@@ -111,16 +111,21 @@ class Table(VizroBaseModel):
     def build(self):
         return dcc.Loading(
             children=[
-                html.H3(self.title) if self.title else None,
-                dcc.Markdown(self.header, className="figure-header") if self.header else None,
-                # Refer to the vm.AgGrid build method for details on why we return the
-                # html.Div(id=self._input_component_id) instead of actual figure object with the original data_frame.
                 html.Div(
-                    id=self.id,
-                    children=[html.Div(id=self._input_component_id)],
-                    className="table-container",
-                ),
-                dcc.Markdown(self.footer, className="figure-footer") if self.footer else None,
+                    children=[
+                        html.H3(self.title, className="figure-title") if self.title else None,
+                        dcc.Markdown(self.header, className="figure-header") if self.header else None,
+                        # Refer to the vm.AgGrid build method for details on why we return the
+                        # html.Div(id=self._input_component_id) instead of actual figure object with the original data_frame.
+                        html.Div(
+                            id=self.id,
+                            children=[html.Div(id=self._input_component_id)],
+                            className="table-container",
+                        ),
+                        dcc.Markdown(self.footer, className="figure-footer") if self.footer else None,
+                    ],
+                    className="figure-container",
+                )
             ],
             color="grey",
             parent_className="loading-container",

@@ -112,21 +112,26 @@ class AgGrid(VizroBaseModel):
 
         return dcc.Loading(
             children=[
-                html.H3(self.title) if self.title else None,
-                dcc.Markdown(self.header, className="figure-header") if self.header else None,
-                # The Div component with `id=self._input_component_id` is rendered during the build phase.
-                # This placeholder component is quickly replaced by the actual AgGrid object, which is generated using
-                # a filtered data_frame and parameterized arguments as part of the on_page_load mechanism.
-                # To prevent pagination and persistence issues while maintaining a lightweight component initial load,
-                # this method now returns a html.Div object instead of the previous dag.AgGrid. The actual AgGrid is
-                # then rendered by the on_page_load mechanism.
-                # The `id=self._input_component_id` is set to avoid the "Non-existing object" Dash exception.
                 html.Div(
-                    id=self.id,
-                    children=[html.Div(id=self._input_component_id)],
-                    className="table-container",
-                ),
-                dcc.Markdown(self.footer, className="figure-footer") if self.footer else None,
+                    children=[
+                        html.H3(self.title, className="figure-title") if self.title else None,
+                        dcc.Markdown(self.header, className="figure-header") if self.header else None,
+                        # The Div component with `id=self._input_component_id` is rendered during the build phase.
+                        # This placeholder component is quickly replaced by the actual AgGrid object, which is generated using
+                        # a filtered data_frame and parameterized arguments as part of the on_page_load mechanism.
+                        # To prevent pagination and persistence issues while maintaining a lightweight component initial load,
+                        # this method now returns a html.Div object instead of the previous dag.AgGrid. The actual AgGrid is
+                        # then rendered by the on_page_load mechanism.
+                        # The `id=self._input_component_id` is set to avoid the "Non-existing object" Dash exception.
+                        html.Div(
+                            id=self.id,
+                            children=[html.Div(id=self._input_component_id)],
+                            className="table-container",
+                        ),
+                        dcc.Markdown(self.footer, className="figure-footer") if self.footer else None,
+                    ],
+                    className="figure-container",
+                )
             ],
             color="grey",
             parent_className="loading-container",

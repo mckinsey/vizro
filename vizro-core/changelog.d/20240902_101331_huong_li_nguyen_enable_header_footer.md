@@ -21,7 +21,6 @@ Uncomment the section that is right (remove the HTML comment wrapper).
 
 - Enable header and footer markdown configuration in `Graph`, `Table` and `AgGrid`. ([#669](https://github.com/mckinsey/vizro/pull/669))
 
-
 <!--
 ### Changed
 
