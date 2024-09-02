@@ -75,18 +75,19 @@ class ChartPlanStatic(BaseModel):
     chart_insights: str = Field(
         ...,
         description="""
-        Insights to what the chart explains or tries to show.""",
+        Insights to what the chart explains or tries to show. Ideally concise and between 30 and 60 words.""",
     )
     code_explanation: str = Field(
         ...,
         description="""
-        Explanation of the code steps used for `chart_code` field.""",
+        Explanation of the code steps used for `chart_code` field. Ideally a concise bulleted step-by-step list.""",
     )
 
     _additional_vizro_imports: List[str] = PrivateAttr(ADDITIONAL_IMPORTS)
 
     @validator("chart_code")
     def _check_chart_code(cls, v):
+        #TODO: add more checks: ends with return, has return, no second function def, only one indented line
         if f"def {CUSTOM_CHART_NAME}(" not in v:
             raise ValueError(f"The chart code must be wrapped in a function named `{CUSTOM_CHART_NAME}`")
 
