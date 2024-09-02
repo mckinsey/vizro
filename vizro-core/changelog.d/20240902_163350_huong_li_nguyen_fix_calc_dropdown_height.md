@@ -39,7 +39,6 @@ Uncomment the section that is right (remove the HTML comment wrapper).
 
 - Fix dynamically calculated `optionHeight` for `Dropdown` when the options are provided as dictionaries. ([#672](https://github.com/mckinsey/vizro/pull/672))
 
-
 <!--
 ### Security
 
