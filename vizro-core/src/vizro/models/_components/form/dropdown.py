@@ -17,6 +17,27 @@ from vizro.models._models_utils import _log_call
 from vizro.models.types import MultiValueType, OptionsType, SingleValueType
 
 
+def _calculate_option_height(list_of_labels: List[str]) -> int:
+    """ "Calculates the height of the dropdown options based on the longest option."""
+    # 30 characters is roughly the number of "A" characters you can fit comfortably on a line in the dropdown.
+    # "A" is representative of a slightly wider than average character:
+    # https://stackoverflow.com/questions/3949422/which-letter-of-the-english-alphabet-takes-up-most-pixels
+    # We look at the longest option to find number_of_lines it requires. Option height is the same for all options
+    # and needs 24px for each line + 8px padding.
+
+    max_length = max(len(str(option)) for option in list_of_labels)
+    number_of_lines = math.ceil(max_length / 30)
+    option_height = 8 + 24 * number_of_lines
+    return option_height
+
+
+def _get_list_of_labels(full_options: OptionsType) -> List[str]:
+    if all(isinstance(option, dict) for option in full_options):
+        return [options_dict["label"] for options_dict in full_options]
+    else:
+        return full_options
+
+
 class Dropdown(VizroBaseModel):
     """Categorical single/multi-option selector `Dropdown`.
 
@@ -63,13 +84,8 @@ class Dropdown(VizroBaseModel):
     @_log_call
     def build(self):
         full_options, default_value = get_options_and_default(options=self.options, multi=self.multi)
-        # 30 characters is roughly the number of "A" characters you can fit comfortably on a line in the dropdown.
-        # "A" is representative of a slightly wider than average character:
-        # https://stackoverflow.com/questions/3949422/which-letter-of-the-english-alphabet-takes-up-most-pixels
-        # We look at the longest option to find number_of_lines it requires. Option height is the same for all options
-        # and needs 24px for each line + 8px padding.
-        number_of_lines = math.ceil(max(len(str(option)) for option in full_options) / 30)
-        option_height = 8 + 24 * number_of_lines
+        list_of_labels = _get_list_of_labels(full_options)
+        option_height = _calculate_option_height(list_of_labels)
 
         return html.Div(
             children=[
