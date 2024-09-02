@@ -91,7 +91,19 @@
         },
         "title": {
           "title": "Title",
-          "description": "Title of the AgGrid",
+          "description": "Title of the `AgGrid`",
+          "default": "",
+          "type": "string"
+        },
+        "header": {
+          "title": "Header",
+          "description": "Markdown text positioned below the component title, compliant with the CommonMark specification.",
+          "default": "",
+          "type": "string"
+        },
+        "footer": {
+          "title": "Footer",
+          "description": "Markdown text positioned below the component, compliant with the CommonMark specification.",
           "default": "",
           "type": "string"
         },
@@ -209,6 +221,24 @@
           "enum": ["graph"],
           "type": "string"
         },
+        "title": {
+          "title": "Title",
+          "description": "Title of the `Graph`",
+          "default": "",
+          "type": "string"
+        },
+        "header": {
+          "title": "Header",
+          "description": "Markdown text positioned below the component title, compliant with the CommonMark specification.",
+          "default": "",
+          "type": "string"
+        },
+        "footer": {
+          "title": "Footer",
+          "description": "Markdown text positioned below the component, compliant with the CommonMark specification.",
+          "default": "",
+          "type": "string"
+        },
         "actions": {
           "title": "Actions",
           "default": [],
@@ -239,7 +269,19 @@
         },
         "title": {
           "title": "Title",
-          "description": "Title of the table",
+          "description": "Title of the `Table`",
+          "default": "",
+          "type": "string"
+        },
+        "header": {
+          "title": "Header",
+          "description": "Markdown text positioned below the component title, compliant with the CommonMark specification.",
+          "default": "",
+          "type": "string"
+        },
+        "footer": {
+          "title": "Footer",
+          "description": "Markdown text positioned below the component, compliant with the CommonMark specification.",
           "default": "",
           "type": "string"
         },
