@@ -186,7 +186,6 @@ class ChartPlanDynamicFactory:
 
 
 if __name__ == "__main__":
-    # Go through code todos
     # Write docs
     # Formulate long term todos
 
