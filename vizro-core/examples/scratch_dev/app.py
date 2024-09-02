@@ -40,12 +40,7 @@ page_two = vm.Page(
         vm.Graph(figure=px.scatter(df, x="sepal_width", y="sepal_length"), title="Blah blah"),
         vm.Table(figure=dash_data_table(df), title="My Table"),
         vm.Graph(
-            figure=px.scatter(
-                df,
-                x="sepal_width",
-                y="sepal_length",
-                color="species"
-            ),
+            figure=px.scatter(df, x="sepal_width", y="sepal_length", color="species"),
             title="My Graph",
             header=HEADER,
         ),
@@ -61,12 +56,7 @@ page_three = vm.Page(
         vm.AgGrid(figure=dash_ag_grid(df), title="My AgGrid", header=HEADER, footer=FOOTER),
         vm.Table(figure=dash_data_table(df), title="My Table", header=HEADER, footer=FOOTER),
         vm.Graph(
-            figure=px.scatter(
-                df,
-                x="sepal_width",
-                y="sepal_length",
-                color="species"
-            ),
+            figure=px.scatter(df, x="sepal_width", y="sepal_length", color="species"),
             title="My Graph",
             header=HEADER,
             footer=FOOTER,
@@ -93,12 +83,7 @@ page_six = vm.Page(
     title="Styling Header/Footer - Graph",
     components=[
         vm.Graph(
-            figure=px.scatter(
-                df,
-                x="sepal_width",
-                y="sepal_length",
-                color="species"
-            ),
+            figure=px.scatter(df, x="sepal_width", y="sepal_length", color="species"),
             title="My Graph",
             header=HEADER,
             footer=FOOTER,
