@@ -67,7 +67,7 @@ class TestChartPlanStaticInstantiation:
 
 
 class TestChartPlanDynamicFactory:
-    def test_check_chart_code_valid(self):
+    def test_execute_chart_code_valid(self):
         chart_plan_dynamic = ChartPlanDynamicFactory(data_frame=px.data.iris())
         chart_plan_dynamic_valid = chart_plan_dynamic(
             chart_type="Bubble Chart",
@@ -110,7 +110,7 @@ class TestChartPlanDynamicFactory:
             ),
         ],
     )
-    def test_check_chart_code_evaluation_invalid(self, chart_code, error_type, error_message):
+    def test_execute_chart_code_invalid(self, chart_code, error_type, error_message):
         chart_plan_dynamic = ChartPlanDynamicFactory(data_frame=px.data.iris())
         with pytest.raises(error_type, match=error_message):
             chart_plan_dynamic_invalid = chart_plan_dynamic(
