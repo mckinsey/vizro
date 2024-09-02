@@ -3,7 +3,7 @@
 import vizro.models as vm
 import vizro.plotly.express as px
 from vizro import Vizro
-from vizro.tables import dash_data_table, dash_ag_grid
+from vizro.tables import dash_ag_grid, dash_data_table
 
 df = px.data.iris()
 
@@ -37,10 +37,12 @@ page_two = vm.Page(
         vm.Table(figure=dash_data_table(df), title="My Table"),
         vm.Graph(
             figure=px.scatter(
-                df, x="sepal_width", y="sepal_length",
+                df,
+                x="sepal_width",
+                y="sepal_length",
             ),
             title="My Graph",
-            header=HEADER
+            header=HEADER,
         ),
     ],
 )
@@ -51,21 +53,20 @@ page_three = vm.Page(
         grid=[[0, 1, 2]],
     ),
     components=[
-        vm.AgGrid(figure=dash_ag_grid(df), title="My AgGrid", header=HEADER,
-            footer=FOOTER),
-        vm.Table(figure=dash_data_table(df), title="My Table", header=HEADER,
-            footer=FOOTER),
+        vm.AgGrid(figure=dash_ag_grid(df), title="My AgGrid", header=HEADER, footer=FOOTER),
+        vm.Table(figure=dash_data_table(df), title="My Table", header=HEADER, footer=FOOTER),
         vm.Graph(
             figure=px.scatter(
-                df, x="sepal_width", y="sepal_length",
+                df,
+                x="sepal_width",
+                y="sepal_length",
             ),
             title="My Graph",
             header=HEADER,
-            footer=FOOTER
+            footer=FOOTER,
         ),
     ],
 )
-
 
 
 dashboard = vm.Dashboard(pages=[page, page_two, page_three])
