@@ -33,13 +33,13 @@ SUPPORTED_MODELS = {
 
 DEFAULT_WRAPPER_MAP: Dict[str, BaseChatModel] = {"OpenAI": ChatOpenAI, "Anthropic": ChatAnthropic}
 
-DEFAULT_MODEL = "gpt-3.5-turbo"
+DEFAULT_MODEL = "gpt-4o-mini"
 DEFAULT_TEMPERATURE = 0
 
 model_to_vendor = {model: key for key, models in SUPPORTED_MODELS.items() for model in models}
 
 
-def _get_llm_model(model: Optional[Union[ChatOpenAI, str]] = None) -> BaseChatModel:
+def _get_llm_model(model: Optional[Union[BaseChatModel, str]] = None) -> BaseChatModel:
     """Fetches and initializes an instance of the LLM.
 
     Args:
