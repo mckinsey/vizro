@@ -155,7 +155,7 @@ def custom_chart(data_frame):
                 (None, "custom_chart"),
             ],
         )
-        def test_get_complete_code(self, chart_plan, chart_name, expected_chart_name):
+        def test_get_complete_code_chart_name_arg(self, chart_plan, chart_name, expected_chart_name):
             assert (
                 chart_plan._get_complete_code(chart_name=chart_name)
                 == f"""import plotly.express as px
