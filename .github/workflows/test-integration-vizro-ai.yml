@@ -115,4 +115,4 @@ jobs:
         with:
           name: Report-${{ matrix.python-version }}-${{ matrix.label }}
           path: |
-            /home/runner/work/vizro/vizro/vizro-ai/reports/report*.csv
+            /home/runner/work/vizro/vizro/vizro-ai/tests/integration/reports/report*.csv
