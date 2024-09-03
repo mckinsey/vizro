@@ -26,7 +26,7 @@ This number determines how often the tool will try to correct an incorrect respo
 ### `return_elements`
 This boolean (by default `False`) determines the return type of `vizro_ai.plot`. 
 
-If set to `False`, then dynamically generated python code is executed in order to produce a `plotly.graph_objects.Figure` object from the LLM response and the user provided data frame. Strictly speaking, it produces a `vizro.charts._charts_utils._DashboardReadyFigure`, which behaves essentially like a plotly graph object, but is ready to be inserted into a [Vizro](https://vizro.readthedocs.io/en/stable/) dashboard. It also comes with the default Vizro dark theme.
+If set to `False`, then dynamically generated python code is executed in order to produce a `plotly.graph_objects.Figure` object from the LLM response and the user provided data frame. Strictly speaking, it produces a `vizro.charts._charts_utils._DashboardReadyFigure`, which behaves essentially like a plotly graph object, but is ready to be [inserted](add-generated-chart-usecase.md) into a [Vizro](https://vizro.readthedocs.io/en/stable/) dashboard. It also comes with the default Vizro dark theme.
 
 If set to `True`, a pydantic model is returned from which the fig object, but also various other outputs can be generated. (see below)
 
@@ -106,7 +106,7 @@ You can obtain the code string that would produce the answer to the user query a
 You can create the fig object using either of the above produced code strings (vizro or plotly), changing the chart name, and using different data. Note that when executing this function, the produced code string will be dynamically executed. Be sure [to read and understand what it means when dynamically generated code is executed](../explanation/safety-in-vizro-ai.md#execution-of-dynamic-code-in-vizro-ai).
 
 #### Vizro ready
-This fig object is in the standard `vizro_dark` theme, and can readily be inserted into a Vizro dashboard.
+This fig object is in the standard `vizro_dark` theme, and can [readily be inserted into a Vizro dashboard](add-generated-chart-usecase.md).
 
 !!! example "Vizro fig object"
 
