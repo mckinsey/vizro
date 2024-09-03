@@ -9,7 +9,7 @@ from vizro.tables import dash_ag_grid, dash_data_table
 df = px.data.iris()
 
 HEADER = """
-Each point in the scatter plot represents one of the 150 iris flowers, with colors indicating their types. The Setosa 
+Each point in the scatter plot represents one of the 150 iris flowers, with colors indicating their types. The Setosa
 type is easily identifiable by its short and wide sepals.
 
 However, there is still overlap between the Versicolor and Virginica types when considering only sepal width and length.
