@@ -8,6 +8,7 @@ from langchain_core.language_models.chat_models import BaseChatModel
 from langchain_core.messages import HumanMessage
 
 from vizro_ai._llm_models import _get_llm_model, _get_model_name
+from vizro_ai.utils.helper import _get_df_info
 from vizro_ai.dashboard._graph.dashboard_creation import _create_and_compile_graph
 from vizro_ai.dashboard._pydantic_output import _get_pydantic_model  # TODO: make general, ie remove from dashboard
 from vizro_ai.dashboard.utils import DashboardOutputs, _extract_custom_functions_and_imports, _register_data
@@ -62,11 +63,12 @@ class VizroAI:
 
         """
         response_model = ChartPlanDynamicFactory(data_frame=df) if validate_code else ChartPlanStatic
+        _,df_sample = _get_df_info(df=df)
         response = _get_pydantic_model(
             query=user_input,
             llm_model=self.model,
             response_model=response_model,
-            df_info=df,
+            df_info=df_sample,
             max_retry=max_debug_retry,
         )
         if return_elements:

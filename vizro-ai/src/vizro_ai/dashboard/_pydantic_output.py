@@ -67,7 +67,7 @@ def _get_pydantic_model(
     query: str,
     llm_model: BaseChatModel,
     response_model: BaseModel,
-    df_info: Optional[Any] = None,
+    df_info: Optional[Any] = None, #TODO: this should potentially not be part of this function.
     max_retry: int = 2,
 ) -> BaseModel:
     # TODO: fix typing similar to instructor library, ie the return type should be the same as response_model
