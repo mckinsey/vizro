@@ -52,10 +52,10 @@ You should see a return output of the form `x.y.z`.
 
 ## Set up access to a large language model
 
-Use of Vizro-AI requires the use of a large language model. At present, we only support [OpenAI](https://openai.com/).
+Vizro-AI supports **any** model that is available via [Langchain's `BaseChatModel` class](https://api.python.langchain.com/en/latest/language_models/langchain_core.language_models.chat_models.BaseChatModel.html#langchain_core.language_models.chat_models.BaseChatModel), and that has the `with_structured_output` method implemented. An overview of the [most common vendor models supporting this functionality](https://python.langchain.com/v0.2/docs/integrations/chat/) can be found in Langchain's documentation.
 
 
-### Set up access to OpenAI
+### Set up access to OpenAI (as an example for any vendor)
 To use OpenAI with Vizro-AI you need an API key, which you can get by [creating an OpenAI account if you don't already have one](https://platform.openai.com/account/api-keys).
 
 We recommend that you consult the [third-party API key section of the disclaimer documentation](../explanation/disclaimer.md) documentation.
@@ -107,6 +107,9 @@ in the OpenAI documentation. (It is under the dropdown of "Step 2: Set up your A
 
 The documentation provides step-by-step instructions for setting up the API key as an environment
 variable, on operating systems including Windows and MacOS.
+
+!!!note
+    Sometimes setting up the `.env` file can be fiddly. If there is continued struggle, remember that one can always provide the API key directly to the instantiated model. See [our user guide](./customize-vizro-ai.md#setting-model-via-class-for-additional-configuration) for this option. Remember to still not commit this API key to any public space like github!
 
 __Set the base URL (optional)__
 
