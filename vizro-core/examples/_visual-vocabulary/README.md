@@ -26,65 +26,65 @@ to create them using [Plotly](https://plotly.com/python/) and [Vizro](https://gi
 The dashboard is still in development. Below is an overview of the chart types for which a completed page is available.
 
 | Chart Type            | Status | Category                 |
-| --------------------- | ---- | ------------------------ |
-| Arc                   | ❌    | Part-to-whole            |
-| Area                  | ✅    | Time                     |
-| Bar                   | ✅    | Magnitude                |
-| Barcode               | ❌    | Distribution             |
-| Beeswarm              | ❌    | Distribution             |
-| Boxplot               | ✅    | Distribution             |
-| Bubble                | ✅    | Correlation              |
-| Bubble map            | ❌    | Spatial                  |
-| Bubble timeline       | ❌    | Time                     |
-| Bullet                | ❌    | Magnitude                |
-| Bump                  | ❌    | Ranking                  |
-| Butterfly             | ✅    | Deviation, Distribution  |
-| Chord                 | ❌    | Flow                     |
-| Choropleth            | ✅    | Spatial                  |
-| Column                | ✅    | Magnitude, Time          |
-| Column and line       | ✅    | Correlation, Time        |
-| Connected scatter     | ✅    | Correlation, Time        |
-| Cumulative curve      | ❌    | Distribution             |
-| Diverging bar         | ❌    | Deviation                |
-| Diverging stacked bar | ❌    | Deviation                |
-| Donut                 | ✅    | Part-to-whole            |
+| --------------------- | ------ | ------------------------ |
+| Arc                   | ❌     | Part-to-whole            |
+| Area                  | ✅     | Time                     |
+| Bar                   | ✅     | Magnitude                |
+| Barcode               | ❌     | Distribution             |
+| Beeswarm              | ❌     | Distribution             |
+| Boxplot               | ✅     | Distribution             |
+| Bubble                | ✅     | Correlation              |
+| Bubble map            | ❌     | Spatial                  |
+| Bubble timeline       | ❌     | Time                     |
+| Bullet                | ❌     | Magnitude                |
+| Bump                  | ❌     | Ranking                  |
+| Butterfly             | ✅     | Deviation, Distribution  |
+| Chord                 | ❌     | Flow                     |
+| Choropleth            | ✅     | Spatial                  |
+| Column                | ✅     | Magnitude, Time          |
+| Column and line       | ✅     | Correlation, Time        |
+| Connected scatter     | ✅     | Correlation, Time        |
+| Cumulative curve      | ❌     | Distribution             |
+| Diverging bar         | ❌     | Deviation                |
+| Diverging stacked bar | ❌     | Deviation                |
+| Donut                 | ✅     | Part-to-whole            |
 | Dot map               | ✅     | Spatial                  |
-| Dot plot              | ❌    | Distribution             |
-| Fan                   | ❌    | Time                     |
-| Flow map              | ❌    | Spatial                  |
-| Funnel                | ✅    | Part-to-whole            |
-| Gantt                 | ❌    | Time                     |
-| Gridplot              | ❌    | Part-to-whole            |
-| Heatmap               | ✅    | Time                     |
-| Heatmap matrix        | ❌    | Correlation              |
-| Histogram             | ✅    | Distribution             |
-| Line                  | ✅    | Time                     |
-| Lollipop              | ❌    | Ranking, Magnitude       |
-| Marimekko             | ❌    | Magnitude, Part-to-whole |
-| Network               | ❌    | Flow                     |
-| Ordered bar           | ✅    | Ranking                  |
-| Ordered bubble        | ❌    | Ranking                  |
-| Ordered column        | ✅    | Ranking                  |
-| Paired bar            | ✅    | Magnitude                |
-| Paired column         | ✅    | Magnitude                |
-| Parallel coordinates  | ✅    | Magnitude                |
-| Pictogram             | ❌    | Magnitude                |
-| Pie                   | ✅    | Part-to-whole            |
-| Radar                 | ❌    | Magnitude                |
-| Radial                | ❌    | Magnitude                |
-| Sankey                | ✅    | Flow                     |
-| Scatter               | ✅    | Correlation              |
-| Scatter matrix        | ✅    | Correlation              |
-| Slope                 | ❌    | Ranking, Time            |
-| Sparkline             | ❌    | Time                     |
-| Stacked bar           | ✅    | Part-to-whole            |
-| Stacked column        | ✅    | Part-to-whole            |
-| Stepped line          | ✅    | Time                     |
-| Surplus deficit line  | ❌    | Deviation                |
-| Treemap               | ✅    | Part-to-whole            |
-| Venn                  | ❌    | Part-to-whole            |
-| Violin                | ✅    | Distribution             |
-| Waterfall             | ❌    | Part-to-whole, Flow      |
+| Dot plot              | ❌     | Distribution             |
+| Fan                   | ❌     | Time                     |
+| Flow map              | ❌     | Spatial                  |
+| Funnel                | ✅     | Part-to-whole            |
+| Gantt                 | ❌     | Time                     |
+| Gridplot              | ❌     | Part-to-whole            |
+| Heatmap               | ✅     | Time                     |
+| Heatmap matrix        | ❌     | Correlation              |
+| Histogram             | ✅     | Distribution             |
+| Line                  | ✅     | Time                     |
+| Lollipop              | ❌     | Ranking, Magnitude       |
+| Marimekko             | ❌     | Magnitude, Part-to-whole |
+| Network               | ❌     | Flow                     |
+| Ordered bar           | ✅     | Ranking                  |
+| Ordered bubble        | ❌     | Ranking                  |
+| Ordered column        | ✅     | Ranking                  |
+| Paired bar            | ✅     | Magnitude                |
+| Paired column         | ✅     | Magnitude                |
+| Parallel coordinates  | ✅     | Magnitude                |
+| Pictogram             | ❌     | Magnitude                |
+| Pie                   | ✅     | Part-to-whole            |
+| Radar                 | ❌     | Magnitude                |
+| Radial                | ❌     | Magnitude                |
+| Sankey                | ✅     | Flow                     |
+| Scatter               | ✅     | Correlation              |
+| Scatter matrix        | ✅     | Correlation              |
+| Slope                 | ❌     | Ranking, Time            |
+| Sparkline             | ❌     | Time                     |
+| Stacked bar           | ✅     | Part-to-whole            |
+| Stacked column        | ✅     | Part-to-whole            |
+| Stepped line          | ✅     | Time                     |
+| Surplus deficit line  | ❌     | Deviation                |
+| Treemap               | ✅     | Part-to-whole            |
+| Venn                  | ❌     | Part-to-whole            |
+| Violin                | ✅     | Distribution             |
+| Waterfall             | ❌     | Part-to-whole, Flow      |
 
 To contribute a chart, follow the steps below:
 

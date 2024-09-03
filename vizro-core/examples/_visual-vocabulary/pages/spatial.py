@@ -70,9 +70,10 @@ dot_map = vm.Page(
                 carshare,
                 lat="centroid_lat",
                 lon="centroid_lon",
-                opacity=0.3,
+                map_style="carto-darkmatter",
+                opacity=0.5,
                 zoom=10,
-            )
+            ),
         ),
         make_code_clipboard_from_py_file("dot_map.py"),
     ],
