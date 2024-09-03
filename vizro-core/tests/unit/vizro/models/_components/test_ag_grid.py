@@ -198,21 +198,22 @@ class TestBuildAgGrid:
         )
         assert_component_equal(ag_grid, expected_ag_grid)
 
-
     def test_aggrid_build_title_header_footer(self, standard_ag_grid):
-        ag_grid = vm.AgGrid(figure=standard_ag_grid, title="Title", header="""#### Subtitle""", footer="""SOURCE: **DATA**""")
+        ag_grid = vm.AgGrid(
+            figure=standard_ag_grid, title="Title", header="""#### Subtitle""", footer="""SOURCE: **DATA**"""
+        )
         ag_grid.pre_build()
         ag_grid = ag_grid.build()
         expected_ag_grid = dcc.Loading(
             html.Div(
                 children=[
                     html.H3("Title", className="figure-title"),
-                    dcc.Markdown("""#### Subtitle""",className= 'figure-header'),
+                    dcc.Markdown("""#### Subtitle""", className="figure-header"),
                     html.Div(
                         children=[html.Div(id="__input_text_table")],
                         className="table-container",
                     ),
-                    dcc.Markdown("""SOURCE: **DATA**""", className='figure-footer')
+                    dcc.Markdown("""SOURCE: **DATA**""", className="figure-footer"),
                 ],
                 className="figure-container",
             ),

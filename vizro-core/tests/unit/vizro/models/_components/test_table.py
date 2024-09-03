@@ -196,19 +196,21 @@ class TestBuildTable:
         assert_component_equal(table, expected_table)
 
     def test_table_build_title_header_footer(self, standard_dash_table):
-        table = vm.Table(figure=standard_dash_table, title="Title", header="""#### Subtitle""", footer="""SOURCE: **DATA**""")
+        table = vm.Table(
+            figure=standard_dash_table, title="Title", header="""#### Subtitle""", footer="""SOURCE: **DATA**"""
+        )
         table.pre_build()
         table = table.build()
         expected_table = dcc.Loading(
             html.Div(
                 children=[
                     html.H3("Title", className="figure-title"),
-                    dcc.Markdown("""#### Subtitle""",className= 'figure-header'),
+                    dcc.Markdown("""#### Subtitle""", className="figure-header"),
                     html.Div(
                         children=[html.Div(id="__input_text_table")],
                         className="table-container",
                     ),
-                    dcc.Markdown("""SOURCE: **DATA**""", className='figure-footer')
+                    dcc.Markdown("""SOURCE: **DATA**""", className="figure-footer"),
                 ],
                 className="figure-container",
             ),
