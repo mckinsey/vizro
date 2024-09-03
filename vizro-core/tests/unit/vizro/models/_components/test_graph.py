@@ -31,14 +31,11 @@ def standard_px_chart_with_str_dataframe():
         size_max=60,
     )
 
+
 @pytest.fixture
 def standard_px_chart_with_title():
-    return px.scatter(
-        data_frame="gapminder",
-        x="gdpPercap",
-        y="lifeExp",
-        title="Title"
-    )
+    return px.scatter(data_frame="gapminder", x="gdpPercap", y="lifeExp", title="Title")
+
 
 class TestGraphInstantiation:
     def test_create_graph_mandatory_only(self, standard_px_chart):
@@ -200,15 +197,16 @@ class TestBuildGraph:
         )
         assert_component_equal(graph, expected_graph, keys_to_strip={"id"})
 
-
     def test_graph_build_title_header_footer(self, standard_px_chart):
-        graph = vm.Graph(figure=standard_px_chart, title="Title", header="""#### Subtitle""", footer="""SOURCE: **DATA**""").build()
+        graph = vm.Graph(
+            figure=standard_px_chart, title="Title", header="""#### Subtitle""", footer="""SOURCE: **DATA**"""
+        ).build()
 
         expected_graph = dcc.Loading(
             html.Div(
                 [
                     html.H3("Title", className="figure-title"),
-                    dcc.Markdown("""#### Subtitle""",className= 'figure-header'),
+                    dcc.Markdown("""#### Subtitle""", className="figure-header"),
                     dcc.Graph(
                         figure=go.Figure(
                             layout={
@@ -224,7 +222,7 @@ class TestBuildGraph:
                             "responsive": True,
                         },
                     ),
-                    dcc.Markdown("""SOURCE: **DATA**""", className= 'figure-footer')
+                    dcc.Markdown("""SOURCE: **DATA**""", className="figure-footer"),
                 ],
                 className="figure-container",
             ),
