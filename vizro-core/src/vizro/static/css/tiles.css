@@ -11,8 +11,14 @@
   flex: 0 1 auto;
 }
 
+/*
 .figure-footer {
   padding-top: 14px;
+}
+ */
+
+.figure-footer, .figure-footer p {
+  font-size: 0.75rem;
 }
 
 .figure-footer a {
