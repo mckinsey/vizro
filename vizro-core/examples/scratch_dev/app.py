@@ -3,24 +3,28 @@
 import vizro.models as vm
 import vizro.plotly.express as px
 from vizro import Vizro
-from vizro.tables import dash_data_table
 
-df = px.data.iris()
-
+iris = px.data.iris()
 
 page = vm.Page(
-    title="Testasfsadfsadf",
-    layout=vm.Layout(
-        grid=[[0, 1, 2, 3]],
-    ),
+    title="My first page",
     components=[
-        vm.Graph(figure=px.scatter(df, x="sepal_width", y="sepal_length")),
-        vm.Graph(figure=px.scatter(df, x="sepal_width", y="sepal_length", title="Blah blah")),
-        vm.Table(figure=dash_data_table(df), title="My Table"),
         vm.Graph(
-            figure=px.scatter(
-                df, x="sepal_width", y="sepal_length", title="My Graph <br><span>This is a subtitle</span>"
-            )
+            id="scatter_chart",
+            figure=px.scatter(iris, title="My scatter chart", x="sepal_length", y="petal_width", color="species"),
+        ),
+    ],
+    controls=[
+        vm.Parameter(
+            targets=["scatter_chart.title"],
+            selector=vm.Dropdown(
+                options=[
+                    {"value": "Shipping Address State", "label": "State"},
+                    {"value": "Category", "label": "Category"},
+                    {"value": "Short_Title", "label": "Product item"},
+                ],
+                multi=False,
+            ),
         ),
     ],
 )
@@ -28,4 +32,4 @@ page = vm.Page(
 dashboard = vm.Dashboard(pages=[page])
 
 if __name__ == "__main__":
-    Vizro().build(dashboard).run(debug=True)
+    Vizro().build(dashboard).run()
