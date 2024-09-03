@@ -82,12 +82,14 @@ jobs:
         run: |
           export OPENAI_API_KEY=${{ secrets.OPENAI_API_KEY }}
           export OPENAI_API_BASE=${{ secrets.OPENAI_API_BASE }}
+          export VIZRO_TYPE=pypi
           hatch run ${{ matrix.hatch-env }}:test-integration
 
       - name: Run vizro-ai integration tests with local vizro
         run: |
           export OPENAI_API_KEY=${{ secrets.OPENAI_API_KEY }}
           export OPENAI_API_BASE=${{ secrets.OPENAI_API_BASE }}
+          export VIZRO_TYPE=local
           cd ../vizro-core
           hatch build
           cd ../vizro-ai
@@ -113,4 +115,4 @@ jobs:
         with:
           name: Report-${{ matrix.python-version }}-${{ matrix.label }}
           path: |
-            /home/runner/work/vizro/vizro/vizro-ai/report*.csv
+            /home/runner/work/vizro/vizro/vizro-ai/reports/report*.csv

@@ -2,6 +2,7 @@
 
 import csv
 import os
+from datetime import datetime
 
 import chromedriver_autoinstaller
 import pytest
@@ -53,6 +54,11 @@ def test_simple_dashboard(dash_duo, model_name):  # noqa: PLR0915
     Add a filter to filter the scatter plot by continent.
     Add a second filter to filter the chart by year.
     """
+    report_file = f"tests/integration/reports/report_model_{model_name}.csv"
+    try:
+        vizro_type = os.environ["VIZRO_TYPE"]
+    except KeyError:
+        vizro_type = "local_env"
 
     dashboard = vizro_ai._dashboard([df1, df2], input_text)
     app = Vizro().build(dashboard).dash
@@ -121,18 +127,22 @@ def test_simple_dashboard(dash_duo, model_name):  # noqa: PLR0915
     ]
     score = sum(prescore)
 
-    with open(f"tests/integration/report_model_{model_name}.csv", "a", newline="") as csvfile:
+    with open(report_file, "a", newline="") as csvfile:
         writer = csv.writer(csvfile, delimiter=",")
-        writer.writerow(["Description, Score"]),
-        writer.writerow([f"Pages exists, {pages}"]),
-        writer.writerow([f"Correct pages number, {pages_num}"]),
-        writer.writerow([f"Correct grid first page, {grid_1}"]),
-        writer.writerow([f"Correct grid second page, {grid_2}"]),
-        writer.writerow([f"Correct components number first page, {components_num_1}"]),
-        writer.writerow([f"Correct components number second page, {components_num_2}"]),
-        writer.writerow([f"Correct controls number first page, {controls_num_1}"]),
-        writer.writerow([f"Correct controls number second page, {controls_num_2}"]),
-        writer.writerow([f"Correct components types first page, {components_types_1}"]),
-        writer.writerow([f"Correct components types second page, {components_types_2}"]),
-        writer.writerow([f"Correct controls types second page, {controls_types_2}"]),
+        writer.writerow([f"Vizro type = {vizro_type}, Datetime = {datetime.now()}"])
+        writer.writerow([])
+        writer.writerow(["Description, Score"])
+        writer.writerow([f"Pages exists, {pages}"])
+        writer.writerow([f"Correct pages number, {pages_num}"])
+        writer.writerow([f"Correct grid first page, {grid_1}"])
+        writer.writerow([f"Correct grid second page, {grid_2}"])
+        writer.writerow([f"Correct components number first page, {components_num_1}"])
+        writer.writerow([f"Correct components number second page, {components_num_2}"])
+        writer.writerow([f"Correct controls number first page, {controls_num_1}"])
+        writer.writerow([f"Correct controls number second page, {controls_num_2}"])
+        writer.writerow([f"Correct components types first page, {components_types_1}"])
+        writer.writerow([f"Correct components types second page, {components_types_2}"])
+        writer.writerow([f"Correct controls types second page, {controls_types_2}"])
         writer.writerow([f"Total, {(score / len(prescore)):.4f}"])
+        writer.writerow([])
+        writer.writerow([])
