@@ -7,7 +7,7 @@ We'll create an animated bar chart illustrating the GDP per capita of each conti
 
 !!! example "Vizro-AI animated chart"
 
-    === "Code for the cell"
+    === "Code"
         ```py
         from vizro_ai import VizroAI
         import vizro.plotly.express as px
@@ -28,7 +28,7 @@ Next, we will try to tweak our prompt to improve the overall layout.
 
 !!! example "Vizro-AI animated chart"
 
-    === "Code for the cell"
+    === "Code"
         ```py
         from vizro_ai import VizroAI
         import vizro.plotly.express as px
@@ -53,7 +53,7 @@ Upon closer inspection, the title is too long and the color palette used does no
 
 !!! example "Vizro-AI animated chart"
 
-    === "Code for the cell"
+    === "Code"
         ```py
         from vizro_ai import VizroAI
         import vizro.plotly.express as px
