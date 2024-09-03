@@ -11,7 +11,7 @@ nav:
           - Model set-up: pages/user-guides/customize-vizro-ai.md
           - Different languages: pages/user-guides/use-different-languages.md
       - CHARTS:
-          - Run Vizro-AI: pages/user-guides/run-vizro-ai.md
+          - Run vizro_ai.plot: pages/user-guides/run-vizro-ai.md
           - Advanced options: pages/user-guides/advanced-options.md
           - Advanced charts: pages/user-guides/create-advanced-charts.md
           - Add Vizro-AI charts to a Vizro dashboard: pages/user-guides/add-generated-chart-usecase.md
