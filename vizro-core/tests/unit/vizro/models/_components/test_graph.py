@@ -101,8 +101,8 @@ class TestDunderMethodsGraph:
         "title, margin_t",
         [(None, None), ("Graph with title", 64), ("Graph with title..<br> and subtitle", 64)],
     )
-    def test_title_layout_adjustments(self, gapminder, title, margin_t, title_pad_t, mocker):
-        # Mock out set_props so we don't need to supply mock callback context for this test.
+    def test_title_layout_adjustments(self, gapminder, title, margin_t, mocker):
+        # Mock out `set_props` so we don't need to supply mock callback context for this test.
         mocker.patch("vizro.models._components.graph.set_props", side_effect=MissingCallbackContextException)
         graph = vm.Graph(figure=px.bar(data_frame=gapminder, x="year", y="pop", title=title)).__call__()
 
