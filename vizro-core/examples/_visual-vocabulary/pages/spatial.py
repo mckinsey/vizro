@@ -96,7 +96,7 @@ bubble_map = vm.Page(
             #### When should I use it?
 
             Use a bubble map to show the distribution, concentration, and size of data points on a map.
-            It’s great for highlighting patterns, clusters, and anomalies.
+            It's great for highlighting patterns, clusters, and anomalies.
 
             Bubble maps clearly display spatial distributions and magnitudes, but overlapping bubbles can obscure
             details in crowded areas. Adjust the opacity and size of your bubbles to enhance clarity.
