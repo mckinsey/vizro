@@ -21,6 +21,8 @@ from dash import (
     html,
 )
 
+from vizro._themes._templates.template_dashboard_overrides import dashboard_overrides
+
 try:
     from pydantic.v1 import Field, validator
 except ImportError:  # pragma: no cov
@@ -156,7 +158,10 @@ class Dashboard(VizroBaseModel):
                 html.Div(id="vizro_version", children=vizro.__version__, hidden=True),
                 dcc.Store(
                     id="vizro_themes",
-                    data={"vizro_dark": pio.templates["vizro_dark"], "vizro_light": pio.templates["vizro_light"]},
+                    data={
+                        "vizro_dark": pio.templates.merge_templates("vizro_dark", dashboard_overrides),
+                        "vizro_light": pio.templates.merge_templates("vizro_light", dashboard_overrides),
+                    },
                 ),
                 ActionLoop._create_app_callbacks(),
                 dash.page_container,

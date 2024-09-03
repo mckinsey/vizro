@@ -121,22 +121,14 @@ class Graph(VizroBaseModel):
     @staticmethod
     def _optimise_fig_layout_for_dashboard(fig):
         """Post layout updates to visually enhance charts used inside dashboard."""
-        # Reduce `margin_t` if no title is provided and `margin_t` is not explicitly set.
-        if fig.layout.margin.t is None and fig.layout.title.text is None:
-            fig.update_layout(margin_t=24)
+        if fig.layout.title.text:
+            if fig.layout.margin.t is None:
+                # Reduce `margin_t` if not explicitly set.
+                fig.update_layout(margin_t=64)
 
-        # Reduce `title_pad_t` if no subtitle is provided and `title_pad_t` is not explicitly set.
-        if fig.layout.title.pad.t is None and fig.layout.title.text and "<br>" not in fig.layout.title.text:
-            fig.update_layout(title_pad_t=7)
-
-        if fig.layout.title.pad.l is None:
-            fig.update_layout(title_pad_l=0)
-
-        if fig.layout.title.pad.r is None:
-            fig.update_layout(title_pad_r=0)
-
-        if fig.layout.margin.l is None:
-            fig.update_layout(margin_l=24)
+            if fig.layout.title.pad.t is None and "<br>" not in fig.layout.title.text:
+                # Reduce `title_pad_t` if title doesn't have subtitle and `title_pad_t` is not explicitly set.
+                fig.update_layout(title_pad_t=7)
 
         return fig
 

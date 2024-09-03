@@ -17,7 +17,7 @@ def target_scatter_filtered_continent_and_pop_parameter_y_and_x(request, gapmind
     ]
     scatter_params["y"] = y
     scatter_params["x"] = x
-    return px.scatter(data, **scatter_params).update_layout(margin_t=24, title_pad_l=0, title_pad_r=0, margin_l=24)
+    return px.scatter(data, **scatter_params)
 
 
 @pytest.fixture
@@ -29,7 +29,7 @@ def target_box_filtered_continent_and_pop_parameter_y_and_x(request, gapminder_2
     ]
     box_params["y"] = y
     box_params["x"] = x
-    return px.box(data, **box_params).update_layout(margin_t=24, title_pad_l=0, title_pad_r=0, margin_l=24)
+    return px.box(data, **box_params)
 
 
 @pytest.fixture

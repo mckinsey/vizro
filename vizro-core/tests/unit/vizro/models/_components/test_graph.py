@@ -99,7 +99,7 @@ class TestDunderMethodsGraph:
 
     @pytest.mark.parametrize(
         "title, margin_t, title_pad_t",
-        [(None, 24, None), ("Graph with title", None, 7), ("Graph with title..<br> and subtitle", None, None)],
+        [(None, None, None), ("Graph with title", 64, 7), ("Graph with title..<br> and subtitle", 64, None)],
     )
     def test_title_layout_adjustments(self, gapminder, title, margin_t, title_pad_t, mocker):
         # Mock out set_props so we don't need to supply mock callback context for this test.
@@ -109,9 +109,6 @@ class TestDunderMethodsGraph:
         # These are the overwrites in graph._optimise_fig_layout_for_dashboard
         assert graph.layout.margin.t == margin_t
         assert graph.layout.title.pad.t == title_pad_t
-        assert graph.layout.title.pad.l == 0
-        assert graph.layout.title.pad.r == 0
-        assert graph.layout.margin.l == 24
 
         # These are our defaults for the layout defined in `_templates.common_values`
         assert graph.layout.template.layout.margin.t == 64
@@ -124,7 +121,7 @@ class TestDunderMethodsGraph:
         # Mock out set_props so we don't need to supply mock callback context for this test.
         mocker.patch("vizro.models._components.graph.set_props", side_effect=MissingCallbackContextException)
         graph = vm.Graph(figure=standard_px_chart).__call__()
-        assert graph == standard_px_chart.update_layout(margin_t=24, title_pad_l=0, title_pad_r=0, margin_l=24)
+        assert graph == standard_px_chart
 
     def test_set_action_via_validator(self, standard_px_chart, identity_action_function):
         graph = vm.Graph(figure=standard_px_chart, actions=[Action(function=identity_action_function())])
