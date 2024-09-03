@@ -29,6 +29,7 @@ nav:
           - Layouts: pages/user-guides/layouts.md
           - Themes: pages/user-guides/themes.md
           - Assets: pages/user-guides/assets.md
+          - Titles, header, footer: pages/user-guides/titles_header_footer.md
       - ACTIONS:
           - Actions: pages/user-guides/actions.md
       - DATA:
