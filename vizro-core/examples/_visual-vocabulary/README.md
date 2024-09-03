@@ -34,7 +34,7 @@ The dashboard is still in development. Below is an overview of the chart types f
 | Beeswarm              | ❌     | Distribution             |
 | Boxplot               | ✅     | Distribution             |
 | Bubble                | ✅     | Correlation              |
-| Bubble map            | ❌     | Spatial                  |
+| Bubble map            | ✅     | Spatial                  |
 | Bubble timeline       | ❌     | Time                     |
 | Bullet                | ❌     | Magnitude                |
 | Bump                  | ❌     | Ranking                  |

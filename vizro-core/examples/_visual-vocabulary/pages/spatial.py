@@ -79,5 +79,44 @@ dot_map = vm.Page(
     ],
 )
 
+bubble_map = vm.Page(
+    title="Bubble map",
+    path="spatial/bubble-map",
+    layout=vm.Layout(grid=PAGE_GRID),
+    components=[
+        vm.Card(
+            text="""
+            #### What is a bubble map?
 
-pages = [choropleth, dot_map]
+            A bubble map uses bubbles of varying sizes to represent the value of a specific variable at geographic
+            locations.
+
+            &nbsp;
+
+            #### When should I use it?
+
+            Use a bubble map to show the distribution, concentration, and size of data points on a map.
+            It’s great for highlighting patterns, clusters, and anomalies.
+
+            Bubble maps clearly display spatial distributions and magnitudes, but overlapping bubbles can obscure
+            details in crowded areas. Adjust the opacity and size of your bubbles to enhance clarity.
+        """
+        ),
+        vm.Graph(
+            figure=px.scatter_map(
+                carshare,
+                lat="centroid_lat",
+                lon="centroid_lon",
+                map_style="carto-darkmatter",
+                size="car_hours",
+                size_max=15,
+                opacity=0.5,
+                zoom=10,
+            ),
+        ),
+        make_code_clipboard_from_py_file("bubble_map.py"),
+    ],
+)
+
+
+pages = [choropleth, dot_map, bubble_map]
