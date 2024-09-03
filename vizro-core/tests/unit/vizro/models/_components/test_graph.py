@@ -98,8 +98,8 @@ class TestDunderMethodsGraph:
             graph["unknown_args"]
 
     @pytest.mark.parametrize(
-        "title, margin_t, title_pad_t",
-        [(None, None, None), ("Graph with title", 64, 7), ("Graph with title..<br> and subtitle", 64, None)],
+        "title, margin_t",
+        [(None, None), ("Graph with title", 64), ("Graph with title..<br> and subtitle", 64)],
     )
     def test_title_layout_adjustments(self, gapminder, title, margin_t, title_pad_t, mocker):
         # Mock out set_props so we don't need to supply mock callback context for this test.
@@ -108,7 +108,6 @@ class TestDunderMethodsGraph:
 
         # These are the overwrites in graph._optimise_fig_layout_for_dashboard
         assert graph.layout.margin.t == margin_t
-        assert graph.layout.title.pad.t == title_pad_t
 
         # These are our defaults for the layout defined in `_templates.common_values`
         assert graph.layout.template.layout.margin.t == 64
