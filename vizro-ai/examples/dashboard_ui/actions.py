@@ -114,14 +114,6 @@ def data_upload_action(contents, filename):
 
 
 @capture("action")
-def save_api_key(api_key, api_base, n_clicks):
-    """Custom action to save api secrets to dcc store."""
-    if n_clicks:
-        # TODO: Possibly add validation for secrets
-        return {"api_key": api_key, "api_base": api_base}, "Secrets saved!"
-
-
-@capture("action")
 def display_filename(data):
     """Custom action to display uploaded filename."""
     if data is None:
