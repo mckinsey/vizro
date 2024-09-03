@@ -168,7 +168,7 @@ class TestPreBuildGraph:
 
 class TestBuildGraph:
     def test_graph_build_mandatory(self, standard_px_chart):
-        graph = vm.Graph(id="text_graph", figure=standard_px_chart).build()
+        graph = vm.Graph(figure=standard_px_chart).build()
 
         expected_graph = dcc.Loading(
             html.Div(
@@ -176,7 +176,6 @@ class TestBuildGraph:
                     None,
                     None,
                     dcc.Graph(
-                        id="text_graph",
                         figure=go.Figure(
                             layout={
                                 "paper_bgcolor": "rgba(0,0,0,0)",
@@ -199,19 +198,18 @@ class TestBuildGraph:
             parent_className="loading-container",
             overlay_style={"visibility": "visible", "opacity": 0.3},
         )
-        assert_component_equal(graph, expected_graph)
+        assert_component_equal(graph, expected_graph, keys_to_strip={"id"})
 
 
-    def test_graph_build_mandatory_and_optional(self, standard_px_chart):
-        graph = vm.Graph(id="text_graph", figure=standard_px_chart, title="Title", header="""# Subtitle""").build()
+    def test_graph_build_title_header_footer(self, standard_px_chart):
+        graph = vm.Graph(figure=standard_px_chart, title="Title", header="""#### Subtitle""", footer="""SOURCE: **DATA**""").build()
 
         expected_graph = dcc.Loading(
             html.Div(
                 [
-                    None,
-                    None,
+                    html.H3("Title", className="figure-title"),
+                    dcc.Markdown("""#### Subtitle""",className= 'figure-header'),
                     dcc.Graph(
-                        id="text_graph",
                         figure=go.Figure(
                             layout={
                                 "paper_bgcolor": "rgba(0,0,0,0)",
@@ -226,7 +224,7 @@ class TestBuildGraph:
                             "responsive": True,
                         },
                     ),
-                    None,
+                    dcc.Markdown("""SOURCE: **DATA**""", className= 'figure-footer')
                 ],
                 className="figure-container",
             ),
@@ -234,4 +232,4 @@ class TestBuildGraph:
             parent_className="loading-container",
             overlay_style={"visibility": "visible", "opacity": 0.3},
         )
-        assert_component_equal(graph, expected_graph)
+        assert_component_equal(graph, expected_graph, keys_to_strip={"id"})

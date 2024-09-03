@@ -150,7 +150,7 @@ class TestPreBuildAgGrid:
 
 class TestBuildAgGrid:
     def test_ag_grid_build_mandatory_only(self, standard_ag_grid, gapminder):
-        ag_grid = vm.AgGrid(id="text_ag_grid", figure=standard_ag_grid)
+        ag_grid = vm.AgGrid(figure=standard_ag_grid)
         ag_grid.pre_build()
         ag_grid = ag_grid.build()
         expected_ag_grid = dcc.Loading(
@@ -159,7 +159,6 @@ class TestBuildAgGrid:
                     None,
                     None,
                     html.Div(
-                        id="text_ag_grid",
                         children=[html.Div(id="__input_text_ag_grid")],
                         className="table-container",
                     ),
@@ -172,7 +171,7 @@ class TestBuildAgGrid:
             overlay_style={"visibility": "visible", "opacity": 0.3},
         )
 
-        assert_component_equal(ag_grid, expected_ag_grid)
+        assert_component_equal(ag_grid, expected_ag_grid, keys_to_strip={"id"})
 
     def test_ag_grid_build_with_underlying_id(self, ag_grid_with_id_and_conf, filter_interaction_action, gapminder):
         ag_grid = vm.AgGrid(id="text_ag_grid", figure=ag_grid_with_id_and_conf, actions=[filter_interaction_action])
@@ -197,5 +196,28 @@ class TestBuildAgGrid:
             parent_className="loading-container",
             overlay_style={"visibility": "visible", "opacity": 0.3},
         )
-
         assert_component_equal(ag_grid, expected_ag_grid)
+
+
+    def test_aggrid_build_title_header_footer(self, standard_ag_grid):
+        ag_grid = vm.AgGrid(figure=standard_ag_grid, title="Title", header="""#### Subtitle""", footer="""SOURCE: **DATA**""")
+        ag_grid.pre_build()
+        ag_grid = ag_grid.build()
+        expected_ag_grid = dcc.Loading(
+            html.Div(
+                children=[
+                    html.H3("Title", className="figure-title"),
+                    dcc.Markdown("""#### Subtitle""",className= 'figure-header'),
+                    html.Div(
+                        children=[html.Div(id="__input_text_table")],
+                        className="table-container",
+                    ),
+                    dcc.Markdown("""SOURCE: **DATA**""", className='figure-footer')
+                ],
+                className="figure-container",
+            ),
+            color="grey",
+            parent_className="loading-container",
+            overlay_style={"visibility": "visible", "opacity": 0.3},
+        )
+        assert_component_equal(ag_grid, expected_ag_grid, keys_to_strip={"id"})

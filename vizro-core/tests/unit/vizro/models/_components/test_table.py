@@ -146,7 +146,7 @@ class TestPreBuildTable:
 
 class TestBuildTable:
     def test_table_build_mandatory_only(self, standard_dash_table, gapminder):
-        table = vm.Table(id="text_table", figure=standard_dash_table)
+        table = vm.Table(figure=standard_dash_table)
         table.pre_build()
         table = table.build()
         expected_table = dcc.Loading(
@@ -155,7 +155,6 @@ class TestBuildTable:
                     None,
                     None,
                     html.Div(
-                        id="text_table",
                         children=[html.Div(id="__input_text_table")],
                         className="table-container",
                     ),
@@ -168,7 +167,7 @@ class TestBuildTable:
             overlay_style={"visibility": "visible", "opacity": 0.3},
         )
 
-        assert_component_equal(table, expected_table)
+        assert_component_equal(table, expected_table, keys_to_strip={"id"})
 
     def test_table_build_with_underlying_id(self, dash_data_table_with_id, filter_interaction_action, gapminder):
         table = vm.Table(id="text_table", figure=dash_data_table_with_id)
@@ -196,21 +195,20 @@ class TestBuildTable:
 
         assert_component_equal(table, expected_table)
 
-    def test_table_build_with_title_header_footer(self, standard_dash_table, gapminder):
-        table = vm.Table(id="text_table", title="Table Title", figure=standard_dash_table)
+    def test_table_build_title_header_footer(self, standard_dash_table):
+        table = vm.Table(figure=standard_dash_table, title="Title", header="""#### Subtitle""", footer="""SOURCE: **DATA**""")
         table.pre_build()
         table = table.build()
         expected_table = dcc.Loading(
             html.Div(
                 children=[
-                    html.H3("Table Title", className="figure-title"),
-                    None,
+                    html.H3("Title", className="figure-title"),
+                    dcc.Markdown("""#### Subtitle""",className= 'figure-header'),
                     html.Div(
-                        id="text_table",
                         children=[html.Div(id="__input_text_table")],
                         className="table-container",
                     ),
-                    None,
+                    dcc.Markdown("""SOURCE: **DATA**""", className='figure-footer')
                 ],
                 className="figure-container",
             ),
@@ -219,4 +217,4 @@ class TestBuildTable:
             overlay_style={"visibility": "visible", "opacity": 0.3},
         )
 
-        assert_component_equal(table, expected_table)
+        assert_component_equal(table, expected_table, keys_to_strip={"id"})
