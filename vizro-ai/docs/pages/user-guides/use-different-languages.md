@@ -1,5 +1,5 @@
 # Generate visualizations using different languages
-Vizro-AI is versatile, supporting prompts and chart visualizations in languages other than English. Let's explore this capability with two examples, starting with Chinese where we inquire about visualizing the GDP per capita over time.
+Vizro-AI is versatile, supporting prompts and chart visualizations in languages other than English. In this guide you will explore this capability with two examples, starting with Chinese where we inquire about visualizing the GDP per capita over time.
 
 !!! example "Vizro-AI Chinese"
 
