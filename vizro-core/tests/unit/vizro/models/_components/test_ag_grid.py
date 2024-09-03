@@ -154,14 +154,19 @@ class TestBuildAgGrid:
         ag_grid.pre_build()
         ag_grid = ag_grid.build()
         expected_ag_grid = dcc.Loading(
-            [
-                None,
-                html.Div(
-                    id="text_ag_grid",
-                    children=[html.Div(id="__input_text_ag_grid")],
-                    className="table-container",
-                ),
-            ],
+            html.Div(
+                [
+                    None,
+                    None,
+                    html.Div(
+                        id="text_ag_grid",
+                        children=[html.Div(id="__input_text_ag_grid")],
+                        className="table-container",
+                    ),
+                    None,
+                ],
+                className="figure-container",
+            ),
             color="grey",
             parent_className="loading-container",
             overlay_style={"visibility": "visible", "opacity": 0.3},
@@ -175,14 +180,19 @@ class TestBuildAgGrid:
         ag_grid = ag_grid.build()
 
         expected_ag_grid = dcc.Loading(
-            [
-                None,
-                html.Div(
-                    id="text_ag_grid",
-                    children=[html.Div(id="underlying_ag_grid_id")],
-                    className="table-container",
-                ),
-            ],
+            html.Div(
+                [
+                    None,
+                    None,
+                    html.Div(
+                        id="text_ag_grid",
+                        children=[html.Div(id="underlying_ag_grid_id")],
+                        className="table-container",
+                    ),
+                    None,
+                ],
+                className="figure-container",
+            ),
             color="grey",
             parent_className="loading-container",
             overlay_style={"visibility": "visible", "opacity": 0.3},

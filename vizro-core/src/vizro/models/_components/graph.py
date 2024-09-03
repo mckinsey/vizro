@@ -168,28 +168,26 @@ class Graph(VizroBaseModel):
         # transparent and has no axes so it doesn't draw anything on the screen which would flicker away when the
         # graph callback is executed to make the dcc.Loading icon appear.
         return dcc.Loading(
-            children=[
-                html.Div(
-                    children=[
-                        html.H3(self.title, className="figure-title") if self.title else None,
-                        dcc.Markdown(self.header, className="figure-header") if self.header else None,
-                        dcc.Graph(
-                            id=self.id,
-                            figure=go.Figure(
-                                layout={
-                                    "paper_bgcolor": "rgba(0,0,0,0)",
-                                    "plot_bgcolor": "rgba(0,0,0,0)",
-                                    "xaxis": {"visible": False},
-                                    "yaxis": {"visible": False},
-                                }
-                            ),
-                            config={"autosizable": True, "frameMargins": 0, "responsive": True},
+            children=html.Div(
+                children=[
+                    html.H3(self.title, className="figure-title") if self.title else None,
+                    dcc.Markdown(self.header, className="figure-header") if self.header else None,
+                    dcc.Graph(
+                        id=self.id,
+                        figure=go.Figure(
+                            layout={
+                                "paper_bgcolor": "rgba(0,0,0,0)",
+                                "plot_bgcolor": "rgba(0,0,0,0)",
+                                "xaxis": {"visible": False},
+                                "yaxis": {"visible": False},
+                            }
                         ),
-                        dcc.Markdown(self.footer, className="figure-footer") if self.footer else None,
-                    ],
-                    className="figure-container",
-                )
-            ],
+                        config={"autosizable": True, "frameMargins": 0, "responsive": True},
+                    ),
+                    dcc.Markdown(self.footer, className="figure-footer") if self.footer else None,
+                ],
+                className="figure-container",
+            ),
             color="grey",
             parent_className="loading-container",
             overlay_style={"visibility": "visible", "opacity": 0.3},

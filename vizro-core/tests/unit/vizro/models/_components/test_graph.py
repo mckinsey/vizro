@@ -5,7 +5,7 @@ import re
 import plotly.graph_objects as go
 import pytest
 from asserts import assert_component_equal
-from dash import dcc
+from dash import dcc, html
 from dash.exceptions import MissingCallbackContextException
 
 try:
@@ -148,27 +148,34 @@ class TestProcessGraphDataFrame:
         assert data_manager[graph["data_frame"]].load().equals(gapminder)
 
 
-class TestBuild:
+class TestBuildGraph:
     def test_graph_build(self, standard_px_chart):
         graph = vm.Graph(id="text_graph", figure=standard_px_chart).build()
 
         expected_graph = dcc.Loading(
-            dcc.Graph(
-                id="text_graph",
-                figure=go.Figure(
-                    layout={
-                        "paper_bgcolor": "rgba(0,0,0,0)",
-                        "plot_bgcolor": "rgba(0,0,0,0)",
-                        "xaxis": {"visible": False},
-                        "yaxis": {"visible": False},
-                    }
-                ),
-                config={
-                    "autosizable": True,
-                    "frameMargins": 0,
-                    "responsive": True,
-                },
-                className="chart_container",
+            html.Div(
+                [
+                    None,
+                    None,
+                    dcc.Graph(
+                        id="text_graph",
+                        figure=go.Figure(
+                            layout={
+                                "paper_bgcolor": "rgba(0,0,0,0)",
+                                "plot_bgcolor": "rgba(0,0,0,0)",
+                                "xaxis": {"visible": False},
+                                "yaxis": {"visible": False},
+                            }
+                        ),
+                        config={
+                            "autosizable": True,
+                            "frameMargins": 0,
+                            "responsive": True,
+                        },
+                    ),
+                    None,
+                ],
+                className="figure-container",
             ),
             color="grey",
             parent_className="loading-container",
