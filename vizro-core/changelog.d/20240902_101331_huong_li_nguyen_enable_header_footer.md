@@ -19,7 +19,8 @@ Uncomment the section that is right (remove the HTML comment wrapper).
 
 ### Added
 
-- Enable header and footer markdown configuration in `Graph`, `Table` and `AgGrid`. ([#669](https://github.com/mckinsey/vizro/pull/669))
+- Enable `header` and `footer` argument inside `Graph`, `Table` and `AgGrid`. ([#669](https://github.com/mckinsey/vizro/pull/669))
+- Enable `title` argument inside `Graph`. ([#669](https://github.com/mckinsey/vizro/pull/669))
 
 <!--
 ### Changed
