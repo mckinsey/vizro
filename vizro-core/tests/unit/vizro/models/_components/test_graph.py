@@ -31,14 +31,11 @@ def standard_px_chart_with_str_dataframe():
         size_max=60,
     )
 
+
 @pytest.fixture
 def standard_px_chart_with_title():
-    return px.scatter(
-        data_frame="gapminder",
-        x="gdpPercap",
-        y="lifeExp",
-        title="Title"
-    )
+    return px.scatter(data_frame="gapminder", x="gdpPercap", y="lifeExp", title="Title")
+
 
 class TestGraphInstantiation:
     def test_create_graph_mandatory_only(self, standard_px_chart):
@@ -200,7 +197,6 @@ class TestBuildGraph:
             overlay_style={"visibility": "visible", "opacity": 0.3},
         )
         assert_component_equal(graph, expected_graph)
-
 
     def test_graph_build_mandatory_and_optional(self, standard_px_chart):
         graph = vm.Graph(id="text_graph", figure=standard_px_chart, title="Title", header="""# Subtitle""").build()
