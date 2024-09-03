@@ -54,7 +54,9 @@ def test_simple_dashboard(dash_duo, model_name):  # noqa: PLR0915
     Add a filter to filter the scatter plot by continent.
     Add a second filter to filter the chart by year.
     """
-    report_file = f"tests/integration/reports/report_model_{model_name}.csv"
+    report_dir = "tests/integration/reports"
+    os.makedirs(report_dir)
+
     try:
         vizro_type = os.environ["VIZRO_TYPE"]
     except KeyError:
@@ -127,7 +129,7 @@ def test_simple_dashboard(dash_duo, model_name):  # noqa: PLR0915
     ]
     score = sum(prescore)
 
-    with open(report_file, "a", newline="") as csvfile:
+    with open(f"{report_dir}/report_model_{model_name}.csv", "a", newline="") as csvfile:
         writer = csv.writer(csvfile, delimiter=",")
         writer.writerow([f"Vizro type = {vizro_type}, Datetime = {datetime.now()}"])
         writer.writerow([])
