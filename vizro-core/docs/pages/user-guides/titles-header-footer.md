@@ -6,8 +6,9 @@ The [`Graph`][vizro.models.Graph], the [`Table`][vizro.models.Table] and the [`A
 accept a `title`, `header` and `footer` argument. This is useful for providing context to the data being
 displayed, or for adding a description of the data.
 
-The `title` is displayed as an `H3` header, while the `header` and `footer` accept Markdown text,
-allowing full control over text formatting.
+- **title**: Displayed as an H3 header, useful for summarizing the main topic or insight of the component.
+- **header**: Accepts Markdown text, ideal for additional descriptions, subtitles, or detailed data insights.
+- **footer**: Also accepts Markdown text, commonly used for citing data sources, providing information on the last update, or adding disclaimers.
 
 
 !!! note
@@ -15,6 +16,7 @@ allowing full control over text formatting.
     Although you can directly provide a `title` to the Plotly Express chart, we recommend using `Graph.title` for
     proper alignment with other components on the screen.
 
+## Formatted Graph
 
 !!! example "Formatted Graph"
     === "app.py"
@@ -72,8 +74,9 @@ allowing full control over text formatting.
     === "Result"
         [![FormattedGraph]][FormattedGraph]
 
-    [Graph]: ../../assets/user_guides/components/formatted_graph.png
+    [FormattedGraph]: ../../assets/user_guides/components/formatted_graph.png
 
+## Formatted AgGrid
 
 !!! example "Formatted AgGrid"
     === "app.py"
@@ -120,9 +123,10 @@ allowing full control over text formatting.
     === "Result"
         [![FormattedGrid]][FormattedGrid]
 
-    [Graph]: ../../assets/user_guides/components/formatted_aggrid.png
+    [FormattedGrid]: ../../assets/user_guides/components/formatted_aggrid.png
 
 
+## Formatted DataTable
 
 !!! example "Formatted DataTable"
     === "app.py"
@@ -167,4 +171,4 @@ allowing full control over text formatting.
     === "Result"
         [![FormattedTable]][FormattedTable]
 
-    [Graph]: ../../assets/user_guides/components/formatted_table.png
+    [FormattedTable]: ../../assets/user_guides/components/formatted_table.png
