@@ -55,7 +55,7 @@ def test_simple_dashboard(dash_duo, model_name):  # noqa: PLR0915
     Add a second filter to filter the chart by year.
     """
     report_dir = "tests/integration/reports"
-    os.makedirs(report_dir)
+    os.makedirs(report_dir, exist_ok=True)
 
     try:
         vizro_type = os.environ["VIZRO_TYPE"]
