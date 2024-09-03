@@ -70,6 +70,7 @@ class ChartPlanStatic(BaseModel):
         3. Must return a plotly go.Figure object
         4. All data used in the chart must be derived from the data_frame argument, all data manipulations
         must be done within the function.
+        5. If possible, especially for simple charts, try to use plotly.express, otherwise use plotly.graph_objects.
         """,
     )
     chart_insights: str = Field(

@@ -85,7 +85,7 @@ def _get_pydantic_model(
         except ValidationError as validation_error:
             last_validation_error = validation_error
         else:
-            return res
+            return res #TODO: problem is response is None, then it returns without raising an error. Wrong typing!
     # TODO: should this be shifted to logging so that that one can control what output gets shown (e.g. in public demos)
     raise last_validation_error
 
@@ -93,8 +93,33 @@ def _get_pydantic_model(
 if __name__ == "__main__":
     import vizro.models as vm
     from vizro_ai._llm_models import _get_llm_model
+    from vizro_ai.plot._response_models import ChartPlanStatic
+    import plotly.express as px
 
-    model = _get_llm_model()
+    llm = _get_llm_model()
+    
+    import os
+    from langchain_mistralai import ChatMistralAI
+    llm = ChatMistralAI(
+        name="codestral-latest",
+        temperature=0,
+        max_retries=2,
+        endpoint= os.environ.get("MISTRAL_BASE_URL"),
+        mistral_api_key = os.environ.get("ANTHROPIC_API_KEY")
+        # other params...
+    )
+    
+    
+    
+    # Easy
     component_description = "Create a card with the following content: 'Hello, world!'"
-    res = _get_pydantic_model(query=component_description, llm_model=model, response_model=vm.Card)
-    print(res)  # noqa: T201
+    res = _get_pydantic_model(query=component_description, llm_model=llm, response_model=vm.Card)
+    print(res.__repr__())  # noqa: T201
+    print(type(res))
+
+    # Harder
+    df = px.data.gapminder().sample(5).to_markdown()
+    component_description2 = "the trend of gdp over years in the US"
+    res2 = _get_pydantic_model(query=component_description2,df_info=df, llm_model=llm, response_model=ChartPlanStatic)
+    print(res2.__repr__())  # noqa: T201
+    print(type(res2))
