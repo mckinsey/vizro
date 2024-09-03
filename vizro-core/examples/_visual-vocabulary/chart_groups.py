@@ -198,7 +198,6 @@ spatial_chart_group = ChartGroup(
     name="Spatial",
     pages=pages.spatial.pages,
     incomplete_pages=[
-        IncompletePage("Dot map"),
         IncompletePage("Flow map"),
         IncompletePage("Bubble map"),
     ],

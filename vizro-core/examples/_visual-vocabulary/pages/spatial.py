@@ -3,7 +3,7 @@
 import vizro.models as vm
 import vizro.plotly.express as px
 
-from pages._pages_utils import PAGE_GRID, gapminder, make_code_clipboard_from_py_file
+from pages._pages_utils import PAGE_GRID, carshare, gapminder, make_code_clipboard_from_py_file
 
 choropleth = vm.Page(
     title="Choropleth",
@@ -42,4 +42,41 @@ choropleth = vm.Page(
     ],
 )
 
-pages = [choropleth]
+dot_map = vm.Page(
+    title="Dot map",
+    path="spatial/dot-map",
+    layout=vm.Layout(grid=PAGE_GRID),
+    components=[
+        vm.Card(
+            text="""
+            #### What is a dot map?
+
+            A dot map, or scatter map, uses dots to represent the value of a specific variable at geographic locations.
+
+            &nbsp;
+
+            #### When should I use it?
+
+            Use a dot map to visually display the distribution and concentration of data points across a geographic
+            area. It's ideal for showing the frequency or density of an attribute, helping to identify patterns,
+            clusters, or anomalies.
+
+            Dot maps offer a clear visual impression of spatial distributions, but overlapping dots can make it hard to
+            distinguish individual data points in dense areas. Consider adding opacity to your dots to improve clarity.
+        """
+        ),
+        vm.Graph(
+            figure=px.scatter_map(
+                carshare,
+                lat="centroid_lat",
+                lon="centroid_lon",
+                opacity=0.3,
+                zoom=10,
+            )
+        ),
+        make_code_clipboard_from_py_file("dot_map.py"),
+    ],
+)
+
+
+pages = [choropleth, dot_map]

@@ -1,4 +1,5 @@
 # This file is only used if you don't have hatch installed.
 # It should be fully generated and used when the demo moves to huggingface.
 black==24.4.2
+plotly>=5.24.0
 vizro
