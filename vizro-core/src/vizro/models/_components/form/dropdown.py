@@ -17,12 +17,14 @@ from vizro.models._components.form._form_utils import get_options_and_default, v
 from vizro.models._models_utils import _log_call
 from vizro.models.types import MultiValueType, OptionsType, SingleValueType
 
+
 def _get_list_of_labels(full_options: OptionsType) -> Union[List[StrictBool], List[float], List[str], List[date]]:
     """Returns a list of labels from the selector options provided."""
     if all(isinstance(option, dict) for option in full_options):
         return [option["label"] for option in full_options]  # type: ignore[index]
     else:
         return full_options
+
 
 def _calculate_option_height(full_options: OptionsType) -> int:
     """Calculates the height of the dropdown options based on the longest option."""
