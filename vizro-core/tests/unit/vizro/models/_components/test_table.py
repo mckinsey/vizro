@@ -39,7 +39,7 @@ class TestTableInstantiation:
 
     @pytest.mark.parametrize("id", ["id_1", "id_2"])
     def test_create_table_mandatory_and_optional(self, standard_dash_table, id):
-        table = vm.Table(id=id, figure=standard_dash_table, actions=[])
+        table = vm.Table(id=id, figure=standard_dash_table)
 
         assert table.id == id
         assert table.type == "table"
@@ -112,7 +112,7 @@ class TestDunderMethodsTable:
 
 class TestAttributesTable:
     def test_table_filter_interaction_attributes(self, dash_data_table_with_id):
-        table = vm.Table(figure=dash_data_table_with_id, title="Gapminder", actions=[])
+        table = vm.Table(figure=dash_data_table_with_id, title="Gapminder")
         table.pre_build()
         assert hasattr(table, "_filter_interaction_input")
         assert "modelID" in table._filter_interaction_input
@@ -131,14 +131,14 @@ class TestProcessTableDataFrame:
 
 
 class TestPreBuildTable:
-    def test_pre_build_no_actions_no_underlying_table_id(self, standard_dash_table):
+    def test_pre_build_no_underlying_table_id(self, standard_dash_table):
         table = vm.Table(id="text_table", figure=standard_dash_table)
         table.pre_build()
 
         assert table._input_component_id == "__input_text_table"
 
-    def test_pre_build_actions_underlying_table_id(self, dash_data_table_with_id, filter_interaction_action):
-        table = vm.Table(id="text_table", figure=dash_data_table_with_id, actions=[filter_interaction_action])
+    def test_pre_build_underlying_table_id(self, dash_data_table_with_id, filter_interaction_action):
+        table = vm.Table(id="text_table", figure=dash_data_table_with_id)
         table.pre_build()
 
         assert table._input_component_id == "underlying_table_id"
