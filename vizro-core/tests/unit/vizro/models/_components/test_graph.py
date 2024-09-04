@@ -5,7 +5,7 @@ import re
 import plotly.graph_objects as go
 import pytest
 from asserts import assert_component_equal
-from dash import dcc
+from dash import dcc, html
 from dash.exceptions import MissingCallbackContextException
 
 try:
@@ -30,6 +30,11 @@ def standard_px_chart_with_str_dataframe():
         hover_name="country",
         size_max=60,
     )
+
+
+@pytest.fixture
+def standard_px_chart_with_title():
+    return px.scatter(data_frame="gapminder", x="gdpPercap", y="lifeExp", title="Title")
 
 
 class TestGraphInstantiation:
@@ -98,17 +103,16 @@ class TestDunderMethodsGraph:
             graph["unknown_args"]
 
     @pytest.mark.parametrize(
-        "title, margin_t, title_pad_t",
-        [(None, None, None), ("Graph with title", 64, 7), ("Graph with title..<br> and subtitle", 64, None)],
+        "title, margin_t",
+        [(None, None), ("Graph with title", 64), ("Graph with title..<br> and subtitle", 64)],
     )
-    def test_title_layout_adjustments(self, gapminder, title, margin_t, title_pad_t, mocker):
-        # Mock out set_props so we don't need to supply mock callback context for this test.
+    def test_title_layout_adjustments(self, gapminder, title, margin_t, mocker):
+        # Mock out `set_props` so we don't need to supply mock callback context for this test.
         mocker.patch("vizro.models._components.graph.set_props", side_effect=MissingCallbackContextException)
         graph = vm.Graph(figure=px.bar(data_frame=gapminder, x="year", y="pop", title=title)).__call__()
 
         # These are the overwrites in graph._optimise_fig_layout_for_dashboard
         assert graph.layout.margin.t == margin_t
-        assert graph.layout.title.pad.t == title_pad_t
 
         # These are our defaults for the layout defined in `_templates.common_values`
         assert graph.layout.template.layout.margin.t == 64
@@ -148,30 +152,83 @@ class TestProcessGraphDataFrame:
         assert data_manager[graph["data_frame"]].load().equals(gapminder)
 
 
-class TestBuild:
-    def test_graph_build(self, standard_px_chart):
-        graph = vm.Graph(id="text_graph", figure=standard_px_chart).build()
+class TestPreBuildGraph:
+    def test_warning_raised_figure_title(self, standard_px_chart_with_title):
+        graph = vm.Graph(figure=standard_px_chart_with_title)
+        with pytest.warns(
+            UserWarning,
+            match="Using the `title` argument in your Plotly chart function may cause misalignment with "
+            "other component titles on the screen. To ensure consistent alignment, consider using "
+            r"`vm.Graph\(title='Title', ...\)`.",
+        ):
+            graph.pre_build()
+
+
+class TestBuildGraph:
+    def test_graph_build_mandatory(self, standard_px_chart):
+        graph = vm.Graph(figure=standard_px_chart).build()
 
         expected_graph = dcc.Loading(
-            dcc.Graph(
-                id="text_graph",
-                figure=go.Figure(
-                    layout={
-                        "paper_bgcolor": "rgba(0,0,0,0)",
-                        "plot_bgcolor": "rgba(0,0,0,0)",
-                        "xaxis": {"visible": False},
-                        "yaxis": {"visible": False},
-                    }
-                ),
-                config={
-                    "autosizable": True,
-                    "frameMargins": 0,
-                    "responsive": True,
-                },
-                className="chart_container",
+            html.Div(
+                [
+                    None,
+                    None,
+                    dcc.Graph(
+                        figure=go.Figure(
+                            layout={
+                                "paper_bgcolor": "rgba(0,0,0,0)",
+                                "plot_bgcolor": "rgba(0,0,0,0)",
+                                "xaxis": {"visible": False},
+                                "yaxis": {"visible": False},
+                            }
+                        ),
+                        config={
+                            "autosizable": True,
+                            "frameMargins": 0,
+                            "responsive": True,
+                        },
+                    ),
+                    None,
+                ],
+                className="figure-container",
             ),
             color="grey",
             parent_className="loading-container",
             overlay_style={"visibility": "visible", "opacity": 0.3},
         )
-        assert_component_equal(graph, expected_graph)
+        assert_component_equal(graph, expected_graph, keys_to_strip={"id"})
+
+    def test_graph_build_title_header_footer(self, standard_px_chart):
+        graph = vm.Graph(
+            figure=standard_px_chart, title="Title", header="""#### Subtitle""", footer="""SOURCE: **DATA**"""
+        ).build()
+
+        expected_graph = dcc.Loading(
+            html.Div(
+                [
+                    html.H3("Title", className="figure-title"),
+                    dcc.Markdown("""#### Subtitle""", className="figure-header"),
+                    dcc.Graph(
+                        figure=go.Figure(
+                            layout={
+                                "paper_bgcolor": "rgba(0,0,0,0)",
+                                "plot_bgcolor": "rgba(0,0,0,0)",
+                                "xaxis": {"visible": False},
+                                "yaxis": {"visible": False},
+                            }
+                        ),
+                        config={
+                            "autosizable": True,
+                            "frameMargins": 0,
+                            "responsive": True,
+                        },
+                    ),
+                    dcc.Markdown("""SOURCE: **DATA**""", className="figure-footer"),
+                ],
+                className="figure-container",
+            ),
+            color="grey",
+            parent_className="loading-container",
+            overlay_style={"visibility": "visible", "opacity": 0.3},
+        )
+        assert_component_equal(graph, expected_graph, keys_to_strip={"id"})
