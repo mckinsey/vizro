@@ -84,6 +84,7 @@ displayed, or for adding a description of the data.
         ```{.python pycafe-link}
 
         import vizro.models as vm
+        import vizro.plotly.express as px
         from vizro import Vizro
         from vizro.tables import dash_ag_grid
 
@@ -135,6 +136,7 @@ displayed, or for adding a description of the data.
         ```{.python pycafe-link}
 
         import vizro.models as vm
+        import vizro.plotly.express as px
         from vizro import Vizro
         from vizro.tables import dash_data_table
 
