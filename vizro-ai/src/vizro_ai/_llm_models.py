@@ -68,13 +68,6 @@ def _get_llm_model(model: Optional[Union[BaseChatModel, str]] = None) -> BaseCha
             vendor = model_to_vendor[model]
             if DEFAULT_WRAPPER_MAP.get(vendor) is None:
                 raise ValueError(f"Additional library to support {vendor} models is not installed.")
-            if vendor == "Mistral":  # Take out once https://github.com/langchain-ai/langchain/pull/25956 gets released
-                return DEFAULT_WRAPPER_MAP.get(vendor)(
-                    name=model,
-                    temperature=DEFAULT_TEMPERATURE,
-                    endpoint=os.environ.get("MISTRAL_BASE_URL"),
-                    mistral_api_key=os.environ.get("MISTRAL_API_KEY"),
-                )
             return DEFAULT_WRAPPER_MAP.get(vendor)(model_name=model, temperature=DEFAULT_TEMPERATURE)
 
     raise ValueError(

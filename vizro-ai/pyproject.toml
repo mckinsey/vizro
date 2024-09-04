@@ -33,7 +33,7 @@ requires-python = ">=3.9"
 
 [project.optional-dependencies]
 anthropic = ["langchain-anthropic"]
-mistral = ["langchain-mistralai"]
+mistral = ["langchain-mistralai>=0.1.13"]
 
 [tool.coverage.paths]
 vizro = ["src/vizro_ai"]  # omit tests for clarity, although this can be useful to see what test lines DID NOT run
