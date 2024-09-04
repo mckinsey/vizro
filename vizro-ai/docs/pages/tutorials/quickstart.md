@@ -100,7 +100,7 @@ And that's it! By passing the prepared data and written visualization request, V
         fig = vizro_ai.plot(
             df,
             """create a line graph for GDP per capita since 1950 for each continent.
-            Mark the x axis as Year, y axis as GDP Per Cap and don't include a title. 
+            Mark the x axis as Year, y axis as GDP Per Cap and don't include a title.
             Make sure to take average over continent.""",
         )
         ```

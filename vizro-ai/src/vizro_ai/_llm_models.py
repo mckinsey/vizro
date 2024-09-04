@@ -1,3 +1,4 @@
+import os
 from contextlib import suppress
 from typing import Dict, Optional, Union
 
@@ -8,7 +9,7 @@ try:
     from langchain_anthropic import ChatAnthropic
 except ImportError:
     ChatAnthropic = None
-    
+
 try:
     from langchain_mistralai import ChatMistralAI
 except ImportError:
@@ -26,16 +27,16 @@ SUPPORTED_MODELS = {
         "claude-3-5-sonnet-20240620",
         "claude-3-opus-20240229",
         "claude-3-sonnet-20240229",
-        "claude-3-haiku-20240307"
+        "claude-3-haiku-20240307",
     ],
-    "Mistral": [
-        "mistral-large-latest",
-        "open-mistral-nemo",
-        "codestral-latest"
-    ]
+    "Mistral": ["mistral-large-latest", "open-mistral-nemo", "codestral-latest"],
 }
 
-DEFAULT_WRAPPER_MAP: Dict[str, BaseChatModel] = {"OpenAI": ChatOpenAI, "Anthropic": ChatAnthropic,"Mistral": ChatMistralAI}
+DEFAULT_WRAPPER_MAP: Dict[str, BaseChatModel] = {
+    "OpenAI": ChatOpenAI,
+    "Anthropic": ChatAnthropic,
+    "Mistral": ChatMistralAI,
+}
 
 DEFAULT_MODEL = "gpt-4o-mini"
 DEFAULT_TEMPERATURE = 0
@@ -67,7 +68,7 @@ def _get_llm_model(model: Optional[Union[BaseChatModel, str]] = None) -> BaseCha
             vendor = model_to_vendor[model]
             if DEFAULT_WRAPPER_MAP.get(vendor) is None:
                 raise ValueError(f"Additional library to support {vendor} models is not installed.")
-            if vendor == "Mistral": # Take out once https://github.com/langchain-ai/langchain/pull/25956 gets released
+            if vendor == "Mistral":  # Take out once https://github.com/langchain-ai/langchain/pull/25956 gets released
                 return DEFAULT_WRAPPER_MAP.get(vendor)(
                     name=model,
                     temperature=DEFAULT_TEMPERATURE,

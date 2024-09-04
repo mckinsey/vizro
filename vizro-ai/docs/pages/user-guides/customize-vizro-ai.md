@@ -3,12 +3,12 @@
 This guide shows you how to setup a LLM model to be used for Vizro-AI. Setting up a LLM is required for the package to generate charts and dashboards based on natural language queries.
 
 ## Supported models
-Vizro-AI supports **any** model that is available via [Langchain's `BaseChatModel` class](https://api.python.langchain.com/en/latest/language_models/langchain_core.language_models.chat_models.BaseChatModel.html#langchain_core.language_models.chat_models.BaseChatModel), and that has the `with_structured_output` method implemented. An overview of the [most common vendor models supporting this functionality](https://python.langchain.com/v0.2/docs/integrations/chat/) can be found in Langchain's documentation. For ease of use one can also choose some models via a string parameter.
+Vizro-AI supports **any** model that is available via [Langchains `BaseChatModel` class](https://api.python.langchain.com/en/latest/language_models/langchain_core.language_models.chat_models.BaseChatModel.html#langchain_core.language_models.chat_models.BaseChatModel), and that has the `with_structured_output` method implemented. An overview of the [most common vendor models supporting this functionality](https://python.langchain.com/v0.2/docs/integrations/chat/) can be found in Langchains documentation. For ease of use one can also choose some models via a string parameter.
 
 
 ### Setting model via string for ease of use
 
-We have created shortcuts with sensible defaults (mainly setting `temparature=0`) for some of the most common vendors. These models can be chosen by simply using the string format in the tabs below. If no model is provided, the default (currently `"gpt-4o-mini"`) is selected.
+We have created shortcuts with sensible defaults (mainly setting `temperature=0`) for some common vendors. These models can be chosen by using the string format in the tabs below. If no model is provided, the default (currently `"gpt-4o-mini"`) is selected.
 
 ```py
 vizro_ai = VizroAI(model="<chosen model>")
@@ -62,10 +62,10 @@ vizro_ai = VizroAI(model="<chosen model>")
     At the time of writing, we found that even the best Mistral models struggled to produce more than the simplest charts, but these outcomes can change drastically overtime.
 
 !!!note
-    When choosing the string representation, it sometimes can be tricky to have the correct environment variable set for the API key (and potential base URL). In case you cannot get this to work, we recommend just instantiating the model directly (see below) and providing the API key via the models parameters.
+    When choosing the string representation, it sometimes can be tricky to have the correct environment variable set for the API key (and potential base URL). In case you cannot get this to work, we recommend instantiating the model directly (see below) and providing the API key via the models parameters.
 
 ### Setting model via class for additional configuration
-Beyond passing a simple string, you can pass **any** model derived from [Langchain's `BaseChatModel` class](https://api.python.langchain.com/en/latest/language_models/langchain_core.language_models.chat_models.BaseChatModel.html#langchain_core.language_models.chat_models.BaseChatModel) that has the `with_structured_output` method implemented. An overview of the [most common vendor models supporting this functionality](https://python.langchain.com/v0.2/docs/integrations/chat/) can be found in Langchain's documentation.
+Beyond passing a string, you can pass **any** model derived from [Langchains `BaseChatModel` class](https://api.python.langchain.com/en/latest/language_models/langchain_core.language_models.chat_models.BaseChatModel.html#langchain_core.language_models.chat_models.BaseChatModel) that has the `with_structured_output` method implemented. An overview of the [most common vendor models supporting this functionality](https://python.langchain.com/v0.2/docs/integrations/chat/) can be found in Langchains documentation.
 
 When choosing this approach, you can customize your model beyond the chosen default from the string instantiation. The choice of available arguments depends on the specific vendor implementation, but usually the main parameter to tweak is the temperature.
 
@@ -96,10 +96,10 @@ Passing an instantiated model to `VizroAI` lets you customize it, and additional
 
 ### Chart generation
 
-At the time of writing, we found that for chart creation, some of the leading vendor's "cheaper" models, e.g. OpenAI's `gpt-4o-mini` and `gpt-3.5` model series, have lower price points and faster speeds, and are sufficient for basic charting.
+At the time of writing, we found that for chart creation, some of the leading vendor's "cheaper" models, for example OpenAI's `gpt-4o-mini` and `gpt-3.5` model series, have lower price points and faster speeds, and are sufficient for basic charting.
 
 Consider upgrading to, in the case of OpenAI the `gpt-4o` and `gpt-4` model series, or in the case of Anthropic the `claude-3-5-sonnet-20240620` model series, for more demanding tasks. The downside of using these models is that they come at a higher cost.
 
 ### Dashboard generation
 
-At the time of writing we find that cheaper model series only allow for very basic dashboards. For a reasonably complex dashboard we recommend the flagship models of the leading vendors, e.g. `gpt-4o` or `claude-3-5-sonnet-20240620`.
+At the time of writing we find that cheaper model series only allow for basic dashboards. For a reasonably complex dashboard we recommend the flagship models of the leading vendors, for example `gpt-4o` or `claude-3-5-sonnet-20240620`.
