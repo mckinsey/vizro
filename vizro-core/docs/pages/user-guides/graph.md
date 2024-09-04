@@ -69,5 +69,5 @@ In the Python example we directly inserted the pandas DataFrame `df` into `figur
 
 ## Add title, header, footer
 
-If you wish to enhance your `Graph` with a title, header, or footer to provide additional context or descriptions,
+To enhance your `Graph` with a title, header, or footer to provide additional context or descriptions,
 refer to our detailed user guide on [title, header, and footer](title-header-footer.md).

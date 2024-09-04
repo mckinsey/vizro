@@ -532,5 +532,5 @@ If the available arguments are not sufficient, there is always the option to cre
 
 ## Add title, header, footer
 
-If you wish to enhance your `Table` or `AgGrid` with a title, header, or footer to provide additional context or
+To enhance your `Table` or `AgGrid` with a title, header, or footer to provide additional context or
 descriptions, refer to our detailed user guide on [title, header, and footer](title-header-footer.md).
