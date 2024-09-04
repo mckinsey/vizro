@@ -1,4 +1,5 @@
 import logging
+from functools import wraps
 from typing import List, Optional, Union
 
 import pandas as pd
@@ -12,15 +13,16 @@ from vizro_ai.dashboard._graph.dashboard_creation import _create_and_compile_gra
 from vizro_ai.dashboard._pydantic_output import _get_pydantic_model  # TODO: make general, ie remove from dashboard
 from vizro_ai.dashboard.utils import DashboardOutputs, _extract_custom_functions_and_imports, _register_data
 from vizro_ai.plot._response_models import ChartPlanDynamicFactory, ChartPlanStatic
-from functools import wraps
 
 logger = logging.getLogger(__name__)
+
 
 def deprecate_explain(func):
     @wraps(func)
     def wrapper(*args, **kwargs):
-        if 'explain' in kwargs:
-            raise TypeError("""VizroAI.plot() no longer supports the 'explain' parameter.
+        if "explain" in kwargs:
+            raise TypeError(
+                """VizroAI.plot() no longer supports the 'explain' parameter.
 This parameter has been removed with the release of `0.3.0`. If you need explanations, use
 `return_elements=True` and the attributes `chart_insights` and `code_explanation`:
 
@@ -29,6 +31,7 @@ print(res.chart_insights)
 print(res.code_explanation)"""
             )
         return func(*args, **kwargs)
+
     return wrapper
 
 
@@ -70,8 +73,8 @@ class VizroAI:
             df: The dataframe to be analyzed.
             user_input: User questions or descriptions of the desired visual.
             max_debug_retry: Maximum number of retries to debug errors. Defaults to `1`.
-            return_elements: Flag to return ChartPlanStatic pydantic model that includes all possible elements generated.
-                Defaults to `False`.
+            return_elements: Flag to return ChartPlanStatic pydantic model that includes all
+                possible elements generated. Defaults to `False`.
             validate_code: Flag if produced code should be executed to validate it. Defaults to `True`.
 
         Returns:

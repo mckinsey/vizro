@@ -1,7 +1,7 @@
 """Code powering the plot command."""
 
 try:
-    from pydantic.v1 import BaseModel, Field, PrivateAttr, create_model, root_validator, validator
+    from pydantic.v1 import BaseModel, Field, PrivateAttr, create_model, validator
 except ImportError:  # pragma: no cov
     from pydantic import BaseModel, Field, PrivateAttr, create_model, validator
 import logging
@@ -42,7 +42,7 @@ def _exec_code(code: str):
     # ldict is used to store the chart function
     # potentially possible to restrict globals to only needed imports, but that is tricky
     ldict = {}
-    exec(code, globals(), ldict)
+    exec(code, globals(), ldict)  # nosec
     return ldict
 
 
@@ -93,7 +93,8 @@ class ChartPlanStatic(BaseModel):
 
         if "data_frame" not in v.split("\n")[0]:
             raise ValueError(
-                "The chart code must accept a single argument `data_frame`, and it should be the first argument of the chart."
+                """The chart code must accept a single argument `data_frame`,
+and it should be the first argument of the chart."""
             )
         return v
 
@@ -199,28 +200,18 @@ if __name__ == "__main__":
     # df = px.data.iris()
     df = px.data.gapminder()
 
-    # dummy_model = _create_model(data_frame=df)
-    # dummy_model(chart_type="foo", imports=["bar"],chart_code="print('hello')",code_explanation="boo",chart_insights="bee")
-
-    # test = dummy_model(  # dummy_response = ChartPlanStatic(
-    #     chart_type="Bubble Chart",
-    #     imports=["import plotly.express as px"],
-    #     chart_code="def custom_chart(data_frame):\n    fig = px.scatter(data_frame, x='gdpPercap', y='lifeExp', size='pop', color='continent', hover_name='country', animation_frame='year', log_x=True, size_max=60)\n    return fig",
-    #     # chart_code="print('Hello World')\nx = 1",
-    #     chart_insights="This bubble chart visualizes the changes in life expectancy and GDP per capita over time. Each bubble represents a country, with the size of the bubble indicating the population and the color representing the continent. The animation is based on the year, showing the evolution of the data over time.",
-    #     code_explanation="1. Create a scatter plot using Plotly Express (px).\n2. Set the x-axis to 'gdpPercap' and the y-axis to 'lifeExp'.\n3. Size the bubbles based on 'pop' (population) and color them based on 'continent'.\n4. Enable hover information to display the country name.\n5. Add animation based on the 'year' column to animate the chart over time.\n6. Set log scaling for the x-axis.\n7. Return the Plotly figure object.",
-    # )
-
     model = _get_llm_model()
 
     query = "the trend of gdp over years in the US"
     # query = "show me the geo distribution of life expectancy and set year as animation "
     # query = "describe the composition of gdp in continents in 2007, and add horizontal line for avg gdp in 2007"
-    # query = "plot a bubble chart to shows the changes in life expectancy gdp per capita  over time. Animate the chart by year"
+    # query = """plot a bubble chart to shows the changes in life expectancy gdp per capita  over time.
+    # Animate the chart by year"""
 
     # print(df.sample(10).to_string())
 
-    # res = _get_pydantic_model(query=query, llm_model=model, response_model=dummy_model, df_info=df.sample(10).to_string())
+    # res = _get_pydantic_model(
+    # query=query, llm_model=model, response_model=dummy_model, df_info=df.sample(10).to_string())
     # code = res._get_complete_code(lint=True)
     # fig = res._get_fig_object(data_frame=df)
     # fig.show()
@@ -238,6 +229,5 @@ if __name__ == "__main__":
     ############################################################################################################
 
     vizro_ai = VizroAI(model=model)
-    # res = vizro_ai.plot(df=df, user_input=query, explain=True, return_elements=True)
-    res2 = vizro_ai.plot2(df=df, user_input=query, return_elements=True)
+    res2 = vizro_ai.plot(df=df, user_input=query, return_elements=True)
     res2.get_fig_object(data_frame=df).show()
