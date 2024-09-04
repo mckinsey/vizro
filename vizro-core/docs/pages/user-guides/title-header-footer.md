@@ -1,6 +1,6 @@
-# How to add titles, headers and footers
+# How to add a title, header and footer
 
-This guide explains how to add titles, headers, and footers to your components in Vizro.
+This guide explains how to add a title, header, and footer to your components in Vizro.
 
 The [`Graph`][vizro.models.Graph], the [`Table`][vizro.models.Table] and the [`AgGrid`][vizro.models.AgGrid] models
 accept a `title`, `header` and `footer` argument. This is useful for providing context to the data being
