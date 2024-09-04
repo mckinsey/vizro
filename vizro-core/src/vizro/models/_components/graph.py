@@ -154,9 +154,9 @@ class Graph(VizroBaseModel):
             pass
         else:
             warnings.warn(
-                "Using `fig.layout.title` in your Plotly chart may cause misalignment with other "
-                "component titles on the screen. To ensure consistent alignment, consider using "
-                "`Graph.title` instead."
+                """Using the `title` argument in your Plotly chart function may cause misalignment with other component
+                titles on the screen. To ensure consistent alignment, consider adding a title via the `vm.Graph`
+                model instead: `vm.Graph(title="Title", ...)`."""
             )
 
     @_log_call
