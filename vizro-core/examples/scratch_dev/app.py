@@ -8,23 +8,24 @@ from vizro import Vizro
 from vizro.models.types import capture
 
 animals = pd.DataFrame(
-    {"animals": ["giraffes", "orangutans", "monkeys"], "value": [20, 14, 23], "color": ["blue", "orange", "orange"]}
+    {"animals": ["giraffes", "orangutans", "monkeys"], "value": [20, 14, 23], "color": ["High", "Low", "Low"]}
 )
 
 
 @capture("graph")
 def bar(data_frame):
     """LA LA LA LA."""
-    df_one = data_frame.query("color=='blue'")
-    df_two = data_frame.query("color=='orange'")
+    df_one = data_frame.query("color=='High'")
+    df_two = data_frame.query("color=='Low'")
+
     fig = go.Figure(
         data=[
-            go.Bar(x=df_one["animals"], y=df_one["value"], name="High", marker_color="#00b4ff", text=df_one["value"]),
+            go.Bar(x=df_one["animals"], y=df_one["value"], name="High", marker_color="#00b4ff"),
         ],
     )
 
     fig.add_trace(
-        go.Bar(x=df_two["animals"], y=df_two["value"], name="Low", marker_color="#ff9222", text=df_two["value"])
+        go.Bar(x=df_two["animals"], y=df_two["value"], name="Low", marker_color="#ff9222")
     )
     return fig
 
