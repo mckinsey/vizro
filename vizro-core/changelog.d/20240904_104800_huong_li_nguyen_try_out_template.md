@@ -27,7 +27,6 @@ Uncomment the section that is right (remove the HTML comment wrapper).
 
 - Reduce default bar width in Vizro chart templates. ([#679](https://github.com/mckinsey/vizro/pull/679))
 
-
 <!--
 ### Deprecated
 
