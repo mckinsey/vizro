@@ -71,8 +71,6 @@ def create_template_dark() -> Template:
     }
 
     # CHART TYPES
-    template_dark.data.bar = [go.Bar(width=0.6)]
-
     template_dark.data.waterfall = [
         go.Waterfall(
             decreasing={"marker": {"color": COLORS["DISCRETE_10"][1]}},

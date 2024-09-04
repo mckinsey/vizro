@@ -69,8 +69,6 @@ def create_template_light() -> Template:
     }
 
     # CHART TYPES
-    template_light.data.bar = [go.Bar(width=0.6)]
-
     template_light.data.waterfall = [
         go.Waterfall(
             decreasing={"marker": {"color": COLORS["DISCRETE_10"][1]}},
