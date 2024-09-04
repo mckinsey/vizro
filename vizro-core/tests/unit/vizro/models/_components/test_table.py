@@ -188,7 +188,7 @@ class TestBuildTable:
                     None,
                     html.Div(
                         id="text_table",
-                        children=[html.Div(id="underlying_table_id")],
+                        children=[html.Div(id=underlying_id_expected)],
                         className="table-container",
                     ),
                     None,
