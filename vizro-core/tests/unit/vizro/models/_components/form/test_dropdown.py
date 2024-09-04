@@ -194,9 +194,14 @@ class TestDropdownBuild:
             (["A" * 31, "B", "C"], 56),
             (["A" * 60, "B", "C"], 56),
             (["A" * 61, "B", "C"], 80),
+            ([{"label": "A" * 30, "value": "A"}, {"label": "B", "value": "B"}, {"label": "C", "value": "C"}], 32),
+            ([{"label": "A" * 31, "value": "A"}, {"label": "B", "value": "B"}, {"label": "C", "value": "C"}], 56),
+            ([{"label": "A" * 60, "value": "A"}, {"label": "B", "value": "B"}, {"label": "C", "value": "C"}], 56),
+            ([{"label": "A" * 61, "value": "A"}, {"label": "B", "value": "B"}, {"label": "C", "value": "C"}], 80),
         ],
     )
     def test_dropdown_dynamic_option_height(self, options, option_height):
+        default_value = options[0]["value"] if all(isinstance(option, dict) for option in options) else options[0]  # type: ignore[index]
         dropdown = Dropdown(id="dropdown_id", multi=False, options=options).build()
         expected_dropdown = html.Div(
             [
@@ -206,7 +211,7 @@ class TestDropdownBuild:
                     options=options,
                     optionHeight=option_height,
                     multi=False,
-                    value=options[0],
+                    value=default_value,
                     persistence=True,
                     persistence_type="session",
                 ),

@@ -21,6 +21,8 @@ def chart_plan():
 
 
 class TestChartPlanStaticInstantiation:
+    """Tests for the ChartPlanStatic class instantiation."""
+
     def test_check_chart_code_valid(self):
         chart_plan_valid = ChartPlanStatic(
             chart_type="Bubble Chart",
@@ -51,13 +53,14 @@ class TestChartPlanStaticInstantiation:
     return fig
         """,
                 ValueError,
-                "The chart code must accept a single argument `data_frame`, and it should be the first argument of the chart.",
+                """The chart code must accept a single argument `data_frame`,
+and it should be the first argument of the chart.""",
             ),
         ],
     )
     def test_check_chart_code_invalid(self, chart_code, error_type, error_message):
         with pytest.raises(error_type, match=error_message):
-            chart_plan_invalid = ChartPlanStatic(
+            ChartPlanStatic(
                 chart_type="Bubble Chart",
                 imports=["import plotly.express as px"],
                 chart_code=chart_code,
@@ -67,6 +70,8 @@ class TestChartPlanStaticInstantiation:
 
 
 class TestChartPlanDynamicFactory:
+    """Tests for the ChartPlanDynamicFactory class, mainly the execution of the chart code."""
+
     def test_execute_chart_code_valid(self):
         chart_plan_dynamic = ChartPlanDynamicFactory(data_frame=px.data.iris())
         chart_plan_dynamic_valid = chart_plan_dynamic(
@@ -113,7 +118,7 @@ class TestChartPlanDynamicFactory:
     def test_execute_chart_code_invalid(self, chart_code, error_type, error_message):
         chart_plan_dynamic = ChartPlanDynamicFactory(data_frame=px.data.iris())
         with pytest.raises(error_type, match=error_message):
-            chart_plan_dynamic_invalid = chart_plan_dynamic(
+            chart_plan_dynamic(
                 chart_type="Bubble Chart",
                 imports=["import plotly.express as px"],
                 chart_code=chart_code,
@@ -122,6 +127,8 @@ class TestChartPlanDynamicFactory:
             )
 
     class TestChartPlanStaticMethodsProperties:
+        """Tests for the methods and properties of the ChartPlanStatic class."""
+
         def test_code(self, chart_plan):
             assert (
                 chart_plan.code
