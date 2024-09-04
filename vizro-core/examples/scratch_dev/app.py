@@ -8,15 +8,15 @@ from vizro import Vizro
 from vizro.models.types import capture
 
 animals = pd.DataFrame(
-    {"animals": ["giraffes", "orangutans", "monkeys"], "value": [20, 14, 23], "color": ["High", "Low", "Low"]}
+    {"animals": ["giraffes", "orangutans", "monkeys"], "value": [20, 14, 23], "color": ["Male", "Female", "Female"]}
 )
 
 
 @capture("graph")
 def bar(data_frame):
     """LA LA LA LA."""
-    df_one = data_frame.query("color=='High'")
-    df_two = data_frame.query("color=='Low'")
+    df_one = data_frame.query("color=='Male'")
+    df_two = data_frame.query("color=='Female'")
 
     fig = go.Figure(
         data=[
