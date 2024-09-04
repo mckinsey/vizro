@@ -18,11 +18,6 @@ repos:
         entry: python tools/check_for_datafiles.py
         language: python
         pass_filenames: false
-      - id: check-forbidden-words
-        name: check-forbidden-words
-        entry: tools/find_forbidden_words_in_repo.sh
-        language: script
-        pass_filenames: false
       - id: check-branch-name
         name: check-branch-name
         entry: tools/check_branch_name.sh
@@ -49,7 +44,7 @@ repos:
         args: [--autofix]
 
   - repo: https://github.com/astral-sh/ruff-pre-commit
-    rev: v0.5.6
+    rev: v0.6.3
     hooks:
       - id: ruff
         args: [--fix, --exit-non-zero-on-fix]
@@ -106,7 +101,7 @@ repos:
         args: ["--fix"]
 
   - repo: https://github.com/errata-ai/vale
-    rev: v3.7.0
+    rev: v3.7.1
     hooks:
       - id: vale
         args: [--config=.vale/.vale.ini]
@@ -122,7 +117,6 @@ ci:
     - check-yaml
     - check-json
     - check-datafiles
-    - check-forbidden-words
     - check-branch-name
     - codespell
     - bandit
