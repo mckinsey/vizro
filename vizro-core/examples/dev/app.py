@@ -159,7 +159,7 @@ graphs = vm.Page(
             figure=px.scatter(iris, x="sepal_width", y="sepal_length", color="species"),
             title="Relationships between Sepal Width and Sepal Length",
             header="""
-                Each point in the scatter plot represents one of the 150 iris flowers,  with colors indicating their
+                Each point in the scatter plot represents one of the 150 iris flowers, with colors indicating their
                 types. The Setosa type is easily identifiable by its short and wide sepals.
 
                 However, there is still overlap between the Versicolor and Virginica types when considering only sepal

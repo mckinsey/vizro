@@ -6,7 +6,7 @@ The [`Graph`][vizro.models.Graph], the [`Table`][vizro.models.Table] and the [`A
 accept a `title`, `header` and `footer` argument. This is useful for providing context to the data being
 displayed, or for adding a description of the data.
 
-- **title**: Displayed as an H3 header, useful for summarizing the main topic or insight of the component.
+- **title**: Displayed as an [H3 header](https://dash.plotly.com/dash-html-components/h3), useful for summarizing the main topic or insight of the component.
 - **header**: Accepts Markdown text, ideal for additional descriptions, subtitles, or detailed data insights.
 - **footer**: Also accepts Markdown text, commonly used for citing data sources, providing information on the last update, or adding disclaimers.
 
@@ -21,11 +21,12 @@ displayed, or for adding a description of the data.
 !!! example "Formatted Graph"
     === "app.py"
         ```{.python pycafe-link}
+
         import vizro.models as vm
         import vizro.plotly.express as px
         from vizro import Vizro
 
-        df = px.data.iris()
+        iris = px.data.iris()
 
         page = vm.Page(
             title="Formatted Graph",
@@ -34,7 +35,7 @@ displayed, or for adding a description of the data.
                     figure=px.scatter(iris, x="sepal_width", y="sepal_length", color="species"),
                     title="Relationships between Sepal Width and Sepal Length",
                     header="""
-                        Each point in the scatter plot represents one of the 150 iris flowers,  with colors indicating their
+                        Each point in the scatter plot represents one of the 150 iris flowers, with colors indicating their
                         types. The Setosa type is easily identifiable by its short and wide sepals.
 
                         However, there is still overlap between the Versicolor and Virginica types when considering only sepal
@@ -61,7 +62,7 @@ displayed, or for adding a description of the data.
               data_frame: iris
             title: Relationships between Sepal Width and Sepal Length
             header: |
-              Each point in the scatter plot represents one of the 150 iris flowers,  with colors indicating their
+              Each point in the scatter plot represents one of the 150 iris flowers, with colors indicating their
               types. The Setosa type is easily identifiable by its short and wide sepals.
 
               However, there is still overlap between the Versicolor and Virginica types when considering only sepal
@@ -81,6 +82,7 @@ displayed, or for adding a description of the data.
 !!! example "Formatted AgGrid"
     === "app.py"
         ```{.python pycafe-link}
+
         import vizro.models as vm
         from vizro import Vizro
         from vizro.tables import dash_ag_grid
@@ -131,6 +133,7 @@ displayed, or for adding a description of the data.
 !!! example "Formatted DataTable"
     === "app.py"
         ```{.python pycafe-link}
+
         import vizro.models as vm
         from vizro import Vizro
         from vizro.tables import dash_data_table

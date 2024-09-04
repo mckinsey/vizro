@@ -155,7 +155,7 @@ class TestBuildTable:
                     None,
                     None,
                     html.Div(
-                        children=[html.Div(id="__input_text_table")],
+                        children=[html.Div()],
                         className="table-container",
                     ),
                     None,
@@ -207,7 +207,7 @@ class TestBuildTable:
                     html.H3("Title", className="figure-title"),
                     dcc.Markdown("""#### Subtitle""", className="figure-header"),
                     html.Div(
-                        children=[html.Div(id="__input_text_table")],
+                        children=[html.Div()],
                         className="table-container",
                     ),
                     dcc.Markdown("""SOURCE: **DATA**""", className="figure-footer"),
