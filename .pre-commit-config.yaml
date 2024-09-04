@@ -31,11 +31,15 @@ repos:
         additional_dependencies:
           - tomli
 
-  # Linter for json, yaml, md, css and more
-  - repo: https://github.com/pre-commit/mirrors-prettier
-    rev: v4.0.0-alpha.8
+  - repo: local
     hooks:
       - id: prettier
+        name: prettier
+        description: Linter for json, yaml, md, css and more
+        entry: prettier --write --ignore-unknown
+        language: node
+        "types": [text]
+        additional_dependencies: ["prettier@3.3.3"]
 
   - repo: https://github.com/macisamuele/language-formatters-pre-commit-hooks
     rev: v2.14.0
@@ -44,7 +48,7 @@ repos:
         args: [--autofix]
 
   - repo: https://github.com/astral-sh/ruff-pre-commit
-    rev: v0.5.6
+    rev: v0.6.3
     hooks:
       - id: ruff
         args: [--fix, --exit-non-zero-on-fix]
@@ -101,7 +105,7 @@ repos:
         args: ["--fix"]
 
   - repo: https://github.com/errata-ai/vale
-    rev: v3.7.0
+    rev: v3.7.1
     hooks:
       - id: vale
         args: [--config=.vale/.vale.ini]
