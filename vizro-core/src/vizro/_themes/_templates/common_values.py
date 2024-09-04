@@ -40,9 +40,6 @@ def create_template_common():
         legend_y=-0.20,
         legend_title_font_family=primary_font,
         legend_title_font_size=14,
-        # Turning off the legend title does not have an effect on Plotly express charts
-        # and by default it is turned off for go.Figures
-        legend_title_text="",
         legend_bgcolor="rgba(0,0,0,0)",
         margin_l=80,
         margin_r=24,
