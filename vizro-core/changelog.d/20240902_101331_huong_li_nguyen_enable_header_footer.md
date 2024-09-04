@@ -13,7 +13,7 @@ Uncomment the section that is right (remove the HTML comment wrapper).
 
 ### Removed
 
-- Remove automatic alignment for chart and table titles when chart title is specified within Plotly chart. A warning will now suggest using `Graph.title` instead. ([#669](https://github.com/mckinsey/vizro/pull/669))
+- Remove automatic alignment for chart title when it's specified within a Plotly chart. A warning will now suggest using `Graph.title` instead. ([#669](https://github.com/mckinsey/vizro/pull/669))
 
 ### Added
 

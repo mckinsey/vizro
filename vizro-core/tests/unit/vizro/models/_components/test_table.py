@@ -169,8 +169,15 @@ class TestBuildTable:
 
         assert_component_equal(table, expected_table, keys_to_strip={"id"})
 
-    def test_table_build_with_underlying_id(self, dash_data_table_with_id, filter_interaction_action, gapminder):
-        table = vm.Table(id="text_table", figure=dash_data_table_with_id)
+    @pytest.mark.parametrize(
+        "table, underlying_id_expected",
+        [
+            ("dash_data_table_with_id", "underlying_table_id"),
+            ("standard_dash_table", "__input_text_table"),
+        ],
+    )
+    def test_table_build_with_and_without_underlying_id(self, table, underlying_id_expected, request):
+        table = vm.Table(id="text_table", figure=request.getfixturevalue(table))
         table.pre_build()
         table = table.build()
 

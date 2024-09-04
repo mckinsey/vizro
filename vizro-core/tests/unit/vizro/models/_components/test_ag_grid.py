@@ -173,8 +173,15 @@ class TestBuildAgGrid:
 
         assert_component_equal(ag_grid, expected_ag_grid, keys_to_strip={"id"})
 
-    def test_ag_grid_build_with_underlying_id(self, ag_grid_with_id_and_conf, filter_interaction_action, gapminder):
-        ag_grid = vm.AgGrid(id="text_ag_grid", figure=ag_grid_with_id_and_conf, actions=[filter_interaction_action])
+    @pytest.mark.parametrize(
+        "ag_grid, underlying_id_expected",
+        [
+            ("ag_grid_with_id_and_conf", "underlying_ag_grid_id"),
+            ("standard_ag_grid", "__input_text_ag_grid"),
+        ],
+    )
+    def test_ag_grid_build_with_and_without_underlying_id(self, ag_grid, underlying_id_expected, request):
+        ag_grid = vm.AgGrid(id="text_ag_grid", figure=request.getfixturevalue(ag_grid))
         ag_grid.pre_build()
         ag_grid = ag_grid.build()
 
@@ -185,7 +192,7 @@ class TestBuildAgGrid:
                     None,
                     html.Div(
                         id="text_ag_grid",
-                        children=[html.Div(id="underlying_ag_grid_id")],
+                        children=[html.Div(id=underlying_id_expected)],
                         className="table-container",
                     ),
                     None,
