@@ -33,6 +33,12 @@ class Graph(VizroBaseModel):
         type (Literal["graph"]): Defaults to `"graph"`.
         figure (CapturedCallable): Function that returns a graph.
             See `CapturedCallable`][vizro.models.types.CapturedCallable].
+        title (str): Title of the `Graph`. Defaults to `""`.
+        header (str): Markdown text positioned below the `Graph.title`. Follows the CommonMark specification.
+            Ideal for adding supplementary information such as subtitles, descriptions, or additional context.
+            Defaults to `""`.
+        footer (str): Markdown text positioned below the `Graph`. Follows the CommonMark specification.
+            Ideal for providing further details such as sources, disclaimers, or additional notes. Defaults to `""`.
         actions (List[Action]): See [`Action`][vizro.models.Action]. Defaults to `[]`.
 
     """
@@ -44,10 +50,13 @@ class Graph(VizroBaseModel):
     title: str = Field("", description="Title of the `Graph`")
     header: str = Field(
         "",
-        description="Markdown text positioned below the component title, compliant with the CommonMark specification.",
+        description="Markdown text positioned below the `Graph.title`. Follows the CommonMark specification. Ideal for "
+        "adding supplementary information such as subtitles, descriptions, or additional context.",
     )
     footer: str = Field(
-        "", description="Markdown text positioned below the component, compliant with the CommonMark specification."
+        "",
+        description="Markdown text positioned below the `Graph`. Follows the CommonMark specification. Ideal for "
+        "providing further details such as sources, disclaimers, or additional notes.",
     )
     actions: List[Action] = []
 

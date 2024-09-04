@@ -2,13 +2,13 @@
 
 This guide explains how to add titles, headers, and footers to your components in Vizro.
 
-The [`Graph`][vizro.models.Graph], the [`Table`][vizro.models.Table] and the [`AgGrid`][vizro.models.AgGrid] components
+The [`Graph`][vizro.models.Graph], the [`Table`][vizro.models.Table] and the [`AgGrid`][vizro.models.AgGrid] models
 accept a `title`, `header` and `footer` argument. This is useful for providing context to the data being
 displayed, or for adding a description of the data.
 
 - **title**: Displayed as an [H3 header](https://dash.plotly.com/dash-html-components/h3), useful for summarizing the main topic or insight of the component.
 - **header**: Accepts Markdown text, ideal for additional descriptions, subtitles, or detailed data insights.
-- **footer**: Also accepts Markdown text, commonly used for citing data sources, providing information on the last update, or adding disclaimers.
+- **footer**: Accepts Markdown text, commonly used for citing data sources, providing information on the last update, or adding disclaimers.
 
 
 !!! note

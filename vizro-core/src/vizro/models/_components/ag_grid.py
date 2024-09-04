@@ -27,7 +27,12 @@ class AgGrid(VizroBaseModel):
     Args:
         type (Literal["ag_grid"]): Defaults to `"ag_grid"`.
         figure (CapturedCallable): Function that returns a Dash AgGrid. See [`vizro.tables`][vizro.tables].
-        title (str): Title of the table. Defaults to `""`.
+        title (str): Title of the `AgGrid`. Defaults to `""`.
+        header (str): Markdown text positioned below the `AgGrid.title`. Follows the CommonMark specification.
+            Ideal for adding supplementary information such as subtitles, descriptions, or additional context.
+            Defaults to `""`.
+        footer (str): Markdown text positioned below the `AgGrid`. Follows the CommonMark specification.
+            Ideal for providing further details such as sources, disclaimers, or additional notes. Defaults to `""`.
         actions (List[Action]): See [`Action`][vizro.models.Action]. Defaults to `[]`.
 
     """
@@ -39,10 +44,13 @@ class AgGrid(VizroBaseModel):
     title: str = Field("", description="Title of the `AgGrid`")
     header: str = Field(
         "",
-        description="Markdown text positioned below the component title, compliant with the CommonMark specification.",
+        description="Markdown text positioned below the `AgGrid.title`. Follows the CommonMark specification. Ideal "
+        "for adding supplementary information such as subtitles, descriptions, or additional context.",
     )
     footer: str = Field(
-        "", description="Markdown text positioned below the component, compliant with the CommonMark specification."
+        "",
+        description="Markdown text positioned below the `AgGrid`. Follows the CommonMark specification. Ideal for "
+        "providing further details such as sources, disclaimers, or additional notes.",
     )
     actions: List[Action] = []
 

@@ -26,7 +26,12 @@ class Table(VizroBaseModel):
     Args:
         type (Literal["table"]): Defaults to `"table"`.
         figure (CapturedCallable): Function that returns a Dash DataTable. See [`vizro.tables`][vizro.tables].
-        title (str): Title of the table. Defaults to `""`.
+        title (str): Title of the `Table`. Defaults to `""`.
+        header (str): Markdown text positioned below the `Table.title`. Follows the CommonMark specification.
+            Ideal for adding supplementary information such as subtitles, descriptions, or additional context.
+            Defaults to `""`.
+        footer (str): Markdown text positioned below the `Table`. Follows the CommonMark specification.
+            Ideal for providing further details such as sources, disclaimers, or additional notes. Defaults to `""`.
         actions (List[Action]): See [`Action`][vizro.models.Action]. Defaults to `[]`.
 
     """
@@ -38,10 +43,13 @@ class Table(VizroBaseModel):
     title: str = Field("", description="Title of the `Table`")
     header: str = Field(
         "",
-        description="Markdown text positioned below the component title, compliant with the CommonMark specification.",
+        description="Markdown text positioned below the `Table.title`. Follows the CommonMark specification. Ideal for "
+        "adding supplementary information such as subtitles, descriptions, or additional context.",
     )
     footer: str = Field(
-        "", description="Markdown text positioned below the component, compliant with the CommonMark specification."
+        "",
+        description="Markdown text positioned below the `Table`. Follows the CommonMark specification. Ideal for "
+        "providing further details such as sources, disclaimers, or additional notes.",
     )
     actions: List[Action] = []
 
