@@ -24,9 +24,7 @@ def bar(data_frame):
         ],
     )
 
-    fig.add_trace(
-        go.Bar(x=df_two["animals"], y=df_two["value"], name="Low", marker_color="#ff9222")
-    )
+    fig.add_trace(go.Bar(x=df_two["animals"], y=df_two["value"], name="Low", marker_color="#ff9222"))
     return fig
 
 
