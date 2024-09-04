@@ -157,8 +157,9 @@ class TestPreBuildGraph:
         graph = vm.Graph(figure=standard_px_chart_with_title)
         with pytest.warns(
             UserWarning,
-            match="Using `fig.layout.title` in your Plotly chart may cause misalignment with other component titles on "
-            "the screen. To ensure consistent alignment, consider using `Graph.title` instead.",
+            match="""Using the `title` argument in your Plotly chart function may cause misalignment with other
+            component titles on the screen. To ensure consistent alignment, consider adding a title via the `vm.Graph`
+            model instead: `vm.Graph(title="Title", ...)`.""",
         ):
             graph.pre_build()
 
