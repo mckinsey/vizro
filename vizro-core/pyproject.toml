@@ -76,7 +76,9 @@ filterwarnings = [
   # Ignore until plotly fixes so the warning is no longer raised:
   "ignore:When grouping with a length-1 list-like, you will need to pass a length-1 tuple to get_group:FutureWarning",
   # Ignore warning when providing a custom format string to the KPI cards:
-  "ignore:Custom format string detected."
+  "ignore:Custom format string detected.",
+  # Ignore warning when using the fig.layout.title inside examples
+  "ignore:Using the `title` argument in your Plotly chart function may cause misalignment:UserWarning"
 ]
 norecursedirs = ["tests/tests_utils", "tests/js"]
 pythonpath = ["tests/tests_utils"]

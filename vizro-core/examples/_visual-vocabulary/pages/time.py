@@ -26,7 +26,7 @@ line = vm.Page(
 
             You should select a line chart when you want to show trends over time. Usually, your y-axis will show a
             quantitative value and your x-axis will be marked as a timescale or a sequence of intervals. You can also
-            display negative values below the x-axis. If you wish to group several lines (different data series) in the
+            display negative values below the x-axis. To group several lines (different data series) in the
             same chart, try to limit yourself to 3-4 to avoid cluttering up your chart.
         """
         ),

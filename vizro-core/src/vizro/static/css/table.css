@@ -1,3 +1,11 @@
+#right-side .dash-cell {
+  height: 48px !important;
+}
+
+#right-side .dash-table-container {
+  padding-bottom: 12px;
+}
+
 #right-side
   .dash-table-container
   .dash-spreadsheet-container
@@ -5,6 +13,7 @@
   th {
   background-color: var(--main-container-bg-color);
   color: var(--text-primary);
+  padding: 10px 0;
 }
 
 #right-side
@@ -81,12 +90,4 @@
   .current-page-container
   input.current-page::placeholder {
   color: var(--text-primary) !important;
-}
-
-.table-container {
-  display: flex;
-  flex-direction: column;
-  height: calc(100% - 36px);
-  overflow: auto;
-  width: 100%;
 }
