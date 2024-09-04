@@ -99,10 +99,7 @@ def _extract_custom_functions_and_imports(custom_charts_code: List[List[Dict[str
                 if import_match:
                     imports.add(import_match.group(1))
 
-                # Remove leading imports and the last line (any chart creation)
                 code_without_imports = code[import_match.end() :]
-                code_without_chart_creation, _, _ = code_without_imports.rpartition("\n\n")
-
-                custom_functions.add(code_without_chart_creation)
+                custom_functions.add(code_without_imports)
 
     return custom_functions, imports

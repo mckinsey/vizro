@@ -5,15 +5,14 @@ import logging
 import vizro.models as vm
 
 try:
-    from pydantic.v1 import BaseModel, Field
+    from pydantic.v1 import BaseModel, Field, ValidationError
 except ImportError:  # pragma: no cov
-    from pydantic import BaseModel, Field
+    from pydantic import BaseModel, Field, ValidationError
 from langchain_core.language_models.chat_models import BaseChatModel
 from vizro.tables import dash_ag_grid
 from vizro_ai.dashboard._pydantic_output import _get_pydantic_model
 from vizro_ai.dashboard._response_models.types import ComponentType
 from vizro_ai.dashboard.utils import AllDfMetadata, ComponentResult
-from vizro_ai.utils.helper import DebugFailure
 
 logger = logging.getLogger(__name__)
 
@@ -76,7 +75,7 @@ class ComponentPlan(BaseModel):
                             chart_name=self.component_id, data_frame=all_df_metadata.get_df(self.df_name), vizro=True
                         ),
                     ),
-                    code=result.code_vizro,
+                    code=result._get_complete_code(chart_name=self.component_id, vizro=True),
                 )
             elif self.component_type == "AgGrid":
                 return ComponentResult(
@@ -92,7 +91,7 @@ class ComponentPlan(BaseModel):
                 proxy_dict["id"] = self.component_id
                 return ComponentResult(component=vm.Card.parse_obj(proxy_dict))
 
-        except DebugFailure as e:
+        except ValidationError as e:
             logger.warning(
                 f"""
 [FALLBACK] Failed to build `Component`: {self.component_id}.
