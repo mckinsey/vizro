@@ -31,19 +31,15 @@ repos:
         additional_dependencies:
           - tomli
 
-  # Linter for json, yaml, md, css and more
   - repo: local
     hooks:
       - id: prettier
         name: prettier
-        description: ""
+        description: Linter for json, yaml, md, css and more
         entry: prettier --write --ignore-unknown
         language: node
         "types": [text]
-        args: []
-        require_serial: false
         additional_dependencies: ["prettier@3.3.3"]
-        minimum_pre_commit_version: "0"
 
   - repo: https://github.com/macisamuele/language-formatters-pre-commit-hooks
     rev: v2.14.0
