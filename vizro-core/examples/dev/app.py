@@ -156,35 +156,42 @@ graphs = vm.Page(
     title="Graphs",
     components=[
         vm.Graph(
-            figure=px.scatter_matrix(
-                iris,
-                dimensions=["sepal_length", "sepal_width", "petal_length", "petal_width"],
-                color="species",
-            )
-        )
+            figure=px.scatter(iris, x="sepal_width", y="sepal_length", color="species"),
+            title="Relationships between Sepal Width and Sepal Length",
+            header="""
+                Each point in the scatter plot represents one of the 150 iris flowers, with colors indicating their
+                types. The Setosa type is easily identifiable by its short and wide sepals.
+
+                However, there is still overlap between the Versicolor and Virginica types when considering only sepal
+                width and length.
+                """,
+            footer="""SOURCE: **Plotly iris data set, 2024**""",
+        ),
     ],
-    controls=[vm.Filter(column="species", selector=vm.Dropdown(title="Species"))],
 )
 
 ag_grid = vm.Page(
     title="AG Grid",
     components=[
         vm.AgGrid(
-            title="Dash AG Grid", figure=dash_ag_grid(data_frame=gapminder_2007, dashGridOptions={"pagination": True})
+            figure=dash_ag_grid(data_frame=gapminder_2007, dashGridOptions={"pagination": True}),
+            title="Gapminder Data Insights",
+            header="""#### An Interactive Exploration of Global Health, Wealth, and Population""",
+            footer="""SOURCE: **Plotly gapminder data set, 2024**""",
         )
     ],
-    controls=[vm.Filter(column="continent")],
 )
 
 table = vm.Page(
     title="Table",
     components=[
         vm.Table(
-            title="Dash DataTable",
             figure=dash_data_table(data_frame=gapminder_2007),
+            title="Gapminder Data Insights",
+            header="""#### An Interactive Exploration of Global Health, Wealth, and Population""",
+            footer="""SOURCE: **Plotly gapminder data set, 2024**""",
         )
     ],
-    controls=[vm.Filter(column="continent")],
 )
 
 cards = vm.Page(
@@ -783,7 +790,16 @@ dashboard = vm.Dashboard(
                 vm.NavLink(
                     label="Features",
                     pages={
-                        "Components": ["Graphs", "AG Grid", "Table", "Cards", "Figure", "Button", "Containers", "Tabs"],
+                        "Components": [
+                            "Graphs",
+                            "AG Grid",
+                            "Table",
+                            "Cards",
+                            "Figure",
+                            "Button",
+                            "Containers",
+                            "Tabs",
+                        ],
                         "Controls": ["Filters", "Parameters", "Selectors"],
                         "Actions": ["Export data", "Chart interaction"],
                         "Extensions": [
