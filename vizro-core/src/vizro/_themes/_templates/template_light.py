@@ -39,6 +39,7 @@ def create_template_light() -> Template:
     template_light["layout"]["ternary"]["baxis"]["linecolor"] = COLORS["BLACK_30"]
     template_light["layout"]["ternary"]["caxis"]["gridcolor"] = COLORS["BLACK_12"]
     template_light["layout"]["ternary"]["caxis"]["linecolor"] = COLORS["BLACK_30"]
+    template_light["layout"]["map"]["style"] = "carto-positron"
     template_light["layout"]["mapbox"]["style"] = "carto-positron"
     template_light["layout"]["coloraxis"]["colorbar"]["tickcolor"] = COLORS["BLACK_30"]
     template_light["layout"]["coloraxis"]["colorbar"]["tickfont"]["color"] = COLORS["BLACK_55"]

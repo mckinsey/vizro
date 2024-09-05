@@ -12,7 +12,6 @@ page = vm.Page(
                 carshare,
                 lat="centroid_lat",
                 lon="centroid_lon",
-                map_style="carto-darkmatter",
                 opacity=0.5,
                 zoom=10,
             )
