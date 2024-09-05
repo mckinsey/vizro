@@ -73,7 +73,7 @@ When choosing this approach, you can customize your model beyond the chosen defa
 To ensure a deterministic answer to our queries, we've set the temperature to 0 in the string instantiation. If you prefer more creative (but potentially more unstable) responses, you can raise the temperature to a maximum of 1.
 <!-- vale on -->
 
-Below you can find an example where a custom model is instantiated with various custom parameters. Note that we manually set the API key and base URL, which is sometimes the easiest way to get it setup.
+Below you can find an example where a custom model is instantiated with various custom parameters. Note that we manually set the API key and base URL, which is the easiest way to get it set up.
 
 ```py
 import os
