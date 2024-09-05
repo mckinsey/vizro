@@ -13,6 +13,7 @@ from vizro.tables import dash_ag_grid
 from vizro_ai.dashboard._pydantic_output import _get_pydantic_model
 from vizro_ai.dashboard._response_models.types import ComponentType
 from vizro_ai.dashboard.utils import AllDfMetadata, ComponentResult
+from vizro_ai.utils.helper import DebugFailure
 
 logger = logging.getLogger(__name__)
 
@@ -53,9 +54,6 @@ class ComponentPlan(BaseModel):
             - component: The created component (vm.Card, vm.AgGrid, or vm.Graph)
             - code: Optional string containing the code used to generate the component (for Graph type only)
 
-        Raises:
-            DebugFailure: If component creation fails, a Card with an error message is returned.
-
         """
         try:
             if self.component_type == "Graph":
@@ -71,9 +69,7 @@ class ComponentPlan(BaseModel):
                 return ComponentResult(
                     component=vm.Graph(
                         id=self.component_id,
-                        figure=result.get_fig_object(
-                            chart_name=self.component_id, data_frame=all_df_metadata.get_df(self.df_name), vizro=True
-                        ),
+                        figure=result.get_fig_object(chart_name=self.component_id, data_frame=self.df_name, vizro=True),
                     ),
                     code=result._get_complete_code(chart_name=self.component_id, vizro=True),
                 )
@@ -91,7 +87,7 @@ class ComponentPlan(BaseModel):
                 proxy_dict["id"] = self.component_id
                 return ComponentResult(component=vm.Card.parse_obj(proxy_dict))
 
-        except ValidationError as e:
+        except (DebugFailure, ValidationError) as e:
             logger.warning(
                 f"""
 [FALLBACK] Failed to build `Component`: {self.component_id}.

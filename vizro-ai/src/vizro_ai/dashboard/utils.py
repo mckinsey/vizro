@@ -100,6 +100,6 @@ def _extract_custom_functions_and_imports(custom_charts_code: List[List[Dict[str
                     imports.add(import_match.group(1))
 
                 code_without_imports = code[import_match.end() :]
-                custom_functions.add(code_without_imports)
+                custom_functions.add(code_without_imports.lstrip("\n"))
 
     return custom_functions, imports
