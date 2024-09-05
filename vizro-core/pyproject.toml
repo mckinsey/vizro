@@ -20,7 +20,6 @@ dependencies = [
   "dash-ag-grid>=31.0.0",
   "pandas",
   "pydantic>=1.10.13",  # must be synced with pre-commit mypy hook manually
-  "plotly>=5.24.0",  # to leverage new MapLibre features
   "dash_mantine_components<0.13.0",  # 0.13.0 is not compatible with 0.12,
   "flask_caching>=2",
   "wrapt>=1",
