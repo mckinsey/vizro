@@ -8,7 +8,7 @@ from langchain_community.llms.fake import FakeListLLM
 from vizro_ai.dashboard._response_models.components import ComponentPlan
 from vizro_ai.dashboard._response_models.page import PagePlan
 from vizro_ai.dashboard.utils import AllDfMetadata, DfMetadata
-from vizro_ai.plot._response_models import ChartPlanStatic
+from vizro_ai.plot._response_models import ChartPlan
 
 
 class MockStructuredOutputLLM(FakeListLLM):
@@ -112,7 +112,7 @@ def component_plan_ag_grid():
 
 @pytest.fixture
 def mock_vizro_ai_return(df):
-    return ChartPlanStatic(
+    return ChartPlan(
         chart_type="scatter",
         imports=["import plotly.express as px\nimport pandas as pd"],
         chart_code="""def custom_chart(data_frame):

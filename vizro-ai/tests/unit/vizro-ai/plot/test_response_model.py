@@ -1,14 +1,14 @@
 import plotly.express as ppx
 import pytest
 import vizro.plotly.express as px
-from vizro_ai.plot._response_models import ChartPlanDynamicFactory, ChartPlanStatic
+from vizro_ai.plot._response_models import ChartPlanFactory, ChartPlan
 
 df = px.data.iris()
 
 
 @pytest.fixture()
 def chart_plan():
-    return ChartPlanStatic(
+    return ChartPlan(
         chart_type="Bubble Chart",
         imports=["import plotly.express as px"],
         chart_code="""def custom_chart(data_frame):
@@ -20,11 +20,11 @@ def chart_plan():
     )
 
 
-class TestChartPlanStaticInstantiation:
-    """Tests for the ChartPlanStatic class instantiation."""
+class TestChartPlanInstantiation:
+    """Tests for the ChartPlan class instantiation."""
 
     def test_check_chart_code_valid(self):
-        chart_plan_valid = ChartPlanStatic(
+        chart_plan_valid = ChartPlan(
             chart_type="Bubble Chart",
             imports=["import plotly.express as px"],
             chart_code="""def custom_chart(data_frame):
@@ -34,7 +34,7 @@ class TestChartPlanStaticInstantiation:
             chart_insights="Very good insights",
             code_explanation="Very good explanation",
         )
-        assert isinstance(chart_plan_valid, ChartPlanStatic)
+        assert isinstance(chart_plan_valid, ChartPlan)
 
     @pytest.mark.parametrize(
         "chart_code, error_type, error_message",
@@ -60,7 +60,7 @@ and it should be the first argument of the chart.""",
     )
     def test_check_chart_code_invalid(self, chart_code, error_type, error_message):
         with pytest.raises(error_type, match=error_message):
-            ChartPlanStatic(
+            ChartPlan(
                 chart_type="Bubble Chart",
                 imports=["import plotly.express as px"],
                 chart_code=chart_code,
@@ -69,11 +69,11 @@ and it should be the first argument of the chart.""",
             )
 
 
-class TestChartPlanDynamicFactory:
-    """Tests for the ChartPlanDynamicFactory class, mainly the execution of the chart code."""
+class TestChartPlanFactory:
+    """Tests for the ChartPlanFactory class, mainly the execution of the chart code."""
 
     def test_execute_chart_code_valid(self):
-        chart_plan_dynamic = ChartPlanDynamicFactory(data_frame=px.data.iris())
+        chart_plan_dynamic = ChartPlanFactory(data_frame=px.data.iris())
         chart_plan_dynamic_valid = chart_plan_dynamic(
             chart_type="Bubble Chart",
             imports=["import plotly.express as px"],
@@ -84,7 +84,7 @@ class TestChartPlanDynamicFactory:
             chart_insights="Very good insights",
             code_explanation="Very good explanation",
         )
-        assert isinstance(chart_plan_dynamic_valid, ChartPlanStatic)
+        assert isinstance(chart_plan_dynamic_valid, ChartPlan)
 
     @pytest.mark.parametrize(
         "chart_code, error_type, error_message",
@@ -116,7 +116,7 @@ class TestChartPlanDynamicFactory:
         ],
     )
     def test_execute_chart_code_invalid(self, chart_code, error_type, error_message):
-        chart_plan_dynamic = ChartPlanDynamicFactory(data_frame=px.data.iris())
+        chart_plan_dynamic = ChartPlanFactory(data_frame=px.data.iris())
         with pytest.raises(error_type, match=error_message):
             chart_plan_dynamic(
                 chart_type="Bubble Chart",
@@ -126,8 +126,8 @@ class TestChartPlanDynamicFactory:
                 code_explanation="Very good explanation",
             )
 
-    class TestChartPlanStaticMethodsProperties:
-        """Tests for the methods and properties of the ChartPlanStatic class."""
+    class TestChartPlanMethodsProperties:
+        """Tests for the methods and properties of the ChartPlan class."""
 
         def test_code(self, chart_plan):
             assert (

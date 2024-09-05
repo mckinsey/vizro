@@ -46,7 +46,7 @@ def _exec_code(code: str):
     return ldict
 
 
-class ChartPlanStatic(BaseModel):
+class ChartPlan(BaseModel):
     """Chart plan model."""
 
     chart_type: str = Field(
@@ -155,8 +155,8 @@ and it should be the first argument of the chart."""
         return self._get_complete_code(vizro=True)
 
 
-class ChartPlanDynamicFactory:
-    def __new__(cls, data_frame: pd.DataFrame) -> ChartPlanStatic:  # TODO: change to ChartPlanDynamic
+class ChartPlanFactory:
+    def __new__(cls, data_frame: pd.DataFrame) -> ChartPlan:  # TODO: change to ChartPlanDynamic
         def _test_execute_chart_code(v):
             """Test the execution of the chart code."""
             try:
@@ -183,7 +183,7 @@ class ChartPlanDynamicFactory:
             __validators__={
                 "validator1": validator("chart_code", allow_reuse=True)(_test_execute_chart_code),
             },
-            __base__=ChartPlanStatic,
+            __base__=ChartPlan,
         )
 
 

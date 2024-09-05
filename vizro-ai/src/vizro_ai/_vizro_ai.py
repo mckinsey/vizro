@@ -12,7 +12,7 @@ from vizro_ai._llm_models import _get_llm_model, _get_model_name
 from vizro_ai.dashboard._graph.dashboard_creation import _create_and_compile_graph
 from vizro_ai.dashboard._pydantic_output import _get_pydantic_model  # TODO: make general, ie remove from dashboard
 from vizro_ai.dashboard.utils import DashboardOutputs, _extract_overall_imports_and_code, _register_data
-from vizro_ai.plot._response_models import ChartPlanDynamicFactory, ChartPlanStatic
+from vizro_ai.plot._response_models import ChartPlanFactory, ChartPlan
 
 logger = logging.getLogger(__name__)
 
@@ -66,7 +66,7 @@ class VizroAI:
         max_debug_retry: int = 1,
         return_elements: bool = False,
         validate_code: bool = True,
-    ) -> Union[go.Figure, ChartPlanStatic]:
+    ) -> Union[go.Figure, ChartPlan]:
         """Plot visuals using vizro via english descriptions, english to chart translation.
 
         Args:
@@ -81,7 +81,7 @@ class VizroAI:
             go.Figure or ChartPlanStatic pydantic model
 
         """
-        response_model = ChartPlanDynamicFactory(data_frame=df) if validate_code else ChartPlanStatic
+        response_model = ChartPlanFactory(data_frame=df) if validate_code else ChartPlan
         response = _get_pydantic_model(
             query=user_input,
             llm_model=self.model,
