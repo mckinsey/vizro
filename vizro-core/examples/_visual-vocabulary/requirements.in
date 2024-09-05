@@ -3,3 +3,4 @@
 black==24.4.2
 plotly>=5.24.0
 vizro
+gunicorn
