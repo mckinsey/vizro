@@ -12,7 +12,7 @@ from vizro_ai._llm_models import _get_llm_model, _get_model_name
 from vizro_ai.dashboard._graph.dashboard_creation import _create_and_compile_graph
 from vizro_ai.dashboard._pydantic_output import _get_pydantic_model  # TODO: make general, ie remove from dashboard
 from vizro_ai.dashboard.utils import DashboardOutputs, _extract_overall_imports_and_code, _register_data
-from vizro_ai.plot._response_models import ChartPlanFactory, ChartPlan
+from vizro_ai.plot._response_models import ChartPlan, ChartPlanFactory
 from vizro_ai.utils.helper import _get_df_info
 
 logger = logging.getLogger(__name__)
@@ -83,7 +83,7 @@ class VizroAI:
 
         """
         response_model = ChartPlanFactory(data_frame=df) if validate_code else ChartPlan
-        _,df_sample = _get_df_info(df,n_sample=10)
+        _, df_sample = _get_df_info(df, n_sample=10)
         response = _get_pydantic_model(
             query=user_input,
             llm_model=self.model,

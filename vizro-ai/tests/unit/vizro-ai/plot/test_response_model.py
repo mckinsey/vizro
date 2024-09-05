@@ -1,7 +1,7 @@
 import plotly.express as ppx
 import pytest
 import vizro.plotly.express as px
-from vizro_ai.plot._response_models import ChartPlanFactory, ChartPlan
+from vizro_ai.plot._response_models import ChartPlan, ChartPlanFactory
 
 df = px.data.iris()
 
