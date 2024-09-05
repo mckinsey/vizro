@@ -10,7 +10,7 @@ Second we show how to use this more comprehensive output, allowing the control o
 ## Inputs of `vizro_ai.plot`
 
 ### `user_input`
-This is the natural language query from which, together with a data sample, the LLM creates a plotly chart. The complexity of charts possible is dependent [on the different vendor model capabilities](customize-vizro-ai.md#what-model-to-choose). It is also [possible to use different languages](use-different-languages.md).
+This is the natural language query from which, together with a data sample, the LLM creates a plotly chart. For the query, you can [use English or a different language](use-different-languages.md). The complexity of the resulting chart [depends on the vendor model capabilities](customize-vizro-ai.md#what-model-to-choose). 
 
 
 ### `df`
