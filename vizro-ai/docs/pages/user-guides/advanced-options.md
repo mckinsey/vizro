@@ -153,7 +153,7 @@ This fig object is a basic plotly figure.
     [VizroAIChartPlotly]: ../../assets/user_guides/VizroAIPlotly.png
 
 #### Using different data
-You may want create the fig object with different data. Note that of course the overall schema should still be adhered to (or else the chart might fail), but for example certain rows can be filtered out. You can re-evaluate this function to produce various fig object for different data.
+You may want create the fig object with different data. You should still follow the overall schema (or else the chart might fail) but, for example certain rows can be filtered out. You can re-evaluate this function to produce fig objects for different data.
 
 !!! example "Different data"
 
