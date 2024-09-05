@@ -8,7 +8,7 @@ nav:
   - How-to guides:
       - FUNDAMENTALS:
           - Install Vizro-AI: pages/user-guides/install.md
-          - Model set-up: pages/user-guides/customize-vizro-ai.md
+          - Model setup: pages/user-guides/customize-vizro-ai.md
           - Different languages: pages/user-guides/use-different-languages.md
       - CHARTS:
           - Run vizro_ai.plot: pages/user-guides/run-vizro-ai.md
