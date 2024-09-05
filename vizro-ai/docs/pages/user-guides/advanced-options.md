@@ -180,7 +180,7 @@ You may want create the fig object with different data. You should still follow 
         ```
 
 #### Changing the chart name
-This option will execute the chart code with the name provided under `chart_name`. This can be important when try to avoid overwriting variables in the namespace.
+This option executes the chart code with the name provided under `chart_name`. This can be important when you want to avoid overwriting variables in the namespace.
 
 
 !!! example "Changing the `chart_name`"
