@@ -71,25 +71,9 @@ def create_template_light() -> Template:
 
     # CHART TYPES
     template_light.data.bar = [
-        go.Bar(marker={"line": {"color": template_light["layout"]["paper_bgcolor"], "width": 1}})
-    ]
-
-    template_light.data.table = [
-        go.Table(
-            header={
-                "fill_color": COLORS["Light_BG01"],
-                "line_color": COLORS["BLACK_12"],
-                "height": 32,
-                "font": {"color": COLORS["BLACK_85"], "size": 14},
-                "align": "left",
-            },
-            cells={
-                "line_color": COLORS["BLACK_12"],
-                "fill_color": COLORS["Light_BG01"],
-                "height": 32,
-                "font": {"color": COLORS["BLACK_55"], "size": 14},
-                "align": "left",
-            },
+        go.Bar(
+            # This hides the border lines in a bar chart created from unaggregated data.
+            marker={"line": {"color": template_light["layout"]["paper_bgcolor"]}},
         )
     ]
 
