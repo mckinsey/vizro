@@ -88,7 +88,7 @@ plot_page = MyPage(
         ),
         vm.Container(
             title="",
-            layout=vm.Layout(grid=[[2, 3, -1, -1, -1, 1, 1, 0, 0]], row_gap="0px", col_gap="4px"),
+            layout=vm.Layout(grid=[[2, -1, -1, -1, -1, 1, 1, 0, 0]], row_gap="0px", col_gap="4px"),
             components=[
                 vm.Button(
                     id="trigger-button-id",
@@ -111,7 +111,7 @@ plot_page = MyPage(
                 ),
                 MyDropdown(options=SUPPORTED_MODELS, value="gpt-4o-mini", multi=False, id="model-dropdown-id"),
                 OffCanvas(id="settings", options=["OpenAI"], value="OpenAI"),
-                Modal(id="modal"),
+                # Modal(id="modal"),
             ],
         ),
         Icon(id="open-settings-id"),
