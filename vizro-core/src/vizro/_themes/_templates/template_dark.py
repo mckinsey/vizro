@@ -39,6 +39,7 @@ def create_template_dark() -> Template:
     template_dark["layout"]["ternary"]["caxis"]["gridcolor"] = COLORS["WHITE_12"]
     template_dark["layout"]["ternary"]["caxis"]["linecolor"] = COLORS["WHITE_30"]
     template_dark["layout"]["mapbox"]["style"] = "carto-darkmatter"
+    template_dark["layout"]["map"]["style"] = "carto-darkmatter"
     template_dark["layout"]["coloraxis"]["colorbar"]["tickcolor"] = COLORS["WHITE_30"]
     template_dark["layout"]["coloraxis"]["colorbar"]["tickfont"]["color"] = COLORS["WHITE_55"]
     template_dark["layout"]["coloraxis"]["colorbar"]["title"]["font"]["color"] = COLORS["WHITE_55"]
@@ -73,27 +74,8 @@ def create_template_dark() -> Template:
     # CHART TYPES
     template_dark.data.bar = [
         go.Bar(
-            marker={"line": {"color": template_dark["layout"]["paper_bgcolor"], "width": 1}},
-            textfont={"color": COLORS["WHITE_55"]},
-        )
-    ]
-
-    template_dark.data.table = [
-        go.Table(
-            header={
-                "fill_color": COLORS["DARK_BG03"],
-                "line_color": COLORS["WHITE_12"],
-                "height": 32,
-                "font": {"color": COLORS["WHITE_85"], "size": 14},
-                "align": "left",
-            },
-            cells={
-                "line_color": COLORS["WHITE_12"],
-                "fill_color": COLORS["DARK_BG03"],
-                "height": 32,
-                "font": {"color": COLORS["WHITE_55"], "size": 14},
-                "align": "left",
-            },
+            # This hides the border lines in a bar chart created from unaggregated data.
+            marker={"line": {"color": template_dark["layout"]["paper_bgcolor"]}},
         )
     ]
 

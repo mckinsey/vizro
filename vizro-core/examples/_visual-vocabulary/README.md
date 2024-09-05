@@ -34,7 +34,7 @@ The dashboard is still in development. Below is an overview of the chart types f
 | Beeswarm              | ❌     | Distribution             |
 | Boxplot               | ✅     | Distribution             |
 | Bubble                | ✅     | Correlation              |
-| Bubble map            | ❌     | Spatial                  |
+| Bubble map            | ✅     | Spatial                  |
 | Bubble timeline       | ❌     | Time                     |
 | Bullet                | ❌     | Magnitude                |
 | Bump                  | ❌     | Ranking                  |
@@ -48,7 +48,7 @@ The dashboard is still in development. Below is an overview of the chart types f
 | Diverging bar         | ❌     | Deviation                |
 | Diverging stacked bar | ❌     | Deviation                |
 | Donut                 | ✅     | Part-to-whole            |
-| Dot map               | ❌     | Spatial                  |
+| Dot map               | ✅     | Spatial                  |
 | Dot plot              | ❌     | Distribution             |
 | Fan                   | ❌     | Time                     |
 | Flow map              | ❌     | Spatial                  |

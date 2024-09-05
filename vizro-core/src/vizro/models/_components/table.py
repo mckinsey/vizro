@@ -26,7 +26,12 @@ class Table(VizroBaseModel):
     Args:
         type (Literal["table"]): Defaults to `"table"`.
         figure (CapturedCallable): Function that returns a Dash DataTable. See [`vizro.tables`][vizro.tables].
-        title (str): Title of the table. Defaults to `""`.
+        title (str): Title of the `Table`. Defaults to `""`.
+        header (str): Markdown text positioned below the `Table.title`. Follows the CommonMark specification.
+            Ideal for adding supplementary information such as subtitles, descriptions, or additional context.
+            Defaults to `""`.
+        footer (str): Markdown text positioned below the `Table`. Follows the CommonMark specification.
+            Ideal for providing further details such as sources, disclaimers, or additional notes. Defaults to `""`.
         actions (List[Action]): See [`Action`][vizro.models.Action]. Defaults to `[]`.
 
     """
@@ -35,7 +40,17 @@ class Table(VizroBaseModel):
     figure: CapturedCallable = Field(
         ..., import_path="vizro.tables", mode="table", description="Function that returns a `Dash DataTable`."
     )
-    title: str = Field("", description="Title of the table")
+    title: str = Field("", description="Title of the `Table`")
+    header: str = Field(
+        "",
+        description="Markdown text positioned below the `Table.title`. Follows the CommonMark specification. Ideal for "
+        "adding supplementary information such as subtitles, descriptions, or additional context.",
+    )
+    footer: str = Field(
+        "",
+        description="Markdown text positioned below the `Table`. Follows the CommonMark specification. Ideal for "
+        "providing further details such as sources, disclaimers, or additional notes.",
+    )
     actions: List[Action] = []
 
     _input_component_id: str = PrivateAttr()
@@ -103,16 +118,22 @@ class Table(VizroBaseModel):
 
     def build(self):
         return dcc.Loading(
-            children=[
-                html.H3(self.title) if self.title else None,
-                # Refer to the vm.AgGrid build method for details on why we return the
-                # html.Div(id=self._input_component_id) instead of actual figure object with the original data_frame.
-                html.Div(
-                    id=self.id,
-                    children=[html.Div(id=self._input_component_id)],
-                    className="table-container",
-                ),
-            ],
+            children=html.Div(
+                children=[
+                    html.H3(self.title, className="figure-title") if self.title else None,
+                    dcc.Markdown(self.header, className="figure-header") if self.header else None,
+                    # Refer to the vm.AgGrid build method for details on why we return the
+                    # html.Div(id=self._input_component_id) instead of actual figure object
+                    # with the original data_frame.
+                    html.Div(
+                        id=self.id,
+                        children=[html.Div(id=self._input_component_id)],
+                        className="table-container",
+                    ),
+                    dcc.Markdown(self.footer, className="figure-footer") if self.footer else None,
+                ],
+                className="figure-container",
+            ),
             color="grey",
             parent_className="loading-container",
             overlay_style={"visibility": "visible", "opacity": 0.3},
