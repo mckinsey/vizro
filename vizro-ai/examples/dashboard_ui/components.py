@@ -113,6 +113,34 @@ class MyDropdown(vm.Dropdown):
         return dropdown_build_obj
 
 
+class Modal(vm.VizroBaseModel):
+    """Modal to convey warning message"""
+    
+    type: Literal["modal"] = "modal"
+    
+    def build(self):
+        """Returns the modal component."""
+        return dbc.Modal(
+            # id=self.id,
+            children=[
+                dbc.ModalHeader(children=dcc.Markdown("""# Warning""")),
+                dbc.ModalBody(children=dcc.Markdown("""### Do NOT upload any sensitive or personally identifying data.
+
+#### Reasoning:
+This space is hosted publicly running one server in a single container. Further this UI executes dynamically created code on the server. It thus
+cannot guarantee the security of your data. In addition it sends the user query and the data to the chosen LLM vendor API. This is not an exhaustive list.
+
+#### Alternatives:
+If sending your query and data to a LLM is acceptable, you can pull and run this image locally. This will avoid sharing
+an instance with others. You can do so by clicking the three dots in the top right of the HuggingFace banner und click `Run with Docker`.
+
+In any case, please remain cautious and understand the responsibilities of sharing data.
+""")),
+            ],
+            size="l",
+            is_open=True,
+        )
+
 class OffCanvas(vm.VizroBaseModel):
     """OffCanvas component for settings."""
 
