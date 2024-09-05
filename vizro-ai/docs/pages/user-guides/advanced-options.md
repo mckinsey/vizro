@@ -130,7 +130,7 @@ This fig object is in the standard `vizro_dark` theme, and can [be inserted into
     [VizroAIChartVizro]: ../../assets/user_guides/VizroAIVizro.png
 
 #### Pure Plotly/Dash
-This fig object is a plain vanilla plotly figure.
+This fig object is a basic plotly figure.
 
 !!! example "Plotly fig object"
 
