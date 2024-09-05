@@ -27,9 +27,9 @@ This number determines how often the tool will try to correct an incorrect respo
 ### `return_elements`
 This boolean (by default `False`) determines the return type of `VizroAI.plot`.
 
-If set to `False`, then dynamically generated Python code is executed to produce a `plotly.graph_objects.Figure` object from the LLM response and the user provided data frame. Strictly speaking, it produces a `vizro.charts._charts_utils._DashboardReadyFigure`, which behaves essentially like a plotly graph object, but is ready to be [inserted](add-generated-chart-usecase.md) into a [Vizro](https://vizro.readthedocs.io/en/stable/) dashboard. It also comes with the default Vizro dark theme.
+If set to `False`, then dynamically generated Python code is executed to produce a `plotly.graph_objects.Figure` object from the LLM response and the user provided data frame. Strictly speaking, it produces a `vizro.charts._charts_utils._DashboardReadyFigure`, which behaves essentially like the former, but is ready to be [inserted](add-generated-chart-usecase.md) into a [Vizro](https://vizro.readthedocs.io/en/stable/) dashboard. It also comes with the default Vizro dark theme.
 
-If set to `True`, a pydantic model is returned from which the `fig` object, but also various other outputs can be generated. (see below)
+If set to `True`, a class (pydantic model) is returned from which the `fig` object, but also various other outputs can be generated. (see below)
 
 ### `validate_code`
 This boolean (by default `True`) determines whether the LLM generated Python code executes with a sample of the data in order to verify that it runs and produces a plotly figure. Be sure [to read and understand what it means when dynamically generated code is executed](../explanation/safety-in-vizro-ai.md#execution-of-dynamic-code-in-vizro-ai).
@@ -38,7 +38,7 @@ If `return_elements=True` AND `validate_code=False`, then NO code is executed to
 
 ## Output if `return_elements=True`
 
-If `return_elements=True`, then instead of a `fig` object, a pydantic class is returned, which enables the following options:
+If `return_elements=True`, then instead of a `fig` object, a class is returned, which enables the following options:
 
 ### Obtain `vizro` code string
 You can obtain the code string that would produce the answer to the user query as a Vizro dashboard ready figure as follows. The name for the function will be `custom_chart`:
