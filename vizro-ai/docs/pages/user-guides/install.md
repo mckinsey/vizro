@@ -117,7 +117,7 @@ The documentation provides step-by-step instructions for setting up the API key 
 variable, on operating systems including Windows and MacOS.
 
 !!!note
-    Sometimes setting up the `.env` file can be fiddly. If there is continued struggle, remember that one can always provide the API key directly to the instantiated model. See [our user guide](./customize-vizro-ai.md#setting-model-via-class-for-additional-configuration) for this option. Remember to still not commit this API key to any public space!
+    Sometimes setting up the `.env` file can be fiddly. If necessary, you can provide the API key directly to the instantiated model. See [our user guide](./customize-vizro-ai.md#setting-model-via-class-for-additional-configuration) for this option. Remember not to commit this API key to any public space!
 
 __Set the base URL (optional)__
 
