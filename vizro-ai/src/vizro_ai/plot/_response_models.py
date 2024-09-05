@@ -80,7 +80,7 @@ class ChartPlanStatic(BaseModel):
     code_explanation: str = Field(
         ...,
         description="""
-        Explanation of the code steps used for `chart_code` field. Ideally a concise bulleted step-by-step list.""",
+        Explanation of the code steps used for `chart_code` field.""",
     )
 
     _additional_vizro_imports: List[str] = PrivateAttr(ADDITIONAL_IMPORTS)

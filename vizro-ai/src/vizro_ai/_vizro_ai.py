@@ -11,7 +11,7 @@ from langchain_core.messages import HumanMessage
 from vizro_ai._llm_models import _get_llm_model, _get_model_name
 from vizro_ai.dashboard._graph.dashboard_creation import _create_and_compile_graph
 from vizro_ai.dashboard._pydantic_output import _get_pydantic_model  # TODO: make general, ie remove from dashboard
-from vizro_ai.dashboard.utils import DashboardOutputs, _extract_custom_functions_and_imports, _register_data
+from vizro_ai.dashboard.utils import DashboardOutputs, _extract_overall_imports_and_code, _register_data
 from vizro_ai.plot._response_models import ChartPlanDynamicFactory, ChartPlanStatic
 
 logger = logging.getLogger(__name__)
@@ -123,6 +123,7 @@ class VizroAI:
                 "dashboard": None,
                 "messages": [HumanMessage(content=user_input)],
                 "custom_charts_code": [],
+                "custom_charts_imports": [],
             },
             config=config,
         )
@@ -130,7 +131,9 @@ class VizroAI:
         _register_data(all_df_metadata=message_res["all_df_metadata"])
 
         if return_elements:
-            chart_code, imports = _extract_custom_functions_and_imports(message_res["custom_charts_code"])
+            chart_code, imports = _extract_overall_imports_and_code(
+                message_res["custom_charts_code"], message_res["custom_charts_imports"]
+            )
             code = dashboard._to_python(extra_callable_defs=chart_code, extra_imports=imports)
             dashboard_output = DashboardOutputs(dashboard=dashboard, code=code)
             return dashboard_output

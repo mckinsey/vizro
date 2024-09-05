@@ -76,7 +76,8 @@ class ComponentPlan(BaseModel):
                             chart_name=self.component_id, data_frame=all_df_metadata.get_df(self.df_name), vizro=True
                         ),
                     ),
-                    code=result.code_vizro,
+                    imports=result._get_imports(vizro=True),
+                    code=result._get_chart_code(chart_name=self.component_id, vizro=True),
                 )
             elif self.component_type == "AgGrid":
                 return ComponentResult(
