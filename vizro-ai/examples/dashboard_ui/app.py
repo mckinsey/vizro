@@ -11,12 +11,12 @@ from components import (
     CodeClipboard,
     CustomDashboard,
     Icon,
+    Modal,
     MyDropdown,
     MyPage,
     OffCanvas,
     UserPromptTextArea,
     UserUpload,
-    Modal
 )
 from dash import Input, Output, State, callback, get_asset_url, html
 from dash.exceptions import PreventUpdate

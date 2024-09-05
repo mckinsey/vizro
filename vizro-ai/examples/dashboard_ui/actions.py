@@ -14,7 +14,7 @@ from vizro.models.types import capture
 from vizro_ai import VizroAI
 
 logger = logging.getLogger(__name__)
-logger.setLevel(logging.INFO) #TODO: remove manual setting and make centrally controlled
+logger.setLevel(logging.INFO)  # TODO: remove manual setting and make centrally controlled
 
 SUPPORTED_VENDORS = {"OpenAI": ChatOpenAI}
 
