@@ -136,7 +136,7 @@ cannot guarantee the security of your data. In addition it sends the user query 
 If sending your query and data to a LLM is acceptable, you can pull and run this image locally. This will avoid sharing
 an instance with others. You can do so by clicking the three dots in the top right of the HuggingFace banner and click `Run with Docker`.
 
-In any case, please remain cautious and understand the responsibilities of sharing data.
+Always exercise caution when sharing data online and understand your responsibilities regarding data privacy and security.```
 """
                     )
                 ),
