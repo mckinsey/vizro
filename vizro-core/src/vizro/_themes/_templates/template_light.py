@@ -69,6 +69,13 @@ def create_template_light() -> Template:
     }
 
     # CHART TYPES
+    template_light.data.bar = [
+        go.Bar(
+            # This hides the border lines in a bar chart created from unaggregated data.
+            marker={"line": {"color": template_light["layout"]["paper_bgcolor"]}},
+        )
+    ]
+
     template_light.data.waterfall = [
         go.Waterfall(
             decreasing={"marker": {"color": COLORS["DISCRETE_10"][1]}},
