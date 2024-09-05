@@ -32,7 +32,7 @@ If set to `False`, then dynamically generated Python code is executed to produce
 If set to `True`, a pydantic model is returned from which the fig object, but also various other outputs can be generated. (see below)
 
 ### `validate_code`
-This boolean (by default `True`) determines whether the LLM generated Python code will be executed with a sample of the data in order to verify that it runs and produces a plotly figure. Be sure [to read and understand what it means when dynamically generated code is executed](../explanation/safety-in-vizro-ai.md#execution-of-dynamic-code-in-vizro-ai).
+This boolean (by default `True`) determines whether the LLM generated Python code executes with a sample of the data in order to verify that it runs and produces a plotly figure. Be sure [to read and understand what it means when dynamically generated code is executed](../explanation/safety-in-vizro-ai.md#execution-of-dynamic-code-in-vizro-ai).
 <!-- vale on -->
 If `return_elements=True` AND `validate_code=False`, then NO code is executed to obtain the return of `vizro_ai.plot`. This means that the code string obtained is not validated, but also that no code was executed.
 
