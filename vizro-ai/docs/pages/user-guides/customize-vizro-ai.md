@@ -34,6 +34,8 @@ vizro_ai = VizroAI(model="<chosen model>")
 
 === "Anthropic"
 
+    _Currently works only for `VizroAI.plot` - we are working on making it available for `VizroAI.dashboard`_
+
     | Env variable      | Name(s)                                   |
     | -----------       | ------------------------------------      |
     | API key           | `ANTHROPIC_API_KEY`                       |
@@ -47,6 +49,8 @@ vizro_ai = VizroAI(model="<chosen model>")
     - `claude-3-haiku-20240307`
 
 === "MistralAI"
+
+     _Currently works only for `VizroAI.plot` - we are working on making it available for `VizroAI.dashboard`_
 
     | Env variable      | Name(s)                                   |
     | -----------       | ------------------------------------      |
