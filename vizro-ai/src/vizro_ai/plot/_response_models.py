@@ -6,7 +6,7 @@ except ImportError:  # pragma: no cov
     from pydantic import BaseModel, Field, PrivateAttr, create_model, validator
 import logging
 import subprocess
-from typing import List, Optional
+from typing import List, Optional, Union
 
 import pandas as pd
 import plotly.express as px
@@ -46,7 +46,7 @@ def _exec_code(code: str):
     return ldict
 
 
-class ChartPlanStatic(BaseModel):
+class ChartPlan(BaseModel):
     """Chart plan model."""
 
     chart_type: str = Field(
@@ -81,7 +81,7 @@ class ChartPlanStatic(BaseModel):
     code_explanation: str = Field(
         ...,
         description="""
-        Explanation of the code steps used for `chart_code` field. Ideally a concise bulleted step-by-step list.""",
+        Explanation of the code steps used for `chart_code` field.""",
     )
 
     _additional_vizro_imports: List[str] = PrivateAttr(ADDITIONAL_IMPORTS)
@@ -130,11 +130,11 @@ and it should be the first argument of the chart."""
 
         return unformatted_code
 
-    def get_fig_object(self, data_frame: pd.DataFrame, chart_name: Optional[str] = None, vizro=True):
+    def get_fig_object(self, data_frame: Union[pd.DataFrame, str], chart_name: Optional[str] = None, vizro=True):
         """Execute code to obtain the plotly go.Figure object. Be sure to check code to be executed before running.
 
         Args:
-            data_frame: Data frame to be used in the chart.
+            data_frame: Dataframe or string representation of the dataframe.
             chart_name: Name of the chart function. Defaults to `None`,
                 in which case it remains as `custom_chart`.
             vizro: Whether to add decorator to make it `vizro-core` compatible. Defaults to `True`.
@@ -156,8 +156,8 @@ and it should be the first argument of the chart."""
         return self._get_complete_code(vizro=True)
 
 
-class ChartPlanDynamicFactory:
-    def __new__(cls, data_frame: pd.DataFrame) -> ChartPlanStatic:  # TODO: change to ChartPlanDynamic
+class ChartPlanFactory:
+    def __new__(cls, data_frame: pd.DataFrame) -> ChartPlan:  # TODO: change to ChartPlanDynamic
         def _test_execute_chart_code(v):
             """Test the execution of the chart code."""
             try:
@@ -184,7 +184,7 @@ class ChartPlanDynamicFactory:
             __validators__={
                 "validator1": validator("chart_code", allow_reuse=True)(_test_execute_chart_code),
             },
-            __base__=ChartPlanStatic,
+            __base__=ChartPlan,
         )
 
 

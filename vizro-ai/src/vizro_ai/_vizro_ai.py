@@ -11,8 +11,8 @@ from langchain_core.messages import HumanMessage
 from vizro_ai._llm_models import _get_llm_model, _get_model_name
 from vizro_ai.dashboard._graph.dashboard_creation import _create_and_compile_graph
 from vizro_ai.dashboard._pydantic_output import _get_pydantic_model  # TODO: make general, ie remove from dashboard
-from vizro_ai.dashboard.utils import DashboardOutputs, _extract_custom_functions_and_imports, _register_data
-from vizro_ai.plot._response_models import ChartPlanDynamicFactory, ChartPlanStatic
+from vizro_ai.dashboard.utils import DashboardOutputs, _extract_overall_imports_and_code, _register_data
+from vizro_ai.plot._response_models import ChartPlan, ChartPlanFactory
 from vizro_ai.utils.helper import _get_df_info
 
 logger = logging.getLogger(__name__)
@@ -67,7 +67,7 @@ class VizroAI:
         max_debug_retry: int = 1,
         return_elements: bool = False,
         validate_code: bool = True,
-    ) -> Union[go.Figure, ChartPlanStatic]:
+    ) -> Union[go.Figure, ChartPlan]:
         """Plot visuals using vizro via english descriptions, english to chart translation.
 
         Args:
@@ -82,8 +82,8 @@ class VizroAI:
             go.Figure or ChartPlanStatic pydantic model
 
         """
-        response_model = ChartPlanDynamicFactory(data_frame=df) if validate_code else ChartPlanStatic
-        _, df_sample = _get_df_info(df=df)
+        response_model = ChartPlanFactory(data_frame=df) if validate_code else ChartPlan
+        _, df_sample = _get_df_info(df, n_sample=10)
         response = _get_pydantic_model(
             query=user_input,
             llm_model=self.model,
@@ -125,6 +125,7 @@ class VizroAI:
                 "dashboard": None,
                 "messages": [HumanMessage(content=user_input)],
                 "custom_charts_code": [],
+                "custom_charts_imports": [],
             },
             config=config,
         )
@@ -132,7 +133,9 @@ class VizroAI:
         _register_data(all_df_metadata=message_res["all_df_metadata"])
 
         if return_elements:
-            chart_code, imports = _extract_custom_functions_and_imports(message_res["custom_charts_code"])
+            chart_code, imports = _extract_overall_imports_and_code(
+                message_res["custom_charts_code"], message_res["custom_charts_imports"]
+            )
             code = dashboard._to_python(extra_callable_defs=chart_code, extra_imports=imports)
             dashboard_output = DashboardOutputs(dashboard=dashboard, code=code)
             return dashboard_output

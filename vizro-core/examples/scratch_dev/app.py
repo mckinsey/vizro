@@ -1,31 +1,36 @@
 """Dev app to try things out."""
 
+import pandas as pd
 import vizro.models as vm
 import vizro.plotly.express as px
 from vizro import Vizro
+from vizro.models.types import capture
+
+animals = pd.DataFrame(
+    {"animals": ["giraffes", "orangutans", "monkeys"], "value": [20, 14, 23], "color": ["Male", "Female", "Female"]}
+)
 
 iris = px.data.iris()
+
+
+@capture("graph")
+def bar(data_frame):
+    """LA LA LA LA."""
+    fig = px.bar(data_frame, x="sepal_length", y="sepal_width", color="species")
+    return fig
+
+
+@capture("graph")
+def px_bar(data_frame):
+    """LA LA LA LA."""
+    fig = px.bar(data_frame, x="animals", y="value", color="color")
+    return fig
+
 
 page = vm.Page(
     title="My first page",
     components=[
-        vm.Graph(
-            id="scatter_chart",
-            figure=px.scatter(iris, title="My scatter chart", x="sepal_length", y="petal_width", color="species"),
-        ),
-    ],
-    controls=[
-        vm.Parameter(
-            targets=["scatter_chart.title"],
-            selector=vm.Dropdown(
-                options=[
-                    {"value": "Shipping Address State", "label": "State"},
-                    {"value": "Category", "label": "Category"},
-                    {"value": "Short_Title", "label": "Product item"},
-                ],
-                multi=False,
-            ),
-        ),
+        vm.Graph(figure=bar(iris)),
     ],
 )
 
