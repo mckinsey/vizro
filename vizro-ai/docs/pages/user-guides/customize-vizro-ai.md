@@ -96,7 +96,7 @@ Passing an instantiated model to `VizroAI` lets you customize it, and additional
 
 ### Chart generation
 
-At the time of writing, we found that for chart creation, some of the leading vendor's "cheaper" models, for example OpenAI's `gpt-4o-mini` and `gpt-3.5` model series, have lower price points and faster speeds, and are sufficient for basic charting.
+At the time of writing, we found that for chart creation, some of the leading vendor's "cheaper" models, for example OpenAI's `gpt-4o-mini` and `gpt-3.5` model series, are suitable for basic charting despite their relatively low price points.
 
 Consider upgrading to, in the case of OpenAI the `gpt-4o` and `gpt-4` model series, or in the case of Anthropic the `claude-3-5-sonnet-20240620` model series, for more demanding tasks. The downside of using these models is that they come at a higher cost.
 
