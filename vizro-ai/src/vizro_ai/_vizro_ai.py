@@ -86,7 +86,7 @@ class VizroAI:
             query=user_input,
             llm_model=self.model,
             response_model=response_model,
-            df_info=df,
+            df_info=df.sample(20),
             max_retry=max_debug_retry,
         )
         if return_elements:

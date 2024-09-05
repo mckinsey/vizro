@@ -528,3 +528,9 @@ an example of a styled table where some conditional formatting is applied. There
     [Table2]: ../../assets/user_guides/table/styled_table.png
 
 If the available arguments are not sufficient, there is always the option to create a [custom Dash DataTable](custom-tables.md).
+
+
+## Add title, header, footer
+
+To enhance your `Table` or `AgGrid` with a title, header, or footer to provide additional context or
+descriptions, refer to our detailed user guide on [title, header, and footer](title-header-footer.md).

@@ -6,7 +6,7 @@ except ImportError:  # pragma: no cov
     from pydantic import BaseModel, Field, PrivateAttr, create_model, validator
 import logging
 import subprocess
-from typing import List, Optional
+from typing import List, Optional, Union
 
 import pandas as pd
 import plotly.express as px
@@ -129,11 +129,11 @@ and it should be the first argument of the chart."""
 
         return unformatted_code
 
-    def get_fig_object(self, data_frame: pd.DataFrame, chart_name: Optional[str] = None, vizro=True):
+    def get_fig_object(self, data_frame: Union[pd.DataFrame, str], chart_name: Optional[str] = None, vizro=True):
         """Execute code to obtain the plotly go.Figure object. Be sure to check code to be executed before running.
 
         Args:
-            data_frame: Data frame to be used in the chart.
+            data_frame: Dataframe or string representation of the dataframe.
             chart_name: Name of the chart function. Defaults to `None`,
                 in which case it remains as `custom_chart`.
             vizro: Whether to add decorator to make it `vizro-core` compatible. Defaults to `True`.

@@ -28,7 +28,7 @@ The following examples can be used as a base to build more sophisticated figures
 ## Examples of custom figures
 
 ### Custom KPI card
-If you wish to change the design or content of our existing KPI (key performance indicator) cards from
+To change the design or content of our existing KPI (key performance indicator) cards from
 [`vizro.figures`](../API-reference/figure-callables.md), you can do so by following the steps described above.
 
 For instance, to make a KPI card with the icon positioned on the right side of the title instead of the left,
