@@ -3,7 +3,7 @@
 This guide shows how to set up a large language model (LLM) for use with Vizro-AI. Setting up a LLM is required for the package to generate charts and dashboards based on natural language queries.
 
 ## Supported models
-Vizro-AI supports **any** model that is available via [Langchains `BaseChatModel` class](https://api.python.langchain.com/en/latest/language_models/langchain_core.language_models.chat_models.BaseChatModel.html#langchain_core.language_models.chat_models.BaseChatModel), and that has the `with_structured_output` method implemented. An overview of the [most common vendor models supporting this functionality](https://python.langchain.com/v0.2/docs/integrations/chat/) can be found in Langchains documentation. For ease of use one can also choose some models via a string parameter.
+Vizro-AI supports **any** model that is available via [Langchain's `BaseChatModel` class](https://api.python.langchain.com/en/latest/language_models/langchain_core.language_models.chat_models.BaseChatModel.html#langchain_core.language_models.chat_models.BaseChatModel), and that has the [`with_structured_output` method](https://python.langchain.com/v0.2/docs/how_to/structured_output/#the-with_structured_output-method) implemented. An overview of the [most common vendor models supporting this functionality](https://python.langchain.com/v0.2/docs/integrations/chat/) can be found in Langchain's documentation. For ease of use one can also choose some models via a string parameter.
 
 
 ### Setting model via string for ease of use
@@ -26,11 +26,11 @@ vizro_ai = VizroAI(model="<chosen model>")
 
     To use OpenAI with Vizro-AI, you must have an account with paid-for credits available. None of the free accounts will suffice. You can check [all available OpenAI models including pricing on their website](https://platform.openai.com/docs/models). This will also explain which version the below string acronyms currently point to.
 
-    - gpt-3.5-turbo
-    - gpt-4-turbo
-    - gpt-4o
-    - gpt-4
-    - gpt-4o-mini `default`
+    - `gpt-4o-mini` **default**
+    - `gpt-4-turbo`
+    - `gpt-4o`
+    - `gpt-4`
+    - `gpt-3.5-turbo`
 
 === "Anthropic"
 
@@ -41,10 +41,10 @@ vizro_ai = VizroAI(model="<chosen model>")
 
     To use Anthropic with Vizro-AI, you must have an account with paid-for credits available. None of the free accounts will suffice. You can check [all available Anthropic models including pricing on their website](https://docs.anthropic.com/en/docs/about-claude/models).
 
-    - claude-3-5-sonnet-20240620
-    - claude-3-opus-20240229
-    - claude-3-sonnet-20240229
-    - claude-3-haiku-20240307
+    - `claude-3-5-sonnet-20240620`
+    - `claude-3-opus-20240229`
+    - `claude-3-sonnet-20240229`
+    - `claude-3-haiku-20240307`
 
 === "MistralAI"
 
@@ -55,9 +55,9 @@ vizro_ai = VizroAI(model="<chosen model>")
 
     To use Mistral with Vizro-AI, you can either use their API, which comes with [an associated cost](https://mistral.ai/technology/#pricing), or you could use their models for free under the Apache 2.0 license. In that case you need to setup the model API yourself. You can check [all available Mistral models including pricing on their website](https://docs.mistral.ai/getting-started/models/). This will also explain which version the below string acronyms currently point to.
 
-    - mistral-large-latest
-    - open-mistral-nemo
-    - codestral-latest
+    - `mistral-large-latest`
+    - `open-mistral-nemo`
+    - `codestral-latest`
 
     At the time of writing, we found that even the best Mistral models struggled to produce more than the simplest charts, but these outcomes can change drastically overtime.
 
@@ -65,7 +65,7 @@ vizro_ai = VizroAI(model="<chosen model>")
     When choosing the string representation, it sometimes can be tricky to have the correct environment variable set for the API key (and potential base URL). In case you cannot get this to work, we recommend instantiating the model directly (see below) and providing the API key via the models parameters.
 
 ### Setting model via class for additional configuration
-Beyond passing a string, you can pass **any** model derived from [Langchains `BaseChatModel` class](https://api.python.langchain.com/en/latest/language_models/langchain_core.language_models.chat_models.BaseChatModel.html#langchain_core.language_models.chat_models.BaseChatModel) that has the `with_structured_output` method implemented. An overview of the [most common vendor models supporting this functionality](https://python.langchain.com/v0.2/docs/integrations/chat/) can be found in Langchains documentation.
+Beyond passing a string, you can pass **any** model derived from [Langchain's `BaseChatModel` class](https://api.python.langchain.com/en/latest/language_models/langchain_core.language_models.chat_models.BaseChatModel.html#langchain_core.language_models.chat_models.BaseChatModel) that has the [`with_structured_output` method](https://python.langchain.com/v0.2/docs/how_to/structured_output/#the-with_structured_output-method) implemented. An overview of the [most common vendor models supporting this functionality](https://python.langchain.com/v0.2/docs/integrations/chat/) can be found in Langchain's documentation.
 
 When choosing this approach, you can customize your model beyond the chosen default from the string instantiation. The choice of available arguments depends on the specific vendor implementation, but usually the main parameter to tweak is the temperature.
 
@@ -102,4 +102,4 @@ Consider upgrading to, in the case of OpenAI the `gpt-4o` and `gpt-4` model seri
 
 ### Dashboard generation
 
-At the time of writing we find that cheaper model series only allow for basic dashboards. For a reasonably complex dashboard we recommend the flagship models of the leading vendors, for example `gpt-4o` or `claude-3-5-sonnet-20240620`.
+At the time of writing we find that cheaper models only allow for basic dashboards. For a reasonably complex dashboard we recommend the flagship models of the leading vendors, for example `gpt-4o` or `claude-3-5-sonnet-20240620`.

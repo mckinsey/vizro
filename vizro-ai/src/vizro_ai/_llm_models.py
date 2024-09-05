@@ -1,4 +1,3 @@
-import os
 from contextlib import suppress
 from typing import Dict, Optional, Union
 

@@ -30,7 +30,7 @@ You should create a virtual environment for each Vizro-AI project you work on to
     conda activate vizroai-environment
     ```
 
-## Install Vizro
+## Install Vizro-AI
 
 To install Vizro-AI, use [`pip`](https://pip.pypa.io/en/stable/) in your terminal window:
 
@@ -60,7 +60,7 @@ You should see a return output of the form `x.y.z`.
 
 ## Set up access to a large language model
 
-Vizro-AI supports **any** model that is available via [Langchains `BaseChatModel` class](https://api.python.langchain.com/en/latest/language_models/langchain_core.language_models.chat_models.BaseChatModel.html#langchain_core.language_models.chat_models.BaseChatModel), and that has the `with_structured_output` method implemented. An overview of the [most common vendor models supporting this functionality](https://python.langchain.com/v0.2/docs/integrations/chat/) can be found in Langchains documentation.
+Vizro-AI supports **any** model that is available via [Langchain's `BaseChatModel` class](https://api.python.langchain.com/en/latest/language_models/langchain_core.language_models.chat_models.BaseChatModel.html#langchain_core.language_models.chat_models.BaseChatModel), and that has the [`with_structured_output` method](https://python.langchain.com/v0.2/docs/how_to/structured_output/#the-with_structured_output-method) implemented. An overview of the [most common vendor models supporting this functionality](https://python.langchain.com/v0.2/docs/integrations/chat/) can be found in Langchain's documentation.
 
 
 ### Set up access to OpenAI (as an example for any vendor)

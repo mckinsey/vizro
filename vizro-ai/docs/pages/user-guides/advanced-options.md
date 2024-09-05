@@ -1,4 +1,4 @@
-# How to use Vizro-AIs advanced options
+# How to use Vizro-AI's advanced options
 
 This guide shows you how to use the advanced options of `VizroAI.plot`.
 
@@ -10,7 +10,7 @@ Second we show how to use this more comprehensive output, allowing the control o
 ## Inputs of `VizroAI.plot`
 
 ### `user_input`
-This is the natural language query from which, together with a data sample, the LLM creates a plotly chart. For the query, you can [use English or a different language](use-different-languages.md). The complexity of the resulting chart [depends on the vendor model capabilities](customize-vizro-ai.md#what-model-to-choose). 
+This is the natural language query from which, together with a data sample, the LLM creates a plotly chart. For the query, you can [use English or a different language](use-different-languages.md). The complexity of the resulting chart [depends on the vendor model capabilities](customize-vizro-ai.md#what-model-to-choose).
 
 
 ### `df`
@@ -153,7 +153,7 @@ This `fig` object is a basic plotly figure.
     [VizroAIChartPlotly]: ../../assets/user_guides/VizroAIPlotly.png
 
 #### Using different data
-You may want create the `fig` object with different data. You should still follow the overall schema (or else the chart might fail) but, for example certain rows can be filtered out. You can re-evaluate this function to produce `fig` objects for different data.
+You can create the `fig` object with different data while ensuring the overall schema remains consistent. You can re-evaluate this function to generate various `fig` objects for different datasets. For example, the code could be generated using fake or sample data fed into Vizro-AI. When moving to production, you can switch the data source to the complete dataset, as long as the data schema is consistent.
 
 !!! example "Different data"
 

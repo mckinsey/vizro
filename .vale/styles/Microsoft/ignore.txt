@@ -92,4 +92,4 @@ versicolor
 virginica
 Hugging Face
 Langchain
-Langchains
+Langchain's
