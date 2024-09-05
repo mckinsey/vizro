@@ -1,6 +1,6 @@
 # Model usage
 
-This guide shows you how to setup a LLM model to be used for Vizro-AI. Setting up a LLM is required for the package to generate charts and dashboards based on natural language queries.
+This guide shows how to set up a large language model (LLM) for use with Vizro-AI. Setting up a LLM is required for the package to generate charts and dashboards based on natural language queries.
 
 ## Supported models
 Vizro-AI supports **any** model that is available via [Langchains `BaseChatModel` class](https://api.python.langchain.com/en/latest/language_models/langchain_core.language_models.chat_models.BaseChatModel.html#langchain_core.language_models.chat_models.BaseChatModel), and that has the `with_structured_output` method implemented. An overview of the [most common vendor models supporting this functionality](https://python.langchain.com/v0.2/docs/integrations/chat/) can be found in Langchains documentation. For ease of use one can also choose some models via a string parameter.
