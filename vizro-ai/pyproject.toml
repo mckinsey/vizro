@@ -19,7 +19,7 @@ dependencies = [
   "openai>=1.0.0",
   "langchain>=0.1.0, <0.3.0",  # TODO update all LLMChain class, update to pydantic v2 and remove upper bound
   "langchain-openai",
-  "langgraph>=0.1.2",
+  "langgraph>=0.1.2, <0.2.17",
   "python-dotenv>=1.0.0",  # TODO decide env var management to see if we need this
   "vizro>=0.1.20"
 ]
