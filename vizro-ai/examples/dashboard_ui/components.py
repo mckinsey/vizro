@@ -114,7 +114,7 @@ class MyDropdown(vm.Dropdown):
 
 
 class Modal(vm.VizroBaseModel):
-    """Modal to convey warning message"""
+    """Modal to convey warning message."""
 
     type: Literal["modal"] = "modal"
 
@@ -129,14 +129,17 @@ class Modal(vm.VizroBaseModel):
                         """### Do NOT upload any sensitive or personally identifying data.
 
 #### Reasoning:
-This space is hosted publicly running one server in a single container. Further this UI executes dynamically created code on the server. It thus
-cannot guarantee the security of your data. In addition it sends the user query and the data to the chosen LLM vendor API. This is not an exhaustive list.
+This space is hosted publicly running one server in a single container. Further this UI executes dynamically created
+code on the server. It thus cannot guarantee the security of your data. In addition it sends the user query and the
+data to the chosen LLM vendor API. This is not an exhaustive list.
 
 #### Alternatives:
 If sending your query and data to a LLM is acceptable, you can pull and run this image locally. This will avoid sharing
-an instance with others. You can do so by clicking the three dots in the top right of the HuggingFace banner and click `Run with Docker`.
+an instance with others. You can do so by clicking the three dots in the top right of the HuggingFace banner
+and click `Run with Docker`.
 
-Always exercise caution when sharing data online and understand your responsibilities regarding data privacy and security.```
+Always exercise caution when sharing data online and understand your responsibilities regarding data privacy
+and security.
 """
                     )
                 ),
