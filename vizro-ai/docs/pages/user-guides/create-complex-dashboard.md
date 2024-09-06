@@ -99,6 +99,9 @@ It's worth noting that a more structured user request is also more machine reada
 Next, submit the data and prompt string:
 
 ```py
+from vizro_ai import VizroAI
+
+vizro_ai = VizroAI(model="gpt-4o")
 dashboard = vizro_ai._dashboard([df1, df2], user_question)
 ```
 
