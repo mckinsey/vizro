@@ -35,14 +35,15 @@ def _format_and_lint(code_string: str) -> str:
     return formatted
 
 
-def _exec_code(code: str):
+def _exec_code(code: str, namespace: dict) -> dict:
     """Execute code and return the local dictionary."""
     # globals needed to access imports, they will not be modified by exec
     # ldict is used to store the chart function
     # potentially possible to restrict globals to only needed imports, but that is tricky
     ldict = {}
-    exec(code, globals(), ldict)  # nosec
-    return ldict
+    exec(code, namespace, ldict)  # nosec
+    namespace.update(ldict)
+    return namespace
 
 
 class ChartPlan(BaseModel):
@@ -141,8 +142,9 @@ and it should be the first argument of the chart."""
         """
         chart_name = chart_name or CUSTOM_CHART_NAME
         code_to_execute = self._get_complete_code(chart_name=chart_name, vizro=vizro)
-        ldict = _exec_code(code_to_execute)
-        chart = ldict[f"{chart_name}"]
+        namespace = globals()
+        namespace = _exec_code(code_to_execute, namespace)
+        chart = namespace[f"{chart_name}"]
         return chart(data_frame)
 
     @property
@@ -156,18 +158,21 @@ and it should be the first argument of the chart."""
 
 class ChartPlanFactory:
     def __new__(cls, data_frame: pd.DataFrame) -> ChartPlan:  # TODO: change to ChartPlanDynamic
-        def _test_execute_chart_code(v):
+        def _test_execute_chart_code(v, values):
             """Test the execution of the chart code."""
+            imports = "\n".join(values.get("imports", []))
+            code_to_validate = imports + "\n\n" + v
             try:
-                _safeguard_check(v)
+                _safeguard_check(code_to_validate)
             except Exception as e:
                 raise ValueError(
                     f"Produced code failed the safeguard validation: <{e}>. Please check the code and try again."
                 )
             try:
-                ldict = _exec_code(v)
-                custom_chart = ldict[f"{CUSTOM_CHART_NAME}"]
-                fig = custom_chart(data_frame.sample(20))
+                namespace = globals()
+                namespace = _exec_code(code_to_validate, namespace)
+                custom_chart = namespace[f"{CUSTOM_CHART_NAME}"]
+                fig = custom_chart(data_frame.sample(10))
             except Exception as e:
                 raise ValueError(
                     f"Produced code execution failed the following error: <{e}>. Please check the code and try again."

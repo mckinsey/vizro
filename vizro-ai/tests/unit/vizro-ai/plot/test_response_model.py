@@ -76,8 +76,10 @@ class TestChartPlanFactory:
         chart_plan_dynamic = ChartPlanFactory(data_frame=px.data.iris())
         chart_plan_dynamic_valid = chart_plan_dynamic(
             chart_type="Bubble Chart",
-            imports=["import plotly.express as px"],
+            imports=["import plotly.express as px", "import numpy as np", "import random"],
             chart_code="""def custom_chart(data_frame):
+    random_other_module_import = np.arange(10)
+    other_random_module_import = random.sample(range(10), 10)
     fig = px.scatter(data_frame, x='sepal_width', y='petal_width')
     return fig
 """,
@@ -104,6 +106,15 @@ class TestChartPlanFactory:
         """,
                 ValueError,
                 "Produced code execution failed the following error: <name 'fi' is not defined>.",
+            ),
+            (
+                """def custom_chart(data_frame):
+    random_call = np.arange(10)
+    fig = px.scatter(data_frame, x='sepal_width', y='petal_width')
+    return fig
+        """,
+                ValueError,
+                "Produced code execution failed the following error: <name 'np' is not defined>.",
             ),
             (
                 """def custom_chart(data_frame):
