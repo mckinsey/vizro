@@ -9,7 +9,6 @@ import subprocess
 from typing import List, Optional, Union
 
 import pandas as pd
-import plotly.express as px
 import plotly.graph_objects as go
 
 from vizro_ai.plot._utils._safeguard import _safeguard_check
@@ -186,49 +185,3 @@ class ChartPlanFactory:
             },
             __base__=ChartPlan,
         )
-
-
-if __name__ == "__main__":
-    # Write docs
-    # Formulate long term todos
-
-    from dotenv import find_dotenv, load_dotenv
-
-    load_dotenv(find_dotenv(usecwd=True))
-    from vizro_ai import VizroAI
-    from vizro_ai._llm_models import _get_llm_model
-
-    # df = px.data.iris()
-    df = px.data.gapminder()
-
-    model = _get_llm_model()
-
-    query = "the trend of gdp over years in the US"
-    # query = "show me the geo distribution of life expectancy and set year as animation "
-    # query = "describe the composition of gdp in continents in 2007, and add horizontal line for avg gdp in 2007"
-    # query = """plot a bubble chart to shows the changes in life expectancy gdp per capita  over time.
-    # Animate the chart by year"""
-
-    # print(df.sample(10).to_string())
-
-    # res = _get_pydantic_model(
-    # query=query, llm_model=model, response_model=dummy_model, df_info=df.sample(10).to_string())
-    # code = res._get_complete_code(lint=True)
-    # fig = res._get_fig_object(data_frame=df)
-    # fig.show()
-
-    # llm = ChatAnthropic(
-    #     model="claude-3-5-sonnet-20240620",
-    #     temperature=0,
-    #     max_tokens=1024,
-    #     timeout=None,
-    #     max_retries=2,
-    #     api_key = os.environ.get("ANTHROPIC_API_KEY"),
-    #     base_url= os.environ.get("ANTHROPIC_API_BASE")
-    # )
-
-    ############################################################################################################
-
-    vizro_ai = VizroAI(model=model)
-    res2 = vizro_ai.plot(df=df, user_input=query, return_elements=True)
-    res2.get_fig_object(data_frame=df).show()

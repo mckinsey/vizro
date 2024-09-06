@@ -1,9 +1,8 @@
 import re
 
+import pytest
 import vizro.models as vm
 from vizro_ai.dashboard._response_models.components import ComponentPlan
-
-import pytest
 
 
 class TestComponentCreate:
