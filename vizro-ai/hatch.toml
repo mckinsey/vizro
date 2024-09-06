@@ -27,7 +27,7 @@ dependencies = [
   # Below dependencies useful to test different models
   "langchain-community",
   "langchain_mistralai",
-  "langchain-anthropic",
+  "langchain-anthropic"
 ]
 installer = "uv"
 
