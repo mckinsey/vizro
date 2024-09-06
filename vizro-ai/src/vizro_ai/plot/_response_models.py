@@ -37,9 +37,9 @@ def _format_and_lint(code_string: str) -> str:
 
 def _exec_code(code: str, namespace: dict) -> dict:
     """Execute code and return the local dictionary."""
-    # globals needed to access imports, they will not be modified by exec
-    # ldict is used to store the chart function
-    # potentially possible to restrict globals to only needed imports, but that is tricky
+    # Need the global namespace for the imports to work for executed code
+    # Tried just handling it in local scope, ie getting the import statement into ldict, but it didn't work
+    #TODO: ideally in future we properly handle process and namespace separation, or even Docke execution
     ldict = {}
     exec(code, namespace, ldict)  # nosec
     namespace.update(ldict)
