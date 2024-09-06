@@ -109,12 +109,12 @@ class TestChartPlanFactory:
             ),
             (
                 """def custom_chart(data_frame):
-    random_call = np.arange(10)
+    random_call = sp.arange(5)
     fig = px.scatter(data_frame, x='sepal_width', y='petal_width')
     return fig
         """,
                 ValueError,
-                "Produced code execution failed the following error: <name 'np' is not defined>.",
+                "Produced code execution failed the following error: <name 'sp' is not defined>.",
             ),
             (
                 """def custom_chart(data_frame):
