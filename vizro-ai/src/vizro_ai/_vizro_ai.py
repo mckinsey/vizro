@@ -74,12 +74,12 @@ class VizroAI:
             df: The dataframe to be analyzed.
             user_input: User questions or descriptions of the desired visual.
             max_debug_retry: Maximum number of retries to debug errors. Defaults to `1`.
-            return_elements: Flag to return ChartPlanStatic pydantic model that includes all
+            return_elements: Flag to return ChartPlan pydantic model that includes all
                 possible elements generated. Defaults to `False`.
             validate_code: Flag if produced code should be executed to validate it. Defaults to `True`.
 
         Returns:
-            go.Figure or ChartPlanStatic pydantic model
+            go.Figure or ChartPlan pydantic model
 
         """
         response_model = ChartPlanFactory(data_frame=df) if validate_code else ChartPlan
