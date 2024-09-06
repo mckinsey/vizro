@@ -11,6 +11,14 @@ See the fragment files in the [changelog.d directory](https://github.com/mckinse
 
 <!-- scriv-insert-here -->
 
+<a id='changelog-0.2.2'></a>
+
+# 0.2.2 — 2024-09-06
+
+## Fixed
+
+- Documented the step for instantiating `VizroAI` in text-to-dashboard pages ([#685](https://github.com/mckinsey/vizro/pull/685))
+
 <a id='changelog-0.2.1'></a>
 
 # 0.2.1 — 2024-08-28
