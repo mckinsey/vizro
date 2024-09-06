@@ -39,6 +39,7 @@ def create_template_dark() -> Template:
     template_dark["layout"]["ternary"]["caxis"]["gridcolor"] = COLORS["WHITE_12"]
     template_dark["layout"]["ternary"]["caxis"]["linecolor"] = COLORS["WHITE_30"]
     template_dark["layout"]["mapbox"]["style"] = "carto-darkmatter"
+    template_dark["layout"]["map"]["style"] = "carto-darkmatter"
     template_dark["layout"]["coloraxis"]["colorbar"]["tickcolor"] = COLORS["WHITE_30"]
     template_dark["layout"]["coloraxis"]["colorbar"]["tickfont"]["color"] = COLORS["WHITE_55"]
     template_dark["layout"]["coloraxis"]["colorbar"]["title"]["font"]["color"] = COLORS["WHITE_55"]

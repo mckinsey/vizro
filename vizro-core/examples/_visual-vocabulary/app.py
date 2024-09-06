@@ -107,5 +107,8 @@ dashboard = vm.Dashboard(
     ),
 )
 
+app = Vizro().build(dashboard)
+server = app.dash.server
+
 if __name__ == "__main__":
-    Vizro().build(dashboard).run()
+    app.run()
