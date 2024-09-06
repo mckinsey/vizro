@@ -42,8 +42,14 @@ print(vizro_ai.__version__)
 
 You should see a return output of the form `x.y.z`.
 
+## 3. Instantiate VizroAI
+```py
+from vizro_ai import VizroAI
 
-## 3. Prepare the data
+vizro_ai = VizroAI()
+```
+
+## 4. Prepare the data
 Next, prepare the data to pass to Vizro-AI. In this example, we use the [gapminder data](https://plotly.com/python-api-reference/generated/plotly.express.data.html#plotly.express.data.gapminder).
 
 ```py
@@ -52,7 +58,7 @@ import vizro.plotly.express as px
 df = px.data.gapminder(datetimes=True, pretty_names=True)
 ```
 
-## 4. Prepare the user prompt
+## 5. Prepare the user prompt
 
 Put together a string of text which is the prompt to request Vizro-AI to generate the dashboard.
 
@@ -74,7 +80,7 @@ Add a filter to filter the box plot by year.
 """
 ```
 
-## 5. Call Vizro-AI
+## 6. Call Vizro-AI
 
 Next, submit the data and prompt string:
 
