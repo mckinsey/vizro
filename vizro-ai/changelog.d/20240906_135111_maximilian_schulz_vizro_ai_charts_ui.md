@@ -21,7 +21,6 @@ Uncomment the section that is right (remove the HTML comment wrapper).
 
 - Added Docker image of `VizroAI.plot` UI for local use ([#1177](https://github.com/mckinsey/vizro/pull/1177))
 
-
 <!--
 ### Changed
 
