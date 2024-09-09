@@ -52,6 +52,4 @@ if __name__ == "__main__":
 
     args = parser.parse_args()
 
-    print(
-        run_vizro_ai_dashboard(args.arg1, args.arg2, args.arg3, args.arg4, args.arg5, args.arg6, args.arg7)
-    )  # noqa: T201
+    print(run_vizro_ai_dashboard(args.arg1, args.arg2, args.arg3, args.arg4, args.arg5, args.arg6, args.arg7))
