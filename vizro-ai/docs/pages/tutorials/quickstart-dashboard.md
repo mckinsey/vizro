@@ -88,10 +88,10 @@ Next, submit the data and prompt string:
 dashboard = vizro_ai._dashboard([df], user_question)
 ```
 
-The call to `_dashboard()` triggers the dashboard generation process. By default, it generates the Vizro `Dashobard` Object.
+The call to `_dashboard()` initiates dashboard generation. By default, it generates the Vizro `Dashobard` Object.
 
 ## 7. Build dashboard
-Once Vizro-AI finishes the dashboard generation process, launch the dashboard with `build()`.
+Once dashboard generation is complete, launch the dashboard with `build()`.
 
 ```py
 from vizro import Vizro
