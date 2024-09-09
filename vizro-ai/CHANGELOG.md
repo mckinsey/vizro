@@ -11,6 +11,14 @@ See the fragment files in the [changelog.d directory](https://github.com/mckinse
 
 <!-- scriv-insert-here -->
 
+<a id='changelog-0.2.3'></a>
+
+# 0.2.3 — 2024-09-09
+
+## Added
+
+- Added Docker image of `VizroAI.plot` UI for local use ([#1177](https://github.com/mckinsey/vizro/pull/1177))
+
 <a id='changelog-0.2.2'></a>
 
 # 0.2.2 — 2024-09-06
