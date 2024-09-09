@@ -1,64 +1,79 @@
-import re
+from typing import List
 
 import vizro.plotly.express as px
-from hamcrest import any_of, assert_that, contains_string, matches_regexp
+from hamcrest import any_of, assert_that, contains_string, is_not, matches_regexp
 from vizro_ai import VizroAI
 
 vizro_ai = VizroAI()
 df = px.data.gapminder()
 
-# List of possible values for axis variables
-POSSIBLE_VALUES = ["count", "gdpPercap", "continent", "avg_gdpPercap", "mean_gdpPercap", "total_gdpPercap"]
+POSSIBLE_AXIS_VALUES = ["count", "gdpPercap", "continent", "avg_gdpPercap", "mean_gdpPercap", "total_gdpPercap"]
+POSSIBLE_CHART = ["px.bar", "go.Bar"]
 
 
-def check_axis(axis, code):
-    """Check if the specified axis in the code uses one of the possible values."""
-    pattern = rf"{axis}\s*=\s*([^,\n]+)"
-    match = re.search(pattern, code)
-    if match:
-        value = match.group(1).strip().strip("'\"")
-        return value in POSSIBLE_VALUES
-    return False
+def create_axis_conditions(axis: str, values: List[str]) -> List:
+    return [
+        matches_regexp(f".*{pattern}.*")
+        for value in values
+        for pattern in [
+            f"{axis}='{value}'",
+            f'{axis}="{value}"',
+            f"{axis}=\\w*\\['{value}'\\]",
+            f'{axis}=\\w*\\["{value}"\\]',
+        ]
+    ]
 
 
-def test_scatter_plot():
-    """Test creation of a scatter plot comparing GDP across different continents."""
+def test_chart():
+    x_conditions = create_axis_conditions("x", POSSIBLE_AXIS_VALUES)
+    y_conditions = create_axis_conditions("y", POSSIBLE_AXIS_VALUES)
+    charts = [contains_string(chart) for chart in POSSIBLE_CHART]
+
     resp = vizro_ai.plot(
         df=df,
-        user_input="Create a scatter plot comparing GDP across different continents",
+        user_input="Create a bar chart comparing GDP across different continents",
         return_elements=True,
     )
-
-    # Check if the response contains a scatter plot
-    assert_that(resp.code, any_of(contains_string("px.scatter"), contains_string("go.Scatter")))
-
-    # Check if x and y axes use valid values
-    assert_that(check_axis("x", resp.code), f"X-axis not in {POSSIBLE_VALUES}")
-    assert_that(check_axis("y", resp.code), f"Y-axis not in {POSSIBLE_VALUES}")
-
-
-def test_bar_chart_with_explanation():
-    """Test creation of a bar chart describing GDP composition per year in the US."""
-    vizro_ai._return_all_text = True
-    resp = vizro_ai.plot(df, "describe the composition of gdp per year in US using bar chart", return_elements=True)
-
-    # Check if the response contains a bar chart
-    assert_that(resp.code, any_of(contains_string("px.bar"), contains_string("go.Bar")))
-
-    # Check if x-axis is set to 'year'
     assert_that(
-        resp.code, any_of(contains_string("x='year'"), matches_regexp(r"x\s*=\s*\w+\s*\[\s*['\"]year['\"]\s*\]"))
+        resp.code,
+        any_of(*charts),
     )
-
-    # Check if y-axis uses one of the possible values
-    y_conditions = [
-        any_of(
-            contains_string(f"y='{value}'"), matches_regexp(rf"y\s*=\s*\w+\s*\[\s*['\"]({value}|{value.lower()})['\"]")
-        )
-        for value in POSSIBLE_VALUES
-    ]
+    assert_that(resp.code, any_of(*x_conditions))
     assert_that(resp.code, any_of(*y_conditions))
 
-    # Check if chart insights mention GDP and United States
-    assert_that(resp.chart_insights, any_of(contains_string("GDP per capita"), contains_string("GDP")))
-    assert_that(resp.chart_insights, any_of(contains_string("United States"), contains_string("US")))
+
+def test_chart_with_explanation():
+    y_conditions = create_axis_conditions("y", POSSIBLE_AXIS_VALUES)
+    charts = [contains_string(chart) for chart in POSSIBLE_CHART]
+
+    vizro_ai._return_all_text = True
+    resp = vizro_ai.plot(df, "describe the composition of gdp per year in US using bar chart", return_elements=True)
+    assert_that(
+        resp.code,
+        any_of(*charts),
+    )
+    assert_that(
+        resp.code,
+        any_of(
+            matches_regexp(r".*x='year'.*"),
+            matches_regexp(r'.*x="year".*'),
+            matches_regexp(r".*x=\w*\['year'\].*"),
+            matches_regexp(r'.*x=\w*\["year"\].*'),
+        ),
+    )
+    assert_that(resp.code, any_of(*y_conditions))
+    assert_that(
+        resp.chart_insights,
+        any_of(
+            contains_string("GDP per capita"),
+            contains_string("GDP"),
+        ),
+    )
+    assert_that(
+        resp.chart_insights,
+        any_of(
+            contains_string("United States"),
+            contains_string("US"),
+        ),
+    )
+    assert_that(resp.code_explanation, is_not(None))
