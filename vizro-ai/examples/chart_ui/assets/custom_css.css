@@ -22,11 +22,11 @@
   outline-width: 0;
 }
 
-#dashboard-text-area {
+#text-area-id {
   background-color: inherit;
   border: 1px solid var(--border-subtle-alpha-01);
   color: var(--text-primary);
-  height: 500px;
+  min-height: 90px;
   padding: 8px;
   width: 100%;
 }
@@ -45,7 +45,8 @@
 .code-clipboard-container {
   background: var(--surfaces-bg-card);
   font-family: monospace;
-  height: 100%;
+  height: 500px;
+  max-height: 500px;
   overflow: auto;
   padding: 1rem;
   position: relative;
@@ -65,22 +66,20 @@
   font-size: 12px;
 }
 
-#dashboard-model-dropdown .Select-menu-outer {
+#model-dropdown-id .Select-menu-outer {
   font-size: 12px;
-  top: 0;
-  transform: translateY(3px) translateY(-100%);
+
+  /* top: 0; */
+
+  /* transform: translateY(3px) translateY(-100%); */
 }
 
-#dashboard-model-dropdown .dash-dropdown {
+#model-dropdow-idn .dash-dropdown {
   background-color: inherit;
   font-size: 12px;
 }
 
 #trigger-button-id {
-  width: 100%;
-}
-
-#dashboard-trigger-button {
   width: 100%;
 }
 
@@ -106,16 +105,6 @@
   padding-top: 8px;
 }
 
-.card:has(#dashboard-upload-message-id) {
-  background-color: inherit;
-  box-shadow: none;
-  font-size: 12px;
-  overflow: hidden;
-  padding-bottom: 0;
-  padding-left: 0;
-  padding-top: 8px;
-}
-
 .card:has(#settings-card-id) {
   background-color: inherit;
   box-shadow: none;
@@ -132,7 +121,7 @@
   width: 100%;
 }
 
-#dashboard-data-upload {
+#data-upload-id {
   border: 1px dashed var(--border-subtle-alpha-01);
   border-radius: 5px;
   color: var(--text-primary);
@@ -146,14 +135,6 @@
 }
 
 #settings-api-base-toggle .form-check-input {
-  border-radius: 8px;
-}
-
-#dashboard-settings-api-key-toggle .form-check-input {
-  border-radius: 8px;
-}
-
-#dashboard-settings-api-base-toggle .form-check-input {
   border-radius: 8px;
 }
 
