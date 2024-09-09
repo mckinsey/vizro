@@ -1,3 +1,5 @@
+"""VizroAI dashboard UI configuration."""
+
 import json
 import subprocess
 
@@ -116,6 +118,7 @@ def show_api_base(value):
     [State("dashboard-settings", "is_open")],
 )
 def open_settings(n_clicks, is_open):
+    """Callback for opening and closing offcanvas settings component."""
     return not is_open if n_clicks else is_open
 
 
@@ -128,9 +131,11 @@ def open_settings(n_clicks, is_open):
         Input("dashboard-settings-api-base", "value"),
         Input("dashboard-trigger-button", "n_clicks"),
         Input("dashboard-data-store", "data"),
+        Input("dashboard-settings-dropdown", "value"),
     ],
 )
-def run_script(user_prompt, model, api_key, api_base, n_clicks, data):
+def run_script(user_prompt, model, api_key, api_base, n_clicks, data, vendor):  # noqa: PLR0913
+    """Callback for triggering subprocess that run vizro-ai."""
     data = json.dumps(data)
     if n_clicks is None:
         raise PreventUpdate
@@ -151,9 +156,12 @@ def run_script(user_prompt, model, api_key, api_base, n_clicks, data):
                 f"{n_clicks}",
                 "--arg6",
                 data,
+                "--arg7",
+                f"{vendor}",
             ],
             capture_output=True,
             text=True,
+            check=False,
         )
         if result.returncode == 0:
             start_index = result.stdout.find("```")

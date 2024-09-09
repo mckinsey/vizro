@@ -1,3 +1,5 @@
+"""File running Vizro AI."""
+
 import argparse
 import json
 import logging
@@ -8,8 +10,8 @@ from actions import get_vizro_ai_dashboard
 from dash.exceptions import PreventUpdate
 
 
-def run_vizro_ai_dashboard(user_prompt, model, api_key, api_base, n_clicks, data):
-    """Gets the AI response."""
+def run_vizro_ai_dashboard(user_prompt, model, api_key, api_base, n_clicks, data, vendor):  # noqa: PLR0913
+    """Function for running VizroAI."""
     data = json.loads(data)
 
     if not n_clicks:
@@ -24,7 +26,7 @@ def run_vizro_ai_dashboard(user_prompt, model, api_key, api_base, n_clicks, data
     try:
         df = pd.DataFrame(data["data"])
         ai_outputs = get_vizro_ai_dashboard(
-            user_prompt=user_prompt, dfs=df, model=model, api_key=api_key, api_base=api_base
+            user_prompt=user_prompt, dfs=df, model=model, api_key=api_key, api_base=api_base, vendor_input=vendor
         )
         ai_code = ai_outputs.code
         formatted_code = black.format_str(ai_code, mode=black.Mode(line_length=90))
@@ -46,7 +48,10 @@ if __name__ == "__main__":
     parser.add_argument("--arg4", required=True, help="API base")
     parser.add_argument("--arg5", required=True, help="n_clicks")
     parser.add_argument("--arg6", required=True, help="Data")
+    parser.add_argument("--arg7", required=True, help="Vendor")
 
     args = parser.parse_args()
 
-    print(run_vizro_ai_dashboard(args.arg1, args.arg2, args.arg3, args.arg4, args.arg5, args.arg6))
+    print(
+        run_vizro_ai_dashboard(args.arg1, args.arg2, args.arg3, args.arg4, args.arg5, args.arg6, args.arg7)
+    )  # noqa: T201

@@ -1,4 +1,4 @@
-"""VizroAI UI dashboard configuration."""
+"""VizroAI chart UI configuration."""
 
 import json
 
