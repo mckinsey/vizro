@@ -77,12 +77,9 @@ dashboard_page = MyPage(
         vm.Container(
             title="",
             layout=vm.Layout(
-                grid=[
-                    [3, -1, -1, -1, -1, -1, 1, 1, 0, 0],
-                    [-1, -1, -1, -1, -1, -1, -1, -1, 2, 2]
-                ],
+                grid=[[3, -1, -1, -1, -1, -1, 1, 1, 0, 0], [-1, -1, -1, -1, -1, -1, -1, -1, 2, 2]],
                 row_gap="0px",
-                col_gap="4px"
+                col_gap="4px",
             ),
             components=[
                 vm.Button(

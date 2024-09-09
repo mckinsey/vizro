@@ -236,8 +236,19 @@ class Icon(vm.VizroBaseModel):
     def build(self):
         """Returns the icon for api settings."""
         return html.Div(
-            children=[html.P("Settings", style={"display": "flex", "justifyContent": "center", "alignItems": "center", "paddingTop": "4px", "paddingRight": "8px"}),
-                      html.Span("settings", className="material-symbols-outlined", id=self.id)],
+            children=[
+                html.P(
+                    "Settings",
+                    style={
+                        "display": "flex",
+                        "justifyContent": "center",
+                        "alignItems": "center",
+                        "paddingTop": "4px",
+                        "paddingRight": "8px",
+                    },
+                ),
+                html.Span("settings", className="material-symbols-outlined", id=self.id),
+            ],
             className="settings-div",
         )
 
