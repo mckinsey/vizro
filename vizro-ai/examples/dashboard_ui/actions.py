@@ -13,6 +13,9 @@ from plotly import graph_objects as go
 from vizro.models.types import capture
 from vizro_ai import VizroAI
 
+logger = logging.getLogger(__name__)
+logger.setLevel(logging.INFO)  # TODO: remove manual setting and make centrally controlled
+
 SUPPORTED_VENDORS = {"OpenAI": ChatOpenAI}
 
 
@@ -62,6 +65,7 @@ def run_vizro_ai(user_prompt, n_clicks, data, model, api_key, api_base, vendor_i
         return create_response(ai_response, figure, user_prompt, data["filename"])
 
     try:
+        logger.info("Attempting chart code.")
         df = pd.DataFrame(data["data"])
         ai_outputs = get_vizro_ai_plot(
             user_prompt=user_prompt,
@@ -76,10 +80,12 @@ def run_vizro_ai(user_prompt, n_clicks, data, model, api_key, api_base, vendor_i
         formatted_code = black.format_str(ai_code, mode=black.Mode(line_length=100))
 
         ai_response = "\n".join(["```python", formatted_code, "```"])
+        logger.info("Successful query produced.")
         return create_response(ai_response, figure, user_prompt, data["filename"])
 
     except Exception as exc:
-        logging.exception(exc)
+        logger.debug(exc)
+        logger.info("Chart creation failed.")
         ai_response = f"Sorry, I can't do that. Following Error occurred: {exc}"
         figure = go.Figure()
         return create_response(ai_response, figure, user_prompt, data["filename"])
@@ -109,7 +115,7 @@ def data_upload_action(contents, filename):
         return {"data": data, "filename": filename}
 
     except Exception as e:
-        logging.exception(e)
+        logger.debug(e)
         return {"error_message": "There was an error processing this file."}
 
 
