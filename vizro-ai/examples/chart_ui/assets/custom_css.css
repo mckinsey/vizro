@@ -119,6 +119,7 @@
   justify-content: end;
   padding-right: 2px;
   width: 100%;
+  align-items: center;
 }
 
 #data-upload-id {
