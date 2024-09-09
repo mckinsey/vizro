@@ -88,7 +88,7 @@ Next, submit the data and prompt string:
 dashboard = vizro_ai._dashboard([df], user_question)
 ```
 
-The call to `_dashboard()` triggers the dashboard building process.
+The call to `_dashboard()` triggers the dashboard generation process. By default, it generates the Vizro `Dashobard` Object.
 
 ## 7. Build dashboard
 Once Vizro-AI finishes the dashboard generation process, launch the dashboard with `build()`.
@@ -110,7 +110,7 @@ Vizro().build(dashboard).run()
         vizro_ai = VizroAI()
 
         user_question = """
-        Create a page showing 1 card, 1 chart.
+        Create a page showing 1 card and 1 chart.
         The first card says 'The Gapminder dataset is a detailed collection of global socioeconomic indicators over several decades. It includes data on GDP per capita, life expectancy, and population for numerous countries and regions. This dataset allows users to analyze development trends, health outcomes, economic growth, and demographic changes globally.'
         The chart is a box plot showing life expectancy distribution. Put Life expectancy on the y axis, continent on the x axis, and color by continent.
         The card takes 1 grid of the page space on the left and the box plot takes 3 grid space on the right.
