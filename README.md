@@ -88,7 +88,7 @@ Vizro-AI is a separate package and extends Vizro to enable the use of natural la
 
 See the [Vizro-AI documentation](https://vizro.readthedocs.io/projects/vizro-ai/) for more details.
 
-## Key benefits of Vizro
+### Key benefits
 
 <br/>
 
@@ -98,16 +98,26 @@ See the [Vizro-AI documentation](https://vizro.readthedocs.io/projects/vizro-ai/
 
 <br/>
 
-## Vizro examples gallery
-
+### Vizro examples gallery
 You can see Vizro in action by clicking on the following image or by visiting [the examples gallery at vizro.mckinsey.com](https://vizro.mckinsey.com).
 
-<p align="left">
+<p align="center">
 <a href="http://vizro.mckinsey.com/">
-<img border="0" src="https://raw.githubusercontent.com/mckinsey/vizro/main/.github/images/vizro_examples_gallery.png" width="525" height="296">  </a>
+<img src="https://raw.githubusercontent.com/mckinsey/vizro/main/.github/images/vizro_examples_gallery.png" width="900">  
+</a>
 </p>
 
-## Dashboard screenshots
+### Vizro visual vocabulary
+Our visual vocabulary dashboard is a guide for selecting and creating various types of charts. It provides guidance
+on when to use each chart type, along with sample Python code using [Plotly](https://plotly.com/python/).
+
+<p align="center">
+<a href="https://huggingface.co/spaces/vizro/demo-visual-vocabulary/">
+<img src="https://raw.githubusercontent.com/mckinsey/vizro/main/.github/images/visual_vocabulary.png" width="900">  
+</a>
+</p>
+
+### Dashboard screenshots
 
 <p align="center">
 <img src="https://raw.githubusercontent.com/mckinsey/vizro/main/.github/images/dashboard_examples.png" width="1300"/>
