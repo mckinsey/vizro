@@ -99,21 +99,23 @@ See the [Vizro-AI documentation](https://vizro.readthedocs.io/projects/vizro-ai/
 <br/>
 
 ### Vizro examples gallery
+
 You can see Vizro in action by clicking on the following image or by visiting [the examples gallery at vizro.mckinsey.com](https://vizro.mckinsey.com).
 
 <p align="center">
 <a href="http://vizro.mckinsey.com/">
-<img src="https://raw.githubusercontent.com/mckinsey/vizro/main/.github/images/vizro_examples_gallery.png" width="900">  
+<img src="https://raw.githubusercontent.com/mckinsey/vizro/main/.github/images/vizro_examples_gallery.png" width="900">
 </a>
 </p>
 
 ### Vizro visual vocabulary
+
 Our visual vocabulary dashboard is a guide for selecting and creating various types of charts. It provides guidance
 on when to use each chart type, along with sample Python code using [Plotly](https://plotly.com/python/).
 
 <p align="center">
 <a href="https://huggingface.co/spaces/vizro/demo-visual-vocabulary/">
-<img src="https://raw.githubusercontent.com/mckinsey/vizro/main/.github/images/visual_vocabulary.png" width="900">  
+<img src="https://raw.githubusercontent.com/mckinsey/vizro/main/.github/images/visual_vocabulary.png" width="900">
 </a>
 </p>
 
