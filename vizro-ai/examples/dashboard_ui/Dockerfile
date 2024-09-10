@@ -13,8 +13,8 @@ RUN pip install --no-cache-dir --upgrade -r requirements.txt
 
 COPY --chown=user . /app
 
-EXPOSE 7860
+EXPOSE 7868
 
 USER user
 
-CMD ["gunicorn", "-w", "4", "-b", "0.0.0.0:7860", "app:server"]
+CMD ["gunicorn", "-w", "4", "-b", "0.0.0.0:7868", "app:server"]
