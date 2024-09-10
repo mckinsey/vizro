@@ -2,5 +2,5 @@
 # It should be fully generated and used when the demo moves to huggingface.
 black==24.4.2
 plotly>=5.24.0
-vizro
+vizro==0.1.22
 gunicorn
