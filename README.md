@@ -110,8 +110,7 @@ You can see Vizro in action by clicking on the following image or by visiting [t
 
 ## Vizro visual vocabulary
 
-Our visual vocabulary dashboard is a guide for selecting and creating various types of charts. It provides guidance
-on when to use each chart type, along with sample Python code using [Plotly](https://plotly.com/python/).
+Our visual vocabulary dashboard helps you to select and create various types of charts. It helps you decide when to use each chart type, and offers sample Python code using [Plotly](https://plotly.com/python/).
 
 <p align="center">
 <a href="https://huggingface.co/spaces/vizro/demo-visual-vocabulary/">

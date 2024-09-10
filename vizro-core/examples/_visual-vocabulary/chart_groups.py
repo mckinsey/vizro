@@ -213,8 +213,8 @@ all_intro_text = """
 
 ### Welcome to our visual vocabulary dashboard! 🎨
 
-#### This dashboard serves as a comprehensive guide for selecting and creating various types of charts. It provides \
-guidance on when to use each chart type, along with sample Python code using [Plotly](https://plotly.com/python/), \
+#### This dashboard serves as a comprehensive guide for selecting and creating various types of charts. It helps \
+you decide when to use each chart type, and offers sample Python code using [Plotly](https://plotly.com/python/), \
 and instructions for embedding these charts into a [Vizro](https://github.com/mckinsey/vizro) dashboard.
 
 #### The charts in this dashboard are designed to make it easy for anyone to create beautiful and sophisticated visuals.
@@ -232,7 +232,7 @@ Created by:
 
 Inspired by:
 - [The FT Visual Vocabulary](https://github.com/Financial-Times/chart-doctor/blob/main/visual-vocabulary/README.md):
-Alan Smith, Chris Campbell, Ian Bott, Liz Faunce, Graham Parrish, Billy Ehrenberg, Paul McCallum,Martin Stabe.
+Alan Smith, Chris Campbell, Ian Bott, Liz Faunce, Graham Parrish, Billy Ehrenberg, Paul McCallum, Martin Stabe.
 
 - [The Graphic Continuum](https://www.informationisbeautifulawards.com/showcase/611-the-graphic-continuum):
 Jon Swabish and Severino Ribecca
