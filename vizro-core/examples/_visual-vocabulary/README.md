@@ -20,7 +20,8 @@ Created by:
 Inspired by:
 
 - [The FT Visual Vocabulary](https://github.com/Financial-Times/chart-doctor/blob/main/visual-vocabulary/README.md):
-  Alan Smith, Chris Campbell, Ian Bott, Liz Faunce, Graham Parrish, Billy Ehrenberg, Paul McCallum, Martin Stabe.
+  [Alan Smith](https://github.com/alansmithy), [Chris Campbell](https://github.com/digitalcampbell), Ian Bott,
+  Liz Faunce, Graham Parrish, Billy Ehrenberg, Paul McCallum, [Martin Stabe](https://github.com/martinstabe).
 
 - [The Graphic Continuum](https://www.informationisbeautifulawards.com/showcase/611-the-graphic-continuum):
   Jon Swabish and Severino Ribecca
