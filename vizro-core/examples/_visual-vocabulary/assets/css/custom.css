@@ -64,8 +64,15 @@ img[src*="#chart-icon"] {
   padding: 4px 12px;
 }
 
+.intro-text h4 {
+  color: var(--text-secondary);
+}
+
 .intro-text p {
-  font-size: 16px;
-  line-height: 20px;
   margin: 0;
+  font-size: 12px;
+}
+
+.intro-text p a {
+  font-size: inherit;
 }

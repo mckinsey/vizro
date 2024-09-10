@@ -43,9 +43,7 @@ class ChartGroup:
 
 
 deviation_intro_text = """
-Deviation enables you to draw attention to variations (+/-) from a fixed reference point.
-Often this reference point is zero, but you might also show a target or a long term average.
-You can also use deviation to express a positive, neutral or negative sentiment.
+#### Deviation enables you to draw attention to variations (+/-) from a fixed reference point. Often this reference point is zero, but you might also show a target or a long term average. You can also use deviation to express a positive, neutral or negative sentiment.
 """
 deviation_chart_group = ChartGroup(
     name="Deviation",
@@ -61,9 +59,7 @@ deviation_chart_group = ChartGroup(
 
 
 correlation_intro_text = """
-Correlation helps you show the relationship between two or more variables. It is important that you
-make it clear to your audience whether or not the relationship is causal, i.e., whether one causes the
-other.
+#### Correlation helps you show the relationship between two or more variables. It is important that you make it clear to your audience whether or not the relationship is causal, i.e., whether one causes the other.
 """
 correlation_chart_group = ChartGroup(
     name="Correlation",
@@ -77,9 +73,7 @@ correlation_chart_group = ChartGroup(
 
 
 ranking_intro_text = """
-Ranking enables you to present items in an ordered list. Use this when you want to highlight the
-position of an item rather than its absolute or relative value. You might want to emphasize the most
-interesting points with highlighting or labels to ensure the reader understands what matters most.
+#### Ranking enables you to present items in an ordered list. Use this when you want to highlight the position of an item rather than its absolute or relative value. You might want to emphasize the most interesting points with highlighting or labels to ensure the reader understands what matters most.
 """
 ranking_chart_group = ChartGroup(
     name="Ranking",
@@ -96,11 +90,7 @@ ranking_chart_group = ChartGroup(
 
 
 distribution_intro_text = """
-Distribution helps you to present all the possible values (or intervals) of your data and how often they
-occur. You can organize the data to show the number or percentage of items in a specified group, what shape
-the group takes, where the center lies, and how much variability there is in the data. This shape
-(or _skew_) of a distribution can be a powerful way for you to highlight either the existence or lack of
-uniformity or equality in the data.
+#### Distribution helps you to present all the possible values (or intervals) of your data and how often they occur. You can organize the data to show the number or percentage of items in a specified group, what shape the group takes, where the center lies, and how much variability there is in the data. This shape (or _skew_) of a distribution can be a powerful way for you to highlight either the existence or lack of uniformity or equality in the data.
 """
 distribution_chart_group = ChartGroup(
     name="Distribution",
@@ -116,10 +106,7 @@ distribution_chart_group = ChartGroup(
 )
 
 magnitude_intro_text = """
-Magnitude allows you to emphasize size comparisons of **counted** items in your data set. You can show
-relative comparisons (whether something is larger or smaller) or absolute differences (where the nuances
-are most interesting). Typically, you will use magnitude for actual numbers versus calculated rates or
-percentages.
+#### Magnitude allows you to emphasize size comparisons of **counted** items in your data set. You can show relative comparisons (whether something is larger or smaller) or absolute differences (where the nuances are most interesting). Typically, you will use magnitude for actual numbers versus calculated rates or percentages.
 """
 magnitude_chart_group = ChartGroup(
     name="Magnitude",
@@ -137,9 +124,7 @@ magnitude_chart_group = ChartGroup(
 )
 
 time_intro_text = """
-Time helps you draw attention to important trends emerging over a specified period. The time period you
-select could be as short as seconds or as long as centuries. What matters most is selecting the correct
-period of time to best show your audience the message they need to take away.
+#### Time helps you draw attention to important trends emerging over a specified period. The time period you select could be as short as seconds or as long as centuries. What matters most is selecting the correct period of time to best show your audience the message they need to take away.
 """
 time_chart_group = ChartGroup(
     name="Time",
@@ -157,8 +142,7 @@ time_chart_group = ChartGroup(
 
 
 part_to_whole_intro_text = """
-Part-to-whole helps you show how one whole item breaks down into its component parts. If you consider the
-size of the parts to be most important, a magnitude chart may be more appropriate.
+#### Part-to-whole helps you show how one whole item breaks down into its component parts. If you consider the size of the parts to be most important, a magnitude chart may be more appropriate.
 """
 part_to_whole_chart_group = ChartGroup(
     name="Part-to-whole",
@@ -175,9 +159,7 @@ part_to_whole_chart_group = ChartGroup(
 )
 
 flow_intro_text = """
-With flow charts, you can highlight the quantity or the intensity of the movement between more than one
-state or condition. The flow might be steps in a logical sequence or movement between different geographical
-locations.
+#### With flow charts, you can highlight the quantity or the intensity of the movement between more than one state or condition. The flow might be steps in a logical sequence or movement between different geographical locations.
 """
 flow_chart_group = ChartGroup(
     name="Flow",
@@ -192,7 +174,7 @@ flow_chart_group = ChartGroup(
 )
 
 spatial_intro_text = """
-Spatial charts allow you to demonstrate precise locations or geographical patterns in your data.
+#### Spatial charts allow you to demonstrate precise locations or geographical patterns in your data.
 """
 spatial_chart_group = ChartGroup(
     name="Spatial",
@@ -218,33 +200,34 @@ CHART_GROUPS = [
 ]
 
 all_intro_text = """
-This dashboard shows a gallery of charts. It includes guidance on when to use each chart type and sample Python code
-to create them using [Plotly](https://plotly.com/python/) and [Vizro](https://github.com/mckinsey/vizro).
+
+### Welcome to our visual vocabulary dashboard! 🎨
+
+#### This dashboard serves as a comprehensive guide for selecting and creating various types of charts. It provides guidance on when to use each chart type, along with sample Python code using [Plotly](https://plotly.com/python/), and instructions for embedding these charts into a [Vizro](https://github.com/mckinsey/vizro) dashboard.
+
+#### The charts in this dashboard are designed to make it easy for anyone to create beautiful and sophisticated visuals.
+
+#### Our goal is to help you understand best practices in data visualization, ensure your charts effectively communicate your message, and streamline the creation of high-quality, interactive visualizations.
 
 &nbsp;
 
-&nbsp;
 
-&nbsp;
-
-**Created by:**
+Created by:
 - [Huong Li Nguyen](https://github.com/huong-li-nguyen) and [Antony Milne](https://github.com/antonymilne)
 
 - Images created by QuantumBlack
 
-**Inspired by:**
+Inspired by:
 - [The FT Visual Vocabulary](https://github.com/Financial-Times/chart-doctor/blob/main/visual-vocabulary/README.md):
 Alan Smith, Chris Campbell, Ian Bott, Liz Faunce, Graham Parrish, Billy Ehrenberg, Paul McCallum,Martin Stabe.
 
 - [The Graphic Continuum](https://www.informationisbeautifulawards.com/showcase/611-the-graphic-continuum):
 Jon Swabish and Severino Ribecca
 
-&nbsp;
+Credits and sources:
+- Charting library: [Plotly](https://plotly.com/python/plotly-express/)
 
-**Credits and sources:**
-
-- [Plotly](https://plotly.com/python/plotly-express/)
-- [Guide to data chart mastery](https://www.atlassian.com/data/charts)
+- Data visualisation best practices: [Guide to data chart mastery](https://www.atlassian.com/data/charts)
 
 """
 

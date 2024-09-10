@@ -1,25 +1,35 @@
 # Vizro - Visual vocabulary
 
-This dashboard shows a gallery of charts. It includes guidance on when to use each chart type and sample Python code
-to create them using [Plotly](https://plotly.com/python/) and [Vizro](https://github.com/mckinsey/vizro).
+### Welcome to our visual vocabulary dashboard! 🎨
 
-**Created by:**
+This dashboard serves as a comprehensive guide for selecting and creating various types of charts. It provides guidance 
+on when to use each chart type, along with sample Python code using [Plotly](https://plotly.com/python/), and 
+instructions for embedding these charts into a [Vizro](https://github.com/mckinsey/vizro) dashboard.
 
+The charts in this dashboard are designed to make it easy for anyone to create beautiful and sophisticated visuals.
+
+Our goal is to help you understand best practices in data visualization, ensure your charts effectively communicate 
+your message, and streamline the creation of high-quality, interactive visualizations.
+
+
+
+Created by:
 - [Huong Li Nguyen](https://github.com/huong-li-nguyen) and [Antony Milne](https://github.com/antonymilne)
 
 - Images created by QuantumBlack
 
-**Inspired by:**
+Inspired by:
+- [The FT Visual Vocabulary](https://github.com/Financial-Times/chart-doctor/blob/main/visual-vocabulary/README.md):
+Alan Smith, Chris Campbell, Ian Bott, Liz Faunce, Graham Parrish, Billy Ehrenberg, Paul McCallum,Martin Stabe.
 
-- [The FT Visual Vocabulary](https://github.com/Financial-Times/chart-doctor/blob/main/visual-vocabulary/README.md): Alan Smith, Chris Campbell, Ian Bott, Liz Faunce, Graham Parrish, Billy Ehrenberg, Paul McCallum,
-  Martin Stabe.
+- [The Graphic Continuum](https://www.informationisbeautifulawards.com/showcase/611-the-graphic-continuum):
+Jon Swabish and Severino Ribecca
 
-- [The Graphic Continuum](https://www.informationisbeautifulawards.com/showcase/611-the-graphic-continuum): Jon Swabish and Severino Ribecca
+Credits and sources:
+- Charting library: [Plotly](https://plotly.com/python/plotly-express/)
 
-**Credits, tutorials and resources:**
+- Data visualisation best practices: [Guide to data chart mastery](https://www.atlassian.com/data/charts)
 
-- [Plotly](https://plotly.com/python/plotly-express/)
-- [Guide to data chart mastery](https://www.atlassian.com/data/charts)
 
 ## Chart types
 
