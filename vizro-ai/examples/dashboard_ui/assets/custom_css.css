@@ -49,6 +49,7 @@
   overflow: auto;
   padding: 1rem;
   position: relative;
+  width: 100%;
 }
 
 .code-clipboard-container::-webkit-scrollbar-thumb {
@@ -175,4 +176,8 @@
   place-content: baseline center;
   position: fixed;
   width: 100%;
+}
+
+#clipboard-container {
+  overflow: hidden;
 }

@@ -11,25 +11,22 @@ from dash.exceptions import PreventUpdate
 
 
 def run_vizro_ai_dashboard(user_prompt, model, api_key, api_base, n_clicks, data, vendor):  # noqa: PLR0913
-    """Function for running VizroAI."""
-    data = json.loads(data)
-
+    """Function to run the VizroAI dashboard based on user inputs and API configurations."""
     if not n_clicks:
         raise PreventUpdate
 
     if not data:
         return "Please upload data to proceed!"
-
     if not api_key:
         return "API key not found. Make sure you enter your API key!"
 
     try:
-        df = pd.DataFrame(data["data"])
+        dfs = [pd.DataFrame(item) for item in json.loads(data).values()]
         ai_outputs = get_vizro_ai_dashboard(
-            user_prompt=user_prompt, dfs=df, model=model, api_key=api_key, api_base=api_base, vendor_input=vendor
+            user_prompt=user_prompt, dfs=dfs, model=model, api_key=api_key, api_base=api_base, vendor_input=vendor
         )
         ai_code = ai_outputs.code
-        formatted_code = black.format_str(ai_code, mode=black.Mode(line_length=90))
+        formatted_code = black.format_str(ai_code, mode=black.Mode(line_length=100))
 
         ai_response = "\n".join(["```python", formatted_code, "```"])
         return ai_response

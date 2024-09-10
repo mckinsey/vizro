@@ -50,7 +50,7 @@ dashboard_page = MyPage(
         grid=[[2, 2, 0, 0, 0], [1, 1, 0, 0, 0], [1, 1, 0, 0, 0], [1, 1, 0, 0, 0], [1, 1, 0, 0, 0], [3, 3, 0, 0, 0]]
     ),
     components=[
-        vm.Container(title="", components=[CodeClipboard(id="dashboard")]),
+        vm.Container(title="", components=[CodeClipboard(id="dashboard")], id="clipboard-container"),
         UserPromptTextArea(id="dashboard-text-area", placeholder="Describe the dashboard you want to create."),
         vm.Container(
             title="",
@@ -129,13 +129,13 @@ def open_settings(n_clicks, is_open):
 @callback(
     Output("dashboard-code-markdown", "children"),
     [
-        Input("dashboard-text-area", "value"),
-        Input("dashboard-model-dropdown", "value"),
-        Input("dashboard-settings-api-key", "value"),
-        Input("dashboard-settings-api-base", "value"),
+        State("dashboard-text-area", "value"),
+        State("dashboard-model-dropdown", "value"),
+        State("dashboard-settings-api-key", "value"),
+        State("dashboard-settings-api-base", "value"),
         Input("dashboard-trigger-button", "n_clicks"),
-        Input("dashboard-data-store", "data"),
-        Input("dashboard-settings-dropdown", "value"),
+        State("dashboard-data-store", "data"),
+        State("dashboard-settings-dropdown", "value"),
     ],
 )
 def run_script(user_prompt, model, api_key, api_base, n_clicks, data, vendor):  # noqa: PLR0913

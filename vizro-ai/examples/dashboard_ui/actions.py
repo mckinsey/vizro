@@ -1,11 +1,6 @@
 """Custom actions used within a dashboard."""
 
-import base64
-import io
-import logging
-
-import pandas as pd
-from _utils import check_file_extension
+from _utils import process_file
 from dash.exceptions import PreventUpdate
 from langchain_openai import ChatOpenAI
 from vizro.models.types import capture
@@ -19,44 +14,40 @@ def get_vizro_ai_dashboard(user_prompt, dfs, model, api_key, api_base, vendor_in
     vendor = SUPPORTED_VENDORS[vendor_input]
     llm = vendor(model_name=model, openai_api_key=api_key, openai_api_base=api_base)
     vizro_ai = VizroAI(model=llm)
-    ai_outputs = vizro_ai._dashboard([dfs], user_prompt, return_elements=True)
+    ai_outputs = vizro_ai._dashboard(dfs, user_prompt, return_elements=True)
 
     return ai_outputs
 
 
 @capture("action")
 def data_upload_action(contents, filename):
-    """Custom data upload action."""
+    """Custom action to handle data upload for single or multiple files."""
     if not contents:
         raise PreventUpdate
 
-    if not check_file_extension(filename=filename):
-        return {"error_message": "Unsupported file extension.. Make sure to upload either csv or an excel file."}
+    uploaded_data = {}
+    if isinstance(filename, str):
+        data = process_file(filename=filename, contents=contents)
+        uploaded_data[filename] = data
 
-    content_type, content_string = contents.split(",")
+    if isinstance(filename, list):
+        for index, item in enumerate(filename):
+            data = process_file(filename=item, contents=contents[index])
+            uploaded_data[item] = data
 
-    try:
-        decoded = base64.b64decode(content_string)
-        if filename.endswith(".csv"):
-            # Handle CSV file
-            df = pd.read_csv(io.StringIO(decoded.decode("utf-8")))
-        else:
-            # Handle Excel file
-            df = pd.read_excel(io.BytesIO(decoded))
-
-        data = df.to_dict("records")
-        return {"data": data, "filename": filename}
-
-    except Exception as e:
-        logging.exception(e)
-        return {"error_message": "There was an error processing this file."}
+    return uploaded_data
 
 
 @capture("action")
 def display_filename(data):
-    """Custom action to display uploaded filename."""
-    if data is None:
+    """Custom action to display the uploaded filename."""
+    if not data:
         raise PreventUpdate
+    # Check for any error message in the data
+    error_message = data.get("error_message")
 
-    display_message = data.get("filename") or data.get("error_message")
-    return f"Uploaded file name: '{display_message}'" if "filename" in data else display_message
+    if error_message:
+        return error_message
+
+    filenames = ", ".join(data.keys())
+    return f"Uploaded file name: '{filenames}'"

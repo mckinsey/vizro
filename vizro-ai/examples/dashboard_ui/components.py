@@ -71,6 +71,7 @@ class UserUpload(vm.VizroBaseModel):
                     children=html.Div(
                         ["Drag and Drop or ", html.A("Select Files")], style={"fontColor": "rgba(255, 255, 255, 0.6)"}
                     ),
+                    multiple=True,
                 ),
             ]
         )
@@ -85,17 +86,17 @@ class CodeClipboard(vm.VizroBaseModel):
 
     def build(self):
         """Returns the code clipboard component inside a output text area."""
-        code = black.format_str(self.code, mode=black.Mode(line_length=120))
+        code = black.format_str(self.code, mode=black.Mode(line_length=100))
         code = code.strip("'\"")
 
         markdown_code = "\n".join(["```python", code, "```"])
 
-        return html.Div(
+        return dcc.Loading(
             [
                 dcc.Clipboard(target_id=f"{self.id}-code-markdown", className="code-clipboard"),
                 dcc.Markdown(markdown_code, id=f"{self.id}-code-markdown"),
             ],
-            className="code-clipboard-container",
+            parent_className="code-clipboard-container",
         )
 
 
