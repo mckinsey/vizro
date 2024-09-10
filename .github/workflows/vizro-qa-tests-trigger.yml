@@ -46,7 +46,7 @@ jobs:
           export INPUT_REPO=${{ secrets.VIZRO_QA_REPO }}
           if [ "${{ matrix.label }}" == "integration tests" ]; then
             export INPUT_WORKFLOW_FILE_NAME=${{ secrets.VIZRO_QA_INTEGRATION_TESTS_WORKFLOW }}
-          if [ "${{ matrix.label }}" == "notebooks test" ]; then
+          elif [ "${{ matrix.label }}" == "notebooks test" ]; then
             export INPUT_WORKFLOW_FILE_NAME=${{ secrets.VIZRO_QA_NOTEBOOKS_TESTS_WORKFLOW }}
           elif [ "${{ matrix.label }}" == "vizro-ai ui tests" ]; then
             export INPUT_WORKFLOW_FILE_NAME=${{ secrets.VIZRO_QA_VIZRO_AI_UI_TESTS_WORKFLOW }}
