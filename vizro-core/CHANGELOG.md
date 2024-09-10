@@ -11,6 +11,28 @@ See the fragment files in the [changelog.d directory](https://github.com/mckinse
 
 <!-- scriv-insert-here -->
 
+<a id='changelog-0.1.22'></a>
+
+# 0.1.22 — 2024-09-10
+
+## Removed
+
+- Remove automatic alignment for chart title when it's specified within a Plotly chart. A warning will now suggest using `Graph.title` instead. ([#669](https://github.com/mckinsey/vizro/pull/669))
+
+## Added
+
+- Enable `header` and `footer` argument inside `Graph`, `Table` and `AgGrid`. ([#669](https://github.com/mckinsey/vizro/pull/669))
+
+- Enable `title` argument inside `Graph`. ([#669](https://github.com/mckinsey/vizro/pull/669))
+
+- Add chart layout template specification for `map_style`. ([#677](https://github.com/mckinsey/vizro/pull/677))
+
+## Fixed
+
+- Fix bug that prevented `VizroBaseModel._to_python()` to convert `dict` fields of models correctly. ([#660](https://github.com/mckinsey/vizro/pull/660))
+
+- Fix dynamically calculated row height for `Dropdown` when the options are provided as dictionaries. ([#672](https://github.com/mckinsey/vizro/pull/672))
+
 <a id='changelog-0.1.21'></a>
 
 # 0.1.21 — 2024-08-28
