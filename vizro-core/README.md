@@ -80,7 +80,7 @@ Optional high-code extensions allow almost infinite customization in a modular w
 
 <br/>
 
-### Key benefits
+## Key benefits of Vizro
 
 <br/>
 
@@ -90,17 +90,30 @@ Optional high-code extensions allow almost infinite customization in a modular w
 
 <br/>
 
-### Dashboard screenshots
+## Vizro examples gallery
+
+You can see Vizro in action by clicking on the following image or by visiting [the examples gallery at vizro.mckinsey.com](https://vizro.mckinsey.com).
+
+<p align="center">
+<a href="http://vizro.mckinsey.com/">
+<img src="https://raw.githubusercontent.com/mckinsey/vizro/main/.github/images/vizro_examples_gallery.png" width="900">
+</a>
+</p>
+
+## Vizro visual vocabulary
+
+Our visual vocabulary dashboard helps you to select and create various types of charts. It helps you decide when to use each chart type, and offers sample Python code using [Plotly](https://plotly.com/python/).
+
+<p align="center">
+<a href="https://huggingface.co/spaces/vizro/demo-visual-vocabulary/">
+<img src="https://raw.githubusercontent.com/mckinsey/vizro/main/.github/images/visual_vocabulary.png" width="900">
+</a>
+</p>
+
+## Dashboard screenshots
 
 <p align="center">
 <img src="https://raw.githubusercontent.com/mckinsey/vizro/main/.github/images/dashboard_examples.png" width="1300"/>
-</p>
-
-### Vizro examples gallery
-
-<p align="left">
-<a href="http://vizro.mckinsey.com/">
-<img border="0" src="https://raw.githubusercontent.com/mckinsey/vizro/main/.github/images/live_interactive_demo.png" width="525" height="296">  </a>
 </p>
 
 ## Installation
