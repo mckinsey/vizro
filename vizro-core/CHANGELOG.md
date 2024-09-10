@@ -29,7 +29,7 @@ See the fragment files in the [changelog.d directory](https://github.com/mckinse
 
 ## Fixed
 
-- Fix bug that prevented `VizroBaseModel._to_python()` to convert `dict` fields of models correctly ([#660](https://github.com/mckinsey/vizro/pull/660))
+- Fix bug that prevented `VizroBaseModel._to_python()` to convert `dict` fields of models correctly. ([#660](https://github.com/mckinsey/vizro/pull/660))
 
 - Fix dynamically calculated row height for `Dropdown` when the options are provided as dictionaries. ([#672](https://github.com/mckinsey/vizro/pull/672))
 
