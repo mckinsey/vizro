@@ -2,34 +2,34 @@
 
 ### Welcome to our visual vocabulary dashboard! 🎨
 
-This dashboard serves as a comprehensive guide for selecting and creating various types of charts. It provides guidance 
-on when to use each chart type, along with sample Python code using [Plotly](https://plotly.com/python/), and 
+This dashboard serves as a comprehensive guide for selecting and creating various types of charts. It provides guidance
+on when to use each chart type, along with sample Python code using [Plotly](https://plotly.com/python/), and
 instructions for embedding these charts into a [Vizro](https://github.com/mckinsey/vizro) dashboard.
 
 The charts in this dashboard are designed to make it easy for anyone to create beautiful and sophisticated visuals.
 
-Our goal is to help you understand best practices in data visualization, ensure your charts effectively communicate 
+Our goal is to help you understand best practices in data visualization, ensure your charts effectively communicate
 your message, and streamline the creation of high-quality, interactive visualizations.
 
-
-
 Created by:
+
 - [Huong Li Nguyen](https://github.com/huong-li-nguyen) and [Antony Milne](https://github.com/antonymilne)
 
 - Images created by QuantumBlack
 
 Inspired by:
+
 - [The FT Visual Vocabulary](https://github.com/Financial-Times/chart-doctor/blob/main/visual-vocabulary/README.md):
-Alan Smith, Chris Campbell, Ian Bott, Liz Faunce, Graham Parrish, Billy Ehrenberg, Paul McCallum,Martin Stabe.
+  Alan Smith, Chris Campbell, Ian Bott, Liz Faunce, Graham Parrish, Billy Ehrenberg, Paul McCallum,Martin Stabe.
 
 - [The Graphic Continuum](https://www.informationisbeautifulawards.com/showcase/611-the-graphic-continuum):
-Jon Swabish and Severino Ribecca
+  Jon Swabish and Severino Ribecca
 
 Credits and sources:
+
 - Charting library: [Plotly](https://plotly.com/python/plotly-express/)
 
-- Data visualisation best practices: [Guide to data chart mastery](https://www.atlassian.com/data/charts)
-
+- Data visualization best practices: [Guide to data chart mastery](https://www.atlassian.com/data/charts)
 
 ## Chart types
 
