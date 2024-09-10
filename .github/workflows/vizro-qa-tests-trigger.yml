@@ -37,6 +37,7 @@ jobs:
         include:
           - label: integration tests
           - label: notebooks test
+          - label: vizro-ai ui tests
     steps:
       - uses: actions/checkout@v4
       - name: Tests trigger
