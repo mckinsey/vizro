@@ -22,6 +22,7 @@ jobs:
         include:
           - label: integration tests
           - label: notebooks tests
+          - label: vizro-ai ui tests
     steps:
       - name: Passed fork step
         run: echo "Success!"
@@ -44,8 +45,10 @@ jobs:
           export INPUT_REPO=${{ secrets.VIZRO_QA_REPO }}
           if [ "${{ matrix.label }}" == "integration tests" ]; then
             export INPUT_WORKFLOW_FILE_NAME=${{ secrets.VIZRO_QA_INTEGRATION_TESTS_WORKFLOW }}
-          elif [ "${{ matrix.label }}" == "notebooks test" ]; then
+          if [ "${{ matrix.label }}" == "notebooks test" ]; then
             export INPUT_WORKFLOW_FILE_NAME=${{ secrets.VIZRO_QA_NOTEBOOKS_TESTS_WORKFLOW }}
+          elif [ "${{ matrix.label }}" == "vizro-ai ui tests" ]; then
+            export INPUT_WORKFLOW_FILE_NAME=${{ secrets.VIZRO_QA_VIZRO_AI_UI_TESTS_WORKFLOW }}
           fi
           export INPUT_GITHUB_TOKEN=${{ secrets.VIZRO_SVC_PAT }}
           export INPUT_REF=main # because we should send existent branch to dispatch workflow
