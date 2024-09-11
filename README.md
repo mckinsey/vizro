@@ -108,7 +108,9 @@ You can see Vizro in action by clicking on the following image or by visiting [t
 
 ## Vizro visual vocabulary
 
-Our visual vocabulary dashboard helps you to select and create various types of charts. It helps you decide when to use each chart type, and offers sample Python code using [Plotly](https://plotly.com/python/).
+Our visual vocabulary dashboard helps you to select and create various types of charts. It helps you decide when to use
+each chart type, and offers sample Python code to create these charts with [Plotly](https://plotly.com/python/) and
+embed them into a Vizro dashboard.
 
 <a href="https://huggingface.co/spaces/vizro/demo-visual-vocabulary/">
 <img src="https://raw.githubusercontent.com/mckinsey/vizro/main/.github/images/visual_vocabulary.png" width="600">
