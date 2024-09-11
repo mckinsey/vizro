@@ -78,7 +78,7 @@ Optional high-code extensions enable almost infinite customization in a modular 
 
 Visit ["Why should I use Vizro?"](https://vizro.readthedocs.io/en/stable/pages/explanation/faq/#why-should-i-use-vizro) for a more detailed explanation of Vizro use cases.
 
-### What is Vizro-AI?
+## What is Vizro-AI?
 
 Vizro-AI is a separate package and extends Vizro to enable the use of natural language queries to build Plotly charts.
 

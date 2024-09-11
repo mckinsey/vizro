@@ -80,7 +80,7 @@ Optional high-code extensions allow almost infinite customization in a modular w
 
 <br/>
 
-### Key benefits
+## Key benefits of Vizro
 
 <br/>
 
