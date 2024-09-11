@@ -103,7 +103,7 @@ See the [Vizro-AI documentation](https://vizro.readthedocs.io/projects/vizro-ai/
 You can see Vizro in action by clicking on the following image or by visiting [the examples gallery at vizro.mckinsey.com](https://vizro.mckinsey.com).
 
 <a href="http://vizro.mckinsey.com/">
-<img src="https://raw.githubusercontent.com/mckinsey/vizro/main/.github/images/vizro_examples_gallery.png" width="500">
+<img src="https://raw.githubusercontent.com/mckinsey/vizro/main/.github/images/vizro_examples_gallery.png" width="550">
 </a>
 
 ## Vizro visual vocabulary
@@ -113,7 +113,7 @@ each chart type, and offers sample Python code to create these charts with [Plot
 embed them into a Vizro dashboard.
 
 <a href="https://huggingface.co/spaces/vizro/demo-visual-vocabulary/">
-<img src="https://raw.githubusercontent.com/mckinsey/vizro/main/.github/images/visual_vocabulary.png" width="500">
+<img src="https://raw.githubusercontent.com/mckinsey/vizro/main/.github/images/visual_vocabulary.png" width="550">
 </a>
 
 ## Dashboard screenshots
