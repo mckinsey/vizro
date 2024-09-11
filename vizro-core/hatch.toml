@@ -112,7 +112,7 @@ scripts = {lint = "SKIP=gitleaks pre-commit run {args:--all-files}"}
 extra-dependencies = [
   "pydantic==1.10.13",
   "dash==2.17.1",
-  "plotly==5.14.0"
+  "plotly==5.14.1"
 ]
 
 [publish.index]
