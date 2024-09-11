@@ -5,7 +5,7 @@ import subprocess
 
 import dash_bootstrap_components as dbc
 import vizro.models as vm
-from actions import data_upload_action, display_filename
+from actions import data_upload_action, display_filename, display_image_name, image_upload_action
 from components import (
     CodeClipboard,
     CustomDashboard,
@@ -47,14 +47,22 @@ dashboard_page = MyPage(
     id="vizro_ai_dashboard_page",
     title="Vizro AI - Dashboard",
     layout=vm.Layout(
-        grid=[[2, 2, 0, 0, 0], [1, 1, 0, 0, 0], [1, 1, 0, 0, 0], [1, 1, 0, 0, 0], [1, 1, 0, 0, 0], [3, 3, 0, 0, 0]]
+        grid=[
+            [2, 2, 0, 0, 0],
+            [2, 2, 0, 0, 0],
+            [1, 1, 0, 0, 0],
+            [1, 1, 0, 0, 0],
+            [1, 1, 0, 0, 0],
+            [1, 1, 0, 0, 0],
+            [3, 3, 0, 0, 0],
+        ]
     ),
     components=[
         vm.Container(title="", components=[CodeClipboard(id="dashboard")], id="clipboard-container"),
         UserPromptTextArea(id="dashboard-text-area", placeholder="Describe the dashboard you want to create."),
         vm.Container(
             title="",
-            layout=vm.Layout(grid=[[0], [1]], row_gap="0px"),
+            layout=vm.Layout(grid=[[0], [1], [2], [3]], row_gap="0px"),
             components=[
                 vm.Card(id="dashboard-upload-message-id", text="Upload your data files (csv or excel)"),
                 UserUpload(
@@ -69,6 +77,22 @@ dashboard_page = MyPage(
                             function=display_filename(),
                             inputs=["dashboard-data-store.data"],
                             outputs=["dashboard-upload-message-id.children"],
+                        ),
+                    ],
+                ),
+                vm.Card(id="image-upload-message-id", text="Upload your image"),
+                UserUpload(
+                    id="image-upload",
+                    actions=[
+                        vm.Action(
+                            function=image_upload_action(),
+                            inputs=["image-upload.contents", "image-upload.filename"],
+                            outputs=["image-store-id.data"],
+                        ),
+                        vm.Action(
+                            function=display_image_name(),
+                            inputs=["image-store-id.data"],
+                            outputs=["image-upload-message-id.children"],
                         ),
                     ],
                 ),
@@ -129,7 +153,7 @@ def open_settings(n_clicks, is_open):
 @callback(
     Output("dashboard-code-markdown", "children"),
     [
-        State("dashboard-text-area", "value"),
+        State("image-store-id", "data"),
         State("dashboard-model-dropdown", "value"),
         State("dashboard-settings-api-key", "value"),
         State("dashboard-settings-api-base", "value"),
@@ -138,18 +162,19 @@ def open_settings(n_clicks, is_open):
         State("dashboard-settings-dropdown", "value"),
     ],
 )
-def run_script(user_prompt, model, api_key, api_base, n_clicks, data, vendor):  # noqa: PLR0913
+def run_script(images, model, api_key, api_base, n_clicks, data, vendor):  # noqa: PLR0913
     """Callback for triggering subprocess that run vizro-ai."""
     data = json.dumps(data)
+    images = json.dumps(images)
     if n_clicks is None:
         raise PreventUpdate
     else:
         result = subprocess.run(
             [
                 "python",
-                "run_vizro_ai.py",
+                "run_img_to_dashboard.py",
                 "--arg1",
-                f"{user_prompt}",
+                f"{images}",
                 "--arg2",
                 f"{model}",
                 "--arg3",

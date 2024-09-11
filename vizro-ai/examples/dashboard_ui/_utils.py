@@ -5,6 +5,7 @@ import io
 import logging
 
 import pandas as pd
+from langchain.schema import HumanMessage
 
 
 def check_file_extension(filename):
@@ -36,3 +37,16 @@ def process_file(contents, filename):
         logging.exception(f"Error processing the file '{filename}': {e}")
         logging.exception(e)
         return {"error_message": f"There was an error processing the file '{filename}'."}
+
+
+def construct_message(images, question):
+    """Construct a HumanMessage with a dynamic number of images.
+
+    :param images: List of base64-encoded image data
+    :param question: The question to ask about the images
+    :return: HumanMessage object
+    """
+    content = [{"type": "text", "text": question}]
+    for img_data in images:
+        content.append({"type": "image_url", "image_url": {"url": f"{img_data}"}})
+    return HumanMessage(content=content)

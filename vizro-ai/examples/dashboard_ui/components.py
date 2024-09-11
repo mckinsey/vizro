@@ -261,5 +261,5 @@ class CustomDashboard(vm.Dashboard):
         """Returns custom dashboard."""
         dashboard_build_obj = super().build()
         dashboard_build_obj.children.append(dcc.Store(id="dashboard-data-store", storage_type="session"))
-        # dashboard_build_obj.children.append(dcc.Store(id="outputs-store-id", storage_type="session"))
+        dashboard_build_obj.children.append(dcc.Store(id="image-store-id", storage_type="session"))
         return dashboard_build_obj

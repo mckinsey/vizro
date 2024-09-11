@@ -51,3 +51,25 @@ def display_filename(data):
 
     filenames = ", ".join(data.keys())
     return f"Uploaded file name: '{filenames}'"
+
+
+@capture("action")
+def image_upload_action(contents, filename):
+    """Custom action to handle data upload for single or multiple files."""
+    if not contents:
+        raise PreventUpdate
+
+    uploaded_image = {}
+    for image, file in zip(contents, filename):
+        uploaded_image[file] = image
+    return uploaded_image
+
+
+@capture("action")
+def display_image_name(data):
+    """Custom action to display the uploaded filename."""
+    if not data:
+        raise PreventUpdate
+
+    filenames = ", ".join(data.keys())
+    return f"Uploaded images: '{filenames}'"

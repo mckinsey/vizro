@@ -26,7 +26,7 @@
   background-color: inherit;
   border: 1px solid var(--border-subtle-alpha-01);
   color: var(--text-primary);
-  height: 500px;
+  height: 450px;
   padding: 8px;
   width: 100%;
 }
@@ -107,14 +107,14 @@
   padding-top: 8px;
 }
 
-.card:has(#dashboard-upload-message-id) {
+.card:has(#dashboard-upload-message-id, #image-upload-message-id) {
   background-color: inherit;
   box-shadow: none;
   font-size: 12px;
   overflow: hidden;
   padding-bottom: 0;
   padding-left: 0;
-  padding-top: 8px;
+  padding-top: 20px;
 }
 
 .card:has(#settings-card-id) {
@@ -180,4 +180,13 @@
 
 #clipboard-container {
   overflow: hidden;
+}
+
+#image-upload {
+  border: 1px dashed var(--border-subtle-alpha-01);
+  border-radius: 5px;
+  color: var(--text-primary);
+  height: 46px;
+  line-height: 46px;
+  text-align: center;
 }
