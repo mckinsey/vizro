@@ -67,84 +67,86 @@ def test_simple_dashboard(dash_duo, model_name):  # noqa: PLR0915
     dash_duo.start_server(app)
     assert dash_duo.get_logs() == []
 
-    pages = [1 if dashboard.pages else 0][0]
-    pages_num = [1 if len(dashboard.pages) == 2 else 0][0]
+    def logic(
+            pages={"num": 2},
+            components=[{"page_num": 1, "num": 1}, {"page_num": 2, "num": 3}],
+            controls=[{"page_num": 1, "num": 0}, {"page_num": 2, "num": 2}],
+            components_types=[{"page_num": 1, "type": "ag_grid", "num": 1}, {"page_num": 2, "type": "card", "num": 2},
+                              {"page_num": 2, "type": "graph", "num": 1}],
+            controls_types=[{"page_num": 2, "type": "filter", "num": 2}]
+    ):
+        pages_exist = [1 if dashboard.pages else 0][0]
+        pages_num = [1 if len(dashboard.pages) == pages["num"] else 0][0]
 
-    try:
-        grid_1 = [1 if dashboard.pages[0].layout.grid[0] == [0] else 0][0]
-    except IndexError:
-        grid_1 = 0
-    try:
-        grid_2 = [1 if dashboard.pages[1].layout.grid[0] == [0, 1, 1] else 0][0]
-    except IndexError:
-        grid_2 = 0
+        components_num = []
+        if components:
+            for component in components:
+                try:
+                    components = [1 if len(dashboard.pages[component["page_num"]-1].components) == component["num"] else 0][0]
+                except IndexError:
+                    components = 0
+                components_num.append(components)
 
-    try:
-        components_num_1 = [1 if len(dashboard.pages[0].components) == 1 else 0][0]
-    except IndexError:
-        components_num_1 = 0
-    try:
-        components_num_2 = [1 if len(dashboard.pages[1].components) == 3 else 0][0]
-    except IndexError:
-        components_num_2 = 0
+        controls_num = []
+        if controls:
+            for control in controls:
+                try:
+                    controls = [1 if len(dashboard.pages[control["page_num"]-1].controls) == control["num"] else 0][0]
+                except IndexError:
+                    controls = 0
+                controls_num.append(controls)
 
-    try:
-        controls_num_1 = [1 if len(dashboard.pages[0].controls) == 0 else 0][0]
-    except IndexError:
-        controls_num_1 = 0
-    try:
-        controls_num_2 = [1 if len(dashboard.pages[1].controls) == 2 else 0][0]
-    except IndexError:
-        controls_num_2 = 0
+        components_types_names = []
+        if components_types:
+            for components_type in components_types:
+                try:
+                    comps = [components.type for components in dashboard.pages[components_type["page_num"]-1].components]
+                    components_types = [1 if comps.count(components_type["type"]) == components_type["num"] else 0][0]
+                except IndexError:
+                    components_types = 0
+                components_types_names.append(components_types)
 
-    try:
-        comps_1 = [components.type for components in dashboard.pages[0].components]
-        components_types_1 = [1 if comps_1.count("ag_grid") == 1 else 0][0]
-    except IndexError:
-        components_types_1 = 0
-    try:
-        comps_2 = [components.type for components in dashboard.pages[1].components]
-        components_types_2 = [1 if comps_2.count("card") == 2 and comps_2.count("graph") == 1 else 0][0]
-    except IndexError:
-        components_types_2 = 0
+        controls_types_names = []
+        if controls_types:
+            for controls_type in controls_types:
+                try:
+                    cntrls = [controls.type for controls in dashboard.pages[controls_type["page_num"]-1].controls]
+                    controls_types = [1 if cntrls.count(controls_type["type"]) == controls_type["num"] else 0][0]
+                except IndexError:
+                    controls_types = 0
+                controls_types_names.append(controls_types)
 
-    try:
-        cntrls_2 = [controls.type for controls in dashboard.pages[1].controls]
-        controls_types_2 = [1 if cntrls_2.count("filter") == 2 else 0][0]
-    except IndexError:
-        controls_types_2 = 0
+        prescore = [
+            pages_exist,
+            pages_num,
+        ]
+        prescore.extend(components_num)
+        prescore.extend(controls_num)
+        prescore.extend(components_types_names)
+        prescore.extend(controls_types_names)
+        print("prescore: ", prescore)
+        score = sum(prescore)
 
-    prescore = [
-        pages,
-        pages_num,
-        grid_1,
-        grid_2,
-        components_num_1,
-        components_num_2,
-        controls_num_1,
-        controls_num_2,
-        components_types_1,
-        components_types_2,
-        controls_types_2,
-    ]
-    score = sum(prescore)
+        with open(f"{report_dir}/report_model_{model_name}.csv", "a", newline="") as csvfile:
+            writer = csv.writer(csvfile, delimiter=",")
+            writer.writerow([f"Vizro type = {vizro_type}, Datetime = {datetime.now()}"])
+            writer.writerow([])
+            writer.writerow(["Description, Score"])
+            writer.writerow([f"Pages exists: {pages_exist}"])
+            writer.writerow([f"Correct pages number: {pages_num}"])
+            writer.writerow([f"Correct components number: {components_num}"])
+            writer.writerow([f"Correct controls number: {controls_num}"])
+            writer.writerow([f"Correct components types: {components_types_names}"])
+            writer.writerow([f"Correct controls types: {controls_types_names}"])
+            writer.writerow([f"Total, {(score / len(prescore)):.4f}"])
+            writer.writerow([])
+            writer.writerow([])
 
-    with open(f"{report_dir}/report_model_{model_name}.csv", "a", newline="") as csvfile:
-        writer = csv.writer(csvfile, delimiter=",")
-        writer.writerow([f"Vizro type = {vizro_type}, Datetime = {datetime.now()}"])
-        writer.writerow([])
-        writer.writerow(["Description, Score"])
-        writer.writerow([f"Pages exists, {pages}"])
-        writer.writerow([f"Correct pages number, {pages_num}"])
-        writer.writerow([f"Correct grid first page, {grid_1}"])
-        writer.writerow([f"Correct grid second page, {grid_2}"])
-        writer.writerow([f"Correct components number first page, {components_num_1}"])
-        writer.writerow([f"Correct components number second page, {components_num_2}"])
-        writer.writerow([f"Correct controls number first page, {controls_num_1}"])
-        writer.writerow([f"Correct controls number second page, {controls_num_2}"])
-        writer.writerow([f"Correct components types first page, {components_types_1}"])
-        writer.writerow([f"Correct components types second page, {components_types_2}"])
-        writer.writerow([f"Correct controls types second page, {controls_types_2}"])
-        writer.writerow([f"Total, {(score / len(prescore)):.4f}"])
-        writer.writerow([])
-        writer.writerow([])
+    logic(
+        pages={"num": 2},
+        components=[{"page_num": 1, "num": 1}, {"page_num": 2, "num": 3}],
+        controls=[{"page_num": 1, "num": 0}, {"page_num": 2, "num": 2}],
+        components_types=[{"page_num": 1, "type": "ag_grid", "num": 1}, {"page_num": 2, "type": "card", "num": 2},
+                          {"page_num": 2, "type": "graph", "num": 1}],
+        controls_types=[{"page_num": 2, "type": "filter", "num": 2}]
+    )
