@@ -39,7 +39,6 @@ Uncomment the section that is right (remove the HTML comment wrapper).
 
 - Fix incompatibility with older `plotly versions` due to chart template update. ([#695](https://github.com/mckinsey/vizro/pull/695))
 
-
 <!--
 ### Security
 
