@@ -2,9 +2,37 @@
 
 There is no setup needed for your first dashboard, thanks to the amazing [Py.Cafe](https://py.cafe/).
 
-Follow the [Edit live on Py.Cafe](https://py.cafe/vizro-official/vizro-iris-analysis) link and you can see the code of the below dashboard and experiment with it.
+Click on the **Run and edit this code in Py.Cafe** link below to live-edit the dashboard.
 
-<iframe src="https://py.cafe/embed/vizro-official/vizro-iris-analysis" width="100%" height="600px"></iframe>
+!!! example "First dashboard"
+    === "app.py"
+        ```{.python pycafe-link}
+        import vizro.plotly.express as px
+        from vizro import Vizro
+        import vizro.models as vm
+
+        df = px.data.iris()
+
+        page = vm.Page(
+            title="My first dashboard",
+            components=[
+                vm.Graph(id="scatter_chart", figure=px.scatter(df, x="sepal_length", y="petal_width", color="species")),
+                vm.Graph(id="hist_chart", figure=px.histogram(df, x="sepal_width", color="species")),
+            ],
+            controls=[
+                vm.Filter(column="species", selector=vm.Dropdown(value=["ALL"])),
+            ],
+        )
+
+        dashboard = vm.Dashboard(pages=[page])
+        Vizro().build(dashboard).run()
+        ```
+
+    === "Result"
+
+        [![FirstDash]][FirstDash]
+
+    [FirstDash]: ../../assets/tutorials/dashboard/first-dashboard.png
 
 <!-- vale off -->
 ## Can I break your code?
