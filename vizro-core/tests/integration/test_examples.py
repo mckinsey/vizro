@@ -47,7 +47,8 @@ examples_path = Path(__file__).parents[2] / "examples"
 @pytest.mark.filterwarnings("ignore:HTTPResponse.getheader()")
 # Ignore as it doesn't affect the test run
 @pytest.mark.filterwarnings("ignore::pytest.PytestUnhandledThreadExceptionWarning")
-@pytest.mark.filterwarnings("ignore:FutureWarning")
+# Ignore for lower bounds because of plotly==5.12.0
+@pytest.mark.filterwarnings("ignore::FutureWarning")
 @pytest.mark.parametrize(
     "example_path, version",
     [
