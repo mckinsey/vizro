@@ -102,6 +102,7 @@ class TestDunderMethodsGraph:
         with pytest.raises(KeyError):
             graph["unknown_args"]
 
+    @pytest.mark.filterwarnings("ignore:FutureWarning")
     @pytest.mark.parametrize(
         "title, margin_t",
         [(None, None), ("Graph with title", 64), ("Graph with title..<br> and subtitle", 64)],
