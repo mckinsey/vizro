@@ -11,6 +11,14 @@ See the fragment files in the [changelog.d directory](https://github.com/mckinse
 
 <!-- scriv-insert-here -->
 
+<a id='changelog-0.1.23'></a>
+
+# 0.1.23 — 2024-09-12
+
+## Fixed
+
+- Fix incompatibility with older `plotly versions` due to chart template update. ([#695](https://github.com/mckinsey/vizro/pull/695))
+
 <a id='changelog-0.1.22'></a>
 
 # 0.1.22 — 2024-09-10
