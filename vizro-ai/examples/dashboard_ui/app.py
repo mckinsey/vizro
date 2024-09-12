@@ -144,7 +144,7 @@ def run_script(user_prompt, model, api_key, api_base, n_clicks, data, vendor):  
     if n_clicks is None:
         raise PreventUpdate
     else:
-        result = subprocess.run(
+        process = subprocess.Popen(
             [
                 "python",
                 "run_vizro_ai.py",
@@ -159,19 +159,18 @@ def run_script(user_prompt, model, api_key, api_base, n_clicks, data, vendor):  
                 "--arg5",
                 f"{n_clicks}",
                 "--arg6",
-                data,
-                "--arg7",
                 f"{vendor}",
             ],
-            capture_output=True,
+            stdin=subprocess.PIPE,
+            stdout=subprocess.PIPE,
+            stderr=subprocess.PIPE,
             text=True,
-            check=False,
         )
-        if result.returncode == 0:
-            start_index = result.stdout.find("```")
-            output = result.stdout[start_index:]
-            return output
-        return result.stderr
+        stdout_data, stderr_data = process.communicate(input=data)
+        if stdout_data:
+            start_index = stdout_data.find("```")
+            return stdout_data[start_index:]
+        return stderr_data
 
 
 app = Vizro().build(dashboard)

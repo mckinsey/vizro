@@ -3,6 +3,7 @@
 import argparse
 import json
 import logging
+import sys
 
 import black
 import pandas as pd
@@ -10,8 +11,10 @@ from actions import get_vizro_ai_dashboard
 from dash.exceptions import PreventUpdate
 
 
-def run_vizro_ai_dashboard(user_prompt, model, api_key, api_base, n_clicks, data, vendor):  # noqa: PLR0913
+def run_vizro_ai_dashboard(user_prompt, model, api_key, api_base, n_clicks, vendor):  # noqa: PLR0913
     """Function to run the VizroAI dashboard based on user inputs and API configurations."""
+    data = sys.stdin.read()
+
     if not n_clicks:
         raise PreventUpdate
 
@@ -44,9 +47,8 @@ if __name__ == "__main__":
     parser.add_argument("--arg3", required=True, help="API key")
     parser.add_argument("--arg4", required=True, help="API base")
     parser.add_argument("--arg5", required=True, help="n_clicks")
-    parser.add_argument("--arg6", required=True, help="Data")
-    parser.add_argument("--arg7", required=True, help="Vendor")
+    parser.add_argument("--arg6", required=True, help="Vendor")
 
     args = parser.parse_args()
 
-    print(run_vizro_ai_dashboard(args.arg1, args.arg2, args.arg3, args.arg4, args.arg5, args.arg6, args.arg7))
+    print(run_vizro_ai_dashboard(args.arg1, args.arg2, args.arg3, args.arg4, args.arg5, args.arg6))
