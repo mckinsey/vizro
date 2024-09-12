@@ -1,6 +1,7 @@
 # A first dashboard
 
 There is no setup needed for your first dashboard, thanks to the amazing [Py.Cafe](https://py.cafe/).
+
 Click on the **Run and edit this code in Py.Cafe** link below to live-edit the dashboard.
 
 !!! example "First dashboard"
@@ -9,9 +10,9 @@ Click on the **Run and edit this code in Py.Cafe** link below to live-edit the d
         import vizro.plotly.express as px
         from vizro import Vizro
         import vizro.models as vm
-        
+
         df = px.data.iris()
-        
+
         page = vm.Page(
             title="My first dashboard",
             components=[
@@ -22,7 +23,7 @@ Click on the **Run and edit this code in Py.Cafe** link below to live-edit the d
                 vm.Filter(column="species", selector=vm.Dropdown(value=["ALL"])),
             ],
         )
-        
+
         dashboard = vm.Dashboard(pages=[page])
         Vizro().build(dashboard).run()
         ```
