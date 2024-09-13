@@ -123,3 +123,11 @@ jobs:
     steps:
       - name: Download All Artifacts
         uses: actions/download-artifact@v4
+
+      - name: Report artifacts
+        uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: Report-aggregated
+          path: |
+            /home/runner/work/vizro/vizro/
