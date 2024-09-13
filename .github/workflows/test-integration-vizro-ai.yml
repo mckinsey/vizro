@@ -123,7 +123,3 @@ jobs:
     steps:
       - name: Download All Artifacts
         uses: actions/download-artifact@v4
-        with:
-          path: /home/runner/work/vizro/vizro/vizro-ai/tests/integration/reports/
-          pattern: Report*
-          merge-multiple: true
