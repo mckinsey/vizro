@@ -74,7 +74,7 @@
     },
     "AgGrid": {
       "title": "AgGrid",
-      "description": "Wrapper for `dash-ag-grid.AgGrid` to visualize grids in dashboard.\n\nArgs:\n    type (Literal[\"ag_grid\"]): Defaults to `\"ag_grid\"`.\n    figure (CapturedCallable): Function that returns a Dash AgGrid. See [`vizro.tables`][vizro.tables].\n    title (str): Title of the table. Defaults to `\"\"`.\n    actions (List[Action]): See [`Action`][vizro.models.Action]. Defaults to `[]`.",
+      "description": "Wrapper for `dash-ag-grid.AgGrid` to visualize grids in dashboard.\n\nArgs:\n    type (Literal[\"ag_grid\"]): Defaults to `\"ag_grid\"`.\n    figure (CapturedCallable): Function that returns a Dash AgGrid. See [`vizro.tables`][vizro.tables].\n    title (str): Title of the `AgGrid`. Defaults to `\"\"`.\n    header (str): Markdown text positioned below the `AgGrid.title`. Follows the CommonMark specification.\n        Ideal for adding supplementary information such as subtitles, descriptions, or additional context.\n        Defaults to `\"\"`.\n    footer (str): Markdown text positioned below the `AgGrid`. Follows the CommonMark specification.\n        Ideal for providing further details such as sources, disclaimers, or additional notes. Defaults to `\"\"`.\n    actions (List[Action]): See [`Action`][vizro.models.Action]. Defaults to `[]`.",
       "type": "object",
       "properties": {
         "id": {
@@ -91,7 +91,19 @@
         },
         "title": {
           "title": "Title",
-          "description": "Title of the AgGrid",
+          "description": "Title of the `AgGrid`",
+          "default": "",
+          "type": "string"
+        },
+        "header": {
+          "title": "Header",
+          "description": "Markdown text positioned below the `AgGrid.title`. Follows the CommonMark specification. Ideal for adding supplementary information such as subtitles, descriptions, or additional context.",
+          "default": "",
+          "type": "string"
+        },
+        "footer": {
+          "title": "Footer",
+          "description": "Markdown text positioned below the `AgGrid`. Follows the CommonMark specification. Ideal for providing further details such as sources, disclaimers, or additional notes.",
           "default": "",
           "type": "string"
         },
@@ -194,7 +206,7 @@
     },
     "Graph": {
       "title": "Graph",
-      "description": "Wrapper for `dcc.Graph` to visualize charts in dashboard.\n\nArgs:\n    type (Literal[\"graph\"]): Defaults to `\"graph\"`.\n    figure (CapturedCallable): Function that returns a graph.\n        See `CapturedCallable`][vizro.models.types.CapturedCallable].\n    actions (List[Action]): See [`Action`][vizro.models.Action]. Defaults to `[]`.",
+      "description": "Wrapper for `dcc.Graph` to visualize charts in dashboard.\n\nArgs:\n    type (Literal[\"graph\"]): Defaults to `\"graph\"`.\n    figure (CapturedCallable): Function that returns a graph.\n        See `CapturedCallable`][vizro.models.types.CapturedCallable].\n    title (str): Title of the `Graph`. Defaults to `\"\"`.\n    header (str): Markdown text positioned below the `Graph.title`. Follows the CommonMark specification.\n        Ideal for adding supplementary information such as subtitles, descriptions, or additional context.\n        Defaults to `\"\"`.\n    footer (str): Markdown text positioned below the `Graph`. Follows the CommonMark specification.\n        Ideal for providing further details such as sources, disclaimers, or additional notes. Defaults to `\"\"`.\n    actions (List[Action]): See [`Action`][vizro.models.Action]. Defaults to `[]`.",
       "type": "object",
       "properties": {
         "id": {
@@ -207,6 +219,24 @@
           "title": "Type",
           "default": "graph",
           "enum": ["graph"],
+          "type": "string"
+        },
+        "title": {
+          "title": "Title",
+          "description": "Title of the `Graph`",
+          "default": "",
+          "type": "string"
+        },
+        "header": {
+          "title": "Header",
+          "description": "Markdown text positioned below the `Graph.title`. Follows the CommonMark specification. Ideal for adding supplementary information such as subtitles, descriptions, or additional context.",
+          "default": "",
+          "type": "string"
+        },
+        "footer": {
+          "title": "Footer",
+          "description": "Markdown text positioned below the `Graph`. Follows the CommonMark specification. Ideal for providing further details such as sources, disclaimers, or additional notes.",
+          "default": "",
           "type": "string"
         },
         "actions": {
@@ -222,7 +252,7 @@
     },
     "Table": {
       "title": "Table",
-      "description": "Wrapper for `dash_table.DataTable` to visualize tables in dashboard.\n\nArgs:\n    type (Literal[\"table\"]): Defaults to `\"table\"`.\n    figure (CapturedCallable): Function that returns a Dash DataTable. See [`vizro.tables`][vizro.tables].\n    title (str): Title of the table. Defaults to `\"\"`.\n    actions (List[Action]): See [`Action`][vizro.models.Action]. Defaults to `[]`.",
+      "description": "Wrapper for `dash_table.DataTable` to visualize tables in dashboard.\n\nArgs:\n    type (Literal[\"table\"]): Defaults to `\"table\"`.\n    figure (CapturedCallable): Function that returns a Dash DataTable. See [`vizro.tables`][vizro.tables].\n    title (str): Title of the `Table`. Defaults to `\"\"`.\n    header (str): Markdown text positioned below the `Table.title`. Follows the CommonMark specification.\n        Ideal for adding supplementary information such as subtitles, descriptions, or additional context.\n        Defaults to `\"\"`.\n    footer (str): Markdown text positioned below the `Table`. Follows the CommonMark specification.\n        Ideal for providing further details such as sources, disclaimers, or additional notes. Defaults to `\"\"`.\n    actions (List[Action]): See [`Action`][vizro.models.Action]. Defaults to `[]`.",
       "type": "object",
       "properties": {
         "id": {
@@ -239,7 +269,19 @@
         },
         "title": {
           "title": "Title",
-          "description": "Title of the table",
+          "description": "Title of the `Table`",
+          "default": "",
+          "type": "string"
+        },
+        "header": {
+          "title": "Header",
+          "description": "Markdown text positioned below the `Table.title`. Follows the CommonMark specification. Ideal for adding supplementary information such as subtitles, descriptions, or additional context.",
+          "default": "",
+          "type": "string"
+        },
+        "footer": {
+          "title": "Footer",
+          "description": "Markdown text positioned below the `Table`. Follows the CommonMark specification. Ideal for providing further details such as sources, disclaimers, or additional notes.",
           "default": "",
           "type": "string"
         },
