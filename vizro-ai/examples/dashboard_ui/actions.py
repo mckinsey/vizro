@@ -1,5 +1,8 @@
 """Custom actions used within a dashboard."""
 
+import base64
+import os
+
 from _utils import process_file
 from dash.exceptions import PreventUpdate
 from langchain_openai import ChatOpenAI
@@ -51,3 +54,25 @@ def display_filename(data):
 
     filenames = ", ".join(data.keys())
     return f"Uploaded file name: '{filenames}'"
+
+
+@capture("action")
+def save_files(contents, filenames, last_modified):
+    """Custom action to save the uploaded filenames."""
+    if contents is not None:
+
+        project_folder = "./output_files"
+        if not os.path.exists(project_folder):
+            os.makedirs(project_folder)
+
+        for content, filename in zip(contents, filenames):
+            # Decode base64 encoded data
+            content_type, content_string = content.split(",")
+            decoded = base64.b64decode(content_string)
+
+            # Save each file in the desired folder
+            file_path = os.path.join(project_folder, filename)
+            with open(file_path, "wb") as f:
+                f.write(decoded)
+
+        return last_modified

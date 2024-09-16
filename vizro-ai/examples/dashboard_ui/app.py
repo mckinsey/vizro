@@ -5,11 +5,14 @@ import subprocess
 
 import dash_bootstrap_components as dbc
 import vizro.models as vm
-from actions import data_upload_action, display_filename
+from _utils import format_output
+from actions import data_upload_action, display_filename, save_files
 from components import (
     CodeClipboard,
+    CustomButton,
     CustomDashboard,
     Icon,
+    IframeComponent,
     Modal,
     MyDropdown,
     MyPage,
@@ -34,6 +37,8 @@ vm.Container.add_type("components", OffCanvas)
 vm.Container.add_type("components", CodeClipboard)
 vm.Container.add_type("components", Icon)
 vm.Container.add_type("components", Modal)
+vm.Container.add_type("components", CustomButton)
+vm.Container.add_type("components", IframeComponent)
 
 MyPage.add_type("components", UserPromptTextArea)
 MyPage.add_type("components", UserUpload)
@@ -50,7 +55,58 @@ dashboard_page = MyPage(
         grid=[[2, 2, 0, 0, 0], [1, 1, 0, 0, 0], [1, 1, 0, 0, 0], [1, 1, 0, 0, 0], [1, 1, 0, 0, 0], [3, 3, 0, 0, 0]]
     ),
     components=[
-        vm.Container(title="", components=[CodeClipboard(id="dashboard")], id="clipboard-container"),
+        # vm.Container(
+        #     id="clipboard-container",
+        #     title="",
+        #     components=[
+        #         CodeClipboard(id="dashboard"),
+        #         CustomButton(text="Run dashboard", id="run-dashboard-button"),
+        #     ],
+        #     layout=vm.Layout(
+        #         grid=[
+        #             *[[0, 0, 0, 0, 0, 0]] * 11,
+        #             [-1, -1, -1, -1, -1, 1]
+        #         ],
+        #         col_gap="20px"
+        #     )
+        # ),
+        vm.Tabs(
+            tabs=[
+                vm.Container(
+                    title="Code",
+                    components=[
+                        vm.Container(
+                            title="",
+                            components=[
+                                vm.Container(
+                                    id="clipboard-container",
+                                    title="",
+                                    components=[
+                                        CodeClipboard(id="dashboard"),
+                                        CustomButton(text="Run dashboard", id="run-dashboard-button"),
+                                    ],
+                                    layout=vm.Layout(
+                                        grid=[*[[0, 0, 0, 0, 0, 0]] * 10, [-1, -1, -1, -1, -1, 1]], col_gap="20px"
+                                    ),
+                                )
+                            ],
+                            id="clipboard-tab",
+                        ),
+                    ],
+                ),
+                vm.Container(
+                    title="Dashboard",
+                    components=[
+                        IframeComponent(
+                            id="embedded_dashboard",
+                            # src="http://localhost:7868/",
+                            src="http://localhost:8051/",
+                            height="600px",
+                        )
+                    ],
+                ),
+            ],
+        ),
         UserPromptTextArea(id="dashboard-text-area", placeholder="Describe the dashboard you want to create."),
         vm.Container(
             title="",
@@ -69,6 +125,15 @@ dashboard_page = MyPage(
                             function=display_filename(),
                             inputs=["dashboard-data-store.data"],
                             outputs=["dashboard-upload-message-id.children"],
+                        ),
+                        vm.Action(
+                            function=save_files(),
+                            inputs=[
+                                "dashboard-data-upload.contents",
+                                "dashboard-data-upload.filename",
+                                "dashboard-data-upload.last_modified",
+                            ],
+                            outputs=["dashboard-data-store.modified_timestamp"],
                         ),
                     ],
                 ),
@@ -171,6 +236,47 @@ def run_script(user_prompt, model, api_key, api_base, n_clicks, data, vendor):  
             start_index = stdout_data.find("```")
             return stdout_data[start_index:]
         return stderr_data
+
+
+@callback(
+    Output("dashboard-code-markdown", "style"),
+    Input("dashboard-code-markdown", "children"),
+)
+def save_to_file(generated_code):
+    gen_ai_file = "output_files/run_vizro_ai_output.py"
+
+    # format code
+    generated_code = format_output(generated_code)
+
+    if generated_code:
+        with open(gen_ai_file, "w") as f:
+            f.write(generated_code)
+
+        return {}
+
+
+@callback(
+    Output("run-dashboard-button", "style"),
+    Input("dashboard-code-markdown", "children"),
+)
+def show_button(ai_response):
+    if ai_response:
+        return {"minWidth": "100%"}
+
+
+# @callback(
+#     Output("embedded_dashboard", "src"),
+#     Input("run-dashboard-button", "n_clicks"),
+# )
+# def run_generated_dashboard(n_clicks):
+#     if not n_clicks:
+#         raise PreventUpdate
+#     else:
+#         subprocess.Popen(
+#             ['python', 'output_files/run_vizro_ai_output.py'],
+#             capture_output=True
+#         )
+#         return "http://localhost:8051/"
 
 
 app = Vizro().build(dashboard)
