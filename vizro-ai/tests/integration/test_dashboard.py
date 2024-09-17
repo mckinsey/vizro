@@ -43,6 +43,7 @@ def logic(  # noqa: PLR0912, PLR0913, PLR0915
         vizro_type = "local_env"
 
     pages_exist = [1 if dashboard.pages else 0][0]
+    pages_exist_report = bool(pages_exist)
     pages_num = [1 if len(dashboard.pages) == pages["num"] else 0][0]
     pages_num_report = [f'{pages["num"]} page(s) for dashboard is {bool(components)}']
 
@@ -119,7 +120,7 @@ def logic(  # noqa: PLR0912, PLR0913, PLR0915
         writer.writerow([f"Vizro type = {vizro_type}, Datetime = {datetime.now()}"])
         writer.writerow([])
         writer.writerow(["Description, Score"])
-        writer.writerow([f"Pages exists: {pages_exist}"])
+        writer.writerow([f"Pages exists: {pages_exist_report}"])
         writer.writerow([f"Pages number: {pages_num_report}"])
         writer.writerow([f"Components number: {components_num_report}"])
         writer.writerow([f"Controls number: {controls_num_report}"])
@@ -130,7 +131,7 @@ def logic(  # noqa: PLR0912, PLR0913, PLR0915
         writer.writerow([])
 
     # for cmd output
-    print(f"Pages exists: {pages_exist}")  # noqa: T201
+    print(f"Pages exists: {pages_exist_report}")  # noqa: T201
     print(f"Correct pages number: {pages_num_report}")  # noqa: T201
     print(f"Components: {components_num_report}")  # noqa: T201
     print(f"Correct controls number: {controls_num_report}")  # noqa: T201
