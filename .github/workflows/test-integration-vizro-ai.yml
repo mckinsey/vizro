@@ -10,9 +10,6 @@ on:
   workflow_dispatch:
   schedule:
     - cron: "30 10 * * 1" # run every Monday at 10:30 UTC
-    paths:
-      - "vizro-ai/**"
-      - "!vizro-ai/docs/**"
 
 env:
   PYTHONUNBUFFERED: 1
