@@ -128,7 +128,9 @@ jobs:
 
       - name: Set current date as env variable
         id: date
-        run: echo "::set-output name=date::$(date +'%Y-%m-%dT%H-%M-%S')"
+        run: |
+          echo "::set-output name=date::$(date +'%Y-%m-%dT%H-%M-%S')"
+          echo "TIME_NOW=$(date +'%Y-%m-%dT%H-%M-%S')" >> $GITHUB_ENV
 
       - name: Report artifacts
         uses: actions/upload-artifact@v4
@@ -144,4 +146,4 @@ jobs:
           ls -l
           curl -fL https://getcli.jfrog.io | sh
           ./jfrog config add vizro --artifactory-url ${{ secrets.ARTIFACTORY_URL}} --user ${{ secrets.ARTIFACTORY_USER}} --apikey ${{ secrets.ARTIFACTORY_PASS}} --interactive=false
-          ./jfrog rt u "Report-aggregated*/*" vizx-generic-local/vizro-ai-reports/
+          ./jfrog rt u "Report-*/*" vizx-generic-local/vizro-ai-reports/Report-aggregated-${{ env.TIME_NOW }}
