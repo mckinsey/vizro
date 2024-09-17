@@ -138,7 +138,7 @@ jobs:
         with:
           name: Report-aggregated-${{ steps.date.outputs.date }}
           path: |
-            /home/runner/work/vizro/vizro/
+            /home/runner/work/vizro/vizro/Report-*
 
       - name: Upload reports to artifactory
         run: |
