@@ -121,25 +121,26 @@ jobs:
     needs: test-integration-vizro-ai
     runs-on: ubuntu-latest
     steps:
+      - uses: actions/checkout@v4
+
       - name: Download All Artifacts
         uses: actions/download-artifact@v4
 
       - name: Set current date as env variable
-        run: |
-          cd /home/runner/work/vizro/vizro/
-          echo "TIME_NOW=$(date +'%Y-%m-%dT%H-%M-%S')" >> $GITHUB_ENV
+        id: date
+        run: echo "::set-output name=date::$(date +'%Y-%m-%dT%H-%M-%S')"
 
       - name: Report artifacts
         uses: actions/upload-artifact@v4
         if: always()
         with:
-          name: Report-aggregated-$TIME_NOW
+          name: Report-aggregated-${{ steps.date.outputs.date }}
           path: |
             /home/runner/work/vizro/vizro/
 
       - name: Upload reports to artifactory
         run: |
-          /home/runner/work/vizro/vizro/
+          cd /home/runner/work/vizro/vizro/
           curl -fL https://getcli.jfrog.io | sh
           ./jf config add vizro --artifactory-url ${{ secrets.ARTIFACTORY_URL}} --user ${{ secrets.ARTIFACTORY_USER}} --apikey ${{ secrets.ARTIFACTORY_PASS}} --interactive=false
           ./jf rt u "Report-aggregated*/*" vizx-generic-local/vizro-ai-reports/
