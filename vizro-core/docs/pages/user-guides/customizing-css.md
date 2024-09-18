@@ -35,7 +35,7 @@ through the use of CSS selectors:
     }
     ```
 
-- **Class selector:** Applies the style to all elements with the specified classname.
+- **Class selector:** Applies the style to all elements with the specified class.
 
     ```
     .card {
