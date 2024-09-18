@@ -19,7 +19,7 @@ Uncomment the section that is right (remove the HTML comment wrapper).
 
 ### Added
 
-- Add `id` to `title` of `Graph`, `Table` and `AgGrid`. ([#705](https://github.com/mckinsey/vizro/pull/705))
+- Add `id` to `title` of `Graph`, `Table`, `AgGrid` and `Container`. ([#705](https://github.com/mckinsey/vizro/pull/705))
 
 
 <!--
