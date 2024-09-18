@@ -39,7 +39,6 @@ Uncomment the section that is right (remove the HTML comment wrapper).
 
 - Enable overwriting global `font-family` in vizro chart templates. ([#717](https://github.com/mckinsey/vizro/pull/717))
 
-
 <!--
 ### Security
 
