@@ -29,7 +29,7 @@ through the use of CSS selectors:
     h1 {
         font-size: 20px;
     }
-    
+
     p {
         color: green;
     }
@@ -90,8 +90,12 @@ For example, temporarily add `background: blue; note that this change will be lo
 ![Temporary changes](../../assets/user_guides/visual_formatting/temporary-changes.png)
 
 
-### Overwrite global CSS properties
-To overwrite any global CSS properties of existing components, target the right CSS property and place your CSS files in the `assets` folder. This will overwrite any existing defaults for that CSS property.
+## CSS overwrites
+
+### Overwrite CSS globally
+To overwrite any global CSS properties of existing components, target the right CSS property and place your CSS files
+in the `assets` folder. This will overwrite any existing defaults for that CSS property.
+
 For reference, see the [Vizro CSS files](https://github.com/mckinsey/vizro/tree/main/vizro-core/src/vizro/static/css).
 
 !!! example "Customizing global CSS properties"
@@ -123,8 +127,6 @@ For reference, see the [Vizro CSS files](https://github.com/mckinsey/vizro/tree/
                 )
 
         dashboard = vm.Dashboard(pages=[page])
-
-
         Vizro().build(dashboard).run()
         ```
 
@@ -151,9 +153,11 @@ For reference, see the [Vizro CSS files](https://github.com/mckinsey/vizro/tree/
     [AssetsCSS]: ../../assets/user_guides/assets/css_change.png
 
 
-### Overwrite CSS properties for specific pages
-To style components for a specific page, use the page's `id` in CSS selectors. By default, this is the [same as the page `title`](pages.md), but such a value might not be a valid CSS identifier.
-A suitable `id` must be unique across all models in the dashboard and should contain only alphanumeric characters, hyphens (`-`) and underscores (`_`). In particular, note that spaces are _not_ allowed.
+### Overwrite CSS for selected pages
+To style components for a specific page, use the page's `id` in CSS selectors. By default, this is the
+[same as the page `title`](pages.md), but such a value might not be a valid CSS identifier.
+A suitable `id` must be unique across all models in the dashboard and should contain only alphanumeric
+characters, hyphens (`-`) and underscores (`_`). In particular, note that spaces are _not_ allowed.
 
 Suppose you want to hide the page title on one page only. Here's how you can achieve this:
 
@@ -215,10 +219,10 @@ Suppose you want to hide the page title on one page only. Here's how you can ach
     [PageTitle]: ../../assets/user_guides/assets/css_page_title.png
 
 
-### Overwrite CSS properties in selective components
+### Overwrite CSS for selected components
 To adjust CSS properties for specific components, like altering the appearance of a selected [`Card`][vizro.models.Card] rather than all `Card`s,
-you need to use a CSS selector that targets the right CSS property.
-If you're unfamiliar with CSS selectors, you can refer to this [tutorial](https://developer.mozilla.org/en-US/docs/Web/CSS/CSS_selectors/Selector_structure) for guidance.
+you need to use a CSS selector that targets the right CSS property. If you're unfamiliar with CSS selectors,
+you can refer to this [tutorial](https://developer.mozilla.org/en-US/docs/Web/CSS/CSS_selectors/Selector_structure) for guidance.
 
 Let's say we want to change the background and font-color of a specific `Card`.
 
@@ -298,25 +302,32 @@ It's essential to understand the relationship between the targeted CSS class or 
 
     [CardCSS]: ../../assets/user_guides/assets/css_change_card.png
 
+
+Some Vizro components produce a single HTML element with an ID that matches the model ID, allowing you to target it
+directly using the #id selector in CSS. Other components generate multiple HTML elements. Within these, the "core"
+element will have an ID matching the model ID, while non-core elements may have IDs that are variations of it,
+such as `{model-id}-title`.
+
+In all instances, you can determine the correct selector by using Chrome DevTools or a similar tool after setting the
+appropriate model ID.
+
+
 ## Common examples
 
-### Change the background color of a container
+### Turn off page title
+See the example above on [hiding the page title on selected pages](#overwrite-css-for-selected-pages).
 
-### Add a logo
+### Change the background color of a card
+See the example above on [customizing CSS properties in selective components](#overwrite-css-for-selected-components).
 
-### Change padding to align a logo
+### Add a logo or favicon
+To add a logo or favicon, refer to our user guide on [adding static assets](assets.md#change-the-favicon).
 
 ### Change the font
+XXXX
 
-### Turn off page title
+### Change the background color of a container
+XXXX
 
-### Add a Flexbox
-
-
-## Info dump for now (not sure yet, where I'll add this)
-To modify a component's styling, you need to identify the appropriate CSS selector. Some Vizro components produce a
-single HTML element with an ID that matches the model ID, allowing you to target it directly using the #id selector
-in CSS. Other components generate multiple HTML elements. Within these, the "core" element will have an ID
-matching the model ID, while non-core elements may have IDs that are variations of it, such as `{model-id}-title`.
-In all instances, you can determine the correct selector by using Chrome DevTools or a similar tool after setting the
-appropriate model ID (see the section below).
+### Change padding to align a logo
+XXX

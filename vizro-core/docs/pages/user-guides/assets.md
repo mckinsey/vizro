@@ -25,9 +25,17 @@ The user's `assets` folder thus always takes precedence.
     Note that Vizro is currently not compatible with [Dash Bootstrap Themes](https://dash-bootstrap-components.opensource.faculty.ai/docs/themes/).
     Adding a Bootstrap stylesheet will have no visual effect on the [components](https://vizro.readthedocs.io/en/stable/pages/user_guides/components/) included in Vizro.
 
+
 ## Change the favicon
 To change the default favicon (website icon appearing in the browser tab), add a file named `favicon.ico` to your `assets` folder.
 For more information, see the [Dash documentation](https://dash.plotly.com/external-resources#changing-the-favicon).
+
+
+## Add a logo image
+
+Vizro will automatically incorporate the dashboard logo in the top-left corner of each page if an image named `logo.<extension>` is present within the assets folder.
+
+Image types of `apng`, `avif`, `gif`, `jpeg`, `jpg`, `png`, `svg`, and `webp` are supported.
 
 
 ## Change the `assets` folder path
@@ -54,12 +62,6 @@ See more information in the [Pages User Guide](pages.md).
 Vizro automatically adds [meta tags](https://metatags.io/) to display a preview card when your app is shared on social media and chat
 clients. To include an image in the preview, place an image file in the assets folder named `app.<extension>`  or
 `logo.<extension>`. Vizro searches the assets folder and uses the first one it finds.
-
-Image types of `apng`, `avif`, `gif`, `jpeg`, `jpg`, `png`, `svg`, and `webp` are supported.
-
-## Add a logo image
-
-Vizro will automatically incorporate the dashboard logo in the top-left corner of each page if an image named `logo.<extension>` is present within the assets folder.
 
 Image types of `apng`, `avif`, `gif`, `jpeg`, `jpg`, `png`, `svg`, and `webp` are supported.
 
