@@ -321,7 +321,28 @@ See the example above on [hiding the page title on selected pages](#overwrite-cs
 See the example above on [customizing CSS properties in selective components](#overwrite-css-for-selected-components).
 
 ### Change the font
-XXXX
+The default fonts for a Vizro app are `Inter, sans-serif, Arial, serif`.
+
+If you need to change the global font, perhaps to adhere to branding guidelines, follow these steps:
+
+1. Download the desired font from a font provider such as [Google Fonts](https://fonts.google.com/).
+2. Place the font file (`.ttf`, `woff2`, etc.) into your `assets` folder. Here’s an example of what the assets folder might look like:
+
+    ![Font Change](../../assets/user_guides/customizing_css/font-change.png)
+3. Add the font to your CSS file using the `@font-face` rule and apply the font globally to your Vizro app, making sure
+to specify fallback fonts. Add the following to your `custom.css` file:
+
+
+    ```css
+    @font-face {
+      font-family: PlayfairDisplay;
+      src: url("PlayfairDisplay-VariableFont_wght.ttf") format("truetype");
+    }
+    
+    * {
+      font-family: PlayfairDisplay, Inter, sans-serif, Arial, serif;
+    }
+    ```
 
 ### Change the background color of a container
 XXXX

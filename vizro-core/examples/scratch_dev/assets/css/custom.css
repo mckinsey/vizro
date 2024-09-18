@@ -1,3 +1,8 @@
-#page-header {
-  padding-left: 8px;
+@font-face {
+  font-family: PlayfairDisplay;
+  src: url("PlayfairDisplay-VariableFont_wght.ttf") format("truetype");
+}
+
+* {
+  font-family: PlayfairDisplay, Inter, sans-serif, Arial, serif;
 }
