@@ -26,6 +26,7 @@ nav:
       - NAVIGATION:
           - Navigation: pages/user-guides/navigation.md
       - VISUAL FORMATTING:
+          - Overview: pages/user-guides/visual-formatting.md
           - Layouts: pages/user-guides/layouts.md
           - Themes: pages/user-guides/themes.md
           - Assets: pages/user-guides/assets.md
