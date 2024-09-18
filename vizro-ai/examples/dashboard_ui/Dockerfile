@@ -1,17 +1,36 @@
-# read the doc: https://huggingface.co/docs/hub/spaces-sdks-docker
-# you will also find guides on how best to write your Dockerfile
+FROM python:3.12-slim AS builder
 
-FROM python:3.12
+RUN apt-get update && apt-get install -y --no-install-recommends \
+    gcc \
+    && rm -rf /var/lib/apt/lists/*
 
 RUN useradd -m -u 1000 user
+USER user
+ENV HOME=/home/user \
+    PATH=/home/user/.local/bin:$PATH
+WORKDIR $HOME/app
 
-WORKDIR /app
+COPY --chown=user requirements.txt .
+RUN pip install --user --no-cache-dir --upgrade pip && \
+    pip install --user --no-cache-dir -r requirements.txt
 
-COPY --chown=user ./requirements.txt requirements.txt
+# Production stage
+FROM python:3.12-slim
 
-RUN pip install --no-cache-dir --upgrade -r requirements.txt
+RUN apt-get update && apt-get upgrade -y && \
+    apt-get clean && \
+    rm -rf /var/lib/apt/lists/*
 
-COPY --chown=user . /app
+RUN useradd -m -u 1000 user
+USER user
+ENV HOME=/home/user \
+    PATH=/home/user/.local/bin:$PATH
+WORKDIR $HOME/app
+
+COPY --from=builder --chown=user $HOME/.local/lib/python3.12/site-packages $HOME/.local/lib/python3.12/site-packages
+COPY --from=builder --chown=user $HOME/.local/bin $HOME/.local/bin
+
+COPY --chown=user . $HOME/app
 
 EXPOSE 7868
 
