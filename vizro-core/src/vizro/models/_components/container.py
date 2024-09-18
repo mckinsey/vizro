@@ -56,6 +56,9 @@ class Container(VizroBaseModel):
             components_container[f"{self.layout.id}_{component_idx}"].children = component.build()
         return html.Div(
             id=self.id,
-            children=[html.H3(children=self.title, className="container__title",  id=f"{self.id}-title"), components_container],
+            children=[
+                html.H3(children=self.title, className="container__title", id=f"{self.id}-title"),
+                components_container,
+            ],
             className="page-component-container",
         )
