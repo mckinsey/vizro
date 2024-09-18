@@ -43,6 +43,21 @@ MyPage.add_type("components", CodeClipboard)
 MyPage.add_type("components", Icon)
 vm.Container.add_type("components", Modal)
 
+output_start = "###OUTPUT_START###"
+output_end = "###OUTPUT_END###"
+req_start = "###REQUIREMENT_START###"
+req_end = "###REQUIREMENT_END###"
+
+def extract_content(text, start_delimiter, end_delimiter):
+    start = text.find(start_delimiter)
+    if start == -1:
+        return ""
+    start += len(start_delimiter)
+    end = text.find(end_delimiter, start)
+    if end == -1:
+        return text[start:].strip()
+    return text[start:end].strip()
+
 dashboard_page = MyPage(
     id="vizro_ai_dashboard_page",
     title="Vizro AI - Dashboard",
@@ -152,6 +167,7 @@ def open_settings(n_clicks, is_open):
 
 @callback(
     Output("dashboard-code-markdown", "children"),
+    Output("dashboard-text-area", 'value'),
     [
         State("image-store-id", "data"),
         State("dashboard-model-dropdown", "value"),
@@ -164,8 +180,10 @@ def open_settings(n_clicks, is_open):
 )
 def run_script(images, model, api_key, api_base, n_clicks, data, vendor):  # noqa: PLR0913
     """Callback for triggering subprocess that run vizro-ai."""
-    data = json.dumps(data)
-    images = json.dumps(images)
+    # data = json.dumps(data)
+    # images = json.dumps(images)
+    data = "test"
+    images = "test"
     if n_clicks is None:
         raise PreventUpdate
     else:
@@ -193,10 +211,13 @@ def run_script(images, model, api_key, api_base, n_clicks, data, vendor):  # noq
             check=False,
         )
         if result.returncode == 0:
-            start_index = result.stdout.find("```")
-            output = result.stdout[start_index:]
-            return output
-        return result.stderr
+            output_temp = extract_content(result.stdout, output_start, output_end)
+            requirement = extract_content(result.stdout, req_start, req_end)
+
+            start_index = output_temp.find("```")
+            output = output_temp[start_index:]
+            return output, requirement
+        return [result.stderr, "test"]
 
 
 app = Vizro().build(dashboard)

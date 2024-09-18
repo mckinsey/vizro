@@ -48,5 +48,8 @@ def construct_message(images, question):
     """
     content = [{"type": "text", "text": question}]
     for img_data in images:
-        content.append({"type": "image_url", "image_url": {"url": f"{img_data}"}})
+         content.append({
+            "type": "image_url",
+            "image_url": {"url": f"data:image/jpeg;base64,{img_data}"}
+        })
     return HumanMessage(content=content)
