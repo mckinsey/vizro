@@ -338,7 +338,7 @@ to specify fallback fonts. Add the following to your `custom.css` file:
       font-family: PlayfairDisplay;
       src: url("PlayfairDisplay-VariableFont_wght.ttf") format("truetype");
     }
-    
+
     * {
       font-family: PlayfairDisplay, Inter, sans-serif, Arial, serif;
     }

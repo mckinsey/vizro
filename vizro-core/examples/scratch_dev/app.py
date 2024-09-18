@@ -1,9 +1,9 @@
 """Dev app to try things out."""
 
-import vizro.models as vm
-from vizro import Vizro
-import vizro.plotly.express as px
 import plotly.io as pio
+import vizro.models as vm
+import vizro.plotly.express as px
+from vizro import Vizro
 
 iris = px.data.iris()
 
