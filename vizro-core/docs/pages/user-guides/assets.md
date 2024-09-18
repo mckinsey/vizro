@@ -33,7 +33,8 @@ For more information, see the [Dash documentation](https://dash.plotly.com/exter
 
 ## Add a logo image
 
-Vizro will automatically incorporate the dashboard logo in the top-left corner of each page if an image named `logo.<extension>` is present within the assets folder.
+Vizro automatically incorporates the dashboard logo in the top-left corner of each page if an image named
+`logo.<extension>` is present within the assets folder.
 
 Image types of `apng`, `avif`, `gif`, `jpeg`, `jpg`, `png`, `svg`, and `webp` are supported.
 

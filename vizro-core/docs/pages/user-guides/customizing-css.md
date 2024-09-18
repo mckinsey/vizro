@@ -1,20 +1,20 @@
-# Customizing CSS
+# Customizing Vizro dashboard CSS
 
-Vizro is quite opinionated when it comes to visual formatting, but it allows for some customization if you want to
+Vizro is opinionated about visual formatting, but it allows for some customization if you want to
 deviate from the default settings. While certain elements, such as the layout of the navigation and components,
 are fixed, you can customize background colors, fonts, and other styles via CSS overrides.
 
 To do so, you need to:
 
 1. Add a CSS file to your `assets` folder, refer to our user guide on [adding static assets](assets.md#how-to-add-static-assets).
-2. Identify the right CSS selector for the component you want to style.
+2. Identify the correct CSS selector for the component you want to style.
 3. Add the desired changed properties to your CSS file.
 
 
 
-## Intro to CSS
-Customizations are typically made using CSS. For a quick 5-minute introduction to CSS, we recommend reading
-this article: [Get Started with CSS in 5 Minutes.](https://www.freecodecamp.org/news/get-started-with-css-in-5-minutes-e0804813fc3e/)
+## Introduction to CSS
+Customizations to the visual formatting of a Vizro dashboard is typically done using CSS. For a short introduction to
+CSS, we recommend reading this article: [Get Started with CSS in 5 Minutes](https://www.freecodecamp.org/news/get-started-with-css-in-5-minutes-e0804813fc3e/).
 
 For a more comprehensive tutorial, refer to the [W3Schools CSS tutorial](https://www.w3schools.com/css/default.asp).
 The entire tutorial is beneficial, but the section on [CSS selectors](https://www.w3schools.com/css/css_selectors.asp)
@@ -52,11 +52,11 @@ through the use of CSS selectors:
     ```
 
 
-## Identify the right CSS selector
+## Identify the correct CSS selector
 
 Use Chrome DevTools or a similar tool (Web Inspector, Web Developer Tools, etc.) to inspect the HTML document in your browser.
 
-1. **Open DevTools:** In Google Chrome, right-click on the app and select "Inspect" from the context menu. This will open the
+1. **Open DevTools:** In Google Chrome, right-click on the app and select "Inspect" from the context menu. This opens the
 HTML document of your Vizro app.
 
     ![Inspect panel](../../assets/user_guides/customizing_css/inspect-panel.png)
@@ -82,7 +82,7 @@ highlighted in the document.
     }
     ```
 
-    This will change the background color for any HTML element with the `card` class.
+    This changes the background color for any HTML element with the `card` class.
 
 **Tip:** You can also test your CSS live by editing the CSS attributes in the "Elements" panel.
 For example, temporarily add `background: blue; note that this change will be lost upon reloading the page.
@@ -93,8 +93,8 @@ For example, temporarily add `background: blue; note that this change will be lo
 ## CSS overwrites
 
 ### Overwrite CSS globally
-To overwrite any global CSS properties of existing components, target the right CSS property and place your CSS files
-in the `assets` folder. This will overwrite any existing defaults for that CSS property.
+To overwrite any global CSS properties of existing components, target the correct CSS property and place your CSS files
+in the `assets` folder. This overwrites any existing defaults for that CSS property.
 
 For reference, see the [Vizro CSS files](https://github.com/mckinsey/vizro/tree/main/vizro-core/src/vizro/static/css).
 
@@ -221,10 +221,10 @@ Suppose you want to hide the page title on one page only. Here's how you can ach
 
 ### Overwrite CSS for selected components
 To adjust CSS properties for specific components, like altering the appearance of a selected [`Card`][vizro.models.Card] rather than all `Card`s,
-you need to use a CSS selector that targets the right CSS property. If you're unfamiliar with CSS selectors,
-you can refer to this [tutorial](https://developer.mozilla.org/en-US/docs/Web/CSS/CSS_selectors/Selector_structure) for guidance.
+you need to use a CSS selector that targets the right CSS property. If you need guidance,
+this [tutorial about CSS selectors](https://developer.mozilla.org/en-US/docs/Web/CSS/CSS_selectors/Selector_structure) is helpful.
 
-Let's say we want to change the background and font-color of a specific `Card`.
+Let's say we want to change the `background-color` and `color` of a specific `Card`.
 
 Here's how you can do it:
 
