@@ -27,7 +27,6 @@ class UserPromptTextArea(vm.VizroBaseModel):
 
     type: Literal["user_text_area"] = "user_text_area"
     actions: List[Action] = []  # noqa: RUF012
-    placeholder: str
 
     _set_actions = _action_validator_factory("value")
 
@@ -38,7 +37,8 @@ class UserPromptTextArea(vm.VizroBaseModel):
             children=[
                 dcc.Textarea(
                     id=self.id,
-                    placeholder=self.placeholder,
+                    placeholder="Describe the chart you want to create, e.g. "
+                    "'Visualize the life expectancy per continent.'",
                 )
             ]
         )
@@ -71,7 +71,6 @@ class UserUpload(vm.VizroBaseModel):
                     children=html.Div(
                         ["Drag and Drop or ", html.A("Select Files")], style={"fontColor": "rgba(255, 255, 255, 0.6)"}
                     ),
-                    multiple=True,
                 ),
             ]
         )
@@ -86,17 +85,17 @@ class CodeClipboard(vm.VizroBaseModel):
 
     def build(self):
         """Returns the code clipboard component inside a output text area."""
-        code = black.format_str(self.code, mode=black.Mode(line_length=100))
+        code = black.format_str(self.code, mode=black.Mode(line_length=120))
         code = code.strip("'\"")
 
         markdown_code = "\n".join(["```python", code, "```"])
 
-        return dcc.Loading(
+        return html.Div(
             [
                 dcc.Clipboard(target_id=f"{self.id}-code-markdown", className="code-clipboard"),
                 dcc.Markdown(markdown_code, id=f"{self.id}-code-markdown"),
             ],
-            parent_className="code-clipboard-container",
+            className="code-clipboard-container",
         )
 
 
@@ -237,19 +236,7 @@ class Icon(vm.VizroBaseModel):
     def build(self):
         """Returns the icon for api settings."""
         return html.Div(
-            children=[
-                html.P(
-                    "Settings",
-                    style={
-                        "display": "flex",
-                        "justifyContent": "center",
-                        "alignItems": "center",
-                        "paddingTop": "4px",
-                        "paddingRight": "8px",
-                    },
-                ),
-                html.Span("settings", className="material-symbols-outlined", id=self.id),
-            ],
+            children=[html.Span("settings", className="material-symbols-outlined", id=self.id)],
             className="settings-div",
         )
 
@@ -260,6 +247,6 @@ class CustomDashboard(vm.Dashboard):
     def build(self):
         """Returns custom dashboard."""
         dashboard_build_obj = super().build()
-        dashboard_build_obj.children.append(dcc.Store(id="dashboard-data-store", storage_type="session"))
-        # dashboard_build_obj.children.append(dcc.Store(id="outputs-store-id", storage_type="session"))
+        dashboard_build_obj.children.append(dcc.Store(id="data-store-id", storage_type="session"))
+        dashboard_build_obj.children.append(dcc.Store(id="outputs-store-id", storage_type="session"))
         return dashboard_build_obj

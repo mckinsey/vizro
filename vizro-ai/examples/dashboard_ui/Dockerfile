@@ -32,6 +32,8 @@ COPY --from=builder --chown=user $HOME/.local/bin $HOME/.local/bin
 
 COPY --chown=user . $HOME/app
 
-EXPOSE 7860
+EXPOSE 7868
 
-CMD ["gunicorn", "-w", "4", "-b", "0.0.0.0:7860", "app:server"]
+USER user
+
+CMD ["gunicorn", "-w", "4", "-b", "0.0.0.0:7868", "app:server"]
