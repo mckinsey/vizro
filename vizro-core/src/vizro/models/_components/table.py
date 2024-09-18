@@ -120,7 +120,7 @@ class Table(VizroBaseModel):
         return dcc.Loading(
             children=html.Div(
                 children=[
-                    html.H3(self.title, className="figure-title") if self.title else None,
+                    html.H3(self.title, className="figure-title", id=f"{self.id}-title") if self.title else None,
                     dcc.Markdown(self.header, className="figure-header") if self.header else None,
                     # Refer to the vm.AgGrid build method for details on why we return the
                     # html.Div(id=self._input_component_id) instead of actual figure object

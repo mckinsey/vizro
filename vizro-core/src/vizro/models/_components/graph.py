@@ -180,7 +180,7 @@ class Graph(VizroBaseModel):
         return dcc.Loading(
             children=html.Div(
                 children=[
-                    html.H3(self.title, className="figure-title") if self.title else None,
+                    html.H3(self.title, className="figure-title", id=f"{self.id}-title") if self.title else None,
                     dcc.Markdown(self.header, className="figure-header") if self.header else None,
                     dcc.Graph(
                         id=self.id,
