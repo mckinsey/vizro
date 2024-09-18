@@ -1,4 +1,4 @@
-# Visual formatting in Vizro
+# Customizing CSS
 
 Vizro is quite opinionated when it comes to visual formatting, but it allows for some customization if you want to
 deviate from the default settings. While certain elements, such as the layout of the navigation and components,
@@ -59,18 +59,18 @@ Use Chrome DevTools or a similar tool (Web Inspector, Web Developer Tools, etc.)
 1. **Open DevTools:** In Google Chrome, right-click on the app and select "Inspect" from the context menu. This will open the
 HTML document of your Vizro app.
 
-    ![Inspect panel](../../assets/user_guides/visual_formatting/inspect-panel.png)
+    ![Inspect panel](../../assets/user_guides/customizing_css/inspect-panel.png)
 
 
 2. **Select an Element:** Suppose you want to change the background color of your cards. Click the
 "Select an element in the page to inspect it" icon in the top left corner of the inspect panel.
 
-    ![Inspect icon](../../assets/user_guides/visual_formatting/inspect-icon.png)
+    ![Inspect icon](../../assets/user_guides/customizing_css/inspect-icon.png)
 
 3. **Find the HTML Block:** Hover over the component you want to style. The corresponding HTML block will be
 highlighted in the document.
 
-    ![Highlighted element](../../assets/user_guides/visual_formatting/highlighted-element.png)
+    ![Highlighted element](../../assets/user_guides/customizing_css/highlighted-element.png)
 
     Notice that the selected HTML block corresponds to the container of the card and has a CSS class, here it is `card`.
 
@@ -87,7 +87,7 @@ highlighted in the document.
 **Tip:** You can also test your CSS live by editing the CSS attributes in the "Elements" panel.
 For example, temporarily add `background: blue; note that this change will be lost upon reloading the page.
 
-![Temporary changes](../../assets/user_guides/visual_formatting/temporary-changes.png)
+![Temporary changes](../../assets/user_guides/customizing_css/temporary-changes.png)
 
 
 ## CSS overwrites
@@ -319,9 +319,6 @@ See the example above on [hiding the page title on selected pages](#overwrite-cs
 
 ### Change the background color of a card
 See the example above on [customizing CSS properties in selective components](#overwrite-css-for-selected-components).
-
-### Add a logo or favicon
-To add a logo or favicon, refer to our user guide on [adding static assets](assets.md#change-the-favicon).
 
 ### Change the font
 XXXX

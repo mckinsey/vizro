@@ -149,7 +149,7 @@ See the fragment files in the [changelog.d directory](https://github.com/mckinse
 
 ## Removed
 
-- Remove all CSS classes with suffix `_outer` from components. Visit the user guide on [how to customize CSS in selected components](https://vizro.readthedocs.io/en/stable/pages/user-guides/visual-formatting.md/#overwrite-css-for-selected-components) for more details. ([#456](https://github.com/mckinsey/vizro/pull/456))
+- Remove all CSS classes with suffix `_outer` from components. Visit the user guide on [how to customize CSS in selected components](https://vizro.readthedocs.io/en/stable/pages/user-guides/customizing-css.md/#overwrite-css-for-selected-components) for more details. ([#456](https://github.com/mckinsey/vizro/pull/456))
 
 ## Changed
 
