@@ -70,7 +70,7 @@ When a custom action needs to interact with the dashboard, it is possible to def
 
 - `inputs` represents dashboard component properties whose values are passed to the custom action function as arguments.
 It is a list of strings in the format `"<component_id>.<property>"` (for example, `"my_selector.value`").
-- `outputs` represents dashboard component properties corresponding to the custom action function return value(s). 
+- `outputs` represents dashboard component properties corresponding to the custom action function return value(s).
 Similar to `inputs`, it is a list of strings in the format `"<component_id>.<property>"` (for example, `"my_card.children"`).
 
 ### Example of `value` as input
@@ -124,7 +124,7 @@ The following example shows a custom action that takes the `value` of the `vm.Ra
 
 
 ### Example of `clickData` as input
-The following example shows how to create a custom action that shows the `clickData` of a chart in a 
+The following example shows how to create a custom action that shows the `clickData` of a chart in a
 [`Card`][vizro.models.Card] component. For further information on the structure and content of the `clickData`
 property, refer to the Dash documentation on [interactive visualizations](https://dash.plotly.com/interactive-graphing).
 
@@ -135,9 +135,9 @@ property, refer to the Dash documentation on [interactive visualizations](https:
         import vizro.models as vm
         import vizro.plotly.express as px
         from vizro import Vizro
-        from vizro.actions import filter_interaction
         from vizro.models.types import capture
 
+        df = px.data.iris()
 
         @capture("action")
         def my_custom_action(show_species: bool, points_data: dict): # (1)!
@@ -151,26 +151,13 @@ property, refer to the Dash documentation on [interactive visualizations](https:
                 text += f" and species {species}"
             return text
 
-
-        df = px.data.iris()
-
         page = vm.Page(
-            title="Example of a custom action with UI inputs and outputs",
-            layout=vm.Layout(
-                grid=[
-                    [0, 2],
-                    [0, 2],
-                    [0, 2],
-                    [1, -1],
-                ],
-                row_gap="25px",
-            ),
+            title="Action with clickData as input",
             components=[
                 vm.Graph(
                     id="scatter_chart",
                     figure=px.scatter(df, x="sepal_length", y="petal_width", color="species", custom_data=["species"]),
                     actions=[
-                        vm.Action(function=filter_interaction(targets=["scatter_chart_2"])),
                         vm.Action(
                             function=my_custom_action(show_species=True), # (2)!
                             inputs=["scatter_chart.clickData"], # (3)!
@@ -179,16 +166,9 @@ property, refer to the Dash documentation on [interactive visualizations](https:
                     ],
                 ),
                 vm.Card(id="my_card", text="Click on a point on the above graph."),
-                vm.Graph(
-                    id="scatter_chart_2",
-                    figure=px.scatter(df, x="sepal_length", y="petal_width", color="species"),
-                ),
             ],
-            controls=[vm.Filter(column="species", selector=vm.Dropdown(title="Species"))],
         )
-
         dashboard = vm.Dashboard(pages=[page])
-
         Vizro().build(dashboard).run()
         ```
 
@@ -202,14 +182,14 @@ property, refer to the Dash documentation on [interactive visualizations](https:
     === "Result"
         [![CustomAction]][CustomAction]
 
-    [CustomAction]: ../../assets/user_guides/custom_actions/custom_action_inputs_outputs.png
+    [CustomAction]: ../../assets/user_guides/custom_actions/clickdata_as_input.png
 
 ## Multiple return values
 The return value of the custom action function is propagated to the dashboard components that are defined in the `outputs` argument of the [`Action`][vizro.models.Action] model.
 If there is a single `output` defined then the function return value is directly assigned to the component property.
 If there are multiple `outputs` defined then the return value is iterated through and each part is assigned to each component property given in `outputs` in turn. This behavior is identical to Python's flexibility in managing multiple return values.
 
-!!! example "Custom action with multiple return values"
+!!! example "Multiple return values"
     === "app.py"
         ```{.python pycafe-link}
         import vizro.models as vm

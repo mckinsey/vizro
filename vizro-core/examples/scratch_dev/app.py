@@ -9,26 +9,33 @@ df = px.data.iris()
 
 
 @capture("action")
-def update_card_text(species):
-    """Returns the input value."""
-    return f"You selected species {species}"
+def my_custom_action(show_species: bool, points_data: dict):
+    """Custom action."""
+    clicked_point = points_data["points"][0]
+    x, y = clicked_point["x"], clicked_point["y"]
+    text = f"Clicked point has sepal length {x}, petal width {y}"
 
+    if show_species:
+        species = clicked_point["customdata"][0]
+        text += f" and species {species}"
+    return text
 
-vm.Page.add_type("components", vm.RadioItems)
 
 page = vm.Page(
-    title="Action with value as input",
-    layout=vm.Layout(grid=[[0, 1]]),
+    title="Action with clickData as input",
     components=[
-        vm.RadioItems(
-            id="my_selector",
-            title="Select a species:",
-            options=df["species"].unique().tolist(),
+        vm.Graph(
+            id="scatter_chart",
+            figure=px.scatter(df, x="sepal_length", y="petal_width", color="species", custom_data=["species"]),
             actions=[
-                vm.Action(function=update_card_text(), inputs=["my_selector.value"], outputs=["my_card.children"])
+                vm.Action(
+                    function=my_custom_action(show_species=True),
+                    inputs=["scatter_chart.clickData"],
+                    outputs=["my_card.children"],
+                ),
             ],
         ),
-        vm.Card(text="Placeholder text", id="my_card"),
+        vm.Card(id="my_card", text="Click on a point on the above graph."),
     ],
 )
 
