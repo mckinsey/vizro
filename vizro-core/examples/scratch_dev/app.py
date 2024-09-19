@@ -1,16 +1,10 @@
 """Dev app to try things out."""
 
-import plotly.io as pio
 import vizro.models as vm
 import vizro.plotly.express as px
 from vizro import Vizro
 
 iris = px.data.iris()
-
-# TODO: Ask A. why this does not work?
-pio.templates["vizro_dark"]["layout"]["font_family"] = "PlayfairDisplay, Inter, sans-serif, Arial, serif"
-pio.templates["vizro_light"]["layout"]["font_family"] = "PlayfairDisplay, Inter, sans-serif, Arial, serif"
-
 
 page = vm.Page(
     title="Page with different font",
@@ -26,7 +20,7 @@ page = vm.Page(
     ],
 )
 
-dashboard = vm.Dashboard(pages=[page])
+dashboard = vm.Dashboard(pages=[page], title="Dashboard title")
 
 if __name__ == "__main__":
     Vizro().build(dashboard).run()

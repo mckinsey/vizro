@@ -211,7 +211,7 @@ to format displayed strings automatically.
 
 As mentioned above, all [parameters of the Dash AG Grid](https://dash.plotly.com/dash-ag-grid/reference) can be entered as keyword arguments. Below you can find
 an example of a styled AG Grid where some conditional formatting is applied, and where the columns are editable, but not filterable or resizable.
-There are more ways to alter the grid beyond this showcase. AG Grid, like any other Vizro component, can be customized using custom CSS. You can find information in the [guide to overwriting CSS properties](./customizing-css.md/#overwrite-css-for-selected-components).
+There are more ways to alter the grid beyond this showcase. AG Grid, like any other Vizro component, can be customized using custom CSS. You can find information in the [guide to overwriting CSS properties](custom-css.md/#overwrite-css-for-selected-components).
 
 !!! example "Styled and modified Dash AG Grid"
 

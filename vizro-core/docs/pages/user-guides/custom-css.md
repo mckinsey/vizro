@@ -60,18 +60,18 @@ Use Chrome DevTools or a similar tool (Web Inspector, Web Developer Tools, etc.)
 1. **Open DevTools:** In Google Chrome, right-click on the app and select "Inspect" from the context menu. This opens the
 HTML document of your Vizro app.
 
-    ![Inspect panel](../../assets/user_guides/customizing_css/inspect-panel.png)
+    ![Inspect panel](../../assets/user_guides/custom_css/inspect-panel.png)
 
 
 2. **Select an Element:** Suppose you want to change the background color of your cards. Click the
 "Select an element in the page to inspect it" icon in the top left corner of the inspect panel.
 
-    ![Inspect icon](../../assets/user_guides/customizing_css/inspect-icon.png)
+    ![Inspect icon](../../assets/user_guides/custom_css/inspect-icon.png)
 
 3. **Find the HTML Block:** Hover over the component you want to style. The corresponding HTML block will be
 highlighted in the document.
 
-    ![Highlighted element](../../assets/user_guides/customizing_css/highlighted-element.png)
+    ![Highlighted element](../../assets/user_guides/custom_css/highlighted-element.png)
 
     Notice that the selected HTML block corresponds to the container of the card and has a CSS class, here it is `card`.
 
@@ -88,7 +88,7 @@ highlighted in the document.
 **Tip:** You can also test your CSS live by editing the CSS attributes in the "Elements" panel.
 For example, temporarily add `background: blue; note that this change will be lost upon reloading the page.
 
-![Temporary changes](../../assets/user_guides/customizing_css/temporary-changes.png)
+![Temporary changes](../../assets/user_guides/custom_css/temporary-changes.png)
 
 
 ## CSS overwrites
@@ -321,7 +321,11 @@ See the example above on [hiding the page title on selected pages](#overwrite-cs
 ### Change the background color of a card
 See the example above on [customizing CSS properties in selective components](#overwrite-css-for-selected-components).
 
-### Change the font
+### Change the background color of a container
+XXXX
+
+
+### Change the global font
 The default fonts for a Vizro app are `Inter, sans-serif, Arial, serif`.
 
 If you need to change the global font, perhaps to adhere to branding guidelines, follow these steps:
@@ -329,7 +333,7 @@ If you need to change the global font, perhaps to adhere to branding guidelines,
 1. Download the desired font from a font provider such as [Google Fonts](https://fonts.google.com/).
 2. Place the font file (`.ttf`, `woff2`, etc.) into your `assets` folder. Here’s an example of what the assets folder might look like:
 
-    ![Font Change](../../assets/user_guides/customizing_css/font-change.png)
+    ![Font Change](../../assets/user_guides/custom_css/font-change.png)
 3. Add the font to your CSS file using the `@font-face` rule and apply the font globally to your Vizro app, making sure
 to specify fallback fonts. Add the following to your `custom.css` file:
 
@@ -344,9 +348,24 @@ to specify fallback fonts. Add the following to your `custom.css` file:
       font-family: PlayfairDisplay, Inter, sans-serif, Arial, serif;
     }
     ```
+4. Please note that the modification above applies solely to the dashboard font. To also change the font within the
+Plotly charts, you must specify this at the beginning of your `app.py` file:
 
-### Change the background color of a container
-XXXX
+```python
+import plotly.io as pio
 
-### Change padding to align a logo
-XXX
+pio.templates["vizro_dark"]["layout"]["font_family"] = "PlayfairDisplay, Inter, sans-serif, Arial, serif"
+pio.templates["vizro_light"]["layout"]["font_family"] = "PlayfairDisplay, Inter, sans-serif, Arial, serif"
+```
+
+### Reposition the logo
+By default, the logo appears in the top left corner of the dashboard. You can move it further to the left or right by
+adjusting the `padding` of the `#page-header` element. Here’s an example of how to achieve this:
+
+```css
+#page-header {
+  padding-left: 8px;
+}
+```
+
+![Logo positioning](../../assets/user_guides/custom_css/logo-position.png)
