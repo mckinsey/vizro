@@ -369,5 +369,5 @@ adjusting the `padding` of the `#page-header` element. Here is an example of how
 ![Logo positioning](../../assets/user_guides/custom_css/logo-position.png)
 
 
-### Change the background color of a container
+### Change the styling of a container
 XXXX
