@@ -1,36 +1,26 @@
-"""Dev app to try things out."""
+"""DDev app to try things out."""
 
-import pandas as pd
+import plotly.io as pio
 import vizro.models as vm
 import vizro.plotly.express as px
 from vizro import Vizro
-from vizro.models.types import capture
-
-animals = pd.DataFrame(
-    {"animals": ["giraffes", "orangutans", "monkeys"], "value": [20, 14, 23], "color": ["Male", "Female", "Female"]}
-)
 
 iris = px.data.iris()
-
-
-@capture("graph")
-def bar(data_frame):
-    """LA LA LA LA."""
-    fig = px.bar(data_frame, x="sepal_length", y="sepal_width", color="species")
-    return fig
-
-
-@capture("graph")
-def px_bar(data_frame):
-    """LA LA LA LA."""
-    fig = px.bar(data_frame, x="animals", y="value", color="color")
-    return fig
+pio.templates["vizro_dark"]["layout"]["font_family"] = "Times New Roman, Inter, sans-serif, Arial, serif"
+pio.templates["vizro_light"]["layout"]["font_family"] = "Times New Roman, Inter, sans-serif, Arial, serif"
 
 
 page = vm.Page(
-    title="My first page",
+    title="Page with different font",
     components=[
-        vm.Graph(figure=bar(iris)),
+        vm.Card(
+            text="""
+        # Lorem ipsum
+
+        Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nullam nec nunc nec libero ultricies ultricies.
+        """
+        ),
+        vm.Graph(figure=px.scatter(iris, x="sepal_width", y="sepal_length", color="species")),
     ],
 )
 
