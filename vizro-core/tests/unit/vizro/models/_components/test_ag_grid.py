@@ -44,7 +44,7 @@ class TestAgGridInstantiation:
 
     @pytest.mark.parametrize("id", ["id_1", "id_2"])
     def test_create_ag_grid_mandatory_and_optional(self, standard_ag_grid, id):
-        ag_grid = vm.AgGrid(figure=standard_ag_grid, id=id, actions=[])
+        ag_grid = vm.AgGrid(figure=standard_ag_grid, id=id)
 
         assert ag_grid.id == id
         assert ag_grid.type == "ag_grid"
@@ -118,7 +118,7 @@ class TestDunderMethodsAgGrid:
 class TestAttributesAgGrid:
     # Testing at this low implementation level as mocking callback contexts skips checking for creation of these objects
     def test_ag_grid_filter_interaction_attributes(self, ag_grid_with_id):
-        ag_grid = vm.AgGrid(figure=ag_grid_with_id, title="Gapminder", actions=[])
+        ag_grid = vm.AgGrid(figure=ag_grid_with_id, title="Gapminder")
         ag_grid.pre_build()
         assert hasattr(ag_grid, "_filter_interaction_input")
         assert "modelID" in ag_grid._filter_interaction_input
@@ -136,56 +136,96 @@ class TestProcessAgGridDataFrame:
 
 
 class TestPreBuildAgGrid:
-    def test_pre_build_no_actions_no_underlying_ag_grid_id(self, standard_ag_grid):
+    def test_pre_build_no_underlying_ag_grid_id(self, standard_ag_grid):
         ag_grid = vm.AgGrid(id="text_ag_grid", figure=standard_ag_grid)
         ag_grid.pre_build()
 
         assert ag_grid._input_component_id == "__input_text_ag_grid"
 
-    def test_pre_build_actions_underlying_ag_grid_id(self, ag_grid_with_id, filter_interaction_action):
-        ag_grid = vm.AgGrid(id="text_ag_grid", figure=ag_grid_with_id, actions=[filter_interaction_action])
+    def test_pre_build_underlying_ag_grid_id(self, ag_grid_with_id):
+        ag_grid = vm.AgGrid(id="text_ag_grid", figure=ag_grid_with_id)
         ag_grid.pre_build()
         assert ag_grid._input_component_id == "underlying_ag_grid_id"
 
 
 class TestBuildAgGrid:
     def test_ag_grid_build_mandatory_only(self, standard_ag_grid, gapminder):
-        ag_grid = vm.AgGrid(id="text_ag_grid", figure=standard_ag_grid)
+        ag_grid = vm.AgGrid(figure=standard_ag_grid)
         ag_grid.pre_build()
         ag_grid = ag_grid.build()
         expected_ag_grid = dcc.Loading(
-            [
-                None,
-                html.Div(
-                    id="text_ag_grid",
-                    children=[html.Div(id="__input_text_ag_grid")],
-                    className="table-container",
-                ),
-            ],
+            html.Div(
+                [
+                    None,
+                    None,
+                    html.Div(
+                        children=[html.Div()],
+                        className="table-container",
+                    ),
+                    None,
+                ],
+                className="figure-container",
+            ),
             color="grey",
             parent_className="loading-container",
             overlay_style={"visibility": "visible", "opacity": 0.3},
         )
 
-        assert_component_equal(ag_grid, expected_ag_grid)
+        assert_component_equal(ag_grid, expected_ag_grid, keys_to_strip={"id"})
 
-    def test_ag_grid_build_with_underlying_id(self, ag_grid_with_id_and_conf, filter_interaction_action, gapminder):
-        ag_grid = vm.AgGrid(id="text_ag_grid", figure=ag_grid_with_id_and_conf, actions=[filter_interaction_action])
+    @pytest.mark.parametrize(
+        "ag_grid, underlying_id_expected",
+        [
+            ("ag_grid_with_id_and_conf", "underlying_ag_grid_id"),
+            ("standard_ag_grid", "__input_text_ag_grid"),
+        ],
+    )
+    def test_ag_grid_build_with_and_without_underlying_id(self, ag_grid, underlying_id_expected, request):
+        ag_grid = vm.AgGrid(id="text_ag_grid", figure=request.getfixturevalue(ag_grid))
         ag_grid.pre_build()
         ag_grid = ag_grid.build()
 
         expected_ag_grid = dcc.Loading(
-            [
-                None,
-                html.Div(
-                    id="text_ag_grid",
-                    children=[html.Div(id="underlying_ag_grid_id")],
-                    className="table-container",
-                ),
-            ],
+            html.Div(
+                [
+                    None,
+                    None,
+                    html.Div(
+                        id="text_ag_grid",
+                        children=[html.Div(id=underlying_id_expected)],
+                        className="table-container",
+                    ),
+                    None,
+                ],
+                className="figure-container",
+            ),
             color="grey",
             parent_className="loading-container",
             overlay_style={"visibility": "visible", "opacity": 0.3},
         )
-
         assert_component_equal(ag_grid, expected_ag_grid)
+
+    def test_aggrid_build_title_header_footer(self, standard_ag_grid):
+        ag_grid = vm.AgGrid(
+            figure=standard_ag_grid, title="Title", header="""#### Subtitle""", footer="""SOURCE: **DATA**"""
+        )
+        ag_grid.pre_build()
+        ag_grid = ag_grid.build()
+        expected_ag_grid = dcc.Loading(
+            html.Div(
+                children=[
+                    html.H3("Title", className="figure-title"),
+                    dcc.Markdown("""#### Subtitle""", className="figure-header"),
+                    html.Div(
+                        children=[html.Div()],
+                        className="table-container",
+                    ),
+                    dcc.Markdown("""SOURCE: **DATA**""", className="figure-footer"),
+                ],
+                className="figure-container",
+            ),
+            color="grey",
+            parent_className="loading-container",
+            overlay_style={"visibility": "visible", "opacity": 0.3},
+        )
+        assert_component_equal(ag_grid, expected_ag_grid, keys_to_strip={"id"})

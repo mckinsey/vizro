@@ -1,0 +1,41 @@
+# Git
+.git
+.gitignore
+.gitattributes
+
+# Docker
+Dockerfile
+docker-compose.yml
+.dockerignore
+
+# Python
+*.pyc
+*.pyo
+*.pyd
+__pycache__
+.pytest_cache
+.coverage
+htmlcov/
+.tox/
+.venv
+venv/
+*.egg-info/
+dist/
+build/
+
+# Editors
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# OS generated
+.DS_Store
+Thumbs.db
+
+# Application specific
+*.log
+*.sqlite3
+
+# csv
+*.csv

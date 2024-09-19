@@ -49,28 +49,32 @@ pages:
     title: Homepage
   - components:
       - figure:
-          _target_: scatter_matrix
+          _target_: scatter
+          x: sepal_width
+          y: sepal_length
           color: species
           data_frame: iris
-          dimensions:
-            ["sepal_length", "sepal_width", "petal_length", "petal_width"]
+        title: Relationships between Sepal Width and Sepal Length
+        header: |
+          Each point in the scatter plot represents one of the 150 iris flowers, with colors indicating their
+          types. The Setosa type is easily identifiable by its short and wide sepals.
+
+          However, there is still overlap between the Versicolor and Virginica types when considering only sepal
+          width and length.
+        footer: |
+          SOURCE: **Plotly iris data set, 2024**
         type: graph
-    controls:
-      - column: species
-        type: filter
-        selector:
-          title: Species
-          type: dropdown
     title: Graphs
   - components:
       - figure:
           _target_: dash_data_table
           data_frame: gapminder_2007
-        title: Dash DataTable
+        title: Gapminder Data Insights
+        header: |
+          #### An Interactive Exploration of Global Health, Wealth, and Population
+        footer: |
+          SOURCE: **Plotly gapminder data set, 2024**
         type: table
-    controls:
-      - column: continent
-        type: filter
     title: Table
   - components:
       - figure:
@@ -78,11 +82,12 @@ pages:
           data_frame: gapminder_2007
           dashGridOptions:
             pagination: true
-        title: Dash AG Grid
+        title: Gapminder Data Insights
+        header: |
+          #### An Interactive Exploration of Global Health, Wealth, and Population
+        footer: |
+          SOURCE: **Plotly gapminder data set, 2024**
         type: ag_grid
-    controls:
-      - column: continent
-        type: filter
     title: AG Grid
   - components:
       - text: |

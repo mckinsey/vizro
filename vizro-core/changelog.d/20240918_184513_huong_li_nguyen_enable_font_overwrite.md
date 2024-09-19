@@ -37,7 +37,7 @@ Uncomment the section that is right (remove the HTML comment wrapper).
 
 ### Fixed
 
-- Fix bug that prevented `VizroBaseModel._to_python()` to convert `dict` fields of models correctly ([#660](https://github.com/mckinsey/vizro/pull/660))
+- Enable overwriting global `font-family` in vizro chart templates. ([#717](https://github.com/mckinsey/vizro/pull/717))
 
 <!--
 ### Security

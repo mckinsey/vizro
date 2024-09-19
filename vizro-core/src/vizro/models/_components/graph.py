@@ -1,8 +1,9 @@
 import logging
+import warnings
 from contextlib import suppress
 from typing import Dict, List, Literal
 
-from dash import ClientsideFunction, Input, Output, State, clientside_callback, dcc, set_props
+from dash import ClientsideFunction, Input, Output, State, clientside_callback, dcc, html, set_props
 from dash.exceptions import MissingCallbackContextException
 from plotly import graph_objects as go
 
@@ -32,6 +33,12 @@ class Graph(VizroBaseModel):
         type (Literal["graph"]): Defaults to `"graph"`.
         figure (CapturedCallable): Function that returns a graph.
             See `CapturedCallable`][vizro.models.types.CapturedCallable].
+        title (str): Title of the `Graph`. Defaults to `""`.
+        header (str): Markdown text positioned below the `Graph.title`. Follows the CommonMark specification.
+            Ideal for adding supplementary information such as subtitles, descriptions, or additional context.
+            Defaults to `""`.
+        footer (str): Markdown text positioned below the `Graph`. Follows the CommonMark specification.
+            Ideal for providing further details such as sources, disclaimers, or additional notes. Defaults to `""`.
         actions (List[Action]): See [`Action`][vizro.models.Action]. Defaults to `[]`.
 
     """
@@ -39,6 +46,17 @@ class Graph(VizroBaseModel):
     type: Literal["graph"] = "graph"
     figure: CapturedCallable = Field(
         ..., import_path="vizro.plotly.express", mode="graph", description="Function that returns a plotly `go.Figure`"
+    )
+    title: str = Field("", description="Title of the `Graph`")
+    header: str = Field(
+        "",
+        description="Markdown text positioned below the `Graph.title`. Follows the CommonMark specification. Ideal for "
+        "adding supplementary information such as subtitles, descriptions, or additional context.",
+    )
+    footer: str = Field(
+        "",
+        description="Markdown text positioned below the `Graph`. Follows the CommonMark specification. Ideal for "
+        "providing further details such as sources, disclaimers, or additional notes.",
     )
     actions: List[Action] = []
 
@@ -126,11 +144,21 @@ class Graph(VizroBaseModel):
                 # Reduce `margin_t` if not explicitly set.
                 fig.update_layout(margin_t=64)
 
-            if fig.layout.title.pad.t is None and "<br>" not in fig.layout.title.text:
-                # Reduce `title_pad_t` if title doesn't have subtitle and `title_pad_t` is not explicitly set.
-                fig.update_layout(title_pad_t=7)
-
         return fig
+
+    @_log_call
+    def pre_build(self):
+        try:
+            self.figure["title"]
+        except KeyError:
+            pass
+        else:
+            warnings.warn(
+                "Using the `title` argument in your Plotly chart function may cause misalignment with "
+                "other component titles on the screen. To ensure consistent alignment, consider using "
+                "`vm.Graph(title='Title', ...)`.",
+                UserWarning,
+            )
 
     @_log_call
     def build(self):
@@ -150,18 +178,25 @@ class Graph(VizroBaseModel):
         # transparent and has no axes so it doesn't draw anything on the screen which would flicker away when the
         # graph callback is executed to make the dcc.Loading icon appear.
         return dcc.Loading(
-            dcc.Graph(
-                id=self.id,
-                figure=go.Figure(
-                    layout={
-                        "paper_bgcolor": "rgba(0,0,0,0)",
-                        "plot_bgcolor": "rgba(0,0,0,0)",
-                        "xaxis": {"visible": False},
-                        "yaxis": {"visible": False},
-                    }
-                ),
-                config={"autosizable": True, "frameMargins": 0, "responsive": True},
-                className="chart_container",
+            children=html.Div(
+                children=[
+                    html.H3(self.title, className="figure-title") if self.title else None,
+                    dcc.Markdown(self.header, className="figure-header") if self.header else None,
+                    dcc.Graph(
+                        id=self.id,
+                        figure=go.Figure(
+                            layout={
+                                "paper_bgcolor": "rgba(0,0,0,0)",
+                                "plot_bgcolor": "rgba(0,0,0,0)",
+                                "xaxis": {"visible": False},
+                                "yaxis": {"visible": False},
+                            }
+                        ),
+                        config={"autosizable": True, "frameMargins": 0, "responsive": True},
+                    ),
+                    dcc.Markdown(self.footer, className="figure-footer") if self.footer else None,
+                ],
+                className="figure-container",
             ),
             color="grey",
             parent_className="loading-container",

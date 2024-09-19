@@ -27,7 +27,12 @@ class AgGrid(VizroBaseModel):
     Args:
         type (Literal["ag_grid"]): Defaults to `"ag_grid"`.
         figure (CapturedCallable): Function that returns a Dash AgGrid. See [`vizro.tables`][vizro.tables].
-        title (str): Title of the table. Defaults to `""`.
+        title (str): Title of the `AgGrid`. Defaults to `""`.
+        header (str): Markdown text positioned below the `AgGrid.title`. Follows the CommonMark specification.
+            Ideal for adding supplementary information such as subtitles, descriptions, or additional context.
+            Defaults to `""`.
+        footer (str): Markdown text positioned below the `AgGrid`. Follows the CommonMark specification.
+            Ideal for providing further details such as sources, disclaimers, or additional notes. Defaults to `""`.
         actions (List[Action]): See [`Action`][vizro.models.Action]. Defaults to `[]`.
 
     """
@@ -36,7 +41,17 @@ class AgGrid(VizroBaseModel):
     figure: CapturedCallable = Field(
         ..., import_path="vizro.tables", mode="ag_grid", description="Function that returns a `Dash AG Grid`."
     )
-    title: str = Field("", description="Title of the AgGrid")
+    title: str = Field("", description="Title of the `AgGrid`")
+    header: str = Field(
+        "",
+        description="Markdown text positioned below the `AgGrid.title`. Follows the CommonMark specification. Ideal "
+        "for adding supplementary information such as subtitles, descriptions, or additional context.",
+    )
+    footer: str = Field(
+        "",
+        description="Markdown text positioned below the `AgGrid`. Follows the CommonMark specification. Ideal for "
+        "providing further details such as sources, disclaimers, or additional notes.",
+    )
     actions: List[Action] = []
 
     _input_component_id: str = PrivateAttr()
@@ -104,21 +119,26 @@ class AgGrid(VizroBaseModel):
         )
 
         return dcc.Loading(
-            children=[
-                html.H3(self.title) if self.title else None,
-                # The Div component with `id=self._input_component_id` is rendered during the build phase.
-                # This placeholder component is quickly replaced by the actual AgGrid object, which is generated using
-                # a filtered data_frame and parameterized arguments as part of the on_page_load mechanism.
-                # To prevent pagination and persistence issues while maintaining a lightweight component initial load,
-                # this method now returns a html.Div object instead of the previous dag.AgGrid. The actual AgGrid is
-                # then rendered by the on_page_load mechanism.
-                # The `id=self._input_component_id` is set to avoid the "Non-existing object" Dash exception.
-                html.Div(
-                    id=self.id,
-                    children=[html.Div(id=self._input_component_id)],
-                    className="table-container",
-                ),
-            ],
+            children=html.Div(
+                children=[
+                    html.H3(self.title, className="figure-title") if self.title else None,
+                    dcc.Markdown(self.header, className="figure-header") if self.header else None,
+                    # The Div component with `id=self._input_component_id` is rendered during the build phase.
+                    # This placeholder component is quickly replaced by the actual AgGrid object, which is generated
+                    # using a filtered data_frame and parameterized arguments as part of the on_page_load mechanism.
+                    # To prevent pagination and persistence issues while maintaining a lightweight component initial
+                    # load, this method now returns a html.Div object instead of the previous dag.AgGrid.
+                    # The actual AgGrid is then rendered by the on_page_load mechanism.
+                    # The `id=self._input_component_id` is set to avoid the "Non-existing object" Dash exception.
+                    html.Div(
+                        id=self.id,
+                        children=[html.Div(id=self._input_component_id)],
+                        className="table-container",
+                    ),
+                    dcc.Markdown(self.footer, className="figure-footer") if self.footer else None,
+                ],
+                className="figure-container",
+            ),
             color="grey",
             parent_className="loading-container",
             overlay_style={"visibility": "visible", "opacity": 0.3},

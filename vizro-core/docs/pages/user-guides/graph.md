@@ -66,3 +66,8 @@ To add a [`Graph`][vizro.models.Graph] to your page, do the following:
 
 
 In the Python example we directly inserted the pandas DataFrame `df` into `figure=px.scatter_matrix(df, ...)`. This is [one way to supply data to a chart](data.md#supply-directly). For the YAML version, we [refer to the data source by name](data.md#reference-by-name) as `data_frame: iris`. For a full explanation of the different methods you can use to send data to your dashboard, see [our guide to using data in Vizro](data.md).
+
+## Add title, header, footer
+
+To enhance your `Graph` with a title, header, or footer to provide additional context or descriptions,
+refer to our detailed user guide on [title, header, and footer](title-header-footer.md).

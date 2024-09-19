@@ -39,7 +39,7 @@ class TestTableInstantiation:
 
     @pytest.mark.parametrize("id", ["id_1", "id_2"])
     def test_create_table_mandatory_and_optional(self, standard_dash_table, id):
-        table = vm.Table(id=id, figure=standard_dash_table, actions=[])
+        table = vm.Table(id=id, figure=standard_dash_table)
 
         assert table.id == id
         assert table.type == "table"
@@ -112,7 +112,7 @@ class TestDunderMethodsTable:
 
 class TestAttributesTable:
     def test_table_filter_interaction_attributes(self, dash_data_table_with_id):
-        table = vm.Table(figure=dash_data_table_with_id, title="Gapminder", actions=[])
+        table = vm.Table(figure=dash_data_table_with_id, title="Gapminder")
         table.pre_build()
         assert hasattr(table, "_filter_interaction_input")
         assert "modelID" in table._filter_interaction_input
@@ -131,14 +131,14 @@ class TestProcessTableDataFrame:
 
 
 class TestPreBuildTable:
-    def test_pre_build_no_actions_no_underlying_table_id(self, standard_dash_table):
+    def test_pre_build_no_underlying_table_id(self, standard_dash_table):
         table = vm.Table(id="text_table", figure=standard_dash_table)
         table.pre_build()
 
         assert table._input_component_id == "__input_text_table"
 
-    def test_pre_build_actions_underlying_table_id(self, dash_data_table_with_id, filter_interaction_action):
-        table = vm.Table(id="text_table", figure=dash_data_table_with_id, actions=[filter_interaction_action])
+    def test_pre_build_underlying_table_id(self, dash_data_table_with_id, filter_interaction_action):
+        table = vm.Table(id="text_table", figure=dash_data_table_with_id)
         table.pre_build()
 
         assert table._input_component_id == "underlying_table_id"
@@ -146,18 +146,55 @@ class TestPreBuildTable:
 
 class TestBuildTable:
     def test_table_build_mandatory_only(self, standard_dash_table, gapminder):
-        table = vm.Table(id="text_table", figure=standard_dash_table)
+        table = vm.Table(figure=standard_dash_table)
         table.pre_build()
         table = table.build()
         expected_table = dcc.Loading(
-            children=[
-                None,
-                html.Div(
-                    id="text_table",
-                    children=[html.Div(id="__input_text_table")],
-                    className="table-container",
-                ),
-            ],
+            html.Div(
+                children=[
+                    None,
+                    None,
+                    html.Div(
+                        children=[html.Div()],
+                        className="table-container",
+                    ),
+                    None,
+                ],
+                className="figure-container",
+            ),
+            color="grey",
+            parent_className="loading-container",
+            overlay_style={"visibility": "visible", "opacity": 0.3},
+        )
+
+        assert_component_equal(table, expected_table, keys_to_strip={"id"})
+
+    @pytest.mark.parametrize(
+        "table, underlying_id_expected",
+        [
+            ("dash_data_table_with_id", "underlying_table_id"),
+            ("standard_dash_table", "__input_text_table"),
+        ],
+    )
+    def test_table_build_with_and_without_underlying_id(self, table, underlying_id_expected, request):
+        table = vm.Table(id="text_table", figure=request.getfixturevalue(table))
+        table.pre_build()
+        table = table.build()
+
+        expected_table = dcc.Loading(
+            html.Div(
+                children=[
+                    None,
+                    None,
+                    html.Div(
+                        id="text_table",
+                        children=[html.Div(id=underlying_id_expected)],
+                        className="table-container",
+                    ),
+                    None,
+                ],
+                className="figure-container",
+            ),
             color="grey",
             parent_className="loading-container",
             overlay_style={"visibility": "visible", "opacity": 0.3},
@@ -165,43 +202,28 @@ class TestBuildTable:
 
         assert_component_equal(table, expected_table)
 
-    def test_table_build_with_underlying_id(self, dash_data_table_with_id, filter_interaction_action, gapminder):
-        table = vm.Table(id="text_table", figure=dash_data_table_with_id)
+    def test_table_build_title_header_footer(self, standard_dash_table):
+        table = vm.Table(
+            figure=standard_dash_table, title="Title", header="""#### Subtitle""", footer="""SOURCE: **DATA**"""
+        )
         table.pre_build()
         table = table.build()
-
         expected_table = dcc.Loading(
-            children=[
-                None,
-                html.Div(
-                    id="text_table",
-                    children=[html.Div(id="underlying_table_id")],
-                    className="table-container",
-                ),
-            ],
+            html.Div(
+                children=[
+                    html.H3("Title", className="figure-title"),
+                    dcc.Markdown("""#### Subtitle""", className="figure-header"),
+                    html.Div(
+                        children=[html.Div()],
+                        className="table-container",
+                    ),
+                    dcc.Markdown("""SOURCE: **DATA**""", className="figure-footer"),
+                ],
+                className="figure-container",
+            ),
             color="grey",
             parent_className="loading-container",
             overlay_style={"visibility": "visible", "opacity": 0.3},
         )
 
-        assert_component_equal(table, expected_table)
-
-    def test_table_build_with_title(self, standard_dash_table, gapminder):
-        table = vm.Table(id="text_table", title="Table Title", figure=standard_dash_table)
-        table.pre_build()
-        table = table.build()
-        expected_table = dcc.Loading(
-            children=[
-                html.H3("Table Title"),
-                html.Div(
-                    id="text_table",
-                    children=[html.Div(id="__input_text_table")],
-                    className="table-container",
-                ),
-            ],
-            color="grey",
-            parent_className="loading-container",
-            overlay_style={"visibility": "visible", "opacity": 0.3},
-        )
-
-        assert_component_equal(table, expected_table)
+        assert_component_equal(table, expected_table, keys_to_strip={"id"})

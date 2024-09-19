@@ -31,6 +31,9 @@ Create a one-page dashboard layout with the following components:
 
 ## 2. Generate and launch the dashboard
 ```py
+from vizro_ai import VizroAI
+
+vizro_ai = VizroAI(model="gpt-4o-mini")
 result = vizro_ai._dashboard([df], user_question, return_elements=True)
 ```
 This will trigger the dashboard building process. Once Vizro-AI finishes the dashboard generation process, you can now launch the dashboard.

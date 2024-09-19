@@ -78,7 +78,7 @@ Optional high-code extensions enable almost infinite customization in a modular 
 
 Visit ["Why should I use Vizro?"](https://vizro.readthedocs.io/en/stable/pages/explanation/faq/#why-should-i-use-vizro) for a more detailed explanation of Vizro use cases.
 
-### What is Vizro-AI?
+## What is Vizro-AI?
 
 Vizro-AI is a separate package and extends Vizro to enable the use of natural language queries to build Plotly charts.
 
@@ -102,10 +102,19 @@ See the [Vizro-AI documentation](https://vizro.readthedocs.io/projects/vizro-ai/
 
 You can see Vizro in action by clicking on the following image or by visiting [the examples gallery at vizro.mckinsey.com](https://vizro.mckinsey.com).
 
-<p align="left">
 <a href="http://vizro.mckinsey.com/">
-<img border="0" src="https://raw.githubusercontent.com/mckinsey/vizro/main/.github/images/vizro_examples_gallery.png" width="525" height="296">  </a>
-</p>
+<img src="https://raw.githubusercontent.com/mckinsey/vizro/main/.github/images/vizro_examples_gallery.png" width="550">
+</a>
+
+## Vizro visual vocabulary
+
+Our visual vocabulary dashboard helps you to select and create various types of charts. It helps you decide when to use
+each chart type, and offers sample Python code to create these charts with [Plotly](https://plotly.com/python/) and
+embed them into a Vizro dashboard.
+
+<a href="https://huggingface.co/spaces/vizro/demo-visual-vocabulary/">
+<img src="https://raw.githubusercontent.com/mckinsey/vizro/main/.github/images/visual_vocabulary.png" width="550">
+</a>
 
 ## Dashboard screenshots
 

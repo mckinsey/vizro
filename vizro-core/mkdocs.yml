@@ -29,6 +29,7 @@ nav:
           - Layouts: pages/user-guides/layouts.md
           - Themes: pages/user-guides/themes.md
           - Assets: pages/user-guides/assets.md
+          - Title, header, footer: pages/user-guides/title-header-footer.md
       - ACTIONS:
           - Actions: pages/user-guides/actions.md
       - DATA:
@@ -109,7 +110,7 @@ markdown_extensions:
             kwds:
               type: vizro
               requirements: |
-                vizro==0.1.21
+                vizro==0.1.23
                 ruff==0.6.1  # mock
   - pymdownx.tabbed:
       alternate_style: true

@@ -1,0 +1,20 @@
+.table-container,
+.dash-graph {
+  flex: 1 1 auto;
+  overflow: auto;
+  width: 100%;
+}
+
+.figure-title,
+.figure-header,
+.figure-footer {
+  flex: 0 1 auto;
+}
+
+.figure-footer {
+  padding-top: 0.75rem;
+}
+
+.figure-footer a {
+  font-size: inherit;
+}
