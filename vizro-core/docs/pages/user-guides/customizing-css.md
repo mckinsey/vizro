@@ -35,7 +35,8 @@ through the use of CSS selectors:
     }
     ```
 
-- **Class selector:** Applies the style to all elements with the specified class.
+- **Class selector:** Targets all elements with the given class for styling. All CSS classes must be preceded with a
+`.` symbol.
 
     ```
     .card {
@@ -43,7 +44,7 @@ through the use of CSS selectors:
     }
     ```
 
-- **ID selector:** Applies the style to the element with the specified ID.
+- **ID selector:** Targets the element with the given ID for styling. All CSS IDs must be preceded by a `#` symbol.
 
     ```
     #my-card {
