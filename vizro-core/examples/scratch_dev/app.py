@@ -5,37 +5,30 @@ import vizro.plotly.express as px
 from vizro import Vizro
 from vizro.models.types import capture
 
-iris = px.data.iris()
+df = px.data.iris()
 
 
 @capture("action")
-def update_graph_title(value):
-    """Custom action."""
-    return f"Distribution for {value}"
+def update_card_text(species):
+    """Returns the input value."""
+    return f"You selected species {species}"
 
+
+vm.Page.add_type("components", vm.RadioItems)
 
 page = vm.Page(
-    title="Dynamic Graph title",
+    title="Action with value as input",
+    layout=vm.Layout(grid=[[0, 1]]),
     components=[
-        vm.Graph(
-            id="my-graph", title="Distribution for setosa", figure=px.bar(iris, x="sepal_length", y="sepal_width")
+        vm.RadioItems(
+            id="my_selector",
+            title="Select a species:",
+            options=df["species"].unique().tolist(),
+            actions=[
+                vm.Action(function=update_card_text(), inputs=["my_selector.value"], outputs=["my_card.children"])
+            ],
         ),
-    ],
-    controls=[
-        vm.Filter(
-            column="species",
-            selector=vm.Dropdown(
-                id="my-dropdown",
-                multi=False,
-                title="Select species:",
-                value="setosa",
-                actions=[
-                    vm.Action(
-                        function=update_graph_title(), inputs=["my-dropdown.value"], outputs=["my-graph-title.children"]
-                    )
-                ],
-            ),
-        )
+        vm.Card(text="Placeholder text", id="my_card"),
     ],
 )
 
