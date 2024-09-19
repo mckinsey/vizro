@@ -97,7 +97,9 @@ The dashboard is still in development. Below is an overview of the chart types f
 | Violin                | ✅     | Distribution             |                                                                          |                                                                                       |
 | Waterfall             | ❌     | Part-to-whole, Flow      |                                                                          |                                                                                       |
 
-To contribute a chart, follow the steps below:
+## How to contribute
+
+Contributions are welcome! To contribute a chart, follow the steps below:
 
 1. Check that a `svg` file named after the chart type is contained in the [assets](https://github.com/mckinsey/vizro/tree/main/vizro-core/examples/_visual-vocabulary/assets/images/charts) folder. If not, [raise an issue](https://github.com/mckinsey/vizro/issues) in the repository.
 2. Add the data set to `_pages_utils.py` if it doesn't already exist. Use existing data sets preferably or any other data set that is publicly available e.g. [plotlx.express.data](https://plotly.com/python-api-reference/generated/plotly.express.data.html)
