@@ -28,7 +28,7 @@ Inspired by:
 
 Credits and sources:
 
-- Charting library: [Plotly](https://plotly.com/python/plotly-express/)
+- Charting library: [Plotly](https://github.com/plotly/plotly.py)
 - Plotly Express chart examples: [Plotly Express](https://plotly.com/python/plotly-express/)
 - Data visualization best practices: [Guide to data chart mastery](https://www.atlassian.com/data/charts)
 
