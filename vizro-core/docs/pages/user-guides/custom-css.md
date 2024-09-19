@@ -349,12 +349,12 @@ to specify fallback fonts. Add the following to your `custom.css` file:
 4. Note that the modification above applies solely to the dashboard font. To also change the font within the
 Plotly charts, you must specify this at the beginning of your `app.py` file:
 
-```python
-import plotly.io as pio
+    ```python
+    import plotly.io as pio
 
-pio.templates["vizro_dark"]["layout"]["font_family"] = "PlayfairDisplay, Inter, sans-serif, Arial, serif"
-pio.templates["vizro_light"]["layout"]["font_family"] = "PlayfairDisplay, Inter, sans-serif, Arial, serif"
-```
+    pio.templates["vizro_dark"]["layout"]["font_family"] = "PlayfairDisplay, Inter, sans-serif, Arial, serif"
+    pio.templates["vizro_light"]["layout"]["font_family"] = "PlayfairDisplay, Inter, sans-serif, Arial, serif"
+    ```
 
 ### Reposition the logo
 By default, the logo appears in the top left corner of the dashboard. You can move it further to the left or right by
@@ -370,4 +370,92 @@ adjusting the `padding` of the `#page-header` element. Here is an example of how
 
 
 ### Change the styling of a container
-XXXX
+If you want to make the subsections of your dashboard stand out more, you can do this by placing your components
+inside a [Container](container.md) and changing the container's styling, for example, background color, borders, padding, etc.
+
+To do this, you need to change the container's CSS class. Using the DevTool, as explained in the section on
+[identifying the correct CSS selector](#identify-the-correct-css-selector), you'll find that the CSS class for the
+`Container` is `page-component-container. You can then use this class to set a new background color and padding.
+
+!!! example "Style a container"
+    === "custom.css"
+    ```css
+    .page-component-container {
+        background: var(--surfaces-bg-card);
+        padding: 12px;
+    }
+    ```
+    === "app.py"
+        ```py
+        import vizro.models as vm
+        import vizro.plotly.express as px
+        from vizro import Vizro
+
+        iris = px.data.iris()
+
+        page = vm.Page(
+            title="Page with subsections",
+            layout=vm.Layout(grid=[[0, 1]]),
+            components=[
+                vm.Container(
+                    title="Container I",
+                    components=[vm.Graph(figure=px.scatter(iris, x="sepal_width", y="sepal_length", color="species"))]
+                ),
+                vm.Container(
+                    title="Container II",
+                    components=[vm.Graph(figure=px.box(iris, x="species", y="sepal_length", color="species"))]
+                )
+            ],
+        )
+
+        dashboard = vm.Dashboard(pages=[page])
+        Vizro().build(dashboard).run()
+        ```
+
+        <img src=https://py.cafe/logo.png alt="py.cafe logo" width="30"><b><a target="_blank" href="https://py.cafe/vizro-official/vizro-style-a-container">Run and edit this code in Py.Cafe</a></b>
+
+    === "app.yaml"
+        ```yaml
+        # Still requires a .py to add data to the data manager and parse YAML configuration
+        # See yaml_version example
+        pages:
+        - components:
+            - text: |
+                Lorem ipsum dolor sit amet consectetur adipisicing elit.
+              type: card
+              id: custom-card
+            - text: |
+                Lorem ipsum dolor sit amet consectetur adipisicing elit.
+              type: card
+          title: Changing the card color
+        ```
+    === "Result"
+         [![StyleContainer]][StyleContainer]
+
+    [StyleContainer]: ../../assets/user_guides/custom_css/style-container.png
+
+You will notice that the background colors of the charts are different. To align it with the colors of the container,
+you can make the charts' background transparent.
+
+To make the background of all charts transparent:
+
+```py
+import plotly.io as pio
+
+pio.templates["vizro_dark"]["layout"]["paper_bgcolor"] = "rgba(0, 0, 0, 0)"
+pio.templates["vizro_light"]["layout"]["paper_bgcolor"] = "rgba(0, 0, 0, 0)"
+pio.templates["vizro_dark"]["layout"]["plot_bgcolor"] = "rgba(0, 0, 0, 0)"
+pio.templates["vizro_light"]["layout"]["plot_bgcolor"] = "rgba(0, 0, 0, 0)"
+```
+
+To make the background of selected charts transparent:
+
+```py
+@capture(graph)
+def custom_chart(data_frame):
+    ...
+    fig.update_layout(paper_bgcolor="rgba(0, 0, 0, 0)", plot_bgcolor="rgba(0, 0, 0, 0)")
+    return fig
+```
+
+![Transparent charts](../../assets/user_guides/custom_css/transparent-charts.png)
