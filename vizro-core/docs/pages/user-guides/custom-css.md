@@ -321,10 +321,6 @@ See the example above on [hiding the page title on selected pages](#overwrite-cs
 ### Change the background color of a card
 See the example above on [customizing CSS properties in selective components](#overwrite-css-for-selected-components).
 
-### Change the background color of a container
-XXXX
-
-
 ### Change the global font
 The default fonts for a Vizro app are `Inter, sans-serif, Arial, serif`.
 
@@ -348,7 +344,9 @@ to specify fallback fonts. Add the following to your `custom.css` file:
       font-family: PlayfairDisplay, Inter, sans-serif, Arial, serif;
     }
     ```
-4. Please note that the modification above applies solely to the dashboard font. To also change the font within the
+
+
+4. Note that the modification above applies solely to the dashboard font. To also change the font within the
 Plotly charts, you must specify this at the beginning of your `app.py` file:
 
 ```python
@@ -360,7 +358,7 @@ pio.templates["vizro_light"]["layout"]["font_family"] = "PlayfairDisplay, Inter,
 
 ### Reposition the logo
 By default, the logo appears in the top left corner of the dashboard. You can move it further to the left or right by
-adjusting the `padding` of the `#page-header` element. Here’s an example of how to achieve this:
+adjusting the `padding` of the `#page-header` element. Here is an example of how to achieve this:
 
 ```css
 #page-header {
@@ -369,3 +367,7 @@ adjusting the `padding` of the `#page-header` element. Here’s an example of ho
 ```
 
 ![Logo positioning](../../assets/user_guides/custom_css/logo-position.png)
+
+
+### Change the background color of a container
+XXXX
