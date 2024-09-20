@@ -24,7 +24,7 @@ def get_vizro_ai_plot(user_prompt, df, model, api_key, api_base, vendor_input): 
     vendor = SUPPORTED_VENDORS[vendor_input]
     llm = vendor(model_name=model, openai_api_key=api_key, openai_api_base=api_base)
     vizro_ai = VizroAI(model=llm)
-    ai_outputs = vizro_ai.plot(df, user_prompt, explain=False, return_elements=True)
+    ai_outputs = vizro_ai.plot(df, user_prompt, return_elements=True)
 
     return ai_outputs
 
@@ -76,7 +76,7 @@ def run_vizro_ai(user_prompt, n_clicks, data, model, api_key, api_base, vendor_i
             vendor_input=vendor_input,
         )
         ai_code = ai_outputs.code
-        figure = ai_outputs.figure
+        figure = ai_outputs.get_fig_object(data_frame=df)
         formatted_code = black.format_str(ai_code, mode=black.Mode(line_length=100))
 
         ai_response = "\n".join(["```python", formatted_code, "```"])
