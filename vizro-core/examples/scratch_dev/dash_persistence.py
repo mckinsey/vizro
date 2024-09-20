@@ -1,52 +1,6 @@
-# """Dev app to try things out."""
-#
-# import plotly.io as pio
-# import vizro.models as vm
-# import vizro.plotly.express as px
-# from vizro import Vizro
-# from vizro.tables import dash_ag_grid
-#
-# iris = px.data.iris()
-#
-#
-# page = vm.Page(
-#     title="Title",
-#     components=[
-#         vm.AgGrid(
-#             id="ag-grid-container",
-#             figure=dash_ag_grid(
-#                 id="ag-grid",
-#                 data_frame=iris,
-#                 persistence=True,
-#                 persistence_type="session",
-#                 persisted_props=["filterModel"],
-#             )
-#         ),
-#     ],
-#     controls=[
-#         vm.Filter(
-#             id="filter_container",
-#             column="sepal_length",
-#             selector=vm.RangeSlider(
-#                 id="filter"
-#             )
-#         ),
-#     ]
-# )
-#
-# dashboard = vm.Dashboard(pages=[page])
-#
-# if __name__ == "__main__":
-#     Vizro().build(dashboard).run()
-
-
-import random
-import dash
 import datetime
-import time
+import dash
 import plotly.express as px
-import plotly.graph_objs as go
-from dash_ag_grid import AgGrid
 
 from dash import Dash, html, dcc, Output, callback, clientside_callback, Input, State, set_props
 
@@ -54,7 +8,6 @@ from dash import Dash, html, dcc, Output, callback, clientside_callback, Input, 
 # like dynamic data
 def slow_load():
     print("running slow_load")
-    time.sleep(0.1)
     return px.data.iris()#.sample(6)
 
 
@@ -95,8 +48,8 @@ def another_page(**kwargs):
 
             # Grid
             html.Div(
-                id="ag_grid_container",
-                children=[html.Div(id="ag_grid")],
+                id="graph_container",
+                children=[html.Div(id="graph")],
             ),
         ]
     )
@@ -122,8 +75,8 @@ clientside_callback(
 
 
 @callback(
-    Output("ag_grid_container", "children"),
-    # Output("filter_container", "children"),
+    Output("graph_container", "children"),
+    Output("filter_container", "children"),
     Input("global_on_page_load_another_page_action_trigger", "data"),
     State("filter", "value"),
     prevent_initial_call=True
@@ -135,8 +88,12 @@ def on_page_load(trigger, persisted_filter_value):
     df = slow_load()
 
     categorical_filter_options = sorted(df["species"].unique().tolist())
-    # categorical_filter_value = [value for value in persisted_filter_value if value in categorical_filter_options]
-    categorical_filter_value = categorical_filter_options
+
+    if not persisted_filter_value:
+        categorical_filter_value = []
+    else:
+        categorical_filter_value = [value for value in persisted_filter_value if value in categorical_filter_options]
+
     categorical_filter_obj = dcc.Dropdown(
         id="filter",
         options=categorical_filter_options,
@@ -147,17 +104,15 @@ def on_page_load(trigger, persisted_filter_value):
     )
 
     # set_props(component_id="categorical_filter_container", props={"children": categorical_filter_obj})
-    # df = df[df["species"].isin(categorical_filter_value)]
+    df = df[df["species"].isin(categorical_filter_value)]
 
-    dash_ag_grid_obj = AgGrid(
-        id="ag_grid",
-        rowData=df.to_dict("records"),
-        persistence=True,
-        persistence_type="session"
+    graph_obj = dcc.Graph(
+        id="graph",
+        figure=px.scatter(df, x="sepal_length", y="sepal_width", color="species")
     )
 
     print("")
-    return dash_ag_grid_obj
+    return graph_obj, categorical_filter_obj
 
 
 app = Dash(use_pages=True, pages_folder="", suppress_callback_exceptions=True)

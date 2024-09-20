@@ -85,7 +85,7 @@ def another_page(**kwargs):
             # semi dynamic version:
             # TODO-conclusion:
             # Persists just first time for UI and server. The reason is that the dcc.Dropdown component is created twice per page refresh.
-            dcc.Loading(
+            html.Div(
                 categorical_filter_build(
                     options=["setosa", "versicolor", "virginica"], value=["setosa", "versicolor", "virginica"],
                     selector=dcc.Dropdown,
@@ -93,6 +93,13 @@ def another_page(**kwargs):
                 ),
                 id="categorical_filter_container",
             ),
+
+            # html.Div(
+            #     id="categorical_filter_container",
+            #     children=[html.Div(id="categorical_filter")],
+            # ),
+
+
             # 2. Neither UI nor server persistence works
             # dcc.Loading(
             #     dcc.Dropdown(id="filter", options=options, multi=True, persistence=True, persistence_type="session"),
@@ -170,7 +177,7 @@ clientside_callback(
 @callback(
     Output("graph1", "figure"),
     Output("graph2", "figure"),
-    # Output("categorical_filter_container", "children"),
+    Output("categorical_filter_container", "children"),
     # Output("numerical_filter_container", "children"),
     # Input("on_page_load_trigger_another_page", "data"),  # this is arbitrary since callback runs on page load
     # automatically. Just need to define some Input.
@@ -180,7 +187,8 @@ clientside_callback(
     # State("numerical_filter", "value"),
     prevent_initial_call=True
 )
-def on_page_load(data, species, x):
+def on_page_load(data, persisted_filter_value, x):
+    persisted_filter_value = persisted_filter_value or []
     # Ideally, OPL flow should look like this:
     #  1. Page.build() -> returns static layout (placeholder elements for dynamic components).
     #  2. Persistence is applied. -> So, filter values are the same as the last time the page was visited.
@@ -203,12 +211,12 @@ def on_page_load(data, species, x):
     # filter_options -> always calculate.
     categorical_filter_options = sorted(df["species"].unique().tolist())
     # For multi=True:
-    categorical_filter_value = [value for value in species if value in categorical_filter_options]
+    categorical_filter_value = [value for value in persisted_filter_value if value in categorical_filter_options]
     # For multi=False:
     # categorical_filter_value = species if species in categorical_filter_options else None
     categorical_filter_obj = categorical_filter_build(options=categorical_filter_options, value=categorical_filter_value, selector=dcc.Dropdown, multi=True)
 
-    set_props(component_id="categorical_filter_container", props={"children": categorical_filter_obj})
+    # set_props(component_id="categorical_filter_container", props={"children": categorical_filter_obj})
     # More about set_props:
     #   -> https://dash.plotly.com/advanced-callbacks#setting-properties-directly
     #   -> https://community.plotly.com/t/dash-2-17-0-released-callback-updates-with-set-props-no-output-callbacks-layout-as-list-dcc-loading-trace-zorder/84343
@@ -245,7 +253,7 @@ def on_page_load(data, species, x):
     # df = df[(df["sepal_length"] >= numerical_filter_value[0]) & (df["sepal_length"] <= numerical_filter_value[1])]
 
     print("")
-    return graph1_call(df), graph2_call(df, x)
+    return graph1_call(df), graph2_call(df, x), categorical_filter_obj
 
 
 @callback(
