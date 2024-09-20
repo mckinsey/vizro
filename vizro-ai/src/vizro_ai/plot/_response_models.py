@@ -173,7 +173,7 @@ class ChartPlanFactory:
                 namespace = globals()
                 namespace = _exec_code(code_to_validate, namespace)
                 custom_chart = namespace[f"{CUSTOM_CHART_NAME}"]
-                fig = custom_chart(data_frame.sample(10))
+                fig = custom_chart(data_frame.sample(10, replace=True))
             except Exception as e:
                 raise ValueError(
                     f"Produced code execution failed the following error: <{e}>. Please check the code and try again."
