@@ -1,27 +1,26 @@
 # Customizing Vizro dashboard CSS
 
-Vizro is opinionated about visual formatting, but it allows for some customization if you want to
-deviate from the default settings. While certain elements, such as the layout of the navigation and components,
-are fixed, you can customize background colors, fonts, and other styles via CSS overrides.
+Vizro is opinionated about visual formatting, and some elements, such as the layout of the navigation and components,
+are fixed. You can customize some settings such as background colors, fonts, and other styles via CSS overrides.
 
-To do so, you need to:
+To make customizations, you need to:
 
-1. Add a CSS file to your `assets` folder, refer to our user guide on [adding static assets](assets.md#how-to-add-static-assets).
-2. Identify the correct CSS selector for the component you want to style.
-3. Add the desired changed properties to your CSS file.
+1. **Add a CSS file to your `assets` folder**. Refer to our user guide on [adding static assets](assets.md#how-to-add-static-assets).
+2. **Identify the correct CSS selector** for the component you want to style.
+3. **Add the desired changed** to the properties to your CSS file.
 
 
 
 ## Introduction to CSS
-Customizations to the visual formatting of a Vizro dashboard is typically done using CSS. For a short introduction to
+Customizations to the visual formatting of a Vizro dashboard are typically done using CSS. For a short introduction to
 CSS, we recommend reading this article: [Get Started with CSS in 5 Minutes](https://www.freecodecamp.org/news/get-started-with-css-in-5-minutes-e0804813fc3e/).
 
 For a more comprehensive tutorial, refer to the [W3Schools CSS tutorial](https://www.w3schools.com/css/default.asp).
 The entire tutorial is beneficial, but the section on [CSS selectors](https://www.w3schools.com/css/css_selectors.asp)
 will be particularly useful.
 
-In Vizro, the CSS file is read in as an external stylesheet. The most common way of applying any styling to Vizro is therefore
-through the use of CSS selectors:
+In Vizro, the CSS file is read in as an external stylesheet. The most common way of applying any styling to
+Vizro is therefore through the use of CSS selectors:
 
 - **Element Selector**: Applies the style to all elements inside the Vizro app.
 
@@ -86,7 +85,7 @@ highlighted in the document.
     This changes the background color for any HTML element with the `card` class.
 
 **Tip:** You can also test your CSS live by editing the CSS attributes in the "Elements" panel.
-For example, temporarily add `background: blue; note that this change will be lost upon reloading the page.
+For example, temporarily add `background: blue;`. Note that this change will be lost upon reloading the page.
 
 ![Temporary changes](../../assets/user_guides/custom_css/temporary-changes.png)
 
