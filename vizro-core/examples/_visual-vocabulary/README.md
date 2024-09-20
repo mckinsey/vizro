@@ -1,100 +1,113 @@
-# Vizro - Visual vocabulary
+# Vizro visual vocabulary
 
-This dashboard shows a gallery of charts. It includes guidance on when to use each chart type and sample Python code
-to create them using [Plotly](https://plotly.com/python/) and [Vizro](https://github.com/mckinsey/vizro).
+### Welcome to our visual vocabulary dashboard! 🎨
 
-**Created by:**
+This dashboard serves as a comprehensive guide for selecting and creating various types of charts. It helps you decide
+when to use each chart type, and offers sample Python code using [Plotly](https://plotly.com/python/), and
+instructions for embedding these charts into a [Vizro](https://github.com/mckinsey/vizro) dashboard.
+
+The charts in this dashboard are designed to make it easy for anyone to create beautiful and sophisticated visuals.
+
+Our goal is to help you understand best practices in data visualization, ensure your charts effectively communicate
+your message, and streamline the creation of high-quality, interactive visualizations.
+
+Created by:
 
 - [Huong Li Nguyen](https://github.com/huong-li-nguyen) and [Antony Milne](https://github.com/antonymilne)
 
 - Images created by QuantumBlack
 
-**Inspired by:**
+Inspired by:
 
-- [The FT Visual Vocabulary](https://github.com/Financial-Times/chart-doctor/blob/main/visual-vocabulary/README.md): Alan Smith, Chris Campbell, Ian Bott, Liz Faunce, Graham Parrish, Billy Ehrenberg, Paul McCallum,
-  Martin Stabe.
+- [The FT Visual Vocabulary](https://github.com/Financial-Times/chart-doctor/blob/main/visual-vocabulary/README.md):
+  [Alan Smith](https://github.com/alansmithy), [Chris Campbell](https://github.com/digitalcampbell), Ian Bott,
+  Liz Faunce, Graham Parrish, Billy Ehrenberg, Paul McCallum, [Martin Stabe](https://github.com/martinstabe).
 
-- [The Graphic Continuum](https://www.informationisbeautifulawards.com/showcase/611-the-graphic-continuum): Jon Swabish and Severino Ribecca
+- [The Graphic Continuum](https://www.informationisbeautifulawards.com/showcase/611-the-graphic-continuum):
+  Jon Swabish and Severino Ribecca
 
-**Credits, tutorials and resources:**
+Credits and sources:
 
-- [Plotly](https://plotly.com/python/plotly-express/)
-- [Guide to data chart mastery](https://www.atlassian.com/data/charts)
+- Charting library: [Plotly](https://github.com/plotly/plotly.py)
+- Plotly Express chart examples: [Plotly Express](https://plotly.com/python/plotly-express/)
+- Data visualization best practices: [Guide to data chart mastery](https://www.atlassian.com/data/charts)
 
 ## Chart types
 
 The dashboard is still in development. Below is an overview of the chart types for which a completed page is available.
 
-| Chart Type            | Status | Category                 |
-| --------------------- | ------ | ------------------------ |
-| Arc                   | ❌     | Part-to-whole            |
-| Area                  | ✅     | Time                     |
-| Bar                   | ✅     | Magnitude                |
-| Barcode               | ❌     | Distribution             |
-| Beeswarm              | ❌     | Distribution             |
-| Boxplot               | ✅     | Distribution             |
-| Bubble                | ✅     | Correlation              |
-| Bubble map            | ✅     | Spatial                  |
-| Bubble timeline       | ❌     | Time                     |
-| Bullet                | ❌     | Magnitude                |
-| Bump                  | ❌     | Ranking                  |
-| Butterfly             | ✅     | Deviation, Distribution  |
-| Chord                 | ❌     | Flow                     |
-| Choropleth            | ✅     | Spatial                  |
-| Column                | ✅     | Magnitude, Time          |
-| Column and line       | ✅     | Correlation, Time        |
-| Connected scatter     | ✅     | Correlation, Time        |
-| Cumulative curve      | ❌     | Distribution             |
-| Diverging bar         | ❌     | Deviation                |
-| Diverging stacked bar | ❌     | Deviation                |
-| Donut                 | ✅     | Part-to-whole            |
-| Dot map               | ✅     | Spatial                  |
-| Dot plot              | ❌     | Distribution             |
-| Fan                   | ❌     | Time                     |
-| Flow map              | ❌     | Spatial                  |
-| Funnel                | ✅     | Part-to-whole            |
-| Gantt                 | ❌     | Time                     |
-| Gridplot              | ❌     | Part-to-whole            |
-| Heatmap               | ✅     | Time                     |
-| Heatmap matrix        | ❌     | Correlation              |
-| Histogram             | ✅     | Distribution             |
-| Line                  | ✅     | Time                     |
-| Lollipop              | ❌     | Ranking, Magnitude       |
-| Marimekko             | ❌     | Magnitude, Part-to-whole |
-| Network               | ❌     | Flow                     |
-| Ordered bar           | ✅     | Ranking                  |
-| Ordered bubble        | ❌     | Ranking                  |
-| Ordered column        | ✅     | Ranking                  |
-| Paired bar            | ✅     | Magnitude                |
-| Paired column         | ✅     | Magnitude                |
-| Parallel coordinates  | ✅     | Magnitude                |
-| Pictogram             | ❌     | Magnitude                |
-| Pie                   | ✅     | Part-to-whole            |
-| Radar                 | ❌     | Magnitude                |
-| Radial                | ❌     | Magnitude                |
-| Sankey                | ✅     | Flow                     |
-| Scatter               | ✅     | Correlation              |
-| Scatter matrix        | ✅     | Correlation              |
-| Slope                 | ❌     | Ranking, Time            |
-| Sparkline             | ❌     | Time                     |
-| Stacked bar           | ✅     | Part-to-whole            |
-| Stacked column        | ✅     | Part-to-whole            |
-| Stepped line          | ✅     | Time                     |
-| Surplus deficit line  | ❌     | Deviation                |
-| Treemap               | ✅     | Part-to-whole            |
-| Venn                  | ❌     | Part-to-whole            |
-| Violin                | ✅     | Distribution             |
-| Waterfall             | ❌     | Part-to-whole, Flow      |
+| Chart Type            | Status | Category                 | Credits & sources                                                                          | API                                                                                                                                                                                             |
+| --------------------- | ------ | ------------------------ | ------------------------------------------------------------------------------------------ | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Arc                   | ❌     | Part-to-whole            |                                                                                            |                                                                                                                                                                                                 |
+| Area                  | ✅     | Time                     | [Filled area plot with px](https://plotly.com/python/filled-area-plots/)                   | [px.area](https://plotly.com/python-api-reference/generated/plotly.express.area)                                                                                                                |
+| Bar                   | ✅     | Magnitude                | [Bar chart with px](https://plotly.com/python/bar-charts/)                                 | [px.bar](https://plotly.com/python-api-reference/generated/plotly.express.bar)                                                                                                                  |
+| Barcode               | ❌     | Distribution             |                                                                                            |                                                                                                                                                                                                 |
+| Beeswarm              | ❌     | Distribution             |                                                                                            |                                                                                                                                                                                                 |
+| Boxplot               | ✅     | Distribution             | [Box plot with px](https://plotly.com/python/box-plots/)                                   | [px.box](https://plotly.github.io/plotly.py-docs/generated/plotly.express.box)                                                                                                                  |
+| Bubble                | ✅     | Correlation              | [Scatter plot with px](https://plotly.com/python/line-and-scatter/)                        | [px.scatter](https://plotly.com/python-api-reference/generated/plotly.express.scatter)                                                                                                          |
+| Bubble map            | ✅     | Spatial                  | [Bubble map in px](https://plotly.com/python/bubble-maps/)                                 | [px.scatter_map](https://plotly.github.io/plotly.py-docs/generated/plotly.express.scatter_map)                                                                                                  |
+| Bubble timeline       | ❌     | Time                     |                                                                                            |                                                                                                                                                                                                 |
+| Bullet                | ❌     | Magnitude                |                                                                                            |                                                                                                                                                                                                 |
+| Bump                  | ❌     | Ranking                  |                                                                                            |                                                                                                                                                                                                 |
+| Butterfly             | ✅     | Deviation, Distribution  | [Pyramid charts in Plotly](https://plotly.com/python/v3/population-pyramid-charts/)        | [go.Bar](https://plotly.com/python-api-reference/generated/plotly.graph_objects.Bar.html)                                                                                                       |
+| Chord                 | ❌     | Flow                     |                                                                                            |                                                                                                                                                                                                 |
+| Choropleth            | ✅     | Spatial                  | [Choropleth map with px](https://plotly.com/python/choropleth-maps/)                       | [px.choropleth](https://plotly.github.io/plotly.py-docs/generated/plotly.express.choropleth.html)                                                                                               |
+| Column                | ✅     | Magnitude, Time          | [Bar chart with px](https://plotly.com/python/bar-charts/)                                 | [px.bar](https://plotly.com/python-api-reference/generated/plotly.express.bar.html)                                                                                                             |
+| Column and line       | ✅     | Correlation, Time        | [Multiple chart types in Plotly](https://plotly.com/python/graphing-multiple-chart-types/) | [go.Bar](https://plotly.com/python-api-reference/generated/plotly.graph_objects.Bar.html) and [go.Scatter](https://plotly.com/python-api-reference/generated/plotly.graph_objects.Scatter.html) |
+| Connected scatter     | ✅     | Correlation, Time        | [Line plot with px](https://plotly.com/python/line-charts/)                                | [px.line](https://plotly.com/python-api-reference/generated/plotly.express.line)                                                                                                                |
+| Cumulative curve      | ❌     | Distribution             |                                                                                            |                                                                                                                                                                                                 |
+| Diverging bar         | ❌     | Deviation                |                                                                                            |                                                                                                                                                                                                 |
+| Diverging stacked bar | ❌     | Deviation                |                                                                                            |                                                                                                                                                                                                 |
+| Donut                 | ✅     | Part-to-whole            | [Pie chart with px](https://plotly.com/python/pie-charts/)                                 | [px.pie](https://plotly.com/python-api-reference/generated/plotly.express.pie)                                                                                                                  |
+| Dot map               | ✅     | Spatial                  | [Bubble map in px](https://plotly.com/python/bubble-maps/)                                 | [px.scatter_map](https://plotly.github.io/plotly.py-docs/generated/plotly.express.scatter_map)                                                                                                  |
+| Dot plot              | ❌     | Distribution             |                                                                                            |                                                                                                                                                                                                 |
+| Fan                   | ❌     | Time                     |                                                                                            |                                                                                                                                                                                                 |
+| Flow map              | ❌     | Spatial                  |                                                                                            |                                                                                                                                                                                                 |
+| Funnel                | ✅     | Part-to-whole            | [Funnel plot with px](https://plotly.com/python/funnel-charts/)                            | [px.funnel](https://plotly.com/python/funnel-charts/)                                                                                                                                           |
+| Gantt                 | ❌     | Time                     |                                                                                            |                                                                                                                                                                                                 |
+| Gridplot              | ❌     | Part-to-whole            |                                                                                            |                                                                                                                                                                                                 |
+| Heatmap               | ✅     | Time                     | [Heatmaps with px](https://plotly.com/python/heatmaps/)                                    | [px.density_heatmap](https://plotly.com/python-api-reference/generated/plotly.express.density_heatmap.html)                                                                                     |
+| Correlation matrix    | ❌     | Correlation              |                                                                                            |                                                                                                                                                                                                 |
+| Histogram             | ✅     | Distribution             | [Histograms with px](https://plotly.com/python/histograms/)                                | [px.histogram](https://plotly.github.io/plotly.py-docs/generated/plotly.express.histogram)                                                                                                      |
+| Line                  | ✅     | Time                     | [Line plot with px](https://plotly.com/python/line-charts/)                                | [px.line](https://plotly.com/python-api-reference/generated/plotly.express.line)                                                                                                                |
+| Lollipop              | ❌     | Ranking, Magnitude       |                                                                                            |                                                                                                                                                                                                 |
+| Marimekko             | ❌     | Magnitude, Part-to-whole |                                                                                            |                                                                                                                                                                                                 |
+| Network               | ❌     | Flow                     |                                                                                            |                                                                                                                                                                                                 |
+| Ordered bar           | ✅     | Ranking                  | [Bar chart with px](https://plotly.com/python/bar-charts/)                                 | [px.bar](https://plotly.com/python-api-reference/generated/plotly.express.bar.html)                                                                                                             |
+| Ordered bubble        | ❌     | Ranking                  |                                                                                            |                                                                                                                                                                                                 |
+| Ordered column        | ✅     | Ranking                  | [Bar chart with px](https://plotly.com/python/bar-charts/)                                 | [px.bar](https://plotly.com/python-api-reference/generated/plotly.express.bar.html)                                                                                                             |
+| Paired bar            | ✅     | Magnitude                | [Histograms with px](https://plotly.com/python/histograms/)                                | [px.histogram](https://plotly.github.io/plotly.py-docs/generated/plotly.express.histogram)                                                                                                      |
+| Paired column         | ✅     | Magnitude                | [Histograms with px](https://plotly.com/python/histograms/)                                | [px.histogram](https://plotly.github.io/plotly.py-docs/generated/plotly.express.histogram)                                                                                                      |
+| Parallel coordinates  | ✅     | Magnitude                | [Parallel coordinates plot with px](https://plotly.com/python/parallel-coordinates-plot/)  | [px.parallel_coordinates](https://plotly.com/python-api-reference/generated/plotly.express.parallel_coordinates.html)                                                                           |
+| Pictogram             | ❌     | Magnitude                |                                                                                            |                                                                                                                                                                                                 |
+| Pie                   | ✅     | Part-to-whole            | [Pie chart with px](https://plotly.com/python/pie-charts/)                                 | [px.pie](https://plotly.com/python-api-reference/generated/plotly.express.pie)                                                                                                                  |
+| Radar                 | ❌     | Magnitude                |                                                                                            |                                                                                                                                                                                                 |
+| Radial                | ❌     | Magnitude                |                                                                                            |                                                                                                                                                                                                 |
+| Sankey                | ✅     | Flow                     | [Sankey diagram in Plotly](https://plotly.com/python/sankey-diagram/)                      | [go.Sankey](https://plotly.github.io/plotly.py-docs/generated/plotly.graph_objects.Sankey.html)                                                                                                 |
+| Scatter               | ✅     | Correlation              | [Scatter plot with px](https://plotly.com/python/line-and-scatter/)                        | [px.scatter](https://plotly.com/python-api-reference/generated/plotly.express.scatter)                                                                                                          |
+| Scatter matrix        | ✅     | Correlation              | [Scatter matrix with px](https://plotly.com/python/splom/)                                 | [px.scatter_matrix](https://plotly.github.io/plotly.py-docs/generated/plotly.express.scatter_matrix.html)                                                                                       |
+| Slope                 | ❌     | Ranking, Time            |                                                                                            |                                                                                                                                                                                                 |
+| Sparkline             | ❌     | Time                     |                                                                                            |                                                                                                                                                                                                 |
+| Stacked bar           | ✅     | Part-to-whole            | [Histograms with px](https://plotly.com/python/histograms/)                                | [px.histogram](https://plotly.github.io/plotly.py-docs/generated/plotly.express.histogram)                                                                                                      |
+| Stacked column        | ✅     | Part-to-whole            | [Histograms with px](https://plotly.com/python/histograms/)                                | [px.histogram](https://plotly.github.io/plotly.py-docs/generated/plotly.express.histogram)                                                                                                      |
+| Stepped line          | ✅     | Time                     | [Line plot with px](https://plotly.com/python/line-charts/)                                | [px.line](https://plotly.com/python-api-reference/generated/plotly.express.line)                                                                                                                |
+| Surplus deficit line  | ❌     | Deviation                |                                                                                            |                                                                                                                                                                                                 |
+| Treemap               | ✅     | Part-to-whole            | [Treemap with px](https://plotly.com/python/treemaps/)                                     | [px.treemap](https://plotly.com/python-api-reference/generated/plotly.express.treemap.html)                                                                                                     |
+| Venn                  | ❌     | Part-to-whole            |                                                                                            |                                                                                                                                                                                                 |
+| Violin                | ✅     | Distribution             | [Violin plot with px](https://plotly.com/python/violin/)                                   | [px.violin](https://plotly.com/python-api-reference/generated/plotly.express.violin.html)                                                                                                       |
+| Waterfall             | ❌     | Part-to-whole, Flow      |                                                                                            |                                                                                                                                                                                                 |
 
-To contribute a chart, follow the steps below:
+## How to contribute
 
-1. Place an `svg` file named after the chart type in the `assets` folder if it doesn't already exist.
-2. Add the data set to `_pages_utils.py` if it doesn't already exist.
+Contributions are welcome! To contribute a chart, follow the steps below:
+
+1. Check that a `svg` file named after the chart type is contained in the [assets](https://github.com/mckinsey/vizro/tree/main/vizro-core/examples/_visual-vocabulary/assets/images/charts) folder. If not, [raise an issue](https://github.com/mckinsey/vizro/issues) in the repository.
+2. Add the data set to `_pages_utils.py` if it doesn't already exist. Use existing data sets preferably or any other data set that is publicly available e.g. [plotlx.express.data](https://plotly.com/python-api-reference/generated/plotly.express.data.html)
 3. Create a new page for the chart type and add it to the relevant category `.py` file such as `correlation.py`,
-   `deviation.py`, `distribution.py`, etc.
-4. Add a `.py` file containing a code example of the chart type in the `pages/examples` folder, for instance, `area.py`
+   `deviation.py`, `distribution.py`, etc. Ensure you add the page to the list of `pages` at the end of the `.py` file.
+4. Add a `.py` file containing a code example of the chart type in the `pages/examples` folder, for instance, `area.py`. Take a look at existing examples.
 5. Remove the `IncompletePage(..)` entry for that chart type in `chart_groups.py`.
-6. Update this `README.md` with the new chart type.
+6. Update this `README.md` with the new chart type, its status, category, and API links.
 
 ## How to run the example locally
 
