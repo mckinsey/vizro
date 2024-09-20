@@ -53,7 +53,7 @@ You can obtain the code string that would produce the answer to the user query a
         df = px.data.gapminder()
         vizro_ai = VizroAI()
 
-        res = vizro_ai.plot(df, "the trend of gdp over years in the US",return_elements=True)
+        res = vizro_ai.plot(df, "the trend of gdp over years in the US", return_elements=True)
         print(res.code_vizro)
         ```
 
@@ -85,7 +85,7 @@ You can obtain the code string that would produce the answer to the user query a
         df = px.data.gapminder()
         vizro_ai = VizroAI()
 
-        res = vizro_ai.plot(df, "the trend of gdp over years in the US",return_elements=True)
+        res = vizro_ai.plot(df, "the trend of gdp over years in the US", return_elements=True)
         print(res.code)
         ```
 

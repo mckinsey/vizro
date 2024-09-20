@@ -48,6 +48,12 @@ vizro_ai = VizroAI(model="<chosen model>")
     - `claude-3-sonnet-20240229`
     - `claude-3-haiku-20240307`
 
+    Install `langchain-anthropic`
+
+    ```bash
+    pip install -U langchain-anthropic
+    ```
+
 === "MistralAI"
 
      _Currently works only for `VizroAI.plot` - we are working on making it available for `VizroAI.dashboard`_
@@ -62,6 +68,12 @@ vizro_ai = VizroAI(model="<chosen model>")
     - `mistral-large-latest`
     - `open-mistral-nemo`
     - `codestral-latest`
+
+    Install `langchain_mistralai`
+
+    ```bash
+    pip install -U langchain_mistralai
+    ```
 
     At the time of writing, we found that even the best Mistral models struggled to produce more than the simplest charts, but these outcomes can change drastically overtime.
 
