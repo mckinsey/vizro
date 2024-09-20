@@ -7,13 +7,12 @@ To make customizations, you need to:
 
 1. **Add a CSS file to your `assets` folder**. Refer to our user guide on [adding static assets](assets.md#how-to-add-static-assets).
 2. **Identify the correct CSS selector** for the component you want to style.
-3. **Add the desired changed** to the properties to your CSS file.
+3. **Add the desired changed** to the CSS properties in your CSS file.
 
 
 
-## Introduction to CSS
-Customizations to the visual formatting of a Vizro dashboard are typically done using CSS. For a short introduction to
-CSS, we recommend reading this article: [Get Started with CSS in 5 Minutes](https://www.freecodecamp.org/news/get-started-with-css-in-5-minutes-e0804813fc3e/).
+## Introduction to Vizro CSS
+For a short introduction to CSS, we recommend reading this article: [Get Started with CSS in 5 Minutes](https://www.freecodecamp.org/news/get-started-with-css-in-5-minutes-e0804813fc3e/).
 
 For a more comprehensive tutorial, refer to the [W3Schools CSS tutorial](https://www.w3schools.com/css/default.asp).
 The entire tutorial is beneficial, but the section on [CSS selectors](https://www.w3schools.com/css/css_selectors.asp)
@@ -62,7 +61,7 @@ HTML document of your Vizro app.
     ![Inspect panel](../../assets/user_guides/custom_css/inspect-panel.png)
 
 
-2. **Select an Element:** Suppose you want to change the background color of your cards. Click the
+2. **Select an element:** Suppose you want to change the background color of your cards. Click the
 "Select an element in the page to inspect it" icon in the top left corner of the inspect panel.
 
     ![Inspect icon](../../assets/user_guides/custom_css/inspect-icon.png)
@@ -93,12 +92,12 @@ For example, temporarily add `background: blue;`. Note that this change will be 
 ## CSS overwrites
 
 ### Overwrite CSS globally
-To overwrite any global CSS properties of existing components, target the correct CSS property and place your CSS files
-in the `assets` folder. This overwrites any existing defaults for that CSS property.
+To overwrite any global CSS property, you need to target the element selector and place your CSS file with the
+overwrites in the `assets` folder.
 
 For reference, see the [Vizro CSS files](https://github.com/mckinsey/vizro/tree/main/vizro-core/src/vizro/static/css).
 
-!!! example "Customizing global CSS properties"
+!!! example "Overwrite CSS globally"
     === "my_css_file.css"
     ```css
     h1, h2 {
@@ -154,7 +153,7 @@ For reference, see the [Vizro CSS files](https://github.com/mckinsey/vizro/tree/
 
 
 ### Overwrite CSS for selected pages
-To style components for a specific page, use the page's `id` in CSS selectors. By default, this is the
+To style components for a specific page, use the page's `id` in the CSS selectors. By default, this is the
 [same as the page `title`](pages.md), but such a value might not be a valid CSS identifier.
 A suitable `id` must be unique across all models in the dashboard and should contain only alphanumeric
 characters, hyphens (`-`) and underscores (`_`). In particular, note that spaces are _not_ allowed.
@@ -162,8 +161,8 @@ characters, hyphens (`-`) and underscores (`_`). In particular, note that spaces
 Suppose you want to hide the page title on one page only. Here's how you can achieve this:
 
 1. Give a valid `id` to the `Page`, for example `Page(id="page-with-hidden-title", title="Page with hidden title", ...)`.
-2. Identify the CSS class or CSS `id` you need to target. To hide the page title, you need to hide the container with the `id `right-header`.
-3. Use the `id` in combination with CSS selectors to change the relevant CSS properties.
+2. Identify the CSS class or CSS `id` you need to target. To hide the page title, you need to hide the parent container with the id `right-header`.
+3. Use the `id` to hide the content.
 4. Add your custom css file to the `assets` folder as explained above.
 
 
@@ -220,9 +219,8 @@ Suppose you want to hide the page title on one page only. Here's how you can ach
 
 
 ### Overwrite CSS for selected components
-To adjust CSS properties for specific components, like altering the appearance of a selected [`Card`][vizro.models.Card] rather than all `Card`s,
-you need to use a CSS selector that targets the right CSS property. If you need guidance,
-this [tutorial about CSS selectors](https://developer.mozilla.org/en-US/docs/Web/CSS/CSS_selectors/Selector_structure) is helpful.
+To adjust CSS properties for specific components, like altering the appearance of a selected [`Card`][vizro.models.Card] rather than all Cards,
+you need to provide an `id` to the component you want to style.
 
 Let's say we want to change the `background-color` and `color` of a specific `Card`.
 
@@ -230,9 +228,11 @@ Here's how you can do it:
 
 1. Assign a unique `id` to the relevant `Card`, for example: `Card(id="custom-card", ...)`
 2. Run your dashboard and open it in your browser
-3. View the HTML source to find the appropriate CSS class or element you need to target. For example, if you inspect a page with [Chrome DevTools](https://developer.chrome.com/docs/devtools/) then you can [directly copy the CSS selector](https://stackoverflow.com/questions/4500572/how-can-i-get-the-css-selector-in-chrome).
+3. View the HTML document to find the appropriate CSS class or element you need to target, as explained in the section
+on [identifying the correct CSS selector](#identify-the-correct-css-selector).
 
-It's essential to understand the relationship between the targeted CSS class or element and the component assigned the `id`, for example:
+It's essential to understand the relationship between the targeted CSS class or element and the component assigned
+`id`, for example:
 
 <!-- vale off -->
 ```html title="HTML structure of a `Card`"
@@ -374,7 +374,7 @@ inside a [Container](container.md) and changing the container's styling, for exa
 
 To do this, you need to change the container's CSS class. Using the DevTool, as explained in the section on
 [identifying the correct CSS selector](#identify-the-correct-css-selector), you'll find that the CSS class for the
-`Container` is `page-component-container. You can then use this class to set a new background color and padding.
+`Container` is `page-component-container`. You can then use this class to set a new `background-color` and `padding`.
 
 !!! example "Style a container"
     === "custom.css"
@@ -418,15 +418,30 @@ To do this, you need to change the container's CSS class. Using the DevTool, as 
         # Still requires a .py to add data to the data manager and parse YAML configuration
         # See yaml_version example
         pages:
-        - components:
-            - text: |
-                Lorem ipsum dolor sit amet consectetur adipisicing elit.
-              type: card
-              id: custom-card
-            - text: |
-                Lorem ipsum dolor sit amet consectetur adipisicing elit.
-              type: card
-          title: Changing the card color
+          - title: "Page with subsections"
+            layout:
+              grid: [[0, 1]]
+            components:
+              - type: container
+                title: "Container I"
+                components:
+                  - type: graph
+                    figure:
+                      _target_: scatter
+                      data_frame: iris
+                      x: sepal_width
+                      y: sepal_length
+                      color: species
+              - type: container
+                title: "Container II"
+                components:
+                  - type: graph
+                    figure:
+                      _target_: box
+                      data_frame: iris
+                      x: species
+                      y: sepal_length
+                      color: species
         ```
     === "Result"
          [![StyleContainer]][StyleContainer]
