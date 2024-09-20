@@ -95,7 +95,7 @@ homepage = vm.Page(
 # work nicely with the hierarchical navigation.
 dashboard = vm.Dashboard(
     # ALL_CHART_GROUP.pages has duplicated pages, e.g. both distribution-butterfly and deviation-butterfly.
-    title="Vizro - Visual Vocabulary",
+    title="Vizro visual vocabulary",
     pages=[homepage, *ALL_CHART_GROUP.pages],
     navigation=vm.Navigation(
         nav_selector=vm.NavBar(
@@ -107,5 +107,8 @@ dashboard = vm.Dashboard(
     ),
 )
 
+app = Vizro().build(dashboard)
+server = app.dash.server
+
 if __name__ == "__main__":
-    Vizro().build(dashboard).run()
+    app.run()

@@ -55,3 +55,6 @@ stepped_line_data = pd.DataFrame(
         "rate": [0.10, 0.12, 0.15, 0.13, 0.14, 0.13, 0.14, 0.16, 0.15],
     }
 )
+
+
+carshare = px.data.carshare()
