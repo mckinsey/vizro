@@ -70,6 +70,8 @@ def _get_pydantic_model(
     df_info: Optional[Any] = None,
     max_retry: int = 2,
 ) -> BaseModel:
+    # TODO: fix typing similar to instructor library, ie the return type should be the same as response_model
+    # At the very least it should include the string type of the validation error
     """Get the pydantic output from the LLM model with retry logic."""
     for attempt in range(max_retry):
         attempt_is_retry = attempt > 0
@@ -84,7 +86,7 @@ def _get_pydantic_model(
             last_validation_error = validation_error
         else:
             return res
-
+    # TODO: should this be shifted to logging so that that one can control what output gets shown (e.g. in public demos)
     raise last_validation_error
 
 

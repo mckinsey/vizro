@@ -52,6 +52,7 @@ class GraphState(BaseModel):
     pages: Annotated[List, operator.add]
     dashboard: Optional[vm.Dashboard] = None
     custom_charts_code: Annotated[List, operator.add]
+    custom_charts_imports: Annotated[List, operator.add]
 
     class Config:
         """Pydantic configuration."""
@@ -152,9 +153,10 @@ def _build_page(state: BuildPageState, config: RunnableConfig) -> Dict[str, List
     page_plan = state["page_plan"]
 
     llm = config["configurable"].get("model", None)
-    page, custom_chart_code = page_plan.create(model=llm, all_df_metadata=all_df_metadata)
+    # TODO: this is a hack to get the custom chart code - we should find a much better way to do so
+    page, custom_chart_imports, custom_chart_code = page_plan.create(model=llm, all_df_metadata=all_df_metadata)
 
-    return {"pages": [page], "custom_charts_code": [custom_chart_code]}
+    return {"pages": [page], "custom_charts_imports": [custom_chart_imports], "custom_charts_code": [custom_chart_code]}
 
 
 def _continue_to_pages(state: GraphState) -> List[Send]:

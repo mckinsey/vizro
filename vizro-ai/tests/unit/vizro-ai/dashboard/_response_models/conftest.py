@@ -3,13 +3,12 @@ from typing import Any, List
 import pandas as pd
 import pytest
 import vizro.models as vm
-import vizro.plotly.express as px
 from langchain.output_parsers import PydanticOutputParser
 from langchain_community.llms.fake import FakeListLLM
 from vizro_ai.dashboard._response_models.components import ComponentPlan
 from vizro_ai.dashboard._response_models.page import PagePlan
 from vizro_ai.dashboard.utils import AllDfMetadata, DfMetadata
-from vizro_ai.utils.helper import PlotOutputs
+from vizro_ai.plot._response_models import ChartPlan
 
 
 class MockStructuredOutputLLM(FakeListLLM):
@@ -113,34 +112,18 @@ def component_plan_ag_grid():
 
 @pytest.fixture
 def mock_vizro_ai_return(df):
-    return PlotOutputs(
-        code="""
-from vizro.models.types import capture
-import vizro.plotly.express as px
-import pandas as pd
-
-@capture('graph')
-def custom_chart(data_frame=None):
-    scatter_df = data_frame[['lifeExp', 'gdpPercap', 'continent', 'country']]
-    scatter_df.reset_index(drop=True, inplace=True)
-
+    return ChartPlan(
+        chart_type="scatter",
+        imports=["import plotly.express as px\nimport pandas as pd"],
+        chart_code="""def custom_chart(data_frame):
     fig = px.scatter(
-        scatter_df,
-        x='gdpPercap',
-        y='lifeExp',
-        title='Life Expectancy vs. GDP per Capita by Country',
-    )
-
-    return fig
-
-fig = custom_chart(data_frame=df)
-""",
-        figure=px.scatter(
-            data_frame=df,
+            data_frame=data_frame,
             x="a",
             y="b",
-        ),
-        business_insights="business_insights",
+        )
+
+    return fig""",
+        chart_insights="business_insights",
         code_explanation="code_explanation",
     )
 
