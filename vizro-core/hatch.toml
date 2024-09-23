@@ -85,10 +85,10 @@ serve = "mkdocs serve --open"
 dependencies = [
   "pip",
   "pyyaml",
-  # black is required to run the example _visual-vocabulary. This is completely independent of the black used in linting
+  # black is required to run the example visual-vocabulary. This is completely independent of the black used in linting
   # our code. When this moves to HuggingFace we can remove the requirement from here.
   "black==24.4.2",
-  "plotly>=5.24.0"  # to leverage new MapLibre features in _visual-vocabulary
+  "plotly>=5.24.0"  # to leverage new MapLibre features in visual-vocabulary
 ]
 installer = "uv"
 scripts = {example = "cd examples/{args:scratch_dev}; python app.py"}
