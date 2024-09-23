@@ -95,4 +95,4 @@ select = [
 "vizro-ai/examples/chart_by_vizro_ai.ipynb" = ["T201", "E501"]
 "vizro-ai/examples/dashboard_by_vizro_ai.ipynb" = ["T201", "E402", "E501"]
 # Ignore missing docstrings in visual-vocabulary examples to keep them succinct.
-"vizro-core/examples/_visual-vocabulary/pages/examples/**" = ["D100", "D103"]
+"vizro-core/examples/visual-vocabulary/pages/examples/**" = ["D100", "D103"]
