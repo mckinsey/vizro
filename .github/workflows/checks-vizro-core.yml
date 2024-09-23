@@ -38,7 +38,7 @@ jobs:
       - name: Install Hatch
         run: pip install hatch
 
-      - name: List dependencies
+      - name: Show dependency tree
         run: hatch run pip tree
 
       - name: Check schema is up to date

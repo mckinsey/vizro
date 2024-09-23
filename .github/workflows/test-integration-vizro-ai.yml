@@ -75,7 +75,7 @@ jobs:
       - name: Install Hatch
         run: pip install hatch
 
-      - name: List dependencies
+      - name: Show dependency tree
         run: hatch run ${{ matrix.hatch-env }}:pip tree
 
       - name: Run vizro-ai integration tests with pypi vizro

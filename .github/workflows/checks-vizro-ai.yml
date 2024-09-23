@@ -38,7 +38,7 @@ jobs:
       - name: Install Hatch
         run: pip install hatch
 
-      - name: List dependencies
+      - name: Show dependency tree
         run: hatch run pip tree
 
       - name: Find changed files to see if changelog fragment needed
