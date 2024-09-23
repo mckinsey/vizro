@@ -1,4 +1,4 @@
-# Vizro visual vocabulary
+# Visual vocabulary made with Vizro and Plotly
 
 ### Welcome to our visual vocabulary dashboard! 🎨
 
