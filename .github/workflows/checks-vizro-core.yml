@@ -39,10 +39,10 @@ jobs:
         run: pip install hatch
 
       - name: List dependencies
-        run: hatch run all.py${{ env.PYTHON_VERSION }}:pip freeze
+        run: hatch run pip freeze
 
       - name: Check schema is up to date
-        run: hatch run all.py${{ env.PYTHON_VERSION }}:schema --check
+        run: hatch run schema --check
 
       - name: Find changed files to see if changelog fragment needed
         id: changed-files

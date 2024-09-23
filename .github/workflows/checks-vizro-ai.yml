@@ -39,7 +39,7 @@ jobs:
         run: pip install hatch
 
       - name: List dependencies
-        run: hatch run all.py${{ env.PYTHON_VERSION }}:pip freeze
+        run: hatch run pip freeze
 
       - name: Find changed files to see if changelog fragment needed
         id: changed-files
