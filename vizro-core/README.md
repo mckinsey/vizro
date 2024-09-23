@@ -98,7 +98,7 @@ You can see Vizro in action by clicking on the following image or by visiting [t
 <img src="https://raw.githubusercontent.com/mckinsey/vizro/main/.github/images/vizro_examples_gallery.png" width="550">
 </a>
 
-## Visual vocabulary made with Vizro and Plotly
+## Visual vocabulary
 
 Our visual vocabulary dashboard helps you to select and create various types of charts. It helps you decide when to use
 each chart type, and offers sample Python code to create these charts with [Plotly](https://plotly.com/python/) and
