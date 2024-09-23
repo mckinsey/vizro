@@ -37,6 +37,7 @@ python = "3.11"
 [envs.default.scripts]
 example = "hatch run examples:example {args:scratch_dev}"  # shortcut script to underlying example environment script.
 lint = "SKIP=gitleaks pre-commit run {args} --all-files"
+pip = "'{env:HATCH_UV}' pip {args}"
 prep-release = [
   "hatch version release",
   "hatch run changelog:collect",
@@ -61,7 +62,6 @@ test-unit-coverage = [
   "- coverage combine",
   "coverage report"
 ]
-pip = "'{env:HATCH_UV}' pip {args}"
 
 [envs.docs]
 dependencies = [
