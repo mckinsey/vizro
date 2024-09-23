@@ -47,7 +47,7 @@ jobs:
           python-version: ${{ matrix.python-version }}
 
       - name: Install Hatch
-        run: pip install --upgrade hatch
+        run: pip install hatch
 
       - name: List dependencies
         run: hatch run ${{ matrix.hatch-env }}:pip freeze
