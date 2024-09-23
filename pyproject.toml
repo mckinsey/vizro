@@ -61,6 +61,9 @@ warn_untyped_fields = true
 line-length = 120
 target-version = "py38"
 
+[tool.ruff.format]
+docstring-code-format = true
+
 [tool.ruff.lint]
 # see: https://beta.ruff.rs/docs/rules/
 ignore = [
@@ -81,10 +84,6 @@ select = [
   "RUF",  # Ruff-specific rules
   "PL"  # pylint
 ]
-
-[tool.ruff.format]
-docstring-code-format = true
-
 
 [tool.ruff.lint.per-file-ignores]
 # Ignore current false positives for pydantic models subclassing across files
