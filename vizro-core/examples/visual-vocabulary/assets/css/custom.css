@@ -76,3 +76,7 @@ img[src*="#chart-icon"] {
 .intro-text p a {
   font-size: inherit;
 }
+
+.intro-text ul:last-of-type {
+  margin-bottom: 0;
+}
