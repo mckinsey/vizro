@@ -79,7 +79,9 @@ def validate_range_value(cls, value, values):
     lvalue, hvalue = (
         (value[0], value[1])
         if isinstance(value, list) and len(value) == EXPECTED_VALUE_LENGTH
-        else (value[0], value[0]) if isinstance(value, list) and len(value) == 1 else (value, value)
+        else (value[0], value[0])
+        if isinstance(value, list) and len(value) == 1
+        else (value, value)
     )
 
     if (values["min"] is not None and not lvalue >= values["min"]) or (
