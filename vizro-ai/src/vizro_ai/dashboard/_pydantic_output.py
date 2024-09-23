@@ -67,7 +67,7 @@ def _get_pydantic_model(
     query: str,
     llm_model: BaseChatModel,
     response_model: BaseModel,
-    df_info: Optional[Any] = None,
+    df_info: Optional[Any] = None,  # TODO: this should potentially not be part of this function.
     max_retry: int = 2,
 ) -> BaseModel:
     # TODO: fix typing similar to instructor library, ie the return type should be the same as response_model
@@ -85,16 +85,41 @@ def _get_pydantic_model(
         except ValidationError as validation_error:
             last_validation_error = validation_error
         else:
-            return res
+            return res  # TODO: problem is response is None, then it returns without raising an error. Wrong typing!
     # TODO: should this be shifted to logging so that that one can control what output gets shown (e.g. in public demos)
     raise last_validation_error
 
 
 if __name__ == "__main__":
+    import plotly.express as px
     import vizro.models as vm
     from vizro_ai._llm_models import _get_llm_model
+    from vizro_ai.plot._response_models import ChartPlanStatic
 
-    model = _get_llm_model()
+    llm = _get_llm_model()
+
+    import os
+
+    from langchain_mistralai import ChatMistralAI
+
+    llm = ChatMistralAI(
+        name="codestral-latest",
+        temperature=0,
+        max_retries=2,
+        endpoint=os.environ.get("MISTRAL_BASE_URL"),
+        mistral_api_key=os.environ.get("ANTHROPIC_API_KEY"),
+        # other params...
+    )
+
+    # Easy
     component_description = "Create a card with the following content: 'Hello, world!'"
-    res = _get_pydantic_model(query=component_description, llm_model=model, response_model=vm.Card)
-    print(res)  # noqa: T201
+    res = _get_pydantic_model(query=component_description, llm_model=llm, response_model=vm.Card)
+    print(res.__repr__())  # noqa: T201
+    print(type(res))  # noqa: T201
+
+    # Harder
+    df = px.data.gapminder().sample(5).to_markdown()
+    component_description2 = "the trend of gdp over years in the US"
+    res2 = _get_pydantic_model(query=component_description2, df_info=df, llm_model=llm, response_model=ChartPlanStatic)
+    print(res2.__repr__())  # noqa: T201
+    print(type(res2))  # noqa: T201
