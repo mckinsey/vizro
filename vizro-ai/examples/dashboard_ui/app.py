@@ -12,7 +12,6 @@ from components import (
     CustomButton,
     CustomDashboard,
     Icon,
-    IframeComponent,
     Modal,
     MyDropdown,
     MyPage,
@@ -38,7 +37,6 @@ vm.Container.add_type("components", CodeClipboard)
 vm.Container.add_type("components", Icon)
 vm.Container.add_type("components", Modal)
 vm.Container.add_type("components", CustomButton)
-vm.Container.add_type("components", IframeComponent)
 
 MyPage.add_type("components", UserPromptTextArea)
 MyPage.add_type("components", UserUpload)
@@ -95,15 +93,9 @@ dashboard_page = MyPage(
                     ],
                 ),
                 vm.Container(
+                    id="embedded-dashboard",
                     title="Dashboard",
-                    components=[
-                        IframeComponent(
-                            id="embedded_dashboard",
-                            # src="http://localhost:7868/",
-                            src="http://localhost:8051/",
-                            height="600px",
-                        )
-                    ],
+                    components=[vm.Card(text="VizroAI generated dashboard placeholder")],
                 ),
             ],
         ),
@@ -243,6 +235,7 @@ def run_script(user_prompt, model, api_key, api_base, n_clicks, data, vendor):  
     Input("dashboard-code-markdown", "children"),
 )
 def save_to_file(generated_code):
+    """Saves vizro-ai generated dashboard code to a file."""
     gen_ai_file = "output_files/run_vizro_ai_output.py"
 
     # format code
@@ -260,23 +253,23 @@ def save_to_file(generated_code):
     Input("dashboard-code-markdown", "children"),
 )
 def show_button(ai_response):
+    """Displays a button to launch the dashboard in a subprocess."""
     if ai_response:
         return {"minWidth": "100%"}
 
 
-# @callback(
-#     Output("embedded_dashboard", "src"),
-#     Input("run-dashboard-button", "n_clicks"),
-# )
-# def run_generated_dashboard(n_clicks):
-#     if not n_clicks:
-#         raise PreventUpdate
-#     else:
-#         subprocess.Popen(
-#             ['python', 'output_files/run_vizro_ai_output.py'],
-#             capture_output=True
-#         )
-#         return "http://localhost:8051/"
+@callback(
+    [Output("run-dashboard-button", "disabled"), Output("embedded-dashboard", "children")],
+    Input("run-dashboard-button", "n_clicks"),
+)
+def run_generated_dashboard(n_clicks):
+    """Runs vizro-ai generated dashboard in an iframe window."""
+    if not n_clicks:
+        raise PreventUpdate
+    else:
+        subprocess.Popen(["python", "output_files/run_vizro_ai_output.py"])
+        iframe = html.Iframe(src="http://localhost:8051/", height="600px")
+        return True, iframe
 
 
 app = Vizro().build(dashboard)

@@ -266,22 +266,13 @@ class CustomDashboard(vm.Dashboard):
 
 
 class CustomButton(vm.Button):
+    """Custom Button model."""
+
     type: Literal["custom_button"] = "custom_button"
 
     def build(self):
+        """Returns custom button."""
         button_build_obj = super().build()
         # button_build_obj.disabled = True
         button_build_obj.style = {"minWidth": "100%", "display": "none"}
         return button_build_obj
-
-
-class IframeComponent(vm.VizroBaseModel):
-    """Custom component to embed an iframe in Vizro."""
-
-    type: Literal["iframe"] = "iframe"
-    src: str = ""
-    width: str = "100%"
-    height: str = "600px"
-
-    def build(self):
-        return html.Iframe(src=self.src, style={"width": self.width, "height": self.height, "border": "none"})
