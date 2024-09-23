@@ -7,7 +7,7 @@ To make customizations, you need to:
 
 1. **Add a CSS file to your `assets` folder**. Refer to our user guide on [adding static assets](assets.md#how-to-add-static-assets).
 2. **Identify the correct CSS selector** for the component you want to style.
-3. **Add the desired changed** to the CSS properties in your CSS file.
+3. **Change the relevant CSS properties** in your CSS file.
 
 
 
@@ -67,7 +67,7 @@ HTML document of your Vizro app.
     ![Inspect icon](../../assets/user_guides/custom_css/inspect-icon.png)
 
 3. **Find the HTML Block:** Hover over the component you want to style. The corresponding HTML block will be
-highlighted in the document.
+highlighted in the HTML document.
 
     ![Highlighted element](../../assets/user_guides/custom_css/highlighted-element.png)
 
@@ -94,8 +94,6 @@ For example, temporarily add `background: blue;`. Note that this change will be 
 ### Overwrite CSS globally
 To overwrite any global CSS property, you need to target the element selector and place your CSS file with the
 overwrites in the `assets` folder.
-
-For reference, see the [Vizro CSS files](https://github.com/mckinsey/vizro/tree/main/vizro-core/src/vizro/static/css).
 
 !!! example "Overwrite CSS globally"
     === "my_css_file.css"
@@ -155,6 +153,7 @@ For reference, see the [Vizro CSS files](https://github.com/mckinsey/vizro/tree/
 ### Overwrite CSS for selected pages
 To style components for a specific page, use the page's `id` in the CSS selectors. By default, this is the
 [same as the page `title`](pages.md), but such a value might not be a valid CSS identifier.
+
 A suitable `id` must be unique across all models in the dashboard and should contain only alphanumeric
 characters, hyphens (`-`) and underscores (`_`). In particular, note that spaces are _not_ allowed.
 
@@ -163,7 +162,7 @@ Suppose you want to hide the page title on one page only. Here's how you can ach
 1. Give a valid `id` to the `Page`, for example `Page(id="page-with-hidden-title", title="Page with hidden title", ...)`.
 2. Identify the CSS class or CSS `id` you need to target. To hide the page title, you need to hide the parent container with the id `right-header`.
 3. Use the `id` to hide the content.
-4. Add your custom css file to the `assets` folder as explained above.
+4. Add your custom css file to the `assets` folder.
 
 
 !!! example "Hide page title on selected pages"
@@ -303,13 +302,15 @@ It's essential to understand the relationship between the targeted CSS class or 
     [CardCSS]: ../../assets/user_guides/assets/css_change_card.png
 
 
-Some Vizro components produce a single HTML element with an ID that matches the model ID, allowing you to target it
-directly using the #id selector in CSS. Other components generate multiple HTML elements. Within these, the "core"
-element will have an ID matching the model ID, while non-core elements may have IDs that are variations of it,
-such as `{model-id}-title`.
+!!! note "Relationship between model ID and CSS ID"
 
-In all instances, you can determine the correct selector by using Chrome DevTools or a similar tool after setting the
-appropriate model ID.
+    Some Vizro components produce a single HTML element with an ID that matches the model ID, allowing you to target it
+    directly using the CSS #id selector. Other components generate multiple HTML elements. Within these, the "core"
+    element will have an ID matching the model ID, while non-core elements may have IDs that are variations of it,
+    such as `{model-id}-title`.
+
+    In all instances, you can determine the correct selector by using Chrome DevTools or a similar tool after setting the
+    appropriate model ID.
 
 
 ## Common examples
@@ -329,6 +330,7 @@ If you need to change the global font, perhaps to adhere to branding guidelines,
 2. Place the font file (`.ttf`, `woff2`, etc.) into your `assets` folder. Here’s an example of what the assets folder might look like:
 
     ![Font Change](../../assets/user_guides/custom_css/font-change.png)
+
 3. Add the font to your CSS file using the `@font-face` rule and apply the font globally to your Vizro app, making sure
 to specify fallback fonts. Add the following to your `custom.css` file:
 
