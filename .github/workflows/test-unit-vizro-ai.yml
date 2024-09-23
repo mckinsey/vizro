@@ -48,7 +48,7 @@ jobs:
         run: pip install hatch
 
       - name: List dependencies
-        run: hatch run ${{ matrix.hatch-env }}:pip freeze
+        run: hatch run ${{ matrix.hatch-env }}:pip tree
 
       - name: Run unit tests
         run: hatch run ${{ matrix.hatch-env }}:test-unit-coverage
