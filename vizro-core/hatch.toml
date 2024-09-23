@@ -29,13 +29,14 @@ dependencies = [
   "toml",
   "pyyaml",
   "openpyxl",
-  "jupyter"
+  "jupyter",
+  "pre-commit"
 ]
 installer = "uv"
 
 [envs.default.scripts]
 example = "hatch run examples:example {args:scratch_dev}"  # shortcut script to underlying example environment script.
-lint = "hatch run lint:lint {args:--all-files}"  # shortcut script to underlying lint environment script.
+lint = "SKIP=gitleaks pre-commit run {args} --all-files"
 prep-release = [
   "hatch version release",
   "hatch run changelog:collect",
@@ -46,8 +47,8 @@ prep-release = [
   'echo "Now raise a PR to merge into main with title: [Release] Release of vizro $(hatch version)"'
 ]
 pypath = "python -c 'import sys; print(sys.executable)'"
-schema = ["python schemas/generate.py {args}", '- hatch run lint --files="schemas/$(hatch version).json" > /dev/null']
-secrets = "hatch run lint:pre-commit run gitleaks --all-files"
+schema = ["python schemas/generate.py {args}", '- SKIP=gitleaks pre-commit run --files="schemas/$(hatch version).json" > /dev/null']
+secrets = "pre-commit run gitleaks --all-files"
 # Note `hatch run test` currently fails due to interference between integration tests and unit tests. Ideally we would
 # fix this, but we don't actually use `hatch run test` anywhere right now.
 # See comments added in https://github.com/mckinsey/vizro/pull/444.
@@ -99,15 +100,6 @@ template = "examples"
 DASH_DEBUG = "true"
 VIZRO_LOG_LEVEL = "DEBUG"
 
-[envs.lint]
-dependencies = [
-  "pip",
-  "pre-commit"
-]
-detached = true
-installer = "uv"
-scripts = {lint = "SKIP=gitleaks pre-commit run {args:--all-files}"}
-
 [envs.lower-bounds]
 extra-dependencies = [
   "pydantic==1.10.13",
@@ -120,3 +112,6 @@ disable = true
 
 [version]
 path = "src/vizro/__init__.py"
+
+# Note:
+# * linting changed to hatch run mpypy etc.
