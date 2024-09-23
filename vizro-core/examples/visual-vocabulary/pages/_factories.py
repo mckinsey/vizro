@@ -33,7 +33,7 @@ def butterfly_factory(group: str):
 
                 Use a butterfly chart when you wish to emphasize the comparison between two data sets sharing the same
                 parameters. Sharing this chart with your audience will help them see at a glance how two groups differ
-                within the same parameters. You can also **stack** two bars on each side To divide your
+                within the same parameters. You can also **stack** two bars on each side to divide your
                 categories.
             """
             ),
