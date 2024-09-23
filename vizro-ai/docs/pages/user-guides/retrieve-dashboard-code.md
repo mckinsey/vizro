@@ -1,8 +1,5 @@
 # Retrieve the code of Vizro-AI generated dashboard
 
-!!! warning "Feature in Alpha Version"
-    This feature is currently in **Alpha** version. It is stable but not officially released yet. We welcome feedback via the [GitHub Issues](https://github.com/mckinsey/vizro/issues). Note that the feature and its API may still undergo minor adjustments.
-
 This guide shows how to retrieve the code of a Vizro-AI generated dashboard. The code can be used for further iterations, improvements and deployment.
 
 While Vizro-AI can follow complex user requirements well and generate high-quality dashboards, due to the nature of LLMs, the generated dashboards often only approximately match user expectations. Besides refining the user prompt and re-running Vizro-AI, you can also extract the code and iterate manually to achieve the desired result.
@@ -34,7 +31,7 @@ Create a one-page dashboard layout with the following components:
 from vizro_ai import VizroAI
 
 vizro_ai = VizroAI(model="gpt-4o-mini")
-result = vizro_ai._dashboard([df], user_question, return_elements=True)
+result = vizro_ai.dashboard([df], user_question, return_elements=True)
 ```
 This will trigger the dashboard building process. Once Vizro-AI finishes the dashboard generation process, you can now launch the dashboard.
 
