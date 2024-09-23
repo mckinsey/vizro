@@ -20,10 +20,6 @@ name = "vizro"
 [tool.bandit]
 exclude_dirs = ["tests"]
 
-[tool.black]
-line-length = 120
-target-version = ["py38"]
-
 [tool.codespell]
 builtin = "clear,rare,en-GB_to_en-US"
 ignore-words-list = "grey,ned,sav,Thur"
@@ -59,7 +55,9 @@ warn_untyped_fields = true
 
 [tool.ruff]
 line-length = 120
-target-version = "py38"
+
+[tool.ruff.format]
+docstring-code-format = true
 
 [tool.ruff.format]
 docstring-code-format = true
@@ -72,7 +70,6 @@ ignore = [
   # D407 needs to be ignored as it otherwise messes up the formatting in our API docs
   "D407"  # missing dashed underline after section
 ]
-ignore-init-module-imports = true  # TODO: remove as deprecated soon
 select = [
   "E",  # pycodestyle errors
   "W",  # pycodestyle warnings
