@@ -1,4 +1,4 @@
-# Vizro visual vocabulary
+# Visual vocabulary
 
 ### Welcome to our visual vocabulary dashboard! 🎨
 
@@ -101,7 +101,7 @@ The dashboard is still in development. Below is an overview of the chart types f
 
 Contributions are welcome! To contribute a chart, follow the steps below:
 
-1. Check that a `svg` file named after the chart type is contained in the [assets](https://github.com/mckinsey/vizro/tree/main/vizro-core/examples/_visual-vocabulary/assets/images/charts) folder. If not, [raise an issue](https://github.com/mckinsey/vizro/issues) in the repository.
+1. Check that a `svg` file named after the chart type is contained in the [assets](https://github.com/mckinsey/vizro/tree/main/vizro-core/examples/visual-vocabulary/assets/images/charts) folder. If not, [raise an issue](https://github.com/mckinsey/vizro/issues) in the repository.
 2. Add the data set to `_pages_utils.py` if it doesn't already exist. Use existing data sets preferably or any other data set that is publicly available e.g. [plotlx.express.data](https://plotly.com/python-api-reference/generated/plotly.express.data.html)
 3. Create a new page for the chart type and add it to the relevant category `.py` file such as `correlation.py`,
    `deviation.py`, `distribution.py`, etc. Ensure you add the page to the list of `pages` at the end of the `.py` file.
@@ -111,6 +111,6 @@ Contributions are welcome! To contribute a chart, follow the steps below:
 
 ## How to run the example locally
 
-1. If you have `hatch` set up, run the example with the command `hatch run example _visual-vocabulary`.
+1. If you have `hatch` set up, run the example with the command `hatch run example visual-vocabulary`.
    Otherwise, with a virtual Python environment activated, run `pip install -r requirements.txt` and then `python app.py`.
 2. You should now be able to access the app locally via http://127.0.0.1:8050/.
