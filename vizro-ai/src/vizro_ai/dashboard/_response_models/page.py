@@ -11,6 +11,7 @@ except ImportError:  # pragma: no cov
     from pydantic import BaseModel, Field, PrivateAttr, ValidationError, root_validator, validator
 import vizro.models as vm
 from tqdm.auto import tqdm
+
 from vizro_ai.dashboard._response_models.components import ComponentPlan
 from vizro_ai.dashboard._response_models.controls import ControlPlan
 from vizro_ai.dashboard._response_models.layout import LayoutPlan
@@ -211,6 +212,7 @@ Build page without layout.
 if __name__ == "__main__":
     import pandas as pd
     from dotenv import load_dotenv
+
     from vizro_ai._llm_models import _get_llm_model
     from vizro_ai.dashboard.utils import AllDfMetadata, DfMetadata
 

@@ -1,4 +1,5 @@
 from pandas.testing import assert_frame_equal
+
 from vizro_ai.dashboard._response_models.df_info import _get_df_info
 
 

@@ -1,6 +1,7 @@
 import pandas as pd
 import pytest
 from langchain_core.messages import HumanMessage
+
 from vizro_ai.dashboard._graph.dashboard_creation import GraphState
 from vizro_ai.dashboard.utils import AllDfMetadata, DfMetadata
 

@@ -11,9 +11,10 @@ try:
 except ImportError:  # pragma: no cov
     from pydantic import ValidationError
 
+from asserts import assert_component_equal
+
 import vizro.models as vm
 import vizro.plotly.express as px
-from asserts import assert_component_equal
 from vizro import Vizro
 from vizro.actions import export_data
 from vizro.managers import model_manager

@@ -82,3 +82,7 @@ filterwarnings = [
 ]
 norecursedirs = ["tests/tests_utils", "tests/js"]
 pythonpath = ["tests/tests_utils"]
+
+[tool.ruff]
+extend = "../pyproject.toml"
+src = ["src"]

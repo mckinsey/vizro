@@ -46,7 +46,6 @@ warn_untyped_fields = true
 
 [tool.ruff]
 line-length = 120
-src = ["."]
 
 [tool.ruff.format]
 docstring-code-format = true

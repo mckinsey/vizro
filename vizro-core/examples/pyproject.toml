@@ -1,0 +1,4 @@
+# Ensure that current package isn't treated as first-party in this directory.
+[tool.ruff]
+extend = "../pyproject.toml"
+src = []

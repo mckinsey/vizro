@@ -2,6 +2,7 @@ import dash_ag_grid as dag
 import pandas as pd
 from asserts import assert_component_equal
 from pandas import Timestamp
+
 from vizro.models.types import capture
 from vizro.tables import dash_ag_grid
 

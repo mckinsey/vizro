@@ -5,6 +5,7 @@ from pathlib import Path
 
 import chromedriver_autoinstaller
 import pytest
+
 from vizro import Vizro
 
 
