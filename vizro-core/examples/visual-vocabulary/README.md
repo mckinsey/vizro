@@ -1,4 +1,4 @@
-# Vizro visual vocabulary
+# Visual vocabulary
 
 ### Welcome to our visual vocabulary dashboard! 🎨
 

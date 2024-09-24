@@ -105,6 +105,11 @@ repos:
     hooks:
       - id: vale
         args: [--config=.vale/.vale.ini]
+        # There's no way to automatically convert vale suggestions/warnings to errors, and so they won't appear at all unless
+        # there's an error raised.
+        # pre-commit's verbose mode means that suggestions and warnings are always shown even if there's no error raised.
+        # See https://github.com/errata-ai/vale/issues/575.
+        verbose: true
 
 # Configuration for https://pre-commit.ci/.
 ci:
