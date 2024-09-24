@@ -71,19 +71,11 @@ select = [
 ]
 
 [tool.ruff.lint.per-file-ignores]
-# Ignore current false positives for pydantic models subclassing across files
-# See: https://github.com/astral-sh/ruff/issues/5243#issuecomment-1860776975
-"**/models/**" = ["RUF012"]
 # Tests can use magic values, assertions, and relative imports, ignore missing docstrings,
 # compare to empty string
 "**/tests/**" = ["PLR2004", "S101", "TID252", "D100", "D101", "D102", "D103", "PLC1901", "RUF012"]
 # Ignore import violations in all __init__.py files
 "__init__.py" = ["E402", "F401"]
-# Ignore print, line length, and import violations in Colab notebooks
-"vizro-ai/examples/chart_by_vizro_ai.ipynb" = ["T201", "E501"]
-"vizro-ai/examples/dashboard_by_vizro_ai.ipynb" = ["T201", "E402", "E501"]
-# Ignore missing docstrings in visual-vocabulary examples to keep them succinct.
-"vizro-core/examples/visual-vocabulary/pages/examples/**" = ["D100", "D103"]
 
 [tool.ruff.lint.pydocstyle]
 convention = "google"
