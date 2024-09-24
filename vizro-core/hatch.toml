@@ -112,7 +112,3 @@ disable = true
 
 [version]
 path = "src/vizro/__init__.py"
-
-# Note:
-# * linting changed to hatch run mpypy etc.
-# * don't do pip

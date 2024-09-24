@@ -4,14 +4,13 @@
 python = ["3.9", "3.10", "3.11", "3.12"]
 
 [envs.changelog]
-dependencies = ["pip", "scriv"]
+dependencies = ["scriv"]
 detached = true
 installer = "uv"
 scripts = {add = "scriv create --add", collect = ["scriv collect --add", "- hatch run lint:lint --files=CHANGELOG.md"]}
 
 [envs.default]
 dependencies = [
-  "pip",
   "devtools[pygments]",
   "coverage[toml]>=6.5",
   "pytest",
@@ -27,9 +26,11 @@ dependencies = [
   # Below dependencies useful to test different models
   "langchain-community",
   "langchain_mistralai",
-  "langchain-anthropic"
+  "langchain-anthropic",
+  "pre-commit"
 ]
 installer = "uv"
+python = "3.11"
 
 [envs.default.env-vars]
 VIZRO_AI_LOG_LEVEL = "DEBUG"
@@ -38,7 +39,8 @@ VIZRO_AI_LOG_LEVEL = "DEBUG"
 example = "cd examples; python example.py"
 example-create-dashboard = "cd examples; python example_dashboard.py"
 example-ui = "cd examples/dashboard_ui; python app.py"
-lint = "hatch run lint:lint {args:--all-files}"
+lint = "SKIP=gitleaks pre-commit run {args} --all-files"
+pip = "'{env:HATCH_UV}' pip {args}"
 prep-release = [
   "hatch version release",
   "hatch run changelog:collect",
@@ -58,7 +60,6 @@ test-unit-coverage = [
 
 [envs.docs]
 dependencies = [
-  "pip",
   "mkdocs>=1.6",
   "mkdocs-material",
   "mkdocs-git-revision-date-localized-plugin",
@@ -67,6 +68,7 @@ dependencies = [
 ]
 detached = true
 installer = "uv"
+pip = "'{env:HATCH_UV}' pip {args}"
 
 [envs.docs.scripts]
 build = "mkdocs build --strict"
@@ -75,15 +77,6 @@ build = "mkdocs build --strict"
 # throwing 403 errors, but these are not real errors.
 link-check = "linkchecker site --check-extern --no-warnings --ignore=404.html --ignore-url=127.0.0.1 --ignore-url=https://vizro.readthedocs.io/ --ignore-url=https://platform.openai.com/docs/models --ignore-url=openai.com --ignore-url=https://openai.com/"
 serve = "mkdocs serve --open"
-
-[envs.lint]
-dependencies = [
-  "pip",
-  "pre-commit"
-]
-detached = true
-installer = "uv"
-scripts = {lint = "SKIP=gitleaks pre-commit run {args:--all-files}"}
 
 [envs.lower-bounds]
 extra-dependencies = ["pydantic==1.10.13"]
