@@ -92,9 +92,6 @@ dependencies = [
   "plotly>=5.24.0"  # to leverage new MapLibre features in visual-vocabulary
 ]
 installer = "uv"
-# Set Python version so that shortcut command hatch run example doesn't install one Python version, only to be
-# overriden by a different one.
-python = "3.11"
 scripts = {example = "cd examples/{args:scratch_dev}; python app.py"}
 # This environment doesn't inherit from default but does install Vizro.
 template = "examples"
