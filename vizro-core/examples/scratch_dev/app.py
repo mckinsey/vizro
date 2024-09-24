@@ -14,7 +14,7 @@ pio.templates["vizro_light"]["layout"]["plot_bgcolor"] = "rgba(0, 0, 0, 0)"
 iris = px.data.iris()
 
 page = vm.Page(
-    title="Page with subsections",
+    title="Page with subsedsfctions",
     layout=vm.Layout(grid=[[0, 1]]),
     components=[
         vm.Container(
@@ -31,4 +31,4 @@ page = vm.Page(
 dashboard = vm.Dashboard(pages=[page])
 
 if __name__ == "__main__":
-    Vizro().build(dashboard).run(debug=False)
+    Vizro().build(dashboard).run()

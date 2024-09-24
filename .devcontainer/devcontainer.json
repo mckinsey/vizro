@@ -1,7 +1,5 @@
-//{
-//  "postAttachCommand": "cd vizro-core; hr example",
-//}
 {
+  "postAttachCommand": "cd vizro-core; hr example",
   "customizations": {
     "vscode": {
       "extensions": [
@@ -9,5 +7,12 @@
       ]
     }
   },
-  "build": { "dockerfile": "Dockerfile" }
+  "build": {
+    "dockerfile": "Dockerfile"
+  },
+  "portsAttributes": {
+    "8050": {
+      "label": "scratch_dev example"
+    }
+  }
 }

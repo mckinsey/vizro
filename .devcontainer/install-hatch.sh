@@ -3,7 +3,7 @@
 # - remove GITHUB_PATH and RUNNER_TOOL_CACHE
 # - set the following variables
 VERSION="latest"
-INSTALL_PATH="/usr/bin/local"
+INSTALL_PATH="/usr/local/bin"
 RUNNER_OS="Linux"
 RUNNER_ARCH="X64"
 
