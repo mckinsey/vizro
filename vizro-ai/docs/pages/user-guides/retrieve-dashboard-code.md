@@ -33,7 +33,7 @@ from vizro_ai import VizroAI
 vizro_ai = VizroAI(model="gpt-4o-mini")
 result = vizro_ai.dashboard([df], user_question, return_elements=True)
 ```
-This will trigger the dashboard building process. Once Vizro-AI finishes the dashboard generation process, you can now launch the dashboard.
+This triggers the dashboard building process. Once Vizro-AI finishes the dashboard generation process, you can now launch the dashboard.
 
 !!! example "Generated dashboard"
 
