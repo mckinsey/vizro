@@ -3,6 +3,7 @@
 from pathlib import Path
 
 import pandas as pd
+import plotly.io as pio
 import vizro.plotly.express as px
 import yaml
 from vizro import Vizro
@@ -13,6 +14,11 @@ data_manager["iris"] = px.data.iris()
 data_manager["gapminder"] = px.data.gapminder()
 data_manager["gapminder_2007"] = px.data.gapminder().query("year == 2007")
 data_manager["tips"] = px.data.tips()
+
+pio.templates["vizro_dark"]["layout"]["paper_bgcolor"] = "rgba(0, 0, 0, 0)"
+pio.templates["vizro_light"]["layout"]["paper_bgcolor"] = "rgba(0, 0, 0, 0)"
+pio.templates["vizro_dark"]["layout"]["plot_bgcolor"] = "rgba(0, 0, 0, 0)"
+pio.templates["vizro_light"]["layout"]["plot_bgcolor"] = "rgba(0, 0, 0, 0)"
 
 df_stocks_long = pd.melt(
     px.data.stocks(datetimes=True),
