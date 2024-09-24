@@ -1,5 +1,5 @@
 {
-  // To avoid creating default environment and then examples environment we use the 
+  // To avoid creating default environment and then examples environment we use the
   // full `hr examples:example` rather than just `hr example` shortcut.
   "postAttachCommand": "cd vizro-core; hr examples:example",
   "customizations": {
