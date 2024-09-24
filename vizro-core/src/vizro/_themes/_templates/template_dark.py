@@ -10,7 +10,7 @@ from vizro._themes._templates.common_values import create_template_common
 def create_template_dark() -> Template:
     """Create dark themed plotly template.
 
-    Returns
+    Returns:
         A plotly template object containing the dark theme
 
     """

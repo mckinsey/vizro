@@ -19,7 +19,7 @@ logger.setLevel(logging.INFO)  # TODO: remove manual setting and make centrally 
 SUPPORTED_VENDORS = {"OpenAI": ChatOpenAI}
 
 
-def get_vizro_ai_plot(user_prompt, df, model, api_key, api_base, vendor_input):  # noqa: PLR0913
+def get_vizro_ai_plot(user_prompt, df, model, api_key, api_base, vendor_input):
     """VizroAi plot configuration."""
     vendor = SUPPORTED_VENDORS[vendor_input]
     llm = vendor(model_name=model, openai_api_key=api_key, openai_api_base=api_base)

@@ -1,15 +1,6 @@
 # THIS IS NOT DESCRIBING A PACKAGE, but the DEV environment of this mono-repo
 # In order to install the packages of this mono-repo from source, refer to the pyproject.toml in the relevant folder
 
-[lint.isort]
-known-first-party = ["vizro"]
-
-[lint.pydocstyle]
-convention = "google"
-
-[lint.pylint]
-max-args = 6
-
 [project]
 authors = [
   {name = "Vizro Team"}
@@ -55,9 +46,7 @@ warn_untyped_fields = true
 
 [tool.ruff]
 line-length = 120
-
-[tool.ruff.format]
-docstring-code-format = true
+src = ["."]
 
 [tool.ruff.format]
 docstring-code-format = true
@@ -96,3 +85,9 @@ select = [
 "vizro-ai/examples/dashboard_by_vizro_ai.ipynb" = ["T201", "E402", "E501"]
 # Ignore missing docstrings in visual-vocabulary examples to keep them succinct.
 "vizro-core/examples/visual-vocabulary/pages/examples/**" = ["D100", "D103"]
+
+[tool.ruff.lint.pydocstyle]
+convention = "google"
+
+[tool.ruff.lint.pylint]
+max-args = 6

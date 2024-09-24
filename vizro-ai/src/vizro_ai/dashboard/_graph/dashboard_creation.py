@@ -34,7 +34,7 @@ Messages = List[BaseMessage]
 class GraphState(BaseModel):
     """Represents the state of the dashboard graph.
 
-    Attributes
+    Attributes:
         messages: With user question, error messages, reasoning
         dfs: Dataframes
         all_df_metadata: Cleaned dataframe names and their metadata
@@ -137,7 +137,7 @@ def _dashboard_plan(state: GraphState, config: RunnableConfig) -> Dict[str, Dash
 class BuildPageState(BaseModel):
     """Represents the state of building the page.
 
-    Attributes
+    Attributes:
         all_df_metadata: Cleaned dataframe names and their metadata
         page_plan: Plan for the dashboard page
 
