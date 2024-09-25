@@ -14,7 +14,7 @@ pio.templates["vizro_light"]["layout"]["plot_bgcolor"] = "rgba(0, 0, 0, 0)"
 iris = px.data.iris()
 
 page = vm.Page(
-    title="Page with subsedsfctions",
+    title="Page with asfsadfsadf",
     layout=vm.Layout(grid=[[0, 1]]),
     components=[
         vm.Container(
