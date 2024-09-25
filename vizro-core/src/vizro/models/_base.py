@@ -283,9 +283,12 @@ class VizroBaseModel(BaseModel):
             Further options include adding extra imports and callable definitions. These will be included in the
             returned python string.
 
-            >>> print(card._to_python(
-            ...    extra_imports={"from typing import List"},
-            ...    extra_callable_defs={"def test(foo:List[str]): return foo"}))
+            >>> print(
+            ...     card._to_python(
+            ...         extra_imports={"from typing import List"},
+            ...         extra_callable_defs={"def test(foo:List[str]): return foo"},
+            ...     )
+            ... )
 
         """
         # Imports

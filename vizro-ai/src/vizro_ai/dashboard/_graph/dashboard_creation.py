@@ -11,6 +11,7 @@ from langchain_core.runnables import RunnableConfig
 from langgraph.constants import END, Send
 from langgraph.graph import StateGraph
 from tqdm.auto import tqdm
+
 from vizro_ai.dashboard._pydantic_output import _get_pydantic_model
 from vizro_ai.dashboard._response_models.dashboard import DashboardPlan
 from vizro_ai.dashboard._response_models.df_info import DfInfo, _create_df_info_content, _get_df_info
@@ -34,7 +35,7 @@ Messages = List[BaseMessage]
 class GraphState(BaseModel):
     """Represents the state of the dashboard graph.
 
-    Attributes
+    Attributes:
         messages: With user question, error messages, reasoning
         dfs: Dataframes
         all_df_metadata: Cleaned dataframe names and their metadata
@@ -137,7 +138,7 @@ def _dashboard_plan(state: GraphState, config: RunnableConfig) -> Dict[str, Dash
 class BuildPageState(BaseModel):
     """Represents the state of building the page.
 
-    Attributes
+    Attributes:
         all_df_metadata: Cleaned dataframe names and their metadata
         page_plan: Plan for the dashboard page
 

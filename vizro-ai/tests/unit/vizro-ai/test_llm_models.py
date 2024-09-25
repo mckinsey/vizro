@@ -1,4 +1,5 @@
 import pytest
+
 from vizro_ai._llm_models import _get_llm_model
 
 

@@ -126,7 +126,7 @@ class _StaticData:
 class DataManager:
     """Object to handle all data for the `vizro` application.
 
-    Examples
+    Examples:
         >>> # Static data that cannot be refreshed during runtime
         >>> data_manager["data"] = pd.read_csv("data.csv")
         >>> # Data that can be refreshed during runtime

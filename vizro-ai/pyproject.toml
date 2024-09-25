@@ -64,3 +64,12 @@ filterwarnings = [
   # Ignore LLMchian deprecation warning:
   "ignore:.*The class `LLMChain` was deprecated in LangChain 0.1.17"
 ]
+
+[tool.ruff]
+extend = "../pyproject.toml"
+src = ["src"]
+
+[tool.ruff.lint.extend-per-file-ignores]
+# Ignore print, line length, and import violations in Colab notebooks
+"examples/chart_by_vizro_ai.ipynb" = ["T201", "E501"]
+"examples/dashboard_by_vizro_ai.ipynb" = ["T201", "E402", "E501"]

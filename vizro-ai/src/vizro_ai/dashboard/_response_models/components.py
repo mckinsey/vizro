@@ -10,6 +10,7 @@ except ImportError:  # pragma: no cov
     from pydantic import BaseModel, Field, ValidationError
 from langchain_core.language_models.chat_models import BaseChatModel
 from vizro.tables import dash_ag_grid
+
 from vizro_ai.dashboard._pydantic_output import _get_pydantic_model
 from vizro_ai.dashboard._response_models.types import ComponentType
 from vizro_ai.dashboard.utils import AllDfMetadata, ComponentResult
@@ -103,6 +104,7 @@ Relevant prompt: {self.component_description}
 
 if __name__ == "__main__":
     from dotenv import load_dotenv
+
     from vizro_ai._llm_models import _get_llm_model
     from vizro_ai.dashboard.utils import AllDfMetadata
 
