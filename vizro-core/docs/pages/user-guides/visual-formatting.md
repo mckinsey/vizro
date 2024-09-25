@@ -1,7 +1,7 @@
 # How to customize the style of Vizro dashboards
 
-Vizro comes with a default styling aimed at helping users with no design experience get started quickly.
-However, if you wish to customize further, there are several options available:
+Vizro has a default styling to help users with no design experience get started quickly.
+There are several options if you want to customize the style:
 
 * **[Configure the `Layout`](layouts.md)**: Customize the arrangement of your components inside your Vizro dashboard.
 

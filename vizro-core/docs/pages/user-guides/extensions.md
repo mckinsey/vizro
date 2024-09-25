@@ -93,9 +93,8 @@ enabling an interaction between data points in a scatter plot and the content of
 
 ## CSS customizations
 
-Although Vizro is opinionated about visual formatting and certain elements like the navigation and control layout are
-fixed, you can still customize various settings, including background colors, fonts, and other styles, through CSS
-overrides.
+Vizro is opinionated about visual formatting, and some elements, such as the layout of the navigation and controls,
+are fixed. You can customize some settings such as background colors, fonts, and other styles via CSS overrides.
 
 For more information, see our documentation on [customizing CSS](custom-css.md)
 

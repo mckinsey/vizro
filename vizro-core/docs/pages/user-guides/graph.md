@@ -70,15 +70,16 @@ In the Python example we directly inserted the pandas DataFrame `df` into `figur
 
 ## Customize Plotly chart
 
-If you want to customize the Plotly chart beyond a function call—such as using post-update methods like
-`update_layout`, `update_xaxes`, or `update_traces`, or creating a custom `plotly.graph_objects.Figure()` object
-and manually adding traces with `add_trace`—you will need to create a custom chart.
+You will need to create a custom chart if you want to customize the Plotly chart beyond a function call, for example by:
+
+* using post-update methods like `update_layout`, `update_xaxes`, `update_traces`, or
+* by creating a custom `plotly.graph_objects.Figure()` object and manually adding traces with `add_trace`.
 
 For more details, refer to our [user guide on custom chart](custom-charts.md) and the
 [Plotly documentation on updating figures](https://plotly.com/python/creating-and-updating-figures/).
 
 
-## Add title, header, footer
+## Add title, header, and footer
 
 The [`Graph`][vizro.models.Graph] accepts a `title`, `header` and `footer` argument. This is useful for providing
 context to the data being displayed, or for adding a description of the data.

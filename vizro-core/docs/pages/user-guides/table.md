@@ -532,7 +532,7 @@ an example of a styled table where some conditional formatting is applied. There
 If the available arguments are not sufficient, there is always the option to create a [custom Dash DataTable](custom-tables.md).
 
 
-## Add title, header, footer
+## Add title, header, and footer
 
 The [`Table`][vizro.models.Table] and the [`AgGrid`][vizro.models.AgGrid] models accept a `title`, `header` and
 `footer` argument. This is useful for providing context to the data being displayed, or for adding a description of
