@@ -67,7 +67,7 @@ correlation_intro_text = """
 correlation_chart_group = ChartGroup(
     name="Correlation",
     pages=pages.correlation.pages,
-    incomplete_pages=[IncompletePage("Heatmap matrix")],
+    incomplete_pages=[IncompletePage("Correlation matrix")],
     icon="Bubble Chart",
     intro_text=correlation_intro_text,
 )
