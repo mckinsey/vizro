@@ -29,7 +29,6 @@ nav:
           - Overview: pages/user-guides/visual-formatting.md
           - Layouts: pages/user-guides/layouts.md
           - Themes: pages/user-guides/themes.md
-          - Title, header, footer: pages/user-guides/title-header-footer.md
           - Assets: pages/user-guides/assets.md
           - CSS: pages/user-guides/custom-css.md
       - ACTIONS:
