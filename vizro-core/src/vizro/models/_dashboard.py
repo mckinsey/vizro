@@ -109,6 +109,15 @@ class Dashboard(VizroBaseModel):
 
     @_log_call
     def pre_build(self):
+        # TODO: Add validation to check if logo or (logo_dark and logo_light) are provided together
+        # if logo_dark and logo_light with logo-> error or (use logo_dark and logo_light)
+        # if logo_dark and logo_light without logo -> use logo_dark and logo_light
+        # if logo and logo_dark -> error
+        # if logo and logo_light -> error
+        # if logo -> use logo
+        # no logo -> no logo
+        # no logo and logo-dark -> error
+        # no logo and logo-light -> error
         meta_image = self._infer_image("app") or self._infer_image("logo")
 
         # Setting order here ensures that the pages in dash.page_registry preserves the order of the List[Page].
@@ -187,6 +196,18 @@ class Dashboard(VizroBaseModel):
             id="settings",
         )
 
+        # LOGIC
+        # logo.svg
+
+        # VALID: ONLY LOGO
+        # VALID: LOGO_DARK and LOGO_LIGHT
+        # If logo is provided only -> logo
+        # If logo_dark is provided only -> logo_dark
+        # If logo_light is provided only -> logo_light
+        # If logo_dark and logo_light are provided -> logo_dark, logo light
+        # If logo and logo_dark are provided -> logo_dark
+        # If logo and logo_light are provided -> logo_light
+
         logo_img = self._infer_image(filename="logo")
         logo_dark_img = self._infer_image(filename="logo_dark")
         logo_light_img = self._infer_image(filename="logo_light")
@@ -196,7 +217,7 @@ class Dashboard(VizroBaseModel):
         path_to_logo_light = get_asset_url(logo_light_img) if logo_light_img else None
 
         # Turn off logo.svg if either logo_dark.svg or logo_light.svg is provided
-        if path_to_logo_light or path_to_logo_dark:
+        if (path_to_logo_light and path_to_logo_dark):
             path_to_logo = None
 
         logo = html.Img(id="logo", src=path_to_logo, hidden=not path_to_logo)
