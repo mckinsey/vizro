@@ -4,9 +4,9 @@ At its simplest, Vizro enables low-code configuration, but you can also customiz
 
 * **[Vizro customizations](#vizro-customizations)**. You can customize Vizro to extend the default functionality of Vizro and create Python functions as customized Plotly charts, tables, dashboard components, actions, or reactive HTML components, and then plug them directly into the existing Vizro dashboard configuration (as explained below).
 
-
 * **[Dash customizations](#dash-customizations)**. You can add custom Dash callbacks directly to any Vizro dashboard, enabling you to code beneath the Vizro layer and control Dash directly.
 
+* **[CSS customizations](#css-customizations)**. You can add custom CSS to any Vizro dashboard, enabling users to deviate from the default styling and create a unique look and feel for their dashboard.
 
 * **[React.js customizations](#reactjs-customizations)**. You can add custom React.js components directly to any Vizro dashboard, enabling users to go beneath both the Vizro and Dash layers and control React.js directly
 
@@ -91,7 +91,12 @@ enabling an interaction between data points in a scatter plot and the content of
         Vizro().build(dashboard).run()
         ```
 
+## CSS customizations
 
+Vizro is opinionated about visual formatting, and some elements, such as the layout of the navigation and controls,
+are fixed. You can customize some settings such as background colors, fonts, and other styles via CSS overrides.
+
+For more information, see our documentation on [customizing CSS](custom-css.md)
 
 ## React.js customizations
 
