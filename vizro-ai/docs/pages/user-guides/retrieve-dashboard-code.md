@@ -39,6 +39,26 @@ This triggers the dashboard building process. Once Vizro-AI finishes the dashboa
 
     === "Code"
         ```py
+        import vizro.plotly.express as px
+        from vizro_ai import VizroAI
+        from vizro import Vizro
+
+        df = px.data.tips()
+        user_question = """
+        Create a one-page dashboard layout with the following components:
+
+        1. Card:
+           - Position: Left of the page
+           - Size: Takes up 1/4 of the total page width
+           - Content: Display the text "This is Tips dataset"
+
+        1. Table:
+           - Position: Right of the card
+           - Size: Takes up the remaining 3/4 of the page width
+           - Content: Display the Tips dataset
+        """
+        vizro_ai = VizroAI(model="gpt-4o-mini")
+        result = vizro_ai.dashboard([df], user_question, return_elements=True)
         Vizro().build(result.dashboard).run()
         ```
 
@@ -53,9 +73,29 @@ This triggers the dashboard building process. Once Vizro-AI finishes the dashboa
 
     === "Code"
         ```py
+        import vizro.plotly.express as px
+        from vizro_ai import VizroAI
+        from vizro import Vizro
+
+        df = px.data.tips()
+        user_question = """
+        Create a one-page dashboard layout with the following components:
+
+        1. Card:
+           - Position: Left of the page
+           - Size: Takes up 1/4 of the total page width
+           - Content: Display the text "This is Tips dataset"
+
+        1. Table:
+           - Position: Right of the card
+           - Size: Takes up the remaining 3/4 of the page width
+           - Content: Display the Tips dataset
+        """
+        vizro_ai = VizroAI(model="gpt-4o-mini")
+        result = vizro_ai.dashboard([df], user_question, return_elements=True)
+
         print(result.code)
         ```
-
     === "Result"
         ```py
         ######## Module Imports ##########
@@ -74,26 +114,26 @@ This triggers the dashboard building process. Once Vizro-AI finishes the dashboa
 
         ########## Object code ###########
         dashboard = vm.Dashboard(
-            pages=[
-                vm.Page(
-                    id="Tips Data Visualization",
-                    components=[
-                        vm.Card(
-                            id="tips_card_tips_data_visualization",
-                            type="card",
-                            text="This is Tips dataset",
-                            href="",
-                        ),
-                        vm.AgGrid(
-                            id="tips_table_tips_data_visualization",
-                            figure=dash_ag_grid(data_frame="restaurant_bills"),
-                        ),
-                    ],
-                    title="Tips Data Visualization",
-                    layout=vm.Layout(grid=[[0, 1, 1, 1]]),
-                    controls=[],
-                )
-            ],
-            title="Tips Dataset Overview",
+           pages=[
+               vm.Page(
+                   id="Tips Data Visualization",
+                   components=[
+                       vm.Card(
+                           id="tips_card_tips_data_visualization",
+                           type="card",
+                           text="This is Tips dataset",
+                           href="",
+                       ),
+                       vm.AgGrid(
+                           id="tips_table_tips_data_visualization",
+                           figure=dash_ag_grid(data_frame="restaurant_bills"),
+                       ),
+                   ],
+                   title="Tips Data Visualization",
+                   layout=vm.Layout(grid=[[0, 1, 1, 1]]),
+                   controls=[],
+               )
+           ],
+           title="Tips Dataset Overview",
         )
         ```
