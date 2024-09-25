@@ -38,11 +38,12 @@ def homepage(**kwargs):
 
 
 # Like pre-build - doesn't get run again when reload page
-# Not used currently - was used for static filter
-initial_df = slow_load()
-# options = sorted(initial_df["species"].unique().tolist())
-sepal_length_min = float(initial_df["sepal_length"].min())
-sepal_length_max = float(initial_df["sepal_length"].max())
+# def categorical_filter_pre_build():
+#     return sorted(slow_load()["species"].unique().tolist())
+
+
+# def numerical_filter_pre_build():
+#     return float(slow_load()["sepal_length"].min()), float(slow_load()["sepal_length"].max())
 
 
 def categorical_filter_build(options, value, selector, id_suffix=None, **kwargs):
@@ -68,23 +69,14 @@ def another_page(**kwargs):
             dcc.Store(id="on_page_load_trigger_another_page"),
             html.H2("Another page"),
 
-            # This does NOT work at all because id="filter" doesn't exist but is used as OPL callback State.
+            # # This does NOT work because id="filter" doesn't exist but is used as OPL callback State.
             # dcc.Loading(id="filter_container"),
 
-            # fully dynamic version:
-            # TODO-conclusion:
-            # Does NOT persist for server (OPL input argument), although correctly persists on the UI.
-            # The reason is that the dcc.Dropdown component is created as a result of on_page_load.
-            # dcc.Loading(html.Div(html.Div(id="filter"), id="filter_container")),
-
-            # static version:
-            # TODO-conclusion:
-            # Possible solution is to alter filter."options" from on_page_load. This would work, but it's not optimal.
+            # # Possible solution is to alter filter.options from on_page_load. This would work, but it's not optimal.
             # dcc.Dropdown(id="filter", options=options, value=options, multi=True, persistence=True),
 
-            # semi dynamic version:
-            # TODO-conclusion:
-            # Persists just first time for UI and server. The reason is that the dcc.Dropdown component is created twice per page refresh.
+            # # Working example of categorical filter
+            # # Outer container can be changed with dcc.Loading.
             html.Div(
                 categorical_filter_build(
                     options=["setosa", "versicolor", "virginica"], value=["setosa", "versicolor", "virginica"],
@@ -94,36 +86,20 @@ def another_page(**kwargs):
                 id="categorical_filter_container",
             ),
 
+            # # Working example of numerical filter:
+            # # Outer container can be changed with dcc.Loading.
             # html.Div(
-            #     id="categorical_filter_container",
-            #     children=[html.Div(id="categorical_filter")],
-            # ),
-
-
-            # 2. Neither UI nor server persistence works
-            # dcc.Loading(
-            #     dcc.Dropdown(id="filter", options=options, multi=True, persistence=True, persistence_type="session"),
-            #     id="filter_container"
-            # ),
-            # 3. Neither UI nor server persistence works
-            # dcc.Loading(
-            #     dcc.Dropdown(id="filter", persistence=True, persistence_type="session"),
-            #     id="filter_container"
-            # ),
-            # 4. Same as "fully dynamic version"
-            # dcc.Loading(
-            #     html.Div(
-            #         dcc.Dropdown(id="filter"),
-            #         id="filter_container",
-            #     )
-            # ),
-
-            # Numerical filter:
-            # dcc.Loading(
             #     numerical_filter_build(
-            #         min_value=sepal_length_min, max_value=sepal_length_max, selector=dcc.RangeSlider,
+            #         min_value=1, max_value=10, value=5,
+            #         selector=dcc.Slider,
             #     ),
             #     id="numerical_filter_container",
+            # ),
+
+            # # Does not work because OPL filter input is missing, but it's used for filtering figures data_frame.
+            # html.Div(
+            #     html.Div(id="categorical_filter"),
+            #     id="categorical_filter_container",
             # ),
 
 
@@ -147,9 +123,7 @@ def graph2_call(data_frame, x):
 # need to write it for rangeslider and dropdown etc. separately though. Probably easier to just replace whole object.
 # This is consistent with how Graph, AgGrid etc. work.
 # BUT controls are different from Graphs since you can set the pre-selected value that should be shown when
-# user first visits page. Is this possible still with dynamic filter?
-# QUESTION: Even though we replace the whole object, persistence=True still seems to work. How?
-# TODO - answer: It doesn't work :(
+# user first visits page. Is this possible still with dynamic filter? -> YES
 
 
 def get_data(species):
@@ -175,20 +149,22 @@ clientside_callback(
 
 
 @callback(
-    Output("graph1", "figure"),
-    Output("graph2", "figure"),
-    Output("categorical_filter_container", "children"),
-    # Output("numerical_filter_container", "children"),
-    # Input("on_page_load_trigger_another_page", "data"),  # this is arbitrary since callback runs on page load
-    # automatically. Just need to define some Input.
-    Input("global_on_page_load_another_page_action_trigger", "data"),
-    State("categorical_filter", "value"),
-    State("parameter", "value"),
-    # State("numerical_filter", "value"),
+    output=[
+        Output("graph1", "figure"),
+        Output("graph2", "figure"),
+        Output("categorical_filter_container", "children"),
+        # Output("numerical_filter_container", "children"),
+    ],
+    inputs=[
+        Input("global_on_page_load_another_page_action_trigger", "data"),
+
+        State("categorical_filter", "value"),
+        # State("numerical_filter", "value"),
+        State("parameter", "value"),
+    ],
     prevent_initial_call=True
 )
 def on_page_load(data, persisted_filter_value, x):
-    persisted_filter_value = persisted_filter_value or []
     # Ideally, OPL flow should look like this:
     #  1. Page.build() -> returns static layout (placeholder elements for dynamic components).
     #  2. Persistence is applied. -> So, filter values are the same as the last time the page was visited.
@@ -205,18 +181,43 @@ def on_page_load(data, persisted_filter_value, x):
     #   1. They solve the circular dependency problem of the full graph.
     #   2. They are explicit which means they can be configured in any way users want. There's no undesired behavior.
 
+    # TODO: Last solution found -> hence put in highlighted TODO:
+    #  1. page.build() -> returns:
+    #    1.1. html.Div(html.Div(id="categorical_filter"), id="categorical_filter_container")
+    #      * Does not work because we need persisted filter input value in OPL, so we can filter figures data_frame. *
+    #    1.2. html.Div(dcc.Dropdown(id="categorical_filter", ...), id="categorical_filter_container")
+    #      * It works! :D *
+    #  2. OPL -> Manipulations with filter and options:
+    #    2.1. Recalculate options.
+    #    2.2. Recalculated value. (persisted_filter_value that exists in recalculated options)
+    #    2.3. Filter figures data_frame with recalculated value.
+    #    2.4. Create a new filter object with recalculated options and original value.
+    #  Limitations:
+    #    1. do_filter is triggered automatically after OPL.
+    #      This shouldn't be the issue since actions loop controls it.
+    #    2. Component persistence updating works slightly different for dcc.Dropdown than for other selector components.
+    #      It changes its persistence even if OPL returns the different options. For other selector components,
+    #      persistence is changed only if user manually change the value. This should be totally fine.
+    # --- (A.M.): How to achieve all of these: ---
+    # * get correct selected value passed into graph calls -> Works with this solution.
+    # * populate filter with right values for user on first page load -> Works with this solution.
+    # * update filter options on page load -> Works with this solution.
+    # * persist filter values on page change -> Works with this solution.
+
     print("running on_page_load")
     df = slow_load()
 
+    # --- Calculate categorical filter ---
     # filter_options -> always calculate.
     categorical_filter_options = sorted(df["species"].unique().tolist())
     # For multi=True:
     categorical_filter_value = [value for value in persisted_filter_value if value in categorical_filter_options]
     # For multi=False:
-    # categorical_filter_value = species if species in categorical_filter_options else None
-    categorical_filter_obj = categorical_filter_build(options=categorical_filter_options, value=categorical_filter_value, selector=dcc.Dropdown, multi=True)
+    # categorical_filter_value = persisted_filter_value if persisted_filter_value in categorical_filter_options else None
+    new_filter_obj = categorical_filter_build(options=categorical_filter_options, value=["setosa", "versicolor", "virginica"], selector=dcc.Dropdown, multi=True)
 
-    # set_props(component_id="categorical_filter_container", props={"children": categorical_filter_obj})
+    # --- set_props ---
+    # set_props(component_id="categorical_filter_container", props={"children": new_filter_obj})
     # More about set_props:
     #   -> https://dash.plotly.com/advanced-callbacks#setting-properties-directly
     #   -> https://community.plotly.com/t/dash-2-17-0-released-callback-updates-with-set-props-no-output-callbacks-layout-as-list-dcc-loading-trace-zorder/84343
@@ -234,64 +235,69 @@ def on_page_load(data, persisted_filter_value, x):
     #   2. Can we handle if filter selector changes dynamically? -> Potentially, (I haven't tested it yet.)
     #   3. Is there a bug with set_props or with dash.Output?!
 
-    # sepal_length numerical filter
+    # --- Calculate numerical filter ---
     # numerical_filter_min = float(df["sepal_length"].min())
     # numerical_filter_max = float(df["sepal_length"].max())
-    # For dcc.Slider
-    # numerical_filter_value = sepal_length_range if numerical_filter_min < sepal_length_range < numerical_filter_max else numerical_filter_min
-    # For dcc.RangeSlider
-    # numerical_filter_value = [max(numerical_filter_min, sepal_length_range[0]), min(numerical_filter_max, sepal_length_range[1])]
-    # numerical_filter_obj = numerical_filter_build(numerical_filter_min, numerical_filter_max, numerical_filter_value, dcc.RangeSlider)
-    # set_props(component_id="numerical_filter_container", props={"children": numerical_filter_obj})
+    #   For dcc.Slider
+    # numerical_filter_value = persisted_filter_value if numerical_filter_min < persisted_filter_value < numerical_filter_max else numerical_filter_min
+    #   For dcc.RangeSlider
+    # numerical_filter_value = [max(numerical_filter_min, persisted_filter_value[0]), min(numerical_filter_max, persisted_filter_value[1])]
+    # new_filter_obj = numerical_filter_build(numerical_filter_min, numerical_filter_max, 5, dcc.Slider)
+    # set_props(component_id="numerical_filter_container", props={"children": new_filter_obj})
 
-    # PROBLEM: How to achieve all of these:
-    # * get correct selected value passed into graph calls -> set_props is a solution
-    # * populate filter with right values for user on first page load -> set_props is a solution
-    # * update filter options on page load -> set_props is a solution
-    # * persist filter values on page change -> set_props is a solution
+    # --- Filtering data: ---
+    #   Categorical
+    #     For multi=True:
     df = df[df["species"].isin(categorical_filter_value)]
+    #     For multi=False:
+    # df = df[df["species"].isin([categorical_filter_value])]
+
+    #   Numerical
+    #     For dcc.RangeSlider
     # df = df[(df["sepal_length"] >= numerical_filter_value[0]) & (df["sepal_length"] <= numerical_filter_value[1])]
+    #     For dcc.Slider
+    # df = df[(df["sepal_length"] == numerical_filter_value)]
 
     print("")
-    return graph1_call(df), graph2_call(df, x), categorical_filter_obj
+    return graph1_call(df), graph2_call(df, x), new_filter_obj
 
 
-@callback(
-    Output("graph1", "figure", allow_duplicate=True),
-    Output("graph2", "figure", allow_duplicate=True),
-    Input("categorical_filter", "value"),
-    State("parameter", "value"),
-    prevent_initial_call=True,
-)
-def do_filter(species, x):
-    print("running do_filter")
-
-    # This also works - filter is calculated on filter value select:
-    # It also makes that filter/df1/df2 are calculated based on the same data. Should we enable that?
-    # df = slow_load()
-    # filter_options = df["species"].unique()
-    # filter_value = [value for value in species if value in filter_options]
-    # filter_obj = filter_call(filter_options, filter_value)
-    # df1 = df2 = df[df["species"].isin(filter_value)]
-    # set_props(component_id="filter_container", props={"children": filter_obj})
-
-    df1 = get_data(species)
-    df2 = get_data(species)
-    print("")
-    return graph1_call(df1), graph2_call(df2, x)
-
-
-@callback(
-    Output("graph2", "figure", allow_duplicate=True),
-    Input("parameter", "value"),
-    State("categorical_filter", "value"),
-    prevent_initial_call=True,
-)
-def do_parameter(x, species):
-    print("running do_parameter")
-    df1 = get_data(species)
-    print("")
-    return graph2_call(df1, x)
+# @callback(
+#     Output("graph1", "figure", allow_duplicate=True),
+#     Output("graph2", "figure", allow_duplicate=True),
+#     Input("categorical_filter", "value"),
+#     State("parameter", "value"),
+#     prevent_initial_call=True,
+# )
+# def do_filter(species, x):
+#     print("running do_filter")
+#
+#     # This also works - filter is calculated on filter value select:
+#     # It also makes that filter/df1/df2 are calculated based on the same data. Should we enable that?
+#     # df = slow_load()
+#     # filter_options = df["species"].unique()
+#     # filter_value = [value for value in species if value in filter_options]
+#     # filter_obj = filter_call(filter_options, filter_value)
+#     # df1 = df2 = df[df["species"].isin(filter_value)]
+#     # set_props(component_id="filter_container", props={"children": filter_obj})
+#
+#     df1 = get_data(species)
+#     df2 = get_data(species)
+#     print("")
+#     return graph1_call(df1), graph2_call(df2, x)
+#
+#
+# @callback(
+#     Output("graph2", "figure", allow_duplicate=True),
+#     Input("parameter", "value"),
+#     State("categorical_filter", "value"),
+#     prevent_initial_call=True,
+# )
+# def do_parameter(x, species):
+#     print("running do_parameter")
+#     df1 = get_data(species)
+#     print("")
+#     return graph2_call(df1, x)
 
 
 app = Dash(use_pages=True, pages_folder="", suppress_callback_exceptions=True)
@@ -299,6 +305,7 @@ dash.register_page("/", layout=homepage)
 dash.register_page("another_page", layout=another_page)
 
 app.layout = html.Div([dcc.Store("global_on_page_load_another_page_action_trigger"), dash.page_container])
+
 
 ##### NEXT STEPS FOR PETAR
 
@@ -317,7 +324,6 @@ app.layout = html.Div([dcc.Store("global_on_page_load_another_page_action_trigge
 # Could actually just do on_page_load_controls and then use all regular callbacks in parallel - so long as caching
 # turned on then on_page_load_controls will have warmed it up so then no problem with regular callbacks.
 # But still not good because regular callbacks will override same output graph multiple times.
-
 
 # Maybe actually need on_page_load_controls to trigger regular filters in general? And just not have too many of them.
 
