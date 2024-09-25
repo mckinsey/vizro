@@ -30,7 +30,7 @@ nav:
           - Layouts: pages/user-guides/layouts.md
           - Themes: pages/user-guides/themes.md
           - Assets: pages/user-guides/assets.md
-          - CSS: pages/user-guides/custom-css.md
+          - Custom CSS: pages/user-guides/custom-css.md
       - ACTIONS:
           - Actions: pages/user-guides/actions.md
       - DATA:

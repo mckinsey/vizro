@@ -534,8 +534,8 @@ If the available arguments are not sufficient, there is always the option to cre
 
 ## Add title, header, footer
 
-The [`Table`][vizro.models.Table] and the [`AgGrid`][vizro.models.AgGrid] models accept a `title`, `header` and 
-`footer` argument. This is useful for providing context to the data being displayed, or for adding a description of 
+The [`Table`][vizro.models.Table] and the [`AgGrid`][vizro.models.AgGrid] models accept a `title`, `header` and
+`footer` argument. This is useful for providing context to the data being displayed, or for adding a description of
 the data.
 
 - **title**: Displayed as an [H3 header](https://dash.plotly.com/dash-html-components/h3), useful for summarizing the main topic or insight of the component.

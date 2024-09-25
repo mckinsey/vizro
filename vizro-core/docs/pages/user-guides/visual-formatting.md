@@ -1,15 +1,17 @@
 # How to customize the style of Vizro dashboards
 
-Vizro comes with a default styling aimed at helping users with no design experience get started quickly. 
+Vizro comes with a default styling aimed at helping users with no design experience get started quickly.
 However, if you wish to customize further, there are several options available:
 
-* **[Configure the `Layout`](layouts.md)**: You can customize the layout of your Vizro dashboard to better suit your needs. This includes configuring the arrangement of your components to create a more effective and visually appealing dashboard.
+* **[Configure the `Layout`](layouts.md)**: Customize the arrangement of your components inside your Vizro dashboard.
 
+* **[Apply a theme](themes.md)**: Choose between a dark or light theme to give your dashboard a cohesive and professional look.
 
-* **[Apply a theme](themes.md)**: Vizro allows you to apply different themes to your dashboard, providing a cohesive and professional look and feel. You can currently select from dark and light theme.
+* **[Manage assets](assets.md)**: Enhance your dashboard by adding images, scripts, and stylesheets to your assets folder.
 
+* **[Customize CSS](custom-css.md)**: Incorporate custom CSS to deviate from the default styling and create a
+unique appearance for your Vizro dashboard.
 
-* **[Add images and stylesheets to your assets folder](assets.md)**: You can manage and customize assets such as images, scripts, and stylesheets to enhance the functionality and appearance of your dashboard.
-
-
-* **[Customize CSS](custom-css.md)**. You can add custom CSS to any Vizro dashboard, enabling users to deviate from the default styling and create a unique look and feel for their dashboard.
+* **[Customize your `component`](components.md)**: Modify the appearance of components like the [Graph](graph.md), the
+[Table](table.md) and the [AgGrid](table.md), by passing additional arguments. Refer to the relevant user guide for
+more details.
