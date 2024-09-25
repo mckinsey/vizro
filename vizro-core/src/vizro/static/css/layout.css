@@ -150,8 +150,8 @@
   margin: 0;
 }
 
-#logo {
-  height: 48px;
+#logo, #logo-light, #logo-dark {
+  height: 100%;
 }
 
 #logo-and-title {

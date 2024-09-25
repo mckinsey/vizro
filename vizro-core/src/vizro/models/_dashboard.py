@@ -186,9 +186,22 @@ class Dashboard(VizroBaseModel):
             ),
             id="settings",
         )
+
         logo_img = self._infer_image(filename="logo")
+        logo_dark_img = self._infer_image(filename="logo_dark")
+        logo_light_img = self._infer_image(filename="logo_light")
+
         path_to_logo = get_asset_url(logo_img) if logo_img else None
+        path_to_logo_dark = get_asset_url(logo_dark_img) if logo_dark_img else None
+        path_to_logo_light = get_asset_url(logo_light_img) if logo_light_img else None
+
+        # Turn off logo.svg if either logo_dark.svg or logo_light.svg is provided
+        if path_to_logo_light or path_to_logo_dark:
+            path_to_logo = None
+
         logo = html.Img(id="logo", src=path_to_logo, hidden=not path_to_logo)
+        logo_dark = html.Img(id="logo-dark", src=path_to_logo_dark, hidden=not path_to_logo_dark)
+        logo_light = html.Img(id="logo-light", src=path_to_logo_light, hidden=not path_to_logo_light)
 
         # Shared across pages but slightly differ in content. These could possibly be done by a clientside
         # callback instead.
@@ -203,11 +216,11 @@ class Dashboard(VizroBaseModel):
         page_components = page_content["page-components"]
 
         return html.Div(
-            [dashboard_title, settings, page_title, nav_bar, nav_panel, logo, control_panel, page_components]
+            [dashboard_title, settings, page_title, nav_bar, nav_panel, logo, logo_dark, logo_light, control_panel, page_components]
         )
 
     def _arrange_page_divs(self, page_divs: _PageDivsType):
-        logo_title = [page_divs["logo"], page_divs["dashboard-title"]]
+        logo_title = [page_divs["logo"], page_divs["logo-dark"], page_divs["logo-light"], page_divs["dashboard-title"]]
         page_header_divs = [html.Div(id="logo-and-title", children=logo_title, hidden=_all_hidden(logo_title))]
         left_sidebar_divs = [page_divs["nav-bar"]]
         left_main_divs = [page_divs["nav-panel"], page_divs["control-panel"]]

@@ -2,7 +2,14 @@
   padding-left: 8px;
 }
 
-.page-component-container {
-  background: #1b1e2a;
-  padding: 12px;
+#logo-dark, #logo-light {
+ display: none;
+}
+
+[data-bs-theme="dark"] #logo-dark {
+  display: inline;
+}
+
+[data-bs-theme="light"] #logo-light {
+  display: inline;
 }
