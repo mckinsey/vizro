@@ -6,7 +6,7 @@ from plotly import graph_objects as go
 def create_template_common():
     """Create general themed plotly template.
 
-    Returns
+    Returns:
     -------
         A plotly template object containing the general theme
         with optional keys specified here:

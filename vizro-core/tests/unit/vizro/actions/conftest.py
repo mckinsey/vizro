@@ -1,5 +1,6 @@
 import pandas as pd
 import pytest
+
 import vizro.models as vm
 import vizro.plotly.express as px
 from vizro import Vizro
@@ -29,7 +30,9 @@ def gapminder_dynamic_first_n_last_n_function(gapminder):
     return lambda first_n=None, last_n=None: (
         pd.concat([gapminder[:first_n], gapminder[-last_n:]])
         if last_n
-        else gapminder[:first_n] if first_n else gapminder
+        else gapminder[:first_n]
+        if first_n
+        else gapminder
     )
 
 

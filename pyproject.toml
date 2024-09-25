@@ -1,15 +1,6 @@
 # THIS IS NOT DESCRIBING A PACKAGE, but the DEV environment of this mono-repo
 # In order to install the packages of this mono-repo from source, refer to the pyproject.toml in the relevant folder
 
-[lint.isort]
-known-first-party = ["vizro"]
-
-[lint.pydocstyle]
-convention = "google"
-
-[lint.pylint]
-max-args = 6
-
 [project]
 authors = [
   {name = "Vizro Team"}
@@ -19,10 +10,6 @@ name = "vizro"
 
 [tool.bandit]
 exclude_dirs = ["tests"]
-
-[tool.black]
-line-length = 120
-target-version = ["py38"]
 
 [tool.codespell]
 builtin = "clear,rare,en-GB_to_en-US"
@@ -59,7 +46,9 @@ warn_untyped_fields = true
 
 [tool.ruff]
 line-length = 120
-target-version = "py38"
+
+[tool.ruff.format]
+docstring-code-format = true
 
 [tool.ruff.lint]
 # see: https://beta.ruff.rs/docs/rules/
@@ -69,7 +58,6 @@ ignore = [
   # D407 needs to be ignored as it otherwise messes up the formatting in our API docs
   "D407"  # missing dashed underline after section
 ]
-ignore-init-module-imports = true  # TODO: remove as deprecated soon
 select = [
   "E",  # pycodestyle errors
   "W",  # pycodestyle warnings
@@ -83,16 +71,14 @@ select = [
 ]
 
 [tool.ruff.lint.per-file-ignores]
-# Ignore current false positives for pydantic models subclassing across files
-# See: https://github.com/astral-sh/ruff/issues/5243#issuecomment-1860776975
-"**/models/**" = ["RUF012"]
 # Tests can use magic values, assertions, and relative imports, ignore missing docstrings,
 # compare to empty string
 "**/tests/**" = ["PLR2004", "S101", "TID252", "D100", "D101", "D102", "D103", "PLC1901", "RUF012"]
 # Ignore import violations in all __init__.py files
 "__init__.py" = ["E402", "F401"]
-# Ignore print, line length, and import violations in Colab notebooks
-"vizro-ai/examples/chart_by_vizro_ai.ipynb" = ["T201", "E501"]
-"vizro-ai/examples/dashboard_by_vizro_ai.ipynb" = ["T201", "E402", "E501"]
-# Ignore missing docstrings in visual-vocabulary examples to keep them succinct.
-"vizro-core/examples/visual-vocabulary/pages/examples/**" = ["D100", "D103"]
+
+[tool.ruff.lint.pydocstyle]
+convention = "google"
+
+[tool.ruff.lint.pylint]
+max-args = 6

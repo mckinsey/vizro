@@ -147,7 +147,7 @@ class Action(VizroBaseModel):
     def build(self) -> html.Div:
         """Builds a callback for the Action model and returns required components for the callback.
 
-        Returns
+        Returns:
             Div containing a list of required components (e.g. dcc.Download) for the Action model
 
         """

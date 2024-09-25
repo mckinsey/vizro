@@ -36,13 +36,13 @@ jobs:
           python-version: ${{ env.PYTHON_VERSION }}
 
       - name: Install Hatch
-        run: pip install --upgrade hatch
+        run: pip install hatch
 
-      - name: List dependencies
-        run: hatch run all.py${{ env.PYTHON_VERSION }}:pip freeze
+      - name: Show dependency tree
+        run: hatch run pip tree
 
       - name: Check schema is up to date
-        run: hatch run all.py${{ env.PYTHON_VERSION }}:schema --check
+        run: hatch run schema --check
 
       - name: Find changed files to see if changelog fragment needed
         id: changed-files

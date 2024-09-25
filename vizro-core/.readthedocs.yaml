@@ -11,7 +11,7 @@ build:
     python: "3.11"
   commands:
     - pip install hatch
-    - cd vizro-core/ && hatch run docs:pip freeze
+    - cd vizro-core/ && hatch run docs:pip tree
     - cd vizro-core/ && hatch run docs:build
     - cd vizro-core/ && hatch run docs:link-check
     - mkdir --parents $READTHEDOCS_OUTPUT
