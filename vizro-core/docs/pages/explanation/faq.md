@@ -172,4 +172,4 @@ To raise a feature request, head to our [GitHub issues](https://github.com/mckin
 
 We are happy to receive general questions around Vizro. Take a look at our [GitHub issues](https://github.com/mckinsey/vizro/issues) and [create a new issue](https://github.com/mckinsey/vizro/issues/new/choose) by clicking "General question".
 
-Several Vizro team members are active on the Plotly Community Forum. If you'd like to also ask your question there then please create a topic in the [Dash Python category](https://community.plotly.com/c/python/25) and make it clear that your question concerns Vizro.
+Several Vizro team members are active on the Plotly Community Forum. If you'd like to also ask your question there then create a topic in the [Dash Python category](https://community.plotly.com/c/python/25) and make it clear that your question concerns Vizro.

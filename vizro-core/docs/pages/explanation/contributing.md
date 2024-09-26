@@ -49,7 +49,7 @@ Regardless of whether you are developing locally or in a codespace, everything y
 
 The commands you might need are as follows. These must be executed with `vizro-core` as your current working directory. Click on the command to read more detailed information about it.
 
-* [`hatch run pypath`](#hatch-run-pypath) shows the path to the Python interpeter.
+* [`hatch run pypath`](#hatch-run-pypath) shows the path to the Python interpreter.
 * [`hatch run example`](#hatch-run-example) runs a hot-reloading example dashboard on port 8050. On GitHub codespaces, this runs automatically on startup.
 * [`hatch run lint`](#hatch-run-lint) checks and fixes code quality and formatting. This is included in CI checks.
 * [`hatch run changelog:add`](#hatch-run-changelogadd) generates a new changelog fragment. This is included in CI checks and required for all changes outside documentation.
@@ -76,7 +76,7 @@ This enables you to run, for example, `hr lint` instead of `hatch run lint`. On 
 
 ### `hatch run example`
 
-`hatch run example` runs a hot-reloading example dashboard on port 8050. On GitHub Codespaces, this [runs automatically on startup](https://docs.github.com/en/codespaces/developing-in-a-codespace/forwarding-ports-in-your-codespace) and is labelled as "scratch_dev example". On your local machine, you can access the dashboard by pointing your browser to [http://localhost:8050](http://localhost:8050).
+`hatch run example` runs a hot-reloading example dashboard on port 8050. On GitHub Codespaces, this [runs automatically on startup](https://docs.github.com/en/codespaces/developing-in-a-codespace/forwarding-ports-in-your-codespace) and is labeled as "scratch_dev example". On your local machine, you can access the dashboard by pointing your browser to [http://localhost:8050](http://localhost:8050).
 
 By default, this command runs the dashboard configured in `vizro-core/examples/scratch_dev/app.py`. This dashboard is used as a temporary "scratch" playground during development. Since it is opened automatically in GitHub Codespaces, it's the perfect place to demonstrate or test out a new feature you're developing. PR reviewers can then immediately see exactly what your changes do by opening a codespace on your branch.
 
@@ -93,9 +93,9 @@ Examples are run with the following settings:
 
 !!! note
 
-    The first time you run `hatch run lint` it may take a couple of minutes, since pre-commit needs to setup linting environments. Subsequent runs re-use these environments and will be much faster.
+    The first time you run `hatch run lint` it may take a couple of minutes, since pre-commit needs to setup linting environments. Subsequent runs reuse these environments and will be much faster.
 
-`hatch run lint` runs the pre-commit hooks on all (not just staged) files. You can run an individual hook, for example `mypy`, on all files by running `hatch run lint mypy`.
+`hatch run lint` runs the pre-commit hooks on all (not only staged) files. You can run an individual hook, for example `mypy`, on all files by running `hatch run lint mypy`.
 
 Our Hatch environment specifies `pre-commit` as a dependency but otherwise does not specify dependencies for linting tools. Instead, the versions of these are pinned in `.pre-commit-config.yaml`, and `pre-commit ci` raises a monthly PR to update them.
 
