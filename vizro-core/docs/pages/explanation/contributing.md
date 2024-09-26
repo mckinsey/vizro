@@ -20,7 +20,7 @@ To develop on [GitHub Codespaces](https://docs.github.com/en/codespaces), follow
 2. [Create a codespace for our repository](https://codespaces.new/mckinsey/vizro). Leave the settings on their defaults and click "Create codespace" to start your codespace. This should take 1-2 minutes to fully launch and automatically starts an example dashboard on port 8050.
 3. Make changes in your codespace. See the [GitHub Codespaces documentation on developing in a codespace](https://docs.github.com/en/codespaces/developing-in-a-codespace/developing-in-a-codespace) for more information.
 4. Add your name to the [list of contributors](authors.md) (source file `vizro-core/docs/pages/explanation/authors.md`).
-5. [Create a pull request (PR)](https://docs.github.com/en/pull-requests/collaborating-with-pull-requests/proposing-changes-to-your-work-with-pull-requests/creating-a-pull-request-from-a-fork). 
+5. [Create a pull request (PR)](https://docs.github.com/en/pull-requests/collaborating-with-pull-requests/proposing-changes-to-your-work-with-pull-requests/creating-a-pull-request-from-a-fork).
 6. Before it can be merged, your PR must meet all the following requirements:
     * Two approving reviews (including a code owner).
     * Continuous Integration (CI) checks pass.
@@ -29,11 +29,11 @@ To develop on [GitHub Codespaces](https://docs.github.com/en/codespaces), follow
 !!! note
 
     There is no need to manually create a fork if you use GitHub Codespaces; a fork is [automatically created for you](https://docs.github.com/en/codespaces/developing-in-a-codespace/using-source-control-in-your-codespace#about-automatic-forking).
-    
+
 ## Develop locally
 
 1. Use our [GitHub issues](https://github.com/mckinsey/vizro/issues) to discuss your contribution.
-2. Install Hatch. There are [several ways to do this](https://hatch.pypa.io/latest/install/). 
+2. Install Hatch. There are [several ways to do this](https://hatch.pypa.io/latest/install/).
 3. [Create a fork of the repository](https://docs.github.com/en/pull-requests/collaborating-with-pull-requests/working-with-forks/fork-a-repo) and clone it to your local machine.
 4. Make changes in your fork.
 5. Add your name to the [list of contributors](authors.md) (source file `vizro-core/docs/pages/explanation/authors.md`).
@@ -47,7 +47,7 @@ To develop on [GitHub Codespaces](https://docs.github.com/en/codespaces), follow
 
 Regardless of whether you are developing locally or in a codespace, everything you need to develop on Vizro is provided by Hatch through the [`hatch run`](https://hatch.pypa.io/latest/cli/reference/#hatch-run) command. The first time you use this command it will install all the required dependencies, including Python.
 
-The commands you might need are as follows. These must be executed with `vizro-core` as your current working directory. Click on the command to read more detailed information about it. 
+The commands you might need are as follows. These must be executed with `vizro-core` as your current working directory. Click on the command to read more detailed information about it.
 
 * [`hatch run pypath`](#hatch-run-pypath) shows the path to the Python interpeter.
 * [`hatch run example`](#hatch-run-example) runs a hot-reloading example dashboard on port 8050. On GitHub codespaces, this runs automatically on startup.
@@ -76,7 +76,7 @@ This enables you to run, for example, `hr lint` instead of `hatch run lint`. On 
 
 ### `hatch run example`
 
-`hatch run example` runs a hot-reloading example dashboard on port 8050. On GitHub Codespaces, this [runs automatically on startup](https://docs.github.com/en/codespaces/developing-in-a-codespace/forwarding-ports-in-your-codespace) and is labelled as "scratch_dev example". On your local machine, you can access the dashboard by pointing your browser to [http://localhost:8050](http://localhost:8050). 
+`hatch run example` runs a hot-reloading example dashboard on port 8050. On GitHub Codespaces, this [runs automatically on startup](https://docs.github.com/en/codespaces/developing-in-a-codespace/forwarding-ports-in-your-codespace) and is labelled as "scratch_dev example". On your local machine, you can access the dashboard by pointing your browser to [http://localhost:8050](http://localhost:8050).
 
 By default, this command runs the dashboard configured in `vizro-core/examples/scratch_dev/app.py`. This dashboard is used as a temporary "scratch" playground during development. Since it is opened automatically in GitHub Codespaces, it's the perfect place to demonstrate or test out a new feature you're developing. PR reviewers can then immediately see exactly what your changes do by opening a codespace on your branch.
 
@@ -93,7 +93,7 @@ Examples are run with the following settings:
 
 !!! note
 
-    The first time you run `hatch run lint` it may take a couple of minutes, since pre-commit needs to setup linting environments. Subsequent runs re-use these environments and will be much faster. 
+    The first time you run `hatch run lint` it may take a couple of minutes, since pre-commit needs to setup linting environments. Subsequent runs re-use these environments and will be much faster.
 
 `hatch run lint` runs the pre-commit hooks on all (not just staged) files. You can run an individual hook, for example `mypy`, on all files by running `hatch run lint mypy`.
 
