@@ -8,6 +8,7 @@ import chromedriver_autoinstaller
 import pytest
 import vizro.plotly.express as px
 from vizro import Vizro
+
 from vizro_ai import VizroAI
 
 vizro_ai = VizroAI()

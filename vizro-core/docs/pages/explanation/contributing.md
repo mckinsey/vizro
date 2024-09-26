@@ -18,7 +18,7 @@ If you are already active on the Plotly Community Forum, you can also ask your q
 
 ## How to interact with the repository
 
-The easiest way to get up and running is to [open the repository in GitHub Codespaces](https://github.com/codespaces/new?hide_repo_select=true&ref=main&repo=626855142). This will create a temporary development environment with all the necessary configurations, making it especially convenient for tasks like reviewing pull requests.
+The easiest way to get up and running is to [open the repository in GitHub Codespaces](https://github.com/codespaces/new?hide_repo_select=true&ref=main&repo=626855142). This creates a temporary development environment with all the necessary configurations, making it especially convenient for tasks like reviewing pull requests.
 
 We use [Hatch](https://hatch.pypa.io/) as a project management tool. To get started on your own machine, you should complete the following steps. Note there is _no need to set up your own virtual environment_ since Hatch takes care of that for you.
 

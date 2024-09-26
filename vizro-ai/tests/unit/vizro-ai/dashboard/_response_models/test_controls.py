@@ -4,6 +4,7 @@ import pytest
 import vizro.models as vm
 from vizro.managers import model_manager
 from vizro.models import VizroBaseModel
+
 from vizro_ai.dashboard._response_models.controls import ControlPlan, _create_filter_proxy
 
 try:

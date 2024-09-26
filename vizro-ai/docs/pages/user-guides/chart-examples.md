@@ -1,6 +1,6 @@
 # Gallery of examples
 
-Take a look at some more advanced charts that can be created with Vizro-AI using data from [Plotly Express](https://plotly.com/python-api-reference/generated/plotly.express.data.html). The examples below use the OpenAI `"gpt-4-0613"` model as we are going to request specific updates to the layout of the charts, which are [more complex than the default GPT 3.5 model can handle](./customize-vizro-ai.md).
+Take a look at some more advanced charts that can be created with Vizro-AI using data from [Plotly Express](https://plotly.com/python-api-reference/generated/plotly.express.data.html). The examples below use the OpenAI `"gpt-4o"` model as we are going to request specific updates to the layout of the charts, which are [more complex than the GPT 3.5 model can handle](./customize-vizro-ai.md).
 
 ### Polar bar chart
 
@@ -24,11 +24,11 @@ It's suitable for comparing multiple variables across different categories or di
 
         df = px.data.wind()
 
-        vizro_ai = VizroAI(model="gpt-4-0613")
+        vizro_ai = VizroAI(model="gpt-4o")
         fig = vizro_ai.plot(df,
                       """Describe wind frequency and direction using bar_polar chart.
                          Increase the width and height of the figure.
-                         Improve layout by placing title to the left. Show legend""", explain=True)
+                         Improve layout by placing title to the left. Show legend""")
         fig.show()
         ```
 
@@ -55,12 +55,12 @@ The next chart we'll look at is a geographical map chart to visualize spatial pa
 
         df = px.data.gapminder()
 
-        vizro_ai = VizroAI(model="gpt-4-0613")
+        vizro_ai = VizroAI(model="gpt-4o")
         fig = vizro_ai.plot(df,
                       """Visualize life expectancy over the years using map chart. Use life expectancy as the color dimension.
                          Improve layout by using Arial font. Increase the width and height of the map area. Outline continents on the map.
                          Show countries on the map.
-                         Increase the width and height of the figure.""", explain=True)
+                         Increase the width and height of the figure.""")
         fig.show()
         ```
 
@@ -87,7 +87,7 @@ Let's explore how to generate a 3-dimensional surface plot with VizroAI.
 
         df = px.data.gapminder()
 
-        vizro_ai = VizroAI(model="gpt-4-0613")
+        vizro_ai = VizroAI(model="gpt-4o")
         fig = vizro_ai.plot(df, "create a surface plot")
         fig.show()
         ```

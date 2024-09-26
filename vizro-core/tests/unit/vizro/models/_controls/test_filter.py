@@ -4,8 +4,9 @@ from typing import Literal
 
 import pandas as pd
 import pytest
-import vizro.models as vm
 from asserts import assert_component_equal
+
+import vizro.models as vm
 from vizro.managers import model_manager
 from vizro.models._action._actions_chain import ActionsChain
 from vizro.models._controls.filter import Filter, _filter_between, _filter_isin

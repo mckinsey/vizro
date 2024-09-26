@@ -7,7 +7,7 @@ We'll create an animated bar chart illustrating the GDP per capita of each conti
 
 !!! example "Vizro-AI animated chart"
 
-    === "Code for the cell"
+    === "Code"
         ```py
         from vizro_ai import VizroAI
         import vizro.plotly.express as px
@@ -28,7 +28,7 @@ Next, we will try to tweak our prompt to improve the overall layout.
 
 !!! example "Vizro-AI animated chart"
 
-    === "Code for the cell"
+    === "Code"
         ```py
         from vizro_ai import VizroAI
         import vizro.plotly.express as px
@@ -53,7 +53,7 @@ Upon closer inspection, the title is too long and the color palette used does no
 
 !!! example "Vizro-AI animated chart"
 
-    === "Code for the cell"
+    === "Code"
         ```py
         from vizro_ai import VizroAI
         import vizro.plotly.express as px
@@ -72,6 +72,7 @@ Upon closer inspection, the title is too long and the color palette used does no
 
     [AnimatedChart3]: ../../assets/tutorials/chart/animated_advanced_chart.gif
 
-Congratulations! You've now gained insights into harnessing the power of a LLM and Vizro-AI for crafting advanced charts and improving formatting. Don't forget, enabling `explain=True` is a good way of learning more about how a chart can be further improved and formatted.
+Congratulations! You've now gained insights into harnessing the power of a LLM and Vizro-AI for crafting advanced charts and improving formatting. Don't forget, enabling `return_elements=True` in `.plot()` and check `chart_insights` and `code_explanation` is a good way of learning more about how a chart can be further improved and formatted.
+
 
 Advanced charts are well-suited for [Vizro](https://github.com/mckinsey/vizro/tree/main/vizro-core) dashboard applications. You can create a chart using `vizro-ai` to plug into your `vizro` dashboard in seconds!

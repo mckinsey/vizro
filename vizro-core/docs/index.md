@@ -21,7 +21,7 @@ Vizro is a toolkit for creating modular data visualization applications.
     [:octicons-arrow-right-24: Fundamentals](pages/user-guides/dashboard.md)</br>
     [:octicons-arrow-right-24: Components overview](pages/user-guides/components.md)</br>
     [:octicons-arrow-right-24: Filters, parameters and selectors](pages/user-guides/filters.md)</br>
-    [:octicons-arrow-right-24: Visual formatting](pages/user-guides/layouts.md)
+    [:octicons-arrow-right-24: Visual formatting](pages/user-guides/visual-formatting.md)
 
 
 

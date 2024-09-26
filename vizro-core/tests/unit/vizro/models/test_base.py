@@ -9,9 +9,10 @@ except ImportError:  # pragma: no cov
 import logging
 import textwrap
 
+from typing_extensions import Annotated
+
 import vizro.models as vm
 import vizro.plotly.express as px
-from typing_extensions import Annotated
 from vizro.actions import export_data
 from vizro.models._base import _patch_vizro_base_model_dict
 from vizro.models.types import capture

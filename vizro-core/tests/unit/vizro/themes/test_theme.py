@@ -4,8 +4,9 @@ import numpy as np
 import pandas as pd
 import plotly.express as px
 import pytest
-import vizro._themes as themes
 from plotly.graph_objs.layout._template import Template
+
+import vizro._themes as themes
 from vizro._themes._color_values import COLORS
 
 

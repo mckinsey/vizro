@@ -1,6 +1,7 @@
 """Unit tests for vizro.models.ActionChain."""
 
 import pytest
+
 from vizro.models._action._action import Action
 from vizro.models._action._actions_chain import ActionsChain, Trigger, _set_actions
 from vizro.models.types import CapturedCallable

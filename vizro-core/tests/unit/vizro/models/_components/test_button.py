@@ -2,8 +2,9 @@
 
 import dash_bootstrap_components as dbc
 import pytest
-import vizro.models as vm
 from asserts import assert_component_equal
+
+import vizro.models as vm
 from vizro.actions import export_data
 
 

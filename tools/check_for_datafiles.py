@@ -28,7 +28,7 @@ whitelist_folders = [
 def check_for_data_files():
     """Recursively finds all data files in non-whitelisted folders.
 
-    Raises
+    Raises:
         AssertionError if data files are present in non-whitelisted folders.
 
     """

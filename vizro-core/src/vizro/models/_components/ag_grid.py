@@ -121,7 +121,7 @@ class AgGrid(VizroBaseModel):
         return dcc.Loading(
             children=html.Div(
                 children=[
-                    html.H3(self.title, className="figure-title") if self.title else None,
+                    html.H3(self.title, className="figure-title", id=f"{self.id}_title") if self.title else None,
                     dcc.Markdown(self.header, className="figure-header") if self.header else None,
                     # The Div component with `id=self._input_component_id` is rendered during the build phase.
                     # This placeholder component is quickly replaced by the actual AgGrid object, which is generated

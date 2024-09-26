@@ -1,6 +1,7 @@
 import pandas as pd
 import pytest
 from langchain_core.messages import HumanMessage
+
 from vizro_ai.dashboard._graph.dashboard_creation import GraphState
 from vizro_ai.dashboard.utils import AllDfMetadata, DfMetadata
 
@@ -29,4 +30,5 @@ def graph_state(dataframes, df_metadata):
         all_df_metadata=df_metadata,
         pages=[],
         custom_charts_code=[],
+        custom_charts_imports=[],
     )

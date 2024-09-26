@@ -2,9 +2,10 @@
 
 import dash
 import pytest
+from asserts import assert_component_equal
+
 import vizro.models as vm
 import vizro.plotly.express as px
-from asserts import assert_component_equal
 from vizro import Vizro
 from vizro.actions import export_data, filter_interaction
 from vizro.actions._callback_mapping._get_action_callback_mapping import _get_action_callback_mapping

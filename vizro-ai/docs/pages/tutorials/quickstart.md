@@ -65,7 +65,12 @@ To learn how to customize the `VizroAI` class, check out the guide on [how to cu
 Finally, we call the `plot()` method with our English language instruction, to generate the visualization:
 
 ```python
-vizro_ai.plot(df, "create a line graph for GDP per capita since 1950 for each continent. Mark the x axis as Year, y axis as GDP Per Cap and don't include a title")
+vizro_ai.plot(
+    df,
+    """create a line graph for GDP per capita since 1950 for
+    each continent. Mark the x axis as Year, y axis as GDP Per Cap
+    and don't include a title. Make sure to take average over continent.""",
+)
 ```
 
 !!! warning "Help! The LLM request was unauthorized"
@@ -82,18 +87,22 @@ vizro_ai.plot(df, "create a line graph for GDP per capita since 1950 for each co
 
 And that's it! By passing the prepared data and written visualization request, Vizro-AI takes care of the processing. It generates the necessary code for data manipulation and chart creation, and returns the chart by executing the generated code.
 
-!!! example "Vizro AI Syntax"
+!!! example "Vizro-AI Syntax"
 
     === "Code for the cell"
         ```py
-        from vizro_ai import VizroAI
         import vizro.plotly.express as px
+        from vizro_ai import VizroAI
 
         df = px.data.gapminder()
 
-        vizro_ai = VizroAI()
-        fig = vizro_ai.plot(df, "create a line graph for GDP per capita since 1950 for each continent. Mark the x axis as Year, y axis as GDP Per Cap and don't include a title", explain=True)
-        fig.show()
+        vizro_ai = VizroAI(model="gpt-4-turbo")
+        fig = vizro_ai.plot(
+            df,
+            """create a line graph for GDP per capita since 1950 for each continent.
+            Mark the x axis as Year, y axis as GDP Per Cap and don't include a title.
+            Make sure to take average over continent.""",
+        )
         ```
     === "Result"
         [![LineGraph]][LineGraph]
@@ -102,7 +111,7 @@ And that's it! By passing the prepared data and written visualization request, V
 
 The chart created is interactive: you can hover over the data for more information.
 
-Passing `explain=True` to the `plot()` method returns the code to create the chart, along with a set of insights to explain the rendered chart in detail. You can then use the code within a Vizro dashboard as illustrated in the [Vizro documentation](https://vizro.readthedocs.io/en/stable/pages/tutorials/explore-components/#22-add-further-components). For the line graph above, the code returned is as follows:
+Passing `return_elements=True` to the `plot()` method returns an object, which includes the code along with a set of insights to explain the rendered chart in detail. You can then use the code within a Vizro dashboard as illustrated in the [Vizro documentation](https://vizro.readthedocs.io/en/stable/pages/tutorials/explore-components/#22-add-further-components). For the line graph above, the code returned may be as follows:
 
 !!! example "Returned by Vizro-AI"
 
@@ -123,17 +132,53 @@ Passing `explain=True` to the `plot()` method returns the code to create the cha
 ### 4. Get an explanation with your chart
 <!-- vale on -->
 
-Let's create another example to illustrate the code and insights returned when passing `explain=True` as a parameter to `plot()`:
+Let's create another example to illustrate the code and insights returned when passing `return_elements=True` as a parameter to `plot()`:
 
-!!! example "Specify  `explain=True`"
+!!! example "Specify  `return_elements=True`"
 
     === "Code for the cell"
         ```py
-        fig = vizro_ai.plot(df, "show me the geo distribution of life expectancy", explain=True)
-        fig.show()
+        res = vizro_ai.plot(df, "show me the geo distribution of life expectancy", return_elements=True)
+        print(res.code)
+        print(res.chart_insights)
+        print(res.code_explanation)
         ```
     === "Result"
-        [![GeoDistribution]][GeoDistribution]
+        Code
+        ```py
+        import plotly.express as px
+
+
+        def custom_chart(data_frame):
+            fig = px.choropleth(
+                data_frame,
+                locations="iso_alpha",
+                color="lifeExp",
+                hover_name="country",
+                color_continuous_scale=px.colors.sequential.Plasma,
+                labels={"lifeExp": "Life Expectancy"},
+            )
+            fig.update_layout(
+                title="Global Life Expectancy Distribution",
+                geo=dict(showframe=False, showcoastlines=True),
+            )
+            return fig
+        ```
+        Chart insights
+        ```
+        This choropleth map visualizes the global distribution of life expectancy across
+        different countries. It highlights variations and trends in life expectancy,
+        providing a clear visual representation of geographical disparities.
+        ```
+        Code explanation
+        ```
+        - Import Plotly Express.
+        - Create a choropleth map using the `px.choropleth` function.
+        - Set the `locations` parameter to the ISO alpha codes from the data.
+        - Color the map based on life expectancy values.
+        - Use a continuous color scale to represent different life expectancies.
+        - Update layout to enhance map readability and aesthetics.
+        ```
 
     [GeoDistribution]: ../../assets/tutorials/chart/GeoDistribution.png
 

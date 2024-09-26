@@ -11,6 +11,7 @@ from langchain_core.runnables import RunnableConfig
 from langgraph.constants import END, Send
 from langgraph.graph import StateGraph
 from tqdm.auto import tqdm
+
 from vizro_ai.dashboard._pydantic_output import _get_pydantic_model
 from vizro_ai.dashboard._response_models.dashboard import DashboardPlan
 from vizro_ai.dashboard._response_models.df_info import DfInfo, _create_df_info_content, _get_df_info
@@ -34,7 +35,7 @@ Messages = List[BaseMessage]
 class GraphState(BaseModel):
     """Represents the state of the dashboard graph.
 
-    Attributes
+    Attributes:
         messages: With user question, error messages, reasoning
         dfs: Dataframes
         all_df_metadata: Cleaned dataframe names and their metadata
@@ -52,6 +53,7 @@ class GraphState(BaseModel):
     pages: Annotated[List, operator.add]
     dashboard: Optional[vm.Dashboard] = None
     custom_charts_code: Annotated[List, operator.add]
+    custom_charts_imports: Annotated[List, operator.add]
 
     class Config:
         """Pydantic configuration."""
@@ -136,7 +138,7 @@ def _dashboard_plan(state: GraphState, config: RunnableConfig) -> Dict[str, Dash
 class BuildPageState(BaseModel):
     """Represents the state of building the page.
 
-    Attributes
+    Attributes:
         all_df_metadata: Cleaned dataframe names and their metadata
         page_plan: Plan for the dashboard page
 
@@ -152,9 +154,10 @@ def _build_page(state: BuildPageState, config: RunnableConfig) -> Dict[str, List
     page_plan = state["page_plan"]
 
     llm = config["configurable"].get("model", None)
-    page, custom_chart_code = page_plan.create(model=llm, all_df_metadata=all_df_metadata)
+    # TODO: this is a hack to get the custom chart code - we should find a much better way to do so
+    page, custom_chart_imports, custom_chart_code = page_plan.create(model=llm, all_df_metadata=all_df_metadata)
 
-    return {"pages": [page], "custom_charts_code": [custom_chart_code]}
+    return {"pages": [page], "custom_charts_imports": [custom_chart_imports], "custom_charts_code": [custom_chart_code]}
 
 
 def _continue_to_pages(state: GraphState) -> List[Send]:

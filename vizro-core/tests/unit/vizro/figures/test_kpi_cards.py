@@ -3,6 +3,7 @@ import pandas as pd
 import pytest
 from asserts import assert_component_equal
 from dash import html
+
 from vizro.figures import kpi_card, kpi_card_reference
 
 df = pd.DataFrame({"Actual": [1, 2, 3], "Reference": [2, 4, 6], "Reference Zero": [0, 0, 0]})

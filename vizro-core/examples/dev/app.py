@@ -545,7 +545,7 @@ def scatter_with_line(data_frame, x, y, hline=None, title=None):
 
 
 @capture("graph")
-def waterfall(data_frame, measure, x, y, text, title=None):  # noqa: PLR0913
+def waterfall(data_frame, measure, x, y, text, title=None):
     """Custom waterfall chart based on go."""
     fig = go.Figure()
     fig.add_traces(
