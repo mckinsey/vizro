@@ -195,6 +195,31 @@ class TestDashboardPreBuild:
             layout=mocker.ANY,  # partial call is tricky to mock out so we ignore it.
         )
 
+    @pytest.mark.parametrize(
+        "logo_path, logo_dark_path, logo_light_path, raise_error",
+        [
+            ("logo.svg", "logo_dark.svg", "logo_light.svg", True),
+            ("logo.svg", None, "logo_light.svg", True),
+            ("logo.svg", "logo_dark.svg", None, True),
+            (None, None, "logo_light.svg", True),
+            (None, "logo_dark.svg", None, True),
+            (None, "logo_dark.svg", "logo_light.svg", False),
+            ("logo.svg", None, None, False),
+            (None, None, None, False),
+        ],
+    )
+    def test_validate_logos(self, page_1, tmp_path, logo_path, logo_dark_path, logo_light_path, raise_error):
+        # TODO: Add some logic that places the logos in the correct folder. How?
+        # I guess it needs to be similar to test_infer_image, but need further explanations.
+
+        if raise_error:
+            with pytest.raises(ValueError):
+                vm.Dashboard(pages=[page_1]).pre_build()
+        else:
+            vm.Dashboard(pages=[page_1]).pre_build()
+
+
+
     def test_make_page_404_layout(self, vizro_app):
         # vizro_app fixture is needed to avoid mocking out get_relative_path.
         expected = html.Div(
