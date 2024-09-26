@@ -1,18 +1,51 @@
-import random
 import dash
 import datetime
 import time
 import plotly.express as px
-import plotly.graph_objs as go
 
 from dash import Dash, html, dcc, Output, callback, clientside_callback, Input, State, set_props
+
+
+# TODO: How to test this?
+#  =====================================================================
+#  *** ATTENTION: THIS IS THE ONLY VARIABLE YOU NEED TO SET ***
+#  Set CONTROL_SELECTOR to test different control types
+#  Choose between: dcc.Dropdown, dcc.Checklist, dcc.RadioItems, dcc.Slider, dcc.RangeSlider
+#  For example: CONTROL_SELECTOR = dcc.RadioItems
+#  =====================================================================
+CONTROL_SELECTOR = None
+# MULTI must be set to True or False for dcc.Dropdown selector only, otherwise MULTI will be automatically calculated.
+MULTI = None
+# =====================================================================
+
+
+# Set MULTI based on CONTROL_SELECTOR
+if CONTROL_SELECTOR in {dcc.Checklist, dcc.RangeSlider}:
+    MULTI = True
+elif CONTROL_SELECTOR in {dcc.Slider, dcc.RadioItems}:
+    MULTI = False
+elif CONTROL_SELECTOR == dcc.Dropdown:
+    if MULTI not in [False, True]:
+        raise ValueError("MULTI must be set to True or False for dcc.Dropdown selector.")
+else:
+    raise ValueError(
+        "Invalid CONTROL_SELECTOR. Must be one of: "
+        "dcc.Dropdown, dcc.Checklist, dcc.RadioItems, dcc.Slider, or dcc.RangeSlider."
+    )
+
+
+# Hardcoded global variable.
+SELECTOR_TYPE = {
+    "categorical": [dcc.Dropdown, dcc.Checklist, dcc.RadioItems],
+    "numerical": [dcc.Slider, dcc.RangeSlider],
+}
 
 
 # like dynamic data
 def slow_load():
     print("running slow_load")
     time.sleep(0.1)
-    return px.data.iris()#.sample(6)
+    return px.data.iris().sample(6)
 
 
 common = [
@@ -38,27 +71,48 @@ def homepage(**kwargs):
 
 
 # Like pre-build - doesn't get run again when reload page
-# def categorical_filter_pre_build():
-#     return sorted(slow_load()["species"].unique().tolist())
+def categorical_filter_pre_build():
+    df = slow_load()
+    options = sorted(df["species"].unique().tolist())
+    return options, options if MULTI else options[0]
 
 
-# def numerical_filter_pre_build():
-#     return float(slow_load()["sepal_length"].min()), float(slow_load()["sepal_length"].max())
+def numerical_filter_pre_build():
+    df = slow_load()
+    _min = float(df["sepal_length"].min())
+    _max = float(df["sepal_length"].max())
+    return _min, _max, [_min, _max] if MULTI else _min
 
 
-def categorical_filter_build(options, value, selector, id_suffix=None, **kwargs):
-    return selector(
-        id=f'categorical_filter{id_suffix or ""}',
-        options=options, value=value,
-        persistence=True, persistence_type="session", **kwargs
+pre_build_options, pre_build_categorical_value = categorical_filter_pre_build()
+pre_build_min, pre_build_max, pre_build_numerical_value = numerical_filter_pre_build()
+
+
+# Like build - gets run every time page is loaded
+def categorical_filter_build(options=None, value=None, **kwargs):
+    if CONTROL_SELECTOR == dcc.Dropdown:
+        kwargs["multi"] = MULTI
+
+    return CONTROL_SELECTOR(
+        id=f'filter',
+        options=options or pre_build_options,
+        value=value or pre_build_categorical_value,
+        persistence=True,
+        persistence_type="session",
+        **kwargs
     )
 
 
-def numerical_filter_build(min_value, max_value, value=None, selector=dcc.RangeSlider, id_suffix=None, **kwargs):
-    return selector(
-        id=f'numerical_filter{id_suffix or ""}',
-        min=min_value, max=max_value, step=0.1, value=value or [min_value, max_value],
-        persistence=True, persistence_type="session", **kwargs
+def numerical_filter_build(min_value=None, max_value=None, value=None, **kwargs):
+    return CONTROL_SELECTOR(
+        id=f'filter',
+        min=min_value or pre_build_min,
+        max=max_value or pre_build_max,
+        value=value or pre_build_numerical_value,
+        step=0.1,
+        persistence=True,
+        persistence_type="session",
+        **kwargs
     )
 
 
@@ -75,31 +129,25 @@ def another_page(**kwargs):
             # # Possible solution is to alter filter.options from on_page_load. This would work, but it's not optimal.
             # dcc.Dropdown(id="filter", options=options, value=options, multi=True, persistence=True),
 
+            # TODO-DEV-TEST: Select a control.
             # # Working example of categorical filter
             # # Outer container can be changed with dcc.Loading.
             html.Div(
-                categorical_filter_build(
-                    options=["setosa", "versicolor", "virginica"], value=["setosa", "versicolor", "virginica"],
-                    selector=dcc.Dropdown,
-                    multi=True
-                ),
-                id="categorical_filter_container",
+                categorical_filter_build() if CONTROL_SELECTOR in SELECTOR_TYPE["categorical"] else numerical_filter_build(),
+                id="filter_container",
             ),
 
             # # Working example of numerical filter:
             # # Outer container can be changed with dcc.Loading.
             # html.Div(
-            #     numerical_filter_build(
-            #         min_value=1, max_value=10, value=5,
-            #         selector=dcc.Slider,
-            #     ),
-            #     id="numerical_filter_container",
+            #     numerical_filter_build(),
+            #     id="filter_container",
             # ),
 
             # # Does not work because OPL filter input is missing, but it's used for filtering figures data_frame.
             # html.Div(
-            #     html.Div(id="categorical_filter"),
-            #     id="categorical_filter_container",
+            #     html.Div(id="filter"),
+            #     id="filter_container",
             # ),
 
 
@@ -152,14 +200,12 @@ clientside_callback(
     output=[
         Output("graph1", "figure"),
         Output("graph2", "figure"),
-        Output("categorical_filter_container", "children"),
-        # Output("numerical_filter_container", "children"),
+        Output("filter_container", "children"),
     ],
     inputs=[
         Input("global_on_page_load_another_page_action_trigger", "data"),
 
-        State("categorical_filter", "value"),
-        # State("numerical_filter", "value"),
+        State("filter", "value"),
         State("parameter", "value"),
     ],
     prevent_initial_call=True
@@ -183,9 +229,9 @@ def on_page_load(data, persisted_filter_value, x):
 
     # TODO: Last solution found -> hence put in highlighted TODO:
     #  1. page.build() -> returns:
-    #    1.1. html.Div(html.Div(id="categorical_filter"), id="categorical_filter_container")
+    #    1.1. html.Div(html.Div(id="filter"), id="filter_container")
     #      * Does not work because we need persisted filter input value in OPL, so we can filter figures data_frame. *
-    #    1.2. html.Div(dcc.Dropdown(id="categorical_filter", ...), id="categorical_filter_container")
+    #    1.2. html.Div(dcc.Dropdown(id="filter", ...), id="filter_container")
     #      * It works! :D *
     #  2. OPL -> Manipulations with filter and options:
     #    2.1. Recalculate options.
@@ -198,6 +244,7 @@ def on_page_load(data, persisted_filter_value, x):
     #    2. Component persistence updating works slightly different for dcc.Dropdown than for other selector components.
     #      It changes its persistence even if OPL returns the different options. For other selector components,
     #      persistence is changed only if user manually change the value. This should be totally fine.
+    #      Is it a bug on the dash side?
     # --- (A.M.): How to achieve all of these: ---
     # * get correct selected value passed into graph calls -> Works with this solution.
     # * populate filter with right values for user on first page load -> Works with this solution.
@@ -208,16 +255,22 @@ def on_page_load(data, persisted_filter_value, x):
     df = slow_load()
 
     # --- Calculate categorical filter ---
-    # filter_options -> always calculate.
-    categorical_filter_options = sorted(df["species"].unique().tolist())
-    # For multi=True:
-    categorical_filter_value = [value for value in persisted_filter_value if value in categorical_filter_options]
-    # For multi=False:
-    # categorical_filter_value = persisted_filter_value if persisted_filter_value in categorical_filter_options else None
-    new_filter_obj = categorical_filter_build(options=categorical_filter_options, value=["setosa", "versicolor", "virginica"], selector=dcc.Dropdown, multi=True)
+    if CONTROL_SELECTOR in SELECTOR_TYPE["categorical"]:
+        categorical_filter_options = sorted(df["species"].unique().tolist())
+        if MULTI:
+            categorical_filter_value = [value for value in persisted_filter_value if value in categorical_filter_options]
+        else:
+            categorical_filter_value = persisted_filter_value if persisted_filter_value in categorical_filter_options else None
+        new_filter_obj = categorical_filter_build(options=categorical_filter_options)
+
+        # --- Filtering data: ---
+        if MULTI:
+            df = df[df["species"].isin(categorical_filter_value)]
+        else:
+            df = df[df["species"].isin([categorical_filter_value])]
 
     # --- set_props ---
-    # set_props(component_id="categorical_filter_container", props={"children": new_filter_obj})
+    # set_props(component_id="filter_container", props={"children": new_filter_obj})
     # More about set_props:
     #   -> https://dash.plotly.com/advanced-callbacks#setting-properties-directly
     #   -> https://community.plotly.com/t/dash-2-17-0-released-callback-updates-with-set-props-no-output-callbacks-layout-as-list-dcc-loading-trace-zorder/84343
@@ -236,27 +289,21 @@ def on_page_load(data, persisted_filter_value, x):
     #   3. Is there a bug with set_props or with dash.Output?!
 
     # --- Calculate numerical filter ---
-    # numerical_filter_min = float(df["sepal_length"].min())
-    # numerical_filter_max = float(df["sepal_length"].max())
-    #   For dcc.Slider
-    # numerical_filter_value = persisted_filter_value if numerical_filter_min < persisted_filter_value < numerical_filter_max else numerical_filter_min
-    #   For dcc.RangeSlider
-    # numerical_filter_value = [max(numerical_filter_min, persisted_filter_value[0]), min(numerical_filter_max, persisted_filter_value[1])]
-    # new_filter_obj = numerical_filter_build(numerical_filter_min, numerical_filter_max, 5, dcc.Slider)
-    # set_props(component_id="numerical_filter_container", props={"children": new_filter_obj})
+    if CONTROL_SELECTOR in SELECTOR_TYPE["numerical"]:
+        numerical_filter_min = float(df["sepal_length"].min())
+        numerical_filter_max = float(df["sepal_length"].max())
+        if MULTI:
+            numerical_filter_value = [max(numerical_filter_min, persisted_filter_value[0]), min(numerical_filter_max, persisted_filter_value[1])]
+        else:
+            numerical_filter_value = persisted_filter_value if numerical_filter_min < persisted_filter_value < numerical_filter_max else numerical_filter_min
+        new_filter_obj = numerical_filter_build(min_value=numerical_filter_min, max_value=numerical_filter_max)
+        # set_props(component_id="numerical_filter_container", props={"children": new_filter_obj})
 
-    # --- Filtering data: ---
-    #   Categorical
-    #     For multi=True:
-    df = df[df["species"].isin(categorical_filter_value)]
-    #     For multi=False:
-    # df = df[df["species"].isin([categorical_filter_value])]
-
-    #   Numerical
-    #     For dcc.RangeSlider
-    # df = df[(df["sepal_length"] >= numerical_filter_value[0]) & (df["sepal_length"] <= numerical_filter_value[1])]
-    #     For dcc.Slider
-    # df = df[(df["sepal_length"] == numerical_filter_value)]
+        # --- Filtering data: ---
+        if MULTI:
+            df = df[(df["sepal_length"] >= numerical_filter_value[0]) & (df["sepal_length"] <= numerical_filter_value[1])]
+        else:
+            df = df[(df["sepal_length"] == numerical_filter_value)]
 
     print("")
     return graph1_call(df), graph2_call(df, x), new_filter_obj
@@ -265,7 +312,7 @@ def on_page_load(data, persisted_filter_value, x):
 # @callback(
 #     Output("graph1", "figure", allow_duplicate=True),
 #     Output("graph2", "figure", allow_duplicate=True),
-#     Input("categorical_filter", "value"),
+#     Input("filter", "value"),
 #     State("parameter", "value"),
 #     prevent_initial_call=True,
 # )
@@ -290,7 +337,7 @@ def on_page_load(data, persisted_filter_value, x):
 # @callback(
 #     Output("graph2", "figure", allow_duplicate=True),
 #     Input("parameter", "value"),
-#     State("categorical_filter", "value"),
+#     State("filter", "value"),
 #     prevent_initial_call=True,
 # )
 # def do_parameter(x, species):
