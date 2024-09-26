@@ -2,7 +2,7 @@
 
 There is no setup needed for your first dashboard, thanks to the amazing [Py.Cafe](https://py.cafe/).
 
-Click on the **Run and edit this code in py.cafe** link below to live-edit the dashboard.
+Click on the **Run and edit this code in py.cafe** link below to live-edit the dashboard. Another edit
 
 !!! example "First dashboard"
     === "app.py"
