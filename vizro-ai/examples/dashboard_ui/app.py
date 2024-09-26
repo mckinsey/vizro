@@ -5,7 +5,7 @@ import subprocess
 
 import dash_bootstrap_components as dbc
 import vizro.models as vm
-from _utils import format_output
+from _utils import format_output, find_available_port
 from actions import data_upload_action, display_filename, save_files
 from components import (
     CodeClipboard,
@@ -264,10 +264,11 @@ def show_button(ai_response):
 )
 def run_generated_dashboard(n_clicks):
     """Runs vizro-ai generated dashboard in an iframe window."""
+    port = find_available_port()
     if not n_clicks:
         raise PreventUpdate
     else:
-        subprocess.Popen(["python", "output_files/run_vizro_ai_output.py"])
+        subprocess.Popen(["python", "output_files/run_vizro_ai_output.py", str(port)])
         iframe = html.Iframe(src="http://localhost:8051/", height="600px")
         return True, iframe
 

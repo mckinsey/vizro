@@ -3,6 +3,7 @@
 import base64
 import io
 import logging
+import socket
 
 import pandas as pd
 
@@ -82,3 +83,14 @@ def format_output(generated_code):
     generated_code += "    app.run(port=8051)\n"
 
     return generated_code
+
+
+def check_available_port(port):
+    with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as sk:
+        return sk.connect_ex(('127.0.0.1', port)) != 0
+
+
+def find_available_port(base_port=8051):
+    while not check_available_port(base_port):
+        base_port += 1
+    return base_port
