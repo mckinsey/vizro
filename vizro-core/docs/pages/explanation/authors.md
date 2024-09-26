@@ -1,9 +1,7 @@
 ## Current team members
 
 [Alexey Snigir](https://github.com/l0uden),
-[Anna Xiong](https://github.com/Anna-Xiong),
 [Antony Milne](https://github.com/antonymilne),
-[Chiara Pullem](https://github.com/chiara-sophie),
 [Dan Dumitriu](https://github.com/dandumitriu1),
 [Huong Li Nguyen](https://github.com/huong-li-nguyen),
 [Jo Stichbury](https://github.com/stichbury),
@@ -35,6 +33,9 @@ Natalia Kurakina,
 [Hamza Oza](https://github.com/hamzaoza),
 [Kee Wen Ng](https://github.com/KeeWenNgQB),
 [Rashida Kanchwala](https://github.com/rashidakanchwala),
+[Juan Luis Cano Rodríguez](https://github.com/astrojuanlu),
+[Anna Xiong](https://github.com/Anna-Xiong),
+[Chiara Pullem](https://github.com/chiara-sophie),
 
 with thanks to Sam Bourton and Kevin Staight for sponsorship, inspiration and guidance,
 
