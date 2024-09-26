@@ -42,16 +42,20 @@ If an image named `logo.<extension>` is present in the assets folder, Vizro auto
 You can also supply two images named `logo_dark.<extension>` and `logo_light.<extension>` to switch logos
 based on the theme (dark or light).
 
-Note that both `logo_dark` and `logo_light` must be provided together, and they cannot be provided if a single `logo.svg` is also provided for both light/dark themes. The valid configurations are as follows:
+Note that both `logo_dark.<extension>` and `logo_light.<extension>` must be provided together, and they cannot be 
+provided if a single `logo.<extension>` is also provided for both light/dark themes. 
 
-* Single logo: Provide only `logo.svg`, which is used for dark and light themes.
-* Theme logos: Provide both `logo_dark.svg` and `logo_light.svg` for dark/light themes. Do not provide `logo.svg`.
+The valid configurations are as follows:
+
+* Single logo: Provide only `logo.<extension>`, which is used for dark and light themes.
+* Theme logos: Provide both `logo_dark.<extension>` and `logo_light.<extension>` for dark/light themes. 
+Do not provide `logo.<extension>`.
 * No logo: No logo images provided.
 
 ![Logo dark](../../assets/user_guides/assets/logo-dark.png)
 ![Logo light](../../assets/user_guides/assets/logo-light.png)
 
-**Supported image types:** `apng`, `avif`, `gif`, `jpeg`, `jpg`, `png`, `svg`, and `webp`
+**Supported image extensions:** `apng`, `avif`, `gif`, `jpeg`, `jpg`, `png`, `svg`, and `webp`
 
 ## Change the `assets` folder path
 If you do not want to place your `assets` folder in the root directory of your app, you can
