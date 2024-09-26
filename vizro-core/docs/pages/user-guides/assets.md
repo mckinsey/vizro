@@ -45,6 +45,9 @@ based on the theme (dark or light).
 
 Note that both `logo_dark` and `logo_light` must be provided together, and they cannot be combined with a single `logo`.
 
+![Logo dark](../../assets/user_guides/assets/logo-dark.png)
+![Logo light](../../assets/user_guides/assets/logo-light.png)
+
 **Supported image types:** `apng`, `avif`, `gif`, `jpeg`, `jpg`, `png`, `svg`, and `webp`
 
 ## Change the `assets` folder path
