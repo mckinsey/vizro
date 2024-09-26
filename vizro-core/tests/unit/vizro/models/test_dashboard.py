@@ -229,23 +229,31 @@ class TestDashboardPreBuild:
                 None,
                 "Both `logo_dark` and `logo_light` must be provided together. Please provide either both or neither.",
             ),
-            (None, "logo_dark.svg", "logo_light.svg", False),
-            ("logo.svg", None, None, False),
-            (None, None, None, False),
         ],
     )
-    def test_validate_logos(self, page_1, tmp_path, logo_path, logo_dark_path, logo_light_path, error_msg):
-        # Creates the logo files at this given path.
+    def test_invalid_logo_combinations(self, page_1, tmp_path, logo_path, logo_dark_path, logo_light_path, error_msg):
         Path(tmp_path / logo_path).touch() if logo_path else None
         Path(tmp_path / logo_dark_path).touch() if logo_dark_path else None
         Path(tmp_path / logo_light_path).touch() if logo_light_path else None
         Vizro(assets_folder=tmp_path)
 
-        if error_msg:
-            with pytest.raises(ValueError, match=error_msg):
-                vm.Dashboard(pages=[page_1]).pre_build()
-        else:
+        with pytest.raises(ValueError, match=error_msg):
             vm.Dashboard(pages=[page_1]).pre_build()
+
+    @pytest.mark.parametrize(
+        "logo_path, logo_dark_path, logo_light_path",
+        [
+            (None, "logo_dark.svg", "logo_light.svg"),
+            ("logo.svg", None, None),
+            (None, None, None),
+        ],
+    )
+    def test_valid_logo_combinations(self, page_1, tmp_path, logo_path, logo_dark_path, logo_light_path):
+        Path(tmp_path / logo_path).touch() if logo_path else None
+        Path(tmp_path / logo_dark_path).touch() if logo_dark_path else None
+        Path(tmp_path / logo_light_path).touch() if logo_light_path else None
+        Vizro(assets_folder=tmp_path)
+        vm.Dashboard(pages=[page_1]).pre_build()
 
     def test_make_page_404_layout(self, vizro_app):
         # vizro_app fixture is needed to avoid mocking out get_relative_path.
