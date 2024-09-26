@@ -35,15 +35,18 @@ For more information, see the [Dash documentation](https://dash.plotly.com/exter
 
 ### Single logo
 
-Vizro automatically incorporates a logo in the top-left corner if an image named `logo.<extension>` is present in the
-assets folder.
+If an image named `logo.<extension>` is present in the assets folder, Vizro automatically incorporates the logo in the top-left corner of the dashboard.
 
 ### Theme-specific logos
 
 You can also supply two images named `logo_dark.<extension>` and `logo_light.<extension>` to switch logos
 based on the theme (dark or light).
 
-Note that both `logo_dark` and `logo_light` must be provided together, and they cannot be combined with a single `logo`.
+Note that both `logo_dark` and `logo_light` must be provided together, and they cannot be provided if a single `logo.svg` is also provided for both light/dark themes. The valid configurations are as follows:
+
+* Single logo: Provide only `logo.svg`, which is used for dark and light themes.
+* Theme logos: Provide both `logo_dark.svg` and `logo_light.svg` for dark/light themes. Do not provide `logo.svg`.
+* No logo: No logo images provided.
 
 ![Logo dark](../../assets/user_guides/assets/logo-dark.png)
 ![Logo light](../../assets/user_guides/assets/logo-light.png)
