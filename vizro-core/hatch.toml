@@ -86,6 +86,7 @@ serve = "mkdocs serve --open"
 [envs.examples]
 dependencies = [
   "pyyaml",
+  "openpyxl",
   # black is required to run the example visual-vocabulary. This is completely independent of the black used in linting
   # our code. When this moves to HuggingFace we can remove the requirement from here.
   "black==24.4.2",
