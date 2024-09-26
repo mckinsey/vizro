@@ -196,27 +196,53 @@ class TestDashboardPreBuild:
         )
 
     @pytest.mark.parametrize(
-        "logo_path, logo_dark_path, logo_light_path, raise_error",
+        "logo_path, logo_dark_path, logo_light_path, error_msg",
         [
-            ("logo.svg", "logo_dark.svg", "logo_light.svg", True),
-            ("logo.svg", None, "logo_light.svg", True),
-            ("logo.svg", "logo_dark.svg", None, True),
-            (None, None, "logo_light.svg", True),
-            (None, "logo_dark.svg", None, True),
+            (
+                "logo.svg",
+                "logo_dark.svg",
+                "logo_light.svg",
+                "Cannot provide `logo` together with both `logo_dark` and `logo_light`. Please provide either `logo`, "
+                "or both `logo_dark` and `logo_light`.",
+            ),
+            (
+                "logo.svg",
+                None,
+                "logo_light.svg",
+                "Both `logo_dark` and `logo_light` must be provided together. Please provide either both or neither.",
+            ),
+            (
+                "logo.svg",
+                "logo_dark.svg",
+                None,
+                "Both `logo_dark` and `logo_light` must be provided together. Please provide either both or neither.",
+            ),
+            (
+                None,
+                None,
+                "logo_light.svg",
+                "Both `logo_dark` and `logo_light` must be provided together. Please provide either both or neither.",
+            ),
+            (
+                None,
+                "logo_dark.svg",
+                None,
+                "Both `logo_dark` and `logo_light` must be provided together. Please provide either both or neither.",
+            ),
             (None, "logo_dark.svg", "logo_light.svg", False),
             ("logo.svg", None, None, False),
             (None, None, None, False),
         ],
     )
-    def test_validate_logos(self, page_1, tmp_path, logo_path, logo_dark_path, logo_light_path, raise_error):
+    def test_validate_logos(self, page_1, tmp_path, logo_path, logo_dark_path, logo_light_path, error_msg):
         # Creates the logo files at this given path.
         Path(tmp_path / logo_path).touch() if logo_path else None
         Path(tmp_path / logo_dark_path).touch() if logo_dark_path else None
         Path(tmp_path / logo_light_path).touch() if logo_light_path else None
         Vizro(assets_folder=tmp_path)
 
-        if raise_error:
-            with pytest.raises(ValueError):
+        if error_msg:
+            with pytest.raises(ValueError, match=error_msg):
                 vm.Dashboard(pages=[page_1]).pre_build()
         else:
             vm.Dashboard(pages=[page_1]).pre_build()
