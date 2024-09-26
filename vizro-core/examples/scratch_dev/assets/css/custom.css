@@ -1,16 +1,3 @@
 #page-header {
   padding-left: 8px;
 }
-
-#logo-dark,
-#logo-light {
-  display: none;
-}
-
-[data-bs-theme="dark"] #logo-dark {
-  display: inline;
-}
-
-[data-bs-theme="light"] #logo-light {
-  display: inline;
-}

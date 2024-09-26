@@ -156,6 +156,19 @@
   height: 100%;
 }
 
+#logo-dark,
+#logo-light {
+  display: none;
+}
+
+[data-bs-theme="dark"] #logo-dark {
+  display: inline;
+}
+
+[data-bs-theme="light"] #logo-light {
+  display: inline;
+}
+
 #logo-and-title {
   align-items: center;
   display: flex;
