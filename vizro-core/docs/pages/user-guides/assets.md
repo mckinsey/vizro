@@ -36,7 +36,6 @@ For more information, see the [Dash documentation](https://dash.plotly.com/exter
 ### Single logo
 
 If an image named `logo.<extension>` is present in the assets folder, Vizro automatically incorporates the logo in the top-left corner of the dashboard.
-assets folder.
 
 ### Theme-specific logos
 
