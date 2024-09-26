@@ -35,12 +35,12 @@ For more information, see the [Dash documentation](https://dash.plotly.com/exter
 
 ### Single logo
 
-Vizro automatically incorporates a logo in the top-left corner if an image named `logo.<extension>` is present in the 
+Vizro automatically incorporates a logo in the top-left corner if an image named `logo.<extension>` is present in the
 assets folder.
 
 ### Theme-specific logos
 
-You can also supply two images named `logo_dark.<extension>` and `logo_light.<extension>` to switch logos 
+You can also supply two images named `logo_dark.<extension>` and `logo_light.<extension>` to switch logos
 based on the theme (dark or light).
 
 Note that both `logo_dark` and `logo_light` must be provided together, and they cannot be combined with a single `logo`.

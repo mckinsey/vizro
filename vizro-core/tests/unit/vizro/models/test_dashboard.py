@@ -218,8 +218,6 @@ class TestDashboardPreBuild:
         else:
             vm.Dashboard(pages=[page_1]).pre_build()
 
-
-
     def test_make_page_404_layout(self, vizro_app):
         # vizro_app fixture is needed to avoid mocking out get_relative_path.
         expected = html.Div(
