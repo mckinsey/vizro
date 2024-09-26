@@ -2,8 +2,9 @@
   padding-left: 8px;
 }
 
-#logo-dark, #logo-light {
- display: none;
+#logo-dark,
+#logo-light {
+  display: none;
 }
 
 [data-bs-theme="dark"] #logo-dark {

@@ -67,6 +67,8 @@ _PageDivsType = TypedDict(
         "nav-bar": dbc.Navbar,
         "nav-panel": dbc.Nav,
         "logo": html.Div,
+        "logo-dark": html.Div,
+        "logo-light": html.Div,
         "control-panel": html.Div,
         "page-components": html.Div,
     },
@@ -109,28 +111,20 @@ class Dashboard(VizroBaseModel):
 
     @_log_call
     def pre_build(self):
-        # TODO: Add validation to check if logo or (logo_dark and logo_light) are provided together
-        # if logo_dark and logo_light with logo-> error or (use logo_dark and logo_light)
-        # if logo_dark and logo_light without logo -> use logo_dark and logo_light
-        # if logo and logo_dark -> error
-        # if logo and logo_light -> error
-        # if logo -> use logo
-        # no logo -> no logo
-        # no logo and logo-dark -> error
-        # no logo and logo-light -> error
-        meta_image = self._infer_image("app") or self._infer_image("logo")
+        self._validate_logos()
 
         # Setting order here ensures that the pages in dash.page_registry preserves the order of the List[Page].
         # For now the homepage (path /) corresponds to self.pages[0].
         # Note redirect_from=["/"] doesn't work and so the / route must be defined separately.
         self.pages[0].path = "/"
+        meta_img = self._infer_image("app") or self._infer_image("logo")
 
         for order, page in enumerate(self.pages):
             dash.register_page(
                 module=page.id,
                 name=page.title,
                 description=page.description,
-                image=meta_image,
+                image=meta_img,
                 title=f"{self.title}: {page.title}" if self.title else page.title,
                 path=page.path,
                 order=order,
@@ -178,6 +172,22 @@ class Dashboard(VizroBaseModel):
             className=self.theme,
         )
 
+    def _validate_logos(self):
+        logo_img = self._infer_image(filename="logo")
+        logo_dark_img = self._infer_image(filename="logo_dark")
+        logo_light_img = self._infer_image(filename="logo_light")
+
+        if logo_dark_img and logo_light_img:
+            if logo_img:
+                raise ValueError(
+                    "Cannot provide `logo` together with both `logo_dark` and `logo_light`. "
+                    "Please provide either `logo`, or both `logo_dark` and `logo_light`."
+                )
+        elif logo_dark_img or logo_light_img:
+            raise ValueError(
+                "Both `logo_dark` and `logo_light` must be provided together. Please provide either both or neither."
+            )
+
     def _get_page_divs(self, page: Page) -> _PageDivsType:
         # Identical across pages
         dashboard_title = (
@@ -196,18 +206,6 @@ class Dashboard(VizroBaseModel):
             id="settings",
         )
 
-        # LOGIC
-        # logo.svg
-
-        # VALID: ONLY LOGO
-        # VALID: LOGO_DARK and LOGO_LIGHT
-        # If logo is provided only -> logo
-        # If logo_dark is provided only -> logo_dark
-        # If logo_light is provided only -> logo_light
-        # If logo_dark and logo_light are provided -> logo_dark, logo light
-        # If logo and logo_dark are provided -> logo_dark
-        # If logo and logo_light are provided -> logo_light
-
         logo_img = self._infer_image(filename="logo")
         logo_dark_img = self._infer_image(filename="logo_dark")
         logo_light_img = self._infer_image(filename="logo_light")
@@ -215,10 +213,6 @@ class Dashboard(VizroBaseModel):
         path_to_logo = get_asset_url(logo_img) if logo_img else None
         path_to_logo_dark = get_asset_url(logo_dark_img) if logo_dark_img else None
         path_to_logo_light = get_asset_url(logo_light_img) if logo_light_img else None
-
-        # Turn off logo.svg if either logo_dark.svg or logo_light.svg is provided
-        if (path_to_logo_light and path_to_logo_dark):
-            path_to_logo = None
 
         logo = html.Img(id="logo", src=path_to_logo, hidden=not path_to_logo)
         logo_dark = html.Img(id="logo-dark", src=path_to_logo_dark, hidden=not path_to_logo_dark)
@@ -237,7 +231,18 @@ class Dashboard(VizroBaseModel):
         page_components = page_content["page-components"]
 
         return html.Div(
-            [dashboard_title, settings, page_title, nav_bar, nav_panel, logo, logo_dark, logo_light, control_panel, page_components]
+            [
+                dashboard_title,
+                settings,
+                page_title,
+                nav_bar,
+                nav_panel,
+                logo,
+                logo_dark,
+                logo_light,
+                control_panel,
+                page_components,
+            ]
         )
 
     def _arrange_page_divs(self, page_divs: _PageDivsType):

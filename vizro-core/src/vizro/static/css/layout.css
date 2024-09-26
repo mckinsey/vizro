@@ -150,7 +150,9 @@
   margin: 0;
 }
 
-#logo, #logo-light, #logo-dark {
+#logo,
+#logo-light,
+#logo-dark {
   height: 100%;
 }
 
