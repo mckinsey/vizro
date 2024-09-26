@@ -32,7 +32,6 @@ dependencies = [
   "pre-commit"
 ]
 installer = "uv"
-python = "3.11"
 
 [envs.default.scripts]
 example = "hatch run examples:example {args:scratch_dev}"  # shortcut script to underlying example environment script.
@@ -48,6 +47,9 @@ prep-release = [
   'echo "Now raise a PR to merge into main with title: [Release] Release of vizro $(hatch version)"'
 ]
 pypath = "python -c 'import sys; print(sys.executable)'"
+# Ideally schema would work best as a Python script with the Python version pinned, but in Hatch it's not possible to
+# specify the current vizro as a dependency in a Python script (this is possible with uv project management). Instead
+# you'd need to add the path of vizro *and all its dependencies* in the file's add `sys.path`, which is not nice.
 schema = ["python schemas/generate.py {args}", '- SKIP=gitleaks pre-commit run --files="schemas/$(hatch version).json" > /dev/null']
 secrets = "pre-commit run gitleaks --all-files"
 # Note `hatch run test` currently fails due to interference between integration tests and unit tests. Ideally we would
@@ -84,6 +86,9 @@ pip = "'{env:HATCH_UV}' pip {args}"
 serve = "mkdocs serve --open"
 
 [envs.examples]
+# TODO: once the visual-vocabulary dashboard has moved out of this repo, this environment should be removed fully and
+# examples should just run in the default environment like they used to so that there's only one Python interpreter
+# used while debugging. Remember to update devcontainer hatch run command to not use examples environment then.
 dependencies = [
   "pyyaml",
   "openpyxl",

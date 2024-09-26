@@ -18,5 +18,11 @@
     "8050": {
       "label": "scratch_dev example"
     }
-  }
+  },
+  // It would be nice if the Python interpreter were automatically set in codespaces.
+  // In theory this should work automatically but it doesn't seem to - maybe an issue with codespaces?
+  // https://code.visualstudio.com/updates/v1_88#_hatch-environment-discovery
+  // https://github.com/pypa/hatch/issues/600
+  // Doing it programmatically is also possible but not very simple:
+  // https://github.com/microsoft/vscode-python/issues/21783
 }
