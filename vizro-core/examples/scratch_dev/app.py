@@ -13,20 +13,22 @@ from dash import Dash, html, dcc, Output, callback, clientside_callback, Input, 
 #  Choose between: dcc.Dropdown, dcc.Checklist, dcc.RadioItems, dcc.Slider, dcc.RangeSlider
 #  For example: CONTROL_SELECTOR = dcc.RadioItems
 #  =====================================================================
-CONTROL_SELECTOR = None
-# MULTI must be set to True or False for dcc.Dropdown selector only, otherwise MULTI will be automatically calculated.
-MULTI = None
+CONTROL_SELECTOR = dcc.Dropdown
+
+# IS_DROPDOWN_MULTI must be set to True or False for dcc.Dropdown selector.
+IS_DROPDOWN_MULTI = True
 # =====================================================================
 
 
-# Set MULTI based on CONTROL_SELECTOR
+# Set MULTI based on CONTROL_SELECTOR and IS_DROPDOWN_MULTI
 if CONTROL_SELECTOR in {dcc.Checklist, dcc.RangeSlider}:
     MULTI = True
 elif CONTROL_SELECTOR in {dcc.Slider, dcc.RadioItems}:
     MULTI = False
 elif CONTROL_SELECTOR == dcc.Dropdown:
-    if MULTI not in [False, True]:
-        raise ValueError("MULTI must be set to True or False for dcc.Dropdown selector.")
+    if IS_DROPDOWN_MULTI not in [False, True]:
+        raise ValueError("IS_DROPDOWN_MULTI must be set to True or False for dcc.Dropdown selector.")
+    MULTI = IS_DROPDOWN_MULTI
 else:
     raise ValueError(
         "Invalid CONTROL_SELECTOR. Must be one of: "
@@ -45,7 +47,7 @@ SELECTOR_TYPE = {
 def slow_load():
     print("running slow_load")
     time.sleep(0.1)
-    return px.data.iris().sample(6)
+    return px.data.iris()#.sample(6)
 
 
 common = [
@@ -84,7 +86,9 @@ def numerical_filter_pre_build():
     return _min, _max, [_min, _max] if MULTI else _min
 
 
+# TODO: You can hardcode these values for testing purposes. They represent initial options/min/max/value for the filter.
 pre_build_options, pre_build_categorical_value = categorical_filter_pre_build()
+
 pre_build_min, pre_build_max, pre_build_numerical_value = numerical_filter_pre_build()
 
 
@@ -150,7 +154,7 @@ def another_page(**kwargs):
             #     id="filter_container",
             # ),
 
-
+            html.Br(),
             dcc.RadioItems(id="parameter", options=["sepal_width", "sepal_length"], value="sepal_width", persistence=True, persistence_type="session"),
             dcc.Loading(dcc.Graph(id="graph1")),
             dcc.Loading(dcc.Graph(id="graph2")),
