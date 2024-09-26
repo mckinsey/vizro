@@ -162,7 +162,7 @@ There are a number of cases where alternatives to Vizro may be more suitable, in
 
 ## How can I report a bug?
 
-Head over to our [Github issues](https://github.com/mckinsey/vizro/issues) and [create a new bug report](https://github.com/mckinsey/vizro/issues/new/choose). We will try to reproduce the bug you've reported and follow up with the next steps.
+Head over to our [GitHub issues](https://github.com/mckinsey/vizro/issues) and [create a new bug report](https://github.com/mckinsey/vizro/issues/new/choose). We will try to reproduce the bug you've reported and follow up with the next steps.
 
 ## How can I request a feature?
 

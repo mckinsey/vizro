@@ -76,7 +76,7 @@ This enables you to run, for example, `hr lint` instead of `hatch run lint`. On 
 
 ### `hatch run example`
 
-`hatch run example` runs a hot-reloading example dashboard on port 8050. On GitHub Codespaces, this [runs automatically on startup](https://docs.github.com/en/codespaces/developing-in-a-codespace/forwarding-ports-in-your-codespace) and is labeled as "scratch_dev example". On your local machine, you can access the dashboard by pointing your browser to [http://localhost:8050](http://localhost:8050).
+`hatch run example` runs a hot-reloading example dashboard on port 8050. On GitHub Codespaces, this [runs automatically on startup](https://docs.github.com/en/codespaces/developing-in-a-codespace/forwarding-ports-in-your-codespace) and is labeled as `scratch_dev example`. On your local machine, you can access the dashboard by pointing your browser to [http://localhost:8050](http://localhost:8050).
 
 By default, this command runs the dashboard configured in `vizro-core/examples/scratch_dev/app.py`. This dashboard is used as a temporary "scratch" playground during development. Since it is opened automatically in GitHub Codespaces, it's the perfect place to demonstrate or test out a new feature you're developing. PR reviewers can then immediately see exactly what your changes do by opening a codespace on your branch.
 
@@ -89,7 +89,7 @@ Examples are run with the following settings:
 
 ### `hatch run lint`
 
-`hatch run lint` checks and fixes code quality and formatting. This is included in CI checks. All linting and associated dependencies are controlled by [pre-commit](https://pre-commit.com/) hooks. We use the [pre-commit ci service](https://pre-commit.ci/) to automatically fix all the linting checks that we can when a PR is pushed. Other linting failures (such as `mypy`) need manual intervention from the developer.
+`hatch run lint` checks and fixes code quality and formatting. This is included in CI checks. All linting and associated dependencies are controlled by [pre-commit](https://pre-commit.com/) hooks. We use the [pre-commit.ci](https://pre-commit.ci/) to automatically fix all the linting checks that we can when a PR is pushed. Other linting failures (such as `mypy`) need manual intervention from the developer.
 
 !!! note
 

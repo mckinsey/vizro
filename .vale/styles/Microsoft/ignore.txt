@@ -97,4 +97,5 @@ dash_data_table
 Langchain
 Langchain's
 codespace
+codespaces
 uv
