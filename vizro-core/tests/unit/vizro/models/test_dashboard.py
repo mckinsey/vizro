@@ -209,8 +209,11 @@ class TestDashboardPreBuild:
         ],
     )
     def test_validate_logos(self, page_1, tmp_path, logo_path, logo_dark_path, logo_light_path, raise_error):
-        # TODO: Add some logic that places the logos in the correct folder. How?
-        # I guess it needs to be similar to test_infer_image, but need further explanations.
+        # Creates the logo files at this given path.
+        Path(tmp_path / logo_path).touch() if logo_path else None
+        Path(tmp_path / logo_dark_path).touch() if logo_dark_path else None
+        Path(tmp_path / logo_light_path).touch() if logo_light_path else None
+        Vizro(assets_folder=tmp_path)
 
         if raise_error:
             with pytest.raises(ValueError):
