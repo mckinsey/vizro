@@ -196,62 +196,46 @@ class TestDashboardPreBuild:
         )
 
     @pytest.mark.parametrize(
-        "logo_path, logo_dark_path, logo_light_path, error_msg",
+        "logo_files, error_msg",
         [
             (
-                "logo.svg",
-                "logo_dark.svg",
-                "logo_light.svg",
+                ["logo.svg", "logo_dark.svg", "logo_light.svg"],
                 "Cannot provide `logo` together with both `logo_dark` and `logo_light`. Please provide either `logo`, "
                 "or both `logo_dark` and `logo_light`.",
             ),
             (
-                "logo.svg",
-                None,
-                "logo_light.svg",
+                ["logo.svg", "logo_light.svg"],
                 "Both `logo_dark` and `logo_light` must be provided together. Please provide either both or neither.",
             ),
             (
-                "logo.svg",
-                "logo_dark.svg",
-                None,
+                ["logo.svg", "logo_dark.svg"],
                 "Both `logo_dark` and `logo_light` must be provided together. Please provide either both or neither.",
             ),
             (
-                None,
-                None,
-                "logo_light.svg",
+                ["logo_light.svg"],
                 "Both `logo_dark` and `logo_light` must be provided together. Please provide either both or neither.",
             ),
             (
-                None,
-                "logo_dark.svg",
-                None,
+                ["logo_dark.svg"],
                 "Both `logo_dark` and `logo_light` must be provided together. Please provide either both or neither.",
             ),
         ],
     )
-    def test_invalid_logo_combinations(self, page_1, tmp_path, logo_path, logo_dark_path, logo_light_path, error_msg):
-        Path(tmp_path / logo_path).touch() if logo_path else None
-        Path(tmp_path / logo_dark_path).touch() if logo_dark_path else None
-        Path(tmp_path / logo_light_path).touch() if logo_light_path else None
+    def test_invalid_logo_combinations(self, page_1, tmp_path, logo_files, error_msg):
+        for file_path in logo_files:
+            Path(tmp_path / file_path).touch()
         Vizro(assets_folder=tmp_path)
 
         with pytest.raises(ValueError, match=error_msg):
             vm.Dashboard(pages=[page_1]).pre_build()
 
     @pytest.mark.parametrize(
-        "logo_path, logo_dark_path, logo_light_path",
-        [
-            (None, "logo_dark.svg", "logo_light.svg"),
-            ("logo.svg", None, None),
-            (None, None, None),
-        ],
+        "logo_files",
+        [["logo_dark.svg", "logo_light.svg"], ["logo.svg"], []],
     )
-    def test_valid_logo_combinations(self, page_1, tmp_path, logo_path, logo_dark_path, logo_light_path):
-        Path(tmp_path / logo_path).touch() if logo_path else None
-        Path(tmp_path / logo_dark_path).touch() if logo_dark_path else None
-        Path(tmp_path / logo_light_path).touch() if logo_light_path else None
+    def test_valid_logo_combinations(self, page_1, tmp_path, logo_files):
+        for file_path in logo_files:
+            Path(tmp_path / file_path).touch()
         Vizro(assets_folder=tmp_path)
         vm.Dashboard(pages=[page_1]).pre_build()
 
