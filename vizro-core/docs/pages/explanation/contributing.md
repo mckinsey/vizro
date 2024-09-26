@@ -27,11 +27,11 @@ To develop on [GitHub Codespaces](https://docs.github.com/en/codespaces), follow
 !!! note
 
     There is no need to manually create a fork if you use GitHub Codespaces; a fork is [created automatically for you](https://docs.github.com/en/codespaces/developing-in-a-codespace/using-source-control-in-your-codespace#about-automatic-forking)).
-    
+
 ## Develop locally
 
 1. Use our [GitHub issues](https://github.com/mckinsey/vizro/issues) to discuss your contribution.
-2. Install Hatch. There are [several ways to do this](https://hatch.pypa.io/latest/install/). 
+2. Install Hatch. There are [several ways to do this](https://hatch.pypa.io/latest/install/).
 3. [Create a fork of the repository](https://docs.github.com/en/pull-requests/collaborating-with-pull-requests/working-with-forks/fork-a-repo) and clone it to your local machine.
 4. Make changes in your fork and [create a pull request](https://docs.github.com/en/pull-requests/collaborating-with-pull-requests/proposing-changes-to-your-work-with-pull-requests/creating-a-pull-request-from-a-fork).
 5. Add your name to the [authors.md](list of code contributors) (source file `vizro-core/docs/pages/explanation/authors.md`).
@@ -44,7 +44,7 @@ To develop on [GitHub Codespaces](https://docs.github.com/en/codespaces), follow
 
 Regardless of whether you are developing locally or in a codespace, everything you need to develop on Vizro is provided by Hatch through the [`hatch run`](https://hatch.pypa.io/latest/cli/reference/#hatch-run) command. The first time you use this command it will install all the required dependencies, including Python.
 
-The commands you might need are as follows. These must be executed with `vizro-core` directory as your current working directory. Click on the command to read more detailed information about it. 
+The commands you might need are as follows. These must be executed with `vizro-core` directory as your current working directory. Click on the command to read more detailed information about it.
 
 * [`hatch run pypath`](#hatch-run-pypath) shows the path to the Python interpeter.
 * [`hatch run example`](#hatch-run-example) runs a hot-reloading example dashboard on port 8050. On GitHub codespaces, this runs automatically on startup.
@@ -72,7 +72,7 @@ This enables you to run, for example, `hr lint`, instead of `hatch run lint`. On
 
 ### `hatch run example`
 
-`hatch run example` runs a hot-reloading example dashboard on port 8050. On GitHub Codespaces, this runs automatically on startup. On your local machine, you can access the dashboard by pointing your browser to [http://localhost:8050](http://localhost:8050). 
+`hatch run example` runs a hot-reloading example dashboard on port 8050. On GitHub Codespaces, this runs automatically on startup. On your local machine, you can access the dashboard by pointing your browser to [http://localhost:8050](http://localhost:8050).
 
 By default, this command runs the dashboard specified in `vizro-core/examples/scratch_dev`. This dashboard is used as a temporary playground during development and can be merged to `main` in any form. Since it is opened automatically in GitHub Codespaces, it's the perfect place to demonstrate or test out a new feature you're developing. Pull request reviewers can then immediately see exactly what your changes do by opening a codespace on your branch.
 
@@ -90,7 +90,7 @@ Examples are run with the following settings:
 
 !!! note
 
-    The first time you run `hatch run lint` it may take a couple of minutes, since pre-commit needs to setup linting environments. Subsequent runs re-use these environments and will be much faster. 
+    The first time you run `hatch run lint` it may take a couple of minutes, since pre-commit needs to setup linting environments. Subsequent runs re-use these environments and will be much faster.
 
 Our Hatch environment specifies `pre-commit` as a dependency but otherwise does not specify dependencies for linting tools. The versions of these are pinned in `.pre-commit-config.yaml`, and `pre-commit ci` raises a monthly pull request to update them.
 
