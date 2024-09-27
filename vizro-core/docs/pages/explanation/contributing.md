@@ -68,7 +68,7 @@ This enables you to run, for example, `hr lint` instead of `hatch run lint`. On 
 
 ### `hatch run pypath`
 
-`hatch run pypath` shows the path to the Python interpreter. This is useful for setting a Python interpreter in your IDE to help navigate the codebase. For example, in GitHub Codespaces and VS Code:
+`hatch run pypath` shows the path to the Python interpreter. This is useful for setting a Python interpreter in your IDE to navigate the codebase. For example, in GitHub Codespaces and VS Code:
 
 * Run `hatch run pypath` and copy the output to your clipboard.
 * Open the Command Palette (++ctrl+shift+p++).
