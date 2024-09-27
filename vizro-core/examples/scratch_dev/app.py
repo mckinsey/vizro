@@ -3,6 +3,7 @@ import datetime
 import time
 import plotly.express as px
 
+
 from dash import Dash, html, dcc, Output, callback, clientside_callback, Input, State, set_props
 
 
@@ -47,29 +48,7 @@ SELECTOR_TYPE = {
 def slow_load():
     print("running slow_load")
     time.sleep(0.1)
-    return px.data.iris()#.sample(6)
-
-
-common = [
-    html.H1(id="dashboard_title", children="Dashboard"),
-    html.Div(dcc.Link("Homepage", href="/")),
-    html.Div(dcc.Link("Another page", href="/another-page")),
-]
-
-
-def make_page(content):
-    return html.Div(
-        [
-            *common,
-            html.P(datetime.datetime.now()),
-            *content,
-        ]
-    )
-
-
-# like build
-def homepage(**kwargs):
-    return make_page([html.H2("Homepage")])
+    return px.data.iris().sample(6)
 
 
 # Like pre-build - doesn't get run again when reload page
@@ -86,13 +65,39 @@ def numerical_filter_pre_build():
     return _min, _max, [_min, _max] if MULTI else _min
 
 
-# TODO: You can hardcode these values for testing purposes. They represent initial options/min/max/value for the filter.
+# TODO-ANTONY: You can hardcode these values for testing purposes. They represent initial options/min/max/value
+#  for the filter that are created in and sent from page.build() every time page is refreshed.
 pre_build_options, pre_build_categorical_value = categorical_filter_pre_build()
+pre_build_options, pre_build_categorical_value = ["setosa"], ["setosa"]
 
 pre_build_min, pre_build_max, pre_build_numerical_value = numerical_filter_pre_build()
 
 
-# Like build - gets run every time page is loaded
+# --- Pages ---
+common = [
+    html.H1(id="dashboard_title", children="Dashboard"),
+    html.Div(dcc.Link("Homepage", href="/")),
+    html.Div(dcc.Link("Another page", href="/another-page")),
+]
+
+
+def make_page(content):
+    page_build_obj = html.Div(
+        [
+            *common,
+            html.P(datetime.datetime.now()),
+            *content,
+        ]
+    )
+    return page_build_obj
+
+
+# homepage build
+def homepage(**kwargs):
+    return make_page([html.H2("Homepage")])
+
+
+# Like filter build - gets run every time page is loaded
 def categorical_filter_build(options=None, value=None, **kwargs):
     if CONTROL_SELECTOR == dcc.Dropdown:
         kwargs["multi"] = MULTI
@@ -120,7 +125,7 @@ def numerical_filter_build(min_value=None, max_value=None, value=None, **kwargs)
     )
 
 
-# like page build
+# Like another-page build
 def another_page(**kwargs):
     return make_page(
         [
@@ -133,20 +138,21 @@ def another_page(**kwargs):
             # # Possible solution is to alter filter.options from on_page_load. This would work, but it's not optimal.
             # dcc.Dropdown(id="filter", options=options, value=options, multi=True, persistence=True),
 
-            # TODO-DEV-TEST: Select a control.
-            # # Working example of categorical filter
             # # Outer container can be changed with dcc.Loading.
             html.Div(
-                categorical_filter_build() if CONTROL_SELECTOR in SELECTOR_TYPE["categorical"] else numerical_filter_build(),
+                # categorical_filter_build() if CONTROL_SELECTOR in SELECTOR_TYPE["categorical"] else numerical_filter_build(),
+
+                # TODO-ANTONY: If we send dcc.Checklist here (or dbc component or universal vizro component) it looks like it works.
+                # dcc.Checklist(
+                #     id=f'filter',
+                #     options=pre_build_options,
+                #     value=pre_build_categorical_value,
+                #     persistence=True,
+                #     persistence_type="session",
+                # ),
+
                 id="filter_container",
             ),
-
-            # # Working example of numerical filter:
-            # # Outer container can be changed with dcc.Loading.
-            # html.Div(
-            #     numerical_filter_build(),
-            #     id="filter_container",
-            # ),
 
             # # Does not work because OPL filter input is missing, but it's used for filtering figures data_frame.
             # html.Div(
@@ -246,9 +252,12 @@ def on_page_load(data, persisted_filter_value, x):
     #    1. do_filter is triggered automatically after OPL.
     #      This shouldn't be the issue since actions loop controls it.
     #    2. Component persistence updating works slightly different for dcc.Dropdown than for other selector components.
-    #      It changes its persistence even if OPL returns the different options. For other selector components,
-    #      persistence is changed only if user manually change the value. This should be totally fine.
-    #      Is it a bug on the dash side?
+    #      Persistence for Dropdown is set even when the Dropdown is returned as a new object from page_build or OPL.
+    #      In persistence.js -> LN:309 "recordUiEdit" function is triggered when dropdown is returned from the server.
+    #      It causes storage.SetItem() to be triggered which mess-ups the persistence for the Dropdown.
+    #      This is probably dash bug because Dropdown is handled a lot with async which probably causes that returned
+    #      Dropdown form the page_build or OPL triggers the "recordUiEdit" which should not trigger.
+    #      Should we recalculate options in pre_build()? -> No.
     # --- (A.M.): How to achieve all of these: ---
     # * get correct selected value passed into graph calls -> Works with this solution.
     # * populate filter with right values for user on first page load -> Works with this solution.
@@ -393,4 +402,4 @@ app.layout = html.Div([dcc.Store("global_on_page_load_another_page_action_trigge
 # IMPORTANT: also consider parametrised data case.
 
 if __name__ == "__main__":
-    app.run(dev_tools_hot_reload=False)
+    app.run(debug=True, dev_tools_hot_reload=False)
