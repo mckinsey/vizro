@@ -94,7 +94,7 @@ Examples are run with the following settings:
 
 !!! note
 
-    The first time you run `hatch run lint` it may take a couple of minutes, since pre-commit needs to setup linting environments. Subsequent runs reuse these environments and will be much faster.
+    The first time you run `hatch run lint` it may take a couple of minutes, since pre-commit needs to setup linting environments. Subsequent runs reuse these environments and are much faster.
 
 `hatch run lint` runs the pre-commit hooks on all (not only staged) files. You can run an individual hook, for example `mypy`, on all files by running `hatch run lint mypy`.
 
