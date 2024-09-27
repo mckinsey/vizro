@@ -28,7 +28,7 @@ To develop on [GitHub Codespaces](https://docs.github.com/en/codespaces), follow
 6. Before it can be merged, your PR must meet all the following requirements:
     * Two approving reviews (including a code owner).
     * Continuous Integration (CI) checks pass.
-    * Up-to-date with `main`.
+    * Code is up-to-date with `main`.
 
 
 ## Develop locally
