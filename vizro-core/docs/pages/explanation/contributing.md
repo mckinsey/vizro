@@ -14,6 +14,10 @@ There are two ways to develop on Vizro:
 
 ## Develop on GitHub Codespaces
 
+!!! note
+
+    There is no need to manually create a fork of the Vizro code if you use GitHub Codespaces, because fork is [automatically created for you](https://docs.github.com/en/codespaces/developing-in-a-codespace/using-source-control-in-your-codespace#about-automatic-forking).
+    
 To develop on [GitHub Codespaces](https://docs.github.com/en/codespaces), follow the below steps:
 
 1. Use [Vizro's GitHub issues](https://github.com/mckinsey/vizro/issues) to discuss your contribution.
@@ -26,9 +30,6 @@ To develop on [GitHub Codespaces](https://docs.github.com/en/codespaces), follow
     * Continuous Integration (CI) checks pass.
     * Up-to-date with `main`.
 
-!!! note
-
-    There is no need to manually create a fork if you use GitHub Codespaces; a fork is [automatically created for you](https://docs.github.com/en/codespaces/developing-in-a-codespace/using-source-control-in-your-codespace#about-automatic-forking).
 
 ## Develop locally
 
