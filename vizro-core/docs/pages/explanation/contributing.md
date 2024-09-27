@@ -9,7 +9,7 @@ There are two ways to develop on Vizro:
 
 !!! note
 
-    With both routes, Hatch is the _only development dependency_. You do not need to manually install Python or create any virtual environments; all this will be handled for you behind the scenes by Hatch. We have configured our codespace to pre-install Hatch, so if you develop on GitHub Codespaces then you don't need to install anything at all!
+    For either method, Hatch is the _only development dependency_. You do not need to manually install Python or create any virtual environments to develop Vizro; all this will be handled for you behind the scenes by Hatch. We have also configured our codespace to pre-install Hatch. If you develop on GitHub Codespaces you don't need to install anything at all!
 
 
 ## Develop on GitHub Codespaces
