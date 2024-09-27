@@ -130,7 +130,7 @@ In CI, we test across multiple Python versions and also [check for code coverage
 hatch run all.py3.10:test-unit-coverage
 ```
 
-In addition to unit tests with code coverage, CI also performs the following checks:
+In addition to run unit tests with code coverage, CI also performs the following checks:
 
 * `hatch run test-integration` runs integration tests that include checking that the example apps in `vizro-core/examples` run.
 * `hatch run test-js` runs Javascript tests using [jest](https://jestjs.io/). Arguments are passed through to the underlying `npx jest` command, for example `hatch run test-js --help`.
