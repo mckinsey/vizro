@@ -42,7 +42,7 @@ To develop on [GitHub Codespaces](https://docs.github.com/en/codespaces), follow
 7. Before it can be merged, your PR must meet all the following requirements:
     * Two approving reviews (including a code owner).
     * Continuous Integration (CI) checks pass.
-    * Your fork is up-to-date with `main`.
+    * Code is up-to-date with `main`.
 
 ## How to use Hatch
 
