@@ -10,6 +10,12 @@ matrix.python.features = [
   {value = "kedro", if = ["3.8", "3.9", "3.10", "3.11"]}
 ]
 
+[envs.all.py3.11.scripts]
+# Ideally schema would work best as a Python script with the Python version pinned, but in Hatch it's not possible to
+# specify the current vizro as a dependency in a Python script (this is possible with uv project management). Instead
+# you'd need to add the path of vizro *and all its dependencies* in the file's add `sys.path`, which is not nice.
+schema = ["python schemas/generate.py {args}", '- SKIP=gitleaks pre-commit run --files="schemas/$(hatch version).json" > /dev/null']
+
 [envs.changelog]
 dependencies = ["scriv"]
 detached = true
@@ -47,10 +53,10 @@ prep-release = [
   'echo "Now raise a PR to merge into main with title: [Release] Release of vizro $(hatch version)"'
 ]
 pypath = "python -c 'import sys; print(sys.executable)'"
-# Ideally schema would work best as a Python script with the Python version pinned, but in Hatch it's not possible to
-# specify the current vizro as a dependency in a Python script (this is possible with uv project management). Instead
-# you'd need to add the path of vizro *and all its dependencies* in the file's add `sys.path`, which is not nice.
-schema = ["python schemas/generate.py {args}", '- SKIP=gitleaks pre-commit run --files="schemas/$(hatch version).json" > /dev/null']
+# Ideally just doing hatch run:schema would be fine, but the schema slightly depends on Python version
+# (Python 3.8 vs. Python 3.11 give different results), even for the same pydantic version. So we point to a script
+# that runs specificially in Python 3.11.
+schema = "hatch run all.py3.11:schema"
 secrets = "pre-commit run gitleaks --all-files"
 # Note `hatch run test` currently fails due to interference between integration tests and unit tests. Ideally we would
 # fix this, but we don't actually use `hatch run test` anywhere right now.

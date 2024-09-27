@@ -1,8 +1,14 @@
 # Contributing
 
-Thank you for your interest in contributing to Vizro! Our development follows a standard [GitHub flow](https://docs.github.com/en/get-started/using-github/github-flow). We aim to make the contribution process as frictionless as possible by having only one direct development dependency: [Hatch](https://hatch.pypa.io/).
+Contributions of all experience levels are welcome! There are many ways to contribute, and we appreciate any help: it doesn't have to be a pull request (PR) on our code. You can also [report a bug](faq.md#how-can-i-report-a-bug), [request a feature](faq.md#how-can-i-request-a-feature), or [ask and answer community questions](faq.md#i-still-have-a-question-where-can-i-ask-it). Before making significant changes to Vizro code, you should first use [GitHub issues](https://github.com/mckinsey/vizro/issues) to discuss your contribution. 
 
-There are two ways to develop on Vizro:
+Our development follows a standard [GitHub flow](https://docs.github.com/en/get-started/using-github/github-flow). In order to be merged, your PR must meet all the following requirements:
+
+* two approving reviews (including a code owner)
+* Continuous Integration (CI) checks pass
+* code is up-to-date with `main`
+
+We aim to make the contribution process as frictionless as possible by having only one direct development dependency: [Hatch](https://hatch.pypa.io/). There are two ways to develop on Vizro:
 
 * [GitHub Codespaces](https://docs.github.com/en/codespaces). This is the recommended method if you are a new contributor and is the quickest and easiest way to get started. All development can be done in your browser in a temporary environment; you do not need to set up anything on your computer. Read [Develop on GitHub Codespaces](#develop-on-github-codespaces) for full instructions on how to do this.
 * Local machine. If you are more experienced then you might prefer to develop on your own computer. Read [Develop locally](#develop-locally) for full instructions on how to do this.
@@ -16,33 +22,22 @@ There are two ways to develop on Vizro:
 
 !!! note
 
-    There is no need to manually create a fork of the Vizro code if you use GitHub Codespaces, because fork is [automatically created for you](https://docs.github.com/en/codespaces/developing-in-a-codespace/using-source-control-in-your-codespace#about-automatic-forking).
+    There is no need to manually create a fork of the Vizro code if you use GitHub Codespaces. A fork is [automatically created for you](https://docs.github.com/en/codespaces/developing-in-a-codespace/using-source-control-in-your-codespace#about-automatic-forking).
 
 To develop on [GitHub Codespaces](https://docs.github.com/en/codespaces), follow the below steps:
 
-1. Use [Vizro's GitHub issues](https://github.com/mckinsey/vizro/issues) to discuss your contribution.
-2. [Create a codespace for our repository](https://codespaces.new/mckinsey/vizro). Leave the settings on their defaults and click "Create codespace" to start your codespace. It should take 1-2 minutes to fully launch and automatically start an example dashboard on port 8050.
-3. Make changes to Vizro code in your codespace. See the [GitHub Codespaces documentation on developing in a codespace](https://docs.github.com/en/codespaces/developing-in-a-codespace/developing-in-a-codespace) for more information.
-4. Add your name to the [list of contributors](authors.md) (source file `vizro-core/docs/pages/explanation/authors.md`).
-5. [Create a pull request (PR)](https://docs.github.com/en/pull-requests/collaborating-with-pull-requests/proposing-changes-to-your-work-with-pull-requests/creating-a-pull-request-from-a-fork).
-6. Before it can be merged, your PR must meet all the following requirements:
-    * Two approving reviews (including a code owner).
-    * Continuous Integration (CI) checks pass.
-    * Code is up-to-date with `main`.
-
+1. [Create a codespace for our repository](https://codespaces.new/mckinsey/vizro). Leave the settings on their defaults and click "Create codespace" to start your codespace. It should take 1-2 minutes to fully launch and automatically start an example dashboard on port 8050.
+2. Make changes to Vizro code in your codespace. See the [GitHub Codespaces documentation on developing in a codespace](https://docs.github.com/en/codespaces/developing-in-a-codespace/developing-in-a-codespace) for more information.
+3. Add your name to the [list of contributors](authors.md) (source file `vizro-core/docs/pages/explanation/authors.md`).
+4. [Create a pull request](https://docs.github.com/en/pull-requests/collaborating-with-pull-requests/proposing-changes-to-your-work-with-pull-requests/creating-a-pull-request-from-a-fork).
 
 ## Develop locally
 
-1. Use our [GitHub issues](https://github.com/mckinsey/vizro/issues) to discuss your contribution.
-2. Install Hatch. There are [several ways to do this](https://hatch.pypa.io/latest/install/).
-3. [Fork the Vizro repository](https://docs.github.com/en/pull-requests/collaborating-with-pull-requests/working-with-forks/fork-a-repo) and clone it to your local machine.
-4. Make changes to Vizro code in your fork.
-5. Add your name to the [list of contributors](authors.md) (source file `vizro-core/docs/pages/explanation/authors.md`).
-6. [Create a pull request (PR)](https://docs.github.com/en/pull-requests/collaborating-with-pull-requests/proposing-changes-to-your-work-with-pull-requests/creating-a-pull-request-from-a-fork).
-7. Before it can be merged, your PR must meet all the following requirements:
-    * Two approving reviews (including a code owner).
-    * Continuous Integration (CI) checks pass.
-    * Code is up-to-date with `main`.
+1. Install Hatch. There are [several ways to do this](https://hatch.pypa.io/latest/install/).
+2. [Fork the Vizro repository](https://docs.github.com/en/pull-requests/collaborating-with-pull-requests/working-with-forks/fork-a-repo) and clone it to your local machine.
+3. Make changes to Vizro code in your fork.
+4. Add your name to the [list of contributors](authors.md) (source file `vizro-core/docs/pages/explanation/authors.md`).
+5. [Create a pull request](https://docs.github.com/en/pull-requests/collaborating-with-pull-requests/proposing-changes-to-your-work-with-pull-requests/creating-a-pull-request-from-a-fork).
 
 ## How to use Hatch
 
@@ -130,7 +125,7 @@ In CI, we test across multiple Python versions and also [check for code coverage
 hatch run all.py3.10:test-unit-coverage
 ```
 
-In addition to run unit tests with code coverage, CI also performs the following checks:
+In addition to running unit tests with code coverage, CI also performs the following checks:
 
 * `hatch run test-integration` runs integration tests that include checking that the example apps in `vizro-core/examples` run.
 * `hatch run test-js` runs Javascript tests using [jest](https://jestjs.io/). Arguments are passed through to the underlying `npx jest` command, for example `hatch run test-js --help`.
