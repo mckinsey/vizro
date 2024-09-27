@@ -1,6 +1,6 @@
 # Contributing
 
-Thank you for your interest in contributing to Vizro! Our development follows a standard [GitHub flow](https://docs.github.com/en/get-started/using-github/github-flow). We have aimed to make the contribution process as frictionless as possible by having only one direct development dependency, [Hatch](https://hatch.pypa.io/).
+Thank you for your interest in contributing to Vizro! Our development follows a standard [GitHub flow](https://docs.github.com/en/get-started/using-github/github-flow). We aim to make the contribution process as frictionless as possible by having only one direct development dependency: [Hatch](https://hatch.pypa.io/).
 
 There are two ways to develop on Vizro:
 
