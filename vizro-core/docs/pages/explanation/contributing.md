@@ -106,7 +106,7 @@ We use [gitleaks](https://github.com/gitleaks/gitleaks) for secret scanning, whi
 
 `hatch run changelog:add` generates a new changelog fragment. This is included in CI checks and required for all changes outside documentation.
 
-The format of our changelog is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/). We use [scriv](https://pypi.org/project/scriv/) to build and maintain [our changelog](https://github.com/mckinsey/vizro/blob/main/vizro-core/CHANGELOG.md). When raising a PR, you  must ensure that a changelog fragment has been created. This fragment is a small `.md` file describing your changes.
+The format of our changelog is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/). We use [scriv](https://pypi.org/project/scriv/) to build and maintain [our changelog](https://github.com/mckinsey/vizro/blob/main/vizro-core/CHANGELOG.md). When raising a PR, you must ensure that a changelog fragment has been created. This fragment is a small `.md` file describing your changes.
 
 Run `hatch run changelog:add` to create a changelog fragment and then uncomment the relevant section(s). If you are uncertain about what to add or whether to add anything at all, refer to [Keep a Changelog](https://keepachangelog.com/en/1.0.0/). The rule of thumb is that if Vizro users would be affected in any way then the changes should be described in the changelog.
 
