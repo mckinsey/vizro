@@ -144,7 +144,7 @@ For more information on our documentation style, refer to our [style guide](docu
 
 ### `hatch run pip`
 
-`hatch run pip` provides a [pip-compatible interface using uv](https://docs.astral.sh/uv/pip/). You should not need to use this.
+`hatch run pip` provides a [pip-compatible interface using uv](https://docs.astral.sh/uv/pip/). You should not need to use this often.
 
 Vizro's dependencies are described by the `dependencies` section in `vizro-core/pyproject.toml`. There is no need to manually install or update the dependencies in your environment; they will be handled automatically for you when you do `hatch run`. This means that there is generally no need to `pip install` anything.
 
