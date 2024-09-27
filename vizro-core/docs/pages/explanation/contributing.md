@@ -138,7 +138,7 @@ In addition to unit tests with code coverage, CI also performs the following che
 
 ### `hatch run docs:serve`
 
-`hatch run docs:serve` shows hot-reloading documentation. Documentation is also built automatically in your PR and can be previewed on Read The Docs. To do this, scroll to the bottom of your PR where all the checks are listed and click the "Details" link next to the Read the Docs build.
+`hatch run docs:serve` builds and displays documentation that is hot-reloading for convenience while you edit it. Documentation is also built automatically in your PR and can be previewed on Read The Docs. To do this, scroll to the bottom of your PR where all the checks are listed and click the "Details" link next to the Read the Docs build.
 
 For more information on our documentation style, refer to our [style guide](documentation-style-guide.md).
 
