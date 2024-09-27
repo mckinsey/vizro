@@ -118,12 +118,14 @@ Run `hatch run changelog:add` to create a changelog fragment and then uncomment 
 
 `hatch run test-unit` runs the test suite. This is included in CI checks.
 
-Tests are handled using [pytest](https://docs.pytest.org/) and arguments are passed through to the underlying `pytest` command. For example, to rerun only failures from the last `pytest` invocation, you could run
+Tests are handled using [pytest](https://docs.pytest.org/) and arguments are passed through to the underlying `pytest` command. For example, to rerun only failures from the last `pytest` invocation, you could run:
+
 ```console
 hatch run test-unit --last-failed
 ```
 
 In CI, we test across multiple Python versions and also [check for code coverage](https://coverage.readthedocs.io/). If required, you can also run this locally. For example, to run unit tests with Python 3.10 and check for code coverage, you would run:
+
 ```console
 hatch run all.py3.10:test-unit-coverage
 ```
