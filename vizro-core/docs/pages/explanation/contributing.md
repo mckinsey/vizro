@@ -51,11 +51,11 @@ Regardless of whether you are developing locally or in a codespace, everything y
 The Hatch commands you need most commonly are as follows. These must be executed with `vizro-core` as your current working directory:
 
 * [`hatch run pypath`](#hatch-run-pypath) shows the path to the Python interpreter.
-* [`hatch run example`](#hatch-run-example) runs a hot-reloading example dashboard on port 8050. On GitHub codespaces, this runs automatically on startup.
+* [`hatch run example`](#hatch-run-example) runs an example dashboard on port 8050 that hot-reloads while you edit it. On GitHub Codespaces, this runs automatically on startup.
 * [`hatch run lint`](#hatch-run-lint) checks and fixes code quality and formatting. This is included in CI checks.
 * [`hatch run changelog:add`](#hatch-run-changelogadd) generates a new changelog fragment. This is included in CI checks and required for all changes outside documentation.
 * [`hatch run test-unit`](#hatch-run-test-unit) runs the test suite. This is included in CI checks.
-* [`hatch run docs:serve`](#hatch-run-docsserve) shows hot-reloading documentation. Documentation is also built automatically in your PR and can be previewed on Read The Docs.
+* [`hatch run docs:serve`](#hatch-run-docsserve) builds and displays documentation that hot-reloads while you edit it. Documentation is also built automatically in your PR and can be previewed on Read The Docs.
 * [`hatch run pip`](#hatch-run-pip) provides a [pip-compatible interface using uv](https://docs.astral.sh/uv/pip/). You should not need to use this much.
 
 To save yourself from repeatedly typing `hatch run` you might like to [set up an alias](https://www.tecmint.com/create-alias-in-linux/):
@@ -77,7 +77,7 @@ This enables you to run, for example, `hr lint` instead of `hatch run lint`. On 
 
 ### `hatch run example`
 
-`hatch run example` runs a hot-reloading example dashboard on port 8050. On GitHub Codespaces, this [runs automatically on startup](https://docs.github.com/en/codespaces/developing-in-a-codespace/forwarding-ports-in-your-codespace) and is labeled as `scratch_dev example`. On your local machine, you can access the dashboard by pointing your browser to [http://127.0.0.1:8050](http://127.0.0.1:8050).
+`hatch run example` runs an example dashboard on port 8050 that hot-reloads while you edit it. On GitHub Codespaces, this [runs automatically on startup](https://docs.github.com/en/codespaces/developing-in-a-codespace/forwarding-ports-in-your-codespace) and is labeled as `scratch_dev example`. On your local machine, you can access the dashboard by pointing your browser to [http://127.0.0.1:8050](http://127.0.0.1:8050).
 
 By default, this command runs the dashboard configured in `vizro-core/examples/scratch_dev/app.py`. This dashboard is used as a temporary "scratch" playground during development. Since it is opened automatically in GitHub Codespaces, it's the perfect place to demonstrate or test out a new feature you're developing. PR reviewers can then immediately see exactly what your changes do by opening a codespace on your branch.
 
