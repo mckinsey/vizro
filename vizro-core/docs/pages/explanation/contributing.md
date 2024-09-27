@@ -35,14 +35,14 @@ To develop on [GitHub Codespaces](https://docs.github.com/en/codespaces), follow
 
 1. Use our [GitHub issues](https://github.com/mckinsey/vizro/issues) to discuss your contribution.
 2. Install Hatch. There are [several ways to do this](https://hatch.pypa.io/latest/install/).
-3. [Create a fork of the repository](https://docs.github.com/en/pull-requests/collaborating-with-pull-requests/working-with-forks/fork-a-repo) and clone it to your local machine.
-4. Make changes in your fork.
+3. [Fork the Vizro repository](https://docs.github.com/en/pull-requests/collaborating-with-pull-requests/working-with-forks/fork-a-repo) and clone it to your local machine.
+4. Make changes to Vizro code in your fork.
 5. Add your name to the [list of contributors](authors.md) (source file `vizro-core/docs/pages/explanation/authors.md`).
 6. [Create a pull request (PR)](https://docs.github.com/en/pull-requests/collaborating-with-pull-requests/proposing-changes-to-your-work-with-pull-requests/creating-a-pull-request-from-a-fork).
 7. Before it can be merged, your PR must meet all the following requirements:
     * Two approving reviews (including a code owner).
     * Continuous Integration (CI) checks pass.
-    * Up-to-date with `main`.
+    * Your fork is up-to-date with `main`.
 
 ## How to use Hatch
 
