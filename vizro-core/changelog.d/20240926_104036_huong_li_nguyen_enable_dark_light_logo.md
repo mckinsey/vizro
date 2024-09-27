@@ -19,7 +19,7 @@ Uncomment the section that is right (remove the HTML comment wrapper).
 
 ### Added
 
-- Enable provision of light and dark logo. ([#745](https://github.com/mckinsey/vizro/pull/745))
+- Theme switcher can now switch between light and dark logos. ([#745](https://github.com/mckinsey/vizro/pull/745))
 
 <!--
 ### Changed
