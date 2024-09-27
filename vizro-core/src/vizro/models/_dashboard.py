@@ -117,7 +117,7 @@ class Dashboard(VizroBaseModel):
         # For now the homepage (path /) corresponds to self.pages[0].
         # Note redirect_from=["/"] doesn't work and so the / route must be defined separately.
         self.pages[0].path = "/"
-        meta_img = self._infer_image("app") or self._infer_image("logo")
+        meta_img = self._infer_image("app") or self._infer_image("logo") or self._infer_image("logo_dark")
 
         for order, page in enumerate(self.pages):
             dash.register_page(
