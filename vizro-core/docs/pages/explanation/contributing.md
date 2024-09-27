@@ -16,9 +16,9 @@ There are two ways to develop on Vizro:
 
 To develop on [GitHub Codespaces](https://docs.github.com/en/codespaces), follow the below steps:
 
-1. Use our [GitHub issues](https://github.com/mckinsey/vizro/issues) to discuss your contribution.
-2. [Create a codespace for our repository](https://codespaces.new/mckinsey/vizro). Leave the settings on their defaults and click "Create codespace" to start your codespace. This should take 1-2 minutes to fully launch and automatically starts an example dashboard on port 8050.
-3. Make changes in your codespace. See the [GitHub Codespaces documentation on developing in a codespace](https://docs.github.com/en/codespaces/developing-in-a-codespace/developing-in-a-codespace) for more information.
+1. Use [Vizro's GitHub issues](https://github.com/mckinsey/vizro/issues) to discuss your contribution.
+2. [Create a codespace for our repository](https://codespaces.new/mckinsey/vizro). Leave the settings on their defaults and click "Create codespace" to start your codespace. It should take 1-2 minutes to fully launch and automatically start an example dashboard on port 8050.
+3. Make changes to Vizro code in your codespace. See the [GitHub Codespaces documentation on developing in a codespace](https://docs.github.com/en/codespaces/developing-in-a-codespace/developing-in-a-codespace) for more information.
 4. Add your name to the [list of contributors](authors.md) (source file `vizro-core/docs/pages/explanation/authors.md`).
 5. [Create a pull request (PR)](https://docs.github.com/en/pull-requests/collaborating-with-pull-requests/proposing-changes-to-your-work-with-pull-requests/creating-a-pull-request-from-a-fork).
 6. Before it can be merged, your PR must meet all the following requirements:
