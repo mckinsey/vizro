@@ -46,7 +46,7 @@ To develop on [GitHub Codespaces](https://docs.github.com/en/codespaces), follow
 
 ## How to use Hatch
 
-Regardless of whether you are developing locally or in a codespace, everything you need to develop on Vizro is provided by Hatch through the [`hatch run`](https://hatch.pypa.io/latest/cli/reference/#hatch-run) command. The first time you use this command it will install all the required dependencies, including Python, which may take some time.
+Regardless of whether you are developing locally or in a codespace, everything you need to develop on Vizro is provided by Hatch through the [`hatch run`](https://hatch.pypa.io/latest/cli/reference/#hatch-run) command. The first time you use this command it will install all the required dependencies, including Python.
 
 The Hatch commands you need most commonly are as follows. These must be executed with `vizro-core` as your current working directory:
 
