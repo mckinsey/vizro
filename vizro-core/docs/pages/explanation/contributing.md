@@ -4,7 +4,7 @@ Thank you for your interest in contributing to Vizro! Our development follows a 
 
 There are two ways to develop on Vizro:
 
-* [GitHub Codespaces](https://docs.github.com/en/codespaces). This is the recommended method if you are a new contributor and is the quickest and easiest way to get started. All development can be done in your browser in an ephemeral environment; you do not need to set up anything on your computer. Read [Develop on GitHub Codespaces](#develop-on-github-codespaces) for full instructions on how to do this.
+* [GitHub Codespaces](https://docs.github.com/en/codespaces). This is the recommended method if you are a new contributor and is the quickest and easiest way to get started. All development can be done in your browser in a temporary environment; you do not need to set up anything on your computer. Read [Develop on GitHub Codespaces](#develop-on-github-codespaces) for full instructions on how to do this.
 * Local machine. If you are more experienced then you might prefer to develop on your own computer. Read [Develop locally](#develop-locally) for full instructions on how to do this.
 
 !!! note
