@@ -195,6 +195,50 @@ class TestDashboardPreBuild:
             layout=mocker.ANY,  # partial call is tricky to mock out so we ignore it.
         )
 
+    @pytest.mark.parametrize(
+        "logo_files, error_msg",
+        [
+            (
+                ["logo.svg", "logo_dark.svg", "logo_light.svg"],
+                "Cannot provide `logo` together with both `logo_dark` and `logo_light`. Please provide either `logo`, "
+                "or both `logo_dark` and `logo_light`.",
+            ),
+            (
+                ["logo.svg", "logo_light.svg"],
+                "Both `logo_dark` and `logo_light` must be provided together. Please provide either both or neither.",
+            ),
+            (
+                ["logo.svg", "logo_dark.svg"],
+                "Both `logo_dark` and `logo_light` must be provided together. Please provide either both or neither.",
+            ),
+            (
+                ["logo_light.svg"],
+                "Both `logo_dark` and `logo_light` must be provided together. Please provide either both or neither.",
+            ),
+            (
+                ["logo_dark.svg"],
+                "Both `logo_dark` and `logo_light` must be provided together. Please provide either both or neither.",
+            ),
+        ],
+    )
+    def test_invalid_logo_combinations(self, page_1, tmp_path, logo_files, error_msg):
+        for file_path in logo_files:
+            Path(tmp_path / file_path).touch()
+        Vizro(assets_folder=tmp_path)
+
+        with pytest.raises(ValueError, match=error_msg):
+            vm.Dashboard(pages=[page_1]).pre_build()
+
+    @pytest.mark.parametrize(
+        "logo_files",
+        [["logo_dark.svg", "logo_light.svg"], ["logo.svg"], []],
+    )
+    def test_valid_logo_combinations(self, page_1, tmp_path, logo_files):
+        for file_path in logo_files:
+            Path(tmp_path / file_path).touch()
+        Vizro(assets_folder=tmp_path)
+        vm.Dashboard(pages=[page_1]).pre_build()
+
     def test_make_page_404_layout(self, vizro_app):
         # vizro_app fixture is needed to avoid mocking out get_relative_path.
         expected = html.Div(
