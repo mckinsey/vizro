@@ -44,6 +44,7 @@ jobs:
         run: |
           export INPUT_OWNER=mckinsey
           export INPUT_REPO=vizro-qa
+          
           if [ "${{ matrix.label }}" == "integration tests" ]; then
             export INPUT_WORKFLOW_FILE_NAME=${{ secrets.VIZRO_QA_INTEGRATION_TESTS_WORKFLOW }}
           elif [ "${{ matrix.label }}" == "notebooks test" ]; then
