@@ -11,6 +11,23 @@ See the fragment files in the [changelog.d directory](https://github.com/mckinse
 
 <!-- scriv-insert-here -->
 
+<a id='changelog-0.1.24'></a>
+# 0.1.24 — 2024-09-30
+
+## Added
+
+- Add `id` to `title` of `Graph`, `Table`, `AgGrid` and `Container`. ([#705](https://github.com/mckinsey/vizro/pull/705))
+
+- Theme switcher can now switch between light and dark logos. ([#745](https://github.com/mckinsey/vizro/pull/745))
+
+## Changed
+
+- Changed dependency from `ruff` to `black` and `autoflake` in order to facilitate installation on pyodide ([#757](https://github.com/mckinsey/vizro/pull/757))
+
+## Fixed
+
+- Enable overwriting global `font-family` in vizro chart templates. ([#717](https://github.com/mckinsey/vizro/pull/717))
+
 <a id='changelog-0.1.23'></a>
 
 # 0.1.23 — 2024-09-12
