@@ -8,6 +8,7 @@ repos:
       - id: check-yaml
         args: ["--unsafe"]
       - id: check-json
+        exclude: "devcontainer.json" # Contains comments.
       - id: trailing-whitespace
       - id: end-of-file-fixer
 

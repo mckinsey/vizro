@@ -98,6 +98,7 @@ markdown_extensions:
   - pymdownx.arithmatex:
       generic: true
   - footnotes
+  - pymdownx.keys
   - pymdownx.details
   - pymdownx.superfences:
       custom_fences:
