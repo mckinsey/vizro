@@ -8,9 +8,9 @@ import logging
 from typing import List, Optional, Union
 
 import autoflake
+import black
 import pandas as pd
 import plotly.graph_objects as go
-from black import FileMode, format_str
 
 from vizro_ai.plot._utils._safeguard import _safeguard_check
 
@@ -30,7 +30,9 @@ def _format_and_lint(code_string: str) -> str:
     # While we wait for the API, we can autoflake and black to process code strings.
 
     removed_imports = autoflake.fix_code(code_string, remove_all_unused_imports=True)
-    formatted = format_str(removed_imports, mode=FileMode())
+    # Black doesn't yet have a Python API, so format_str might not work at some point in the future.
+    # https://black.readthedocs.io/en/stable/faq.html#does-black-have-an-api
+    formatted = black.format_str(removed_imports, mode=black.Mode())
     return formatted
 
 
