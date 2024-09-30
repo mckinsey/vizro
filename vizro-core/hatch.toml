@@ -10,7 +10,7 @@ matrix.python.features = [
   {value = "kedro", if = ["3.8", "3.9", "3.10", "3.11"]}
 ]
 
-[envs.all.py3.11.scripts]
+[envs."all.py3.11".scripts]
 # Ideally schema would work best as a Python script with the Python version pinned, but in Hatch it's not possible to
 # specify the current vizro as a dependency in a Python script (this is possible with uv project management). Instead
 # you'd need to add the path of vizro *and all its dependencies* in the file's add `sys.path`, which is not nice.
