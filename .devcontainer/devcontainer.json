@@ -26,3 +26,4 @@
   // Doing it programmatically is also possible but not very simple:
   // https://github.com/microsoft/vscode-python/issues/21783
 }
+]
