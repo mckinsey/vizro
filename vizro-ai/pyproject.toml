@@ -20,7 +20,7 @@ dependencies = [
   "langchain>=0.1.0, <0.3.0",  # TODO update to pydantic v2 and remove upper bound
   "langgraph>=0.1.2, <0.2.17",  # TODO update to pydantic v2 and remove upper bound (latest version break pydantic v1 compatibility)
   "python-dotenv>=1.0.0",  # TODO decide env var management to see if we need this
-  "vizro>=0.1.21",
+  "vizro>=0.1.23",
   "langchain_openai",  # Base dependency, ie minimum model working
   "ruff"
 ]
