@@ -3,18 +3,18 @@ import datetime
 import time
 import plotly.express as px
 
-
 from dash import Dash, html, dcc, Output, callback, clientside_callback, Input, State, set_props
+import dash_mantine_components as dmc
 
 
-# TODO: How to test this?
+# TODO-TEST: How to test this?
 #  =====================================================================
 #  *** ATTENTION: THIS IS THE ONLY VARIABLE YOU NEED TO SET ***
 #  Set CONTROL_SELECTOR to test different control types
 #  Choose between: dcc.Dropdown, dcc.Checklist, dcc.RadioItems, dcc.Slider, dcc.RangeSlider
 #  For example: CONTROL_SELECTOR = dcc.RadioItems
 #  =====================================================================
-CONTROL_SELECTOR = dcc.Dropdown
+CONTROL_SELECTOR = dcc.RangeSlider
 
 # IS_DROPDOWN_MULTI must be set to True or False for dcc.Dropdown selector.
 IS_DROPDOWN_MULTI = True
@@ -65,11 +65,9 @@ def numerical_filter_pre_build():
     return _min, _max, [_min, _max] if MULTI else _min
 
 
-# TODO-ANTONY: You can hardcode these values for testing purposes. They represent initial options/min/max/value
+# TODO-TEST: You can hardcode these values for testing purposes. They represent initial options/min/max/value
 #  for the filter that are created in and sent from page.build() every time page is refreshed.
 pre_build_options, pre_build_categorical_value = categorical_filter_pre_build()
-pre_build_options, pre_build_categorical_value = ["setosa"], ["setosa"]
-
 pre_build_min, pre_build_max, pre_build_numerical_value = numerical_filter_pre_build()
 
 
@@ -98,35 +96,51 @@ def homepage(**kwargs):
 
 
 # Like filter build - gets run every time page is loaded
-def categorical_filter_build(options=None, value=None, **kwargs):
+def categorical_filter_build(options=None):
+    kwargs = {}
     if CONTROL_SELECTOR == dcc.Dropdown:
         kwargs["multi"] = MULTI
 
     return CONTROL_SELECTOR(
         id=f'filter',
         options=options or pre_build_options,
-        value=value or pre_build_categorical_value,
+        value=pre_build_categorical_value,
         persistence=True,
         persistence_type="session",
         **kwargs
     )
 
 
-def numerical_filter_build(min_value=None, max_value=None, value=None, **kwargs):
+def numerical_filter_build(min_value=None, max_value=None):
     return CONTROL_SELECTOR(
         id=f'filter',
         min=min_value or pre_build_min,
         max=max_value or pre_build_max,
-        value=value or pre_build_numerical_value,
+        value=pre_build_numerical_value,
         step=0.1,
         persistence=True,
         persistence_type="session",
-        **kwargs
     )
 
 
 # Like another-page build
 def another_page(**kwargs):
+    def _get_initial_page_build_object():
+        if CONTROL_SELECTOR == dcc.Dropdown:
+            # A hack explained in on_page_load To-do "Limitations" section.
+            return dmc.DateRangePicker(
+                id='filter',
+                value=pre_build_categorical_value,
+                persistence=True,
+                persistence_type="session",
+            )
+        elif CONTROL_SELECTOR in SELECTOR_TYPE["categorical"]:
+            return categorical_filter_build()
+        elif CONTROL_SELECTOR in SELECTOR_TYPE["numerical"]:
+            return numerical_filter_build()
+        else:
+            raise ValueError("Invalid CONTROL_SELECTOR.")
+
     return make_page(
         [
             dcc.Store(id="on_page_load_trigger_another_page"),
@@ -140,17 +154,7 @@ def another_page(**kwargs):
 
             # # Outer container can be changed with dcc.Loading.
             html.Div(
-                # categorical_filter_build() if CONTROL_SELECTOR in SELECTOR_TYPE["categorical"] else numerical_filter_build(),
-
-                # TODO-ANTONY: If we send dcc.Checklist here (or dbc component or universal vizro component) it looks like it works.
-                # dcc.Checklist(
-                #     id=f'filter',
-                #     options=pre_build_options,
-                #     value=pre_build_categorical_value,
-                #     persistence=True,
-                #     persistence_type="session",
-                # ),
-
+                _get_initial_page_build_object(),
                 id="filter_container",
             ),
 
@@ -256,8 +260,8 @@ def on_page_load(data, persisted_filter_value, x):
     #      In persistence.js -> LN:309 "recordUiEdit" function is triggered when dropdown is returned from the server.
     #      It causes storage.SetItem() to be triggered which mess-ups the persistence for the Dropdown.
     #      This is probably dash bug because Dropdown is handled a lot with async which probably causes that returned
-    #      Dropdown form the page_build or OPL triggers the "recordUiEdit" which should not trigger.
-    #      Should we recalculate options in pre_build()? -> No.
+    #      Dropdown from the page_build or OPL triggers the "recordUiEdit" which should not trigger.
+    #      ** Problem is solved by returning dmc.DateRangePicker instead of dcc.Dropdown from page.build. **
     # --- (A.M.): How to achieve all of these: ---
     # * get correct selected value passed into graph calls -> Works with this solution.
     # * populate filter with right values for user on first page load -> Works with this solution.
