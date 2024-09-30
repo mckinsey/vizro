@@ -148,8 +148,7 @@ We have [configured Hatch to use uv](https://hatch.pypa.io/1.12/how-to/environme
 If for some reason you do need to use `pip` then the correct way to do so is through `hatch run pip`. For example, you could run `hatch run pip show plotly`. This will use the version of uv that Hatch itself uses under the hood. If you already have uv installed globally then `uv pip show plotly` would also work.
 
 !!! warning
-    You _should not_ try to interact with Vizro dependencies using a global `pip`. For example, running `pip show
-    plotly` without the `hatch run` prefix will not work correctly.
+    You should not try to interact with Vizro dependencies using a global `pip`. For example, running `pip show plotly` without the `hatch run` prefix will not work correctly.
 
 ## Code of conduct
 
