@@ -13,9 +13,10 @@ except ImportError:  # pragma: no cov
 
 import inspect
 import logging
-import subprocess
 import textwrap
 
+import autoflake
+from black import FileMode, format_str
 from typing_extensions import Annotated
 
 from vizro.managers import model_manager
@@ -73,12 +74,10 @@ def _patch_vizro_base_model_dict():
 def _format_and_lint(code_string: str) -> str:
     # Tracking https://github.com/astral-sh/ruff/issues/659 for proper python API
     # Good example: https://github.com/astral-sh/ruff/issues/8401#issuecomment-1788806462
-    linted = subprocess.check_output(
-        ["ruff", "check", "--fix", "--exit-zero", "--silent", "--isolated", "-"], input=code_string, encoding="utf-8"
-    )
-    formatted = subprocess.check_output(
-        ["ruff", "format", "--silent", "--isolated", "-"], input=linted, encoding="utf-8"
-    )
+    # While we wait for the API, we can autoflake and black to process code strings.
+
+    removed_imports = autoflake.fix_code(code_string, remove_all_unused_imports=True)
+    formatted = format_str(removed_imports, mode=FileMode())
     return formatted
 
 
