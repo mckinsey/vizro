@@ -23,7 +23,7 @@ See the fragment files in the [changelog.d directory](https://github.com/mckinse
 
 ## Changed
 
-- Changed dependency from `ruff` to `black` and `autoflake` in order to facilitate installation on pyodide ([#757](https://github.com/mckinsey/vizro/pull/757))
+- Changed dependency from `ruff` to `black` and `autoflake` in order to facilitate installation on pyodide. ([#757](https://github.com/mckinsey/vizro/pull/757))
 
 ## Fixed
 
