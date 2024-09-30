@@ -1,6 +1,6 @@
 # Contributing
 
-Contributions of all experience levels are welcome! There are many ways to contribute, and we appreciate any help: it doesn't have to be a pull request (PR) on our code. You can also [report a bug](faq.md#how-can-i-report-a-bug), [request a feature](faq.md#how-can-i-request-a-feature), or [ask and answer community questions](faq.md#i-still-have-a-question-where-can-i-ask-it). Before making significant changes to Vizro code, you should first use [GitHub issues](https://github.com/mckinsey/vizro/issues) to discuss your contribution. 
+Contributions of all experience levels are welcome! There are many ways to contribute, and we appreciate any help: it doesn't have to be a pull request (PR) on our code. You can also [report a bug](faq.md#how-can-i-report-a-bug), [request a feature](faq.md#how-can-i-request-a-feature), or [ask and answer community questions](faq.md#i-still-have-a-question-where-can-i-ask-it). Before making significant changes to Vizro code, you should first use [GitHub issues](https://github.com/mckinsey/vizro/issues) to discuss your contribution.
 
 Our development follows a standard [GitHub flow](https://docs.github.com/en/get-started/using-github/github-flow). In order to be merged, your PR must meet all the following requirements:
 
@@ -148,7 +148,7 @@ We have [configured Hatch to use uv](https://hatch.pypa.io/1.12/how-to/environme
 If for some reason you do need to use `pip` then the correct way to do so is through `hatch run pip`. For example, you could run `hatch run pip show plotly`. This will use the version of uv that Hatch itself uses under the hood. If you already have uv installed globally then `uv pip show plotly` would also work.
 
 !!! warning
-    You _should not_ try to interact with Vizro dependencies using a global `pip`. For example, running `pip show 
+    You _should not_ try to interact with Vizro dependencies using a global `pip`. For example, running `pip show
     plotly` without the `hatch run` prefix will not work correctly.
 
 ## Code of conduct
