@@ -67,6 +67,8 @@ _PageDivsType = TypedDict(
         "nav-bar": dbc.Navbar,
         "nav-panel": dbc.Nav,
         "logo": html.Div,
+        "logo-dark": html.Div,
+        "logo-light": html.Div,
         "control-panel": html.Div,
         "page-components": html.Div,
     },
@@ -109,19 +111,20 @@ class Dashboard(VizroBaseModel):
 
     @_log_call
     def pre_build(self):
-        meta_image = self._infer_image("app") or self._infer_image("logo")
+        self._validate_logos()
 
         # Setting order here ensures that the pages in dash.page_registry preserves the order of the List[Page].
         # For now the homepage (path /) corresponds to self.pages[0].
         # Note redirect_from=["/"] doesn't work and so the / route must be defined separately.
         self.pages[0].path = "/"
+        meta_img = self._infer_image("app") or self._infer_image("logo") or self._infer_image("logo_dark")
 
         for order, page in enumerate(self.pages):
             dash.register_page(
                 module=page.id,
                 name=page.title,
                 description=page.description,
-                image=meta_image,
+                image=meta_img,
                 title=f"{self.title}: {page.title}" if self.title else page.title,
                 path=page.path,
                 order=order,
@@ -169,6 +172,22 @@ class Dashboard(VizroBaseModel):
             className=self.theme,
         )
 
+    def _validate_logos(self):
+        logo_img = self._infer_image(filename="logo")
+        logo_dark_img = self._infer_image(filename="logo_dark")
+        logo_light_img = self._infer_image(filename="logo_light")
+
+        if logo_dark_img and logo_light_img:
+            if logo_img:
+                raise ValueError(
+                    "Cannot provide `logo` together with both `logo_dark` and `logo_light`. "
+                    "Please provide either `logo`, or both `logo_dark` and `logo_light`."
+                )
+        elif logo_dark_img or logo_light_img:
+            raise ValueError(
+                "Both `logo_dark` and `logo_light` must be provided together. Please provide either both or neither."
+            )
+
     def _get_page_divs(self, page: Page) -> _PageDivsType:
         # Identical across pages
         dashboard_title = (
@@ -186,9 +205,18 @@ class Dashboard(VizroBaseModel):
             ),
             id="settings",
         )
+
         logo_img = self._infer_image(filename="logo")
+        logo_dark_img = self._infer_image(filename="logo_dark")
+        logo_light_img = self._infer_image(filename="logo_light")
+
         path_to_logo = get_asset_url(logo_img) if logo_img else None
+        path_to_logo_dark = get_asset_url(logo_dark_img) if logo_dark_img else None
+        path_to_logo_light = get_asset_url(logo_light_img) if logo_light_img else None
+
         logo = html.Img(id="logo", src=path_to_logo, hidden=not path_to_logo)
+        logo_dark = html.Img(id="logo-dark", src=path_to_logo_dark, hidden=not path_to_logo_dark)
+        logo_light = html.Img(id="logo-light", src=path_to_logo_light, hidden=not path_to_logo_light)
 
         # Shared across pages but slightly differ in content. These could possibly be done by a clientside
         # callback instead.
@@ -203,11 +231,22 @@ class Dashboard(VizroBaseModel):
         page_components = page_content["page-components"]
 
         return html.Div(
-            [dashboard_title, settings, page_title, nav_bar, nav_panel, logo, control_panel, page_components]
+            [
+                dashboard_title,
+                settings,
+                page_title,
+                nav_bar,
+                nav_panel,
+                logo,
+                logo_dark,
+                logo_light,
+                control_panel,
+                page_components,
+            ]
         )
 
     def _arrange_page_divs(self, page_divs: _PageDivsType):
-        logo_title = [page_divs["logo"], page_divs["dashboard-title"]]
+        logo_title = [page_divs["logo"], page_divs["logo-dark"], page_divs["logo-light"], page_divs["dashboard-title"]]
         page_header_divs = [html.Div(id="logo-and-title", children=logo_title, hidden=_all_hidden(logo_title))]
         left_sidebar_divs = [page_divs["nav-bar"]]
         left_main_divs = [page_divs["nav-panel"], page_divs["control-panel"]]

@@ -33,11 +33,29 @@ For more information, see the [Dash documentation](https://dash.plotly.com/exter
 
 ## Add a logo image
 
-Vizro automatically incorporates the dashboard logo in the top-left corner of each page if an image named
-`logo.<extension>` is present within the assets folder.
+### Single logo
 
-Image types of `apng`, `avif`, `gif`, `jpeg`, `jpg`, `png`, `svg`, and `webp` are supported.
+If an image named `logo.<extension>` is present in the assets folder, Vizro automatically incorporates the logo in the top-left corner of the dashboard.
 
+**Supported image extensions:** `apng`, `avif`, `gif`, `jpeg`, `jpg`, `png`, `svg`, and `webp`
+
+### Theme-specific logos
+
+You can also supply two images named `logo_dark.<extension>` and `logo_light.<extension>` to switch logos
+based on the theme (dark or light).
+
+Note that both `logo_dark.<extension>` and `logo_light.<extension>` must be provided together, and they cannot be
+provided if a single `logo.<extension>` is also provided for both light/dark themes.
+
+The valid configurations are as follows:
+
+* Single logo: Provide only `logo.<extension>`, which is used for dark and light themes.
+* Theme logos: Provide both `logo_dark.<extension>` and `logo_light.<extension>` for dark/light themes.
+Do not provide `logo.<extension>`.
+* No logo: No logo images provided.
+
+![Logo dark](../../assets/user_guides/assets/logo-dark.png)
+![Logo light](../../assets/user_guides/assets/logo-light.png)
 
 ## Change the `assets` folder path
 If you do not want to place your `assets` folder in the root directory of your app, you can
