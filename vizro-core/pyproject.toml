@@ -24,7 +24,8 @@ dependencies = [
   "dash_mantine_components<0.13.0",  # 0.13.0 is not compatible with 0.12,
   "flask_caching>=2",
   "wrapt>=1",
-  "ruff"
+  "black",
+  "autoflake"
 ]
 description = "Vizro is a package to facilitate visual analytics."
 dynamic = ["version"]
