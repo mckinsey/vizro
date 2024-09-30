@@ -139,7 +139,7 @@ We encourage you to ask and answer technical questions via the [GitHub Issues](h
 ## Contributing
 
 To learn more about making a contribution,
-please see the [Contributing Guide](https://vizro.readthedocs.io/en/stable/pages/development/contributing/) for more information
+please see the [contributing guide](https://vizro.readthedocs.io/en/stable/pages/development/contributing/) for more information
 
 You can also view current and former [contributors](https://vizro.readthedocs.io/en/stable/pages/development/authors/)
 
