@@ -55,7 +55,7 @@ prep-release = [
 pypath = "python -c 'import sys; print(sys.executable)'"
 # Ideally just doing hatch run:schema would be fine, but the schema slightly depends on Python version
 # (Python 3.8 vs. Python 3.11 give different results), even for the same pydantic version. So we point to a script
-# that runs specificially in Python 3.11.
+# that runs specifically in Python 3.11.
 schema = "hatch run all.py3.11:schema"
 secrets = "pre-commit run gitleaks --all-files"
 # Note `hatch run test` currently fails due to interference between integration tests and unit tests. Ideally we would
