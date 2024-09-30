@@ -13,6 +13,8 @@ IFS=$'\n\t'
 PURPLE="\033[1;35m"
 RESET="\033[0m"
 
+# This and many of the following conditionals are irrelevant given the above setting
+# of variables, but the code is left here to be consistent with the original source.
 if [[ "${RUNNER_OS}" == "Windows" ]]; then
   SEP="\\"
 else

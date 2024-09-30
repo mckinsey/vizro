@@ -8,6 +8,8 @@ Our development follows a standard [GitHub flow](https://docs.github.com/en/get-
 * Continuous Integration (CI) checks pass
 * code is up-to-date with `main`
 
+If you are a first-time contributor with a new GitHub account then you may also need to [wait for CI workflows to be approved](https://docs.github.com/en/actions/managing-workflow-runs-and-deployments/managing-workflow-runs/approving-workflow-runs-from-public-forks).
+
 We aim to make the contribution process as frictionless as possible by having only one direct development dependency: [Hatch](https://hatch.pypa.io/). There are two ways to develop on Vizro:
 
 * [GitHub Codespaces](https://docs.github.com/en/codespaces). This is the recommended method if you are a new contributor and is the quickest and easiest way to get started. All development can be done in your browser in a temporary environment; you do not need to set up anything on your computer. Read [Develop on GitHub Codespaces](#develop-on-github-codespaces) for full instructions on how to do this.
@@ -20,13 +22,11 @@ We aim to make the contribution process as frictionless as possible by having on
 
 ## Develop on GitHub Codespaces
 
-!!! note
-
-    There is no need to manually create a fork of the Vizro code if you use GitHub Codespaces. A fork is [automatically created for you](https://docs.github.com/en/codespaces/developing-in-a-codespace/using-source-control-in-your-codespace#about-automatic-forking).
+There is no need to manually create a fork of the Vizro code if you use GitHub Codespaces. A fork is [automatically created for you](https://docs.github.com/en/codespaces/developing-in-a-codespace/using-source-control-in-your-codespace#about-automatic-forking).
 
 To develop on [GitHub Codespaces](https://docs.github.com/en/codespaces), follow the below steps:
 
-1. [Create a codespace for our repository](https://codespaces.new/mckinsey/vizro). Leave the settings on their defaults and click "Create codespace" to start your codespace. It should take 1-2 minutes to fully launch and automatically start an example dashboard on port 8050.
+1. [Create a codespace for our repository](https://codespaces.new/mckinsey/vizro). Leave the settings on their defaults and click "Create codespace" to start your codespace. It should take 1-2 minutes to fully launch and automatically start an example dashboard on port 8050. In the rare event that the codespace fails to start correctly and enters recovery mode, you should [rebuild the container](https://docs.github.com/en/codespaces/developing-in-a-codespace/rebuilding-the-container-in-a-codespace#rebuilding-a-container) or start a whole new codespace.
 2. Make changes to Vizro code in your codespace. See the [GitHub Codespaces documentation on developing in a codespace](https://docs.github.com/en/codespaces/developing-in-a-codespace/developing-in-a-codespace) for more information.
 3. Add your name to the [list of contributors](authors.md) (source file `vizro-core/docs/pages/explanation/authors.md`).
 4. [Create a pull request](https://docs.github.com/en/pull-requests/collaborating-with-pull-requests/proposing-changes-to-your-work-with-pull-requests/creating-a-pull-request-from-a-fork).
