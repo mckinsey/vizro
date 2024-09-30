@@ -41,27 +41,6 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
-      # Pinned Chrome version because chromedriver v120 recognized as chrome-headless-shell instead of chrome
-      # https://github.com/plotly/dash/issues/2712
-      # https://bugs.chromium.org/p/chromedriver/issues/detail?id=4665
-      # https://github.com/mckinsey/vizro/pull/215/
-      # If these are fixed then this whole step can be removed.
-      - name: Install Chrome and chromedriver
-        run: |
-          export chrome_version=125.0.6422.141
-          sudo apt-get update || true
-          sudo apt-get install libu2f-udev -y
-          wget "https://dl.google.com/linux/chrome/deb/pool/main/g/google-chrome-stable/google-chrome-stable_$chrome_version-1_amd64.deb"
-          sudo apt-get install -y --allow-downgrades ./google-chrome-stable_$chrome_version-1_amd64.deb
-          rm google-chrome-stable_$chrome_version-1_amd64.deb
-
-          wget https://storage.googleapis.com/chrome-for-testing-public/$chrome_version/linux64/chromedriver-linux64.zip
-          unzip chromedriver-linux64.zip
-          cd chromedriver-linux64
-          sudo mv chromedriver /usr/bin/chromedriver
-          sudo chown root:root /usr/bin/chromedriver
-          sudo chmod +x /usr/bin/chromedriver
-
       - name: Set up Python ${{ matrix.python-version }}
         uses: actions/setup-python@v5
         with:
