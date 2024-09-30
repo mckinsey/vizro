@@ -33,7 +33,6 @@ Uncomment the section that is right (remove the HTML comment wrapper).
 
 - Changed dependency from `ruff` to `black` and `autoflake` in order to facilitate installation on pyodide ([#757](https://github.com/mckinsey/vizro/pull/757))
 
-
 <!--
 ### Fixed
 
