@@ -1,9 +1,5 @@
 # Dashboard generation
 
-!!! warning "Feature in Alpha Version"
-    This feature is currently in **Alpha** version. It is stable but not officially released yet. We welcome feedback via the [GitHub Issues](https://github.com/mckinsey/vizro/issues). Note that the feature and its API may still undergo minor adjustments.
-
-
 In the previous tutorial, we explained how to use Vizro-AI to generate individual charts from text. Vizro-AI also supports text-to-dashboard functionality, enabling you to generate a complete [Vizro](https://vizro.readthedocs.io/en/stable/) dashboard containing multiple charts and pages.
 
 You may also want to review the [Vizro dashboard tutorial](https://vizro.readthedocs.io/en/stable/pages/tutorials/first-dashboard/), which creates a dashboard from scratch rather than by generation with Vizro-AI.
@@ -85,10 +81,10 @@ Add a filter to filter the box plot by year.
 Next, submit the data and prompt string:
 
 ```py
-dashboard = vizro_ai._dashboard([df], user_question)
+dashboard = vizro_ai.dashboard([df], user_question)
 ```
 
-The call to `_dashboard()` initiates dashboard generation. By default, it generates the Vizro `Dashobard` Object.
+The call to `dashboard()` initiates dashboard generation. By default, it generates the Vizro `Dashboard` Object.
 
 ## 7. Build dashboard
 Once dashboard generation is complete, launch the dashboard with `build()`.
@@ -118,7 +114,7 @@ Vizro().build(dashboard).run()
         Add a filter to filter the box plot by year.
         """
 
-        dashboard = vizro_ai._dashboard([df], user_question)
+        dashboard = vizro_ai.dashboard([df], user_question)
         Vizro().build(dashboard).run()
         ```
 

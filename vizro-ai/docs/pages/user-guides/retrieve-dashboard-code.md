@@ -1,8 +1,5 @@
 # Retrieve the code of Vizro-AI generated dashboard
 
-!!! warning "Feature in Alpha Version"
-    This feature is currently in **Alpha** version. It is stable but not officially released yet. We welcome feedback via the [GitHub Issues](https://github.com/mckinsey/vizro/issues). Note that the feature and its API may still undergo minor adjustments.
-
 This guide shows how to retrieve the code of a Vizro-AI generated dashboard. The code can be used for further iterations, improvements and deployment.
 
 While Vizro-AI can follow complex user requirements well and generate high-quality dashboards, due to the nature of LLMs, the generated dashboards often only approximately match user expectations. Besides refining the user prompt and re-running Vizro-AI, you can also extract the code and iterate manually to achieve the desired result.
@@ -34,7 +31,7 @@ Create a one-page dashboard layout with the following components:
 from vizro_ai import VizroAI
 
 vizro_ai = VizroAI(model="gpt-4o-mini")
-result = vizro_ai._dashboard([df], user_question, return_elements=True)
+result = vizro_ai.dashboard([df], user_question, return_elements=True)
 ```
 This triggers the dashboard building process. Once Vizro-AI finishes the dashboard generation process, you can now launch the dashboard.
 
@@ -42,6 +39,26 @@ This triggers the dashboard building process. Once Vizro-AI finishes the dashboa
 
     === "Code"
         ```py
+        import vizro.plotly.express as px
+        from vizro_ai import VizroAI
+        from vizro import Vizro
+
+        df = px.data.tips()
+        user_question = """
+        Create a one-page dashboard layout with the following components:
+
+        1. Card:
+           - Position: Left of the page
+           - Size: Takes up 1/4 of the total page width
+           - Content: Display the text "This is Tips dataset"
+
+        1. Table:
+           - Position: Right of the card
+           - Size: Takes up the remaining 3/4 of the page width
+           - Content: Display the Tips dataset
+        """
+        vizro_ai = VizroAI(model="gpt-4o-mini")
+        result = vizro_ai.dashboard([df], user_question, return_elements=True)
         Vizro().build(result.dashboard).run()
         ```
 
@@ -56,9 +73,29 @@ This triggers the dashboard building process. Once Vizro-AI finishes the dashboa
 
     === "Code"
         ```py
+        import vizro.plotly.express as px
+        from vizro_ai import VizroAI
+        from vizro import Vizro
+
+        df = px.data.tips()
+        user_question = """
+        Create a one-page dashboard layout with the following components:
+
+        1. Card:
+           - Position: Left of the page
+           - Size: Takes up 1/4 of the total page width
+           - Content: Display the text "This is Tips dataset"
+
+        1. Table:
+           - Position: Right of the card
+           - Size: Takes up the remaining 3/4 of the page width
+           - Content: Display the Tips dataset
+        """
+        vizro_ai = VizroAI(model="gpt-4o-mini")
+        result = vizro_ai.dashboard([df], user_question, return_elements=True)
+
         print(result.code)
         ```
-
     === "Result"
         ```py
         ######## Module Imports ##########
@@ -77,26 +114,26 @@ This triggers the dashboard building process. Once Vizro-AI finishes the dashboa
 
         ########## Object code ###########
         dashboard = vm.Dashboard(
-            pages=[
-                vm.Page(
-                    id="Tips Data Visualization",
-                    components=[
-                        vm.Card(
-                            id="tips_card_tips_data_visualization",
-                            type="card",
-                            text="This is Tips dataset",
-                            href="",
-                        ),
-                        vm.AgGrid(
-                            id="tips_table_tips_data_visualization",
-                            figure=dash_ag_grid(data_frame="restaurant_bills"),
-                        ),
-                    ],
-                    title="Tips Data Visualization",
-                    layout=vm.Layout(grid=[[0, 1, 1, 1]]),
-                    controls=[],
-                )
-            ],
-            title="Tips Dataset Overview",
+           pages=[
+               vm.Page(
+                   id="Tips Data Visualization",
+                   components=[
+                       vm.Card(
+                           id="tips_card_tips_data_visualization",
+                           type="card",
+                           text="This is Tips dataset",
+                           href="",
+                       ),
+                       vm.AgGrid(
+                           id="tips_table_tips_data_visualization",
+                           figure=dash_ag_grid(data_frame="restaurant_bills"),
+                       ),
+                   ],
+                   title="Tips Data Visualization",
+                   layout=vm.Layout(grid=[[0, 1, 1, 1]]),
+                   controls=[],
+               )
+           ],
+           title="Tips Dataset Overview",
         )
         ```
