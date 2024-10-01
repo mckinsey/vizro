@@ -1,4 +1,9 @@
 """Demo app."""
+
+# TODO: To run this program:
+#  1. upload px.data.gapminder() data to first page upload component
+#  2. create idea_s_demo/data/output_data folder
+
 import logging
 import base64
 import pandas as pd
@@ -64,7 +69,7 @@ def _load_data(file_path):
     if file_path.exists():
         return pd.read_csv(file_path)
     print("Using default data, file path might be incorrect")
-    return pd.DataFrame()
+    return px.data.gapminder()
 
 
 def page_2_load_data():
