@@ -11,6 +11,28 @@ See the fragment files in the [changelog.d directory](https://github.com/mckinse
 
 <!-- scriv-insert-here -->
 
+<a id='changelog-0.3.0'></a>
+# 0.3.0 — 2024-10-01
+
+## Highlights ✨
+
+- VizroAI now allows **any** `langchain` model with structured output capabilities to be used, not just `ChatOpenAI` ([#646](https://github.com/mckinsey/vizro/pull/646))
+- VizroAI now has a more flexible output when choosing `VizroAI.plot(...,return_elements=True)`. See documentation for all new options. ([#646](https://github.com/mckinsey/vizro/pull/646))
+
+## Removed
+
+- Removed the automatic display of chart explanation and insights in Jupyter. ([#646](https://github.com/mckinsey/vizro/pull/646))
+
+## Changed
+
+- Changed the return type of `VizroAI.plot(...,return_elements=True)` from `PlotOutputs` dataclass to a pydantic model with more flexible methods. See documentation for more into ([#646](https://github.com/mckinsey/vizro/pull/646))
+
+- Changed dependency from `ruff` to `black` and `autoflake` in order to facilitate installation on pyodide ([#757](https://github.com/mckinsey/vizro/pull/757))
+
+## Deprecated
+
+- Removed argument `explain` from VizroAI.plot(). Use `return_elements=True` instead. ([#646](https://github.com/mckinsey/vizro/pull/646))
+
 <a id='changelog-0.2.3'></a>
 
 # 0.2.3 — 2024-09-09
