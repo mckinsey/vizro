@@ -4,7 +4,7 @@ import gzip
 import base64
 from urllib.parse import urlencode, quote
 
-COMMIT_HASH = "commit_hash"
+COMMIT_HASH = "3321df6426357e7472303a3ed0b887b80349bc0d"
 
 def generate_link():
     base_url = f"https://raw.githubusercontent.com/mckinsey/vizro/{COMMIT_HASH}/vizro-ai/examples/scratch_dev/"
