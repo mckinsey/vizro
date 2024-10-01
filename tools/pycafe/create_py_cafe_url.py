@@ -15,7 +15,7 @@ def generate_link():
     # for root, _, files in os.walk(directory):
     #     print(root)
     print(os.getcwd())
-    directory = None#"../tools/pycafe"
+    directory = "."#"../tools/pycafe"
     for root, _, files in os.walk(directory):
         for file in files:
             print(root, file)
