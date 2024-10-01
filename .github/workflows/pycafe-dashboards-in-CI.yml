@@ -1,8 +1,8 @@
 name: PyCafe Dashboards in CI
 
-defaults:
-  run:
-    working-directory: vizro-core # but could be any folder
+# defaults:
+  # run:
+  #   working-directory: vizro-core # but could be any folder
 
 on:
   push:
