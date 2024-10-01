@@ -101,7 +101,7 @@ vizro_ai = VizroAI(model="gpt-4o")
 dashboard = vizro_ai.dashboard([df1, df2], user_question)
 ```
 
-The call to `dashboard()` triggers the dashboard building process. Once Vizro-AI finishes the dashboard generation process, you can launch the dashboard with `build()`.
+The call to `dashboard()` triggers the dashboard building process. Once Vizro-AI finishes this process, you can launch the dashboard with `build()`.
 
 !!! example "Generated dashboard"
 
