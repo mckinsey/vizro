@@ -14,7 +14,6 @@ def generate_link():
     # directory = "../../vizro-core/examples/scratch_dev"
     # for root, _, files in os.walk(directory):
     #     print(root)
-    import os
     print(os.getcwd())
     directory = "/tools/pycafe"
     for root, _, files in os.walk(directory):
