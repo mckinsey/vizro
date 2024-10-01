@@ -15,7 +15,7 @@ def generate_link():
     # for root, _, files in os.walk(directory):
     #     print(root)
 
-    directory = "../pycafe"
+    directory = "vizro-core/tools/pycafe"
     for root, _, files in os.walk(directory):
         for file in files:
             print(root, file)
