@@ -11,7 +11,7 @@ from vizro.models.types import capture
 
 
 @capture("figure")
-def kpi_card(  # noqa: PLR0913
+def kpi_card(
     data_frame: pd.DataFrame,
     value_column: str,
     *,

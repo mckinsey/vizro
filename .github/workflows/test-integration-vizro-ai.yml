@@ -70,10 +70,10 @@ jobs:
           python-version: ${{ matrix.python-version }}
 
       - name: Install Hatch
-        run: pip install --upgrade hatch
+        run: pip install hatch
 
-      - name: List dependencies
-        run: hatch run ${{ matrix.hatch-env }}:pip freeze
+      - name: Show dependency tree
+        run: hatch run ${{ matrix.hatch-env }}:pip tree
 
       - name: Run vizro-ai integration tests with pypi vizro
         run: |

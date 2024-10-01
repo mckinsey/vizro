@@ -1,15 +1,10 @@
 # This workflow will triage pull requests and apply a label based on the
 # paths that are modified in the pull request.
-#
-# To use this workflow, you will need to set up a .github/labeler.yml
-# file with configuration.  For more information, see:
-# https://github.com/actions/labeler
-
 name: Labeler
 on:
-  pull_request:
-    branches:
-      - "main"
+  # Note this job uses pull_request_target so we should not add steps that check out, build, or run untrusted code.
+  # https://docs.github.com/en/actions/writing-workflows/choosing-when-your-workflow-runs/events-that-trigger-workflows#pull_request_target
+  pull_request_target:
     paths:
       - "vizro-ai/**"
 
@@ -22,5 +17,3 @@ jobs:
 
     steps:
       - uses: actions/labeler@v5
-        with:
-          repo-token: "${{ secrets.GITHUB_TOKEN }}"

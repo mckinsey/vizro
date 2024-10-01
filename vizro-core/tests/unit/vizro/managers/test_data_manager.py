@@ -10,6 +10,7 @@ from asserts import assert_frame_not_equal
 from flask_caching import Cache
 from freezegun import freeze_time
 from pandas.testing import assert_frame_equal
+
 from vizro import Vizro
 from vizro.managers import data_manager
 

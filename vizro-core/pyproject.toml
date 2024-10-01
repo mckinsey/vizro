@@ -19,11 +19,13 @@ dependencies = [
   "dash_bootstrap_components",
   "dash-ag-grid>=31.0.0",
   "pandas",
+  "plotly>=5.12.0",
   "pydantic>=1.10.13",  # must be synced with pre-commit mypy hook manually
   "dash_mantine_components<0.13.0",  # 0.13.0 is not compatible with 0.12,
   "flask_caching>=2",
   "wrapt>=1",
-  "ruff"
+  "black",
+  "autoflake"
 ]
 description = "Vizro is a package to facilitate visual analytics."
 dynamic = ["version"]
@@ -81,3 +83,14 @@ filterwarnings = [
 ]
 norecursedirs = ["tests/tests_utils", "tests/js"]
 pythonpath = ["tests/tests_utils"]
+
+[tool.ruff]
+extend = "../pyproject.toml"
+src = ["src"]
+
+[tool.ruff.lint.extend-per-file-ignores]
+# Ignore current false positives for pydantic models subclassing across files
+# See: https://github.com/astral-sh/ruff/issues/5243#issuecomment-1860776975
+"**/models/**" = ["RUF012"]
+# Ignore missing docstrings in visual-vocabulary examples to keep them succinct.
+"examples/visual-vocabulary/pages/examples/**" = ["D100", "D103"]

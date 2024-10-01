@@ -147,6 +147,7 @@ Relevant prompt: {self.control_description}
 if __name__ == "__main__":
     import pandas as pd
     from dotenv import load_dotenv
+
     from vizro_ai._llm_models import _get_llm_model
     from vizro_ai.dashboard.utils import AllDfMetadata, DfMetadata
 

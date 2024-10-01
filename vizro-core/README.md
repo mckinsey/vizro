@@ -98,7 +98,7 @@ You can see Vizro in action by clicking on the following image or by visiting [t
 <img src="https://raw.githubusercontent.com/mckinsey/vizro/main/.github/images/vizro_examples_gallery.png" width="550">
 </a>
 
-## Vizro visual vocabulary
+## Visual vocabulary
 
 Our visual vocabulary dashboard helps you to select and create various types of charts. It helps you decide when to use
 each chart type, and offers sample Python code to create these charts with [Plotly](https://plotly.com/python/) and
@@ -139,7 +139,7 @@ We encourage you to ask and answer technical questions via the [GitHub Issues](h
 ## Contributing
 
 To learn more about making a contribution,
-please see the [Contributing Guide](https://vizro.readthedocs.io/en/stable/pages/development/contributing/) for more information
+please see the [contributing guide](https://vizro.readthedocs.io/en/stable/pages/development/contributing/) for more information
 
 You can also view current and former [contributors](https://vizro.readthedocs.io/en/stable/pages/development/authors/)
 

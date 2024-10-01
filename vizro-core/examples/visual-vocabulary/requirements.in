@@ -1,0 +1,5 @@
+# This file is only used if you don't have hatch installed.
+black==24.4.2
+plotly>=5.24.0
+vizro==0.1.23
+gunicorn

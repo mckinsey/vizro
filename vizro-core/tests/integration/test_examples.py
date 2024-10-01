@@ -5,6 +5,7 @@ from pathlib import Path
 
 import chromedriver_autoinstaller
 import pytest
+
 from vizro import Vizro
 
 
@@ -52,9 +53,7 @@ examples_path = Path(__file__).parents[2] / "examples"
 @pytest.mark.parametrize(
     "example_path, version",
     [
-        # KPI example is not included as it will be moved to HuggingFace over time.
         # Visual vocabulary is not included since it means installing black in the testing environment.
-        # It will move to HuggingFace in due course anyway.
         (examples_path / "scratch_dev", ""),
         (examples_path / "scratch_dev", "yaml_version"),
         (examples_path / "dev", ""),

@@ -11,6 +11,7 @@ except ImportError:  # pragma: no cov
     from pydantic import BaseModel, Field, PrivateAttr, ValidationError, root_validator, validator
 import vizro.models as vm
 from tqdm.auto import tqdm
+
 from vizro_ai.dashboard._response_models.components import ComponentPlan
 from vizro_ai.dashboard._response_models.controls import ControlPlan
 from vizro_ai.dashboard._response_models.layout import LayoutPlan
@@ -46,6 +47,7 @@ class PagePlan(BaseModel):
     _controls: List[vm.Filter] = PrivateAttr()
     _layout: vm.Layout = PrivateAttr()
     _components_code: dict = PrivateAttr()
+    _components_imports: dict = PrivateAttr()
 
     @validator("title")
     def _check_title(cls, v):
@@ -82,17 +84,20 @@ class PagePlan(BaseModel):
         self._controls = None
         self._layout = None
         self._components_code = None
+        self._components_imports = None
 
+    # TODO: Add type hints on this page!
     def _get_components_and_code(self, model, all_df_metadata):
         if self._components is None:
-            self._components, self._components_code = self._build_components(
+            self._components, self._components_imports, self._components_code = self._build_components(
                 model=model, all_df_metadata=all_df_metadata
             )
-        return self._components, self._components_code
+        return self._components, self._components_imports, self._components_code
 
     def _build_components(self, model, all_df_metadata):
         components = []
         components_code = []
+        components_imports = []
         component_log = tqdm(total=0, bar_format="{desc}", leave=False)
         with tqdm(
             total=len(self.components_plan),
@@ -103,17 +108,20 @@ class PagePlan(BaseModel):
                 component_log.set_description_str(f"[Page] <{self.title}>: [Component] {component_plan.component_id}")
                 pbar.update(1)
                 result = component_plan.create(model=model, all_df_metadata=all_df_metadata)
-                component, code = result.component, result.code
+                component, imports, code = result.component, result.imports, result.code
 
                 components.append(component)
 
                 # Store the code for the component, currently this only applies to Graph component
                 component_code = {}
+                component_imports = {}
                 if code:
                     component_code[component_plan.component_id] = code
                     components_code.append(component_code)
+                    component_imports[component_plan.component_id] = imports
+                    components_imports.append(component_imports)
         component_log.close()
-        return components, components_code
+        return components, components_imports, components_code
 
     def _get_layout(self, model, all_df_metadata):
         if self._layout is None:
@@ -135,6 +143,7 @@ class PagePlan(BaseModel):
     def _controllable_components(self, model, all_df_metadata):
         return [
             comp.id
+            # TODO: improve on taking element by position
             for comp in self._get_components_and_code(model=model, all_df_metadata=all_df_metadata)[0]
             if isinstance(comp, (vm.Graph, vm.AgGrid))
         ]
@@ -161,14 +170,14 @@ class PagePlan(BaseModel):
 
         return controls
 
-    def create(self, model, all_df_metadata) -> Tuple[Union[vm.Page, None], Optional[str]]:
+    def create(self, model, all_df_metadata) -> Tuple[Union[vm.Page, None], Optional[str], Optional[str]]:
         """Create the page."""
         page_desc = f"Building page: {self.title}"
         logger.info(page_desc)
         pbar = tqdm(total=5, desc=page_desc)
 
         title = _execute_step(pbar, page_desc + " --> add title", self.title)
-        components, components_code = _execute_step(
+        components, components_imports, components_code = _execute_step(
             pbar,
             page_desc + " --> add components",
             self._get_components_and_code(model=model, all_df_metadata=all_df_metadata),
@@ -197,12 +206,13 @@ Build page without layout.
                 page = None
         _execute_step(pbar, page_desc + " --> done", None)
         pbar.close()
-        return page, components_code
+        return page, components_imports, components_code
 
 
 if __name__ == "__main__":
     import pandas as pd
     from dotenv import load_dotenv
+
     from vizro_ai._llm_models import _get_llm_model
     from vizro_ai.dashboard.utils import AllDfMetadata, DfMetadata
 

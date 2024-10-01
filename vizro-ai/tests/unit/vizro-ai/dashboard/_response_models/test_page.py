@@ -1,4 +1,5 @@
 import pytest
+
 from vizro_ai.dashboard._response_models.page import PagePlan
 
 try:

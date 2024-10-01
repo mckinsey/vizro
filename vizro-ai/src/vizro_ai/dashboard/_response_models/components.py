@@ -5,11 +5,12 @@ import logging
 import vizro.models as vm
 
 try:
-    from pydantic.v1 import BaseModel, Field
+    from pydantic.v1 import BaseModel, Field, ValidationError
 except ImportError:  # pragma: no cov
-    from pydantic import BaseModel, Field
+    from pydantic import BaseModel, Field, ValidationError
 from langchain_core.language_models.chat_models import BaseChatModel
 from vizro.tables import dash_ag_grid
+
 from vizro_ai.dashboard._pydantic_output import _get_pydantic_model
 from vizro_ai.dashboard._response_models.types import ComponentType
 from vizro_ai.dashboard.utils import AllDfMetadata, ComponentResult
@@ -54,27 +55,25 @@ class ComponentPlan(BaseModel):
             - component: The created component (vm.Card, vm.AgGrid, or vm.Graph)
             - code: Optional string containing the code used to generate the component (for Graph type only)
 
-        Raises:
-            DebugFailure: If component creation fails, a Card with an error message is returned.
-
         """
         try:
             if self.component_type == "Graph":
                 from vizro_ai import VizroAI
 
                 vizro_ai = VizroAI(model=model)
-                result = vizro_ai._run_plot_tasks(
+                result = vizro_ai.plot(
                     df=all_df_metadata.get_df(self.df_name),
                     user_input=self.component_description,
-                    chart_name=self.component_id,
-                    max_debug_retry=2,
+                    max_debug_retry=2,  # TODO must be flexible
+                    return_elements=True,
                 )
                 return ComponentResult(
                     component=vm.Graph(
                         id=self.component_id,
-                        figure=result.figure,
+                        figure=result.get_fig_object(chart_name=self.component_id, data_frame=self.df_name, vizro=True),
                     ),
-                    code=result.code,
+                    imports=result._get_imports(vizro=True),
+                    code=result._get_chart_code(chart_name=self.component_id, vizro=True),
                 )
             elif self.component_type == "AgGrid":
                 return ComponentResult(
@@ -90,7 +89,7 @@ class ComponentPlan(BaseModel):
                 proxy_dict["id"] = self.component_id
                 return ComponentResult(component=vm.Card.parse_obj(proxy_dict))
 
-        except DebugFailure as e:
+        except (DebugFailure, ValidationError) as e:
             logger.warning(
                 f"""
 [FALLBACK] Failed to build `Component`: {self.component_id}.
@@ -105,6 +104,7 @@ Relevant prompt: {self.component_description}
 
 if __name__ == "__main__":
     from dotenv import load_dotenv
+
     from vizro_ai._llm_models import _get_llm_model
     from vizro_ai.dashboard.utils import AllDfMetadata
 

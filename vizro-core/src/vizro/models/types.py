@@ -66,7 +66,7 @@ class CapturedCallable:
 
         Partially binds *args and **kwargs to the function call.
 
-        Raises
+        Raises:
             ValueError if `function` contains positional-only or variadic positional parameters (*args).
 
         """
