@@ -7,25 +7,28 @@ from urllib.parse import urlencode, quote
 COMMIT_HASH = "3321df6426357e7472303a3ed0b887b80349bc0d"
 
 def generate_link():
-    base_url = f"https://raw.githubusercontent.com/mckinsey/vizro/{COMMIT_HASH}/vizro-core/examples/scratch_dev/"
+    base_url = f"https://raw.githubusercontent.com/mckinsey/vizro/{COMMIT_HASH}/tools/pycafe/"
     json_object = {
         "code": f"{base_url}app.py",
         "requirements": f"{base_url}requirements.txt",
         "files": []
     }
 
-    # directory = "vizro-core/examples/scratch_dev"
-    # for root, _, files in os.walk(directory):
-    #     print("FOO")
-    #     for file in files:
-    #         print(file)
-    #         file_path = os.path.join(root, file)
-    #         relative_path = os.path.relpath(file_path, directory)
-    #         file_url = f"{base_url}{relative_path.replace(os.sep, '/')}"
-    #         json_object["files"].append({
-    #             "name": relative_path,
-    #             "url": file_url
-    #         })
+# directory = "../../vizro-core/examples/scratch_dev"
+# for root, _, files in os.walk(directory):
+#     print(root)
+
+    directory = "../pycafe"
+    for root, _, files in os.walk(directory):
+        for file in files:
+            print(root,file)
+            file_path = os.path.join(root, file)
+            relative_path = os.path.relpath(file_path, directory)
+            file_url = f"{base_url}{relative_path.replace(os.sep, '/')}"
+            json_object["files"].append({
+                "name": relative_path,
+                "url": file_url
+            })
     print(json_object)
     json_text = json.dumps(json_object)
     compressed_json_text = gzip.compress(json_text.encode("utf8"))
