@@ -2,6 +2,7 @@ import logging
 
 import pytest
 import vizro.models as vm
+
 from vizro_ai.dashboard._response_models.layout import LayoutPlan
 
 

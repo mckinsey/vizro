@@ -5,9 +5,10 @@ try:
 except ImportError:  # pragma: no cov
     from pydantic import BaseModel, Field, PrivateAttr, create_model, validator
 import logging
-import subprocess
 from typing import List, Optional, Union
 
+import autoflake
+import black
 import pandas as pd
 import plotly.graph_objects as go
 
@@ -26,12 +27,12 @@ CUSTOM_CHART_NAME = "custom_chart"
 def _format_and_lint(code_string: str) -> str:
     # Tracking https://github.com/astral-sh/ruff/issues/659 for proper python API
     # Good example: https://github.com/astral-sh/ruff/issues/8401#issuecomment-1788806462
-    linted = subprocess.check_output(
-        ["ruff", "check", "--fix", "--exit-zero", "--silent", "--isolated", "-"], input=code_string, encoding="utf-8"
-    )
-    formatted = subprocess.check_output(
-        ["ruff", "format", "--silent", "--isolated", "-"], input=linted, encoding="utf-8"
-    )
+    # While we wait for the API, we can autoflake and black to process code strings.
+
+    removed_imports = autoflake.fix_code(code_string, remove_all_unused_imports=True)
+    # Black doesn't yet have a Python API, so format_str might not work at some point in the future.
+    # https://black.readthedocs.io/en/stable/faq.html#does-black-have-an-api
+    formatted = black.format_str(removed_imports, mode=black.Mode())
     return formatted
 
 

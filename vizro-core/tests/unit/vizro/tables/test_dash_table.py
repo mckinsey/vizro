@@ -1,6 +1,7 @@
 import pandas as pd
 from asserts import assert_component_equal
 from dash import dash_table
+
 from vizro.models.types import capture
 from vizro.tables import dash_data_table
 

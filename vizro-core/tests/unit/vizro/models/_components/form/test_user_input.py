@@ -3,6 +3,7 @@
 import dash_bootstrap_components as dbc
 from asserts import assert_component_equal
 from dash import html
+
 from vizro.models._components.form._user_input import UserInput
 
 

@@ -1,5 +1,6 @@
 import pytest
 import vizro.models as vm
+
 from vizro_ai.dashboard._pydantic_output import _create_message_content, _create_prompt_template, _get_pydantic_model
 
 

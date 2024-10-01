@@ -1,6 +1,7 @@
 import pytest
-import vizro.models as vm
 from asserts import assert_component_equal
+
+import vizro.models as vm
 from vizro import Vizro
 
 

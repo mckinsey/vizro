@@ -5,6 +5,7 @@ import pytest
 import vizro.models as vm
 from langchain.output_parsers import PydanticOutputParser
 from langchain_community.llms.fake import FakeListLLM
+
 from vizro_ai.dashboard._response_models.components import ComponentPlan
 from vizro_ai.dashboard._response_models.page import PagePlan
 from vizro_ai.dashboard.utils import AllDfMetadata, DfMetadata

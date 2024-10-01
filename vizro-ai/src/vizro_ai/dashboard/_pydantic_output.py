@@ -93,6 +93,7 @@ def _get_pydantic_model(
 if __name__ == "__main__":
     import plotly.express as px
     import vizro.models as vm
+
     from vizro_ai._llm_models import _get_llm_model
     from vizro_ai.plot._response_models import ChartPlanStatic
 

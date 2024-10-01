@@ -151,7 +151,7 @@ We encourage you to ask and answer technical questions via the [GitHub Issues](h
 
 ## Want to contribute to Vizro?
 
-The [contribution guidelines](https://vizro.readthedocs.io/en/stable/pages/explanation/contributing/) explain how you can contribute to Vizro.
+The [contributing guide](https://vizro.readthedocs.io/en/stable/pages/explanation/contributing/) explain how you can contribute to Vizro.
 
 You can also view current and former [contributors](https://vizro.readthedocs.io/en/stable/pages/explanation/authors/).
 

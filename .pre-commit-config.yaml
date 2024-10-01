@@ -8,6 +8,7 @@ repos:
       - id: check-yaml
         args: ["--unsafe"]
       - id: check-json
+        exclude: "devcontainer.json" # Contains comments.
       - id: trailing-whitespace
       - id: end-of-file-fixer
 
@@ -51,12 +52,8 @@ repos:
     rev: v0.6.3
     hooks:
       - id: ruff
-        args: [--fix, --exit-non-zero-on-fix]
-
-  - repo: https://github.com/psf/black
-    rev: 24.8.0
-    hooks:
-      - id: black
+        args: [--fix]
+      - id: ruff-format
 
   - repo: https://github.com/PyCQA/bandit
     rev: 1.7.9
