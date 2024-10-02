@@ -12,8 +12,8 @@ If you are a first-time contributor with a new GitHub account then you may also 
 
 We aim to make the contribution process as easy as possible by having only one direct development dependency: [Hatch](https://hatch.pypa.io/). There are two ways to develop on Vizro:
 
-* [GitHub Codespaces](https://docs.github.com/en/codespaces). This is the recommended method if you are a new contributor. It is the quickest and easiest way to get started. All development can be done in your browser in a temporary environment; you do not need to set up anything on your computer. The section called ["Develop on GitHub Codespaces"](#develop-on-github-codespaces) has full instructions on how to do this.
-* Local machine. If you are more experienced then you might prefer to develop on your own computer. The section called ["Develop locally"](#develop-locally) below has full instructions on how to do this.
+* [GitHub Codespaces](https://docs.github.com/en/codespaces). This is the recommended method if you are a new contributor. It is the quickest and easiest way to get started. All development can be done in your browser in a temporary environment; you do not need to set up anything on your computer. The [Develop on GitHub Codespaces](#develop-on-github-codespaces) section has full instructions on how to do this.
+* Local machine. If you are more experienced then you might prefer to develop on your own computer. The [Develop locally](#develop-locally) section has full instructions on how to do this.
 
 !!! note
 
