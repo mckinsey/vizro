@@ -2,7 +2,7 @@
 
 Contributions of all experience levels are welcome! There are many ways to contribute, and we appreciate any help: it doesn't have to be a pull request (PR) on our code. You can also [report a bug](faq.md#how-can-i-report-a-bug), [request a feature](faq.md#how-can-i-request-a-feature), or [ask and answer community questions](faq.md#i-still-have-a-question-where-can-i-ask-it). Before making significant changes to Vizro code, you should first use [GitHub issues](https://github.com/mckinsey/vizro/issues) to discuss your contribution.
 
-Our development follows a standard [GitHub flow](https://docs.github.com/en/get-started/using-github/github-flow). In order to be merged, your PR must meet all the following requirements:
+Our development follows a standard [GitHub flow](https://docs.github.com/en/get-started/using-github/github-flow). To be merged, your PR must meet all the following requirements:
 
 * two approving reviews (including a code owner)
 * Continuous Integration (CI) checks pass
@@ -10,10 +10,10 @@ Our development follows a standard [GitHub flow](https://docs.github.com/en/get-
 
 If you are a first-time contributor with a new GitHub account then you may also need to [wait for CI workflows to be approved](https://docs.github.com/en/actions/managing-workflow-runs-and-deployments/managing-workflow-runs/approving-workflow-runs-from-public-forks).
 
-We aim to make the contribution process as frictionless as possible by having only one direct development dependency: [Hatch](https://hatch.pypa.io/). There are two ways to develop on Vizro:
+We aim to make the contribution process as easy as possible by having only one direct development dependency: [Hatch](https://hatch.pypa.io/). There are two ways to develop on Vizro:
 
-* [GitHub Codespaces](https://docs.github.com/en/codespaces). This is the recommended method if you are a new contributor and is the quickest and easiest way to get started. All development can be done in your browser in a temporary environment; you do not need to set up anything on your computer. Read [Develop on GitHub Codespaces](#develop-on-github-codespaces) for full instructions on how to do this.
-* Local machine. If you are more experienced then you might prefer to develop on your own computer. Read [Develop locally](#develop-locally) for full instructions on how to do this.
+* [GitHub Codespaces](https://docs.github.com/en/codespaces). This is the recommended method if you are a new contributor. It is the quickest and easiest way to get started. All development can be done in your browser in a temporary environment; you do not need to set up anything on your computer. The [Develop on GitHub Codespaces](#develop-on-github-codespaces) section has full instructions on how to do this.
+* Local machine. If you are more experienced then you might prefer to develop on your own computer. The [Develop locally](#develop-locally) section has full instructions on how to do this.
 
 !!! note
 
