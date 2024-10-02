@@ -96,7 +96,7 @@ class VizroAI:
         else:
             return response.get_fig_object(data_frame=df)
 
-    def _dashboard(
+    def dashboard(
         self,
         dfs: List[pd.DataFrame],
         user_input: str,
