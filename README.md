@@ -80,7 +80,7 @@ Visit ["Why should I use Vizro?"](https://vizro.readthedocs.io/en/stable/pages/e
 
 ## What is Vizro-AI?
 
-Vizro-AI is a separate package and extends Vizro to enable the use of natural language queries to build Plotly charts.
+Vizro-AI is a separate package and extends Vizro to enable the use of natural language queries to build Plotly charts and Vizro dashboards. With Vizro-AI you can effortlessly create interactive charts and comprehensive dashboards by simply describing your needs in plain English, or any other language.
 
 <p align="center">
 <img src="./vizro-ai/docs/assets/readme/readme_animation.gif" alt="Gif to show vizro-ai", width="525" height="296">
