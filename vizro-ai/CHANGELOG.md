@@ -17,9 +17,9 @@ See the fragment files in the [changelog.d directory](https://github.com/mckinse
 
 ## Highlights ✨
 
-- VizroAI now allows **any** `langchain` model with structured output capabilities to be used, not just `ChatOpenAI` ([#646](https://github.com/mckinsey/vizro/pull/646))
+- VizroAI now allows **any** `langchain` model with structured output capabilities to be used, not just `ChatOpenAI`. ([#646](https://github.com/mckinsey/vizro/pull/646))
 - VizroAI now has a more flexible output when choosing `VizroAI.plot(...,return_elements=True)`. See documentation for all new options. ([#646](https://github.com/mckinsey/vizro/pull/646))
-- VizroAI now support text to dashboard generation using `VizroAI.dashboard()`. To get started, visit the [Vizro-AI docs](https://vizro.readthedocs.io/projects/vizro-ai/en/latest/pages/tutorials/quickstart-dashboard/)
+- VizroAI now support text to dashboard generation using `VizroAI.dashboard()`. To get started, visit the [Vizro-AI docs](https://vizro.readthedocs.io/projects/vizro-ai/en/latest/pages/tutorials/quickstart-dashboard/).
 
 ## Removed
 
@@ -27,7 +27,7 @@ See the fragment files in the [changelog.d directory](https://github.com/mckinse
 
 ## Changed
 
-- Changed the return type of `VizroAI.plot(...,return_elements=True)` from `PlotOutputs` dataclass to a pydantic model with more flexible methods. See documentation for more into ([#646](https://github.com/mckinsey/vizro/pull/646))
+- Changed the return type of `VizroAI.plot(...,return_elements=True)` from `PlotOutputs` dataclass to a pydantic model with more flexible methods. See documentation for more info. ([#646](https://github.com/mckinsey/vizro/pull/646))
 
 ## Deprecated
 
