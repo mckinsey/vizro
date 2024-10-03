@@ -32,7 +32,7 @@ except ImportError:  # pragma: no cov
 from dash.development.base_component import Component
 
 import vizro
-from vizro._constants import MODULE_PAGE_404, STATIC_URL_PREFIX, VIZRO_ASSETS_PATH
+from vizro._constants import MODULE_PAGE_404, VIZRO_ASSETS_PATH
 from vizro.actions._action_loop._action_loop import ActionLoop
 from vizro.models import Navigation, VizroBaseModel
 from vizro.models._models_utils import _log_call
