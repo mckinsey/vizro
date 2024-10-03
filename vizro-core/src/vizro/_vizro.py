@@ -24,9 +24,8 @@ if TYPE_CHECKING:
 # served on import of vizro, regardless of whether the Vizro class or any other bits are used.
 # This list should be kept to the bare minimum so we don't insert any more than the minimum required CSS on pure Dash
 # apps.
-# At the moment the only library components we support just are KPI cards, which just need CSS files.
-# Just here for consistency. We don't currently provide any library JS, but this would be the case if there's JS
-# required for any components that can be used outside Vizro framework.
+# At the moment the only library components we support just are KPI cards, which just need CSS files. The
+# _library_js_files is here just for consistency and might be populated in future.
 _library_css_files = {
     VIZRO_ASSETS_PATH / "css/figures.css",
     VIZRO_ASSETS_PATH / "css/fonts/material-symbols-outlined.woff2",
@@ -69,7 +68,7 @@ class Vizro:
             else:
                 # map files and fonts and images. These are treated like scripts since this is how Dash handles them.
                 # This adds paths to self.dash.registered_paths so that they can be accessed without throwing an
-                # error dash._validate.validate_js_path.
+                # error in dash._validate.validate_js_path.
                 self.dash.scripts.append_script(_make_resource_spec(path))
 
         data_manager.cache.init_app(self.dash.server)
@@ -195,7 +194,7 @@ def _make_resource_spec(path: Path):
     else:
         # Files that aren't css or js cannot be minified, do not have external_url and set dynamic=True to ensure that
         # the file isn't included in the HTML source. See https://github.com/plotly/dash/pull/1078.
-        # map and font files  are be served through the CDN in the same way as the CSS files but external_url is
+        # map and font files are served through the CDN in the same way as the CSS files but external_url is
         # irrelevant here. The way the file is requested is through a relative url("./fonts/...") in the requesting
         # CSS file. When the CSS file is served from the CDN then this will refer to the font file also on the CDN.
         resource_spec["dynamic"] = True
