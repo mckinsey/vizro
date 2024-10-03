@@ -243,7 +243,7 @@ class TestDashboardPreBuild:
         # vizro_app fixture is needed to avoid mocking out get_relative_path.
         expected = html.Div(
             [
-                html.Img(src="/vizro/images/errors/error_404.svg"),
+                html.Img(),
                 html.Div(
                     [
                         html.Div(
@@ -261,7 +261,9 @@ class TestDashboardPreBuild:
             className="page_error_container",
         )
 
-        assert_component_equal(vm.Dashboard._make_page_404_layout(), expected)
+        # Strip out src since it's too long to be worth comparing and just comes directly
+        # from reading a file.
+        assert_component_equal(vm.Dashboard._make_page_404_layout(), expected, keys_to_strip={"src"})
 
 
 class TestDashboardBuild:
