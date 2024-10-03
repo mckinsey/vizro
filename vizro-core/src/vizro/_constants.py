@@ -2,7 +2,7 @@
 
 ALL_OPTION = "ALL"
 NONE_OPTION = "NONE"
-STATIC_URL_PREFIX = "vizro"
+STATIC_URL_PREFIX = "vizro"  # Can we remove this?
 MODULE_PAGE_404 = "not_found_404"
 EMPTY_SPACE_CONST = -1
 ON_PAGE_LOAD_ACTION_PREFIX = "on_page_load_action"

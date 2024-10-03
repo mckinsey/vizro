@@ -5,7 +5,7 @@ import plotly.io as pio
 from dash.development.base_component import Component
 
 from ._themes import dark, light
-from ._vizro import Vizro
+from ._vizro import Vizro, _make_resource_spec, _library_css_files, _library_js_files
 
 logging.basicConfig(level=os.getenv("VIZRO_LOG_LEVEL", "WARNING"))
 pio.templates["vizro_dark"] = dark
@@ -27,31 +27,14 @@ class _Dummy(Component):
     pass
 
 
-# For dev versions, a branch or tag called e.g. 0.1.20.dev0 does not exist and so won't work with the CDN. We point
-# to main instead, but this can be manually overridden to the current feature branch name if required.
-# _git_branch = __version__ if "dev" not in __version__ else "main"
-_git_branch = __version__ if "dev" not in __version__ else "main"
-_library_css = ["static/css/figures"]
-_base_external_url = f"https://cdn.jsdelivr.net/gh/mckinsey/vizro@{_git_branch}/vizro-core/src/vizro/"
+# AM: comment have minimum in _library_css_files
+# tidy/remove map file as refers to stuff that doesn't exist
+# remove 404 image? Or can keep there? Would it work through CDN? Remember to remove constant/
+# Check order of CSS is same.
+# Debugging hot reloading
+# Ideally would do webpack to .min.js and ship the .min.js so that people using locally also get minified
+# Likewise ideally would ship .min.css for all files, so that everyone benefits and not just those who do
+# serve_locally=False
 
-# CSS is packaged and accessed using relative_package_path when serve_locally=False (the default) in
-# the Dash instantiation. When serve_locally=True then, where defined, external_url will be used instead.
-_css_dist = [
-    {
-        "namespace": "vizro",
-        "relative_package_path": f"{css_file}.css",
-        "external_url": f"{_base_external_url}{css_file}.min.css",
-    }
-    for css_file in _library_css
-]
-
-# Include font file so that figures with icons can be used outside Vizro as pure Dash components.
-# The file can be served through the CDN in the same way as the CSS files but external_url is irrelevant here. The way
-# the file is requested is through a relative url("./fonts/...") in the requesting CSS file. When the CSS file is
-# served from the CDN then this will refer to the font file also on the CDN.
-_css_dist.append(
-    {
-        "namespace": "vizro",
-        "relative_package_path": "static/css/fonts/material-symbols-outlined.woff2",
-    }
-)
+_css_dist = [_make_resource_spec(css_file) for css_file in _library_css_files]
+_js_dist = [_make_resource_spec(js_file) for js_file in _library_js_files]

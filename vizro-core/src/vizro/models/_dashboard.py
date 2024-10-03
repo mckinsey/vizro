@@ -138,14 +138,14 @@ class Dashboard(VizroBaseModel):
             page.build()  # TODO: ideally remove, but necessary to register slider callbacks
 
         clientside_callback(
-            ClientsideFunction(namespace="clientside", function_name="update_dashboard_theme"),
+            ClientsideFunction(namespace="dashboard", function_name="update_dashboard_theme"),
             Output("dashboard-container", "className"),
             Input("theme_selector", "checked"),
         )
         left_side_div_present = any([len(self.pages) > 1, self.pages[0].controls])
         if left_side_div_present:
             clientside_callback(
-                ClientsideFunction(namespace="clientside", function_name="collapse_nav_panel"),
+                ClientsideFunction(namespace="dashboard", function_name="collapse_nav_panel"),
                 [
                     Output("collapsable-left-side", "is_open"),
                     Output("collapse-icon", "style"),

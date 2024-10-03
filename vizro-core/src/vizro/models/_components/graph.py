@@ -163,7 +163,7 @@ class Graph(VizroBaseModel):
     @_log_call
     def build(self):
         clientside_callback(
-            ClientsideFunction(namespace="clientside", function_name="update_graph_theme"),
+            ClientsideFunction(namespace="dashboard", function_name="update_graph_theme"),
             output=[Output(self.id, "figure"), Output(self.id, "style")],
             inputs=[
                 Input(self.id, "figure"),
