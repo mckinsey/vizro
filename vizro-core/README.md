@@ -30,7 +30,7 @@
 ---
 
 <p align="center">
-<img src="https://raw.githubusercontent.com/mckinsey/vizro/docs/update-preview-img/.github/images/vizro_spash_teaser.gif" width="600"/>
+<img src="https://raw.githubusercontent.com/mckinsey/vizro/main/.github/images/vizro_spash_teaser.gif" width="600"/>
 </p>
 
 <p align="center">
