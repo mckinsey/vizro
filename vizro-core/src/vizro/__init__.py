@@ -27,14 +27,5 @@ class _Dummy(Component):
     pass
 
 
-# AM: comment have minimum in _library_css_files
-# tidy/remove map file as refers to stuff that doesn't exist
-# remove 404 image? Or can keep there? Would it work through CDN? Remember to remove constant/
-# Check order of CSS is same.
-# Debugging hot reloading
-# Ideally would do webpack to .min.js and ship the .min.js so that people using locally also get minified
-# Likewise ideally would ship .min.css for all files, so that everyone benefits and not just those who do
-# serve_locally=False
-
 _css_dist = [_make_resource_spec(css_file) for css_file in _library_css_files]
 _js_dist = [_make_resource_spec(js_file) for js_file in _library_js_files]

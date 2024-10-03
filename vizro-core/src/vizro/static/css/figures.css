@@ -16,6 +16,16 @@ Note the relative url works with both serve_locally=True and serve_locally=False
   src: url("./fonts/material-symbols-outlined.woff2") format("woff2");
 }
 
+/*
+serve_locally=True:
+  <link rel="stylesheet" href="_dash-component-suite/vizro/figures.css">
+  _dash-component-suite/vizro/fonts/material-symbols-outlined.woff2
+
+serve_locally=False:
+  <link rel="stylesheet" href="http://jsdeliver.net/vizro/figures.css">
+  http://jsdeliver.net/vizro/_dash-component-suite/vizro/fonts/material-symbols-outlined.woff2
+*/
+
 .material-symbols-outlined {
   direction: ltr;
   display: inline-block;

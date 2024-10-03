@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+import base64
 import logging
 from functools import partial
 from pathlib import Path
@@ -31,7 +32,7 @@ except ImportError:  # pragma: no cov
 from dash.development.base_component import Component
 
 import vizro
-from vizro._constants import MODULE_PAGE_404, STATIC_URL_PREFIX
+from vizro._constants import MODULE_PAGE_404, STATIC_URL_PREFIX, VIZRO_ASSETS_PATH
 from vizro.actions._action_loop._action_loop import ActionLoop
 from vizro.models import Navigation, VizroBaseModel
 from vizro.models._models_utils import _log_call
@@ -303,9 +304,10 @@ class Dashboard(VizroBaseModel):
 
     @staticmethod
     def _make_page_404_layout():
+        error_404_svg = base64.b64encode((VIZRO_ASSETS_PATH / "images/error_404.svg").read_bytes()).decode("utf-8")
         return html.Div(
             [
-                html.Img(src=get_relative_path(f"/{STATIC_URL_PREFIX}/images/errors/error_404.svg")),
+                html.Img(src=f"data:image/svg+xml;base64,{error_404_svg}"),
                 html.Div(
                     [
                         html.Div(

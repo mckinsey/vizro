@@ -9,7 +9,7 @@ import dash
 import plotly.io as pio
 from flask_caching import SimpleCache
 
-from vizro._constants import STATIC_URL_PREFIX
+from vizro._constants import STATIC_URL_PREFIX, VIZRO_ASSETS_PATH
 from vizro.managers import data_manager, model_manager
 from vizro.models import Dashboard
 
@@ -20,8 +20,6 @@ if TYPE_CHECKING:
     from _typeshed.wsgi import StartResponse, WSGIEnvironment
 
 
-_VIZRO_ASSETS_PATH = Path(__file__).with_name("static")
-
 # Files needed to use Vizro as a library (not a framework), e.g. in a pure Dash app. These files are automatically
 # served on import of vizro, regardless of whether the Vizro class or any other bits are used.
 # This list should be kept to the bare minimum so we don't insert any more than the minimum required CSS on pure Dash
@@ -30,8 +28,8 @@ _VIZRO_ASSETS_PATH = Path(__file__).with_name("static")
 # Just here for consistency. We don't currently provide any library JS, but this would be the case if there's JS
 # required for any components that can be used outside Vizro framework.
 _library_css_files = {
-    _VIZRO_ASSETS_PATH / "css/figures.css",
-    _VIZRO_ASSETS_PATH / "css/fonts/material-symbols-outlined.woff2",
+    VIZRO_ASSETS_PATH / "css/figures.css",
+    VIZRO_ASSETS_PATH / "css/fonts/material-symbols-outlined.woff2",
 }
 _library_js_files = set()
 
@@ -63,7 +61,7 @@ class Vizro:
 
         # Add static assets that were not already included in the library. These are registered only when Vizro() is
         # called, i.e. when Vizro is used as a framework.
-        for path in set(_VIZRO_ASSETS_PATH.rglob("*")) - _library_css_files - _library_js_files:
+        for path in set(VIZRO_ASSETS_PATH.rglob("*")) - _library_css_files - _library_js_files:
             if path.suffix == ".css":
                 self.dash.css.append_css(_make_resource_spec(path))
             elif path.suffix == ".js":
@@ -72,7 +70,7 @@ class Vizro:
                 # map files and fonts and images. These are treated like scripts since this is how Dash handles them.
                 # This adds paths to self.dash.registered_paths so that they can be accessed without throwing an
                 # error dash._validate.validate_js_path.
-                self.dash.scripts.append_script(_make_resource_spec(path, custom_type=True))
+                self.dash.scripts.append_script(_make_resource_spec(path))
 
         data_manager.cache.init_app(self.dash.server)
 
@@ -165,31 +163,14 @@ class Vizro:
         dash._pages.CONFIG.clear()
         dash._pages.CONFIG.__dict__.clear()
 
-    @staticmethod
-    def _get_external_assets(folder: Path, extension: str) -> List[str]:
-        """Returns a list of paths to assets with given `extension` in `folder`, prefixed with `STATIC_URL_PREFIX`.
 
-        e.g. with STATIC_URL_PREFIX="vizro", extension="css", folder="/path/to/vizro/vizro-core/src/vizro/static",
-        we will get ["vizro/css/accordion.css", "vizro/css/button.css", ...].
-        """
-        return sorted(
-            (STATIC_URL_PREFIX / path.relative_to(folder)).as_posix() for path in folder.rglob(f"*.{extension}")
-        )
-
-
-def _make_resource_spec(path: Path, custom_type: bool = False):
-    # TODO: proper docstring
-    # Create a resource specification for Dash.
-    # Dash uses relative_package_path when serve_locally=False (the default) in the Dash instantiation.
-    # When serve_locally=True then, where defined, external_url will be used instead.
-    # Set custom_type=True to handle files that aren't css or js, e.g. map or image or font files. These need to be
-    # registered so that Dash validation doesn't throw an error, but they shouldn't be included in the HTML source.
-
+def _make_resource_spec(path: Path):
     # For dev versions, a branch or tag called e.g. 0.1.20.dev0 does not exist and so won't work with the CDN. We point
     # to main instead, but this can be manually overridden to the current feature branch name if required.
     from vizro import __version__
 
-    _git_branch = __version__ if "dev" not in __version__ else "main"
+    # _git_branch = __version__ if "dev" not in __version__ else "main"
+    _git_branch = "feat/allow-servering-external-assets"
     BASE_EXTERNAL_URL = f"https://cdn.jsdelivr.net/gh/mckinsey/vizro@{_git_branch}/vizro-core/src/vizro/"
 
     # Get path relative to the vizro package root, where this file resides.
@@ -200,17 +181,18 @@ def _make_resource_spec(path: Path, custom_type: bool = False):
         "relative_package_path": str(relative_path),
     }
 
-    if not custom_type:
-        # The CDN automatically minifies CSS and JS files which aren't already minified.
-        if ".min" not in relative_path.suffixes:
-            # Convert "filename.css" to "filename.min.css".
-            new_suffix = f".min{relative_path.suffix}"
-            external_url = f"{BASE_EXTERNAL_URL}{relative_path.with_suffix(new_suffix)}"
-        else:
-            external_url = f"{BASE_EXTERNAL_URL}{relative_path}"
-            # TODO: check these are strings.
-            # TODO: write proper tests.
-        resource_spec["external_url"] = external_url
+    if relative_path.suffix in {".css", ".js"}:
+        # The CDN automatically minifies CSS and JS files which aren't already minified. Convert "filename.css" to
+        # "filename.min.css" for these files.
+        external_relative_path = (
+            relative_path
+            if ".min" in relative_path.suffixes
+            else relative_path.with_suffix(f".min{relative_path.suffix}")
+        )
+
+        # Dash uses relative_package_path when serve_locally=False (the default) in the Dash instantiation.
+        # When serve_locally=True then, where defined, external_url will be used instead.
+        resource_spec["external_url"] = f"{BASE_EXTERNAL_URL}{external_relative_path}"
     else:
         # Files that aren't css or js cannot be minified, do not have external_url and set dynamic=True to ensure that
         # the file isn't included in the HTML source. See https://github.com/plotly/dash/pull/1078.
