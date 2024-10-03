@@ -5,7 +5,7 @@ import plotly.io as pio
 from dash.development.base_component import Component
 
 from ._themes import dark, light
-from ._vizro import Vizro, _make_resource_spec, _library_css_files, _library_js_files
+from ._vizro import Vizro, _library_css_files, _library_js_files, _make_resource_spec
 
 logging.basicConfig(level=os.getenv("VIZRO_LOG_LEVEL", "WARNING"))
 pio.templates["vizro_dark"] = dark
