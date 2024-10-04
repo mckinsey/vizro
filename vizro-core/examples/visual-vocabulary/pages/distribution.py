@@ -88,8 +88,8 @@ dotplot = vm.Page(
             text="""
             #### What is a Dot Plot?
 
-            A Dot Plot is a scatter plot with one categorical axis and one continuous axis. They 
-            can be used to show changes or ranges between two (or more) points in time or 
+            A Dot Plot is a scatter plot with one categorical axis and one continuous axis. They
+            can be used to show changes or ranges between two (or more) points in time or
             between two (or more) conditions.
 
             &nbsp;
@@ -97,7 +97,7 @@ dotplot = vm.Page(
             #### When should I use it?
 
             Compared to a bar chart, dot plots can be less cluttered and allow for an easier
-             comparison between conditions. They are ideal for quick insights or when 
+             comparison between conditions. They are ideal for quick insights or when
              presenting data in a simple, clear manner. They can also be used to easily compare multiple small data sets.
         """
         ),
