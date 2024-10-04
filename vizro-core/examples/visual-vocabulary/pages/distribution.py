@@ -97,8 +97,8 @@ dotplot = vm.Page(
             #### When should I use it?
 
             Compared to a bar chart, dot plots can be less cluttered and allow for an easier
-             comparison between conditions. They are ideal for quick insights or when
-             presenting data in a simple, clear manner. They can also be used to easily compare multiple small data sets.
+             comparison between conditions. They are ideal for quick insights or when presenting 
+             data in a simple, clear manner. They can also be used to easily compare multiple small data sets.
         """
         ),
         vm.Graph(figure=px.scatter(iris, x="sepal_length", y="species")),
