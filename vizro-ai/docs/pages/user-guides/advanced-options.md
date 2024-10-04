@@ -27,7 +27,7 @@ This number determines how often the tool will try to correct an incorrect respo
 ### `return_elements`
 This boolean (by default `False`) determines the return type of `VizroAI.plot`.
 
-If set to `False`, then dynamically generated Python code is executed to produce a `plotly.graph_objects.Figure` object from the LLM response and the user provided data frame. Strictly speaking, it produces a `vizro.charts._charts_utils._DashboardReadyFigure`, which behaves essentially like the former, but is ready to be [inserted](add-generated-chart-usecase.md) into a [Vizro](https://vizro.readthedocs.io/en/stable/) dashboard. It also comes with the default Vizro dark theme.
+If set to `False`, then dynamically generated Python code is executed to produce a `plotly.graph_objects.Figure` object from the LLM response and the user-provided data frame. Strictly speaking, it produces a `vizro.charts._charts_utils._DashboardReadyFigure`, which behaves essentially like the former, but is ready to be [inserted](add-generated-chart-usecase.md) into a [Vizro](https://vizro.readthedocs.io/en/stable/) dashboard. It also comes with the default Vizro dark theme.
 
 If set to `True`, a class (pydantic model) is returned from which the `fig` object, but also various other outputs can be generated. (see below)
 
