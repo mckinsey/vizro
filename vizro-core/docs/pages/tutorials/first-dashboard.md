@@ -1,4 +1,4 @@
-# A first dashboard
+# A second dashboard
 
 There is no setup needed for your first dashboard, thanks to the amazing [Py.Cafe](https://py.cafe/).
 
