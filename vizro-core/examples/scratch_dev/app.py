@@ -10,7 +10,6 @@ page = vm.Page(
     title="Page with asfsadfsadf",
     layout=vm.Layout(grid=[[0, 1]]),
     components=[
-
         vm.Graph(id="scatter_chart", figure=px.scatter(df, x="sepal_length", y="petal_width", color="species")),
         vm.Graph(id="hist_chart", figure=px.histogram(df, x="sepal_width", color="species")),
     ],
