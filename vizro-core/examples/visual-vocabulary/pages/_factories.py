@@ -111,6 +111,7 @@ def column_and_line_factory(group: str):
         ],
     )
 
+
 def lollipop_factory(group: str):
     """Reusable function to create the page content for the lollipop chart with a unique ID."""
     return vm.Page(
@@ -123,25 +124,21 @@ def lollipop_factory(group: str):
                 text="""
                 #### What is a lollipop chart?
 
-                A lollipop chart is a type of chart that combines elements of a bar chart and a scatter plot. And a line extends from the 
-                x-axis to a dot, which marks the value for that category. This makes it easy to compare different categories visually.
+                A lollipop chart is a type of chart that combines elementsof a bar chart and a scatter plot.
+                A line extends from the x-axis to a dot, which marks the value for that category. This makes
+                it easy to compare different categories visually.
 
                 &nbsp;
 
                 #### When should I use it?
 
-                Use a lollipop chart when you want to highlight individual data points and make comparisons across categories. It’s 
-                particularly useful for displaying ranking or distribution data, and it can be more visually appealing and easier to 
-                read than traditional bar charts.
+                Use a lollipop chart when you want to highlight individual data points and make comparisons across
+                categories. It is particularly useful for displaying ranking or distribution data, and it can be more
+                visually appealing and easier to read than traditional bar charts.
         """
             ),
             vm.Graph(
-                figure=lollipop(
-                    gapminder.query("year == 2007 and gdpPercap > 36000"),
-                    'country',
-                    'gdpPercap', 
-                    5.0
-                )
+                figure=lollipop(gapminder.query("year == 2007 and gdpPercap > 36000"), "country", "gdpPercap", 5.0)
             ),
             make_code_clipboard_from_py_file("lollipop.py"),
         ],

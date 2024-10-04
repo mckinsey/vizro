@@ -143,13 +143,25 @@ def categorical_column(data_frame: pd.DataFrame, x: str, y: str):
     fig.update_xaxes(type="category")
     return fig
 
+
 def offset_signal(signal: float, marker_offset: float):
-    """Offsets the signal value by the marker_offset, reducing for positive signal values 
-        and increasing for negative values. Used to reduce the length of lines on lollipop charts
-        to end just under the dot """
+    """Offsets a signal value by marker_offset.
+
+    Reduces for positive signal values and increasing for negative values. Used to reduce the length of
+    lines on lollipop charts to end just before the dot.
+
+    Args:
+        signal (float): the value to be updated.
+        marker_offset (float): the offset to be added/subtracted.
+
+    Returns:
+        float: the updated value.
+
+    """
     if abs(signal) <= marker_offset:
         return 0
     return signal - marker_offset if signal > 0 else signal + marker_offset
+
 
 @capture("graph")
 def lollipop(data_frame: pd.DataFrame, x: str, y: str, y_offset: float):
@@ -171,18 +183,17 @@ def lollipop(data_frame: pd.DataFrame, x: str, y: str, y_offset: float):
 
     shapes = []
     for i, row in data_frame.iterrows():
-        shapes.append(dict(
-            type='line',
-            xref='x',
-            yref='y',
-            x0=row[x],
-            y0=0,
-            x1=row[x],
-            y1=offset_signal(row[y], y_offset),
-            line=dict(
-                color='grey',
-                width=2
-            )
-        ))
+        shapes.append(
+            {
+                "type": "line",
+                "xref": "x",
+                "yref": "y",
+                "x0": row[x],
+                "y0": 0,
+                "x1": row[x],
+                "y1": offset_signal(row[y], y_offset),
+                "line": {"color": "grey", "width": 2},
+            }
+        )
     fig = data.update_layout(shapes=shapes)
     return fig

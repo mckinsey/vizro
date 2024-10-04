@@ -3,8 +3,8 @@
 import vizro.models as vm
 import vizro.plotly.express as px
 
-from pages._pages_utils import PAGE_GRID, gapminder, iris, make_code_clipboard_from_py_file, tips
 from pages._factories import lollipop_factory
+from pages._pages_utils import PAGE_GRID, gapminder, iris, make_code_clipboard_from_py_file, tips
 
 bar = vm.Page(
     title="Bar",
