@@ -3,7 +3,7 @@
 This guide offers insights into different ways of running `VizroAI.plot` to generate Plotly charts. We cover how to use:
 
 * [a Jupyter Notebook](#jupyter-notebook)
-* [a Python script](#python-script)
+* [a Python script](#Python-script)
 * [integration into an application](#application-integration)
 
 ## Jupyter Notebook

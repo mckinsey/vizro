@@ -100,7 +100,7 @@ If you would like to customize the `.env` file location and name, you can manual
     # Load the specified .env file
     load_dotenv(env_file)
     ```
-    Refer to [python-dotenv documentation](https://saurabh-kumar.com/python-dotenv/reference/) for further information.
+    Refer to [Python-dotenv documentation](https://saurabh-kumar.com/python-dotenv/reference/) for further information.
 
 !!! warning "Don't share your secret API key!"
 
