@@ -143,6 +143,7 @@ def categorical_column(data_frame: pd.DataFrame, x: str, y: str):
     fig.update_xaxes(type="category")
     return fig
 
+
 @capture("graph")
 def waterfall(data_frame: pd.DataFrame, x: str, y: str, measure: List[str]) -> go.Figure:
     """Creates a custom sankey chart using Plotly's `go.Waterfall`.
@@ -163,12 +164,14 @@ def waterfall(data_frame: pd.DataFrame, x: str, y: str, measure: List[str]) -> g
     https://plotly.com/python/reference/waterfall/
 
     """
-    fig = go.Figure(go.Waterfall(
-        x = data_frame[x],
-        y = data_frame[y],
-        measure = measure,
-        textposition = "outside",
-        connector = {"line":{"color":"rgb(63, 63, 63)"}},
-    ))
+    fig = go.Figure(
+        go.Waterfall(
+            x=data_frame[x],
+            y=data_frame[y],
+            measure=measure,
+            textposition="outside",
+            connector={"line": {"color": "rgb(63, 63, 63)"}},
+        )
+    )
     fig.update_layout(barmode="relative")
     return fig

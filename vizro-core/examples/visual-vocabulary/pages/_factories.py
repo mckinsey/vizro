@@ -111,6 +111,7 @@ def column_and_line_factory(group: str):
         ],
     )
 
+
 def waterfall_factory(group: str):
     """Reusable function to create the page content for the column chart with a unique ID."""
     return vm.Page(
@@ -133,7 +134,14 @@ def waterfall_factory(group: str):
                 Use a waterfall chart when you wish to visualize how individual factors contribute to the total (e.g., changes in revenue or costs over time or by category).
             """
             ),
-            vm.Graph(figure=waterfall(waterfall_data, x="x", y="y", measure=["relative", "relative", "total", "relative", "relative", "total"])),
+            vm.Graph(
+                figure=waterfall(
+                    waterfall_data,
+                    x="x",
+                    y="y",
+                    measure=["relative", "relative", "total", "relative", "relative", "total"],
+                )
+            ),
             make_code_clipboard_from_py_file("waterfall.py"),
         ],
     )

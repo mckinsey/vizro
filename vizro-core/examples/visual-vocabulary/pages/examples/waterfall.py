@@ -1,6 +1,5 @@
 from typing import List
 
-
 import pandas as pd
 import plotly.graph_objects as go
 import vizro.models as vm
@@ -14,21 +13,25 @@ waterfall_data = pd.DataFrame(
     }
 )
 
+
 @capture("graph")
 def waterfall(
-    data_frame: pd.DataFrame, 
-    x: str, 
+    data_frame: pd.DataFrame,
+    x: str,
     y: str,
     measure: List[str],
 ):
-    fig = go.Figure(go.Waterfall(
-        x = data_frame[x],
-        y = data_frame[y],
-        measure = measure,
-        connector = {"line":{"color":"rgb(63, 63, 63)"}},
-    ))
+    fig = go.Figure(
+        go.Waterfall(
+            x=data_frame[x],
+            y=data_frame[y],
+            measure=measure,
+            connector={"line": {"color": "rgb(63, 63, 63)"}},
+        )
+    )
     fig.update_layout(barmode="relative")
     return fig
+
 
 page = vm.Page(
     title="Waterfall",
@@ -38,10 +41,10 @@ page = vm.Page(
                 waterfall_data,
                 x="x",
                 y="y",
-                measure = ["relative", "relative", "total", "relative", "relative", "total"],
+                measure=["relative", "relative", "total", "relative", "relative", "total"],
             )
         )
-    ]
+    ],
 )
 
 dashboard = vm.Dashboard(pages=[page])
