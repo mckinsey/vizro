@@ -276,7 +276,7 @@ class CapturedCallable:
 def _pio_templates_default():
     """Sets pio.templates.default to "vizro_dark" and then reverts it.
 
-    This is to ensure that in a Jupyter Notebook captured charts look the same as when they're in the dashboard. When
+    This is to ensure that in a Jupyter notebook captured charts look the same as when they're in the dashboard. When
     the context manager exits the global theme is reverted just to keep things clean (e.g. if you really wanted to,
     you could compare a captured vs. non-captured chart in the same Python session).
 
