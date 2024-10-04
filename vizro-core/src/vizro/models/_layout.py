@@ -5,7 +5,7 @@ from dash import html
 from numpy import ma
 
 try:
-    from pydantic.v1 import Field, PrivateAttr, ValidationError, validator
+    from pydantic.v1 import Field, PrivateAttr, validator
 except ImportError:  # pragma: no cov
     from pydantic import Field, PrivateAttr, validator
 
