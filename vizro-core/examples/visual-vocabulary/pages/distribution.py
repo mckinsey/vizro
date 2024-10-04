@@ -4,7 +4,7 @@ import vizro.models as vm
 import vizro.plotly.express as px
 
 from pages._factories import butterfly_factory
-from pages._pages_utils import PAGE_GRID, make_code_clipboard_from_py_file, tips
+from pages._pages_utils import PAGE_GRID, make_code_clipboard_from_py_file, tips, iris
 
 violin = vm.Page(
     title="Violin",
@@ -79,6 +79,29 @@ boxplot = vm.Page(
 
 butterfly = butterfly_factory("distribution")
 
+dotplot = vm.Page(
+    title="Dot Plot",
+    path="distribution/dotplot",
+        layout=vm.Layout(grid=PAGE_GRID),
+    components=[
+        vm.Card(
+            text="""
+            #### What is a Dot Plot?
+
+            A Dot Plot is a scatter plot with one categorical axis and one continuous axis. They can be used to show changes or ranges between two (or more) points in time or between two (or more) conditions.
+
+            &nbsp;
+
+            #### When should I use it?
+
+            Compared to a bar chart, dot plots can be less cluttered and allow for an easier comparison between conditions. They are ideal for quick insights or when presenting data in a simple, clear manner. They can also be used to easily compare multiple small data sets.
+        """
+        ),
+        vm.Graph(figure=px.scatter(iris, x="sepal_length", y="species")),
+        make_code_clipboard_from_py_file("dotplot.py"),
+    ],
+)
+
 histogram = vm.Page(
     title="Histogram",
     path="distribution/histogram",
@@ -106,5 +129,4 @@ histogram = vm.Page(
     ],
 )
 
-
-pages = [violin, boxplot, butterfly, histogram]
+pages = [violin, boxplot, butterfly, dotplot, histogram]
