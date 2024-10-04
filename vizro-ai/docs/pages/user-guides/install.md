@@ -113,7 +113,7 @@ To make the OpenAI API key available for all projects, you can set it as a syste
 variable. Refer to the section ["Set up your API key for all projects"](https://platform.openai.com/docs/quickstart/step-2-setup-your-api-key?context=python)
 in the OpenAI documentation. (It is under the dropdown of "Step 2: Set up your API key").
 
-The documentation offers step-by-step instructions for setting up the API key as an environment
+The documentation provides step-by-step instructions for setting up the API key as an environment
 variable, on operating systems including Windows and MacOS.
 
 !!!note
