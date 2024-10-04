@@ -205,15 +205,11 @@ radar = vm.Page(
 
                 #### When should I use it?
 
-                Use a radar chart to visualize and compare the performance or characteristics of data across multiple variables. 
-                This chart is particularly useful for highlighting strengths and weaknesses, as well as identifying patterns or outliers.  
+                Use a radar chart to visualize and compare the performance or characteristics of data across multiple variables.
+                This chart is particularly useful for highlighting strengths and weaknesses, as well as identifying patterns or outliers.
         """
         ),
-        vm.Graph(
-            figure=px.line_polar(
-                wind, r="frequency", theta="direction", color="strength", line_close=True
-            )
-        ),
+        vm.Graph(figure=px.line_polar(wind, r="frequency", theta="direction", color="strength", line_close=True)),
         make_code_clipboard_from_py_file("radar.py"),
     ],
 )
