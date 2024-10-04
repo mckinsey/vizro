@@ -472,7 +472,7 @@ As mentioned above, custom components can trigger action. To enable the custom c
 
         Vizro().build(dashboard).run()
         ```
-        <img src=https://py.cafe/logo.png alt="py.cafe logo" width="30"><b><a target="_blank" href="https://py.cafe/vizro-official/vizro-custom-carousel-component">Run and edit this code in Py.Cafe</a></b>
+        <img src=https://py.cafe/logo.png alt="PyCafe logo" width="30"><b><a target="_blank" href="https://py.cafe/vizro-official/vizro-custom-carousel-component">Run and edit this code in PyCafe</a></b>
     === "yaml"
         ```yaml
         # Custom components are currently only possible via python configuration
