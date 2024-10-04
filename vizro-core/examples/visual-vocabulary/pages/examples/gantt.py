@@ -1,9 +1,9 @@
 import pandas as pd
+import plotly.graph_objects as go
 import vizro.models as vm
 import vizro.plotly.express as px
 from vizro import Vizro
 from vizro.models.types import capture
-import plotly.graph_objects as go
 
 tasks = pd.DataFrame([
     {"Task": "Job A", "Start": '2009-01-01', "Finish": '2009-02-28'},
@@ -16,6 +16,7 @@ def gantt(data_frame: pd.DataFrame, x_start: str, x_end: str, y: str) -> go.Figu
     fig = px.timeline(data_frame, x_start, x_end, y)
     fig.update_yaxes(autorange="reversed")
     return fig
+
 
 page = vm.Page(
     title="Gantt",
