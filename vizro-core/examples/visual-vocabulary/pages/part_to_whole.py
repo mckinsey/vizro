@@ -2,6 +2,7 @@
 
 import vizro.models as vm
 import vizro.plotly.express as px
+from pages._factories import waterfall_factory
 
 from pages._pages_utils import PAGE_GRID, funnel_data, gapminder, make_code_clipboard_from_py_file, tips
 
@@ -203,5 +204,6 @@ funnel = vm.Page(
     ],
 )
 
+waterfall = waterfall_factory("part-to-whole")
 
-pages = [donut, pie, treemap, stacked_bar, stacked_column, funnel]
+pages = [donut, pie, treemap, stacked_bar, stacked_column, funnel, waterfall]

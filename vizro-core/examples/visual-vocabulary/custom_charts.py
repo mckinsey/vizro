@@ -142,3 +142,33 @@ def categorical_column(data_frame: pd.DataFrame, x: str, y: str):
     # So ticks are aligned with bars when xaxes values are numbers (e.g. years)
     fig.update_xaxes(type="category")
     return fig
+
+@capture("graph")
+def waterfall(data_frame: pd.DataFrame, x: str, y: str, measure: List[str]) -> go.Figure:
+    """Creates a custom sankey chart using Plotly's `go.Waterfall`.
+
+    A Waterfall chart is a type of bar chart where the span of the bars is set in `y`.
+    It is useful to display the contribution of various elements (either positive or negative).
+
+    Args:
+        data_frame (pd.DataFrame): The data source for the chart.
+        x (str): The name of the column in the data frame for the x coordinates.
+        y (str): The name of the column in the data frame for the y coordinates.
+        measure (List[str]): A list of types of values.
+
+    Returns:
+        go.Figure: A Plotly Figure object representing the Waterfall chart.
+
+    For detailed information on additional parameters and customization, refer to the Plotly documentation:
+    https://plotly.com/python/reference/waterfall/
+
+    """
+    fig = go.Figure(go.Waterfall(
+        x = data_frame[x],
+        y = data_frame[y],
+        measure = measure,
+        textposition = "outside",
+        connector = {"line":{"color":"rgb(63, 63, 63)"}},
+    ))
+    fig.update_layout(barmode="relative")
+    return fig

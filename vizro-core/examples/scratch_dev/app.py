@@ -3,19 +3,18 @@
 import vizro.models as vm
 import vizro.plotly.express as px
 from vizro import Vizro
+from pages._pages_utils import waterfall_data
+from custom_charts import waterfall
 
 df = px.data.iris()
 
 page = vm.Page(
-    title="Page with asfsadfsadf",
+    title="Page with testing",
     layout=vm.Layout(grid=[[0, 1]]),
     components=[
-        vm.Graph(id="scatter_chart", figure=px.scatter(df, x="sepal_length", y="petal_width", color="species")),
-        vm.Graph(id="hist_chart", figure=px.histogram(df, x="sepal_width", color="species")),
+        vm.Graph(figure=waterfall(waterfall_data, x="x", y="y", measure=["relative", "relative", "total", "relative", "relative", "total"])),
     ],
-    controls=[
-        vm.Filter(column="species", selector=vm.Dropdown(value=["ALL"])),
-    ],
+
 )
 
 dashboard = vm.Dashboard(pages=[page])

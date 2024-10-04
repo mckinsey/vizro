@@ -6,9 +6,9 @@ each chart type used in different groups.
 
 import vizro.models as vm
 import vizro.plotly.express as px
-from custom_charts import butterfly, column_and_line
+from custom_charts import butterfly, column_and_line, waterfall
 
-from pages._pages_utils import PAGE_GRID, ages, gapminder, make_code_clipboard_from_py_file
+from pages._pages_utils import PAGE_GRID, ages, gapminder, make_code_clipboard_from_py_file, waterfall_data
 
 
 def butterfly_factory(group: str):
@@ -108,5 +108,32 @@ def column_and_line_factory(group: str):
                 )
             ),
             make_code_clipboard_from_py_file("column_and_line.py"),
+        ],
+    )
+
+def waterfall_factory(group: str):
+    """Reusable function to create the page content for the column chart with a unique ID."""
+    return vm.Page(
+        id=f"{group}-waterfall",
+        path=f"{group}/waterfall",
+        title="Waterfall",
+        layout=vm.Layout(grid=PAGE_GRID),
+        components=[
+            vm.Card(
+                text="""
+
+                #### What is a waterfall chart?
+
+                A waterfall chart is a bar chart that displays the cumulative effect of sequentially introduced positive or negative values.
+
+                &nbsp;
+
+                #### When should I use it?
+
+                Use a waterfall chart when you wish to visualize how individual factors contribute to the total (e.g., changes in revenue or costs over time or by category).
+            """
+            ),
+            vm.Graph(figure=waterfall(waterfall_data, x="x", y="y", measure=["relative", "relative", "total", "relative", "relative", "total"])),
+            make_code_clipboard_from_py_file("waterfall.py"),
         ],
     )

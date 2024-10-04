@@ -58,3 +58,10 @@ stepped_line_data = pd.DataFrame(
 
 
 carshare = px.data.carshare()
+
+waterfall_data = pd.DataFrame(
+    {
+        "x": ["Sales", "Consulting", "Net revenue", "Purchases", "Other expenses", "Profit before tax"],
+        "y": [60, 80, 0, -40, -20, 0],
+    }
+)
