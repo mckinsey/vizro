@@ -223,12 +223,3 @@ class Layout(VizroBaseModel):
             id=self.id,
         )
         return component_container
-
-
-if __name__ == "__main__":
-    print(repr(Layout(grid=[[0, 1], [0, 2]])))  # noqa: T201
-
-    try:
-        Layout(grid=[[0, 1], [1, 0]])
-    except ValidationError as e:
-        print(e)  # noqa: T201
