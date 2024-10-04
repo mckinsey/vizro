@@ -140,7 +140,6 @@ time_chart_group = ChartGroup(
     name="Time",
     pages=pages.time.pages,
     incomplete_pages=[
-        IncompletePage("Gantt"),
         IncompletePage("Slope"),
         IncompletePage("Fan"),
         IncompletePage("Bubble timeline"),

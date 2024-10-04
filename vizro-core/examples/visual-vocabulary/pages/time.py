@@ -4,7 +4,7 @@ import vizro.models as vm
 import vizro.plotly.express as px
 from custom_charts import categorical_column
 
-from pages._factories import column_and_line_factory, connected_scatter_factory
+from pages._factories import column_and_line_factory, connected_scatter_factory, gantt_factory
 from pages._pages_utils import PAGE_GRID, gapminder, make_code_clipboard_from_py_file, stepped_line_data, stocks, tips
 
 line = vm.Page(
@@ -160,4 +160,6 @@ heatmap = vm.Page(
         make_code_clipboard_from_py_file("heatmap.py"),
     ],
 )
-pages = [line, column, area, connected_scatter, column_and_line, stepped_line, heatmap]
+
+gantt = gantt_factory("time")
+pages = [line, column, area, connected_scatter, column_and_line, stepped_line, heatmap, gantt]
