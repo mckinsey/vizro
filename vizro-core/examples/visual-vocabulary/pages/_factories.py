@@ -8,7 +8,7 @@ import vizro.models as vm
 import vizro.plotly.express as px
 from custom_charts import butterfly, column_and_line, gantt
 
-from pages._pages_utils import PAGE_GRID, ages, gapminder, tasks, make_code_clipboard_from_py_file
+from pages._pages_utils import PAGE_GRID, ages, gapminder, make_code_clipboard_from_py_file, tasks
 
 
 def butterfly_factory(group: str):
@@ -111,6 +111,7 @@ def column_and_line_factory(group: str):
         ],
     )
 
+
 def gantt_factory(group: str):
     """Reusable function to create the page content for the gantt chart with a unique ID."""
     return vm.Page(
@@ -123,25 +124,18 @@ def gantt_factory(group: str):
                 text="""
                 #### What is a Gantt chart?
 
-                A Gantt chart is a type of bar chart that represents a project schedule. It shows the start and end 
+                A Gantt chart is a type of bar chart that represents a project schedule. It shows the start and end
                 dates of various elements of a project, such as tasks, activities, or events, in a timeline format.
 
                 &nbsp;
 
                 #### When should I use it?
 
-                Use a Gantt chart when you want to visualize the timeline of a project and track the progress of individual tasks. 
+                Use a Gantt chart when you want to visualize the timeline of a project and track the progress of individual tasks.
                 It’s ideal for project management, helping you to plan, coordinate, and keep an overview of complex projects.
         """
             ),
-            vm.Graph(
-                figure=gantt(
-                    tasks,
-                    x_start="Start", 
-                    x_end="Finish", 
-                    y="Task"
-                )
-            ),
+            vm.Graph(figure=gantt(tasks, x_start="Start", x_end="Finish", y="Task")),
             make_code_clipboard_from_py_file("gantt.py"),
         ],
     )

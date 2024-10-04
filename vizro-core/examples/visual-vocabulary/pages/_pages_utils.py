@@ -59,8 +59,10 @@ stepped_line_data = pd.DataFrame(
 
 carshare = px.data.carshare()
 
-tasks = pd.DataFrame([
-    dict(Task="Job A", Start='2009-01-01', Finish='2009-02-28'),
-    dict(Task="Job B", Start='2009-03-05', Finish='2009-04-15'),
-    dict(Task="Job C", Start='2009-02-20', Finish='2009-05-30')
-])
+tasks = pd.DataFrame(
+    [
+        dict(Task="Job A", Start="2009-01-01", Finish="2009-02-28"),
+        dict(Task="Job B", Start="2009-03-05", Finish="2009-04-15"),
+        dict(Task="Job C", Start="2009-02-20", Finish="2009-05-30"),
+    ]
+)

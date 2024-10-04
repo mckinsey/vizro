@@ -143,6 +143,7 @@ def categorical_column(data_frame: pd.DataFrame, x: str, y: str):
     fig.update_xaxes(type="category")
     return fig
 
+
 @capture("graph")
 def gantt(data_frame: pd.DataFrame, x_start: str, x_end: str, y: str) -> go.Figure:
     """Creates a gantt chart using Plotly."""
