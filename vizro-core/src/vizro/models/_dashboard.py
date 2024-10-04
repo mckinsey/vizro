@@ -313,14 +313,14 @@ class Dashboard(VizroBaseModel):
                                 html.H3("This page could not be found.", className="heading-3-600"),
                                 html.P("Make sure the URL you entered is correct."),
                             ],
-                            className="error_text_container",
+                            className="error-text-container",
                         ),
                         dbc.Button(children="Take me home", href=get_relative_path("/")),
                     ],
-                    className="error_content_container",
+                    className="error-content-container",
                 ),
             ],
-            className="page_error_container",
+            className="page-error-container",
         )
 
     @staticmethod
