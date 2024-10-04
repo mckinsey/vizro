@@ -5,11 +5,14 @@ import vizro.plotly.express as px
 from vizro import Vizro
 from vizro.models.types import capture
 
-tasks = pd.DataFrame([
-    {"Task": "Job A", "Start": '2009-01-01', "Finish": '2009-02-28'},
-    {"Task": "Job B", "Start": '2009-03-05', "Finish": '2009-04-15'},
-    {"Task": "Job C", "Start": '2009-02-20', "Finish": '2009-05-30'}
-])
+tasks = pd.DataFrame(
+    [
+        {"Task": "Job A", "Start": "2009-01-01", "Finish": "2009-02-28"},
+        {"Task": "Job B", "Start": "2009-03-05", "Finish": "2009-04-15"},
+        {"Task": "Job C", "Start": "2009-02-20", "Finish": "2009-05-30"},
+    ]
+)
+
 
 @capture("graph")
 def gantt(data_frame: pd.DataFrame, x_start: str, x_end: str, y: str) -> go.Figure:
