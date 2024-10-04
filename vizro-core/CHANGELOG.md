@@ -413,7 +413,7 @@ See the fragment files in the [changelog.d directory](https://github.com/mckinse
 
 - Autopopulate `navigation.pages` with registered pages during `Dashboard` validation if `navigation.pages = None` ([#117](https://github.com/mckinsey/vizro/pull/117))
 
-- Update warning for duplicated IDs in `data_manager` and `model_manager` to now recommend `Vizro._reset()` as a potential fix when working in a Jupyter Notebook ([#120](https://github.com/mckinsey/vizro/pull/120))
+- Update warning for duplicated IDs in `data_manager` and `model_manager` to now recommend `Vizro._reset()` as a potential fix when working in a Jupyter notebook ([#120](https://github.com/mckinsey/vizro/pull/120))
 
 ## Fixed
 

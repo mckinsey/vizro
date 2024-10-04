@@ -392,8 +392,8 @@ class capture:
                     fig = _DashboardReadyFigure()
                 else:
                     # Standard case for px.scatter(df: pd.DataFrame).
-                    # Set theme for the figure that gets shown in a Jupyter Notebook. This is to ensure that in a
-                    # Jupyter Notebook captured charts look the same as when they're in the dashboard. To mimic this,
+                    # Set theme for the figure that gets shown in a Jupyter notebook. This is to ensure that in a
+                    # Jupyter notebook captured charts look the same as when they're in the dashboard. To mimic this,
                     # we first use _pio_templates_default to set the global theme, as is done in the dashboard, and then
                     # do the fig.layout.template update that is achieved by the theme selector.
                     # We don't want to update the captured_callable in the same way, since it's only used inside the
