@@ -6,7 +6,7 @@ each chart type used in different groups.
 
 import vizro.models as vm
 import vizro.plotly.express as px
-from custom_charts import butterfly, column_and_line
+from custom_charts import butterfly, column_and_line, lollipop
 
 from pages._pages_utils import PAGE_GRID, ages, gapminder, make_code_clipboard_from_py_file
 
@@ -108,5 +108,41 @@ def column_and_line_factory(group: str):
                 )
             ),
             make_code_clipboard_from_py_file("column_and_line.py"),
+        ],
+    )
+
+def lollipop_factory(group: str):
+    """Reusable function to create the page content for the lollipop chart with a unique ID."""
+    return vm.Page(
+        id=f"{group}-lollipop",
+        path=f"{group}/lollipop",
+        title="Lollipop",
+        layout=vm.Layout(grid=PAGE_GRID),
+        components=[
+            vm.Card(
+                text="""
+                #### What is a lollipop chart?
+
+                A lollipop chart is a type of chart that combines elements of a bar chart and a scatter plot. And a line extends from the 
+                x-axis to a dot, which marks the value for that category. This makes it easy to compare different categories visually.
+
+                &nbsp;
+
+                #### When should I use it?
+
+                Use a lollipop chart when you want to highlight individual data points and make comparisons across categories. It’s 
+                particularly useful for displaying ranking or distribution data, and it can be more visually appealing and easier to 
+                read than traditional bar charts.
+        """
+            ),
+            vm.Graph(
+                figure=lollipop(
+                    gapminder.query("year == 2007 and gdpPercap > 36000"),
+                    'country',
+                    'gdpPercap', 
+                    5.0
+                )
+            ),
+            make_code_clipboard_from_py_file("lollipop.py"),
         ],
     )

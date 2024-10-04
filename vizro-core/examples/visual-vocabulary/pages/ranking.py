@@ -4,6 +4,7 @@ import vizro.models as vm
 import vizro.plotly.express as px
 
 from pages._pages_utils import PAGE_GRID, gapminder, make_code_clipboard_from_py_file
+from pages._factories import lollipop_factory
 
 ordered_bar = vm.Page(
     title="Ordered bar",
@@ -79,5 +80,6 @@ ordered_column = vm.Page(
     ],
 )
 
+lollipop = lollipop_factory("ranking")
 
-pages = [ordered_bar, ordered_column]
+pages = [ordered_bar, ordered_column, lollipop]
