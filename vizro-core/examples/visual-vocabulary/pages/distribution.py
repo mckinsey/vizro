@@ -4,7 +4,7 @@ import vizro.models as vm
 import vizro.plotly.express as px
 
 from pages._factories import butterfly_factory
-from pages._pages_utils import PAGE_GRID, make_code_clipboard_from_py_file, tips, iris
+from pages._pages_utils import PAGE_GRID, iris, make_code_clipboard_from_py_file, tips
 
 violin = vm.Page(
     title="Violin",
@@ -82,7 +82,7 @@ butterfly = butterfly_factory("distribution")
 dotplot = vm.Page(
     title="Dot Plot",
     path="distribution/dotplot",
-        layout=vm.Layout(grid=PAGE_GRID),
+    layout=vm.Layout(grid=PAGE_GRID),
     components=[
         vm.Card(
             text="""
