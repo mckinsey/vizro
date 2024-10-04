@@ -8,7 +8,7 @@ Vizro-AI supports **any** model that is available via [Langchain's `BaseChatMode
 
 ### Setting model via string for ease of use
 
-We have created shortcuts with sensible defaults (mainly setting `temperature=0`) for some common vendors. These models can be chosen by using the string format in the tabs below. If no model is provided, the default (currently `"gpt-4o-mini"`) is selected.
+We have created shortcuts with sensible defaults (mainly setting `temperature=0`) for some common vendors. These models can be chosen by using the string format in the tabs below. If no model is given, the default (currently `"gpt-4o-mini"`) is selected.
 
 ```py
 vizro_ai = VizroAI(model="<chosen model>")
