@@ -131,8 +131,8 @@ def gantt_factory(group: str):
 
                 #### When should I use it?
 
-                Use a Gantt chart when you want to visualize the timeline of a project and track the progress of 
-                individual tasks. It\'s ideal for project management, helping you to plan, coordinate, and keep an 
+                Use a Gantt chart when you want to visualize the timeline of a project and track the progress of
+                individual tasks. It\'s ideal for project management, helping you to plan, coordinate, and keep an
                 overview of complex projects.
         """
             ),
