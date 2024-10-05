@@ -130,6 +130,12 @@ def column_and_line(data_frame: pd.DataFrame, x: str, y_column: str, y_line: str
 
     return fig
 
+def sparkline(df, x, y):
+    fig=px.line(df, x, y, facet_row='variable', height=50)
+    fig.update_xaxes(showticklabels=False, showgrid=False, zeroline=False)
+    fig.update_yaxes(showticklabels=False, showgrid=False, zeroline=False)
+    fig.update_layout(template=None, height=100, margin=dict(l=0, r=0, t=0, b=0), showlegend=False)
+    return fig
 
 @capture("graph")
 def categorical_column(data_frame: pd.DataFrame, x: str, y: str):
