@@ -146,7 +146,7 @@ def categorical_column(data_frame: pd.DataFrame, x: str, y: str):
 
 @capture("graph")
 def waterfall(data_frame: pd.DataFrame, x: str, y: str, measure: List[str]) -> go.Figure:
-    """Creates a custom sankey chart using Plotly's `go.Waterfall`.
+    """Creates a custom waterfall chart using Plotly's `go.Waterfall`.
 
     A Waterfall chart is a type of bar chart where the span of the bars is set in `y`.
     It is useful to display the contribution of various elements (either positive or negative).
