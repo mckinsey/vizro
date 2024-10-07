@@ -37,6 +37,7 @@ Natalia Kurakina,
 [Anna Xiong](https://github.com/Anna-Xiong),
 [Chiara Pullem](https://github.com/chiara-sophie),
 [Sylvie Zhang](https://github.com/sylviezhang37),
+[Bhavana Sundar](https://github.com/bhavanaeh),
 [Ferida Mohammed](https://github.com/feridaaa)
 
 with thanks to Sam Bourton and Kevin Staight for sponsorship, inspiration and guidance,
