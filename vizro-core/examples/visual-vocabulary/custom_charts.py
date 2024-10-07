@@ -155,7 +155,7 @@ def waterfall(data_frame: pd.DataFrame, x: str, y: str, measure: List[str]) -> g
         data_frame (pd.DataFrame): The data source for the chart.
         x (str): The name of the column in the data frame for the x coordinates.
         y (str): The name of the column in the data frame for the y coordinates.
-        measure (List[str]): A list of types of values.
+        measure (List[str]): A list of types of values. Each could be "relative", "total" or "absolute".
 
     Returns:
         go.Figure: A Plotly Figure object representing the Waterfall chart.
