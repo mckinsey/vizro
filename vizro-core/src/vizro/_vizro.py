@@ -26,11 +26,11 @@ if TYPE_CHECKING:
 # apps.
 # At the moment the only library components we support just are KPI cards, which just need CSS files. The
 # _library_js_files is here just for consistency and might be populated in future.
-_library_css_files = {
+_library_css_files = [
     VIZRO_ASSETS_PATH / "css/figures.css",
     VIZRO_ASSETS_PATH / "css/fonts/material-symbols-outlined.woff2",
-}
-_library_js_files = set()
+]
+_library_js_files = []
 
 
 class Vizro:
@@ -58,10 +58,13 @@ class Vizro:
             use_pages=True,
         )
 
-        # Add static assets that were not already included in the library. These are registered only when Vizro() is
-        # called, i.e. when Vizro is used as a framework.
-        for path in set(VIZRO_ASSETS_PATH.rglob("*")) - _library_css_files - _library_js_files:
-            if path.suffix == ".css":
+        # These are registered only when Vizro() is called, i.e. when Vizro is used as a framework.
+        # vizro-boostrap.min.css must be first so that it can be overridden, e.g. by boostrap_overrides.css.
+        for path in sorted(VIZRO_ASSETS_PATH.rglob("*"), key=lambda x: x.name != "vizro-bootstrap.min.css"):
+            if path in _library_css_files + _library_js_files:
+                # Asset is already included in the library so no need to add it again.
+                pass
+            elif path.suffix == ".css":
                 self.dash.css.append_css(_make_resource_spec(path))
             elif path.suffix == ".js":
                 self.dash.scripts.append_script(_make_resource_spec(path))
