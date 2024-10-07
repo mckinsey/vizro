@@ -18,7 +18,6 @@ df1 = px.data.gapminder()
 df2 = px.data.stocks()
 
 
-@pytest.mark.easy_dashboard
 @pytest.fixture(scope="module", autouse=True)
 def setup_test_environment():
     # We only need to install chromedriver outside CI.
@@ -29,6 +28,7 @@ def setup_test_environment():
 def logic(  # noqa: PLR0912, PLR0913, PLR0915
     dashboard,
     model_name,
+    prompt_tier,
     pages: Dict[str, int],
     components: List[Dict[str, int]],
     controls: List[Dict[str, int]],
@@ -40,12 +40,16 @@ def logic(  # noqa: PLR0912, PLR0913, PLR0915
 
     try:
         vizro_type = os.environ["VIZRO_TYPE"]
+        branch = os.environ["BRANCH"]
+        python_version = os.environ["PYTHON_VERSION"]
     except KeyError:
         vizro_type = "local_env"
+        branch = "local"
+        python_version = "local"
 
-    pages_exist = [1 if dashboard.pages else 0][0]
-    pages_exist_report = bool(pages_exist)
-    pages_num = [1 if len(dashboard.pages) == pages["num"] else 0][0]
+    pages_exist = [1 if dashboard.pages else 0]
+    pages_exist_report = bool(pages_exist[0])
+    pages_num = [1 if len(dashboard.pages) == pages["num"] else 0]
     pages_num_report = [f'{pages["num"]} page(s) for dashboard is {bool(components)}']
 
     components_num = []
@@ -106,30 +110,27 @@ def logic(  # noqa: PLR0912, PLR0913, PLR0915
                 f'for page {controls_type["page_num"]} is {bool(controls)}'
             )
 
-    prescore = [
-        pages_exist,
-        pages_num,
-    ]
+    prescore = []
+    pages_exist.extend(pages_num)
+    prescore.extend(pages_exist)
     prescore.extend(components_num)
     prescore.extend(controls_num)
     prescore.extend(components_types_names)
     prescore.extend(controls_types_names)
     score = sum(prescore)
 
-    with open(f"{report_dir}/report_model_{model_name}.csv", "a", newline="") as csvfile:
+    pages_score = (sum(pages_exist) / len(pages_exist))
+    components_score = (sum(components_num) / len(components_num))
+    component_types_score = (sum(components_types_names) / len(components_types_names))
+    controls_score = (sum(controls_num) / len(controls_num))
+    controls_types_score = (sum(controls_types_names) / len(controls_types_names))
+    total = [pages_score, components_score, component_types_score, controls_score, controls_types_score]
+    total_score = (sum(total) / len(total))
+
+    with open(f"{report_dir}/report_model_{model_name}_new.csv", "a", newline="") as csvfile:
         writer = csv.writer(csvfile, delimiter=",")
-        writer.writerow([f"Vizro type = {vizro_type}, Datetime = {datetime.now()}"])
-        writer.writerow([])
-        writer.writerow(["Description, Score"])
-        writer.writerow([f"Pages exists: {pages_exist_report}"])
-        writer.writerow([f"Pages number: {pages_num_report}"])
-        writer.writerow([f"Components number: {components_num_report}"])
-        writer.writerow([f"Controls number: {controls_num_report}"])
-        writer.writerow([f"Components types: {components_types_names_report}"])
-        writer.writerow([f"Controls types: {controls_types_names_report}"])
-        writer.writerow([f"Total, {(score / len(prescore)):.4f}"])
-        writer.writerow([])
-        writer.writerow([])
+        writer.writerow(["timestamp, vizro_type, branch, python_version, model, prompt_tier, total_score, pages_score, components_score, component_types_score, controls_score, controls_types_score"])
+        writer.writerow([f"{datetime.now()}, {vizro_type}, {branch}, {python_version}, {model_name}, {prompt_tier}, {total_score}, {pages_score}, {components_score}, {component_types_score}, {controls_score}, {controls_types_score}"])
 
     # for cmd output
     print(f"Pages exists: {pages_exist_report}")  # noqa: T201
@@ -141,6 +142,7 @@ def logic(  # noqa: PLR0912, PLR0913, PLR0915
     print(f"Total, {(score / len(prescore)):.4f}")  # noqa: T201
 
 
+@pytest.mark.easy_dashboard
 @pytest.mark.parametrize(
     "model_name",
     ["gpt-3.5-turbo"],
@@ -180,6 +182,7 @@ def test_simple_dashboard(dash_duo, model_name):
     logic(
         dashboard=dashboard,
         model_name=model_name,
+        prompt_tier="easy",
         pages={"num": 2},
         components=[{"page_num": 1, "num": 1}, {"page_num": 2, "num": 3}],
         controls=[{"page_num": 1, "num": 0}, {"page_num": 2, "num": 2}],

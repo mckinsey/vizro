@@ -5,8 +5,9 @@ defaults:
     working-directory: vizro-ai
 
 on:
-  push:
-    branches: [main]
+  pull_request:
+    branches:
+      - main
   workflow_dispatch:
   schedule:
     - cron: "30 10 * * 1" # run every Monday at 10:30 UTC
@@ -80,6 +81,8 @@ jobs:
           export OPENAI_API_KEY=${{ secrets.OPENAI_API_KEY }}
           export OPENAI_API_BASE=${{ secrets.OPENAI_API_BASE }}
           export VIZRO_TYPE=pypi
+          export BRANCH=${{ github.head_ref }}
+          export PYTHON_VERSION=${{ matrix.python-version }}
           hatch run ${{ matrix.hatch-env }}:test-integration
 
       - name: Run vizro-ai integration tests with local vizro
@@ -87,6 +90,8 @@ jobs:
           export OPENAI_API_KEY=${{ secrets.OPENAI_API_KEY }}
           export OPENAI_API_BASE=${{ secrets.OPENAI_API_BASE }}
           export VIZRO_TYPE=local
+          export BRANCH=${{ github.head_ref }}
+          export PYTHON_VERSION=${{ matrix.python-version }}
           cd ../vizro-core
           hatch build
           cd ../vizro-ai
@@ -129,13 +134,18 @@ jobs:
           echo "::set-output name=date::$(date +'%Y-%m-%dT%H-%M-%S')"
           echo "TIME_NOW=$(date +'%Y-%m-%dT%H-%M-%S')" >> $GITHUB_ENV
 
+      - name: Create one csv report
+        run: |
+          cd /home/runner/work/vizro/vizro/
+          head -n 1 Report-3.11-/*.csv > combined.out && tail -n+2 -q */*.csv >> report-aggregated-${{ steps.date.outputs.date }}.csv
+
       - name: Report artifacts
         uses: actions/upload-artifact@v4
         if: always()
         with:
           name: Report-aggregated-${{ steps.date.outputs.date }}
           path: |
-            /home/runner/work/vizro/vizro/Report-*
+            /home/runner/work/vizro/vizro/report-aggregated-${{ steps.date.outputs.date }}.csv
 
       - name: Upload reports to artifactory
         run: |
