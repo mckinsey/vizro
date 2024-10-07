@@ -30,15 +30,13 @@ def get_vizro_ai_plot(user_prompt, df, model, api_key, api_base, vendor_input):
 
 
 @capture("action")
-def run_vizro_ai(user_prompt, n_clicks, data, model, api_key, api_base, vendor_input):  # noqa: PLR0913
+def run_vizro_ai(user_prompt, n_clicks, data, model, api_key, api_base, vendor_input, return_vizro):  # noqa: PLR0913
     """Gets the AI response and adds it to the text window."""
 
-    def create_response(ai_response, figure, user_prompt, filename):
-        plotly_fig = figure.to_json()
+    def create_response(ai_response, figure):
         return (
             ai_response,
-            figure,
-            {"ai_response": ai_response, "figure": plotly_fig, "prompt": user_prompt, "filename": filename},
+            figure
         )
 
     if not n_clicks:
@@ -47,22 +45,22 @@ def run_vizro_ai(user_prompt, n_clicks, data, model, api_key, api_base, vendor_i
     if not data:
         ai_response = "Please upload data to proceed!"
         figure = go.Figure()
-        return create_response(ai_response, figure, user_prompt, None)
+        return create_response(ai_response, figure)
 
     if not api_key:
         ai_response = "API key not found. Make sure you enter your API key!"
         figure = go.Figure()
-        return create_response(ai_response, figure, user_prompt, data["filename"])
+        return create_response(ai_response, figure)
 
     if api_key.startswith('"'):
         ai_response = "Make sure you enter your API key without quotes!"
         figure = go.Figure()
-        return create_response(ai_response, figure, user_prompt, data["filename"])
+        return create_response(ai_response, figure)
 
     if api_base is not None and api_base.startswith('"'):
         ai_response = "Make sure you enter your API base without quotes!"
         figure = go.Figure()
-        return create_response(ai_response, figure, user_prompt, data["filename"])
+        return create_response(ai_response, figure)
 
     try:
         logger.info("Attempting chart code.")
@@ -76,19 +74,20 @@ def run_vizro_ai(user_prompt, n_clicks, data, model, api_key, api_base, vendor_i
             vendor_input=vendor_input,
         )
         ai_code = ai_outputs.code
-        figure = ai_outputs.get_fig_object(data_frame=df)
+        print("return vizro: ", return_vizro)
+        figure = ai_outputs.get_fig_object(data_frame=df, vizro=True)
         formatted_code = black.format_str(ai_code, mode=black.Mode(line_length=100))
 
         ai_response = "\n".join(["```python", formatted_code, "```"])
         logger.info("Successful query produced.")
-        return create_response(ai_response, figure, user_prompt, data["filename"])
+        return create_response(ai_response, figure)
 
     except Exception as exc:
         logger.debug(exc)
         logger.info("Chart creation failed.")
         ai_response = f"Sorry, I can't do that. Following Error occurred: {exc}"
         figure = go.Figure()
-        return create_response(ai_response, figure, user_prompt, data["filename"])
+        return create_response(ai_response, figure)
 
 
 @capture("action")

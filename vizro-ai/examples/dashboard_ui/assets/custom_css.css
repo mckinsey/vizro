@@ -157,3 +157,20 @@
   position: fixed;
   width: 100%;
 }
+
+.toggle-div {
+    display: flex;
+    flex-direction: row;
+    width: 100%;
+    gap: 8px;
+    justify-content: center;
+    padding-top: 8px;
+}
+
+.form-check .form-check-input  {
+  border-radius: 8px;
+}
+
+.form-check {
+  padding-top: 2px;
+}

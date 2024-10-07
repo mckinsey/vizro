@@ -13,10 +13,10 @@ from components import (
     Icon,
     Modal,
     MyDropdown,
-    MyPage,
     OffCanvas,
     UserPromptTextArea,
     UserUpload,
+    ToggleSwitch
 )
 from dash import Input, Output, State, callback, get_asset_url, html
 from dash.exceptions import PreventUpdate
@@ -28,14 +28,15 @@ vm.Container.add_type("components", OffCanvas)
 vm.Container.add_type("components", CodeClipboard)
 vm.Container.add_type("components", Icon)
 vm.Container.add_type("components", Modal)
+vm.Container.add_type("components", ToggleSwitch)
 
-MyPage.add_type("components", UserPromptTextArea)
-MyPage.add_type("components", UserUpload)
-MyPage.add_type("components", MyDropdown)
-MyPage.add_type("components", OffCanvas)
-MyPage.add_type("components", CodeClipboard)
-MyPage.add_type("components", Icon)
-MyPage.add_type("components", Modal)
+vm.Page.add_type("components", UserPromptTextArea)
+vm.Page.add_type("components", UserUpload)
+vm.Page.add_type("components", MyDropdown)
+vm.Page.add_type("components", OffCanvas)
+vm.Page.add_type("components", CodeClipboard)
+vm.Page.add_type("components", Icon)
+vm.Page.add_type("components", Modal)
 
 
 SUPPORTED_MODELS = [
@@ -47,7 +48,7 @@ SUPPORTED_MODELS = [
 ]
 
 
-plot_page = MyPage(
+plot_page = vm.Page(
     id="vizro_ai_plot_page",
     title="Vizro-AI - effortlessly create interactive charts with Plotly",
     layout=vm.Layout(
@@ -88,7 +89,7 @@ plot_page = MyPage(
         ),
         vm.Container(
             title="",
-            layout=vm.Layout(grid=[[2, -1, -1, -1, -1, 1, 1, 0, 0]], row_gap="0px", col_gap="4px"),
+            layout=vm.Layout(grid=[[2, -1, -1, 3, 3, 1, 1, 0, 0]], row_gap="0px", col_gap="4px"),
             components=[
                 vm.Button(
                     id="trigger-button-id",
@@ -104,13 +105,15 @@ plot_page = MyPage(
                                 "settings-api-key.value",
                                 "settings-api-base.value",
                                 "settings-dropdown.value",
+                                "toggle-switch.value",
                             ],
-                            outputs=["plot-code-markdown.children", "graph-id.figure", "outputs-store-id.data"],
+                            outputs=["plot-code-markdown.children", "graph-id.figure"],
                         ),
                     ],
                 ),
                 MyDropdown(options=SUPPORTED_MODELS, value="gpt-4o-mini", multi=False, id="model-dropdown-id"),
                 OffCanvas(id="settings", options=["OpenAI"], value="OpenAI"),
+                ToggleSwitch(id="toggle-id")
                 # Modal(id="modal"),
             ],
         ),
@@ -123,29 +126,6 @@ dashboard = CustomDashboard(pages=[plot_page])
 
 
 # pure dash callbacks
-@callback(
-    [
-        Output("plot-code-markdown", "children", allow_duplicate=True),
-        Output("graph-id", "figure", allow_duplicate=True),
-        Output("text-area-id", "value"),
-        Output("upload-message-id", "children"),
-    ],
-    [Input("on_page_load_action_trigger_vizro_ai_plot_page", "data")],
-    [State("outputs-store-id", "data")],
-    prevent_initial_call="initial_duplicate",
-)
-def update_data(page_data, outputs_data):
-    """Callback for retrieving latest vizro-ai output from dcc store."""
-    if not outputs_data:
-        raise PreventUpdate
-
-    ai_response = outputs_data["ai_response"]
-    fig = json.loads(outputs_data["figure"])
-    filename = f"File uploaded: '{outputs_data['filename']}'"
-    prompt = outputs_data["prompt"]
-
-    return ai_response, fig, prompt, filename
-
 
 @callback(
     Output("settings", "is_open"),
