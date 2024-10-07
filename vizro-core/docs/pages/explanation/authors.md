@@ -1,5 +1,5 @@
 ## Current team members
-
+<!-- vale off -->
 [Alexey Snigir](https://github.com/l0uden),
 [Antony Milne](https://github.com/antonymilne),
 [Dan Dumitriu](https://github.com/dandumitriu1),
@@ -46,3 +46,4 @@ and special thanks to
 [Wesley Leong](https://github.com/wesleyleong), [Jonas Kemper](https://github.com/jonasrk) and team for origination and support
 
 (plus everyone else who helped to test, guide, support and encourage development)
+<!-- vale on -->
