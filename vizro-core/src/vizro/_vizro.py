@@ -166,6 +166,9 @@ class Vizro:
 def _make_resource_spec(path: Path):
     # For dev versions, a branch or tag called e.g. 0.1.20.dev0 does not exist and so won't work with the CDN. We point
     # to main instead, but this can be manually overridden to the current feature branch name if required.
+    # This would only be the case where you need to test something with serve_locally=False and have changed
+    # assets compared to main. In this case you need to push your assets changes to remote for the CDN to update,
+    # and it might also be necessary to clear the CDN cache: https://www.jsdelivr.com/tools/purge.
 
     # _git_branch = __version__ if "dev" not in __version__ else "main"
     _git_branch = "feat/allow-servering-external-assets"
