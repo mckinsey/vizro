@@ -119,18 +119,30 @@ def logic(  # noqa: PLR0912, PLR0913, PLR0915
     prescore.extend(controls_types_names)
     score = sum(prescore)
 
-    pages_score = (sum(pages_exist) / len(pages_exist))
-    components_score = (sum(components_num) / len(components_num))
-    component_types_score = (sum(components_types_names) / len(components_types_names))
-    controls_score = (sum(controls_num) / len(controls_num))
-    controls_types_score = (sum(controls_types_names) / len(controls_types_names))
+    pages_score = sum(pages_exist) / len(pages_exist)
+    components_score = sum(components_num) / len(components_num)
+    component_types_score = sum(components_types_names) / len(components_types_names)
+    controls_score = sum(controls_num) / len(controls_num)
+    controls_types_score = sum(controls_types_names) / len(controls_types_names)
     total = [pages_score, components_score, component_types_score, controls_score, controls_types_score]
-    total_score = (sum(total) / len(total))
+    total_score = sum(total) / len(total)
 
     with open(f"{report_dir}/report_model_{model_name}_new.csv", "a", newline="") as csvfile:
         writer = csv.writer(csvfile, delimiter=",")
-        writer.writerow(["timestamp, vizro_type, branch, python_version, model, prompt_tier, total_score, pages_score, components_score, component_types_score, controls_score, controls_types_score"])
-        writer.writerow([f"{datetime.now()}, {vizro_type}, {branch}, {python_version}, {model_name}, {prompt_tier}, {total_score}, {pages_score}, {components_score}, {component_types_score}, {controls_score}, {controls_types_score}"])
+        writer.writerow(
+            [
+                "timestamp, vizro_type, branch, python_version, model, prompt_tier, "
+                "total_score, pages_score, components_score, component_types_score, controls_score, "
+                "controls_types_score"
+            ]
+        )
+        writer.writerow(
+            [
+                f"{datetime.now()}, {vizro_type}, {branch}, {python_version}, {model_name}, {prompt_tier}, "
+                f"{total_score}, {pages_score}, {components_score}, {component_types_score}, {controls_score}, "
+                f"{controls_types_score}"
+            ]
+        )
 
     # for cmd output
     print(f"Pages exists: {pages_exist_report}")  # noqa: T201
