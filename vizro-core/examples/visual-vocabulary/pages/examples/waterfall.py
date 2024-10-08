@@ -30,7 +30,7 @@ def waterfall(
             connector={"line": {"color": "rgb(63, 63, 63)"}},
         )
     )
-    fig.update_layout(barmode="relative")
+    fig.update_layout(showlegend=False)
     return fig
 
 
