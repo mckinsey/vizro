@@ -171,5 +171,5 @@ def waterfall(data_frame: pd.DataFrame, x: str, y: str, measure: List[str]) -> g
             measure=measure,
         )
     )
-    fig.update_layout(barmode="relative", showlegend=False)
+    fig.update_layout(showlegend=False)
     return fig
