@@ -41,7 +41,7 @@ page = vm.Page(
                 waterfall_data,
                 x="x",
                 y="y",
-                measure=measure,
+                measure="measure",
             )
         )
     ],
