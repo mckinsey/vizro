@@ -38,7 +38,8 @@ Natalia Kurakina,
 [Chiara Pullem](https://github.com/chiara-sophie)
 [Lydia Pitts](https://github.com/LydiaPitts)
 [Bhavana Sundar](https://github.com/bhavanaeh),
-[Ferida Mohammed](https://github.com/feridaaa)
+[Ferida Mohammed](https://github.com/feridaaa),
+[Riley Dou](https://github.com/rilieo)
 
 with thanks to Sam Bourton and Kevin Staight for sponsorship, inspiration and guidance,
 
