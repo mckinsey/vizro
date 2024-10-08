@@ -10,7 +10,6 @@
 [Maximilian Schulz](https://github.com/maxschulz-COL),
 [Nadija Graca](https://github.com/nadijagraca),
 [Petar Pejovic](https://github.com/petar-qb)
-[Upekesha Ngugi](https://github.com/upekesha)
 
 
 ## Previous team members and code contributors
