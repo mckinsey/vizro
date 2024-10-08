@@ -5,9 +5,9 @@ from dash import html
 from numpy import ma
 
 try:
-    from pydantic.v1 import Field, PrivateAttr, ValidationError, validator
+    from pydantic.v1 import Field, PrivateAttr, validator
 except ImportError:  # pragma: no cov
-    from pydantic import Field, PrivateAttr, ValidationError, validator
+    from pydantic import Field, PrivateAttr, validator
 
 from vizro._constants import EMPTY_SPACE_CONST
 from vizro.models import VizroBaseModel
@@ -223,12 +223,3 @@ class Layout(VizroBaseModel):
             id=self.id,
         )
         return component_container
-
-
-if __name__ == "__main__":
-    print(repr(Layout(grid=[[0, 1], [0, 2]])))  # noqa: T201
-
-    try:
-        Layout(grid=[[0, 1], [1, 0]])
-    except ValidationError as e:
-        print(e)  # noqa: T201
