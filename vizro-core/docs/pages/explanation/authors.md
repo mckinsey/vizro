@@ -41,7 +41,8 @@ Natalia Kurakina,
 [Ferida Mohammed](https://github.com/feridaaa),
 [Lydia Pitts](https://github.com/LydiaPitts),
 [Riley Dou](https://github.com/rilieo),
-[Upekesha Ngugi](https://github.com/upekesha)
+[Upekesha Ngugi](https://github.com/upekesha),
+[Hansaem Park](https://github.com/sammitako)
 
 with thanks to Sam Bourton and Kevin Staight for sponsorship, inspiration and guidance,
 
