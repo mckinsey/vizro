@@ -1,7 +1,7 @@
 """VizroAI UI dashboard configuration."""
 
-import json
-
+import black
+import dash
 import dash_bootstrap_components as dbc
 import pandas as pd
 import vizro.models as vm
@@ -14,12 +14,11 @@ from components import (
     Modal,
     MyDropdown,
     OffCanvas,
+    ToggleSwitch,
     UserPromptTextArea,
     UserUpload,
-    ToggleSwitch
 )
 from dash import Input, Output, State, callback, get_asset_url, html
-from dash.exceptions import PreventUpdate
 from vizro import Vizro
 
 vm.Container.add_type("components", UserUpload)
@@ -60,7 +59,11 @@ plot_page = vm.Page(
         ]
     ),
     components=[
-        vm.Container(title="", components=[CodeClipboard(id="plot")]),
+        vm.Container(
+            title="",
+            components=[CodeClipboard(id="plot"), ToggleSwitch(id="toggle-id")],
+            layout=vm.Layout(grid=[*[[0, 0, 0, 0, 0]] * 7, [-1, -1, -1, -1, 1]]),
+        ),
         UserPromptTextArea(
             id="text-area-id",
         ),
@@ -89,7 +92,7 @@ plot_page = vm.Page(
         ),
         vm.Container(
             title="",
-            layout=vm.Layout(grid=[[2, -1, -1, 3, 3, 1, 1, 0, 0]], row_gap="0px", col_gap="4px"),
+            layout=vm.Layout(grid=[[2, -1, -1, -1, -1, 1, 1, 0, 0]], row_gap="0px", col_gap="4px"),
             components=[
                 vm.Button(
                     id="trigger-button-id",
@@ -105,15 +108,13 @@ plot_page = vm.Page(
                                 "settings-api-key.value",
                                 "settings-api-base.value",
                                 "settings-dropdown.value",
-                                "toggle-switch.value",
                             ],
-                            outputs=["plot-code-markdown.children", "graph-id.figure"],
+                            outputs=["plot-code-markdown.children", "graph-id.figure", "code-output-store-id.data"],
                         ),
                     ],
                 ),
                 MyDropdown(options=SUPPORTED_MODELS, value="gpt-4o-mini", multi=False, id="model-dropdown-id"),
                 OffCanvas(id="settings", options=["OpenAI"], value="OpenAI"),
-                ToggleSwitch(id="toggle-id")
                 # Modal(id="modal"),
             ],
         ),
@@ -126,6 +127,7 @@ dashboard = CustomDashboard(pages=[plot_page])
 
 
 # pure dash callbacks
+
 
 @callback(
     Output("settings", "is_open"),
@@ -153,6 +155,23 @@ def show_api_key(value):
 def show_api_base(value):
     """Callback to show api base."""
     return "text" if value else "password"
+
+
+@callback(
+    Output("plot-code-markdown", "children"),
+    Input("toggle-switch", "value"),
+    [State("code-output-store-id", "data")],
+)
+def toggle_code(value, data):
+    """Callback for switching between vizro and plotly code."""
+    if not data:
+        return dash.no_update
+
+    ai_code = data["ai_outputs"]["vizro"] if value else data["ai_outputs"]["plotly"]
+
+    formatted_code = black.format_str(ai_code, mode=black.Mode(line_length=100))
+    ai_response = "\n".join(["```python", formatted_code, "```"])
+    return ai_response
 
 
 app = Vizro().build(dashboard)

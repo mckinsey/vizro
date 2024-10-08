@@ -238,26 +238,23 @@ class CustomDashboard(vm.Dashboard):
         """Returns custom dashboard."""
         dashboard_build_obj = super().build()
         dashboard_build_obj.children.append(dcc.Store(id="data-store-id", storage_type="session"))
+        dashboard_build_obj.children.append(dcc.Store(id="code-output-store-id", storage_type="session"))
         return dashboard_build_obj
 
 
 class ToggleSwitch(vm.VizroBaseModel):
     """Custom toggle switch model."""
+
     type: Literal["toggle_switch"] = "toggle_switch"
 
     def build(self):
         """Returns custom toggle switch component."""
-
         toggle_component = html.Div(
             children=[
                 html.P("Plotly"),
-                dbc.Switch(
-                    id="toggle-switch",
-                    value=True,
-                    style={"borderRadius": "8px"}
-                ),
+                dbc.Switch(id="toggle-switch", value=True, style={"borderRadius": "8px"}),
                 html.P("Vizro"),
             ],
-            className="toggle-div"
+            className="toggle-div",
         )
         return toggle_component

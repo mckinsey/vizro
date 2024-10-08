@@ -45,8 +45,8 @@
 .code-clipboard-container {
   background: var(--surfaces-bg-card);
   font-family: monospace;
-  height: 500px;
-  max-height: 500px;
+  height: 100%;
+  max-height: 470px;
   overflow: auto;
   padding: 1rem;
   position: relative;
@@ -159,15 +159,15 @@
 }
 
 .toggle-div {
-    display: flex;
-    flex-direction: row;
-    width: 100%;
-    gap: 8px;
-    justify-content: center;
-    padding-top: 8px;
+  display: flex;
+  flex-direction: row;
+  gap: 8px;
+  justify-content: center;
+  padding-top: 8px;
+  width: 100%;
 }
 
-.form-check .form-check-input  {
+.form-check .form-check-input {
   border-radius: 8px;
 }
 
