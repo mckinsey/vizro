@@ -141,7 +141,7 @@ def waterfall_factory(group: str):
                     waterfall_data,
                     x="x",
                     y="y",
-                    measure=["relative", "relative", "total", "relative", "relative", "total"],
+                    measure=measure,
                 )
             ),
             make_code_clipboard_from_py_file("waterfall.py"),
