@@ -27,7 +27,6 @@ def waterfall(
             x=data_frame[x],
             y=data_frame[y],
             measure=measure,
-            connector={"line": {"color": "rgb(63, 63, 63)"}},
         )
     )
     fig.update_layout(showlegend=False)
