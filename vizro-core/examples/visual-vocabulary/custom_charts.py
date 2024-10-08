@@ -169,8 +169,6 @@ def waterfall(data_frame: pd.DataFrame, x: str, y: str, measure: List[str]) -> g
             x=data_frame[x],
             y=data_frame[y],
             measure=measure,
-            textposition="outside",
-            connector={"line": {"color": "rgb(63, 63, 63)"}},
         )
     )
     fig.update_layout(barmode="relative", showlegend=False)
