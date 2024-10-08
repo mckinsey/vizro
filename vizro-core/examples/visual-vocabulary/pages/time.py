@@ -4,7 +4,7 @@ import vizro.models as vm
 import vizro.plotly.express as px
 from custom_charts import categorical_column
 
-from pages._factories import column_and_line_factory, connected_scatter_factory
+from pages._factories import column_and_line_factory, connected_scatter_factory, sparkline_factory
 from pages._pages_utils import PAGE_GRID, gapminder, make_code_clipboard_from_py_file, stepped_line_data, stocks, tips
 
 line = vm.Page(
@@ -100,6 +100,7 @@ area = vm.Page(
 
 connected_scatter = connected_scatter_factory("time")
 column_and_line = column_and_line_factory("time")
+sparkline = sparkline_factory("time")
 
 stepped_line = vm.Page(
     title="Stepped line",
@@ -160,4 +161,5 @@ heatmap = vm.Page(
         make_code_clipboard_from_py_file("heatmap.py"),
     ],
 )
-pages = [line, column, area, connected_scatter, column_and_line, stepped_line, heatmap]
+
+pages = [line, column, area, sparkline, connected_scatter, column_and_line, stepped_line, heatmap]

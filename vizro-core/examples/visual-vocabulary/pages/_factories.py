@@ -6,9 +6,9 @@ each chart type used in different groups.
 
 import vizro.models as vm
 import vizro.plotly.express as px
-from custom_charts import butterfly, column_and_line
+from custom_charts import butterfly, column_and_line, sparkline
 
-from pages._pages_utils import PAGE_GRID, ages, gapminder, make_code_clipboard_from_py_file
+from pages._pages_utils import PAGE_GRID, ages, gapminder, make_code_clipboard_from_py_file, stocks
 
 
 def butterfly_factory(group: str):
@@ -108,5 +108,37 @@ def column_and_line_factory(group: str):
                 )
             ),
             make_code_clipboard_from_py_file("column_and_line.py"),
+        ],
+    )
+
+def sparkline_factory(group: str):
+    """Reusable function to create the page content for the sparkline chart with a unique ID."""
+    return vm.Page(
+        id=f"{group}-sparkline",
+        path=f"{group}/sparkline",
+        title="Sparkline",
+        layout=vm.Layout(grid=PAGE_GRID),
+        components=[
+            vm.Card(
+                text="""
+            #### What is a sparkline chart?
+
+            Sparkline charts present multiple timeseries over a continuous time period, as a compact set of line or area charts 
+            without bulky axes or annotations. 
+
+            &nbsp;
+
+            #### When should I use it?
+
+            You should select a sparklines chart when you want to show trends for multiple time series that share the same 
+            quantity in the Y-axis, over the same time range in the X-axis. Usually, your y-axis will show a
+            quantitative value and your x-axis will a timescale, but neither will have labels as sparklines only indicate
+            relative movement.
+        """
+            ),
+            vm.Graph(
+                figure=sparkline(stocks, x="date", y=["GOOG", "AMZN"])
+            ),
+            make_code_clipboard_from_py_file("sparkline.py"),
         ],
     )
