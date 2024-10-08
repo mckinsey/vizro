@@ -62,7 +62,7 @@ plot_page = vm.Page(
         vm.Container(
             title="",
             components=[CodeClipboard(id="plot"), ToggleSwitch(id="toggle-id")],
-            layout=vm.Layout(grid=[*[[0, 0, 0, 0, 0]] * 7, [-1, -1, -1, -1, 1]]),
+            layout=vm.Layout(grid=[*[[0]] * 7, [1]], row_gap="12px"),
         ),
         UserPromptTextArea(
             id="text-area-id",
