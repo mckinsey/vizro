@@ -125,16 +125,16 @@ def waterfall_factory(group: str):
 
                 #### What is a waterfall chart?
 
-                A waterfall chart is a bar chart that shows the cumulative effect of sequential positive or negative 
+                A waterfall chart is a bar chart that shows the cumulative effect of sequential positive or negative
                 values. It starts with an initial value, displays individual changes as steps, and ends with the final total.
 
                 &nbsp;
 
                 #### When should I use it?
 
-                Use a waterfall chart to visualize how individual factors contribute to a total, such as changes in 
-                revenue or costs by category. It helps you understand the incremental impact of each factor, making 
-                data analysis and interpretation easier. Ensure all bars and changes are clearly labeled, use consistent 
+                Use a waterfall chart to visualize how individual factors contribute to a total, such as changes in
+                revenue or costs by category. It helps you understand the incremental impact of each factor, making
+                data analysis and interpretation easier. Ensure all bars and changes are clearly labeled, use consistent
                 colors for positive and negative values, and arrange categories logically to tell a coherent story.
             """
             ),
