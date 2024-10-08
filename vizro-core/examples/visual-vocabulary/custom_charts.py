@@ -168,7 +168,7 @@ def waterfall(data_frame: pd.DataFrame, x: str, y: str, measure: List[str]) -> g
         go.Waterfall(
             x=data_frame[x],
             y=data_frame[y],
-            measure=measure,
+            measure=data_frame[measure],
         )
     )
     fig.update_layout(showlegend=False)
