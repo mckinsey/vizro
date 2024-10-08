@@ -1,5 +1,5 @@
 ## Current team members
-
+<!-- vale off -->
 [Alexey Snigir](https://github.com/l0uden),
 [Antony Milne](https://github.com/antonymilne),
 [Dan Dumitriu](https://github.com/dandumitriu1),
@@ -37,7 +37,8 @@ Natalia Kurakina,
 [Anna Xiong](https://github.com/Anna-Xiong),
 [Chiara Pullem](https://github.com/chiara-sophie)
 [Lydia Pitts](https://github.com/LydiaPitts)
-[Sylvie Zhang](https://github.com/sylviezhang37)
+[Bhavana Sundar](https://github.com/bhavanaeh),
+[Ferida Mohammed](https://github.com/feridaaa)
 
 with thanks to Sam Bourton and Kevin Staight for sponsorship, inspiration and guidance,
 
@@ -45,3 +46,4 @@ and special thanks to
 [Wesley Leong](https://github.com/wesleyleong), [Jonas Kemper](https://github.com/jonasrk) and team for origination and support
 
 (plus everyone else who helped to test, guide, support and encourage development)
+<!-- vale on -->

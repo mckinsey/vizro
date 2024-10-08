@@ -72,7 +72,7 @@ def _patch_vizro_base_model_dict():
 
 
 def _format_and_lint(code_string: str) -> str:
-    # Tracking https://github.com/astral-sh/ruff/issues/659 for proper python API
+    # Tracking https://github.com/astral-sh/ruff/issues/659 for proper Python API
     # Good example: https://github.com/astral-sh/ruff/issues/8401#issuecomment-1788806462
     # While we wait for the API, we can use autoflake and black to process code strings
 
@@ -282,7 +282,7 @@ class VizroBaseModel(BaseModel):
             >>> print(card._to_python())
 
             Further options include adding extra imports and callable definitions. These will be included in the
-            returned python string.
+            returned Python string.
 
             >>> print(
             ...     card._to_python(

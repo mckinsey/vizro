@@ -115,7 +115,7 @@ adjust the return statement of the function.
 
     === "app.yaml"
         ```yaml
-        # Custom figures are currently only possible via python configuration
+        # Custom figures are currently only possible via Python configuration
         ```
     === "Result"
         [![CustomKPI]][CustomKPI]
@@ -165,7 +165,7 @@ name from a filter.
 
     === "app.yaml"
         ```yaml
-        # Custom figures are currently only possible via python configuration
+        # Custom figures are currently only possible via Python configuration
         ```
     === "Result"
         [![CustomHTML]][CustomHTML]
@@ -267,7 +267,7 @@ number of cards displayed dynamically adjusts based on a `vm.Parameter`.
         ```
     === "app.yaml"
         ```yaml
-        # Custom figures are currently only possible via python configuration
+        # Custom figures are currently only possible via Python configuration
         ```
     === "Result"
         [![CustomFigure]][CustomFigure]
