@@ -26,7 +26,7 @@ def waterfall(
         go.Waterfall(
             x=data_frame[x],
             y=data_frame[y],
-            measure=measure,
+            measure=data_frame[measure],
         )
     )
     fig.update_layout(showlegend=False)
