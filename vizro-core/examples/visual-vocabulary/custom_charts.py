@@ -146,21 +146,21 @@ def categorical_column(data_frame: pd.DataFrame, x: str, y: str):
 
 @capture("graph")
 def waterfall(data_frame: pd.DataFrame, x: str, y: str, measure: List[str]) -> go.Figure:
-    """Creates a custom waterfall chart using Plotly's `go.Waterfall`.
+    """Creates a waterfall chart using Plotly's `go.Waterfall`.
 
-    A Waterfall chart is a type of bar chart where the span of the bars is set in `y`.
-    It is useful to display the contribution of various elements (either positive or negative).
+    A Waterfall chart visually breaks down the cumulative effect of sequential positive and negative values, 
+    showing how each value contributes to the total.
 
     Args:
         data_frame (pd.DataFrame): The data source for the chart.
-        x (str): The name of the column in the data frame for the x coordinates.
-        y (str): The name of the column in the data frame for the y coordinates.
-        measure (List[str]): A list of types of values. Each could be "relative", "total" or "absolute".
+        x (str): Column name in `data_frame` for x-axis values.
+        y (str): Column name in `data_frame` for y-axis values.
+        measure (List[str]): List specifying the type of each bar, can be "relative", "total", or "absolute".
 
     Returns:
         go.Figure: A Plotly Figure object representing the Waterfall chart.
 
-    For detailed information on additional parameters and customization, refer to the Plotly documentation:
+    For additional parameters and customization options, see the Plotly documentation:
     https://plotly.com/python/reference/waterfall/
 
     """
