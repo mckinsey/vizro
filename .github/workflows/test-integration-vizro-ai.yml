@@ -9,8 +9,6 @@ on:
     branches:
       - main
   workflow_dispatch:
-  schedule:
-    - cron: "30 10 * * 1" # run every Monday at 10:30 UTC
 
 env:
   PYTHONUNBUFFERED: 1
@@ -137,7 +135,7 @@ jobs:
       - name: Create one csv report
         run: |
           cd /home/runner/work/vizro/vizro/
-          head -n 1 Report-3.11-/*.csv > combined.out && tail -n+2 -q */*.csv >> report-aggregated-${{ steps.date.outputs.date }}.csv
+          head -n 1 Report-3.11-/*_pypi.csv > combined.out && tail -n+2 -q */*.csv >> report-aggregated-${{ steps.date.outputs.date }}.csv
 
       - name: Report artifacts
         uses: actions/upload-artifact@v4
