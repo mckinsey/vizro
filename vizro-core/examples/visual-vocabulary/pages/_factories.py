@@ -126,7 +126,7 @@ def waterfall_factory(group: str):
                 #### What is a waterfall chart?
 
                 A waterfall chart is a bar chart that shows the cumulative effect of sequential positive or negative
-                values. It starts with an initial value, displays individual changes as steps, and ends with the 
+                values. It starts with an initial value, displays individual changes as steps, and ends with the
                 final total.
 
                 &nbsp;
