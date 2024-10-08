@@ -152,4 +152,4 @@ jobs:
           cd /home/runner/work/vizro/vizro/
           curl -fL https://getcli.jfrog.io | sh
           ./jfrog config add vizro --artifactory-url ${{ secrets.ARTIFACTORY_URL}} --user ${{ secrets.ARTIFACTORY_USER}} --apikey ${{ secrets.ARTIFACTORY_PASS}} --interactive=false
-          ./jfrog rt u --flat=false "Report-*/" vizx-generic-local/vizro-ai-reports/Report-aggregated-${{ env.TIME_NOW }}/
+          ./jfrog rt u --flat=false "report-aggregated-${{ steps.date.outputs.date }}.csv" vizx-generic-local/vizro-ai-reports/

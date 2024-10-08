@@ -127,7 +127,7 @@ def logic(  # noqa: PLR0912, PLR0913, PLR0915
     total = [pages_score, components_score, component_types_score, controls_score, controls_types_score]
     total_score = sum(total) / len(total)
 
-    with open(f"{report_dir}/report_model_{model_name}_new.csv", "a", newline="") as csvfile:
+    with open(f"{report_dir}/report_model_{model_name}_{vizro_type}.csv", "a", newline="") as csvfile:
         writer = csv.writer(csvfile, delimiter=",")
         writer.writerow(
             [
