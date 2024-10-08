@@ -148,7 +148,7 @@ def categorical_column(data_frame: pd.DataFrame, x: str, y: str):
 def waterfall(data_frame: pd.DataFrame, x: str, y: str, measure: List[str]) -> go.Figure:
     """Creates a waterfall chart using Plotly's `go.Waterfall`.
 
-    A Waterfall chart visually breaks down the cumulative effect of sequential positive and negative values, 
+    A Waterfall chart visually breaks down the cumulative effect of sequential positive and negative values,
     showing how each value contributes to the total.
 
     Args:
