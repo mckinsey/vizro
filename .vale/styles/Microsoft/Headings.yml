@@ -13,6 +13,7 @@ exceptions:
   - Vizro-AI
   - Jupyter
   - Notebook
+  - AgGrid
   - AG Grid
   - Dash AG Grid
   - Dash AG Grids
@@ -52,6 +53,7 @@ exceptions:
   - Google Analytics
   - Google Cloud
   - Google Cloud Functions
+  - Graph
   - GraphQL
   - Hook
   - Hooks
