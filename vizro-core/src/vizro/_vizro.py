@@ -3,7 +3,7 @@ from __future__ import annotations
 import logging
 import warnings
 from pathlib import Path
-from typing import TYPE_CHECKING, Iterable
+from typing import TYPE_CHECKING, Iterable, TypedDict
 
 import dash
 import plotly.io as pio
@@ -23,14 +23,14 @@ if TYPE_CHECKING:
 # Files needed to use Vizro as a library (not a framework), e.g. in a pure Dash app. These files are automatically
 # served on import of vizro, regardless of whether the Vizro class or any other bits are used.
 # This list should be kept to the bare minimum so we don't insert any more than the minimum required CSS on pure Dash
-# apps.
-# At the moment the only library components we support just are KPI cards, which just need CSS files. The
-# _library_js_files is here just for consistency and might be populated in future.
+# apps. At the moment the only library components we support just are KPI cards. Note that anything that's not CSS
+# is handled as a script, even if it's a font file or image.
 _library_css_files = [
     VIZRO_ASSETS_PATH / "css/figures.css",
+]
+_library_js_files = [
     VIZRO_ASSETS_PATH / "css/fonts/material-symbols-outlined.woff2",
 ]
-_library_js_files = []
 
 
 class Vizro:
@@ -61,7 +61,9 @@ class Vizro:
         # These are registered only when Vizro() is called, i.e. when Vizro is used as a framework.
         # vizro-boostrap.min.css must be first so that it can be overridden, e.g. by boostrap_overrides.css.
         # After that, all other items are sorted alphabetically.
-        for path in sorted(VIZRO_ASSETS_PATH.rglob("*"), key=lambda x: (x.name != "vizro-bootstrap.min.css", x)):
+        for path in sorted(
+            VIZRO_ASSETS_PATH.rglob("*.*"), key=lambda file: (file.name != "vizro-bootstrap.min.css", file)
+        ):
             if path in _library_css_files + _library_js_files:
                 # Asset is already included in the library so no need to add it again.
                 pass
@@ -167,7 +169,21 @@ class Vizro:
         dash._pages.CONFIG.__dict__.clear()
 
 
-def _make_resource_spec(path: Path):
+class _ResourceSpec(TypedDict, total=False):
+    """Dash specification for a CSS or JS resource.
+
+    Dash uses relative_package_path when serve_locally=False (the default) in the Dash instantiation. When
+    serve_locally=True then, where defined, external_url will be used instead. dynamic and external_url are not
+    required keys.
+    """
+
+    namespace: str
+    external_url: str
+    relative_package_path: str
+    dynamic: bool
+
+
+def _make_resource_spec(path: Path) -> _ResourceSpec:
     # For dev versions, a branch or tag called e.g. 0.1.20.dev0 does not exist and so won't work with the CDN. We point
     # to main instead, but this can be manually overridden to the current feature branch name if required.
     # This would only be the case where you need to test something with serve_locally=False and have changed
@@ -181,7 +197,7 @@ def _make_resource_spec(path: Path):
     # Get path relative to the vizro package root, where this file resides.
     relative_path = path.relative_to(Path(__file__).parent)
 
-    resource_spec = {
+    resource_spec: _ResourceSpec = {
         "namespace": "vizro",
         "relative_package_path": str(relative_path),
     }
@@ -195,8 +211,6 @@ def _make_resource_spec(path: Path):
             else relative_path.with_suffix(f".min{relative_path.suffix}")
         )
 
-        # Dash uses relative_package_path when serve_locally=False (the default) in the Dash instantiation.
-        # When serve_locally=True then, where defined, external_url will be used instead.
         resource_spec["external_url"] = f"{BASE_EXTERNAL_URL}{external_relative_path}"
     else:
         # Files that aren't css or js cannot be minified, do not have external_url and set dynamic=True to ensure that

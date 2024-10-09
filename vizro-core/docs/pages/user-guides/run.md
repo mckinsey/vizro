@@ -149,6 +149,6 @@ Internally, `app = Vizro()` contains a Flask app in `app.dash.server`. However, 
 
 [`Vizro`][vizro.Vizro] accepts `**kwargs` that are passed through to `Dash`. This enables you to configure the underlying Dash app using the same [arguments that are available](https://dash.plotly.com/reference#dash.dash) in `Dash`. For example, in a deployment context, some of the below arguments may be useful:
 
-- `url_base_pathname`: serve your Vizro app at a specific path rather than at the domain root, e.g. if you host your dashboard at http://www.example.com/my_dashboard/ then you would set `url_base_pathname="/my_dashboard/"` .
+- `url_base_pathname`: serve your Vizro app at a specific path rather than at the domain root. For example, if you host your dashboard at http://www.example.com/my_dashboard/ then you would set `url_base_pathname="/my_dashboard/"` .
 - `serve_locally`: set to `False` to [serve Dash component libraries from a Content Delivery Network (CDN)](https://dash.plotly.com/external-resources#serving-dash's-component-libraries-locally-or-from-a-cdn), which reduces load on the server and can improve performance. Vizro uses [jsDeliver](https://www.jsdelivr.com/) as a CDN for CSS and JavaScript sources.
 - `assets_external_path`: when `serve_locally=False`, you can also [serve your own assets from a CDN](https://dash.plotly.com/external-resources#load-assets-from-a-folder-hosted-on-a-cdn).
