@@ -6,7 +6,7 @@ If you haven't yet done so, you may want to review the [first dashboard tutorial
 
 ## 1. (Optional) Install Vizro and get ready to run your code
 
-The code for this tutorial is all available for you to experiment with in [Py.Cafe](https://py.cafe/) so there is no need to install Vizro and run it locally.
+The code for this tutorial is all available for you to experiment with in [PyCafe](https://py.cafe/) so there is no need to install Vizro and run it locally.
 
 However, if you prefer working in a Notebook or Python script, you should [install Vizro](../user-guides/install.md).
 

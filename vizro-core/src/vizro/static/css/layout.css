@@ -85,7 +85,7 @@
   border-bottom: 1px solid var(--border-subtle-alpha-01);
 }
 
-.page_error_container {
+.page-error-container {
   align-items: center;
   background: var(--surfaces-bg-03);
   display: flex;
@@ -95,7 +95,7 @@
   width: 100vw;
 }
 
-.error_content_container {
+.error-content-container {
   align-items: center;
   display: inline-flex;
   flex-direction: column;
@@ -103,7 +103,7 @@
   margin-top: -32px;
 }
 
-.error_text_container {
+.error-text-container {
   display: flex;
   flex-direction: column;
   gap: 8px;
