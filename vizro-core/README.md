@@ -30,7 +30,7 @@
 ---
 
 <p align="center">
-<img src="https://raw.githubusercontent.com/mckinsey/vizro/main/.github/images/example_screens.png" width="700"/>
+<img src="https://raw.githubusercontent.com/mckinsey/vizro/main/.github/images/vizro_spash_teaser.gif" width="600"/>
 </p>
 
 <p align="center">
@@ -104,7 +104,7 @@ Our visual vocabulary dashboard helps you to select and create various types of 
 each chart type, and offers sample Python code to create these charts with [Plotly](https://plotly.com/python/) and
 embed them into a Vizro dashboard.
 
-<a href="https://huggingface.co/spaces/vizro/demo-visual-vocabulary/">
+<a href="https://vizro-demo-visual-vocabulary.hf.space">
 <img src="https://raw.githubusercontent.com/mckinsey/vizro/main/.github/images/visual_vocabulary.png" width="550">
 </a>
 

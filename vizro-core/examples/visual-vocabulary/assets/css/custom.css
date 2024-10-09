@@ -73,10 +73,6 @@ img[src*="#chart-icon"] {
   margin: 0;
 }
 
-.intro-text p a {
-  font-size: inherit;
-}
-
 .intro-text ul:last-of-type {
   margin-bottom: 0;
 }
