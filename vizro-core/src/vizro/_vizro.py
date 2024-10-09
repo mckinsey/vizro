@@ -9,6 +9,7 @@ import dash
 import plotly.io as pio
 from flask_caching import SimpleCache
 
+import vizro
 from vizro._constants import VIZRO_ASSETS_PATH
 from vizro.managers import data_manager, model_manager
 from vizro.models import Dashboard
@@ -190,8 +191,7 @@ def _make_resource_spec(path: Path) -> _ResourceSpec:
     # assets compared to main. In this case you need to push your assets changes to remote for the CDN to update,
     # and it might also be necessary to clear the CDN cache: https://www.jsdelivr.com/tools/purge.
 
-    # _git_branch = __version__ if "dev" not in __version__ else "main"
-    _git_branch = "feat/allow-servering-external-assets"
+    _git_branch = vizro.__version__ if "dev" not in vizro.__version__ else "main"
     BASE_EXTERNAL_URL = f"https://cdn.jsdelivr.net/gh/mckinsey/vizro@{_git_branch}/vizro-core/src/vizro/"
 
     # Get path relative to the vizro package root, where this file resides.

@@ -5,10 +5,9 @@ import vizro
 from vizro._constants import VIZRO_ASSETS_PATH
 
 _git_branch = vizro.__version__ if "dev" not in vizro.__version__ else "main"
-_git_branch = "feat/allow-servering-external-assets"
 
 
-# Using Vizro as a framework should include both the library and framework CSS and scripts, so all files in
+# Using Vizro as a framework should include both the library and framework resources i.e. all files in
 # VIZRO_ASSETS_PATH.
 class TestVizroResources:
     # Only external_url or relative_package_path will exist in the resource specification depending on
