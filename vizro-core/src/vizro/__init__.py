@@ -27,5 +27,5 @@ class _Dummy(Component):
     pass
 
 
-_css_dist = [_make_resource_spec(css_file) for css_file in _library_css_files]
-_js_dist = [_make_resource_spec(js_file) for js_file in _library_js_files]
+_css_dist = [_make_resource_spec(css_file) for css_file in sorted(_library_css_files)]
+_js_dist = [_make_resource_spec(js_file) for js_file in sorted(_library_js_files)]

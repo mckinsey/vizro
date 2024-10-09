@@ -60,7 +60,8 @@ class Vizro:
 
         # These are registered only when Vizro() is called, i.e. when Vizro is used as a framework.
         # vizro-boostrap.min.css must be first so that it can be overridden, e.g. by boostrap_overrides.css.
-        for path in sorted(VIZRO_ASSETS_PATH.rglob("*"), key=lambda x: x.name != "vizro-bootstrap.min.css"):
+        # After that, all other items are sorted alphabetically.
+        for path in sorted(VIZRO_ASSETS_PATH.rglob("*"), key=lambda x: (x.name != "vizro-bootstrap.min.css", x)):
             if path in _library_css_files + _library_js_files:
                 # Asset is already included in the library so no need to add it again.
                 pass
