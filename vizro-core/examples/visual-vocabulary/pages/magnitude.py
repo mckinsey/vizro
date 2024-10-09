@@ -212,7 +212,8 @@ radar = vm.Page(
                 as well as identifying patterns or outliers.
         """
         ),
-        vm.Graph(figure=px.line_polar(wind, r="frequency", theta="direction", color="strength", line_close=True)),
+        vm.Graph(figure=radar(wind.query("strength =='1-2'"), r="frequency", theta="direction", line_close=True)
+        ),
         make_code_clipboard_from_py_file("radar.py"),
     ],
 )
