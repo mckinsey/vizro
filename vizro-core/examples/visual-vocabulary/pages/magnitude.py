@@ -199,21 +199,20 @@ radar = vm.Page(
             text="""
                 #### What is a radar chart?
 
-                A radar chart (aka spider plot or star plot) is a type of data visualization
-
-                &nbsp;
+                A radar chart is also known as a spider plot or star plot.
+                It is a type of data visualization used to display multivariate data.
+                The chart has three or more variables represented on axes with
+                the same starting point.
 
                 #### When should I use it?
 
-                Use a radar chart to visualize and compare the performance or characteristics of data across multiple variables. 
-                This chart is particularly useful for highlighting strengths and weaknesses, as well as identifying patterns or outliers.  
+                Use a radar chart to visualize and compare the performance or
+                characteristics of data across multiple variables.
+                This chart is useful for highlighting strengths and weaknesses,
+                as well as identifying patterns or outliers.
         """
         ),
-        vm.Graph(
-            figure=px.line_polar(
-                wind, r="frequency", theta="direction", color="strength", line_close=True
-            )
-        ),
+        vm.Graph(figure=px.line_polar(wind, r="frequency", theta="direction", color="strength", line_close=True)),
         make_code_clipboard_from_py_file("radar.py"),
     ],
 )

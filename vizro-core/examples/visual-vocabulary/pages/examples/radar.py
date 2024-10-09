@@ -7,11 +7,7 @@ wind = px.data.wind()
 page = vm.Page(
     title="Radar chart",
     components=[
-        vm.Graph(
-            figure=px.line_polar(
-                wind, r="frequency", theta="direction", color="strength", line_close=True
-            )
-        )
+        vm.Graph(figure=px.line_polar(wind, r="frequency", theta="direction", color="strength", line_close=True))
     ],
 )
 
