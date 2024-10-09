@@ -208,8 +208,7 @@ radar = vm.Page(
 For clarity, limit the number of variables and data series. Use consistent scales for all axes, clearly mark labels and data points, and avoid clutter by focusing on key variables.
         """
         ),
-        vm.Graph(figure=radar(wind.query("strength =='1-2'"), r="frequency", theta="direction", line_close=True)
-        ),
+        vm.Graph(figure=radar(wind.query("strength =='1-2'"), r="frequency", theta="direction", line_close=True)),
         make_code_clipboard_from_py_file("radar.py"),
     ],
 )
