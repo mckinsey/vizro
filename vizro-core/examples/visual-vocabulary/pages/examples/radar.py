@@ -8,10 +8,7 @@ wind = px.data.wind()
 
 @capture("graph")
 def radar(data_frame, **kwargs):
-    """
-    Add docstrings here (see butterfly example)
-    
-    """
+    """Add docstrings here (see butterfly example)"""
     fig = px.line_polar(data_frame, **kwargs)
     fig.update_traces(fill="toself")
     return fig
