@@ -42,5 +42,4 @@ class Alert(VizroBaseModel):
                     className="alert",
                 )
             ],
-            className="alert_container",
         )

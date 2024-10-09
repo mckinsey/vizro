@@ -22,7 +22,7 @@ body:
     attributes:
       label: Code/Examples
       description: >-
-        Post any supporting code around your question here or as a [py.cafe link](https://py.cafe/snippet/vizro/v1).
+        Post any supporting code around your question here or as a [PyCafe link](https://py.cafe/snippet/vizro/v1).
         Don't forget to include the package version, if it's relevant.
 
   - type: dropdown
