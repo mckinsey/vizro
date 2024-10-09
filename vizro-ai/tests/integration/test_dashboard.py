@@ -131,16 +131,16 @@ def logic(  # noqa: PLR0912, PLR0913, PLR0915
         writer = csv.writer(csvfile, delimiter=",")
         writer.writerow(
             [
-                "timestamp, vizro_type, branch, python_version, model, prompt_tier, "
-                "total_score, pages_score, components_score, component_types_score, controls_score, "
+                "timestamp", "vizro_type", "branch", "python_version", "model", "prompt_tier",
+                "total_score", "pages_score", "components_score", "component_types_score", "controls_score",
                 "controls_types_score"
             ]
         )
         writer.writerow(
             [
-                f"{datetime.now()}, {vizro_type}, {branch}, {python_version}, {model_name}, {prompt_tier}, "
-                f"{total_score}, {pages_score}, {components_score}, {component_types_score}, {controls_score}, "
-                f"{controls_types_score}"
+                datetime.now(), vizro_type, branch, python_version, model_name, prompt_tier,
+                total_score, pages_score, components_score, component_types_score, controls_score,
+                controls_types_score
             ]
         )
 
