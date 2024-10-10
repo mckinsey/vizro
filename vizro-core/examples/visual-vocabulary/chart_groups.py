@@ -122,7 +122,6 @@ magnitude_chart_group = ChartGroup(
     incomplete_pages=[
         IncompletePage("Marimekko"),
         IncompletePage("Lollipop"),
-        IncompletePage("Radar"),
         IncompletePage("Pictogram"),
         IncompletePage("Bullet"),
         IncompletePage("Radial"),
