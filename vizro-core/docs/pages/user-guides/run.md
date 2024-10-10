@@ -2,18 +2,18 @@
 
 This guide shows you how to launch your dashboard in different ways. By default, your dashboard apps run on localhost port 8050 so is accessible at [http://127.0.0.1:8050/](http://127.0.0.1:8050/).
 
-## Py.Cafe
+## PyCafe
 
-The easiest way to launch your dashboard is to edit the code live on [Py.Cafe](https://py.cafe/).
+The easiest way to launch your dashboard is to edit the code live on [PyCafe](https://py.cafe/).
 
-Most of our examples have a link below the code, [Run and edit this code in Py.Cafe](https://py.cafe/vizro-official/vizro-iris-analysis), which you can follow to experiment with the code. This opens an editor such as the one below, which displays the dashboard and the code side by side.
+Most of our examples have a link below the code, [Run and edit this code in PyCafe](https://py.cafe/vizro-official/vizro-iris-analysis), which you can follow to experiment with the code. This opens an editor such as the one below, which displays the dashboard and the code side by side.
 
 <figure markdown="span">
-  ![Py.Cafe editor](../../assets/user_guides/run/pycafe_editor.png)
+  ![PyCafe editor](../../assets/user_guides/run/pycafe_editor.png)
   <figcaption>Enter your dashboard code on the left, and see the results immediately reflected in the app on the right.</figcaption>
 </figure>
 
-You can use [Py.Cafe](https://py.cafe/snippet/vizro/v1) snippet mode to experiment with your own Vizro dashboards by dropping code into a new project.
+You can use [PyCafe](https://py.cafe/snippet/vizro/v1) snippet mode to experiment with your own Vizro dashboards by dropping code into a new project.
 
 
 ## Default built-in Flask development server
@@ -52,7 +52,7 @@ INFO:werkzeug:WARNING: This is a development server. Do not use it in a producti
 
 !!! warning "In production"
 
-    As per the above warning message, which is [further explained in the Flask documentation](https://flask.palletsprojects.com/en/3.0.x/deploying/), the Flask development server is intended for use only during local development and **should not** be used when deploying to production. Instead, you should instead use a production-ready solution such as [gunicorn](#gunicorn).
+    As per the above warning message, which is [further explained in the Flask documentation](https://flask.palletsprojects.com/en/3.0.x/deploying/), the Flask development server is intended for use only during local development and **should not** be used when deploying to production. Instead, you should instead use a production-ready solution such as [Gunicorn](#gunicorn).
 
 ### Automatic reloading and debugging
 
@@ -147,4 +147,8 @@ A Vizro app wraps a Dash app, which itself wraps a Flask app. Hence to deploy a 
 
 Internally, `app = Vizro()` contains a Flask app in `app.dash.server`. However, as a convenience, the Vizro `app` itself implements the [WSGI application interface](https://werkzeug.palletsprojects.com/en/3.0.x/terms/#wsgi) as a shortcut to the underlying Flask app. This means that, as in the [above example with Gunicorn](#gunicorn), the Vizro `app` object can be directly supplied to the WSGI server.
 
-[`Vizro`][vizro.Vizro] accepts `**kwargs` that are passed through to `Dash`. This enables you to configure the underlying Dash app using the same [arguments that are available](https://dash.plotly.com/reference#dash.dash) in `Dash`. For example, in a deployment context, you might like to specify a custom `url_base_pathname` to serve your Vizro app at a specific URL rather than at your domain root.
+[`Vizro`][vizro.Vizro] accepts `**kwargs` that are passed through to `Dash`. This enables you to configure the underlying Dash app using the same [arguments that are available](https://dash.plotly.com/reference#dash.dash) in `Dash`. For example, in a deployment context, some of the below arguments may be useful:
+
+- `url_base_pathname`: serve your Vizro app at a specific path rather than at the domain root. For example, if you host your dashboard at http://www.example.com/my_dashboard/ then you would set `url_base_pathname="/my_dashboard/"` .
+- `serve_locally`: set to `False` to [serve Dash component libraries from a Content Delivery Network (CDN)](https://dash.plotly.com/external-resources#serving-dash's-component-libraries-locally-or-from-a-cdn), which reduces load on the server and can improve performance. Vizro uses [jsDeliver](https://www.jsdelivr.com/) as a CDN for CSS and JavaScript sources.
+- `assets_external_path`: when `serve_locally=False`, you can also [serve your own assets from a CDN](https://dash.plotly.com/external-resources#load-assets-from-a-folder-hosted-on-a-cdn).

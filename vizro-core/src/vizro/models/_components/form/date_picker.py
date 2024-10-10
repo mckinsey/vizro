@@ -67,7 +67,7 @@ class DatePicker(VizroBaseModel):
         ]
 
         clientside_callback(
-            ClientsideFunction(namespace="clientside", function_name="update_date_picker_values"),
+            ClientsideFunction(namespace="date_picker", function_name="update_date_picker_values"),
             output=output,
             inputs=inputs,
         )
@@ -75,7 +75,7 @@ class DatePicker(VizroBaseModel):
         # if there is not enough space. Caused by another workaround for this issue:
         # https://github.com/snehilvj/dash-mantine-components/issues/219
         clientside_callback(
-            ClientsideFunction(namespace="clientside", function_name="update_date_picker_position"),
+            ClientsideFunction(namespace="date_picker", function_name="update_date_picker_position"),
             output=Output(self.id, "dropdownPosition"),
             inputs=Input(self.id, "n_clicks"),
         )
@@ -108,5 +108,4 @@ class DatePicker(VizroBaseModel):
                 date_picker,
                 dcc.Store(id=f"{self.id}_input_store", storage_type="session", data=init_value),
             ],
-            className="selector_container",
         )

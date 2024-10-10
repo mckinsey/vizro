@@ -29,6 +29,7 @@ gapminder = px.data.gapminder()
 iris = px.data.iris()
 stocks = px.data.stocks()
 tips = px.data.tips()
+wind = px.data.wind()
 
 ages = pd.DataFrame(
     {
@@ -58,3 +59,11 @@ stepped_line_data = pd.DataFrame(
 
 
 carshare = px.data.carshare()
+
+waterfall_data = pd.DataFrame(
+    {
+        "x": ["Sales", "Consulting", "Net revenue", "Purchases", "Other expenses", "Profit before tax"],
+        "y": [60, 80, 0, -40, -20, 0],
+        "measure": ["relative", "relative", "total", "relative", "relative", "total"],
+    }
+)
