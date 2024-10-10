@@ -1,8 +1,8 @@
 import pandas as pd
+import plotly.io as pio
 import vizro.models as vm
 import vizro.plotly.express as px
 from vizro import Vizro
-from vizro._themes._color_values import COLORS
 
 pastries = pd.DataFrame(
     {
@@ -34,7 +34,8 @@ page = vm.Page(
                 x="Profit Ratio",
                 y="pastry",
                 color="Profit Ratio",
-                color_continuous_scale=COLORS["DIVERGING_RED_CYAN"],
+                color_continuous_scale=pio.templates["vizro_dark"].layout.colorscale.diverging,
+                color_continuous_midpoint=0,
             ),
         ),
     ],

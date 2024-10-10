@@ -1,8 +1,8 @@
 """Deviation charts."""
 
+import plotly.io as pio
 import vizro.models as vm
 import vizro.plotly.express as px
-from vizro._themes._color_values import COLORS
 
 from pages._factories import butterfly_factory
 from pages._pages_utils import PAGE_GRID, make_code_clipboard_from_py_file, pastries
@@ -43,7 +43,8 @@ diverging_bar = vm.Page(
                 x="Profit Ratio",
                 y="pastry",
                 color="Profit Ratio",
-                color_continuous_scale=COLORS["DIVERGING_RED_CYAN"],
+                color_continuous_scale=pio.templates["vizro_dark"].layout.colorscale.diverging,
+                color_continuous_midpoint=0,
             ),
         ),
         make_code_clipboard_from_py_file("diverging_bar.py"),
