@@ -139,7 +139,7 @@ vm.Parameter.add_type("selector", TooltipNonCrossRangeSlider)
 
     === "yaml"
         ```yaml
-        # Custom components are currently only possible via python configuration
+        # Custom components are currently only possible via Python configuration
         ```
     === "Result"
         [![CustomComponent1]][CustomComponent1]
@@ -256,7 +256,7 @@ vm.Page.add_type("components", Jumbotron)
         6.  The new component can now be inserted into a regular dashboard.
     === "yaml"
         ```yaml
-        # Custom components are currently only possible via python configuration
+        # Custom components are currently only possible via Python configuration
         ```
     === "Result"
         [![CustomComponent2]][CustomComponent2]
@@ -378,7 +378,7 @@ Add the custom action `open_offcanvas` as a `function` argument inside the [`Act
         ```
     === "yaml"
         ```yaml
-        # Custom components are currently only possible via python configuration
+        # Custom components are currently only possible via Python configuration
         ```
     === "Result"
         [![CustomComponent3]][CustomComponent3]
@@ -472,10 +472,10 @@ As mentioned above, custom components can trigger action. To enable the custom c
 
         Vizro().build(dashboard).run()
         ```
-        <img src=https://py.cafe/logo.png alt="py.cafe logo" width="30"><b><a target="_blank" href="https://py.cafe/vizro-official/vizro-custom-carousel-component">Run and edit this code in Py.Cafe</a></b>
+        <img src=https://py.cafe/logo.png alt="PyCafe logo" width="30"><b><a target="_blank" href="https://py.cafe/vizro-official/vizro-custom-carousel-component">Run and edit this code in PyCafe</a></b>
     === "yaml"
         ```yaml
-        # Custom components are currently only possible via python configuration
+        # Custom components are currently only possible via Python configuration
         ```
     === "Result"
         [![CustomComponent4]][CustomComponent4]
