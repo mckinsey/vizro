@@ -175,8 +175,8 @@ def logic(  # noqa: PLR0912, PLR0913, PLR0915
 @pytest.mark.easy_dashboard
 @pytest.mark.parametrize(
     "model_name",
-    ["gpt-3.5-turbo"],
-    ids=["gpt-3.5"],
+    ["gpt-4o-mini"],
+    ids=["gpt-4o-mini"],
 )
 @pytest.mark.filterwarnings("ignore::langchain_core._api.beta_decorator.LangChainBetaWarning")
 @pytest.mark.filterwarnings("ignore::UserWarning")

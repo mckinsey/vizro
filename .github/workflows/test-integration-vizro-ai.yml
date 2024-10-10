@@ -135,7 +135,7 @@ jobs:
       - name: Create one csv report
         run: |
           cd /home/runner/work/vizro/vizro/
-          head -n 1 Report-3.11-/report_model_gpt-3.5-turbo_pypi.csv > report-aggregated-${{ steps.date.outputs.date }}.csv && tail -n+2 -q */*.csv >> report-aggregated-${{ steps.date.outputs.date }}.csv
+          head -n 1 Report-3.11-/report_model_gpt-4o-mini_pypi.csv > report-aggregated-${{ steps.date.outputs.date }}.csv && tail -n+2 -q */*.csv >> report-aggregated-${{ steps.date.outputs.date }}.csv
           gawk -F, -i inplace 'FNR>1 {$1="${{ steps.date.outputs.date }}"} {print}' OFS=, report-aggregated-${{ steps.date.outputs.date }}.csv
 
       - name: Report artifacts
