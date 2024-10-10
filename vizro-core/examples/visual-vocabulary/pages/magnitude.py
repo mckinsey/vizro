@@ -2,8 +2,9 @@
 
 import vizro.models as vm
 import vizro.plotly.express as px
+from custom_charts import radar
 
-from pages._pages_utils import PAGE_GRID, gapminder, iris, make_code_clipboard_from_py_file, tips
+from pages._pages_utils import PAGE_GRID, gapminder, iris, make_code_clipboard_from_py_file, tips, wind
 
 bar = vm.Page(
     title="Bar",
@@ -190,4 +191,27 @@ parallel_coordinates = vm.Page(
     ],
 )
 
-pages = [bar, column, paired_bar, paired_column, parallel_coordinates]
+radar = vm.Page(
+    path="magnitude/radar",
+    title="Radar",
+    layout=vm.Layout(grid=PAGE_GRID),
+    components=[
+        vm.Card(
+            text="""
+                #### What is a radar chart?
+                A radar chart, also known as a spider plot or star plot, is a type of data visualization
+                used to display multivariate data. It consists of three or more variables represented
+                on axes that originate from the same central point.
+
+                #### When should I use it?
+                Use a radar chart to compare performance or characteristics across multiple variables.
+                The chart effectively highlights strengths, weaknesses, patterns, and outliers.
+                To maintain clarity, use consistent scales for all axes and clearly mark labels and data points.
+        """
+        ),
+        vm.Graph(figure=radar(wind.query("strength == '1-2'"), r="frequency", theta="direction", line_close=True)),
+        make_code_clipboard_from_py_file("radar.py"),
+    ],
+)
+
+pages = [bar, column, paired_bar, paired_column, parallel_coordinates, radar]

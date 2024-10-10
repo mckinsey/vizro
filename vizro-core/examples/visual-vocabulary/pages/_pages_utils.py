@@ -29,6 +29,7 @@ gapminder = px.data.gapminder()
 iris = px.data.iris()
 stocks = px.data.stocks()
 tips = px.data.tips()
+wind = px.data.wind()
 
 ages = pd.DataFrame(
     {
