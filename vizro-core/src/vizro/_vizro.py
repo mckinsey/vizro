@@ -167,6 +167,12 @@ class Vizro:
         dash.page_registry.clear()
         dash._pages.CONFIG.clear()
         dash._pages.CONFIG.__dict__.clear()
+        # To reset state to as if Vizro() hadn't been ran we need to make sure vizro is in the component
+        # registry. This is a set so it's not possible to duplicate the entry. This handles the very edge case that
+        # probably only occurs in our tests where someone does import vizro; Vizro(); Dash(), which means the Vizro
+        # library components are no longer available. This would work correctly with import vizro; Vizro();
+        # Vizro.reset(); Dash().
+        ComponentRegistry.registry.add("vizro")
 
 
 class _ResourceSpec(TypedDict, total=False):

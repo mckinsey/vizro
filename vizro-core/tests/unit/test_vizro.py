@@ -26,24 +26,14 @@ class TestVizroResources:
     def test_css(self, serve_locally, resource_key, resource_value):
         app = vizro.Vizro(serve_locally=serve_locally)
 
-        library_and_framework_css = app.dash.css.get_library_css("vizro")
-        expected_library_css = [
-            {"namespace": "vizro", resource_key: resource[resource_key]} for resource in vizro._css_dist
-        ]
+        framework_css = app.dash.css.get_library_css("vizro")
 
         # Check same number of files
-        assert len(library_and_framework_css) == len(set(VIZRO_ASSETS_PATH.rglob("*.css")))
-        # Check library css comes first
-        assert library_and_framework_css[: len(expected_library_css)] == expected_library_css
-        # Check vizro-bootstrap comes next and looks right
-        assert library_and_framework_css[len(expected_library_css)] == {
-            "namespace": "vizro",
-            resource_key: resource_value,
-        }
+        assert len(framework_css) == len(set(VIZRO_ASSETS_PATH.rglob("*.css")))
+        # Check vizro-bootstrap comes first and looks right
+        assert framework_css[0] == {"namespace": "vizro", resource_key: resource_value}
         # Check rest is in alphabetical order
-        assert library_and_framework_css[len(expected_library_css) + 1 :] == sorted(
-            library_and_framework_css[len(expected_library_css) + 1 :], key=lambda resource: resource[resource_key]
-        )
+        assert framework_css[1:] == sorted(framework_css[1:], key=lambda resource: resource[resource_key])
 
     # Only external_url or relative_package_path will exist in the resource specification depending on
     # whether serve_locally=True (the Dash and Vizro default) or False.
@@ -61,30 +51,22 @@ class TestVizroResources:
     def test_scripts(self, serve_locally, resource_key, resource_value):
         app = vizro.Vizro(serve_locally=serve_locally)
 
-        library_and_framework_scripts = app.dash.scripts.get_library_scripts("vizro")
+        framework_scripts = app.dash.scripts.get_library_scripts("vizro")
 
-        # The below would mirror test_vizro_css but we need to handle dynamic resources differently. These never have
-        # external_url associated with them.
-        # library_scripts = [{"namespace": "vizro", resource_key: resource[resource_key]}
-        # for resource in vizro._js_dist]
-        expected_library_scripts = []
-        for resource in vizro._js_dist:
-            if resource.get("dynamic", False):
-                expected_library_scripts.append(
-                    {"namespace": "vizro", "dynamic": True, "relative_package_path": resource["relative_package_path"]}
-                )
-            else:
-                expected_library_scripts.append({"namespace": "vizro", resource_key: resource[resource_key]})
-
-        # Check same number of files. Everything apart from css goes into scripts, not just js.
-        assert len(library_and_framework_scripts) == len(
+        # Check same number of files
+        assert len(framework_scripts) == len(
             set(VIZRO_ASSETS_PATH.rglob("*.*")) - set(VIZRO_ASSETS_PATH.rglob("*.css"))
         )
-        # Check library scripts comes first
-        assert library_and_framework_scripts[: len(expected_library_scripts)] == expected_library_scripts
-        # Check last entry which is guaranteed to be a .js script rather than a dynamic asset that might not have
-        # external_url.
-        assert library_and_framework_scripts[-1] == {"namespace": "vizro", resource_key: resource_value}
+        # Check a random file. It doesn't matter what this one is so long as it doesn't have dynamic=True, which would
+        # make it impossible to check external_url.
+        assert framework_scripts[-1] == {"namespace": "vizro", resource_key: resource_value}
+        # Checking the order here is trickier because when dynamic=True some resources don't have external_url. The
+        # order is less important than for CSS anyway, so we don't test it.
+
+    def test_double_instantiation(self):
+        # This wouldn't pass without the suppress(ValueError) around ComponentRegistry.registry.discard("vizro").
+        vizro.Vizro()
+        vizro.Vizro()
 
 
 # Using Vizro as a library in a pure Dash app should include only resources stipulated in vizro._css_dist and
@@ -94,10 +76,8 @@ class TestDashResources:
     def test_css(self, serve_locally, resource_key):
         app = dash.Dash(serve_locally=serve_locally)
 
-        expected_library_css = [
-            {"namespace": "vizro", resource_key: resource[resource_key]} for resource in vizro._css_dist
-        ]
-        assert app.css.get_library_css("vizro") == expected_library_css
+        library_css = [{"namespace": "vizro", resource_key: resource[resource_key]} for resource in vizro._css_dist]
+        assert app.css.get_library_css("vizro") == library_css
 
     # Only external_url or relative_package_path will exist in the resource specification depending on
     # whether serve_locally=True (the Dash and Vizro default) or False.
@@ -107,15 +87,14 @@ class TestDashResources:
 
         # The below would mirror test_vizro_css but we need to handle dynamic resources differently. These never have
         # external_url associated with them.
-        # library_scripts = [{"namespace": "vizro", resource_key: resource[resource_key]}
-        # for resource in vizro._js_dist]
-        expected_library_scripts = []
+        # library_scripts =[{"namespace": "vizro", resource_key: resource[resource_key]} for resource in vizro._js_dist]
+        library_scripts = []
         for resource in vizro._js_dist:
             if resource.get("dynamic", False):
-                expected_library_scripts.append(
+                library_scripts.append(
                     {"namespace": "vizro", "dynamic": True, "relative_package_path": resource["relative_package_path"]}
                 )
             else:
-                expected_library_scripts.append({"namespace": "vizro", resource_key: resource[resource_key]})
+                library_scripts.append({"namespace": "vizro", resource_key: resource[resource_key]})
 
-        assert app.scripts.get_library_scripts("vizro") == expected_library_scripts
+        assert app.scripts.get_library_scripts("vizro") == library_scripts
