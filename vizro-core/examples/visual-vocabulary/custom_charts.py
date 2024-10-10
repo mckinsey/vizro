@@ -173,3 +173,23 @@ def waterfall(data_frame: pd.DataFrame, x: str, y: str, measure: List[str]) -> g
     )
     fig.update_layout(showlegend=False)
     return fig
+
+
+@capture("graph")
+def radar(data_frame, **kwargs) -> go.Figure:
+    """Creates a radar chart using Plotly's `line_polar`.
+
+    A radar chart is a type of data visualization in which there are three or more
+    variables represented on axes that originate from the same central point.
+
+    Args:
+        data_frame (pd.DataFrame): The data source for the chart.
+        **kwargs: Keyword arguments that can be passed into Plotly's line_polar (i.e. r, theta, etc.)
+
+    Returns:
+        go.Figure: A Plotly Figure object representing the radar chart.
+
+    """
+    fig = px.line_polar(data_frame, **kwargs)
+    fig.update_traces(fill="toself")
+    return fig
