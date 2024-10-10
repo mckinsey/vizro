@@ -18,7 +18,7 @@ page = vm.Page(
     ],
 )
 
-dashboard = vm.Dashboard(pages=[page])
+dashboard = vm.Dashboard(pages=[page], navigation=vm.Navigation(nav_selector=vm.NavBar()))
 
 if __name__ == "__main__":
-    Vizro().build(dashboard).run()
+    Vizro(serve_locally=False).build(dashboard).run()

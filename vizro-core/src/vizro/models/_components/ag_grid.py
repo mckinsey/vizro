@@ -113,7 +113,7 @@ class AgGrid(VizroBaseModel):
 
     def build(self):
         clientside_callback(
-            ClientsideFunction(namespace="clientside", function_name="update_ag_grid_theme"),
+            ClientsideFunction(namespace="dashboard", function_name="update_ag_grid_theme"),
             Output(self._input_component_id, "className"),
             Input("theme_selector", "checked"),
         )
