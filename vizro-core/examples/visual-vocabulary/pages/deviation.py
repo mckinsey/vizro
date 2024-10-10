@@ -51,4 +51,3 @@ diverging_bar = vm.Page(
 )
 
 pages = [butterfly, diverging_bar]
-
