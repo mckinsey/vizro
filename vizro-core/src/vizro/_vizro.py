@@ -2,11 +2,13 @@ from __future__ import annotations
 
 import logging
 import warnings
+from contextlib import suppress
 from pathlib import Path
 from typing import TYPE_CHECKING, Iterable, TypedDict
 
 import dash
 import plotly.io as pio
+from dash.development.base_component import ComponentRegistry
 from flask_caching import SimpleCache
 
 import vizro
@@ -21,19 +23,6 @@ if TYPE_CHECKING:
     from _typeshed.wsgi import StartResponse, WSGIEnvironment
 
 
-# Files needed to use Vizro as a library (not a framework), e.g. in a pure Dash app. These files are automatically
-# served on import of vizro, regardless of whether the Vizro class or any other bits are used.
-# This list should be kept to the bare minimum so we don't insert any more than the minimum required CSS on pure Dash
-# apps. At the moment the only library components we support just are KPI cards. Note that anything that's not CSS
-# is handled as a script, even if it's a font file or image.
-_library_css_files = [
-    VIZRO_ASSETS_PATH / "css/figures.css",
-]
-_library_js_files = [
-    VIZRO_ASSETS_PATH / "css/fonts/material-symbols-outlined.woff2",
-]
-
-
 class Vizro:
     """The main class of the `vizro` package."""
 
@@ -45,7 +34,7 @@ class Vizro:
                 [Dash documentation](https://dash.plotly.com/reference#dash.dash) for possible arguments.
 
         """
-        # Setting suppress_callback_exceptions=True for the following reasons:
+        # Set suppress_callback_exceptions=True for the following reasons:
         # 1. Prevents the following Dash exception when using html.Div as placeholders in build methods:
         #    "Property 'cellClicked' was used with component ID '__input_ag_grid_id' in one of the Input
         #    items of a callback. This ID is assigned to a dash_html_components.Div component in the layout,
@@ -59,16 +48,26 @@ class Vizro:
             use_pages=True,
         )
 
-        # These are registered only when Vizro() is called, i.e. when Vizro is used as a framework.
+        # When Vizro is used as a framework, we want to include the library and framework resources.
+        # Dash serves resources in the order 1. external_stylesheets/scripts; 2. library resources from the
+        # ComponentRegistry; 3. resources added by append_css/scripts.
+        # Vizro library resources are already present thanks to ComponentRegistry.registry.add("vizro") in
+        # __init__.py. However, since Dash serves these before those added below it means that vizro-bootstrap.css would
+        # be served  *after* Vizro library's figures.css. We always want vizro-bootstrap.css to be served first
+        # so that it can be overridden. For pure Dash users this is achieved vizro-boostrap.css is supplied as an
+        # external_stylesheet. We could add vizro-boostrap.css as an external_stylesheet here but it is awkward
+        # because it means providing href="_dash-component-suite/..." or using the external_url. Instead we remove
+        # Vizro as a component library and then just serve all the resources again. ValueError is suppressed so that
+        # repeated calls to Vizro() don't give an error.
+        with suppress(ValueError):
+            ComponentRegistry.registry.discard("vizro")
+
         # vizro-boostrap.min.css must be first so that it can be overridden, e.g. by boostrap_overrides.css.
         # After that, all other items are sorted alphabetically.
         for path in sorted(
             VIZRO_ASSETS_PATH.rglob("*.*"), key=lambda file: (file.name != "vizro-bootstrap.min.css", file)
         ):
-            if path in _library_css_files + _library_js_files:
-                # Asset is already included in the library so no need to add it again.
-                pass
-            elif path.suffix == ".css":
+            if path.suffix == ".css":
                 self.dash.css.append_css(_make_resource_spec(path))
             elif path.suffix == ".js":
                 self.dash.scripts.append_script(_make_resource_spec(path))
