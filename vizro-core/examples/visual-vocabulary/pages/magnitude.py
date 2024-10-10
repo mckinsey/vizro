@@ -199,8 +199,9 @@ radar = vm.Page(
         vm.Card(
             text="""
                 #### What is a radar chart?
-                A radar chart, also known as a spider plot or star plot, is a type of data visualization used to display multivariate data.
-                It consists of three or more variables represented on axes that originate from the same central point.
+                A radar chart, also known as a spider plot or star plot, is a type of data visualization
+                used to display multivariate data. It consists of three or more variables represented
+                on axes that originate from the same central point.
 
                 #### When should I use it?
                 Use a radar chart to compare performance or characteristics across multiple variables.
