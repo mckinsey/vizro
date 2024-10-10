@@ -43,7 +43,8 @@ Natalia Kurakina,
 [Riley Dou](https://github.com/rilieo),
 [Upekesha Ngugi](https://github.com/upekesha),
 [Hansaem Park](https://github.com/sammitako),
-[Rosheen C.](https://github.com/rc678)
+[Rosheen C.](https://github.com/rc678),
+[Hilary Ivy](https://github.com/hxe00570)
 
 with thanks to Sam Bourton and Kevin Staight for sponsorship, inspiration and guidance,
 
