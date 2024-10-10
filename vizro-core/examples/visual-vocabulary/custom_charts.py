@@ -179,7 +179,7 @@ def waterfall(data_frame: pd.DataFrame, x: str, y: str, measure: List[str]) -> g
 def radar(data_frame, **kwargs) -> go.Figure:
     """Creates a radar chart using Plotly's `line_polar`.
 
-    A radar chart is a type of data vizualization in which there are three or more
+    A radar chart is a type of data visualization in which there are three or more
     variables represented on axes that originate from the same central point.
 
     Args:
