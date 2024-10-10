@@ -170,7 +170,6 @@ class Dashboard(VizroBaseModel):
                 ActionLoop._create_app_callbacks(),
                 dash.page_container,
             ],
-            className=self.theme,
         )
 
     def _validate_logos(self):

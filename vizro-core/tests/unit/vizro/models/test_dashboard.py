@@ -295,7 +295,6 @@ class TestDashboardBuild:
                 ActionLoop._create_app_callbacks(),
                 dash.page_container,
             ],
-            className="vizro_dark",
         )
         assert_component_equal(dashboard.build(), expected_dashboard_container)
 
