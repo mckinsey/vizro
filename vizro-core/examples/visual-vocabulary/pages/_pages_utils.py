@@ -30,7 +30,6 @@ iris = px.data.iris()
 stocks = px.data.stocks()
 tips = px.data.tips()
 wind = px.data.wind()
-
 ages = pd.DataFrame(
     {
         "Age": ["0-19", "20-29", "30-39", "40-49", "50-59", ">=60"],
@@ -59,6 +58,17 @@ stepped_line_data = pd.DataFrame(
 
 
 carshare = px.data.carshare()
+pastry = pd.DataFrame(
+    {
+        "Pastry": ["Scones", "Bagels", "Muffins", "Cakes", "Donuts", "Cookies"],
+        "Neva": [9, 7, 4, 0, 0, 0],
+        "Nope": [7, 6, 3, 0, 0, 0],
+        "No": [5, 4, 3, 0, 0, 0],
+        "Maybe": [0, 0, 0, 4, 7, 9],
+        "Possible": [0, 0, 0, 3, 5, 8],
+        "Yes": [0, 0, 0, 4, 6, 8],
+    }
+)
 
 waterfall_data = pd.DataFrame(
     {
