@@ -1,12 +1,10 @@
-"""Dev app to try things out."""
-
 import pandas as pd
+import plotly.io as pio
 import vizro.models as vm
 import vizro.plotly.express as px
 from vizro import Vizro
-from vizro._themes._color_values import COLORS
 
-pastry = pd.DataFrame(
+pastries = pd.DataFrame(
     {
         "pastry": [
             "Scones",
@@ -26,24 +24,22 @@ pastry = pd.DataFrame(
     }
 )
 
-
 page = vm.Page(
     title="Diverging bar",
     components=[
         vm.Graph(
             figure=px.bar(
-                pastry.sort_values("Profit Ratio"),
+                pastries.sort_values("Profit Ratio"),
                 orientation="h",
                 x="Profit Ratio",
                 y="pastry",
                 color="Profit Ratio",
-                color_continuous_scale=COLORS["DIVERGING_RED_CYAN"],
+                color_continuous_scale=pio.templates["vizro_dark"].layout.colorscale.diverging,
+                color_continuous_midpoint=0,
             ),
         ),
     ],
 )
 
 dashboard = vm.Dashboard(pages=[page])
-
-if __name__ == "__main__":
-    Vizro().build(dashboard).run()
+Vizro().build(dashboard).run()
