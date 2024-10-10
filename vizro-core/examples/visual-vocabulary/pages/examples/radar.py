@@ -8,17 +8,17 @@ wind = px.data.wind()
 
 @capture("graph")
 def radar(data_frame, **kwargs):
-    """Add docstrings here (see butterfly example)"""
+    """Creates a radar chart using Plotly"""
     fig = px.line_polar(data_frame, **kwargs)
     fig.update_traces(fill="toself")
     return fig
 
 
 page = vm.Page(
-    title="Radar chart",
+    title="Radar",
     components=[
         vm.Graph(
-            figure=radar_chart(
+            figure=radar(
                 wind.query("strength =='1-2'"), r="frequency", theta="direction", color="strength", line_close=True
             )
         )
