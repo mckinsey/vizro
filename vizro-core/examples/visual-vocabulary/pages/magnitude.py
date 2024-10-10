@@ -209,7 +209,7 @@ radar = vm.Page(
                 To maintain clarity, use consistent scales for all axes and clearly mark labels and data points.
         """
         ),
-        vm.Graph(figure=radar(wind.query("strength =='1-2'"), r="frequency", theta="direction", line_close=True)),
+        vm.Graph(figure=radar(wind.query("strength == '1-2'"), r="frequency", theta="direction", line_close=True)),
         make_code_clipboard_from_py_file("radar.py"),
     ],
 )

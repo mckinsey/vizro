@@ -17,7 +17,7 @@ def radar(data_frame, **kwargs):
 page = vm.Page(
     title="Radar",
     components=[
-        vm.Graph(figure=radar(wind.query("strength =='1-2'"), r="frequency", theta="direction", line_close=True))
+        vm.Graph(figure=radar(wind.query("strength == '1-2'"), r="frequency", theta="direction", line_close=True))
     ],
 )
 
