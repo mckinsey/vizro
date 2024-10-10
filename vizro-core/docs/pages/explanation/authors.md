@@ -42,7 +42,8 @@ Natalia Kurakina,
 [Lydia Pitts](https://github.com/LydiaPitts),
 [Riley Dou](https://github.com/rilieo),
 [Upekesha Ngugi](https://github.com/upekesha),
-[Hansaem Park](https://github.com/sammitako)
+[Hansaem Park](https://github.com/sammitako),
+[Rosheen C.](https://github.com/rc678)
 
 with thanks to Sam Bourton and Kevin Staight for sponsorship, inspiration and guidance,
 
