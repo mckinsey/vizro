@@ -161,11 +161,7 @@
   display: none;
 }
 
-[data-bs-theme="dark"] #logo-dark {
-  display: inline;
-}
-
-[data-bs-theme="light"] #logo-light {
+#logo-dark, #logo-light {
   display: inline;
 }
 
