@@ -96,7 +96,8 @@
   --text-code-literal: #6bb5fd;
 }
 
-:root, [data-bs-theme="light"] {
+:root,
+[data-bs-theme="light"] {
   --fill-accordion-button: invert(64%) sepia(0%) saturate(1375%);
   --fill-active: var(--fill-light-mode-active);
   --text-active: rgba(20, 23, 33, 1);

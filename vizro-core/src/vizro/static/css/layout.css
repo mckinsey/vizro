@@ -161,7 +161,8 @@
   display: none;
 }
 
-#logo-dark, #logo-light {
+#logo-dark,
+#logo-light {
   display: inline;
 }
 
