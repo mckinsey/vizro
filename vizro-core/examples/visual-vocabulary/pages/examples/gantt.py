@@ -14,7 +14,7 @@ tasks = pd.DataFrame(
 
 page = vm.Page(
     title="Gantt",
-    components=[vm.Graph(px.timeline(tasks.iloc[::-1], x_start="Start", x_end="Finish", y="Task"))],
+    components=[vm.Graph(px.timeline(tasks.sort_values("Start", ascending=False), x_start="Start", x_end="Finish", y="Task"))],
 )
 
 dashboard = vm.Dashboard(pages=[page])

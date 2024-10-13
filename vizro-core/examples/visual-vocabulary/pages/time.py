@@ -185,7 +185,7 @@ it easy to monitor project status and manage interdependencies. However, they ca
 complex if not regularly updated, especially for large projects.
         """
             ),
-            vm.Graph(figure=px.timeline(tasks.iloc[::-1], x_start="Start", x_end="Finish", y="Task")),
+            vm.Graph(figure=px.timeline(tasks.sort_values("Start", ascending=False), x_start="Start", x_end="Finish", y="Task")),
             make_code_clipboard_from_py_file("gantt.py"),
         ],
     )
