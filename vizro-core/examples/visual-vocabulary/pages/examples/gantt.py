@@ -1,9 +1,7 @@
 import pandas as pd
-import plotly.graph_objects as go
 import vizro.models as vm
 import vizro.plotly.express as px
 from vizro import Vizro
-from vizro.models.types import capture
 
 tasks = pd.DataFrame(
     [
@@ -14,16 +12,9 @@ tasks = pd.DataFrame(
 )
 
 
-@capture("graph")
-def gantt(data_frame: pd.DataFrame, x_start: str, x_end: str, y: str) -> go.Figure:
-    fig = px.timeline(data_frame, x_start, x_end, y)
-    fig.update_yaxes(autorange="reversed")
-    return fig
-
-
 page = vm.Page(
     title="Gantt",
-    components=[vm.Graph(px.gantt(tasks, x_start="Start", x_end="Finish", y="Task"))],
+    components=[vm.Graph(px.timeline(tasks.iloc[::-1], x_start="Start", x_end="Finish", y="Task"))],
 )
 
 dashboard = vm.Dashboard(pages=[page])

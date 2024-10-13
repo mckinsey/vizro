@@ -142,11 +142,3 @@ def categorical_column(data_frame: pd.DataFrame, x: str, y: str):
     # So ticks are aligned with bars when xaxes values are numbers (e.g. years)
     fig.update_xaxes(type="category")
     return fig
-
-
-@capture("graph")
-def gantt(data_frame: pd.DataFrame, x_start: str, x_end: str, y: str) -> go.Figure:
-    """Creates a gantt chart using Plotly."""
-    fig = px.timeline(data_frame, x_start, x_end, y)
-    fig.update_yaxes(autorange="reversed")
-    return fig
