@@ -22,6 +22,7 @@ jobs:
           - label: integration tests
           - label: notebooks tests
           - label: vizro-ai ui tests
+          - label: component library tests
     steps:
       - name: Passed fork step
         run: echo "Success!"

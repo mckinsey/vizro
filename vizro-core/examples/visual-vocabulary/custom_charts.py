@@ -142,3 +142,54 @@ def categorical_column(data_frame: pd.DataFrame, x: str, y: str):
     # So ticks are aligned with bars when xaxes values are numbers (e.g. years)
     fig.update_xaxes(type="category")
     return fig
+
+
+@capture("graph")
+def waterfall(data_frame: pd.DataFrame, x: str, y: str, measure: List[str]) -> go.Figure:
+    """Creates a waterfall chart using Plotly's `go.Waterfall`.
+
+    A Waterfall chart visually breaks down the cumulative effect of sequential positive and negative values,
+    showing how each value contributes to the total.
+
+    Args:
+        data_frame (pd.DataFrame): The data source for the chart.
+        x (str): Column name in `data_frame` for x-axis values.
+        y (str): Column name in `data_frame` for y-axis values.
+        measure (List[str]): List specifying the type of each bar, can be "relative", "total", or "absolute".
+
+    Returns:
+        go.Figure: A Plotly Figure object representing the Waterfall chart.
+
+    For additional parameters and customization options, see the Plotly documentation:
+    https://plotly.com/python/reference/waterfall/
+
+    """
+    fig = go.Figure(
+        go.Waterfall(
+            x=data_frame[x],
+            y=data_frame[y],
+            measure=data_frame[measure],
+        )
+    )
+    fig.update_layout(showlegend=False)
+    return fig
+
+
+@capture("graph")
+def radar(data_frame, **kwargs) -> go.Figure:
+    """Creates a radar chart using Plotly's `line_polar`.
+
+    A radar chart is a type of data visualization in which there are three or more
+    variables represented on axes that originate from the same central point.
+
+    Args:
+        data_frame (pd.DataFrame): The data source for the chart.
+        **kwargs: Keyword arguments that can be passed into Plotly's line_polar (i.e. r, theta, etc.)
+
+    Returns:
+        go.Figure: A Plotly Figure object representing the radar chart.
+
+    """
+    fig = px.line_polar(data_frame, **kwargs)
+    fig.update_traces(fill="toself")
+    return fig

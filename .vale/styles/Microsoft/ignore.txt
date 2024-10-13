@@ -99,3 +99,4 @@ Langchain's
 codespace
 codespaces
 uv
+jsDeliver

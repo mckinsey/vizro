@@ -34,12 +34,12 @@ class Tabs(VizroBaseModel):
     @_log_call
     def build(self):
         tabs_list = dmc.TabsList(
-            [dmc.Tab(tab.title, value=tab.id, className="tab__title") for tab in self.tabs],
-            className="tabs__list",
+            [dmc.Tab(tab.title, value=tab.id, className="tab-title") for tab in self.tabs],
+            className="tabs-list",
         )
 
         tabs_panels = [
-            dmc.TabsPanel(html.Div([tab.build()], className="tab__content"), value=tab.id, className="tabs__panel")
+            dmc.TabsPanel(html.Div([tab.build()], className="tab-content"), value=tab.id, className="tabs-panel")
             for tab in self.tabs
         ]
 

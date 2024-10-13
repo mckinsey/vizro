@@ -115,7 +115,7 @@ adjust the return statement of the function.
 
     === "app.yaml"
         ```yaml
-        # Custom figures are currently only possible via python configuration
+        # Custom figures are currently only possible via Python configuration
         ```
     === "Result"
         [![CustomKPI]][CustomKPI]
@@ -165,7 +165,7 @@ name from a filter.
 
     === "app.yaml"
         ```yaml
-        # Custom figures are currently only possible via python configuration
+        # Custom figures are currently only possible via Python configuration
         ```
     === "Result"
         [![CustomHTML]][CustomHTML]
@@ -245,7 +245,7 @@ number of cards displayed dynamically adjusts based on a `vm.Parameter`.
            The parameter targets the `n_rows` argument of the `multiple_cards` function, determining the number of rows
            taken from the data.
 
-        <img src=https://py.cafe/logo.png alt="py.cafe logo" width="30"><b><a target="_blank" href="https://py.cafe/vizro-official/vizro-dynamic-cards">Run and edit this code in Py.Cafe</a></b>
+        <img src=https://py.cafe/logo.png alt="PyCafe logo" width="30"><b><a target="_blank" href="https://py.cafe/vizro-official/vizro-dynamic-cards">Run and edit this code in PyCafe</a></b>
 
     === "styling.css"
         ```css
@@ -267,7 +267,7 @@ number of cards displayed dynamically adjusts based on a `vm.Parameter`.
         ```
     === "app.yaml"
         ```yaml
-        # Custom figures are currently only possible via python configuration
+        # Custom figures are currently only possible via Python configuration
         ```
     === "Result"
         [![CustomFigure]][CustomFigure]
