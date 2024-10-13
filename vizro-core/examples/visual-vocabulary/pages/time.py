@@ -192,9 +192,11 @@ progress, and managing dependencies. They clearly display task start and end dat
 it easy to monitor project status and manage interdependencies. However, they can become
 complex if not regularly updated, especially for large projects.
         """
-            ),
-            vm.Graph(figure=px.timeline(tasks.sort_values("Start", ascending=False), x_start="Start", x_end="Finish", y="Task")),
-            make_code_clipboard_from_py_file("gantt.py"),
-        ],
-    )
+        ),
+        vm.Graph(
+            figure=px.timeline(tasks.sort_values("Start", ascending=False), x_start="Start", x_end="Finish", y="Task")
+        ),
+        make_code_clipboard_from_py_file("gantt.py"),
+    ],
+)
 pages = [line, column, area, connected_scatter, column_and_line, stepped_line, heatmap, gantt]
