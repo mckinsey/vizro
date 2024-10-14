@@ -25,7 +25,7 @@ def dumbbell(data_frame, x, y, color):
         )
 
     # Increase size of dots
-    fig.update_traces(marker=dict(size=12))
+    fig.update_traces(marker_size=12)
     return fig
 
 
