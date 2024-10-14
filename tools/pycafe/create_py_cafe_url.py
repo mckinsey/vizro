@@ -17,7 +17,11 @@ def generate_link(directory):
         app_content_split = app_content.split('if __name__ == "__main__":')
         app_content = app_content_split[0] + textwrap.dedent(app_content_split[1])
 
-    json_object = {"code": app_content, "requirements": "https://github.com/mckinsey/vizro/actions/runs/11331818793/artifacts/2054258229", "files": []}
+    json_object = {
+        "code": app_content,
+        "requirements": "https://github.com/mckinsey/vizro/actions/runs/11331818793/artifacts/2054258229",
+        "files": [],
+    }
 
     for root, _, files in os.walk(directory):
         for file in files:
