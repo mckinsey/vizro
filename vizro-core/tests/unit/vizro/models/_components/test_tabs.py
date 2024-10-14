@@ -56,18 +56,18 @@ class TestTabsBuildMethod:
             result.children[0],
             dmc.TabsList(
                 children=[
-                    dmc.Tab(value="container-1", children="Title-1", className="tab__title"),
-                    dmc.Tab(value="container-2", children="Title-2", className="tab__title"),
+                    dmc.Tab(value="container-1", children="Title-1", className="tab-title"),
+                    dmc.Tab(value="container-2", children="Title-2", className="tab-title"),
                 ],
-                className="tabs__list",
+                className="tabs-list",
             ),
         )
         # This one removes the need for duplication of tests as the output is similar
         assert_component_equal(
             result.children[1:],
             [
-                dmc.TabsPanel(className="tabs__panel", value="container-1"),
-                dmc.TabsPanel(className="tabs__panel", value="container-2"),
+                dmc.TabsPanel(className="tabs-panel", value="container-1"),
+                dmc.TabsPanel(className="tabs-panel", value="container-2"),
             ],
             keys_to_strip={"children"},
         )

@@ -51,7 +51,6 @@ deviation_chart_group = ChartGroup(
     name="Deviation",
     pages=pages.deviation.pages,
     incomplete_pages=[
-        IncompletePage(title="Diverging bar"),
         IncompletePage("Diverging stacked bar"),
         IncompletePage(title="Surplus deficit filled line"),
     ],
@@ -122,7 +121,6 @@ magnitude_chart_group = ChartGroup(
     incomplete_pages=[
         IncompletePage("Marimekko"),
         IncompletePage("Lollipop"),
-        IncompletePage("Radar"),
         IncompletePage("Pictogram"),
         IncompletePage("Bullet"),
         IncompletePage("Radial"),
@@ -140,7 +138,6 @@ time_chart_group = ChartGroup(
     name="Time",
     pages=pages.time.pages,
     incomplete_pages=[
-        IncompletePage("Gantt"),
         IncompletePage("Slope"),
         IncompletePage("Fan"),
         IncompletePage("Bubble timeline"),
@@ -163,7 +160,6 @@ part_to_whole_chart_group = ChartGroup(
         IncompletePage("Arc"),
         IncompletePage("Gridplot"),
         IncompletePage("Venn"),
-        IncompletePage("Waterfall"),
     ],
     icon="Donut Small",
     intro_text=part_to_whole_intro_text,
@@ -177,7 +173,6 @@ flow_chart_group = ChartGroup(
     name="Flow",
     pages=pages.flow.pages,
     incomplete_pages=[
-        IncompletePage("Waterfall"),
         IncompletePage("Chord"),
         IncompletePage("Network"),
     ],

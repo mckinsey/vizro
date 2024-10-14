@@ -79,7 +79,7 @@ class RangeSlider(VizroBaseModel):
         ]
 
         clientside_callback(
-            ClientsideFunction(namespace="clientside", function_name="update_range_slider_values"),
+            ClientsideFunction(namespace="range_slider", function_name="update_range_slider_values"),
             output=output,
             inputs=inputs,
         )

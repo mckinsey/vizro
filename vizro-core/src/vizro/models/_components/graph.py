@@ -70,9 +70,10 @@ class Graph(VizroBaseModel):
     # Convenience wrapper/syntactic sugar.
     def __call__(self, **kwargs):
         # This default value is not actually used anywhere at the moment since __call__ is always used with data_frame
-        # specified. It's here to match Table and AgGrid and because we might want to use __call__ more in future.
+        # specified. It's here since we want to use __call__ without arguments more in future.
         # If the functionality of process_callable_data_frame moves to CapturedCallable then this would move there too.
-        kwargs.setdefault("data_frame", data_manager[self["data_frame"]].load())
+        if "data_frame" not in kwargs:
+            kwargs["data_frame"] = data_manager[self["data_frame"]].load()
         fig = self.figure(**kwargs)
         fig = self._optimise_fig_layout_for_dashboard(fig)
 
@@ -163,7 +164,7 @@ class Graph(VizroBaseModel):
     @_log_call
     def build(self):
         clientside_callback(
-            ClientsideFunction(namespace="clientside", function_name="update_graph_theme"),
+            ClientsideFunction(namespace="dashboard", function_name="update_graph_theme"),
             output=[Output(self.id, "figure"), Output(self.id, "style")],
             inputs=[
                 Input(self.id, "figure"),

@@ -75,7 +75,7 @@ class Slider(VizroBaseModel):
         ]
 
         clientside_callback(
-            ClientsideFunction(namespace="clientside", function_name="update_slider_values"),
+            ClientsideFunction(namespace="slider", function_name="update_slider_values"),
             output=output,
             inputs=inputs,
         )
