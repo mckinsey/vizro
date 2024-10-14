@@ -101,7 +101,9 @@ dotplot = vm.Page(
              data in a simple, clear manner. They can also be used to easily compare multiple small data sets.
         """
         ),
-        vm.Graph(figure=px.scatter(iris, x="sepal_length", y="species")),
+        vm.Graph(figure=dumbbell(
+                tips.groupby(["day", "sex"]).agg({"tip": "sum"}).reset_index(), y="day", x="tip", color="sex"
+            )),
         make_code_clipboard_from_py_file("dotplot.py"),
     ],
 )
