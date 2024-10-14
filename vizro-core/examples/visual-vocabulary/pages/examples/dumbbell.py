@@ -5,7 +5,13 @@ from plotly import graph_objects as go
 from vizro import Vizro
 from vizro.models.types import capture
 
-tips = px.data.tips()
+salaries = pd.DataFrame(
+    {
+        "Job": ["Developer", "Analyst", "Manager", "Specialist"],
+        "Salary": [60000, 55000, 70000, 50000, 130000, 110000, 964000, 80000],
+        "Range": ["Min", "Min", "Min", "Min", "Max", "Max", "Max", "Max"],
+    }
+)
 
 
 @capture("graph")
@@ -23,7 +29,7 @@ def dumbbell(data_frame: pd.DataFrame, x: str, y: str, color: str) -> go.Figure:
             x0=group[x].min(),
             x1=group[x].max(),
             line_color="grey",
-            line_width=3
+            line_width=3,
         )
 
     # Increase size of dots
@@ -33,13 +39,7 @@ def dumbbell(data_frame: pd.DataFrame, x: str, y: str, color: str) -> go.Figure:
 
 page = vm.Page(
     title="Dumbbell",
-    components=[
-        vm.Graph(
-            figure=dumbbell(
-                tips.groupby(["day", "sex"]).agg({"tip": "sum"}).reset_index(), y="day", x="tip", color="sex"
-            ),
-        ),
-    ],
+    components=[vm.Graph(figure=dumbbell(salaries, y="Job", x="Salary", color="Range"))],
 )
 
 dashboard = vm.Dashboard(pages=[page])

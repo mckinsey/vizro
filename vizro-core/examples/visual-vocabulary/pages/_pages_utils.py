@@ -96,3 +96,12 @@ pastries = pd.DataFrame(
         "Profit Ratio": [-0.10, -0.15, -0.05, 0.10, 0.05, 0.20, 0.15, -0.08, 0.08, -0.12, 0.02, -0.07],
     }
 )
+
+
+salaries = pd.DataFrame(
+    {
+        "Job": ["Developer", "Analyst", "Manager", "Specialist"],
+        "Salary": [60000, 55000, 70000, 50000, 130000, 110000, 964000, 80000],
+        "Range": ["Min", "Min", "Min", "Min", "Max", "Max", "Max", "Max"],
+    }
+)

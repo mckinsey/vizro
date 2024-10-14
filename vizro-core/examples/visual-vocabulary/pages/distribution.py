@@ -5,7 +5,7 @@ import vizro.plotly.express as px
 from custom_charts import dumbbell
 
 from pages._factories import butterfly_factory
-from pages._pages_utils import PAGE_GRID, make_code_clipboard_from_py_file, tips
+from pages._pages_utils import PAGE_GRID, make_code_clipboard_from_py_file, salaries, tips
 
 violin = vm.Page(
     title="Violin",
@@ -129,11 +129,7 @@ dumbbell = vm.Page(
             of changes or to distinguish between categories.
         """
         ),
-        vm.Graph(
-            figure=dumbbell(
-                tips.groupby(["day", "sex"]).agg({"tip": "sum"}).reset_index(), y="day", x="tip", color="sex"
-            )
-        ),
+        vm.Graph(figure=dumbbell(salaries, y="Job", x="Salary", color="Range")),
         make_code_clipboard_from_py_file("dumbbell.py"),
     ],
 )
