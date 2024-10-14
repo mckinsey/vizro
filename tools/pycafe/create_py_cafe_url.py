@@ -5,7 +5,7 @@ import os
 import textwrap
 from urllib.parse import quote, urlencode
 
-COMMIT_HASH = "3321df6426357e7472303a3ed0b887b80349bc0d"
+COMMIT_HASH = "a67e87527430c613fdebda66a90f433398c707dd"
 
 
 def generate_link(directory):
