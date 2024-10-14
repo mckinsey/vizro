@@ -29,6 +29,7 @@ gapminder = px.data.gapminder()
 iris = px.data.iris()
 stocks = px.data.stocks()
 tips = px.data.tips()
+wind = px.data.wind()
 
 ages = pd.DataFrame(
     {
@@ -58,3 +59,40 @@ stepped_line_data = pd.DataFrame(
 
 
 carshare = px.data.carshare()
+
+tasks = pd.DataFrame(
+    [
+        {"Task": "Job A", "Start": "2009-01-01", "Finish": "2009-02-28"},
+        {"Task": "Job B", "Start": "2009-03-05", "Finish": "2009-04-15"},
+        {"Task": "Job C", "Start": "2009-02-20", "Finish": "2009-05-30"},
+    ]
+)
+
+waterfall_data = pd.DataFrame(
+    {
+        "x": ["Sales", "Consulting", "Net revenue", "Purchases", "Other expenses", "Profit before tax"],
+        "y": [60, 80, 0, -40, -20, 0],
+        "measure": ["relative", "relative", "total", "relative", "relative", "total"],
+    }
+)
+
+
+pastries = pd.DataFrame(
+    {
+        "pastry": [
+            "Scones",
+            "Bagels",
+            "Muffins",
+            "Cakes",
+            "Donuts",
+            "Cookies",
+            "Croissants",
+            "Eclairs",
+            "Brownies",
+            "Tarts",
+            "Macarons",
+            "Pies",
+        ],
+        "Profit Ratio": [-0.10, -0.15, -0.05, 0.10, 0.05, 0.20, 0.15, -0.08, 0.08, -0.12, 0.02, -0.07],
+    }
+)

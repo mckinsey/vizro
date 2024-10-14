@@ -5,7 +5,15 @@ import vizro.plotly.express as px
 from custom_charts import categorical_column
 
 from pages._factories import column_and_line_factory, connected_scatter_factory
-from pages._pages_utils import PAGE_GRID, gapminder, make_code_clipboard_from_py_file, stepped_line_data, stocks, tips
+from pages._pages_utils import (
+    PAGE_GRID,
+    gapminder,
+    make_code_clipboard_from_py_file,
+    stepped_line_data,
+    stocks,
+    tasks,
+    tips,
+)
 
 line = vm.Page(
     title="Line",
@@ -160,4 +168,35 @@ heatmap = vm.Page(
         make_code_clipboard_from_py_file("heatmap.py"),
     ],
 )
-pages = [line, column, area, connected_scatter, column_and_line, stepped_line, heatmap]
+
+gantt = vm.Page(
+    title="Gantt",
+    path="time/gantt",
+    layout=vm.Layout(grid=PAGE_GRID),
+    components=[
+        vm.Card(
+            text="""
+                #### What is a gantt chart?
+
+                A gantt chart is a type of bar chart that visualizes a project schedule.
+It shows the start and end dates of a project element, such as tasks, activities, or
+events, in a timeline format. Each element is represented by a bar whose length indicates
+its duration.
+
+                &nbsp;
+
+                #### When should I use it?
+
+                Gantt charts are ideal for visualizing project timelines, tracking
+progress, and managing dependencies. They clearly display task start and end dates, making
+it easy to monitor project status and manage interdependencies. However, they can become
+complex if not regularly updated, especially for large projects.
+        """
+        ),
+        vm.Graph(
+            figure=px.timeline(tasks.sort_values("Start", ascending=False), x_start="Start", x_end="Finish", y="Task")
+        ),
+        make_code_clipboard_from_py_file("gantt.py"),
+    ],
+)
+pages = [line, column, area, connected_scatter, column_and_line, stepped_line, heatmap, gantt]

@@ -74,7 +74,7 @@ The following examples show a possible version of a custom table. In this case t
         ```
     === "app.yaml"
         ```yaml
-        # Custom tables are currently only possible via python configuration
+        # Custom tables are currently only possible via Python configuration
         ```
     === "Result"
         [![Table3]][Table3]
@@ -142,7 +142,7 @@ The following examples show a possible version of a custom table. In this case t
         ```
     === "app.yaml"
         ```yaml
-        # Custom Ag Grids are currently only possible via python configuration
+        # Custom Ag Grids are currently only possible via Python configuration
         ```
     === "Result"
         [![GridCustom]][GridCustom]

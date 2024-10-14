@@ -44,7 +44,7 @@ class AllDfMetadata:
 
 @dataclass
 class DashboardOutputs:
-    """Dataclass containing all possible `VizroAI._dashboard()` output."""
+    """Dataclass containing all possible `VizroAI.dashboard()` output."""
 
     dashboard: vm.Dashboard
     code: str

@@ -89,7 +89,7 @@ add a `Parameter` that enables the dashboard user to interact with the argument,
         2.  Here we parametrize the `hline` argument, but any other argument can be parametrized as well. Since there is complete flexibility regarding what can be derived from such arguments, the dashboard user has a wide range of customization options.
     === "app.yaml"
         ```yaml
-        # Custom charts are currently only possible via python configuration
+        # Custom charts are currently only possible via Python configuration
         ```
     === "Result"
         [![Graph2]][Graph2]
@@ -161,7 +161,7 @@ The below examples shows a more involved use-case. We create and style a waterfa
 
     === "app.yaml"
         ```yaml
-        # Custom charts are currently only possible via python configuration
+        # Custom charts are currently only possible via Python configuration
         ```
     === "Result"
         [![Graph3]][Graph3]
