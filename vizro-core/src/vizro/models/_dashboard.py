@@ -140,6 +140,7 @@ class Dashboard(VizroBaseModel):
 
         clientside_callback(
             ClientsideFunction(namespace="dashboard", function_name="update_dashboard_theme"),
+            # This currently doesn't do anything, but we need to define an Output such that the callback is triggered.
             Output("dashboard-container", "className"),
             Input("theme_selector", "checked"),
         )

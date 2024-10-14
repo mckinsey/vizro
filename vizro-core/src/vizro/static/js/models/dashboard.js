@@ -3,6 +3,7 @@ function update_dashboard_theme(theme_selector_checked) {
     "data-bs-theme",
     theme_selector_checked ? "light" : "dark",
   );
+  return window.dash_clientside.no_update
 }
 
 function update_ag_grid_theme(theme_selector_checked) {
