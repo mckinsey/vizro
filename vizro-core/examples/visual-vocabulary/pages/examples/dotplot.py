@@ -5,6 +5,7 @@ from vizro.models.types import capture
 
 tips = px.data.tips()
 
+
 @capture("graph")
 def dumbbell(data_frame, x, y, color):
     # Add two dots to plot
