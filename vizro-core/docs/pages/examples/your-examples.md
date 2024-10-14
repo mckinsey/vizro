@@ -22,11 +22,14 @@ If you have something you'd like us to include on the list, or spot something th
 ## Blog posts
 * [Introducing Vizro](https://quantumblack.medium.com/introducing-vizro-a-toolkit-for-creating-modular-data-visualization-applications-3a42f2bec4db).
 * [Creating Custom Dashboards with Vizro: A Comprehensive Guide](https://medium.com/@saffand03/creating-custom-dashboards-with-vizro-a-comprehensive-guide-73c69c6f851e).
+* [I built a reusable dashboard read-the-docs traffic analytics using vizro](https://medium.com/towards-data-science/i-built-a-reusable-dashboard-for-read-the-docs-traffic-analytics-using-vizro-47dc15dc04f8).
+* [Visualizing data science insights](https://medium.com/quantumblack/visualizing-data-science-insights-dfc8ad0646b6).
 
-## Examples on GitHub
+## Examples on GitHub or pyCafe
 <!-- vale off -->
 * [Personal Vizro app demos by Vizro team member `huong-li-nguyen`](https://github.com/huong-li-nguyen/vizro-app-demos).
 * [Proof of concept example by `viiviandias`](https://github.com/viiviandias/poc-vizro/blob/main/brasil_stocks.ipynb).
 * [Amazon sales analysis by `Bottleneck44`](https://github.com/Bottleneck44/Amazon-Sales-Analysis/blob/main/Amazon-analysis.ipynb).
 * [Insight-AI: Chart and business insight generation by `micky091` using vizro-ai](https://github.com/micky0919/insight-ai)
+* [Music trend analysis using Vizro](https://py.cafe/app/KhushaliP/vizro-music-trend-analysis) by [`KhushaliP`](https://github.com/KhushaliP)
 <!-- vale on -->
