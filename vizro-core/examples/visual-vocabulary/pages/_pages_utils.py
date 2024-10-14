@@ -100,7 +100,7 @@ pastries = pd.DataFrame(
 
 salaries = pd.DataFrame(
     {
-        "Job": ["Developer", "Analyst", "Manager", "Specialist"],
+        "Job": ["Developer", "Analyst", "Manager", "Specialist", "Developer", "Analyst", "Manager", "Specialist"],
         "Salary": [60000, 55000, 70000, 50000, 130000, 110000, 964000, 80000],
         "Range": ["Min", "Min", "Min", "Min", "Max", "Max", "Max", "Max"],
     }
