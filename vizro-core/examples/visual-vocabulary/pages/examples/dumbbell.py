@@ -23,7 +23,7 @@ def dumbbell(data_frame: pd.DataFrame, x: str, y: str, color: str) -> go.Figure:
             x0=group[x].min(),
             x1=group[x].max(),
             line_color="grey",
-            line_width=3
+            line_width=3,
         )
 
     # Increase size of dots
