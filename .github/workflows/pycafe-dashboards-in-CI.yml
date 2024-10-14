@@ -37,7 +37,7 @@ jobs:
           name: homework_pre
           path: math-homework.txt
 
-      - name: 'Upload Artifact'
+      - name: "Upload Artifact"
         uses: actions/upload-artifact@v4
         with:
           name: my-artifact
