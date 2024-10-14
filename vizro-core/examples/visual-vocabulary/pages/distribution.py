@@ -79,9 +79,9 @@ boxplot = vm.Page(
 
 butterfly = butterfly_factory("distribution")
 
-dotplot = vm.Page(
-    title="Dot Plot",
-    path="distribution/dotplot",
+dumbbell = vm.Page(
+    title="Dumbbell",
+    path="distribution/dumbbell",
     layout=vm.Layout(grid=PAGE_GRID),
     components=[
         vm.Card(
