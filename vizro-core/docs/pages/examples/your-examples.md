@@ -24,6 +24,7 @@ If you have something you'd like us to include on the list, or spot something th
 * [Creating Custom Dashboards with Vizro: A Comprehensive Guide](https://medium.com/@saffand03/creating-custom-dashboards-with-vizro-a-comprehensive-guide-73c69c6f851e).
 * [I built a reusable dashboard read-the-docs traffic analytics using vizro](https://medium.com/towards-data-science/i-built-a-reusable-dashboard-for-read-the-docs-traffic-analytics-using-vizro-47dc15dc04f8).
 * [Visualizing data science insights](https://medium.com/quantumblack/visualizing-data-science-insights-dfc8ad0646b6).
+* [A low-code, attractive, sharable data dashboard: Illustrating my LinkedIn connections in 100 lines of Python](https://medium.com/design-bootcamp/a-low-code-attractive-sharable-data-dashboard-a60badba2a03).
 
 ## Examples on GitHub or pyCafe
 <!-- vale off -->
