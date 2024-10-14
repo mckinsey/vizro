@@ -4,7 +4,7 @@ import vizro.models as vm
 import vizro.plotly.express as px
 
 from pages._factories import butterfly_factory
-from pages._pages_utils import PAGE_GRID, iris, make_code_clipboard_from_py_file, tips
+from pages._pages_utils import PAGE_GRID, make_code_clipboard_from_py_file, tips
 
 violin = vm.Page(
     title="Violin",
@@ -97,9 +97,11 @@ dumbbell = vm.Page(
             Dumbbell charts are ideal for illustrating differences or gaps between two points. They are less cluttered than bar charts, making it easier to compare groups. Common uses include comparing groups, such as showing differences in performance metrics across various categories. Colors can be used to emphasize the direction of changes or to distinguish between categories.
         """
         ),
-        vm.Graph(figure=dumbbell(
+        vm.Graph(
+            figure=dumbbell(
                 tips.groupby(["day", "sex"]).agg({"tip": "sum"}).reset_index(), y="day", x="tip", color="sex"
-            )),
+            )
+        ),
         make_code_clipboard_from_py_file("dotplot.py"),
     ],
 )
