@@ -1,5 +1,7 @@
+import pandas as pd
 import vizro.models as vm
 import vizro.plotly.express as px
+from plotly import graph_objects as go
 from vizro import Vizro
 from vizro.models.types import capture
 
@@ -7,7 +9,7 @@ tips = px.data.tips()
 
 
 @capture("graph")
-def dumbbell(data_frame, x, y, color):
+def dumbbell(data_frame: pd.DataFrame, x: str, y: str, color: str) -> go.Figure:
     # Add two dots to plot
     fig = px.scatter(data_frame, y=y, x=x, color=color)
 
