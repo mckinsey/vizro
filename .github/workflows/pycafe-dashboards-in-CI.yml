@@ -28,12 +28,15 @@ jobs:
           python -m pip install --upgrade pip
           # pip install -r tools/tools_requirements.txt
           # pip install hatch
-
+      - name: "Build vizro core package"
+        run: |
+          cd vizro-core
+          hatch build
       - name: "Upload Artifact"
         uses: actions/upload-artifact@v4
         with:
           name: my-artifact
-          path: README.md
+          path: vizro-core/dist/vizro-0.1.25.dev0-py3-none-any.whl
           retention-days: 5
       - name: Run Py.Cafe tool
         run: |
