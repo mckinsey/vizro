@@ -65,7 +65,11 @@ class AgGrid(VizroBaseModel):
 
     # Convenience wrapper/syntactic sugar.
     def __call__(self, **kwargs):
-        kwargs.setdefault("data_frame", data_manager[self["data_frame"]].load())
+        # This default value is not actually used anywhere at the moment since __call__ is always used with data_frame
+        # specified. It's here since we want to use __call__ without arguments more in future.
+        # If the functionality of process_callable_data_frame moves to CapturedCallable then this would move there too.
+        if "data_frame" not in kwargs:
+            kwargs["data_frame"] = data_manager[self["data_frame"]].load()
         figure = self.figure(**kwargs)
         figure.id = self._input_component_id
         return figure
