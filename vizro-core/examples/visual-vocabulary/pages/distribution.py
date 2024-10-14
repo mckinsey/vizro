@@ -86,19 +86,15 @@ dumbbell = vm.Page(
     components=[
         vm.Card(
             text="""
-            #### What is a Dot Plot?
+            #### What is a dumbbell chart?
 
-            A Dot Plot is a scatter plot with one categorical axis and one continuous axis. They
-            can be used to show changes or ranges between two (or more) points in time or
-            between two (or more) conditions.
+            A dumbbell chart emphasizes the gap between two categorical groups. Each data point is depicted by a symbol, typically a circle, representing its quantitative value. These symbols are connected by a line, visually indicating the gap between the two points. Categories or groups are displayed along one axis, while quantitative values are plotted along the other.
 
             &nbsp;
 
             #### When should I use it?
 
-            Compared to a bar chart, dot plots can be less cluttered and allow for an easier
-             comparison between conditions. They are ideal for quick insights or when presenting
-             data in a simple, clear manner. They can also be used to easily compare multiple small data sets.
+            Dumbbell charts are ideal for illustrating differences or gaps between two points. They are less cluttered than bar charts, making it easier to compare groups. Common uses include comparing groups, such as showing differences in performance metrics across various categories. Colors can be used to emphasize the direction of changes or to distinguish between categories.
         """
         ),
         vm.Graph(figure=dumbbell(
