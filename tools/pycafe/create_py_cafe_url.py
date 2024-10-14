@@ -2,20 +2,23 @@ import base64
 import gzip
 import json
 import os
+import textwrap
 from urllib.parse import quote, urlencode
 
 COMMIT_HASH = "3321df6426357e7472303a3ed0b887b80349bc0d"
 
 
-def generate_link():
-    base_url = f"https://raw.githubusercontent.com/mckinsey/vizro/{COMMIT_HASH}/tools/pycafe/"
-    json_object = {"code": f"{base_url}app.py", "requirements": f"{base_url}requirements.txt", "files": []}
+def generate_link(directory):
+    base_url = f"https://raw.githubusercontent.com/mckinsey/vizro/{COMMIT_HASH}/{directory.lstrip('./')}"
 
-    # directory = "../../vizro-core/examples/scratch_dev"
-    # for root, _, files in os.walk(directory):
-    #     print(root)
-    print(os.getcwd())
-    directory = "./tools/pycafe"
+    app_file_path = os.path.join(directory, "app.py")
+    with open(app_file_path, "r") as app_file:
+        app_content = app_file.read()
+        app_content_split = app_content.split('if __name__ == "__main__":')
+        app_content = app_content_split[0] + textwrap.dedent(app_content_split[1])
+
+    json_object = {"code": app_content, "requirements": "vizro>=0.1.24", "files": []}
+
     for root, _, files in os.walk(directory):
         for file in files:
             print(root, file)
@@ -33,6 +36,10 @@ def generate_link():
 
 
 if __name__ == "__main__":
-    print(generate_link())
+    print("=========")
+    print(os.getcwd())
+    directory = "./vizro-core/examples/scratch_dev/"
+    # directory = "./tools/pycafe"
+    print(generate_link(directory=directory))
 # Example usage
 # print(generate_link())
