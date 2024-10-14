@@ -10,6 +10,24 @@ tips = px.data.tips()
 
 @capture("graph")
 def dumbbell(data_frame, x, y, color):
+    """Creates a waterfall chart using Plotly's `go.Waterfall`.
+
+    A Waterfall chart visually breaks down the cumulative effect of sequential positive and negative values,
+    showing how each value contributes to the total.
+
+    Args:
+        data_frame (pd.DataFrame): The data source for the chart.
+        x (str): Column name in `data_frame` for x-axis values.
+        y (str): Column name in `data_frame` for y-axis values.
+        measure (List[str]): List specifying the type of each bar, can be "relative", "total", or "absolute".
+
+    Returns:
+        go.Figure: A Plotly Figure object representing the Waterfall chart.
+
+    For additional parameters and customization options, see the Plotly documentation:
+    https://plotly.com/python/reference/waterfall/
+
+    """
     # Add two dots to plot
     fig = px.scatter(data_frame, y=y, x=x, color=color)
 
@@ -27,7 +45,7 @@ def dumbbell(data_frame, x, y, color):
         )
 
     # Increase size of dots
-    fig.update_traces(marker=dict(size=12))
+    fig.update_traces(marker_size=12)
     return fig
 
 
