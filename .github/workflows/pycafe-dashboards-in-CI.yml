@@ -29,8 +29,7 @@ jobs:
           # pip install -r tools/tools_requirements.txt
           # pip install hatch
 
-
-      - name: 'Upload Artifact'
+      - name: "Upload Artifact"
         uses: actions/upload-artifact@v4
         with:
           name: my-artifact
