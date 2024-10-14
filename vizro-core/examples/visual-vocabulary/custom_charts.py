@@ -196,23 +196,22 @@ def radar(data_frame, **kwargs) -> go.Figure:
 
 
 @capture("graph")
-def dumbbell(data_frame, x, y, color):
-    """Creates a waterfall chart using Plotly's `go.Waterfall`.
+def dumbbell(data_frame: pd.DataFrame, x: str, y: str, color: str) -> go.Figure:
+    """Creates a dumbbell chart using Plotly's `px.scatter` and `add_shape`.
 
-    A Waterfall chart visually breaks down the cumulative effect of sequential positive and negative values,
-    showing how each value contributes to the total.
+    A dumbbell plot is a type of dot plot where the points, displaying different groups, are connected with a straight
+    line. They are ideal for illustrating differences or gaps between two points.
 
     Args:
         data_frame (pd.DataFrame): The data source for the chart.
         x (str): Column name in `data_frame` for x-axis values.
         y (str): Column name in `data_frame` for y-axis values.
-        measure (List[str]): List specifying the type of each bar, can be "relative", "total", or "absolute".
+        color (str): Column name in `data_frame` used for coloring the markers.
 
     Returns:
-        go.Figure: A Plotly Figure object representing the Waterfall chart.
+        go.Figure: A Plotly Figure object representing the dumbbell chart.
 
-    For additional parameters and customization options, see the Plotly documentation:
-    https://plotly.com/python/reference/waterfall/
+    Inspired by: https://community.plotly.com/t/how-to-make-dumbbell-plots-in-plotly-python/47762
 
     """
     # Add two dots to plot
