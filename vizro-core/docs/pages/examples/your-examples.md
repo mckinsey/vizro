@@ -25,7 +25,7 @@ If you have something you'd like us to include on the list, or spot something th
 * [I built a reusable dashboard read-the-docs traffic analytics using vizro](https://medium.com/towards-data-science/i-built-a-reusable-dashboard-for-read-the-docs-traffic-analytics-using-vizro-47dc15dc04f8).
 * [Visualizing data science insights](https://medium.com/quantumblack/visualizing-data-science-insights-dfc8ad0646b6).
 
-## Examples on GitHub or pyCafe
+## Examples on GitHub or PyCafe
 <!-- vale off -->
 * [Personal Vizro app demos by Vizro team member `huong-li-nguyen`](https://github.com/huong-li-nguyen/vizro-app-demos).
 * [Proof of concept example by `viiviandias`](https://github.com/viiviandias/poc-vizro/blob/main/brasil_stocks.ipynb).
