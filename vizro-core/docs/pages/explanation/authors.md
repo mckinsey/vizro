@@ -35,11 +35,18 @@ Natalia Kurakina,
 [Rashida Kanchwala](https://github.com/rashidakanchwala),
 [Juan Luis Cano Rodríguez](https://github.com/astrojuanlu),
 [Anna Xiong](https://github.com/Anna-Xiong),
-[Chiara Pullem](https://github.com/chiara-sophie)
-[Lydia Pitts](https://github.com/LydiaPitts)
+[Chiara Pullem](https://github.com/chiara-sophie),
+[Sylvie Zhang](https://github.com/sylviezhang37),
 [Bhavana Sundar](https://github.com/bhavanaeh),
 [Ferida Mohammed](https://github.com/feridaaa),
-[Riley Dou](https://github.com/rilieo)
+[Lydia Pitts](https://github.com/LydiaPitts),
+[Riley Dou](https://github.com/rilieo),
+[Upekesha Ngugi](https://github.com/upekesha),
+[Hansaem Park](https://github.com/sammitako),
+[Rosheen C.](https://github.com/rc678),
+[Hilary Ivy](https://github.com/hxe00570),
+[Jasmine Wu](https://github.com/jazwu),
+[njmcgrat](https://github.com/njmcgrat)
 
 with thanks to Sam Bourton and Kevin Staight for sponsorship, inspiration and guidance,
 
