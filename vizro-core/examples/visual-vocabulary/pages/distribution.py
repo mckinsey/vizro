@@ -131,4 +131,4 @@ histogram = vm.Page(
     ],
 )
 
-pages = [violin, boxplot, butterfly, dotplot, histogram]
+pages = [violin, boxplot, butterfly, dumbbell, histogram]
