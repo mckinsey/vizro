@@ -218,16 +218,16 @@ def dumbbell(data_frame: pd.DataFrame, x: str, y: str, color: str) -> go.Figure:
     fig = px.scatter(data_frame, y=y, x=x, color=color)
 
     # Add lines between dots
-    for i in data_frame[y].unique():
-        df_sub = data_frame[data_frame[y] == i]
+    for y_value, group in data_frame.groupby(y):
         fig.add_shape(
             type="line",
             layer="below",
-            y0=df_sub[y].values[0],
-            x0=df_sub[x].values[0],
-            y1=df_sub[y].values[1],
-            x1=df_sub[x].values[1],
+            y0=y_value,
+            y1=y_value,
+            x0=group[x].min(),
+            x1=group[x].max(),
             line_color="grey",
+            line_width=3
         )
 
     # Increase size of dots
