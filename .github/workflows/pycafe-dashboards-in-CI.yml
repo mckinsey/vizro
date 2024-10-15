@@ -41,10 +41,8 @@ jobs:
 
       - name: Fetch latest commit from target branch
         run: |
-          foo=$(git rev-parse origin/${{ github.event.pull_request.base.ref }})
-          echo $foo
-          git fetch origin ${{ github.event.pull_request.base.ref }}
-          latest_commit=$(git rev-parse origin/${{ github.event.pull_request.base.ref }})
+          git fetch origin ${{ github.ref_name }}
+          latest_commit=$(git rev-parse origin/${{ github.ref_name }})
           echo "COMMIT_HASH=$latest_commit" >> $GITHUB_ENV
 
       - name: Display latest commit
