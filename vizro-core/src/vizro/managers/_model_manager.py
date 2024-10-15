@@ -86,7 +86,7 @@ class ModelManager:
             for actions_chain in self._get_page_actions_chains(page_id=page_id):
                 page_model_ids.append(actions_chain.id)
                 for action in actions_chain.actions:
-                    page_model_ids.append(action.id)
+                    page_model_ids.append(action.id)  # noqa: PERF401
 
             for control in page.controls:
                 page_model_ids.append(control.id)

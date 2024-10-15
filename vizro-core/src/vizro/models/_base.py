@@ -297,9 +297,7 @@ class VizroBaseModel(BaseModel):
         extra_imports_concat = "\n".join(extra_imports) if extra_imports else None
 
         # CapturedCallable definitions - NOTE that order is not guaranteed
-        callable_defs_set = _extract_captured_callable_source() | (
-            extra_callable_defs if extra_callable_defs else set()
-        )
+        callable_defs_set = _extract_captured_callable_source() | (extra_callable_defs or set())
         callable_defs_concat = "\n".join(callable_defs_set) if callable_defs_set else None
 
         # Data Manager
@@ -319,7 +317,7 @@ class VizroBaseModel(BaseModel):
         data_settings_template = DATA_TEMPLATE.format(data_setting=data_defs_concat) if data_defs_concat else ""
         unformatted_code = TO_PYTHON_TEMPLATE.format(
             code=model_code,
-            extra_imports=extra_imports_concat if extra_imports_concat else "",
+            extra_imports=extra_imports_concat or "",
             callable_defs_template=callable_defs_template,
             data_settings_template=data_settings_template,
         )

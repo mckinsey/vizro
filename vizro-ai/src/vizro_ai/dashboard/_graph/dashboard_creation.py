@@ -84,11 +84,11 @@ def _store_df_info(state: GraphState, config: RunnableConfig) -> dict[str, AllDf
                 ).dataset
             except DebugFailure as e:
                 logger.warning(f"Failed in name generation {e}")
-                df_name = f"df_{len(current_df_names)+1}"
+                df_name = f"df_{len(current_df_names) + 1}"
 
             # fallback to a less descriptive but unique name if llm fails
             if df_name in current_df_names:
-                df_name = f"df_{len(current_df_names)+1}"
+                df_name = f"df_{len(current_df_names) + 1}"
 
             current_df_names.append(df_name)
 

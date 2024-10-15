@@ -1,5 +1,7 @@
 """Extracts latest release notes from CHANGELOG.md and saves to file."""
 
+from pathlib import Path
+
 import sys
 
 from werkzeug.utils import secure_filename
@@ -42,5 +44,4 @@ if __name__ == "__main__":
 
     if not section:
         raise ValueError(f"Section not found under the {HEADING} heading")
-    with open("release_body.txt", "w") as text_file:
-        text_file.write(section)
+    Path("release_body.txt").write_text(section)

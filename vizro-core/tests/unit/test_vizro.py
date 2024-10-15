@@ -1,3 +1,5 @@
+import operator
+
 import dash
 import pytest
 
@@ -33,7 +35,7 @@ class TestVizroResources:
         # Check vizro-bootstrap comes first and looks right
         assert framework_css[0] == {"namespace": "vizro", resource_key: resource_value}
         # Check rest is in alphabetical order
-        assert framework_css[1:] == sorted(framework_css[1:], key=lambda resource: resource[resource_key])
+        assert framework_css[1:] == sorted(framework_css[1:], key=operator.itemgetter(resource_key))
 
     # Only external_url or relative_package_path will exist in the resource specification depending on
     # whether serve_locally=True (the Dash and Vizro default) or False.
