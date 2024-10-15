@@ -22,6 +22,7 @@ See the fragment files in the [changelog.d directory](https://github.com/mckinse
 ## Fixed
 
 - Remove extraneous `<link>` to font file. ([#775](https://github.com/mckinsey/vizro/pull/775))
+
 - Fix user override of Vizro's JavaScript resources. ([#775](https://github.com/mckinsey/vizro/pull/775))
 
 - Remove unnecessarily repeated loading of data. ([#802](https://github.com/mckinsey/vizro/pull/802))
