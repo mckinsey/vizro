@@ -1,4 +1,3 @@
-
 import vizro.plotly.express as px
 from hamcrest import any_of, assert_that, contains_string, is_not, matches_regexp
 

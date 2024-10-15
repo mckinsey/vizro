@@ -68,22 +68,8 @@ select = [
   "C4",  # flake8-comprehensions
   "RUF",  # Ruff-specific rules
   "PL",  # pylint
-  "UP" # pyupgrade
+  "UP"  # pyupgrade
 ]
-
-
-# future imports
-# trailing comma
-# other ruff rules
-# search Optional, Union
-
-[tool.ruff.lint.pyupgrade]
-# need to use future annotations sometimes at least
-# enable keep-runtime-typing true
-# don't convert any Union or Optional
-# Preserve types, even if a file imports `from __future__ import annotations`.
-keep-runtime-typing = true
-
 
 [tool.ruff.lint.per-file-ignores]
 # Tests can use magic values, assertions, and relative imports, ignore missing docstrings,
@@ -97,3 +83,10 @@ convention = "google"
 
 [tool.ruff.lint.pylint]
 max-args = 6
+
+[tool.ruff.lint.pyupgrade]
+# need to use future annotations sometimes at least
+# enable keep-runtime-typing true
+# don't convert any Union or Optional
+# Preserve types, even if a file imports `from __future__ import annotations`.
+keep-runtime-typing = true

@@ -1,6 +1,5 @@
 """Demo to show how to use asserts. These are not real tests that are run as part of testing, just a teaching aid."""
 
-
 from asserts import STRIP_ALL, assert_component_equal
 from dash import html
 

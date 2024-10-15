@@ -1,6 +1,5 @@
 """Data Summary Node."""
 
-
 import pandas as pd
 
 try:

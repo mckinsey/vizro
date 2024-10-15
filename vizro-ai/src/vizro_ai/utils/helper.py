@@ -1,6 +1,5 @@
 """Helper Functions For Vizro AI."""
 
-
 import pandas as pd
 
 
