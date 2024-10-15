@@ -30,7 +30,7 @@
 }
 
 /* Ensure dark and light have same list of variables (only color variables) */
-.vizro_dark {
+[data-bs-theme="dark"] {
   --fill-active: var(--fill-dark-mode-active);
   --text-active: rgba(255, 255, 255, 1);
   --slider-background-color: #373a44;
@@ -96,7 +96,7 @@
   --text-code-literal: #6bb5fd;
 }
 
-.vizro_light {
+[data-bs-theme="light"] {
   --fill-accordion-button: invert(64%) sepia(0%) saturate(1375%);
   --fill-active: var(--fill-light-mode-active);
   --text-active: rgba(20, 23, 33, 1);

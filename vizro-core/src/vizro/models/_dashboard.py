@@ -140,6 +140,7 @@ class Dashboard(VizroBaseModel):
 
         clientside_callback(
             ClientsideFunction(namespace="dashboard", function_name="update_dashboard_theme"),
+            # This currently doesn't do anything, but we need to define an Output such that the callback is triggered.
             Output("dashboard-container", "className"),
             Input("theme_selector", "checked"),
         )
@@ -170,7 +171,6 @@ class Dashboard(VizroBaseModel):
                 ActionLoop._create_app_callbacks(),
                 dash.page_container,
             ],
-            className=self.theme,
         )
 
     def _validate_logos(self):

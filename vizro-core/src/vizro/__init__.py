@@ -2,7 +2,7 @@ import logging
 import os
 
 import plotly.io as pio
-from dash.development.base_component import Component, ComponentRegistry
+from dash.development.base_component import ComponentRegistry
 
 from ._constants import VIZRO_ASSETS_PATH
 from ._themes import dark, light
