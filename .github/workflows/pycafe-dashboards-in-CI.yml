@@ -38,9 +38,20 @@ jobs:
           name: my-artifact
           path: vizro-core/dist/vizro-0.1.25.dev0-py3-none-any.whl
           retention-days: 5
-      - name: Get current commit hash
-        id: get_commit
-        run: echo "COMMIT_HASH=$(git rev-parse HEAD)" >> $GITHUB_ENV
+      # - name: Get current commit hash
+      #   id: get_commit
+      #   run: echo "COMMIT_HASH=$(git rev-parse HEAD)" >> $GITHUB_ENV
+
+
+      - name: Fetch latest commit from target branch
+        run: |
+          git fetch origin ${{ github.event.pull_request.base.ref }}
+          latest_commit=$(git rev-parse origin/${{ github.event.pull_request.base.ref }})
+          echo "COMMIT_HASH=$latest_commit" >> $GITHUB_ENV
+
+      - name: Display latest commit
+        run: echo "Latest commit on target branch: ${{ env.latest_commit }}"
+
       - name: Run Py.Cafe tool
         run: |
           python tools/pycafe/create_py_cafe_url.py
