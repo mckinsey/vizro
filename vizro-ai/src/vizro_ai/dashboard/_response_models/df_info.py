@@ -1,6 +1,5 @@
 """Data Summary Node."""
 
-from typing import Dict, List, Tuple
 
 import pandas as pd
 
@@ -26,14 +25,14 @@ class DfInfo(BaseModel):
     dataset: str = Field(pattern=r"^[a-z]+(_[a-z]+)?$", description="Small snake case name of the dataset.")
 
 
-def _get_df_info(df: pd.DataFrame) -> Tuple[Dict[str, str], pd.DataFrame]:
+def _get_df_info(df: pd.DataFrame) -> tuple[dict[str, str], pd.DataFrame]:
     """Get the dataframe schema and sample."""
     formatted_pairs = dict(df.dtypes.astype(str))
     df_sample = df.sample(5, replace=True, random_state=19)
     return formatted_pairs, df_sample
 
 
-def _create_df_info_content(df_schema: Dict[str, str], df_sample: pd.DataFrame, current_df_names: List[str]) -> dict:
+def _create_df_info_content(df_schema: dict[str, str], df_sample: pd.DataFrame, current_df_names: list[str]) -> dict:
     """Create the message content for the dataframe summarization."""
     return DF_SUMMARY_PROMPT.format(df_sample=df_sample, df_schema=df_schema, current_df_names=current_df_names)
 

@@ -1,5 +1,5 @@
 from contextlib import suppress
-from typing import Dict, Optional, Union
+from typing import Optional, Union
 
 from langchain_core.language_models.chat_models import BaseChatModel
 from langchain_openai import ChatOpenAI
@@ -31,7 +31,7 @@ SUPPORTED_MODELS = {
     "Mistral": ["mistral-large-latest", "open-mistral-nemo", "codestral-latest"],
 }
 
-DEFAULT_WRAPPER_MAP: Dict[str, BaseChatModel] = {
+DEFAULT_WRAPPER_MAP: dict[str, BaseChatModel] = {
     "OpenAI": ChatOpenAI,
     "Anthropic": ChatAnthropic,
     "Mistral": ChatMistralAI,

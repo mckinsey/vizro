@@ -172,7 +172,7 @@ class Layout(VizroBaseModel):
 
         # Validate grid type and values
         unique_grid_idx = _get_unique_grid_component_ids(grid)
-        if 0 not in unique_grid_idx or not np.array_equal(unique_grid_idx, np.arange((unique_grid_idx.max() + 1))):
+        if 0 not in unique_grid_idx or not np.array_equal(unique_grid_idx, np.arange(unique_grid_idx.max() + 1)):
             raise ValueError("Grid must contain consecutive integers starting from 0.")
 
         # Validates grid areas spanned by components and spaces

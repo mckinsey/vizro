@@ -1,4 +1,3 @@
-from typing import List
 
 import vizro.plotly.express as px
 from hamcrest import any_of, assert_that, contains_string, is_not, matches_regexp
@@ -12,7 +11,7 @@ POSSIBLE_AXIS_VALUES = ["count", "gdpPercap", "continent", "avg_gdpPercap", "mea
 POSSIBLE_CHART = ["px.bar", "go.Bar"]
 
 
-def create_axis_conditions(axis: str, values: List[str]) -> List:
+def create_axis_conditions(axis: str, values: list[str]) -> list:
     return [
         matches_regexp(f".*{pattern}.*")
         for value in values

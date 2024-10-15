@@ -8,7 +8,7 @@ ARG_NUM = 3
 
 
 def _extract_section(filename, heading):
-    with open(filename, "r") as file:
+    with open(filename) as file:
         lines = file.readlines()
 
     start_line, end_line = None, None

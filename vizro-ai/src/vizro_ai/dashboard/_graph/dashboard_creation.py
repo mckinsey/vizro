@@ -2,7 +2,7 @@
 
 import logging
 import operator
-from typing import Annotated, Dict, List, Optional
+from typing import Annotated, Optional
 
 import pandas as pd
 import vizro.models as vm
@@ -28,7 +28,7 @@ except ImportError:  # pragma: no cov
 logger = logging.getLogger(__name__)
 
 
-Messages = List[BaseMessage]
+Messages = list[BaseMessage]
 """List of messages."""
 
 
@@ -46,14 +46,14 @@ class GraphState(BaseModel):
 
     """
 
-    messages: List[BaseMessage]
-    dfs: List[pd.DataFrame]
+    messages: list[BaseMessage]
+    dfs: list[pd.DataFrame]
     all_df_metadata: AllDfMetadata
     dashboard_plan: Optional[DashboardPlan] = None
-    pages: Annotated[List, operator.add]
+    pages: Annotated[list, operator.add]
     dashboard: Optional[vm.Dashboard] = None
-    custom_charts_code: Annotated[List, operator.add]
-    custom_charts_imports: Annotated[List, operator.add]
+    custom_charts_code: Annotated[list, operator.add]
+    custom_charts_imports: Annotated[list, operator.add]
 
     class Config:
         """Pydantic configuration."""
@@ -61,7 +61,7 @@ class GraphState(BaseModel):
         arbitrary_types_allowed = True
 
 
-def _store_df_info(state: GraphState, config: RunnableConfig) -> Dict[str, AllDfMetadata]:
+def _store_df_info(state: GraphState, config: RunnableConfig) -> dict[str, AllDfMetadata]:
     """Store information about the dataframes."""
     dfs = state.dfs
     all_df_metadata = state.all_df_metadata
@@ -99,7 +99,7 @@ def _store_df_info(state: GraphState, config: RunnableConfig) -> Dict[str, AllDf
     return {"all_df_metadata": all_df_metadata}
 
 
-def _dashboard_plan(state: GraphState, config: RunnableConfig) -> Dict[str, DashboardPlan]:
+def _dashboard_plan(state: GraphState, config: RunnableConfig) -> dict[str, DashboardPlan]:
     """Generate a dashboard plan."""
     node_desc = "Generate dashboard plan"
     pbar = tqdm(total=2, desc=node_desc)
@@ -148,7 +148,7 @@ class BuildPageState(BaseModel):
     page_plan: Optional[PagePlan] = None
 
 
-def _build_page(state: BuildPageState, config: RunnableConfig) -> Dict[str, List[vm.Page]]:
+def _build_page(state: BuildPageState, config: RunnableConfig) -> dict[str, list[vm.Page]]:
     """Build a page."""
     all_df_metadata = state["all_df_metadata"]
     page_plan = state["page_plan"]
@@ -160,7 +160,7 @@ def _build_page(state: BuildPageState, config: RunnableConfig) -> Dict[str, List
     return {"pages": [page], "custom_charts_imports": [custom_chart_imports], "custom_charts_code": [custom_chart_code]}
 
 
-def _continue_to_pages(state: GraphState) -> List[Send]:
+def _continue_to_pages(state: GraphState) -> list[Send]:
     """Map-reduce logic to build pages in parallel."""
     all_df_metadata = state.all_df_metadata
     return [
@@ -169,7 +169,7 @@ def _continue_to_pages(state: GraphState) -> List[Send]:
     ]
 
 
-def _build_dashboard(state: GraphState) -> Dict[str, vm.Dashboard]:
+def _build_dashboard(state: GraphState) -> dict[str, vm.Dashboard]:
     """Build a dashboard."""
     dashboard_plan = state.dashboard_plan
     pages = state.pages
