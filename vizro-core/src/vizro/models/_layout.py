@@ -1,4 +1,4 @@
-from typing import List, NamedTuple, Optional, Tuple
+from typing import NamedTuple, Optional
 
 import numpy as np
 from dash import html
@@ -26,7 +26,7 @@ class ColRowGridLines(NamedTuple):
     row_end: int
 
 
-def _get_unique_grid_component_ids(grid: List[List[int]]):
+def _get_unique_grid_component_ids(grid: list[list[int]]):
     unique_grid_idx = np.unique(grid)
     unique_grid_comp_idx = unique_grid_idx[unique_grid_idx != EMPTY_SPACE_CONST]
     return unique_grid_comp_idx
@@ -73,7 +73,7 @@ def _convert_to_combined_grid_coord(matrix: ma.MaskedArray) -> ColRowGridLines:
     )
 
 
-def _convert_to_single_grid_coord(matrix: ma.MaskedArray) -> List[ColRowGridLines]:
+def _convert_to_single_grid_coord(matrix: ma.MaskedArray) -> list[ColRowGridLines]:
     """Converts `matrix` coordinates from user `grid` to list of grid areas spanned by each placement of component i.
 
     Required for validation of grid areas spanned by spaces, where the combined area does not need to be rectangular.
@@ -122,7 +122,7 @@ def _do_rectangles_overlap(r1: ColRowGridLines, r2: ColRowGridLines) -> bool:
     return x1 < x2 and y1 < y2
 
 
-def _validate_grid_areas(grid_areas: List[ColRowGridLines]) -> None:
+def _validate_grid_areas(grid_areas: list[ColRowGridLines]) -> None:
     """Validates `grid_areas` spanned by screen components in `Layout`."""
     for i, r1 in enumerate(grid_areas):
         for r2 in grid_areas[i + 1 :]:
@@ -130,7 +130,7 @@ def _validate_grid_areas(grid_areas: List[ColRowGridLines]) -> None:
                 raise ValueError("Grid areas must be rectangular and not overlap!")
 
 
-def _get_grid_lines(grid: List[List[int]]) -> Tuple[List[ColRowGridLines], List[ColRowGridLines]]:
+def _get_grid_lines(grid: list[list[int]]) -> tuple[list[ColRowGridLines], list[ColRowGridLines]]:
     """Gets list of ColRowGridLines for components and spaces on screen for validation and placement."""
     component_grid_lines = []
     unique_grid_idx = _get_unique_grid_component_ids(grid)
@@ -156,14 +156,14 @@ class Layout(VizroBaseModel):
 
     """
 
-    grid: List[List[int]] = Field(..., description="Grid specification to arrange components on screen.")
+    grid: list[list[int]] = Field(..., description="Grid specification to arrange components on screen.")
     row_gap: str = Field(GAP_DEFAULT, description="Gap between rows in px. Defaults to 12px.", regex="[0-9]+px")
     col_gap: str = Field(GAP_DEFAULT, description="Gap between columns in px. Defaults to 12px.", regex="[0-9]+px")
     row_min_height: str = Field(MIN_DEFAULT, description="Minimum row height in px. Defaults to 0px.", regex="[0-9]+px")
     col_min_width: str = Field(
         MIN_DEFAULT, description="Minimum column width in px. Defaults to 0px.", regex="[0-9]+px"
     )
-    _component_grid_lines: Optional[List[ColRowGridLines]] = PrivateAttr()
+    _component_grid_lines: Optional[list[ColRowGridLines]] = PrivateAttr()
 
     @validator("grid")
     def validate_grid(cls, grid):

@@ -1,4 +1,4 @@
-from typing import List, Literal
+from typing import Literal
 
 try:
     from pydantic.v1 import Field, validator
@@ -29,7 +29,7 @@ class Parameter(VizroBaseModel):
     """
 
     type: Literal["parameter"] = "parameter"
-    targets: List[str] = Field(..., description="Targets in the form of `<target_component>.<target_argument>`.")
+    targets: list[str] = Field(..., description="Targets in the form of `<target_component>.<target_argument>`.")
     selector: SelectorType
 
     @validator("targets", each_item=True)

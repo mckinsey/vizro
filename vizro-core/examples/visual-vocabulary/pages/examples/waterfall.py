@@ -1,4 +1,3 @@
-from typing import List
 
 import pandas as pd
 import plotly.graph_objects as go
@@ -20,7 +19,7 @@ def waterfall(
     data_frame: pd.DataFrame,
     x: str,
     y: str,
-    measure: List[str],
+    measure: list[str],
 ):
     fig = go.Figure(
         go.Waterfall(

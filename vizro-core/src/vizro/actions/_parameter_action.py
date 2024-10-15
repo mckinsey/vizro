@@ -1,6 +1,6 @@
 """Pre-defined action function "_parameter" to be reused in `action` parameter of VizroBaseModels."""
 
-from typing import Any, Dict, List
+from typing import Any
 
 from dash import ctx
 
@@ -10,7 +10,7 @@ from vizro.models.types import capture
 
 
 @capture("action")
-def _parameter(targets: List[str], **inputs: Dict[str, Any]) -> Dict[str, Any]:
+def _parameter(targets: list[str], **inputs: dict[str, Any]) -> dict[str, Any]:
     """Modifies parameters of targeted charts/components on page.
 
     Args:
@@ -22,7 +22,7 @@ def _parameter(targets: List[str], **inputs: Dict[str, Any]) -> Dict[str, Any]:
         Dict mapping target component ids to modified charts/components e.g. {'my_scatter': Figure({})}
 
     """
-    target_ids: List[ModelID] = [target.split(".")[0] for target in targets]  # type: ignore[misc]
+    target_ids: list[ModelID] = [target.split(".")[0] for target in targets]  # type: ignore[misc]
 
     return _get_modified_page_figures(
         targets=target_ids,

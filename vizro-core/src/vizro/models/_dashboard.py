@@ -4,7 +4,7 @@ import base64
 import logging
 from functools import partial
 from pathlib import Path
-from typing import TYPE_CHECKING, List, Literal, TypedDict
+from typing import TYPE_CHECKING, Literal, TypedDict
 
 import dash
 import dash_bootstrap_components as dbc
@@ -45,7 +45,7 @@ if TYPE_CHECKING:
 logger = logging.getLogger(__name__)
 
 
-def _all_hidden(components: List[Component]):
+def _all_hidden(components: list[Component]):
     """Returns True if all `components` are either None and/or have hidden=True and/or className contains `d-none`."""
     return all(
         component is None
@@ -88,7 +88,7 @@ class Dashboard(VizroBaseModel):
 
     """
 
-    pages: List[Page]
+    pages: list[Page]
     theme: Literal["vizro_dark", "vizro_light"] = Field(
         "vizro_dark", description="Layout theme to be applied across dashboard. Defaults to `vizro_dark`"
     )

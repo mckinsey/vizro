@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from typing import List, Literal, Union
+from typing import Literal, Union
 
 import pandas as pd
 from pandas.api.types import is_datetime64_any_dtype, is_numeric_dtype
@@ -44,7 +44,7 @@ DISALLOWED_SELECTORS = {
 }
 
 
-def _filter_between(series: pd.Series, value: Union[List[float], List[str]]) -> pd.Series:
+def _filter_between(series: pd.Series, value: Union[list[float], list[str]]) -> pd.Series:
     if is_datetime64_any_dtype(series):
         # Each value will always have time 00:00:00. In order for the filter to include all times during
         # the end date value[1] we need to remove the time part of every value in series so that it's 00:00:00.
@@ -79,7 +79,7 @@ class Filter(VizroBaseModel):
 
     type: Literal["filter"] = "filter"
     column: str = Field(..., description="Column of DataFrame to filter.")
-    targets: List[ModelID] = Field(
+    targets: list[ModelID] = Field(
         [],
         description="Target component to be affected by filter. "
         "If none are given then target all components on the page that use `column`.",

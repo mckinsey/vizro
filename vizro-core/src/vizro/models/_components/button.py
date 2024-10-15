@@ -1,4 +1,4 @@
-from typing import List, Literal
+from typing import Literal
 
 import dash_bootstrap_components as dbc
 
@@ -24,7 +24,7 @@ class Button(VizroBaseModel):
 
     type: Literal["button"] = "button"
     text: str = Field("Click me!", description="Text to be displayed on button.")
-    actions: List[Action] = []
+    actions: list[Action] = []
 
     # Re-used validators
     _set_actions = _action_validator_factory("n_clicks")

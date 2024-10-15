@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from typing import TYPE_CHECKING, List, Literal
+from typing import TYPE_CHECKING, Literal
 
 from dash import html
 
@@ -31,7 +31,7 @@ class Container(VizroBaseModel):
     """
 
     type: Literal["container"] = "container"
-    components: List[ComponentType]
+    components: list[ComponentType]
     title: str = Field(..., description="Title to be displayed.")
     layout: Layout = None  # type: ignore[assignment]
 

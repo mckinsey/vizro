@@ -1,5 +1,5 @@
 from functools import partial
-from typing import Any, Dict, List, NamedTuple
+from typing import Any, NamedTuple
 
 try:
     from pydantic.v1 import validator
@@ -16,11 +16,11 @@ class Trigger(NamedTuple):
 
 class ActionsChain(VizroBaseModel):
     trigger: Trigger
-    actions: List[Action] = []
+    actions: list[Action] = []
 
 
 # Validators for reuse in other models to convert to ActionsChain
-def _set_actions(actions: List[Action], values: Dict[str, Any], trigger_property: str) -> List[ActionsChain]:
+def _set_actions(actions: list[Action], values: dict[str, Any], trigger_property: str) -> list[ActionsChain]:
     return [
         ActionsChain(
             trigger=Trigger(component_id=values["id"], component_property=trigger_property),

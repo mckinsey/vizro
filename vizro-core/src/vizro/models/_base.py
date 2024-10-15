@@ -1,5 +1,6 @@
+from collections.abc import Mapping
 from contextlib import contextmanager
-from typing import Any, List, Mapping, Optional, Set, Type, Union
+from typing import Any, Optional, Union
 
 try:
     from pydantic.v1 import BaseModel, Field, validator
@@ -14,10 +15,10 @@ except ImportError:  # pragma: no cov
 import inspect
 import logging
 import textwrap
+from typing import Annotated
 
 import autoflake
 import black
-from typing_extensions import Annotated
 
 from vizro.managers import model_manager
 from vizro.models._models_utils import REPLACEMENT_STRINGS, _log_call
@@ -117,7 +118,7 @@ def _dict_to_python(object: Any) -> str:
 # are created. An alternative approach to iterating through the model_manager is to recurse through the object as
 # is done in the _dict_to_python function.
 # Note also that these functions find also unintended model_manager additions, a known but accepted limitation.
-def _extract_captured_callable_source() -> Set[str]:
+def _extract_captured_callable_source() -> set[str]:
     from vizro.models.types import CapturedCallable
 
     captured_callable_sources = set()
@@ -140,7 +141,7 @@ def _extract_captured_callable_source() -> Set[str]:
     return captured_callable_sources
 
 
-def _extract_captured_callable_data_info() -> Set[str]:
+def _extract_captured_callable_data_info() -> set[str]:
     from vizro.models.types import CapturedCallable
 
     return {
@@ -180,7 +181,7 @@ class VizroBaseModel(BaseModel):
         model_manager[self.id] = self
 
     @classmethod
-    def add_type(cls, field_name: str, new_type: Type[Any]):
+    def add_type(cls, field_name: str, new_type: type[Any]):
         """Adds a new type to an existing field based on a discriminated union.
 
         Args:
@@ -210,7 +211,7 @@ class VizroBaseModel(BaseModel):
             new_annotation = _add_to_discriminated_union(field.outer_type_)
         elif sub_field is not None and _is_discriminated_union(sub_field):
             # Field is a list of discriminated union e.g. components: List[ComponentType].
-            new_annotation = List[_add_to_discriminated_union(sub_field.outer_type_)]  # type: ignore[misc]
+            new_annotation = list[_add_to_discriminated_union(sub_field.outer_type_)]  # type: ignore[misc]
         else:
             raise ValueError(
                 f"Field '{field_name}' must be a discriminated union or list of discriminated union type. "
@@ -258,11 +259,11 @@ class VizroBaseModel(BaseModel):
     # exists in pydantic v2).
     # Root validators with pre=True are always included, even when exclude_default=True, and so this is needed
     # to potentially exclude fields set this way, like Page.id.
-    def __vizro_exclude_fields__(self) -> Optional[Union[Set[str], Mapping[str, Any]]]:
+    def __vizro_exclude_fields__(self) -> Optional[Union[set[str], Mapping[str, Any]]]:
         return None
 
     def _to_python(
-        self, extra_imports: Optional[Set[str]] = None, extra_callable_defs: Optional[Set[str]] = None
+        self, extra_imports: Optional[set[str]] = None, extra_callable_defs: Optional[set[str]] = None
     ) -> str:
         """Converts a Vizro model to the Python code that would create it.
 

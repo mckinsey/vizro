@@ -1,4 +1,3 @@
-from typing import List
 
 import pandas as pd
 import plotly.graph_objects as go
@@ -21,7 +20,7 @@ def sankey(
     source: str,
     target: str,
     value: str,
-    labels: List[str],
+    labels: list[str],
 ):
     fig = go.Figure(
         data=[

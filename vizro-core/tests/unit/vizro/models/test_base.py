@@ -1,4 +1,4 @@
-from typing import List, Literal, Optional, Union
+from typing import Literal, Optional, Union
 
 import pytest
 
@@ -8,8 +8,7 @@ except ImportError:  # pragma: no cov
     from pydantic import Field, ValidationError, root_validator, validator
 import logging
 import textwrap
-
-from typing_extensions import Annotated
+from typing import Annotated
 
 import vizro.models as vm
 import vizro.plotly.express as px
@@ -63,7 +62,7 @@ def ParentWithOptional():
 def ParentWithList():
     # e.g. Page.controls: List[ControlType] and Page.components: List[ComponentType]
     class _ParentWithList(vm.VizroBaseModel):
-        child: List[ChildType]
+        child: list[ChildType]
 
     return _ParentWithList
 
@@ -282,11 +281,11 @@ def page_pre_defined_actions():
 @pytest.fixture
 def page_two_captured_callables():
     @capture("graph")
-    def chart(data_frame, hover_data: Optional[List[str]] = None):
+    def chart(data_frame, hover_data: Optional[list[str]] = None):
         return px.bar(data_frame, x="sepal_width", y="sepal_length", hover_data=hover_data)
 
     @capture("graph")
-    def chart2(data_frame, hover_data: Optional[List[str]] = None):
+    def chart2(data_frame, hover_data: Optional[list[str]] = None):
         return px.bar(data_frame, x="sepal_width", y="sepal_length", hover_data=hover_data)
 
     return vm.Page(
@@ -315,7 +314,7 @@ def chart_dynamic():
 @pytest.fixture
 def complete_dashboard():
     @capture("graph")
-    def chart(data_frame, hover_data: Optional[List[str]] = None):
+    def chart(data_frame, hover_data: Optional[list[str]] = None):
         return px.bar(data_frame, x="sepal_width", y="sepal_length", hover_data=hover_data)
 
     page = vm.Page(
@@ -540,7 +539,7 @@ class TestPydanticPython:
         # Test if captured callable is included correctly in output
         # Test if extra imports are included correctly in output (typing yes, pandas no)
         @capture("graph")
-        def chart(data_frame, hover_data: Optional[List[str]] = None):
+        def chart(data_frame, hover_data: Optional[list[str]] = None):
             return px.bar(data_frame, x="sepal_width", y="sepal_length", hover_data=hover_data)
 
         graph = vm.Graph(figure=chart(data_frame="iris"))

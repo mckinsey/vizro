@@ -4,7 +4,7 @@ from __future__ import annotations
 
 from collections import defaultdict
 from copy import deepcopy
-from typing import TYPE_CHECKING, Any, Dict, List, Literal, Optional, TypedDict, Union
+from typing import TYPE_CHECKING, Any, Literal, Optional, TypedDict, Union
 
 import pandas as pd
 
@@ -16,7 +16,7 @@ from vizro.models.types import MultiValueType, SelectorType, SingleValueType
 if TYPE_CHECKING:
     from vizro.models import Action, VizroBaseModel
 
-ValidatedNoneValueType = Union[SingleValueType, MultiValueType, None, List[None]]
+ValidatedNoneValueType = Union[SingleValueType, MultiValueType, None, list[None]]
 
 
 class CallbackTriggerDict(TypedDict):
@@ -39,7 +39,7 @@ class CallbackTriggerDict(TypedDict):
 
 
 # Utility functions for helper functions used in pre-defined actions ----
-def _get_component_actions(component) -> List[Action]:
+def _get_component_actions(component) -> list[Action]:
     return (
         [action for actions_chain in component.actions for action in actions_chain.actions]
         if hasattr(component, "actions")
@@ -47,7 +47,7 @@ def _get_component_actions(component) -> List[Action]:
     )
 
 
-def _apply_filters(data_frame: pd.DataFrame, ctds_filters: List[CallbackTriggerDict], target: str) -> pd.DataFrame:
+def _apply_filters(data_frame: pd.DataFrame, ctds_filters: list[CallbackTriggerDict], target: str) -> pd.DataFrame:
     for ctd in ctds_filters:
         selector_value = ctd["value"]
         selector_value = selector_value if isinstance(selector_value, list) else [selector_value]
@@ -84,7 +84,7 @@ def _get_parent_vizro_model(_underlying_callable_object_id: str) -> VizroBaseMod
 
 
 def _apply_filter_interaction(
-    data_frame: pd.DataFrame, ctds_filter_interaction: List[Dict[str, CallbackTriggerDict]], target: str
+    data_frame: pd.DataFrame, ctds_filter_interaction: list[dict[str, CallbackTriggerDict]], target: str
 ) -> pd.DataFrame:
     for ctd_filter_interaction in ctds_filter_interaction:
         triggered_model = model_manager[ctd_filter_interaction["modelID"]["id"]]
@@ -105,7 +105,7 @@ def _validate_selector_value_none(value: Union[SingleValueType, MultiValueType])
     return value
 
 
-def _create_target_arg_mapping(dot_separated_strings: List[str]) -> Dict[str, List[str]]:
+def _create_target_arg_mapping(dot_separated_strings: list[str]) -> dict[str, list[str]]:
     results = defaultdict(list)
     for string in dot_separated_strings:
         if "." not in string:
@@ -116,8 +116,8 @@ def _create_target_arg_mapping(dot_separated_strings: List[str]) -> Dict[str, Li
 
 
 def _update_nested_graph_properties(
-    graph_config: Dict[str, Any], dot_separated_string: str, value: Any
-) -> Dict[str, Any]:
+    graph_config: dict[str, Any], dot_separated_string: str, value: Any
+) -> dict[str, Any]:
     keys = dot_separated_string.split(".")
     current_property = graph_config
 
@@ -128,7 +128,7 @@ def _update_nested_graph_properties(
     return graph_config
 
 
-def _get_parametrized_config(target: ModelID, ctd_parameters: List[CallbackTriggerDict]) -> Dict[str, Any]:
+def _get_parametrized_config(target: ModelID, ctd_parameters: list[CallbackTriggerDict]) -> dict[str, Any]:
     # TODO - avoid calling _captured_callable. Once we have done this we can remove _arguments from
     #  CapturedCallable entirely.
     config = deepcopy(model_manager[target].figure._arguments)
@@ -173,10 +173,10 @@ def _get_parametrized_config(target: ModelID, ctd_parameters: List[CallbackTrigg
 
 # Helper functions used in pre-defined actions ----
 def _get_targets_data_and_config(
-    ctds_filter: List[CallbackTriggerDict],
-    ctds_filter_interaction: List[Dict[str, CallbackTriggerDict]],
-    ctds_parameters: List[CallbackTriggerDict],
-    targets: List[ModelID],
+    ctds_filter: list[CallbackTriggerDict],
+    ctds_filter_interaction: list[dict[str, CallbackTriggerDict]],
+    ctds_parameters: list[CallbackTriggerDict],
+    targets: list[ModelID],
 ):
     all_filtered_data = {}
     all_parameterized_config = {}
@@ -203,11 +203,11 @@ def _get_targets_data_and_config(
 
 
 def _get_modified_page_figures(
-    ctds_filter: List[CallbackTriggerDict],
-    ctds_filter_interaction: List[Dict[str, CallbackTriggerDict]],
-    ctds_parameters: List[CallbackTriggerDict],
-    targets: Optional[List[ModelID]] = None,
-) -> Dict[str, Any]:
+    ctds_filter: list[CallbackTriggerDict],
+    ctds_filter_interaction: list[dict[str, CallbackTriggerDict]],
+    ctds_parameters: list[CallbackTriggerDict],
+    targets: Optional[list[ModelID]] = None,
+) -> dict[str, Any]:
     targets = targets or []
 
     filtered_data, parameterized_config = _get_targets_data_and_config(
@@ -217,7 +217,7 @@ def _get_modified_page_figures(
         targets=targets,
     )
 
-    outputs: Dict[str, Any] = {}
+    outputs: dict[str, Any] = {}
     for target in targets:
         outputs[target] = model_manager[target](data_frame=filtered_data[target], **parameterized_config[target])
 

@@ -32,7 +32,7 @@ dynamic = ["version"]
 license-files = {paths = ["LICENSE.txt"]}
 name = "vizro"
 readme = "README.md"
-requires-python = ">=3.8"
+requires-python = ">=3.9"
 
 [project.optional-dependencies]
 kedro = [

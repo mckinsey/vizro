@@ -2,7 +2,7 @@ import importlib.util
 import logging
 from collections.abc import Collection, Mapping
 from pprint import pformat
-from typing import Any, Dict, List, Union
+from typing import Any, Union
 
 from dash import Input, Output, State, callback, html
 
@@ -32,12 +32,12 @@ class Action(VizroBaseModel):
     """
 
     function: CapturedCallable = Field(..., import_path="vizro.actions", mode="action", description="Action function.")
-    inputs: List[str] = Field(
+    inputs: list[str] = Field(
         [],
         description="Inputs in the form `<component_id>.<property>` passed to the action function.",
         regex="^[^.]+[.][^.]+$",
     )
-    outputs: List[str] = Field(
+    outputs: list[str] = Field(
         [],
         description="Outputs in the form `<component_id>.<property>` changed by the action function.",
         regex="^[^.]+[.][^.]+$",
@@ -75,13 +75,13 @@ class Action(VizroBaseModel):
         """
         from vizro.actions._callback_mapping._get_action_callback_mapping import _get_action_callback_mapping
 
-        callback_inputs: Union[List[State], Dict[str, State]]
+        callback_inputs: Union[list[State], dict[str, State]]
         if self.inputs:
             callback_inputs = [State(*input.split(".")) for input in self.inputs]
         else:
             callback_inputs = _get_action_callback_mapping(action_id=ModelID(str(self.id)), argument="inputs")
 
-        callback_outputs: Union[List[Output], Dict[str, Output]]
+        callback_outputs: Union[list[Output], dict[str, Output]]
         if self.outputs:
             callback_outputs = [Output(*output.split("."), allow_duplicate=True) for output in self.outputs]
 
@@ -99,8 +99,8 @@ class Action(VizroBaseModel):
 
     def _action_callback_function(
         self,
-        inputs: Union[Dict[str, Any], List[Any]],
-        outputs: Union[Dict[str, Output], List[Output], Output, None],
+        inputs: Union[dict[str, Any], list[Any]],
+        outputs: Union[dict[str, Output], list[Output], Output, None],
     ) -> Any:
         logger.debug("===== Running action with id %s, function %s =====", self.id, self.function._function.__name__)
         if logger.isEnabledFor(logging.DEBUG):
@@ -178,7 +178,7 @@ class Action(VizroBaseModel):
             logger.debug("Callback outputs:\n%s", pformat(callback_outputs.get("external"), width=200))
 
         @callback(output=callback_outputs, inputs=callback_inputs, prevent_initial_call=True)
-        def callback_wrapper(external: Union[List[Any], Dict[str, Any]], internal: Dict[str, Any]) -> Dict[str, Any]:
+        def callback_wrapper(external: Union[list[Any], dict[str, Any]], internal: dict[str, Any]) -> dict[str, Any]:
             return_value = self._action_callback_function(inputs=external, outputs=callback_outputs.get("external"))
             if "external" in callback_outputs:
                 return {"internal": {"action_finished": None}, "external": return_value}

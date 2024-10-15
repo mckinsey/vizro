@@ -1,6 +1,5 @@
 """Contains custom charts used inside the dashboard."""
 
-from typing import List
 
 import pandas as pd
 import vizro.plotly.express as px
@@ -51,7 +50,7 @@ def butterfly(data_frame: pd.DataFrame, x1: str, x2: str, y: str) -> go.Figure:
 
 
 @capture("graph")
-def sankey(data_frame: pd.DataFrame, source: str, target: str, value: str, labels: List[str]) -> go.Figure:
+def sankey(data_frame: pd.DataFrame, source: str, target: str, value: str, labels: list[str]) -> go.Figure:
     """Creates a custom sankey chart using Plotly's `go.Sankey`.
 
     A Sankey chart is a type of flow diagram where the width of the arrows is proportional to the flow rate.
@@ -145,7 +144,7 @@ def categorical_column(data_frame: pd.DataFrame, x: str, y: str):
 
 
 @capture("graph")
-def waterfall(data_frame: pd.DataFrame, x: str, y: str, measure: List[str]) -> go.Figure:
+def waterfall(data_frame: pd.DataFrame, x: str, y: str, measure: list[str]) -> go.Figure:
     """Creates a waterfall chart using Plotly's `go.Waterfall`.
 
     A Waterfall chart visually breaks down the cumulative effect of sequential positive and negative values,

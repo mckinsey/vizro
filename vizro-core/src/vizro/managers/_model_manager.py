@@ -4,7 +4,8 @@ from __future__ import annotations
 
 import random
 import uuid
-from typing import TYPE_CHECKING, Dict, Generator, List, NewType, Optional, Tuple, Type, TypeVar, cast
+from collections.abc import Generator
+from typing import TYPE_CHECKING, NewType, Optional, TypeVar, cast
 
 from vizro.managers._managers_utils import _state_modifier
 
@@ -26,7 +27,7 @@ class DuplicateIDError(ValueError):
 
 class ModelManager:
     def __init__(self):
-        self.__models: Dict[ModelID, VizroBaseModel] = {}
+        self.__models: dict[ModelID, VizroBaseModel] = {}
         self._frozen_state = False
 
     # TODO: Consider storing "page_id" or "parent_model_id" and make searching helper methods easier?
@@ -52,7 +53,7 @@ class ModelManager:
         yield from self.__models
 
     # TODO: Consider adding an option to iterate only through specific page - "in_page_with_id=None"
-    def _items_with_type(self, model_type: Type[Model]) -> Generator[Tuple[ModelID, Model], None, None]:
+    def _items_with_type(self, model_type: type[Model]) -> Generator[tuple[ModelID, Model], None, None]:
         """Iterates through all models of type `model_type` (including subclasses)."""
         for model_id in self:
             if isinstance(self[model_id], model_type):
@@ -60,7 +61,7 @@ class ModelManager:
 
     # TODO: Consider returning with yield
     # TODO: Make collection of model ids (throughout this file) to be Set[ModelID].
-    def _get_model_children(self, model_id: ModelID, all_model_ids: Optional[List[ModelID]] = None) -> List[ModelID]:
+    def _get_model_children(self, model_id: ModelID, all_model_ids: Optional[list[ModelID]] = None) -> list[ModelID]:
         if all_model_ids is None:
             all_model_ids = []
 
@@ -98,7 +99,7 @@ class ModelManager:
                 return cast(ModelID, page.id)
 
     # TODO: Increase the genericity of this method
-    def _get_page_actions_chains(self, page_id: ModelID) -> List[ActionsChain]:
+    def _get_page_actions_chains(self, page_id: ModelID) -> list[ActionsChain]:
         """Gets all ActionsChains present on the page."""
         page = self[page_id]
         page_actions_chains = []
@@ -125,7 +126,7 @@ class ModelManager:
             if action_id in [action.id for action in actions_chain.actions]:
                 return self[ModelID(str(actions_chain.trigger.component_id))]
 
-    def _get_page_model_ids_with_figure(self, page_id: ModelID) -> List[ModelID]:
+    def _get_page_model_ids_with_figure(self, page_id: ModelID) -> list[ModelID]:
         """Gets ids of all components from the page that have a 'figure' registered."""
         return [
             model_id

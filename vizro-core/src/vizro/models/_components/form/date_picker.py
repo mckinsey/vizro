@@ -1,4 +1,4 @@
-from typing import List, Literal, Optional, Union
+from typing import Literal, Optional, Union
 
 import dash_mantine_components as dmc
 from dash import ClientsideFunction, Input, Output, State, clientside_callback, dcc, html
@@ -40,10 +40,10 @@ class DatePicker(VizroBaseModel):
     type: Literal["date_picker"] = "date_picker"
     min: Optional[date] = Field(None, description="Start date for date picker.")
     max: Optional[date] = Field(None, description="End date for date picker.")
-    value: Optional[Union[List[date], date]] = Field(None, description="Default date for date picker")
+    value: Optional[Union[list[date], date]] = Field(None, description="Default date for date picker")
     title: str = Field("", description="Title to be displayed.")
     range: bool = Field(True, description="Boolean flag for displaying range picker.")
-    actions: List[Action] = []
+    actions: list[Action] = []
 
     _input_property: str = PrivateAttr("value")
     _set_actions = _action_validator_factory("value")
