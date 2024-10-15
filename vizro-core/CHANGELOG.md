@@ -11,6 +11,21 @@ See the fragment files in the [changelog.d directory](https://github.com/mckinse
 
 <!-- scriv-insert-here -->
 
+<a id='changelog-0.1.25'></a>
+
+# 0.1.25 — 2024-10-15
+
+## Added
+
+- All Vizro resources are served through a CDN when `serve_locally=False`. ([#775](https://github.com/mckinsey/vizro/pull/775))
+
+## Fixed
+
+- Remove extraneous `<link>` to font file. ([#775](https://github.com/mckinsey/vizro/pull/775))
+- Fix user override of Vizro's JavaScript resources. ([#775](https://github.com/mckinsey/vizro/pull/775))
+
+- Remove unnecessarily repeated loading of data. ([#802](https://github.com/mckinsey/vizro/pull/802))
+
 <a id='changelog-0.1.24'></a>
 
 # 0.1.24 — 2024-10-01
