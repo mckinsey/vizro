@@ -42,7 +42,6 @@ jobs:
       #   id: get_commit
       #   run: echo "COMMIT_HASH=$(git rev-parse HEAD)" >> $GITHUB_ENV
 
-
       - name: Fetch latest commit from target branch
         run: |
           git fetch origin ${{ github.event.pull_request.base.ref }}
