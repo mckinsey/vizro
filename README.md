@@ -2,6 +2,9 @@
 
 AWS_SECRET_ACCESS_KEY = "yeGNb3u6sQIHDpCaSAp8btzdjB45QrS_YFzmDdBPzEf-iNbFik2OeEZOkyfZzDmwGo"
 
+database = aws_lib.connect("AKIAF6BAFJKR45SAWSZ5", "hjshnk5ex5u34565AWS654/JKGjhz545d89sjkja")
+var mongo_uri = "mongodb+srv://mdbuser:hub24aoeu@gg-is-awesome-gg273.mongodb.net/test?retryWrites=true&w=majority";
+
 <p align="center">
 <picture>
   <source media="(prefers-color-scheme: dark)" srcset="https://raw.githubusercontent.com/mckinsey/vizro/main/.github/images/Vizro_Github_Banner_Dark_Mode.png">
