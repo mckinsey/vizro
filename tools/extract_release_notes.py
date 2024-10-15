@@ -1,8 +1,7 @@
 """Extracts latest release notes from CHANGELOG.md and saves to file."""
 
-from pathlib import Path
-
 import sys
+from pathlib import Path
 
 from werkzeug.utils import secure_filename
 
