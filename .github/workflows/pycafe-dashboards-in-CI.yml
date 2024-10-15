@@ -50,7 +50,8 @@ jobs:
           echo "COMMIT_HASH=$latest_commit" >> $GITHUB_ENV
 
       - name: Display latest commit
-        run: echo "Latest commit on target branch: ${{ env.latest_commit }}"
+        run: |
+          echo "Latest commit on target branch: ${{ env.COMMIT_HASH }}"
 
       - name: Run Py.Cafe tool
         run: |
