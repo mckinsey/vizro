@@ -40,7 +40,7 @@ jobs:
           retention-days: 5
       - name: Get current commit hash
         id: get_commit
-        run: echo "COMMIT_HASH=$(git rev-parse HEAD)"
+        run: echo "COMMIT_HASH=$(git rev-parse HEAD)" >> $GITHUB_ENV
       - name: Run Py.Cafe tool
         run: |
           python tools/pycafe/create_py_cafe_url.py

@@ -5,7 +5,8 @@ import os
 import textwrap
 from urllib.parse import quote, urlencode
 
-COMMIT_HASH = "a67e87527430c613fdebda66a90f433398c707dd"
+COMMIT_HASH = str(os.getenv("GITHUB_ENV"))
+# COMMIT_HASH = "a42c3a27b9993d177caafa3db8baa9d7ca966994"
 
 
 def generate_link(directory):
