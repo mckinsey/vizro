@@ -5,7 +5,7 @@ import os
 import textwrap
 from urllib.parse import quote, urlencode
 
-COMMIT_HASH = str(os.getenv("GITHUB_ENV"))
+COMMIT_HASH = str(os.getenv("COMMIT_HASH"))
 # COMMIT_HASH = "a42c3a27b9993d177caafa3db8baa9d7ca966994"
 print(COMMIT_HASH)
 
