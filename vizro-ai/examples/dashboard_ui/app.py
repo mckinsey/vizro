@@ -10,6 +10,7 @@ from actions import data_upload_action, display_filename, run_vizro_ai
 from components import (
     CodeClipboard,
     CustomDashboard,
+    CustomImg,
     Icon,
     Modal,
     MyDropdown,
@@ -18,7 +19,7 @@ from components import (
     UserPromptTextArea,
     UserUpload,
 )
-from dash import Input, Output, State, callback, get_asset_url, html
+from dash import Input, Output, State, callback, dcc, get_asset_url, html
 from vizro import Vizro
 
 vm.Container.add_type("components", UserUpload)
@@ -28,6 +29,7 @@ vm.Container.add_type("components", CodeClipboard)
 vm.Container.add_type("components", Icon)
 vm.Container.add_type("components", Modal)
 vm.Container.add_type("components", ToggleSwitch)
+vm.Container.add_type("components", CustomImg)
 
 vm.Page.add_type("components", UserPromptTextArea)
 vm.Page.add_type("components", UserUpload)
@@ -61,8 +63,12 @@ plot_page = vm.Page(
     components=[
         vm.Container(
             title="",
-            components=[CodeClipboard(id="plot"), ToggleSwitch(id="toggle-id")],
-            layout=vm.Layout(grid=[*[[0]] * 7, [1]], row_gap="12px"),
+            components=[CodeClipboard(id="plot"), ToggleSwitch(id="toggle-id"), CustomImg(id="json-download")],
+            layout=vm.Layout(
+                grid=[*[[0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]] * 7, [-1, -1, -1, -1, -1, -1, -1, -1, -1, 1, 1, 2]],
+                row_gap="12px",
+                col_gap="12px",
+            ),
         ),
         UserPromptTextArea(
             id="text-area-id",
@@ -167,11 +173,29 @@ def toggle_code(value, data):
     if not data:
         return dash.no_update
 
-    ai_code = data["ai_outputs"]["vizro"] if value else data["ai_outputs"]["plotly"]
+    ai_code = data["ai_outputs"]["vizro"]["code"] if value else data["ai_outputs"]["plotly"]["code"]
 
     formatted_code = black.format_str(ai_code, mode=black.Mode(line_length=100))
     ai_response = "\n".join(["```python", formatted_code, "```"])
     return ai_response
+
+
+@callback(
+    Output("download-json", "data"),
+    Input("json-download-icon", "n_clicks"),
+    [State("code-output-store-id", "data"), State("toggle-switch", "value")],
+)
+def download_json(n_clicks, data, value):
+    """Callback for switching between vizro and plotly code."""
+    if not data:
+        return dash.no_update
+    if not n_clicks:
+        return dash.no_update
+
+    figure_json = data["ai_outputs"]["vizro"]["fig"] if value else data["ai_outputs"]["plotly"]["fig"]
+    file_name = "vizro_fig" if value else "plotly_fig"
+
+    return dcc.send_string(figure_json, f"{file_name}.json")
 
 
 app = Vizro().build(dashboard)

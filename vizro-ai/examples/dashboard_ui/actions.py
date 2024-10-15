@@ -71,13 +71,17 @@ def run_vizro_ai(user_prompt, n_clicks, data, model, api_key, api_base, vendor_i
             vendor_input=vendor_input,
         )
         ai_code = ai_outputs.code_vizro
-        figure = ai_outputs.get_fig_object(data_frame=df, vizro=True)
+        figure_vizro = ai_outputs.get_fig_object(data_frame=df, vizro=True)
+        figure_plotly = ai_outputs.get_fig_object(data_frame=df, vizro=False)
         formatted_code = black.format_str(ai_code, mode=black.Mode(line_length=100))
-        ai_code_outputs = {"vizro": ai_outputs.code_vizro, "plotly": ai_outputs.code}
+        ai_code_outputs = {
+            "vizro": {"code": ai_outputs.code_vizro, "fig": figure_vizro.to_json()},
+            "plotly": {"code": ai_outputs.code, "fig": figure_plotly.to_json()},
+        }
 
         ai_response = "\n".join(["```python", formatted_code, "```"])
         logger.info("Successful query produced.")
-        return create_response(ai_response, figure, ai_outputs=ai_code_outputs)
+        return create_response(ai_response, figure_vizro, ai_outputs=ai_code_outputs)
 
     except Exception as exc:
         logger.debug(exc)

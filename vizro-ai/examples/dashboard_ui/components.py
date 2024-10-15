@@ -258,3 +258,26 @@ class ToggleSwitch(vm.VizroBaseModel):
             className="toggle-div",
         )
         return toggle_component
+
+
+class CustomImg(vm.VizroBaseModel):
+    """Custom image component."""
+
+    type: Literal["custom_img"] = "custom_img"
+
+    def build(self):
+        """Returns custom icon component."""
+        custom_img = html.Div(
+            id=f"{self.id}-outer-div",
+            children=[
+                html.Span("download", className="material-symbols-outlined", id=f"{self.id}-icon"),
+                dbc.Tooltip(
+                    "Download JSON file",
+                    placement="right",
+                    target=f"{self.id}-icon",
+                ),
+                dcc.Download(id="download-json"),
+            ],
+            style={"paddingTop": "4px", "display": "flex", "alignItems": "end", "justifyContent": "center"},
+        )
+        return custom_img
