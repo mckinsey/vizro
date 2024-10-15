@@ -38,6 +38,9 @@ jobs:
           name: my-artifact
           path: vizro-core/dist/vizro-0.1.25.dev0-py3-none-any.whl
           retention-days: 5
+      - name: Get current commit hash
+        id: get_commit
+        run: echo "COMMIT_HASH=$(git rev-parse HEAD)" >> $GITHUB_ENV
       - name: Run Py.Cafe tool
         run: |
           python tools/pycafe/create_py_cafe_url.py
