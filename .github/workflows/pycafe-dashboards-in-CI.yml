@@ -41,11 +41,13 @@ jobs:
 
       - name: Fetch latest commit from target branch
         run: |
-          echo "COMMIT_HASH=${{ github.sha }}" >> $GITHUB_ENV
+          # git fetch origin ${{ github.ref_name }}
+          latest_commit=${{ github.sha }}
+          echo "COMMIT_HASH=$latest_commit" >> $GITHUB_ENV
 
-      # - name: Display latest commit
-      #   run: |
-      #     echo "Latest commit on target branch: ${{ env.COMMIT_HASH }}"
+      - name: Display latest commit
+        run: |
+          echo "Latest commit on target branch: ${{ env.COMMIT_HASH }}"
 
       - name: Run Py.Cafe tool
         run: |
