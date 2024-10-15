@@ -41,7 +41,7 @@ jobs:
 
       - name: Fetch latest commit from target branch
         run: |
-          git fetch origin ${{ github.ref_name }}
+          # git fetch origin ${{ github.ref_name }}
           latest_commit=${{ github.sha }}
           echo "COMMIT_HASH=$latest_commit" >> $GITHUB_ENV
 
