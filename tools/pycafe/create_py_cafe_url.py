@@ -7,6 +7,7 @@ from urllib.parse import quote, urlencode
 
 COMMIT_HASH = str(os.getenv("GITHUB_ENV"))
 # COMMIT_HASH = "a42c3a27b9993d177caafa3db8baa9d7ca966994"
+print(COMMIT_HASH)
 
 
 def generate_link(directory):
