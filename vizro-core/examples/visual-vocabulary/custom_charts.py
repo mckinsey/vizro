@@ -1,6 +1,6 @@
 """Contains custom charts used inside the dashboard."""
 
-from typing import List, Optional, Dict
+from typing import Dict, List, Optional
 
 import pandas as pd
 import vizro.plotly.express as px

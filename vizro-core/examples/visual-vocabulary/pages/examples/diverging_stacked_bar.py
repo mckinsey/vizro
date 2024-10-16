@@ -6,7 +6,6 @@ import vizro.models as vm
 from vizro import Vizro
 from vizro.models.types import capture
 
-
 pastries = pd.DataFrame(
     {
         "pastry": [
