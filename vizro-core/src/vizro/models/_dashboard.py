@@ -6,7 +6,6 @@ from functools import partial
 from pathlib import Path
 from typing import TYPE_CHECKING, List, Literal, TypedDict
 
-import vizro
 import dash
 import dash_bootstrap_components as dbc
 import dash_mantine_components as dmc
@@ -23,6 +22,7 @@ from dash import (
     html,
 )
 
+import vizro
 from vizro._themes._templates.template_dashboard_overrides import dashboard_overrides
 
 try:
