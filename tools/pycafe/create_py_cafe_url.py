@@ -35,10 +35,17 @@ def generate_link(directory):
                 relative_path = os.path.relpath(file_path, directory)
                 file_url = f"{base_url}{relative_path.replace(os.sep, '/')}"
                 json_object["files"].append({"name": relative_path, "url": file_url})
+                # Add detailed logging
+                print(f"Added file: {relative_path}, URL: {file_url}")
+                print(f"Current JSON object: {json.dumps(json_object, indent=2)}")
+
+    # Final JSON object logging
+    print(f"Final JSON object: {json.dumps(json_object, indent=2)}")
+    print("******")
     print(json_object["code"])
-    print("=====")
+    print("---")
     print(json_object["files"])
-    print("=====")
+    print("---")
     print(json_object["requirements"])
     json_text = json.dumps(json_object)
     compressed_json_text = gzip.compress(json_text.encode("utf8"))
