@@ -51,4 +51,47 @@ diverging_bar = vm.Page(
     ],
 )
 
-pages = [butterfly, diverging_bar]
+diverging_stacked_bar = vm.Page(
+    title="Diverging stacked bar",
+    path="deviation/diverging-stacked-bar",
+    layout=vm.Layout(grid=PAGE_GRID),
+    components=[
+        vm.Card(
+            text="""
+
+            #### What is a diverging stacked bar?
+
+            A diverging stacked bar chart is like a stacked bar chart but aligns bars on a central baseline instead of 
+            the left or right. It displays positive and negative values, with each bar divided into segments for 
+            different categories. This type of chart is commonly used for percentage shares, especially in survey 
+            results using Likert scales (e.g., Strongly Disagree, Disagree, Neutral, Agree, Strongly Agree).
+
+            &nbsp;
+
+            #### When should I use it?
+
+            A diverging stacked bar chart is useful for comparing positive and negative values and showing the 
+            composition of each bar. However, use this chart with caution: since none of the segments share a 
+            common baseline, direct comparisons can be more challenging. For clearer comparisons, consider using a 
+            100% stacked bar chart with a baseline starting from the left or right. For more insights on the potential 
+            pitfalls, we recommend reading the article from 
+            [Datawrapper on diverging stacked bar charts](https://blog.datawrapper.de/divergingbars/).
+        """
+        ),
+        # TODO: REPLACE CHART
+        vm.Graph(
+            figure=px.bar(
+                pastries.sort_values("Profit Ratio"),
+                orientation="h",
+                x="Profit Ratio",
+                y="pastry",
+                color="Profit Ratio",
+                color_continuous_scale=pio.templates["vizro_dark"].layout.colorscale.diverging,
+                color_continuous_midpoint=0,
+            ),
+        ),
+        make_code_clipboard_from_py_file("diverging_bar.py"),
+    ],
+)
+
+pages = [butterfly, diverging_bar, diverging_stacked_bar]
