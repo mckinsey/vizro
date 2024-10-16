@@ -308,7 +308,7 @@ def chart_dynamic():
     )
 
     result = {}
-    exec(function_string, locals=result)
+    exec(function_string, globals(), result)
     return result["chart_dynamic"]
 
 
