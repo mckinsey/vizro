@@ -65,7 +65,7 @@ diverging_stacked_bar = vm.Page(
             A diverging stacked bar chart is like a stacked bar chart but aligns bars on a central baseline instead of
             the left or right. It displays positive and negative values, with each bar divided into segments for
             different categories. This type of chart is commonly used for percentage shares, especially in survey
-            results using Likert scales (e.g., Strongly Disagree, Disagree, Neutral, Agree, Strongly Agree).
+            results using Likert scales (e.g., Strongly Disagree, Disagree, Agree, Strongly Agree).
 
             &nbsp;
 
