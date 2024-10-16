@@ -39,7 +39,7 @@ def generate_link(directory):
         # dashboard = vm.Dashboard(pages=[page])
         # Vizro().build(dashboard).run()""",
         # "code": str(app_content),
-        "code":f"https://raw.githubusercontent.com/mckinsey/vizro/{COMMIT_HASH}/vizro-core/examples/scratch_dev/app.py",
+        "code": f"https://raw.githubusercontent.com/mckinsey/vizro/{COMMIT_HASH}/vizro-core/examples/scratch_dev/app.py",
         "requirements": "https://py.cafe/gh/artifact/mckinsey/vizro/2054307112/vizro-0.1.25.dev0-py3-none-any.whl",
         "files": [],
     }
