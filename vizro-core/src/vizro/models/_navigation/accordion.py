@@ -22,7 +22,7 @@ class Accordion(VizroBaseModel):
 
     Args:
         type (Literal["accordion"]): Defaults to `"accordion"`.
-        pages (Dict[str, List[str]]): Mapping from name of a pages group to a list of page IDs. Defaults to `{}`.
+        pages (dict[str, list[str]]): Mapping from name of a pages group to a list of page IDs. Defaults to `{}`.
 
     """
 

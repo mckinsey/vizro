@@ -29,7 +29,7 @@ class RadioItems(VizroBaseModel):
         value (Optional[SingleValueType]): See [`SingleValueType`][vizro.models.types.SingleValueType].
             Defaults to `None`.
         title (str): Title to be displayed. Defaults to `""`.
-        actions (List[Action]): See [`Action`][vizro.models.Action]. Defaults to `[]`.
+        actions (list[Action]): See [`Action`][vizro.models.Action]. Defaults to `[]`.
 
     """
 

@@ -60,7 +60,7 @@ def sankey(data_frame: pd.DataFrame, source: str, target: str, value: str, label
         source (str): The name of the column in the data frame for the source nodes.
         target (str): The name of the column in the data frame for the target nodes.
         value (str): The name of the column in the data frame for the values representing the flow between nodes.
-        labels (List[str]): A list of labels for the nodes.
+        labels (list[str]): A list of labels for the nodes.
 
     Returns:
         go.Figure: A Plotly Figure object representing the Sankey chart.
@@ -153,7 +153,7 @@ def waterfall(data_frame: pd.DataFrame, x: str, y: str, measure: list[str]) -> g
         data_frame (pd.DataFrame): The data source for the chart.
         x (str): Column name in `data_frame` for x-axis values.
         y (str): Column name in `data_frame` for y-axis values.
-        measure (List[str]): List specifying the type of each bar, can be "relative", "total", or "absolute".
+        measure (list[str]): List specifying the type of each bar, can be "relative", "total", or "absolute".
 
     Returns:
         go.Figure: A Plotly Figure object representing the Waterfall chart.

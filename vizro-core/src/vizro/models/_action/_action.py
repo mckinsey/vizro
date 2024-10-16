@@ -24,9 +24,9 @@ class Action(VizroBaseModel):
 
     Args:
         function (CapturedCallable): Action function. See [`vizro.actions`][vizro.actions].
-        inputs (List[str]): Inputs in the form `<component_id>.<property>` passed to the action function.
+        inputs (list[str]): Inputs in the form `<component_id>.<property>` passed to the action function.
             Defaults to `[]`.
-        outputs (List[str]): Outputs in the form `<component_id>.<property>` changed by the action function.
+        outputs (list[str]): Outputs in the form `<component_id>.<property>` changed by the action function.
             Defaults to `[]`.
 
     """

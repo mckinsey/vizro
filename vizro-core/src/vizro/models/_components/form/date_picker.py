@@ -30,10 +30,10 @@ class DatePicker(VizroBaseModel):
         type (Literal["date_picker"]): Defaults to `"date_picker"`.
         min (Optional[date]): Start date for date picker. Defaults to `None`.
         max (Optional[date]): End date for date picker. Defaults to `None`.
-        value (Union[List[date], date]): Default date/dates for date picker. Defaults to `None`.
+        value (Union[list[date], date]): Default date/dates for date picker. Defaults to `None`.
         title (str): Title to be displayed. Defaults to `""`.
         range (bool): Boolean flag for displaying range picker. Default to `True`.
-        actions (List[Action]): See [`Action`][vizro.models.Action]. Defaults to `[]`.
+        actions (list[Action]): See [`Action`][vizro.models.Action]. Defaults to `[]`.
 
     """
 

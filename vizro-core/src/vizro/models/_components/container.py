@@ -23,7 +23,7 @@ class Container(VizroBaseModel):
 
     Args:
         type (Literal["container"]): Defaults to `"container"`.
-        components (List[ComponentType]): See [ComponentType][vizro.models.types.ComponentType]. At least one component
+        components (list[ComponentType]): See [ComponentType][vizro.models.types.ComponentType]. At least one component
             has to be provided.
         title (str): Title to be displayed.
         layout (Layout): Layout to place components in. Defaults to `None`.

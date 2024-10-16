@@ -21,7 +21,7 @@ class UserPromptTextArea(vm.VizroBaseModel):
         type (Literal["user_input"]): Defaults to `"user_text_area"`.
         title (str): Title to be displayed. Defaults to `""`.
         placeholder (str): Default text to display in input field. Defaults to `""`.
-        actions (Optional[List[Action]]): Defaults to `[]`.
+        actions (Optional[list[Action]]): Defaults to `[]`.
 
     """
 
@@ -50,7 +50,7 @@ class UserUpload(vm.VizroBaseModel):
     Args:
         type (Literal["upload"]): Defaults to `"upload"`.
         title (str): Title to be displayed.
-        actions (List[Action]): See [`Action`][vizro.models.Action]. Defaults to `[]`.
+        actions (list[Action]): See [`Action`][vizro.models.Action]. Defaults to `[]`.
 
     """
 

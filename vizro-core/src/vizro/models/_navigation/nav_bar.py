@@ -23,8 +23,8 @@ class NavBar(VizroBaseModel):
 
     Args:
         type (Literal["nav_bar"]): Defaults to `"nav_bar"`.
-        pages (Dict[str, List[str]]): Mapping from name of a pages group to a list of page IDs. Defaults to `{}`.
-        items (List[NavLink]): See [`NavLink`][vizro.models.NavLink]. Defaults to `[]`.
+        pages (dict[str, list[str]]): Mapping from name of a pages group to a list of page IDs. Defaults to `{}`.
+        items (list[NavLink]): See [`NavLink`][vizro.models.NavLink]. Defaults to `[]`.
 
     """
 

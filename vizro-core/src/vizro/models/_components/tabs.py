@@ -22,7 +22,7 @@ class Tabs(VizroBaseModel):
 
     Args:
         type (Literal["tabs"]): Defaults to `"tabs"`.
-        tabs (List[Container]): See [`Container`][vizro.models.Container].
+        tabs (list[Container]): See [`Container`][vizro.models.Container].
 
     """
 

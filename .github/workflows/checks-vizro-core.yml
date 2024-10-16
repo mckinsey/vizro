@@ -42,7 +42,7 @@ jobs:
         run: hatch run pip tree
 
       - name: Check schema is up to date
-        run: hatch run schema --check
+        run: hatch run schema-check
 
       - name: Find changed files to see if changelog fragment needed
         id: changed-files

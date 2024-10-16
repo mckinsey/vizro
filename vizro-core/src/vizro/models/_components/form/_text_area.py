@@ -22,7 +22,7 @@ class TextArea(VizroBaseModel):
         type (Literal["text_area"]): Defaults to `"text_area"`.
         title (str): Title to be displayed. Defaults to `""`.
         placeholder (str): Default text to display in input field. Defaults to `""`.
-        actions (Optional[List[Action]]): Defaults to `[]`.
+        actions (Optional[list[Action]]): Defaults to `[]`.
 
     """
 

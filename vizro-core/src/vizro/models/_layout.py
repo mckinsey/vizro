@@ -148,7 +148,7 @@ class Layout(VizroBaseModel):
     """Grid specification to place chart/components on the [`Page`][vizro.models.Page].
 
     Args:
-        grid (List[List[int]]): Grid specification to arrange components on screen.
+        grid (list[list[int]]): Grid specification to arrange components on screen.
         row_gap (str): Gap between rows in px. Defaults to `"12px"`.
         col_gap (str): Gap between columns in px. Defaults to `"12px"`.
         row_min_height (str): Minimum row height in px. Defaults to `"0px"`.

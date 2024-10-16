@@ -33,7 +33,7 @@ class AgGrid(VizroBaseModel):
             Defaults to `""`.
         footer (str): Markdown text positioned below the `AgGrid`. Follows the CommonMark specification.
             Ideal for providing further details such as sources, disclaimers, or additional notes. Defaults to `""`.
-        actions (List[Action]): See [`Action`][vizro.models.Action]. Defaults to `[]`.
+        actions (list[Action]): See [`Action`][vizro.models.Action]. Defaults to `[]`.
 
     """
 

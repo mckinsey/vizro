@@ -144,8 +144,8 @@ def _get_parametrized_config(target: ModelID, ctd_parameters: list[CallbackTrigg
         if hasattr(selector_value, "__iter__") and ALL_OPTION in selector_value:  # type: ignore[operator]
             selector: SelectorType = model_manager[ctd["id"]]
 
-            # Even if options are provided as List[Dict], the Dash component only returns a List of values.
-            # So we need to ensure that we always return a List only as well to provide consistent types.
+            # Even if options are provided as list[dict], the Dash component only returns a list of values.
+            # So we need to ensure that we always return a list only as well to provide consistent types.
             if all(isinstance(option, dict) for option in selector.options):
                 selector_value = [option["value"] for option in selector.options]
             else:

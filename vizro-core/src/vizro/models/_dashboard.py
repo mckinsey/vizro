@@ -80,7 +80,7 @@ class Dashboard(VizroBaseModel):
     """Vizro Dashboard to be used within [`Vizro`][vizro._vizro.Vizro.build].
 
     Args:
-        pages (List[Page]): See [`Page`][vizro.models.Page].
+        pages (list[Page]): See [`Page`][vizro.models.Page].
         theme (Literal["vizro_dark", "vizro_light"]): Layout theme to be applied across dashboard.
             Defaults to `vizro_dark`.
         navigation (Navigation): See [`Navigation`][vizro.models.Navigation]. Defaults to `None`.
@@ -114,7 +114,7 @@ class Dashboard(VizroBaseModel):
     def pre_build(self):
         self._validate_logos()
 
-        # Setting order here ensures that the pages in dash.page_registry preserves the order of the List[Page].
+        # Setting order here ensures that the pages in dash.page_registry preserves the order of the list[Page].
         # For now the homepage (path /) corresponds to self.pages[0].
         # Note redirect_from=["/"] doesn't work and so the / route must be defined separately.
         self.pages[0].path = "/"

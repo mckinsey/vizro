@@ -60,7 +60,7 @@ def ParentWithOptional():
 
 @pytest.fixture()
 def ParentWithList():
-    # e.g. Page.controls: List[ControlType] and Page.components: List[ComponentType]
+    # e.g. Page.controls: list[ControlType] and Page.components: list[ComponentType]
     class _ParentWithList(vm.VizroBaseModel):
         child: list[ChildType]
 
