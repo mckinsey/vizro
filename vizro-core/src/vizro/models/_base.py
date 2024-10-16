@@ -1,6 +1,6 @@
 from collections.abc import Mapping
 from contextlib import contextmanager
-from typing import Any, Optional, Union, Annotated
+from typing import Annotated, Any, Optional, Union
 
 try:
     from pydantic.v1 import BaseModel, Field, validator

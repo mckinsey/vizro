@@ -1,6 +1,4 @@
 import textwrap
-from vizro.models.types import capture
-from typing import Optional
 
 function_string = textwrap.dedent(
     """
