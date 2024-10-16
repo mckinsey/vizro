@@ -10,6 +10,7 @@ from pydantic import PrivateAttr
 from vizro.models import Action
 from vizro.models._action._actions_chain import _action_validator_factory
 from vizro.models._models_utils import _log_call
+from vizro.models.types import capture
 
 
 class UserPromptTextArea(vm.VizroBaseModel):
@@ -281,3 +282,22 @@ class CustomImg(vm.VizroBaseModel):
             style={"paddingTop": "4px", "display": "flex", "alignItems": "end", "justifyContent": "center"},
         )
         return custom_img
+
+
+@capture("figure")
+def custom_table(data_frame):
+    """Custom table figure."""
+
+    table = dbc.Table.from_dataframe(data_frame, striped=True, bordered=True, hover=True)
+
+    accordion = html.Div(
+        dbc.Accordion(
+            [
+                dbc.AccordionItem(
+                    [table],
+                    title="Show data",
+                ),
+            ],
+        )
+    )
+    return accordion

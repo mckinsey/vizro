@@ -18,6 +18,7 @@ from components import (
     ToggleSwitch,
     UserPromptTextArea,
     UserUpload,
+    custom_table
 )
 from dash import Input, Output, State, callback, dcc, get_asset_url, html
 from vizro import Vizro
@@ -55,6 +56,7 @@ plot_page = vm.Page(
     layout=vm.Layout(
         grid=[
             [3, 3, -1, 5],
+            [3, 3, 2, 2],
             [1, 1, 2, 2],
             [4, 4, 2, 2],
             *[[0, 0, 2, 2]] * 6,
@@ -76,7 +78,7 @@ plot_page = vm.Page(
         vm.Graph(id="graph-id", figure=px.scatter(pd.DataFrame())),
         vm.Container(
             title="",
-            layout=vm.Layout(grid=[[1], [0]], row_gap="0px"),
+            layout=vm.Layout(grid=[[1], [0], [2]], row_gap="0px"),
             components=[
                 UserUpload(
                     id="data-upload-id",
@@ -94,6 +96,10 @@ plot_page = vm.Page(
                     ],
                 ),
                 vm.Card(id="upload-message-id", text="Upload your data file (csv or excel)"),
+                vm.Figure(
+                    id="show-data-component",
+                    figure=custom_table(data_frame=pd.DataFrame())
+                )
             ],
         ),
         vm.Container(
