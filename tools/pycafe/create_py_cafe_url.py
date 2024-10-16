@@ -18,15 +18,15 @@ def generate_link(directory):
         app_content = app_file.read()
         app_content_split = app_content.split('if __name__ == "__main__":')
         app_content = app_content_split[0] + textwrap.dedent(app_content_split[1])
-        print(app_content)
-        print("=====")
+        # print(app_content)
+        # print("=====")
 
     json_object = {
         "code": str(app_content),
         "requirements": "https://py.cafe/gh/artifact/mckinsey/vizro/2054307112/vizro-0.1.25.dev0-py3-none-any.whl",
         "files": [],
     }
-    print("=====")
+    # print("=====")
     for root, _, files in os.walk(directory):
         for file in files:
             print(root, file)
@@ -38,15 +38,16 @@ def generate_link(directory):
                 # Add detailed logging
                 print(f"Added file: {relative_path}, URL: {file_url}")
                 print(f"Current JSON object: {json.dumps(json_object, indent=2)}")
+                print("-+-")
 
     # Final JSON object logging
     print(f"Final JSON object: {json.dumps(json_object, indent=2)}")
     print("******")
-    print(json_object["code"])
-    print("---")
-    print(json_object["files"])
-    print("---")
-    print(json_object["requirements"])
+    # print(json_object["code"])
+    # print("---")
+    # print(json_object["files"])
+    # print("---")
+    # print(json_object["requirements"])
     json_text = json.dumps(json_object)
     compressed_json_text = gzip.compress(json_text.encode("utf8"))
     base64_text = base64.b64encode(compressed_json_text).decode("utf8")
