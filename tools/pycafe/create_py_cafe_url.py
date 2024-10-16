@@ -18,8 +18,8 @@ def generate_link(directory):
         app_content = app_file.read()
         app_content_split = app_content.split('if __name__ == "__main__":')
         app_content = app_content_split[0] + textwrap.dedent(app_content_split[1])
-        # print(app_content)
-        # print("=====")
+        print(app_content)
+        print("=====")
 
     json_object = {
         #         "code": """import vizro.plotly.express as px
@@ -38,8 +38,8 @@ def generate_link(directory):
         # )
         # dashboard = vm.Dashboard(pages=[page])
         # Vizro().build(dashboard).run()""",
-        # "code": str(app_content),
-        "code":f"https://raw.githubusercontent.com/mckinsey/vizro/{COMMIT_HASH}/vizro-core/examples/scratch_dev/app.py",
+        "code": str(app_content),
+        # "code":f"https://raw.githubusercontent.com/mckinsey/vizro/{COMMIT_HASH}/vizro-core/examples/scratch_dev/app.py",
         "requirements": "https://py.cafe/gh/artifact/mckinsey/vizro/2054307112/vizro-0.1.25.dev0-py3-none-any.whl",
         "files": [],
     }
