@@ -6,32 +6,30 @@ import subprocess
 import textwrap
 from pathlib import Path
 from urllib.parse import quote, urlencode
+import sys
 
 COMMIT_HASH = str(os.getenv("COMMIT_HASH"))
 RUN_ID = str(os.getenv("RUN_ID"))
-# COMMIT_HASH = "16563957afa641c4141752099acff2a8049fd63c"
-print(COMMIT_HASH)
+PACKAGE_VERSION = subprocess.check_output(["hatch", "version"], cwd="vizro-core").decode("utf-8").strip()
+PYCAFE_URL = "https://py.cafe"
 
 
 def generate_link(directory):
-    base_url = f"https://raw.githubusercontent.com/mckinsey/vizro/{COMMIT_HASH}/{directory.lstrip('./')}"
+    base_url = f"https://raw.githubusercontent.com/mckinsey/vizro/{COMMIT_HASH}/{directory}"
 
     app_file_path = os.path.join(directory, "app.py")
     app_content = Path(app_file_path).read_text()
     app_content_split = app_content.split('if __name__ == "__main__":')
-    app_content = app_content_split[0] + textwrap.dedent(app_content_split[1])
-
-    attempted_package_version = subprocess.check_output(["hatch", "version"], cwd="vizro-core").decode("utf-8").strip()
-    print(f"Attempted package version: {attempted_package_version}")
+    app_content = app_content_split[0] + textwrap.dedent(app_content_split[1]) 
 
     json_object = {
         "code": str(app_content),
-        "requirements": f"https://py.cafe/gh/artifact/mckinsey/vizro/actions/runs/{RUN_ID}/pip/vizro-{attempted_package_version}-py3-none-any.whl",  # "https://py.cafe/gh/artifact/mckinsey/vizro/2054307112/vizro-0.1.25.dev0-py3-none-any.whl",
+        "requirements": f"{PYCAFE_URL}/gh/artifact/mckinsey/vizro/actions/runs/{RUN_ID}/pip/vizro-{PACKAGE_VERSION}-py3-none-any.whl",
         "files": [],
     }
-    for root, _, files in os.walk(directory):
+    for root, _, files in os.walk("./"+directory):
         for file in files:
-            print(root, file)
+            # print(root, file)
             if "yaml" in root or "app.py" in file:
                 continue
             file_path = os.path.join(root, file)
@@ -46,19 +44,11 @@ def generate_link(directory):
     compressed_json_text = gzip.compress(json_text.encode("utf8"))
     base64_text = base64.b64encode(compressed_json_text).decode("utf8")
     query = urlencode({"c": base64_text}, quote_via=quote)
-    base_url = "https://py.cafe"
-    return f"{base_url}/snippet/vizro/v1?{query}"
+    return f"{PYCAFE_URL}/snippet/vizro/v1?{query}"
 
 
 if __name__ == "__main__":
-    print("=========")
-    print(os.getcwd())
-    directory = "./vizro-core/examples/scratch_dev/"
-    # directory = "./tools/pycafe"
+    directory = "vizro-core/examples/scratch_dev/"
+    if len(sys.argv) > 1:
+        directory = sys.argv[1]
     print(generate_link(directory=directory))
-# Example usage
-# print(generate_link())
-
-### LEARNING
-# The output in CI seems to change if you compare it during runtime and after the job is done. I cannot explain this, but when clicking the py.cafe link
-# during a run, it fails, but once it is completed, it works.
