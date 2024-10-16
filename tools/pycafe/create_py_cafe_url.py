@@ -35,7 +35,11 @@ def generate_link(directory):
                 relative_path = os.path.relpath(file_path, directory)
                 file_url = f"{base_url}{relative_path.replace(os.sep, '/')}"
                 json_object["files"].append({"name": relative_path, "url": file_url})
-    print(json_object)
+    print(json_object["code"])
+    print("=====")
+    print(json_object["files"])
+    print("=====")
+    print(json_object["requirements"])
     json_text = json.dumps(json_object)
     compressed_json_text = gzip.compress(json_text.encode("utf8"))
     base64_text = base64.b64encode(compressed_json_text).decode("utf8")
