@@ -48,7 +48,7 @@ Vizro().build(dashboard).run()""",  # str(app_content),
     for root, _, files in os.walk(directory):
         for file in files:
             print(root, file)
-            if "yaml" in root:
+            if "yaml" in root or "app.py" in file:
                 continue
             file_path = os.path.join(root, file)
             relative_path = os.path.relpath(file_path, directory)
