@@ -16,39 +16,15 @@ def generate_link(directory):
 
     app_file_path = os.path.join(directory, "app.py")
     app_content = Path(app_file_path).read_text()
-    # with open(app_file_path, "r") as app_file:
-    #     app_content = app_file.read()
     app_content_split = app_content.split('if __name__ == "__main__":')
-    # print(app_content_split)
     app_content = app_content_split[0] + textwrap.dedent(app_content_split[1])
-    # print(app_content_split[0])
-    # print("++++")
-    # print(textwrap.dedent(app_content_split[1]))
-    # print("=====")
+
 
     json_object = {
-        #         "code": """import vizro.plotly.express as px
-        # from vizro import Vizro
-        # import vizro.models as vm
-        # df = px.data.iris()
-        # page = vm.Page(
-        #     title="My first dashboard",
-        #     components=[
-        #         vm.Graph(id="scatter_chart", figure=px.scatter(df, x="sepal_length", y="petal_width", color="species")),
-        #         vm.Graph(id="hist_chart", figure=px.histogram(df, x="sepal_width", color="species")),
-        #     ],
-        #     controls=[
-        #         vm.Filter(column="species", selector=vm.Dropdown(value=["ALL"])),
-        #     ],
-        # )
-        # dashboard = vm.Dashboard(pages=[page])
-        # Vizro().build(dashboard).run()""",
         "code": str(app_content),
-        # "code":f"https://raw.githubusercontent.com/mckinsey/vizro/{COMMIT_HASH}/vizro-core/examples/scratch_dev/app.py",
         "requirements": "https://py.cafe/gh/artifact/mckinsey/vizro/2054307112/vizro-0.1.25.dev0-py3-none-any.whl",
         "files": [],
     }
-    # print("=====")
     for root, _, files in os.walk(directory):
         for file in files:
             print(root, file)
@@ -58,19 +34,10 @@ def generate_link(directory):
             relative_path = os.path.relpath(file_path, directory)
             file_url = f"{base_url}{relative_path.replace(os.sep, '/')}"
             json_object["files"].append({"name": relative_path, "url": file_url})
-            # Add detailed logging
-            # print(f"Added file: {relative_path}, URL: {file_url}")
-            # print(f"Current JSON object: {json.dumps(json_object, indent=2)}")
-            # print("-+-")
 
     # Final JSON object logging
     print(f"Final JSON object: {json.dumps(json_object, indent=2)}")
-    print("******")
-    print(json_object["code"])
-    print("---")
-    # print(json_object["files"])
-    # print("---")
-    # print(json_object["requirements"])
+
     json_text = json.dumps(json_object)
     compressed_json_text = gzip.compress(json_text.encode("utf8"))
     base64_text = base64.b64encode(compressed_json_text).decode("utf8")
@@ -87,3 +54,7 @@ if __name__ == "__main__":
     print(generate_link(directory=directory))
 # Example usage
 # print(generate_link())
+
+### LEARNING
+# The output in CI seems to change if you compare it during runtime and after the job is done. I cannot explain this, but when clicking the py.cafe link
+# during a run, it fails, but once it is completed, it works.
