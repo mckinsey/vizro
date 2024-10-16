@@ -2,10 +2,10 @@ import base64
 import gzip
 import json
 import os
+import subprocess
 import textwrap
 from pathlib import Path
 from urllib.parse import quote, urlencode
-import subprocess
 
 COMMIT_HASH = str(os.getenv("COMMIT_HASH"))
 RUN_ID = str(os.getenv("RUN_ID"))
@@ -21,9 +21,7 @@ def generate_link(directory):
     app_content_split = app_content.split('if __name__ == "__main__":')
     app_content = app_content_split[0] + textwrap.dedent(app_content_split[1])
 
-    attempted_package_version = (
-            subprocess.check_output(["hatch", "version"], cwd=f"vizro").decode("utf-8").strip()
-        )
+    attempted_package_version = subprocess.check_output(["hatch", "version"], cwd="vizro").decode("utf-8").strip()
     print(f"Attempted package version: {attempted_package_version}")
 
     json_object = {
