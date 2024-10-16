@@ -13,14 +13,14 @@ x = (1, 2, 3, 4)
 ```
 
 ```{.python pycafe-link}
-        x = (1, 2, 
+        x = (1, 2,
              3, 4)
 ```
 
 !!! example "Card"
     === "app.py"
         ```{.python pycafe-link}
-        x = (1, 2, 
+        x = (1, 2,
              3, 4)
 
         import vizro.models as vm
