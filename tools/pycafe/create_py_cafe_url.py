@@ -16,13 +16,13 @@ def generate_link(directory):
     app_file_path = os.path.join(directory, "app.py")
     with open(app_file_path, "r") as app_file:
         app_content = app_file.read()
-        app_content_split = app_content.split('if __name__ == "__main__":')
-        print(app_content_split)
-        app_content = app_content_split[0] + textwrap.dedent(app_content_split[1])
-        print(app_content_split[0])
-        print("++++")
-        print(textwrap.dedent(app_content_split[1]))
-        print("=====")
+        # app_content_split = app_content.split('if __name__ == "__main__":')
+        # print(app_content_split)
+        # app_content = app_content_split[0] + textwrap.dedent(app_content_split[1])
+        # print(app_content_split[0])
+        # print("++++")
+        # print(textwrap.dedent(app_content_split[1]))
+        # print("=====")
 
     json_object = {
         #         "code": """import vizro.plotly.express as px
