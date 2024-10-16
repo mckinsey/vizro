@@ -2,8 +2,8 @@ import base64
 import gzip
 import json
 import os
-from urllib.parse import quote, urlencode
 from pathlib import Path
+from urllib.parse import quote, urlencode
 
 COMMIT_HASH = str(os.getenv("COMMIT_HASH"))
 # COMMIT_HASH = "16563957afa641c4141752099acff2a8049fd63c"
@@ -17,13 +17,13 @@ def generate_link(directory):
     app_content = Path(app_file_path).read_text()
     # with open(app_file_path, "r") as app_file:
     #     app_content = app_file.read()
-        # app_content_split = app_content.split('if __name__ == "__main__":')
-        # print(app_content_split)
-        # app_content = app_content_split[0] + textwrap.dedent(app_content_split[1])
-        # print(app_content_split[0])
-        # print("++++")
-        # print(textwrap.dedent(app_content_split[1]))
-        # print("=====")
+    # app_content_split = app_content.split('if __name__ == "__main__":')
+    # print(app_content_split)
+    # app_content = app_content_split[0] + textwrap.dedent(app_content_split[1])
+    # print(app_content_split[0])
+    # print("++++")
+    # print(textwrap.dedent(app_content_split[1]))
+    # print("=====")
 
     json_object = {
         #         "code": """import vizro.plotly.express as px
