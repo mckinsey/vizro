@@ -22,7 +22,7 @@ def generate_link(directory):
 
     json_object = {
         "code": str(app_content),
-        "requirements": f"https://py.cafe/gh/artifact/mckinsey/vizro/actions/runs/{RUN_ID}/pip/vizro-0.1.26.dev0-py3-none-any.whl", #"https://py.cafe/gh/artifact/mckinsey/vizro/2054307112/vizro-0.1.25.dev0-py3-none-any.whl",
+        "requirements": f"https://py.cafe/gh/artifact/mckinsey/vizro/actions/runs/{RUN_ID}/pip/vizro-0.1.26.dev0-py3-none-any.whl",  # "https://py.cafe/gh/artifact/mckinsey/vizro/2054307112/vizro-0.1.25.dev0-py3-none-any.whl",
         "files": [],
     }
     for root, _, files in os.walk(directory):
