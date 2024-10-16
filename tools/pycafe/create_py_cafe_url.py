@@ -26,7 +26,6 @@ def generate_link(directory):
         "requirements": "https://py.cafe/gh/artifact/mckinsey/vizro/2054307112/vizro-0.1.25.dev0-py3-none-any.whl",
         "files": [],
     }
-    print(json_object["files"])
     print("=====")
     for root, _, files in os.walk(directory):
         for file in files:
@@ -35,7 +34,7 @@ def generate_link(directory):
             relative_path = os.path.relpath(file_path, directory)
             file_url = f"{base_url}{relative_path.replace(os.sep, '/')}"
             json_object["files"].append({"name": relative_path, "url": file_url})
-            print(json_object)
+            print(json_object["files"])
     json_text = json.dumps(json_object)
     compressed_json_text = gzip.compress(json_text.encode("utf8"))
     base64_text = base64.b64encode(compressed_json_text).decode("utf8")
