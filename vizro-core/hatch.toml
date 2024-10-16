@@ -109,7 +109,7 @@ VIZRO_LOG_LEVEL = "DEBUG"
 
 [envs.lower-bounds]
 extra-dependencies = [
-  "pydantic==1.10.13",
+  "pydantic==1.10.16",
   "dash==2.17.1",
   "plotly==5.12.0"
 ]
