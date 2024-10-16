@@ -35,8 +35,6 @@ jobs:
             hatch-env: all.py3.11
           - python-version: "3.12"
             hatch-env: all.py3.12
-          - python-version: "3.13"
-            hatch-env: all.py3.13
           - python-version: "3.12"
             hatch-env: lower-bounds
             label: lower bounds
@@ -63,8 +61,6 @@ jobs:
             hatch-env: all.py3.11
           - python-version: "3.12"
             hatch-env: all.py3.12
-          - python-version: "3.13"
-            hatch-env: all.py3.13
           - python-version: "3.12"
             hatch-env: lower-bounds
             label: lower bounds
