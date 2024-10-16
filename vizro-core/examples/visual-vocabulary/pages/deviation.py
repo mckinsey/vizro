@@ -3,7 +3,7 @@
 import plotly.io as pio
 import vizro.models as vm
 import vizro.plotly.express as px
-
+from custom_charts import diverging_stacked_bar
 from pages._factories import butterfly_factory
 from pages._pages_utils import PAGE_GRID, make_code_clipboard_from_py_file, pastries
 
@@ -36,8 +36,18 @@ diverging_bar = vm.Page(
             of values. Ensure a consistent scale on both sides of the baseline to avoid misleading interpretations.
         """
         ),
-        vm.Graph(figure=diverging_stacked_bar(data_frame=pastries)),
-        make_code_clipboard_from_py_file("diverging_stacked_bar.py"),
+        vm.Graph(
+            figure=px.bar(
+                pastries.sort_values("Profit Ratio"),
+                orientation="h",
+                x="Profit Ratio",
+                y="pastry",
+                color="Profit Ratio",
+                color_continuous_scale=pio.templates["vizro_dark"].layout.colorscale.diverging,
+                color_continuous_midpoint=0,
+            ),
+        ),
+        make_code_clipboard_from_py_file("diverging_bar.py"),
     ],
 )
 
@@ -68,19 +78,21 @@ diverging_stacked_bar = vm.Page(
             [Datawrapper on diverging stacked bar charts](https://blog.datawrapper.de/divergingbars/).
         """
         ),
-        # TODO: REPLACE CHART
         vm.Graph(
-            figure=px.bar(
-                pastries.sort_values("Profit Ratio"),
-                orientation="h",
-                x="Profit Ratio",
+            figure=diverging_stacked_bar(
+                data_frame=pastries,
                 y="pastry",
-                color="Profit Ratio",
-                color_continuous_scale=pio.templates["vizro_dark"].layout.colorscale.diverging,
-                color_continuous_midpoint=0,
+                category_pos=["Agree", "Strongly Agree"],
+                category_neg=["Disagree", "Strongly Disagree"],
+                color_discrete_map={
+                    "Strongly Agree": "#1a85ff",
+                    "Agree": "#70a1ff",
+                    "Disagree": "#ff5584",
+                    "Strongly Disagree": "#d41159",
+                },
             ),
         ),
-        make_code_clipboard_from_py_file("diverging_bar.py"),
+        make_code_clipboard_from_py_file("diverging_stacked_bar.py"),
     ],
 )
 
