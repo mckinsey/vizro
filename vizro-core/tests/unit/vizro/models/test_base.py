@@ -307,8 +307,9 @@ def chart_dynamic():
         """
     )
 
-    exec(function_string)
-    return locals()["chart_dynamic"]
+    result = {}
+    exec(function_string, locals=result)
+    return result["chart_dynamic"]
 
 
 @pytest.fixture

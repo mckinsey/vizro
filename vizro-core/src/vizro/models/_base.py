@@ -1,6 +1,6 @@
 from collections.abc import Mapping
 from contextlib import contextmanager
-from typing import Any, Optional, Union
+from typing import Any, Optional, Union, Annotated
 
 try:
     from pydantic.v1 import BaseModel, Field, validator
@@ -15,7 +15,6 @@ except ImportError:  # pragma: no cov
 import inspect
 import logging
 import textwrap
-from typing import Annotated
 
 import autoflake
 import black
@@ -287,8 +286,8 @@ class VizroBaseModel(BaseModel):
 
             >>> print(
             ...     card._to_python(
-            ...         extra_imports={"from typing import List"},
-            ...         extra_callable_defs={"def test(foo:List[str]): return foo"},
+            ...         extra_imports={"from typing import Optional"},
+            ...         extra_callable_defs={"def test(foo: Optional[str]): return foo"},
             ...     )
             ... )
 

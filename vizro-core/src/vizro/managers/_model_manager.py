@@ -60,7 +60,7 @@ class ModelManager:
                 yield model_id, cast(Model, self[model_id])
 
     # TODO: Consider returning with yield
-    # TODO: Make collection of model ids (throughout this file) to be Set[ModelID].
+    # TODO: Make collection of model ids (throughout this file) to be set[ModelID].
     def _get_model_children(self, model_id: ModelID, all_model_ids: Optional[list[ModelID]] = None) -> list[ModelID]:
         if all_model_ids is None:
             all_model_ids = []
