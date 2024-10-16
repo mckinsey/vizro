@@ -35,7 +35,7 @@ jobs:
       - name: "Upload Artifact"
         uses: actions/upload-artifact@v4
         with:
-          name: my-artifact
+          name: pip
           path: vizro-core/dist/*.whl
           retention-days: 5
 
