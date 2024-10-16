@@ -61,17 +61,17 @@ jobs:
       checks: write
       contents: read
     steps:
-    - uses: actions/checkout@v1
-    - uses: setup-build
-      id: test
-    - uses: LouisBrunner/checks-action@v2.0.0
-      if: always()
-      with:
-        token: ${{ secrets.GITHUB_TOKEN }}
-        name: Test XYZ
-        conclusion: ${{ job.status }}
-        output: |
-          {"summary":"${{ steps.test.outputs.summary }}"}
+      - uses: actions/checkout@v1
+      - uses: setup-build
+        id: test
+      - uses: LouisBrunner/checks-action@v2.0.0
+        if: always()
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+          name: Test XYZ
+          conclusion: ${{ job.status }}
+          output: |
+            {"summary":"${{ steps.test.outputs.summary }}"}
 
 # why not build wheel now?
 # see why not direct again?
