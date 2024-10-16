@@ -61,20 +61,20 @@ diverging_stacked_bar = vm.Page(
 
             #### What is a diverging stacked bar?
 
-            A diverging stacked bar chart is like a stacked bar chart but aligns bars on a central baseline instead of 
-            the left or right. It displays positive and negative values, with each bar divided into segments for 
-            different categories. This type of chart is commonly used for percentage shares, especially in survey 
+            A diverging stacked bar chart is like a stacked bar chart but aligns bars on a central baseline instead of
+            the left or right. It displays positive and negative values, with each bar divided into segments for
+            different categories. This type of chart is commonly used for percentage shares, especially in survey
             results using Likert scales (e.g., Strongly Disagree, Disagree, Neutral, Agree, Strongly Agree).
 
             &nbsp;
 
             #### When should I use it?
 
-            A diverging stacked bar chart is useful for comparing positive and negative values and showing the 
-            composition of each bar. However, use this chart with caution: since none of the segments share a 
-            common baseline, direct comparisons can be more challenging. For clearer comparisons, consider using a 
-            100% stacked bar chart with a baseline starting from the left or right. For more insights on the potential 
-            pitfalls, we recommend reading the article from 
+            A diverging stacked bar chart is useful for comparing positive and negative values and showing the
+            composition of each bar. However, use this chart with caution: since none of the segments share a
+            common baseline, direct comparisons can be more challenging. For clearer comparisons, consider using a
+            100% stacked bar chart with a baseline starting from the left or right. For more insights on the potential
+            pitfalls, we recommend reading the article from
             [Datawrapper on diverging stacked bar charts](https://blog.datawrapper.de/divergingbars/).
         """
         ),
