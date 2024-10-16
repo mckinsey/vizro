@@ -6,7 +6,7 @@ import dash_bootstrap_components as dbc
 import pandas as pd
 import vizro.models as vm
 import vizro.plotly.express as px
-from actions import data_upload_action, display_filename, run_vizro_ai
+from actions import data_upload_action, display_filename, run_vizro_ai, update_table
 from components import (
     CodeClipboard,
     CustomDashboard,
@@ -18,7 +18,7 @@ from components import (
     ToggleSwitch,
     UserPromptTextArea,
     UserUpload,
-    custom_table
+    custom_table,
 )
 from dash import Input, Output, State, callback, dcc, get_asset_url, html
 from vizro import Vizro
@@ -78,7 +78,7 @@ plot_page = vm.Page(
         vm.Graph(id="graph-id", figure=px.scatter(pd.DataFrame())),
         vm.Container(
             title="",
-            layout=vm.Layout(grid=[[1], [0], [2]], row_gap="0px"),
+            layout=vm.Layout(grid=[[1], [0], [2]], row_gap="0px", row_min_height="40px"),
             components=[
                 UserUpload(
                     id="data-upload-id",
@@ -93,13 +93,13 @@ plot_page = vm.Page(
                             inputs=["data-store-id.data"],
                             outputs=["upload-message-id.children"],
                         ),
+                        vm.Action(
+                            function=update_table(), inputs=["data-store-id.data"], outputs=["accordion-table.children"]
+                        ),
                     ],
                 ),
                 vm.Card(id="upload-message-id", text="Upload your data file (csv or excel)"),
-                vm.Figure(
-                    id="show-data-component",
-                    figure=custom_table(data_frame=pd.DataFrame())
-                )
+                vm.Figure(id="show-data-component", figure=custom_table(data_frame=pd.DataFrame())),
             ],
         ),
         vm.Container(

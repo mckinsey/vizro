@@ -287,7 +287,6 @@ class CustomImg(vm.VizroBaseModel):
 @capture("figure")
 def custom_table(data_frame):
     """Custom table figure."""
-
     table = dbc.Table.from_dataframe(data_frame, striped=True, bordered=True, hover=True)
 
     accordion = html.Div(
@@ -296,8 +295,12 @@ def custom_table(data_frame):
                 dbc.AccordionItem(
                     [table],
                     title="Show data",
+                    id="accordion-table",
+                    style={"fontSize": "14px", "height": "46px"},
                 ),
             ],
+            style={"zIndex": "5", "position": "relative"},
+            start_collapsed=True,
         )
     )
     return accordion

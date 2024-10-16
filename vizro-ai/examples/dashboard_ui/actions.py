@@ -5,6 +5,8 @@ import io
 import logging
 
 import black
+import dash
+import dash_bootstrap_components as dbc
 import pandas as pd
 from _utils import check_file_extension
 from dash.exceptions import PreventUpdate
@@ -127,3 +129,14 @@ def display_filename(data):
 
     display_message = data.get("filename") or data.get("error_message")
     return f"Uploaded file name: '{display_message}'" if "filename" in data else display_message
+
+
+@capture("action")
+def update_table(data):
+    """Custom action fpr updating data."""
+    if not data:
+        return dash.no_update
+    df = pd.DataFrame(data["data"])
+    df_sample = df.sample(3)
+    table = dbc.Table.from_dataframe(df_sample, striped=True, bordered=True, hover=True)
+    return table
