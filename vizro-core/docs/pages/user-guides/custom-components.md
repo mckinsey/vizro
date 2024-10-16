@@ -308,7 +308,7 @@ Add the custom action `open_offcanvas` as a `function` argument inside the [`Act
 
     === "app.py"
         ```{.python pycafe-link}
-        from typing import List, Literal
+        from typing import Literal
 
         import dash_bootstrap_components as dbc
         import vizro.models as vm
@@ -404,7 +404,7 @@ As mentioned above, custom components can trigger action. To enable the custom c
 
     === "app.py"
         ```py
-        from typing import List, Literal
+        from typing import Literal
 
         import dash_bootstrap_components as dbc
         import vizro.models as vm
@@ -424,7 +424,7 @@ As mentioned above, custom components can trigger action. To enable the custom c
         # 1. Create new custom component
         class Carousel(vm.VizroBaseModel):
             type: Literal["carousel"] = "carousel"
-            items: List
+            items: list
             actions: list[Action] = []
             # Here we set the action so a change in the active_index property of the custom component triggers the action
             _set_actions = _action_validator_factory("active_index")
