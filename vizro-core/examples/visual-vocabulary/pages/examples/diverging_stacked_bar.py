@@ -102,6 +102,7 @@ page = vm.Page(
     title="Diverging stacked bar",
     components=[
         vm.Graph(
+            title="Would you recommend the pastry to your friends?",
             figure=diverging_stacked_bar(
                 data_frame=pastries,
                 y="pastry",
