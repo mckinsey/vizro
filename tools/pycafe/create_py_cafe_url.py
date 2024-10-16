@@ -22,7 +22,7 @@ def generate_link(directory):
         # app_content = app_content_split[0] + textwrap.dedent(app_content_split[1])
 
     json_object = {
-        "code": app_content,
+        "code": "import pandas as pd",
         "requirements": "https://py.cafe/gh/artifact/mckinsey/vizro/2054307112/vizro-0.1.25.dev0-py3-none-any.whl",
         "files": [],
     }
