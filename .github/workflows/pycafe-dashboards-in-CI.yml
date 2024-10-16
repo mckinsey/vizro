@@ -44,11 +44,13 @@ jobs:
           # git fetch origin ${{ github.ref_name }}
           latest_commit=${{ github.sha }}
           echo "COMMIT_HASH=$latest_commit" >> $GITHUB_ENV
-          echo "RUN_ID={{ github.run_id }}" >> $GITHUB_ENV
+          run_id=${{ github.run_id }}
+          echo "RUN_ID=$run_id" >> $GITHUB_ENV
 
       - name: Display latest commit
         run: |
           echo "Latest commit on target branch: ${{ env.COMMIT_HASH }}"
+          echo "Latest run id: ${{ env.RUN_ID }}"
 
       - name: Run Py.Cafe tool
         run: |
