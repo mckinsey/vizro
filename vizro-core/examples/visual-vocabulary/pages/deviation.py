@@ -3,7 +3,6 @@
 import plotly.io as pio
 import vizro.models as vm
 import vizro.plotly.express as px
-from custom_charts import diverging_stackd_bar
 
 from pages._factories import butterfly_factory
 from pages._pages_utils import PAGE_GRID, make_code_clipboard_from_py_file, pastries
