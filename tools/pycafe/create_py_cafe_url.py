@@ -22,7 +22,7 @@ def generate_link(directory):
         # print("=====")
 
     json_object = {
-        "code": "import pandas as pd",#str(app_content),
+        "code": "import pandas as pd",  # str(app_content),
         "requirements": "https://py.cafe/gh/artifact/mckinsey/vizro/2054307112/vizro-0.1.25.dev0-py3-none-any.whl",
         "files": [],
     }
@@ -30,7 +30,7 @@ def generate_link(directory):
     for root, _, files in os.walk(directory):
         for file in files:
             print(root, file)
-            if not file == "app.py": # this skips all app.py files
+            if not file == "app.py":  # this skips all app.py files
                 file_path = os.path.join(root, file)
                 relative_path = os.path.relpath(file_path, directory)
                 file_url = f"{base_url}{relative_path.replace(os.sep, '/')}"
