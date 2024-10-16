@@ -16,10 +16,10 @@ def generate_link(directory):
     app_file_path = os.path.join(directory, "app.py")
     with open(app_file_path, "r") as app_file:
         app_content = app_file.read()
-        print(app_content)
-        print("=====")
         app_content_split = app_content.split('if __name__ == "__main__":')
         app_content = app_content_split[0] + textwrap.dedent(app_content_split[1])
+        print(app_content)
+        print("=====")
 
     json_object = {
         "code": str(app_content),
@@ -30,11 +30,12 @@ def generate_link(directory):
     for root, _, files in os.walk(directory):
         for file in files:
             print(root, file)
-            file_path = os.path.join(root, file)
-            relative_path = os.path.relpath(file_path, directory)
-            file_url = f"{base_url}{relative_path.replace(os.sep, '/')}"
-            json_object["files"].append({"name": relative_path, "url": file_url})
-            print(json_object["files"])
+            if not file == "app.py":
+                file_path = os.path.join(root, file)
+                relative_path = os.path.relpath(file_path, directory)
+                file_url = f"{base_url}{relative_path.replace(os.sep, '/')}"
+                json_object["files"].append({"name": relative_path, "url": file_url})
+    print(json_object)
     json_text = json.dumps(json_object)
     compressed_json_text = gzip.compress(json_text.encode("utf8"))
     base64_text = base64.b64encode(compressed_json_text).decode("utf8")
