@@ -315,7 +315,7 @@ Refer to our [user guide on custom actions](custom-actions.md) for more informat
 
 
 ## Chain actions
-The `actions` parameter for the different screen components accepts a `List` of [`Action`][vizro.models.Action] models.
+The `actions` parameter for the different screen components accepts a `list` of [`Action`][vizro.models.Action] models.
 This means that it's possible to chain together a list of actions that are executed by triggering only one component.
 The order of action execution is guaranteed, and the next action in the list will start executing only when the previous one is completed.
 
