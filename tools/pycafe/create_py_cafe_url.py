@@ -16,6 +16,8 @@ def generate_link(directory):
     app_file_path = os.path.join(directory, "app.py")
     with open(app_file_path, "r") as app_file:
         app_content = app_file.read()
+        print(app_content)
+        print("=====")
         app_content_split = app_content.split('if __name__ == "__main__":')
         app_content = app_content_split[0] + textwrap.dedent(app_content_split[1])
 
