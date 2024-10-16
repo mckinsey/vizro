@@ -41,10 +41,10 @@ def generate_link(directory):
                 print("-+-")
 
     # Final JSON object logging
-    print(f"Final JSON object: {json.dumps(json_object, indent=2)}")
+    # print(f"Final JSON object: {json.dumps(json_object, indent=2)}")
     print("******")
-    # print(json_object["code"])
-    # print("---")
+    print(json_object["code"])
+    print("---")
     # print(json_object["files"])
     # print("---")
     # print(json_object["requirements"])
