@@ -3,6 +3,7 @@ import gzip
 import json
 import os
 from urllib.parse import quote, urlencode
+from pathlib import Path
 
 COMMIT_HASH = str(os.getenv("COMMIT_HASH"))
 # COMMIT_HASH = "16563957afa641c4141752099acff2a8049fd63c"
@@ -13,8 +14,9 @@ def generate_link(directory):
     base_url = f"https://raw.githubusercontent.com/mckinsey/vizro/{COMMIT_HASH}/{directory.lstrip('./')}"
 
     app_file_path = os.path.join(directory, "app.py")
-    with open(app_file_path, "r") as app_file:
-        app_content = app_file.read()
+    app_content = Path(app_file_path).read_text()
+    # with open(app_file_path, "r") as app_file:
+    #     app_content = app_file.read()
         # app_content_split = app_content.split('if __name__ == "__main__":')
         # print(app_content_split)
         # app_content = app_content_split[0] + textwrap.dedent(app_content_split[1])
