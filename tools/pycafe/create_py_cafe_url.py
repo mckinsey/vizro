@@ -2,8 +2,8 @@ import base64
 import gzip
 import json
 import os
-from urllib.parse import quote, urlencode
 import textwrap
+from urllib.parse import quote, urlencode
 
 COMMIT_HASH = str(os.getenv("COMMIT_HASH"))
 # COMMIT_HASH = "16563957afa641c4141752099acff2a8049fd63c"
