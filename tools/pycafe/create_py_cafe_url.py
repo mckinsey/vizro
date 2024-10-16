@@ -7,6 +7,7 @@ from pathlib import Path
 from urllib.parse import quote, urlencode
 
 COMMIT_HASH = str(os.getenv("COMMIT_HASH"))
+RUN_ID = str(os.getenv("RUN_ID"))
 # COMMIT_HASH = "16563957afa641c4141752099acff2a8049fd63c"
 print(COMMIT_HASH)
 
@@ -21,7 +22,7 @@ def generate_link(directory):
 
     json_object = {
         "code": str(app_content),
-        "requirements": "https://py.cafe/gh/artifact/mckinsey/vizro/2054307112/vizro-0.1.25.dev0-py3-none-any.whl",
+        "requirements": f"https://py.cafe/gh/artifact/mckinsey/vizro/actions/runs/{RUN_ID}/pip/vizro-0.1.26.dev0-py3-none-any.whl", #"https://py.cafe/gh/artifact/mckinsey/vizro/2054307112/vizro-0.1.25.dev0-py3-none-any.whl",
         "files": [],
     }
     for root, _, files in os.walk(directory):

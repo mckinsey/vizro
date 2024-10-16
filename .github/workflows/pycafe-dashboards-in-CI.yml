@@ -44,6 +44,7 @@ jobs:
           # git fetch origin ${{ github.ref_name }}
           latest_commit=${{ github.sha }}
           echo "COMMIT_HASH=$latest_commit" >> $GITHUB_ENV
+          echo "RUN_ID={{ github.run_id }}" >> $GITHUB_ENV
 
       - name: Display latest commit
         run: |
