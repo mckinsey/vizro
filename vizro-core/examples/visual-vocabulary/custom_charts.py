@@ -193,3 +193,43 @@ def radar(data_frame, **kwargs) -> go.Figure:
     fig = px.line_polar(data_frame, **kwargs)
     fig.update_traces(fill="toself")
     return fig
+
+
+@capture("graph")
+def dumbbell(data_frame: pd.DataFrame, x: str, y: str, color: str) -> go.Figure:
+    """Creates a dumbbell chart using Plotly's `px.scatter` and `add_shape`.
+
+    A dumbbell plot is a type of dot plot where the points, displaying different groups, are connected with a straight
+    line. They are ideal for illustrating differences or gaps between two points.
+
+    Args:
+        data_frame (pd.DataFrame): The data source for the chart.
+        x (str): Column name in `data_frame` for x-axis values.
+        y (str): Column name in `data_frame` for y-axis values.
+        color (str): Column name in `data_frame` used for coloring the markers.
+
+    Returns:
+        go.Figure: A Plotly Figure object representing the dumbbell chart.
+
+    Inspired by: https://community.plotly.com/t/how-to-make-dumbbell-plots-in-plotly-python/47762
+
+    """
+    # Add two dots to plot
+    fig = px.scatter(data_frame, y=y, x=x, color=color)
+
+    # Add lines between dots
+    for y_value, group in data_frame.groupby(y):
+        fig.add_shape(
+            type="line",
+            layer="below",
+            y0=y_value,
+            y1=y_value,
+            x0=group[x].min(),
+            x1=group[x].max(),
+            line_color="grey",
+            line_width=3,
+        )
+
+    # Increase size of dots
+    fig.update_traces(marker_size=12)
+    return fig
