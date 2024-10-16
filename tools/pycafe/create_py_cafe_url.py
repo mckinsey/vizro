@@ -3,6 +3,7 @@ import gzip
 import json
 import os
 from urllib.parse import quote, urlencode
+import textwrap
 
 COMMIT_HASH = str(os.getenv("COMMIT_HASH"))
 # COMMIT_HASH = "16563957afa641c4141752099acff2a8049fd63c"
@@ -17,8 +18,8 @@ def generate_link(directory):
         app_content = app_file.read()
         print(app_content)
         print("=====")
-        # app_content_split = app_content.split('if __name__ == "__main__":')
-        # app_content = app_content_split[0] + textwrap.dedent(app_content_split[1])
+        app_content_split = app_content.split('if __name__ == "__main__":')
+        app_content = app_content_split[0] + textwrap.dedent(app_content_split[1])
 
     json_object = {
         "code": str(app_content),
