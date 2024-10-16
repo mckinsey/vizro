@@ -18,7 +18,9 @@ def generate_link(directory):
         app_content = app_file.read()
         app_content_split = app_content.split('if __name__ == "__main__":')
         app_content = app_content_split[0] + textwrap.dedent(app_content_split[1])
-        print(app_content)
+        print(app_content_split[0])
+        print("++++")
+        print(textwrap.dedent(app_content_split[1]))
         print("=====")
 
     json_object = {

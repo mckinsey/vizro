@@ -28,7 +28,7 @@ pastry = pd.DataFrame(
 
 
 page = vm.Page(
-    title="Test F",
+    title="Test G",
     components=[
         vm.Graph(
             figure=px.bar(
