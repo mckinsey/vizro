@@ -38,7 +38,8 @@ def generate_link(directory):
         # )
         # dashboard = vm.Dashboard(pages=[page])
         # Vizro().build(dashboard).run()""",
-        "code": str(app_content),
+        # "code": str(app_content),
+        "code":f"https://raw.githubusercontent.com/mckinsey/vizro/{COMMIT_HASH}/vizro-core/examples/scratch_dev/assets/logo_light.svg",
         "requirements": "https://py.cafe/gh/artifact/mckinsey/vizro/2054307112/vizro-0.1.25.dev0-py3-none-any.whl",
         "files": [],
     }
@@ -53,12 +54,12 @@ def generate_link(directory):
             file_url = f"{base_url}{relative_path.replace(os.sep, '/')}"
             json_object["files"].append({"name": relative_path, "url": file_url})
             # Add detailed logging
-            print(f"Added file: {relative_path}, URL: {file_url}")
-            print(f"Current JSON object: {json.dumps(json_object, indent=2)}")
-            print("-+-")
+            # print(f"Added file: {relative_path}, URL: {file_url}")
+            # print(f"Current JSON object: {json.dumps(json_object, indent=2)}")
+            # print("-+-")
 
     # Final JSON object logging
-    # print(f"Final JSON object: {json.dumps(json_object, indent=2)}")
+    print(f"Final JSON object: {json.dumps(json_object, indent=2)}")
     print("******")
     print(json_object["code"])
     print("---")
