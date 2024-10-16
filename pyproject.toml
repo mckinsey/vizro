@@ -57,7 +57,7 @@ ignore = [
   "D401",  # first-line should be in imperative mood
   # D407 needs to be ignored as it otherwise messes up the formatting in our API docs
   "D407",  # missing dashed underline after section
-  "PD901", # allow using the generic variable name `df` for DataFrames
+  "PD901"  # allow using the generic variable name `df` for DataFrames
 ]
 select = [
   "E",  # pycodestyle errors
@@ -69,24 +69,11 @@ select = [
   "C4",  # flake8-comprehensions
   "RUF",  # Ruff-specific rules
   "PL",  # pylint
-  "PD", # pandas-vet
-  "UP", # pyupgrade
-  "PERF", # perflint
-  "FURB", # refurb
+  "PD",  # pandas-vet
+  "UP",  # pyupgrade
+  "PERF",  # perflint
+  "FURB"  # refurb
 ]
-
-
-# TODO:
-# trailing comma
-# correct docstrings - tried to do this already but check
-# format code in docs
-# think about pydantic to python
-
-[tool.ruff.lint.pyupgrade]
-# Don't do PEP 604 rewrites (e.g. Union[str, int] -> str | int), even in files that import
-# `from __future__ import annotations`. This is needed since pydantic relies on the runtime behavior in Python 3.9.
-# When we drop Python 3.9 we can remove this setting.
-keep-runtime-typing = true
 
 [tool.ruff.lint.per-file-ignores]
 # Tests can use magic values, assertions, and relative imports, ignore missing docstrings,
@@ -100,3 +87,9 @@ convention = "google"
 
 [tool.ruff.lint.pylint]
 max-args = 6
+
+[tool.ruff.lint.pyupgrade]
+# Don't do PEP 604 rewrites (e.g. Union[str, int] -> str | int), even in files that import
+# `from __future__ import annotations`. This is needed since pydantic relies on the runtime behavior in Python 3.9.
+# When we drop Python 3.9 we can remove this setting.
+keep-runtime-typing = true
