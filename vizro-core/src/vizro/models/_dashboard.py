@@ -6,6 +6,7 @@ from functools import partial
 from pathlib import Path
 from typing import TYPE_CHECKING, List, Literal, TypedDict
 
+import vizro
 import dash
 import dash_bootstrap_components as dbc
 import dash_mantine_components as dmc
