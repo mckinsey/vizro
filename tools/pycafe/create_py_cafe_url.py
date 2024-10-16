@@ -26,7 +26,7 @@ def generate_link(directory):
         "requirements": "https://py.cafe/gh/artifact/mckinsey/vizro/2054307112/vizro-0.1.25.dev0-py3-none-any.whl",
         "files": [],
     }
-    print(json_object)
+    print(json_object["files"])
     print("=====")
     for root, _, files in os.walk(directory):
         for file in files:
