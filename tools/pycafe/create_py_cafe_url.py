@@ -40,7 +40,7 @@ page = vm.Page(
 )
 
 dashboard = vm.Dashboard(pages=[page])
-Vizro().build(dashboard).run()""",#str(app_content),
+Vizro().build(dashboard).run()""",  # str(app_content),
         "requirements": "https://py.cafe/gh/artifact/mckinsey/vizro/2054307112/vizro-0.1.25.dev0-py3-none-any.whl",
         "files": [],
     }
