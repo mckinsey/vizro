@@ -3,10 +3,10 @@ import gzip
 import json
 import os
 import subprocess
+import sys
 import textwrap
 from pathlib import Path
 from urllib.parse import quote, urlencode
-import sys
 
 COMMIT_HASH = str(os.getenv("COMMIT_HASH"))
 RUN_ID = str(os.getenv("RUN_ID"))
@@ -20,14 +20,14 @@ def generate_link(directory):
     app_file_path = os.path.join(directory, "app.py")
     app_content = Path(app_file_path).read_text()
     app_content_split = app_content.split('if __name__ == "__main__":')
-    app_content = app_content_split[0] + textwrap.dedent(app_content_split[1]) 
+    app_content = app_content_split[0] + textwrap.dedent(app_content_split[1])
 
     json_object = {
         "code": str(app_content),
         "requirements": f"{PYCAFE_URL}/gh/artifact/mckinsey/vizro/actions/runs/{RUN_ID}/pip/vizro-{PACKAGE_VERSION}-py3-none-any.whl",
         "files": [],
     }
-    for root, _, files in os.walk("./"+directory):
+    for root, _, files in os.walk("./" + directory):
         for file in files:
             # print(root, file)
             if "yaml" in root or "app.py" in file:
