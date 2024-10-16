@@ -159,7 +159,7 @@ class Dashboard(VizroBaseModel):
         return html.Div(
             id="dashboard-container",
             children=[
-                html.Div(id="vizro_version", children=vizro.__version__, hidden=True),
+                # html.Div(id="vizro_version", children=vizro.__version__, hidden=True),
                 dcc.Store(
                     id="vizro_themes",
                     data={
