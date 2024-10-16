@@ -21,9 +21,7 @@ def generate_link(directory):
     app_content_split = app_content.split('if __name__ == "__main__":')
     app_content = app_content_split[0] + textwrap.dedent(app_content_split[1])
 
-    attempted_package_version = (
-            subprocess.check_output(["hatch", "version"], cwd=f"vizro-core").decode("utf-8").strip()
-        )
+    attempted_package_version = subprocess.check_output(["hatch", "version"], cwd="vizro-core").decode("utf-8").strip()
     print(f"Attempted package version: {attempted_package_version}")
 
     json_object = {
