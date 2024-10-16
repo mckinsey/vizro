@@ -6,7 +6,7 @@ import textwrap
 from urllib.parse import quote, urlencode
 
 COMMIT_HASH = str(os.getenv("COMMIT_HASH"))
-COMMIT_HASH = "79ccfab83b150b355b12ed09cc6314651ae84221"
+# COMMIT_HASH = "16563957afa641c4141752099acff2a8049fd63c"
 print(COMMIT_HASH)
 
 
