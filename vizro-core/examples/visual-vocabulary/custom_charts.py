@@ -233,3 +233,36 @@ def dumbbell(data_frame: pd.DataFrame, x: str, y: str, color: str) -> go.Figure:
     # Increase size of dots
     fig.update_traces(marker_size=12)
     return fig
+
+
+@capture("graph")
+def diverging_stacked_bar(data_frame):
+    fig = go.Figure()
+
+    # Add traces for negative side
+    for col in data_frame.columns[2:4]:
+        fig.add_trace(
+            go.Bar(
+                x=-data_frame[col].values,
+                y=data_frame["pastry"],
+                orientation="h",
+                name=col,
+                customdata=data_frame[col],
+            )
+        )
+
+    # Add traces for positive side
+    for col in data_frame.columns[4:]:
+        fig.add_trace(
+            go.Bar(
+                x=data_frame[col],
+                y=data_frame["pastry"],
+                orientation="h",
+                name=col,
+            )
+        )
+
+    # Update layout and add vertical line
+    fig.update_layout(barmode="relative")
+    fig.add_vline(x=0, line_width=2, line_color="grey")
+    return fig

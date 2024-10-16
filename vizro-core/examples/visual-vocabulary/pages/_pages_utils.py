@@ -58,17 +58,6 @@ stepped_line_data = pd.DataFrame(
 
 
 carshare = px.data.carshare()
-pastry = pd.DataFrame(
-    {
-        "Pastry": ["Scones", "Bagels", "Muffins", "Cakes", "Donuts", "Cookies"],
-        "Neva": [9, 7, 4, 0, 0, 0],
-        "Nope": [7, 6, 3, 0, 0, 0],
-        "No": [5, 4, 3, 0, 0, 0],
-        "Maybe": [0, 0, 0, 4, 7, 9],
-        "Possible": [0, 0, 0, 3, 5, 8],
-        "Yes": [0, 0, 0, 4, 6, 8],
-    }
-)
 
 tasks = pd.DataFrame(
     [
@@ -85,7 +74,6 @@ waterfall_data = pd.DataFrame(
         "measure": ["relative", "relative", "total", "relative", "relative", "total"],
     }
 )
-
 
 pastries = pd.DataFrame(
     {
@@ -104,9 +92,12 @@ pastries = pd.DataFrame(
             "Pies",
         ],
         "Profit Ratio": [-0.10, -0.15, -0.05, 0.10, 0.05, 0.20, 0.15, -0.08, 0.08, -0.12, 0.02, -0.07],
+        "Strongly Disagree": [20, 30, 10, 5, 15, 5, 10, 25, 8, 20, 5, 10],
+        "Disagree": [30, 25, 20, 10, 20, 10, 15, 30, 12, 30, 10, 15],
+        "Agree": [30, 25, 40, 40, 45, 40, 40, 25, 40, 30, 45, 35],
+        "Strongly Agree": [20, 20, 30, 45, 20, 45, 35, 20, 40, 20, 40, 40]
     }
 )
-
 
 salaries = pd.DataFrame(
     {
