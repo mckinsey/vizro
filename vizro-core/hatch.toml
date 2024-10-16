@@ -50,8 +50,6 @@ pypath = "python -c 'import sys; print(sys.executable)'"
 # Only run pre-commit hooks when schema is generated, not when it's checked. This keeps the check fast in CI.
 schema = ["python schemas/generate.py", 'SKIP=gitleaks pre-commit run --files="schemas/$(hatch version).json" > /dev/null']
 schema-check = ["python schemas/generate.py --check"]
-# TODO: check codespaces
-
 secrets = "pre-commit run gitleaks --all-files"
 # Note `hatch run test` currently fails due to interference between integration tests and unit tests. Ideally we would
 # fix this, but we don't actually use `hatch run test` anywhere right now.
