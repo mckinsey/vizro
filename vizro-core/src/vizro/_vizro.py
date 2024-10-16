@@ -2,15 +2,17 @@ from __future__ import annotations
 
 import logging
 import warnings
+from contextlib import suppress
 from pathlib import Path
-from typing import TYPE_CHECKING, Iterable, List
+from typing import TYPE_CHECKING, Iterable, TypedDict
 
 import dash
-import flask
 import plotly.io as pio
+from dash.development.base_component import ComponentRegistry
 from flask_caching import SimpleCache
 
-from vizro._constants import STATIC_URL_PREFIX
+import vizro
+from vizro._constants import VIZRO_ASSETS_PATH
 from vizro.managers import data_manager, model_manager
 from vizro.models import Dashboard
 
@@ -32,7 +34,7 @@ class Vizro:
                 [Dash documentation](https://dash.plotly.com/reference#dash.dash) for possible arguments.
 
         """
-        # Setting suppress_callback_exceptions=True for the following reasons:
+        # Set suppress_callback_exceptions=True for the following reasons:
         # 1. Prevents the following Dash exception when using html.Div as placeholders in build methods:
         #    "Property 'cellClicked' was used with component ID '__input_ag_grid_id' in one of the Input
         #    items of a callback. This ID is assigned to a dash_html_components.Div component in the layout,
@@ -46,41 +48,34 @@ class Vizro:
             use_pages=True,
         )
 
-        # Include Vizro assets (in the static folder) as external scripts and stylesheets. We extend self.dash.config
-        # objects so the user can specify additional external_scripts and external_stylesheets via kwargs.
-        vizro_assets_folder = Path(__file__).with_name("static")
-        requests_pathname_prefix = self.dash.config.requests_pathname_prefix
-        # Exclude vizro/css/figures.css since these are distributed through the vizro._css_dist mechanism.
-        # In future we will probably handle all assets this way and none of this code will be required.
-        vizro_css = [
-            requests_pathname_prefix + path
-            for path in self._get_external_assets(vizro_assets_folder, "css")
-            if path != "vizro/css/figures.css"
-        ]
+        # When Vizro is used as a framework, we want to include the library and framework resources.
+        # Dash serves resources in the order 1. external_stylesheets/scripts; 2. library resources from the
+        # ComponentRegistry; 3. resources added by append_css/scripts.
+        # Vizro library resources are already present thanks to ComponentRegistry.registry.add("vizro") in
+        # __init__.py. However, since Dash serves these before those added below it means that vizro-bootstrap.css would
+        # be served  *after* Vizro library's figures.css. We always want vizro-bootstrap.css to be served first
+        # so that it can be overridden. For pure Dash users this is achieved vizro-boostrap.css is supplied as an
+        # external_stylesheet. We could add vizro-boostrap.css as an external_stylesheet here but it is awkward
+        # because it means providing href="_dash-component-suite/..." or using the external_url. Instead we remove
+        # Vizro as a component library and then just serve all the resources again. ValueError is suppressed so that
+        # repeated calls to Vizro() don't give an error.
+        with suppress(ValueError):
+            ComponentRegistry.registry.discard("vizro")
 
-        # Ensure vizro-bootstrap.min.css is loaded in first to allow overwrites
-        vizro_css.sort(key=lambda x: not x.endswith("vizro-bootstrap.min.css"))
-
-        vizro_js = [
-            {"src": requests_pathname_prefix + path, "type": "module"}
-            for path in self._get_external_assets(vizro_assets_folder, "js")
-        ]
-        self.dash.config.external_stylesheets.extend(vizro_css)
-        self.dash.config.external_scripts.extend(vizro_js)
-
-        # Serve all assets (including files other than css and js) that live in vizro_assets_folder at the
-        # route /vizro. Based on code in Dash.init_app that serves assets_folder. This respects the case that the
-        # dashboard is not hosted at the root of the server, e.g. http://www.example.com/dashboard/vizro.
-        routes_pathname_prefix = self.dash.config.routes_pathname_prefix
-        blueprint_prefix = routes_pathname_prefix.replace("/", "_").replace(".", "_")
-        self.dash.server.register_blueprint(
-            flask.Blueprint(
-                f"{blueprint_prefix}vizro_assets",
-                self.dash.config.name,
-                static_folder=vizro_assets_folder,
-                static_url_path=routes_pathname_prefix + STATIC_URL_PREFIX,
-            )
-        )
+        # vizro-boostrap.min.css must be first so that it can be overridden, e.g. by boostrap_overrides.css.
+        # After that, all other items are sorted alphabetically.
+        for path in sorted(
+            VIZRO_ASSETS_PATH.rglob("*.*"), key=lambda file: (file.name != "vizro-bootstrap.min.css", file)
+        ):
+            if path.suffix == ".css":
+                self.dash.css.append_css(_make_resource_spec(path))
+            elif path.suffix == ".js":
+                self.dash.scripts.append_script(_make_resource_spec(path))
+            else:
+                # map files and fonts and images. These are treated like scripts since this is how Dash handles them.
+                # This adds paths to self.dash.registered_paths so that they can be accessed without throwing an
+                # error in dash._validate.validate_js_path.
+                self.dash.scripts.append_script(_make_resource_spec(path))
 
         data_manager.cache.init_app(self.dash.server)
 
@@ -98,7 +93,7 @@ class Vizro:
         if dashboard.title:
             self.dash.title = dashboard.title
 
-        # Set global template to vizro_light or vizro_dark.
+        # Set global chart template to vizro_light or vizro_dark.
         # The choice between these is generally meaningless because chart colors in the two are identical, and
         # everything else gets overridden in the clientside theme selector callback.
         # Note this setting of global template isn't undone anywhere. If we really wanted to then we could try and
@@ -172,14 +167,62 @@ class Vizro:
         dash.page_registry.clear()
         dash._pages.CONFIG.clear()
         dash._pages.CONFIG.__dict__.clear()
+        # To reset state to as if Vizro() hadn't been ran we need to make sure vizro is in the component
+        # registry. This is a set so it's not possible to duplicate the entry. This handles the very edge case that
+        # probably only occurs in our tests where someone does import vizro; Vizro(); Dash(), which means the Vizro
+        # library components are no longer available. This would work correctly with import vizro; Vizro();
+        # Vizro.reset(); Dash().
+        ComponentRegistry.registry.add("vizro")
 
-    @staticmethod
-    def _get_external_assets(folder: Path, extension: str) -> List[str]:
-        """Returns a list of paths to assets with given `extension` in `folder`, prefixed with `STATIC_URL_PREFIX`.
 
-        e.g. with STATIC_URL_PREFIX="vizro", extension="css", folder="/path/to/vizro/vizro-core/src/vizro/static",
-        we will get ["vizro/css/accordion.css", "vizro/css/button.css", ...].
-        """
-        return sorted(
-            (STATIC_URL_PREFIX / path.relative_to(folder)).as_posix() for path in folder.rglob(f"*.{extension}")
+class _ResourceSpec(TypedDict, total=False):
+    """Dash specification for a CSS or JS resource.
+
+    Dash uses relative_package_path when serve_locally=False (the default) in the Dash instantiation. When
+    serve_locally=True then, where defined, external_url will be used instead. dynamic and external_url are not
+    required keys.
+    """
+
+    namespace: str
+    external_url: str
+    relative_package_path: str
+    dynamic: bool
+
+
+def _make_resource_spec(path: Path) -> _ResourceSpec:
+    # For dev versions, a branch or tag called e.g. 0.1.20.dev0 does not exist and so won't work with the CDN. We point
+    # to main instead, but this can be manually overridden to the current feature branch name if required.
+    # This would only be the case where you need to test something with serve_locally=False and have changed
+    # assets compared to main. In this case you need to push your assets changes to remote for the CDN to update,
+    # and it might also be necessary to clear the CDN cache: https://www.jsdelivr.com/tools/purge.
+
+    _git_branch = vizro.__version__ if "dev" not in vizro.__version__ else "main"
+    BASE_EXTERNAL_URL = f"https://cdn.jsdelivr.net/gh/mckinsey/vizro@{_git_branch}/vizro-core/src/vizro/"
+
+    # Get path relative to the vizro package root, where this file resides.
+    relative_path = path.relative_to(Path(__file__).parent)
+
+    resource_spec: _ResourceSpec = {
+        "namespace": "vizro",
+        "relative_package_path": str(relative_path),
+    }
+
+    if relative_path.suffix in {".css", ".js"}:
+        # The CDN automatically minifies CSS and JS files which aren't already minified. Convert "filename.css" to
+        # "filename.min.css" for these files.
+        external_relative_path = (
+            relative_path
+            if ".min" in relative_path.suffixes
+            else relative_path.with_suffix(f".min{relative_path.suffix}")
         )
+
+        resource_spec["external_url"] = f"{BASE_EXTERNAL_URL}{external_relative_path}"
+    else:
+        # Files that aren't css or js cannot be minified, do not have external_url and set dynamic=True to ensure that
+        # the file isn't included in the HTML source. See https://github.com/plotly/dash/pull/1078.
+        # map and font files are served through the CDN in the same way as the CSS files but external_url is
+        # irrelevant here. The way the file is requested is through a relative url("./fonts/...") in the requesting
+        # CSS file. When the CSS file is served from the CDN then this will refer to the font file also on the CDN.
+        resource_spec["dynamic"] = True
+
+    return resource_spec

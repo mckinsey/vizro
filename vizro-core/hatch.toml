@@ -20,7 +20,7 @@ schema = ["python schemas/generate.py {args}", '- SKIP=gitleaks pre-commit run -
 dependencies = ["scriv"]
 detached = true
 installer = "uv"
-scripts = {add = "scriv create --add", collect = ["scriv collect --add", "- hatch run lint:lint --files=CHANGELOG.md"]}
+scripts = {add = "scriv create --add", collect = ["scriv collect --add", "- SKIP=gitleaks pre-commit run --files=CHANGELOG.md > /dev/null"]}
 
 [envs.default]
 dependencies = [

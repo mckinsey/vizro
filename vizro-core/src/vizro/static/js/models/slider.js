@@ -1,4 +1,4 @@
-export function _update_slider_values(start, slider, input_store, self_data) {
+function update_slider_values(start, slider, input_store, self_data) {
   var end_value, trigger_id;
 
   trigger_id = dash_clientside.callback_context.triggered;
@@ -21,3 +21,8 @@ export function _update_slider_values(start, slider, input_store, self_data) {
 
   return [end_value, end_value, end_value];
 }
+
+window.dash_clientside = {
+  ...window.dash_clientside,
+  slider: { update_slider_values: update_slider_values },
+};
