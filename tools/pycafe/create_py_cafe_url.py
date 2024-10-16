@@ -2,6 +2,7 @@ import base64
 import gzip
 import json
 import os
+from pathlib import Path
 from urllib.parse import quote, urlencode
 from pathlib import Path
 import textwrap
