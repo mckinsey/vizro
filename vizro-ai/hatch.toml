@@ -79,8 +79,7 @@ serve = "mkdocs serve --open"
 
 [envs.lower-bounds]
 extra-dependencies = ["pydantic==1.10.16"]
-# Ideally this would run on Python 3.12 but that's not solvable with pydantic==1.10.16.
-python = "3.12"
+python = "3.9"
 
 [version]
 path = "src/vizro_ai/__init__.py"

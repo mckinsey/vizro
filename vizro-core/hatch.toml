@@ -112,7 +112,7 @@ extra-dependencies = [
   "plotly==5.12.0"
 ]
 features = ["kedro"]
-python = "3.12"
+python = "3.9"
 
 [publish.index]
 disable = true
