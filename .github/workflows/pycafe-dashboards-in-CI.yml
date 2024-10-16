@@ -36,7 +36,7 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: my-artifact
-          path: vizro-core/dist/vizro-0.1.25.dev0-py3-none-any.whl
+          path: vizro-core/dist/*.whl
           retention-days: 5
 
       - name: Fetch latest commit from target branch
