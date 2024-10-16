@@ -2,10 +2,10 @@ import base64
 import gzip
 import json
 import os
+import subprocess
 import textwrap
 from pathlib import Path
 from urllib.parse import quote, urlencode
-import subprocess
 
 COMMIT_HASH = str(os.getenv("COMMIT_HASH"))
 RUN_ID = str(os.getenv("RUN_ID"))
