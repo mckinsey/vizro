@@ -4,8 +4,14 @@ import sys
 from github import Github
 
 # Authenticate with GitHub
-access_token = os.getenv("GITHUB_TOKEN")
-g = Github(access_token)
+
+from github import Auth
+
+# using an access token
+
+access_token = str(os.getenv("GITHUB_TOKEN"))
+auth = Auth.Token(access_token)
+g = Github(auth=auth)
 
 # for repo in g.get_user().get_repos():
 #     print(repo.name)
