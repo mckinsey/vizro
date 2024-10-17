@@ -66,4 +66,4 @@ jobs:
 
         run: |
           cd vizro-core
-          hatch run python ../tools/pycafe/test.py vizro-core/examples/scratch_dev/
+          hatch run python ../tools/pycafe/test.py examples/scratch_dev/

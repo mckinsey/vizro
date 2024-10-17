@@ -14,7 +14,7 @@ GITHUB_TOKEN = str(os.getenv("GITHUB_TOKEN"))
 REPO_NAME = str(os.getenv("GITHUB_REPOSITORY"))
 PR_NUMBER = int(os.getenv("PR_NUMBER"))
 
-# COMMIT_HASH = str(os.getenv("COMMIT_HASH"))
+
 RUN_ID = str(os.getenv("RUN_ID"))
 PACKAGE_VERSION = subprocess.check_output(["hatch", "version"]).decode("utf-8").strip()
 PYCAFE_URL = "https://py.cafe"
@@ -30,7 +30,7 @@ COMMIT_SHA = pr.head.sha
 
 
 def generate_link(directory):
-    base_url = f"https://raw.githubusercontent.com/mckinsey/vizro/{COMMIT_SHA}/{DIRECTORY}"
+    base_url = f"https://raw.githubusercontent.com/mckinsey/vizro/{COMMIT_SHA}/{directory}"
 
     app_file_path = os.path.join(directory, "app.py")
     app_content = Path(app_file_path).read_text()
