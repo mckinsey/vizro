@@ -19,8 +19,6 @@ RUN_ID = str(os.getenv("RUN_ID"))
 PACKAGE_VERSION = subprocess.check_output(["hatch", "version"]).decode("utf-8").strip()
 PYCAFE_URL = "https://py.cafe"
 
-DIRECTORY = sys.argv[1]
-
 # Access
 auth = Auth.Token(GITHUB_TOKEN)
 g = Github(auth=auth)
@@ -64,18 +62,17 @@ def generate_link(directory):
     return f"{PYCAFE_URL}/snippet/vizro/v1?{query}"
 
 
-# base_url = f"https://py.cafe/snippet/{type}/v1"
-url = "https://py.cafe/snippet/vizro/v1"  # f"{base_url}#code={quote(code)}&requirements={quote(requirements)}"
+for directory in sys.argv[1:]:
+    print(f"Generating PyCafe URL for directory: {directory}")
+    url = generate_link(directory=directory)
+    # pr.create_issue_comment("Foo bar")
 
+    # Define the deployment status
+    state = "success"  # Options: 'error', 'failure', 'pending', 'success'
+    description = "Test out this PR on a PyCafe environment"
+    context = "PyCafe"
 
-pr.create_issue_comment("Foo bar")
-
-# Define the deployment status
-state = "success"  # Options: 'error', 'failure', 'pending', 'success'
-description = "Test out this PR on a PyCafe environment"
-context = "PyCafe"
-
-# Create the status on the commit
-commit = repo.get_commit(COMMIT_SHA)
-commit.create_status(state=state, target_url=url, description=description, context=context)
-print(f"Deployment status added to commit {COMMIT_SHA}")
+    # Create the status on the commit
+    commit = repo.get_commit(COMMIT_SHA)
+    commit.create_status(state=state, target_url=url, description=description, context=context)
+    print(f"Deployment status added to commit {COMMIT_SHA}")
