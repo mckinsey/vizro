@@ -72,7 +72,6 @@ jobs:
             https://api.github.com/repos/${{ github.repository }}/check-runs \
             -d '{"name":"Scratch Example", "head_sha":"${{ github.event.pull_request.head.sha }}", "status":"in_progress","details_url":"https://github.com/mckinsey/vizro","output":{"title":"Dev example to try out things","summary":"","text":""}}'
 
-
   # check why details url not working, check why it runs under secret scans
   # test_something:
   #   runs-on: ubuntu-latest
