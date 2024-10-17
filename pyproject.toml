@@ -72,7 +72,7 @@ select = [
   "PD",  # pandas-vet for linting pandas code
   "UP",  # pyupgrade for upgrading syntax to new Python versions
   "PERF",  # perflint for performance anti-patterns
-  "FURB"  # refurb for reburbishing and modernising
+  "FURB"  # refurb for reburbishing and modernizing
 ]
 
 [tool.ruff.lint.per-file-ignores]
