@@ -88,12 +88,12 @@ def post_comment(urls: list[tuple[str, str]]):
     comments = pr.get_issue_comments()
     bot_comment = None
     for comment in comments:
-        if comment.body.startswith("View the dashboard live on PyCafe:"):
+        if comment.body.startswith("View the dashboards live on PyCafe:"):
             bot_comment = comment
             break
 
     # Get current UTC datetime
-    current_utc_time = datetime.datetime.utcnow().strftime("%Y-%m-%d %H:%M:%S UTC")
+    current_utc_time = datetime.datetime.now(datetime.UTC).strftime("%Y-%m-%d %H:%M:%S UTC")
 
     # Define the comment body with datetime
     dashboards = "\n\n".join(f"Link: [{directory}]({url})" for url, directory in urls)
