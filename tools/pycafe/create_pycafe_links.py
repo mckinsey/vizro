@@ -98,12 +98,12 @@ def post_comment(urls: list[tuple[str, str]]):
     # Define the comment body with datetime
     dashboards = "\n\n".join(f"Link: [{directory}]({url})" for url, directory in urls)
 
-    comment_body = textwrap.dedent(f"""View the example dashboards of the current commit live on PyCafe:\n
-    Updated on: {current_utc_time}
-    Commit: {commit_sha}
+    comment_body = f"""View the example dashboards of the current commit live on PyCafe:\n
+Updated on: {current_utc_time}
+Commit: {commit_sha}
 
-    {dashboards}
-    """)
+{dashboards}
+"""
 
     # Update the existing comment or create a new one
     if bot_comment:
