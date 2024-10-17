@@ -45,5 +45,5 @@ context = "PyCafe"
 
 # Create the status on the commit
 commit = repo.get_commit(commit_sha)
-commit.create_status(state=state)#, target_url=url, description=description, context=context)
+commit.create_status(state=state)  # , target_url=url, description=description, context=context)
 print(f"Deployment status added to commit {commit_sha}")
