@@ -1,4 +1,5 @@
 import base64
+import datetime
 import gzip
 import json
 import os
@@ -6,9 +7,8 @@ import subprocess
 import sys
 import textwrap
 from pathlib import Path
-from urllib.parse import quote, urlencode
-import datetime
 from typing import Optional
+from urllib.parse import quote, urlencode
 
 from github import Auth, Github
 
