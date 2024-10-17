@@ -1,4 +1,4 @@
-from typing import Dict, List, Optional
+from typing import Optional
 
 import pandas as pd
 import plotly.graph_objects as go
@@ -37,7 +37,7 @@ def diverging_stacked_bar(
     y: str,
     category_pos: List[str],
     category_neg: List[str],
-    color_discrete_map: Optional[Dict[str, str]] = None,
+    color_discrete_map: Optional[dict[str, str]] = None,
 ) -> go.Figure:
     """Creates a horizontal diverging stacked bar chart (with positive and negative values only) using Plotly's go.Bar.
 
@@ -55,7 +55,7 @@ def diverging_stacked_bar(
             ordered from least to most positive.
        category_neg (List[str]): List of column names in the DataFrame representing negative values. Columns should be
             ordered from least to most negative.
-       color_discrete_map: Optional[Dict[str, str]]: A dictionary mapping category names to color strings.
+       color_discrete_map: Optional[dict[str, str]]: A dictionary mapping category names to color strings.
 
     Returns:
        go.Figure: A Plotly Figure object representing the horizontal diverging stacked bar chart.

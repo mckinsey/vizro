@@ -259,7 +259,7 @@ def diverging_stacked_bar(
             ordered from least to most positive.
        category_neg (List[str]): List of column names in the DataFrame representing negative values. Columns should be
             ordered from least to most negative.
-       color_discrete_map: Optional[Dict[str, str]]: A dictionary mapping category names to color strings.
+       color_discrete_map: Optional[dict[str, str]]: A dictionary mapping category names to color strings.
 
     Returns:
        go.Figure: A Plotly Figure object representing the horizontal diverging stacked bar chart.
