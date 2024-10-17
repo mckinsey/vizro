@@ -29,7 +29,8 @@ dependencies = [
   "pyyaml",
   "openpyxl",
   "jupyter",
-  "pre-commit"
+  "pre-commit",
+  "PyGithub"
 ]
 installer = "uv"
 
