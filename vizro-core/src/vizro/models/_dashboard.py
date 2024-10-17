@@ -22,6 +22,7 @@ from dash import (
     html,
 )
 
+import vizro
 from vizro._themes._templates.template_dashboard_overrides import dashboard_overrides
 
 try:
@@ -31,7 +32,6 @@ except ImportError:  # pragma: no cov
 
 from dash.development.base_component import Component
 
-import vizro
 from vizro._constants import MODULE_PAGE_404, VIZRO_ASSETS_PATH
 from vizro.actions._action_loop._action_loop import ActionLoop
 from vizro.models import Navigation, VizroBaseModel

@@ -1,0 +1,48 @@
+name: PyCafe Dashboards in CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches:
+      - main
+
+env:
+  PYTHON_VERSION: "3.12"
+
+jobs:
+  create-links:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: ${{ env.PYTHON_VERSION }}
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r tools/tools_requirements.txt
+          pip install hatch
+      - name: "Build vizro core package"
+        run: |
+          cd vizro-core
+          hatch build
+      - name: "Upload Artifact"
+        uses: actions/upload-artifact@v4
+        with:
+          name: pip
+          path: vizro-core/dist/*.whl
+          retention-days: 14
+
+      - name: Run Github Tool
+        env:
+          GITHUB_TOKEN: ${{ github.token }}
+          RUN_ID: ${{ github.run_id }}
+          GITHUB_REPOSITORY: ${{ github.repository }}
+          PR_NUMBER: ${{ github.event.number }}
+          GITHUB_OWNER: mckinsey
+
+        run: |
+          cd vizro-core
+          hatch run python ../tools/pycafe/create_pycafe_links.py examples/scratch_dev/ examples/dev/ examples/visual-vocabulary/
