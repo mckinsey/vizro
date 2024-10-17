@@ -61,7 +61,7 @@ jobs:
           GITHUB_TOKEN: ${{ github.token }}
           RUN_ID: ${{ github.run_id }}
           GITHUB_REPOSITORY: ${{ github.repository }}
-          PR_NUMBER: ${{ github.event.inputs.pr_number }}
+          PR_NUMBER: ${{ github.event.number }}
           GITHUB_OWNER: mckinsey
 
         run: |
