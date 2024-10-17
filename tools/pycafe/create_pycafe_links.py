@@ -119,6 +119,7 @@ if __name__ == "__main__":
 
     # Generate links for each directory and create status
     for directory in sys.argv[1:]:
+        # Add any extra requirements for specific dev examples
         if directory == "examples/dev/":
             url = generate_link(directory=directory, extra_requirements=["openpyxl"])
         else:
