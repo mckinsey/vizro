@@ -58,7 +58,8 @@ jobs:
 
       - name: Run Github Tool
         run: |
-          hatch run python tools/pycafe/test.py $GH_TOKEN ${{ env.COMMIT_HASH }} ${{ env.RUN_ID }}
+          cd vizro-core
+          hatch run python ../tools/pycafe/test.py $GH_TOKEN ${{ env.COMMIT_HASH }} ${{ env.RUN_ID }}
 
       - name: Create Check Run
         env:
