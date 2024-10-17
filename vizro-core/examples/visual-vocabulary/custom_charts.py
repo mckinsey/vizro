@@ -255,9 +255,9 @@ def diverging_stacked_bar(
     Args:
        data_frame (pd.DataFrame): The data frame for the chart.
        y (str): The name of the categorical column in the data frame to be used for the y-axis (categories)
-       category_pos (List[str]): List of column names in the data frame representing positive values. Columns should be
+       category_pos (list[str]): List of column names in the data frame representing positive values. Columns should be
             ordered from least to most positive.
-       category_neg (List[str]): List of column names in the DataFrame representing negative values. Columns should be
+       category_neg (list[str]): List of column names in the DataFrame representing negative values. Columns should be
             ordered from least to most negative.
        color_discrete_map: Optional[dict[str, str]]: A dictionary mapping category names to color strings.
 
@@ -270,7 +270,7 @@ def diverging_stacked_bar(
     for column in category_neg:
         fig.add_trace(
             go.Bar(
-                x=-data_frame[column].values,
+                x=-data_frame[column].to_numpy(),
                 y=data_frame[y],
                 orientation="h",
                 name=column,
