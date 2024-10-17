@@ -1,5 +1,4 @@
 import sys
-from urllib.parse import quote
 
 from github import Github
 
@@ -28,7 +27,7 @@ pr = repo.get_pull(pr_number)
 print(pr)
 
 # base_url = f"https://py.cafe/snippet/{type}/v1"
-url = "https://py.cafe/snippet/vizro/v1"#f"{base_url}#code={quote(code)}&requirements={quote(requirements)}"
+url = "https://py.cafe/snippet/vizro/v1"  # f"{base_url}#code={quote(code)}&requirements={quote(requirements)}"
 
 # # Get the latest commit SHA from the PR
 if 1:
