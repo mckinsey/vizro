@@ -38,12 +38,12 @@ print(commit_sha)
 
 pr.create_issue_comment("Foo bar")
 
-# # Define the deployment status
-# state = "success"  # Options: 'error', 'failure', 'pending', 'success'
-# description = "Test out this PR on a PyCafe environment"
-# context = "PyCafe"
+# Define the deployment status
+state = "success"  # Options: 'error', 'failure', 'pending', 'success'
+description = "Test out this PR on a PyCafe environment"
+context = "PyCafe"
 
-# # Create the status on the commit
-# commit = repo.get_commit(commit_sha)
-# commit.create_status(state=state)#, target_url=url, description=description, context=context)
-# print(f"Deployment status added to commit {commit_sha}")
+# Create the status on the commit
+commit = repo.get_commit(commit_sha)
+commit.create_status(state=state)#, target_url=url, description=description, context=context)
+print(f"Deployment status added to commit {commit_sha}")
