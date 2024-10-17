@@ -1,18 +1,18 @@
-import os
-import sys
-from github import Auth, Github
-import subprocess
-from pathlib import Path
-import textwrap
 import base64
 import gzip
 import json
+import os
+import subprocess
+import sys
+import textwrap
+from pathlib import Path
 from urllib.parse import quote, urlencode
 
+from github import Auth, Github
 
-GITHUB_TOKEN = str(os.getenv('GITHUB_TOKEN'))
-REPO_NAME = str(os.getenv('GITHUB_REPOSITORY'))
-PR_NUMBER = int(os.getenv('PR_NUMBER'))
+GITHUB_TOKEN = str(os.getenv("GITHUB_TOKEN"))
+REPO_NAME = str(os.getenv("GITHUB_REPOSITORY"))
+PR_NUMBER = int(os.getenv("PR_NUMBER"))
 
 # COMMIT_HASH = str(os.getenv("COMMIT_HASH"))
 RUN_ID = str(os.getenv("RUN_ID"))
@@ -29,7 +29,6 @@ g = Github(auth=auth)
 repo = g.get_repo(REPO_NAME)
 pr = repo.get_pull(PR_NUMBER)
 COMMIT_SHA = pr.head.sha
-
 
 
 def generate_link(directory):

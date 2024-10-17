@@ -61,9 +61,9 @@ jobs:
           GITHUB_TOKEN: ${{ github.token }}
           RUN_ID: ${{ github.run_id }}
           GITHUB_REPOSITORY: ${{ github.repository }}
-          PR_NUMBER: ${{ github.event.inputs.pr_number }}      
+          PR_NUMBER: ${{ github.event.inputs.pr_number }}
           GITHUB_OWNER: mckinsey
-          
+
         run: |
           cd vizro-core
           hatch run python ../tools/pycafe/test.py vizro-core/examples/scratch_dev/
