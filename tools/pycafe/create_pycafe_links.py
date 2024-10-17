@@ -83,7 +83,7 @@ def post_comment(urls: list[tuple[str, str]]):
     comments = pr.get_issue_comments()
     bot_comment = None
     for comment in comments:
-        if comment.body.startswith("View the dashboards live on PyCafe:"):
+        if comment.body.startswith("View the example dashboards of the current commit live"):
             bot_comment = comment
             break
 
