@@ -1,3 +1,4 @@
+"""Generate PyCafe links for the example dashboards and post them as a comment on the pull request and as status."""
 import base64
 import datetime
 import gzip
@@ -79,10 +80,12 @@ def generate_link(directory: str, extra_requirements: Optional[list[str]] = None
 
 
 def post_comment(urls: list[tuple[str, str]]):
+    """Post a comment on the pull request with the links to the PyCafe dashboards."""
+    # Inspired by https://github.com/snehilvj/dash-mantine-components
+
     # Find existing comments by the bot
     comments = pr.get_issue_comments()
     bot_comment = None
-    print(comments)
     for comment in comments:
         if comment.body.startswith("View the dashboard live on PyCafe:"):
             bot_comment = comment
@@ -92,16 +95,15 @@ def post_comment(urls: list[tuple[str, str]]):
     current_utc_time = datetime.datetime.utcnow().strftime("%Y-%m-%d %H:%M:%S UTC")
 
     # Define the comment body with datetime
-    # comment_body = f"Test Environment for [{REPO_NAME}-{PR_NUMBER}]({link})\nUpdated on: {current_utc_time}"
-    dashboards = "\n\n".join(f"View the dashboard live on PyCafe: [{directory}]({url})" for url, directory in urls)
+    dashboards = "\n\n".join(f"Link: [{directory}]({url})" for url, directory in urls)
 
-    comment_body = f"""View the example dashboards of the current commit live on PyCafe:
-Updated on: {current_utc_time}
+    comment_body = textwrap.dedent(f"""View the example dashboards of the current commit live on PyCafe:
+    Updated on: {current_utc_time}
+    Commit: {commit_sha}
 
-Commit: {commit_sha}
-
-{dashboards}
-"""
+    {dashboards}
+    """
+    )
 
     # Update the existing comment or create a new one
     if bot_comment:
@@ -112,21 +114,26 @@ Commit: {commit_sha}
         print("Comment added to the pull request.")
 
 
-urls = []
-for directory in sys.argv[1:]:
-    if directory == "examples/dev/":
-        url = generate_link(directory=directory, extra_requirements=["openpyxl"])
-    else:
-        url = generate_link(directory=directory)
-    urls.append((url, directory))
+if __name__ == "__main__":
+    urls = []
 
-    # Define the deployment status
-    state = "success"  # Options: 'error', 'failure', 'pending', 'success'
-    description = "Test out the app live on PyCafe"
-    context = f"PyCafe Example ({directory})"
+    # Generate links for each directory and create status
+    for directory in sys.argv[1:]:
+        if directory == "examples/dev/":
+            url = generate_link(directory=directory, extra_requirements=["openpyxl"])
+        else:
+            url = generate_link(directory=directory)
+        urls.append((url, directory))
 
-    # Create the status on the commit
-    commit.create_status(state=state, target_url=url, description=description, context=context)
+        # Define the deployment status
+        state = "success"  # Options: 'error', 'failure', 'pending', 'success'
+        description = "Test out the app live on PyCafe"
+        context = f"PyCafe Example ({directory})"
 
-post_comment(urls)
-print("All done!")
+        # Create the status on the commit
+        commit.create_status(state=state, target_url=url, description=description, context=context)
+
+    # Post the comment with the links
+    post_comment(urls)
+
+    print("All done!")
