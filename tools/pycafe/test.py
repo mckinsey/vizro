@@ -93,7 +93,7 @@ def post_comment(urls: list[tuple[str, str]]):
 
     # Define the comment body with datetime
     # comment_body = f"Test Environment for [{REPO_NAME}-{PR_NUMBER}]({link})\nUpdated on: {current_utc_time}"
-    comment_body = "\n".join(
+    comment_body = "\n\n".join(
         f"View the dashboard live on PyCafe: [{directory}]({url})\n\nUpdated on: {current_utc_time}"
         for url, directory in urls
     )
