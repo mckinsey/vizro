@@ -30,7 +30,7 @@ COMMIT_SHA = pr.head.sha
 
 
 def generate_link(directory):
-    base_url = f"https://raw.githubusercontent.com/mckinsey/vizro/{COMMIT_SHA}/{directory}"
+    base_url = f"https://raw.githubusercontent.com/mckinsey/vizro/{COMMIT_SHA}/vizro-core/{directory}"
 
     app_file_path = os.path.join(directory, "app.py")
     app_content = Path(app_file_path).read_text()
