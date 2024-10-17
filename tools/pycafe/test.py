@@ -3,16 +3,18 @@ from urllib.parse import quote
 
 from github import Github
 
+import os
+
 # Authenticate with GitHub
-access_token = sys.argv[1]
+access_token = os.getenv("GITHUB_TOKEN")
 g = Github(access_token)
 
 # for repo in g.get_user().get_repos():
 #     print(repo.name)
 
 print(sys.argv)
-repo = sys.argv[2]
-pr = sys.argv[3]
+repo = sys.argv[1]
+pr = sys.argv[2]
 # type = sys.argv[3]
 # code = sys.argv[4]
 # requirements = sys.argv[5]

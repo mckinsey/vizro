@@ -57,6 +57,8 @@ jobs:
           python tools/pycafe/create_py_cafe_url.py
 
       - name: Run Github Tool
+        env:
+          GH_TOKEN: ${{ github.token }}
         run: |
           cd vizro-core
           hatch run python ../tools/pycafe/test.py $GH_TOKEN mckinsey/vizro 766
