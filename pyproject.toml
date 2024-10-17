@@ -60,19 +60,19 @@ ignore = [
   "PD901"  # allow using the generic variable name `df` for DataFrames
 ]
 select = [
-  "E",  # pycodestyle errors
-  "W",  # pycodestyle warnings
-  "F",  # pyflakes
-  "I",  # isort
-  "D",  # pydocstyle
-  "T201",  # print
-  "C4",  # flake8-comprehensions
+  "E",  # pycodestyle errors for style conventions of PEP 8
+  "W",  # pycodestyle warnings  for style conventions of PEP 8
+  "F",  # pyflakes for Python errors
+  "I",  # isort for sorting imports
+  "D",  # pydocstyle for docstrings
+  "T201",  # flake8-print for detecting print statement
+  "C4",  # flake8-comprehensions for better list/set/dict comprehensions
   "RUF",  # Ruff-specific rules
   "PL",  # pylint
-  "PD",  # pandas-vet
-  "UP",  # pyupgrade
-  "PERF",  # perflint
-  "FURB"  # refurb
+  "PD",  # pandas-vet for linting pandas code
+  "UP",  # pyupgrade for upgrading syntax to new Python versions
+  "PERF",  # perflint for performance anti-patterns
+  "FURB"  # refurb for reburbishing and modernising
 ]
 
 [tool.ruff.lint.per-file-ignores]
