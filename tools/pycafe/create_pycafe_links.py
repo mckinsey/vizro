@@ -1,4 +1,5 @@
 """Generate PyCafe links for the example dashboards and post them as a comment on the pull request and as status."""
+
 import base64
 import datetime
 import gzip
@@ -102,8 +103,7 @@ def post_comment(urls: list[tuple[str, str]]):
     Commit: {commit_sha}
 
     {dashboards}
-    """
-    )
+    """)
 
     # Update the existing comment or create a new one
     if bot_comment:
