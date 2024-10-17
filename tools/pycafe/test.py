@@ -26,11 +26,12 @@ g = Github(auth=auth)
 # Get PR and commits
 repo = g.get_repo(REPO_NAME)
 pr = repo.get_pull(PR_NUMBER)
-COMMIT_SHA = pr.head.sha
+commit_sha = pr.head.sha
+commit = repo.get_commit(commit_sha)
 
 
 def generate_link(directory):
-    base_url = f"https://raw.githubusercontent.com/mckinsey/vizro/{COMMIT_SHA}/vizro-core/{directory}"
+    base_url = f"https://raw.githubusercontent.com/mckinsey/vizro/{commit_sha}/vizro-core/{directory}"
 
     app_file_path = os.path.join(directory, "app.py")
     app_content = Path(app_file_path).read_text()
@@ -62,17 +63,18 @@ def generate_link(directory):
     return f"{PYCAFE_URL}/snippet/vizro/v1?{query}"
 
 
-for directory in sys.argv[1:]:
-    print(f"Generating PyCafe URL for directory: {directory}")
-    url = generate_link(directory=directory)
+urls = [(generate_link(directory=directory),directory) for directory in sys.argv[1:]]
+
+for url, directory in urls:
+    # print(f"Generating PyCafe URL for directory: {directory}")
+    # url = generate_link(directory=directory)
     # pr.create_issue_comment("Foo bar")
 
     # Define the deployment status
     state = "success"  # Options: 'error', 'failure', 'pending', 'success'
-    description = "Test out this PR on a PyCafe environment"
-    context = "PyCafe"
+    description = "Test out the app live on PyCafe"
+    context = f"PyCafe Example ({directory})"
 
     # Create the status on the commit
-    commit = repo.get_commit(COMMIT_SHA)
     commit.create_status(state=state, target_url=url, description=description, context=context)
-    print(f"Deployment status added to commit {COMMIT_SHA}")
+    # print(f"Deployment status added to commit {COMMIT_SHA}")
