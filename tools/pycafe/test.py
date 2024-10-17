@@ -37,13 +37,12 @@ def generate_link(directory: str, extra_requirements: Optional[list[str]] = None
 
     # Requirements
     if extra_requirements:
-        extra_requirements: str = "\n".join(extra_requirements)
+        extra_requirements_concat: str = "\n".join(extra_requirements)
     else:
-        extra_requirements = ""
+        extra_requirements_concat = ""
     requirements = (
-        f"""{PYCAFE_URL}/gh/artifact/mckinsey/vizro/
-actions/runs/{RUN_ID}/pip/vizro-{PACKAGE_VERSION}-py3-none-any.whl"""
-        + extra_requirements
+        f"""{PYCAFE_URL}/gh/artifact/mckinsey/vizro/actions/runs/{RUN_ID}/pip/vizro-{PACKAGE_VERSION}-py3-none-any.whl\n"""
+        + extra_requirements_concat
     )
     print(f"Requirements: {requirements}")
 
@@ -90,7 +89,7 @@ def post_comment(link):
             break
 
     # Get current UTC datetime
-    current_utc_time = datetime.utcnow().strftime("%Y-%m-%d %H:%M:%S UTC")
+    current_utc_time = datetime.datetime.utcnow().strftime("%Y-%m-%d %H:%M:%S UTC")
 
     # Define the comment body with datetime
     comment_body = f"Test Environment for [{REPO_NAME}-{PR_NUMBER}]({link})\nUpdated on: {current_utc_time}"
