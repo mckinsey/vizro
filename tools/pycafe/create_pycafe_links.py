@@ -35,6 +35,7 @@ commit = repo.get_commit(commit_sha)
 
 
 def generate_link(directory: str, extra_requirements: Optional[list[str]] = None):
+    """Generate a PyCafe link for the example dashboards."""
     base_url = f"https://raw.githubusercontent.com/mckinsey/vizro/{commit_sha}/vizro-core/{directory}"
 
     # Requirements
@@ -103,10 +104,10 @@ Commit: {commit_sha}
     # Update the existing comment or create a new one
     if bot_comment:
         bot_comment.edit(comment_body)
-        print("Comment updated on the pull request.")
+        print("Comment updated on the pull request.")  # noqa
     else:
         pr.create_issue_comment(comment_body)
-        print("Comment added to the pull request.")
+        print("Comment added to the pull request.")  # noqa
 
 
 if __name__ == "__main__":
@@ -128,7 +129,7 @@ if __name__ == "__main__":
 
         # Create the status on the commit
         commit.create_status(state=state, target_url=url, description=description, context=context)
-        print(f"Status created for {context} with URL: {url}")
+        print(f"Status created for {context} with URL: {url}")  # noqa
 
     # Post the comment with the links
     post_comment(urls)
