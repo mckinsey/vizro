@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from typing import TYPE_CHECKING, List, Literal
+from typing import TYPE_CHECKING, Literal
 
 from dash import html
 
@@ -23,7 +23,7 @@ class Container(VizroBaseModel):
 
     Args:
         type (Literal["container"]): Defaults to `"container"`.
-        components (List[ComponentType]): See [ComponentType][vizro.models.types.ComponentType]. At least one component
+        components (list[ComponentType]): See [ComponentType][vizro.models.types.ComponentType]. At least one component
             has to be provided.
         title (str): Title to be displayed.
         layout (Layout): Layout to place components in. Defaults to `None`.
@@ -31,7 +31,7 @@ class Container(VizroBaseModel):
     """
 
     type: Literal["container"] = "container"
-    components: List[ComponentType]
+    components: list[ComponentType]
     title: str = Field(..., description="Title to be displayed.")
     layout: Layout = None  # type: ignore[assignment]
 

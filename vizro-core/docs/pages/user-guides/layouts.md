@@ -54,7 +54,7 @@ grid = [[0, 1],
         [0, 2]]
 ```
 
-- The `grid` must be provided as `List[List[int]]` (for example, `grid = [[0, 1], [0, 2]]`).
+- The `grid` must be provided as `list[list[int]]` (for example, `grid = [[0, 1], [0, 2]]`).
 - The integers in the `grid` must be consecutive integers starting with 0 (for example, `0`, `1`, `2`).
     - The integers correspond to the index of the chart/component inside the list of `components` provided to [`Page`][vizro.models.Page].
     - The number of integers in the `grid` needs to match the number of chart/components provided.

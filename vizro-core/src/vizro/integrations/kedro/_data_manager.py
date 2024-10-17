@@ -1,5 +1,5 @@
 from pathlib import Path
-from typing import Any, Dict, Optional, Union
+from typing import Any, Optional, Union
 
 from kedro.framework.session import KedroSession
 from kedro.framework.startup import bootstrap_project
@@ -9,7 +9,7 @@ from vizro.managers._data_manager import pd_DataFrameCallable
 
 
 def catalog_from_project(
-    project_path: Union[str, Path], env: Optional[str] = None, extra_params: Optional[Dict[str, Any]] = None
+    project_path: Union[str, Path], env: Optional[str] = None, extra_params: Optional[dict[str, Any]] = None
 ) -> DataCatalog:
     bootstrap_project(project_path)
     with KedroSession.create(
@@ -18,7 +18,7 @@ def catalog_from_project(
         return session.load_context().catalog
 
 
-def datasets_from_catalog(catalog: DataCatalog) -> Dict[str, pd_DataFrameCallable]:
+def datasets_from_catalog(catalog: DataCatalog) -> dict[str, pd_DataFrameCallable]:
     datasets = {}
     for name in catalog.list():
         dataset = catalog._get_dataset(name, suggest=False)

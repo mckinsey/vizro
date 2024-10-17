@@ -6,5 +6,4 @@ from vizro.models._components.form.radio_items import RadioItems
 from vizro.models._components.form.range_slider import RangeSlider
 from vizro.models._components.form.slider import Slider
 
-# Please keep alphabetically ordered
 __all__ = ["Button", "Checklist", "DatePicker", "Dropdown", "RadioItems", "RangeSlider", "Slider"]

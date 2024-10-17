@@ -2,7 +2,6 @@
 
 import itertools
 from dataclasses import dataclass
-from typing import List
 
 import pages.correlation
 import pages.deviation
@@ -36,8 +35,8 @@ class ChartGroup:
     """Represents a group of charts like "Deviation"."""
 
     name: str
-    pages: List[vm.Page]
-    incomplete_pages: List[IncompletePage]
+    pages: list[vm.Page]
+    incomplete_pages: list[IncompletePage]
     intro_text: str
     icon: str = ""  # ALL_CHART_GROUP is the only one that doesn't require an icon.
 
