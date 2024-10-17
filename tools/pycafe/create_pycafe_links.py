@@ -46,7 +46,6 @@ def generate_link(directory: str, extra_requirements: Optional[list[str]] = None
         f"""{PYCAFE_URL}/gh/artifact/mckinsey/vizro/actions/runs/{RUN_ID}/pip/vizro-{PACKAGE_VERSION}-py3-none-any.whl\n"""
         + extra_requirements_concat
     )
-    print(f"Requirements: {requirements}")
 
     # App file
     app_file_path = os.path.join(directory, "app.py")
@@ -62,16 +61,12 @@ def generate_link(directory: str, extra_requirements: Optional[list[str]] = None
     }
     for root, _, files in os.walk("./" + directory):
         for file in files:
-            # print(root, file)
             if "app.py" in file:
                 continue
             file_path = os.path.join(root, file)
             relative_path = os.path.relpath(file_path, directory)
             file_url = f"{base_url}{relative_path.replace(os.sep, '/')}"
             json_object["files"].append({"name": relative_path, "url": file_url})
-
-    # Final JSON object logging
-    print(f"Final JSON object: {json.dumps(json_object, indent=2)}")
 
     json_text = json.dumps(json_object)
     compressed_json_text = gzip.compress(json_text.encode("utf8"))
@@ -133,8 +128,7 @@ if __name__ == "__main__":
 
         # Create the status on the commit
         commit.create_status(state=state, target_url=url, description=description, context=context)
+        print(f"Status created for {context} with URL: {url}")
 
     # Post the comment with the links
     post_comment(urls)
-
-    print("All done!")
