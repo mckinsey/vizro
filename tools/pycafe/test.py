@@ -6,7 +6,7 @@ from github import Auth, Github
 
 # using an access token
 
-access_token = str(os.getenv("GITHUB_TOKEN"))
+access_token = str(os.getenv("GH_TOKEN"))
 auth = Auth.Token(access_token)
 g = Github(auth=auth)
 
