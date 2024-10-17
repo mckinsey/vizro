@@ -49,10 +49,6 @@ def kpi_card(
         icon: Name of the icon from the [Google Material Icon Library](https://fonts.google.com/icons) to be displayed
             on the left side of the KPI title. If not provided, no icon is displayed.
 
-    Raises:
-        UserWarning: If `value_format` is provided, a warning is raised to make aware that only trusted user
-            input should be provided.
-
     Returns:
          A Dash Bootstrap Components card (`dbc.Card`) containing the formatted KPI value.
 
@@ -122,10 +118,6 @@ def kpi_card_reference(  # noqa: PLR0913
         title: KPI title displayed on top of the card. If not provided, it defaults to the capitalized `value_column`.
         icon: Name of the icon from the [Google Material Icon Library](https://fonts.google.com/icons) to be displayed
             on the left side of the KPI title. If not provided, no icon is displayed.
-
-    Raises:
-        UserWarning: If `value_format` or `reference_format` is provided, a warning is raised to make aware
-            that only trusted user input should be provided.
 
     Returns:
         A Dash Bootstrap Components card (`dbc.Card`) containing the formatted KPI value and reference.
