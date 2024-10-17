@@ -1,8 +1,7 @@
+import os
 import sys
 
 from github import Github
-
-import os
 
 # Authenticate with GitHub
 access_token = os.getenv("GITHUB_TOKEN")
