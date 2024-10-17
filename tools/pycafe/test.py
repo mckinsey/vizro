@@ -7,12 +7,15 @@ from github import Github
 access_token = sys.argv[1]
 g = Github(access_token)
 
+# for repo in g.get_user().get_repos():
+#     print(repo.name)
+
 print(sys.argv)
-repo = sys.argv[1]
-pr = sys.argv[2]
-type = sys.argv[3]
-code = sys.argv[4]
-requirements = sys.argv[5]
+repo = sys.argv[2]
+pr = sys.argv[3]
+# type = sys.argv[3]
+# code = sys.argv[4]
+# requirements = sys.argv[5]
 
 # Get the repository
 repo = g.get_repo(repo)
@@ -20,13 +23,15 @@ repo = g.get_repo(repo)
 # Get the pull request
 pr_number = int(pr)
 pr = repo.get_pull(pr_number)
+print(pr)
 
-base_url = f"https://py.cafe/snippet/{type}/v1"
-url = f"{base_url}#code={quote(code)}&requirements={quote(requirements)}"
+# base_url = f"https://py.cafe/snippet/{type}/v1"
+url = "https://py.cafe/snippet/vizro/v1"#f"{base_url}#code={quote(code)}&requirements={quote(requirements)}"
 
 # # Get the latest commit SHA from the PR
 if 1:
     commit_sha = pr.head.sha
+    print(commit_sha)
 
     # Define the deployment status
     state = "success"  # Options: 'error', 'failure', 'pending', 'success'
