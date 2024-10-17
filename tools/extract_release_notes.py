@@ -1,6 +1,7 @@
 """Extracts latest release notes from CHANGELOG.md and saves to file."""
 
 import sys
+from pathlib import Path
 
 from werkzeug.utils import secure_filename
 
@@ -8,7 +9,7 @@ ARG_NUM = 3
 
 
 def _extract_section(filename, heading):
-    with open(filename, "r") as file:
+    with open(filename) as file:
         lines = file.readlines()
 
     start_line, end_line = None, None
@@ -42,5 +43,4 @@ if __name__ == "__main__":
 
     if not section:
         raise ValueError(f"Section not found under the {HEADING} heading")
-    with open("release_body.txt", "w") as text_file:
-        text_file.write(section)
+    Path("release_body.txt").write_text(section)

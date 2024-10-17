@@ -23,7 +23,7 @@ class ActionLoop:
         """Builds callbacks for the action loop and returns required components for the action loop mechanism to work.
 
         Returns:
-            List of required components for the action loop e.g. List[dcc.Store, html.Div].
+            List of required components for the action loop e.g. list[dcc.Store, html.Div].
 
         """
         _build_action_loop_callbacks()
@@ -34,7 +34,7 @@ class ActionLoop:
         """Builds a callback for each `Action` model and returns required components for these callbacks.
 
         Returns:
-            List of required components for each `Action` in the `Dashboard` e.g. List[dcc.Download]
+            List of required components for each `Action` in the `Dashboard` e.g. list[dcc.Download]
 
         """
         actions = _get_actions_on_registered_pages()

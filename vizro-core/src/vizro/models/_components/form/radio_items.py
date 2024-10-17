@@ -1,4 +1,4 @@
-from typing import List, Literal, Optional
+from typing import Literal, Optional
 
 from dash import html
 
@@ -29,7 +29,7 @@ class RadioItems(VizroBaseModel):
         value (Optional[SingleValueType]): See [`SingleValueType`][vizro.models.types.SingleValueType].
             Defaults to `None`.
         title (str): Title to be displayed. Defaults to `""`.
-        actions (List[Action]): See [`Action`][vizro.models.Action]. Defaults to `[]`.
+        actions (list[Action]): See [`Action`][vizro.models.Action]. Defaults to `[]`.
 
     """
 
@@ -37,7 +37,7 @@ class RadioItems(VizroBaseModel):
     options: OptionsType = []
     value: Optional[SingleValueType] = None
     title: str = Field("", description="Title to be displayed")
-    actions: List[Action] = []
+    actions: list[Action] = []
 
     # Component properties for actions and interactions
     _input_property: str = PrivateAttr("value")

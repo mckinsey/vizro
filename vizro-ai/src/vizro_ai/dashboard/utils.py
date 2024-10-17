@@ -1,7 +1,7 @@
 """Helper Functions For Vizro AI dashboard."""
 
 from dataclasses import dataclass, field
-from typing import Any, Dict, List, Optional, Set, Tuple, Union
+from typing import Any, Optional, Union
 
 import pandas as pd
 import tqdm.std as tsd
@@ -12,7 +12,7 @@ import vizro.models as vm
 class DfMetadata:
     """Dataclass containing metadata content for a dataframe."""
 
-    df_schema: Dict[str, str]
+    df_schema: dict[str, str]
     df: pd.DataFrame
     df_sample: pd.DataFrame
 
@@ -21,9 +21,9 @@ class DfMetadata:
 class AllDfMetadata:
     """Dataclass containing metadata for all dataframes."""
 
-    all_df_metadata: Dict[str, DfMetadata] = field(default_factory=dict)
+    all_df_metadata: dict[str, DfMetadata] = field(default_factory=dict)
 
-    def get_schemas_and_samples(self) -> Dict[str, Dict[str, str]]:
+    def get_schemas_and_samples(self) -> dict[str, dict[str, str]]:
         """Retrieve only the df_schema and df_sample for all datasets."""
         return {
             name: {"df_schema": metadata.df_schema, "df_sample": metadata.df_sample}
@@ -37,7 +37,7 @@ class AllDfMetadata:
         except KeyError:
             raise KeyError("Dataframe not found in metadata. Please ensure that the correct dataframe is provided.")
 
-    def get_df_schema(self, name: str) -> Dict[str, str]:
+    def get_df_schema(self, name: str) -> dict[str, str]:
         """Retrieve the schema of the dataframe by name."""
         return self.all_df_metadata[name].df_schema
 
@@ -74,8 +74,8 @@ def _register_data(all_df_metadata: AllDfMetadata) -> vm.Dashboard:
 
 
 def _extract_overall_imports_and_code(
-    custom_charts_code: List[List[Dict[str, str]]], custom_charts_imports: List[List[Dict[str, str]]]
-) -> Tuple[Set[str], Set[str]]:
+    custom_charts_code: list[list[dict[str, str]]], custom_charts_imports: list[list[dict[str, str]]]
+) -> tuple[set[str], set[str]]:
     """Extract custom functions and imports from the custom charts code.
 
     Args:

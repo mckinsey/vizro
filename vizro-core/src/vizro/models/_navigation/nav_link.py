@@ -49,7 +49,7 @@ class NavLink(VizroBaseModel):
 
     @_log_call
     def build(self, *, active_page_id=None):
-        # _nav_selector is an Accordion, so _nav_selector._pages is guaranteed to be Dict[str, List[str]].
+        # _nav_selector is an Accordion, so _nav_selector._pages is guaranteed to be dict[str, list[str]].
         # `active_page_id` is still required here for the automatic opening of the Accordion when navigating
         # from homepage to a page within the Accordion and there are several Accordions within the page.
         all_page_ids = list(itertools.chain(*self._nav_selector.pages.values()))

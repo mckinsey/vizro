@@ -1,7 +1,7 @@
 """Layout plan model."""
 
 import logging
-from typing import List, Optional
+from typing import Optional
 
 import vizro.models as vm
 
@@ -13,7 +13,7 @@ except ImportError:  # pragma: no cov
 logger = logging.getLogger(__name__)
 
 
-def _convert_to_grid(layout_grid_template_areas: List[str], component_ids: List[str]) -> List[List[int]]:
+def _convert_to_grid(layout_grid_template_areas: list[str], component_ids: list[str]) -> list[list[int]]:
     component_map = {component: index for index, component in enumerate(component_ids)}
     grid = []
 
@@ -42,7 +42,7 @@ Returning default values.
 class LayoutPlan(BaseModel):
     """Layout plan model, which only applies to Vizro Components(Graph, AgGrid, Card)."""
 
-    layout_grid_template_areas: List[str] = Field(
+    layout_grid_template_areas: list[str] = Field(
         [],
         description="""
         Generate grid template areas for the layout adhering to the grid-template-areas CSS property syntax.
@@ -56,7 +56,7 @@ class LayoutPlan(BaseModel):
         """,
     )
 
-    def create(self, component_ids: List[str]) -> Optional[vm.Layout]:
+    def create(self, component_ids: list[str]) -> Optional[vm.Layout]:
         """Create the layout."""
         if not self.layout_grid_template_areas:
             return None

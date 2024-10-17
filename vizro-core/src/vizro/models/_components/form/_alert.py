@@ -1,4 +1,4 @@
-from typing import List, Literal, Optional
+from typing import Literal, Optional
 
 import dash_bootstrap_components as dbc
 from dash import html
@@ -20,7 +20,7 @@ class Alert(VizroBaseModel):
         text (str): Text to be displayed in the alert.
         is_open (bool): Flag indicating whether alert should be open by default. Defaults to `True`.
         duration (Optional[int]): Duration in milliseconds for the alert to appear. Defaults to `None`.
-        actions (List[Action]): See [`Action`][vizro.models.Action]. Defaults to `[]`.
+        actions (list[Action]): See [`Action`][vizro.models.Action]. Defaults to `[]`.
 
     """
 
@@ -28,7 +28,7 @@ class Alert(VizroBaseModel):
     text: str = Field(..., description="Text to be displayed in the alert.")
     is_open: bool = Field(True, description="Flag indicating whether alert should be open by default.")
     duration: Optional[int] = Field(None, description="Duration in milliseconds for the alert to appear.", ge=0)
-    actions: List[Action] = []
+    actions: list[Action] = []
 
     @_log_call
     def build(self):

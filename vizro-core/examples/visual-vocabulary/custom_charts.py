@@ -1,7 +1,5 @@
 """Contains custom charts used inside the dashboard."""
 
-from typing import List
-
 import pandas as pd
 import vizro.plotly.express as px
 from plotly import graph_objects as go
@@ -51,7 +49,7 @@ def butterfly(data_frame: pd.DataFrame, x1: str, x2: str, y: str) -> go.Figure:
 
 
 @capture("graph")
-def sankey(data_frame: pd.DataFrame, source: str, target: str, value: str, labels: List[str]) -> go.Figure:
+def sankey(data_frame: pd.DataFrame, source: str, target: str, value: str, labels: list[str]) -> go.Figure:
     """Creates a custom sankey chart using Plotly's `go.Sankey`.
 
     A Sankey chart is a type of flow diagram where the width of the arrows is proportional to the flow rate.
@@ -62,7 +60,7 @@ def sankey(data_frame: pd.DataFrame, source: str, target: str, value: str, label
         source (str): The name of the column in the data frame for the source nodes.
         target (str): The name of the column in the data frame for the target nodes.
         value (str): The name of the column in the data frame for the values representing the flow between nodes.
-        labels (List[str]): A list of labels for the nodes.
+        labels (list[str]): A list of labels for the nodes.
 
     Returns:
         go.Figure: A Plotly Figure object representing the Sankey chart.
@@ -145,7 +143,7 @@ def categorical_column(data_frame: pd.DataFrame, x: str, y: str):
 
 
 @capture("graph")
-def waterfall(data_frame: pd.DataFrame, x: str, y: str, measure: List[str]) -> go.Figure:
+def waterfall(data_frame: pd.DataFrame, x: str, y: str, measure: list[str]) -> go.Figure:
     """Creates a waterfall chart using Plotly's `go.Waterfall`.
 
     A Waterfall chart visually breaks down the cumulative effect of sequential positive and negative values,
@@ -155,7 +153,7 @@ def waterfall(data_frame: pd.DataFrame, x: str, y: str, measure: List[str]) -> g
         data_frame (pd.DataFrame): The data source for the chart.
         x (str): Column name in `data_frame` for x-axis values.
         y (str): Column name in `data_frame` for y-axis values.
-        measure (List[str]): List specifying the type of each bar, can be "relative", "total", or "absolute".
+        measure (list[str]): List specifying the type of each bar, can be "relative", "total", or "absolute".
 
     Returns:
         go.Figure: A Plotly Figure object representing the Waterfall chart.
