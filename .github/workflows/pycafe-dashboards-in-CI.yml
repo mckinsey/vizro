@@ -39,23 +39,6 @@ jobs:
           path: vizro-core/dist/*.whl
           retention-days: 5
 
-      # - name: Fetch latest commit from target branch
-      #   run: |
-      #     # git fetch origin ${{ github.ref_name }}
-      #     latest_commit=${{ github.sha }}
-      #     echo "COMMIT_HASH=$latest_commit" >> $GITHUB_ENV
-      #     run_id=${{ github.run_id }}
-      #     echo "RUN_ID=$run_id" >> $GITHUB_ENV
-
-      # - name: Display latest commit
-      #   run: |
-      #     echo "Latest commit on target branch: ${{ env.COMMIT_HASH }}"
-      #     echo "Latest run id: ${{ env.RUN_ID }}"
-
-      # - name: Run Py.Cafe tool
-      #   run: |
-      #     python tools/pycafe/create_py_cafe_url.py
-
       - name: Run Github Tool
         env:
           GITHUB_TOKEN: ${{ github.token }}

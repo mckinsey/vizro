@@ -82,9 +82,9 @@ def post_comment(urls: list[tuple[str, str]]):
     # Find existing comments by the bot
     comments = pr.get_issue_comments()
     bot_comment = None
-
+    print(comments)
     for comment in comments:
-        if comment.body.startswith("iew the dashboard live on PyCafe:"):
+        if comment.body.startswith("View the dashboard live on PyCafe:"):
             bot_comment = comment
             break
 
@@ -93,10 +93,15 @@ def post_comment(urls: list[tuple[str, str]]):
 
     # Define the comment body with datetime
     # comment_body = f"Test Environment for [{REPO_NAME}-{PR_NUMBER}]({link})\nUpdated on: {current_utc_time}"
-    comment_body = "\n\n".join(
-        f"View the dashboard live on PyCafe: [{directory}]({url})\n\nUpdated on: {current_utc_time}"
-        for url, directory in urls
-    )
+    dashboards = "\n\n".join(f"View the dashboard live on PyCafe: [{directory}]({url})" for url, directory in urls)
+
+    comment_body = f"""View the example dashboards of the current commit live on PyCafe:
+Updated on: {current_utc_time}
+
+Commit: {commit_sha}
+
+{dashboards}
+"""
 
     # Update the existing comment or create a new one
     if bot_comment:
