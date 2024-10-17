@@ -30,7 +30,6 @@ iris = px.data.iris()
 stocks = px.data.stocks()
 tips = px.data.tips()
 wind = px.data.wind()
-
 ages = pd.DataFrame(
     {
         "Age": ["0-19", "20-29", "30-39", "40-49", "50-59", ">=60"],
@@ -76,7 +75,6 @@ waterfall_data = pd.DataFrame(
     }
 )
 
-
 pastries = pd.DataFrame(
     {
         "pastry": [
@@ -94,9 +92,12 @@ pastries = pd.DataFrame(
             "Pies",
         ],
         "Profit Ratio": [-0.10, -0.15, -0.05, 0.10, 0.05, 0.20, 0.15, -0.08, 0.08, -0.12, 0.02, -0.07],
+        "Strongly Disagree": [20, 30, 10, 5, 15, 5, 10, 25, 8, 20, 5, 10],
+        "Disagree": [30, 25, 20, 10, 20, 10, 15, 30, 12, 30, 10, 15],
+        "Agree": [30, 25, 40, 40, 45, 40, 40, 25, 40, 30, 45, 35],
+        "Strongly Agree": [20, 20, 30, 45, 20, 45, 35, 20, 40, 20, 40, 40],
     }
 )
-
 
 salaries = pd.DataFrame(
     {
