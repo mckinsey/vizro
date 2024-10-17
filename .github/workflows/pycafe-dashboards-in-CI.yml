@@ -39,59 +39,31 @@ jobs:
           path: vizro-core/dist/*.whl
           retention-days: 5
 
-      - name: Fetch latest commit from target branch
-        run: |
-          # git fetch origin ${{ github.ref_name }}
-          latest_commit=${{ github.sha }}
-          echo "COMMIT_HASH=$latest_commit" >> $GITHUB_ENV
-          run_id=${{ github.run_id }}
-          echo "RUN_ID=$run_id" >> $GITHUB_ENV
+      # - name: Fetch latest commit from target branch
+      #   run: |
+      #     # git fetch origin ${{ github.ref_name }}
+      #     latest_commit=${{ github.sha }}
+      #     echo "COMMIT_HASH=$latest_commit" >> $GITHUB_ENV
+      #     run_id=${{ github.run_id }}
+      #     echo "RUN_ID=$run_id" >> $GITHUB_ENV
 
-      - name: Display latest commit
-        run: |
-          echo "Latest commit on target branch: ${{ env.COMMIT_HASH }}"
-          echo "Latest run id: ${{ env.RUN_ID }}"
+      # - name: Display latest commit
+      #   run: |
+      #     echo "Latest commit on target branch: ${{ env.COMMIT_HASH }}"
+      #     echo "Latest run id: ${{ env.RUN_ID }}"
 
-      - name: Run Py.Cafe tool
-        run: |
-          python tools/pycafe/create_py_cafe_url.py
+      # - name: Run Py.Cafe tool
+      #   run: |
+      #     python tools/pycafe/create_py_cafe_url.py
 
       - name: Run Github Tool
         env:
-          GH_TOKEN: ${{ github.token }}
+          GITHUB_TOKEN: ${{ github.token }}
+          RUN_ID: ${{ github.run_id }}
+          GITHUB_REPOSITORY: ${{ github.repository }}
+          PR_NUMBER: ${{ github.event.inputs.pr_number }}      
+          GITHUB_OWNER: mckinsey
+          
         run: |
           cd vizro-core
-          hatch run python ../tools/pycafe/test.py mckinsey/vizro 766
-
-      - name: Create Check Run
-        env:
-          GH_TOKEN: ${{ github.token }}
-        run: |
-          curl -L -X POST \
-            -H "Accept: application/vnd.github+json" \
-            -H "Authorization: Bearer $GH_TOKEN"\
-            -H "X-GitHub-Api-Version: 2022-11-28" \
-            https://api.github.com/repos/${{ github.repository }}/check-runs \
-            -d '{"name":"Scratch Example", "head_sha":"${{ github.event.pull_request.head.sha }}", "status":"in_progress","details_url":"https://github.com/mckinsey/vizro","output":{"title":"Dev example to try out things","summary":"","text":""}}'
-
-  # check why details url not working, check why it runs under secret scans
-  # test_something:
-  #   runs-on: ubuntu-latest
-  #   permissions:
-  #     checks: write
-  #     contents: read
-  #   steps:
-  #     - uses: actions/checkout@v1
-  #     - uses: setup-build
-  #       id: test
-  #     - uses: LouisBrunner/checks-action@v2.0.0
-  #       if: always()
-  #       with:
-  #         token: ${{ secrets.GITHUB_TOKEN }}
-  #         name: Test XYZ
-  #         conclusion: ${{ job.status }}
-  #         output: |
-  #           {"summary":"${{ steps.test.outputs.summary }}"}
-
-# why not build wheel now?
-# see why not direct again?
+          hatch run python ../tools/pycafe/test.py vizro-core/examples/scratch_dev/

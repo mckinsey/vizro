@@ -1,40 +1,73 @@
 import os
 import sys
-
-# Authenticate with GitHub
 from github import Auth, Github
+import subprocess
+from pathlib import Path
+import textwrap
+import base64
+import gzip
+import json
+from urllib.parse import quote, urlencode
 
-# using an access token
 
-access_token = str(os.getenv("GH_TOKEN"))
-auth = Auth.Token(access_token)
+GITHUB_TOKEN = str(os.getenv('GITHUB_TOKEN'))
+REPO_NAME = str(os.getenv('GITHUB_REPOSITORY'))
+PR_NUMBER = int(os.getenv('PR_NUMBER'))
+
+# COMMIT_HASH = str(os.getenv("COMMIT_HASH"))
+RUN_ID = str(os.getenv("RUN_ID"))
+PACKAGE_VERSION = subprocess.check_output(["hatch", "version"], cwd="vizro-core").decode("utf-8").strip()
+PYCAFE_URL = "https://py.cafe"
+
+DIRECTORY = sys.argv[1]
+
+# Access
+auth = Auth.Token(GITHUB_TOKEN)
 g = Github(auth=auth)
 
-# for repo in g.get_user().get_repos():
-#     print(repo.name)
+# Get PR and commits
+repo = g.get_repo(REPO_NAME)
+pr = repo.get_pull(PR_NUMBER)
+COMMIT_SHA = pr.head.sha
 
-print(sys.argv)
-repo = sys.argv[1]
-pr = sys.argv[2]
-# type = sys.argv[3]
-# code = sys.argv[4]
-# requirements = sys.argv[5]
 
-# Get the repository
-repo = g.get_repo(repo)
 
-# Get the pull request
-pr_number = int(pr)
-pr = repo.get_pull(pr_number)
-print(pr)
+def generate_link(directory):
+    base_url = f"https://raw.githubusercontent.com/mckinsey/vizro/{COMMIT_SHA}/{DIRECTORY}"
+
+    app_file_path = os.path.join(directory, "app.py")
+    app_content = Path(app_file_path).read_text()
+    app_content_split = app_content.split('if __name__ == "__main__":')
+    app_content = app_content_split[0] + textwrap.dedent(app_content_split[1])
+
+    json_object = {
+        "code": str(app_content),
+        "requirements": f"{PYCAFE_URL}/gh/artifact/mckinsey/vizro/actions/runs/{RUN_ID}/pip/vizro-{PACKAGE_VERSION}-py3-none-any.whl",
+        "files": [],
+    }
+    for root, _, files in os.walk("./" + directory):
+        for file in files:
+            # print(root, file)
+            if "yaml" in root or "app.py" in file:
+                continue
+            file_path = os.path.join(root, file)
+            relative_path = os.path.relpath(file_path, directory)
+            file_url = f"{base_url}{relative_path.replace(os.sep, '/')}"
+            json_object["files"].append({"name": relative_path, "url": file_url})
+
+    # Final JSON object logging
+    print(f"Final JSON object: {json.dumps(json_object, indent=2)}")
+
+    json_text = json.dumps(json_object)
+    compressed_json_text = gzip.compress(json_text.encode("utf8"))
+    base64_text = base64.b64encode(compressed_json_text).decode("utf8")
+    query = urlencode({"c": base64_text}, quote_via=quote)
+    return f"{PYCAFE_URL}/snippet/vizro/v1?{query}"
+
 
 # base_url = f"https://py.cafe/snippet/{type}/v1"
 url = "https://py.cafe/snippet/vizro/v1"  # f"{base_url}#code={quote(code)}&requirements={quote(requirements)}"
 
-# # Get the latest commit SHA from the PR
-# if 1:
-commit_sha = pr.head.sha
-print(commit_sha)
 
 pr.create_issue_comment("Foo bar")
 
@@ -44,6 +77,6 @@ description = "Test out this PR on a PyCafe environment"
 context = "PyCafe"
 
 # Create the status on the commit
-commit = repo.get_commit(commit_sha)
+commit = repo.get_commit(COMMIT_SHA)
 commit.create_status(state=state, target_url=url, description=description, context=context)
-print(f"Deployment status added to commit {commit_sha}")
+print(f"Deployment status added to commit {COMMIT_SHA}")
