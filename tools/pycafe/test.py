@@ -7,6 +7,8 @@ import sys
 import textwrap
 from pathlib import Path
 from urllib.parse import quote, urlencode
+import datetime
+from typing import Optional
 
 from github import Auth, Github
 
@@ -30,23 +32,37 @@ commit_sha = pr.head.sha
 commit = repo.get_commit(commit_sha)
 
 
-def generate_link(directory):
+def generate_link(directory: str, extra_requirements: Optional[list[str]] = None):
     base_url = f"https://raw.githubusercontent.com/mckinsey/vizro/{commit_sha}/vizro-core/{directory}"
 
+    # Requirements
+    if extra_requirements:
+        extra_requirements: str = "\n".join(extra_requirements)
+    else:
+        extra_requirements = ""
+    requirements = (
+        f"""{PYCAFE_URL}/gh/artifact/mckinsey/vizro/
+actions/runs/{RUN_ID}/pip/vizro-{PACKAGE_VERSION}-py3-none-any.whl"""
+        + extra_requirements
+    )
+    print(f"Requirements: {requirements}")
+
+    # App file
     app_file_path = os.path.join(directory, "app.py")
     app_content = Path(app_file_path).read_text()
     app_content_split = app_content.split('if __name__ == "__main__":')
     app_content = app_content_split[0] + textwrap.dedent(app_content_split[1])
 
+    # JSON object
     json_object = {
         "code": str(app_content),
-        "requirements": f"{PYCAFE_URL}/gh/artifact/mckinsey/vizro/actions/runs/{RUN_ID}/pip/vizro-{PACKAGE_VERSION}-py3-none-any.whl",
+        "requirements": requirements,
         "files": [],
     }
     for root, _, files in os.walk("./" + directory):
         for file in files:
             # print(root, file)
-            if "yaml" in root or "app.py" in file:
+            if "app.py" in file:
                 continue
             file_path = os.path.join(root, file)
             relative_path = os.path.relpath(file_path, directory)
@@ -63,9 +79,37 @@ def generate_link(directory):
     return f"{PYCAFE_URL}/snippet/vizro/v1?{query}"
 
 
-urls = [(generate_link(directory=directory),directory) for directory in sys.argv[1:]]
+def post_comment(link):
+    # Find existing comments by the bot
+    comments = pr.get_issue_comments()
+    bot_comment = None
 
-for url, directory in urls:
+    for comment in comments:
+        if comment.body.startswith("Test Environment for ["):
+            bot_comment = comment
+            break
+
+    # Get current UTC datetime
+    current_utc_time = datetime.utcnow().strftime("%Y-%m-%d %H:%M:%S UTC")
+
+    # Define the comment body with datetime
+    comment_body = f"Test Environment for [{REPO_NAME}-{PR_NUMBER}]({link})\nUpdated on: {current_utc_time}"
+
+    # Update the existing comment or create a new one
+    if bot_comment:
+        bot_comment.edit(comment_body)
+        print("Comment updated on the pull request.")
+    else:
+        pr.create_issue_comment(comment_body)
+        print("Comment added to the pull request.")
+
+
+for directory in sys.argv[1:]:
+    if directory == "examples/dev/":
+        url = generate_link(directory=directory, extra_requirements=["openpyxl"])
+    else:
+        url = generate_link(directory=directory)
+
     # print(f"Generating PyCafe URL for directory: {directory}")
     # url = generate_link(directory=directory)
     # pr.create_issue_comment("Foo bar")
