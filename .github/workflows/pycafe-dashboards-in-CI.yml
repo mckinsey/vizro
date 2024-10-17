@@ -59,7 +59,7 @@ jobs:
 
       - name: Run Github Tool
         run: |
-          python tools/pycafe/test.py $GH_TOKEN ${{ env.COMMIT_HASH }} ${{ env.RUN_ID }}
+          hatch run python tools/pycafe/test.py $GH_TOKEN ${{ env.COMMIT_HASH }} ${{ env.RUN_ID }}
 
       - name: Create Check Run
         env:
