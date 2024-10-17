@@ -51,12 +51,12 @@ nav:
       - Figure functions: pages/API-reference/figure-callables.md
   - Explanation:
       - FAQs: pages/explanation/faq.md
+      - User examples: pages/explanation/your-examples.md
       - Contribute to Vizro: pages/explanation/contributing.md
       - Documentation style: pages/explanation/documentation-style-guide.md
       - Authors: pages/explanation/authors.md
   - Examples:
-      - Example dashboard code: pages/examples/examples.md
-      - Examples from Vizro users: pages/examples/your-examples.md
+      - Vizro gallery: https://vizro.mckinsey.com/
   - Vizro-AI:
       - Vizro-AI: https://vizro.readthedocs.io/projects/vizro-ai/
 

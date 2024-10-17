@@ -34,8 +34,18 @@ We do not consider frontend changes (such as changing the appearance of a compon
 
 ## Where can I find example dashboards?
 
-Check out our [examples section](../examples/examples.md) which describes the contents of the `examples` folder of the [Vizro GitHub repository](https://github.com/mckinsey/vizro/tree/main/vizro-core/examples).
+For a gallery of examples of Vizro in action, take a look at [vizro.mckinsey.com](https://vizro.mckinsey.com).
 
+Within Vizro's GitHub repository, the [`examples/dev` folder](https://github.com/mckinsey/vizro/tree/main/vizro-core/examples/dev) of `vizro-core` contains example code using the pydantic model. If you have any problems running the example code, please [raise an issue](https://github.com/mckinsey/vizro/issues) on the Vizro repository.
+
+!!! note
+
+    The pydantic model should be your preferred method of dashboard configuration, but you can also [define a dashboard with YAML, JSON, or as a Python dictionary](../user-guides/dashboard.md). To guide you, the `examples/dev` folder also contains an alternative `yaml_version` of the gapminder example, which offers the same example as the pydantic model but via YAML configuration. 
+    
+### Examples from Vizro users
+
+We maintain a separate, curated page of [videos, blog posts, and examples of Vizro usage from our community](your-examples.md).    
+    
 ## Why should I use Vizro?
 
 Vizro is a high-level framework built on top of Dash and Pydantic,
