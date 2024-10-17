@@ -29,16 +29,18 @@ print(pr)
 url = "https://py.cafe/snippet/vizro/v1"  # f"{base_url}#code={quote(code)}&requirements={quote(requirements)}"
 
 # # Get the latest commit SHA from the PR
-if 1:
-    commit_sha = pr.head.sha
-    print(commit_sha)
+# if 1:
+commit_sha = pr.head.sha
+print(commit_sha)
 
-    # Define the deployment status
-    state = "success"  # Options: 'error', 'failure', 'pending', 'success'
-    description = "Test out this PR on a PyCafe environment"
-    context = "PyCafe"
+pr.create_issue_comment("Foo bar")
 
-    # Create the status on the commit
-    commit = repo.get_commit(commit_sha)
-    commit.create_status(state=state)#, target_url=url, description=description, context=context)
-    print(f"Deployment status added to commit {commit_sha}")
+# # Define the deployment status
+# state = "success"  # Options: 'error', 'failure', 'pending', 'success'
+# description = "Test out this PR on a PyCafe environment"
+# context = "PyCafe"
+
+# # Create the status on the commit
+# commit = repo.get_commit(commit_sha)
+# commit.create_status(state=state)#, target_url=url, description=description, context=context)
+# print(f"Deployment status added to commit {commit_sha}")
