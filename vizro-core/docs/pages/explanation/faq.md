@@ -40,12 +40,12 @@ Within Vizro's GitHub repository, the [`examples/dev` folder](https://github.com
 
 !!! note
 
-    The pydantic model should be your preferred method of dashboard configuration, but you can also [define a dashboard with YAML, JSON, or as a Python dictionary](../user-guides/dashboard.md). To guide you, the `examples/dev` folder also contains an alternative `yaml_version` of the gapminder example, which offers the same example as the pydantic model but via YAML configuration. 
-    
+    The pydantic model should be your preferred method of dashboard configuration, but you can also [define a dashboard with YAML, JSON, or as a Python dictionary](../user-guides/dashboard.md). To guide you, the `examples/dev` folder also contains an alternative `yaml_version` of the gapminder example, which offers the same example as the pydantic model but via YAML configuration.
+
 ### Examples from Vizro users
 
-We maintain a separate, curated page of [videos, blog posts, and examples of Vizro usage from our community](your-examples.md).    
-    
+We maintain a separate, curated page of [videos, blog posts, and examples of Vizro usage from our community](your-examples.md).
+
 ## Why should I use Vizro?
 
 Vizro is a high-level framework built on top of Dash and Pydantic,
