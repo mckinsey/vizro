@@ -78,13 +78,13 @@ def generate_link(directory: str, extra_requirements: Optional[list[str]] = None
     return f"{PYCAFE_URL}/snippet/vizro/v1?{query}"
 
 
-def post_comment(link):
+def post_comment(urls: list[tuple[str, str]]):
     # Find existing comments by the bot
     comments = pr.get_issue_comments()
     bot_comment = None
 
     for comment in comments:
-        if comment.body.startswith("Test Environment for ["):
+        if comment.body.startswith("iew the dashboard live on PyCafe:"):
             bot_comment = comment
             break
 
@@ -92,7 +92,11 @@ def post_comment(link):
     current_utc_time = datetime.datetime.utcnow().strftime("%Y-%m-%d %H:%M:%S UTC")
 
     # Define the comment body with datetime
-    comment_body = f"Test Environment for [{REPO_NAME}-{PR_NUMBER}]({link})\nUpdated on: {current_utc_time}"
+    # comment_body = f"Test Environment for [{REPO_NAME}-{PR_NUMBER}]({link})\nUpdated on: {current_utc_time}"
+    comment_body = "\n".join(
+        f"View the dashboard live on PyCafe: [{directory}]({url})\n\nUpdated on: {current_utc_time}"
+        for url, directory in urls
+    )
 
     # Update the existing comment or create a new one
     if bot_comment:
@@ -103,15 +107,13 @@ def post_comment(link):
         print("Comment added to the pull request.")
 
 
+urls = []
 for directory in sys.argv[1:]:
     if directory == "examples/dev/":
         url = generate_link(directory=directory, extra_requirements=["openpyxl"])
     else:
         url = generate_link(directory=directory)
-
-    # print(f"Generating PyCafe URL for directory: {directory}")
-    # url = generate_link(directory=directory)
-    # pr.create_issue_comment("Foo bar")
+    urls.append((url, directory))
 
     # Define the deployment status
     state = "success"  # Options: 'error', 'failure', 'pending', 'success'
@@ -120,4 +122,6 @@ for directory in sys.argv[1:]:
 
     # Create the status on the commit
     commit.create_status(state=state, target_url=url, description=description, context=context)
-    # print(f"Deployment status added to commit {COMMIT_SHA}")
+
+post_comment(urls)
+print("All done!")
