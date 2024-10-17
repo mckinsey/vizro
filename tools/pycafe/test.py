@@ -16,7 +16,7 @@ PR_NUMBER = int(os.getenv("PR_NUMBER"))
 
 # COMMIT_HASH = str(os.getenv("COMMIT_HASH"))
 RUN_ID = str(os.getenv("RUN_ID"))
-PACKAGE_VERSION = subprocess.check_output(["hatch", "version"], cwd="vizro-core").decode("utf-8").strip()
+PACKAGE_VERSION = subprocess.check_output(["hatch", "version"]).decode("utf-8").strip()
 PYCAFE_URL = "https://py.cafe"
 
 DIRECTORY = sys.argv[1]
