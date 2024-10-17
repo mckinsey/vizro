@@ -1,11 +1,8 @@
 import os
 import sys
 
-from github import Github
-
 # Authenticate with GitHub
-
-from github import Auth
+from github import Auth, Github
 
 # using an access token
 
