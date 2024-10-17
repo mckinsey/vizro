@@ -24,18 +24,18 @@ jobs:
           python -m pip install --upgrade pip
           pip install -r tools/tools_requirements.txt
           pip install hatch
-      - name: "Build vizro core package"
+      - name: "Build vizro-core package"
         run: |
           cd vizro-core
           hatch build
-      - name: "Upload Artifact"
+      - name: "Upload artifact"
         uses: actions/upload-artifact@v4
         with:
           name: pip
           path: vizro-core/dist/*.whl
           retention-days: 14
 
-      - name: Run Github Tool
+      - name: "Create PyCafe links"
         env:
           GITHUB_TOKEN: ${{ github.token }}
           RUN_ID: ${{ github.run_id }}
