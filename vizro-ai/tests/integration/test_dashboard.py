@@ -3,6 +3,7 @@
 import csv
 import os
 from datetime import datetime
+from typing import Dict, List
 
 import chromedriver_autoinstaller
 import pytest
@@ -17,7 +18,6 @@ df1 = px.data.gapminder()
 df2 = px.data.stocks()
 
 
-@pytest.mark.easy_dashboard
 @pytest.fixture(scope="module", autouse=True)
 def setup_test_environment():
     # We only need to install chromedriver outside CI.
@@ -25,15 +25,163 @@ def setup_test_environment():
         chromedriver_autoinstaller.install()
 
 
+def logic(  # noqa: PLR0912, PLR0913, PLR0915
+    dashboard,
+    model_name,
+    prompt_tier,
+    pages: Dict[str, int],
+    components: List[Dict[str, int]],
+    controls: List[Dict[str, int]],
+    components_types: List[Dict[str, int]],
+    controls_types: List[Dict[str, int]],
+):
+    report_dir = "tests/integration/reports"
+    os.makedirs(report_dir, exist_ok=True)
+
+    try:
+        vizro_type = os.environ["VIZRO_TYPE"]
+        branch = os.environ["BRANCH"]
+        python_version = os.environ["PYTHON_VERSION"]
+    except KeyError:
+        vizro_type = "local_env"
+        branch = "local"
+        python_version = "local"
+
+    pages_exist = [1 if dashboard.pages else 0]
+    pages_exist_report = bool(pages_exist[0])
+    pages_num = [1 if len(dashboard.pages) == pages["num"] else 0]
+    pages_num_report = [f'{pages["num"]} page(s) for dashboard is {bool(components)}']
+
+    components_num = []
+    components_num_report = []
+    if components:
+        for component in components:
+            try:
+                components = [
+                    1 if len(dashboard.pages[component["page_num"] - 1].components) == component["num"] else 0
+                ][0]
+            except IndexError:
+                components = 0
+            components_num.append(components)
+            components_num_report.append(
+                f'{component["num"]} component(s) for page {component["page_num"]} is {bool(components)}'
+            )
+
+    controls_num = []
+    controls_num_report = []
+    if controls:
+        for control in controls:
+            try:
+                controls = [1 if len(dashboard.pages[control["page_num"] - 1].controls) == control["num"] else 0][0]
+            except IndexError:
+                controls = 0
+            controls_num.append(controls)
+            controls_num_report.append(
+                f'{control["num"]} control(s) for page {control["page_num"]} is {bool(controls)}'
+            )
+
+    components_types_names = []
+    components_types_names_report = []
+    if components_types:
+        for components_type in components_types:
+            try:
+                comps = [components.type for components in dashboard.pages[components_type["page_num"] - 1].components]
+                components_types = [1 if comps.count(components_type["type"]) == components_type["num"] else 0][0]
+            except IndexError:
+                components_types = 0
+            components_types_names.append(components_types)
+            components_types_names_report.append(
+                f'{components_type["num"]} components_type(s) {components_type["type"]} '
+                f'for page {components_type["page_num"]} is {bool(controls)}'
+            )
+
+    controls_types_names = []
+    controls_types_names_report = []
+    if controls_types:
+        for controls_type in controls_types:
+            try:
+                cntrls = [controls.type for controls in dashboard.pages[controls_type["page_num"] - 1].controls]
+                controls_types = [1 if cntrls.count(controls_type["type"]) == controls_type["num"] else 0][0]
+            except IndexError:
+                controls_types = 0
+            controls_types_names.append(controls_types)
+            controls_types_names_report.append(
+                f'{controls_type["num"]} controls_type(s) {controls_type["type"]} '
+                f'for page {controls_type["page_num"]} is {bool(controls)}'
+            )
+
+    prescore = []
+    pages_exist.extend(pages_num)
+    prescore.extend(pages_exist)
+    prescore.extend(components_num)
+    prescore.extend(controls_num)
+    prescore.extend(components_types_names)
+    prescore.extend(controls_types_names)
+    score = sum(prescore)
+
+    pages_score = sum(pages_exist) / len(pages_exist)
+    components_score = sum(components_num) / len(components_num)
+    component_types_score = sum(components_types_names) / len(components_types_names)
+    controls_score = sum(controls_num) / len(controls_num)
+    controls_types_score = sum(controls_types_names) / len(controls_types_names)
+    total = [pages_score, components_score, component_types_score, controls_score, controls_types_score]
+    total_score = sum(total) / len(total)
+
+    with open(f"{report_dir}/report_model_{model_name}_{vizro_type}.csv", "a", newline="") as csvfile:
+        writer = csv.writer(csvfile, delimiter=",")
+        writer.writerow(
+            [
+                "timestamp",
+                "vizro_type",
+                "branch",
+                "python_version",
+                "model",
+                "prompt_tier",
+                "total_score",
+                "pages_score",
+                "components_score",
+                "component_types_score",
+                "controls_score",
+                "controls_types_score",
+            ]
+        )
+        writer.writerow(
+            [
+                datetime.now(),
+                vizro_type,
+                branch,
+                python_version,
+                model_name,
+                prompt_tier,
+                total_score,
+                pages_score,
+                components_score,
+                component_types_score,
+                controls_score,
+                controls_types_score,
+            ]
+        )
+
+    # for cmd output
+    print(f"Pages exists: {pages_exist_report}")  # noqa: T201
+    print(f"Correct pages number: {pages_num_report}")  # noqa: T201
+    print(f"Components: {components_num_report}")  # noqa: T201
+    print(f"Correct controls number: {controls_num_report}")  # noqa: T201
+    print(f"Correct components types: {components_types_names_report}")  # noqa: T201
+    print(f"Correct controls types: {controls_types_names_report}")  # noqa: T201
+    print(f"Total, {(score / len(prescore)):.4f}")  # noqa: T201
+
+
+@pytest.mark.easy_dashboard
 @pytest.mark.parametrize(
     "model_name",
-    ["gpt-3.5-turbo"],
-    ids=["gpt-3.5"],
+    ["gpt-4o-mini"],
+    ids=["gpt-4o-mini"],
 )
 @pytest.mark.filterwarnings("ignore::langchain_core._api.beta_decorator.LangChainBetaWarning")
 @pytest.mark.filterwarnings("ignore::UserWarning")
 @pytest.mark.filterwarnings("ignore:HTTPResponse.getheader()")
-def test_simple_dashboard(dash_duo, model_name):  # noqa: PLR0915
+def test_simple_dashboard(dash_duo, model_name):
     input_text = """
     I need a page with 1 table.
     The table shows the tech companies stock data.
@@ -55,97 +203,23 @@ def test_simple_dashboard(dash_duo, model_name):  # noqa: PLR0915
     Add a filter to filter the scatter plot by continent.
     Add a second filter to filter the chart by year.
     """
-    report_dir = "tests/integration/reports"
-    os.makedirs(report_dir, exist_ok=True)
-
-    try:
-        vizro_type = os.environ["VIZRO_TYPE"]
-    except KeyError:
-        vizro_type = "local_env"
 
     dashboard = vizro_ai.dashboard([df1, df2], input_text)
     app = Vizro().build(dashboard).dash
     dash_duo.start_server(app)
     assert dash_duo.get_logs() == []
 
-    pages = [1 if dashboard.pages else 0][0]
-    pages_num = [1 if len(dashboard.pages) == 2 else 0][0]
-
-    try:
-        grid_1 = [1 if dashboard.pages[0].layout.grid[0] == [0] else 0][0]
-    except IndexError:
-        grid_1 = 0
-    try:
-        grid_2 = [1 if dashboard.pages[1].layout.grid[0] == [0, 1, 1] else 0][0]
-    except IndexError:
-        grid_2 = 0
-
-    try:
-        components_num_1 = [1 if len(dashboard.pages[0].components) == 1 else 0][0]
-    except IndexError:
-        components_num_1 = 0
-    try:
-        components_num_2 = [1 if len(dashboard.pages[1].components) == 3 else 0][0]
-    except IndexError:
-        components_num_2 = 0
-
-    try:
-        controls_num_1 = [1 if len(dashboard.pages[0].controls) == 0 else 0][0]
-    except IndexError:
-        controls_num_1 = 0
-    try:
-        controls_num_2 = [1 if len(dashboard.pages[1].controls) == 2 else 0][0]
-    except IndexError:
-        controls_num_2 = 0
-
-    try:
-        comps_1 = [components.type for components in dashboard.pages[0].components]
-        components_types_1 = [1 if comps_1.count("ag_grid") == 1 else 0][0]
-    except IndexError:
-        components_types_1 = 0
-    try:
-        comps_2 = [components.type for components in dashboard.pages[1].components]
-        components_types_2 = [1 if comps_2.count("card") == 2 and comps_2.count("graph") == 1 else 0][0]
-    except IndexError:
-        components_types_2 = 0
-
-    try:
-        cntrls_2 = [controls.type for controls in dashboard.pages[1].controls]
-        controls_types_2 = [1 if cntrls_2.count("filter") == 2 else 0][0]
-    except IndexError:
-        controls_types_2 = 0
-
-    prescore = [
-        pages,
-        pages_num,
-        grid_1,
-        grid_2,
-        components_num_1,
-        components_num_2,
-        controls_num_1,
-        controls_num_2,
-        components_types_1,
-        components_types_2,
-        controls_types_2,
-    ]
-    score = sum(prescore)
-
-    with open(f"{report_dir}/report_model_{model_name}.csv", "a", newline="") as csvfile:
-        writer = csv.writer(csvfile, delimiter=",")
-        writer.writerow([f"Vizro type = {vizro_type}, Datetime = {datetime.now()}"])
-        writer.writerow([])
-        writer.writerow(["Description, Score"])
-        writer.writerow([f"Pages exists, {pages}"])
-        writer.writerow([f"Correct pages number, {pages_num}"])
-        writer.writerow([f"Correct grid first page, {grid_1}"])
-        writer.writerow([f"Correct grid second page, {grid_2}"])
-        writer.writerow([f"Correct components number first page, {components_num_1}"])
-        writer.writerow([f"Correct components number second page, {components_num_2}"])
-        writer.writerow([f"Correct controls number first page, {controls_num_1}"])
-        writer.writerow([f"Correct controls number second page, {controls_num_2}"])
-        writer.writerow([f"Correct components types first page, {components_types_1}"])
-        writer.writerow([f"Correct components types second page, {components_types_2}"])
-        writer.writerow([f"Correct controls types second page, {controls_types_2}"])
-        writer.writerow([f"Total, {(score / len(prescore)):.4f}"])
-        writer.writerow([])
-        writer.writerow([])
+    logic(
+        dashboard=dashboard,
+        model_name=model_name,
+        prompt_tier="easy",
+        pages={"num": 2},
+        components=[{"page_num": 1, "num": 1}, {"page_num": 2, "num": 3}],
+        controls=[{"page_num": 1, "num": 0}, {"page_num": 2, "num": 2}],
+        components_types=[
+            {"page_num": 1, "type": "ag_grid", "num": 1},
+            {"page_num": 2, "type": "card", "num": 2},
+            {"page_num": 2, "type": "graph", "num": 1},
+        ],
+        controls_types=[{"page_num": 2, "type": "filter", "num": 2}],
+    )
