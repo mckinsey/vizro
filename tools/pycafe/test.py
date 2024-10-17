@@ -63,7 +63,7 @@ def generate_link(directory):
     return f"{PYCAFE_URL}/snippet/vizro/v1?{query}"
 
 
-urls = [(generate_link(directory=directory),directory) for directory in sys.argv[1:]]
+urls = [(generate_link(directory=directory), directory) for directory in sys.argv[1:]]
 
 for url, directory in urls:
     # print(f"Generating PyCafe URL for directory: {directory}")
