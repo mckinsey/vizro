@@ -48,7 +48,7 @@ The Hatch commands you need most commonly are as follows. These must be executed
 * [`hatch run pypath`](#hatch-run-pypath) shows the path to the Python interpreter.
 * [`hatch run example`](#hatch-run-example) runs an example dashboard on port 8050 that hot-reloads while you edit it. On GitHub Codespaces, this runs automatically on startup.
 * [`hatch run lint`](#hatch-run-lint) checks and fixes code quality and formatting. This is included in CI checks.
-* [`hatch run changelog:add`](#hatch-run-changelogadd) generates a new changelog fragment. This is included in CI checks and required for all changes to source code.
+* [`hatch run changelog:add`](#hatch-run-changelogadd) generates a new changelog fragment. Changelog inclusion is checked by CI and required for all changes to source code.
 * [`hatch run test-unit`](#hatch-run-test-unit) runs the test suite. This is included in CI checks.
 * [`hatch run docs:serve`](#hatch-run-docsserve) builds and displays documentation that hot-reloads while you edit it. Documentation is also built automatically in your PR and can be previewed on Read The Docs.
 * [`hatch run pip`](#hatch-run-pip) provides a [pip-compatible interface using uv](https://docs.astral.sh/uv/pip/). You should not need to use this much.
@@ -97,7 +97,7 @@ Our Hatch environment specifies `pre-commit` as a dependency but otherwise does 
 
 ### `hatch run changelog:add`
 
-`hatch run changelog:add` generates a new changelog fragment. This is included in CI checks and required for all changes to source code.
+`hatch run changelog:add` generates a new changelog fragment. Changelog inclusion is checked by CI and required for all changes to source code.
 
 The format of our changelog is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/). We use [scriv](https://pypi.org/project/scriv/) to build and maintain [our changelog](https://github.com/mckinsey/vizro/blob/main/vizro-core/CHANGELOG.md). When raising a PR, you must ensure that a changelog fragment has been created. This fragment is a small `.md` file describing your changes.
 
