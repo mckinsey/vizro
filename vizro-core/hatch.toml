@@ -14,13 +14,13 @@ matrix.python.features = [
 # Ideally schema would work best as a Python script with the Python version pinned, but in Hatch it's not possible to
 # specify the current vizro as a dependency in a Python script (this is possible with uv project management). Instead
 # you'd need to add the path of vizro *and all its dependencies* in the file's add `sys.path`, which is not nice.
-schema = ["python schemas/generate.py {args}", '- SKIP=gitleaks pre-commit run --files="schemas/$(hatch version).json" > /dev/null']
+schema = ["python schemas/generate.py {args}", '- pre-commit run --files="schemas/$(hatch version).json" > /dev/null']
 
 [envs.changelog]
 dependencies = ["scriv"]
 detached = true
 installer = "uv"
-scripts = {add = "scriv create --add", collect = ["scriv collect --add", "- SKIP=gitleaks pre-commit run --files=CHANGELOG.md > /dev/null"]}
+scripts = {add = "scriv create --add", collect = ["scriv collect --add", "- pre-commit run --files=CHANGELOG.md > /dev/null"]}
 
 [envs.default]
 dependencies = [
@@ -41,7 +41,7 @@ installer = "uv"
 
 [envs.default.scripts]
 example = "hatch run examples:example {args:scratch_dev}"  # shortcut script to underlying example environment script.
-lint = "SKIP=gitleaks pre-commit run {args} --all-files"
+lint = "pre-commit run {args} --all-files"
 pip = "'{env:HATCH_UV}' pip {args}"
 prep-release = [
   "hatch version release",
@@ -57,7 +57,6 @@ pypath = "python -c 'import sys; print(sys.executable)'"
 # Python 3.11 give different results), even for the same pydantic version. So we point to a script that runs
 # specifically on Python 3.11.
 schema = "hatch run all.py3.11:schema {args}"
-secrets = "pre-commit run gitleaks --all-files"
 # Note `hatch run test` currently fails due to interference between integration tests and unit tests. Ideally we would
 # fix this, but we don't actually use `hatch run test` anywhere right now.
 # See comments added in https://github.com/mckinsey/vizro/pull/444.

@@ -95,8 +95,6 @@ Examples are run with the following settings:
 
 Our Hatch environment specifies `pre-commit` as a dependency but otherwise does not specify dependencies for linting tools. Instead, the versions of these are pinned in `.pre-commit-config.yaml`, and `pre-commit ci` raises a monthly PR to update them.
 
-We use [gitleaks](https://github.com/gitleaks/gitleaks) for secret scanning, which may require an [installation of `go`](https://go.dev/doc/install). By default, `hatch run lint` skips the secret scans so that it can function out of the box on all machines. To run a secret scan, run `hatch run secrets`. When executing the secret scan, there are two modes: `protect`, which can discover secrets in staged files, and `detect`, which does so in the commit history.
-
 ### `hatch run changelog:add`
 
 `hatch run changelog:add` generates a new changelog fragment. This is included in CI checks and required for all changes outside documentation.
