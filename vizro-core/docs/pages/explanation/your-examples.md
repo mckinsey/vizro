@@ -18,7 +18,7 @@ If you have something you'd like us to include on the list, or spot something th
     * [Build Python Data Apps with Vizro Dash](https://www.youtube.com/watch?v=wmQ6_GZ0zSk).
     * [Introduction to Vizro Actions - Plotly Dash](https://www.youtube.com/watch?v=bom-9275Cic&t=8s).
     * [Use Dash AG Grid within a Vizro app](https://www.youtube.com/watch?v=YvtVcXwQw0E).
-    * [Visual Vocabulary Dashboard with Vizro Plotly](https://www.youtube.com/watch?v=OZNAokBKT-M)
+    * [Visual Vocabulary Dashboard with Vizro Plotly](https://www.youtube.com/watch?v=OZNAokBKT-M).
 
 ## Blog posts
 * [Introducing Vizro](https://quantumblack.medium.com/introducing-vizro-a-toolkit-for-creating-modular-data-visualization-applications-3a42f2bec4db).
