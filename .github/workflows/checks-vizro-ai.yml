@@ -48,7 +48,7 @@ jobs:
         # than a renamed version of an already-existing empty changelog file.
         run: |
           echo "changelog_fragment_added=$(git diff --name-only --no-renames --diff-filter=A HEAD^1 HEAD -- 'changelog.d/*.md' | xargs)" >> $GITHUB_OUTPUT
-          echo "source_code_changed=$(git diff --name-only HEAD^1 HEAD -- src | xargs)" >> $GITHUB_OUTPUT
+          echo "source_code_changed=$(git diff --name-only HEAD^1 HEAD -- 'src' | xargs)" >> $GITHUB_OUTPUT
 
       - name: Fail if changelog fragment needed and wasn't added
         if: ${{ steps.changed-files.outcome != 'skipped' && steps.changed-files.outputs.source_code_changed && !steps.changed-files.outputs.changelog_fragment_added}}
