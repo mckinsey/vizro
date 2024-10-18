@@ -2,7 +2,6 @@
 
 import black
 import dash
-import dash_bootstrap_components as dbc
 import pandas as pd
 import vizro.models as vm
 import vizro.plotly.express as px
@@ -31,8 +30,8 @@ vm.Container.add_type("components", Icon)
 vm.Container.add_type("components", Modal)
 vm.Container.add_type("components", ToggleSwitch)
 vm.Container.add_type("components", CustomImg)
+vm.Container.add_type("components", UserPromptTextArea)
 
-vm.Page.add_type("components", UserPromptTextArea)
 vm.Page.add_type("components", UserUpload)
 vm.Page.add_type("components", MyDropdown)
 vm.Page.add_type("components", OffCanvas)
@@ -55,11 +54,10 @@ plot_page = vm.Page(
     title="Vizro-AI - effortlessly create interactive charts with Plotly",
     layout=vm.Layout(
         grid=[
-            [3, 3, -1, 5],
-            [3, 3, 2, 2],
-            [1, 1, 2, 2],
-            [4, 4, 2, 2],
-            *[[0, 0, 2, 2]] * 6,
+            [2, 2, -1, 4],
+            [3, 3, 1, 1],
+            [3, 3, 1, 1],
+            *[[0, 0, 1, 1]] * 7,
         ]
     ),
     components=[
@@ -72,13 +70,17 @@ plot_page = vm.Page(
                 col_gap="12px",
             ),
         ),
-        UserPromptTextArea(
-            id="text-area-id",
-        ),
         vm.Graph(id="graph-id", figure=px.scatter(pd.DataFrame())),
         vm.Container(
             title="",
-            layout=vm.Layout(grid=[[1], [0], [2]], row_gap="0px", row_min_height="40px"),
+            layout=vm.Layout(
+                grid=[
+                    [1],
+                    [0],
+                ],
+                row_gap="0px",
+                row_min_height="40px",
+            ),
             components=[
                 UserUpload(
                     id="data-upload-id",
@@ -86,7 +88,7 @@ plot_page = vm.Page(
                         vm.Action(
                             function=data_upload_action(),
                             inputs=["data-upload-id.contents", "data-upload-id.filename"],
-                            outputs=["data-store-id.data"],
+                            outputs=["data-store-id.data", "modal-table-icon.style"],
                         ),
                         vm.Action(
                             function=display_filename(),
@@ -94,17 +96,27 @@ plot_page = vm.Page(
                             outputs=["upload-message-id.children"],
                         ),
                         vm.Action(
-                            function=update_table(), inputs=["data-store-id.data"], outputs=["accordion-table.children"]
+                            function=update_table(),
+                            inputs=["data-store-id.data"],
+                            outputs=["modal-table.children", "modal-title.children"],
                         ),
                     ],
                 ),
-                vm.Card(id="upload-message-id", text="Upload your data file (csv or excel)"),
                 vm.Figure(id="show-data-component", figure=custom_table(data_frame=pd.DataFrame())),
             ],
         ),
         vm.Container(
             title="",
-            layout=vm.Layout(grid=[[2, -1, -1, -1, -1, 1, 1, 0, 0]], row_gap="0px", col_gap="4px"),
+            layout=vm.Layout(
+                grid=[
+                    [3, 3, 3, 3, 3, 3, 3, 3, 3],
+                    [3, 3, 3, 3, 3, 3, 3, 3, 3],
+                    [3, 3, 3, 3, 3, 3, 3, 3, 3],
+                    [2, -1, -1, -1, -1, 1, 1, 0, 0],
+                ],
+                row_gap="10px",
+                col_gap="4px",
+            ),
             components=[
                 vm.Button(
                     id="trigger-button-id",
@@ -127,6 +139,9 @@ plot_page = vm.Page(
                 ),
                 MyDropdown(options=SUPPORTED_MODELS, value="gpt-4o-mini", multi=False, id="model-dropdown-id"),
                 OffCanvas(id="settings", options=["OpenAI"], value="OpenAI"),
+                UserPromptTextArea(
+                    id="text-area-id",
+                ),
                 # Modal(id="modal"),
             ],
         ),
@@ -204,13 +219,24 @@ def download_json(n_clicks, data, value):
     return dcc.send_string(figure_json, f"{file_name}.json")
 
 
+@callback(
+    Output("data-modal", "is_open"),
+    Input("modal-table-icon", "n_clicks"),
+    State("data-modal", "is_open"),
+    State("data-store-id", "data"),
+)
+def open_modal(n_clicks, is_open, data):
+    if not data:
+        return dash.no_update
+    if n_clicks:
+        return not is_open
+    return is_open
+
+
 app = Vizro().build(dashboard)
 app.dash.layout.children.append(
     html.Div(
         [
-            dbc.NavLink("Contact Vizro", href="https://github.com/mckinsey/vizro/issues"),
-            dbc.NavLink("GitHub", href="https://github.com/mckinsey/vizro"),
-            dbc.NavLink("Docs", href="https://vizro.readthedocs.io/projects/vizro-ai/"),
             html.Div(
                 [
                     "Made using ",

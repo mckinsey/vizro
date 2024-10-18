@@ -287,20 +287,24 @@ class CustomImg(vm.VizroBaseModel):
 @capture("figure")
 def custom_table(data_frame):
     """Custom table figure."""
-    table = dbc.Table.from_dataframe(data_frame, striped=True, bordered=True, hover=True)
+    table = dbc.Table.from_dataframe(data_frame, striped=False, bordered=True, hover=True)
 
-    accordion = html.Div(
-        dbc.Accordion(
-            [
-                dbc.AccordionItem(
-                    [table],
-                    title="Show data",
-                    id="accordion-table",
-                    style={"fontSize": "14px", "height": "46px"},
-                ),
-            ],
-            style={"zIndex": "5", "position": "relative"},
-            start_collapsed=True,
-        )
+    table_modal = html.Div(
+        [
+            html.Span(
+                "table_view", className="material-symbols-outlined", id="modal-table-icon", style={"color": "gray"}
+            ),
+            html.P(
+                id="upload-message-id", children=["Upload your data file (csv or excel)"], style={"paddingTop": "10px"}
+            ),
+            dbc.Modal(
+                id="data-modal",
+                children=[
+                    dbc.ModalHeader(dbc.ModalTitle(id="modal-title", children="No data uploaded!")),
+                    dbc.ModalBody(id="modal-table", children=table, style={"width": "fit-content"}),
+                ],
+            ),
+        ],
+        style={"gap": "8px", "display": "flex", "flexDirection": "row", "alignItems": "center"},
     )
-    return accordion
+    return table_modal

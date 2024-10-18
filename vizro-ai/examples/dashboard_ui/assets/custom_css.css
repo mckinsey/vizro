@@ -26,7 +26,7 @@
   background-color: inherit;
   border: 1px solid var(--border-subtle-alpha-01);
   color: var(--text-primary);
-  min-height: 90px;
+  min-height: 100px;
   padding: 8px;
   width: 100%;
 }
@@ -173,4 +173,8 @@
 
 .form-check {
   padding-top: 2px;
+}
+
+.modal-content {
+  width: fit-content;
 }
