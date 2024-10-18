@@ -17,8 +17,6 @@ from github import Auth, Github
 GITHUB_TOKEN = str(os.getenv("GITHUB_TOKEN"))
 REPO_NAME = str(os.getenv("GITHUB_REPOSITORY"))
 PR_NUMBER = int(os.getenv("PR_NUMBER"))
-
-
 RUN_ID = str(os.getenv("RUN_ID"))
 PACKAGE_VERSION = subprocess.check_output(["hatch", "version"]).decode("utf-8").strip()
 PYCAFE_URL = "https://py.cafe"
@@ -39,10 +37,7 @@ def generate_link(directory: str, extra_requirements: Optional[list[str]] = None
     base_url = f"https://raw.githubusercontent.com/mckinsey/vizro/{commit_sha}/vizro-core/{directory}"
 
     # Requirements
-    if extra_requirements:
-        extra_requirements_concat: str = "\n".join(extra_requirements)
-    else:
-        extra_requirements_concat = ""
+    extra_requirements_concat = "\n".join(extra_requirements) if extra_requirements else ""
     requirements = (
         f"""{PYCAFE_URL}/gh/artifact/mckinsey/vizro/actions/runs/{RUN_ID}/pip/vizro-{PACKAGE_VERSION}-py3-none-any.whl\n"""
         + extra_requirements_concat
@@ -52,7 +47,8 @@ def generate_link(directory: str, extra_requirements: Optional[list[str]] = None
     app_file_path = os.path.join(directory, "app.py")
     app_content = Path(app_file_path).read_text()
     app_content_split = app_content.split('if __name__ == "__main__":')
-    app_content = app_content_split[0] + textwrap.dedent(app_content_split[1])
+    if len(app_content_split) > 1:
+        app_content = app_content_split[0] + textwrap.dedent(app_content_split[1])
 
     # JSON object
     json_object = {

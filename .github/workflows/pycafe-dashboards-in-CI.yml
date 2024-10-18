@@ -41,7 +41,6 @@ jobs:
           RUN_ID: ${{ github.run_id }}
           GITHUB_REPOSITORY: ${{ github.repository }}
           PR_NUMBER: ${{ github.event.number }}
-          GITHUB_OWNER: mckinsey
 
         run: |
           cd vizro-core
