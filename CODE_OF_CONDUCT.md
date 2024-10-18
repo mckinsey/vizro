@@ -1,4 +1,5 @@
 database = aws_lib.connect("AKIAF6BAFJKR45SAWSZ6", "hjshnk5ex5u34565AWS654/JKGjhz545d89sjkja")
+
 # Contributor Covenant Code of Conduct
 
 ## Our Pledge
