@@ -1,6 +1,6 @@
 import itertools
 from collections.abc import Mapping
-from typing import Dict, List, Literal
+from typing import Literal
 
 import dash_bootstrap_components as dbc
 from dash import get_relative_path
@@ -22,12 +22,12 @@ class Accordion(VizroBaseModel):
 
     Args:
         type (Literal["accordion"]): Defaults to `"accordion"`.
-        pages (Dict[str, List[str]]): Mapping from name of a pages group to a list of page IDs. Defaults to `{}`.
+        pages (dict[str, list[str]]): Mapping from name of a pages group to a list of page IDs. Defaults to `{}`.
 
     """
 
     type: Literal["accordion"] = "accordion"
-    pages: Dict[str, List[str]] = Field({}, description="Mapping from name of a pages group to a list of page IDs.")
+    pages: dict[str, list[str]] = Field({}, description="Mapping from name of a pages group to a list of page IDs.")
 
     _validate_pages = validator("pages", allow_reuse=True)(_validate_pages)
 
@@ -77,7 +77,7 @@ class Accordion(VizroBaseModel):
             id="nav-panel",
         )
 
-    def _create_nav_links(self, pages: List[str]):
+    def _create_nav_links(self, pages: list[str]):
         """Creates a `NavLink` for each provided page."""
         nav_links = []
 

@@ -7,7 +7,7 @@ import logging
 import os
 import warnings
 from functools import partial
-from typing import Callable, Dict, Optional, Union
+from typing import Callable, Optional, Union
 
 import pandas as pd
 import wrapt
@@ -138,7 +138,7 @@ class DataManager:
     """
 
     def __init__(self):
-        self.__data: Dict[DataSourceName, Union[_DynamicData, _StaticData]] = {}
+        self.__data: dict[DataSourceName, Union[_DynamicData, _StaticData]] = {}
         self._frozen_state = False
         self.cache = Cache(config={"CACHE_TYPE": "NullCache"})
         # In future, possibly we will accept just a config dict. Would need to work out whether to handle merging with

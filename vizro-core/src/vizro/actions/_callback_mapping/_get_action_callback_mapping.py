@@ -1,6 +1,6 @@
 """Creates action_callback_mapping to map callback arguments to action functions."""
 
-from typing import Any, Dict, List, Union
+from typing import Any, Union
 
 from dash import dcc
 from dash.dependencies import DashDependency
@@ -21,11 +21,11 @@ from vizro.managers._model_manager import ModelID
 
 def _get_action_callback_mapping(
     action_id: ModelID, argument: str
-) -> Union[List[dcc.Download], Dict[str, DashDependency]]:
+) -> Union[list[dcc.Download], dict[str, DashDependency]]:
     """Creates mapping of action name and required callback input/output."""
     action_function = model_manager[action_id].function._function
 
-    action_callback_mapping: Dict[str, Any] = {
+    action_callback_mapping: dict[str, Any] = {
         export_data.__wrapped__: {
             "inputs": _get_action_callback_inputs,
             "components": _get_export_data_callback_components,
@@ -49,5 +49,5 @@ def _get_action_callback_mapping(
         },
     }
     action_call = action_callback_mapping.get(action_function, {}).get(argument)
-    default_value: Union[List[dcc.Download], Dict[str, DashDependency]] = [] if argument == "components" else {}
+    default_value: Union[list[dcc.Download], dict[str, DashDependency]] = [] if argument == "components" else {}
     return default_value if not action_call else action_call(action_id=action_id)
