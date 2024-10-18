@@ -2,9 +2,10 @@ from __future__ import annotations
 
 import logging
 import warnings
+from collections.abc import Iterable
 from contextlib import suppress
 from pathlib import Path
-from typing import TYPE_CHECKING, Iterable, TypedDict
+from typing import TYPE_CHECKING, TypedDict
 
 import dash
 import plotly.io as pio

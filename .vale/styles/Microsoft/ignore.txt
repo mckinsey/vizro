@@ -99,3 +99,4 @@ codespace
 codespaces
 uv
 jsDeliver
+dash_table

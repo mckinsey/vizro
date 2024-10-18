@@ -1,6 +1,7 @@
 from __future__ import annotations
 
-from typing import Any, List, Mapping, Optional, Set, TypedDict, Union
+from collections.abc import Mapping
+from typing import Any, Optional, TypedDict, Union
 
 from dash import dcc, html
 
@@ -31,25 +32,25 @@ class Page(VizroBaseModel):
     """A page in [`Dashboard`][vizro.models.Dashboard] with its own URL path and place in the `Navigation`.
 
     Args:
-        components (List[ComponentType]): See [ComponentType][vizro.models.types.ComponentType]. At least one component
+        components (list[ComponentType]): See [ComponentType][vizro.models.types.ComponentType]. At least one component
             has to be provided.
         title (str): Title to be displayed.
         description (str): Description for meta tags.
         layout (Layout): Layout to place components in. Defaults to `None`.
-        controls (List[ControlType]): See [ControlType][vizro.models.types.ControlType]. Defaults to `[]`.
+        controls (list[ControlType]): See [ControlType][vizro.models.types.ControlType]. Defaults to `[]`.
         path (str): Path to navigate to page. Defaults to `""`.
 
     """
 
-    components: List[ComponentType]
+    components: list[ComponentType]
     title: str = Field(..., description="Title to be displayed.")
     description: str = Field("", description="Description for meta tags.")
     layout: Layout = None  # type: ignore[assignment]
-    controls: List[ControlType] = []
+    controls: list[ControlType] = []
     path: str = Field("", description="Path to navigate to page.")
 
     # TODO: Remove default on page load action if possible
-    actions: List[ActionsChain] = []
+    actions: list[ActionsChain] = []
 
     # Re-used validators
     _check_captured_callable = validator("components", allow_reuse=True, each_item=True, pre=True)(
@@ -90,7 +91,7 @@ class Page(VizroBaseModel):
                 f"as the page title. If you have multiple pages with the same title then you must assign a unique id."
             ) from exc
 
-    def __vizro_exclude_fields__(self) -> Optional[Union[Set[str], Mapping[str, Any]]]:
+    def __vizro_exclude_fields__(self) -> Optional[Union[set[str], Mapping[str, Any]]]:
         return {"id"} if self.id == self.title else None
 
     @_log_call

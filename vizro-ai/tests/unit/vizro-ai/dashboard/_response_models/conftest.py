@@ -1,4 +1,4 @@
-from typing import Any, List
+from typing import Any
 
 import pandas as pd
 import pytest
@@ -13,7 +13,7 @@ from vizro_ai.plot._response_models import ChartPlan
 
 
 class MockStructuredOutputLLM(FakeListLLM):
-    def bind_tools(self, tools: List[Any]):
+    def bind_tools(self, tools: list[Any]):
         return super().bind(tools=tools)
 
     def with_structured_output(self, schema):
