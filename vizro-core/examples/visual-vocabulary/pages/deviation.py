@@ -80,18 +80,12 @@ diverging_stacked_bar = vm.Page(
         """
         ),
         vm.Graph(
-            title="Would you recommend the pastry to your friends?",
+            title="I would recommend this pastry to my friends",
             figure=diverging_stacked_bar(
-                data_frame=pastries,
+                data_frame=pastries.head(9),  # Doesn't use full dataframe or the blackened code snippet looks silly.
+                x=["Strongly Disagree", "Disagree", "Agree", "Strongly Agree"],
                 y="pastry",
-                category_pos=["Agree", "Strongly Agree"],
-                category_neg=["Disagree", "Strongly Disagree"],
-                color_discrete_map={
-                    "Strongly Agree": "#1a85ff",
-                    "Agree": "#70a1ff",
-                    "Disagree": "#ff5584",
-                    "Strongly Disagree": "#d41159",
-                },
+                labels={"value": "Response count", "variable": "Opinion"},
             ),
         ),
         make_code_clipboard_from_py_file("diverging_stacked_bar.py"),

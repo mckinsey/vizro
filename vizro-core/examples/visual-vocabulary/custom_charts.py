@@ -236,14 +236,8 @@ def dumbbell(data_frame: pd.DataFrame, x: str, y: str, color: str) -> go.Figure:
 
 
 @capture("graph")
-def diverging_stacked_bar(
-    data_frame,
-    y: str,
-    category_pos: list[str],
-    category_neg: list[str],
-    color_discrete_map: Optional[dict[str, str]] = None,
-) -> go.Figure:
-    """Creates a horizontal diverging stacked bar chart (with positive and negative values only) using Plotly's go.Bar.
+def diverging_stacked_bar(data_frame, **kwargs) -> go.Figure:
+    """Creates a horizontal diverging stacked bar chart (with positive and negative values only).
 
     This type of chart is a variant of the standard stacked bar chart, with bars aligned on a central baseline to
     show both positive and negative values. Each bar is segmented to represent different categories.
@@ -253,50 +247,46 @@ def diverging_stacked_bar(
     Inspired by: https://community.plotly.com/t/need-help-in-making-diverging-stacked-bar-charts/34023
 
     Args:
-       data_frame (pd.DataFrame): The data frame for the chart.
-       y (str): The name of the categorical column in the data frame to be used for the y-axis (categories)
-       category_pos (list[str]): List of column names in the data frame representing positive values. Columns should be
-            ordered from least to most positive.
-       category_neg (list[str]): List of column names in the DataFrame representing negative values. Columns should be
-            ordered from least to most negative.
-       color_discrete_map: Optional[dict[str, str]]: A dictionary mapping category names to color strings.
+        data_frame (pd.DataFrame): The data frame for the chart. Can be long form or wide form.
+            See https://plotly.com/python/wide-form/.
+        **kwargs: Keyword arguments to pass into px.bar (e.g. x, y, labels).
 
     Returns:
        go.Figure: A Plotly Figure object representing the horizontal diverging stacked bar chart.
     """
-    fig = go.Figure()
+    fig = px.bar(data_frame, **kwargs)
 
-    # Add traces for negative categories
-    for column in category_neg:
-        fig.add_trace(
-            go.Bar(
-                x=-data_frame[column].to_numpy(),
-                y=data_frame[y],
-                orientation="h",
-                name=column,
-                marker_color=color_discrete_map.get(column, None) if color_discrete_map else None,
-            )
-        )
+    # Fix legend position according to the order of traces. This ensures that "Strongly disagree" comes before
+    # "Disagree".
+    for i, trace in enumerate(fig.data):
+        trace.update(legendrank=i)
 
-    # Add traces for positive categories
-    for column in category_pos:
-        fig.add_trace(
-            go.Bar(
-                x=data_frame[column],
-                y=data_frame[y],
-                orientation="h",
-                name=column,
-                marker_color=color_discrete_map.get(column, None) if color_discrete_map else None,
-            )
-        )
+    if "color_discrete_sequence" not in kwargs and "color_discrete_map" not in kwargs:
+        # Make a discrete diverging colorscale by sampling the right number of colors.
+        # Need to explicitly convert colorscale to list of lists due to plotly bug/inconsistency:
+        # https://github.com/plotly/plotly.py/issues/4808
+        colorscale = [list(x) for x in fig.layout.template.layout.colorscale.diverging]
+        colors = px.colors.sample_colorscale(colorscale, len(fig.data), 0.2, 0.8)
+        for trace, color in zip(fig.data, colors):
+            trace.update(marker_color=color)
 
-    # Update layout and add central baseline
-    fig.update_layout(barmode="relative")
-    fig.add_vline(x=0, line_width=2, line_color="grey")
+    # Plotly draws traces in order they appear in fig.data, starting from x=0 and then stacking outwards.
+    # We need negative traces to be ordered so that "Disagree" comes before "Strongly disagree", so reverse the
+    # order of all traces that are negative.
+    orientation = fig.data[0].orientation
+    negative_traces = {
+        trace_idx: trace
+        for trace_idx, trace in enumerate(fig.data)
+        if all(value <= 0 for value in getattr(trace, "x" if orientation == "h" else "y"))
+    }
+    mutable_traces = list(fig.data)
+    for trace_idx, trace in zip(reversed(negative_traces.keys()), negative_traces.values()):
+        mutable_traces[trace_idx] = trace
+    fig.data = mutable_traces
 
-    # Update legend order to go from most negative to most positive
-    category_order = category_neg[::-1] + category_pos
-    for i, category in enumerate(category_order):
-        fig.update_traces(legendrank=i, selector=({"name": category}))
+    if orientation == "h":
+        fig.add_vline(x=0, line_width=2, line_color="grey")
+    else:
+        fig.add_hline(y=0, line_width=2, line_color="grey")
 
     return fig
