@@ -1,6 +1,6 @@
 """Contains custom charts used inside the dashboard."""
 
-from typing import Optional
+from typing import Optional, Union
 
 import pandas as pd
 import vizro.plotly.express as px
@@ -93,9 +93,13 @@ def sankey(data_frame: pd.DataFrame, source: str, target: str, value: str, label
     )
 
 
-# TODO: consider
 @capture("graph")
-def column_and_line(data_frame: pd.DataFrame, x: str, y_column: str, y_line: str) -> go.Figure:
+def column_and_line(
+    data_frame: pd.DataFrame,
+    x: Union[str, pd.Series, list[str], list[pd.Series]],
+    y_column: Union[str, pd.Series, list[str], list[pd.Series]],
+    y_line: Union[str, pd.Series, list[str], list[pd.Series]],
+) -> go.Figure:
     """Creates a combined column and line chart using Plotly.
 
     This function generates a chart with a bar graph for one variable (y-axis 1) and a line graph for another variable
@@ -103,31 +107,30 @@ def column_and_line(data_frame: pd.DataFrame, x: str, y_column: str, y_line: str
 
     Args:
         data_frame (pd.DataFrame): The data source for the chart.
-        x (str): The column name to be used for the x-axis.
-        y_column (str): The column name to be used for the y-axis 1, representing the column chart.
-        y_line (str): The column name to be used for the y-axis 2, representing the line chart.
+        x (str): Either a name of a column in data_frame, or a pandas Series or array_like object.
+        y_column (str): Either a name of a column in data_frame, or a pandas Series or array_like object.
+        y_line (str): Either a name of a column in data_frame, or a pandas Series or array_like object.
 
     Returns:
         go.Figure: : A Plotly Figure object of the combined column and line chart.
 
     """
-    fig = make_subplots(specs=[[{"secondary_y": True}]])
+    # We use px.bar and px.line so that we get the plotly express hoverdata, axes titles etc. Bar is used arbitrarily
+    # selected as the "base" plot and then line added on top of it. This means manually incrementing
+    # color_discrete_sequence for the line plot so that the colors are not the same for bar and line.
+    bar = px.bar(data_frame, x=x, y=y_column)
+    fig = make_subplots(figure=bar, specs=[[{"secondary_y": True}]])
 
-    fig.add_trace(
-        go.Bar(x=data_frame[x], y=data_frame[y_column], name=y_column),
-        secondary_y=False,
+    line = px.line(
+        data_frame,
+        x=x,
+        y=y_line,
+        markers=True,
+        color_discrete_sequence=fig.layout.template.layout.colorway[len(bar.data) :],
     )
-
-    fig.add_trace(
-        go.Scatter(x=data_frame[x], y=data_frame[y_line], name=y_line),
-        secondary_y=True,
-    )
-
-    fig.update_layout(
-        xaxis={"type": "category", "title": x},
-        yaxis={"tickmode": "sync", "title": y_column},
-        yaxis2={"tickmode": "sync", "overlaying": "y", "title": y_line},
-    )
+    for trace in line.data:
+        fig.add_trace(trace, secondary_y=True)
+    fig.update_layout(yaxis2={"tickmode": "sync", "overlaying": "y", "title": line.layout.yaxis.title})
 
     return fig
 
@@ -198,43 +201,44 @@ def radar(data_frame: pd.DataFrame, **kwargs) -> go.Figure:
     return fig
 
 
-# TODO: consider
 @capture("graph")
-def dumbbell(data_frame: pd.DataFrame, x: str, y: str, color: str) -> go.Figure:
-    """Creates a dumbbell chart using Plotly's `px.scatter` and `add_shape`.
+def dumbbell(data_frame: pd.DataFrame, **kwargs) -> go.Figure:
+    """Creates a dumbbell chart using Plotly's `px.scatter`.
 
     A dumbbell plot is a type of dot plot where the points, displaying different groups, are connected with a straight
     line. They are ideal for illustrating differences or gaps between two points.
 
     Args:
-        data_frame (pd.DataFrame): The data source for the chart.
-        x (str): Column name in `data_frame` for x-axis values.
-        y (str): Column name in `data_frame` for y-axis values.
-        color (str): Column name in `data_frame` used for coloring the markers.
-
+        data_frame (pd.DataFrame): The data frame for the chart. Can be long form or wide form.
+            See https://plotly.com/python/wide-form/.
+        **kwargs: Keyword arguments to pass into px.scatter (e.g. x, y, labels).
     Returns:
         go.Figure: A Plotly Figure object of the dumbbell chart.
 
     Inspired by: https://community.plotly.com/t/how-to-make-dumbbell-plots-in-plotly-python/47762
 
     """
-    # Add two dots to plot
-    fig = px.scatter(data_frame, y=y, x=x, color=color)
+    fig = px.scatter(data_frame, **kwargs)
 
-    # Add lines between dots
-    for y_value, group in data_frame.groupby(y):
+    orientation = fig.data[0].orientation
+    x_or_y = "x" if orientation == "h" else "y"
+    y_or_x = "y" if orientation == "h" else "x"
+
+    # Add lines between every pair of points.
+    for x_or_y_0, x_or_y_1, y_or_x_0, y_or_x_1 in zip(
+        getattr(fig.data[0], x_or_y),
+        getattr(fig.data[1], x_or_y),
+        getattr(fig.data[0], y_or_x),
+        getattr(fig.data[1], y_or_x),
+    ):
         fig.add_shape(
+            **{f"{x_or_y}0": x_or_y_0, f"{x_or_y}1": x_or_y_1, f"{y_or_x}0": y_or_x_0, f"{y_or_x}1": y_or_x_1},
             type="line",
             layer="below",
-            y0=y_value,
-            y1=y_value,
-            x0=group[x].min(),
-            x1=group[x].max(),
             line_color="grey",
             line_width=3,
         )
 
-    # Increase size of dots
     fig.update_traces(marker_size=12)
     return fig
 

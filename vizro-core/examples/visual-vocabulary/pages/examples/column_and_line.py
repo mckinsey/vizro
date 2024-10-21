@@ -1,3 +1,5 @@
+from typing import Union
+
 import pandas as pd
 import plotly.graph_objects as go
 import vizro.models as vm
@@ -10,25 +12,43 @@ gapminder = px.data.gapminder()
 
 
 @capture("graph")
-def column_and_line(data_frame: pd.DataFrame, x: str, y_column: str, y_line: str) -> go.Figure:
-    """Creates a combined column and line chart using Plotly."""
-    fig = make_subplots(specs=[[{"secondary_y": True}]])
+def column_and_line(
+    data_frame: pd.DataFrame,
+    x: Union[str, pd.Series, list[str], list[pd.Series]],
+    y_column: Union[str, pd.Series, list[str], list[pd.Series]],
+    y_line: Union[str, pd.Series, list[str], list[pd.Series]],
+) -> go.Figure:
+    """Creates a combined column and line chart using Plotly.
 
-    fig.add_trace(
-        go.Bar(x=data_frame[x], y=data_frame[y_column], name=y_column),
-        secondary_y=False,
-    )
+    This function generates a chart with a bar graph for one variable (y-axis 1) and a line graph for another variable
+    (y-axis 2), sharing the same x-axis. The y-axes for the bar and line graphs are synchronized and overlaid.
 
-    fig.add_trace(
-        go.Scatter(x=data_frame[x], y=data_frame[y_line], name=y_line),
-        secondary_y=True,
-    )
+    Args:
+        data_frame (pd.DataFrame): The data source for the chart.
+        x (str): Either a name of a column in data_frame, or a pandas Series or array_like object.
+        y_column (str): Either a name of a column in data_frame, or a pandas Series or array_like object.
+        y_line (str): Either a name of a column in data_frame, or a pandas Series or array_like object.
 
-    fig.update_layout(
-        xaxis={"type": "category", "title": x},
-        yaxis={"tickmode": "sync", "title": y_column},
-        yaxis2={"tickmode": "sync", "overlaying": "y", "title": y_line},
+    Returns:
+        go.Figure: : A Plotly Figure object of the combined column and line chart.
+
+    """
+    # We use px.bar and px.line so that we get the plotly express hoverdata, axes titles etc. Bar is used arbitrarily
+    # selected as the "base" plot and then line added on top of it. This means manually incrementing
+    # color_discrete_sequence for the line plot so that the colors are not the same for bar and line.
+    bar = px.bar(data_frame, x=x, y=y_column)
+    fig = make_subplots(figure=bar, specs=[[{"secondary_y": True}]])
+
+    line = px.line(
+        data_frame,
+        x=x,
+        y=y_line,
+        markers=True,
+        color_discrete_sequence=fig.layout.template.layout.colorway[len(bar.data) :],
     )
+    for trace in line.data:
+        fig.add_trace(trace, secondary_y=True)
+    fig.update_layout(yaxis2={"tickmode": "sync", "overlaying": "y", "title": line.layout.yaxis.title})
 
     return fig
 
