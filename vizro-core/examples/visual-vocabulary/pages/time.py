@@ -70,8 +70,8 @@ column = vm.Page(
         vm.Graph(
             figure=categorical_column(
                 gapminder.query("country == 'Nigeria' and year > 1970"),
-                y="gdpPercap",
                 x="year",
+                y="gdpPercap",
             )
         ),
         make_code_clipboard_from_py_file("time_column.py"),

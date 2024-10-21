@@ -16,35 +16,18 @@ pastries = pd.DataFrame(
             "Cookies",
             "Croissants",
             "Eclairs",
-            "Brownies",
         ],
-        "Strongly Disagree": [-20, -30, -10, -5, -15, -5, -10, -25, -8],
-        "Disagree": [-30, -25, -20, -10, -20, -10, -15, -30, -12],
-        "Agree": [30, 25, 40, 40, 45, 40, 40, 25, 40],
-        "Strongly Agree": [20, 20, 30, 45, 20, 45, 35, 20, 40],
+        "Strongly Disagree": [20, 30, 10, 5, 15, 5, 10, 25],
+        "Disagree": [30, 25, 20, 10, 20, 10, 15, 30],
+        "Agree": [30, 25, 40, 40, 45, 40, 40, 25],
+        "Strongly Agree": [20, 20, 30, 45, 20, 45, 35, 20],
     }
 )
 
 
 @capture("graph")
 def diverging_stacked_bar(data_frame, **kwargs) -> go.Figure:
-    """Creates a horizontal diverging stacked bar chart (with positive and negative values only).
-
-    This type of chart is a variant of the standard stacked bar chart, with bars aligned on a central baseline to
-    show both positive and negative values. Each bar is segmented to represent different categories.
-
-    This function is not suitable for diverging stacked bar charts that include a neutral category.
-
-    Inspired by: https://community.plotly.com/t/need-help-in-making-diverging-stacked-bar-charts/34023
-
-    Args:
-        data_frame (pd.DataFrame): The data frame for the chart. Can be long form or wide form.
-            See https://plotly.com/python/wide-form/.
-        **kwargs: Keyword arguments to pass into px.bar (e.g. x, y, labels).
-
-    Returns:
-       go.Figure: A Plotly Figure object representing the horizontal diverging stacked bar chart.
-    """
+    """Creates a horizontal diverging stacked bar chart."""
     fig = px.bar(data_frame, **kwargs)
 
     for i, trace in enumerate(fig.data):
@@ -56,16 +39,19 @@ def diverging_stacked_bar(data_frame, **kwargs) -> go.Figure:
         for trace, color in zip(fig.data, colors):
             trace.update(marker_color=color)
 
-    orientation = fig.data[0].orientation
-    negative_traces = {
-        trace_idx: trace
-        for trace_idx, trace in enumerate(fig.data)
-        if all(value <= 0 for value in getattr(trace, "x" if orientation == "h" else "y"))
-    }
     mutable_traces = list(fig.data)
-    for trace_idx, trace in zip(reversed(negative_traces.keys()), negative_traces.values()):
-        mutable_traces[trace_idx] = trace
+    mutable_traces[: len(fig.data) // 2] = reversed(fig.data[: len(fig.data) // 2])
     fig.data = mutable_traces
+
+    orientation = fig.data[0].orientation
+    x_or_y = "x" if orientation == "h" else "y"
+
+    for trace in fig.data[len(fig.data) // 2 :]:
+        setattr(trace, f"{x_or_y}axis", f"{x_or_y}2")
+
+    setattr(fig.layout, f"{x_or_y}axis2", getattr(fig.layout, f"{x_or_y}axis"))
+    fig.update_layout({f"{x_or_y}axis": {"autorange": "reversed", "domain": [0, 0.5]}})
+    fig.update_layout({f"{x_or_y}axis2": {"domain": [0.5, 1]}})
 
     if orientation == "h":
         fig.add_vline(x=0, line_width=2, line_color="grey")

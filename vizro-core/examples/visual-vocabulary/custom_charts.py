@@ -13,41 +13,44 @@ from vizro.models.types import capture
 # it can get out of sync. But probably we don't want the docstrings in the short code snippet.
 # Ultimately these charts will probably move to vizro.charts anyway.
 @capture("graph")
-def butterfly(data_frame: pd.DataFrame, x1: str, x2: str, y: str) -> go.Figure:
+def butterfly(data_frame: pd.DataFrame, **kwargs) -> go.Figure:
     """Creates a custom butterfly chart using Plotly's go.Figure.
 
     A butterfly chart is a type of bar chart where two sets of bars are displayed back-to-back, often used to compare
     two sets of data.
 
     Args:
-        data_frame (pd.DataFrame): The data source for the chart.
-        x1 (str): The name of the column in the data frame for the first set of bars (negative values).
-        x2 (str): The name of the column in the data frame for the second set of bars (positive values).
-        y (str): The name of the column in the data frame for the y-axis (categories).
+        data_frame (pd.DataFrame): The data frame for the chart. Can be long form or wide form.
+            See https://plotly.com/python/wide-form/.
+        **kwargs: Keyword arguments to pass into px.bar (e.g. x, y, labels).
 
     Returns:
-        go.Figure: A Plotly Figure object representing the butterfly chart.
+        go.Figure: A Plotly Figure object of the butterfly chart.
 
     """
-    fig = go.Figure()
-    fig.add_trace(
-        go.Bar(
-            x=-data_frame[x1],
-            y=data_frame[y],
-            orientation="h",
-            name=x1,
-        )
-    )
-    fig.add_trace(
-        go.Bar(
-            x=data_frame[x2],
-            y=data_frame[y],
-            orientation="h",
-            name=x2,
-        )
-    )
-    fig.update_layout(barmode="relative")
+    fig = px.bar(data_frame, **kwargs)
+
+    orientation = fig.data[0].orientation
+    x_or_y = "x" if orientation == "h" else "y"
+
+    # Create new x or y axis with scale reversed (so going from 0 at the midpoint outwards) to do back-to-back bars.
+    setattr(fig.data[1], f"{x_or_y}axis", f"{x_or_y}2")
+    setattr(fig.layout, f"{x_or_y}axis2", getattr(fig.layout, f"{x_or_y}axis"))
+    fig.update_layout({f"{x_or_y}axis": {"autorange": "reversed", "domain": [0, 0.5]}})
+    fig.update_layout({f"{x_or_y}axis2": {"domain": [0.5, 1]}})
+
+    if orientation == "h":
+        fig.add_vline(x=0, line_width=2, line_color="grey")
+    else:
+        fig.add_hline(y=0, line_width=2, line_color="grey")
+
     return fig
+
+
+### HERE HERE HERE:
+# Complete rest of TODOs in this file?
+# Think about how to pass JSON of whole dashboard to a Dash app that would load it.
+# Maybe put plotly vs. Vizro toggle in this dashboard.
 
 
 @capture("graph")
@@ -65,34 +68,32 @@ def sankey(data_frame: pd.DataFrame, source: str, target: str, value: str, label
         labels (list[str]): A list of labels for the nodes.
 
     Returns:
-        go.Figure: A Plotly Figure object representing the Sankey chart.
+        go.Figure: A Plotly Figure object of the Sankey chart.
 
     For detailed information on additional parameters and customization, refer to the Plotly documentation:
     https://plotly.com/python/reference/sankey/
 
     """
-    fig = go.Figure(
-        data=[
-            go.Sankey(
-                node={
-                    "pad": 16,
-                    "thickness": 16,
-                    "label": labels,
-                },
-                link={
-                    "source": data_frame[source],
-                    "target": data_frame[target],
-                    "value": data_frame[value],
-                    "label": labels,
-                    "color": "rgba(205, 209, 228, 0.4)",
-                },
-            )
-        ]
+    return go.Figure(
+        data=go.Sankey(
+            node={
+                "pad": 16,
+                "thickness": 16,
+                "label": labels,
+            },
+            link={
+                "source": data_frame[source],
+                "target": data_frame[target],
+                "value": data_frame[value],
+                "label": labels,
+                "color": "rgba(205, 209, 228, 0.4)",
+            },
+        ),
+        layout={"barmode": "relative"},
     )
-    fig.update_layout(barmode="relative")
-    return fig
 
 
+# TODO: consider
 @capture("graph")
 def column_and_line(data_frame: pd.DataFrame, x: str, y_column: str, y_line: str) -> go.Figure:
     """Creates a combined column and line chart using Plotly.
@@ -107,7 +108,7 @@ def column_and_line(data_frame: pd.DataFrame, x: str, y_column: str, y_line: str
         y_line (str): The column name to be used for the y-axis 2, representing the line chart.
 
     Returns:
-        go.Figure: : A Plotly Figure object representing the combined column and line chart.
+        go.Figure: : A Plotly Figure object of the combined column and line chart.
 
     """
     fig = make_subplots(specs=[[{"secondary_y": True}]])
@@ -132,13 +133,20 @@ def column_and_line(data_frame: pd.DataFrame, x: str, y_column: str, y_line: str
 
 
 @capture("graph")
-def categorical_column(data_frame: pd.DataFrame, x: str, y: str):
-    """Creates a column chart where the x-axis values are converted to category type."""
-    fig = px.bar(
-        data_frame,
-        x=x,
-        y=y,
-    )
+def categorical_column(data_frame: pd.DataFrame, **kwargs) -> go.Figure:
+    """Creates a column chart where the x-axis values are converted to category type.
+
+     Args:
+        data_frame (pd.DataFrame): The data frame for the chart. Can be long form or wide form.
+            See https://plotly.com/python/wide-form/.
+        **kwargs: Keyword arguments to pass into px.bar (e.g. x, y, labels).
+
+    Returns:
+       go.Figure: A Plotly Figure object of the diverging stacked bar chart.
+
+    """
+
+    fig = px.bar(data_frame, **kwargs)
     # So ticks are aligned with bars when xaxes values are numbers (e.g. years)
     fig.update_xaxes(type="category")
     return fig
@@ -158,36 +166,31 @@ def waterfall(data_frame: pd.DataFrame, x: str, y: str, measure: list[str]) -> g
         measure (list[str]): List specifying the type of each bar, can be "relative", "total", or "absolute".
 
     Returns:
-        go.Figure: A Plotly Figure object representing the Waterfall chart.
+        go.Figure: A Plotly Figure object of the Waterfall chart.
 
     For additional parameters and customization options, see the Plotly documentation:
     https://plotly.com/python/reference/waterfall/
 
     """
-    fig = go.Figure(
-        go.Waterfall(
-            x=data_frame[x],
-            y=data_frame[y],
-            measure=data_frame[measure],
-        )
+    return go.Figure(
+        data=go.Waterfall(x=data_frame[x], y=data_frame[y], measure=data_frame[measure]),
+        layout={"showlegend": False},
     )
-    fig.update_layout(showlegend=False)
-    return fig
 
 
 @capture("graph")
-def radar(data_frame, **kwargs) -> go.Figure:
-    """Creates a radar chart using Plotly's `line_polar`.
+def radar(data_frame: pd.DataFrame, **kwargs) -> go.Figure:
+    """Creates a radar chart using Plotly's px.line_polar.
 
     A radar chart is a type of data visualization in which there are three or more
     variables represented on axes that originate from the same central point.
 
-    Args:
-        data_frame (pd.DataFrame): The data source for the chart.
-        **kwargs: Keyword arguments that can be passed into Plotly's line_polar (i.e. r, theta, etc.)
+       Args:
+        data_frame (pd.DataFrame): The data frame for the chart.
+        **kwargs: Keyword arguments to pass into px.line_polar (e.g. r, theta).
 
     Returns:
-        go.Figure: A Plotly Figure object representing the radar chart.
+       go.Figure: A Plotly Figure object of the radar chart.
 
     """
     fig = px.line_polar(data_frame, **kwargs)
@@ -195,6 +198,7 @@ def radar(data_frame, **kwargs) -> go.Figure:
     return fig
 
 
+# TODO: consider
 @capture("graph")
 def dumbbell(data_frame: pd.DataFrame, x: str, y: str, color: str) -> go.Figure:
     """Creates a dumbbell chart using Plotly's `px.scatter` and `add_shape`.
@@ -209,7 +213,7 @@ def dumbbell(data_frame: pd.DataFrame, x: str, y: str, color: str) -> go.Figure:
         color (str): Column name in `data_frame` used for coloring the markers.
 
     Returns:
-        go.Figure: A Plotly Figure object representing the dumbbell chart.
+        go.Figure: A Plotly Figure object of the dumbbell chart.
 
     Inspired by: https://community.plotly.com/t/how-to-make-dumbbell-plots-in-plotly-python/47762
 
@@ -236,13 +240,14 @@ def dumbbell(data_frame: pd.DataFrame, x: str, y: str, color: str) -> go.Figure:
 
 
 @capture("graph")
-def diverging_stacked_bar(data_frame, **kwargs) -> go.Figure:
-    """Creates a horizontal diverging stacked bar chart (with positive and negative values only).
+def diverging_stacked_bar(data_frame: pd.DataFrame, **kwargs) -> go.Figure:
+    """Creates a horizontal diverging stacked bar chart using Plotly's px.bar.
 
     This type of chart is a variant of the standard stacked bar chart, with bars aligned on a central baseline to
     show both positive and negative values. Each bar is segmented to represent different categories.
 
-    This function is not suitable for diverging stacked bar charts that include a neutral category.
+    This function is not suitable for diverging stacked bar charts that include a neutral category. The first half of
+    bars plotted are assumed to be negative ("Disagree") and the second half are assumed to be positive ("Agree").
 
     Inspired by: https://community.plotly.com/t/need-help-in-making-diverging-stacked-bar-charts/34023
 
@@ -252,7 +257,7 @@ def diverging_stacked_bar(data_frame, **kwargs) -> go.Figure:
         **kwargs: Keyword arguments to pass into px.bar (e.g. x, y, labels).
 
     Returns:
-       go.Figure: A Plotly Figure object representing the horizontal diverging stacked bar chart.
+       go.Figure: A Plotly Figure object of the diverging stacked bar chart.
     """
     fig = px.bar(data_frame, **kwargs)
 
@@ -272,17 +277,21 @@ def diverging_stacked_bar(data_frame, **kwargs) -> go.Figure:
 
     # Plotly draws traces in order they appear in fig.data, starting from x=0 and then stacking outwards.
     # We need negative traces to be ordered so that "Disagree" comes before "Strongly disagree", so reverse the
-    # order of all traces that are negative.
-    orientation = fig.data[0].orientation
-    negative_traces = {
-        trace_idx: trace
-        for trace_idx, trace in enumerate(fig.data)
-        if all(value <= 0 for value in getattr(trace, "x" if orientation == "h" else "y"))
-    }
+    # order of first half of traces.
     mutable_traces = list(fig.data)
-    for trace_idx, trace in zip(reversed(negative_traces.keys()), negative_traces.values()):
-        mutable_traces[trace_idx] = trace
+    mutable_traces[: len(fig.data) // 2] = reversed(fig.data[: len(fig.data) // 2])
     fig.data = mutable_traces
+
+    # Create new x or y axis with scale reversed (so going from 0 at the midpoint outwards) to do negative bars.
+    orientation = fig.data[0].orientation
+    x_or_y = "x" if orientation == "h" else "y"
+
+    for trace in fig.data[len(fig.data) // 2 :]:
+        setattr(trace, f"{x_or_y}axis", f"{x_or_y}2")
+
+    setattr(fig.layout, f"{x_or_y}axis2", getattr(fig.layout, f"{x_or_y}axis"))
+    fig.update_layout({f"{x_or_y}axis": {"autorange": "reversed", "domain": [0, 0.5]}})
+    fig.update_layout({f"{x_or_y}axis2": {"domain": [0.5, 1]}})
 
     if orientation == "h":
         fig.add_vline(x=0, line_width=2, line_color="grey")

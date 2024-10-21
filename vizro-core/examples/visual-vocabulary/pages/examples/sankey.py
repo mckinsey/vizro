@@ -21,26 +21,23 @@ def sankey(
     value: str,
     labels: list[str],
 ):
-    fig = go.Figure(
-        data=[
-            go.Sankey(
-                node={
-                    "pad": 16,
-                    "thickness": 16,
-                    "label": labels,
-                },
-                link={
-                    "source": data_frame[source],
-                    "target": data_frame[target],
-                    "value": data_frame[value],
-                    "label": labels,
-                    "color": "rgba(205, 209, 228, 0.4)",
-                },
-            )
-        ]
+    return go.Figure(
+        data=go.Sankey(
+            node={
+                "pad": 16,
+                "thickness": 16,
+                "label": labels,
+            },
+            link={
+                "source": data_frame[source],
+                "target": data_frame[target],
+                "value": data_frame[value],
+                "label": labels,
+                "color": "rgba(205, 209, 228, 0.4)",
+            },
+        ),
+        layout={"barmode": "relative"},
     )
-    fig.update_layout(barmode="relative")
-    return fig
 
 
 page = vm.Page(

@@ -15,12 +15,8 @@ pastries = pd.DataFrame(
             "Cookies",
             "Croissants",
             "Eclairs",
-            "Brownies",
-            "Tarts",
-            "Macarons",
-            "Pies",
         ],
-        "Profit Ratio": [-0.10, -0.15, -0.05, 0.10, 0.05, 0.20, 0.15, -0.08, 0.08, -0.12, 0.02, -0.07],
+        "Profit Ratio": [-0.10, -0.05, 0.10, 0.05, 0.15, -0.08, 0.08, -0.12],
     }
 )
 
@@ -30,7 +26,6 @@ page = vm.Page(
         vm.Graph(
             figure=px.bar(
                 pastries.sort_values("Profit Ratio"),
-                orientation="h",
                 x="Profit Ratio",
                 y="pastry",
                 color="Profit Ratio",

@@ -1,7 +1,7 @@
 import pandas as pd
 import vizro.models as vm
 import vizro.plotly.express as px
-from plotly import graph_objects as go
+import plotly.graph_objects as go
 from vizro import Vizro
 from vizro.models.types import capture
 
