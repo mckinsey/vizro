@@ -47,12 +47,6 @@ def butterfly(data_frame: pd.DataFrame, **kwargs) -> go.Figure:
     return fig
 
 
-### HERE HERE HERE:
-# Complete rest of TODOs in this file?
-# Think about how to pass JSON of whole dashboard to a Dash app that would load it.
-# Maybe put plotly vs. Vizro toggle in this dashboard.
-
-
 @capture("graph")
 def sankey(data_frame: pd.DataFrame, source: str, target: str, value: str, labels: list[str]) -> go.Figure:
     """Creates a custom sankey chart using Plotly's `go.Sankey`.
