@@ -20,7 +20,6 @@ jobs:
       matrix:
         include:
           - label: integration tests
-          - label: notebooks tests
           - label: vizro-ai ui tests
           - label: component library tests
     steps:
@@ -36,7 +35,6 @@ jobs:
       matrix:
         include:
           - label: integration tests
-          - label: notebooks test
           - label: vizro-ai ui tests
           - label: component library tests
     steps:
@@ -48,8 +46,6 @@ jobs:
 
           if [ "${{ matrix.label }}" == "integration tests" ]; then
             export INPUT_WORKFLOW_FILE_NAME=${{ secrets.VIZRO_QA_INTEGRATION_TESTS_WORKFLOW }}
-          elif [ "${{ matrix.label }}" == "notebooks test" ]; then
-            export INPUT_WORKFLOW_FILE_NAME=${{ secrets.VIZRO_QA_NOTEBOOKS_TESTS_WORKFLOW }}
           elif [ "${{ matrix.label }}" == "vizro-ai ui tests" ]; then
             export INPUT_WORKFLOW_FILE_NAME=${{ secrets.VIZRO_QA_VIZRO_AI_UI_TESTS_WORKFLOW }}
           elif [ "${{ matrix.label }}" == "component library tests" ]; then
