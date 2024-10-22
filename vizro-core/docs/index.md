@@ -30,7 +30,7 @@ Vizro is a toolkit for creating modular data visualization applications.
     ---
 
     [:octicons-arrow-right-24: Tutorials](pages/tutorials/explore-components.md) <br/>
-    [:octicons-arrow-right-24: Examples](pages/examples/examples.md)
+    [:octicons-arrow-right-24: Examples](https://vizro.mckinsey.com)
 
 
 
