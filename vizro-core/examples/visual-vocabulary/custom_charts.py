@@ -1,6 +1,6 @@
 """Contains custom charts used inside the dashboard."""
 
-from typing import Optional, Union
+from typing import Union
 
 import pandas as pd
 import vizro.plotly.express as px
@@ -139,7 +139,7 @@ def column_and_line(
 def categorical_column(data_frame: pd.DataFrame, **kwargs) -> go.Figure:
     """Creates a column chart where the x-axis values are converted to category type.
 
-     Args:
+    Args:
         data_frame (pd.DataFrame): The data frame for the chart. Can be long form or wide form.
             See https://plotly.com/python/wide-form/.
         **kwargs: Keyword arguments to pass into px.bar (e.g. x, y, labels).
@@ -148,7 +148,6 @@ def categorical_column(data_frame: pd.DataFrame, **kwargs) -> go.Figure:
        go.Figure: A Plotly Figure object of the diverging stacked bar chart.
 
     """
-
     fig = px.bar(data_frame, **kwargs)
     # So ticks are aligned with bars when xaxes values are numbers (e.g. years)
     fig.update_xaxes(type="category")
@@ -188,7 +187,7 @@ def radar(data_frame: pd.DataFrame, **kwargs) -> go.Figure:
     A radar chart is a type of data visualization in which there are three or more
     variables represented on axes that originate from the same central point.
 
-       Args:
+    Args:
         data_frame (pd.DataFrame): The data frame for the chart.
         **kwargs: Keyword arguments to pass into px.line_polar (e.g. r, theta).
 
@@ -212,6 +211,7 @@ def dumbbell(data_frame: pd.DataFrame, **kwargs) -> go.Figure:
         data_frame (pd.DataFrame): The data frame for the chart. Can be long form or wide form.
             See https://plotly.com/python/wide-form/.
         **kwargs: Keyword arguments to pass into px.scatter (e.g. x, y, labels).
+
     Returns:
         go.Figure: A Plotly Figure object of the dumbbell chart.
 

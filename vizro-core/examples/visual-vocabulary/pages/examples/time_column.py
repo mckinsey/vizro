@@ -1,9 +1,9 @@
 import pandas as pd
+import plotly.graph_objects as go
 import vizro.models as vm
 import vizro.plotly.express as px
 from vizro import Vizro
 from vizro.models.types import capture
-import plotly.graph_objects as go
 
 gapminder = px.data.gapminder()
 
