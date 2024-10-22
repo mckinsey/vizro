@@ -3,7 +3,7 @@ code.language-python.hljs {
   padding: 0;
 }
 
-.hljs {
+.hljs  {
   background: unset;
   color: unset;
   font-family: monospace;
@@ -18,12 +18,12 @@ code.language-python.hljs {
 .hljs-string,
 .hljs-params,
 .hljs-params .hljs-string,
-.hljs-number {
+.hljs-number, .hljs-subst {
   color: var(--text-code-string);
   font-family: monospace;
 }
 
-.hljs-literal {
+.hljs-literal{
   color: var(--text-code-literal);
   font-family: monospace;
 }

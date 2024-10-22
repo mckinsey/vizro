@@ -18,24 +18,7 @@ def column_and_line(
     y_column: Union[str, pd.Series, list[str], list[pd.Series]],
     y_line: Union[str, pd.Series, list[str], list[pd.Series]],
 ) -> go.Figure:
-    """Creates a combined column and line chart using Plotly.
-
-    This function generates a chart with a bar graph for one variable (y-axis 1) and a line graph for another variable
-    (y-axis 2), sharing the same x-axis. The y-axes for the bar and line graphs are synchronized and overlaid.
-
-    Args:
-        data_frame (pd.DataFrame): The data source for the chart.
-        x (str): Either a name of a column in data_frame, or a pandas Series or array_like object.
-        y_column (str): Either a name of a column in data_frame, or a pandas Series or array_like object.
-        y_line (str): Either a name of a column in data_frame, or a pandas Series or array_like object.
-
-    Returns:
-        go.Figure: : A Plotly Figure object of the combined column and line chart.
-
-    """
-    # We use px.bar and px.line so that we get the plotly express hoverdata, axes titles etc. Bar is used arbitrarily
-    # selected as the "base" plot and then line added on top of it. This means manually incrementing
-    # color_discrete_sequence for the line plot so that the colors are not the same for bar and line.
+    """Creates a combined column and line chart using Plotly."""
     bar = px.bar(data_frame, x=x, y=y_column)
     fig = make_subplots(figure=bar, specs=[[{"secondary_y": True}]])
 
@@ -53,21 +36,18 @@ def column_and_line(
     return fig
 
 
-dashboard = vm.Dashboard(
-    pages=[
-        vm.Page(
-            title="Column and line",
-            components=[
-                vm.Graph(
-                    figure=column_and_line(
-                        gapminder.query("country == 'Vietnam'"),
-                        y_column="gdpPercap",
-                        y_line="lifeExp",
-                        x="year",
-                    )
-                )
-            ],
+page = vm.Page(
+    title="Column and line",
+    components=[
+        vm.Graph(
+            figure=column_and_line(
+                gapminder.query("country == 'Vietnam'"),
+                y_column="gdpPercap",
+                y_line="lifeExp",
+                x="year",
+            )
         )
-    ]
+    ],
 )
+dashboard = vm.Dashboard(pages=[page])
 Vizro().build(dashboard).run()

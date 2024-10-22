@@ -22,7 +22,6 @@ def butterfly(data_frame: pd.DataFrame, **kwargs) -> go.Figure:
     orientation = fig.data[0].orientation
     x_or_y = "x" if orientation == "h" else "y"
 
-    # Create new x or y axis with scale reversed (so going from 0 at the midpoint outwards) to do back-to-back bars.
     setattr(fig.data[1], f"{x_or_y}axis", f"{x_or_y}2")
     setattr(fig.layout, f"{x_or_y}axis2", getattr(fig.layout, f"{x_or_y}axis"))
     fig.update_layout({f"{x_or_y}axis": {"autorange": "reversed", "domain": [0, 0.5]}})
@@ -36,18 +35,13 @@ def butterfly(data_frame: pd.DataFrame, **kwargs) -> go.Figure:
     return fig
 
 
-dashboard = vm.Dashboard(
-    pages=[
-        vm.Page(
-            title="Butterfly",
-            components=[
-                vm.Graph(
-                    figure=butterfly(
-                        ages, x=["Male", "Female"], y="Age", labels={"value": "Population", "variable": "Sex"}
-                    )
-                )
-            ],
+page = vm.Page(
+    title="Butterfly",
+    components=[
+        vm.Graph(
+            figure=butterfly(ages, x=["Male", "Female"], y="Age", labels={"value": "Population", "variable": "Sex"})
         )
-    ]
+    ],
 )
+dashboard = vm.Dashboard(pages=[page])
 Vizro().build(dashboard).run()
