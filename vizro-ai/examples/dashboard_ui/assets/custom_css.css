@@ -193,3 +193,11 @@
   background-color: inherit;
   color: var(--text-active);
 }
+
+#right-header {
+  align-items: baseline;
+  display: flex;
+  flex-direction: row;
+  height: 32px;
+  justify-content: center;
+}
