@@ -178,3 +178,18 @@
 .modal-content {
   width: fit-content;
 }
+
+.btn-primary:enabled:has(#dropdown-menu-icon) {
+  background-color: inherit;
+  color: var(--text-active);
+}
+
+.btn-primary:disabled:has(#dropdown-menu-icon) {
+  background-color: inherit;
+  color: var(--text-active);
+}
+
+.download-button {
+  background-color: inherit;
+  color: var(--text-active);
+}

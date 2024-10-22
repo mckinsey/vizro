@@ -1,8 +1,11 @@
 """VizroAI UI dashboard configuration."""
 
+import json
+
 import black
 import dash
 import pandas as pd
+import plotly.graph_objects as go
 import vizro.models as vm
 import vizro.plotly.express as px
 from actions import data_upload_action, display_filename, run_vizro_ai, update_table
@@ -10,6 +13,7 @@ from components import (
     CodeClipboard,
     CustomDashboard,
     CustomImg,
+    DropdownMenu,
     Icon,
     Modal,
     MyDropdown,
@@ -31,6 +35,7 @@ vm.Container.add_type("components", Modal)
 vm.Container.add_type("components", ToggleSwitch)
 vm.Container.add_type("components", CustomImg)
 vm.Container.add_type("components", UserPromptTextArea)
+vm.Container.add_type("components", DropdownMenu)
 
 vm.Page.add_type("components", UserUpload)
 vm.Page.add_type("components", MyDropdown)
@@ -51,10 +56,10 @@ SUPPORTED_MODELS = [
 
 plot_page = vm.Page(
     id="vizro_ai_plot_page",
-    title="Vizro-AI - effortlessly create interactive charts with Plotly",
+    title="Vizro-AI - create interactive charts with Plotly and Vizro",
     layout=vm.Layout(
         grid=[
-            [2, 2, -1, 4],
+            [2, 2, 1, 1],
             [3, 3, 1, 1],
             [3, 3, 1, 1],
             *[[0, 0, 1, 1]] * 7,
@@ -63,14 +68,28 @@ plot_page = vm.Page(
     components=[
         vm.Container(
             title="",
-            components=[CodeClipboard(id="plot"), ToggleSwitch(id="toggle-id"), CustomImg(id="json-download")],
+            components=[CodeClipboard(id="plot"), ToggleSwitch(id="toggle-id")],
             layout=vm.Layout(
-                grid=[*[[0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]] * 7, [-1, -1, -1, -1, -1, -1, -1, -1, -1, 1, 1, 2]],
+                grid=[*[[0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]] * 7, [-1, -1, -1, -1, -1, -1, -1, -1, -1, -1, 1, 1]],
                 row_gap="12px",
                 col_gap="12px",
             ),
         ),
-        vm.Graph(id="graph-id", figure=px.scatter(pd.DataFrame())),
+        vm.Container(
+            title="",
+            layout=vm.Layout(
+                grid=[
+                    [-1, -1, -1, -1, -1, -1, -1, -1, -1, -1, 0],
+                    *[[1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1]] * 10,
+                    [-1, -1, -1, -1, -1, -1, -1, -1, 2, 2, 2],
+                ]
+            ),
+            components=[
+                Icon(id="open-settings-id"),
+                vm.Graph(id="graph-id", figure=px.scatter(pd.DataFrame())),
+                DropdownMenu(id="dropdown-menu"),
+            ],
+        ),
         vm.Container(
             title="",
             layout=vm.Layout(
@@ -145,7 +164,6 @@ plot_page = vm.Page(
                 # Modal(id="modal"),
             ],
         ),
-        Icon(id="open-settings-id"),
     ],
 )
 
@@ -202,24 +220,6 @@ def toggle_code(value, data):
 
 
 @callback(
-    Output("download-json", "data"),
-    Input("json-download-icon", "n_clicks"),
-    [State("code-output-store-id", "data"), State("toggle-switch", "value")],
-)
-def download_json(n_clicks, data, value):
-    """Callback for switching between vizro and plotly code."""
-    if not data:
-        return dash.no_update
-    if not n_clicks:
-        return dash.no_update
-
-    figure_json = data["ai_outputs"]["vizro"]["fig"] if value else data["ai_outputs"]["plotly"]["fig"]
-    file_name = "vizro_fig" if value else "plotly_fig"
-
-    return dcc.send_string(figure_json, f"{file_name}.json")
-
-
-@callback(
     Output("data-modal", "is_open"),
     Input("modal-table-icon", "n_clicks"),
     State("data-modal", "is_open"),
@@ -231,6 +231,50 @@ def open_modal(n_clicks, is_open, data):
     if n_clicks:
         return not is_open
     return is_open
+
+
+@callback(
+    Output("download-json", "data"),
+    Input("dropdown-menu-json", "n_clicks"),
+    State("code-output-store-id", "data"),
+)
+def download_json(n_clicks, data):
+    """Callback for downloading vizro fig json file."""
+    if not data:
+        return dash.no_update
+    if not n_clicks:
+        return dash.no_update
+
+    figure_json = data["ai_outputs"]["vizro"]["fig"]
+    file_name = "vizro_fig"
+
+    return dcc.send_string(figure_json, f"{file_name}.json")
+
+
+@callback(
+    Output("download-html", "data"),
+    Input("dropdown-menu-html", "n_clicks"),
+    State("code-output-store-id", "data"),
+    prevent_initial_call=True,
+)
+def download_html(n_clicks, data):
+    """Callback for downloading vizro fig html file."""
+    if not data:
+        return dash.no_update
+    if not n_clicks:
+        return dash.no_update
+    vizro_json = data["ai_outputs"]["vizro"]["fig"]
+    vizro_json = f"{vizro_json}"
+    fig_json = json.loads(vizro_json)
+    fig = go.Figure(fig_json)
+
+    fig.write_html("plotly_graph.html")
+    return dcc.send_file("plotly_graph.html")
+
+
+def download_png():
+    """Callback for downloading vizro fig png  file."""
+    pass
 
 
 app = Vizro().build(dashboard)

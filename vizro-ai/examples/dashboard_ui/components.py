@@ -273,13 +273,13 @@ class CustomImg(vm.VizroBaseModel):
             children=[
                 html.Span("download", className="material-symbols-outlined", id=f"{self.id}-icon"),
                 dbc.Tooltip(
-                    "Download JSON file",
+                    "Download fig",
                     placement="right",
                     target=f"{self.id}-icon",
                 ),
                 dcc.Download(id="download-json"),
             ],
-            style={"paddingTop": "4px", "display": "flex", "alignItems": "end", "justifyContent": "center"},
+            style={"paddingTop": "4px", "display": "flex", "alignItems": "end", "justifyContent": "end"},
         )
         return custom_img
 
@@ -308,3 +308,40 @@ def custom_table(data_frame):
         style={"gap": "8px", "display": "flex", "flexDirection": "row", "alignItems": "center"},
     )
     return table_modal
+
+
+class DropdownMenu(vm.VizroBaseModel):
+    """Custom dropdown menu component."""
+
+    type: Literal["dropdown_menu"] = "dropdown_menu"
+
+    def build(self):
+        button_group = dbc.ButtonGroup(
+            [
+                dbc.Button(children="JSON", id=f"{self.id}-json", className="download-button"),
+                dcc.Download(id="download-json"),
+                # dbc.Tooltip("Download fig as JSON", target=f"{self.id}-json", placement="top"),
+                dbc.Button(children="HTML", id=f"{self.id}-html", className="download-button"),
+                dcc.Download(id="download-html"),
+                # dbc.Tooltip("Download fig as HTML", target=f"{self.id}-html", placement="top"),
+                dbc.Button(children="PNG", id=f"{self.id}-png", className="download-button"),
+                dcc.Download(id="download-png"),
+                # dbc.Tooltip("Download fig as PNG", target=f"{self.id}-png", placement="top"),
+            ],
+            style={"scale": "85%"},
+        )
+        download_div = html.Div(
+            children=[html.Span("download", className="material-symbols-outlined", id=f"{self.id}-icon"), button_group],
+            style={
+                "display": "flex",
+                "flexDirection": "row",
+                "gap": "2px",
+                "border": "0.5px solid gray",
+                "borderRadius": "8px",
+                "width": "200px",
+                "alignItems": "center",
+                "justifyContent": "center",
+            },
+        )
+
+        return download_div
