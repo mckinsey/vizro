@@ -81,8 +81,6 @@ diverging_stacked_bar = vm.Page(
         ),
         vm.Graph(
             title="I would recommend this pastry to my friends",
-            # TODO: when it's possible to update a figure without making a whole new function, remove the - signs from
-            # the x-axis (and maybe hover labels). It's not possible to do this dynamically in diverging_stacked_bar.
             figure=diverging_stacked_bar(
                 data_frame=pastries,
                 x=["Strongly Disagree", "Disagree", "Agree", "Strongly Agree"],
