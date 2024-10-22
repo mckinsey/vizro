@@ -7,7 +7,7 @@ python = ["3.9", "3.10", "3.11", "3.12"]
 dependencies = ["scriv"]
 detached = true
 installer = "uv"
-scripts = {add = "scriv create --add", collect = ["scriv collect --add", "- hatch run lint:lint --files=CHANGELOG.md"]}
+scripts = {add = "scriv create --add", collect = ["scriv collect --add", "- pre-commit run --files=CHANGELOG.md > /dev/null"]}
 
 [envs.default]
 dependencies = [
@@ -30,7 +30,6 @@ dependencies = [
   "pre-commit"
 ]
 installer = "uv"
-python = "3.11"
 
 [envs.default.env-vars]
 VIZRO_AI_LOG_LEVEL = "DEBUG"
@@ -39,7 +38,7 @@ VIZRO_AI_LOG_LEVEL = "DEBUG"
 example = "cd examples; python example.py"
 example-create-dashboard = "cd examples; python example_dashboard.py"
 example-ui = "cd examples/dashboard_ui; python app.py"
-lint = "SKIP=gitleaks pre-commit run {args} --all-files"
+lint = "pre-commit run {args} --all-files"
 pip = "'{env:HATCH_UV}' pip {args}"
 prep-release = [
   "hatch version release",
@@ -48,7 +47,6 @@ prep-release = [
   'echo "Now raise a PR to merge into main with title: [Release] Release of vizro-ai $(hatch version)"'
 ]
 pypath = "hatch run python -c 'import sys; print(sys.executable)'"
-secrets = "pre-commit run gitleaks --all-files"
 test = "pytest tests {args}"
 test-integration = "pytest -vs --reruns 1 tests/integration --headless {args}"
 test-unit = "pytest tests/unit {args}"
@@ -79,7 +77,8 @@ pip = "'{env:HATCH_UV}' pip {args}"
 serve = "mkdocs serve --open"
 
 [envs.lower-bounds]
-extra-dependencies = ["pydantic==1.10.13"]
+extra-dependencies = ["pydantic==1.10.16"]
+python = "3.9"
 
 [version]
 path = "src/vizro_ai/__init__.py"

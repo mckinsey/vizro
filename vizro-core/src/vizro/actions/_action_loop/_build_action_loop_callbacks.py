@@ -1,7 +1,6 @@
 """Contains utilities to create required dash callbacks for the action loop."""
 
 import logging
-from typing import List
 
 from dash import ClientsideFunction, Input, Output, State, clientside_callback
 
@@ -23,7 +22,7 @@ def _build_action_loop_callbacks() -> None:
     if not actions_chains:
         return
 
-    gateway_inputs: List[Input] = []
+    gateway_inputs: list[Input] = []
     for actions_chain in actions_chains:
         # Recalculating the trigger component id to use the underlying callable object as a trigger component if needed.
         actions_chain_trigger_component_id = actions_chain.trigger.component_id
@@ -38,7 +37,7 @@ def _build_action_loop_callbacks() -> None:
 
         # Callback that enables gateway callback to work in the multiple page app
         clientside_callback(
-            ClientsideFunction(namespace="clientside", function_name="trigger_to_global_store"),
+            ClientsideFunction(namespace="build_action_loop_callbacks", function_name="trigger_to_global_store"),
             Output({"type": "gateway_input", "trigger_id": actions_chain.id}, "data"),
             Input(
                 component_id=actions_chain_trigger_component_id,
@@ -57,7 +56,7 @@ def _build_action_loop_callbacks() -> None:
 
     # Determines the final sequence of actions to be triggered.
     clientside_callback(
-        ClientsideFunction(namespace="clientside", function_name="gateway"),
+        ClientsideFunction(namespace="build_action_loop_callbacks", function_name="gateway"),
         output=[Output("remaining_actions", "data")]
         + [Output({"type": "action_trigger", "action_name": action.id}, "data") for action in actions],
         inputs=[
@@ -72,7 +71,7 @@ def _build_action_loop_callbacks() -> None:
 
     # Callback that triggers the next iteration
     clientside_callback(
-        ClientsideFunction(namespace="clientside", function_name="after_action_cycle_breaker"),
+        ClientsideFunction(namespace="build_action_loop_callbacks", function_name="after_action_cycle_breaker"),
         Output("cycle_breaker_empty_output_store", "data"),
         Input("action_finished", "data"),
         prevent_initial_call=True,

@@ -1,4 +1,4 @@
-from typing import List, Literal, Optional, Union
+from typing import Literal, Optional, Union
 
 import dash_mantine_components as dmc
 from dash import ClientsideFunction, Input, Output, State, clientside_callback, dcc, html
@@ -30,20 +30,20 @@ class DatePicker(VizroBaseModel):
         type (Literal["date_picker"]): Defaults to `"date_picker"`.
         min (Optional[date]): Start date for date picker. Defaults to `None`.
         max (Optional[date]): End date for date picker. Defaults to `None`.
-        value (Union[List[date], date]): Default date/dates for date picker. Defaults to `None`.
+        value (Union[list[date], date]): Default date/dates for date picker. Defaults to `None`.
         title (str): Title to be displayed. Defaults to `""`.
         range (bool): Boolean flag for displaying range picker. Default to `True`.
-        actions (List[Action]): See [`Action`][vizro.models.Action]. Defaults to `[]`.
+        actions (list[Action]): See [`Action`][vizro.models.Action]. Defaults to `[]`.
 
     """
 
     type: Literal["date_picker"] = "date_picker"
     min: Optional[date] = Field(None, description="Start date for date picker.")
     max: Optional[date] = Field(None, description="End date for date picker.")
-    value: Optional[Union[List[date], date]] = Field(None, description="Default date for date picker")
+    value: Optional[Union[list[date], date]] = Field(None, description="Default date for date picker")
     title: str = Field("", description="Title to be displayed.")
     range: bool = Field(True, description="Boolean flag for displaying range picker.")
-    actions: List[Action] = []
+    actions: list[Action] = []
 
     _input_property: str = PrivateAttr("value")
     _set_actions = _action_validator_factory("value")
@@ -67,7 +67,7 @@ class DatePicker(VizroBaseModel):
         ]
 
         clientside_callback(
-            ClientsideFunction(namespace="clientside", function_name="update_date_picker_values"),
+            ClientsideFunction(namespace="date_picker", function_name="update_date_picker_values"),
             output=output,
             inputs=inputs,
         )
@@ -75,7 +75,7 @@ class DatePicker(VizroBaseModel):
         # if there is not enough space. Caused by another workaround for this issue:
         # https://github.com/snehilvj/dash-mantine-components/issues/219
         clientside_callback(
-            ClientsideFunction(namespace="clientside", function_name="update_date_picker_position"),
+            ClientsideFunction(namespace="date_picker", function_name="update_date_picker_position"),
             output=Output(self.id, "dropdownPosition"),
             inputs=Input(self.id, "n_clicks"),
         )
@@ -108,5 +108,4 @@ class DatePicker(VizroBaseModel):
                 date_picker,
                 dcc.Store(id=f"{self.id}_input_store", storage_type="session", data=init_value),
             ],
-            className="selector_container",
         )

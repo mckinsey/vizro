@@ -1,6 +1,6 @@
 """App configuration for dashboard."""
 
-from typing import List, Union
+from typing import Union
 
 import vizro.models as vm
 from chart_groups import ALL_CHART_GROUP, CHART_GROUPS, ChartGroup, IncompletePage
@@ -60,7 +60,7 @@ def make_homepage_container(chart_group: ChartGroup) -> vm.Container:
     )
 
 
-def _remove_duplicates(pages: List[Union[vm.Page, IncompletePage]]) -> List[Union[vm.Page, IncompletePage]]:
+def _remove_duplicates(pages: list[Union[vm.Page, IncompletePage]]) -> list[Union[vm.Page, IncompletePage]]:
     # Deduplicate pages that have the same title. Using reversed means that the page that is kept is the first one
     # in the dashboard. This will be the one that the card on the homepage links to.
     return list({page.title: page for page in reversed(pages)}.values())
@@ -111,4 +111,4 @@ app = Vizro().build(dashboard)
 server = app.dash.server
 
 if __name__ == "__main__":
-    app.run()
+    app.run(port=8051)

@@ -1,4 +1,4 @@
-from typing import List, Literal
+from typing import Literal
 
 import dash_bootstrap_components as dbc
 from dash import html
@@ -22,7 +22,7 @@ class UserInput(VizroBaseModel):
         type (Literal["user_input"]): Defaults to `"user_input"`.
         title (str): Title to be displayed. Defaults to `""`.
         placeholder (str): Default text to display in input field. Defaults to `""`.
-        actions (Optional[List[Action]]): Defaults to `[]`.
+        actions (Optional[list[Action]]): Defaults to `[]`.
 
     """
 
@@ -30,7 +30,7 @@ class UserInput(VizroBaseModel):
     # TODO: before making public consider naming this field (or giving an alias) label instead of title
     title: str = Field("", description="Title to be displayed")
     placeholder: str = Field("", description="Default text to display in input field")
-    actions: List[Action] = []
+    actions: list[Action] = []
 
     # Re-used validators
     # TODO: Before making public, consider how actions should be triggered and what the default property should be

@@ -1,7 +1,7 @@
 from __future__ import annotations
 
 from collections.abc import Mapping
-from typing import Dict, List, Literal
+from typing import Literal
 
 import dash_bootstrap_components as dbc
 from dash import html
@@ -23,14 +23,14 @@ class NavBar(VizroBaseModel):
 
     Args:
         type (Literal["nav_bar"]): Defaults to `"nav_bar"`.
-        pages (Dict[str, List[str]]): Mapping from name of a pages group to a list of page IDs. Defaults to `{}`.
-        items (List[NavLink]): See [`NavLink`][vizro.models.NavLink]. Defaults to `[]`.
+        pages (dict[str, list[str]]): Mapping from name of a pages group to a list of page IDs. Defaults to `{}`.
+        items (list[NavLink]): See [`NavLink`][vizro.models.NavLink]. Defaults to `[]`.
 
     """
 
     type: Literal["nav_bar"] = "nav_bar"
-    pages: Dict[str, List[str]] = Field({}, description="Mapping from name of a pages group to a list of page IDs.")
-    items: List[NavLink] = []
+    pages: dict[str, list[str]] = Field({}, description="Mapping from name of a pages group to a list of page IDs.")
+    items: list[NavLink] = []
 
     # validators
     _validate_pages = validator("pages", allow_reuse=True)(_validate_pages)

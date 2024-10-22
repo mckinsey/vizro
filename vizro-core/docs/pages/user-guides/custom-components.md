@@ -139,7 +139,7 @@ vm.Parameter.add_type("selector", TooltipNonCrossRangeSlider)
 
     === "yaml"
         ```yaml
-        # Custom components are currently only possible via python configuration
+        # Custom components are currently only possible via Python configuration
         ```
     === "Result"
         [![CustomComponent1]][CustomComponent1]
@@ -256,7 +256,7 @@ vm.Page.add_type("components", Jumbotron)
         6.  The new component can now be inserted into a regular dashboard.
     === "yaml"
         ```yaml
-        # Custom components are currently only possible via python configuration
+        # Custom components are currently only possible via Python configuration
         ```
     === "Result"
         [![CustomComponent2]][CustomComponent2]
@@ -308,7 +308,7 @@ Add the custom action `open_offcanvas` as a `function` argument inside the [`Act
 
     === "app.py"
         ```{.python pycafe-link}
-        from typing import List, Literal
+        from typing import Literal
 
         import dash_bootstrap_components as dbc
         import vizro.models as vm
@@ -378,7 +378,7 @@ Add the custom action `open_offcanvas` as a `function` argument inside the [`Act
         ```
     === "yaml"
         ```yaml
-        # Custom components are currently only possible via python configuration
+        # Custom components are currently only possible via Python configuration
         ```
     === "Result"
         [![CustomComponent3]][CustomComponent3]
@@ -390,9 +390,9 @@ Add the custom action `open_offcanvas` as a `function` argument inside the [`Act
 
 As mentioned above, custom components can trigger action. To enable the custom component to trigger the action, we need to add some extra code:
 
-1. **Add the `actions` argument to your custom component**. The type of the `actions` argument is `List[Action]`.
+1. **Add the `actions` argument to your custom component**. The type of the `actions` argument is `list[Action]`.
    ```py
-    actions: List[Action] = []
+    actions: list[Action] = []
    ```
 2. **Set the action through `_set_actions`**. In doing so, any change in the `"active_index"` property of the custom component triggers the action.
    ```py
@@ -404,7 +404,7 @@ As mentioned above, custom components can trigger action. To enable the custom c
 
     === "app.py"
         ```py
-        from typing import List, Literal
+        from typing import Literal
 
         import dash_bootstrap_components as dbc
         import vizro.models as vm
@@ -424,8 +424,8 @@ As mentioned above, custom components can trigger action. To enable the custom c
         # 1. Create new custom component
         class Carousel(vm.VizroBaseModel):
             type: Literal["carousel"] = "carousel"
-            items: List
-            actions: List[Action] = []
+            items: list
+            actions: list[Action] = []
             # Here we set the action so a change in the active_index property of the custom component triggers the action
             _set_actions = _action_validator_factory("active_index")
 
@@ -472,10 +472,10 @@ As mentioned above, custom components can trigger action. To enable the custom c
 
         Vizro().build(dashboard).run()
         ```
-        <img src=https://py.cafe/logo.png alt="py.cafe logo" width="30"><b><a target="_blank" href="https://py.cafe/vizro-official/vizro-custom-carousel-component">Run and edit this code in Py.Cafe</a></b>
+        <img src=https://py.cafe/logo.png alt="PyCafe logo" width="30"><b><a target="_blank" href="https://py.cafe/vizro-official/vizro-custom-carousel-component">Run and edit this code in PyCafe</a></b>
     === "yaml"
         ```yaml
-        # Custom components are currently only possible via python configuration
+        # Custom components are currently only possible via Python configuration
         ```
     === "Result"
         [![CustomComponent4]][CustomComponent4]

@@ -1,5 +1,5 @@
 ## Current team members
-
+<!-- vale off -->
 [Alexey Snigir](https://github.com/l0uden),
 [Antony Milne](https://github.com/antonymilne),
 [Dan Dumitriu](https://github.com/dandumitriu1),
@@ -35,7 +35,18 @@ Natalia Kurakina,
 [Rashida Kanchwala](https://github.com/rashidakanchwala),
 [Juan Luis Cano Rodríguez](https://github.com/astrojuanlu),
 [Anna Xiong](https://github.com/Anna-Xiong),
-[Chiara Pullem](https://github.com/chiara-sophie)
+[Chiara Pullem](https://github.com/chiara-sophie),
+[Sylvie Zhang](https://github.com/sylviezhang37),
+[Bhavana Sundar](https://github.com/bhavanaeh),
+[Ferida Mohammed](https://github.com/feridaaa),
+[Lydia Pitts](https://github.com/LydiaPitts),
+[Riley Dou](https://github.com/rilieo),
+[Upekesha Ngugi](https://github.com/upekesha),
+[Hansaem Park](https://github.com/sammitako),
+[Rosheen C.](https://github.com/rc678),
+[Hilary Ivy](https://github.com/hxe00570),
+[Jasmine Wu](https://github.com/jazwu),
+[njmcgrat](https://github.com/njmcgrat)
 
 with thanks to Sam Bourton and Kevin Staight for sponsorship, inspiration and guidance,
 
@@ -43,3 +54,4 @@ and special thanks to
 [Wesley Leong](https://github.com/wesleyleong), [Jonas Kemper](https://github.com/jonasrk) and team for origination and support
 
 (plus everyone else who helped to test, guide, support and encourage development)
+<!-- vale on -->

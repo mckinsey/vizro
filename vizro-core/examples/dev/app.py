@@ -1,7 +1,7 @@
 """Example app to show all features of Vizro."""
 
 from time import sleep
-from typing import List, Literal, Optional
+from typing import Literal, Optional
 
 import dash_bootstrap_components as dbc
 import pandas as pd
@@ -601,7 +601,7 @@ custom_charts = vm.Page(
 
 # CUSTOM TABLE ------------------------------------------------------------------
 @capture("table")
-def my_custom_table(data_frame=None, chosen_columns: Optional[List[str]] = None):
+def my_custom_table(data_frame=None, chosen_columns: Optional[list[str]] = None):
     """Custom table with added logic to filter on chosen columns."""
     columns = [{"name": i, "id": i} for i in chosen_columns]
     defaults = {

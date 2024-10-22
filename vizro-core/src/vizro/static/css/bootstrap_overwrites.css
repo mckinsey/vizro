@@ -9,11 +9,6 @@ but do not want to take over to `vizro-bootstrap` as these settings might not be
   margin-bottom: 0;
 }
 
-/* TO DO: Check if this should live in vizro-bootstrap */
-.card p:last-of-type {
-  margin-bottom: 0;
-}
-
 .accordion-item .nav-link {
   padding: 0.5rem 1rem;
 }

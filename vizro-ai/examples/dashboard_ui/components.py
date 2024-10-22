@@ -1,6 +1,6 @@
 """Contains custom components used within a dashboard."""
 
-from typing import List, Literal
+from typing import Literal
 
 import black
 import dash_bootstrap_components as dbc
@@ -21,12 +21,12 @@ class UserPromptTextArea(vm.VizroBaseModel):
         type (Literal["user_input"]): Defaults to `"user_text_area"`.
         title (str): Title to be displayed. Defaults to `""`.
         placeholder (str): Default text to display in input field. Defaults to `""`.
-        actions (Optional[List[Action]]): Defaults to `[]`.
+        actions (Optional[list[Action]]): Defaults to `[]`.
 
     """
 
     type: Literal["user_text_area"] = "user_text_area"
-    actions: List[Action] = []  # noqa: RUF012
+    actions: list[Action] = []  # noqa: RUF012
 
     _set_actions = _action_validator_factory("value")
 
@@ -50,12 +50,12 @@ class UserUpload(vm.VizroBaseModel):
     Args:
         type (Literal["upload"]): Defaults to `"upload"`.
         title (str): Title to be displayed.
-        actions (List[Action]): See [`Action`][vizro.models.Action]. Defaults to `[]`.
+        actions (list[Action]): See [`Action`][vizro.models.Action]. Defaults to `[]`.
 
     """
 
     type: Literal["upload"] = "upload"
-    actions: List[Action] = []  # noqa: RUF012
+    actions: list[Action] = []  # noqa: RUF012
 
     # 'contents' property is input to custom action callback
     _input_property: str = PrivateAttr("contents")
@@ -153,7 +153,7 @@ class OffCanvas(vm.VizroBaseModel):
     """OffCanvas component for settings."""
 
     type: Literal["offcanvas"] = "offcanvas"
-    options: List[str]
+    options: list[str]
     value: str
 
     def build(self):

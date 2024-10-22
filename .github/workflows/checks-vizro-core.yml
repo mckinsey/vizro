@@ -18,7 +18,7 @@ on:
 env:
   PYTHONUNBUFFERED: 1
   FORCE_COLOR: 1
-  PYTHON_VERSION: "3.11"
+  PYTHON_VERSION: "3.12"
 
 jobs:
   checks-vizro-core:
@@ -42,7 +42,7 @@ jobs:
         run: hatch run pip tree
 
       - name: Check schema is up to date
-        run: hatch run schema --check
+        run: hatch run schema-check
 
       - name: Find changed files to see if changelog fragment needed
         id: changed-files
@@ -51,10 +51,10 @@ jobs:
         # than a renamed version of an already-existing empty changelog file.
         run: |
           echo "changelog_fragment_added=$(git diff --name-only --no-renames --diff-filter=A HEAD^1 HEAD -- 'changelog.d/*.md' | xargs)" >> $GITHUB_OUTPUT
-          echo "files_outside_docs_changed=$(git diff --name-only HEAD^1 HEAD -- ':!docs' | xargs)" >> $GITHUB_OUTPUT
+          echo "source_code_changed=$(git diff --name-only HEAD^1 HEAD -- 'src' | xargs)" >> $GITHUB_OUTPUT
 
       - name: Fail if changelog fragment needed and wasn't added
-        if: ${{ steps.changed-files.outcome != 'skipped' && steps.changed-files.outputs.files_outside_docs_changed && !steps.changed-files.outputs.changelog_fragment_added}}
+        if: ${{ steps.changed-files.outcome != 'skipped' && steps.changed-files.outputs.source_code_changed && !steps.changed-files.outputs.changelog_fragment_added}}
         run: |
           echo "No changelog fragment .md file within changelog.d was detected. Run 'hatch run changelog:add' to create such a fragment."
           echo "If your PR contains changes that should be mentioned in the CHANGELOG in the next release, please uncomment the relevant section in your created fragment and describe the changes to the user."

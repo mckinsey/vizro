@@ -5,7 +5,7 @@ try:
 except ImportError:  # pragma: no cov
     from pydantic import BaseModel, Field, PrivateAttr, create_model, validator
 import logging
-from typing import List, Optional, Union
+from typing import Optional, Union
 
 import autoflake
 import black
@@ -25,7 +25,7 @@ CUSTOM_CHART_NAME = "custom_chart"
 
 
 def _format_and_lint(code_string: str) -> str:
-    # Tracking https://github.com/astral-sh/ruff/issues/659 for proper python API
+    # Tracking https://github.com/astral-sh/ruff/issues/659 for proper Python API
     # Good example: https://github.com/astral-sh/ruff/issues/8401#issuecomment-1788806462
     # While we wait for the API, we can autoflake and black to process code strings.
 
@@ -57,7 +57,7 @@ class ChartPlan(BaseModel):
         Describes the chart type that best reflects the user request.
         """,
     )
-    imports: List[str] = Field(
+    imports: list[str] = Field(
         ...,
         description="""
         List of import statements required to render the chart defined by the `chart_code` field.
@@ -85,7 +85,7 @@ class ChartPlan(BaseModel):
         Explanation of the code steps used for `chart_code` field.""",
     )
 
-    _additional_vizro_imports: List[str] = PrivateAttr(ADDITIONAL_IMPORTS)
+    _additional_vizro_imports: list[str] = PrivateAttr(ADDITIONAL_IMPORTS)
 
     @validator("chart_code")
     def _check_chart_code(cls, v):

@@ -1,6 +1,6 @@
 repos:
   - repo: https://github.com/pre-commit/pre-commit-hooks
-    rev: v4.6.0
+    rev: v5.0.0
     hooks:
       - id: check-added-large-files
       - id: check-merge-conflict
@@ -18,11 +18,6 @@ repos:
         name: check-datafiles
         entry: python tools/check_for_datafiles.py
         language: python
-        pass_filenames: false
-      - id: check-branch-name
-        name: check-branch-name
-        entry: tools/check_branch_name.sh
-        language: script
         pass_filenames: false
 
   - repo: https://github.com/codespell-project/codespell
@@ -49,14 +44,14 @@ repos:
         args: [--autofix]
 
   - repo: https://github.com/astral-sh/ruff-pre-commit
-    rev: v0.6.3
+    rev: v0.6.9
     hooks:
       - id: ruff
         args: [--fix]
       - id: ruff-format
 
   - repo: https://github.com/PyCQA/bandit
-    rev: 1.7.9
+    rev: 1.7.10
     hooks:
       - id: bandit
         args: [-c, pyproject.toml, -ll]
@@ -76,20 +71,6 @@ repos:
           # or ignore so for now we just pin to 1.10.14 which doesn't flag the problems.
           # https://github.com/pydantic/pydantic/pull/8765
           - pydantic==1.10.14
-
-  - repo: https://github.com/gitleaks/gitleaks
-    rev: v8.18.4
-    hooks:
-      - id: gitleaks
-        name: gitleaks (protect)
-        description: Detect hardcoded secrets using Gitleaks
-        entry: gitleaks protect --verbose --staged
-        language: golang
-      - id: gitleaks
-        name: gitleaks (detect)
-        description: Detect hardcoded secrets using Gitleaks
-        entry: gitleaks detect --verbose --baseline-path gitleaks-report.json
-        language: golang
 
   - repo: https://github.com/awebdeveloper/pre-commit-stylelint
     rev: "0.0.2"
@@ -123,9 +104,7 @@ ci:
     - check-yaml
     - check-json
     - check-datafiles
-    - check-branch-name
     - codespell
     - bandit
     - mypy
-    - gitleaks
     - vale

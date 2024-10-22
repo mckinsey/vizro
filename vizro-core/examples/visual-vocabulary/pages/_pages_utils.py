@@ -29,7 +29,7 @@ gapminder = px.data.gapminder()
 iris = px.data.iris()
 stocks = px.data.stocks()
 tips = px.data.tips()
-
+wind = px.data.wind()
 ages = pd.DataFrame(
     {
         "Age": ["0-19", "20-29", "30-39", "40-49", "50-59", ">=60"],
@@ -58,3 +58,51 @@ stepped_line_data = pd.DataFrame(
 
 
 carshare = px.data.carshare()
+
+tasks = pd.DataFrame(
+    [
+        {"Task": "Job A", "Start": "2009-01-01", "Finish": "2009-02-28"},
+        {"Task": "Job B", "Start": "2009-03-05", "Finish": "2009-04-15"},
+        {"Task": "Job C", "Start": "2009-02-20", "Finish": "2009-05-30"},
+    ]
+)
+
+waterfall_data = pd.DataFrame(
+    {
+        "x": ["Sales", "Consulting", "Net revenue", "Purchases", "Other expenses", "Profit before tax"],
+        "y": [60, 80, 0, -40, -20, 0],
+        "measure": ["relative", "relative", "total", "relative", "relative", "total"],
+    }
+)
+
+pastries = pd.DataFrame(
+    {
+        "pastry": [
+            "Scones",
+            "Bagels",
+            "Muffins",
+            "Cakes",
+            "Donuts",
+            "Cookies",
+            "Croissants",
+            "Eclairs",
+            "Brownies",
+            "Tarts",
+            "Macarons",
+            "Pies",
+        ],
+        "Profit Ratio": [-0.10, -0.15, -0.05, 0.10, 0.05, 0.20, 0.15, -0.08, 0.08, -0.12, 0.02, -0.07],
+        "Strongly Disagree": [20, 30, 10, 5, 15, 5, 10, 25, 8, 20, 5, 10],
+        "Disagree": [30, 25, 20, 10, 20, 10, 15, 30, 12, 30, 10, 15],
+        "Agree": [30, 25, 40, 40, 45, 40, 40, 25, 40, 30, 45, 35],
+        "Strongly Agree": [20, 20, 30, 45, 20, 45, 35, 20, 40, 20, 40, 40],
+    }
+)
+
+salaries = pd.DataFrame(
+    {
+        "Job": ["Developer", "Analyst", "Manager", "Specialist"] * 2,
+        "Salary": [60000, 55000, 70000, 50000, 130000, 110000, 96400, 80000],
+        "Range": ["Min"] * 4 + ["Max"] * 4,
+    }
+)

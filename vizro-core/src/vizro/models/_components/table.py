@@ -1,5 +1,5 @@
 import logging
-from typing import Dict, List, Literal
+from typing import Literal
 
 import pandas as pd
 from dash import State, dcc, html
@@ -32,7 +32,7 @@ class Table(VizroBaseModel):
             Defaults to `""`.
         footer (str): Markdown text positioned below the `Table`. Follows the CommonMark specification.
             Ideal for providing further details such as sources, disclaimers, or additional notes. Defaults to `""`.
-        actions (List[Action]): See [`Action`][vizro.models.Action]. Defaults to `[]`.
+        actions (list[Action]): See [`Action`][vizro.models.Action]. Defaults to `[]`.
 
     """
 
@@ -51,7 +51,7 @@ class Table(VizroBaseModel):
         description="Markdown text positioned below the `Table`. Follows the CommonMark specification. Ideal for "
         "providing further details such as sources, disclaimers, or additional notes.",
     )
-    actions: List[Action] = []
+    actions: list[Action] = []
 
     _input_component_id: str = PrivateAttr()
 
@@ -64,7 +64,11 @@ class Table(VizroBaseModel):
 
     # Convenience wrapper/syntactic sugar.
     def __call__(self, **kwargs):
-        kwargs.setdefault("data_frame", data_manager[self["data_frame"]].load())
+        # This default value is not actually used anywhere at the moment since __call__ is always used with data_frame
+        # specified. It's here since we want to use __call__ without arguments more in future.
+        # If the functionality of process_callable_data_frame moves to CapturedCallable then this would move there too.
+        if "data_frame" not in kwargs:
+            kwargs["data_frame"] = data_manager[self["data_frame"]].load()
         figure = self.figure(**kwargs)
         figure.id = self._input_component_id
         return figure
@@ -90,7 +94,7 @@ class Table(VizroBaseModel):
         }
 
     def _filter_interaction(
-        self, data_frame: pd.DataFrame, target: str, ctd_filter_interaction: Dict[str, CallbackTriggerDict]
+        self, data_frame: pd.DataFrame, target: str, ctd_filter_interaction: dict[str, CallbackTriggerDict]
     ) -> pd.DataFrame:
         """Function to be carried out for pre-defined `filter_interaction`."""
         # data_frame is the DF of the target, ie the data to be filtered, hence we cannot get the DF from this model

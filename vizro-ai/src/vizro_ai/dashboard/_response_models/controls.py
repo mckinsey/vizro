@@ -1,7 +1,7 @@
 """Controls plan model."""
 
 import logging
-from typing import List, Optional
+from typing import Optional
 
 import pandas as pd
 import vizro.models as vm
@@ -60,7 +60,7 @@ def _create_filter_proxy(df_cols, df_schema, controllable_components) -> BaseMod
     return create_model(
         "FilterProxy",
         targets=(
-            List[str],
+            list[str],
             Field(
                 ...,
                 description=f"""
