@@ -21,6 +21,13 @@ RUN_ID = str(os.getenv("RUN_ID"))
 PACKAGE_VERSION = subprocess.check_output(["hatch", "version"]).decode("utf-8").strip()
 PYCAFE_URL = "https://py.cafe"
 
+BOT_COMMENT_TEMPLATE = """## View the example dashboards of the current commit live on PyCafe :coffee: :rocket:\n
+Updated on: {current_utc_time}
+Commit: {commit_sha}
+
+{dashboards}
+"""
+
 # Access
 auth = Auth.Token(GITHUB_TOKEN)
 g = Github(auth=auth)
@@ -89,19 +96,16 @@ def post_comment(urls: list[tuple[str, str]]):
     # Define the comment body with datetime
     dashboards = "\n\n".join(f"Link: [{directory}]({url})" for url, directory in urls)
 
-    comment_body = f"""## View the example dashboards of the current commit live on PyCafe :coffee: :rocket:\n
-Updated on: {current_utc_time}
-Commit: {commit_sha}
-
-{dashboards}
-"""
-
     # Update the existing comment or create a new one
     if bot_comment:
-        bot_comment.edit(comment_body)
+        bot_comment.edit(
+            BOT_COMMENT_TEMPLATE.format(current_utc_time=current_utc_time, commit_sha=commit_sha, dashboards=dashboards)
+        )
         print("Comment updated on the pull request.")  # noqa
     else:
-        pr.create_issue_comment(comment_body)
+        pr.create_issue_comment(
+            BOT_COMMENT_TEMPLATE.format(current_utc_time=current_utc_time, commit_sha=commit_sha, dashboards=dashboards)
+        )
         print("Comment added to the pull request.")  # noqa
 
 
