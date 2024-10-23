@@ -201,3 +201,7 @@
   height: 32px;
   justify-content: center;
 }
+
+#modal-table-icon {
+  cursor: pointer;
+}

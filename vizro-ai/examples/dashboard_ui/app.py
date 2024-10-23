@@ -107,7 +107,7 @@ plot_page = vm.Page(
                         vm.Action(
                             function=data_upload_action(),
                             inputs=["data-upload-id.contents", "data-upload-id.filename"],
-                            outputs=["data-store-id.data", "modal-table-icon.style"],
+                            outputs=["data-store-id.data", "modal-table-icon.style", "modal-table-tooltip.style"],
                         ),
                         vm.Action(
                             function=display_filename(),

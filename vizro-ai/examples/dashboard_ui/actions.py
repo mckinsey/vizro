@@ -100,9 +100,11 @@ def data_upload_action(contents, filename):
         raise PreventUpdate
 
     if not check_file_extension(filename=filename):
-        return {"error_message": "Unsupported file extension.. Make sure to upload either csv or an excel file."}, {
-            "color": "gray"
-        }
+        return (
+            {"error_message": "Unsupported file extension.. Make sure to upload either csv or an excel file."},
+            {"color": "gray"},
+            {"display": "none"},
+        )
 
     content_type, content_string = contents.split(",")
 
@@ -116,11 +118,15 @@ def data_upload_action(contents, filename):
             df = pd.read_excel(io.BytesIO(decoded))
 
         data = df.to_dict("records")
-        return {"data": data, "filename": filename}, {}
+        return {"data": data, "filename": filename}, {"cursor": "pointer"}, {}
 
     except Exception as e:
         logger.debug(e)
-        return {"error_message": "There was an error processing this file."}, {"color": "gray"}
+        return (
+            {"error_message": "There was an error processing this file."},
+            {"color": "gray", "cursor": "default"},
+            {"display": "none"},
+        )
 
 
 @capture("action")

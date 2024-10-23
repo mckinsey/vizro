@@ -292,7 +292,17 @@ def custom_table(data_frame):
     table_modal = html.Div(
         [
             html.Span(
-                "table_view", className="material-symbols-outlined", id="modal-table-icon", style={"color": "gray"}
+                "table_view",
+                className="material-symbols-outlined",
+                id="modal-table-icon",
+                style={"color": "gray", "cursor": "default"},
+            ),
+            dbc.Tooltip(
+                "Click to view data!",
+                placement="top",
+                target="modal-table-icon",
+                style={"display": "none"},
+                id="modal-table-tooltip",
             ),
             html.P(
                 id="upload-message-id", children=["Upload your data file (csv or excel)"], style={"paddingTop": "10px"}
