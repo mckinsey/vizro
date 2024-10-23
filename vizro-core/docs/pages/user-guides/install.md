@@ -1,8 +1,8 @@
 # How to install Vizro
 
-Thanks to [PyCafe](https://py.cafe/) you can create Vizro dashboards without installing Vizro locally, as you can see from the [first dashboard tutorial](../tutorials/first-dashboard.md).
+Thanks to [PyCafe](https://py.cafe/) you can create Vizro dashboards without installing Vizro locally, as you can see from the [first dashboard tutorial](../tutorials/first-dashboard.md) (you can find out more about [working with PyCafe and Vizro](https://py.cafe/docs/apps/vizro) from the PyCafe documentation).
 
-However, if you prefer to work locally, this guide shows you how to install Vizro, how to verify the installation succeeded and find the version of Vizro, and how to update Vizro.
+If you prefer to work locally, this guide shows you how to install Vizro, how to verify the installation succeeded and find the version of Vizro, and how to update Vizro.
 
 We recommend that you create a virtual environment for each Vizro project you work on to isolate its Python dependencies from other projects. If you already have a virtual environment you can skip the next section and [install Vizro](#install-vizro). Otherwise, read on!
 
