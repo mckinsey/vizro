@@ -46,12 +46,13 @@ def diverging_stacked_bar(data_frame, **kwargs) -> go.Figure:
     orientation = fig.data[0].orientation
     x_or_y = "x" if orientation == "h" else "y"
 
-    for trace in fig.data[len(fig.data) // 2 :]:
-        setattr(trace, f"{x_or_y}axis", f"{x_or_y}2")
+    for trace_idx in range(len(fig.data) // 2):
+        fig.update_traces({f"{x_or_y}axis": f"{x_or_y}2"}, selector=trace_idx)
 
-    setattr(fig.layout, f"{x_or_y}axis2", getattr(fig.layout, f"{x_or_y}axis"))
-    fig.update_layout({f"{x_or_y}axis": {"autorange": "reversed", "domain": [0, 0.5]}})
-    fig.update_layout({f"{x_or_y}axis2": {"domain": [0.5, 1]}})
+    fig.update_layout({f"{x_or_y}axis2": fig.layout[f"{x_or_y}axis"]})
+    fig.update_layout(
+        {f"{x_or_y}axis": {"autorange": "reversed", "domain": [0, 0.5]}, f"{x_or_y}axis2": {"domain": [0.5, 1]}}
+    )
 
     if orientation == "h":
         fig.add_vline(x=0, line_width=2, line_color="grey")

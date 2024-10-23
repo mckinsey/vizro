@@ -24,10 +24,10 @@ def dumbbell(data_frame: pd.DataFrame, **kwargs) -> go.Figure:
     y_or_x = "y" if orientation == "h" else "x"
 
     for x_or_y_0, x_or_y_1, y_or_x_0, y_or_x_1 in zip(
-        getattr(fig.data[0], x_or_y),
-        getattr(fig.data[1], x_or_y),
-        getattr(fig.data[0], y_or_x),
-        getattr(fig.data[1], y_or_x),
+        fig.data[0][x_or_y],
+        fig.data[1][x_or_y],
+        fig.data[0][y_or_x],
+        fig.data[1][y_or_x],
     ):
         fig.add_shape(
             **{f"{x_or_y}0": x_or_y_0, f"{x_or_y}1": x_or_y_1, f"{y_or_x}0": y_or_x_0, f"{y_or_x}1": y_or_x_1},

@@ -34,10 +34,11 @@ def butterfly(data_frame: pd.DataFrame, **kwargs) -> go.Figure:
     x_or_y = "x" if orientation == "h" else "y"
 
     # Create new x or y axis with scale reversed (so going from 0 at the midpoint outwards) to do back-to-back bars.
-    setattr(fig.data[1], f"{x_or_y}axis", f"{x_or_y}2")
-    setattr(fig.layout, f"{x_or_y}axis2", getattr(fig.layout, f"{x_or_y}axis"))
-    fig.update_layout({f"{x_or_y}axis": {"autorange": "reversed", "domain": [0, 0.5]}})
-    fig.update_layout({f"{x_or_y}axis2": {"domain": [0.5, 1]}})
+    fig.update_traces({f"{x_or_y}axis": f"{x_or_y}2"}, selector=1)
+    fig.update_layout({f"{x_or_y}axis2": fig.layout[f"{x_or_y}axis"]})
+    fig.update_layout(
+        {f"{x_or_y}axis": {"autorange": "reversed", "domain": [0, 0.5]}, f"{x_or_y}axis2": {"domain": [0.5, 1]}}
+    )
 
     if orientation == "h":
         fig.add_vline(x=0, line_width=2, line_color="grey")
@@ -220,10 +221,10 @@ def dumbbell(data_frame: pd.DataFrame, **kwargs) -> go.Figure:
 
     # Add lines between every pair of points.
     for x_or_y_0, x_or_y_1, y_or_x_0, y_or_x_1 in zip(
-        getattr(fig.data[0], x_or_y),
-        getattr(fig.data[1], x_or_y),
-        getattr(fig.data[0], y_or_x),
-        getattr(fig.data[1], y_or_x),
+        fig.data[0][x_or_y],
+        fig.data[1][x_or_y],
+        fig.data[0][y_or_x],
+        fig.data[1][y_or_x],
     ):
         fig.add_shape(
             **{f"{x_or_y}0": x_or_y_0, f"{x_or_y}1": x_or_y_1, f"{y_or_x}0": y_or_x_0, f"{y_or_x}1": y_or_x_1},
@@ -284,12 +285,13 @@ def diverging_stacked_bar(data_frame: pd.DataFrame, **kwargs) -> go.Figure:
     orientation = fig.data[0].orientation
     x_or_y = "x" if orientation == "h" else "y"
 
-    for trace in fig.data[len(fig.data) // 2 :]:
-        setattr(trace, f"{x_or_y}axis", f"{x_or_y}2")
+    for trace_idx in range(len(fig.data) // 2):
+        fig.update_traces({f"{x_or_y}axis": f"{x_or_y}2"}, selector=trace_idx)
 
-    setattr(fig.layout, f"{x_or_y}axis2", getattr(fig.layout, f"{x_or_y}axis"))
-    fig.update_layout({f"{x_or_y}axis": {"autorange": "reversed", "domain": [0, 0.5]}})
-    fig.update_layout({f"{x_or_y}axis2": {"domain": [0.5, 1]}})
+    fig.update_layout({f"{x_or_y}axis2": fig.layout[f"{x_or_y}axis"]})
+    fig.update_layout(
+        {f"{x_or_y}axis": {"autorange": "reversed", "domain": [0, 0.5]}, f"{x_or_y}axis2": {"domain": [0.5, 1]}}
+    )
 
     if orientation == "h":
         fig.add_vline(x=0, line_width=2, line_color="grey")

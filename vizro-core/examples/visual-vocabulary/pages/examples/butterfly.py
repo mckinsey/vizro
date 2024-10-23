@@ -22,10 +22,11 @@ def butterfly(data_frame: pd.DataFrame, **kwargs) -> go.Figure:
     orientation = fig.data[0].orientation
     x_or_y = "x" if orientation == "h" else "y"
 
-    setattr(fig.data[1], f"{x_or_y}axis", f"{x_or_y}2")
-    setattr(fig.layout, f"{x_or_y}axis2", getattr(fig.layout, f"{x_or_y}axis"))
-    fig.update_layout({f"{x_or_y}axis": {"autorange": "reversed", "domain": [0, 0.5]}})
-    fig.update_layout({f"{x_or_y}axis2": {"domain": [0.5, 1]}})
+    fig.update_traces({f"{x_or_y}axis": f"{x_or_y}2"}, selector=1)
+    fig.update_layout({f"{x_or_y}axis2": fig.layout[f"{x_or_y}axis"]})
+    fig.update_layout(
+        {f"{x_or_y}axis": {"autorange": "reversed", "domain": [0, 0.5]}, f"{x_or_y}axis2": {"domain": [0.5, 1]}}
+    )
 
     if orientation == "h":
         fig.add_vline(x=0, line_width=2, line_color="grey")
