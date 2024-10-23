@@ -1,4 +1,4 @@
-name: PyCafe Dashboards in CI
+name: PyCafe Dashboards
 
 on:
   push:
@@ -6,6 +6,8 @@ on:
   pull_request:
     branches:
       - main
+    paths:  
+      - "vizro-core/**"
 
 env:
   PYTHON_VERSION: "3.12"
@@ -19,23 +21,20 @@ jobs:
         uses: actions/setup-python@v5
         with:
           python-version: ${{ env.PYTHON_VERSION }}
-      - name: Install dependencies
-        run: |
-          python -m pip install --upgrade pip
-          pip install -r tools/tools_requirements.txt
-          pip install hatch
-      - name: "Build vizro-core package"
+      - name: Install Hatch
+        run: pip install hatch
+      - name: Build vizro-core package
         run: |
           cd vizro-core
-          hatch build
-      - name: "Upload artifact"
+          hatch build -t wheel
+      - name: Upload artifact
         uses: actions/upload-artifact@v4
         with:
           name: pip
           path: vizro-core/dist/*.whl
           retention-days: 14
 
-      - name: "Create PyCafe links"
+      - name: Create PyCafe links
         env:
           GITHUB_TOKEN: ${{ github.token }}
           RUN_ID: ${{ github.run_id }}
