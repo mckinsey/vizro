@@ -1,6 +1,5 @@
 """Deviation charts."""
 
-import plotly.io as pio
 import vizro.models as vm
 import vizro.plotly.express as px
 from custom_charts import diverging_stacked_bar

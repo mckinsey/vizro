@@ -1,5 +1,4 @@
 import pandas as pd
-import plotly.io as pio
 import vizro.models as vm
 import vizro.plotly.express as px
 from vizro import Vizro
