@@ -38,15 +38,7 @@ diverging_bar = vm.Page(
         """
         ),
         vm.Graph(
-            figure=px.bar(
-                pastries.sort_values("Profit Ratio"),
-                orientation="h",
-                x="Profit Ratio",
-                y="pastry",
-                color="Profit Ratio",
-                color_continuous_scale=pio.templates["vizro_dark"].layout.colorscale.diverging,
-                color_continuous_midpoint=0,
-            ),
+            figure=px.bar(pastries.sort_values("Profit Ratio"), orientation="h", x="Profit Ratio", y="pastry"),
         ),
         make_code_clipboard_from_py_file("diverging_bar.py"),
     ],

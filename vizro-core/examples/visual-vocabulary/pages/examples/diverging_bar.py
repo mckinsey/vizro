@@ -24,14 +24,7 @@ page = vm.Page(
     title="Diverging bar",
     components=[
         vm.Graph(
-            figure=px.bar(
-                pastries.sort_values("Profit Ratio"),
-                x="Profit Ratio",
-                y="pastry",
-                color="Profit Ratio",
-                color_continuous_scale=pio.templates["vizro_dark"].layout.colorscale.diverging,
-                color_continuous_midpoint=0,
-            ),
+            figure=px.bar(pastries.sort_values("Profit Ratio"), x="Profit Ratio", y="pastry"),
         ),
     ],
 )
