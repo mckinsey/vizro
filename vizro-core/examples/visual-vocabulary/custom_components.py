@@ -23,7 +23,6 @@ class CodeClipboard(vm.VizroBaseModel):
     language: str = ""
 
     def build(self):
-        # Run and edit this code in PyCafe
         """Returns the code clipboard component inside an accordion."""
         markdown_code = "\n".join([f"```{self.language}", self.code, "```"])
 
