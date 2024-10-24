@@ -20,7 +20,7 @@ def butterfly(data_frame: pd.DataFrame, **kwargs) -> go.Figure:
     two sets of data.
 
     Args:
-        data_frame (pd.DataFrame): The data frame for the chart. Can be long form or wide form.
+        data_frame: The DataFrame for the chart. Can be long form or wide form.
             See https://plotly.com/python/wide-form/.
         **kwargs: Keyword arguments to pass into px.bar (e.g. x, y, labels).
 
@@ -102,9 +102,9 @@ def column_and_line(
 
     Args:
         data_frame (pd.DataFrame): The data source for the chart.
-        x (str): Either a name of a column in data_frame, or a pandas Series or array_like object.
-        y_column (str): Either a name of a column in data_frame, or a pandas Series or array_like object.
-        y_line (str): Either a name of a column in data_frame, or a pandas Series or array_like object.
+        x: Either a name of a column in data_frame, or a pandas Series or array_like object.
+        y_column: Either a name of a column in data_frame, or a pandas Series or array_like object.
+        y_line: Either a name of a column in data_frame, or a pandas Series or array_like object.
 
     Returns:
         go.Figure: : A Plotly Figure object of the combined column and line chart.
@@ -135,7 +135,7 @@ def categorical_column(data_frame: pd.DataFrame, **kwargs) -> go.Figure:
     """Creates a column chart where the x-axis values are converted to category type.
 
     Args:
-        data_frame (pd.DataFrame): The data frame for the chart. Can be long form or wide form.
+        data_frame: The DataFrame for the chart. Can be long form or wide form.
             See https://plotly.com/python/wide-form/.
         **kwargs: Keyword arguments to pass into px.bar (e.g. x, y, labels).
 
@@ -183,7 +183,7 @@ def radar(data_frame: pd.DataFrame, **kwargs) -> go.Figure:
     variables represented on axes that originate from the same central point.
 
     Args:
-        data_frame (pd.DataFrame): The data frame for the chart.
+        data_frame: The DataFrame for the chart.
         **kwargs: Keyword arguments to pass into px.line_polar (e.g. r, theta).
 
     Returns:
@@ -203,7 +203,7 @@ def dumbbell(data_frame: pd.DataFrame, **kwargs) -> go.Figure:
     line. They are ideal for illustrating differences or gaps between two points.
 
     Args:
-        data_frame (pd.DataFrame): The data frame for the chart. Can be long form or wide form.
+        data_frame: The DataFrame for the chart. Can be long form or wide form.
             See https://plotly.com/python/wide-form/.
         **kwargs: Keyword arguments to pass into px.scatter (e.g. x, y, labels).
 
@@ -251,7 +251,7 @@ def diverging_stacked_bar(data_frame: pd.DataFrame, **kwargs) -> go.Figure:
     Inspired by: https://community.plotly.com/t/need-help-in-making-diverging-stacked-bar-charts/34023
 
     Args:
-        data_frame (pd.DataFrame): The data frame for the chart. Can be long form or wide form.
+        data_frame: The DataFrame for the chart. Can be long form or wide form.
             See https://plotly.com/python/wide-form/.
         **kwargs: Keyword arguments to pass into px.bar (e.g. x, y, labels).
 
