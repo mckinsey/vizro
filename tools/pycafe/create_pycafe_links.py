@@ -48,6 +48,8 @@ def generate_link(directory: str, extra_requirements: Optional[list[str]] = None
         f"""{PYCAFE_URL}/gh/artifact/mckinsey/vizro/actions/runs/{RUN_ID}/pip/{WHL_FILE}\n"""
         + extra_requirements_concat
     )
+    print(WHL_FILE)
+    print(requirements)
 
     # App file
     app_content = Path(directory, "app.py").read_text()
