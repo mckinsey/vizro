@@ -38,11 +38,5 @@ jobs:
           retention-days: 14
 
       - name: Create PyCafe links
-        env:
-          GITHUB_TOKEN: ${{ github.token }}
-          RUN_ID: ${{ github.run_id }}
-          GITHUB_REPOSITORY: ${{ github.repository }}
-          PR_NUMBER: ${{ github.event.number }}
-
         run: |
-          hatch run python ../tools/pycafe/create_pycafe_links.py
+          hatch run python ../tools/pycafe/create_pycafe_links.py ${{ github.token }} ${{ github.repository }} ${{ github.event.number }} ${{ github.run_id }}

@@ -4,7 +4,7 @@ import base64
 import datetime
 import gzip
 import json
-import os
+import sys
 import textwrap
 from pathlib import Path
 from typing import Optional
@@ -12,10 +12,10 @@ from urllib.parse import quote, urlencode
 
 from github import Auth, Github
 
-GITHUB_TOKEN = str(os.getenv("GITHUB_TOKEN"))
-REPO_NAME = str(os.getenv("GITHUB_REPOSITORY"))
-PR_NUMBER = int(os.getenv("PR_NUMBER"))
-RUN_ID = str(os.getenv("RUN_ID"))
+GITHUB_TOKEN = sys.argv[1]
+REPO_NAME = sys.argv[2]
+PR_NUMBER = int(sys.argv[3])
+RUN_ID = sys.argv[4]
 WHL_FILE = next(Path("dist").glob("*.whl")).name
 PYCAFE_URL = "https://py.cafe"
 VIZRO_RAW_URL = "https://raw.githubusercontent.com/mckinsey/vizro"
