@@ -5,6 +5,8 @@ import vizro.plotly.express as px
 from custom_charts import radar
 
 from pages._pages_utils import PAGE_GRID, gapminder, iris, make_code_clipboard_from_py_file, tips, wind
+from pages.examples.bar import fig
+from vizro.models.types import capture
 
 bar = vm.Page(
     title="Bar",
@@ -29,19 +31,21 @@ bar = vm.Page(
             descriptions below.
         """
         ),
-        vm.Graph(
-            figure=px.bar(
-                gapminder.query(
-                    "year == 2007 and country.isin(['United States', 'Pakistan', 'India', 'China', 'Indonesia'])"
+        vm.Graph(figure=fig),
+        vm.Tabs(
+            tabs=[
+                vm.Container(
+                    title="Vizro dashboard", components=[make_code_clipboard_from_py_file("bar.py", mode="vizro")]
                 ),
-                x="pop",
-                y="country",
-                orientation="h",
-            )
+                vm.Container(
+                    title="Plotly figure",
+                    components=[make_code_clipboard_from_py_file("bar.py", mode="plotly")],
+                ),
+            ]
         ),
-        make_code_clipboard_from_py_file("bar.py"),
     ],
 )
+
 
 # Note: Code example for magnitude/column differs from time/column. The text description is the same.
 column = vm.Page(

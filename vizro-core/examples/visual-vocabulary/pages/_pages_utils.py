@@ -11,13 +11,33 @@ from custom_components import CodeClipboard
 # To disable logging info messages caused by black.format_str: https://github.com/psf/black/issues/2058
 logging.getLogger("blib2to3").setLevel(logging.ERROR)
 
+VIZRO_CODE_TEMPLATE = """
+import vizro.models as vm
+import vizro.plotly.express as px
+from vizro import Vizro
 
-def make_code_clipboard_from_py_file(filepath: str):
+{example_code}
+
+page = vm.Page(title="{title}", components=[vm.Graph(figure=fig)])
+dashboard = vm.Dashboard(pages=[page])
+Vizro().build(dashboard).run()
+"""
+# TODO AM: isort? Do like vizro-ai.
+
+
+def make_code_clipboard_from_py_file(filepath: str, mode="vizro"):
     # Black doesn't yet have a Python API, so format_str might not work at some point in the future.
     # https://black.readthedocs.io/en/stable/faq.html#does-black-have-an-api
-    filepath = Path(__file__).parents[1] / "pages/examples" / filepath
+    example_code = (Path(__file__).parents[1] / "pages/examples" / filepath).read_text()
+
+    if mode == "vizro":
+        example_code = VIZRO_CODE_TEMPLATE.format(title="Title", example_code=example_code)
+    else:
+        example_code.replace("import vizro.plotly.express as px", "import plotly.express as px")
+
     return CodeClipboard(
-        code=black.format_str(filepath.read_text(encoding="utf-8"), mode=black.Mode(line_length=80)),
+        code=black.format_str(example_code, mode=black.Mode(line_length=80)),
+        mode=mode,
         language="python",
     )
 
