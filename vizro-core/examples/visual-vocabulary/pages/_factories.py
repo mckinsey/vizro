@@ -37,7 +37,9 @@ def butterfly_factory(group: str):
                 categories.
             """
             ),
-            vm.Graph(figure=butterfly(ages, x1="Male", x2="Female", y="Age")),
+            vm.Graph(
+                figure=butterfly(ages, x=["Male", "Female"], y="Age", labels={"value": "Population", "variable": "Sex"})
+            ),
             make_code_clipboard_from_py_file("butterfly.py"),
         ],
     )

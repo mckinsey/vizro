@@ -1,6 +1,5 @@
-from typing import Optional
-
 import pandas as pd
+import plotly.express as px
 import plotly.graph_objects as go
 import vizro.models as vm
 from vizro import Vizro
@@ -17,83 +16,47 @@ pastries = pd.DataFrame(
             "Cookies",
             "Croissants",
             "Eclairs",
-            "Brownies",
-            "Tarts",
-            "Macarons",
-            "Pies",
         ],
-        "Profit Ratio": [-0.10, -0.15, -0.05, 0.10, 0.05, 0.20, 0.15, -0.08, 0.08, -0.12, 0.02, -0.07],
-        "Strongly Disagree": [20, 30, 10, 5, 15, 5, 10, 25, 8, 20, 5, 10],
-        "Disagree": [30, 25, 20, 10, 20, 10, 15, 30, 12, 30, 10, 15],
-        "Agree": [30, 25, 40, 40, 45, 40, 40, 25, 40, 30, 45, 35],
-        "Strongly Agree": [20, 20, 30, 45, 20, 45, 35, 20, 40, 20, 40, 40],
+        "Strongly Disagree": [20, 30, 10, 5, 15, 5, 10, 25],
+        "Disagree": [30, 25, 20, 10, 20, 10, 15, 30],
+        "Agree": [30, 25, 40, 40, 45, 40, 40, 25],
+        "Strongly Agree": [20, 20, 30, 45, 20, 45, 35, 20],
     }
 )
 
 
 @capture("graph")
-def diverging_stacked_bar(
-    data_frame,
-    y: str,
-    category_pos: list[str],
-    category_neg: list[str],
-    color_discrete_map: Optional[dict[str, str]] = None,
-) -> go.Figure:
-    """Creates a horizontal diverging stacked bar chart (with positive and negative values only) using Plotly's go.Bar.
+def diverging_stacked_bar(data_frame, **kwargs) -> go.Figure:
+    fig = px.bar(data_frame, **kwargs)
 
-    This type of chart is a variant of the standard stacked bar chart, with bars aligned on a central baseline to
-    show both positive and negative values. Each bar is segmented to represent different categories.
+    for i, trace in enumerate(fig.data):
+        trace.update(legendrank=i)
 
-    This function is not suitable for diverging stacked bar charts that include a neutral category.
+    if "color_discrete_sequence" not in kwargs and "color_discrete_map" not in kwargs:
+        colorscale = [list(x) for x in fig.layout.template.layout.colorscale.diverging]
+        colors = px.colors.sample_colorscale(colorscale, len(fig.data), 0.2, 0.8)
+        for trace, color in zip(fig.data, colors):
+            trace.update(marker_color=color)
 
-    Inspired by: https://community.plotly.com/t/need-help-in-making-diverging-stacked-bar-charts/34023
+    mutable_traces = list(fig.data)
+    mutable_traces[: len(fig.data) // 2] = reversed(fig.data[: len(fig.data) // 2])
+    fig.data = mutable_traces
 
-    Args:
-       data_frame (pd.DataFrame): The data frame for the chart.
-       y (str): The name of the categorical column in the data frame to be used for the y-axis (categories)
-       category_pos (list[str]): List of column names in the data frame representing positive values. Columns should be
-            ordered from least to most positive.
-       category_neg (list[str]): List of column names in the DataFrame representing negative values. Columns should be
-            ordered from least to most negative.
-       color_discrete_map: Optional[dict[str, str]]: A dictionary mapping category names to color strings.
+    orientation = fig.data[0].orientation
+    x_or_y = "x" if orientation == "h" else "y"
 
-    Returns:
-       go.Figure: A Plotly Figure object representing the horizontal diverging stacked bar chart.
-    """
-    fig = go.Figure()
+    for trace_idx in range(len(fig.data) // 2):
+        fig.update_traces({f"{x_or_y}axis": f"{x_or_y}2"}, selector=trace_idx)
 
-    # Add traces for negative categories
-    for column in category_neg:
-        fig.add_trace(
-            go.Bar(
-                x=-data_frame[column].to_numpy(),
-                y=data_frame[y],
-                orientation="h",
-                name=column,
-                marker_color=color_discrete_map.get(column, None) if color_discrete_map else None,
-            )
-        )
+    fig.update_layout({f"{x_or_y}axis2": fig.layout[f"{x_or_y}axis"]})
+    fig.update_layout(
+        {f"{x_or_y}axis": {"autorange": "reversed", "domain": [0, 0.5]}, f"{x_or_y}axis2": {"domain": [0.5, 1]}}
+    )
 
-    # Add traces for positive categories
-    for column in category_pos:
-        fig.add_trace(
-            go.Bar(
-                x=data_frame[column],
-                y=data_frame[y],
-                orientation="h",
-                name=column,
-                marker_color=color_discrete_map.get(column, None) if color_discrete_map else None,
-            )
-        )
-
-    # Update layout and add central baseline
-    fig.update_layout(barmode="relative")
-    fig.add_vline(x=0, line_width=2, line_color="grey")
-
-    # Update legend order to go from most negative to most positive
-    category_order = category_neg[::-1] + category_pos
-    for i, category in enumerate(category_order):
-        fig.update_traces(legendrank=i, selector=({"name": category}))
+    if orientation == "h":
+        fig.add_vline(x=0, line_width=2, line_color="grey")
+    else:
+        fig.add_hline(y=0, line_width=2, line_color="grey")
 
     return fig
 
@@ -102,18 +65,12 @@ page = vm.Page(
     title="Diverging stacked bar",
     components=[
         vm.Graph(
-            title="Would you recommend the pastry to your friends?",
+            title="I would recommend this pastry to my friends",
             figure=diverging_stacked_bar(
                 data_frame=pastries,
+                x=["Strongly Disagree", "Disagree", "Agree", "Strongly Agree"],
                 y="pastry",
-                category_pos=["Agree", "Strongly Agree"],
-                category_neg=["Disagree", "Strongly Disagree"],
-                color_discrete_map={
-                    "Strongly Agree": "#1a85ff",
-                    "Agree": "#70a1ff",
-                    "Disagree": "#ff5584",
-                    "Strongly Disagree": "#d41159",
-                },
+                labels={"value": "Response count", "variable": "Opinion"},
             ),
         ),
     ],

@@ -1,6 +1,5 @@
 """Deviation charts."""
 
-import plotly.io as pio
 import vizro.models as vm
 import vizro.plotly.express as px
 from custom_charts import diverging_stacked_bar
@@ -38,15 +37,7 @@ diverging_bar = vm.Page(
         """
         ),
         vm.Graph(
-            figure=px.bar(
-                pastries.sort_values("Profit Ratio"),
-                orientation="h",
-                x="Profit Ratio",
-                y="pastry",
-                color="Profit Ratio",
-                color_continuous_scale=pio.templates["vizro_dark"].layout.colorscale.diverging,
-                color_continuous_midpoint=0,
-            ),
+            figure=px.bar(pastries.sort_values("Profit Ratio"), orientation="h", x="Profit Ratio", y="pastry"),
         ),
         make_code_clipboard_from_py_file("diverging_bar.py"),
     ],
@@ -80,18 +71,12 @@ diverging_stacked_bar = vm.Page(
         """
         ),
         vm.Graph(
-            title="Would you recommend the pastry to your friends?",
+            title="I would recommend this pastry to my friends",
             figure=diverging_stacked_bar(
                 data_frame=pastries,
+                x=["Strongly Disagree", "Disagree", "Agree", "Strongly Agree"],
                 y="pastry",
-                category_pos=["Agree", "Strongly Agree"],
-                category_neg=["Disagree", "Strongly Disagree"],
-                color_discrete_map={
-                    "Strongly Agree": "#1a85ff",
-                    "Agree": "#70a1ff",
-                    "Disagree": "#ff5584",
-                    "Strongly Disagree": "#d41159",
-                },
+                labels={"value": "Response count", "variable": "Opinion"},
             ),
         ),
         make_code_clipboard_from_py_file("diverging_stacked_bar.py"),

@@ -129,7 +129,7 @@ dumbbell = vm.Page(
             of changes or to distinguish between categories.
         """
         ),
-        vm.Graph(figure=dumbbell(salaries, y="Job", x="Salary", color="Range")),
+        vm.Graph(figure=dumbbell(salaries, y="Job", x=["Min", "Max"], labels={"variable": "", "value": "Salary in $"})),
         make_code_clipboard_from_py_file("dumbbell.py"),
     ],
 )
