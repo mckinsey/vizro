@@ -73,4 +73,3 @@ class FlexContainer(vm.Container):
 vm.Container.add_type("components", FlexContainer)
 vm.Container.add_type("components", Markdown)
 vm.Container.add_type("components", CodeClipboard)
-vm.Page.add_type("components", CodeClipboard)
