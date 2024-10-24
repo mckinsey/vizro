@@ -43,10 +43,14 @@ def generate_link(directory: str, extra_requirements: Optional[list[str]] = None
     base_url = f"{VIZRO_RAW_URL}/{commit_sha}/vizro-core/{directory}"
 
     # Requirements
-    extra_requirements_concat = "\n".join(extra_requirements) if extra_requirements else ""
-    requirements = (
-        f"""{PYCAFE_URL}/gh/artifact/mckinsey/vizro/actions/runs/{RUN_ID}/pip/{WHL_FILE}\n"""
-        + extra_requirements_concat
+    requirements = "\n".join(
+        filter(
+            None,
+            [
+                f"{PYCAFE_URL}/gh/artifact/mckinsey/vizro/actions/runs/{RUN_ID}/pip/{WHL_FILE}",
+                *(extra_requirements or []),
+            ],
+        )
     )
 
     # App file
