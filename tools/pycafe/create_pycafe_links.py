@@ -5,7 +5,6 @@ import datetime
 import gzip
 import json
 import os
-import subprocess
 import textwrap
 from pathlib import Path
 from typing import Optional
@@ -17,8 +16,9 @@ GITHUB_TOKEN = str(os.getenv("GITHUB_TOKEN"))
 REPO_NAME = str(os.getenv("GITHUB_REPOSITORY"))
 PR_NUMBER = int(os.getenv("PR_NUMBER"))
 RUN_ID = str(os.getenv("RUN_ID"))
-PACKAGE_VERSION = subprocess.check_output(["hatch", "version"]).decode("utf-8").strip()
+WHL_FILE = next(Path("dist").glob("*.whl")).stem
 PYCAFE_URL = "https://py.cafe"
+VIZRO_RAW_URL = "https://raw.githubusercontent.com/mckinsey/vizro"
 
 BOT_COMMENT_TEMPLATE = """## View the example dashboards of the current commit live on PyCafe :coffee: :rocket:\n
 Updated on: {current_utc_time}
@@ -40,12 +40,12 @@ commit = repo.get_commit(commit_sha)
 
 def generate_link(directory: str, extra_requirements: Optional[list[str]] = None):
     """Generate a PyCafe link for the example dashboards."""
-    base_url = f"https://raw.githubusercontent.com/mckinsey/vizro/{commit_sha}/vizro-core/{directory}"
+    base_url = f"{VIZRO_RAW_URL}/{commit_sha}/vizro-core/{directory}"
 
     # Requirements
     extra_requirements_concat = "\n".join(extra_requirements) if extra_requirements else ""
     requirements = (
-        f"""{PYCAFE_URL}/gh/artifact/mckinsey/vizro/actions/runs/{RUN_ID}/pip/vizro-{PACKAGE_VERSION}-py3-none-any.whl\n"""
+        f"""{PYCAFE_URL}/gh/artifact/mckinsey/vizro/actions/runs/{RUN_ID}/pip/{WHL_FILE}\n"""
         + extra_requirements_concat
     )
 
