@@ -9,6 +9,10 @@ on:
     paths:
       - "vizro-core/**"
 
+defaults:
+  run:
+    working-directory: vizro-core
+
 env:
   PYTHON_VERSION: "3.12"
 
@@ -25,7 +29,6 @@ jobs:
         run: pip install hatch
       - name: Build vizro-core package
         run: |
-          cd vizro-core
           hatch build -t wheel
       - name: Upload artifact
         uses: actions/upload-artifact@v4
@@ -42,5 +45,4 @@ jobs:
           PR_NUMBER: ${{ github.event.number }}
 
         run: |
-          cd vizro-core
           hatch run python ../tools/pycafe/create_pycafe_links.py examples/scratch_dev/ examples/dev/ examples/visual-vocabulary/
