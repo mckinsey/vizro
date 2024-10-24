@@ -62,12 +62,14 @@ def generate_link(directory: str, extra_requirements: Optional[list[str]] = None
         "files": [],
     }
 
-    for file_path in Path(directory).rglob("*"):
-        if file_path.is_dir() or file_path.name == "app.py":
-            continue
-        relative_path = file_path.relative_to(directory)
-        file_url = f"{base_url}/{relative_path.as_posix()}"
-        json_object["files"].append({"name": str(relative_path), "url": file_url})
+    json_object["files"] = [
+        {
+            "name": str(file_path.relative_to(directory)),
+            "url": f"{base_url}/{file_path.relative_to(directory).as_posix()}",
+        }
+        for file_path in Path(directory).rglob("*")
+        if not file_path.is_dir() and file_path.relative_to(directory) != Path("app.py")
+    ]
 
     json_text = json.dumps(json_object)
     compressed_json_text = gzip.compress(json_text.encode("utf8"))
