@@ -16,7 +16,7 @@ GITHUB_TOKEN = str(os.getenv("GITHUB_TOKEN"))
 REPO_NAME = str(os.getenv("GITHUB_REPOSITORY"))
 PR_NUMBER = int(os.getenv("PR_NUMBER"))
 RUN_ID = str(os.getenv("RUN_ID"))
-WHL_FILE = next(Path("dist").glob("*.whl")).stem
+WHL_FILE = next(Path("dist").glob("*.whl")).name
 PYCAFE_URL = "https://py.cafe"
 VIZRO_RAW_URL = "https://raw.githubusercontent.com/mckinsey/vizro"
 
@@ -48,8 +48,6 @@ def generate_link(directory: str, extra_requirements: Optional[list[str]] = None
         f"""{PYCAFE_URL}/gh/artifact/mckinsey/vizro/actions/runs/{RUN_ID}/pip/{WHL_FILE}\n"""
         + extra_requirements_concat
     )
-    print(WHL_FILE)
-    print(requirements)
 
     # App file
     app_content = Path(directory, "app.py").read_text()
