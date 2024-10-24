@@ -45,4 +45,4 @@ jobs:
           PR_NUMBER: ${{ github.event.number }}
 
         run: |
-          hatch run python ../tools/pycafe/create_pycafe_links.py examples/scratch_dev/ examples/dev/ examples/visual-vocabulary/
+          hatch run python ../tools/pycafe/create_pycafe_links.py

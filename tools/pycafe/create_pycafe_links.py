@@ -6,7 +6,6 @@ import gzip
 import json
 import os
 import subprocess
-import sys
 import textwrap
 from pathlib import Path
 from typing import Optional
@@ -78,7 +77,7 @@ def generate_link(directory: str, extra_requirements: Optional[list[str]] = None
     return f"{PYCAFE_URL}/snippet/vizro/v1?{query}"
 
 
-def post_comment(urls: list[tuple[str, str]]):
+def post_comment(urls: dict[str, str]):
     """Post a comment on the pull request with the links to the PyCafe dashboards."""
     # Inspired by https://github.com/snehilvj/dash-mantine-components
 
@@ -94,7 +93,7 @@ def post_comment(urls: list[tuple[str, str]]):
     current_utc_time = datetime.datetime.now(datetime.UTC).strftime("%Y-%m-%d %H:%M:%S UTC")
 
     # Define the comment body with datetime
-    dashboards = "\n\n".join(f"Link: [{directory}]({url})" for url, directory in urls)
+    dashboards = "\n\n".join(f"Link: [{directory}]({url})" for url, directory in urls.items())
 
     # Update the existing comment or create a new one
     if bot_comment:
@@ -110,17 +109,18 @@ def post_comment(urls: list[tuple[str, str]]):
 
 
 if __name__ == "__main__":
-    urls = []
+    directories_with_requirements = {
+        "examples/dev/": ["openpyxl"],
+        "examples/scratch_dev": None,
+        "examples/visual-vocabulary/": None,
+    }
+    urls = {
+        directory: generate_link(directory, extra_requirements)
+        for directory, extra_requirements in directories_with_requirements.items()
+    }
 
-    # Generate links for each directory and create status
-    for directory in sys.argv[1:]:
-        # Add any extra requirements for specific dev examples
-        if directory == "examples/dev/":
-            url = generate_link(directory=directory, extra_requirements=["openpyxl"])
-        else:
-            url = generate_link(directory=directory)
-        urls.append((url, directory))
-
+    # Create status
+    for directory, url in urls.items():
         # Define the deployment status
         state = "success"  # Options: 'error', 'failure', 'pending', 'success'
         description = "Test out the app live on PyCafe"
