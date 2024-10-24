@@ -21,8 +21,10 @@ page = vm.Page(title="{title}", components=[vm.Graph(figure=fig)])
 dashboard = vm.Dashboard(pages=[page])
 Vizro().build(dashboard).run()
 """
-# TODO AM: isort? Do like vizro-ai.
+# TODO HERE: isort? Do like vizro-ai.
 # Make sure unused imports like vizro.models.types.capture disappear
+# Roll out changes across all files - need to modify all example files other than magnitude ones and import fig directly
+# from those files in all vm.Graph().
 
 
 def make_code_clipboard_from_py_file(filepath: str, mode="vizro"):
