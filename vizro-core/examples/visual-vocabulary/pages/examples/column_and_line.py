@@ -28,8 +28,10 @@ def column_and_line(
         markers=True,
         color_discrete_sequence=fig.layout.template.layout.colorway[len(bar.data) :],
     )
+
     for trace in line.data:
         fig.add_trace(trace, secondary_y=True)
+
     fig.update_layout(yaxis2={"tickmode": "sync", "overlaying": "y", "title": line.layout.yaxis.title})
 
     return fig
