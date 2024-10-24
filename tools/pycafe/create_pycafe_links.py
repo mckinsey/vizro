@@ -63,20 +63,17 @@ def generate_link(directory: str, extra_requirements: Optional[list[str]] = None
     }
 
     for file_path in Path(directory).rglob("*"):
-        print(file_path)
-        if file_path.name == "app.py":
+        if file_path.is_dir() or file_path.name == "app.py":
             continue
         relative_path = file_path.relative_to(directory)
         file_url = f"{base_url}/{relative_path.as_posix()}"
         json_object["files"].append({"name": str(relative_path), "url": file_url})
-        print("---------------------")
-    print(json_object)
-    print("=====================")
-    json_text = json.dumps(json_object)
-    compressed_json_text = gzip.compress(json_text.encode("utf8"))
-    base64_text = base64.b64encode(compressed_json_text).decode("utf8")
-    query = urlencode({"c": base64_text}, quote_via=quote)
-    return f"{PYCAFE_URL}/snippet/vizro/v1?{query}"
+
+        json_text = json.dumps(json_object)
+        compressed_json_text = gzip.compress(json_text.encode("utf8"))
+        base64_text = base64.b64encode(compressed_json_text).decode("utf8")
+        query = urlencode({"c": base64_text}, quote_via=quote)
+        return f"{PYCAFE_URL}/snippet/vizro/v1?{query}"
 
 
 def post_comment(urls: dict[str, str]):
