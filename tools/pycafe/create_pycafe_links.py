@@ -93,7 +93,7 @@ def post_comment(urls: dict[str, str]):
     current_utc_time = datetime.datetime.now(datetime.UTC).strftime("%Y-%m-%d %H:%M:%S UTC")
 
     # Define the comment body with datetime
-    dashboards = "\n\n".join(f"Link: [{directory}]({url})" for url, directory in urls.items())
+    dashboards = "\n\n".join(f"Link: [{directory}]({url})" for directory, url in urls.items())
 
     # Update the existing comment or create a new one
     if bot_comment:
