@@ -38,7 +38,18 @@ ordered_bar = vm.Page(
                 orientation="h",
             )
         ),
-        make_code_clipboard_from_py_file("ordered_bar.py"),
+        vm.Tabs(
+            tabs=[
+                vm.Container(
+                    title="Vizro dashboard",
+                    components=[make_code_clipboard_from_py_file("ordered_bar.py", mode="vizro")],
+                ),
+                vm.Container(
+                    title="Plotly figure",
+                    components=[make_code_clipboard_from_py_file("ordered_bar.py", mode="plotly")],
+                ),
+            ]
+        ),
     ],
 )
 
@@ -75,7 +86,18 @@ ordered_column = vm.Page(
                 x="country",
             )
         ),
-        make_code_clipboard_from_py_file("ordered_column.py"),
+        vm.Tabs(
+            tabs=[
+                vm.Container(
+                    title="Vizro dashboard",
+                    components=[make_code_clipboard_from_py_file("ordered_column.py", mode="vizro")],
+                ),
+                vm.Container(
+                    title="Plotly figure",
+                    components=[make_code_clipboard_from_py_file("ordered_column.py", mode="plotly")],
+                ),
+            ]
+        ),
     ],
 )
 

@@ -39,7 +39,17 @@ line = vm.Page(
         """
         ),
         vm.Graph(figure=px.line(stocks, x="date", y="GOOG")),
-        make_code_clipboard_from_py_file("line.py"),
+        vm.Tabs(
+            tabs=[
+                vm.Container(
+                    title="Vizro dashboard", components=[make_code_clipboard_from_py_file("line.py", mode="vizro")]
+                ),
+                vm.Container(
+                    title="Plotly figure",
+                    components=[make_code_clipboard_from_py_file("line.py", mode="plotly")],
+                ),
+            ]
+        ),
     ],
 )
 
@@ -74,7 +84,18 @@ column = vm.Page(
                 y="gdpPercap",
             )
         ),
-        make_code_clipboard_from_py_file("time_column.py"),
+        vm.Tabs(
+            tabs=[
+                vm.Container(
+                    title="Vizro dashboard",
+                    components=[make_code_clipboard_from_py_file("time_column.py", mode="vizro")],
+                ),
+                vm.Container(
+                    title="Plotly figure",
+                    components=[make_code_clipboard_from_py_file("time_column.py", mode="plotly")],
+                ),
+            ]
+        ),
     ],
 )
 
@@ -102,7 +123,17 @@ area = vm.Page(
         """
         ),
         vm.Graph(figure=px.area(stocks, x="date", y="GOOG")),
-        make_code_clipboard_from_py_file("area.py"),
+        vm.Tabs(
+            tabs=[
+                vm.Container(
+                    title="Vizro dashboard", components=[make_code_clipboard_from_py_file("area.py", mode="vizro")]
+                ),
+                vm.Container(
+                    title="Plotly figure",
+                    components=[make_code_clipboard_from_py_file("area.py", mode="plotly")],
+                ),
+            ]
+        ),
     ],
 )
 
@@ -138,7 +169,18 @@ stepped_line = vm.Page(
                 line_shape="vh",
             ),
         ),
-        make_code_clipboard_from_py_file("stepped_line.py"),
+        vm.Tabs(
+            tabs=[
+                vm.Container(
+                    title="Vizro dashboard",
+                    components=[make_code_clipboard_from_py_file("stepped_line.py", mode="vizro")],
+                ),
+                vm.Container(
+                    title="Plotly figure",
+                    components=[make_code_clipboard_from_py_file("stepped_line.py", mode="plotly")],
+                ),
+            ]
+        ),
     ],
 )
 
@@ -165,7 +207,17 @@ heatmap = vm.Page(
         """
         ),
         vm.Graph(figure=px.density_heatmap(tips, x="day", y="size", z="tip", histfunc="avg", text_auto="$.2f")),
-        make_code_clipboard_from_py_file("heatmap.py"),
+        vm.Tabs(
+            tabs=[
+                vm.Container(
+                    title="Vizro dashboard", components=[make_code_clipboard_from_py_file("heatmap.py", mode="vizro")]
+                ),
+                vm.Container(
+                    title="Plotly figure",
+                    components=[make_code_clipboard_from_py_file("heatmap.py", mode="plotly")],
+                ),
+            ]
+        ),
     ],
 )
 
@@ -196,7 +248,17 @@ complex if not regularly updated, especially for large projects.
         vm.Graph(
             figure=px.timeline(tasks.sort_values("Start", ascending=False), x_start="Start", x_end="Finish", y="Task")
         ),
-        make_code_clipboard_from_py_file("gantt.py"),
+        vm.Tabs(
+            tabs=[
+                vm.Container(
+                    title="Vizro dashboard", components=[make_code_clipboard_from_py_file("gantt.py", mode="vizro")]
+                ),
+                vm.Container(
+                    title="Plotly figure",
+                    components=[make_code_clipboard_from_py_file("gantt.py", mode="plotly")],
+                ),
+            ]
+        ),
     ],
 )
 pages = [line, column, area, connected_scatter, column_and_line, stepped_line, heatmap, gantt]

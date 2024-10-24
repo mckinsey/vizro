@@ -39,7 +39,18 @@ diverging_bar = vm.Page(
         vm.Graph(
             figure=px.bar(pastries.sort_values("Profit Ratio"), orientation="h", x="Profit Ratio", y="pastry"),
         ),
-        make_code_clipboard_from_py_file("diverging_bar.py"),
+        vm.Tabs(
+            tabs=[
+                vm.Container(
+                    title="Vizro dashboard",
+                    components=[make_code_clipboard_from_py_file("diverging_bar.py", mode="vizro")],
+                ),
+                vm.Container(
+                    title="Plotly figure",
+                    components=[make_code_clipboard_from_py_file("diverging_bar.py", mode="plotly")],
+                ),
+            ]
+        ),
     ],
 )
 
@@ -79,7 +90,18 @@ diverging_stacked_bar = vm.Page(
                 labels={"value": "Response count", "variable": "Opinion"},
             ),
         ),
-        make_code_clipboard_from_py_file("diverging_stacked_bar.py"),
+        vm.Tabs(
+            tabs=[
+                vm.Container(
+                    title="Vizro dashboard",
+                    components=[make_code_clipboard_from_py_file("diverging_stacked_bar.py", mode="vizro")],
+                ),
+                vm.Container(
+                    title="Plotly figure",
+                    components=[make_code_clipboard_from_py_file("diverging_stacked_bar.py", mode="plotly")],
+                ),
+            ]
+        ),
     ],
 )
 

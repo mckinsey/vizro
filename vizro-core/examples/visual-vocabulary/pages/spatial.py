@@ -38,7 +38,18 @@ choropleth = vm.Page(
                 hover_name="country",
             )
         ),
-        make_code_clipboard_from_py_file("choropleth.py"),
+        vm.Tabs(
+            tabs=[
+                vm.Container(
+                    title="Vizro dashboard",
+                    components=[make_code_clipboard_from_py_file("choropleth.py", mode="vizro")],
+                ),
+                vm.Container(
+                    title="Plotly figure",
+                    components=[make_code_clipboard_from_py_file("choropleth.py", mode="plotly")],
+                ),
+            ]
+        ),
     ],
 )
 
@@ -74,7 +85,17 @@ dot_map = vm.Page(
                 zoom=10,
             ),
         ),
-        make_code_clipboard_from_py_file("dot_map.py"),
+        vm.Tabs(
+            tabs=[
+                vm.Container(
+                    title="Vizro dashboard", components=[make_code_clipboard_from_py_file("dot_map.py", mode="vizro")]
+                ),
+                vm.Container(
+                    title="Plotly figure",
+                    components=[make_code_clipboard_from_py_file("dot_map.py", mode="plotly")],
+                ),
+            ]
+        ),
     ],
 )
 
@@ -112,7 +133,18 @@ bubble_map = vm.Page(
                 zoom=10,
             ),
         ),
-        make_code_clipboard_from_py_file("bubble_map.py"),
+        vm.Tabs(
+            tabs=[
+                vm.Container(
+                    title="Vizro dashboard",
+                    components=[make_code_clipboard_from_py_file("bubble_map.py", mode="vizro")],
+                ),
+                vm.Container(
+                    title="Plotly figure",
+                    components=[make_code_clipboard_from_py_file("bubble_map.py", mode="plotly")],
+                ),
+            ]
+        ),
     ],
 )
 

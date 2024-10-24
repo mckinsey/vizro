@@ -44,13 +44,10 @@ def generate_link(directory: str, extra_requirements: Optional[list[str]] = None
 
     # Requirements
     requirements = "\n".join(
-        filter(
-            None,
-            [
-                f"{PYCAFE_URL}/gh/artifact/mckinsey/vizro/actions/runs/{RUN_ID}/pip/{WHL_FILE}",
-                *(extra_requirements or []),
-            ],
-        )
+        [
+            f"{PYCAFE_URL}/gh/artifact/mckinsey/vizro/actions/runs/{RUN_ID}/pip/{WHL_FILE}",
+            *(extra_requirements or []),
+        ],
     )
 
     # App file
