@@ -23,6 +23,7 @@ dashboard = vm.Dashboard(pages=[page])
 Vizro().build(dashboard).run()
 """
 # TODO AM: isort? Do like vizro-ai.
+# Make sure unused imports like vizro.models.types.capture disappear
 
 
 def make_code_clipboard_from_py_file(filepath: str, mode="vizro"):
@@ -33,7 +34,9 @@ def make_code_clipboard_from_py_file(filepath: str, mode="vizro"):
     if mode == "vizro":
         example_code = VIZRO_CODE_TEMPLATE.format(title="Title", example_code=example_code)
     else:
-        example_code.replace("import vizro.plotly.express as px", "import plotly.express as px")
+        replacements = {"import vizro.plotly.express as px": "import plotly.express as px", '@capture("graph")': ""}
+        for old_code, new_code in replacements.items():
+            example_code = example_code.replace(old_code, new_code)
 
     return CodeClipboard(
         code=black.format_str(example_code, mode=black.Mode(line_length=80)),

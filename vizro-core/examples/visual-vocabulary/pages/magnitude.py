@@ -1,12 +1,10 @@
 """Magnitude charts."""
 
 import vizro.models as vm
-import vizro.plotly.express as px
 from custom_charts import radar
 
-from pages._pages_utils import PAGE_GRID, gapminder, iris, make_code_clipboard_from_py_file, tips, wind
-from pages.examples.bar import fig
-from vizro.models.types import capture
+from pages._pages_utils import PAGE_GRID, make_code_clipboard_from_py_file
+from pages.examples import bar, magnitude_column, paired_bar, paired_column, parallel_coordinates, radar
 
 bar = vm.Page(
     title="Bar",
@@ -31,7 +29,7 @@ bar = vm.Page(
             descriptions below.
         """
         ),
-        vm.Graph(figure=fig),
+        vm.Graph(figure=bar.fig),
         vm.Tabs(
             tabs=[
                 vm.Container(
@@ -71,16 +69,19 @@ column = vm.Page(
                 or abbreviations with fuller descriptions below.
         """
         ),
-        vm.Graph(
-            figure=px.bar(
-                gapminder.query(
-                    "year == 2007 and country.isin(['United States', 'Pakistan', 'India', 'China', 'Indonesia'])"
+        vm.Graph(figure=magnitude_column.fig),
+        vm.Tabs(
+            tabs=[
+                vm.Container(
+                    title="Vizro dashboard",
+                    components=[make_code_clipboard_from_py_file("magnitude_column.py", mode="vizro")],
                 ),
-                y="pop",
-                x="country",
-            )
+                vm.Container(
+                    title="Plotly figure",
+                    components=[make_code_clipboard_from_py_file("magnitude_column.py", mode="plotly")],
+                ),
+            ]
         ),
-        make_code_clipboard_from_py_file("magnitude_column.py"),
     ],
 )
 
@@ -109,18 +110,19 @@ paired_bar = vm.Page(
             with fuller descriptions below.
         """
         ),
-        vm.Graph(
-            figure=px.histogram(
-                tips,
-                y="day",
-                x="total_bill",
-                color="sex",
-                barmode="group",
-                orientation="h",
-                category_orders={"day": ["Thur", "Fri", "Sat", "Sun"]},
-            ),
+        vm.Graph(figure=paired_bar.fig),
+        vm.Tabs(
+            tabs=[
+                vm.Container(
+                    title="Vizro dashboard",
+                    components=[make_code_clipboard_from_py_file("paired_bar.py", mode="vizro")],
+                ),
+                vm.Container(
+                    title="Plotly figure",
+                    components=[make_code_clipboard_from_py_file("paired_bar.py", mode="plotly")],
+                ),
+            ]
         ),
-        make_code_clipboard_from_py_file("paired_bar.py"),
     ],
 )
 
@@ -149,17 +151,19 @@ paired_column = vm.Page(
             with fuller descriptions below.
         """
         ),
-        vm.Graph(
-            figure=px.histogram(
-                tips,
-                x="day",
-                y="total_bill",
-                color="sex",
-                barmode="group",
-                category_orders={"day": ["Thur", "Fri", "Sat", "Sun"]},
-            ),
+        vm.Graph(figure=paired_column.fig),
+        vm.Tabs(
+            tabs=[
+                vm.Container(
+                    title="Vizro dashboard",
+                    components=[make_code_clipboard_from_py_file("paired_column.py", mode="vizro")],
+                ),
+                vm.Container(
+                    title="Plotly figure",
+                    components=[make_code_clipboard_from_py_file("paired_column.py", mode="plotly")],
+                ),
+            ]
         ),
-        make_code_clipboard_from_py_file("paired_column.py"),
     ],
 )
 
@@ -186,12 +190,19 @@ parallel_coordinates = vm.Page(
                 coding to distinguish between different data points or groups.
         """
         ),
-        vm.Graph(
-            figure=px.parallel_coordinates(
-                iris, color="species_id", dimensions=["sepal_width", "sepal_length", "petal_width", "petal_length"]
-            )
+        vm.Graph(figure=parallel_coordinates.fig),
+        vm.Tabs(
+            tabs=[
+                vm.Container(
+                    title="Vizro dashboard",
+                    components=[make_code_clipboard_from_py_file("parallel_coordinates.py", mode="vizro")],
+                ),
+                vm.Container(
+                    title="Plotly figure",
+                    components=[make_code_clipboard_from_py_file("parallel_coordinates.py", mode="plotly")],
+                ),
+            ]
         ),
-        make_code_clipboard_from_py_file("parallel_coordinates.py"),
     ],
 )
 
@@ -213,8 +224,18 @@ radar = vm.Page(
                 To maintain clarity, use consistent scales for all axes and clearly mark labels and data points.
         """
         ),
-        vm.Graph(figure=radar(wind.query("strength == '1-2'"), r="frequency", theta="direction", line_close=True)),
-        make_code_clipboard_from_py_file("radar.py"),
+        vm.Graph(figure=radar.fig),
+        vm.Tabs(
+            tabs=[
+                vm.Container(
+                    title="Vizro dashboard", components=[make_code_clipboard_from_py_file("radar.py", mode="vizro")]
+                ),
+                vm.Container(
+                    title="Plotly figure",
+                    components=[make_code_clipboard_from_py_file("radar.py", mode="plotly")],
+                ),
+            ]
+        ),
     ],
 )
 

@@ -11,13 +11,13 @@ img[src*="#chart-icon"] {
 }
 
 .code-clipboard {
-  font-size: 20px;
   float: right;
+  font-size: 20px;
 }
 
 .code-clipboard pre {
-   font-family: monospace;
-   margin-bottom: 12px
+  font-family: monospace;
+  margin-bottom: 12px;
 }
 
 .code-clipboard-container {
@@ -28,7 +28,8 @@ img[src*="#chart-icon"] {
   position: relative;
 }
 
-.code-clipboard-container .pycafe-link, .code-clipboard-container .pycafe-link:focus {
+.code-clipboard-container .pycafe-link,
+.code-clipboard-container .pycafe-link:focus {
   line-height: unset;
   margin-bottom: 12px;
 }
