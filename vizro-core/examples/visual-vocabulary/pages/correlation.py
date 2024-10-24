@@ -30,7 +30,17 @@ scatter = vm.Page(
         """
         ),
         vm.Graph(figure=px.scatter(iris, x="sepal_width", y="sepal_length", color="species")),
-        make_code_clipboard_from_py_file("scatter.py"),
+        vm.Tabs(
+            tabs=[
+                vm.Container(
+                    title="Vizro dashboard", components=[make_code_clipboard_from_py_file("scatter.py", mode="vizro")]
+                ),
+                vm.Container(
+                    title="Plotly figure",
+                    components=[make_code_clipboard_from_py_file("scatter.py", mode="plotly")],
+                ),
+            ]
+        ),
     ],
 )
 
@@ -63,7 +73,18 @@ scatter_matrix = vm.Page(
         vm.Graph(
             figure=px.scatter_matrix(iris, dimensions=["sepal_length", "sepal_width", "petal_length", "petal_width"])
         ),
-        make_code_clipboard_from_py_file("scatter_matrix.py"),
+        vm.Tabs(
+            tabs=[
+                vm.Container(
+                    title="Vizro dashboard",
+                    components=[make_code_clipboard_from_py_file("scatter_matrix.py", mode="vizro")],
+                ),
+                vm.Container(
+                    title="Plotly figure",
+                    components=[make_code_clipboard_from_py_file("scatter_matrix.py", mode="plotly")],
+                ),
+            ]
+        ),
     ],
 )
 
@@ -92,7 +113,17 @@ bubble = vm.Page(
         """
         ),
         vm.Graph(figure=px.scatter(gapminder.query("year==2007"), x="gdpPercap", y="lifeExp", size="pop", size_max=60)),
-        make_code_clipboard_from_py_file("bubble.py"),
+        vm.Tabs(
+            tabs=[
+                vm.Container(
+                    title="Vizro dashboard", components=[make_code_clipboard_from_py_file("bubble.py", mode="vizro")]
+                ),
+                vm.Container(
+                    title="Plotly figure",
+                    components=[make_code_clipboard_from_py_file("bubble.py", mode="plotly")],
+                ),
+            ]
+        ),
     ],
 )
 

@@ -39,7 +39,17 @@ pie = vm.Page(
                 names="day",
             )
         ),
-        make_code_clipboard_from_py_file("pie.py"),
+        vm.Tabs(
+            tabs=[
+                vm.Container(
+                    title="Vizro dashboard", components=[make_code_clipboard_from_py_file("pie.py", mode="vizro")]
+                ),
+                vm.Container(
+                    title="Plotly figure",
+                    components=[make_code_clipboard_from_py_file("pie.py", mode="plotly")],
+                ),
+            ]
+        ),
     ],
 )
 
@@ -73,7 +83,17 @@ donut = vm.Page(
                 hole=0.4,
             )
         ),
-        make_code_clipboard_from_py_file("donut.py"),
+        vm.Tabs(
+            tabs=[
+                vm.Container(
+                    title="Vizro dashboard", components=[make_code_clipboard_from_py_file("donut.py", mode="vizro")]
+                ),
+                vm.Container(
+                    title="Plotly figure",
+                    components=[make_code_clipboard_from_py_file("donut.py", mode="plotly")],
+                ),
+            ]
+        ),
     ],
 )
 
@@ -109,7 +129,17 @@ treemap = vm.Page(
                 color="lifeExp",
             )
         ),
-        make_code_clipboard_from_py_file("treemap.py"),
+        vm.Tabs(
+            tabs=[
+                vm.Container(
+                    title="Vizro dashboard", components=[make_code_clipboard_from_py_file("treemap.py", mode="vizro")]
+                ),
+                vm.Container(
+                    title="Plotly figure",
+                    components=[make_code_clipboard_from_py_file("treemap.py", mode="plotly")],
+                ),
+            ]
+        ),
     ],
 )
 
@@ -140,7 +170,18 @@ stacked_bar = vm.Page(
         """
         ),
         vm.Graph(figure=px.histogram(tips, y="sex", x="total_bill", color="day", orientation="h")),
-        make_code_clipboard_from_py_file("stacked_bar.py"),
+        vm.Tabs(
+            tabs=[
+                vm.Container(
+                    title="Vizro dashboard",
+                    components=[make_code_clipboard_from_py_file("stacked_bar.py", mode="vizro")],
+                ),
+                vm.Container(
+                    title="Plotly figure",
+                    components=[make_code_clipboard_from_py_file("stacked_bar.py", mode="plotly")],
+                ),
+            ]
+        ),
     ],
 )
 
@@ -171,7 +212,18 @@ stacked_column = vm.Page(
         """
         ),
         vm.Graph(figure=px.histogram(tips, x="sex", y="total_bill", color="day")),
-        make_code_clipboard_from_py_file("stacked_bar.py"),
+        vm.Tabs(
+            tabs=[
+                vm.Container(
+                    title="Vizro dashboard",
+                    components=[make_code_clipboard_from_py_file("stacked_bar.py", mode="vizro")],
+                ),
+                vm.Container(
+                    title="Plotly figure",
+                    components=[make_code_clipboard_from_py_file("stacked_bar.py", mode="plotly")],
+                ),
+            ]
+        ),
     ],
 )
 
@@ -200,7 +252,17 @@ funnel = vm.Page(
         """
         ),
         vm.Graph(figure=px.funnel_area(funnel_data, names="Stage", values="Value")),
-        make_code_clipboard_from_py_file("funnel.py"),
+        vm.Tabs(
+            tabs=[
+                vm.Container(
+                    title="Vizro dashboard", components=[make_code_clipboard_from_py_file("funnel.py", mode="vizro")]
+                ),
+                vm.Container(
+                    title="Plotly figure",
+                    components=[make_code_clipboard_from_py_file("funnel.py", mode="plotly")],
+                ),
+            ]
+        ),
     ],
 )
 

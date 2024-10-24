@@ -40,7 +40,18 @@ def butterfly_factory(group: str):
             vm.Graph(
                 figure=butterfly(ages, x=["Male", "Female"], y="Age", labels={"value": "Population", "variable": "Sex"})
             ),
-            make_code_clipboard_from_py_file("butterfly.py"),
+            vm.Tabs(
+                tabs=[
+                    vm.Container(
+                        title="Vizro dashboard",
+                        components=[make_code_clipboard_from_py_file("butterfly.py", mode="vizro")],
+                    ),
+                    vm.Container(
+                        title="Plotly figure",
+                        components=[make_code_clipboard_from_py_file("butterfly.py", mode="plotly")],
+                    ),
+                ]
+            ),
         ],
     )
 
@@ -72,7 +83,18 @@ def connected_scatter_factory(group: str):
         """
             ),
             vm.Graph(figure=px.line(gapminder.query("country == 'Australia'"), x="year", y="lifeExp", markers=True)),
-            make_code_clipboard_from_py_file("connected_scatter.py"),
+            vm.Tabs(
+                tabs=[
+                    vm.Container(
+                        title="Vizro dashboard",
+                        components=[make_code_clipboard_from_py_file("connected_scatter.py", mode="vizro")],
+                    ),
+                    vm.Container(
+                        title="Plotly figure",
+                        components=[make_code_clipboard_from_py_file("connected_scatter.py", mode="plotly")],
+                    ),
+                ]
+            ),
         ],
     )
 
@@ -109,7 +131,18 @@ def column_and_line_factory(group: str):
                     x="year",
                 )
             ),
-            make_code_clipboard_from_py_file("column_and_line.py"),
+            vm.Tabs(
+                tabs=[
+                    vm.Container(
+                        title="Vizro dashboard",
+                        components=[make_code_clipboard_from_py_file("column_and_line.py", mode="vizro")],
+                    ),
+                    vm.Container(
+                        title="Plotly figure",
+                        components=[make_code_clipboard_from_py_file("column_and_line.py", mode="plotly")],
+                    ),
+                ]
+            ),
         ],
     )
 
@@ -149,6 +182,17 @@ def waterfall_factory(group: str):
                     measure="measure",
                 )
             ),
-            make_code_clipboard_from_py_file("waterfall.py"),
+            vm.Tabs(
+                tabs=[
+                    vm.Container(
+                        title="Vizro dashboard",
+                        components=[make_code_clipboard_from_py_file("waterfall.py", mode="vizro")],
+                    ),
+                    vm.Container(
+                        title="Plotly figure",
+                        components=[make_code_clipboard_from_py_file("waterfall.py", mode="plotly")],
+                    ),
+                ]
+            ),
         ],
     )

@@ -41,7 +41,17 @@ sankey = vm.Page(
                 value="Value",
             ),
         ),
-        make_code_clipboard_from_py_file("sankey.py"),
+        vm.Tabs(
+            tabs=[
+                vm.Container(
+                    title="Vizro dashboard", components=[make_code_clipboard_from_py_file("sankey.py", mode="vizro")]
+                ),
+                vm.Container(
+                    title="Plotly figure",
+                    components=[make_code_clipboard_from_py_file("sankey.py", mode="plotly")],
+                ),
+            ]
+        ),
     ],
 )
 

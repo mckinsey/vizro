@@ -37,7 +37,17 @@ violin = vm.Page(
                 box=True,
             )
         ),
-        make_code_clipboard_from_py_file("violin.py"),
+        vm.Tabs(
+            tabs=[
+                vm.Container(
+                    title="Vizro dashboard", components=[make_code_clipboard_from_py_file("violin.py", mode="vizro")]
+                ),
+                vm.Container(
+                    title="Plotly figure",
+                    components=[make_code_clipboard_from_py_file("violin.py", mode="plotly")],
+                ),
+            ]
+        ),
     ],
 )
 
@@ -74,7 +84,17 @@ boxplot = vm.Page(
                 color="day",
             )
         ),
-        make_code_clipboard_from_py_file("boxplot.py"),
+        vm.Tabs(
+            tabs=[
+                vm.Container(
+                    title="Vizro dashboard", components=[make_code_clipboard_from_py_file("boxplot.py", mode="vizro")]
+                ),
+                vm.Container(
+                    title="Plotly figure",
+                    components=[make_code_clipboard_from_py_file("boxplot.py", mode="plotly")],
+                ),
+            ]
+        ),
     ],
 )
 
@@ -103,7 +123,17 @@ histogram = vm.Page(
         """
         ),
         vm.Graph(figure=px.histogram(tips, x="total_bill")),
-        make_code_clipboard_from_py_file("histogram.py"),
+        vm.Tabs(
+            tabs=[
+                vm.Container(
+                    title="Vizro dashboard", components=[make_code_clipboard_from_py_file("histogram.py", mode="vizro")]
+                ),
+                vm.Container(
+                    title="Plotly figure",
+                    components=[make_code_clipboard_from_py_file("histogram.py", mode="plotly")],
+                ),
+            ]
+        ),
     ],
 )
 
@@ -130,7 +160,17 @@ dumbbell = vm.Page(
         """
         ),
         vm.Graph(figure=dumbbell(salaries, y="Job", x=["Min", "Max"], labels={"variable": "", "value": "Salary in $"})),
-        make_code_clipboard_from_py_file("dumbbell.py"),
+        vm.Tabs(
+            tabs=[
+                vm.Container(
+                    title="Vizro dashboard", components=[make_code_clipboard_from_py_file("dumbbell.py", mode="vizro")]
+                ),
+                vm.Container(
+                    title="Plotly figure",
+                    components=[make_code_clipboard_from_py_file("dumbbell.py", mode="plotly")],
+                ),
+            ]
+        ),
     ],
 )
 

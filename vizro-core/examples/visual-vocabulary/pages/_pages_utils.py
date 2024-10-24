@@ -13,7 +13,6 @@ logging.getLogger("blib2to3").setLevel(logging.ERROR)
 
 VIZRO_CODE_TEMPLATE = """
 import vizro.models as vm
-import vizro.plotly.express as px
 from vizro import Vizro
 
 {example_code}
