@@ -27,7 +27,6 @@ pastries = pd.DataFrame(
 
 @capture("graph")
 def diverging_stacked_bar(data_frame, **kwargs) -> go.Figure:
-    """Creates a horizontal diverging stacked bar chart."""
     fig = px.bar(data_frame, **kwargs)
 
     for i, trace in enumerate(fig.data):

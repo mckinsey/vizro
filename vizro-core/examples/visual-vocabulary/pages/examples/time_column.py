@@ -10,9 +10,7 @@ gapminder = px.data.gapminder()
 
 @capture("graph")
 def categorical_column(data_frame: pd.DataFrame, **kwargs) -> go.Figure:
-    """Creates a column chart where the x-axis values are converted to category type."""
     fig = px.bar(data_frame, **kwargs)
-    # So ticks are aligned with bars when xaxes values are numbers (e.g. years)
     fig.update_xaxes(type="category")
     return fig
 

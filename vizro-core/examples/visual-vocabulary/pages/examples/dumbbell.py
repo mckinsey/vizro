@@ -16,7 +16,6 @@ salaries = pd.DataFrame(
 
 @capture("graph")
 def dumbbell(data_frame: pd.DataFrame, **kwargs) -> go.Figure:
-    """Creates a dumbbell chart using Plotly's `px.scatter`."""
     fig = px.scatter(data_frame, **kwargs)
 
     orientation = fig.data[0].orientation

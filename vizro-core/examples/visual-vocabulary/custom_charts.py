@@ -14,18 +14,19 @@ from vizro.models.types import capture
 # Ultimately these charts will probably move to vizro.charts anyway.
 @capture("graph")
 def butterfly(data_frame: pd.DataFrame, **kwargs) -> go.Figure:
-    """Creates a custom butterfly chart using Plotly's go.Figure.
+    """Creates a butterfly chart based on px.bar.
 
     A butterfly chart is a type of bar chart where two sets of bars are displayed back-to-back, often used to compare
     two sets of data.
 
     Args:
-        data_frame: The DataFrame for the chart. Can be long form or wide form.
+        data_frame: DataFrame for the chart. Can be long form or wide form.
             See https://plotly.com/python/wide-form/.
         **kwargs: Keyword arguments to pass into px.bar (e.g. x, y, labels).
+            See https://plotly.com/python-api-reference/generated/plotly.express.bar.html.
 
     Returns:
-        go.Figure: A Plotly Figure object of the butterfly chart.
+        go.Figure: Butterfly chart.
 
     """
     fig = px.bar(data_frame, **kwargs)
@@ -50,24 +51,23 @@ def butterfly(data_frame: pd.DataFrame, **kwargs) -> go.Figure:
 
 @capture("graph")
 def sankey(data_frame: pd.DataFrame, source: str, target: str, value: str, labels: list[str]) -> go.Figure:
-    """Creates a custom sankey chart using Plotly's `go.Sankey`.
+    """Creates a Sankey chart based on go.Sankey.
 
     A Sankey chart is a type of flow diagram where the width of the arrows is proportional to the flow rate.
     It is used to visualize the flow of resources or data between different stages or categories.
 
-    Args:
-        data_frame (pd.DataFrame): The data source for the chart.
-        source (str): The name of the column in the data frame for the source nodes.
-        target (str): The name of the column in the data frame for the target nodes.
-        value (str): The name of the column in the data frame for the values representing the flow between nodes.
-        labels (list[str]): A list of labels for the nodes.
-
-    Returns:
-        go.Figure: A Plotly Figure object of the Sankey chart.
-
     For detailed information on additional parameters and customization, refer to the Plotly documentation:
     https://plotly.com/python/reference/sankey/
 
+    Args:
+        data_frame: DataFrame for the chart.
+        source: The name of the column in data_frame for source nodes.
+        target: The name of the column in data_frame for target nodes.
+        value: The name of the column in data_frame for the values representing the flow between nodes.
+        labels: A list of labels for the nodes.
+
+    Returns:
+        go.Figure: Sankey chart.
     """
     return go.Figure(
         data=go.Sankey(
@@ -95,19 +95,20 @@ def column_and_line(
     y_column: Union[str, pd.Series, list[str], list[pd.Series]],
     y_line: Union[str, pd.Series, list[str], list[pd.Series]],
 ) -> go.Figure:
-    """Creates a combined column and line chart using Plotly.
+    """Creates a combined column and line chart based on px.bar and px.line.
 
     This function generates a chart with a bar graph for one variable (y-axis 1) and a line graph for another variable
     (y-axis 2), sharing the same x-axis. The y-axes for the bar and line graphs are synchronized and overlaid.
 
     Args:
-        data_frame (pd.DataFrame): The data source for the chart.
+        data_frame: DataFrame for the chart. Can be long form or wide form.
+            See https://plotly.com/python/wide-form/.
         x: Either a name of a column in data_frame, or a pandas Series or array_like object.
         y_column: Either a name of a column in data_frame, or a pandas Series or array_like object.
         y_line: Either a name of a column in data_frame, or a pandas Series or array_like object.
 
     Returns:
-        go.Figure: : A Plotly Figure object of the combined column and line chart.
+        go.Figure: Combined column and line chart.
 
     """
     # We use px.bar and px.line so that we get the plotly express hoverdata, axes titles etc. Bar is used arbitrarily
@@ -132,15 +133,16 @@ def column_and_line(
 
 @capture("graph")
 def categorical_column(data_frame: pd.DataFrame, **kwargs) -> go.Figure:
-    """Creates a column chart where the x-axis values are converted to category type.
+    """Creates cateogrical bar chart based on px.bar.
 
     Args:
-        data_frame: The DataFrame for the chart. Can be long form or wide form.
+        data_frame: DataFrame for the chart. Can be long form or wide form.
             See https://plotly.com/python/wide-form/.
         **kwargs: Keyword arguments to pass into px.bar (e.g. x, y, labels).
+            See https://plotly.com/python-api-reference/generated/plotly.express.bar.html.
 
     Returns:
-       go.Figure: A Plotly Figure object of the diverging stacked bar chart.
+       go.Figure: Categorical column chart.
 
     """
     fig = px.bar(data_frame, **kwargs)
@@ -151,23 +153,22 @@ def categorical_column(data_frame: pd.DataFrame, **kwargs) -> go.Figure:
 
 @capture("graph")
 def waterfall(data_frame: pd.DataFrame, x: str, y: str, measure: list[str]) -> go.Figure:
-    """Creates a waterfall chart using Plotly's `go.Waterfall`.
+    """Creates a waterfall chart based on go.Waterfall.
 
     A Waterfall chart visually breaks down the cumulative effect of sequential positive and negative values,
     showing how each value contributes to the total.
 
-    Args:
-        data_frame (pd.DataFrame): The data source for the chart.
-        x (str): Column name in `data_frame` for x-axis values.
-        y (str): Column name in `data_frame` for y-axis values.
-        measure (list[str]): List specifying the type of each bar, can be "relative", "total", or "absolute".
-
-    Returns:
-        go.Figure: A Plotly Figure object of the Waterfall chart.
-
     For additional parameters and customization options, see the Plotly documentation:
     https://plotly.com/python/reference/waterfall/
 
+    Args:
+        data_frame: TDataFrame for the chart.
+        x: Column name in data_frame for x-axis values.
+        y: Column name in data_frame for y-axis values.
+        measure: List specifying the type of each bar, can be "relative", "total", or "absolute".
+
+    Returns:
+        go.Figure: Waterfall chart.
     """
     return go.Figure(
         data=go.Waterfall(x=data_frame[x], y=data_frame[y], measure=data_frame[measure]),
@@ -177,14 +178,15 @@ def waterfall(data_frame: pd.DataFrame, x: str, y: str, measure: list[str]) -> g
 
 @capture("graph")
 def radar(data_frame: pd.DataFrame, **kwargs) -> go.Figure:
-    """Creates a radar chart using Plotly's px.line_polar.
+    """Creates a radar chart based on px.line_polar.
 
     A radar chart is a type of data visualization in which there are three or more
     variables represented on axes that originate from the same central point.
 
     Args:
-        data_frame: The DataFrame for the chart.
+        data_frame: DataFrame for the chart.
         **kwargs: Keyword arguments to pass into px.line_polar (e.g. r, theta).
+            See https://plotly.com/python-api-reference/generated/plotly.express.line_polar.html.
 
     Returns:
        go.Figure: A Plotly Figure object of the radar chart.
@@ -197,21 +199,21 @@ def radar(data_frame: pd.DataFrame, **kwargs) -> go.Figure:
 
 @capture("graph")
 def dumbbell(data_frame: pd.DataFrame, **kwargs) -> go.Figure:
-    """Creates a dumbbell chart using Plotly's `px.scatter`.
+    """Creates a dumbbell chart based on px.scatter.
 
     A dumbbell plot is a type of dot plot where the points, displaying different groups, are connected with a straight
     line. They are ideal for illustrating differences or gaps between two points.
 
-    Args:
-        data_frame: The DataFrame for the chart. Can be long form or wide form.
-            See https://plotly.com/python/wide-form/.
-        **kwargs: Keyword arguments to pass into px.scatter (e.g. x, y, labels).
-
-    Returns:
-        go.Figure: A Plotly Figure object of the dumbbell chart.
-
     Inspired by: https://community.plotly.com/t/how-to-make-dumbbell-plots-in-plotly-python/47762
 
+    Args:
+        data_frame: DataFrame for the chart. Can be long form or wide form.
+            See https://plotly.com/python/wide-form/.
+        **kwargs: Keyword arguments to pass into px.scatter (e.g. x, y, labels).
+            See https://plotly.com/python-api-reference/generated/plotly.scatter.html.
+
+    Returns:
+        go.Figure: Dumbbell chart.
     """
     fig = px.scatter(data_frame, **kwargs)
 
@@ -240,7 +242,7 @@ def dumbbell(data_frame: pd.DataFrame, **kwargs) -> go.Figure:
 
 @capture("graph")
 def diverging_stacked_bar(data_frame: pd.DataFrame, **kwargs) -> go.Figure:
-    """Creates a horizontal diverging stacked bar chart using Plotly's px.bar.
+    """Creates a diverging stacked bar chart based on px.bar.
 
     This type of chart is a variant of the standard stacked bar chart, with bars aligned on a central baseline to
     show both positive and negative values. Each bar is segmented to represent different categories.
@@ -251,12 +253,13 @@ def diverging_stacked_bar(data_frame: pd.DataFrame, **kwargs) -> go.Figure:
     Inspired by: https://community.plotly.com/t/need-help-in-making-diverging-stacked-bar-charts/34023
 
     Args:
-        data_frame: The DataFrame for the chart. Can be long form or wide form.
+        data_frame: DataFrame for the chart. Can be long form or wide form.
             See https://plotly.com/python/wide-form/.
         **kwargs: Keyword arguments to pass into px.bar (e.g. x, y, labels).
+            See https://plotly.com/python-api-reference/generated/plotly.express.bar.html.
 
     Returns:
-       go.Figure: A Plotly Figure object of the diverging stacked bar chart.
+       go.Figure: Diverging stacked bar chart.
     """
     fig = px.bar(data_frame, **kwargs)
 

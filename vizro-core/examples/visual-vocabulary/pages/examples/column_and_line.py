@@ -18,7 +18,6 @@ def column_and_line(
     y_column: Union[str, pd.Series, list[str], list[pd.Series]],
     y_line: Union[str, pd.Series, list[str], list[pd.Series]],
 ) -> go.Figure:
-    """Creates a combined column and line chart using Plotly."""
     bar = px.bar(data_frame, x=x, y=y_column)
     fig = make_subplots(figure=bar, specs=[[{"secondary_y": True}]])
 

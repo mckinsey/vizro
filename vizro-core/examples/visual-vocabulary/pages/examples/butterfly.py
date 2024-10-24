@@ -16,7 +16,6 @@ ages = pd.DataFrame(
 
 @capture("graph")
 def butterfly(data_frame: pd.DataFrame, **kwargs) -> go.Figure:
-    """Creates a butterfly chart with back-to-back bars."""
     fig = px.bar(data_frame, **kwargs)
 
     orientation = fig.data[0].orientation

@@ -8,7 +8,6 @@ wind = px.data.wind()
 
 @capture("graph")
 def radar(data_frame, **kwargs):
-    """Creates a radar chart using Plotly's px.line_polar."""
     fig = px.line_polar(data_frame, **kwargs)
     fig.update_traces(fill="toself")
     return fig
