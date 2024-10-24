@@ -135,7 +135,7 @@ def column_and_line(
 
 @capture("graph")
 def categorical_column(data_frame: pd.DataFrame, **kwargs) -> go.Figure:
-    """Creates cateogrical bar chart based on px.bar.
+    """Creates categorical bar chart based on px.bar.
 
     Args:
         data_frame: DataFrame for the chart. Can be long form or wide form.
