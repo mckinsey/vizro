@@ -61,8 +61,8 @@ def generate_link(directory: str, extra_requirements: Optional[list[str]] = None
         "requirements": requirements,
         "files": [],
     }
-    
-    for file_path in Path(directory).rglob('*'):
+
+    for file_path in Path(directory).rglob("*"):
         print(file_path)
         if file_path.name == "app.py":
             continue
