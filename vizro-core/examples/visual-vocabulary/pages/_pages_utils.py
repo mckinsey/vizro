@@ -86,23 +86,19 @@ pastries = pd.DataFrame(
             "Cookies",
             "Croissants",
             "Eclairs",
-            "Brownies",
-            "Tarts",
-            "Macarons",
-            "Pies",
         ],
-        "Profit Ratio": [-0.10, -0.15, -0.05, 0.10, 0.05, 0.20, 0.15, -0.08, 0.08, -0.12, 0.02, -0.07],
-        "Strongly Disagree": [20, 30, 10, 5, 15, 5, 10, 25, 8, 20, 5, 10],
-        "Disagree": [30, 25, 20, 10, 20, 10, 15, 30, 12, 30, 10, 15],
-        "Agree": [30, 25, 40, 40, 45, 40, 40, 25, 40, 30, 45, 35],
-        "Strongly Agree": [20, 20, 30, 45, 20, 45, 35, 20, 40, 20, 40, 40],
+        "Profit Ratio": [-0.10, -0.05, 0.10, 0.05, 0.15, -0.08, 0.08, -0.12],
+        "Strongly Disagree": [20, 30, 10, 5, 15, 5, 10, 25],
+        "Disagree": [30, 25, 20, 10, 20, 10, 15, 30],
+        "Agree": [30, 25, 40, 40, 45, 40, 40, 25],
+        "Strongly Agree": [20, 20, 30, 45, 20, 45, 35, 20],
     }
 )
 
 salaries = pd.DataFrame(
     {
-        "Job": ["Developer", "Analyst", "Manager", "Specialist"] * 2,
-        "Salary": [60000, 55000, 70000, 50000, 130000, 110000, 96400, 80000],
-        "Range": ["Min"] * 4 + ["Max"] * 4,
+        "Job": ["Developer", "Analyst", "Manager", "Specialist"],
+        "Min": [60000, 55000, 70000, 50000],
+        "Max": [130000, 110000, 96400, 80000],
     }
 )

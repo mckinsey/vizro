@@ -20,15 +20,10 @@ def waterfall(
     y: str,
     measure: list[str],
 ):
-    fig = go.Figure(
-        go.Waterfall(
-            x=data_frame[x],
-            y=data_frame[y],
-            measure=data_frame[measure],
-        )
+    return go.Figure(
+        data=go.Waterfall(x=data_frame[x], y=data_frame[y], measure=data_frame[measure]),
+        layout={"showlegend": False},
     )
-    fig.update_layout(showlegend=False)
-    return fig
 
 
 page = vm.Page(
