@@ -39,4 +39,4 @@ jobs:
 
       - name: Create PyCafe links
         run: |
-          hatch run python ../tools/pycafe/create_pycafe_links.py ${{ github.token }} ${{ github.repository }} ${{ github.event.number }} ${{ github.run_id }}
+          hatch run python ../tools/pycafe/create_pycafe_links.py ${{ github.token }} ${{ github.repository }} ${{ github.event.number }} ${{ github.event.workflow_run.id }} ${{ github.event.workflow_run.head_sha }}

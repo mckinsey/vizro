@@ -16,6 +16,7 @@ GITHUB_TOKEN = sys.argv[1]
 REPO_NAME = sys.argv[2]
 PR_NUMBER = int(sys.argv[3])
 RUN_ID = sys.argv[4]
+COMMIT_SHA = sys.argv[5]
 WHL_FILE = next(Path("dist").glob("*.whl")).name
 PYCAFE_URL = "https://py.cafe"
 VIZRO_RAW_URL = "https://raw.githubusercontent.com/mckinsey/vizro"
@@ -34,8 +35,9 @@ g = Github(auth=auth)
 # Get PR and commits
 repo = g.get_repo(REPO_NAME)
 pr = repo.get_pull(PR_NUMBER)
-commit_sha = pr.head.sha
-commit = repo.get_commit(commit_sha)
+commit = repo.get_commit(COMMIT_SHA)
+commit_sha = COMMIT_SHA
+
 
 
 def generate_link(directory: str, extra_requirements: Optional[list[str]] = None):
