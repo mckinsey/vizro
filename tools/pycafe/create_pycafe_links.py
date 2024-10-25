@@ -39,7 +39,6 @@ commit = repo.get_commit(COMMIT_SHA)
 commit_sha = COMMIT_SHA
 
 
-
 def generate_link(directory: str, extra_requirements: Optional[list[str]] = None):
     """Generate a PyCafe link for the example dashboards."""
     base_url = f"{VIZRO_RAW_URL}/{commit_sha}/vizro-core/{directory}"
