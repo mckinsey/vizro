@@ -1,23 +1,19 @@
-name: PyCafe Dashboards
+name: PyCafe Playground Link
 
 on:
-  push:
-    branches: [main]
-  pull_request:
-    branches:
-      - main
-    paths:
-      - "vizro-core/**"
+  workflow_run:
+    workflows: [Build]
+    types:
+      - completed
 
 defaults:
   run:
     working-directory: vizro-core
-
 env:
   PYTHON_VERSION: "3.12"
 
 jobs:
-  create-links:
+  create-status:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
@@ -27,16 +23,6 @@ jobs:
           python-version: ${{ env.PYTHON_VERSION }}
       - name: Install Hatch
         run: pip install hatch
-      - name: Build vizro-core package
-        run: |
-          hatch build -t wheel
-      - name: Upload artifact
-        uses: actions/upload-artifact@v4
-        with:
-          name: pip
-          path: vizro-core/dist/*.whl
-          retention-days: 14
-
       - name: Create PyCafe links
         run: |
           hatch run python ../tools/pycafe/create_pycafe_links.py ${{ github.token }} ${{ github.repository }} ${{ github.event.number }} ${{ github.event.workflow_run.id }} ${{ github.event.workflow_run.head_sha }}
