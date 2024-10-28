@@ -25,7 +25,7 @@ jobs:
         run: pip install hatch
       - name: Print PR Number
         run: |
-          echo "Pull Request Number: ${{ github.event.workflow_run.pull_requests }}"
+          echo "Pull Request Number: ${{ github.event.workflow_run.pull_requests[0].number }}"
     - name: Create PyCafe links
       run: |
         PR_NUMBER=${{ github.event.workflow_run.pull_requests[0].number || '' }}
