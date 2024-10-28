@@ -33,6 +33,6 @@ def column_and_line(
     return fig
 
 
-gapminder = px.data.gapminder()
+gapminder = px.data.gapminder().query("country == 'Vietnam'")
 
-fig = column_and_line(gapminder.query("country == 'Vietnam'"), y_column="gdpPercap", y_line="lifeExp", x="year")
+fig = column_and_line(gapminder, y_column="gdpPercap", y_line="lifeExp", x="year")
