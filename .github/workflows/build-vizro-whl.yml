@@ -1,4 +1,5 @@
-name: PyCafe Dashboards
+name: Build
+
 
 on:
   push:
@@ -37,6 +38,3 @@ jobs:
           path: vizro-core/dist/*.whl
           retention-days: 14
 
-      - name: Create PyCafe links
-        run: |
-          hatch run python ../tools/pycafe/create_pycafe_links.py ${{ github.token }} ${{ github.repository }} ${{ github.event.number }} ${{ github.event.workflow_run.id }} ${{ github.event.workflow_run.head_sha }}
