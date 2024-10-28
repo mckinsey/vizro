@@ -1,6 +1,5 @@
 name: Build
 
-
 on:
   push:
     branches: [main]
@@ -37,4 +36,3 @@ jobs:
           name: pip
           path: vizro-core/dist/*.whl
           retention-days: 14
-
