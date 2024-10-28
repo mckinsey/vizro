@@ -10,14 +10,16 @@ from pathlib import Path
 from typing import Optional
 from urllib.parse import quote, urlencode
 
+import vizro
 from github import Auth, Github
+
+PACKAGE_VERSION = vizro.__version__
 
 GITHUB_TOKEN = sys.argv[1]
 REPO_NAME = sys.argv[2]
 PR_NUMBER = int(sys.argv[3])
 RUN_ID = sys.argv[4]
 COMMIT_SHA = sys.argv[5]
-WHL_FILE = next(Path("dist").glob("*.whl")).name
 PYCAFE_URL = "https://py.cafe"
 VIZRO_RAW_URL = "https://raw.githubusercontent.com/mckinsey/vizro"
 
@@ -46,7 +48,7 @@ def generate_link(directory: str, extra_requirements: Optional[list[str]] = None
     # Requirements
     requirements = "\n".join(
         [
-            f"{PYCAFE_URL}/gh/artifact/mckinsey/vizro/actions/runs/{RUN_ID}/pip/{WHL_FILE}",
+            f"{PYCAFE_URL}/gh/artifact/mckinsey/vizro/actions/runs/{RUN_ID}/pip/vizro-{PACKAGE_VERSION}-py3-none-any.whl",
             *(extra_requirements or []),
         ],
     )
