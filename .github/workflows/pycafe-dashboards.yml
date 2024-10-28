@@ -1,0 +1,31 @@
+name: PyCafe Playground Link
+
+on:
+  workflow_run:
+    workflows: [Build]
+    types:
+      - completed
+
+defaults:
+  run:
+    working-directory: vizro-core
+env:
+  PYTHON_VERSION: "3.12"
+
+jobs:
+  create-status:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: ${{ env.PYTHON_VERSION }}
+      - name: Install Hatch
+        run: pip install hatch
+      - name: Print PR Number
+        run: |
+          echo "Pull Request Number: ${{ github.event.workflow_run.pull_requests }}"
+      - name: Create PyCafe links
+        run: |
+          hatch run python ../tools/pycafe/create_pycafe_links.py ${{ github.token }} ${{ github.repository }} ${{ github.event.workflow_run.pull_requests[0].number }} ${{ github.event.workflow_run.id }} ${{ github.event.workflow_run.head_sha }}

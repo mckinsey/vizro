@@ -1,4 +1,4 @@
-name: PyCafe Dashboards
+name: Build
 
 on:
   push:
@@ -17,7 +17,7 @@ env:
   PYTHON_VERSION: "3.12"
 
 jobs:
-  create-links:
+  build-whl:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
@@ -36,7 +36,3 @@ jobs:
           name: pip
           path: vizro-core/dist/*.whl
           retention-days: 14
-
-      - name: Create PyCafe links
-        run: |
-          hatch run python ../tools/pycafe/create_pycafe_links.py ${{ github.token }} ${{ github.repository }} ${{ github.event.number }} ${{ github.run_id }}
