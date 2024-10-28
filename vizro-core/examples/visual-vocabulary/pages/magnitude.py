@@ -1,9 +1,10 @@
 """Magnitude charts."""
 
 import vizro.models as vm
-from custom_charts import radar
 
 from pages._pages_utils import PAGE_GRID, make_code_clipboard_from_py_file
+
+# TODO: fix imports so doesn't get overwritten
 from pages.examples import bar, magnitude_column, paired_bar, paired_column, parallel_coordinates, radar
 
 bar = vm.Page(

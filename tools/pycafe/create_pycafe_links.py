@@ -114,7 +114,7 @@ if __name__ == "__main__":
     directories_with_requirements = {
         "examples/dev/": ["openpyxl"],
         "examples/scratch_dev": None,
-        "examples/visual-vocabulary/": None,
+        "examples/visual-vocabulary/": ["autoflake==2.3.1", "black==24.4.2", "isort==5.13.2", "plotly==5.24.1"],
     }
     urls = {
         directory: generate_link(directory, extra_requirements)
