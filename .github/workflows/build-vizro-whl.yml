@@ -18,7 +18,7 @@ env:
   PYTHON_VERSION: "3.12"
 
 jobs:
-  create-links:
+  build-whl:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
