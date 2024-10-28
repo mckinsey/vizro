@@ -10,6 +10,7 @@ from pathlib import Path
 from typing import Optional
 from urllib.parse import quote, urlencode
 
+import requests
 import vizro
 from github import Auth, Github
 
@@ -56,17 +57,14 @@ def generate_link(directory: str, extra_requirements: Optional[list[str]] = None
 
     # Requirements
     requirements = "\n".join(
-        filter(
-            None,
-            [
-                f"{PYCAFE_URL}/gh/artifact/mckinsey/vizro/actions/runs/{RUN_ID}/pip/vizro-{PACKAGE_VERSION}-py3-none-any.whl",
-                *(extra_requirements or []),
-            ],
-        )
+        [
+            f"{PYCAFE_URL}/gh/artifact/mckinsey/vizro/actions/runs/{RUN_ID}/pip/vizro-{PACKAGE_VERSION}-py3-none-any.whl",
+            *(extra_requirements or []),
+        ]
     )
 
     # App file
-    app_content = Path(directory, "app.py").read_text()
+    app_content = requests.get(f"{base_url}/app.py").text
     app_content_split = app_content.split('if __name__ == "__main__":')
     if len(app_content_split) > 1:
         app_content = app_content_split[0] + textwrap.dedent(app_content_split[1])
