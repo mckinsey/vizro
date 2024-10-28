@@ -161,11 +161,6 @@ class Dashboard(VizroBaseModel):
             id="dashboard-container",
             children=[
                 html.Div(id="vizro_version", children=vizro.__version__, hidden=True),
-                html.Div(
-                    id="pink-div",
-                    children="This is a pink div",
-                    style={"backgroundColor": "pink", "padding": "10px", "margin": "10px"},
-                ),
                 dcc.Store(
                     id="vizro_themes",
                     data={
