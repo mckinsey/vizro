@@ -1,11 +1,11 @@
 """Spatial charts."""
 
 import vizro.models as vm
-import vizro.plotly.express as px
 
-from pages._pages_utils import PAGE_GRID, carshare, gapminder, make_code_clipboard_from_py_file
+from pages._pages_utils import PAGE_GRID, make_code_clipboard_from_py_file
+from pages.examples import bubble_map, choropleth, dot_map
 
-choropleth = vm.Page(
+choropleth_page = vm.Page(
     title="Choropleth",
     path="spatial/choropleth",
     layout=vm.Layout(grid=PAGE_GRID),
@@ -30,14 +30,7 @@ choropleth = vm.Page(
 
         """
         ),
-        vm.Graph(
-            figure=px.choropleth(
-                gapminder.query("year == 2007"),
-                locations="iso_alpha",
-                color="lifeExp",
-                hover_name="country",
-            )
-        ),
+        vm.Graph(figure=choropleth.fig),
         vm.Tabs(
             tabs=[
                 vm.Container(
@@ -53,7 +46,7 @@ choropleth = vm.Page(
     ],
 )
 
-dot_map = vm.Page(
+dot_map_page = vm.Page(
     title="Dot map",
     path="spatial/dot-map",
     layout=vm.Layout(grid=PAGE_GRID),
@@ -77,13 +70,7 @@ dot_map = vm.Page(
         """
         ),
         vm.Graph(
-            figure=px.scatter_map(
-                carshare,
-                lat="centroid_lat",
-                lon="centroid_lon",
-                opacity=0.5,
-                zoom=10,
-            ),
+            figure=dot_map.fig,
         ),
         vm.Tabs(
             tabs=[
@@ -99,7 +86,7 @@ dot_map = vm.Page(
     ],
 )
 
-bubble_map = vm.Page(
+bubble_map_page = vm.Page(
     title="Bubble map",
     path="spatial/bubble-map",
     layout=vm.Layout(grid=PAGE_GRID),
@@ -122,17 +109,7 @@ bubble_map = vm.Page(
             details in crowded areas. Adjust the opacity and size of your bubbles to enhance clarity.
         """
         ),
-        vm.Graph(
-            figure=px.scatter_map(
-                carshare,
-                lat="centroid_lat",
-                lon="centroid_lon",
-                size="car_hours",
-                size_max=15,
-                opacity=0.5,
-                zoom=10,
-            ),
-        ),
+        vm.Graph(figure=bubble_map.fig),
         vm.Tabs(
             tabs=[
                 vm.Container(
@@ -149,4 +126,4 @@ bubble_map = vm.Page(
 )
 
 
-pages = [choropleth, dot_map, bubble_map]
+pages = [choropleth_page, dot_map_page, bubble_map_page]

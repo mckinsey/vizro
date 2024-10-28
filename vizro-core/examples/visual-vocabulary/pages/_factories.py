@@ -5,10 +5,9 @@ each chart type used in different groups.
 """
 
 import vizro.models as vm
-import vizro.plotly.express as px
-from custom_charts import butterfly, column_and_line, waterfall
 
-from pages._pages_utils import PAGE_GRID, ages, gapminder, make_code_clipboard_from_py_file, waterfall_data
+from pages._pages_utils import PAGE_GRID, make_code_clipboard_from_py_file
+from pages.examples import butterfly, column_and_line, connected_scatter, waterfall
 
 
 def butterfly_factory(group: str):
@@ -37,9 +36,7 @@ def butterfly_factory(group: str):
                 categories.
             """
             ),
-            vm.Graph(
-                figure=butterfly(ages, x=["Male", "Female"], y="Age", labels={"value": "Population", "variable": "Sex"})
-            ),
+            vm.Graph(figure=butterfly.fig),
             vm.Tabs(
                 tabs=[
                     vm.Container(
@@ -82,7 +79,7 @@ def connected_scatter_factory(group: str):
                 avoid misinterpretation.
         """
             ),
-            vm.Graph(figure=px.line(gapminder.query("country == 'Australia'"), x="year", y="lifeExp", markers=True)),
+            vm.Graph(figure=connected_scatter.fig),
             vm.Tabs(
                 tabs=[
                     vm.Container(
@@ -123,14 +120,7 @@ def column_and_line_factory(group: str):
                 for other types of data comparisons.
         """
             ),
-            vm.Graph(
-                figure=column_and_line(
-                    gapminder.query("country == 'Vietnam'"),
-                    y_column="gdpPercap",
-                    y_line="lifeExp",
-                    x="year",
-                )
-            ),
+            vm.Graph(figure=column_and_line.fig),
             vm.Tabs(
                 tabs=[
                     vm.Container(
@@ -174,14 +164,7 @@ def waterfall_factory(group: str):
                 colors for positive and negative values, and arrange categories logically to tell a coherent story.
             """
             ),
-            vm.Graph(
-                figure=waterfall(
-                    waterfall_data,
-                    x="x",
-                    y="y",
-                    measure="measure",
-                )
-            ),
+            vm.Graph(figure=waterfall.fig),
             vm.Tabs(
                 tabs=[
                     vm.Container(

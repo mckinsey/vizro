@@ -2,13 +2,9 @@ from typing import Union
 
 import pandas as pd
 import plotly.graph_objects as go
-import vizro.models as vm
 import vizro.plotly.express as px
 from plotly.subplots import make_subplots
-from vizro import Vizro
 from vizro.models.types import capture
-
-gapminder = px.data.gapminder()
 
 
 @capture("graph")
@@ -37,18 +33,6 @@ def column_and_line(
     return fig
 
 
-page = vm.Page(
-    title="Column and line",
-    components=[
-        vm.Graph(
-            figure=column_and_line(
-                gapminder.query("country == 'Vietnam'"),
-                y_column="gdpPercap",
-                y_line="lifeExp",
-                x="year",
-            )
-        )
-    ],
-)
-dashboard = vm.Dashboard(pages=[page])
-Vizro().build(dashboard).run()
+gapminder = px.data.gapminder()
+
+fig = column_and_line(gapminder.query("country == 'Vietnam'"), y_column="gdpPercap", y_line="lifeExp", x="year")

@@ -1,13 +1,12 @@
 """Distribution charts."""
 
 import vizro.models as vm
-import vizro.plotly.express as px
-from custom_charts import dumbbell
 
 from pages._factories import butterfly_factory
-from pages._pages_utils import PAGE_GRID, make_code_clipboard_from_py_file, salaries, tips
+from pages._pages_utils import PAGE_GRID, make_code_clipboard_from_py_file
+from pages.examples import boxplot, dumbbell, histogram, violin
 
-violin = vm.Page(
+violin_page = vm.Page(
     title="Violin",
     path="distribution/violin",
     layout=vm.Layout(grid=PAGE_GRID),
@@ -28,15 +27,7 @@ violin = vm.Page(
             inter-quartile range, the confidence intervals and the median.
         """
         ),
-        vm.Graph(
-            figure=px.violin(
-                tips,
-                y="total_bill",
-                x="day",
-                color="day",
-                box=True,
-            )
-        ),
+        vm.Graph(figure=violin.fig),
         vm.Tabs(
             tabs=[
                 vm.Container(
@@ -51,7 +42,7 @@ violin = vm.Page(
     ],
 )
 
-boxplot = vm.Page(
+boxplot_page = vm.Page(
     title="Boxplot",
     path="distribution/boxplot",
     layout=vm.Layout(grid=PAGE_GRID),
@@ -76,14 +67,7 @@ boxplot = vm.Page(
             the whiskers.
         """
         ),
-        vm.Graph(
-            figure=px.box(
-                tips,
-                y="total_bill",
-                x="day",
-                color="day",
-            )
-        ),
+        vm.Graph(figure=boxplot.fig),
         vm.Tabs(
             tabs=[
                 vm.Container(
@@ -98,9 +82,9 @@ boxplot = vm.Page(
     ],
 )
 
-butterfly = butterfly_factory("distribution")
+butterfly_page = butterfly_factory("distribution")
 
-histogram = vm.Page(
+histogram_page = vm.Page(
     title="Histogram",
     path="distribution/histogram",
     layout=vm.Layout(grid=PAGE_GRID),
@@ -122,7 +106,7 @@ histogram = vm.Page(
             immediately clear.
         """
         ),
-        vm.Graph(figure=px.histogram(tips, x="total_bill")),
+        vm.Graph(figure=histogram.fig),
         vm.Tabs(
             tabs=[
                 vm.Container(
@@ -137,7 +121,7 @@ histogram = vm.Page(
     ],
 )
 
-dumbbell = vm.Page(
+dumbbell_page = vm.Page(
     title="Dumbbell",
     path="distribution/dumbbell",
     layout=vm.Layout(grid=PAGE_GRID),
@@ -159,7 +143,7 @@ dumbbell = vm.Page(
             of changes or to distinguish between categories.
         """
         ),
-        vm.Graph(figure=dumbbell(salaries, y="Job", x=["Min", "Max"], labels={"variable": "", "value": "Salary in $"})),
+        vm.Graph(figure=dumbbell.fig),
         vm.Tabs(
             tabs=[
                 vm.Container(
@@ -175,4 +159,4 @@ dumbbell = vm.Page(
 )
 
 
-pages = [violin, boxplot, butterfly, dumbbell, histogram]
+pages = [violin_page, boxplot_page, butterfly_page, dumbbell_page, histogram_page]

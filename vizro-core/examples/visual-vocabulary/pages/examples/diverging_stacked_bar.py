@@ -1,32 +1,11 @@
 import pandas as pd
 import plotly.express as px
 import plotly.graph_objects as go
-import vizro.models as vm
-from vizro import Vizro
 from vizro.models.types import capture
-
-pastries = pd.DataFrame(
-    {
-        "pastry": [
-            "Scones",
-            "Bagels",
-            "Muffins",
-            "Cakes",
-            "Donuts",
-            "Cookies",
-            "Croissants",
-            "Eclairs",
-        ],
-        "Strongly Disagree": [20, 30, 10, 5, 15, 5, 10, 25],
-        "Disagree": [30, 25, 20, 10, 20, 10, 15, 30],
-        "Agree": [30, 25, 40, 40, 45, 40, 40, 25],
-        "Strongly Agree": [20, 20, 30, 45, 20, 45, 35, 20],
-    }
-)
 
 
 @capture("graph")
-def diverging_stacked_bar(data_frame, **kwargs) -> go.Figure:
+def diverging_stacked_bar(data_frame: pd.DataFrame, **kwargs) -> go.Figure:
     fig = px.bar(data_frame, **kwargs)
 
     for i, trace in enumerate(fig.data):
@@ -61,20 +40,29 @@ def diverging_stacked_bar(data_frame, **kwargs) -> go.Figure:
     return fig
 
 
-page = vm.Page(
-    title="Diverging stacked bar",
-    components=[
-        vm.Graph(
-            title="I would recommend this pastry to my friends",
-            figure=diverging_stacked_bar(
-                data_frame=pastries,
-                x=["Strongly Disagree", "Disagree", "Agree", "Strongly Agree"],
-                y="pastry",
-                labels={"value": "Response count", "variable": "Opinion"},
-            ),
-        ),
-    ],
+pastries = pd.DataFrame(
+    {
+        "pastry": [
+            "Scones",
+            "Bagels",
+            "Muffins",
+            "Cakes",
+            "Donuts",
+            "Cookies",
+            "Croissants",
+            "Eclairs",
+        ],
+        "Strongly Disagree": [20, 30, 10, 5, 15, 5, 10, 25],
+        "Disagree": [30, 25, 20, 10, 20, 10, 15, 30],
+        "Agree": [30, 25, 40, 40, 45, 40, 40, 25],
+        "Strongly Agree": [20, 20, 30, 45, 20, 45, 35, 20],
+    }
 )
 
-dashboard = vm.Dashboard(pages=[page])
-Vizro().build(dashboard).run()
+fig = diverging_stacked_bar(
+    data_frame=pastries,
+    x=["Strongly Disagree", "Disagree", "Agree", "Strongly Agree"],
+    y="pastry",
+    labels={"value": "Response count", "variable": "Opinion"},
+    title="I would recommend this pastry to my friends",
+)

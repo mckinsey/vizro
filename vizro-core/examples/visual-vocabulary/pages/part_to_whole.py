@@ -1,12 +1,12 @@
 """Part-to-whole charts."""
 
 import vizro.models as vm
-import vizro.plotly.express as px
 
 from pages._factories import waterfall_factory
-from pages._pages_utils import PAGE_GRID, funnel_data, gapminder, make_code_clipboard_from_py_file, tips
+from pages._pages_utils import PAGE_GRID, make_code_clipboard_from_py_file
+from pages.examples import donut, funnel, pie, stacked_bar, stacked_column, treemap
 
-pie = vm.Page(
+pie_page = vm.Page(
     title="Pie",
     path="part-to-whole/pie",
     layout=vm.Layout(grid=PAGE_GRID),
@@ -32,13 +32,7 @@ pie = vm.Page(
             difficult to accurately compare the sizes of the segments.
         """
         ),
-        vm.Graph(
-            figure=px.pie(
-                tips,
-                values="tip",
-                names="day",
-            )
-        ),
+        vm.Graph(figure=pie.fig),
         vm.Tabs(
             tabs=[
                 vm.Container(
@@ -53,7 +47,7 @@ pie = vm.Page(
     ],
 )
 
-donut = vm.Page(
+donut_page = vm.Page(
     title="Donut",
     path="part-to-whole/donut",
     layout=vm.Layout(grid=PAGE_GRID),
@@ -75,14 +69,7 @@ donut = vm.Page(
             to focus on the length of the arcs of the sections instead of the proportions of the segment sizes.
         """
         ),
-        vm.Graph(
-            figure=px.pie(
-                tips,
-                values="tip",
-                names="day",
-                hole=0.4,
-            )
-        ),
+        vm.Graph(figure=donut.fig),
         vm.Tabs(
             tabs=[
                 vm.Container(
@@ -97,7 +84,7 @@ donut = vm.Page(
     ],
 )
 
-treemap = vm.Page(
+treemap_page = vm.Page(
     title="Treemap",
     path="part-to-whole/treemap",
     layout=vm.Layout(grid=PAGE_GRID),
@@ -121,14 +108,7 @@ treemap = vm.Page(
                 overview of the data.
             """
         ),
-        vm.Graph(
-            figure=px.treemap(
-                gapminder.query("year == 2007"),
-                path=[px.Constant("world"), "continent", "country"],
-                values="pop",
-                color="lifeExp",
-            )
-        ),
+        vm.Graph(figure=treemap.fig),
         vm.Tabs(
             tabs=[
                 vm.Container(
@@ -143,7 +123,7 @@ treemap = vm.Page(
     ],
 )
 
-stacked_bar = vm.Page(
+stacked_bar_page = vm.Page(
     title="Stacked bar",
     path="part-to-whole/stacked-bar",
     layout=vm.Layout(grid=PAGE_GRID),
@@ -169,7 +149,7 @@ stacked_bar = vm.Page(
             descriptions below.
         """
         ),
-        vm.Graph(figure=px.histogram(tips, y="sex", x="total_bill", color="day", orientation="h")),
+        vm.Graph(figure=stacked_bar.fig),
         vm.Tabs(
             tabs=[
                 vm.Container(
@@ -185,7 +165,7 @@ stacked_bar = vm.Page(
     ],
 )
 
-stacked_column = vm.Page(
+stacked_column_page = vm.Page(
     title="Stacked column",
     path="part-to-whole/stacked-column",
     layout=vm.Layout(grid=PAGE_GRID),
@@ -211,23 +191,23 @@ stacked_column = vm.Page(
             descriptions below.
         """
         ),
-        vm.Graph(figure=px.histogram(tips, x="sex", y="total_bill", color="day")),
+        vm.Graph(figure=stacked_column.fig),
         vm.Tabs(
             tabs=[
                 vm.Container(
                     title="Vizro dashboard",
-                    components=[make_code_clipboard_from_py_file("stacked_bar.py", mode="vizro")],
+                    components=[make_code_clipboard_from_py_file("stacked_column.py", mode="vizro")],
                 ),
                 vm.Container(
                     title="Plotly figure",
-                    components=[make_code_clipboard_from_py_file("stacked_bar.py", mode="plotly")],
+                    components=[make_code_clipboard_from_py_file("stacked_column.py", mode="plotly")],
                 ),
             ]
         ),
     ],
 )
 
-funnel = vm.Page(
+funnel_page = vm.Page(
     title="Funnel",
     path="part-to-whole/funnel",
     layout=vm.Layout(grid=PAGE_GRID),
@@ -251,7 +231,7 @@ funnel = vm.Page(
             sales processes, or any sequential data where you want to highlight drop-offs or reductions between stages.
         """
         ),
-        vm.Graph(figure=px.funnel_area(funnel_data, names="Stage", values="Value")),
+        vm.Graph(figure=funnel.fig),
         vm.Tabs(
             tabs=[
                 vm.Container(
@@ -266,6 +246,6 @@ funnel = vm.Page(
     ],
 )
 
-waterfall = waterfall_factory("part-to-whole")
+waterfall_page = waterfall_factory("part-to-whole")
 
-pages = [donut, pie, treemap, stacked_bar, stacked_column, funnel, waterfall]
+pages = [donut_page, pie_page, treemap_page, stacked_bar_page, stacked_column_page, funnel_page, waterfall_page]

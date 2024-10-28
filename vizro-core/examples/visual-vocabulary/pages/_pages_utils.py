@@ -17,14 +17,10 @@ VIZRO_CODE_TEMPLATE = """
 import vizro.models as vm
 from vizro import Vizro
 {example_code}
-page = vm.Page(title="{title}", components=[vm.Graph(figure=fig)])
+page = vm.Page(title="My page", components=[vm.Graph(figure=fig)])
 dashboard = vm.Dashboard(pages=[page])
 Vizro().build(dashboard).run()
 """
-# TODO:
-# Roll out changes across all files - need to modify all example files other than magnitude ones and import fig directly
-# from those files in all vm.Graph().
-# De-duplicate.
 
 
 def _format_and_lint(code_string: str, line_length: int) -> str:

@@ -1,16 +1,15 @@
 """Deviation charts."""
 
 import vizro.models as vm
-import vizro.plotly.express as px
-from custom_charts import diverging_stacked_bar
 
 from pages._factories import butterfly_factory
-from pages._pages_utils import PAGE_GRID, make_code_clipboard_from_py_file, pastries
+from pages._pages_utils import PAGE_GRID, make_code_clipboard_from_py_file
+from pages.examples import diverging_bar, diverging_stacked_bar
 
-butterfly = butterfly_factory("deviation")
+butterfly_page = butterfly_factory("deviation")
 
 
-diverging_bar = vm.Page(
+diverging_bar_page = vm.Page(
     title="Diverging bar",
     path="deviation/diverging-bar",
     layout=vm.Layout(grid=PAGE_GRID),
@@ -36,9 +35,7 @@ diverging_bar = vm.Page(
             of values. Ensure a consistent scale on both sides of the baseline to avoid misleading interpretations.
         """
         ),
-        vm.Graph(
-            figure=px.bar(pastries.sort_values("Profit Ratio"), orientation="h", x="Profit Ratio", y="pastry"),
-        ),
+        vm.Graph(figure=diverging_bar.fig),
         vm.Tabs(
             tabs=[
                 vm.Container(
@@ -54,7 +51,7 @@ diverging_bar = vm.Page(
     ],
 )
 
-diverging_stacked_bar = vm.Page(
+diverging_stacked_bar_page = vm.Page(
     title="Diverging stacked bar",
     path="deviation/diverging-stacked-bar",
     layout=vm.Layout(grid=PAGE_GRID),
@@ -81,15 +78,7 @@ diverging_stacked_bar = vm.Page(
             [Datawrapper on diverging stacked bar charts](https://blog.datawrapper.de/divergingbars/).
         """
         ),
-        vm.Graph(
-            title="I would recommend this pastry to my friends",
-            figure=diverging_stacked_bar(
-                data_frame=pastries,
-                x=["Strongly Disagree", "Disagree", "Agree", "Strongly Agree"],
-                y="pastry",
-                labels={"value": "Response count", "variable": "Opinion"},
-            ),
-        ),
+        vm.Graph(figure=diverging_stacked_bar.fig),
         vm.Tabs(
             tabs=[
                 vm.Container(
@@ -105,4 +94,4 @@ diverging_stacked_bar = vm.Page(
     ],
 )
 
-pages = [butterfly, diverging_bar, diverging_stacked_bar]
+pages = [butterfly_page, diverging_bar_page, diverging_stacked_bar_page]

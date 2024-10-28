@@ -3,11 +3,9 @@
 import vizro.models as vm
 
 from pages._pages_utils import PAGE_GRID, make_code_clipboard_from_py_file
-
-# TODO: fix imports so doesn't get overwritten
 from pages.examples import bar, magnitude_column, paired_bar, paired_column, parallel_coordinates, radar
 
-bar = vm.Page(
+bar_page = vm.Page(
     title="Bar",
     path="magnitude/bar",
     layout=vm.Layout(grid=PAGE_GRID),
@@ -47,7 +45,7 @@ bar = vm.Page(
 
 
 # Note: Code example for magnitude/column differs from time/column. The text description is the same.
-column = vm.Page(
+column_page = vm.Page(
     id="magnitude-column",
     path="magnitude/column",
     title="Column",
@@ -86,7 +84,7 @@ column = vm.Page(
     ],
 )
 
-paired_bar = vm.Page(
+paired_bar_page = vm.Page(
     title="Paired bar",
     path="magnitude/paired-bar",
     layout=vm.Layout(grid=PAGE_GRID),
@@ -127,7 +125,7 @@ paired_bar = vm.Page(
     ],
 )
 
-paired_column = vm.Page(
+paired_column_page = vm.Page(
     title="Paired column",
     path="magnitude/paired-column",
     layout=vm.Layout(grid=PAGE_GRID),
@@ -168,7 +166,7 @@ paired_column = vm.Page(
     ],
 )
 
-parallel_coordinates = vm.Page(
+parallel_coordinates_page = vm.Page(
     path="magnitude/parallel-coordinates ",
     title="Parallel coordinates",
     layout=vm.Layout(grid=PAGE_GRID),
@@ -207,7 +205,7 @@ parallel_coordinates = vm.Page(
     ],
 )
 
-radar = vm.Page(
+radar_page = vm.Page(
     path="magnitude/radar",
     title="Radar",
     layout=vm.Layout(grid=PAGE_GRID),
@@ -240,4 +238,4 @@ radar = vm.Page(
     ],
 )
 
-pages = [bar, column, paired_bar, paired_column, parallel_coordinates, radar]
+pages = [bar_page, column_page, paired_bar_page, paired_column_page, parallel_coordinates_page, radar_page]

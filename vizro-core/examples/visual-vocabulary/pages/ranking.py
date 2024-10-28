@@ -1,11 +1,11 @@
 """Ranking charts."""
 
 import vizro.models as vm
-import vizro.plotly.express as px
 
-from pages._pages_utils import PAGE_GRID, gapminder, make_code_clipboard_from_py_file
+from pages._pages_utils import PAGE_GRID, make_code_clipboard_from_py_file
+from pages.examples import ordered_bar, ordered_column
 
-ordered_bar = vm.Page(
+ordered_bar_page = vm.Page(
     title="Ordered bar",
     path="ranking/ordered-bar",
     layout=vm.Layout(grid=PAGE_GRID),
@@ -28,16 +28,7 @@ ordered_bar = vm.Page(
             descriptions below.
         """
         ),
-        vm.Graph(
-            figure=px.bar(
-                gapminder.query(
-                    "year == 2007 and country.isin(['United States', 'Pakistan', 'India', 'China', 'Indonesia'])"
-                ).sort_values("pop"),
-                x="pop",
-                y="country",
-                orientation="h",
-            )
-        ),
+        vm.Graph(figure=ordered_bar.fig),
         vm.Tabs(
             tabs=[
                 vm.Container(
@@ -53,7 +44,7 @@ ordered_bar = vm.Page(
     ],
 )
 
-ordered_column = vm.Page(
+ordered_column_page = vm.Page(
     title="Ordered column",
     path="ranking/ordered-column",
     layout=vm.Layout(grid=PAGE_GRID),
@@ -77,15 +68,7 @@ ordered_column = vm.Page(
             descriptions below.
         """
         ),
-        vm.Graph(
-            figure=px.bar(
-                gapminder.query(
-                    "year == 2007 and country.isin(['United States', 'Pakistan', 'India', 'China', 'Indonesia'])"
-                ).sort_values("pop"),
-                y="pop",
-                x="country",
-            )
-        ),
+        vm.Graph(figure=ordered_column.fig),
         vm.Tabs(
             tabs=[
                 vm.Container(
@@ -102,4 +85,4 @@ ordered_column = vm.Page(
 )
 
 
-pages = [ordered_bar, ordered_column]
+pages = [ordered_bar_page, ordered_column_page]

@@ -10,6 +10,12 @@ img[src*="#chart-icon"] {
   width: 100%;
 }
 
+.open-in-new {
+  font-size: inherit;
+  margin-left: 4px;
+  vertical-align: middle;
+}
+
 .code-clipboard {
   float: right;
   font-size: 20px;

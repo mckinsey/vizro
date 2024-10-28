@@ -27,7 +27,10 @@ class CodeClipboard(vm.VizroBaseModel):
         markdown_code = "\n".join([f"```{self.language}", self.code, "```"])
 
         pycafe_link = dbc.Button(
-            "Edit code live on PyCafe",
+            [
+                "Edit code live on PyCafe",
+                html.Span("open_in_new", className="material-symbols-outlined open-in-new"),
+            ],
             href=f"https://py.cafe/snippet/vizro/v1#code={quote(self.code)}",
             target="_blank",
             className="pycafe-link",
