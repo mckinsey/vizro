@@ -6,8 +6,6 @@ from pathlib import Path
 import autoflake
 import black
 import isort
-import pandas as pd
-import vizro.plotly.express as px
 from custom_components import CodeClipboard
 
 # To disable logging info messages caused by black.format_str: https://github.com/psf/black/issues/2058
