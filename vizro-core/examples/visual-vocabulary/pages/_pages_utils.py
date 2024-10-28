@@ -4,8 +4,8 @@ import logging
 from pathlib import Path
 
 import autoflake
-import isort
 import black
+import isort
 import pandas as pd
 import vizro.plotly.express as px
 from custom_components import CodeClipboard

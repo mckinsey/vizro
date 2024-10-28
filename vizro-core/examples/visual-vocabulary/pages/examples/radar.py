@@ -1,5 +1,4 @@
 import pandas as pd
-
 import vizro.plotly.express as px
 from vizro.models.types import capture
 
