@@ -44,9 +44,7 @@ gunicorn==23.0.0
 idna==3.8
     # via requests
 importlib-metadata==8.4.0
-    # via
-    #   dash
-    #   flask
+    # via dash
 itsdangerous==2.2.0
     # via flask
 jinja2==3.1.4
@@ -90,19 +88,14 @@ retrying==1.3.4
     # via dash
 ruff==0.6.3
     # via vizro
-setuptools==74.1.2
-    # via dash
 six==1.16.0
     # via
     #   python-dateutil
     #   retrying
 tenacity==9.0.0
     # via plotly
-tomli==2.0.1
-    # via black
 typing-extensions==4.12.2
     # via
-    #   black
     #   dash
     #   pydantic
     #   pydantic-core
@@ -112,7 +105,7 @@ urllib3==2.2.2
     # via requests
 vizro==0.1.23
     # via -r requirements.in
-werkzeug==3.0.4
+werkzeug==3.0.6
     # via
     #   dash
     #   flask
