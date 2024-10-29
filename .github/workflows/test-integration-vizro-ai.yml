@@ -53,7 +53,7 @@ jobs:
             os: windows-latest
             label: Windows
         is_pr:
-          - ${{ github.event_name != 'pull_request' }}
+          - ${{ github.event_name == 'pull_request' }}
         exclude:
           - is_pr: true
             config:
@@ -102,7 +102,7 @@ jobs:
             os: windows-latest
             label: Windows
         is_pr:
-          - ${{ github.event_name != 'pull_request' }}
+          - ${{ github.event_name == 'pull_request' }}
         exclude:
           - is_pr: true
             config:
