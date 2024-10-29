@@ -47,7 +47,6 @@ jobs:
             label: Windows
 
     # Run Windows jobs only on merges to main
-    if: github.event_name == 'push' && github.ref == 'refs/heads/main' && matrix.os == 'windows-latest'
     steps:
       - uses: actions/checkout@v4
 
