@@ -17,7 +17,7 @@ env:
 
 jobs:
   test-unit-vizro-core:
-    name: test-unit-vizro-core on Py${{ matrix.config.py }} ${{ matrix.config.label }}
+    name: test-unit-vizro-core on Py${{ matrix.config.python-version }} ${{ matrix.config.label }}
 
     runs-on: ${{ matrix.config.os }}
     strategy:
