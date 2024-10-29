@@ -22,22 +22,34 @@ jobs:
   test-integration-vizro-ai-fork:
     if: ${{ github.event.pull_request.head.repo.fork }}
     name: test-integration-vizro-ai on Py${{ matrix.python-version }} ${{ matrix.label }}
-    runs-on: ubuntu-latest
+    runs-on: ${{ matrix.os }}
     strategy:
       fail-fast: false
       matrix:
         include:
           - python-version: "3.9"
             hatch-env: all.py3.9
+            os: ubuntu-latest
           - python-version: "3.10"
             hatch-env: all.py3.10
+            os: ubuntu-latest
           - python-version: "3.11"
             hatch-env: all.py3.11
+            os: ubuntu-latest
           - python-version: "3.12"
             hatch-env: all.py3.12
+            os: ubuntu-latest
+          - python-version: "3.13"
+            hatch-env: all.py3.13
+            os: ubuntu-latest
           - python-version: "3.9"
             hatch-env: lower-bounds
+            os: ubuntu-latest
             label: lower bounds
+          - python-version: "3.12"
+            hatch-env: all.py3.12
+            os: windows-latest
+            label: Windows
 
     steps:
       - uses: actions/checkout@v4
@@ -48,22 +60,34 @@ jobs:
   test-integration-vizro-ai:
     if: ${{ ! github.event.pull_request.head.repo.fork }}
     name: test-integration-vizro-ai on Py${{ matrix.python-version }} ${{ matrix.label }}
-    runs-on: ubuntu-latest
+    runs-on: ${{ matrix.os }}
     strategy:
       fail-fast: false
       matrix:
         include:
           - python-version: "3.9"
             hatch-env: all.py3.9
+            os: ubuntu-latest
           - python-version: "3.10"
             hatch-env: all.py3.10
+            os: ubuntu-latest
           - python-version: "3.11"
             hatch-env: all.py3.11
+            os: ubuntu-latest
           - python-version: "3.12"
             hatch-env: all.py3.12
+            os: ubuntu-latest
+          - python-version: "3.13"
+            hatch-env: all.py3.13
+            os: ubuntu-latest
           - python-version: "3.9"
             hatch-env: lower-bounds
+            os: ubuntu-latest
             label: lower bounds
+          - python-version: "3.12"
+            hatch-env: all.py3.12
+            os: windows-latest
+            label: Windows
 
     steps:
       - uses: actions/checkout@v4

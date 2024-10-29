@@ -23,20 +23,25 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        os: [ubuntu-latest]
         include:
           - python-version: "3.9"
             hatch-env: all.py3.9
+            os: ubuntu-latest
           - python-version: "3.10"
             hatch-env: all.py3.10
+            os: ubuntu-latest
           - python-version: "3.11"
             hatch-env: all.py3.11
+            os: ubuntu-latest
           - python-version: "3.12"
             hatch-env: all.py3.12
+            os: ubuntu-latest
           - python-version: "3.13"
             hatch-env: all.py3.13
+            os: ubuntu-latest
           - python-version: "3.9"
             hatch-env: lower-bounds
+            os: ubuntu-latest
             label: lower bounds
           - python-version: "3.12"
             hatch-env: all.py3.12
