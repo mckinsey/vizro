@@ -24,9 +24,13 @@ jobs:
       fail-fast: false
       matrix:
         python-version: ["3.9", "3.10", "3.11", "3.12", "3.13"]
-        os: [ubuntu-latest]
-        include_windows:
-          - ${{github.event_name != 'pull_request'}}
+        os: [ubuntu-latest, windows-latest]
+        is_pr:
+          - ${{ github.event_name == 'pull_request' }}
+        exclude:
+          - is_pr: true
+            os: windows-latest
+        # just use below for labelling and hatch-env so not needed?
         include:
           - python-version: "3.9"
             hatch-env: all.py3.9
@@ -43,6 +47,7 @@ jobs:
             label: lower bounds
           - python-version: "3.12"
             hatch-env: all.py3.12
+            is_pr: false
             os: windows-latest
             label: Windows
 
