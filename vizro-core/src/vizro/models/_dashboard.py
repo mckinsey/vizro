@@ -3,7 +3,7 @@ from __future__ import annotations
 import base64
 import logging
 from functools import partial
-from pathlib import Path
+from pathlib import Path, PureWindowsPath
 from typing import TYPE_CHECKING, Literal, TypedDict
 
 import dash
@@ -335,4 +335,5 @@ class Dashboard(VizroBaseModel):
         if assets_folder.is_dir():
             for path in Path(assets_folder).rglob(f"{filename}.*"):
                 if path.suffix in valid_extensions:
-                    return str(path.relative_to(assets_folder))
+                    # Return path as posix so image source comes out correctly on Windows.
+                    return path.relative_to(assets_folder).as_posix()

@@ -224,6 +224,5 @@ def _make_resource_spec(path: Path) -> _ResourceSpec:
         # irrelevant here. The way the file is requested is through a relative url("./fonts/...") in the requesting
         # CSS file. When the CSS file is served from the CDN then this will refer to the font file also on the CDN.
         resource_spec["dynamic"] = True
-    print(resource_spec)
 
     return resource_spec
