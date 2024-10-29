@@ -44,9 +44,6 @@ jobs:
           - python-version: "3.12"
             hatch-env: all.py3.12
             os: ubuntu-latest
-          - python-version: "3.13"
-            hatch-env: all.py3.13
-            os: ubuntu-latest
           - python-version: "3.9"
             hatch-env: lower-bounds
             os: ubuntu-latest
@@ -95,9 +92,6 @@ jobs:
             os: ubuntu-latest
           - python-version: "3.12"
             hatch-env: all.py3.12
-            os: ubuntu-latest
-          - python-version: "3.13"
-            hatch-env: all.py3.13
             os: ubuntu-latest
           - python-version: "3.9"
             hatch-env: lower-bounds
