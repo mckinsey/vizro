@@ -51,7 +51,7 @@ jobs:
         - ${{ github.event_name == 'pull_request' }}
         exclude:
           - is_pr: true
-            python-version:
+            config:
               py: "3.12"
               hatch-env: all.py3.12
               label: Windows
