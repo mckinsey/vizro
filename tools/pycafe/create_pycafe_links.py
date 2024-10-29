@@ -1,25 +1,37 @@
 """Generate PyCafe links for the example dashboards and post them as a comment on the pull request and as status."""
 
+import argparse
 import base64
 import datetime
 import gzip
 import json
-import sys
 import textwrap
 from pathlib import Path
 from typing import Optional
 from urllib.parse import quote, urlencode
 
+import requests
 import vizro
 from github import Auth, Github
 
 PACKAGE_VERSION = vizro.__version__
 
-GITHUB_TOKEN = sys.argv[1]
-REPO_NAME = sys.argv[2]
-PR_NUMBER = int(sys.argv[3])
-RUN_ID = sys.argv[4]
-COMMIT_SHA = sys.argv[5]
+# Parse arguments
+parser = argparse.ArgumentParser(description="Generate PyCafe links for the example dashboards.")
+parser.add_argument("--github-token", required=True, help="GitHub token for authentication")
+parser.add_argument("--repo-name", required=True, help="Name of the GitHub repository")
+parser.add_argument("--run-id", required=True, help="GitHub Actions run ID")
+parser.add_argument("--commit-sha", required=True, help="Commit SHA")
+parser.add_argument("--pr-number", type=int, help="Pull request number (optional)")
+
+
+args = parser.parse_args()
+
+GITHUB_TOKEN = args.github_token
+REPO_NAME = args.repo_name
+PR_NUMBER = args.pr_number
+RUN_ID = args.run_id
+COMMIT_SHA = args.commit_sha
 PYCAFE_URL = "https://py.cafe"
 VIZRO_RAW_URL = "https://raw.githubusercontent.com/mckinsey/vizro"
 
@@ -36,25 +48,23 @@ g = Github(auth=auth)
 
 # Get PR and commits
 repo = g.get_repo(REPO_NAME)
-pr = repo.get_pull(PR_NUMBER)
-commit_sha_files = pr.head.sha
 commit = repo.get_commit(COMMIT_SHA)
 
 
 def generate_link(directory: str, extra_requirements: Optional[list[str]] = None):
     """Generate a PyCafe link for the example dashboards."""
-    base_url = f"{VIZRO_RAW_URL}/{commit_sha_files}/vizro-core/{directory}"
+    base_url = f"{VIZRO_RAW_URL}/{COMMIT_SHA}/vizro-core/{directory}"
 
     # Requirements
     requirements = "\n".join(
         [
             f"{PYCAFE_URL}/gh/artifact/mckinsey/vizro/actions/runs/{RUN_ID}/pip/vizro-{PACKAGE_VERSION}-py3-none-any.whl",
             *(extra_requirements or []),
-        ],
+        ]
     )
 
     # App file
-    app_content = Path(directory, "app.py").read_text()
+    app_content = requests.get(f"{base_url}/app.py", timeout=10).text
     app_content_split = app_content.split('if __name__ == "__main__":')
     if len(app_content_split) > 1:
         app_content = app_content_split[0] + textwrap.dedent(app_content_split[1])
@@ -136,4 +146,6 @@ if __name__ == "__main__":
         print(f"Status created for {context} with URL: {url}")  # noqa
 
     # Post the comment with the links
-    post_comment(urls)
+    if PR_NUMBER is not None:
+        pr = repo.get_pull(PR_NUMBER)
+        post_comment(urls)
