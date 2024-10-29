@@ -19,7 +19,7 @@ jobs:
   test-unit-vizro-core:
     name: test-unit-vizro-core on Py${{ matrix.config.py }} ${{ matrix.config.label }}
 
-    runs-on: ${{ matrix.os }}
+    runs-on: ${{ matrix.config.os }}
     strategy:
       fail-fast: false
       matrix:
