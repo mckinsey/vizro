@@ -3,7 +3,7 @@ from __future__ import annotations
 import base64
 import logging
 from functools import partial
-from pathlib import Path, PureWindowsPath
+from pathlib import Path
 from typing import TYPE_CHECKING, Literal, TypedDict
 
 import dash
