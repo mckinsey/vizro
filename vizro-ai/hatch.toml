@@ -39,7 +39,7 @@ example = "cd examples; python example.py"
 example-create-dashboard = "cd examples; python example_dashboard.py"
 example-ui = "cd examples/dashboard_ui; python app.py"
 lint = "pre-commit run {args} --all-files"
-pip = "'{env:HATCH_UV}' pip {args}"
+pip = '"{env:HATCH_UV}" pip {args}'
 prep-release = [
   "hatch version release",
   "hatch run changelog:collect",
@@ -73,7 +73,7 @@ build = "mkdocs build --strict"
 # more advanced settings using a linkcheckerrc config file. openai.com doesn't seem to work well with linkchecking,
 # throwing 403 errors, but these are not real errors.
 link-check = "linkchecker site --check-extern --no-warnings --ignore=404.html --ignore-url=127.0.0.1 --ignore-url=https://vizro.readthedocs.io/ --ignore-url=https://platform.openai.com/docs/models --ignore-url=openai.com --ignore-url=https://openai.com/"
-pip = "'{env:HATCH_UV}' pip {args}"
+pip = '"{env:HATCH_UV}" pip {args}'
 serve = "mkdocs serve --open"
 
 [envs.lower-bounds]
