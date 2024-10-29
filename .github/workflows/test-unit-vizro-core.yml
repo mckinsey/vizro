@@ -58,8 +58,8 @@ jobs:
       - name: Install Hatch
         run: pip install hatch
 
-      #      - name: Show dependency tree
-      #        run: hatch run ${{ matrix.hatch-env }}:pip tree
+      - name: Show dependency tree
+        run: hatch -vvv run ${{ matrix.hatch-env }}:pip tree
 
       - name: Run unit tests
         run: hatch run ${{ matrix.hatch-env }}:test-unit-coverage
