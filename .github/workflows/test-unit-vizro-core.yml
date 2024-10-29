@@ -25,9 +25,9 @@ jobs:
       matrix:
         python-version: ["3.9", "3.10", "3.11", "3.12", "3.13"]
         os: [ubuntu-latest, windows-latest]
-        hatch-env: ["all.py" ${{ matrix.python-version }}]
+        hatch-env: [${{ format("all.py{0}", matrix.python-version) }}]
         is_pr:
-          - ${{ github.event_name == 'pull_request' }}
+          - ${{ github.event_name == "pull_request' }}
         exclude:
           - is_pr: true
             os: windows-latest
