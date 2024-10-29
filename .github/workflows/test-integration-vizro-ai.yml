@@ -21,12 +21,17 @@ env:
 jobs:
   test-integration-vizro-ai-fork:
     if: ${{ github.event.pull_request.head.repo.fork }}
-    name: test-integration-vizro-ai on Py${{ matrix.python-version }} ${{ matrix.label }}
-    runs-on: ${{ matrix.os }}
+    name: test-integration-vizro-ai on Py${{ matrix.config.python-version }} ${{ matrix.config.label }}
+    runs-on: ${{ matrix.config.os }}
     strategy:
       fail-fast: false
       matrix:
-        include:
+        # This is not a nice way to define the matrix, but it's the only way that's possible so that we only run
+        # the job on Windows on merge to main rather than in every PR. See:
+        # https://stackoverflow.com/questions/66025220/paired-values-in-github-actions-matrix
+        # https://github.com/orgs/community/discussions/26253
+        # https://github.com/actions/runner/issues/1985
+        config:
           - python-version: "3.9"
             hatch-env: all.py3.9
             os: ubuntu-latest
@@ -50,6 +55,15 @@ jobs:
             hatch-env: all.py3.12
             os: windows-latest
             label: Windows
+        is_pr:
+          - ${{ github.event_name != 'pull_request' }}
+        exclude:
+          - is_pr: true
+            config:
+              python-version: "3.12"
+              hatch-env: all.py3.12
+              os: windows-latest
+              label: Windows
 
     steps:
       - uses: actions/checkout@v4
@@ -59,12 +73,17 @@ jobs:
 
   test-integration-vizro-ai:
     if: ${{ ! github.event.pull_request.head.repo.fork }}
-    name: test-integration-vizro-ai on Py${{ matrix.python-version }} ${{ matrix.label }}
-    runs-on: ${{ matrix.os }}
+    name: test-integration-vizro-ai on Py${{ matrix.config.python-version }} ${{ matrix.config.label }}
+    runs-on: ${{ matrix.config.os }}
     strategy:
       fail-fast: false
       matrix:
-        include:
+        # This is not a nice way to define the matrix, but it's the only way that's possible so that we only run
+        # the job on Windows on merge to main rather than in every PR. See:
+        # https://stackoverflow.com/questions/66025220/paired-values-in-github-actions-matrix
+        # https://github.com/orgs/community/discussions/26253
+        # https://github.com/actions/runner/issues/1985
+        config:
           - python-version: "3.9"
             hatch-env: all.py3.9
             os: ubuntu-latest
@@ -88,27 +107,36 @@ jobs:
             hatch-env: all.py3.12
             os: windows-latest
             label: Windows
+        is_pr:
+          - ${{ github.event_name != 'pull_request' }}
+        exclude:
+          - is_pr: true
+            config:
+              python-version: "3.12"
+              hatch-env: all.py3.12
+              os: windows-latest
+              label: Windows
 
     steps:
       - uses: actions/checkout@v4
 
-      - name: Set up Python ${{ matrix.python-version }}
+      - name: Set up Python ${{ matrix.config.python-version }}
         uses: actions/setup-python@v5
         with:
-          python-version: ${{ matrix.python-version }}
+          python-version: ${{ matrix.config.python-version }}
 
       - name: Install Hatch
         run: pip install hatch
 
       - name: Show dependency tree
-        run: hatch run ${{ matrix.hatch-env }}:pip tree
+        run: hatch run ${{ matrix.config.hatch-env }}:pip tree
 
       - name: Run vizro-ai integration tests with pypi vizro
         run: |
           export OPENAI_API_KEY=${{ secrets.OPENAI_API_KEY }}
           export OPENAI_API_BASE=${{ secrets.OPENAI_API_BASE }}
           export VIZRO_TYPE=pypi
-          hatch run ${{ matrix.hatch-env }}:test-integration
+          hatch run ${{ matrix.config.hatch-env }}:test-integration
 
       - name: Run vizro-ai integration tests with local vizro
         run: |
@@ -118,8 +146,8 @@ jobs:
           cd ../vizro-core
           hatch build
           cd ../vizro-ai
-          hatch run ${{ matrix.hatch-env }}:pip install ../vizro-core/dist/vizro*.tar.gz
-          hatch run ${{ matrix.hatch-env }}:test-integration
+          hatch run ${{ matrix.config.hatch-env }}:pip install ../vizro-core/dist/vizro*.tar.gz
+          hatch run ${{ matrix.config.hatch-env }}:test-integration
 
       - name: Send custom JSON data to Slack
         id: slack
@@ -128,7 +156,7 @@ jobs:
         with:
           payload: |
             {
-              "text": "Vizro-ai ${{ matrix.hatch-env }} integration tests build result: ${{ job.status }}\nBranch: ${{ github.head_ref }}\n${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}"
+              "text": "Vizro-ai ${{ matrix.config.hatch-env }} integration tests build result: ${{ job.status }}\nBranch: ${{ github.head_ref }}\n${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}"
             }
         env:
           SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
@@ -138,6 +166,6 @@ jobs:
         uses: actions/upload-artifact@v4
         if: always()
         with:
-          name: Report-${{ matrix.python-version }}-${{ matrix.label }}
+          name: Report-${{ matrix.config.python-version }}-${{ matrix.config.label }}
           path: |
             /home/runner/work/vizro/vizro/vizro-ai/tests/integration/reports/report*.csv

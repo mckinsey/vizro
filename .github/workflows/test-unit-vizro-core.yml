@@ -23,60 +23,52 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
+        # This is not a nice way to define the matrix, but it's the only way that's possible so that we only run
+        # the job on Windows on merge to main rather than in every PR. See:
+        # https://stackoverflow.com/questions/66025220/paired-values-in-github-actions-matrix
+        # https://github.com/orgs/community/discussions/26253
+        # https://github.com/actions/runner/issues/1985
         config:
-          - py: "3.9"
+          - python-version: "3.9"
             hatch-env: all.py3.9
             os: ubuntu-latest
-          - py: "3.10"
+          - python-version: "3.10"
             hatch-env: all.py3.10
             os: ubuntu-latest
-          - py: "3.11"
+          - python-version: "3.11"
             hatch-env: all.py3.11
             os: ubuntu-latest
-          - py: "3.12"
+          - python-version: "3.12"
             hatch-env: all.py3.12
             os: ubuntu-latest
-          - py: "3.13"
+          - python-version: "3.13"
             hatch-env: all.py3.13
             os: ubuntu-latest
-          - py: "3.9"
+          - python-version: "3.9"
             hatch-env: lower-bounds
-            label: lower bounds
             os: ubuntu-latest
-          - py: "3.12"
+            label: lower bounds
+          - python-version: "3.12"
             hatch-env: all.py3.12
-            label: Windows
             os: windows-latest
+            label: Windows
         is_pr:
         - ${{ github.event_name != 'pull_request' }}
         exclude:
           - is_pr: true
             config:
-              py: "3.12"
+              python-version: "3.12"
               hatch-env: all.py3.12
-              label: Windows
               os: windows-latest
-        # just use below for labelling and hatch-env so not needed?
-        # will still need windows and lower bounds job though
-#        include:
-#          - python-env:
-#            - py: "3.9"
-#            - hatch-env: lower-bounds
-#            label: lower bounds
-#          - python-version: "3.12"
-#            hatch-env: all.py3.12
-#            is_pr: false
-#            os: windows-latest
-#            label: Windows
+              label: Windows
 
-    # Run Windows jobs only on merges to main
     steps:
       - uses: actions/checkout@v4
 
-      - name: Set up Python ${{ matrix.config.py }}
+      - name: Set up Python ${{ matrix.config.python-version }}
         uses: actions/setup-python@v5
         with:
-          python-version: ${{ matrix.config.py }}
+          python-version: ${{ matrix.config.python-version }}
 
       - name: Install Hatch
         run: pip install hatch
