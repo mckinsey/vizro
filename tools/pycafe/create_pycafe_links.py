@@ -89,8 +89,8 @@ def generate_link(directory: str, extra_requirements: Optional[list[str]] = None
         # Add files to the json_object
         json_object["files"] = [
             {
-                "name": file["path"].removeprefix(f"{directory}/"),
-                "url": f"{base_url}/{file['path'].removeprefix(f'{directory}/')}",
+                "name": file["path"].removeprefix(f"{directory}"),
+                "url": f"{base_url}{file['path'].removeprefix(f'{directory}')}",
             }
             for file in folder_files
             # Filter out app.py and requirements.txt (as already added above)
