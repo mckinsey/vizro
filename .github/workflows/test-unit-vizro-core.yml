@@ -17,7 +17,7 @@ env:
 
 jobs:
   test-unit-vizro-core:
-    name: test-unit-vizro-core on ${{ matrix.os }} Py${{ matrix.python-version }} ${{ matrix.label }}
+    name: test-unit-vizro-core on ${{ matrix.os == 'windows-latest' && 'Windows ' || '' }}Py${{ matrix.python-version }} ${{ matrix.label }}
 
     runs-on: ${{ matrix.os }}
     strategy:
@@ -58,8 +58,8 @@ jobs:
       - name: Install Hatch
         run: pip install hatch
 
-      - name: Show dependency tree
-        run: hatch run ${{ matrix.hatch-env }}:pip tree
+#      - name: Show dependency tree
+#        run: hatch run ${{ matrix.hatch-env }}:pip tree
 
       - name: Run unit tests
         run: hatch run ${{ matrix.hatch-env }}:test-unit-coverage
