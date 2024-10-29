@@ -25,12 +25,17 @@ jobs:
       matrix:
         python-version: ["3.9", "3.10", "3.11", "3.12", "3.13"]
         os: [ubuntu-latest, windows-latest]
+        hatch-env: ["all.py" ${{ matrix.python-version }}]
         is_pr:
           - ${{ github.event_name == 'pull_request' }}
         exclude:
           - is_pr: true
             os: windows-latest
+          - is_pr: false
+            os: windows-latest
+            python-version: ["3.9", "3.10", "3.11", "3.13"]
         # just use below for labelling and hatch-env so not needed?
+        # will still need windows and lower bounds job though
         include:
           - python-version: "3.9"
             hatch-env: all.py3.9
@@ -45,11 +50,11 @@ jobs:
           - python-version: "3.9"
             hatch-env: lower-bounds
             label: lower bounds
-          - python-version: "3.12"
-            hatch-env: all.py3.12
-            is_pr: false
-            os: windows-latest
-            label: Windows
+#          - python-version: "3.12"
+#            hatch-env: all.py3.12
+#            is_pr: false
+#            os: windows-latest
+#            label: Windows
 
     # Run Windows jobs only on merges to main
     steps:
