@@ -6,7 +6,6 @@ import datetime
 import gzip
 import json
 import textwrap
-from pathlib import Path
 from typing import Optional
 from urllib.parse import quote, urlencode
 
@@ -53,7 +52,7 @@ commit = repo.get_commit(COMMIT_SHA)
 
 def generate_link(directory: str, extra_requirements: Optional[list[str]] = None):
     """Generate a PyCafe link for the example dashboards."""
-    base_url = f"{VIZRO_RAW_URL}/{COMMIT_SHA}/vizro-core/{directory}"
+    base_url = f"{VIZRO_RAW_URL}/{COMMIT_SHA}/{directory}"
 
     # Requirements
     requirements = "\n".join(
@@ -63,7 +62,7 @@ def generate_link(directory: str, extra_requirements: Optional[list[str]] = None
         ]
     )
 
-    # App file
+    # App file - get current commit, and modify to remove if clause
     app_content = requests.get(f"{base_url}/app.py", timeout=10).text
     app_content_split = app_content.split('if __name__ == "__main__":')
     if len(app_content_split) > 1:
@@ -76,14 +75,29 @@ def generate_link(directory: str, extra_requirements: Optional[list[str]] = None
         "files": [],
     }
 
-    json_object["files"] = [
-        {
-            "name": str(file_path.relative_to(directory)),
-            "url": f"{base_url}/{file_path.relative_to(directory).as_posix()}",
-        }
-        for file_path in Path(directory).rglob("*")
-        if not file_path.is_dir() and file_path.relative_to(directory) != Path("app.py")
-    ]
+    # GitHub API URL for a specific commit
+    url = f"https://api.github.com/repos/{REPO_NAME}/git/trees/{COMMIT_SHA}?recursive=1"
+
+    # Make the request to get all the files in the commit
+    response = requests.get(url, timeout=20)
+    if response.status_code == 200:  # noqa
+        # Get the JSON response with the file tree
+        files = response.json().get("tree", [])
+        # Filter files for the specific folder path
+        folder_files = [file for file in files if file["path"].startswith(directory)]
+
+        # Add files to the json_object
+        json_object["files"] = [
+            {
+                "name": file["path"].removeprefix(f"{directory}"),
+                "url": f"{base_url}{file['path'].removeprefix(f'{directory}')}",
+            }
+            for file in folder_files
+            # Filter out app.py and requirements.txt (as already added above)
+            if file["type"] == "blob" and file["path"] not in {f"{directory}/app.py", f"{directory}/requirements.txt"}
+        ]
+    else:
+        raise Exception(f"Failed to fetch file tree from GitHub API: {response.status_code} {response.text}")
 
     json_text = json.dumps(json_object)
     compressed_json_text = gzip.compress(json_text.encode("utf8"))
@@ -125,9 +139,14 @@ def post_comment(urls: dict[str, str]):
 
 if __name__ == "__main__":
     directories_with_requirements = {
-        "examples/dev/": ["openpyxl"],
-        "examples/scratch_dev": None,
-        "examples/visual-vocabulary/": None,
+        "vizro-core/examples/dev/": ["openpyxl"],
+        "vizro-core/examples/scratch_dev": None,
+        "vizro-core/examples/visual-vocabulary/": [
+            "autoflake==2.3.1",
+            "black==24.4.2",
+            "isort==5.13.2",
+            "plotly==5.24.1",
+        ],
     }
     urls = {
         directory: generate_link(directory, extra_requirements)
@@ -149,3 +168,5 @@ if __name__ == "__main__":
     if PR_NUMBER is not None:
         pr = repo.get_pull(PR_NUMBER)
         post_comment(urls)
+
+# Try out if this sticks with the local files that have just been changed. Add some files to scratch dev
