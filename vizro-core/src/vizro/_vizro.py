@@ -4,7 +4,7 @@ import logging
 import warnings
 from collections.abc import Iterable
 from contextlib import suppress
-from pathlib import Path
+from pathlib import Path, PurePosixPath
 from typing import TYPE_CHECKING, TypedDict
 
 import dash
@@ -203,7 +203,7 @@ def _make_resource_spec(path: Path) -> _ResourceSpec:
     # Get path relative to the vizro package root, where this file resides.
     # This must be a posix path to work on Windows, so that we convert all \ to / and routing works correctly.
     # See https://github.com/mckinsey/vizro/issues/836.
-    relative_path = path.relative_to(Path(__file__).parent)
+    relative_path = PurePosixPath(path.relative_to(Path(__file__).parent))
 
     resource_spec: _ResourceSpec = {"namespace": "vizro", "relative_package_path": str(relative_path)}
 

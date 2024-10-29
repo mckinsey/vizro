@@ -48,6 +48,9 @@ jobs:
             os: windows-latest
             label: Windows
 
+
+    # Run Windows jobs only on merges to main
+    if: github.event_name == 'push' && github.ref == 'refs/heads/main' && matrix.os == 'windows-latest'
     steps:
       - uses: actions/checkout@v4
 
@@ -60,7 +63,7 @@ jobs:
         run: pip install hatch
 
       - name: Show dependency tree
-        run: hatch -vvv run ${{ matrix.hatch-env }}:pip tree
+        run: hatch run ${{ matrix.hatch-env }}:pip tree
 
       - name: Run unit tests
         run: hatch run ${{ matrix.hatch-env }}:test-unit-coverage
