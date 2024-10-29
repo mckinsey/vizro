@@ -78,7 +78,7 @@ def generate_link(directory: str, extra_requirements: Optional[list[str]] = None
     # GitHub API URL for a specific commit
     url = f"https://api.github.com/repos/{REPO_NAME}/git/trees/{COMMIT_SHA}?recursive=1"
 
-    # Make the request
+    # Make the request to get all the files in the commit
     response = requests.get(url, timeout=20)
     if response.status_code == 200:  # noqa
         # Get the JSON response with the file tree
