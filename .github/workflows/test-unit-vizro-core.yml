@@ -17,13 +17,13 @@ env:
 
 jobs:
   test-unit-vizro-core:
-    name: test-unit-vizro-core on Py${{ matrix.python-env.py }} ${{ matrix.python-env.label }}
+    name: test-unit-vizro-core on Py${{ matrix.config.py }} ${{ matrix.config.label }}
 
     runs-on: ${{ matrix.os }}
     strategy:
       fail-fast: false
       matrix:
-        python-env:
+        config:
           - py: "3.9"
             hatch-env: all.py3.9
             os: ubuntu-latest
@@ -47,7 +47,8 @@ jobs:
             hatch-env: all.py3.12
             label: Windows
             os: windows-latest
-        is_pr: [${{ github.event_name == "pull_request" }}]
+        is_pr:
+        - ${{ github.event_name == 'pull_request' }}
         exclude:
           - is_pr: true
             python-version:
@@ -72,16 +73,16 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
-      - name: Set up Python ${{ matrix.python-version }}
+      - name: Set up Python ${{ matrix.config.py }}
         uses: actions/setup-python@v5
         with:
-          python-version: ${{ matrix.python-version }}
+          python-version: ${{ matrix.config.py }}
 
       - name: Install Hatch
         run: pip install hatch
 
       - name: Show dependency tree
-        run: hatch run ${{ matrix.hatch-env }}:pip tree
+        run: hatch run ${{ matrix.config.hatch-env }}:pip tree
 
       - name: Run unit tests
-        run: hatch run ${{ matrix.hatch-env }}:test-unit-coverage
+        run: hatch run ${{ matrix.config.hatch-env }}:test-unit-coverage
