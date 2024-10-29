@@ -4,7 +4,7 @@ import logging
 import warnings
 from collections.abc import Iterable
 from contextlib import suppress
-from pathlib import Path, PurePosixPath
+from pathlib import Path
 from typing import TYPE_CHECKING, TypedDict
 
 import dash
