@@ -23,11 +23,13 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        python-version: ["3.9", "3.10", "3.11", "3.12", "3.13"]
-        os: [ubuntu-latest, windows-latest]
-        hatch-env: [${{ format("all.py{0}", matrix.python-version) }}]
+        python-version: [{py: "3.9", hatch-env: all.py3.9}, {py: "3.10", hatch-env: all.py3.10},
+                         {py: "3.11", hatch-env: all.py3.11}, {py: "3.12", hatch-env: all.py3.12},
+                         {py: "3.13", hatch-env: all.py3.13}, py: "3.9", hatch-env: lower-bounds]
+        os: ["ubuntu-latest", "windows-latest"]
+        #hatch-env: [${{ format("all.py{0}", matrix.python-version) }}]
         is_pr:
-          - ${{ github.event_name == "pull_request' }}
+          - ${{ github.event_name == "pull_request" }}
         exclude:
           - is_pr: true
             os: windows-latest
@@ -37,16 +39,6 @@ jobs:
         # just use below for labelling and hatch-env so not needed?
         # will still need windows and lower bounds job though
         include:
-          - python-version: "3.9"
-            hatch-env: all.py3.9
-          - python-version: "3.10"
-            hatch-env: all.py3.10
-          - python-version: "3.11"
-            hatch-env: all.py3.11
-          - python-version: "3.12"
-            hatch-env: all.py3.12
-          - python-version: "3.13"
-            hatch-env: all.py3.13
           - python-version: "3.9"
             hatch-env: lower-bounds
             label: lower bounds
