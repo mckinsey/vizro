@@ -10,21 +10,55 @@ import dash_bootstrap_components as dbc
 import pandas as pd
 from _utils import check_file_extension
 from dash.exceptions import PreventUpdate
-from langchain_openai import ChatOpenAI
 from plotly import graph_objects as go
 from vizro.models.types import capture
 from vizro_ai import VizroAI
 
+from langchain_openai import ChatOpenAI
+try:
+    from langchain_anthropic import ChatAnthropic
+except ImportError:
+    ChatAnthropic = None
+
+try:
+    from langchain_mistralai import ChatMistralAI
+except ImportError:
+    ChatMistralAI = None
+
 logger = logging.getLogger(__name__)
 logger.setLevel(logging.INFO)  # TODO: remove manual setting and make centrally controlled
 
-SUPPORTED_VENDORS = {"OpenAI": ChatOpenAI}
+SUPPORTED_VENDORS = {"OpenAI": ChatOpenAI, "Anthropic": ChatAnthropic, "Mistral": ChatMistralAI}
+
+SUPPORTED_MODELS = {
+    "OpenAI": [
+        "gpt-4",
+        "gpt-4-turbo",
+        "gpt-3.5-turbo",
+        "gpt-4o",
+        "gpt-4o-mini",
+    ],
+    "Anthropic": [
+        "claude-3-5-sonnet-20240620",
+        "claude-3-opus-20240229",
+        "claude-3-sonnet-20240229",
+        "claude-3-haiku-20240307",
+    ],
+    "Mistral": ["mistral-large-latest", "open-mistral-nemo", "codestral-latest"],
+}
 
 
 def get_vizro_ai_plot(user_prompt, df, model, api_key, api_base, vendor_input):
     """VizroAi plot configuration."""
     vendor = SUPPORTED_VENDORS[vendor_input]
-    llm = vendor(model_name=model, openai_api_key=api_key, openai_api_base=api_base)
+
+    if vendor_input == "OpenAI":
+        llm = vendor(model_name=model, openai_api_key=api_key, openai_api_base=api_base)
+    if vendor_input == "Anthropic":
+        llm = vendor(model=model, anthropic_api_key=api_key, anthropic_api_url=api_base)
+    if vendor_input == "Mistral":
+        llm = vendor(model=model, mistral_api_key=api_key, mistral_api_url=api_base)
+
     vizro_ai = VizroAI(model=llm)
     ai_outputs = vizro_ai.plot(df, user_prompt, return_elements=True)
 

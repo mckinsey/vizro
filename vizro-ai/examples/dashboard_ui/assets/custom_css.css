@@ -1,9 +1,4 @@
 #page-header {
-  background-color: var(--main-container-bg-color);
-  justify-content: center;
-}
-
-#page-title {
   display: none;
 }
 
@@ -250,6 +245,3 @@
   overflow: auto;
 }
 
-#right-header {
-  display: none;
-}

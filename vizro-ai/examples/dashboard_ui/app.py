@@ -2,6 +2,7 @@
 
 import json
 
+import plotly.io as pio
 import black
 import dash
 import pandas as pd
@@ -26,6 +27,17 @@ from components import (
 from dash import Input, Output, State, callback, dcc, get_asset_url, html
 from vizro import Vizro
 
+from langchain_openai import ChatOpenAI
+try:
+    from langchain_anthropic import ChatAnthropic
+except ImportError:
+    ChatAnthropic = None
+
+try:
+    from langchain_mistralai import ChatMistralAI
+except ImportError:
+    ChatMistralAI = None
+
 vm.Container.add_type("components", UserUpload)
 vm.Container.add_type("components", MyDropdown)
 vm.Container.add_type("components", OffCanvas)
@@ -45,13 +57,22 @@ vm.Page.add_type("components", Icon)
 vm.Page.add_type("components", Modal)
 
 
-SUPPORTED_MODELS = [
-    "gpt-4o-mini",
-    "gpt-4",
-    "gpt-4-turbo",
-    "gpt-3.5-turbo",
-    "gpt-4o",
-]
+SUPPORTED_MODELS = {
+    "OpenAI": [
+        "gpt-4",
+        "gpt-4-turbo",
+        "gpt-3.5-turbo",
+        "gpt-4o",
+        "gpt-4o-mini",
+    ],
+    "Anthropic": [
+        "claude-3-5-sonnet-20240620",
+        "claude-3-opus-20240229",
+        "claude-3-sonnet-20240229",
+        "claude-3-haiku-20240307",
+    ],
+    "Mistral": ["mistral-large-latest", "open-mistral-nemo", "codestral-latest"],
+}
 
 
 plot_page = vm.Page(
@@ -156,7 +177,7 @@ plot_page = vm.Page(
                         ),
                     ],
                 ),
-                MyDropdown(options=SUPPORTED_MODELS, value="gpt-4o-mini", multi=False, id="model-dropdown-id"),
+                MyDropdown(options=SUPPORTED_MODELS["OpenAI"], value="gpt-4o-mini", multi=False, id="model-dropdown-id"),
                 OffCanvas(id="settings", options=["OpenAI", "Anthropic", "Mistral"], value="OpenAI"),
                 UserPromptTextArea(id="text-area-id"),
                 # Modal(id="modal"),
@@ -266,9 +287,8 @@ def download_html(n_clicks, data):
     vizro_json = f"{vizro_json}"
     fig_json = json.loads(vizro_json)
     fig = go.Figure(fig_json)
-
-    fig.write_html("plotly_graph.html")
-    return dcc.send_file("plotly_graph.html")
+    graphs_html = pio.to_html(fig)
+    return dcc.send_string(graphs_html, filename="plotly_graph.html")
 
 
 def download_png():
