@@ -22,7 +22,6 @@ from langchain_core.tools import InjectedToolArg, tool
 from langchain_openai import ChatOpenAI
 from vizro_ai import VizroAI
 
-# Initialize the LLM
 llm = ChatOpenAI(model="gpt-4")
 ```
 
@@ -44,7 +43,6 @@ def get_plot_code(df: Annotated[Any, InjectedToolArg], question: str) -> str:
     Returns:
         Generated plot code
     """
-    df = pd.DataFrame(df)
     vizro_ai = VizroAI(model=llm)
     plot_elements = vizro_ai.plot(
         df,
