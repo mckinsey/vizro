@@ -157,10 +157,8 @@ plot_page = vm.Page(
                     ],
                 ),
                 MyDropdown(options=SUPPORTED_MODELS, value="gpt-4o-mini", multi=False, id="model-dropdown-id"),
-                OffCanvas(id="settings", options=["OpenAI"], value="OpenAI"),
-                UserPromptTextArea(
-                    id="text-area-id",
-                ),
+                OffCanvas(id="settings", options=["OpenAI", "Anthropic", "Mistral"], value="OpenAI"),
+                UserPromptTextArea(id="text-area-id"),
                 # Modal(id="modal"),
             ],
         ),
@@ -277,6 +275,15 @@ def download_png():
     """Callback for downloading vizro fig png  file."""
     pass
 
+
+@callback(
+    [Output("model-dropdown-id", "options"), Output("model-dropdown-id", "value")],
+    Input("settings-dropdown", "value")
+)
+def update_model_dropdown(value):
+    available_models = SUPPORTED_MODELS[value]
+    default_model = available_models[0]
+    return available_models, default_model
 
 app = Vizro().build(dashboard)
 app.dash.layout.children.append(
