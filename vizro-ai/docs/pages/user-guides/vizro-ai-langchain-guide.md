@@ -1,6 +1,6 @@
-# Using Vizro-AI Methods as LangChain Tools
+# Using Vizro-AI methods as LangChain tools
 
-This guide demonstrates how to integrate Vizro-AI's plotting and dashboard generation capabilities with LangChain tools. This integration allows you to use Vizro-AI's functionality within a larger LangChain application.
+This guide demonstrates how to integrate Vizro-AI's chart and dashboard generation capabilities as LangChain tools. This integration enables you to use Vizro-AI's functionality within a larger LangChain application.
 
 ## 1. Set up the environment
 
@@ -27,7 +27,7 @@ llm = ChatOpenAI(model="gpt-4o-mini")
 
 ## 2. Define LangChain tools
 
-Basic tools only take string as input and output. Vizro-AI takes Pandas dataframes as input and it's not cost-efficient and secure to pass the full dataset to a LLM. In this case, [bind the Pandas dataframes at run time](https://python.langchain.com/v0.2/docs/how_to/tool_runtime/) is more suitable.
+Basic tools only take string as input and output. Vizro-AI takes Pandas dataframes as input and it's not cost-efficient and secure to pass the full data to a LLM. In this case, [bind the Pandas dataframes at run time](https://python.langchain.com/v0.2/docs/how_to/tool_runtime/) is more suitable.
 
 Now, create tools that wrap Vizro-AI's plotting and dashboard generation capabilities:
 
@@ -109,9 +109,9 @@ chain = llm_with_tools | inject_df | tool_router.map()
 
 ## 4. Use the chain
 
-Now you can use the chain to generate plots or dashboards based on natural language queries. The chain will generate code that you can use to create visualizations.
+Now you can use the chain to generate charts or dashboards based on natural language queries. The chain will generate code that you can use to create visualizations.
 
-!!! example "Generate plot code"
+!!! example "Generate chart code"
 
     === "Code"
         ```py
@@ -191,5 +191,3 @@ Now you can use the chain to generate plots or dashboards based on natural langu
             title="GDP per Capita vs Life Expectancy",
         )
         ```
-
-This integration allows you to leverage Vizro-AI's visualization capabilities within a LangChain application, enabling natural language-driven creation of plots and dashboards.
