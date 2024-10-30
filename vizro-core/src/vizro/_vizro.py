@@ -4,7 +4,7 @@ import logging
 import warnings
 from collections.abc import Iterable
 from contextlib import suppress
-from pathlib import Path
+from pathlib import Path, PurePosixPath
 from typing import TYPE_CHECKING, TypedDict
 
 import dash
@@ -201,12 +201,11 @@ def _make_resource_spec(path: Path) -> _ResourceSpec:
     BASE_EXTERNAL_URL = f"https://cdn.jsdelivr.net/gh/mckinsey/vizro@{_git_branch}/vizro-core/src/vizro/"
 
     # Get path relative to the vizro package root, where this file resides.
-    relative_path = path.relative_to(Path(__file__).parent)
+    # This must be a posix path to work on Windows, so that we convert all \ to / and routing works correctly.
+    # See https://github.com/mckinsey/vizro/issues/836.
+    relative_path = PurePosixPath(path.relative_to(Path(__file__).parent))
 
-    resource_spec: _ResourceSpec = {
-        "namespace": "vizro",
-        "relative_package_path": str(relative_path),
-    }
+    resource_spec: _ResourceSpec = {"namespace": "vizro", "relative_package_path": str(relative_path)}
 
     if relative_path.suffix in {".css", ".js"}:
         # The CDN automatically minifies CSS and JS files which aren't already minified. Convert "filename.css" to

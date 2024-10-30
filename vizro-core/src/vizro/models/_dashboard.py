@@ -335,4 +335,5 @@ class Dashboard(VizroBaseModel):
         if assets_folder.is_dir():
             for path in Path(assets_folder).rglob(f"{filename}.*"):
                 if path.suffix in valid_extensions:
-                    return str(path.relative_to(assets_folder))
+                    # Return path as posix so image source comes out correctly on Windows.
+                    return path.relative_to(assets_folder).as_posix()

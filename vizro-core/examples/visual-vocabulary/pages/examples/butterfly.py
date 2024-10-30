@@ -1,17 +1,7 @@
 import pandas as pd
 import plotly.express as px
 import plotly.graph_objects as go
-import vizro.models as vm
-from vizro import Vizro
 from vizro.models.types import capture
-
-ages = pd.DataFrame(
-    {
-        "Age": ["0-19", "20-29", "30-39", "40-49", "50-59", ">=60"],
-        "Male": [800, 2000, 4200, 5000, 2100, 800],
-        "Female": [1000, 3000, 3500, 3800, 3600, 700],
-    }
-)
 
 
 @capture("graph")
@@ -35,13 +25,12 @@ def butterfly(data_frame: pd.DataFrame, **kwargs) -> go.Figure:
     return fig
 
 
-page = vm.Page(
-    title="Butterfly",
-    components=[
-        vm.Graph(
-            figure=butterfly(ages, x=["Male", "Female"], y="Age", labels={"value": "Population", "variable": "Sex"})
-        )
-    ],
+ages = pd.DataFrame(
+    {
+        "Age": ["0-19", "20-29", "30-39", "40-49", "50-59", ">=60"],
+        "Male": [800, 2000, 4200, 5000, 2100, 800],
+        "Female": [1000, 3000, 3500, 3800, 3600, 700],
+    }
 )
-dashboard = vm.Dashboard(pages=[page])
-Vizro().build(dashboard).run()
+
+fig = butterfly(ages, x=["Male", "Female"], y="Age", labels={"value": "Population", "variable": "Sex"})
