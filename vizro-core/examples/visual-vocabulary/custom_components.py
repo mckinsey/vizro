@@ -11,31 +11,38 @@ try:
 except ImportError:  # pragma: no cov
     from pydantic import Field
 
+from urllib.parse import quote
+
 
 class CodeClipboard(vm.VizroBaseModel):
     """Code snippet with a copy to clipboard button."""
 
     type: Literal["code_clipboard"] = "code_clipboard"
     code: str
+    mode: Literal["vizro", "plotly"]
     language: str = ""
 
     def build(self):
         """Returns the code clipboard component inside an accordion."""
         markdown_code = "\n".join([f"```{self.language}", self.code, "```"])
-        return dbc.Accordion(
+
+        pycafe_link = dbc.Button(
             [
-                dbc.AccordionItem(
-                    html.Div(
-                        [
-                            dcc.Markdown(markdown_code, id=self.id),
-                            dcc.Clipboard(target_id=self.id, className="code-clipboard"),
-                        ],
-                        className="code-clipboard-container",
-                    ),
-                    title="SHOW CODE",
-                )
+                "Edit code live on PyCafe",
+                html.Span("open_in_new", className="material-symbols-outlined open-in-new"),
             ],
-            start_collapsed=False,
+            href=f"https://py.cafe/snippet/vizro/v1#code={quote(self.code)}",
+            target="_blank",
+            className="pycafe-link",
+        )
+
+        return html.Div(
+            [
+                pycafe_link if self.mode == "vizro" else None,
+                dcc.Clipboard(target_id=self.id, className="code-clipboard"),
+                dcc.Markdown(markdown_code, id=self.id),
+            ],
+            className="code-clipboard-container",
         )
 
 
@@ -68,4 +75,4 @@ class FlexContainer(vm.Container):
 
 vm.Container.add_type("components", FlexContainer)
 vm.Container.add_type("components", Markdown)
-vm.Page.add_type("components", CodeClipboard)
+vm.Container.add_type("components", CodeClipboard)

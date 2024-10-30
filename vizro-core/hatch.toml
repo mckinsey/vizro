@@ -91,10 +91,12 @@ serve = "mkdocs serve --open"
 dependencies = [
   "pyyaml",
   "openpyxl",
-  # black is required to run the example visual-vocabulary. This is completely independent of the black used in linting
-  # our code. When this moves to HuggingFace we can remove the requirement from here.
+  # black, autoflake and isort required to run the example visual-vocabulary. This is completely independent of the
+  # tools used in linting our code. When this moves to HuggingFace we can remove the requirement from here.
+  "autoflake==2.3.1",
   "black==24.4.2",
-  "plotly>=5.24.0"  # to leverage new MapLibre features in visual-vocabulary
+  "isort==5.13.2",
+  "plotly==5.24.1"  # to leverage new MapLibre features in visual-vocabulary
 ]
 installer = "uv"
 scripts = {example = "cd examples/{args:scratch_dev}; python app.py"}
