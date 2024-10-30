@@ -38,9 +38,9 @@ You can use [PyCafe](https://py.cafe/snippet/vizro/v1) snippet mode to experimen
 
         Vizro().build(dashboard).run()
         ```
-- create a Python file named `app.py`.
-- type the command `python app.py` into your terminal.
-- information below will be displayed in your terminal, go to [http://127.0.0.1:8050/](http://127.0.0.1:8050/).
+1. create a Python file named `app.py`.
+2. type the command `python app.py` into your terminal.
+3. information below will be displayed in your terminal, go to [http://127.0.0.1:8050/](http://127.0.0.1:8050/).
 
 ```
 Dash is running on http://127.0.0.1:8050/

@@ -8,9 +8,9 @@ The [`Page`][vizro.models.Page] model accepts the `controls` argument, where you
 
 To add a parameter to your page, do the following:
 
-- add the [`Parameter`][vizro.models.Parameter] model into the `controls` argument of the [`Page`][vizro.models.Page] model.
-- add the `targets` argument
-- add a selector model to the `selector` argument.
+1. add the [`Parameter`][vizro.models.Parameter] model into the `controls` argument of the [`Page`][vizro.models.Page] model.
+2. add the `targets` argument
+3. add a selector model to the `selector` argument.
 
 In the `targets` argument, you can specify the component and function argument that the parameter should be applied to in the form of `<target_component_id>.<target_argument>` (for example, `scatter_chart.title`).
 
