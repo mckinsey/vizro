@@ -130,6 +130,7 @@
   text-align: center;
 }
 
+/*
 #settings-api-key-toggle .form-check-input {
   border-radius: 8px;
 }
@@ -137,7 +138,7 @@
 #settings-api-base-toggle .form-check-input {
   border-radius: 8px;
 }
-
+*/
 #toggle-div-api-base,
 #toggle-div-api-key {
   align-items: center;
@@ -168,6 +169,14 @@
 }
 
 .form-check .form-check-input {
+  border-radius: 8px;
+}
+
+#settings-api-key-toggle .form-check-input {
+  border-radius: 8px;
+}
+
+#settings-api-base-toggle .form-check-input {
   border-radius: 8px;
 }
 
@@ -204,4 +213,34 @@
 
 #modal-table-icon {
   cursor: pointer;
+}
+
+.dropdown-menu-toggle-class {
+  background-color: inherit;
+  color: var(--text-active);
+  height: 2rem;
+  scale: 90%;
+}
+
+.dropdown-menu-toggle-class:hover {
+  background-color: inherit;
+  color: var(--text-active);
+  cursor: pointer;
+  height: 2rem;
+  scale: 90%;
+}
+
+.dropdown-menu-toggle-class.btn-primary:focus:not(
+    :focus-visible,
+    :disabled,
+    .disabled
+  ) {
+  background-color: inherit;
+  color: var(--text-active);
+}
+
+.modal-class {
+  max-height: 600px;
+  max-width: 1000px;
+  overflow: auto;
 }

@@ -81,7 +81,7 @@ plot_page = vm.Page(
                 grid=[
                     [-1, -1, -1, -1, -1, -1, -1, -1, -1, -1, 0],
                     *[[1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1]] * 10,
-                    [-1, -1, -1, -1, -1, -1, -1, -1, 2, 2, 2],
+                    [-1, -1, -1, -1, -1, -1, -1, -1, -1, 2, 2],
                 ]
             ),
             components=[
@@ -226,6 +226,7 @@ def toggle_code(value, data):
     State("data-store-id", "data"),
 )
 def open_modal(n_clicks, is_open, data):
+    """Callback for opening modal component."""
     if not data:
         return dash.no_update
     if n_clicks:

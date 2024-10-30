@@ -311,8 +311,14 @@ def custom_table(data_frame):
                 id="data-modal",
                 children=[
                     dbc.ModalHeader(dbc.ModalTitle(id="modal-title", children="No data uploaded!")),
-                    dbc.ModalBody(id="modal-table", children=table, style={"width": "fit-content"}),
+                    dbc.ModalBody(
+                        id="modal-table",
+                        children=table,
+                    ),
                 ],
+                size="xl",
+                # centered=True,
+                modal_class_name="modal-class",
             ),
         ],
         style={"gap": "8px", "display": "flex", "flexDirection": "row", "alignItems": "center"},
@@ -326,29 +332,46 @@ class DropdownMenu(vm.VizroBaseModel):
     type: Literal["dropdown_menu"] = "dropdown_menu"
 
     def build(self):
-        button_group = dbc.ButtonGroup(
-            [
-                dbc.Button(children="JSON", id=f"{self.id}-json", className="download-button"),
-                dcc.Download(id="download-json"),
-                # dbc.Tooltip("Download fig as JSON", target=f"{self.id}-json", placement="top"),
-                dbc.Button(children="HTML", id=f"{self.id}-html", className="download-button"),
-                dcc.Download(id="download-html"),
-                # dbc.Tooltip("Download fig as HTML", target=f"{self.id}-html", placement="top"),
-                dbc.Button(children="PNG", id=f"{self.id}-png", className="download-button"),
-                dcc.Download(id="download-png"),
-                # dbc.Tooltip("Download fig as PNG", target=f"{self.id}-png", placement="top"),
+        """Returns custom dropdown menu."""
+        dropdown_menu = dbc.DropdownMenu(
+            id="dropdown-menu-button",
+            label="Download ",
+            children=[
+                dbc.DropdownMenuItem(
+                    children=[
+                        dbc.Button(children="JSON", id=f"{self.id}-json", className="download-button"),
+                        dcc.Download(id="download-json"),
+                    ]
+                ),
+                dbc.DropdownMenuItem(
+                    children=[
+                        dbc.Button(children="HTML", id=f"{self.id}-html", className="download-button"),
+                        dcc.Download(id="download-html"),
+                    ]
+                ),
+                dbc.DropdownMenuItem(
+                    children=[
+                        dbc.Button(children="PNG", id=f"{self.id}-png", className="download-button"),
+                        dcc.Download(id="download-png"),
+                    ]
+                ),
             ],
-            style={"scale": "85%"},
+            toggleClassName="dropdown-menu-toggle-class",
         )
         download_div = html.Div(
-            children=[html.Span("download", className="material-symbols-outlined", id=f"{self.id}-icon"), button_group],
+            children=[
+                html.Span("download", className="material-symbols-outlined", id=f"{self.id}-icon"),
+                dropdown_menu,
+                dbc.Tooltip(
+                    "Download explanation placeholder", target="dropdown-menu-button", delay={"show": 1000, "hide": 0}
+                ),
+            ],
             style={
                 "display": "flex",
                 "flexDirection": "row",
                 "gap": "2px",
                 "border": "0.5px solid gray",
                 "borderRadius": "8px",
-                "width": "200px",
                 "alignItems": "center",
                 "justifyContent": "center",
             },

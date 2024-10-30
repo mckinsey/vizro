@@ -141,7 +141,7 @@ def display_filename(data):
 
 @capture("action")
 def update_table(data):
-    """Custom action fpr updating data."""
+    """Custom action for updating data."""
     if not data:
         return dash.no_update
     df = pd.DataFrame(data["data"])
