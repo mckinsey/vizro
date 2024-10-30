@@ -52,10 +52,10 @@ jobs:
             hatch-env: all.py3.12
             os: windows-latest
             label: Windows
-        is_pr:
-          - ${{ github.event_name == 'pull_request' }}
+        is_non_release_pr:
+          - ${{ github.event_name == 'pull_request' && !startsWith(github.head_ref, 'release')}}
         exclude:
-          - is_pr: true
+          - is_non_release_pr: true
             config:
               python-version: "3.12"
               hatch-env: all.py3.12
@@ -101,10 +101,10 @@ jobs:
             hatch-env: all.py3.12
             os: windows-latest
             label: Windows
-        is_pr:
-          - ${{ github.event_name == 'pull_request' }}
+        is_non_release_pr:
+          - ${{ github.event_name == 'pull_request' && !startsWith(github.head_ref, 'release')}}
         exclude:
-          - is_pr: true
+          - is_non_release_pr: true
             config:
               python-version: "3.12"
               hatch-env: all.py3.12
