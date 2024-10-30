@@ -1,4 +1,9 @@
 #page-header {
+  background-color: var(--main-container-bg-color);
+  justify-content: center;
+}
+
+#page-title {
   display: none;
 }
 
@@ -243,4 +248,8 @@
   max-height: 600px;
   max-width: 1000px;
   overflow: auto;
+}
+
+#right-header {
+  display: none;
 }
