@@ -1,10 +1,15 @@
 # Using Vizro-AI methods as LangChain tools
 
-This guide demonstrates how to integrate Vizro-AI's chart and dashboard generation capabilities as LangChain tools. This integration enables you to use Vizro-AI's functionality within a larger LangChain application.
+You can use Vizro-AI's functionality within a larger LangChain application. This guide shows how to integrate Vizro-AI's chart and dashboard generation capabilities as LangChain tools. Here are the steps you need to take:
+
+1. [Set up the environment](#1-set-up-the-environment)
+2. [Define LangChain tools](#2-define-langchain-tools)
+3. [Set up the tool chain](#3-set-up-the-tool-chain)
+4. [Use the chain](#4-use-the-chain)
 
 ## 1. Set up the environment
 
-First, import the required libraries and prepare your data:
+First, import the required libraries and prepare the LLM:
 
 ```python
 from copy import deepcopy
@@ -17,17 +22,13 @@ from langchain_core.tools import InjectedToolArg, tool
 from langchain_openai import ChatOpenAI
 from vizro_ai import VizroAI
 
-# Load sample data
-df = px.data.gapminder()
-dfs = [df]
-
 # Initialize the LLM
-llm = ChatOpenAI(model="gpt-4o-mini")
+llm = ChatOpenAI(model="gpt-4")
 ```
 
 ## 2. Define LangChain tools
 
-Basic tools only take string as input and output. Vizro-AI takes Pandas dataframes as input and it's not cost-efficient and secure to pass the full data to a LLM. In this case, [bind the Pandas dataframes at run time](https://python.langchain.com/v0.2/docs/how_to/tool_runtime/) is more suitable.
+Basic tools only take string as input and output. Vizro-AI takes Pandas DataFrames as input and it's neither cost-efficient nor secure to pass the full data to a LLM. The recommended approach is to exclude DataFrame parameters from the tool's schema and instead bind them at runtime using [LangChain's runtime binding feature](https://python.langchain.com/v0.2/docs/how_to/tool_runtime/).
 
 Now, create tools that wrap Vizro-AI's plotting and dashboard generation capabilities:
 
@@ -115,6 +116,9 @@ Now you can use the chain to generate charts or dashboards based on natural lang
 
     === "Code"
         ```py
+        # Load sample data
+        df = px.data.gapminder()
+
         plot_response = chain.invoke("Plot GDP per capita for each continent")
         print(plot_response[0].content)
         ```
@@ -141,6 +145,8 @@ Now you can use the chain to generate charts or dashboards based on natural lang
 
     === "Code"
         ```py
+        dfs = [px.data.gapminder()]
+
         dashboard_response = chain.invoke("Create a dashboard. This dashboard has a chart showing the correlation between gdpPercap and lifeExp.")
         print(dashboard_response[0].content)
         ```
