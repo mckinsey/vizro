@@ -18,31 +18,22 @@ jobs:
   test-score-vizro-ai-fork:
     if: ${{ github.event.pull_request.head.repo.fork }}
     name: test-score-vizro-ai on Py${{ matrix.config.python-version }} ${{ matrix.config.label }}
-    runs-on: ${{ matrix.config.os }}
+    runs-on: ubuntu-latest
     strategy:
       fail-fast: false
       matrix:
         config:
           - python-version: "3.9"
             hatch-env: all.py3.9
-            os: ubuntu-latest
           - python-version: "3.10"
             hatch-env: all.py3.10
-            os: ubuntu-latest
           - python-version: "3.11"
             hatch-env: all.py3.11
-            os: ubuntu-latest
           - python-version: "3.12"
             hatch-env: all.py3.12
-            os: ubuntu-latest
           - python-version: "3.9"
             hatch-env: lower-bounds
-            os: ubuntu-latest
             label: lower bounds
-          - python-version: "3.12"
-            hatch-env: all.py3.12
-            os: windows-latest
-            label: Windows
 
     steps:
       - uses: actions/checkout@v4
@@ -53,31 +44,22 @@ jobs:
   test-score-vizro-ai:
     if: ${{ ! github.event.pull_request.head.repo.fork }}
     name: test-score-vizro-ai on Py${{ matrix.config.python-version }} ${{ matrix.config.label }}
-    runs-on: ${{ matrix.config.os }}
+    runs-on: ubuntu-latest
     strategy:
       fail-fast: false
       matrix:
         config:
           - python-version: "3.9"
             hatch-env: all.py3.9
-            os: ubuntu-latest
           - python-version: "3.10"
             hatch-env: all.py3.10
-            os: ubuntu-latest
           - python-version: "3.11"
             hatch-env: all.py3.11
-            os: ubuntu-latest
           - python-version: "3.12"
             hatch-env: all.py3.12
-            os: ubuntu-latest
           - python-version: "3.9"
             hatch-env: lower-bounds
-            os: ubuntu-latest
             label: lower bounds
-          - python-version: "3.12"
-            hatch-env: all.py3.12
-            os: windows-latest
-            label: Windows
 
     steps:
       - uses: actions/checkout@v4

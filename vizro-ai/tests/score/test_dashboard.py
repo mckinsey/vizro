@@ -3,7 +3,6 @@
 import csv
 import os
 from datetime import datetime
-from typing import Dict, List
 
 import chromedriver_autoinstaller
 import pytest
@@ -29,11 +28,11 @@ def logic(  # noqa: PLR0912, PLR0913, PLR0915
     dashboard,
     model_name,
     prompt_tier,
-    pages: Dict[str, int],
-    components: List[Dict[str, int]],
-    controls: List[Dict[str, int]],
-    components_types: List[Dict[str, int]],
-    controls_types: List[Dict[str, int]],
+    pages: dict[str, int],
+    components: list[dict[str, int]],
+    controls: list[dict[str, int]],
+    components_types: list[dict[str, int]],
+    controls_types: list[dict[str, int]],
 ):
     report_dir = "tests/score/reports"
     os.makedirs(report_dir, exist_ok=True)
