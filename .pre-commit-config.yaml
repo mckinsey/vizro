@@ -19,11 +19,6 @@ repos:
         entry: python tools/check_for_datafiles.py
         language: python
         pass_filenames: false
-      - id: check-branch-name
-        name: check-branch-name
-        entry: tools/check_branch_name.sh
-        language: script
-        pass_filenames: false
 
   - repo: https://github.com/codespell-project/codespell
     rev: v2.3.0
@@ -77,20 +72,6 @@ repos:
           # https://github.com/pydantic/pydantic/pull/8765
           - pydantic==1.10.14
 
-  - repo: https://github.com/gitleaks/gitleaks
-    rev: v8.20.1
-    hooks:
-      - id: gitleaks
-        name: gitleaks (protect)
-        description: Detect hardcoded secrets using Gitleaks
-        entry: gitleaks protect --verbose --staged
-        language: golang
-      - id: gitleaks
-        name: gitleaks (detect)
-        description: Detect hardcoded secrets using Gitleaks
-        entry: gitleaks detect --verbose --baseline-path gitleaks-report.json
-        language: golang
-
   - repo: https://github.com/awebdeveloper/pre-commit-stylelint
     rev: "0.0.2"
     hooks:
@@ -123,9 +104,7 @@ ci:
     - check-yaml
     - check-json
     - check-datafiles
-    - check-branch-name
     - codespell
     - bandit
     - mypy
-    - gitleaks
     - vale

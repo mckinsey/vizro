@@ -1,12 +1,12 @@
 """Distribution charts."""
 
 import vizro.models as vm
-import vizro.plotly.express as px
 
 from pages._factories import butterfly_factory
-from pages._pages_utils import PAGE_GRID, make_code_clipboard_from_py_file, tips
+from pages._pages_utils import PAGE_GRID, make_code_clipboard_from_py_file
+from pages.examples import boxplot, dumbbell, histogram, violin
 
-violin = vm.Page(
+violin_page = vm.Page(
     title="Violin",
     path="distribution/violin",
     layout=vm.Layout(grid=PAGE_GRID),
@@ -27,20 +27,22 @@ violin = vm.Page(
             inter-quartile range, the confidence intervals and the median.
         """
         ),
-        vm.Graph(
-            figure=px.violin(
-                tips,
-                y="total_bill",
-                x="day",
-                color="day",
-                box=True,
-            )
+        vm.Graph(figure=violin.fig),
+        vm.Tabs(
+            tabs=[
+                vm.Container(
+                    title="Vizro dashboard", components=[make_code_clipboard_from_py_file("violin.py", mode="vizro")]
+                ),
+                vm.Container(
+                    title="Plotly figure",
+                    components=[make_code_clipboard_from_py_file("violin.py", mode="plotly")],
+                ),
+            ]
         ),
-        make_code_clipboard_from_py_file("violin.py"),
     ],
 )
 
-boxplot = vm.Page(
+boxplot_page = vm.Page(
     title="Boxplot",
     path="distribution/boxplot",
     layout=vm.Layout(grid=PAGE_GRID),
@@ -65,21 +67,24 @@ boxplot = vm.Page(
             the whiskers.
         """
         ),
-        vm.Graph(
-            figure=px.box(
-                tips,
-                y="total_bill",
-                x="day",
-                color="day",
-            )
+        vm.Graph(figure=boxplot.fig),
+        vm.Tabs(
+            tabs=[
+                vm.Container(
+                    title="Vizro dashboard", components=[make_code_clipboard_from_py_file("boxplot.py", mode="vizro")]
+                ),
+                vm.Container(
+                    title="Plotly figure",
+                    components=[make_code_clipboard_from_py_file("boxplot.py", mode="plotly")],
+                ),
+            ]
         ),
-        make_code_clipboard_from_py_file("boxplot.py"),
     ],
 )
 
-butterfly = butterfly_factory("distribution")
+butterfly_page = butterfly_factory("distribution")
 
-histogram = vm.Page(
+histogram_page = vm.Page(
     title="Histogram",
     path="distribution/histogram",
     layout=vm.Layout(grid=PAGE_GRID),
@@ -101,10 +106,57 @@ histogram = vm.Page(
             immediately clear.
         """
         ),
-        vm.Graph(figure=px.histogram(tips, x="total_bill")),
-        make_code_clipboard_from_py_file("histogram.py"),
+        vm.Graph(figure=histogram.fig),
+        vm.Tabs(
+            tabs=[
+                vm.Container(
+                    title="Vizro dashboard", components=[make_code_clipboard_from_py_file("histogram.py", mode="vizro")]
+                ),
+                vm.Container(
+                    title="Plotly figure",
+                    components=[make_code_clipboard_from_py_file("histogram.py", mode="plotly")],
+                ),
+            ]
+        ),
+    ],
+)
+
+dumbbell_page = vm.Page(
+    title="Dumbbell",
+    path="distribution/dumbbell",
+    layout=vm.Layout(grid=PAGE_GRID),
+    components=[
+        vm.Card(
+            text="""
+            #### What is a dumbbell chart?
+            A dumbbell chart emphasizes the gap between two categorical groups. Each data point is depicted by a
+            symbol, typically a circle, representing its quantitative value. These symbols are connected by a line,
+            visually indicating the gap between the two points. Categories or groups are displayed along one axis,
+            while quantitative values are plotted along the other.
+
+            &nbsp;
+
+            #### When should I use it?
+            Dumbbell charts are ideal for illustrating differences or gaps between two points. They are less cluttered
+            than bar charts, making it easier to compare groups. Common uses include comparing groups, such as showing
+            differences in performance metrics across various categories. Colors can be used to emphasize the direction
+            of changes or to distinguish between categories.
+        """
+        ),
+        vm.Graph(figure=dumbbell.fig),
+        vm.Tabs(
+            tabs=[
+                vm.Container(
+                    title="Vizro dashboard", components=[make_code_clipboard_from_py_file("dumbbell.py", mode="vizro")]
+                ),
+                vm.Container(
+                    title="Plotly figure",
+                    components=[make_code_clipboard_from_py_file("dumbbell.py", mode="plotly")],
+                ),
+            ]
+        ),
     ],
 )
 
 
-pages = [violin, boxplot, butterfly, histogram]
+pages = [violin_page, boxplot_page, butterfly_page, dumbbell_page, histogram_page]

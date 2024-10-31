@@ -34,15 +34,15 @@ Navigation.update_forward_refs(Accordion=Accordion, NavBar=NavBar, NavLink=NavLi
 Dashboard.update_forward_refs(Page=Page, Navigation=Navigation)
 NavBar.update_forward_refs(NavLink=NavLink)
 NavLink.update_forward_refs(Accordion=Accordion)
-# Please keep alphabetically ordered
+
 __all__ = [
     "Accordion",
     "Action",
     "AgGrid",
     "Button",
     "Card",
-    "Container",
     "Checklist",
+    "Container",
     "Dashboard",
     "DatePicker",
     "Dropdown",

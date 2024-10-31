@@ -1,10 +1,20 @@
-from typing import List
-
 import pandas as pd
 import plotly.graph_objects as go
-import vizro.models as vm
-from vizro import Vizro
 from vizro.models.types import capture
+
+
+@capture("graph")
+def waterfall(
+    data_frame: pd.DataFrame,
+    x: str,
+    y: str,
+    measure: list[str],
+):
+    return go.Figure(
+        data=go.Waterfall(x=data_frame[x], y=data_frame[y], measure=data_frame[measure]),
+        layout={"showlegend": False},
+    )
+
 
 waterfall_data = pd.DataFrame(
     {
@@ -14,38 +24,4 @@ waterfall_data = pd.DataFrame(
     }
 )
 
-
-@capture("graph")
-def waterfall(
-    data_frame: pd.DataFrame,
-    x: str,
-    y: str,
-    measure: List[str],
-):
-    fig = go.Figure(
-        go.Waterfall(
-            x=data_frame[x],
-            y=data_frame[y],
-            measure=data_frame[measure],
-        )
-    )
-    fig.update_layout(showlegend=False)
-    return fig
-
-
-page = vm.Page(
-    title="Waterfall",
-    components=[
-        vm.Graph(
-            figure=waterfall(
-                waterfall_data,
-                x="x",
-                y="y",
-                measure="measure",
-            )
-        )
-    ],
-)
-
-dashboard = vm.Dashboard(pages=[page])
-Vizro().build(dashboard).run()
+fig = waterfall(waterfall_data, x="x", y="y", measure="measure")

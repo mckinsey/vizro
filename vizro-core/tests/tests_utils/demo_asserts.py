@@ -1,7 +1,5 @@
 """Demo to show how to use asserts. These are not real tests that are run as part of testing, just a teaching aid."""
 
-from typing import List
-
 from asserts import STRIP_ALL, assert_component_equal
 from dash import html
 
@@ -20,7 +18,7 @@ class X(VizroBaseModel):
 
 class Y(VizroBaseModel):
     # Higher-level container model.
-    children: List[X]
+    children: list[X]
 
     def build(self):
         return html.Div([child.build() for child in self.children], id=self.id, className="container")

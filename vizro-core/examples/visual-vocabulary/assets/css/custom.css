@@ -10,20 +10,34 @@ img[src*="#chart-icon"] {
   width: 100%;
 }
 
+.open-in-new {
+  font-size: inherit;
+  margin-left: 4px;
+  vertical-align: middle;
+}
+
 .code-clipboard {
+  float: right;
   font-size: 20px;
-  position: absolute;
-  right: 14px;
-  top: 12px;
+}
+
+.code-clipboard pre {
+  font-family: monospace;
+  margin-bottom: 12px;
 }
 
 .code-clipboard-container {
   background: var(--surfaces-bg-card);
-  font-family: monospace;
   max-height: 500px;
   overflow: auto;
   padding: 1rem;
   position: relative;
+}
+
+.code-clipboard-container .pycafe-link,
+.code-clipboard-container .pycafe-link:focus {
+  line-height: unset;
+  margin-bottom: 12px;
 }
 
 .code-clipboard-container::-webkit-scrollbar-thumb {

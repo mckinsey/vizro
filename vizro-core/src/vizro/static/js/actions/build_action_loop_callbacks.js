@@ -1,8 +1,8 @@
-export function _trigger_to_global_store(input, data) {
+function trigger_to_global_store(input, data) {
   return data;
 }
 
-export function _gateway(
+function gateway(
   remaining_actions,
   trigger_to_actions_chain_mapper,
   action_trigger_actions_id,
@@ -76,7 +76,16 @@ export function _gateway(
   return [remaining_actions.slice(1)].concat(trigger_next);
 }
 
-export function _after_action_cycle_breaker(data) {
+function after_action_cycle_breaker(data) {
   document.getElementById("cycle_breaker_div").click();
   return [];
 }
+
+window.dash_clientside = {
+  ...window.dash_clientside,
+  build_action_loop_callbacks: {
+    trigger_to_global_store: trigger_to_global_store,
+    gateway: gateway,
+    after_action_cycle_breaker: after_action_cycle_breaker,
+  },
+};

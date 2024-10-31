@@ -1,9 +1,10 @@
 from __future__ import annotations
 
+import base64
 import logging
 from functools import partial
 from pathlib import Path
-from typing import TYPE_CHECKING, List, Literal, TypedDict
+from typing import TYPE_CHECKING, Literal, TypedDict
 
 import dash
 import dash_bootstrap_components as dbc
@@ -21,6 +22,7 @@ from dash import (
     html,
 )
 
+import vizro
 from vizro._themes._templates.template_dashboard_overrides import dashboard_overrides
 
 try:
@@ -30,8 +32,7 @@ except ImportError:  # pragma: no cov
 
 from dash.development.base_component import Component
 
-import vizro
-from vizro._constants import MODULE_PAGE_404, STATIC_URL_PREFIX
+from vizro._constants import MODULE_PAGE_404, VIZRO_ASSETS_PATH
 from vizro.actions._action_loop._action_loop import ActionLoop
 from vizro.models import Navigation, VizroBaseModel
 from vizro.models._models_utils import _log_call
@@ -44,7 +45,7 @@ if TYPE_CHECKING:
 logger = logging.getLogger(__name__)
 
 
-def _all_hidden(components: List[Component]):
+def _all_hidden(components: list[Component]):
     """Returns True if all `components` are either None and/or have hidden=True and/or className contains `d-none`."""
     return all(
         component is None
@@ -79,7 +80,7 @@ class Dashboard(VizroBaseModel):
     """Vizro Dashboard to be used within [`Vizro`][vizro._vizro.Vizro.build].
 
     Args:
-        pages (List[Page]): See [`Page`][vizro.models.Page].
+        pages (list[Page]): See [`Page`][vizro.models.Page].
         theme (Literal["vizro_dark", "vizro_light"]): Layout theme to be applied across dashboard.
             Defaults to `vizro_dark`.
         navigation (Navigation): See [`Navigation`][vizro.models.Navigation]. Defaults to `None`.
@@ -87,7 +88,7 @@ class Dashboard(VizroBaseModel):
 
     """
 
-    pages: List[Page]
+    pages: list[Page]
     theme: Literal["vizro_dark", "vizro_light"] = Field(
         "vizro_dark", description="Layout theme to be applied across dashboard. Defaults to `vizro_dark`"
     )
@@ -113,7 +114,7 @@ class Dashboard(VizroBaseModel):
     def pre_build(self):
         self._validate_logos()
 
-        # Setting order here ensures that the pages in dash.page_registry preserves the order of the List[Page].
+        # Setting order here ensures that the pages in dash.page_registry preserves the order of the list[Page].
         # For now the homepage (path /) corresponds to self.pages[0].
         # Note redirect_from=["/"] doesn't work and so the / route must be defined separately.
         self.pages[0].path = "/"
@@ -138,14 +139,15 @@ class Dashboard(VizroBaseModel):
             page.build()  # TODO: ideally remove, but necessary to register slider callbacks
 
         clientside_callback(
-            ClientsideFunction(namespace="clientside", function_name="update_dashboard_theme"),
+            ClientsideFunction(namespace="dashboard", function_name="update_dashboard_theme"),
+            # This currently doesn't do anything, but we need to define an Output such that the callback is triggered.
             Output("dashboard-container", "className"),
             Input("theme_selector", "checked"),
         )
         left_side_div_present = any([len(self.pages) > 1, self.pages[0].controls])
         if left_side_div_present:
             clientside_callback(
-                ClientsideFunction(namespace="clientside", function_name="collapse_nav_panel"),
+                ClientsideFunction(namespace="dashboard", function_name="collapse_nav_panel"),
                 [
                     Output("collapsable-left-side", "is_open"),
                     Output("collapse-icon", "style"),
@@ -169,7 +171,6 @@ class Dashboard(VizroBaseModel):
                 ActionLoop._create_app_callbacks(),
                 dash.page_container,
             ],
-            className=self.theme,
         )
 
     def _validate_logos(self):
@@ -303,9 +304,13 @@ class Dashboard(VizroBaseModel):
 
     @staticmethod
     def _make_page_404_layout():
+        # The svg file is available through the _dash-component-suites/vizro route, as used in Dash's
+        # _relative_url_path, but that feels too private to access directly. Hence read the file in directly rather
+        # than referring to its path.
+        error_404_svg = base64.b64encode((VIZRO_ASSETS_PATH / "images/error_404.svg").read_bytes()).decode("utf-8")
         return html.Div(
             [
-                html.Img(src=get_relative_path(f"/{STATIC_URL_PREFIX}/images/errors/error_404.svg")),
+                html.Img(src=f"data:image/svg+xml;base64,{error_404_svg}"),
                 html.Div(
                     [
                         html.Div(
@@ -330,4 +335,5 @@ class Dashboard(VizroBaseModel):
         if assets_folder.is_dir():
             for path in Path(assets_folder).rglob(f"{filename}.*"):
                 if path.suffix in valid_extensions:
-                    return str(path.relative_to(assets_folder))
+                    # Return path as posix so image source comes out correctly on Windows.
+                    return path.relative_to(assets_folder).as_posix()

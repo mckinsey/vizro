@@ -1,4 +1,4 @@
-from typing import Any, List
+from typing import Any
 
 import pytest
 import vizro.models as vm
@@ -8,7 +8,7 @@ from langchain_core.messages import HumanMessage
 
 
 class MockStructuredOutputLLM(FakeListLLM):
-    def bind_tools(self, tools: List[Any]):
+    def bind_tools(self, tools: list[Any]):
         return super().bind(tools=tools)
 
     def with_structured_output(self, schema):

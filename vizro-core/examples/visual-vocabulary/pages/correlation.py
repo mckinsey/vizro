@@ -1,12 +1,12 @@
 """Correlation charts."""
 
 import vizro.models as vm
-import vizro.plotly.express as px
 
 from pages._factories import column_and_line_factory, connected_scatter_factory
-from pages._pages_utils import PAGE_GRID, gapminder, iris, make_code_clipboard_from_py_file
+from pages._pages_utils import PAGE_GRID, make_code_clipboard_from_py_file
+from pages.examples import bubble, scatter, scatter_matrix
 
-scatter = vm.Page(
+scatter_page = vm.Page(
     title="Scatter",
     path="correlation/scatter",
     layout=vm.Layout(grid=PAGE_GRID),
@@ -29,14 +29,24 @@ scatter = vm.Page(
             that correlation is not causation. Make sure your audience does not draw the wrong conclusions.
         """
         ),
-        vm.Graph(figure=px.scatter(iris, x="sepal_width", y="sepal_length", color="species")),
-        make_code_clipboard_from_py_file("scatter.py"),
+        vm.Graph(figure=scatter.fig),
+        vm.Tabs(
+            tabs=[
+                vm.Container(
+                    title="Vizro dashboard", components=[make_code_clipboard_from_py_file("scatter.py", mode="vizro")]
+                ),
+                vm.Container(
+                    title="Plotly figure",
+                    components=[make_code_clipboard_from_py_file("scatter.py", mode="plotly")],
+                ),
+            ]
+        ),
     ],
 )
 
-connected_scatter = connected_scatter_factory("correlation")
+connected_scatter_page = connected_scatter_factory("correlation")
 
-scatter_matrix = vm.Page(
+scatter_matrix_page = vm.Page(
     title="Scatter matrix",
     path="correlation/scatter-matrix",
     layout=vm.Layout(grid=PAGE_GRID),
@@ -60,14 +70,23 @@ scatter_matrix = vm.Page(
             ensure clarity and readability of the chart.
         """
         ),
-        vm.Graph(
-            figure=px.scatter_matrix(iris, dimensions=["sepal_length", "sepal_width", "petal_length", "petal_width"])
+        vm.Graph(figure=scatter_matrix.fig),
+        vm.Tabs(
+            tabs=[
+                vm.Container(
+                    title="Vizro dashboard",
+                    components=[make_code_clipboard_from_py_file("scatter_matrix.py", mode="vizro")],
+                ),
+                vm.Container(
+                    title="Plotly figure",
+                    components=[make_code_clipboard_from_py_file("scatter_matrix.py", mode="plotly")],
+                ),
+            ]
         ),
-        make_code_clipboard_from_py_file("scatter_matrix.py"),
     ],
 )
 
-bubble = vm.Page(
+bubble_page = vm.Page(
     title="Bubble",
     path="correlation/bubble",
     layout=vm.Layout(grid=PAGE_GRID),
@@ -91,10 +110,21 @@ bubble = vm.Page(
             providing deeper insights than a standard scatter plot.
         """
         ),
-        vm.Graph(figure=px.scatter(gapminder.query("year==2007"), x="gdpPercap", y="lifeExp", size="pop", size_max=60)),
-        make_code_clipboard_from_py_file("bubble.py"),
+        vm.Graph(figure=bubble.fig),
+        vm.Tabs(
+            tabs=[
+                vm.Container(
+                    title="Vizro dashboard", components=[make_code_clipboard_from_py_file("bubble.py", mode="vizro")]
+                ),
+                vm.Container(
+                    title="Plotly figure",
+                    components=[make_code_clipboard_from_py_file("bubble.py", mode="plotly")],
+                ),
+            ]
+        ),
     ],
 )
 
-column_and_line = column_and_line_factory("correlation")
-pages = [scatter, connected_scatter, scatter_matrix, bubble, column_and_line]
+column_and_line_page = column_and_line_factory("correlation")
+
+pages = [scatter_page, connected_scatter_page, scatter_matrix_page, bubble_page, column_and_line_page]

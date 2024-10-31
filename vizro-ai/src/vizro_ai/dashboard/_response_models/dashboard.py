@@ -1,7 +1,6 @@
 """Dashboard plan model."""
 
 import logging
-from typing import List
 
 try:
     from pydantic.v1 import BaseModel, Field
@@ -22,4 +21,4 @@ class DashboardPlan(BaseModel):
         make a short and concise title from the content of the pages.
         """,
     )
-    pages: List[PagePlan]
+    pages: list[PagePlan]
