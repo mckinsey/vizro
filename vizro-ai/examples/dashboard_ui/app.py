@@ -299,11 +299,6 @@ def download_html(n_clicks, data):
     return dcc.send_string(graphs_html, filename="plotly_graph.html")
 
 
-def download_png():
-    """Callback for downloading vizro fig png  file."""
-    pass
-
-
 @callback(
     [Output("model-dropdown-id", "options"), Output("model-dropdown-id", "value")], Input("settings-dropdown", "value")
 )

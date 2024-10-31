@@ -326,12 +326,6 @@ class DropdownMenu(vm.VizroBaseModel):
                         dcc.Download(id="download-html"),
                     ]
                 ),
-                dbc.DropdownMenuItem(
-                    children=[
-                        dbc.Button(children="PNG", id=f"{self.id}-png", className="download-button"),
-                        dcc.Download(id="download-png"),
-                    ]
-                ),
             ],
             toggleClassName="dropdown-menu-toggle-class",
         )
@@ -340,8 +334,8 @@ class DropdownMenu(vm.VizroBaseModel):
                 html.Span("download", className="material-symbols-outlined", id=f"{self.id}-icon"),
                 dropdown_menu,
                 dbc.Tooltip(
-                    "Download this plot to your device as a plotly JSON, interactive HTML, "
-                    "or PNG file for easy sharing or future use.",
+                    "Download this plot to your device as a plotly JSON or interactive HTML file "
+                    "for easy sharing or future use.",
                     target="dropdown-menu-icon",
                 ),
             ],
