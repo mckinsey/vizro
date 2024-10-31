@@ -5,7 +5,7 @@ from typing import List, Literal
 import black
 import dash_bootstrap_components as dbc
 import vizro.models as vm
-from dash import dcc, html, get_asset_url
+from dash import dcc, get_asset_url, html
 from pydantic import PrivateAttr
 from vizro.models import Action
 from vizro.models._action._actions_chain import _action_validator_factory
@@ -69,9 +69,7 @@ class UserUpload(vm.VizroBaseModel):
             [
                 dcc.Upload(
                     id=self.id,
-                    children=html.Div(
-                        ["Drag and Drop or ", html.A("Select Files")], style={"fontColor": "rgba(255, 255, 255, 0.6)"}
-                    ),
+                    children=html.Div(["Drag and Drop or ", html.A("Select Files")], id="data-upload"),
                 ),
             ]
         )
@@ -255,36 +253,13 @@ class ToggleSwitch(vm.VizroBaseModel):
                 html.P("Plotly"),
                 html.Div(
                     dbc.Switch(id="toggle-switch", value=True, style={"borderRadius": "8px"}),
-                    style={"paddingRight": "4px"}
+                    style={"paddingRight": "4px"},
                 ),
                 html.P("Vizro"),
             ],
             className="toggle-div",
         )
         return toggle_component
-
-
-class CustomImg(vm.VizroBaseModel):
-    """Custom image component."""
-
-    type: Literal["custom_img"] = "custom_img"
-
-    def build(self):
-        """Returns custom icon component."""
-        custom_img = html.Div(
-            id=f"{self.id}-outer-div",
-            children=[
-                html.Span("download", className="material-symbols-outlined", id=f"{self.id}-icon"),
-                dbc.Tooltip(
-                    "Download fig",
-                    placement="right",
-                    target=f"{self.id}-icon",
-                ),
-                dcc.Download(id="download-json"),
-            ],
-            style={"paddingTop": "4px", "display": "flex", "alignItems": "end", "justifyContent": "end"},
-        )
-        return custom_img
 
 
 @capture("figure")
@@ -320,11 +295,10 @@ def custom_table(data_frame):
                     ),
                 ],
                 size="xl",
-                # centered=True,
                 modal_class_name="modal-class",
             ),
         ],
-        style={"gap": "8px", "display": "flex", "flexDirection": "row", "alignItems": "center"},
+        id="table-modal-div",
     )
     return table_modal
 
@@ -365,19 +339,13 @@ class DropdownMenu(vm.VizroBaseModel):
             children=[
                 html.Span("download", className="material-symbols-outlined", id=f"{self.id}-icon"),
                 dropdown_menu,
-                # dbc.Tooltip(
-                #     "Download explanation placeholder", target="dropdown-menu-button", delay={"show": 1000, "hide": 0}
-                # ),
+                dbc.Tooltip(
+                    "Download this plot to your device as a plotly JSON, interactive HTML, "
+                    "or PNG file for easy sharing or future use.",
+                    target="dropdown-menu-icon",
+                ),
             ],
-            style={
-                "display": "flex",
-                "flexDirection": "row",
-                "border": "0.5px solid gray",
-                "borderRadius": "8px",
-                "alignItems": "center",
-                "justifyContent": "center",
-                "width": "100%"
-            },
+            id="dropdown-menu-id",
         )
 
         return download_div
@@ -389,22 +357,18 @@ class HeaderComponent(vm.VizroBaseModel):
     type: Literal["header"] = "header"
 
     def build(self):
-        """Returns custom header component"""
-
-        title = html.Header("Vizro-AI", style={"fontSize": "28px", "display": "flex", "alignItems": "center", "fontWeight": "400 "})
+        """Returns custom header component."""
+        title = html.Header("Vizro", id="custom-header-title")
         header = html.Div(
-            children=[
-                html.Img(src=get_asset_url("logo.svg"), alt="Vizro logo", className="header-logo"),
-                title
-            ],
-            style={"display": "flex", "flexDirection": "row", "gap": "8px", "justifyContent": "center", "width": "100%"}
+            children=[html.Img(src=get_asset_url("logo.svg"), alt="Vizro logo", className="header-logo"), title],
+            id="custom-header-div",
         )
         icon = html.Div(
-            children=[html.Span("settings", className="material-symbols-outlined", id="open-settings-id")],
+            children=[
+                html.Span("settings", className="material-symbols-outlined", id="open-settings-id"),
+                dbc.Tooltip("Settings", target="open-settings-id"),
+            ],
             className="settings-div",
         )
 
         return html.Div(children=[header, icon], className="custom_header")
-
-
-

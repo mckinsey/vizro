@@ -2,19 +2,20 @@
 
 import json
 
-import plotly.io as pio
 import black
 import dash
+import dash_bootstrap_components as dbc
 import pandas as pd
 import plotly.graph_objects as go
+import plotly.io as pio
 import vizro.models as vm
 import vizro.plotly.express as px
 from actions import data_upload_action, display_filename, run_vizro_ai, update_table
 from components import (
     CodeClipboard,
     CustomDashboard,
-    CustomImg,
     DropdownMenu,
+    HeaderComponent,
     Icon,
     Modal,
     MyDropdown,
@@ -23,12 +24,10 @@ from components import (
     UserPromptTextArea,
     UserUpload,
     custom_table,
-    HeaderComponent
 )
 from dash import Input, Output, State, callback, dcc, get_asset_url, html
 from vizro import Vizro
 
-from langchain_openai import ChatOpenAI
 try:
     from langchain_anthropic import ChatAnthropic
 except ImportError:
@@ -46,7 +45,6 @@ vm.Container.add_type("components", CodeClipboard)
 vm.Container.add_type("components", Icon)
 vm.Container.add_type("components", Modal)
 vm.Container.add_type("components", ToggleSwitch)
-vm.Container.add_type("components", CustomImg)
 vm.Container.add_type("components", UserPromptTextArea)
 vm.Container.add_type("components", DropdownMenu)
 vm.Container.add_type("components", HeaderComponent)
@@ -84,9 +82,11 @@ plot_page = vm.Page(
         grid=[
             [4, 4, 4, 4],
             [2, 2, 1, 1],
+            [2, 2, 1, 1],
             [3, 3, 1, 1],
             [3, 3, 1, 1],
-            *[[0, 0, 1, 1]] * 7,
+            [3, 3, 1, 1],
+            *[[0, 0, 1, 1]] * 8,
         ]
     ),
     components=[
@@ -113,14 +113,15 @@ plot_page = vm.Page(
             ],
         ),
         vm.Container(
-            title="",
+            id="upload-data-container",
+            title="Turn your data into visuals — just upload, describe, and see your chart in action",
             layout=vm.Layout(
                 grid=[
                     [1],
                     [0],
                 ],
                 row_gap="0px",
-                row_min_height="40px",
+                # row_min_height="40px",
             ),
             components=[
                 UserUpload(
@@ -161,7 +162,7 @@ plot_page = vm.Page(
             components=[
                 vm.Button(
                     id="trigger-button-id",
-                    text="Run VizroAI",
+                    text="Run Vizro-AI",
                     actions=[
                         vm.Action(
                             function=run_vizro_ai(),
@@ -178,7 +179,9 @@ plot_page = vm.Page(
                         ),
                     ],
                 ),
-                MyDropdown(options=SUPPORTED_MODELS["OpenAI"], value="gpt-4o-mini", multi=False, id="model-dropdown-id"),
+                MyDropdown(
+                    options=SUPPORTED_MODELS["OpenAI"], value="gpt-4o-mini", multi=False, id="model-dropdown-id"
+                ),
                 OffCanvas(id="settings", options=["OpenAI", "Anthropic", "Mistral"], value="OpenAI"),
                 UserPromptTextArea(id="text-area-id"),
                 # Modal(id="modal"),
@@ -187,7 +190,7 @@ plot_page = vm.Page(
         vm.Container(
             title="",
             components=[HeaderComponent()],
-        )
+        ),
     ],
 )
 
@@ -302,13 +305,14 @@ def download_png():
 
 
 @callback(
-    [Output("model-dropdown-id", "options"), Output("model-dropdown-id", "value")],
-    Input("settings-dropdown", "value")
+    [Output("model-dropdown-id", "options"), Output("model-dropdown-id", "value")], Input("settings-dropdown", "value")
 )
 def update_model_dropdown(value):
+    """Callback for updating available models."""
     available_models = SUPPORTED_MODELS[value]
     default_model = available_models[0]
     return available_models, default_model
+
 
 app = Vizro().build(dashboard)
 app.dash.layout.children.append(
@@ -318,8 +322,9 @@ app.dash.layout.children.append(
                 [
                     "Made using ",
                     html.Img(src=get_asset_url("logo.svg"), id="banner", alt="Vizro logo"),
-                    "vizro",
+                    dbc.NavLink("vizro", href="https://github.com/mckinsey/vizro", target="_blank", external_link=True),
                 ],
+                style={"display": "flex", "flexDirection": "row"},
             ),
         ],
         className="anchor-container",

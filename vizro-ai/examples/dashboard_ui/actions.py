@@ -10,11 +10,11 @@ import dash_bootstrap_components as dbc
 import pandas as pd
 from _utils import check_file_extension
 from dash.exceptions import PreventUpdate
+from langchain_openai import ChatOpenAI
 from plotly import graph_objects as go
 from vizro.models.types import capture
 from vizro_ai import VizroAI
 
-from langchain_openai import ChatOpenAI
 try:
     from langchain_anthropic import ChatAnthropic
 except ImportError:
