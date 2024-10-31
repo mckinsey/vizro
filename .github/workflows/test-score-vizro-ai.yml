@@ -100,7 +100,7 @@ jobs:
           OPENAI_API_BASE: ${{ secrets.OPENAI_API_BASE }}
           VIZRO_TYPE: pypi
           BRANCH: ${{ github.head_ref }}
-          PYTHON_VERSION: ${{ matrix.python-version }}
+          PYTHON_VERSION: ${{ matrix.config.python-version }}
 
       - name: Run vizro-ai score tests with local vizro
         run: |
@@ -111,7 +111,7 @@ jobs:
           OPENAI_API_BASE: ${{ secrets.OPENAI_API_BASE }}
           VIZRO_TYPE: local
           BRANCH: ${{ github.head_ref }}
-          PYTHON_VERSION: ${{ matrix.python-version }}
+          PYTHON_VERSION: ${{ matrix.config.python-version }}
 
       - name: Send custom JSON data to Slack
         id: slack
