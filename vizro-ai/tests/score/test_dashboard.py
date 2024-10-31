@@ -35,7 +35,7 @@ def logic(  # noqa: PLR0912, PLR0913, PLR0915
     components_types: List[Dict[str, int]],
     controls_types: List[Dict[str, int]],
 ):
-    report_dir = "tests/integration/reports"
+    report_dir = "tests/score/reports"
     os.makedirs(report_dir, exist_ok=True)
 
     try:
