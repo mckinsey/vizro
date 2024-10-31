@@ -23,6 +23,7 @@ from components import (
     UserPromptTextArea,
     UserUpload,
     custom_table,
+    HeaderComponent
 )
 from dash import Input, Output, State, callback, dcc, get_asset_url, html
 from vizro import Vizro
@@ -48,6 +49,7 @@ vm.Container.add_type("components", ToggleSwitch)
 vm.Container.add_type("components", CustomImg)
 vm.Container.add_type("components", UserPromptTextArea)
 vm.Container.add_type("components", DropdownMenu)
+vm.Container.add_type("components", HeaderComponent)
 
 vm.Page.add_type("components", UserUpload)
 vm.Page.add_type("components", MyDropdown)
@@ -80,6 +82,7 @@ plot_page = vm.Page(
     title="Vizro-AI - create interactive charts with Plotly and Vizro",
     layout=vm.Layout(
         grid=[
+            [4, 4, 4, 4],
             [2, 2, 1, 1],
             [3, 3, 1, 1],
             [3, 3, 1, 1],
@@ -91,7 +94,7 @@ plot_page = vm.Page(
             title="",
             components=[CodeClipboard(id="plot"), ToggleSwitch(id="toggle-id")],
             layout=vm.Layout(
-                grid=[*[[0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]] * 7, [-1, -1, -1, -1, -1, -1, -1, -1, -1, -1, 1, 1]],
+                grid=[*[[0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]] * 7, [-1, -1, -1, -1, -1, -1, -1, -1, -1, 1, 1, 1]],
                 row_gap="12px",
                 col_gap="12px",
             ),
@@ -100,13 +103,11 @@ plot_page = vm.Page(
             title="",
             layout=vm.Layout(
                 grid=[
-                    [-1, -1, -1, -1, -1, -1, -1, -1, -1, -1, 0],
-                    *[[1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1]] * 10,
-                    [-1, -1, -1, -1, -1, -1, -1, -1, -1, 2, 2],
+                    *[[0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]] * 10,
+                    [-1, -1, -1, -1, -1, -1, -1, -1, -1, 1, 1],
                 ]
             ),
             components=[
-                Icon(id="open-settings-id"),
                 vm.Graph(id="graph-id", figure=px.scatter(pd.DataFrame())),
                 DropdownMenu(id="dropdown-menu"),
             ],
@@ -183,6 +184,10 @@ plot_page = vm.Page(
                 # Modal(id="modal"),
             ],
         ),
+        vm.Container(
+            title="",
+            components=[HeaderComponent()],
+        )
     ],
 )
 

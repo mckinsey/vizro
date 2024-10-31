@@ -5,7 +5,7 @@ from typing import List, Literal
 import black
 import dash_bootstrap_components as dbc
 import vizro.models as vm
-from dash import dcc, html
+from dash import dcc, html, get_asset_url
 from pydantic import PrivateAttr
 from vizro.models import Action
 from vizro.models._action._actions_chain import _action_validator_factory
@@ -253,7 +253,10 @@ class ToggleSwitch(vm.VizroBaseModel):
         toggle_component = html.Div(
             children=[
                 html.P("Plotly"),
-                dbc.Switch(id="toggle-switch", value=True, style={"borderRadius": "8px"}),
+                html.Div(
+                    dbc.Switch(id="toggle-switch", value=True, style={"borderRadius": "8px"}),
+                    style={"paddingRight": "4px"}
+                ),
                 html.P("Vizro"),
             ],
             className="toggle-div",
@@ -362,19 +365,46 @@ class DropdownMenu(vm.VizroBaseModel):
             children=[
                 html.Span("download", className="material-symbols-outlined", id=f"{self.id}-icon"),
                 dropdown_menu,
-                dbc.Tooltip(
-                    "Download explanation placeholder", target="dropdown-menu-button", delay={"show": 1000, "hide": 0}
-                ),
+                # dbc.Tooltip(
+                #     "Download explanation placeholder", target="dropdown-menu-button", delay={"show": 1000, "hide": 0}
+                # ),
             ],
             style={
                 "display": "flex",
                 "flexDirection": "row",
-                "gap": "2px",
                 "border": "0.5px solid gray",
                 "borderRadius": "8px",
                 "alignItems": "center",
                 "justifyContent": "center",
+                "width": "100%"
             },
         )
 
         return download_div
+
+
+class HeaderComponent(vm.VizroBaseModel):
+    """Custom header component."""
+
+    type: Literal["header"] = "header"
+
+    def build(self):
+        """Returns custom header component"""
+
+        title = html.Header("Vizro-AI", style={"fontSize": "28px", "display": "flex", "alignItems": "center", "fontWeight": "400 "})
+        header = html.Div(
+            children=[
+                html.Img(src=get_asset_url("logo.svg"), alt="Vizro logo", className="header-logo"),
+                title
+            ],
+            style={"display": "flex", "flexDirection": "row", "gap": "8px", "justifyContent": "center", "width": "100%"}
+        )
+        icon = html.Div(
+            children=[html.Span("settings", className="material-symbols-outlined", id="open-settings-id")],
+            className="settings-div",
+        )
+
+        return html.Div(children=[header, icon], className="custom_header")
+
+
+

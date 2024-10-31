@@ -118,7 +118,7 @@
   display: flex;
   justify-content: end;
   padding-right: 2px;
-  width: 100%;
+  width: 20px;
 }
 
 #data-upload-id {
@@ -162,9 +162,9 @@
 .toggle-div {
   display: flex;
   flex-direction: row;
-  gap: 8px;
+  gap: 4px;
   justify-content: end;
-  padding-top: 8px;
+  padding-top: 12px;
   width: 100%;
 }
 
@@ -245,3 +245,26 @@
   overflow: auto;
 }
 
+#right-header {
+  display: none;
+}
+
+.custom_header {
+  border-bottom: 1px solid var(--border-subtle-alpha-01);
+  height: 60px;
+  align-items: center;
+  display: flex;
+  flex-direction: row;
+  height: 60px;
+  justify-content: space-between;
+  min-height: 0;
+  width: 100%;
+}
+
+#right-side {
+  padding-top: 0px;
+}
+
+.header-logo {
+  width: 48px;
+}
