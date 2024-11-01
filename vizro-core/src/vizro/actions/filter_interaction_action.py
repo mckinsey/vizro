@@ -1,6 +1,6 @@
 """Pre-defined action function "filter_interaction" to be reused in `action` parameter of VizroBaseModels."""
 
-from typing import Any, Dict, List, Optional
+from typing import Any, Optional
 
 from dash import ctx
 
@@ -10,7 +10,7 @@ from vizro.models.types import capture
 
 
 @capture("action")
-def filter_interaction(targets: Optional[List[ModelID]] = None, **inputs: Dict[str, Any]) -> Dict[str, Any]:
+def filter_interaction(targets: Optional[list[ModelID]] = None, **inputs: dict[str, Any]) -> dict[str, Any]:
     """Filters targeted charts/components on page by clicking on data points or table cells of the source chart.
 
     To set up filtering on specific columns of the target graph(s), include these columns in the 'custom_data'

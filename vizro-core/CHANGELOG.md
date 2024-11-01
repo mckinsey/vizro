@@ -11,6 +11,22 @@ See the fragment files in the [changelog.d directory](https://github.com/mckinse
 
 <!-- scriv-insert-here -->
 
+<a id='changelog-0.1.26'></a>
+
+# 0.1.26 — 2024-10-30
+
+## Removed
+
+- Drop support for Python 3.8. ([#813](https://github.com/mckinsey/vizro/pull/813))
+
+## Added
+
+- Add support for Python 3.13. ([#813](https://github.com/mckinsey/vizro/pull/813))
+
+## Fixed
+
+- Fix paths to Vizro assets on Windows. ([#837](https://github.com/mckinsey/vizro/pull/837))
+
 <a id='changelog-0.1.25'></a>
 
 # 0.1.25 — 2024-10-15

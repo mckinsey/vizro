@@ -1,7 +1,5 @@
 import pandas as pd
-import vizro.models as vm
 import vizro.plotly.express as px
-from vizro import Vizro
 
 stepped_line_data = pd.DataFrame(
     {
@@ -10,18 +8,4 @@ stepped_line_data = pd.DataFrame(
     }
 )
 
-page = vm.Page(
-    title="Stepped line",
-    components=[
-        vm.Graph(
-            figure=px.line(
-                data_frame=stepped_line_data,
-                x="year",
-                y="rate",
-                line_shape="vh",
-            ),
-        )
-    ],
-)
-dashboard = vm.Dashboard(pages=[page])
-Vizro().build(dashboard).run()
+fig = px.line(data_frame=stepped_line_data, x="year", y="rate", line_shape="vh")

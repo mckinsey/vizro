@@ -18,7 +18,8 @@ code.language-python.hljs {
 .hljs-string,
 .hljs-params,
 .hljs-params .hljs-string,
-.hljs-number {
+.hljs-number,
+.hljs-subst {
   color: var(--text-code-string);
   font-family: monospace;
 }

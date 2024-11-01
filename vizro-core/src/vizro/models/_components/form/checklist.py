@@ -1,4 +1,4 @@
-from typing import List, Literal, Optional
+from typing import Literal, Optional
 
 from dash import html
 
@@ -28,7 +28,7 @@ class Checklist(VizroBaseModel):
         options (OptionsType): See [`OptionsType`][vizro.models.types.OptionsType]. Defaults to `[]`.
         value (Optional[MultiValueType]): See [`MultiValueType`][vizro.models.types.MultiValueType]. Defaults to `None`.
         title (str): Title to be displayed. Defaults to `""`.
-        actions (List[Action]): See [`Action`][vizro.models.Action]. Defaults to `[]`.
+        actions (list[Action]): See [`Action`][vizro.models.Action]. Defaults to `[]`.
 
     """
 
@@ -36,7 +36,7 @@ class Checklist(VizroBaseModel):
     options: OptionsType = []
     value: Optional[MultiValueType] = None
     title: str = Field("", description="Title to be displayed")
-    actions: List[Action] = []
+    actions: list[Action] = []
 
     # Component properties for actions and interactions
     _input_property: str = PrivateAttr("value")

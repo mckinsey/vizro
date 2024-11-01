@@ -1,7 +1,6 @@
 """Contains utilities to create required dash callbacks for the action loop."""
 
 import logging
-from typing import List
 
 from dash import ClientsideFunction, Input, Output, State, clientside_callback
 
@@ -23,7 +22,7 @@ def _build_action_loop_callbacks() -> None:
     if not actions_chains:
         return
 
-    gateway_inputs: List[Input] = []
+    gateway_inputs: list[Input] = []
     for actions_chain in actions_chains:
         # Recalculating the trigger component id to use the underlying callable object as a trigger component if needed.
         actions_chain_trigger_component_id = actions_chain.trigger.component_id

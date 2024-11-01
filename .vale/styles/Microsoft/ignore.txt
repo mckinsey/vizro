@@ -68,7 +68,6 @@ Codespaces
 dev
 mypy
 javascript
-gitleaks
 resizable
 LLMs
 untrusted
@@ -100,3 +99,4 @@ codespace
 codespaces
 uv
 jsDeliver
+dash_table

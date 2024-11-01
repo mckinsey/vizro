@@ -1,6 +1,6 @@
 import math
 from datetime import date
-from typing import List, Literal, Optional, Union
+from typing import Literal, Optional, Union
 
 from dash import dcc, html
 
@@ -18,7 +18,7 @@ from vizro.models._models_utils import _log_call
 from vizro.models.types import MultiValueType, OptionsType, SingleValueType
 
 
-def _get_list_of_labels(full_options: OptionsType) -> Union[List[StrictBool], List[float], List[str], List[date]]:
+def _get_list_of_labels(full_options: OptionsType) -> Union[list[StrictBool], list[float], list[str], list[date]]:
     """Returns a list of labels from the selector options provided."""
     if all(isinstance(option, dict) for option in full_options):
         return [option["label"] for option in full_options]  # type: ignore[index]
@@ -54,7 +54,7 @@ class Dropdown(VizroBaseModel):
             [`MultiValueType`][vizro.models.types.MultiValueType]. Defaults to `None`.
         multi (bool): Whether to allow selection of multiple values. Defaults to `True`.
         title (str): Title to be displayed. Defaults to `""`.
-        actions (List[Action]): See [`Action`][vizro.models.Action]. Defaults to `[]`.
+        actions (list[Action]): See [`Action`][vizro.models.Action]. Defaults to `[]`.
 
     """
 
@@ -63,7 +63,7 @@ class Dropdown(VizroBaseModel):
     value: Optional[Union[SingleValueType, MultiValueType]] = None
     multi: bool = Field(True, description="Whether to allow selection of multiple values")
     title: str = Field("", description="Title to be displayed")
-    actions: List[Action] = []
+    actions: list[Action] = []
 
     # Component properties for actions and interactions
     _input_property: str = PrivateAttr("value")

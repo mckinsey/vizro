@@ -1,7 +1,7 @@
 import logging
 import warnings
 from contextlib import suppress
-from typing import Dict, List, Literal
+from typing import Literal
 
 from dash import ClientsideFunction, Input, Output, State, clientside_callback, dcc, html, set_props
 from dash.exceptions import MissingCallbackContextException
@@ -39,7 +39,7 @@ class Graph(VizroBaseModel):
             Defaults to `""`.
         footer (str): Markdown text positioned below the `Graph`. Follows the CommonMark specification.
             Ideal for providing further details such as sources, disclaimers, or additional notes. Defaults to `""`.
-        actions (List[Action]): See [`Action`][vizro.models.Action]. Defaults to `[]`.
+        actions (list[Action]): See [`Action`][vizro.models.Action]. Defaults to `[]`.
 
     """
 
@@ -58,7 +58,7 @@ class Graph(VizroBaseModel):
         description="Markdown text positioned below the `Graph`. Follows the CommonMark specification. Ideal for "
         "providing further details such as sources, disclaimers, or additional notes.",
     )
-    actions: List[Action] = []
+    actions: list[Action] = []
 
     # Component properties for actions and interactions
     _output_component_property: str = PrivateAttr("figure")
@@ -106,7 +106,7 @@ class Graph(VizroBaseModel):
         }
 
     def _filter_interaction(
-        self, data_frame: pd.DataFrame, target: str, ctd_filter_interaction: Dict[str, CallbackTriggerDict]
+        self, data_frame: pd.DataFrame, target: str, ctd_filter_interaction: dict[str, CallbackTriggerDict]
     ) -> pd.DataFrame:
         """Function to be carried out for pre-defined `filter_interaction`."""
         # data_frame is the DF of the target, ie the data to be filtered, hence we cannot get the DF from this model

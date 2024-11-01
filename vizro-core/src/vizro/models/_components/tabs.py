@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from typing import TYPE_CHECKING, List, Literal
+from typing import TYPE_CHECKING, Literal
 
 import dash_mantine_components as dmc
 from dash import html
@@ -22,12 +22,12 @@ class Tabs(VizroBaseModel):
 
     Args:
         type (Literal["tabs"]): Defaults to `"tabs"`.
-        tabs (List[Container]): See [`Container`][vizro.models.Container].
+        tabs (list[Container]): See [`Container`][vizro.models.Container].
 
     """
 
     type: Literal["tabs"] = "tabs"
-    tabs: List[Container]
+    tabs: list[Container]
 
     _validate_tabs = validator("tabs", allow_reuse=True, always=True)(validate_min_length)
 

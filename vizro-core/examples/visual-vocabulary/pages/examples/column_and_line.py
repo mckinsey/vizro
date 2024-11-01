@@ -1,53 +1,38 @@
+from typing import Union
+
 import pandas as pd
 import plotly.graph_objects as go
-import vizro.models as vm
 import vizro.plotly.express as px
 from plotly.subplots import make_subplots
-from vizro import Vizro
 from vizro.models.types import capture
-
-gapminder = px.data.gapminder()
 
 
 @capture("graph")
-def column_and_line(data_frame: pd.DataFrame, x: str, y_column: str, y_line: str) -> go.Figure:
-    """Creates a combined column and line chart using Plotly."""
-    fig = make_subplots(specs=[[{"secondary_y": True}]])
+def column_and_line(
+    data_frame: pd.DataFrame,
+    x: Union[str, pd.Series, list[str], list[pd.Series]],
+    y_column: Union[str, pd.Series, list[str], list[pd.Series]],
+    y_line: Union[str, pd.Series, list[str], list[pd.Series]],
+) -> go.Figure:
+    bar = px.bar(data_frame, x=x, y=y_column)
+    fig = make_subplots(figure=bar, specs=[[{"secondary_y": True}]])
 
-    fig.add_trace(
-        go.Bar(x=data_frame[x], y=data_frame[y_column], name=y_column),
-        secondary_y=False,
+    line = px.line(
+        data_frame,
+        x=x,
+        y=y_line,
+        markers=True,
+        color_discrete_sequence=fig.layout.template.layout.colorway[len(bar.data) :],
     )
 
-    fig.add_trace(
-        go.Scatter(x=data_frame[x], y=data_frame[y_line], name=y_line),
-        secondary_y=True,
-    )
+    for trace in line.data:
+        fig.add_trace(trace, secondary_y=True)
 
-    fig.update_layout(
-        xaxis={"type": "category", "title": x},
-        yaxis={"tickmode": "sync", "title": y_column},
-        yaxis2={"tickmode": "sync", "overlaying": "y", "title": y_line},
-    )
+    fig.update_layout(yaxis2={"tickmode": "sync", "overlaying": "y", "title": line.layout.yaxis.title})
 
     return fig
 
 
-dashboard = vm.Dashboard(
-    pages=[
-        vm.Page(
-            title="Column and line",
-            components=[
-                vm.Graph(
-                    figure=column_and_line(
-                        gapminder.query("country == 'Vietnam'"),
-                        y_column="gdpPercap",
-                        y_line="lifeExp",
-                        x="year",
-                    )
-                )
-            ],
-        )
-    ]
-)
-Vizro().build(dashboard).run()
+gapminder = px.data.gapminder().query("country == 'Vietnam'")
+
+fig = column_and_line(gapminder, y_column="gdpPercap", y_line="lifeExp", x="year")

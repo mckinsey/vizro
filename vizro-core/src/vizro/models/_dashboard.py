@@ -4,7 +4,7 @@ import base64
 import logging
 from functools import partial
 from pathlib import Path
-from typing import TYPE_CHECKING, List, Literal, TypedDict
+from typing import TYPE_CHECKING, Literal, TypedDict
 
 import dash
 import dash_bootstrap_components as dbc
@@ -22,6 +22,7 @@ from dash import (
     html,
 )
 
+import vizro
 from vizro._themes._templates.template_dashboard_overrides import dashboard_overrides
 
 try:
@@ -31,7 +32,6 @@ except ImportError:  # pragma: no cov
 
 from dash.development.base_component import Component
 
-import vizro
 from vizro._constants import MODULE_PAGE_404, VIZRO_ASSETS_PATH
 from vizro.actions._action_loop._action_loop import ActionLoop
 from vizro.models import Navigation, VizroBaseModel
@@ -45,7 +45,7 @@ if TYPE_CHECKING:
 logger = logging.getLogger(__name__)
 
 
-def _all_hidden(components: List[Component]):
+def _all_hidden(components: list[Component]):
     """Returns True if all `components` are either None and/or have hidden=True and/or className contains `d-none`."""
     return all(
         component is None
@@ -80,7 +80,7 @@ class Dashboard(VizroBaseModel):
     """Vizro Dashboard to be used within [`Vizro`][vizro._vizro.Vizro.build].
 
     Args:
-        pages (List[Page]): See [`Page`][vizro.models.Page].
+        pages (list[Page]): See [`Page`][vizro.models.Page].
         theme (Literal["vizro_dark", "vizro_light"]): Layout theme to be applied across dashboard.
             Defaults to `vizro_dark`.
         navigation (Navigation): See [`Navigation`][vizro.models.Navigation]. Defaults to `None`.
@@ -88,7 +88,7 @@ class Dashboard(VizroBaseModel):
 
     """
 
-    pages: List[Page]
+    pages: list[Page]
     theme: Literal["vizro_dark", "vizro_light"] = Field(
         "vizro_dark", description="Layout theme to be applied across dashboard. Defaults to `vizro_dark`"
     )
@@ -114,7 +114,7 @@ class Dashboard(VizroBaseModel):
     def pre_build(self):
         self._validate_logos()
 
-        # Setting order here ensures that the pages in dash.page_registry preserves the order of the List[Page].
+        # Setting order here ensures that the pages in dash.page_registry preserves the order of the list[Page].
         # For now the homepage (path /) corresponds to self.pages[0].
         # Note redirect_from=["/"] doesn't work and so the / route must be defined separately.
         self.pages[0].path = "/"
@@ -335,4 +335,5 @@ class Dashboard(VizroBaseModel):
         if assets_folder.is_dir():
             for path in Path(assets_folder).rglob(f"{filename}.*"):
                 if path.suffix in valid_extensions:
-                    return str(path.relative_to(assets_folder))
+                    # Return path as posix so image source comes out correctly on Windows.
+                    return path.relative_to(assets_folder).as_posix()
