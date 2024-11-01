@@ -317,15 +317,14 @@ class DropdownMenu(vm.VizroBaseModel):
                 dbc.DropdownMenuItem(
                     children=[
                         dbc.Button(children="JSON", id=f"{self.id}-json", className="download-button"),
-                        dcc.Download(id="download-json"),
                     ]
                 ),
                 dbc.DropdownMenuItem(
                     children=[
                         dbc.Button(children="HTML", id=f"{self.id}-html", className="download-button"),
-                        dcc.Download(id="download-html"),
                     ]
                 ),
+                dcc.Download(id="download-file"),
             ],
             toggleClassName="dropdown-menu-toggle-class",
         )

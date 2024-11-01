@@ -32,11 +32,11 @@ SUPPORTED_VENDORS = {"OpenAI": ChatOpenAI, "Anthropic": ChatAnthropic, "Mistral"
 
 SUPPORTED_MODELS = {
     "OpenAI": [
+        "gpt-4o-mini",
+        "gpt-4o",
         "gpt-4",
         "gpt-4-turbo",
         "gpt-3.5-turbo",
-        "gpt-4o",
-        "gpt-4o-mini",
     ],
     "Anthropic": [
         "claude-3-5-sonnet-20240620",

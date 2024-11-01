@@ -25,7 +25,7 @@ from components import (
     UserUpload,
     custom_table,
 )
-from dash import Input, Output, State, callback, dcc, get_asset_url, html
+from dash import Input, Output, State, callback, ctx, dcc, get_asset_url, html
 from vizro import Vizro
 
 try:
@@ -59,11 +59,11 @@ vm.Page.add_type("components", Modal)
 
 SUPPORTED_MODELS = {
     "OpenAI": [
+        "gpt-4o-mini",
+        "gpt-4o",
         "gpt-4",
         "gpt-4-turbo",
         "gpt-3.5-turbo",
-        "gpt-4o",
-        "gpt-4o-mini",
     ],
     "Anthropic": [
         "claude-3-5-sonnet-20240620",
@@ -262,41 +262,29 @@ def open_modal(n_clicks, is_open, data):
 
 
 @callback(
-    Output("download-json", "data"),
-    Input("dropdown-menu-json", "n_clicks"),
-    State("code-output-store-id", "data"),
-)
-def download_json(n_clicks, data):
-    """Callback for downloading vizro fig json file."""
-    if not data:
-        return dash.no_update
-    if not n_clicks:
-        return dash.no_update
-
-    figure_json = data["ai_outputs"]["vizro"]["fig"]
-    file_name = "vizro_fig"
-
-    return dcc.send_string(figure_json, f"{file_name}.json")
-
-
-@callback(
-    Output("download-html", "data"),
-    Input("dropdown-menu-html", "n_clicks"),
+    Output("download-file", "data"),
+    [Input("dropdown-menu-html", "n_clicks"), Input("dropdown-menu-json", "n_clicks")],
     State("code-output-store-id", "data"),
     prevent_initial_call=True,
 )
-def download_html(n_clicks, data):
-    """Callback for downloading vizro fig html file."""
+def download_fig(n_clicks_html, n_clicks_json, data):
+    """Callback for downloading vizro fig."""
     if not data:
         return dash.no_update
-    if not n_clicks:
+    if not (n_clicks_html or n_clicks_json):
         return dash.no_update
-    vizro_json = data["ai_outputs"]["vizro"]["fig"]
-    vizro_json = f"{vizro_json}"
-    fig_json = json.loads(vizro_json)
-    fig = go.Figure(fig_json)
-    graphs_html = pio.to_html(fig)
-    return dcc.send_string(graphs_html, filename="plotly_graph.html")
+
+    button_clicked = ctx.triggered_id
+
+    if button_clicked == "dropdown-menu-html":
+        vizro_json = json.loads(data["ai_outputs"]["vizro"]["fig"])
+        fig = go.Figure(vizro_json)
+        graphs_html = pio.to_html(fig)
+        return dcc.send_string(graphs_html, filename="vizro_fig.html")
+
+    if button_clicked == "dropdown-menu-json":
+        plotly_json = data["ai_outputs"]["plotly"]["fig"]
+        return dcc.send_string(plotly_json, "plotly_fig.json")
 
 
 @callback(
