@@ -201,6 +201,7 @@
 .download-button {
   background-color: inherit;
   color: var(--text-active);
+  width: 100%;
 }
 
 #modal-table-icon {
@@ -235,6 +236,7 @@
   max-height: 600px;
   max-width: 1000px;
   overflow: auto;
+  scrollbar-width: thin;
 }
 
 #right-header {
