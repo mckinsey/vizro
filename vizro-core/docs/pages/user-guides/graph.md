@@ -24,7 +24,7 @@ To add a [`Graph`][vizro.models.Graph] to your page, do the following:
 
 !!! example "Graph"
     === "app.py"
-    
+
         ```{.python pycafe-link}
         import vizro.models as vm
         import vizro.plotly.express as px
@@ -97,7 +97,7 @@ context to the data being displayed, or for adding a description of the data.
 
 !!! example "Formatted Graph"
     === "app.py"
-    
+
         ```{.python pycafe-link}
 
         import vizro.models as vm
