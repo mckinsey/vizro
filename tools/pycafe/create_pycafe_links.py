@@ -148,9 +148,8 @@ if __name__ == "__main__":
             "plotly==5.24.1",
         ],
         "vizro-ai/examples/dashboard_ui/": [
-            "vizro-ai>=0.2.1",
+            "vizro-ai>=0.3.0",
             "black",
-            "jupyter",
             "openpyxl",
             "greenlet # mock",
             "tiktoken @ https://py.cafe/files/maartenbreddels/tiktoken-demo/tiktoken-0.7.0-cp312-cp312-pyodide_2024_0_wasm32.whl",
