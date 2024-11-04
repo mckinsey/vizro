@@ -106,11 +106,9 @@ class Filter(VizroBaseModel):
                 targets=model_manager._get_page_model_ids_with_figure(
                     page_id=model_manager._get_model_page_id(model_id=ModelID(str(self.id)))
                 ),
-                raise_column_not_found_error=False,
+                eagerly_raise_column_not_found_error=False,
             )
-            if targeted_data.empty:
-                raise ValueError(f"Selected column {self.column} not found in any dataframe on this page.")
-            self.targets = targeted_data.columns
+            self.targets = list(targeted_data.columns)
 
         # Set default selector according to column type.
         self._column_type = self._validate_column_type(targeted_data)
@@ -119,17 +117,18 @@ class Filter(VizroBaseModel):
 
         if isinstance(self.selector, DISALLOWED_SELECTORS.get(self._column_type, ())):
             raise ValueError(
-                f"Chosen selector {type(self.selector)} is not compatible with ({self._column_type}) column '"
-                f"{self.column}'."
+                f"Chosen selector {type(self.selector).__name__} is not compatible with {self._column_type} column "
+                f"'{self.column}'."
             )
 
         # Set appropriate properties for the selector.
-        if self._column_type == "categorical":
-            self.selector.options = self.selector.options or self._get_options(targeted_data)
-        elif self._column_type in ("temporal", "numerical"):
+        if isinstance(self.selector, SELECTORS["numerical"] + SELECTORS["temporal"]):
             _min, _max = self._get_min_max(targeted_data)
             self.selector.min = self.selector.min or _min
             self.selector.max = self.selector.max or _max
+        else:
+            # Categorical selector.
+            self.selector.options = self.selector.options or self._get_options(targeted_data)
 
         if not self.selector.actions:
             if isinstance(self.selector, RangeSlider) or (
@@ -159,20 +158,20 @@ class Filter(VizroBaseModel):
                 "change type while the dashboard is running."
             )
 
-        if self._column_type == "categorical":
-            options = self._get_options(targeted_data)
-            return options
-            # TODO: when implement dynamic, will need to do something with this e.g. pass to selector.__call__.
-        elif self._column_type in ("temporal", "numerical"):
-            _min, _max = self._get_min_max(targeted_data)
-            return _min, _max
-            # TODO: when implement dynamic, will need to do something with this e.g. pass to selector.__call__.
+        # TODO: when implement dynamic, will need to do something with this e.g. pass to selector.__call__.
+        # if isinstance(self.selector, SELECTORS["numerical"] + SELECTORS["temporal"]):
+        #     options = self._get_options(targeted_data)
+        # else:
+        #     # Categorical selector.
+        #     _min, _max = self._get_min_max(targeted_data)
 
     @_log_call
     def build(self):
         return self.selector.build()
 
-    def _validate_targeted_data(self, targets: list[ModelID], raise_column_not_found_error=True) -> pd.DataFrame:
+    def _validate_targeted_data(
+        self, targets: list[ModelID], eagerly_raise_column_not_found_error=True
+    ) -> pd.DataFrame:
         # TODO: consider moving some of this logic to data_manager when implement dynamic filter. Make sure
         #  get_modified_figures is as efficient as code here.
 
@@ -198,10 +197,17 @@ class Filter(VizroBaseModel):
                 # reset_index so that when we make a DataFrame out of all these pd.Series pandas doesn't try to align
                 # the columns by index.
                 target_to_series[target] = data_frame[self.column].reset_index(drop=True)
-            elif raise_column_not_found_error:
+            elif eagerly_raise_column_not_found_error:
                 raise ValueError(f"Selected column {self.column} not found in dataframe for {target}.")
 
-        return pd.DataFrame(target_to_series)
+        targeted_data = pd.DataFrame(target_to_series)
+        if targeted_data.columns.empty:
+            # Still raised when eagerly_raise_column_not_found_error=False.
+            raise ValueError(f"Selected column {self.column} not found in any dataframe for {targets}.")
+        if targeted_data.empty:
+            raise ValueError(f"Selected column {self.column} does not contain any data.")
+
+        return targeted_data
 
     def _validate_column_type(self, targeted_data: pd.DataFrame) -> Literal["numerical", "categorical", "temporal"]:
         is_numerical = targeted_data.apply(is_numeric_dtype)
@@ -222,7 +228,7 @@ class Filter(VizroBaseModel):
 
     # TODO: write tests. Include N/A
     # TODO: block all update of models during runtime
-    def _get_min_max(self, targeted_data: pd.DataFrame) -> tuple(float, float):
+    def _get_min_max(self, targeted_data: pd.DataFrame) -> tuple[float, float]:
         # Use item() to convert to convert scalar from numpy to Python type. This isn't needed during pre_build because
         # pydantic will coerce the type, but it is necessary in __call__ where we don't update model field values
         # and instead just pass straight to the Dash component.

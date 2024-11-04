@@ -274,22 +274,24 @@ class TestPreBuildMethod:
         assert isinstance(filter.selector, selector)
 
     @pytest.mark.parametrize(
-        "filtered_column, selector",
+        "filtered_column, selector, selector_name, column_type",
         [
-            ("country", vm.Slider),
-            ("country", vm.RangeSlider),
-            ("country", vm.DatePicker),
-            ("lifeExp", vm.DatePicker),
-            ("year", vm.Slider),
-            ("year", vm.RangeSlider),
+            ("country", vm.Slider, "Slider", "categorical"),
+            ("country", vm.RangeSlider, "RangeSlider", "categorical"),
+            ("country", vm.DatePicker, "DatePicker", "categorical"),
+            ("lifeExp", vm.DatePicker, "DatePicker", "numerical"),
+            ("year", vm.Slider, "Slider", "temporal"),
+            ("year", vm.RangeSlider, "RangeSlider", "temporal"),
         ],
     )
-    def test_disallowed_selectors_per_column_type(self, filtered_column, selector, managers_one_page_two_graphs):
+    def test_disallowed_selectors_per_column_type(
+        self, filtered_column, selector, selector_name, column_type, managers_one_page_two_graphs
+    ):
         filter = vm.Filter(column=filtered_column, selector=selector())
         model_manager["test_page"].controls = [filter]
         with pytest.raises(
             ValueError,
-            match=f"Chosen selector {selector().type} is not compatible with .* column '{filtered_column}'. ",
+            match=f"Chosen selector {selector_name} is not compatible with {column_type} column '{filtered_column}'.",
         ):
             filter.pre_build()
 
@@ -306,10 +308,7 @@ class TestPreBuildMethod:
         model_manager["graphs_with_shared_column"].controls = [filter]
         with pytest.raises(
             ValueError,
-            match=re.escape(
-                f"Inconsistent types detected in the shared data column 'shared_column' for targeted charts {targets}. "
-                f"Please ensure that the data column contains the same data type across all targeted charts."
-            ),
+            match="Inconsistent types detected in the shared data column shared_column.",
         ):
             filter.pre_build()
 
