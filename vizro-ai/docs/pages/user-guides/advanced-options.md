@@ -163,7 +163,7 @@ You can create the `fig` object with different data while ensuring the overall s
 !!! example "Different data"
 
     === "Code"
-    
+
         ```py
         from vizro_ai import VizroAI
         import plotly.express as px
@@ -192,7 +192,7 @@ This option executes the chart code with the name given under `chart_name`. This
 !!! example "Changing the `chart_name`"
 
     === "Code"
-    
+
         ```py
         from vizro_ai import VizroAI
         import plotly.express as px
