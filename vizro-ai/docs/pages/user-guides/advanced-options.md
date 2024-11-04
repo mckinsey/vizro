@@ -2,10 +2,13 @@
 
 This guide shows you how to use the advanced options of `VizroAI.plot`.
 
-First we show how to change the input parameters of the function, allowing the control of whether code gets executed, the number of retries of `.plot` when
-it fails validation, and how to change for a more comprehensive return of output (when `return_elements=True`).
+First we show how to change the input parameters of the function, as follows:
 
-Second we show how to use this more comprehensive output, allowing the control of code generation and `fig` object production.
+* control over whether code gets executed,
+* the number of retries of `.plot` when it fails validation,
+* how to request a comprehensive output (when `return_elements=True`).
+
+Second we show how to use this more comprehensive output, enabling control of code generation and `fig` object production.
 
 ## Inputs of `VizroAI.plot`
 
@@ -14,7 +17,7 @@ This is the natural language query from which, together with a data sample, the 
 
 
 ### `df`
-Provide any `pandas` data frame to base your query on. The LLM will receive a sample of this data frame to form an appropriate graph.
+Supply any `pandas` data frame to base your query on. The LLM will receive a sample of this data frame to form an appropriate graph.
 
 If the option `validate_code` is set to `True` (which it is by default), the LLM created chart code will be evaluated on a sample of this data frame.
 
@@ -27,14 +30,14 @@ This number determines how often the tool will try to correct an incorrect respo
 ### `return_elements`
 This boolean (by default `False`) determines the return type of `VizroAI.plot`.
 
-If set to `False`, then dynamically generated Python code is executed to produce a `plotly.graph_objects.Figure` object from the LLM response and the user provided data frame. Strictly speaking, it produces a `vizro.charts._charts_utils._DashboardReadyFigure`, which behaves essentially like the former, but is ready to be [inserted](add-generated-chart-usecase.md) into a [Vizro](https://vizro.readthedocs.io/en/stable/) dashboard. It also comes with the default Vizro dark theme.
+If set to `False`, then dynamically generated Python code is executed to produce a `plotly.graph_objects.Figure` object from the LLM response and the user supplied data frame. Strictly speaking, it produces a `vizro.charts._charts_utils._DashboardReadyFigure`, which behaves essentially like the former, but is ready to be [inserted](add-generated-chart-usecase.md) into a [Vizro](https://vizro.readthedocs.io/en/stable/) dashboard. It also comes with the default Vizro dark theme.
 
 If set to `True`, a class (pydantic model) is returned from which the `fig` object, but also various other outputs can be generated. (see below)
 
 ### `validate_code`
 This boolean (by default `True`) determines whether the LLM generated Python code executes with a sample of the data in order to verify that it runs and produces a plotly figure. Be sure [to read and understand what it means when dynamically generated code is executed](../explanation/safety-in-vizro-ai.md#execution-of-dynamic-code-in-vizro-ai).
 <!-- vale on -->
-If `return_elements=True` AND `validate_code=False`, then NO code is executed to obtain the return of `VizroAI.plot`. This means that the code string obtained is not validated, but also that no code was executed.
+If `return_elements=True` **and** `validate_code=False`, then no code is executed to obtain the return of `VizroAI.plot`. This means that the code string obtained is not validated, but also that no code was executed.
 
 ## Output if `return_elements=True`
 
@@ -153,11 +156,14 @@ This `fig` object is a basic plotly figure.
     [VizroAIChartPlotly]: ../../assets/user_guides/VizroAIPlotly.png
 
 #### Using different data
-You can create the `fig` object with different data while ensuring the overall schema remains consistent. You can re-evaluate this function to generate various `fig` objects for different datasets. For example, the code could be generated using fake or sample data fed into Vizro-AI. When moving to production, you can switch the data source to the complete dataset, as long as the data schema is consistent.
+<!--vale off-->
+You can create the `fig` object with different data while ensuring the overall schema remains consistent. You can re-evaluate this function to generate various `fig` objects for different data. For example, the code could be generated using fake or sample data fed into Vizro-AI. When moving to production, you can switch the data source to the complete dataset, as long as the data schema is consistent.
+<!--vale on-->
 
 !!! example "Different data"
 
     === "Code"
+    
         ```py
         from vizro_ai import VizroAI
         import plotly.express as px
@@ -180,12 +186,13 @@ You can create the `fig` object with different data while ensuring the overall s
         ```
 
 #### Changing the chart name
-This option executes the chart code with the name provided under `chart_name`. This can be important when you want to avoid overwriting variables in the namespace.
+This option executes the chart code with the name given under `chart_name`. This can be important when you want to avoid overwriting variables in the namespace.
 
 
 !!! example "Changing the `chart_name`"
 
     === "Code"
+    
         ```py
         from vizro_ai import VizroAI
         import plotly.express as px

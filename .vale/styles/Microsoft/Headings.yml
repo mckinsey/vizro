@@ -70,6 +70,7 @@ exceptions:
   - Kubernetes Pod
   - Kubernetes Service
   - Lambda
+  - LangChain
   - Linux
   - MySQL
   - Notebook

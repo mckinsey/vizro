@@ -64,5 +64,5 @@ You can use Vizro-AI in any standard development environment by creating a `.py`
 ## Application integration
 
 You may prefer to integrate Vizro-AI into an application that offers a UI for users to input prompts. For that you can take the `fig` object from the `.plot` call, and use it elsewhere
-in any application after potentially processing it further (such as serializing it or similar). It is also possible to obtain the code that would produce the object. For any advanced usage options, refer to
+in any application (you may first want to process it further, for example, by serializing it or similar). It is also possible to obtain the code that would produce the object. For any advanced usage options, refer to
 [our advanced options guide](advanced-options.md).
