@@ -206,6 +206,7 @@ Run the code below to apply the layout to the dashboard page:
         layout=vm.Layout(grid=[[0, 0], [1, 2], [1, 2], [1, 2]])
         ```
     === "app.py"
+
         ```{.python pycafe-link}
         from vizro import Vizro
         import vizro.models as vm
@@ -278,6 +279,7 @@ are listed in the `targets` parameter, meaning that the filter is be applied to 
             ]
         ```
     === "app.py"
+
         ```{.python pycafe-link}
         from vizro import Vizro
         import vizro.models as vm
@@ -391,6 +393,7 @@ for parameters](../user-guides/parameters.md).
         )
         ```
     === "app.py"
+
         ```{.python pycafe-link}
         from vizro import Vizro
         import vizro.models as vm
@@ -544,6 +547,7 @@ of the subpages. Additionally, you can use the navigation panel on the left side
         dashboard = vm.Dashboard(pages=[home_page, first_page, second_page])
         ```
     === "app.py"
+    
         ```{.python pycafe-link}
 
         from vizro import Vizro

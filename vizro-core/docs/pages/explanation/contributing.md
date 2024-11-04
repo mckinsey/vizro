@@ -53,7 +53,9 @@ The Hatch commands you need most commonly are as follows. These must be executed
 * [`hatch run docs:serve`](#hatch-run-docsserve) builds and displays documentation that hot-reloads while you edit it. Documentation is also built automatically in your PR and can be previewed on Read The Docs.
 * [`hatch run pip`](#hatch-run-pip) provides a [pip-compatible interface using uv](https://docs.astral.sh/uv/pip/). You should not need to use this much.
 
-To save yourself from regularly typing `hatch run` you might like to [set up an alias](https://www.tecmint.com/create-alias-in-linux/):
+<!-- vale off-->
+To save yourself from repeatedly typing `hatch run` you might like to [set up an alias](https://www.tecmint.com/create-alias-in-linux/):
+<!-- vale on-->
 
 ```console
 alias hr="hatch run"
