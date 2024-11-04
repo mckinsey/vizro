@@ -147,6 +147,12 @@ if __name__ == "__main__":
             "isort==5.13.2",
             "plotly==5.24.1",
         ],
+        "vizro-ai/examples/dashboard_ui/": [
+            "vizro-ai>=0.2.1",
+            "black",
+            "jupyter",
+            "openpyxl",
+        ],
     }
     urls = {
         directory: generate_link(directory, extra_requirements)

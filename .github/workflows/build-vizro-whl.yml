@@ -36,3 +36,15 @@ jobs:
           name: pip
           path: vizro-core/dist/*.whl
           retention-days: 14
+# Comment out for testing
+      - name: Print PR Number
+        run: |
+          echo "Pull Request Number: ${{ github.event.workflow_run.pull_requests[0].number }}"
+      - name: Create PyCafe links
+        run: |
+          PR_NUMBER=${{ github.event.workflow_run.pull_requests[0].number || '' }}
+          if [ -n "$PR_NUMBER" ]; then
+            hatch run python ../tools/pycafe/create_pycafe_links.py --github-token ${{ github.token }} --repo-name ${{ github.repository }} --pr-number $PR_NUMBER --run-id ${{ github.run_id }} --commit-sha ${{ github.sha }}
+          else
+            hatch run python ../tools/pycafe/create_pycafe_links.py --github-token ${{ github.token }} --repo-name ${{ github.repository }} --run-id ${{ github.run_id }} --commit-sha ${{ github.sha }}
+          fi
