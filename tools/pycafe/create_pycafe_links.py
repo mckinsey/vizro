@@ -152,6 +152,9 @@ if __name__ == "__main__":
             "black",
             "jupyter",
             "openpyxl",
+            "greenlet",  # mock
+            "tiktoken @ https://py.cafe/files/maartenbreddels/tiktoken-demo/tiktoken-0.7.0-cp312-cp312-pyodide_2024_0_wasm32.whl",
+            "https://py.cafe/files/maartenbreddels/jiter-demo/jiter-0.6.1-cp312-cp312-pyodide_2024_0_wasm32.whl",
         ],
     }
     urls = {
