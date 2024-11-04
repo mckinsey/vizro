@@ -27,10 +27,11 @@ If you have something you'd like us to include on the list, or spot something th
 * [I built a reusable dashboard read-the-docs traffic analytics using vizro](https://medium.com/towards-data-science/i-built-a-reusable-dashboard-for-read-the-docs-traffic-analytics-using-vizro-47dc15dc04f8).
 <!-- vale on-->
 * [Visualizing data science insights](https://medium.com/quantumblack/visualizing-data-science-insights-dfc8ad0646b6).
+<!-- vale off -->
 * [A low-code, attractive, sharable data dashboard: Illustrating my LinkedIn connections in 100 lines of Python](https://medium.com/design-bootcamp/a-low-code-attractive-sharable-data-dashboard-a60badba2a03).
 
 ## Examples on GitHub or PyCafe
-<!-- vale off -->
+
 * [Personal Vizro app demos by Vizro team member `huong-li-nguyen`](https://github.com/huong-li-nguyen/vizro-app-demos).
 * [Proof of concept example by `viiviandias`](https://github.com/viiviandias/poc-vizro/blob/main/brasil_stocks.ipynb).
 * [Amazon sales analysis by `Bottleneck44`](https://github.com/Bottleneck44/Amazon-Sales-Analysis/blob/main/Amazon-analysis.ipynb).
