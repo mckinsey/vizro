@@ -547,7 +547,7 @@ of the subpages. Additionally, you can use the navigation panel on the left side
         dashboard = vm.Dashboard(pages=[home_page, first_page, second_page])
         ```
     === "app.py"
-    
+
         ```{.python pycafe-link}
 
         from vizro import Vizro
