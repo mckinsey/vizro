@@ -36,7 +36,6 @@ jobs:
           name: pip
           path: vizro-core/dist/*.whl
           retention-days: 14
-# Comment out for testing
       - name: Print PR Number
         run: |
           echo "Pull Request Number: ${{ github.event.workflow_run.pull_requests[0].number }}"
