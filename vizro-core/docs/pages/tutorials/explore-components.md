@@ -28,7 +28,7 @@ The code below shows the steps necessary to add a box plot to the page:
 
 !!! example "First component"
     === "app.py"
-    
+
         ```{.python pycafe-link}
         from vizro import Vizro
         import vizro.models as vm
@@ -114,7 +114,7 @@ The code below adds two components to the page:
         )
         ```
     === "app.py"
-    
+
         ```{.python pycafe-link}
         from vizro import Vizro
         import vizro.models as vm

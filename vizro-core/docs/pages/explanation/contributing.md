@@ -141,10 +141,10 @@ For more information on our documentation style, refer to our [style guide](docu
 
 Vizro's dependencies are described by the `dependencies` section in `vizro-core/pyproject.toml`. There is no need to manually install or update the dependencies in your environment; they will be handled automatically for you when you do `hatch run`. This means that there is usually no need to `pip install` anything.
 
-We have [configured Hatch to use uv](https://hatch.pypa.io/1.12/how-to/environment/select-installer/) for rapid virtual environment creation, dependency resolution and installation. 
+We have [configured Hatch to use uv](https://hatch.pypa.io/1.12/how-to/environment/select-installer/) for rapid virtual environment creation, dependency resolution and installation.
 
 !!! note
-    
+
     If you have installed unwanted dependencies in your Hatch environment then the simplest solution is to delete the environment (`hatch env remove` to remove one environment or `hatch env prune` to remove all environments). Your next `hatch run` command will recreate the environment and install all the dependencies it needs.
 
 If for some reason you do need to use `pip` then the correct way to do so is through `hatch run pip`. For example, you could run `hatch run pip show plotly`. This will use the version of uv that Hatch itself uses under the hood. If you already have uv installed globally then `uv pip show plotly` would also work.
