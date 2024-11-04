@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+import numpy as np
 from typing import Literal, Union
 
 import pandas as pd
@@ -86,6 +87,7 @@ class Filter(VizroBaseModel):
     )
     selector: SelectorType = None
     _column_type: Literal["numerical", "categorical", "temporal"] = PrivateAttr()
+    _data_frames = PrivateAttr()
 
     @validator("targets", each_item=True)
     def check_target_present(cls, target):
@@ -108,31 +110,57 @@ class Filter(VizroBaseModel):
         return self.selector.build()
 
     def _set_targets(self):
-        if not self.targets:
-            for component_id in model_manager._get_page_model_ids_with_figure(
-                page_id=model_manager._get_model_page_id(model_id=ModelID(str(self.id)))
-            ):
-                # TODO: consider making a helper method in data_manager or elsewhere to reduce this operation being
-                #  duplicated across Filter so much, and/or consider storing the result to avoid repeating it.
-                #  Need to think about this in connection with how to update filters on the fly and duplicated calls
-                #  issue outlined in https://github.com/mckinsey/vizro/pull/398#discussion_r1559120849.
-                data_source_name = model_manager[component_id]["data_frame"]
-                data_frame = data_manager[data_source_name].load()
-                if self.column in data_frame.columns:
-                    self.targets.append(component_id)
-            if not self.targets:
-                raise ValueError(f"Selected column {self.column} not found in any dataframe on this page.")
+        # TODO: consider moving to data_manager, depending on Petar's work
+        # TODO: write tests
+        potential_targets = self.targets or model_manager._get_page_model_ids_with_figure(
+            page_id=model_manager._get_model_page_id(model_id=ModelID(str(self.id)))
+        )
+
+        potential_target_to_data_source_name = {
+            target: model_manager[target]["data_frame"] for target in potential_targets
+        }
+        # Using set() here ensures we only load each data source once rather than repeating the operation for each
+        # target.
+        data_source_name_to_data = {
+            data_source_name: data_manager[data_source_name].load()
+            for data_source_name in set(potential_target_to_data_source_name.values())
+        }
+        target_to_series = dict()
+
+        for target, data_source_name in potential_target_to_data_source_name.items():
+            data_frame = data_source_name_to_data[data_source_name]
+
+            if self.column in data_frame.columns:
+                target_to_series[target] = data_frame
+            elif self.targets:
+                # targets were manually specified so it's not ok the column isn't there. If targets were not specified
+                # then it's fine, we just skip this target, and error is not raised.
+                raise ValueError(f"Selected column {self.column} not found in dataframe for {target}.")
+
+        if not target_to_series:
+            raise ValueError(f"Selected column {self.column} not found in any dataframe on this page.")
+
+        self.targets = list(target_to_series)
+        # COMMEnt. will have repeats
+        self._targeted_data = pd.DataFrame.from_dict(target_to_series)
 
     def _set_column_type(self):
-        data_source_name = model_manager[self.targets[0]]["data_frame"]
-        data_frame = data_manager[data_source_name].load()
+        # TODO: check
+        is_numerical = self._targeted_data.apply(is_numeric_dtype)
+        is_temporal = self._targeted_data.apply(is_datetime64_any_dtype)
+        is_categorical = ~is_numerical & ~is_temporal
 
-        if is_numeric_dtype(data_frame[self.column]):
+        if is_numerical.all():
             self._column_type = "numerical"
-        elif is_datetime64_any_dtype(data_frame[self.column]):
+        elif is_temporal.all():
             self._column_type = "temporal"
-        else:
+        elif is_categorical.all():
             self._column_type = "categorical"
+        else:
+            raise ValueError(
+                f"Inconsistent types detected in the shared data column {self.column}. This column must "
+                "have the same type for all targets."
+            )
 
     def _set_selector(self):
         self.selector = self.selector or SELECTORS[self._column_type][0]()
@@ -149,40 +177,14 @@ class Filter(VizroBaseModel):
         # If the selector is a numerical or temporal selector, and the min and max values are not set, then set them
         # N.B. All custom selectors inherit from numerical or temporal selector should also pass this check
         if isinstance(self.selector, SELECTORS["numerical"] + SELECTORS["temporal"]):
-            min_values = []
-            max_values = []
-            for target_id in self.targets:
-                data_source_name = model_manager[target_id]["data_frame"]
-                data_frame = data_manager[data_source_name].load()
-                min_values.append(data_frame[self.column].min())
-                max_values.append(data_frame[self.column].max())
-
-            if not (
-                (is_numeric_dtype(pd.Series(min_values)) and is_numeric_dtype(pd.Series(max_values)))
-                or (is_datetime64_any_dtype(pd.Series(min_values)) and is_datetime64_any_dtype(pd.Series(max_values)))
-            ):
-                raise ValueError(
-                    f"Inconsistent types detected in the shared data column '{self.column}' for targeted charts "
-                    f"{self.targets}. Please ensure that the data column contains the same data type across all "
-                    f"targeted charts."
-                )
-
-            if self.selector.min is None:
-                self.selector.min = min(min_values)
-            if self.selector.max is None:
-                self.selector.max = max(max_values)
+            self.selector.min = self.selector.min or self._targeted_data.to_numpy().min()
+            self.selector.max = self.selector.max or self._targeted_data.to_numpy().max()
 
     def _set_categorical_selectors_options(self):
         # If the selector is a categorical selector, and the options are not set, then set them
         # N.B. All custom selectors inherit from categorical selector should also pass this check
-        if isinstance(self.selector, SELECTORS["categorical"]) and not self.selector.options:
-            options = set()
-            for target_id in self.targets:
-                data_source_name = model_manager[target_id]["data_frame"]
-                data_frame = data_manager[data_source_name].load()
-                options |= set(data_frame[self.column])
-
-            self.selector.options = sorted(options)
+        if isinstance(self.selector, SELECTORS["categorical"]):
+            self.selector.options = self.selector.options or sorted(np.unique(self._targeted_data.to_numpy()))
 
     def _set_actions(self):
         if not self.selector.actions:
