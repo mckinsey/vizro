@@ -24,6 +24,7 @@ To add a [`Graph`][vizro.models.Graph] to your page, do the following:
 
 !!! example "Graph"
     === "app.py"
+    
         ```{.python pycafe-link}
         import vizro.models as vm
         import vizro.plotly.express as px
@@ -85,8 +86,8 @@ The [`Graph`][vizro.models.Graph] accepts a `title`, `header` and `footer` argum
 context to the data being displayed, or for adding a description of the data.
 
 - **title**: Displayed as an [H3 header](https://dash.plotly.com/dash-html-components/h3), useful for summarizing the main topic or insight of the component.
-- **header**: Accepts Markdown text, ideal for additional descriptions, subtitles, or detailed data insights.
-- **footer**: Accepts Markdown text, commonly used for citing data sources, providing information on the last update, or adding disclaimers.
+- **header**: Accepts markdown text, ideal for extra descriptions, subtitles, or detailed data insights.
+- **footer**: Accepts markdown text, commonly used for citing data sources, providing information on the last update, or adding disclaimers.
 
 
 !!! note
@@ -96,6 +97,7 @@ context to the data being displayed, or for adding a description of the data.
 
 !!! example "Formatted Graph"
     === "app.py"
+    
         ```{.python pycafe-link}
 
         import vizro.models as vm
