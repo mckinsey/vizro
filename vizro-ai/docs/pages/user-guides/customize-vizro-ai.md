@@ -43,8 +43,8 @@ vizro_ai = VizroAI(model="<chosen model>")
 
     To use Anthropic with Vizro-AI, you must have an account with paid-for credits available. None of the free accounts will suffice. You can check [all available Anthropic models including pricing on their website](https://docs.anthropic.com/en/docs/about-claude/models).
 
-    - `claude-3-5-sonnet-20240620`
-    - `claude-3-opus-20240229`
+    - `claude-3-5-sonnet-latest`
+    - `claude-3-opus-latest`
     - `claude-3-sonnet-20240229`
     - `claude-3-haiku-20240307`
 
