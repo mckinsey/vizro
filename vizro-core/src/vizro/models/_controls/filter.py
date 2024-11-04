@@ -173,7 +173,7 @@ class Filter(VizroBaseModel):
         self, targets: list[ModelID], eagerly_raise_column_not_found_error=True
     ) -> pd.DataFrame:
         # TODO: consider moving some of this logic to data_manager when implement dynamic filter. Make sure
-        #  get_modified_figures is as efficient as code here.
+        #  get_modified_figures and stuff in _actions_utils.py is as efficient as code here.
 
         # When loading data_frame there are possible keys:
         #  1. target. In worst case scenario this is needed but can lead to unnecessary repeated data loading.
