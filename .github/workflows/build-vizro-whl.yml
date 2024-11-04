@@ -36,8 +36,8 @@ jobs:
           name: pip
           path: vizro-core/dist/*.whl
           retention-days: 14
-# The below can be commented out in order to dry run the test creation of the PyCafe links
-# Once satisfied, comment them again, because the actual links will be created by the pycafe-dashboards.yml workflow
+      # The below can be commented out in order to dry run the test creation of the PyCafe links
+      # Once satisfied, comment them again, because the actual links will be created by the pycafe-dashboards.yml workflow
       - name: Print PR Number
         run: |
           echo "Pull Request Number: ${{ github.event.workflow_run.pull_requests[0].number }}"
