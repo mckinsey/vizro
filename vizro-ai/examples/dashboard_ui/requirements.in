@@ -3,3 +3,5 @@ vizro-ai>=0.2.1
 black
 jupyter
 openpyxl
+langchain_anthropic
+langchain_mistralai
