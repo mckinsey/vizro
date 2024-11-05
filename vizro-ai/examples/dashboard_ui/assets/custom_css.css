@@ -26,7 +26,7 @@
   background-color: inherit;
   border: 1px solid var(--border-subtle-alpha-01);
   color: var(--text-primary);
-  min-height: 120px;
+  min-height: 13.5vh;
   padding: 8px;
   width: 100%;
 }
