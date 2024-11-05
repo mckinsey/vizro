@@ -5,11 +5,12 @@ from typing import Literal
 import black
 import dash_bootstrap_components as dbc
 import vizro.models as vm
-from dash import dcc, html
+from dash import dcc, get_asset_url, html
 from pydantic import PrivateAttr
 from vizro.models import Action
 from vizro.models._action._actions_chain import _action_validator_factory
 from vizro.models._models_utils import _log_call
+from vizro.models.types import capture
 
 
 class UserPromptTextArea(vm.VizroBaseModel):
@@ -68,9 +69,7 @@ class UserUpload(vm.VizroBaseModel):
             [
                 dcc.Upload(
                     id=self.id,
-                    children=html.Div(
-                        ["Drag and Drop or ", html.A("Select Files")], style={"fontColor": "rgba(255, 255, 255, 0.6)"}
-                    ),
+                    children=html.Div(["Drag and Drop or ", html.A("Select Files")], id="data-upload"),
                 ),
             ]
         )
@@ -218,16 +217,6 @@ class OffCanvas(vm.VizroBaseModel):
         return offcanvas
 
 
-class MyPage(vm.Page):
-    """Custom page."""
-
-    type: Literal["my_page"] = "my_page"
-
-    def pre_build(self):
-        """Overwriting pre_build."""
-        pass
-
-
 class Icon(vm.VizroBaseModel):
     """Icon component for settings."""
 
@@ -248,5 +237,131 @@ class CustomDashboard(vm.Dashboard):
         """Returns custom dashboard."""
         dashboard_build_obj = super().build()
         dashboard_build_obj.children.append(dcc.Store(id="data-store-id", storage_type="session"))
-        dashboard_build_obj.children.append(dcc.Store(id="outputs-store-id", storage_type="session"))
+        dashboard_build_obj.children.append(dcc.Store(id="code-output-store-id", storage_type="session"))
         return dashboard_build_obj
+
+
+class ToggleSwitch(vm.VizroBaseModel):
+    """Custom toggle switch model."""
+
+    type: Literal["toggle_switch"] = "toggle_switch"
+
+    def build(self):
+        """Returns custom toggle switch component."""
+        toggle_component = html.Div(
+            children=[
+                html.P("Plotly"),
+                html.Div(
+                    dbc.Switch(id="toggle-switch", value=True, style={"borderRadius": "8px"}),
+                    style={"paddingRight": "4px"},
+                ),
+                html.P("Vizro"),
+            ],
+            className="toggle-div",
+        )
+        return toggle_component
+
+
+@capture("figure")
+def custom_table(data_frame):
+    """Custom table figure."""
+    table = dbc.Table.from_dataframe(data_frame, striped=False, bordered=True, hover=True)
+
+    table_modal = html.Div(
+        [
+            html.Span(
+                "table_view",
+                className="material-symbols-outlined",
+                id="modal-table-icon",
+                style={"color": "gray", "cursor": "default"},
+            ),
+            dbc.Tooltip(
+                "Click to view data!",
+                placement="top",
+                target="modal-table-icon",
+                style={"display": "none"},
+                id="modal-table-tooltip",
+            ),
+            html.P(
+                id="upload-message-id", children=["Upload your data file (csv or excel)"], style={"paddingTop": "10px"}
+            ),
+            dbc.Modal(
+                id="data-modal",
+                children=[
+                    dbc.ModalHeader(dbc.ModalTitle(id="modal-title", children="No data uploaded!")),
+                    dbc.ModalBody(
+                        id="modal-table",
+                        children=table,
+                    ),
+                ],
+                size="xl",
+                modal_class_name="modal-class",
+            ),
+        ],
+        id="table-modal-div",
+    )
+    return table_modal
+
+
+class DropdownMenu(vm.VizroBaseModel):
+    """Custom dropdown menu component."""
+
+    type: Literal["dropdown_menu"] = "dropdown_menu"
+
+    def build(self):
+        """Returns custom dropdown menu."""
+        dropdown_menu = dbc.DropdownMenu(
+            id="dropdown-menu-button",
+            label="Download ",
+            children=[
+                dbc.DropdownMenuItem(
+                    children=[
+                        dbc.Button(children="JSON", id=f"{self.id}-json", className="download-button"),
+                    ]
+                ),
+                dbc.DropdownMenuItem(
+                    children=[
+                        dbc.Button(children="HTML", id=f"{self.id}-html", className="download-button"),
+                    ]
+                ),
+                dcc.Download(id="download-file"),
+            ],
+            toggleClassName="dropdown-menu-toggle-class",
+        )
+        download_div = html.Div(
+            children=[
+                html.Span("download", className="material-symbols-outlined", id=f"{self.id}-icon"),
+                dropdown_menu,
+                dbc.Tooltip(
+                    "Download this plot to your device as a plotly JSON or interactive HTML file "
+                    "for easy sharing or future use.",
+                    target="dropdown-menu-icon",
+                ),
+            ],
+            id="dropdown-menu-id",
+        )
+
+        return download_div
+
+
+class HeaderComponent(vm.VizroBaseModel):
+    """Custom header component."""
+
+    type: Literal["header"] = "header"
+
+    def build(self):
+        """Returns custom header component."""
+        title = html.Header("Vizro", id="custom-header-title")
+        header = html.Div(
+            children=[html.Img(src=get_asset_url("logo.svg"), alt="Vizro logo", className="header-logo"), title],
+            id="custom-header-div",
+        )
+        icon = html.Div(
+            children=[
+                html.Span("settings", className="material-symbols-outlined", id="open-settings-id"),
+                dbc.Tooltip("Settings", target="open-settings-id"),
+            ],
+            className="settings-div",
+        )
+
+        return html.Div(children=[header, icon], className="custom_header")
