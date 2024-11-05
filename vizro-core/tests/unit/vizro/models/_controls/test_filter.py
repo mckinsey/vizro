@@ -217,7 +217,9 @@ class TestPreBuildMethod:
         filter = vm.Filter(column="invalid_choice")
         model_manager["test_page"].controls = [filter]
 
-        with pytest.raises(ValueError, match="Selected column invalid_choice not found in any dataframe on this page."):
+        with pytest.raises(
+            ValueError, match="Selected column invalid_choice not found in any dataframe for scatter_chart, bar_chart."
+        ):
             filter.pre_build()
 
     @pytest.mark.parametrize(

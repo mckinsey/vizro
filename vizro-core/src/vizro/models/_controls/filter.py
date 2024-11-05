@@ -203,7 +203,7 @@ class Filter(VizroBaseModel):
         targeted_data = pd.DataFrame(target_to_series)
         if targeted_data.columns.empty:
             # Still raised when eagerly_raise_column_not_found_error=False.
-            raise ValueError(f"Selected column {self.column} not found in any dataframe for {targets}.")
+            raise ValueError(f"Selected column {self.column} not found in any dataframe for {", ".join(targets)}.")
         if targeted_data.empty:
             raise ValueError(f"Selected column {self.column} does not contain any data.")
 
