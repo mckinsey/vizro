@@ -53,7 +53,9 @@ The Hatch commands you need most commonly are as follows. These must be executed
 * [`hatch run docs:serve`](#hatch-run-docsserve) builds and displays documentation that hot-reloads while you edit it. Documentation is also built automatically in your PR and can be previewed on Read The Docs.
 * [`hatch run pip`](#hatch-run-pip) provides a [pip-compatible interface using uv](https://docs.astral.sh/uv/pip/). You should not need to use this much.
 
+<!-- vale off-->
 To save yourself from repeatedly typing `hatch run` you might like to [set up an alias](https://www.tecmint.com/create-alias-in-linux/):
+<!-- vale on-->
 
 ```console
 alias hr="hatch run"
@@ -74,7 +76,7 @@ This enables you to run, for example, `hr lint` instead of `hatch run lint`. On 
 
 `hatch run example` runs an example dashboard on port 8050 that hot-reloads while you edit it. On GitHub Codespaces, this [runs automatically on startup](https://docs.github.com/en/codespaces/developing-in-a-codespace/forwarding-ports-in-your-codespace) and is labeled as `scratch_dev example`. On your local machine, you can access the dashboard by pointing your browser to [http://127.0.0.1:8050](http://127.0.0.1:8050).
 
-By default, this command runs the dashboard configured in `vizro-core/examples/scratch_dev/app.py`. This dashboard is used as a temporary "scratch" playground during development. Since it is opened automatically in GitHub Codespaces, it's the perfect place to demonstrate or test out a new feature you're developing. PR reviewers can then immediately see exactly what your changes do by opening a codespace on your branch.
+By default, this command runs the dashboard configured in `vizro-core/examples/scratch_dev/app.py`. This dashboard is used as a temporary "scratch" playground during development. Since it is opened automatically in GitHub Codespaces, it's the perfect place to show, or test out, a new feature you're developing. PR reviewers can then immediately see exactly what your changes do by opening a codespace on your branch.
 
 You can run any example in `vizro-core/examples` or its subdirectories by running `hatch run example <example_path>`, where `<example_path>` is the path to the directory containing the `app.py` file relative to `vizro-core/examples`. For example, `hatch run example dev` runs a dashboard located at `vizro-core/examples/dev/app.py`. This dashboard demonstrates a full set of Vizro features and is also [hosted on Hugging Face](https://huggingface.co/spaces/vizro/demo-features).
 
@@ -139,9 +141,13 @@ For more information on our documentation style, refer to our [style guide](docu
 
 `hatch run pip` provides a [pip-compatible interface using uv](https://docs.astral.sh/uv/pip/). You should not need to use this often.
 
-Vizro's dependencies are described by the `dependencies` section in `vizro-core/pyproject.toml`. There is no need to manually install or update the dependencies in your environment; they will be handled automatically for you when you do `hatch run`. This means that there is generally no need to `pip install` anything.
+Vizro's dependencies are described by the `dependencies` section in `vizro-core/pyproject.toml`. There is no need to manually install or update the dependencies in your environment; they will be handled automatically for you when you do `hatch run`. This means that there is usually no need to `pip install` anything.
 
-We have [configured Hatch to use uv](https://hatch.pypa.io/1.12/how-to/environment/select-installer/) for virtual environment creation, dependency resolution and installation. This is extremely fast. If you have installed unwanted dependencies in your Hatch environment then the simplest solution is to delete the environment (`hatch env remove` to remove one environment or `hatch env prune` to remove all environments). Your next `hatch run` command will quickly recreate the environment and install all the dependencies it needs.
+We have [configured Hatch to use uv](https://hatch.pypa.io/1.12/how-to/environment/select-installer/) for rapid virtual environment creation, dependency resolution and installation.
+
+!!! note
+
+    If you have installed unwanted dependencies in your Hatch environment then the simplest solution is to delete the environment (`hatch env remove` to remove one environment or `hatch env prune` to remove all environments). Your next `hatch run` command will recreate the environment and install all the dependencies it needs.
 
 If for some reason you do need to use `pip` then the correct way to do so is through `hatch run pip`. For example, you could run `hatch run pip show plotly`. This will use the version of uv that Hatch itself uses under the hood. If you already have uv installed globally then `uv pip show plotly` would also work.
 

@@ -539,8 +539,8 @@ The [`Table`][vizro.models.Table] and the [`AgGrid`][vizro.models.AgGrid] models
 the data.
 
 - **title**: Displayed as an [H3 header](https://dash.plotly.com/dash-html-components/h3), useful for summarizing the main topic or insight of the component.
-- **header**: Accepts Markdown text, ideal for additional descriptions, subtitles, or detailed data insights.
-- **footer**: Accepts Markdown text, commonly used for citing data sources, providing information on the last update, or adding disclaimers.
+- **header**: Accepts markdown text, ideal for extra descriptions, subtitles, or detailed data insights.
+- **footer**: Accepts markdown text, commonly used for citing data sources, providing information on the last update, or adding disclaimers.
 
 
 
