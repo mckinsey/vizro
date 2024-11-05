@@ -113,11 +113,11 @@ To make the OpenAI API key available for all projects, you can set it as a syste
 variable. Refer to the section ["Set up your API key for all projects"](https://platform.openai.com/docs/quickstart/step-2-setup-your-api-key?context=python)
 in the OpenAI documentation. (It is under the dropdown of "Step 2: Set up your API key").
 
-The documentation provides step-by-step instructions for setting up the API key as an environment
+The documentation gives step-by-step instructions for setting up the API key as an environment
 variable, on operating systems including Windows and MacOS.
 
 !!!note
-    Sometimes setting up the `.env` file can be fiddly. If necessary, you can provide the API key directly to the instantiated model. See [our user guide](./customize-vizro-ai.md#setting-model-via-class-for-additional-configuration) for this option. Remember not to commit this API key to any public space!
+    Sometimes setting up the `.env` file can be fiddly. If necessary, you can supply the API key directly to the instantiated model. See [our user guide](./customize-vizro-ai.md#setting-model-via-class-for-additional-configuration) for this option. Remember not to commit this API key to any public space!
 
 __Set the base URL (optional)__
 
