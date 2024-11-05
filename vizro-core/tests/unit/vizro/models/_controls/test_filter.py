@@ -244,14 +244,6 @@ class TestFilterInstantiation:
             Filter(column="foo", targets=["invalid_target"])
 
 
-"""
-two figures, only one has target column - default should find right one, no error
-two figures, only one has target column - specific invalid should error
-
-columns empty default and specific -> error
-"""
-
-
 class TestPreBuildMethod:
     def test_targets_default_valid(self, managers_column_only_exists_in_some):
         # Core of tests is still interface level
