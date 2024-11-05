@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from typing import Literal, Union
+from typing import Any, Literal, Union
 
 import numpy as np
 import pandas as pd
@@ -188,7 +188,7 @@ class Filter(VizroBaseModel):
             data_source_name: data_manager[data_source_name].load()
             for data_source_name in set(target_to_data_source_name.values())
         }
-        target_to_series = dict()
+        target_to_series = {}
 
         for target, data_source_name in target_to_data_source_name.items():
             data_frame = data_source_name_to_data[data_source_name]
@@ -205,7 +205,9 @@ class Filter(VizroBaseModel):
             # Still raised when eagerly_raise_column_not_found_error=False.
             raise ValueError(f"Selected column {self.column} not found in any dataframe for {', '.join(targets)}.")
         if targeted_data.empty:
-            raise ValueError(f"Selected column {self.column} does not contain any data.")
+            raise ValueError(
+                f"Selected column {self.column} does not contain anything in any dataframe for {', '.join(targets)}."
+            )
 
         return targeted_data
 
@@ -222,20 +224,22 @@ class Filter(VizroBaseModel):
             return "categorical"
         else:
             raise ValueError(
-                f"Inconsistent types detected in the shared data column {self.column}. This column must "
-                "have the same type for all targets."
+                f"Inconsistent types detected in column {self.column}. This column must have the same type for all "
+                "targets."
             )
 
-    # TODO: write tests. Include N/A
-    # TODO: block all update of models during runtime
-    def _get_min_max(self, targeted_data: pd.DataFrame) -> tuple[float, float]:
+    @staticmethod
+    def _get_min_max(targeted_data: pd.DataFrame) -> tuple[float, float]:
         # Use item() to convert to convert scalar from numpy to Python type. This isn't needed during pre_build because
         # pydantic will coerce the type, but it is necessary in __call__ where we don't update model field values
         # and instead just pass straight to the Dash component.
         return targeted_data.min(axis=None).item(), targeted_data.max(axis=None).item()
 
-    def _get_options(self, targeted_data: pd.DataFrame) -> list:
+    @staticmethod
+    def _get_options(targeted_data: pd.DataFrame) -> list[Any]:
         # Use tolist() to convert to convert scalar from numpy to Python type. This isn't needed during pre_build
-        # because pydantic will coerce the type, but it is necessary in __call__ where we don't update model field values
-        # and instead just pass straight to the Dash component.
-        return np.unique(targeted_data.stack().dropna()).tolist()
+        # because pydantic will coerce the type, but it is necessary in __call__ where we don't update model field
+        # values and instead just pass straight to the Dash component.
+        # The dropna() isn't strictly required here but will be in future pandas versions when the behavior of stack
+        # changes. See https://pandas.pydata.org/docs/whatsnew/v2.1.0.html#whatsnew-210-enhancements-new-stack.
+        return np.unique(targeted_data.stack().dropna()).tolist()  # noqa: PD013
