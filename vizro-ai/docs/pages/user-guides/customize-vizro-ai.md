@@ -120,4 +120,4 @@ Consider upgrading to, in the case of OpenAI the `gpt-4o` and `gpt-4` model seri
 
 ### Dashboard generation
 
-At the time of writing we find that cheaper models only work for basic dashboards. For a reasonably complex dashboard we recommend the flagship models of the leading vendors, for example `gpt-4o` or `claude-3-5-sonnet-20240620`.
+At the time of writing we find that cheaper models only work for basic dashboards. For a reasonably complex dashboard we recommend the flagship models of the leading vendors, for example `gpt-4o` or `claude-3-5-sonnet-latest`.
