@@ -2,7 +2,10 @@
 
 import csv
 import os
+from collections import Counter
+from dataclasses import dataclass
 from datetime import datetime
+from typing import Literal
 
 import chromedriver_autoinstaller
 import pytest
@@ -24,18 +27,35 @@ def setup_test_environment():
         chromedriver_autoinstaller.install()
 
 
-def logic(  # noqa: PLR0912, PLR0913, PLR0915
+def logic(  # noqa: PLR0912, PLR0915
     dashboard,
     model_name,
+    dash_duo,
     prompt_tier,
-    pages: dict[str, int],
-    components: list[dict[str, int]],
-    controls: list[dict[str, int]],
-    components_types: list[dict[str, int]],
-    controls_types: list[dict[str, int]],
+    config: dict,
 ):
     report_dir = "tests/score/reports"
     os.makedirs(report_dir, exist_ok=True)
+
+    app = Vizro().build(dashboard).dash
+
+    try:
+        dash_duo.start_server(app)
+        app_started = 1.0
+        app_started_report = "App started!"
+    except Exception as e:
+        app_started = 0
+        app_started_report = "App didn't start!"
+        print(f"App start exception: {e}")  # noqa: T201
+
+    try:
+        assert dash_duo.get_logs() == []
+        no_browser_console_errors = 1.0
+        no_browser_console_errors_report = "No error logs in browser console!"
+    except AssertionError as e:
+        no_browser_console_errors = 0
+        no_browser_console_errors_report = "Error logs in browser console found!"
+        print(f"Browser console exception: {e}")  # noqa: T201
 
     try:
         vizro_type = os.environ["VIZRO_TYPE"]
@@ -48,83 +68,96 @@ def logic(  # noqa: PLR0912, PLR0913, PLR0915
 
     pages_exist = [1 if dashboard.pages else 0]
     pages_exist_report = bool(pages_exist[0])
-    pages_num = [1 if len(dashboard.pages) == pages["num"] else 0]
-    pages_num_report = [f'{pages["num"]} page(s) for dashboard is {bool(components)}']
+    pages_num = [1 if len(dashboard.pages) == len(config["pages"]) else 0]
+    pages_num_report = [f'{len(config["pages"])} page(s) for dashboard is {bool(pages_num[0])}']
 
     components_num = []
     components_num_report = []
-    if components:
-        for component in components:
-            try:
-                components = [
-                    1 if len(dashboard.pages[component["page_num"] - 1].components) == component["num"] else 0
-                ][0]
-            except IndexError:
-                components = 0
-            components_num.append(components)
-            components_num_report.append(
-                f'{component["num"]} component(s) for page {component["page_num"]} is {bool(components)}'
-            )
+    for page in range(len(config["pages"])):
+        try:
+            components = [
+                1 if len(dashboard.pages[page].components) == len(config["pages"][page]["components"]) else 0
+            ][0]
+        except IndexError:
+            components = 0
+        components_num.append(components)
+        components_num_report.append(
+            f'{len(config["pages"][page]["components"])} component(s) for page {page} is {bool(components)}'
+        )
 
     controls_num = []
     controls_num_report = []
-    if controls:
-        for control in controls:
-            try:
-                controls = [1 if len(dashboard.pages[control["page_num"] - 1].controls) == control["num"] else 0][0]
-            except IndexError:
-                controls = 0
-            controls_num.append(controls)
-            controls_num_report.append(
-                f'{control["num"]} control(s) for page {control["page_num"]} is {bool(controls)}'
-            )
+    for page in range(len(config["pages"])):
+        try:
+            controls = [1 if len(dashboard.pages[page].controls) == len(config["pages"][page]["controls"]) else 0][0]
+        except IndexError:
+            controls = 0
+        controls_num.append(controls)
+        controls_num_report.append(
+            f'{len(config["pages"][page]["controls"])} control(s) for page {page} is {bool(controls)}'
+        )
 
     components_types_names = []
     components_types_names_report = []
-    if components_types:
-        for components_type in components_types:
-            try:
-                comps = [components.type for components in dashboard.pages[components_type["page_num"] - 1].components]
-                components_types = [1 if comps.count(components_type["type"]) == components_type["num"] else 0][0]
-            except IndexError:
-                components_types = 0
-            components_types_names.append(components_types)
-            components_types_names_report.append(
-                f'{components_type["num"]} components_type(s) {components_type["type"]} '
-                f'for page {components_type["page_num"]} is {bool(controls)}'
-            )
+    try:
+        for page in range(len(config["pages"])):
+            components_dashboard = Counter([component.type for component in dashboard.pages[page].components])
+            components_config = Counter([component.type for component in config["pages"][page]["components"]])
+            for component_name in components_config:
+                components_types = [
+                    1 if components_config[component_name] == components_dashboard[component_name] else 0
+                ][0]
+                components_types_names.append(components_types)
+                components_types_names_report.append(
+                    f"{components_config[component_name]} components_type(s) {component_name} "
+                    f"for page {page} is {bool(components_types)}"
+                )
+    except IndexError:
+        components_types = 0
+        components_types_names.append(components_types)
+        components_types_names_report.append("page or component does not exists")
 
     controls_types_names = []
     controls_types_names_report = []
-    if controls_types:
-        for controls_type in controls_types:
-            try:
-                cntrls = [controls.type for controls in dashboard.pages[controls_type["page_num"] - 1].controls]
-                controls_types = [1 if cntrls.count(controls_type["type"]) == controls_type["num"] else 0][0]
-            except IndexError:
-                controls_types = 0
-            controls_types_names.append(controls_types)
-            controls_types_names_report.append(
-                f'{controls_type["num"]} controls_type(s) {controls_type["type"]} '
-                f'for page {controls_type["page_num"]} is {bool(controls)}'
-            )
+    try:
+        for page in range(len(config["pages"])):
+            controls_dashboard = Counter([control.type for control in dashboard.pages[page].controls])
+            controls_config = Counter([control.type for control in config["pages"][page]["controls"]])
+            for control_name in controls_config:
+                controls_types = [1 if controls_config[control_name] == controls_dashboard[control_name] else 0][0]
+                controls_types_names.append(controls_types)
+                controls_types_names_report.append(
+                    f"{controls_config[control_name]} controls_type(s) {control_name} "
+                    f"for page {page} is {bool(controls_types)}"
+                )
+    except IndexError:
+        controls_types = 0
+        controls_types_names.append(controls_types)
+        controls_types_names_report.append("page or control does not exists")
 
-    prescore = []
     pages_exist.extend(pages_num)
-    prescore.extend(pages_exist)
-    prescore.extend(components_num)
-    prescore.extend(controls_num)
-    prescore.extend(components_types_names)
-    prescore.extend(controls_types_names)
-    score = sum(prescore)
 
-    pages_score = sum(pages_exist) / len(pages_exist)
-    components_score = sum(components_num) / len(components_num)
-    component_types_score = sum(components_types_names) / len(components_types_names)
-    controls_score = sum(controls_num) / len(controls_num)
-    controls_types_score = sum(controls_types_names) / len(controls_types_names)
-    total = [pages_score, components_score, component_types_score, controls_score, controls_types_score]
-    total_score = sum(total) / len(total)
+    app_started_score = {"weight": 0.4, "score": app_started}
+    no_browser_console_errors_score = {"weight": 0.1, "score": no_browser_console_errors}
+    pages_score = {"weight": 0.2, "score": sum(pages_exist) / len(pages_exist)}
+    components_score = {"weight": 0.1, "score": sum(components_num) / len(components_num)}
+    component_types_score = {"weight": 0.1, "score": sum(components_types_names) / len(components_types_names)}
+    controls_score = {"weight": 0.1, "score": sum(controls_num) / len(controls_num)}
+    controls_types_score = {"weight": 0.1, "score": sum(controls_types_names) / len(controls_types_names)}
+
+    scores = [
+        app_started_score,
+        no_browser_console_errors_score,
+        pages_score,
+        components_score,
+        component_types_score,
+        controls_score,
+        controls_types_score,
+    ]
+    total_weight = sum(score["weight"] for score in scores)
+    if total_weight != 1:
+        scores = [{"weight": score["weight"] / total_weight, "score": score["score"]} for score in scores]
+    weighted_score = round(sum(score["weight"] * score["score"] for score in scores), 1)
 
     with open(f"{report_dir}/report_model_{model_name}_{vizro_type}.csv", "a", newline="") as csvfile:
         writer = csv.writer(csvfile, delimiter=",")
@@ -136,7 +169,9 @@ def logic(  # noqa: PLR0912, PLR0913, PLR0915
                 "python_version",
                 "model",
                 "prompt_tier",
-                "total_score",
+                "weighted_score",
+                "no_browser_console_errors_score",
+                "app_started_score",
                 "pages_score",
                 "components_score",
                 "component_types_score",
@@ -152,23 +187,28 @@ def logic(  # noqa: PLR0912, PLR0913, PLR0915
                 python_version,
                 model_name,
                 prompt_tier,
-                total_score,
-                pages_score,
-                components_score,
-                component_types_score,
-                controls_score,
-                controls_types_score,
+                weighted_score,
+                app_started_score["score"],
+                no_browser_console_errors_score["score"],
+                pages_score["score"],
+                components_score["score"],
+                component_types_score["score"],
+                controls_score["score"],
+                controls_types_score["score"],
             ]
         )
 
     # for cmd output
+    print(f"App started: {app_started_report}")  # noqa: T201
+    print(f"Console errors: {no_browser_console_errors_report}")  # noqa: T201
     print(f"Pages exists: {pages_exist_report}")  # noqa: T201
     print(f"Correct pages number: {pages_num_report}")  # noqa: T201
     print(f"Components: {components_num_report}")  # noqa: T201
     print(f"Correct controls number: {controls_num_report}")  # noqa: T201
     print(f"Correct components types: {components_types_names_report}")  # noqa: T201
     print(f"Correct controls types: {controls_types_names_report}")  # noqa: T201
-    print(f"Total, {(score / len(prescore)):.4f}")  # noqa: T201
+    print(f"Weighted score: {weighted_score}")  # noqa: T201
+    print(f"Scores: {scores}")  # noqa: T201
 
 
 @pytest.mark.easy_dashboard
@@ -204,21 +244,39 @@ def test_simple_dashboard(dash_duo, model_name):
     """
 
     dashboard = vizro_ai.dashboard([df1, df2], input_text)
-    app = Vizro().build(dashboard).dash
-    dash_duo.start_server(app)
-    assert dash_duo.get_logs() == []
+
+    @dataclass
+    class Components:
+        type: Literal["ag_grid", "card", "graph"]
+
+    @dataclass
+    class Controls:
+        type: Literal["filter", "parameter"]
 
     logic(
         dashboard=dashboard,
         model_name=model_name,
+        dash_duo=dash_duo,
         prompt_tier="easy",
-        pages={"num": 2},
-        components=[{"page_num": 1, "num": 1}, {"page_num": 2, "num": 3}],
-        controls=[{"page_num": 1, "num": 0}, {"page_num": 2, "num": 2}],
-        components_types=[
-            {"page_num": 1, "type": "ag_grid", "num": 1},
-            {"page_num": 2, "type": "card", "num": 2},
-            {"page_num": 2, "type": "graph", "num": 1},
-        ],
-        controls_types=[{"page_num": 2, "type": "filter", "num": 2}],
+        config={
+            "pages": [
+                {
+                    "components": [
+                        Components(type="ag_grid"),
+                    ],
+                    "controls": [],
+                },
+                {
+                    "components": [
+                        Components(type="card"),
+                        Components(type="card"),
+                        Components(type="graph"),
+                    ],
+                    "controls": [
+                        Controls(type="filter"),
+                        Controls(type="filter"),
+                    ],
+                },
+            ],
+        },
     )
