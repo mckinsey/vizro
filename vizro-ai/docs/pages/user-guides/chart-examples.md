@@ -1,6 +1,6 @@
 # Gallery of examples
 
-Take a look at some more advanced charts that can be created with Vizro-AI using data from [Plotly Express](https://plotly.com/python-api-reference/generated/plotly.express.data.html). The examples below use the OpenAI `"gpt-4o"` model as we are going to request specific updates to the layout of the charts, which are [more complex than the GPT 3.5 model can handle](./customize-vizro-ai.md).
+Take a look at some more advanced charts that can be created with Vizro-AI using data from [Plotly Express](https://plotly.com/python-api-reference/generated/plotly.express.data.html). The examples below use the OpenAI `"gpt-4o"` model as we are going to request specific updates to the layout of the charts.
 
 ### Polar bar chart
 
