@@ -45,6 +45,7 @@ SUPPORTED_MODELS = {
     "Mistral": ["mistral-large-latest", "open-mistral-nemo", "codestral-latest"],
 }
 DEFAULT_TEMPERATURE = 0.1
+DEFAULT_RETRY = 3
 
 
 def get_vizro_ai_plot(user_prompt, df, model, api_key, api_base, vendor_input):
@@ -63,7 +64,7 @@ def get_vizro_ai_plot(user_prompt, df, model, api_key, api_base, vendor_input):
         llm = vendor(model=model, mistral_api_key=api_key, mistral_api_url=api_base, temperature=DEFAULT_TEMPERATURE)
 
     vizro_ai = VizroAI(model=llm)
-    ai_outputs = vizro_ai.plot(df, user_prompt, return_elements=True)
+    ai_outputs = vizro_ai.plot(df, user_prompt, max_debug_retry=DEFAULT_RETRY, return_elements=True)
 
     return ai_outputs
 
