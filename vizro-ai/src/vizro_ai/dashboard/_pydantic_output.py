@@ -74,6 +74,7 @@ def _get_pydantic_model(
     # At the very least it should include the string type of the validation error
     """Get the pydantic output from the LLM model with retry logic."""
     for attempt in range(max_retry):
+        logger.info(f"Attempt Number {attempt}")
         attempt_is_retry = attempt > 0
         prompt = _create_prompt(retry=attempt_is_retry)
         message_content = _create_message_content(
