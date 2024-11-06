@@ -1,12 +1,12 @@
 import pytest
 
-from vizro.actions._actions_utils import _create_target_arg_mapping, _update_nested_graph_properties
+from vizro.actions._actions_utils import _create_target_arg_mapping, _update_nested_figure_properties
 
 
 class TestUpdateNestedGraphProperties:
-    def test_update_nested_graph_properties_single_level(self):
+    def test_update_nested_figure_properties_single_level(self):
         graph = {"color": "blue"}
-        result = _update_nested_graph_properties(graph, "color", "red")
+        result = _update_nested_figure_properties(graph, "color", "red")
         expected = {"color": "red"}
         assert result == expected
 
@@ -22,8 +22,8 @@ class TestUpdateNestedGraphProperties:
             ),
         ],
     )
-    def test_update_nested_graph_properties_multiple_levels(self, graph, dot_separated_strings, value, expected):
-        result = _update_nested_graph_properties(graph, dot_separated_strings, value)
+    def test_update_nested_figure_properties_multiple_levels(self, graph, dot_separated_strings, value, expected):
+        result = _update_nested_figure_properties(graph, dot_separated_strings, value)
         assert result == expected
 
     @pytest.mark.parametrize(
@@ -50,14 +50,14 @@ class TestUpdateNestedGraphProperties:
             ({}, "color", "red", {"color": "red"}),
         ],
     )
-    def test_update_nested_graph_properties_add_or_overwrite_keys(self, graph, dot_separated_strings, value, expected):
-        result = _update_nested_graph_properties(graph, dot_separated_strings, value)
+    def test_update_nested_figure_properties_add_or_overwrite_keys(self, graph, dot_separated_strings, value, expected):
+        result = _update_nested_figure_properties(graph, dot_separated_strings, value)
         assert result == expected
 
-    def test_update_nested_graph_properties_invalid_type(self):
+    def test_update_nested_figure_properties_invalid_type(self):
         graph = {"color": "blue"}
         with pytest.raises(TypeError, match="'str' object does not support item assignment"):
-            _update_nested_graph_properties(graph, "color.value", "42")
+            _update_nested_figure_properties(graph, "color.value", "42")
 
 
 class TestCreateTargetArgMapping:

@@ -116,17 +116,17 @@ def _create_target_arg_mapping(dot_separated_strings: list[str]) -> dict[str, li
     return results
 
 
-def _update_nested_graph_properties(
-    graph_config: dict[str, Any], dot_separated_string: str, value: Any
+def _update_nested_figure_properties(
+    figure_config: dict[str, Any], dot_separated_string: str, value: Any
 ) -> dict[str, Any]:
     keys = dot_separated_string.split(".")
-    current_property = graph_config
+    current_property = figure_config
 
     for key in keys[:-1]:
         current_property = current_property.setdefault(key, {})
 
     current_property[keys[-1]] = value
-    return graph_config
+    return figure_config
 
 
 def _get_parametrized_config(target: ModelID, ctd_parameters: list[CallbackTriggerDict]) -> dict[str, Any]:
@@ -165,59 +165,30 @@ def _get_parametrized_config(target: ModelID, ctd_parameters: list[CallbackTrigg
                 continue
 
             for action_targets_arg in action_targets[target]:
-                config = _update_nested_graph_properties(
-                    graph_config=config, dot_separated_string=action_targets_arg, value=selector_value
+                config = _update_nested_figure_properties(
+                    figure_config=config, dot_separated_string=action_targets_arg, value=selector_value
                 )
 
     return config
 
 
 # Helper functions used in pre-defined actions ----
-def _get_targets_data_and_config(
+def _get_targets_data(
     ctds_filter: list[CallbackTriggerDict],
     ctds_filter_interaction: list[dict[str, CallbackTriggerDict]],
     ctds_parameters: list[CallbackTriggerDict],
     targets: list[ModelID],
 ):
-    all_filtered_data = {}
-    all_parameterized_config = {}
-
-    for target in targets:
-        # parametrized_config includes a key "data_frame" that is used in the data loading function.
-        parameterized_config = _get_parametrized_config(target=target, ctd_parameters=ctds_parameters)
-        data_source_name = model_manager[target]["data_frame"]
-        data_frame = data_manager[data_source_name].load(**parameterized_config["data_frame"])
-
-        filtered_data = _apply_filters(data_frame=data_frame, ctds_filters=ctds_filter, target=target)
-        filtered_data = _apply_filter_interaction(
-            data_frame=filtered_data, ctds_filter_interaction=ctds_filter_interaction, target=target
-        )
-
-        # Parameters affecting data_frame have already been used above in data loading and so are excluded from
-        # all_parameterized_config.
-        all_filtered_data[target] = filtered_data
-        all_parameterized_config[target] = {
-            key: value for key, value in parameterized_config.items() if key != "data_frame"
-        }
-
-    return all_filtered_data, all_parameterized_config
-
-
-def _get_modified_page_figures(
-    ctds_filter: list[CallbackTriggerDict],
-    ctds_filter_interaction: list[dict[str, CallbackTriggerDict]],
-    ctds_parameters: list[CallbackTriggerDict],
-    targets: Optional[list[ModelID]] = None,
-) -> dict[str, Any]:
-    targets = targets or []
+    target_to_parameterized_config = {
+        target: _get_parametrized_config(target=target, ctd_parameters=ctds_parameters) for target in targets
+    }
 
     target_to_data_source_load_key = {}
 
     # TODO: Check doesn't give duplicates for static data
-    # TODO: separate out _get_parametrized_config for data_frame and general keys
-    for target in targets:
+
+    for target, parameterized_config in target_to_parameterized_config.items():
         # parametrized_config includes a key "data_frame" that is used in the data loading function.
-        parameterized_config = _get_parametrized_config(target=target, ctd_parameters=ctds_parameters)
         data_source_load_key = json.dumps(
             {
                 "data_source_name": model_manager[target]["data_frame"],
@@ -227,6 +198,7 @@ def _get_modified_page_figures(
         )
         target_to_data_source_load_key[target] = data_source_load_key
 
+    # TODO: don't duplicate data in memory. Now this isn't true so maybe change structure of dictionaries?
     data_source_load_key_to_data = {}
 
     for data_source_load_key in set(target_to_data_source_load_key.values()):
@@ -234,7 +206,7 @@ def _get_modified_page_figures(
         data = data_manager[data_source_load["data_source_name"]].load(**data_source_load["dynamic_data_load_params"])
         data_source_load_key_to_data[data_source_load_key] = data
 
-    outputs: dict[str, Any] = {}
+    target_to_filtered_data = {}
 
     # TODO: deduplicate filtering operation
     for target in targets:
@@ -243,16 +215,32 @@ def _get_modified_page_figures(
         filtered_data = _apply_filter_interaction(
             data_frame=filtered_data, ctds_filter_interaction=ctds_filter_interaction, target=target
         )
+        target_to_filtered_data[target] = filtered_data
 
+    return target_to_filtered_data
+
+
+def _get_modified_page_figures(
+    ctds_filter: list[CallbackTriggerDict],
+    ctds_filter_interaction: list[dict[str, CallbackTriggerDict]],
+    ctds_parameters: list[CallbackTriggerDict],
+    targets: Optional[list[ModelID]] = None,
+) -> dict[str, Any]:
+    targets = targets or []
+    outputs: dict[str, Any] = {}
+
+    all_filtered_data = _get_targets_data(ctds_filter, ctds_filter_interaction, ctds_parameters, targets)
+    target_to_parameterized_config = {
+        target: _get_parametrized_config(target=target, ctd_parameters=ctds_parameters) for target in targets
+    }
+    for target, parameterized_config in target_to_parameterized_config.items():
         outputs[target] = model_manager[target](
-            data_frame=filtered_data,
-            **{
-                key: value
-                for key, value in _get_parametrized_config(target=target, ctd_parameters=ctds_parameters).items()
-                if key != "data_frame"
-            },
+            data_frame=all_filtered_data[target],
+            **{key: value for key, value in parameterized_config.items() if key != "data_frame"},
         )
 
-    # TODO: think about where filter call goes
+    # here have new data_frame = True/False argument
+
+    # TODO: think about where new dynamic filter call goes
 
     return outputs
