@@ -18,6 +18,17 @@ vizro_ai = VizroAI()
 
 df1 = px.data.gapminder()
 df2 = px.data.stocks()
+df3 = px.data.tips()
+
+
+@dataclass
+class Components:
+    type: Literal["ag_grid", "card", "graph"]
+
+
+@dataclass
+class Controls:
+    type: Literal["filter", "parameter"]
 
 
 @pytest.fixture(scope="module", autouse=True)
@@ -56,6 +67,8 @@ def logic(  # noqa: PLR0912, PLR0915
         no_browser_console_errors = 0
         no_browser_console_errors_report = "Error logs in browser console found!"
         print(f"Browser console exception: {e}")  # noqa: T201
+
+    Vizro._reset()
 
     try:
         vizro_type = os.environ["VIZRO_TYPE"]
@@ -170,8 +183,8 @@ def logic(  # noqa: PLR0912, PLR0915
                 "model",
                 "prompt_tier",
                 "weighted_score",
-                "no_browser_console_errors_score",
                 "app_started_score",
+                "no_browser_console_errors_score",
                 "pages_score",
                 "components_score",
                 "component_types_score",
@@ -220,7 +233,7 @@ def logic(  # noqa: PLR0912, PLR0915
 @pytest.mark.filterwarnings("ignore::langchain_core._api.beta_decorator.LangChainBetaWarning")
 @pytest.mark.filterwarnings("ignore::UserWarning")
 @pytest.mark.filterwarnings("ignore:HTTPResponse.getheader()")
-def test_simple_dashboard(dash_duo, model_name):
+def test_easy_dashboard(dash_duo, model_name):
     input_text = """
     I need a page with 1 table.
     The table shows the tech companies stock data.
@@ -245,14 +258,6 @@ def test_simple_dashboard(dash_duo, model_name):
 
     dashboard = vizro_ai.dashboard([df1, df2], input_text)
 
-    @dataclass
-    class Components:
-        type: Literal["ag_grid", "card", "graph"]
-
-    @dataclass
-    class Controls:
-        type: Literal["filter", "parameter"]
-
     logic(
         dashboard=dashboard,
         model_name=model_name,
@@ -276,6 +281,105 @@ def test_simple_dashboard(dash_duo, model_name):
                         Controls(type="filter"),
                         Controls(type="filter"),
                     ],
+                },
+            ],
+        },
+    )
+
+
+@pytest.mark.medium_dashboard
+@pytest.mark.parametrize(
+    "model_name",
+    ["gpt-4o-mini"],
+    ids=["gpt-4o-mini"],
+)
+@pytest.mark.filterwarnings("ignore::langchain_core._api.beta_decorator.LangChainBetaWarning")
+@pytest.mark.filterwarnings("ignore::UserWarning")
+@pytest.mark.filterwarnings("ignore:HTTPResponse.getheader()")
+def test_medium_dashboard(dash_duo, model_name):
+    input_text = """
+    <Page 1>
+    I need a page with 1 table and 1 line chart.
+    The chart shows the stock price trends of GOOG and AAPL.
+    The table shows the stock prices data details.
+
+    <Page 2>
+    I need a second page showing 1 card and 1 chart.
+    The card says 'The Gapminder dataset provides historical data on countries' development indicators.'
+    The chart is a scatter plot showing GDP per capita vs. life expectancy.
+    GDP per capita on the x axis, life expectancy on the y axis, and colored by continent.
+    Layout the card on the left and the chart on the right. The card takes 1/3 of the whole space on the left.
+    The chart takes 2/3 of the whole space and is on the right.
+    Add a filter to filter the scatter plot by continent.
+    Add a second filter to filter the chart by year.
+
+    <Page 3>
+    This page displays the tips dataset. use two different charts to show data
+    distributions. one chart should be a bar chart and the other should be a scatter plot.
+    first chart is on the left and the second chart is on the right.
+    Add a filter to filter data in the scatter plot by smoker.
+
+    <Page 4>
+    Create 3 cards on this page:
+    1. The first card on top says "This page combines data from various sources
+     including tips, stock prices, and global indicators."
+    2. The second card says "Insights from Gapminder dataset."
+    3. The third card says "Stock price trends over time."
+
+    Layout these 3 cards in this way:
+    create a grid with 3 columns and 2 rows.
+    Row 1: The first row has three columns:
+    - The first column is empty.
+    - The second and third columns span the area for card 1.
+
+    Row 2: The second row also has three columns:
+    - The first column is empty.
+    - The second column is occupied by the area for card 2.
+    - The third column is occupied by the area for card 3.
+        """
+
+    dashboard = vizro_ai.dashboard([df1, df2, df3], input_text)
+
+    logic(
+        dashboard=dashboard,
+        model_name=model_name,
+        dash_duo=dash_duo,
+        prompt_tier="medium",
+        config={
+            "pages": [
+                {
+                    "components": [
+                        Components(type="ag_grid"),
+                        Components(type="graph"),
+                    ],
+                    "controls": [],
+                },
+                {
+                    "components": [
+                        Components(type="card"),
+                        Components(type="graph"),
+                    ],
+                    "controls": [
+                        Controls(type="filter"),
+                        Controls(type="filter"),
+                    ],
+                },
+                {
+                    "components": [
+                        Components(type="graph"),
+                        Components(type="graph"),
+                    ],
+                    "controls": [
+                        Controls(type="filter"),
+                    ],
+                },
+                {
+                    "components": [
+                        Components(type="card"),
+                        Components(type="card"),
+                        Components(type="card"),
+                    ],
+                    "controls": [],
                 },
             ],
         },
