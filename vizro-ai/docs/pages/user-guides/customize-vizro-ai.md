@@ -29,8 +29,6 @@ vizro_ai = VizroAI(model="<chosen model>")
     - `gpt-4o-mini` **default**
     - `gpt-4-turbo`
     - `gpt-4o`
-    - `gpt-4`
-    - `gpt-3.5-turbo`
 
 === "Anthropic"
 
