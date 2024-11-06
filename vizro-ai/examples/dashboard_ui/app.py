@@ -5,12 +5,13 @@ import subprocess
 
 import dash_bootstrap_components as dbc
 import vizro.models as vm
-from _utils import format_output, find_available_port
+from _utils import find_available_port, format_output
 from actions import data_upload_action, display_filename, save_files
 from components import (
     CodeClipboard,
     CustomButton,
     CustomDashboard,
+    HeaderComponent,
     Icon,
     Modal,
     MyDropdown,
@@ -37,6 +38,7 @@ vm.Container.add_type("components", CodeClipboard)
 vm.Container.add_type("components", Icon)
 vm.Container.add_type("components", Modal)
 vm.Container.add_type("components", CustomButton)
+vm.Container.add_type("components", HeaderComponent)
 
 MyPage.add_type("components", UserPromptTextArea)
 MyPage.add_type("components", UserUpload)
@@ -50,58 +52,48 @@ dashboard_page = MyPage(
     id="vizro_ai_dashboard_page",
     title="Vizro AI - Dashboard",
     layout=vm.Layout(
-        grid=[[2, 2, 0, 0, 0], [1, 1, 0, 0, 0], [1, 1, 0, 0, 0], [1, 1, 0, 0, 0], [1, 1, 0, 0, 0], [3, 3, 0, 0, 0]]
+        grid=[
+            [4, 4, 4, 4, 4],
+            [2, 2, 0, 0, 0],
+            [2, 2, 0, 0, 0],
+            [3, 3, 0, 0, 0],
+            [1, 1, 0, 0, 0],
+            [1, 1, 0, 0, 0],
+            [1, 1, 0, 0, 0],
+            [1, 1, 0, 0, 0],
+            [1, 1, 0, 0, 0],
+            [1, 1, 0, 0, 0],
+            [1, 1, 0, 0, 0],
+        ]
     ),
     components=[
-        # vm.Container(
-        #     id="clipboard-container",
-        #     title="",
-        #     components=[
-        #         CodeClipboard(id="dashboard"),
-        #         CustomButton(text="Run dashboard", id="run-dashboard-button"),
-        #     ],
-        #     layout=vm.Layout(
-        #         grid=[
-        #             *[[0, 0, 0, 0, 0, 0]] * 11,
-        #             [-1, -1, -1, -1, -1, 1]
-        #         ],
-        #         col_gap="20px"
-        #     )
-        # ),
-        vm.Tabs(
-            tabs=[
+        vm.Container(
+            title="Code",
+            components=[
                 vm.Container(
-                    title="Code",
+                    title="",
                     components=[
                         vm.Container(
+                            id="clipboard-container",
                             title="",
                             components=[
-                                vm.Container(
-                                    id="clipboard-container",
-                                    title="",
-                                    components=[
-                                        CodeClipboard(id="dashboard"),
-                                        CustomButton(text="Run dashboard", id="run-dashboard-button"),
-                                    ],
-                                    layout=vm.Layout(
-                                        grid=[*[[0, 0, 0, 0, 0, 0]] * 10, [-1, -1, -1, -1, -1, 1]], col_gap="20px"
-                                    ),
-                                )
+                                CodeClipboard(id="dashboard"),
+                                CustomButton(id="run-dashboard"),
                             ],
-                            id="clipboard-tab",
-                        ),
+                            layout=vm.Layout(
+                                grid=[*[[0, 0, 0, 0, 0, 0, 0, 0, 0, 0]] * 11, [-1, -1, -1, -1, -1, -1, -1, -1, 1, 1]],
+                                col_gap="20px",
+                            ),
+                        )
                     ],
-                ),
-                vm.Container(
-                    id="embedded-dashboard",
-                    title="Dashboard",
-                    components=[vm.Card(text="VizroAI generated dashboard placeholder")],
+                    id="clipboard-tab",
                 ),
             ],
         ),
         UserPromptTextArea(id="dashboard-text-area", placeholder="Describe the dashboard you want to create."),
         vm.Container(
-            title="",
+            id="upload-container",
+            title="Turn your data into visuals — just upload, describe, and see your dashboard in action",
             layout=vm.Layout(grid=[[0], [1]], row_gap="0px"),
             components=[
                 vm.Card(id="dashboard-upload-message-id", text="Upload your data files (csv or excel)"),
@@ -134,7 +126,9 @@ dashboard_page = MyPage(
         vm.Container(
             title="",
             layout=vm.Layout(
-                grid=[[3, -1, -1, -1, -1, -1, 1, 1, 0, 0], [-1, -1, -1, -1, -1, -1, -1, -1, 2, 2]],
+                grid=[
+                    [2, -1, -1, -1, -1, -1, 1, 1, 0, 0],
+                ],
                 row_gap="0px",
                 col_gap="4px",
             ),
@@ -144,10 +138,13 @@ dashboard_page = MyPage(
                     text="Run VizroAI",
                 ),
                 MyDropdown(options=SUPPORTED_MODELS, value="gpt-4o-mini", multi=False, id="dashboard-model-dropdown"),
-                Icon(id="open-settings-id"),
                 OffCanvas(id="dashboard-settings", options=["OpenAI"], value="OpenAI"),
                 # Modal(id="modal"),
             ],
+        ),
+        vm.Container(
+            title="",
+            components=[HeaderComponent()],
         ),
     ],
 )
@@ -249,28 +246,32 @@ def save_to_file(generated_code):
 
 
 @callback(
-    Output("run-dashboard-button", "style"),
+    Output("run-dashboard-navlink", "style"),
     Input("dashboard-code-markdown", "children"),
 )
 def show_button(ai_response):
     """Displays a button to launch the dashboard in a subprocess."""
-    if ai_response:
-        return {"minWidth": "100%"}
-
-
-@callback(
-    [Output("run-dashboard-button", "disabled"), Output("embedded-dashboard", "children")],
-    Input("run-dashboard-button", "n_clicks"),
-)
-def run_generated_dashboard(n_clicks):
-    """Runs vizro-ai generated dashboard in an iframe window."""
-    port = find_available_port()
-    if not n_clicks:
+    if not ai_response:
         raise PreventUpdate
-    else:
-        subprocess.Popen(["python", "output_files/run_vizro_ai_output.py", str(port)])
-        iframe = html.Iframe(src="http://localhost:8051/", height="600px")
-        return True, iframe
+    port = find_available_port()
+    subprocess.Popen(["python", "output_files/run_vizro_ai_output.py", str(port)])
+    return {}
+
+
+#
+# @callback(
+#     [Output("run-dashboard-button", "disabled"), Output("embedded-dashboard", "children")],
+#     Input("run-dashboard-button", "n_clicks"),
+# )
+# def run_generated_dashboard(n_clicks):
+#     """Runs vizro-ai generated dashboard in an iframe window."""
+#     port = find_available_port()
+#     if not n_clicks:
+#         raise PreventUpdate
+#     else:
+#         subprocess.Popen(["python", "output_files/run_vizro_ai_output.py", str(port)])
+#         iframe = html.Iframe(src="http://localhost:8051/", height="600px")
+#         return True, iframe
 
 
 app = Vizro().build(dashboard)

@@ -5,7 +5,7 @@ from typing import List, Literal
 import black
 import dash_bootstrap_components as dbc
 import vizro.models as vm
-from dash import dcc, html
+from dash import dcc, get_asset_url, html
 from pydantic import PrivateAttr
 from vizro.models import Action
 from vizro.models._action._actions_chain import _action_validator_factory
@@ -272,7 +272,41 @@ class CustomButton(vm.Button):
 
     def build(self):
         """Returns custom button."""
-        button_build_obj = super().build()
-        # button_build_obj.disabled = True
-        button_build_obj.style = {"minWidth": "100%", "display": "none"}
-        return button_build_obj
+        button = dbc.Button(
+            id=self.id,
+            children=[
+                dbc.NavLink(
+                    "View your dashboard",
+                    href="http://localhost:8051/",
+                    target="_blank",
+                    external_link=True,
+                    id=f"{self.id}-navlink",
+                ),
+            ],
+            style={"width": "12rem"},
+            className="navlink-button",
+        )
+        return button
+
+
+class HeaderComponent(vm.VizroBaseModel):
+    """Custom header component."""
+
+    type: Literal["header"] = "header"
+
+    def build(self):
+        """Returns custom header component."""
+        title = html.Header("Vizro", id="custom-header-title")
+        header = html.Div(
+            children=[html.Img(src=get_asset_url("logo.svg"), alt="Vizro logo", className="header-logo"), title],
+            id="custom-header-div",
+        )
+        icon = html.Div(
+            children=[
+                html.Span("settings", className="material-symbols-outlined", id="open-settings-id"),
+                dbc.Tooltip("Settings", target="open-settings-id"),
+            ],
+            className="settings-div",
+        )
+
+        return html.Div(children=[header, icon], className="custom_header")
