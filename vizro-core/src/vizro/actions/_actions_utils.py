@@ -106,14 +106,17 @@ def _validate_selector_value_none(value: Union[SingleValueType, MultiValueType])
     return value
 
 
-def _create_target_arg_mapping(dot_separated_strings: list[str]) -> dict[str, list[str]]:
-    results = defaultdict(list)
-    for string in dot_separated_strings:
-        if "." not in string:
-            raise ValueError(f"Provided string {string} must contain a '.'")
-        component, arg = string.split(".", 1)
-        results[component].append(arg)
-    return results
+def _filter_dot_separated_strings(dot_separated_strings: list[str], target: str, data_frame: bool) -> list[str]:
+    result = []
+
+    for dot_separated_string in dot_separated_strings:
+        if dot_separated_string.startswith(f"{target}."):
+            dot_separated_string = dot_separated_string.removeprefix(f"{target}.")
+            if (data_frame and dot_separated_string.startswith("data_frame.")) or (
+                not data_frame and not dot_separated_string.startswith("data_frame.")
+            ):
+                result.append(dot_separated_string)
+    return result
 
 
 def _update_nested_figure_properties(
@@ -129,14 +132,18 @@ def _update_nested_figure_properties(
     return figure_config
 
 
-def _get_parametrized_config(target: ModelID, ctd_parameters: list[CallbackTriggerDict]) -> dict[str, Any]:
-    # TODO - avoid calling _captured_callable. Once we have done this we can remove _arguments from
-    #  CapturedCallable entirely.
-    config = deepcopy(model_manager[target].figure._arguments)
-
-    # It's not possible to address nested argument of data_frame like data_frame.x.y, just top-level ones like
-    # data_frame.x.
-    config["data_frame"] = {}
+def _get_parametrized_config(
+    ctd_parameters: list[CallbackTriggerDict], target: ModelID, data_frame: bool
+) -> dict[str, Any]:
+    if data_frame:
+        # It's not possible to address nested argument of data_frame like data_frame.x.y, just top-level ones like
+        # data_frame.x.
+        config = {"data_frame": {}}
+    else:
+        # TODO - avoid calling _captured_callable. Once we have done this we can remove _arguments from
+        #  CapturedCallable entirely. This might mean not being able to address nested parameters.
+        config = deepcopy(model_manager[target].figure._arguments)
+        del config["data_frame"]
 
     for ctd in ctd_parameters:
         # TODO: needs to be refactored so that it is independent of implementation details
@@ -153,52 +160,44 @@ def _get_parametrized_config(target: ModelID, ctd_parameters: list[CallbackTrigg
                 selector_value = selector.options
 
         selector_value = _validate_selector_value_none(selector_value)
-        selector_actions = _get_component_actions(model_manager[ctd["id"]])
 
-        for action in selector_actions:
+        for action in _get_component_actions(model_manager[ctd["id"]]):
             if action.function._function.__name__ != "_parameter":
                 continue
 
-            action_targets = _create_target_arg_mapping(action.function["targets"])
-
-            if target not in action_targets:
-                continue
-
-            for action_targets_arg in action_targets[target]:
+            for dot_separated_string in _filter_dot_separated_strings(action.function["targets"], target, data_frame):
                 config = _update_nested_figure_properties(
-                    figure_config=config, dot_separated_string=action_targets_arg, value=selector_value
+                    figure_config=config, dot_separated_string=dot_separated_string, value=selector_value
                 )
 
     return config
 
 
 # Helper functions used in pre-defined actions ----
-def _get_targets_data(
+def _get_target_to_filtered_data(
     ctds_filter: list[CallbackTriggerDict],
     ctds_filter_interaction: list[dict[str, CallbackTriggerDict]],
     ctds_parameters: list[CallbackTriggerDict],
     targets: list[ModelID],
 ):
-    target_to_parameterized_config = {
-        target: _get_parametrized_config(target=target, ctd_parameters=ctds_parameters) for target in targets
-    }
-
     target_to_data_source_load_key = {}
 
     # TODO: Check doesn't give duplicates for static data
 
-    for target, parameterized_config in target_to_parameterized_config.items():
-        # parametrized_config includes a key "data_frame" that is used in the data loading function.
+    for target in targets:
+        dynamic_data_load_params = _get_parametrized_config(
+            ctd_parameters=ctds_parameters, target=target, data_frame=True
+        )
         data_source_load_key = json.dumps(
             {
                 "data_source_name": model_manager[target]["data_frame"],
-                "dynamic_data_load_params": parameterized_config["data_frame"],
+                "dynamic_data_load_params": dynamic_data_load_params["data_frame"],
             },
             sort_keys=True,
         )
         target_to_data_source_load_key[target] = data_source_load_key
 
-    # TODO: don't duplicate data in memory. Now this isn't true so maybe change structure of dictionaries?
+    # TODO: comment
     data_source_load_key_to_data = {}
 
     for data_source_load_key in set(target_to_data_source_load_key.values()):
@@ -208,7 +207,7 @@ def _get_targets_data(
 
     target_to_filtered_data = {}
 
-    # TODO: deduplicate filtering operation
+    # TODO: deduplicate filtering operation - save for future
     for target in targets:
         data_frame = data_source_load_key_to_data[target_to_data_source_load_key[target]]
         filtered_data = _apply_filters(data_frame=data_frame, ctds_filters=ctds_filter, target=target)
@@ -227,19 +226,17 @@ def _get_modified_page_figures(
     targets: Optional[list[ModelID]] = None,
 ) -> dict[str, Any]:
     targets = targets or []
-    outputs: dict[str, Any] = {}
 
-    all_filtered_data = _get_targets_data(ctds_filter, ctds_filter_interaction, ctds_parameters, targets)
-    target_to_parameterized_config = {
-        target: _get_parametrized_config(target=target, ctd_parameters=ctds_parameters) for target in targets
-    }
-    for target, parameterized_config in target_to_parameterized_config.items():
-        outputs[target] = model_manager[target](
-            data_frame=all_filtered_data[target],
-            **{key: value for key, value in parameterized_config.items() if key != "data_frame"},
+    target_to_filtered_data = _get_target_to_filtered_data(
+        ctds_filter, ctds_filter_interaction, ctds_parameters, targets
+    )
+    outputs = {
+        target: model_manager[target](
+            data_frame=filtered_data,
+            **_get_parametrized_config(ctd_parameters=ctds_parameters, target=target, data_frame=False),
         )
-
-    # here have new data_frame = True/False argument
+        for target, filtered_data in target_to_filtered_data.items()
+    }
 
     # TODO: think about where new dynamic filter call goes
 
