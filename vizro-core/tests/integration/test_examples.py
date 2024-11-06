@@ -48,6 +48,7 @@ examples_path = Path(__file__).parents[2] / "examples"
 @pytest.mark.filterwarnings("ignore:HTTPResponse.getheader()")
 # Ignore as it doesn't affect the test run
 @pytest.mark.filterwarnings("ignore::pytest.PytestUnhandledThreadExceptionWarning")
+@pytest.mark.filterwarnings("ignore::pytest.PytestUnraisableExceptionWarning")
 # Ignore for lower bounds because of plotly==5.12.0
 @pytest.mark.filterwarnings("ignore:.*The behavior of DatetimeProperties.to_pydatetime is deprecated.*:FutureWarning")
 @pytest.mark.parametrize(
