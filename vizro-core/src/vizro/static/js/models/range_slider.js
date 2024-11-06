@@ -1,4 +1,4 @@
-export function _update_range_slider_values(
+function update_range_slider_values(
   start,
   end,
   slider,
@@ -51,3 +51,8 @@ export function _update_range_slider_values(
 
   return [start_value, end_value, slider_value, slider_value];
 }
+
+window.dash_clientside = {
+  ...window.dash_clientside,
+  range_slider: { update_range_slider_values: update_range_slider_values },
+};

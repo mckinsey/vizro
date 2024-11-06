@@ -1,11 +1,12 @@
 """Flow charts."""
 
 import vizro.models as vm
-from custom_charts import sankey
 
-from pages._pages_utils import PAGE_GRID, make_code_clipboard_from_py_file, sankey_data
+from pages._factories import waterfall_factory
+from pages._pages_utils import PAGE_GRID, make_code_clipboard_from_py_file
+from pages.examples import sankey
 
-sankey = vm.Page(
+sankey_page = vm.Page(
     title="Sankey",
     path="flow/sankey",
     layout=vm.Layout(grid=PAGE_GRID),
@@ -31,17 +32,21 @@ sankey = vm.Page(
             possible.
         """
         ),
-        vm.Graph(
-            figure=sankey(
-                sankey_data,
-                labels=["A1", "A2", "B1", "B2", "C1", "C2"],
-                source="Origin",
-                target="Destination",
-                value="Value",
-            ),
+        vm.Graph(figure=sankey.fig),
+        vm.Tabs(
+            tabs=[
+                vm.Container(
+                    title="Vizro dashboard", components=[make_code_clipboard_from_py_file("sankey.py", mode="vizro")]
+                ),
+                vm.Container(
+                    title="Plotly figure",
+                    components=[make_code_clipboard_from_py_file("sankey.py", mode="plotly")],
+                ),
+            ]
         ),
-        make_code_clipboard_from_py_file("sankey.py"),
     ],
 )
 
-pages = [sankey]
+waterfall_page = waterfall_factory("flow")
+
+pages = [sankey_page, waterfall_page]

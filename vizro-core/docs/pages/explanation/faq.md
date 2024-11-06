@@ -16,9 +16,9 @@ Here are some answers to frequently asked questions:
 * [How does Vizro differ from Dash or Streamlit?](#how-does-vizro-differ-from-dash-or-streamlit)
 * [How does Vizro compare with Python packages and business intelligence (BI) tools?](#how-does-vizro-compare-with-python-packages-and-business-intelligence-bi-tools)
 * [When would an alternative to Vizro be more suitable?](#when-would-an-alternative-to-vizro-be-more-suitable)
-* [I want to contribute to Vizro, how can I find out more?](contributing.md)
-* [I still have a question. Where can I ask it?](contributing.md/#got-a-vizro-question)
-
+* [How can I report a bug?](#how-can-i-report-a-bug)
+* [How can I request a feature?](#how-can-i-request-a-feature)
+* [I still have a question. Where can I ask it?](#i-still-have-a-question-where-can-i-ask-it)
 
 ## Which browsers does Vizro support?
 Vizro supports the [Chrome browser](https://www.google.com/intl/en_us/chrome/).
@@ -34,7 +34,9 @@ We do not consider frontend changes (such as changing the appearance of a compon
 
 ## Where can I find example dashboards?
 
-Check out our [examples section](../examples/examples.md) which describes the contents of the `examples` folder of the [Vizro GitHub repository](https://github.com/mckinsey/vizro/tree/main/vizro-core/examples).
+For a gallery of examples showing Vizro in action, take a look at [vizro.mckinsey.com](https://vizro.mckinsey.com). The gallery links to the [Vizro HuggingFace collection](https://huggingface.co/vizro), which includes complete code accessed for each example by selecting "Files" in the top right menu.
+
+We also maintain a separate, curated page of [videos, blog posts, and examples of Vizro usage from our community](your-examples.md).
 
 ## Why should I use Vizro?
 
@@ -159,3 +161,17 @@ There are a number of cases where alternatives to Vizro may be more suitable, in
 - where Python developers are already very comfortable leveraging other Python packages
 
 <!-- vale on -->
+
+## How can I report a bug?
+
+Head over to our [GitHub issues](https://github.com/mckinsey/vizro/issues) and [create a new bug report](https://github.com/mckinsey/vizro/issues/new/choose). We will try to reproduce the bug you've reported and follow up with the next steps.
+
+## How can I request a feature?
+
+To raise a feature request, head to our [GitHub issues](https://github.com/mckinsey/vizro/issues) and [create a new feature request](https://github.com/mckinsey/vizro/issues/new/choose). The team will then try to understand the request in more detail, explore the feasibility and prioritize it in relation to the current roadmap. We will get back to you as soon as possible with an estimate of whether and when this feature could be released.
+
+## I still have a question. Where can I ask it?
+
+We are happy to receive general questions around Vizro. Take a look at our [GitHub issues](https://github.com/mckinsey/vizro/issues) and [create a new issue](https://github.com/mckinsey/vizro/issues/new/choose) by clicking "General question".
+
+Several Vizro team members are active on the Plotly Community Forum. If you'd like to also ask your question there then create a topic in the [Dash Python category](https://community.plotly.com/c/python/25) and make it clear that your question concerns Vizro.

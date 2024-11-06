@@ -1,4 +1,4 @@
-from typing import Dict, List, Literal, Optional
+from typing import Literal, Optional
 
 from dash import ClientsideFunction, Input, Output, State, clientside_callback, dcc, html
 
@@ -32,10 +32,10 @@ class Slider(VizroBaseModel):
         min (Optional[float]): Start value for slider. Defaults to `None`.
         max (Optional[float]): End value for slider. Defaults to `None`.
         step (Optional[float]): Step-size for marks on slider. Defaults to `None`.
-        marks (Optional[Dict[int, Union[str, dict]]]): Marks to be displayed on slider. Defaults to `{}`.
+        marks (Optional[dict[int, Union[str, dict]]]): Marks to be displayed on slider. Defaults to `{}`.
         value (Optional[float]): Default value for slider. Defaults to `None`.
         title (str): Title to be displayed. Defaults to `""`.
-        actions (List[Action]): See [`Action`][vizro.models.Action]. Defaults to `[]`.
+        actions (list[Action]): See [`Action`][vizro.models.Action]. Defaults to `[]`.
 
     """
 
@@ -43,10 +43,10 @@ class Slider(VizroBaseModel):
     min: Optional[float] = Field(None, description="Start value for slider.")
     max: Optional[float] = Field(None, description="End value for slider.")
     step: Optional[float] = Field(None, description="Step-size for marks on slider.")
-    marks: Optional[Dict[float, str]] = Field({}, description="Marks to be displayed on slider.")
+    marks: Optional[dict[float, str]] = Field({}, description="Marks to be displayed on slider.")
     value: Optional[float] = Field(None, description="Default value for slider.")
     title: str = Field("", description="Title to be displayed.")
-    actions: List[Action] = []
+    actions: list[Action] = []
 
     _dynamic: bool = PrivateAttr(False)
 
@@ -60,11 +60,13 @@ class Slider(VizroBaseModel):
     _set_default_marks = validator("marks", allow_reuse=True, always=True)(set_default_marks)
     _set_actions = _action_validator_factory("value")
 
-    def __call__(self, on_page_load_value=None):
-        return self._build_static(on_page_load_value=on_page_load_value)
+    def __call__(self, current_value=None, new_min=None, new_max=None, **kwargs):
+        return self._build_static(current_value=current_value, new_min=new_min, new_max=new_max, **kwargs)
 
-    def _build_static(self, is_dynamic_build=False, on_page_load_value=None):
-        init_value = on_page_load_value or self.value or self.min
+    def _build_static(self, is_dynamic_build=False, current_value=None, new_min=None, new_max=None, **kwargs):
+        _min = new_min if new_min else self.min
+        _max = new_max if new_max else self.max
+        init_value = current_value or self.value or _min
 
         output = [
             Output(f"{self.id}_end_value", "value"),
@@ -79,7 +81,7 @@ class Slider(VizroBaseModel):
         ]
 
         clientside_callback(
-            ClientsideFunction(namespace="clientside", function_name="update_slider_values"),
+            ClientsideFunction(namespace="slider", function_name="update_slider_values"),
             output=output,
             inputs=inputs,
         )
@@ -117,7 +119,7 @@ class Slider(VizroBaseModel):
 
         return html.Div(
             children=[
-                dcc.Store(f"{self.id}_callback_data", data={"id": self.id, "min": self.min, "max": self.max, "is_dynamic_build": is_dynamic_build}),
+                dcc.Store(f"{self.id}_callback_data", data={"id": self.id, "min": _min, "max": _max, "is_dynamic_build": is_dynamic_build}),
                 html.Div(
                     children=[
                         dbc.Label(children=self.title, html_for=self.id) if self.title else None,
@@ -127,8 +129,8 @@ class Slider(VizroBaseModel):
                                     id=f"{self.id}_end_value",
                                     type="number",
                                     placeholder="max",
-                                    min=self.min,
-                                    max=self.max,
+                                    min=_min,
+                                    max=_max,
                                     step=self.step,
                                     value=init_value,
                                     persistence=True,
@@ -146,8 +148,8 @@ class Slider(VizroBaseModel):
                 ),
                 dcc.Slider(
                     id=self.id,
-                    min=self.min,
-                    max=self.max,
+                    min=_min,
+                    max=_max,
                     step=self.step,
                     marks=self.marks,
                     value=init_value,

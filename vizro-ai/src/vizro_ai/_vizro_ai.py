@@ -1,6 +1,6 @@
 import logging
 from functools import wraps
-from typing import List, Optional, Union
+from typing import Optional, Union
 
 import pandas as pd
 import plotly.graph_objects as go
@@ -96,9 +96,9 @@ class VizroAI:
         else:
             return response.get_fig_object(data_frame=df)
 
-    def _dashboard(
+    def dashboard(
         self,
-        dfs: List[pd.DataFrame],
+        dfs: list[pd.DataFrame],
         user_input: str,
         return_elements: bool = False,
     ) -> Union[DashboardOutputs, vm.Dashboard]:

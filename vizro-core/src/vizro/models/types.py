@@ -8,7 +8,7 @@ import importlib
 import inspect
 from contextlib import contextmanager
 from datetime import date
-from typing import Any, Dict, List, Literal, Protocol, Union, runtime_checkable
+from typing import Any, Literal, Protocol, Union, runtime_checkable
 
 import plotly.io as pio
 
@@ -22,7 +22,9 @@ except ImportError:  # pragma: no cov
     from pydantic.schema import SkipField
 
 
-from typing_extensions import Annotated, TypedDict
+from typing import Annotated
+
+from typing_extensions import TypedDict
 
 from vizro.charts._charts_utils import _DashboardReadyFigure
 
@@ -170,7 +172,7 @@ class CapturedCallable:
         return self.__function
 
     @classmethod
-    def __modify_schema__(cls, field_schema: Dict[str, Any], field: ModelField):
+    def __modify_schema__(cls, field_schema: dict[str, Any], field: ModelField):
         """Generates schema for field of this type."""
         raise SkipField(f"{cls.__name__} {field.name} is excluded from the schema.")
 
@@ -191,7 +193,7 @@ class CapturedCallable:
     @classmethod
     def _parse_json(
         cls,
-        captured_callable_config: Union[_SupportsCapturedCallable, CapturedCallable, Dict[str, Any]],
+        captured_callable_config: Union[_SupportsCapturedCallable, CapturedCallable, dict[str, Any]],
         field: ModelField,
     ) -> Union[CapturedCallable, _SupportsCapturedCallable]:
         """Parses captured_callable_config specification from JSON/YAML.
@@ -276,7 +278,7 @@ class CapturedCallable:
 def _pio_templates_default():
     """Sets pio.templates.default to "vizro_dark" and then reverts it.
 
-    This is to ensure that in a Jupyter notebook captured charts look the same as when they're in the dashboard. When
+    This is to ensure that in a Jupyter Notebook captured charts look the same as when they're in the dashboard. When
     the context manager exits the global theme is reverted just to keep things clean (e.g. if you really wanted to,
     you could compare a captured vs. non-captured chart in the same Python session).
 
@@ -392,8 +394,8 @@ class capture:
                     fig = _DashboardReadyFigure()
                 else:
                     # Standard case for px.scatter(df: pd.DataFrame).
-                    # Set theme for the figure that gets shown in a Jupyter notebook. This is to ensure that in a
-                    # Jupyter notebook captured charts look the same as when they're in the dashboard. To mimic this,
+                    # Set theme for the figure that gets shown in a Jupyter Notebook. This is to ensure that in a
+                    # Jupyter Notebook captured charts look the same as when they're in the dashboard. To mimic this,
                     # we first use _pio_templates_default to set the global theme, as is done in the dashboard, and then
                     # do the fig.layout.template update that is achieved by the theme selector.
                     # We don't want to update the captured_callable in the same way, since it's only used inside the
@@ -452,7 +454,7 @@ class capture:
 # Types used for selector values and options. Note the docstrings here are rendered on the API reference.
 SingleValueType = Union[StrictBool, float, str, date]
 """Permissible value types for single-value selectors. Values are displayed as default."""
-MultiValueType = Union[List[StrictBool], List[float], List[str], List[date]]
+MultiValueType = Union[list[StrictBool], list[float], list[str], list[date]]
 """Permissible value types for multi-value selectors. Values are displayed as default."""
 
 
@@ -463,7 +465,7 @@ class OptionsDictType(TypedDict):
     value: SingleValueType
 
 
-OptionsType = Union[List[StrictBool], List[float], List[str], List[date], List[OptionsDictType]]
+OptionsType = Union[list[StrictBool], list[float], list[str], list[date], list[OptionsDictType]]
 """Permissible options types for selectors. Options are available choices for user to select from."""
 
 # All the below types rely on models and so must use ForwardRef (i.e. "Checklist" rather than actual Checklist class).
@@ -498,7 +500,7 @@ ComponentType = Annotated[
 [`Button`][vizro.models.Button], [`Card`][vizro.models.Card], [`Table`][vizro.models.Table],
 [`Graph`][vizro.models.Graph] or [`AgGrid`][vizro.models.AgGrid]."""
 
-NavPagesType = Union[List[str], Dict[str, List[str]]]
+NavPagesType = Union[list[str], dict[str, list[str]]]
 "List of page IDs or a mapping from name of a group to a list of page IDs (for hierarchical sub-navigation)."
 
 NavSelectorType = Annotated[

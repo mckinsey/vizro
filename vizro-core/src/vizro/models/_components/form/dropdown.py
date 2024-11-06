@@ -1,6 +1,6 @@
 import math
 from datetime import date
-from typing import List, Literal, Optional, Union
+from typing import Literal, Optional, Union
 
 from dash import dcc, html
 
@@ -19,7 +19,7 @@ from vizro.models._models_utils import _log_call
 from vizro.models.types import MultiValueType, OptionsType, SingleValueType
 
 
-def _get_list_of_labels(full_options: OptionsType) -> Union[List[StrictBool], List[float], List[str], List[date]]:
+def _get_list_of_labels(full_options: OptionsType) -> Union[list[StrictBool], list[float], list[str], list[date]]:
     """Returns a list of labels from the selector options provided."""
     if all(isinstance(option, dict) for option in full_options):
         return [option["label"] for option in full_options]  # type: ignore[index]
@@ -55,7 +55,7 @@ class Dropdown(VizroBaseModel):
             [`MultiValueType`][vizro.models.types.MultiValueType]. Defaults to `None`.
         multi (bool): Whether to allow selection of multiple values. Defaults to `True`.
         title (str): Title to be displayed. Defaults to `""`.
-        actions (List[Action]): See [`Action`][vizro.models.Action]. Defaults to `[]`.
+        actions (list[Action]): See [`Action`][vizro.models.Action]. Defaults to `[]`.
 
     """
 
@@ -64,7 +64,7 @@ class Dropdown(VizroBaseModel):
     value: Optional[Union[SingleValueType, MultiValueType]] = None
     multi: bool = Field(True, description="Whether to allow selection of multiple values")
     title: str = Field("", description="Title to be displayed")
-    actions: List[Action] = []
+    actions: list[Action] = []
 
     # A private property that allows dynamically updating components
     # TODO: Consider making the _dynamic public later. The same property also could be used for all other components.
@@ -89,11 +89,12 @@ class Dropdown(VizroBaseModel):
         return multi
 
     # Convenience wrapper/syntactic sugar.
-    def __call__(self, **kwargs):
-        return self._build_static()
+    def __call__(self, new_options=None, **kwargs):
+        return self._build_static(new_options=new_options, **kwargs)
 
-    def _build_static(self):
-        full_options, default_value = get_options_and_default(options=self.options, multi=self.multi)
+    def _build_static(self, new_options=None, **kwargs):
+        options = new_options if new_options else self.options
+        full_options, default_value = get_options_and_default(options=options, multi=self.multi)
         option_height = _calculate_option_height(full_options)
 
         return html.Div(

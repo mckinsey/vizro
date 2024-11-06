@@ -8,6 +8,26 @@ Even if you are an experienced data practitioner, Vizro-AI optimizes how you cre
 
 <img src=".//assets/readme/readme_animation.gif" alt="Gif to demonstrate vizro-ai">
 
+Below is a table of the Vizro components currently supported by Vizro-AI. This list is not exhaustive, and we are actively working on adding more features to Vizro-AI.
+
+| Feature type         | Feature                                                                                                                | Availability |
+|----------------------|------------------------------------------------------------------------------------------------------------------------|--------------|
+| **Components**       | [Graph](https://vizro.readthedocs.io/en/stable/pages/user-guides/graph/)                                               | ✔            |
+|                      | [AG Grid](https://vizro.readthedocs.io/en/stable/pages/user-guides/table/#ag-grid)                                     | ✔            |
+|                      | [Card](https://vizro.readthedocs.io/en/stable/pages/user-guides/card-button/)                                          | ✔            |
+|                      | [Button](https://vizro.readthedocs.io/en/stable/pages/user-guides/card-button/)                                        | ✖            |
+|                      | [Tabs](https://vizro.readthedocs.io/en/stable/pages/user-guides/tabs/)                                                 | ✖            |
+|                      | [Containers](https://vizro.readthedocs.io/en/stable/pages/user-guides/container/)                                      | ✖            |
+| **Controls**         | [Filter](https://vizro.readthedocs.io/en/stable/pages/user-guides/filters/)                                            | ✔            |
+|                      | [Parameter](https://vizro.readthedocs.io/en/stable/pages/user-guides/parameters/)                                      | ✖            |
+| **Navigation**       | [Default navigation](https://vizro.readthedocs.io/en/stable/pages/user-guides/navigation/#use-the-default-navigation)  | ✔            |
+|                      | [Custom navigation](https://vizro.readthedocs.io/en/stable/pages/user-guides/navigation/#customize-the-navigation-bar) | ✖            |
+| **Layout**           | [Layout](https://vizro.readthedocs.io/en/stable/pages/user-guides/layouts/)                                            | ✔            |
+| **Dashboard header** | [Dashboard title](https://vizro.readthedocs.io/en/stable/pages/user-guides/dashboard/)                                 | ✔            |
+|                      | [Logo](https://vizro.readthedocs.io/en/stable/pages/user-guides/dashboard/)                                            | ✖            |
+
+If a feature you need for your dashboard isn't currently supported by Vizro-AI you can [retrieve the dashboard code](https://vizro.readthedocs.io/projects/vizro-ai/en/vizro-ai-0.2.3/pages/user-guides/retrieve-dashboard-code/) and add the missing components before running the dashboard.
+
 <div class="grid cards" markdown>
 
 -   :fontawesome-solid-forward-fast:{ .lg .middle } __New to Vizro-AI?__
@@ -26,7 +46,6 @@ Even if you are an experienced data practitioner, Vizro-AI optimizes how you cre
     [:octicons-arrow-right-24: Model usage](pages/user-guides/customize-vizro-ai.md)</br>
     [:octicons-arrow-right-24: Create advanced charts](pages/user-guides/create-advanced-charts.md)</br>
     [:octicons-arrow-right-24: Add charts to a dashboard](pages/user-guides/add-generated-chart-usecase.md)</br>
-    [:octicons-arrow-right-24: Generate a complex dashboard](pages/user-guides/create-complex-dashboard.md)</br>
     [:octicons-arrow-right-24: Retrieve code for a generated dashboard](pages/user-guides/retrieve-dashboard-code.md)
 
 - :material-format-font:{ .lg .middle } __Find out more__

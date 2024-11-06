@@ -1,5 +1,6 @@
+from collections.abc import Mapping
 from contextlib import contextmanager
-from typing import Any, List, Mapping, Optional, Set, Type, Union
+from typing import Annotated, Any, Optional, Union
 
 try:
     from pydantic.v1 import BaseModel, Field, validator
@@ -13,10 +14,10 @@ except ImportError:  # pragma: no cov
 
 import inspect
 import logging
-import subprocess
 import textwrap
 
-from typing_extensions import Annotated
+import autoflake
+import black
 
 from vizro.managers import model_manager
 from vizro.models._models_utils import REPLACEMENT_STRINGS, _log_call
@@ -71,14 +72,14 @@ def _patch_vizro_base_model_dict():
 
 
 def _format_and_lint(code_string: str) -> str:
-    # Tracking https://github.com/astral-sh/ruff/issues/659 for proper python API
+    # Tracking https://github.com/astral-sh/ruff/issues/659 for proper Python API
     # Good example: https://github.com/astral-sh/ruff/issues/8401#issuecomment-1788806462
-    linted = subprocess.check_output(
-        ["ruff", "check", "--fix", "--exit-zero", "--silent", "--isolated", "-"], input=code_string, encoding="utf-8"
-    )
-    formatted = subprocess.check_output(
-        ["ruff", "format", "--silent", "--isolated", "-"], input=linted, encoding="utf-8"
-    )
+    # While we wait for the API, we can use autoflake and black to process code strings
+
+    removed_imports = autoflake.fix_code(code_string, remove_all_unused_imports=True)
+    # Black doesn't yet have a Python API, so format_str might not work at some point in the future.
+    # https://black.readthedocs.io/en/stable/faq.html#does-black-have-an-api
+    formatted = black.format_str(removed_imports, mode=black.Mode())
     return formatted
 
 
@@ -103,7 +104,7 @@ def _dict_to_python(object: Any) -> str:
         fields = ", ".join(f"'{field_name}': {_dict_to_python(value)}" for field_name, value in object.items())
         return "{" + fields + "}"
     elif isinstance(object, list):
-        # Need to do this manually to avoid extra quotation marks that arise when doing repr(List).
+        # Need to do this manually to avoid extra quotation marks that arise when doing repr(list).
         code_string = ", ".join(_dict_to_python(item) for item in object)
         return f"[{code_string}]"
     elif isinstance(object, CapturedCallable):
@@ -116,7 +117,7 @@ def _dict_to_python(object: Any) -> str:
 # are created. An alternative approach to iterating through the model_manager is to recurse through the object as
 # is done in the _dict_to_python function.
 # Note also that these functions find also unintended model_manager additions, a known but accepted limitation.
-def _extract_captured_callable_source() -> Set[str]:
+def _extract_captured_callable_source() -> set[str]:
     from vizro.models.types import CapturedCallable
 
     captured_callable_sources = set()
@@ -139,7 +140,7 @@ def _extract_captured_callable_source() -> Set[str]:
     return captured_callable_sources
 
 
-def _extract_captured_callable_data_info() -> Set[str]:
+def _extract_captured_callable_data_info() -> set[str]:
     from vizro.models.types import CapturedCallable
 
     return {
@@ -179,7 +180,7 @@ class VizroBaseModel(BaseModel):
         model_manager[self.id] = self
 
     @classmethod
-    def add_type(cls, field_name: str, new_type: Type[Any]):
+    def add_type(cls, field_name: str, new_type: type[Any]):
         """Adds a new type to an existing field based on a discriminated union.
 
         Args:
@@ -208,8 +209,8 @@ class VizroBaseModel(BaseModel):
             # Field itself is a non-optional discriminated union, e.g. selector: SelectorType or Optional[SelectorType].
             new_annotation = _add_to_discriminated_union(field.outer_type_)
         elif sub_field is not None and _is_discriminated_union(sub_field):
-            # Field is a list of discriminated union e.g. components: List[ComponentType].
-            new_annotation = List[_add_to_discriminated_union(sub_field.outer_type_)]  # type: ignore[misc]
+            # Field is a list of discriminated union e.g. components: list[ComponentType].
+            new_annotation = list[_add_to_discriminated_union(sub_field.outer_type_)]  # type: ignore[misc]
         else:
             raise ValueError(
                 f"Field '{field_name}' must be a discriminated union or list of discriminated union type. "
@@ -257,11 +258,11 @@ class VizroBaseModel(BaseModel):
     # exists in pydantic v2).
     # Root validators with pre=True are always included, even when exclude_default=True, and so this is needed
     # to potentially exclude fields set this way, like Page.id.
-    def __vizro_exclude_fields__(self) -> Optional[Union[Set[str], Mapping[str, Any]]]:
+    def __vizro_exclude_fields__(self) -> Optional[Union[set[str], Mapping[str, Any]]]:
         return None
 
     def _to_python(
-        self, extra_imports: Optional[Set[str]] = None, extra_callable_defs: Optional[Set[str]] = None
+        self, extra_imports: Optional[set[str]] = None, extra_callable_defs: Optional[set[str]] = None
     ) -> str:
         """Converts a Vizro model to the Python code that would create it.
 
@@ -281,12 +282,12 @@ class VizroBaseModel(BaseModel):
             >>> print(card._to_python())
 
             Further options include adding extra imports and callable definitions. These will be included in the
-            returned python string.
+            returned Python string.
 
             >>> print(
             ...     card._to_python(
-            ...         extra_imports={"from typing import List"},
-            ...         extra_callable_defs={"def test(foo:List[str]): return foo"},
+            ...         extra_imports={"from typing import Optional"},
+            ...         extra_callable_defs={"def test(foo: Optional[str]): return foo"},
             ...     )
             ... )
 
@@ -295,9 +296,7 @@ class VizroBaseModel(BaseModel):
         extra_imports_concat = "\n".join(extra_imports) if extra_imports else None
 
         # CapturedCallable definitions - NOTE that order is not guaranteed
-        callable_defs_set = _extract_captured_callable_source() | (
-            extra_callable_defs if extra_callable_defs else set()
-        )
+        callable_defs_set = _extract_captured_callable_source() | (extra_callable_defs or set())
         callable_defs_concat = "\n".join(callable_defs_set) if callable_defs_set else None
 
         # Data Manager
@@ -317,7 +316,7 @@ class VizroBaseModel(BaseModel):
         data_settings_template = DATA_TEMPLATE.format(data_setting=data_defs_concat) if data_defs_concat else ""
         unformatted_code = TO_PYTHON_TEMPLATE.format(
             code=model_code,
-            extra_imports=extra_imports_concat if extra_imports_concat else "",
+            extra_imports=extra_imports_concat or "",
             callable_defs_template=callable_defs_template,
             data_settings_template=data_settings_template,
         )

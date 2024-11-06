@@ -3,7 +3,7 @@
 import logging
 import re
 from collections import Counter
-from typing import List, Optional, Tuple, Union
+from typing import Optional, Union
 
 try:
     from pydantic.v1 import BaseModel, Field, PrivateAttr, ValidationError, root_validator, validator
@@ -30,12 +30,12 @@ class PagePlan(BaseModel):
         make a concise and descriptive title from the components.
         """,
     )
-    components_plan: List[ComponentPlan] = Field(
+    components_plan: list[ComponentPlan] = Field(
         ..., description="List of components. Must contain at least one component."
     )
-    controls_plan: List[ControlPlan] = Field([], description="Controls of the page.")
+    controls_plan: list[ControlPlan] = Field([], description="Controls of the page.")
     layout_plan: LayoutPlan = Field(None, description="Layout of components on the page.")
-    unsupported_specs: List[str] = Field(
+    unsupported_specs: list[str] = Field(
         [],
         description="""
         List of unsupported specs. If there are any unsupported specs,
@@ -43,8 +43,8 @@ class PagePlan(BaseModel):
         """,
     )
 
-    _components: List[Union[vm.Card, vm.AgGrid, vm.Figure]] = PrivateAttr()
-    _controls: List[vm.Filter] = PrivateAttr()
+    _components: list[Union[vm.Card, vm.AgGrid, vm.Figure]] = PrivateAttr()
+    _controls: list[vm.Filter] = PrivateAttr()
     _layout: vm.Layout = PrivateAttr()
     _components_code: dict = PrivateAttr()
     _components_imports: dict = PrivateAttr()
@@ -170,7 +170,7 @@ class PagePlan(BaseModel):
 
         return controls
 
-    def create(self, model, all_df_metadata) -> Tuple[Union[vm.Page, None], Optional[str], Optional[str]]:
+    def create(self, model, all_df_metadata) -> tuple[Union[vm.Page, None], Optional[str], Optional[str]]:
         """Create the page."""
         page_desc = f"Building page: {self.title}"
         logger.info(page_desc)

@@ -1,6 +1,6 @@
 """Pre-defined action function "_on_page_load" to be reused in `action` parameter of VizroBaseModels."""
 
-from typing import Any, Dict, List
+from typing import Any
 
 from dash import ctx
 
@@ -11,7 +11,7 @@ from vizro.managers import model_manager, data_manager
 
 
 @capture("action")
-def _on_page_load(targets: List[ModelID], **inputs: Dict[str, Any]) -> Dict[str, Any]:
+def _on_page_load(targets: list[ModelID], **inputs: dict[str, Any]) -> dict[str, Any]:
     """Applies controls to charts on page once the page is opened (or refreshed).
 
     Args:
@@ -53,10 +53,13 @@ def _on_page_load(targets: List[ModelID], **inputs: Dict[str, Any]) -> Dict[str,
             # filter_obj._set_categorical_selectors_options(force=True, current_value=[])
 
             # 2. "new_options" DOES include the "current_value"
-            filter_obj._set_categorical_selectors_options(force=True, current_value=current_value)
-            filter_obj._set_numerical_and_temporal_selectors_values(force=True, current_value=current_value)
+            # filter_obj._set_categorical_selectors_options(force=True, current_value=current_value)
+            # filter_obj._set_numerical_and_temporal_selectors_values(force=True, current_value=current_value)
 
-            return_obj[filter_id] = filter_obj.selector(on_page_load_value=current_value)
+            # return_obj[filter_id] = filter_obj.selector(on_page_load_value=current_value)
+
+
+            return_obj[filter_id] = filter_obj(current_value=current_value)
 
     print("ON PAGE LOAD - END\n")
 

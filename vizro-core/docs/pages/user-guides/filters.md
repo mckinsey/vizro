@@ -10,8 +10,8 @@ This model enables the automatic creation of [selectors](../user-guides/selector
 
 To add a filter to your page, do the following:
 
-- add the [`Filter`][vizro.models.Filter] model into the `controls` argument of the [`Page`][vizro.models.Page] model
-- configure the `column` argument, which denotes the target column to be filtered
+1. add the [`Filter`][vizro.models.Filter] model into the `controls` argument of the [`Page`][vizro.models.Page] model
+2. configure the `column` argument, which denotes the target column to be filtered
 
 By default, all components on a page with such a `column` present will be filtered. The selector type will be chosen
 automatically based on the target column, for example, a dropdown for categorical data, a range slider for numerical data, or a date picker for temporal data.

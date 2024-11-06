@@ -11,6 +11,56 @@ See the fragment files in the [changelog.d directory](https://github.com/mckinse
 
 <!-- scriv-insert-here -->
 
+<a id='changelog-0.1.26'></a>
+
+# 0.1.26 — 2024-10-30
+
+## Removed
+
+- Drop support for Python 3.8. ([#813](https://github.com/mckinsey/vizro/pull/813))
+
+## Added
+
+- Add support for Python 3.13. ([#813](https://github.com/mckinsey/vizro/pull/813))
+
+## Fixed
+
+- Fix paths to Vizro assets on Windows. ([#837](https://github.com/mckinsey/vizro/pull/837))
+
+<a id='changelog-0.1.25'></a>
+
+# 0.1.25 — 2024-10-15
+
+## Added
+
+- All Vizro resources are served through a CDN when `serve_locally=False`. ([#775](https://github.com/mckinsey/vizro/pull/775))
+
+## Fixed
+
+- Remove extraneous `<link>` to font file. ([#775](https://github.com/mckinsey/vizro/pull/775))
+
+- Fix user override of Vizro's JavaScript resources. ([#775](https://github.com/mckinsey/vizro/pull/775))
+
+- Remove unnecessarily repeated loading of data. ([#802](https://github.com/mckinsey/vizro/pull/802))
+
+<a id='changelog-0.1.24'></a>
+
+# 0.1.24 — 2024-10-01
+
+## Added
+
+- Add `id` to `title` of `Graph`, `Table`, `AgGrid` and `Container`. ([#705](https://github.com/mckinsey/vizro/pull/705))
+
+- Theme switcher can now switch between light and dark logos. ([#745](https://github.com/mckinsey/vizro/pull/745))
+
+## Changed
+
+- Changed dependency from `ruff` to `black` and `autoflake` in order to facilitate installation on pyodide. ([#757](https://github.com/mckinsey/vizro/pull/757))
+
+## Fixed
+
+- Enable overwriting global `font-family` in vizro chart templates. ([#717](https://github.com/mckinsey/vizro/pull/717))
+
 <a id='changelog-0.1.23'></a>
 
 # 0.1.23 — 2024-09-12

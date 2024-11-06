@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from typing import TYPE_CHECKING, List, Literal
+from typing import TYPE_CHECKING, Literal
 
 from dash import html
 
@@ -24,13 +24,13 @@ class Form(VizroBaseModel):
 
     Args:
         type (Literal["form"]): Defaults to `"form"`.
-        components (List[FormComponentType]): List of components used in the form.
+        components (list[FormComponentType]): List of components used in the form.
         layout (Layout): Defaults to `None`.
 
     """
 
     type: Literal["form"] = "form"
-    components: List[_FormComponentType]
+    components: list[_FormComponentType]
     layout: Layout = None  # type: ignore[assignment]
 
     # Re-used validators

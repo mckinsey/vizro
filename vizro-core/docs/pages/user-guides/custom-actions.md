@@ -60,7 +60,7 @@ The following example shows how to create a custom action that postpones executi
         ```
     === "app.yaml"
         ```yaml
-        # Custom actions are currently only possible via python configuration
+        # Custom actions are currently only possible via Python configuration
         ```
 <!-- vale on -->
 
@@ -115,7 +115,7 @@ The following example shows a custom action that takes the `value` of the `vm.Ra
         ```
     === "app.yaml"
         ```yaml
-        # Custom actions are currently only possible via python configuration
+        # Custom actions are currently only possible via Python configuration
         ```
     === "Result"
         [![ValueAction]][ValueAction]
@@ -177,7 +177,7 @@ property, refer to the Dash documentation on [interactive visualizations](https:
         3. The content of `inputs` will "fill in the gaps" by setting values for the remaining unbound arguments in `my_custom_action`. Here there is one such argument, named `points_data`. Values for these are bound _dynamically at runtime_ to reflect the live state of your dashboard.
     === "app.yaml"
         ```yaml
-        # Custom actions are currently only possible via python configuration
+        # Custom actions are currently only possible via Python configuration
         ```
     === "Result"
         [![CustomAction]][CustomAction]
@@ -249,7 +249,7 @@ If there are multiple `outputs` defined then the return value is iterated throug
         2. These values are assigned to the `outputs` in the same order.
     === "app.yaml"
         ```yaml
-        # Custom actions are currently only possible via python configuration
+        # Custom actions are currently only possible via Python configuration
         ```
     === "Result"
         [![CustomAction2]][CustomAction2]

@@ -4,8 +4,7 @@ on:
   push:
     branches: [main]
   pull_request:
-    branches:
-      - main
+    branches: [main]
 
 env:
   PYTHONUNBUFFERED: 1
@@ -21,8 +20,8 @@ jobs:
       matrix:
         include:
           - label: integration tests
-          - label: notebooks tests
           - label: vizro-ai ui tests
+          - label: component library tests
     steps:
       - name: Passed fork step
         run: echo "Success!"
@@ -36,20 +35,21 @@ jobs:
       matrix:
         include:
           - label: integration tests
-          - label: notebooks test
           - label: vizro-ai ui tests
+          - label: component library tests
     steps:
       - uses: actions/checkout@v4
       - name: Tests trigger
         run: |
           export INPUT_OWNER=mckinsey
           export INPUT_REPO=vizro-qa
+
           if [ "${{ matrix.label }}" == "integration tests" ]; then
             export INPUT_WORKFLOW_FILE_NAME=${{ secrets.VIZRO_QA_INTEGRATION_TESTS_WORKFLOW }}
-          elif [ "${{ matrix.label }}" == "notebooks test" ]; then
-            export INPUT_WORKFLOW_FILE_NAME=${{ secrets.VIZRO_QA_NOTEBOOKS_TESTS_WORKFLOW }}
           elif [ "${{ matrix.label }}" == "vizro-ai ui tests" ]; then
             export INPUT_WORKFLOW_FILE_NAME=${{ secrets.VIZRO_QA_VIZRO_AI_UI_TESTS_WORKFLOW }}
+          elif [ "${{ matrix.label }}" == "component library tests" ]; then
+            export INPUT_WORKFLOW_FILE_NAME=${{ secrets.VIZRO_QA_VIZRO_COMPONENT_LIBRARY_TESTS_WORKFLOW }}
           fi
           export INPUT_GITHUB_TOKEN=${{ secrets.VIZRO_SVC_PAT }}
           export INPUT_REF=main # because we should send existent branch to dispatch workflow

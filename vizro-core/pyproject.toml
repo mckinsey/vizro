@@ -8,30 +8,31 @@ authors = [
 ]
 classifiers = [
   "Programming Language :: Python",
-  "Programming Language :: Python :: 3.8",
   "Programming Language :: Python :: 3.9",
   "Programming Language :: Python :: 3.10",
   "Programming Language :: Python :: 3.11",
-  "Programming Language :: Python :: 3.12"
+  "Programming Language :: Python :: 3.12",
+  "Programming Language :: Python :: 3.13"
 ]
 dependencies = [
   "dash>=2.17.1",  # 2.17.1 needed for no_output fix in clientside_callback
   "dash_bootstrap_components",
   "dash-ag-grid>=31.0.0",
-  "pandas",
+  "pandas>=2",
   "plotly>=5.12.0",
-  "pydantic>=1.10.13",  # must be synced with pre-commit mypy hook manually
+  "pydantic>=1.10.16",  # must be synced with pre-commit mypy hook manually
   "dash_mantine_components<0.13.0",  # 0.13.0 is not compatible with 0.12,
   "flask_caching>=2",
   "wrapt>=1",
-  "ruff"
+  "black",
+  "autoflake"
 ]
 description = "Vizro is a package to facilitate visual analytics."
 dynamic = ["version"]
 license-files = {paths = ["LICENSE.txt"]}
 name = "vizro"
 readme = "README.md"
-requires-python = ">=3.8"
+requires-python = ">=3.9"
 
 [project.optional-dependencies]
 kedro = [
@@ -75,10 +76,10 @@ filterwarnings = [
   "ignore:(?s).*Pyarrow will become a required dependency of pandas:DeprecationWarning",
   # Ignore until plotly fixes so the warning is no longer raised:
   "ignore:When grouping with a length-1 list-like, you will need to pass a length-1 tuple to get_group:FutureWarning",
-  # Ignore warning when providing a custom format string to the KPI cards:
-  "ignore:Custom format string detected.",
-  # Ignore warning when using the fig.layout.title inside examples
-  "ignore:Using the `title` argument in your Plotly chart function may cause misalignment:UserWarning"
+  # Ignore warning when using the fig.layout.title inside examples:
+  "ignore:Using the `title` argument in your Plotly chart function may cause misalignment:UserWarning",
+  # Ignore warning for Pydantic v1 API and Python 3.13:
+  "ignore:Failing to pass a value to the 'type_params' parameter of 'typing.ForwardRef._evaluate' is deprecated:DeprecationWarning"
 ]
 norecursedirs = ["tests/tests_utils", "tests/js"]
 pythonpath = ["tests/tests_utils"]

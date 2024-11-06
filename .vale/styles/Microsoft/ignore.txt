@@ -68,7 +68,6 @@ Codespaces
 dev
 mypy
 javascript
-gitleaks
 resizable
 LLMs
 untrusted
@@ -76,6 +75,7 @@ Builtins
 Redlisted
 api
 stylings
+uncomment
 uncommenting
 subgrids
 favicon
@@ -95,3 +95,8 @@ dash_ag_grid
 dash_data_table
 Langchain
 Langchain's
+codespace
+codespaces
+uv
+jsDeliver
+dash_table

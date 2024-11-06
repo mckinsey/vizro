@@ -1,13 +1,15 @@
 """Time charts."""
 
 import vizro.models as vm
-import vizro.plotly.express as px
-from custom_charts import categorical_column
 
 from pages._factories import column_and_line_factory, connected_scatter_factory
-from pages._pages_utils import PAGE_GRID, gapminder, make_code_clipboard_from_py_file, stepped_line_data, stocks, tips
+from pages._pages_utils import (
+    PAGE_GRID,
+    make_code_clipboard_from_py_file,
+)
+from pages.examples import area, gantt, heatmap, line, stepped_line, time_column
 
-line = vm.Page(
+line_page = vm.Page(
     title="Line",
     path="time/line",
     layout=vm.Layout(grid=PAGE_GRID),
@@ -30,13 +32,23 @@ line = vm.Page(
             same chart, try to limit yourself to 3-4 to avoid cluttering up your chart.
         """
         ),
-        vm.Graph(figure=px.line(stocks, x="date", y="GOOG")),
-        make_code_clipboard_from_py_file("line.py"),
+        vm.Graph(figure=line.fig),
+        vm.Tabs(
+            tabs=[
+                vm.Container(
+                    title="Vizro dashboard", components=[make_code_clipboard_from_py_file("line.py", mode="vizro")]
+                ),
+                vm.Container(
+                    title="Plotly figure",
+                    components=[make_code_clipboard_from_py_file("line.py", mode="plotly")],
+                ),
+            ]
+        ),
     ],
 )
 
 # Note: Code example for magnitude/column differs from time/column. The text description is the same.
-column = vm.Page(
+column_page = vm.Page(
     id="time-column",
     path="time/column",
     title="Column",
@@ -59,18 +71,23 @@ column = vm.Page(
                 or abbreviations with fuller descriptions below.
         """
         ),
-        vm.Graph(
-            figure=categorical_column(
-                gapminder.query("country == 'Nigeria' and year > 1970"),
-                y="gdpPercap",
-                x="year",
-            )
+        vm.Graph(figure=time_column.fig),
+        vm.Tabs(
+            tabs=[
+                vm.Container(
+                    title="Vizro dashboard",
+                    components=[make_code_clipboard_from_py_file("time_column.py", mode="vizro")],
+                ),
+                vm.Container(
+                    title="Plotly figure",
+                    components=[make_code_clipboard_from_py_file("time_column.py", mode="plotly")],
+                ),
+            ]
         ),
-        make_code_clipboard_from_py_file("time_column.py"),
     ],
 )
 
-area = vm.Page(
+area_page = vm.Page(
     title="Area",
     path="time/area",
     layout=vm.Layout(grid=PAGE_GRID),
@@ -93,15 +110,25 @@ area = vm.Page(
             data series in the same chart, try to limit yourself to 3-4 to maintain clarity and avoid clutter.
         """
         ),
-        vm.Graph(figure=px.area(stocks, x="date", y="GOOG")),
-        make_code_clipboard_from_py_file("area.py"),
+        vm.Graph(figure=area.fig),
+        vm.Tabs(
+            tabs=[
+                vm.Container(
+                    title="Vizro dashboard", components=[make_code_clipboard_from_py_file("area.py", mode="vizro")]
+                ),
+                vm.Container(
+                    title="Plotly figure",
+                    components=[make_code_clipboard_from_py_file("area.py", mode="plotly")],
+                ),
+            ]
+        ),
     ],
 )
 
-connected_scatter = connected_scatter_factory("time")
-column_and_line = column_and_line_factory("time")
+connected_scatter_page = connected_scatter_factory("time")
+column_and_line_page = column_and_line_factory("time")
 
-stepped_line = vm.Page(
+stepped_line_page = vm.Page(
     title="Stepped line",
     path="time/stepped-line",
     layout=vm.Layout(grid=PAGE_GRID),
@@ -122,19 +149,23 @@ stepped_line = vm.Page(
             By contrast, a line chart would suggest that changes occur gradually.
         """
         ),
-        vm.Graph(
-            figure=px.line(
-                data_frame=stepped_line_data,
-                x="year",
-                y="rate",
-                line_shape="vh",
-            ),
+        vm.Graph(figure=stepped_line.fig),
+        vm.Tabs(
+            tabs=[
+                vm.Container(
+                    title="Vizro dashboard",
+                    components=[make_code_clipboard_from_py_file("stepped_line.py", mode="vizro")],
+                ),
+                vm.Container(
+                    title="Plotly figure",
+                    components=[make_code_clipboard_from_py_file("stepped_line.py", mode="plotly")],
+                ),
+            ]
         ),
-        make_code_clipboard_from_py_file("stepped_line.py"),
     ],
 )
 
-heatmap = vm.Page(
+heatmap_page = vm.Page(
     title="Heatmap",
     path="time/heatmap",
     layout=vm.Layout(grid=PAGE_GRID),
@@ -156,8 +187,66 @@ heatmap = vm.Page(
             patterns and correlations.
         """
         ),
-        vm.Graph(figure=px.density_heatmap(tips, x="day", y="size", z="tip", histfunc="avg", text_auto="$.2f")),
-        make_code_clipboard_from_py_file("heatmap.py"),
+        vm.Graph(figure=heatmap.fig),
+        vm.Tabs(
+            tabs=[
+                vm.Container(
+                    title="Vizro dashboard", components=[make_code_clipboard_from_py_file("heatmap.py", mode="vizro")]
+                ),
+                vm.Container(
+                    title="Plotly figure",
+                    components=[make_code_clipboard_from_py_file("heatmap.py", mode="plotly")],
+                ),
+            ]
+        ),
     ],
 )
-pages = [line, column, area, connected_scatter, column_and_line, stepped_line, heatmap]
+
+gantt_page = vm.Page(
+    title="Gantt",
+    path="time/gantt",
+    layout=vm.Layout(grid=PAGE_GRID),
+    components=[
+        vm.Card(
+            text="""
+                #### What is a gantt chart?
+
+                A gantt chart is a type of bar chart that visualizes a project schedule.
+It shows the start and end dates of a project element, such as tasks, activities, or
+events, in a timeline format. Each element is represented by a bar whose length indicates
+its duration.
+
+                &nbsp;
+
+                #### When should I use it?
+
+                Gantt charts are ideal for visualizing project timelines, tracking
+progress, and managing dependencies. They clearly display task start and end dates, making
+it easy to monitor project status and manage interdependencies. However, they can become
+complex if not regularly updated, especially for large projects.
+        """
+        ),
+        vm.Graph(figure=gantt.fig),
+        vm.Tabs(
+            tabs=[
+                vm.Container(
+                    title="Vizro dashboard", components=[make_code_clipboard_from_py_file("gantt.py", mode="vizro")]
+                ),
+                vm.Container(
+                    title="Plotly figure",
+                    components=[make_code_clipboard_from_py_file("gantt.py", mode="plotly")],
+                ),
+            ]
+        ),
+    ],
+)
+pages = [
+    line_page,
+    column_page,
+    area_page,
+    connected_scatter_page,
+    column_and_line_page,
+    stepped_line_page,
+    heatmap_page,
+    gantt_page,
+]

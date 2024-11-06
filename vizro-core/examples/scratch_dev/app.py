@@ -13,8 +13,8 @@ from vizro.managers import data_manager
 
 print("INITIALIZING")
 
-FILTER_COLUMN = "species"
-# FILTER_COLUMN = "sepal_length"
+# FILTER_COLUMN = "species"
+FILTER_COLUMN = "sepal_length"
 
 
 def slow_load(sample_size=3):
@@ -95,7 +95,7 @@ another_page = vm.Page(
             # selector=vm.Dropdown(id="filter_id"),
             # selector=vm.Dropdown(id="filter_id", value=["setosa"]),
 
-            selector=vm.Checklist(id="filter_id"),
+            # selector=vm.Checklist(id="filter_id"),
             # selector=vm.Checklist(id="filter_id", value=["setosa"]),
 
             # selector=vm.Dropdown(id="filter_id", multi=False),
@@ -104,7 +104,7 @@ another_page = vm.Page(
             # selector=vm.RadioItems(id="filter_id"),
             # selector=vm.RadioItems(id="filter_id", value="setosa"),
 
-            # selector=vm.Slider(id="filter_id"),
+            selector=vm.Slider(id="filter_id"),
             # selector=vm.Slider(id="filter_id", value=6),
 
             # selector=vm.RangeSlider(id="filter_id"),

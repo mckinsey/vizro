@@ -22,8 +22,6 @@ The following examples show a possible version of a custom table. In this case t
 ??? example "Custom Dash DataTable"
     === "app.py"
         ```{.python pycafe-link}
-        from typing import List
-
         from dash import dash_table
 
         import vizro.models as vm
@@ -35,7 +33,7 @@ The following examples show a possible version of a custom table. In this case t
 
 
         @capture("table")
-        def my_custom_table(chosen_columns: List[str], data_frame=None):
+        def my_custom_table(chosen_columns: list[str], data_frame=None):
             """Custom table."""
             columns = [{"name": i, "id": i} for i in chosen_columns]
             defaults = {
@@ -74,7 +72,7 @@ The following examples show a possible version of a custom table. In this case t
         ```
     === "app.yaml"
         ```yaml
-        # Custom tables are currently only possible via python configuration
+        # Custom tables are currently only possible via Python configuration
         ```
     === "Result"
         [![Table3]][Table3]
@@ -84,8 +82,6 @@ The following examples show a possible version of a custom table. In this case t
 ??? example "Custom Dash AgGrid"
     === "app.py"
         ```{.python pycafe-link}
-        from typing import List
-
         import vizro.models as vm
         import vizro.plotly.express as px
         from dash_ag_grid import AgGrid
@@ -96,7 +92,7 @@ The following examples show a possible version of a custom table. In this case t
 
 
         @capture("ag_grid")
-        def my_custom_aggrid(chosen_columns: List[str], data_frame=None):
+        def my_custom_aggrid(chosen_columns: list[str], data_frame=None):
             """Custom ag_grid."""
             defaults = {
                 "className": "ag-theme-quartz-dark ag-theme-vizro",
@@ -142,7 +138,7 @@ The following examples show a possible version of a custom table. In this case t
         ```
     === "app.yaml"
         ```yaml
-        # Custom Ag Grids are currently only possible via python configuration
+        # Custom Ag Grids are currently only possible via Python configuration
         ```
     === "Result"
         [![GridCustom]][GridCustom]

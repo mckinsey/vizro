@@ -18,6 +18,7 @@ nav:
       - DASHBOARDS:
           - Generate a complex dashboard: pages/user-guides/create-complex-dashboard.md
           - Retrieve code for a generated dashboard: pages/user-guides/retrieve-dashboard-code.md
+          - Use Vizro-AI methods as Langchain tools: pages/user-guides/vizro-ai-langchain-guide.md
   - API Reference:
       - VizroAI: pages/API-reference/vizro-ai.md
   - Explanation:

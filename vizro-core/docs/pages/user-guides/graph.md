@@ -6,9 +6,9 @@ The [`Graph`][vizro.models.Graph] model is the most used component in many dashb
 
 To add a [`Graph`][vizro.models.Graph] to your page, do the following:
 
-- insert the [`Graph`][vizro.models.Graph] model into the `components` argument of the
+1. insert the [`Graph`][vizro.models.Graph] model into the `components` argument of the
 [`Page`][vizro.models.Page] model
-- enter any of the currently available charts of the open source library [`plotly.express`](https://plotly.com/python/plotly-express/) into the `figure` argument
+2. enter any of the currently available charts of the open source library [`plotly.express`](https://plotly.com/python/plotly-express/) into the `figure` argument
 
 !!! note
 

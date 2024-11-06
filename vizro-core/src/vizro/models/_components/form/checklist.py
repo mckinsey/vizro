@@ -1,4 +1,4 @@
-from typing import List, Literal, Optional
+from typing import Literal, Optional
 
 from dash import html
 
@@ -28,7 +28,7 @@ class Checklist(VizroBaseModel):
         options (OptionsType): See [`OptionsType`][vizro.models.types.OptionsType]. Defaults to `[]`.
         value (Optional[MultiValueType]): See [`MultiValueType`][vizro.models.types.MultiValueType]. Defaults to `None`.
         title (str): Title to be displayed. Defaults to `""`.
-        actions (List[Action]): See [`Action`][vizro.models.Action]. Defaults to `[]`.
+        actions (list[Action]): See [`Action`][vizro.models.Action]. Defaults to `[]`.
 
     """
 
@@ -36,7 +36,7 @@ class Checklist(VizroBaseModel):
     options: OptionsType = []
     value: Optional[MultiValueType] = None
     title: str = Field("", description="Title to be displayed")
-    actions: List[Action] = []
+    actions: list[Action] = []
 
     _dynamic: bool = PrivateAttr(False)
 
@@ -48,11 +48,12 @@ class Checklist(VizroBaseModel):
     _validate_options = root_validator(allow_reuse=True, pre=True)(validate_options_dict)
     _validate_value = validator("value", allow_reuse=True, always=True)(validate_value)
 
-    def __call__(self, **kwargs):
-        return self._build_static()
+    def __call__(self, new_options=None, **kwargs):
+        return self._build_static(new_options=new_options, **kwargs)
 
-    def _build_static(self):
-        full_options, default_value = get_options_and_default(options=self.options, multi=True)
+    def _build_static(self, new_options=None, **kwargs):
+        options = new_options if new_options else self.options
+        full_options, default_value = get_options_and_default(options=options, multi=True)
 
         return html.Fieldset(
             children=[

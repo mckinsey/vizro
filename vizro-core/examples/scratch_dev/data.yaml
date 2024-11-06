@@ -2,5 +2,5 @@ setosa: 5
 versicolor: 10
 virginica: 15
 
-min: 5
+min: 6
 max: 7

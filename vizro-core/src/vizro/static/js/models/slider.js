@@ -1,5 +1,5 @@
-export function _update_slider_values(start, slider, input_store, self_data) {
-  var end_value, trigger_id, is_on_page_load_triggered=false;
+function update_slider_values(start, slider, input_store, self_data) {
+  var end_value, trigger_id;
 
   trigger_id = dash_clientside.callback_context.triggered;
   if (trigger_id.length != 0) {
@@ -30,5 +30,9 @@ export function _update_slider_values(start, slider, input_store, self_data) {
     return [dash_clientside.no_update, dash_clientside.no_update, end_value];
   }
   return [end_value, end_value, end_value];
-
 }
+
+window.dash_clientside = {
+  ...window.dash_clientside,
+  slider: { update_slider_values: update_slider_values },
+};

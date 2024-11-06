@@ -1,6 +1,6 @@
 """Contains utilities to create the action_callback_mapping."""
 
-from typing import Any, Callable, Dict, List, Union
+from typing import Any, Callable, Union
 
 from dash import Output, State, dcc
 
@@ -16,8 +16,8 @@ from vizro.models.types import ControlType
 # Potentially this could be a way to reconcile predefined with custom actions,
 # and make that predefined actions see and add into account custom actions.
 def _get_matching_actions_by_function(
-    page_id: ModelID, action_function: Callable[[Any], Dict[str, Any]]
-) -> List[Action]:
+    page_id: ModelID, action_function: Callable[[Any], dict[str, Any]]
+) -> list[Action]:
     """Gets list of `Actions` on triggered `Page` that match the provided `action_function`."""
     return [
         action
@@ -28,7 +28,7 @@ def _get_matching_actions_by_function(
 
 
 # CALLBACK STATES --------------
-def _get_inputs_of_controls(page: Page, control_type: ControlType) -> List[State]:
+def _get_inputs_of_controls(page: Page, control_type: ControlType) -> list[State]:
     """Gets list of `States` for selected `control_type` of triggered `Page`."""
     return [
         State(component_id=control.selector.id, component_property=control.selector._input_property)
@@ -38,8 +38,8 @@ def _get_inputs_of_controls(page: Page, control_type: ControlType) -> List[State
 
 
 def _get_inputs_of_figure_interactions(
-    page: Page, action_function: Callable[[Any], Dict[str, Any]]
-) -> List[Dict[str, State]]:
+    page: Page, action_function: Callable[[Any], dict[str, Any]]
+) -> list[dict[str, State]]:
     """Gets list of `States` for selected chart interaction `action_function` of triggered `Page`."""
     figure_interactions_on_page = _get_matching_actions_by_function(
         page_id=ModelID(str(page.id)), action_function=action_function
@@ -60,14 +60,14 @@ def _get_inputs_of_figure_interactions(
 
 
 # TODO: Refactor this and util functions once we implement "_get_input_property" method in VizroBaseModel models
-def _get_action_callback_inputs(action_id: ModelID) -> Dict[str, List[Union[State, Dict[str, State]]]]:
+def _get_action_callback_inputs(action_id: ModelID) -> dict[str, list[Union[State, dict[str, State]]]]:
     """Creates mapping of pre-defined action names and a list of `States`."""
     page: Page = model_manager[model_manager._get_model_page_id(model_id=action_id)]
 
     action_input_mapping = {
         "filters": _get_inputs_of_controls(page=page, control_type=Filter),
         "parameters": _get_inputs_of_controls(page=page, control_type=Parameter),
-        # TODO: Probably need to adjust other inputs to follow the same structure List[Dict[str, State]]
+        # TODO: Probably need to adjust other inputs to follow the same structure list[dict[str, State]]
         "filter_interaction": _get_inputs_of_figure_interactions(
             page=page, action_function=filter_interaction.__wrapped__
         ),
@@ -76,7 +76,7 @@ def _get_action_callback_inputs(action_id: ModelID) -> Dict[str, List[Union[Stat
 
 
 # CALLBACK OUTPUTS --------------
-def _get_action_callback_outputs(action_id: ModelID) -> Dict[str, Output]:
+def _get_action_callback_outputs(action_id: ModelID) -> dict[str, Output]:
     """Creates mapping of target names and their `Output`."""
     action_function = model_manager[action_id].function._function
 
@@ -103,23 +103,7 @@ def _get_action_callback_outputs(action_id: ModelID) -> Dict[str, Output]:
     }
 
 
-def _get_on_page_load_callback_outputs(action_id: ModelID) -> Dict[str, Output]:
-    """Creates mapping of target names and their `Output`."""
-    component_targets = _get_action_callback_outputs(action_id=action_id)
-
-    # TODO-WIP: Add only dynamic filters from the current page
-    import vizro.models as vm
-    for filter_id, filter_obj in model_manager._items_with_type(vm.Filter):
-        if filter_obj._dynamic:
-            component_targets[filter_id] = Output(
-                component_id=filter_id,
-                component_property="children",
-            )
-
-    return component_targets
-
-
-def _get_export_data_callback_outputs(action_id: ModelID) -> Dict[str, Output]:
+def _get_export_data_callback_outputs(action_id: ModelID) -> dict[str, Output]:
     """Gets mapping of relevant output target name and `Outputs` for `export_data` action."""
     action = model_manager[action_id]
 
@@ -142,8 +126,23 @@ def _get_export_data_callback_outputs(action_id: ModelID) -> Dict[str, Output]:
     }
 
 
+def _get_on_page_load_callback_outputs(action_id: ModelID) -> dict[str, Output]:
+    """Creates mapping of target names and their `Output`."""
+    component_targets = _get_action_callback_outputs(action_id=action_id)
+
+    # TODO-WIP: Add only dynamic filters from the current page
+    import vizro.models as vm
+    for filter_id, filter_obj in model_manager._items_with_type(vm.Filter):
+        if filter_obj._dynamic:
+            component_targets[filter_id] = Output(
+                component_id=filter_id,
+                component_property="children",
+            )
+
+    return component_targets
+
 # CALLBACK COMPONENTS --------------
-def _get_export_data_callback_components(action_id: ModelID) -> List[dcc.Download]:
+def _get_export_data_callback_components(action_id: ModelID) -> list[dcc.Download]:
     """Creates dcc.Downloads for target components of the `export_data` action."""
     action = model_manager[action_id]
 

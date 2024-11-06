@@ -5,10 +5,9 @@ each chart type used in different groups.
 """
 
 import vizro.models as vm
-import vizro.plotly.express as px
-from custom_charts import butterfly, column_and_line
 
-from pages._pages_utils import PAGE_GRID, ages, gapminder, make_code_clipboard_from_py_file
+from pages._pages_utils import PAGE_GRID, make_code_clipboard_from_py_file
+from pages.examples import butterfly, column_and_line, connected_scatter, waterfall
 
 
 def butterfly_factory(group: str):
@@ -37,8 +36,19 @@ def butterfly_factory(group: str):
                 categories.
             """
             ),
-            vm.Graph(figure=butterfly(ages, x1="Male", x2="Female", y="Age")),
-            make_code_clipboard_from_py_file("butterfly.py"),
+            vm.Graph(figure=butterfly.fig),
+            vm.Tabs(
+                tabs=[
+                    vm.Container(
+                        title="Vizro dashboard",
+                        components=[make_code_clipboard_from_py_file("butterfly.py", mode="vizro")],
+                    ),
+                    vm.Container(
+                        title="Plotly figure",
+                        components=[make_code_clipboard_from_py_file("butterfly.py", mode="plotly")],
+                    ),
+                ]
+            ),
         ],
     )
 
@@ -69,8 +79,19 @@ def connected_scatter_factory(group: str):
                 avoid misinterpretation.
         """
             ),
-            vm.Graph(figure=px.line(gapminder.query("country == 'Australia'"), x="year", y="lifeExp", markers=True)),
-            make_code_clipboard_from_py_file("connected_scatter.py"),
+            vm.Graph(figure=connected_scatter.fig),
+            vm.Tabs(
+                tabs=[
+                    vm.Container(
+                        title="Vizro dashboard",
+                        components=[make_code_clipboard_from_py_file("connected_scatter.py", mode="vizro")],
+                    ),
+                    vm.Container(
+                        title="Plotly figure",
+                        components=[make_code_clipboard_from_py_file("connected_scatter.py", mode="plotly")],
+                    ),
+                ]
+            ),
         ],
     )
 
@@ -99,14 +120,62 @@ def column_and_line_factory(group: str):
                 for other types of data comparisons.
         """
             ),
-            vm.Graph(
-                figure=column_and_line(
-                    gapminder.query("country == 'Vietnam'"),
-                    y_column="gdpPercap",
-                    y_line="lifeExp",
-                    x="year",
-                )
+            vm.Graph(figure=column_and_line.fig),
+            vm.Tabs(
+                tabs=[
+                    vm.Container(
+                        title="Vizro dashboard",
+                        components=[make_code_clipboard_from_py_file("column_and_line.py", mode="vizro")],
+                    ),
+                    vm.Container(
+                        title="Plotly figure",
+                        components=[make_code_clipboard_from_py_file("column_and_line.py", mode="plotly")],
+                    ),
+                ]
             ),
-            make_code_clipboard_from_py_file("column_and_line.py"),
+        ],
+    )
+
+
+def waterfall_factory(group: str):
+    """Reusable function to create the page content for the column chart with a unique ID."""
+    return vm.Page(
+        id=f"{group}-waterfall",
+        path=f"{group}/waterfall",
+        title="Waterfall",
+        layout=vm.Layout(grid=PAGE_GRID),
+        components=[
+            vm.Card(
+                text="""
+
+                #### What is a waterfall chart?
+
+                A waterfall chart is a bar chart that shows the cumulative effect of sequential positive or negative
+                values. It starts with an initial value, displays individual changes as steps, and ends with the
+                final total.
+
+                &nbsp;
+
+                #### When should I use it?
+
+                Use a waterfall chart to visualize how individual factors contribute to a total, such as changes in
+                revenue or costs by category. It helps you understand the incremental impact of each factor, making
+                data analysis and interpretation easier. Ensure all bars and changes are clearly labeled, use consistent
+                colors for positive and negative values, and arrange categories logically to tell a coherent story.
+            """
+            ),
+            vm.Graph(figure=waterfall.fig),
+            vm.Tabs(
+                tabs=[
+                    vm.Container(
+                        title="Vizro dashboard",
+                        components=[make_code_clipboard_from_py_file("waterfall.py", mode="vizro")],
+                    ),
+                    vm.Container(
+                        title="Plotly figure",
+                        components=[make_code_clipboard_from_py_file("waterfall.py", mode="plotly")],
+                    ),
+                ]
+            ),
         ],
     )
