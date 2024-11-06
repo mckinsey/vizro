@@ -2,6 +2,7 @@
 
 from __future__ import annotations
 
+import json
 from collections import defaultdict
 from copy import deepcopy
 from typing import TYPE_CHECKING, Any, Literal, Optional, TypedDict, Union
@@ -23,7 +24,7 @@ class CallbackTriggerDict(TypedDict):
     """Represent dash.ctx.args_grouping item. Shortened as 'ctd' in the code.
 
     Args:
-        id: The component ID. If it`s a pattern matching ID, it will be a dict.
+        id: The component ID. If it's a pattern matching ID, it will be a dict.
         property: The component property used in the callback.
         value: The value of the component property at the time the callback was fired.
         str_id: For pattern matching IDs, it's the stringified dict ID without white spaces.
@@ -210,15 +211,48 @@ def _get_modified_page_figures(
 ) -> dict[str, Any]:
     targets = targets or []
 
-    filtered_data, parameterized_config = _get_targets_data_and_config(
-        ctds_filter=ctds_filter,
-        ctds_filter_interaction=ctds_filter_interaction,
-        ctds_parameters=ctds_parameters,
-        targets=targets,
-    )
+    target_to_data_source_load_key = {}
+
+    # TODO: Check doesn't give duplicates for static data
+    # TODO: separate out _get_parametrized_config for data_frame and general keys
+    for target in targets:
+        # parametrized_config includes a key "data_frame" that is used in the data loading function.
+        parameterized_config = _get_parametrized_config(target=target, ctd_parameters=ctds_parameters)
+        data_source_load_key = json.dumps(
+            {
+                "data_source_name": model_manager[target]["data_frame"],
+                "dynamic_data_load_params": parameterized_config["data_frame"],
+            },
+            sort_keys=True,
+        )
+        target_to_data_source_load_key[target] = data_source_load_key
+
+    data_source_load_key_to_data = {}
+
+    for data_source_load_key in set(target_to_data_source_load_key.values()):
+        data_source_load = json.loads(data_source_load_key)
+        data = data_manager[data_source_load["data_source_name"]].load(**data_source_load["dynamic_data_load_params"])
+        data_source_load_key_to_data[data_source_load_key] = data
 
     outputs: dict[str, Any] = {}
+
+    # TODO: deduplicate filtering operation
     for target in targets:
-        outputs[target] = model_manager[target](data_frame=filtered_data[target], **parameterized_config[target])
+        data_frame = data_source_load_key_to_data[target_to_data_source_load_key[target]]
+        filtered_data = _apply_filters(data_frame=data_frame, ctds_filters=ctds_filter, target=target)
+        filtered_data = _apply_filter_interaction(
+            data_frame=filtered_data, ctds_filter_interaction=ctds_filter_interaction, target=target
+        )
+
+        outputs[target] = model_manager[target](
+            data_frame=filtered_data,
+            **{
+                key: value
+                for key, value in _get_parametrized_config(target=target, ctd_parameters=ctds_parameters).items()
+                if key != "data_frame"
+            },
+        )
+
+    # TODO: think about where filter call goes
 
     return outputs

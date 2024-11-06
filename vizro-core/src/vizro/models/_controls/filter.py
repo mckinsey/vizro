@@ -181,7 +181,8 @@ class Filter(VizroBaseModel):
         # When loading data_frame there are possible keys:
         #  1. target. In worst case scenario this is needed but can lead to unnecessary repeated data loading.
         #  2. data_source_name. No repeated data loading but won't work when applying data_frame parameters at runtime.
-        #  3. target + data_frame parameters keyword-argument pairs. This is the correct key to use at runtime.
+        #  3. data_source_name + data_frame parameters keyword-argument pairs. This is the correct key to use at
+        #  runtime.
         # For now we follow scheme 2 for data loading (due to set() below) and 1 for the returned targeted_data
         # pd.DataFrame, i.e. a separate column for each target even if some data is repeated.
         # TODO: when this works with data_frame parameters load() will need to take arguments and the structures here

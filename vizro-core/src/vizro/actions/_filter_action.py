@@ -28,7 +28,6 @@ def _filter(
 
     Returns:
         Dict mapping target component ids to modified charts/components e.g. {'my_scatter': Figure({})}
-
     """
     return _get_modified_page_figures(
         targets=targets,
