@@ -410,12 +410,13 @@ class TestPreBuildMethod:
         assert filter.selector.max == gapminder.year.max().to_pydatetime().date()
 
     @pytest.mark.parametrize("selector", [vm.Slider, vm.RangeSlider])
-    def test_numerical_min_max_specific(self, selector, managers_one_page_two_graphs):
-        filter = vm.Filter(column="lifeExp", selector=selector(min=3, max=5))
+    @pytest.mark.parametrize("min, max", [(3, 5), (0, 5), (-5, 0)])
+    def test_numerical_min_max_specific(self, selector, min, max, managers_one_page_two_graphs):
+        filter = vm.Filter(column="lifeExp", selector=selector(min=min, max=max))
         model_manager["test_page"].controls = [filter]
         filter.pre_build()
-        assert filter.selector.min == 3
-        assert filter.selector.max == 5
+        assert filter.selector.min == min
+        assert filter.selector.max == max
 
     def test_temporal_min_max_specific(self, managers_one_page_two_graphs):
         filter = vm.Filter(column="year", selector=vm.DatePicker(min="1952-01-01", max="2007-01-01"))

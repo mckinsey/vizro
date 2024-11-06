@@ -124,8 +124,11 @@ class Filter(VizroBaseModel):
         # Set appropriate properties for the selector.
         if isinstance(self.selector, SELECTORS["numerical"] + SELECTORS["temporal"]):
             _min, _max = self._get_min_max(targeted_data)
-            self.selector.min = self.selector.min or _min
-            self.selector.max = self.selector.max or _max
+            # Note that manually set self.selector.min/max = 0 are Falsey but should not be overwritten.
+            if self.selector.min is None:
+                self.selector.min = _min
+            if self.selector.max is None:
+                self.selector.max = _max
         else:
             # Categorical selector.
             self.selector.options = self.selector.options or self._get_options(targeted_data)
