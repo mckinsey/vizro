@@ -34,6 +34,7 @@ exceptions:
   - Azure Event Hub
   - CSS
   - CI/CD
+  - Codespaces
   - DataCatalog
   - Data Catalog
   - Data Manager
@@ -55,6 +56,7 @@ exceptions:
   - Google Cloud Functions
   - Graph
   - GraphQL
+  - Hatch
   - Hook
   - Hooks
   - IDs
@@ -68,6 +70,7 @@ exceptions:
   - Kubernetes Pod
   - Kubernetes Service
   - Lambda
+  - LangChain
   - Linux
   - MySQL
   - Notebook

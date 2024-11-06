@@ -60,7 +60,11 @@ class ChartPlan(BaseModel):
     imports: list[str] = Field(
         ...,
         description="""
-        List of import statements required to render the chart defined by the `chart_code` field.
+        List of import statements required to render the chart defined by the `chart_code` field. Ensure that every
+        import statement is a separate list/array entry: An example of valid list of import statements would be:
+
+        [`import pandas as pd`,
+        `import plotly.express as px`]
         """,
     )
     chart_code: str = Field(

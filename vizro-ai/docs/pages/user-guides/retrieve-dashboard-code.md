@@ -1,8 +1,8 @@
 # Retrieve the code of Vizro-AI generated dashboard
 
-This guide shows how to retrieve the code of a Vizro-AI generated dashboard. The code can be used for further iterations, improvements and deployment.
+This guide shows how to retrieve the code of a Vizro-AI generated dashboard. The code can be used for further iterations, improvements, and deployment.
 
-While Vizro-AI can follow complex user requirements well and generate high-quality dashboards, due to the nature of LLMs, the generated dashboards often only approximately match user expectations. Besides refining the user prompt and re-running Vizro-AI, you can also extract the code and iterate manually to achieve the desired result.
+While Vizro-AI can follow complex user requirements well and generate high-quality dashboards, due to the nature of LLMs, the generated dashboards often only partly match user expectations. Besides refining the user prompt and re-running Vizro-AI, you can also extract the code and iterate manually to achieve the desired result.
 
 
 ## 1. Prepare the data and user prompt

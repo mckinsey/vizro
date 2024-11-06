@@ -16,15 +16,13 @@ except ImportError:
 
 SUPPORTED_MODELS = {
     "OpenAI": [
-        "gpt-4",
         "gpt-4-turbo",
-        "gpt-3.5-turbo",
         "gpt-4o",
         "gpt-4o-mini",
     ],
     "Anthropic": [
-        "claude-3-5-sonnet-20240620",
-        "claude-3-opus-20240229",
+        "claude-3-5-sonnet-latest",
+        "claude-3-opus-latest",
         "claude-3-sonnet-20240229",
         "claude-3-haiku-20240307",
     ],

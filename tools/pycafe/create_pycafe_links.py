@@ -147,6 +147,17 @@ if __name__ == "__main__":
             "isort==5.13.2",
             "plotly==5.24.1",
         ],
+        "vizro-ai/examples/dashboard_ui/": [
+            "vizro-ai>=0.3.0",
+            "black",
+            "openpyxl",
+            "langchain_anthropic",
+            "langchain_mistralai",
+            "greenlet # mock",
+            "tiktoken @ https://py.cafe/files/maartenbreddels/tiktoken-demo/tiktoken-0.7.0-cp312-cp312-pyodide_2024_0_wasm32.whl",
+            "https://py.cafe/files/maartenbreddels/jiter-demo/jiter-0.6.1-cp312-cp312-pyodide_2024_0_wasm32.whl",
+            "https://py.cafe/files/maartenbreddels/tokenizers-demo/tokenizers-0.20.2.dev0-cp312-cp312-pyodide_2024_0_wasm32.whl",
+        ],
     }
     urls = {
         directory: generate_link(directory, extra_requirements)
