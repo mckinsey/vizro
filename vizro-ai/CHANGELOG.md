@@ -17,7 +17,7 @@ See the fragment files in the [changelog.d directory](https://github.com/mckinse
 
 ## Changed
 
-- Changed prompt for `vizro-ai.plot` to provide more guidance for desired import format ([#854](https://github.com/mckinsey/vizro/pull/854))
+- Changed prompt for `vizro-ai.plot` to provide more guidance for desired import format. ([#854](https://github.com/mckinsey/vizro/pull/854))
 
 <a id='changelog-0.3.0'></a>
 
