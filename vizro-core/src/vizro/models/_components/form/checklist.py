@@ -38,6 +38,8 @@ class Checklist(VizroBaseModel):
     title: str = Field("", description="Title to be displayed")
     actions: List[Action] = []
 
+    _dynamic: bool = PrivateAttr(False)
+
     # Component properties for actions and interactions
     _input_property: str = PrivateAttr("value")
 
@@ -46,8 +48,10 @@ class Checklist(VizroBaseModel):
     _validate_options = root_validator(allow_reuse=True, pre=True)(validate_options_dict)
     _validate_value = validator("value", allow_reuse=True, always=True)(validate_value)
 
-    @_log_call
-    def build(self):
+    def __call__(self, **kwargs):
+        return self._build_static()
+
+    def _build_static(self):
         full_options, default_value = get_options_and_default(options=self.options, multi=True)
 
         return html.Fieldset(
@@ -62,3 +66,15 @@ class Checklist(VizroBaseModel):
                 ),
             ]
         )
+
+    def _build_dynamic_placeholder(self):
+        if not self.value:
+            self.value = [get_options_and_default(self.options, multi=True)[1]]
+
+        return self._build_static()
+
+    @_log_call
+    def build(self):
+        # TODO: We don't have to implement _build_dynamic_placeholder, _build_static here. It's possible to:
+        #  if dynamic and self.value is None -> set self.value + return standard build (static)
+        return self._build_dynamic_placeholder() if self._dynamic else self._build_static()

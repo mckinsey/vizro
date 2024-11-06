@@ -34,7 +34,7 @@ export function _update_graph_theme(
 export function _collapse_nav_panel(n_clicks, is_open) {
   if (!n_clicks) {
     /* Automatically collapses left-side if xs and s-devices are detected*/
-    if (window.innerWidth < 576 || window.innerHeight < 576) {
+    if (window.innerWidth < 6 || window.innerHeight < 6) {
       return [
         false,
         {

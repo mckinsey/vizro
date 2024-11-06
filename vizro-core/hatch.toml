@@ -98,7 +98,7 @@ template = "examples"
 
 [envs.examples.env-vars]
 DASH_DEBUG = "true"
-VIZRO_LOG_LEVEL = "DEBUG"
+VIZRO_LOG_LEVEL = "WARNING"
 
 [envs.lower-bounds]
 extra-dependencies = [

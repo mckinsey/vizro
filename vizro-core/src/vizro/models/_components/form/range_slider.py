@@ -50,6 +50,8 @@ class RangeSlider(VizroBaseModel):
     title: str = Field("", description="Title to be displayed.")
     actions: List[Action] = []
 
+    _dynamic: bool = PrivateAttr(False)
+
     # Component properties for actions and interactions
     _input_property: str = PrivateAttr("value")
 
@@ -60,9 +62,12 @@ class RangeSlider(VizroBaseModel):
     _set_default_marks = validator("marks", allow_reuse=True, always=True)(set_default_marks)
     _set_actions = _action_validator_factory("value")
 
+    def __call__(self, on_page_load_value=None):
+        return self._build_static(on_page_load_value=on_page_load_value)
+
     @_log_call
-    def build(self):
-        init_value = self.value or [self.min, self.max]  # type: ignore[list-item]
+    def _build_static(self, is_dynamic_build=False, on_page_load_value=None):
+        init_value = on_page_load_value or self.value or [self.min, self.max]  # type: ignore[list-item]
 
         output = [
             Output(f"{self.id}_start_value", "value"),
@@ -86,7 +91,7 @@ class RangeSlider(VizroBaseModel):
 
         return html.Div(
             children=[
-                dcc.Store(f"{self.id}_callback_data", data={"id": self.id, "min": self.min, "max": self.max}),
+                dcc.Store(f"{self.id}_callback_data", data={"id": self.id, "min": self.min, "max": self.max, "is_dynamic_build": is_dynamic_build}),
                 html.Div(
                     children=[
                         dbc.Label(children=self.title, html_for=self.id) if self.title else None,
@@ -117,7 +122,9 @@ class RangeSlider(VizroBaseModel):
                                     persistence_type="session",
                                     className="slider-text-input-field",
                                 ),
-                                dcc.Store(id=f"{self.id}_input_store", storage_type="session", data=init_value),
+                                dcc.Store(id=f"{self.id}_input_store", storage_type="session", data=self.value)
+                                if is_dynamic_build
+                                else dcc.Store(id=f"{self.id}_input_store", storage_type="session"),
                             ],
                             className="slider-text-input-container",
                         ),
@@ -137,3 +144,14 @@ class RangeSlider(VizroBaseModel):
                 ),
             ]
         )
+
+    def _build_dynamic_placeholder(self):
+        if not self.value:
+            self.value = [self.min, self.max]
+        return self._build_static(is_dynamic_build=True)
+
+    @_log_call
+    def build(self):
+        # TODO: We don't have to implement _build_dynamic_placeholder, _build_static here. It's possible to:
+        #  if dynamic and self.value is None -> set self.value + return standard build (static)
+        return self._build_dynamic_placeholder() if self._dynamic else self._build_static()

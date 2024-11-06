@@ -1,5 +1,7 @@
 from __future__ import annotations
 
+from dash import dcc, html
+
 from typing import List, Literal, Union
 
 import pandas as pd
@@ -25,6 +27,8 @@ from vizro.models._components.form import (
 )
 from vizro.models._models_utils import _log_call
 from vizro.models.types import MultiValueType, SelectorType
+from vizro.models._components.form._form_utils import get_options_and_default
+from vizro.managers._data_manager import _DynamicData
 
 # Ideally we might define these as NumericalSelectorType = Union[RangeSlider, Slider] etc., but that will not work
 # with isinstance checks.
@@ -42,6 +46,10 @@ DISALLOWED_SELECTORS = {
     "temporal": SELECTORS["numerical"],
     "categorical": SELECTORS["numerical"] + SELECTORS["temporal"],
 }
+
+# TODO: Remove this check because all vizro selectors support dynamic mode
+# Tuple of filter selectors that support dynamic mode
+DYNAMIC_SELECTORS = (Dropdown, Checklist, RadioItems, Slider, RangeSlider)
 
 
 def _filter_between(series: pd.Series, value: Union[List[float], List[str]]) -> pd.Series:
@@ -85,6 +93,9 @@ class Filter(VizroBaseModel):
         "If none are given then target all components on the page that use `column`.",
     )
     selector: SelectorType = None
+
+    _dynamic: bool = PrivateAttr(None)
+
     _column_type: Literal["numerical", "categorical", "temporal"] = PrivateAttr()
 
     @validator("targets", each_item=True)
@@ -99,13 +110,15 @@ class Filter(VizroBaseModel):
         self._set_column_type()
         self._set_selector()
         self._validate_disallowed_selector()
+        self._set_dynamic()
         self._set_numerical_and_temporal_selectors_values()
         self._set_categorical_selectors_options()
         self._set_actions()
 
     @_log_call
     def build(self):
-        return self.selector.build()
+        selector_build_obj = self.selector.build()
+        return dcc.Loading(id=self.id, children=selector_build_obj) if self._dynamic else selector_build_obj
 
     def _set_targets(self):
         if not self.targets:
@@ -145,12 +158,41 @@ class Filter(VizroBaseModel):
                 f"with {self._column_type} column '{self.column}'. "
             )
 
-    def _set_numerical_and_temporal_selectors_values(self):
+    def _set_dynamic(self):
+        self._dynamic = False
+
+        # Selector can't be dynamic if:
+        # Selector doesn't support dynamic mode
+        # Selector is categorical and "options" is defined
+        # Selector is numerical/Temporal and "min" and "max" are defined
+        if (
+            not isinstance(self.selector, DYNAMIC_SELECTORS)
+            or getattr(self.selector, "options", False)
+            or any(getattr(self.selector, attr, False) for attr in ["min", "max"])
+        ):
+            return
+
+        for target_id in self.targets:
+            data_source_name = model_manager[target_id]["data_frame"]
+            if isinstance(data_manager[data_source_name], _DynamicData):
+                self._dynamic = True
+                self.selector._dynamic = True
+                return
+
+    def _set_numerical_and_temporal_selectors_values(self, force=False, current_value=None):
         # If the selector is a numerical or temporal selector, and the min and max values are not set, then set them
         # N.B. All custom selectors inherit from numerical or temporal selector should also pass this check
         if isinstance(self.selector, SELECTORS["numerical"] + SELECTORS["temporal"]):
-            min_values = []
-            max_values = []
+            lvalue, hvalue = (
+                (current_value[0], current_value[1])
+                if isinstance(current_value, list) and len(current_value) == 2
+                else (current_value[0], current_value[0])
+                if isinstance(current_value, list) and len(current_value) == 1
+                else (current_value, current_value)
+            )
+
+            min_values = [] if lvalue is None else [lvalue]
+            max_values = [] if hvalue is None else [hvalue]
             for target_id in self.targets:
                 data_source_name = model_manager[target_id]["data_frame"]
                 data_frame = data_manager[data_source_name].load()
@@ -169,16 +211,18 @@ class Filter(VizroBaseModel):
                     f"targeted charts."
                 )
 
-            if self.selector.min is None:
+            if self.selector.min is None or force:
                 self.selector.min = min(min_values)
-            if self.selector.max is None:
+            if self.selector.max is None or force:
                 self.selector.max = max(max_values)
 
-    def _set_categorical_selectors_options(self):
+    def _set_categorical_selectors_options(self, force=False, current_value=None):
         # If the selector is a categorical selector, and the options are not set, then set them
         # N.B. All custom selectors inherit from categorical selector should also pass this check
-        if isinstance(self.selector, SELECTORS["categorical"]) and not self.selector.options:
-            options = set()
+        if isinstance(self.selector, SELECTORS["categorical"]) and (not self.selector.options or force):
+            current_value = current_value or []
+            current_value = current_value if isinstance(current_value, list) else [current_value]
+            options = set(current_value)
             for target_id in self.targets:
                 data_source_name = model_manager[target_id]["data_frame"]
                 data_frame = data_manager[data_source_name].load()
