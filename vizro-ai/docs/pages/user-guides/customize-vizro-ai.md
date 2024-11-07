@@ -8,14 +8,14 @@ Vizro-AI supports **any** model that is available via [Langchain's `BaseChatMode
 
 ### Setting model via string for ease of use
 
-We have created shortcuts with sensible defaults (mainly setting `temperature=0`) for some common vendors. These models can be chosen by using the string format in the tabs below. If no model is provided, the default (currently `"gpt-4o-mini"`) is selected.
+We have created shortcuts with sensible defaults (mainly setting `temperature=0`) for some common vendors. These models can be chosen by using the string format in the tabs below. If no model is supplied, the default (currently `"gpt-4o-mini"`) is selected.
 
 ```py
 vizro_ai = VizroAI(model="<chosen model>")
 ```
 
 !!!note
-    For the string settings to work, you must provide your API key via environment variables. The relevant variable names to be set are noted in each vendor tab.
+    For the string settings to work, you must supply your API key via environment variables. The relevant variable names to be set are noted in each vendor tab.
 
 === "OpenAI"
 
@@ -29,8 +29,6 @@ vizro_ai = VizroAI(model="<chosen model>")
     - `gpt-4o-mini` **default**
     - `gpt-4-turbo`
     - `gpt-4o`
-    - `gpt-4`
-    - `gpt-3.5-turbo`
 
 === "Anthropic"
 
@@ -43,8 +41,8 @@ vizro_ai = VizroAI(model="<chosen model>")
 
     To use Anthropic with Vizro-AI, you must have an account with paid-for credits available. None of the free accounts will suffice. You can check [all available Anthropic models including pricing on their website](https://docs.anthropic.com/en/docs/about-claude/models).
 
-    - `claude-3-5-sonnet-20240620`
-    - `claude-3-opus-20240229`
+    - `claude-3-5-sonnet-latest`
+    - `claude-3-opus-latest`
     - `claude-3-sonnet-20240229`
     - `claude-3-haiku-20240307`
 
@@ -80,7 +78,9 @@ vizro_ai = VizroAI(model="<chosen model>")
 !!!note
     When choosing the string representation, it sometimes can be tricky to have the correct environment variable set for the API key (and potential base URL). In case you cannot get this to work, we recommend instantiating the model directly (see below) and providing the API key via the models parameters.
 
+<!--vale off-->
 ### Setting model via class for additional configuration
+<!--vale on-->
 Beyond passing a string, you can pass **any** model derived from [Langchain's `BaseChatModel` class](https://api.python.langchain.com/en/latest/language_models/langchain_core.language_models.chat_models.BaseChatModel.html#langchain_core.language_models.chat_models.BaseChatModel) that has the [`with_structured_output` method](https://python.langchain.com/v0.2/docs/how_to/structured_output/#the-with_structured_output-method) implemented. An overview of the [most common vendor models supporting this functionality](https://python.langchain.com/v0.2/docs/integrations/chat/) can be found in Langchain's documentation.
 
 When choosing this approach, you can customize your model beyond the chosen default from the string instantiation. The choice of available arguments depends on the specific vendor implementation, but usually the main parameter to tweak is the temperature.
@@ -112,10 +112,10 @@ Passing an instantiated model to `VizroAI` lets you customize it, and additional
 
 ### Chart generation
 
-At the time of writing, we found that for chart creation, some of the leading vendor's "cheaper" models, for example OpenAI's `gpt-4o-mini` and `gpt-3.5` model series, are suitable for basic charting despite their relatively low price points.
+At the time of writing, we found that for chart creation, the leading vendor's "cheaper" models, for example OpenAI's `gpt-4o-mini`, are suitable for basic charting despite their relatively low price points.
 
-Consider upgrading to, in the case of OpenAI the `gpt-4o` and `gpt-4` model series, or in the case of Anthropic the `claude-3-5-sonnet-20240620` model series, for more demanding tasks. The downside of using these models is that they come at a higher cost.
+Consider upgrading to, in the case of OpenAI the `gpt-4o` and `gpt-4` model series, or in the case of Anthropic the `Claude 3.5` model series, for more demanding tasks. The downside of using these models is that they come at a higher cost.
 
 ### Dashboard generation
 
-At the time of writing we find that cheaper models only allow for basic dashboards. For a reasonably complex dashboard we recommend the flagship models of the leading vendors, for example `gpt-4o` or `claude-3-5-sonnet-20240620`.
+At the time of writing we find that cheaper models only work for basic dashboards. For a reasonably complex dashboard we recommend the flagship models of the leading vendors, for example `gpt-4o` or `claude-3-5-sonnet-latest`.
