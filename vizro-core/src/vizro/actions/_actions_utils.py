@@ -48,7 +48,9 @@ def _get_component_actions(component) -> list[Action]:
     )
 
 
-def _apply_filters(data_frame: pd.DataFrame, ctds_filters: list[CallbackTriggerDict], target: str) -> pd.DataFrame:
+def _apply_control_filters(
+    data_frame: pd.DataFrame, ctds_filters: list[CallbackTriggerDict], target: str
+) -> pd.DataFrame:
     for ctd in ctds_filters:
         selector_value = ctd["value"]
         selector_value = selector_value if isinstance(selector_value, list) else [selector_value]
@@ -174,49 +176,38 @@ def _get_parametrized_config(
 
 
 # Helper functions used in pre-defined actions ----
-def _get_target_to_filtered_data(
+def _apply_filters(
+    data: pd.DataFrame,
     ctds_filter: list[CallbackTriggerDict],
     ctds_filter_interaction: list[dict[str, CallbackTriggerDict]],
-    ctds_parameters: list[CallbackTriggerDict],
-    targets: list[ModelID],
+    target: ModelID,
 ):
-    target_to_data_source_load_key = {}
+    # Takes in just one target, so dataframe is filtered repeatedly for every target that uses it.
+    # Potentially this could be de-duplicated but it's not so important since filtering is a relatively fast
+    # operation (compared to data loading).
+    filtered_data = _apply_control_filters(data_frame=data, ctds_filters=ctds_filter, target=target)
+    filtered_data = _apply_filter_interaction(
+        data_frame=filtered_data, ctds_filter_interaction=ctds_filter_interaction, target=target
+    )
+    return filtered_data
 
-    # TODO: Check doesn't give duplicates for static data
 
+def _get_unfiltered_data(
+    ctds_parameters: list[CallbackTriggerDict], targets: list[ModelID]
+) -> dict[ModelID, pd.DataFrame]:
+    # Takes in multiple targets to ensure that data can be loaded efficiently using _multi_load and not repeated for
+    # every single target.
+    # Getting unfiltered data requires data frame parameters. We pass in all ctd_parameters and then find the
+    # data_frame ones by passing data_frame=True in the call to _get_paramaterized_config.
+    multi_data_source_name_load_kwargs = []
     for target in targets:
         dynamic_data_load_params = _get_parametrized_config(
             ctd_parameters=ctds_parameters, target=target, data_frame=True
         )
-        data_source_load_key = json.dumps(
-            {
-                "data_source_name": model_manager[target]["data_frame"],
-                "dynamic_data_load_params": dynamic_data_load_params["data_frame"],
-            },
-            sort_keys=True,
-        )
-        target_to_data_source_load_key[target] = data_source_load_key
+        data_source_name = model_manager[target]["data_frame"]
+        multi_data_source_name_load_kwargs.append((data_source_name, dynamic_data_load_params["data_frame"]))
 
-    # TODO: comment
-    data_source_load_key_to_data = {}
-
-    for data_source_load_key in set(target_to_data_source_load_key.values()):
-        data_source_load = json.loads(data_source_load_key)
-        data = data_manager[data_source_load["data_source_name"]].load(**data_source_load["dynamic_data_load_params"])
-        data_source_load_key_to_data[data_source_load_key] = data
-
-    target_to_filtered_data = {}
-
-    # TODO: deduplicate filtering operation - save for future
-    for target in targets:
-        data_frame = data_source_load_key_to_data[target_to_data_source_load_key[target]]
-        filtered_data = _apply_filters(data_frame=data_frame, ctds_filters=ctds_filter, target=target)
-        filtered_data = _apply_filter_interaction(
-            data_frame=filtered_data, ctds_filter_interaction=ctds_filter_interaction, target=target
-        )
-        target_to_filtered_data[target] = filtered_data
-
-    return target_to_filtered_data
+    return dict(zip(targets, data_manager._multi_load(multi_data_source_name_load_kwargs)))
 
 
 def _get_modified_page_figures(
@@ -226,18 +217,22 @@ def _get_modified_page_figures(
     targets: Optional[list[ModelID]] = None,
 ) -> dict[str, Any]:
     targets = targets or []
+    outputs = {}
 
-    target_to_filtered_data = _get_target_to_filtered_data(
-        ctds_filter, ctds_filter_interaction, ctds_parameters, targets
-    )
-    outputs = {
-        target: model_manager[target](
+    # TODO: the structure here would be nicer if we could get just the ctds for a single target at one time,
+    #  so you could do apply_filters on a target a pass only the ctds relevant for that target.
+    #  Consider restructuring ctds to a more convenient form to make this possible.
+
+    for target, unfiltered_data in _get_unfiltered_data(ctds_parameters, targets).items():
+        filtered_data = _apply_filters(unfiltered_data, ctds_filter, ctds_filter_interaction, target)
+        outputs[target] = model_manager[target](
             data_frame=filtered_data,
             **_get_parametrized_config(ctd_parameters=ctds_parameters, target=target, data_frame=False),
         )
-        for target, filtered_data in target_to_filtered_data.items()
-    }
 
-    # TODO: think about where new dynamic filter call goes
+    # TODO NEXT: will need to pass unfiltered_data into Filter.__call__.
+    # This dictionary is filtered for correct targets already selected in Filter.__call__ or that could be done here
+    # instead.
+    # {target: data_frame for target, data_frame in unfiltered_data.items() if target in self.targets}
 
     return outputs
