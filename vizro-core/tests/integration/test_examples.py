@@ -41,8 +41,8 @@ examples_path = Path(__file__).parents[2] / "examples"
 
 
 # Ignore deprecation warning until this is solved: https://github.com/plotly/dash/issues/2590
-# The `features` examples do add_type, which ideally we would clean up afterwards to restore vizro.models to its
-# previous state. Since we don't currently do this, `hatch run test` fails.
+# The `features` examples do add_type, which ideally we would clean up afterwards to restore vizro.models to
+# its previous state. Since we don't currently do this, `hatch run test` fails.
 # This is difficult to fix fully by un-importing vizro.models though, since we use `import vizro.models as vm` - see
 # https://stackoverflow.com/questions/437589/how-do-i-unload-reload-a-python-module.
 @pytest.mark.filterwarnings("ignore:HTTPResponse.getheader():DeprecationWarning")
