@@ -150,7 +150,7 @@ def managers_one_page_without_graphs_one_button():
     vm.Page(
         id="test_page",
         title="Test page",
-        components=[vm.Graph(figure=px.scatter(data_frame=pd.DataFrame(columns=["A"]), x="A", y="A"))],
+        components=[vm.Graph(figure=px.scatter(data_frame=pd.DataFrame(data={"A": [1], "B": [2]}), x="A", y="B"))],
         controls=[vm.Filter(id="test_filter", column="A")],
     )
     Vizro._pre_build()
