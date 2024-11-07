@@ -86,6 +86,6 @@ def _get_model_name(model: BaseChatModel) -> str:
 
 
 if __name__ == "__main__":
-    llm_chat_openai = _get_llm_model(model="gpt-3.5-turbo")
+    llm_chat_openai = _get_llm_model(model="gpt-4o-mini")
     print(repr(llm_chat_openai))  # noqa: T201
     print(llm_chat_openai.model_name)  # noqa: T201
