@@ -11,6 +11,18 @@ See the fragment files in the [changelog.d directory](https://github.com/mckinse
 
 <!-- scriv-insert-here -->
 
+<a id='changelog-0.3.2'></a>
+
+# 0.3.2 — 2024-11-07
+
+## Removed
+
+- Removed the older models from model shortcuts and docs. ([#853](https://github.com/mckinsey/vizro/pull/853))
+
+## Changed
+
+- Updated `_check_chart_code` validator to handle Python code block markers from llm responses. ([#858](https://github.com/mckinsey/vizro/pull/858))
+
 <a id='changelog-0.3.1'></a>
 
 # 0.3.1 — 2024-11-06

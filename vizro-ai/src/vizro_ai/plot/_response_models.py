@@ -36,6 +36,17 @@ def _format_and_lint(code_string: str) -> str:
     return formatted
 
 
+def _strip_markdown(code_string: str) -> str:
+    """Strip markdown code block from the code string."""
+    if code_string.startswith("```python\n"):
+        code_string = code_string[len("```python\n") :]
+    elif code_string.startswith("```\n"):
+        code_string = code_string[len("```\n") :]
+    if code_string.endswith("```"):
+        code_string = code_string[:-3]
+    return code_string.strip()
+
+
 def _exec_code(code: str, namespace: dict) -> dict:
     """Execute code and return the local dictionary."""
     # Need the global namespace for the imports to work for executed code
@@ -93,11 +104,7 @@ class ChartPlan(BaseModel):
 
     @validator("chart_code")
     def _check_chart_code(cls, v):
-        # Remove markdown code block if present
-        if v.startswith("```python\n") and v.endswith("```"):
-            v = v[len("```python\n") : -3].strip()
-        elif v.startswith("```\n") and v.endswith("```"):
-            v = v[len("```\n") : -3].strip()
+        v = _strip_markdown(v)
 
         # TODO: add more checks: ends with return, has return, no second function def, only one indented line
         if f"def {CUSTOM_CHART_NAME}(" not in v:
