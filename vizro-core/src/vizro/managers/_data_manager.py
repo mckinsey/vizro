@@ -2,14 +2,13 @@
 
 from __future__ import annotations
 
-import json
-
 import functools
+import json
 import logging
 import os
 import warnings
 from functools import partial
-from typing import Callable, Optional, Union, Any
+from typing import Any, Callable, Optional, Union
 
 import pandas as pd
 import wrapt

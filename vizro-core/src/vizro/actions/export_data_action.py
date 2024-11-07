@@ -5,7 +5,7 @@ from typing import Any, Optional
 from dash import ctx, dcc
 from typing_extensions import Literal
 
-from vizro.actions._actions_utils import _get_unfiltered_data, _apply_filters
+from vizro.actions._actions_utils import _apply_filters, _get_unfiltered_data
 from vizro.managers import model_manager
 from vizro.managers._model_manager import ModelID
 from vizro.models.types import capture
