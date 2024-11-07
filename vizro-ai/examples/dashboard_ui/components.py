@@ -148,6 +148,33 @@ and security.
         )
 
 
+def create_provider_item(name, url, note=None):
+    """Helper function to create a consistent ListGroupItem for each provider"""
+    return dbc.ListGroupItem(
+        [
+            html.Div(
+                [
+                    html.Span(name, style={"color": "#ffffff"}),
+                    (html.Small(note, style={"color": "rgba(255, 255, 255, 0.5)"}) if note else None),
+                    html.Span("→", className="float-end", style={"color": "#ffffff"}),
+                ],
+                className="d-flex justify-content-between align-items-center",
+            )
+        ],
+        href=url,
+        target="_blank",
+        action=True,
+        style={
+            "background-color": "transparent",
+            "border": "1px solid rgba(255, 255, 255, 0.1)",
+            "margin-bottom": "8px",
+            "transition": "all 0.2s ease",
+            "cursor": "pointer",
+        },
+        class_name="list-group-item-action hover-effect",
+    )
+
+
 class OffCanvas(vm.VizroBaseModel):
     """OffCanvas component for settings."""
 
@@ -202,14 +229,44 @@ class OffCanvas(vm.VizroBaseModel):
             className="mb-3",
         )
 
+        providers = [
+            {"name": "OpenAI", "url": "https://openai.com/index/openai-api/"},
+            {"name": "Anthropic", "url": "https://docs.anthropic.com/en/api/getting-started"},
+            {"name": "Mistral", "url": "https://docs.mistral.ai/getting-started/quickstart/"},
+            {"name": "xAI", "url": "https://x.ai/blog/api", "note": "(Free API credits available)"},
+        ]
+
+        api_instructions = html.Div(
+            [
+                html.Hr(
+                    style={
+                        "margin": "2rem 0",
+                        "border-color": "rgba(255, 255, 255, 0.1)",
+                        "border-style": "solid",
+                        "border-width": "0 0 1px 0",
+                    }
+                ),
+                html.H6("Get API Keys:", className="mb-3", style={"color": "#ffffff"}),
+                dbc.ListGroup(
+                    [
+                        create_provider_item(name=provider["name"], url=provider["url"], note=provider.get("note"))
+                        for provider in providers
+                    ],
+                    flush=True,
+                    className="border-0",
+                ),
+            ],
+        )
+
         offcanvas = dbc.Offcanvas(
             id=self.id,
             children=[
                 html.Div(
                     children=[
                         input_groups,
+                        api_instructions,
                     ]
-                )
+                ),
             ],
             title="Settings",
             is_open=True,

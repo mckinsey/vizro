@@ -94,23 +94,22 @@ class ChartPlan(BaseModel):
     @validator("chart_code")
     def _check_chart_code(cls, v):
         # Remove markdown code block if present
-        code = v
-        if code.startswith("```python\n") and code.endswith("```"):
-            code = code[len("```python\n") : -3].strip()
-        elif code.startswith("```\n") and code.endswith("```"):
-            code = code[len("```\n") : -3].strip()
+        if v.startswith("```python\n") and v.endswith("```"):
+            v = v[len("```python\n") : -3].strip()
+        elif v.startswith("```\n") and v.endswith("```"):
+            v = v[len("```\n") : -3].strip()
 
         # TODO: add more checks: ends with return, has return, no second function def, only one indented line
-        if f"def {CUSTOM_CHART_NAME}(" not in code:
+        if f"def {CUSTOM_CHART_NAME}(" not in v:
             raise ValueError(f"The chart code must be wrapped in a function named `{CUSTOM_CHART_NAME}`")
 
-        first_line = code.split("\n")[0].strip()
+        first_line = v.split("\n")[0].strip()
         if "data_frame" not in first_line:
             raise ValueError(
                 """The chart code must accept a single argument `data_frame`,
 and it should be the first argument of the chart."""
             )
-        return code
+        return v
 
     def _get_imports(self, vizro: bool = False):
         imports = list(dict.fromkeys(self.imports + self._additional_vizro_imports))  # remove duplicates

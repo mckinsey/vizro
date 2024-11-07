@@ -70,7 +70,7 @@ SUPPORTED_MODELS = {
         "claude-3-haiku-20240307",
     ],
     "Mistral": ["mistral-large-latest", "open-mistral-nemo", "codestral-latest"],
-    "xAI (free API credits available)": ["grok-beta"],
+    "xAI": ["grok-beta"],
 }
 
 
@@ -183,7 +183,7 @@ plot_page = vm.Page(
                 ),
                 OffCanvas(
                     id="settings",
-                    options=["OpenAI", "Anthropic", "Mistral", "xAI (free API credits available)"],
+                    options=["OpenAI", "Anthropic", "Mistral", "xAI"],
                     value="OpenAI",
                 ),
                 UserPromptTextArea(id="text-area-id"),

@@ -32,7 +32,7 @@ SUPPORTED_VENDORS = {
     "OpenAI": ChatOpenAI,
     "Anthropic": ChatAnthropic,
     "Mistral": ChatMistralAI,
-    "xAI (free API credits available)": ChatOpenAI,
+    "xAI": ChatOpenAI,
 }
 
 SUPPORTED_MODELS = {
@@ -48,7 +48,7 @@ SUPPORTED_MODELS = {
         "claude-3-haiku-20240307",
     ],
     "Mistral": ["mistral-large-latest", "open-mistral-nemo", "codestral-latest"],
-    "xAI (free API credits available)": ["grok-beta"],
+    "xAI": ["grok-beta"],
 }
 DEFAULT_TEMPERATURE = 0.1
 DEFAULT_RETRY = 3
@@ -68,7 +68,7 @@ def get_vizro_ai_plot(user_prompt, df, model, api_key, api_base, vendor_input):
         )
     if vendor_input == "Mistral":
         llm = vendor(model=model, mistral_api_key=api_key, mistral_api_url=api_base, temperature=DEFAULT_TEMPERATURE)
-    if vendor_input == "xAI (free API credits available)":
+    if vendor_input == "xAI":
         llm = vendor(model=model, openai_api_key=api_key, openai_api_base=api_base, temperature=DEFAULT_TEMPERATURE)
 
     vizro_ai = VizroAI(model=llm)
