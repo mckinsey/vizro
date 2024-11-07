@@ -149,7 +149,7 @@ and security.
 
 
 def create_provider_item(name, url, note=None):
-    """Helper function to create a consistent ListGroupItem for each provider"""
+    """Helper function to create a consistent ListGroupItem for each provider."""
     return dbc.ListGroupItem(
         [
             html.Div(
