@@ -181,7 +181,11 @@ plot_page = vm.Page(
                 MyDropdown(
                     options=SUPPORTED_MODELS["OpenAI"], value="gpt-4o-mini", multi=False, id="model-dropdown-id"
                 ),
-                OffCanvas(id="settings", options=["OpenAI", "Anthropic", "Mistral", "xAI (free API credits available)"], value="OpenAI"),
+                OffCanvas(
+                    id="settings",
+                    options=["OpenAI", "Anthropic", "Mistral", "xAI (free API credits available)"],
+                    value="OpenAI",
+                ),
                 UserPromptTextArea(id="text-area-id"),
                 # Modal(id="modal"),
             ],
