@@ -137,9 +137,7 @@ class Slider(VizroBaseModel):
                                     persistence_type="session",
                                     className="slider-text-input-field",
                                 ),
-                                dcc.Store(id=f"{self.id}_input_store",  storage_type="session", data=init_value)
-                                if is_dynamic_build
-                                else dcc.Store(id=f"{self.id}_input_store", storage_type="session"),
+                                dcc.Store(id=f"{self.id}_input_store",  storage_type="session")
                             ],
                             className="slider-text-input-container",
                         ),
@@ -162,9 +160,6 @@ class Slider(VizroBaseModel):
         )
 
     def _build_dynamic_placeholder(self):
-        if self.value is None:
-            self.value = self.min
-
         return self._build_static(is_dynamic_build=True)
 
     @_log_call
