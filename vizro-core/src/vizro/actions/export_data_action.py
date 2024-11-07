@@ -49,7 +49,7 @@ def export_data(
         if file_format == "csv":
             writer = filtered_data.to_csv
         elif file_format == "xlsx":
-            writer = filtered_data.to
+            writer = filtered_data.to_excel
         # Invalid file_format should be caught by Action validation
 
         outputs[f"download_dataframe_{target}"] = dcc.send_data_frame(

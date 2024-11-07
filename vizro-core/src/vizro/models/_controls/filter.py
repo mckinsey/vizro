@@ -104,12 +104,12 @@ class Filter(VizroBaseModel):
             page_id=model_manager._get_model_page_id(model_id=ModelID(str(self.id)))
         )
         # TODO NEXT: how to handle pre_build for dynamic filters? Do we still require default argument values in
-        #  `load` to establish selector type etc.? Can we take selector values from model_manager to supply these? Or just don't
-        #  do validation at pre_build time and wait until state is available during build time instead? What should the
-        #  load kwargs be here?
+        #  `load` to establish selector type etc.? Can we take selector values from model_manager to supply these?
+        #  Or just don't do validation at pre_build time and wait until state is availableduring build time instead?
+        #  What should the load kwargs be here?
         #  Note that currently _get_unfiltered_data is only suitable for use at runtime since it requires
         #  ctd_parameters. That could be changed to just reuse that function.
-        multi_data_source_name_load_kwargs = [(model_manager[target]["data_frame"], {}) for target in proposed_targets]
+        multi_data_source_name_load_kwargs = [(model_manager[target]["data_frame"], {}) for target in proposed_targets]  # type: ignore[var-annotated]
         target_to_data_frame = dict(zip(proposed_targets, data_manager._multi_load(multi_data_source_name_load_kwargs)))
         targeted_data = self._validate_targeted_data(
             target_to_data_frame, eagerly_raise_column_not_found_error=bool(self.targets)

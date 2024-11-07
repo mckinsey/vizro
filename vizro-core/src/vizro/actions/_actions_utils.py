@@ -109,9 +109,9 @@ def _validate_selector_value_none(value: Union[SingleValueType, MultiValueType])
 def _filter_dot_separated_strings(dot_separated_strings: list[str], target: str, data_frame: bool) -> list[str]:
     result = []
 
-    for dot_separated_string in dot_separated_strings:
-        if dot_separated_string.startswith(f"{target}."):
-            dot_separated_string = dot_separated_string.removeprefix(f"{target}.")
+    for dot_separated_string_with_target in dot_separated_strings:
+        if dot_separated_string_with_target.startswith(f"{target}."):
+            dot_separated_string = dot_separated_string_with_target.removeprefix(f"{target}.")
             if (data_frame and dot_separated_string.startswith("data_frame.")) or (
                 not data_frame and not dot_separated_string.startswith("data_frame.")
             ):
@@ -138,7 +138,7 @@ def _get_parametrized_config(
     if data_frame:
         # It's not possible to address nested argument of data_frame like data_frame.x.y, just top-level ones like
         # data_frame.x.
-        config = {"data_frame": {}}
+        config: dict[str, Any] = {"data_frame": {}}
     else:
         # TODO - avoid calling _captured_callable. Once we have done this we can remove _arguments from
         #  CapturedCallable entirely. This might mean not being able to address nested parameters.
@@ -212,10 +212,9 @@ def _get_modified_page_figures(
     ctds_filter: list[CallbackTriggerDict],
     ctds_filter_interaction: list[dict[str, CallbackTriggerDict]],
     ctds_parameters: list[CallbackTriggerDict],
-    targets: Optional[list[ModelID]] = None,
-) -> dict[str, Any]:
-    targets = targets or []
-    outputs = {}
+    targets: list[ModelID],
+) -> dict[ModelID, Any]:
+    outputs: dict[ModelID, Any] = {}
 
     # TODO: the structure here would be nicer if we could get just the ctds for a single target at one time,
     #  so you could do apply_filters on a target a pass only the ctds relevant for that target.
