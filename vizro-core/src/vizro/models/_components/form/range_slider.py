@@ -62,12 +62,14 @@ class RangeSlider(VizroBaseModel):
     _set_default_marks = validator("marks", allow_reuse=True, always=True)(set_default_marks)
     _set_actions = _action_validator_factory("value")
 
-    def __call__(self, on_page_load_value=None):
-        return self._build_static(on_page_load_value=on_page_load_value)
+    def __call__(self, current_value=None, new_min=None, new_max=None, **kwargs):
+        return self._build_static(current_value=current_value, new_min=new_min, new_max=new_max, **kwargs)
 
     @_log_call
-    def _build_static(self, is_dynamic_build=False, on_page_load_value=None):
-        init_value = on_page_load_value or self.value or [self.min, self.max]  # type: ignore[list-item]
+    def _build_static(self, current_value=None, new_min=None, new_max=None, **kwargs):
+        _min = new_min if new_min else self.min
+        _max = new_max if new_max else self.max
+        init_value = current_value or self.value or [_min, _max]
 
         output = [
             Output(f"{self.id}_start_value", "value"),
@@ -89,9 +91,11 @@ class RangeSlider(VizroBaseModel):
             inputs=inputs,
         )
 
+        stop = 0
+
         return html.Div(
             children=[
-                dcc.Store(f"{self.id}_callback_data", data={"id": self.id, "min": self.min, "max": self.max, "is_dynamic_build": is_dynamic_build}),
+                dcc.Store(f"{self.id}_callback_data", data={"id": self.id, "min": _min, "max": _max}),
                 html.Div(
                     children=[
                         dbc.Label(children=self.title, html_for=self.id) if self.title else None,
@@ -101,8 +105,8 @@ class RangeSlider(VizroBaseModel):
                                     id=f"{self.id}_start_value",
                                     type="number",
                                     placeholder="min",
-                                    min=self.min,
-                                    max=self.max,
+                                    min=_min,
+                                    max=_max,
                                     step=self.step,
                                     value=init_value[0],
                                     persistence=True,
@@ -114,17 +118,15 @@ class RangeSlider(VizroBaseModel):
                                     id=f"{self.id}_end_value",
                                     type="number",
                                     placeholder="max",
-                                    min=self.min,
-                                    max=self.max,
+                                    min=_min,
+                                    max=_max,
                                     step=self.step,
                                     value=init_value[1],
                                     persistence=True,
                                     persistence_type="session",
                                     className="slider-text-input-field",
                                 ),
-                                dcc.Store(id=f"{self.id}_input_store", storage_type="session", data=self.value)
-                                if is_dynamic_build
-                                else dcc.Store(id=f"{self.id}_input_store", storage_type="session"),
+                                dcc.Store(id=f"{self.id}_input_store", storage_type="session")
                             ],
                             className="slider-text-input-container",
                         ),
@@ -133,8 +135,8 @@ class RangeSlider(VizroBaseModel):
                 ),
                 dcc.RangeSlider(
                     id=self.id,
-                    min=self.min,
-                    max=self.max,
+                    min=_min,
+                    max=_max,
                     step=self.step,
                     marks=self.marks,
                     value=init_value,
@@ -146,8 +148,6 @@ class RangeSlider(VizroBaseModel):
         )
 
     def _build_dynamic_placeholder(self):
-        if not self.value:
-            self.value = [self.min, self.max]
         return self._build_static(is_dynamic_build=True)
 
     @_log_call

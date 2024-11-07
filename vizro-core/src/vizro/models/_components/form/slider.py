@@ -63,7 +63,7 @@ class Slider(VizroBaseModel):
     def __call__(self, current_value=None, new_min=None, new_max=None, **kwargs):
         return self._build_static(current_value=current_value, new_min=new_min, new_max=new_max, **kwargs)
 
-    def _build_static(self, is_dynamic_build=False, current_value=None, new_min=None, new_max=None, **kwargs):
+    def _build_static(self, current_value=None, new_min=None, new_max=None, **kwargs):
         _min = new_min if new_min else self.min
         _max = new_max if new_max else self.max
         init_value = current_value or self.value or _min
@@ -119,7 +119,7 @@ class Slider(VizroBaseModel):
 
         return html.Div(
             children=[
-                dcc.Store(f"{self.id}_callback_data", data={"id": self.id, "min": _min, "max": _max, "is_dynamic_build": is_dynamic_build}),
+                dcc.Store(f"{self.id}_callback_data", data={"id": self.id, "min": _min, "max": _max}),
                 html.Div(
                     children=[
                         dbc.Label(children=self.title, html_for=self.id) if self.title else None,
@@ -137,9 +137,7 @@ class Slider(VizroBaseModel):
                                     persistence_type="session",
                                     className="slider-text-input-field",
                                 ),
-                                dcc.Store(id=f"{self.id}_input_store",  storage_type="session", data=init_value)
-                                if is_dynamic_build
-                                else dcc.Store(id=f"{self.id}_input_store", storage_type="session"),
+                                dcc.Store(id=f"{self.id}_input_store",  storage_type="session")
                             ],
                             className="slider-text-input-container",
                         ),
@@ -162,10 +160,7 @@ class Slider(VizroBaseModel):
         )
 
     def _build_dynamic_placeholder(self):
-        if self.value is None:
-            self.value = self.min
-
-        return self._build_static(is_dynamic_build=True)
+        return self._build_static()
 
     @_log_call
     def build(self):
