@@ -45,7 +45,7 @@ examples_path = Path(__file__).parents[2] / "examples"
 # previous state. Since we don't currently do this, `hatch run test` fails.
 # This is difficult to fix fully by un-importing vizro.models though, since we use `import vizro.models as vm` - see
 # https://stackoverflow.com/questions/437589/how-do-i-unload-reload-a-python-module.
-@pytest.mark.filterwarnings("ignore:HTTPResponse.getheader()")
+@pytest.mark.filterwarnings("ignore:HTTPResponse.getheader():DeprecationWarning")
 # Ignore as it doesn't affect the test run
 @pytest.mark.filterwarnings("ignore:unclosed file:ResourceWarning")
 # Ignore for lower bounds because of plotly==5.12.0
