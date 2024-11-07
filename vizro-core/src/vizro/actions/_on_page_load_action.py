@@ -25,16 +25,9 @@ def _on_page_load(targets: list[ModelID], **inputs: dict[str, Any]) -> dict[str,
     """
     print("\nON PAGE LOAD - START")
     print(f'Filter value: {ctx.args_grouping["external"]["filters"]}')
-    return_obj = _get_modified_page_figures(
-        targets=targets,
-        ctds_filter=ctx.args_grouping["external"]["filters"],
-        ctds_filter_interaction=ctx.args_grouping["external"]["filter_interaction"],
-        ctds_parameters=ctx.args_grouping["external"]["parameters"],
-    )
+    return_obj = {}
 
     import vizro.models as vm
-    from time import sleep
-    sleep(1)
 
     # TODO-WIP: Add filters to OPL targets. Return only dynamic filter from the targets and not from the entire app.
     for filter_id, filter_obj in model_manager._items_with_type(vm.Filter):
@@ -60,6 +53,21 @@ def _on_page_load(targets: list[ModelID], **inputs: dict[str, Any]) -> dict[str,
 
 
             return_obj[filter_id] = filter_obj(current_value=current_value)
+
+            if current_value is None:
+                for item in ctx.args_grouping["external"]["filters"]:
+                    if item["id"] == filter_obj.selector.id:
+                        item["value"] = return_obj[filter_id].children[2].value
+                        print(f"Updated value to ------------> {item['value']}")
+
+    return_obj.update(
+        _get_modified_page_figures(
+            targets=targets,
+            ctds_filter=ctx.args_grouping["external"]["filters"],
+            ctds_filter_interaction=ctx.args_grouping["external"]["filter_interaction"],
+            ctds_parameters=ctx.args_grouping["external"]["parameters"],
+        )
+    )
 
     print("ON PAGE LOAD - END\n")
 

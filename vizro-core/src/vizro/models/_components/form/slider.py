@@ -115,6 +115,11 @@ class Slider(VizroBaseModel):
         #         3. clienside_callback is triggered again but as all input values are the same it raises
         #           dash_clienside.no_update and the process is done. Otherwise, filter_action would be triggered
 
+        # New user is opening the page with the dynamic Slider.
+        if current_value is None and is_dynamic_build:
+            # TODO: set new_user=True and send it through the _callback_data dcc.Store
+            init_value = None
+
         stop = 0
 
         return html.Div(

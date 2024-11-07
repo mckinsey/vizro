@@ -126,6 +126,13 @@ class Filter(VizroBaseModel):
         else:
             # Numerical or temporal selector.
             _min, _max = self._get_min_max(targeted_data, current_value)
+
+            if current_value is None:
+                if isinstance(self.selector, Slider):
+                    current_value = _min
+                elif isinstance(self.selector, [RangeSlider, DatePicker]):
+                    current_value = [_min, _max]
+
             return self.selector(current_value=current_value, new_min=_min, new_max=_max, **kwargs)
 
     @_log_call
