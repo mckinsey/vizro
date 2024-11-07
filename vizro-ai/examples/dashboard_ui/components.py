@@ -246,7 +246,7 @@ class OffCanvas(vm.VizroBaseModel):
                         "border-width": "0 0 1px 0",
                     }
                 ),
-                html.H6("Get API Keys:", className="mb-3", style={"color": "#ffffff"}),
+                html.Div("Get API Keys", className="mb-3", style={"color": "#ffffff"}),
                 dbc.ListGroup(
                     [
                         create_provider_item(name=provider["name"], url=provider["url"], note=provider.get("note"))
