@@ -34,7 +34,7 @@ DEFAULT_WRAPPER_MAP: dict[str, BaseChatModel] = {
     "OpenAI": ChatOpenAI,
     "Anthropic": ChatAnthropic,
     "Mistral": ChatMistralAI,
-    "xAI": ChatOpenAI, # xAI API is compatible with OpenAI
+    "xAI": ChatOpenAI,  # xAI API is compatible with OpenAI
 }
 
 DEFAULT_MODEL = "gpt-4o-mini"

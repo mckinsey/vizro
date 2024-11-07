@@ -28,7 +28,12 @@ except ImportError:
 logger = logging.getLogger(__name__)
 logger.setLevel(logging.INFO)  # TODO: remove manual setting and make centrally controlled
 
-SUPPORTED_VENDORS = {"OpenAI": ChatOpenAI, "Anthropic": ChatAnthropic, "Mistral": ChatMistralAI, "xAI (free API credits available)": ChatOpenAI}
+SUPPORTED_VENDORS = {
+    "OpenAI": ChatOpenAI,
+    "Anthropic": ChatAnthropic,
+    "Mistral": ChatMistralAI,
+    "xAI (free API credits available)": ChatOpenAI,
+}
 
 SUPPORTED_MODELS = {
     "OpenAI": [
@@ -64,9 +69,7 @@ def get_vizro_ai_plot(user_prompt, df, model, api_key, api_base, vendor_input):
     if vendor_input == "Mistral":
         llm = vendor(model=model, mistral_api_key=api_key, mistral_api_url=api_base, temperature=DEFAULT_TEMPERATURE)
     if vendor_input == "xAI (free API credits available)":
-        llm = vendor(
-            model=model, openai_api_key=api_key, openai_api_base=api_base, temperature=DEFAULT_TEMPERATURE
-        )
+        llm = vendor(model=model, openai_api_key=api_key, openai_api_base=api_base, temperature=DEFAULT_TEMPERATURE)
 
     vizro_ai = VizroAI(model=llm)
     ai_outputs = vizro_ai.plot(df, user_prompt, max_debug_retry=DEFAULT_RETRY, return_elements=True)

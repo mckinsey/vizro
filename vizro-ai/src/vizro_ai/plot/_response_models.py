@@ -96,9 +96,9 @@ class ChartPlan(BaseModel):
         # Remove markdown code block if present
         code = v
         if code.startswith("```python\n") and code.endswith("```"):
-            code = code[len("```python\n"):-3].strip()
+            code = code[len("```python\n") : -3].strip()
         elif code.startswith("```\n") and code.endswith("```"):
-            code = code[len("```\n"):-3].strip()
+            code = code[len("```\n") : -3].strip()
 
         # TODO: add more checks: ends with return, has return, no second function def, only one indented line
         if f"def {CUSTOM_CHART_NAME}(" not in code:
@@ -110,7 +110,7 @@ class ChartPlan(BaseModel):
                 """The chart code must accept a single argument `data_frame`,
 and it should be the first argument of the chart."""
             )
-        return code 
+        return code
 
     def _get_imports(self, vizro: bool = False):
         imports = list(dict.fromkeys(self.imports + self._additional_vizro_imports))  # remove duplicates
