@@ -93,11 +93,18 @@ class ChartPlan(BaseModel):
 
     @validator("chart_code")
     def _check_chart_code(cls, v):
+        # Remove markdown code block if present
+        if v.startswith("```python\n") and v.endswith("```"):
+            v = v[len("```python\n") : -3].strip()
+        elif v.startswith("```\n") and v.endswith("```"):
+            v = v[len("```\n") : -3].strip()
+
         # TODO: add more checks: ends with return, has return, no second function def, only one indented line
         if f"def {CUSTOM_CHART_NAME}(" not in v:
             raise ValueError(f"The chart code must be wrapped in a function named `{CUSTOM_CHART_NAME}`")
 
-        if "data_frame" not in v.split("\n")[0]:
+        first_line = v.split("\n")[0].strip()
+        if "data_frame" not in first_line:
             raise ValueError(
                 """The chart code must accept a single argument `data_frame`,
 and it should be the first argument of the chart."""
