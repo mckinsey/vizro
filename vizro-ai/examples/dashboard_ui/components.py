@@ -219,16 +219,6 @@ class OffCanvas(vm.VizroBaseModel):
         return offcanvas
 
 
-class MyPage(vm.Page):
-    """Custom page."""
-
-    type: Literal["my_page"] = "my_page"
-
-    def pre_build(self):
-        """Overwriting pre_build."""
-        pass
-
-
 class Icon(vm.VizroBaseModel):
     """Icon component for settings."""
 
@@ -261,7 +251,6 @@ class CustomDashboard(vm.Dashboard):
         """Returns custom dashboard."""
         dashboard_build_obj = super().build()
         dashboard_build_obj.children.append(dcc.Store(id="dashboard-data-store", storage_type="session"))
-        # dashboard_build_obj.children.append(dcc.Store(id="outputs-store-id", storage_type="session"))
         return dashboard_build_obj
 
 
@@ -283,7 +272,7 @@ class CustomButton(vm.Button):
                     id=f"{self.id}-navlink",
                 ),
             ],
-            style={"width": "12rem"},
+            style={"display": "none"},
             className="navlink-button",
         )
         return button
@@ -296,7 +285,7 @@ class HeaderComponent(vm.VizroBaseModel):
 
     def build(self):
         """Returns custom header component."""
-        title = html.Header("Vizro", id="custom-header-title")
+        title = html.Header("Vizro-AI dashboard generator", id="custom-header-title")
         header = html.Div(
             children=[html.Img(src=get_asset_url("logo.svg"), alt="Vizro logo", className="header-logo"), title],
             id="custom-header-div",

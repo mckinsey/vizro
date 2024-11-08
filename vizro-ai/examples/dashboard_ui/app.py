@@ -15,7 +15,6 @@ from components import (
     Icon,
     Modal,
     MyDropdown,
-    MyPage,
     OffCanvas,
     UserPromptTextArea,
     UserUpload,
@@ -39,16 +38,17 @@ vm.Container.add_type("components", Icon)
 vm.Container.add_type("components", Modal)
 vm.Container.add_type("components", CustomButton)
 vm.Container.add_type("components", HeaderComponent)
-
-MyPage.add_type("components", UserPromptTextArea)
-MyPage.add_type("components", UserUpload)
-MyPage.add_type("components", MyDropdown)
-MyPage.add_type("components", OffCanvas)
-MyPage.add_type("components", CodeClipboard)
-MyPage.add_type("components", Icon)
 vm.Container.add_type("components", Modal)
 
-dashboard_page = MyPage(
+vm.Page.add_type("components", UserPromptTextArea)
+vm.Page.add_type("components", UserUpload)
+vm.Page.add_type("components", MyDropdown)
+vm.Page.add_type("components", OffCanvas)
+vm.Page.add_type("components", CodeClipboard)
+vm.Page.add_type("components", Icon)
+
+
+dashboard_page = vm.Page(
     id="vizro_ai_dashboard_page",
     title="Vizro AI - Dashboard",
     layout=vm.Layout(
@@ -56,19 +56,20 @@ dashboard_page = MyPage(
             [4, 4, 4, 4, 4],
             [2, 2, 0, 0, 0],
             [2, 2, 0, 0, 0],
+            [1, 1, 0, 0, 0],
+            [1, 1, 0, 0, 0],
+            [1, 1, 0, 0, 0],
+            [1, 1, 0, 0, 0],
+            [1, 1, 0, 0, 0],
+            [1, 1, 0, 0, 0],
+            [1, 1, 0, 0, 0],
             [3, 3, 0, 0, 0],
-            [1, 1, 0, 0, 0],
-            [1, 1, 0, 0, 0],
-            [1, 1, 0, 0, 0],
-            [1, 1, 0, 0, 0],
-            [1, 1, 0, 0, 0],
-            [1, 1, 0, 0, 0],
-            [1, 1, 0, 0, 0],
-        ]
+        ],
+        row_min_height="50px",
     ),
     components=[
         vm.Container(
-            title="Code",
+            title="",
             components=[
                 vm.Container(
                     title="",
@@ -82,7 +83,7 @@ dashboard_page = MyPage(
                             ],
                             layout=vm.Layout(
                                 grid=[*[[0, 0, 0, 0, 0, 0, 0, 0, 0, 0]] * 11, [-1, -1, -1, -1, -1, -1, -1, -1, 1, 1]],
-                                col_gap="20px",
+                                row_min_height="30px",
                             ),
                         )
                     ],
@@ -129,8 +130,6 @@ dashboard_page = MyPage(
                 grid=[
                     [2, -1, -1, -1, -1, -1, 1, 1, 0, 0],
                 ],
-                row_gap="0px",
-                col_gap="4px",
             ),
             components=[
                 vm.Button(
@@ -246,7 +245,7 @@ def save_to_file(generated_code):
 
 
 @callback(
-    Output("run-dashboard-navlink", "style"),
+    [Output("run-dashboard", "style"), Output("run-dashboard-navlink", "href")],
     Input("dashboard-code-markdown", "children"),
 )
 def show_button(ai_response):
@@ -255,38 +254,21 @@ def show_button(ai_response):
         raise PreventUpdate
     port = find_available_port()
     subprocess.Popen(["python", "output_files/run_vizro_ai_output.py", str(port)])
-    return {}
-
-
-#
-# @callback(
-#     [Output("run-dashboard-button", "disabled"), Output("embedded-dashboard", "children")],
-#     Input("run-dashboard-button", "n_clicks"),
-# )
-# def run_generated_dashboard(n_clicks):
-#     """Runs vizro-ai generated dashboard in an iframe window."""
-#     port = find_available_port()
-#     if not n_clicks:
-#         raise PreventUpdate
-#     else:
-#         subprocess.Popen(["python", "output_files/run_vizro_ai_output.py", str(port)])
-#         iframe = html.Iframe(src="http://localhost:8051/", height="600px")
-#         return True, iframe
+    href = f"http://localhost:{port}/"
+    return {}, href
 
 
 app = Vizro().build(dashboard)
 app.dash.layout.children.append(
     html.Div(
         [
-            dbc.NavLink("Contact us", href="https://github.com/mckinsey/vizro/issues"),
-            dbc.NavLink("GitHub", href="https://github.com/mckinsey/vizro"),
-            dbc.NavLink("Docs", href="https://vizro.readthedocs.io/projects/vizro-ai/"),
             html.Div(
                 [
                     "Made using ",
                     html.Img(src=get_asset_url("logo.svg"), id="banner", alt="Vizro logo"),
-                    "vizro",
+                    dbc.NavLink("vizro", href="https://github.com/mckinsey/vizro"),
                 ],
+                style={"display": "flex", "flexDirection": "row"},
             ),
         ],
         className="anchor-container",

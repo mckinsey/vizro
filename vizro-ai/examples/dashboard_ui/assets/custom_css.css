@@ -26,7 +26,7 @@
   background-color: inherit;
   border: 1px solid var(--border-subtle-alpha-01);
   color: var(--text-primary);
-  height: 500px;
+  height: 62vh;
   padding: 8px;
   width: 100%;
 }
@@ -46,6 +46,7 @@
   background: var(--surfaces-bg-card);
   font-family: monospace;
   height: 100%;
+  max-height: 670px;
   overflow: auto;
   padding: 1rem;
   position: relative;
@@ -136,7 +137,7 @@
   border: 1px dashed var(--border-subtle-alpha-01);
   border-radius: 5px;
   color: var(--text-primary);
-  height: 46px;
+  height: 100%;
   line-height: 46px;
   text-align: center;
 }
@@ -245,4 +246,9 @@
   line-height: 16px;
   text-decoration: none;
   transition: box-shadow 0.2s;
+  width: 100%;
+}
+
+#run-dashboard-navlink.nav-link {
+  color: var(--text-primary-inverted);
 }
