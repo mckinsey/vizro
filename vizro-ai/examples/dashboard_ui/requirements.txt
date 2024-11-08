@@ -15,10 +15,6 @@ anyio==4.4.0
     #   anthropic
     #   httpx
     #   openai
-async-timeout==4.0.3
-    # via
-    #   aiohttp
-    #   langchain
 attrs==24.2.0
     # via aiohttp
 autoflake==2.3.1
@@ -67,8 +63,6 @@ distro==1.9.0
     #   openai
 et-xmlfile==1.1.0
     # via openpyxl
-exceptiongroup==1.2.2
-    # via anyio
 filelock==3.16.1
     # via huggingface-hub
 flask==3.0.3
@@ -83,8 +77,6 @@ frozenlist==1.4.1
     #   aiosignal
 fsspec==2024.10.0
     # via huggingface-hub
-greenlet==3.1.0
-    # via sqlalchemy
 gunicorn==23.0.0
     # via -r requirements.in
 h11==0.14.0
@@ -108,9 +100,7 @@ idna==3.8
     #   requests
     #   yarl
 importlib-metadata==8.5.0
-    # via
-    #   dash
-    #   flask
+    # via dash
 itsdangerous==2.2.0
     # via flask
 jinja2==3.1.4
@@ -256,10 +246,6 @@ tokenizers==0.20.1
     # via
     #   anthropic
     #   langchain-mistralai
-tomli==2.0.1
-    # via
-    #   autoflake
-    #   black
 tqdm==4.66.5
     # via
     #   huggingface-hub
@@ -267,12 +253,9 @@ tqdm==4.66.5
 typing-extensions==4.12.2
     # via
     #   anthropic
-    #   anyio
-    #   black
     #   dash
     #   huggingface-hub
     #   langchain-core
-    #   multidict
     #   openai
     #   pydantic
     #   pydantic-core
@@ -283,7 +266,7 @@ urllib3==2.2.3
     # via requests
 vizro==0.1.23
     # via vizro-ai
-vizro-ai==0.3.0
+vizro-ai==0.3.2
     # via -r requirements.in
 werkzeug==3.0.4
     # via
