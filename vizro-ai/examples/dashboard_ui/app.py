@@ -1,192 +1,143 @@
-"""VizroAI UI dashboard configuration."""
+"""VizroAI dashboard UI configuration."""
 
 import json
+import subprocess
 
-import black
-import dash
 import dash_bootstrap_components as dbc
-import pandas as pd
-import plotly.graph_objects as go
-import plotly.io as pio
 import vizro.models as vm
-import vizro.plotly.express as px
-from actions import data_upload_action, display_filename, run_vizro_ai, update_table
+from _utils import find_available_port, format_output
+from actions import data_upload_action, display_filename, save_files
 from components import (
     CodeClipboard,
+    CustomButton,
     CustomDashboard,
-    DropdownMenu,
     HeaderComponent,
     Icon,
     Modal,
     MyDropdown,
     OffCanvas,
-    ToggleSwitch,
     UserPromptTextArea,
     UserUpload,
-    custom_table,
 )
-from dash import Input, Output, State, callback, ctx, dcc, get_asset_url, html
+from dash import Input, Output, State, callback, get_asset_url, html
+from dash.exceptions import PreventUpdate
 from vizro import Vizro
 
-try:
-    from langchain_anthropic import ChatAnthropic
-except ImportError:
-    ChatAnthropic = None
-
-try:
-    from langchain_mistralai import ChatMistralAI
-except ImportError:
-    ChatMistralAI = None
-
+SUPPORTED_MODELS = [
+    "gpt-4o-mini",
+    "gpt-4",
+    "gpt-4-turbo",
+    "gpt-3.5-turbo",
+    "gpt-4o",
+]
 vm.Container.add_type("components", UserUpload)
 vm.Container.add_type("components", MyDropdown)
 vm.Container.add_type("components", OffCanvas)
 vm.Container.add_type("components", CodeClipboard)
 vm.Container.add_type("components", Icon)
 vm.Container.add_type("components", Modal)
-vm.Container.add_type("components", ToggleSwitch)
-vm.Container.add_type("components", UserPromptTextArea)
-vm.Container.add_type("components", DropdownMenu)
+vm.Container.add_type("components", CustomButton)
 vm.Container.add_type("components", HeaderComponent)
+vm.Container.add_type("components", Modal)
 
+vm.Page.add_type("components", UserPromptTextArea)
 vm.Page.add_type("components", UserUpload)
 vm.Page.add_type("components", MyDropdown)
 vm.Page.add_type("components", OffCanvas)
 vm.Page.add_type("components", CodeClipboard)
 vm.Page.add_type("components", Icon)
-vm.Page.add_type("components", Modal)
 
 
-SUPPORTED_MODELS = {
-    "OpenAI": [
-        "gpt-4o-mini",
-        "gpt-4o",
-        "gpt-4-turbo",
-    ],
-    "Anthropic": [
-        "claude-3-opus-latest",
-        "claude-3-5-sonnet-latest",
-        "claude-3-sonnet-20240229",
-        "claude-3-haiku-20240307",
-    ],
-    "Mistral": ["mistral-large-latest", "open-mistral-nemo", "codestral-latest"],
-    "xAI": ["grok-beta"],
-}
-
-
-plot_page = vm.Page(
-    id="vizro_ai_plot_page",
-    title="Vizro-AI - create interactive charts with Plotly and Vizro",
+dashboard_page = vm.Page(
+    id="vizro_ai_dashboard_page",
+    title="Vizro AI - Dashboard",
     layout=vm.Layout(
         grid=[
-            [4, 4, 4, 4],
-            [2, 2, 1, 1],
-            [2, 2, 1, 1],
-            [3, 3, 1, 1],
-            [3, 3, 1, 1],
-            [3, 3, 1, 1],
-            *[[0, 0, 1, 1]] * 8,
-        ]
+            [4, 4, 4, 4, 4],
+            [2, 2, 0, 0, 0],
+            [2, 2, 0, 0, 0],
+            [1, 1, 0, 0, 0],
+            [1, 1, 0, 0, 0],
+            [1, 1, 0, 0, 0],
+            [1, 1, 0, 0, 0],
+            [1, 1, 0, 0, 0],
+            [1, 1, 0, 0, 0],
+            [1, 1, 0, 0, 0],
+            [3, 3, 0, 0, 0],
+        ],
+        row_min_height="50px",
     ),
     components=[
         vm.Container(
             title="",
-            components=[CodeClipboard(id="plot"), ToggleSwitch(id="toggle-id")],
-            layout=vm.Layout(
-                grid=[*[[0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]] * 7, [-1, -1, -1, -1, -1, -1, -1, -1, -1, 1, 1, 1]],
-                row_gap="12px",
-                col_gap="12px",
-            ),
-        ),
-        vm.Container(
-            title="",
-            layout=vm.Layout(
-                grid=[
-                    *[[0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]] * 10,
-                    [-1, -1, -1, -1, -1, -1, -1, -1, -1, 1, 1],
-                ]
-            ),
             components=[
-                vm.Graph(id="graph-id", figure=px.scatter(pd.DataFrame())),
-                DropdownMenu(id="dropdown-menu"),
+                vm.Container(
+                    title="",
+                    components=[
+                        vm.Container(
+                            id="clipboard-container",
+                            title="",
+                            components=[
+                                CodeClipboard(id="dashboard"),
+                                CustomButton(id="run-dashboard"),
+                            ],
+                            layout=vm.Layout(
+                                grid=[*[[0, 0, 0, 0, 0, 0, 0, 0, 0, 0]] * 11, [-1, -1, -1, -1, -1, -1, -1, -1, 1, 1]],
+                                row_min_height="30px",
+                            ),
+                        )
+                    ],
+                    id="clipboard-tab",
+                ),
             ],
         ),
+        UserPromptTextArea(id="dashboard-text-area", placeholder="Describe the dashboard you want to create."),
         vm.Container(
-            id="upload-data-container",
-            title="Turn your data into visuals — just upload, describe, and see your chart in action",
-            layout=vm.Layout(
-                grid=[
-                    [1],
-                    [0],
-                ],
-                row_gap="0px",
-                # row_min_height="40px",
-            ),
+            id="upload-container",
+            title="Turn your data into visuals — just upload, describe, and see your dashboard in action",
+            layout=vm.Layout(grid=[[0], [1]], row_gap="0px"),
             components=[
+                vm.Card(id="dashboard-upload-message-id", text="Upload your data files (csv or excel)"),
                 UserUpload(
-                    id="data-upload-id",
+                    id="dashboard-data-upload",
                     actions=[
                         vm.Action(
                             function=data_upload_action(),
-                            inputs=["data-upload-id.contents", "data-upload-id.filename"],
-                            outputs=["data-store-id.data", "modal-table-icon.style", "modal-table-tooltip.style"],
+                            inputs=["dashboard-data-upload.contents", "dashboard-data-upload.filename"],
+                            outputs=["dashboard-data-store.data"],
                         ),
                         vm.Action(
                             function=display_filename(),
-                            inputs=["data-store-id.data"],
-                            outputs=["upload-message-id.children"],
+                            inputs=["dashboard-data-store.data"],
+                            outputs=["dashboard-upload-message-id.children"],
                         ),
                         vm.Action(
-                            function=update_table(),
-                            inputs=["data-store-id.data"],
-                            outputs=["modal-table.children", "modal-title.children"],
+                            function=save_files(),
+                            inputs=[
+                                "dashboard-data-upload.contents",
+                                "dashboard-data-upload.filename",
+                                "dashboard-data-upload.last_modified",
+                            ],
+                            outputs=["dashboard-data-store.modified_timestamp"],
                         ),
                     ],
                 ),
-                vm.Figure(id="show-data-component", figure=custom_table(data_frame=pd.DataFrame())),
             ],
         ),
         vm.Container(
             title="",
             layout=vm.Layout(
                 grid=[
-                    [3, 3, 3, 3, 3, 3, 3, 3, 3],
-                    [3, 3, 3, 3, 3, 3, 3, 3, 3],
-                    [3, 3, 3, 3, 3, 3, 3, 3, 3],
-                    [2, -1, -1, -1, -1, 1, 1, 0, 0],
+                    [2, -1, -1, -1, -1, -1, 1, 1, 0, 0],
                 ],
-                row_gap="10px",
-                col_gap="4px",
             ),
             components=[
                 vm.Button(
-                    id="trigger-button-id",
-                    text="Run Vizro-AI",
-                    actions=[
-                        vm.Action(
-                            function=run_vizro_ai(),
-                            inputs=[
-                                "text-area-id.value",
-                                "trigger-button-id.n_clicks",
-                                "data-store-id.data",
-                                "model-dropdown-id.value",
-                                "settings-api-key.value",
-                                "settings-api-base.value",
-                                "settings-dropdown.value",
-                            ],
-                            outputs=["plot-code-markdown.children", "graph-id.figure", "code-output-store-id.data"],
-                        ),
-                    ],
+                    id="dashboard-trigger-button",
+                    text="Run VizroAI",
                 ),
-                MyDropdown(
-                    options=SUPPORTED_MODELS["OpenAI"], value="gpt-4o-mini", multi=False, id="model-dropdown-id"
-                ),
-                OffCanvas(
-                    id="settings",
-                    options=["OpenAI", "Anthropic", "Mistral", "xAI"],
-                    value="OpenAI",
-                ),
-                UserPromptTextArea(id="text-area-id"),
+                MyDropdown(options=SUPPORTED_MODELS, value="gpt-4o-mini", multi=False, id="dashboard-model-dropdown"),
+                OffCanvas(id="dashboard-settings", options=["OpenAI"], value="OpenAI"),
                 # Modal(id="modal"),
             ],
         ),
@@ -197,26 +148,12 @@ plot_page = vm.Page(
     ],
 )
 
-
-dashboard = CustomDashboard(pages=[plot_page])
-
-
-# pure dash callbacks
+dashboard = CustomDashboard(pages=[dashboard_page])
 
 
 @callback(
-    Output("settings", "is_open"),
-    Input("open-settings-id", "n_clicks"),
-    [State("settings", "is_open")],
-)
-def open_settings(n_clicks, is_open):
-    """Callback for opening and closing offcanvas settings component."""
-    return not is_open if n_clicks else is_open
-
-
-@callback(
-    Output("settings-api-key", "type"),
-    Input("settings-api-key-toggle", "value"),
+    Output("dashboard-settings-api-key", "type"),
+    Input("dashboard-settings-api-key-toggle", "value"),
 )
 def show_api_key(value):
     """Callback to show api key."""
@@ -224,8 +161,8 @@ def show_api_key(value):
 
 
 @callback(
-    Output("settings-api-base", "type"),
-    Input("settings-api-base-toggle", "value"),
+    Output("dashboard-settings-api-base", "type"),
+    Input("dashboard-settings-api-base-toggle", "value"),
 )
 def show_api_base(value):
     """Callback to show api base."""
@@ -233,71 +170,92 @@ def show_api_base(value):
 
 
 @callback(
-    Output("plot-code-markdown", "children"),
-    Input("toggle-switch", "value"),
-    [State("code-output-store-id", "data")],
+    Output("dashboard-settings", "is_open"),
+    Input("open-settings-id", "n_clicks"),
+    [State("dashboard-settings", "is_open")],
 )
-def toggle_code(value, data):
-    """Callback for switching between vizro and plotly code."""
-    if not data:
-        return dash.no_update
-
-    ai_code = data["ai_outputs"]["vizro"]["code"] if value else data["ai_outputs"]["plotly"]["code"]
-
-    formatted_code = black.format_str(ai_code, mode=black.Mode(line_length=100))
-    ai_response = "\n".join(["```python", formatted_code, "```"])
-    return ai_response
+def open_settings(n_clicks, is_open):
+    """Callback for opening and closing offcanvas settings component."""
+    return not is_open if n_clicks else is_open
 
 
 @callback(
-    Output("data-modal", "is_open"),
-    Input("modal-table-icon", "n_clicks"),
-    State("data-modal", "is_open"),
-    State("data-store-id", "data"),
+    Output("dashboard-code-markdown", "children"),
+    [
+        State("dashboard-text-area", "value"),
+        State("dashboard-model-dropdown", "value"),
+        State("dashboard-settings-api-key", "value"),
+        State("dashboard-settings-api-base", "value"),
+        Input("dashboard-trigger-button", "n_clicks"),
+        State("dashboard-data-store", "data"),
+        State("dashboard-settings-dropdown", "value"),
+    ],
 )
-def open_modal(n_clicks, is_open, data):
-    """Callback for opening modal component."""
-    if not data:
-        return dash.no_update
-    if n_clicks:
-        return not is_open
-    return is_open
+def run_script(user_prompt, model, api_key, api_base, n_clicks, data, vendor):  # noqa: PLR0913
+    """Callback for triggering subprocess that run vizro-ai."""
+    data = json.dumps(data)
+    if n_clicks is None:
+        raise PreventUpdate
+    else:
+        process = subprocess.Popen(
+            [
+                "python",
+                "run_vizro_ai.py",
+                "--arg1",
+                f"{user_prompt}",
+                "--arg2",
+                f"{model}",
+                "--arg3",
+                f"{api_key}",
+                "--arg4",
+                f"{api_base}",
+                "--arg5",
+                f"{n_clicks}",
+                "--arg6",
+                f"{vendor}",
+            ],
+            stdin=subprocess.PIPE,
+            stdout=subprocess.PIPE,
+            stderr=subprocess.PIPE,
+            text=True,
+        )
+        stdout_data, stderr_data = process.communicate(input=data)
+        if stdout_data:
+            start_index = stdout_data.find("```")
+            return stdout_data[start_index:]
+        return stderr_data
 
 
 @callback(
-    Output("download-file", "data"),
-    [Input("dropdown-menu-html", "n_clicks"), Input("dropdown-menu-json", "n_clicks")],
-    State("code-output-store-id", "data"),
-    prevent_initial_call=True,
+    Output("dashboard-code-markdown", "style"),
+    Input("dashboard-code-markdown", "children"),
 )
-def download_fig(n_clicks_html, n_clicks_json, data):
-    """Callback for downloading vizro fig."""
-    if not data:
-        return dash.no_update
-    if not (n_clicks_html or n_clicks_json):
-        return dash.no_update
+def save_to_file(generated_code):
+    """Saves vizro-ai generated dashboard code to a file."""
+    gen_ai_file = "output_files/run_vizro_ai_output.py"
 
-    button_clicked = ctx.triggered_id
+    # format code
+    generated_code = format_output(generated_code)
 
-    if button_clicked == "dropdown-menu-html":
-        vizro_json = json.loads(data["ai_outputs"]["vizro"]["fig"])
-        fig = go.Figure(vizro_json)
-        graphs_html = pio.to_html(fig)
-        return dcc.send_string(graphs_html, filename="vizro_fig.html")
+    if generated_code:
+        with open(gen_ai_file, "w") as f:
+            f.write(generated_code)
 
-    if button_clicked == "dropdown-menu-json":
-        plotly_json = data["ai_outputs"]["plotly"]["fig"]
-        return dcc.send_string(plotly_json, "plotly_fig.json")
+        return {}
 
 
 @callback(
-    [Output("model-dropdown-id", "options"), Output("model-dropdown-id", "value")], Input("settings-dropdown", "value")
+    [Output("run-dashboard", "style"), Output("run-dashboard-navlink", "href")],
+    Input("dashboard-code-markdown", "children"),
 )
-def update_model_dropdown(value):
-    """Callback for updating available models."""
-    available_models = SUPPORTED_MODELS[value]
-    default_model = available_models[0]
-    return available_models, default_model
+def show_button(ai_response):
+    """Displays a button to launch the dashboard in a subprocess."""
+    if not ai_response:
+        raise PreventUpdate
+    port = find_available_port()
+    subprocess.Popen(["python", "output_files/run_vizro_ai_output.py", str(port)])
+    href = f"http://localhost:{port}/"
+    return {}, href
 
 
 app = Vizro().build(dashboard)
@@ -308,7 +266,7 @@ app.dash.layout.children.append(
                 [
                     "Made using ",
                     html.Img(src=get_asset_url("logo.svg"), id="banner", alt="Vizro logo"),
-                    dbc.NavLink("vizro", href="https://github.com/mckinsey/vizro", target="_blank", external_link=True),
+                    dbc.NavLink("vizro", href="https://github.com/mckinsey/vizro"),
                 ],
                 style={"display": "flex", "flexDirection": "row"},
             ),
@@ -316,6 +274,7 @@ app.dash.layout.children.append(
         className="anchor-container",
     )
 )
+
 
 server = app.dash.server
 if __name__ == "__main__":

@@ -2,3 +2,5 @@ gunicorn
 vizro-ai>=0.3.0
 black
 openpyxl
+langchain_anthropic
+langchain_mistralai
