@@ -3,11 +3,12 @@
 from __future__ import annotations
 
 import functools
+import json
 import logging
 import os
 import warnings
 from functools import partial
-from typing import Callable, Optional, Union
+from typing import Any, Callable, Optional, Union
 
 import pandas as pd
 import wrapt
@@ -195,6 +196,40 @@ class DataManager:
             return self.__data[name]
         except KeyError as exc:
             raise KeyError(f"Data source {name} does not exist.") from exc
+
+    def _multi_load(self, multi_name_load_kwargs: list[tuple[DataSourceName, dict[str, Any]]]) -> list[pd.DataFrame]:
+        """Loads multiple data sources as efficiently as possible.
+
+        Deduplicates a list of (data source name, load keyword argument dictionary) tuples so that each one corresponds
+        to only a single load() call. In the worst case scenario where there are no repeated tuples then performance of
+        this function is identical to doing a load call for each tuple.
+
+        Args:
+            multi_name_load_kwargs: List of (data source name, load keyword argument dictionary).
+
+        Returns:
+            Loaded data in the same order as `multi_name_load_kwargs` was supplied.
+        """
+        # TODO NOW: Check doesn't give duplicates for static data. Write tests with load call_count
+
+        # Easiest way to make a key to de-duplicate each (data source name, load keyword argument dictionary) tuple.
+        def encode_load_key(name, load_kwargs):
+            return json.dumps([name, load_kwargs], sort_keys=True)
+
+        def decode_load_key(key):
+            return json.loads(key)
+
+        # dict.fromkeys does the de-duplication.
+        load_key_to_data = dict.fromkeys(
+            encode_load_key(name, load_kwargs) for name, load_kwargs in multi_name_load_kwargs
+        )
+
+        # Load each key only once.
+        for load_key in load_key_to_data.keys():
+            name, load_kwargs = decode_load_key(load_key)
+            load_key_to_data[load_key] = self[name].load(**load_kwargs)
+
+        return [load_key_to_data[encode_load_key(name, load_kwargs)] for name, load_kwargs in multi_name_load_kwargs]
 
     def _clear(self):
         # We do not actually call self.cache.clear() because (a) it would only work when self._cache_has_app is True,

@@ -201,3 +201,54 @@ if __name__ == "__main__":
     print("RUNNING\n")
 
     app.run(dev_tools_hot_reload=False)
+
+
+# """Dev app to try things out."""
+#
+# import pandas as pd
+# import vizro.models as vm
+# import vizro.plotly.express as px
+# from vizro import Vizro
+#
+# from vizro.managers import data_manager
+#
+#
+# def load_1(sample=1):
+#     print("load_1")
+#     return px.data.iris().sample(sample)
+#
+#
+# def load_2(sample=2):
+#     print("load_2")
+#     return px.data.iris().sample(sample)
+#
+#
+# data_manager["load_1"] = load_1
+# data_manager["load_2"] = load_2
+#
+# page = vm.Page(
+#     title="Charts UI",
+#     components=[
+#         vm.Graph(id="graph_1", figure=px.scatter("load_1", x="sepal_width", y="sepal_length")),
+#         vm.Graph(id="graph_2", figure=px.scatter("load_1", x="sepal_width", y="sepal_length")),
+#         vm.Graph(id="graph_3", figure=px.scatter("load_2", x="sepal_width", y="sepal_length")),
+#         vm.Graph(id="graph_4", figure=px.scatter("load_2", x="sepal_width", y="sepal_length")),
+#     ],
+#     controls=[
+#         vm.Filter(column="species"),
+#         vm.Parameter(
+#             targets=['graph_1.data_frame.sample', 'graph_3.data_frame.sample'],
+#             selector=vm.Slider(min=1, max=10, step=1, value=1),
+#         ),
+#         vm.Parameter(
+#             targets=['graph_2.data_frame.sample', 'graph_4.data_frame.sample'],
+#             selector=vm.Slider(min=1, max=10, step=1, value=1),
+#         )
+#     ],
+#
+# )
+#
+# dashboard = vm.Dashboard(pages=[page])
+#
+# if __name__ == "__main__":
+#     Vizro().build(dashboard).run()

@@ -107,10 +107,13 @@ class Filter(VizroBaseModel):
 
     def __call__(self, current_value, **kwargs):
         # Only relevant for a dynamic filter.
-        # TODO: this will need to pass parametrised data_frame arguments through to _validate_targeted_data.
         # Although targets are fixed at build time, the validation logic is repeated during runtime, so if a column
         # is missing then it will raise an error. We could change this if we wanted.
-        targeted_data = self._validate_targeted_data(targets=self.targets)
+        # Call this from actions_utils
+        targeted_data = self._validate_targeted_data(
+            {target: data_frame for target, data_frame in target_to_data_frame.items() if target in self.targets},
+            eagerly_raise_column_not_found_error=True,
+        )
 
         if (column_type := self._validate_column_type(targeted_data)) != self._column_type:
             raise ValueError(
@@ -130,19 +133,25 @@ class Filter(VizroBaseModel):
 
     @_log_call
     def pre_build(self):
-        if self.targets:
-            targeted_data = self._validate_targeted_data(targets=self.targets)
-        else:
-            # If targets aren't explicitly provided then try to target all figures on the page. In this case we don't
-            # want to raise an error if the column is not found in a figure's data_frame, it will just be ignored.
-            # Possibly in future this will change (which would be breaking change).
-            targeted_data = self._validate_targeted_data(
-                targets=model_manager._get_page_model_ids_with_figure(
-                    page_id=model_manager._get_model_page_id(model_id=ModelID(str(self.id)))
-                ),
-                eagerly_raise_column_not_found_error=False,
-            )
-            self.targets = list(targeted_data.columns)
+        # If targets aren't explicitly provided then try to target all figures on the page. In this case we don't
+        # want to raise an error if the column is not found in a figure's data_frame, it will just be ignored.
+        # This is the case when bool(self.targets) is False.
+        # Possibly in future this will change (which would be breaking change).
+        proposed_targets = self.targets or model_manager._get_page_model_ids_with_figure(
+            page_id=model_manager._get_model_page_id(model_id=ModelID(str(self.id)))
+        )
+        # TODO NEXT: how to handle pre_build for dynamic filters? Do we still require default argument values in
+        #  `load` to establish selector type etc.? Can we take selector values from model_manager to supply these?
+        #  Or just don't do validation at pre_build time and wait until state is availableduring build time instead?
+        #  What should the load kwargs be here?
+        #  Note that currently _get_unfiltered_data is only suitable for use at runtime since it requires
+        #  ctd_parameters. That could be changed to just reuse that function.
+        multi_data_source_name_load_kwargs = [(model_manager[target]["data_frame"], {}) for target in proposed_targets]  # type: ignore[var-annotated]
+        target_to_data_frame = dict(zip(proposed_targets, data_manager._multi_load(multi_data_source_name_load_kwargs)))
+        targeted_data = self._validate_targeted_data(
+            target_to_data_frame, eagerly_raise_column_not_found_error=bool(self.targets)
+        )
+        self.targets = list(targeted_data.columns)
 
         # Set default selector according to column type.
         self._column_type = self._validate_column_type(targeted_data)

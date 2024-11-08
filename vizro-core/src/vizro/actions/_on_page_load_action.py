@@ -11,7 +11,7 @@ from vizro.managers import model_manager, data_manager
 
 
 @capture("action")
-def _on_page_load(targets: list[ModelID], **inputs: dict[str, Any]) -> dict[str, Any]:
+def _on_page_load(targets: list[ModelID], **inputs: dict[str, Any]) -> dict[ModelID, Any]:
     """Applies controls to charts on page once the page is opened (or refreshed).
 
     Args:
@@ -26,10 +26,10 @@ def _on_page_load(targets: list[ModelID], **inputs: dict[str, Any]) -> dict[str,
     print("\nON PAGE LOAD - START")
     print(f'Filter value: {ctx.args_grouping["external"]["filters"]}')
     return_obj = _get_modified_page_figures(
-        targets=targets,
         ctds_filter=ctx.args_grouping["external"]["filters"],
         ctds_filter_interaction=ctx.args_grouping["external"]["filter_interaction"],
         ctds_parameters=ctx.args_grouping["external"]["parameters"],
+        targets=targets,
     )
 
     import vizro.models as vm

@@ -32,11 +32,13 @@ We do not consider frontend changes (such as changing the appearance of a compon
 
     While being in version `0.x.x`, we may introduce breaking changes in minor versions.
 
+
 ## Where can I find example dashboards?
 
 For a gallery of examples showing Vizro in action, take a look at [vizro.mckinsey.com](https://vizro.mckinsey.com). The gallery links to the [Vizro HuggingFace collection](https://huggingface.co/vizro), which includes complete code accessed for each example by selecting "Files" in the top right menu.
 
 We also maintain a separate, curated page of [videos, blog posts, and examples of Vizro usage from our community](your-examples.md).
+
 
 ## Why should I use Vizro?
 
@@ -160,18 +162,22 @@ There are a number of cases where alternatives to Vizro may be more suitable, in
 
 - where Python developers are already very comfortable leveraging other Python packages
 
-<!-- vale on -->
+
 
 ## How can I report a bug?
 
 Head over to our [GitHub issues](https://github.com/mckinsey/vizro/issues) and [create a new bug report](https://github.com/mckinsey/vizro/issues/new/choose). We will try to reproduce the bug you've reported and follow up with the next steps.
 
+
 ## How can I request a feature?
 
 To raise a feature request, head to our [GitHub issues](https://github.com/mckinsey/vizro/issues) and [create a new feature request](https://github.com/mckinsey/vizro/issues/new/choose). The team will then try to understand the request in more detail, explore the feasibility and prioritize it in relation to the current roadmap. We will get back to you as soon as possible with an estimate of whether and when this feature could be released.
+
 
 ## I still have a question. Where can I ask it?
 
 We are happy to receive general questions around Vizro. Take a look at our [GitHub issues](https://github.com/mckinsey/vizro/issues) and [create a new issue](https://github.com/mckinsey/vizro/issues/new/choose) by clicking "General question".
 
 Several Vizro team members are active on the Plotly Community Forum. If you'd like to also ask your question there then create a topic in the [Dash Python category](https://community.plotly.com/c/python/25) and make it clear that your question concerns Vizro.
+
+<!-- vale on -->
