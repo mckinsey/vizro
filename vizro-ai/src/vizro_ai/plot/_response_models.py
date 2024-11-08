@@ -29,10 +29,10 @@ def _strip_markdown(code_string: str) -> str:
     prefixes = ["```python\n", "```py\n", "```\n"]
     for prefix in prefixes:
         if code_string.startswith(prefix):
-            code_string = code_string[len(prefix):]
+            code_string = code_string[len(prefix) :]
             break
     if code_string.endswith("```"):
-        code_string = code_string[:-len("```")]
+        code_string = code_string[: -len("```")]
     return code_string.strip()
 
 
