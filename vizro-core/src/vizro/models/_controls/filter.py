@@ -107,8 +107,8 @@ class Filter(VizroBaseModel):
         )
         # TODO NEXT: how to handle pre_build for dynamic filters? Do we still require default argument values in
         #  `load` to establish selector type etc.? Can we take selector values from model_manager to supply these?
-        #  Or just don't do validation at pre_build time and wait until state is availableduring build time instead?
-        #  What should the load kwargs be here?
+        #  Or just don't do validation at pre_build time and wait until state is available during build time instead?
+        #  What should the load kwargs be here? Remember they need to be {} for static data.
         #  Note that currently _get_unfiltered_data is only suitable for use at runtime since it requires
         #  ctd_parameters. That could be changed to just reuse that function.
         multi_data_source_name_load_kwargs: list[tuple[DataSourceName, dict[str, Any]]] = [

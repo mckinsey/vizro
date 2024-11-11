@@ -204,13 +204,14 @@ class DataManager:
         to only a single load() call. In the worst case scenario where there are no repeated tuples then performance of
         this function is identical to doing a load call for each tuple.
 
+        If a data source is static then load keyword argument dictionary must be {}.
+
         Args:
             multi_name_load_kwargs: List of (data source name, load keyword argument dictionary).
 
         Returns:
             Loaded data in the same order as `multi_name_load_kwargs` was supplied.
         """
-        # TODO NOW: Check doesn't give duplicates for static data. Write tests with load call_count
 
         # Easiest way to make a key to de-duplicate each (data source name, load keyword argument dictionary) tuple.
         def encode_load_key(name, load_kwargs):

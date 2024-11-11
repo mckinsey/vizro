@@ -103,7 +103,7 @@ def _apply_filter_interaction(
 
     Args:
         data_frame: unfiltered DataFrame.
-        ctds_filters_interaction: structure containing CallbackTriggerDict for filter interactions.
+        ctds_filter_interaction: structure containing CallbackTriggerDict for filter interactions.
         target: id of targeted Figure.
 
     Returns: filtered DataFrame.
@@ -177,8 +177,9 @@ def _get_parametrized_config(
 
     """
     if data_frame:
-        # It's not possible to address nested argument of data_frame like data_frame.x.y, just top-level ones like
-        # data_frame.x.
+        # This entry is inserted (but will always be empty) even for static data so that the load/_multi_load calls
+        # look identical for dynamic data with no arguments and static data. Note it's not possible to address nested
+        # argument of data_frame like data_frame.x.y, just top-level ones like data_frame.x.
         config: dict[str, Any] = {"data_frame": {}}
     else:
         # TODO - avoid calling _captured_callable. Once we have done this we can remove _arguments from
@@ -235,7 +236,8 @@ def _get_unfiltered_data(
     # Takes in multiple targets to ensure that data can be loaded efficiently using _multi_load and not repeated for
     # every single target.
     # Getting unfiltered data requires data frame parameters. We pass in all ctd_parameters and then find the
-    # data_frame ones by passing data_frame=True in the call to _get_paramaterized_config.
+    # data_frame ones by passing data_frame=True in the call to _get_paramaterized_config. Static data is also
+    # handled here and will just have empty dictionary for its kwargs.
     multi_data_source_name_load_kwargs: list[tuple[DataSourceName, dict[str, Any]]] = []
     for target in targets:
         dynamic_data_load_params = _get_parametrized_config(
