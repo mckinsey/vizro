@@ -83,6 +83,14 @@ repos:
           - stylelint-order@4.1.0
         args: ["--fix"]
 
+  - repo: https://github.com/executablebooks/mdformat
+    rev: 0.7.18
+    hooks:
+      - id: mdformat
+        args: [--wrap=no]
+    additional_dependencies:
+      - "mdformat-mkdocs[recommended]==3.0.0"      
+
   - repo: https://github.com/errata-ai/vale
     rev: v3.7.1
     hooks:
