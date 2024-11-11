@@ -73,17 +73,48 @@ and it should be the first argument of the chart.""",
 class TestChartPlanFactory:
     """Tests for the ChartPlanFactory class, mainly the execution of the chart code."""
 
-    def test_execute_chart_code_valid(self):
-        chart_plan_dynamic = ChartPlanFactory(data_frame=px.data.iris())
-        chart_plan_dynamic_valid = chart_plan_dynamic(
-            chart_type="Bubble Chart",
-            imports=["import plotly.express as px", "import numpy as np", "import random"],
-            chart_code="""def custom_chart(data_frame):
+    @pytest.mark.parametrize(
+        "chart_code",
+        [
+            """def custom_chart(data_frame):
     random_other_module_import = np.arange(10)
     other_random_module_import = random.sample(range(10), 10)
     fig = px.scatter(data_frame, x='sepal_width', y='petal_width')
     return fig
 """,
+            """def custom_chart(data_frame):
+    fig = px.scatter(data_frame, x='sepal_length', y='petal_length')
+    return fig
+""",
+            """```python
+def custom_chart(data_frame):
+    random_other_module_import = np.arange(10)
+    other_random_module_import = random.sample(range(10), 10)
+    fig = px.scatter(data_frame, x='sepal_width', y='petal_width')
+    return fig
+```""",
+            """```py
+def custom_chart(data_frame):
+    random_other_module_import = np.arange(10)
+    other_random_module_import = random.sample(range(10), 10)
+    fig = px.scatter(data_frame, x='sepal_width', y='petal_width')
+    return fig
+```""",
+            """```
+def custom_chart(data_frame):
+    random_other_module_import = np.arange(10)
+    other_random_module_import = random.sample(range(10), 10)
+    fig = px.scatter(data_frame, x='sepal_width', y='petal_width')
+    return fig
+```""",
+        ],
+    )
+    def test_execute_chart_code_valid(self, chart_code):
+        chart_plan_dynamic = ChartPlanFactory(data_frame=px.data.iris())
+        chart_plan_dynamic_valid = chart_plan_dynamic(
+            chart_type="Bubble Chart",
+            imports=["import plotly.express as px", "import numpy as np", "import random"],
+            chart_code=chart_code,
             chart_insights="Very good insights",
             code_explanation="Very good explanation",
         )
