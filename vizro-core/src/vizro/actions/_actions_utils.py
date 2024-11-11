@@ -188,21 +188,17 @@ def _get_parametrized_config(
 
     for ctd in ctd_parameters:
         # TODO: needs to be refactored so that it is independent of implementation details
-        selector_value = ctd["value"]
+        parameter_value = ctd["value"]
 
-        if hasattr(selector_value, "__iter__") and ALL_OPTION in selector_value:  # type: ignore[operator]
-            selector: SelectorType = model_manager[ctd["id"]]
-
-            # Even if options are provided as list[dict], the Dash component only returns a list of values.
+        selector: SelectorType = model_manager[ctd["id"]]
+        if hasattr(parameter_value, "__iter__") and ALL_OPTION in parameter_value:  # type: ignore[operator]
+            # Even if an option is provided as list[dict], the Dash component only returns a list of values.
             # So we need to ensure that we always return a list only as well to provide consistent types.
-            if all(isinstance(option, dict) for option in selector.options):
-                selector_value = [option["value"] for option in selector.options]
-            else:
-                selector_value = selector.options
+            parameter_value = [option["value"] if isinstance(option, dict) else option for option in selector.options]
 
-        selector_value = _validate_selector_value_none(selector_value)
+        parameter_value = _validate_selector_value_none(parameter_value)
 
-        for action in _get_component_actions(model_manager[ctd["id"]]):
+        for action in _get_component_actions(selector):
             if action.function._function.__name__ != "_parameter":
                 continue
 
@@ -210,7 +206,7 @@ def _get_parametrized_config(
                 action.function["targets"], target, data_frame
             ):
                 config = _update_nested_figure_properties(
-                    figure_config=config, dot_separated_string=dot_separated_string, value=selector_value
+                    figure_config=config, dot_separated_string=dot_separated_string, value=parameter_value
                 )
 
     return config
