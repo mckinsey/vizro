@@ -10,7 +10,7 @@ from vizro.models.types import capture
 
 
 @capture("action")
-def filter_interaction(targets: Optional[list[ModelID]] = None, **inputs: dict[str, Any]) -> dict[str, Any]:
+def filter_interaction(targets: Optional[list[ModelID]] = None, **inputs: dict[str, Any]) -> dict[ModelID, Any]:
     """Filters targeted charts/components on page by clicking on data points or table cells of the source chart.
 
     To set up filtering on specific columns of the target graph(s), include these columns in the 'custom_data'
@@ -29,8 +29,8 @@ def filter_interaction(targets: Optional[list[ModelID]] = None, **inputs: dict[s
 
     """
     return _get_modified_page_figures(
-        targets=targets,
         ctds_filter=ctx.args_grouping["external"]["filters"],
         ctds_filter_interaction=ctx.args_grouping["external"]["filter_interaction"],
         ctds_parameters=ctx.args_grouping["external"]["parameters"],
+        targets=targets or [],
     )
