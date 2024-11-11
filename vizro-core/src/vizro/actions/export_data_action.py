@@ -5,7 +5,7 @@ from typing import Any, Optional
 from dash import ctx, dcc
 from typing_extensions import Literal
 
-from vizro.actions._actions_utils import _get_targets_data_and_config
+from vizro.actions._actions_utils import _apply_filters, _get_unfiltered_data
 from vizro.managers import model_manager
 from vizro.managers._model_manager import ModelID
 from vizro.models.types import capture
@@ -41,23 +41,19 @@ def export_data(
         if target not in model_manager:
             raise ValueError(f"Component '{target}' does not exist.")
 
-    data_frames, _ = _get_targets_data_and_config(
-        targets=targets,
-        ctds_filter=ctx.args_grouping["external"]["filters"],
-        ctds_filter_interaction=ctx.args_grouping["external"]["filter_interaction"],
-        ctds_parameters=ctx.args_grouping["external"]["parameters"],
-    )
-
+    ctds = ctx.args_grouping["external"]
     outputs = {}
-    for target_id in targets:
+
+    for target, unfiltered_data in _get_unfiltered_data(ctds["parameters"], targets).items():
+        filtered_data = _apply_filters(unfiltered_data, ctds["filters"], ctds["filter_interaction"], target)
         if file_format == "csv":
-            writer = data_frames[target_id].to_csv
+            writer = filtered_data.to_csv
         elif file_format == "xlsx":
-            writer = data_frames[target_id].to_excel
+            writer = filtered_data.to_excel
         # Invalid file_format should be caught by Action validation
 
-        outputs[f"download_dataframe_{target_id}"] = dcc.send_data_frame(
-            writer=writer, filename=f"{target_id}.{file_format}", index=False
+        outputs[f"download_dataframe_{target}"] = dcc.send_data_frame(
+            writer=writer, filename=f"{target}.{file_format}", index=False
         )
 
     return outputs
