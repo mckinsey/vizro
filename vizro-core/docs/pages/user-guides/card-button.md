@@ -526,7 +526,7 @@ To create a navigation card:
         page_2 = vm.Page(
             title="Filters and parameters",
             components=[
-                vm.Graph(id="scatter", figure=px.scatter(iris, x="sepal_length", y="petal_width", color="sepal_width")),
+                vm.Graph(figure=px.scatter(iris, x="sepal_length", y="petal_width", color="sepal_width")),
             ],
         )
 

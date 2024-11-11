@@ -106,7 +106,7 @@ The following example shows a custom action that takes the `value` of the `vm.Ra
                         vm.Action(function=update_card_text(), inputs=["my_selector.value"], outputs=["my_card.children"])
                     ],
                 ),
-                vm.Card(text="Placeholder text", id="my_card"),
+                vm.Card(text="Placeholder text"),
             ],
         )
 
@@ -165,7 +165,7 @@ property, refer to the Dash documentation on [interactive visualizations](https:
                         ),
                     ],
                 ),
-                vm.Card(id="my_card", text="Click on a point on the above graph."),
+                vm.Card(text="Click on a point on the above graph."),
             ],
         )
         dashboard = vm.Dashboard(pages=[page])
@@ -234,8 +234,8 @@ If there are multiple `outputs` defined then the return value is iterated throug
                         ),
                     ],
                 ),
-                vm.Card(id="my_card_1", text="Click on a point on the above graph."),
-                vm.Card(id="my_card_2", text="Click on a point on the above graph."),
+                vm.Card(text="Click on a point on the above graph."),
+                vm.Card(text="Click on a point on the above graph."),
             ],
             controls=[vm.Filter(column="species", selector=vm.Dropdown(title="Species"))],
         )
