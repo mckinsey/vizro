@@ -9,6 +9,7 @@ import pandas as pd
 
 from vizro._constants import ALL_OPTION, NONE_OPTION
 from vizro.managers import data_manager, model_manager
+from vizro.managers._data_manager import DataSourceName
 from vizro.managers._model_manager import ModelID
 from vizro.models.types import MultiValueType, SelectorType, SingleValueType
 
@@ -46,9 +47,18 @@ def _get_component_actions(component) -> list[Action]:
     )
 
 
-def _apply_control_filters(
-    data_frame: pd.DataFrame, ctds_filters: list[CallbackTriggerDict], target: str
+def _apply_filter_controls(
+    data_frame: pd.DataFrame, ctds_filters: list[CallbackTriggerDict], target: ModelID
 ) -> pd.DataFrame:
+    """Applies filters from a vm.Filter model in the controls.
+
+    Args:
+        data_frame: unfiltered DataFrame.
+        ctds_filters: list of CallbackTriggerDict for filters.
+        target: id of targeted Figure.
+
+    Returns: filtered DataFrame.
+    """
     for ctd in ctds_filters:
         selector_value = ctd["value"]
         selector_value = selector_value if isinstance(selector_value, list) else [selector_value]
@@ -85,8 +95,19 @@ def _get_parent_vizro_model(_underlying_callable_object_id: str) -> VizroBaseMod
 
 
 def _apply_filter_interaction(
-    data_frame: pd.DataFrame, ctds_filter_interaction: list[dict[str, CallbackTriggerDict]], target: str
+    data_frame: pd.DataFrame, ctds_filter_interaction: list[dict[str, CallbackTriggerDict]], target: ModelID
 ) -> pd.DataFrame:
+    """Applies filters from a filter_interaction.
+
+    This will be removed in future when filter interactions are implemented using controls.
+
+    Args:
+        data_frame: unfiltered DataFrame.
+        ctds_filters_interaction: structure containing CallbackTriggerDict for filter interactions.
+        target: id of targeted Figure.
+
+    Returns: filtered DataFrame.
+    """
     for ctd_filter_interaction in ctds_filter_interaction:
         triggered_model = model_manager[ctd_filter_interaction["modelID"]["id"]]
         data_frame = triggered_model._filter_interaction(
@@ -106,15 +127,25 @@ def _validate_selector_value_none(value: Union[SingleValueType, MultiValueType])
     return value
 
 
-def _filter_dot_separated_strings(dot_separated_strings: list[str], target: str, data_frame: bool) -> list[str]:
+def _get_target_dot_separated_strings(dot_separated_strings: list[str], target: ModelID, data_frame: bool) -> list[str]:
+    """Filters list of dot separated strings to get just those relevant for a single target.
+
+    Args:
+        dot_separated_strings: list of dot separated strings that can be targeted by a vm.Parameter,
+            e.g. ["target_name.data_frame.arg", "target_name.x"]
+        target: id of targeted Figure.
+        data_frame: whether to return only DataFrame parameters starting "data_frame." or only non-DataFrame parameters.
+
+    Returns:
+        List of dot separated strings for target.
+    """
     result = []
 
     for dot_separated_string_with_target in dot_separated_strings:
         if dot_separated_string_with_target.startswith(f"{target}."):
             dot_separated_string = dot_separated_string_with_target.removeprefix(f"{target}.")
-            if (data_frame and dot_separated_string.startswith("data_frame.")) or (
-                not data_frame and not dot_separated_string.startswith("data_frame.")
-            ):
+            # We only want data_frame parameters when data_frame = True.
+            if dot_separated_string.startswith("data_frame.") == data_frame:
                 result.append(dot_separated_string)
     return result
 
@@ -135,6 +166,16 @@ def _update_nested_figure_properties(
 def _get_parametrized_config(
     ctd_parameters: list[CallbackTriggerDict], target: ModelID, data_frame: bool
 ) -> dict[str, Any]:
+    """Convert parameters into a keyword-argument dictionary.
+
+    Args:
+        ctd_parameters: list of CallbackTriggerDicts for vm.Parameter.
+        target: id of targeted figure.
+        data_frame: whether to return only DataFrame parameters starting "data_frame." or only non-DataFrame parameters.
+
+    Returns: keyword-argument dictionary.
+
+    """
     if data_frame:
         # It's not possible to address nested argument of data_frame like data_frame.x.y, just top-level ones like
         # data_frame.x.
@@ -165,7 +206,9 @@ def _get_parametrized_config(
             if action.function._function.__name__ != "_parameter":
                 continue
 
-            for dot_separated_string in _filter_dot_separated_strings(action.function["targets"], target, data_frame):
+            for dot_separated_string in _get_target_dot_separated_strings(
+                action.function["targets"], target, data_frame
+            ):
                 config = _update_nested_figure_properties(
                     figure_config=config, dot_separated_string=dot_separated_string, value=selector_value
                 )
@@ -183,7 +226,7 @@ def _apply_filters(
     # Takes in just one target, so dataframe is filtered repeatedly for every target that uses it.
     # Potentially this could be de-duplicated but it's not so important since filtering is a relatively fast
     # operation (compared to data loading).
-    filtered_data = _apply_control_filters(data_frame=data, ctds_filters=ctds_filter, target=target)
+    filtered_data = _apply_filter_controls(data_frame=data, ctds_filters=ctds_filter, target=target)
     filtered_data = _apply_filter_interaction(
         data_frame=filtered_data, ctds_filter_interaction=ctds_filter_interaction, target=target
     )
@@ -197,7 +240,7 @@ def _get_unfiltered_data(
     # every single target.
     # Getting unfiltered data requires data frame parameters. We pass in all ctd_parameters and then find the
     # data_frame ones by passing data_frame=True in the call to _get_paramaterized_config.
-    multi_data_source_name_load_kwargs = []
+    multi_data_source_name_load_kwargs: list[tuple[DataSourceName, dict[str, Any]]] = []
     for target in targets:
         dynamic_data_load_params = _get_parametrized_config(
             ctd_parameters=ctds_parameters, target=target, data_frame=True

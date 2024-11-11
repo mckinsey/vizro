@@ -6,6 +6,8 @@ import numpy as np
 import pandas as pd
 from pandas.api.types import is_datetime64_any_dtype, is_numeric_dtype
 
+from vizro.managers._data_manager import DataSourceName
+
 try:
     from pydantic.v1 import Field, PrivateAttr, validator
 except ImportError:  # pragma: no cov
@@ -109,7 +111,9 @@ class Filter(VizroBaseModel):
         #  What should the load kwargs be here?
         #  Note that currently _get_unfiltered_data is only suitable for use at runtime since it requires
         #  ctd_parameters. That could be changed to just reuse that function.
-        multi_data_source_name_load_kwargs = [(model_manager[target]["data_frame"], {}) for target in proposed_targets]  # type: ignore[var-annotated]
+        multi_data_source_name_load_kwargs: list[tuple[DataSourceName, dict[str, Any]]] = [
+            (model_manager[target]["data_frame"], {}) for target in proposed_targets
+        ]
         target_to_data_frame = dict(zip(proposed_targets, data_manager._multi_load(multi_data_source_name_load_kwargs)))
         targeted_data = self._validate_targeted_data(
             target_to_data_frame, eagerly_raise_column_not_found_error=bool(self.targets)
