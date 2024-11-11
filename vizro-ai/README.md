@@ -2,11 +2,7 @@
 
 <div align="center" markdown="1">
 
-[![Python version](https://img.shields.io/badge/python-3.9%20%7C%203.10%20%7C%203.11%20%7C%203.12-blue.svg)](https://pypi.org/project/vizro/)
-[![PyPI version](https://badge.fury.io/py/vizro_ai.svg)](https://badge.fury.io/py/vizro_ai)
-[![License](https://img.shields.io/badge/license-Apache%202.0-blue.svg)](https://github.com/mckinsey/vizro/blob/main/LICENSE.md)
-[![Documentation](https://readthedocs.org/projects/vizro-ai/badge/?version=latest)](https://vizro-ai.readthedocs.io/)
-[![OpenSSF Best Practices](https://www.bestpractices.dev/projects/7858/badge)](https://www.bestpractices.dev/projects/7858)
+[![Python version](https://img.shields.io/badge/python-3.9%20%7C%203.10%20%7C%203.11%20%7C%203.12-blue.svg)](https://pypi.org/project/vizro/) [![PyPI version](https://badge.fury.io/py/vizro_ai.svg)](https://badge.fury.io/py/vizro_ai) [![License](https://img.shields.io/badge/license-Apache%202.0-blue.svg)](https://github.com/mckinsey/vizro/blob/main/LICENSE.md) [![Documentation](https://readthedocs.org/projects/vizro-ai/badge/?version=latest)](https://vizro-ai.readthedocs.io/) [![OpenSSF Best Practices](https://www.bestpractices.dev/projects/7858/badge)](https://www.bestpractices.dev/projects/7858)
 
 <img src="./docs/assets/readme/readme_animation.gif" alt="Gif to demonstrate vizro-ai">
 
@@ -21,10 +17,7 @@ It serves as an extension to Vizro, leveraging natural language capabilities to 
 
 ## Try out live
 
-| Platform     | Chart creation                                                                                                                                                                            | Dashboard creation                                                                                                                                                                            |
-| ------------ | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| PyCafe       | https://py.cafe/app/vizro-official/vizro-ai-charts                                                                                                                                        |                                                                                                                                                                                               |
-| Google Colab | [![Open In Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/mckinsey/vizro/blob/main/vizro-ai/examples/chart_by_vizro_ai.ipynb) | [![Open In Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/mckinsey/vizro/blob/main/vizro-ai/examples/dashboard_by_vizro_ai.ipynb) |
+| Platform | Chart creation | Dashboard creation | | ------------ | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | | PyCafe | https://py.cafe/app/vizro-official/vizro-ai-charts | | | Google Colab | [![Open In Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/mckinsey/vizro/blob/main/vizro-ai/examples/chart_by_vizro_ai.ipynb) | [![Open In Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/mckinsey/vizro/blob/main/vizro-ai/examples/dashboard_by_vizro_ai.ipynb) |
 
 ## Why Vizro-AI?
 

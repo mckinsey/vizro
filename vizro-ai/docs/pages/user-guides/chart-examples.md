@@ -4,36 +4,35 @@ Take a look at some more advanced charts that can be created with Vizro-AI using
 
 ### Polar bar chart
 
-A polar bar chart is a circular graph where each axis represents a different variable, typically used for displaying cyclical or directional data.
-It's suitable for comparing multiple variables across different categories or directions. Let's make one using Vizro-AI.
-
+A polar bar chart is a circular graph where each axis represents a different variable, typically used for displaying cyclical or directional data. It's suitable for comparing multiple variables across different categories or directions. Let's make one using Vizro-AI.
 
 !!! example "Polar Bar Chart"
 
-    === "Resulting chart"
-        [![VizroAIChart1]][VizroAIChart1]
+````
+=== "Resulting chart"
+    [![VizroAIChart1]][VizroAIChart1]
 
-    === "Code for the cell"
-        ```py
-        import vizro_ai
-        from vizro_ai import VizroAI
-        import plotly.express as px
+=== "Code for the cell"
+    ```py
+    import vizro_ai
+    from vizro_ai import VizroAI
+    import plotly.express as px
 
-        from dotenv import load_dotenv
-        load_dotenv()
+    from dotenv import load_dotenv
+    load_dotenv()
 
-        df = px.data.wind()
+    df = px.data.wind()
 
-        vizro_ai = VizroAI(model="gpt-4o")
-        fig = vizro_ai.plot(df,
-                      """Describe wind frequency and direction using bar_polar chart.
-                         Increase the width and height of the figure.
-                         Improve layout by placing title to the left. Show legend""")
-        fig.show()
-        ```
+    vizro_ai = VizroAI(model="gpt-4o")
+    fig = vizro_ai.plot(df,
+                  """Describe wind frequency and direction using bar_polar chart.
+                     Increase the width and height of the figure.
+                     Improve layout by placing title to the left. Show legend""")
+    fig.show()
+    ```
 
-    [VizroAIChart1]: ../../assets/user_guides/polar_bar_chart.png
-
+[VizroAIChart1]: ../../assets/user_guides/polar_bar_chart.png
+````
 
 ### Geographical map chart
 
@@ -41,31 +40,32 @@ The next chart we'll look at is a geographical map chart to visualize spatial pa
 
 !!! example "Map chart"
 
-    === "Resulting chart"
-        [![VizroAIChart2]][VizroAIChart2]
+````
+=== "Resulting chart"
+    [![VizroAIChart2]][VizroAIChart2]
 
-    === "Code for the cell"
-        ```py
-        import vizro_ai
-        from vizro_ai import VizroAI
-        import plotly.express as px
+=== "Code for the cell"
+    ```py
+    import vizro_ai
+    from vizro_ai import VizroAI
+    import plotly.express as px
 
-        from dotenv import load_dotenv
-        load_dotenv()
+    from dotenv import load_dotenv
+    load_dotenv()
 
-        df = px.data.gapminder()
+    df = px.data.gapminder()
 
-        vizro_ai = VizroAI(model="gpt-4o")
-        fig = vizro_ai.plot(df,
-                      """Visualize life expectancy over the years using map chart. Use life expectancy as the color dimension.
-                         Improve layout by using Arial font. Increase the width and height of the map area. Outline continents on the map.
-                         Show countries on the map.
-                         Increase the width and height of the figure.""")
-        fig.show()
-        ```
+    vizro_ai = VizroAI(model="gpt-4o")
+    fig = vizro_ai.plot(df,
+                  """Visualize life expectancy over the years using map chart. Use life expectancy as the color dimension.
+                     Improve layout by using Arial font. Increase the width and height of the map area. Outline continents on the map.
+                     Show countries on the map.
+                     Increase the width and height of the figure.""")
+    fig.show()
+    ```
 
-    [VizroAIChart2]: ../../assets/user_guides/map_chart.gif
-
+[VizroAIChart2]: ../../assets/user_guides/map_chart.gif
+````
 
 ### 3D surface plot
 
@@ -73,23 +73,25 @@ Let's explore how to generate a 3-dimensional surface plot with VizroAI.
 
 !!! example "Surface plot"
 
-    === "Resulting chart"
-        [![VizroAIChart3]][VizroAIChart3]
+````
+=== "Resulting chart"
+    [![VizroAIChart3]][VizroAIChart3]
 
-    === "Code for the cell"
-        ```py
-        import vizro_ai
-        from vizro_ai import VizroAI
-        import plotly.express as px
+=== "Code for the cell"
+    ```py
+    import vizro_ai
+    from vizro_ai import VizroAI
+    import plotly.express as px
 
-        from dotenv import load_dotenv
-        load_dotenv()
+    from dotenv import load_dotenv
+    load_dotenv()
 
-        df = px.data.gapminder()
+    df = px.data.gapminder()
 
-        vizro_ai = VizroAI(model="gpt-4o")
-        fig = vizro_ai.plot(df, "create a surface plot")
-        fig.show()
-        ```
+    vizro_ai = VizroAI(model="gpt-4o")
+    fig = vizro_ai.plot(df, "create a surface plot")
+    fig.show()
+    ```
 
-    [VizroAIChart3]: ../../assets/user_guides/surface_plot.gif
+[VizroAIChart3]: ../../assets/user_guides/surface_plot.gif
+````

@@ -26,7 +26,7 @@ Please try to be as explicit as possible to help us better understand the nature
 
 We will review it thoroughly and get back to you. If the issue is confirmed, we will release a patch as soon as possible.
 
----
+______________________________________________________________________
 
 Thanks for your help!
 
