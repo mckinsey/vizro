@@ -28,6 +28,7 @@ nav:
       - Safety in Vizro-AI: pages/explanation/safety-in-vizro-ai.md
   - Examples:
       - Chart examples: pages/user-guides/chart-examples.md
+      - Dashboard examples: pages/user-guides/dashboard-examples.md
   #- Contribute:
   #      - Contributing: pages/contribute/contributing.md
   - Vizro:
