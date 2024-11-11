@@ -90,9 +90,9 @@ We will use the [election data](https://plotly.com/python-api-reference/generate
     [VizroAIDashboardPage2]: ../../assets/user_guides/dashboard/dashboard1_page2.png
 
 
-### Exploring tips dataset
+### Exploring tips data
 
-In this example, we will work with [tips dataset](https://plotly.com/python-api-reference/generated/plotly.express.data.html#plotly.express.data.tips) where we will closely describe
+In this example, we will work with [tips data](https://plotly.com/python-api-reference/generated/plotly.express.data.html#plotly.express.data.tips) where we will describe
 the position of components in the layout.
 
 
