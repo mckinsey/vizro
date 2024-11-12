@@ -17,6 +17,7 @@ def diverging_stacked_bar(data_frame: pd.DataFrame, **kwargs) -> go.Figure:
         for trace, color in zip(fig.data, colors):
             trace.update(marker_color=color)
 
+    fig.data = fig.data[::-1]
     mutable_traces = list(fig.data)
     mutable_traces[: len(fig.data) // 2] = reversed(fig.data[: len(fig.data) // 2])
     fig.data = mutable_traces
@@ -63,6 +64,6 @@ fig = diverging_stacked_bar(
     data_frame=pastries,
     x=["Strongly Disagree", "Disagree", "Agree", "Strongly Agree"],
     y="pastry",
-    labels={"value": "Response count", "variable": "Opinion"},
+    labels={"value": "Response (in %)", "variable": ""},
     title="I would recommend this pastry to my friends",
 )
