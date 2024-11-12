@@ -31,8 +31,7 @@ def diverging_stacked_bar(data_frame: pd.DataFrame, **kwargs) -> go.Figure:
 
     fig.update_layout({f"{x_or_y}axis2": fig.layout[f"{x_or_y}axis"]})
     fig.update_layout(
-        {f"{x_or_y}axis": {"autorange": "reversed", "domain": [0, 0.5]},
-         f"{x_or_y}axis2": {"domain": [0.5, 1]}}
+        {f"{x_or_y}axis": {"autorange": "reversed", "domain": [0, 0.5]}, f"{x_or_y}axis2": {"domain": [0.5, 1]}}
     )
 
     # This is not generic enough to be added, but optimises the chart in terms of data viz best practices -

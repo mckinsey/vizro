@@ -97,7 +97,6 @@ def diverging_stacked_bar(
     for i, category in enumerate(category_order):
         fig.update_traces(legendrank=i, selector=({"name": category}))
 
-
     fig.update_xaxes(ticksuffix="%", range=[-80, 80])
 
     return fig
