@@ -90,6 +90,8 @@ class Filter(VizroBaseModel):
     selector: SelectorType = None
     _column_type: Literal["numerical", "categorical", "temporal"] = PrivateAttr()
 
+    # TODO[pydantic]: We couldn't refactor the `validator`, please replace it by `field_validator` manually.
+    # Check https://docs.pydantic.dev/dev-v2/migration/#changes-to-validators for more information.
     @validator("targets", each_item=True)
     def check_target_present(cls, target):
         if target not in model_manager:

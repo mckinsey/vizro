@@ -95,12 +95,16 @@ class Dashboard(VizroBaseModel):
     navigation: Navigation = None  # type: ignore[assignment]
     title: str = Field("", description="Dashboard title to appear on every page on top left-side.")
 
+    # TODO[pydantic]: We couldn't refactor the `validator`, please replace it by `field_validator` manually.
+    # Check https://docs.pydantic.dev/dev-v2/migration/#changes-to-validators for more information.
     @validator("pages", always=True)
     def validate_pages(cls, pages):
         if not pages:
             raise ValueError("Ensure this value has at least 1 item.")
         return pages
 
+    # TODO[pydantic]: We couldn't refactor the `validator`, please replace it by `field_validator` manually.
+    # Check https://docs.pydantic.dev/dev-v2/migration/#changes-to-validators for more information.
     @validator("navigation", always=True)
     def set_navigation_pages(cls, navigation, values):
         if "pages" not in values:

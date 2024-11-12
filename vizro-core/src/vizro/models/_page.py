@@ -4,11 +4,12 @@ from collections.abc import Mapping
 from typing import Any, Optional, TypedDict, Union
 
 from dash import dcc, html
+from pydantic import model_validator
 
 try:
     from pydantic.v1 import Field, root_validator, validator
 except ImportError:  # pragma: no cov
-    from pydantic import Field, root_validator, validator
+    from pydantic import Field, validator
 
 from vizro._constants import ON_PAGE_LOAD_ACTION_PREFIX
 from vizro.actions import _on_page_load
@@ -59,7 +60,8 @@ class Page(VizroBaseModel):
     _validate_min_length = validator("components", allow_reuse=True, always=True)(validate_min_length)
     _validate_layout = validator("layout", allow_reuse=True, always=True)(set_layout)
 
-    @root_validator(pre=True)
+    @model_validator(mode="before")
+    @classmethod
     def set_id(cls, values):
         if "title" not in values:
             return values
@@ -67,6 +69,8 @@ class Page(VizroBaseModel):
         values.setdefault("id", values["title"])
         return values
 
+    # TODO[pydantic]: We couldn't refactor the `validator`, please replace it by `field_validator` manually.
+    # Check https://docs.pydantic.dev/dev-v2/migration/#changes-to-validators for more information.
     @validator("path", always=True)
     def set_path(cls, path, values) -> str:
         # Based on how Github generates anchor links - see:

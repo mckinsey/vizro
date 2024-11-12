@@ -1,6 +1,7 @@
 from collections.abc import Mapping
 from contextlib import contextmanager
 from typing import Annotated, Any, Optional, Union
+from pydantic import ConfigDict
 
 try:
     from pydantic.v1 import BaseModel, Field, validator
@@ -167,6 +168,8 @@ class VizroBaseModel(BaseModel):
         "When no ID is chosen, ID will be automatically generated.",
     )
 
+    # TODO[pydantic]: We couldn't refactor the `validator`, please replace it by `field_validator` manually.
+    # Check https://docs.pydantic.dev/dev-v2/migration/#changes-to-validators for more information.
     @validator("id", always=True)
     def set_id(cls, id) -> str:
         return id or model_manager._generate_id()
@@ -325,9 +328,6 @@ class VizroBaseModel(BaseModel):
         except Exception:
             logging.exception("Code formatting failed; returning unformatted code")
             return unformatted_code
-
-    class Config:
-        extra = "forbid"  # Good for spotting user typos and being strict.
-        smart_union = True  # Makes unions work without unexpected coercion (will be the default in pydantic v2).
-        validate_assignment = True  # Run validators when a field is assigned after model instantiation.
-        copy_on_model_validation = "none"  # Don't copy sub-models. Essential for the model_manager to work correctly.
+    # TODO[pydantic]: The following keys were removed: `smart_union`, `copy_on_model_validation`.
+    # Check https://docs.pydantic.dev/dev-v2/migration/#changes-to-config for more information.
+    model_config = ConfigDict(extra="forbid", smart_union=True, validate_assignment=True, copy_on_model_validation="none")

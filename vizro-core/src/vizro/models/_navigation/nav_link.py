@@ -4,6 +4,7 @@ import itertools
 
 import dash_bootstrap_components as dbc
 from dash import get_relative_path, html
+from pydantic import field_validator
 
 try:
     from pydantic.v1 import Field, PrivateAttr, validator
@@ -37,7 +38,8 @@ class NavLink(VizroBaseModel):
     # Re-used validators
     _validate_pages = validator("pages", allow_reuse=True)(_validate_pages)
 
-    @validator("icon")
+    @field_validator("icon")
+    @classmethod
     def validate_icon(cls, icon) -> str:
         return icon.strip().lower().replace(" ", "_")
 
