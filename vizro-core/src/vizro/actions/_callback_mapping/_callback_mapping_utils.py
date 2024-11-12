@@ -126,21 +126,6 @@ def _get_export_data_callback_outputs(action_id: ModelID) -> dict[str, Output]:
     }
 
 
-def _get_on_page_load_callback_outputs(action_id: ModelID) -> dict[str, Output]:
-    """Creates mapping of target names and their `Output`."""
-    component_targets = _get_action_callback_outputs(action_id=action_id)
-
-    # TODO-WIP: Add only dynamic filters from the current page
-    import vizro.models as vm
-    for filter_id, filter_obj in model_manager._items_with_type(vm.Filter):
-        if filter_obj._dynamic:
-            component_targets[filter_id] = Output(
-                component_id=filter_id,
-                component_property="children",
-            )
-
-    return component_targets
-
 # CALLBACK COMPONENTS --------------
 def _get_export_data_callback_components(action_id: ModelID) -> list[dcc.Download]:
     """Creates dcc.Downloads for target components of the `export_data` action."""

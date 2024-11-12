@@ -13,8 +13,8 @@ from vizro.managers import data_manager
 
 print("INITIALIZING")
 
-# FILTER_COLUMN = "species"
-FILTER_COLUMN = "sepal_length"
+FILTER_COLUMN = "species"
+# FILTER_COLUMN = "sepal_length"
 
 
 def slow_load(sample_size=3):
@@ -49,7 +49,15 @@ def load_from_file():
     return final_df
 
 
+def load_parametrised_species(species=None):
+    df = px.data.iris()
+    if species:
+        df = df[df["species"].isin(species)]
+    return df
+
+
 data_manager["dynamic_df"] = load_from_file
+# data_manager["dynamic_df"] = load_parametrised_species
 
 # # TODO-DEV: Turn on/off caching to see how it affects the app.
 # data_manager.cache = Cache(config={"CACHE_TYPE": "SimpleCache"})
@@ -81,6 +89,16 @@ another_page = vm.Page(
         #     figure=px.scatter(
         #         data_frame="dynamic_df",
         #         x="sepal_length",
+        #         y="petal_length",
+        #         color="species",
+        #         color_discrete_map={"setosa": "#00b4ff", "versicolor": "#ff9222", "virginica": "#3949ab"},
+        #     ),
+        # ),
+        # vm.Graph(
+        #     id="graph_2_id",
+        #     figure=px.scatter(
+        #         data_frame="dynamic_df",
+        #         x="sepal_length",
         #         y="petal_width",
         #         color="species",
         #     )
@@ -91,11 +109,11 @@ another_page = vm.Page(
         vm.Filter(
             id="filter_container_id",
             column=FILTER_COLUMN,
-
+            # targets=["graph_2_id"],
             # selector=vm.Dropdown(id="filter_id"),
             # selector=vm.Dropdown(id="filter_id", value=["setosa"]),
 
-            # selector=vm.Checklist(id="filter_id"),
+            selector=vm.Checklist(id="filter_id"),
             # selector=vm.Checklist(id="filter_id", value=["setosa"]),
 
             # selector=vm.Dropdown(id="filter_id", multi=False),
@@ -104,7 +122,7 @@ another_page = vm.Page(
             # selector=vm.RadioItems(id="filter_id"),
             # selector=vm.RadioItems(id="filter_id", value="setosa"),
 
-            selector=vm.Slider(id="filter_id"),
+            # selector=vm.Slider(id="filter_id"),
             # selector=vm.Slider(id="filter_id", value=6),
 
             # selector=vm.RangeSlider(id="filter_id"),
@@ -175,7 +193,15 @@ another_page = vm.Page(
                 value="species",
                 multi=False,
             )
-        )
+        ),
+        # vm.Parameter(
+        #     id="parameter_species",
+        #     targets=[
+        #         "graph_1_id.data_frame.species",
+        #         "filter_container_id.",
+        #     ],
+        #     selector=vm.Dropdown(options=["setosa", "versicolor", "virginica"])
+        # ),
         # vm.Parameter(
         #     id="parameter_container_id",
         #     targets=[

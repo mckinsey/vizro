@@ -13,7 +13,7 @@ from vizro.managers._model_manager import ModelID
 from vizro.models.types import MultiValueType, SelectorType, SingleValueType
 
 if TYPE_CHECKING:
-    from vizro.models import Action, VizroBaseModel
+    from vizro.models import Action, VizroBaseModel, Filter
 
 ValidatedNoneValueType = Union[SingleValueType, MultiValueType, None, list[None]]
 
@@ -191,7 +191,7 @@ def _apply_filters(
 
 
 def _get_unfiltered_data(
-    ctds_parameters: list[CallbackTriggerDict], targets: list[ModelID]
+    ctds_parameter: list[CallbackTriggerDict], targets: list[ModelID]
 ) -> dict[ModelID, pd.DataFrame]:
     # Takes in multiple targets to ensure that data can be loaded efficiently using _multi_load and not repeated for
     # every single target.
@@ -200,8 +200,11 @@ def _get_unfiltered_data(
     multi_data_source_name_load_kwargs = []
     for target in targets:
         dynamic_data_load_params = _get_parametrized_config(
-            ctd_parameters=ctds_parameters, target=target, data_frame=True
+            ctd_parameters=ctds_parameter, target=target, data_frame=True
         )
+        # This works for the figure objects but not for the Filter objects. Ideally, we should or enable multiple
+        # data_frame-s from figure objects or limit Filter to use a single data_frame object. Filter with a single
+        # data_frame object sounds like a better idea (although it's a breaking change).
         data_source_name = model_manager[target]["data_frame"]
         multi_data_source_name_load_kwargs.append((data_source_name, dynamic_data_load_params["data_frame"]))
 
@@ -211,7 +214,7 @@ def _get_unfiltered_data(
 def _get_modified_page_figures(
     ctds_filter: list[CallbackTriggerDict],
     ctds_filter_interaction: list[dict[str, CallbackTriggerDict]],
-    ctds_parameters: list[CallbackTriggerDict],
+    ctds_parameter: list[CallbackTriggerDict],
     targets: list[ModelID],
 ) -> dict[ModelID, Any]:
     outputs: dict[ModelID, Any] = {}
@@ -220,16 +223,44 @@ def _get_modified_page_figures(
     #  so you could do apply_filters on a target a pass only the ctds relevant for that target.
     #  Consider restructuring ctds to a more convenient form to make this possible.
 
-    for target, unfiltered_data in _get_unfiltered_data(ctds_parameters, targets).items():
-        filtered_data = _apply_filters(unfiltered_data, ctds_filter, ctds_filter_interaction, target)
-        outputs[target] = model_manager[target](
-            data_frame=filtered_data,
-            **_get_parametrized_config(ctd_parameters=ctds_parameters, target=target, data_frame=False),
-        )
+    from vizro.models import Filter
 
-    # TODO NEXT: will need to pass unfiltered_data into Filter.__call__.
-    # This dictionary is filtered for correct targets already selected in Filter.__call__ or that could be done here
-    # instead.
-    # {target: data_frame for target, data_frame in unfiltered_data.items() if target in self.targets}
+    control_targets = []
+    control_targets_targets = []
+    figure_targets = []
+
+    for target in targets:
+        target_obj = model_manager[target]
+        if isinstance(target_obj, Filter):
+            control_targets.append(target)
+            control_targets_targets.extend(target_obj.targets)
+        else:
+            figure_targets.append(target)
+
+    # Retrieving only figure_targets data_frames from multi_load is not the best solution. We assume that Filter.targets
+    # are the subset of the action's targets. This works for the on_page_load, but will not work if explicitly set.
+    # Also, it was a good decision to return action output as key: value pairs for the predefined actions.
+    _get_unfiltered_data_targets = list(set(figure_targets + control_targets_targets))
+
+    figure_targets_unfiltered_data: dict[ModelID, pd.DataFrame] = _get_unfiltered_data(ctds_parameter, _get_unfiltered_data_targets)
+
+    for target, unfiltered_data in figure_targets_unfiltered_data.items():
+        if target in figure_targets:
+            filtered_data = _apply_filters(unfiltered_data, ctds_filter, ctds_filter_interaction, target)
+            outputs[target] = model_manager[target](
+                data_frame=filtered_data,
+                **_get_parametrized_config(ctd_parameters=ctds_parameter, target=target, data_frame=False),
+            )
+
+    for target in control_targets:
+        current_value = [item for item in ctds_filter if item["id"] == model_manager[target].selector.id]
+        current_value = current_value if not current_value else current_value[0]["value"]
+        if "ALL" in current_value or ["ALL"] in current_value:
+            current_value = []
+
+        outputs[target] = model_manager[target](
+            target_to_data_frame=figure_targets_unfiltered_data,
+            current_value=current_value
+        )
 
     return outputs

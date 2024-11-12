@@ -28,26 +28,24 @@ def _on_page_load(targets: list[ModelID], **inputs: dict[str, Any]) -> dict[Mode
     return_obj = _get_modified_page_figures(
         ctds_filter=ctx.args_grouping["external"]["filters"],
         ctds_filter_interaction=ctx.args_grouping["external"]["filter_interaction"],
-        ctds_parameters=ctx.args_grouping["external"]["parameters"],
+        ctds_parameter=ctx.args_grouping["external"]["parameters"],
         targets=targets,
     )
 
-    import vizro.models as vm
-    from time import sleep
-    sleep(1)
+    # import vizro.models as vm
+    # from time import sleep
+    # sleep(1)
+    #
+    # for filter_id, filter_obj in model_manager._items_with_type(vm.Filter):
+    #     if filter_obj._dynamic:
+    #         current_value = [
+    #             item for item in ctx.args_grouping["external"]["filters"]
+    #             if item["id"] == filter_obj.selector.id
+    #         ][0]["value"]
+    #
+    #         if current_value in ["ALL", ["ALL"]]:
+    #             current_value = []
 
-    # TODO-WIP: Add filters to OPL targets. Return only dynamic filter from the targets and not from the entire app.
-    for filter_id, filter_obj in model_manager._items_with_type(vm.Filter):
-        if filter_obj._dynamic:
-            current_value = [
-                item for item in ctx.args_grouping["external"]["filters"]
-                if item["id"] == filter_obj.selector.id
-            ][0]["value"]
-
-            if current_value in ["ALL", ["ALL"]]:
-                current_value = []
-
-            # TODO-CONSIDER: Does calculating options/min/max significantly slow down the app?
             # TODO: Also propagate DFP values into the load() method
             # 1. "new_options"/"min/max" DOES NOT include the "current_value"
             # filter_obj._set_categorical_selectors_options(force=True, current_value=[])
@@ -58,8 +56,7 @@ def _on_page_load(targets: list[ModelID], **inputs: dict[str, Any]) -> dict[Mode
 
             # return_obj[filter_id] = filter_obj.selector(on_page_load_value=current_value)
 
-
-            return_obj[filter_id] = filter_obj(current_value=current_value)
+            # return_obj[filter_id] = filter_obj(current_value=current_value)
 
     print("ON PAGE LOAD - END\n")
 

@@ -96,6 +96,10 @@ class Filter(VizroBaseModel):
     selector: SelectorType = None
 
     _dynamic: bool = PrivateAttr(None)
+    _pre_build_finished: bool = PrivateAttr(False)
+
+    # Component properties for actions and interactions
+    _output_component_property: str = PrivateAttr("children")
 
     _column_type: Literal["numerical", "categorical", "temporal"] = PrivateAttr()
 
@@ -105,7 +109,7 @@ class Filter(VizroBaseModel):
             raise ValueError(f"Target {target} not found in model_manager.")
         return target
 
-    def __call__(self, current_value, **kwargs):
+    def __call__(self, target_to_data_frame: dict[ModelID, pd.DataFrame], current_value: Any, **kwargs):
         # Only relevant for a dynamic filter.
         # Although targets are fixed at build time, the validation logic is repeated during runtime, so if a column
         # is missing then it will raise an error. We could change this if we wanted.
@@ -121,7 +125,6 @@ class Filter(VizroBaseModel):
                 "change type while the dashboard is running."
             )
 
-        # TODO: when implement dynamic, will need to do something with this e.g. pass to selector.__call__.
         if isinstance(self.selector, SELECTORS["categorical"]):
             # Categorical selector.
             new_options = self._get_options(targeted_data, current_value)
@@ -133,6 +136,9 @@ class Filter(VizroBaseModel):
 
     @_log_call
     def pre_build(self):
+        if self._pre_build_finished:
+            return
+        self._pre_build_finished = True
         # If targets aren't explicitly provided then try to target all figures on the page. In this case we don't
         # want to raise an error if the column is not found in a figure's data_frame, it will just be ignored.
         # This is the case when bool(self.targets) is False.
@@ -142,7 +148,7 @@ class Filter(VizroBaseModel):
         )
         # TODO NEXT: how to handle pre_build for dynamic filters? Do we still require default argument values in
         #  `load` to establish selector type etc.? Can we take selector values from model_manager to supply these?
-        #  Or just don't do validation at pre_build time and wait until state is availableduring build time instead?
+        #  Or just don't do validation at pre_build time and wait until state is available during build time instead?
         #  What should the load kwargs be here?
         #  Note that currently _get_unfiltered_data is only suitable for use at runtime since it requires
         #  ctd_parameters. That could be changed to just reuse that function.
@@ -216,29 +222,17 @@ class Filter(VizroBaseModel):
         return dcc.Loading(id=self.id, children=selector_build_obj) if self._dynamic else selector_build_obj
 
     def _validate_targeted_data(
-        self, targets: list[ModelID], eagerly_raise_column_not_found_error=True
+        self, target_to_data_frame: dict[ModelID, pd.DataFrame], eagerly_raise_column_not_found_error=True
     ) -> pd.DataFrame:
-        # TODO: consider moving some of this logic to data_manager when implement dynamic filter. Make sure
-        #  get_modified_figures and stuff in _actions_utils.py is as efficient as code here.
+        # target_to_data_source_name = {target: model_manager[target]["data_frame"] for target in targets}
+        # data_source_name_to_data = {
+        #     data_source_name: data_manager[data_source_name].load()
+        #     for data_source_name in set(target_to_data_source_name.values())
+        # }
 
-        # When loading data_frame there are possible keys:
-        #  1. target. In worst case scenario this is needed but can lead to unnecessary repeated data loading.
-        #  2. data_source_name. No repeated data loading but won't work when applying data_frame parameters at runtime.
-        #  3. target + data_frame parameters keyword-argument pairs. This is the correct key to use at runtime.
-        # For now we follow scheme 2 for data loading (due to set() below) and 1 for the returned targeted_data
-        # pd.DataFrame, i.e. a separate column for each target even if some data is repeated.
-        # TODO: when this works with data_frame parameters load() will need to take arguments and the structures here
-        #  might change a bit.
-        target_to_data_source_name = {target: model_manager[target]["data_frame"] for target in targets}
-        data_source_name_to_data = {
-            data_source_name: data_manager[data_source_name].load()
-            for data_source_name in set(target_to_data_source_name.values())
-        }
         target_to_series = {}
 
-        for target, data_source_name in target_to_data_source_name.items():
-            data_frame = data_source_name_to_data[data_source_name]
-
+        for target, data_frame in target_to_data_frame.items():
             if self.column in data_frame.columns:
                 # reset_index so that when we make a DataFrame out of all these pd.Series pandas doesn't try to align
                 # the columns by index.

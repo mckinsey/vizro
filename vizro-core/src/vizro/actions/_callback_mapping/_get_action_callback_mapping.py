@@ -11,7 +11,6 @@ from vizro.actions._callback_mapping._callback_mapping_utils import (
     _get_action_callback_outputs,
     _get_export_data_callback_components,
     _get_export_data_callback_outputs,
-    _get_on_page_load_callback_outputs,
 )
 from vizro.actions._filter_action import _filter
 from vizro.actions._on_page_load_action import _on_page_load
@@ -46,7 +45,7 @@ def _get_action_callback_mapping(
         },
         _on_page_load.__wrapped__: {
             "inputs": _get_action_callback_inputs,
-            "outputs": _get_on_page_load_callback_outputs,
+            "outputs": _get_action_callback_outputs,
         },
     }
     action_call = action_callback_mapping.get(action_function, {}).get(argument)
