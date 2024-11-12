@@ -1,4 +1,5 @@
 from typing import Literal
+from pydantic import field_validator
 
 try:
     from pydantic.v1 import Field, validator
@@ -32,6 +33,8 @@ class Parameter(VizroBaseModel):
     targets: list[str] = Field(..., description="Targets in the form of `<target_component>.<target_argument>`.")
     selector: SelectorType
 
+    # TODO[pydantic]: We couldn't refactor the `validator`, please replace it by `field_validator` manually.
+    # Check https://docs.pydantic.dev/dev-v2/migration/#changes-to-validators for more information.
     @validator("targets", each_item=True)
     def check_dot_notation(cls, target):
         if "." not in target:
@@ -40,6 +43,8 @@ class Parameter(VizroBaseModel):
             )
         return target
 
+    # TODO[pydantic]: We couldn't refactor the `validator`, please replace it by `field_validator` manually.
+    # Check https://docs.pydantic.dev/dev-v2/migration/#changes-to-validators for more information.
     @validator("targets", each_item=True)
     def check_target_present(cls, target):
         target_id = target.split(".")[0]
@@ -47,6 +52,8 @@ class Parameter(VizroBaseModel):
             raise ValueError(f"Target {target_id} not found in model_manager.")
         return target
 
+    # TODO[pydantic]: We couldn't refactor the `validator`, please replace it by `field_validator` manually.
+    # Check https://docs.pydantic.dev/dev-v2/migration/#changes-to-validators for more information.
     @validator("targets", each_item=True)
     def check_data_frame_as_target_argument(cls, target):
         targeted_argument = target.split(".", 1)[1]
@@ -57,7 +64,8 @@ class Parameter(VizroBaseModel):
             )
         return target
 
-    @validator("targets")
+    @field_validator("targets")
+    @classmethod
     def check_duplicate_parameter_target(cls, targets):
         all_targets = targets.copy()
         for _, param in model_manager._items_with_type(Parameter):

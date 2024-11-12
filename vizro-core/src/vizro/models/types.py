@@ -172,11 +172,15 @@ class CapturedCallable:
         return self.__function
 
     @classmethod
+    # TODO[pydantic]: We couldn't refactor `__modify_schema__`, please create the `__get_pydantic_json_schema__` manually.
+    # Check https://docs.pydantic.dev/latest/migration/#defining-custom-types for more information.
     def __modify_schema__(cls, field_schema: dict[str, Any], field: ModelField):
         """Generates schema for field of this type."""
         raise SkipField(f"{cls.__name__} {field.name} is excluded from the schema.")
 
     @classmethod
+    # TODO[pydantic]: We couldn't refactor `__get_validators__`, please create the `__get_pydantic_core_schema__` manually.
+    # Check https://docs.pydantic.dev/latest/migration/#defining-custom-types for more information.
     def __get_validators__(cls):
         """Makes type compatible with pydantic model without needing `arbitrary_types_allowed`."""
         # Each validator receives as an input the value returned from the previous validator.

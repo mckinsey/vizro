@@ -1,11 +1,12 @@
 from typing import Literal, Optional, Union
 
 import pytest
+from pydantic import model_validator
 
 try:
     from pydantic.v1 import Field, ValidationError, root_validator, validator
 except ImportError:  # pragma: no cov
-    from pydantic import Field, ValidationError, root_validator, validator
+    from pydantic import Field, ValidationError, validator
 import logging
 import textwrap
 from typing import Annotated
@@ -205,13 +206,16 @@ class ModelWithFieldSetting(vm.VizroBaseModel):
     foo: str = ""
 
     # Set a field with regular validator
+    # TODO[pydantic]: We couldn't refactor the `validator`, please replace it by `field_validator` manually.
+    # Check https://docs.pydantic.dev/dev-v2/migration/#changes-to-validators for more information.
     @validator("foo", always=True)
     def set_foo(cls, foo) -> str:
         return foo or "long-random-thing"
 
     # Set a field with a pre=True root-validator -->
     # # this will not be caught by exclude_unset=True
-    @root_validator(pre=True)
+    @model_validator(mode="before")
+    @classmethod
     def set_id(cls, values):
         if "title" not in values:
             return values

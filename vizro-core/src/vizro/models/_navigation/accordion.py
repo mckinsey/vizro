@@ -4,6 +4,7 @@ from typing import Literal
 
 import dash_bootstrap_components as dbc
 from dash import get_relative_path
+from pydantic import field_validator
 
 try:
     from pydantic.v1 import Field, validator
@@ -31,7 +32,8 @@ class Accordion(VizroBaseModel):
 
     _validate_pages = validator("pages", allow_reuse=True)(_validate_pages)
 
-    @validator("pages", pre=True)
+    @field_validator("pages", mode="before")
+    @classmethod
     def coerce_pages_type(cls, pages):
         if isinstance(pages, Mapping):
             return pages

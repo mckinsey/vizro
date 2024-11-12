@@ -3,11 +3,12 @@ from typing import NamedTuple, Optional
 import numpy as np
 from dash import html
 from numpy import ma
+from pydantic import field_validator
 
 try:
     from pydantic.v1 import Field, PrivateAttr, validator
 except ImportError:  # pragma: no cov
-    from pydantic import Field, PrivateAttr, validator
+    from pydantic import Field, PrivateAttr
 
 from vizro._constants import EMPTY_SPACE_CONST
 from vizro.models import VizroBaseModel
@@ -165,7 +166,8 @@ class Layout(VizroBaseModel):
     )
     _component_grid_lines: Optional[list[ColRowGridLines]] = PrivateAttr()
 
-    @validator("grid")
+    @field_validator("grid")
+    @classmethod
     def validate_grid(cls, grid):
         if len({len(row) for row in grid}) > 1:
             raise ValueError("All rows must be of same length.")

@@ -5,11 +5,12 @@ from pprint import pformat
 from typing import Any, Union
 
 from dash import Input, Output, State, callback, html
+from pydantic import field_validator
 
 try:
     from pydantic.v1 import Field, validator
 except ImportError:  # pragma: no cov
-    from pydantic import Field, validator
+    from pydantic import Field
 
 from vizro.managers._model_manager import ModelID
 from vizro.models import VizroBaseModel
@@ -48,7 +49,8 @@ class Action(VizroBaseModel):
     # require, and make the code here look up the appropriate validation using the function as key
     # This could then also involve other validations currently only carried out at run-time in pre-defined actions, such
     # as e.g. checking if the correct arguments have been provided to the file_format in export_data.
-    @validator("function")
+    @field_validator("function")
+    @classmethod
     def validate_predefined_actions(cls, function):
         if function._function.__name__ == "export_data":
             file_format = function._arguments.get("file_format")
