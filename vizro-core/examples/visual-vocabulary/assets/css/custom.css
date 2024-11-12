@@ -90,3 +90,22 @@ img[src*="#chart-icon"] {
 .intro-text ul:last-of-type {
   margin-bottom: 0;
 }
+
+.anchor-container {
+  background: #060a17;
+  bottom: 0;
+  display: flex;
+  font-weight: 600;
+  gap: 2rem;
+  height: 2rem;
+  padding: 4px;
+  place-content: baseline center;
+  position: fixed;
+  width: 100%;
+}
+
+.anchor-div {
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+}
