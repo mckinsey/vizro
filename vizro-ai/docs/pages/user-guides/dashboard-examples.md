@@ -96,7 +96,7 @@ In this example, we will work with [tips data](https://plotly.com/python-api-ref
 the position of components in the layout.
 
 
-!!! example "Generated dashboard"
+!!! example "Tips dashboard"
 
     === "Code"
         ```py
@@ -130,3 +130,66 @@ the position of components in the layout.
 
 
     [VizroAIDashboardPage1]: ../../assets/user_guides/dashboard/dashboard2_page1.png
+
+
+### Exploring gapminder data
+
+In this example, we are requesting a multi-page dashboard, which includes various types of components, filter, and customized layout.
+We will use the [gapminder data](https://plotly.com/python-api-reference/generated/plotly.express.data.html#plotly.express.data.gapminder)
+
+
+!!! example "Gapminder dashboard"
+
+    === "Code"
+        ```py
+        import vizro.plotly.express as px
+        from vizro_ai import VizroAI
+        from vizro import Vizro
+
+        df = px.data.gapminder()
+        user_question = """
+        Create a two-page dashboard with the following components:
+
+        <Page 1>
+        I need one card that has this exact text: """Population, GDP per capita, and life expectancy are interconnected metrics that provide insights into the socioeconomic well-being of a country. Rapid population growth can strain resources and infrastructure, impacting GDP per capita. Higher GDP per capita often enables better healthcare and improved life expectancy, but other factors such as healthcare quality and social policies also play significant roles."""
+
+        I need map chart to visualize GDP per capita over the years for each country. Improve the layout of the chart, so that individual countries are clearly visible on the map.
+
+        Use table to show the gapminder data.
+
+        Add a filter on the table, to filter the table by the continent.
+
+        Layout of page 1:
+        The whole page is divided by a (6 by 2) grid, with 6 rows and 2 columns.
+        Row 1 -card spans all two columns
+        Row 2, 3 & 4 - animated map chart span all two columns
+        Row 5 & 6 - the table span all two columns.
+
+        <Page 2>
+        I need page with three charts.
+
+        First chart: Visualize the distribution of life expectancy across continents using boxplot chart.
+        Second chart:  Compares the most recent life expectancy for each continent.
+        Third chart: Visualize the progress of each continent when it comes to life expectancy numbers. Use average life expectancy for each continent as comparison metric.
+
+        Page Layout:
+        The whole page is divided by a (2 by 2) grid, with 3 rows and 2 columns.
+        Row 1 - first chart spans both columns
+        Row 2  - second chart spans column 1; third chart spans column 2.
+        """
+
+        vizro_ai = VizroAI(model="gpt-4o")
+        dashboard = vizro_ai.dashboard([df1, df2], user_question)
+
+        Vizro().build(dashboard).run()
+
+        ```
+
+    === "Page1"
+        [![VizroAIGapminderPage1]][VizroAIDashboardPage1]
+
+    === "Page2"
+        [![VizroAIGapminderdPage2]][VizroAIDashboardPage2]
+
+    [VizroAIGapminderPage1]: ../../assets/user_guides/dashboard/dashboard3_page1.png
+    [VizroAIGapminderdPage2]: ../../assets/user_guides/dashboard/dashboard3_page2.png
