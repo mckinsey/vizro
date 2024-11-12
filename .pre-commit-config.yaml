@@ -83,16 +83,13 @@ repos:
           - stylelint-order@4.1.0
         args: ["--fix"]
 
-  - repo: https://github.com/errata-ai/vale
-    rev: v3.7.1
+  - repo: https://github.com/executablebooks/mdformat
+    rev: 0.7.18
     hooks:
-      - id: vale
-        args: [--config=.vale/.vale.ini]
-        # There's no way to automatically convert vale suggestions/warnings to errors, and so they won't appear at all unless
-        # there's an error raised.
-        # pre-commit's verbose mode means that suggestions and warnings are always shown even if there's no error raised.
-        # See https://github.com/errata-ai/vale/issues/575.
-        verbose: true
+      - id: mdformat
+        args: [--wrap=no]
+        additional_dependencies:
+          - "mdformat-mkdocs[recommended]==3.0.0"
 
 # Configuration for https://pre-commit.ci/.
 ci:
