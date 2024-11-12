@@ -5,7 +5,7 @@ defaults:
     working-directory: vizro-ai
 
 on:
-    workflow_dispatch:
+  workflow_dispatch:
 
 env:
   PYTHONUNBUFFERED: 1
