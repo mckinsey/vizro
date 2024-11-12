@@ -5,12 +5,12 @@ from pprint import pformat
 from typing import Any, Union
 
 from dash import Input, Output, State, callback, html
-from pydantic import field_validator
+from pydantic import field_validator, Field
 
-try:
-    from pydantic.v1 import Field, validator
-except ImportError:  # pragma: no cov
-    from pydantic import Field
+# try:
+#     from pydantic.v1 import Field, validator
+# except ImportError:  # pragma: no cov
+#     from pydantic import Field
 
 from vizro.managers._model_manager import ModelID
 from vizro.models import VizroBaseModel
@@ -32,16 +32,16 @@ class Action(VizroBaseModel):
 
     """
 
-    function: CapturedCallable = Field(..., import_path="vizro.actions", mode="action", description="Action function.")
+    function: CapturedCallable = Field(..., description="Action function.") # , import_path="vizro.actions", mode="action"
     inputs: list[str] = Field(
         [],
         description="Inputs in the form `<component_id>.<property>` passed to the action function.",
-        regex="^[^.]+[.][^.]+$",
+        pattern="^[^.]+[.][^.]+$",
     )
     outputs: list[str] = Field(
         [],
         description="Outputs in the form `<component_id>.<property>` changed by the action function.",
-        regex="^[^.]+[.][^.]+$",
+        pattern="^[^.]+[.][^.]+$",
     )
 
     # TODO: Problem: generic Action model shouldn't depend on details of particular actions like export_data.
