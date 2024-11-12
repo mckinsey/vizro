@@ -24,7 +24,8 @@ vizro_ai = VizroAI(model="<chosen model>")
     | API key           | `OPENAI_API_KEY`                      |
     | Base API URL      | `OPENAI_API_BASE`                     |
 
-    To use OpenAI with Vizro-AI, you must have an account with paid-for credits available. None of the free accounts will suffice. You can check [all available OpenAI models including pricing on their website](https://platform.openai.com/docs/models). This will also explain which version the below string acronyms currently point to.
+    To use OpenAI with Vizro-AI, you must have an account with paid-for credits available. None of the free accounts will suffice. You can check [all available OpenAI models including pricing on their website](https://platform.openai.com/docs/models). This will also explain which version the below string acronyms currently point to. Before usage, please review OpenAI's guidelines on risk mitigation to understand potential model limitations and best practices.
+    More details on responsible usage can be found on this [link](https://platform.openai.com/docs/models).
 
     - `gpt-4o-mini` **default**
     - `gpt-4-turbo`
@@ -39,7 +40,8 @@ vizro_ai = VizroAI(model="<chosen model>")
     | API key           | `ANTHROPIC_API_KEY`                       |
     | Base API URL      | `ANTHROPIC_API_URL`,`ANTHROPIC_BASE_URL`  |
 
-    To use Anthropic with Vizro-AI, you must have an account with paid-for credits available. None of the free accounts will suffice. You can check [all available Anthropic models including pricing on their website](https://docs.anthropic.com/en/docs/about-claude/models).
+    To use Anthropic with Vizro-AI, you must have an account with paid-for credits available. None of the free accounts will suffice. You can check [all available Anthropic models including pricing on their website](https://docs.anthropic.com/en/docs/about-claude/models). Before usage, please review Anthropic guidelines on risk mitigation to understand potential model limitations and best practices.
+    More details on responsible usage can be found on this [link](https://trust.anthropic.com/).
 
     - `claude-3-5-sonnet-latest`
     - `claude-3-opus-latest`
@@ -62,6 +64,7 @@ vizro_ai = VizroAI(model="<chosen model>")
     | Base API URL      | `MISTRAL_BASE_URL`                        |
 
     To use Mistral with Vizro-AI, you can either use their API, which comes with [an associated cost](https://mistral.ai/technology/#pricing), or you could use their models for free under the Apache 2.0 license. In that case you need to setup the model API yourself. You can check [all available Mistral models including pricing on their website](https://docs.mistral.ai/getting-started/models/models_overview). This will also explain which version the below string acronyms currently point to.
+    Before usage, please review Mistral guidelines on risk mitigation to understand potential model limitations and best practices. More details on responsible usage can be found on this [link](https://docs.mistral.ai/capabilities/guardrailing/#guardrailing-results-with-mistral-safety-prompt).
 
     - `mistral-large-latest`
     - `open-mistral-nemo`
