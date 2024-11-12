@@ -29,22 +29,28 @@ Click on the **Run and edit this code in PyCafe** link below to live-edit the da
         ```
 
     === "Result"
-
-        [![FirstDash]][FirstDash]
-
-    [FirstDash]: ../../assets/tutorials/dashboard/first-dashboard.png
+        [![FirstDash]][firstdash]
 
 <!-- vale off -->
+
 ## Can I break this code?
+
 <!-- vale on -->
+
 When you click the link to "Edit live on PyCafe" the dashboard is running inside your browser. Any changes you make are local and you don't need to worry about breaking the code for others. Nobody else sees the changes you make unless you save a copy of the project as your own Vizro PyCafe project.
 
 <!-- vale off -->
+
 ## How can I make my own dashboards?
+
 <!-- vale on -->
+
 You can use PyCafe to experiment with your own Vizro dashboards by dropping code onto a new project. Check out the [PyCafe documentation](https://py.cafe/docs/apps/vizro) for more information.
 
 If you need inspiration or a starting point, we make all our examples available for you to try out on PyCafe. Throughout our documentation, follow the "**Run and edit this code in PyCafe**" link below the code snippets to open them in PyCafe.
 
 ## Where next?
+
 You are now ready to explore Vizro further, by working through the ["Explore Vizro" tutorial](explore-components.md) or by consulting the [how-to guides](../user-guides/dashboard.md).
+
+[firstdash]: ../../assets/tutorials/dashboard/first-dashboard.png

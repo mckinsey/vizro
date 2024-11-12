@@ -8,12 +8,11 @@ You may also want to review the [Vizro dashboard tutorial](https://vizro.readthe
 
 If you haven't already installed Vizro-AI and set up the API key for OpenAI, follow the [installation guide](../user-guides/install.md).
 
-
 ## 2. Open a Notebook
+
 A good way to initially explore Vizro-AI is from inside a Jupyter Notebook.
 
 ??? "If you haven't used Jupyter before..."
-
     You may need to install the Jupyter package if you . From the terminal window:
 
     ```bash
@@ -39,6 +38,7 @@ print(vizro_ai.__version__)
 You should see a return output of the form `x.y.z`.
 
 ## 3. Instantiate VizroAI
+
 ```py
 from vizro_ai import VizroAI
 
@@ -46,6 +46,7 @@ vizro_ai = VizroAI()
 ```
 
 ## 4. Prepare the data
+
 Next, prepare the data to pass to Vizro-AI. In this example, we use the [gapminder data](https://plotly.com/python-api-reference/generated/plotly.express.data.html#plotly.express.data.gapminder).
 
 ```py
@@ -87,6 +88,7 @@ dashboard = vizro_ai.dashboard([df], user_question)
 The call to `dashboard()` initiates dashboard generation. By default, it generates the Vizro `Dashboard` Object.
 
 ## 7. Build dashboard
+
 Once dashboard generation is complete, launch the dashboard with `build()`.
 
 ```py
@@ -95,7 +97,6 @@ Vizro().build(dashboard).run()
 ```
 
 !!! example "Generated dashboard"
-
     === "Code for the cell"
         ```py
         from vizro import Vizro
@@ -119,6 +120,6 @@ Vizro().build(dashboard).run()
         ```
 
     === "Result"
-        [![VizroAIDashboardPage1]][VizroAIDashboardPage1]
+        [![VizroAIDashboardPage1]][vizroaidashboardpage1]
 
-    [VizroAIDashboardPage1]: ../../assets/tutorials/dashboard/dashboard0_page1.png
+[vizroaidashboardpage1]: ../../assets/tutorials/dashboard/dashboard0_page1.png

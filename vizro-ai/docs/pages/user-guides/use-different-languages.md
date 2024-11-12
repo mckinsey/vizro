@@ -1,8 +1,8 @@
 # Generate visualizations using different languages
+
 Vizro-AI is versatile, supporting prompts and chart visualizations in languages other than English. In this guide you will explore this capability with two examples, starting with Chinese where we inquire about visualizing the GDP per capita over time.
 
 !!! example "Vizro-AI Chinese"
-
     === "Code for the cell"
         ```py
         from vizro_ai import VizroAI
@@ -14,15 +14,13 @@ Vizro-AI is versatile, supporting prompts and chart visualizations in languages 
         fig = vizro_ai.plot(df, "请画一个世界年均GDP的趋势图")
         fig.show()
         ```
-    === "Result"
-        [![ChineseChart]][ChineseChart]
 
-    [ChineseChart]: ../../assets/tutorials/chart/ChineseExample.png
+    === "Result"
+        [![ChineseChart]][chinesechart]
 
 Subsequently, we'll switch to German and prompt the visualization of life expectancy in the United States over time, comparing it to the global life expectancy trend. For this example, we'll include `return_elements=True` to obtain comprehensive insights into both the data and the generated code.
 
 !!! example "Vizro-AI German"
-
     === "Code for the cell"
         ```py
         from vizro_ai import VizroAI
@@ -36,7 +34,9 @@ Subsequently, we'll switch to German and prompt the visualization of life expect
         print(f"Code:\n{result.code_explanation}\n{result.code_vizro}\n" )
         result.get_fig_object(df).show()
         ```
-    === "Result"
-        [![GermanChart]][GermanChart]
 
-    [GermanChart]: ../../assets/tutorials/chart/GermanExample.png
+    === "Result"
+        [![GermanChart]][germanchart]
+
+[chinesechart]: ../../assets/tutorials/chart/ChineseExample.png
+[germanchart]: ../../assets/tutorials/chart/GermanExample.png

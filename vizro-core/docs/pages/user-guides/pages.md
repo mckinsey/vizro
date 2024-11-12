@@ -1,28 +1,27 @@
 # How to use pages
-This guide shows you how to add pages to your dashboard and customize the URL paths if needed.
-A [`Page`][vizro.models.Page] lets you place and arrange your dashboard content (for example, chart/components, tables, and text)
-and configure your dashboard interactions (such as filters and parameters).
 
-The [`Dashboard`][vizro.models.Dashboard] model accepts the `pages` argument, where you can insert your [`Page`][vizro.models.Page].
+This guide shows you how to add pages to your dashboard and customize the URL paths if needed. A \[`Page`\]\[vizro.models.Page\] lets you place and arrange your dashboard content (for example, chart/components, tables, and text) and configure your dashboard interactions (such as filters and parameters).
+
+The \[`Dashboard`\]\[vizro.models.Dashboard\] model accepts the `pages` argument, where you can insert your \[`Page`\]\[vizro.models.Page\].
 
 ## Create a page
 
-A [`Page`][vizro.models.Page] is split up into four main containers:
+A \[`Page`\]\[vizro.models.Page\] is split up into four main containers:
 
 1. The **navigation container** where you can customize your `navigation` (see [Dashboard](dashboard.md) and [Navigation](navigation.md) for more information). Note that the navigation container needs to be configured via the Dashboard.
-2. The **control container**  where you can add your `controls` (see [Filters](filters.md) or [Parameters](parameters.md)) to interact with the dashboard
-3. The **page header** that contains the page title and the theme toggle switch button
-4. The **component container** where you can add your [components](components.md) to visualize your data
+1. The **control container** where you can add your `controls` (see [Filters](filters.md) or [Parameters](parameters.md)) to interact with the dashboard
+1. The **page header** that contains the page title and the theme toggle switch button
+1. The **component container** where you can add your [components](components.md) to visualize your data
 
 ![Page Container](../../assets/user_guides/pages/page_containers.png)
 
 To create and add a page to your dashboard, do the following steps:
 
-1. Set a `title` for your [`Page`][vizro.models.Page]
-2. Configure your `components`, see our guide on the [various options](components.md)
-3. (optional) Configure your `controls` , see our guides on [Filters](filters.md) and [Parameters](parameters.md)
-4. (optional) Configure your `layout` , see our guide on [Layouts](layouts.md)
-5. (optional) Give a `description` of your `Page` to the app's [meta tags](https://metatags.io/)
+1. Set a `title` for your \[`Page`\]\[vizro.models.Page\]
+1. Configure your `components`, see our guide on the [various options](components.md)
+1. (optional) Configure your `controls` , see our guides on [Filters](filters.md) and [Parameters](parameters.md)
+1. (optional) Configure your `layout` , see our guide on [Layouts](layouts.md)
+1. (optional) Give a `description` of your `Page` to the app's [meta tags](https://metatags.io/)
 
 !!! example "Page"
     === "app.py"
@@ -51,6 +50,7 @@ To create and add a page to your dashboard, do the following steps:
 
         Vizro().build(dashboard).run()
         ```
+
     === "app.yaml"
         ```yaml
         # Still requires a .py to add data to the data manager and parse YAML configuration
@@ -80,26 +80,23 @@ To create and add a page to your dashboard, do the following steps:
           title: Page Title
           description: "Longer description of the page content"
         ```
-    === "Result"
-        [![Page]][Page]
 
-    [Page]: ../../assets/user_guides/pages/page_sunburst.png
+    === "Result"
+        [![Page]][page]
 
 An accordion page selector is automatically added to your dashboard in the top-left of the control container for through the different pages. It will not be added if your dashboard consists of only one page.
 
 You can additionally navigate through the different pages by going directly to the relevant page URL (more details in next section).
 
-
 ## Customize the page URL
-By default, the page URL is automatically generated based on the `id` of the page. For example, if `id="This is my first page"`
-the generated page URL will be `path=this-is-my-first-page`. You can then access the page via `localhost:<port_number>/this-is-my-first-page`.
 
-Note that the page `id` defaults to be the same as the page `title` if not set.
-If you have multiple pages with the same `title` then you must assign a unique `id`.
+By default, the page URL is automatically generated based on the `id` of the page. For example, if `id="This is my first page"` the generated page URL will be `path=this-is-my-first-page`. You can then access the page via `localhost:<port_number>/this-is-my-first-page`.
+
+Note that the page `id` defaults to be the same as the page `title` if not set. If you have multiple pages with the same `title` then you must assign a unique `id`.
 
 The first page always has the URL prefix `/` assigned. A custom URL can, therefore, not be created for the first page.
 
-To customize the page URL, pass a valid URL name to the `path` argument of [`Page`][vizro.models.Page]:
+To customize the page URL, pass a valid URL name to the `path` argument of \[`Page`\]\[vizro.models.Page\]:
 
 !!! example "Page"
     === "app.py"
@@ -137,6 +134,7 @@ To customize the page URL, pass a valid URL name to the `path` argument of [`Pag
 
         Vizro().build(dashboard).run()
         ```
+
     === "app.yaml"
         ```yaml
         # Still requires a .py to add data to the data manager and parse YAML configuration
@@ -173,3 +171,5 @@ To customize the page URL, pass a valid URL name to the `path` argument of [`Pag
         ```
 
 You can now access the first page via `localhost:<port_number>/` and the second page via `localhost:<port_number>/my-custom-url`.
+
+[page]: ../../assets/user_guides/pages/page_sunburst.png

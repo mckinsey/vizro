@@ -4,14 +4,11 @@ Take a look at some more advanced charts that can be created with Vizro-AI using
 
 ### Polar bar chart
 
-A polar bar chart is a circular graph where each axis represents a different variable, typically used for displaying cyclical or directional data.
-It's suitable for comparing multiple variables across different categories or directions. Let's make one using Vizro-AI.
-
+A polar bar chart is a circular graph where each axis represents a different variable, typically used for displaying cyclical or directional data. It's suitable for comparing multiple variables across different categories or directions. Let's make one using Vizro-AI.
 
 !!! example "Polar Bar Chart"
-
     === "Resulting chart"
-        [![VizroAIChart1]][VizroAIChart1]
+        [![VizroAIChart1]][vizroaichart1]
 
     === "Code for the cell"
         ```py
@@ -32,17 +29,13 @@ It's suitable for comparing multiple variables across different categories or di
         fig.show()
         ```
 
-    [VizroAIChart1]: ../../assets/user_guides/polar_bar_chart.png
-
-
 ### Geographical map chart
 
 The next chart we'll look at is a geographical map chart to visualize spatial patterns in data, which often reveals insights not seen in other charts.
 
 !!! example "Map chart"
-
     === "Resulting chart"
-        [![VizroAIChart2]][VizroAIChart2]
+        [![VizroAIChart2]][vizroaichart2]
 
     === "Code for the cell"
         ```py
@@ -64,17 +57,13 @@ The next chart we'll look at is a geographical map chart to visualize spatial pa
         fig.show()
         ```
 
-    [VizroAIChart2]: ../../assets/user_guides/map_chart.gif
-
-
 ### 3D surface plot
 
 Let's explore how to generate a 3-dimensional surface plot with VizroAI.
 
 !!! example "Surface plot"
-
     === "Resulting chart"
-        [![VizroAIChart3]][VizroAIChart3]
+        [![VizroAIChart3]][vizroaichart3]
 
     === "Code for the cell"
         ```py
@@ -92,4 +81,6 @@ Let's explore how to generate a 3-dimensional surface plot with VizroAI.
         fig.show()
         ```
 
-    [VizroAIChart3]: ../../assets/user_guides/surface_plot.gif
+[vizroaichart1]: ../../assets/user_guides/polar_bar_chart.png
+[vizroaichart2]: ../../assets/user_guides/map_chart.gif
+[vizroaichart3]: ../../assets/user_guides/surface_plot.gif

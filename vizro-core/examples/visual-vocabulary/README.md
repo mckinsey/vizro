@@ -2,14 +2,11 @@
 
 ### Welcome to our visual vocabulary dashboard! 🎨
 
-This dashboard serves as a comprehensive guide for selecting and creating various types of charts. It helps you decide
-when to use each chart type, and offers sample Python code using [Plotly](https://plotly.com/python/), and
-instructions for embedding these charts into a [Vizro](https://github.com/mckinsey/vizro) dashboard.
+This dashboard serves as a comprehensive guide for selecting and creating various types of charts. It helps you decide when to use each chart type, and offers sample Python code using [Plotly](https://plotly.com/python/), and instructions for embedding these charts into a [Vizro](https://github.com/mckinsey/vizro) dashboard.
 
 The charts in this dashboard are designed to make it easy for anyone to create beautiful and sophisticated visuals.
 
-Our goal is to help you understand best practices in data visualization, ensure your charts effectively communicate
-your message, and streamline the creation of high-quality, interactive visualizations.
+Our goal is to help you understand best practices in data visualization, ensure your charts effectively communicate your message, and streamline the creation of high-quality, interactive visualizations.
 
 Created by:
 
@@ -19,12 +16,9 @@ Created by:
 
 Inspired by:
 
-- [The FT Visual Vocabulary](https://github.com/Financial-Times/chart-doctor/blob/main/visual-vocabulary/README.md):
-  [Alan Smith](https://github.com/alansmithy), [Chris Campbell](https://github.com/digitalcampbell), Ian Bott,
-  Liz Faunce, Graham Parrish, Billy Ehrenberg, Paul McCallum, [Martin Stabe](https://github.com/martinstabe).
+- [The FT Visual Vocabulary](https://github.com/Financial-Times/chart-doctor/blob/main/visual-vocabulary/README.md): [Alan Smith](https://github.com/alansmithy), [Chris Campbell](https://github.com/digitalcampbell), Ian Bott, Liz Faunce, Graham Parrish, Billy Ehrenberg, Paul McCallum, [Martin Stabe](https://github.com/martinstabe).
 
-- [The Graphic Continuum](https://www.informationisbeautifulawards.com/showcase/611-the-graphic-continuum):
-  Jon Swabish and Severino Ribecca
+- [The Graphic Continuum](https://www.informationisbeautifulawards.com/showcase/611-the-graphic-continuum): Jon Swabish and Severino Ribecca
 
 Credits and sources:
 
@@ -102,14 +96,13 @@ The dashboard is still in development. Below is an overview of the chart types f
 Contributions are welcome! To contribute a chart, follow the steps below:
 
 1. Check that a `svg` file named after the chart type is contained in the [assets](https://github.com/mckinsey/vizro/tree/main/vizro-core/examples/visual-vocabulary/assets/images/charts) folder. If not, [raise an issue](https://github.com/mckinsey/vizro/issues) in the repository.
-2. Add the data set to `_pages_utils.py` if it doesn't already exist. Use existing data sets preferably or any other data set that is publicly available e.g. [plotly.express.data](https://plotly.com/python-api-reference/generated/plotly.express.data.html)
-3. Create a new page for the chart type and add it to the relevant category `.py` file such as `correlation.py`,
-   `deviation.py`, `distribution.py`, etc. Ensure you add the page to the list of `pages` at the end of the `.py` file.
-4. Add a `.py` file containing a code example of the chart type in the `pages/examples` folder, for instance, `area.py`. Take a look at existing examples.
-5. Remove the `IncompletePage(..)` entry for that chart type in `chart_groups.py`.
-6. Update this `README.md` with the new chart type, its status, category, and API links.
+1. Add the data set to `_pages_utils.py` if it doesn't already exist. Use existing data sets preferably or any other data set that is publicly available e.g. [plotly.express.data](https://plotly.com/python-api-reference/generated/plotly.express.data.html)
+1. Create a new page for the chart type and add it to the relevant category `.py` file such as `correlation.py`, `deviation.py`, `distribution.py`, etc. Ensure you add the page to the list of `pages` at the end of the `.py` file.
+1. Add a `.py` file containing a code example of the chart type in the `pages/examples` folder, for instance, `area.py`. Take a look at existing examples.
+1. Remove the `IncompletePage(..)` entry for that chart type in `chart_groups.py`.
+1. Update this `README.md` with the new chart type, its status, category, and API links.
 
 ## How to run the example locally
 
 1. Run the example with the command `hatch run example visual-vocabulary`.
-2. You should now be able to access the app locally via http://127.0.0.1:8050/.
+1. You should now be able to access the app locally via http://127.0.0.1:8050/.

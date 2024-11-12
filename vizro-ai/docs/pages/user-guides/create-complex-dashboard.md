@@ -9,6 +9,7 @@ The following example shows how to use Vizro-AI to generate a complex Vizro dash
 If you haven't already installed Vizro-AI and set up the API key for OpenAI, follow the [installation guide](../user-guides/install.md).
 
 ## 1. Prepare the data
+
 Next, prepare the data to pass to Vizro-AI. In this example, we use the [election data](https://plotly.com/python-api-reference/generated/plotly.express.data.html#plotly.express.data.election) and the [stocks data](https://plotly.com/python-api-reference/generated/plotly.express.data.html#plotly.express.data.stocks).
 
 ```py
@@ -17,7 +18,6 @@ import vizro.plotly.express as px
 df1 = px.data.election()
 df2 = px.data.stocks(datetimes=True)
 ```
-
 
 ## 2. Prepare the user prompt
 
@@ -104,17 +104,16 @@ dashboard = vizro_ai.dashboard([df1, df2], user_question)
 The call to `dashboard()` triggers the dashboard building process. Once Vizro-AI finishes this process, you can launch the dashboard with `build()`.
 
 !!! example "Generated dashboard"
-
     === "Code"
         ```py
         Vizro().build(dashboard).run()
         ```
 
     === "Page1"
-        [![VizroAIDashboardPage1]][VizroAIDashboardPage1]
+        [![VizroAIDashboardPage1]][vizroaidashboardpage1]
 
     === "Page2"
-        [![VizroAIDashboardPage2]][VizroAIDashboardPage2]
+        [![VizroAIDashboardPage2]][vizroaidashboardpage2]
 
-    [VizroAIDashboardPage1]: ../../assets/user_guides/dashboard/dashboard1_page1.png
-    [VizroAIDashboardPage2]: ../../assets/user_guides/dashboard/dashboard1_page2.png
+[vizroaidashboardpage1]: ../../assets/user_guides/dashboard/dashboard1_page1.png
+[vizroaidashboardpage2]: ../../assets/user_guides/dashboard/dashboard1_page2.png
