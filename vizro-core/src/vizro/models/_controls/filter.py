@@ -6,6 +6,8 @@ import numpy as np
 import pandas as pd
 from pandas.api.types import is_datetime64_any_dtype, is_numeric_dtype
 
+from vizro.managers._data_manager import DataSourceName
+
 try:
     from pydantic.v1 import Field, PrivateAttr, validator
 except ImportError:  # pragma: no cov
@@ -96,19 +98,27 @@ class Filter(VizroBaseModel):
 
     @_log_call
     def pre_build(self):
-        if self.targets:
-            targeted_data = self._validate_targeted_data(targets=self.targets)
-        else:
-            # If targets aren't explicitly provided then try to target all figures on the page. In this case we don't
-            # want to raise an error if the column is not found in a figure's data_frame, it will just be ignored.
-            # Possibly in future this will change (which would be breaking change).
-            targeted_data = self._validate_targeted_data(
-                targets=model_manager._get_page_model_ids_with_figure(
-                    page_id=model_manager._get_model_page_id(model_id=ModelID(str(self.id)))
-                ),
-                eagerly_raise_column_not_found_error=False,
-            )
-            self.targets = list(targeted_data.columns)
+        # If targets aren't explicitly provided then try to target all figures on the page. In this case we don't
+        # want to raise an error if the column is not found in a figure's data_frame, it will just be ignored.
+        # This is the case when bool(self.targets) is False.
+        # Possibly in future this will change (which would be breaking change).
+        proposed_targets = self.targets or model_manager._get_page_model_ids_with_figure(
+            page_id=model_manager._get_model_page_id(model_id=ModelID(str(self.id)))
+        )
+        # TODO NEXT: how to handle pre_build for dynamic filters? Do we still require default argument values in
+        #  `load` to establish selector type etc.? Can we take selector values from model_manager to supply these?
+        #  Or just don't do validation at pre_build time and wait until state is available during build time instead?
+        #  What should the load kwargs be here? Remember they need to be {} for static data.
+        #  Note that currently _get_unfiltered_data is only suitable for use at runtime since it requires
+        #  ctd_parameters. That could be changed to just reuse that function.
+        multi_data_source_name_load_kwargs: list[tuple[DataSourceName, dict[str, Any]]] = [
+            (model_manager[target]["data_frame"], {}) for target in proposed_targets
+        ]
+        target_to_data_frame = dict(zip(proposed_targets, data_manager._multi_load(multi_data_source_name_load_kwargs)))
+        targeted_data = self._validate_targeted_data(
+            target_to_data_frame, eagerly_raise_column_not_found_error=bool(self.targets)
+        )
+        self.targets = list(targeted_data.columns)
 
         # Set default selector according to column type.
         self._column_type = self._validate_column_type(targeted_data)
@@ -148,12 +158,15 @@ class Filter(VizroBaseModel):
                 )
             ]
 
-    def __call__(self, **kwargs):
+    def __call__(self, target_to_data_frame: dict[ModelID, pd.DataFrame]):
         # Only relevant for a dynamic filter.
-        # TODO: this will need to pass parametrised data_frame arguments through to _validate_targeted_data.
         # Although targets are fixed at build time, the validation logic is repeated during runtime, so if a column
         # is missing then it will raise an error. We could change this if we wanted.
-        targeted_data = self._validate_targeted_data(targets=self.targets)
+        # Call this from actions_utils
+        targeted_data = self._validate_targeted_data(
+            {target: data_frame for target, data_frame in target_to_data_frame.items() if target in self.targets},
+            eagerly_raise_column_not_found_error=True,
+        )
 
         if (column_type := self._validate_column_type(targeted_data)) != self._column_type:
             raise ValueError(
@@ -173,29 +186,11 @@ class Filter(VizroBaseModel):
         return self.selector.build()
 
     def _validate_targeted_data(
-        self, targets: list[ModelID], eagerly_raise_column_not_found_error=True
+        self, target_to_data_frame: dict[ModelID, pd.DataFrame], eagerly_raise_column_not_found_error
     ) -> pd.DataFrame:
-        # TODO: consider moving some of this logic to data_manager when implement dynamic filter. Make sure
-        #  get_modified_figures and stuff in _actions_utils.py is as efficient as code here.
-
-        # When loading data_frame there are possible keys:
-        #  1. target. In worst case scenario this is needed but can lead to unnecessary repeated data loading.
-        #  2. data_source_name. No repeated data loading but won't work when applying data_frame parameters at runtime.
-        #  3. target + data_frame parameters keyword-argument pairs. This is the correct key to use at runtime.
-        # For now we follow scheme 2 for data loading (due to set() below) and 1 for the returned targeted_data
-        # pd.DataFrame, i.e. a separate column for each target even if some data is repeated.
-        # TODO: when this works with data_frame parameters load() will need to take arguments and the structures here
-        #  might change a bit.
-        target_to_data_source_name = {target: model_manager[target]["data_frame"] for target in targets}
-        data_source_name_to_data = {
-            data_source_name: data_manager[data_source_name].load()
-            for data_source_name in set(target_to_data_source_name.values())
-        }
         target_to_series = {}
 
-        for target, data_source_name in target_to_data_source_name.items():
-            data_frame = data_source_name_to_data[data_source_name]
-
+        for target, data_frame in target_to_data_frame.items():
             if self.column in data_frame.columns:
                 # reset_index so that when we make a DataFrame out of all these pd.Series pandas doesn't try to align
                 # the columns by index.
@@ -206,10 +201,14 @@ class Filter(VizroBaseModel):
         targeted_data = pd.DataFrame(target_to_series)
         if targeted_data.columns.empty:
             # Still raised when eagerly_raise_column_not_found_error=False.
-            raise ValueError(f"Selected column {self.column} not found in any dataframe for {', '.join(targets)}.")
+            raise ValueError(
+                f"Selected column {self.column} not found in any dataframe for "
+                f"{', '.join(target_to_data_frame.keys())}."
+            )
         if targeted_data.empty:
             raise ValueError(
-                f"Selected column {self.column} does not contain anything in any dataframe for {', '.join(targets)}."
+                f"Selected column {self.column} does not contain anything in any dataframe for "
+                f"{', '.join(target_to_data_frame.keys())}."
             )
 
         return targeted_data

@@ -16,7 +16,7 @@ def _filter(
     targets: list[ModelID],
     filter_function: Callable[[pd.Series, Any], pd.Series],
     **inputs: dict[str, Any],
-) -> dict[str, Any]:
+) -> dict[ModelID, Any]:
     """Filters targeted charts/components on page by interaction with `Filter` control.
 
     Args:
@@ -28,11 +28,10 @@ def _filter(
 
     Returns:
         Dict mapping target component ids to modified charts/components e.g. {'my_scatter': Figure({})}
-
     """
     return _get_modified_page_figures(
-        targets=targets,
         ctds_filter=ctx.args_grouping["external"]["filters"],
         ctds_filter_interaction=ctx.args_grouping["external"]["filter_interaction"],
         ctds_parameters=ctx.args_grouping["external"]["parameters"],
+        targets=targets,
     )
