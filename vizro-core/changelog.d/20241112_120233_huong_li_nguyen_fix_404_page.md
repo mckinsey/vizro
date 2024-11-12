@@ -39,7 +39,6 @@ Uncomment the section that is right (remove the HTML comment wrapper).
 
 - Fix 404 error page and page flickering on refresh ([#865](https://github.com/mckinsey/vizro/pull/865)).
 
-
 <!--
 ### Security
 
