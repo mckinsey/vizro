@@ -45,6 +45,16 @@ def logic(  # noqa: PLR0912, PLR0915
     prompt_tier,
     config: dict,
 ):
+    """Calculates all separate scores. Creates csv report.
+
+    Attributes:
+        dashboard: VizroAI generated dashboard
+        model_name: GenAI model name
+        dash_duo: dash_duo fixture
+        prompt_tier: complexity of the prompt
+        config: json config of the expected dashboard
+
+    """
     report_dir = "tests/score/reports"
     os.makedirs(report_dir, exist_ok=True)
 
@@ -150,6 +160,7 @@ def logic(  # noqa: PLR0912, PLR0915
 
     pages_exist.extend(pages_num)
 
+    # Every separate score has its own weight.
     app_started_score = {"weight": 0.4, "score": app_started}
     no_browser_console_errors_score = {"weight": 0.1, "score": no_browser_console_errors}
     pages_score = {"weight": 0.2, "score": sum(pages_exist) / len(pages_exist)}
@@ -167,11 +178,15 @@ def logic(  # noqa: PLR0912, PLR0915
         controls_score,
         controls_types_score,
     ]
+    # total_weight should be equal to 1
     total_weight = sum(score["weight"] for score in scores)
+    # If total_weight is not equal to 1, we're recalculating weights for every separate score
+    # and calculating final weighted_score for the created dashboard
     if total_weight != 1:
         scores = [{"weight": score["weight"] / total_weight, "score": score["score"]} for score in scores]
     weighted_score = round(sum(score["weight"] * score["score"] for score in scores), 1)
 
+    # csv report creation
     with open(f"{report_dir}/report_model_{model_name}_{vizro_type}.csv", "a", newline="") as csvfile:
         writer = csv.writer(csvfile, delimiter=",")
         writer.writerow(
@@ -211,7 +226,7 @@ def logic(  # noqa: PLR0912, PLR0915
             ]
         )
 
-    # for cmd output
+    # Readable report for the console output
     print(f"App started: {app_started_report}")  # noqa: T201
     print(f"Console errors: {no_browser_console_errors_report}")  # noqa: T201
     print(f"Pages exists: {pages_exist_report}")  # noqa: T201
