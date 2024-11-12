@@ -26,7 +26,7 @@ It is necessary to approach the generated content with caution, especially when 
 ### 3. Data privacy
 <!-- vale on -->
 Your data is sent to model vendors if you connect to LLMs via their APIs.
-For example, if you connect to the model "gpt-3.5-turbo-0613" from Open AI, your data will be sent to OpenAI via their API.
+For example, if you connect to the model from OpenAI, your data will be sent to OpenAI via their API.
 Users should be cautious about sharing or inputting any personal or sensitive information.
 
 <!-- vale off -->

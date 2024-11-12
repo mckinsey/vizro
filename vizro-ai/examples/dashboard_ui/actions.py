@@ -28,15 +28,18 @@ except ImportError:
 logger = logging.getLogger(__name__)
 logger.setLevel(logging.INFO)  # TODO: remove manual setting and make centrally controlled
 
-SUPPORTED_VENDORS = {"OpenAI": ChatOpenAI, "Anthropic": ChatAnthropic, "Mistral": ChatMistralAI}
+SUPPORTED_VENDORS = {
+    "OpenAI": ChatOpenAI,
+    "Anthropic": ChatAnthropic,
+    "Mistral": ChatMistralAI,
+    "xAI": ChatOpenAI,
+}
 
 SUPPORTED_MODELS = {
     "OpenAI": [
         "gpt-4o-mini",
         "gpt-4o",
-        "gpt-4",
         "gpt-4-turbo",
-        "gpt-3.5-turbo",
     ],
     "Anthropic": [
         "claude-3-opus-latest",
@@ -45,7 +48,10 @@ SUPPORTED_MODELS = {
         "claude-3-haiku-20240307",
     ],
     "Mistral": ["mistral-large-latest", "open-mistral-nemo", "codestral-latest"],
+    "xAI": ["grok-beta"],
 }
+DEFAULT_TEMPERATURE = 0.1
+DEFAULT_RETRY = 3
 
 
 def get_vizro_ai_plot(user_prompt, df, model, api_key, api_base, vendor_input):
@@ -53,14 +59,20 @@ def get_vizro_ai_plot(user_prompt, df, model, api_key, api_base, vendor_input):
     vendor = SUPPORTED_VENDORS[vendor_input]
 
     if vendor_input == "OpenAI":
-        llm = vendor(model_name=model, openai_api_key=api_key, openai_api_base=api_base)
+        llm = vendor(
+            model_name=model, openai_api_key=api_key, openai_api_base=api_base, temperature=DEFAULT_TEMPERATURE
+        )
     if vendor_input == "Anthropic":
-        llm = vendor(model=model, anthropic_api_key=api_key, anthropic_api_url=api_base)
+        llm = vendor(
+            model=model, anthropic_api_key=api_key, anthropic_api_url=api_base, temperature=DEFAULT_TEMPERATURE
+        )
     if vendor_input == "Mistral":
-        llm = vendor(model=model, mistral_api_key=api_key, mistral_api_url=api_base)
+        llm = vendor(model=model, mistral_api_key=api_key, mistral_api_url=api_base, temperature=DEFAULT_TEMPERATURE)
+    if vendor_input == "xAI":
+        llm = vendor(model=model, openai_api_key=api_key, openai_api_base=api_base, temperature=DEFAULT_TEMPERATURE)
 
     vizro_ai = VizroAI(model=llm)
-    ai_outputs = vizro_ai.plot(df, user_prompt, return_elements=True)
+    ai_outputs = vizro_ai.plot(df, user_prompt, max_debug_retry=DEFAULT_RETRY, return_elements=True)
 
     return ai_outputs
 

@@ -61,9 +61,7 @@ SUPPORTED_MODELS = {
     "OpenAI": [
         "gpt-4o-mini",
         "gpt-4o",
-        "gpt-4",
         "gpt-4-turbo",
-        "gpt-3.5-turbo",
     ],
     "Anthropic": [
         "claude-3-opus-latest",
@@ -72,6 +70,7 @@ SUPPORTED_MODELS = {
         "claude-3-haiku-20240307",
     ],
     "Mistral": ["mistral-large-latest", "open-mistral-nemo", "codestral-latest"],
+    "xAI": ["grok-beta"],
 }
 
 
@@ -182,7 +181,11 @@ plot_page = vm.Page(
                 MyDropdown(
                     options=SUPPORTED_MODELS["OpenAI"], value="gpt-4o-mini", multi=False, id="model-dropdown-id"
                 ),
-                OffCanvas(id="settings", options=["OpenAI", "Anthropic", "Mistral"], value="OpenAI"),
+                OffCanvas(
+                    id="settings",
+                    options=["OpenAI", "Anthropic", "Mistral", "xAI"],
+                    value="OpenAI",
+                ),
                 UserPromptTextArea(id="text-area-id"),
                 # Modal(id="modal"),
             ],

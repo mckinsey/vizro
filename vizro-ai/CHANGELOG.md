@@ -11,6 +11,26 @@ See the fragment files in the [changelog.d directory](https://github.com/mckinse
 
 <!-- scriv-insert-here -->
 
+<a id='changelog-0.3.2'></a>
+
+# 0.3.2 — 2024-11-08
+
+## Removed
+
+- Removed the older models from model shortcuts and docs. ([#853](https://github.com/mckinsey/vizro/pull/853))
+
+## Fixed
+
+- Fixed output validation to handle Python code block markers from llm responses. ([#858](https://github.com/mckinsey/vizro/pull/858))
+
+<a id='changelog-0.3.1'></a>
+
+# 0.3.1 — 2024-11-06
+
+## Changed
+
+- Changed prompt for `vizro-ai.plot` to provide more guidance for desired import format. ([#854](https://github.com/mckinsey/vizro/pull/854))
+
 <a id='changelog-0.3.0'></a>
 
 # 0.3.0 — 2024-10-02

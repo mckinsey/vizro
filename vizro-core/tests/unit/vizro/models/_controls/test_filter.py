@@ -1,4 +1,3 @@
-import re
 from datetime import date, datetime
 from typing import Literal
 
@@ -7,10 +6,50 @@ import pytest
 from asserts import assert_component_equal
 
 import vizro.models as vm
+import vizro.plotly.express as px
+from vizro import Vizro
 from vizro.managers import model_manager
 from vizro.models._action._actions_chain import ActionsChain
 from vizro.models._controls.filter import Filter, _filter_between, _filter_isin
 from vizro.models.types import CapturedCallable
+
+
+@pytest.fixture
+def managers_column_different_type():
+    """Instantiates the managers with a page and two graphs sharing the same column but of different data types."""
+    df_numerical = pd.DataFrame({"shared_column": [1]})
+    df_temporal = pd.DataFrame({"shared_column": [datetime(2024, 1, 1)]})
+    df_categorical = pd.DataFrame({"shared_column": ["a"]})
+
+    vm.Page(
+        id="test_page",
+        title="Page Title",
+        components=[
+            vm.Graph(id="column_numerical", figure=px.scatter(df_numerical)),
+            vm.Graph(id="column_temporal", figure=px.scatter(df_temporal)),
+            vm.Graph(id="column_categorical", figure=px.scatter(df_categorical)),
+        ],
+    )
+    Vizro._pre_build()
+
+
+@pytest.fixture
+def managers_column_only_exists_in_some():
+    """Dataframes with column_numerical and column_categorical, which can be different lengths."""
+    vm.Page(
+        id="test_page",
+        title="Page Title",
+        components=[
+            vm.Graph(id="column_numerical_exists_1", figure=px.scatter(pd.DataFrame({"column_numerical": [1]}))),
+            vm.Graph(id="column_numerical_exists_2", figure=px.scatter(pd.DataFrame({"column_numerical": [1, 2]}))),
+            vm.Graph(id="column_numerical_exists_empty", figure=px.scatter(pd.DataFrame({"column_numerical": []}))),
+            vm.Graph(id="column_categorical_exists_1", figure=px.scatter(pd.DataFrame({"column_categorical": ["a"]}))),
+            vm.Graph(
+                id="column_categorical_exists_2", figure=px.scatter(pd.DataFrame({"column_categorical": ["a", "b"]}))
+            ),
+        ],
+    )
+    Vizro._pre_build()
 
 
 class TestFilterFunctions:
@@ -206,26 +245,62 @@ class TestFilterInstantiation:
 
 
 class TestPreBuildMethod:
-    def test_set_targets_valid(self, managers_one_page_two_graphs):
+    def test_targets_default_valid(self, managers_column_only_exists_in_some):
         # Core of tests is still interface level
-        filter = vm.Filter(column="country")
+        filter = vm.Filter(column="column_numerical")
         # Special case - need filter in the context of page in order to run filter.pre_build
         model_manager["test_page"].controls = [filter]
         filter.pre_build()
-        assert set(filter.targets) == {"scatter_chart", "bar_chart"}
+        assert filter.targets == [
+            "column_numerical_exists_1",
+            "column_numerical_exists_2",
+            "column_numerical_exists_empty",
+        ]
 
-    def test_set_targets_invalid(self, managers_one_page_two_graphs):
+    def test_targets_specific_valid(self, managers_column_only_exists_in_some):
+        filter = vm.Filter(column="column_numerical", targets=["column_numerical_exists_1"])
+        model_manager["test_page"].controls = [filter]
+        filter.pre_build()
+        assert filter.targets == ["column_numerical_exists_1"]
+
+    def test_targets_default_invalid(self, managers_column_only_exists_in_some):
         filter = vm.Filter(column="invalid_choice")
         model_manager["test_page"].controls = [filter]
 
-        with pytest.raises(ValueError, match="Selected column invalid_choice not found in any dataframe on this page."):
+        with pytest.raises(
+            ValueError,
+            match="Selected column invalid_choice not found in any dataframe for column_numerical_exists_1, "
+            "column_numerical_exists_2, column_numerical_exists_empty, column_categorical_exists_1, "
+            "column_categorical_exists_2.",
+        ):
+            filter.pre_build()
+
+    def test_targets_specific_invalid(self, managers_column_only_exists_in_some):
+        filter = vm.Filter(column="column_numerical", targets=["column_categorical_exists_1"])
+        model_manager["test_page"].controls = [filter]
+
+        with pytest.raises(
+            ValueError,
+            match="Selected column column_numerical not found in dataframe for column_categorical_exists_1.",
+        ):
+            filter.pre_build()
+
+    def test_targets_empty(self, managers_column_only_exists_in_some):
+        filter = vm.Filter(column="column_numerical", targets=["column_numerical_exists_empty"])
+        model_manager["test_page"].controls = [filter]
+
+        with pytest.raises(
+            ValueError,
+            match="Selected column column_numerical does not contain anything in any dataframe for "
+            "column_numerical_exists_empty.",
+        ):
             filter.pre_build()
 
     @pytest.mark.parametrize(
         "filtered_column, expected_column_type",
         [("country", "categorical"), ("year", "temporal"), ("lifeExp", "numerical")],
     )
-    def test_set_column_type(self, filtered_column, expected_column_type, managers_one_page_two_graphs):
+    def test_column_type(self, filtered_column, expected_column_type, managers_one_page_two_graphs):
         filter = vm.Filter(column=filtered_column)
         model_manager["test_page"].controls = [filter]
         filter.pre_build()
@@ -235,7 +310,7 @@ class TestPreBuildMethod:
         "filtered_column, expected_selector",
         [("country", vm.Dropdown), ("year", vm.DatePicker), ("lifeExp", vm.RangeSlider)],
     )
-    def test_set_selector_default_selector(self, filtered_column, expected_selector, managers_one_page_two_graphs):
+    def test_selector_default_selector(self, filtered_column, expected_selector, managers_one_page_two_graphs):
         filter = vm.Filter(column=filtered_column)
         model_manager["test_page"].controls = [filter]
         filter.pre_build()
@@ -243,7 +318,7 @@ class TestPreBuildMethod:
         assert filter.selector.title == filtered_column.title()
 
     @pytest.mark.parametrize("filtered_column", ["country", "year", "lifeExp"])
-    def test_set_selector_specific_selector(self, filtered_column, managers_one_page_two_graphs):
+    def test_selector_specific_selector(self, filtered_column, managers_one_page_two_graphs):
         filter = vm.Filter(column=filtered_column, selector=vm.RadioItems(title="Title"))
         model_manager["test_page"].controls = [filter]
         filter.pre_build()
@@ -274,54 +349,60 @@ class TestPreBuildMethod:
         assert isinstance(filter.selector, selector)
 
     @pytest.mark.parametrize(
-        "filtered_column, selector",
+        "filtered_column, selector, selector_name, column_type",
         [
-            ("country", vm.Slider),
-            ("country", vm.RangeSlider),
-            ("country", vm.DatePicker),
-            ("lifeExp", vm.DatePicker),
-            ("year", vm.Slider),
-            ("year", vm.RangeSlider),
+            ("country", vm.Slider, "Slider", "categorical"),
+            ("country", vm.RangeSlider, "RangeSlider", "categorical"),
+            ("country", vm.DatePicker, "DatePicker", "categorical"),
+            ("lifeExp", vm.DatePicker, "DatePicker", "numerical"),
+            ("year", vm.Slider, "Slider", "temporal"),
+            ("year", vm.RangeSlider, "RangeSlider", "temporal"),
         ],
     )
-    def test_disallowed_selectors_per_column_type(self, filtered_column, selector, managers_one_page_two_graphs):
+    def test_disallowed_selectors_per_column_type(
+        self, filtered_column, selector, selector_name, column_type, managers_one_page_two_graphs
+    ):
         filter = vm.Filter(column=filtered_column, selector=selector())
         model_manager["test_page"].controls = [filter]
         with pytest.raises(
             ValueError,
-            match=f"Chosen selector {selector().type} is not compatible with .* column '{filtered_column}'. ",
+            match=f"Chosen selector {selector_name} is not compatible with {column_type} column '{filtered_column}'.",
         ):
             filter.pre_build()
 
     @pytest.mark.parametrize(
         "targets",
         [
-            ["id_shared_column_numerical", "id_shared_column_temporal"],
-            ["id_shared_column_numerical", "id_shared_column_categorical"],
-            ["id_shared_column_temporal", "id_shared_column_categorical"],
+            ["column_numerical", "column_temporal"],
+            ["column_numerical", "column_categorical"],
+            ["column_temporal", "column_categorical"],
         ],
     )
-    def test_set_slider_values_shared_column_inconsistent_dtype(self, targets, managers_shared_column_different_dtype):
+    def test_validate_column_type(self, targets, managers_column_different_type):
         filter = vm.Filter(column="shared_column", targets=targets)
-        model_manager["graphs_with_shared_column"].controls = [filter]
+        model_manager["test_page"].controls = [filter]
         with pytest.raises(
             ValueError,
-            match=re.escape(
-                f"Inconsistent types detected in the shared data column 'shared_column' for targeted charts {targets}. "
-                f"Please ensure that the data column contains the same data type across all targeted charts."
-            ),
+            match="Inconsistent types detected in column shared_column.",
         ):
             filter.pre_build()
 
     @pytest.mark.parametrize("selector", [vm.Slider, vm.RangeSlider])
-    def test_set_numerical_selectors_values_min_max_default(self, selector, gapminder, managers_one_page_two_graphs):
+    def test_numerical_min_max_default(self, selector, gapminder, managers_one_page_two_graphs):
         filter = vm.Filter(column="lifeExp", selector=selector())
         model_manager["test_page"].controls = [filter]
         filter.pre_build()
         assert filter.selector.min == gapminder.lifeExp.min()
         assert filter.selector.max == gapminder.lifeExp.max()
 
-    def test_set_temporal_selectors_values_min_max_default(self, gapminder, managers_one_page_two_graphs):
+    def test_numerical_min_max_different_column_lengths(self, gapminder, managers_column_only_exists_in_some):
+        filter = vm.Filter(column="column_numerical", selector=vm.Slider())
+        model_manager["test_page"].controls = [filter]
+        filter.pre_build()
+        assert filter.selector.min == 1
+        assert filter.selector.max == 2
+
+    def test_temporal_min_max_default(self, gapminder, managers_one_page_two_graphs):
         filter = vm.Filter(column="year", selector=vm.DatePicker())
         model_manager["test_page"].controls = [filter]
         filter.pre_build()
@@ -329,14 +410,15 @@ class TestPreBuildMethod:
         assert filter.selector.max == gapminder.year.max().to_pydatetime().date()
 
     @pytest.mark.parametrize("selector", [vm.Slider, vm.RangeSlider])
-    def test_set_numerical_selectors_values_min_max_specific(self, selector, managers_one_page_two_graphs):
-        filter = vm.Filter(column="lifeExp", selector=selector(min=3, max=5))
+    @pytest.mark.parametrize("min, max", [(3, 5), (0, 5), (-5, 0)])
+    def test_numerical_min_max_specific(self, selector, min, max, managers_one_page_two_graphs):
+        filter = vm.Filter(column="lifeExp", selector=selector(min=min, max=max))
         model_manager["test_page"].controls = [filter]
         filter.pre_build()
-        assert filter.selector.min == 3
-        assert filter.selector.max == 5
+        assert filter.selector.min == min
+        assert filter.selector.max == max
 
-    def test_set_temporal_selectors_values_min_max_specific(self, managers_one_page_two_graphs):
+    def test_temporal_min_max_specific(self, managers_one_page_two_graphs):
         filter = vm.Filter(column="year", selector=vm.DatePicker(min="1952-01-01", max="2007-01-01"))
         model_manager["test_page"].controls = [filter]
         filter.pre_build()
@@ -344,14 +426,20 @@ class TestPreBuildMethod:
         assert filter.selector.max == date(2007, 1, 1)
 
     @pytest.mark.parametrize("selector", [vm.Checklist, vm.Dropdown, vm.RadioItems])
-    def test_set_categorical_selectors_options_default(self, selector, gapminder, managers_one_page_two_graphs):
+    def test_categorical_options_default(self, selector, gapminder, managers_one_page_two_graphs):
         filter = vm.Filter(column="continent", selector=selector())
         model_manager["test_page"].controls = [filter]
         filter.pre_build()
         assert filter.selector.options == sorted(set(gapminder["continent"]))
 
+    def test_categorical_options_different_column_lengths(self, gapminder, managers_column_only_exists_in_some):
+        filter = vm.Filter(column="column_categorical", selector=vm.Checklist())
+        model_manager["test_page"].controls = [filter]
+        filter.pre_build()
+        assert filter.selector.options == ["a", "b"]
+
     @pytest.mark.parametrize("selector", [vm.Checklist, vm.Dropdown, vm.RadioItems])
-    def test_set_categorical_selectors_options_specific(self, selector, managers_one_page_two_graphs):
+    def test_categorical_options_specific(self, selector, managers_one_page_two_graphs):
         filter = vm.Filter(column="continent", selector=selector(options=["Africa", "Europe"]))
         model_manager["test_page"].controls = [filter]
         filter.pre_build()

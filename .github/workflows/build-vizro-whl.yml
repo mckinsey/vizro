@@ -8,6 +8,7 @@ on:
       - main
     paths:
       - "vizro-core/**"
+      - "vizro-ai/examples/**"
 
 defaults:
   run:
