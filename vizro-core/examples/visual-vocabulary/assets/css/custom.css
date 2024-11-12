@@ -92,20 +92,26 @@ img[src*="#chart-icon"] {
 }
 
 .anchor-container {
-  background: #060a17;
+  align-items: center;
+  background: var(--text-primary);
+  border-top-left-radius: 8px;
   bottom: 0;
+  color: var(--text-contrast-primary);
   display: flex;
-  font-weight: 600;
-  gap: 2rem;
-  height: 2rem;
-  padding: 4px;
-  place-content: baseline center;
+  font-size: 0.8rem;
+  font-weight: 500;
+  height: 24px;
+  padding: 0 12px;
   position: fixed;
-  width: 100%;
+  right: 0;
 }
 
-.anchor-div {
-  display: flex;
-  flex-direction: row;
-  justify-content: center;
+.anchor-container:focus,
+.anchor-container:hover {
+  background: var(--text-secondary);
+  color: var(--text-contrast-primary);
+}
+
+img#banner {
+  height: 16px;
 }

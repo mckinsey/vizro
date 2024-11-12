@@ -111,17 +111,11 @@ dashboard = vm.Dashboard(
 
 app = Vizro().build(dashboard)
 app.dash.layout.children.append(
-    html.Div(
-        [
-            html.Div(
-                [
-                    "Made using ",
-                    html.Img(src=get_asset_url("logo.svg"), id="banner", alt="Vizro logo"),
-                    dbc.NavLink("vizro", href="https://github.com/mckinsey/vizro", target="_blank", external_link=True),
-                ],
-                className="anchor-div",
-            ),
-        ],
+    dbc.NavLink(
+        ["Made with ", html.Img(src=get_asset_url("logo.svg"), id="banner", alt="Vizro logo"), "vizro"],
+        href="https://github.com/mckinsey/vizro",
+        target="_blank",
+        external_link=True,
         className="anchor-container",
     )
 )
