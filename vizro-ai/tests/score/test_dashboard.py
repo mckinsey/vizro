@@ -187,44 +187,50 @@ def logic(  # noqa: PLR0912, PLR0915
     weighted_score = round(sum(score["weight"] * score["score"] for score in scores), 1)
 
     # csv report creation
-    with open(f"{report_dir}/report_model_{model_name}_{vizro_type}.csv", "a", newline="") as csvfile:
-        writer = csv.writer(csvfile, delimiter=",")
-        writer.writerow(
-            [
-                "timestamp",
-                "vizro_type",
-                "branch",
-                "python_version",
-                "model",
-                "prompt_tier",
-                "weighted_score",
-                "app_started_score",
-                "no_browser_console_errors_score",
-                "pages_score",
-                "components_score",
-                "component_types_score",
-                "controls_score",
-                "controls_types_score",
-            ]
-        )
-        writer.writerow(
-            [
-                datetime.now(),
-                vizro_type,
-                branch,
-                python_version,
-                model_name,
-                prompt_tier,
-                weighted_score,
-                app_started_score["score"],
-                no_browser_console_errors_score["score"],
-                pages_score["score"],
-                components_score["score"],
-                component_types_score["score"],
-                controls_score["score"],
-                controls_types_score["score"],
-            ]
-        )
+
+    data_rows = [
+        datetime.now(),
+        vizro_type,
+        branch,
+        python_version,
+        model_name,
+        prompt_tier,
+        weighted_score,
+        app_started_score["score"],
+        no_browser_console_errors_score["score"],
+        pages_score["score"],
+        components_score["score"],
+        component_types_score["score"],
+        controls_score["score"],
+        controls_types_score["score"],
+    ]
+
+    with open(f"{report_dir}/report_model_{model_name}_{vizro_type}.csv", "a", newline=""):
+        with open(f"{report_dir}/report_model_{model_name}_{vizro_type}.csv", "r+", newline="") as csvfile:
+            writer = csv.writer(csvfile, delimiter=",")
+            first_line = csvfile.readline()
+            if not first_line:
+                writer.writerow(
+                    [
+                        "timestamp",
+                        "vizro_type",
+                        "branch",
+                        "python_version",
+                        "model",
+                        "prompt_tier",
+                        "weighted_score",
+                        "app_started_score",
+                        "no_browser_console_errors_score",
+                        "pages_score",
+                        "components_score",
+                        "component_types_score",
+                        "controls_score",
+                        "controls_types_score",
+                    ]
+                )
+                writer.writerow(data_rows)
+            else:
+                writer.writerow(data_rows)
 
     # Readable report for the console output
     print(f"App started: {app_started_report}")  # noqa: T201
