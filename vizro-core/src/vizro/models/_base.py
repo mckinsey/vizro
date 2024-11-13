@@ -1,16 +1,16 @@
 from collections.abc import Mapping
 from contextlib import contextmanager
 from typing import Annotated, Any, Optional, Union
-from pydantic import ConfigDict
+from pydantic import ConfigDict, BaseModel, Field, validator
 
-try:
-    from pydantic.v1 import BaseModel, Field, validator
-    from pydantic.v1.fields import SHAPE_LIST, ModelField
-    from pydantic.v1.typing import get_args
-except ImportError:  # pragma: no cov
-    from pydantic import BaseModel, Field, validator
-    from pydantic.fields import SHAPE_LIST, ModelField
-    from pydantic.typing import get_args
+# try:
+#     from pydantic.v1 import BaseModel, Field, validator
+#     from pydantic.v1.fields import SHAPE_LIST, ModelField
+#     from pydantic.v1.typing import get_args
+# except ImportError:  # pragma: no cov
+#     from pydantic import BaseModel, Field, validator
+#     from pydantic.fields import SHAPE_LIST, ModelField
+#     from pydantic.typing import get_args
 
 
 import inspect

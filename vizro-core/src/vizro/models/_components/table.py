@@ -3,6 +3,7 @@ from typing import Literal
 
 import pandas as pd
 from dash import State, dcc, html
+from pydantic.json_schema import SkipJsonSchema
 
 try:
     from pydantic.v1 import Field, PrivateAttr, validator
@@ -37,7 +38,7 @@ class Table(VizroBaseModel):
     """
 
     type: Literal["table"] = "table"
-    figure: CapturedCallable = Field(
+    figure: SkipJsonSchema[CapturedCallable] = Field(
         ..., import_path="vizro.tables", mode="table", description="Function that returns a `Dash DataTable`."
     )
     title: str = Field("", description="Title of the `Table`")

@@ -11,15 +11,16 @@ from datetime import date
 from typing import Any, Literal, Protocol, Union, runtime_checkable
 
 import plotly.io as pio
+from pydantic import Field, StrictBool
 
 try:
-    from pydantic.v1 import Field, StrictBool
+    # from pydantic.v1 import Field, StrictBool
     from pydantic.v1.fields import ModelField
-    from pydantic.v1.schema import SkipField
+    # from pydantic.v1.schema import SkipField
 except ImportError:  # pragma: no cov
-    from pydantic import Field, StrictBool
+    # from pydantic import Field, StrictBool
     from pydantic.fields import ModelField
-    from pydantic.schema import SkipField
+    # from pydantic.schema import SkipField
 
 
 from typing import Annotated
@@ -171,12 +172,12 @@ class CapturedCallable:
     def _function(self):
         return self.__function
 
-    @classmethod
-    # TODO[pydantic]: We couldn't refactor `__modify_schema__`, please create the `__get_pydantic_json_schema__` manually.
-    # Check https://docs.pydantic.dev/latest/migration/#defining-custom-types for more information.
-    def __modify_schema__(cls, field_schema: dict[str, Any], field: ModelField):
-        """Generates schema for field of this type."""
-        raise SkipField(f"{cls.__name__} {field.name} is excluded from the schema.")
+    # @classmethod
+    # # TODO[pydantic]: We couldn't refactor `__modify_schema__`, please create the `__get_pydantic_json_schema__` manually.
+    # # Check https://docs.pydantic.dev/latest/migration/#defining-custom-types for more information.
+    # def __modify_schema__(cls, field_schema: dict[str, Any], field: ModelField):
+    #     """Generates schema for field of this type."""
+    #     raise SkipField(f"{cls.__name__} {field.name} is excluded from the schema.")
 
     @classmethod
     # TODO[pydantic]: We couldn't refactor `__get_validators__`, please create the `__get_pydantic_core_schema__` manually.

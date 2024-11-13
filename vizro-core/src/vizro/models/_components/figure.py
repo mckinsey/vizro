@@ -1,6 +1,7 @@
 from typing import Literal
 
 from dash import dcc, html
+from pydantic.json_schema import SkipJsonSchema
 
 try:
     from pydantic.v1 import Field, PrivateAttr, validator
@@ -24,7 +25,7 @@ class Figure(VizroBaseModel):
     """
 
     type: Literal["figure"] = "figure"
-    figure: CapturedCallable = Field(
+    figure: SkipJsonSchema[CapturedCallable] = Field(
         import_path="vizro.figures",
         mode="figure",
         description="Function that returns a figure-like object.",

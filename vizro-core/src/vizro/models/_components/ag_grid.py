@@ -3,6 +3,7 @@ from typing import Literal
 
 import pandas as pd
 from dash import State, dcc, html
+from pydantic.json_schema import SkipJsonSchema
 
 try:
     from pydantic.v1 import Field, PrivateAttr, validator
@@ -38,7 +39,7 @@ class AgGrid(VizroBaseModel):
     """
 
     type: Literal["ag_grid"] = "ag_grid"
-    figure: CapturedCallable = Field(
+    figure: SkipJsonSchema[CapturedCallable] = Field(
         ..., import_path="vizro.tables", mode="ag_grid", description="Function that returns a `Dash AG Grid`."
     )
     title: str = Field("", description="Title of the `AgGrid`")

@@ -6,6 +6,7 @@ from typing import Literal
 from dash import ClientsideFunction, Input, Output, State, clientside_callback, dcc, html, set_props
 from dash.exceptions import MissingCallbackContextException
 from plotly import graph_objects as go
+from pydantic.json_schema import SkipJsonSchema
 
 try:
     from pydantic.v1 import Field, PrivateAttr, validator
@@ -44,7 +45,7 @@ class Graph(VizroBaseModel):
     """
 
     type: Literal["graph"] = "graph"
-    figure: CapturedCallable = Field(
+    figure: SkipJsonSchema[CapturedCallable] = Field(
         ..., import_path="vizro.plotly.express", mode="graph", description="Function that returns a plotly `go.Figure`"
     )
     title: str = Field("", description="Title of the `Graph`")

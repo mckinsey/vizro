@@ -6,6 +6,7 @@ from typing import Any, Union
 
 from dash import Input, Output, State, callback, html
 from pydantic import field_validator, Field
+from pydantic.json_schema import SkipJsonSchema
 
 # try:
 #     from pydantic.v1 import Field, validator
@@ -32,7 +33,9 @@ class Action(VizroBaseModel):
 
     """
 
-    function: CapturedCallable = Field(..., description="Action function.") # , import_path="vizro.actions", mode="action"
+    function: SkipJsonSchema[CapturedCallable] = Field(
+        ..., description="Action function."
+    )  # , import_path="vizro.actions", mode="action"
     inputs: list[str] = Field(
         [],
         description="Inputs in the form `<component_id>.<property>` passed to the action function.",
