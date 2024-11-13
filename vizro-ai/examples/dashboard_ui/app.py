@@ -308,7 +308,7 @@ app.dash.layout.children.append(
                 [
                     "Made using ",
                     html.Img(src=get_asset_url("logo.svg"), id="banner", alt="Vizro logo"),
-                    dbc.NavLink("vizro", href="https://github.com/mckinsey/vizro", target="_blank", external_link=True),
+                    dbc.NavLink("vizro", href="https://github.com/mckinsey/vizro", target="_blank"),
                 ],
                 style={"display": "flex", "flexDirection": "row"},
             ),
