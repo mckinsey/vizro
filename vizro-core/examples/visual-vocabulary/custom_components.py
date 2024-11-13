@@ -51,7 +51,7 @@ class Markdown(vm.VizroBaseModel):
     def build(self):
         """Returns a markdown component with an optional classname."""
         return dcc.Markdown(
-            id=self.id, children=self.text, dangerously_allow_html=False, className=self.classname, link_target="_top"
+            id=self.id, children=self.text, dangerously_allow_html=False, className=self.classname, link_target="_blank"
         )
 
 
