@@ -2,9 +2,11 @@
 
 from typing import Union
 
+import dash_bootstrap_components as dbc
 import vizro.models as vm
 from chart_groups import ALL_CHART_GROUP, CHART_GROUPS, ChartGroup, IncompletePage
 from custom_components import FlexContainer, Markdown
+from dash import get_asset_url, html
 from vizro import Vizro
 
 
@@ -108,6 +110,14 @@ dashboard = vm.Dashboard(
 )
 
 app = Vizro().build(dashboard)
+app.dash.layout.children.append(
+    dbc.NavLink(
+        ["Made with ", html.Img(src=get_asset_url("logo.svg"), id="banner", alt="Vizro logo"), "vizro"],
+        href="https://github.com/mckinsey/vizro",
+        target="_blank",
+        className="anchor-container",
+    )
+)
 server = app.dash.server
 
 if __name__ == "__main__":
