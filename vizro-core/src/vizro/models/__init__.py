@@ -13,27 +13,13 @@ from ._dashboard import Dashboard
 from ._layout import Layout
 from ._page import Page
 
-Tabs.update_forward_refs(Container=Container)
-Container.update_forward_refs(
-    AgGrid=AgGrid, Button=Button, Card=Card, Figure=Figure, Graph=Graph, Layout=Layout, Table=Table, Tabs=Tabs
-)
-Page.update_forward_refs(
-    Accordion=Accordion,
-    AgGrid=AgGrid,
-    Button=Button,
-    Card=Card,
-    Container=Container,
-    Figure=Figure,
-    Filter=Filter,
-    Graph=Graph,
-    Parameter=Parameter,
-    Table=Table,
-    Tabs=Tabs,
-)
-Navigation.update_forward_refs(Accordion=Accordion, NavBar=NavBar, NavLink=NavLink)
-Dashboard.update_forward_refs(Page=Page, Navigation=Navigation)
-NavBar.update_forward_refs(NavLink=NavLink)
-NavLink.update_forward_refs(Accordion=Accordion)
+Tabs.model_rebuild()
+Container.model_rebuild()
+Page.model_rebuild()
+Navigation.model_rebuild()
+Dashboard.model_rebuild()
+NavBar.model_rebuild()
+NavLink.model_rebuild()
 
 __all__ = [
     "Accordion",
