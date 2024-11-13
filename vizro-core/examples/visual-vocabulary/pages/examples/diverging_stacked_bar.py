@@ -17,8 +17,6 @@ def diverging_stacked_bar(data_frame: pd.DataFrame, **kwargs) -> go.Figure:
         for trace, color in zip(fig.data, colors):
             trace.update(marker_color=color)
 
-    # Reverse the order of the traces, such that they are drawn in the correct order of the legend
-    fig.data = fig.data[::-1]
     mutable_traces = list(fig.data)
     mutable_traces[: len(fig.data) // 2] = reversed(fig.data[: len(fig.data) // 2])
     fig.data = mutable_traces
@@ -26,7 +24,7 @@ def diverging_stacked_bar(data_frame: pd.DataFrame, **kwargs) -> go.Figure:
     orientation = fig.data[0].orientation
     x_or_y = "x" if orientation == "h" else "y"
 
-    for trace_idx in range(len(fig.data) // 2):
+    for trace_idx in range(len(fig.data) // 2, len(fig.data)):
         fig.update_traces({f"{x_or_y}axis": f"{x_or_y}2"}, selector=trace_idx)
 
     fig.update_layout({f"{x_or_y}axis2": fig.layout[f"{x_or_y}axis"]})
@@ -34,20 +32,12 @@ def diverging_stacked_bar(data_frame: pd.DataFrame, **kwargs) -> go.Figure:
         {f"{x_or_y}axis": {"autorange": "reversed", "domain": [0, 0.5]}, f"{x_or_y}axis2": {"domain": [0.5, 1]}}
     )
 
-    # This is not generic enough to be added, but optimises the chart in terms of data viz best practices -
-    # where would this live? I am a bit torn between engineering best practices and making the chart as flexible as
-    # possible vs. showing a custom chart that shows data viz best practices. For me the visual-vocabulary should
-    # fulfill the later, while our potential custom chart library should display engineering best practices.
-    # Q: How could we change the range of the xaxes now? This doesn't seem to work anymore. Plotly's current default
-    # leads to visual confusion. The negative bar traces seem to appear long than the positive ones, but it's
-    # because they do not share the same axes range, thus potentially leading to false conclusions.
-    fig.update_xaxes(ticksuffix="%", range=[0, 100])
-
     if orientation == "h":
         fig.add_vline(x=0, line_width=2, line_color="grey")
     else:
         fig.add_hline(y=0, line_width=2, line_color="grey")
 
+    fig.update_xaxes(ticksuffix="%", range=[0, 100])
     return fig
 
 
