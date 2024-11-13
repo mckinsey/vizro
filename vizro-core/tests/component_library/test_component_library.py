@@ -3,9 +3,9 @@ import dash_bootstrap_components as dbc
 import pandas as pd
 import pytest
 from dash import Dash, html
-from vizro.figures.library import kpi_card, kpi_card_reference
-
 from tests.helpers.common import compare_images
+
+from vizro.figures.library import kpi_card, kpi_card_reference
 
 df_kpi = pd.DataFrame(
     {

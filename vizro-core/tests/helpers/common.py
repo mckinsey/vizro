@@ -10,9 +10,7 @@ def comparison_logic(original_image, new_image):
     difference = cv2.subtract(original_image, new_image)
     blue, green, red = cv2.split(difference)
     assert_that(cv2.countNonZero(blue), equal_to(0), reason="Blue channel is different")
-    assert_that(
-        cv2.countNonZero(green), equal_to(0), reason="Green channel is different"
-    )
+    assert_that(cv2.countNonZero(green), equal_to(0), reason="Green channel is different")
     assert_that(cv2.countNonZero(red), equal_to(0), reason="Red channel is different")
 
 
