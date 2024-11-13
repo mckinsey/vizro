@@ -3,13 +3,13 @@ from typing import Literal
 
 import pandas as pd
 from dash import State, dcc, html
+from pydantic import Field, PrivateAttr, validator
 from pydantic.json_schema import SkipJsonSchema
 
-try:
-    from pydantic.v1 import Field, PrivateAttr, validator
-except ImportError:  # pragma: no cov
-    from pydantic import Field, PrivateAttr, validator
-
+# try:
+#     from pydantic.v1 import Field, PrivateAttr, validator
+# except ImportError:  # pragma: no cov
+#     from pydantic import Field, PrivateAttr, validator
 from vizro.actions._actions_utils import CallbackTriggerDict, _get_component_actions, _get_parent_vizro_model
 from vizro.managers import data_manager
 from vizro.models import Action, VizroBaseModel

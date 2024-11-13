@@ -3,12 +3,12 @@ from __future__ import annotations
 from typing import TYPE_CHECKING, Literal
 
 from dash import html
+from pydantic import Field, validator
 
-try:
-    from pydantic.v1 import Field, validator
-except ImportError:  # pragma: no cov
-    from pydantic import Field, validator
-
+# try:
+#     from pydantic.v1 import Field, validator
+# except ImportError:  # pragma: no cov
+#     from pydantic import Field, validator
 from vizro.models import VizroBaseModel
 from vizro.models._layout import set_layout
 from vizro.models._models_utils import _log_call, check_captured_callable, validate_min_length

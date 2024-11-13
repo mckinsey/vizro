@@ -3,12 +3,12 @@ from __future__ import annotations
 from typing import TYPE_CHECKING, Literal
 
 from dash import html
+from pydantic import validator
 
-try:
-    from pydantic.v1 import validator
-except ImportError:  # pragma: no cov
-    from pydantic import validator
-
+# try:
+#     from pydantic.v1 import validator
+# except ImportError:  # pragma: no cov
+#     from pydantic import validator
 from vizro.models import VizroBaseModel
 from vizro.models._components.form import Checklist, Dropdown, RadioItems, RangeSlider, Slider
 from vizro.models._layout import set_layout

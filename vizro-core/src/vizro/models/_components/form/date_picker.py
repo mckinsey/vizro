@@ -1,18 +1,15 @@
-from typing import Literal, Optional, Union
-
-import dash_mantine_components as dmc
-from dash import ClientsideFunction, Input, Output, State, clientside_callback, dcc, html
-
-try:
-    from pydantic.v1 import Field, PrivateAttr, validator
-except ImportError:  # pragma: no cov
-    from pydantic import Field, PrivateAttr, validator
-
-
+# try:
+#     from pydantic.v1 import Field, PrivateAttr, validator
+# except ImportError:  # pragma: no cov
+#     from pydantic import Field, PrivateAttr, validator
 import datetime
 from datetime import date
+from typing import Literal, Optional, Union
 
 import dash_bootstrap_components as dbc
+import dash_mantine_components as dmc
+from dash import ClientsideFunction, Input, Output, State, clientside_callback, dcc, html
+from pydantic import Field, PrivateAttr, validator
 
 from vizro.models import Action, VizroBaseModel
 from vizro.models._action._actions_chain import _action_validator_factory

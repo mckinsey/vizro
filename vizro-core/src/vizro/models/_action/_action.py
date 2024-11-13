@@ -4,14 +4,13 @@ from collections.abc import Collection, Mapping
 from pprint import pformat
 from typing import Any, Union
 
-from dash import Input, Output, State, callback, html
-from pydantic import field_validator, Field
-from pydantic.json_schema import SkipJsonSchema
-
 # try:
 #     from pydantic.v1 import Field, validator
 # except ImportError:  # pragma: no cov
 #     from pydantic import Field
+from dash import Input, Output, State, callback, html
+from pydantic import Field, field_validator
+from pydantic.json_schema import SkipJsonSchema
 
 from vizro.managers._model_manager import ModelID
 from vizro.models import VizroBaseModel

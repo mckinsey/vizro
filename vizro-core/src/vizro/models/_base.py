@@ -1,8 +1,3 @@
-from collections.abc import Mapping
-from contextlib import contextmanager
-from typing import Annotated, Any, Optional, Union
-from pydantic import ConfigDict, BaseModel, Field, validator, field_validator
-
 # try:
 #     from pydantic.v1 import BaseModel, Field, validator
 #     from pydantic.v1.fields import SHAPE_LIST, ModelField
@@ -11,14 +6,16 @@ from pydantic import ConfigDict, BaseModel, Field, validator, field_validator
 #     from pydantic import BaseModel, Field, validator
 #     from pydantic.fields import SHAPE_LIST, ModelField
 #     from pydantic.typing import get_args
-
-
 import inspect
 import logging
 import textwrap
+from collections.abc import Mapping
+from contextlib import contextmanager
+from typing import Annotated, Any, Optional, Union
 
 import autoflake
 import black
+from pydantic import BaseModel, ConfigDict, Field, field_validator
 
 from vizro.managers import model_manager
 from vizro.models._models_utils import REPLACEMENT_STRINGS, _log_call

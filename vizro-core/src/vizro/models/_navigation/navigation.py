@@ -1,13 +1,12 @@
 from __future__ import annotations
 
-from dash import html
-
-try:
-    from pydantic.v1 import validator
-except ImportError:  # pragma: no cov
-    from pydantic import validator
-
+# try:
+#     from pydantic.v1 import validator
+# except ImportError:  # pragma: no cov
+#     from pydantic import validator
 import dash_bootstrap_components as dbc
+from dash import html
+from pydantic import validator
 
 from vizro.models import VizroBaseModel
 from vizro.models._models_utils import _log_call
