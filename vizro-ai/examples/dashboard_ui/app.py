@@ -79,15 +79,9 @@ plot_page = vm.Page(
     title="Vizro-AI - create interactive charts with Plotly and Vizro",
     layout=vm.Layout(
         grid=[
-            [4, 4, 4, 4],
-            [4, 4, 4, 4],
-            [2, 2, 1, 1],
-            [2, 2, 1, 1],
-            [2, 2, 1, 1],
-            [3, 3, 1, 1],
-            [3, 3, 1, 1],
-            [3, 3, 1, 1],
-            [3, 3, 1, 1],
+            *[[4, 4, 4, 4]] * 2,
+            *[[2, 2, 1, 1]] * 3,
+            *[[3, 3, 1, 1]] * 4,
             *[[0, 0, 1, 1]] * 10,
         ]
     ),
@@ -123,7 +117,6 @@ plot_page = vm.Page(
                     [0],
                 ],
                 row_gap="0px",
-                # row_min_height="40px",
             ),
             components=[
                 UserUpload(
@@ -158,7 +151,7 @@ plot_page = vm.Page(
                     [3, 3, 3, 3, 3, 3, 3, 3, 3],
                     [2, -1, -1, -1, -1, 1, 1, 0, 0],
                 ],
-                row_gap="10px",
+                row_gap="12px",
                 col_gap="4px",
             ),
             components=[
@@ -305,21 +298,13 @@ def update_model_dropdown(value):
 
 app = Vizro().build(dashboard)
 app.dash.layout.children.append(
-    html.Div(
-        [
-            html.Div(
-                [
-                    "Made using ",
-                    html.Img(src=get_asset_url("logo.svg"), id="banner", alt="Vizro logo"),
-                    dbc.NavLink("vizro", href="https://github.com/mckinsey/vizro", target="_blank"),
-                ],
-                style={"display": "flex", "flexDirection": "row"},
-            ),
-        ],
+    dbc.NavLink(
+        ["Made with ", html.Img(src=get_asset_url("logo.svg"), id="banner", alt="Vizro logo"), "vizro"],
+        href="https://github.com/mckinsey/vizro",
+        target="_blank",
         className="anchor-container",
     )
 )
-
 server = app.dash.server
 if __name__ == "__main__":
     app.run()

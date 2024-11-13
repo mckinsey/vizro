@@ -26,7 +26,7 @@
   background-color: inherit;
   border: 1px solid var(--border-subtle-alpha-01);
   color: var(--text-primary);
-  min-height: 13.5vh;
+  min-height: 14vh;
   padding: 8px;
   width: 100%;
 }
@@ -46,7 +46,7 @@
   background: var(--surfaces-bg-card);
   font-family: monospace;
   height: 100%;
-  max-height: 470px;
+  max-height: 44vh;
   overflow: auto;
   padding: 1rem;
   position: relative;
@@ -146,18 +146,6 @@
   justify-content: center;
 }
 
-.anchor-container {
-  background: #060a17;
-  bottom: 0;
-  display: flex;
-  font-weight: 600;
-  gap: 2rem;
-  padding: 4px;
-  place-content: baseline center;
-  position: fixed;
-  width: 100%;
-}
-
 .toggle-div {
   display: flex;
   flex-direction: row;
@@ -190,17 +178,20 @@
 .btn-primary:enabled:has(#dropdown-menu-icon) {
   background-color: inherit;
   color: var(--text-active);
+  font-size: 1.5rem;
 }
 
 .btn-primary:disabled:has(#dropdown-menu-icon) {
   background-color: inherit;
   color: var(--text-active);
+  font-size: 1.5rem;
 }
 
 .download-button {
   background-color: inherit;
   color: var(--text-active);
   width: 100%;
+  font-size: 1.5rem;
 }
 
 #modal-table-icon {
@@ -273,7 +264,8 @@
   display: flex;
   flex-direction: row;
   justify-content: center;
-  width: 100%;
+  padding-left: 4px;
+  min-width: 130px;
 }
 
 #custom-header-div {
@@ -314,4 +306,29 @@
   background-color: rgba(255, 255, 255, 0.1) !important;
   box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
   transform: translateY(-2px);
+}
+
+.anchor-container {
+  align-items: center;
+  background: var(--text-primary);
+  border-top-left-radius: 8px;
+  bottom: 0;
+  color: var(--text-contrast-primary);
+  display: flex;
+  font-size: 0.8rem;
+  font-weight: 500;
+  height: 24px;
+  padding: 0 12px;
+  position: fixed;
+  right: 0;
+}
+
+.anchor-container:focus,
+.anchor-container:hover {
+  background: var(--text-secondary);
+  color: var(--text-contrast-primary);
+}
+
+img#banner {
+  height: 16px;
 }
