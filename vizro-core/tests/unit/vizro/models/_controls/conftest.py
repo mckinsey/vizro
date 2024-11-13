@@ -1,28 +1,8 @@
-import datetime
-import random
-
-import numpy as np
-import pandas as pd
 import pytest
 
 import vizro.models as vm
 import vizro.plotly.express as px
 from vizro import Vizro
-
-
-@pytest.fixture
-def dfs_with_shared_column():
-    df1 = pd.DataFrame()
-    df1["x"] = np.random.uniform(0, 10, 100)
-    df1["y"] = np.random.uniform(0, 10, 100)
-    df2 = df1.copy()
-    df3 = df1.copy()
-
-    df1["shared_column"] = np.random.uniform(0, 10, 100)
-    df2["shared_column"] = [datetime.datetime(2024, 1, 1) + datetime.timedelta(days=i) for i in range(100)]
-    df3["shared_column"] = random.choices(["CATEGORY 1", "CATEGORY 2"], k=100)
-
-    return df1, df2, df3
 
 
 @pytest.fixture
@@ -34,22 +14,6 @@ def managers_one_page_two_graphs(gapminder):
         components=[
             vm.Graph(id="scatter_chart", figure=px.scatter(gapminder, x="lifeExp", y="gdpPercap")),
             vm.Graph(id="bar_chart", figure=px.bar(gapminder, x="country", y="gdpPercap")),
-        ],
-    )
-    Vizro._pre_build()
-
-
-@pytest.fixture
-def managers_shared_column_different_dtype(dfs_with_shared_column):
-    """Instantiates the managers with a page and two graphs sharing the same column but of different data types."""
-    df1, df2, df3 = dfs_with_shared_column
-    vm.Page(
-        id="graphs_with_shared_column",
-        title="Page Title",
-        components=[
-            vm.Graph(id="id_shared_column_numerical", figure=px.scatter(df1, x="x", y="y", color="shared_column")),
-            vm.Graph(id="id_shared_column_temporal", figure=px.scatter(df2, x="x", y="y", color="shared_column")),
-            vm.Graph(id="id_shared_column_categorical", figure=px.scatter(df3, x="x", y="y", color="shared_column")),
         ],
     )
     Vizro._pre_build()

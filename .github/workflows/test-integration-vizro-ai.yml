@@ -13,6 +13,7 @@ on:
     paths:
       - "vizro-ai/**"
       - "!vizro-ai/docs/**"
+    workflow_dispatch:
 
 env:
   PYTHONUNBUFFERED: 1
@@ -153,11 +154,3 @@ jobs:
         env:
           SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
           SLACK_WEBHOOK_TYPE: INCOMING_WEBHOOK
-
-      - name: Report artifacts
-        uses: actions/upload-artifact@v4
-        if: always()
-        with:
-          name: Report-${{ matrix.config.python-version }}-${{ matrix.config.label }}
-          path: |
-            /home/runner/work/vizro/vizro/vizro-ai/tests/integration/reports/report*.csv

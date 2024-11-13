@@ -13,6 +13,7 @@ from pandas.testing import assert_frame_equal
 
 from vizro import Vizro
 from vizro.managers import data_manager
+from vizro.managers._data_manager import _DynamicData, _StaticData
 
 
 # Fixture that freezes the time so that tests involving time.sleep can run quickly. Instead of time.sleep,
@@ -42,6 +43,10 @@ def make_fixed_data():
     return pd.DataFrame([1, 2, 3])
 
 
+def make_fixed_data_with_args(label, another_label="x"):
+    return pd.DataFrame([1, 2, 3]).assign(label=label, another_label=another_label)
+
+
 class TestLoad:
     def test_static(self):
         data = make_fixed_data()
@@ -66,6 +71,100 @@ class TestLoad:
         assert_frame_equal(loaded_data, data())
         # Make sure loaded_data is a copy rather than the same object.
         assert loaded_data is not data()
+
+
+class TestMultiLoad:
+    def test_static_single_request(self, mocker):
+        # Single value in multi_name_load_kwargs loads the data.
+        data_manager["data"] = make_fixed_data()
+        load_spy = mocker.spy(_StaticData, "load")
+        loaded_data = data_manager._multi_load([("data", {})])
+        assert load_spy.call_count == 1
+        assert len(loaded_data) == 1
+        assert_frame_equal(loaded_data[0], make_fixed_data())
+
+    def test_static_multiple_requests(self, mocker):
+        # Multiple distinct values in multi_name_load_kwargs are loaded separately but repeated ones are not.
+        data_manager["data_x"] = make_fixed_data()
+        data_manager["data_y"] = make_fixed_data()
+        load_spy = mocker.spy(_StaticData, "load")
+        loaded_data = data_manager._multi_load([("data_x", {}), ("data_y", {}), ("data_x", {})])
+        assert load_spy.call_count == 2  # Crucially this is not 3.
+        assert len(loaded_data) == 3
+        assert_frame_equal(loaded_data[0], make_fixed_data())
+        assert_frame_equal(loaded_data[1], make_fixed_data())
+        assert_frame_equal(loaded_data[2], make_fixed_data())
+
+    # Behavior of static data and dynamic data with no arguments is the same.
+    def test_dynamic_single_request_no_args(self, mocker):
+        # Single value in multi_name_load_kwargs loads the data.
+        data_manager["data"] = make_fixed_data
+        load_spy = mocker.spy(_DynamicData, "load")
+        loaded_data = data_manager._multi_load([("data", {})])
+        assert load_spy.call_count == 1
+        assert len(loaded_data) == 1
+        assert_frame_equal(loaded_data[0], make_fixed_data())
+
+    # Behavior of static data and dynamic data with no arguments is the same.
+    def test_dynamic_multiple_requests_no_args(self, mocker):
+        # Multiple distinct values in multi_name_load_kwargs are loaded separately but repeated ones are not.
+        data_manager["data_x"] = make_fixed_data
+        data_manager["data_y"] = make_fixed_data
+        load_spy = mocker.spy(_DynamicData, "load")
+        loaded_data = data_manager._multi_load([("data_x", {}), ("data_y", {}), ("data_x", {})])
+        assert load_spy.call_count == 2  # Crucially this is not 3.
+        assert len(loaded_data) == 3
+        assert_frame_equal(loaded_data[0], make_fixed_data())
+        assert_frame_equal(loaded_data[1], make_fixed_data())
+        assert_frame_equal(loaded_data[2], make_fixed_data())
+
+    # Test various JSON-serialisable types of argument value.
+    @pytest.mark.parametrize("label", ["y", None, [1, 2, 3], {"a": "b"}])
+    def test_dynamic_single_request_with_args(self, label, mocker):
+        # Single value in multi_name_load_kwargs loads the data.
+        data_manager["data"] = make_fixed_data_with_args
+        load_spy = mocker.spy(_DynamicData, "load")
+        loaded_data = data_manager._multi_load([("data", {"label": label})])
+        assert load_spy.call_count == 1
+        assert len(loaded_data) == 1
+        assert_frame_equal(loaded_data[0], make_fixed_data_with_args(label=label))
+
+    def test_dynamic_multiple_requests_with_args(self, mocker):
+        # Multiple distinct values in multi_name_load_kwargs are loaded separately but repeated ones are not.
+        data_manager["data_x"] = make_fixed_data_with_args
+        data_manager["data_y"] = make_fixed_data_with_args
+        load_spy = mocker.spy(_DynamicData, "load")
+        loaded_data = data_manager._multi_load(
+            [
+                ("data_x", {"label": "x"}),
+                ("data_x", {"label": "y"}),
+                ("data_y", {"label": "x"}),
+                ("data_x", {"label": "x"}),  # Repeat of first entry.
+            ]
+        )
+        assert load_spy.call_count == 3  # Crucially this is not 4.
+        assert len(loaded_data) == 4
+        assert_frame_equal(loaded_data[0], make_fixed_data_with_args(label="x"))
+        assert_frame_equal(loaded_data[1], make_fixed_data_with_args(label="y"))
+        assert_frame_equal(loaded_data[2], make_fixed_data_with_args(label="x"))
+        assert_frame_equal(loaded_data[3], make_fixed_data_with_args(label="x"))
+
+    def test_dynamic_args_order_does_not_matter(self, mocker):
+        # Multiple distinct values in multi_name_load_kwargs are loaded separately but repeated ones are not.
+        data_manager["data"] = make_fixed_data_with_args
+        load_spy = mocker.spy(_DynamicData, "load")
+        loaded_data = data_manager._multi_load(
+            [
+                ("data", {"label": "x", "another_label": "x"}),
+                ("data", {"label": "x", "another_label": "y"}),
+                ("data", {"another_label": "x", "label": "x"}),
+            ]
+        )
+        assert load_spy.call_count == 2  # Crucially this is not 3.
+        assert len(loaded_data) == 3
+        assert_frame_equal(loaded_data[0], make_fixed_data_with_args(label="x", another_label="x"))
+        assert_frame_equal(loaded_data[1], make_fixed_data_with_args(label="x", another_label="y"))
+        assert_frame_equal(loaded_data[2], make_fixed_data_with_args(label="x", another_label="x"))
 
 
 class TestInvalid:

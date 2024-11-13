@@ -9,6 +9,7 @@ a `vizro_dark` and a `vizro_light` theme. If not specified then `theme` defaults
 
 !!! example "Change theme"
     === "app.py"
+
         ```{.python pycafe-link hl_lines="18"}
         import vizro.models as vm
         import vizro.plotly.express as px
