@@ -302,14 +302,23 @@ class Dashboard(VizroBaseModel):
         page_layout.id = page.id
         return page_layout
 
-    @staticmethod
-    def _make_page_404_layout():
+    def _make_page_404_layout(self):
         # The svg file is available through the _dash-component-suites/vizro route, as used in Dash's
         # _relative_url_path, but that feels too private to access directly. Hence read the file in directly rather
         # than referring to its path.
         error_404_svg = base64.b64encode((VIZRO_ASSETS_PATH / "images/error_404.svg").read_bytes()).decode("utf-8")
         return html.Div(
             [
+                html.Div(
+                    children=dmc.Switch(
+                        id="theme_selector",
+                        checked=self.theme == "vizro_light",
+                        persistence=True,
+                        persistence_type="session",
+                        className="toggle-switch",
+                    ),
+                    id="settings",
+                ),
                 html.Img(src=f"data:image/svg+xml;base64,{error_404_svg}"),
                 html.Div(
                     [

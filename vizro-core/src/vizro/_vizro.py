@@ -108,9 +108,10 @@ class Vizro:
 
         # Note that model instantiation and pre_build are independent of Dash.
         self._pre_build()
-
         self.dash.layout = dashboard.build()
 
+        # Add data-bs-theme attribute for 404 error page
+        self.dash.index_string = self.dash.index_string.replace("<html>", "<html data-bs-theme='dark'")
         return self
 
     def run(self, *args, **kwargs):  # if type annotated, mkdocstring stops seeing the class
