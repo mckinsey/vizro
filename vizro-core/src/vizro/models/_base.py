@@ -1,7 +1,7 @@
 from collections.abc import Mapping
 from contextlib import contextmanager
 from typing import Annotated, Any, Optional, Union
-from pydantic import ConfigDict, BaseModel, Field, validator
+from pydantic import ConfigDict, BaseModel, Field, validator, field_validator
 
 # try:
 #     from pydantic.v1 import BaseModel, Field, validator
@@ -166,11 +166,13 @@ class VizroBaseModel(BaseModel):
         "",
         description="ID to identify model. Must be unique throughout the whole dashboard."
         "When no ID is chosen, ID will be automatically generated.",
+        validate_default=True
     )
 
     # TODO[pydantic]: We couldn't refactor the `validator`, please replace it by `field_validator` manually.
     # Check https://docs.pydantic.dev/dev-v2/migration/#changes-to-validators for more information.
-    @validator("id", always=True)
+    @field_validator("id")
+    @classmethod
     def set_id(cls, id) -> str:
         return id or model_manager._generate_id()
 
