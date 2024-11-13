@@ -10,8 +10,11 @@ import vizro.models as vm
 import vizro.plotly.express as px
 from vizro import Vizro
 from vizro.managers import data_manager
+from functools import partial
 
 print("INITIALIZING")
+
+SPECIES_COLORS = {"setosa": "#00b4ff", "versicolor": "#ff9222", "virginica": "#3949ab"}
 
 FILTER_COLUMN = "species"
 # FILTER_COLUMN = "sepal_length"
@@ -24,7 +27,9 @@ def slow_load(sample_size=3):
     return df
 
 
-def load_from_file():
+def load_from_file(filter_column=None):
+    filter_column = filter_column or FILTER_COLUMN
+
     with open('data.yaml', 'r') as file:
         data = yaml.safe_load(file)
         data = data or pd.DataFrame()
@@ -33,15 +38,15 @@ def load_from_file():
     df = px.data.iris()
 
     # Load the first N rows of each species. N per species is defined in the data.yaml file.
-    if FILTER_COLUMN == "species":
+    if filter_column == "species":
         final_df = pd.concat(objs=[
-            df[df[FILTER_COLUMN] == 'setosa'].head(data.get("setosa", 0)),
-            df[df[FILTER_COLUMN] == 'versicolor'].head(data.get("versicolor", 0)),
-            df[df[FILTER_COLUMN] == 'virginica'].head(data.get("virginica", 0)),
+            df[df[filter_column] == 'setosa'].head(data.get("setosa", 0)),
+            df[df[filter_column] == 'versicolor'].head(data.get("versicolor", 0)),
+            df[df[filter_column] == 'virginica'].head(data.get("virginica", 0)),
         ], ignore_index=True)
-    elif FILTER_COLUMN == "sepal_length":
+    elif filter_column == "sepal_length":
         final_df = df[
-            df[FILTER_COLUMN].between(data.get("min", 0), data.get("max", 0), inclusive="both")
+            df[filter_column].between(data.get("min", 0), data.get("max", 0), inclusive="both")
         ]
     else:
         raise ValueError("Invalid FILTER_COLUMN")
@@ -56,13 +61,16 @@ def load_parametrised_species(species=None):
     return df
 
 
-data_manager["dynamic_df"] = load_from_file
-# data_manager["dynamic_df"] = load_parametrised_species
+data_manager["load_from_file"] = load_from_file
+data_manager["load_from_file_species"] = partial(load_from_file, filter_column="species")
+data_manager["load_from_file_sepal_length"] = partial(load_from_file, filter_column="sepal_length")
+
+# data_manager["load_parametrised_species"] = load_parametrised_species
 
 # # TODO-DEV: Turn on/off caching to see how it affects the app.
 # data_manager.cache = Cache(config={"CACHE_TYPE": "SimpleCache"})
-# data_manager["dynamic_df"] = slow_load
-# data_manager["dynamic_df"].timeout = 5
+# data_manager["load_from_file"] = slow_load
+# data_manager["load_from_file"].timeout = 5
 
 
 homepage = vm.Page(
@@ -72,154 +80,227 @@ homepage = vm.Page(
     ],
 )
 
-another_page = vm.Page(
-    title="Test update control options",
+page_1 = vm.Page(
+    title="Dynamic vs Static filter",
     components=[
         vm.Graph(
-            id="graph_1_id",
+            id="p1-G-1",
             figure=px.bar(
-                data_frame="dynamic_df",
-                x="species",
-                color="species",
-                color_discrete_map={"setosa": "#00b4ff", "versicolor": "#ff9222", "virginica": "#3949ab"},
-            )
+                data_frame="load_from_file_species",
+                x="species", color="species", color_discrete_map=SPECIES_COLORS,
+            ),
         ),
-        # vm.Graph(
-        #     id="graph_2_id",
-        #     figure=px.scatter(
-        #         data_frame="dynamic_df",
-        #         x="sepal_length",
-        #         y="petal_length",
-        #         color="species",
-        #         color_discrete_map={"setosa": "#00b4ff", "versicolor": "#ff9222", "virginica": "#3949ab"},
-        #     ),
-        # ),
-        # vm.Graph(
-        #     id="graph_2_id",
-        #     figure=px.scatter(
-        #         data_frame="dynamic_df",
-        #         x="sepal_length",
-        #         y="petal_width",
-        #         color="species",
-        #     )
-        # ),
-
+        vm.Graph(
+            id="p1-G-2",
+            figure=px.scatter(
+                data_frame=px.data.iris(),
+                x="sepal_length", y="petal_length", color="species", color_discrete_map=SPECIES_COLORS,
+            ),
+        )
     ],
     controls=[
-        vm.Filter(
-            id="filter_container_id",
-            column=FILTER_COLUMN,
-            # targets=["graph_2_id"],
-            # selector=vm.Dropdown(id="filter_id"),
-            # selector=vm.Dropdown(id="filter_id", value=["setosa"]),
-
-            selector=vm.Checklist(id="filter_id"),
-            # selector=vm.Checklist(id="filter_id", value=["setosa"]),
-
-            # selector=vm.Dropdown(id="filter_id", multi=False),
-            # selector=vm.Dropdown(id="filter_id", multi=False, value="setosa"),
-
-            # selector=vm.RadioItems(id="filter_id"),
-            # selector=vm.RadioItems(id="filter_id", value="setosa"),
-
-            # selector=vm.Slider(id="filter_id"),
-            # selector=vm.Slider(id="filter_id", value=6),
-
-            # selector=vm.RangeSlider(id="filter_id"),
-            # selector=vm.RangeSlider(id="filter_id", value=[5, 7]),
-
-            # TEST CASES:
-            #   no selector
-            #           WORKS
-            #   multi=True
-            #       default
-            #           WORKS
-            # selector=vm.Slider(id="filter_id", step=0.5),
-            #       options: list
-            #           WORKS - but options doesn't mean anything because options are dynamically overwritten.
-            # selector=vm.Dropdown(options=["setosa", "versicolor"]),
-            #       options: empty list
-            #           WORKS
-            # selector=vm.Dropdown(options=[]),
-            #       options: dict
-            #           WORKS - but "label" is always overwritten.
-            # selector=vm.Dropdown(options=[{"label": "Setosa", "value": "setosa"}, {"label": "Versicolor", "value": "versicolor"}]),
-            #       options list; value
-            #           WORKS
-            # selector=vm.Dropdown(options=["setosa", "versicolor"], value=["setosa"]),
-            #       options list; empty value
-            #           WORKS
-            # selector=vm.Dropdown(options=["setosa", "versicolor"], value=[]),
-            #       strange options
-            #           WORKS
-            # selector=vm.Dropdown(options=["A", "B", "C"]),
-            #       strange options with strange value
-            #           WORKS - works even for the dynamic False, and this is OK.
-            # selector=vm.Dropdown(options=["A", "B", "C"], value=["XYZ"]),
-            #
-            #
-            #   multi=False -> TLDR: Doesn't work if value is cleared. Other combinations are same as multi=True.
-            #       default
-            #           DOES NOT WORK - Doesn't work if value is cleared. Then persistence storage become "null" and our
-            #           placeholder component dmc.DateRangePicker can't process null value. It expects a value or a list
-            #           of values. SOLUTION -> Create the "universal Vizro placeholder component"
-            # selector=vm.Dropdown(multi=False),
-            #       options: list - because options are dynamically overwritten.
-            #           WORKS - but options doesn't mean anything because options are dynamically overwritten.
-            # selector=vm.Dropdown(multi=False, options=["setosa", "versicolor"]),
-            #       options: empty list
-            #           WORKS
-            # selector=vm.Dropdown(multi=False, options=[]),
-            #       options: dict
-            # selector=vm.Dropdown(multi=False, options=[{"label": "Setosa", "value": "setosa"}, {"label": "Versicolor", "value": "versicolor"}]),
-            #       options list; value
-            #           WORKS
-            # selector=vm.Dropdown(multi=False, options=["setosa", "versicolor"], value="setosa"),
-            #       options list; None value
-            #           WORKS
-            # selector=vm.Dropdown(multi=False, options=["setosa", "versicolor"], value=None),
-            #       strange options
-            #           WORKS
-            # selector=vm.Dropdown(multi=False, options=["A", "B", "C"]),
-            #       strange options with strange value
-            #           WORKS
-            # selector=vm.Dropdown(multi=False, options=["A", "B", "C"], value="XYZ"),
-        ),
+        vm.Filter(id="p1-F-1", column="species", targets=["p1-G-1"], selector=vm.Dropdown(title="Dynamic filter")),
+        vm.Filter(id="p1-F-2", column="species", targets=["p1-G-2"], selector=vm.Dropdown(title="Static filter")),
         vm.Parameter(
-            id="parameter_x",
-            targets=["graph_1_id.x",],
-            selector=vm.Dropdown(
-                options=["species", "sepal_width"],
-                value="species",
-                multi=False,
-            )
-        ),
-        # vm.Parameter(
-        #     id="parameter_species",
-        #     targets=[
-        #         "graph_1_id.data_frame.species",
-        #         "filter_container_id.",
-        #     ],
-        #     selector=vm.Dropdown(options=["setosa", "versicolor", "virginica"])
-        # ),
-        # vm.Parameter(
-        #     id="parameter_container_id",
-        #     targets=[
-        #         "graph_1_id.data_frame.sample_size",
-        #         # "graph_2_id.data_frame.sample_size",
-        #     ],
-        #     selector=vm.Slider(
-        #         id="parameter_id",
-        #         min=1,
-        #         max=10,
-        #         step=1,
-        #         value=10,
-        #     )
-        # ),
-    ],
+            targets=["p1-G-1.x", "p1-G-2.x"],
+            selector=vm.RadioItems(options=["species", "sepal_width"], value="species", title="Simple X-axis parameter")
+        )
+    ]
 )
 
-dashboard = vm.Dashboard(pages=[homepage, another_page])
+
+page_2 = vm.Page(
+    title="Categorical dynamic selectors",
+    components=[
+        vm.Graph(
+            id="p2-G-1",
+            figure=px.bar(
+                data_frame="load_from_file_species",
+                x="species", color="species", color_discrete_map=SPECIES_COLORS,
+            ),
+        ),
+    ],
+    controls=[
+        vm.Filter(id="p2-F-1", column="species", selector=vm.Dropdown()),
+        vm.Filter(id="p2-F-2", column="species", selector=vm.Dropdown(multi=False)),
+        vm.Filter(id="p2-F-3", column="species", selector=vm.Checklist()),
+        vm.Filter(id="p2-F-4", column="species", selector=vm.RadioItems()),
+        vm.Parameter(
+            targets=["p2-G-1.x"],
+            selector=vm.RadioItems(options=["species", "sepal_width"], value="species", title="Simple X-axis parameter")
+        )
+    ]
+)
+
+
+page_3 = vm.Page(
+    title="Numerical dynamic selectors",
+    components=[
+        vm.Graph(
+            id="p3-G-1",
+            figure=px.bar(
+                data_frame="load_from_file_sepal_length",
+                x="species", color="species", color_discrete_map=SPECIES_COLORS,
+            ),
+        ),
+    ],
+    controls=[
+        vm.Filter(id="p3-F-1", column="sepal_length", selector=vm.Slider()),
+        vm.Filter(id="p3-F-2", column="sepal_length", selector=vm.RangeSlider()),
+        vm.Parameter(
+            targets=["p3-G-1.x"],
+            selector=vm.RadioItems(options=["species", "sepal_width"], value="species", title="Simple X-axis parameter")
+        )
+    ]
+)
+# another_page = vm.Page(
+#     title="Test update control options",
+#     components=[
+#         vm.Graph(
+#             id="graph_1_id",
+#             figure=px.bar(
+#                 data_frame="dynamic_df",
+#                 x="species",
+#                 color="species",
+#                 color_discrete_map={"setosa": "#00b4ff", "versicolor": "#ff9222", "virginica": "#3949ab"},
+#             )
+#         ),
+#         # vm.Graph(
+#         #     id="graph_2_id",
+#         #     figure=px.scatter(
+#         #         data_frame="dynamic_df",
+#         #         x="sepal_length",
+#         #         y="petal_length",
+#         #         color="species",
+#         #         color_discrete_map={"setosa": "#00b4ff", "versicolor": "#ff9222", "virginica": "#3949ab"},
+#         #     ),
+#         # ),
+#         # vm.Graph(
+#         #     id="graph_2_id",
+#         #     figure=px.scatter(
+#         #         data_frame="dynamic_df",
+#         #         x="sepal_length",
+#         #         y="petal_width",
+#         #         color="species",
+#         #     )
+#         # ),
+#
+#     ],
+#     controls=[
+#         vm.Filter(
+#             id="filter_container_id",
+#             column=FILTER_COLUMN,
+#             # targets=["graph_2_id"],
+#             # selector=vm.Dropdown(id="filter_id"),
+#             # selector=vm.Dropdown(id="filter_id", value=["setosa"]),
+#
+#             selector=vm.Checklist(id="filter_id"),
+#             # selector=vm.Checklist(id="filter_id", value=["setosa"]),
+#
+#             # selector=vm.Dropdown(id="filter_id", multi=False),
+#             # selector=vm.Dropdown(id="filter_id", multi=False, value="setosa"),
+#
+#             # selector=vm.RadioItems(id="filter_id"),
+#             # selector=vm.RadioItems(id="filter_id", value="setosa"),
+#
+#             # selector=vm.Slider(id="filter_id"),
+#             # selector=vm.Slider(id="filter_id", value=6),
+#
+#             # selector=vm.RangeSlider(id="filter_id"),
+#             # selector=vm.RangeSlider(id="filter_id", value=[5, 7]),
+#
+#             # TEST CASES:
+#             #   no selector
+#             #           WORKS
+#             #   multi=True
+#             #       default
+#             #           WORKS
+#             # selector=vm.Slider(id="filter_id", step=0.5),
+#             #       options: list
+#             #           WORKS - but options doesn't mean anything because options are dynamically overwritten.
+#             # selector=vm.Dropdown(options=["setosa", "versicolor"]),
+#             #       options: empty list
+#             #           WORKS
+#             # selector=vm.Dropdown(options=[]),
+#             #       options: dict
+#             #           WORKS - but "label" is always overwritten.
+#             # selector=vm.Dropdown(options=[{"label": "Setosa", "value": "setosa"}, {"label": "Versicolor", "value": "versicolor"}]),
+#             #       options list; value
+#             #           WORKS
+#             # selector=vm.Dropdown(options=["setosa", "versicolor"], value=["setosa"]),
+#             #       options list; empty value
+#             #           WORKS
+#             # selector=vm.Dropdown(options=["setosa", "versicolor"], value=[]),
+#             #       strange options
+#             #           WORKS
+#             # selector=vm.Dropdown(options=["A", "B", "C"]),
+#             #       strange options with strange value
+#             #           WORKS - works even for the dynamic False, and this is OK.
+#             # selector=vm.Dropdown(options=["A", "B", "C"], value=["XYZ"]),
+#             #
+#             #
+#             #   multi=False -> TLDR: Doesn't work if value is cleared. Other combinations are same as multi=True.
+#             #       default
+#             #           DOES NOT WORK - Doesn't work if value is cleared. Then persistence storage become "null" and our
+#             #           placeholder component dmc.DateRangePicker can't process null value. It expects a value or a list
+#             #           of values. SOLUTION -> Create the "universal Vizro placeholder component"
+#             # selector=vm.Dropdown(multi=False),
+#             #       options: list - because options are dynamically overwritten.
+#             #           WORKS - but options doesn't mean anything because options are dynamically overwritten.
+#             # selector=vm.Dropdown(multi=False, options=["setosa", "versicolor"]),
+#             #       options: empty list
+#             #           WORKS
+#             # selector=vm.Dropdown(multi=False, options=[]),
+#             #       options: dict
+#             # selector=vm.Dropdown(multi=False, options=[{"label": "Setosa", "value": "setosa"}, {"label": "Versicolor", "value": "versicolor"}]),
+#             #       options list; value
+#             #           WORKS
+#             # selector=vm.Dropdown(multi=False, options=["setosa", "versicolor"], value="setosa"),
+#             #       options list; None value
+#             #           WORKS
+#             # selector=vm.Dropdown(multi=False, options=["setosa", "versicolor"], value=None),
+#             #       strange options
+#             #           WORKS
+#             # selector=vm.Dropdown(multi=False, options=["A", "B", "C"]),
+#             #       strange options with strange value
+#             #           WORKS
+#             # selector=vm.Dropdown(multi=False, options=["A", "B", "C"], value="XYZ"),
+#         ),
+#         vm.Parameter(
+#             id="parameter_x",
+#             targets=["graph_1_id.x",],
+#             selector=vm.Dropdown(
+#                 options=["species", "sepal_width"],
+#                 value="species",
+#                 multi=False,
+#             )
+#         ),
+#         # vm.Parameter(
+#         #     id="parameter_species",
+#         #     targets=[
+#         #         "graph_1_id.data_frame.species",
+#         #         "filter_container_id.",
+#         #     ],
+#         #     selector=vm.Dropdown(options=["setosa", "versicolor", "virginica"])
+#         # ),
+#         # vm.Parameter(
+#         #     id="parameter_container_id",
+#         #     targets=[
+#         #         "graph_1_id.data_frame.sample_size",
+#         #         # "graph_2_id.data_frame.sample_size",
+#         #     ],
+#         #     selector=vm.Slider(
+#         #         id="parameter_id",
+#         #         min=1,
+#         #         max=10,
+#         #         step=1,
+#         #         value=10,
+#         #     )
+#         # ),
+#     ],
+# )
+
+dashboard = vm.Dashboard(pages=[homepage, page_1, page_2, page_3])
 
 if __name__ == "__main__":
     app = Vizro().build(dashboard)

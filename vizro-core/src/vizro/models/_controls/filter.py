@@ -152,7 +152,39 @@ class Filter(VizroBaseModel):
         #  What should the load kwargs be here?
         #  Note that currently _get_unfiltered_data is only suitable for use at runtime since it requires
         #  ctd_parameters. That could be changed to just reuse that function.
-        multi_data_source_name_load_kwargs = [(model_manager[target]["data_frame"], {}) for target in proposed_targets]  # type: ignore[var-annotated]
+        from vizro.models._controls import Parameter
+
+        load_kwargs = {}
+        page_obj = model_manager[model_manager._get_model_page_id(model_id=ModelID(str(self.id)))]
+        for target in proposed_targets:
+            data_source_name = model_manager[target]["data_frame"]
+            load_kwargs[data_source_name] = {}
+
+            for page_parameter in page_obj.controls:
+                if isinstance(page_parameter, Parameter):
+                    for parameter_targets in page_parameter.targets:
+                        if parameter_targets.startswith(f'{target}.data_frame'):
+                            argument = parameter_targets.split('.')[2]
+                            # argument is explicitly defined
+                            if parameter_value := getattr(page_parameter.selector, value, None):
+                                load_kwargs[data_source_name].append((argument, parameter_value))
+                            # find default value
+                            else:
+                                parameter_selector = page_parameter.selector
+                                if parameter_selector == Dropdown:
+                                    default_parameter_value = get_options_and_default(parameter_selector.options, parameter_selector.multi)
+                                elif parameter_selector == Checklist:
+                                    default_parameter_value = get_options_and_default(parameter_selector.options, True)
+                                elif parameter_selector == RadioItems:
+                                    default_parameter_value = get_options_and_default(parameter_selector.options, False)
+                                elif parameter_selector == Slider:
+                                    default_parameter_value = parameter_selector.min
+                                elif parameter_selector == RangeSlider:
+                                    default_parameter_value = [parameter_selector.min, parameter_selector.max]
+                                load_kwargs[data_source_name].append((argument, default_parameter_value))
+
+        # multi_data_source_name_load_kwargs = [(model_manager[target]["data_frame"], {}) for target in proposed_targets]  # type: ignore[var-annotated]
+        multi_data_source_name_load_kwargs = [(a, s) for a, s in load_kwargs.items()]
         target_to_data_frame = dict(zip(proposed_targets, data_manager._multi_load(multi_data_source_name_load_kwargs)))
         targeted_data = self._validate_targeted_data(
             target_to_data_frame, eagerly_raise_column_not_found_error=bool(self.targets)
@@ -244,6 +276,7 @@ class Filter(VizroBaseModel):
         if targeted_data.columns.empty:
             # Still raised when eagerly_raise_column_not_found_error=False.
             raise ValueError(f"Selected column {self.column} not found in any dataframe for {', '.join(targets)}.")
+        # TODO: Enable empty data_frame handling
         if targeted_data.empty:
             raise ValueError(
                 f"Selected column {self.column} does not contain anything in any dataframe for {', '.join(targets)}."
