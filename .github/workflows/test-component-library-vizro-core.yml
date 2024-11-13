@@ -1,0 +1,39 @@
+name: Integration tests Component Library
+
+defaults:
+  run:
+    working-directory: vizro-core
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches:
+      - main
+
+env:
+  PYTHONUNBUFFERED: 1
+  FORCE_COLOR: 1
+
+jobs:
+  test-component-library-vizro-core:
+    name: test-component-library-vizro-core
+
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up Python 3.12
+        uses: actions/setup-python@v5
+        with:
+          python-version: 3.12
+
+      - name: Install Hatch
+        run: pip install hatch
+
+      - name: Show dependency tree
+        run: hatch run tests:pip tree
+
+      - name: Run integration tests
+        run: hatch run tests:test-component-library
