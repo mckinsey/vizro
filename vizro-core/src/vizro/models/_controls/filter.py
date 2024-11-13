@@ -8,6 +8,8 @@ import numpy as np
 import pandas as pd
 from pandas.api.types import is_datetime64_any_dtype, is_numeric_dtype
 
+from vizro.managers._data_manager import DataSourceName
+
 try:
     from pydantic.v1 import Field, PrivateAttr, validator
 except ImportError:  # pragma: no cov
@@ -254,7 +256,7 @@ class Filter(VizroBaseModel):
         return dcc.Loading(id=self.id, children=selector_build_obj) if self._dynamic else selector_build_obj
 
     def _validate_targeted_data(
-        self, target_to_data_frame: dict[ModelID, pd.DataFrame], eagerly_raise_column_not_found_error=True
+        self, target_to_data_frame: dict[ModelID, pd.DataFrame], eagerly_raise_column_not_found_error
     ) -> pd.DataFrame:
         # target_to_data_source_name = {target: model_manager[target]["data_frame"] for target in targets}
         # data_source_name_to_data = {
@@ -275,11 +277,15 @@ class Filter(VizroBaseModel):
         targeted_data = pd.DataFrame(target_to_series)
         if targeted_data.columns.empty:
             # Still raised when eagerly_raise_column_not_found_error=False.
-            raise ValueError(f"Selected column {self.column} not found in any dataframe for {', '.join(targets)}.")
+            raise ValueError(
+                f"Selected column {self.column} not found in any dataframe for "
+                f"{', '.join(target_to_data_frame.keys())}."
+            )
         # TODO: Enable empty data_frame handling
         if targeted_data.empty:
             raise ValueError(
-                f"Selected column {self.column} does not contain anything in any dataframe for {', '.join(targets)}."
+                f"Selected column {self.column} does not contain anything in any dataframe for "
+                f"{', '.join(target_to_data_frame.keys())}."
             )
 
         return targeted_data

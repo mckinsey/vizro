@@ -27,12 +27,14 @@ SUPPORTED_MODELS = {
         "claude-3-haiku-20240307",
     ],
     "Mistral": ["mistral-large-latest", "open-mistral-nemo", "codestral-latest"],
+    "xAI": ["grok-beta"],
 }
 
 DEFAULT_WRAPPER_MAP: dict[str, BaseChatModel] = {
     "OpenAI": ChatOpenAI,
     "Anthropic": ChatAnthropic,
     "Mistral": ChatMistralAI,
+    "xAI": ChatOpenAI,  # xAI API is compatible with OpenAI
 }
 
 DEFAULT_MODEL = "gpt-4o-mini"

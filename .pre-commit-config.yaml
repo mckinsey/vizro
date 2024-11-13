@@ -44,7 +44,7 @@ repos:
         args: [--autofix]
 
   - repo: https://github.com/astral-sh/ruff-pre-commit
-    rev: v0.6.9
+    rev: v0.7.2
     hooks:
       - id: ruff
         args: [--fix]
@@ -84,7 +84,7 @@ repos:
         args: ["--fix"]
 
   - repo: https://github.com/errata-ai/vale
-    rev: v3.7.1
+    rev: v3.8.0
     hooks:
       - id: vale
         args: [--config=.vale/.vale.ini]

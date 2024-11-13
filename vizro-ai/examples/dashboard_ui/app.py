@@ -70,6 +70,7 @@ SUPPORTED_MODELS = {
         "claude-3-haiku-20240307",
     ],
     "Mistral": ["mistral-large-latest", "open-mistral-nemo", "codestral-latest"],
+    "xAI": ["grok-beta"],
 }
 
 
@@ -180,7 +181,11 @@ plot_page = vm.Page(
                 MyDropdown(
                     options=SUPPORTED_MODELS["OpenAI"], value="gpt-4o-mini", multi=False, id="model-dropdown-id"
                 ),
-                OffCanvas(id="settings", options=["OpenAI", "Anthropic", "Mistral"], value="OpenAI"),
+                OffCanvas(
+                    id="settings",
+                    options=["OpenAI", "Anthropic", "Mistral", "xAI"],
+                    value="OpenAI",
+                ),
                 UserPromptTextArea(id="text-area-id"),
                 # Modal(id="modal"),
             ],
@@ -303,7 +308,7 @@ app.dash.layout.children.append(
                 [
                     "Made using ",
                     html.Img(src=get_asset_url("logo.svg"), id="banner", alt="Vizro logo"),
-                    dbc.NavLink("vizro", href="https://github.com/mckinsey/vizro", target="_blank", external_link=True),
+                    dbc.NavLink("vizro", href="https://github.com/mckinsey/vizro", target="_blank"),
                 ],
                 style={"display": "flex", "flexDirection": "row"},
             ),

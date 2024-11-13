@@ -1,6 +1,6 @@
 import pytest
 
-from vizro.actions._actions_utils import _filter_dot_separated_strings, _update_nested_figure_properties
+from vizro.actions._actions_utils import _get_target_dot_separated_strings, _update_nested_figure_properties
 
 
 class TestUpdateNestedGraphProperties:
@@ -81,7 +81,7 @@ class TestFilterDotSeparatedStrings:
         ],
     )
     def test_filter_data_frame_parameters(self, dot_separated_strings, expected):
-        assert _filter_dot_separated_strings(dot_separated_strings, "component1", data_frame=True) == expected
+        assert _get_target_dot_separated_strings(dot_separated_strings, "component1", data_frame=True) == expected
 
     @pytest.mark.parametrize(
         "dot_separated_strings, expected",
@@ -103,4 +103,4 @@ class TestFilterDotSeparatedStrings:
         ],
     )
     def test_filter_non_data_frame_parameters(self, dot_separated_strings, expected):
-        assert _filter_dot_separated_strings(dot_separated_strings, "component1", data_frame=False) == expected
+        assert _get_target_dot_separated_strings(dot_separated_strings, "component1", data_frame=False) == expected
