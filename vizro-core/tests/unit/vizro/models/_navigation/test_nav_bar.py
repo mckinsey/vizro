@@ -6,12 +6,12 @@ import dash_bootstrap_components as dbc
 import pytest
 from asserts import STRIP_ALL, assert_component_equal
 from dash import html
+from pydantic import ValidationError
 
-try:
-    from pydantic.v1 import ValidationError
-except ImportError:  # pragma: no cov
-    from pydantic import ValidationError
-
+# try:
+#     from pydantic.v1 import ValidationError
+# except ImportError:  # pragma: no cov
+#     from pydantic import ValidationError
 import vizro.models as vm
 
 pytestmark = pytest.mark.usefixtures("prebuilt_two_page_dashboard")

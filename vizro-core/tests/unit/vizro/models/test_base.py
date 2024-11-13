@@ -1,15 +1,13 @@
-from typing import Literal, Optional, Union
-
-import pytest
-from pydantic import model_validator
-
-try:
-    from pydantic.v1 import Field, ValidationError, root_validator, validator
-except ImportError:  # pragma: no cov
-    from pydantic import Field, ValidationError, validator
+# try:
+#     from pydantic.v1 import Field, ValidationError, root_validator, validator
+# except ImportError:  # pragma: no cov
+#     from pydantic import Field, ValidationError, validator
 import logging
 import textwrap
-from typing import Annotated
+from typing import Annotated, Literal, Optional, Union
+
+import pytest
+from pydantic import Field, ValidationError, model_validator, validator
 
 import vizro.models as vm
 import vizro.plotly.express as px

@@ -1,12 +1,12 @@
 import re
 
 import pytest
+from pydantic import ValidationError
 
-try:
-    from pydantic.v1 import ValidationError
-except ImportError:  # pragma: no cov
-    from pydantic import ValidationError
-
+# try:
+#     from pydantic.v1 import ValidationError
+# except ImportError:  # pragma: no cov
+#     from pydantic import ValidationError
 import vizro.models as vm
 
 
