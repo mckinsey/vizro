@@ -121,12 +121,11 @@
   width: 20px;
 }
 
-#data-upload-id {
+#data-upload-component {
   border: 1px dashed var(--border-subtle-alpha-01);
-  border-radius: 5px;
   color: var(--text-primary);
-  height: 46px;
-  line-height: 46px;
+  height: 5vh;
+  line-height: 5vh;
   text-align: center;
 }
 

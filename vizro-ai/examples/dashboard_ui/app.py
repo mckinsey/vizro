@@ -80,12 +80,15 @@ plot_page = vm.Page(
     layout=vm.Layout(
         grid=[
             [4, 4, 4, 4],
+            [4, 4, 4, 4],
             [2, 2, 1, 1],
             [2, 2, 1, 1],
+            [2, 2, 1, 1],
             [3, 3, 1, 1],
             [3, 3, 1, 1],
             [3, 3, 1, 1],
-            *[[0, 0, 1, 1]] * 8,
+            [3, 3, 1, 1],
+            *[[0, 0, 1, 1]] * 10,
         ]
     ),
     components=[
@@ -124,11 +127,11 @@ plot_page = vm.Page(
             ),
             components=[
                 UserUpload(
-                    id="data-upload-id",
+                    id="data-upload-component",
                     actions=[
                         vm.Action(
                             function=data_upload_action(),
-                            inputs=["data-upload-id.contents", "data-upload-id.filename"],
+                            inputs=["data-upload-components.contents", "data-upload-components.filename"],
                             outputs=["data-store-id.data", "modal-table-icon.style", "modal-table-tooltip.style"],
                         ),
                         vm.Action(
