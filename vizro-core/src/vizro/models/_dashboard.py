@@ -309,6 +309,7 @@ class Dashboard(VizroBaseModel):
         error_404_svg = base64.b64encode((VIZRO_ASSETS_PATH / "images/error_404.svg").read_bytes()).decode("utf-8")
         return html.Div(
             [
+                # Theme switch is added such that the 404 page has the same theme as the user-selected one.
                 html.Div(
                     children=dmc.Switch(
                         id="theme_selector",
