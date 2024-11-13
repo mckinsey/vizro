@@ -90,10 +90,6 @@ class Vizro:
             self: Vizro app
 
         """
-        # Note Dash.index uses self.dash.title instead of self.dash.app.config.title.
-        if dashboard.title:
-            self.dash.title = dashboard.title
-
         # Set global chart template to vizro_light or vizro_dark.
         # The choice between these is generally meaningless because chart colors in the two are identical, and
         # everything else gets overridden in the clientside theme selector callback.
@@ -110,8 +106,14 @@ class Vizro:
         self._pre_build()
         self.dash.layout = dashboard.build()
 
-        # Add data-bs-theme attribute for 404 error page
-        self.dash.index_string = self.dash.index_string.replace("<html>", "<html data-bs-theme='dark'")
+        # Add data-bs-theme attribute that is always present, even for pages without theme selector,
+        # i.e. the Dash "Loading..." screen.
+        bootstrap_theme = dashboard.theme.removeprefix("vizro_")
+        self.dash.index_string = self.dash.index_string.replace("<html>", f"<html data-bs-theme='{bootstrap_theme}'>")
+
+        # Note Dash.index uses self.dash.title instead of self.dash.app.config.title.
+        if dashboard.title:
+            self.dash.title = dashboard.title
         return self
 
     def run(self, *args, **kwargs):  # if type annotated, mkdocstring stops seeing the class
