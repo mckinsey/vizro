@@ -24,6 +24,18 @@ ADDITIONAL_IMPORTS = [
 CUSTOM_CHART_NAME = "custom_chart"
 
 
+def _strip_markdown(code_string: str) -> str:
+    """Strip markdown code block from the code string."""
+    prefixes = ["```python\n", "```py\n", "```\n"]
+    for prefix in prefixes:
+        if code_string.startswith(prefix):
+            code_string = code_string[len(prefix) :]
+            break
+    if code_string.endswith("```"):
+        code_string = code_string[: -len("```")]
+    return code_string.strip()
+
+
 def _format_and_lint(code_string: str) -> str:
     # Tracking https://github.com/astral-sh/ruff/issues/659 for proper Python API
     # Good example: https://github.com/astral-sh/ruff/issues/8401#issuecomment-1788806462
@@ -60,7 +72,11 @@ class ChartPlan(BaseModel):
     imports: list[str] = Field(
         ...,
         description="""
-        List of import statements required to render the chart defined by the `chart_code` field.
+        List of import statements required to render the chart defined by the `chart_code` field. Ensure that every
+        import statement is a separate list/array entry: An example of valid list of import statements would be:
+
+        [`import pandas as pd`,
+        `import plotly.express as px`]
         """,
     )
     chart_code: str = Field(
@@ -89,11 +105,14 @@ class ChartPlan(BaseModel):
 
     @validator("chart_code")
     def _check_chart_code(cls, v):
+        v = _strip_markdown(v)
+
         # TODO: add more checks: ends with return, has return, no second function def, only one indented line
         if f"def {CUSTOM_CHART_NAME}(" not in v:
             raise ValueError(f"The chart code must be wrapped in a function named `{CUSTOM_CHART_NAME}`")
 
-        if "data_frame" not in v.split("\n")[0]:
+        first_line = v.split("\n")[0].strip()
+        if "data_frame" not in first_line:
             raise ValueError(
                 """The chart code must accept a single argument `data_frame`,
 and it should be the first argument of the chart."""

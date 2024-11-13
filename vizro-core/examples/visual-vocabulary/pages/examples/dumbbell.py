@@ -1,17 +1,7 @@
 import pandas as pd
 import plotly.graph_objects as go
-import vizro.models as vm
 import vizro.plotly.express as px
-from vizro import Vizro
 from vizro.models.types import capture
-
-salaries = pd.DataFrame(
-    {
-        "Job": ["Developer", "Analyst", "Manager", "Specialist"],
-        "Min": [60000, 55000, 70000, 50000],
-        "Max": [130000, 110000, 96400, 80000],
-    }
-)
 
 
 @capture("graph")
@@ -40,12 +30,12 @@ def dumbbell(data_frame: pd.DataFrame, **kwargs) -> go.Figure:
     return fig
 
 
-page = vm.Page(
-    title="Dumbbell",
-    components=[
-        vm.Graph(figure=dumbbell(salaries, y="Job", x=["Min", "Max"], labels={"variable": "", "value": "Salary in $"}))
-    ],
+salaries = pd.DataFrame(
+    {
+        "Job": ["Developer", "Analyst", "Manager", "Specialist"],
+        "Min": [60000, 55000, 70000, 50000],
+        "Max": [130000, 110000, 96400, 80000],
+    }
 )
 
-dashboard = vm.Dashboard(pages=[page])
-Vizro().build(dashboard).run()
+fig = dumbbell(salaries, y="Job", x=["Min", "Max"], labels={"variable": "", "value": "Salary in $"})

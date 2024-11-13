@@ -30,9 +30,9 @@ original [Javascript implementation](https://www.ag-grid.com/).
 
 To add a [`AgGrid`][vizro.models.AgGrid] to your page, do the following:
 
-- Insert the [`AgGrid`][vizro.models.AgGrid] model into the `components` argument of the
+1. Insert the [`AgGrid`][vizro.models.AgGrid] model into the `components` argument of the
 [`Page`][vizro.models.Page] model.
-- Enter the `dash_ag_grid` function under the `figure` argument (imported via `from vizro.tables import dash_ag_grid`).
+2. Enter the `dash_ag_grid` function under the `figure` argument (imported via `from vizro.tables import dash_ag_grid`).
 
 The Vizro version of this AG Grid differs in one way from the original Dash AG Grid: it requires the user to pass a pandas DataFrame as the source of data.
 As explained in [our guide to using data in Vizro](data.md), this must be entered under the argument `data_frame`. Most other [parameters of the Dash AG Grid](https://dash.plotly.com/dash-ag-grid/reference) can be entered as keyword arguments.
@@ -348,9 +348,9 @@ The Vizro [`Table`][vizro.models.Table] model is based on the [Dash DataTable](h
 
 To add a [`Table`][vizro.models.Table] to your page, do the following:
 
-- Insert the [`Table`][vizro.models.Table] model into the `components` argument of the
+1. Insert the [`Table`][vizro.models.Table] model into the `components` argument of the
 [`Page`][vizro.models.Page] model.
-- Enter the `dash_data_table` function under the `figure` argument (imported via `from vizro.tables import dash_data_table`).
+2. Enter the `dash_data_table` function under the `figure` argument (imported via `from vizro.tables import dash_data_table`).
 
 
 The Vizro version of this table differs in one way from the original table: it requires the user to pass a pandas DataFrame as the source of data.
@@ -539,8 +539,8 @@ The [`Table`][vizro.models.Table] and the [`AgGrid`][vizro.models.AgGrid] models
 the data.
 
 - **title**: Displayed as an [H3 header](https://dash.plotly.com/dash-html-components/h3), useful for summarizing the main topic or insight of the component.
-- **header**: Accepts Markdown text, ideal for additional descriptions, subtitles, or detailed data insights.
-- **footer**: Accepts Markdown text, commonly used for citing data sources, providing information on the last update, or adding disclaimers.
+- **header**: Accepts markdown text, ideal for extra descriptions, subtitles, or detailed data insights.
+- **footer**: Accepts markdown text, commonly used for citing data sources, providing information on the last update, or adding disclaimers.
 
 
 

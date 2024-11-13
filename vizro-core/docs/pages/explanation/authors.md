@@ -10,11 +10,11 @@
 [Maximilian Schulz](https://github.com/maxschulz-COL),
 [Nadija Graca](https://github.com/nadijagraca),
 [Petar Pejovic](https://github.com/petar-qb)
-
+<!-- vale on -->
 
 
 ## Previous team members and code contributors
-
+<!-- vale off -->
 [Ann Marie Ward](https://github.com/AnnMarieW),
 [Ned Letcher](https://github.com/ned2),
 Natalia Kurakina,

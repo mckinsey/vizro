@@ -49,7 +49,7 @@ prep-release = [
 ]
 pypath = "python -c 'import sys; print(sys.executable)'"
 # Only run pre-commit hooks when schema is generated, not when it's checked. This keeps the check fast in CI.
-schema = ["python schemas/generate.py", 'pre-commit run --files="schemas/$(hatch version).json" > /dev/null']
+schema = ["python schemas/generate.py", '- pre-commit run --files="schemas/$(hatch version).json" > /dev/null']
 schema-check = ["python schemas/generate.py --check"]
 # Note `hatch run test` currently fails due to interference between integration tests and unit tests. Ideally we would
 # fix this, but we don't actually use `hatch run test` anywhere right now.
@@ -91,10 +91,12 @@ serve = "mkdocs serve --open"
 dependencies = [
   "pyyaml",
   "openpyxl",
-  # black is required to run the example visual-vocabulary. This is completely independent of the black used in linting
-  # our code. When this moves to HuggingFace we can remove the requirement from here.
+  # black, autoflake and isort required to run the example visual-vocabulary. This is completely independent of the
+  # tools used in linting our code. When this moves to HuggingFace we can remove the requirement from here.
+  "autoflake==2.3.1",
   "black==24.4.2",
-  "plotly>=5.24.0"  # to leverage new MapLibre features in visual-vocabulary
+  "isort==5.13.2",
+  "plotly==5.24.1"  # to leverage new MapLibre features in visual-vocabulary
 ]
 installer = "uv"
 scripts = {example = "cd examples/{args:scratch_dev}; python app.py"}
@@ -109,7 +111,9 @@ VIZRO_LOG_LEVEL = "DEBUG"
 extra-dependencies = [
   "pydantic==1.10.16",
   "dash==2.17.1",
-  "plotly==5.12.0"
+  "plotly==5.12.0",
+  "pandas==2.0.0",
+  "numpy==1.23.0"  # Need numpy<2 to work with pandas==2.0.0. See https://stackoverflow.com/questions/78634235/.
 ]
 features = ["kedro"]
 python = "3.9"

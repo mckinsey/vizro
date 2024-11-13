@@ -36,8 +36,6 @@ Credits and sources:
 
 The dashboard is still in development. Below is an overview of the chart types for which a completed page is available.
 
-Sure, here's the table with all columns aligned for better readability:
-
 | Chart Type            | Status | Category                 | Credits & sources                                                                                                               | API                                                                                                                                                                                             |
 | --------------------- | ------ | ------------------------ | ------------------------------------------------------------------------------------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | Arc                   | ❌     | Part-to-whole            |                                                                                                                                 |                                                                                                                                                                                                 |

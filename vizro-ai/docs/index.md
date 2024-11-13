@@ -46,7 +46,6 @@ If a feature you need for your dashboard isn't currently supported by Vizro-AI y
     [:octicons-arrow-right-24: Model usage](pages/user-guides/customize-vizro-ai.md)</br>
     [:octicons-arrow-right-24: Create advanced charts](pages/user-guides/create-advanced-charts.md)</br>
     [:octicons-arrow-right-24: Add charts to a dashboard](pages/user-guides/add-generated-chart-usecase.md)</br>
-    [:octicons-arrow-right-24: Generate a complex dashboard](pages/user-guides/create-complex-dashboard.md)</br>
     [:octicons-arrow-right-24: Retrieve code for a generated dashboard](pages/user-guides/retrieve-dashboard-code.md)
 
 - :material-format-font:{ .lg .middle } __Find out more__

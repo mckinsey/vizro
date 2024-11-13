@@ -13,6 +13,7 @@ on:
     paths:
       - "vizro-ai/**"
       - "!vizro-ai/docs/**"
+    workflow_dispatch:
 
 env:
   PYTHONUNBUFFERED: 1
@@ -52,10 +53,10 @@ jobs:
             hatch-env: all.py3.12
             os: windows-latest
             label: Windows
-        is_pr:
-          - ${{ github.event_name == 'pull_request' }}
+        is_non_release_pr:
+          - ${{ github.event_name == 'pull_request' && !startsWith(github.head_ref, 'release')}}
         exclude:
-          - is_pr: true
+          - is_non_release_pr: true
             config:
               python-version: "3.12"
               hatch-env: all.py3.12
@@ -101,10 +102,10 @@ jobs:
             hatch-env: all.py3.12
             os: windows-latest
             label: Windows
-        is_pr:
-          - ${{ github.event_name == 'pull_request' }}
+        is_non_release_pr:
+          - ${{ github.event_name == 'pull_request' && !startsWith(github.head_ref, 'release')}}
         exclude:
-          - is_pr: true
+          - is_non_release_pr: true
             config:
               python-version: "3.12"
               hatch-env: all.py3.12
@@ -153,11 +154,3 @@ jobs:
         env:
           SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
           SLACK_WEBHOOK_TYPE: INCOMING_WEBHOOK
-
-      - name: Report artifacts
-        uses: actions/upload-artifact@v4
-        if: always()
-        with:
-          name: Report-${{ matrix.config.python-version }}-${{ matrix.config.label }}
-          path: |
-            /home/runner/work/vizro/vizro/vizro-ai/tests/integration/reports/report*.csv
