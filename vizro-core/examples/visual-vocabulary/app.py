@@ -115,7 +115,6 @@ app.dash.layout.children.append(
         ["Made with ", html.Img(src=get_asset_url("logo.svg"), id="banner", alt="Vizro logo"), "vizro"],
         href="https://github.com/mckinsey/vizro",
         target="_blank",
-        external_link=True,
         className="anchor-container",
     )
 )
