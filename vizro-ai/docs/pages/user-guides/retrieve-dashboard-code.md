@@ -116,13 +116,16 @@ This triggers the dashboard building process. Once Vizro-AI finishes the dashboa
         dashboard = vm.Dashboard(
            pages=[
                vm.Page(
+                   id="Tips Data Visualization",
                    components=[
                        vm.Card(
+                           id="tips_card_tips_data_visualization",
                            type="card",
                            text="This is Tips dataset",
                            href="",
                        ),
                        vm.AgGrid(
+                           id="tips_table_tips_data_visualization",
                            figure=dash_ag_grid(data_frame="restaurant_bills"),
                        ),
                    ],
