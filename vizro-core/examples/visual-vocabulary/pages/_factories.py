@@ -7,7 +7,7 @@ each chart type used in different groups.
 import vizro.models as vm
 
 from pages._pages_utils import PAGE_GRID, make_code_clipboard_from_py_file
-from pages.examples import butterfly, column_and_line, connected_scatter, waterfall, lollipop
+from pages.examples import butterfly, column_and_line, connected_scatter, lollipop, waterfall
 
 
 def butterfly_factory(group: str):
@@ -193,16 +193,16 @@ def lollipop_factory(group: str):
                 text="""
 
                 #### What is a lollipop chart?
-                
-                A lollipop chart is a variation of a bar chart where each data point is represented by a line and a 
-                dot at the end to mark the value. It functions like a bar chart but offers a cleaner visual, 
+
+                A lollipop chart is a variation of a bar chart where each data point is represented by a line and a
+                dot at the end to mark the value. It functions like a bar chart but offers a cleaner visual,
                 especially useful when dealing with a large number of high values, to avoid the clutter of tall columns.
                 However, it can be less precise due to the difficulty in judging the exact center of the circle.
-                
+
                 &nbsp;
 
                 #### When should I use it?
-                
+
                 Use a lollipop chart to compare values across categories, especially when dealing with many high values.
                 It highlights differences and trends clearly without the visual bulk of a bar chart. Ensure clarity by
                 limiting categories, using consistent scales, and clearly labeling axes. Consider alternatives if
