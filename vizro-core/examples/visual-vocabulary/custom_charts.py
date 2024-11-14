@@ -326,7 +326,7 @@ def lollipop(data_frame: pd.DataFrame, **kwargs):
     """
     # Should we allow keyword arguments (kwargs) in this context, given the presence of multiple traces?
     # Unlike the column_and_line chart, where all traces hold equal significance, here the traces differ in importance.
-    # The primary scatter plot is the main data visualization, while the additional traces merely serve as connecting lines.
+    # The primary scatter plot is the main trace, while the additional traces merely serve as connecting lines.
     # Therefore, should we apply the kwargs solely to the scatter plot, as illustrated below?
     fig = px.scatter(data_frame, **kwargs)
     x_array = fig.data[0].x
