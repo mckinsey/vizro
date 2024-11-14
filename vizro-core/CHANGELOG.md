@@ -23,7 +23,7 @@ See the fragment files in the [changelog.d directory](https://github.com/mckinse
 
 ## Fixed
 
-- Fix 404 error page and page flickering on refresh ([#865](https://github.com/mckinsey/vizro/pull/865)).
+- Fix 404 error page and page flickering on refresh. ([#865](https://github.com/mckinsey/vizro/pull/865))
 
 <a id='changelog-0.1.26'></a>
 
