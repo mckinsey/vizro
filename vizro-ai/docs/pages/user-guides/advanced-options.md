@@ -137,9 +137,6 @@ This `fig` object is in the standard `vizro_dark` theme, and can [be inserted in
     === "Result"
         [![VizroAIChartVizro]][vizroaichartvizro]
 
-        ```
-        ```
-
 #### Pure Plotly/Dash
 
 This `fig` object is a basic plotly figure.
