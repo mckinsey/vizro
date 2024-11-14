@@ -22,7 +22,7 @@
   outline-width: 0;
 }
 
-#text-area-id {
+#text-area {
   background-color: inherit;
   border: 1px solid var(--border-subtle-alpha-01);
   color: var(--text-primary);
@@ -66,7 +66,7 @@
   font-size: 12px;
 }
 
-#model-dropdown-id .Select-menu-outer {
+#model-dropdown .Select-menu-outer {
   font-size: 12px;
 
   /* top: 0; */
@@ -74,12 +74,12 @@
   /* transform: translateY(3px) translateY(-100%); */
 }
 
-#model-dropdow-idn .dash-dropdown {
+#model-dropdow .dash-dropdown {
   background-color: inherit;
   font-size: 12px;
 }
 
-#trigger-button-id {
+#trigger-button {
   width: 100%;
 }
 
@@ -87,7 +87,7 @@
   background-color: inherit;
 }
 
-#model-dropdown-id .Select-clear {
+#model-dropdown .Select-clear {
   display: none;
 }
 
@@ -95,7 +95,7 @@
   width: 50%;
 }
 
-.card:has(#upload-message-id) {
+.card:has(#upload-message) {
   background-color: inherit;
   box-shadow: none;
   font-size: 12px;
@@ -257,7 +257,7 @@
   padding-top: 4px;
 }
 
-#dropdown-menu-id {
+#dropdown-menu {
   align-items: center;
   border: 0.5px solid gray;
   border-radius: 8px;
@@ -294,7 +294,7 @@
   color: var(--text-secondary);
 }
 
-#open-settings-id:hover {
+#open-settings:hover {
   cursor: pointer;
 }
 

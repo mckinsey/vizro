@@ -88,7 +88,7 @@ plot_page = vm.Page(
     components=[
         vm.Container(
             title="",
-            components=[CodeClipboard(id="plot"), ToggleSwitch(id="toggle-id")],
+            components=[CodeClipboard(id="plot"), ToggleSwitch()],
             layout=vm.Layout(
                 grid=[*[[0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]] * 7, [-1, -1, -1, -1, -1, -1, -1, -1, -1, 1, 1, 1]],
                 row_gap="12px",
@@ -104,7 +104,7 @@ plot_page = vm.Page(
                 ]
             ),
             components=[
-                vm.Graph(id="graph-id", figure=px.scatter(pd.DataFrame())),
+                vm.Graph(id="graph", figure=px.scatter(pd.DataFrame())),
                 DropdownMenu(id="dropdown-menu"),
             ],
         ),
@@ -125,16 +125,16 @@ plot_page = vm.Page(
                         vm.Action(
                             function=data_upload_action(),
                             inputs=["data-upload-components.contents", "data-upload-components.filename"],
-                            outputs=["data-store-id.data", "modal-table-icon.style", "modal-table-tooltip.style"],
+                            outputs=["data-store.data", "modal-table-icon.style", "modal-table-tooltip.style"],
                         ),
                         vm.Action(
                             function=display_filename(),
-                            inputs=["data-store-id.data"],
-                            outputs=["upload-message-id.children"],
+                            inputs=["data-store.data"],
+                            outputs=["upload-message.children"],
                         ),
                         vm.Action(
                             function=update_table(),
-                            inputs=["data-store-id.data"],
+                            inputs=["data-store.data"],
                             outputs=["modal-table.children", "modal-title.children"],
                         ),
                     ],
@@ -156,33 +156,33 @@ plot_page = vm.Page(
             ),
             components=[
                 vm.Button(
-                    id="trigger-button-id",
+                    id="trigger-button",
                     text="Run Vizro-AI",
                     actions=[
                         vm.Action(
                             function=run_vizro_ai(),
                             inputs=[
-                                "text-area-id.value",
-                                "trigger-button-id.n_clicks",
-                                "data-store-id.data",
-                                "model-dropdown-id.value",
+                                "text-area.value",
+                                "trigger-button.n_clicks",
+                                "data-store.data",
+                                "model-dropdown.value",
                                 "settings-api-key.value",
                                 "settings-api-base.value",
                                 "settings-dropdown.value",
                             ],
-                            outputs=["plot-code-markdown.children", "graph-id.figure", "code-output-store-id.data"],
+                            outputs=["plot-code-markdown.children", "graph.figure", "code-output-store.data"],
                         ),
                     ],
                 ),
                 MyDropdown(
-                    options=SUPPORTED_MODELS["OpenAI"], value="gpt-4o-mini", multi=False, id="model-dropdown-id"
+                    options=SUPPORTED_MODELS["OpenAI"], value="gpt-4o-mini", multi=False, id="model-dropdown"
                 ),
                 OffCanvas(
                     id="settings",
                     options=["OpenAI", "Anthropic", "Mistral", "xAI"],
                     value="OpenAI",
                 ),
-                UserPromptTextArea(id="text-area-id"),
+                UserPromptTextArea(id="text-area"),
                 # Modal(id="modal"),
             ],
         ),
@@ -202,7 +202,7 @@ dashboard = CustomDashboard(pages=[plot_page])
 
 @callback(
     Output("settings", "is_open"),
-    Input("open-settings-id", "n_clicks"),
+    Input("open-settings", "n_clicks"),
     [State("settings", "is_open")],
 )
 def open_settings(n_clicks, is_open):
@@ -231,7 +231,7 @@ def show_api_base(value):
 @callback(
     Output("plot-code-markdown", "children"),
     Input("toggle-switch", "value"),
-    [State("code-output-store-id", "data")],
+    [State("code-output-store", "data")],
 )
 def toggle_code(value, data):
     """Callback for switching between vizro and plotly code."""
@@ -249,7 +249,7 @@ def toggle_code(value, data):
     Output("data-modal", "is_open"),
     Input("modal-table-icon", "n_clicks"),
     State("data-modal", "is_open"),
-    State("data-store-id", "data"),
+    State("data-store", "data"),
 )
 def open_modal(n_clicks, is_open, data):
     """Callback for opening modal component."""
@@ -263,7 +263,7 @@ def open_modal(n_clicks, is_open, data):
 @callback(
     Output("download-file", "data"),
     [Input("dropdown-menu-html", "n_clicks"), Input("dropdown-menu-json", "n_clicks")],
-    State("code-output-store-id", "data"),
+    State("code-output-store", "data"),
     prevent_initial_call=True,
 )
 def download_fig(n_clicks_html, n_clicks_json, data):
@@ -287,7 +287,7 @@ def download_fig(n_clicks_html, n_clicks_json, data):
 
 
 @callback(
-    [Output("model-dropdown-id", "options"), Output("model-dropdown-id", "value")], Input("settings-dropdown", "value")
+    [Output("model-dropdown", "options"), Output("model-dropdown", "value")], Input("settings-dropdown", "value")
 )
 def update_model_dropdown(value):
     """Callback for updating available models."""

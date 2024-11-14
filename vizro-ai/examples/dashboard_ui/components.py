@@ -293,8 +293,8 @@ class CustomDashboard(vm.Dashboard):
     def build(self):
         """Returns custom dashboard."""
         dashboard_build_obj = super().build()
-        dashboard_build_obj.children.append(dcc.Store(id="data-store-id", storage_type="session"))
-        dashboard_build_obj.children.append(dcc.Store(id="code-output-store-id", storage_type="session"))
+        dashboard_build_obj.children.append(dcc.Store(id="data-store", storage_type="session"))
+        dashboard_build_obj.children.append(dcc.Store(id="code-output-store", storage_type="session"))
         return dashboard_build_obj
 
 
@@ -340,7 +340,7 @@ def custom_table(data_frame):
                 id="modal-table-tooltip",
             ),
             html.P(
-                id="upload-message-id", children=["Upload your data file (csv or excel)"], style={"paddingTop": "10px"}
+                id="upload-message", children=["Upload your data file (csv or excel)"], style={"paddingTop": "10px"}
             ),
             dbc.Modal(
                 id="data-modal",
@@ -415,8 +415,8 @@ class HeaderComponent(vm.VizroBaseModel):
         )
         icon = html.Div(
             children=[
-                html.Span("settings", className="material-symbols-outlined", id="open-settings-id"),
-                dbc.Tooltip("Settings", target="open-settings-id"),
+                html.Span("settings", className="material-symbols-outlined", id="open-settings"),
+                dbc.Tooltip("Settings", target="open-settings"),
             ],
             className="settings-div",
         )
