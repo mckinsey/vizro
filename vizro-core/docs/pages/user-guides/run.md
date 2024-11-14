@@ -15,7 +15,6 @@ Most of our examples have a link below the code, [Run and edit this code in PyCa
 
 You can use [PyCafe](https://py.cafe/snippet/vizro/v1) snippet mode to experiment with your own Vizro dashboards by dropping code into a new project.
 
-
 ## Default built-in Flask development server
 
 !!! example "Default built-in Flask development server"
@@ -38,9 +37,10 @@ You can use [PyCafe](https://py.cafe/snippet/vizro/v1) snippet mode to experimen
 
         Vizro().build(dashboard).run()
         ```
+
 1. create a Python file named `app.py`.
-2. type the command `python app.py` into your terminal.
-3. information below will be displayed in your terminal, go to [http://127.0.0.1:8050/](http://127.0.0.1:8050/).
+1. type the command `python app.py` into your terminal.
+1. information below will be displayed in your terminal, go to [http://127.0.0.1:8050/](http://127.0.0.1:8050/).
 
 ```
 Dash is running on http://127.0.0.1:8050/
@@ -51,7 +51,6 @@ INFO:werkzeug:WARNING: This is a development server. Do not use it in a producti
 ```
 
 !!! warning "In production"
-
     As per the above warning message, which is [further explained in the Flask documentation](https://flask.palletsprojects.com/en/3.0.x/deploying/), the Flask development server is intended for use only during local development and **should not** be used when deploying to production. Instead, you should instead use a production-ready solution such as [Gunicorn](#gunicorn).
 
 ### Automatic reloading and debugging
@@ -64,11 +63,11 @@ Setting `debug=True` enables [Dash Dev Tools](https://dash.plotly.com/devtools).
 
 In addition, some errors generated at run time can also be viewed via the browser console (for example in `Chrome` see `View > Developer > Developer Tools > Console`).
 
-
 ## Jupyter
-The dashboard application can be launched in a Jupyter environment in `inline`, `external`, and `jupyterlab` mode.
-!!! example "Run in a Jupyter Notebook in inline mode"
 
+The dashboard application can be launched in a Jupyter environment in `inline`, `external`, and `jupyterlab` mode.
+
+!!! example "Run in a Jupyter Notebook in inline mode"
     === "app.ipynb"
         ```py linenums="1"
         from vizro import Vizro
@@ -87,16 +86,16 @@ The dashboard application can be launched in a Jupyter environment in `inline`, 
         dashboard = vm.Dashboard(pages=[page])
         Vizro().build(dashboard).run(jupyter_mode="external")
         ```
+
 - by default, the mode is set to `inline` in `run()` and the dashboard will be displayed inside your Jupyter environment.
 - you can specify `jupyter_mode="external"` and a link will be displayed to direct you to the localhost where the dashboard is running.
 - you can use tab mode by `jupyter_mode="tab"` to automatically open the app in a new browser
 
 !!! note "Reloading and debugging"
-
     Code reloading and hot reloading do not work within a Jupyter Notebook. Instead, there are two methods to reload the dashboard:
 
-	* Restart the Jupyter kernel and re-run your notebook.
-	* Add a cell containing `from vizro import Vizro; Vizro._reset()` to the top of your notebook and re-run it. With this method, there is no need to restart the Jupyter kernel.
+    - Restart the Jupyter kernel and re-run your notebook.
+    - Add a cell containing `from vizro import Vizro; Vizro._reset()` to the top of your notebook and re-run it. With this method, there is no need to restart the Jupyter kernel.
 
 ## Gunicorn
 
@@ -126,16 +125,17 @@ The dashboard application can be launched in a Jupyter environment in `inline`, 
         ```
 
         1. The Vizro `app` object is a WSGI application that exposes the underlying Flask app; this will be used by Gunicorn.
-        2. Enable the same app to still be run using the built-in Flask server with `python app.py` for development purposes.
+        1. Enable the same app to still be run using the built-in Flask server with `python app.py` for development purposes.
 
 To run using Gunicorn with four worker processes, execute
+
 ```bash
 gunicorn app:app --workers 4
 ```
+
 in the command line. For more Gunicorn configuration options, refer to [Gunicorn documentation](https://docs.gunicorn.org/).
 
 !!! warning "In production"
-
     If your dashboard uses [dynamic data](data.md#dynamic-data) that can be refreshed while the dashboard is running then you should [configure your data manager cache](data.md#configure-cache) to use a backend that supports multiple processes.
 
 ## Deployment

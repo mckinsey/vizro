@@ -4,8 +4,8 @@ This guide shows how to retrieve the code of a Vizro-AI generated dashboard. The
 
 While Vizro-AI can follow complex user requirements well and generate high-quality dashboards, due to the nature of LLMs, the generated dashboards often only partly match user expectations. Besides refining the user prompt and re-running Vizro-AI, you can also extract the code and iterate manually to achieve the desired result.
 
-
 ## 1. Prepare the data and user prompt
+
 ```py
 import vizro.plotly.express as px
 
@@ -27,16 +27,17 @@ Create a one-page dashboard layout with the following components:
 ```
 
 ## 2. Generate and launch the dashboard
+
 ```py
 from vizro_ai import VizroAI
 
 vizro_ai = VizroAI(model="gpt-4o-mini")
 result = vizro_ai.dashboard([df], user_question, return_elements=True)
 ```
+
 This triggers the dashboard building process. Once Vizro-AI finishes the dashboard generation process, you can now launch the dashboard.
 
 !!! example "Generated dashboard"
-
     === "Code"
         ```py
         import vizro.plotly.express as px
@@ -63,14 +64,17 @@ This triggers the dashboard building process. Once Vizro-AI finishes the dashboa
         ```
 
     === "Result"
-        [![VizroAIDashboardPage1]][VizroAIDashboardPage1]
+        \[!\[VizroAIDashboardPage1\]\]\[VizroAIDashboardPage1\]
 
+```
+[VizroAIDashboardPage1]: ../../assets/user_guides/dashboard/dashboard2_page1.png
+```
 
-    [VizroAIDashboardPage1]: ../../assets/user_guides/dashboard/dashboard2_page1.png
+FIXME
 
 ## 3. Retrieve the Python code of the dashboard
-!!! example "View dashboard code"
 
+!!! example "View dashboard code"
     === "Code"
         ```py
         import vizro.plotly.express as px
@@ -96,6 +100,7 @@ This triggers the dashboard building process. Once Vizro-AI finishes the dashboa
 
         print(result.code)
         ```
+
     === "Result"
         ```py
         ######## Module Imports ##########

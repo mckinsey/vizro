@@ -4,21 +4,19 @@ Contributions of all experience levels are welcome! There are many ways to contr
 
 Our development follows a standard [GitHub flow](https://docs.github.com/en/get-started/using-github/github-flow). To be merged, your PR must meet all the following requirements:
 
-* two approving reviews (including a code owner)
-* Continuous Integration (CI) checks pass
-* code is up-to-date with `main`
+- two approving reviews (including a code owner)
+- Continuous Integration (CI) checks pass
+- code is up-to-date with `main`
 
 If you are a first-time contributor with a new GitHub account then you may also need to [wait for CI workflows to be approved](https://docs.github.com/en/actions/managing-workflow-runs-and-deployments/managing-workflow-runs/approving-workflow-runs-from-public-forks).
 
 We aim to make the contribution process as easy as possible by having only one direct development dependency: [Hatch](https://hatch.pypa.io/). There are two ways to develop on Vizro:
 
-* [GitHub Codespaces](https://docs.github.com/en/codespaces). This is the recommended method if you are a new contributor. It is the quickest and easiest way to get started. All development can be done in your browser in a temporary environment; you do not need to set up anything on your computer. The [Develop on GitHub Codespaces](#develop-on-github-codespaces) section has full instructions on how to do this.
-* Local machine. If you are more experienced then you might prefer to develop on your own computer. The [Develop locally](#develop-locally) section has full instructions on how to do this.
+- [GitHub Codespaces](https://docs.github.com/en/codespaces). This is the recommended method if you are a new contributor. It is the quickest and easiest way to get started. All development can be done in your browser in a temporary environment; you do not need to set up anything on your computer. The [Develop on GitHub Codespaces](#develop-on-github-codespaces) section has full instructions on how to do this.
+- Local machine. If you are more experienced then you might prefer to develop on your own computer. The [Develop locally](#develop-locally) section has full instructions on how to do this.
 
 !!! note
-
     For either method, Hatch is the _only development dependency_. You do not need to manually install Python or create any virtual environments to develop Vizro; all this will be handled for you behind the scenes by Hatch. We have also configured our codespace to pre-install Hatch. If you develop on GitHub Codespaces you don't need to install anything at all!
-
 
 ## Develop on GitHub Codespaces
 
@@ -27,17 +25,17 @@ There is no need to manually create a fork of the Vizro code if you use GitHub C
 To develop on [GitHub Codespaces](https://docs.github.com/en/codespaces), follow the below steps:
 
 1. [Create a codespace for our repository](https://codespaces.new/mckinsey/vizro). Leave the settings on their defaults and click "Create codespace" to start your codespace. It should take 1-2 minutes to fully launch and automatically start an example dashboard on port 8050. In the rare event that the codespace fails to start correctly and enters recovery mode, you should [rebuild the container](https://docs.github.com/en/codespaces/developing-in-a-codespace/rebuilding-the-container-in-a-codespace#rebuilding-a-container) or start a whole new codespace.
-2. Make changes to Vizro code in your codespace. See the [GitHub Codespaces documentation on developing in a codespace](https://docs.github.com/en/codespaces/developing-in-a-codespace/developing-in-a-codespace) for more information.
-3. Add your name to the [list of contributors](authors.md) (source file `vizro-core/docs/pages/explanation/authors.md`).
-4. [Create a pull request](https://docs.github.com/en/pull-requests/collaborating-with-pull-requests/proposing-changes-to-your-work-with-pull-requests/creating-a-pull-request-from-a-fork).
+1. Make changes to Vizro code in your codespace. See the [GitHub Codespaces documentation on developing in a codespace](https://docs.github.com/en/codespaces/developing-in-a-codespace/developing-in-a-codespace) for more information.
+1. Add your name to the [list of contributors](authors.md) (source file `vizro-core/docs/pages/explanation/authors.md`).
+1. [Create a pull request](https://docs.github.com/en/pull-requests/collaborating-with-pull-requests/proposing-changes-to-your-work-with-pull-requests/creating-a-pull-request-from-a-fork).
 
 ## Develop locally
 
 1. Install Hatch. There are [several ways to do this](https://hatch.pypa.io/latest/install/).
-2. [Fork the Vizro repository](https://docs.github.com/en/pull-requests/collaborating-with-pull-requests/working-with-forks/fork-a-repo) and clone it to your local machine.
-3. Make changes to Vizro code in your fork.
-4. Add your name to the [list of contributors](authors.md) (source file `vizro-core/docs/pages/explanation/authors.md`).
-5. [Create a pull request](https://docs.github.com/en/pull-requests/collaborating-with-pull-requests/proposing-changes-to-your-work-with-pull-requests/creating-a-pull-request-from-a-fork).
+1. [Fork the Vizro repository](https://docs.github.com/en/pull-requests/collaborating-with-pull-requests/working-with-forks/fork-a-repo) and clone it to your local machine.
+1. Make changes to Vizro code in your fork.
+1. Add your name to the [list of contributors](authors.md) (source file `vizro-core/docs/pages/explanation/authors.md`).
+1. [Create a pull request](https://docs.github.com/en/pull-requests/collaborating-with-pull-requests/proposing-changes-to-your-work-with-pull-requests/creating-a-pull-request-from-a-fork).
 
 ## How to use Hatch
 
@@ -45,16 +43,18 @@ Regardless of whether you are developing locally or in a codespace, everything y
 
 The Hatch commands you need most commonly are as follows. These must be executed with `vizro-core` as your current working directory:
 
-* [`hatch run pypath`](#hatch-run-pypath) shows the path to the Python interpreter.
-* [`hatch run example`](#hatch-run-example) runs an example dashboard on port 8050 that hot-reloads while you edit it. On GitHub Codespaces, this runs automatically on startup.
-* [`hatch run lint`](#hatch-run-lint) checks and fixes code quality and formatting. This is included in CI checks.
-* [`hatch run changelog:add`](#hatch-run-changelogadd) generates a new changelog fragment. Changelog inclusion is checked by CI and required for all changes to source code.
-* [`hatch run test-unit`](#hatch-run-test-unit) runs the test suite. This is included in CI checks.
-* [`hatch run docs:serve`](#hatch-run-docsserve) builds and displays documentation that hot-reloads while you edit it. Documentation is also built automatically in your PR and can be previewed on Read The Docs.
-* [`hatch run pip`](#hatch-run-pip) provides a [pip-compatible interface using uv](https://docs.astral.sh/uv/pip/). You should not need to use this much.
+- [`hatch run pypath`](#hatch-run-pypath) shows the path to the Python interpreter.
+- [`hatch run example`](#hatch-run-example) runs an example dashboard on port 8050 that hot-reloads while you edit it. On GitHub Codespaces, this runs automatically on startup.
+- [`hatch run lint`](#hatch-run-lint) checks and fixes code quality and formatting. This is included in CI checks.
+- [`hatch run changelog:add`](#hatch-run-changelogadd) generates a new changelog fragment. Changelog inclusion is checked by CI and required for all changes to source code.
+- [`hatch run test-unit`](#hatch-run-test-unit) runs the test suite. This is included in CI checks.
+- [`hatch run docs:serve`](#hatch-run-docsserve) builds and displays documentation that hot-reloads while you edit it. Documentation is also built automatically in your PR and can be previewed on Read The Docs.
+- [`hatch run pip`](#hatch-run-pip) provides a [pip-compatible interface using uv](https://docs.astral.sh/uv/pip/). You should not need to use this much.
 
 <!-- vale off-->
+
 To save yourself from repeatedly typing `hatch run` you might like to [set up an alias](https://www.tecmint.com/create-alias-in-linux/):
+
 <!-- vale on-->
 
 ```console
@@ -67,10 +67,10 @@ This enables you to run, for example, `hr lint` instead of `hatch run lint`. On 
 
 `hatch run pypath` shows the path to the Python interpreter. This is useful for setting a Python interpreter in your IDE to navigate the codebase. For example, in GitHub Codespaces and VS Code:
 
-* Run `hatch run pypath` and copy the output to your clipboard.
-* Open the Command Palette (++ctrl+shift+p++).
-* Run the "Python: Select Interpreter" command and select the "Enter interpreter path..." option.
-* Paste the path.
+- Run `hatch run pypath` and copy the output to your clipboard.
+- Open the Command Palette (++ctrl+shift+p++).
+- Run the "Python: Select Interpreter" command and select the "Enter interpreter path..." option.
+- Paste the path.
 
 ### `hatch run example`
 
@@ -82,15 +82,14 @@ You can run any example in `vizro-core/examples` or its subdirectories by runnin
 
 Examples are run with the following settings:
 
-* [Dash dev tools](https://dash.plotly.com/devtools) enabled. This includes hot reloading, so that any changes to the example app or Vizro source code should automatically show in your dashboard without needing refresh or restart anything.
-* The environment variable `VIZRO_LOG_LEVEL = "DEBUG"` to show log messages of level `DEBUG` and above.
+- [Dash dev tools](https://dash.plotly.com/devtools) enabled. This includes hot reloading, so that any changes to the example app or Vizro source code should automatically show in your dashboard without needing refresh or restart anything.
+- The environment variable `VIZRO_LOG_LEVEL = "DEBUG"` to show log messages of level `DEBUG` and above.
 
 ### `hatch run lint`
 
 `hatch run lint` checks and fixes code quality and formatting. This is included in CI checks. All linting and associated dependencies are controlled by [pre-commit](https://pre-commit.com/) hooks. We use the [pre-commit.ci](https://pre-commit.ci/) to automatically fix all the linting checks that we can when a PR is pushed. Other linting failures (such as `mypy`) need manual intervention from the developer.
 
 !!! note
-
     The first time you run `hatch run lint` it may take a couple of minutes, since pre-commit needs to setup linting environments. Subsequent runs reuse these environments and are much faster.
 
 `hatch run lint` runs the pre-commit hooks on all (not only staged) files. You can run an individual hook, for example `mypy`, on all files by running `hatch run lint mypy`.
@@ -106,7 +105,6 @@ The format of our changelog is based on [Keep a Changelog](https://keepachangelo
 Run `hatch run changelog:add` to create a changelog fragment and then uncomment the relevant section(s). If you are uncertain about what to add or whether to add anything at all, refer to [Keep a Changelog](https://keepachangelog.com/en/1.0.0/). The rule of thumb is that if Vizro users would be affected in any way then the changes should be described in the changelog.
 
 !!! note
-
     Changes that do not affect source code do not need a changelog fragment. This facilitates simple modifications to documentation [made directly on GitHub](https://docs.github.com/en/repositories/working-with-files/managing-files/editing-files) or with the [github.dev](https://docs.github.com/en/codespaces/the-githubdev-web-based-editor), where no terminal is available to run `hatch changelog:add`. Any changes to source code require a changelog fragment to be generated. If your changes do not require a changelog entry then you still need to generate the fragment but can leave it all commented out.
 
 ### `hatch run test-unit`
@@ -127,9 +125,9 @@ hatch run all.py3.10:test-unit-coverage
 
 In addition to running unit tests with code coverage, CI also performs the following checks:
 
-* `hatch run test-integration` runs integration tests that include checking that the example apps in `vizro-core/examples` run.
-* `hatch run test-js` runs Javascript tests using [jest](https://jestjs.io/). Arguments are passed through to the underlying `npx jest` command, for example `hatch run test-js --help`.
-* QA tests. These are run on a separate private `vizro-qa` repository and not triggered by PRs coming from forks.
+- `hatch run test-integration` runs integration tests that include checking that the example apps in `vizro-core/examples` run.
+- `hatch run test-js` runs Javascript tests using [jest](https://jestjs.io/). Arguments are passed through to the underlying `npx jest` command, for example `hatch run test-js --help`.
+- QA tests. These are run on a separate private `vizro-qa` repository and not triggered by PRs coming from forks.
 
 ### `hatch run docs:serve`
 
@@ -146,7 +144,6 @@ Vizro's dependencies are described by the `dependencies` section in `vizro-core/
 We have [configured Hatch to use uv](https://hatch.pypa.io/1.12/how-to/environment/select-installer/) for rapid virtual environment creation, dependency resolution and installation.
 
 !!! note
-
     If you have installed unwanted dependencies in your Hatch environment then the simplest solution is to delete the environment (`hatch env remove` to remove one environment or `hatch env prune` to remove all environments). Your next `hatch run` command will recreate the environment and install all the dependencies it needs.
 
 If for some reason you do need to use `pip` then the correct way to do so is through `hatch run pip`. For example, you could run `hatch run pip show plotly`. This will use the version of uv that Hatch itself uses under the hood. If you already have uv installed globally then `uv pip show plotly` would also work.

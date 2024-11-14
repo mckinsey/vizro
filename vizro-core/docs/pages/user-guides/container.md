@@ -2,30 +2,22 @@
 
 This guide shows you how to use containers to group your components into sections and subsections within the page.
 
-A [`Container`][vizro.models.Container] complements the idea of a [`Page`][vizro.models.Page], and the two models have almost identical arguments.
- [`Page.layout`](layouts.md) offers a way to structure the overall layout of the page, and a `Container` enables more granular control within a specific section of that page.
+A [`Container`][vizro.models.Container] complements the idea of a [`Page`][vizro.models.Page], and the two models have almost identical arguments. [`Page.layout`](layouts.md) offers a way to structure the overall layout of the page, and a `Container` enables more granular control within a specific section of that page.
 
-While there is currently no clear difference in rendering, extra functionality will be added to the `Container` soon (including controls specific to that container),
-enhancing the ability to manage related components.
+While there is currently no clear difference in rendering, extra functionality will be added to the `Container` soon (including controls specific to that container), enhancing the ability to manage related components.
 
 !!! note "Displaying multiple containers inside Tabs"
-
     An alternative way to display multiple containers on one page is to place them inside [Tabs](tabs.md).
 
-    [`Tabs`][vizro.models.Tabs] organize and separate groups of related content in a dashboard, letting users switch between different sections or views.
-    They are a way of putting multiple containers into the same screen space, and letting the user switch between them.
+    [`Tabs`][vizro.models.Tabs] organize and separate groups of related content in a dashboard, letting users switch between different sections or views. They are a way of putting multiple containers into the same screen space, and letting the user switch between them.
 
     ![tabs](../../assets/user_guides/components/tabs-info.png){ width="500" }
 
-
-
 ## When to use containers
-In general, any arbitrarily granular layout can already be achieved by [using `Page.layout`](layouts.md) alone and is our
-recommended approach if you want to arrange components on a page with consistent row and/or column spacing.
 
-`Page.layout` has a `grid` argument that sets the overall layout of the page.
-`Container.layout` also has a `grid` argument. This enables you to insert a further `grid` into a component's space on the page,
-enabling more granular control by breaking the overall page grid into subgrids.
+In general, any arbitrarily granular layout can already be achieved by [using `Page.layout`](layouts.md) alone and is our recommended approach if you want to arrange components on a page with consistent row and/or column spacing.
+
+`Page.layout` has a `grid` argument that sets the overall layout of the page. `Container.layout` also has a `grid` argument. This enables you to insert a further `grid` into a component's space on the page, enabling more granular control by breaking the overall page grid into subgrids.
 
 Here are a few cases where you might want to use a `Container` instead of `Page.layout`:
 
@@ -34,14 +26,14 @@ Here are a few cases where you might want to use a `Container` instead of `Page.
 - If you want different row and column spacing between subgrids
 - If you want to apply controls to selected subgrids (will be supported soon)
 
-
 ## Basic containers
+
 To add a [`Container`][vizro.models.Container] to your page, do the following:
 
 1. Insert the `Container` into the `components` argument of the [`Page`][vizro.models.Page]
-2. Set a `title` for your `Container`
-3. Configure your `components`, [read the overview page for various options](components.md)
-4. (optional) Configure your `layout`, see [the guide on `Layout`](layouts.md)
+1. Set a `title` for your `Container`
+1. Configure your `components`, [read the overview page for various options](components.md)
+1. (optional) Configure your `layout`, see [the guide on `Layout`](layouts.md)
 
 !!! example "Container"
     === "app.py"
@@ -105,7 +97,7 @@ To add a [`Container`][vizro.models.Container] to your page, do the following:
         ```
 
         1. Note that the `Page.layout` argument is not specified here and will therefore defaults to `[[0], [1]]`, meaning the containers will be **vertically stacked** down the page in one column.
-        2. **Horizontally stack** the components side-by-side inside this `Container` in one row.
+        1. **Horizontally stack** the components side-by-side inside this `Container` in one row.
 
     === "app.yaml"
         ```yaml
@@ -149,27 +141,20 @@ To add a [`Container`][vizro.models.Container] to your page, do the following:
                 title: Container II
             title: Containers
         ```
-    === "Result"
-        [![Container]][Container]
 
-    [Container]: ../../assets/user_guides/components/containers.png
+    === "Result"
+        [![Container]][container]
 
 Note that an almost identical layout can also be achieved using solely the [`Page.layout`](layouts.md) by configuring the `Page.layout` as `vm.Layout(grid = [[0, 1], [2, 2]])`.
 
 ## Nested containers
-Containers can be nested, providing a hierarchical structure for organizing components.
-This nesting capability enables users to create more complex layouts and manage related components at any level of granularity.
+
+Containers can be nested, providing a hierarchical structure for organizing components. This nesting capability enables users to create more complex layouts and manage related components at any level of granularity.
 
 To create nested containers, add a `Container` to the `components` argument of another `Container`.
 
 ```python title="Example"
-vm.Container(
-    title="Parent Container",
-    components=[
-        vm.Container(
-            title="Child Container",
-            components=[vm.Button()]
-        )
-    ]
-)
+vm.Container(title="Parent Container", components=[vm.Container(title="Child Container", components=[vm.Button()])])
 ```
+
+[container]: ../../assets/user_guides/components/containers.png

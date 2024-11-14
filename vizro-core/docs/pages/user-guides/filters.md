@@ -2,19 +2,16 @@
 
 This guide shows you how to add filters to your dashboard. One main way to interact with the charts/components on your page is by filtering the underlying data. A filter selects a subset of rows of a component's underlying DataFrame which alters the appearance of that component on the page.
 
-The [`Page`][vizro.models.Page] model accepts the `controls` argument, where you can enter a [`Filter`][vizro.models.Filter] model.
-This model enables the automatic creation of [selectors](../user-guides/selectors.md) (such as Dropdown, RadioItems, Slider, ...) that operate upon the charts/components on the screen.
-
+The [`Page`][vizro.models.Page] model accepts the `controls` argument, where you can enter a [`Filter`][vizro.models.Filter] model. This model enables the automatic creation of [selectors](../user-guides/selectors.md) (such as Dropdown, RadioItems, Slider, ...) that operate upon the charts/components on the screen.
 
 ## Basic filters
 
 To add a filter to your page, do the following:
 
 1. add the [`Filter`][vizro.models.Filter] model into the `controls` argument of the [`Page`][vizro.models.Page] model
-2. configure the `column` argument, which denotes the target column to be filtered
+1. configure the `column` argument, which denotes the target column to be filtered
 
-By default, all components on a page with such a `column` present will be filtered. The selector type will be chosen
-automatically based on the target column, for example, a dropdown for categorical data, a range slider for numerical data, or a date picker for temporal data.
+By default, all components on a page with such a `column` present will be filtered. The selector type will be chosen automatically based on the target column, for example, a dropdown for categorical data, a range slider for numerical data, or a date picker for temporal data.
 
 !!! example "Basic Filter"
     === "app.py"
@@ -39,6 +36,7 @@ automatically based on the target column, for example, a dropdown for categorica
 
         Vizro().build(dashboard).run()
         ```
+
     === "app.yaml"
         ```yaml
         # Still requires a .py to add data to the data manager and parse YAML configuration
@@ -57,16 +55,13 @@ automatically based on the target column, for example, a dropdown for categorica
                 type: filter
             title: My first page
         ```
+
     === "Result"
-
-        [![Filter]][Filter]
-
-    [Filter]: ../../assets/user_guides/control/control1.png
+        [![Filter]][filter]
 
 ## Changing selectors
 
-If you want to have a different selector for your filter, you can give the `selector` argument of the [`Filter`][vizro.models.Filter] a different selector model.
-Currently available selectors are [`Checklist`][vizro.models.Checklist], [`Dropdown`][vizro.models.Dropdown], [`RadioItems`][vizro.models.RadioItems], [`RangeSlider`][vizro.models.RangeSlider], [`Slider`][vizro.models.Slider], and [`DatePicker`][vizro.models.DatePicker].
+If you want to have a different selector for your filter, you can give the `selector` argument of the [`Filter`][vizro.models.Filter] a different selector model. Currently available selectors are [`Checklist`][vizro.models.Checklist], [`Dropdown`][vizro.models.Dropdown], [`RadioItems`][vizro.models.RadioItems], [`RangeSlider`][vizro.models.RangeSlider], [`Slider`][vizro.models.Slider], and [`DatePicker`][vizro.models.DatePicker].
 
 !!! example "Filter with custom Selector"
     === "app.py"
@@ -91,6 +86,7 @@ Currently available selectors are [`Checklist`][vizro.models.Checklist], [`Dropd
 
         Vizro().build(dashboard).run()
         ```
+
     === "app.yaml"
         ```yaml
         # Still requires a .py to add data to the data manager and parse YAML configuration
@@ -110,11 +106,9 @@ Currently available selectors are [`Checklist`][vizro.models.Checklist], [`Dropd
                 type: filter
             title: My first page
         ```
+
     === "Result"
-
-        [![Selector]][Selector]
-
-    [Selector]: ../../assets/user_guides/control/control2.png
+        [![Selector]][selector]
 
 ## Further customization
 
@@ -150,6 +144,7 @@ Below is an advanced example where we only target one page component, and where 
 
         Vizro().build(dashboard).run()
         ```
+
     === "app.yaml"
         ```yaml
         # Still requires a .py to add data to the data manager and parse YAML configuration
@@ -175,15 +170,17 @@ Below is an advanced example where we only target one page component, and where 
             controls:
               - column: petal_length
                 targets:
-                - scatter_chart
+                  - scatter_chart
                 selector:
                   step: 1
                   type: range_slider
                 type: filter
             title: My first page
         ```
+
     === "Result"
+        [![Advanced]][advanced]
 
-        [![Advanced]][Advanced]
-
-    [Advanced]: ../../assets/user_guides/control/control3.png
+[advanced]: ../../assets/user_guides/control/control3.png
+[filter]: ../../assets/user_guides/control/control1.png
+[selector]: ../../assets/user_guides/control/control2.png

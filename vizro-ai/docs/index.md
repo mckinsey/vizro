@@ -11,7 +11,7 @@ Even if you are an experienced data practitioner, Vizro-AI optimizes how you cre
 Below is a table of the Vizro components currently supported by Vizro-AI. This list is not exhaustive, and we are actively working on adding more features to Vizro-AI.
 
 | Feature type         | Feature                                                                                                                | Availability |
-|----------------------|------------------------------------------------------------------------------------------------------------------------|--------------|
+| -------------------- | ---------------------------------------------------------------------------------------------------------------------- | ------------ |
 | **Components**       | [Graph](https://vizro.readthedocs.io/en/stable/pages/user-guides/graph/)                                               | ✔            |
 |                      | [AG Grid](https://vizro.readthedocs.io/en/stable/pages/user-guides/table/#ag-grid)                                     | ✔            |
 |                      | [Card](https://vizro.readthedocs.io/en/stable/pages/user-guides/card-button/)                                          | ✔            |
@@ -28,33 +28,27 @@ Below is a table of the Vizro components currently supported by Vizro-AI. This l
 
 If a feature you need for your dashboard isn't currently supported by Vizro-AI you can [retrieve the dashboard code](https://vizro.readthedocs.io/projects/vizro-ai/en/vizro-ai-0.2.3/pages/user-guides/retrieve-dashboard-code/) and add the missing components before running the dashboard.
 
+FIXME: maybe use two newline between each
+
 <div class="grid cards" markdown>
 
--   :fontawesome-solid-forward-fast:{ .lg .middle } __New to Vizro-AI?__
+- :fontawesome-solid-forward-fast:{ .lg .middle } __New to Vizro-AI?__
 
     ---
 
-    [:octicons-arrow-right-24: Install Vizro-AI](pages/user-guides/install.md) </br>
-    [:octicons-arrow-right-24: Quickstart chart generation](pages/tutorials/quickstart.md) </br>
-    [:octicons-arrow-right-24: Quickstart dashboard generation](pages/tutorials/quickstart-dashboard.md) </br>
+    [:octicons-arrow-right-24: Install Vizro-AI](pages/user-guides/install.md) </br> [:octicons-arrow-right-24: Quickstart chart generation](pages/tutorials/quickstart.md) </br> [:octicons-arrow-right-24: Quickstart dashboard generation](pages/tutorials/quickstart-dashboard.md) </br>
 
 - :fontawesome-solid-keyboard:{ .lg .middle } __Get hands-on__
 
     ---
 
-    [:octicons-arrow-right-24: How to run Vizro-AI](pages/user-guides/run-vizro-ai.md)</br>
-    [:octicons-arrow-right-24: Model usage](pages/user-guides/customize-vizro-ai.md)</br>
-    [:octicons-arrow-right-24: Create advanced charts](pages/user-guides/create-advanced-charts.md)</br>
-    [:octicons-arrow-right-24: Add charts to a dashboard](pages/user-guides/add-generated-chart-usecase.md)</br>
-    [:octicons-arrow-right-24: Retrieve code for a generated dashboard](pages/user-guides/retrieve-dashboard-code.md)
+    [:octicons-arrow-right-24: How to run Vizro-AI](pages/user-guides/run-vizro-ai.md)</br> [:octicons-arrow-right-24: Model usage](pages/user-guides/customize-vizro-ai.md)</br> [:octicons-arrow-right-24: Create advanced charts](pages/user-guides/create-advanced-charts.md)</br> [:octicons-arrow-right-24: Add charts to a dashboard](pages/user-guides/add-generated-chart-usecase.md)</br> [:octicons-arrow-right-24: Retrieve code for a generated dashboard](pages/user-guides/retrieve-dashboard-code.md)
 
 - :material-format-font:{ .lg .middle } __Find out more__
 
     ---
 
-    [:octicons-arrow-right-24: FAQs](pages/explanation/faq.md) </br>
-    [:octicons-arrow-right-24: Safeguard dynamic code execution](pages/explanation/safeguard.md) </br>
-    [:octicons-arrow-right-24: Guidelines for use of LLMs](pages/explanation/safety-in-vizro-ai.md)
+    [:octicons-arrow-right-24: FAQs](pages/explanation/faq.md) </br> [:octicons-arrow-right-24: Safeguard dynamic code execution](pages/explanation/safeguard.md) </br> [:octicons-arrow-right-24: Guidelines for use of LLMs](pages/explanation/safety-in-vizro-ai.md)
 
 - :fontawesome-solid-chart-column:{ .lg .middle } __Vizro__
 
@@ -62,14 +56,9 @@ If a feature you need for your dashboard isn't currently supported by Vizro-AI y
 
     [:octicons-arrow-right-24: Vizro documentation](https://vizro.readthedocs.io/)
 
-
 </div>
 
 !!! notice "Notice"
+    Review the [disclaimer](pages/explanation/disclaimer.md) before using the `vizro-ai` package.
 
-    Review the [disclaimer](pages/explanation/disclaimer.md)
-    before using the `vizro-ai` package.
-
-    Users must connect to large language models (LLMs) to use Vizro-AI.
-    Please review our [guidelines on the use of LLMs](pages/explanation/safety-in-vizro-ai.md)
-    and the required [safeguarding for dynamic code evaluation](pages/explanation/safeguard.md).
+    Users must connect to large language models (LLMs) to use Vizro-AI. Please review our [guidelines on the use of LLMs](pages/explanation/safety-in-vizro-ai.md) and the required [safeguarding for dynamic code evaluation](pages/explanation/safeguard.md).
