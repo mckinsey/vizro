@@ -191,7 +191,6 @@
   background-color: inherit;
   color: var(--text-active);
   width: 100%;
-  font-size: 1.5rem;
 }
 
 #modal-table-icon {
@@ -257,7 +256,7 @@
   padding-top: 4px;
 }
 
-#dropdown-menu {
+#dropdown-menu-div {
   align-items: center;
   border: 0.5px solid gray;
   border-radius: 8px;

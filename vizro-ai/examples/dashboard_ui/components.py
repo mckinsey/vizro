@@ -89,12 +89,17 @@ class CodeClipboard(vm.VizroBaseModel):
 
         markdown_code = "\n".join(["```python", code, "```"])
 
-        return html.Div(
+        return dcc.Loading(
+            html.Div(
             [
                 dcc.Clipboard(target_id=f"{self.id}-code-markdown", className="code-clipboard"),
                 dcc.Markdown(markdown_code, id=f"{self.id}-code-markdown"),
             ],
             className="code-clipboard-container",
+            ),
+            color="grey",
+            parent_className="loading-container",
+            overlay_style={"visibility": "visible", "opacity": 0.3},
         )
 
 
@@ -395,7 +400,7 @@ class DropdownMenu(vm.VizroBaseModel):
                     target="dropdown-menu-icon",
                 ),
             ],
-            id="dropdown-menu-id",
+            id="dropdown-menu-div",
         )
 
         return download_div
