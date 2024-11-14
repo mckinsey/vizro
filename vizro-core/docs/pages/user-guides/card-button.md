@@ -560,7 +560,6 @@ To create a navigation card:
                 data_frame: iris
                 x: sepal_length
                 y: petal_width
-              id: scatter
               type: graph
           title: Filters and parameters
         ```
