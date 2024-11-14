@@ -23,7 +23,7 @@ def lollipop(data_frame: pd.DataFrame, **kwargs):
 
     fig.update_traces(marker_size=12, line_width=3, line_color=fig.layout.template.layout.colorway[0])
     fig.update_layout(showlegend=False)
-    fig.update_layout(yaxis_title="")
+    fig.update_layout(yaxis_title="", yaxis_showgrid=False)
     return fig
 
 fig = lollipop(data_frame=gapminder.query("year == 2007 and gdpPercap > 36000").sort_values("gdpPercap"), y="country", x="gdpPercap")

@@ -353,5 +353,5 @@ def lollipop(data_frame: pd.DataFrame, **kwargs):
 
     # These are use-case specific layout updates. Normally not suitable for a chart inside vizro.charts, as these
     # depend on the data context.
-    fig.update_layout(yaxis_title="")
+    fig.update_layout(yaxis_title="", yaxis_showgrid=False)
     return fig
