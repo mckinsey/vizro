@@ -27,9 +27,13 @@ def diverging_stacked_bar(data_frame: pd.DataFrame, **kwargs) -> go.Figure:
     for trace_idx in range(len(fig.data) // 2, len(fig.data)):
         fig.update_traces({f"{x_or_y}axis": f"{x_or_y}2"}, selector=trace_idx)
 
+    fig.update_layout({f"{x_or_y}axis": {"ticksuffix": "%"}})
     fig.update_layout({f"{x_or_y}axis2": fig.layout[f"{x_or_y}axis"]})
     fig.update_layout(
-        {f"{x_or_y}axis": {"autorange": "reversed", "domain": [0, 0.5]}, f"{x_or_y}axis2": {"domain": [0.5, 1]}}
+        {
+            f"{x_or_y}axis": {"domain": [0, 0.5], "range": [100, 0]},
+            f"{x_or_y}axis2": {"domain": [0.5, 1], "range": [0, 100]},
+        }
     )
 
     if orientation == "h":
@@ -37,7 +41,6 @@ def diverging_stacked_bar(data_frame: pd.DataFrame, **kwargs) -> go.Figure:
     else:
         fig.add_hline(y=0, line_width=2, line_color="grey")
 
-    fig.update_xaxes(ticksuffix="%", range=[0, 100])
     return fig
 
 
