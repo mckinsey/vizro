@@ -33,7 +33,7 @@ def create_image_difference(original, new):
 def compare_images(browserdriver, base_image, test_image_name):
     """Comparison logic and diff files creation."""
     browserdriver.save_screenshot(f"{test_image_name}_branch.png")
-    original = cv2.imread(f"screenshots/{base_image}")
+    original = cv2.imread(f"tests/screenshots/{base_image}")
     new = cv2.imread(f"{test_image_name}_branch.png")
     try:
         comparison_logic(original, new)
