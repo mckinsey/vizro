@@ -7,7 +7,7 @@ from pages._pages_utils import (
     PAGE_GRID,
     make_code_clipboard_from_py_file,
 )
-from pages.examples import area, gantt, heatmap, line, stepped_line, time_column, sparkline
+from pages.examples import area, gantt, heatmap, line, sparkline, stepped_line, time_column
 
 line_page = vm.Page(
     title="Line",
@@ -251,7 +251,7 @@ sparkline_page = vm.Page(
             text="""
                 #### What is a sparkline chart?
 
-                A sparkline chart is a compact line or area chart that displays multiple time series over a continuous 
+                A sparkline chart is a compact line or area chart that displays multiple time series over a continuous
                 period. Without visible axes or labels, they are ideal for embedding within text, tables, or dashboards,
                 highlighting relative movement rather than precise values for a quick visual summary of trends.
 
@@ -259,10 +259,10 @@ sparkline_page = vm.Page(
 
                 #### When should I use it?
 
-                Use sparkline charts to show trends for multiple time series sharing the same Y-axis quantity over the 
-                same X-axis time range. They emphasize relative movement rather than precise values. To keep them 
-                effective, ensure simplicity by avoiding clutter. Use consistent scales and distinct colors for 
-                different series. Remove labels and gridlines, limit annotations, and place sparklines near relevant 
+                Use sparkline charts to show trends for multiple time series sharing the same Y-axis quantity over the
+                same X-axis time range. They emphasize relative movement rather than precise values. To keep them
+                effective, ensure simplicity by avoiding clutter. Use consistent scales and distinct colors for
+                different series. Remove labels and gridlines, limit annotations, and place sparklines near relevant
                 text or data.
             """
         ),
@@ -289,5 +289,5 @@ pages = [
     stepped_line_page,
     heatmap_page,
     gantt_page,
-    sparkline_page
+    sparkline_page,
 ]
