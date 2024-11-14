@@ -1,6 +1,6 @@
 # Model usage
 
-This guide shows how to set up a large language model (LLM) for use with Vizro-AI. Setting up a LLM is required for the package to generate charts and dashboards based on natural language queries.
+This guide shows how to set up a large language model (LLM) for use with Vizro-AI. Setting up a LLM is required for the package to generate charts and dashboards based on natural language queries. To ensure responsible use, review the vendor’s guidelines on risk mitigation before using the model to understand potential model limitations and best practices.
 
 ## Supported models
 Vizro-AI supports **any** model that is available via [Langchain's `BaseChatModel` class](https://api.python.langchain.com/en/latest/language_models/langchain_core.language_models.chat_models.BaseChatModel.html#langchain_core.language_models.chat_models.BaseChatModel), and that has the [`with_structured_output` method](https://python.langchain.com/v0.2/docs/how_to/structured_output/#the-with_structured_output-method) implemented. An overview of the [most common vendor models supporting this functionality](https://python.langchain.com/v0.2/docs/integrations/chat/) can be found in Langchain's documentation. For ease of use one can also choose some models via a string parameter.
@@ -24,7 +24,8 @@ vizro_ai = VizroAI(model="<chosen model>")
     | API key           | `OPENAI_API_KEY`                      |
     | Base API URL      | `OPENAI_API_BASE`                     |
 
-    To use OpenAI with Vizro-AI, you must have an account with paid-for credits available. None of the free accounts will suffice. You can check [all available OpenAI models including pricing on their website](https://platform.openai.com/docs/models). This will also explain which version the below string acronyms currently point to.
+    To use OpenAI with Vizro-AI, you must have an account with paid-for credits available. None of the free accounts will suffice. [Check the OpenAI models and pricing on their website](https://platform.openai.com/docs/models). Before using a model, please review OpenAI's guidelines on risk mitigation to understand potential model limitations and best practices.
+    [See the OpenAI site for more details on responsible usage](https://platform.openai.com/docs/guides/safety-best-practices).
 
     - `gpt-4o-mini` **default**
     - `gpt-4-turbo`
@@ -39,7 +40,8 @@ vizro_ai = VizroAI(model="<chosen model>")
     | API key           | `ANTHROPIC_API_KEY`                       |
     | Base API URL      | `ANTHROPIC_API_URL`,`ANTHROPIC_BASE_URL`  |
 
-    To use Anthropic with Vizro-AI, you must have an account with paid-for credits available. None of the free accounts will suffice. You can check [all available Anthropic models including pricing on their website](https://docs.anthropic.com/en/docs/about-claude/models).
+    To use Anthropic with Vizro-AI, you must have an account with paid-for credits available. None of the free accounts will suffice. [Check the Anthropic models and pricing on their website](https://docs.anthropic.com/en/docs/about-claude/models). Before using a model, please review Anthropic guidelines on risk mitigation to understand potential model limitations and best practices.
+    [See the Anthropic site for more details on responsible usage](https://support.anthropic.com/en/collections/4078535-trust-safety/).
 
     - `claude-3-5-sonnet-latest`
     - `claude-3-opus-latest`
@@ -62,6 +64,8 @@ vizro_ai = VizroAI(model="<chosen model>")
     | Base API URL      | `MISTRAL_BASE_URL`                        |
 
     To use Mistral with Vizro-AI, you can either use their API, which comes with [an associated cost](https://mistral.ai/technology/#pricing), or you could use their models for free under the Apache 2.0 license. In that case you need to setup the model API yourself. You can check [all available Mistral models including pricing on their website](https://docs.mistral.ai/getting-started/models/models_overview). This will also explain which version the below string acronyms currently point to.
+    Before usage, please review Mistral guidelines on risk mitigation to understand potential model limitations and best practices.
+    [See the Mistral site for more details on responsible usage](https://help.mistral.ai/en/collections/272960-le-chat/).
 
     - `mistral-large-latest`
     - `open-mistral-nemo`
