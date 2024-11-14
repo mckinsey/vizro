@@ -91,11 +91,11 @@ class CodeClipboard(vm.VizroBaseModel):
 
         return dcc.Loading(
             html.Div(
-            [
-                dcc.Clipboard(target_id=f"{self.id}-code-markdown", className="code-clipboard"),
-                dcc.Markdown(markdown_code, id=f"{self.id}-code-markdown"),
-            ],
-            className="code-clipboard-container",
+                [
+                    dcc.Clipboard(target_id=f"{self.id}-code-markdown", className="code-clipboard"),
+                    dcc.Markdown(markdown_code, id=f"{self.id}-code-markdown"),
+                ],
+                className="code-clipboard-container",
             ),
             color="grey",
             parent_className="loading-container",

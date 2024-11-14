@@ -263,8 +263,8 @@
   display: flex;
   flex-direction: row;
   justify-content: center;
-  padding-left: 4px;
   min-width: 130px;
+  padding-left: 4px;
 }
 
 #custom-header-div {

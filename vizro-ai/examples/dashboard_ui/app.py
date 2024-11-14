@@ -174,9 +174,7 @@ plot_page = vm.Page(
                         ),
                     ],
                 ),
-                MyDropdown(
-                    options=SUPPORTED_MODELS["OpenAI"], value="gpt-4o-mini", multi=False, id="model-dropdown"
-                ),
+                MyDropdown(options=SUPPORTED_MODELS["OpenAI"], value="gpt-4o-mini", multi=False, id="model-dropdown"),
                 OffCanvas(
                     id="settings",
                     options=["OpenAI", "Anthropic", "Mistral", "xAI"],
@@ -286,9 +284,7 @@ def download_fig(n_clicks_html, n_clicks_json, data):
         return dcc.send_string(plotly_json, "plotly_fig.json")
 
 
-@callback(
-    [Output("model-dropdown", "options"), Output("model-dropdown", "value")], Input("settings-dropdown", "value")
-)
+@callback([Output("model-dropdown", "options"), Output("model-dropdown", "value")], Input("settings-dropdown", "value"))
 def update_model_dropdown(value):
     """Callback for updating available models."""
     available_models = SUPPORTED_MODELS[value]
