@@ -81,7 +81,6 @@ ranking_chart_group = ChartGroup(
     incomplete_pages=[
         IncompletePage("Ordered bubble"),
         IncompletePage("Slope"),
-        IncompletePage("Lollipop"),
         IncompletePage("Bump"),
     ],
     icon="Stacked Bar Chart",
@@ -117,7 +116,6 @@ magnitude_chart_group = ChartGroup(
     pages=pages.magnitude.pages,
     incomplete_pages=[
         IncompletePage("Marimekko"),
-        IncompletePage("Lollipop"),
         IncompletePage("Pictogram"),
         IncompletePage("Bullet"),
         IncompletePage("Radial"),
