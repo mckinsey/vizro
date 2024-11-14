@@ -304,3 +304,54 @@ def diverging_stacked_bar(data_frame: pd.DataFrame, **kwargs) -> go.Figure:
         fig.add_hline(y=0, line_width=2, line_color="grey")
 
     return fig
+
+
+
+@capture("graph")
+def lollipop(data_frame: pd.DataFrame, **kwargs):
+    """Creates a lollipop based on px.scatter.
+
+    A lollipop chart is a variation of a bar chart where each data point is represented by a line and a dot at the end
+    to mark the value.
+
+    Inspired by: https://community.plotly.com/t/how-to-make-dumbbell-plots-in-plotly-python/47762
+
+    Args:
+        data_frame: DataFrame for the chart. Can be long form or wide form.
+            See https://plotly.com/python/wide-form/.
+        **kwargs: Keyword arguments to pass into px.scatter (e.g. x, y, labels).
+            See https://plotly.com/python-api-reference/generated/plotly.scatter.html.
+
+    Returns:
+        go.Figure: Lollipop chart.
+    """
+    # Should we allow keyword arguments (kwargs) in this context, given the presence of multiple traces?
+    # Unlike the column_and_line chart, where all traces hold equal significance, here the traces differ in importance.
+    # The primary scatter plot is the main data visualization, while the additional traces merely serve as connecting lines.
+    # Therefore, should we apply the kwargs solely to the scatter plot, as illustrated below?
+    fig = px.scatter(data_frame, **kwargs)
+    x_array = fig.data[0].x
+    y_array = fig.data[0].y
+
+    # Is it necessary to always enable orientation? Unlike bar charts, scatter plots do not have an
+    # orientation argument. The calculation of the trace below needs to adapt based on the orientation.
+    # However, since we can't predict the user's choice for x and y axes, I am not sure how we can dynamically update
+    # the orientation. This chart does not always have a categorical and a numerical column. In can also be
+    # with both numeric columns. Should we introduce this ourselves? Does this have to be part of this example
+    # or can we hard-code for the visual-vocabulary?
+    for i in range(len(data_frame)):
+        fig.add_trace(
+            go.Scatter(
+                x=[0, x_array[i]],
+                y=[y_array[i], y_array[i]],
+                mode="lines",
+            )
+        )
+
+    fig.update_traces(marker_size=12, line_width=3, line_color=fig.layout.template.layout.colorway[0])
+    fig.update_layout(showlegend=False)
+
+    # These are use-case specific layout updates. Normally not suitable for a chart inside vizro.charts, as these
+    # depend on the data context.
+    fig.update_layout(yaxis_title="")
+    return fig
