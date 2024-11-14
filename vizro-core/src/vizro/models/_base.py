@@ -163,7 +163,7 @@ class VizroBaseModel(BaseModel):
         "",
         description="ID to identify model. Must be unique throughout the whole dashboard."
         "When no ID is chosen, ID will be automatically generated.",
-        validate_default=True
+        validate_default=True,
     )
 
     # TODO[pydantic]: We couldn't refactor the `validator`, please replace it by `field_validator` manually.
@@ -174,7 +174,7 @@ class VizroBaseModel(BaseModel):
         return id or model_manager._generate_id()
 
     @_log_call
-    def __init__(self, **data: Any):
+    def __init__(self, **data: Any):  # TODO: model_post_init
         """Adds this model instance to the model manager."""
         # Note this runs after the set_id validator, so self.id is available here. In pydantic v2 we should do this
         # using the new model_post_init method to avoid overriding __init__.
@@ -327,6 +327,9 @@ class VizroBaseModel(BaseModel):
         except Exception:
             logging.exception("Code formatting failed; returning unformatted code")
             return unformatted_code
+
     # TODO[pydantic]: The following keys were removed: `smart_union`, `copy_on_model_validation`.
     # Check https://docs.pydantic.dev/dev-v2/migration/#changes-to-config for more information.
-    model_config = ConfigDict(extra="forbid", smart_union=True, validate_assignment=True, copy_on_model_validation="none")
+    model_config = ConfigDict(
+        extra="forbid", smart_union=True, validate_assignment=True, copy_on_model_validation="none"
+    )
