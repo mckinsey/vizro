@@ -170,7 +170,6 @@ Below is an advanced example where we only target one page component, and where 
                   x: petal_length
                   y: sepal_width
                   color: species
-                id: scatter_chart2
                 type: graph
             controls:
               - column: petal_length
