@@ -2,9 +2,9 @@
 
 import vizro.models as vm
 
+from pages._factories import lollipop_factory
 from pages._pages_utils import PAGE_GRID, make_code_clipboard_from_py_file
 from pages.examples import ordered_bar, ordered_column
-from pages._factories import lollipop_factory
 
 ordered_bar_page = vm.Page(
     title="Ordered bar",

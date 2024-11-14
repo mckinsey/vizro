@@ -5,6 +5,7 @@ from vizro.models.types import capture
 
 gapminder = px.data.gapminder()
 
+
 @capture("graph")
 def lollipop(data_frame: pd.DataFrame, **kwargs):
     """Creates a lollipop chart using Plotly."""
@@ -26,4 +27,9 @@ def lollipop(data_frame: pd.DataFrame, **kwargs):
     fig.update_layout(yaxis_title="")
     return fig
 
-fig = lollipop(data_frame=gapminder.query("year == 2007 and gdpPercap > 36000").sort_values("gdpPercap"), y="country", x="gdpPercap")
+
+fig = lollipop(
+    data_frame=gapminder.query("year == 2007 and gdpPercap > 36000").sort_values("gdpPercap"),
+    y="country",
+    x="gdpPercap",
+)

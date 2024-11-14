@@ -2,9 +2,9 @@
 
 import vizro.models as vm
 
+from pages._factories import lollipop_factory
 from pages._pages_utils import PAGE_GRID, make_code_clipboard_from_py_file
 from pages.examples import bar, magnitude_column, paired_bar, paired_column, parallel_coordinates, radar
-from pages._factories import lollipop_factory
 
 bar_page = vm.Page(
     title="Bar",
@@ -240,4 +240,12 @@ radar_page = vm.Page(
 )
 
 lollipop_page = lollipop_factory("magnitude")
-pages = [bar_page, column_page, paired_bar_page, paired_column_page, parallel_coordinates_page, radar_page, lollipop_page]
+pages = [
+    bar_page,
+    column_page,
+    paired_bar_page,
+    paired_column_page,
+    parallel_coordinates_page,
+    radar_page,
+    lollipop_page,
+]

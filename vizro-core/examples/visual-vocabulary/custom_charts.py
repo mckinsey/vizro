@@ -306,7 +306,6 @@ def diverging_stacked_bar(data_frame: pd.DataFrame, **kwargs) -> go.Figure:
     return fig
 
 
-
 @capture("graph")
 def lollipop(data_frame: pd.DataFrame, **kwargs):
     """Creates a lollipop based on px.scatter.
