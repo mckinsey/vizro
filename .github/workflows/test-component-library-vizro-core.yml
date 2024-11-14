@@ -59,7 +59,7 @@ jobs:
         with:
           payload: |
             {
-              "text": "Vizro component tests build result: ${{ job.status }}\nBranch: ${{ env.head_ref }}\n${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}"
+              "text": "Vizro component tests build result: ${{ job.status }}\nBranch: ${{ github.head_ref }}\n${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}"
             }
         env:
           SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
