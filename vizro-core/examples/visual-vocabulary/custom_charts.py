@@ -303,5 +303,4 @@ def diverging_stacked_bar(data_frame: pd.DataFrame, **kwargs) -> go.Figure:
     else:
         fig.add_hline(y=0, line_width=2, line_color="grey")
 
-    fig.update_xaxes(ticksuffix="%", range=[0, 100])
     return fig
