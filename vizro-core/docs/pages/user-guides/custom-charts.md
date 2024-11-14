@@ -88,7 +88,6 @@ The below examples shows a case where we enhance an existing `plotly.express` ch
 
     === "app.yaml"
         Custom charts are currently only possible via Python configuration.
-        ```
 
     === "Result"
         [![Graph2]][graph2]

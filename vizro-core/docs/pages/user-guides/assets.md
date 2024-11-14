@@ -1,6 +1,6 @@
 # How to add static assets
 
-    This guide shows you how to add static assets to your dashboard. Static assets are images that you would like to show in your dashboard, or custom CSS and JS files with which you would like to enhance/change the appearance of your dashboard.
+This guide shows you how to add static assets to your dashboard. Static assets are images that you would like to show in your dashboard, or custom CSS and JS files with which you would like to enhance/change the appearance of your dashboard.
 
 To add images, custom CSS or JS files, create a folder named `assets` in the root of your app directory and insert your files. Assets included in that folder are automatically served after serving Vizro's static files via the `external_stylesheets` and `external_scripts` arguments of [Dash](https://dash.plotly.com/external-resources#adding-external-css/javascript). The user's `assets` folder thus always takes precedence.
 

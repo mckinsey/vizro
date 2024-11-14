@@ -223,7 +223,6 @@ An image ALT text offers a description to your image and serves as a text placeh
 
         <img src=https://py.cafe/logo.png alt="PyCafe logo" width="30"><b><a target="_blank" href="https://py.cafe/vizro-official/vizro-placing-images">Run and edit this code in PyCafe</a></b>
 
-````
 === "app.yaml"
     ```yaml
     # Still requires a .py to add data to the data manager and parse YAML configuration
@@ -246,7 +245,6 @@ An image ALT text offers a description to your image and serves as a text placeh
      [![CardImageDefault]][CardImageDefault]
 
 [CardImageDefault]: ../../assets/user_guides/components/card_image_default.png
-````
 
 !!! note
     Note that inserting images using html is by default turned off by the `dcc.Markdown` to prevent users being exposed to cross-site scripting attacks. If you need to turn it on, a custom component would have to be created.
