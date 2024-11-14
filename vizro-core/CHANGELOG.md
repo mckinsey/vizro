@@ -11,6 +11,20 @@ See the fragment files in the [changelog.d directory](https://github.com/mckinse
 
 <!-- scriv-insert-here -->
 
+<a id='changelog-0.1.27'></a>
+
+# 0.1.27 — 2024-11-14
+
+## Changed
+
+- Improve performance of data loading. ([#850](https://github.com/mckinsey/vizro/pull/850), [#857](https://github.com/mckinsey/vizro/pull/857))
+
+- Upper bound dependency `dash<3`. ([#877](https://github.com/mckinsey/vizro/pull/877))
+
+## Fixed
+
+- Fix 404 error page and page flickering on refresh ([#865](https://github.com/mckinsey/vizro/pull/865)).
+
 <a id='changelog-0.1.26'></a>
 
 # 0.1.26 — 2024-10-30
