@@ -87,7 +87,12 @@ repos:
     rev: 0.7.18
     hooks:
       - id: mdformat
-        args: [--ignore-missing-references, --wrap=no, --align-semantic-breaks-in-lists]
+        args:
+          [
+            --ignore-missing-references,
+            --wrap=no,
+            --align-semantic-breaks-in-lists,
+          ]
         exclude: ^vizro-core/docs/pages/API-reference|^vizro-ai/docs/pages/API-reference
         additional_dependencies:
           - mdformat-mkdocs[recommended]==3.1.1
