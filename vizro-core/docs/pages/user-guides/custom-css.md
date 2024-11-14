@@ -219,7 +219,7 @@ It's essential to understand the relationship between the targeted CSS class or 
 
 <!-- vale off -->
 
-```html title="HTML structure of a `Card`"
+```html {title="HTML structure of a `Card`"}
 
 <div class="card">
     <div id="custom-card">
