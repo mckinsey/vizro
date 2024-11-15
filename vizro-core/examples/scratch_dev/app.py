@@ -41,6 +41,7 @@ page = vm.Page(
             ),
         ),
     ],
+    controls=[vm.Filter(column="pastry")],
 )
 
 dashboard = vm.Dashboard(pages=[page])

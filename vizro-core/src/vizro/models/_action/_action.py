@@ -43,6 +43,19 @@ class Action(VizroBaseModel):
         regex="^[^.]+[.][^.]+$",
     )
 
+    # POPULATE THESE USING function.inputs etc. When? Can't be init/validator as need model_manager. Could be
+    # pre_build if no actions created during pre_build. Or needs to be final pre-build or in build
+    # Need to pass page or action_id or similar into CapturedActionCallable to calculate all controls or page or
+    # similar.
+    # inputs/outputs is only list[str] so far so would need to change to dict or change current dict to list to work
+    # with this
+    # can just put into private property _inputs that mimics inputs for now
+    # in future might use pattern matching
+    # for now function.inputs needs to be dynamically calculated property
+    # fine to copy and paste between different actions or have some code for inputs corresponding to all controls on
+    # page
+    # remove components as property and just put in dcc.Download global? Need one download object per file?
+
     # TODO: Problem: generic Action model shouldn't depend on details of particular actions like export_data.
     # Possible solutions: make a generic mapping of action functions to validation functions or the imports they
     # require, and make the code here look up the appropriate validation using the function as key

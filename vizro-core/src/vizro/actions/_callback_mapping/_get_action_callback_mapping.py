@@ -28,8 +28,8 @@ def _get_action_callback_mapping(
     action_callback_mapping: dict[str, Any] = {
         export_data.__wrapped__: {
             "inputs": _get_action_callback_inputs,
-            "components": _get_export_data_callback_components,
-            "outputs": _get_export_data_callback_outputs,
+            "components": _get_export_data_callback_components,  # AM. not updated
+            "outputs": _get_export_data_callback_outputs,  # AM. not updated
         },
         _filter.__wrapped__: {
             "inputs": _get_action_callback_inputs,

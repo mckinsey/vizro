@@ -28,13 +28,15 @@ def _get_matching_actions_by_function(
 
 
 # CALLBACK STATES --------------
-def _get_inputs_of_controls(page: Page, control_type: ControlType) -> list[State]:
+def _get_inputs_of_controls(page: Page, control_type: ControlType) -> dict[ModelID, State]:
     """Gets list of `States` for selected `control_type` of triggered `Page`."""
-    return [
-        State(component_id=control.selector.id, component_property=control.selector._input_property)
+    return {
+        control.selector.id: State(
+            component_id=control.selector.id, component_property=control.selector._input_property
+        )
         for control in page.controls
         if isinstance(control, control_type)
-    ]
+    }
 
 
 def _get_inputs_of_figure_interactions(
@@ -65,12 +67,14 @@ def _get_action_callback_inputs(action_id: ModelID) -> dict[str, list[Union[Stat
     page: Page = model_manager[model_manager._get_model_page_id(model_id=action_id)]
 
     action_input_mapping = {
-        "filters": _get_inputs_of_controls(page=page, control_type=Filter),
-        "parameters": _get_inputs_of_controls(page=page, control_type=Parameter),
+        "filters": _get_inputs_of_controls(
+            page=page, control_type=Filter
+        ),  # AM now looks like "filters": {"filter_id": ["iris", "versicolor"]}
+        "parameters": _get_inputs_of_controls(page=page, control_type=Parameter),  # AM: updated
         # TODO: Probably need to adjust other inputs to follow the same structure list[dict[str, State]]
         "filter_interaction": _get_inputs_of_figure_interactions(
             page=page, action_function=filter_interaction.__wrapped__
-        ),
+        ),  # AM: not updated yet
     }
     return action_input_mapping
 
