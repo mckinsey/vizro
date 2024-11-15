@@ -4,13 +4,12 @@ from typing import Literal
 
 import dash_bootstrap_components as dbc
 from dash import get_relative_path
-from pydantic import field_validator
+from pydantic import Field, field_validator, validator
 
-try:
-    from pydantic.v1 import Field, validator
-except ImportError:  # pragma: no cov
-    from pydantic import Field, validator
-
+# try:
+#     from pydantic.v1 import Field, validator
+# except ImportError:  # pragma: no cov
+#     from pydantic import Field, validator
 from vizro._constants import ACCORDION_DEFAULT_TITLE
 from vizro.managers._model_manager import ModelID, model_manager
 from vizro.models import VizroBaseModel
