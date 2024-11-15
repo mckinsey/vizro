@@ -265,6 +265,8 @@
   justify-content: center;
   min-width: 130px;
   padding-left: 4px;
+  width: 130px;
+  align-self: flex-end;
 }
 
 #custom-header-div {
