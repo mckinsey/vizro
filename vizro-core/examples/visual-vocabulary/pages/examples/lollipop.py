@@ -11,25 +11,15 @@ def lollipop(data_frame: pd.DataFrame, **kwargs):
     """Creates a lollipop chart using Plotly."""
     fig = px.scatter(data_frame, **kwargs)
 
-    orientation = fig.data[0].orientation
-    x_array = fig.data[0]["x"]
-    y_array = fig.data[0]["y"]
+    # Enable for both orientations
+    is_horizontal = fig.data[0].orientation == "h"
+    x_coords = [[0, x] if is_horizontal else [x, x] for x in fig.data[0]["x"]]
+    y_coords = [[y, y] if is_horizontal else [0, y] for y in fig.data[0]["y"]]
+    for x, y in zip(x_coords, y_coords):
+        fig.add_trace(go.Scatter(x=x, y=y, mode="lines"))
 
-    for i in range(len(data_frame)):
-        fig.add_trace(
-            go.Scatter(
-                x=[0, x_array[i]] if orientation == "h" else [x_array[i], x_array[i]],
-                y=[y_array[i], y_array[i]] if orientation == "h" else [0, y_array[i]],
-                mode="lines",
-            )
-        )
-
-    if orientation == "h":
-        yaxis_showgrid = False
-        xaxis_showgrid = True
-    else:
-        yaxis_showgrid = True
-        xaxis_showgrid = False
+    xaxis_showgrid = is_horizontal
+    yaxis_showgrid = not is_horizontal
 
     fig.update_traces(
         marker_size=12,
