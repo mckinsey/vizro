@@ -298,8 +298,7 @@ def _get_modified_page_figures(
             current_value = []
 
         outputs[target] = model_manager[target](
-            target_to_data_frame=figure_targets_unfiltered_data,
-            current_value=current_value
+            target_to_data_frame=figure_targets_unfiltered_data, current_value=current_value
         )
 
     return outputs

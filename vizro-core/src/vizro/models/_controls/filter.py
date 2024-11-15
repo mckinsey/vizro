@@ -177,12 +177,10 @@ class Filter(VizroBaseModel):
         #  1. Selector doesn't support the dynamic mode
         #  2. Selector is categorical and "options" prop is defined
         #  3. Selector is numerical and "min" and "max" props are defined
-        if (
-            isinstance(self.selector, DYNAMIC_SELECTORS) and
-            (
-                hasattr(self.selector, "options") and not getattr(self.selector, "options") or
-                all(hasattr(self.selector, attr) and getattr(self.selector, attr) is None for attr in ["min", "max"])
-            )
+        if isinstance(self.selector, DYNAMIC_SELECTORS) and (
+            hasattr(self.selector, "options")
+            and not getattr(self.selector, "options")
+            or all(hasattr(self.selector, attr) and getattr(self.selector, attr) is None for attr in ["min", "max"])
         ):
             for target_id in self.targets:
                 data_source_name = model_manager[target_id]["data_frame"]
