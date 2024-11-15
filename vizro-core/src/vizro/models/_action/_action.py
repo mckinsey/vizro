@@ -14,7 +14,7 @@ except ImportError:  # pragma: no cov
 from vizro.managers._model_manager import ModelID
 from vizro.models import VizroBaseModel
 from vizro.models._models_utils import _log_call
-from vizro.models.types import CapturedCallable
+from vizro.models.types import CapturedCallable, CapturedActionCallable
 
 logger = logging.getLogger(__name__)
 
@@ -42,6 +42,21 @@ class Action(VizroBaseModel):
         description="Outputs in the form `<component_id>.<property>` changed by the action function.",
         regex="^[^.]+[.][^.]+$",
     )
+
+    # HERE
+    # Need to access through function rather than model for custom actions. So long as have one action model. Think about interact action which does not have parent filter model.
+    # POPULATE THESE USING function.inputs etc. When? Can't be init/validator as need model_manager. Could be
+    # pre_build if no actions created during pre_build. Or needs to be final pre-build or in build
+    # Need to pass page or action_id or similar into CapturedActionCallable to calculate all controls or page or
+    # similar.
+    # inputs/outputs is only list[str] so far so would need to change to dict or change current dict to list to work
+    # with this
+    # can just put into private property _inputs that mimics inputs for now
+    # in future might use pattern matching
+    # for now function.inputs needs to be dynamically calculated property
+    # fine to copy and paste between different actions or have some code for inputs corresponding to all controls on
+    # page
+    # remove components as property and just put in dcc.Download global? Need one download object per file?
 
     # TODO: Problem: generic Action model shouldn't depend on details of particular actions like export_data.
     # Possible solutions: make a generic mapping of action functions to validation functions or the imports they
@@ -78,6 +93,8 @@ class Action(VizroBaseModel):
         callback_inputs: Union[list[State], dict[str, State]]
         if self.inputs:
             callback_inputs = [State(*input.split(".")) for input in self.inputs]
+        elif isinstance(self.function, CapturedActionCallable):
+            callback_inputs = self.function.inputs
         else:
             callback_inputs = _get_action_callback_mapping(action_id=ModelID(str(self.id)), argument="inputs")
 
@@ -90,6 +107,8 @@ class Action(VizroBaseModel):
             # single element list (e.g. ["text"]).
             if len(callback_outputs) == 1:
                 callback_outputs = callback_outputs[0]
+        elif isinstance(self.function, CapturedActionCallable):
+            callback_outputs = self.function.outputs
         else:
             callback_outputs = _get_action_callback_mapping(action_id=ModelID(str(self.id)), argument="outputs")
 
@@ -151,6 +170,20 @@ class Action(VizroBaseModel):
             Div containing a list of required components (e.g. dcc.Download) for the Action model
 
         """
+        # AM. Doesn't belong in build especially because it mutates something in model_manager but hard to put
+        # earlier on at the moment.
+        # Most of the stuff here doesn't actually belong here because it shouldn't be repeated every page load.
+        # Could populate self.inputs instead of self.function.inputs but inputs/outputs is only list[str] so far so
+        # would need to change to dict or change current dict to list to work with this
+        # Need to pass page or action_id or similar into CapturedActionCallable to calculate all controls or page or
+        # similar.
+        # Could just put into private property _inputs that mimics inputs for now but no point since always
+        # recalculated at the moment.
+        # In future might use pattern matching.
+        # Remove components as property and just put in dcc.Download global? Need one download object per file?
+
+        self.function._action_id = self.id
+
         external_callback_inputs, external_callback_outputs, action_components = self._get_callback_mapping()
         callback_inputs = {
             "external": external_callback_inputs,

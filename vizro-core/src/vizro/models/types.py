@@ -3,6 +3,8 @@
 # ruff: noqa: F821
 from __future__ import annotations
 
+import abc
+
 import functools
 import importlib
 import inspect
@@ -272,6 +274,37 @@ class CapturedCallable:
         args = ", ".join(f"{key}={value!r}" for key, value in self._arguments.items())
         original_module_path = f"{self._function.__module__}"
         return f"{_clean_module_string(original_module_path)}{self._function.__name__}({args})"
+
+
+class CapturedActionCallable(CapturedCallable, abc.ABC):
+    def __init__(self, *args, **kwargs):
+        super().__init__(self.pure_function, *args, **kwargs)
+        self._action_id = None
+        self._mode = "action"
+
+    @staticmethod
+    @abc.abstractmethod
+    # Maybe need to have self so can access inputs/outputs/components?
+    # If not then, keep as staticmethod.
+    # Call it just function, no underscores.
+    def pure_function():
+        pass
+
+    # Should these also be abstract? Probably not.
+    # Should they be class properties? Maybe.
+    # Will you ever need self in them? Maybe.
+    @property
+    def inputs(self):
+        return []
+
+    @property
+    def outputs(self):
+        return []
+
+    @property
+    def components(self):
+        # Do we really need this? Should it return an empty list?
+        return []
 
 
 @contextmanager

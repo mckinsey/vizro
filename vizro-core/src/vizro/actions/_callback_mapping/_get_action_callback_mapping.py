@@ -31,10 +31,6 @@ def _get_action_callback_mapping(
             "components": _get_export_data_callback_components,
             "outputs": _get_export_data_callback_outputs,
         },
-        _filter.__wrapped__: {
-            "inputs": _get_action_callback_inputs,
-            "outputs": _get_action_callback_outputs,
-        },
         filter_interaction.__wrapped__: {
             "inputs": _get_action_callback_inputs,
             "outputs": _get_action_callback_outputs,

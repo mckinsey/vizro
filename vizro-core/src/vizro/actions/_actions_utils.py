@@ -59,6 +59,8 @@ def _apply_filter_controls(
 
     Returns: filtered DataFrame.
     """
+    from vizro.actions import _filter
+
     for ctd in ctds_filters:
         selector_value = ctd["value"]
         selector_value = selector_value if isinstance(selector_value, list) else [selector_value]
@@ -66,7 +68,7 @@ def _apply_filter_controls(
 
         for action in selector_actions:
             if (
-                action.function._function.__name__ != "_filter"
+                not isinstance(action.function, _filter)
                 or target not in action.function["targets"]
                 or ALL_OPTION in selector_value
             ):
