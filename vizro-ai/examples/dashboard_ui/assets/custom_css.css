@@ -46,7 +46,7 @@
   background: var(--surfaces-bg-card);
   font-family: monospace;
   height: 100%;
-  max-height: 44vh;
+  max-height: 42vh;
   overflow: auto;
   padding: 1rem;
   position: relative;
@@ -337,4 +337,30 @@ img#banner {
   display: flex;
   justify-content: end;
   width: 100%;
+}
+
+.flex-container {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+  justify-content: flex-start;
+  flex-direction: column;
+  overflow: none;
+}
+
+.flex-container h4 {
+  color: var(--text-secondary);
+  margin: 0;
+  padding-top: 12px;
+  text-align: center;
+}
+
+.flex-container .code-clipboard-container {
+  height: 500px;
+  width: 100%;
+}
+
+
+.flex-container #graph {
+  height: 712px;
 }

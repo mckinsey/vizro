@@ -24,6 +24,7 @@ from components import (
     UserPromptTextArea,
     UserUpload,
     custom_table,
+    FlexContainer
 )
 from dash import Input, Output, State, callback, ctx, dcc, get_asset_url, html
 from vizro import Vizro
@@ -47,14 +48,10 @@ vm.Container.add_type("components", Modal)
 vm.Container.add_type("components", ToggleSwitch)
 vm.Container.add_type("components", UserPromptTextArea)
 vm.Container.add_type("components", DropdownMenu)
-vm.Container.add_type("components", HeaderComponent)
+vm.Page.add_type("components", HeaderComponent)
+vm.Page.add_type("components", FlexContainer)
 
-vm.Page.add_type("components", UserUpload)
-vm.Page.add_type("components", MyDropdown)
-vm.Page.add_type("components", OffCanvas)
-vm.Page.add_type("components", CodeClipboard)
-vm.Page.add_type("components", Icon)
-vm.Page.add_type("components", Modal)
+FlexContainer.add_type("components", DropdownMenu)
 
 
 SUPPORTED_MODELS = {
@@ -79,114 +76,101 @@ plot_page = vm.Page(
     title="Vizro-AI - create interactive charts with Plotly and Vizro",
     layout=vm.Layout(
         grid=[
-            *[[4, 4, 4, 4]] * 2,
-            *[[2, 2, 1, 1]] * 3,
-            *[[3, 3, 1, 1]] * 4,
-            *[[0, 0, 1, 1]] * 10,
+            *[[0, 0, 0, 0]] * 1,
+            *[[1, 1, 2, 2]] * 11,
         ]
     ),
     components=[
-        vm.Container(
-            title="",
-            components=[CodeClipboard(id="plot"), ToggleSwitch()],
-            layout=vm.Layout(
-                grid=[*[[0]] * 7, [1]],
-                row_gap="12px",
-                col_gap="12px",
-            ),
+        HeaderComponent(),
+        FlexContainer(
+            components=[
+                vm.Container(
+                    id="upload-data-container",
+                    title="Turn your data into visuals — just upload, describe, and see your chart in action",
+                    layout=vm.Layout(
+                        grid=[[0], [1]],
+                        row_gap="0px",
+                    ),
+                    components=[
+                        vm.Figure(id="show-data-component", figure=custom_table(data_frame=pd.DataFrame())),
+                        UserUpload(
+                            id="data-upload-component",
+                            actions=[
+                                vm.Action(
+                                    function=data_upload_action(),
+                                    inputs=["data-upload-component.contents", "data-upload-component.filename"],
+                                    outputs=["data-store.data", "modal-table-icon.style", "modal-table-tooltip.style"],
+                                ),
+                                vm.Action(
+                                    function=display_filename(),
+                                    inputs=["data-store.data"],
+                                    outputs=["upload-message.children"],
+                                ),
+                                vm.Action(
+                                    function=update_table(),
+                                    inputs=["data-store.data"],
+                                    outputs=["modal-table.children", "modal-title.children"],
+                                ),
+                            ],
+                        ),
+                    ],
+                ),
+                vm.Container(
+                    title="",
+                    layout=vm.Layout(
+                        grid=[
+                            *[[0, 0, 0, 0, 0, 0, 0, 0, 0]] * 3,
+                            [3, -1, -1, -1, -1, 1, 1, 2, 2],
+                        ],
+                        row_gap="12px",
+                        col_gap="4px",
+                    ),
+                    components=[
+                        UserPromptTextArea(id="text-area"),
+                        MyDropdown(options=SUPPORTED_MODELS["OpenAI"], value="gpt-4o-mini", multi=False,
+                                   id="model-dropdown"),
+                        vm.Button(
+                            id="trigger-button",
+                            text="Run Vizro-AI",
+                            actions=[
+                                vm.Action(
+                                    function=run_vizro_ai(),
+                                    inputs=[
+                                        "text-area.value",
+                                        "trigger-button.n_clicks",
+                                        "data-store.data",
+                                        "model-dropdown.value",
+                                        "settings-api-key.value",
+                                        "settings-api-base.value",
+                                        "settings-dropdown.value",
+                                    ],
+                                    outputs=["plot-code-markdown.children", "graph.figure", "code-output-store.data"],
+                                ),
+                            ],
+                        ),
+                        OffCanvas(
+                            id="settings",
+                            options=["OpenAI", "Anthropic", "Mistral", "xAI"],
+                            value="OpenAI",
+                        ),
+                    ],
+                ),
+                vm.Container(
+                    title="",
+                    components=[CodeClipboard(id="plot"), ToggleSwitch()],
+                    layout=vm.Layout(
+                        grid=[*[[0]] * 7, [1]],
+                        row_gap="12px",
+                        col_gap="12px",
+                    ),
+                ),
+            ]
         ),
-        vm.Container(
-            title="",
-            layout=vm.Layout(
-                grid=[
-                    *[[0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]] * 10,
-                    [-1, -1, -1, -1, -1, -1, -1, -1, -1, 1, 1],
-                ]
-            ),
+        FlexContainer(
             components=[
                 vm.Graph(id="graph", figure=px.scatter(pd.DataFrame())),
                 DropdownMenu(id="dropdown-menu"),
             ],
-        ),
-        vm.Container(
-            id="upload-data-container",
-            title="Turn your data into visuals — just upload, describe, and see your chart in action",
-            layout=vm.Layout(
-                grid=[
-                    [1],
-                    [0],
-                ],
-                row_gap="0px",
-            ),
-            components=[
-                UserUpload(
-                    id="data-upload-component",
-                    actions=[
-                        vm.Action(
-                            function=data_upload_action(),
-                            inputs=["data-upload-component.contents", "data-upload-component.filename"],
-                            outputs=["data-store.data", "modal-table-icon.style", "modal-table-tooltip.style"],
-                        ),
-                        vm.Action(
-                            function=display_filename(),
-                            inputs=["data-store.data"],
-                            outputs=["upload-message.children"],
-                        ),
-                        vm.Action(
-                            function=update_table(),
-                            inputs=["data-store.data"],
-                            outputs=["modal-table.children", "modal-title.children"],
-                        ),
-                    ],
-                ),
-                vm.Figure(id="show-data-component", figure=custom_table(data_frame=pd.DataFrame())),
-            ],
-        ),
-        vm.Container(
-            title="",
-            layout=vm.Layout(
-                grid=[
-                    [3, 3, 3, 3, 3, 3, 3, 3, 3],
-                    [3, 3, 3, 3, 3, 3, 3, 3, 3],
-                    [3, 3, 3, 3, 3, 3, 3, 3, 3],
-                    [2, -1, -1, -1, -1, 1, 1, 0, 0],
-                ],
-                row_gap="12px",
-                col_gap="4px",
-            ),
-            components=[
-                vm.Button(
-                    id="trigger-button",
-                    text="Run Vizro-AI",
-                    actions=[
-                        vm.Action(
-                            function=run_vizro_ai(),
-                            inputs=[
-                                "text-area.value",
-                                "trigger-button.n_clicks",
-                                "data-store.data",
-                                "model-dropdown.value",
-                                "settings-api-key.value",
-                                "settings-api-base.value",
-                                "settings-dropdown.value",
-                            ],
-                            outputs=["plot-code-markdown.children", "graph.figure", "code-output-store.data"],
-                        ),
-                    ],
-                ),
-                MyDropdown(options=SUPPORTED_MODELS["OpenAI"], value="gpt-4o-mini", multi=False, id="model-dropdown"),
-                OffCanvas(
-                    id="settings",
-                    options=["OpenAI", "Anthropic", "Mistral", "xAI"],
-                    value="OpenAI",
-                ),
-                UserPromptTextArea(id="text-area"),
-                # Modal(id="modal"),
-            ],
-        ),
-        vm.Container(
-            title="",
-            components=[HeaderComponent()],
         ),
     ],
 )
