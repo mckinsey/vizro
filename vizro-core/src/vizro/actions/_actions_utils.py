@@ -14,7 +14,7 @@ from vizro.managers._model_manager import ModelID
 from vizro.models.types import MultiValueType, SelectorType, SingleValueType
 
 if TYPE_CHECKING:
-    from vizro.models import Action, VizroBaseModel, Filter
+    from vizro.models import Action, VizroBaseModel
 
 ValidatedNoneValueType = Union[SingleValueType, MultiValueType, None, list[None]]
 
@@ -161,6 +161,7 @@ def _update_nested_figure_properties(
 
     current_property[keys[-1]] = value
     return figure_config
+
 
 def _get_parametrized_config(
     ctds_parameter: list[CallbackTriggerDict], target: ModelID, data_frame: bool

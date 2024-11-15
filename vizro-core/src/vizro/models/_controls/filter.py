@@ -1,11 +1,10 @@
 from __future__ import annotations
 
-from dash import dcc, html
-
 from typing import Any, Literal, Union
 
 import numpy as np
 import pandas as pd
+from dash import dcc
 from pandas.api.types import is_datetime64_any_dtype, is_numeric_dtype
 
 from vizro.managers._data_manager import DataSourceName
@@ -18,6 +17,7 @@ except ImportError:  # pragma: no cov
 from vizro._constants import FILTER_ACTION_PREFIX
 from vizro.actions import _filter
 from vizro.managers import data_manager, model_manager
+from vizro.managers._data_manager import _DynamicData
 from vizro.managers._model_manager import ModelID
 from vizro.models import Action, VizroBaseModel
 from vizro.models._components.form import (
@@ -30,8 +30,6 @@ from vizro.models._components.form import (
 )
 from vizro.models._models_utils import _log_call
 from vizro.models.types import MultiValueType, SelectorType
-from vizro.models._components.form._form_utils import get_options_and_default
-from vizro.managers._data_manager import _DynamicData
 
 # Ideally we might define these as NumericalSelectorType = Union[RangeSlider, Slider] etc., but that will not work
 # with isinstance checks.

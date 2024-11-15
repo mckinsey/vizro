@@ -123,12 +123,8 @@ class Dropdown(VizroBaseModel):
             children=[
                 dbc.Label(self.title, html_for=self.id) if self.title else None,
                 dmc.DateRangePicker(
-                    id=self.id,
-                    value=self.value,
-                    persistence=True,
-                    persistence_type="session",
-                    style={'opacity': 0}
-                )
+                    id=self.id, value=self.value, persistence=True, persistence_type="session", style={"opacity": 0}
+                ),
             ]
         )
 

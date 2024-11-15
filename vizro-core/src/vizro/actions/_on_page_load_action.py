@@ -7,7 +7,6 @@ from dash import ctx
 from vizro.actions._actions_utils import _get_modified_page_figures
 from vizro.managers._model_manager import ModelID
 from vizro.models.types import capture
-from vizro.managers import model_manager, data_manager
 
 
 @capture("action")
