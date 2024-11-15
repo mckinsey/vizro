@@ -349,6 +349,18 @@ def lollipop(data_frame: pd.DataFrame, **kwargs):
             )
         )
 
-    fig.update_traces(marker_size=12, line_width=3, line_color=fig.layout.template.layout.colorway[0])
-    fig.update_layout(showlegend=False, yaxis_title="", yaxis_showgrid=False)
+    if orientation == "h":
+        yaxis_showgrid = False
+        xaxis_showgrid = True
+    else:
+        yaxis_showgrid = True
+        xaxis_showgrid = False
+
+    fig.update_traces(
+        marker_size=12,
+        line_width=3,
+        line_color=fig.layout.template.layout.colorway[0],
+    )
+
+    fig.update_layout(showlegend=False, yaxis_showgrid=yaxis_showgrid, xaxis_showgrid=xaxis_showgrid)
     return fig
