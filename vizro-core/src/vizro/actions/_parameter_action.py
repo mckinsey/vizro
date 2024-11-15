@@ -24,6 +24,9 @@ def _parameter(targets: list[str], **inputs: dict[str, Any]) -> dict[ModelID, An
     """
     target_ids: list[ModelID] = [target.split(".")[0] for target in targets]  # type: ignore[misc]
 
-    return _get_modified_page_figures(filters=inputs["filters"],
-                                      ctds_filter_interaction=ctx.args_grouping["external"]["filter_interaction"],
-                                      parameters=inputs["parameters"], targets=target_ids)
+    return _get_modified_page_figures(
+        filters=inputs["filters"],
+        ctds_filter_interaction=ctx.args_grouping["external"]["filter_interaction"],
+        parameters=inputs["parameters"],
+        targets=target_ids,
+    )

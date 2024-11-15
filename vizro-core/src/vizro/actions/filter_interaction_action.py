@@ -28,6 +28,9 @@ def filter_interaction(targets: Optional[list[ModelID]] = None, **inputs: dict[s
         Dict mapping target component ids to modified charts/components e.g. {'my_scatter': Figure({})}
 
     """
-    return _get_modified_page_figures(filters=inputs["filters"],
-                                      ctds_filter_interaction=ctx.args_grouping["external"]["filter_interaction"],
-                                      parameters=inputs["parameters"], targets=targets or [])
+    return _get_modified_page_figures(
+        filters=inputs["filters"],
+        ctds_filter_interaction=ctx.args_grouping["external"]["filter_interaction"],
+        parameters=inputs["parameters"],
+        targets=targets or [],
+    )

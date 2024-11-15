@@ -22,7 +22,6 @@ def _on_page_load(targets: list[ModelID], **inputs: dict[str, Any]) -> dict[Mode
         Dict mapping target chart ids to modified figures e.g. {'my_scatter': Figure({})}
 
     """
-
     return _get_modified_page_figures(
         filters=inputs["filters"],
         ctds_filter_interaction=ctx.args_grouping["external"]["filter_interaction"],
