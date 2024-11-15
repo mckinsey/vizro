@@ -61,7 +61,7 @@ data_manager["load_from_file_sepal_length"] = partial(load_from_file, filter_col
 data_manager["load_from_file_date_column"] = partial(load_from_file, filter_column="date_column")
 
 
-# # TODO-DEV: Turn on/off caching to see how it affects the app.
+# TODO-DEV: Turn on/off caching to see how it affects the app.
 # data_manager.cache = Cache(config={"CACHE_TYPE": "SimpleCache", "CACHE_DEFAULT_TIMEOUT": 5})
 
 
@@ -135,7 +135,7 @@ page_3 = vm.Page(
 )
 
 page_4 = vm.Page(
-    title="Temporal dynamic selectors",
+    title="[TO BE DONE IN THE FOLLOW UP PR] Temporal dynamic selectors",
     components=[
         vm.Graph(
             id="p4-G-1",

@@ -91,8 +91,6 @@ class RangeSlider(VizroBaseModel):
             inputs=inputs,
         )
 
-        stop = 0
-
         return html.Div(
             children=[
                 dcc.Store(f"{self.id}_callback_data", data={"id": self.id, "min": _min, "max": _max}),
@@ -148,10 +146,10 @@ class RangeSlider(VizroBaseModel):
         )
 
     def _build_dynamic_placeholder(self):
-        return self._build_static(is_dynamic_build=True)
+        return self._build_static()
 
     @_log_call
     def build(self):
-        # TODO: We don't have to implement _build_dynamic_placeholder, _build_static here. It's possible to:
-        #  if dynamic and self.value is None -> set self.value + return standard build (static)
+        # We don't have to implement _build_dynamic_placeholder, _build_static here. It's possible to: if dynamic and
+        # self.value is None -> set self.value + return standard build (static), but let's align it with the Dropdown.
         return self._build_dynamic_placeholder() if self._dynamic else self._build_static()

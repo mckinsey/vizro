@@ -153,7 +153,7 @@ class Filter(VizroBaseModel):
         #  Or just don't do validation at pre_build time and wait until state is available during build time instead?
         #  What should the load kwargs be here? Remember they need to be {} for static data.
         #  Note that currently _get_unfiltered_data is only suitable for use at runtime since it requires
-        #  ctd_parameters. That could be changed to just reuse that function.
+        #  ctds_parameter. That could be changed to just reuse that function.
         multi_data_source_name_load_kwargs: list[tuple[DataSourceName, dict[str, Any]]] = [
             (model_manager[target]["data_frame"], {}) for target in proposed_targets
         ]
@@ -176,9 +176,9 @@ class Filter(VizroBaseModel):
             )
 
         # Selector can't be dynamic if:
-        # Selector doesn't support dynamic mode
-        # Selector is categorical and "options" is defined
-        # Selector is numerical/Temporal and "min" and "max" are defined
+        #  1. Selector doesn't support the dynamic mode
+        #  2. Selector is categorical and "options" prop is defined
+        #  3. Selector is numerical and "min" and "max" props are defined
         if (
             isinstance(self.selector, DYNAMIC_SELECTORS) and
             (
@@ -222,19 +222,13 @@ class Filter(VizroBaseModel):
 
     @_log_call
     def build(self):
-        # TODO: Align inner and outer id to be the same as for other figure components.
+        # TODO: Align inner and outer ids to be handled in the same way as for other figure components.
         selector_build_obj = self.selector.build()
         return dcc.Loading(id=self.id, children=selector_build_obj) if self._dynamic else selector_build_obj
 
     def _validate_targeted_data(
         self, target_to_data_frame: dict[ModelID, pd.DataFrame], eagerly_raise_column_not_found_error
     ) -> pd.DataFrame:
-        # target_to_data_source_name = {target: model_manager[target]["data_frame"] for target in targets}
-        # data_source_name_to_data = {
-        #     data_source_name: data_manager[data_source_name].load()
-        #     for data_source_name in set(target_to_data_source_name.values())
-        # }
-
         target_to_series = {}
 
         for target, data_frame in target_to_data_frame.items():
@@ -287,7 +281,7 @@ class Filter(VizroBaseModel):
         _max = targeted_data.max(axis=None).item()
 
         if current_value:
-            if isinstance(current_value, list) and len(current_value) == 2:
+            if isinstance(current_value, list):
                 _min = min(_min, current_value[0])
                 _max = max(_max, current_value[1])
             else:

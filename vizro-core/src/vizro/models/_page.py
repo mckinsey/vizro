@@ -104,10 +104,11 @@ class Page(VizroBaseModel):
         #  Does the "postorder DFS" traversal pass work for us? -> More about it:
         #  https://www.geeksforgeeks.org/tree-traversals-inorder-preorder-and-postorder/#postorder-traversal
         #  By introducing this traversal algorithm we should ensure that child pre_build will always be called before
-        #  parent pre_build. Is this the case that solves all the pre_build interdependency future problems as well?
+        #  parent pre_build. Does this case solve all the pre_build interdependency future problems for us?
+        #  Should we also ensure that targeted components are always pre_build before the source components?
 
         # The hack below is just to ensure that the pre_build of the Filter components is called before the page
-        # pre_build calculates targets.
+        # pre_build calculates on_page_load targets. We need this to check is the Filter _dynamic or not.
         for control in self.controls:
             if isinstance(control, Filter):
                 if not control._pre_build_finished:

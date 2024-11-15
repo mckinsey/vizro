@@ -70,13 +70,13 @@ class RadioItems(VizroBaseModel):
         )
 
     def _build_dynamic_placeholder(self):
-        if not self.value:
+        if self.value is None:
             self.value = get_options_and_default(self.options, multi=False)[1]
 
         return self._build_static()
 
     @_log_call
     def build(self):
-        # TODO: We don't have to implement _build_dynamic_placeholder, _build_static here. It's possible to:
-        #  if dynamic and self.value is None -> set self.value + return standard build (static)
+        # We don't have to implement _build_dynamic_placeholder, _build_static here. It's possible to: if dynamic and
+        # self.value is None -> set self.value + return standard build (static), but let's align it with the Dropdown.
         return self._build_dynamic_placeholder() if self._dynamic else self._build_static()

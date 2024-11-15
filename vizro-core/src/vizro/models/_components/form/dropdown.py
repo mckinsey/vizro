@@ -67,8 +67,8 @@ class Dropdown(VizroBaseModel):
     actions: list[Action] = []
 
     # A private property that allows dynamically updating components
-    # TODO: Consider making the _dynamic public later. The same property also could be used for all other components.
-    #  For example: vm.Graph could have a dynamic that is by default set on True.
+    # Consider making the _dynamic public later. The same property could also be used for all other components.
+    # For example: vm.Graph could have a dynamic that is by default set on True.
     _dynamic: bool = PrivateAttr(False)
 
     # Component properties for actions and interactions
@@ -88,7 +88,6 @@ class Dropdown(VizroBaseModel):
             raise ValueError("Please set multi=True if providing a list of default values.")
         return multi
 
-    # Convenience wrapper/syntactic sugar.
     def __call__(self, new_options=None, **kwargs):
         return self._build_static(new_options=new_options, **kwargs)
 
@@ -114,13 +113,12 @@ class Dropdown(VizroBaseModel):
 
     def _build_dynamic_placeholder(self):
         # Setting self.value is kind of Dropdown pre_build method. It sets self.value only the first time if it's None.
-        # We cannot create pre_build for the Dropdown because it has to be called after vm.Filter.pre_build, but
-        # nothing guarantees that.
-        if not self.value:
+        # We cannot create pre_build for the Dropdown because it has to be called after vm.Filter.pre_build, but nothing
+        # guarantees that. We can call Filter.selector.pre_build() from the Filter.pre_build() method it we decide that.
+        if self.value is None:
             self.value = get_options_and_default(self.options, self.multi)[1]
 
-        # return self._build_static()
-
+        # Replace this with the Universal Vizro Placeholder component.
         return html.Div(
             children=[
                 dbc.Label(self.title, html_for=self.id) if self.title else None,

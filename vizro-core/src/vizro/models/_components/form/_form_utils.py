@@ -45,7 +45,6 @@ def validate_options_dict(cls, values):
     return values
 
 
-# TODO: Check this below again
 def validate_value(cls, value, values):
     """Reusable validator for the "value" argument of categorical selectors."""
     if "options" not in values or not values["options"]:
@@ -55,8 +54,8 @@ def validate_value(cls, value, values):
         [entry["value"] for entry in values["options"]] if isinstance(values["options"][0], dict) else values["options"]
     )
 
-    # if value and not is_value_contained(value, possible_values):
-    #     raise ValueError("Please provide a valid value from `options`.")
+    if value and ALL_OPTION not in value and not is_value_contained(value, possible_values):
+        raise ValueError("Please provide a valid value from `options`.")
 
     return value
 
