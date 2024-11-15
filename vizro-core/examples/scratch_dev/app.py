@@ -15,29 +15,28 @@ from functools import partial
 print("INITIALIZING")
 
 SPECIES_COLORS = {"setosa": "#00b4ff", "versicolor": "#ff9222", "virginica": "#3949ab"}
+BAR_CHART_CONF = dict(x="species", color="species", color_discrete_map=SPECIES_COLORS)
+SCATTER_CHART_CONF = dict(x="sepal_length", y="petal_length", color="species", color_discrete_map=SPECIES_COLORS)
 
+# Relevant for the "page_6" only
 FILTER_COLUMN = "species"
 # FILTER_COLUMN = "sepal_length"
+# FILTER_COLUMN = "date_column"
 
 
-def slow_load(sample_size=3):
-    # time.sleep(2)
-    df = px.data.iris().sample(sample_size)
-    print(f'SLOW LOAD - {sorted(df["species"].unique().tolist())} - sample_size = {sample_size}')
-    return df
+def load_from_file(filter_column=None, parametrized_species=None):
+    # Load the full iris dataset
+    df = px.data.iris()
+    df['date_column'] = pd.date_range(start=pd.to_datetime("2024-01-01"), periods=len(df), freq='D')
 
-
-def load_from_file(filter_column=None):
-    filter_column = filter_column or FILTER_COLUMN
+    if parametrized_species:
+        return df[df["species"].isin(parametrized_species)]
 
     with open('data.yaml', 'r') as file:
         data = yaml.safe_load(file)
-        data = data or pd.DataFrame()
+        data = data or {}
 
-    # Load the full iris dataset
-    df = px.data.iris()
-
-    # Load the first N rows of each species. N per species is defined in the data.yaml file.
+    filter_column = filter_column or FILTER_COLUMN
     if filter_column == "species":
         final_df = pd.concat(objs=[
             df[df[filter_column] == 'setosa'].head(data.get("setosa", 0)),
@@ -45,32 +44,25 @@ def load_from_file(filter_column=None):
             df[df[filter_column] == 'virginica'].head(data.get("virginica", 0)),
         ], ignore_index=True)
     elif filter_column == "sepal_length":
-        final_df = df[
-            df[filter_column].between(data.get("min", 0), data.get("max", 0), inclusive="both")
-        ]
+        final_df = df[df[filter_column].between(data.get("min"), data.get("max",), inclusive="both")]
+    elif filter_column == "date_column":
+        date_min = pd.to_datetime(data.get("date_min"))
+        date_max = pd.to_datetime(data.get("date_max"))
+        final_df = df[df[filter_column].between(date_min, date_max, inclusive="both")]
     else:
         raise ValueError("Invalid FILTER_COLUMN")
 
     return final_df
 
 
-def load_parametrised_species(species=None):
-    df = px.data.iris()
-    if species:
-        df = df[df["species"].isin(species)]
-    return df
-
-
 data_manager["load_from_file"] = load_from_file
 data_manager["load_from_file_species"] = partial(load_from_file, filter_column="species")
 data_manager["load_from_file_sepal_length"] = partial(load_from_file, filter_column="sepal_length")
+data_manager["load_from_file_date_column"] = partial(load_from_file, filter_column="date_column")
 
-# data_manager["load_parametrised_species"] = load_parametrised_species
 
 # # TODO-DEV: Turn on/off caching to see how it affects the app.
-# data_manager.cache = Cache(config={"CACHE_TYPE": "SimpleCache"})
-# data_manager["load_from_file"] = slow_load
-# data_manager["load_from_file"].timeout = 5
+# data_manager.cache = Cache(config={"CACHE_TYPE": "SimpleCache", "CACHE_DEFAULT_TIMEOUT": 5})
 
 
 homepage = vm.Page(
@@ -85,17 +77,11 @@ page_1 = vm.Page(
     components=[
         vm.Graph(
             id="p1-G-1",
-            figure=px.bar(
-                data_frame="load_from_file_species",
-                x="species", color="species", color_discrete_map=SPECIES_COLORS,
-            ),
+            figure=px.bar(data_frame="load_from_file_species", **BAR_CHART_CONF),
         ),
         vm.Graph(
             id="p1-G-2",
-            figure=px.scatter(
-                data_frame=px.data.iris(),
-                x="sepal_length", y="petal_length", color="species", color_discrete_map=SPECIES_COLORS,
-            ),
+            figure=px.scatter(data_frame=px.data.iris(), **SCATTER_CHART_CONF),
         )
     ],
     controls=[
@@ -114,10 +100,7 @@ page_2 = vm.Page(
     components=[
         vm.Graph(
             id="p2-G-1",
-            figure=px.bar(
-                data_frame="load_from_file_species",
-                x="species", color="species", color_discrete_map=SPECIES_COLORS,
-            ),
+            figure=px.bar(data_frame="load_from_file_species", **BAR_CHART_CONF),
         ),
     ],
     controls=[
@@ -138,10 +121,7 @@ page_3 = vm.Page(
     components=[
         vm.Graph(
             id="p3-G-1",
-            figure=px.bar(
-                data_frame="load_from_file_sepal_length",
-                x="species", color="species", color_discrete_map=SPECIES_COLORS,
-            ),
+            figure=px.bar(data_frame="load_from_file_sepal_length", **BAR_CHART_CONF),
         ),
     ],
     controls=[
@@ -153,154 +133,115 @@ page_3 = vm.Page(
         )
     ]
 )
-# another_page = vm.Page(
-#     title="Test update control options",
-#     components=[
-#         vm.Graph(
-#             id="graph_1_id",
-#             figure=px.bar(
-#                 data_frame="dynamic_df",
-#                 x="species",
-#                 color="species",
-#                 color_discrete_map={"setosa": "#00b4ff", "versicolor": "#ff9222", "virginica": "#3949ab"},
-#             )
-#         ),
-#         # vm.Graph(
-#         #     id="graph_2_id",
-#         #     figure=px.scatter(
-#         #         data_frame="dynamic_df",
-#         #         x="sepal_length",
-#         #         y="petal_length",
-#         #         color="species",
-#         #         color_discrete_map={"setosa": "#00b4ff", "versicolor": "#ff9222", "virginica": "#3949ab"},
-#         #     ),
-#         # ),
-#         # vm.Graph(
-#         #     id="graph_2_id",
-#         #     figure=px.scatter(
-#         #         data_frame="dynamic_df",
-#         #         x="sepal_length",
-#         #         y="petal_width",
-#         #         color="species",
-#         #     )
-#         # ),
-#
-#     ],
-#     controls=[
-#         vm.Filter(
-#             id="filter_container_id",
-#             column=FILTER_COLUMN,
-#             # targets=["graph_2_id"],
-#             # selector=vm.Dropdown(id="filter_id"),
-#             # selector=vm.Dropdown(id="filter_id", value=["setosa"]),
-#
-#             selector=vm.Checklist(id="filter_id"),
-#             # selector=vm.Checklist(id="filter_id", value=["setosa"]),
-#
-#             # selector=vm.Dropdown(id="filter_id", multi=False),
-#             # selector=vm.Dropdown(id="filter_id", multi=False, value="setosa"),
-#
-#             # selector=vm.RadioItems(id="filter_id"),
-#             # selector=vm.RadioItems(id="filter_id", value="setosa"),
-#
-#             # selector=vm.Slider(id="filter_id"),
-#             # selector=vm.Slider(id="filter_id", value=6),
-#
-#             # selector=vm.RangeSlider(id="filter_id"),
-#             # selector=vm.RangeSlider(id="filter_id", value=[5, 7]),
-#
-#             # TEST CASES:
-#             #   no selector
-#             #           WORKS
-#             #   multi=True
-#             #       default
-#             #           WORKS
-#             # selector=vm.Slider(id="filter_id", step=0.5),
-#             #       options: list
-#             #           WORKS - but options doesn't mean anything because options are dynamically overwritten.
-#             # selector=vm.Dropdown(options=["setosa", "versicolor"]),
-#             #       options: empty list
-#             #           WORKS
-#             # selector=vm.Dropdown(options=[]),
-#             #       options: dict
-#             #           WORKS - but "label" is always overwritten.
-#             # selector=vm.Dropdown(options=[{"label": "Setosa", "value": "setosa"}, {"label": "Versicolor", "value": "versicolor"}]),
-#             #       options list; value
-#             #           WORKS
-#             # selector=vm.Dropdown(options=["setosa", "versicolor"], value=["setosa"]),
-#             #       options list; empty value
-#             #           WORKS
-#             # selector=vm.Dropdown(options=["setosa", "versicolor"], value=[]),
-#             #       strange options
-#             #           WORKS
-#             # selector=vm.Dropdown(options=["A", "B", "C"]),
-#             #       strange options with strange value
-#             #           WORKS - works even for the dynamic False, and this is OK.
-#             # selector=vm.Dropdown(options=["A", "B", "C"], value=["XYZ"]),
-#             #
-#             #
-#             #   multi=False -> TLDR: Doesn't work if value is cleared. Other combinations are same as multi=True.
-#             #       default
-#             #           DOES NOT WORK - Doesn't work if value is cleared. Then persistence storage become "null" and our
-#             #           placeholder component dmc.DateRangePicker can't process null value. It expects a value or a list
-#             #           of values. SOLUTION -> Create the "universal Vizro placeholder component"
-#             # selector=vm.Dropdown(multi=False),
-#             #       options: list - because options are dynamically overwritten.
-#             #           WORKS - but options doesn't mean anything because options are dynamically overwritten.
-#             # selector=vm.Dropdown(multi=False, options=["setosa", "versicolor"]),
-#             #       options: empty list
-#             #           WORKS
-#             # selector=vm.Dropdown(multi=False, options=[]),
-#             #       options: dict
-#             # selector=vm.Dropdown(multi=False, options=[{"label": "Setosa", "value": "setosa"}, {"label": "Versicolor", "value": "versicolor"}]),
-#             #       options list; value
-#             #           WORKS
-#             # selector=vm.Dropdown(multi=False, options=["setosa", "versicolor"], value="setosa"),
-#             #       options list; None value
-#             #           WORKS
-#             # selector=vm.Dropdown(multi=False, options=["setosa", "versicolor"], value=None),
-#             #       strange options
-#             #           WORKS
-#             # selector=vm.Dropdown(multi=False, options=["A", "B", "C"]),
-#             #       strange options with strange value
-#             #           WORKS
-#             # selector=vm.Dropdown(multi=False, options=["A", "B", "C"], value="XYZ"),
-#         ),
-#         vm.Parameter(
-#             id="parameter_x",
-#             targets=["graph_1_id.x",],
-#             selector=vm.Dropdown(
-#                 options=["species", "sepal_width"],
-#                 value="species",
-#                 multi=False,
-#             )
-#         ),
-#         # vm.Parameter(
-#         #     id="parameter_species",
-#         #     targets=[
-#         #         "graph_1_id.data_frame.species",
-#         #         "filter_container_id.",
-#         #     ],
-#         #     selector=vm.Dropdown(options=["setosa", "versicolor", "virginica"])
-#         # ),
-#         # vm.Parameter(
-#         #     id="parameter_container_id",
-#         #     targets=[
-#         #         "graph_1_id.data_frame.sample_size",
-#         #         # "graph_2_id.data_frame.sample_size",
-#         #     ],
-#         #     selector=vm.Slider(
-#         #         id="parameter_id",
-#         #         min=1,
-#         #         max=10,
-#         #         step=1,
-#         #         value=10,
-#         #     )
-#         # ),
-#     ],
-# )
 
-dashboard = vm.Dashboard(pages=[homepage, page_1, page_2, page_3])
+page_4 = vm.Page(
+    title="Temporal dynamic selectors",
+    components=[
+        vm.Graph(
+            id="p4-G-1",
+            figure=px.bar(data_frame="load_from_file_date_column", **BAR_CHART_CONF),
+        ),
+    ],
+    controls=[
+        vm.Filter(id="p4-F-1", column="date_column", selector=vm.DatePicker(range=False)),
+        vm.Filter(id="p4-F-2", column="date_column", selector=vm.DatePicker()),
+        vm.Parameter(
+            targets=["p4-G-1.x"],
+            selector=vm.RadioItems(options=["species", "sepal_width"], value="species", title="Simple X-axis parameter")
+        )
+    ]
+)
+
+page_5 = vm.Page(
+    title="Parametrised dynamic selectors",
+    components=[
+        vm.Graph(
+            id="p5-G-1",
+            figure=px.bar(data_frame="load_from_file_species", **BAR_CHART_CONF),
+        ),
+    ],
+    controls=[
+        vm.Filter(id="p5-F-1", column="species", targets=["p5-G-1"], selector=vm.Checklist()),
+        vm.Parameter(
+            targets=[
+                "p5-G-1.data_frame.parametrized_species",
+                # TODO: Uncomment the following target and see the magic :D
+                #  Is this the indicator that parameter.targets prop has to support 'target' definition without the '.'?
+                # "p5-F-1.",
+            ],
+            selector=vm.Dropdown(
+                options=["setosa", "versicolor", "virginica"],
+                multi=True,
+                title="Parametrized species"
+            )
+        ),
+        vm.Parameter(
+            targets=[
+                "p5-G-1.x",
+                # TODO: Uncomment the following target and see the magic :D
+                # "p5-F-1.",
+            ],
+            selector=vm.RadioItems(options=["species", "sepal_width"], value="species", title="Simple X-axis parameter")
+        ),
+    ]
+)
+
+
+page_6 = vm.Page(
+    title="Page to test things out",
+    components=[
+        vm.Graph(
+            id="graph_dynamic",
+            figure=px.bar(data_frame="load_from_file", **BAR_CHART_CONF)
+        ),
+        vm.Graph(
+            id="graph_static",
+            figure=px.scatter(data_frame=px.data.iris(), **SCATTER_CHART_CONF),
+        )
+    ],
+    controls=[
+        vm.Filter(
+            id="filter_container_id",
+            column=FILTER_COLUMN,
+            targets=["graph_dynamic"],
+            # targets=["graph_static"],
+
+            # selector=vm.Dropdown(id="filter_id"),
+            # selector=vm.Dropdown(id="filter_id", value=["setosa"]),
+
+            # selector=vm.Checklist(id="filter_id"),
+            # selector=vm.Checklist(id="filter_id", value=["setosa"]),
+
+            # TODO-BUG: vm.Dropdown(multi=False) Doesn't work if value is cleared. The persistence storage become
+            #  "null" and our placeholder component dmc.DateRangePicker can't process null value. It expects a value or
+            #  a list of values.
+            #  SOLUTION -> Create the "Universal Vizro placeholder component".
+            #  TEMPORARY SOLUTION -> set clearable=False for the dynamic Dropdown(multi=False)
+            # selector=vm.Dropdown(id="filter_id", multi=False), ->
+            # selector=vm.Dropdown(id="filter_id", multi=False, value="setosa"),
+
+            # selector=vm.RadioItems(id="filter_id"),
+            # selector=vm.RadioItems(id="filter_id", value="setosa"),
+
+            # selector=vm.Slider(id="filter_id"),
+            # selector=vm.Slider(id="filter_id", value=5),
+
+            # selector=vm.RangeSlider(id="filter_id"),
+            # selector=vm.RangeSlider(id="filter_id", value=[5, 7]),
+           ),
+        vm.Parameter(
+            id="parameter_x",
+            targets=["graph_dynamic.x",],
+            selector=vm.Dropdown(
+                options=["species", "sepal_width"],
+                value="species",
+                multi=False,
+            )
+        ),
+    ],
+)
+
+dashboard = vm.Dashboard(pages=[homepage, page_1, page_2, page_3, page_4, page_5, page_6])
 
 if __name__ == "__main__":
     app = Vizro().build(dashboard)
@@ -308,54 +249,3 @@ if __name__ == "__main__":
     print("RUNNING\n")
 
     app.run(dev_tools_hot_reload=False)
-
-
-# """Dev app to try things out."""
-#
-# import pandas as pd
-# import vizro.models as vm
-# import vizro.plotly.express as px
-# from vizro import Vizro
-#
-# from vizro.managers import data_manager
-#
-#
-# def load_1(sample=1):
-#     print("load_1")
-#     return px.data.iris().sample(sample)
-#
-#
-# def load_2(sample=2):
-#     print("load_2")
-#     return px.data.iris().sample(sample)
-#
-#
-# data_manager["load_1"] = load_1
-# data_manager["load_2"] = load_2
-#
-# page = vm.Page(
-#     title="Charts UI",
-#     components=[
-#         vm.Graph(id="graph_1", figure=px.scatter("load_1", x="sepal_width", y="sepal_length")),
-#         vm.Graph(id="graph_2", figure=px.scatter("load_1", x="sepal_width", y="sepal_length")),
-#         vm.Graph(id="graph_3", figure=px.scatter("load_2", x="sepal_width", y="sepal_length")),
-#         vm.Graph(id="graph_4", figure=px.scatter("load_2", x="sepal_width", y="sepal_length")),
-#     ],
-#     controls=[
-#         vm.Filter(column="species"),
-#         vm.Parameter(
-#             targets=['graph_1.data_frame.sample', 'graph_3.data_frame.sample'],
-#             selector=vm.Slider(min=1, max=10, step=1, value=1),
-#         ),
-#         vm.Parameter(
-#             targets=['graph_2.data_frame.sample', 'graph_4.data_frame.sample'],
-#             selector=vm.Slider(min=1, max=10, step=1, value=1),
-#         )
-#     ],
-#
-# )
-#
-# dashboard = vm.Dashboard(pages=[page])
-#
-# if __name__ == "__main__":
-#     Vizro().build(dashboard).run()

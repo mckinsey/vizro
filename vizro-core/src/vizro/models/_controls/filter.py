@@ -50,7 +50,7 @@ DISALLOWED_SELECTORS = {
     "categorical": SELECTORS["numerical"] + SELECTORS["temporal"],
 }
 
-# TODO: Remove this check because all vizro selectors support dynamic mode
+# TODO: Remove this check when support dynamic mode for DatePicker selector.
 # Tuple of filter selectors that support dynamic mode
 DYNAMIC_SELECTORS = (Dropdown, Checklist, RadioItems, Slider, RangeSlider)
 
@@ -156,11 +156,20 @@ class Filter(VizroBaseModel):
         #  ctd_parameters. That could be changed to just reuse that function.
         from vizro.models._controls import Parameter
 
-        load_kwargs = {}
+        multi_data_source_name_load_kwargs: list[tuple[DataSourceName, dict[str, Any]]] = []
+
+        # One tuple per filter.target
+        # [
+        #     ('data_1', {'arg_1': 1, 'arg_2': 2,}),
+        #     ('data_2', {'X': "ASD"}),
+        #     ('data_2', {'X': "qwe"}),
+        # ]
+
+        # TODO-NEXT: The code below is just a PoC and could be improved a lot.
         page_obj = model_manager[model_manager._get_model_page_id(model_id=ModelID(str(self.id)))]
         for target in proposed_targets:
             data_source_name = model_manager[target]["data_frame"]
-            load_kwargs[data_source_name] = {}
+            load_kwargs = {}
 
             for page_parameter in page_obj.controls:
                 if isinstance(page_parameter, Parameter):
@@ -168,25 +177,26 @@ class Filter(VizroBaseModel):
                         if parameter_targets.startswith(f'{target}.data_frame'):
                             argument = parameter_targets.split('.')[2]
                             # argument is explicitly defined
-                            if parameter_value := getattr(page_parameter.selector, value, None):
-                                load_kwargs[data_source_name].append((argument, parameter_value))
+                            if parameter_value := getattr(page_parameter.selector, 'value', None):
+                                load_kwargs[argument]=parameter_value
                             # find default value
                             else:
                                 parameter_selector = page_parameter.selector
-                                if parameter_selector == Dropdown:
+                                default_parameter_value = None
+                                if isinstance(parameter_selector, Dropdown):
                                     default_parameter_value = get_options_and_default(parameter_selector.options, parameter_selector.multi)
-                                elif parameter_selector == Checklist:
+                                elif isinstance(parameter_selector, Checklist):
                                     default_parameter_value = get_options_and_default(parameter_selector.options, True)
-                                elif parameter_selector == RadioItems:
+                                elif isinstance(parameter_selector, RadioItems):
                                     default_parameter_value = get_options_and_default(parameter_selector.options, False)
-                                elif parameter_selector == Slider:
+                                elif isinstance(parameter_selector, Slider):
                                     default_parameter_value = parameter_selector.min
-                                elif parameter_selector == RangeSlider:
+                                elif isinstance(parameter_selector, RangeSlider):
                                     default_parameter_value = [parameter_selector.min, parameter_selector.max]
-                                load_kwargs[data_source_name].append((argument, default_parameter_value))
+                                load_kwargs[argument] = default_parameter_value[1] if default_parameter_value[1] != "ALL" else parameter_selector.options
 
-        # multi_data_source_name_load_kwargs = [(model_manager[target]["data_frame"], {}) for target in proposed_targets]  # type: ignore[var-annotated]
-        multi_data_source_name_load_kwargs = [(a, s) for a, s in load_kwargs.items()]
+            multi_data_source_name_load_kwargs.append((data_source_name, load_kwargs))
+
         target_to_data_frame = dict(zip(proposed_targets, data_manager._multi_load(multi_data_source_name_load_kwargs)))
         targeted_data = self._validate_targeted_data(
             target_to_data_frame, eagerly_raise_column_not_found_error=bool(self.targets)
