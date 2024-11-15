@@ -331,3 +331,10 @@
 img#banner {
   height: 16px;
 }
+
+.dropdown-menu-outer-div {
+  width: 100%;
+  display: flex;
+  justify-content: end;
+  align-items: end;
+}

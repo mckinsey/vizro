@@ -90,7 +90,7 @@ plot_page = vm.Page(
             title="",
             components=[CodeClipboard(id="plot"), ToggleSwitch()],
             layout=vm.Layout(
-                grid=[*[[0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]] * 7, [-1, -1, -1, -1, -1, -1, -1, -1, -1, 1, 1, 1]],
+                grid=[*[[0]] * 7, [1]],
                 row_gap="12px",
                 col_gap="12px",
             ),
