@@ -4,13 +4,10 @@ from collections.abc import Mapping
 from typing import Any, Optional, TypedDict, Union
 
 from dash import dcc, html
-from pydantic import model_validator
+from pydantic import Field, model_validator, validator
 
-try:
-    from pydantic.v1 import Field, root_validator, validator
-except ImportError:  # pragma: no cov
-    from pydantic import Field, validator
-
+# except ImportError:  # pragma: no cov
+#     from pydantic import Field, validator
 from vizro._constants import ON_PAGE_LOAD_ACTION_PREFIX
 from vizro.actions import _on_page_load
 from vizro.managers import model_manager
@@ -46,7 +43,7 @@ class Page(VizroBaseModel):
     components: list[ComponentType]
     title: str = Field(..., description="Title to be displayed.")
     description: str = Field("", description="Description for meta tags.")
-    layout: Layout = None  # type: ignore[assignment]
+    layout: Optional[Layout] = None  # type: ignore[assignment]
     controls: list[ControlType] = []
     path: str = Field("", description="Path to navigate to page.")
 
