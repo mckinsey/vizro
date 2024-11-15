@@ -183,6 +183,7 @@ Now you can use the chain to generate charts or dashboards based on natural lang
                 vm.Page(
                     components=[
                         vm.Graph(
+                            id="gdp_life_exp_graph",
                             figure=gdp_life_exp_graph(data_frame="gdp_life_exp"),
                         )
                     ],
