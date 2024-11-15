@@ -14,7 +14,7 @@ from vizro.managers._model_manager import ModelID
 from vizro.models.types import MultiValueType, SelectorType, SingleValueType
 
 if TYPE_CHECKING:
-    from vizro.models import Action, VizroBaseModel, Filter
+    from vizro.models import Action, VizroBaseModel
 
 ValidatedNoneValueType = Union[SingleValueType, MultiValueType, None, list[None]]
 
@@ -162,6 +162,7 @@ def _update_nested_figure_properties(
     current_property[keys[-1]] = value
     return figure_config
 
+
 def _get_parametrized_config(
     ctd_parameter: list[CallbackTriggerDict], target: ModelID, data_frame: bool
 ) -> dict[str, Any]:
@@ -275,7 +276,9 @@ def _get_modified_page_figures(
     # Also, it was a good decision to return action output as key: value pairs for the predefined actions.
     _get_unfiltered_data_targets = list(set(figure_targets + control_targets_targets))
 
-    figure_targets_unfiltered_data: dict[ModelID, pd.DataFrame] = _get_unfiltered_data(ctds_parameter, _get_unfiltered_data_targets)
+    figure_targets_unfiltered_data: dict[ModelID, pd.DataFrame] = _get_unfiltered_data(
+        ctds_parameter, _get_unfiltered_data_targets
+    )
 
     for target, unfiltered_data in figure_targets_unfiltered_data.items():
         if target in figure_targets:
@@ -292,8 +295,7 @@ def _get_modified_page_figures(
             current_value = []
 
         outputs[target] = model_manager[target](
-            target_to_data_frame=figure_targets_unfiltered_data,
-            current_value=current_value
+            target_to_data_frame=figure_targets_unfiltered_data, current_value=current_value
         )
 
     return outputs

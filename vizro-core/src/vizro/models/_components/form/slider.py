@@ -137,7 +137,7 @@ class Slider(VizroBaseModel):
                                     persistence_type="session",
                                     className="slider-text-input-field",
                                 ),
-                                dcc.Store(id=f"{self.id}_input_store",  storage_type="session")
+                                dcc.Store(id=f"{self.id}_input_store", storage_type="session"),
                             ],
                             className="slider-text-input-container",
                         ),

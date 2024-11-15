@@ -1,4 +1,5 @@
 """Dev app to try things out."""
+
 import time
 import yaml
 
@@ -27,24 +28,35 @@ FILTER_COLUMN = "species"
 def load_from_file(filter_column=None, parametrized_species=None):
     # Load the full iris dataset
     df = px.data.iris()
-    df['date_column'] = pd.date_range(start=pd.to_datetime("2024-01-01"), periods=len(df), freq='D')
+    df["date_column"] = pd.date_range(start=pd.to_datetime("2024-01-01"), periods=len(df), freq="D")
 
     if parametrized_species:
         return df[df["species"].isin(parametrized_species)]
 
-    with open('data.yaml', 'r') as file:
+    with open("data.yaml", "r") as file:
         data = yaml.safe_load(file)
         data = data or {}
 
     filter_column = filter_column or FILTER_COLUMN
     if filter_column == "species":
-        final_df = pd.concat(objs=[
-            df[df[filter_column] == 'setosa'].head(data.get("setosa", 0)),
-            df[df[filter_column] == 'versicolor'].head(data.get("versicolor", 0)),
-            df[df[filter_column] == 'virginica'].head(data.get("virginica", 0)),
-        ], ignore_index=True)
+        final_df = pd.concat(
+            objs=[
+                df[df[filter_column] == "setosa"].head(data.get("setosa", 0)),
+                df[df[filter_column] == "versicolor"].head(data.get("versicolor", 0)),
+                df[df[filter_column] == "virginica"].head(data.get("virginica", 0)),
+            ],
+            ignore_index=True,
+        )
     elif filter_column == "sepal_length":
-        final_df = df[df[filter_column].between(data.get("min"), data.get("max",), inclusive="both")]
+        final_df = df[
+            df[filter_column].between(
+                data.get("min"),
+                data.get(
+                    "max",
+                ),
+                inclusive="both",
+            )
+        ]
     elif filter_column == "date_column":
         date_min = pd.to_datetime(data.get("date_min"))
         date_max = pd.to_datetime(data.get("date_max"))
@@ -82,16 +94,18 @@ page_1 = vm.Page(
         vm.Graph(
             id="p1-G-2",
             figure=px.scatter(data_frame=px.data.iris(), **SCATTER_CHART_CONF),
-        )
+        ),
     ],
     controls=[
         vm.Filter(id="p1-F-1", column="species", targets=["p1-G-1"], selector=vm.Dropdown(title="Dynamic filter")),
         vm.Filter(id="p1-F-2", column="species", targets=["p1-G-2"], selector=vm.Dropdown(title="Static filter")),
         vm.Parameter(
             targets=["p1-G-1.x", "p1-G-2.x"],
-            selector=vm.RadioItems(options=["species", "sepal_width"], value="species", title="Simple X-axis parameter")
-        )
-    ]
+            selector=vm.RadioItems(
+                options=["species", "sepal_width"], value="species", title="Simple X-axis parameter"
+            ),
+        ),
+    ],
 )
 
 
@@ -110,9 +124,11 @@ page_2 = vm.Page(
         vm.Filter(id="p2-F-4", column="species", selector=vm.RadioItems()),
         vm.Parameter(
             targets=["p2-G-1.x"],
-            selector=vm.RadioItems(options=["species", "sepal_width"], value="species", title="Simple X-axis parameter")
-        )
-    ]
+            selector=vm.RadioItems(
+                options=["species", "sepal_width"], value="species", title="Simple X-axis parameter"
+            ),
+        ),
+    ],
 )
 
 
@@ -129,9 +145,11 @@ page_3 = vm.Page(
         vm.Filter(id="p3-F-2", column="sepal_length", selector=vm.RangeSlider()),
         vm.Parameter(
             targets=["p3-G-1.x"],
-            selector=vm.RadioItems(options=["species", "sepal_width"], value="species", title="Simple X-axis parameter")
-        )
-    ]
+            selector=vm.RadioItems(
+                options=["species", "sepal_width"], value="species", title="Simple X-axis parameter"
+            ),
+        ),
+    ],
 )
 
 page_4 = vm.Page(
@@ -147,9 +165,11 @@ page_4 = vm.Page(
         vm.Filter(id="p4-F-2", column="date_column", selector=vm.DatePicker()),
         vm.Parameter(
             targets=["p4-G-1.x"],
-            selector=vm.RadioItems(options=["species", "sepal_width"], value="species", title="Simple X-axis parameter")
-        )
-    ]
+            selector=vm.RadioItems(
+                options=["species", "sepal_width"], value="species", title="Simple X-axis parameter"
+            ),
+        ),
+    ],
 )
 
 page_5 = vm.Page(
@@ -170,10 +190,8 @@ page_5 = vm.Page(
                 # "p5-F-1.",
             ],
             selector=vm.Dropdown(
-                options=["setosa", "versicolor", "virginica"],
-                multi=True,
-                title="Parametrized species"
-            )
+                options=["setosa", "versicolor", "virginica"], multi=True, title="Parametrized species"
+            ),
         ),
         vm.Parameter(
             targets=[
@@ -181,23 +199,22 @@ page_5 = vm.Page(
                 # TODO: Uncomment the following target and see the magic :D
                 # "p5-F-1.",
             ],
-            selector=vm.RadioItems(options=["species", "sepal_width"], value="species", title="Simple X-axis parameter")
+            selector=vm.RadioItems(
+                options=["species", "sepal_width"], value="species", title="Simple X-axis parameter"
+            ),
         ),
-    ]
+    ],
 )
 
 
 page_6 = vm.Page(
     title="Page to test things out",
     components=[
-        vm.Graph(
-            id="graph_dynamic",
-            figure=px.bar(data_frame="load_from_file", **BAR_CHART_CONF)
-        ),
+        vm.Graph(id="graph_dynamic", figure=px.bar(data_frame="load_from_file", **BAR_CHART_CONF)),
         vm.Graph(
             id="graph_static",
             figure=px.scatter(data_frame=px.data.iris(), **SCATTER_CHART_CONF),
-        )
+        ),
     ],
     controls=[
         vm.Filter(
@@ -205,13 +222,10 @@ page_6 = vm.Page(
             column=FILTER_COLUMN,
             targets=["graph_dynamic"],
             # targets=["graph_static"],
-
             # selector=vm.Dropdown(id="filter_id"),
             # selector=vm.Dropdown(id="filter_id", value=["setosa"]),
-
             # selector=vm.Checklist(id="filter_id"),
             # selector=vm.Checklist(id="filter_id", value=["setosa"]),
-
             # TODO-BUG: vm.Dropdown(multi=False) Doesn't work if value is cleared. The persistence storage become
             #  "null" and our placeholder component dmc.DateRangePicker can't process null value. It expects a value or
             #  a list of values.
@@ -219,24 +233,23 @@ page_6 = vm.Page(
             #  TEMPORARY SOLUTION -> set clearable=False for the dynamic Dropdown(multi=False)
             # selector=vm.Dropdown(id="filter_id", multi=False), ->
             # selector=vm.Dropdown(id="filter_id", multi=False, value="setosa"),
-
             # selector=vm.RadioItems(id="filter_id"),
             # selector=vm.RadioItems(id="filter_id", value="setosa"),
-
             # selector=vm.Slider(id="filter_id"),
             # selector=vm.Slider(id="filter_id", value=5),
-
             # selector=vm.RangeSlider(id="filter_id"),
             # selector=vm.RangeSlider(id="filter_id", value=[5, 7]),
-           ),
+        ),
         vm.Parameter(
             id="parameter_x",
-            targets=["graph_dynamic.x",],
+            targets=[
+                "graph_dynamic.x",
+            ],
             selector=vm.Dropdown(
                 options=["species", "sepal_width"],
                 value="species",
                 multi=False,
-            )
+            ),
         ),
     ],
 )
