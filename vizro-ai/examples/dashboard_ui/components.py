@@ -391,20 +391,20 @@ class DropdownMenu(vm.VizroBaseModel):
             toggleClassName="dropdown-menu-toggle-class",
         )
         download_div = html.Div(
-                html.Div(
-                    children=[
-                        html.Span("download", className="material-symbols-outlined", id=f"{self.id}-icon"),
-                        dropdown_menu,
-                        dbc.Tooltip(
-                            "Download this plot to your device as a plotly JSON or interactive HTML file "
-                            "for easy sharing or future use.",
-                            target="dropdown-menu-icon",
-                        ),
-                    ],
-                    id="dropdown-menu-div",
+            html.Div(
+                children=[
+                    html.Span("download", className="material-symbols-outlined", id=f"{self.id}-icon"),
+                    dropdown_menu,
+                    dbc.Tooltip(
+                        "Download this plot to your device as a plotly JSON or interactive HTML file "
+                        "for easy sharing or future use.",
+                        target="dropdown-menu-icon",
                     ),
-                className="dropdown-menu-outer-div",
-            )
+                ],
+                id="dropdown-menu-div",
+            ),
+            className="dropdown-menu-outer-div",
+        )
 
         return download_div
 

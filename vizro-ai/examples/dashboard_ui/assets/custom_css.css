@@ -333,8 +333,8 @@ img#banner {
 }
 
 .dropdown-menu-outer-div {
-  width: 100%;
+  align-items: end;
   display: flex;
   justify-content: end;
-  align-items: end;
+  width: 100%;
 }
