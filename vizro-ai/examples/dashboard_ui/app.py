@@ -15,6 +15,7 @@ from components import (
     CodeClipboard,
     CustomDashboard,
     DropdownMenu,
+    FlexContainer,
     HeaderComponent,
     Icon,
     Modal,
@@ -24,7 +25,6 @@ from components import (
     UserPromptTextArea,
     UserUpload,
     custom_table,
-    FlexContainer
 )
 from dash import Input, Output, State, callback, ctx, dcc, get_asset_url, html
 from vizro import Vizro
@@ -127,8 +127,9 @@ plot_page = vm.Page(
                     ),
                     components=[
                         UserPromptTextArea(id="text-area"),
-                        MyDropdown(options=SUPPORTED_MODELS["OpenAI"], value="gpt-4o-mini", multi=False,
-                                   id="model-dropdown"),
+                        MyDropdown(
+                            options=SUPPORTED_MODELS["OpenAI"], value="gpt-4o-mini", multi=False, id="model-dropdown"
+                        ),
                         vm.Button(
                             id="trigger-button",
                             text="Run Vizro-AI",
