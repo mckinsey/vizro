@@ -37,7 +37,9 @@ def lollipop(data_frame: pd.DataFrame, **kwargs):
         line_color=fig.layout.template.layout.colorway[0],
     )
 
-    fig.update_layout(showlegend=False, yaxis_showgrid=yaxis_showgrid, xaxis_showgrid=xaxis_showgrid, yaxis_rangemode='tozero')
+    fig.update_layout(
+        showlegend=False, yaxis_showgrid=yaxis_showgrid, xaxis_showgrid=xaxis_showgrid, yaxis_rangemode="tozero"
+    )
     return fig
 
 
