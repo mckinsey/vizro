@@ -48,15 +48,7 @@ def load_from_file(filter_column=None, parametrized_species=None):
             ignore_index=True,
         )
     elif filter_column == "sepal_length":
-        final_df = df[
-            df[filter_column].between(
-                data.get("min"),
-                data.get(
-                    "max",
-                ),
-                inclusive="both",
-            )
-        ]
+        final_df = df[df[filter_column].between(data.get("min"), data.get("max"), inclusive="both")]
     elif filter_column == "date_column":
         date_min = pd.to_datetime(data.get("date_min"))
         date_max = pd.to_datetime(data.get("date_max"))
@@ -101,9 +93,7 @@ page_1 = vm.Page(
         vm.Filter(id="p1-F-2", column="species", targets=["p1-G-2"], selector=vm.Dropdown(title="Static filter")),
         vm.Parameter(
             targets=["p1-G-1.x", "p1-G-2.x"],
-            selector=vm.RadioItems(
-                options=["species", "sepal_width"], title="Simple X-axis parameter"
-            ),
+            selector=vm.RadioItems(options=["species", "sepal_width"], title="Simple X-axis parameter"),
         ),
     ],
 )
@@ -231,7 +221,7 @@ page_6 = vm.Page(
             #  a list of values.
             #  SOLUTION -> Create the "Universal Vizro placeholder component".
             #  TEMPORARY SOLUTION -> set clearable=False for the dynamic Dropdown(multi=False)
-            # selector=vm.Dropdown(id="filter_id", multi=False), ->
+            # selector=vm.Dropdown(id="filter_id", multi=False),
             # selector=vm.Dropdown(id="filter_id", multi=False, value="setosa"),
             # selector=vm.RadioItems(id="filter_id"),
             # selector=vm.RadioItems(id="filter_id", value="setosa"),

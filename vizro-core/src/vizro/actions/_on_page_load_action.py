@@ -22,15 +22,11 @@ def _on_page_load(targets: list[ModelID], **inputs: dict[str, Any]) -> dict[Mode
         Dict mapping target chart ids to modified figures e.g. {'my_scatter': Figure({})}
 
     """
-    print("\nON PAGE LOAD - START")
-    print(f'Filter value: {ctx.args_grouping["external"]["filters"]}')
     return_obj = _get_modified_page_figures(
         ctds_filter=ctx.args_grouping["external"]["filters"],
         ctds_filter_interaction=ctx.args_grouping["external"]["filter_interaction"],
         ctds_parameter=ctx.args_grouping["external"]["parameters"],
         targets=targets,
     )
-
-    print("ON PAGE LOAD - END\n")
 
     return return_obj

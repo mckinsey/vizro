@@ -29,7 +29,6 @@ def _filter(
     Returns:
         Dict mapping target component ids to modified charts/components e.g. {'my_scatter': Figure({})}
     """
-    print("FILTER ACTION TRIGGERED!\n")
     return _get_modified_page_figures(
         ctds_filter=ctx.args_grouping["external"]["filters"],
         ctds_filter_interaction=ctx.args_grouping["external"]["filter_interaction"],

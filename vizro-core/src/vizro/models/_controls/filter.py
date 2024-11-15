@@ -294,4 +294,4 @@ class Filter(VizroBaseModel):
         # The dropna() isn't strictly required here but will be in future pandas versions when the behavior of stack
         # changes. See https://pandas.pydata.org/docs/whatsnew/v2.1.0.html#whatsnew-210-enhancements-new-stack.
         current_value = current_value or []
-        return np.unique(pd.concat([targeted_data.stack().dropna(), pd.Series(current_value)])).tolist()
+        return np.unique(pd.concat([targeted_data.stack().dropna(), pd.Series(current_value)])).tolist()  # noqa: PD013

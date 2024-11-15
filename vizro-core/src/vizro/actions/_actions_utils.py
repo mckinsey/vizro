@@ -292,8 +292,9 @@ def _get_modified_page_figures(
             )
 
     for target in control_targets:
-        current_value = [item for item in ctds_filter if item["id"] == model_manager[target].selector.id]
-        current_value = current_value if not current_value else current_value[0]["value"]
+        current_value: Any = [item for item in ctds_filter if item["id"] == model_manager[target].selector.id]
+        if current_value:
+            current_value = current_value[0]["value"]
         if hasattr(current_value, "__iter__") and ALL_OPTION in current_value:
             current_value = []
 
