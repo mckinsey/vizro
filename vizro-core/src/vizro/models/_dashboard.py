@@ -4,7 +4,7 @@ import base64
 import logging
 from functools import partial
 from pathlib import Path
-from typing import TYPE_CHECKING, Literal, TypedDict
+from typing import TYPE_CHECKING, Literal, Optional, TypedDict
 
 import dash
 import dash_bootstrap_components as dbc
@@ -91,7 +91,7 @@ class Dashboard(VizroBaseModel):
     theme: Literal["vizro_dark", "vizro_light"] = Field(
         "vizro_dark", description="Layout theme to be applied across dashboard. Defaults to `vizro_dark`"
     )
-    navigation: Navigation = None  # type: ignore[assignment]
+    navigation: Optional[Navigation] = None
     title: str = Field("", description="Dashboard title to appear on every page on top left-side.")
 
     # TODO[pydantic]: We couldn't refactor the `validator`, please replace it by `field_validator` manually.

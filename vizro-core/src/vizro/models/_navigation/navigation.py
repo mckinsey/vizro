@@ -1,5 +1,7 @@
 from __future__ import annotations
 
+from typing import Optional
+
 # try:
 #     from pydantic.v1 import validator
 # except ImportError:  # pragma: no cov
@@ -26,7 +28,7 @@ class Navigation(VizroBaseModel):
     """
 
     pages: NavPagesType = []
-    nav_selector: NavSelectorType = None
+    nav_selector: Optional[NavSelectorType] = None
 
     # validators
     _validate_pages = validator("pages", allow_reuse=True)(_validate_pages)
