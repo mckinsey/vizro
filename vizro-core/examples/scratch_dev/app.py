@@ -102,7 +102,7 @@ page_1 = vm.Page(
         vm.Parameter(
             targets=["p1-G-1.x", "p1-G-2.x"],
             selector=vm.RadioItems(
-                options=["species", "sepal_width"], value="species", title="Simple X-axis parameter"
+                options=["species", "sepal_width"], title="Simple X-axis parameter"
             ),
         ),
     ],
@@ -241,15 +241,8 @@ page_6 = vm.Page(
             # selector=vm.RangeSlider(id="filter_id", value=[5, 7]),
         ),
         vm.Parameter(
-            id="parameter_x",
-            targets=[
-                "graph_dynamic.x",
-            ],
-            selector=vm.Dropdown(
-                options=["species", "sepal_width"],
-                value="species",
-                multi=False,
-            ),
+            targets=["graph_dynamic.x"],
+            selector=vm.RadioItems(options=["species", "sepal_width"], title="Simple X-axis parameter"),
         ),
     ],
 )
