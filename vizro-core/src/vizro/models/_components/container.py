@@ -1,9 +1,9 @@
 from __future__ import annotations
 
-from typing import TYPE_CHECKING, Literal
+from typing import TYPE_CHECKING, Annotated, Literal, Optional
 
 from dash import html
-from pydantic import Field, validator
+from pydantic import BeforeValidator, Field, conlist, validator
 
 # try:
 #     from pydantic.v1 import Field, validator
@@ -31,15 +31,13 @@ class Container(VizroBaseModel):
     """
 
     type: Literal["container"] = "container"
-    components: list[ComponentType]
+    components: conlist(
+        Annotated[ComponentType, BeforeValidator(check_captured_callable), Field(...)], min_length=1
+    )  # since no default, can skip validate_default
     title: str = Field(..., description="Title to be displayed.")
-    layout: Layout = None  # type: ignore[assignment]
+    layout: Optional[Layout] = None
 
     # Re-used validators
-    _check_captured_callable = validator("components", allow_reuse=True, each_item=True, pre=True)(
-        check_captured_callable
-    )
-    _validate_min_length = validator("components", allow_reuse=True, always=True)(validate_min_length)
     _validate_layout = validator("layout", allow_reuse=True, always=True)(set_layout)
 
     @_log_call

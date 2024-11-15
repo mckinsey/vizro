@@ -33,7 +33,7 @@ def _get_unique_grid_component_ids(grid: list[list[int]]):
 
 
 # Validators for reuse
-def set_layout(cls, layout, values):
+def set_layout(layout, values):
     from vizro.models import Layout
 
     if "components" not in values:

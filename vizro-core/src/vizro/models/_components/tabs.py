@@ -4,7 +4,7 @@ from typing import TYPE_CHECKING, Literal
 
 import dash_mantine_components as dmc
 from dash import html
-from pydantic import validator
+from pydantic import conlist, validator
 
 # try:
 #     from pydantic.v1 import validator
@@ -27,9 +27,7 @@ class Tabs(VizroBaseModel):
     """
 
     type: Literal["tabs"] = "tabs"
-    tabs: list[Container]
-
-    _validate_tabs = validator("tabs", allow_reuse=True, always=True)(validate_min_length)
+    tabs: conlist(Container, min_length=1)
 
     @_log_call
     def build(self):

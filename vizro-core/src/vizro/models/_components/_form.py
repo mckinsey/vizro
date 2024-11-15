@@ -1,9 +1,9 @@
 from __future__ import annotations
 
-from typing import TYPE_CHECKING, Literal
+from typing import TYPE_CHECKING, Annotated, Literal
 
 from dash import html
-from pydantic import validator
+from pydantic import BeforeValidator, Field, conlist, validator
 
 # try:
 #     from pydantic.v1 import validator
@@ -30,14 +30,12 @@ class Form(VizroBaseModel):
     """
 
     type: Literal["form"] = "form"
-    components: list[_FormComponentType]
-    layout: Layout = None  # type: ignore[assignment]
+    components: conlist(
+        Annotated[_FormComponentType, BeforeValidator(check_captured_callable), Field(...)], min_length=1
+    )  # since no default, can skip validate_default
+    layout: Optional[Layout] = None  # type: ignore[assignment]
 
     # Re-used validators
-    _check_captured_callable = validator("components", allow_reuse=True, each_item=True, pre=True)(
-        check_captured_callable
-    )
-    _validate_min_length = validator("components", allow_reuse=True, always=True)(validate_min_length)
     _validate_layout = validator("layout", allow_reuse=True, always=True)(set_layout)
 
     @_log_call

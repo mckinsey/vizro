@@ -1,10 +1,10 @@
 from __future__ import annotations
 
 from collections.abc import Mapping
-from typing import Any, Optional, TypedDict, Union
+from typing import Annotated, Any, Optional, TypedDict, Union
 
 from dash import dcc, html
-from pydantic import Field, model_validator, validator
+from pydantic import BeforeValidator, Field, conlist, model_validator, validator
 
 # except ImportError:  # pragma: no cov
 #     from pydantic import Field, validator
@@ -40,10 +40,12 @@ class Page(VizroBaseModel):
 
     """
 
-    components: list[ComponentType]
+    components: conlist(
+        Annotated[ComponentType, BeforeValidator(check_captured_callable), Field(...)], min_length=1
+    )  # since no default, can skip validate_default
     title: str = Field(..., description="Title to be displayed.")
     description: str = Field("", description="Description for meta tags.")
-    layout: Optional[Layout] = None  # type: ignore[assignment]
+    layout: Optional[Layout] = None
     controls: list[ControlType] = []
     path: str = Field("", description="Path to navigate to page.")
 
@@ -51,10 +53,6 @@ class Page(VizroBaseModel):
     actions: list[ActionsChain] = []
 
     # Re-used validators
-    _check_captured_callable = validator("components", allow_reuse=True, each_item=True, pre=True)(
-        check_captured_callable
-    )
-    _validate_min_length = validator("components", allow_reuse=True, always=True)(validate_min_length)
     _validate_layout = validator("layout", allow_reuse=True, always=True)(set_layout)
 
     @model_validator(mode="before")
