@@ -14,7 +14,7 @@ import dash_mantine_components as dmc
 #  Choose between: dcc.Dropdown, dcc.Checklist, dcc.RadioItems, dcc.Slider, dcc.RangeSlider
 #  For example: CONTROL_SELECTOR = dcc.RadioItems
 #  =====================================================================
-CONTROL_SELECTOR = dcc.RangeSlider
+CONTROL_SELECTOR = dcc.Checklist
 
 # IS_DROPDOWN_MULTI must be set to True or False for dcc.Dropdown selector.
 IS_DROPDOWN_MULTI = True
@@ -273,18 +273,19 @@ def on_page_load(data, persisted_filter_value, x):
 
     # --- Calculate categorical filter ---
     if CONTROL_SELECTOR in SELECTOR_TYPE["categorical"]:
+        # Changing current_value format for easier handling
+        persisted_filter_value = persisted_filter_value if isinstance(persisted_filter_value, list) else [persisted_filter_value]
+
+        # Fetching new options
         categorical_filter_options = sorted(df["species"].unique().tolist())
-        if MULTI:
-            categorical_filter_value = [value for value in persisted_filter_value if value in categorical_filter_options]
-        else:
-            categorical_filter_value = persisted_filter_value if persisted_filter_value in categorical_filter_options else None
+
+        # new_options = current_value + new_options
+        categorical_filter_options = sorted(list(set(categorical_filter_options + persisted_filter_value)))
+
         new_filter_obj = categorical_filter_build(options=categorical_filter_options)
 
         # --- Filtering data: ---
-        if MULTI:
-            df = df[df["species"].isin(categorical_filter_value)]
-        else:
-            df = df[df["species"].isin([categorical_filter_value])]
+        df = df[df["species"].isin(persisted_filter_value)]
 
     # --- set_props ---
     # set_props(component_id="filter_container", props={"children": new_filter_obj})
@@ -307,20 +308,19 @@ def on_page_load(data, persisted_filter_value, x):
 
     # --- Calculate numerical filter ---
     if CONTROL_SELECTOR in SELECTOR_TYPE["numerical"]:
+        persisted_filter_value = persisted_filter_value if isinstance(persisted_filter_value, list) else [persisted_filter_value, persisted_filter_value]
+
         numerical_filter_min = float(df["sepal_length"].min())
         numerical_filter_max = float(df["sepal_length"].max())
-        if MULTI:
-            numerical_filter_value = [max(numerical_filter_min, persisted_filter_value[0]), min(numerical_filter_max, persisted_filter_value[1])]
-        else:
-            numerical_filter_value = persisted_filter_value if numerical_filter_min < persisted_filter_value < numerical_filter_max else numerical_filter_min
+
+        numerical_filter_min = min(numerical_filter_min, persisted_filter_value[0])
+        numerical_filter_max = max(numerical_filter_max, persisted_filter_value[1])
+
         new_filter_obj = numerical_filter_build(min_value=numerical_filter_min, max_value=numerical_filter_max)
         # set_props(component_id="numerical_filter_container", props={"children": new_filter_obj})
 
         # --- Filtering data: ---
-        if MULTI:
-            df = df[(df["sepal_length"] >= numerical_filter_value[0]) & (df["sepal_length"] <= numerical_filter_value[1])]
-        else:
-            df = df[(df["sepal_length"] == numerical_filter_value)]
+        df = df[(df["sepal_length"] >= numerical_filter_value[0]) & (df["sepal_length"] <= numerical_filter_value[1])]
 
     print("")
     return graph1_call(df), graph2_call(df, x), new_filter_obj
