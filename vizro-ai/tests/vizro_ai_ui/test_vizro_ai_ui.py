@@ -50,7 +50,7 @@ def test_chart_ui(chromedriver):
         try:
             webdriver_waiter(
                 chromedriver,
-                '//*[starts-with(@class, "anguage-python")]',
+                '//*[starts-with(@class, "language-python")]',
             )
             return True
         except (TimeoutException, InvalidSelectorException):
