@@ -1,12 +1,12 @@
 # How to run Vizro-AI dashboard
 
-This guide offers insights into different ways of running `VizroAI.dashboard` to generate Vizro dashboard. 
+This guide offers insights into different ways of running `VizroAI.dashboard` to generate Vizro dashboard.
 
 ??? note "Note: API key"
 
     Make sure you have followed the [LLM setup guide](../user-guides/install.md#set-up-access-to-a-large-language-model) and thatyour api key is set up in a `.env` file in the same folder as your Notebook file (`.ipynb`).
 
-## Run Vizro-AI dashboard 
+## Run Vizro-AI dashboard
 
 ### 1. Prepare the data and user prompt
 ```py
@@ -73,11 +73,11 @@ This triggers the dashboard building process. Once Vizro-AI finishes the dashboa
 
 ## Retrieve the Python code of the dashboard
 
-To illustrate the process, lets re-use the example provided above. 
+To illustrate the process, lets re-use the example provided above.
 
-Like the `VizroAI.plot` method, in order to produce more comprehensive output we need to set `return_elements=True`. `return_elements` is a boolean (by default `False`) which determines the return type of `VizroAI.dashboard`. 
+Like the `VizroAI.plot` method, in order to produce more comprehensive output we need to set `return_elements=True`. `return_elements` is a boolean (by default `False`) which determines the return type of `VizroAI.dashboard`.
 
-- If set to `False` it produces a `Vizro` dashboard object. 
+- If set to `False` it produces a `Vizro` dashboard object.
 - If set to `True`, it returns a class (a Pydantic model) containing both the dashboard object and the code string used to generate it.
 
 !!! example "View dashboard code"
