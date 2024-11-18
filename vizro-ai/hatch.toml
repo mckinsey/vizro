@@ -57,6 +57,7 @@ test-unit-coverage = [
   "coverage report"
 ]
 test-vizro-ai-ui = "pytest -vs --reruns 1 tests/vizro_ai_ui --headless {args}"
+vizro-ai-ui = "python examples/dashboard_ui/app.py &"
 
 [envs.docs]
 dependencies = [
@@ -83,12 +84,6 @@ extra-dependencies = ["pydantic==1.10.16"]
 python = "3.9"
 
 [envs.tests]
-extra-dependencies = [
-  "black",
-  "openpyxl",
-  "langchain_anthropic",
-  "langchain_mistralai"
-]
 python = "3.12"
 
 [version]

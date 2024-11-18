@@ -52,7 +52,7 @@ jobs:
 
       - name: Run vizroAI UI tests
         run: |
-          python examples/dashboard_ui/app.py &
+          hatch run tests:vizro-ai-ui
           tests/vizro_ai_ui/wait-for-it.sh 127.0.0.1:8050 -t 30
           hatch run tests:test-vizro-ai-ui
         env:
