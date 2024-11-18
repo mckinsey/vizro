@@ -83,6 +83,12 @@ extra-dependencies = ["pydantic==1.10.16"]
 python = "3.9"
 
 [envs.tests]
+extra-dependencies = [
+  "black",
+  "openpyxl",
+  "langchain_anthropic",
+  "langchain_mistralai"
+]
 python = "3.12"
 
 [version]
