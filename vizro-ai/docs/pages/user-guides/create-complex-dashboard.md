@@ -105,9 +105,75 @@ The call to `dashboard()` triggers the dashboard building process. Once Vizro-AI
 
 !!! example "Generated dashboard"
 
-    === "Code"
+    === "Code for the cell"
+
         ```py
+        import vizro_ai
+        from vizro_ai import VizroAI
+        import plotly.express as px
+
+        from dotenv import load_dotenv
+        load_dotenv()
+
+        df1 = px.data.election()
+        df2 = px.data.stocks(datetimes=True)
+
+        user_question = """
+        Create a 2-page dashabord.
+
+        <Page 1>
+        Visualize the election result.
+
+        NOTE:
+        1. use consistent and default color scheme.
+           1. make axis label and chart title simple and readable.
+
+        I need 3 pie charts, 3 bar charts, 1 table, and 1 radio button as filter.
+
+        pie chart 1: shows number of votes Coderre received, compared to total votes.
+        pie chart 2: shows number of votes Bergeron received, compared to total votes.
+        pie chart 3: shows number of votes Joly received, compared to total votes.
+
+        bar chart 1: shows number of districts Coderre winned. put `result` on y-axis, put "count of districts" on x-axis.
+        bar chart 2: shows number of districts Bergeron winned. put `result` on y-axis, put "count of districts" on x-axis.
+        bar chart 3: shows number of districts Joly winned. put `result` on y-axis, put "count of districts" on x-axis.
+
+        use table to show the election data.
+
+        Layout of page 1:
+        Imaging the whole page is divided by a (3 by 3) grid, with 3 rows and 3 columns.
+        Row 1 - pie chart 1 takes column 1; pie chart 2 takes column 2; pie chart 3 takes column 3.
+        Row 2 - bar chart 1 takes column 1; bar chart 2 takes column 2; bar chart 3 takes column 3.
+        Row 3 - the table span all three columns.
+
+        Add a filter to filter all pie charts by district, using radio button as selelctor.
+
+
+        <Page 2>
+        Visualize the tech company stock data.
+        I need 1 line chart, 6 cards.
+
+        line chart: shows the stock price history of all comanies. put data on x-axis, company names as facet_row. make the y-axis label simple and readable.
+
+        For cards, render the exact text as requested.
+        Card 1 has text `> Dow Jones \n\n ## **39,737.26**\n`
+        Card 2 has text `> S&P 500 \n\n ## **4,509.61**\n`
+        Card 3 has text `> NASDAQ Composite \n\n ## **14,141.48**\n`
+        Card 4 has text `> FTSE 100 \n\n ## **7,592.66**\n`
+        Card 5 has text `> DAX \n\n ## **15,948.85**\n`
+        Card 6 has text `> Nikkei 225 \n\n ## **32,210.78**\n`
+
+        Page Layout:
+        In a grid of 7 rows and 6 columns:
+        column 1 to column 5 - the line chart spans 5 columns (all 7 rows) from the left.
+        column 6 - card 1 takes row 1; card 2 takes row 2; card 3 takes row 3; ... card 6 takes row 6; row 7 is empty.
+        """
+
+        vizro_ai = VizroAI(model="gpt-4o")
+        dashboard = vizro_ai.dashboard([df1, df2], user_question)
+
         Vizro().build(dashboard).run()
+
         ```
 
     === "Page1"

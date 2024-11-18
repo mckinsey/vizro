@@ -55,7 +55,7 @@ nav:
       - Contribute to Vizro: pages/explanation/contributing.md
       - Documentation style: pages/explanation/documentation-style-guide.md
       - Authors: pages/explanation/authors.md
-  - Examples:
+  - Try out!:
       - Vizro gallery: https://vizro.mckinsey.com/
   - Vizro-AI:
       - Vizro-AI: https://vizro.readthedocs.io/projects/vizro-ai/
