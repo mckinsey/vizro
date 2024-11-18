@@ -48,7 +48,7 @@ DISALLOWED_SELECTORS = {
     "categorical": SELECTORS["numerical"] + SELECTORS["temporal"],
 }
 
-# TODO: Remove this check when support dynamic mode for DatePicker selector.
+# TODO: Remove DYNAMIC_SELECTORS along with its validation check when support dynamic mode for the DatePicker selector.
 # Tuple of filter selectors that support dynamic mode
 DYNAMIC_SELECTORS = (Dropdown, Checklist, RadioItems, Slider, RangeSlider)
 
@@ -173,14 +173,11 @@ class Filter(VizroBaseModel):
                 f"'{self.column}'."
             )
 
-        # Selector can't be dynamic if:
-        #  1. Selector doesn't support the dynamic mode
-        #  2. Selector is categorical and "options" prop is defined
-        #  3. Selector is numerical and "min" and "max" props are defined
+        # Selector can be dynamic if selector support the dynamic mode and "options", "min" and "max" are not provided.
         if isinstance(self.selector, DYNAMIC_SELECTORS) and (
-            hasattr(self.selector, "options")
-            and not getattr(self.selector, "options")
-            or all(hasattr(self.selector, attr) and getattr(self.selector, attr) is None for attr in ["min", "max"])
+            not getattr(self.selector, "options", None)
+            and getattr(self.selector, "min", None) is None
+            and getattr(self.selector, "max", None) is None
         ):
             for target_id in self.targets:
                 data_source_name = model_manager[target_id]["data_frame"]
@@ -218,7 +215,6 @@ class Filter(VizroBaseModel):
 
     @_log_call
     def build(self):
-        # TODO: Align inner and outer ids to be handled in the same way as for other figure components.
         selector_build_obj = self.selector.build()
         return dcc.Loading(id=self.id, children=selector_build_obj) if self._dynamic else selector_build_obj
 
@@ -277,12 +273,10 @@ class Filter(VizroBaseModel):
         _max = targeted_data.max(axis=None).item()
 
         if current_value:
-            if isinstance(current_value, list):
-                _min = min(_min, current_value[0])
-                _max = max(_max, current_value[1])
-            else:
-                _min = min(_min, current_value)
-                _max = max(_max, current_value)
+            # The current_value is a list of two elements when a range selector is used. Otherwise it is a single value.
+            _is_range_selector = isinstance(current_value, list)
+            _min = min(_min, current_value[0] if _is_range_selector else current_value)
+            _max = max(_max, current_value[1] if _is_range_selector else current_value)
 
         return _min, _max
 

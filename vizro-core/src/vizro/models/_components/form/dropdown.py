@@ -114,11 +114,11 @@ class Dropdown(VizroBaseModel):
     def _build_dynamic_placeholder(self):
         # Setting self.value is kind of Dropdown pre_build method. It sets self.value only the first time if it's None.
         # We cannot create pre_build for the Dropdown because it has to be called after vm.Filter.pre_build, but nothing
-        # guarantees that. We can call Filter.selector.pre_build() from the Filter.pre_build() method it we decide that.
+        # guarantees that. We can call Filter.selector.pre_build() from the Filter.pre_build() method if we decide that.
         if self.value is None:
             self.value = get_options_and_default(self.options, self.multi)[1]
 
-        # Replace this with the Universal Vizro Placeholder component.
+        # TODO-NEXT: Replace this with the "universal Vizro placeholder" component.
         return html.Div(
             children=[
                 dbc.Label(self.title, html_for=self.id) if self.title else None,
