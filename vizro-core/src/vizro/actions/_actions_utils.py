@@ -270,10 +270,7 @@ def _get_modified_page_figures(
         else:
             figure_targets.append(target)
 
-    # Retrieving only figure_targets data_frames from _multi_load is not the best solution.
-    # In that way, we assume that Filter.targets are the subset of the action's targets. This works for the
-    # on_page_load, but will not work if targets are explicitly set.
-    # For example, in future, if Parameter is targeting only a single Filter.
+    # Get data_frames for all figure_targets and components that are targets of controls
     _get_unfiltered_data_targets = list(set(figure_targets + control_targets_targets))
 
     figure_targets_unfiltered_data: dict[ModelID, pd.DataFrame] = _get_unfiltered_data(
