@@ -34,7 +34,7 @@ jobs:
   test-vizro-ai-ui:
     if: ${{ ! github.event.pull_request.head.repo.fork }}
     name: test-vizro-ai-ui
-    runs-on: ubintu-latest
+    runs-on: ubuntu-latest
 
     steps:
       - uses: actions/checkout@v4
