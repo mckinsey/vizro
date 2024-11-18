@@ -2,7 +2,6 @@ import os
 
 import pytest
 from selenium.common import InvalidSelectorException, TimeoutException
-
 from tests.helpers.common import (
     wait_for,
     webdriver_click_waiter,

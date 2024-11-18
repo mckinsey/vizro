@@ -3,7 +3,6 @@ from datetime import datetime
 import pytest
 from selenium import webdriver
 from selenium.webdriver.chrome.options import Options
-
 from tests.helpers.checkers import browser_console_warnings_checker
 
 
@@ -23,11 +22,7 @@ def chromedriver(request):
 def teardown_method(chromedriver):
     """Fixture checks log errors and quits the driver after each test."""
     yield
-    log_levels = [
-        level
-        for level in chromedriver.get_log("browser")
-        if level["level"] == "SEVERE" or "WARNING"
-    ]
+    log_levels = [level for level in chromedriver.get_log("browser") if level["level"] == "SEVERE" or "WARNING"]
     if log_levels:
         for log_level in log_levels:
             browser_console_warnings_checker(log_level, log_levels)
@@ -54,7 +49,5 @@ def test_failed_check(request):
 
 
 def take_screenshot(driver, nodeid):
-    file_name = f'{nodeid}_{datetime.today().strftime("%Y-%m-%d_%H-%M")}.png'.replace(
-        "/", "_"
-    ).replace("::", "__")
+    file_name = f'{nodeid}_{datetime.today().strftime("%Y-%m-%d_%H-%M")}.png'.replace("/", "_").replace("::", "__")
     driver.save_screenshot(file_name)

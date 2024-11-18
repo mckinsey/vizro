@@ -58,7 +58,6 @@ jobs:
           OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
           OPENAI_API_BASE: ${{ secrets.OPENAI_API_BASE }}
 
-
       - name: Copy failed screenshots
         if: failure()
         run: |
