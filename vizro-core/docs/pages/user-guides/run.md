@@ -80,7 +80,7 @@ The dashboard application can be launched in a Jupyter environment in `inline`, 
         page = vm.Page(
             title="My first page",
             components=[
-                vm.Graph(id="scatter_chart", figure=px.scatter(iris, x="sepal_length", y="petal_width", color="species")),
+                vm.Graph(figure=px.scatter(iris, x="sepal_length", y="petal_width", color="species")),
             ],
         )
 
@@ -114,7 +114,7 @@ The dashboard application can be launched in a Jupyter environment in `inline`, 
         page = vm.Page(
             title="My first page",
             components=[
-                vm.Graph(id="scatter_chart", figure=px.scatter(iris, x="sepal_length", y="petal_width", color="species")),
+                vm.Graph(figure=px.scatter(iris, x="sepal_length", y="petal_width", color="species")),
             ],
         )
 

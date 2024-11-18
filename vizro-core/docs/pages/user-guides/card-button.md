@@ -526,7 +526,7 @@ To create a navigation card:
         page_2 = vm.Page(
             title="Filters and parameters",
             components=[
-                vm.Graph(id="scatter", figure=px.scatter(iris, x="sepal_length", y="petal_width", color="sepal_width")),
+                vm.Graph(figure=px.scatter(iris, x="sepal_length", y="petal_width", color="sepal_width")),
             ],
         )
 
@@ -560,7 +560,6 @@ To create a navigation card:
                 data_frame: iris
                 x: sepal_length
                 y: petal_width
-              id: scatter
               type: graph
           title: Filters and parameters
         ```
@@ -632,7 +631,7 @@ In the below example we show how to configure a button to export the filtered da
                     actions=[vm.Action(function=export_data(targets=["scatter_chart"]))],
                 ),
             ],
-            controls=[vm.Filter(column="species", selector=vm.Dropdown(title="Species"))],
+            controls=[vm.Filter(column="species")],
         )
 
         dashboard = vm.Dashboard(pages=[page])
