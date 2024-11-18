@@ -9,6 +9,7 @@ on:
     branches: [main]
   pull_request:
     branches:
+      - qa/component_library_tests
       - main
     paths:
       - "vizro-ai/**"
