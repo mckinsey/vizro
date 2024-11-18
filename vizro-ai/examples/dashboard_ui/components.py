@@ -89,12 +89,17 @@ class CodeClipboard(vm.VizroBaseModel):
 
         markdown_code = "\n".join(["```python", code, "```"])
 
-        return html.Div(
-            [
-                dcc.Clipboard(target_id=f"{self.id}-code-markdown", className="code-clipboard"),
-                dcc.Markdown(markdown_code, id=f"{self.id}-code-markdown"),
-            ],
-            className="code-clipboard-container",
+        return dcc.Loading(
+            html.Div(
+                [
+                    dcc.Clipboard(target_id=f"{self.id}-code-markdown", className="code-clipboard"),
+                    dcc.Markdown(markdown_code, id=f"{self.id}-code-markdown"),
+                ],
+                className="code-clipboard-container",
+            ),
+            color="grey",
+            parent_className="loading-container",
+            overlay_style={"visibility": "visible", "opacity": 0.3},
         )
 
 
@@ -293,8 +298,8 @@ class CustomDashboard(vm.Dashboard):
     def build(self):
         """Returns custom dashboard."""
         dashboard_build_obj = super().build()
-        dashboard_build_obj.children.append(dcc.Store(id="data-store-id", storage_type="session"))
-        dashboard_build_obj.children.append(dcc.Store(id="code-output-store-id", storage_type="session"))
+        dashboard_build_obj.children.append(dcc.Store(id="data-store", storage_type="session"))
+        dashboard_build_obj.children.append(dcc.Store(id="code-output-store", storage_type="session"))
         return dashboard_build_obj
 
 
@@ -340,7 +345,7 @@ def custom_table(data_frame):
                 id="modal-table-tooltip",
             ),
             html.P(
-                id="upload-message-id", children=["Upload your data file (csv or excel)"], style={"paddingTop": "10px"}
+                id="upload-message", children=["Upload your data file (csv or excel)"], style={"paddingTop": "10px"}
             ),
             dbc.Modal(
                 id="data-modal",
@@ -392,12 +397,11 @@ class DropdownMenu(vm.VizroBaseModel):
                 dbc.Tooltip(
                     "Download this plot to your device as a plotly JSON or interactive HTML file "
                     "for easy sharing or future use.",
-                    target="dropdown-menu-icon",
+                    target="dropdown-menu-div",
                 ),
             ],
-            id="dropdown-menu-id",
+            id="dropdown-menu-div",
         )
-
         return download_div
 
 
@@ -415,10 +419,23 @@ class HeaderComponent(vm.VizroBaseModel):
         )
         icon = html.Div(
             children=[
-                html.Span("settings", className="material-symbols-outlined", id="open-settings-id"),
-                dbc.Tooltip("Settings", target="open-settings-id"),
+                html.Span("settings", className="material-symbols-outlined", id="open-settings"),
+                dbc.Tooltip("Settings", target="open-settings"),
             ],
             className="settings-div",
         )
 
         return html.Div(children=[header, icon], className="custom_header")
+
+
+class FlexContainer(vm.Container):
+    """Custom flex `Container`."""
+
+    type: Literal["flex_container"] = "flex_container"
+    title: str = None  # Title exists in vm.Container but we don't want to use it here.
+
+    def build(self):
+        """Returns a flex container."""
+        return html.Div(
+            id=self.id, children=[component.build() for component in self.components], className="flex-container"
+        )
