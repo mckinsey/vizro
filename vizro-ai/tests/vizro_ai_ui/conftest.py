@@ -10,7 +10,7 @@ from tests.helpers.checkers import browser_console_warnings_checker
 def chromedriver(request):
     """Fixture for starting chromedriver."""
     options = Options()
-    # options.add_argument("--headless")
+    options.add_argument("--headless")
     options.add_argument("--window-size=1920,1080")
     options.add_argument("--disable-search-engine-choice-screen")
     driver = webdriver.Chrome(options=options)
