@@ -1,5 +1,5 @@
 from typing import Literal
-
+from dash import dcc, get_relative_path
 import dash_bootstrap_components as dbc
 
 try:
@@ -24,6 +24,7 @@ class Button(VizroBaseModel):
 
     type: Literal["button"] = "button"
     text: str = Field("Click me!", description="Text to be displayed on button.")
+    href: str = Field("", description="URL (relative or absolute) to navigate to.")
     actions: list[Action] = []
 
     # Re-used validators
@@ -31,4 +32,5 @@ class Button(VizroBaseModel):
 
     @_log_call
     def build(self):
-        return dbc.Button(id=self.id, children=self.text)
+        return dbc.Button(id=self.id,children=self.text,   href=get_relative_path(self.href) if self.href.startswith("/") else self.href,
+                target="_top")
