@@ -1,6 +1,7 @@
 from typing import Literal
-from dash import dcc, get_relative_path
+
 import dash_bootstrap_components as dbc
+from dash import get_relative_path
 
 try:
     from pydantic.v1 import Field
@@ -32,5 +33,9 @@ class Button(VizroBaseModel):
 
     @_log_call
     def build(self):
-        return dbc.Button(id=self.id,children=self.text,   href=get_relative_path(self.href) if self.href.startswith("/") else self.href,
-                target="_top")
+        return dbc.Button(
+            id=self.id,
+            children=self.text,
+            href=get_relative_path(self.href) if self.href.startswith("/") else self.href,
+            target="_top",
+        )
