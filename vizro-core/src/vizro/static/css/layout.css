@@ -24,7 +24,7 @@
 }
 
 #right-side {
-  background: var(--main-container-bg-color);
+  background: var(--right-side-bg);
   display: flex;
   flex-direction: column;
   gap: 1.25rem;
