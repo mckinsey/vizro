@@ -485,8 +485,9 @@ img[src*="#my-image"] {
 This section describes how to use the [`Card`][vizro.models.Card] component to create a navigation card,
 enabling users to navigate to another page by clicking on the card area.
 
-For a button-style navigation component, see the [guide on creating a link button](#create-a-link-button).
-To configure the navigation panel on the left hand side of the screen, refer to the [guide on navigation](navigation.md).
+For a button-style link navigation component, see the [separate guide on creating a link button](#create-a-link-button).
+To configure the navigation panel on the left hand side of the screen, refer to the
+[separate guide on navigation](navigation.md).
 
 To create a navigation card:
 
@@ -633,10 +634,12 @@ You can configure the `text` argument to alter the display text of the [`Button`
 
 ### Create a link button
 
-To navigate to different pages using a button with an anchor tag, provide an absolute or relative URL to the 
+To navigate to a different page using a button with an anchor tag, assign an absolute or relative URL to the 
 `Button.href`.
 
 ```python
+import vizro.models as vm
+
 vm.Button(text="Leave us a star! ⭐", href="https://github.com/mckinsey/vizro")
 ```
 
@@ -644,10 +647,10 @@ vm.Button(text="Leave us a star! ⭐", href="https://github.com/mckinsey/vizro")
 
 You can use the [`Button`][vizro.models.Button] to trigger predefined action functions, such as exporting data. 
 To explore the available options for [`Actions`][vizro.models.Action], refer to our [API reference][vizro.actions]. 
-Use the `Button.actions` argument to specify which action function should be executed when the button is clicked.
+Use the `Button.actions` argument to specify which action function executes when the button is clicked.
 
-In the example below, we demonstrate how to configure a button to export the filtered data of a target chart using the 
-[export_data][vizro.actions.export_data] action function
+The example below demonstrates how to configure a button to export the filtered data of a target chart using the
+[export_data][vizro.actions.export_data] action function.
 
 
 !!! example "Button with action"

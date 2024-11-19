@@ -33,6 +33,7 @@ class CodeClipboard(vm.VizroBaseModel):
             ],
             href=f"https://py.cafe/snippet/vizro/v1#code={quote(self.code)}",
             target="_blank",
+            className="pycafe-link",
         )
 
         return html.Div(
