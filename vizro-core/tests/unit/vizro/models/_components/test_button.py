@@ -19,16 +19,22 @@ class TestButtonInstantiation:
         assert button.href == ""
         assert button.actions == []
 
-    @pytest.mark.parametrize("text, href", [("Test", "/page_1_reference"),
-                                            ("Test", "https://www.google.de/"),
-                                            (123, "/"), ("""# Header""", "/"),
-                                            (1.23, "/"), ("""<p>Hello </p>""", "/"),
-                                            (True, "/"),
-                                            ])
+    @pytest.mark.parametrize(
+        "text, href",
+        [
+            ("Test", "/page_1_reference"),
+            ("Test", "https://www.google.de/"),
+            (123, "/"),
+            ("""# Header""", "/"),
+            (1.23, "/"),
+            ("""<p>Hello </p>""", "/"),
+            (True, "/"),
+        ],
+    )
     def test_create_button_with_optional(self, text, href):
         button = vm.Button(id="button-id", text=text, href=href)
 
-        assert button.id=="button-id"
+        assert button.id == "button-id"
         assert button.type == "button"
         assert button.text == str(text)
         assert button.href == href
@@ -41,13 +47,12 @@ class TestButtonInstantiation:
 
 
 class TestBuildMethod:
-
     def test_button_build_wo_href(self):
         button = vm.Button(id="button_id", text="My text").build()
         expected = dbc.Button(id="button_id", children="My text", href="", target="_top")
         assert_component_equal(button, expected)
+
     def test_button_build_with_href(self):
         button = vm.Button(id="button_id", text="My text", href="https://www.google.com").build()
-        expected = dbc.Button(id="button_id", children="My text", href="https://www.google.com",
-                target="_top")
+        expected = dbc.Button(id="button_id", children="My text", href="https://www.google.com", target="_top")
         assert_component_equal(button, expected)
