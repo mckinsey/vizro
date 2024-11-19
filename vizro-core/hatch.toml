@@ -30,7 +30,10 @@ dependencies = [
   "openpyxl",
   "jupyter",
   "pre-commit",
-  "PyGithub"
+  "PyGithub",
+  "imutils",
+  "opencv-python",
+  "pyhamcrest"
 ]
 installer = "uv"
 
@@ -55,7 +58,7 @@ schema-check = ["python schemas/generate.py --check"]
 # fix this, but we don't actually use `hatch run test` anywhere right now.
 # See comments added in https://github.com/mckinsey/vizro/pull/444.
 test = "pytest tests --headless {args}"
-test-component-library = "pytest tests/component_library --headless {args}"
+test-e2e-component-library = "pytest tests/e2e/test_component_library.py --headless {args}"
 test-integration = "pytest tests/integration --headless {args}"
 test-js = "./tools/run_jest.sh {args}"
 test-unit = "pytest tests/unit {args}"
@@ -118,14 +121,6 @@ extra-dependencies = [
 ]
 features = ["kedro"]
 python = "3.9"
-
-[envs.tests]
-extra-dependencies = [
-  "imutils",
-  "opencv-python",
-  "pyhamcrest"
-]
-python = "3.12"
 
 [publish.index]
 disable = true

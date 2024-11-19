@@ -1,4 +1,4 @@
-name: Integration tests Component Library
+name: e2e component library tests
 
 defaults:
   run:
@@ -14,29 +14,30 @@ on:
 env:
   PYTHONUNBUFFERED: 1
   FORCE_COLOR: 1
+  PYTHON_VERSION: "3.12"
 
 jobs:
-  test-component-library-vizro-core:
-    name: test-component-library-vizro-core
+  test-e2e-component-library-vizro-core:
+    name: test-e2e-component-library-vizro-core
 
     runs-on: ubuntu-latest
 
     steps:
       - uses: actions/checkout@v4
 
-      - name: Set up Python 3.12
+      - name: Set up Python ${{ env.PYTHON_VERSION }}
         uses: actions/setup-python@v5
         with:
-          python-version: 3.12
+          python-version: ${{ env.PYTHON_VERSION }}
 
       - name: Install Hatch
         run: pip install hatch
 
       - name: Show dependency tree
-        run: hatch run tests:pip tree
+        run: hatch run all.py${{ env.PYTHON_VERSION }}:pip tree
 
-      - name: Run integration tests
-        run: hatch run tests:test-component-library
+      - name: Run e2e component library tests
+        run: hatch run all.py${{ env.PYTHON_VERSION }}:test-e2e-component-library
 
       - name: Copy failed screenshots
         if: failure()

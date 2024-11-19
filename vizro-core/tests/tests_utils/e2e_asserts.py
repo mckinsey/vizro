@@ -1,11 +1,11 @@
-import subprocess
-
 import cv2
 import imutils
+import shutil
 from hamcrest import assert_that, equal_to
+from pathlib import Path
 
 
-def comparison_logic(original_image, new_image):
+def _compare_images(original_image, new_image):
     """Comparison process."""
     difference = cv2.subtract(original_image, new_image)
     blue, green, red = cv2.split(difference)
@@ -14,7 +14,7 @@ def comparison_logic(original_image, new_image):
     assert_that(cv2.countNonZero(red), equal_to(0), reason="Red channel is different")
 
 
-def create_image_difference(original, new):
+def _create_image_difference(original, new):
     """Creates new image with diff of images comparison."""
     diff = original.copy()
     cv2.absdiff(original, new, diff)
@@ -30,19 +30,20 @@ def create_image_difference(original, new):
     return new
 
 
-def compare_images(browserdriver, base_image, test_image_name):
+def assert_image_equal(browserdriver, test_image_name):
     """Comparison logic and diff files creation."""
+    base_image_name = f"{test_image_name.replace('test', 'base')}.png"
     browserdriver.save_screenshot(f"{test_image_name}_branch.png")
-    original = cv2.imread(f"tests/screenshots/{base_image}")
+    original = cv2.imread(f"tests/e2e/screenshots/{base_image_name}")
     new = cv2.imread(f"{test_image_name}_branch.png")
     try:
-        comparison_logic(original, new)
-        subprocess.call(f"rm -rf {test_image_name}_branch.png", shell=True)
-    except (AssertionError, AttributeError) as exp:
-        subprocess.call(f"cp {test_image_name}_branch.png {base_image}", shell=True)
-        diff = create_image_difference(original=new, new=original)
+        _compare_images(original, new)
+        Path(f"{test_image_name}_branch.png").unlink()
+    except AssertionError as exp:
+        shutil.copy(f"{test_image_name}_branch.png",  base_image_name)
+        diff = _create_image_difference(original=new, new=original)
         cv2.imwrite(f"{test_image_name}_diff_main.png", diff)
-        raise Exception("pictures are not the same") from exp
+        raise AssertionError("pictures are not the same") from exp
     except cv2.error as exp:
-        subprocess.call(f"cp {test_image_name}_branch.png {base_image}", shell=True)
-        raise Exception("pictures has different sizes") from exp
+        shutil.copy(f"{test_image_name}_branch.png", base_image_name)
+        raise cv2.error("pictures has different sizes") from exp

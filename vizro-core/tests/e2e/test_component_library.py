@@ -1,9 +1,7 @@
-# ruff: noqa: F403, F405
 import dash_bootstrap_components as dbc
 import pandas as pd
-import pytest
 from dash import Dash, html
-from tests.helpers.common import compare_images
+from e2e_asserts import assert_image_equal
 
 from vizro.figures.library import kpi_card, kpi_card_reference
 
@@ -69,10 +67,8 @@ example_reference_cards = [
 ]
 
 
-@pytest.mark.filterwarnings("ignore:HTTPResponse.getheader():DeprecationWarning")
-@pytest.mark.filterwarnings("ignore::pytest.PytestUnhandledThreadExceptionWarning")
-@pytest.mark.filterwarnings("ignore:unclosed file:ResourceWarning")
-def test_kpi_card(dash_duo):
+def test_kpi_card_component_library(dash_duo, get_test_name):
+
     app = Dash(__name__, external_stylesheets=[dbc.themes.BOOTSTRAP])
     app.layout = dbc.Container(
         [
@@ -89,5 +85,5 @@ def test_kpi_card(dash_duo):
     dash_duo.start_server(app)
     dash_duo.wait_for_page(timeout=20)
     dash_duo.wait_for_element("div[class='card-kpi card']")
-    compare_images(dash_duo.driver, "base_kpi_comp_lib.png", "tests_kpi_comp_lib")
+    assert_image_equal(dash_duo.driver, get_test_name)
     assert dash_duo.get_logs() == [], "browser console should contain no error"
