@@ -13,7 +13,7 @@
 }
 
 #left-main::-webkit-scrollbar-thumb {
-  border-color: var(--surfaces-bg-02);
+  border-color: var(--surfaces-bg02);
 }
 
 .card::-webkit-scrollbar-thumb,

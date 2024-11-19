@@ -17,7 +17,7 @@
 }
 
 #left-side {
-  background-color: var(--surfaces-bg-02);
+  background-color: var(--surfaces-bg02);
   display: flex;
   flex-direction: row;
   height: 100%;
@@ -42,7 +42,7 @@
 
 #page-header {
   align-items: center;
-  background-color: var(--surfaces-bg-02);
+  background-color: var(--surfaces-bg02);
   display: flex;
   flex-direction: row;
   height: 60px;
@@ -53,7 +53,7 @@
 }
 
 #page-header:not(:empty) {
-  border-bottom: 1px solid var(--border-subtle-alpha-01);
+  border-bottom: 1px solid var(--border-subtleAlpha01);
 }
 
 #page-components {
@@ -82,7 +82,7 @@
 }
 
 #control-panel:not(:empty) {
-  border-bottom: 1px solid var(--border-subtle-alpha-01);
+  border-bottom: 1px solid var(--border-subtleAlpha01);
 }
 
 .page-error-container {
@@ -125,7 +125,7 @@
 }
 
 #left-sidebar {
-  border-right: 1px solid var(--border-subtle-alpha-01);
+  border-right: 1px solid var(--border-subtleAlpha01);
   display: flex;
   flex-direction: column;
   gap: 40px;

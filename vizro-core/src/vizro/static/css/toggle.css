@@ -12,7 +12,7 @@
 }
 
 #dashboard-container .mantine-Switch-track:focus {
-  border: 2px solid var(--focus-focus);
+  border: 2px solid var(--focus);
 }
 
 #dashboard-container .mantine-Switch-input {
@@ -33,7 +33,7 @@
 }
 
 #dashboard-container input:checked + * > .mantine-11dx59s {
-  background: var(--text-contrast-primary);
+  background: var(--text-primary-inverted);
   left: calc(100% - 12px);
 }
 

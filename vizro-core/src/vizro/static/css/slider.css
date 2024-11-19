@@ -29,7 +29,7 @@
 .rc-slider-handle:hover,
 .rc-slider-handle-dragging.rc-slider-handle-dragging.rc-slider-handle-dragging,
 .rc-slider-handle-click-focused:focus {
-  background-color: var(--surfaces-bg-01);
+  background-color: var(--surfaces-bg01);
   border: solid 6px var(--fill-on-active);
   border-color: var(--fill-on-active);
   border-radius: 100%;
@@ -119,7 +119,7 @@ input.dash-input:invalid {
   padding: 0;
   text-align: center;
   text-decoration: underline;
-  text-decoration-color: var(--border-subtle-alpha-01);
+  text-decoration-color: var(--border-subtleAlpha01);
 }
 
 .slider-text-input-range-separator {

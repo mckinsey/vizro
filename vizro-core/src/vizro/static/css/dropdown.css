@@ -3,7 +3,7 @@
   background-color: var(--field-enabled);
   border: none;
   border-radius: 0;
-  box-shadow: var(--box-shadow-elevation-0);
+  box-shadow: var(--elevation-0);
   font-size: var(--text-size-02);
 }
 
@@ -12,7 +12,7 @@
   background-color: var(--field-enabled);
   border: none;
   border-radius: 0;
-  box-shadow: var(--box-shadow-elevation-0);
+  box-shadow: var(--elevation-0);
   font-size: var(--text-size-02);
   line-height: var(--text-size-05);
 }
@@ -25,7 +25,7 @@
 
 /* Dropdown menu hover effect */
 #dashboard-container .VirtualizedSelectFocusedOption {
-  background-color: var(--state-overlays-hover);
+  background-color: var(--stateOverlays-hover);
 }
 
 /* Input box for existing values and user input */
@@ -58,7 +58,7 @@
 
 /* Border on focus */
 #dashboard-container .is-focused:not(.is-open) > .Select-control {
-  box-shadow: 0 0 0 2px var(--focus-focus) inset;
+  box-shadow: 0 0 0 2px var(--focus) inset;
 }
 
 /* Single-select dropdown only ------------------- */
@@ -81,7 +81,7 @@
   background-color: var(--tags-bg-color);
   border: 0;
   border-radius: 0;
-  box-shadow: var(--box-shadow-elevation-0);
+  box-shadow: var(--elevation-0);
   color: var(--tags-text-color);
   font-size: var(--text-size-02);
   height: var(--tag-height);
