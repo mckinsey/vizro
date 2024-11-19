@@ -8,36 +8,6 @@ This guide offers insights into different ways of running `VizroAI.dashboard` to
 
 ## Run Vizro-AI dashboard
 
-### 1. Prepare the data and user prompt
-```py
-import vizro.plotly.express as px
-
-df = px.data.tips()
-
-user_question = """
-Create a one-page dashboard layout with the following components:
-
-1. Card:
-   - Position: Left of the page
-   - Size: Takes up 1/4 of the total page width
-   - Content: Display the text "This is Tips dataset"
-
-2. Table:
-   - Position: Right of the card
-   - Size: Takes up the remaining 3/4 of the page width
-   - Content: Display the Tips dataset
-"""
-```
-
-### 2. Generate and launch the dashboard
-```py
-from vizro_ai import VizroAI
-
-vizro_ai = VizroAI(model="gpt-4o-mini")
-dashboard = vizro_ai.dashboard([df], user_question)
-```
-This triggers the dashboard building process. Once Vizro-AI finishes the dashboard generation process, you can now launch the dashboard.
-
 !!! example "Generated dashboard"
 
     === "Code"
@@ -71,10 +41,12 @@ This triggers the dashboard building process. Once Vizro-AI finishes the dashboa
 
     [VizroAIDashboardPage1]: ../../assets/user_guides/dashboard/dashboard2_page1.png
 
+This triggers the dashboard building process. Once Vizro-AI finishes the dashboard generation process, you can now launch the dashboard.
+
 ## Retrieve the Python code of the dashboard
 
 To illustrate the process, lets use the example above.
-
+<!-- vale off -->
 Like the `VizroAI.plot` method, in order to produce more comprehensive output we need to set `return_elements=True`. `return_elements` is a boolean (by default `False`) which determines the return type of `VizroAI.dashboard`.
 
 - If set to `False` it produces a `Vizro` dashboard object.
@@ -148,6 +120,13 @@ Like the `VizroAI.plot` method, in order to produce more comprehensive output we
            title="Tips Dataset Overview",
         )
         ```
+
+To use the above code, you will still need to add three simple steps. 
+1. Import your data into the Python environment. 
+2. Uncomment data manager instance and map the imported data. See Vizro guide on [connecting dashboard to data](https://vizro.readthedocs.io/en/stable/pages/user-guides/data/). 
+3. Add following code snippet at the end of the file `Vizro().build(dashboard).run()` to launch the dashboard.
+
+Detailed guidance is provided in [dashboard generation tutorial](https://vizro.readthedocs.io/projects/vizro-ai/en/vizro-ai-0.3.2/pages/tutorials/quickstart/)
 
 ## Available Vizro components
 
