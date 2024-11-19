@@ -260,27 +260,22 @@ def _get_modified_page_figures(
     outputs: dict[ModelID, Any] = {}
 
     control_targets = []
-    control_targets_targets = []
     figure_targets = []
     for target in targets:
-        target_obj = model_manager[target]
-        if isinstance(target_obj, Filter):
+        if isinstance(model_manager[target], Filter):
             control_targets.append(target)
-            control_targets_targets.extend(target_obj.targets)
         else:
             figure_targets.append(target)
 
-    # Get data_frames for all figure_targets and components that are targets of controls
-    _get_unfiltered_data_targets = list(set(figure_targets + control_targets_targets))
-
-    figure_targets_unfiltered_data: dict[ModelID, pd.DataFrame] = _get_unfiltered_data(
-        ctds_parameter=ctds_parameter, targets=_get_unfiltered_data_targets
-    )
+    # TODO-NEXT: Add fetching unfiltered data for the Filter.targets as well, once dynamic filters become "targetable"
+    #  from other actions too. For example, in future, if Parameter is targeting only a single Filter.
+    #  Currently, it only works for the on_page_load because Filter.targets are indeed the part of the actions' targets.
+    target_to_data_frame = _get_unfiltered_data(ctds_parameter=ctds_parameter, targets=figure_targets)
 
     # TODO: the structure here would be nicer if we could get just the ctds for a single target at one time,
     #  so you could do apply_filters on a target a pass only the ctds relevant for that target.
     #  Consider restructuring ctds to a more convenient form to make this possible.
-    for target, unfiltered_data in figure_targets_unfiltered_data.items():
+    for target, unfiltered_data in target_to_data_frame.items():
         if target in figure_targets:
             filtered_data = _apply_filters(unfiltered_data, ctds_filter, ctds_filter_interaction, target)
             outputs[target] = model_manager[target](
@@ -296,7 +291,7 @@ def _get_modified_page_figures(
             current_value = []
 
         outputs[target] = model_manager[target](
-            target_to_data_frame=figure_targets_unfiltered_data, current_value=current_value
+            target_to_data_frame=target_to_data_frame, current_value=current_value
         )
 
     return outputs
