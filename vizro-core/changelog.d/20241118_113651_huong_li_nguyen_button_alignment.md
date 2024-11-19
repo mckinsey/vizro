@@ -19,7 +19,7 @@ Uncomment the section that is right (remove the HTML comment wrapper).
 
 ### Added
 
-- Enable `href` inside `vm.Button` ([#881](https://github.com/mckinsey/vizro/pull/881))
+- Enable `href` inside `vm.Button`. ([#881](https://github.com/mckinsey/vizro/pull/881))
 
 <!--
 ### Changed

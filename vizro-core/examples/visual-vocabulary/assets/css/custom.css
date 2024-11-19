@@ -34,12 +34,6 @@ img[src*="#chart-icon"] {
   position: relative;
 }
 
-.code-clipboard-container .pycafe-link,
-.code-clipboard-container .pycafe-link:focus {
-  line-height: unset;
-  margin-bottom: 12px;
-}
-
 .code-clipboard-container::-webkit-scrollbar-thumb {
   border-color: var(--surfaces-bg-card);
 }
