@@ -1,8 +1,9 @@
+import shutil
+from pathlib import Path
+
 import cv2
 import imutils
-import shutil
 from hamcrest import assert_that, equal_to
-from pathlib import Path
 
 
 def _compare_images(original_image, new_image):
@@ -40,7 +41,7 @@ def assert_image_equal(browserdriver, test_image_name):
         _compare_images(original, new)
         Path(f"{test_image_name}_branch.png").unlink()
     except AssertionError as exp:
-        shutil.copy(f"{test_image_name}_branch.png",  base_image_name)
+        shutil.copy(f"{test_image_name}_branch.png", base_image_name)
         diff = _create_image_difference(original=new, new=original)
         cv2.imwrite(f"{test_image_name}_diff_main.png", diff)
         raise AssertionError("pictures are not the same") from exp
