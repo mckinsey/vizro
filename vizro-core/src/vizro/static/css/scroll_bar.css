@@ -9,7 +9,7 @@
 }
 
 ::-webkit-scrollbar-thumb:hover {
-  background: var(--fill-medium-emphasis);
+  background: var(--fill-secondary);
 }
 
 #left-main::-webkit-scrollbar-thumb {

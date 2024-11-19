@@ -43,7 +43,7 @@
 /* User input */
 #dashboard-container .dash-dropdown .Select-input {
   display: block;
-  height: var(--tag-height);
+  height: 24px;
   margin-left: unset;
 }
 
@@ -78,13 +78,12 @@
 
 /* Tags --------------------------- */
 #dashboard-container .Select--multi .Select-value {
-  background-color: var(--tags-bg-color);
+  background-color: var(--dropdown-label-bg);
   border: 0;
   border-radius: 0;
   box-shadow: var(--elevation-0);
-  color: var(--tags-text-color);
+  color: var(--text-secondary);
   font-size: 0.875rem;
-  height: var(--tag-height);
   height: 100%;
   letter-spacing: -0.112px;
   margin: 0;
