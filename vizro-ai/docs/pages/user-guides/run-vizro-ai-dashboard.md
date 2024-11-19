@@ -121,9 +121,9 @@ Like the `VizroAI.plot` method, in order to produce more comprehensive output we
         )
         ```
 
-To use the above code, you will still need to add three simple steps. 
-1. Import your data into the Python environment. 
-2. Uncomment data manager instance and map the imported data. See Vizro guide on [connecting dashboard to data](https://vizro.readthedocs.io/en/stable/pages/user-guides/data/). 
+To use the above code, you will still need to add three simple steps.
+1. Import your data into the Python environment.
+2. Uncomment data manager instance and map the imported data. See Vizro guide on [connecting dashboard to data](https://vizro.readthedocs.io/en/stable/pages/user-guides/data/).
 3. Add following code snippet at the end of the file `Vizro().build(dashboard).run()` to launch the dashboard.
 
 Detailed guidance is provided in [dashboard generation tutorial](https://vizro.readthedocs.io/projects/vizro-ai/en/vizro-ai-0.3.2/pages/tutorials/quickstart/)
