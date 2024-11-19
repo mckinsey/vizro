@@ -3,6 +3,7 @@ from vizro.models.types import capture
 
 stocks = px.data.stocks()
 
+
 @capture("graph")
 def sparkline(data_frame, **kwargs):
     fig = px.line(data_frame, **kwargs)
@@ -12,6 +13,4 @@ def sparkline(data_frame, **kwargs):
     return fig
 
 
-fig = sparkline(
-    stocks, x="date", y=["GOOG", "AMZN", "AAPL"], labels={"variable": "stock"}, facet_row="variable"
-)
+fig = sparkline(stocks, x="date", y=["GOOG", "AMZN", "AAPL"], labels={"variable": "stock"}, facet_row="variable")
