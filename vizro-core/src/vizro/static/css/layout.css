@@ -177,7 +177,7 @@
 }
 
 #collapse-icon.material-symbols-outlined {
-  background-color: var(--tooltip-bg-color);
+  background-color: var(--bs-tooltip-bg);
   border-radius: 50%;
   color: var(--text-disabled);
   cursor: pointer;
@@ -185,7 +185,7 @@
 }
 
 #collapse-icon.material-symbols-outlined:hover {
-  color: var(--text-active);
+  color: var(--text-primary);
 }
 
 .collapse-icon-div {

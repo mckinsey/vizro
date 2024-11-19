@@ -5,16 +5,16 @@
 
 .rc-slider-rail,
 .rc-slider-track {
-  background-color: var(--slider-background-color);
+  background-color: var(--slider-rail-bg);
   height: 2px;
 }
 
 .rc-slider-track {
-  background-color: var(--fill-on-active);
+  background-color: var(--fill-active);
 }
 
 .rc-slider-dot {
-  background-color: var(--slider-background-color);
+  background-color: var(--slider-rail-bg);
   border: var(--field-enabled);
   bottom: 0;
   height: 6px;
@@ -22,7 +22,7 @@
 }
 
 .rc-slider-dot-active {
-  background-color: var(--fill-on-active);
+  background-color: var(--fill-active);
 }
 
 .rc-slider-handle,
@@ -30,8 +30,8 @@
 .rc-slider-handle-dragging.rc-slider-handle-dragging.rc-slider-handle-dragging,
 .rc-slider-handle-click-focused:focus {
   background-color: var(--surfaces-bg01);
-  border: solid 6px var(--fill-on-active);
-  border-color: var(--fill-on-active);
+  border: solid 6px var(--fill-active);
+  border-color: var(--fill-active);
   border-radius: 100%;
   height: 16px;
   margin: -8px 0 0;
@@ -41,7 +41,7 @@
 
 .rc-slider-handle:hover,
 .rc-slider-handle-dragging.rc-slider-handle-dragging.rc-slider-handle-dragging {
-  border: solid 4px var(--fill-on-active);
+  border: solid 4px var(--fill-active);
   box-shadow: unset;
   cursor: context-menu;
 }
@@ -51,7 +51,7 @@
 }
 
 .rc-slider-handle:active {
-  border: solid 6px var(--fill-on-active);
+  border: solid 6px var(--fill-active);
   box-shadow: unset;
   cursor: grabbing;
   height: 16px;
@@ -68,7 +68,7 @@
 }
 
 .rc-slider-mark-text-active {
-  color: var(--fill-on-active);
+  color: var(--fill-active);
 }
 
 .slider-track-with-marks,

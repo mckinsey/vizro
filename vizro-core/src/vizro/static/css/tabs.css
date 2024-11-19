@@ -37,21 +37,21 @@
 
 .tab-title:hover {
   background-color: transparent;
-  border-bottom: 1px solid var(--text-active);
+  border-bottom: 1px solid var(--text-primary);
 }
 
 .tab-title[data-active] {
-  border-bottom: 1px solid var(--text-active);
-  color: var(--text-active);
+  border-bottom: 1px solid var(--text-primary);
+  color: var(--text-primary);
 }
 
 .tab-title[data-active]:hover {
   background-color: transparent;
-  border-color: 1px solid var(--text-active);
+  border-color: 1px solid var(--text-primary);
 }
 
 .tab-title[data-active] .mantine-Tabs-tabLabel {
-  color: var(--text-active);
+  color: var(--text-primary);
 }
 
 .tab-content > .page-component-container > .container-title {
