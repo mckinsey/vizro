@@ -482,9 +482,12 @@ img[src*="#my-image"] {
 
 ### Create a navigation card
 
-This section describes how to use the [`Card`][vizro.models.Card] component to create a navigation card. To configure the navigation panel on the left hand side of the screen, refer to the [guide on navigation](navigation.md).
+This section describes how to use the [`Card`][vizro.models.Card] component to create a navigation card,
+enabling users to navigate to another page by clicking on the card area.
 
-A navigation card enables you to navigate to a different page via a click on the card area.
+For a button-style link navigation component, see the [separate guide on creating a link button](#create-a-link-button).
+To configure the navigation panel on the left hand side of the screen, refer to the
+[separate guide on navigation](navigation.md).
 
 To create a navigation card:
 
@@ -587,21 +590,70 @@ For detailed examples on how to create a KPI card, refer to the [figure user gui
 
 ## Buttons
 
-To enhance dashboard interactions, you can use the [`Button`][vizro.models.Button] component to trigger any pre-defined
-action functions such as exporting chart data. To use the currently available options for the [`Actions`][vizro.models.Action]
-component, check out the [API reference][vizro.actions].
+The Button component is commonly used for interactive dashboard interactions
+such as form submissions, navigation links, and other action triggers.
 
 To add a [`Button`][vizro.models.Button], insert it into the `components` argument of the
 [`Page`][vizro.models.Page].
 
-You can configure the `text` argument to alter the display text of the [`Button`][vizro.models.Button] and the
-`actions` argument to define which action function should be executed on button click.
 
-In the below example we show how to configure a button to export the filtered data of a target chart using
-[export_data][vizro.actions.export_data], a pre-defined action function.
+### Customize button text
+
+You can configure the `text` argument to alter the display text of the [`Button`][vizro.models.Button].
+
+!!! example "Customize text"
+
+    === "app.py"
+        ```{.python pycafe-link}
+        import vizro.models as vm
+        from vizro import Vizro
+
+        page = vm.Page(
+            title="Button with text",
+            components=[vm.Button(text="I'm a button!")],
+        )
+
+        dashboard = vm.Dashboard(pages=[page])
+        Vizro().build(dashboard).run()
+        ```
+    === "app.yaml"
+        ```yaml
+        # Still requires a .py to add data to the data manager and parse YAML configuration
+        # See from_yaml example
+        pages:
+          - components:
+            - type: button
+              text: I'm a button!
+            title: Button with text
+        ```
+    === "Result"
+        [![ButtonText]][ButtonText]
+
+    [ButtonText]: ../../assets/user_guides/components/button_text.png
 
 
-!!! example "Button"
+### Create a link button
+
+To navigate to a different page using a button with an anchor tag, assign an absolute or relative URL to the
+`Button.href`.
+
+```python
+import vizro.models as vm
+
+vm.Button(text="Leave us a star! ⭐", href="https://github.com/mckinsey/vizro")
+```
+
+### Attach an action
+
+You can use the [`Button`][vizro.models.Button] to trigger predefined action functions, such as exporting data.
+To explore the available options for [`Actions`][vizro.models.Action], refer to our [API reference][vizro.actions].
+Use the `Button.actions` argument to specify which action function executes when the button is clicked.
+
+The example below demonstrates how to configure a button to export the filtered data of a target chart using the
+[export_data][vizro.actions.export_data] action function.
+
+
+!!! example "Button with action"
 
     === "app.py"
         ```{.python pycafe-link}
@@ -681,6 +733,7 @@ In the below example we show how to configure a button to export the filtered da
 
     [Button]: ../../assets/user_guides/components/button.png
 
+### Use as a control
 The [`Button`][vizro.models.Button] component is currently reserved to be used inside the main panel (right-side) of the dashboard.
 However, there might be use cases where one would like to place the `Button` inside the control panel (left-side) with the other controls.
 
