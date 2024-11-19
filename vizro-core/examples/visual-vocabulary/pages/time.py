@@ -7,7 +7,7 @@ from pages._pages_utils import (
     PAGE_GRID,
     make_code_clipboard_from_py_file,
 )
-from pages.examples import area, gantt, heatmap, line, stepped_line, time_column
+from pages.examples import area, gantt, heatmap, line, sparkline, stepped_line, time_column
 
 line_page = vm.Page(
     title="Line",
@@ -212,19 +212,19 @@ gantt_page = vm.Page(
                 #### What is a gantt chart?
 
                 A gantt chart is a type of bar chart that visualizes a project schedule.
-It shows the start and end dates of a project element, such as tasks, activities, or
-events, in a timeline format. Each element is represented by a bar whose length indicates
-its duration.
+                It shows the start and end dates of a project element, such as tasks, activities, or
+                events, in a timeline format. Each element is represented by a bar whose length indicates
+                its duration.
 
                 &nbsp;
 
                 #### When should I use it?
 
                 Gantt charts are ideal for visualizing project timelines, tracking
-progress, and managing dependencies. They clearly display task start and end dates, making
-it easy to monitor project status and manage interdependencies. However, they can become
-complex if not regularly updated, especially for large projects.
-        """
+                progress, and managing dependencies. They clearly display task start and end dates, making
+                it easy to monitor project status and manage interdependencies. However, they can become
+                complex if not regularly updated, especially for large projects.
+            """
         ),
         vm.Graph(figure=gantt.fig),
         vm.Tabs(
@@ -240,6 +240,46 @@ complex if not regularly updated, especially for large projects.
         ),
     ],
 )
+
+
+sparkline_page = vm.Page(
+    title="Sparkline",
+    path="time/sparkline",
+    layout=vm.Layout(grid=PAGE_GRID),
+    components=[
+        vm.Card(
+            text="""
+                #### What is a sparkline chart?
+
+                A sparkline chart is a compact line or area chart that displays multiple time series over a continuous
+                period. Without visible axes or labels, they are ideal for embedding within text, tables, or dashboards,
+                highlighting relative movement rather than precise values for a quick visual summary of trends.
+
+                &nbsp;
+
+                #### When should I use it?
+
+                Use sparkline charts to show trends for multiple time series sharing the same y-axis quantity over the
+                same x-axis time range. They emphasize relative movement rather than precise values. To keep them
+                effective, ensure simplicity by avoiding clutter. Use consistent scales and distinct colors for
+                different series. Remove labels and gridlines, limit annotations, and place sparklines near relevant
+                text or data.
+            """
+        ),
+        vm.Graph(figure=sparkline.fig),
+        vm.Tabs(
+            tabs=[
+                vm.Container(
+                    title="Vizro dashboard", components=[make_code_clipboard_from_py_file("sparkline.py", mode="vizro")]
+                ),
+                vm.Container(
+                    title="Plotly figure",
+                    components=[make_code_clipboard_from_py_file("sparkline.py", mode="plotly")],
+                ),
+            ]
+        ),
+    ],
+)
 pages = [
     line_page,
     column_page,
@@ -249,4 +289,5 @@ pages = [
     stepped_line_page,
     heatmap_page,
     gantt_page,
+    sparkline_page,
 ]
