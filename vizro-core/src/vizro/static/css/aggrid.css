@@ -123,7 +123,7 @@
 
 #dashboard-container .ag-filter-apply-panel {
   justify-content: flex-start;
-  padding: 0.5rem 0 0.75rem 0;
+  padding: 0.5rem 0 0.75rem;
 }
 
 #dashboard-container .ag-filter-condition {

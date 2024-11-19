@@ -1,6 +1,6 @@
 /* This file contains overwrites, which we want to have as defaults for vizro
 but do not want to take over to `vizro-bootstrap` as these settings might not be generic enough. */
-[data-bs-theme="dark"] {;
+[data-bs-theme="dark"] {
   --dropdown-label-bg: var(--primary-800);
   --right-side-bg: var(--surfaces-bg03);
   --text-code-string: #95c2e7;
@@ -11,7 +11,7 @@ but do not want to take over to `vizro-bootstrap` as these settings might not be
   --slider-rail-bg: var(--primary-100);
 }
 
-[data-bs-theme="light"] {;
+[data-bs-theme="light"] {
   --dropdown-label-bg: var(--primary-300);
   --right-side-bg: var(--surfaces-bg01);
   --text-code-string: #0a3069;
