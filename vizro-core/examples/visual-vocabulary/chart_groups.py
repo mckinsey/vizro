@@ -138,7 +138,6 @@ time_chart_group = ChartGroup(
         IncompletePage("Slope"),
         IncompletePage("Fan"),
         IncompletePage("Bubble timeline"),
-        IncompletePage("Sparkline"),
     ],
     icon="Timeline",
     intro_text=time_intro_text,
