@@ -27,7 +27,7 @@ nav:
       - Safeguard code execution: pages/explanation/safeguard.md
       - Safety in Vizro-AI: pages/explanation/safety-in-vizro-ai.md
   - Examples:
-      - Vizro gallery: https://vizro.mckinsey.com
+      - Gallery: https://vizro.mckinsey.com
   #- Contribute:
   #      - Contributing: pages/contribute/contributing.md
   - Vizro:

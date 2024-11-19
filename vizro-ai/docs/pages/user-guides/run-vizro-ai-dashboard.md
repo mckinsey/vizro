@@ -1,10 +1,10 @@
 # How to run Vizro-AI dashboard
 
-This guide offers insights into different ways of running `VizroAI.dashboard` to generate Vizro dashboards from natural language prompts.
+This guide offers insights into different ways of running `VizroAI.dashboard` to generate a Vizro dashboards from natural language prompts.
 
 ??? note "Note: API key"
 
-    Make sure you have followed the [LLM setup guide](../user-guides/install.md#set-up-access-to-a-large-language-model) and thatyour api key is set up in a `.env` file in the same folder as your Notebook file (`.ipynb`).
+    Make sure you have followed the [LLM setup guide](../user-guides/install.md#set-up-access-to-a-large-language-model) and that your API key is set up in a `.env` file in the same folder as your Notebook file (`.ipynb`).
 
 ## Run Vizro-AI dashboard
 
@@ -73,7 +73,7 @@ This triggers the dashboard building process. Once Vizro-AI finishes the dashboa
 
 ## Retrieve the Python code of the dashboard
 
-To illustrate the process, lets re-use the example provided above.
+To illustrate the process, lets use the example above.
 
 Like the `VizroAI.plot` method, in order to produce more comprehensive output we need to set `return_elements=True`. `return_elements` is a boolean (by default `False`) which determines the return type of `VizroAI.dashboard`.
 
@@ -151,7 +151,7 @@ Like the `VizroAI.plot` method, in order to produce more comprehensive output we
 
 ## Available Vizro components
 
-Below is a table of the Vizro components currently supported by Vizro-AI. This list is not exhaustive, and we are actively working on adding more features to Vizro-AI.
+The following list is a table of the Vizro components currently supported by Vizro-AI. This list is not exhaustive, and we are actively working on adding more features to Vizro-AI.
 
 | Feature type         | Feature                                                                                                                                  | Availability |
 |----------------------|------------------------------------------------------------------------------------------------------------------------------------------|-------------|
@@ -172,4 +172,4 @@ Below is a table of the Vizro components currently supported by Vizro-AI. This l
 |                      | [Filter interaction between charts](https://vizro.readthedocs.io/en/stable/pages/user-guides/actions/#filter-data-by-clicking-on-chart/) | ✖           |
 |                      | [Custom actions](https://vizro.readthedocs.io/en/stable/pages/user-guides/actions/#custom-actions/)                                      | ✖           |
 
-If a feature you need for your dashboard isn't currently supported by Vizro-AI you can retrieve the dashboard code and add the missing components before running the dashboard.
+If a feature you need for your dashboard isn't currently supported by Vizro-AI you can retrieve the dashboard code and add it by hand before running the dashboard.

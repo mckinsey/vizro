@@ -134,26 +134,26 @@ The call to `dashboard()` triggers the dashboard building process. Once Vizro-AI
         pie chart 2: shows number of votes Bergeron received, compared to total votes.
         pie chart 3: shows number of votes Joly received, compared to total votes.
 
-        bar chart 1: shows number of districts Coderre winned. put `result` on y-axis, put "count of districts" on x-axis.
-        bar chart 2: shows number of districts Bergeron winned. put `result` on y-axis, put "count of districts" on x-axis.
-        bar chart 3: shows number of districts Joly winned. put `result` on y-axis, put "count of districts" on x-axis.
+        bar chart 1: shows number of districts Coderre won. Put `result` on y-axis, put "count of districts" on x-axis.
+        bar chart 2: shows number of districts Bergeron won. Put `result` on y-axis, put "count of districts" on x-axis.
+        bar chart 3: shows number of districts Joly won. Put `result` on y-axis, put "count of districts" on x-axis.
 
         use table to show the election data.
 
         Layout of page 1:
-        Imaging the whole page is divided by a (3 by 3) grid, with 3 rows and 3 columns.
+        Imagine the whole page is divided by a (3 by 3) grid, with 3 rows and 3 columns.
         Row 1 - pie chart 1 takes column 1; pie chart 2 takes column 2; pie chart 3 takes column 3.
         Row 2 - bar chart 1 takes column 1; bar chart 2 takes column 2; bar chart 3 takes column 3.
         Row 3 - the table span all three columns.
 
-        Add a filter to filter all pie charts by district, using radio button as selelctor.
+        Add a filter to filter all pie charts by district, using radio button as selector.
 
 
         <Page 2>
         Visualize the tech company stock data.
         I need 1 line chart, 6 cards.
 
-        line chart: shows the stock price history of all comanies. put data on x-axis, company names as facet_row. make the y-axis label simple and readable.
+        line chart: shows the stock price history of all companies. Put data on x-axis, company names as facet_row. make the y-axis label simple and readable.
 
         For cards, render the exact text as requested.
         Card 1 has text `> Dow Jones \n\n ## **39,737.26**\n`
