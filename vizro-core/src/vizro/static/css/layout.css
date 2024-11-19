@@ -10,7 +10,7 @@
   display: flex;
   flex: 0 0 auto;
   flex-direction: column;
-  gap: var(--spacing-06);
+  gap: 1.5rem;
   overflow: auto;
   padding: 24px 24px 0;
   width: 324px;
@@ -27,7 +27,7 @@
   background: var(--main-container-bg-color);
   display: flex;
   flex-direction: column;
-  gap: var(--spacing-05);
+  gap: 1.25rem;
   padding: 24px;
   width: 100%;
 }
@@ -58,7 +58,7 @@
 
 #page-components {
   overflow: auto;
-  padding-top: var(--spacing-01);
+  padding-top: 0.25rem;
 }
 
 .grid-layout {
@@ -76,9 +76,9 @@
   align-self: stretch;
   display: flex;
   flex-direction: column;
-  gap: var(--spacing-06);
-  padding-bottom: var(--spacing-06);
-  padding-top: var(--spacing-02);
+  gap: 1.5rem;
+  padding-bottom: 1.5rem;
+  padding-top: 0.5rem;
 }
 
 #control-panel:not(:empty) {

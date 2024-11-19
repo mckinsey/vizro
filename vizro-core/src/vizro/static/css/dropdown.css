@@ -4,7 +4,7 @@
   border: none;
   border-radius: 0;
   box-shadow: var(--elevation-0);
-  font-size: var(--text-size-02);
+  font-size: 0.875rem;
 }
 
 /* Dropdown menu when clicking on expand arrow */
@@ -13,8 +13,8 @@
   border: none;
   border-radius: 0;
   box-shadow: var(--elevation-0);
-  font-size: var(--text-size-02);
-  line-height: var(--text-size-05);
+  font-size: 0.875rem;
+  line-height: 1.5rem;
 }
 
 /* Dropdown menu options */
@@ -63,7 +63,7 @@
 
 /* Single-select dropdown only ------------------- */
 #dashboard-container .Select--single .Select-value {
-  padding-left: var(--spacing-02);
+  padding-left: 0.5rem;
 }
 
 .has-value.Select--single > .Select-control .Select-value .Select-value-label,
@@ -83,19 +83,19 @@
   border-radius: 0;
   box-shadow: var(--elevation-0);
   color: var(--tags-text-color);
-  font-size: var(--text-size-02);
+  font-size: 0.875rem;
   height: var(--tag-height);
   height: 100%;
   letter-spacing: var(--letter-spacing-body-ui-02);
   margin: 0;
-  padding: 0 var(--spacing-01);
+  padding: 0 0.25rem;
   vertical-align: baseline;
 }
 
 /* Tag: Label */
 #dashboard-container .Select--multi .Select-value-label {
   color: var(--text-primary);
-  line-height: var(--text-size-05);
+  line-height: 1.5rem;
   padding: 0 4px;
 }
 

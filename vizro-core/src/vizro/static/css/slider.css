@@ -61,9 +61,9 @@
 
 .rc-slider-mark-text {
   color: var(--text-secondary);
-  font-size: var(--text-size-01);
-  line-height: var(--text-size-02);
-  margin-top: var(--spacing-01);
+  font-size: 0.75rem;
+  line-height: 0.875rem;
+  margin-top: 0.25rem;
   min-width: 44px;
 }
 
@@ -96,7 +96,7 @@ input.dash-input:invalid {
   display: flex;
   flex-direction: row;
   justify-content: space-between;
-  line-height: var(--text-size-03);
+  line-height: 1rem;
 }
 
 .slider-label-input label {
@@ -107,14 +107,14 @@ input.dash-input:invalid {
 .slider-text-input-container {
   display: flex;
   flex-direction: row;
-  gap: var(--spacing-01);
-  margin-bottom: var(--spacing-03);
+  gap: 0.25rem;
+  margin-bottom: 0.75rem;
 }
 
 .slider-text-input-field {
   background-color: transparent;
   color: var(--text-secondary);
-  font-size: var(--text-size-02);
+  font-size: 0.875rem;
   max-width: 80px; /* required for Mozilla */
   padding: 0;
   text-align: center;
@@ -124,7 +124,7 @@ input.dash-input:invalid {
 
 .slider-text-input-range-separator {
   color: var(--text-secondary);
-  font-size: var(--text-size-02);
+  font-size: 0.875rem;
 }
 
 /* To remove number input spin box */

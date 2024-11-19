@@ -7,7 +7,7 @@
   --ag-data-color: var(--text-primary);
   --ag-header-background-color: var(--main-container-bg-color);
   --ag-icon-font-family: aggridquartz;
-  --ag-icon-size: var(--text-size-02);
+  --ag-icon-size: 0.875rem;
   --ag-row-height: 48px;
   --ag-header-height: 40px;
   --ag-borders: none;
@@ -37,12 +37,12 @@
   align-items: center;
   display: flex;
   height: 40px;
-  padding: 0 var(--spacing-03);
+  padding: 0 0.75rem;
 }
 
 #dashboard-container .ag-header-cell-text {
   letter-spacing: -0.112px;
-  line-height: var(--spacing-04);
+  line-height: 1rem;
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
@@ -55,7 +55,7 @@
 
 /* Rows ------- */
 #dashboard-container .ag-cell {
-  padding: 0 var(--spacing-03);
+  padding: 0 0.75rem;
 }
 
 #dashboard-container .ag-cell-focus {
@@ -77,10 +77,10 @@
   background-color: var(--field-enabled);
   box-shadow: var(--elevation-0);
   display: flex;
-  font-size: var(--text-size-02);
+  font-size: 0.875rem;
   font-weight: var(--text-weight-regular);
   letter-spacing: var(--letter-spacing-body-ui-02);
-  line-height: var(--text-size-03);
+  line-height: 1rem;
   text-overflow: ellipsis;
 }
 
@@ -89,7 +89,7 @@
   border: none;
   border-radius: 0;
   box-shadow: none;
-  font-size: var(--text-size-02);
+  font-size: 0.875rem;
 }
 
 #dashboard-container .ag-filter-select .ag-picker-field-wrapper {
@@ -101,8 +101,8 @@
   background-color: var(--field-enabled);
   box-shadow: var(--elevation-0);
   color: var(--text-primary);
-  font-size: var(--text-size-02);
-  line-height: var(--text-size-05);
+  font-size: 0.875rem;
+  line-height: 1.5rem;
 }
 
 #dashboard-container .ag-select-list-item.ag-active-item {
@@ -123,12 +123,12 @@
 
 #dashboard-container .ag-filter-apply-panel {
   justify-content: flex-start;
-  padding: var(--spacing-02) 0 var(--spacing-03) 0;
+  padding: 0.5rem 0 0.75rem 0;
 }
 
 #dashboard-container .ag-filter-condition {
   justify-content: flex-start;
-  padding: var(--spacing-02) var(--spacing-01);
+  padding: 0.5rem 0.25rem;
 }
 
 /* Scroll Bar */
@@ -164,12 +164,12 @@
   border-radius: 0;
   box-shadow: var(--elevation-0);
   color: var(--text-primary-inverted);
-  font-size: var(--text-size-02);
+  font-size: 0.875rem;
   font-weight: var(--text-weight-semibold);
   height: 32px;
   letter-spacing: var(--letter-spacing-body-link-02);
-  line-height: var(--text-size-05);
-  padding: var(--spacing-01) var(--spacing-03);
+  line-height: 1.5rem;
+  padding: 0.25rem 0.75rem;
   text-transform: none;
 }
 
