@@ -290,8 +290,6 @@ def _get_modified_page_figures(
         if hasattr(current_value, "__iter__") and ALL_OPTION in current_value:
             current_value = []
 
-        outputs[target] = model_manager[target](
-            target_to_data_frame=target_to_data_frame, current_value=current_value
-        )
+        outputs[target] = model_manager[target](target_to_data_frame=target_to_data_frame, current_value=current_value)
 
     return outputs
