@@ -3,23 +3,19 @@ import plotly.express as px
 import plotly.graph_objects as go
 from vizro.models.types import capture
 
-gapminder = px.data.gapminder()
-
 
 @capture("graph")
 def lollipop(data_frame: pd.DataFrame, **kwargs):
     """Creates a lollipop chart using Plotly."""
     fig = px.scatter(data_frame, **kwargs)
 
-    # Enable for both orientations
-    is_horizontal = fig.data[0].orientation == "h"
-    x_coords = [[0, x] if is_horizontal else [x, x] for x in fig.data[0]["x"]]
-    y_coords = [[y, y] if is_horizontal else [0, y] for y in fig.data[0]["y"]]
-    for x, y in zip(x_coords, y_coords):
-        fig.add_trace(go.Scatter(x=x, y=y, mode="lines"))
+    orientation = fig.data[0].orientation
+    x_or_y = "x" if orientation == "h" else "y"
+    y_or_x = "y" if orientation == "h" else "x"
 
-    xaxis_showgrid = is_horizontal
-    yaxis_showgrid = not is_horizontal
+    for x_or_y_value, y_or_x_value in zip(fig.data[0][x_or_y], fig.data[0][y_or_x]):
+        fig.add_trace(
+            go.Scatter({x_or_y: [0, x_or_y_value], y_or_x: [y_or_x_value, y_or_x_value], "mode": "lines"}))
 
     fig.update_traces(
         marker_size=12,
@@ -28,13 +24,19 @@ def lollipop(data_frame: pd.DataFrame, **kwargs):
     )
 
     fig.update_layout(
-        showlegend=False, yaxis_showgrid=yaxis_showgrid, xaxis_showgrid=xaxis_showgrid, yaxis_rangemode="tozero"
+        {"showlegend": False,
+         f"{x_or_y}axis_showgrid": True,
+         f"{y_or_x}axis_showgrid": False,
+         f"{x_or_y}axis_rangemode": "tozero"
+         },
+
     )
     return fig
 
-
-fig = lollipop(
-    data_frame=gapminder.query("year == 2007 and gdpPercap > 36000").sort_values("gdpPercap"),
-    y="country",
-    x="gdpPercap",
+gapminder = (
+    px.data.gapminder()
+    .query("year == 2007 and country.isin(['United States', 'Pakistan', 'India', 'China', 'Indonesia'])")
+    .sort_values("pop")
 )
+
+fig = lollipop(gapminder, y="country", x="pop")

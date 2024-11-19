@@ -330,21 +330,20 @@ def lollipop(data_frame: pd.DataFrame, **kwargs):
     Returns:
         go.Figure: Lollipop chart.
     """
-    # Unlike the column_and_line chart, where all traces hold equal significance, here the traces differ in importance.
-    # The primary scatter plot is the main trace, while the additional traces merely serve as connecting lines.
-    # Therefore, should we apply the kwargs solely to the main scatter plot, as illustrated below?
+    # Plots the dots of the lollipop chart
     fig = px.scatter(data_frame, **kwargs)
 
-    # Enable for both orientations
-    is_horizontal = fig.data[0].orientation == "h"
-    x_coords = [[0, x] if is_horizontal else [x, x] for x in fig.data[0]["x"]]
-    y_coords = [[y, y] if is_horizontal else [0, y] for y in fig.data[0]["y"]]
-    for x, y in zip(x_coords, y_coords):
-        fig.add_trace(go.Scatter(x=x, y=y, mode="lines"))
+    # Enables the orientation of the chart to be either horizontal or vertical
+    orientation = fig.data[0].orientation
+    x_or_y = "x" if orientation == "h" else "y"
+    y_or_x = "y" if orientation == "h" else "x"
 
-    xaxis_showgrid = is_horizontal
-    yaxis_showgrid = not is_horizontal
+    # Plots the lines of the lollipop chart
+    for x_or_y_value, y_or_x_value in zip(fig.data[0][x_or_y], fig.data[0][y_or_x]):
+        fig.add_trace(
+            go.Scatter({x_or_y: [0, x_or_y_value], y_or_x: [y_or_x_value, y_or_x_value], "mode": "lines"}))
 
+    # Styles the lollipop chart and makes it uni-colored
     fig.update_traces(
         marker_size=12,
         line_width=3,
@@ -352,6 +351,11 @@ def lollipop(data_frame: pd.DataFrame, **kwargs):
     )
 
     fig.update_layout(
-        showlegend=False, yaxis_showgrid=yaxis_showgrid, xaxis_showgrid=xaxis_showgrid, yaxis_rangemode="tozero"
+        {"showlegend": False,
+         f"{x_or_y}axis_showgrid": True,
+         f"{y_or_x}axis_showgrid": False,
+         f"{x_or_y}axis_rangemode": "tozero"
+         },
+
     )
     return fig
