@@ -14,8 +14,7 @@ def lollipop(data_frame: pd.DataFrame, **kwargs):
     y_or_x = "y" if orientation == "h" else "x"
 
     for x_or_y_value, y_or_x_value in zip(fig.data[0][x_or_y], fig.data[0][y_or_x]):
-        fig.add_trace(
-            go.Scatter({x_or_y: [0, x_or_y_value], y_or_x: [y_or_x_value, y_or_x_value], "mode": "lines"}))
+        fig.add_trace(go.Scatter({x_or_y: [0, x_or_y_value], y_or_x: [y_or_x_value, y_or_x_value], "mode": "lines"}))
 
     fig.update_traces(
         marker_size=12,
@@ -24,14 +23,15 @@ def lollipop(data_frame: pd.DataFrame, **kwargs):
     )
 
     fig.update_layout(
-        {"showlegend": False,
-         f"{x_or_y}axis_showgrid": True,
-         f"{y_or_x}axis_showgrid": False,
-         f"{x_or_y}axis_rangemode": "tozero"
-         },
-
+        {
+            "showlegend": False,
+            f"{x_or_y}axis_showgrid": True,
+            f"{y_or_x}axis_showgrid": False,
+            f"{x_or_y}axis_rangemode": "tozero",
+        },
     )
     return fig
+
 
 gapminder = (
     px.data.gapminder()
