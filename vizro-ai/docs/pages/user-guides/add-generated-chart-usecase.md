@@ -99,8 +99,8 @@ This object must then be passed to the `figure` argument of the Vizro [Graph](ht
         page = vm.Page(
             title = 'Demographics',
             components = [
-                vm.Graph(id='bubble chart', figure=custom_chart(df)),
-                vm.Graph(id='histogram', figure = px.box(df,
+                vm.Graph(figure=custom_chart(df)),
+                vm.Graph(figure = px.box(df,
                                                          x='continent',
                                                          y='lifeExp',
                                                          color='continent',
@@ -152,8 +152,8 @@ Executing the code below yields the identical dashboard as the example above.
         page = vm.Page(
             title = 'Demographics',
             components = [
-                vm.Graph(id='bubble chart', figure=fig),
-                vm.Graph(id='histogram', figure = px.box(df,
+                vm.Graph(figure=fig),
+                vm.Graph(figure = px.box(df,
                                                          x='continent',
                                                          y='lifeExp',
                                                          color='continent',

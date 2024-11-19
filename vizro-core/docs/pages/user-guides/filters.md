@@ -139,7 +139,7 @@ Below is an advanced example where we only target one page component, and where 
             title="My first page",
             components=[
                 vm.Graph(id="scatter_chart", figure=px.scatter(iris, x="sepal_length", y="petal_width", color="species")),
-                vm.Graph(id="scatter_chart2", figure=px.scatter(iris, x="petal_length", y="sepal_width", color="species")),
+                vm.Graph(figure=px.scatter(iris, x="petal_length", y="sepal_width", color="species")),
             ],
             controls=[
                 vm.Filter(column="petal_length",targets=["scatter_chart"],selector=vm.RangeSlider(step=1)),
@@ -170,7 +170,6 @@ Below is an advanced example where we only target one page component, and where 
                   x: petal_length
                   y: sepal_width
                   color: species
-                id: scatter_chart2
                 type: graph
             controls:
               - column: petal_length

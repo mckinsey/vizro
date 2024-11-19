@@ -47,7 +47,8 @@ Natalia Kurakina,
 [Hilary Ivy](https://github.com/hxe00570),
 [Jasmine Wu](https://github.com/jazwu),
 [njmcgrat](https://github.com/njmcgrat),
-[Jenelle Yonkman](https://github.com/yonkmanjl)
+[Jenelle Yonkman](https://github.com/yonkmanjl),
+[ataraexia](https://github.com/ataraexia)
 
 with thanks to Sam Bourton and Kevin Staight for sponsorship, inspiration and guidance,
 
