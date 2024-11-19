@@ -78,8 +78,8 @@
   box-shadow: var(--elevation-0);
   display: flex;
   font-size: 0.875rem;
-  font-weight: var(--text-weight-regular);
-  letter-spacing: var(--letter-spacing-body-ui-02);
+  font-weight: 400;
+  letter-spacing: -0.112px;
   line-height: 1rem;
   text-overflow: ellipsis;
 }
@@ -165,9 +165,9 @@
   box-shadow: var(--elevation-0);
   color: var(--text-primary-inverted);
   font-size: 0.875rem;
-  font-weight: var(--text-weight-semibold);
+  font-weight: 600;
   height: 32px;
-  letter-spacing: var(--letter-spacing-body-link-02);
+  letter-spacing: -0.028px;
   line-height: 1.5rem;
   padding: 0.25rem 0.75rem;
   text-transform: none;

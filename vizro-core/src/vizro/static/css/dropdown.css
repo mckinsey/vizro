@@ -20,7 +20,7 @@
 /* Dropdown menu options */
 #dashboard-container .VirtualizedSelectOption {
   color: var(--text-primary);
-  font-weight: var(--text-weight-regular);
+  font-weight: 400;
 }
 
 /* Dropdown menu hover effect */
@@ -86,7 +86,7 @@
   font-size: 0.875rem;
   height: var(--tag-height);
   height: 100%;
-  letter-spacing: var(--letter-spacing-body-ui-02);
+  letter-spacing: -0.112px;
   margin: 0;
   padding: 0 0.25rem;
   vertical-align: baseline;
