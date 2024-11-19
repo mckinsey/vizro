@@ -259,8 +259,8 @@ sparkline_page = vm.Page(
 
                 #### When should I use it?
 
-                Use sparkline charts to show trends for multiple time series sharing the same Y-axis quantity over the
-                same X-axis time range. They emphasize relative movement rather than precise values. To keep them
+                Use sparkline charts to show trends for multiple time series sharing the same y-axis quantity over the
+                same x-axis time range. They emphasize relative movement rather than precise values. To keep them
                 effective, ensure simplicity by avoiding clutter. Use consistent scales and distinct colors for
                 different series. Remove labels and gridlines, limit annotations, and place sparklines near relevant
                 text or data.
