@@ -1,6 +1,6 @@
 # How to run Vizro-AI dashboard
 
-This guide offers insights into different ways of running `VizroAI.dashboard` to generate Vizro dashboard.
+This guide offers insights into different ways of running `VizroAI.dashboard` to generate Vizro dashboards from natural language prompts.
 
 ??? note "Note: API key"
 
