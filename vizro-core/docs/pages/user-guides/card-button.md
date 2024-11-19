@@ -590,7 +590,7 @@ For detailed examples on how to create a KPI card, refer to the [figure user gui
 
 ## Buttons
 
-The Button component is commonly used for interactive dashboard interactions 
+The Button component is commonly used for interactive dashboard interactions
 such as form submissions, navigation links, and other action triggers.
 
 To add a [`Button`][vizro.models.Button], insert it into the `components` argument of the
@@ -634,7 +634,7 @@ You can configure the `text` argument to alter the display text of the [`Button`
 
 ### Create a link button
 
-To navigate to a different page using a button with an anchor tag, assign an absolute or relative URL to the 
+To navigate to a different page using a button with an anchor tag, assign an absolute or relative URL to the
 `Button.href`.
 
 ```python
@@ -645,8 +645,8 @@ vm.Button(text="Leave us a star! ⭐", href="https://github.com/mckinsey/vizro")
 
 ### Attach an action
 
-You can use the [`Button`][vizro.models.Button] to trigger predefined action functions, such as exporting data. 
-To explore the available options for [`Actions`][vizro.models.Action], refer to our [API reference][vizro.actions]. 
+You can use the [`Button`][vizro.models.Button] to trigger predefined action functions, such as exporting data.
+To explore the available options for [`Actions`][vizro.models.Action], refer to our [API reference][vizro.actions].
 Use the `Button.actions` argument to specify which action function executes when the button is clicked.
 
 The example below demonstrates how to configure a button to export the filtered data of a target chart using the
