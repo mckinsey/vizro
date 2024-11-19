@@ -16,8 +16,8 @@ Click on the **Run and edit this code in PyCafe** link below to live-edit the da
         page = vm.Page(
             title="My first dashboard",
             components=[
-                vm.Graph(id="scatter_chart", figure=px.scatter(df, x="sepal_length", y="petal_width", color="species")),
-                vm.Graph(id="hist_chart", figure=px.histogram(df, x="sepal_width", color="species")),
+                vm.Graph(figure=px.scatter(df, x="sepal_length", y="petal_width", color="species")),
+                vm.Graph(figure=px.histogram(df, x="sepal_width", color="species")),
             ],
             controls=[
                 vm.Filter(column="species", selector=vm.Dropdown(value=["ALL"])),
