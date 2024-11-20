@@ -68,7 +68,6 @@ example_reference_cards = [
 
 
 def test_kpi_card_component_library(dash_duo, request):
-
     app = Dash(__name__, external_stylesheets=[dbc.themes.BOOTSTRAP])
     app.layout = dbc.Container(
         [

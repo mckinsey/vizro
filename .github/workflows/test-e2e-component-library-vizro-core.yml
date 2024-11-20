@@ -18,7 +18,6 @@ env:
 
 jobs:
   test-e2e-component-library-vizro-core:
-
     runs-on: ubuntu-latest
 
     steps:
