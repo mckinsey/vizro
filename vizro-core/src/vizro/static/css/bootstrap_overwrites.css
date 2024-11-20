@@ -22,7 +22,7 @@ but do not want to take over to `vizro-bootstrap` as these settings might not be
   --text-code-literal: #005cc5;
   --fill-icon-image-card: invert(64%) sepia(0%) saturate(1375%);
   --slider-rail-bg: var(--primary-900);
-  --collapse-icon-bg: var(--primary-100);
+  --collapse-icon-bg: var(--primary-300);
 }
 
 .card .nav-link {
