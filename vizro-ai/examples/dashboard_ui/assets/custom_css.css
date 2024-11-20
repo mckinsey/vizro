@@ -314,7 +314,7 @@
   background: var(--text-primary);
   border-top-left-radius: 8px;
   bottom: 0;
-  color: var(--text-contrast-primary);
+  color: var(--text-primary-inverted);
   display: flex;
   font-size: 0.8rem;
   font-weight: 500;
@@ -327,7 +327,7 @@
 .anchor-container:focus,
 .anchor-container:hover {
   background: var(--text-secondary);
-  color: var(--text-contrast-primary);
+  color: var(--text-primary-inverted);
 }
 
 img#banner {
