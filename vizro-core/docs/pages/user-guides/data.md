@@ -338,7 +338,7 @@ You cannot pass [nested parameters](parameters.md#nested-parameters) to dynamic 
 
 ### Filters
 
-By default, when a [filter](filters.md) depends on dynamic data, the available selector values update on page refresh to reflect the latest dynamic data. The mechanism for this, including caching, works exactly like other non-control components such as `vm.Graph`. However, unlike such components, a filter can depend on multiple data sources. 
+By default, when a [filter](filters.md) depends on dynamic data, the available selector values update on page refresh to reflect the latest dynamic data. The mechanism for this, including caching, works exactly like other non-control components such as `vm.Graph`. However, unlike such components, a filter can depend on multiple data sources.
 
 Vizro looks at the data source for each component in the filter's `targets`. If at least one of these is a dynamic data source then the filter behaves dynamically and the filter's selector updates on page refresh. Remember that when `targets` is not explicitly specified, a filter applies to all the components on a page that use a DataFrame including `column`.
 
@@ -385,7 +385,7 @@ For example, let us add two filters to the [dynamic data example](#dynamic-data)
     ```
 
     1. This filter implicitly controls the dynamic data source `"iris"`, which supplies the `data_frame` to the targeted `vm.Graph`. On page refresh, Vizro reloads this data, looks at the values found in the `"species"` column and sets the categorical selector's `options` accordingly.
-    2. Similarly, on page refresh, Vizro looks at the `"sepal_length"` column of the reloaded data and sets new `min` and `max` values for the numerical selector.  
+    2. Similarly, on page refresh, Vizro looks at the `"sepal_length"` column of the reloaded data and sets new `min` and `max` values for the numerical selector.
 
 If you have a filter that depends on dynamic data but do not want the available values to change when the dynamic data changes then you should manually specify the `selector`'s `options` field (categorical selector) or `min` and `max` fields (numerical selector). In the above example, this could be achieved as follows:
 
@@ -409,4 +409,4 @@ When Vizro initially builds a filter that depends on parametrized dynamic data l
 
 !!! note
 
-    When a dynamic data parameter is changed on screen, the data underlying a dynamic filter can change. Currently this change affects page components such as `vm.Graph` but does not affect the available values shown in a dynamic filter, which only update on page refresh. This functionality will be coming soon! 
+    When a dynamic data parameter is changed on screen, the data underlying a dynamic filter can change. Currently this change affects page components such as `vm.Graph` but does not affect the available values shown in a dynamic filter, which only update on page refresh. This functionality will be coming soon!
