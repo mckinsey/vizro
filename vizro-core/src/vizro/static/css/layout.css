@@ -177,7 +177,7 @@
 }
 
 #collapse-icon.material-symbols-outlined {
-  background-color: var(--bs-tooltip-bg);
+  background-color: var(--collapse-icon-bg);
   border-radius: 50%;
   color: var(--text-disabled);
   cursor: pointer;

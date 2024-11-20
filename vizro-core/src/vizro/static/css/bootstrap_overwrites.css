@@ -9,6 +9,7 @@ but do not want to take over to `vizro-bootstrap` as these settings might not be
   --text-code-type: #f69d50;
   --text-code-literal: #6bb5fd;
   --slider-rail-bg: var(--primary-100);
+  --collapse-icon-bg: var(--primary-500);
 }
 
 [data-bs-theme="light"] {
@@ -21,6 +22,7 @@ but do not want to take over to `vizro-bootstrap` as these settings might not be
   --text-code-literal: #005cc5;
   --fill-icon-image-card: invert(64%) sepia(0%) saturate(1375%);
   --slider-rail-bg: var(--primary-900);
+  --collapse-icon-bg: var(--primary-100);
 }
 
 .card .nav-link {
