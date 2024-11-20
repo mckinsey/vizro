@@ -1,8 +1,9 @@
+import shutil
+from pathlib import Path
+
 import cv2
 import imutils
-import shutil
 from hamcrest import assert_that, equal_to
-from pathlib import Path
 
 
 def _compare_images(expected_image, result_image):
