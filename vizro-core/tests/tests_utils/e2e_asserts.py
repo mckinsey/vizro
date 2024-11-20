@@ -5,19 +5,19 @@ from hamcrest import assert_that, equal_to
 from pathlib import Path
 
 
-def _compare_images(original_image, new_image):
+def _compare_images(expected_image, result_image):
     """Comparison process."""
-    difference = cv2.subtract(original_image, new_image)
+    difference = cv2.subtract(expected_image, result_image)
     blue, green, red = cv2.split(difference)
     assert_that(cv2.countNonZero(blue), equal_to(0), reason="Blue channel is different")
     assert_that(cv2.countNonZero(green), equal_to(0), reason="Green channel is different")
     assert_that(cv2.countNonZero(red), equal_to(0), reason="Red channel is different")
 
 
-def _create_image_difference(original, new):
+def _create_image_difference(expected_image, result_image):
     """Creates new image with diff of images comparison."""
-    diff = original.copy()
-    cv2.absdiff(original, new, diff)
+    diff = expected_image.copy()
+    cv2.absdiff(expected_image, result_image, diff)
     gray = cv2.cvtColor(diff, cv2.COLOR_BGR2GRAY)
     for i in range(0, 3):
         dilated = cv2.dilate(gray.copy(), None, iterations=i + 1)
@@ -26,24 +26,30 @@ def _create_image_difference(original, new):
     cnts = imutils.grab_contours(cnts)
     for contour in cnts:
         (x, y, width, height) = cv2.boundingRect(contour)
-        cv2.rectangle(new, (x, y), (x + width, y + height), (0, 255, 0), 2)
-    return new
+        cv2.rectangle(result_image, (x, y), (x + width, y + height), (0, 255, 0), 2)
+    return result_image
 
 
-def assert_image_equal(browserdriver, test_image_name):
+def make_screenshot_and_paths(browserdriver, request):
+    result_image_path = f"{request.node.name}_branch.png"
+    expected_image_name = f"{request.node.name.replace('test', 'main')}.png"
+    expected_image_path = f"tests/e2e/screenshots/{expected_image_name}"
+    browserdriver.save_screenshot(result_image_path)
+    return result_image_path, expected_image_path, expected_image_name
+
+
+def assert_image_equal(result_image_path, expected_image_path, expected_image_name):
     """Comparison logic and diff files creation."""
-    base_image_name = f"{test_image_name.replace('test', 'base')}.png"
-    browserdriver.save_screenshot(f"{test_image_name}_branch.png")
-    original = cv2.imread(f"tests/e2e/screenshots/{base_image_name}")
-    new = cv2.imread(f"{test_image_name}_branch.png")
+    expected_image = cv2.imread(expected_image_path)
+    result_image = cv2.imread(result_image_path)
     try:
-        _compare_images(original, new)
-        Path(f"{test_image_name}_branch.png").unlink()
-    except AssertionError as exp:
-        shutil.copy(f"{test_image_name}_branch.png",  base_image_name)
-        diff = _create_image_difference(original=new, new=original)
-        cv2.imwrite(f"{test_image_name}_diff_main.png", diff)
-        raise AssertionError("pictures are not the same") from exp
-    except cv2.error as exp:
-        shutil.copy(f"{test_image_name}_branch.png", base_image_name)
-        raise cv2.error("pictures has different sizes") from exp
+        _compare_images(expected_image, result_image)
+        Path(result_image_path).unlink()
+    except AssertionError as exc:
+        shutil.copy(result_image_path,  expected_image_name)
+        diff = _create_image_difference(expected_image=expected_image, result_image=result_image)
+        cv2.imwrite(f"{result_image_path}_difference_from_main.png", diff)
+        raise AssertionError("pictures are not the same") from exc
+    except cv2.error as exc:
+        shutil.copy(result_image_path, expected_image_name)
+        raise cv2.error("pictures has different sizes") from exc

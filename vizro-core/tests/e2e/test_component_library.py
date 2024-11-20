@@ -1,7 +1,7 @@
 import dash_bootstrap_components as dbc
 import pandas as pd
 from dash import Dash, html
-from e2e_asserts import assert_image_equal
+from e2e_asserts import assert_image_equal, make_screenshot_and_paths
 
 from vizro.figures.library import kpi_card, kpi_card_reference
 
@@ -67,7 +67,7 @@ example_reference_cards = [
 ]
 
 
-def test_kpi_card_component_library(dash_duo, get_test_name):
+def test_kpi_card_component_library(dash_duo, request):
 
     app = Dash(__name__, external_stylesheets=[dbc.themes.BOOTSTRAP])
     app.layout = dbc.Container(
@@ -85,5 +85,6 @@ def test_kpi_card_component_library(dash_duo, get_test_name):
     dash_duo.start_server(app)
     dash_duo.wait_for_page(timeout=20)
     dash_duo.wait_for_element("div[class='card-kpi card']")
-    assert_image_equal(dash_duo.driver, get_test_name)
+    result_image_path, expected_image_path, expected_image_name = make_screenshot_and_paths(dash_duo.driver, request)
+    assert_image_equal(result_image_path, expected_image_path, expected_image_name)
     assert dash_duo.get_logs() == [], "browser console should contain no error"
