@@ -31,17 +31,17 @@ def _create_image_difference(expected_image, result_image):
     return result_image
 
 
-def make_screenshot_and_paths(browserdriver, request):
-    result_image_path = f"{request.node.name}_branch.png"
-    expected_image_name = f"{request.node.name.replace('test', 'main')}.png"
-    expected_image_path = f"tests/e2e/screenshots/{expected_image_name}"
+def make_screenshot_and_paths(browserdriver, request_node_name):
+    result_image_path = f"{request_node_name}_branch.png"
+    expected_image_path = f"tests/e2e/screenshots/{request_node_name.replace('test', 'main')}.png"
     browserdriver.save_screenshot(result_image_path)
-    return result_image_path, expected_image_path, expected_image_name
+    return result_image_path, expected_image_path
 
 
-def assert_image_equal(result_image_path, expected_image_path, expected_image_name):
+def assert_image_equal(result_image_path, expected_image_path):
     """Comparison logic and diff files creation."""
     expected_image = cv2.imread(expected_image_path)
+    expected_image_name = Path(expected_image_path).name
     result_image = cv2.imread(result_image_path)
     try:
         _compare_images(expected_image, result_image)

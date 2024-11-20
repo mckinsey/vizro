@@ -85,6 +85,6 @@ def test_kpi_card_component_library(dash_duo, request):
     dash_duo.start_server(app)
     dash_duo.wait_for_page(timeout=20)
     dash_duo.wait_for_element("div[class='card-kpi card']")
-    result_image_path, expected_image_path, expected_image_name = make_screenshot_and_paths(dash_duo.driver, request)
-    assert_image_equal(result_image_path, expected_image_path, expected_image_name)
+    result_image_path, expected_image_path = make_screenshot_and_paths(dash_duo.driver, request.node.name)
+    assert_image_equal(result_image_path, expected_image_path)
     assert dash_duo.get_logs() == [], "browser console should contain no error"
