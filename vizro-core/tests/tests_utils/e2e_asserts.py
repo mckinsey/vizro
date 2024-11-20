@@ -47,7 +47,7 @@ def assert_image_equal(result_image_path, expected_image_path):
         _compare_images(expected_image, result_image)
         Path(result_image_path).unlink()
     except AssertionError as exc:
-        shutil.copy(result_image_path,  expected_image_name)
+        shutil.copy(result_image_path, expected_image_name)
         diff = _create_image_difference(expected_image=expected_image, result_image=result_image)
         cv2.imwrite(f"{result_image_path}_difference_from_main.png", diff)
         raise AssertionError("pictures are not the same") from exc
