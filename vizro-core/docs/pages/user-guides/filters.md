@@ -5,7 +5,7 @@ This guide shows you how to add filters to your dashboard. One main way to inter
 The [`Page`][vizro.models.Page] model accepts the `controls` argument, where you can enter a [`Filter`][vizro.models.Filter] model.
 This model enables the automatic creation of [selectors](selectors.md) (such as `Dropdown`, `RadioItems`, `Slider`, ...) that operate on the charts/components on the screen.
 
-By default, filters that control [dynamic data](data.md#dynamic-data) are [updated while the dashboard is running](data.md#filters) when the underlying data changes.
+By default, filters that control [dynamic data](data.md#dynamic-data) are [dynamically updated](data.md#filters) when the underlying data changes while the dashboard is running.
 
 ## Basic filters
 
