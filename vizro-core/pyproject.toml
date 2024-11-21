@@ -16,7 +16,7 @@ classifiers = [
 ]
 dependencies = [
   "dash>=2.17.1,<3",  # 2.17.1 needed for no_output fix in clientside_callback
-  "dash_bootstrap_components",
+  "dash_bootstrap_components>=1.6.0",
   "dash-ag-grid>=31.0.0",
   "pandas>=2",
   "plotly>=5.12.0",
