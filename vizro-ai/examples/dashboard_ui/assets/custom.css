@@ -333,7 +333,8 @@ img#banner {
   flex-flow: column wrap;
   gap: 12px;
   justify-content: flex-start;
-  /*Nadija, can you check what overflow behaviour you guys wanted here? none doesn't exist as a property*/
+
+  /* Nadija, can you check what overflow behaviour you guys wanted here? none doesn't exist as a property */
   overflow: hidden;
 }
 
