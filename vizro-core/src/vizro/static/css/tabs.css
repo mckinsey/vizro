@@ -36,9 +36,9 @@
 }
 
 .tab-title:hover {
-  color: var(--text-primaryHover);
   background-color: transparent;
   border-bottom: 1px solid var(--border-hover);
+  color: var(--text-primaryHover);
 }
 
 .tab-title[data-active] {
