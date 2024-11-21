@@ -268,7 +268,8 @@ data_manager["no_expire_data"].timeout = 0
 
 ### Parametrize data loading
 
-You can supply arguments to your dynamic data loading function that can be modified from the dashboard. For example:
+You can give arguments to your dynamic data loading function that can be modified from the dashboard. For example:
+
 - To load different versions of the same data.
 - To handle big data you can use an argument that controls the amount of data that is loaded. This effectively pre-filters data before it reaches the Vizro dashboard.
 
@@ -280,7 +281,7 @@ To add a parameter to control a dynamic data source, do the following:
 2. give an `id` to all components that have the data source you wish to alter through a parameter.
 3. [add a parameter](parameters.md) with `targets` of the form `<target_component_id>.data_frame.<dynamic_data_argument>` and a suitable [selector](selectors.md).
 
-For example, let us extend the [dynamic data example](#dynamic-data) above to show how the `load_iris_data` can take an argument `number_of_points` controlled from the dashboard with a [`Slider`][vizro.models.Slider].
+For example, let us extend the [dynamic data example](#dynamic-data) above into a simple toy example of how parametrized dynamic data works. The `load_iris_data` can take an argument `number_of_points` controlled from the dashboard with a [`Slider`][vizro.models.Slider].
 
 !!! example "Parametrized dynamic data"
     === "app.py"
@@ -338,23 +339,23 @@ You cannot pass [nested parameters](parameters.md#nested-parameters) to dynamic 
 
 ### Filters
 
-By default, when a [filter](filters.md) depends on dynamic data, the available selector values update on page refresh to reflect the latest dynamic data. The mechanism for this, including caching, works exactly like other non-control components such as `vm.Graph`. However, unlike such components, a filter can depend on multiple data sources.
+When a [filter](filters.md) depends on dynamic data and no `selector` is explicitly defined in the `vm.Filter` model, the available selector values update on page refresh to reflect the latest dynamic data. This is called a _dynamic filter_.
 
-Vizro looks at the data source for each component in the filter's `targets`. If at least one of these is a dynamic data source then the filter behaves dynamically and the filter's selector updates on page refresh. Remember that when `targets` is not explicitly specified, a filter applies to all the components on a page that use a DataFrame including `column`.
+The mechanism for dynamic filters, including caching, works exactly like other non-control components such as `vm.Graph`. However, unlike such components, a filter can depend on multiple data sources. If at least one data source of the components in the filter's `targets` is dynamic then the filter is dynamic. Remember that when `targets` is not explicitly specified, a filter applies to all the components on a page that use a DataFrame including `column`.
 
 When the page is refreshed, the behaviour of a dynamic filter is as follows:
 
 - The filter's selector updates its available values:
-    - For [categorical selectors](selectors.md#categorical-selectors), `options` updates.
-    - For [numerical selectors](selectors.md#numerical-selectors), `min` and `max` update.
+    - For [categorical selectors](selectors.md#categorical-selectors), `options` updates to give all unique values found in `column` across all the data sources of components in `targets`.
+    - For [numerical selectors](selectors.md#numerical-selectors), `min` and `max` update to give the overall minimum and maximum values found in `column` across all the data sources of components in `targets`.
 - The value selected on screen by a dashboard user _does not_ change. If the selected value is not present in the new set of available values then it is still selected, but the filtering operation might result in an empty DataFrame.
-- The `targets` of the filter and selector type do not change (for example, a `Dropdown` cannot turn into `RadioItems`).
+- Even though the values present in a data source can change, the schema should not: `column` should remain present and of the same type in the data sources. The `targets` of the filter and selector type cannot change while the dashboard is running. For example, a `vm.Dropdown` selector cannot turn into `vm.RadioItems`.
 
 For example, let us add two filters to the [dynamic data example](#dynamic-data) above:
 
 !!! example "Dynamic filters"
 
-    ```py hl_lines="20 21"
+    ```py hl_lines="10 20 21"
     from vizro import Vizro
     import pandas as pd
     import vizro.plotly.express as px
@@ -364,7 +365,7 @@ For example, let us add two filters to the [dynamic data example](#dynamic-data)
 
     def load_iris_data():
         iris = pd.read_csv("iris.csv")
-        return iris.sample(50)
+        return iris.sample(5)  # (1)!
 
     data_manager["iris"] = load_iris_data
 
@@ -374,8 +375,8 @@ For example, let us add two filters to the [dynamic data example](#dynamic-data)
             vm.Graph(figure=px.box("iris", x="species", y="petal_width", color="species"))
         ],
         controls=[
-            vm.Filter(column="species"),  # (1)!
-            vm.Filter(column="sepal_length"),  # (2)!
+            vm.Filter(column="species"),  # (2)!
+            vm.Filter(column="sepal_length"),  # (3)!
         ],
     )
 
@@ -384,8 +385,9 @@ For example, let us add two filters to the [dynamic data example](#dynamic-data)
     Vizro().build(dashboard).run()
     ```
 
-    1. This filter implicitly controls the dynamic data source `"iris"`, which supplies the `data_frame` to the targeted `vm.Graph`. On page refresh, Vizro reloads this data, looks at the values found in the `"species"` column and sets the categorical selector's `options` accordingly.
-    2. Similarly, on page refresh, Vizro looks at the `"sepal_length"` column of the reloaded data and sets new `min` and `max` values for the numerical selector.
+    1. We sample only 5 rather than 50 points so that changes to the available values in the filtered columns are more apparent when the page is refreshed.
+    2. This filter implicitly controls the dynamic data source `"iris"`, which supplies the `data_frame` to the targeted `vm.Graph`. On page refresh, Vizro reloads this data, finds all the unique values in the `"species"` column and sets the categorical selector's `options` accordingly.
+    3. Similarly, on page refresh, Vizro finds the minimum and maximum values of the `"sepal_length"` column in the reloaded data and sets new `min` and `max` values for the numerical selector accordingly.
 
 If you have a filter that depends on dynamic data but do not want the available values to change when the dynamic data changes then you should manually specify the `selector`'s `options` field (categorical selector) or `min` and `max` fields (numerical selector). In the above example, this could be achieved as follows:
 

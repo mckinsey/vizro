@@ -122,7 +122,7 @@ Currently available selectors are [`Checklist`][vizro.models.Checklist], [`Dropd
 For further customizations, you can always refer to the [`Filter`][vizro.models.Filter] reference. Some popular choices are:
 
 - select which component the filter will apply to by using `targets`
-- specify options of the `selector` chosen
+- specify configuration of the `selector`, for example the `options` for a categorical filter or `min` and `max` for a numerical filter
 
 Below is an advanced example where we only target one page component, and where we further customize the chosen `selector`.
 
