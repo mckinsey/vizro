@@ -122,11 +122,22 @@ Like the `VizroAI.plot` method, in order to produce more comprehensive output we
         ```
 
 To use the above code, you will still need to add three simple steps:
-- Import your data into the Python environment.
-- Uncomment the data manager instance and map the imported data. See the Vizro guide on [connecting dashboard to data](https://vizro.readthedocs.io/en/stable/pages/user-guides/data/).
-- Add following code snippet at the end of the file `Vizro().build(dashboard).run()` to launch the dashboard.
 
-Detailed guidance is provided in [dashboard generation tutorial](Detailed guidance is provided in [dashboard generation tutorial](https://vizro.readthedocs.io/projects/vizro-ai/en/latest/pages/tutorials/quickstart/))
+- Import your data.
+    ```py
+    data = pd.read_csv('data.csv')  # Replace 'data.csv' with your file name or path to your data
+    ```
+- After importing your data, register it in the data manager by uncommenting the data manager instance and assigning the imported data to it. See the Vizro guide on [connecting dashboard to data](https://vizro.readthedocs.io/en/stable/pages/user-guides/data/#reference-by-name/).
+
+    ```py
+    data_manager["restaurant_bills"] = data
+    ```
+
+- Launch the dashboard by adding the code below at the end of the file:
+    ```py
+    Vizro().build(dashboard).run()
+    ```
+Detailed guidance is provided in [dashboard generation tutorial](https://vizro.readthedocs.io/projects/vizro-ai/en/latest/pages/tutorials/quickstart/)).
 
 ## Available Vizro components
 
