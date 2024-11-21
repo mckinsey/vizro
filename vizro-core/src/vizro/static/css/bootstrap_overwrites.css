@@ -1,5 +1,29 @@
 /* This file contains overwrites, which we want to have as defaults for vizro
 but do not want to take over to `vizro-bootstrap` as these settings might not be generic enough. */
+[data-bs-theme="dark"] {
+  --dropdown-label-bg: var(--primary-800);
+  --right-side-bg: var(--surfaces-bg03);
+  --text-code-string: #95c2e7;
+  --text-code-keyword: #f4766e;
+  --text-code-meta: #c8ace1;
+  --text-code-type: #f69d50;
+  --text-code-literal: #6bb5fd;
+  --slider-rail-bg: var(--primary-100);
+  --collapse-icon-bg: var(--primary-500);
+}
+
+[data-bs-theme="light"] {
+  --dropdown-label-bg: var(--primary-300);
+  --right-side-bg: var(--surfaces-bg01);
+  --text-code-string: #0a3069;
+  --text-code-keyword: #d12d39;
+  --text-code-meta: #6f42c1;
+  --text-code-type: #f69d50;
+  --text-code-literal: #005cc5;
+  --fill-icon-image-card: invert(64%) sepia(0%) saturate(1375%);
+  --slider-rail-bg: var(--primary-900);
+  --collapse-icon-bg: var(--primary-300);
+}
 
 .card .nav-link {
   height: 100%;

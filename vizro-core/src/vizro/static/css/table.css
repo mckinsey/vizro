@@ -11,7 +11,7 @@
   .dash-spreadsheet-container
   .dash-spreadsheet-inner
   th {
-  background-color: var(--main-container-bg-color);
+  background-color: var(--right-side-bg);
   color: var(--text-primary);
   padding: 10px 0;
 }
@@ -21,7 +21,7 @@
   .dash-spreadsheet-container
   .dash-spreadsheet-inner
   td {
-  background-color: var(--main-container-bg-color);
+  background-color: var(--right-side-bg);
   color: var(--text-primary);
 }
 
@@ -30,7 +30,7 @@
   .dash-spreadsheet-container
   .dash-spreadsheet-inner
   table {
-  --hover: var(--main-container-bg-color);
+  --hover: var(--right-side-bg);
 
   width: 100%;
 }

@@ -12,7 +12,7 @@
 }
 
 #dashboard-container .mantine-Switch-track:focus {
-  border: 2px solid var(--focus-focus);
+  border: 2px solid var(--focus);
 }
 
 #dashboard-container .mantine-Switch-input {
@@ -26,14 +26,14 @@
 }
 
 #dashboard-container .mantine-Switch-thumb {
-  background-color: var(--fill-medium-emphasis);
+  background-color: var(--fill-secondary);
   border: none;
   height: 10px;
   width: 10px;
 }
 
 #dashboard-container input:checked + * > .mantine-11dx59s {
-  background: var(--text-contrast-primary);
+  background: var(--text-primary-inverted);
   left: calc(100% - 12px);
 }
 
