@@ -299,6 +299,7 @@ class CustomDashboard(vm.Dashboard):
         """Returns custom dashboard."""
         dashboard_build_obj = super().build()
         dashboard_build_obj.children.append(dcc.Store(id="data-store", storage_type="session"))
+        dashboard_build_obj.children.append(dcc.Store(id="img-store", storage_type="session"))
         dashboard_build_obj.children.append(dcc.Store(id="code-output-store", storage_type="session"))
         return dashboard_build_obj
 
@@ -334,7 +335,7 @@ def custom_table(data_frame):
             html.Span(
                 "table_view",
                 className="material-symbols-outlined",
-                id="modal-table-icon",
+                id="modal-table-icon-img",
                 style={"color": "gray", "cursor": "default"},
             ),
             dbc.Tooltip(
@@ -342,17 +343,17 @@ def custom_table(data_frame):
                 placement="top",
                 target="modal-table-icon",
                 style={"display": "none"},
-                id="modal-table-tooltip",
+                id="modal-table-tooltip-img",
             ),
             html.P(
-                id="upload-message", children=["Upload your data file (csv or excel)"], style={"paddingTop": "10px"}
+                id="upload-message-img", children=["Upload your data file (csv or excel)"], style={"paddingTop": "10px"}
             ),
             dbc.Modal(
-                id="data-modal",
+                id="data-modal-img",
                 children=[
-                    dbc.ModalHeader(dbc.ModalTitle(id="modal-title", children="No data uploaded!")),
+                    dbc.ModalHeader(dbc.ModalTitle(id="modal-title-img", children="No data uploaded!")),
                     dbc.ModalBody(
-                        id="modal-table",
+                        id="modal-table-img",
                         children=table,
                     ),
                 ],
@@ -360,7 +361,7 @@ def custom_table(data_frame):
                 modal_class_name="modal-class",
             ),
         ],
-        id="table-modal-div",
+        id="table-modal-div-img",
     )
     return table_modal
 
@@ -386,7 +387,7 @@ class DropdownMenu(vm.VizroBaseModel):
                         dbc.Button(children="HTML", id=f"{self.id}-html", className="download-button"),
                     ]
                 ),
-                dcc.Download(id="download-file"),
+                dcc.Download(id="download-file-img"),
             ],
             toggleClassName="dropdown-menu-toggle-class",
         )
@@ -397,10 +398,10 @@ class DropdownMenu(vm.VizroBaseModel):
                 dbc.Tooltip(
                     "Download this plot to your device as a plotly JSON or interactive HTML file "
                     "for easy sharing or future use.",
-                    target="dropdown-menu-div",
+                    target="dropdown-menu-div-img",
                 ),
             ],
-            id="dropdown-menu-div",
+            id="dropdown-menu-div-img",
         )
         return download_div
 

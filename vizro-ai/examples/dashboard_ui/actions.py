@@ -3,6 +3,7 @@
 import base64
 import io
 import logging
+import json
 
 import black
 import dash
@@ -196,3 +197,57 @@ def update_table(data):
     df_sample = df.sample(5)
     table = dbc.Table.from_dataframe(df_sample, striped=False, bordered=True, hover=True)
     return table, modal_title
+
+
+@capture("action")
+def image_upload_action(contents, filename):
+    """Custom action to handle data upload for single or multiple files."""
+    if not contents:
+        raise PreventUpdate
+
+    uploaded_image = {}
+    for image, file in zip(contents, filename):
+        uploaded_image[file] = image
+    return uploaded_image
+
+
+@capture("action")
+def run_image_ai(image, df, model, api_key, api_base, vendor_input):
+    vendor = SUPPORTED_VENDORS[vendor_input]
+
+    if vendor_input == "OpenAI":
+        llm = vendor(
+            model_name=model, openai_api_key=api_key, openai_api_base=api_base, temperature=DEFAULT_TEMPERATURE
+        )
+    if vendor_input == "Anthropic":
+        llm = vendor(
+            model=model, anthropic_api_key=api_key, anthropic_api_url=api_base, temperature=DEFAULT_TEMPERATURE
+        )
+    if vendor_input == "Mistral":
+        llm = vendor(model=model, mistral_api_key=api_key, mistral_api_url=api_base, temperature=DEFAULT_TEMPERATURE)
+    if vendor_input == "xAI":
+        llm = vendor(model=model, openai_api_key=api_key, openai_api_base=api_base, temperature=DEFAULT_TEMPERATURE)
+
+    vizro_ai = VizroAI(model=llm)
+
+    question = """
+    You are a data scientist with expertise in Plotly and the visualization library named Vizro.
+    1. Describe the chart you see.
+    2. Describe what do you see in chart with following aspects:
+
+      - Axis labels
+      - Title
+      - Chart Legend
+      - Data Values
+      - Colors
+      - Orientation of chart
+
+    Important, if there are any text you see, accurately describe the original text. 
+    """
+
+    images = json.loads(image)
+    images = list(images.values())
+
+    message = construct_message(images, question)
+    response = ai_model.invoke([message])
+    dashboard_spec = response.content

@@ -31,7 +31,7 @@
   width: 100%;
 }
 
-#code-clipboard {
+#code-clipboard-imd {
   padding: 8px;
 }
 
@@ -122,6 +122,14 @@
 }
 
 #data-upload-component {
+  border: 1px dashed var(--border-subtle-alpha-01);
+  color: var(--text-primary);
+  height: 5vh;
+  line-height: 5vh;
+  text-align: center;
+}
+
+#img-upload-component {
   border: 1px dashed var(--border-subtle-alpha-01);
   color: var(--text-primary);
   height: 5vh;
