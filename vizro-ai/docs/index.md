@@ -27,7 +27,7 @@ Even if you are an experienced data practitioner, Vizro-AI optimizes how you cre
     [:octicons-arrow-right-24: Model usage](pages/user-guides/customize-vizro-ai.md)</br>
     [:octicons-arrow-right-24: Create advanced charts](pages/user-guides/create-advanced-charts.md)</br>
     [:octicons-arrow-right-24: Add charts to a dashboard](pages/user-guides/add-generated-chart-usecase.md)</br>
-    [:octicons-arrow-right-24: Retrieve code for a generated dashboard](pages/user-guides/retrieve-dashboard-code.md)
+    [:octicons-arrow-right-24: Retrieve code for a generated dashboard](pages/user-guides/run-vizro-ai-dashboard.md)
 
 - :material-format-font:{ .lg .middle } __Find out more__
 
