@@ -33,6 +33,7 @@ dependencies = [
   "PyGithub"
 ]
 installer = "uv"
+env-vars = {UV_PRERELEASE = "allow"}
 
 [envs.default.scripts]
 example = "hatch run examples:example {args:scratch_dev}"  # shortcut script to underlying example environment script.
