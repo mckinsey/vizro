@@ -14,7 +14,7 @@ from vizro.managers._model_manager import ModelID
 from vizro.models.types import MultiValueType, SelectorType, SingleValueType
 
 if TYPE_CHECKING:
-    from vizro.models import Action, VizroBaseModel
+    from vizro.models import Action, VizroBaseModel, Filter
 
 ValidatedNoneValueType = Union[SingleValueType, MultiValueType, None, list[None]]
 
@@ -60,6 +60,7 @@ def _apply_filter_controls(
     Returns: filtered DataFrame.
     """
     from vizro.actions import _filter
+    from vizro.models import Filter
 
     for ctd in ctds_filters:
         selector_value = ctd["value"]
@@ -68,14 +69,16 @@ def _apply_filter_controls(
 
         for action in selector_actions:
             if (
-                not isinstance(action.function, _filter)
+                # not isinstance(model_manager[ctd["id"], Dropdown]
+                # not isinstance(action.function, _filter)
+                not isinstance(filter := model_manager[ctd["id"].removeprefix("selector_")], Filter)
                 or target not in action.function["targets"]
                 or ALL_OPTION in selector_value
             ):
                 continue
 
-            _filter_function = action.function["filter_function"]
-            _filter_column = action.function["filter_column"]
+            _filter_function = filter._filter_function
+            _filter_column = filter.column
             _filter_value = selector_value
             data_frame = data_frame[_filter_function(data_frame[_filter_column], _filter_value)]
 

@@ -90,10 +90,10 @@ class _filter(CapturedActionCallable):
 
     @staticmethod
     def pure_function(
-            filter_column: str,
-            targets: list[ModelID],
-            filter_function: Callable[[pd.Series, Any], pd.Series],
-            **inputs: dict[str, Any],
+        filter_column: str,
+        targets: list[ModelID],
+        filter_function: Callable[[pd.Series, Any], pd.Series],
+        **inputs: dict[str, Any],
     ) -> dict[ModelID, Any]:
         """Filters targeted charts/components on page by interaction with `Filter` control.
 
@@ -125,20 +125,16 @@ class _filter(CapturedActionCallable):
         from vizro.actions import filter_interaction
         from vizro.models import Filter, Parameter
 
-        # AM. think of better way to do this. OK for now though. In future maybe pattern matching callback best to
-        # avoid all these lookups? May have problem with this and changes to pass id through into callbacks using
-        # dict[str, State] - doesn't seem possible with pattern matching callbacks?
         page_id = model_manager._get_model_page_id(model_id=self._action_id)
         page = model_manager[page_id]
+        # use List[State]
         action_input_mapping = {
-            "filters": _get_inputs_of_controls(
-                page=page, control_type=Filter
-            ),  # AM now looks like "filters": {"filter_id": ["iris", "versicolor"]}
-            "parameters": _get_inputs_of_controls(page=page, control_type=Parameter),  # AM: updated
+            "filters": _get_inputs_of_controls(page=page, control_type=Filter),
+            "parameters": _get_inputs_of_controls(page=page, control_type=Parameter),
             # TODO: Probably need to adjust other inputs to follow the same structure list[dict[str, State]]
             "filter_interaction": _get_inputs_of_figure_interactions(
                 page=page, action_function=filter_interaction.__wrapped__
-            ),  # AM: not updated yet
+            ),
         }
         return action_input_mapping
 

@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from typing import Any, Literal, Union
+from typing import Any, Literal, Union, Callable
 
 import numpy as np
 import pandas as pd
@@ -14,7 +14,7 @@ except ImportError:  # pragma: no cov
     from pydantic import Field, PrivateAttr, validator
 
 from vizro._constants import FILTER_ACTION_PREFIX
-from vizro.actions import _filter
+from vizro.actions import _filter, _on_page_load
 from vizro.managers import data_manager, model_manager
 from vizro.managers._model_manager import ModelID
 from vizro.models import Action, VizroBaseModel
@@ -89,6 +89,7 @@ class Filter(VizroBaseModel):
     )
     selector: SelectorType = None
     _column_type: Literal["numerical", "categorical", "temporal"] = PrivateAttr()
+    _filter_function: Callable = PrivateAttr()
 
     @validator("targets", each_item=True)
     def check_target_present(cls, target):
@@ -122,7 +123,7 @@ class Filter(VizroBaseModel):
 
         # Set default selector according to column type.
         self._column_type = self._validate_column_type(targeted_data)
-        self.selector = self.selector or SELECTORS[self._column_type][0]()
+        self.selector = self.selector or SELECTORS[self._column_type][0](id=f"selector_{self.id}")  # temporary hack
         self.selector.title = self.selector.title or self.column.title()
 
         if isinstance(self.selector, DISALLOWED_SELECTORS.get(self._column_type, ())):
@@ -151,10 +152,14 @@ class Filter(VizroBaseModel):
             else:
                 filter_function = _filter_isin
 
+            self._filter_function = filter_function
+
             self.selector.actions = [
                 Action(
                     id=f"{FILTER_ACTION_PREFIX}_{self.id}",
-                    function=_filter(filter_column=self.column, targets=self.targets, filter_function=filter_function),
+                    function=_on_page_load(targets=self.targets),  # should have arguments filters, parameters
+                    # targets can go as function arguments or output field of action model - keep here for now
+                    # Could put in Filter model or as varargs field in Action
                 )
             ]
 

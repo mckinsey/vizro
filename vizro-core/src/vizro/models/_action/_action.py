@@ -57,6 +57,7 @@ class Action(VizroBaseModel):
     # fine to copy and paste between different actions or have some code for inputs corresponding to all controls on
     # page
     # remove components as property and just put in dcc.Download global? Need one download object per file?
+    # GOOD IDEA? Pass filters/parameters into all functions as reserved kwargs? Must be optional though.
 
     # TODO: Problem: generic Action model shouldn't depend on details of particular actions like export_data.
     # Possible solutions: make a generic mapping of action functions to validation functions or the imports they
@@ -95,6 +96,8 @@ class Action(VizroBaseModel):
             callback_inputs = [State(*input.split(".")) for input in self.inputs]
         elif isinstance(self.function, CapturedActionCallable):
             callback_inputs = self.function.inputs
+
+            # callback_inputs = self.inputs
         else:
             callback_inputs = _get_action_callback_mapping(action_id=ModelID(str(self.id)), argument="inputs")
 
@@ -179,7 +182,6 @@ class Action(VizroBaseModel):
         # similar.
         # Could just put into private property _inputs that mimics inputs for now but no point since always
         # recalculated at the moment.
-        # In future might use pattern matching.
         # Remove components as property and just put in dcc.Download global? Need one download object per file?
 
         self.function._action_id = self.id
