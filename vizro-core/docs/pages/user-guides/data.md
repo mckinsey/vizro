@@ -396,9 +396,9 @@ controls = [
 ]
 ```
 
-If you [specify a custom selector](filters.md#changing-selectors) for a dynamic filter without manually specifying `options` (categorical selector) or `min` and `max` (numerical selector) then the selector remains dynamic. For example:
+If you [use a specific selector](filters.md#changing-selectors) for a dynamic filter without manually specifying `options` (categorical selector) or `min` and `max` (numerical selector) then the selector remains dynamic. For example:
 
-```python title="Dynamic filter with custom selector is still dynamic"
+```python title="Dynamic filter with specific selector is still dynamic"
 controls = [
     vm.Filter(column="species", selector=vm.Checklist()),
     vm.Filter(column="sepal_length", selector=vm.Slider()),
