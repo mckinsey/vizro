@@ -1,4 +1,5 @@
 """Utils file."""
+from langchain.schema import HumanMessage
 
 
 def check_file_extension(filename):
@@ -6,3 +7,16 @@ def check_file_extension(filename):
 
     # Check if the filename ends with .csv or .xls
     return filename.endswith(".csv") or filename.endswith(".xls") or filename.endswith(".xlsx")
+
+
+def construct_message(images, question):
+    """Construct a HumanMessage with a dynamic number of images.
+
+    :param images: List of base64-encoded image data
+    :param question: The question to ask about the images
+    :return: HumanMessage object
+    """
+    content = [{"type": "text", "text": question}]
+    for img_data in images:
+        content.append({"type": "image_url", "image_url": {"url": f"{img_data}"}})
+    return HumanMessage(content=content)

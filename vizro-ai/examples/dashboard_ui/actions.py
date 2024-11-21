@@ -9,7 +9,7 @@ import black
 import dash
 import dash_bootstrap_components as dbc
 import pandas as pd
-from _utils import check_file_extension
+from _utils import check_file_extension, construct_message
 from dash.exceptions import PreventUpdate
 from langchain_openai import ChatOpenAI
 from plotly import graph_objects as go
