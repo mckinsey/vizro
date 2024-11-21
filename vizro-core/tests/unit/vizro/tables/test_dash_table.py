@@ -45,8 +45,8 @@ class TestDashDataTable:
                 style_data_conditional=[
                     {
                         "if": {"state": "active"},
-                        "backgroundColor": "var(--state-overlays-selected)",
-                        "border": "1px solid var(--state-overlays-selected)",
+                        "backgroundColor": "var(--stateOverlays-selected)",
+                        "border": "1px solid var(--stateOverlays-selected)",
                     }
                 ],
             ),
