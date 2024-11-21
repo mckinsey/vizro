@@ -125,7 +125,7 @@ To use the above code, you will still need to add three simple steps:
 
 - Import your data.
     ```py
-    data = pd.read_csv('data.csv')  # Replace 'data.csv' with your file name or path to your data
+    data = pd.read_csv('data.csv')  # Replace 'data.csv' with your filename or path to your data
     ```
 - After importing your data, register it in the data manager by uncommenting the data manager instance and assigning the imported data to it. See the Vizro guide on [connecting dashboard to data](https://vizro.readthedocs.io/en/stable/pages/user-guides/data/#reference-by-name/).
 
@@ -137,7 +137,7 @@ To use the above code, you will still need to add three simple steps:
     ```py
     Vizro().build(dashboard).run()
     ```
-Detailed guidance is provided in [dashboard generation tutorial](https://vizro.readthedocs.io/projects/vizro-ai/en/latest/pages/tutorials/quickstart/)).
+Detailed guidance is provided in [dashboard generation tutorial](https://vizro.readthedocs.io/projects/vizro-ai/en/latest/pages/tutorials/quickstart/).
 
 ## Available Vizro components
 
