@@ -141,6 +141,12 @@
           "default": "Click me!",
           "type": "string"
         },
+        "href": {
+          "title": "Href",
+          "description": "URL (relative or absolute) to navigate to.",
+          "default": "",
+          "type": "string"
+        },
         "actions": {
           "title": "Actions",
           "default": [],

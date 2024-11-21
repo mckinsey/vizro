@@ -58,7 +58,7 @@ class TestDashboardInstantiation:
             vm.Dashboard(pages=[])
 
     def test_field_invalid_pages_input_type(self):
-        with pytest.raises(ValidationError, match="4 validation errors for Dashboard"):
+        with pytest.raises(ValidationError, match="5 validation errors for Dashboard"):
             vm.Dashboard(pages=[vm.Button()])
 
     def test_field_invalid_theme_input_type(self, page_1):
