@@ -94,7 +94,7 @@ img[src*="#chart-icon"] {
   background: var(--text-primary);
   border-top-left-radius: 8px;
   bottom: 0;
-  color: var(--text-primary-inverted);
+  color: var(--text-contrast-primary);
   display: flex;
   font-size: 0.8rem;
   font-weight: 500;
@@ -107,7 +107,7 @@ img[src*="#chart-icon"] {
 .anchor-container:focus,
 .anchor-container:hover {
   background: var(--text-secondary);
-  color: var(--text-primary-inverted);
+  color: var(--text-contrast-primary);
 }
 
 img#banner {
