@@ -8,7 +8,7 @@ import pandas as pd
 import plotly.graph_objects as go
 import vizro.models as vm
 import vizro.plotly.express as px
-from dash import dash_table, dcc, html
+from dash import dash_table, dcc, html, get_asset_url
 from vizro import Vizro
 from vizro.actions import export_data, filter_interaction
 from vizro.figures import kpi_card, kpi_card_reference
@@ -817,5 +817,17 @@ dashboard = vm.Dashboard(
     ),
 )
 
+
+app = Vizro().build(dashboard)
+app.dash.layout.children.append(
+    dbc.NavLink(
+        ["Made with ", html.Img(src=get_asset_url("logo.svg"), id="banner", alt="Vizro logo"), "vizro"],
+        href="https://github.com/mckinsey/vizro",
+        target="_blank",
+        className="anchor-container",
+    )
+)
+server = app.dash.server
+
 if __name__ == "__main__":
-    Vizro().build(dashboard).run()
+    app.run()
