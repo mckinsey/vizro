@@ -40,8 +40,8 @@ The following examples show a possible version of a custom table. In this case t
                 "style_as_list_view": True,
                 "style_data": {"border_bottom": "1px solid var(--border-subtleAlpha01)", "height": "40px"},
                 "style_header": {
-                    "border_bottom": "1px solid var(--state-overlays-selected-hover)",
-                    "border_top": "1px solid var(--main-container-bg-color)",
+                    "border_bottom": "1px solid var(--stateOverlays-selectedHover)",
+                    "border_top": "1px solid var(--right-side-bg)",
                     "height": "32px",
                 },
             }
