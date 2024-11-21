@@ -96,25 +96,8 @@ class Page(VizroBaseModel):
 
     @_log_call
     def pre_build(self):
-        # TODO: Remove default on page load action if possible
         targets = model_manager._get_page_model_ids_with_figure(page_id=ModelID(str(self.id)))
-
-        # TODO: In the Vizro._pre_build(), the loop passes through the components in the random order, but the
-        #  "pre_build" of one component can depend on another component's "pre_build".
-        #  Does the "postorder DFS" traversal pass work for us? -> More about it:
-        #  https://www.geeksforgeeks.org/tree-traversals-inorder-preorder-and-postorder/#postorder-traversal
-        #  By introducing this traversal algorithm we should ensure that child pre_build will always be called before
-        #  parent pre_build. Does this case solve all the pre_build interdependency future problems for us?
-        #  Should we also ensure that targeted components are always pre_build before the source components?
-
-        # The hack below is just to ensure that the pre_build of the Filter components is called before the page
-        # pre_build calculates on_page_load targets. We need this to check is the Filter _dynamic or not.
-        for control in self.controls:
-            if isinstance(control, Filter):
-                if not control._pre_build_finished:
-                    control.pre_build()
-                if control._dynamic:
-                    targets.append(control.id)
+        targets.extend(control.id for control in self.controls if getattr(control, "_dynamic", False))
 
         if targets:
             self.actions = [

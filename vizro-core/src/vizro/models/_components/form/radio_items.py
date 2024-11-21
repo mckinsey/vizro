@@ -49,11 +49,10 @@ class RadioItems(VizroBaseModel):
     _validate_options = root_validator(allow_reuse=True, pre=True)(validate_options_dict)
     _validate_value = validator("value", allow_reuse=True, always=True)(validate_value)
 
-    def __call__(self, new_options=None, **kwargs):
-        return self._build_static(new_options=new_options, **kwargs)
+    def __call__(self, options):
+        return self._build_static(options)
 
-    def _build_static(self, new_options=None, **kwargs):
-        options = new_options if new_options else self.options
+    def _build_static(self, options):
         full_options, default_value = get_options_and_default(options=options, multi=False)
 
         return html.Fieldset(
@@ -73,10 +72,10 @@ class RadioItems(VizroBaseModel):
         if self.value is None:
             self.value = get_options_and_default(self.options, multi=False)[1]
 
-        return self._build_static()
+        return self._build_static(self.options)
 
     @_log_call
     def build(self):
         # We don't have to implement _build_dynamic_placeholder, _build_static here. It's possible to: if dynamic and
         # self.value is None -> set self.value + return standard build (static), but let's align it with the Dropdown.
-        return self._build_dynamic_placeholder() if self._dynamic else self._build_static()
+        return self._build_dynamic_placeholder() if self._dynamic else self._build_static(self.options)

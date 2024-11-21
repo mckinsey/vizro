@@ -14,7 +14,7 @@ try:
 except ImportError:  # pragma: no cov
     from pydantic import Field, PrivateAttr, validator
 
-from vizro._constants import FILTER_ACTION_PREFIX
+from vizro._constants import ALL_OPTION, FILTER_ACTION_PREFIX
 from vizro.actions import _filter
 from vizro.managers import data_manager, model_manager
 from vizro.managers._data_manager import _DynamicData
@@ -96,7 +96,6 @@ class Filter(VizroBaseModel):
     selector: SelectorType = None
 
     _dynamic: bool = PrivateAttr(None)
-    _pre_build_finished: bool = PrivateAttr(False)
 
     # Component properties for actions and interactions
     _output_component_property: str = PrivateAttr("children")
@@ -109,11 +108,10 @@ class Filter(VizroBaseModel):
             raise ValueError(f"Target {target} not found in model_manager.")
         return target
 
-    def __call__(self, target_to_data_frame: dict[ModelID, pd.DataFrame], current_value: Any, **kwargs):
+    def __call__(self, target_to_data_frame: dict[ModelID, pd.DataFrame], current_value: Any):
         # Only relevant for a dynamic filter.
         # Although targets are fixed at build time, the validation logic is repeated during runtime, so if a column
         # is missing then it will raise an error. We could change this if we wanted.
-        # Call this from actions_utils
         targeted_data = self._validate_targeted_data(
             {target: data_frame for target, data_frame in target_to_data_frame.items() if target in self.targets},
             eagerly_raise_column_not_found_error=True,
@@ -126,19 +124,15 @@ class Filter(VizroBaseModel):
             )
 
         if isinstance(self.selector, SELECTORS["categorical"]):
-            # Categorical selector.
-            new_options = self._get_options(targeted_data, current_value)
-            return self.selector(current_value=current_value, new_options=new_options, **kwargs)
+            return self.selector(options=self._get_options(targeted_data, current_value))
         else:
-            # Numerical or temporal selector.
             _min, _max = self._get_min_max(targeted_data, current_value)
-            return self.selector(current_value=current_value, new_min=_min, new_max=_max, **kwargs)
+            # "current_value" is propagated only to support dcc.Input and dcc.Store components in numerical selectors
+            # to work with a dynamic selector. This can be removed when dash persistence bug is fixed.
+            return self.selector(min=_min, max=_max, current_value=current_value)
 
     @_log_call
     def pre_build(self):
-        if self._pre_build_finished:
-            return
-        self._pre_build_finished = True
         # If targets aren't explicitly provided then try to target all figures on the page. In this case we don't
         # want to raise an error if the column is not found in a figure's data_frame, it will just be ignored.
         # This is the case when bool(self.targets) is False.
@@ -146,12 +140,14 @@ class Filter(VizroBaseModel):
         proposed_targets = self.targets or model_manager._get_page_model_ids_with_figure(
             page_id=model_manager._get_model_page_id(model_id=ModelID(str(self.id)))
         )
-        # TODO NEXT: how to handle pre_build for dynamic filters? Do we still require default argument values in
-        #  `load` to establish selector type etc.? Can we take selector values from model_manager to supply these?
-        #  Or just don't do validation at pre_build time and wait until state is available during build time instead?
-        #  What should the load kwargs be here? Remember they need to be {} for static data.
-        #  Note that currently _get_unfiltered_data is only suitable for use at runtime since it requires
-        #  ctds_parameter. That could be changed to just reuse that function.
+
+        # TODO: Currently dynamic data functions require a default value for every argument. Even when there is a
+        #  dataframe parameter, the default value is used when pre-build the filter e.g. to find the targets,
+        #  column type (and hence selector) and initial values. There are three ways to handle this:
+        #  1. (Current approach) - Propagate {} and use only default arguments value in the dynamic data function.
+        #  2. Propagate values from the model_manager and relax the limitation of requireing argument default values.
+        #  3. Skip the pre-build and do everything in the build method (if possible).
+        #  Find more about the mentioned limitation at: https://github.com/mckinsey/vizro/pull/879/files#r1846609956
         multi_data_source_name_load_kwargs: list[tuple[DataSourceName, dict[str, Any]]] = [
             (model_manager[target]["data_frame"], {}) for target in proposed_targets
         ]
@@ -173,7 +169,10 @@ class Filter(VizroBaseModel):
                 f"'{self.column}'."
             )
 
-        # Selector can be dynamic if selector support the dynamic mode and "options", "min" and "max" are not provided.
+        # Check if the filter is dynamic. Dynamic filter means that the filter is updated when the page is refreshed
+        # which causes that "options" for categorical or "min" and "max" for numerical/temporal selectors are updated.
+        # The filter is dynamic if mentioned attributes ("options"/"min"/"max") are not explicitly provided and if the
+        # filter targets at least one figure that uses the dynamic data source.
         if isinstance(self.selector, DYNAMIC_SELECTORS) and (
             not getattr(self.selector, "options", None)
             and getattr(self.selector, "min", None) is None
@@ -272,11 +271,10 @@ class Filter(VizroBaseModel):
         _min = targeted_data.min(axis=None).item()
         _max = targeted_data.max(axis=None).item()
 
-        if current_value:
-            # The current_value is a list of two elements when a range selector is used. Otherwise it is a single value.
-            _is_range_selector = isinstance(current_value, list)
-            _min = min(_min, current_value[0] if _is_range_selector else current_value)
-            _max = max(_max, current_value[1] if _is_range_selector else current_value)
+        if current_value is not None:
+            current_value = current_value if isinstance(current_value, list) else [current_value]
+            _min = min(_min, *current_value)
+            _max = max(_max, *current_value)
 
         return _min, _max
 
@@ -287,5 +285,10 @@ class Filter(VizroBaseModel):
         # values and instead just pass straight to the Dash component.
         # The dropna() isn't strictly required here but will be in future pandas versions when the behavior of stack
         # changes. See https://pandas.pydata.org/docs/whatsnew/v2.1.0.html#whatsnew-210-enhancements-new-stack.
-        current_value = current_value or []
+
+        # Remove ALL_OPTION from the string or list of currently selected value for the categorical filters.
+        current_value = [] if current_value in (None, ALL_OPTION) else current_value
+        if isinstance(current_value, list) and ALL_OPTION in current_value:
+            current_value.remove(ALL_OPTION)
+
         return np.unique(pd.concat([targeted_data.stack().dropna(), pd.Series(current_value)])).tolist()  # noqa: PD013

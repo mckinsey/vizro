@@ -88,11 +88,10 @@ class Dropdown(VizroBaseModel):
             raise ValueError("Please set multi=True if providing a list of default values.")
         return multi
 
-    def __call__(self, new_options=None, **kwargs):
-        return self._build_static(new_options=new_options, **kwargs)
+    def __call__(self, options):
+        return self._build_static(options)
 
-    def _build_static(self, new_options=None, **kwargs):
-        options = new_options if new_options else self.options
+    def _build_static(self, options):
         full_options, default_value = get_options_and_default(options=options, multi=self.multi)
         option_height = _calculate_option_height(full_options)
 
@@ -130,4 +129,4 @@ class Dropdown(VizroBaseModel):
 
     @_log_call
     def build(self):
-        return self._build_dynamic_placeholder() if self._dynamic else self._build_static()
+        return self._build_dynamic_placeholder() if self._dynamic else self._build_static(self.options)

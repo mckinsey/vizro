@@ -276,19 +276,17 @@ def _get_modified_page_figures(
     #  so you could do apply_filters on a target a pass only the ctds relevant for that target.
     #  Consider restructuring ctds to a more convenient form to make this possible.
     for target, unfiltered_data in target_to_data_frame.items():
-        if target in figure_targets:
-            filtered_data = _apply_filters(unfiltered_data, ctds_filter, ctds_filter_interaction, target)
-            outputs[target] = model_manager[target](
-                data_frame=filtered_data,
-                **_get_parametrized_config(ctds_parameter=ctds_parameter, target=target, data_frame=False),
-            )
+        filtered_data = _apply_filters(unfiltered_data, ctds_filter, ctds_filter_interaction, target)
+        outputs[target] = model_manager[target](
+            data_frame=filtered_data,
+            **_get_parametrized_config(ctds_parameter=ctds_parameter, target=target, data_frame=False),
+        )
 
     for target in control_targets:
-        current_value: Any = [item for item in ctds_filter if item["id"] == model_manager[target].selector.id]
-        if current_value:
-            current_value = current_value[0]["value"]
-        if hasattr(current_value, "__iter__") and ALL_OPTION in current_value:
-            current_value = []
+        ctd_filter = [item for item in ctds_filter if item["id"] == model_manager[target].selector.id]
+
+        # This only covers the case of cross-page actions when Filter in an output, but is not an input of the action.
+        current_value = ctd_filter[0]["value"] if ctd_filter else None
 
         outputs[target] = model_manager[target](target_to_data_frame=target_to_data_frame, current_value=current_value)
 

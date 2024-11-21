@@ -1,13 +1,12 @@
-# Choose from 0-50
-setosa: 5
-versicolor: 10
+# Choose between 0-50
+#setosa: 5
+#versicolor: 10
 virginica: 15
 
-# Choose from: 4.8 to 7.4
-min: 5
-max: 7
+# Choose between: 4.3 to 7.4
+min: 7.1
+#max: 7
 
-# Choose from:
-#   2020-01-01 to 2020-05-29
+# Choose between: 2020-01-01 to 2020-05-29
 date_min: 2024-01-01
 date_max: 2024-05-29

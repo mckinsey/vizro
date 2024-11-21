@@ -62,15 +62,11 @@ class RangeSlider(VizroBaseModel):
     _set_default_marks = validator("marks", allow_reuse=True, always=True)(set_default_marks)
     _set_actions = _action_validator_factory("value")
 
-    def __call__(self, current_value=None, new_min=None, new_max=None, **kwargs):
-        return self._build_static(current_value=current_value, new_min=new_min, new_max=new_max, **kwargs)
+    def __call__(self, min, max, current_value):
+        return self._build_static(min, max, current_value)
 
     @_log_call
-    def _build_static(self, current_value=None, new_min=None, new_max=None, **kwargs):
-        _min = new_min if new_min else self.min
-        _max = new_max if new_max else self.max
-        init_value = current_value or self.value or [_min, _max]
-
+    def _build_static(self, min, max, current_value):
         output = [
             Output(f"{self.id}_start_value", "value"),
             Output(f"{self.id}_end_value", "value"),
@@ -93,7 +89,7 @@ class RangeSlider(VizroBaseModel):
 
         return html.Div(
             children=[
-                dcc.Store(f"{self.id}_callback_data", data={"id": self.id, "min": _min, "max": _max}),
+                dcc.Store(f"{self.id}_callback_data", data={"id": self.id, "min": min, "max": max}),
                 html.Div(
                     children=[
                         dbc.Label(children=self.title, html_for=self.id) if self.title else None,
@@ -103,10 +99,10 @@ class RangeSlider(VizroBaseModel):
                                     id=f"{self.id}_start_value",
                                     type="number",
                                     placeholder="min",
-                                    min=_min,
-                                    max=_max,
+                                    min=min,
+                                    max=max,
                                     step=self.step,
-                                    value=init_value[0],
+                                    value=current_value[0],
                                     persistence=True,
                                     persistence_type="session",
                                     className="slider-text-input-field",
@@ -116,10 +112,10 @@ class RangeSlider(VizroBaseModel):
                                     id=f"{self.id}_end_value",
                                     type="number",
                                     placeholder="max",
-                                    min=_min,
-                                    max=_max,
+                                    min=min,
+                                    max=max,
                                     step=self.step,
-                                    value=init_value[1],
+                                    value=current_value[1],
                                     persistence=True,
                                     persistence_type="session",
                                     className="slider-text-input-field",
@@ -133,11 +129,11 @@ class RangeSlider(VizroBaseModel):
                 ),
                 dcc.RangeSlider(
                     id=self.id,
-                    min=_min,
-                    max=_max,
+                    min=min,
+                    max=max,
                     step=self.step,
                     marks=self.marks,
-                    value=init_value,
+                    value=current_value,
                     persistence=True,
                     persistence_type="session",
                     className="slider-track-without-marks" if self.marks is None else "slider-track-with-marks",
@@ -146,10 +142,10 @@ class RangeSlider(VizroBaseModel):
         )
 
     def _build_dynamic_placeholder(self):
-        return self._build_static()
+        return self._build_static(self.min, self.max, self.value or [self.min, self.max])
 
     @_log_call
     def build(self):
         # We don't have to implement _build_dynamic_placeholder, _build_static here. It's possible to: if dynamic and
         # self.value is None -> set self.value + return standard build (static), but let's align it with the Dropdown.
-        return self._build_dynamic_placeholder() if self._dynamic else self._build_static()
+        return self._build_dynamic_placeholder() if self._dynamic else self._build_static(self.min, self.max, self.value or [self.min, self.max])

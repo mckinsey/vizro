@@ -25,38 +25,41 @@ FILTER_COLUMN = "species"
 # FILTER_COLUMN = "date_column"
 
 
-def load_from_file(filter_column=None, parametrized_species=None):
+def load_from_file(filter_column=FILTER_COLUMN, parametrized_species=None):
     # Load the full iris dataset
     df = px.data.iris()
     df["date_column"] = pd.date_range(start=pd.to_datetime("2024-01-01"), periods=len(df), freq="D")
 
-    if parametrized_species:
-        return df[df["species"].isin(parametrized_species)]
-
     with open("data.yaml", "r") as file:
-        data = yaml.safe_load(file)
-        data = data or {}
+        data = {
+            "setosa": 0, "versicolor": 0, "virginica": 0,
+            "min": 0, "max": 10,
+            "date_min": "2024-01-01", "date_max": "2024-05-29",
+        }
+        data.update(yaml.safe_load(file) or {})
 
-    filter_column = filter_column or FILTER_COLUMN
     if filter_column == "species":
-        final_df = pd.concat(
+        df = pd.concat(
             objs=[
-                df[df[filter_column] == "setosa"].head(data.get("setosa", 0)),
-                df[df[filter_column] == "versicolor"].head(data.get("versicolor", 0)),
-                df[df[filter_column] == "virginica"].head(data.get("virginica", 0)),
+                df[df[filter_column] == "setosa"].head(data["setosa"]),
+                df[df[filter_column] == "versicolor"].head(data["versicolor"]),
+                df[df[filter_column] == "virginica"].head(data["virginica"]),
             ],
             ignore_index=True,
         )
     elif filter_column == "sepal_length":
-        final_df = df[df[filter_column].between(data.get("min"), data.get("max"), inclusive="both")]
+        df = df[df[filter_column].between(data["min"], data["max"], inclusive="both")]
     elif filter_column == "date_column":
-        date_min = pd.to_datetime(data.get("date_min"))
-        date_max = pd.to_datetime(data.get("date_max"))
-        final_df = df[df[filter_column].between(date_min, date_max, inclusive="both")]
+        date_min = pd.to_datetime(data["date_min"])
+        date_max = pd.to_datetime(data["date_max"])
+        df = df[df[filter_column].between(date_min, date_max, inclusive="both")]
     else:
         raise ValueError("Invalid FILTER_COLUMN")
 
-    return final_df
+    if parametrized_species:
+        df = df[df["species"].isin(parametrized_species)]
+
+    return df
 
 
 data_manager["load_from_file"] = load_from_file
@@ -66,7 +69,7 @@ data_manager["load_from_file_date_column"] = partial(load_from_file, filter_colu
 
 
 # TODO-DEV: Turn on/off caching to see how it affects the app.
-# data_manager.cache = Cache(config={"CACHE_TYPE": "SimpleCache", "CACHE_DEFAULT_TIMEOUT": 5})
+# data_manager.cache = Cache(config={"CACHE_TYPE": "SimpleCache", "CACHE_DEFAULT_TIMEOUT": 10})
 
 
 homepage = vm.Page(
