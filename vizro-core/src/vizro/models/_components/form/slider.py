@@ -124,11 +124,16 @@ class Slider(VizroBaseModel):
             ]
         )
 
-    def _build_dynamic_placeholder(self):
-        return self._build_static(self.min, self.max, self.value or self.min)
+    def _build_dynamic_placeholder(self, current_value):
+        return self._build_static(self.min, self.max, current_value)
 
     @_log_call
     def build(self):
         # We don't have to implement _build_dynamic_placeholder, _build_static here. It's possible to: if dynamic and
         # self.value is None -> set self.value + return standard build (static), but let's align it with the Dropdown.
-        return self._build_dynamic_placeholder() if self._dynamic else self._build_static(self.min, self.max, self.value or self.min)
+        current_value = self.value if self.value is not None else self.min
+        return (
+            self._build_dynamic_placeholder(current_value)
+            if self._dynamic
+            else self._build_static(self.min, self.max, current_value)
+        )

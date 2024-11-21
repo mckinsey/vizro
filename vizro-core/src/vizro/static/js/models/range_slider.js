@@ -28,7 +28,7 @@ function update_range_slider_values(
     }
     return [start, end, [start, end], [start, end]];
 
-  // slider component is the trigger
+    // slider component is the trigger
   } else if (trigger_id === self_data["id"]) {
     return [slider[0], slider[1], slider, slider];
   }

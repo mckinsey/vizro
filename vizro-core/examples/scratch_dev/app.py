@@ -32,9 +32,13 @@ def load_from_file(filter_column=FILTER_COLUMN, parametrized_species=None):
 
     with open("data.yaml", "r") as file:
         data = {
-            "setosa": 0, "versicolor": 0, "virginica": 0,
-            "min": 0, "max": 10,
-            "date_min": "2024-01-01", "date_max": "2024-05-29",
+            "setosa": 0,
+            "versicolor": 0,
+            "virginica": 0,
+            "min": 0,
+            "max": 10,
+            "date_min": "2024-01-01",
+            "date_max": "2024-05-29",
         }
         data.update(yaml.safe_load(file) or {})
 

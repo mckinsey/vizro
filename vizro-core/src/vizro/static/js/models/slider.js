@@ -14,7 +14,7 @@ function update_slider_values(start, slider, input_store, self_data) {
     }
     return [start, start, start];
 
-  // slider component is the trigger
+    // slider component is the trigger
   } else if (trigger_id === self_data["id"]) {
     return [slider, slider, slider];
   }

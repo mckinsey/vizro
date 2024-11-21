@@ -145,7 +145,7 @@ class Filter(VizroBaseModel):
         #  dataframe parameter, the default value is used when pre-build the filter e.g. to find the targets,
         #  column type (and hence selector) and initial values. There are three ways to handle this:
         #  1. (Current approach) - Propagate {} and use only default arguments value in the dynamic data function.
-        #  2. Propagate values from the model_manager and relax the limitation of requireing argument default values.
+        #  2. Propagate values from the model_manager and relax the limitation of requiring argument default values.
         #  3. Skip the pre-build and do everything in the build method (if possible).
         #  Find more about the mentioned limitation at: https://github.com/mckinsey/vizro/pull/879/files#r1846609956
         multi_data_source_name_load_kwargs: list[tuple[DataSourceName, dict[str, Any]]] = [
