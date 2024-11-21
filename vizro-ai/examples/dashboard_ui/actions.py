@@ -15,6 +15,7 @@ from langchain_openai import ChatOpenAI
 from plotly import graph_objects as go
 from vizro.models.types import capture
 from vizro_ai import VizroAI
+from vizro_ai._llm_models import _get_llm_model
 
 try:
     from langchain_anthropic import ChatAnthropic
@@ -200,35 +201,23 @@ def update_table(data):
 
 
 @capture("action")
-def image_upload_action(contents, filename):
+def image_upload_action(contents):
     """Custom action to handle data upload for single or multiple files."""
     if not contents:
         raise PreventUpdate
-
-    uploaded_image = {}
-    for image, file in zip(contents, filename):
-        uploaded_image[file] = image
-    return uploaded_image
+    print("contents: ", contents)
+    return contents
 
 
 @capture("action")
-def run_image_ai(image, df, model, api_key, api_base, vendor_input):
-    vendor = SUPPORTED_VENDORS[vendor_input]
+def run_image_ai(image, n_clicks, data, model, api_key, api_base, vendor_input):
+    ai_model = _get_llm_model(model="gpt-4o")
 
-    if vendor_input == "OpenAI":
-        llm = vendor(
-            model_name=model, openai_api_key=api_key, openai_api_base=api_base, temperature=DEFAULT_TEMPERATURE
-        )
-    if vendor_input == "Anthropic":
-        llm = vendor(
-            model=model, anthropic_api_key=api_key, anthropic_api_url=api_base, temperature=DEFAULT_TEMPERATURE
-        )
-    if vendor_input == "Mistral":
-        llm = vendor(model=model, mistral_api_key=api_key, mistral_api_url=api_base, temperature=DEFAULT_TEMPERATURE)
-    if vendor_input == "xAI":
-        llm = vendor(model=model, openai_api_key=api_key, openai_api_base=api_base, temperature=DEFAULT_TEMPERATURE)
+    def create_response(ai_response, figure, ai_outputs):
+        return (ai_response, figure, {"ai_outputs": ai_outputs})
 
-    vizro_ai = VizroAI(model=llm)
+    if not n_clicks:
+        raise PreventUpdate
 
     question = """
     You are a data scientist with expertise in Plotly and the visualization library named Vizro.
@@ -246,8 +235,41 @@ def run_image_ai(image, df, model, api_key, api_base, vendor_input):
     """
 
     images = json.loads(image)
-    images = list(images.values())
+    images = list(images)
 
     message = construct_message(images, question)
     response = ai_model.invoke([message])
-    dashboard_spec = response.content
+    chart_spec = response.content
+
+    print("chart_spec: ", chart_spec)
+
+    try:
+        logger.info("Attempting chart code.")
+        df = pd.DataFrame(data["data"])
+        ai_outputs = get_vizro_ai_plot(
+            user_prompt=chart_spec,
+            df=df,
+            model=model,
+            api_key=api_key,
+            api_base=api_base,
+            vendor_input=vendor_input,
+        )
+        ai_code = ai_outputs.code_vizro
+        figure_vizro = ai_outputs.get_fig_object(data_frame=df, vizro=True)
+        figure_plotly = ai_outputs.get_fig_object(data_frame=df, vizro=False)
+        formatted_code = black.format_str(ai_code, mode=black.Mode(line_length=100))
+        ai_code_outputs = {
+            "vizro": {"code": ai_outputs.code_vizro, "fig": figure_vizro.to_json()},
+            "plotly": {"code": ai_outputs.code, "fig": figure_plotly.to_json()},
+        }
+
+        ai_response = "\n".join(["```python", formatted_code, "```"])
+        logger.info("Successful query produced.")
+        return create_response(ai_response, figure_vizro, ai_outputs=ai_code_outputs)
+
+    except Exception as exc:
+        logger.debug(exc)
+        logger.info("Chart creation failed.")
+        ai_response = f"Sorry, I can't do that. Following Error occurred: {exc}"
+        figure = go.Figure()
+        return create_response(ai_response, figure, ai_outputs=None)

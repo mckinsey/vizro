@@ -335,7 +335,7 @@ def custom_table(data_frame):
             html.Span(
                 "table_view",
                 className="material-symbols-outlined",
-                id="modal-table-icon-img",
+                id="modal-table-icon",
                 style={"color": "gray", "cursor": "default"},
             ),
             dbc.Tooltip(
@@ -343,17 +343,17 @@ def custom_table(data_frame):
                 placement="top",
                 target="modal-table-icon",
                 style={"display": "none"},
-                id="modal-table-tooltip-img",
+                id="modal-table-tooltip",
             ),
             html.P(
-                id="upload-message-img", children=["Upload your data file (csv or excel)"], style={"paddingTop": "10px"}
+                id="upload-message", children=["Upload your data file (csv or excel)"], style={"paddingTop": "10px"}
             ),
             dbc.Modal(
-                id="data-modal-img",
+                id="data-modal",
                 children=[
-                    dbc.ModalHeader(dbc.ModalTitle(id="modal-title-img", children="No data uploaded!")),
+                    dbc.ModalHeader(dbc.ModalTitle(id="modal-title", children="No data uploaded!")),
                     dbc.ModalBody(
-                        id="modal-table-img",
+                        id="modal-table",
                         children=table,
                     ),
                 ],
@@ -361,7 +361,7 @@ def custom_table(data_frame):
                 modal_class_name="modal-class",
             ),
         ],
-        id="table-modal-div-img",
+        id="table-modal-div",
     )
     return table_modal
 
@@ -387,7 +387,7 @@ class DropdownMenu(vm.VizroBaseModel):
                         dbc.Button(children="HTML", id=f"{self.id}-html", className="download-button"),
                     ]
                 ),
-                dcc.Download(id="download-file-img"),
+                dcc.Download(id="download-file"),
             ],
             toggleClassName="dropdown-menu-toggle-class",
         )
@@ -398,10 +398,10 @@ class DropdownMenu(vm.VizroBaseModel):
                 dbc.Tooltip(
                     "Download this plot to your device as a plotly JSON or interactive HTML file "
                     "for easy sharing or future use.",
-                    target="dropdown-menu-div-img",
+                    target="dropdown-menu-div",
                 ),
             ],
-            id="dropdown-menu-div-img",
+            id="dropdown-menu-div",
         )
         return download_div
 
