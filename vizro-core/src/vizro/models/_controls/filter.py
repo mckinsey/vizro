@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from typing import Any, Literal, Union, Callable
+from typing import Any, Callable, Literal, Union
 
 import numpy as np
 import pandas as pd
@@ -14,7 +14,7 @@ except ImportError:  # pragma: no cov
     from pydantic import Field, PrivateAttr, validator
 
 from vizro._constants import FILTER_ACTION_PREFIX
-from vizro.actions import _filter, _on_page_load
+from vizro.actions import _on_page_load
 from vizro.managers import data_manager, model_manager
 from vizro.managers._model_manager import ModelID
 from vizro.models import Action, VizroBaseModel
@@ -159,7 +159,7 @@ class Filter(VizroBaseModel):
                     id=f"{FILTER_ACTION_PREFIX}_{self.id}",
                     function=_on_page_load(targets=self.targets),  # should have arguments filters, parameters
                     # targets can go as function arguments or output field of action model - keep here for now
-                    # Could put in Filter model or as varargs field in Action
+                    # Could put filter_function in Filter model or as varargs field in Action
                 )
             ]
 

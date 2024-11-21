@@ -4,7 +4,6 @@
 from __future__ import annotations
 
 import abc
-
 import functools
 import importlib
 import inspect

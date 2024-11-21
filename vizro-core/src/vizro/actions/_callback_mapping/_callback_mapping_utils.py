@@ -4,7 +4,7 @@ from typing import Any, Callable, Union
 
 from dash import Output, State, dcc
 
-from vizro.actions import _parameter, filter_interaction
+from vizro.actions import filter_interaction
 from vizro.managers import model_manager
 from vizro.managers._model_manager import ModelID
 from vizro.models import Action, Page
@@ -89,9 +89,6 @@ def _get_action_callback_outputs(action_id: ModelID) -> dict[str, Output]:
         targets = model_manager[action_id].function["targets"]
     except KeyError:
         targets = []
-
-    if action_function == _parameter.__wrapped__:
-        targets = [target.split(".")[0] for target in targets]
 
     return {
         target: Output(

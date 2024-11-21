@@ -2,17 +2,9 @@
 
 from typing import Any
 
-from dash import ctx
+from dash import Output, ctx
 
 from vizro.actions._actions_utils import _get_modified_page_figures
-from vizro.managers._model_manager import ModelID
-from vizro.models.types import capture
-
-from typing import Any, Callable, Dict, List
-
-from dash import Output, State, ctx
-from pandas import Series
-
 from vizro.managers import model_manager
 from vizro.managers._model_manager import ModelID
 from vizro.models.types import CapturedActionCallable
@@ -32,11 +24,11 @@ class _on_page_load(CapturedActionCallable):
 
     @property
     def inputs(self):
+        from vizro.actions import filter_interaction
         from vizro.actions._callback_mapping._callback_mapping_utils import (
+            _get_inputs_of_controls,
             _get_inputs_of_figure_interactions,
         )
-        from vizro.actions._callback_mapping._callback_mapping_utils import _get_inputs_of_controls
-        from vizro.actions import filter_interaction
         from vizro.models import Filter, Parameter
 
         page_id = model_manager._get_model_page_id(model_id=self._action_id)
@@ -54,11 +46,22 @@ class _on_page_load(CapturedActionCallable):
 
     @property
     def outputs(self) -> dict[ModelID, Output]:
+        # TBD where this bit of code goes and how to get targets for filter and opl vs. parameter
+
+        targets = list(self["targets"])
+        output_targets = []
+        for target in targets:
+            if "." in target:
+                component, property = target.split(".", 1)
+                output_targets.append(component)
+            else:
+                output_targets.append(target)
+
         return {
             target: Output(
                 component_id=target,
                 component_property=model_manager[target]._output_component_property,
                 allow_duplicate=True,
             )
-            for target in self["targets"]
+            for target in output_targets
         }

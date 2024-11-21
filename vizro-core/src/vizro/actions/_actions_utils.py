@@ -14,7 +14,7 @@ from vizro.managers._model_manager import ModelID
 from vizro.models.types import MultiValueType, SelectorType, SingleValueType
 
 if TYPE_CHECKING:
-    from vizro.models import Action, VizroBaseModel, Filter
+    from vizro.models import Action, VizroBaseModel
 
 ValidatedNoneValueType = Union[SingleValueType, MultiValueType, None, list[None]]
 
@@ -59,7 +59,6 @@ def _apply_filter_controls(
 
     Returns: filtered DataFrame.
     """
-    from vizro.actions import _filter
     from vizro.models import Filter
 
     for ctd in ctds_filters:
@@ -181,6 +180,8 @@ def _get_parametrized_config(
     Returns: keyword-argument dictionary.
 
     """
+    from vizro.models import Parameter
+
     if data_frame:
         # This entry is inserted (but will always be empty) even for static data so that the load/_multi_load calls
         # look identical for dynamic data with no arguments and static data. Note it's not possible to address nested
@@ -205,7 +206,8 @@ def _get_parametrized_config(
         parameter_value = _validate_selector_value_none(parameter_value)
 
         for action in _get_component_actions(selector):
-            if action.function._function.__name__ != "_parameter":
+            if not isinstance(parameter := model_manager["parameter_" + ctd["id"]], Parameter):
+                # if action.function._function.__name__ != "_parameter":
                 continue
 
             for dot_separated_string in _get_target_dot_separated_strings(
@@ -265,6 +267,13 @@ def _get_modified_page_figures(
     # TODO: the structure here would be nicer if we could get just the ctds for a single target at one time,
     #  so you could do apply_filters on a target a pass only the ctds relevant for that target.
     #  Consider restructuring ctds to a more convenient form to make this possible.
+    old_targets = list(targets)
+    targets = []
+    for target in old_targets:
+        if "." in target:
+            targets.append(target.split(".", 1)[0])
+        else:
+            targets.append(target)
 
     for target, unfiltered_data in _get_unfiltered_data(ctds_parameters, targets).items():
         filtered_data = _apply_filters(unfiltered_data, ctds_filter, ctds_filter_interaction, target)

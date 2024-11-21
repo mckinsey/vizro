@@ -14,7 +14,7 @@ except ImportError:  # pragma: no cov
 from vizro.managers._model_manager import ModelID
 from vizro.models import VizroBaseModel
 from vizro.models._models_utils import _log_call
-from vizro.models.types import CapturedCallable, CapturedActionCallable
+from vizro.models.types import CapturedActionCallable, CapturedCallable
 
 logger = logging.getLogger(__name__)
 

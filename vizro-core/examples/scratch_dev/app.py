@@ -31,6 +31,7 @@ page = vm.Page(
     title="Charts UI",
     components=[
         vm.Graph(
+            id="graph",
             figure=px.bar(
                 pastry.sort_values("Profit Ratio"),
                 orientation="h",
@@ -42,7 +43,14 @@ page = vm.Page(
             #            actions=[vm.Action(function=interact(control_id="x"))],
         ),
     ],
-    controls=[vm.Filter(column="pastry")],
+    controls=[
+        vm.Filter(column="pastry"),
+        vm.Parameter(
+            id="parameter_x",
+            targets=["graph.color"],
+            selector=vm.RadioItems(options=["Profit Ratio", "pastry"], id="x"),
+        ),
+    ],
 )
 
 dashboard = vm.Dashboard(pages=[page])

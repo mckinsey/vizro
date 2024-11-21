@@ -12,9 +12,7 @@ from vizro.actions._callback_mapping._callback_mapping_utils import (
     _get_export_data_callback_components,
     _get_export_data_callback_outputs,
 )
-from vizro.actions._filter_action import _filter
-from vizro.actions._on_page_load_action import _on_page_load
-from vizro.actions._parameter_action import _parameter
+
 from vizro.managers import model_manager
 from vizro.managers._model_manager import ModelID
 
@@ -32,10 +30,6 @@ def _get_action_callback_mapping(
             "outputs": _get_export_data_callback_outputs,
         },
         filter_interaction.__wrapped__: {
-            "inputs": _get_action_callback_inputs,
-            "outputs": _get_action_callback_outputs,
-        },
-        _parameter.__wrapped__: {
             "inputs": _get_action_callback_inputs,
             "outputs": _get_action_callback_outputs,
         },
