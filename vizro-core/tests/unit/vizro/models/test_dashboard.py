@@ -2,6 +2,7 @@ from pathlib import Path
 
 import dash
 import dash_bootstrap_components as dbc
+import dash_mantine_components as dmc
 import plotly.io as pio
 import pytest
 from asserts import assert_component_equal
@@ -57,7 +58,7 @@ class TestDashboardInstantiation:
             vm.Dashboard(pages=[])
 
     def test_field_invalid_pages_input_type(self):
-        with pytest.raises(ValidationError, match="4 validation errors for Dashboard"):
+        with pytest.raises(ValidationError, match="5 validation errors for Dashboard"):
             vm.Dashboard(pages=[vm.Button()])
 
     def test_field_invalid_theme_input_type(self, page_1):
@@ -239,10 +240,20 @@ class TestDashboardPreBuild:
         Vizro(assets_folder=tmp_path)
         vm.Dashboard(pages=[page_1]).pre_build()
 
-    def test_make_page_404_layout(self, vizro_app):
+    def test_make_page_404_layout(self, page_1, vizro_app):
         # vizro_app fixture is needed to avoid mocking out get_relative_path.
         expected = html.Div(
             [
+                html.Div(
+                    children=dmc.Switch(
+                        id="theme_selector",
+                        checked=False,
+                        persistence=True,
+                        persistence_type="session",
+                        className="toggle-switch",
+                    ),
+                    id="settings",
+                ),
                 html.Img(),
                 html.Div(
                     [
@@ -263,7 +274,7 @@ class TestDashboardPreBuild:
 
         # Strip out src since it's too long to be worth comparing and just comes directly
         # from reading a file.
-        assert_component_equal(vm.Dashboard._make_page_404_layout(), expected, keys_to_strip={"src"})
+        assert_component_equal(vm.Dashboard(pages=[page_1])._make_page_404_layout(), expected, keys_to_strip={"src"})
 
 
 class TestDashboardBuild:

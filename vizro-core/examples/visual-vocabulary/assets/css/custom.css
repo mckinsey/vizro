@@ -34,9 +34,7 @@ img[src*="#chart-icon"] {
   position: relative;
 }
 
-.code-clipboard-container .pycafe-link,
-.code-clipboard-container .pycafe-link:focus {
-  line-height: unset;
+.code-clipboard-container .pycafe-link {
   margin-bottom: 12px;
 }
 
