@@ -4,12 +4,12 @@ import pandas as pd
 import plotly.graph_objects as go
 import plotly.io as pio
 import pytest
+from pydantic import Field, ValidationError
 
-try:
-    from pydantic.v1 import Field, ValidationError
-except ImportError:  # pragma: no cov
-    from pydantic import Field, ValidationError
-
+# try:
+#     from pydantic.v1 import Field, ValidationError
+# except ImportError:  # pragma: no cov
+#     from pydantic import Field, ValidationError
 from vizro.models import VizroBaseModel
 from vizro.models.types import CapturedCallable, capture
 

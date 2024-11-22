@@ -492,7 +492,7 @@ selectors = vm.Page(
             column="size",
             selector=vm.Slider(title="Slider (Tips - size)", step=1, value=2),
         ),
-        vm.Filter(targets=["graph-stocks"], column="date", selector=vm.DatePicker(title="Date Picker (Stocks - date)")),
+        # vm.Filter(targets=["graph-stocks"], column="date", selector=vm.DatePicker(title="Date Picker (Stocks - date)")),
     ],
 )
 
@@ -805,7 +805,7 @@ dashboard = vm.Dashboard(
                         "Extensions": [
                             "Custom Charts",
                             "Custom Tables",
-                            "Custom Components",
+                            # "Custom Components",
                             "Custom Actions",
                             "Custom Figures",
                         ],
