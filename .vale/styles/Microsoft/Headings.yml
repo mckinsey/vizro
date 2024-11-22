@@ -71,6 +71,8 @@ exceptions:
   - Kubernetes Service
   - Lambda
   - LangChain
+  - LangFuse
+  - LangSmith
   - Linux
   - MySQL
   - Notebook
