@@ -56,7 +56,7 @@ nav:
       - Documentation style: pages/explanation/documentation-style-guide.md
       - Authors: pages/explanation/authors.md
   - Examples:
-      - Vizro gallery: https://vizro.mckinsey.com/
+      - Gallery: https://vizro.mckinsey.com/
   - Vizro-AI:
       - Vizro-AI: https://vizro.readthedocs.io/projects/vizro-ai/
 
