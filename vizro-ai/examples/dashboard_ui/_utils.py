@@ -16,7 +16,6 @@ def construct_message(images, question):
     :param question: The question to ask about the images
     :return: HumanMessage object
     """
-    content = [{"type": "text", "text": question}]
-    for img_data in images:
-        content.append({"type": "image_url", "image_url": {"url": f"{img_data}"}})
+    content = [{"type": "text", "text": question}, {"type": "image_url", "image_url": {"url": f"{images}"}}]
+
     return HumanMessage(content=content)

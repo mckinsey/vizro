@@ -205,13 +205,14 @@ def image_upload_action(contents):
     """Custom action to handle data upload for single or multiple files."""
     if not contents:
         raise PreventUpdate
-    print("contents: ", contents)
-    return contents
+    image = json.dumps(contents)
+    return image
 
 
 @capture("action")
 def run_image_ai(image, n_clicks, data, model, api_key, api_base, vendor_input):
-    ai_model = _get_llm_model(model="gpt-4o")
+    # ai_model = _get_llm_model(model="gpt-4o")
+    ai_model = ChatOpenAI(model_name="gpt-4o", openai_api_key=api_key, openai_api_base=api_base, temperature=DEFAULT_TEMPERATURE)
 
     def create_response(ai_response, figure, ai_outputs):
         return (ai_response, figure, {"ai_outputs": ai_outputs})
@@ -221,27 +222,33 @@ def run_image_ai(image, n_clicks, data, model, api_key, api_base, vendor_input):
 
     question = """
     You are a data scientist with expertise in Plotly and the visualization library named Vizro.
-    1. Describe the chart you see.
-    2. Describe what do you see in chart with following aspects:
+    You are a data scientist with expertise in Plotly and the visualization library Vizro. Your task is to analyze and 
+    describe the chart provided. 
+    Describe the chart and provide detailed observation in response to the following aspects:
 
-      - Axis labels
-      - Title
-      - Chart Legend
-      - Data Values
-      - Colors
-      - Orientation of chart
+    <General Description>
+    Provide an overview of the chart. Identify the chart type and any other key features you observe.
+    
+    <Axis Labels>
+    Describe the text of the x-axis and y-axis labels. Take note of any visible units or symbols. 
+    
+    <Chart Title>
+    Identify the chart title. 
+    
+    <Chart Legend>
+    Describe the legend, including its position, content, and how it connects to the chart. 
+    
+    <Data Values>
+    Provide insights into how the data is represented. Mention key values or patterns within the chart.
 
     Important, if there are any text you see, accurately describe the original text. 
     """
 
     images = json.loads(image)
-    images = list(images)
 
     message = construct_message(images, question)
     response = ai_model.invoke([message])
     chart_spec = response.content
-
-    print("chart_spec: ", chart_spec)
 
     try:
         logger.info("Attempting chart code.")
