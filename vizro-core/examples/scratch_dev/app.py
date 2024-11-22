@@ -30,17 +30,17 @@ pastry = pd.DataFrame(
 page = vm.Page(
     title="Charts UI",
     components=[
-        vm.Card(text="Foo")
-        # vm.Graph(
-        #     figure=px.bar(
-        #         pastry.sort_values("Profit Ratio"),
-        #         orientation="h",
-        #         x="Profit Ratio",
-        #         y="pastry",
-        #         color="Profit Ratio",
-        #         color_continuous_scale=COLORS["DIVERGING_RED_CYAN"],
-        #     ),
-        # ),
+        vm.Card(text="Foo"),
+        vm.Graph(
+            figure=px.bar(
+                pastry.sort_values("Profit Ratio"),
+                orientation="h",
+                x="Profit Ratio",
+                y="pastry",
+                color="Profit Ratio",
+                color_continuous_scale=COLORS["DIVERGING_RED_CYAN"],
+            ),
+        ),
     ],
 )
 
