@@ -11,7 +11,7 @@ import pandas as pd
 from dash import ClientsideFunction, Input, Output, State, clientside_callback, dcc, html, set_props
 from dash.exceptions import MissingCallbackContextException
 from plotly import graph_objects as go
-from pydantic import Field, PrivateAttr, validator
+from pydantic import Field, PrivateAttr, field_validator, validator
 from pydantic.json_schema import SkipJsonSchema
 
 from vizro.actions._actions_utils import CallbackTriggerDict, _get_component_actions
@@ -21,7 +21,7 @@ from vizro.models import Action, VizroBaseModel
 from vizro.models._action._actions_chain import _action_validator_factory
 from vizro.models._components._components_utils import _process_callable_data_frame
 from vizro.models._models_utils import _log_call
-from vizro.models.types import CapturedCallable
+from vizro.models.types import CapturedCallable, validate_captured_callable
 
 logger = logging.getLogger(__name__)
 
@@ -45,7 +45,9 @@ class Graph(VizroBaseModel):
 
     type: Literal["graph"] = "graph"
     figure: SkipJsonSchema[CapturedCallable] = Field(
-        ..., import_path="vizro.plotly.express", mode="graph", description="Function that returns a plotly `go.Figure`"
+        ...,
+        json_schema_extra={"mode": "graph", "import_path": "vizro.plotly.express"},
+        description="Function that returns a plotly `go.Figure`",
     )
     title: str = Field("", description="Title of the `Graph`")
     header: str = Field(
@@ -64,6 +66,7 @@ class Graph(VizroBaseModel):
     _output_component_property: str = PrivateAttr("figure")
 
     # Validators
+    _validate_figure = field_validator("figure", mode="before")(validate_captured_callable)
     _set_actions = _action_validator_factory("clickData")
     _validate_callable = validator("figure", allow_reuse=True)(_process_callable_data_frame)
 

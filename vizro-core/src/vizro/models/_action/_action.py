@@ -15,7 +15,7 @@ from pydantic.json_schema import SkipJsonSchema
 from vizro.managers._model_manager import ModelID
 from vizro.models import VizroBaseModel
 from vizro.models._models_utils import _log_call
-from vizro.models.types import CapturedCallable
+from vizro.models.types import CapturedCallable, validate_captured_callable
 
 logger = logging.getLogger(__name__)
 
@@ -33,8 +33,8 @@ class Action(VizroBaseModel):
     """
 
     function: SkipJsonSchema[CapturedCallable] = Field(
-        ..., description="Action function."
-    )  # , import_path="vizro.actions", mode="action"
+        ..., json_schema_extra={"mode": "action", "import_path": "vizro.actions"}, description="Action function."
+    )
     inputs: list[str] = Field(
         [],
         description="Inputs in the form `<component_id>.<property>` passed to the action function.",
@@ -45,6 +45,9 @@ class Action(VizroBaseModel):
         description="Outputs in the form `<component_id>.<property>` changed by the action function.",
         pattern="^[^.]+[.][^.]+$",
     )
+
+    # Validators
+    _validate_function = field_validator("function", mode="before")(validate_captured_callable)
 
     # TODO: Problem: generic Action model shouldn't depend on details of particular actions like export_data.
     # Possible solutions: make a generic mapping of action functions to validation functions or the imports they
