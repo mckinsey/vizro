@@ -73,6 +73,8 @@ To learn more, refer to the section that describes how to [safeguard execution o
 ## Debugging in Vizro-AI with LangSmith and LangFuse
 
 [LangSmith](https://docs.smith.langchain.com/) and [LangFuse](https://langfuse.com/docs) are tools designed to enhance transparency and interpretability in AI workflows.
-You can use these tools with Vizro-AI to improve debugging and traceability by leveraging their advanced observability and evaluation features.
+To improve debugging and traceability, you can use the advanced observability and evaluation features of these tools with Vizro-AI.
 
-To ensure responsible use of said tools, review their data privacy and security policies. See [LangFuse](https://langfuse.com/docs/data-security-privacy) and [LangSmith](https://www.langchain.com/privacy-policy) site for more details on responsible usage.
+To ensure responsible use, review their data privacy and security policies. See [LangFuse Data Security & Privacy ](https://langfuse.com/docs/data-security-privacy) and [LangSmith Privacy Policy](https://www.langchain.com/privacy-policy) site for more details.
+
+Additionally, both support self-hosting options, which may be critical for security oriented users.See [LangSmith](https://docs.smith.langchain.com/self_hosting) and [LangFuse](https://langfuse.com/docs/deployment/self-host) self-hosting guides for more details. LangFuse offers a self-hosting service under the MIT Licence.
