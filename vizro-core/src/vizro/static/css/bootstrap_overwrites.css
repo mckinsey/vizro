@@ -1,6 +1,8 @@
 /* This file contains overwrites, which we want to have as defaults for vizro framework
 but do not want to take over to `vizro-bootstrap` as these settings might not be generic enough
-for a pure Dash app. */
+for a pure Dash app.
+
+All the HEX values starting with --text-code are taken from the Github code highlighting style. */
 [data-bs-theme="dark"] {
   --dropdown-label-bg: var(--primary-800);
   --right-side-bg: var(--surfaces-bg03);
