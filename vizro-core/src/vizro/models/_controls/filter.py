@@ -5,6 +5,7 @@ from typing import Any, Literal, Union
 import numpy as np
 import pandas as pd
 from dash import dcc
+from contextlib import suppress
 from pandas.api.types import is_datetime64_any_dtype, is_numeric_dtype
 
 from vizro.managers._data_manager import DataSourceName
@@ -95,7 +96,7 @@ class Filter(VizroBaseModel):
     )
     selector: SelectorType = None
 
-    _dynamic: bool = PrivateAttr(None)
+    _dynamic: bool = PrivateAttr(False)
 
     # Component properties for actions and interactions
     _output_component_property: str = PrivateAttr("children")
@@ -265,11 +266,22 @@ class Filter(VizroBaseModel):
 
     @staticmethod
     def _get_min_max(targeted_data: pd.DataFrame, current_value=None) -> tuple[float, float]:
+        _min = targeted_data.min(axis=None)
+        _max = targeted_data.max(axis=None)
+
+        # Convert to datetime if the column is datetime64
+        if targeted_data.apply(is_datetime64_any_dtype).all():
+            _min = pd.to_datetime(_min)
+            _max = pd.to_datetime(_max)
+            current_value = pd.to_datetime(current_value)
+            # Convert DatetimeIndex to list of Timestamp objects so that we can use min and max functions below.
+            with suppress(AttributeError): current_value = current_value.tolist()
+
         # Use item() to convert to convert scalar from numpy to Python type. This isn't needed during pre_build because
         # pydantic will coerce the type, but it is necessary in __call__ where we don't update model field values
         # and instead just pass straight to the Dash component.
-        _min = targeted_data.min(axis=None).item()
-        _max = targeted_data.max(axis=None).item()
+        with suppress(AttributeError): _min = _min.item()
+        with suppress(AttributeError): _max = _max.item()
 
         if current_value is not None:
             current_value = current_value if isinstance(current_value, list) else [current_value]
@@ -285,10 +297,15 @@ class Filter(VizroBaseModel):
         # values and instead just pass straight to the Dash component.
         # The dropna() isn't strictly required here but will be in future pandas versions when the behavior of stack
         # changes. See https://pandas.pydata.org/docs/whatsnew/v2.1.0.html#whatsnew-210-enhancements-new-stack.
+        # Also setting the dtype for the current_value_series to the dtype of the targeted_data_series to ensure it
+        # works when it's empty. See: https://pandas.pydata.org/docs/whatsnew/v2.1.0.html#other-deprecations
 
         # Remove ALL_OPTION from the string or list of currently selected value for the categorical filters.
         current_value = [] if current_value in (None, ALL_OPTION) else current_value
         if isinstance(current_value, list) and ALL_OPTION in current_value:
             current_value.remove(ALL_OPTION)
 
-        return np.unique(pd.concat([targeted_data.stack().dropna(), pd.Series(current_value)])).tolist()  # noqa: PD013
+        targeted_data_series = targeted_data.stack().dropna()
+        current_value_series = pd.Series(current_value).astype(targeted_data_series.dtypes)
+
+        return sorted(list(pd.concat([targeted_data_series, current_value_series]).unique()))

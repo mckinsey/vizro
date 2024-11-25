@@ -26,34 +26,8 @@ def iris():
 
 
 @pytest.fixture
-def gapminder_dynamic_first_n_last_n_function(gapminder):
-    return lambda first_n=None, last_n=None: (
-        pd.concat([gapminder[:first_n], gapminder[-last_n:]])
-        if last_n
-        else gapminder[:first_n]
-        if first_n
-        else gapminder
-    )
-
-
-@pytest.fixture
-def box_params():
-    return {"x": "continent", "y": "lifeExp", "custom_data": ["continent"]}
-
-
-@pytest.fixture
 def box_chart(gapminder_2007, box_params):
     return px.box(gapminder_2007, **box_params)
-
-
-@pytest.fixture
-def box_chart_dynamic_data_frame(box_params):
-    return px.box("gapminder_dynamic_first_n_last_n", **box_params)
-
-
-@pytest.fixture
-def scatter_params():
-    return {"x": "gdpPercap", "y": "lifeExp"}
 
 
 @pytest.fixture
@@ -69,11 +43,6 @@ def scatter_matrix_params():
 @pytest.fixture
 def scatter_matrix_chart(iris, scatter_matrix_params):
     return px.scatter_matrix(iris, **scatter_matrix_params)
-
-
-@pytest.fixture
-def scatter_chart_dynamic_data_frame(scatter_params):
-    return px.scatter("gapminder_dynamic_first_n_last_n", **scatter_params)
 
 
 @pytest.fixture
@@ -99,21 +68,6 @@ def managers_one_page_two_graphs_one_button(box_chart, scatter_chart):
         components=[
             vm.Graph(id="box_chart", figure=box_chart),
             vm.Graph(id="scatter_chart", figure=scatter_chart),
-            vm.Button(id="button"),
-        ],
-    )
-    Vizro._pre_build()
-
-
-@pytest.fixture
-def managers_one_page_two_graphs_with_dynamic_data(box_chart_dynamic_data_frame, scatter_chart_dynamic_data_frame):
-    """Instantiates a simple model_manager and data_manager with a page, two graph models and the button component."""
-    vm.Page(
-        id="test_page",
-        title="My first dashboard",
-        components=[
-            vm.Graph(id="box_chart", figure=box_chart_dynamic_data_frame),
-            vm.Graph(id="scatter_chart", figure=scatter_chart_dynamic_data_frame),
             vm.Button(id="button"),
         ],
     )

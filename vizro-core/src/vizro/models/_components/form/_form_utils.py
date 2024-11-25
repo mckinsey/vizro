@@ -54,7 +54,10 @@ def validate_value(cls, value, values):
         [entry["value"] for entry in values["options"]] if isinstance(values["options"][0], dict) else values["options"]
     )
 
-    if value and ALL_OPTION not in value and not is_value_contained(value, possible_values):
+    if hasattr(value, "__iter__") and ALL_OPTION in value:
+        return value
+
+    if value and not is_value_contained(value, possible_values):
         raise ValueError("Please provide a valid value from `options`.")
 
     return value
