@@ -1,16 +1,15 @@
 from datetime import date, datetime
 from typing import Literal
 
-from dash import dcc
 import pandas as pd
 import pytest
 from asserts import assert_component_equal
+from dash import dcc
 
 import vizro.models as vm
 import vizro.plotly.express as px
 from vizro import Vizro
 from vizro.managers import data_manager, model_manager
-from vizro.models import DatePicker
 from vizro.models._action._actions_chain import ActionsChain
 from vizro.models._controls.filter import Filter, _filter_between, _filter_isin
 from vizro.models.types import CapturedCallable
@@ -231,18 +230,22 @@ class TestFilterStaticMethods:
             ([["A", "B", "A"]], ["A", "B"]),
             ([[1, 2, 1]], [1, 2]),
             ([[1.1, 2.2, 1.1]], [1.1, 2.2]),
-            ([[
-                datetime(2024, 1, 1),
-                datetime(2024, 1, 2),
-                datetime(2024, 1, 1),
-            ]],
-            [
-                datetime(2024, 1, 1),
-                datetime(2024, 1, 2),
-            ]),
+            (
+                [
+                    [
+                        datetime(2024, 1, 1),
+                        datetime(2024, 1, 2),
+                        datetime(2024, 1, 1),
+                    ]
+                ],
+                [
+                    datetime(2024, 1, 1),
+                    datetime(2024, 1, 2),
+                ],
+            ),
             ([["A", "B"], ["B", "C"]], ["A", "B", "C"]),
             ([["A", "B"], ["C"]], ["A", "B", "C"]),
-            ([["A" ], []], ["A" ]),
+            ([["A"], []], ["A"]),
         ],
     )
     def test_get_options(self, data_columns, expected):
@@ -264,30 +267,38 @@ class TestFilterStaticMethods:
             ([[1, 2]], [3, 4], [1, 2, 3, 4]),
             ([[1.1, 2.2]], 3.3, [1.1, 2.2, 3.3]),
             ([[1.1, 2.2]], [3.3, 4.4], [1.1, 2.2, 3.3, 4.4]),
-            ([[
-                datetime(2024, 1, 1),
-                datetime(2024, 1, 2),
-            ]],
-             datetime(2024, 1, 3),
-             [
-                datetime(2024, 1, 1),
-                datetime(2024, 1, 2),
+            (
+                [
+                    [
+                        datetime(2024, 1, 1),
+                        datetime(2024, 1, 2),
+                    ]
+                ],
                 datetime(2024, 1, 3),
-             ]),
-            ([[
-                datetime(2024, 1, 1),
-                datetime(2024, 1, 2),
-            ]],
-             [
-                datetime(2024, 1, 3),
-                datetime(2024, 1, 4),
-             ],
-             [
-                 datetime(2024, 1, 1),
-                 datetime(2024, 1, 2),
-                 datetime(2024, 1, 3),
-                 datetime(2024, 1, 4),
-             ]),
+                [
+                    datetime(2024, 1, 1),
+                    datetime(2024, 1, 2),
+                    datetime(2024, 1, 3),
+                ],
+            ),
+            (
+                [
+                    [
+                        datetime(2024, 1, 1),
+                        datetime(2024, 1, 2),
+                    ]
+                ],
+                [
+                    datetime(2024, 1, 3),
+                    datetime(2024, 1, 4),
+                ],
+                [
+                    datetime(2024, 1, 1),
+                    datetime(2024, 1, 2),
+                    datetime(2024, 1, 3),
+                    datetime(2024, 1, 4),
+                ],
+            ),
         ],
     )
     def test_get_options_with_current_value(self, data_columns, current_value, expected):
@@ -300,15 +311,19 @@ class TestFilterStaticMethods:
         [
             ([[1, 2, 1]], (1, 2)),
             ([[1.1, 2.2, 1.1]], (1.1, 2.2)),
-            ([[
-                datetime(2024, 1, 1),
-                datetime(2024, 1, 2),
-                datetime(2024, 1, 1),
-            ]],
-             (
-                 datetime(2024, 1, 1),
-                 datetime(2024, 1, 2),
-             )),
+            (
+                [
+                    [
+                        datetime(2024, 1, 1),
+                        datetime(2024, 1, 2),
+                        datetime(2024, 1, 1),
+                    ]
+                ],
+                (
+                    datetime(2024, 1, 1),
+                    datetime(2024, 1, 2),
+                ),
+            ),
             ([[1, 2], [2, 3]], (1, 3)),
             ([[1, 2], [3]], (1, 3)),
             ([[1, 2], []], (1, 2)),
@@ -326,29 +341,36 @@ class TestFilterStaticMethods:
             ([[1, 2]], [3, 4], (1, 4)),
             ([[1.1, 2.2]], 3.3, (1.1, 3.3)),
             ([[1.1, 2.2]], [3.3, 4.4], (1.1, 4.4)),
-            ([[
-                datetime(2024, 1, 1),
-                datetime(2024, 1, 2),
-                datetime(2024, 1, 1),
-            ]],
+            (
+                [
+                    [
+                        datetime(2024, 1, 1),
+                        datetime(2024, 1, 2),
+                        datetime(2024, 1, 1),
+                    ]
+                ],
                 datetime(2024, 1, 3),
-             (
-                 datetime(2024, 1, 1),
-                 datetime(2024, 1, 3),
-             )),
-            ([[
-                datetime(2024, 1, 1),
-                datetime(2024, 1, 2),
-                datetime(2024, 1, 1),
-            ]],
-             [
-                datetime(2024, 1, 3),
-                datetime(2024, 1, 4),
-             ],
-             (
-                datetime(2024, 1, 1),
-                datetime(2024, 1, 4),
-             )
+                (
+                    datetime(2024, 1, 1),
+                    datetime(2024, 1, 3),
+                ),
+            ),
+            (
+                [
+                    [
+                        datetime(2024, 1, 1),
+                        datetime(2024, 1, 2),
+                        datetime(2024, 1, 1),
+                    ]
+                ],
+                [
+                    datetime(2024, 1, 3),
+                    datetime(2024, 1, 4),
+                ],
+                (
+                    datetime(2024, 1, 1),
+                    datetime(2024, 1, 4),
+                ),
             ),
             ([[1, 2], [2, 3]], 4, (1, 4)),
             ([[1, 2], [2, 3]], [4, 5], (1, 5)),
@@ -552,10 +574,7 @@ class TestPreBuildMethod:
         ],
     )
     def test_filter_is_dynamic_with_dynamic_selectors(
-        self,
-        test_column,
-        test_selector,
-        gapminder_dynamic_first_n_last_n_function
+        self, test_column, test_selector, gapminder_dynamic_first_n_last_n_function
     ):
         data_manager["gapminder_dynamic_first_n_last_n"] = gapminder_dynamic_first_n_last_n_function
         filter = vm.Filter(column=test_column, selector=test_selector)
@@ -590,10 +609,7 @@ class TestPreBuildMethod:
         ],
     )
     def test_filter_is_not_dynamic_with_options_min_max_specified(
-        self,
-        test_column,
-        test_selector,
-        gapminder_dynamic_first_n_last_n_function
+        self, test_column, test_selector, gapminder_dynamic_first_n_last_n_function
     ):
         data_manager["gapminder_dynamic_first_n_last_n"] = gapminder_dynamic_first_n_last_n_function
         filter = vm.Filter(column=test_column, selector=test_selector)

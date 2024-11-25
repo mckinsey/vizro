@@ -1,11 +1,10 @@
 from __future__ import annotations
 
+from contextlib import suppress
 from typing import Any, Literal, Union
 
-import numpy as np
 import pandas as pd
 from dash import dcc
-from contextlib import suppress
 from pandas.api.types import is_datetime64_any_dtype, is_numeric_dtype
 
 from vizro.managers._data_manager import DataSourceName
@@ -275,13 +274,16 @@ class Filter(VizroBaseModel):
             _max = pd.to_datetime(_max)
             current_value = pd.to_datetime(current_value)
             # Convert DatetimeIndex to list of Timestamp objects so that we can use min and max functions below.
-            with suppress(AttributeError): current_value = current_value.tolist()
+            with suppress(AttributeError):
+                current_value = current_value.tolist()
 
         # Use item() to convert to convert scalar from numpy to Python type. This isn't needed during pre_build because
         # pydantic will coerce the type, but it is necessary in __call__ where we don't update model field values
         # and instead just pass straight to the Dash component.
-        with suppress(AttributeError): _min = _min.item()
-        with suppress(AttributeError): _max = _max.item()
+        with suppress(AttributeError):
+            _min = _min.item()
+        with suppress(AttributeError):
+            _max = _max.item()
 
         if current_value is not None:
             current_value = current_value if isinstance(current_value, list) else [current_value]
@@ -305,7 +307,7 @@ class Filter(VizroBaseModel):
         if isinstance(current_value, list) and ALL_OPTION in current_value:
             current_value.remove(ALL_OPTION)
 
-        targeted_data_series = targeted_data.stack().dropna()
+        targeted_data_series = targeted_data.stack().dropna()  # noqa: PD013
         current_value_series = pd.Series(current_value).astype(targeted_data_series.dtypes)
 
-        return sorted(list(pd.concat([targeted_data_series, current_value_series]).unique()))
+        return sorted(pd.concat([targeted_data_series, current_value_series]).unique())

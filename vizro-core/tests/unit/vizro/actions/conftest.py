@@ -1,4 +1,3 @@
-import pandas as pd
 import pytest
 
 import vizro.models as vm
