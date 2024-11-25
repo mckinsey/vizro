@@ -1,9 +1,9 @@
 # Advanced charts
 This page explains how to use Vizro-AI to create charts with advanced visualizations and enhanced formatting.
 
-## Animated bar chart
+## Animated map chart
 
-We'll create an animated bar chart illustrating the GDP per capita of each continent over time. Run the code below and look at the result.
+We'll create an animated map chart illustrating the GDP per capita of each continent over time. Run the code below and look at the result.
 
 !!! example "Vizro-AI animated chart"
 
@@ -76,3 +76,65 @@ Congratulations! You've now gained insights into harnessing the power of a LLM a
 
 
 Advanced charts are well-suited for [Vizro](https://github.com/mckinsey/vizro/tree/main/vizro-core) dashboard applications. You can create a chart using `vizro-ai` to plug into your `vizro` dashboard in seconds!
+
+
+## Polar bar chart
+
+A polar bar chart is a circular graph where each axis represents a different variable, typically used for displaying cyclical or directional data.
+It's suitable for comparing multiple variables across different categories or directions. Let's make one using Vizro-AI.
+
+
+!!! example "Polar Bar Chart"
+
+    === "Resulting chart"
+        [![VizroAIChart1]][VizroAIChart1]
+
+    === "Code for the cell"
+        ```py
+        import vizro_ai
+        from vizro_ai import VizroAI
+        import plotly.express as px
+
+        from dotenv import load_dotenv
+        load_dotenv()
+
+        df = px.data.wind()
+
+        vizro_ai = VizroAI(model="gpt-4o")
+        fig = vizro_ai.plot(df,
+                      """Describe wind frequency and direction using bar_polar chart.
+                         Increase the width and height of the figure.
+                         Improve layout by placing title to the left. Show legend""")
+        fig.show()
+        ```
+
+    [VizroAIChart1]: ../../assets/user_guides/polar_bar_chart.png
+
+
+
+## 3D surface plot
+
+Let's explore how to generate a 3-dimensional surface plot with VizroAI.
+
+!!! example "Surface plot"
+
+    === "Resulting chart"
+        [![VizroAIChart3]][VizroAIChart3]
+
+    === "Code for the cell"
+        ```py
+        import vizro_ai
+        from vizro_ai import VizroAI
+        import plotly.express as px
+
+        from dotenv import load_dotenv
+        load_dotenv()
+
+        df = px.data.gapminder()
+
+        vizro_ai = VizroAI(model="gpt-4o")
+        fig = vizro_ai.plot(df, "create a surface plot")
+        fig.show()
+        ```
+
+    [VizroAIChart3]: ../../assets/user_guides/surface_plot.gif
