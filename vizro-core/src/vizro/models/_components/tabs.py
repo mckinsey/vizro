@@ -3,7 +3,6 @@ from __future__ import annotations
 from typing import TYPE_CHECKING, Literal
 
 import dash_bootstrap_components as dbc
-from dash import html
 
 try:
     from pydantic.v1 import validator
@@ -39,7 +38,9 @@ class Tabs(VizroBaseModel):
                 dbc.Tab(
                     tab.build(),
                     label=tab.title,
-                ) for tab in self.tabs],
+                )
+                for tab in self.tabs
+            ],
             persistence=True,
             persistence_type="session",
         )
