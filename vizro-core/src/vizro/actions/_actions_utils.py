@@ -282,12 +282,15 @@ def _get_modified_page_figures(
             **_get_parametrized_config(ctds_parameter=ctds_parameter, target=target, data_frame=False),
         )
 
+    # AM comment: please check this comment I added!
     for target in control_targets:
         ctd_filter = [item for item in ctds_filter if item["id"] == model_manager[target].selector.id]
 
         # This only covers the case of cross-page actions when Filter in an output, but is not an input of the action.
         current_value = ctd_filter[0]["value"] if ctd_filter else None
 
+        # target_to_data_frame contains all targets, including some which might not be relevant for the filter in
+        # question. We filter to use just the relevant targets in Filter.__call__.
         outputs[target] = model_manager[target](target_to_data_frame=target_to_data_frame, current_value=current_value)
 
     return outputs

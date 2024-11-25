@@ -88,10 +88,12 @@ class Dropdown(VizroBaseModel):
             raise ValueError("Please set multi=True if providing a list of default values.")
         return multi
 
+    # AM comment: please remove build_static and change into __call__ in all places unless you think there's
+    # a good reason not to do so.
     def __call__(self, options):
-        return self._build_static(options)
-
-    def _build_static(self, options):
+        # AM comment: this is the main confusing thing about the current approach I think: every time we run
+        # __call__ we override the value set below, which sounds wrong because we say that we never change the value.
+        # From what I remember this is a workaround for the Dash bug? Maybe add a comment explaining this.
         full_options, default_value = get_options_and_default(options=options, multi=self.multi)
         option_height = _calculate_option_height(full_options)
 
@@ -114,13 +116,17 @@ class Dropdown(VizroBaseModel):
         # Setting self.value is kind of Dropdown pre_build method. It sets self.value only the first time if it's None.
         # We cannot create pre_build for the Dropdown because it has to be called after vm.Filter.pre_build, but nothing
         # guarantees that. We can call Filter.selector.pre_build() from the Filter.pre_build() method if we decide that.
+        # TODO: move this to pre_build once we have better control of the ordering.
         if self.value is None:
-            self.value = get_options_and_default(self.options, self.multi)[1]
+            _, default_value = get_options_and_default(self.options, self.multi)
+            self.value = default_value
 
         # TODO-NEXT: Replace this with the "universal Vizro placeholder" component.
         return html.Div(
             children=[
                 dbc.Label(self.title, html_for=self.id) if self.title else None,
+                # AM question: why do we want opacity: 0? If we don't want it to appear on screen then normally we do
+                # this with visibility or display.
                 dmc.DateRangePicker(
                     id=self.id, value=self.value, persistence=True, persistence_type="session", style={"opacity": 0}
                 ),
@@ -129,4 +135,4 @@ class Dropdown(VizroBaseModel):
 
     @_log_call
     def build(self):
-        return self._build_dynamic_placeholder() if self._dynamic else self._build_static(self.options)
+        return self._build_dynamic_placeholder() if self._dynamic else self.__call__(self.options)

@@ -148,6 +148,7 @@ class Filter(VizroBaseModel):
         #  2. Propagate values from the model_manager and relax the limitation of requiring argument default values.
         #  3. Skip the pre-build and do everything in the build method (if possible).
         #  Find more about the mentioned limitation at: https://github.com/mckinsey/vizro/pull/879/files#r1846609956
+        # Even if the solution changes for dynamic data, static data should still use {} as the arguments here.
         multi_data_source_name_load_kwargs: list[tuple[DataSourceName, dict[str, Any]]] = [
             (model_manager[target]["data_frame"], {}) for target in proposed_targets
         ]
@@ -170,11 +171,12 @@ class Filter(VizroBaseModel):
             )
 
         # Check if the filter is dynamic. Dynamic filter means that the filter is updated when the page is refreshed
-        # which causes that "options" for categorical or "min" and "max" for numerical/temporal selectors are updated.
-        # The filter is dynamic if mentioned attributes ("options"/"min"/"max") are not explicitly provided and if the
-        # filter targets at least one figure that uses the dynamic data source.
+        # which causes "options" for categorical or "min" and "max" for numerical/temporal selectors to be updated.
+        # The filter is dynamic iff mentioned attributes ("options"/"min"/"max") are not explicitly provided and
+        # filter targets at least one figure that uses dynamic data source. Note that min or max = 0 are Falsey values
+        # but should still count as manually set.
         if isinstance(self.selector, DYNAMIC_SELECTORS) and (
-            not getattr(self.selector, "options", None)
+            not getattr(self.selector, "options", [])
             and getattr(self.selector, "min", None) is None
             and getattr(self.selector, "max", None) is None
         ):
@@ -269,6 +271,12 @@ class Filter(VizroBaseModel):
         _max = targeted_data.max(axis=None)
 
         # Convert to datetime if the column is datetime64
+        # AM question: I think this could be simplified:
+        #  * column type is already stored in _column_type and validated in __call__ with validate_column_type. Hence
+        #    we can just do if instance(self.selector, SELECTORS["temporal"]
+        #  * why do we need to do this type conversion at all? When we set min/max for datepicker in pre_build we don't
+        #  do any type
+        #    conversions.
         if targeted_data.apply(is_datetime64_any_dtype).all():
             _min = pd.to_datetime(_min)
             _max = pd.to_datetime(_max)
@@ -280,6 +288,7 @@ class Filter(VizroBaseModel):
         # Use item() to convert to convert scalar from numpy to Python type. This isn't needed during pre_build because
         # pydantic will coerce the type, but it is necessary in __call__ where we don't update model field values
         # and instead just pass straight to the Dash component.
+        # AM QUESTION: why could AttributeError be raised here?
         with suppress(AttributeError):
             _min = _min.item()
         with suppress(AttributeError):
@@ -294,20 +303,15 @@ class Filter(VizroBaseModel):
 
     @staticmethod
     def _get_options(targeted_data: pd.DataFrame, current_value=None) -> list[Any]:
-        # Use tolist() to convert to convert scalar from numpy to Python type. This isn't needed during pre_build
-        # because pydantic will coerce the type, but it is necessary in __call__ where we don't update model field
-        # values and instead just pass straight to the Dash component.
         # The dropna() isn't strictly required here but will be in future pandas versions when the behavior of stack
         # changes. See https://pandas.pydata.org/docs/whatsnew/v2.1.0.html#whatsnew-210-enhancements-new-stack.
-        # Also setting the dtype for the current_value_series to the dtype of the targeted_data_series to ensure it
-        # works when it's empty. See: https://pandas.pydata.org/docs/whatsnew/v2.1.0.html#other-deprecations
+        options = set(targeted_data.stack().dropna()) # noqa: PD013
 
-        # Remove ALL_OPTION from the string or list of currently selected value for the categorical filters.
-        current_value = [] if current_value in (None, ALL_OPTION) else current_value
-        if isinstance(current_value, list) and ALL_OPTION in current_value:
-            current_value.remove(ALL_OPTION)
+        # AM comment: I refactored this function to work analogously to _get_min_max.
+        # Completely untested though so please do check!!
+        if current_value is not None:
+            current_value = set(current_value) if isinstance(current_value, list) else {current_value}
+            options = options | current_value - {ALL_OPTION}
 
-        targeted_data_series = targeted_data.stack().dropna()  # noqa: PD013
-        current_value_series = pd.Series(current_value).astype(targeted_data_series.dtypes)
+        return sorted(options)
 
-        return sorted(pd.concat([targeted_data_series, current_value_series]).unique())
