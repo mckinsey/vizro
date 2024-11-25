@@ -37,29 +37,8 @@ jobs:
       - name: Run e2e component library tests
         run: hatch run test-e2e-component-library
 
-      - name: Copy failed screenshots
+      - name: Create artifacts and slack notifications
         if: failure()
-        run: |
-          mkdir /home/runner/work/vizro/vizro/vizro-core/failed_screenshots/
-          cp *.png failed_screenshots
-
-      - name: Archive production artifacts
-        uses: actions/upload-artifact@v4
-        if: failure()
-        with:
-          name: Failed screenshots
-          path: |
-            /home/runner/work/vizro/vizro/vizro-core/failed_screenshots/*.png
-
-      - name: Send custom JSON data to Slack
-        id: slack
-        uses: slackapi/slack-github-action@v1.26.0
-        if: failure()
-        with:
-          payload: |
-            {
-              "text": "Vizro component tests build result: ${{ job.status }}\nBranch: ${{ github.head_ref }}\n${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}"
-            }
+        uses: ./.github/actions/failed-artifacts-and-slack-notifications
         env:
-          SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
-          SLACK_WEBHOOK_TYPE: INCOMING_WEBHOOK
+          TESTS_NAME: Vizro e2e component library tests
