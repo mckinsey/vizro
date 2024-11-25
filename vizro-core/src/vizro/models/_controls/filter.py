@@ -305,7 +305,7 @@ class Filter(VizroBaseModel):
     def _get_options(targeted_data: pd.DataFrame, current_value=None) -> list[Any]:
         # The dropna() isn't strictly required here but will be in future pandas versions when the behavior of stack
         # changes. See https://pandas.pydata.org/docs/whatsnew/v2.1.0.html#whatsnew-210-enhancements-new-stack.
-        options = set(targeted_data.stack().dropna()) # noqa: PD013
+        options = set(targeted_data.stack().dropna())  # noqa: PD013
 
         # AM comment: I refactored this function to work analogously to _get_min_max.
         # Completely untested though so please do check!!
@@ -314,4 +314,3 @@ class Filter(VizroBaseModel):
             options = options | current_value - {ALL_OPTION}
 
         return sorted(options)
-
