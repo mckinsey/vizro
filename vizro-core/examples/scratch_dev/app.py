@@ -15,18 +15,18 @@ page = vm.Page(
                     title="Tab I",
                     components=[
                         vm.Graph(
+                            title="Graph I",
                             figure=px.bar(
                                 gapminder_2007,
-                                title="Graph 1",
                                 x="continent",
                                 y="lifeExp",
                                 color="continent",
                             ),
                         ),
                         vm.Graph(
+                            title="Graph II",
                             figure=px.box(
                                 gapminder_2007,
-                                title="Graph 2",
                                 x="continent",
                                 y="lifeExp",
                                 color="continent",
@@ -38,9 +38,9 @@ page = vm.Page(
                     title="Tab II",
                     components=[
                         vm.Graph(
+                            title="Graph III",
                             figure=px.scatter(
                                 gapminder_2007,
-                                title="Graph 3",
                                 x="gdpPercap",
                                 y="lifeExp",
                                 size="pop",
@@ -52,7 +52,6 @@ page = vm.Page(
             ],
         ),
     ],
-    controls=[vm.Filter(column="continent")],
 )
 
 dashboard = vm.Dashboard(pages=[page])

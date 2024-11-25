@@ -40,3 +40,7 @@ but do not want to take over to `vizro-bootstrap` as these settings might not be
 .accordion-item .nav-link.active {
   border-left: 2px solid var(--border-enabled);
 }
+
+.nav-tabs {
+  margin-bottom: 20px;
+}
