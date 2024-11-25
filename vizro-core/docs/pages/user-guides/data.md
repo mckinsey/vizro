@@ -398,7 +398,7 @@ controls = [
 ]
 ```
 
-If you [use a specific selector](filters.md#changing-selectors) for a dynamic filter without manually specifying `options` (categorical selector) or `min` and `max` (numerical selector) then the selector remains dynamic. For example:
+If you [use a specific selector](filters.md#change-selectors) for a dynamic filter without manually specifying `options` (categorical selector) or `min` and `max` (numerical selector) then the selector remains dynamic. For example:
 
 ```python title="Dynamic filter with specific selector is still dynamic"
 controls = [
