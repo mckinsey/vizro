@@ -19,6 +19,7 @@ formatters
 fsspec
 globals
 Globals
+interpretability
 Kaggle
 namespace
 namespaces
