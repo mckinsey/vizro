@@ -34,13 +34,7 @@ class Tabs(VizroBaseModel):
     def build(self):
         return dbc.Tabs(
             id=self.id,
-            children=[
-                dbc.Tab(
-                    tab.build(),
-                    label=tab.title,
-                )
-                for tab in self.tabs
-            ],
+            children=[dbc.Tab(tab.build(), label=tab.title) for tab in self.tabs],
             persistence=True,
             persistence_type="session",
         )
