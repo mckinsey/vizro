@@ -42,3 +42,4 @@ jobs:
         uses: ./.github/actions/failed-artifacts-and-slack-notifications
         env:
           TESTS_NAME: Vizro e2e component library tests
+          SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
