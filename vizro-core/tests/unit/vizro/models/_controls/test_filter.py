@@ -248,6 +248,9 @@ class TestFilterStaticMethods:
             ([["A"], []], ["A"]),
         ],
     )
+    # AM question: is there any way to make this a bit more "real" and do it by creating a fake page with targets
+    # with data sources, making an actual Filter() object properly and then checking Filter.selector.options?
+    # If it's too complicated then no worries though.
     def test_get_options(self, data_columns, expected):
         targeted_data = pd.DataFrame({f"target_{i}": pd.Series(data) for i, data in enumerate(data_columns)})
         result = Filter._get_options(targeted_data)
@@ -301,6 +304,13 @@ class TestFilterStaticMethods:
             ),
         ],
     )
+    # AM comment: ah ok, this will get complicated to test with current_value if we do what I suggest above... Probably
+    # not a possibility then.
+    # As a compromise, how about making this TestFilterCall and testing as Filter.__call__(targeted_data, current_value)? This tests
+    # a higher level of interface which would be good here. Currently the logic in Filter.__call__ isn't actually
+    # tested anywhere including the `if isinstance(self.selector, SELECTORS["categorical"])` check and the column type
+    # change validation. If we make the testing higher level here it can cover everything you've done already, plus more,
+    # and it will be more robust to refactoring.
     def test_get_options_with_current_value(self, data_columns, current_value, expected):
         targeted_data = pd.DataFrame({f"target_{i}": pd.Series(data) for i, data in enumerate(data_columns)})
         result = Filter._get_options(targeted_data, current_value)
@@ -558,12 +568,12 @@ class TestPreBuildMethod:
         model_manager["test_page"].controls = [filter]
         filter.pre_build()
         # Filter is not dynamic because it does not target a figure that uses dynamic data
-        assert filter._dynamic is False
-        assert filter.selector._dynamic is False
+        assert not filter._dynamic
+        assert not filter.selector._dynamic
 
     @pytest.mark.usefixtures("managers_one_page_two_graphs_with_dynamic_data")
     @pytest.mark.parametrize(
-        "test_column ,test_selector",
+        "test_column, test_selector",
         [
             ("continent", vm.Checklist()),
             ("continent", vm.Dropdown()),
@@ -581,8 +591,8 @@ class TestPreBuildMethod:
         model_manager["test_page"].controls = [filter]
         filter.pre_build()
         # Filter is dynamic because it targets a figure that uses dynamic data
-        assert filter._dynamic is True
-        assert filter.selector._dynamic is True
+        assert filter._dynamic
+        assert filter.selector._dynamic
 
     @pytest.mark.usefixtures("managers_one_page_two_graphs_with_dynamic_data")
     def test_filter_is_not_dynamic_with_non_dynamic_selectors(self, gapminder_dynamic_first_n_last_n_function):
@@ -590,7 +600,7 @@ class TestPreBuildMethod:
         filter = vm.Filter(column="year", selector=vm.DatePicker())
         model_manager["test_page"].controls = [filter]
         filter.pre_build()
-        assert filter._dynamic is False
+        assert not filter._dynamic
 
     @pytest.mark.usefixtures("managers_one_page_two_graphs_with_dynamic_data")
     @pytest.mark.parametrize(
@@ -615,8 +625,8 @@ class TestPreBuildMethod:
         filter = vm.Filter(column=test_column, selector=test_selector)
         model_manager["test_page"].controls = [filter]
         filter.pre_build()
-        assert filter._dynamic is False
-        assert filter.selector._dynamic is False
+        assert not filter._dynamic
+        assert not filter.selector._dynamic
 
     @pytest.mark.parametrize("selector", [vm.Slider, vm.RangeSlider])
     def test_numerical_min_max_default(self, selector, gapminder, managers_one_page_two_graphs):
