@@ -1,4 +1,5 @@
 name: "Create artifacts and slack notifications"
+description: "Creates failed artifacts with screenshots and sends slack notifications if build failed"
 
 runs:
   using: "composite"
@@ -7,6 +8,7 @@ runs:
       shell: bash
       run: |
         mkdir /home/runner/work/vizro/vizro/vizro-core/failed_screenshots/
+        cd /home/runner/work/vizro/vizro/vizro-core/
         cp *.png failed_screenshots
 
     - name: Archive production artifacts
