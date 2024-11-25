@@ -25,8 +25,7 @@ Uncomment the section that is right (remove the HTML comment wrapper).
 
 ### Changed
 
-- Replace `dmc.Tabs` with `dbc.Tabs` and change CSS selectors accordingly.  ([#895](https://github.com/mckinsey/vizro/pull/895))
-
+- Replace `dmc.Tabs` with `dbc.Tabs` and change CSS selectors accordingly. ([#895](https://github.com/mckinsey/vizro/pull/895))
 
 <!--
 ### Deprecated
