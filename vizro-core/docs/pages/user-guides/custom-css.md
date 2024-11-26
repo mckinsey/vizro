@@ -316,10 +316,10 @@ It's essential to understand the relationship between the targeted CSS class or 
 
 ### Make your CSS responsive to theme Switches with variables
 To ensure your CSS adapts to theme changes, we recommend using CSS variables (`var`) whenever possible. For a 
-comprehensive list of available variable names, please refer to the
+comprehensive list of available variable names, refer to the
 [Bootstrap documentation](https://getbootstrap.com/docs/5.3/customize/css-variables/). Note that our 
 Bootstrap stylesheet is still under development, so not all Bootstrap variable names are currently available.
- Additionally, you can define your own CSS variables, as demonstrated in the example on
+Additionally, you can define your own CSS variables, as demonstrated in the example on
 [changing the container background color](#change-the-styling-of-a-container).
 
 ### Turn off page title
