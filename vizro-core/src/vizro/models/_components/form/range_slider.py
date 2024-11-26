@@ -63,10 +63,6 @@ class RangeSlider(VizroBaseModel):
     _set_actions = _action_validator_factory("value")
 
     def __call__(self, min, max, current_value):
-        return self._build_static(min, max, current_value)
-
-    @_log_call
-    def _build_static(self, min, max, current_value):
         output = [
             Output(f"{self.id}_start_value", "value"),
             Output(f"{self.id}_end_value", "value"),
@@ -142,15 +138,13 @@ class RangeSlider(VizroBaseModel):
         )
 
     def _build_dynamic_placeholder(self, current_value):
-        return self._build_static(self.min, self.max, current_value)
+        return self.__call__(self.min, self.max, current_value)
 
     @_log_call
     def build(self):
-        # We don't have to implement _build_dynamic_placeholder, _build_static here. It's possible to: if dynamic and
-        # self.value is None -> set self.value + return standard build (static), but let's align it with the Dropdown.
         current_value = self.value or [self.min, self.max]  # type: ignore[list-item]
         return (
             self._build_dynamic_placeholder(current_value)
             if self._dynamic
-            else self._build_static(self.min, self.max, current_value)
+            else self.__call__(self.min, self.max, current_value)
         )

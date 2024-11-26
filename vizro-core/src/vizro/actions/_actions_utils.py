@@ -282,7 +282,6 @@ def _get_modified_page_figures(
             **_get_parametrized_config(ctds_parameter=ctds_parameter, target=target, data_frame=False),
         )
 
-    # AM comment: please check this comment I added!
     for target in control_targets:
         ctd_filter = [item for item in ctds_filter if item["id"] == model_manager[target].selector.id]
 
