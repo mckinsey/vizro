@@ -1,7 +1,6 @@
 """Unit tests for vizro.models.Container."""
 
 import dash_bootstrap_components as dbc
-import dash_mantine_components as dmc
 import pytest
 from asserts import assert_component_equal
 from dash import html
@@ -47,7 +46,9 @@ class TestTabsBuildMethod:
         )
         # We want to test the children created in the Tabs.build but not e.g. the
         # vm.Container.build() as it's tested elsewhere already
-        assert_component_equal(result.children, [dbc.Tab(label="Title-1"), dbc.Tab(label="Title-2")], keys_to_strip={"children"})
+        assert_component_equal(
+            result.children, [dbc.Tab(label="Title-1"), dbc.Tab(label="Title-2")], keys_to_strip={"children"}
+        )
         # We still check that the html.Div for the Containers are created, but we don't need to check its content
         assert_component_equal(
             [tab.children for tab in result.children],
