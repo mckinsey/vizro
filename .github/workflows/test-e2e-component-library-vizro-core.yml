@@ -1,0 +1,45 @@
+name: e2e tests of component library for Vizro
+
+defaults:
+  run:
+    working-directory: vizro-core
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches:
+      - main
+
+env:
+  PYTHONUNBUFFERED: 1
+  FORCE_COLOR: 1
+  PYTHON_VERSION: "3.12"
+
+jobs:
+  test-e2e-component-library-vizro-core:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up Python ${{ env.PYTHON_VERSION }}
+        uses: actions/setup-python@v5
+        with:
+          python-version: ${{ env.PYTHON_VERSION }}
+
+      - name: Install Hatch
+        run: pip install hatch
+
+      - name: Show dependency tree
+        run: hatch run pip tree
+
+      - name: Run e2e component library tests
+        run: hatch run test-e2e-component-library
+
+      - name: Create artifacts and slack notifications
+        if: failure()
+        uses: ./.github/actions/failed-artifacts-and-slack-notifications
+        env:
+          TESTS_NAME: Vizro e2e component library tests
+          SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
