@@ -316,10 +316,11 @@ It's essential to understand the relationship between the targeted CSS class or 
 
 ### Make your CSS responsive to theme switches with variables
 To ensure your CSS adapts to theme changes, we recommend using CSS variables (`var`) whenever possible. For a
-comprehensive list of available variable names, refer to the
-[Bootstrap documentation](https://getbootstrap.com/docs/5.3/customize/css-variables/). Note that our
-Bootstrap stylesheet is still under development, so not all Bootstrap variables are currently available.
-Additionally, you can define your own CSS variables, as demonstrated in the example on
+comprehensive list of available CSS variable names, refer to the
+[Bootstrap documentation](https://getbootstrap.com/docs/5.3/customize/css-variables/). Note that our Vizro Bootstrap
+stylesheet is still under development. While all Bootstrap variables have values assigned, some of these values may
+come from the default Bootstrap theme, which can result in styling that looks different from the intended Vizro design.
+You can also define your own CSS variables, as demonstrated in the example on
 [changing the container background color](#change-the-styling-of-a-container).
 
 ### Turn off page title
