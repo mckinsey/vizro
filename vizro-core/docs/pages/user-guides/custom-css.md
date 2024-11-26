@@ -315,9 +315,9 @@ It's essential to understand the relationship between the targeted CSS class or 
 ## Common examples
 
 ### Make your CSS responsive to theme Switches with variables
-To ensure your CSS adapts to theme changes, we recommend using CSS variables (`var`) whenever possible. For a 
+To ensure your CSS adapts to theme changes, we recommend using CSS variables (`var`) whenever possible. For a
 comprehensive list of available variable names, refer to the
-[Bootstrap documentation](https://getbootstrap.com/docs/5.3/customize/css-variables/). Note that our 
+[Bootstrap documentation](https://getbootstrap.com/docs/5.3/customize/css-variables/). Note that our
 Bootstrap stylesheet is still under development, so not all Bootstrap variables are currently available.
 Additionally, you can define your own CSS variables, as demonstrated in the example on
 [changing the container background color](#change-the-styling-of-a-container).
@@ -392,7 +392,7 @@ To do this, you need to change the container's CSS class. Using the DevTool, as 
     [data-bs-theme="dark"] {
         --container-bg-color: #232632;
     }
-    
+
     [data-bs-theme="light"] {
         --container-bg-color: #F5F6F6;
     }
