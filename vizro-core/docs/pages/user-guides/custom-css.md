@@ -314,7 +314,7 @@ It's essential to understand the relationship between the targeted CSS class or 
 
 ## Common examples
 
-### Make your CSS responsive to theme Switches with variables
+### Make your CSS responsive to theme switches with variables
 To ensure your CSS adapts to theme changes, we recommend using CSS variables (`var`) whenever possible. For a
 comprehensive list of available variable names, refer to the
 [Bootstrap documentation](https://getbootstrap.com/docs/5.3/customize/css-variables/). Note that our
