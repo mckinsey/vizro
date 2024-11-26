@@ -28,6 +28,7 @@ All the HEX values starting with --text-code are taken from the Github code high
   --collapse-icon-bg: var(--primary-300);
 }
 
+/* CARDS */
 .card .nav-link {
   height: 100%;
 }
@@ -36,10 +37,32 @@ All the HEX values starting with --text-code are taken from the Github code high
   margin-bottom: 0;
 }
 
+/* ACCORDION */
 .accordion-item .nav-link {
   padding: 0.5rem 1rem;
 }
 
 .accordion-item .nav-link.active {
   border-left: 2px solid var(--border-enabled);
+}
+
+/* TABS */
+.nav-tabs {
+  margin-bottom: 1.25rem;
+}
+
+.tab-content {
+  height: calc(100% - 3.25rem); /* 3.25rem: nav-tabs margin + height */
+}
+
+/* The dbc component adds an additional div element to which we cannot assign a className.
+To ensure the dynamic height adjustment and prevent scrolling, the height must be specified for that div as below. */
+.tab-pane,
+.tab-pane > div:first-child {
+  height: 100%;
+}
+
+/* Hides title of the first container given the title is already reflected in the tab title */
+.tab-content .container-title:first-of-type {
+  display: none;
 }
