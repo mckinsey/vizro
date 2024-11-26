@@ -1,46 +1,55 @@
 """Dev app to try things out."""
 
-import pandas as pd
 import vizro.models as vm
 import vizro.plotly.express as px
 from vizro import Vizro
-from vizro._themes._color_values import COLORS
-import dash_bootstrap_components as dbc
-from dash import html
 
-from typing import Literal
-
-from dash import html
-
-import vizro.models as vm
-from vizro import Vizro
-
-
-class Tooltip(vm.VizroBaseModel):
-    type: Literal["tooltip"] = "tooltip"
-    text: str = "This is a tooltip"
-
-    def build(self):
-        return html.Div(
-            [
-                dbc.Button("Button", id=f"{self.id}-tooltip-target"),
-                dbc.Tooltip(
-                    self.text,
-                    target=f"{self.id}-tooltip-target",
-                    is_open=True,
-                ),
-            ]
-        )
-
-
-vm.Page.add_type("components", Tooltip)
+gapminder_2007 = px.data.gapminder().query("year == 2007")
 
 page = vm.Page(
-    title="Custom Component",
+    title="Tabs",
     components=[
-        Tooltip(text="Tooltip label"),
-        Tooltip(
-            text="Max. width of tooltip should not exceed 180px - this instance should be used for multiple lines of text for increased legibility."
+        vm.Tabs(
+            tabs=[
+                vm.Container(
+                    title="Tab I",
+                    components=[
+                        vm.Graph(
+                            title="Graph I",
+                            figure=px.bar(
+                                gapminder_2007,
+                                x="continent",
+                                y="lifeExp",
+                                color="continent",
+                            ),
+                        ),
+                        vm.Graph(
+                            title="Graph II",
+                            figure=px.box(
+                                gapminder_2007,
+                                x="continent",
+                                y="lifeExp",
+                                color="continent",
+                            ),
+                        ),
+                    ],
+                ),
+                vm.Container(
+                    title="Tab II",
+                    components=[
+                        vm.Graph(
+                            title="Graph III",
+                            figure=px.scatter(
+                                gapminder_2007,
+                                x="gdpPercap",
+                                y="lifeExp",
+                                size="pop",
+                                color="continent",
+                            ),
+                        ),
+                    ],
+                ),
+            ],
         ),
     ],
 )
