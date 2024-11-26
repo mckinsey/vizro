@@ -9,11 +9,11 @@
 }
 
 ::-webkit-scrollbar-thumb:hover {
-  background: var(--fill-medium-emphasis);
+  background: var(--fill-secondary);
 }
 
 #left-main::-webkit-scrollbar-thumb {
-  border-color: var(--surfaces-bg-02);
+  border-color: var(--surfaces-bg02);
 }
 
 .card::-webkit-scrollbar-thumb,
@@ -23,11 +23,11 @@
 }
 
 #page-components::-webkit-scrollbar-thumb {
-  border-color: var(--main-container-bg-color);
+  border-color: var(--right-side-bg);
 }
 
 .table-container::-webkit-scrollbar-thumb {
-  border-color: var(--main-container-bg-color);
+  border-color: var(--right-side-bg);
 }
 
 /* Can't control thumb color so hover is turned off */

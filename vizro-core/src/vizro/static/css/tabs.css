@@ -8,7 +8,7 @@
 .tabs-list {
   align-items: flex-start;
   align-self: stretch;
-  border-bottom: 1px solid var(--border-subtle-alpha-01);
+  border-bottom: 1px solid var(--border-subtleAlpha01);
   display: flex;
   flex-wrap: nowrap;
   gap: 16px;
@@ -37,21 +37,22 @@
 
 .tab-title:hover {
   background-color: transparent;
-  border-bottom: 1px solid var(--text-active);
+  border-bottom: 1px solid var(--border-hover);
+  color: var(--text-primaryHover);
 }
 
 .tab-title[data-active] {
-  border-bottom: 1px solid var(--text-active);
-  color: var(--text-active);
+  border-bottom: 1px solid var(--border-selected);
+  color: var(--text-primary);
 }
 
 .tab-title[data-active]:hover {
   background-color: transparent;
-  border-color: 1px solid var(--text-active);
+  border-color: 1px solid var(--border-selected);
 }
 
 .tab-title[data-active] .mantine-Tabs-tabLabel {
-  color: var(--text-active);
+  color: var(--text-primary);
 }
 
 .tab-content > .page-component-container > .container-title {
