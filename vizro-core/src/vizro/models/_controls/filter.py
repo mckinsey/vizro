@@ -217,6 +217,9 @@ class Filter(VizroBaseModel):
     @_log_call
     def build(self):
         selector_build_obj = self.selector.build()
+        # TODO: Align the (dynamic) object's return structure with the figure's components when the Dash bug is fixed.
+        #  This means returning an empty "html.Div(id=self.id, className="...")" as a placeholder from Filter.build().
+        #  Also, make selector.title visible when the filter is reloading.
         return dcc.Loading(id=self.id, children=selector_build_obj) if self._dynamic else selector_build_obj
 
     def _validate_targeted_data(
