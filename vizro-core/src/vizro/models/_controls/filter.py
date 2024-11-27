@@ -1,6 +1,5 @@
 from __future__ import annotations
 
-from contextlib import suppress
 from typing import Any, Literal, Union
 
 import pandas as pd
@@ -270,37 +269,17 @@ class Filter(VizroBaseModel):
 
     @staticmethod
     def _get_min_max(targeted_data: pd.DataFrame, current_value=None) -> tuple[float, float]:
+        targeted_data = pd.concat([targeted_data, pd.Series(current_value)]).stack().dropna()  # noqa: PD013
+
         _min = targeted_data.min(axis=None)
         _max = targeted_data.max(axis=None)
-
-        # Convert to datetime if the column is datetime64
-        # AM question: I think this could be simplified:
-        #  * column type is already stored in _column_type and validated in __call__ with validate_column_type. Hence
-        #    we can just do if instance(self.selector, SELECTORS["temporal"]
-        #  * why do we need to do this type conversion at all? When we set min/max for datepicker in pre_build we don't
-        #  do any type
-        #    conversions.
-        if targeted_data.apply(is_datetime64_any_dtype).all():
-            _min = pd.to_datetime(_min)
-            _max = pd.to_datetime(_max)
-            current_value = pd.to_datetime(current_value)
-            # Convert DatetimeIndex to list of Timestamp objects so that we can use min and max functions below.
-            with suppress(AttributeError):
-                current_value = current_value.tolist()
 
         # Use item() to convert to convert scalar from numpy to Python type. This isn't needed during pre_build because
         # pydantic will coerce the type, but it is necessary in __call__ where we don't update model field values
         # and instead just pass straight to the Dash component.
-        # AM QUESTION: why could AttributeError be raised here?
-        with suppress(AttributeError):
-            _min = _min.item()
-        with suppress(AttributeError):
-            _max = _max.item()
-
-        if current_value is not None:
-            current_value = current_value if isinstance(current_value, list) else [current_value]
-            _min = min(_min, *current_value)
-            _max = max(_max, *current_value)
+        # However, in some cases _min and _max are already Python types and so item() call is not required.
+        _min = _min if not hasattr(_min, "item") else _min.item()
+        _max = _max if not hasattr(_max, "item") else _max.item()
 
         return _min, _max
 
@@ -308,12 +287,5 @@ class Filter(VizroBaseModel):
     def _get_options(targeted_data: pd.DataFrame, current_value=None) -> list[Any]:
         # The dropna() isn't strictly required here but will be in future pandas versions when the behavior of stack
         # changes. See https://pandas.pydata.org/docs/whatsnew/v2.1.0.html#whatsnew-210-enhancements-new-stack.
-        options = set(targeted_data.stack().dropna())  # noqa: PD013
-
-        # AM comment: I refactored this function to work analogously to _get_min_max.
-        # Completely untested though so please do check!!
-        if current_value is not None:
-            current_value = set(current_value) if isinstance(current_value, list) else {current_value}
-            options = options | current_value - {ALL_OPTION}
-
-        return sorted(options)
+        targeted_data = pd.concat([targeted_data, pd.Series(current_value)]).stack().dropna()  # noqa: PD013
+        return sorted(set(targeted_data) - {ALL_OPTION})

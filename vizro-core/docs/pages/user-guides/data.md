@@ -281,7 +281,7 @@ To add a parameter to control a dynamic data source, do the following:
 2. give an `id` to all components that have the data source you wish to alter through a parameter.
 3. [add a parameter](parameters.md) with `targets` of the form `<target_component_id>.data_frame.<dynamic_data_argument>` and a suitable [selector](selectors.md).
 
-For example, let us extend the [dynamic data example](#dynamic-data) above into a simple toy example of how parametrized dynamic data works. The `load_iris_data` can take an argument `number_of_points` controlled from the dashboard with a [`Slider`][vizro.models.Slider].
+For example, let us extend the [dynamic data example](#dynamic-data) above into example of how parametrized dynamic data works. The `load_iris_data` can take an argument `number_of_points` controlled from the dashboard with a [`Slider`][vizro.models.Slider].
 
 !!! example "Parametrized dynamic data"
     === "app.py"
@@ -343,7 +343,7 @@ When a [filter](filters.md) depends on dynamic data and no `selector` is explici
 
 The mechanism for dynamic filters, including caching, works exactly like other non-control components such as `vm.Graph`. However, unlike such components, a filter can depend on multiple data sources. If at least one data source of the components in the filter's `targets` is dynamic then the filter is dynamic. Remember that when `targets` is not explicitly specified, a filter applies to all the components on a page that use a DataFrame including `column`.
 
-When the page is refreshed, the behaviour of a dynamic filter is as follows:
+When the page is refreshed, the behavior of a dynamic filter is as follows:
 
 - The filter's selector updates its available values:
     - For [categorical selectors](selectors.md#categorical-selectors), `options` updates to give all unique values found in `column` across all the data sources of components in `targets`.

@@ -243,9 +243,11 @@ class TestFilterStaticMethods:
                     datetime(2024, 1, 2),
                 ],
             ),
-            ([["A", "B"], ["B", "C"]], ["A", "B", "C"]),
-            ([["A", "B"], ["C"]], ["A", "B", "C"]),
+            ([[], []], []),
             ([["A"], []], ["A"]),
+            ([[], ["A"]], ["A"]),
+            ([["A"], ["B"]], ["A", "B"]),
+            ([["A", "B"], ["B", "C"]], ["A", "B", "C"]),
         ],
     )
     # AM question: is there any way to make this a bit more "real" and do it by creating a fake page with targets
@@ -262,55 +264,45 @@ class TestFilterStaticMethods:
             ([[]], None, []),
             ([[]], "ALL", []),
             ([[]], ["ALL", "A"], ["A"]),
+            ([["A"]], ["ALL", "B"], ["A", "B"]),
             ([[]], "A", ["A"]),
             ([[]], ["A", "B"], ["A", "B"]),
-            ([["A", "B"]], "C", ["A", "B", "C"]),
-            ([["A", "B"]], ["C", "D"], ["A", "B", "C", "D"]),
-            ([[1, 2]], 3, [1, 2, 3]),
-            ([[1, 2]], [3, 4], [1, 2, 3, 4]),
-            ([[1.1, 2.2]], 3.3, [1.1, 2.2, 3.3]),
-            ([[1.1, 2.2]], [3.3, 4.4], [1.1, 2.2, 3.3, 4.4]),
+            ([["A"]], "B", ["A", "B"]),
+            ([["A"]], ["B", "C"], ["A", "B", "C"]),
+            ([[1]], 2, [1, 2]),
+            ([[1]], [2, 3], [1, 2, 3]),
+            ([[1.1]], 2.2, [1.1, 2.2]),
+            ([[1.1]], [2.2, 3.3], [1.1, 2.2, 3.3]),
             (
                 [
                     [
                         datetime(2024, 1, 1),
-                        datetime(2024, 1, 2),
                     ]
                 ],
-                datetime(2024, 1, 3),
+                datetime(2024, 1, 2),
                 [
                     datetime(2024, 1, 1),
                     datetime(2024, 1, 2),
-                    datetime(2024, 1, 3),
                 ],
             ),
             (
                 [
                     [
                         datetime(2024, 1, 1),
-                        datetime(2024, 1, 2),
                     ]
                 ],
                 [
+                    datetime(2024, 1, 2),
                     datetime(2024, 1, 3),
-                    datetime(2024, 1, 4),
                 ],
                 [
                     datetime(2024, 1, 1),
                     datetime(2024, 1, 2),
                     datetime(2024, 1, 3),
-                    datetime(2024, 1, 4),
                 ],
             ),
         ],
     )
-    # AM comment: ah ok, this will get complicated to test with current_value if we do what I suggest above... Probably
-    # not a possibility then.
-    # As a compromise, how about making this TestFilterCall and testing as Filter.__call__(targeted_data, current_value)? This tests
-    # a higher level of interface which would be good here. Currently the logic in Filter.__call__ isn't actually
-    # tested anywhere including the `if isinstance(self.selector, SELECTORS["categorical"])` check and the column type
-    # change validation. If we make the testing higher level here it can cover everything you've done already, plus more,
-    # and it will be more robust to refactoring.
     def test_get_options_with_current_value(self, data_columns, current_value, expected):
         targeted_data = pd.DataFrame({f"target_{i}": pd.Series(data) for i, data in enumerate(data_columns)})
         result = Filter._get_options(targeted_data, current_value)
@@ -334,9 +326,9 @@ class TestFilterStaticMethods:
                     datetime(2024, 1, 2),
                 ),
             ),
-            ([[1, 2], [2, 3]], (1, 3)),
-            ([[1, 2], [3]], (1, 3)),
+            ([[1], []], (1, 1)),
             ([[1, 2], []], (1, 2)),
+            ([[1, 2], [2, 3]], (1, 3)),
         ],
     )
     def test_get_min_max(self, data_columns, expected):
@@ -356,7 +348,6 @@ class TestFilterStaticMethods:
                     [
                         datetime(2024, 1, 1),
                         datetime(2024, 1, 2),
-                        datetime(2024, 1, 1),
                     ]
                 ],
                 datetime(2024, 1, 3),
@@ -370,7 +361,6 @@ class TestFilterStaticMethods:
                     [
                         datetime(2024, 1, 1),
                         datetime(2024, 1, 2),
-                        datetime(2024, 1, 1),
                     ]
                 ],
                 [
@@ -382,10 +372,10 @@ class TestFilterStaticMethods:
                     datetime(2024, 1, 4),
                 ),
             ),
-            ([[1, 2], [2, 3]], 4, (1, 4)),
-            ([[1, 2], [2, 3]], [4, 5], (1, 5)),
-            ([[1, 2], []], 3, (1, 3)),
-            ([[1, 2], []], [3, 4], (1, 4)),
+            ([[1], []], 2, (1, 2)),
+            ([[1], []], [2, 3], (1, 3)),
+            ([[1], [2]], 3, (1, 3)),
+            ([[1], [2]], [3, 4], (1, 4)),
         ],
     )
     def test_get_min_max_with_current_value(self, data_columns, current_value, expected):
