@@ -8,7 +8,7 @@ import pandas as pd
 import plotly.graph_objects as go
 import vizro.models as vm
 import vizro.plotly.express as px
-from dash import dash_table, dcc, html
+from dash import dash_table, dcc, get_asset_url, html
 from vizro import Vizro
 from vizro.actions import export_data, filter_interaction
 from vizro.figures import kpi_card, kpi_card_reference
@@ -606,10 +606,10 @@ def my_custom_table(data_frame=None, chosen_columns: Optional[list[str]] = None)
     columns = [{"name": i, "id": i} for i in chosen_columns]
     defaults = {
         "style_as_list_view": True,
-        "style_data": {"border_bottom": "1px solid var(--border-subtle-alpha-01)", "height": "40px"},
+        "style_data": {"border_bottom": "1px solid var(--border-subtleAlpha01)", "height": "40px"},
         "style_header": {
-            "border_bottom": "1px solid var(--state-overlays-selected-hover)",
-            "border_top": "1px solid var(--main-container-bg-color)",
+            "border_bottom": "1px solid var(--stateOverlays-selectedHover)",
+            "border_top": "1px solid var(--right-side-bg)",
             "height": "32px",
         },
     }
@@ -817,5 +817,16 @@ dashboard = vm.Dashboard(
     ),
 )
 
+
 if __name__ == "__main__":
-    Vizro().build(dashboard).run()
+    app = Vizro().build(dashboard)
+    app.dash.layout.children.append(
+        dbc.NavLink(
+            ["Made with ", html.Img(src=get_asset_url("logo.svg"), id="banner", alt="Vizro logo"), "vizro"],
+            href="https://github.com/mckinsey/vizro",
+            target="_blank",
+            className="anchor-container",
+        )
+    )
+    server = app.dash.server
+    app.run()

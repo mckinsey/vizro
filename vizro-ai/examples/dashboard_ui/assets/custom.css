@@ -3,12 +3,12 @@
 }
 
 .card-body {
-  color: var(--text-light-mode-secondary);
+  color: var(--text-secondary-inverted);
 }
 
 .textbox {
   border-radius: 24px;
-  font-size: var(--text-size-02);
+  font-size: 0.875rem;
   margin-bottom: 20px;
   max-width: 60%;
   padding: 4px 12px;
@@ -17,14 +17,14 @@
 
 .user_input:focus {
   background: var(--field-enabled);
-  box-shadow: 0 0 0 2px var(--focus-focus) inset;
+  box-shadow: 0 0 0 2px var(--focus) inset;
   color: var(--text-primary);
   outline-width: 0;
 }
 
 #text-area {
   background-color: inherit;
-  border: 1px solid var(--border-subtle-alpha-01);
+  border: 1px solid var(--border-subtleAlpha01);
   color: var(--text-primary);
   min-height: 14vh;
   padding: 8px;
@@ -68,10 +68,6 @@
 
 #model-dropdown .Select-menu-outer {
   font-size: 12px;
-
-  /* top: 0; */
-
-  /* transform: translateY(3px) translateY(-100%); */
 }
 
 #model-dropdow .dash-dropdown {
@@ -122,22 +118,13 @@
 }
 
 #data-upload-component {
-  border: 1px dashed var(--border-subtle-alpha-01);
+  border: 1px dashed var(--border-subtleAlpha01);
   color: var(--text-primary);
   height: 5vh;
   line-height: 5vh;
   text-align: center;
 }
 
-/*
-#settings-api-key-toggle .form-check-input {
-  border-radius: 8px;
-}
-
-#settings-api-base-toggle .form-check-input {
-  border-radius: 8px;
-}
-*/
 #toggle-div-api-base,
 #toggle-div-api-key {
   align-items: center;
@@ -177,19 +164,19 @@
 
 .btn-primary:enabled:has(#dropdown-menu-icon) {
   background-color: inherit;
-  color: var(--text-active);
+  color: var(--text-primary);
   font-size: 1.5rem;
 }
 
 .btn-primary:disabled:has(#dropdown-menu-icon) {
   background-color: inherit;
-  color: var(--text-active);
+  color: var(--text-primary);
   font-size: 1.5rem;
 }
 
 .download-button {
   background-color: inherit;
-  color: var(--text-active);
+  color: var(--text-primary);
   width: 100%;
 }
 
@@ -199,14 +186,14 @@
 
 .dropdown-menu-toggle-class {
   background-color: inherit;
-  color: var(--text-active);
+  color: var(--text-primary);
   height: 2rem;
   scale: 90%;
 }
 
 .dropdown-menu-toggle-class:hover {
   background-color: inherit;
-  color: var(--text-active);
+  color: var(--text-primary);
   cursor: pointer;
   height: 2rem;
   scale: 90%;
@@ -218,7 +205,7 @@
     .disabled
   ) {
   background-color: inherit;
-  color: var(--text-active);
+  color: var(--text-primary);
 }
 
 .modal-class {
@@ -234,7 +221,7 @@
 
 .custom_header {
   align-items: center;
-  border-bottom: 1px solid var(--border-subtle-alpha-01);
+  border-bottom: 1px solid var(--border-subtleAlpha01);
   display: flex;
   flex-direction: row;
   height: 60px;
@@ -314,7 +301,7 @@
   background: var(--text-primary);
   border-top-left-radius: 8px;
   bottom: 0;
-  color: var(--text-contrast-primary);
+  color: var(--text-primary-inverted);
   display: flex;
   font-size: 0.8rem;
   font-weight: 500;
@@ -327,7 +314,7 @@
 .anchor-container:focus,
 .anchor-container:hover {
   background: var(--text-secondary);
-  color: var(--text-contrast-primary);
+  color: var(--text-primary-inverted);
 }
 
 img#banner {
@@ -346,7 +333,9 @@ img#banner {
   flex-flow: column wrap;
   gap: 12px;
   justify-content: flex-start;
-  overflow: none;
+
+  /* Nadija, can you check what overflow behaviour you guys wanted here? none doesn't exist as a property */
+  overflow: hidden;
 }
 
 .flex-container h4 {
