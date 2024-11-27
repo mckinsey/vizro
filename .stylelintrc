@@ -1,6 +1,6 @@
 {
   "extends": "stylelint-config-standard",
-  "plugins": ["stylelint-order"],
+  "plugins": ["stylelint-order", "stylelint-csstree-validator"],
   "rules": {
     "order/properties-alphabetical-order": true,
     "selector-class-pattern": null,
@@ -8,6 +8,7 @@
     "color-function-notation": "legacy",
     "alpha-value-notation": "number",
     "color-hex-length": "long",
-    "selector-not-notation": null
+    "selector-not-notation": null,
+    "csstree/validator": true
   }
 }

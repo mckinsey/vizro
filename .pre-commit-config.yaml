@@ -81,6 +81,7 @@ repos:
           - stylelint@16.2.1
           - stylelint-config-standard@36.0.0
           - stylelint-order@4.1.0
+          - stylelint-csstree-validator@3.0.0
         args: ["--fix"]
 
   - repo: https://github.com/errata-ai/vale
