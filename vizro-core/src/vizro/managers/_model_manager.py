@@ -5,13 +5,14 @@ from __future__ import annotations
 import random
 import uuid
 from collections.abc import Generator
-from typing import TYPE_CHECKING, NewType, Optional, TypeVar, cast
+from typing import TYPE_CHECKING, NewType, Optional, TypeVar, cast, Union
 
 from vizro.managers._managers_utils import _state_modifier
 
 if TYPE_CHECKING:
-    from vizro.models import VizroBaseModel
+    from vizro.models import VizroBaseModel, Page
     from vizro.models._action._actions_chain import ActionsChain
+
 
 # As done for Dash components in dash.development.base_component, fixing the random seed is required to make sure that
 # the randomly generated model ID for the same model matches up across workers when running gunicorn without --preload.
@@ -50,90 +51,55 @@ class ModelManager:
 
         Note this yields model IDs rather key/value pairs to match the interface for a dictionary.
         """
+        # TODO: should this yield models rather than model IDs? Should model_manager be more like set with a special
+        #  lookup by model ID or more like dictionary?
         yield from self.__models
 
-    # TODO: Consider adding an option to iterate only through specific page - "in_page_with_id=None"
-    def _items_with_type(self, model_type: type[Model]) -> Generator[tuple[ModelID, Model], None, None]:
-        """Iterates through all models of type `model_type` (including subclasses)."""
-        for model_id in self:
-            if isinstance(self[model_id], model_type):
-                yield model_id, cast(Model, self[model_id])
+    def _get_models(self, model_type: type[Model] = None, page: Optional[Model] = None) -> Generator[Model, None, None]:
+        """Iterates through all models of type `model_type` (including subclasses). If `page_id` specified then only
+        give models from that page."""
+        models = self._get_model_children(page) if page is not None else self.__models.values()
+
+        for model in models:
+            if model_type is None or isinstance(model, model_type):
+                yield model
 
     # TODO: Consider returning with yield
-    # TODO: Make collection of model ids (throughout this file) to be set[ModelID].
-    def _get_model_children(self, model_id: ModelID, all_model_ids: Optional[list[ModelID]] = None) -> list[ModelID]:
-        if all_model_ids is None:
-            all_model_ids = []
+    # TODO NOW: Make brief comments on how in future it should work to use Page (or maybe Dashboard) as key primitive.
+    def _get_model_children(self, model: Model) -> Generator[Model, None, None]:
+        from vizro.models import VizroBaseModel
 
-        all_model_ids.append(model_id)
-        model = self[model_id]
-        if hasattr(model, "components"):
-            for child_model in model.components:
-                self._get_model_children(child_model.id, all_model_ids)
-        if hasattr(model, "tabs"):
-            for child_model in model.tabs:
-                self._get_model_children(child_model.id, all_model_ids)
-        return all_model_ids
+        if isinstance(model, VizroBaseModel):
+            yield model
 
-    # TODO: Consider moving this method in the Dashboard model or some other util file
-    def _get_model_page_id(self, model_id: ModelID) -> ModelID:  # type: ignore[return]
+        model_fields = ["components", "tabs", "controls", "actions", "selector"]
+
+        for model_field in model_fields:
+            if (model_field_value := getattr(model, model_field, None)) is not None:
+                if isinstance(model_field_value, list):
+                    # For fields like components that are list of models.
+                    for single_model_field_value in model_field_value:
+                        yield from self._get_model_children(single_model_field_value)
+                else:
+                    # For fields that have single model like selector.
+                    yield from self._get_model_children(model_field_value)
+                # We don't handle dicts of models at the moment. See below TODO for how this will all be improved in
+                #  future.
+
+        # TODO: Add navigation, accordions and other page objects. Won't be needed once have made whole model
+        #  manager work better recursively and have better ways to navigate the hierarchy. In pydantic v2 this would use
+        #  model_fields.
+
+    def _get_model_page(self, model: Model) -> Page:  # type: ignore[return]
         """Gets the id of the page containing the model with "model_id"."""
         from vizro.models import Page
 
-        for page_id, page in model_manager._items_with_type(Page):
-            page_model_ids = [page_id, self._get_model_children(model_id=page_id)]
+        if isinstance(model, Page):
+            return model
 
-            for actions_chain in self._get_page_actions_chains(page_id=page_id):
-                page_model_ids.append(actions_chain.id)
-                for action in actions_chain.actions:
-                    page_model_ids.append(action.id)  # noqa: PERF401
-
-            for control in page.controls:
-                page_model_ids.append(control.id)
-                if hasattr(control, "selector") and control.selector:
-                    page_model_ids.append(control.selector.id)
-
-            # TODO: Add navigation, accordions and other page objects
-
-            if model_id in page_model_ids:
-                return cast(ModelID, page.id)
-
-    # TODO: Increase the genericity of this method
-    def _get_page_actions_chains(self, page_id: ModelID) -> list[ActionsChain]:
-        """Gets all ActionsChains present on the page."""
-        page = self[page_id]
-        page_actions_chains = []
-
-        for model_id in self._get_model_children(model_id=page_id):
-            model = self[model_id]
-            if hasattr(model, "actions"):
-                page_actions_chains.extend(model.actions)
-
-        for control in page.controls:
-            if hasattr(control, "actions") and control.actions:
-                page_actions_chains.extend(control.actions)
-            if hasattr(control, "selector") and control.selector and hasattr(control.selector, "actions"):
-                page_actions_chains.extend(control.selector.actions)
-
-        return page_actions_chains
-
-    # TODO: Consider moving this one to the _callback_mapping_utils.py since it's only used there
-    def _get_action_trigger(self, action_id: ModelID) -> VizroBaseModel:  # type: ignore[return]
-        """Gets the model that triggers the action with "action_id"."""
-        from vizro.models._action._actions_chain import ActionsChain
-
-        for _, actions_chain in model_manager._items_with_type(ActionsChain):
-            if action_id in [action.id for action in actions_chain.actions]:
-                return self[ModelID(str(actions_chain.trigger.component_id))]
-
-    def _get_page_model_ids_with_figure(self, page_id: ModelID) -> list[ModelID]:
-        """Gets ids of all components from the page that have a 'figure' registered."""
-        return [
-            model_id
-            for model_id in self._get_model_children(model_id=page_id)
-            # Optimally this statement should be: "if isinstance(model, Figure)"
-            if hasattr(model_manager[model_id], "figure")
-        ]
+        for page in self._get_models(Page):
+            if model in self._get_model_children(page):
+                return page
 
     @staticmethod
     def _generate_id() -> ModelID:

@@ -15,8 +15,7 @@ def _validate_pages(pages):
     pages_as_list = list(itertools.chain(*pages.values())) if isinstance(pages, dict) else pages
     # Ideally we would use dashboard.pages in the model manager here, but we only register pages in
     # dashboard.pre_build and model manager cannot find a Dashboard at validation time.
-    # page[0] gives the page model ID.
-    registered_pages = [page[0] for page in model_manager._items_with_type(Page)]
+    registered_pages = [page.id for page in model_manager._get_models(Page)]
 
     if not pages_as_list:
         raise ValueError("Ensure this value has at least 1 item.")

@@ -17,13 +17,12 @@ from vizro.actions._on_page_load_action import _on_page_load
 from vizro.actions._parameter_action import _parameter
 from vizro.managers import model_manager
 from vizro.managers._model_manager import ModelID
+from vizro.models import Action
 
 
-def _get_action_callback_mapping(
-    action_id: ModelID, argument: str
-) -> Union[list[dcc.Download], dict[str, DashDependency]]:
+def _get_action_callback_mapping(action: Action, argument: str) -> Union[list[dcc.Download], dict[str, DashDependency]]:
     """Creates mapping of action name and required callback input/output."""
-    action_function = model_manager[action_id].function._function
+    action_function = action.function._function
 
     action_callback_mapping: dict[str, Any] = {
         export_data.__wrapped__: {
@@ -50,4 +49,4 @@ def _get_action_callback_mapping(
     }
     action_call = action_callback_mapping.get(action_function, {}).get(argument)
     default_value: Union[list[dcc.Download], dict[str, DashDependency]] = [] if argument == "components" else {}
-    return default_value if not action_call else action_call(action_id=action_id)
+    return default_value if not action_call else action_call(action=action)

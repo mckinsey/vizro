@@ -17,7 +17,7 @@ from vizro._constants import FILTER_ACTION_PREFIX
 from vizro.actions import _filter
 from vizro.managers import data_manager, model_manager
 from vizro.managers._model_manager import ModelID
-from vizro.models import Action, VizroBaseModel
+from vizro.models import Action, VizroBaseModel, Graph, AgGrid, Table, Figure
 from vizro.models._components.form import (
     Checklist,
     DatePicker,
@@ -102,9 +102,10 @@ class Filter(VizroBaseModel):
         # want to raise an error if the column is not found in a figure's data_frame, it will just be ignored.
         # This is the case when bool(self.targets) is False.
         # Possibly in future this will change (which would be breaking change).
-        proposed_targets = self.targets or model_manager._get_page_model_ids_with_figure(
-            page_id=model_manager._get_model_page_id(model_id=ModelID(str(self.id)))
-        )
+        proposed_targets = self.targets or [
+            model.id
+            for model in model_manager._get_models((Graph, AgGrid, Table, Figure), model_manager._get_model_page(self))
+        ]
         # TODO NEXT: how to handle pre_build for dynamic filters? Do we still require default argument values in
         #  `load` to establish selector type etc.? Can we take selector values from model_manager to supply these?
         #  Or just don't do validation at pre_build time and wait until state is available during build time instead?

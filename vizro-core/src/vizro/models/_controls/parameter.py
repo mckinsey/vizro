@@ -60,7 +60,7 @@ class Parameter(VizroBaseModel):
     @validator("targets")
     def check_duplicate_parameter_target(cls, targets):
         all_targets = targets.copy()
-        for _, param in model_manager._items_with_type(Parameter):
+        for param in model_manager._get_models(Parameter):
             all_targets.extend(param.targets)
         duplicate_targets = {item for item in all_targets if all_targets.count(item) > 1}
         if duplicate_targets:

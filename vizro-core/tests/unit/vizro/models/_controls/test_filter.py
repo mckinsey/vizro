@@ -448,14 +448,14 @@ class TestPreBuildMethod:
     @pytest.mark.parametrize(
         "filtered_column, selector, filter_function",
         [
-            ("lifeExp", None, _filter_between),
-            ("country", None, _filter_isin),
-            ("year", None, _filter_between),
-            ("year", vm.DatePicker(range=False), _filter_isin),
+            ("lifeExp", lambda: None, _filter_between),
+            ("country", lambda: None, _filter_isin),
+            ("year", lambda: None, _filter_between),
+            ("year", lambda: vm.DatePicker(range=False), _filter_isin),
         ],
     )
     def test_set_actions(self, filtered_column, selector, filter_function, managers_one_page_two_graphs):
-        filter = vm.Filter(column=filtered_column, selector=selector)
+        filter = vm.Filter(column=filtered_column, selector=selector())
         model_manager["test_page"].controls = [filter]
         filter.pre_build()
         default_action = filter.selector.actions[0]
@@ -507,18 +507,20 @@ class TestFilterBuild:
     @pytest.mark.parametrize(
         "test_column,test_selector",
         [
-            ("continent", vm.Checklist()),
-            ("continent", vm.Dropdown()),
-            ("continent", vm.RadioItems()),
-            ("pop", vm.RangeSlider()),
-            ("pop", vm.Slider()),
-            ("year", vm.DatePicker()),
-            ("year", vm.DatePicker(range=False)),
+            ("continent", lambda: vm.Checklist()),
+            ("continent", lambda: vm.Dropdown()),
+            ("continent", lambda: vm.RadioItems()),
+            ("pop", lambda: vm.RangeSlider()),
+            ("pop", lambda: vm.Slider()),
+            ("year", lambda: vm.DatePicker()),
+            ("year", lambda: vm.DatePicker(range=False)),
         ],
     )
     def test_filter_build(self, test_column, test_selector):
+        test_selector = test_selector()
         filter = vm.Filter(column=test_column, selector=test_selector)
         model_manager["test_page"].controls = [filter]
+
         filter.pre_build()
         result = filter.build()
         expected = test_selector.build()

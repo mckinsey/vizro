@@ -15,18 +15,21 @@ if TYPE_CHECKING:
 
 
 def _get_actions_chains_on_all_pages() -> list[ActionsChain]:
+    from vizro.models._action._actions_chain import ActionsChain
+
     """Gets list of ActionsChain models for registered pages."""
     actions_chains: list[ActionsChain] = []
     # TODO: once dash.page_registry matches up with model_manager, change this to use purely model_manager.
     # Making the change now leads to problems since there can be Action models defined that aren't used in the
     # dashboard.
     # See https://github.com/mckinsey/vizro/pull/366.
+    # TODO NOW: try to change this
     for registered_page in dash.page_registry.values():
         try:
             page: Page = model_manager[registered_page["module"]]
         except KeyError:
             continue
-        actions_chains.extend(model_manager._get_page_actions_chains(page_id=ModelID(str(page.id))))
+        actions_chains.extend(model_manager._get_models(ActionsChain, page))
     return actions_chains
 
 

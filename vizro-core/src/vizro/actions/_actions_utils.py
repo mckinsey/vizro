@@ -80,15 +80,10 @@ def _apply_filter_controls(
     return data_frame
 
 
-def _get_parent_vizro_model(_underlying_callable_object_id: str) -> VizroBaseModel:
-    from vizro.models import VizroBaseModel
-
-    for _, vizro_base_model in model_manager._items_with_type(VizroBaseModel):
-        if (
-            hasattr(vizro_base_model, "_input_component_id")
-            and vizro_base_model._input_component_id == _underlying_callable_object_id
-        ):
-            return vizro_base_model
+def _get_parent_model(_underlying_callable_object_id: str) -> VizroBaseModel:
+    for model in model_manager._get_models():
+        if hasattr(model, "_input_component_id") and model._input_component_id == _underlying_callable_object_id:
+            return model
     raise KeyError(
         f"No parent Vizro model found for underlying callable object with id: {_underlying_callable_object_id}."
     )
