@@ -20,7 +20,6 @@
 Natalia Kurakina,
 [Leon Nallamuthu](https://github.com/leonnallamuthu),
 [axa99](https://github.com/axa99),
-[Juan Luis Cano Rodríguez](https://github.com/astrojuanlu),
 [Denis Lebedev](https://github.com/DenisLebedevMcK),
 [Qiuyi Chen](https://github.com/Qiuyi-Chen),
 [Elena Fridman](https://github.com/EllenWie),
