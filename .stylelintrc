@@ -1,8 +1,9 @@
 {
   "extends": "stylelint-config-standard",
-  "plugins": ["stylelint-order"],
+  "plugins": ["stylelint-order", "stylelint-csstree-validator"],
   "rules": {
     "order/properties-alphabetical-order": true,
+    "csstree/validator": true,
     "selector-class-pattern": null,
     "custom-property-pattern": null,
     "color-function-notation": "legacy",
