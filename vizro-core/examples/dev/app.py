@@ -830,4 +830,4 @@ app.dash.layout.children.append(
 server = app.dash.server
 
 if __name__ == "__main__":
-    app.run()
+    app.run(port=8050)
