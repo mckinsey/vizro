@@ -11,6 +11,22 @@ See the fragment files in the [changelog.d directory](https://github.com/mckinse
 
 <!-- scriv-insert-here -->
 
+<a id='changelog-0.1.28'></a>
+# 0.1.28 — 2024-11-27
+
+## Removed
+
+- Removed all CSS variables from `variables.css` and `token_names.css`, replacing them with CSS variables from `vizro-bootstrap.min.css`.
+  Refer to [`vizro-bootstrap.min.css](https://github.com/mckinsey/vizro/blob/main/vizro-core/src/vizro/static/css/vizro-bootstrap.min.css) for the updated CSS variables. ([#886](https://github.com/mckinsey/vizro/pull/886))
+
+## Added
+
+- Enable `href` inside `vm.Button`. ([#881](https://github.com/mckinsey/vizro/pull/881))
+
+## Changed
+
+- Replace `dmc.Tabs` with `dbc.Tabs` and change CSS selectors accordingly. ([#895](https://github.com/mckinsey/vizro/pull/895))
+
 <a id='changelog-0.1.27'></a>
 
 # 0.1.27 — 2024-11-14
