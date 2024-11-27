@@ -333,7 +333,7 @@ img#banner {
   flex-flow: column wrap;
   gap: 12px;
   justify-content: flex-start;
-  overflow: hidden; /* to check */
+  overflow: hidden; /* check and remove comment */
 }
 
 .flex-container h4 {
