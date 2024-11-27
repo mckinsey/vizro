@@ -158,7 +158,11 @@ class Filter(VizroBaseModel):
                 Action(
                     id=f"{FILTER_ACTION_PREFIX}_{self.id}",
                     function=_on_page_load(targets=self.targets),  # should have arguments filters, parameters
-                    # targets can go as function arguments or output field of action model - keep here for now
+                    # Would be nice if arguments provided were actually used in the function - can have special
+                    # keywords for filters and parameters.
+                    # targets can go as function arguments or output field of action model - keep as argument of
+                    # function for now. Doesn't really make sense to get from Filter or Parameter model itself or all
+                    # calls to on_page_load look same. But maybe ultimately that's easiest?
                     # Could put filter_function in Filter model or as varargs field in Action
                 )
             ]

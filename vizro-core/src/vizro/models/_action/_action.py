@@ -45,6 +45,7 @@ class Action(VizroBaseModel):
 
     # HERE
     # Need to access through function rather than model for custom actions. So long as have one action model. Think about interact action which does not have parent filter model.
+    # Or have varargs in Action model - more amenable to schema?
     # POPULATE THESE USING function.inputs etc. When? Can't be init/validator as need model_manager. Could be
     # pre_build if no actions created during pre_build. Or needs to be final pre-build or in build
     # Need to pass page or action_id or similar into CapturedActionCallable to calculate all controls or page or
@@ -115,7 +116,8 @@ class Action(VizroBaseModel):
         else:
             callback_outputs = _get_action_callback_mapping(action_id=ModelID(str(self.id)), argument="outputs")
 
-        action_components = _get_action_callback_mapping(action_id=ModelID(str(self.id)), argument="components")
+        # Only export action
+        action_components = self.function.components
 
         return callback_inputs, callback_outputs, action_components
 

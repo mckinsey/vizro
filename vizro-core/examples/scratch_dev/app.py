@@ -5,6 +5,7 @@ import vizro.models as vm
 import vizro.plotly.express as px
 from vizro import Vizro
 from vizro._themes._color_values import COLORS
+from vizro.actions import export_data
 
 pastry = pd.DataFrame(
     {
@@ -41,6 +42,12 @@ page = vm.Page(
                 color_continuous_scale=COLORS["DIVERGING_RED_CYAN"],
             ),
             #            actions=[vm.Action(function=interact(control_id="x"))],
+        ),
+        vm.Button(
+            text="Export data",
+            actions=[
+                vm.Action(function=export_data()),
+            ],
         ),
     ],
     controls=[
