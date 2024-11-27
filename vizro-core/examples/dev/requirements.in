@@ -1,0 +1,4 @@
+# This file is only used if you don't have hatch installed.
+gunicorn
+openpyxl
+vizro==0.1.28
