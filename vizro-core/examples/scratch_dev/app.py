@@ -19,13 +19,8 @@ SPECIES_COLORS = {"setosa": "#00b4ff", "versicolor": "#ff9222", "virginica": "#3
 BAR_CHART_CONF = dict(x="species", color="species", color_discrete_map=SPECIES_COLORS)
 SCATTER_CHART_CONF = dict(x="sepal_length", y="petal_length", color="species", color_discrete_map=SPECIES_COLORS)
 
-# Relevant for the "page_6" only
-FILTER_COLUMN = "species"
-# FILTER_COLUMN = "sepal_length"
-# FILTER_COLUMN = "date_column"
 
-
-def load_from_file(filter_column=FILTER_COLUMN, parametrized_species=None):
+def load_from_file(filter_column=None, parametrized_species=None):
     # Load the full iris dataset
     df = px.data.iris()
     df["date_column"] = pd.date_range(start=pd.to_datetime("2024-01-01"), periods=len(df), freq="D")
@@ -58,7 +53,7 @@ def load_from_file(filter_column=FILTER_COLUMN, parametrized_species=None):
         date_max = pd.to_datetime(data["date_max"])
         df = df[df[filter_column].between(date_min, date_max, inclusive="both")]
     else:
-        raise ValueError("Invalid FILTER_COLUMN")
+        raise ValueError("Invalid filter_column")
 
     if parametrized_species:
         df = df[df["species"].isin(parametrized_species)]
@@ -66,7 +61,6 @@ def load_from_file(filter_column=FILTER_COLUMN, parametrized_species=None):
     return df
 
 
-data_manager["load_from_file"] = load_from_file
 data_manager["load_from_file_species"] = partial(load_from_file, filter_column="species")
 data_manager["load_from_file_sepal_length"] = partial(load_from_file, filter_column="sepal_length")
 data_manager["load_from_file_date_column"] = partial(load_from_file, filter_column="date_column")
@@ -207,7 +201,7 @@ page_5 = vm.Page(
 page_6 = vm.Page(
     title="Page to test things out",
     components=[
-        vm.Graph(id="graph_dynamic", figure=px.bar(data_frame="load_from_file", **BAR_CHART_CONF)),
+        vm.Graph(id="graph_dynamic", figure=px.bar(data_frame="load_from_file_species", **BAR_CHART_CONF)),
         vm.Graph(
             id="graph_static",
             figure=px.scatter(data_frame=px.data.iris(), **SCATTER_CHART_CONF),
@@ -216,7 +210,7 @@ page_6 = vm.Page(
     controls=[
         vm.Filter(
             id="filter_container_id",
-            column=FILTER_COLUMN,
+            column="species",
             targets=["graph_dynamic"],
             # targets=["graph_static"],
             # selector=vm.Dropdown(id="filter_id"),
