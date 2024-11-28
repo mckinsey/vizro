@@ -24,12 +24,16 @@ def diverging_stacked_bar(data_frame: pd.DataFrame, **kwargs) -> go.Figure:
     orientation = fig.data[0].orientation
     x_or_y = "x" if orientation == "h" else "y"
 
-    for trace_idx in range(len(fig.data) // 2):
+    for trace_idx in range(len(fig.data) // 2, len(fig.data)):
         fig.update_traces({f"{x_or_y}axis": f"{x_or_y}2"}, selector=trace_idx)
 
+    fig.update_layout({f"{x_or_y}axis": {"ticksuffix": "%"}})
     fig.update_layout({f"{x_or_y}axis2": fig.layout[f"{x_or_y}axis"]})
     fig.update_layout(
-        {f"{x_or_y}axis": {"autorange": "reversed", "domain": [0, 0.5]}, f"{x_or_y}axis2": {"domain": [0.5, 1]}}
+        {
+            f"{x_or_y}axis": {"domain": [0, 0.5], "range": [100, 0]},
+            f"{x_or_y}axis2": {"domain": [0.5, 1], "range": [0, 100]},
+        }
     )
 
     if orientation == "h":
@@ -63,6 +67,6 @@ fig = diverging_stacked_bar(
     data_frame=pastries,
     x=["Strongly Disagree", "Disagree", "Agree", "Strongly Agree"],
     y="pastry",
-    labels={"value": "Response count", "variable": "Opinion"},
+    labels={"value": "", "variable": "", "pastry": ""},
     title="I would recommend this pastry to my friends",
 )

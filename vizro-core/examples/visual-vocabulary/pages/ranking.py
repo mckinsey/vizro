@@ -2,6 +2,7 @@
 
 import vizro.models as vm
 
+from pages._factories import lollipop_factory
 from pages._pages_utils import PAGE_GRID, make_code_clipboard_from_py_file
 from pages.examples import ordered_bar, ordered_column
 
@@ -85,4 +86,6 @@ ordered_column_page = vm.Page(
 )
 
 
-pages = [ordered_bar_page, ordered_column_page]
+lollipop_page = lollipop_factory("deviation")
+
+pages = [ordered_bar_page, ordered_column_page, lollipop_page]

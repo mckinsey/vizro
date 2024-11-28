@@ -294,6 +294,14 @@ It's essential to understand the relationship between the targeted CSS class or 
 
 ## Common examples
 
+### Make your CSS responsive to theme switches with variables
+To ensure your CSS adapts to theme changes, we recommend using CSS variables (`var`) whenever possible. For a
+comprehensive list of available variable names, refer to the
+[Bootstrap documentation](https://getbootstrap.com/docs/5.3/customize/css-variables/). Note that our
+Bootstrap stylesheet is still under development, so not all Bootstrap variables are currently available.
+Additionally, you can define your own CSS variables, as demonstrated in the example on
+[changing the container background color](#change-the-styling-of-a-container).
+
 ### Turn off page title
 
 See the example above on [hiding the page title on selected pages](#overwrite-css-for-selected-pages).
@@ -358,8 +366,18 @@ To do this, you need to change the container's CSS class. Using the DevTool, as 
     === "custom.css"
 
     ```css
+    /* Assign a variable to the dark and light theme */
+    [data-bs-theme="dark"] {
+        --container-bg-color: #232632;
+    }
+
+    [data-bs-theme="light"] {
+        --container-bg-color: #F5F6F6;
+    }
+
+    /* Use the custom variable var(--container-bg-color) */
     .page-component-container {
-        background: var(--surfaces-bg-card);
+        background: var(--container-bg-color);
         padding: 12px;
     }
     ```

@@ -34,9 +34,7 @@ img[src*="#chart-icon"] {
   position: relative;
 }
 
-.code-clipboard-container .pycafe-link,
-.code-clipboard-container .pycafe-link:focus {
-  line-height: unset;
+.code-clipboard-container .pycafe-link {
   margin-bottom: 12px;
 }
 
@@ -96,7 +94,7 @@ img[src*="#chart-icon"] {
   background: var(--text-primary);
   border-top-left-radius: 8px;
   bottom: 0;
-  color: var(--text-contrast-primary);
+  color: var(--text-primary-inverted);
   display: flex;
   font-size: 0.8rem;
   font-weight: 500;
@@ -109,7 +107,7 @@ img[src*="#chart-icon"] {
 .anchor-container:focus,
 .anchor-container:hover {
   background: var(--text-secondary);
-  color: var(--text-contrast-primary);
+  color: var(--text-primary-inverted);
 }
 
 img#banner {

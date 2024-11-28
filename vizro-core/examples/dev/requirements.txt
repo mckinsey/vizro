@@ -3,13 +3,9 @@
 annotated-types==0.7.0
     # via pydantic
 autoflake==2.3.1
-    # via
-    #   -r requirements.in
-    #   vizro
+    # via vizro
 black==24.4.2
-    # via
-    #   -r requirements.in
-    #   vizro
+    # via vizro
 blinker==1.8.2
     # via flask
 cachelib==0.9.0
@@ -39,6 +35,8 @@ dash-mantine-components==0.12.1
     # via vizro
 dash-table==5.0.0
     # via dash
+et-xmlfile==2.0.0
+    # via openpyxl
 flask==3.0.3
     # via
     #   dash
@@ -53,8 +51,6 @@ importlib-metadata==8.5.0
     # via
     #   dash
     #   flask
-isort==5.13.2
-    # via -r requirements.in
 itsdangerous==2.2.0
     # via flask
 jinja2==3.1.4
@@ -69,6 +65,8 @@ nest-asyncio==1.6.0
     # via dash
 numpy==2.0.2
     # via pandas
+openpyxl==3.1.5
+    # via -r requirements.in
 packaging==24.1
     # via
     #   black
@@ -82,7 +80,6 @@ platformdirs==4.2.2
     # via black
 plotly==5.24.1
     # via
-    #   -r requirements.in
     #   dash
     #   vizro
 pydantic==2.9.2
