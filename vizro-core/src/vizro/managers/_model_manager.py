@@ -5,7 +5,7 @@ from __future__ import annotations
 import random
 import uuid
 from collections.abc import Generator
-from typing import TYPE_CHECKING, NewType, Optional, TypeVar
+from typing import TYPE_CHECKING, NewType, Optional, TypeVar, Union
 
 from vizro.managers._managers_utils import _state_modifier
 
@@ -54,9 +54,12 @@ class ModelManager:
         #  lookup by model ID or more like dictionary?
         yield from self.__models
 
-    def _get_models(self, model_type: type[Model] = None, page: Optional[Model] = None) -> Generator[Model, None, None]:
-        """Iterates through all models of type `model_type` (including subclasses). If `page_id` specified then only
-        give models from that page.
+    def _get_models(
+        self, model_type: Optional[Union[type[Model], tuple[type[Model], ...]]] = None, page: Optional[Page] = None
+    ) -> Generator[Model, None, None]:
+        """Iterates through all models of type `model_type` (including subclasses).
+
+        If `model_type` not given then look at all models. If `page_id` specified then only give models from that page.
         """
         models = self._get_model_children(page) if page is not None else self.__models.values()
 

@@ -1,6 +1,7 @@
 """Contains utilities to create the action_callback_mapping."""
 
-from typing import Any, Callable, Union
+from collections.abc import Iterable
+from typing import Any, Callable, Union, cast
 
 from dash import Output, State, dcc
 
@@ -20,7 +21,7 @@ def _get_matching_actions_by_function(page: Page, action_function: Callable[[Any
     """Gets list of `Actions` on triggered `Page` that match the provided `action_function`."""
     return [
         action
-        for actions_chain in model_manager._get_models(ActionsChain, page)
+        for actions_chain in cast(Iterable[ActionsChain], model_manager._get_models(ActionsChain, page))
         for action in actions_chain.actions
         if action.function._function == action_function
     ]
@@ -31,7 +32,7 @@ def _get_inputs_of_controls(page: Page, control_type: ControlType) -> list[State
     """Gets list of `States` for selected `control_type` of triggered `Page`."""
     return [
         State(component_id=control.selector.id, component_property=control.selector._input_property)
-        for control in model_manager._get_models(control_type, page)
+        for control in cast(Iterable[ControlType], model_manager._get_models(control_type, page))
     ]
 
 
@@ -39,7 +40,7 @@ def _get_action_trigger(action: Action) -> VizroBaseModel:  # type: ignore[retur
     """Gets the model that triggers the action with "action_id"."""
     from vizro.models._action._actions_chain import ActionsChain
 
-    for actions_chain in model_manager._get_models(ActionsChain):
+    for actions_chain in cast(Iterable[ActionsChain], model_manager._get_models(ActionsChain)):
         if action in actions_chain.actions:
             return model_manager[ModelID(str(actions_chain.trigger.component_id))]
 
