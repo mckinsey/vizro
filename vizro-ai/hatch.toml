@@ -30,10 +30,7 @@ dependencies = [
   "pre-commit"
 ]
 installer = "uv"
-
-[envs.default.env-vars]
-UV_PRERELEASE = "allow"
-VIZRO_AI_LOG_LEVEL = "DEBUG"
+env-vars = {VIZRO_AI_LOG_LEVEL = "DEBUG"}
 
 [envs.default.scripts]
 example = "cd examples; python example.py"
