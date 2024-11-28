@@ -219,14 +219,16 @@ It's essential to understand the relationship between the targeted CSS class or 
 
 <!-- vale off -->
 
-```html {title="HTML structure of a `Card`"}
-
+```html title="HTML structure of a card"
 <div class="card">
-    <div id="custom-card">
-        <p>Lorem ipsum dolor sit amet consectetur adipisicing elit.</p>
-    </div>
+ <div id="custom-card">
+  <p>
+   Lorem ipsum dolor sit amet consectetur adipisicing elit.
+  </p>
+ </div>
 </div>
 ```
+
 <!-- vale on -->
 
 - **Main element with `id`:** There is a `<div>` with our `id="custom-card"`.

@@ -223,29 +223,27 @@ An image ALT text offers a description to your image and serves as a text placeh
 
         <img src=https://py.cafe/logo.png alt="PyCafe logo" width="30"><b><a target="_blank" href="https://py.cafe/vizro-official/vizro-placing-images">Run and edit this code in PyCafe</a></b>
 
-
     === "app.yaml"
         ```yaml
         # Still requires a .py to add data to the data manager and parse YAML configuration
         # See from_yaml example
         pages:
-        - components:
-            - text: |
-                ![continent](assets/images/continents/africa.svg)
-    
-                Commodi repudiandae consequuntur voluptatum laborum numquam blanditiis harum quisquam eius sed odit.
-    
-                Fugiat iusto fuga praesentium option, eaque rerum! Provident similique accusantium nemo autem.
-    
-                Obcaecati tenetur iure eius earum ut molestias architecto voluptate aliquam nihil, eveniet aliquid.
-              title: My card with image!
-              type: card
-          title: Placing Images
+          - components:
+              - text: |
+                  ![continent](assets/images/continents/africa.svg)
+
+                  Commodi repudiandae consequuntur voluptatum laborum numquam blanditiis harum quisquam eius sed odit.
+
+                  Fugiat iusto fuga praesentium option, eaque rerum! Provident similique accusantium nemo autem.
+
+                  Obcaecati tenetur iure eius earum ut molestias architecto voluptate aliquam nihil, eveniet aliquid.
+                title: My card with image!
+                type: card
+            title: Placing Images
         ```
+
     === "Result"
-         [![CardImageDefault]][CardImageDefault]
-    
-    [CardImageDefault]: ../../assets/user_guides/components/card_image_default.png
+        [![CardImageDefault]][cardimagedefault]
 
 !!! note
     Note that inserting images using html is by default turned off by the `dcc.Markdown` to prevent users being exposed to cross-site scripting attacks. If you need to turn it on, a custom component would have to be created.
@@ -725,6 +723,7 @@ vm.Page.add_type("controls", vm.Button)
 [buttontext]: ../../assets/user_guides/components/button_text.png
 [card]: ../../assets/user_guides/components/card.png
 [cardicon]: ../../assets/user_guides/components/card_icon.png
+[cardimagedefault]: ../../assets/user_guides/components/card_image_default.png
 [cardimagefloating]: ../../assets/user_guides/components/card_image_floating.png
 [cardimagestyled]: ../../assets/user_guides/components/card_image_styled.png
 [cardtext]: ../../assets/user_guides/components/card_text.png
