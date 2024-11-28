@@ -15,15 +15,6 @@ page = vm.Page(
                     title="Tab I",
                     components=[
                         vm.Graph(
-                            title="Graph I",
-                            figure=px.bar(
-                                gapminder_2007,
-                                x="continent",
-                                y="lifeExp",
-                                color="continent",
-                            ),
-                        ),
-                        vm.Graph(
                             title="Graph II",
                             figure=px.box(
                                 gapminder_2007,
