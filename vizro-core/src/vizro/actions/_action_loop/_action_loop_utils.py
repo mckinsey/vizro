@@ -7,7 +7,6 @@ from typing import TYPE_CHECKING
 import dash
 
 from vizro.managers import model_manager
-from vizro.managers._model_manager import ModelID
 
 if TYPE_CHECKING:
     from vizro.models import Action, Page

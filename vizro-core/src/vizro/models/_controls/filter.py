@@ -17,7 +17,7 @@ from vizro._constants import FILTER_ACTION_PREFIX
 from vizro.actions import _filter
 from vizro.managers import data_manager, model_manager
 from vizro.managers._model_manager import ModelID
-from vizro.models import Action, VizroBaseModel, Graph, AgGrid, Table, Figure
+from vizro.models import Action, AgGrid, Figure, Graph, Table, VizroBaseModel
 from vizro.models._components.form import (
     Checklist,
     DatePicker,

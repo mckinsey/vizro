@@ -7,7 +7,7 @@ from dash import Output, State, dcc
 from vizro.actions import _parameter, filter_interaction
 from vizro.managers import model_manager
 from vizro.managers._model_manager import ModelID
-from vizro.models import Action, Page, Graph, AgGrid, Table, Figure, VizroBaseModel
+from vizro.models import Action, AgGrid, Figure, Graph, Page, Table, VizroBaseModel
 from vizro.models._action._actions_chain import ActionsChain
 from vizro.models._controls import Filter, Parameter
 from vizro.models.types import ControlType

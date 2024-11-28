@@ -5,13 +5,12 @@ from __future__ import annotations
 import random
 import uuid
 from collections.abc import Generator
-from typing import TYPE_CHECKING, NewType, Optional, TypeVar, cast, Union
+from typing import TYPE_CHECKING, NewType, Optional, TypeVar
 
 from vizro.managers._managers_utils import _state_modifier
 
 if TYPE_CHECKING:
-    from vizro.models import VizroBaseModel, Page
-    from vizro.models._action._actions_chain import ActionsChain
+    from vizro.models import Page, VizroBaseModel
 
 
 # As done for Dash components in dash.development.base_component, fixing the random seed is required to make sure that
@@ -57,7 +56,8 @@ class ModelManager:
 
     def _get_models(self, model_type: type[Model] = None, page: Optional[Model] = None) -> Generator[Model, None, None]:
         """Iterates through all models of type `model_type` (including subclasses). If `page_id` specified then only
-        give models from that page."""
+        give models from that page.
+        """
         models = self._get_model_children(page) if page is not None else self.__models.values()
 
         for model in models:

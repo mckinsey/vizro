@@ -15,8 +15,6 @@ from vizro.actions._callback_mapping._callback_mapping_utils import (
 from vizro.actions._filter_action import _filter
 from vizro.actions._on_page_load_action import _on_page_load
 from vizro.actions._parameter_action import _parameter
-from vizro.managers import model_manager
-from vizro.managers._model_manager import ModelID
 from vizro.models import Action
 
 

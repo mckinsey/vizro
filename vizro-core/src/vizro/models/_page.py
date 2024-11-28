@@ -13,8 +13,8 @@ except ImportError:  # pragma: no cov
 from vizro._constants import ON_PAGE_LOAD_ACTION_PREFIX
 from vizro.actions import _on_page_load
 from vizro.managers import model_manager
-from vizro.managers._model_manager import DuplicateIDError, ModelID
-from vizro.models import Action, Layout, VizroBaseModel, Graph, AgGrid, Table, Figure
+from vizro.managers._model_manager import DuplicateIDError
+from vizro.models import Action, AgGrid, Figure, Graph, Layout, Table, VizroBaseModel
 from vizro.models._action._actions_chain import ActionsChain, Trigger
 from vizro.models._layout import set_layout
 from vizro.models._models_utils import _log_call, check_captured_callable, validate_min_length
