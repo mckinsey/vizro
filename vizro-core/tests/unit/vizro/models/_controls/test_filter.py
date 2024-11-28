@@ -445,6 +445,8 @@ class TestPreBuildMethod:
         filter.pre_build()
         assert filter.selector.options == ["Africa", "Europe"]
 
+    # Use lambda to create test_selector only in the test itself rather than in the parameters, so that it's in the
+    # model_manager for the test.
     @pytest.mark.parametrize(
         "filtered_column, selector, filter_function",
         [
@@ -504,6 +506,8 @@ class TestPreBuildMethod:
 class TestFilterBuild:
     """Tests filter build method."""
 
+    # Use lambda to create test_selector only in the test itself rather than in the parameters, so that it's in the
+    # model_manager for the test.
     @pytest.mark.parametrize(
         "test_column,test_selector",
         [

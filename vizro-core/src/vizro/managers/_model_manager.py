@@ -59,7 +59,7 @@ class ModelManager:
     ) -> Generator[Model, None, None]:
         """Iterates through all models of type `model_type` (including subclasses).
 
-        If `model_type` not given then look at all models. If `page_id` specified then only give models from that page.
+        If `model_type` not given then look at all models. If `page` specified then only give models from that page.
         """
         models = self._get_model_children(page) if page is not None else self.__models.values()
 
@@ -67,8 +67,6 @@ class ModelManager:
             if model_type is None or isinstance(model, model_type):
                 yield model
 
-    # TODO: Consider returning with yield
-    # TODO NOW: Make brief comments on how in future it should work to use Page (or maybe Dashboard) as key primitive.
     def _get_model_children(self, model: Model) -> Generator[Model, None, None]:
         from vizro.models import VizroBaseModel
 
@@ -91,7 +89,8 @@ class ModelManager:
 
         # TODO: Add navigation, accordions and other page objects. Won't be needed once have made whole model
         #  manager work better recursively and have better ways to navigate the hierarchy. In pydantic v2 this would use
-        #  model_fields.
+        #  model_fields. Maybe we'd also use Page (or sometimes Dashboard) as the central model for navigating the
+        #  hierarchy rather than it being so generic.
 
     def _get_model_page(self, model: Model) -> Page:  # type: ignore[return]
         """Gets the id of the page containing the model with "model_id"."""

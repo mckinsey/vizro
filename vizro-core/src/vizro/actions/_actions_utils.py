@@ -82,6 +82,8 @@ def _apply_filter_controls(
 
 
 def _get_parent_model(_underlying_callable_object_id: str) -> VizroBaseModel:
+    from vizro.models import VizroBaseModel
+
     for model in cast(Iterable[VizroBaseModel], model_manager._get_models()):
         if hasattr(model, "_input_component_id") and model._input_component_id == _underlying_callable_object_id:
             return model
