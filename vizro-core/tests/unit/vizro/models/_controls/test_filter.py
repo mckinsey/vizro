@@ -436,11 +436,6 @@ class TestFilterInstantiation:
 class TestFilterCall:
     """Test Filter.__call__() method with target_to_data_frame and current_value inputs."""
 
-    # TODO: three options:
-    #  1. enhance this solution a bit
-    #  2. Remove these tests completely
-    #  3. Merge them with the detailed _get_min_max and _get_options tests
-
     def test_filter_call_categorical_valid(self, target_to_data_frame):
         filter = vm.Filter(
             column="column_categorical", targets=["column_categorical_exists_1", "column_categorical_exists_2"]
