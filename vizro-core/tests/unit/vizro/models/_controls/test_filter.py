@@ -53,6 +53,32 @@ def managers_column_only_exists_in_some():
     Vizro._pre_build()
 
 
+@pytest.fixture
+def target_to_data_frame():
+    return {
+        "column_numerical_exists_1": pd.DataFrame(
+            {
+                "column_numerical": [1, 2],
+            }
+        ),
+        "column_numerical_exists_2": pd.DataFrame(
+            {
+                "column_numerical": [2, 3],
+            }
+        ),
+        "column_categorical_exists_1": pd.DataFrame(
+            {
+                "column_categorical": ["a", "b"],
+            }
+        ),
+        "column_categorical_exists_2": pd.DataFrame(
+            {
+                "column_categorical": ["b", "c"],
+            }
+        ),
+    }
+
+
 class TestFilterFunctions:
     @pytest.mark.parametrize(
         "data, value, expected",
@@ -250,9 +276,6 @@ class TestFilterStaticMethods:
             ([["A", "B"], ["B", "C"]], ["A", "B", "C"]),
         ],
     )
-    # AM question: is there any way to make this a bit more "real" and do it by creating a fake page with targets
-    # with data sources, making an actual Filter() object properly and then checking Filter.selector.options?
-    # If it's too complicated then no worries though.
     def test_get_options(self, data_columns, expected):
         targeted_data = pd.DataFrame({f"target_{i}": pd.Series(data) for i, data in enumerate(data_columns)})
         result = Filter._get_options(targeted_data)
@@ -407,6 +430,77 @@ class TestFilterInstantiation:
     def test_check_target_present_invalid(self):
         with pytest.raises(ValueError, match="Target invalid_target not found in model_manager."):
             Filter(column="foo", targets=["invalid_target"])
+
+
+@pytest.mark.usefixtures("managers_column_only_exists_in_some")
+class TestFilterCall:
+    """Test Filter.__call__() method with target_to_data_frame and current_value inputs."""
+
+    # TODO: three options:
+    #  1. enhance this solution a bit
+    #  2. Remove these tests completely
+    #  3. Merge them with the detailed _get_min_max and _get_options tests
+
+    def test_filter_call_categorical_valid(self, target_to_data_frame):
+        filter = vm.Filter(
+            column="column_categorical", targets=["column_categorical_exists_1", "column_categorical_exists_2"]
+        )
+        filter._column_type = "categorical"
+        filter.selector = vm.Dropdown(id="test_selector_id")
+
+        selector_build = filter(target_to_data_frame=target_to_data_frame, current_value=["a", "b"])["test_selector_id"]
+        assert selector_build.options == ["ALL", "a", "b", "c"]
+
+    def test_filter_call_numerical_valid(self, target_to_data_frame):
+        filter = vm.Filter(
+            column="column_numerical", targets=["column_numerical_exists_1", "column_numerical_exists_2"]
+        )
+        filter._column_type = "numerical"
+        filter.selector = vm.RangeSlider(id="test_selector_id")
+
+        selector_build = filter(target_to_data_frame=target_to_data_frame, current_value=[1, 2])["test_selector_id"]
+        assert selector_build.min == 1
+        assert selector_build.max == 3
+
+    def test_filter_call_column_is_changed(self, target_to_data_frame):
+        filter = vm.Filter(
+            column="column_categorical", targets=["column_categorical_exists_1", "column_categorical_exists_2"]
+        )
+        filter._column_type = "numerical"
+        filter.selector = vm.RangeSlider(id="test_selector_id")
+
+        with pytest.raises(
+            ValueError,
+            match="column_categorical has changed type from numerical to categorical. "
+            "A filtered column cannot change type while the dashboard is running.",
+        ):
+            filter(target_to_data_frame=target_to_data_frame, current_value=["a", "b"])
+
+    def test_filter_call_selected_column_not_found_in_target(self):
+        filter = vm.Filter(column="column_categorical", targets=["column_categorical_exists_1"])
+        filter._column_type = "categorical"
+        filter.selector = vm.Dropdown(id="test_selector_id")
+
+        with pytest.raises(
+            ValueError,
+            match="Selected column column_categorical not found in dataframe for column_categorical_exists_1.",
+        ):
+            filter(target_to_data_frame={"column_categorical_exists_1": pd.DataFrame()}, current_value=["a", "b"])
+
+    def test_filter_call_targeted_data_empty(self):
+        filter = vm.Filter(column="column_categorical", targets=["column_categorical_exists_1"])
+        filter._column_type = "categorical"
+        filter.selector = vm.Dropdown(id="test_selector_id")
+
+        with pytest.raises(
+            ValueError,
+            match="Selected column column_categorical does not contain anything in any dataframe "
+            "for column_categorical_exists_1.",
+        ):
+            filter(
+                target_to_data_frame={"column_categorical_exists_1": pd.DataFrame({"column_categorical": []})},
+                current_value=["a", "b"],
+            )
 
 
 class TestPreBuildMethod:
