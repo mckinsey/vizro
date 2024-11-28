@@ -35,7 +35,6 @@ dependencies = [
   "opencv-python",
   "pyhamcrest"
 ]
-env-vars = {UV_PRERELEASE = "allow"}
 installer = "uv"
 
 [envs.default.scripts]

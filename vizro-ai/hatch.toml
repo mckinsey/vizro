@@ -32,7 +32,6 @@ dependencies = [
 installer = "uv"
 
 [envs.default.env-vars]
-UV_PRERELEASE = "allow"
 VIZRO_AI_LOG_LEVEL = "DEBUG"
 
 [envs.default.scripts]
