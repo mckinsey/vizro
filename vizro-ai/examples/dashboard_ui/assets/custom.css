@@ -188,7 +188,7 @@
   background-color: inherit;
   color: var(--text-primary);
   height: 2rem;
-  scale: 90%;
+  transform: scale(0.9);
 }
 
 .dropdown-menu-toggle-class:hover {
@@ -196,7 +196,7 @@
   color: var(--text-primary);
   cursor: pointer;
   height: 2rem;
-  scale: 90%;
+  transform: scale(0.9);
 }
 
 .dropdown-menu-toggle-class.btn-primary:focus:not(
@@ -333,7 +333,7 @@ img#banner {
   flex-flow: column wrap;
   gap: 12px;
   justify-content: flex-start;
-  overflow: hidden; /* to check */
+  overflow: hidden; /* check and remove comment */
 }
 
 .flex-container h4 {
