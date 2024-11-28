@@ -29,8 +29,8 @@ dependencies = [
   "langchain-anthropic",
   "pre-commit"
 ]
-installer = "uv"
 env-vars = {VIZRO_AI_LOG_LEVEL = "DEBUG"}
+installer = "uv"
 
 [envs.default.scripts]
 example = "cd examples; python example.py"
