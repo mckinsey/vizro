@@ -1,14 +1,14 @@
 {
   "extends": "stylelint-config-standard",
-  "plugins": ["stylelint-order", "stylelint-csstree-validator"],
+  "plugins": ["stylelint-order"],
   "rules": {
     "order/properties-alphabetical-order": true,
-    "csstree/validator": true,
     "selector-class-pattern": null,
     "custom-property-pattern": null,
     "color-function-notation": "legacy",
     "alpha-value-notation": "number",
     "color-hex-length": "long",
-    "selector-not-notation": null
+    "selector-not-notation": null,
+    "declaration-property-value-no-unknown": true
   }
 }
