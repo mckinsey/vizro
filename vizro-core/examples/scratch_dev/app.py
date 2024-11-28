@@ -20,7 +20,6 @@ class ControlGroup(vm.VizroBaseModel):
     def build(self):
         return html.Div(
             [html.H4(self.title), html.Hr()] + [control.build() for control in self.controls],
-            className="control_group_container",
         )
 
 
