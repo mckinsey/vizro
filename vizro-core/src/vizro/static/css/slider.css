@@ -5,16 +5,16 @@
 
 .rc-slider-rail,
 .rc-slider-track {
-  background-color: var(--slider-background-color);
+  background-color: var(--slider-rail-bg);
   height: 2px;
 }
 
 .rc-slider-track {
-  background-color: var(--fill-on-active);
+  background-color: var(--fill-active);
 }
 
 .rc-slider-dot {
-  background-color: var(--slider-background-color);
+  background-color: var(--slider-rail-bg);
   border: var(--field-enabled);
   bottom: 0;
   height: 6px;
@@ -22,16 +22,16 @@
 }
 
 .rc-slider-dot-active {
-  background-color: var(--fill-on-active);
+  background-color: var(--fill-active);
 }
 
 .rc-slider-handle,
 .rc-slider-handle:hover,
 .rc-slider-handle-dragging.rc-slider-handle-dragging.rc-slider-handle-dragging,
 .rc-slider-handle-click-focused:focus {
-  background-color: var(--surfaces-bg-01);
-  border: solid 6px var(--fill-on-active);
-  border-color: var(--fill-on-active);
+  background-color: var(--surfaces-bg01);
+  border: solid 6px var(--fill-active);
+  border-color: var(--fill-active);
   border-radius: 100%;
   height: 16px;
   margin: -8px 0 0;
@@ -41,7 +41,7 @@
 
 .rc-slider-handle:hover,
 .rc-slider-handle-dragging.rc-slider-handle-dragging.rc-slider-handle-dragging {
-  border: solid 4px var(--fill-on-active);
+  border: solid 4px var(--fill-active);
   box-shadow: unset;
   cursor: context-menu;
 }
@@ -51,7 +51,7 @@
 }
 
 .rc-slider-handle:active {
-  border: solid 6px var(--fill-on-active);
+  border: solid 6px var(--fill-active);
   box-shadow: unset;
   cursor: grabbing;
   height: 16px;
@@ -61,14 +61,14 @@
 
 .rc-slider-mark-text {
   color: var(--text-secondary);
-  font-size: var(--text-size-01);
-  line-height: var(--text-size-02);
-  margin-top: var(--spacing-01);
+  font-size: 0.75rem;
+  line-height: 0.875rem;
+  margin-top: 0.25rem;
   min-width: 44px;
 }
 
 .rc-slider-mark-text-active {
-  color: var(--fill-on-active);
+  color: var(--fill-active);
 }
 
 .slider-track-with-marks,
@@ -96,7 +96,7 @@ input.dash-input:invalid {
   display: flex;
   flex-direction: row;
   justify-content: space-between;
-  line-height: var(--text-size-03);
+  line-height: 1rem;
 }
 
 .slider-label-input label {
@@ -107,24 +107,24 @@ input.dash-input:invalid {
 .slider-text-input-container {
   display: flex;
   flex-direction: row;
-  gap: var(--spacing-01);
-  margin-bottom: var(--spacing-03);
+  gap: 0.25rem;
+  margin-bottom: 0.75rem;
 }
 
 .slider-text-input-field {
   background-color: transparent;
   color: var(--text-secondary);
-  font-size: var(--text-size-02);
+  font-size: 0.875rem;
   max-width: 80px; /* required for Mozilla */
   padding: 0;
   text-align: center;
   text-decoration: underline;
-  text-decoration-color: var(--border-subtle-alpha-01);
+  text-decoration-color: var(--border-subtleAlpha01);
 }
 
 .slider-text-input-range-separator {
   color: var(--text-secondary);
-  font-size: var(--text-size-02);
+  font-size: 0.875rem;
 }
 
 /* To remove number input spin box */
