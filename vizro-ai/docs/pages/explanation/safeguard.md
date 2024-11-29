@@ -23,6 +23,7 @@ To help to mitigate these risks, we limit the execution of certain modules and f
 
 The lists below are a reflection of the security and functionality we have implemented with Vizro-AI:
 
+<!--vale off-->
 ??? success "Whitelisted Packages"
 
     - `pandas`
@@ -64,6 +65,8 @@ The lists below are a reflection of the security and functionality we have imple
 
     - Various data file formats (such as .csv, .tsv, .xlsx, .json, and so on)
     - Specific methods related to data input/output operations (such as .to_csv, .read_excel, .loadtxt)
+
+<!--vale on-->
 
 ### Safeguard for user environment and input
 
