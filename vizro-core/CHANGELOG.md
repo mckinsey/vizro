@@ -17,7 +17,7 @@ See the fragment files in the [changelog.d directory](https://github.com/mckinse
 
 ## Removed
 
-- Removed all CSS variables from `variables.css` and `token_names.css`, replacing them with CSS variables from `vizro-bootstrap.min.css`. Refer to [\`vizro-bootstrap.min.css](https://github.com/mckinsey/vizro/blob/main/vizro-core/src/vizro/static/css/vizro-bootstrap.min.css) for the updated CSS variables. ([#886](https://github.com/mckinsey/vizro/pull/886))
+- Removed all CSS variables from `variables.css` and `token_names.css`, replacing them with CSS variables from `vizro-bootstrap.min.css`. Refer to [`vizro-bootstrap.min.css`](https://github.com/mckinsey/vizro/blob/main/vizro-core/src/vizro/static/css/vizro-bootstrap.min.css) for the updated CSS variables. ([#886](https://github.com/mckinsey/vizro/pull/886))
 
 ## Added
 
