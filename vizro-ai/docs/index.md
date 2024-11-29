@@ -14,6 +14,7 @@ Even if you are an experienced data practitioner, Vizro-AI optimizes how you cre
 
     ---
 
+FIXME: maybe use two new lines between each
     [:octicons-arrow-right-24: Install Vizro-AI](pages/user-guides/install.md) </br> [:octicons-arrow-right-24: Quickstart chart generation](pages/tutorials/quickstart.md) </br> [:octicons-arrow-right-24: Quickstart dashboard generation](pages/tutorials/quickstart-dashboard.md) </br>
 
 - :fontawesome-solid-keyboard:{ .lg .middle } __Get hands-on__
