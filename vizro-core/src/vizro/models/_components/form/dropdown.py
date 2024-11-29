@@ -66,7 +66,6 @@ class Dropdown(VizroBaseModel):
     title: str = Field("", description="Title to be displayed")
     actions: list[Action] = []
 
-    # A private property that allows dynamically updating components
     # Consider making the _dynamic public later. The same property could also be used for all other components.
     # For example: vm.Graph could have a dynamic that is by default set on True.
     _dynamic: bool = PrivateAttr(False)
