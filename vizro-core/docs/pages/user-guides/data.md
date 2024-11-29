@@ -341,14 +341,14 @@ You cannot pass [nested parameters](parameters.md#nested-parameters) to dynamic 
 
 When a [filter](filters.md) depends on dynamic data and no `selector` is explicitly defined in the `vm.Filter` model, the available selector values update on page refresh to reflect the latest dynamic data. This is called a _dynamic filter_.
 
-The mechanism for dynamic filters, including caching, works exactly like other non-control components such as `vm.Graph`. However, unlike such components, a filter can depend on multiple data sources. If at least one data source of the components in the filter's `targets` is dynamic then the filter is dynamic. Remember that when `targets` is not explicitly specified, a filter applies to all the components on a page that use a DataFrame including `column`.
+The system for updating dynamic filters works exactly like other non-control components such as `vm.Graph`. However, unlike such components, a filter can depend on multiple data sources. If at least one data source of the components in the filter's `targets` is dynamic then the filter is dynamic. Remember that when `targets` is not explicitly specified, a filter applies to all the components on a page that use a DataFrame including `column`.
 
 When the page is refreshed, the behavior of a dynamic filter is as follows:
 
 - The filter's selector updates its available values:
     - For [categorical selectors](selectors.md#categorical-selectors), `options` updates to give all unique values found in `column` across all the data sources of components in `targets`.
     - For [numerical selectors](selectors.md#numerical-selectors), `min` and `max` update to give the overall minimum and maximum values found in `column` across all the data sources of components in `targets`.
-- The value selected on screen by a dashboard user _does not_ change. If the selected value is not present in the new set of available values then it is still selected, but the filtering operation might result in an empty DataFrame.
+- The value selected on screen by a dashboard user _does not_ change. If the selected value is not already present in the new set of available values then the `options` or `min` and `max` are modified to include it. In this case, the filtering operation might result in an empty DataFrame.
 - Even though the values present in a data source can change, the schema should not: `column` should remain present and of the same type in the data sources. The `targets` of the filter and selector type cannot change while the dashboard is running. For example, a `vm.Dropdown` selector cannot turn into `vm.RadioItems`.
 
 For example, let us add two filters to the [dynamic data example](#dynamic-data) above:
