@@ -119,12 +119,12 @@ class Dropdown(VizroBaseModel):
         # TODO-NEXT: Replace this with the "universal Vizro placeholder" component.
         return html.Div(
             children=[
+                html.Legend(children=self.title, className="form-label") if self.title else None,
                 dmc.DateRangePicker(
                     id=self.id,
                     value=self.value,
                     persistence=True,
                     persistence_type="session",
-                    style={"visibility": "hidden"},
                 ),
             ]
         )

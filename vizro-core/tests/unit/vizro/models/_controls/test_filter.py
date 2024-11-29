@@ -866,9 +866,14 @@ class TestFilterBuild:
         filter.pre_build()
 
         result = filter.build()
-        expected = dcc.Loading(id="filter_id", children=test_selector.build())
+        expected = dcc.Loading(
+            id="filter_id",
+            children=test_selector.build(),
+            color="grey",
+            overlay_style={"visibility": "visible"},
+        )
 
-        assert_component_equal(result, expected)
+        assert_component_equal(result, expected, keys_to_strip={"className"})
 
     @pytest.mark.usefixtures("managers_one_page_two_graphs_with_dynamic_data")
     def test_dynamic_filter_build_with_non_dynamic_selectors(self, gapminder_dynamic_first_n_last_n_function):

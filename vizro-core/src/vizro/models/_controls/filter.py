@@ -219,7 +219,27 @@ class Filter(VizroBaseModel):
         # TODO: Align the (dynamic) object's return structure with the figure's components when the Dash bug is fixed.
         #  This means returning an empty "html.Div(id=self.id, className=...)" as a placeholder from Filter.build().
         #  Also, make selector.title visible when the filter is reloading.
-        return dcc.Loading(id=self.id, children=selector_build_obj) if self._dynamic else selector_build_obj
+        if not self._dynamic:
+            return selector_build_obj
+
+        # Temporarily hide the selector and numeric dcc.Input components during the filter reloading process.
+        # Other components, such as the title, remain visible because of the configuration:
+        # overlay_style={"visibility": "visible"} in dcc.Loading.
+        # Note: dcc.Slider and dcc.RangeSlider do not support the "style" property directly,
+        # so the "className" attribute is used to apply custom CSS for visibility control.
+        # Reference for Dash class names: https://dashcheatsheet.pythonanywhere.com/
+        selector_build_obj[self.selector.id].className = "invisible"
+        if f"{self.selector.id}_start_value" in selector_build_obj:
+            selector_build_obj[f"{self.selector.id}_start_value"].className = "d-none"
+        if f"{self.selector.id}_end_value" in selector_build_obj:
+            selector_build_obj[f"{self.selector.id}_end_value"].className = "d-none"
+
+        return dcc.Loading(
+            id=self.id,
+            children=selector_build_obj,
+            color="grey",
+            overlay_style={"visibility": "visible"},
+        )
 
     def _validate_targeted_data(
         self, target_to_data_frame: dict[ModelID, pd.DataFrame], eagerly_raise_column_not_found_error
