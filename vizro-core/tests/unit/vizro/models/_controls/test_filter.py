@@ -438,20 +438,22 @@ class TestFilterCall:
 
     def test_filter_call_categorical_valid(self, target_to_data_frame):
         filter = vm.Filter(
-            column="column_categorical", targets=["column_categorical_exists_1", "column_categorical_exists_2"]
+            column="column_categorical",
+            targets=["column_categorical_exists_1", "column_categorical_exists_2"],
+            selector=vm.Dropdown(id="test_selector_id"),
         )
-        filter._column_type = "categorical"
-        filter.selector = vm.Dropdown(id="test_selector_id")
+        filter.pre_build()
 
         selector_build = filter(target_to_data_frame=target_to_data_frame, current_value=["a", "b"])["test_selector_id"]
         assert selector_build.options == ["ALL", "a", "b", "c"]
 
     def test_filter_call_numerical_valid(self, target_to_data_frame):
         filter = vm.Filter(
-            column="column_numerical", targets=["column_numerical_exists_1", "column_numerical_exists_2"]
+            column="column_numerical",
+            targets=["column_numerical_exists_1", "column_numerical_exists_2"],
+            selector=vm.RangeSlider(id="test_selector_id"),
         )
-        filter._column_type = "numerical"
-        filter.selector = vm.RangeSlider(id="test_selector_id")
+        filter.pre_build()
 
         selector_build = filter(target_to_data_frame=target_to_data_frame, current_value=[1, 2])["test_selector_id"]
         assert selector_build.min == 1
@@ -461,8 +463,9 @@ class TestFilterCall:
         filter = vm.Filter(
             column="column_categorical", targets=["column_categorical_exists_1", "column_categorical_exists_2"]
         )
+        filter.pre_build()
+
         filter._column_type = "numerical"
-        filter.selector = vm.RangeSlider(id="test_selector_id")
 
         with pytest.raises(
             ValueError,
@@ -473,8 +476,7 @@ class TestFilterCall:
 
     def test_filter_call_selected_column_not_found_in_target(self):
         filter = vm.Filter(column="column_categorical", targets=["column_categorical_exists_1"])
-        filter._column_type = "categorical"
-        filter.selector = vm.Dropdown(id="test_selector_id")
+        filter.pre_build()
 
         with pytest.raises(
             ValueError,
@@ -484,8 +486,7 @@ class TestFilterCall:
 
     def test_filter_call_targeted_data_empty(self):
         filter = vm.Filter(column="column_categorical", targets=["column_categorical_exists_1"])
-        filter._column_type = "categorical"
-        filter.selector = vm.Dropdown(id="test_selector_id")
+        filter.pre_build()
 
         with pytest.raises(
             ValueError,
