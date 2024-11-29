@@ -51,7 +51,7 @@ INFO:werkzeug:WARNING: This is a development server. Do not use it in a producti
 ```
 
 !!! warning "In production"
-    As per the above warning message, which is [further explained in the Flask documentation](https://flask.palletsprojects.com/en/3.0.x/deploying/), the Flask development server is intended for use only during local development and **should not** be used when deploying to production. Instead, you should instead use a production-ready solution such as [Gunicorn](#gunicorn).
+    The above warning message is [further explained in the Flask documentation](https://flask.palletsprojects.com/en/3.0.x/deploying/). The Flask development server is intended for use only during local development and **should not** be used when deploying to production. Instead, you should instead use a production-ready solution such as [Gunicorn](#gunicorn).
 
 ### Automatic reloading and debugging
 
@@ -136,7 +136,7 @@ gunicorn app:app --workers 4
 in the command line. For more Gunicorn configuration options, refer to [Gunicorn documentation](https://docs.gunicorn.org/).
 
 !!! warning "In production"
-    If your dashboard uses [dynamic data](data.md#dynamic-data) that can be refreshed while the dashboard is running then you should [configure your data manager cache](data.md#configure-cache) to use a backend that supports multiple processes.
+    If your dashboard uses [dynamic data](data.md#dynamic-data) that can be refreshed while the dashboard is running then you should [configure your data manager cache](data.md#configure-cache) to use a back end that supports multiple processes.
 
 ## Deployment
 

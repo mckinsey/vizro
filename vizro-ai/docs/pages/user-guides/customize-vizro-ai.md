@@ -18,16 +18,16 @@ vizro_ai = VizroAI(model="<chosen model>")
     For the string settings to work, you must supply your API key via environment variables. The relevant variable names to be set are noted in each vendor tab.
 
 === "OpenAI"
-    | Env variable | Name(s)           |
-    | ------------ | ----------------- |
-    | API key      | `OPENAI_API_KEY`  |
-    | Base API URL | `OPENAI_API_BASE` |
+| Environment variable | Name(s)           |
+| -------------------- | ----------------- |
+| API key              | `OPENAI_API_KEY`  |
+| Base API URL         | `OPENAI_API_BASE` |
 
-    To use OpenAI with Vizro-AI, you must have an account with paid-for credits available. None of the free accounts will suffice. [Check the OpenAI models and pricing on their website](https://platform.openai.com/docs/models). Before using a model, please review OpenAI's guidelines on risk mitigation to understand potential model limitations and best practices. [See the OpenAI site for more details on responsible usage](https://platform.openai.com/docs/guides/safety-best-practices).
+To use OpenAI with Vizro-AI, you must have an account with paid-for credits available. None of the free accounts will suffice. [Check the OpenAI models and pricing on their website](https://platform.openai.com/docs/models). Before using a model, please review OpenAI's guidelines on risk mitigation to understand potential model limitations and best practices. [See the OpenAI site for more details on responsible usage](https://platform.openai.com/docs/guides/safety-best-practices).
 
-    - `gpt-4o-mini` **default**
-    - `gpt-4-turbo`
-    - `gpt-4o`
+- `gpt-4o-mini` **default**
+- `gpt-4-turbo`
+- `gpt-4o`
 
 === "Anthropic"
     _Currently works only for `VizroAI.plot` - we are working on making it available for `VizroAI.dashboard`_

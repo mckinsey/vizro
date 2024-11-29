@@ -15,7 +15,7 @@ For more information, refer to the API reference of the selector, or the documen
 - [`RadioItems`][vizro.models.RadioItems] based on [`dcc.RadioItems`](https://dash.plotly.com/dash-core-components/radioitems)
 
 !!! note
-    When configuring the `options` of the categorical selectors, you can either provide:
+    When configuring the `options` of the categorical selectors, you can either give:
 
     - a list of values `options = ['Value A', 'Value B', 'Value C']`
     - or a dictionary of label-value mappings `options=[{'label': 'True', 'value': True}, {'label': 'False', 'value': False}]`
@@ -30,7 +30,7 @@ For more information, refer to the API reference of the selector, or the documen
 - [`RangeSlider`][vizro.models.RangeSlider] based on [`dcc.RangeSlider`](https://dash.plotly.com/dash-core-components/rangeslider)
 
 !!! note
-    When configuring the [`Slider`][vizro.models.Slider] and the [`RangeSlider`][vizro.models.RangeSlider] with float values, and using `step` with an integer value, you may notice unexpected behavior, such as the drag value being outside its indicated marks. To our knowledge, this is a current bug in the underlying [`dcc.Slider`](https://dash.plotly.com/dash-core-components/slider) and [`dcc.RangeSlider`](https://dash.plotly.com/dash-core-components/rangeslider) component, which you can circumvent by adapting the `step` size accordingly.
+    When configuring the [`Slider`][vizro.models.Slider] and the [`RangeSlider`][vizro.models.RangeSlider] with float values, and using `step` with an integer value, you may notice unexpected behavior, such as the drag value being outside its indicated marks. To our knowledge, this is a current bug in the underlying [`dcc.Slider`](https://dash.plotly.com/dash-core-components/slider) and [`dcc.RangeSlider`](https://dash.plotly.com/dash-core-components/rangeslider) component, which you can circumvent by adapting the `step` size as needed.
 
 ## Temporal selectors
 

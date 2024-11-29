@@ -243,7 +243,7 @@ The return value of the custom action function is propagated to the dashboard co
         [![CustomAction2]][customaction2]
 
 !!! warning
-    Note that users of this package are responsible for the content of any custom action function that they write - especially with regard to leaking any sensitive information or exposing to any security threat during implementation. You should always [treat the content of user input as untrusted](https://community.plotly.com/t/writing-secure-dash-apps-community-thread/54619).
+    Note that users of this package are responsible for the content of any custom action function that they write. Take care to avoid leaking any sensitive information or exposing to any security threat during implementation. You should always [treat the content of user input as untrusted](https://community.plotly.com/t/writing-secure-dash-apps-community-thread/54619).
 
 [customaction]: ../../assets/user_guides/custom_actions/clickdata_as_input.png
 [customaction2]: ../../assets/user_guides/custom_actions/custom_action_multiple_return_values.png

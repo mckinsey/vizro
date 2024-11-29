@@ -117,86 +117,86 @@ Now you can use the chain to generate charts or dashboards based on natural lang
 
 !!! example "Generate chart code"
     === "Code"
-        ```py
-        # Load sample data
-        df = px.data.gapminder()
+    ```python
+    # Load sample data
+    df = px.data.gapminder()
 
-        plot_response = chain.invoke("Plot GDP per capita for each continent")
-        print(plot_response[0].content)
-        ```
+    plot_response = chain.invoke("Plot GDP per capita for each continent")
+    print(plot_response[0].content)
+    ```
 
     === "Vizro-AI Generated Code"
-        ```py
-        import plotly.graph_objects as go
-        from vizro.models.types import capture
+    ```python
+    import plotly.graph_objects as go
+    from vizro.models.types import capture
 
-        @capture("graph")
-        def custom_chart(data_frame):
-            continent_gdp = data_frame.groupby("continent")["gdpPercap"].mean().reset_index()
-            fig = go.Figure(
-                data=[go.Bar(x=continent_gdp["continent"], y=continent_gdp["gdpPercap"])]
-            )
-            fig.update_layout(
-                title="GDP per Capita by Continent",
-                xaxis_title="Continent",
-                yaxis_title="GDP per Capita",
-            )
-            return fig
-        ```
+    @capture("graph")
+    def custom_chart(data_frame):
+        continent_gdp = data_frame.groupby("continent")["gdpPercap"].mean().reset_index()
+        fig = go.Figure(
+            data=[go.Bar(x=continent_gdp["continent"], y=continent_gdp["gdpPercap"])]
+        )
+        fig.update_layout(
+            title="GDP per Capita by Continent",
+            xaxis_title="Continent",
+            yaxis_title="GDP per Capita",
+        )
+        return fig
+    ```
 
 !!! example "Generate dashboard code"
     === "Code"
-        ```py
-        dfs = [px.data.gapminder()]
+    ```python
+    dfs = [px.data.gapminder()]
 
-        dashboard_response = chain.invoke("Create a dashboard. This dashboard has a chart showing the correlation between gdpPercap and lifeExp.")
-        print(dashboard_response[0].content)
-        ```
+    dashboard_response = chain.invoke("Create a dashboard. This dashboard has a chart showing the correlation between gdpPercap and lifeExp.")
+    print(dashboard_response[0].content)
+    ```
 
     === "Vizro-AI Generated Code"
-        ```py
-        ############ Imports ##############
-        import vizro.models as vm
-        from vizro.models.types import capture
-        import plotly.graph_objects as go
+    ```py
+    ############ Imports ##############
+    import vizro.models as vm
+    from vizro.models.types import capture
+    import plotly.graph_objects as go
 
 
-        ####### Function definitions ######
-        @capture("graph")
-        def gdp_life_exp_graph(data_frame):
-            fig = go.Figure()
-            fig.add_trace(
-                go.Scatter(x=data_frame["gdpPercap"], y=data_frame["lifeExp"], mode="markers")
-            )
-            fig.update_layout(
-                title="GDP per Capita vs Life Expectancy",
-                xaxis_title="GDP per Capita",
-                yaxis_title="Life Expectancy",
-            )
-            return fig
-
-
-        ####### Data Manager Settings #####
-        #######!!! UNCOMMENT BELOW !!!#####
-        # from vizro.managers import data_manager
-        # data_manager["gdp_life_exp"] = ===> Fill in here <===
-
-
-        ########### Model code ############
-        model = vm.Dashboard(
-            pages=[
-                vm.Page(
-                    components=[
-                        vm.Graph(
-                            id="gdp_life_exp_graph",
-                            figure=gdp_life_exp_graph(data_frame="gdp_life_exp"),
-                        )
-                    ],
-                    title="GDP vs Life Expectancy Correlation",
-                    layout=vm.Layout(grid=[[0]]),
-                    controls=[],
-                )
-            ],
-            title="GDP per Capita vs Life Expectancy",
+    ####### Function definitions ######
+    @capture("graph")
+    def gdp_life_exp_graph(data_frame):
+        fig = go.Figure()
+        fig.add_trace(
+            go.Scatter(x=data_frame["gdpPercap"], y=data_frame["lifeExp"], mode="markers")
         )
-        ```
+        fig.update_layout(
+            title="GDP per Capita vs Life Expectancy",
+            xaxis_title="GDP per Capita",
+            yaxis_title="Life Expectancy",
+        )
+        return fig
+
+
+    ####### Data Manager Settings #####
+    #######!!! UNCOMMENT BELOW !!!#####
+    # from vizro.managers import data_manager
+    # data_manager["gdp_life_exp"] = ===> Fill in here <===
+
+
+    ########### Model code ############
+    model = vm.Dashboard(
+        pages=[
+            vm.Page(
+                components=[
+                    vm.Graph(
+                        id="gdp_life_exp_graph",
+                        figure=gdp_life_exp_graph(data_frame="gdp_life_exp"),
+                    )
+                ],
+                title="GDP vs Life Expectancy Correlation",
+                layout=vm.Layout(grid=[[0]]),
+                controls=[],
+            )
+        ],
+        title="GDP per Capita vs Life Expectancy",
+    )
+    ```

@@ -246,7 +246,7 @@ An image ALT text offers a description to your image and serves as a text placeh
         [![CardImageDefault]][cardimagedefault]
 
 !!! note
-    Note that inserting images using html is by default turned off by the `dcc.Markdown` to prevent users being exposed to cross-site scripting attacks. If you need to turn it on, a custom component would have to be created.
+    Note that inserting images using HTML is by default turned off by the `dcc.Markdown` to prevent users being exposed to cross-site scripting attacks. If you need to turn it on, a custom component would have to be created.
 
 You might notice that the image is quite large. You'll find out how to style images in terms of their position and size in the next section.
 
@@ -626,79 +626,79 @@ The example below demonstrates how to configure a button to export the filtered 
 
 !!! example "Button with action"
     === "app.py"
-        ```{.python pycafe-link}
-        import vizro.models as vm
-        import vizro.plotly.express as px
-        from vizro import Vizro
-        from vizro.actions import export_data
+    ```{.python pycafe-link}
+    import vizro.models as vm
+    import vizro.plotly.express as px
+    from vizro import Vizro
+    from vizro.actions import export_data
 
-        df = px.data.iris()
+    df = px.data.iris()
 
-        page = vm.Page(
-            title="My first page",
-            layout=vm.Layout(grid=[[0], [0], [0], [0], [1]]),
-            components=[
-                vm.Graph(
-                    id="scatter_chart",
-                    figure=px.scatter(
-                        df,
-                        x="sepal_width",
-                        y="sepal_length",
-                        color="species",
-                        size="petal_length",
-                    ),
+    page = vm.Page(
+        title="My first page",
+        layout=vm.Layout(grid=[[0], [0], [0], [0], [1]]),
+        components=[
+            vm.Graph(
+                id="scatter_chart",
+                figure=px.scatter(
+                    df,
+                    x="sepal_width",
+                    y="sepal_length",
+                    color="species",
+                    size="petal_length",
                 ),
-                vm.Button(
-                    text="Export data",
-                    actions=[vm.Action(function=export_data(targets=["scatter_chart"]))],
-                ),
-            ],
-            controls=[vm.Filter(column="species")],
-        )
+            ),
+            vm.Button(
+                text="Export data",
+                actions=[vm.Action(function=export_data(targets=["scatter_chart"]))],
+            ),
+        ],
+        controls=[vm.Filter(column="species")],
+    )
 
-        dashboard = vm.Dashboard(pages=[page])
+    dashboard = vm.Dashboard(pages=[page])
 
-        Vizro().build(dashboard).run()
-        ```
+    Vizro().build(dashboard).run()
+    ```
 
     === "app.yaml"
-        ```yaml
-        # Still requires a .py to add data to the data manager and parse YAML configuration
-        # See from_yaml example
-        pages:
-          - components:
-              - figure:
-                  _target_: scatter
-                  x: sepal_width
-                  y: sepal_length
-                  color: species
-                  size: petal_length
-                  data_frame: iris
-                id: scatter_chart
-                type: graph
-              - type: button
-                text: Export data
-                id: export_data
-                actions:
-                  - function:
-                      _target_: export_data
-                      targets:
-                        - scatter_chart
-            controls:
-              - column: species
-                selector:
-                  title: Species
-                  type: dropdown
-                type: filter
-            layout:
-              grid:
-                - [0]
-                - [0]
-                - [0]
-                - [0]
-                - [1]
-            title: My first page
-        ```
+    ```yaml
+    # Still requires a .py to add data to the data manager and parse YAML configuration
+    # See from_yaml example
+    pages:
+      - components:
+          - figure:
+              _target_: scatter
+              x: sepal_width
+              y: sepal_length
+              color: species
+              size: petal_length
+              data_frame: iris
+            id: scatter_chart
+            type: graph
+          - type: button
+            text: Export data
+            id: export_data
+            actions:
+              - function:
+                  _target_: export_data
+                  targets:
+                    - scatter_chart
+        controls:
+          - column: species
+            selector:
+              title: Species
+              type: dropdown
+            type: filter
+        layout:
+          grid:
+            - [0]
+            - [0]
+            - [0]
+            - [0]
+            - [1]
+        title: My first page
+    ```
 
     === "Result"
         [![Button]][button]

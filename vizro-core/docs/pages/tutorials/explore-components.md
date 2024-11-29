@@ -470,7 +470,7 @@ The code below illustrates a functional dashboard where you can navigate from th
 
 !!! example "Final dashboard"
     === "Code"
-        ```py
+        ```python
         home_page = vm.Page(
             title="Homepage",
             components=[
@@ -498,7 +498,7 @@ The code below illustrates a functional dashboard where you can navigate from th
         )
         ```
 
-        ```py
+        ```python
         dashboard = vm.Dashboard(pages=[home_page, first_page, second_page])
         ```
 
@@ -622,7 +622,7 @@ Congratulations on completing this tutorial! You have acquired the knowledge to 
 
 After completing the tutorial you now have a solid understanding of the main elements of Vizro and how to bring them together to create dynamic and interactive data visualizations.
 
-You can find out more about the Vizro by reading the [components overview page](../user-guides/components.md). To gain more in-depth knowledge about the usage and configuration details of individual controls, check out the guides dedicated to [Filters](../user-guides/filters.md), [Parameters](../user-guides/parameters.md) and [Selectors](../user-guides/selectors.md). If you'd like to understand more about different ways to configure the navigation of your dashboard, head to [Navigation](../user-guides/navigation.md).
+You can find out more about the Vizro by reading the [components overview page](../user-guides/components.md). To gain more in-depth knowledge about the usage and configuration details of individual controls, check out the guides dedicated to [Filters](../user-guides/filters.md), [Parameters](../user-guides/parameters.md), and [Selectors](../user-guides/selectors.md). If you'd like to understand more about different ways to configure the navigation of your dashboard, head to [Navigation](../user-guides/navigation.md).
 
 Vizro doesn't end here, and we only covered the key features, but there is still much more to explore! You can learn:
 

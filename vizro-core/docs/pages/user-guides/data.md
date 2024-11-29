@@ -323,7 +323,7 @@ For example, let us extend the [dynamic data example](#dynamic-data) above to sh
 Parametrized data loading is compatible with [caching](#configure-cache). The cache uses [memoization](https://flask-caching.readthedocs.io/en/latest/#memoization), so that the dynamic data function's arguments are included in the cache key. This means that `load_iris_data(number_of_points=10)` is cached independently of `load_iris_data(number_of_points=20)`.
 
 !!! warning
-    You should always [treat the content of user input as untrusted](https://community.plotly.com/t/writing-secure-dash-apps-community-thread/54619). For example, you should not expose a filepath to load without passing it through a function like [`werkzeug.utils.secure_filename`](https://werkzeug.palletsprojects.com/en/3.0.x/utils/#werkzeug.utils.secure_filename), or you might enable arbitrary access to files on your server.
+    You should always [treat the content of user input as untrusted](https://community.plotly.com/t/writing-secure-dash-apps-community-thread/54619). For example, you should not expose a file path to load without passing it through a function like [`werkzeug.utils.secure_filename`](https://werkzeug.palletsprojects.com/en/3.0.x/utils/#werkzeug.utils.secure_filename), or you might enable arbitrary access to files on your server.
 
 You cannot pass [nested parameters](parameters.md#nested-parameters) to dynamic data. You can only target the top-level arguments of the data loading function, not the nested keys in a dictionary.
 

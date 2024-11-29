@@ -85,7 +85,7 @@ By default, `vizro-ai` automatically loads the `.env` file, by searching the cur
 If you would like to customize the `.env` file location and name, you can manually customize the search to override the default and specify the path and name of a custom `.env` file.
 
 ??? example "How to override the default location of the .`env` file:"
-    ```py
+    ```python
     from dotenv import load_dotenv, find_dotenv
     from pathlib import Path
 

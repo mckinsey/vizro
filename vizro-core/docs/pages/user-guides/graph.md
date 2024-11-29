@@ -10,7 +10,7 @@ To add a [`Graph`][vizro.models.Graph] to your page, do the following:
 1. enter any of the currently available charts of the open source library [`plotly.express`](https://plotly.com/python/plotly-express/) into the `figure` argument
 
 !!! note
-    In order to use the [`plotly.express`](https://plotly.com/python/plotly-express/) chart in a Vizro dashboard, you need to import it as `import vizro.plotly.express as px`. This leaves any of the [`plotly.express`](https://plotly.com/python/plotly-express/) functionality untouched, but allows _direct insertion_ into the [`Graph`][vizro.models.Graph] model _as is_.
+    To use the [`plotly.express`](https://plotly.com/python/plotly-express/) chart in a Vizro dashboard, you need to import it as `import vizro.plotly.express as px`. This leaves any of the [`plotly.express`](https://plotly.com/python/plotly-express/) functionality untouched yet enables _direct insertion_ into the [`Graph`][vizro.models.Graph] model _as is_.
 
     Note also that the `plotly.express` chart needs to have a `data_frame` argument. In case you require a chart without a `data_frame` argument (for example, the [`imshow` chart](https://plotly.com/python/imshow/)), refer to our [guide on custom charts](custom-charts.md).
 
@@ -72,14 +72,14 @@ For more details, refer to our [user guide on custom chart](custom-charts.md) an
 
 ## Add title, header, and footer
 
-The [`Graph`][vizro.models.Graph] accepts a `title`, `header` and `footer` argument. This is useful for providing context to the data being displayed, or for adding a description of the data.
+The [`Graph`][vizro.models.Graph] accepts a `title`, `header` and `footer` argument. This is useful for context on the data being displayed, or for adding a description of the data.
 
 - **title**: Displayed as an [H3 header](https://dash.plotly.com/dash-html-components/h3), useful for summarizing the main topic or insight of the component.
 - **header**: Accepts markdown text, ideal for extra descriptions, subtitles, or detailed data insights.
 - **footer**: Accepts markdown text, commonly used for citing data sources, providing information on the last update, or adding disclaimers.
 
 !!! note
-    Although you can directly provide a `title` to the Plotly Express chart, we recommend using `Graph.title` for proper alignment with other components on the screen.
+    Although you can directly give a `title` to the Plotly Express chart, we recommend using `Graph.title` for proper alignment with other components on the screen.
 
 !!! example "Formatted Graph"
     === "app.py"

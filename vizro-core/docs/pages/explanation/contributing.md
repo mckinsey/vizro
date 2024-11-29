@@ -90,7 +90,7 @@ Examples are run with the following settings:
 `hatch run lint` checks and fixes code quality and formatting. This is included in CI checks. All linting and associated dependencies are controlled by [pre-commit](https://pre-commit.com/) hooks. We use the [pre-commit.ci](https://pre-commit.ci/) to automatically fix all the linting checks that we can when a PR is pushed. Other linting failures (such as `mypy`) need manual intervention from the developer.
 
 !!! note
-    The first time you run `hatch run lint` it may take a couple of minutes, since pre-commit needs to setup linting environments. Subsequent runs reuse these environments and are much faster.
+    The first time you run `hatch run lint` it may take a couple of minutes, since pre-commit needs to setup linting environments. Further runs reuse these environments and are much faster.
 
 `hatch run lint` runs the pre-commit hooks on all (not only staged) files. You can run an individual hook, for example `mypy`, on all files by running `hatch run lint mypy`.
 
@@ -105,7 +105,7 @@ The format of our changelog is based on [Keep a Changelog](https://keepachangelo
 Run `hatch run changelog:add` to create a changelog fragment and then uncomment the relevant section(s). If you are uncertain about what to add or whether to add anything at all, refer to [Keep a Changelog](https://keepachangelog.com/en/1.0.0/). The rule of thumb is that if Vizro users would be affected in any way then the changes should be described in the changelog.
 
 !!! note
-    Changes that do not affect source code do not need a changelog fragment. This facilitates simple modifications to documentation [made directly on GitHub](https://docs.github.com/en/repositories/working-with-files/managing-files/editing-files) or with the [github.dev](https://docs.github.com/en/codespaces/the-githubdev-web-based-editor), where no terminal is available to run `hatch changelog:add`. Any changes to source code require a changelog fragment to be generated. If your changes do not require a changelog entry then you still need to generate the fragment but can leave it all commented out.
+    Changes that do not affect source code do not need a changelog fragment. This simplifies modifications to documentation [made directly on GitHub](https://docs.github.com/en/repositories/working-with-files/managing-files/editing-files) or within the [github.dev](https://docs.github.com/en/codespaces/the-githubdev-web-based-editor), where no terminal is available to run `hatch changelog:add`. Any changes to source code require a changelog fragment to be generated. If your changes do not require a changelog entry then you still need to generate the fragment but can leave it all commented out.
 
 ### `hatch run test-unit`
 
