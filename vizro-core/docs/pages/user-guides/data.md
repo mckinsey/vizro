@@ -179,7 +179,7 @@ Since dynamic data sources must always be added to the data manager and referenc
 
 ### Configure cache
 
-By default, a dynamic data function executes every time the dashboard is refreshed. Data loading is batched so that a dynamic data function that supplies multiple graphs on the same page only executes _once_ on page refresh. Even with this batching, if loading your data is still a slow operation, your dashboard performance may suffer.
+By default, a dynamic data function executes every time the dashboard is refreshed. Data loading is batched so that a dynamic data function that supplies multiple graphs on the same page only executes _once_ per page refresh. Even with this batching, if loading your data is a slow operation, your dashboard performance may suffer.
 
 The Vizro data manager has a server-side caching mechanism to help solve this. Vizro's cache uses [Flask-Caching](https://flask-caching.readthedocs.io/en/latest/), which supports a number of possible cache backends and [configuration options](https://flask-caching.readthedocs.io/en/latest/#configuring-flask-caching). By default, the cache is turned off.
 
