@@ -22,9 +22,9 @@ The below sections are guides on how to use pre-defined action functions.
 
 To enable downloading data, you can add the [`export_data`][vizro.actions.export_data] action function to the [`Button`][vizro.models.Button] component. Hence, as a result, when a dashboard user now clicks the button, all data on the page will be downloaded.
 
-
 !!! example "`export_data`"
     === "app.py"
+
     ```{.python pycafe-link}
     import vizro.models as vm
     import vizro.plotly.express as px
@@ -59,6 +59,7 @@ To enable downloading data, you can add the [`export_data`][vizro.actions.export
     ```
 
     === "app.yaml"
+
     ```yaml
     # Still requires a .py to add data to the data manager and parse YAML configuration
     # See yaml_version example
