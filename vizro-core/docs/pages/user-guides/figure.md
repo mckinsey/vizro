@@ -40,6 +40,7 @@ To add a `Figure` to your page:
 
 !!! example "Use existing figure functions"
     === "app.py"
+
     ```{.python pycafe-link}
     import vizro.models as vm
     import vizro.plotly.express as px
@@ -71,6 +72,7 @@ To add a `Figure` to your page:
     ```
 
     === "app.yaml"
+
     ```yaml
     # Still requires a .py to add data to the data manager and parse YAML configuration
     # See from_yaml example
@@ -110,6 +112,7 @@ As described in the [API reference](../API-reference/figure-callables.md) and il
 
 !!! example "KPI card variations"
     === "app.py"
+
     ```{.python pycafe-link}
     import pandas as pd
     import vizro.models as vm

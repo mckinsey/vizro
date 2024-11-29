@@ -626,6 +626,7 @@ The example below demonstrates how to configure a button to export the filtered 
 
 !!! example "Button with action"
     === "app.py"
+
     ```{.python pycafe-link}
     import vizro.models as vm
     import vizro.plotly.express as px
@@ -662,6 +663,7 @@ The example below demonstrates how to configure a button to export the filtered 
     ```
 
     === "app.yaml"
+
     ```yaml
     # Still requires a .py to add data to the data manager and parse YAML configuration
     # See from_yaml example

@@ -34,7 +34,6 @@ The `catalog` variable may have been created in a number of different ways:
 The full code for these different cases is given below.
 
 !!! example "Import a Kedro Data Catalog into the Vizro data manager"
-    
     === "app.py (Kedro project path)"
         ```python
         from vizro.integrations import kedro as kedro_integration
