@@ -25,7 +25,7 @@ Uncomment the section that is right (remove the HTML comment wrapper).
 
 ### Changed
 
-- Replace `dmc.Switch` with `dbc.Switch` and change CSS selectors accordingly. ([#1](https://github.com/mckinsey/vizro/pull/1))
+- Replace `dmc.Switch` with `dbc.Switch` and change CSS selectors accordingly. ([#907](https://github.com/mckinsey/vizro/pull/907))
 
 <!--
 ### Deprecated
