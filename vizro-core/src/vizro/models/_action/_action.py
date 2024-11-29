@@ -92,20 +92,11 @@ class Action(VizroBaseModel):
         """
         callback_inputs: Union[list[State], dict[str, State]]
         if self.inputs:
-            callback_inputs = [State(*input.split(".")) for input in self.inputs] + [self.function.inputs]
-        else:
+            callback_inputs = [State(*input.split(".")) for input in self.inputs]
+        elif isinstance(self.function, CapturedActionCallable):
             callback_inputs = self.function.inputs
 
         callback_outputs: Union[list[Output], dict[str, Output]]
-
-        # GOOD IDEA:
-        # MAYBE BEST TO BUILD THIS INTO CapturedActionCallable itself?! Similarly for special treatment of inputs.
-        # AND MAKE captured("action") produce CapturedActionCallable so can use it for those too.
-        # Just like parameters, filters are special input arguments, targets is special too and extracted and
-        # used in particular way.
-        # Note for export_data, targets means something else though - it's not output component!
-        # Still need way to override outputs manually ideally for full flexibility. So having export_data as
-        # CapturedActionCallable is good.
         if self.outputs:
             callback_outputs = [Output(*output.split("."), allow_duplicate=True) for output in self.outputs]
 
@@ -114,7 +105,15 @@ class Action(VizroBaseModel):
             # single element list (e.g. ["text"]).
             if len(callback_outputs) == 1:
                 callback_outputs = callback_outputs[0]
-        else:
+        elif isinstance(self.function, CapturedActionCallable):
+            # GOOD IDEA:
+            # MAYBE BEST TO BUILD THIS INTO CapturedActionCallable itself?! Similarly for special treatment of inputs.
+            # AND MAKE captured("action") produce CapturedActionCallable so can use it for those too.
+            # Just like parameters, filters are special input arguments, targets is special too and extracted and
+            # used in particular way.
+            # Note for export_data, targets means something else though - it's not output component!
+            # Still need way to override outputs manually ideally for full flexibility. So having export_data as
+            # CapturedActionCallable is good.
             callback_outputs = self.function.outputs
 
         # Only export action but make sure always defined (apart from maybe for custom actions)
@@ -135,8 +134,7 @@ class Action(VizroBaseModel):
         if isinstance(inputs, Mapping):
             return_value = self.function(**inputs)
         else:
-            kwargs = inputs[-1]
-            return_value = self.function(**dict(zip(self.function._arguments, inputs[:-1])), **kwargs)
+            return_value = self.function(*inputs)
 
         # Delegate all handling of the return_value and mapping to appropriate outputs to Dash - we don't modify
         # return_value to reshape it in any way. All we do is do some error checking to raise clearer error messages.

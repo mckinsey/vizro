@@ -279,13 +279,13 @@ class CapturedCallable:
 
 
 class CapturedActionCallable(CapturedCallable, abc.ABC):
-    def __init__(self, pure_function=None, *args, **kwargs):
-        super().__init__(pure_function or self.pure_function, *args, **kwargs)
+    def __init__(self, *args, **kwargs):
+        super().__init__(self.pure_function, *args, **kwargs)
         self._action_id = None
         self._mode = "action"
 
     @staticmethod
-    # @abc.abstractmethod
+    @abc.abstractmethod
     def pure_function():
         pass
 
@@ -491,7 +491,7 @@ class capture:
             @functools.wraps(func)
             def wrapped(*args, **kwargs):
                 # Note this is basically the same as partial(func, *args, **kwargs)
-                captured_callable: CapturedActionCallable = CapturedActionCallable(func, *args, **kwargs)
+                captured_callable: CapturedCallable = CapturedCallable(func, *args, **kwargs)
                 captured_callable._mode = self._mode
                 captured_callable._model_example = self._model_example
                 return captured_callable
