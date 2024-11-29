@@ -24,6 +24,7 @@ To help to mitigate these risks, we limit the execution of certain modules and f
 The lists below are a reflection of the security and functionality we have implemented with Vizro-AI:
 
 <!--vale off-->
+
 ??? success "Whitelisted Packages"
     - `pandas`
     - `numpy`
