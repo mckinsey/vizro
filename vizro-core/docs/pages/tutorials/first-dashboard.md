@@ -1,4 +1,4 @@
-# A first dashboard
+# A FFFFirst dashboard
 
 There is no setup needed for your first dashboard, thanks to the amazing [PyCafe](https://py.cafe/).
 
