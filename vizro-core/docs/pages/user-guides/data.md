@@ -271,7 +271,7 @@ data_manager["no_expire_data"].timeout = 0
 You can give arguments to your dynamic data loading function that can be modified from the dashboard. For example:
 
 - To load different versions of the same data.
-- To handle big data you can use an argument that controls the amount of data that is loaded. This effectively pre-filters data before it reaches the Vizro dashboard.
+- To handle large datasets you can use an argument that controls the amount of data that is loaded. This effectively pre-filters data before it reaches the Vizro dashboard.
 
 In general, a parametrized dynamic data source should always return a pandas DataFrame with a fixed schema (column names and types). This ensures that page components and controls continue to work as expected when the parameter is changed on screen.
 
