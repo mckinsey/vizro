@@ -341,7 +341,7 @@ You cannot pass [nested parameters](parameters.md#nested-parameters) to dynamic 
 
 When a [filter](filters.md) depends on dynamic data and no `selector` is explicitly defined in the `vm.Filter` model, the available selector values update on page refresh to reflect the latest dynamic data. This is called a _dynamic filter_.
 
-The system for updating dynamic filters works exactly like other non-control components such as `vm.Graph`. However, unlike such components, a filter can depend on multiple data sources. If at least one data source of the components in the filter's `targets` is dynamic then the filter is dynamic. Remember that when `targets` is not explicitly specified, a filter applies to all the components on a page that use a DataFrame including `column`.
+The mechanism behind updating dynamic filters works exactly like other non-control components such as `vm.Graph`. However, unlike such components, a filter can depend on multiple data sources. If at least one data source of the components in the filter's `targets` is dynamic then the filter is dynamic. Remember that when `targets` is not explicitly specified, a filter applies to all the components on a page that use a DataFrame including `column`.
 
 When the page is refreshed, the behavior of a dynamic filter is as follows:
 
