@@ -410,7 +410,7 @@ controls = [
 When Vizro initially builds a filter that depends on parametrized dynamic data loading, data is loaded using the default argument values. This data is used to:
 
 * perform initial validation
-* check which data sources contain the specified `column` (unless `targets` is explicitly specified) and 
+* check which data sources contain the specified `column` (unless `targets` is explicitly specified) and
 * determine the type of selector to use (unless `selector` is explicitly specified).
 
 !!! note
