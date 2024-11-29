@@ -389,7 +389,7 @@ For example, let us add two filters to the [dynamic data example](#dynamic-data)
     2. This filter implicitly controls the dynamic data source `"iris"`, which supplies the `data_frame` to the targeted `vm.Graph`. On page refresh, Vizro reloads this data, finds all the unique values in the `"species"` column and sets the categorical selector's `options` accordingly.
     3. Similarly, on page refresh, Vizro finds the minimum and maximum values of the `"sepal_length"` column in the reloaded data and sets new `min` and `max` values for the numerical selector accordingly.
 
-If you have a filter that depends on dynamic data but do not want the available values to change when the dynamic data changes then you should manually specify the `selector`'s `options` field (categorical selector) or `min` and `max` fields (numerical selector). In the above example, this could be achieved as follows:
+Consider a filter that depends on dynamic data, where you do **not** want the available values to change when the dynamic data changes. You should manually specify the `selector`'s `options` field (categorical selector) or `min` and `max` fields (numerical selector). In the above example, this could be achieved as follows:
 
 ```python title="Override selector options to make a dynamic filter static"
 controls = [
