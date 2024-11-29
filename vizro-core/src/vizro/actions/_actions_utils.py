@@ -288,3 +288,6 @@ def _get_modified_page_figures(
     # {target: data_frame for target, data_frame in unfiltered_data.items() if target in self.targets}
 
     return outputs
+
+
+# RENAME THIS SO IT'S CLEAR IT'S ONLY USED BY APPLY_CONTROLS. Just put into _on_page_load_action.py.

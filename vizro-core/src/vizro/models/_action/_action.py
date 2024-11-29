@@ -94,25 +94,7 @@ class Action(VizroBaseModel):
         if self.inputs:
             callback_inputs = [State(*input.split(".")) for input in self.inputs]
         elif isinstance(self.function, CapturedActionCallable):
-            # Do this just for built in actions for now but would be available to custom ones in future
-            # For now just always provide arguments; in future might want to do
-            # inspect.signature(self.function.pure_function).parameters to see if they're actually requested.
-            # Like how poydantic handles arguments for field_validator.
-            from vizro.actions._callback_mapping._callback_mapping_utils import (
-                _get_inputs_of_controls,
-                _get_inputs_of_figure_interactions,
-            )
-            from vizro.models import Filter, Parameter
-
-            page_id = model_manager._get_model_page_id(model_id=self.id)
-            page = model_manager[page_id]
-            # Should really use List[State] to match self.inputs or change that to match this
-            callback_inputs = {
-                "filters": _get_inputs_of_controls(page=page, control_type=Filter),
-                "parameters": _get_inputs_of_controls(page=page, control_type=Parameter),
-                # TODO: Probably need to adjust other inputs to follow the same structure list[dict[str, State]]
-                "filter_interaction": _get_inputs_of_figure_interactions(page=page),
-            }
+            callback_inputs = self.function.inputs
 
         callback_outputs: Union[list[Output], dict[str, Output]]
         if self.outputs:
@@ -124,42 +106,18 @@ class Action(VizroBaseModel):
             if len(callback_outputs) == 1:
                 callback_outputs = callback_outputs[0]
         elif isinstance(self.function, CapturedActionCallable):
+            # GOOD IDEA:
+            # MAYBE BEST TO BUILD THIS INTO CapturedActionCallable itself?! Similarly for special treatment of inputs.
+            # AND MAKE captured("action") produce CapturedActionCallable so can use it for those too.
             # Just like parameters, filters are special input arguments, targets is special too and extracted and
             # used in particular way.
             # Note for export_data, targets means something else though - it's not output component!
             # Still need way to override outputs manually ideally for full flexibility. So having export_data as
             # CapturedActionCallable is good.
-            if hasattr(self.function, "outputs"):
-                # export_data
-                callback_outputs = self.function.outputs
-            elif "targets" in self.function._arguments:
-                # opl. This could live here or in opl.outputs depending on whether we make it available
-                # to all actions. Assuming special export_data.outputs is still needed.
-                # TBD where this bit of code goes and how to get targets for filter and opl vs. parameter
+            callback_outputs = self.function.outputs
 
-                targets = list(self.function["targets"])
-                output_targets = []
-                for target in targets:
-                    if "." in target:
-                        component, property = target.split(".", 1)
-                        output_targets.append(component)
-                    else:
-                        output_targets.append(target)
-
-                callback_outputs: dict[ModelID, Output] = {
-                    target: Output(
-                        component_id=target,
-                        component_property=model_manager[target]._output_component_property,
-                        allow_duplicate=True,
-                    )
-                    for target in output_targets
-                }
-            else:
-                # not sure - probably not allowed? Use Action.outputs?
-                pass
-
-        # Only export action
-        action_components = self.function.components
+        # Only export action but make sure always defined (apart from maybe for custom actions)
+        action_components = getattr(self.function, "components", [])
 
         return callback_inputs, callback_outputs, action_components
 

@@ -54,3 +54,7 @@ def _get_inputs_of_figure_interactions(page: Page) -> list[dict[str, State]]:
             )
         inputs.append(triggered_model._filter_interaction_input)
     return inputs
+
+
+# THIS UTILS FILE IS ONLY ASSOCIATED WITH ACTIONS NOW SO SHOULD GO THERE
+# This assumes that we can supply inputs automatically to all callbacks that don't have inputs defined manually.

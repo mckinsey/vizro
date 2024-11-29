@@ -8,10 +8,13 @@ import functools
 import importlib
 import inspect
 from contextlib import contextmanager
+from dash import Output
 from datetime import date
 from typing import Any, Literal, Protocol, Union, runtime_checkable
 
 import plotly.io as pio
+
+from vizro.managers import model_manager
 
 try:
     from pydantic.v1 import Field, StrictBool
@@ -283,17 +286,61 @@ class CapturedActionCallable(CapturedCallable, abc.ABC):
 
     @staticmethod
     @abc.abstractmethod
-    # Maybe need to have self so can access inputs/outputs/components?
-    # If not then, keep as staticmethod.
-    # Call it just function, no underscores.
     def pure_function():
         pass
 
-    # Should these also be abstract? Probably not.
-    # Should they be class properties? Maybe.
+    @property
+    def outputs(self):
+        # opl. This could live here or in opl.outputs depending on whether we make it available
+        # to all actions. Assuming special export_data.outputs is still needed.
+        # TBD where this bit of code goes and how to get targets for filter and opl vs. parameter
+
+        targets = list(self["targets"])
+        output_targets = []
+        for target in targets:
+            if "." in target:
+                component, property = target.split(".", 1)
+                output_targets.append(component)
+            else:
+                output_targets.append(target)
+
+        from vizro.managers._model_manager import ModelID
+
+        callback_outputs: dict[ModelID, Output] = {
+            target: Output(
+                component_id=target,
+                component_property=model_manager[target]._output_component_property,
+                allow_duplicate=True,
+            )
+            for target in output_targets
+        }
+        return callback_outputs
+
+    @property
+    def inputs(self):
+        # For now just always provide arguments; in future might want to do
+        # inspect.signature(self.function.pure_function).parameters to see if they're actually requested.
+        # Like how pydantic handles arguments for field_validator.
+        # If @capture("action") for user action produces CapturedActionCallable then must check if argument is demanded.
+        from vizro.actions._callback_mapping._callback_mapping_utils import (
+            _get_inputs_of_controls,
+            _get_inputs_of_figure_interactions,
+        )
+        from vizro.models import Filter, Parameter
+
+        page_id = model_manager._get_model_page_id(model_id=self._action_id)
+        page = model_manager[page_id]
+        # Should really use List[State] to match self.inputs or change that to match this
+        callback_inputs = {
+            "filters": _get_inputs_of_controls(page=page, control_type=Filter),
+            "parameters": _get_inputs_of_controls(page=page, control_type=Parameter),
+            # TODO: Probably need to adjust other inputs to follow the same structure list[dict[str, State]]
+            "filter_interaction": _get_inputs_of_figure_interactions(page=page),
+        }
+        return callback_inputs
+
     @property
     def components(self):
-        # Do we really need this? Should it return an empty list?
         return []
 
 
