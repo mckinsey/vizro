@@ -8,6 +8,7 @@ Vizro is a toolkit for creating modular data visualization applications.
 
     ---
 
+FIXME: maybe use two new lines between each
     [:octicons-arrow-right-24: Quickstart tutorial](pages/tutorials/first-dashboard.md) </br> [:octicons-arrow-right-24: Install Vizro](pages/user-guides/install.md)
 
 - :fontawesome-solid-keyboard:{ .lg .middle } __Vizro features__
