@@ -2,7 +2,6 @@ from pathlib import Path
 
 import dash
 import dash_bootstrap_components as dbc
-import dash_mantine_components as dmc
 import plotly.io as pio
 import pytest
 from asserts import assert_component_equal
@@ -245,12 +244,11 @@ class TestDashboardPreBuild:
         expected = html.Div(
             [
                 html.Div(
-                    children=dmc.Switch(
-                        id="theme_selector",
-                        checked=False,
+                    children=dbc.Switch(
+                        id="theme-selector",
+                        value=False,
                         persistence=True,
                         persistence_type="session",
-                        className="toggle-switch",
                     ),
                     id="settings",
                 ),
