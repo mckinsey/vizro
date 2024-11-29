@@ -97,6 +97,8 @@ class Page(VizroBaseModel):
     @_log_call
     def pre_build(self):
         targets = model_manager._get_page_model_ids_with_figure(page_id=ModelID(str(self.id)))
+
+        # TODO NEXT: make work generically for control group
         targets.extend(control.id for control in self.controls if getattr(control, "_dynamic", False))
 
         if targets:
