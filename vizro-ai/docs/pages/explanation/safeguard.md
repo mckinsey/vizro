@@ -24,7 +24,6 @@ To help to mitigate these risks, we limit the execution of certain modules and f
 The lists below are a reflection of the security and functionality we have implemented with Vizro-AI:
 
 ??? success "Whitelisted Packages"
-
     - `pandas`
     - `numpy`
     - `vizro`
@@ -36,7 +35,6 @@ The lists below are a reflection of the security and functionality we have imple
     - `sklearn`
 
 ??? success "Whitelisted Builtins"
-
     - abs
     - len
     - max
@@ -56,12 +54,10 @@ The lists below are a reflection of the security and functionality we have imple
     - tuple
 
 ??? failure "Redlisted Class Methods"
-
     - subclasses
     - builtins
 
 ??? failure "Redlisted Data Handling Methods and Formats"
-
     - Various data file formats (such as .csv, .tsv, .xlsx, .json, and so on)
     - Specific methods related to data input/output operations (such as .to_csv, .read_excel, .loadtxt)
 
