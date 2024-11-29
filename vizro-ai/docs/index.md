@@ -14,25 +14,49 @@ Even if you are an experienced data practitioner, Vizro-AI optimizes how you cre
 
     ---
 
-FIXME: maybe use two new lines between each [:octicons-arrow-right-24: Install Vizro-AI](pages/user-guides/install.md) </br> [:octicons-arrow-right-24: Quickstart chart generation](pages/tutorials/quickstart.md) </br> [:octicons-arrow-right-24: Quickstart dashboard generation](pages/tutorials/quickstart-dashboard.md) </br>
+[:octicons-arrow-right-24: Install Vizro-AI](pages/user-guides/install.md) </br> 
+
+
+[:octicons-arrow-right-24: Quickstart chart generation](pages/tutorials/quickstart.md) </br> 
+
+
+[:octicons-arrow-right-24: Quickstart dashboard generation](pages/tutorials/quickstart-dashboard.md) </br>
 
 - :fontawesome-solid-keyboard:{ .lg .middle } __Get hands-on__
 
     ---
 
-    [:octicons-arrow-right-24: How to run Vizro-AI](pages/user-guides/run-vizro-ai.md)</br> [:octicons-arrow-right-24: Model usage](pages/user-guides/customize-vizro-ai.md)</br> [:octicons-arrow-right-24: Create advanced charts](pages/user-guides/create-advanced-charts.md)</br> [:octicons-arrow-right-24: Add charts to a dashboard](pages/user-guides/add-generated-chart-usecase.md)</br> [:octicons-arrow-right-24: Retrieve code for a generated dashboard](pages/user-guides/run-vizro-ai-dashboard.md)
+[:octicons-arrow-right-24: How to run Vizro-AI](pages/user-guides/run-vizro-ai.md)</br>
+    
+    
+[:octicons-arrow-right-24: Model usage](pages/user-guides/customize-vizro-ai.md)</br>
+
+
+[:octicons-arrow-right-24: Create advanced charts](pages/user-guides/create-advanced-charts.md)</br>
+
+
+[:octicons-arrow-right-24: Add charts to a dashboard](pages/user-guides/add-generated-chart-usecase.md)</br>
+
+
+[:octicons-arrow-right-24: Retrieve code for a generated dashboard](pages/user-guides/run-vizro-ai-dashboard.md)
 
 - :material-format-font:{ .lg .middle } __Find out more__
 
     ---
 
-    [:octicons-arrow-right-24: FAQs](pages/explanation/faq.md) </br> [:octicons-arrow-right-24: Safeguard dynamic code execution](pages/explanation/safeguard.md) </br> [:octicons-arrow-right-24: Guidelines for use of LLMs](pages/explanation/safety-in-vizro-ai.md)
+[:octicons-arrow-right-24: FAQs](pages/explanation/faq.md) </br>
+
+
+[:octicons-arrow-right-24: Safeguard dynamic code execution](pages/explanation/safeguard.md) </br>
+
+
+[:octicons-arrow-right-24: Guidelines for use of LLMs](pages/explanation/safety-in-vizro-ai.md)
 
 - :fontawesome-solid-chart-column:{ .lg .middle } __Vizro__
 
     ---
 
-    [:octicons-arrow-right-24: Vizro documentation](https://vizro.readthedocs.io/)
+[:octicons-arrow-right-24: Vizro documentation](https://vizro.readthedocs.io/)
 
 </div>
 
