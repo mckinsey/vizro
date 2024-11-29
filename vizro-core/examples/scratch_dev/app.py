@@ -48,7 +48,7 @@ page1 = vm.Page(
 
 
 @capture("action")
-def my_custom_action(points_data: dict):
+def my_custom_action(points_data: dict, **kwargs):
     """Custom action."""
     clicked_point = points_data["points"][0]
     x, y = clicked_point["x"], clicked_point["y"]
