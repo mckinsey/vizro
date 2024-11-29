@@ -8,7 +8,7 @@ This guide offers insights into different ways of running `VizroAI.dashboard` to
 ## Run Vizro-AI dashboard
 
 !!! example "Generated dashboard"
-    === "Code"
+    === "Prompt"
         ```py
         import vizro.plotly.express as px
         from vizro_ai import VizroAI
@@ -34,11 +34,8 @@ This guide offers insights into different ways of running `VizroAI.dashboard` to
         ```
 
     === "Result"
-        \[!\[VizroAIDashboardPage1\]\]\[VizroAIDashboardPage1\]
+    ![VizroAIDashboardPage1](../../assets/user_guides/dashboard/dashboard2_page1.png)
 
-```
-[VizroAIDashboardPage1]: ../../assets/user_guides/dashboard/dashboard2_page1.png
-```
 
 This triggers the dashboard building process. Once Vizro-AI finishes the dashboard generation process, you can now launch the dashboard.
 
@@ -54,7 +51,7 @@ Like the `VizroAI.plot` method, in order to produce more comprehensive output we
 - If set to `True`, it returns a class (a Pydantic model) containing both the dashboard object and the code string used to generate it.
 
 !!! example "View dashboard code"
-    === "Code"
+    === "Prompt"
         ```py
         import vizro.plotly.express as px
         from vizro_ai import VizroAI
@@ -80,7 +77,7 @@ Like the `VizroAI.plot` method, in order to produce more comprehensive output we
         print(result.code)
         ```
 
-    === "Result"
+    === "Resulting code"
         ```py
         ######## Module Imports ##########
         from vizro import Vizro
