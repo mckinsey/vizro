@@ -2,18 +2,25 @@
 
 from typing import Any
 
-from dash import Output, ctx
+from dash import State, ctx
 
 from vizro.actions._actions_utils import _get_modified_page_figures
-from vizro.managers import model_manager
 from vizro.managers._model_manager import ModelID
 from vizro.models.types import CapturedActionCallable
 
 
 class _on_page_load(CapturedActionCallable):
+    # RENAME apply_controls or similar
     @staticmethod
-    def pure_function(targets: list[ModelID], **inputs: dict[str, Any]) -> dict[ModelID, Any]:
+    def pure_function(
+        targets: list[ModelID],  # Gets provided upfront in on_page_load(targets=...). Always there - need to populate
+        # it even if empty in advance or otherwise don't know Outputs in advance.
+        filters: list[State],  # Don't need to provide this until do actual on_page_load()()
+        parameters: list[State],  # Don't need to provide this until do actual on_page_load()()
+        filter_interaction: list[dict[str, State]],  # Don't need to provide this until do actual on_page_load()()
+    ) -> dict[ModelID, Any]:
         # AM. Might we want to use self in here?
+        # filters, paramters, filter_interaction currently ignored but will be used in future
 
         return _get_modified_page_figures(
             ctds_filter=ctx.args_grouping["external"]["filters"],
@@ -22,46 +29,5 @@ class _on_page_load(CapturedActionCallable):
             targets=targets,
         )
 
-    @property
-    def inputs(self):
-        from vizro.actions import filter_interaction
-        from vizro.actions._callback_mapping._callback_mapping_utils import (
-            _get_inputs_of_controls,
-            _get_inputs_of_figure_interactions,
-        )
-        from vizro.models import Filter, Parameter
 
-        page_id = model_manager._get_model_page_id(model_id=self._action_id)
-        page = model_manager[page_id]
-        # use List[State]
-        action_input_mapping = {
-            "filters": _get_inputs_of_controls(page=page, control_type=Filter),
-            "parameters": _get_inputs_of_controls(page=page, control_type=Parameter),
-            # TODO: Probably need to adjust other inputs to follow the same structure list[dict[str, State]]
-            "filter_interaction": _get_inputs_of_figure_interactions(
-                page=page, action_function=filter_interaction.__wrapped__
-            ),
-        }
-        return action_input_mapping
-
-    @property
-    def outputs(self) -> dict[ModelID, Output]:
-        # TBD where this bit of code goes and how to get targets for filter and opl vs. parameter
-
-        targets = list(self["targets"])
-        output_targets = []
-        for target in targets:
-            if "." in target:
-                component, property = target.split(".", 1)
-                output_targets.append(component)
-            else:
-                output_targets.append(target)
-
-        return {
-            target: Output(
-                component_id=target,
-                component_property=model_manager[target]._output_component_property,
-                allow_duplicate=True,
-            )
-            for target in output_targets
-        }
+# NOW THIS IS BACK TO A PURE FUNCTION, NO NEED FOR CLASS. But probably keep as class for now.

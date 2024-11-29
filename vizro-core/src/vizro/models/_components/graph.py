@@ -7,6 +7,8 @@ from dash import ClientsideFunction, Input, Output, State, clientside_callback, 
 from dash.exceptions import MissingCallbackContextException
 from plotly import graph_objects as go
 
+from vizro.actions import filter_interaction
+
 try:
     from pydantic.v1 import Field, PrivateAttr, validator
 except ImportError:  # pragma: no cov
@@ -130,7 +132,8 @@ class Graph(VizroBaseModel):
         customdata = ctd_click_data["value"]["points"][0]["customdata"]
 
         for action in source_graph_actions:
-            if action.function._function.__name__ != "filter_interaction" or target not in action.function["targets"]:
+            # THIS isinstance LOOKS MUCH BETTER - do it same way in actions_utils
+            if not isinstance(action.function, filter_interaction) or target not in action.function["targets"]:
                 continue
             for custom_data_idx, column in enumerate(custom_data_columns):
                 data_frame = data_frame[data_frame[column].isin([customdata[custom_data_idx]])]

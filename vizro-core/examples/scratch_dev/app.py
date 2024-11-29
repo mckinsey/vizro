@@ -1,66 +1,53 @@
-"""Dev app to try things out."""
-
-import pandas as pd
 import vizro.models as vm
 import vizro.plotly.express as px
 from vizro import Vizro
-from vizro._themes._color_values import COLORS
-from vizro.actions import export_data
+from vizro.actions import filter_interaction, export_data
 
-pastry = pd.DataFrame(
-    {
-        "pastry": [
-            "Scones",
-            "Bagels",
-            "Muffins",
-            "Cakes",
-            "Donuts",
-            "Cookies",
-            "Croissants",
-            "Eclairs",
-            "Brownies",
-            "Tarts",
-            "Macarons",
-            "Pies",
-        ],
-        "Profit Ratio": [-0.10, -0.15, -0.05, 0.10, 0.05, 0.20, 0.15, -0.08, 0.08, -0.12, 0.02, -0.07],
-    }
-)
+df_gapminder = px.data.gapminder().query("year == 2007")
 
-
-page = vm.Page(
-    title="Charts UI",
-    components=[
-        vm.Graph(
-            id="graph",
-            figure=px.bar(
-                pastry.sort_values("Profit Ratio"),
-                orientation="h",
-                x="Profit Ratio",
-                y="pastry",
-                color="Profit Ratio",
-                color_continuous_scale=COLORS["DIVERGING_RED_CYAN"],
-            ),
-            #            actions=[vm.Action(function=interact(control_id="x"))],
-        ),
-        vm.Button(
-            text="Export data",
-            actions=[
-                vm.Action(function=export_data()),
+dashboard = vm.Dashboard(
+    pages=[
+        vm.Page(
+            title="Filter interaction",
+            components=[
+                vm.Graph(
+                    figure=px.box(
+                        df_gapminder,
+                        x="continent",
+                        y="lifeExp",
+                        color="continent",
+                        custom_data=["continent"],
+                    ),
+                    actions=[vm.Action(function=filter_interaction(targets=["scatter_relation_2007"]))],
+                ),
+                vm.Graph(
+                    id="scatter_relation_2007",
+                    figure=px.scatter(
+                        df_gapminder,
+                        x="gdpPercap",
+                        y="lifeExp",
+                        size="pop",
+                        color="continent",
+                    ),
+                ),
+                vm.Button(
+                    text="Export data",
+                    actions=[
+                        vm.Action(function=export_data()),
+                    ],
+                ),
+            ],
+            controls=[
+                vm.Filter(column="continent"),
+                vm.Parameter(
+                    id="parameter_x",
+                    targets=["scatter_relation_2007.color"],
+                    selector=vm.RadioItems(options=["continent", "pop"], id="x"),
+                ),
             ],
         ),
-    ],
-    controls=[
-        vm.Filter(column="pastry"),
-        vm.Parameter(
-            id="parameter_x",
-            targets=["graph.color"],
-            selector=vm.RadioItems(options=["Profit Ratio", "pastry"], id="x"),
-        ),
-    ],
+    ]
 )
-
-dashboard = vm.Dashboard(pages=[page])
 
 if __name__ == "__main__":
     Vizro().build(dashboard).run()

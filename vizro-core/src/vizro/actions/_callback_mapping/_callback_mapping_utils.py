@@ -1,14 +1,13 @@
 """Contains utilities to create the action_callback_mapping."""
 
-from typing import Any, Callable, Union
+from typing import Any, Callable
 
-from dash import Output, State, dcc
+from dash import State
 
 from vizro.actions import filter_interaction
 from vizro.managers import model_manager
 from vizro.managers._model_manager import ModelID
 from vizro.models import Action, Page
-from vizro.models._controls import Filter, Parameter
 from vizro.models.types import ControlType
 
 
@@ -37,12 +36,10 @@ def _get_inputs_of_controls(page: Page, control_type: ControlType) -> list[State
     ]
 
 
-def _get_inputs_of_figure_interactions(
-    page: Page, action_function: Callable[[Any], dict[str, Any]]
-) -> list[dict[str, State]]:
+def _get_inputs_of_figure_interactions(page: Page) -> list[dict[str, State]]:
     """Gets list of `States` for selected chart interaction `action_function` of triggered `Page`."""
     figure_interactions_on_page = _get_matching_actions_by_function(
-        page_id=ModelID(str(page.id)), action_function=action_function
+        page_id=ModelID(str(page.id)), action_function=filter_interaction.pure_function
     )
     inputs = []
     for action in figure_interactions_on_page:
@@ -57,44 +54,3 @@ def _get_inputs_of_figure_interactions(
             )
         inputs.append(triggered_model._filter_interaction_input)
     return inputs
-
-
-# TODO: Refactor this and util functions once we implement "_get_input_property" method in VizroBaseModel models
-def _get_action_callback_inputs(action_id: ModelID) -> dict[str, list[Union[State, dict[str, State]]]]:
-    """Creates mapping of pre-defined action names and a list of `States`."""
-    page: Page = model_manager[model_manager._get_model_page_id(model_id=action_id)]
-
-    action_input_mapping = {
-        "filters": _get_inputs_of_controls(page=page, control_type=Filter),
-        "parameters": _get_inputs_of_controls(page=page, control_type=Parameter),
-        # TODO: Probably need to adjust other inputs to follow the same structure list[dict[str, State]]
-        "filter_interaction": _get_inputs_of_figure_interactions(
-            page=page, action_function=filter_interaction.__wrapped__
-        ),
-    }
-    return action_input_mapping
-
-
-# CALLBACK OUTPUTS --------------
-def _get_action_callback_outputs(action_id: ModelID) -> dict[str, Output]:
-    """Creates mapping of target names and their `Output`."""
-    action_function = model_manager[action_id].function._function
-
-    # The right solution for mypy here is to not e.g. define new attributes on the base but instead to get mypy to
-    # recognize that model_manager[action_id] is of type Action and hence has the function attribute.
-    # Ideally model_manager.__getitem__ would handle this itself, possibly with suitable use of a cast.
-    # If not then we can do the cast to Action at the point of consumption here to avoid needing mypy ignores.
-
-    try:
-        targets = model_manager[action_id].function["targets"]
-    except KeyError:
-        targets = []
-
-    return {
-        target: Output(
-            component_id=target,
-            component_property=model_manager[target]._output_component_property,
-            allow_duplicate=True,
-        )
-        for target in targets
-    }

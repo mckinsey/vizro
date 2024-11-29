@@ -291,15 +291,6 @@ class CapturedActionCallable(CapturedCallable, abc.ABC):
 
     # Should these also be abstract? Probably not.
     # Should they be class properties? Maybe.
-    # Will you ever need self in them? Maybe.
-    @property
-    def inputs(self):
-        return []
-
-    @property
-    def outputs(self):
-        return []
-
     @property
     def components(self):
         # Do we really need this? Should it return an empty list?

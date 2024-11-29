@@ -11,7 +11,7 @@ try:
 except ImportError:  # pragma: no cov
     from pydantic import Field, validator
 
-from vizro.managers._model_manager import ModelID
+from vizro.managers._model_manager import ModelID, model_manager
 from vizro.models import VizroBaseModel
 from vizro.models._models_utils import _log_call
 from vizro.models.types import CapturedActionCallable, CapturedCallable
@@ -90,17 +90,29 @@ class Action(VizroBaseModel):
         Returns: List of required components (e.g. dcc.Download) for the Action model added to the `Dashboard`
             container. Those components represent the return value of the Action build method.
         """
-        from vizro.actions._callback_mapping._get_action_callback_mapping import _get_action_callback_mapping
-
         callback_inputs: Union[list[State], dict[str, State]]
         if self.inputs:
             callback_inputs = [State(*input.split(".")) for input in self.inputs]
         elif isinstance(self.function, CapturedActionCallable):
-            callback_inputs = self.function.inputs
+            # Do this just for built in actions for now but would be available to custom ones in future
+            # For now just always provide arguments; in future might want to do
+            # inspect.signature(self.function.pure_function).parameters to see if they're actually requested.
+            # Like how poydantic handles arguments for field_validator.
+            from vizro.actions._callback_mapping._callback_mapping_utils import (
+                _get_inputs_of_controls,
+                _get_inputs_of_figure_interactions,
+            )
+            from vizro.models import Filter, Parameter
 
-            # callback_inputs = self.inputs
-        else:
-            callback_inputs = _get_action_callback_mapping(action_id=ModelID(str(self.id)), argument="inputs")
+            page_id = model_manager._get_model_page_id(model_id=self.id)
+            page = model_manager[page_id]
+            # Should really use List[State] to match self.inputs or change that to match this
+            callback_inputs = {
+                "filters": _get_inputs_of_controls(page=page, control_type=Filter),
+                "parameters": _get_inputs_of_controls(page=page, control_type=Parameter),
+                # TODO: Probably need to adjust other inputs to follow the same structure list[dict[str, State]]
+                "filter_interaction": _get_inputs_of_figure_interactions(page=page),
+            }
 
         callback_outputs: Union[list[Output], dict[str, Output]]
         if self.outputs:
@@ -112,9 +124,39 @@ class Action(VizroBaseModel):
             if len(callback_outputs) == 1:
                 callback_outputs = callback_outputs[0]
         elif isinstance(self.function, CapturedActionCallable):
-            callback_outputs = self.function.outputs
-        else:
-            callback_outputs = _get_action_callback_mapping(action_id=ModelID(str(self.id)), argument="outputs")
+            # Just like parameters, filters are special input arguments, targets is special too and extracted and
+            # used in particular way.
+            # Note for export_data, targets means something else though - it's not output component!
+            # Still need way to override outputs manually ideally for full flexibility. So having export_data as
+            # CapturedActionCallable is good.
+            if hasattr(self.function, "outputs"):
+                # export_data
+                callback_outputs = self.function.outputs
+            elif "targets" in self.function._arguments:
+                # opl. This could live here or in opl.outputs depending on whether we make it available
+                # to all actions. Assuming special export_data.outputs is still needed.
+                # TBD where this bit of code goes and how to get targets for filter and opl vs. parameter
+
+                targets = list(self.function["targets"])
+                output_targets = []
+                for target in targets:
+                    if "." in target:
+                        component, property = target.split(".", 1)
+                        output_targets.append(component)
+                    else:
+                        output_targets.append(target)
+
+                callback_outputs: dict[ModelID, Output] = {
+                    target: Output(
+                        component_id=target,
+                        component_property=model_manager[target]._output_component_property,
+                        allow_duplicate=True,
+                    )
+                    for target in output_targets
+                }
+            else:
+                # not sure - probably not allowed? Use Action.outputs?
+                pass
 
         # Only export action
         action_components = self.function.components

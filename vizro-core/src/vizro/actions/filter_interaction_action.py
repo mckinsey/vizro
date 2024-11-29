@@ -1,36 +1,30 @@
 """Pre-defined action function "filter_interaction" to be reused in `action` parameter of VizroBaseModels."""
 
-from typing import Any, Optional
+from typing import Any
 
-from dash import ctx
+from dash import State, ctx
 
 from vizro.actions._actions_utils import _get_modified_page_figures
 from vizro.managers._model_manager import ModelID
-from vizro.models.types import capture
+from vizro.models.types import CapturedActionCallable
 
 
-@capture("action")
-def filter_interaction(targets: Optional[list[ModelID]] = None, **inputs: dict[str, Any]) -> dict[ModelID, Any]:
-    """Filters targeted charts/components on page by clicking on data points or table cells of the source chart.
+class filter_interaction(CapturedActionCallable):
+    # identical to opl
+    @staticmethod
+    def pure_function(
+        targets: list[ModelID],  # Gets provided upfront in on_page_load(targets=...). Always there - need to populate
+        # it even if empty in advance or otherwise don't know Outputs in advance.
+        filters: list[State],  # Don't need to provide this until do actual on_page_load()()
+        parameters: list[State],  # Don't need to provide this until do actual on_page_load()()
+        filter_interaction: list[dict[str, State]],  # Don't need to provide this until do actual on_page_load()()
+    ) -> dict[ModelID, Any]:
+        # AM. Might we want to use self in here?
+        # filters, paramters, filter_interaction currently ignored but will be used in future
 
-    To set up filtering on specific columns of the target graph(s), include these columns in the 'custom_data'
-    parameter of the source graph e.g. `px.bar(..., custom_data=["species", "sepal_length"])`.
-    If the filter interaction source is a table e.g. `vm.Table(..., actions=[filter_interaction])`,
-    then the table doesn't need to have a 'custom_data' parameter set up.
-
-    Args:
-        targets: List of target component ids to filter by chart interaction. If missing, will target all valid
-            components on page. Defaults to `None`.
-        inputs: Dict mapping action function names with their inputs e.g.
-            inputs = {'filters': [], 'parameters': ['gdpPercap'], 'filter_interaction': []}
-
-    Returns:
-        Dict mapping target component ids to modified charts/components e.g. {'my_scatter': Figure({})}
-
-    """
-    return _get_modified_page_figures(
-        ctds_filter=ctx.args_grouping["external"]["filters"],
-        ctds_filter_interaction=ctx.args_grouping["external"]["filter_interaction"],
-        ctds_parameters=ctx.args_grouping["external"]["parameters"],
-        targets=targets or [],
-    )
+        return _get_modified_page_figures(
+            ctds_filter=ctx.args_grouping["external"]["filters"],
+            ctds_filter_interaction=ctx.args_grouping["external"]["filter_interaction"],
+            ctds_parameters=ctx.args_grouping["external"]["parameters"],
+            targets=targets,
+        )

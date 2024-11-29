@@ -2,19 +2,23 @@
 
 from typing import Any, Optional
 
-from dash import ctx, dcc, Output
+from dash import Output, State, ctx, dcc
 from typing_extensions import Literal
 
 from vizro.actions._actions_utils import _apply_filters, _get_unfiltered_data
 from vizro.managers import model_manager
 from vizro.managers._model_manager import ModelID
-from vizro.models.types import capture, CapturedActionCallable
+from vizro.models.types import CapturedActionCallable
 
 
 class export_data(CapturedActionCallable):
     @staticmethod
     def pure_function(
-        targets: Optional[list[ModelID]] = None, file_format: Literal["csv", "xlsx"] = "csv", **inputs: dict[str, Any]
+        filters: list[State],  # Don't need to provide this until do actual on_page_load()()
+        parameters: list[State],  # Don't need to provide this until do actual on_page_load()()
+        filter_interaction: list[dict[str, State]],  # Don't need to provide this until do actual on_page_load()()
+        targets: Optional[list[ModelID]] = None,
+        file_format: Literal["csv", "xlsx"] = "csv",
     ) -> dict[str, Any]:
         """Exports visible data of target charts/components on page after being triggered.
 
@@ -60,29 +64,6 @@ class export_data(CapturedActionCallable):
         return outputs
 
     @property
-    def inputs(self):
-        # SAME AS OPL
-        from vizro.actions import filter_interaction
-        from vizro.actions._callback_mapping._callback_mapping_utils import (
-            _get_inputs_of_controls,
-            _get_inputs_of_figure_interactions,
-        )
-        from vizro.models import Filter, Parameter
-
-        page_id = model_manager._get_model_page_id(model_id=self._action_id)
-        page = model_manager[page_id]
-        # use List[State]
-        action_input_mapping = {
-            "filters": _get_inputs_of_controls(page=page, control_type=Filter),
-            "parameters": _get_inputs_of_controls(page=page, control_type=Parameter),
-            # TODO: Probably need to adjust other inputs to follow the same structure list[dict[str, State]]
-            "filter_interaction": _get_inputs_of_figure_interactions(
-                page=page, action_function=filter_interaction.__wrapped__
-            ),
-        }
-        return action_input_mapping
-
-    @property
     def outputs(self) -> dict[ModelID, Output]:
         # DIFFERENT FROM OPL
         """Gets mapping of relevant output target name and `Outputs` for `export_data` action."""
@@ -126,3 +107,14 @@ class export_data(CapturedActionCallable):
             dcc.Download(id={"type": "download_dataframe", "action_id": self._action_id, "target_id": target})
             for target in targets
         ]
+
+
+# Maybe in future build single dcc.Download component into page. Still need way of signifying
+# that it should be the output component for export_data action - could do as @capture("action", download=True)
+# or similar. Or special function argument def export_data(__download__=True). Treated like targets.
+# Argument should not need to be provided manually by user though.
+# Feels like CapturedActionCallable class gives most space for future expansion but it also more complex.
+# Maybe do it this way for now, then add more actions, then come back to adding special behaviour so we can remove
+# classes. At this point revisit whether each action should have separate model.
+# THIS IS GOOD IDEA.
+# So might as well put outputs back in opl for now.
