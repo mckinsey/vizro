@@ -39,6 +39,7 @@ exceptions:
   - LESS
   - LLDB
   - LLM
+  - MIT
   - NET
   - NOTE
   - NVDA
