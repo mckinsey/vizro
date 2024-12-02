@@ -92,12 +92,21 @@ class Action(VizroBaseModel):
         """
         callback_inputs: Union[list[State], dict[str, State]]
         if self.inputs:
+            # EVENTUALLY WANT TO TRY AND PUT THIS INTO self.function.inputs as well
+            # Look at signature of inputs to work out what to take - either built in things like parameters OR
+            # "component_id.component_property" etc. Key thing is it should be easier than Dash.
             callback_inputs = [State(*input.split(".")) for input in self.inputs]
         elif isinstance(self.function, CapturedActionCallable):
             callback_inputs = self.function.inputs
 
         callback_outputs: Union[list[Output], dict[str, Output]]
         if self.outputs:
+            # SIMILARLY TO INPUTS, WOULD BE AUTOMATICALLY POPULATED USING targets argument of function and other such
+            # keyword arguments.
+            # If want to do it manually to override this then yser needs  write CapturedActionCallable class. Or
+            # could have small helpers on @capture("action", something=...). Or other methods I put on Bear for giving
+            # outputs of model. But key thing is it's not Action.outputs any more.
+            # If not possible then using Action.outputs is ok though even if don't use Action.inputs.
             callback_outputs = [Output(*output.split("."), allow_duplicate=True) for output in self.outputs]
 
             # Need to use a single Output in the @callback decorator rather than a single element list for the case

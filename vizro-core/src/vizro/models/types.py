@@ -322,6 +322,7 @@ class CapturedActionCallable(CapturedCallable, abc.ABC):
         # inspect.signature(self.function.pure_function).parameters to see if they're actually requested.
         # Like how pydantic handles arguments for field_validator.
         # If @capture("action") for user action produces CapturedActionCallable then must check if argument is demanded.
+        # Could have logic here that looks at arguments in signature of pure_function to see what inputs should be
         from vizro.actions._callback_mapping._callback_mapping_utils import (
             _get_inputs_of_controls,
             _get_inputs_of_figure_interactions,
