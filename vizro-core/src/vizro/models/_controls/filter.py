@@ -1,6 +1,7 @@
 from __future__ import annotations
 
-from typing import Any, Literal, Union, cast, Iterable
+from collections.abc import Iterable
+from typing import Any, Literal, Union, cast
 
 import pandas as pd
 from dash import dcc

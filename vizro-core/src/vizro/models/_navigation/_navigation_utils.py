@@ -1,7 +1,8 @@
 from __future__ import annotations
 
 import itertools
-from typing import TypedDict, cast, Iterable
+from collections.abc import Iterable
+from typing import TypedDict, cast
 
 import dash_bootstrap_components as dbc
 
