@@ -66,11 +66,7 @@ def _apply_filter_controls(
         selector_actions = _get_component_actions(model_manager[ctd["id"]])
 
         for action in selector_actions:
-            if (
-                action.function._function.__name__ != "_filter"
-                or target not in action.function["targets"]
-                or ALL_OPTION in selector_value
-            ):
+            if target not in action.function["targets"] or ALL_OPTION in selector_value:
                 continue
 
             _filter_function = action.function["filter_function"]
@@ -198,9 +194,6 @@ def _get_parametrized_config(
         parameter_value = _validate_selector_value_none(parameter_value)
 
         for action in _get_component_actions(selector):
-            if action.function._function.__name__ != "_parameter":
-                continue
-
             for dot_separated_string in _get_target_dot_separated_strings(
                 action.function["targets"], target, data_frame
             ):
