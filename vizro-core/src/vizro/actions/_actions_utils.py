@@ -66,7 +66,10 @@ def _apply_filter_controls(
         selector_value = selector_value if isinstance(selector_value, list) else [selector_value]
         selector_actions = _get_component_actions(model_manager[ctd["id"]])
 
+        # Need to find parent filter now, which we didn't before.
+        # Still no need to check that this is a filter though - we know it must be.
         for action in selector_actions:
+            # Petar qn: WHY THIS CHECK NEEDED AT ALL?
             if (
                 # not isinstance(model_manager[ctd["id"], Dropdown]
                 # not isinstance(action.function, _filter)
