@@ -1,7 +1,7 @@
 from __future__ import annotations
 
 from collections.abc import Mapping
-from typing import Any, Optional, TypedDict, Union
+from typing import Any, Optional, TypedDict, Union, cast, Iterable
 
 from dash import dcc, html
 
@@ -13,8 +13,8 @@ except ImportError:  # pragma: no cov
 from vizro._constants import ON_PAGE_LOAD_ACTION_PREFIX
 from vizro.actions import _on_page_load
 from vizro.managers import model_manager
-from vizro.managers._model_manager import DuplicateIDError, FIGURE_MODELS
-from vizro.models import Action, AgGrid, Figure, Graph, Layout, Table, VizroBaseModel
+from vizro.managers._model_manager import FIGURE_MODELS, DuplicateIDError
+from vizro.models import Action, Layout, VizroBaseModel, Filter
 from vizro.models._action._actions_chain import ActionsChain, Trigger
 from vizro.models._layout import set_layout
 from vizro.models._models_utils import _log_call, check_captured_callable, validate_min_length
@@ -96,10 +96,13 @@ class Page(VizroBaseModel):
 
     @_log_call
     def pre_build(self):
-        targets = model_manager._get_page_model_ids_with_figure(page_id=ModelID(str(self.id)))
-
-        # TODO NEXT: make work generically for control group
-        targets.extend(control.id for control in self.controls if getattr(control, "_dynamic", False))
+        figure_targets = [model.id for model in model_manager._get_models(FIGURE_MODELS, page=self)]
+        filter_targets = [
+            filter.id
+            for filter in cast(Iterable[Filter], model_manager._get_models(Filter, page=self))
+            if filter._dynamic
+        ]
+        targets = figure_targets + filter_targets
 
         if targets:
             self.actions = [

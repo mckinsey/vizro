@@ -145,13 +145,12 @@ class Vizro:
         # Any models that are created during the pre-build process *will not* themselves have pre_build run on them.
         # In future may add a second pre_build loop after the first one.
 
-        # model_manager results is wrapped into a list to avoid RuntimeError: dictionary changed size during iteration
-        for _, filter_obj in list(model_manager._items_with_type(Filter)):
+        for filter in model_manager._get_models(Filter):
             # Run pre_build on all filters first, then on all other models. This handles dependency between Filter
             # and Page pre_build and ensures that filters are pre-built before the Page objects that use them.
             # This is important because the Page pre_build method checks whether filters are dynamic or not, which is
             # defined in the filter's pre_build method.
-            filter_obj.pre_build()
+            filter.pre_build()
         for model_id in set(model_manager):
             model = model_manager[model_id]
             if hasattr(model, "pre_build") and not isinstance(model, Filter):

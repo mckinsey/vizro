@@ -76,14 +76,16 @@ class ModelManager:
             model_type = (vm.Graph, vm.AgGrid, vm.Table, vm.Figure)
         models = self.__get_model_children(page) if page is not None else self.__models.values()
 
-        for model in models:
+        # Convert to list to avoid changing size when looping through at runtime.
+        for model in list(models):
             if model_type is None or isinstance(model, model_type):
                 yield model
 
     def __get_model_children(self, model: Model) -> Generator[Model, None, None]:
         """Iterates through children of `model`.
 
-        Currently looks only through certain fields so might miss some children models."""
+        Currently looks only through certain fields so might miss some children models.
+        """
         from vizro.models import VizroBaseModel
 
         if isinstance(model, VizroBaseModel):
