@@ -13,7 +13,7 @@ except ImportError:  # pragma: no cov
 from vizro._constants import ON_PAGE_LOAD_ACTION_PREFIX
 from vizro.actions import _on_page_load
 from vizro.managers import model_manager
-from vizro.managers._model_manager import DuplicateIDError
+from vizro.managers._model_manager import DuplicateIDError, FIGURE_MODELS
 from vizro.models import Action, AgGrid, Figure, Graph, Layout, Table, VizroBaseModel
 from vizro.models._action._actions_chain import ActionsChain, Trigger
 from vizro.models._layout import set_layout
@@ -97,7 +97,7 @@ class Page(VizroBaseModel):
     @_log_call
     def pre_build(self):
         # TODO: Remove default on page load action if possible
-        targets = [model.id for model in model_manager._get_models((Graph, AgGrid, Table, Figure), page=self)]
+        targets = [model.id for model in model_manager._get_models(FIGURE_MODELS, page=self)]
         if targets:
             self.actions = [
                 ActionsChain(

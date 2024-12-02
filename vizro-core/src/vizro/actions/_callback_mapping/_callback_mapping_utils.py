@@ -7,7 +7,7 @@ from dash import Output, State, dcc
 
 from vizro.actions import _parameter, filter_interaction
 from vizro.managers import model_manager
-from vizro.managers._model_manager import ModelID
+from vizro.managers._model_manager import ModelID, FIGURE_MODELS
 from vizro.models import Action, AgGrid, Figure, Graph, Page, Table, VizroBaseModel
 from vizro.models._action._actions_chain import ActionsChain
 from vizro.models._controls import Filter, Parameter
@@ -117,8 +117,7 @@ def _get_export_data_callback_outputs(action: Action) -> dict[str, Output]:
         targets = None
 
     targets = targets or [
-        model.id
-        for model in model_manager._get_models((Graph, AgGrid, Table, Figure), model_manager._get_model_page(action))
+        model.id for model in model_manager._get_models(FIGURE_MODELS, model_manager._get_model_page(action))
     ]
 
     return {
@@ -139,8 +138,7 @@ def _get_export_data_callback_components(action: Action) -> list[dcc.Download]:
         targets = None
 
     targets = targets or [
-        model.id
-        for model in model_manager._get_models((Graph, AgGrid, Table, Figure), model_manager._get_model_page(action))
+        model.id for model in model_manager._get_models(FIGURE_MODELS, model_manager._get_model_page(action))
     ]
 
     return [

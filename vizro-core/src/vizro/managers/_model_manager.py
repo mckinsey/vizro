@@ -21,6 +21,13 @@ ModelID = NewType("ModelID", str)
 Model = TypeVar("Model", bound="VizroBaseModel")
 
 
+# Sentinel object for models that are reactive to controls. This can't be done directly by defining
+# FIGURE_MODELS = (Graph, ...) due to circular imports. Done as class for mypy.
+# https://stackoverflow.com/questions/69239403/type-hinting-parameters-with-a-sentinel-value-as-the-default
+class FIGURE_MODELS:
+    pass
+
+
 class DuplicateIDError(ValueError):
     """Useful for providing a more explicit error message when a model has id set automatically, e.g. Page."""
 
@@ -55,24 +62,35 @@ class ModelManager:
         yield from self.__models
 
     def _get_models(
-        self, model_type: Optional[Union[type[Model], tuple[type[Model], ...]]] = None, page: Optional[Page] = None
+        self,
+        model_type: Optional[Union[type[Model], tuple[type[Model], ...], type[FIGURE_MODELS]]] = None,
+        page: Optional[Page] = None,
     ) -> Generator[Model, None, None]:
         """Iterates through all models of type `model_type` (including subclasses).
 
         If `model_type` not given then look at all models. If `page` specified then only give models from that page.
         """
-        models = self._get_model_children(page) if page is not None else self.__models.values()
+        import vizro.models as vm
+
+        if model_type is FIGURE_MODELS:
+            model_type = (vm.Graph, vm.AgGrid, vm.Table, vm.Figure)
+        models = self.__get_model_children(page) if page is not None else self.__models.values()
 
         for model in models:
             if model_type is None or isinstance(model, model_type):
                 yield model
 
-    def _get_model_children(self, model: Model) -> Generator[Model, None, None]:
+    def __get_model_children(self, model: Model) -> Generator[Model, None, None]:
+        """Iterates through children of `model`.
+
+        Currently looks only through certain fields so might miss some children models."""
         from vizro.models import VizroBaseModel
 
         if isinstance(model, VizroBaseModel):
             yield model
 
+        # TODO: in future this list should not be maintained manually. Instead we should look through all model children
+        # by looking at model.model_fields.
         model_fields = ["components", "tabs", "controls", "actions", "selector"]
 
         for model_field in model_fields:
@@ -80,10 +98,10 @@ class ModelManager:
                 if isinstance(model_field_value, list):
                     # For fields like components that are list of models.
                     for single_model_field_value in model_field_value:
-                        yield from self._get_model_children(single_model_field_value)
+                        yield from self.__get_model_children(single_model_field_value)
                 else:
                     # For fields that have single model like selector.
-                    yield from self._get_model_children(model_field_value)
+                    yield from self.__get_model_children(model_field_value)
                 # We don't handle dicts of models at the moment. See below TODO for how this will all be improved in
                 #  future.
 
@@ -93,14 +111,14 @@ class ModelManager:
         #  hierarchy rather than it being so generic.
 
     def _get_model_page(self, model: Model) -> Page:  # type: ignore[return]
-        """Gets the id of the page containing the model with "model_id"."""
+        """Gets the page containing `model`."""
         from vizro.models import Page
 
         if isinstance(model, Page):
             return model
 
         for page in self._get_models(Page):
-            if model in self._get_model_children(page):
+            if model in self.__get_model_children(page):
                 return page
 
     @staticmethod

@@ -16,7 +16,7 @@ except ImportError:  # pragma: no cov
 from vizro._constants import FILTER_ACTION_PREFIX
 from vizro.actions import _filter
 from vizro.managers import data_manager, model_manager
-from vizro.managers._model_manager import ModelID
+from vizro.managers._model_manager import ModelID, FIGURE_MODELS
 from vizro.models import Action, AgGrid, Figure, Graph, Table, VizroBaseModel
 from vizro.models._components.form import (
     Checklist,
@@ -103,8 +103,7 @@ class Filter(VizroBaseModel):
         # This is the case when bool(self.targets) is False.
         # Possibly in future this will change (which would be breaking change).
         proposed_targets = self.targets or [
-            model.id
-            for model in model_manager._get_models((Graph, AgGrid, Table, Figure), model_manager._get_model_page(self))
+            model.id for model in model_manager._get_models(FIGURE_MODELS, model_manager._get_model_page(self))
         ]
         # TODO NEXT: how to handle pre_build for dynamic filters? Do we still require default argument values in
         #  `load` to establish selector type etc.? Can we take selector values from model_manager to supply these?
