@@ -66,3 +66,8 @@ To ensure the dynamic height adjustment and prevent scrolling, the height must b
 .tab-content .container-title:first-of-type {
   display: none;
 }
+
+/* Remove label that automatically gets added when calling `dbc.Switch` to remove gap. */
+label[for="theme-selector"] {
+  display: none;
+}

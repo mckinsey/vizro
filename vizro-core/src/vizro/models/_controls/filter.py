@@ -2,8 +2,8 @@ from __future__ import annotations
 
 from typing import Any, Literal, Union
 
-import numpy as np
 import pandas as pd
+from dash import dcc
 from pandas.api.types import is_datetime64_any_dtype, is_numeric_dtype
 
 from vizro.managers._data_manager import DataSourceName
@@ -13,9 +13,10 @@ try:
 except ImportError:  # pragma: no cov
     from pydantic import Field, PrivateAttr, validator
 
-from vizro._constants import FILTER_ACTION_PREFIX
+from vizro._constants import ALL_OPTION, FILTER_ACTION_PREFIX
 from vizro.actions import _filter
 from vizro.managers import data_manager, model_manager
+from vizro.managers._data_manager import _DynamicData
 from vizro.managers._model_manager import ModelID
 from vizro.models import Action, VizroBaseModel
 from vizro.models._components.form import (
@@ -45,6 +46,10 @@ DISALLOWED_SELECTORS = {
     "temporal": SELECTORS["numerical"],
     "categorical": SELECTORS["numerical"] + SELECTORS["temporal"],
 }
+
+# TODO: Remove DYNAMIC_SELECTORS along with its validation check when support dynamic mode for the DatePicker selector.
+# Tuple of filter selectors that support dynamic mode
+DYNAMIC_SELECTORS = (Dropdown, Checklist, RadioItems, Slider, RangeSlider)
 
 
 def _filter_between(series: pd.Series, value: Union[list[float], list[str]]) -> pd.Series:
@@ -88,6 +93,12 @@ class Filter(VizroBaseModel):
         "If none are given then target all components on the page that use `column`.",
     )
     selector: SelectorType = None
+
+    _dynamic: bool = PrivateAttr(False)
+
+    # Component properties for actions and interactions
+    _output_component_property: str = PrivateAttr("children")
+
     _column_type: Literal["numerical", "categorical", "temporal"] = PrivateAttr()
 
     @validator("targets", each_item=True)
@@ -95,6 +106,29 @@ class Filter(VizroBaseModel):
         if target not in model_manager:
             raise ValueError(f"Target {target} not found in model_manager.")
         return target
+
+    def __call__(self, target_to_data_frame: dict[ModelID, pd.DataFrame], current_value: Any):
+        # Only relevant for a dynamic filter.
+        # Although targets are fixed at build time, the validation logic is repeated during runtime, so if a column
+        # is missing then it will raise an error. We could change this if we wanted.
+        targeted_data = self._validate_targeted_data(
+            {target: data_frame for target, data_frame in target_to_data_frame.items() if target in self.targets},
+            eagerly_raise_column_not_found_error=True,
+        )
+
+        if (column_type := self._validate_column_type(targeted_data)) != self._column_type:
+            raise ValueError(
+                f"{self.column} has changed type from {self._column_type} to {column_type}. A filtered column cannot "
+                "change type while the dashboard is running."
+            )
+
+        if isinstance(self.selector, SELECTORS["categorical"]):
+            return self.selector(options=self._get_options(targeted_data, current_value))
+        else:
+            _min, _max = self._get_min_max(targeted_data, current_value)
+            # "current_value" is propagated only to support dcc.Input and dcc.Store components in numerical selectors
+            # to work with a dynamic selector. This can be removed when dash persistence bug is fixed.
+            return self.selector(min=_min, max=_max, current_value=current_value)
 
     @_log_call
     def pre_build(self):
@@ -105,15 +139,19 @@ class Filter(VizroBaseModel):
         proposed_targets = self.targets or model_manager._get_page_model_ids_with_figure(
             page_id=model_manager._get_model_page_id(model_id=ModelID(str(self.id)))
         )
-        # TODO NEXT: how to handle pre_build for dynamic filters? Do we still require default argument values in
-        #  `load` to establish selector type etc.? Can we take selector values from model_manager to supply these?
-        #  Or just don't do validation at pre_build time and wait until state is available during build time instead?
-        #  What should the load kwargs be here? Remember they need to be {} for static data.
-        #  Note that currently _get_unfiltered_data is only suitable for use at runtime since it requires
-        #  ctd_parameters. That could be changed to just reuse that function.
+
+        # TODO: Currently dynamic data functions require a default value for every argument. Even when there is a
+        #  dataframe parameter, the default value is used when pre-build the filter e.g. to find the targets,
+        #  column type (and hence selector) and initial values. There are three ways to handle this:
+        #  1. (Current approach) - Propagate {} and use only default arguments value in the dynamic data function.
+        #  2. Propagate values from the model_manager and relax the limitation of requiring argument default values.
+        #  3. Skip the pre-build and do everything in the build method (if possible).
+        #  Find more about the mentioned limitation at: https://github.com/mckinsey/vizro/pull/879/files#r1846609956
+        # Even if the solution changes for dynamic data, static data should still use {} as the arguments here.
         multi_data_source_name_load_kwargs: list[tuple[DataSourceName, dict[str, Any]]] = [
             (model_manager[target]["data_frame"], {}) for target in proposed_targets
         ]
+
         target_to_data_frame = dict(zip(proposed_targets, data_manager._multi_load(multi_data_source_name_load_kwargs)))
         targeted_data = self._validate_targeted_data(
             target_to_data_frame, eagerly_raise_column_not_found_error=bool(self.targets)
@@ -130,6 +168,23 @@ class Filter(VizroBaseModel):
                 f"Chosen selector {type(self.selector).__name__} is not compatible with {self._column_type} column "
                 f"'{self.column}'."
             )
+
+        # Check if the filter is dynamic. Dynamic filter means that the filter is updated when the page is refreshed
+        # which causes "options" for categorical or "min" and "max" for numerical/temporal selectors to be updated.
+        # The filter is dynamic iff mentioned attributes ("options"/"min"/"max") are not explicitly provided and
+        # filter targets at least one figure that uses dynamic data source. Note that min or max = 0 are Falsey values
+        # but should still count as manually set.
+        if isinstance(self.selector, DYNAMIC_SELECTORS) and (
+            not getattr(self.selector, "options", [])
+            and getattr(self.selector, "min", None) is None
+            and getattr(self.selector, "max", None) is None
+        ):
+            for target_id in self.targets:
+                data_source_name = model_manager[target_id]["data_frame"]
+                if isinstance(data_manager[data_source_name], _DynamicData):
+                    self._dynamic = True
+                    self.selector._dynamic = True
+                    break
 
         # Set appropriate properties for the selector.
         if isinstance(self.selector, SELECTORS["numerical"] + SELECTORS["temporal"]):
@@ -158,32 +213,33 @@ class Filter(VizroBaseModel):
                 )
             ]
 
-    def __call__(self, target_to_data_frame: dict[ModelID, pd.DataFrame]):
-        # Only relevant for a dynamic filter.
-        # Although targets are fixed at build time, the validation logic is repeated during runtime, so if a column
-        # is missing then it will raise an error. We could change this if we wanted.
-        # Call this from actions_utils
-        targeted_data = self._validate_targeted_data(
-            {target: data_frame for target, data_frame in target_to_data_frame.items() if target in self.targets},
-            eagerly_raise_column_not_found_error=True,
-        )
-
-        if (column_type := self._validate_column_type(targeted_data)) != self._column_type:
-            raise ValueError(
-                f"{self.column} has changed type from {self._column_type} to {column_type}. A filtered column cannot "
-                "change type while the dashboard is running."
-            )
-
-        # TODO: when implement dynamic, will need to do something with this e.g. pass to selector.__call__.
-        # if isinstance(self.selector, SELECTORS["numerical"] + SELECTORS["temporal"]):
-        #     options = self._get_options(targeted_data)
-        # else:
-        #     # Categorical selector.
-        #     _min, _max = self._get_min_max(targeted_data)
-
     @_log_call
     def build(self):
-        return self.selector.build()
+        selector_build_obj = self.selector.build()
+        # TODO: Align the (dynamic) object's return structure with the figure's components when the Dash bug is fixed.
+        #  This means returning an empty "html.Div(id=self.id, className=...)" as a placeholder from Filter.build().
+        #  Also, make selector.title visible when the filter is reloading.
+        if not self._dynamic:
+            return selector_build_obj
+
+        # Temporarily hide the selector and numeric dcc.Input components during the filter reloading process.
+        # Other components, such as the title, remain visible because of the configuration:
+        # overlay_style={"visibility": "visible"} in dcc.Loading.
+        # Note: dcc.Slider and dcc.RangeSlider do not support the "style" property directly,
+        # so the "className" attribute is used to apply custom CSS for visibility control.
+        # Reference for Dash class names: https://dashcheatsheet.pythonanywhere.com/
+        selector_build_obj[self.selector.id].className = "invisible"
+        if f"{self.selector.id}_start_value" in selector_build_obj:
+            selector_build_obj[f"{self.selector.id}_start_value"].className = "d-none"
+        if f"{self.selector.id}_end_value" in selector_build_obj:
+            selector_build_obj[f"{self.selector.id}_end_value"].className = "d-none"
+
+        return dcc.Loading(
+            id=self.id,
+            children=selector_build_obj,
+            color="grey",
+            overlay_style={"visibility": "visible"},
+        )
 
     def _validate_targeted_data(
         self, target_to_data_frame: dict[ModelID, pd.DataFrame], eagerly_raise_column_not_found_error
@@ -205,6 +261,7 @@ class Filter(VizroBaseModel):
                 f"Selected column {self.column} not found in any dataframe for "
                 f"{', '.join(target_to_data_frame.keys())}."
             )
+        # TODO: Enable empty data_frame handling
         if targeted_data.empty:
             raise ValueError(
                 f"Selected column {self.column} does not contain anything in any dataframe for "
@@ -231,17 +288,24 @@ class Filter(VizroBaseModel):
             )
 
     @staticmethod
-    def _get_min_max(targeted_data: pd.DataFrame) -> tuple[float, float]:
+    def _get_min_max(targeted_data: pd.DataFrame, current_value=None) -> tuple[float, float]:
+        targeted_data = pd.concat([targeted_data, pd.Series(current_value)]).stack().dropna()  # noqa: PD013
+
+        _min = targeted_data.min(axis=None)
+        _max = targeted_data.max(axis=None)
+
         # Use item() to convert to convert scalar from numpy to Python type. This isn't needed during pre_build because
         # pydantic will coerce the type, but it is necessary in __call__ where we don't update model field values
         # and instead just pass straight to the Dash component.
-        return targeted_data.min(axis=None).item(), targeted_data.max(axis=None).item()
+        # However, in some cases _min and _max are already Python types and so item() call is not required.
+        _min = _min if not hasattr(_min, "item") else _min.item()
+        _max = _max if not hasattr(_max, "item") else _max.item()
+
+        return _min, _max
 
     @staticmethod
-    def _get_options(targeted_data: pd.DataFrame) -> list[Any]:
-        # Use tolist() to convert to convert scalar from numpy to Python type. This isn't needed during pre_build
-        # because pydantic will coerce the type, but it is necessary in __call__ where we don't update model field
-        # values and instead just pass straight to the Dash component.
+    def _get_options(targeted_data: pd.DataFrame, current_value=None) -> list[Any]:
         # The dropna() isn't strictly required here but will be in future pandas versions when the behavior of stack
         # changes. See https://pandas.pydata.org/docs/whatsnew/v2.1.0.html#whatsnew-210-enhancements-new-stack.
-        return np.unique(targeted_data.stack().dropna()).tolist()  # noqa: PD013
+        targeted_data = pd.concat([targeted_data, pd.Series(current_value)]).stack().dropna()  # noqa: PD013
+        return sorted(set(targeted_data) - {ALL_OPTION})
