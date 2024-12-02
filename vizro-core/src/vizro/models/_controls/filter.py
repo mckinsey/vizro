@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from typing import Any, Literal, Union
+from typing import Any, Literal, Union, cast, Iterable
 
 import pandas as pd
 from dash import dcc
@@ -137,7 +137,10 @@ class Filter(VizroBaseModel):
         # This is the case when bool(self.targets) is False.
         # Possibly in future this will change (which would be breaking change).
         proposed_targets = self.targets or [
-            model.id for model in model_manager._get_models(FIGURE_MODELS, model_manager._get_model_page(self))
+            cast(ModelID, model.id)
+            for model in cast(
+                Iterable[VizroBaseModel], model_manager._get_models(FIGURE_MODELS, model_manager._get_model_page(self))
+            )
         ]
         # TODO: Currently dynamic data functions require a default value for every argument. Even when there is a
         #  dataframe parameter, the default value is used when pre-build the filter e.g. to find the targets,

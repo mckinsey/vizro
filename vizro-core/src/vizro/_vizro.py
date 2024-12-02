@@ -5,7 +5,7 @@ import warnings
 from collections.abc import Iterable
 from contextlib import suppress
 from pathlib import Path, PurePosixPath
-from typing import TYPE_CHECKING, TypedDict
+from typing import TYPE_CHECKING, TypedDict, cast
 
 import dash
 import plotly.io as pio
@@ -145,7 +145,7 @@ class Vizro:
         # Any models that are created during the pre-build process *will not* themselves have pre_build run on them.
         # In future may add a second pre_build loop after the first one.
 
-        for filter in model_manager._get_models(Filter):
+        for filter in cast(Iterable[Filter], model_manager._get_models(Filter)):
             # Run pre_build on all filters first, then on all other models. This handles dependency between Filter
             # and Page pre_build and ensures that filters are pre-built before the Page objects that use them.
             # This is important because the Page pre_build method checks whether filters are dynamic or not, which is

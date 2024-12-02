@@ -96,7 +96,9 @@ class Page(VizroBaseModel):
 
     @_log_call
     def pre_build(self):
-        figure_targets = [model.id for model in model_manager._get_models(FIGURE_MODELS, page=self)]
+        figure_targets = [
+            model.id for model in cast(Iterable[VizroBaseModel], model_manager._get_models(FIGURE_MODELS, page=self))
+        ]
         filter_targets = [
             filter.id
             for filter in cast(Iterable[Filter], model_manager._get_models(Filter, page=self))

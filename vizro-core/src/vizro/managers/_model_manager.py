@@ -4,8 +4,8 @@ from __future__ import annotations
 
 import random
 import uuid
-from collections.abc import Generator
-from typing import TYPE_CHECKING, NewType, Optional, TypeVar, Union
+from collections.abc import Generator, Iterable
+from typing import TYPE_CHECKING, NewType, Optional, TypeVar, Union, cast
 
 from vizro.managers._managers_utils import _state_modifier
 
@@ -119,7 +119,7 @@ class ModelManager:
         if isinstance(model, Page):
             return model
 
-        for page in self._get_models(Page):
+        for page in cast(Iterable[Page], self._get_models(Page)):
             if model in self.__get_model_children(page):
                 return page
 

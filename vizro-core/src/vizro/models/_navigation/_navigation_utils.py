@@ -1,7 +1,7 @@
 from __future__ import annotations
 
 import itertools
-from typing import TypedDict
+from typing import TypedDict, cast, Iterable
 
 import dash_bootstrap_components as dbc
 
@@ -15,7 +15,7 @@ def _validate_pages(pages):
     pages_as_list = list(itertools.chain(*pages.values())) if isinstance(pages, dict) else pages
     # Ideally we would use dashboard.pages in the model manager here, but we only register pages in
     # dashboard.pre_build and model manager cannot find a Dashboard at validation time.
-    registered_pages = [page.id for page in model_manager._get_models(Page)]
+    registered_pages = [page.id for page in cast(Iterable[Page], model_manager._get_models(Page))]
 
     if not pages_as_list:
         raise ValueError("Ensure this value has at least 1 item.")

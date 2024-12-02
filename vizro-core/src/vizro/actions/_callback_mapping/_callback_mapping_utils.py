@@ -117,7 +117,10 @@ def _get_export_data_callback_outputs(action: Action) -> dict[str, Output]:
         targets = None
 
     targets = targets or [
-        model.id for model in model_manager._get_models(FIGURE_MODELS, model_manager._get_model_page(action))
+        model.id
+        for model in cast(
+            Iterable[VizroBaseModel], model_manager._get_models(FIGURE_MODELS, model_manager._get_model_page(action))
+        )
     ]
 
     return {
@@ -138,7 +141,10 @@ def _get_export_data_callback_components(action: Action) -> list[dcc.Download]:
         targets = None
 
     targets = targets or [
-        model.id for model in model_manager._get_models(FIGURE_MODELS, model_manager._get_model_page(action))
+        model.id
+        for model in cast(
+            Iterable[VizroBaseModel], model_manager._get_models(FIGURE_MODELS, model_manager._get_model_page(action))
+        )
     ]
 
     return [
