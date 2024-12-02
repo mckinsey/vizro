@@ -48,18 +48,18 @@ def _get_component_actions(component) -> list[Action]:
 
 
 def _apply_filter_controls(
-    data_frame: pd.DataFrame, ctds_filters: list[CallbackTriggerDict], target: ModelID
+    data_frame: pd.DataFrame, ctds_filter: list[CallbackTriggerDict], target: ModelID
 ) -> pd.DataFrame:
     """Applies filters from a vm.Filter model in the controls.
 
     Args:
         data_frame: unfiltered DataFrame.
-        ctds_filters: list of CallbackTriggerDict for filters.
+        ctds_filter: list of CallbackTriggerDict for filters.
         target: id of targeted Figure.
 
     Returns: filtered DataFrame.
     """
-    for ctd in ctds_filters:
+    for ctd in ctds_filter:
         selector_value = ctd["value"]
         selector_value = selector_value if isinstance(selector_value, list) else [selector_value]
         selector_actions = _get_component_actions(model_manager[ctd["id"]])
@@ -164,12 +164,12 @@ def _update_nested_figure_properties(
 
 
 def _get_parametrized_config(
-    ctd_parameters: list[CallbackTriggerDict], target: ModelID, data_frame: bool
+    ctds_parameter: list[CallbackTriggerDict], target: ModelID, data_frame: bool
 ) -> dict[str, Any]:
     """Convert parameters into a keyword-argument dictionary.
 
     Args:
-        ctd_parameters: list of CallbackTriggerDicts for vm.Parameter.
+        ctds_parameter: list of CallbackTriggerDicts for vm.Parameter.
         target: id of targeted figure.
         data_frame: whether to return only DataFrame parameters starting "data_frame." or only non-DataFrame parameters.
 
@@ -187,7 +187,7 @@ def _get_parametrized_config(
         config = deepcopy(model_manager[target].figure._arguments)
         del config["data_frame"]
 
-    for ctd in ctd_parameters:
+    for ctd in ctds_parameter:
         # TODO: needs to be refactored so that it is independent of implementation details
         parameter_value = ctd["value"]
 
@@ -223,7 +223,7 @@ def _apply_filters(
     # Takes in just one target, so dataframe is filtered repeatedly for every target that uses it.
     # Potentially this could be de-duplicated but it's not so important since filtering is a relatively fast
     # operation (compared to data loading).
-    filtered_data = _apply_filter_controls(data_frame=data, ctds_filters=ctds_filter, target=target)
+    filtered_data = _apply_filter_controls(data_frame=data, ctds_filter=ctds_filter, target=target)
     filtered_data = _apply_filter_interaction(
         data_frame=filtered_data, ctds_filter_interaction=ctds_filter_interaction, target=target
     )
@@ -231,17 +231,17 @@ def _apply_filters(
 
 
 def _get_unfiltered_data(
-    ctds_parameters: list[CallbackTriggerDict], targets: list[ModelID]
+    ctds_parameter: list[CallbackTriggerDict], targets: list[ModelID]
 ) -> dict[ModelID, pd.DataFrame]:
     # Takes in multiple targets to ensure that data can be loaded efficiently using _multi_load and not repeated for
     # every single target.
-    # Getting unfiltered data requires data frame parameters. We pass in all ctd_parameters and then find the
+    # Getting unfiltered data requires data frame parameters. We pass in all ctds_parameter and then find the
     # data_frame ones by passing data_frame=True in the call to _get_paramaterized_config. Static data is also
     # handled here and will just have empty dictionary for its kwargs.
     multi_data_source_name_load_kwargs: list[tuple[DataSourceName, dict[str, Any]]] = []
     for target in targets:
         dynamic_data_load_params = _get_parametrized_config(
-            ctd_parameters=ctds_parameters, target=target, data_frame=True
+            ctds_parameter=ctds_parameter, target=target, data_frame=True
         )
         data_source_name = model_manager[target]["data_frame"]
         multi_data_source_name_load_kwargs.append((data_source_name, dynamic_data_load_params["data_frame"]))
@@ -252,25 +252,45 @@ def _get_unfiltered_data(
 def _get_modified_page_figures(
     ctds_filter: list[CallbackTriggerDict],
     ctds_filter_interaction: list[dict[str, CallbackTriggerDict]],
-    ctds_parameters: list[CallbackTriggerDict],
+    ctds_parameter: list[CallbackTriggerDict],
     targets: list[ModelID],
 ) -> dict[ModelID, Any]:
+    from vizro.models import Filter
+
     outputs: dict[ModelID, Any] = {}
+
+    control_targets = []
+    figure_targets = []
+    for target in targets:
+        if isinstance(model_manager[target], Filter):
+            control_targets.append(target)
+        else:
+            figure_targets.append(target)
+
+    # TODO-NEXT: Add fetching unfiltered data for the Filter.targets as well, once dynamic filters become "targetable"
+    #  from other actions too. For example, in future, if Parameter is targeting only a single Filter.
+    #  Currently, it only works for the on_page_load because Filter.targets are indeed the part of the actions' targets.
+    #  More about the limitation: https://github.com/mckinsey/vizro/pull/879/files#r1863535516
+    target_to_data_frame = _get_unfiltered_data(ctds_parameter=ctds_parameter, targets=figure_targets)
 
     # TODO: the structure here would be nicer if we could get just the ctds for a single target at one time,
     #  so you could do apply_filters on a target a pass only the ctds relevant for that target.
     #  Consider restructuring ctds to a more convenient form to make this possible.
-
-    for target, unfiltered_data in _get_unfiltered_data(ctds_parameters, targets).items():
+    for target, unfiltered_data in target_to_data_frame.items():
         filtered_data = _apply_filters(unfiltered_data, ctds_filter, ctds_filter_interaction, target)
         outputs[target] = model_manager[target](
             data_frame=filtered_data,
-            **_get_parametrized_config(ctd_parameters=ctds_parameters, target=target, data_frame=False),
+            **_get_parametrized_config(ctds_parameter=ctds_parameter, target=target, data_frame=False),
         )
 
-    # TODO NEXT: will need to pass unfiltered_data into Filter.__call__.
-    # This dictionary is filtered for correct targets already selected in Filter.__call__ or that could be done here
-    # instead.
-    # {target: data_frame for target, data_frame in unfiltered_data.items() if target in self.targets}
+    for target in control_targets:
+        ctd_filter = [item for item in ctds_filter if item["id"] == model_manager[target].selector.id]
+
+        # This only covers the case of cross-page actions when Filter in an output, but is not an input of the action.
+        current_value = ctd_filter[0]["value"] if ctd_filter else None
+
+        # target_to_data_frame contains all targets, including some which might not be relevant for the filter in
+        # question. We filter to use just the relevant targets in Filter.__call__.
+        outputs[target] = model_manager[target](target_to_data_frame=target_to_data_frame, current_value=current_value)
 
     return outputs
