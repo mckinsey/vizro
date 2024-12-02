@@ -331,5 +331,8 @@ class VizroBaseModel(BaseModel):
     # TODO[pydantic]: The following keys were removed: `smart_union`, `copy_on_model_validation`.
     # Check https://docs.pydantic.dev/dev-v2/migration/#changes-to-config for more information.
     model_config = ConfigDict(
-        extra="forbid", smart_union=True, validate_assignment=True, copy_on_model_validation="none"
+        extra="forbid",
+        smart_union=True,
+        validate_assignment=True,
+        copy_on_model_validation="none",
     )

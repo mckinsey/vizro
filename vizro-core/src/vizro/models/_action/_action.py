@@ -2,14 +2,14 @@ import importlib.util
 import logging
 from collections.abc import Collection, Mapping
 from pprint import pformat
-from typing import Any, Union
+from typing import Annotated, Any, Union
 
 # try:
-#     from pydantic.v1 import Field, validator
+# from pydantic.v1 import Field
 # except ImportError:  # pragma: no cov
 #     from pydantic import Field
 from dash import Input, Output, State, callback, html
-from pydantic import Field, field_validator
+from pydantic import Field, StringConstraints, field_validator
 from pydantic.json_schema import SkipJsonSchema
 
 from vizro.managers._model_manager import ModelID
@@ -35,15 +35,13 @@ class Action(VizroBaseModel):
     function: SkipJsonSchema[CapturedCallable] = Field(
         ..., json_schema_extra={"mode": "action", "import_path": "vizro.actions"}, description="Action function."
     )
-    inputs: list[str] = Field(
+    inputs: list[Annotated[str, StringConstraints(pattern="^[^.]+[.][^.]+$")]] = Field(
         [],
         description="Inputs in the form `<component_id>.<property>` passed to the action function.",
-        pattern="^[^.]+[.][^.]+$",
     )
-    outputs: list[str] = Field(
+    outputs: list[Annotated[str, StringConstraints(pattern="^[^.]+[.][^.]+$")]] = Field(
         [],
         description="Outputs in the form `<component_id>.<property>` changed by the action function.",
-        pattern="^[^.]+[.][^.]+$",
     )
 
     # Validators
