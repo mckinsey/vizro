@@ -6,20 +6,31 @@ function update_slider_values(start, slider, input_store, self_data) {
     trigger_id =
       dash_clientside.callback_context.triggered[0]["prop_id"].split(".")[0];
   }
+
+  // text form component is the trigger
   if (trigger_id === `${self_data["id"]}_end_value`) {
     if (isNaN(start)) {
       return dash_clientside.no_update;
     }
-    end_value = start;
+    return [start, start, start];
+
+    // slider component is the trigger
   } else if (trigger_id === self_data["id"]) {
-    end_value = slider;
-  } else {
-    end_value = input_store !== null ? input_store : self_data["min"];
+    return [slider, slider, slider];
   }
-
-  end_value = Math.min(Math.max(self_data["min"], end_value), self_data["max"]);
-
-  return [end_value, end_value, end_value];
+  // on_page_load is the trigger
+  if (input_store === null) {
+    return [dash_clientside.no_update, dash_clientside.no_update, slider];
+  }
+  if (slider === start && start === input_store) {
+    // To prevent filter_action to be triggered after on_page_load
+    return [
+      dash_clientside.no_update,
+      dash_clientside.no_update,
+      dash_clientside.no_update,
+    ];
+  }
+  return [input_store, input_store, input_store];
 }
 
 window.dash_clientside = {

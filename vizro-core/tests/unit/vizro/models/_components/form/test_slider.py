@@ -35,7 +35,7 @@ def expected_slider():
                                 persistence_type="session",
                                 className="slider-text-input-field",
                             ),
-                            dcc.Store(id="slider_id_input_store", storage_type="session", data=5.0),
+                            dcc.Store(id="slider_id_input_store", storage_type="session"),
                         ],
                         className="slider-text-input-container",
                     ),
