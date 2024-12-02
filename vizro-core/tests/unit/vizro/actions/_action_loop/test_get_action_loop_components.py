@@ -1,8 +1,9 @@
 """Unit tests for vizro.actions._action_loop._get_action_loop_components file."""
 
 import pytest
-from asserts import assert_component_equal
+from asserts import STRIP_ALL, assert_component_equal
 from dash import dcc, html
+from dash._utils import stringify_id
 
 import vizro.models as vm
 import vizro.plotly.express as px
@@ -27,7 +28,7 @@ def gateway_components(request):
     components = request.param
     actions_chain_ids = [model_manager[component].actions[0].id for component in components]
     return [
-        dcc.Store(id={"type": "gateway_input", "trigger_id": actions_chain_id}, data=f"{actions_chain_id}")
+        dcc.Store(id={"type": "gateway_input", "trigger_id": actions_chain_id}, data=actions_chain_id)
         for actions_chain_id in actions_chain_ids
     ]
 
@@ -153,11 +154,26 @@ class TestGetActionLoopComponents:
         result = _get_action_loop_components()
         expected = html.Div(
             id="action_loop_components_div",
-            children=fundamental_components
-            + gateway_components
-            + action_trigger_components
-            + [action_trigger_actions_id_component]
-            + [trigger_to_actions_chain_mapper_component],
+            children=[
+                *fundamental_components,
+                *gateway_components,
+                *action_trigger_components,
+                action_trigger_actions_id_component,
+                trigger_to_actions_chain_mapper_component,
+            ],
         )
 
-        assert_component_equal(result, expected)
+        # Data in these dcc.Stores is arbitrarily order. Sort in advance to ensure that assert_component_equal
+        # is order-agnostic for their data.
+        for key in ("action_trigger_actions_id", "trigger_to_actions_chain_mapper"):
+            result[key].data = sorted(result[key].data)
+            expected[key].data = sorted(expected[key].data)
+
+        # Validate the action_loop_components_div wrapper.
+        assert_component_equal(result, expected, keys_to_strip=STRIP_ALL)
+
+        # Order of dcc.Stores inside div wrapper is arbitrary so sort by stringified id to do order-agnostic comparison.
+        assert_component_equal(
+            sorted(result.children, key=lambda component: stringify_id(component.id)),
+            sorted(expected.children, key=lambda component: stringify_id(component.id)),
+        )
