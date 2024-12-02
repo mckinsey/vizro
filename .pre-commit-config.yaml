@@ -44,7 +44,7 @@ repos:
         args: [--autofix]
 
   - repo: https://github.com/astral-sh/ruff-pre-commit
-    rev: v0.7.2
+    rev: v0.8.1
     hooks:
       - id: ruff
         args: [--fix]
@@ -52,7 +52,7 @@ repos:
       - id: ruff-format
 
   - repo: https://github.com/PyCQA/bandit
-    rev: 1.7.10
+    rev: 1.8.0
     hooks:
       - id: bandit
         args: [-c, pyproject.toml, -ll]
@@ -62,7 +62,7 @@ repos:
     # Upgrade to v1.11.1 not possible as it doesn't seem compatible with pydantic<2 plugin.
     # Similar issue with previous v.1.11.X versions: https://github.com/pydantic/pydantic/issues/10000
     # We need to revert the changes from the pre-commit autoupdate for now.
-    rev: v1.10.1
+    rev: v1.13.0
     hooks:
       - id: mypy
         files: ^vizro-core/src/
@@ -84,7 +84,7 @@ repos:
         args: ["--fix"]
 
   - repo: https://github.com/errata-ai/vale
-    rev: v3.8.0
+    rev: v3.9.1
     hooks:
       - id: vale
         args: [--config=.vale/.vale.ini]
