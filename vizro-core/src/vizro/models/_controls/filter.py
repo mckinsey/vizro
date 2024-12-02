@@ -1,6 +1,7 @@
 from __future__ import annotations
 
-from typing import Any, Literal, Union
+from collections.abc import Iterable
+from typing import Any, Literal, Union, cast
 
 import pandas as pd
 from dash import dcc
@@ -17,7 +18,7 @@ from vizro._constants import ALL_OPTION, FILTER_ACTION_PREFIX
 from vizro.actions import _filter
 from vizro.managers import data_manager, model_manager
 from vizro.managers._data_manager import _DynamicData
-from vizro.managers._model_manager import ModelID
+from vizro.managers._model_manager import FIGURE_MODELS, ModelID
 from vizro.models import Action, VizroBaseModel
 from vizro.models._components.form import (
     Checklist,
@@ -136,10 +137,12 @@ class Filter(VizroBaseModel):
         # want to raise an error if the column is not found in a figure's data_frame, it will just be ignored.
         # This is the case when bool(self.targets) is False.
         # Possibly in future this will change (which would be breaking change).
-        proposed_targets = self.targets or model_manager._get_page_model_ids_with_figure(
-            page_id=model_manager._get_model_page_id(model_id=ModelID(str(self.id)))
-        )
-
+        proposed_targets = self.targets or [
+            cast(ModelID, model.id)
+            for model in cast(
+                Iterable[VizroBaseModel], model_manager._get_models(FIGURE_MODELS, model_manager._get_model_page(self))
+            )
+        ]
         # TODO: Currently dynamic data functions require a default value for every argument. Even when there is a
         #  dataframe parameter, the default value is used when pre-build the filter e.g. to find the targets,
         #  column type (and hence selector) and initial values. There are three ways to handle this:
