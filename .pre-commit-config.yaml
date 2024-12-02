@@ -89,6 +89,7 @@ repos:
       - id: mdformat
         args:
           [
+            --help,
             --ignore-missing-references,
             --wrap=no,
             --align-semantic-breaks-in-lists,
@@ -96,7 +97,7 @@ repos:
         exclude: ^vizro-core/docs/pages/API-reference|^vizro-ai/docs/pages/API-reference|vizro-core/docs/pages/user-guides/custom-components.md
         additional_dependencies:
           - mdformat-mkdocs[recommended]==3.1.1
-          
+
 # Configuration for https://pre-commit.ci/.
 ci:
   autoupdate_schedule: monthly
@@ -111,4 +112,3 @@ ci:
     - codespell
     - bandit
     - mypy
-    - vale
