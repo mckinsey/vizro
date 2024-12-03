@@ -86,7 +86,9 @@ def ParentWithNonDiscriminatedUnion():
 class TestDiscriminatedUnion:
     def test_no_type_match(self, Parent):
         child = ChildZ()
-        with pytest.raises(ValidationError, match="No match for discriminator 'type' and value 'child_Z'"):
+        with pytest.raises(
+            ValidationError, match="'type' does not match any of the expected tags: 'child_x', 'child_y'"
+        ):
             Parent(child=child)
 
     def test_add_type_model_instantiation(self, Parent):
@@ -114,7 +116,9 @@ class TestOptionalDiscriminatedUnion:
     # The current error message is the non-discriminated union one.
     def test_no_type_match_current_behaviour(self, ParentWithOptional):
         child = ChildZ()
-        with pytest.raises(ValidationError, match="unexpected value; permitted: 'child_x'"):
+        with pytest.raises(
+            ValidationError, match="'type' does not match any of the expected tags: 'child_x', 'child_y'"
+        ):
             ParentWithOptional(child=child)
 
     def test_add_type_model_instantiation(self, ParentWithOptional):
@@ -131,7 +135,9 @@ class TestOptionalDiscriminatedUnion:
 class TestListDiscriminatedUnion:
     def test_no_type_match(self, ParentWithList):
         child = ChildZ()
-        with pytest.raises(ValidationError, match="No match for discriminator 'type' and value 'child_Z'"):
+        with pytest.raises(
+            ValidationError, match="'type' does not match any of the expected tags: 'child_x', 'child_y'"
+        ):
             ParentWithList(child=[child])
 
     def test_add_type_model_instantiation(self, ParentWithList):
