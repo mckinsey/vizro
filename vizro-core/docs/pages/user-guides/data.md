@@ -411,7 +411,7 @@ When Vizro initially builds a filter that depends on parametrized dynamic data l
 
 * perform initial validation
 * check which data sources contain the specified `column` (unless `targets` is explicitly specified) and
-* determine the type of selector to use (unless `selector` is explicitly specified).
+* find the type of selector to use (unless `selector` is explicitly specified).
 
 !!! note
 
