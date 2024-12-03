@@ -40,62 +40,60 @@ To add a `Figure` to your page:
 
 !!! example "Use existing figure functions"
     === "app.py"
-
-    ```{.python pycafe-link}
-    import vizro.models as vm
-    import vizro.plotly.express as px
-    from vizro import Vizro
-    from vizro.figures import kpi_card
-
-    tips = px.data.tips
-
-    # Create a layout with five rows and four columns. The KPI card is positioned in the first cell, while the remaining cells are empty.
-    page = vm.Page(
-        title="KPI card",
-        layout=vm.Layout(grid=[[0, -1, -1, -1]] + [[-1, -1, -1, -1]] * 4),
-        components=[
-            vm.Figure(
-                figure=kpi_card( # For more information, refer to the API reference for kpi_card
-                    data_frame=tips,
-                    value_column="tip",
-                    value_format="${value:.2f}",
-                    icon="shopping_cart",
-                    title="KPI card I",
-                )
-            )
-        ],
-        controls=[vm.Filter(column="day", selector=vm.RadioItems())],
-    )
-
-    dashboard = vm.Dashboard(pages=[page])
-    Vizro().build(dashboard).run()
-    ```
-
+        ```{.python pycafe-link}
+	    import vizro.models as vm
+	    import vizro.plotly.express as px
+	    from vizro import Vizro
+	    from vizro.figures import kpi_card
+	
+	    tips = px.data.tips
+	
+	    # Create a layout with five rows and four columns. The KPI card is positioned in the first cell, while the remaining cells are empty.
+	    page = vm.Page(
+	        title="KPI card",
+	        layout=vm.Layout(grid=[[0, -1, -1, -1]] + [[-1, -1, -1, -1]] * 4),
+	        components=[
+	            vm.Figure(
+	                figure=kpi_card( # For more information, refer to the API reference for kpi_card
+	                    data_frame=tips,
+	                    value_column="tip",
+	                    value_format="${value:.2f}",
+	                    icon="shopping_cart",
+	                    title="KPI card I",
+	                )
+	            )
+	        ],
+	        controls=[vm.Filter(column="day", selector=vm.RadioItems())],
+	    )
+	
+	    dashboard = vm.Dashboard(pages=[page])
+	    Vizro().build(dashboard).run()
+	    ```
     === "app.yaml"
 
-    ```yaml
-    # Still requires a .py to add data to the data manager and parse YAML configuration
-    # See from_yaml example
-    pages:
-      - components:
-          - figure:
-              _target_: kpi_card
-              data_frame: tips
-              value_column: tip
-              value_format: ${value:.2f}
-              icon: shopping_cart
-              title: KPI card I
-            type: figure
-        controls:
-          - column: day
-            type: filter
-            selector:
-              type: radio_items
-        layout:
-          grid: [[0, -1, -1, -1], [-1, -1, -1, -1], [-1, -1, -1, -1], [-1, -1, -1, -1],
-             [-1, -1, -1, -1]]
-        title: KPI card
-    ```
+        ```yaml
+	    # Still requires a .py to add data to the data manager and parse YAML configuration
+	    # See from_yaml example
+	    pages:
+	      - components:
+	          - figure:
+	              _target_: kpi_card
+	              data_frame: tips
+	              value_column: tip
+	              value_format: ${value:.2f}
+	              icon: shopping_cart
+	              title: KPI card I
+	            type: figure
+	        controls:
+	          - column: day
+	            type: filter
+	            selector:
+	              type: radio_items
+	        layout:
+	          grid: [[0, -1, -1, -1], [-1, -1, -1, -1], [-1, -1, -1, -1], [-1, -1, -1, -1],
+	             [-1, -1, -1, -1]]
+	        title: KPI card
+        ```
 
     === "Result"
         [![Figure]][figure]
