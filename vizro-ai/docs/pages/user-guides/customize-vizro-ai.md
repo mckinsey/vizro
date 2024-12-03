@@ -19,24 +19,24 @@ vizro_ai = VizroAI(model="<chosen model>")
 
 === "OpenAI"
 
-| Environment variable | Name(s)           |
-| -------------------- | ----------------- |
-| API key              | `OPENAI_API_KEY`  |
-| Base API URL         | `OPENAI_API_BASE` |
+    | Environment variable | Name(s)           |
+    | -------------------- | ----------------- |
+    | API key              | `OPENAI_API_KEY`  |
+    | Base API URL         | `OPENAI_API_BASE` |
 
-To use OpenAI with Vizro-AI, you must have an account with paid-for credits available. None of the free accounts will suffice. [Check the OpenAI models and pricing on their website](https://platform.openai.com/docs/models). Before using a model, please review OpenAI's guidelines on risk mitigation to understand potential model limitations and best practices. [See the OpenAI site for more details on responsible usage](https://platform.openai.com/docs/guides/safety-best-practices).
+    To use OpenAI with Vizro-AI, you must have an account with paid-for credits available. None of the free accounts will suffice. [Check the OpenAI models and pricing on their website](https://platform.openai.com/docs/models). Before using a model, please review OpenAI's guidelines on risk mitigation to understand potential model limitations and best practices. [See the OpenAI site for more details on responsible usage](https://platform.openai.com/docs/guides/safety-best-practices).
 
-- `gpt-4o-mini` **default**
-- `gpt-4-turbo`
-- `gpt-4o`
+    - `gpt-4o-mini` **default**
+    - `gpt-4-turbo`
+    - `gpt-4o`
 
 === "Anthropic"
     _Currently works only for `VizroAI.plot` - we are working on making it available for `VizroAI.dashboard`_
 
-    | Env variable | Name(s)                                  |
-    | ------------ | ---------------------------------------- |
-    | API key      | `ANTHROPIC_API_KEY`                      |
-    | Base API URL | `ANTHROPIC_API_URL`,`ANTHROPIC_BASE_URL` |
+    | Environment variable | Name(s)                                  |
+    | -------------------- | ---------------------------------------- |
+    | API key              | `ANTHROPIC_API_KEY`                      |
+    | Base API URL         | `ANTHROPIC_API_URL`,`ANTHROPIC_BASE_URL` |
 
     To use Anthropic with Vizro-AI, you must have an account with paid-for credits available. None of the free accounts will suffice. [Check the Anthropic models and pricing on their website](https://docs.anthropic.com/en/docs/about-claude/models). Before using a model, please review Anthropic guidelines on risk mitigation to understand potential model limitations and best practices. [See the Anthropic site for more details on responsible usage](https://support.anthropic.com/en/collections/4078535-trust-safety/).
 
@@ -54,10 +54,10 @@ To use OpenAI with Vizro-AI, you must have an account with paid-for credits avai
 === "MistralAI"
     _Currently works only for `VizroAI.plot` - we are working on making it available for `VizroAI.dashboard`_
 
-    | Env variable | Name(s)            |
-    | ------------ | ------------------ |
-    | API key      | `MISTRAL_API_KEY`  |
-    | Base API URL | `MISTRAL_BASE_URL` |
+    | Environment variable | Name(s)            |
+    | -------------------- | ------------------ |
+    | API key              | `MISTRAL_API_KEY`  |
+    | Base API URL         | `MISTRAL_BASE_URL` |
 
     To use Mistral with Vizro-AI, you can either use their API, which comes with [an associated cost](https://mistral.ai/technology/#pricing), or you could use their models for free under the Apache 2.0 license. In that case you need to setup the model API yourself. You can check [all available Mistral models including pricing on their website](https://docs.mistral.ai/getting-started/models/models_overview). This will also explain which version the below string acronyms currently point to. Before usage, please review Mistral guidelines on risk mitigation to understand potential model limitations and best practices. [See the Mistral site for more details on responsible usage](https://help.mistral.ai/en/collections/272960-le-chat/).
 

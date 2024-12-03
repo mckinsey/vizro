@@ -34,8 +34,7 @@ This guide offers insights into different ways of running `VizroAI.dashboard` to
         ```
 
     === "Result"
-
-    ![VizroAIDashboardPage1](../../assets/user_guides/dashboard/dashboard2_page1.png)
+        ![VizroAIDashboardPage1](../../assets/user_guides/dashboard/dashboard2_page1.png)
 
 This triggers the dashboard building process. Once Vizro-AI finishes the dashboard generation process, you can now launch the dashboard.
 
