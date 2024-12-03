@@ -1,10 +1,14 @@
 """The action loop creates all the required action callbacks and its components."""
 
+from collections.abc import Iterable
+from typing import cast
+
 from dash import html
 
-from vizro.actions._action_loop._action_loop_utils import _get_actions_on_registered_pages
 from vizro.actions._action_loop._build_action_loop_callbacks import _build_action_loop_callbacks
 from vizro.actions._action_loop._get_action_loop_components import _get_action_loop_components
+from vizro.managers import model_manager
+from vizro.models import Action
 
 
 class ActionLoop:
@@ -37,5 +41,8 @@ class ActionLoop:
             List of required components for each `Action` in the `Dashboard` e.g. list[dcc.Download]
 
         """
-        actions = _get_actions_on_registered_pages()
-        return html.Div([action.build() for action in actions], id="app_action_models_components_div", hidden=True)
+        return html.Div(
+            [action.build() for action in cast(Iterable[Action], model_manager._get_models(Action))],
+            id="app_action_models_components_div",
+            hidden=True,
+        )
