@@ -11,6 +11,7 @@ repos:
         exclude: "devcontainer.json" # Contains comments.
       - id: trailing-whitespace
       - id: end-of-file-fixer
+        exclude: "new_fragment.md.j2" # Incompatible whitespace with mdformat in changelog snippet.
 
   - repo: local
     hooks:
