@@ -84,13 +84,12 @@ To overwrite any global CSS property, you need to target the element selector an
 
 !!! example "Overwrite CSS globally"
     === "my_css_file.css"
-
-    ```css
-    h1,
-    h2 {
-        color: hotpink;
-    }
-    ```
+        ```css
+        h1,
+        h2 {
+            color: hotpink;
+        }
+        ```
 
     === "app.py"
         ```py
@@ -153,12 +152,11 @@ Suppose you want to hide the page title on one page only. Here's how you can ach
 
 !!! example "Hide page title on selected pages"
     === "my_css_file.css"
-
-    ```css
-    #page-with-hidden-title #right-header {
-        display: none;
-    }
-    ```
+        ```css
+        #page-with-hidden-title #right-header {
+            display: none;
+        }
+        ```
 
     === "app.py"
         ```py
@@ -237,18 +235,17 @@ It's essential to understand the relationship between the targeted CSS class or 
 
 !!! example "Customizing CSS properties in selective components"
     === "my_css_file.css"
+        ```css
+        /* Apply styling to parent */
+        .card:has(#custom-card) {
+            background-color: white;
+        }
 
-    ```css
-    /* Apply styling to parent */
-    .card:has(#custom-card) {
-        background-color: white;
-    }
-
-    /* Apply styling to child */
-    #custom-card p {
-        color: black;
-    }
-    ```
+        /* Apply styling to child */
+        #custom-card p {
+            color: black;
+        }
+        ```
 
     === "app.py"
         ```py
@@ -362,23 +359,22 @@ To do this, you need to change the container's CSS class. Using the DevTool, as 
 
 !!! example "Style a container"
     === "custom.css"
+        ```css
+        /* Assign a variable to the dark and light theme */
+        [data-bs-theme="dark"] {
+            --container-bg-color: #232632;
+        }
 
-    ```css
-    /* Assign a variable to the dark and light theme */
-    [data-bs-theme="dark"] {
-        --container-bg-color: #232632;
-    }
+        [data-bs-theme="light"] {
+            --container-bg-color: #F5F6F6;
+        }
 
-    [data-bs-theme="light"] {
-        --container-bg-color: #F5F6F6;
-    }
-
-    /* Use the custom variable var(--container-bg-color) */
-    .page-component-container {
-        background: var(--container-bg-color);
-        padding: 12px;
-    }
-    ```
+        /* Use the custom variable var(--container-bg-color) */
+        .page-component-container {
+            background: var(--container-bg-color);
+            padding: 12px;
+        }
+        ```
 
     === "app.py"
         ```py
