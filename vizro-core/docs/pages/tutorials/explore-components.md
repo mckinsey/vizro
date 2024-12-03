@@ -496,9 +496,9 @@ The code below illustrates a functional dashboard where you can navigate from th
                 ),
             ],
         )
-        ```
 
-        ```python
+        ...
+
         dashboard = vm.Dashboard(pages=[home_page, first_page, second_page])
         ```
 
