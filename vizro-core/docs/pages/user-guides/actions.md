@@ -24,68 +24,66 @@ To enable downloading data, you can add the [`export_data`][vizro.actions.export
 
 !!! example "`export_data`"
     === "app.py"
+        ```{.python pycafe-link}
+        import vizro.models as vm
+        import vizro.plotly.express as px
+        from vizro import Vizro
+        from vizro.actions import export_data
 
-    ```{.python pycafe-link}
-    import vizro.models as vm
-    import vizro.plotly.express as px
-    from vizro import Vizro
-    from vizro.actions import export_data
+        iris = px.data.iris()
 
-    iris = px.data.iris()
+        page = vm.Page(
+            title="Using actions",
+            components=[
+                vm.Graph(
+                    figure=px.scatter(iris, x="petal_length", y="sepal_length", color="sepal_width"),
+                ),
+                vm.Graph(
+                    figure=px.histogram(iris, x="petal_length", color="species"),
+                ),
+                vm.Button(
+                    text="Export data",
+                    actions=[
+                        vm.Action(
+                            function=export_data()
+                        ),
+                    ],
+                ),
+            ],
+        )
 
-    page = vm.Page(
-        title="Using actions",
-        components=[
-            vm.Graph(
-                figure=px.scatter(iris, x="petal_length", y="sepal_length", color="sepal_width"),
-            ),
-            vm.Graph(
-                figure=px.histogram(iris, x="petal_length", color="species"),
-            ),
-            vm.Button(
-                text="Export data",
-                actions=[
-                    vm.Action(
-                        function=export_data()
-                    ),
-                ],
-            ),
-        ],
-    )
+        dashboard = vm.Dashboard(pages=[page])
 
-    dashboard = vm.Dashboard(pages=[page])
-
-    Vizro().build(dashboard).run()
-    ```
+        Vizro().build(dashboard).run()
+        ```
 
     === "app.yaml"
-
-    ```yaml
-    # Still requires a .py to add data to the data manager and parse YAML configuration
-    # See yaml_version example
-    pages:
-      - components:
-          - type: graph
-            figure:
-              _target_: scatter
-              data_frame: iris
-              color: sepal_width
-              x: petal_length
-              y: sepal_length
-          - type: graph
-            figure:
-              _target_: histogram
-              data_frame: iris
-              color: species
-              x: petal_length
-          - type: button
-            text: Export data
-            id: export_data_button
-            actions:
-              - function:
-                  _target_: export_data
-        title: Exporting
-    ```
+        ```yaml
+        # Still requires a .py to add data to the data manager and parse YAML configuration
+        # See yaml_version example
+        pages:
+          - components:
+              - type: graph
+                figure:
+                  _target_: scatter
+                  data_frame: iris
+                  color: sepal_width
+                  x: petal_length
+                  y: sepal_length
+              - type: graph
+                figure:
+                  _target_: histogram
+                  data_frame: iris
+                  color: species
+                  x: petal_length
+              - type: button
+                text: Export data
+                id: export_data_button
+                actions:
+                  - function:
+                      _target_: export_data
+            title: Exporting
+        ```
 
     === "Result"
         [![Graph]][graph]
