@@ -56,7 +56,6 @@ class TestRadioItemsInstantiation:
                 [{"label": "True", "value": True}, {"label": "False", "value": False}],
                 [{"label": "True", "value": True}, {"label": "False", "value": False}],
             ),
-            ([True, 2.0, 1.0, "A", "B"], ["True", "2.0", "1.0", "A", "B"]),
         ],
     )
     def test_create_radio_items_valid_options(self, test_options, expected):
@@ -69,9 +68,9 @@ class TestRadioItemsInstantiation:
         assert radio_items.title == ""
         assert radio_items.actions == []
 
-    @pytest.mark.parametrize("test_options", [1, "A", True, 1.0])
+    @pytest.mark.parametrize("test_options", [1, "A", True, 1.0, [True, 2.0, 1.0, "A", "B"]])
     def test_create_radio_items_invalid_options_type(self, test_options):
-        with pytest.raises(ValidationError, match="value is not a valid list"):
+        with pytest.raises(ValidationError, match="Input should be a valid"):
             RadioItems(options=test_options)
 
     def test_create_radio_items_invalid_options_dict(self):
@@ -88,7 +87,6 @@ class TestRadioItemsInstantiation:
             (2.0, [1.0, 2.0, 3.0]),
             (True, [True, False]),
             ("B", [{"label": "A", "value": "A"}, {"label": "B", "value": "B"}]),
-            ("True", [True, 2.0, 1.0, "A", "B"]),
         ],
     )
     def test_create_radio_items_valid_value(self, test_value, options):

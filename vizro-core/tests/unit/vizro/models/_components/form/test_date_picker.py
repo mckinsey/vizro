@@ -45,7 +45,7 @@ class TestDatePickerInstantiation:
         assert date_picker.actions == []
         assert date_picker.range is True
 
-    @pytest.mark.parametrize("title", ["test", 1, 1.0, """## Test header""", ""])
+    @pytest.mark.parametrize("title", ["test", """## Test header""", ""])
     def test_valid_title(self, title):
         date_picker = vm.DatePicker(title=title)
 
@@ -71,7 +71,7 @@ class TestDatePickerInstantiation:
             vm.DatePicker(min="2024-02-01", max="2024-01-01")
 
     def test_validate_max_invalid_date_format(self):
-        with pytest.raises(ValidationError, match="invalid date format"):
+        with pytest.raises(ValidationError, match="Input should be a valid date or datetime"):
             vm.DatePicker(min="50-50-50", max="50-50-50")
 
     def test_validate_range_true_datepicker_value_valid(self):

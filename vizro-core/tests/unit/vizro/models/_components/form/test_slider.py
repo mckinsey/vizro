@@ -137,7 +137,7 @@ class TestSliderInstantiation:
             ]
 
     def test_invalid_marks(self):
-        with pytest.raises(ValidationError, match="2 validation errors for Slider"):
+        with pytest.raises(ValidationError, match="4 validation errors for Slider"):
             vm.Slider(min=1, max=10, marks={"start": 0, "end": 10})
 
     @pytest.mark.parametrize("step, expected", [(1, {}), (None, None)])
@@ -163,7 +163,7 @@ class TestSliderInstantiation:
         assert slider["slider-id"].marks == expected_marks
         assert slider["slider-id"].className == expected_class
 
-    @pytest.mark.parametrize("title", ["test", 1, 1.0, """## Test header""", ""])
+    @pytest.mark.parametrize("title", ["test", """## Test header""", ""])
     def test_valid_title(self, title):
         slider = vm.Slider(title=title)
 
