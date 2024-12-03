@@ -11,6 +11,20 @@ See the fragment files in the [changelog.d directory](https://github.com/mckinse
 
 <!-- scriv-insert-here -->
 
+<a id='changelog-0.1.29'></a>
+
+# 0.1.29 — 2024-12-03
+
+## Highlights ✨
+
+- Filters update automatically when underlying dynamic data changes. See the [user guide on dynamic filters](https://vizro.readthedocs.io/en/stable/pages/user-guides/data/#filters) for more information. ([#879](https://github.com/mckinsey/vizro/pull/879))
+
+## Changed
+
+- Custom controls can be nested arbitrarily deep inside `Page.controls`. ([#903](https://github.com/mckinsey/vizro/pull/903))
+
+- Replace `dmc.Switch` with `dbc.Switch` and change CSS selectors accordingly. ([#907](https://github.com/mckinsey/vizro/pull/907))
+
 <a id='changelog-0.1.28'></a>
 
 # 0.1.28 — 2024-11-27

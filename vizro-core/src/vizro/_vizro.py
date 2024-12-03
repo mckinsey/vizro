@@ -5,7 +5,7 @@ import warnings
 from collections.abc import Iterable
 from contextlib import suppress
 from pathlib import Path, PurePosixPath
-from typing import TYPE_CHECKING, TypedDict
+from typing import TYPE_CHECKING, TypedDict, cast
 
 import dash
 import plotly.io as pio
@@ -15,7 +15,7 @@ from flask_caching import SimpleCache
 import vizro
 from vizro._constants import VIZRO_ASSETS_PATH
 from vizro.managers import data_manager, model_manager
-from vizro.models import Dashboard
+from vizro.models import Dashboard, Filter
 
 logger = logging.getLogger(__name__)
 
@@ -144,9 +144,16 @@ class Vizro:
         # changes size.
         # Any models that are created during the pre-build process *will not* themselves have pre_build run on them.
         # In future may add a second pre_build loop after the first one.
+
+        for filter in cast(Iterable[Filter], model_manager._get_models(Filter)):
+            # Run pre_build on all filters first, then on all other models. This handles dependency between Filter
+            # and Page pre_build and ensures that filters are pre-built before the Page objects that use them.
+            # This is important because the Page pre_build method checks whether filters are dynamic or not, which is
+            # defined in the filter's pre_build method.
+            filter.pre_build()
         for model_id in set(model_manager):
             model = model_manager[model_id]
-            if hasattr(model, "pre_build"):
+            if hasattr(model, "pre_build") and not isinstance(model, Filter):
                 model.pre_build()
 
     def __call__(self, environ: WSGIEnvironment, start_response: StartResponse) -> Iterable[bytes]:

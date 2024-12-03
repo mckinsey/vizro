@@ -519,6 +519,7 @@ class TestFilterBuild:
     def test_filter_build(self, test_column, test_selector):
         filter = vm.Filter(column=test_column, selector=test_selector)
         model_manager["test_page"].controls = [filter]
+
         filter.pre_build()
         result = filter.build()
         expected = test_selector.build()
