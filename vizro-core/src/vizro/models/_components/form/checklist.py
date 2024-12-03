@@ -66,7 +66,8 @@ class Checklist(VizroBaseModel):
 
     def _build_dynamic_placeholder(self):
         if self.value is None:
-            self.value = [get_options_and_default(self.options, multi=True)[1]]
+            _, default_value = get_options_and_default(self.options, multi=True)
+            self.value = [default_value]
 
         return self.__call__(self.options)
 
