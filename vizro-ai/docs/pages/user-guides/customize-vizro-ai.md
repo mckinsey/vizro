@@ -18,7 +18,6 @@ vizro_ai = VizroAI(model="<chosen model>")
     For the string settings to work, you must supply your API key via environment variables. The relevant variable names to be set are noted in each vendor tab.
 
 === "OpenAI"
-
     | Environment variable | Name(s)           |
     | -------------------- | ----------------- |
     | API key              | `OPENAI_API_KEY`  |

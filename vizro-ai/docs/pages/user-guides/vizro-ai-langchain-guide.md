@@ -115,9 +115,7 @@ chain = llm_with_tools | inject_df | tool_router.map()
 
 Now you can use the chain to generate charts or dashboards based on natural language queries. The chain will generate code that you can use to create visualizations.
 
-
 !!! example "Generate chart code"
-
     === "Code"
         ```python
         # Load sample data
@@ -126,17 +124,17 @@ Now you can use the chain to generate charts or dashboards based on natural lang
         plot_response = chain.invoke("Plot GDP per capita for each continent")
         print(plot_response[0].content)
         ```
+
     === "Vizro-AI Generated Code"
         ```python
         import plotly.graph_objects as go
         from vizro.models.types import capture
 
+
         @capture("graph")
         def custom_chart(data_frame):
             continent_gdp = data_frame.groupby("continent")["gdpPercap"].mean().reset_index()
-            fig = go.Figure(
-                data=[go.Bar(x=continent_gdp["continent"], y=continent_gdp["gdpPercap"])]
-            )
+            fig = go.Figure(data=[go.Bar(x=continent_gdp["continent"], y=continent_gdp["gdpPercap"])])
             fig.update_layout(
                 title="GDP per Capita by Continent",
                 xaxis_title="Continent",
@@ -146,14 +144,16 @@ Now you can use the chain to generate charts or dashboards based on natural lang
         ```
 
 !!! example "Generate dashboard code"
-
     === "Code"
         ```python
         dfs = [px.data.gapminder()]
 
-        dashboard_response = chain.invoke("Create a dashboard. This dashboard has a chart showing the correlation between gdpPercap and lifeExp.")
+        dashboard_response = chain.invoke(
+            "Create a dashboard. This dashboard has a chart showing the correlation between gdpPercap and lifeExp."
+        )
         print(dashboard_response[0].content)
         ```
+
     === "Vizro-AI Generated Code"
         ```python
         ############ Imports ##############
@@ -166,9 +166,7 @@ Now you can use the chain to generate charts or dashboards based on natural lang
         @capture("graph")
         def gdp_life_exp_graph(data_frame):
             fig = go.Figure()
-            fig.add_trace(
-                go.Scatter(x=data_frame["gdpPercap"], y=data_frame["lifeExp"], mode="markers")
-            )
+            fig.add_trace(go.Scatter(x=data_frame["gdpPercap"], y=data_frame["lifeExp"], mode="markers"))
             fig.update_layout(
                 title="GDP per Capita vs Life Expectancy",
                 xaxis_title="GDP per Capita",
