@@ -45,7 +45,7 @@ repos:
         args: [--autofix]
 
   - repo: https://github.com/astral-sh/ruff-pre-commit
-    rev: v0.7.2
+    rev: v0.8.1
     hooks:
       - id: ruff
         args: [--fix]
@@ -53,7 +53,7 @@ repos:
       - id: ruff-format
 
   - repo: https://github.com/PyCQA/bandit
-    rev: 1.7.10
+    rev: 1.8.0
     hooks:
       - id: bandit
         args: [-c, pyproject.toml, -ll]
@@ -112,3 +112,4 @@ ci:
     - codespell
     - bandit
     - mypy
+

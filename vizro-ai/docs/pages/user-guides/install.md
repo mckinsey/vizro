@@ -66,7 +66,7 @@ Vizro-AI supports **any** model that is available via [Langchain's `BaseChatMode
 
 To use OpenAI with Vizro-AI you need an API key, which you can get by [creating an OpenAI account if you don't already have one](https://platform.openai.com/account/api-keys).
 
-We recommend that you consult the [third-party API key section of the disclaimer documentation](../explanation/disclaimer.md) documentation.
+We recommend that you consult the [third-party API key section of the disclaimer documentation](../explanation/disclaimer.md).
 
 There are two common ways to set up the API key in a development environment.
 
