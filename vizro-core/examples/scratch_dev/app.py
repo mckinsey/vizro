@@ -1,69 +1,36 @@
 from typing import List, Literal
 
-from dash import html
-
 import vizro.models as vm
 import vizro.plotly.express as px
+from dash import html
 from vizro import Vizro
-from vizro.models.types import ControlType
+from vizro._themes._color_values import COLORS
 
-df_gapminder = px.data.gapminder()
-
-
-class ControlGroup(vm.VizroBaseModel):
-    """Container to group controls."""
-
-    type: Literal["control_group"] = "control_group"
-    title: str
-    controls: List[ControlType] = []
-
-    def build(self):
-        return html.Div(
-            [html.H4(self.title), html.Hr()] + [control.build() for control in self.controls],
-        )
+df = px.data.gapminder()
 
 
-vm.Page.add_type("controls", ControlGroup)
-
-page1 = vm.Page(
-    title="Relationship Analysis",
+page = vm.Page(
+    title="Charts UI",
     components=[
-        vm.Graph(id="scatter", figure=px.scatter(df_gapminder, x="gdpPercap", y="lifeExp", size="pop")),
+        vm.Card(text="Foo"),
+        vm.Graph(
+            id="gapminder",
+            figure=px.bar(
+                df,
+                x="continent",
+                y="gdpPercap",
+            ),
+        ),
     ],
     controls=[
-        ControlGroup(
-            title="Group A",
-            controls=[
-                vm.Parameter(
-                    id="this",
-                    targets=["scatter.x"],
-                    selector=vm.Dropdown(
-                        options=["lifeExp", "gdpPercap", "pop"], multi=False, value="gdpPercap", title="Choose x-axis"
-                    ),
-                ),
-                vm.Parameter(
-                    targets=["scatter.y"],
-                    selector=vm.Dropdown(
-                        options=["lifeExp", "gdpPercap", "pop"], multi=False, value="lifeExp", title="Choose y-axis"
-                    ),
-                ),
-            ],
-        ),
-        ControlGroup(
-            title="Group B",
-            controls=[
-                vm.Parameter(
-                    targets=["scatter.size"],
-                    selector=vm.Dropdown(
-                        options=["lifeExp", "gdpPercap", "pop"], multi=False, value="pop", title="Choose bubble size"
-                    ),
-                )
-            ],
+        vm.Filter(
+            targets=["gapminder"],
+            column="continent",
         ),
     ],
 )
 
-dashboard = vm.Dashboard(pages=[page1])
+dashboard = vm.Dashboard(pages=[page])
 
 if __name__ == "__main__":
     Vizro().build(dashboard).run()

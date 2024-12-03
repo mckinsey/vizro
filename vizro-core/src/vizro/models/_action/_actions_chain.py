@@ -1,11 +1,12 @@
 from functools import partial
 from typing import Any, NamedTuple
 
-try:
-    from pydantic.v1 import validator
-except ImportError:  # pragma: no cov
-    from pydantic import validator
+from pydantic import validator
 
+# try:
+#     from pydantic.v1 import validator
+# except ImportError:  # pragma: no cov
+#     from pydantic import validator
 from vizro.models import Action, VizroBaseModel
 
 

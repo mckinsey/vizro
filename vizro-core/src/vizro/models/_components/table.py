@@ -3,19 +3,20 @@ from typing import Literal
 
 import pandas as pd
 from dash import State, dcc, html
+from pydantic import Field, PrivateAttr, field_validator, validator
+from pydantic.json_schema import SkipJsonSchema
 
-try:
-    from pydantic.v1 import Field, PrivateAttr, validator
-except ImportError:  # pragma: no cov
-    from pydantic import Field, PrivateAttr, validator
-
+# try:
+#     from pydantic.v1 import Field, PrivateAttr, validator
+# except ImportError:  # pragma: no cov
+#     from pydantic import Field, PrivateAttr, validator
 from vizro.actions._actions_utils import CallbackTriggerDict, _get_component_actions, _get_parent_model
 from vizro.managers import data_manager
 from vizro.models import Action, VizroBaseModel
 from vizro.models._action._actions_chain import _action_validator_factory
 from vizro.models._components._components_utils import _process_callable_data_frame
 from vizro.models._models_utils import _log_call
-from vizro.models.types import CapturedCallable
+from vizro.models.types import CapturedCallable, validate_captured_callable
 
 logger = logging.getLogger(__name__)
 
@@ -37,8 +38,10 @@ class Table(VizroBaseModel):
     """
 
     type: Literal["table"] = "table"
-    figure: CapturedCallable = Field(
-        ..., import_path="vizro.tables", mode="table", description="Function that returns a `Dash DataTable`."
+    figure: SkipJsonSchema[CapturedCallable] = Field(
+        ...,
+        json_schema_extra={"mode": "table", "import_path": "vizro.tables"},
+        description="Function that returns a `Dash DataTable`.",
     )
     title: str = Field("", description="Title of the `Table`")
     header: str = Field(
@@ -59,6 +62,7 @@ class Table(VizroBaseModel):
     _output_component_property: str = PrivateAttr("children")
 
     # Validators
+    _validate_figure = field_validator("figure", mode="before")(validate_captured_callable)
     set_actions = _action_validator_factory("active_cell")
     _validate_callable = validator("figure", allow_reuse=True, always=True)(_process_callable_data_frame)
 

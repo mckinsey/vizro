@@ -24,11 +24,8 @@ class TestButtonInstantiation:
         [
             ("Test", "/page_1_reference"),
             ("Test", "https://www.google.de/"),
-            (123, "/"),
             ("""# Header""", "/"),
-            (1.23, "/"),
             ("""<p>Hello </p>""", "/"),
-            (True, "/"),
         ],
     )
     def test_create_button_with_optional(self, text, href):

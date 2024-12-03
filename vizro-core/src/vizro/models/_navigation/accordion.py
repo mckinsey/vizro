@@ -4,12 +4,12 @@ from typing import Literal
 
 import dash_bootstrap_components as dbc
 from dash import get_relative_path
+from pydantic import Field, field_validator, validator
 
-try:
-    from pydantic.v1 import Field, validator
-except ImportError:  # pragma: no cov
-    from pydantic import Field, validator
-
+# try:
+#     from pydantic.v1 import Field, validator
+# except ImportError:  # pragma: no cov
+#     from pydantic import Field, validator
 from vizro._constants import ACCORDION_DEFAULT_TITLE
 from vizro.managers._model_manager import ModelID, model_manager
 from vizro.models import VizroBaseModel
@@ -31,7 +31,8 @@ class Accordion(VizroBaseModel):
 
     _validate_pages = validator("pages", allow_reuse=True)(_validate_pages)
 
-    @validator("pages", pre=True)
+    @field_validator("pages", mode="before")
+    @classmethod
     def coerce_pages_type(cls, pages):
         if isinstance(pages, Mapping):
             return pages

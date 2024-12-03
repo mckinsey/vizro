@@ -5,12 +5,12 @@ import re
 import dash_bootstrap_components as dbc
 import pytest
 from asserts import assert_component_equal
+from pydantic import ValidationError
 
-try:
-    from pydantic.v1 import ValidationError
-except ImportError:  # pragma: no cov
-    from pydantic import ValidationError
-
+# try:
+#     from pydantic.v1 import ValidationError
+# except ImportError:  # pragma: no cov
+#     from pydantic import ValidationError
 import vizro.models as vm
 from vizro._constants import ACCORDION_DEFAULT_TITLE
 
@@ -41,7 +41,7 @@ class TestAccordionInstantiation:
             vm.Accordion(pages=pages)
 
     def test_invalid_field_pages_wrong_input_type(self):
-        with pytest.raises(ValidationError, match="str type expected"):
+        with pytest.raises(ValidationError, match="Input should be a valid string"):
             vm.Accordion(pages=[vm.Page(title="Page 3", components=[vm.Button()])])
 
     @pytest.mark.parametrize("pages", [["non existent page"], {"Group": ["non existent page"]}])

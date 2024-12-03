@@ -1,13 +1,12 @@
 from typing import Literal, Optional
 
-from dash import html
-
-try:
-    from pydantic.v1 import Field, PrivateAttr, root_validator, validator
-except ImportError:  # pragma: no cov
-    from pydantic import Field, PrivateAttr, root_validator, validator
-
+# try:
+#     from pydantic.v1 import Field, PrivateAttr, root_validator, validator
+# except ImportError:  # pragma: no cov
+#     from pydantic import Field, PrivateAttr, root_validator, validator
 import dash_bootstrap_components as dbc
+from dash import html
+from pydantic import Field, PrivateAttr, root_validator, validator
 
 from vizro.models import Action, VizroBaseModel
 from vizro.models._action._actions_chain import _action_validator_factory

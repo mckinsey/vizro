@@ -1,15 +1,13 @@
 from __future__ import annotations
 
 from collections.abc import Iterable, Mapping
-from typing import Any, Optional, TypedDict, Union, cast
+from typing import Annotated, Any, Optional, TypedDict, Union, cast
 
 from dash import dcc, html
+from pydantic import BeforeValidator, Field, conlist, model_validator, validator
 
-try:
-    from pydantic.v1 import Field, root_validator, validator
-except ImportError:  # pragma: no cov
-    from pydantic import Field, root_validator, validator
-
+# except ImportError:  # pragma: no cov
+#     from pydantic import Field, validator
 from vizro._constants import ON_PAGE_LOAD_ACTION_PREFIX
 from vizro.actions import _on_page_load
 from vizro.managers import model_manager
@@ -17,7 +15,7 @@ from vizro.managers._model_manager import FIGURE_MODELS, DuplicateIDError
 from vizro.models import Action, Filter, Layout, VizroBaseModel
 from vizro.models._action._actions_chain import ActionsChain, Trigger
 from vizro.models._layout import set_layout
-from vizro.models._models_utils import _log_call, check_captured_callable, validate_min_length
+from vizro.models._models_utils import _log_call, check_captured_callable
 
 from .types import ComponentType, ControlType
 
@@ -42,10 +40,12 @@ class Page(VizroBaseModel):
 
     """
 
-    components: list[ComponentType]
+    components: conlist(
+        Annotated[ComponentType, BeforeValidator(check_captured_callable), Field(...)], min_length=1
+    )  # since no default, can skip validate_default
     title: str = Field(..., description="Title to be displayed.")
     description: str = Field("", description="Description for meta tags.")
-    layout: Layout = None  # type: ignore[assignment]
+    layout: Optional[Layout] = None
     controls: list[ControlType] = []
     path: str = Field("", description="Path to navigate to page.")
 
@@ -53,13 +53,10 @@ class Page(VizroBaseModel):
     actions: list[ActionsChain] = []
 
     # Re-used validators
-    _check_captured_callable = validator("components", allow_reuse=True, each_item=True, pre=True)(
-        check_captured_callable
-    )
-    _validate_min_length = validator("components", allow_reuse=True, always=True)(validate_min_length)
     _validate_layout = validator("layout", allow_reuse=True, always=True)(set_layout)
 
-    @root_validator(pre=True)
+    @model_validator(mode="before")
+    @classmethod
     def set_id(cls, values):
         if "title" not in values:
             return values
@@ -67,6 +64,8 @@ class Page(VizroBaseModel):
         values.setdefault("id", values["title"])
         return values
 
+    # TODO[pydantic]: We couldn't refactor the `validator`, please replace it by `field_validator` manually.
+    # Check https://docs.pydantic.dev/dev-v2/migration/#changes-to-validators for more information.
     @validator("path", always=True)
     def set_path(cls, path, values) -> str:
         # Based on how Github generates anchor links - see:

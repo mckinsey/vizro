@@ -2,12 +2,12 @@ from typing import Literal, Optional
 
 import dash_bootstrap_components as dbc
 from dash import html
+from pydantic import Field
 
-try:
-    from pydantic.v1 import Field
-except ImportError:  # pragma: no cov
-    from pydantic import Field
-
+# try:
+#     from pydantic.v1 import Field
+# except ImportError:  # pragma: no cov
+#     from pydantic import Field
 from vizro.models import Action, VizroBaseModel
 from vizro.models._models_utils import _log_call
 

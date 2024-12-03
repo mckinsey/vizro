@@ -4,13 +4,12 @@ import itertools
 
 import dash_bootstrap_components as dbc
 from dash import get_relative_path, html
+from pydantic import Field, PrivateAttr, field_validator, validator
 
-try:
-    from pydantic.v1 import Field, PrivateAttr, validator
-except ImportError:  # pragma: no cov
-    from pydantic import Field, PrivateAttr, validator
-
-
+# try:
+#     from pydantic.v1 import Field, PrivateAttr, validator
+# except ImportError:  # pragma: no cov
+#     from pydantic import Field, PrivateAttr, validator
 from vizro.managers._model_manager import ModelID, model_manager
 from vizro.models import VizroBaseModel
 from vizro.models._models_utils import _log_call
@@ -37,7 +36,8 @@ class NavLink(VizroBaseModel):
     # Re-used validators
     _validate_pages = validator("pages", allow_reuse=True)(_validate_pages)
 
-    @validator("icon")
+    @field_validator("icon")
+    @classmethod
     def validate_icon(cls, icon) -> str:
         return icon.strip().lower().replace(" ", "_")
 

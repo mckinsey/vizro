@@ -2,15 +2,14 @@ import math
 from datetime import date
 from typing import Literal, Optional, Union
 
-from dash import dcc, html
-
-try:
-    from pydantic.v1 import Field, PrivateAttr, StrictBool, root_validator, validator
-except ImportError:  # pragma: no cov
-    from pydantic import Field, PrivateAttr, StrictBool, root_validator, validator
-
+# try:
+#     from pydantic.v1 import Field, PrivateAttr, StrictBool, root_validator, validator
+# except ImportError:  # pragma: no cov
+#     from pydantic import Field, PrivateAttr, StrictBool, root_validator, validator
 import dash_bootstrap_components as dbc
 import dash_mantine_components as dmc
+from dash import dcc, html
+from pydantic import Field, PrivateAttr, StrictBool, root_validator, validator
 
 from vizro.models import Action, VizroBaseModel
 from vizro.models._action._actions_chain import _action_validator_factory
@@ -78,6 +77,8 @@ class Dropdown(VizroBaseModel):
     _validate_options = root_validator(allow_reuse=True, pre=True)(validate_options_dict)
     _validate_value = validator("value", allow_reuse=True, always=True)(validate_value)
 
+    # TODO[pydantic]: We couldn't refactor the `validator`, please replace it by `field_validator` manually.
+    # Check https://docs.pydantic.dev/dev-v2/migration/#changes-to-validators for more information.
     @validator("multi", always=True)
     def validate_multi(cls, multi, values):
         if "value" not in values:

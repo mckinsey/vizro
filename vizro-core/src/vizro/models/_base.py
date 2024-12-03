@@ -1,23 +1,21 @@
+# try:
+#     from pydantic.v1 import BaseModel, Field, validator
+#     from pydantic.v1.fields import SHAPE_LIST, ModelField
+#     from pydantic.v1.typing import get_args
+# except ImportError:  # pragma: no cov
+#     from pydantic import BaseModel, Field, validator
+#     from pydantic.fields import SHAPE_LIST, ModelField
+#     from pydantic.typing import get_args
+import inspect
+import logging
+import textwrap
 from collections.abc import Mapping
 from contextlib import contextmanager
 from typing import Annotated, Any, Optional, Union
 
-try:
-    from pydantic.v1 import BaseModel, Field, validator
-    from pydantic.v1.fields import SHAPE_LIST, ModelField
-    from pydantic.v1.typing import get_args
-except ImportError:  # pragma: no cov
-    from pydantic import BaseModel, Field, validator
-    from pydantic.fields import SHAPE_LIST, ModelField
-    from pydantic.typing import get_args
-
-
-import inspect
-import logging
-import textwrap
-
 import autoflake
 import black
+from pydantic import BaseModel, ConfigDict, Field, field_validator
 
 from vizro.managers import model_manager
 from vizro.models._models_utils import REPLACEMENT_STRINGS, _log_call
@@ -165,14 +163,18 @@ class VizroBaseModel(BaseModel):
         "",
         description="ID to identify model. Must be unique throughout the whole dashboard."
         "When no ID is chosen, ID will be automatically generated.",
+        validate_default=True,
     )
 
-    @validator("id", always=True)
+    # TODO[pydantic]: We couldn't refactor the `validator`, please replace it by `field_validator` manually.
+    # Check https://docs.pydantic.dev/dev-v2/migration/#changes-to-validators for more information.
+    @field_validator("id")
+    @classmethod
     def set_id(cls, id) -> str:
         return id or model_manager._generate_id()
 
     @_log_call
-    def __init__(self, **data: Any):
+    def __init__(self, **data: Any):  # TODO: model_post_init
         """Adds this model instance to the model manager."""
         # Note this runs after the set_id validator, so self.id is available here. In pydantic v2 we should do this
         # using the new model_post_init method to avoid overriding __init__.
@@ -326,8 +328,11 @@ class VizroBaseModel(BaseModel):
             logging.exception("Code formatting failed; returning unformatted code")
             return unformatted_code
 
-    class Config:
-        extra = "forbid"  # Good for spotting user typos and being strict.
-        smart_union = True  # Makes unions work without unexpected coercion (will be the default in pydantic v2).
-        validate_assignment = True  # Run validators when a field is assigned after model instantiation.
-        copy_on_model_validation = "none"  # Don't copy sub-models. Essential for the model_manager to work correctly.
+    # TODO[pydantic]: The following keys were removed: `smart_union`, `copy_on_model_validation`.
+    # Check https://docs.pydantic.dev/dev-v2/migration/#changes-to-config for more information.
+    model_config = ConfigDict(
+        extra="forbid",
+        smart_union=True,
+        validate_assignment=True,
+        copy_on_model_validation="none",
+    )

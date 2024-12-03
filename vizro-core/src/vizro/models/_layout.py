@@ -3,12 +3,12 @@ from typing import NamedTuple, Optional
 import numpy as np
 from dash import html
 from numpy import ma
+from pydantic import Field, PrivateAttr, field_validator
 
-try:
-    from pydantic.v1 import Field, PrivateAttr, validator
-except ImportError:  # pragma: no cov
-    from pydantic import Field, PrivateAttr, validator
-
+# try:
+#     from pydantic.v1 import Field, PrivateAttr, validator
+# except ImportError:  # pragma: no cov
+#     from pydantic import Field, PrivateAttr
 from vizro._constants import EMPTY_SPACE_CONST
 from vizro.models import VizroBaseModel
 from vizro.models._models_utils import _log_call
@@ -33,7 +33,7 @@ def _get_unique_grid_component_ids(grid: list[list[int]]):
 
 
 # Validators for reuse
-def set_layout(cls, layout, values):
+def set_layout(layout, values):
     from vizro.models import Layout
 
     if "components" not in values:
@@ -157,15 +157,18 @@ class Layout(VizroBaseModel):
     """
 
     grid: list[list[int]] = Field(..., description="Grid specification to arrange components on screen.")
-    row_gap: str = Field(GAP_DEFAULT, description="Gap between rows in px. Defaults to 12px.", regex="[0-9]+px")
-    col_gap: str = Field(GAP_DEFAULT, description="Gap between columns in px. Defaults to 12px.", regex="[0-9]+px")
-    row_min_height: str = Field(MIN_DEFAULT, description="Minimum row height in px. Defaults to 0px.", regex="[0-9]+px")
+    row_gap: str = Field(GAP_DEFAULT, description="Gap between rows in px. Defaults to 12px.", pattern="[0-9]+px")
+    col_gap: str = Field(GAP_DEFAULT, description="Gap between columns in px. Defaults to 12px.", pattern="[0-9]+px")
+    row_min_height: str = Field(
+        MIN_DEFAULT, description="Minimum row height in px. Defaults to 0px.", pattern="[0-9]+px"
+    )
     col_min_width: str = Field(
-        MIN_DEFAULT, description="Minimum column width in px. Defaults to 0px.", regex="[0-9]+px"
+        MIN_DEFAULT, description="Minimum column width in px. Defaults to 0px.", pattern="[0-9]+px"
     )
     _component_grid_lines: Optional[list[ColRowGridLines]] = PrivateAttr()
 
-    @validator("grid")
+    @field_validator("grid")
+    @classmethod
     def validate_grid(cls, grid):
         if len({len(row) for row in grid}) > 1:
             raise ValueError("All rows must be of same length.")

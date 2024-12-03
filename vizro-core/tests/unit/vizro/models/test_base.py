@@ -1,14 +1,13 @@
-from typing import Literal, Optional, Union
-
-import pytest
-
-try:
-    from pydantic.v1 import Field, ValidationError, root_validator, validator
-except ImportError:  # pragma: no cov
-    from pydantic import Field, ValidationError, root_validator, validator
+# try:
+#     from pydantic.v1 import Field, ValidationError, root_validator, validator
+# except ImportError:  # pragma: no cov
+#     from pydantic import Field, ValidationError, validator
 import logging
 import textwrap
-from typing import Annotated
+from typing import Annotated, Literal, Optional, Union
+
+import pytest
+from pydantic import Field, ValidationError, model_validator, validator
 
 import vizro.models as vm
 import vizro.plotly.express as px
@@ -87,7 +86,9 @@ def ParentWithNonDiscriminatedUnion():
 class TestDiscriminatedUnion:
     def test_no_type_match(self, Parent):
         child = ChildZ()
-        with pytest.raises(ValidationError, match="No match for discriminator 'type' and value 'child_Z'"):
+        with pytest.raises(
+            ValidationError, match="'type' does not match any of the expected tags: 'child_x', 'child_y'"
+        ):
             Parent(child=child)
 
     def test_add_type_model_instantiation(self, Parent):
@@ -115,7 +116,9 @@ class TestOptionalDiscriminatedUnion:
     # The current error message is the non-discriminated union one.
     def test_no_type_match_current_behaviour(self, ParentWithOptional):
         child = ChildZ()
-        with pytest.raises(ValidationError, match="unexpected value; permitted: 'child_x'"):
+        with pytest.raises(
+            ValidationError, match="'type' does not match any of the expected tags: 'child_x', 'child_y'"
+        ):
             ParentWithOptional(child=child)
 
     def test_add_type_model_instantiation(self, ParentWithOptional):
@@ -132,7 +135,9 @@ class TestOptionalDiscriminatedUnion:
 class TestListDiscriminatedUnion:
     def test_no_type_match(self, ParentWithList):
         child = ChildZ()
-        with pytest.raises(ValidationError, match="No match for discriminator 'type' and value 'child_Z'"):
+        with pytest.raises(
+            ValidationError, match="'type' does not match any of the expected tags: 'child_x', 'child_y'"
+        ):
             ParentWithList(child=[child])
 
     def test_add_type_model_instantiation(self, ParentWithList):
@@ -205,13 +210,16 @@ class ModelWithFieldSetting(vm.VizroBaseModel):
     foo: str = ""
 
     # Set a field with regular validator
+    # TODO[pydantic]: We couldn't refactor the `validator`, please replace it by `field_validator` manually.
+    # Check https://docs.pydantic.dev/dev-v2/migration/#changes-to-validators for more information.
     @validator("foo", always=True)
     def set_foo(cls, foo) -> str:
         return foo or "long-random-thing"
 
     # Set a field with a pre=True root-validator -->
     # # this will not be caught by exclude_unset=True
-    @root_validator(pre=True)
+    @model_validator(mode="before")
+    @classmethod
     def set_id(cls, values):
         if "title" not in values:
             return values

@@ -4,7 +4,7 @@ import base64
 import logging
 from functools import partial
 from pathlib import Path
-from typing import TYPE_CHECKING, Literal, TypedDict
+from typing import TYPE_CHECKING, Literal, Optional, TypedDict
 
 import dash
 import dash_bootstrap_components as dbc
@@ -21,17 +21,16 @@ from dash import (
     html,
 )
 
-import vizro
-from vizro._themes._templates.template_dashboard_overrides import dashboard_overrides
-
-try:
-    from pydantic.v1 import Field, validator
-except ImportError:  # pragma: no cov
-    from pydantic import Field, validator
-
+# try:
+#     from pydantic.v1 import Field, validator
+# except ImportError:  # pragma: no cov
+#     from pydantic import Field, validator
 from dash.development.base_component import Component
+from pydantic import Field, validator
 
+import vizro
 from vizro._constants import MODULE_PAGE_404, VIZRO_ASSETS_PATH
+from vizro._themes._templates.template_dashboard_overrides import dashboard_overrides
 from vizro.actions._action_loop._action_loop import ActionLoop
 from vizro.models import Navigation, VizroBaseModel
 from vizro.models._models_utils import _log_call
@@ -91,16 +90,22 @@ class Dashboard(VizroBaseModel):
     theme: Literal["vizro_dark", "vizro_light"] = Field(
         "vizro_dark", description="Layout theme to be applied across dashboard. Defaults to `vizro_dark`"
     )
-    navigation: Navigation = None  # type: ignore[assignment]
+    navigation: Optional[Navigation] = None
     title: str = Field("", description="Dashboard title to appear on every page on top left-side.")
 
+    # TODO[pydantic]: We couldn't refactor the `validator`, please replace it by `field_validator` manually.
+    # Check https://docs.pydantic.dev/dev-v2/migration/#changes-to-validators for more information.
     @validator("pages", always=True)
+    @classmethod
     def validate_pages(cls, pages):
         if not pages:
             raise ValueError("Ensure this value has at least 1 item.")
         return pages
 
+    # TODO[pydantic]: We couldn't refactor the `validator`, please replace it by `field_validator` manually.
+    # Check https://docs.pydantic.dev/dev-v2/migration/#changes-to-validators for more information.
     @validator("navigation", always=True)
+    @classmethod
     def set_navigation_pages(cls, navigation, values):
         if "pages" not in values:
             return navigation

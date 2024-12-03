@@ -6,12 +6,12 @@ import dash_bootstrap_components as dbc
 import pytest
 from asserts import STRIP_ALL, assert_component_equal
 from dash import html
+from pydantic import ValidationError
 
-try:
-    from pydantic.v1 import ValidationError
-except ImportError:  # pragma: no cov
-    from pydantic import ValidationError
-
+# try:
+#     from pydantic.v1 import ValidationError
+# except ImportError:  # pragma: no cov
+#     from pydantic import ValidationError
 import vizro.models as vm
 
 pytestmark = pytest.mark.usefixtures("prebuilt_two_page_dashboard")
@@ -46,7 +46,7 @@ class TestNavLinkInstantiation:
         assert nav_link.pages == pages_as_dict
 
     def test_mandatory_label_missing(self):
-        with pytest.raises(ValidationError, match="field required"):
+        with pytest.raises(ValidationError, match="Field required"):
             vm.NavLink()
 
     @pytest.mark.parametrize("pages", [{"Group": []}, []])
@@ -55,8 +55,8 @@ class TestNavLinkInstantiation:
             vm.NavLink(pages=pages)
 
     def test_invalid_field_pages_wrong_input_type(self):
-        with pytest.raises(ValidationError, match="str type expected"):
-            vm.NavLink(pages=[vm.Page(title="Page 3", components=[vm.Button()])])
+        with pytest.raises(ValidationError, match="Input should be a valid"):
+            vm.NavLink(pages=[vm.Page(title="Page 3", components=[vm.Button()])], label="Foo")
 
     @pytest.mark.parametrize("pages", [["non existent page"], {"Group": ["non existent page"]}])
     def test_invalid_page(self, pages):

@@ -1,23 +1,21 @@
 from __future__ import annotations
 
 from collections.abc import Iterable
-from typing import Any, Literal, Union, cast
+from typing import Any, Literal, Optional, Union, cast
 
 import pandas as pd
 from dash import dcc
 from pandas.api.types import is_datetime64_any_dtype, is_numeric_dtype
+from pydantic import Field, PrivateAttr, validator
 
-from vizro.managers._data_manager import DataSourceName
-
-try:
-    from pydantic.v1 import Field, PrivateAttr, validator
-except ImportError:  # pragma: no cov
-    from pydantic import Field, PrivateAttr, validator
-
+# try:
+#     from pydantic.v1 import Field, PrivateAttr, validator
+# except ImportError:  # pragma: no cov
+#     from pydantic import Field, PrivateAttr, validator
 from vizro._constants import ALL_OPTION, FILTER_ACTION_PREFIX
 from vizro.actions import _filter
 from vizro.managers import data_manager, model_manager
-from vizro.managers._data_manager import _DynamicData
+from vizro.managers._data_manager import DataSourceName, _DynamicData
 from vizro.managers._model_manager import FIGURE_MODELS, ModelID
 from vizro.models import Action, VizroBaseModel
 from vizro.models._components.form import (
@@ -93,7 +91,7 @@ class Filter(VizroBaseModel):
         description="Target component to be affected by filter. "
         "If none are given then target all components on the page that use `column`.",
     )
-    selector: SelectorType = None
+    selector: Optional[SelectorType] = None
 
     _dynamic: bool = PrivateAttr(False)
 
@@ -102,6 +100,8 @@ class Filter(VizroBaseModel):
 
     _column_type: Literal["numerical", "categorical", "temporal"] = PrivateAttr()
 
+    # TODO[pydantic]: We couldn't refactor the `validator`, please replace it by `field_validator` manually.
+    # Check https://docs.pydantic.dev/dev-v2/migration/#changes-to-validators for more information.
     @validator("targets", each_item=True)
     def check_target_present(cls, target):
         if target not in model_manager:

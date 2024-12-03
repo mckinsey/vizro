@@ -1,17 +1,18 @@
 from typing import Literal
 
 from dash import dcc, html
+from pydantic import Field, PrivateAttr, field_validator, validator
+from pydantic.json_schema import SkipJsonSchema
 
-try:
-    from pydantic.v1 import Field, PrivateAttr, validator
-except ImportError:  # pragma: no cov
-    from pydantic import Field, PrivateAttr, validator
-
+# try:
+#     from pydantic.v1 import Field, PrivateAttr, validator
+# except ImportError:  # pragma: no cov
+#     from pydantic import Field, PrivateAttr, validator
 from vizro.managers import data_manager
 from vizro.models import VizroBaseModel
 from vizro.models._components._components_utils import _process_callable_data_frame
 from vizro.models._models_utils import _log_call
-from vizro.models.types import CapturedCallable
+from vizro.models.types import CapturedCallable, validate_captured_callable
 
 
 class Figure(VizroBaseModel):
@@ -24,9 +25,8 @@ class Figure(VizroBaseModel):
     """
 
     type: Literal["figure"] = "figure"
-    figure: CapturedCallable = Field(
-        import_path="vizro.figures",
-        mode="figure",
+    figure: SkipJsonSchema[CapturedCallable] = Field(
+        json_schema_extra={"mode": "figure", "import_path": "vizro.figures"},
         description="Function that returns a figure-like object.",
     )
 
@@ -34,6 +34,7 @@ class Figure(VizroBaseModel):
     _output_component_property: str = PrivateAttr("children")
 
     # Validators
+    _validate_figure = field_validator("figure", mode="before")(validate_captured_callable)
     _validate_callable = validator("figure", allow_reuse=True, always=True)(_process_callable_data_frame)
 
     def __call__(self, **kwargs):

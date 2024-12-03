@@ -2,18 +2,19 @@ import importlib.util
 import logging
 from collections.abc import Collection, Mapping
 from pprint import pformat
-from typing import Any, Union
+from typing import Annotated, Any, Union
 
+# try:
+# from pydantic.v1 import Field
+# except ImportError:  # pragma: no cov
+#     from pydantic import Field
 from dash import Input, Output, State, callback, html
-
-try:
-    from pydantic.v1 import Field, validator
-except ImportError:  # pragma: no cov
-    from pydantic import Field, validator
+from pydantic import Field, StringConstraints, field_validator
+from pydantic.json_schema import SkipJsonSchema
 
 from vizro.models import VizroBaseModel
 from vizro.models._models_utils import _log_call
-from vizro.models.types import CapturedCallable
+from vizro.models.types import CapturedCallable, validate_captured_callable
 
 logger = logging.getLogger(__name__)
 
@@ -30,24 +31,28 @@ class Action(VizroBaseModel):
 
     """
 
-    function: CapturedCallable = Field(..., import_path="vizro.actions", mode="action", description="Action function.")
-    inputs: list[str] = Field(
+    function: SkipJsonSchema[CapturedCallable] = Field(
+        ..., json_schema_extra={"mode": "action", "import_path": "vizro.actions"}, description="Action function."
+    )
+    inputs: list[Annotated[str, StringConstraints(pattern="^[^.]+[.][^.]+$")]] = Field(
         [],
         description="Inputs in the form `<component_id>.<property>` passed to the action function.",
-        regex="^[^.]+[.][^.]+$",
     )
-    outputs: list[str] = Field(
+    outputs: list[Annotated[str, StringConstraints(pattern="^[^.]+[.][^.]+$")]] = Field(
         [],
         description="Outputs in the form `<component_id>.<property>` changed by the action function.",
-        regex="^[^.]+[.][^.]+$",
     )
+
+    # Validators
+    _validate_function = field_validator("function", mode="before")(validate_captured_callable)
 
     # TODO: Problem: generic Action model shouldn't depend on details of particular actions like export_data.
     # Possible solutions: make a generic mapping of action functions to validation functions or the imports they
     # require, and make the code here look up the appropriate validation using the function as key
     # This could then also involve other validations currently only carried out at run-time in pre-defined actions, such
     # as e.g. checking if the correct arguments have been provided to the file_format in export_data.
-    @validator("function")
+    @field_validator("function")
+    @classmethod
     def validate_predefined_actions(cls, function):
         if function._function.__name__ == "export_data":
             file_format = function._arguments.get("file_format")

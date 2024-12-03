@@ -5,13 +5,12 @@ from typing import Literal
 
 import dash_bootstrap_components as dbc
 from dash import html
+from pydantic import Field, field_validator, validator
 
-try:
-    from pydantic.v1 import Field, validator
-except ImportError:  # pragma: no cov
-    from pydantic import Field, validator
-
-
+# try:
+#     from pydantic.v1 import Field, validator
+# except ImportError:  # pragma: no cov
+#     from pydantic import Field, validator
 from vizro.models import VizroBaseModel
 from vizro.models._models_utils import _log_call
 from vizro.models._navigation._navigation_utils import _NavBuildType, _validate_pages
@@ -35,7 +34,8 @@ class NavBar(VizroBaseModel):
     # validators
     _validate_pages = validator("pages", allow_reuse=True)(_validate_pages)
 
-    @validator("pages", pre=True)
+    @field_validator("pages", mode="before")
+    @classmethod
     def coerce_pages_type(cls, pages):
         if isinstance(pages, Mapping):
             return pages
