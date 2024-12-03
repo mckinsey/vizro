@@ -1,7 +1,7 @@
 from collections.abc import Iterable
 from typing import Annotated, Literal, cast
 
-from pydantic import AfterValidator, Field, field_validator
+from pydantic import AfterValidator, Field
 
 # try:
 #     from pydantic.v1 import Field, validator

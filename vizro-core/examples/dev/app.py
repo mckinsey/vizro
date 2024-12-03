@@ -1,7 +1,7 @@
 """Example app to show all features of Vizro."""
 
 from time import sleep
-from typing import Literal, Optional
+from typing import Optional
 
 import dash_bootstrap_components as dbc
 import pandas as pd

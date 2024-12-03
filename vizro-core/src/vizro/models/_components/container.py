@@ -11,7 +11,7 @@ from pydantic import BeforeValidator, Field, conlist, validator
 #     from pydantic import Field, validator
 from vizro.models import VizroBaseModel
 from vizro.models._layout import set_layout
-from vizro.models._models_utils import _log_call, check_captured_callable, validate_min_length
+from vizro.models._models_utils import _log_call, check_captured_callable
 from vizro.models.types import ComponentType
 
 if TYPE_CHECKING:

@@ -15,7 +15,7 @@ from vizro.managers._model_manager import FIGURE_MODELS, DuplicateIDError
 from vizro.models import Action, Filter, Layout, VizroBaseModel
 from vizro.models._action._actions_chain import ActionsChain, Trigger
 from vizro.models._layout import set_layout
-from vizro.models._models_utils import _log_call, check_captured_callable, validate_min_length
+from vizro.models._models_utils import _log_call, check_captured_callable
 
 from .types import ComponentType, ControlType
 

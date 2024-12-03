@@ -12,9 +12,8 @@ from typing import Annotated, Any, Literal, Protocol, Union, runtime_checkable
 
 import plotly.io as pio
 import pydantic_core as cs
-from pydantic import Field, StrictBool, ValidationInfo, field_validator
+from pydantic import Field, StrictBool, ValidationInfo
 from pydantic.fields import FieldInfo
-from pydantic.json_schema import GetJsonSchemaHandler, JsonSchemaValue
 from typing_extensions import TypedDict
 
 from vizro.charts._charts_utils import _DashboardReadyFigure
