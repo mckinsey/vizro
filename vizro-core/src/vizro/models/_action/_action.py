@@ -12,7 +12,6 @@ from dash import Input, Output, State, callback, html
 from pydantic import Field, StringConstraints, field_validator
 from pydantic.json_schema import SkipJsonSchema
 
-from vizro.managers._model_manager import ModelID
 from vizro.models import VizroBaseModel
 from vizro.models._models_utils import _log_call
 from vizro.models.types import CapturedCallable, validate_captured_callable
@@ -84,7 +83,7 @@ class Action(VizroBaseModel):
         if self.inputs:
             callback_inputs = [State(*input.split(".")) for input in self.inputs]
         else:
-            callback_inputs = _get_action_callback_mapping(action_id=ModelID(str(self.id)), argument="inputs")
+            callback_inputs = _get_action_callback_mapping(self, argument="inputs")
 
         callback_outputs: Union[list[Output], dict[str, Output]]
         if self.outputs:
@@ -96,9 +95,9 @@ class Action(VizroBaseModel):
             if len(callback_outputs) == 1:
                 callback_outputs = callback_outputs[0]
         else:
-            callback_outputs = _get_action_callback_mapping(action_id=ModelID(str(self.id)), argument="outputs")
+            callback_outputs = _get_action_callback_mapping(self, argument="outputs")
 
-        action_components = _get_action_callback_mapping(action_id=ModelID(str(self.id)), argument="components")
+        action_components = _get_action_callback_mapping(self, argument="components")
 
         return callback_inputs, callback_outputs, action_components
 

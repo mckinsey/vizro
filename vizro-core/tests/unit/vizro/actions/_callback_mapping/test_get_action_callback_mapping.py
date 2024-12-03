@@ -9,6 +9,7 @@ import vizro.plotly.express as px
 from vizro import Vizro
 from vizro.actions import export_data, filter_interaction
 from vizro.actions._callback_mapping._get_action_callback_mapping import _get_action_callback_mapping
+from vizro.managers import model_manager
 from vizro.models.types import capture
 
 
@@ -185,7 +186,7 @@ class TestCallbackMapping:
         ],
     )
     def test_action_callback_mapping_inputs(self, action_id, action_callback_inputs_expected):
-        result = _get_action_callback_mapping(action_id=action_id, argument="inputs")
+        result = _get_action_callback_mapping(action=model_manager[action_id], argument="inputs")
         assert result == action_callback_inputs_expected
 
     @pytest.mark.parametrize(
@@ -242,14 +243,14 @@ class TestCallbackMapping:
         indirect=["action_callback_outputs_expected"],
     )
     def test_action_callback_mapping_outputs(self, action_id, action_callback_outputs_expected):
-        result = _get_action_callback_mapping(action_id=action_id, argument="outputs")
+        result = _get_action_callback_mapping(action=model_manager[action_id], argument="outputs")
         assert result == action_callback_outputs_expected
 
     @pytest.mark.parametrize(
         "export_data_outputs_expected", [("scatter_chart", "scatter_chart_2", "vizro_table")], indirect=True
     )
     def test_export_data_no_targets_set_mapping_outputs(self, export_data_outputs_expected):
-        result = _get_action_callback_mapping(action_id="export_data_action", argument="outputs")
+        result = _get_action_callback_mapping(action=model_manager["export_data_action"], argument="outputs")
 
         assert result == export_data_outputs_expected
 
@@ -266,7 +267,7 @@ class TestCallbackMapping:
     def test_export_data_targets_set_mapping_outputs(
         self, config_for_testing_all_components_with_actions, export_data_outputs_expected
     ):
-        result = _get_action_callback_mapping(action_id="export_data_action", argument="outputs")
+        result = _get_action_callback_mapping(action=model_manager["export_data_action"], argument="outputs")
 
         assert result == export_data_outputs_expected
 
@@ -274,7 +275,9 @@ class TestCallbackMapping:
         "export_data_components_expected", [("scatter_chart", "scatter_chart_2", "vizro_table")], indirect=True
     )
     def test_export_data_no_targets_set_mapping_components(self, export_data_components_expected):
-        result_components = _get_action_callback_mapping(action_id="export_data_action", argument="components")
+        result_components = _get_action_callback_mapping(
+            action=model_manager["export_data_action"], argument="components"
+        )
         assert_component_equal(result_components, export_data_components_expected)
 
     @pytest.mark.parametrize(
@@ -290,11 +293,13 @@ class TestCallbackMapping:
     def test_export_data_targets_set_mapping_components(
         self, config_for_testing_all_components_with_actions, export_data_components_expected
     ):
-        result_components = _get_action_callback_mapping(action_id="export_data_action", argument="components")
+        result_components = _get_action_callback_mapping(
+            action=model_manager["export_data_action"], argument="components"
+        )
         assert_component_equal(result_components, export_data_components_expected)
 
     def test_known_action_unknown_argument(self):
-        result = _get_action_callback_mapping(action_id="export_data_action", argument="unknown-argument")
+        result = _get_action_callback_mapping(action=model_manager["export_data_action"], argument="unknown-argument")
         assert result == {}
 
     # "export_data_custom_action" represents a unique scenario within custom actions, where the function's name
@@ -305,5 +310,5 @@ class TestCallbackMapping:
         "argument, expected", [("inputs", {}), ("outputs", {}), ("components", []), ("unknown-argument", {})]
     )
     def test_custom_action_mapping(self, action_id, argument, expected):
-        result = _get_action_callback_mapping(action_id=action_id, argument=argument)
+        result = _get_action_callback_mapping(action=model_manager[action_id], argument=argument)
         assert result == expected

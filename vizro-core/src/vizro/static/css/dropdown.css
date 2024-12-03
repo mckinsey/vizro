@@ -3,8 +3,8 @@
   background-color: var(--field-enabled);
   border: none;
   border-radius: 0;
-  box-shadow: var(--box-shadow-elevation-0);
-  font-size: var(--text-size-02);
+  box-shadow: var(--elevation-0);
+  font-size: 0.875rem;
 }
 
 /* Dropdown menu when clicking on expand arrow */
@@ -12,20 +12,20 @@
   background-color: var(--field-enabled);
   border: none;
   border-radius: 0;
-  box-shadow: var(--box-shadow-elevation-0);
-  font-size: var(--text-size-02);
-  line-height: var(--text-size-05);
+  box-shadow: var(--elevation-0);
+  font-size: 0.875rem;
+  line-height: 1.5rem;
 }
 
 /* Dropdown menu options */
 #dashboard-container .VirtualizedSelectOption {
   color: var(--text-primary);
-  font-weight: var(--text-weight-regular);
+  font-weight: 400;
 }
 
 /* Dropdown menu hover effect */
 #dashboard-container .VirtualizedSelectFocusedOption {
-  background-color: var(--state-overlays-hover);
+  background-color: var(--stateOverlays-hover);
 }
 
 /* Input box for existing values and user input */
@@ -43,7 +43,7 @@
 /* User input */
 #dashboard-container .dash-dropdown .Select-input {
   display: block;
-  height: var(--tag-height);
+  height: 24px;
   margin-left: unset;
 }
 
@@ -58,12 +58,12 @@
 
 /* Border on focus */
 #dashboard-container .is-focused:not(.is-open) > .Select-control {
-  box-shadow: 0 0 0 2px var(--focus-focus) inset;
+  box-shadow: 0 0 0 2px var(--focus) inset;
 }
 
 /* Single-select dropdown only ------------------- */
 #dashboard-container .Select--single .Select-value {
-  padding-left: var(--spacing-02);
+  padding-left: 0.5rem;
 }
 
 .has-value.Select--single > .Select-control .Select-value .Select-value-label,
@@ -78,24 +78,23 @@
 
 /* Tags --------------------------- */
 #dashboard-container .Select--multi .Select-value {
-  background-color: var(--tags-bg-color);
+  background-color: var(--dropdown-label-bg);
   border: 0;
   border-radius: 0;
-  box-shadow: var(--box-shadow-elevation-0);
-  color: var(--tags-text-color);
-  font-size: var(--text-size-02);
-  height: var(--tag-height);
+  box-shadow: var(--elevation-0);
+  color: var(--text-secondary);
+  font-size: 0.875rem;
   height: 100%;
-  letter-spacing: var(--letter-spacing-body-ui-02);
+  letter-spacing: -0.112px;
   margin: 0;
-  padding: 0 var(--spacing-01);
+  padding: 0 0.25rem;
   vertical-align: baseline;
 }
 
 /* Tag: Label */
 #dashboard-container .Select--multi .Select-value-label {
   color: var(--text-primary);
-  line-height: var(--text-size-05);
+  line-height: 1.5rem;
   padding: 0 4px;
 }
 

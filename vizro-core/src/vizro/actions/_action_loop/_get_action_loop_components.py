@@ -2,10 +2,9 @@
 
 from dash import dcc, html
 
-from vizro.actions._action_loop._action_loop_utils import (
-    _get_actions_chains_on_all_pages,
-    _get_actions_on_registered_pages,
-)
+from vizro.managers import model_manager
+from vizro.models import Action
+from vizro.models._action._actions_chain import ActionsChain
 
 
 def _get_action_loop_components() -> html.Div:
@@ -15,8 +14,9 @@ def _get_action_loop_components() -> html.Div:
         List of dcc or html components.
 
     """
-    actions_chains = _get_actions_chains_on_all_pages()
-    actions = _get_actions_on_registered_pages()
+    # actions_chain and actions are iterated over multiple times so must be realized into a list.
+    actions_chains: list[ActionsChain] = list(model_manager._get_models(ActionsChain))
+    actions: list[Action] = list(model_manager._get_models(Action))
 
     if not actions_chains:
         return html.Div(id="action_loop_components_div")

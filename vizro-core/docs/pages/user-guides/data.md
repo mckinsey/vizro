@@ -179,7 +179,7 @@ Since dynamic data sources must always be added to the data manager and referenc
 
 ### Configure cache
 
-By default, each time the dashboard is refreshed a dynamic data function executes again. In fact, if there are multiple graphs on the same page using the same dynamic data source then the loading function executes _multiple_ times, once for each graph on the page. Hence, if loading your data is a slow operation, your dashboard performance may suffer.
+By default, a dynamic data function executes every time the dashboard is refreshed. Data loading is batched so that a dynamic data function that supplies multiple graphs on the same page only executes _once_ per page refresh. Even with this batching, if loading your data is a slow operation, your dashboard performance may suffer.
 
 The Vizro data manager has a server-side caching mechanism to help solve this. Vizro's cache uses [Flask-Caching](https://flask-caching.readthedocs.io/en/latest/), which supports a number of possible cache backends and [configuration options](https://flask-caching.readthedocs.io/en/latest/#configuring-flask-caching). By default, the cache is turned off.
 
@@ -220,7 +220,7 @@ By default, when caching is turned on, dynamic data is cached in the data manage
 
 If you would like to alter some options, such as the default cache timeout, then you can specify a different cache configuration:
 
-```py title="Simple cache with timeout set to 10 minutes"
+```python title="Simple cache with timeout set to 10 minutes"
 data_manager.cache = Cache(config={"CACHE_TYPE": "SimpleCache", "CACHE_DEFAULT_TIMEOUT": 600})
 ```
 
@@ -268,8 +268,12 @@ data_manager["no_expire_data"].timeout = 0
 
 ### Parametrize data loading
 
-You can supply arguments to your dynamic data loading function that can be modified from the dashboard.
-For example, if you are handling big data then you can use an argument to specify the number of entries or size of chunk of data.
+You can give arguments to your dynamic data loading function that can be modified from the dashboard. For example:
+
+- To load different versions of the same data.
+- To handle large datasets you can use an argument that controls the amount of data that is loaded. This effectively pre-filters data before it reaches the Vizro dashboard.
+
+In general, a parametrized dynamic data source should always return a pandas DataFrame with a fixed schema (column names and types). This ensures that page components and controls continue to work as expected when the parameter is changed on screen.
 
 To add a parameter to control a dynamic data source, do the following:
 
@@ -277,7 +281,7 @@ To add a parameter to control a dynamic data source, do the following:
 2. give an `id` to all components that have the data source you wish to alter through a parameter.
 3. [add a parameter](parameters.md) with `targets` of the form `<target_component_id>.data_frame.<dynamic_data_argument>` and a suitable [selector](selectors.md).
 
-For example, let us extend the [dynamic data example](#dynamic-data) above to show how the `load_iris_data` can take an argument `number_of_points` controlled from the dashboard with a [`Slider`][vizro.models.Slider].
+For example, let us extend the [dynamic data example](#dynamic-data) above into an example of how parametrized dynamic data works. The `load_iris_data` can take an argument `number_of_points` controlled from the dashboard with a [`Slider`][vizro.models.Slider].
 
 !!! example "Parametrized dynamic data"
     === "app.py"
@@ -333,14 +337,82 @@ Parametrized data loading is compatible with [caching](#configure-cache). The ca
 
 You cannot pass [nested parameters](parameters.md#nested-parameters) to dynamic data. You can only target the top-level arguments of the data loading function, not the nested keys in a dictionary.
 
-### Filter update limitation
+### Filters
 
-If your dashboard includes a [filter](filters.md) then the values shown on a filter's [selector](selectors.md) _do not_ update while the dashboard is running. This is a known limitation that will be lifted in future releases, but if is problematic for you already then [raise an issue on our GitHub repo](https://github.com/mckinsey/vizro/issues/).
+When a [filter](filters.md) depends on dynamic data and no `selector` is explicitly defined in the `vm.Filter` model, the available selector values update on page refresh to reflect the latest dynamic data. This is called a _dynamic filter_.
 
-This limitation is why all arguments of your dynamic data loading function must have a default value. Regardless of the value of the `vm.Parameter` selected in the dashboard, these default parameter values are used when the `vm.Filter` is built. This determines the type of selector used in a filter and the options shown, which cannot currently be changed while the dashboard is running.
+The mechanism behind updating dynamic filters works exactly like other non-control components such as `vm.Graph`. However, unlike such components, a filter can depend on multiple data sources. If at least one data source of the components in the filter's `targets` is dynamic then the filter is dynamic. Remember that when `targets` is not explicitly specified, a filter applies to all the components on a page that use a DataFrame including `column`.
 
-Although a selector is automatically chosen for you in a filter when your dashboard is built, remember that [you can change this choice](filters.md#changing-selectors). For example, we could ensure that a dropdown always contains the options "setosa", "versicolor" and "virginica" by explicitly specifying your filter as follows.
+When the page is refreshed, the behavior of a dynamic filter is as follows:
 
-```py
-vm.Filter(column="species", selector=vm.Dropdown(options=["setosa", "versicolor", "virginica"])
+- The filter's selector updates its available values:
+    - For [categorical selectors](selectors.md#categorical-selectors), `options` updates to give all unique values found in `column` across all the data sources of components in `targets`.
+    - For [numerical selectors](selectors.md#numerical-selectors), `min` and `max` update to give the overall minimum and maximum values found in `column` across all the data sources of components in `targets`.
+- The value selected on screen by a dashboard user _does not_ change. If the selected value is not already present in the new set of available values then the `options` or `min` and `max` are modified to include it. In this case, the filtering operation might result in an empty DataFrame.
+- Even though the values present in a data source can change, the schema should not: `column` should remain present and of the same type in the data sources. The `targets` of the filter and selector type cannot change while the dashboard is running. For example, a `vm.Dropdown` selector cannot turn into `vm.RadioItems`.
+
+For example, let us add two filters to the [dynamic data example](#dynamic-data) above:
+
+!!! example "Dynamic filters"
+
+    ```py hl_lines="10 20 21"
+    from vizro import Vizro
+    import pandas as pd
+    import vizro.plotly.express as px
+    import vizro.models as vm
+
+    from vizro.managers import data_manager
+
+    def load_iris_data():
+        iris = pd.read_csv("iris.csv")
+        return iris.sample(5)  # (1)!
+
+    data_manager["iris"] = load_iris_data
+
+    page = vm.Page(
+        title="Update the chart and filters on page refresh",
+        components=[
+            vm.Graph(figure=px.box("iris", x="species", y="petal_width", color="species"))
+        ],
+        controls=[
+            vm.Filter(column="species"),  # (2)!
+            vm.Filter(column="sepal_length"),  # (3)!
+        ],
+    )
+
+    dashboard = vm.Dashboard(pages=[page])
+
+    Vizro().build(dashboard).run()
+    ```
+
+    1. We sample only 5 rather than 50 points so that changes to the available values in the filtered columns are more apparent when the page is refreshed.
+    2. This filter implicitly controls the dynamic data source `"iris"`, which supplies the `data_frame` to the targeted `vm.Graph`. On page refresh, Vizro reloads this data, finds all the unique values in the `"species"` column and sets the categorical selector's `options` accordingly.
+    3. Similarly, on page refresh, Vizro finds the minimum and maximum values of the `"sepal_length"` column in the reloaded data and sets new `min` and `max` values for the numerical selector accordingly.
+
+Consider a filter that depends on dynamic data, where you do **not** want the available values to change when the dynamic data changes. You should manually specify the `selector`'s `options` field (categorical selector) or `min` and `max` fields (numerical selector). In the above example, this could be achieved as follows:
+
+```python title="Override selector options to make a dynamic filter static"
+controls = [
+    vm.Filter(column="species", selector=vm.Dropdown(options=["setosa", "versicolor", "virginica"])),
+    vm.Filter(column="sepal_length", selector=vm.RangeSlider(min=4.3, max=7.9)),
+]
 ```
+
+If you [use a specific selector](filters.md#change-selector) for a dynamic filter without manually specifying `options` (categorical selector) or `min` and `max` (numerical selector) then the selector remains dynamic. For example:
+
+```python title="Dynamic filter with specific selector is still dynamic"
+controls = [
+    vm.Filter(column="species", selector=vm.Checklist()),
+    vm.Filter(column="sepal_length", selector=vm.Slider()),
+]
+```
+
+When Vizro initially builds a filter that depends on parametrized dynamic data loading, data is loaded using the default argument values. This data is used to:
+
+* perform initial validation
+* check which data sources contain the specified `column` (unless `targets` is explicitly specified) and
+* determine the type of selector to use (unless `selector` is explicitly specified).
+
+!!! note
+
+    When the value of a dynamic data parameter is changed by a dashboard user, the data underlying a dynamic filter can change. Currently this change affects page components such as `vm.Graph` but does not affect the available values shown in a dynamic filter, which only update on page refresh. This functionality will be coming soon!

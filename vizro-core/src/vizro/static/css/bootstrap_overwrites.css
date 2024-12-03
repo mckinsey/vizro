@@ -1,6 +1,34 @@
-/* This file contains overwrites, which we want to have as defaults for vizro
-but do not want to take over to `vizro-bootstrap` as these settings might not be generic enough. */
+/* This file contains overwrites, which we want to have as defaults for vizro framework
+but do not want to take over to `vizro-bootstrap` as these settings might not be generic enough
+for a pure Dash app.
 
+All the HEX values starting with --text-code are taken from the Github code highlighting style. */
+[data-bs-theme="dark"] {
+  --dropdown-label-bg: var(--primary-800);
+  --right-side-bg: var(--surfaces-bg03);
+  --text-code-string: #95c2e7;
+  --text-code-keyword: #f4766e;
+  --text-code-meta: #c8ace1;
+  --text-code-type: #f69d50;
+  --text-code-literal: #6bb5fd;
+  --slider-rail-bg: var(--primary-100);
+  --collapse-icon-bg: var(--primary-500);
+}
+
+[data-bs-theme="light"] {
+  --dropdown-label-bg: var(--primary-300);
+  --right-side-bg: var(--surfaces-bg01);
+  --text-code-string: #0a3069;
+  --text-code-keyword: #d12d39;
+  --text-code-meta: #6f42c1;
+  --text-code-type: #f69d50;
+  --text-code-literal: #005cc5;
+  --fill-icon-image-card: invert(64%) sepia(0%) saturate(1375%);
+  --slider-rail-bg: var(--primary-900);
+  --collapse-icon-bg: var(--primary-300);
+}
+
+/* CARDS */
 .card .nav-link {
   height: 100%;
 }
@@ -9,10 +37,37 @@ but do not want to take over to `vizro-bootstrap` as these settings might not be
   margin-bottom: 0;
 }
 
+/* ACCORDION */
 .accordion-item .nav-link {
   padding: 0.5rem 1rem;
 }
 
 .accordion-item .nav-link.active {
   border-left: 2px solid var(--border-enabled);
+}
+
+/* TABS */
+.nav-tabs {
+  margin-bottom: 1.25rem;
+}
+
+.tab-content {
+  height: calc(100% - 3.25rem); /* 3.25rem: nav-tabs margin + height */
+}
+
+/* The dbc component adds an additional div element to which we cannot assign a className.
+To ensure the dynamic height adjustment and prevent scrolling, the height must be specified for that div as below. */
+.tab-pane,
+.tab-pane > div:first-child {
+  height: 100%;
+}
+
+/* Hides title of the first container given the title is already reflected in the tab title */
+.tab-content .container-title:first-of-type {
+  display: none;
+}
+
+/* Remove label that automatically gets added when calling `dbc.Switch` to remove gap. */
+label[for="theme-selector"] {
+  display: none;
 }

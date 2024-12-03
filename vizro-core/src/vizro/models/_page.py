@@ -1,7 +1,7 @@
 from __future__ import annotations
 
-from collections.abc import Mapping
-from typing import Annotated, Any, Optional, TypedDict, Union
+from collections.abc import Iterable, Mapping
+from typing import Annotated, Any, Optional, TypedDict, Union, cast
 
 from dash import dcc, html
 from pydantic import BeforeValidator, Field, conlist, model_validator, validator
@@ -11,8 +11,8 @@ from pydantic import BeforeValidator, Field, conlist, model_validator, validator
 from vizro._constants import ON_PAGE_LOAD_ACTION_PREFIX
 from vizro.actions import _on_page_load
 from vizro.managers import model_manager
-from vizro.managers._model_manager import DuplicateIDError, ModelID
-from vizro.models import Action, Layout, VizroBaseModel
+from vizro.managers._model_manager import FIGURE_MODELS, DuplicateIDError
+from vizro.models import Action, Filter, Layout, VizroBaseModel
 from vizro.models._action._actions_chain import ActionsChain, Trigger
 from vizro.models._layout import set_layout
 from vizro.models._models_utils import _log_call, check_captured_callable, validate_min_length
@@ -95,8 +95,16 @@ class Page(VizroBaseModel):
 
     @_log_call
     def pre_build(self):
-        # TODO: Remove default on page load action if possible
-        targets = model_manager._get_page_model_ids_with_figure(page_id=ModelID(str(self.id)))
+        figure_targets = [
+            model.id for model in cast(Iterable[VizroBaseModel], model_manager._get_models(FIGURE_MODELS, page=self))
+        ]
+        filter_targets = [
+            filter.id
+            for filter in cast(Iterable[Filter], model_manager._get_models(Filter, page=self))
+            if filter._dynamic
+        ]
+        targets = figure_targets + filter_targets
+
         if targets:
             self.actions = [
                 ActionsChain(

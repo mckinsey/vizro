@@ -10,7 +10,7 @@ from pydantic.json_schema import SkipJsonSchema
 #     from pydantic.v1 import Field, PrivateAttr, validator
 # except ImportError:  # pragma: no cov
 #     from pydantic import Field, PrivateAttr, validator
-from vizro.actions._actions_utils import CallbackTriggerDict, _get_component_actions, _get_parent_vizro_model
+from vizro.actions._actions_utils import CallbackTriggerDict, _get_component_actions, _get_parent_model
 from vizro.managers import data_manager
 from vizro.models import Action, VizroBaseModel
 from vizro.models._action._actions_chain import _action_validator_factory
@@ -108,7 +108,7 @@ class Table(VizroBaseModel):
             return data_frame
 
         # ctd_active_cell["id"] represents the underlying table id, so we need to fetch its parent Vizro Table actions.
-        source_table_actions = _get_component_actions(_get_parent_vizro_model(ctd_active_cell["id"]))
+        source_table_actions = _get_component_actions(_get_parent_model(ctd_active_cell["id"]))
 
         for action in source_table_actions:
             if action.function._function.__name__ != "filter_interaction" or target not in action.function["targets"]:

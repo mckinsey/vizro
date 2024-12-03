@@ -1,4 +1,5 @@
-from typing import Annotated, Literal
+from collections.abc import Iterable
+from typing import Annotated, Literal, cast
 
 from pydantic import AfterValidator, Field, field_validator
 
@@ -37,12 +38,13 @@ def check_data_frame_as_target_argument(target):
             f"Invalid target {target}. 'data_frame' target must be supplied in the form "
             "<target_component>.data_frame.<dynamic_data_argument>"
         )
+    # TODO: Add validation: Make sure the target data_frame is _DynamicData.
     return target
 
 
 def check_duplicate_parameter_target(targets):
     all_targets = targets.copy()
-    for _, param in model_manager._items_with_type(Parameter):
+    for param in cast(Iterable[Parameter], model_manager._get_models(Parameter)):
         all_targets.extend(param.targets)
     duplicate_targets = {item for item in all_targets if all_targets.count(item) > 1}
     if duplicate_targets:

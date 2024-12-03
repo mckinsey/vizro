@@ -125,7 +125,7 @@ def _extract_captured_callable_source() -> set[str]:
                 # Check to see if the captured callable does use a cleaned module string, if yes then
                 # we can assume that the source code can be imported via Vizro, and thus does not need to be defined
                 value.__repr_clean__().startswith(new)
-                for _, new in REPLACEMENT_STRINGS.items()
+                for new in REPLACEMENT_STRINGS.values()
             ):
                 try:
                     source = textwrap.dedent(inspect.getsource(value._function))

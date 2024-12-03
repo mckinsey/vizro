@@ -8,7 +8,6 @@ from typing import TYPE_CHECKING, Literal, Optional, TypedDict
 
 import dash
 import dash_bootstrap_components as dbc
-import dash_mantine_components as dmc
 import plotly.io as pio
 from dash import (
     ClientsideFunction,
@@ -147,7 +146,7 @@ class Dashboard(VizroBaseModel):
             ClientsideFunction(namespace="dashboard", function_name="update_dashboard_theme"),
             # This currently doesn't do anything, but we need to define an Output such that the callback is triggered.
             Output("dashboard-container", "className"),
-            Input("theme_selector", "checked"),
+            Input("theme-selector", "value"),
         )
         left_side_div_present = any([len(self.pages) > 1, self.pages[0].controls])
         if left_side_div_present:
@@ -202,12 +201,11 @@ class Dashboard(VizroBaseModel):
             else html.H2(id="dashboard-title", hidden=True)
         )
         settings = html.Div(
-            children=dmc.Switch(
-                id="theme_selector",
-                checked=self.theme == "vizro_light",
+            children=dbc.Switch(
+                id="theme-selector",
+                value=self.theme == "vizro_light",
                 persistence=True,
                 persistence_type="session",
-                className="toggle-switch",
             ),
             id="settings",
         )
@@ -316,12 +314,11 @@ class Dashboard(VizroBaseModel):
             [
                 # Theme switch is added such that the 404 page has the same theme as the user-selected one.
                 html.Div(
-                    children=dmc.Switch(
-                        id="theme_selector",
-                        checked=self.theme == "vizro_light",
+                    children=dbc.Switch(
+                        id="theme-selector",
+                        value=self.theme == "vizro_light",
                         persistence=True,
                         persistence_type="session",
-                        className="toggle-switch",
                     ),
                     id="settings",
                 ),

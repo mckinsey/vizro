@@ -1,6 +1,6 @@
 """Unit tests for vizro.models.Container."""
 
-import dash_mantine_components as dmc
+import dash_bootstrap_components as dbc
 import pytest
 from asserts import assert_component_equal
 from dash import html
@@ -43,42 +43,20 @@ class TestTabsBuildMethod:
         # We want to test the component itself but not all its children
         assert_component_equal(
             result,
-            dmc.Tabs(id="tabs-id", value="container-1", persistence=True, persistence_type="session", className="tabs"),
+            dbc.Tabs(id="tabs-id", persistence=True, persistence_type="session"),
             keys_to_strip={"children"},
         )
         # We want to test the children created in the Tabs.build but not e.g. the
         # vm.Container.build() as it's tested elsewhere already
         assert_component_equal(
-            result.children,
-            [dmc.TabsList(), dmc.TabsPanel(value="container-1"), dmc.TabsPanel(value="container-2")],
-            keys_to_strip={"children", "className"},
-        )
-        # So we go down the tree and ignore the children selectively
-        assert_component_equal(
-            result.children[0],
-            dmc.TabsList(
-                children=[
-                    dmc.Tab(value="container-1", children="Title-1", className="tab-title"),
-                    dmc.Tab(value="container-2", children="Title-2", className="tab-title"),
-                ],
-                className="tabs-list",
-            ),
-        )
-        # This one removes the need for duplication of tests as the output is similar
-        assert_component_equal(
-            result.children[1:],
-            [
-                dmc.TabsPanel(className="tabs-panel", value="container-1"),
-                dmc.TabsPanel(className="tabs-panel", value="container-2"),
-            ],
-            keys_to_strip={"children"},
+            result.children, [dbc.Tab(label="Title-1"), dbc.Tab(label="Title-2")], keys_to_strip={"children"}
         )
         # We still check that the html.Div for the Containers are created, but we don't need to check its content
         assert_component_equal(
-            [tab.children.children for tab in result.children[1:]],
+            [tab.children for tab in result.children],
             [
-                [html.Div(id="container-1", className="page-component-container")],
-                [html.Div(id="container-2", className="page-component-container")],
+                html.Div(id="container-1", className="page-component-container"),
+                html.Div(id="container-2", className="page-component-container"),
             ],
             keys_to_strip={"children"},
         )
