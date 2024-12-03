@@ -4,14 +4,12 @@ import dash_bootstrap_components as dbc
 import pytest
 from asserts import assert_component_equal
 from dash import dcc
-
 from pydantic import ValidationError
 
 # try:
 #     from pydantic.v1 import ValidationError
 # except ImportError:  # pragma: no cov
 #     from pydantic import ValidationError
-
 import vizro.models as vm
 
 
@@ -36,11 +34,11 @@ class TestCardInstantiation:
         assert card.href == href
 
     def test_mandatory_text_missing(self):
-        with pytest.raises(ValidationError, match="field required"):
+        with pytest.raises(ValidationError, match="Field required"):
             vm.Card()
 
     def test_none_as_text(self):
-        with pytest.raises(ValidationError, match="none is not an allowed value"):
+        with pytest.raises(ValidationError, match="Input should be a valid string"):
             vm.Card(text=None)
 
 
@@ -99,7 +97,7 @@ class TestBuildMethod:
         "test_text, expected",
         [
             ("""<p>Hello </p>""", "<p>Hello </p>"),  # html will not be evaluated but converted to string
-            (12345, "12345"),
+            ("12345", "12345"),
             ("""$$ \\frac{1}{(\\sqrt{\\phi \\sqrt{5}}-\\phi)}$$""", "$$ \\frac{1}{(\\sqrt{\\phi \\sqrt{5}}-\\phi)}$$"),
         ],
     )

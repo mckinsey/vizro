@@ -57,7 +57,7 @@ class TestGraphInstantiation:
         assert graph.figure == standard_px_chart._captured_callable
 
     def test_mandatory_figure_missing(self):
-        with pytest.raises(ValidationError, match="field required"):
+        with pytest.raises(ValidationError, match="Field required"):
             vm.Graph()
 
     def test_captured_callable_invalid(self, standard_go_chart):

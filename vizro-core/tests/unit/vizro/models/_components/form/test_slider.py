@@ -119,11 +119,9 @@ class TestSliderInstantiation:
     @pytest.mark.parametrize(
         "marks, expected",
         [
-            ({i: str(i) for i in range(0, 10, 5)}, {i: str(i) for i in range(0, 10, 5)}),
-            ({15: 15, 25: 25}, {15: "15", 25: "25"}),  # all int
-            ({15.5: 15.5, 25.5: 25.5}, {15.5: "15.5", 25.5: "25.5"}),  # all floats
-            ({15.0: 15, 25.5: 25.5}, {15: "15", 25.5: "25.5"}),  # mixed floats
-            ({"15": 15, "25": 25}, {15: "15", 25: "25"}),  # all string
+            # TODO[pydantic],MS: why is this not failing, should it not be converted to float?
+            ({i: str(i) for i in range(0, 10, 5)}, {i: str(i) for i in range(0, 10, 5)}),  # int - str
+            ({1.0: "1", 1.5: "1.5"}, {1: "1", 1.5: "1.5"}),  # float - str (but see validator)
             (None, None),
         ],
     )
