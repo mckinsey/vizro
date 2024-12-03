@@ -1,7 +1,7 @@
 from __future__ import annotations
 
 from collections.abc import Iterable
-from typing import Any, Literal, Union, cast
+from typing import Any, Literal, Optional, Union, cast
 
 import pandas as pd
 from dash import dcc
@@ -91,7 +91,7 @@ class Filter(VizroBaseModel):
         description="Target component to be affected by filter. "
         "If none are given then target all components on the page that use `column`.",
     )
-    selector: SelectorType = None
+    selector: Optional[SelectorType] = None
 
     _dynamic: bool = PrivateAttr(False)
 
