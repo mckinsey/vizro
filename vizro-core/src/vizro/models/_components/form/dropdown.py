@@ -10,7 +10,6 @@ except ImportError:  # pragma: no cov
     from pydantic import Field, PrivateAttr, StrictBool, root_validator, validator
 
 import dash_bootstrap_components as dbc
-import dash_mantine_components as dmc
 
 from vizro.models import Action, VizroBaseModel
 from vizro.models._action._actions_chain import _action_validator_factory
@@ -116,7 +115,6 @@ class Dropdown(VizroBaseModel):
             self.value = default_value
 
         return self.__call__(self.options)
-
 
     @_log_call
     def build(self):
