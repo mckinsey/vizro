@@ -308,18 +308,31 @@ class Dashboard(VizroBaseModel):
         return html.Div(
             [
                 # Theme switch is added such that the 404 page has the same theme as the user-selected one.
-                dbc.Switch(
-                    id="theme-selector",
-                    value=self.theme == "vizro_light",
-                    persistence=True,
-                    persistence_type="session",
+                html.Div(
+                    children=dbc.Switch(
+                        id="theme-selector",
+                        value=self.theme == "vizro_light",
+                        persistence=True,
+                        persistence_type="session",
+                    ),
+                    id="settings",
                 ),
                 html.Img(src=f"data:image/svg+xml;base64,{error_404_svg}"),
-                html.H3("This page could not be found."),
-                html.P("Make sure the URL you entered is correct."),
-                dbc.Button(children="Take me home", href=get_relative_path("/"), className="mt-4"),
+                html.Div(
+                    [
+                        html.Div(
+                            children=[
+                                html.H3("This page could not be found.", className="heading-3-600"),
+                                html.P("Make sure the URL you entered is correct."),
+                            ],
+                            className="error-text-container",
+                        ),
+                        dbc.Button(children="Take me home", href=get_relative_path("/")),
+                    ],
+                    className="error-content-container",
+                ),
             ],
-            className="d-flex flex-column align-items-center justify-content-center min-vh-100",
+            className="page-error-container",
         )
 
     @staticmethod

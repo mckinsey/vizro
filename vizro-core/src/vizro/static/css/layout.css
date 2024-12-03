@@ -85,6 +85,31 @@
   border-bottom: 1px solid var(--border-subtleAlpha01);
 }
 
+.page-error-container {
+  align-items: center;
+  display: flex;
+  flex-direction: column;
+  height: 100vh;
+  justify-content: center;
+  width: 100vw;
+}
+
+.error-content-container {
+  align-items: center;
+  display: inline-flex;
+  flex-direction: column;
+  gap: 24px;
+  margin-top: -32px;
+}
+
+.error-text-container {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  text-align: center;
+  width: 336px;
+}
+
 .dashboard_title {
   display: flex;
   flex-direction: column;

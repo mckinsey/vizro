@@ -27,6 +27,6 @@ def _parameter(targets: list[str], **inputs: dict[str, Any]) -> dict[ModelID, An
     return _get_modified_page_figures(
         ctds_filter=ctx.args_grouping["external"]["filters"],
         ctds_filter_interaction=ctx.args_grouping["external"]["filter_interaction"],
-        ctds_parameters=ctx.args_grouping["external"]["parameters"],
+        ctds_parameter=ctx.args_grouping["external"]["parameters"],
         targets=target_ids,
     )
