@@ -11,7 +11,6 @@ repos:
         exclude: "devcontainer.json" # Contains comments.
       - id: trailing-whitespace
       - id: end-of-file-fixer
-        exclude: "new_fragment.md.j2" # Incompatible whitespace with mdformat in changelog snippet.
 
   - repo: local
     hooks:
@@ -95,7 +94,7 @@ repos:
             --wrap=no,
             --align-semantic-breaks-in-lists,
           ]
-        exclude: ^vizro-core/docs/pages/API-reference|^vizro-ai/docs/pages/API-reference|vizro-core/docs/pages/user-guides/custom-components.md
+        exclude: ^vizro-core/docs/pages/API-reference|^vizro-ai/docs/pages/API-reference|vizro-core/docs/pages/user-guides/custom-components.md|^vizro-core/changelog.d|^vizro-ai/changelog.d
         additional_dependencies:
           - mdformat-mkdocs[recommended]==3.1.1
 
