@@ -34,8 +34,9 @@ repos:
         description: Linter for json, yaml, md, css and more
         entry: prettier --write --ignore-unknown
         language: node
-        "types": [text]
+        types: [text]
         additional_dependencies: ["prettier@3.3.3"]
+        exclude_types: [markdown]
 
   - repo: https://github.com/macisamuele/language-formatters-pre-commit-hooks
     rev: v2.14.0
@@ -93,7 +94,7 @@ repos:
             --wrap=no,
             --align-semantic-breaks-in-lists,
           ]
-        exclude: ^vizro-core/docs/pages/API-reference|^vizro-ai/docs/pages/API-reference|vizro-core/docs/pages/user-guides/custom-components.md|.github/|^vizro-core/CHANGELOG.md
+        exclude: ^vizro-core/docs/pages/API-reference|^vizro-ai/docs/pages/API-reference|vizro-core/docs/pages/user-guides/custom-components.md
         additional_dependencies:
           - mdformat-mkdocs[recommended]==3.1.1
 
