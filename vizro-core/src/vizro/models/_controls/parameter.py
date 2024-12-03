@@ -56,7 +56,6 @@ class Parameter(VizroBaseModel):
                 f"Invalid target {target}. 'data_frame' target must be supplied in the form "
                 "<target_component>.data_frame.<dynamic_data_argument>"
             )
-        # TODO: Add validation: Make sure the target data_frame is _DynamicData.
         return target
 
     @validator("targets")

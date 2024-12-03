@@ -48,8 +48,6 @@ class Slider(VizroBaseModel):
     title: str = Field("", description="Title to be displayed.")
     actions: list[Action] = []
 
-    _dynamic: bool = PrivateAttr(False)
-
     # Component properties for actions and interactions
     _input_property: str = PrivateAttr("value")
 
@@ -60,7 +58,10 @@ class Slider(VizroBaseModel):
     _set_default_marks = validator("marks", allow_reuse=True, always=True)(set_default_marks)
     _set_actions = _action_validator_factory("value")
 
-    def __call__(self, min, max, current_value):
+    @_log_call
+    def build(self):
+        init_value = self.value or self.min
+
         output = [
             Output(f"{self.id}_end_value", "value"),
             Output(self.id, "value"),
@@ -81,7 +82,7 @@ class Slider(VizroBaseModel):
 
         return html.Div(
             children=[
-                dcc.Store(f"{self.id}_callback_data", data={"id": self.id, "min": min, "max": max}),
+                dcc.Store(f"{self.id}_callback_data", data={"id": self.id, "min": self.min, "max": self.max}),
                 html.Div(
                     children=[
                         dbc.Label(children=self.title, html_for=self.id) if self.title else None,
@@ -91,15 +92,15 @@ class Slider(VizroBaseModel):
                                     id=f"{self.id}_end_value",
                                     type="number",
                                     placeholder="max",
-                                    min=min,
-                                    max=max,
+                                    min=self.min,
+                                    max=self.max,
                                     step=self.step,
-                                    value=current_value,
+                                    value=init_value,
                                     persistence=True,
                                     persistence_type="session",
                                     className="slider-text-input-field",
                                 ),
-                                dcc.Store(id=f"{self.id}_input_store", storage_type="session"),
+                                dcc.Store(id=f"{self.id}_input_store", storage_type="session", data=init_value),
                             ],
                             className="slider-text-input-container",
                         ),
@@ -108,27 +109,15 @@ class Slider(VizroBaseModel):
                 ),
                 dcc.Slider(
                     id=self.id,
-                    min=min,
-                    max=max,
+                    min=self.min,
+                    max=self.max,
                     step=self.step,
                     marks=self.marks,
-                    value=current_value,
+                    value=init_value,
                     included=False,
                     persistence=True,
                     persistence_type="session",
                     className="slider-track-without-marks" if self.marks is None else "slider-track-with-marks",
                 ),
             ]
-        )
-
-    def _build_dynamic_placeholder(self, current_value):
-        return self.__call__(self.min, self.max, current_value)
-
-    @_log_call
-    def build(self):
-        current_value = self.value if self.value is not None else self.min
-        return (
-            self._build_dynamic_placeholder(current_value)
-            if self._dynamic
-            else self.__call__(self.min, self.max, current_value)
         )
