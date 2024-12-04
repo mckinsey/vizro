@@ -459,47 +459,17 @@ You can apply selectors to configure [`Filters`][vizro.models.Filter] and [`Para
 - [`Slider`][vizro.models.Slider]
 
 ## 4. The final touches
+Each page is added to the dashboard using the following line of code: `vm.Dashboard(pages=[first_page, second_page])`. 
+This ensures that all the pages are accessible.
 
-This section puts everything together by adding a homepage to the example for navigation between the two separate pages.
+By default, a navigation panel is added on the left side to switch between the two pages. 
 
-For easy navigation within your dashboard, we'll create a page that serves as the entry point for the user. On this homepage are two [`Cards`][vizro.models.Card] which serve as tiles that can be customized with a title, some text, and an image. These cards link to the subpages within your dashboard using their `href` attributes as `href="/first-page"` and `href="/second-page"`. This establishes the navigation links from the homepage to each of the subpages.
-
-Each page is added to the dashboard using the following line of code: `vm.Dashboard(pages=[home_page, first_page, second_page])`. This ensures that all the pages are accessible.
-
-The code below illustrates a functional dashboard where you can navigate from the homepage to each of the subpages. Additionally, you can use the navigation panel on the left side to switch between the three pages.
 
 !!! example "Final dashboard"
     === "Code"
         ```python
-        home_page = vm.Page(
-            title="Homepage",
-            components=[
-                vm.Card(
-                    text="""
-                    ![](https://raw.githubusercontent.com/mckinsey/vizro/786167c822cce65fe85ffad8ed000d8553a5ef44/vizro-core/docs/assets/images/collections.svg#icon-top)
-
-                    ### First Page
-
-                    Exemplary first dashboard page.
-                    """,
-                    href="/first-page",
-                ),
-                vm.Card(
-                    text="""
-                    ![](https://raw.githubusercontent.com/mckinsey/vizro/786167c822cce65fe85ffad8ed000d8553a5ef44/vizro-core/docs/assets/images/features.svg#icon-top)
-
-                    ### Second Page
-
-                    Exemplary second dashboard page.
-                    """,
-                    href="/second-page",
-                ),
-            ],
-        )
-
-        ...
-
         dashboard = vm.Dashboard(pages=[home_page, first_page, second_page])
+        Vizro().build(dashboard).run()
         ```
 
     === "app.py"
@@ -508,32 +478,6 @@ The code below illustrates a functional dashboard where you can navigate from th
         from vizro import Vizro
         import vizro.models as vm
         import vizro.plotly.express as px
-
-        home_page = vm.Page(
-            title="Homepage",
-            components=[
-                vm.Card(
-                    text="""
-                    ![](https://raw.githubusercontent.com/mckinsey/vizro/786167c822cce65fe85ffad8ed000d8553a5ef44/vizro-core/docs/assets/images/collections.svg)
-
-                    ### First Page
-
-                    Exemplary first dashboard page.
-                    """,
-                    href="/first-page",
-                ),
-                vm.Card(
-                    text="""
-                    ![](https://raw.githubusercontent.com/mckinsey/vizro/786167c822cce65fe85ffad8ed000d8553a5ef44/vizro-core/docs/assets/images/features.svg#icon-top)
-
-                    ### Second Page
-
-                    Exemplary second dashboard page.
-                    """,
-                    href="/second-page",
-                ),
-            ],
-        )
 
         df = px.data.gapminder()
         gapminder_data = (
@@ -603,12 +547,9 @@ The code below illustrates a functional dashboard where you can navigate from th
             ],
         )
 
-        dashboard = vm.Dashboard(pages=[home_page, first_page, second_page])
+        dashboard = vm.Dashboard(pages=[first_page, second_page])
         Vizro().build(dashboard).run()
         ```
-
-    === "Homepage"
-        [![FinalPage]][finalpage]
 
     === "Subpage1"
         [![FinalPage1]][finalpage1]

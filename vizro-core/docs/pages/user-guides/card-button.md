@@ -322,7 +322,7 @@ Note the added URL hash `#my-image`. Now create a CSS file placed in your `asset
 
 Use the following pre-defined URL hashes in your image path to apply Vizro's default styling.
 
-#### To float the image next to the text:
+**To float the image next to the text:**
 
 To float an image for example to the right of the text, use the `src` attribute as a CSS selector. Follow these steps:
 
@@ -404,13 +404,9 @@ To float an image for example to the right of the text, use the `src` attribute 
     === "Result"
         [![CardImageFloating]][cardimagefloating]
 
-
 ### Make an icon responsive to theme switch
 
-To make an icon responsive to theme switching, override its
-[`filter` CSS property](https://developer.mozilla.org/en-US/docs/Web/CSS/filter). In this example, we use the
-`--fill-icon-image-card` CSS variable from the `vizro-bootstrap` CSS file. It leverages the `invert()` function to
-flip the icon's color during a theme switch.
+To make an icon responsive to theme switching, override its [`filter` CSS property](https://developer.mozilla.org/en-US/docs/Web/CSS/filter). In this example, we use the `--fill-icon-image-card` CSS variable from the `vizro-bootstrap` CSS file. It leverages the `invert()` function to flip the icon's color during a theme switch.
 
 This approach works if your icon initially has a white fill color. If not, modify the SVG code by adding `fill="white"`.
 
@@ -678,7 +674,6 @@ vm.Page.add_type("controls", vm.Button)
 [button]: ../../assets/user_guides/components/button.png
 [buttontext]: ../../assets/user_guides/components/button_text.png
 [card]: ../../assets/user_guides/components/card.png
-[cardicon]: ../../assets/user_guides/components/card_icon.png
 [cardimagedefault]: ../../assets/user_guides/components/card_image_default.png
 [cardimagefloating]: ../../assets/user_guides/components/card_image_floating.png
 [cardimagestyled]: ../../assets/user_guides/components/card_image_styled.png
