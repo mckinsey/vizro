@@ -13,7 +13,7 @@ Uncomment the section that is right (remove the HTML comment wrapper).
 
 ### Removed
 
-- Remove CSS in static folder to float images. ([#919](https://github.com/mckinsey/vizro/pull/919))
+- Remove built-in CSS shortcuts `#floating-*` to float images. These can still be provided manually. ([#919](https://github.com/mckinsey/vizro/pull/919))
 
 
 <!--
