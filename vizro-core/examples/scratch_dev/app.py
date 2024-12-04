@@ -238,7 +238,7 @@ page_6 = vm.Page(
     ],
 )
 
-dashboard = vm.Dashboard(pages=[homepage, page_1, page_2, page_3, page_4, page_5, page_6])
+dashboard = vm.Dashboard(pages=[homepage, page_1, page_2, page_3, page_4, page_5])
 
 if __name__ == "__main__":
     app = Vizro().build(dashboard)
