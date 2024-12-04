@@ -7,7 +7,7 @@ except ImportError:  # pragma: no cov
     from pydantic import Field, validator
 
 from vizro._constants import PARAMETER_ACTION_PREFIX
-from vizro.actions import _on_page_load
+from vizro.actions import _parameter
 from vizro.managers import model_manager
 from vizro.models import Action, VizroBaseModel
 from vizro.models._components.form import Checklist, DatePicker, Dropdown, RadioItems, RangeSlider, Slider
@@ -98,5 +98,5 @@ class Parameter(VizroBaseModel):
     def _set_actions(self):
         if not self.selector.actions:
             self.selector.actions = [
-                Action(id=f"{PARAMETER_ACTION_PREFIX}_{self.id}", function=_on_page_load(targets=self.targets))
+                Action(id=f"{PARAMETER_ACTION_PREFIX}_{self.id}", function=_parameter(targets=self.targets))
             ]

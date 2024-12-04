@@ -5,7 +5,6 @@ from typing import Any, Literal, Union, cast
 
 import pandas as pd
 from dash import dcc
-from jedi.inference.gradual.typing import Callable
 from pandas.api.types import is_datetime64_any_dtype, is_numeric_dtype
 
 from vizro.managers._data_manager import DataSourceName
@@ -16,7 +15,7 @@ except ImportError:  # pragma: no cov
     from pydantic import Field, PrivateAttr, validator
 
 from vizro._constants import ALL_OPTION, FILTER_ACTION_PREFIX
-from vizro.actions import _on_page_load
+from vizro.actions import _filter
 from vizro.managers import data_manager, model_manager
 from vizro.managers._data_manager import _DynamicData
 from vizro.managers._model_manager import FIGURE_MODELS, ModelID
@@ -95,8 +94,6 @@ class Filter(VizroBaseModel):
         "If none are given then target all components on the page that use `column`.",
     )
     selector: SelectorType = None
-    _filter_function: Callable = PrivateAttr()
-    # TODO NOW: move more functionalitry out of action_utils and into Filter to make more extensible
 
     _dynamic: bool = PrivateAttr(False)
 
@@ -212,14 +209,10 @@ class Filter(VizroBaseModel):
             else:
                 filter_function = _filter_isin
 
-            self._filter_function = filter_function
-
             self.selector.actions = [
                 Action(
                     id=f"{FILTER_ACTION_PREFIX}_{self.id}",
-                    function=_on_page_load(
-                        filter_column=self.column, targets=self.targets, filter_function=filter_function
-                    ),
+                    function=_filter(filter_column=self.column, targets=self.targets, filter_function=filter_function),
                 )
             ]
 

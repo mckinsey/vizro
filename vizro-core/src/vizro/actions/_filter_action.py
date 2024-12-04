@@ -1,7 +1,8 @@
-"""Pre-defined action function "_on_page_load" to be reused in `action` parameter of VizroBaseModels."""
+"""Pre-defined action function "_filter" to be reused in `action` parameter of VizroBaseModels."""
 
-from typing import Any
+from typing import Any, Callable
 
+import pandas as pd
 from dash import ctx
 
 from vizro.actions._actions_utils import _get_modified_page_figures
@@ -10,17 +11,23 @@ from vizro.models.types import capture
 
 
 @capture("action")
-def _on_page_load(targets: list[ModelID], **inputs: dict[str, Any]) -> dict[ModelID, Any]:
-    """Applies controls to charts on page once the page is opened (or refreshed).
+def _filter(
+    filter_column: str,
+    targets: list[ModelID],
+    filter_function: Callable[[pd.Series, Any], pd.Series],
+    **inputs: dict[str, Any],
+) -> dict[ModelID, Any]:
+    """Filters targeted charts/components on page by interaction with `Filter` control.
 
     Args:
-        targets: List of target component ids to apply on page load mechanism to
+        filter_column: Data column to filter
+        targets: List of target component ids to apply filters on
+        filter_function: Filter function to apply
         inputs: Dict mapping action function names with their inputs e.g.
             inputs = {'filters': [], 'parameters': ['gdpPercap'], 'filter_interaction': []}
 
     Returns:
-        Dict mapping target chart ids to modified figures e.g. {'my_scatter': Figure({})}
-
+        Dict mapping target component ids to modified charts/components e.g. {'my_scatter': Figure({})}
     """
     return _get_modified_page_figures(
         ctds_filter=ctx.args_grouping["external"]["filters"],

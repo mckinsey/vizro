@@ -65,11 +65,7 @@ def _apply_filter_controls(
         selector_value = selector_value if isinstance(selector_value, list) else [selector_value]
         selector_actions = _get_component_actions(model_manager[ctd["id"]])
 
-        # TODO NOW: see if can be simplified
-        # not isinstance(filter := model_manager[ctd["id"].removeprefix("selector_")], Filter)
         for action in selector_actions:
-            if model_manager._get_parent_model(model_manager[ctd["id"]]) == target:
-
             if (
                 action.function._function.__name__ != "_filter"
                 or target not in action.function["targets"]
@@ -77,8 +73,8 @@ def _apply_filter_controls(
             ):
                 continue
 
-            _filter_function = filter._filter_function
-            _filter_column = filter.column
+            _filter_function = action.function["filter_function"]
+            _filter_column = action.function["filter_column"]
             _filter_value = selector_value
             data_frame = data_frame[_filter_function(data_frame[_filter_column], _filter_value)]
 
