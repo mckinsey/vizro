@@ -104,7 +104,7 @@ The code below adds two components to the page:
             id="line_gdp",
             figure=px.line(gapminder_data, x="year", y="gdpPercap", color="continent",
                             labels={"year": "Year", "continent": "Continent",
-                            "gdpPercap":"GDP Per Cap"}, title=''),
+                            "gdpPercap":"GDP Per Cap"}),
         )
         ```
 
@@ -137,7 +137,7 @@ The code below adds two components to the page:
                 vm.Graph(
                     figure=px.line(gapminder_data, x="year", y="gdpPercap", color="continent",
                                     labels={"year": "Year", "continent": "Continent",
-                                    "gdpPercap":"GDP Per Cap"}, title=''),
+                                    "gdpPercap":"GDP Per Cap"}),
                 ),
 
             ],
