@@ -6,8 +6,7 @@ import vizro.plotly.express as px
 
 df = px.data.gapminder()
 gapminder_data = (
-    df.groupby(by=["continent", "year"]).
-    agg({"lifeExp": "mean", "pop": "sum", "gdpPercap": "mean"}).reset_index()
+    df.groupby(by=["continent", "year"]).agg({"lifeExp": "mean", "pop": "sum", "gdpPercap": "mean"}).reset_index()
 )
 first_page = vm.Page(
     title="First Page",
@@ -22,14 +21,23 @@ first_page = vm.Page(
         ),
         vm.Graph(
             id="box_cont",
-            figure=px.box(gapminder_data, x="continent", y="lifeExp", color="continent",
-                          labels={"lifeExp": "Life Expectancy", "continent": "Continent"}),
+            figure=px.box(
+                gapminder_data,
+                x="continent",
+                y="lifeExp",
+                color="continent",
+                labels={"lifeExp": "Life Expectancy", "continent": "Continent"},
+            ),
         ),
         vm.Graph(
             id="line_gdp",
-            figure=px.line(gapminder_data, x="year", y="gdpPercap", color="continent",
-                           labels={"year": "Year", "continent": "Continent",
-                                   "gdpPercap": "GDP Per Cap"}),
+            figure=px.line(
+                gapminder_data,
+                x="year",
+                y="gdpPercap",
+                color="continent",
+                labels={"year": "Year", "continent": "Continent", "gdpPercap": "GDP Per Cap"},
+            ),
         ),
     ],
     controls=[
@@ -43,27 +51,30 @@ second_page = vm.Page(
     components=[
         vm.Graph(
             id="scatter_iris",
-            figure=px.scatter(iris_data, x="sepal_width", y="sepal_length", color="species",
-                              color_discrete_map={"setosa": "#00b4ff", "versicolor": "#ff9222"},
-                              labels={"sepal_width": "Sepal Width", "sepal_length": "Sepal Length",
-                                      "species": "Species"},
-                              ),
+            figure=px.scatter(
+                iris_data,
+                x="sepal_width",
+                y="sepal_length",
+                color="species",
+                color_discrete_map={"setosa": "#00b4ff", "versicolor": "#ff9222"},
+                labels={"sepal_width": "Sepal Width", "sepal_length": "Sepal Length", "species": "Species"},
+            ),
         ),
         vm.Graph(
             id="hist_iris",
-            figure=px.histogram(iris_data, x="sepal_width", color="species",
-                                color_discrete_map={"setosa": "#00b4ff", "versicolor": "#ff9222"},
-                                labels={"sepal_width": "Sepal Width", "count": "Count",
-                                        "species": "Species"},
-                                ),
+            figure=px.histogram(
+                iris_data,
+                x="sepal_width",
+                color="species",
+                color_discrete_map={"setosa": "#00b4ff", "versicolor": "#ff9222"},
+                labels={"sepal_width": "Sepal Width", "count": "Count", "species": "Species"},
+            ),
         ),
     ],
     controls=[
         vm.Parameter(
-            targets=["scatter_iris.color_discrete_map.virginica",
-                     "hist_iris.color_discrete_map.virginica"],
-            selector=vm.Dropdown(
-                options=["#ff5267", "#3949ab"], multi=False, value="#3949ab", title="Color Virginica"),
+            targets=["scatter_iris.color_discrete_map.virginica", "hist_iris.color_discrete_map.virginica"],
+            selector=vm.Dropdown(options=["#ff5267", "#3949ab"], multi=False, value="#3949ab", title="Color Virginica"),
         ),
         vm.Parameter(
             targets=["scatter_iris.opacity"],

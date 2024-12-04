@@ -459,11 +459,10 @@ You can apply selectors to configure [`Filters`][vizro.models.Filter] and [`Para
 - [`Slider`][vizro.models.Slider]
 
 ## 4. The final touches
-Each page is added to the dashboard using the following line of code: `vm.Dashboard(pages=[first_page, second_page])`. 
-This ensures that all the pages are accessible.
 
-By default, a navigation panel is added on the left side to switch between the two pages. 
+Each page is added to the dashboard using the following line of code: `vm.Dashboard(pages=[first_page, second_page])`. This ensures that all the pages are accessible.
 
+By default, a navigation panel is added on the left side to switch between the two pages.
 
 !!! example "Final dashboard"
     === "Code"
@@ -572,7 +571,6 @@ Vizro doesn't end here, and we only covered the key features, but there is still
 - How to use [Actions](../user-guides/actions.md) for example, for chart interaction or custom controls.
 - How to create dashboards from `yaml`, `dict` or `json` following the [dashboard guide](../user-guides/dashboard.md).
 
-[finalpage]: ../../assets/tutorials/dashboard/dashboard4.png
 [finalpage1]: ../../assets/tutorials/dashboard/dashboard2.png
 [finalpage2]: ../../assets/tutorials/dashboard/dashboard3.png
 [firstpage1]: ../../assets/tutorials/dashboard/dashboard21.png
