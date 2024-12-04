@@ -71,3 +71,9 @@ To ensure the dynamic height adjustment and prevent scrolling, the height must b
 label[for="theme-selector"] {
   display: none;
 }
+
+img[src*="icon-top"] {
+  filter: var(--fill-icon-image-card);
+  height: 36px;
+  width: 36px;
+}

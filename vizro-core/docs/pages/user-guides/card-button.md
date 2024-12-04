@@ -323,10 +323,10 @@ Note the added URL hash `#my-image`. Now create a CSS file placed in your `asset
 Use the following pre-defined URL hashes in your image path to apply Vizro's default styling.
 
 #### To float the image next to the text:
+To float an image for example to the right of the text, use the `src` attribute as a CSS selector. Follow these steps:
 
-- floating-left: `![](my_image.png#floating-left)`
-- floating-right: `![](my_image.png#floating-right)`
-- floating-center: `![](my_image.png#floating-center)`
+1. Add a hash (#) to the image URL, e.g., `![](assets/images/continents/europe.svg#my-image)`
+2. Target that hash in your custom CSS file `img[src*="#my-image"] { float: right; }`
 
 !!! example "Card with floating image"
     === "images.css"
@@ -334,6 +334,7 @@ Use the following pre-defined URL hashes in your image path to apply Vizro's def
         img[src*="#my-image"] {
             width: 120px;
             height: 120px;
+            float: right;
         }
         ```
 
@@ -349,7 +350,7 @@ Use the following pre-defined URL hashes in your image path to apply Vizro's def
                         text="""
                         ### My card with floating image!
 
-                        ![](assets/images/continents/europe.svg#my-image#floating-right)
+                        ![](assets/images/continents/europe.svg#my-image)
 
                          Commodi repudiandae consequuntur voluptatum laborum numquam blanditiis harum quisquam eius sed odit.
 
@@ -381,7 +382,7 @@ Use the following pre-defined URL hashes in your image path to apply Vizro's def
         pages:
           - components:
               - text: |
-                  ![](assets/images/continents/europe.svg#my-image#floating-right)
+                  ![](assets/images/continents/europe.svg#my-image)
 
                   Commodi repudiandae consequuntur voluptatum laborum numquam blanditiis harum quisquam eius sed odit.
 
