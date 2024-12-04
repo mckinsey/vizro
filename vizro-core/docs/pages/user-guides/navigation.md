@@ -2,8 +2,7 @@
 
 This guide shows you how to use and customize the navigation that appears on the left of your dashboard.
 
-The [`Dashboard`][vizro.models.Dashboard] model accepts a `navigation` argument, where you can enter a [`Navigation`][vizro.models.Navigation] model. This enables you to group pages together and customize how they appear in your navigation.
-The dashboard includes a collapsible side panel that users can minimize or expand by a button click. The collapse button, located in the top right corner of the side panel, is visible by default for user convenience.
+The [`Dashboard`][vizro.models.Dashboard] model accepts a `navigation` argument, where you can enter a [`Navigation`][vizro.models.Navigation] model. This enables you to group pages together and customize how they appear in your navigation. The dashboard includes a collapsible side panel that users can minimize or expand by a button click. The collapse button, located in the top right corner of the side panel, is visible by default for user convenience.
 
 ## Use the default navigation
 
@@ -56,8 +55,8 @@ By default, if the `navigation` argument is not specified, Vizro creates a navig
                 type: graph
             title: My first page
           - components:
-             - text: My text here
-               type: card
+              - text: My text here
+                type: card
             title: My second page
           - components:
               - figure:
@@ -69,10 +68,9 @@ By default, if the `navigation` argument is not specified, Vizro creates a navig
                 type: graph
             title: My third page
         ```
-    === "Result"
-        [![DefaultNavigation]][DefaultNavigation]
 
-    [DefaultNavigation]: ../../assets/user_guides/navigation/default_navigation.png
+    === "Result"
+        [![DefaultNavigation]][defaultnavigation]
 
 ## Include a subset of pages
 
@@ -132,17 +130,15 @@ To include only some of your dashboard pages in your navigation then list them i
             - My first page
             - My second page
         ```
-    === "Result"
-        [![OnlySomePages]][OnlySomePages]
 
-    [OnlySomePages]: ../../assets/user_guides/navigation/only_some_pages.png
+    === "Result"
+        [![OnlySomePages]][onlysomepages]
 
 ## Group pages
 
 You can also group your pages together by specifying `pages` as a dictionary:
 
 !!! example "Grouping pages"
-
     === "snippet.py"
         ```py
         # page_1, page_2, page_3 defined as in default example
@@ -154,7 +150,6 @@ You can also group your pages together by specifying `pages` as a dictionary:
         ```
 
     === "app.py"
-
         ```{.python pycafe-link}
         from vizro import Vizro
         import vizro.plotly.express as px
@@ -187,6 +182,7 @@ You can also group your pages together by specifying `pages` as a dictionary:
         )
         Vizro().build(dashboard).run()
         ```
+
     === "app.yaml"
         ```yaml
         # Still requires a .py to add data to the data manager and parse YAML configuration
@@ -200,18 +196,15 @@ You can also group your pages together by specifying `pages` as a dictionary:
             Group B:
               - My third page
         ```
+
     === "Result"
-        [![GroupedNavigation]][GroupedNavigation]
-
-    [GroupedNavigation]: ../../assets/user_guides/navigation/grouped_navigation.png
-
+        [![GroupedNavigation]][groupednavigation]
 
 ## Use a navigation bar with icons
 
 Another way to group together pages in the navigation is to use a [`NavBar`][vizro.models.NavBar] with icons. The simplest way to use this is to change the `nav_selector` specified in [`Navigation`][vizro.models.Navigation]:
 
 !!! example "Using `NavBar`"
-
     === "snippet.py"
         ```py
          # page_1, page_2, page_3 defined as in default example
@@ -223,8 +216,8 @@ Another way to group together pages in the navigation is to use a [`NavBar`][viz
         )
         Vizro().build(dashboard).run()
         ```
-    === "app.py"
 
+    === "app.py"
         ```{.python pycafe-link}
         from vizro import Vizro
         import vizro.plotly.express as px
@@ -276,14 +269,11 @@ Another way to group together pages in the navigation is to use a [`NavBar`][viz
           nav_selector:
             type: nav_bar
         ```
+
     === "Result"
-        [![NavBar]][NavBar]
+        [![NavBar]][navbar]
 
-    [NavBar]: ../../assets/user_guides/navigation/nav_bar.png
-
-
-Here, the first level of the navigation hierarchy ("Group A" and "Group B") is represented by an icon in a navigation bar, and the second level of the navigation (the pages) is represented by an accordion.
-By default, the set of icons used are the [`filter` icons from the Google Material icons library](https://fonts.google.com/icons?icon.query=filter). The icon label ("Group A" and "Group B") appears as a tooltip on hovering over the icon.
+Here, the first level of the navigation hierarchy ("Group A" and "Group B") is represented by an icon in a navigation bar, and the second level of the navigation (the pages) is represented by an accordion. By default, the set of icons used are the [`filter` icons from the Google Material icons library](https://fonts.google.com/icons?icon.query=filter). The icon label ("Group A" and "Group B") appears as a tooltip on hovering over the icon.
 
 ## Customize the navigation bar
 
@@ -314,7 +304,6 @@ The same configuration for [grouping pages](#group-pages) applies inside a `NavL
         ```
 
     === "app.py"
-
         ```{.python pycafe-link}
         from vizro import Vizro
         import vizro.plotly.express as px
@@ -375,10 +364,9 @@ The same configuration for [grouping pages](#group-pages) applies inside a `NavL
                   Group B:
                     - My third page
         ```
-    === "Result"
-        [![AccordionInsideNavBar]][AccordionInsideNavBar]
 
-    [AccordionInsideNavBar]: ../../assets/user_guides/navigation/accordion_inside_nav_bar.png
+    === "Result"
+        [![AccordionInsideNavBar]][accordioninsidenavbar]
 
 You can alter the icons used by specifying the name of the icon in the [Google Material icons library](https://fonts.google.com/icons):
 
@@ -402,8 +390,8 @@ You can alter the icons used by specifying the name of the icon in the [Google M
             ),
         )
         ```
-    === "app.py"
 
+    === "app.py"
         ```{.python pycafe-link}
         from vizro import Vizro
         import vizro.plotly.express as px
@@ -468,7 +456,13 @@ You can alter the icons used by specifying the name of the icon in the [Google M
                 pages:
                   - My third page
         ```
-    === "Result"
-        [![CustomIcons]][CustomIcons]
 
-    [CustomIcons]: ../../assets/user_guides/navigation/custom_icons.png
+    === "Result"
+        [![CustomIcons]][customicons]
+
+[accordioninsidenavbar]: ../../assets/user_guides/navigation/accordion_inside_nav_bar.png
+[customicons]: ../../assets/user_guides/navigation/custom_icons.png
+[defaultnavigation]: ../../assets/user_guides/navigation/default_navigation.png
+[groupednavigation]: ../../assets/user_guides/navigation/grouped_navigation.png
+[navbar]: ../../assets/user_guides/navigation/nav_bar.png
+[onlysomepages]: ../../assets/user_guides/navigation/only_some_pages.png

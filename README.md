@@ -11,19 +11,13 @@
 
 <div align="center" markdown="1">
 
-[![Python version](https://img.shields.io/badge/python-3.9%20%7C%203.10%20%7C%203.11%20%7C%203.12%20%7C%203.13-blue.svg)](https://pypi.org/project/vizro/)
-[![PyPI version](https://badge.fury.io/py/vizro.svg)](https://badge.fury.io/py/vizro)
-[![License](https://img.shields.io/badge/license-Apache%202.0-blue.svg)](https://github.com/mckinsey/vizro/blob/main/LICENSE.md)
-[![Documentation](https://readthedocs.org/projects/vizro/badge/?version=stable)](https://vizro.readthedocs.io/)
-[![OpenSSF Best Practices](https://www.bestpractices.dev/projects/7858/badge)](https://www.bestpractices.dev/projects/7858)
+[![Python version](https://img.shields.io/badge/python-3.9%20%7C%203.10%20%7C%203.11%20%7C%203.12%20%7C%203.13-blue.svg)](https://pypi.org/project/vizro/) [![PyPI version](https://badge.fury.io/py/vizro.svg)](https://badge.fury.io/py/vizro) [![License](https://img.shields.io/badge/license-Apache%202.0-blue.svg)](https://github.com/mckinsey/vizro/blob/main/LICENSE.md) [![Documentation](https://readthedocs.org/projects/vizro/badge/?version=stable)](https://vizro.readthedocs.io/) [![OpenSSF Best Practices](https://www.bestpractices.dev/projects/7858/badge)](https://www.bestpractices.dev/projects/7858)
 
 </div>
 
 <div align="center" markdown="1">
 
-<a href="https://vizro.readthedocs.io/en/stable/" target="_blank">Documentation </a> |
-<a href="https://vizro.readthedocs.io/en/stable/pages/tutorials/first_dashboard/" target="_blank">Get Started </a> |
-<a href="http://vizro.mckinsey.com/" target="_blank">Vizro examples gallery</a>
+<a href="https://vizro.readthedocs.io/en/stable/" target="_blank">Documentation </a> | <a href="https://vizro.readthedocs.io/en/stable/pages/tutorials/first_dashboard/" target="_blank">Get Started </a> | <a href="http://vizro.mckinsey.com/" target="_blank">Vizro examples gallery</a>
 
 </div>
 
@@ -108,9 +102,7 @@ You can see Vizro in action by clicking on the following image or by visiting [t
 
 ## Visual vocabulary
 
-Our visual vocabulary dashboard helps you to select and create various types of charts. It helps you decide when to use
-each chart type, and offers sample Python code to create these charts with [Plotly](https://plotly.com/python/) and
-embed them into a Vizro dashboard.
+Our visual vocabulary dashboard helps you to select and create various types of charts. It helps you decide when to use each chart type, and offers sample Python code to create these charts with [Plotly](https://plotly.com/python/) and embed them into a Vizro dashboard.
 
 <a href="https://vizro-demo-visual-vocabulary.hf.space">
 <img src="https://raw.githubusercontent.com/mckinsey/vizro/main/.github/images/visual_vocabulary.png" width="550">
