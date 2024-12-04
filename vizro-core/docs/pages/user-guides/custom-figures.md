@@ -1,41 +1,36 @@
 # How to create custom figures
 
-This guide explains how to create custom figures, which is useful when you need a component that reacts to
-[filter](filters.md) and [parameter](parameters.md) controls.
+This guide explains how to create custom figures, which is useful when you need a component that reacts to [filter](filters.md) and [parameter](parameters.md) controls.
 
-The [`Figure`][vizro.models.Figure] model accepts the `figure` argument, where you can enter _any_ custom figure function
-as explained in the [user guide on figures](figure.md).
+The [`Figure`][vizro.models.Figure] model accepts the `figure` argument, where you can enter _any_ custom figure function as explained in the [user guide on figures](figure.md).
 
 ## When to use a custom figure
-As described in the flowchart detailing [when to use `Figure`](figure.md), custom figures should be used if
-**both** of the following conditions are met:
+
+As described in the flowchart detailing [when to use `Figure`](figure.md), custom figures should be used if **both** of the following conditions are met:
 
 - You need a figure that doesn't fit into the existing pre-defined components ([`Graph`][vizro.models.Graph], [`Table`][vizro.models.Table] or [`AgGrid`][vizro.models.AgGrid]).
 - You need a figure that isn't available in our pre-defined figure functions [`vizro.figures`](../API-reference/figure-callables.md).
 
 ## Steps to create a custom figure
 
-1. Define a function that returns a [Dash component](https://dash.plotly.com/#open-source-component-libraries).
-This can, but does not need to, be based on code in our pre-defined figure functions in [`vizro.figures`](../API-reference/figure-callables.md).
-2. Decorate it with `@capture("figure")`.
-3. The function must accept a `data_frame` argument (of type `pandas.DataFrame`).
-4. The figure should be derived from and require only one `pandas.DataFrame`. Dataframes from other arguments
-will not react to dashboard controls such as [`Filter`](filters.md).
-5. Pass your function to the `figure` argument of the [`Figure`][vizro.models.Figure] model.
+1. Define a function that returns a [Dash component](https://dash.plotly.com/#open-source-component-libraries). This can, but does not need to, be based on code in our pre-defined figure functions in [`vizro.figures`](../API-reference/figure-callables.md).
+1. Decorate it with `@capture("figure")`.
+1. The function must accept a `data_frame` argument (of type `pandas.DataFrame`).
+1. The figure should be derived from and require only one `pandas.DataFrame`. Dataframes from other arguments will not react to dashboard controls such as [`Filter`](filters.md).
+1. Pass your function to the `figure` argument of the [`Figure`][vizro.models.Figure] model.
 
 The following examples can be used as a base to build more sophisticated figures.
 
 ## Examples of custom figures
 
 ### Custom KPI card
-To change the design or content of our existing KPI (key performance indicator) cards from
-[`vizro.figures`](../API-reference/figure-callables.md), you can do so by following the steps described above.
 
-For instance, to make a KPI card with the icon positioned on the right side of the title instead of the left,
-copy and paste the [source code of `kpi_card`](../API-reference/figure-callables.md#vizro.figures.kpi_card) and
-adjust the return statement of the function.
+To change the design or content of our existing KPI (key performance indicator) cards from [`vizro.figures`](../API-reference/figure-callables.md), you can do so by following the steps described above.
+
+For instance, to make a KPI card with the icon positioned on the right side of the title instead of the left, copy and paste the [source code of `kpi_card`](../API-reference/figure-callables.md#vizro.figures.kpi_card) and adjust the return statement of the function.
 
 <!-- vale off -->
+
 !!! example "Custom KPI card"
     === "app.py"
         ```{.python pycafe-link}
@@ -107,29 +102,26 @@ adjust the return statement of the function.
         ```
 
         1. Here we decorate our custom figure function with the `@capture("figure")` decorator.
-        2. The custom figure function needs to have a `data_frame` argument and return a `Dash` component.
-        3. We adjust the return statement to include the icon on the right side of the title. This is achieved by swapping the order of the `html.H2` and `html.P` compared to the original `kpi_card`.
-        4. This creates a [`layout`](layouts.md) with four rows and columns. The KPI cards are positioned in the first two cells, while the remaining cells are empty.
-        5. For more information, refer to the API reference for the  [`kpi_card`](../API-reference/figure-callables.md#vizro.figures.kpi_card).
-        6. Our custom figure function `custom_kpi_card` now needs to be passed on to the `vm.Figure`.
+        1. The custom figure function needs to have a `data_frame` argument and return a `Dash` component.
+        1. We adjust the return statement to include the icon on the right side of the title. This is achieved by swapping the order of the `html.H2` and `html.P` compared to the original `kpi_card`.
+        1. This creates a [`layout`](layouts.md) with four rows and columns. The KPI cards are positioned in the first two cells, while the remaining cells are empty.
+        1. For more information, refer to the API reference for the [`kpi_card`](../API-reference/figure-callables.md#vizro.figures.kpi_card).
+        1. Our custom figure function `custom_kpi_card` now needs to be passed on to the `vm.Figure`.
 
     === "app.yaml"
-        ```yaml
-        # Custom figures are currently only possible via Python configuration
-        ```
-    === "Result"
-        [![CustomKPI]][CustomKPI]
+        Custom figures are currently only possible via Python configuration.
 
-    [CustomKPI]: ../../assets/user_guides/figure/custom_kpi.png
+    === "Result"
+        [![CustomKPI]][customkpi]
 
 <!-- vale on -->
 
 ### Dynamic HTML header
-You can create a custom figure for any [Dash component](https://dash.plotly.com/#open-source-component-libraries).
-Below is an example of a custom figure that returns a `html.H2` component that dynamically updates based on the selected
-name from a filter.
+
+You can create a custom figure for any [Dash component](https://dash.plotly.com/#open-source-component-libraries). Below is an example of a custom figure that returns a `html.H2` component that dynamically updates based on the selected name from a filter.
 
 <!-- vale off -->
+
 !!! example "Dynamic HTML header"
     === "app.py"
         ```{.python pycafe-link}
@@ -159,27 +151,24 @@ name from a filter.
         ```
 
         1. Here we decorate our custom figure function with the `@capture("figure")` decorator.
-        2. The custom figure function needs to have a `data_frame` argument and return a `Dash` component.
-        3. We return a `html.H2` component that dynamically updates based on the selected name from the filter.
-        4. Our custom figure function `dynamic_html_header` now needs to be passed on to the `vm.Figure`.
+        1. The custom figure function needs to have a `data_frame` argument and return a `Dash` component.
+        1. We return a `html.H2` component that dynamically updates based on the selected name from the filter.
+        1. Our custom figure function `dynamic_html_header` now needs to be passed on to the `vm.Figure`.
 
     === "app.yaml"
-        ```yaml
-        # Custom figures are currently only possible via Python configuration
-        ```
-    === "Result"
-        [![CustomHTML]][CustomHTML]
+        Custom figures are currently only possible via Python configuration.
 
-    [CustomHTML]: ../../assets/user_guides/figure/custom_html.png
+    === "Result"
+        [![CustomHTML]][customhtml]
 
 <!-- vale on -->
 
-
 ### Dynamic number of cards
-The example below shows how to create multiple cards created from a `pandas.DataFrame` where the
-number of cards displayed dynamically adjusts based on a `vm.Parameter`.
+
+The example below shows how to create multiple cards created from a `pandas.DataFrame` where the number of cards displayed dynamically adjusts based on a `vm.Parameter`.
 
 <!-- vale off -->
+
 !!! example "Dynamic number of cards"
     === "app.py"
         ```py
@@ -239,40 +228,39 @@ number of cards displayed dynamically adjusts based on a `vm.Parameter`.
         ```
 
         1. Here we decorate our custom figure function with the `@capture("figure")` decorator.
-        2. The custom figure function needs to have a `data_frame` argument and return a `Dash` component.
-        3. Our decorated figure function `multiple_cards` now needs to be passed on to the `vm.Figure`.
-        4. We add a [`vm.Parameter`](parameters.md) to dynamically adjust the number of cards displayed.
-           The parameter targets the `n_rows` argument of the `multiple_cards` function, determining the number of rows
-           taken from the data.
+        1. The custom figure function needs to have a `data_frame` argument and return a `Dash` component.
+        1. Our decorated figure function `multiple_cards` now needs to be passed on to the `vm.Figure`.
+        1. We add a [`vm.Parameter`](parameters.md) to dynamically adjust the number of cards displayed. The parameter targets the `n_rows` argument of the `multiple_cards` function, determining the number of rows taken from the data.
 
         <img src=https://py.cafe/logo.png alt="PyCafe logo" width="30"><b><a target="_blank" href="https://py.cafe/vizro-official/vizro-dynamic-cards">Run and edit this code in PyCafe</a></b>
 
     === "styling.css"
         ```css
         .multiple-cards-container {
-          display: flex;
-          flex-wrap: wrap;
-          gap: 12px;
+            display: flex;
+            flex-wrap: wrap;
+            gap: 12px;
         }
 
         .figure-container {
-          height: unset;
-          width: unset;
+            height: unset;
+            width: unset;
         }
 
         .figure-container .card {
-          height: 210px;
-          width: 240px;
+            height: 210px;
+            width: 240px;
         }
         ```
+
     === "app.yaml"
-        ```yaml
-        # Custom figures are currently only possible via Python configuration
-        ```
+        Custom figures are currently only possible via Python configuration.
+
     === "Result"
-        [![CustomFigure]][CustomFigure]
-
-    [CustomFigure]: ../../assets/user_guides/figure/custom_multiple_cards.png
-
+        [![CustomFigure]][customfigure]
 
 <!-- vale on -->
+
+[customfigure]: ../../assets/user_guides/figure/custom_multiple_cards.png
+[customhtml]: ../../assets/user_guides/figure/custom_html.png
+[customkpi]: ../../assets/user_guides/figure/custom_kpi.png
