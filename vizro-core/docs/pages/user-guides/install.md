@@ -8,8 +8,8 @@ We recommend that you create a virtual environment for each Vizro project you wo
 
 ## Prerequisites to working locally
 
-* **Python**: Vizro supports macOS, Linux, and Windows. It works with Python 3.9 and later.
-* **Virtual environment**: You specify the version of Python to use with Vizro when you set up the virtual environment. See the following references to learn more about [Python virtual environments](https://realpython.com/python-virtual-environments-a-primer/), [Conda virtual environments](https://docs.conda.io/projects/conda/en/latest/user-guide/getting-started.html#starting-conda) or [watch an explainer video about them](https://youtu.be/YKfAwIItO7M).
+- **Python**: Vizro supports macOS, Linux, and Windows. It works with Python 3.9 and later.
+- **Virtual environment**: You specify the version of Python to use with Vizro when you set up the virtual environment. See the following references to learn more about [Python virtual environments](https://realpython.com/python-virtual-environments-a-primer/), [Conda virtual environments](https://docs.conda.io/projects/conda/en/latest/user-guide/getting-started.html#starting-conda) or [watch an explainer video about them](https://youtu.be/YKfAwIItO7M).
 
 ### How to create a virtual environment for your Vizro project
 

@@ -2,11 +2,12 @@
 
 Vizro supports two different types of data:
 
-* [Static data](#static-data): pandas DataFrame. This is the simplest method and best to use if you do not need the more advanced functionality of dynamic data.
-* [Dynamic data](#dynamic-data): function that returns a pandas DataFrame. This is a bit more complex to understand but has more advanced functionality such as the ability to refresh data while the dashboard is running.
+- [Static data](#static-data): pandas DataFrame. This is the simplest method and best to use if you do not need the more advanced functionality of dynamic data.
+- [Dynamic data](#dynamic-data): function that returns a pandas DataFrame. This is a bit more complex to understand but has more advanced functionality such as the ability to refresh data while the dashboard is running.
 
 The following flowchart shows what you need to consider when choosing how to set up your data.
-``` mermaid
+
+```mermaid
 graph TD
   refresh["`Do you need your data to refresh while the dashboard is running?`"]
   specification["`Do you need to specify your dashboard through a configuration language like YAML?`"]
@@ -27,11 +28,10 @@ graph TD
 ```
 
 ??? note "Static vs. dynamic data comparison"
-
     This table gives a full comparison between static and dynamic data. Do not worry if you do not yet understand everything in it; it will become clearer after reading more about [static data](#static-data) and [dynamic data](#dynamic-data)!
 
     |                                                               | Static           | Dynamic                                  |
-    |---------------------------------------------------------------|------------------|------------------------------------------|
+    | ------------------------------------------------------------- | ---------------- | ---------------------------------------- |
     | Required Python type                                          | pandas DataFrame | Function that returns a pandas DataFrame |
     | Can be supplied directly in `data_frame` argument of `figure` | Yes              | No                                       |
     | Can be referenced by name after adding to data manager        | Yes              | Yes                                      |
@@ -73,14 +73,13 @@ The below example uses the Iris data saved to a file `iris.csv` in the same dire
         ```
 
         1. `iris` is a pandas DataFrame created by reading from the CSV file `iris.csv`.
-    === "Result"
-        [![DataBasic]][DataBasic]
 
-    [DataBasic]: ../../assets/user_guides/data/data_pandas_dataframe.png
+    === "Result"
+        [![DataBasic]][databasic]
 
 The [`Graph`][vizro.models.Graph], [`AgGrid`][vizro.models.AgGrid] and [`Table`][vizro.models.Table] models all have an argument called `figure`. This accepts a function (in the above example, `px.scatter`) that takes a pandas DataFrame as its first argument. The name of this argument is always `data_frame`. When configuring the dashboard using Python, it is optional to give the name of the argument: if you like, you could write `data_frame=iris` instead of `iris`.
-!!! note
 
+!!! note
     With static data, once the dashboard is running, the data shown in the dashboard cannot change even if the source data in `iris.csv` changes. The code `iris = pd.read_csv("iris.csv")` is only executed once when the dashboard is first started. If you would like changes to source data to flow through to the dashboard then you must use [dynamic data](#dynamic-data).
 
 ### Reference by name
@@ -107,27 +106,27 @@ If you would like to specify your dashboard configuration through YAML then you 
         ```
 
         1. `"iris"` is the name of a data source added to the data manager. This data is a pandas DataFrame created by reading from the CSV file `iris.csv`.
+
     === "dashboard.yaml"
         ```yaml
         pages:
-        - components:
-            - figure:
+          - components:
+              figure:
                 _target_: box
                 data_frame: iris # (1)!
                 x: species
                 y: petal_width
                 color: species
               type: graph
-            title: Static data example
+              title: Static data example
         ```
 
         1. Refer to the `"iris"` data source in the data manager.
+
     === "Result"
-        [![DataBasic]][DataBasic]
+        [![DataBasic]][databasic]
 
-    [DataBasic]: ../../assets/user_guides/data/data_pandas_dataframe.png
-
-It is also possible to refer to a named data source using the Python API: `px.scatter("iris", ...)` or `px.scatter(data_frame="iris", ...)`  would work if the `"iris"` data source has been registered in the data manager.
+It is also possible to refer to a named data source using the Python API: `px.scatter("iris", ...)` or `px.scatter(data_frame="iris", ...)` would work if the `"iris"` data source has been registered in the data manager.
 
 ## Dynamic data
 
@@ -166,14 +165,12 @@ The example below shows how data is fetched dynamically every time the page is r
         ```
 
         1. `iris` is a pandas DataFrame created by reading from the CSV file `iris.csv`.
-        2. To demonstrate that dynamic data can change when the page is refreshed, select 50 points at random. This simulates what would happen if your file `iris.csv` were constantly changing.
-        3. To use `load_iris_data` as dynamic data it must be added to the data manager. You should **not** actually call the function as `load_iris_data()`; doing so would result in static data that cannot be reloaded.
-        4. Dynamic data is referenced by the name of the data source `"iris"`.
+        1. To demonstrate that dynamic data can change when the page is refreshed, select 50 points at random. This simulates what would happen if your file `iris.csv` were constantly changing.
+        1. To use `load_iris_data` as dynamic data it must be added to the data manager. You should **not** actually call the function as `load_iris_data()`; doing so would result in static data that cannot be reloaded.
+        1. Dynamic data is referenced by the name of the data source `"iris"`.
 
     === "Result"
-        [![DynamicData]][DynamicData]
-
-    [DynamicData]: ../../assets/user_guides/data/dynamic_data.gif
+        [![DynamicData]][dynamicdata]
 
 Since dynamic data sources must always be added to the data manager and referenced by name, they may be used in YAML configuration [exactly the same way as for static data sources](#reference-by-name).
 
@@ -184,10 +181,10 @@ By default, a dynamic data function executes every time the dashboard is refresh
 The Vizro data manager has a server-side caching mechanism to help solve this. Vizro's cache uses [Flask-Caching](https://flask-caching.readthedocs.io/en/latest/), which supports a number of possible cache backends and [configuration options](https://flask-caching.readthedocs.io/en/latest/#configuring-flask-caching). By default, the cache is turned off.
 
 <!-- vale off -->
+
 In a development environment the easiest way to enable caching is to use a [simple memory cache](https://cachelib.readthedocs.io/en/stable/simple/) with the default configuration options. This is achieved by adding one line to the above example to set `data_manager.cache`:
 
 !!! example "Simple cache with default timeout of 5 minutes"
-
     ```py hl_lines="13"
     from flask_caching import Cache
     from vizro import Vizro
@@ -225,7 +222,6 @@ data_manager.cache = Cache(config={"CACHE_TYPE": "SimpleCache", "CACHE_DEFAULT_T
 ```
 
 !!! warning
-
     Simple cache exists purely for single-process development purposes and is not intended to be used in production. If you deploy with multiple workers, [for example with Gunicorn](run.md/#gunicorn), then you should use a production-ready cache backend. All of Flask-Caching's [built-in backends](https://flask-caching.readthedocs.io/en/latest/#built-in-cache-backends) other than `SimpleCache` are suitable for production. In particular, you might like to use [`FileSystemCache`](https://cachelib.readthedocs.io/en/stable/file/) or [`RedisCache`](https://cachelib.readthedocs.io/en/stable/redis/):
 
     ```py title="Production-ready caches"
@@ -239,7 +235,9 @@ data_manager.cache = Cache(config={"CACHE_TYPE": "SimpleCache", "CACHE_DEFAULT_T
     Since Flask-Caching relies on [`pickle`](https://docs.python.org/3/library/pickle.html), which can execute arbitrary code during unpickling, you should not cache data from untrusted sources. Doing so [could be unsafe](https://github.com/pallets-eco/flask-caching/pull/209).
 
 Note that when a production-ready cache backend is used, the cache is persisted beyond the Vizro process and is not cleared by restarting your server. To clear the cache then you must do so manually, for example, if you use `FileSystemCache` then you would delete your `cache` directory. Persisting the cache can also be useful for development purposes when handling data that takes a long time to load: even if you do not need the data to refresh while your dashboard is running, it can speed up your development loop to use dynamic data with a cache that is persisted between repeated runs of Vizro.
+
 <!-- vale on -->
+
 #### Set timeouts
 
 You can change the timeout of the cache independently for each dynamic data source in the data manager using the `timeout` setting (measured in seconds). A `timeout` of 0 indicates that the cache does not expire. This is effectively the same as using [static data](#static-data).
@@ -278,8 +276,8 @@ In general, a parametrized dynamic data source should always return a pandas Dat
 To add a parameter to control a dynamic data source, do the following:
 
 1. add the appropriate argument to your dynamic data function and specify a default value for the argument.
-2. give an `id` to all components that have the data source you wish to alter through a parameter.
-3. [add a parameter](parameters.md) with `targets` of the form `<target_component_id>.data_frame.<dynamic_data_argument>` and a suitable [selector](selectors.md).
+1. give an `id` to all components that have the data source you wish to alter through a parameter.
+1. [add a parameter](parameters.md) with `targets` of the form `<target_component_id>.data_frame.<dynamic_data_argument>` and a suitable [selector](selectors.md).
 
 For example, let us extend the [dynamic data example](#dynamic-data) above into an example of how parametrized dynamic data works. The `load_iris_data` can take an argument `number_of_points` controlled from the dashboard with a [`Slider`][vizro.models.Slider].
 
@@ -318,21 +316,18 @@ For example, let us extend the [dynamic data example](#dynamic-data) above into 
         ```
 
         1. `load_iris_data` takes a single argument, `number_of_points`, with a default value of 10.
-        2. `iris` is a pandas DataFrame created by reading from the CSV file `iris.csv`.
-        3. Sample points at random, where `number_of_points` gives the number of points selected.
-        4. To use `load_iris_data` as dynamic data it must be added to the data manager. You should **not** actually call the function as `load_iris_data()` or `load_iris_data(number_of_points=...)`; doing so would result in static data that cannot be reloaded.
-        5. Give the `vm.Graph` component `id="graph"` so that the `vm.Parameter` can target it. Dynamic data is referenced by the name of the data source `"iris"`.
-        6. Create a `vm.Parameter` to target the `number_of_points` argument for the `data_frame` used in `graph`.
+        1. `iris` is a pandas DataFrame created by reading from the CSV file `iris.csv`.
+        1. Sample points at random, where `number_of_points` gives the number of points selected.
+        1. To use `load_iris_data` as dynamic data it must be added to the data manager. You should **not** actually call the function as `load_iris_data()` or `load_iris_data(number_of_points=...)`; doing so would result in static data that cannot be reloaded.
+        1. Give the `vm.Graph` component `id="graph"` so that the `vm.Parameter` can target it. Dynamic data is referenced by the name of the data source `"iris"`.
+        1. Create a `vm.Parameter` to target the `number_of_points` argument for the `data_frame` used in `graph`.
 
     === "Result"
-        [![ParametrizedDynamicData]][ParametrizedDynamicData]
-
-    [ParametrizedDynamicData]: ../../assets/user_guides/data/parametrized_dynamic_data.gif
+        [![ParametrizedDynamicData]][parametrizeddynamicdata]
 
 Parametrized data loading is compatible with [caching](#configure-cache). The cache uses [memoization](https://flask-caching.readthedocs.io/en/latest/#memoization), so that the dynamic data function's arguments are included in the cache key. This means that `load_iris_data(number_of_points=10)` is cached independently of `load_iris_data(number_of_points=20)`.
 
 !!! warning
-
     You should always [treat the content of user input as untrusted](https://community.plotly.com/t/writing-secure-dash-apps-community-thread/54619). For example, you should not expose a filepath to load without passing it through a function like [`werkzeug.utils.secure_filename`](https://werkzeug.palletsprojects.com/en/3.0.x/utils/#werkzeug.utils.secure_filename), or you might enable arbitrary access to files on your server.
 
 You cannot pass [nested parameters](parameters.md#nested-parameters) to dynamic data. You can only target the top-level arguments of the data loading function, not the nested keys in a dictionary.
@@ -354,7 +349,6 @@ When the page is refreshed, the behavior of a dynamic filter is as follows:
 For example, let us add two filters to the [dynamic data example](#dynamic-data) above:
 
 !!! example "Dynamic filters"
-
     ```py hl_lines="10 20 21"
     from vizro import Vizro
     import pandas as pd
@@ -386,8 +380,8 @@ For example, let us add two filters to the [dynamic data example](#dynamic-data)
     ```
 
     1. We sample only 5 rather than 50 points so that changes to the available values in the filtered columns are more apparent when the page is refreshed.
-    2. This filter implicitly controls the dynamic data source `"iris"`, which supplies the `data_frame` to the targeted `vm.Graph`. On page refresh, Vizro reloads this data, finds all the unique values in the `"species"` column and sets the categorical selector's `options` accordingly.
-    3. Similarly, on page refresh, Vizro finds the minimum and maximum values of the `"sepal_length"` column in the reloaded data and sets new `min` and `max` values for the numerical selector accordingly.
+    1. This filter implicitly controls the dynamic data source `"iris"`, which supplies the `data_frame` to the targeted `vm.Graph`. On page refresh, Vizro reloads this data, finds all the unique values in the `"species"` column and sets the categorical selector's `options` accordingly.
+    1. Similarly, on page refresh, Vizro finds the minimum and maximum values of the `"sepal_length"` column in the reloaded data and sets new `min` and `max` values for the numerical selector accordingly.
 
 Consider a filter that depends on dynamic data, where you do **not** want the available values to change when the dynamic data changes. You should manually specify the `selector`'s `options` field (categorical selector) or `min` and `max` fields (numerical selector). In the above example, this could be achieved as follows:
 
@@ -409,10 +403,13 @@ controls = [
 
 When Vizro initially builds a filter that depends on parametrized dynamic data loading, data is loaded using the default argument values. This data is used to:
 
-* perform initial validation
-* check which data sources contain the specified `column` (unless `targets` is explicitly specified) and
-* find the type of selector to use (unless `selector` is explicitly specified).
+- perform initial validation
+- check which data sources contain the specified `column` (unless `targets` is explicitly specified) and
+- find the type of selector to use (unless `selector` is explicitly specified).
 
 !!! note
-
     When the value of a dynamic data parameter is changed by a dashboard user, the data underlying a dynamic filter can change. Currently this change affects page components such as `vm.Graph` but does not affect the available values shown in a dynamic filter, which only update on page refresh. This functionality will be coming soon!
+
+[databasic]: ../../assets/user_guides/data/data_pandas_dataframe.png
+[dynamicdata]: ../../assets/user_guides/data/dynamic_data.gif
+[parametrizeddynamicdata]: ../../assets/user_guides/data/parametrized_dynamic_data.gif
