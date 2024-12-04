@@ -104,7 +104,7 @@ The code below adds two components to the page:
             id="line_gdp",
             figure=px.line(gapminder_data, x="year", y="gdpPercap", color="continent",
                             labels={"year": "Year", "continent": "Continent",
-                            "gdpPercap":"GDP Per Cap"}, title=''),
+                            "gdpPercap":"GDP Per Cap"}),
         )
         ```
 
@@ -137,7 +137,7 @@ The code below adds two components to the page:
                 vm.Graph(
                     figure=px.line(gapminder_data, x="year", y="gdpPercap", color="continent",
                                     labels={"year": "Year", "continent": "Continent",
-                                    "gdpPercap":"GDP Per Cap"}, title=''),
+                                    "gdpPercap":"GDP Per Cap"}),
                 ),
 
             ],
@@ -460,46 +460,15 @@ You can apply selectors to configure [`Filters`][vizro.models.Filter] and [`Para
 
 ## 4. The final touches
 
-This section puts everything together by adding a homepage to the example for navigation between the two separate pages.
+Each page is added to the dashboard using the following line of code: `vm.Dashboard(pages=[first_page, second_page])`. This ensures that all the pages are accessible.
 
-For easy navigation within your dashboard, we'll create a page that serves as the entry point for the user. On this homepage are two [`Cards`][vizro.models.Card] which serve as tiles that can be customized with a title, some text, and an image. These cards link to the subpages within your dashboard using their `href` attributes as `href="/first-page"` and `href="/second-page"`. This establishes the navigation links from the homepage to each of the subpages.
-
-Each page is added to the dashboard using the following line of code: `vm.Dashboard(pages=[home_page, first_page, second_page])`. This ensures that all the pages are accessible.
-
-The code below illustrates a functional dashboard where you can navigate from the homepage to each of the subpages. Additionally, you can use the navigation panel on the left side to switch between the three pages.
+By default, a navigation panel on the left side enables the user to switch between the two pages.
 
 !!! example "Final dashboard"
     === "Code"
         ```python
-        home_page = vm.Page(
-            title="Homepage",
-            components=[
-                vm.Card(
-                    text="""
-                    ![](https://raw.githubusercontent.com/mckinsey/vizro/786167c822cce65fe85ffad8ed000d8553a5ef44/vizro-core/docs/assets/images/collections.svg#icon-top)
-
-                    ### First Page
-
-                    Exemplary first dashboard page.
-                    """,
-                    href="/first-page",
-                ),
-                vm.Card(
-                    text="""
-                    ![](https://raw.githubusercontent.com/mckinsey/vizro/786167c822cce65fe85ffad8ed000d8553a5ef44/vizro-core/docs/assets/images/features.svg#icon-top)
-
-                    ### Second Page
-
-                    Exemplary second dashboard page.
-                    """,
-                    href="/second-page",
-                ),
-            ],
-        )
-
-        ...
-
         dashboard = vm.Dashboard(pages=[home_page, first_page, second_page])
+        Vizro().build(dashboard).run()
         ```
 
     === "app.py"
@@ -508,32 +477,6 @@ The code below illustrates a functional dashboard where you can navigate from th
         from vizro import Vizro
         import vizro.models as vm
         import vizro.plotly.express as px
-
-        home_page = vm.Page(
-            title="Homepage",
-            components=[
-                vm.Card(
-                    text="""
-                    ![](https://raw.githubusercontent.com/mckinsey/vizro/786167c822cce65fe85ffad8ed000d8553a5ef44/vizro-core/docs/assets/images/collections.svg)
-
-                    ### First Page
-
-                    Exemplary first dashboard page.
-                    """,
-                    href="/first-page",
-                ),
-                vm.Card(
-                    text="""
-                    ![](https://raw.githubusercontent.com/mckinsey/vizro/786167c822cce65fe85ffad8ed000d8553a5ef44/vizro-core/docs/assets/images/features.svg#icon-top)
-
-                    ### Second Page
-
-                    Exemplary second dashboard page.
-                    """,
-                    href="/second-page",
-                ),
-            ],
-        )
 
         df = px.data.gapminder()
         gapminder_data = (
@@ -603,12 +546,9 @@ The code below illustrates a functional dashboard where you can navigate from th
             ],
         )
 
-        dashboard = vm.Dashboard(pages=[home_page, first_page, second_page])
+        dashboard = vm.Dashboard(pages=[first_page, second_page])
         Vizro().build(dashboard).run()
         ```
-
-    === "Homepage"
-        [![FinalPage]][finalpage]
 
     === "Subpage1"
         [![FinalPage1]][finalpage1]
@@ -631,9 +571,8 @@ Vizro doesn't end here, and we only covered the key features, but there is still
 - How to use [Actions](../user-guides/actions.md) for example, for chart interaction or custom controls.
 - How to create dashboards from `yaml`, `dict` or `json` following the [dashboard guide](../user-guides/dashboard.md).
 
-[finalpage]: ../../assets/tutorials/dashboard/dashboard4.png
-[finalpage1]: ../../assets/tutorials/dashboard/dashboard2.png
-[finalpage2]: ../../assets/tutorials/dashboard/dashboard3.png
+[finalpage1]: ../../assets/tutorials/dashboard/dashboard-first-page.png
+[finalpage2]: ../../assets/tutorials/dashboard/dashboard-second-page.png
 [firstpage1]: ../../assets/tutorials/dashboard/dashboard21.png
 [firstpage2]: ../../assets/tutorials/dashboard/dashboard22.png
 [firstpage3]: ../../assets/tutorials/dashboard/dashboard23.png
