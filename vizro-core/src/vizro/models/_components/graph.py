@@ -130,7 +130,7 @@ class Graph(VizroBaseModel):
         customdata = ctd_click_data["value"]["points"][0]["customdata"]
 
         for action in source_graph_actions:
-            if target not in action.function["targets"]:
+            if action.function._function.__name__ != "filter_interaction" or target not in action.function["targets"]:
                 continue
             for custom_data_idx, column in enumerate(custom_data_columns):
                 data_frame = data_frame[data_frame[column].isin([customdata[custom_data_idx]])]

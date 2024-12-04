@@ -103,7 +103,7 @@ class AgGrid(VizroBaseModel):
         source_table_actions = _get_component_actions(_get_parent_model(ctd_cellClicked["id"]))
 
         for action in source_table_actions:
-            if target not in action.function["targets"]:
+            if action.function._function.__name__ != "filter_interaction" or target not in action.function["targets"]:
                 continue
             column = ctd_cellClicked["value"]["colId"]
             clicked_data = ctd_cellClicked["value"]["value"]
