@@ -42,3 +42,9 @@
 img#banner {
   height: 16px;
 }
+
+img[src*="icon-top"] {
+  filter: var(--fill-icon-image-card);
+  height: 36px;
+  width: 36px;
+}
