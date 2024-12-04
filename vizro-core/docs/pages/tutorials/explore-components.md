@@ -459,11 +459,10 @@ You can apply selectors to configure [`Filters`][vizro.models.Filter] and [`Para
 - [`Slider`][vizro.models.Slider]
 
 ## 4. The final touches
-Each page is added to the dashboard using the following line of code: `vm.Dashboard(pages=[first_page, second_page])`. 
-This ensures that all the pages are accessible.
 
-By default, a navigation panel is added on the left side to switch between the two pages. 
+Each page is added to the dashboard using the following line of code: `vm.Dashboard(pages=[first_page, second_page])`. This ensures that all the pages are accessible.
 
+By default, a navigation panel is added on the left side to switch between the two pages.
 
 !!! example "Final dashboard"
     === "Code"
