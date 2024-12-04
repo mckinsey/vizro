@@ -404,63 +404,19 @@ To float an image for example to the right of the text, use the `src` attribute 
     === "Result"
         [![CardImageFloating]][cardimagefloating]
 
-#### Card with icon
-
-- default icon styling (`icon-top`): `![](my_image.png#icon-top)`
-
-!!! example "Card with icon"
-    === "app.py"
-        ```{.python pycafe-link}
-        import vizro.models as vm
-        from vizro import Vizro
-
-        page = vm.Page(
-            title="Card with icon",
-            components=[
-                vm.Card(
-                    text="""
-                    ![](https://raw.githubusercontent.com/mckinsey/vizro/d24a6f0d4efdf3c47392458e64b190fa1f92b2a7/vizro-core/docs/assets/images/hypotheses.svg#icon-top)
-
-                    ### Card Title
-
-                    Lorem ipsum dolor sit amet, consectetur adipiscing elit. Ut fringilla dictum lacus eget fringilla.
-                    Maecenas in various nibh, quis venenatis nulla. Integer et libero ultrices, scelerisque velit sed.
-                    """,
-                ),
-            ],
-        )
-
-        dashboard = vm.Dashboard(pages=[page])
-        Vizro().build(dashboard).run()
-        ```
-
-    === "app.yaml"
-        ```yaml
-        # Still requires a .py to add data to the data manager and parse YAML configuration
-        # See from_yaml example
-        pages:
-          - components:
-              - text: |
-                  ![](assets/images/icons/hypotheses.svg#icon-top)
-
-                  ### Card Title
-
-                  Lorem ipsum dolor sit amet, consectetur adipiscing elit. Ut fringilla dictum lacus eget fringilla.
-                  Maecenas in various nibh, quis venenatis nulla. Integer et libero ultrices, scelerisque velit sed.
-                type: card
-            title: Card with icon
-        ```
-
-    === "Result"
-        [![CardIcon]][cardicon]
 
 ### Make an icon responsive to theme switch
 
-To make an icon responsive to the theme switch, override the value of the [`filter` CSS property](https://developer.mozilla.org/en-US/docs/Web/CSS/filter). The `filter` CSS property lets you add visual effects to elements using different functions. In our example, we're using the `--inverse-color` CSS variable from the Vizro theme. It uses the CSS `invert()` function to flip the color of the icon when you switch themes. Note that this only works if your initial icon has a white fill color. If your icon is not white, you can change its color by adding `fill="white"` to the SVG code. Assign the predefined CSS variable `--inverse-color` to the `filter` property of your selected icon.
+To make an icon responsive to theme switching, override its
+[`filter` CSS property](https://developer.mozilla.org/en-US/docs/Web/CSS/filter). In this example, we use the
+`--fill-icon-image-card` CSS variable from the `vizro-bootstrap` CSS file. It leverages the `invert()` function to
+flip the icon's color during a theme switch.
+
+This approach works if your icon initially has a white fill color. If not, modify the SVG code by adding `fill="white"`.
 
 ```css
 img[src*="#my-image"] {
-    filter: var(--inverse-color);
+    filter: var(--fill-icon-image-card);
 }
 ```
 
