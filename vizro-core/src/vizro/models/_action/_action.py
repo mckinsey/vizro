@@ -6,6 +6,8 @@ from typing import Any, Union
 
 from dash import Input, Output, State, callback, html
 
+from vizro.actions._on_page_load_action import CapturedActionCallable
+
 try:
     from pydantic.v1 import Field, validator
 except ImportError:  # pragma: no cov
@@ -72,16 +74,28 @@ class Action(VizroBaseModel):
         Returns: List of required components (e.g. dcc.Download) for the Action model added to the `Dashboard`
             container. Those components represent the return value of the Action build method.
         """
-        from vizro.actions._callback_mapping._get_action_callback_mapping import _get_action_callback_mapping
-
         callback_inputs: Union[list[State], dict[str, State]]
+
         if self.inputs:
+            # TODO NOW: tidy comment.
+            # EVENTUALLY WANT TO TRY AND PUT THIS INTO self.function.inputs as well once
+            # once capture("action") returns CapturedAcftionCallable too.
+            # Look at signature of inputs to work out what to take - either built in things like parameters OR
+            # "component_id.component_property" etc. Key thing is it should be easier than Dash.
             callback_inputs = [State(*input.split(".")) for input in self.inputs]
-        else:
-            callback_inputs = _get_action_callback_mapping(self, argument="inputs")
+        elif isinstance(self.function, CapturedActionCallable):
+            callback_inputs = self.function.inputs
 
         callback_outputs: Union[list[Output], dict[str, Output]]
+
         if self.outputs:
+            # TODO NOW: tidy comment
+            # SIMILARLY TO INPUTS, WOULD BE AUTOMATICALLY POPULATED USING targets argument of function and other such
+            # keyword arguments.
+            # If want to do it manually to override this then yser needs  write CapturedActionCallable class. Or
+            # could have small helpers on @capture("action", something=...). Or other methods I put on Bear for giving
+            # outputs of model. But key thing is it's not Action.outputs any more.
+            # If not possible then using Action.outputs is ok though even if don't use Action.inputs.
             callback_outputs = [Output(*output.split("."), allow_duplicate=True) for output in self.outputs]
 
             # Need to use a single Output in the @callback decorator rather than a single element list for the case
@@ -89,10 +103,24 @@ class Action(VizroBaseModel):
             # single element list (e.g. ["text"]).
             if len(callback_outputs) == 1:
                 callback_outputs = callback_outputs[0]
-        else:
-            callback_outputs = _get_action_callback_mapping(self, argument="outputs")
+        elif isinstance(self.function, CapturedActionCallable):
+            # TODO NOW: tidy comment
+            # GOOD IDEA:
+            # MAYBE BEST TO BUILD THIS INTO CapturedActionCallable itself?! Similarly for special treatment of inputs.
+            # AND MAKE captured("action") produce CapturedActionCallable so can use it for those too.
+            # Just like parameters, filters are special input arguments, targets is special too and extracted and
+            # used in particular way.
+            # Note for export_data, targets means something else though - it's not output component!
+            # Still need way to override outputs manually ideally for full flexibility. So having export_data as
+            # CapturedActionCallable is good.
+            callback_outputs = self.function.outputs
 
-        action_components = _get_action_callback_mapping(self, argument="components")
+        # TODO NOW: tidy order of ifs here and above
+        if not isinstance(self.function, CapturedActionCallable):
+            action_components = []
+        else:
+            # IN FUTURE THIS IF WOULD GO if capture("action") returns CapturedActionCallable
+            action_components = self.function.components
 
         return callback_inputs, callback_outputs, action_components
 
@@ -150,6 +178,21 @@ class Action(VizroBaseModel):
             Div containing a list of required components (e.g. dcc.Download) for the Action model
 
         """
+        # TODO: tidy comment
+        # AM. Doesn't belong in build especially because it mutates something in model_manager but hard to put
+        # earlier on at the moment.
+        # Most of the stuff here doesn't actually belong here because it shouldn't be repeated every page load.
+        # Could populate self.inputs instead of self.function.inputs but inputs/outputs is only list[str] so far so
+        # would need to change to dict or change current dict to list to work with this
+        # Need to pass page or action_id or similar into CapturedActionCallable to calculate all controls or page or
+        # similar.
+        # Could just put into private property _inputs that mimics inputs for now but no point since always
+        # recalculated at the moment.
+        # Remove components as property and just put in dcc.Download global? Need one download object per file?
+        # TODO NOW: figure out a better way to pass action into CapturedActionCallable
+        # At least could have a method for it to look less hacky?
+        self.function._action = self
+
         external_callback_inputs, external_callback_outputs, action_components = self._get_callback_mapping()
         callback_inputs = {
             "external": external_callback_inputs,

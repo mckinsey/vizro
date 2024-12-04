@@ -1,69 +1,48 @@
-from typing import List, Literal
+"""Dev app to try things out."""
 
-from dash import html
-
+import pandas as pd
 import vizro.models as vm
 import vizro.plotly.express as px
 from vizro import Vizro
-from vizro.models.types import ControlType
-
-df_gapminder = px.data.gapminder()
-
-
-class ControlGroup(vm.VizroBaseModel):
-    """Container to group controls."""
-
-    type: Literal["control_group"] = "control_group"
-    title: str
-    controls: List[ControlType] = []
-
-    def build(self):
-        return html.Div(
-            [html.H4(self.title), html.Hr()] + [control.build() for control in self.controls],
-        )
+from vizro.actions._filter_action import _filter
+from vizro.models._controls.filter import _filter_isin
+from vizro.models.types import capture
 
 
-vm.Page.add_type("controls", ControlGroup)
+df = px.data.iris()
 
-page1 = vm.Page(
-    title="Relationship Analysis",
+
+page = vm.Page(
+    title="Charts UI",
     components=[
-        vm.Graph(id="scatter", figure=px.scatter(df_gapminder, x="gdpPercap", y="lifeExp", size="pop")),
+        vm.Graph(id="graph_id", figure=px.scatter(df, x="sepal_width", y="sepal_length", color="species")),
+        vm.Card(id="card_id", text="Placeholder text"),
     ],
     controls=[
-        ControlGroup(
-            title="Group A",
-            controls=[
-                vm.Parameter(
-                    id="this",
-                    targets=["scatter.x"],
-                    selector=vm.Dropdown(
-                        options=["lifeExp", "gdpPercap", "pop"], multi=False, value="gdpPercap", title="Choose x-axis"
+        vm.Filter(
+            id="filter_id",
+            column="species",
+            targets=["graph_id"],
+            selector=vm.Dropdown(
+                id="filter_dropdown_id",
+                value="setosa",
+                multi=False,
+                actions=[
+                    vm.Action(
+                        function=_filter(targets=["graph_id"], filter_column="species", filter_function=_filter_isin),
                     ),
-                ),
-                vm.Parameter(
-                    targets=["scatter.y"],
-                    selector=vm.Dropdown(
-                        options=["lifeExp", "gdpPercap", "pop"], multi=False, value="lifeExp", title="Choose y-axis"
+                    vm.Action(
+                        function=(capture("action"))(lambda value: value)(),
+                        inputs=["filter_dropdown_id.value"],
+                        outputs=["card_id.children"],
                     ),
-                ),
-            ],
-        ),
-        ControlGroup(
-            title="Group B",
-            controls=[
-                vm.Parameter(
-                    targets=["scatter.size"],
-                    selector=vm.Dropdown(
-                        options=["lifeExp", "gdpPercap", "pop"], multi=False, value="pop", title="Choose bubble size"
-                    ),
-                )
-            ],
+                ],
+            ),
         ),
     ],
 )
 
-dashboard = vm.Dashboard(pages=[page1])
+dashboard = vm.Dashboard(pages=[page])
 
 if __name__ == "__main__":
     Vizro().build(dashboard).run()

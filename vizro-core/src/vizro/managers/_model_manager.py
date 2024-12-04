@@ -123,6 +123,14 @@ class ModelManager:
             if model in self.__get_model_children(page):
                 return page
 
+    def _get_model_parent(self, model: Model, model_type: type[Model]) -> Model:
+        # TODO NOW: maybe merge with above function
+        # TODO NOW: implement caching of these methods when model_manager refactored. Or implement them once
+        # and store rather than recalculating every time.
+        for parent_model in cast(Iterable[model_type], self._get_models(model_type)):
+            if model in self.__get_model_children(parent_model):
+                return parent_model
+
     @staticmethod
     def _generate_id() -> ModelID:
         return ModelID(str(uuid.UUID(int=rd.getrandbits(128))))
