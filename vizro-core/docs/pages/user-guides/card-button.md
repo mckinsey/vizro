@@ -406,7 +406,9 @@ To float an image for example to the right of the text, use the `src` attribute 
 
 ### Make an icon responsive to theme switch
 
-To make an icon responsive to theme switching, override its [`filter` CSS property](https://developer.mozilla.org/en-US/docs/Web/CSS/filter). In this example, we use the `--fill-icon-image-card` CSS variable from the `vizro-bootstrap` CSS file. It leverages the `invert()` function to flip the icon's color during a theme switch.
+To make an icon responsive to theme switching, override its [`filter` CSS property](https://developer.mozilla.org/en-US/docs/Web/CSS/filter).
+
+In this example, we use the `--fill-icon-image-card` CSS variable from the `vizro-bootstrap` CSS file. It uses the `invert()` function to flip the icon's color during a theme switch.
 
 This approach works if your icon initially has a white fill color. If not, modify the SVG code by adding `fill="white"`.
 
