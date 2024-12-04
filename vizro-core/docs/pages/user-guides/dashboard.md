@@ -1,16 +1,15 @@
 # How to create a dashboard
-This guide shows you how to configure and call a [`Dashboard`][vizro.models.Dashboard] using either
-pydantic models, Python dictionaries, YAML, or JSON.
+
+This guide shows you how to configure and call a [`Dashboard`][vizro.models.Dashboard] using either pydantic models, Python dictionaries, YAML, or JSON.
 
 To create a dashboard:
 
 1. Choose one of the possible configuration syntaxes
-2. Create your `pages`, see our [guide on Pages](pages.md)
-3. (optional) Choose a `theme`, see our [guide on Themes](themes.md)
-4. (optional) Customize your `navigation`, see our [guide on Navigation](navigation.md)
-5. (optional) Set a `title` for your dashboard
-6. Add your `dashboard` to the `build` call of Vizro
-
+1. Create your `pages`, see our [guide on Pages](pages.md)
+1. (optional) Choose a `theme`, see our [guide on Themes](themes.md)
+1. (optional) Customize your `navigation`, see our [guide on Navigation](navigation.md)
+1. (optional) Set a `title` for your dashboard
+1. Add your `dashboard` to the `build` call of Vizro
 
 ## Use dashboard configuration options
 
@@ -37,6 +36,7 @@ To create a dashboard:
 
         Vizro().build(dashboard).run()
         ```
+
     === "app.py - Python dict"
         ```py
         import vizro.plotly.express as px
@@ -77,6 +77,7 @@ To create a dashboard:
 
         Vizro().build(dashboard).run()
         ```
+
     === "dashboard.yaml"
         ```yaml
         # Still requires a .py to add data to the data manager and parse YAML configuration
@@ -101,50 +102,49 @@ To create a dashboard:
                 type: filter
             title: My first dashboard
         ```
+
     === "dashboard.json"
         ```json
         {
-            "pages": [
+          "pages": [
+            {
+              "components": [
                 {
-                    "components": [
-                        {
-                            "figure": {
-                                "_target_": "scatter",
-                                "color": "species",
-                                "data_frame": "iris",
-                                "x": "sepal_length",
-                                "y": "petal_width"
-                            },
-                            "type": "graph"
-                        },
-                        {
-                            "figure": {
-                                "_target_": "histogram",
-                                "color": "species",
-                                "data_frame": "iris",
-                                "x": "sepal_width",
-                            },
-                            "type": "graph"
-                        }
-                    ],
-                    "controls": [
-                        {
-                            "column": "species",
-                            "type": "filter"
-                        }
-                    ],
-                    "title": "My first dashboard"
+                  "figure": {
+                    "_target_": "scatter",
+                    "color": "species",
+                    "data_frame": "iris",
+                    "x": "sepal_length",
+                    "y": "petal_width"
+                  },
+                  "type": "graph"
+                },
+                {
+                  "figure": {
+                    "_target_": "histogram",
+                    "color": "species",
+                    "data_frame": "iris",
+                    "x": "sepal_width"
+                  },
+                  "type": "graph"
                 }
-            ]
+              ],
+              "controls": [
+                {
+                  "column": "species",
+                  "type": "filter"
+                }
+              ],
+              "title": "My first dashboard"
+            }
+          ]
         }
         ```
-    === "Result"
-        [![Dashboard]][Dashboard]
 
-    [Dashboard]: ../../assets/user_guides/dashboard/dashboard.png
+    === "Result"
+        [![Dashboard]][dashboard]
 
 !!! note "Extra `.py` files for `yaml` and `json` required"
-
     Note that in the `yaml` and `json` example an extra `.py` is required to register the data and parse the yaml/json configuration.
 
     === "app.py for yaml"
@@ -164,6 +164,7 @@ To create a dashboard:
 
         Vizro().build(dashboard).run()
         ```
+
     === "app.py for json"
         ```py
         import json
@@ -187,7 +188,6 @@ After running the dashboard, you can access the dashboard via `localhost:8050`.
 
 If supplied, the `title` of the [`Dashboard`][vizro.models.Dashboard] displays a heading at the top of every page.
 
-
 ## Add a dashboard logo
 
 Vizro will [automatically incorporate the dashboard logo](assets.md/#add-a-logo-image) in the top-left corner of each page if an image named `logo.<extension>` is present within the assets folder.
@@ -196,11 +196,10 @@ Vizro will [automatically incorporate the dashboard logo](assets.md/#add-a-logo-
 
 ## Browser title
 
-The [website icon](assets.md/#change-the-favicon), Dashboard `title` (if supplied) and [Page `title`][vizro.models.Page] are displayed in the browser's
-title bar. For example, if your Dashboard `title` is "Vizro Demo" and the Page `title` is "Homepage", then the title in the browser tab will be "Vizro Demo: Homepage".
+The [website icon](assets.md/#change-the-favicon), Dashboard `title` (if supplied) and [Page `title`][vizro.models.Page] are displayed in the browser's title bar. For example, if your Dashboard `title` is "Vizro Demo" and the Page `title` is "Homepage", then the title in the browser tab will be "Vizro Demo: Homepage".
 
 ## Meta tags for social media
 
-Vizro automatically adds [meta tags](https://metatags.io/) to display a preview card when your app is shared on social media and chat
-clients. The preview includes the `URL`, `title`, plus an [image](assets.md/#include-a-meta-tags-image) and
-[Page `description`][vizro.models.Page] (if supplied).  To see an example, try sharing an example from the [Vizro examples gallery](https://vizro.mckinsey.com/).
+Vizro automatically adds [meta tags](https://metatags.io/) to display a preview card when your app is shared on social media and chat clients. The preview includes the `URL`, `title`, plus an [image](assets.md/#include-a-meta-tags-image) and [Page `description`][vizro.models.Page] (if supplied). To see an example, try sharing an example from the [Vizro examples gallery](https://vizro.mckinsey.com/).
+
+[dashboard]: ../../assets/user_guides/dashboard/dashboard.png
