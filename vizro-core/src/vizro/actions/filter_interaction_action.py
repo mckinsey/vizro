@@ -1,13 +1,13 @@
 """Pre-defined action function "filter_interaction" to be reused in `action` parameter of VizroBaseModels."""
 
-from typing import Any, Optional
+from typing import Any
 
-from dash import ctx
+from dash import State, ctx
 
 from vizro.actions._actions_utils import _get_modified_page_figures
 from vizro.managers._model_manager import ModelID
 from vizro.models._action._action import NewAction
-from vizro.models.types import capture
+
 # TODO NOW: comments and docstrings like in opl
 
 
@@ -16,7 +16,12 @@ class filter_interaction(NewAction):
     targets: list[ModelID] = []
     # TODO NOW: comment it's optional
 
-    def __call__(self, **inputs: dict[str, Any]) -> dict[ModelID, Any]:
+    def __call__(
+        self,
+        filters: list[State],
+        parameters: list[State],
+        filter_interaction: list[dict[str, State]],
+    ) -> dict[ModelID, Any]:
         """Applies controls to charts on page once the page is opened (or refreshed).
 
         Args:
@@ -28,7 +33,6 @@ class filter_interaction(NewAction):
         Returns:
             Dict mapping target component ids to modified charts/components e.g. {'my_scatter': Figure({})}
         """
-
         # TODO NOW: comment about how filters, paramters, filter_interaction currently ignored but will be used in
         #  future when do pattern matching callback.
 

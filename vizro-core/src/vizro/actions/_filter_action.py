@@ -2,29 +2,14 @@
 
 from typing import Any, Callable
 
-import pandas as pd
-from dash import ctx
+from dash import State, ctx
 
 from vizro.actions._actions_utils import _get_modified_page_figures
 from vizro.managers._model_manager import ModelID
 from vizro.models._action._action import NewAction
-from vizro.models.types import capture
 
 """Pre-defined action function "_on_page_load" to be reused in `action` parameter of VizroBaseModels."""
 
-from pydantic import field_validator
-from typing import Any, Optional, Callable
-
-from dash import ctx, Output
-
-from vizro.actions._actions_utils import _get_modified_page_figures
-
-
-from vizro.managers._model_manager import ModelID, model_manager
-
-from vizro.models.types import capture
-
-from vizro.models import Action
 
 # TODO NOW: comments and docstrings like in opl
 
@@ -34,7 +19,12 @@ class _filter(NewAction):
     filter_column: str
     filter_function: Callable
 
-    def __call__(self, **inputs: dict[str, Any]) -> dict[ModelID, Any]:
+    def __call__(
+        self,
+        filters: list[State],
+        parameters: list[State],
+        filter_interaction: list[dict[str, State]],
+    ) -> dict[ModelID, Any]:
         return _get_modified_page_figures(
             ctds_filter=ctx.args_grouping["external"]["filters"],
             ctds_filter_interaction=ctx.args_grouping["external"]["filter_interaction"],

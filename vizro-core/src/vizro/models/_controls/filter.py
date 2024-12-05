@@ -19,7 +19,7 @@ from vizro.actions import _filter
 from vizro.managers import data_manager, model_manager
 from vizro.managers._data_manager import _DynamicData
 from vizro.managers._model_manager import FIGURE_MODELS, ModelID
-from vizro.models import Action, VizroBaseModel
+from vizro.models import VizroBaseModel
 from vizro.models._components.form import (
     Checklist,
     DatePicker,

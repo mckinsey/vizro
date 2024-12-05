@@ -2,19 +2,23 @@
 
 from typing import Any
 
-from dash import ctx
+from dash import State, ctx
 
 from vizro.actions._actions_utils import _get_modified_page_figures
 from vizro.managers._model_manager import ModelID
 from vizro.models._action._action import NewAction
-from vizro.models.types import capture
 
 
 # TODO NOW: comments and docstrings like in opl
 class _parameter(NewAction):
     targets: list[ModelID]
 
-    def __call__(self, **inputs: dict[str, Any]) -> dict[ModelID, Any]:
+    def __call__(
+        self,
+        filters: list[State],
+        parameters: list[State],
+        filter_interaction: list[dict[str, State]],
+    ) -> dict[ModelID, Any]:
         # TODO NOW: work out where this goes. Probably better here than in _get_modified_page_figures.
         targets = [target.partition(".")[0] for target in self.targets]
         return _get_modified_page_figures(

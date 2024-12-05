@@ -1,15 +1,12 @@
-from abc import ABC
+from __future__ import annotations
 
-from dash.development.base_component import Component
-
-import importlib.util
 import logging
 from collections.abc import Collection, Mapping
 from pprint import pformat
-from typing import Any, Union, TypedDict
+from typing import Any, TypedDict, Union, TYPE_CHECKING
 
 from dash import Input, Output, State, callback, html
-
+from dash.development.base_component import Component
 
 from vizro.managers import model_manager
 from vizro.managers._model_manager import ModelID
@@ -17,11 +14,18 @@ from vizro.managers._model_manager import ModelID
 try:
     from pydantic.v1 import Field, validator
 except ImportError:  # pragma: no cov
-    from pydantic import Field, validator
+    from pydantic import Field
 
+from collections.abc import Iterable
+from typing import cast
+
+
+if TYPE_CHECKING:
+    from vizro.models import Page
 from vizro.models import VizroBaseModel
+
 from vizro.models._models_utils import _log_call
-from vizro.models.types import CapturedCallable
+from vizro.models.types import CapturedCallable, ControlType
 
 logger = logging.getLogger(__name__)
 
@@ -166,6 +170,45 @@ class Action(VizroBaseModel):
         return html.Div(id=f"{self.id}_action_model_components_div", children=action_components, hidden=True)
 
 
+# TODO NOW: finish tidying/removing these helpers. Move into NewAction class as staticmethods.
+
+
+def _get_inputs_of_controls(page: Page, control_type: ControlType) -> list[State]:
+    """Gets list of `States` for selected `control_type` of triggered `Page`."""
+    return [
+        State(component_id=control.selector.id, component_property=control.selector._input_property)
+        for control in cast(Iterable[ControlType], model_manager._get_models(control_type, page))
+    ]
+
+
+def _get_action_trigger(action: Action) -> VizroBaseModel:  # type: ignore[return]
+    """Gets the model that triggers the action with "action_id"."""
+    from vizro.models._action._actions_chain import ActionsChain
+    # TODO: maybe make model_manager._get_parent_model for this sort of thing - see my shelf
+
+    for actions_chain in cast(Iterable[ActionsChain], model_manager._get_models(ActionsChain)):
+        if action in actions_chain.actions:
+            return model_manager[ModelID(str(actions_chain.trigger.component_id))]
+
+
+def _get_inputs_of_figure_interactions(page: Page, model_type: type[NewAction]) -> list[dict[str, State]]:
+    """Gets list of `States` for selected chart interaction `filter_interaction` of triggered `Page`."""
+    figure_interactions_on_page = model_manager._get_models(model_type=model_type, page=page)
+    inputs = []
+    for action in figure_interactions_on_page:
+        triggered_model = _get_action_trigger(action)
+        required_attributes = ["_filter_interaction_input", "_filter_interaction"]
+        for attribute in required_attributes:
+            if not hasattr(triggered_model, attribute):
+                raise ValueError(f"Model {triggered_model.id} does not have required attribute `{attribute}`.")
+        if "modelID" not in triggered_model._filter_interaction_input:
+            raise ValueError(
+                f"Model {triggered_model.id} does not have required State `modelID` in `_filter_interaction_input`."
+            )
+        inputs.append(triggered_model._filter_interaction_input)
+    return inputs
+
+
 class ControlInputs(TypedDict):
     filters: list[State]
     parameters: list[State]
@@ -224,10 +267,6 @@ class NewAction(VizroBaseModel):
 
     @property
     def inputs(self) -> ControlInputs:
-        from vizro.actions._callback_mapping._callback_mapping_utils import (
-            _get_inputs_of_controls,
-            _get_inputs_of_figure_interactions,
-        )
         from vizro.models import Filter, Parameter
         from vizro.actions import filter_interaction
 
@@ -245,7 +284,7 @@ class NewAction(VizroBaseModel):
         return {
             "filters": _get_inputs_of_controls(page=page, control_type=Filter),
             "parameters": _get_inputs_of_controls(page=page, control_type=Parameter),
-            "filter_interaction": _get_inputs_of_figure_interactions(page=page, action_function=filter_interaction),
+            "filter_interaction": _get_inputs_of_figure_interactions(page=page, model_type=filter_interaction),
         }
 
     @property

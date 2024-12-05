@@ -1,10 +1,9 @@
 """Pre-defined action function "export_data" to be reused in `action` parameter of VizroBaseModels."""
 
 from collections.abc import Iterable
-from typing import Any, Literal, Optional, cast
+from typing import Any, Literal, cast
 
 from dash import Output, State, ctx, dcc
-from typing_extensions import Literal
 
 from vizro.actions._actions_utils import _apply_filters, _get_unfiltered_data
 from vizro.managers import model_manager
@@ -20,9 +19,9 @@ class export_data(NewAction):
 
     def __call__(
         self,
-        filters: list[State],  # Don't need to provide this until do actual export_data()()
-        parameters: list[State],  # Don't need to provide this until do actual export_data()()
-        filter_interaction: list[dict[str, State]],  # Don't need to provide this until do actual export_data()()
+        filters: list[State],
+        parameters: list[State],
+        filter_interaction: list[dict[str, State]],
     ) -> dict[str, Any]:
         # TODO NOW: docstring
         """Exports visible data of target charts/components on page after being triggered.

@@ -6,10 +6,9 @@ try:
 except ImportError:  # pragma: no cov
     from pydantic import Field, validator
 
-from vizro._constants import PARAMETER_ACTION_PREFIX
 from vizro.actions import _parameter
 from vizro.managers import model_manager
-from vizro.models import Action, VizroBaseModel
+from vizro.models import VizroBaseModel
 from vizro.models._components.form import Checklist, DatePicker, Dropdown, RadioItems, RangeSlider, Slider
 from vizro.models._models_utils import _log_call
 from vizro.models.types import SelectorType
