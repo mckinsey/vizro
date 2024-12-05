@@ -144,6 +144,10 @@ plugins:
   - git-revision-date-localized:
       enable_creation_date: false
 
+extra:
+  meta:
+    - name: google-site-verification
+      content: "CYb3cxosCgsN2QDQVaSGQpMQCesqpsGQ3oTM02NtvkY"
 extra_css:
   - stylesheets/extra.css
 
