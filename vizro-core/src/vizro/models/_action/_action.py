@@ -1,5 +1,7 @@
 from __future__ import annotations
 
+import inspect
+
 import logging
 from collections.abc import Collection, Mapping
 from pprint import pformat
@@ -91,8 +93,10 @@ class Action(VizroBaseModel):
             logger.debug("Action outputs:\n%s", pformat(outputs, width=200))
 
         if isinstance(inputs, Mapping):
+            # TODO NOW: comment this is only NewAction
             return_value = self.function(**inputs)
         else:
+            # TODO NOW: comment this is only old action
             return_value = self.function(*inputs)
 
         # Delegate all handling of the return_value and mapping to appropriate outputs to Dash - we don't modify
@@ -167,6 +171,8 @@ class Action(VizroBaseModel):
                 return {"internal": {"action_finished": None}, "external": return_value}
             return {"internal": {"action_finished": None}}
 
+        # TODO NOW: figure out where this belongs - in export_data? WHat other actions will have components? Does it
+        #  matter where to put them on the page or they're all like Download?
         return html.Div(id=f"{self.id}_action_model_components_div", children=action_components, hidden=True)
 
 
@@ -218,6 +224,11 @@ class ControlInputs(TypedDict):
 
 
 class NewAction(VizroBaseModel):
+    # TODO NOW: Maybe make abstractmethod.
+    def __call__(self, *args, **kwargs):
+        pass
+
+    # TODO FUTURE: this would be removed. It's just here for compatability with CapturedCallable,
     @property
     def function(self):
         # TODO NOW: comment. Horrible hack to make compatible with CapturedCallable.
@@ -274,17 +285,16 @@ class NewAction(VizroBaseModel):
 
         # TODO NOW: create comment about refactoring ctds format in future. Comment that List[State] here would match
         #  custom actions.
-        # TODO NOW: tidy comment.
-        # For now just always provide arguments; in future might want to do
-        # inspect.signature(self.function.pure_function).parameters to see if they're actually requested.
-        # Like how pydantic handles arguments for field_validator.
-        # If @capture("action") for user action produces CapturedActionCallable then must check if argument is demanded.
-        # Could have logic here that looks at arguments in signature of pure_function to see what inputs should be
+        # TODO: consider names of these reserved arguments. vizro_filters? __filters__? filters? Don't do using type
+        #  hints - too complicated for user.
 
-        return {
+        reserved_kwargs = {
             "filters": _get_inputs_of_controls(page=page, control_type=Filter),
             "parameters": _get_inputs_of_controls(page=page, control_type=Parameter),
             "filter_interaction": _get_inputs_of_figure_interactions(page=page, model_type=filter_interaction),
+        }
+        return {
+            key: value for key, value in reserved_kwargs.items() if key in inspect.signature(self.__call__).parameters
         }
 
     @property
