@@ -1,10 +1,18 @@
+from abc import ABC
+
+from dash.development.base_component import Component
+
 import importlib.util
 import logging
 from collections.abc import Collection, Mapping
 from pprint import pformat
-from typing import Any, Union
+from typing import Any, Union, TypedDict
 
 from dash import Input, Output, State, callback, html
+
+
+from vizro.managers import model_manager
+from vizro.managers._model_manager import ModelID
 
 try:
     from pydantic.v1 import Field, validator
@@ -42,24 +50,6 @@ class Action(VizroBaseModel):
         regex="^[^.]+[.][^.]+$",
     )
 
-    # TODO: Problem: generic Action model shouldn't depend on details of particular actions like export_data.
-    # Possible solutions: make a generic mapping of action functions to validation functions or the imports they
-    # require, and make the code here look up the appropriate validation using the function as key
-    # This could then also involve other validations currently only carried out at run-time in pre-defined actions, such
-    # as e.g. checking if the correct arguments have been provided to the file_format in export_data.
-    @validator("function")
-    def validate_predefined_actions(cls, function):
-        if function._function.__name__ == "export_data":
-            file_format = function._arguments.get("file_format")
-            if file_format not in [None, "csv", "xlsx"]:
-                raise ValueError(f'Unknown "file_format": {file_format}.' f' Known file formats: "csv", "xlsx".')
-            if file_format == "xlsx":
-                if importlib.util.find_spec("openpyxl") is None and importlib.util.find_spec("xlsxwriter") is None:
-                    raise ModuleNotFoundError(
-                        "You must install either openpyxl or xlsxwriter to export to xlsx format."
-                    )
-        return function
-
     def _get_callback_mapping(self):
         """Builds callback inputs and outputs for the Action model callback, and returns action required components.
 
@@ -72,29 +62,19 @@ class Action(VizroBaseModel):
         Returns: List of required components (e.g. dcc.Download) for the Action model added to the `Dashboard`
             container. Those components represent the return value of the Action build method.
         """
-        from vizro.actions._callback_mapping._get_action_callback_mapping import _get_action_callback_mapping
+        # TODO NOW: comment this is only used by old actions.
+        callback_inputs = [State(*input.split(".")) for input in self.inputs]
+        callback_outputs = [Output(*output.split("."), allow_duplicate=True) for output in self.outputs]
 
-        callback_inputs: Union[list[State], dict[str, State]]
-        if self.inputs:
-            callback_inputs = [State(*input.split(".")) for input in self.inputs]
-        else:
-            callback_inputs = _get_action_callback_mapping(self, argument="inputs")
+        # Need to use a single Output in the @callback decorator rather than a single element list for the case
+        # of a single output. This means the action function can return a single value (e.g. "text") rather than a
+        # single element list (e.g. ["text"]).
+        if len(callback_outputs) == 1:
+            callback_outputs = callback_outputs[0]
 
-        callback_outputs: Union[list[Output], dict[str, Output]]
-        if self.outputs:
-            callback_outputs = [Output(*output.split("."), allow_duplicate=True) for output in self.outputs]
+        callback_components = []
 
-            # Need to use a single Output in the @callback decorator rather than a single element list for the case
-            # of a single output. This means the action function can return a single value (e.g. "text") rather than a
-            # single element list (e.g. ["text"]).
-            if len(callback_outputs) == 1:
-                callback_outputs = callback_outputs[0]
-        else:
-            callback_outputs = _get_action_callback_mapping(self, argument="outputs")
-
-        action_components = _get_action_callback_mapping(self, argument="components")
-
-        return callback_inputs, callback_outputs, action_components
+        return callback_inputs, callback_outputs, callback_components
 
     def _action_callback_function(
         self,
@@ -184,3 +164,99 @@ class Action(VizroBaseModel):
             return {"internal": {"action_finished": None}}
 
         return html.Div(id=f"{self.id}_action_model_components_div", children=action_components, hidden=True)
+
+
+class ControlInputs(TypedDict):
+    filters: list[State]
+    parameters: list[State]
+    filter_interaction: list[dict[str, State]]
+
+    # TODO NOW: figure out where this class lives
+
+
+class NewAction(VizroBaseModel):
+    @property
+    def function(self):
+        # TODO NOW: comment. Horrible hack to make compatible with CapturedCallable.
+        _function = self.__call__
+        # TODO NOW: see if this is necessary still after tidying
+        _function.__func__._function = self.__call__
+        # TODO NOW: figure out how to name for debugging - maybe need to alter Action debugging code.
+        # _function.__func__._function.__name__ = type(self)
+        return _function
+
+    def _get_callback_mapping(self):
+        """Builds callback inputs and outputs for the Action model callback, and returns action required components.
+
+        callback_inputs, and callback_outputs are "dash.State" and "dash.Output" objects made of three parts:
+            1. User configured inputs/outputs - for custom actions,
+            2. Vizro configured inputs/outputs - for predefined actions,
+            3. Hardcoded inputs/outputs - for custom and predefined actions
+                (enable callbacks to live inside the Action loop).
+
+        Returns: List of required components (e.g. dcc.Download) for the Action model added to the `Dashboard`
+            container. Those components represent the return value of the Action build method.
+        """
+        return self.inputs, self.outputs, self.dash_components
+
+    @property
+    def outputs(self) -> dict[str, Output]:
+        # TODO NOW: tidy and decide where this bit of code goes and how to get targets for filter and opl vs. parameter
+
+        # TODO NOW: check if targets defined
+        targets = self.targets
+        output_targets = []
+        for target in targets:
+            if "." in target:
+                component, property = target.split(".", 1)
+                output_targets.append(component)
+            else:
+                output_targets.append(target)
+
+        return {
+            target: Output(
+                component_id=target,
+                component_property=model_manager[target]._output_component_property,
+                allow_duplicate=True,
+            )
+            for target in output_targets
+        }
+
+    @property
+    def inputs(self) -> ControlInputs:
+        from vizro.actions._callback_mapping._callback_mapping_utils import (
+            _get_inputs_of_controls,
+            _get_inputs_of_figure_interactions,
+        )
+        from vizro.models import Filter, Parameter
+        from vizro.actions import filter_interaction
+
+        page = model_manager._get_model_page(self)
+
+        # TODO NOW: create comment about refactoring ctds format in future. Comment that List[State] here would match
+        #  custom actions.
+        # TODO NOW: tidy comment.
+        # For now just always provide arguments; in future might want to do
+        # inspect.signature(self.function.pure_function).parameters to see if they're actually requested.
+        # Like how pydantic handles arguments for field_validator.
+        # If @capture("action") for user action produces CapturedActionCallable then must check if argument is demanded.
+        # Could have logic here that looks at arguments in signature of pure_function to see what inputs should be
+
+        return {
+            "filters": _get_inputs_of_controls(page=page, control_type=Filter),
+            "parameters": _get_inputs_of_controls(page=page, control_type=Parameter),
+            "filter_interaction": _get_inputs_of_figure_interactions(page=page, action_function=filter_interaction),
+        }
+
+    @property
+    def dash_components(self) -> list[Component]:
+        return []
+
+
+NewAction.build = Action.build
+NewAction._action_callback_function = Action._action_callback_function
+
+# TODO NOW: doesn't seem to require Action to inherit from ABC, not sure why. Probably safest if we add it as
+#  subclass anyway.
+# Or try alternative approach where NewAction(Action) and then remove fields/methods.
+Action.register(NewAction)

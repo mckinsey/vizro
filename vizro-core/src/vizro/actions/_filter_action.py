@@ -7,31 +7,78 @@ from dash import ctx
 
 from vizro.actions._actions_utils import _get_modified_page_figures
 from vizro.managers._model_manager import ModelID
+from vizro.models._action._action import NewAction
 from vizro.models.types import capture
 
+"""Pre-defined action function "_on_page_load" to be reused in `action` parameter of VizroBaseModels."""
 
-@capture("action")
-def _filter(
-    filter_column: str,
-    targets: list[ModelID],
-    filter_function: Callable[[pd.Series, Any], pd.Series],
-    **inputs: dict[str, Any],
-) -> dict[ModelID, Any]:
-    """Filters targeted charts/components on page by interaction with `Filter` control.
+from pydantic import field_validator
+from typing import Any, Optional, Callable
 
-    Args:
-        filter_column: Data column to filter
-        targets: List of target component ids to apply filters on
-        filter_function: Filter function to apply
-        inputs: Dict mapping action function names with their inputs e.g.
-            inputs = {'filters': [], 'parameters': ['gdpPercap'], 'filter_interaction': []}
+from dash import ctx, Output
 
-    Returns:
-        Dict mapping target component ids to modified charts/components e.g. {'my_scatter': Figure({})}
-    """
-    return _get_modified_page_figures(
-        ctds_filter=ctx.args_grouping["external"]["filters"],
-        ctds_filter_interaction=ctx.args_grouping["external"]["filter_interaction"],
-        ctds_parameter=ctx.args_grouping["external"]["parameters"],
-        targets=targets,
-    )
+from vizro.actions._actions_utils import _get_modified_page_figures
+
+
+from vizro.managers._model_manager import ModelID, model_manager
+
+from vizro.models.types import capture
+
+from vizro.models import Action
+
+# TODO NOW: comments and docstrings like in opl
+
+
+class _filter(NewAction):
+    targets: list[ModelID]
+    filter_column: str
+    filter_function: Callable
+
+    def __call__(self, **inputs: dict[str, Any]) -> dict[ModelID, Any]:
+        return _get_modified_page_figures(
+            ctds_filter=ctx.args_grouping["external"]["filters"],
+            ctds_filter_interaction=ctx.args_grouping["external"]["filter_interaction"],
+            ctds_parameter=ctx.args_grouping["external"]["parameters"],
+            targets=self.targets,
+        )
+
+
+# TODO NOW: validation
+# filter_action
+# def _post_init(self):
+#     """Post initialization is called in the vm.Action build phase, and it is used to validate and calculate the
+#     properties of the CapturedActionCallable. With this, we can validate the properties and raise errors before
+#     the action is built. Also, "input"/"output"/"components" properties and "pure_function" can use these validated
+#     and the calculated arguments.
+#     """
+#     # TODO-AV2-OQ: Rethink validation and calculation of properties for filter/parameter/update_figures since they
+#     #  have been private actions before.
+#
+#     self._page_id = model_manager._get_model_page_id(model_id=self._action_id)
+#
+#     # TODO-AV2: Should we rename it to `column`?
+#     # Validate and calculate "filter_column"
+#     filter_column = self._arguments.get("filter_column")
+#     if not filter_column or not isinstance(filter_column, str):
+#         raise ValueError("'filter_column' must be a string.")
+#
+#     # TODO-AV2: Should we:
+#     #  1. Rename it to `filtering_function`?
+#     #  2. Calculate it based on the 'filter_column' type (something similar we do in the Filter._pre_build() phase)?
+#     # Validate and calculate "filter_function"
+#     filter_function = self._arguments.get("filter_function")
+#     if not filter_function or not callable(filter_function):
+#         raise ValueError("'filter_function' must be a callable.")
+#
+#     # Validate and calculate "targets"
+#     targets = self._arguments.get("targets")
+#     if targets:
+#         for target in targets:
+#             if self._page_id != model_manager._get_model_page_id(model_id=target):
+#                 raise ValueError(f"Component '{target}' does not exist on the page '{self._page_id}'.")
+#     else:
+#         targets = model_manager._get_page_model_ids_with_figure(page_id=self._page_id)
+#     # targets are assigned to self.targets because self.targets is used in outputs calculation.
+#     # targets are assigned to self._arguments["targets"] because targets could be calculated in this method so we
+#     # should ensure that the calculated targets are used in pure_function.
+#     self._arguments["targets"] = self.targets = targets

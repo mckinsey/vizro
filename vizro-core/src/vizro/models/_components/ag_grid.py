@@ -4,6 +4,8 @@ from typing import Literal
 import pandas as pd
 from dash import State, dcc, html
 
+from vizro.actions import filter_interaction
+
 try:
     from pydantic.v1 import Field, PrivateAttr, validator
 except ImportError:  # pragma: no cov
@@ -103,7 +105,8 @@ class AgGrid(VizroBaseModel):
         source_table_actions = _get_component_actions(_get_parent_model(ctd_cellClicked["id"]))
 
         for action in source_table_actions:
-            if action.function._function.__name__ != "filter_interaction" or target not in action.function["targets"]:
+            # TODO NOW: simplify
+            if not isinstance(action, filter_interaction) or target not in action.targets:
                 continue
             column = ctd_cellClicked["value"]["colId"]
             clicked_data = ctd_cellClicked["value"]["value"]

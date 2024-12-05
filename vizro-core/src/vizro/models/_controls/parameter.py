@@ -97,6 +97,4 @@ class Parameter(VizroBaseModel):
 
     def _set_actions(self):
         if not self.selector.actions:
-            self.selector.actions = [
-                Action(id=f"{PARAMETER_ACTION_PREFIX}_{self.id}", function=_parameter(targets=self.targets))
-            ]
+            self.selector.actions = [_parameter(targets=self.targets)]

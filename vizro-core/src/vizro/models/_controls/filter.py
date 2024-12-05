@@ -210,10 +210,13 @@ class Filter(VizroBaseModel):
                 filter_function = _filter_isin
 
             self.selector.actions = [
-                Action(
+                # TODO NOW: is there any point in this id labelling? Useful for debugging?
+                _filter(
                     id=f"{FILTER_ACTION_PREFIX}_{self.id}",
-                    function=_filter(filter_column=self.column, targets=self.targets, filter_function=filter_function),
-                )
+                    filter_column=self.column,
+                    targets=self.targets,
+                    filter_function=filter_function,
+                ),
             ]
 
     @_log_call
