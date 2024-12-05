@@ -257,13 +257,14 @@ def _get_modified_page_figures(
 
     outputs: dict[ModelID, Any] = {}
 
-    control_targets = []
-    figure_targets = []
+    control_targets = set()
+    figure_targets = set()
     for target in targets:
-        if isinstance(model_manager[target], Filter):
-            control_targets.append(target)
+        if isinstance((filter := model_manager[target]), Filter):
+            control_targets.add(target)
+            figure_targets |= set(filter.targets)
         else:
-            figure_targets.append(target)
+            figure_targets.add(target)
 
     # TODO-NEXT: Add fetching unfiltered data for the Filter.targets as well, once dynamic filters become "targetable"
     #  from other actions too. For example, in future, if Parameter is targeting only a single Filter.
