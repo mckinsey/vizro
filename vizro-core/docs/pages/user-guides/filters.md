@@ -2,8 +2,7 @@
 
 This guide shows you how to add filters to your dashboard. One main way to interact with the charts/components on your page is by filtering the underlying data. A filter selects a subset of rows of a component's underlying DataFrame which alters the appearance of that component on the page.
 
-The [`Page`][vizro.models.Page] model accepts the `controls` argument, where you can enter a [`Filter`][vizro.models.Filter] model.
-This model enables the automatic creation of [selectors](selectors.md) (for example, `Dropdown` or `RangeSlider`) that operate on the charts/components on the screen.
+The [`Page`][vizro.models.Page] model accepts the `controls` argument, where you can enter a [`Filter`][vizro.models.Filter] model. This model enables the automatic creation of [selectors](selectors.md) (for example, `Dropdown` or `RangeSlider`) that operate on the charts/components on the screen.
 
 By default, filters that control components with [dynamic data](data.md#dynamic-data) are [dynamically updated](data.md#filters) when the underlying data changes while the dashboard is running.
 
@@ -12,9 +11,9 @@ By default, filters that control components with [dynamic data](data.md#dynamic-
 To add a filter to your page, do the following:
 
 1. add the [`Filter`][vizro.models.Filter] model into the `controls` argument of the [`Page`][vizro.models.Page] model
-2. configure the `column` argument, which denotes the target column to be filtered
+1. configure the `column` argument, which denotes the target column to be filtered
 
-You can also set `targets` to specify which components on the page should be affected by the filter. If this is not explicitly set then `targets` defaults to all components on the page whose data source includes `column`.
+You can also set `targets` to specify which components on the page the filter should apply to. If this is not explicitly set then `targets` defaults to all components on the page whose data source includes `column`.
 
 !!! example "Basic Filter"
     === "app.py"
@@ -39,6 +38,7 @@ You can also set `targets` to specify which components on the page should be aff
 
         Vizro().build(dashboard).run()
         ```
+
     === "app.yaml"
         ```yaml
         # Still requires a .py to add data to the data manager and parse YAML configuration
@@ -57,17 +57,15 @@ You can also set `targets` to specify which components on the page should be aff
                 type: filter
             title: My first page
         ```
+
     === "Result"
-
-        [![Filter]][Filter]
-
-    [Filter]: ../../assets/user_guides/control/control1.png
+        [![Filter]][filter]
 
 The selector is configured automatically based on the target column type data as follows:
 
- - Categorical data uses [`vm.Dropdown(multi=True)`][vizro.models.Dropdown] where `options` is the set of unique values found in `column` across all the data sources of components in `targets`.
- - [Numerical data](https://pandas.pydata.org/docs/reference/api/pandas.api.types.is_numeric_dtype.html) uses [`vm.RangeSlider`][vizro.models.RangeSlider] where `min` and `max` are the overall minimum and maximum values found in `column` across all the data sources of components in `targets`.
- - [Temporal data](https://pandas.pydata.org/docs/reference/api/pandas.api.types.is_datetime64_any_dtype.html) uses [`vm.DatePicker(range=True)`][vizro.models.DatePicker] where `min` and `max` are the overall minimum and maximum values found in `column` across all the data sources of components in `targets`. A column can be converted to this type with [pandas.to_datetime](https://pandas.pydata.org/docs/reference/api/pandas.to_datetime.html).
+- Categorical data uses [`vm.Dropdown(multi=True)`][vizro.models.Dropdown] where `options` is the set of unique values found in `column` across all the data sources of components in `targets`.
+- [Numerical data](https://pandas.pydata.org/docs/reference/api/pandas.api.types.is_numeric_dtype.html) uses [`vm.RangeSlider`][vizro.models.RangeSlider] where `min` and `max` are the overall minimum and maximum values found in `column` across all the data sources of components in `targets`.
+- [Temporal data](https://pandas.pydata.org/docs/reference/api/pandas.api.types.is_datetime64_any_dtype.html) uses [`vm.DatePicker(range=True)`][vizro.models.DatePicker] where `min` and `max` are the overall minimum and maximum values found in `column` across all the data sources of components in `targets`. A column can be converted to this type with [pandas.to_datetime](https://pandas.pydata.org/docs/reference/api/pandas.to_datetime.html).
 
 The following example demonstrates these default selector types.
 
@@ -107,6 +105,7 @@ The following example demonstrates these default selector types.
 
         Vizro().build(dashboard).run()
         ```
+
     === "app.yaml"
         ```yaml
         # Still requires a .py to add data to the data manager and parse YAML configuration
@@ -129,15 +128,13 @@ The following example demonstrates these default selector types.
                 type: filter
             title: My first page
         ```
-    === "Result"
-        [![Filter]][Filter]
 
-    [Filter]: ../../assets/user_guides/selectors/default_filter_selectors.png
+    === "Result"
+        [![Filter]][filter]
 
 ## Change selector
 
-If you want to have a different selector for your filter, you can give the `selector` argument of the [`Filter`][vizro.models.Filter] a different selector model.
-Currently available selectors are [`Checklist`][vizro.models.Checklist], [`Dropdown`][vizro.models.Dropdown], [`RadioItems`][vizro.models.RadioItems], [`RangeSlider`][vizro.models.RangeSlider], [`Slider`][vizro.models.Slider], and [`DatePicker`][vizro.models.DatePicker].
+If you want to have a different selector for your filter, you can give the `selector` argument of the [`Filter`][vizro.models.Filter] a different selector model. Currently available selectors are [`Checklist`][vizro.models.Checklist], [`Dropdown`][vizro.models.Dropdown], [`RadioItems`][vizro.models.RadioItems], [`RangeSlider`][vizro.models.RangeSlider], [`Slider`][vizro.models.Slider], and [`DatePicker`][vizro.models.DatePicker].
 
 !!! example "Filter with different selector"
     === "app.py"
@@ -162,6 +159,7 @@ Currently available selectors are [`Checklist`][vizro.models.Checklist], [`Dropd
 
         Vizro().build(dashboard).run()
         ```
+
     === "app.yaml"
         ```yaml
         # Still requires a .py to add data to the data manager and parse YAML configuration
@@ -181,11 +179,9 @@ Currently available selectors are [`Checklist`][vizro.models.Checklist], [`Dropd
                 type: filter
             title: My first page
         ```
+
     === "Result"
-
-        [![Selector]][Selector]
-
-    [Selector]: ../../assets/user_guides/control/control2.png
+        [![Selector]][selector]
 
 ## Further customization
 
@@ -220,6 +216,7 @@ Below is an advanced example where we only target one page component, and where 
 
         Vizro().build(dashboard).run()
         ```
+
     === "app.yaml"
         ```yaml
         # Still requires a .py to add data to the data manager and parse YAML configuration
@@ -244,17 +241,19 @@ Below is an advanced example where we only target one page component, and where 
             controls:
               - column: petal_length
                 targets:
-                - scatter_chart
+                  - scatter_chart
                 selector:
                   step: 1
                   type: range_slider
                 type: filter
             title: My first page
         ```
+
     === "Result"
-
-        [![Advanced]][Advanced]
-
-    [Advanced]: ../../assets/user_guides/control/control3.png
+        [![Advanced]][advanced]
 
 To further customize selectors, see our [how-to-guide on creating custom components](custom-components.md).
+
+[advanced]: ../../assets/user_guides/control/control3.png
+[filter]: ../../assets/user_guides/control/control1.png
+[selector]: ../../assets/user_guides/control/control2.png

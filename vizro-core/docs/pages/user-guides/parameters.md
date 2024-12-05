@@ -9,8 +9,8 @@ The [`Page`][vizro.models.Page] model accepts the `controls` argument, where you
 To add a parameter to your page, do the following:
 
 1. add the [`Parameter`][vizro.models.Parameter] model into the `controls` argument of the [`Page`][vizro.models.Page] model.
-2. add the `targets` argument
-3. add a selector model to the `selector` argument.
+1. add the `targets` argument
+1. add a selector model to the `selector` argument.
 
 In the `targets` argument, you can specify the component and function argument that the parameter should be applied to in the form of `<target_component_id>.<target_argument>` (for example, `scatter_chart.title`).
 
@@ -48,6 +48,7 @@ Unlike for the [`Filter`][vizro.models.Filter] model, you also have to configure
 
         Vizro().build(dashboard).run()
         ```
+
     === "app.yaml"
         ```yaml
         # Still requires a .py to add data to the data manager and parse YAML configuration
@@ -64,18 +65,17 @@ Unlike for the [`Filter`][vizro.models.Filter] model, you also have to configure
                 type: graph
             controls:
               - selector:
-                  options: ["My scatter chart", "A better title!", "Another title..."]
-                  multi: False
+                  options: [My scatter chart, A better title!, Another title...]
+                  multi: false
                   type: dropdown
                 targets:
                   - scatter_chart.title
                 type: parameter
             title: My first page
         ```
-    === "Result"
-        [![Parameter]][Parameter]
 
-    [Parameter]: ../../assets/user_guides/control/control4.png
+    === "Result"
+        [![Parameter]][parameter]
 
 If you would like to pass `None` as a parameter and make a parameter optional, you can specify the string `"NONE"` in the `options` or `value` field.
 
@@ -133,6 +133,7 @@ If you want to change nested parameters, you can specify the `targets` argument 
 
         Vizro().build(dashboard).run()
         ```
+
     === "app.yaml"
         ```yaml
         # Still requires a .py to add data to the data manager and parse YAML configuration
@@ -146,7 +147,7 @@ If you want to change nested parameters, you can specify the `targets` argument 
                   y: sepal_length
                   size: petal_length
                   color: species
-                  color_discrete_map: {"setosa": "#00b4ff", "versicolor": "#ff9222"}
+                  color_discrete_map: {setosa: '#00b4ff', versicolor: '#ff9222'}
                 id: scatter_chart
                 type: graph
               - figure:
@@ -155,23 +156,22 @@ If you want to change nested parameters, you can specify the `targets` argument 
                   x: sepal_width
                   y: sepal_length
                   color: species
-                  color_discrete_map: {"setosa": "#00b4ff", "versicolor": "#ff9222"}
+                  color_discrete_map: {setosa: '#00b4ff', versicolor: '#ff9222'}
                 id: bar_chart
                 type: graph
             controls:
               - selector:
-                  options: ["#ff5267", "#3949ab"]
+                  options: ['#ff5267', '#3949ab']
                   value: #3949ab
-                  multi: False
+                  multi: false
                   type: dropdown
-                targets: ["scatter_chart.color_discrete_map.virginica", "bar_chart.color_discrete_map.virginica"]
+                targets: [scatter_chart.color_discrete_map.virginica, bar_chart.color_discrete_map.virginica]
                 type: parameter
             title: My first page
         ```
-    === "Result"
-        [![Nested]][Nested]
 
-    [Nested]: ../../assets/user_guides/control/control5.png
+    === "Result"
+        [![Nested]][nested]
 
 In the above example, the object passed to the function argument `color_discrete_map` is a dictionary which maps the different flower species to fixed colors (for example, `{"virginica":"blue"}`). In this case, only the value `blue` should be changed instead of the entire dictionary. This can be achieved by specifying a target as `scatter.color_discrete_map.virginica`.
 
@@ -180,3 +180,6 @@ Note that in the above example, one parameter affects multiple targets.
 ## Dynamic data parameters
 
 If you use [dynamic data](data.md/#dynamic-data) that can be updated while the dashboard is running then you can pass parameters to the dynamic data function to alter the data loaded into your dashboard. For detailed instructions, refer to the section on [parametrized data loading](data.md/#parametrize-data-loading).
+
+[nested]: ../../assets/user_guides/control/control5.png
+[parameter]: ../../assets/user_guides/control/control4.png

@@ -11,14 +11,27 @@ See the fragment files in the [changelog.d directory](https://github.com/mckinse
 
 <!-- scriv-insert-here -->
 
+<a id='changelog-0.1.29'></a>
+
+# 0.1.29 — 2024-12-03
+
+## Highlights ✨
+
+- Filters update automatically when underlying dynamic data changes. See the [user guide on dynamic filters](https://vizro.readthedocs.io/en/stable/pages/user-guides/data/#filters) for more information. ([#879](https://github.com/mckinsey/vizro/pull/879))
+
+## Changed
+
+- Custom controls can be nested arbitrarily deep inside `Page.controls`. ([#903](https://github.com/mckinsey/vizro/pull/903))
+
+- Replace `dmc.Switch` with `dbc.Switch` and change CSS selectors accordingly. ([#907](https://github.com/mckinsey/vizro/pull/907))
+
 <a id='changelog-0.1.28'></a>
 
 # 0.1.28 — 2024-11-27
 
 ## Removed
 
-- Removed all CSS variables from `variables.css` and `token_names.css`, replacing them with CSS variables from `vizro-bootstrap.min.css`.
-  Refer to [`vizro-bootstrap.min.css](https://github.com/mckinsey/vizro/blob/main/vizro-core/src/vizro/static/css/vizro-bootstrap.min.css) for the updated CSS variables. ([#886](https://github.com/mckinsey/vizro/pull/886))
+- Removed all CSS variables from `variables.css` and `token_names.css`, replacing them with CSS variables from `vizro-bootstrap.min.css`. Refer to [`vizro-bootstrap.min.css`](https://github.com/mckinsey/vizro/blob/main/vizro-core/src/vizro/static/css/vizro-bootstrap.min.css) for the updated CSS variables. ([#886](https://github.com/mckinsey/vizro/pull/886))
 
 ## Added
 
@@ -304,10 +317,7 @@ See the fragment files in the [changelog.d directory](https://github.com/mckinse
 
 ### Highlights ✨
 
-- Introduce `AgGrid` as a new `Page` component, allowing the usage of
-  [AG Grid](https://www.ag-grid.com/) in
-  `Vizro`. See the [user guide on tables](https://vizro.readthedocs.io/en/stable/pages/user_guides/table/)
-  for more information. ([#289](https://github.com/mckinsey/vizro/pull/289),[#268](https://github.com/mckinsey/vizro/pull/268),[#324](https://github.com/mckinsey/vizro/pull/324))
+- Introduce `AgGrid` as a new `Page` component, allowing the usage of [AG Grid](https://www.ag-grid.com/) in `Vizro`. See the [user guide on tables](https://vizro.readthedocs.io/en/stable/pages/user_guides/table/) for more information. ([#289](https://github.com/mckinsey/vizro/pull/289),[#268](https://github.com/mckinsey/vizro/pull/268),[#324](https://github.com/mckinsey/vizro/pull/324))
 
 ## Changed
 
@@ -552,10 +562,10 @@ See the fragment files in the [changelog.d directory](https://github.com/mckinse
 
 - Optimize the client-server communication ([#34](https://github.com/mckinsey/vizro/pull/34))
 
-  - Eliminate most server side callbacks in favor of client-side callbacks
-  - Add tests for client-side callbacks written in Node.js framework called `jest`.
-  - Add hatch command `hatch run test-js` that runs unit tests written in `jest`.
-  - Logging information now only displayed for action function carried out (no trigger or finished information)
+    - Eliminate most server side callbacks in favor of client-side callbacks
+    - Add tests for client-side callbacks written in Node.js framework called `jest`.
+    - Add hatch command `hatch run test-js` that runs unit tests written in `jest`.
+    - Logging information now only displayed for action function carried out (no trigger or finished information)
 
 - Replaced all screenshots in the docs to reflect new navigation designs ([#48](https://github.com/mckinsey/vizro/pull/48))
 
@@ -599,21 +609,21 @@ See the fragment files in the [changelog.d directory](https://github.com/mckinse
 
 - Add the following pydantic models:
 
-  - Action
-  - Button
-  - Card
-  - Checklist
-  - Dashboard
-  - Dropdown
-  - Filter
-  - Graph
-  - Layout
-  - Navigation
-  - Page
-  - Parameter
-  - RadioItems
-  - RangeSlider
-  - Slider
-  - VizroBaseModel
+    - Action
+    - Button
+    - Card
+    - Checklist
+    - Dashboard
+    - Dropdown
+    - Filter
+    - Graph
+    - Layout
+    - Navigation
+    - Page
+    - Parameter
+    - RadioItems
+    - RangeSlider
+    - Slider
+    - VizroBaseModel
 
 - Enable the addition and usage of custom components and custom charts
