@@ -1,11 +1,10 @@
 from __future__ import annotations
 
 import inspect
-
 import logging
 from collections.abc import Collection, Mapping
 from pprint import pformat
-from typing import Any, TypedDict, Union, TYPE_CHECKING
+from typing import TYPE_CHECKING, Any, TypedDict, Union
 
 from dash import Input, Output, State, callback, html
 from dash.development.base_component import Component
@@ -21,11 +20,9 @@ except ImportError:  # pragma: no cov
 from collections.abc import Iterable
 from typing import cast
 
-
 if TYPE_CHECKING:
     from vizro.models import Page
 from vizro.models import VizroBaseModel
-
 from vizro.models._models_utils import _log_call
 from vizro.models.types import CapturedCallable, ControlType
 
@@ -278,8 +275,8 @@ class NewAction(VizroBaseModel):
 
     @property
     def inputs(self) -> ControlInputs:
-        from vizro.models import Filter, Parameter
         from vizro.actions import filter_interaction
+        from vizro.models import Filter, Parameter
 
         page = model_manager._get_model_page(self)
 
