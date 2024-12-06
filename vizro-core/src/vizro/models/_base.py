@@ -1,5 +1,5 @@
 # try:
-#     from pydantic.v1 import BaseModel, Field, validator
+# from pydantic.v1 import BaseModel, Field, validator
 #     from pydantic.v1.fields import SHAPE_LIST, ModelField
 #     from pydantic.v1.typing import get_args
 # except ImportError:  # pragma: no cov
@@ -11,14 +11,18 @@ import logging
 import textwrap
 from collections.abc import Mapping
 from contextlib import contextmanager
-from typing import Annotated, Any, Optional, Union
+from typing import Annotated, Any, Optional, Union, get_args, get_origin
 
 import autoflake
 import black
 from pydantic import BaseModel, ConfigDict, Field, field_validator
+from pydantic.fields import FieldInfo
+from pydantic_core import core_schema
 
 from vizro.managers import model_manager
 from vizro.models._models_utils import REPLACEMENT_STRINGS, _log_call
+
+field = core_schema.model_field(schema=core_schema.int_schema())
 
 ACTIONS_CHAIN = "ActionsChain"
 ACTION = "actions"
@@ -150,6 +154,59 @@ def _extract_captured_callable_data_info() -> set[str]:
     }
 
 
+def _add_type_to_union(union: Union[type[Any], type[Any]], new_type: type[Any]) -> Union[type[Any], type[Any]]:
+    args = get_args(union)
+    return Union[*args, new_type]
+
+
+def _add_type_to_annotated_union(union, new_type: type[Any]) -> Annotated:
+    args = get_args(union)
+    return Annotated[_add_type_to_union(args[0], new_type), args[1]]
+
+
+def _is_discriminated_union_via_field_info(field: FieldInfo) -> bool:
+    if hasattr(field, "annotation") and field.annotation is None:
+        raise ValueError("Field annotation is None")
+    return hasattr(field, "discriminator") and field.discriminator is not None
+
+
+def _is_discriminated_union_via_annotation(annotation) -> bool:
+    if get_origin(annotation) is not Annotated:
+        return False
+    metadata = get_args(annotation)[1:]
+    return hasattr(metadata[0], "discriminator")
+
+
+def _is_not_annotated(field: type[Any]) -> bool:
+    return get_origin(field) is not None and get_origin(field) is not Annotated
+
+
+def _add_type_to_annotated_union_if_found(
+    type_annotation: type[Any], additional_type: type[Any], field_name: str
+) -> type[Any]:
+    def _split_types(type_annotation: type[Any]) -> type[Any]:
+        outer_type = get_origin(type_annotation)
+        inner_types = get_args(type_annotation)  # TODO: [MS] what if multiple, or what if not first
+        if outer_type is None or len(inner_types) < 1:
+            raise ValueError("Unsupported annotation type")
+        if len(inner_types) > 1:
+            return outer_type[
+                _add_type_to_annotated_union_if_found(inner_types[0], additional_type, field_name),
+                inner_types[1],
+            ]
+        return outer_type[_add_type_to_annotated_union_if_found(inner_types[0], additional_type, field_name)]
+
+    if _is_not_annotated(type_annotation):
+        return _split_types(type_annotation)
+    elif _is_discriminated_union_via_annotation(type_annotation):
+        return _add_type_to_annotated_union(type_annotation, additional_type)
+    else:
+        raise ValueError(
+            f"Field '{field_name}' must be a discriminated union or list of discriminated union type. "
+            "You probably do not need to call add_type to use your new type."
+        )
+
+
 class VizroBaseModel(BaseModel):
     """All models that are registered to the model manager should inherit from this class.
 
@@ -190,55 +247,21 @@ class VizroBaseModel(BaseModel):
             new_type: New type to add to discriminated union
 
         """
-
-        def _add_to_discriminated_union(union):
-            # Returning Annotated here isn't strictly necessary but feels safer because the new discriminated union
-            # will then be annotated the same way as the old one.
-            args = get_args(union)
-            # args[0] is the original union, e.g. Union[Filter, Parameter]. args[1] is the FieldInfo annotated metadata.
-            return Annotated[Union[args[0], new_type], args[1]]
-
-        def _is_discriminated_union(field):
-            # Really this should be done as follows:
-            # return field.discriminator_key is not None
-            # However, this does not work with Optional[DiscriminatedUnion]. See also TestOptionalDiscriminatedUnion.
-            return hasattr(field.outer_type_, "__metadata__") and get_args(field.outer_type_)[1].discriminator
-
-        field = cls.__fields__[field_name]
-        sub_field = field.sub_fields[0] if field.shape == SHAPE_LIST else None
-
-        if _is_discriminated_union(field):
-            # Field itself is a non-optional discriminated union, e.g. selector: SelectorType or Optional[SelectorType].
-            new_annotation = _add_to_discriminated_union(field.outer_type_)
-        elif sub_field is not None and _is_discriminated_union(sub_field):
-            # Field is a list of discriminated union e.g. components: list[ComponentType].
-            new_annotation = list[_add_to_discriminated_union(sub_field.outer_type_)]  # type: ignore[misc]
-        else:
-            raise ValueError(
-                f"Field '{field_name}' must be a discriminated union or list of discriminated union type. "
-                "You probably do not need to call add_type to use your new type."
-            )
-
-        cls.__fields__[field_name] = ModelField(
-            name=field.name,
-            type_=new_annotation,
-            class_validators=field.class_validators,
-            model_config=field.model_config,
-            default=field.default,
-            default_factory=field.default_factory,
-            required=field.required,
-            final=field.final,
-            alias=field.alias,
-            field_info=field.field_info,
+        field = cls.model_fields[field_name]
+        new_annotation = (
+            _add_type_to_union(field.annotation, new_type)
+            if _is_discriminated_union_via_field_info(field)
+            else _add_type_to_annotated_union_if_found(field.annotation, new_type, field_name)
         )
+        field = cls.model_fields[field_name] = FieldInfo.merge_field_infos(field, annotation=new_annotation)
 
         # We need to resolve all ForwardRefs again e.g. in the case of Page, which requires update_forward_refs in
         # vizro.models. The vm.__dict__.copy() is inspired by pydantic's own implementation of update_forward_refs and
         # effectively replaces all ForwardRefs defined in vizro.models.
         import vizro.models as vm
 
-        cls.update_forward_refs(**vm.__dict__.copy())
-        new_type.update_forward_refs(**vm.__dict__.copy())
+        cls.model_rebuild(force=True, _types_namespace=vm.__dict__.copy())
+        new_type.model_rebuild(force=True, _types_namespace=vm.__dict__.copy())
 
     def dict(self, **kwargs):
         global _PATCH_VIZRO_BASE_MODEL_DICT  # noqa

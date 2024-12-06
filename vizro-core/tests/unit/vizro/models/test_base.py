@@ -71,7 +71,10 @@ def ParentWithForwardRef():
     class _ParentWithForwardRef(vm.VizroBaseModel):
         child: Annotated[Union["ChildXForwardRef", "ChildYForwardRef"], Field(discriminator="type")]  # noqa: F821
 
-    _ParentWithForwardRef.update_forward_refs(ChildXForwardRef=ChildX, ChildYForwardRef=ChildY)
+    # TODO: [MS] This is how I would update the forward refs, but we should double check
+    ChildXForwardRef = ChildX
+    ChildYForwardRef = ChildY
+    _ParentWithForwardRef.model_rebuild()
     return _ParentWithForwardRef
 
 
@@ -154,7 +157,9 @@ class TestListDiscriminatedUnion:
 class TestParentForwardRefDiscriminatedUnion:
     def test_no_type_match(self, ParentWithForwardRef):
         child = ChildZ()
-        with pytest.raises(ValidationError, match="No match for discriminator 'type' and value 'child_Z'"):
+        with pytest.raises(
+            ValidationError, match="'type' does not match any of the expected tags: 'child_x', 'child_y'"
+        ):
             ParentWithForwardRef(child=child)
 
     def test_add_type_model_instantiation(self, ParentWithForwardRef, mocker):
@@ -174,9 +179,13 @@ class TestParentForwardRefDiscriminatedUnion:
 
 class TestChildWithForwardRef:
     def test_no_type_match(self, Parent):
+        # TODO: [MS] I am not sure why this worked before, but in my understanding, we need to define the forward ref before rebuilding the model
+        # that contains it.
+        ChildXForwardRef = ChildX
+        ChildWithForwardRef.model_rebuild()
         child = ChildWithForwardRef()
         with pytest.raises(
-            ValidationError, match="No match for discriminator 'type' and value 'child_with_forward_ref'"
+            ValidationError, match="'type' does not match any of the expected tags: 'child_x', 'child_y'"
         ):
             Parent(child=child)
 
