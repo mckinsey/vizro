@@ -1,89 +1,104 @@
-"""Dev app to try things out."""
-
-from vizro import Vizro
 import vizro.models as vm
 import vizro.plotly.express as px
+from vizro import Vizro
+from vizro.actions import filter_interaction, export_data
+from vizro.models._action._action import capture_new_action, VizroState, VizroOutput
+from vizro.models.types import capture
 
-df = px.data.gapminder()
-gapminder_data = (
-    df.groupby(by=["continent", "year"]).agg({"lifeExp": "mean", "pop": "sum", "gdpPercap": "mean"}).reset_index()
-)
-first_page = vm.Page(
-    title="First Page",
-    layout=vm.Layout(grid=[[0, 0], [1, 2], [1, 2], [1, 2]]),
+df_gapminder = px.data.gapminder().query("year == 2007")
+
+page1 = vm.Page(
+    title="Filter interaction",
     components=[
-        vm.Card(
-            text="""
-                # First dashboard page
-                This pages shows the inclusion of markdown text in a page and how components
-                can be structured using Layout.
-            """,
-        ),
         vm.Graph(
-            id="box_cont",
             figure=px.box(
-                gapminder_data,
+                df_gapminder,
                 x="continent",
                 y="lifeExp",
                 color="continent",
-                labels={"lifeExp": "Life Expectancy", "continent": "Continent"},
+                custom_data=["continent"],
             ),
+            actions=[filter_interaction(targets=["scatter_relation_2007"])],
         ),
         vm.Graph(
-            id="line_gdp",
-            figure=px.line(
-                gapminder_data,
-                x="year",
-                y="gdpPercap",
+            id="scatter_relation_2007",
+            figure=px.scatter(
+                df_gapminder,
+                x="gdpPercap",
+                y="lifeExp",
+                size="pop",
                 color="continent",
-                labels={"year": "Year", "continent": "Continent", "gdpPercap": "GDP Per Cap"},
             ),
+        ),
+        vm.Button(
+            text="Export data",
+            actions=[export_data(targets=["scatter_relation_2007"])],
         ),
     ],
     controls=[
-        vm.Filter(column="continent", targets=["box_cont", "line_gdp"]),
+        vm.Filter(column="continent"),
+        vm.Parameter(
+            id="parameter_x",
+            targets=["scatter_relation_2007.color"],
+            selector=vm.RadioItems(options=["continent", "pop"], id="x"),
+        ),
     ],
 )
 
-iris_data = px.data.iris()
-second_page = vm.Page(
-    title="Second Page",
+
+# @capture("action")
+@capture_new_action
+def my_custom_action(points_data: VizroState, output: VizroOutput):
+    # Problem: have unused argument, but that is ok. Better than argument not existing.
+    """Custom action."""
+    clicked_point = points_data["points"][0]
+    x, y = clicked_point["x"], clicked_point["y"]
+    species = clicked_point["customdata"][0]
+    card_1_text = f"Clicked point has sepal length {x}, petal width {y}"
+    # card_2_text = f"Clicked point has species {species}"
+    return card_1_text  # , card_2_text
+
+
+df = px.data.iris()
+
+page2 = vm.Page(
+    title="Example of a custom action with UI inputs and outputs",
+    layout=vm.Layout(
+        grid=[
+            [0, 0],
+            [0, 0],
+            [0, 0],
+            [1, 2],
+        ],
+        row_gap="25px",
+    ),
     components=[
         vm.Graph(
-            id="scatter_iris",
-            figure=px.scatter(
-                iris_data,
-                x="sepal_width",
-                y="sepal_length",
-                color="species",
-                color_discrete_map={"setosa": "#00b4ff", "versicolor": "#ff9222"},
-                labels={"sepal_width": "Sepal Width", "sepal_length": "Sepal Length", "species": "Species"},
-            ),
+            id="scatter_chart",
+            figure=px.scatter(df, x="sepal_length", y="petal_width", color="species", custom_data=["species"]),
+            actions=[
+                my_custom_action(points_data="scatter_chart.clickData", output="my_card_1.children"),
+                # Alternatives:
+                # {my_custom_action(points_data="scatter_chart.clickData"): "my_card_1"},
+                # could make NewCustomAction hashable by hasing model id
+                # {"my_card_1.children": my_custom_action(points_data="scatter_chart.clickData")},
+                # vm.Action(
+                #     function=my_custom_action(points_data="scatter_chart.clickData"), outputs="my_card_1.children"
+                # ),
+                # vm.Action(
+                #     function=my_custom_action(),
+                #     inputs=["scatter_chart.clickData"],
+                #     outputs=["my_card_1.children", "my_card_2.children"],
+                # ),
+            ],
         ),
-        vm.Graph(
-            id="hist_iris",
-            figure=px.histogram(
-                iris_data,
-                x="sepal_width",
-                color="species",
-                color_discrete_map={"setosa": "#00b4ff", "versicolor": "#ff9222"},
-                labels={"sepal_width": "Sepal Width", "count": "Count", "species": "Species"},
-            ),
-        ),
+        vm.Card(id="my_card_1", text="Click on a point on the above graph."),
+        vm.Card(id="my_card_2", text="Click on a point on the above graph."),
     ],
-    controls=[
-        vm.Parameter(
-            targets=["scatter_iris.color_discrete_map.virginica", "hist_iris.color_discrete_map.virginica"],
-            selector=vm.Dropdown(options=["#ff5267", "#3949ab"], multi=False, value="#3949ab", title="Color Virginica"),
-        ),
-        vm.Parameter(
-            targets=["scatter_iris.opacity"],
-            selector=vm.Slider(min=0, max=1, value=0.8, title="Opacity"),
-        ),
-    ],
+    controls=[vm.Filter(column="species", selector=vm.Dropdown(title="Species"))],
 )
 
-dashboard = vm.Dashboard(pages=[first_page, second_page])
+dashboard = vm.Dashboard(pages=[page1, page2])
 
 if __name__ == "__main__":
     Vizro().build(dashboard).run()

@@ -2,29 +2,61 @@
 
 from typing import Any
 
-from dash import ctx
+from dash import State, ctx
 
 from vizro.actions._actions_utils import _get_modified_page_figures
 from vizro.managers._model_manager import ModelID
-from vizro.models.types import capture
+from vizro.models._action._action import NewAction
 
 
-@capture("action")
-def _on_page_load(targets: list[ModelID], **inputs: dict[str, Any]) -> dict[ModelID, Any]:
-    """Applies controls to charts on page once the page is opened (or refreshed).
+# TODO NOW: rename apply_controls or similar. Docstring. Tidy comments in arguments.
+class _on_page_load(NewAction):
+    targets: list[ModelID]
 
-    Args:
-        targets: List of target component ids to apply on page load mechanism to
-        inputs: Dict mapping action function names with their inputs e.g.
-            inputs = {'filters': [], 'parameters': ['gdpPercap'], 'filter_interaction': []}
+    def function(
+        self,
+        filters: list[State],
+        parameters: list[State],
+        filter_interaction: list[dict[str, State]],
+    ) -> dict[ModelID, Any]:
+        """Applies controls to charts on page once the page is opened (or refreshed).
 
-    Returns:
-        Dict mapping target chart ids to modified figures e.g. {'my_scatter': Figure({})}
+        Args:
+            targets: List of target component ids to filter by chart interaction. If missing, will target all valid
+                components on page. Defaults to `None`.
+            inputs: Dict mapping action function names with their inputs e.g.
+                inputs = {'filters': [], 'parameters': ['gdpPercap'], 'filter_interaction': [], 'theme_selector': True}
 
-    """
-    return _get_modified_page_figures(
-        ctds_filter=ctx.args_grouping["external"]["filters"],
-        ctds_filter_interaction=ctx.args_grouping["external"]["filter_interaction"],
-        ctds_parameter=ctx.args_grouping["external"]["parameters"],
-        targets=targets,
-    )
+        Returns:
+            Dict mapping target component ids to modified charts/components e.g. {'my_scatter': Figure({})}
+        """
+        # TODO NOW: comment about how filters, paramters, filter_interaction currently ignored but will be used in
+        #  future when do pattern matching callback.
+
+        return _get_modified_page_figures(
+            ctds_filter=ctx.args_grouping["external"]["filters"],
+            ctds_filter_interaction=ctx.args_grouping["external"]["filter_interaction"],
+            ctds_parameter=ctx.args_grouping["external"]["parameters"],
+            targets=self.targets,
+        )
+
+    function._function = function
+
+    # update_figures
+    # def _post_init(self):
+    #     """Post initialization is called in the vm.Action build phase, and it is used to validate and calculate the
+    #     properties of the CapturedActionCallable. With this, we can validate the properties and raise errors before
+    #     the action is built. Also, "input"/"output"/"components" properties and "pure_function" can use these validated
+    #     and the calculated arguments.
+    #     """
+    #     self._page_id = model_manager._get_model_page_id(model_id=self._action_id)
+    #
+    #     # Validate and calculate "targets"
+    #     targets = self._arguments.get("targets")
+    #     if targets:
+    #         for target in targets:
+    #             if self._page_id != model_manager._get_model_page_id(model_id=target):
+    #                 raise ValueError(f"Component '{target}' does not exist on the page '{self._page_id}'.")
+    #     else:
+    #         targets = model_manager._get_page_model_ids_with_figure(page_id=self._page_id)
+    #     self._arguments["targets"] = self.targets = targets
