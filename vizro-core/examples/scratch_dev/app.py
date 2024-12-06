@@ -2,6 +2,7 @@ import vizro.models as vm
 import vizro.plotly.express as px
 from vizro import Vizro
 from vizro.actions import filter_interaction, export_data
+from vizro.models._action._action import capture_new_action, VizroState, VizroOutput
 from vizro.models.types import capture
 
 df_gapminder = px.data.gapminder().query("year == 2007")
@@ -45,15 +46,17 @@ page1 = vm.Page(
 )
 
 
-@capture("action")
-def my_custom_action(points_data: dict):
+# @capture("action")
+@capture_new_action
+def my_custom_action(points_data: VizroState, output: VizroOutput):
+    # Problem: have unused argument, but that is ok. Better than argument not existing.
     """Custom action."""
     clicked_point = points_data["points"][0]
     x, y = clicked_point["x"], clicked_point["y"]
     species = clicked_point["customdata"][0]
     card_1_text = f"Clicked point has sepal length {x}, petal width {y}"
-    card_2_text = f"Clicked point has species {species}"
-    return card_1_text, card_2_text
+    # card_2_text = f"Clicked point has species {species}"
+    return card_1_text  # , card_2_text
 
 
 df = px.data.iris()
@@ -74,11 +77,19 @@ page2 = vm.Page(
             id="scatter_chart",
             figure=px.scatter(df, x="sepal_length", y="petal_width", color="species", custom_data=["species"]),
             actions=[
-                vm.Action(
-                    function=my_custom_action(),
-                    inputs=["scatter_chart.clickData"],
-                    outputs=["my_card_1.children", "my_card_2.children"],
-                ),
+                my_custom_action(points_data="scatter_chart.clickData", output="my_card_1.children"),
+                # Alternatives:
+                # {my_custom_action(points_data="scatter_chart.clickData"): "my_card_1"},
+                # could make NewCustomAction hashable by hasing model id
+                # {"my_card_1.children": my_custom_action(points_data="scatter_chart.clickData")},
+                # vm.Action(
+                #     function=my_custom_action(points_data="scatter_chart.clickData"), outputs="my_card_1.children"
+                # ),
+                # vm.Action(
+                #     function=my_custom_action(),
+                #     inputs=["scatter_chart.clickData"],
+                #     outputs=["my_card_1.children", "my_card_2.children"],
+                # ),
             ],
         ),
         vm.Card(id="my_card_1", text="Click on a point on the above graph."),

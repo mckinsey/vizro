@@ -13,7 +13,7 @@ from vizro.models._action._action import NewAction
 class _parameter(NewAction):
     targets: list[ModelID]
 
-    def __call__(
+    def function(
         self,
         filters: list[State],
         parameters: list[State],
@@ -27,6 +27,8 @@ class _parameter(NewAction):
             ctds_parameter=ctx.args_grouping["external"]["parameters"],
             targets=targets,
         )
+
+    function._function = function
 
     # pararmeter_action
     # def _post_init(self):

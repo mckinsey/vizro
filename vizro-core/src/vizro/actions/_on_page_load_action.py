@@ -13,7 +13,7 @@ from vizro.models._action._action import NewAction
 class _on_page_load(NewAction):
     targets: list[ModelID]
 
-    def __call__(
+    def function(
         self,
         filters: list[State],
         parameters: list[State],
@@ -39,6 +39,8 @@ class _on_page_load(NewAction):
             ctds_parameter=ctx.args_grouping["external"]["parameters"],
             targets=self.targets,
         )
+
+    function._function = function
 
     # update_figures
     # def _post_init(self):

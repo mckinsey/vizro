@@ -19,7 +19,7 @@ class _filter(NewAction):
     filter_column: str
     filter_function: Callable
 
-    def __call__(
+    def function(
         self,
         filters: list[State],
         parameters: list[State],
@@ -31,6 +31,8 @@ class _filter(NewAction):
             ctds_parameter=ctx.args_grouping["external"]["parameters"],
             targets=self.targets,
         )
+
+    function._function = function
 
 
 # TODO NOW: validation

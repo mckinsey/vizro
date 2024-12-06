@@ -17,7 +17,7 @@ class export_data(NewAction):
     # targets?
     file_format: Literal["csv", "xlsx"] = "csv"
 
-    def __call__(
+    def function(
         self,
         filters: list[State],
         parameters: list[State],
@@ -67,6 +67,8 @@ class export_data(NewAction):
             )
 
         return outputs
+
+    function._function = function
 
     @property
     def outputs(self) -> dict[str, Output]:

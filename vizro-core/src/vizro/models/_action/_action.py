@@ -4,7 +4,7 @@ import inspect
 import logging
 from collections.abc import Collection, Mapping
 from pprint import pformat
-from typing import TYPE_CHECKING, Any, TypedDict, Union
+from typing import TYPE_CHECKING, Any, TypedDict, Union, Callable, Annotated, TypeVar
 
 from dash import Input, Output, State, callback, html
 from dash.development.base_component import Component
@@ -15,7 +15,7 @@ from vizro.managers._model_manager import ModelID
 try:
     from pydantic.v1 import Field, validator
 except ImportError:  # pragma: no cov
-    from pydantic import Field
+    from pydantic import Field, ConfigDict
 
 from collections.abc import Iterable
 from typing import cast
@@ -222,19 +222,19 @@ class ControlInputs(TypedDict):
 
 class NewAction(VizroBaseModel):
     # TODO NOW: Maybe make abstractmethod.
-    def __call__(self, *args, **kwargs):
+    def function(self, *args, **kwargs):
         pass
 
-    # TODO FUTURE: this would be removed. It's just here for compatability with CapturedCallable,
-    @property
-    def function(self):
-        # TODO NOW: comment. Horrible hack to make compatible with CapturedCallable.
-        _function = self.__call__
-        # TODO NOW: see if this is necessary still after tidying
-        _function.__func__._function = self.__call__
-        # TODO NOW: figure out how to name for debugging - maybe need to alter Action debugging code.
-        # _function.__func__._function.__name__ = type(self)
-        return _function
+    # # TODO FUTURE: this would be removed. It's just here for compatability with CapturedCallable,
+    # @property
+    # def function(self):
+    #     # TODO NOW: comment. Horrible hack to make compatible with CapturedCallable.
+    #     _function = self.new_function
+    #     # TODO NOW: see if this is necessary still after tidying
+    #     _function.__func__._function = self.new_function
+    #     # TODO NOW: figure out how to name for debugging - maybe need to alter Action debugging code.
+    #     # _function.__func__._function.__name__ = type(self)
+    #     return _function
 
     def _get_callback_mapping(self):
         """Builds callback inputs and outputs for the Action model callback, and returns action required components.
@@ -282,16 +282,16 @@ class NewAction(VizroBaseModel):
 
         # TODO NOW: create comment about refactoring ctds format in future. Comment that List[State] here would match
         #  custom actions.
-        # TODO: consider names of these reserved arguments. vizro_filters? __filters__? filters? Don't do using type
+        # TODO: consider names of these reserved arguments. vizro_filters? runtime_filters? __filters__? filters? Don't
+        #  do using type
         #  hints - too complicated for user.
-
         reserved_kwargs = {
             "filters": _get_inputs_of_controls(page=page, control_type=Filter),
             "parameters": _get_inputs_of_controls(page=page, control_type=Parameter),
             "filter_interaction": _get_inputs_of_figure_interactions(page=page, model_type=filter_interaction),
         }
         return {
-            key: value for key, value in reserved_kwargs.items() if key in inspect.signature(self.__call__).parameters
+            key: value for key, value in reserved_kwargs.items() if key in inspect.signature(self.function).parameters
         }
 
     @property
@@ -306,3 +306,167 @@ NewAction._action_callback_function = Action._action_callback_function
 #  subclass anyway.
 # Or try alternative approach where NewAction(Action) and then remove fields/methods.
 Action.register(NewAction)
+
+
+##### How user writes custom action. Compare to capture() decorator and do as capture("new_action").
+# Probably not a good idea to have this as same NewAction class - good to have a separate model.
+# e.g. want extra="allow" only in Custom Action
+# But then need to repeat code that injects inputs etc. into here :(
+# OR that needs to live elsewhere and not as property in NewAction. Given the arguments are always optional this is
+# probably ok?
+class capture_new_action:
+    def __init__(self, function):
+        print("init capture_new_action")
+        self.actual_function = function
+
+    def __call__(self, **kwargs):
+        # TODO NOW:
+        # if use validate_call here then make it more lenient than default config e.g. arbitrary_types_allowed=True)
+        # if self.func asks for **filters then put in here. . Easier to mark using name rather than type hint
+        # that it's provided by vizro.
+        # validate_call can only do validators as Annotations of fields
+        print("creating NewCustomAction")
+        # return NewAction(func=validate_call(self.func), **kwargs)
+        return NewCustomAction(actual_function=self.actual_function, **kwargs)
+
+
+class NewCustomAction(VizroBaseModel):
+    actual_function: Callable
+
+    @property
+    def inputs(self):
+        extra_fields = set(self.__dict__) - set(self.__fields__)
+
+        arguments_provided_upfront = {
+            key: getattr(self, key) for key in extra_fields
+        }  # easier with model_extra in pydantic v2
+
+        all_parameters = inspect.signature(self.actual_function).parameters
+
+        dash_inputs = {}
+
+        for key, value in arguments_provided_upfront.items():
+            if all_parameters[key].annotation is VizroState:
+                dash_inputs[key] = State(*value.split("."))
+
+        return dash_inputs
+
+    def function(self, **kwargs):
+        # called at runtime
+        # TODO NOW: note:
+        # NO MORE OVERRIDING ARGS AT RUNTIME POSSIBLE - actuallyl dictionary override as it stands will do this though
+        # KWARGS ONLY, no positional - ok
+        # Actually just want to pass special run time things in here?
+        # Maybe need inputs that are always provided when requested and extra_inputs you can have in addition to those.
+
+        # # Not sure whether to populate kwargs inside here or will be provided by caller.
+
+        # all_required_parameters = inspect.signature(
+        #     self.actual_function
+        # ).parameters  # maybe check for non-optional only
+        #
+        # # THIS ONLY NEEDED IF USE OTHER APPROACH WITH ARGUMENT NAME TELLING YOU required state, NOT VALUE
+        # remaining_inputs = set(all_required_parameters) - extra_fields
+
+        # THESE DEFINITELY NEED TO BE HANDLED AS ARGUMENT NAMES AND NOT VALUES. Otherwise you'd need to do
+        # export_data(filters=...) etc.
+        # reserved_kwargs = {
+        #     "filters": _get_inputs_of_controls(page=page, control_type=Filter),
+        #     "parameters": _get_inputs_of_controls(page=page, control_type=Parameter),
+        #     "filter_interaction": _get_inputs_of_figure_interactions(page=page, model_type=filter_interaction),
+        # }
+        # built_in_inputs = {
+        #     key: value for key, value in reserved_kwargs.items() if key in remaining_inputs
+        # }  # actually filters isn't reserved arguments since  it only looks at remaining_inptus here
+        # rquired from function signature
+        requested_inputs = {}  # from function signature or provided arguments
+
+        return self.actual_function(
+            **self.inputs,
+        )
+
+        # arguments_provided_upfront, **built_in_inputs, **requested_inputs,
+        # **kwargs)
+
+    @property
+    def outputs(self):
+        # Maybe for outputs don't look at special argument called target. Instead look for type VizroOutput.
+        # But then have unused arguments in the user-written custom action function.
+        # Code here copied and pasted from inputs:
+        # But what to do about supplying values to these fields for running self.actual_function?
+        extra_fields = set(self.__dict__) - set(self.__fields__)
+
+        arguments_provided_upfront = {
+            key: getattr(self, key) for key in extra_fields
+        }  # easier with model_extra in pydantic v2
+
+        all_parameters = inspect.signature(self.actual_function).parameters
+
+        dash_outputs = {}
+
+        for key, value in arguments_provided_upfront.items():
+            if all_parameters[key].annotation is VizroOutput:
+                dash_outputs[key] = Output(*value.split("."))
+
+        return dash_outputs
+
+    class Config:
+        extra = "allow"
+
+
+Action.register(NewCustomAction)
+
+VizroState = TypeVar("VizroState")
+VizroOutput = TypeVar("VizroOutput")
+
+if __name__ == "__main__":
+    # Needs to work with default values too - need to parse these in NewCustomAction.
+    @capture_new_action
+    def f(
+        x: str,
+        any_variable_name_but_expects_dropdown_value: VizroState,  # for people who care abotu type safety: Annotated[int, ""],
+        # could also do as defeault value = State like in FastAPI old
+        # convention
+        # for dropdown that gives int value
+        # filters: Annotated[dict, Depends] = "filters",  # maybe dont need to provide default value or even type hint
+    ):
+        print("running function")
+        print(f"{x=}")
+        print(f"{any_variable_name_but_expects_dropdown_value=}")
+        # print(f"{filters=}")
+
+    # in config, user would do actions=[f(x="a")]
+    # definitely don't provide filters
+    # maybe fill out component_id_property_state
+    # f(x="a", dropdown_value="dropdown_id.value") -> more reusable and attached to point of use. TRY THIS FIRST
+    # how to distinguish x from dropdown_value? Would need special naming scheme or type hint. Don't like type hint
+    # because obscures actual value provided and will break typing. Could do like FastAPI dependency injection? Looks
+    # complicated for beginner though - don't like this.
+    # Or dropdown_value=Wrapper("dropdown_id.value") - how to do through yaml? Could apply same scheme to filters etc. -
+    # then no need for reserved arguments names, just would have default values like filters=Wrapper("filters").
+    # So with this approach need either special argument name or special type provided or do e.g.
+    # dropdown_value="vizro:**dropdown_id.value**".
+    # Like Wrapper() best but how to do from JSON? Not sure. best is just to write Wrapper() as string like you would
+    # do in python and then interpret that.
+    # Only other options are special argument name or special argument value (but string).
+    # Special argument value is better I think. Try "state:" for now and think of alternatives later.
+    # Problem with string argument value is it breaks typing. Wrapper() is much better.
+    # Use Annotated? Not simple to understand but correct way in FastAPI Depends.
+    # Using type hint will also break typing unless do as annotated.
+    # Best options now are special argument name - but this also breaks typing!!
+    # Overall best option is like FastAPI Depends.
+    # OR
+    # f(x="a")
+    # and hardcode component into function signature -> less complex - still needs special argument name or type hint.
+    # Don't want to do type hint.
+    # OR ENABLE BOTH?
+    # even better to just provide component_id and then it guesses property if not supplied
+    f(x=2, any_variable_name_but_expects_dropdown_value="state:dropdown_id.value").function()
+
+# T = TypeVar('T')
+# Const = Annotated[T, my_annotations.CONST]
+#
+# class C:
+#     def const_method(self: Const[List[int]]) -> int:
+#         ...
+# should only need to use type hint if you actually care about type safety
