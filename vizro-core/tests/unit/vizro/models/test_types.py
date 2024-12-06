@@ -254,7 +254,7 @@ class TestModelFieldJSONConfig:
 
     def test_invalid_arguments(self):
         config = {"_target_": "decorated_action_function", "e": 5}
-        with pytest.raises(ValidationError, match="got an unexpected keyword argument"):
+        with pytest.raises(TypeError, match="got an unexpected keyword argument"):
             ModelWithGraph(function=config)
 
     def test_undecorated_function(self):
@@ -282,7 +282,11 @@ class TestModelFieldJSONConfig:
     def test_invalid_import_path(self):
         class ModelWithInvalidModule(VizroBaseModel):
             # The import_path doesn't exist.
-            function: CapturedCallable = Field(..., import_path="invalid.module", mode="graph")
+            function: CapturedCallable = Field(
+                ..., json_schema_extra={"mode": "graph", "import_path": "invalid.module"}
+            )
+            # Validators
+            _validate_figure = field_validator("function", mode="before")(validate_captured_callable)
 
         config = {"_target_": "decorated_graph_function", "data_frame": "data_source_name"}
 
