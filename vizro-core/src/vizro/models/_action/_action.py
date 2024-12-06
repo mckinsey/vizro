@@ -4,7 +4,7 @@ import inspect
 import logging
 from collections.abc import Collection, Mapping
 from pprint import pformat
-from typing import TYPE_CHECKING, Any, TypedDict, Union, Callable, Annotated, TypeVar
+from typing import TYPE_CHECKING, Any, Callable, TypedDict, TypeVar, Union
 
 from dash import Input, Output, State, callback, html
 from dash.development.base_component import Component
@@ -15,7 +15,7 @@ from vizro.managers._model_manager import ModelID
 try:
     from pydantic.v1 import Field, validator
 except ImportError:  # pragma: no cov
-    from pydantic import Field, ConfigDict
+    from pydantic import Field
 
 from collections.abc import Iterable
 from typing import cast
