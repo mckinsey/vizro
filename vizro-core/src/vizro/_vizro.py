@@ -52,7 +52,7 @@ class Vizro:
             use_pages=True,
             # This is added here temporarily for testing. These stylesheets are required for certain dmc components.
             # It may be better to include these stylesheets in the css folder.
-            external_stylesheets=dmc.styles.ALL
+            external_stylesheets=dmc.styles.ALL,
         )
 
         # When Vizro is used as a framework, we want to include the library and framework resources.

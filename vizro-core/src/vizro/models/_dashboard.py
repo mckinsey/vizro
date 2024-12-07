@@ -157,7 +157,7 @@ class Dashboard(VizroBaseModel):
                 State("collapsable-left-side", "is_open"),
             )
 
-        layout= html.Div(
+        layout = html.Div(
             id="dashboard-container",
             children=[
                 html.Div(id="vizro_version", children=vizro.__version__, hidden=True),

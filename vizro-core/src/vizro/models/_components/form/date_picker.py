@@ -9,7 +9,6 @@ except ImportError:  # pragma: no cov
     from pydantic import Field, PrivateAttr, validator
 
 
-import datetime
 from datetime import date
 
 import dash_bootstrap_components as dbc
