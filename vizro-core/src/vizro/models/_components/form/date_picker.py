@@ -27,7 +27,7 @@ class DatePicker(VizroBaseModel):
     [`dmc.DateRangePicker`](https://www.dash-mantine-components.com/components/datepicker#daterangepicker).
 
     Args:
-        type (Literal["date_picker"]): Defaults to `"date_picker"`.
+        type (Literal["default", "range", "multiple"]): Defaults to A single date picker allowing the selection of one date.
         min (Optional[date]): Start date for date picker. Defaults to `None`.
         max (Optional[date]): End date for date picker. Defaults to `None`.
         value (Union[list[date], date]): Default date/dates for date picker. Defaults to `None`.
@@ -37,11 +37,13 @@ class DatePicker(VizroBaseModel):
 
     """
 
-    type: Literal["date_picker"] = "date_picker"
+    type: Literal["default", "range", "multiple"] = "default"
     min: Optional[date] = Field(None, description="Start date for date picker.")
     max: Optional[date] = Field(None, description="End date for date picker.")
     value: Optional[Union[list[date], date]] = Field(None, description="Default date for date picker")
     title: str = Field("", description="Title to be displayed.")
+
+    # Could probably delete the `range` arg, but keeping it makes it backwards compatible
     range: bool = Field(True, description="Boolean flag for displaying range picker.")
     actions: list[Action] = []
 
@@ -71,33 +73,15 @@ class DatePicker(VizroBaseModel):
             output=output,
             inputs=inputs,
         )
-        # clientside callback is required as a workaround when the date-picker is overflowing its parent container
-        # if there is not enough space. Caused by another workaround for this issue:
-        # https://github.com/snehilvj/dash-mantine-components/issues/219
-        clientside_callback(
-            ClientsideFunction(namespace="date_picker", function_name="update_date_picker_position"),
-            output=Output(self.id, "dropdownPosition"),
-            inputs=Input(self.id, "n_clicks"),
-        )
 
-        date_picker_class = dmc.DateRangePicker if self.range else dmc.DatePicker
-
-        # dropdownPosition must be set to bottom-start as a workaround for issue:
-        # https://github.com/snehilvj/dash-mantine-components/issues/219
-        # clearable must be set to False as a workaround for issue:
-        # https://github.com/snehilvj/dash-mantine-components/issues/212
-        # maxDate must be increased by one day, and later on disabledDates must be set as maxDate + 1 day
-        # as a workaround for issue: https://github.com/snehilvj/dash-mantine-components/issues/230
-        date_picker = date_picker_class(
+        date_picker = dmc.DatePickerInput(
             id=self.id,
             minDate=self.min,
             value=init_value,
-            maxDate=self.max + datetime.timedelta(days=1) if self.max else None,
+            maxDate=self.max,
             persistence=True,
             persistence_type="session",
-            dropdownPosition="bottom-start",
-            clearable=False,
-            disabledDates=self.max + datetime.timedelta(days=1) if self.max else None,
+            type="range" if self.range else "default",
             className="datepicker",
             **date_range_picker_kwargs,
         )

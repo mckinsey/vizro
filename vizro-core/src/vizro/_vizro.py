@@ -8,6 +8,7 @@ from pathlib import Path, PurePosixPath
 from typing import TYPE_CHECKING, TypedDict, cast
 
 import dash
+import dash_mantine_components as dmc
 import plotly.io as pio
 from dash.development.base_component import ComponentRegistry
 from flask_caching import SimpleCache
@@ -16,6 +17,8 @@ import vizro
 from vizro._constants import VIZRO_ASSETS_PATH
 from vizro.managers import data_manager, model_manager
 from vizro.models import Dashboard, Filter
+
+dash._dash_renderer._set_react_version("18.2.0")
 
 logger = logging.getLogger(__name__)
 
@@ -47,6 +50,9 @@ class Vizro:
             suppress_callback_exceptions=True,
             title="Vizro",
             use_pages=True,
+            # This is added here temporarily for testing. These stylesheets are required for certain dmc components.
+            # It may be better to include these stylesheets in the css folder.
+            external_stylesheets=dmc.styles.ALL
         )
 
         # When Vizro is used as a framework, we want to include the library and framework resources.
