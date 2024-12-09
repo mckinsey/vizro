@@ -820,13 +820,13 @@ dashboard = vm.Dashboard(
 
 if __name__ == "__main__":
     app = Vizro().build(dashboard)
-    app.dash.layout.children.append(
-        dbc.NavLink(
-            ["Made with ", html.Img(src=get_asset_url("logo.svg"), id="banner", alt="Vizro logo"), "vizro"],
-            href="https://github.com/mckinsey/vizro",
-            target="_blank",
-            className="anchor-container",
-        )
+
+    new_link = dbc.NavLink(
+        ["Made with ", html.Img(src=get_asset_url("logo.svg"), id="banner", alt="Vizro logo"), "vizro"],
+        href="https://github.com/mckinsey/vizro",
+        target="_blank",
+        className="anchor-container",
     )
+    app.dash.layout.children = [app.dash.layout.children, new_link]
     server = app.dash.server
     app.run()
