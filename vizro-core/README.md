@@ -31,18 +31,17 @@ Use it to build beautiful and powerful data visualization apps quickly and easil
 Then customize and deploy your app to production at scale.
 
 <div align="center">
-<img src="https://raw.githubusercontent.com/mckinsey/vizro/main/.github/images/code_dashboard.png" width="100%"/>
 Use a few lines of simple low-code configuration, with in-built visual design best practices, to assemble high-quality
 multi-page prototypes.
+<img src="https://raw.githubusercontent.com/mckinsey/vizro/main/.github/images/code_dashboard.png" width="100%"/>
 </div>
 
-<br>
 
 The benefits of the Vizro toolkit include:
 
 <img src="https://raw.githubusercontent.com/mckinsey/vizro/main/.github/images/infographic.svg" width="800"/>
 
-Visit ["How-to guides"](https://vizro.readthedocs.io/en/stable/pages/user-guides/install/) for a more detailed explanation of Vizro features.
+Visit our ["How-to guides"](https://vizro.readthedocs.io/en/stable/pages/user-guides/install/) for a more detailed explanation of Vizro features.
 
 ## Why use Vizro?
 
