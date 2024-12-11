@@ -92,7 +92,6 @@ Visit the [documentation](https://vizro.readthedocs.io/en/stable/) for more deta
 
 <br>
 
-
 ### [Visual vocabulary](https://vizro-demo-visual-vocabulary.hf.space/)
 
 <img align="left" width="300" src="https://raw.githubusercontent.com/mckinsey/vizro/main/.github/images/toolkit_visual_vocabulary.png">
