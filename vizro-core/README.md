@@ -1,41 +1,31 @@
-<br/><br/>
 
-<p align="center">
+
+<div style="text-align: center;padding-top: 24px; padding-bottom: 24px;">
+
 <picture>
   <source media="(prefers-color-scheme: dark)" srcset="https://raw.githubusercontent.com/mckinsey/vizro/main/.github/images/Vizro_Github_Banner_Dark_Mode.png">
   <source media="(prefers-color-scheme: light)" srcset="https://raw.githubusercontent.com/mckinsey/vizro/main/.github/images/Vizro_Github_Banner_Light_Mode.png">
   <img alt="Vizro logo" src="https://raw.githubusercontent.com/mckinsey/vizro/main/.github/images/Vizro_Github_Banner_Dark_Mode.png" width="250">
 </picture>
-</p>
-<br/>
 
-<div align="center">
-<font size="+1">
-Vizro is a low-code toolkit for building high-quality data visualization apps
-</font>
-</div>
+#### Vizro is a low-code toolkit for building high-quality data visualization apps
 
-<div align="center" markdown="1">
+[![Python version](https://img.shields.io/badge/python-3.9%20%7C%203.10%20%7C%203.11%20%7C%203.12%20%7C%203.13-blue.svg)](https://pypi.org/project/vizro/) 
+[![PyPI version](https://badge.fury.io/py/vizro.svg)](https://badge.fury.io/py/vizro) 
+[![License](https://img.shields.io/badge/license-Apache%202.0-blue.svg)](https://github.com/mckinsey/vizro/blob/main/LICENSE.md) 
+[![Documentation](https://readthedocs.org/projects/vizro/badge/?version=stable)](https://vizro.readthedocs.io/) 
+[![OpenSSF Best Practices](https://www.bestpractices.dev/projects/7858/badge)](https://www.bestpractices.dev/projects/7858)
 
-[![Python version](https://img.shields.io/badge/python-3.9%20%7C%203.10%20%7C%203.11%20%7C%203.12%20%7C%203.13-blue.svg)](https://pypi.org/project/vizro/) [![PyPI version](https://badge.fury.io/py/vizro.svg)](https://badge.fury.io/py/vizro) [![License](https://img.shields.io/badge/license-Apache%202.0-blue.svg)](https://github.com/mckinsey/vizro/blob/main/LICENSE.md) [![Documentation](https://readthedocs.org/projects/vizro/badge/?version=stable)](https://vizro.readthedocs.io/) [![OpenSSF Best Practices](https://www.bestpractices.dev/projects/7858/badge)](https://www.bestpractices.dev/projects/7858)
+[Documentation](https://vizro.readthedocs.io/en/stable/) | [Get Started](https://vizro.readthedocs.io/en/stable/pages/tutorials/first_dashboard/) | [Vizro examples gallery](http://vizro.mckinsey.com/)
 
-</div>
 
-<div align="center" markdown="1">
 
-<a href="https://vizro.readthedocs.io/en/stable/" target="_blank">Documentation </a> | <a href="https://vizro.readthedocs.io/en/stable/pages/tutorials/first_dashboard/" target="_blank">Get Started </a> | <a href="http://vizro.mckinsey.com/" target="_blank">Vizro examples gallery</a>
 
-</div>
-
----
-
-<p align="center">
 <img src="https://raw.githubusercontent.com/mckinsey/vizro/main/.github/images/vizro_spash_teaser.gif" width="600"/>
-</p>
 
-<p align="center">
 <img src="https://raw.githubusercontent.com/mckinsey/vizro/main/.github/images/logo_watermarks.svg" width="300">
-</p>
+
+</div>
 
 ## What is Vizro?
 
