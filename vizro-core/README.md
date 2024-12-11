@@ -94,11 +94,9 @@ Visit the [documentation](https://vizro.readthedocs.io/en/stable/) for more deta
 
 **Chart examples.**
 
-The visual vocabulary helps you to decide which chart type to use for your requirements, and offers sample code 
-to create these charts with Plotly or embed them into a Vizro dashboard.
+The visual vocabulary helps you to decide which chart type to use for your requirements, and offers sample code to create these charts with Plotly or embed them into a Vizro dashboard.
 
 Visit the [visual vocabulary](https://vizro-demo-visual-vocabulary.hf.space/) to search for charts or get inspiration.
-
 
 <br>
 <br>
