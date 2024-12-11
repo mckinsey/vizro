@@ -36,7 +36,6 @@ multi-page prototypes.
 <img src="https://raw.githubusercontent.com/mckinsey/vizro/main/.github/images/code_dashboard.png" width="100%"/>
 </div>
 
-
 The benefits of the Vizro toolkit include:
 
 <img src="https://raw.githubusercontent.com/mckinsey/vizro/main/.github/images/infographic.svg" width="800"/>
@@ -89,7 +88,6 @@ Visit the [documentation](https://vizro.readthedocs.io/en/stable/) for more deta
 
 <img width="400" src="https://raw.githubusercontent.com/mckinsey/vizro/main/.github/images/toolkit_framework.svg">
 
-
 ### [Visual vocabulary](https://vizro-demo-visual-vocabulary.hf.space/)
 
 **Chart examples.**
@@ -99,7 +97,6 @@ The visual vocabulary helps you to decide which chart type to use for your requi
 Visit the [visual vocabulary](https://vizro-demo-visual-vocabulary.hf.space/) to search for charts or get inspiration.
 
 <img width="500" src="https://raw.githubusercontent.com/mckinsey/vizro/main/.github/images/toolkit_visual_vocabulary.png">
-
 
 ### [Vizro examples gallery](https://vizro.mckinsey.com/)
 
@@ -111,7 +108,6 @@ Visit the [dashboard examples gallery](https://vizro.mckinsey.com/) to see the d
 
 <img width="500" src="https://raw.githubusercontent.com/mckinsey/vizro/main/.github/images/toolkit_dashboard_examples.png">
 
-
 ### [Vizro-AI](https://vizro.readthedocs.io/projects/vizro-ai)
 
 **LLM generated charts and dashboards.**
@@ -121,7 +117,6 @@ Vizro-AI is a separate package (called `vizro_ai`) that extends Vizro to incorpo
 Visit the [Vizro-AI documentation](https://vizro.readthedocs.io/projects/vizro-ai/) for more details.
 
 <img width="500" src="https://raw.githubusercontent.com/mckinsey/vizro/main/.github/images/toolkit_vizro_ai.gif">
-
 
 ## Installation and first steps
 
