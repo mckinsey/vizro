@@ -1,6 +1,6 @@
+<br><br>
 
-
-<div style="text-align: center;padding-top: 24px; padding-bottom: 24px;">
+<div align="center">
 
 <picture>
   <source media="(prefers-color-scheme: dark)" srcset="https://raw.githubusercontent.com/mckinsey/vizro/main/.github/images/Vizro_Github_Banner_Dark_Mode.png">
@@ -18,11 +18,8 @@
 
 [Documentation](https://vizro.readthedocs.io/en/stable/) | [Get Started](https://vizro.readthedocs.io/en/stable/pages/tutorials/first_dashboard/) | [Vizro examples gallery](http://vizro.mckinsey.com/)
 
-
-
-
+---
 <img src="https://raw.githubusercontent.com/mckinsey/vizro/main/.github/images/vizro_spash_teaser.gif" width="600"/>
-
 <img src="https://raw.githubusercontent.com/mckinsey/vizro/main/.github/images/logo_watermarks.svg" width="300">
 
 </div>
@@ -35,20 +32,18 @@ Use it to build beautiful and powerful data visualization apps quickly and easil
 
 Then customize and deploy your app to production at scale.
 
-<p align="center">
+<div align="center">
 <img src="https://raw.githubusercontent.com/mckinsey/vizro/main/.github/images/code_dashboard.png" width="1300"/>
-<font size="-1">
-Use a few lines of simple low-code configuration, with in-built visual design best practices, to assemble high-quality multi-page prototypes.
-</font>
-</p>
 
-<br>
+Use a few lines of simple low-code configuration, with in-built visual design best practices, to assemble high-quality multi-page prototypes.
+</div>
+
 
 The benefits of the Vizro toolkit include:
 
-<p align="center">
+<div align="center">
 <img src="https://raw.githubusercontent.com/mckinsey/vizro/main/.github/images/infographic.svg" width="800"/>
-</p>
+</div>
 
 Visit ["How-to guides"](https://vizro.readthedocs.io/en/stable/pages/user-guides/install/) for a more detailed explanation of Vizro features.
 
