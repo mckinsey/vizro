@@ -82,20 +82,17 @@ Use Vizro when you need to combine the speed and ease of low-code Python tools, 
 
 ### [Vizro framework](https://vizro.readthedocs.io/en/stable/)
 
-<img align="right" width="300" src="https://raw.githubusercontent.com/mckinsey/vizro/main/.github/images/toolkit_framework.svg">
-
 **Low-code framework for building dashboards.**
 
 The Vizro framework underpins the entire Vizro toolkit. It is a Python package (called `vizro`).
 
 Visit the [documentation](https://vizro.readthedocs.io/en/stable/) for more details.
 
-<br>
+<img width="400" src="https://raw.githubusercontent.com/mckinsey/vizro/main/.github/images/toolkit_framework.svg">
+
 
 
 ### [Visual vocabulary](https://vizro-demo-visual-vocabulary.hf.space/)
-
-<img align="left" width="300" src="https://raw.githubusercontent.com/mckinsey/vizro/main/.github/images/toolkit_visual_vocabulary.png">
 
 **Chart examples.**
 
@@ -103,11 +100,10 @@ The visual vocabulary helps you to decide which chart type to use for your requi
 
 Visit the [visual vocabulary](https://vizro-demo-visual-vocabulary.hf.space/) to search for charts or get inspiration.
 
-<br>
+<img width="500" src="https://raw.githubusercontent.com/mckinsey/vizro/main/.github/images/toolkit_visual_vocabulary.png">
+
 
 ### [Vizro examples gallery](https://vizro.mckinsey.com/)
-
-<img align="right" width="300" src="https://raw.githubusercontent.com/mckinsey/vizro/main/.github/images/toolkit_dashboard_examples.png">
 
 **Dashboard examples.**
 
@@ -115,11 +111,10 @@ The dashboard examples gallery enables you to explore Vizro in action by viewing
 
 Visit the [dashboard examples gallery](https://vizro.mckinsey.com/) to see the dashboards in action.
 
-<br>
+<img width="500" src="https://raw.githubusercontent.com/mckinsey/vizro/main/.github/images/toolkit_dashboard_examples.png">
+
 
 ### [Vizro-AI](https://vizro.readthedocs.io/projects/vizro-ai)
-
-<img align="left" width="300" src="https://raw.githubusercontent.com/mckinsey/vizro/main/.github/images/toolkit_vizro_ai.gif">
 
 **LLM generated charts and dashboards.**
 
@@ -127,7 +122,8 @@ Vizro-AI is a separate package (called `vizro_ai`) that extends Vizro to incorpo
 
 Visit the [Vizro-AI documentation](https://vizro.readthedocs.io/projects/vizro-ai/) for more details.
 
-<br>
+<img width="500" src="https://raw.githubusercontent.com/mckinsey/vizro/main/.github/images/toolkit_vizro_ai.gif">
+
 
 ## Installation and first steps
 
