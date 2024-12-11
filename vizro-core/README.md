@@ -31,17 +31,19 @@ Use it to build beautiful and powerful data visualization apps quickly and easil
 
 Then customize and deploy your app to production at scale.
 
+<div align="center">
+<img src="https://raw.githubusercontent.com/mckinsey/vizro/main/.github/images/code_dashboard.png" width="100%"/>
 Use a few lines of simple low-code configuration, with in-built visual design best practices, to assemble high-quality
 multi-page prototypes.
-
-<img src="https://raw.githubusercontent.com/mckinsey/vizro/main/.github/images/code_dashboard.png" width="100%"/>
-
+</div>
+<br>
 
 The benefits of the Vizro toolkit include:
 
 <div align="center">
 <img src="https://raw.githubusercontent.com/mckinsey/vizro/main/.github/images/infographic.svg" width="800"/>
 </div>
+<br>
 
 Visit our ["How-to guides"](https://vizro.readthedocs.io/en/stable/pages/user-guides/install/) for a more detailed explanation of Vizro features.
 
@@ -84,14 +86,18 @@ Use Vizro when you need to combine the speed and ease of low-code Python tools, 
 
 ### [Vizro framework](https://vizro.readthedocs.io/en/stable/)
 
-**Low-code framework for building dashboards:** The Vizro framework underpins the entire Vizro toolkit. It is a Python package (called `vizro`).
+**Low-code framework for building dashboards** 
+
+The Vizro framework underpins the entire Vizro toolkit. It is a Python package (called `vizro`).
 
 Visit the [documentation](https://vizro.readthedocs.io/en/stable/) for more details.
 
 
 ### [Visual vocabulary](https://vizro-demo-visual-vocabulary.hf.space/)
 
-**Chart examples:** The visual vocabulary helps you to decide which chart type to use for your requirements, and offers sample code to create these charts with Plotly or embed them into a Vizro dashboard.
+**Chart examples** 
+
+The visual vocabulary helps you to decide which chart type to use for your requirements, and offers sample code to create these charts with Plotly or embed them into a Vizro dashboard.
 
 Visit the [visual vocabulary](https://vizro-demo-visual-vocabulary.hf.space/) to search for charts or get inspiration.
 
@@ -100,7 +106,9 @@ Visit the [visual vocabulary](https://vizro-demo-visual-vocabulary.hf.space/) to
 
 ### [Vizro examples gallery](https://vizro.mckinsey.com/)
 
-**Dashboard examples:** The dashboard examples gallery enables you to explore Vizro in action by viewing interactive example apps. You can copy the code to use as a template or starter for your next dashboard.
+**Dashboard examples** 
+
+The dashboard examples gallery enables you to explore Vizro in action by viewing interactive example apps. You can copy the code to use as a template or starter for your next dashboard.
 
 Visit the [dashboard examples gallery](https://vizro.mckinsey.com/) to see the dashboards in action.
 
@@ -109,7 +117,9 @@ Visit the [dashboard examples gallery](https://vizro.mckinsey.com/) to see the d
 
 ### [Vizro-AI](https://vizro.readthedocs.io/projects/vizro-ai)
 
-**LLM generated charts and dashboards:** Vizro-AI is a separate package (called `vizro_ai`) that extends Vizro to incorporate LLMs. Use it to build interactive Vizro charts and dashboards, by simply describing what you need in plain English or other languages.
+**LLM generated charts and dashboards** 
+
+Vizro-AI is a separate package (called `vizro_ai`) that extends Vizro to incorporate LLMs. Use it to build interactive Vizro charts and dashboards, by simply describing what you need in plain English or other languages.
 
 Visit the [Vizro-AI documentation](https://vizro.readthedocs.io/projects/vizro-ai/) for more details.
 
