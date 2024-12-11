@@ -77,41 +77,28 @@ Use Vizro when you need to combine the speed and ease of low-code Python tools, 
 
 ## How to use Vizro?
 
-<div style="display: flex; align-items: center; ">
+<img align="right" src="https://raw.githubusercontent.com/mckinsey/vizro/main/.github/images/code_dashboard.png" width="400">
+<h3> <a href="https://vizro.readthedocs.io/en/stable/">Vizro framework</a> </h3>
 
-<div style="flex: 1; ">
-  <h3> <a href="https://vizro.readthedocs.io/en/stable/">Vizro framework</a> </h3>
-
-<p> <b>Low-code framework for building dashboards.</b>
+**Low-code framework for building dashboards.**
 
 The Vizro framework underpins the entire Vizro toolkit. It is a Python package (called `vizro`).
 
-Visit the <a href="https://vizro.readthedocs.io/en/stable/">documentation</a> for more details.
-
-</p>
-  </div>
-
-<img src="https://raw.githubusercontent.com/mckinsey/vizro/main/.github/images/toolkit_framework.svg" alt="" style="width: 400px; margin-left: 20px;">
-</div>
+Visit the [documentation](https://vizro.readthedocs.io/en/stable/) for more details.
 
 <br>
 <br>
 
-<div style="display: flex; align-items: center;">
-  <img src="https://raw.githubusercontent.com/mckinsey/vizro/main/.github/images/toolkit_visual_vocabulary.png" alt="" style="width: 500px; margin-right: 20px;">
-  <div style="flex: 1;">
-  <h3> <a href="https://vizro-demo-visual-vocabulary.hf.space/">Visual vocabulary</a> </h3>
+<img align="left" src="https://raw.githubusercontent.com/mckinsey/vizro/main/.github/images/code_dashboard.png" width="500">
+<h3> <a href="https://vizro-demo-visual-vocabulary.hf.space/">Visual vocabulary</a> </h3>
 
-<p style="flex: 1;">
-  <b> Chart examples. </b>
+**Chart examples.**
 
-The visual vocabulary helps you to decide which chart type to use for your requirements, and offers sample code to create these charts with Plotly or embed them into a Vizro dashboard.
+The visual vocabulary helps you to decide which chart type to use for your requirements, and offers sample code 
+to create these charts with Plotly or embed them into a Vizro dashboard.
 
-Visit the <a href="https://vizro-demo-visual-vocabulary.hf.space/">visual vocabulary</a> to search for charts or get inspiration.
+Visit the [visual vocabulary](https://vizro-demo-visual-vocabulary.hf.space/) to search for charts or get inspiration.
 
-</p>
-  </div>
-</div>
 
 <br>
 <br>
