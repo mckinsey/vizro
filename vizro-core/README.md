@@ -64,7 +64,7 @@ Visit ["How-to guides"](https://vizro.readthedocs.io/en/stable/pages/user-guides
 
 ## Why use Vizro?
 
-Vizro helps you to build data visualisation apps that are:
+Vizro helps you to build data visualization apps that are:
 
 **Quick and easy**
 
