@@ -22,7 +22,6 @@
 <img src="https://raw.githubusercontent.com/mckinsey/vizro/main/.github/images/logo_watermarks.svg" width="300">
 </div>
 
-
 ## What is Vizro?
 
 Vizro is an open-source Python-based toolkit.
@@ -46,7 +45,6 @@ The benefits of the Vizro toolkit include:
 <br>
 
 Visit our ["How-to guides"](https://vizro.readthedocs.io/en/stable/pages/user-guides/install/) for a more detailed explanation of Vizro features.
-
 
 ## Why use Vizro?
 
@@ -86,16 +84,15 @@ Use Vizro when you need to combine the speed and ease of low-code Python tools, 
 
 ### [Vizro framework](https://vizro.readthedocs.io/en/stable/)
 
-**Low-code framework for building dashboards** 
+**Low-code framework for building dashboards**
 
 The Vizro framework underpins the entire Vizro toolkit. It is a Python package (called `vizro`).
 
 Visit the [documentation](https://vizro.readthedocs.io/en/stable/) for more details.
 
-
 ### [Visual vocabulary](https://vizro-demo-visual-vocabulary.hf.space/)
 
-**Chart examples** 
+**Chart examples**
 
 The visual vocabulary helps you to decide which chart type to use for your requirements, and offers sample code to create these charts with Plotly or embed them into a Vizro dashboard.
 
@@ -103,10 +100,9 @@ Visit the [visual vocabulary](https://vizro-demo-visual-vocabulary.hf.space/) to
 
 <img width="600" src="https://raw.githubusercontent.com/mckinsey/vizro/main/.github/images/toolkit_visual_vocabulary.png">
 
-
 ### [Vizro examples gallery](https://vizro.mckinsey.com/)
 
-**Dashboard examples** 
+**Dashboard examples**
 
 The dashboard examples gallery enables you to explore Vizro in action by viewing interactive example apps. You can copy the code to use as a template or starter for your next dashboard.
 
@@ -114,17 +110,15 @@ Visit the [dashboard examples gallery](https://vizro.mckinsey.com/) to see the d
 
 <img width="600" src="https://raw.githubusercontent.com/mckinsey/vizro/main/.github/images/toolkit_dashboard_examples.png">
 
-
 ### [Vizro-AI](https://vizro.readthedocs.io/projects/vizro-ai)
 
-**LLM generated charts and dashboards** 
+**LLM generated charts and dashboards**
 
 Vizro-AI is a separate package (called `vizro_ai`) that extends Vizro to incorporate LLMs. Use it to build interactive Vizro charts and dashboards, by simply describing what you need in plain English or other languages.
 
 Visit the [Vizro-AI documentation](https://vizro.readthedocs.io/projects/vizro-ai/) for more details.
 
 <img width="600" src="https://raw.githubusercontent.com/mckinsey/vizro/main/.github/images/toolkit_vizro_ai.gif">
-
 
 ## Installation and first steps
 
