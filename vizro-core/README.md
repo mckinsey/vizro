@@ -14,11 +14,12 @@
 
 [Documentation](https://vizro.readthedocs.io/en/stable/) | [Get Started](https://vizro.readthedocs.io/en/stable/pages/tutorials/first_dashboard/) | [Vizro examples gallery](http://vizro.mckinsey.com/)
 
----
+<hr>
 
 <img src="https://raw.githubusercontent.com/mckinsey/vizro/main/.github/images/vizro_spash_teaser.gif" width="600"/>
+<br>
+<br>
 <img src="https://raw.githubusercontent.com/mckinsey/vizro/main/.github/images/logo_watermarks.svg" width="300">
-
 </div>
 
 ## What is Vizro?
@@ -29,15 +30,17 @@ Use it to build beautiful and powerful data visualization apps quickly and easil
 
 Then customize and deploy your app to production at scale.
 
-<img align="center" src="https://raw.githubusercontent.com/mckinsey/vizro/main/.github/images/code_dashboard.png" width="1300"/>
-
-Use a few lines of simple low-code configuration, with in-built visual design best practices, to assemble high-quality multi-page prototypes.
+<div align="center">
+<img src="https://raw.githubusercontent.com/mckinsey/vizro/main/.github/images/code_dashboard.png" width="100%"/>
+Use a few lines of simple low-code configuration, with in-built visual design best practices, to assemble high-quality 
+multi-page prototypes.
+</div>
 
 <br>
 
 The benefits of the Vizro toolkit include:
 
-<img align="center" src="https://raw.githubusercontent.com/mckinsey/vizro/main/.github/images/infographic.svg" width="800"/>
+<img src="https://raw.githubusercontent.com/mckinsey/vizro/main/.github/images/infographic.svg" width="800"/>
 
 Visit ["How-to guides"](https://vizro.readthedocs.io/en/stable/pages/user-guides/install/) for a more detailed explanation of Vizro features.
 
@@ -77,7 +80,7 @@ Use Vizro when you need to combine the speed and ease of low-code Python tools, 
 
 ## How to use Vizro?
 
-<img align="right" src="https://raw.githubusercontent.com/mckinsey/vizro/main/.github/images/code_dashboard.png" width="400">
+<img align="right" src="https://raw.githubusercontent.com/mckinsey/vizro/main/.github/images/toolkit_framework.svg" width="400">
 <h3> <a href="https://vizro.readthedocs.io/en/stable/">Vizro framework</a> </h3>
 
 **Low-code framework for building dashboards.**
@@ -89,7 +92,7 @@ Visit the [documentation](https://vizro.readthedocs.io/en/stable/) for more deta
 <br>
 <br>
 
-<img align="left" src="https://raw.githubusercontent.com/mckinsey/vizro/main/.github/images/code_dashboard.png" width="500">
+<img align="left" width="500" src="https://raw.githubusercontent.com/mckinsey/vizro/main/.github/images/toolkit_visual_vocabulary.png">
 <h3> <a href="https://vizro-demo-visual-vocabulary.hf.space/">Visual vocabulary</a> </h3>
 
 **Chart examples.**
@@ -101,40 +104,29 @@ Visit the [visual vocabulary](https://vizro-demo-visual-vocabulary.hf.space/) to
 <br>
 <br>
 
-<div style="display: flex; align-items: center;">
-  <div style="flex: 1;">
-  <h3> <a href="https://vizro.mckinsey.com/">Vizro examples gallery</a> </h3>
+<img align="right" width="500" src="https://raw.githubusercontent.com/mckinsey/vizro/main/.github/images/toolkit_dashboard_examples.png">
+<h3> <a href="https://vizro.mckinsey.com/">Vizro examples gallery</a> </h3>
 
-<p style="flex: 1;">
-  <b> Dashboard examples. </b>
+**Dashboard examples.**
 
 The dashboard examples gallery enables you to explore Vizro in action by viewing interactive example apps. You can copy the code to use as a template or starter for your next dashboard.
 
-Visit the <a href="https://vizro.mckinsey.com/">dashboard examples gallery</a> to see the dashboards in action.
-
-</p>
-  </div>
-  <img src="https://raw.githubusercontent.com/mckinsey/vizro/main/.github/images/toolkit_dashboard_examples.png" alt="" style="width: 500px; margin-left: 20px;">
-</div>
+Visit the [dashboard examples gallery](https://vizro.mckinsey.com/) to see the dashboards in action.
 
 <br>
 <br>
 
-<div style="display: flex; align-items: center;">
-  <img src="https://raw.githubusercontent.com/mckinsey/vizro/main/.github/images/toolkit_vizro_ai.gif" alt="" style="width: 500px; margin-right: 20px;">
-  <div style="flex: 1;">
-  <h3> <a href="https://vizro.readthedocs.io/projects/vizro-ai/en/vizro-ai-0.3.2/">Vizro-AI</a> </h3>
+<img align="left" width="500" src="https://raw.githubusercontent.com/mckinsey/vizro/main/.github/images/toolkit_vizro_ai.gif">
+<h3> <a href="https://vizro.readthedocs.io/projects/vizro-ai/en/vizro-ai-0.3.2/">Vizro-AI</a> </h3>
 
-<p style="flex: 1;">
-  <b> LLM generated charts and dashboards. </b>
+**LLM generated charts and dashboards.**
 
 Vizro-AI is a separate package (called `vizro_ai`) that extends Vizro to incorporate LLMs. Use it to build interactive Vizro charts and dashboards, by simply describing what you need in plain English or other languages.
 
-Visit the <a href="https://vizro.readthedocs.io/projects/vizro-ai/en/vizro-ai-0.3.2/">Vizro-AI documentation</a> for more details.
+Visit the [Vizro-AI documentation](https://vizro.readthedocs.io/projects/vizro-ai/) for more details.
 
-</p>
-  </div>
-</div>
+<br>
+<br>
 
 ## Installation and first steps
 
