@@ -96,7 +96,9 @@ The visual vocabulary helps you to decide which chart type to use for your requi
 
 Visit the [visual vocabulary](https://vizro-demo-visual-vocabulary.hf.space/) to search for charts or get inspiration.
 
-<img width="600" src="https://raw.githubusercontent.com/mckinsey/vizro/main/.github/images/toolkit_visual_vocabulary.png">
+<a href="https://vizro-demo-visual-vocabulary.hf.space/">
+<img src="https://raw.githubusercontent.com/mckinsey/vizro/main/.github/images/toolkit_visual_vocabulary.png" width="600">
+</a>
 
 ## [Vizro examples gallery](https://vizro.mckinsey.com/)
 
@@ -106,7 +108,9 @@ The dashboard examples gallery enables you to explore Vizro in action by viewing
 
 Visit the [dashboard examples gallery](https://vizro.mckinsey.com/) to see the dashboards in action.
 
-<img width="600" src="https://raw.githubusercontent.com/mckinsey/vizro/main/.github/images/toolkit_dashboard_examples.png">
+<a href="https://vizro.mckinsey.com/">
+<img src="https://raw.githubusercontent.com/mckinsey/vizro/main/.github/images/toolkit_dashboard_examples.png" width="600">
+</a>
 
 ## [Vizro-AI](https://vizro.readthedocs.io/projects/vizro-ai/)
 
