@@ -26,7 +26,7 @@ class DatePicker(VizroBaseModel):
     [`dmc.DateRangePicker`](https://www.dash-mantine-components.com/components/datepicker#daterangepicker).
 
     Args:
-        type (Literal["default", "range", "multiple"]): Defaults to A single date picker allowing the selection of one date.
+        type (Literal["date_picker"]): Defaults to `"date_picker"`.
         min (Optional[date]): Start date for date picker. Defaults to `None`.
         max (Optional[date]): End date for date picker. Defaults to `None`.
         value (Union[list[date], date]): Default date/dates for date picker. Defaults to `None`.
@@ -36,7 +36,7 @@ class DatePicker(VizroBaseModel):
 
     """
 
-    type: Literal["default", "range", "multiple"] = "default"
+    type: Literal["date_picker"] = "date_picker"
     min: Optional[date] = Field(None, description="Start date for date picker.")
     max: Optional[date] = Field(None, description="End date for date picker.")
     value: Optional[Union[list[date], date]] = Field(None, description="Default date for date picker")
