@@ -50,14 +50,20 @@ class Checklist(VizroBaseModel):
 
     def __call__(self, options):
         full_options, default_value = get_options_and_default(options=options, multi=True)
-
+        print("default value: ", default_value)
         return html.Fieldset(
             children=[
                 html.Legend(children=self.title, className="form-label") if self.title else None,
                 dbc.Checklist(
+                    id=f"{self.id}-select-all",
+                    options=["Select All"],
+                    # value="Select All",
+                    style={"marginBottom": "12px"}
+                ),
+                dbc.Checklist(
                     id=self.id,
-                    options=full_options,
-                    value=self.value if self.value is not None else [default_value],
+                    options=options,
+                    value=self.value if self.value else [],
                     persistence=True,
                     persistence_type="session",
                 ),

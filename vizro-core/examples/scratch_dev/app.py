@@ -3,6 +3,9 @@
 from vizro import Vizro
 import vizro.models as vm
 import vizro.plotly.express as px
+from dash import Input, Output, State, callback
+from vizro.tables import dash_ag_grid
+
 
 df = px.data.gapminder()
 gapminder_data = (
@@ -10,7 +13,7 @@ gapminder_data = (
 )
 first_page = vm.Page(
     title="First Page",
-    layout=vm.Layout(grid=[[0, 0], [1, 2], [1, 2], [1, 2]]),
+    layout=vm.Layout(grid=[[0, 0], [1, 1], [1, 1], [1, 1]]),
     components=[
         vm.Card(
             text="""
@@ -19,71 +22,38 @@ first_page = vm.Page(
                 can be structured using Layout.
             """,
         ),
-        vm.Graph(
-            id="box_cont",
-            figure=px.box(
-                gapminder_data,
-                x="continent",
-                y="lifeExp",
-                color="continent",
-                labels={"lifeExp": "Life Expectancy", "continent": "Continent"},
-            ),
-        ),
-        vm.Graph(
-            id="line_gdp",
-            figure=px.line(
-                gapminder_data,
-                x="year",
-                y="gdpPercap",
-                color="continent",
-                labels={"year": "Year", "continent": "Continent", "gdpPercap": "GDP Per Cap"},
-            ),
-        ),
+        vm.AgGrid(
+            figure=dash_ag_grid(data_frame=gapminder_data, dashGridOptions={"pagination": True}),
+            title="Gapminder Data Insights",
+            header="""#### An Interactive Exploration of Global Health, Wealth, and Population""",
+            footer="""SOURCE: **Plotly gapminder data set, 2024**""",
+        )
     ],
     controls=[
-        vm.Filter(column="continent", targets=["box_cont", "line_gdp"]),
+        vm.Filter(column="continent", selector=vm.Checklist(id="test")),
+        # vm.Filter(column="continent"),
     ],
 )
 
-iris_data = px.data.iris()
-second_page = vm.Page(
-    title="Second Page",
-    components=[
-        vm.Graph(
-            id="scatter_iris",
-            figure=px.scatter(
-                iris_data,
-                x="sepal_width",
-                y="sepal_length",
-                color="species",
-                color_discrete_map={"setosa": "#00b4ff", "versicolor": "#ff9222"},
-                labels={"sepal_width": "Sepal Width", "sepal_length": "Sepal Length", "species": "Species"},
-            ),
-        ),
-        vm.Graph(
-            id="hist_iris",
-            figure=px.histogram(
-                iris_data,
-                x="sepal_width",
-                color="species",
-                color_discrete_map={"setosa": "#00b4ff", "versicolor": "#ff9222"},
-                labels={"sepal_width": "Sepal Width", "count": "Count", "species": "Species"},
-            ),
-        ),
-    ],
-    controls=[
-        vm.Parameter(
-            targets=["scatter_iris.color_discrete_map.virginica", "hist_iris.color_discrete_map.virginica"],
-            selector=vm.Dropdown(options=["#ff5267", "#3949ab"], multi=False, value="#3949ab", title="Color Virginica"),
-        ),
-        vm.Parameter(
-            targets=["scatter_iris.opacity"],
-            selector=vm.Slider(min=0, max=1, value=0.8, title="Opacity"),
-        ),
-    ],
-)
+dashboard = vm.Dashboard(pages=[first_page])
 
-dashboard = vm.Dashboard(pages=[first_page, second_page])
+
+@callback(
+    [Output("test", "value"), Output("test-select-all", "value")],
+    [Input("test-select-all", "value"), Input("test", "value")],
+    State("test", "options"),
+)
+def update_checklist(value_1, value_2, options):
+    if value_1:
+        if len(value_2) == 0:
+            return options, value_1
+        if len(value_2) != len(options):
+            return value_2, []
+    else:
+        if len(value_2) == len(options):
+            return options, ["Select All"]
+
+
 
 if __name__ == "__main__":
     Vizro().build(dashboard).run()
