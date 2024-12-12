@@ -3,38 +3,30 @@
 from vizro import Vizro
 import vizro.plotly.express as px
 import vizro.models as vm
-from typing import Literal
-from dash import html, get_asset_url
-import dash_bootstrap_components as dbc
+from vizro.tables import dash_ag_grid
+import pandas as pd
 
-# Create a custom component based on vm.Dashboard.
-# See: https://vizro.readthedocs.io/en/stable/pages/user-guides/custom-components/#extend-an-existing-component
-class CustomDashboard(vm.Dashboard):
-    """Custom implementation of `Dashboard`."""
+df = pd.read_csv("https://raw.githubusercontent.com/plotly/datasets/master/ag-grid/olympic-winners.csv")
+columnDefs = [
+    {"field": "athlete", "headerName": "The full Name of the athlete"},
+    {"field": "age", "headerName": "The number of Years since the athlete was born"},
+    {"field": "country", "headerName": "The Country the athlete was born in"},
+    {"field": "sport", "headerName": "The Sport the athlete participated in"},
+    {"field": "total", "headerName": "The Total number of medals won by the athlete"},
+]
 
-    type: Literal["custom_dashboard"] = "custom_dashboard"
-
-    def _make_page_layout(self, *args, **kwargs):
-        super_build_obj = super()._make_page_layout(*args, **kwargs)
-        # We access the container with id="settings", where the theme switch is placed and add the H4.
-        # You can see what's inside the settings.children container here: https://github.com/mckinsey/vizro/blob/main/vizro-core/src/vizro/models/_dashboard.py
-        super_build_obj["settings"].children = [
-            html.H4("Good morning, Li! ☕", style={"margin-bottom": "0"}),
-            super_build_obj["settings"].children
-        ]
-        return super_build_obj
+defaultColDef = {
+    "wrapHeaderText": True,
+    "autoHeaderHeight": True,
+}
 
 
 # Test app -----------------
 page = vm.Page(
     title="Page Title",
-    components=[vm.Graph(figure=px.box(px.data.iris(), x="species", y="petal_width", color="species"))],
-    controls=[
-        vm.Filter(column="species"),
-        vm.Filter(column="sepal_length"),
-    ],
+    components=[vm.AgGrid(figure=dash_ag_grid(df, columnDefs=columnDefs, defaultColDef=defaultColDef))],
 )
-dashboard = CustomDashboard(pages=[page])
+dashboard = vm.Dashboard(pages=[page])
 
 if __name__ == "__main__":
     Vizro().build(dashboard).run()
