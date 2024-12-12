@@ -8,6 +8,7 @@ from pathlib import Path, PurePosixPath
 from typing import TYPE_CHECKING, TypedDict, cast
 
 import dash
+import dash_mantine_components as dmc
 import plotly.io as pio
 from dash.development.base_component import ComponentRegistry
 from flask_caching import SimpleCache
@@ -16,6 +17,8 @@ import vizro
 from vizro._constants import VIZRO_ASSETS_PATH
 from vizro.managers import data_manager, model_manager
 from vizro.models import Dashboard, Filter
+
+dash._dash_renderer._set_react_version("18.2.0")
 
 logger = logging.getLogger(__name__)
 
@@ -48,6 +51,13 @@ class Vizro:
             title="Vizro",
             use_pages=True,
         )
+
+        # Ensure external_stylesheets is a list and append the additional stylesheet
+        external_stylesheets = self.dash.config.external_stylesheets
+        self.dash.config.external_stylesheets = (
+            external_stylesheets if isinstance(external_stylesheets, list) else [external_stylesheets]
+        )
+        self.dash.config.external_stylesheets.append(dmc.styles.DATES)
 
         # When Vizro is used as a framework, we want to include the library and framework resources.
         # Dash serves resources in the order 1. external_stylesheets/scripts; 2. library resources from the
