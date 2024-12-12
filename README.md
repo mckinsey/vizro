@@ -14,7 +14,7 @@
 
 [Documentation](https://vizro.readthedocs.io/en/stable/) | [Get Started](https://vizro.readthedocs.io/en/stable/pages/tutorials/first_dashboard/) | [Vizro examples gallery](http://vizro.mckinsey.com/)
 
-## 
+##
 
 <img src="https://raw.githubusercontent.com/mckinsey/vizro/main/.github/images/vizro_spash_teaser.gif" width="600"/>
 <br>
@@ -90,7 +90,7 @@ The Vizro framework underpins the entire Vizro toolkit. It is a Python package (
 
 Visit the [documentation](https://vizro.readthedocs.io/en/stable/) for more details.
 
-## 
+##
 
 ### [Vizro visual vocabulary](https://vizro-demo-visual-vocabulary.hf.space/)
 
@@ -102,7 +102,7 @@ Visit the [visual vocabulary](https://vizro-demo-visual-vocabulary.hf.space/) to
 
 <img width="600" src="https://raw.githubusercontent.com/mckinsey/vizro/main/.github/images/toolkit_visual_vocabulary.png">
 
-## 
+##
 
 ### [Vizro examples gallery](https://vizro.mckinsey.com/)
 
@@ -114,7 +114,7 @@ Visit the [dashboard examples gallery](https://vizro.mckinsey.com/) to see the d
 
 <img width="600" src="https://raw.githubusercontent.com/mckinsey/vizro/main/.github/images/toolkit_dashboard_examples.png">
 
-## 
+##
 
 ### [Vizro-AI](https://vizro.readthedocs.io/projects/vizro-ai)
 
