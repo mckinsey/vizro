@@ -1,9 +1,9 @@
 # How to create custom charts
 
-This guide shows you how to create custom charts and how to add them to your dashboard.
-The [`Graph`][vizro.models.Graph] model accepts the `figure` argument, where you can enter _any_ [`plotly.express`](https://plotly.com/python/plotly-express/) chart as explained in the [user guide on graphs](graph.md).
+This guide shows you how to create custom charts and how to add them to your dashboard. The [`Graph`][vizro.models.Graph] model accepts the `figure` argument, where you can enter _any_ [`plotly.express`](https://plotly.com/python/plotly-express/) chart as explained in the [user guide on graphs](graph.md).
 
 ## When to use a custom chart
+
 In general, you should use the custom chart decorator `@capture("graph")` if your plotly chart needs any post-update calls or customization. For example:
 
 - You want to use any of the post figure update calls by `plotly` such as `update_layout`, `update_xaxes`, `update_traces` (for more details, see the docs on [plotly's update calls](https://plotly.com/python/creating-and-updating-figures/#other-update-methods))
@@ -12,11 +12,10 @@ In general, you should use the custom chart decorator `@capture("graph")` if you
 ## Steps to create a custom chart
 
 1. Define a function that returns a `go.Figure()`.
-2. Decorate it with `@capture("graph")`.
-3. The function must accept a `data_frame` argument (of type `pandas.DataFrame`).
-4. The visualization should be derived from and require only one `pandas.DataFrame`. Dataframes from other arguments
-will not react to dashboard controls such as [`Filter`](filters.md).
-5. Pass your function to the `figure` argument of the [`Graph`][vizro.models.Graph] model.
+1. Decorate it with `@capture("graph")`.
+1. The function must accept a `data_frame` argument (of type `pandas.DataFrame`).
+1. The visualization should be derived from and require only one `pandas.DataFrame`. Dataframes from other arguments will not react to dashboard controls such as [`Filter`](filters.md).
+1. Pass your function to the `figure` argument of the [`Graph`][vizro.models.Graph] model.
 
 The minimal example below can be used as a base to build more sophisticated charts.
 
@@ -39,12 +38,10 @@ To alter the data in the `data_frame` argument, consider using a [Filter](filter
 
 ## Enhanced `plotly.express` chart with reference line
 
-The below examples shows a case where we enhance an existing `plotly.express` chart. We add a new argument (`hline`), that is used to draw a grey reference line at the height determined by the value of `hline`. The important thing to note is that we then
-add a `Parameter` that enables the dashboard user to interact with the argument, and hence move the line in this case. See the `Result` tab for an animation.
+The below examples shows a case where we enhance an existing `plotly.express` chart. We add a new argument (`hline`), that is used to draw a grey reference line at the height determined by the value of `hline`. The important thing to note is that we then add a `Parameter` that enables the dashboard user to interact with the argument, and hence move the line in this case. See the `Result` tab for an animation.
 
 !!! example "Custom `plotly.express` scatter chart with a `Parameter`"
     === "app.py"
-
         ```{.python pycafe-link}
         import vizro.models as vm
         import vizro.plotly.express as px
@@ -86,17 +83,14 @@ add a `Parameter` that enables the dashboard user to interact with the argument,
         Vizro().build(dashboard).run()
         ```
 
-        1.  Note that arguments of the custom chart can be parametrized. Here we choose to parametrize the `hline` argument (see below).
-        2.  Here we parametrize the `hline` argument, but any other argument can be parametrized as well. Since there is complete flexibility regarding what can be derived from such arguments, the dashboard user has a wide range of customization options.
+        1. Note that arguments of the custom chart can be parametrized. Here we choose to parametrize the `hline` argument (see below).
+        1. Here we parametrize the `hline` argument, but any other argument can be parametrized as well. Since there is complete flexibility regarding what can be derived from such arguments, the dashboard user has a wide range of customization options.
+
     === "app.yaml"
-        ```yaml
-        # Custom charts are currently only possible via Python configuration
-        ```
+        Custom charts are currently only possible via Python configuration.
+
     === "Result"
-        [![Graph2]][Graph2]
-
-    [Graph2]: ../../assets/user_guides/custom_charts/custom_chart_showcase_parameter.gif
-
+        [![Graph2]][graph2]
 
 ## New Waterfall chart based on `go.Figure()`
 
@@ -104,7 +98,6 @@ The below examples shows a more involved use-case. We create and style a waterfa
 
 !!! example "Custom `go.Figure()` waterfall chart with a `Parameter`"
     === "app.py"
-
         ```{.python pycafe-link}
         import pandas as pd
         import plotly.graph_objects as go
@@ -162,10 +155,10 @@ The below examples shows a more involved use-case. We create and style a waterfa
         ```
 
     === "app.yaml"
-        ```yaml
-        # Custom charts are currently only possible via Python configuration
-        ```
-    === "Result"
-        [![Graph3]][Graph3]
+        Custom charts are currently only possible via Python configuration.
 
-    [Graph3]: ../../assets/user_guides/custom_charts/custom_chart_waterfall.png
+    === "Result"
+        [![Graph3]][graph3]
+
+[graph2]: ../../assets/user_guides/custom_charts/custom_chart_showcase_parameter.gif
+[graph3]: ../../assets/user_guides/custom_charts/custom_chart_waterfall.png

@@ -4,11 +4,9 @@ This guide shows you how to use cards and buttons to visualize and interact with
 
 ## Cards
 
-The [`Card`][vizro.models.Card] is a flexible and extensible component that enables customization via markdown text.
-Refer to any online guide for [basic markdown usage](https://markdown-guide.readthedocs.io/en/latest/).
+The [`Card`][vizro.models.Card] is a flexible and extensible component that enables customization via markdown text. Refer to any online guide for [basic markdown usage](https://markdown-guide.readthedocs.io/en/latest/).
 
 You can add a [`Card`][vizro.models.Card] to your dashboard by inserting the [`Card`][vizro.models.Card] into the `components` argument of the [`Page`][vizro.models.Page].
-
 
 !!! example "Card"
     === "app.py"
@@ -32,28 +30,26 @@ You can add a [`Card`][vizro.models.Card] to your dashboard by inserting the [`C
 
         Vizro().build(dashboard).run()
         ```
+
     === "app.yaml"
         ```yaml
         # Still requires a .py to add data to the data manager and parse YAML configuration
         # See from_yaml example
         pages:
-        - components:
-            - text: |
-                Commodi repudiandae consequuntur voluptatum.
-              title: Card Title
-              type: card
-          title: Card
+          - components:
+              - text: |
+                  Commodi repudiandae consequuntur voluptatum.
+                title: Card Title
+                type: card
+            title: Card
         ```
-    === "Result"
-        [![Card]][Card]
 
-    [Card]: ../../assets/user_guides/components/card.png
+    === "Result"
+        [![Card]][card]
 
 ### Customize card text
 
-The [`Card`][vizro.models.Card] uses the `dcc.Markdown` component from Dash as its underlying text component.
-For more details on customizing the markdown text, refer to the [`dcc.Markdown` component documentation](https://dash.plotly.com/dash-core-components/markdown).
-Based on examples from Dash, the [`Card`][vizro.models.Card] model supports the following:
+The [`Card`][vizro.models.Card] uses the `dcc.Markdown` component from Dash as its underlying text component. For more details on customizing the markdown text, refer to the [`dcc.Markdown` component documentation](https://dash.plotly.com/dash-core-components/markdown). Based on examples from Dash, the [`Card`][vizro.models.Card] model supports the following:
 
 - Headers
 - Emphasis
@@ -130,58 +126,58 @@ Based on examples from Dash, the [`Card`][vizro.models.Card] model supports the 
 
         Vizro().build(dashboard).run()
         ```
+
     === "app.yaml"
         ```yaml
         # Still requires a .py to add data to the data manager and parse YAML configuration
         # See from_yaml example
         pages:
-        - components:
-          - text: |
-              # Header level 1 <h1>
+          - components:
+              - text: |
+                  # Header level 1 <h1>
 
-              ## Header level 2 <h2>
+                  ## Header level 2 <h2>
 
-              ### Header level 3 <h3>
+                  ### Header level 3 <h3>
 
-              #### Header level 4 <h4>
-            type: card
-          - text: |
-              Commodi repudiandae consequuntur voluptatum laborum numquam blanditiis harum quisquam eius sed odit.
+                  #### Header level 4 <h4>
+                type: card
+              - text: |
+                  Commodi repudiandae consequuntur voluptatum laborum numquam blanditiis harum quisquam eius sed odit.
 
-              Fugiat iusto fuga praesentium option, eaque rerum! Provident similique accusantium nemo autem.
+                  Fugiat iusto fuga praesentium option, eaque rerum! Provident similique accusantium nemo autem.
 
-              Obcaecati tenetur iure eius earum ut molestias architecto voluptate aliquam nihil, eveniet aliquid.
+                  Obcaecati tenetur iure eius earum ut molestias architecto voluptate aliquam nihil, eveniet aliquid.
 
-              Culpa officia aut! Impedit sit sunt quaerat, odit, tenetur error, harum nesciunt ipsum debitis quas.
-            title: Paragraphs
-            type: card
-          - text: |
-              >
-              > A block quote is a long quotation, indented to create a separate block of text.
-              >
-            title: Block Quotes
-            type: card
-          - text: |
-              * Item A
-                * Sub Item 1
-                * Sub Item 2
-              * Item B
-            title: Lists
-            type: card
-          - text: |
-              This word will be *italic*
+                  Culpa officia aut! Impedit sit sunt quaerat, odit, tenetur error, harum nesciunt ipsum debitis quas.
+                title: Paragraphs
+                type: card
+              - text: |
+                  >
+                  > A block quote is a long quotation, indented to create a separate block of text.
+                  >
+                title: Block Quotes
+                type: card
+              - text: |
+                  * Item A
+                    * Sub Item 1
+                    * Sub Item 2
+                  * Item B
+                title: Lists
+                type: card
+              - text: |
+                  This word will be *italic*
 
-              This word will be **bold**
+                  This word will be **bold**
 
-              This word will be _**bold and italic**_
-            title: Emphasis
-            type: card
-          title: Customizing Text
+                  This word will be _**bold and italic**_
+                title: Emphasis
+                type: card
+            title: Customizing Text
         ```
-    === "Result"
-        [![CardText]][CardText]
 
-    [CardText]: ../../assets/user_guides/components/card_text.png
+    === "Result"
+        [![CardText]][cardtext]
 
 ### Place an image on a card
 
@@ -189,11 +185,10 @@ Images can be added to the `text` parameter by using the standard markdown synta
 
 `![Image ALT text](Image URL)`
 
-An image ALT text offers a description to your image and serves as a text placeholder or to improve the
-accessibility of your app. Providing an image ALT text is optional.
+An image ALT text offers a description to your image and serves as a text placeholder or to improve the accessibility of your app. Providing an image ALT text is optional.
 
 1. To use a relative Image URL, place an image of your choice into your `assets` folder first
-2. Use markdown to render your image by using one of the following syntax:
+1. Use markdown to render your image by using one of the following syntax:
     - Relative Image URL: `![Image ALT text](/path/to/image.png)`
     - Absolute Image URL: `![Image ALT text](https://XXXXXX)`
 
@@ -228,37 +223,32 @@ accessibility of your app. Providing an image ALT text is optional.
 
         <img src=https://py.cafe/logo.png alt="PyCafe logo" width="30"><b><a target="_blank" href="https://py.cafe/vizro-official/vizro-placing-images">Run and edit this code in PyCafe</a></b>
 
-
     === "app.yaml"
         ```yaml
         # Still requires a .py to add data to the data manager and parse YAML configuration
         # See from_yaml example
         pages:
-        - components:
-            - text: |
-                ![continent](assets/images/continents/africa.svg)
+          - components:
+              - text: |
+                  ![continent](assets/images/continents/africa.svg)
 
-                Commodi repudiandae consequuntur voluptatum laborum numquam blanditiis harum quisquam eius sed odit.
+                  Commodi repudiandae consequuntur voluptatum laborum numquam blanditiis harum quisquam eius sed odit.
 
-                Fugiat iusto fuga praesentium option, eaque rerum! Provident similique accusantium nemo autem.
+                  Fugiat iusto fuga praesentium option, eaque rerum! Provident similique accusantium nemo autem.
 
-                Obcaecati tenetur iure eius earum ut molestias architecto voluptate aliquam nihil, eveniet aliquid.
-              title: My card with image!
-              type: card
-          title: Placing Images
+                  Obcaecati tenetur iure eius earum ut molestias architecto voluptate aliquam nihil, eveniet aliquid.
+                title: My card with image!
+                type: card
+            title: Placing Images
         ```
-    === "Result"
-         [![CardImageDefault]][CardImageDefault]
 
-    [CardImageDefault]: ../../assets/user_guides/components/card_image_default.png
+    === "Result"
+        [![CardImageDefault]][cardimagedefault]
 
 !!! note
-
-    Note that inserting images using html is by default turned off by the `dcc.Markdown` to prevent users being exposed
-    to cross-site scripting attacks. If you need to turn it on, a custom component would have to be created.
+    Note that inserting images using HTML is by default turned off by the `dcc.Markdown` to prevent users being exposed to cross-site scripting attacks. If you need to turn it on, a custom component would have to be created.
 
 You might notice that the image is quite large. You'll find out how to style images in terms of their position and size in the next section.
-
 
 ### Style a card image
 
@@ -266,17 +256,17 @@ To change the size or position of the image, add a URL hash to your image like t
 
 `![Image ALT text](Image URL#my-image)`
 
-Note the added URL hash `#my-image`. Now create a CSS file placed in your `assets` folder
-and give an attribute selector to select images with that matching URL hash.
+Note the added URL hash `#my-image`. Now create a CSS file placed in your `assets` folder and give an attribute selector to select images with that matching URL hash.
 
 !!! example "Card with styled image"
     === "images.css"
-    ```css
-    img[src*="#my-image"] {
-      width: 120px;
-      height: 120px;
-    }
-    ```
+        ```css
+        img[src*="#my-image"] {
+            width: 120px;
+            height: 120px;
+        }
+        ```
+
     === "app.py"
         ```py
         import vizro.models as vm
@@ -313,40 +303,42 @@ and give an attribute selector to select images with that matching URL hash.
         # Still requires a .py to add data to the data manager and parse YAML configuration
         # See from_yaml example
         pages:
-        - components:
-            - text: |
-                ![](assets/images/continents/europe.svg#my-image)
+          - components:
+              - text: |
+                  ![](assets/images/continents/europe.svg#my-image)
 
-                Commodi repudiandae consequuntur voluptatum laborum numquam blanditiis harum quisquam eius sed odit.
+                  Commodi repudiandae consequuntur voluptatum laborum numquam blanditiis harum quisquam eius sed odit.
 
-                Fugiat iusto fuga praesentium option, eaque rerum! Provident similique accusantium nemo autem.
+                  Fugiat iusto fuga praesentium option, eaque rerum! Provident similique accusantium nemo autem.
 
-                Obcaecati tenetur iure eius earum ut molestias architecto voluptate aliquam nihil, eveniet aliquid.
-              title: My card with image!
-              type: card
-          title: Styling Images
+                  Obcaecati tenetur iure eius earum ut molestias architecto voluptate aliquam nihil, eveniet aliquid.
+                title: My card with image!
+                type: card
+            title: Styling Images
         ```
-    === "Result"
-         [![CardImageStyled]][CardImageStyled]
 
-    [CardImageStyled]: ../../assets/user_guides/components/card_image_styled.png
+    === "Result"
+        [![CardImageStyled]][cardimagestyled]
 
 Use the following pre-defined URL hashes in your image path to apply Vizro's default styling.
 
-#### To float the image next to the text:
+**To float the image next to the text:**
 
-- floating-left: `![](my_image.png#floating-left)`
-- floating-right: `![](my_image.png#floating-right)`
-- floating-center: `![](my_image.png#floating-center)`
+To float an image for example to the right of the text, use the `src` attribute as a CSS selector. Follow these steps:
+
+1. Add a hash (#) to the image URL, e.g., `![](assets/images/continents/europe.svg#my-image)`
+1. Target that hash in your custom CSS file `img[src*="#my-image"] { float: right; }`
 
 !!! example "Card with floating image"
     === "images.css"
-    ```css
-    img[src*="#my-image"] {
-      width: 120px;
-      height: 120px;
-    }
-    ```
+        ```css
+        img[src*="#my-image"] {
+            width: 120px;
+            height: 120px;
+            float: right;
+        }
+        ```
+
     === "app.py"
         ```py
         import vizro.models as vm
@@ -359,7 +351,7 @@ Use the following pre-defined URL hashes in your image path to apply Vizro's def
                         text="""
                         ### My card with floating image!
 
-                        ![](assets/images/continents/europe.svg#my-image#floating-right)
+                        ![](assets/images/continents/europe.svg#my-image)
 
                          Commodi repudiandae consequuntur voluptatum laborum numquam blanditiis harum quisquam eius sed odit.
 
@@ -389,91 +381,40 @@ Use the following pre-defined URL hashes in your image path to apply Vizro's def
         # Still requires a .py to add data to the data manager and parse YAML configuration
         # See from_yaml example
         pages:
-        - components:
-            - text: |
-                ![](assets/images/continents/europe.svg#my-image#floating-right)
+          - components:
+              - text: |
+                  ![](assets/images/continents/europe.svg#my-image)
 
-                Commodi repudiandae consequuntur voluptatum laborum numquam blanditiis harum quisquam eius sed odit.
+                  Commodi repudiandae consequuntur voluptatum laborum numquam blanditiis harum quisquam eius sed odit.
 
-                Fugiat iusto fuga praesentium option, eaque rerum! Provident similique accusantium nemo autem.
+                  Fugiat iusto fuga praesentium option, eaque rerum! Provident similique accusantium nemo autem.
 
-                Obcaecati tenetur iure eius earum ut molestias architecto voluptate aliquam nihil, eveniet aliquid.
+                  Obcaecati tenetur iure eius earum ut molestias architecto voluptate aliquam nihil, eveniet aliquid.
 
-                Culpa officia aut! Impedit sit sunt quaerat, odit, tenetur error, harum nesciunt ipsum debitis quas.
+                  Culpa officia aut! Impedit sit sunt quaerat, odit, tenetur error, harum nesciunt ipsum debitis quas.
 
-                Obcaecati tenetur iure eius earum ut molestias architecto voluptate aliquam nihil, eveniet aliquid.
+                  Obcaecati tenetur iure eius earum ut molestias architecto voluptate aliquam nihil, eveniet aliquid.
 
-                Culpa officia aut! Impedit sit sunt quaerat, odit, tenetur error, harum nesciunt ipsum debitis quas.
-              title: My card with floating image!
-              type: card
-          title: Floating Images
+                  Culpa officia aut! Impedit sit sunt quaerat, odit, tenetur error, harum nesciunt ipsum debitis quas.
+                title: My card with floating image!
+                type: card
+            title: Floating Images
         ```
+
     === "Result"
-         [![CardImageFloating]][CardImageFloating]
-
-    [CardImageFloating]: ../../assets/user_guides/components/card_image_floating.png
-
-#### Card with icon
-
-- default icon styling (`icon-top`): `![](my_image.png#icon-top)`
-
-!!! example "Card with icon"
-    === "app.py"
-        ```{.python pycafe-link}
-        import vizro.models as vm
-        from vizro import Vizro
-
-        page = vm.Page(
-            title="Card with icon",
-            components=[
-                vm.Card(
-                    text="""
-                    ![](https://raw.githubusercontent.com/mckinsey/vizro/d24a6f0d4efdf3c47392458e64b190fa1f92b2a7/vizro-core/docs/assets/images/hypotheses.svg#icon-top)
-
-                    ### Card Title
-
-                    Lorem ipsum dolor sit amet, consectetur adipiscing elit. Ut fringilla dictum lacus eget fringilla.
-                    Maecenas in various nibh, quis venenatis nulla. Integer et libero ultrices, scelerisque velit sed.
-                    """,
-                ),
-            ],
-        )
-
-        dashboard = vm.Dashboard(pages=[page])
-        Vizro().build(dashboard).run()
-        ```
-    === "app.yaml"
-        ```yaml
-        # Still requires a .py to add data to the data manager and parse YAML configuration
-        # See from_yaml example
-        pages:
-        - components:
-            - text: |
-                ![](assets/images/icons/hypotheses.svg#icon-top)
-
-                ### Card Title
-
-                Lorem ipsum dolor sit amet, consectetur adipiscing elit. Ut fringilla dictum lacus eget fringilla.
-                Maecenas in various nibh, quis venenatis nulla. Integer et libero ultrices, scelerisque velit sed.
-              type: card
-          title: Card with icon
-        ```
-    === "Result"
-           [![CardIcon]][CardIcon]
-
-       [CardIcon]: ../../assets/user_guides/components/card_icon.png
-
+        [![CardImageFloating]][cardimagefloating]
 
 ### Make an icon responsive to theme switch
 
-To make an icon responsive to the theme switch, override the value of the [`filter` CSS property](https://developer.mozilla.org/en-US/docs/Web/CSS/filter).
-The `filter` CSS property lets you add visual effects to elements using different functions. In our example, we're using the `--inverse-color` CSS variable from the Vizro theme.
-It uses the  CSS `invert()` function to flip the color of the icon when you switch themes. Note that this only works if your initial icon has a white fill color. If your icon is not white, you can change its color by adding `fill="white"` to the SVG code.
-Assign the predefined CSS variable `--inverse-color` to the `filter` property of your selected icon.
+To make an icon responsive to theme switching, override its [`filter` CSS property](https://developer.mozilla.org/en-US/docs/Web/CSS/filter).
+
+In this example, we use the `--fill-icon-image-card` CSS variable from the `vizro-bootstrap` CSS file. It uses the `invert()` function to flip the icon's color during a theme switch.
+
+This approach works if your icon initially has a white fill color. If not, modify the SVG code by adding `fill="white"`.
 
 ```css
 img[src*="#my-image"] {
-  filter: var(--inverse-color);
+    filter: var(--fill-icon-image-card);
 }
 ```
 
@@ -482,15 +423,15 @@ img[src*="#my-image"] {
 
 ### Create a navigation card
 
-This section describes how to use the [`Card`][vizro.models.Card] component to create a navigation card. To configure the navigation panel on the left hand side of the screen, refer to the [guide on navigation](navigation.md).
+This section describes how to use the [`Card`][vizro.models.Card] component to create a navigation card, enabling users to navigate to another page by clicking on the card area.
 
-A navigation card enables you to navigate to a different page via a click on the card area.
+For a button-style link navigation component, see the [separate guide on creating a link button](#create-a-link-button). To configure the navigation panel on the left hand side of the screen, refer to the [separate guide on navigation](navigation.md).
 
 To create a navigation card:
 
 1. Insert the [`Card`][vizro.models.Card] into the `components` argument of the [`Page`][vizro.models.Page].
-2. Pass your markdown text to the `Card.text`.
-3. Pass a relative or absolute URL to the `Card.href`.
+1. Pass your markdown text to the `Card.text`.
+1. Pass a relative or absolute URL to the `Card.href`.
 
 !!! example "Navigation Card"
     === "app.py"
@@ -526,7 +467,7 @@ To create a navigation card:
         page_2 = vm.Page(
             title="Filters and parameters",
             components=[
-                vm.Graph(id="scatter", figure=px.scatter(iris, x="sepal_length", y="petal_width", color="sepal_width")),
+                vm.Graph(figure=px.scatter(iris, x="sepal_length", y="petal_width", color="sepal_width")),
             ],
         )
 
@@ -534,76 +475,110 @@ To create a navigation card:
 
         Vizro().build(dashboard).run()
         ```
+
     === "app.yaml"
         ```yaml
         # Still requires a .py to add data to the data manager and parse YAML configuration
         # See from_yaml example
         pages:
-        - components:
-            - text: |
-                ### Filters and parameters
+          - components:
+              - text: |
+                  ### Filters and parameters
 
-                Leads to the first page on click
-              href: /filters-and-parameters
-              type: card
-            - text: |
-                ### Google - External Link
+                  Leads to the first page on click
+                href: /filters-and-parameters
+                type: card
+              - text: |
+                  ### Google - External Link
 
-                Leads to an external link on click.
-              href: https://google.com
-              type: card
-          title: Homepage
-        - components:
-            - figure:
-                _target_: scatter
-                color: sepal_width
-                data_frame: iris
-                x: sepal_length
-                y: petal_width
-              id: scatter
-              type: graph
-          title: Filters and parameters
+                  Leads to an external link on click.
+                href: https://google.com
+                type: card
+            title: Homepage
+          - components:
+              - figure:
+                  _target_: scatter
+                  color: sepal_width
+                  data_frame: iris
+                  x: sepal_length
+                  y: petal_width
+                type: graph
+            title: Filters and parameters
         ```
-    === "Result"
-           [![NavCard]][NavCard]
 
-       [NavCard]: ../../assets/user_guides/components/nav_card.png
+    === "Result"
+        [![NavCard]][navcard]
 
 If you now click on the card area, you should automatically be redirected to the relevant `href`.
 
 !!! note
-
     When using the [`Card`][vizro.models.Card], keep the following in mind:
 
     - If the href given is a relative URL, it should match the `path` of the [`Page`][vizro.models.Page] that the [`Card`][vizro.models.Card] should navigate to.
     - If the href given is an absolute link, it should start with `https://` or an equivalent protocol.
 
-
 ### Create a KPI card
-To create a KPI card, you can use the existing KPI card functions from [`vizro.figures`](../API-reference/figure-callables.md).
-Unlike the static text card `vm.Card`, a KPI card must be created using a figure function,
-which enables the text content of the KPI to change based on input from controls or actions.
+
+To create a KPI card, you can use the existing KPI card functions from [`vizro.figures`](../API-reference/figure-callables.md). Unlike the static text card `vm.Card`, a KPI card must be created using a figure function, which enables the text content of the KPI to change based on input from controls or actions.
 
 For detailed examples on how to create a KPI card, refer to the [figure user guide on KPI cards](figure.md#key-performance-indicator-kpi-cards).
 
 ## Buttons
 
-To enhance dashboard interactions, you can use the [`Button`][vizro.models.Button] component to trigger any pre-defined
-action functions such as exporting chart data. To use the currently available options for the [`Actions`][vizro.models.Action]
-component, check out the [API reference][vizro.actions].
+The Button component is commonly used for interactive dashboard interactions such as form submissions, navigation links, and other action triggers.
 
-To add a [`Button`][vizro.models.Button], insert it into the `components` argument of the
-[`Page`][vizro.models.Page].
+To add a [`Button`][vizro.models.Button], insert it into the `components` argument of the [`Page`][vizro.models.Page].
 
-You can configure the `text` argument to alter the display text of the [`Button`][vizro.models.Button] and the
-`actions` argument to define which action function should be executed on button click.
+### Customize button text
 
-In the below example we show how to configure a button to export the filtered data of a target chart using
-[export_data][vizro.actions.export_data], a pre-defined action function.
+You can configure the `text` argument to alter the display text of the [`Button`][vizro.models.Button].
 
+!!! example "Customize text"
+    === "app.py"
+        ```{.python pycafe-link}
+        import vizro.models as vm
+        from vizro import Vizro
 
-!!! example "Button"
+        page = vm.Page(
+            title="Button with text",
+            components=[vm.Button(text="I'm a button!")],
+        )
 
+        dashboard = vm.Dashboard(pages=[page])
+        Vizro().build(dashboard).run()
+        ```
+
+    === "app.yaml"
+        ```yaml
+        # Still requires a .py to add data to the data manager and parse YAML configuration
+        # See from_yaml example
+        pages:
+          - components:
+              - type: button
+                text: I'm a button!
+            title: Button with text
+        ```
+
+    === "Result"
+        [![ButtonText]][buttontext]
+
+### Create a link button
+
+To navigate to a different page using a button with an anchor tag, assign an absolute or relative URL to the `Button.href`.
+
+```python
+import vizro.models as vm
+
+vm.Button(text="Leave us a star! ⭐", href="https://github.com/mckinsey/vizro")
+```
+
+### Attach an action
+
+You can use the [`Button`][vizro.models.Button] to trigger predefined action functions, such as exporting data. To explore the available options for [`Actions`][vizro.models.Action], refer to our [API reference][vizro.actions]. Use the `Button.actions` argument to specify which action function executes when the button is clicked.
+
+The example below demonstrates how to configure a button to export the filtered data of a target chart using the [export_data][vizro.actions.export_data] action function.
+
+!!! example "Button with action"
     === "app.py"
         ```{.python pycafe-link}
         import vizro.models as vm
@@ -632,36 +607,37 @@ In the below example we show how to configure a button to export the filtered da
                     actions=[vm.Action(function=export_data(targets=["scatter_chart"]))],
                 ),
             ],
-            controls=[vm.Filter(column="species", selector=vm.Dropdown(title="Species"))],
+            controls=[vm.Filter(column="species")],
         )
 
         dashboard = vm.Dashboard(pages=[page])
 
         Vizro().build(dashboard).run()
         ```
+
     === "app.yaml"
         ```yaml
         # Still requires a .py to add data to the data manager and parse YAML configuration
         # See from_yaml example
         pages:
           - components:
-            - figure:
-                _target_: scatter
-                x: sepal_width
-                y: sepal_length
-                color: species
-                size: petal_length
-                data_frame: iris
-              id: scatter_chart
-              type: graph
-            - type: button
-              text: Export data
-              id: export_data
-              actions:
-                - function:
-                    _target_: export_data
-                    targets:
-                      - scatter_chart
+              - figure:
+                  _target_: scatter
+                  x: sepal_width
+                  y: sepal_length
+                  color: species
+                  size: petal_length
+                  data_frame: iris
+                id: scatter_chart
+                type: graph
+              - type: button
+                text: Export data
+                id: export_data
+                actions:
+                  - function:
+                      _target_: export_data
+                      targets:
+                        - scatter_chart
             controls:
               - column: species
                 selector:
@@ -677,13 +653,13 @@ In the below example we show how to configure a button to export the filtered da
                 - [1]
             title: My first page
         ```
+
     === "Result"
-        [![Button]][Button]
+        [![Button]][button]
 
-    [Button]: ../../assets/user_guides/components/button.png
+### Use as a control
 
-The [`Button`][vizro.models.Button] component is currently reserved to be used inside the main panel (right-side) of the dashboard.
-However, there might be use cases where one would like to place the `Button` inside the control panel (left-side) with the other controls.
+The [`Button`][vizro.models.Button] component is currently reserved to be used inside the main panel (right-side) of the dashboard. However, there might be use cases where one would like to place the `Button` inside the control panel (left-side) with the other controls.
 
 In this case, follow the user-guide outlined for [creating custom components](custom-components.md) and manually add the `Button` as a valid type to the `controls` argument by running the following lines before your dashboard configurations:
 
@@ -696,3 +672,12 @@ vm.Page.add_type("controls", vm.Button)
 # Add dashboard configurations below
 ...
 ```
+
+[button]: ../../assets/user_guides/components/button.png
+[buttontext]: ../../assets/user_guides/components/button_text.png
+[card]: ../../assets/user_guides/components/card.png
+[cardimagedefault]: ../../assets/user_guides/components/card_image_default.png
+[cardimagefloating]: ../../assets/user_guides/components/card_image_floating.png
+[cardimagestyled]: ../../assets/user_guides/components/card_image_styled.png
+[cardtext]: ../../assets/user_guides/components/card_text.png
+[navcard]: ../../assets/user_guides/components/nav_card.png

@@ -2,8 +2,7 @@ from __future__ import annotations
 
 from typing import TYPE_CHECKING, Literal
 
-import dash_mantine_components as dmc
-from dash import html
+import dash_bootstrap_components as dbc
 
 try:
     from pydantic.v1 import validator
@@ -33,21 +32,9 @@ class Tabs(VizroBaseModel):
 
     @_log_call
     def build(self):
-        tabs_list = dmc.TabsList(
-            [dmc.Tab(tab.title, value=tab.id, className="tab-title") for tab in self.tabs],
-            className="tabs-list",
-        )
-
-        tabs_panels = [
-            dmc.TabsPanel(html.Div([tab.build()], className="tab-content"), value=tab.id, className="tabs-panel")
-            for tab in self.tabs
-        ]
-
-        return dmc.Tabs(
+        return dbc.Tabs(
             id=self.id,
-            value=self.tabs[0].id,
-            children=[tabs_list, *tabs_panels],
+            children=[dbc.Tab(tab.build(), label=tab.title) for tab in self.tabs],
             persistence=True,
             persistence_type="session",
-            className="tabs",
         )

@@ -15,7 +15,6 @@ Most of our examples have a link below the code, [Run and edit this code in PyCa
 
 You can use [PyCafe](https://py.cafe/snippet/vizro/v1) snippet mode to experiment with your own Vizro dashboards by dropping code into a new project.
 
-
 ## Default built-in Flask development server
 
 !!! example "Default built-in Flask development server"
@@ -38,9 +37,10 @@ You can use [PyCafe](https://py.cafe/snippet/vizro/v1) snippet mode to experimen
 
         Vizro().build(dashboard).run()
         ```
+
 1. create a Python file named `app.py`.
-2. type the command `python app.py` into your terminal.
-3. information below will be displayed in your terminal, go to [http://127.0.0.1:8050/](http://127.0.0.1:8050/).
+1. type the command `python app.py` into your terminal.
+1. information below will be displayed in your terminal, go to [http://127.0.0.1:8050/](http://127.0.0.1:8050/).
 
 ```
 Dash is running on http://127.0.0.1:8050/
@@ -51,8 +51,7 @@ INFO:werkzeug:WARNING: This is a development server. Do not use it in a producti
 ```
 
 !!! warning "In production"
-
-    As per the above warning message, which is [further explained in the Flask documentation](https://flask.palletsprojects.com/en/3.0.x/deploying/), the Flask development server is intended for use only during local development and **should not** be used when deploying to production. Instead, you should instead use a production-ready solution such as [Gunicorn](#gunicorn).
+    The above warning message is [further explained in the Flask documentation](https://flask.palletsprojects.com/en/3.0.x/deploying/). The Flask development server is intended for use only during local development and **should not** be used when deploying to production. Instead, you should instead use a production-ready solution such as [Gunicorn](#gunicorn).
 
 ### Automatic reloading and debugging
 
@@ -64,11 +63,11 @@ Setting `debug=True` enables [Dash Dev Tools](https://dash.plotly.com/devtools).
 
 In addition, some errors generated at run time can also be viewed via the browser console (for example in `Chrome` see `View > Developer > Developer Tools > Console`).
 
-
 ## Jupyter
-The dashboard application can be launched in a Jupyter environment in `inline`, `external`, and `jupyterlab` mode.
-!!! example "Run in a Jupyter Notebook in inline mode"
 
+The dashboard application can be launched in a Jupyter environment in `inline`, `external`, and `jupyterlab` mode.
+
+!!! example "Run in a Jupyter Notebook in inline mode"
     === "app.ipynb"
         ```py linenums="1"
         from vizro import Vizro
@@ -80,23 +79,23 @@ The dashboard application can be launched in a Jupyter environment in `inline`, 
         page = vm.Page(
             title="My first page",
             components=[
-                vm.Graph(id="scatter_chart", figure=px.scatter(iris, x="sepal_length", y="petal_width", color="species")),
+                vm.Graph(figure=px.scatter(iris, x="sepal_length", y="petal_width", color="species")),
             ],
         )
 
         dashboard = vm.Dashboard(pages=[page])
         Vizro().build(dashboard).run(jupyter_mode="external")
         ```
+
 - by default, the mode is set to `inline` in `run()` and the dashboard will be displayed inside your Jupyter environment.
 - you can specify `jupyter_mode="external"` and a link will be displayed to direct you to the localhost where the dashboard is running.
 - you can use tab mode by `jupyter_mode="tab"` to automatically open the app in a new browser
 
 !!! note "Reloading and debugging"
-
     Code reloading and hot reloading do not work within a Jupyter Notebook. Instead, there are two methods to reload the dashboard:
 
-	* Restart the Jupyter kernel and re-run your notebook.
-	* Add a cell containing `from vizro import Vizro; Vizro._reset()` to the top of your notebook and re-run it. With this method, there is no need to restart the Jupyter kernel.
+    - Restart the Jupyter kernel and re-run your notebook.
+    - Add a cell containing `from vizro import Vizro; Vizro._reset()` to the top of your notebook and re-run it. With this method, there is no need to restart the Jupyter kernel.
 
 ## Gunicorn
 
@@ -114,7 +113,7 @@ The dashboard application can be launched in a Jupyter environment in `inline`, 
         page = vm.Page(
             title="My first page",
             components=[
-                vm.Graph(id="scatter_chart", figure=px.scatter(iris, x="sepal_length", y="petal_width", color="species")),
+                vm.Graph(figure=px.scatter(iris, x="sepal_length", y="petal_width", color="species")),
             ],
         )
 
@@ -126,17 +125,18 @@ The dashboard application can be launched in a Jupyter environment in `inline`, 
         ```
 
         1. The Vizro `app` object is a WSGI application that exposes the underlying Flask app; this will be used by Gunicorn.
-        2. Enable the same app to still be run using the built-in Flask server with `python app.py` for development purposes.
+        1. Enable the same app to still be run using the built-in Flask server with `python app.py` for development purposes.
 
 To run using Gunicorn with four worker processes, execute
+
 ```bash
 gunicorn app:app --workers 4
 ```
+
 in the command line. For more Gunicorn configuration options, refer to [Gunicorn documentation](https://docs.gunicorn.org/).
 
 !!! warning "In production"
-
-    If your dashboard uses [dynamic data](data.md#dynamic-data) that can be refreshed while the dashboard is running then you should [configure your data manager cache](data.md#configure-cache) to use a backend that supports multiple processes.
+    If your dashboard uses [dynamic data](data.md#dynamic-data) that can be refreshed while the dashboard is running then you should [configure your data manager cache](data.md#configure-cache) to use a back end that supports multiple processes.
 
 ## Deployment
 
@@ -149,6 +149,6 @@ Internally, `app = Vizro()` contains a Flask app in `app.dash.server`. However, 
 
 [`Vizro`][vizro.Vizro] accepts `**kwargs` that are passed through to `Dash`. This enables you to configure the underlying Dash app using the same [arguments that are available](https://dash.plotly.com/reference#dash.dash) in `Dash`. For example, in a deployment context, these arguments may be useful:
 
-- `url_base_pathname`: serve your Vizro app at a specific path rather than at the domain root. For example, if you host your dashboard at http://www.example.com/my_dashboard/ then you would set `url_base_pathname="/my_dashboard/"` or an environment variable `DASH_URL_BASE_PATHNAME="/my_dashboard/"`.
+- `url_base_pathname`: serve your Vizro app at a specific path rather than at the domain root. For example, if you host your dashboard at `http://www.example.com/my_dashboard/` then you would set `url_base_pathname="/my_dashboard/"` or an environment variable `DASH_URL_BASE_PATHNAME="/my_dashboard/"`.
 - `serve_locally`: set to `False` to [serve Dash component libraries from a Content Delivery Network (CDN)](https://dash.plotly.com/external-resources#serving-dash's-component-libraries-locally-or-from-a-cdn), which reduces load on the server and can improve performance. Vizro uses [jsDeliver](https://www.jsdelivr.com/) as a CDN for CSS and JavaScript sources.
 - `assets_external_path`: when `serve_locally=False`, you can also set `assets_external_path` or an environment variable `DASH_ASSETS_EXTERNAL_PATH` to [serve your own assets from a CDN](https://dash.plotly.com/external-resources#load-assets-from-a-folder-hosted-on-a-cdn).

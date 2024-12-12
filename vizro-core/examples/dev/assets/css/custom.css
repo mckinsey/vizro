@@ -17,3 +17,34 @@
   height: 210px;
   width: 240px;
 }
+
+.anchor-container {
+  align-items: center;
+  background: var(--text-primary);
+  border-top-left-radius: 8px;
+  bottom: 0;
+  color: var(--text-primary-inverted);
+  display: flex;
+  font-size: 0.8rem;
+  font-weight: 500;
+  height: 24px;
+  padding: 0 12px;
+  position: fixed;
+  right: 0;
+}
+
+.anchor-container:focus,
+.anchor-container:hover {
+  background: var(--text-secondary);
+  color: var(--text-primary-inverted);
+}
+
+img#banner {
+  height: 16px;
+}
+
+img[src*="icon-top"] {
+  filter: var(--fill-icon-image-card);
+  height: 36px;
+  width: 36px;
+}

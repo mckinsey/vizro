@@ -234,7 +234,6 @@ vm.Page.add_type("components", Jumbotron)
             title="Custom Component",
             components=[
                 Jumbotron(  # (6)!
-                    id="my_jumbotron",
                     title="Jumbotron",
                     subtitle="This is a subtitle to summarize some content.",
                     text="This is the main body of text of the Jumbotron.",
@@ -364,7 +363,6 @@ Add the custom action `open_offcanvas` as a `function` argument inside the [`Act
                     ],
                 ),
                 OffCanvas(
-                    id="offcanvas",
                     content="OffCanvas content",
                     title="Offcanvas Title",
                 ),

@@ -290,12 +290,18 @@ def diverging_stacked_bar(data_frame: pd.DataFrame, **kwargs) -> go.Figure:
     orientation = fig.data[0].orientation
     x_or_y = "x" if orientation == "h" else "y"
 
-    for trace_idx in range(len(fig.data) // 2):
+    for trace_idx in range(len(fig.data) // 2, len(fig.data)):
         fig.update_traces({f"{x_or_y}axis": f"{x_or_y}2"}, selector=trace_idx)
 
+    # Add ticksuffix and range limitations on both sids for correct interpretation of diverging stacked bar
+    # with percentage data
+    fig.update_layout({f"{x_or_y}axis": {"ticksuffix": "%"}})
     fig.update_layout({f"{x_or_y}axis2": fig.layout[f"{x_or_y}axis"]})
     fig.update_layout(
-        {f"{x_or_y}axis": {"autorange": "reversed", "domain": [0, 0.5]}, f"{x_or_y}axis2": {"domain": [0.5, 1]}}
+        {
+            f"{x_or_y}axis": {"domain": [0, 0.5], "range": [100, 0]},
+            f"{x_or_y}axis2": {"domain": [0.5, 1], "range": [0, 100]},
+        }
     )
 
     if orientation == "h":
@@ -303,4 +309,52 @@ def diverging_stacked_bar(data_frame: pd.DataFrame, **kwargs) -> go.Figure:
     else:
         fig.add_hline(y=0, line_width=2, line_color="grey")
 
+    return fig
+
+
+@capture("graph")
+def lollipop(data_frame: pd.DataFrame, **kwargs):
+    """Creates a lollipop based on px.scatter.
+
+    A lollipop chart is a variation of a bar chart where each data point is represented by a line and a dot at the end
+    to mark the value.
+
+    Inspired by: https://towardsdatascience.com/lollipop-dumbbell-charts-with-plotly-696039d5f85
+
+    Args:
+        data_frame: DataFrame for the chart. Can be long form or wide form.
+            See https://plotly.com/python/wide-form/.
+        **kwargs: Keyword arguments to pass into px.scatter (e.g. x, y, labels).
+            See https://plotly.com/python-api-reference/generated/plotly.scatter.html.
+
+    Returns:
+        go.Figure: Lollipop chart.
+    """
+    # Plots the dots of the lollipop chart
+    fig = px.scatter(data_frame, **kwargs)
+
+    # Enables the orientation of the chart to be either horizontal or vertical
+    orientation = fig.data[0].orientation
+    x_or_y = "x" if orientation == "h" else "y"
+    y_or_x = "y" if orientation == "h" else "x"
+
+    # Plots the lines of the lollipop chart
+    for x_or_y_value, y_or_x_value in zip(fig.data[0][x_or_y], fig.data[0][y_or_x]):
+        fig.add_trace(go.Scatter({x_or_y: [0, x_or_y_value], y_or_x: [y_or_x_value, y_or_x_value], "mode": "lines"}))
+
+    # Styles the lollipop chart and makes it uni-colored
+    fig.update_traces(
+        marker_size=12,
+        line_width=3,
+        line_color=fig.layout.template.layout.colorway[0],
+    )
+
+    fig.update_layout(
+        {
+            "showlegend": False,
+            f"{x_or_y}axis_showgrid": True,
+            f"{y_or_x}axis_showgrid": False,
+            f"{x_or_y}axis_rangemode": "tozero",
+        },
+    )
     return fig

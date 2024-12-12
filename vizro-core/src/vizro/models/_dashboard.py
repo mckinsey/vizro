@@ -8,7 +8,6 @@ from typing import TYPE_CHECKING, Literal, TypedDict
 
 import dash
 import dash_bootstrap_components as dbc
-import dash_mantine_components as dmc
 import plotly.io as pio
 from dash import (
     ClientsideFunction,
@@ -142,7 +141,7 @@ class Dashboard(VizroBaseModel):
             ClientsideFunction(namespace="dashboard", function_name="update_dashboard_theme"),
             # This currently doesn't do anything, but we need to define an Output such that the callback is triggered.
             Output("dashboard-container", "className"),
-            Input("theme_selector", "checked"),
+            Input("theme-selector", "value"),
         )
         left_side_div_present = any([len(self.pages) > 1, self.pages[0].controls])
         if left_side_div_present:
@@ -197,12 +196,11 @@ class Dashboard(VizroBaseModel):
             else html.H2(id="dashboard-title", hidden=True)
         )
         settings = html.Div(
-            children=dmc.Switch(
-                id="theme_selector",
-                checked=self.theme == "vizro_light",
+            children=dbc.Switch(
+                id="theme-selector",
+                value=self.theme == "vizro_light",
                 persistence=True,
                 persistence_type="session",
-                className="toggle-switch",
             ),
             id="settings",
         )
@@ -310,32 +308,18 @@ class Dashboard(VizroBaseModel):
         return html.Div(
             [
                 # Theme switch is added such that the 404 page has the same theme as the user-selected one.
-                html.Div(
-                    children=dmc.Switch(
-                        id="theme_selector",
-                        checked=self.theme == "vizro_light",
-                        persistence=True,
-                        persistence_type="session",
-                        className="toggle-switch",
-                    ),
-                    id="settings",
+                dbc.Switch(
+                    id="theme-selector",
+                    value=self.theme == "vizro_light",
+                    persistence=True,
+                    persistence_type="session",
                 ),
                 html.Img(src=f"data:image/svg+xml;base64,{error_404_svg}"),
-                html.Div(
-                    [
-                        html.Div(
-                            children=[
-                                html.H3("This page could not be found.", className="heading-3-600"),
-                                html.P("Make sure the URL you entered is correct."),
-                            ],
-                            className="error-text-container",
-                        ),
-                        dbc.Button(children="Take me home", href=get_relative_path("/")),
-                    ],
-                    className="error-content-container",
-                ),
+                html.H3("This page could not be found."),
+                html.P("Make sure the URL you entered is correct."),
+                dbc.Button(children="Take me home", href=get_relative_path("/"), className="mt-4"),
             ],
-            className="page-error-container",
+            className="d-flex flex-column align-items-center justify-content-center min-vh-100",
         )
 
     @staticmethod

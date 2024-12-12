@@ -77,8 +77,8 @@ class TestBuildMethod:
             ("Text to test card", "Text to test card"),
             ("", ""),
             (
-                """![](assets/images/icons/content/hypotheses.svg#icon-top)""",
-                "![](assets/images/icons/content/hypotheses.svg#icon-top)",
+                """![](assets/images/icons/content/hypotheses.svg)""",
+                "![](assets/images/icons/content/hypotheses.svg)",
             ),
             ("""Code block: ```python print(1)```""", "Code block: ```python print(1)```"),
             ("""[Example page](/test_page)""", "[Example page](/test_page)"),

@@ -15,7 +15,7 @@ classifiers = [
   "Programming Language :: Python :: 3.13"
 ]
 dependencies = [
-  "dash>=2.17.1",  # 2.17.1 needed for no_output fix in clientside_callback
+  "dash>=2.18.0,<3",  # 2.18.0 needed as the 'id' attribute is exposed for dcc.Loading
   "dash_bootstrap_components",
   "dash-ag-grid>=31.0.0",
   "pandas>=2",
@@ -79,7 +79,9 @@ filterwarnings = [
   # Ignore warning when using the fig.layout.title inside examples:
   "ignore:Using the `title` argument in your Plotly chart function may cause misalignment:UserWarning",
   # Ignore warning for Pydantic v1 API and Python 3.13:
-  "ignore:Failing to pass a value to the 'type_params' parameter of 'typing.ForwardRef._evaluate' is deprecated:DeprecationWarning"
+  "ignore:Failing to pass a value to the 'type_params' parameter of 'typing.ForwardRef._evaluate' is deprecated:DeprecationWarning",
+  # Ignore deprecation warning until this is solved: https://github.com/plotly/dash/issues/2590:
+  "ignore:HTTPResponse.getheader():DeprecationWarning"
 ]
 norecursedirs = ["tests/tests_utils", "tests/js"]
 pythonpath = ["tests/tests_utils"]

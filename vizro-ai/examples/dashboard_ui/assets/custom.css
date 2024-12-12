@@ -1,0 +1,353 @@
+#page-header {
+  display: none;
+}
+
+.card-body {
+  color: var(--text-secondary-inverted);
+}
+
+.textbox {
+  border-radius: 24px;
+  font-size: 0.875rem;
+  margin-bottom: 20px;
+  max-width: 60%;
+  padding: 4px 12px;
+  width: max-content;
+}
+
+.user_input:focus {
+  background: var(--field-enabled);
+  box-shadow: 0 0 0 2px var(--focus) inset;
+  color: var(--text-primary);
+  outline-width: 0;
+}
+
+#text-area {
+  background-color: inherit;
+  border: 1px solid var(--border-subtleAlpha01);
+  color: var(--text-primary);
+  min-height: 14vh;
+  padding: 8px;
+  width: 100%;
+}
+
+#code-clipboard {
+  padding: 8px;
+}
+
+.code-clipboard {
+  font-size: 20px;
+  position: absolute;
+  right: 14px;
+  top: 12px;
+}
+
+.code-clipboard-container {
+  background: var(--surfaces-bg-card);
+  font-family: monospace;
+  height: 100%;
+  max-height: 42vh;
+  overflow: auto;
+  padding: 1rem;
+  position: relative;
+}
+
+.code-clipboard-container::-webkit-scrollbar-thumb {
+  border-color: var(--surfaces-bg-card);
+}
+
+#model-dropdown .Select--single .Select-value {
+  background-color: inherit;
+  font-size: 12px;
+}
+
+#model-dropdown .Select-control {
+  background-color: inherit;
+  font-size: 12px;
+}
+
+#model-dropdown .Select-menu-outer {
+  font-size: 12px;
+}
+
+#model-dropdow .dash-dropdown {
+  background-color: inherit;
+  font-size: 12px;
+}
+
+#trigger-button {
+  width: 100%;
+}
+
+#dashboard-container .dash-dropdown {
+  background-color: inherit;
+}
+
+#model-dropdown .Select-clear {
+  display: none;
+}
+
+#save-button-id {
+  width: 50%;
+}
+
+.card:has(#upload-message) {
+  background-color: inherit;
+  box-shadow: none;
+  font-size: 12px;
+  overflow: hidden;
+  padding-bottom: 0;
+  padding-left: 0;
+  padding-top: 8px;
+}
+
+.card:has(#settings-card-id) {
+  background-color: inherit;
+  box-shadow: none;
+  font-size: 12px;
+  overflow: hidden;
+  padding-bottom: 0;
+  padding-left: 0;
+}
+
+.settings-div {
+  display: flex;
+  justify-content: end;
+  padding-right: 2px;
+  width: 20px;
+}
+
+#data-upload-component {
+  border: 1px dashed var(--border-subtleAlpha01);
+  color: var(--text-primary);
+  height: 5vh;
+  line-height: 5vh;
+  text-align: center;
+}
+
+#toggle-div-api-base,
+#toggle-div-api-key {
+  align-items: center;
+  display: flex;
+  gap: 4px;
+  justify-content: center;
+}
+
+.toggle-div {
+  display: flex;
+  flex-direction: row;
+  gap: 4px;
+  justify-content: end;
+  padding-top: 6px;
+  width: 100%;
+}
+
+.form-check .form-check-input {
+  border-radius: 8px;
+}
+
+#settings-api-key-toggle .form-check-input {
+  border-radius: 8px;
+}
+
+#settings-api-base-toggle .form-check-input {
+  border-radius: 8px;
+}
+
+.form-check {
+  padding-top: 2px;
+}
+
+.modal-content {
+  width: fit-content;
+}
+
+.btn-primary:enabled:has(#dropdown-menu-icon) {
+  background-color: inherit;
+  color: var(--text-primary);
+  font-size: 1.5rem;
+}
+
+.btn-primary:disabled:has(#dropdown-menu-icon) {
+  background-color: inherit;
+  color: var(--text-primary);
+  font-size: 1.5rem;
+}
+
+.download-button {
+  background-color: inherit;
+  color: var(--text-primary);
+  width: 100%;
+}
+
+#modal-table-icon {
+  cursor: pointer;
+}
+
+.dropdown-menu-toggle-class {
+  background-color: inherit;
+  color: var(--text-primary);
+  height: 2rem;
+  transform: scale(0.9);
+}
+
+.dropdown-menu-toggle-class:hover {
+  background-color: inherit;
+  color: var(--text-primary);
+  cursor: pointer;
+  height: 2rem;
+  transform: scale(0.9);
+}
+
+.dropdown-menu-toggle-class.btn-primary:focus:not(
+    :focus-visible,
+    :disabled,
+    .disabled
+  ) {
+  background-color: inherit;
+  color: var(--text-primary);
+}
+
+.modal-class {
+  max-height: 600px;
+  max-width: 1000px;
+  overflow: auto;
+  scrollbar-width: thin;
+}
+
+#right-header {
+  display: none;
+}
+
+.custom_header {
+  align-items: center;
+  border-bottom: 1px solid var(--border-subtleAlpha01);
+  display: flex;
+  flex-direction: row;
+  height: 60px;
+  justify-content: space-between;
+  min-height: 0;
+  width: 100%;
+}
+
+#right-side {
+  padding-top: 0;
+}
+
+.header-logo {
+  width: 48px;
+}
+/* stylelint-disable-next-line selector-id-pattern */
+#upload-data-container_title {
+  font-size: 14px;
+  padding-top: 4px;
+}
+
+#dropdown-menu-div {
+  align-items: center;
+  align-self: flex-end;
+  border: 0.5px solid gray;
+  border-radius: 8px;
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  min-width: 130px;
+  padding-left: 4px;
+  width: 130px;
+}
+
+#custom-header-div {
+  display: flex;
+  flex-direction: row;
+  gap: 8px;
+  justify-content: center;
+  width: 100%;
+}
+
+#custom-header-title {
+  align-items: center;
+  display: flex;
+  font-size: 28px;
+  font-weight: 400;
+}
+
+#table-modal-div {
+  align-items: center;
+  display: flex;
+  flex-direction: row;
+  gap: 8px;
+}
+
+#data-upload {
+  color: var(--text-secondary);
+}
+
+#open-settings:hover {
+  cursor: pointer;
+}
+
+.hover-effect {
+  transition: all 0.2s ease !important;
+}
+
+.hover-effect:hover {
+  background-color: rgba(255, 255, 255, 0.1) !important;
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+  transform: translateY(-2px);
+}
+
+.anchor-container {
+  align-items: center;
+  background: var(--text-primary);
+  border-top-left-radius: 8px;
+  bottom: 0;
+  color: var(--text-primary-inverted);
+  display: flex;
+  font-size: 0.8rem;
+  font-weight: 500;
+  height: 24px;
+  padding: 0 12px;
+  position: fixed;
+  right: 0;
+}
+
+.anchor-container:focus,
+.anchor-container:hover {
+  background: var(--text-secondary);
+  color: var(--text-primary-inverted);
+}
+
+img#banner {
+  height: 16px;
+}
+
+.dropdown-menu-outer-div {
+  align-items: end;
+  display: flex;
+  justify-content: end;
+  width: 100%;
+}
+
+.flex-container {
+  display: flex;
+  flex-flow: column wrap;
+  gap: 12px;
+  justify-content: flex-start;
+  overflow: hidden; /* check and remove comment */
+}
+
+.flex-container h4 {
+  color: var(--text-secondary);
+  margin: 0;
+  padding-top: 12px;
+  text-align: center;
+}
+
+.flex-container .code-clipboard-container {
+  height: 500px;
+  width: 100%;
+}
+
+.flex-container #graph {
+  height: 712px;
+}

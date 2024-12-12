@@ -16,8 +16,8 @@ nav:
           - Advanced charts: pages/user-guides/create-advanced-charts.md
           - Add Vizro-AI charts to a Vizro dashboard: pages/user-guides/add-generated-chart-usecase.md
       - DASHBOARDS:
-          - Generate a complex dashboard: pages/user-guides/create-complex-dashboard.md
-          - Retrieve code for a generated dashboard: pages/user-guides/retrieve-dashboard-code.md
+          - Run vizro_ai.dashboard: pages/user-guides/run-vizro-ai-dashboard.md
+          - Advanced dashboards: pages/user-guides/create-complex-dashboard.md
           - Use Vizro-AI methods as Langchain tools: pages/user-guides/vizro-ai-langchain-guide.md
   - API Reference:
       - VizroAI: pages/API-reference/vizro-ai.md
@@ -26,8 +26,9 @@ nav:
       - Disclaimer: pages/explanation/disclaimer.md
       - Safeguard code execution: pages/explanation/safeguard.md
       - Safety in Vizro-AI: pages/explanation/safety-in-vizro-ai.md
+      - Why use Vizro-AI: pages/explanation/why-use-vizro-ai.md
   - Examples:
-      - Chart examples: pages/user-guides/chart-examples.md
+      - Gallery: https://vizro.mckinsey.com
   #- Contribute:
   #      - Contributing: pages/contribute/contributing.md
   - Vizro:

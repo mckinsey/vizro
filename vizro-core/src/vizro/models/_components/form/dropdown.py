@@ -65,6 +65,10 @@ class Dropdown(VizroBaseModel):
     title: str = Field("", description="Title to be displayed")
     actions: list[Action] = []
 
+    # Consider making the _dynamic public later. The same property could also be used for all other components.
+    # For example: vm.Graph could have a dynamic that is by default set on True.
+    _dynamic: bool = PrivateAttr(False)
+
     # Component properties for actions and interactions
     _input_property: str = PrivateAttr("value")
 
@@ -82,9 +86,8 @@ class Dropdown(VizroBaseModel):
             raise ValueError("Please set multi=True if providing a list of default values.")
         return multi
 
-    @_log_call
-    def build(self):
-        full_options, default_value = get_options_and_default(options=self.options, multi=self.multi)
+    def __call__(self, options):
+        full_options, default_value = get_options_and_default(options=options, multi=self.multi)
         option_height = _calculate_option_height(full_options)
 
         return html.Div(
@@ -95,9 +98,24 @@ class Dropdown(VizroBaseModel):
                     options=full_options,
                     value=self.value if self.value is not None else default_value,
                     multi=self.multi,
-                    persistence=True,
                     optionHeight=option_height,
+                    persistence=True,
                     persistence_type="session",
                 ),
             ]
         )
+
+    def _build_dynamic_placeholder(self):
+        # Setting self.value is kind of Dropdown pre_build method. It sets self.value only the first time if it's None.
+        # We cannot create pre_build for the Dropdown because it has to be called after vm.Filter.pre_build, but nothing
+        # guarantees that. We can call Filter.selector.pre_build() from the Filter.pre_build() method if we decide that.
+        # TODO: move this to pre_build once we have better control of the ordering.
+        if self.value is None:
+            _, default_value = get_options_and_default(self.options, self.multi)
+            self.value = default_value
+
+        return self.__call__(self.options)
+
+    @_log_call
+    def build(self):
+        return self._build_dynamic_placeholder() if self._dynamic else self.__call__(self.options)

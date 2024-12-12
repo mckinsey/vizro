@@ -3,9 +3,9 @@
 You can use Vizro-AI's functionality within a larger LangChain application. This guide shows how to integrate Vizro-AI's chart and dashboard generation capabilities as LangChain tools. Here are the steps you need to take:
 
 1. [Set up the environment](#1-set-up-the-environment)
-2. [Define LangChain tools](#2-define-langchain-tools)
-3. [Set up the tool chain](#3-set-up-the-tool-chain)
-4. [Use the chain](#4-use-the-chain)
+1. [Define LangChain tools](#2-define-langchain-tools)
+1. [Set up the tool chain](#3-set-up-the-tool-chain)
+1. [Use the chain](#4-use-the-chain)
 
 ## 1. Set up the environment
 
@@ -51,6 +51,7 @@ def get_plot_code(df: Annotated[Any, InjectedToolArg], question: str) -> str:
     )
     return plot_elements.code_vizro
 
+
 @tool(parse_docstring=True)
 def get_dashboard_code(dfs: Annotated[Any, InjectedToolArg], question: str) -> str:
     """Generate the dashboard code.
@@ -80,6 +81,7 @@ Create a chain that handles tool execution and data injection:
 tools = [get_plot_code, get_dashboard_code]
 llm_with_tools = llm.bind_tools(tools)
 
+
 # Create data injection chain
 @chain
 def inject_df(ai_msg):
@@ -95,12 +97,15 @@ def inject_df(ai_msg):
         tool_calls.append(tool_call_copy)
     return tool_calls
 
+
 # Create tool router
 tool_map = {tool.name: tool for tool in tools}
+
 
 @chain
 def tool_router(tool_call):
     return tool_map[tool_call["name"]]
+
 
 # Combine chains
 chain = llm_with_tools | inject_df | tool_router.map()
@@ -111,26 +116,25 @@ chain = llm_with_tools | inject_df | tool_router.map()
 Now you can use the chain to generate charts or dashboards based on natural language queries. The chain will generate code that you can use to create visualizations.
 
 !!! example "Generate chart code"
-
     === "Code"
-        ```py
+        ```python
         # Load sample data
         df = px.data.gapminder()
 
         plot_response = chain.invoke("Plot GDP per capita for each continent")
         print(plot_response[0].content)
         ```
+
     === "Vizro-AI Generated Code"
-        ```py
+        ```python
         import plotly.graph_objects as go
         from vizro.models.types import capture
+
 
         @capture("graph")
         def custom_chart(data_frame):
             continent_gdp = data_frame.groupby("continent")["gdpPercap"].mean().reset_index()
-            fig = go.Figure(
-                data=[go.Bar(x=continent_gdp["continent"], y=continent_gdp["gdpPercap"])]
-            )
+            fig = go.Figure(data=[go.Bar(x=continent_gdp["continent"], y=continent_gdp["gdpPercap"])])
             fig.update_layout(
                 title="GDP per Capita by Continent",
                 xaxis_title="Continent",
@@ -140,16 +144,18 @@ Now you can use the chain to generate charts or dashboards based on natural lang
         ```
 
 !!! example "Generate dashboard code"
-
     === "Code"
-        ```py
+        ```python
         dfs = [px.data.gapminder()]
 
-        dashboard_response = chain.invoke("Create a dashboard. This dashboard has a chart showing the correlation between gdpPercap and lifeExp.")
+        dashboard_response = chain.invoke(
+            "Create a dashboard. This dashboard has a chart showing the correlation between gdpPercap and lifeExp."
+        )
         print(dashboard_response[0].content)
         ```
+
     === "Vizro-AI Generated Code"
-        ```py
+        ```python
         ############ Imports ##############
         import vizro.models as vm
         from vizro.models.types import capture
@@ -160,9 +166,7 @@ Now you can use the chain to generate charts or dashboards based on natural lang
         @capture("graph")
         def gdp_life_exp_graph(data_frame):
             fig = go.Figure()
-            fig.add_trace(
-                go.Scatter(x=data_frame["gdpPercap"], y=data_frame["lifeExp"], mode="markers")
-            )
+            fig.add_trace(go.Scatter(x=data_frame["gdpPercap"], y=data_frame["lifeExp"], mode="markers"))
             fig.update_layout(
                 title="GDP per Capita vs Life Expectancy",
                 xaxis_title="GDP per Capita",

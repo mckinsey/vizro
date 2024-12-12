@@ -38,6 +38,8 @@ class Checklist(VizroBaseModel):
     title: str = Field("", description="Title to be displayed")
     actions: list[Action] = []
 
+    _dynamic: bool = PrivateAttr(False)
+
     # Component properties for actions and interactions
     _input_property: str = PrivateAttr("value")
 
@@ -46,9 +48,8 @@ class Checklist(VizroBaseModel):
     _validate_options = root_validator(allow_reuse=True, pre=True)(validate_options_dict)
     _validate_value = validator("value", allow_reuse=True, always=True)(validate_value)
 
-    @_log_call
-    def build(self):
-        full_options, default_value = get_options_and_default(options=self.options, multi=True)
+    def __call__(self, options):
+        full_options, default_value = get_options_and_default(options=options, multi=True)
 
         return html.Fieldset(
             children=[
@@ -62,3 +63,14 @@ class Checklist(VizroBaseModel):
                 ),
             ]
         )
+
+    def _build_dynamic_placeholder(self):
+        if self.value is None:
+            _, default_value = get_options_and_default(self.options, multi=True)
+            self.value = [default_value]
+
+        return self.__call__(self.options)
+
+    @_log_call
+    def build(self):
+        return self._build_dynamic_placeholder() if self._dynamic else self.__call__(self.options)

@@ -196,7 +196,8 @@ class ChartPlanFactory:
                 fig = custom_chart(data_frame.sample(10, replace=True))
             except Exception as e:
                 raise ValueError(
-                    f"Produced code execution failed the following error: <{e}>. Please check the code and try again."
+                    f"Produced code execution failed the following error: <{e}>. Please check the code and try again, "
+                    f"alternatively try with a more powerful model."
                 )
             assert isinstance(
                 fig, go.Figure
