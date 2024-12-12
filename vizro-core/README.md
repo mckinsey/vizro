@@ -82,7 +82,7 @@ Use Vizro when you need to combine the speed and ease of low-code Python tools, 
 
 ## How to use Vizro?
 
-### Vizro framework
+## Vizro framework
 
 **Low-code framework for building dashboards.**
 
@@ -90,7 +90,7 @@ The Vizro framework underpins the entire Vizro toolkit. It is a Python package (
 
 Visit the **[documentation](https://vizro.readthedocs.io/en/stable/)** for more details.
 
-### Vizro visual vocabulary
+## Vizro visual vocabulary
 
 **Chart examples.**
 
@@ -100,7 +100,7 @@ Visit the **[Vizro visual vocabulary](https://vizro-demo-visual-vocabulary.hf.sp
 
 <img width="600" src="https://raw.githubusercontent.com/mckinsey/vizro/main/.github/images/toolkit_visual_vocabulary.png">
 
-### Vizro examples gallery
+## Vizro examples gallery
 
 **Dashboard examples.**
 
@@ -110,7 +110,7 @@ Visit the **[dashboard examples gallery](https://vizro.mckinsey.com/)** to see t
 
 <img width="600" src="https://raw.githubusercontent.com/mckinsey/vizro/main/.github/images/toolkit_dashboard_examples.png">
 
-### Vizro-AI
+## Vizro-AI
 
 **Use LLMs to generate charts and dashboards.**
 
