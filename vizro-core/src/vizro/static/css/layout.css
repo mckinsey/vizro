@@ -5,6 +5,12 @@
   width: 100vw;
 }
 
+#settings {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
 #left-main {
   align-items: flex-start;
   display: flex;
