@@ -2,7 +2,7 @@ import os
 
 import pytest
 from selenium.common import InvalidSelectorException, TimeoutException
-from tests.helpers.common import (
+from e2e_waiters import (
     wait_for,
     webdriver_click_waiter,
     webdriver_waiter,
@@ -11,8 +11,8 @@ from tests.helpers.common import (
 
 
 @pytest.mark.filterwarnings("ignore:HTTPResponse.getheader():DeprecationWarning")
-@pytest.mark.filterwarnings("ignore::pytest.PytestUnhandledThreadExceptionWarning")
-@pytest.mark.filterwarnings("ignore:unclosed file:ResourceWarning")
+# @pytest.mark.filterwarnings("ignore::pytest.PytestUnhandledThreadExceptionWarning")
+# @pytest.mark.filterwarnings("ignore:unclosed file:ResourceWarning")
 @pytest.mark.parametrize(
     "chromedriver",
     [({"port": 8050})],
@@ -30,11 +30,11 @@ def test_chart_ui(chromedriver):
 
     # upload file
     file_input = webdriver_waiter_css(chromedriver, 'input[type="file"]')
-    file_input.send_keys(os.path.abspath("tests/vizro_ai_ui/genre_popularity_by_country.csv"))
-    webdriver_click_waiter(chromedriver, '//*[@id="data-upload-id"]')
+    file_input.send_keys(os.path.abspath("tests/tests_utils/genre_popularity_by_country.csv"))
+    webdriver_click_waiter(chromedriver, '//*[@id="data-upload"]')
 
     # enter prompt
-    prompt = webdriver_waiter(chromedriver, '//*[@id="text-area-id"]')
+    prompt = webdriver_waiter(chromedriver, '//*[@id="text-area"]')
     prompt.send_keys("Create bar graph by genre")
 
     # choose gpt version
@@ -43,7 +43,7 @@ def test_chart_ui(chromedriver):
     webdriver_click_waiter(chromedriver, '//*/div[text()="gpt-4o-mini"]')
 
     # click run VizroAI
-    webdriver_click_waiter(chromedriver, '//*[@id="trigger-button-id"]')
+    webdriver_click_waiter(chromedriver, '//*[@id="trigger-button"]')
 
     # check result
     def _text_waiter():

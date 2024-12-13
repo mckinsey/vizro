@@ -1,5 +1,5 @@
 from hamcrest import any_of, assert_that, contains_string
-from tests.helpers.constants import (
+from e2e_constants import (
     INVALID_PROP_ERROR,
     REACT_NOT_RECOGNIZE_ERROR,
     REACT_RENDERING_ERROR,

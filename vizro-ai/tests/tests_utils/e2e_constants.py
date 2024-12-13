@@ -7,3 +7,5 @@ WILLMOUNT_RENAMED_WARNING = "componentWillMount has been renamed"
 WILLRECEIVEPROPS_RENAMED_WARNING = "componentWillReceiveProps has been renamed"
 READPIXELS_WARNING = "GPU stall due to ReadPixels"
 WEBGL_WARNING = "WebGL"  # https://issues.chromium.org/issues/40277080
+
+TIMEOUT = 30

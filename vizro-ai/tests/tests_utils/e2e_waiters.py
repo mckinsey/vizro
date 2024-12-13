@@ -6,6 +6,7 @@ from selenium.common.exceptions import (
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support import expected_conditions
 from selenium.webdriver.support.wait import WebDriverWait
+from e2e_constants import TIMEOUT
 
 
 def wait_for(condition_function, *args):
@@ -20,20 +21,20 @@ def wait_for(condition_function, *args):
 
 
 def webdriver_click_waiter(browserdriver, xpath):
-    WebDriverWait(browserdriver, 10, ignored_exceptions=StaleElementReferenceException).until(
+    WebDriverWait(browserdriver, TIMEOUT, ignored_exceptions=StaleElementReferenceException).until(
         expected_conditions.element_to_be_clickable((By.XPATH, xpath))
     ).click()
 
 
 def webdriver_waiter(browserdriver, xpath):
-    elem = WebDriverWait(browserdriver, 10, ignored_exceptions=StaleElementReferenceException).until(
+    elem = WebDriverWait(browserdriver, TIMEOUT, ignored_exceptions=StaleElementReferenceException).until(
         expected_conditions.presence_of_element_located((By.XPATH, xpath))
     )
     return elem
 
 
 def webdriver_waiter_css(browserdriver, xpath):
-    elem = WebDriverWait(browserdriver, 30, ignored_exceptions=StaleElementReferenceException).until(
+    elem = WebDriverWait(browserdriver, TIMEOUT, ignored_exceptions=StaleElementReferenceException).until(
         expected_conditions.presence_of_element_located((By.CSS_SELECTOR, xpath))
     )
     return elem

@@ -68,6 +68,8 @@ filterwarnings = [
   # Ignore warning for Pydantic v1 API and Python 3.13:
   "ignore:Failing to pass a value to the 'type_params' parameter of 'typing.ForwardRef._evaluate' is deprecated:DeprecationWarning"
 ]
+norecursedirs = ["tests/tests_utils"]
+pythonpath = ["tests/tests_utils"]
 
 [tool.ruff]
 extend = "../pyproject.toml"
