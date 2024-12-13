@@ -34,7 +34,7 @@ def test_chart_ui(chromedriver):
     # upload file
     file_input = webdriver_waiter_css(chromedriver, 'input[type="file"]')
     file_input.send_keys(os.path.abspath("tests/tests_utils/genre_popularity_by_country.csv"))
-    webdriver_click_waiter(chromedriver, '//*[@id="data-upload"]')
+    webdriver_click_waiter(chromedriver, '//*[@id="data-upload-id"]')
 
     # enter prompt
     prompt = webdriver_waiter(chromedriver, '//*[@id="text-area"]')
