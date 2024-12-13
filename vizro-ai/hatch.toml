@@ -48,6 +48,7 @@ prep-release = [
 ]
 pypath = "hatch run python -c 'import sys; print(sys.executable)'"
 test = "pytest tests {args}"
+test-e2e-vizro-ai-ui = "pytest -vs --reruns 1 tests/e2e/test_vizro_ai_ui.py --headless {args}"
 test-integration = "pytest -vs --reruns 1 tests/integration --headless {args}"
 test-score = "pytest -vs --reruns 1 tests/score --headless {args}"
 test-unit = "pytest tests/unit {args}"
@@ -56,7 +57,6 @@ test-unit-coverage = [
   "- coverage combine",
   "coverage report"
 ]
-test-e2e-vizro-ai-ui = "pytest -vs --reruns 1 tests/e2e/test_vizro_ai_ui.py --headless {args}"
 vizro-ai-ui = "python examples/dashboard_ui/app.py &"
 
 [envs.docs]

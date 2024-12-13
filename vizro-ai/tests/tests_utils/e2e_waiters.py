@@ -1,12 +1,12 @@
 import time
 
+from e2e_constants import TIMEOUT
 from selenium.common.exceptions import (
     StaleElementReferenceException,
 )
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support import expected_conditions
 from selenium.webdriver.support.wait import WebDriverWait
-from e2e_constants import TIMEOUT
 
 
 def wait_for(condition_function, *args):

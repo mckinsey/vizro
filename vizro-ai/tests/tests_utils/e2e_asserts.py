@@ -1,4 +1,3 @@
-from hamcrest import any_of, assert_that, contains_string
 from e2e_constants import (
     INVALID_PROP_ERROR,
     REACT_NOT_RECOGNIZE_ERROR,
@@ -10,6 +9,7 @@ from e2e_constants import (
     WILLMOUNT_RENAMED_WARNING,
     WILLRECEIVEPROPS_RENAMED_WARNING,
 )
+from hamcrest import any_of, assert_that, contains_string
 
 
 def browser_console_warnings_checker(log_level, log_levels):
