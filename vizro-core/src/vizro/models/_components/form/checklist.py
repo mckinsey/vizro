@@ -1,6 +1,6 @@
 from typing import Literal, Optional
 
-from dash import html
+from dash import ClientsideFunction, Input, Output, State, clientside_callback, dcc, html
 
 try:
     from pydantic.v1 import Field, PrivateAttr, root_validator, validator
@@ -49,16 +49,31 @@ class Checklist(VizroBaseModel):
     _validate_value = validator("value", allow_reuse=True, always=True)(validate_value)
 
     def __call__(self, options):
-        full_options, default_value = get_options_and_default(options=options, multi=True)
-        print("default value: ", default_value)
+        output = [
+            Output(f"{self.id}", "value"),
+            Output(f"{self.id}_select_all", "value")
+        ]
+        inputs = [
+            Input(f"{self.id}_select_all", "value"),
+            Input(f"{self.id}", "value"),
+            State(f"{self.id}", "options"),
+        ]
+
+        clientside_callback(
+            ClientsideFunction(namespace="checklist", function_name="update_checklist_values"),
+            output=output,
+            inputs=inputs,
+        )
+
         return html.Fieldset(
             children=[
                 html.Legend(children=self.title, className="form-label") if self.title else None,
                 dbc.Checklist(
-                    id=f"{self.id}-select-all",
+                    id=f"{self.id}_select_all",
                     options=["Select All"],
-                    # value="Select All",
-                    style={"marginBottom": "12px"}
+                    value=[],
+                    persistence=True,
+                    persistence_type="session",
                 ),
                 dbc.Checklist(
                     id=self.id,

@@ -1,9 +1,10 @@
 """Dev app to try things out."""
+import dash
 
 from vizro import Vizro
 import vizro.models as vm
 import vizro.plotly.express as px
-from dash import Input, Output, State, callback
+
 from vizro.tables import dash_ag_grid
 
 
@@ -30,30 +31,11 @@ first_page = vm.Page(
         )
     ],
     controls=[
-        vm.Filter(column="continent", selector=vm.Checklist(id="test")),
-        # vm.Filter(column="continent"),
+        vm.Filter(column="continent", selector=vm.Checklist()),
     ],
 )
 
 dashboard = vm.Dashboard(pages=[first_page])
-
-
-@callback(
-    [Output("test", "value"), Output("test-select-all", "value")],
-    [Input("test-select-all", "value"), Input("test", "value")],
-    State("test", "options"),
-)
-def update_checklist(value_1, value_2, options):
-    if value_1:
-        if len(value_2) == 0:
-            return options, value_1
-        if len(value_2) != len(options):
-            return value_2, []
-    else:
-        if len(value_2) == len(options):
-            return options, ["Select All"]
-
-
 
 if __name__ == "__main__":
     Vizro().build(dashboard).run()
