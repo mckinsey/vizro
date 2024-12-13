@@ -1,13 +1,13 @@
 import os
 
 import pytest
-from selenium.common import InvalidSelectorException, TimeoutException
 from e2e_waiters import (
     wait_for,
     webdriver_click_waiter,
     webdriver_waiter,
     webdriver_waiter_css,
 )
+from selenium.common import InvalidSelectorException, TimeoutException
 
 
 @pytest.mark.filterwarnings("ignore:HTTPResponse.getheader():DeprecationWarning")
