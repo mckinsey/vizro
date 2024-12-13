@@ -1,6 +1,7 @@
 import os
 
 import pytest
+from e2e_fake_data_generator import create_genre_popularity_by_country
 from e2e_waiters import (
     wait_for,
     webdriver_click_waiter,
@@ -8,7 +9,6 @@ from e2e_waiters import (
     webdriver_waiter_css,
 )
 from selenium.common import InvalidSelectorException, TimeoutException
-from e2e_fake_data_generator import create_genre_popularity_by_country
 
 
 @pytest.mark.parametrize(
