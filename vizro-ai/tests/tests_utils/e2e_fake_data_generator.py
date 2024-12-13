@@ -1,16 +1,37 @@
-import pandas as pd
 import random
+
+import pandas as pd
 
 # List of music genres
 music_genres = [
-    "Pop", "Rock", "Hip-Hop", "Jazz", "Classical", "Electronic",
-    "Reggae", "Country", "Blues", "R&B", "Metal", "Folk"
+    "Pop",
+    "Rock",
+    "Hip-Hop",
+    "Jazz",
+    "Classical",
+    "Electronic",
+    "Reggae",
+    "Country",
+    "Blues",
+    "R&B",
+    "Metal",
+    "Folk",
 ]
 
 # List of countries
 countries = [
-    "United States", "Canada", "United Kingdom", "Germany", "France",
-    "Japan", "Australia", "Brazil", "India", "South Korea", "Italy", "Spain"
+    "United States",
+    "Canada",
+    "United Kingdom",
+    "Germany",
+    "France",
+    "Japan",
+    "Australia",
+    "Brazil",
+    "India",
+    "South Korea",
+    "Italy",
+    "Spain",
 ]
 
 
@@ -25,11 +46,6 @@ def create_genre_popularity_by_country(start_year=1980, end_year=2023, records_p
             country = random.choice(countries)
             popularity_score = round(random.uniform(0, 100), 2)  # Popularity score between 0 and 100
 
-            data.append({
-                "Year": year,
-                "Country": country,
-                "Genre": genre,
-                "Popularity Score": popularity_score
-            })
+            data.append({"Year": year, "Country": country, "Genre": genre, "Popularity Score": popularity_score})
 
     return pd.DataFrame(data)
