@@ -51,7 +51,7 @@ jobs:
       - name: Run e2e VizroAI UI tests
         run: |
           hatch run vizro-ai-ui
-          tests/test_utils/wait-for-it.sh 127.0.0.1:8050 -t 30
+          tests/tests_utils/wait-for-it.sh 127.0.0.1:8050 -t 30
           hatch run test-e2e-vizro-ai-ui
         env:
           OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}

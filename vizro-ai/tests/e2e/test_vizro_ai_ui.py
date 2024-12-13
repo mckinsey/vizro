@@ -8,17 +8,20 @@ from e2e_waiters import (
     webdriver_waiter,
     webdriver_waiter_css,
 )
+from e2e_fake_data_generator import create_genre_popularity_by_country
 
 
-@pytest.mark.filterwarnings("ignore:HTTPResponse.getheader():DeprecationWarning")
-# @pytest.mark.filterwarnings("ignore::pytest.PytestUnhandledThreadExceptionWarning")
-# @pytest.mark.filterwarnings("ignore:unclosed file:ResourceWarning")
 @pytest.mark.parametrize(
     "chromedriver",
     [({"port": 8050})],
     indirect=["chromedriver"],
 )
 def test_chart_ui(chromedriver):
+    # Create test dataset
+    popularity_dataset = create_genre_popularity_by_country(start_year=1980, end_year=2023, records_per_year=10)
+    # Save to a CSV file
+    popularity_dataset.to_csv("tests/tests_utils/genre_popularity_by_country.csv", index=False)
+
     # fill in values
     api_key = webdriver_waiter(chromedriver, '//*[@id="settings-api-key"]')
     api_base = webdriver_waiter(chromedriver, '//*[@id="settings-api-base"]')
