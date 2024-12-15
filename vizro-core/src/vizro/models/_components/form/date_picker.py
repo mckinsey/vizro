@@ -1,7 +1,7 @@
 from typing import Literal, Optional, Union
 
 import dash_mantine_components as dmc
-from dash import  Input, Output, State, dcc, html
+from dash import html
 
 try:
     from pydantic.v1 import Field, PrivateAttr, validator
@@ -57,7 +57,6 @@ class DatePicker(VizroBaseModel):
     def build(self):
         init_value = self.value or ([self.min, self.max] if self.range else self.min)  # type: ignore[list-item]
         date_range_picker_kwargs = {"allowSingleDateInRange": True} if self.range else {}
-
 
         date_picker = dmc.DatePickerInput(
             id=self.id,
