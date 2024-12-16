@@ -29,6 +29,11 @@ All the HEX values starting with --text-code are taken from the Github code high
 }
 
 /* CARDS */
+.card {
+  height: 100%;
+  width: 100%;
+}
+
 .card .nav-link {
   height: 100%;
 }
