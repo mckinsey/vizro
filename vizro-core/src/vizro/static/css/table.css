@@ -1,8 +1,8 @@
-.table-container .dash-cell {
+#dashboard-container .dash-cell {
   height: 48px !important;
 }
 
-.table-container
+#dashboard-container
   .dash-table-container
   .dash-spreadsheet-container
   .dash-spreadsheet-inner
@@ -11,7 +11,7 @@
   padding: 10px 0;
 }
 
-.table-container
+#dashboard-container
   .dash-table-container
   .dash-spreadsheet-container
   .dash-spreadsheet-inner
@@ -20,7 +20,7 @@
 }
 
 
-.table-container
+#dashboard-container
   .dash-table-container
   .dash-spreadsheet-container
   .dash-spreadsheet-inner
@@ -29,22 +29,22 @@
 }
 
 /* Styling for pagination element */
-.table-container .first-page,
-.table-container .previous-page,
-.table-container .next-page,
-.table-container .last-page{
+#dashboard-container .first-page,
+#dashboard-container .previous-page,
+#dashboard-container .next-page,
+#dashboard-container .last-page{
   background: inherit;
   color: var(--text-secondary);
 }
 
-.table-container input.current-page, .table-container input.current-page::placeholder {
+#dashboard-container input.current-page, .table-container input.current-page::placeholder {
   background: inherit;
   color: var(--text-primary) !important;
 }
 
-.table-container button.first-page:hover,
-.table-container button.previous-page:hover,
-.table-container button.next-page:hover,
-.table-container button.last-page:hover {
+#dashboard-container button.first-page:hover,
+#dashboard-container button.previous-page:hover,
+#dashboard-container button.next-page:hover,
+#dashboard-container button.last-page:hover {
   color: var(--text-primaryHover) !important;
 }
