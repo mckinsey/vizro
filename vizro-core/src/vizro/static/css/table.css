@@ -1,93 +1,50 @@
-#right-side .dash-cell {
+.table-container .dash-cell {
   height: 48px !important;
 }
 
-#right-side .dash-table-container {
-  padding-bottom: 12px;
-}
-
-#right-side
+.table-container
   .dash-table-container
   .dash-spreadsheet-container
   .dash-spreadsheet-inner
   th {
-  background-color: var(--right-side-bg);
-  color: var(--text-primary);
+  background-color: inherit;
   padding: 10px 0;
 }
 
-#right-side
+.table-container
   .dash-table-container
   .dash-spreadsheet-container
   .dash-spreadsheet-inner
   td {
-  background-color: var(--right-side-bg);
-  color: var(--text-primary);
+  background-color: inherit;
 }
 
-#right-side
+
+.table-container
   .dash-table-container
   .dash-spreadsheet-container
   .dash-spreadsheet-inner
   table {
-  --hover: var(--right-side-bg);
-
-  width: 100%;
+  --hover: inherit;
 }
 
-#right-side
-  .dash-table-container
-  .dash-spreadsheet-container
-  .dash-spreadsheet-inner
-  td
-  .dash-cell-value.unfocused {
-  font-size: 14px;
+/* Styling for pagination element */
+.table-container .first-page,
+.table-container .previous-page,
+.table-container .next-page,
+.table-container .last-page{
+  background: inherit;
+  color: var(--text-secondary);
 }
 
-#right-side
-  .dash-table-container
-  .dash-spreadsheet-container
-  .dash-spreadsheet-inner
-  .column-header-name {
-  font-size: 14px;
-}
-
-.dash-table-container .previous-next-container .page-number {
-  color: var(--text-primary);
-}
-
-#right-side .dash-table-container .previous-next-container {
-  font-size: 14px;
-  padding: 4px 0;
-}
-
-#right-side .dash-table-container .previous-next-container button,
-#right-side
-  .dash-table-container
-  .previous-next-container
-  .page-number
-  .current-page-container
-  .current-page-shadow,
-.dash-table-container
-  .previous-next-container
-  .page-number
-  .current-page-container
-  input.current-page {
-  background: transparent;
-  color: var(--text-primary);
-  font-size: 14px;
-}
-
-#right-side
-  .dash-table-container
-  .previous-next-container
-  .page-number
-  .current-page-container
-  .current-page-shadow::placeholder,
-.dash-table-container
-  .previous-next-container
-  .page-number
-  .current-page-container
-  input.current-page::placeholder {
+.table-container input.current-page, .table-container input.current-page::placeholder {
+  background: inherit;
   color: var(--text-primary) !important;
+}
+
+.table-container button.first-page:hover,
+.table-container button.previous-page:hover,
+.table-container button.next-page:hover,
+.table-container button.last-page:hover {
+  color: var(--text-primaryHover) !important;
 }
