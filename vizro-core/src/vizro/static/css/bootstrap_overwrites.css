@@ -76,3 +76,8 @@ To ensure the dynamic height adjustment and prevent scrolling, the height must b
 label[for="theme-selector"] {
   display: none;
 }
+
+
+.navbar {
+    background: var(--surfaces-bg02) !important;
+}
