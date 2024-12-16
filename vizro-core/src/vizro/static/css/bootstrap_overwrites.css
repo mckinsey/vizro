@@ -77,7 +77,6 @@ label[for="theme-selector"] {
   display: none;
 }
 
-
 .navbar {
-    background: var(--surfaces-bg02) !important;
+  background: var(--surfaces-bg02) !important;
 }
