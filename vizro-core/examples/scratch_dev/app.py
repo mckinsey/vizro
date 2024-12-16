@@ -1,4 +1,5 @@
 """Dev app to try things out."""
+
 import dash
 
 from vizro import Vizro
@@ -28,7 +29,7 @@ first_page = vm.Page(
             title="Gapminder Data Insights",
             header="""#### An Interactive Exploration of Global Health, Wealth, and Population""",
             footer="""SOURCE: **Plotly gapminder data set, 2024**""",
-        )
+        ),
     ],
     controls=[
         vm.Filter(column="continent", selector=vm.Checklist()),
