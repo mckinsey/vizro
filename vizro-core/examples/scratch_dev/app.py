@@ -11,7 +11,7 @@ table = vm.Page(
     title="Table",
     components=[
         vm.Table(
-            figure=dash_data_table(data_frame=gapminde, page_size=5),
+            figure=dash_data_table(data_frame=gapminder, page_size=5),
             title="Gapminder Data Insights",
             header="""#### An Interactive Exploration of Global Health, Wealth, and Population""",
             footer="""SOURCE: **Plotly gapminder data set, 2024**""",

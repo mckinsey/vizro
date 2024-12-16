@@ -1,30 +1,17 @@
 #dashboard-container .dash-cell {
-  height: 48px !important;
+  height: 3rem !important;
 }
 
-#dashboard-container
-  .dash-table-container
-  .dash-spreadsheet-container
-  .dash-spreadsheet-inner
-  th {
+#dashboard-container .dash-spreadsheet-inner th {
   background-color: inherit;
   padding: 10px 0;
 }
 
-#dashboard-container
-  .dash-table-container
-  .dash-spreadsheet-container
-  .dash-spreadsheet-inner
-  td {
+#dashboard-container .dash-spreadsheet-inner td {
   background-color: inherit;
 }
 
-
-#dashboard-container
-  .dash-table-container
-  .dash-spreadsheet-container
-  .dash-spreadsheet-inner
-  table {
+#dashboard-container .dash-spreadsheet-inner table {
   --hover: inherit;
 }
 
@@ -32,12 +19,13 @@
 #dashboard-container .first-page,
 #dashboard-container .previous-page,
 #dashboard-container .next-page,
-#dashboard-container .last-page{
+#dashboard-container .last-page {
   background: inherit;
   color: var(--text-secondary);
 }
 
-#dashboard-container input.current-page, .table-container input.current-page::placeholder {
+#dashboard-container input.current-page,
+.table-container input.current-page::placeholder {
   background: inherit;
   color: var(--text-primary) !important;
 }
