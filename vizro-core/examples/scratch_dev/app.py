@@ -1,31 +1,69 @@
 """Dev app to try things out."""
 
-from vizro import Vizro
-import vizro.plotly.express as px
-import vizro.models as vm
-from vizro.tables import dash_ag_grid
 import pandas as pd
-
-df = pd.read_csv("https://raw.githubusercontent.com/plotly/datasets/master/ag-grid/olympic-winners.csv")
-columnDefs = [
-    {"field": "athlete", "headerName": "The full Name of the athlete"},
-    {"field": "age", "headerName": "The number of Years since the athlete was born"},
-    {"field": "country", "headerName": "The Country the athlete was born in"},
-    {"field": "sport", "headerName": "The Sport the athlete participated in"},
-    {"field": "total", "headerName": "The Total number of medals won by the athlete"},
-]
-
-defaultColDef = {
-    "wrapHeaderText": True,
-    "autoHeaderHeight": True,
-}
+import vizro.models as vm
+import vizro.plotly.express as px
+from vizro import Vizro
+from typing import List, Literal, Tuple
+from vizro.models.types import ControlType
+from dash import html
 
 
-# Test app -----------------
+class CustomGroup(vm.VizroBaseModel):
+    """Container to group controls."""
+
+    type: Literal["custom_group"] = "custom_group"
+    controls: List[Tuple[str, List[ControlType]]] = [[]]
+
+    def build(self):
+        return html.Div(
+            children=[
+                html.Div(
+                    children=[html.Br(), html.H5(control_tuple[0]), *[control.build() for control in control_tuple[1]]],
+                )
+                for control_tuple in self.controls
+            ]
+        )
+
+
+vm.Page.add_type("controls", CustomGroup)
+
+
 page = vm.Page(
-    title="Page Title",
-    components=[vm.AgGrid(figure=dash_ag_grid(df, columnDefs=columnDefs, defaultColDef=defaultColDef))],
+    title="Title",
+    components=[
+        vm.Graph(id="graph_id", figure=px.scatter(px.data.iris(), x="sepal_width", y="sepal_length", color="species")),
+    ],
+    controls=[
+        CustomGroup(
+            controls=[
+                (
+                    "Categorical Filters",
+                    [
+                        vm.Filter(column="species"),
+                    ],
+                ),
+                (
+                    "Numeric Filters",
+                    [
+                        vm.Filter(column="petal_length"),
+                        vm.Filter(column="sepal_length"),
+                    ],
+                ),
+            ],
+        ),
+        vm.Parameter(
+            targets=["graph_id.x"],
+            selector=vm.RadioItems(
+                title="Select X Axis",
+                options=["sepal_width", "sepal_length", "petal_width", "petal_length"],
+                value="sepal_width",
+            ),
+        ),
+    ],
 )
+
+
 dashboard = vm.Dashboard(pages=[page])
 
 if __name__ == "__main__":
