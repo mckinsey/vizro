@@ -175,7 +175,7 @@ class Dashboard(VizroBaseModel):
         return dmc.MantineProvider(
             layout,
             # Use the `theme` to style all Mantine components with a Vizro theme. For more info see https://www.dash-mantine-components.com/components/mantineprovider
-            # theme = {...}
+             theme = {"primaryColor": "gray"}
         )
 
     def _validate_logos(self):

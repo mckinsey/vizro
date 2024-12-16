@@ -67,6 +67,8 @@ class DatePicker(VizroBaseModel):
             persistence_type="session",
             type="range" if self.range else "default",
             className="datepicker",
+            # removes the default red color for  weekend days
+            styles={"day": {"color": "var(--mantine-color-text"}},
             **date_range_picker_kwargs,
         )
 
