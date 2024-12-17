@@ -32,7 +32,8 @@ first_page = vm.Page(
         ),
     ],
     controls=[
-        vm.Filter(column="continent", selector=vm.Checklist()),
+        # vm.Filter(column="continent", selector=vm.Checklist()),
+        vm.Filter(column="continent")
     ],
 )
 

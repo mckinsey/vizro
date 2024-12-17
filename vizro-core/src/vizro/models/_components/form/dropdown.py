@@ -2,7 +2,7 @@ import math
 from datetime import date
 from typing import Literal, Optional, Union
 
-from dash import dcc, html
+from dash import ClientsideFunction, Input, Output, State, clientside_callback, html, dcc
 
 try:
     from pydantic.v1 import Field, PrivateAttr, StrictBool, root_validator, validator
@@ -87,8 +87,20 @@ class Dropdown(VizroBaseModel):
         return multi
 
     def __call__(self, options):
+        output = [Output(f"{self.id}", "value")]
+        inputs = [
+            Input(f"{self.id}", "value"),
+            State(f"{self.id}", "options"),
+        ]
+
+        clientside_callback(
+            ClientsideFunction(namespace="dropdown", function_name="update_dropdown_values"),
+            output=output,
+            inputs=inputs,
+        )
         full_options, default_value = get_options_and_default(options=options, multi=self.multi)
         option_height = _calculate_option_height(full_options)
+
 
         return html.Div(
             children=[
@@ -96,7 +108,7 @@ class Dropdown(VizroBaseModel):
                 dcc.Dropdown(
                     id=self.id,
                     options=full_options,
-                    value=self.value if self.value is not None else default_value,
+                    value=self.value if self.value is not None else [],
                     multi=self.multi,
                     optionHeight=option_height,
                     persistence=True,
