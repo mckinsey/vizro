@@ -93,27 +93,42 @@ class Dropdown(VizroBaseModel):
             State(f"{self.id}", "options"),
         ]
 
-        clientside_callback(
-            ClientsideFunction(namespace="dropdown", function_name="update_dropdown_values"),
-            output=output,
-            inputs=inputs,
-        )
+        # clientside_callback(
+        #     ClientsideFunction(namespace="dropdown", function_name="update_dropdown_values"),
+        #     output=output,
+        #     inputs=inputs,
+        # )
         full_options, default_value = get_options_and_default(options=options, multi=self.multi)
         option_height = _calculate_option_height(full_options)
+
+        dbc_dropdown = dbc.DropdownMenu(
+            label="Menu",
+            children=[
+                dbc.Checklist(
+                    id=self.id,
+                    options=full_options,
+                    value=self.value if self.value else [],
+                    persistence=True,
+                    persistence_type="session",
+                )
+            ],
+            in_navbar=True,
+        )
 
 
         return html.Div(
             children=[
                 dbc.Label(self.title, html_for=self.id) if self.title else None,
-                dcc.Dropdown(
-                    id=self.id,
-                    options=full_options,
-                    value=self.value if self.value is not None else [],
-                    multi=self.multi,
-                    optionHeight=option_height,
-                    persistence=True,
-                    persistence_type="session",
-                ),
+                dbc_dropdown
+                # dcc.Dropdown(
+                #     id=self.id,
+                #     options=full_options,
+                #     value=self.value if self.value is not None else [],
+                #     multi=self.multi,
+                #     optionHeight=option_height,
+                #     persistence=True,
+                #     persistence_type="session",
+                # ),
             ]
         )
 
