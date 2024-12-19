@@ -131,6 +131,7 @@ def pages_books_totals_chart(data_frame):
             y=data_frame["Cumulative Pages"],
             mode="lines",
             name="Cumulative Pages",
+            zorder=1,  # Ensure the line chart is rendered on top of the bar chart
         )
     )
 
@@ -149,9 +150,8 @@ def pages_books_totals_chart(data_frame):
     fig.update_layout(
         title="Cumulative Pages Read and Total Books Read Per Year",
         xaxis_title="Date",
-        yaxis_title="Cumulative Pages",
-        yaxis2=dict(title="Total Books Read", overlaying="y", side="right"),
-        legend=dict(x=0.1, y=0.9),
+        yaxis=dict(title="Cumulative Pages", rangemode="tozero"),
+        yaxis2=dict(title="Total Books Read", overlaying="y", side="right", tickmode="sync", rangemode="tozero"),
     )
 
     return fig
