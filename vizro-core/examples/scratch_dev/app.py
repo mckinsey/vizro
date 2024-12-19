@@ -48,10 +48,14 @@ def scatter_chart(data_frame):
             go.Scatter(
                 x=[row["Date Read"], row["Date Read"]],
                 y=[1],
-                mode="markers+lines",
-                line=dict(color="gray", width=2),
-                marker=dict(color="blue", size=10),
+                customdata=[[row["Title"], row["Author"], row["My Rating"]]],
                 showlegend=False,
+                marker=dict(color="#00b4ff", size=20, opacity=0.4),
+                hovertemplate='<b>Title:</b> %{customdata[0]}<br>' +
+                              '<b>Author:</b> %{customdata[1]}<br>' +
+                              '<b>My Rating:</b> %{customdata[2]}<br>' +
+                              '<b>Date:</b> %{x}<br>' +
+                              '<extra></extra>',
             )
         )
 
@@ -59,12 +63,11 @@ def scatter_chart(data_frame):
     fig.update_layout(
         title="Timeline of My Ratings",
         xaxis_title="Date Read",
-        yaxis_title="",
         xaxis=dict(type="date"),  # Ensure the x-axis is treated as dates
         yaxis=dict(
-            tickmode="linear",
-            showticklabels=False,  # Hide y-axis labels
-            range=[0, 2],  # Adjust the range if necessary
+           ticks="",  # Hide ticks
+           tickmode="linear",
+           showticklabels=False,  # Hide y-axis labels
         ),
     )
 
