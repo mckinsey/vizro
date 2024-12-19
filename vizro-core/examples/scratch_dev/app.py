@@ -95,7 +95,7 @@ def custom_chart(data_frame, top_n=15):
         title="Dumbbell Chart: My Rating (blue) vs Average Rating (orange)",
         xaxis_title="Rating",
         xaxis=dict(range=[-0.5, 5.5]),
-        yaxis_autorange='reversed'
+        yaxis_autorange="reversed",
     )
     return fig
 
@@ -147,7 +147,9 @@ def pages_books_totals_chart(data_frame):
         title="Cumulative Pages Read and Total Books Read Per Year",
         xaxis_title="Date",
         yaxis=dict(title="Cumulative Pages", rangemode="tozero"),
-        yaxis2=dict(title="Total Books Read", overlaying="y", side="right", tickmode="sync", rangemode="tozero", tickformat="d"),
+        yaxis2=dict(
+            title="Total Books Read", overlaying="y", side="right", tickmode="sync", rangemode="tozero", tickformat="d"
+        ),
     )
 
     return fig
@@ -192,7 +194,12 @@ model = vm.Dashboard(
                     figure=custom_chart(df),
                 ),
             ],
-            controls=[vm.Parameter(targets=["custom_chart.top_n"], selector=vm.Slider(min=5, max=30, value=20, step=5, title="Select number of books:"))],
+            controls=[
+                vm.Parameter(
+                    targets=["custom_chart.top_n"],
+                    selector=vm.Slider(min=5, max=30, value=20, step=5, title="Select number of books:"),
+                )
+            ],
             title="Ratings over the years",
         ),
     ],
