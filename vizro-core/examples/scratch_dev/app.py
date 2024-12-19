@@ -23,7 +23,6 @@ Stack the books vertically on the y axis, ordered alphabetically by Title, and u
 
 """
 
-
 ############ Imports ##############
 from vizro import Vizro
 import vizro.models as vm
@@ -51,11 +50,11 @@ def scatter_chart(data_frame):
                 customdata=[[row["Title"], row["Author"], row["My Rating"]]],
                 showlegend=False,
                 marker=dict(color="#00b4ff", size=20, opacity=0.4),
-                hovertemplate='<b>Title:</b> %{customdata[0]}<br>' +
-                              '<b>Author:</b> %{customdata[1]}<br>' +
-                              '<b>My Rating:</b> %{customdata[2]}<br>' +
-                              '<b>Date:</b> %{x}<br>' +
-                              '<extra></extra>',
+                hovertemplate="<b>Title:</b> %{customdata[0]}<br>"
+                + "<b>Author:</b> %{customdata[1]}<br>"
+                + "<b>My Rating:</b> %{customdata[2]}<br>"
+                + "<b>Date:</b> %{x}"
+                + "<extra></extra>",
             )
         )
 
@@ -65,9 +64,9 @@ def scatter_chart(data_frame):
         xaxis_title="Date Read",
         xaxis=dict(type="date"),  # Ensure the x-axis is treated as dates
         yaxis=dict(
-           ticks="",  # Hide ticks
-           tickmode="linear",
-           showticklabels=False,  # Hide y-axis labels
+            ticks="",  # Hide ticks
+            tickmode="linear",
+            showticklabels=False,  # Hide y-axis labels
         ),
     )
 
@@ -75,32 +74,29 @@ def scatter_chart(data_frame):
 
 
 @capture("graph")
-def custom_chart(data_frame):
+def custom_chart(data_frame, top_n=15):
     fig = go.Figure()
-    for index, row in data_frame.iterrows():
-        if row["My Rating"] > 0:
-            fig.add_trace(
-                go.Scatter(
-                    x=[row["My Rating"], row["Average Rating"]],
-                    y=[row["Title"], row["Title"]],
-                    mode="markers+lines",
-                    line=dict(color="gray", width=2),
-                    marker=dict(color=["blue", "orange"], size=10),
-                    showlegend=False,
-                )
-            )
-    fig.update_layout(
-        title="Dumbbell Chart: My Rating vs Average Rating",
-        xaxis_title="Rating",
-        yaxis_title="Books",
-        xaxis=dict(range=[0, 5]),
-        yaxis=dict(
-            tickmode="linear",
-            showticklabels=False,  # Hide y-axis labels
-        ),
-        height=600,
-    )
 
+    filtered_data = data_frame.sort_values(by="Title", ascending=True).head(top_n)
+
+    for index, row in filtered_data.iterrows():
+        fig.add_trace(
+            go.Scatter(
+                x=[row["My Rating"], row["Average Rating"]],
+                y=[row["Title"], row["Title"]],
+                mode="markers+lines",
+                line=dict(color="gray", width=2),
+                marker=dict(color=["#00b4ff", "#ff9222"], size=10),
+                showlegend=False,
+            )
+        )
+
+    fig.update_layout(
+        title="Dumbbell Chart: My Rating (blue) vs Average Rating (orange)",
+        xaxis_title="Rating",
+        xaxis=dict(range=[-0.5, 5.5]),
+        yaxis_autorange='reversed'
+    )
     return fig
 
 
@@ -151,7 +147,7 @@ def pages_books_totals_chart(data_frame):
         title="Cumulative Pages Read and Total Books Read Per Year",
         xaxis_title="Date",
         yaxis=dict(title="Cumulative Pages", rangemode="tozero"),
-        yaxis2=dict(title="Total Books Read", overlaying="y", side="right", tickmode="sync", rangemode="tozero"),
+        yaxis2=dict(title="Total Books Read", overlaying="y", side="right", tickmode="sync", rangemode="tozero", tickformat="d"),
     )
 
     return fig
@@ -172,8 +168,6 @@ model = vm.Dashboard(
                 ),
             ],
             title="This year's reading",
-            layout=vm.Layout(grid=[[0]]),
-            controls=[],
         ),
         vm.Page(
             components=[
@@ -183,7 +177,6 @@ model = vm.Dashboard(
                 )
             ],
             title="Pages and Book totals over the years",
-            layout=vm.Layout(grid=[[0]]),
             controls=[
                 vm.Filter(
                     column="Year Published",
@@ -196,12 +189,11 @@ model = vm.Dashboard(
             components=[
                 vm.Graph(
                     id="custom_chart",
-                    figure=custom_chart(df.sort_values(by="Title", ascending=False)),
+                    figure=custom_chart(df),
                 ),
             ],
+            controls=[vm.Parameter(targets=["custom_chart.top_n"], selector=vm.Slider(min=5, max=30, value=20, step=5, title="Select number of books:"))],
             title="Ratings over the years",
-            layout=vm.Layout(grid=[[0]]),
-            controls=[],
         ),
     ],
     title="Book Reading Dashboard",
