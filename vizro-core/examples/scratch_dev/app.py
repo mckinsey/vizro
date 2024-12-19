@@ -26,18 +26,10 @@ Stack the books vertically on the y axis, ordered alphabetically by Title, and u
 
 ############ Imports ##############
 from vizro import Vizro
-import vizro.plotly.express as px
-import vizro.tables as vt
 import vizro.models as vm
-from vizro.models.types import capture
-import pandas as pd
-import vizro.plotly.express as px
-import plotly.graph_objects as go
-from vizro.models.types import capture
 
 import pandas as pd
 import plotly.graph_objects as go
-import vizro.plotly.express as px
 from vizro.models.types import capture
 
 
@@ -72,11 +64,12 @@ def scatter_chart(data_frame):
         yaxis=dict(
             tickmode="linear",
             showticklabels=False,  # Hide y-axis labels
-            range=[0,2]  # Adjust the range if necessary
-        )
+            range=[0, 2],  # Adjust the range if necessary
+        ),
     )
 
     return fig
+
 
 @capture("graph")
 def custom_chart(data_frame):
@@ -99,14 +92,14 @@ def custom_chart(data_frame):
         yaxis_title="Books",
         xaxis=dict(range=[0, 5]),
         yaxis=dict(
-        tickmode="linear",
-        showticklabels=False,  # Hide y-axis labels
+            tickmode="linear",
+            showticklabels=False,  # Hide y-axis labels
         ),
-
         height=600,
     )
 
     return fig
+
 
 @capture("graph")
 def pages_books_totals_chart(data_frame):
@@ -160,8 +153,9 @@ def pages_books_totals_chart(data_frame):
 
     return fig
 
-df = pd.read_csv('filtered_books.csv')
-df["Date Read"] = pd.to_datetime(df['Date Read'],dayfirst=True)
+
+df = pd.read_csv("filtered_books.csv")
+df["Date Read"] = pd.to_datetime(df["Date Read"], dayfirst=True)
 
 
 ########### Model code ############
