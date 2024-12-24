@@ -151,3 +151,11 @@ wrapper **/
   gap: 4px;
   padding: 4px 8px;
 }
+
+.checklist-dropdown-div {
+  border-bottom: 1px solid var(--bs-secondary);
+  display: flex;
+  flex-direction: row;
+  gap: 8px;
+  width: 100%;
+}

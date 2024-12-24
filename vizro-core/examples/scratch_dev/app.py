@@ -7,12 +7,22 @@ import vizro.models as vm
 import vizro.plotly.express as px
 
 from vizro.tables import dash_ag_grid
-
+from vizro.managers import data_manager
 
 df = px.data.gapminder()
+
 gapminder_data = (
     df.groupby(by=["continent", "year"]).agg({"lifeExp": "mean", "pop": "sum", "gdpPercap": "mean"}).reset_index()
 )
+
+
+def dynamic_gapminder_data():
+    return gapminder_data
+
+
+data_manager["dynamic_gapminder_data"] = dynamic_gapminder_data
+
+
 first_page = vm.Page(
     title="First Page",
     layout=vm.Layout(grid=[[0, 0], [1, 1], [1, 1], [1, 1]]),
@@ -26,6 +36,8 @@ first_page = vm.Page(
         ),
         vm.AgGrid(
             figure=dash_ag_grid(data_frame=gapminder_data, dashGridOptions={"pagination": True}),
+            # TODO: Test it in dynamic mode.
+            # figure=dash_ag_grid(data_frame="dynamic_gapminder_data", dashGridOptions={"pagination": True}),
             title="Gapminder Data Insights",
             header="""#### An Interactive Exploration of Global Health, Wealth, and Population""",
             footer="""SOURCE: **Plotly gapminder data set, 2024**""",
@@ -33,7 +45,21 @@ first_page = vm.Page(
     ],
     controls=[
         # vm.Filter(column="continent", selector=vm.Checklist()),
-        vm.Filter(column="continent")
+        vm.Filter(
+            column="continent",
+            selector=vm.Dropdown(
+                # options=[
+                #     {"label": "EUROPE", "value": "Europe"},
+                #     {"label": "AFRICA", "value": "Africa"},
+                #     {"label": "ASIA", "value": "Asia"},
+                #     {"label": "AMERICAS", "value": "Americas"},
+                #     {"label": "OCEANIA", "value": "Oceania"},
+                # ],
+                value=["Europe"],
+                # value="Europe",
+                # multi=False,
+            ),
+        )
     ],
 )
 

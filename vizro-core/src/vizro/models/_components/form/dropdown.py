@@ -2,7 +2,7 @@ import math
 from datetime import date
 from typing import Literal, Optional, Union
 
-from dash import ClientsideFunction, Input, Output, State, clientside_callback, html, dcc
+from dash import ClientsideFunction, Input, Output, State, clientside_callback, dcc, html
 
 try:
     from pydantic.v1 import Field, PrivateAttr, StrictBool, root_validator, validator
@@ -37,6 +37,46 @@ def _calculate_option_height(full_options: OptionsType) -> int:
     max_length = max(len(str(option)) for option in list_of_labels)
     number_of_lines = math.ceil(max_length / 30)
     return 8 + 24 * number_of_lines
+
+
+def _add_select_all_option(full_options: OptionsType, component_id: str, multi: bool):
+    """Adds checklist component for select all option."""
+    if not multi:
+        return full_options
+
+    def create_select_all_option():
+        """Creates the "Select All" option as a dictionary."""
+        return {
+            "label": html.Div(
+                [
+                    dcc.Checklist(
+                        options=[{"label": "", "value": "ALL"}],
+                        value=[],
+                        id=f"{component_id}_checklist_all",
+                        persistence=True,
+                        persistence_type="session",
+                    ),
+                    html.Span("ALL"),
+                ],
+                className="checklist-dropdown-div",
+            ),
+            "value": "ALL",
+        }
+
+    altered_options = []
+    for option in full_options:
+        if isinstance(option, str):
+            if option == "ALL":
+                altered_options.append(create_select_all_option())
+            else:
+                altered_options.append({"label": option, "value": option})
+        elif isinstance(option, dict):
+            if option["value"] == "ALL":
+                altered_options.append(create_select_all_option())
+            else:
+                altered_options.append(option)
+
+    return altered_options
 
 
 class Dropdown(VizroBaseModel):
@@ -87,48 +127,34 @@ class Dropdown(VizroBaseModel):
         return multi
 
     def __call__(self, options):
-        output = [Output(f"{self.id}", "value")]
+        output = [Output(f"{self.id}", "value"), Output(f"{self.id}_checklist_all", "value")]
         inputs = [
             Input(f"{self.id}", "value"),
             State(f"{self.id}", "options"),
         ]
 
-        # clientside_callback(
-        #     ClientsideFunction(namespace="dropdown", function_name="update_dropdown_values"),
-        #     output=output,
-        #     inputs=inputs,
-        # )
+        clientside_callback(
+            ClientsideFunction(namespace="dropdown", function_name="update_dropdown_values"),
+            output=output,
+            inputs=inputs,
+        )
         full_options, default_value = get_options_and_default(options=options, multi=self.multi)
         option_height = _calculate_option_height(full_options)
 
-        dbc_dropdown = dbc.DropdownMenu(
-            label="Menu",
-            children=[
-                dbc.Checklist(
-                    id=self.id,
-                    options=full_options,
-                    value=self.value if self.value else [],
-                    persistence=True,
-                    persistence_type="session",
-                )
-            ],
-            in_navbar=True,
-        )
-
+        full_options = _add_select_all_option(full_options=full_options, component_id=self.id, multi=self.multi)
 
         return html.Div(
             children=[
                 dbc.Label(self.title, html_for=self.id) if self.title else None,
-                dbc_dropdown
-                # dcc.Dropdown(
-                #     id=self.id,
-                #     options=full_options,
-                #     value=self.value if self.value is not None else [],
-                #     multi=self.multi,
-                #     optionHeight=option_height,
-                #     persistence=True,
-                #     persistence_type="session",
-                # ),
+                dcc.Dropdown(
+                    id=self.id,
+                    options=full_options,
+                    value=self.value if self.value is not None else default_value,
+                    multi=self.multi,
+                    optionHeight=option_height,
+                    persistence=True,
+                    persistence_type="session",
+                ),
             ]
         )
 
