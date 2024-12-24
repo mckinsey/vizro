@@ -3,30 +3,24 @@
 from vizro import Vizro
 import vizro.plotly.express as px
 import vizro.models as vm
-from vizro.tables import dash_ag_grid
-import pandas as pd
+from vizro.tables import dash_data_table
 
-df = pd.read_csv("https://raw.githubusercontent.com/plotly/datasets/master/ag-grid/olympic-winners.csv")
-columnDefs = [
-    {"field": "athlete", "headerName": "The full Name of the athlete"},
-    {"field": "age", "headerName": "The number of Years since the athlete was born"},
-    {"field": "country", "headerName": "The Country the athlete was born in"},
-    {"field": "sport", "headerName": "The Sport the athlete participated in"},
-    {"field": "total", "headerName": "The Total number of medals won by the athlete"},
-]
+gapminder = px.data.gapminder()
 
-defaultColDef = {
-    "wrapHeaderText": True,
-    "autoHeaderHeight": True,
-}
-
-
-# Test app -----------------
-page = vm.Page(
-    title="Page Title",
-    components=[vm.AgGrid(figure=dash_ag_grid(df, columnDefs=columnDefs, defaultColDef=defaultColDef))],
+table = vm.Page(
+    title="Table",
+    components=[
+        vm.Table(
+            figure=dash_data_table(data_frame=gapminder, page_size=5),
+            title="Gapminder Data Insights",
+            header="""#### An Interactive Exploration of Global Health, Wealth, and Population""",
+            footer="""SOURCE: **Plotly gapminder data set, 2024**""",
+        )
+    ],
 )
-dashboard = vm.Dashboard(pages=[page])
+
+
+dashboard = vm.Dashboard(pages=[table])
 
 if __name__ == "__main__":
     Vizro().build(dashboard).run()
