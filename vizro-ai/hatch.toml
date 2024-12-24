@@ -3,6 +3,11 @@
 [[envs.all.matrix]]
 python = ["3.9", "3.10", "3.11", "3.12"]
 
+[envs.hatch-uv]
+dependencies = [
+  "uv<0.5.10" # https://github.com/astral-sh/uv/issues/10039
+]
+
 [envs.changelog]
 dependencies = ["scriv"]
 detached = true
@@ -28,8 +33,6 @@ dependencies = [
   "langchain_mistralai",
   "langchain-anthropic",
   "pre-commit",
-  # https://github.com/astral-sh/uv/issues/10039
-  "uv<0.5.10"
 ]
 installer = "uv"
 
@@ -68,8 +71,6 @@ dependencies = [
   "mkdocs-git-revision-date-localized-plugin>=1.2.5",
   "mkdocstrings[python]",
   "linkchecker",
-  # https://github.com/astral-sh/uv/issues/10039
-  "uv<0.5.10"
 ]
 detached = true
 installer = "uv"

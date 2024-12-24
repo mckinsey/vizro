@@ -10,6 +10,11 @@ matrix.python.features = [
   {value = "kedro", if = ["3.9", "3.10", "3.11", "3.12"]}
 ]
 
+[envs.hatch-uv]
+dependencies = [
+  "uv<0.5.10" # https://github.com/astral-sh/uv/issues/10039
+]
+
 [envs.changelog]
 dependencies = ["scriv"]
 detached = true
@@ -33,8 +38,7 @@ dependencies = [
   "PyGithub",
   "imutils",
   "opencv-python",
-  "pyhamcrest",
-  "uv<0.5.10" # https://github.com/astral-sh/uv/issues/10039
+  "pyhamcrest"
 ]
 installer = "uv"
 
@@ -76,8 +80,7 @@ dependencies = [
   "mkdocs-git-revision-date-localized-plugin>=1.2.5",
   "mkdocstrings[python]",
   "linkchecker",
-  "mkdocs-pycafe",
-  "uv<0.5.10" # https://github.com/astral-sh/uv/issues/10039
+  "mkdocs-pycafe"
 ]
 detached = true
 installer = "uv"
@@ -102,8 +105,7 @@ dependencies = [
   "autoflake==2.3.1",
   "black==24.4.2",
   "isort==5.13.2",
-  "plotly==5.24.1",  # to leverage new MapLibre features in visual-vocabulary
-  "uv<0.5.10" # https://github.com/astral-sh/uv/issues/10039
+  "plotly==5.24.1"  # to leverage new MapLibre features in visual-vocabulary
 ]
 installer = "uv"
 scripts = {example = "cd examples/{args:scratch_dev}; python app.py"}
