@@ -3,11 +3,6 @@
 [[envs.all.matrix]]
 python = ["3.9", "3.10", "3.11", "3.12"]
 
-[envs.hatch-uv]
-dependencies = [
-  "uv<0.5.10" # https://github.com/astral-sh/uv/issues/10039
-]
-
 [envs.changelog]
 dependencies = ["scriv"]
 detached = true
@@ -32,7 +27,7 @@ dependencies = [
   "langchain-community",
   "langchain_mistralai",
   "langchain-anthropic",
-  "pre-commit",
+  "pre-commit"
 ]
 installer = "uv"
 
@@ -70,7 +65,7 @@ dependencies = [
   "mkdocs-material",
   "mkdocs-git-revision-date-localized-plugin>=1.2.5",
   "mkdocstrings[python]",
-  "linkchecker",
+  "linkchecker"
 ]
 detached = true
 installer = "uv"
@@ -83,6 +78,11 @@ build = "mkdocs build --strict"
 link-check = "linkchecker site --check-extern --no-warnings --ignore=404.html --ignore-url=127.0.0.1 --ignore-url=https://vizro.readthedocs.io/ --ignore-url=https://platform.openai.com/docs/models --ignore-url=openai.com --ignore-url=https://openai.com/"
 pip = '"{env:HATCH_UV}" pip {args}'
 serve = "mkdocs serve --open"
+
+[envs.hatch-uv]
+dependencies = [
+  "uv<0.5.10"  # https://github.com/astral-sh/uv/issues/10039
+]
 
 [envs.lower-bounds]
 extra-dependencies = ["pydantic==1.10.16"]
