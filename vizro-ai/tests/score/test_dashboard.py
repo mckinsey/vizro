@@ -10,11 +10,11 @@ from typing import Literal
 import chromedriver_autoinstaller
 import pytest
 import vizro.plotly.express as px
+import numpy as np
 from vizro import Vizro
 
 from vizro_ai import VizroAI
-
-vizro_ai = VizroAI()
+from prompts import easy_prompt, medium_prompt, complex_prompt
 
 df1 = px.data.gapminder()
 df2 = px.data.stocks()
@@ -22,12 +22,12 @@ df3 = px.data.tips()
 
 
 @dataclass
-class Components:
+class Component:
     type: Literal["ag_grid", "card", "graph"]
 
 
 @dataclass
-class Controls:
+class Control:
     type: Literal["filter", "parameter"]
 
 
@@ -43,6 +43,7 @@ def logic(  # noqa: PLR0912, PLR0915
     model_name,
     dash_duo,
     prompt_tier,
+    prompt_text,
     config: dict,
 ):
     """Calculates all separate scores. Creates csv report.
@@ -52,6 +53,7 @@ def logic(  # noqa: PLR0912, PLR0915
         model_name: GenAI model name
         dash_duo: dash_duo fixture
         prompt_tier: complexity of the prompt
+        prompt_text: prompt text
         config: json config of the expected dashboard
 
     """
@@ -161,73 +163,40 @@ def logic(  # noqa: PLR0912, PLR0915
     pages_exist.extend(pages_num)
 
     # Every separate score has its own weight.
-    app_started_score = {"weight": 0.4, "score": app_started}
-    no_browser_console_errors_score = {"weight": 0.1, "score": no_browser_console_errors}
-    pages_score = {"weight": 0.2, "score": sum(pages_exist) / len(pages_exist)}
-    components_score = {"weight": 0.1, "score": sum(components_num) / len(components_num)}
-    component_types_score = {"weight": 0.1, "score": sum(components_types_names) / len(components_types_names)}
-    controls_score = {"weight": 0.1, "score": sum(controls_num) / len(controls_num)}
-    controls_types_score = {"weight": 0.1, "score": sum(controls_types_names) / len(controls_types_names)}
-
     scores = [
-        app_started_score,
-        no_browser_console_errors_score,
-        pages_score,
-        components_score,
-        component_types_score,
-        controls_score,
-        controls_types_score,
+        {"score_name": "app_started_score", "weight": 0.4, "score": app_started},
+        {"score_name": "no_browser_console_errors_score", "weight": 0.1, "score": no_browser_console_errors},
+        {"score_name": "pages_score", "weight": 0.2, "score": sum(pages_exist) / len(pages_exist)},
+        {"score_name": "components_score", "weight": 0.1, "score": sum(components_num) / len(components_num)},
+        {"score_name": "component_types_score", "weight": 0.1, "score": sum(components_types_names) / len(components_types_names)},
+        {"score_name": "controls_score", "weight": 0.1, "score": sum(controls_num) / len(controls_num)},
+        {"score_name": "controls_types_score", "weight": 0.1, "score": sum(controls_types_names) / len(controls_types_names)},
     ]
-    # total_weight should be equal to 1
-    total_weight = sum(score["weight"] for score in scores)
-    # If total_weight is not equal to 1, we're recalculating weights for every separate score
-    # and calculating final weighted_score for the created dashboard
-    if total_weight != 1:
-        scores = [{"weight": score["weight"] / total_weight, "score": score["score"]} for score in scores]
-    weighted_score = round(sum(score["weight"] * score["score"] for score in scores), 1)
+
+    scores_values = np.array([score["score"] for score in scores])
+    weights = np.array([score["weight"] for score in scores])
+    weighted_score = np.average(scores_values, weights=weights)
 
     # csv report creation
-
-    data_rows = [
-        datetime.now(),
-        vizro_type,
-        branch,
-        python_version,
-        model_name,
-        prompt_tier,
-        weighted_score,
-        app_started_score["score"],
-        no_browser_console_errors_score["score"],
-        pages_score["score"],
-        components_score["score"],
-        component_types_score["score"],
-        controls_score["score"],
-        controls_types_score["score"],
-    ]
+    data_rows = [datetime.now(), vizro_type, branch, python_version, model_name, prompt_tier, prompt_text, weighted_score]
+    data_rows.extend(score["score"] for score in scores)
 
     with open(f"{report_dir}/report_model_{model_name}_{vizro_type}.csv", "a", newline=""):
         with open(f"{report_dir}/report_model_{model_name}_{vizro_type}.csv", "r+", newline="") as csvfile:
             writer = csv.writer(csvfile, delimiter=",")
             first_line = csvfile.readline()
             if not first_line:
-                writer.writerow(
-                    [
+                header_rows = [
                         "timestamp",
                         "vizro_type",
                         "branch",
                         "python_version",
                         "model",
                         "prompt_tier",
-                        "weighted_score",
-                        "app_started_score",
-                        "no_browser_console_errors_score",
-                        "pages_score",
-                        "components_score",
-                        "component_types_score",
-                        "controls_score",
-                        "controls_types_score",
-                    ]
-                )
+                        "prompt_text",
+                        "weighted_score"]
+                header_rows.extend(score["score_name"] for score in scores)
+                writer.writerow(header_rows)
                 writer.writerow(data_rows)
             else:
                 writer.writerow(data_rows)
@@ -248,59 +217,40 @@ def logic(  # noqa: PLR0912, PLR0915
 @pytest.mark.easy_dashboard
 @pytest.mark.parametrize(
     "model_name",
-    ["gpt-4o-mini"],
-    ids=["gpt-4o-mini"],
-)
-@pytest.mark.filterwarnings("ignore::langchain_core._api.beta_decorator.LangChainBetaWarning")
-@pytest.mark.filterwarnings("ignore::UserWarning")
-@pytest.mark.filterwarnings("ignore:HTTPResponse.getheader()")
+    [
+        "gpt-4o-mini",
+        "claude-3-5-sonnet-latest",
+    ],
+    ids=[
+        "gpt-4o-mini",
+        "claude-3-5-sonnet-latest",
+    ])
 def test_easy_dashboard(dash_duo, model_name):
-    input_text = """
-    I need a page with 1 table.
-    The table shows the tech companies stock data.
-
-    I need a second page showing 2 cards and one chart.
-    The first card says 'The Gapminder dataset provides historical data on countries' development indicators.'
-    The chart is an scatter plot showing life expectancy vs. GDP per capita by country.
-    Life expectancy on the y axis, GDP per capita on the x axis, and colored by continent.
-    The second card says 'Data spans from 1952 to 2007 across various countries.'
-    The layout uses a grid of 3 columns and 2 rows.
-
-    Row 1: The first row has three columns:
-    The first column is occupied by the first card.
-    The second and third columns are spanned by the chart.
-
-    Row 2: The second row mirrors the layout of the first row with respect to chart,
-    but the first column is occupied by the second card.
-
-    Add a filter to filter the scatter plot by continent.
-    Add a second filter to filter the chart by year.
-    """
-
-    dashboard = vizro_ai.dashboard([df1, df2], input_text)
+    dashboard = VizroAI(model=model_name).dashboard([df1, df2], easy_prompt)
 
     logic(
         dashboard=dashboard,
         model_name=model_name,
         dash_duo=dash_duo,
         prompt_tier="easy",
+        prompt_text=easy_prompt.replace("\n", " "),
         config={
             "pages": [
                 {
                     "components": [
-                        Components(type="ag_grid"),
+                        Component(type="ag_grid"),
                     ],
                     "controls": [],
                 },
                 {
                     "components": [
-                        Components(type="card"),
-                        Components(type="card"),
-                        Components(type="graph"),
+                        Component(type="card"),
+                        Component(type="card"),
+                        Component(type="graph"),
                     ],
                     "controls": [
-                        Controls(type="filter"),
-                        Controls(type="filter"),
+                        Control(type="filter"),
+                        Control(type="filter"),
                     ],
                 },
             ],
@@ -312,93 +262,118 @@ def test_easy_dashboard(dash_duo, model_name):
 @pytest.mark.parametrize(
     "model_name",
     ["gpt-4o-mini"],
-    ids=["gpt-4o-mini"],
-)
-@pytest.mark.filterwarnings("ignore::langchain_core._api.beta_decorator.LangChainBetaWarning")
-@pytest.mark.filterwarnings("ignore::UserWarning")
-@pytest.mark.filterwarnings("ignore:HTTPResponse.getheader()")
+    ids=["gpt-4o-mini"])
 def test_medium_dashboard(dash_duo, model_name):
-    input_text = """
-    <Page 1>
-    I need a page with 1 table and 1 line chart.
-    The chart shows the stock price trends of GOOG and AAPL.
-    The table shows the stock prices data details.
-
-    <Page 2>
-    I need a second page showing 1 card and 1 chart.
-    The card says 'The Gapminder dataset provides historical data on countries' development indicators.'
-    The chart is a scatter plot showing GDP per capita vs. life expectancy.
-    GDP per capita on the x axis, life expectancy on the y axis, and colored by continent.
-    Layout the card on the left and the chart on the right. The card takes 1/3 of the whole space on the left.
-    The chart takes 2/3 of the whole space and is on the right.
-    Add a filter to filter the scatter plot by continent.
-    Add a second filter to filter the chart by year.
-
-    <Page 3>
-    This page displays the tips dataset. use two different charts to show data
-    distributions. one chart should be a bar chart and the other should be a scatter plot.
-    first chart is on the left and the second chart is on the right.
-    Add a filter to filter data in the scatter plot by smoker.
-
-    <Page 4>
-    Create 3 cards on this page:
-    1. The first card on top says "This page combines data from various sources
-     including tips, stock prices, and global indicators."
-    2. The second card says "Insights from Gapminder dataset."
-    3. The third card says "Stock price trends over time."
-
-    Layout these 3 cards in this way:
-    create a grid with 3 columns and 2 rows.
-    Row 1: The first row has three columns:
-    - The first column is empty.
-    - The second and third columns span the area for card 1.
-
-    Row 2: The second row also has three columns:
-    - The first column is empty.
-    - The second column is occupied by the area for card 2.
-    - The third column is occupied by the area for card 3.
-        """
-
-    dashboard = vizro_ai.dashboard([df1, df2, df3], input_text)
+    dashboard = VizroAI(model=model_name).dashboard([df1, df2, df3], medium_prompt)
 
     logic(
         dashboard=dashboard,
         model_name=model_name,
         dash_duo=dash_duo,
         prompt_tier="medium",
+        prompt_text=medium_prompt.replace("\n", " "),
         config={
             "pages": [
                 {
                     "components": [
-                        Components(type="ag_grid"),
-                        Components(type="graph"),
+                        Component(type="ag_grid"),
+                        Component(type="graph"),
                     ],
                     "controls": [],
                 },
                 {
                     "components": [
-                        Components(type="card"),
-                        Components(type="graph"),
+                        Component(type="card"),
+                        Component(type="graph"),
                     ],
                     "controls": [
-                        Controls(type="filter"),
-                        Controls(type="filter"),
+                        Control(type="filter"),
+                        Control(type="filter"),
                     ],
                 },
                 {
                     "components": [
-                        Components(type="graph"),
-                        Components(type="graph"),
+                        Component(type="graph"),
+                        Component(type="graph"),
                     ],
                     "controls": [
-                        Controls(type="filter"),
+                        Control(type="filter"),
                     ],
                 },
                 {
                     "components": [
-                        Components(type="card"),
-                        Components(type="card"),
-                        Components(type="card"),
+                        Component(type="card"),
+                        Component(type="card"),
+                        Component(type="card"),
+                    ],
+                    "controls": [],
+                },
+            ],
+        },
+    )
+
+
+@pytest.mark.complex_dashboard
+@pytest.mark.parametrize(
+    "model_name",
+    ["gpt-4o-mini"],
+    ids=["gpt-4o-mini"],
+)
+def test_complex_dashboard(dash_duo, model_name):
+    dashboard = VizroAI(model=model_name).dashboard([df1, df2, df3], complex_prompt)
+
+    logic(
+        dashboard=dashboard,
+        model_name=model_name,
+        dash_duo=dash_duo,
+        prompt_tier="complex",
+        prompt_text=complex_prompt.replace("\n", " "),
+        config={
+            "pages": [
+                {
+                    "components": [
+                        Component(type="ag_grid"),
+                        Component(type="graph"),
+                        Component(type="graph"),
+                        Component(type="graph"),
+                    ],
+                    "controls": [
+                        Control(type="filter"),
+                        Control(type="filter"),
+                        Control(type="filter")
+                    ],
+                },
+                {
+                    "components": [
+                        Component(type="card"),
+                        Component(type="card"),
+                        Component(type="card"),
+                        Component(type="graph"),
+                        Component(type="graph"),
+                        Component(type="graph"),
+                        Component(type="graph"),
+                    ],
+                    "controls": [
+                        Control(type="filter"),
+                        Control(type="filter"),
+                    ],
+                },
+                {
+                    "components": [
+                        Component(type="graph"),
+                        Component(type="graph"),
+                        Component(type="graph"),
+                        Component(type="graph"),
+                    ],
+                    "controls": [
+                        Control(type="filter"),
+                    ],
+                },
+                {
+                    "components": [
+                        Component(type="card"),
+                        Component(type="card"),
+                        Component(type="card"),
                     ],
                     "controls": [],
                 },
