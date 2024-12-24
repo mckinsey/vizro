@@ -134,9 +134,16 @@ class TestChecklistBuild:
             [
                 html.Legend("Title", className="form-label"),
                 dbc.Checklist(
+                    id=f"checklist_id_select_all",
+                    options=["Select All"],
+                    value=[],
+                    persistence=True,
+                    persistence_type="session",
+                ),
+                dbc.Checklist(
                     id="checklist_id",
-                    options=["ALL", "A", "B", "C"],
-                    value=["ALL"],
+                    options=["A", "B", "C"],
+                    value=[],
                     persistence=True,
                     persistence_type="session",
                 ),
