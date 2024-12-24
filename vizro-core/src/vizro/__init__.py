@@ -14,7 +14,7 @@ pio.templates["vizro_light"] = light
 
 __all__ = ["Vizro"]
 
-__version__ = "0.1.30.dev0"
+__version__ = "0.1.31.dev0"
 
 
 # For the below _css_dist and _js_dist to be used by Dash, they must be retrieved by dash.resources.Css.get_all_css().
