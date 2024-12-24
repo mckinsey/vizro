@@ -33,7 +33,8 @@ dependencies = [
   "PyGithub",
   "imutils",
   "opencv-python",
-  "pyhamcrest"
+  "pyhamcrest",
+  "uv<0.5.10" # https://github.com/astral-sh/uv/issues/10039
 ]
 installer = "uv"
 
@@ -75,7 +76,8 @@ dependencies = [
   "mkdocs-git-revision-date-localized-plugin>=1.2.5",
   "mkdocstrings[python]",
   "linkchecker",
-  "mkdocs-pycafe"
+  "mkdocs-pycafe",
+  "uv<0.5.10" # https://github.com/astral-sh/uv/issues/10039
 ]
 detached = true
 installer = "uv"
@@ -100,7 +102,8 @@ dependencies = [
   "autoflake==2.3.1",
   "black==24.4.2",
   "isort==5.13.2",
-  "plotly==5.24.1"  # to leverage new MapLibre features in visual-vocabulary
+  "plotly==5.24.1",  # to leverage new MapLibre features in visual-vocabulary
+  "uv<0.5.10" # https://github.com/astral-sh/uv/issues/10039
 ]
 installer = "uv"
 scripts = {example = "cd examples/{args:scratch_dev}; python app.py"}

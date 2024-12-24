@@ -27,7 +27,9 @@ dependencies = [
   "langchain-community",
   "langchain_mistralai",
   "langchain-anthropic",
-  "pre-commit"
+  "pre-commit",
+  # https://github.com/astral-sh/uv/issues/10039
+  "uv<0.5.10"
 ]
 installer = "uv"
 
@@ -65,7 +67,9 @@ dependencies = [
   "mkdocs-material",
   "mkdocs-git-revision-date-localized-plugin>=1.2.5",
   "mkdocstrings[python]",
-  "linkchecker"
+  "linkchecker",
+  # https://github.com/astral-sh/uv/issues/10039
+  "uv<0.5.10"
 ]
 detached = true
 installer = "uv"
