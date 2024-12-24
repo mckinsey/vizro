@@ -8,13 +8,13 @@ from datetime import datetime
 from typing import Literal
 
 import chromedriver_autoinstaller
+import numpy as np
 import pytest
 import vizro.plotly.express as px
-import numpy as np
+from prompts import complex_prompt, easy_prompt, medium_prompt
 from vizro import Vizro
 
 from vizro_ai import VizroAI
-from prompts import easy_prompt, medium_prompt, complex_prompt
 
 df1 = px.data.gapminder()
 df2 = px.data.stocks()
@@ -168,9 +168,17 @@ def logic(  # noqa: PLR0912, PLR0915
         {"score_name": "no_browser_console_errors_score", "weight": 0.1, "score": no_browser_console_errors},
         {"score_name": "pages_score", "weight": 0.2, "score": sum(pages_exist) / len(pages_exist)},
         {"score_name": "components_score", "weight": 0.1, "score": sum(components_num) / len(components_num)},
-        {"score_name": "component_types_score", "weight": 0.1, "score": sum(components_types_names) / len(components_types_names)},
+        {
+            "score_name": "component_types_score",
+            "weight": 0.1,
+            "score": sum(components_types_names) / len(components_types_names),
+        },
         {"score_name": "controls_score", "weight": 0.1, "score": sum(controls_num) / len(controls_num)},
-        {"score_name": "controls_types_score", "weight": 0.1, "score": sum(controls_types_names) / len(controls_types_names)},
+        {
+            "score_name": "controls_types_score",
+            "weight": 0.1,
+            "score": sum(controls_types_names) / len(controls_types_names),
+        },
     ]
 
     scores_values = np.array([score["score"] for score in scores])
@@ -178,7 +186,16 @@ def logic(  # noqa: PLR0912, PLR0915
     weighted_score = np.average(scores_values, weights=weights)
 
     # csv report creation
-    data_rows = [datetime.now(), vizro_type, branch, python_version, model_name, prompt_tier, prompt_text, weighted_score]
+    data_rows = [
+        datetime.now(),
+        vizro_type,
+        branch,
+        python_version,
+        model_name,
+        prompt_tier,
+        prompt_text,
+        weighted_score,
+    ]
     data_rows.extend(score["score"] for score in scores)
 
     with open(f"{report_dir}/report_model_{model_name}_{vizro_type}.csv", "a", newline=""):
@@ -187,14 +204,15 @@ def logic(  # noqa: PLR0912, PLR0915
             first_line = csvfile.readline()
             if not first_line:
                 header_rows = [
-                        "timestamp",
-                        "vizro_type",
-                        "branch",
-                        "python_version",
-                        "model",
-                        "prompt_tier",
-                        "prompt_text",
-                        "weighted_score"]
+                    "timestamp",
+                    "vizro_type",
+                    "branch",
+                    "python_version",
+                    "model",
+                    "prompt_tier",
+                    "prompt_text",
+                    "weighted_score",
+                ]
                 header_rows.extend(score["score_name"] for score in scores)
                 writer.writerow(header_rows)
                 writer.writerow(data_rows)
@@ -224,7 +242,8 @@ def logic(  # noqa: PLR0912, PLR0915
     ids=[
         "gpt-4o-mini",
         "claude-3-5-sonnet-latest",
-    ])
+    ],
+)
 def test_easy_dashboard(dash_duo, model_name):
     dashboard = VizroAI(model=model_name).dashboard([df1, df2], easy_prompt)
 
@@ -259,10 +278,7 @@ def test_easy_dashboard(dash_duo, model_name):
 
 
 @pytest.mark.medium_dashboard
-@pytest.mark.parametrize(
-    "model_name",
-    ["gpt-4o-mini"],
-    ids=["gpt-4o-mini"])
+@pytest.mark.parametrize("model_name", ["gpt-4o-mini"], ids=["gpt-4o-mini"])
 def test_medium_dashboard(dash_duo, model_name):
     dashboard = VizroAI(model=model_name).dashboard([df1, df2, df3], medium_prompt)
 
@@ -337,11 +353,7 @@ def test_complex_dashboard(dash_duo, model_name):
                         Component(type="graph"),
                         Component(type="graph"),
                     ],
-                    "controls": [
-                        Control(type="filter"),
-                        Control(type="filter"),
-                        Control(type="filter")
-                    ],
+                    "controls": [Control(type="filter"), Control(type="filter"), Control(type="filter")],
                 },
                 {
                     "components": [
