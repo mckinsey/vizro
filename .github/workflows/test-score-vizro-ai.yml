@@ -46,7 +46,6 @@ jobs:
           - python-version: "3.12"
             hatch-env: all.py3.12
 
-
     steps:
       - uses: actions/checkout@v4
 
