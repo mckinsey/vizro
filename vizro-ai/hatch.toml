@@ -77,11 +77,6 @@ link-check = "linkchecker site --check-extern --no-warnings --ignore=404.html --
 pip = '"{env:HATCH_UV}" pip {args}'
 serve = "mkdocs serve --open"
 
-#[envs.hatch-uv]
-#dependencies = [
-#  "uv<0.5.10"  # https://github.com/astral-sh/uv/issues/10039
-#]
-
 [envs.lower-bounds]
 extra-dependencies = ["pydantic==1.10.16"]
 python = "3.9"
