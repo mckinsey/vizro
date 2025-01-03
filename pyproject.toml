@@ -6,8 +6,8 @@ authors = [
   {name = "Vizro Team"}
 ]
 description = "Vizro is a package to facilitate visual analytics."
-name = "vizro"
 dynamic = ["version"]
+name = "vizro"
 
 [tool.bandit]
 exclude_dirs = ["tests"]
