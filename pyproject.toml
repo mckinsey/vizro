@@ -7,6 +7,7 @@ authors = [
 ]
 description = "Vizro is a package to facilitate visual analytics."
 name = "vizro"
+dynamic = ["version"]
 
 [tool.bandit]
 exclude_dirs = ["tests"]

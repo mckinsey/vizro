@@ -111,10 +111,10 @@ template = "examples"
 DASH_DEBUG = "true"
 VIZRO_LOG_LEVEL = "DEBUG"
 
-[envs.hatch-uv]
-dependencies = [
-  "uv<0.5.10"  # https://github.com/astral-sh/uv/issues/10039
-]
+#[envs.hatch-uv]
+#dependencies = [
+#  "uv<0.5.10"  # https://github.com/astral-sh/uv/issues/10039
+#]
 
 [envs.lower-bounds]
 extra-dependencies = [
