@@ -149,7 +149,7 @@ class Graph(VizroBaseModel):
             getattr(fig.layout.margin, side) is None for side in ["l", "r", "b", "t"]
         ):
             # Avoid hidden labels in Parcoords figures by setting margins
-            fig.update_layout(margin=dict(l=30, r=0, b=22, t=42))
+            fig.update_layout(margin={"l": 30, "r": 0, "b": 22, "t": 42})
 
         return fig
 
