@@ -63,7 +63,7 @@ def generate_link(directory: str, extra_requirements: Optional[list[str]] = None
     )
 
     # App file - get current commit, and modify to remove if clause
-    app_content = requests.get(f"{base_url}/app.py", timeout=10).text
+    app_content = requests.get(f"{base_url}/app_themes.py", timeout=10).text
     app_content_split = app_content.split('if __name__ == "__main__":')
     if len(app_content_split) > 1:
         app_content = app_content_split[0] + textwrap.dedent(app_content_split[1])
@@ -93,8 +93,9 @@ def generate_link(directory: str, extra_requirements: Optional[list[str]] = None
                 "url": f"{base_url}{file['path'].removeprefix(f'{directory}')}",
             }
             for file in folder_files
-            # Filter out app.py and requirements.txt (as already added above)
-            if file["type"] == "blob" and file["path"] not in {f"{directory}/app.py", f"{directory}/requirements.txt"}
+            # Filter out app_themes.py and requirements.txt (as already added above)
+            if file["type"] == "blob"
+            and file["path"] not in {f"{directory}/app_themes.py", f"{directory}/requirements.txt"}
         ]
     else:
         raise Exception(f"Failed to fetch file tree from GitHub API: {response.status_code} {response.text}")

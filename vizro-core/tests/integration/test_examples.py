@@ -29,7 +29,7 @@ def dashboard(request, monkeypatch):
     example_directory = request.getfixturevalue("example_path") / request.getfixturevalue("version")
     monkeypatch.chdir(example_directory)
     monkeypatch.syspath_prepend(example_directory)
-    return runpy.run_path("app.py")["dashboard"]
+    return runpy.run_path("app_themes.py")["dashboard"]
     # Both run_path and run_module contaminate sys.modules, so we need to undo this in order to avoid interference
     # between tests. However, if you do this then importlib.import_module seems to cause the problem due to mysterious
     # reasons. The current system should work well so long as there's no sub-packages with clashing names in the

@@ -1,17 +1,35 @@
-"""****** Important! *******
+"""
+****** Important! *******
 If you run this app locally, un-comment line 127 to add the theme change components to the layout
 """
 
-import dash_ag_grid as dag
-import dash_bootstrap_components as dbc
+from dash import Dash, dcc, html, Input, Output, State, callback, Patch, clientside_callback
 import plotly.express as px
-from dash import Dash, Input, Output, callback, dcc, html
+import plotly.io as pio
+import dash_bootstrap_components as dbc
+from dash_bootstrap_templates import ThemeChangerAIO, template_from_url
+import dash_ag_grid as dag
 
 df = px.data.gapminder()
 years = df.year.unique()
 continents = df.continent.unique()
 
-app = Dash(__name__, external_stylesheets=[dbc.themes.BOOTSTRAP, dbc.icons.FONT_AWESOME])
+# stylesheet with the .dbc class to style  dcc, DataTable and AG Grid components with a Bootstrap theme
+dbc_css = "https://cdn.jsdelivr.net/gh/AnnMarieW/dash-bootstrap-templates/dbc.min.css"
+
+app = Dash(__name__, external_stylesheets=[dbc.themes.BOOTSTRAP, dbc.icons.FONT_AWESOME, dbc_css])
+
+
+color_mode_switch = html.Span(
+    [
+        dbc.Label(className="fa fa-moon", html_for="switch"),
+        dbc.Switch(id="switch", value=True, className="d-inline-block ms-1", persistence=True),
+        dbc.Label(className="fa fa-sun", html_for="switch"),
+    ]
+)
+
+# The ThemeChangerAIO loads all 52  Bootstrap themed figure templates to plotly.io
+theme_controls = html.Div([ThemeChangerAIO(aio_id="theme"), color_mode_switch], className="hstack gap-3 mt-2")
 
 header = html.H4("Theme Explorer Sample App", className="bg-primary text-white p-2 mb-2 text-center")
 
@@ -65,7 +83,6 @@ slider = html.Div(
     ],
     className="mb-4",
 )
-
 theme_colors = [
     "primary",
     "secondary",
@@ -77,9 +94,7 @@ theme_colors = [
     "dark",
     "link",
 ]
-
 colors = html.Div([dbc.Button(f"{color}", color=f"{color}", size="sm") for color in theme_colors])
-
 colors = html.Div(["Theme Colors:", colors], className="mt-2")
 
 
@@ -88,9 +103,8 @@ controls = dbc.Card(
     body=True,
 )
 
-
-tab1 = dbc.Tab([dcc.Graph(id="line-chart", figure=px.line())], label="Line Chart")
-tab2 = dbc.Tab([dcc.Graph(id="scatter-chart", figure=px.scatter())], label="Scatter Chart")
+tab1 = dbc.Tab([dcc.Graph(id="line-chart", figure=px.line(template="bootstrap"))], label="Line Chart")
+tab2 = dbc.Tab([dcc.Graph(id="scatter-chart", figure=px.scatter(template="bootstrap"))], label="Scatter Chart")
 tab3 = dbc.Tab([grid], label="Grid", className="p-4")
 tabs = dbc.Card(dbc.Tabs([tab1, tab2, tab3]))
 
@@ -102,6 +116,10 @@ app.layout = dbc.Container(
                 dbc.Col(
                     [
                         controls,
+                        # ************************************
+                        # Uncomment line below when running locally!
+                        # ************************************
+                        theme_controls,
                     ],
                     width=4,
                 ),
@@ -121,21 +139,20 @@ app.layout = dbc.Container(
     Input("indicator", "value"),
     Input("continents", "value"),
     Input("years", "value"),
+    State(ThemeChangerAIO.ids.radio("theme"), "value"),
+    State("switch", "value"),
 )
-def update(indicator, continent, yrs):
+def update(indicator, continent, yrs, theme, color_mode_switch_on):
     if continent == [] or indicator is None:
         return {}, {}, {}
+
+    theme_name = template_from_url(theme)
+    template_name = theme_name if color_mode_switch_on else theme_name + "_dark"
 
     dff = df[df.year.between(yrs[0], yrs[1])]
     dff = dff[dff.continent.isin(continent)]
 
-    fig = px.line(
-        dff,
-        x="year",
-        y=indicator,
-        color="continent",
-        line_group="country",
-    )
+    fig = px.line(dff, x="year", y=indicator, color="continent", line_group="country", template=template_name)
 
     fig_scatter = px.scatter(
         dff[dff.year == yrs[0]],
@@ -145,6 +162,8 @@ def update(indicator, continent, yrs):
         color="continent",
         log_x=True,
         size_max=60,
+        template=template_name,
+        title="Gapminder %s: %s theme" % (yrs[1], template_name),
     )
 
     grid_filter = (
@@ -154,7 +173,40 @@ def update(indicator, continent, yrs):
         "isExternalFilterPresent": {"function": "true"},
         "doesExternalFilterPass": {"function": grid_filter},
     }
+
     return fig, fig_scatter, dashGridOptions
+
+
+# updates the Bootstrap global light/dark color mode
+clientside_callback(
+    """
+    switchOn => {
+       document.documentElement.setAttribute('data-bs-theme', switchOn ? 'light' : 'dark');
+       return window.dash_clientside.no_update
+    }
+    """,
+    Output("switch", "id"),
+    Input("switch", "value"),
+)
+
+
+# This callback makes updating figures with the new theme much faster
+@callback(
+    Output("line-chart", "figure", allow_duplicate=True),
+    Output("scatter-chart", "figure", allow_duplicate=True),
+    Input(ThemeChangerAIO.ids.radio("theme"), "value"),
+    Input("switch", "value"),
+    prevent_initial_call=True,
+)
+def update_template(theme, color_mode_switch_on):
+    theme_name = template_from_url(theme)
+    template_name = theme_name if color_mode_switch_on else theme_name + "_dark"
+
+    patched_figure = Patch()
+    # When using Patch() to update the figure template, you must use the figure template dict
+    # from plotly.io  and not just the template name
+    patched_figure["layout"]["template"] = pio.templates[template_name]
+    return patched_figure, patched_figure
 
 
 if __name__ == "__main__":
