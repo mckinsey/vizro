@@ -56,7 +56,7 @@ class DatePicker(VizroBaseModel):
 
     def build(self):
         init_value = self.value or ([self.min, self.max] if self.range else self.min)  # type: ignore[list-item]
-        date_range_picker_kwargs = {"allowSingleDateInRange": True} if self.range else {}
+        date_range_picker_kwargs = {}
 
         date_picker = dmc.DatePickerInput(
             id=self.id,
@@ -66,6 +66,7 @@ class DatePicker(VizroBaseModel):
             persistence=True,
             persistence_type="session",
             type="range" if self.range else "default",
+            allowSingleDateInRange= True,
             className="datepicker",
             # removes the default red color for  weekend days
             styles={"day": {"color": "var(--mantine-color-text"}},
