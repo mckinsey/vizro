@@ -11,9 +11,13 @@ df = px.data.gapminder()
 years = df.year.unique()
 continents = df.continent.unique()
 
-app = Dash(__name__, external_stylesheets=[dbc.themes.BOOTSTRAP, dbc.icons.FONT_AWESOME])
+# Test out local vizro-bootstrap file
+base = "https://cdn.jsdelivr.net/gh/mckinsey/vizro@tidy/add-bs-theme/vizro-core/src/vizro/static/css/"
+vizro_bootstrap = base + "vizro-bootstrap.min.css"
 
-header = html.H4("Theme Explorer Sample App", className="bg-primary text-white p-2 mb-2 text-center")
+app = Dash(__name__, external_stylesheets=[vizro_bootstrap, dbc.icons.FONT_AWESOME])
+
+header = html.H3("Theme Explorer Sample App", className="bg-primary p-2")
 
 grid = dag.AgGrid(
     id="grid",
