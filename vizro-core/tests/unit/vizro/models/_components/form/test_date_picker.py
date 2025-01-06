@@ -117,25 +117,25 @@ class TestBuildMethod:
             min="2023-01-01", max="2023-07-01", range=range, value=value, id="datepicker_id", title="Test title"
         ).build()
 
-        date_picker_class = dmc.DateRangePicker if range else dmc.DatePicker
-        additional_kwargs = {"allowSingleDateInRange": True} if range else {}
+        additional_kwargs = {}
         expected_datepicker = html.Div(
             [
+
                 dbc.Label("Test title", html_for="datepicker_id"),
-                date_picker_class(
+                dmc.DatePickerInput(
                     id="datepicker_id",
                     minDate="2023-01-01",
-                    maxDate="2023-07-02",
                     value=value,
+                    maxDate="2023-07-01",
                     persistence=True,
                     persistence_type="session",
-                    dropdownPosition="bottom-start",
-                    disabledDates="2023-07-02",
-                    clearable=False,
+                    type="range" if range else "default",
+                    allowSingleDateInRange=True,
                     className="datepicker",
+                    # removes the default red color for  weekend days
+                    styles={"day": {"color": "var(--mantine-color-text"}},
                     **additional_kwargs,
-                ),
-                dcc.Store(id="datepicker_id_input_store", storage_type="session", data=value),
+                )
             ],
         )
         assert_component_equal(date_picker, expected_datepicker)
