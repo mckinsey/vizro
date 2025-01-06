@@ -4,8 +4,8 @@
 
 #dashboard-container .dash-spreadsheet-inner th {
   background-color: inherit;
-  padding: 10px 0;
   color: var(--text-primary);
+  padding: 10px 0;
 }
 
 #dashboard-container .dash-spreadsheet-inner td {
