@@ -83,39 +83,15 @@ theme_colors = [
 ]
 
 colors = html.Div([dbc.Button(f"{color}", color=f"{color}", size="sm") for color in theme_colors])
-
 colors = html.Div(["Theme Colors:", colors], className="mt-2")
 
-
-controls = dbc.Card(
-    [dropdown, checklist, slider],
-    body=True,
-)
-
-
-tab1 = dbc.Tab([dcc.Graph(id="line-chart", figure=px.line())], label="Line Chart")
-tab2 = dbc.Tab([dcc.Graph(id="scatter-chart", figure=px.scatter())], label="Scatter Chart")
+controls = dbc.Card([dropdown, checklist, slider], body=True)
+tab1 = dbc.Tab([dcc.Graph(id="line-chart", figure=px.line())], label="Line Chart", className="p-4")
+tab2 = dbc.Tab([dcc.Graph(id="scatter-chart", figure=px.scatter())], label="Scatter Chart", className="p-4")
 tab3 = dbc.Tab([grid], label="Grid", className="p-4")
 tabs = dbc.Card(dbc.Tabs([tab1, tab2, tab3]))
 
-app.layout = dbc.Container(
-    [
-        header,
-        dbc.Row(
-            [
-                dbc.Col(
-                    [
-                        controls,
-                    ],
-                    width=4,
-                ),
-                dbc.Col([tabs, colors], width=8),
-            ]
-        ),
-    ],
-    fluid=True,
-    className="dbc dbc-ag-grid",
-)
+app.layout = dbc.Container([header, dbc.Row([dbc.Col(controls, width=4), dbc.Col([tabs, colors], width=8)])], fluid=True)
 
 
 @callback(
