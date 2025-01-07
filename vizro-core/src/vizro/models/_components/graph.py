@@ -140,16 +140,16 @@ class Graph(VizroBaseModel):
     @staticmethod
     def _optimise_fig_layout_for_dashboard(fig):
         """Post layout updates to visually enhance charts used inside dashboard."""
-        if fig.layout.title.text:
-            if fig.layout.margin.t is None:
-                # Reduce `margin_t` if not explicitly set.
-                fig.update_layout(margin_t=64)
-
         if any(isinstance(plotly_obj, go.Parcoords) for plotly_obj in fig.data) and all(
             getattr(fig.layout.margin, side) is None for side in ["l", "r", "b", "t"]
         ):
             # Avoid hidden labels in Parcoords figures by setting margins
-            fig.update_layout(margin={"l": 30, "r": 0, "b": 22, "t": 42})
+            fig.update_layout(margin={"l": 30, "r": 0, "b": 22, "t": 106 if fig.layout.title.text else 42})
+
+        if fig.layout.title.text:
+            if fig.layout.margin.t is None:
+                # Reduce `margin_t` if not explicitly set.
+                fig.update_layout(margin_t=64)
 
         return fig
 
