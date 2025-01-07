@@ -140,7 +140,7 @@ in the command line. For more Gunicorn configuration options, refer to [Gunicorn
 
 ## Deployment
 
-A Vizro app wraps a Dash app, which itself wraps a Flask app. Hence to deploy a Vizro app, similar guidance applies as for the underlying frameworks:
+A Vizro app wraps a Dash app, which itself wraps a Flask app. Deploying a Vizro app is similar to deployment for the underlying frameworks:
 
 - [Flask deployment documentation](https://flask.palletsprojects.com/en/2.0.x/deploying/)
 - [Dash deployment documentation](https://dash.plotly.com/deployment)
@@ -152,3 +152,9 @@ Internally, `app = Vizro()` contains a Flask app in `app.dash.server`. However, 
 - `url_base_pathname`: serve your Vizro app at a specific path rather than at the domain root. For example, if you host your dashboard at `http://www.example.com/my_dashboard/` then you would set `url_base_pathname="/my_dashboard/"` or an environment variable `DASH_URL_BASE_PATHNAME="/my_dashboard/"`.
 - `serve_locally`: set to `False` to [serve Dash component libraries from a Content Delivery Network (CDN)](https://dash.plotly.com/external-resources#serving-dash's-component-libraries-locally-or-from-a-cdn), which reduces load on the server and can improve performance. Vizro uses [jsDeliver](https://www.jsdelivr.com/) as a CDN for CSS and JavaScript sources.
 - `assets_external_path`: when `serve_locally=False`, you can also set `assets_external_path` or an environment variable `DASH_ASSETS_EXTERNAL_PATH` to [serve your own assets from a CDN](https://dash.plotly.com/external-resources#load-assets-from-a-folder-hosted-on-a-cdn).
+
+### Dash Enterprise
+
+Since Vizro is built on Dash and creates Dash app objects, Vizro dashboards can be deployed to [Dash Enterprise](https://plotly.com/dash/) and accessed in the same way as other Dash apps.
+
+Dash Enterprise helps to deploy and scale production-grade data apps and integrate them with IT infrastructure such as authentication and VPC services. Vizro users may find it suitable for deployment, rapid development environments, and authentication.
