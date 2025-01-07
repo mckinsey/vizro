@@ -5,13 +5,13 @@ If you run this app locally, un-comment line 127 to add the theme change compone
 import dash_ag_grid as dag
 import dash_bootstrap_components as dbc
 import plotly.express as px
-from dash import Dash, Input, Output, callback, dcc, html
+from dash import Dash, Input, Output, callback, clientside_callback, dcc, html
 
 df = px.data.gapminder()
 years = df.year.unique()
 continents = df.continent.unique()
 
-# Test out local vizro-bootstrap file
+# Test out local vizro-bootstrap file. Note: It takes a while after a commit for the updated file to be available
 base = "https://cdn.jsdelivr.net/gh/mckinsey/vizro@tidy/add-bs-theme/vizro-core/src/vizro/static/css/"
 vizro_bootstrap = base + "vizro-bootstrap.min.css"
 
@@ -77,7 +77,7 @@ slider = html.Div(
     className="mb-5",
 )
 
-# toggle = dbc.Switch(id="switch", value=True, persistence=True, persistence_type="session")
+toggle = dbc.Switch(id="switch", value=True, persistence=True, persistence_type="session")
 
 theme_colors = [
     "primary",
@@ -94,14 +94,7 @@ theme_colors = [
 colors = html.Div([dbc.Button(f"{color}", color=f"{color}", size="sm") for color in theme_colors])
 colors = html.Div(["Theme Colors:", colors], className="mt-2")
 
-controls = dbc.Card(
-    [
-        dropdown,
-        checklist,
-        slider,
-        #   toggle
-    ]
-)
+controls = dbc.Card([dropdown, checklist, slider, toggle])
 tab1 = dbc.Tab([dcc.Graph(id="line-chart", figure=px.line())], label="Line Chart", className="p-4")
 tab2 = dbc.Tab([dcc.Graph(id="scatter-chart", figure=px.scatter())], label="Scatter Chart", className="p-4")
 tab3 = dbc.Tab([grid], label="Grid", className="p-4")
@@ -157,16 +150,16 @@ def update(indicator, continent, yrs):
 
 
 # updates the Bootstrap global light/dark color mode
-# clientside_callback(
-#    """
-#    switchOn => {
-#       document.documentElement.setAttribute('data-bs-theme', switchOn ? 'light' : 'dark');
-#       return window.dash_clientside.no_update
-#    }
-#    """,
-#    Output("switch", "id"),
-#    Input("switch", "value"),
-# )
+clientside_callback(
+    """
+    switchOn => {
+       document.documentElement.setAttribute('data-bs-theme', switchOn ? 'light' : 'dark');
+       return window.dash_clientside.no_update
+    }
+    """,
+    Output("switch", "id"),
+    Input("switch", "value"),
+)
 
 
 if __name__ == "__main__":
