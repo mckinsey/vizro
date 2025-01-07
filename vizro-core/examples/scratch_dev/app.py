@@ -82,6 +82,7 @@ toggle = dbc.Switch(id="switch", value=False, persistence=True, persistence_type
 theme_colors = [
     "primary",
     "secondary",
+    "tertiary",
     "success",
     "warning",
     "danger",
@@ -91,8 +92,8 @@ theme_colors = [
     "link",
 ]
 
-colors = html.Div([dbc.Button(f"{color}", color=f"{color}", size="sm") for color in theme_colors])
-colors = html.Div(["Theme Colors:", colors], className="mt-2")
+colors = html.Div([dbc.Button(f"{color}", color=f"{color}", size="sm") for color in theme_colors], className="d-flex", style={"gap": "8px"})
+colors = html.Div([html.H4("Theme Colors:"), colors], className="mt-4")
 
 controls = dbc.Card([dropdown, checklist, slider, toggle])
 tab1 = dbc.Tab([dcc.Graph(id="line-chart", figure=px.line())], label="Line Chart", className="p-4")
