@@ -5,7 +5,7 @@ If you run this app locally, un-comment line 127 to add the theme change compone
 import dash_ag_grid as dag
 import dash_bootstrap_components as dbc
 import plotly.express as px
-from dash import Dash, Input, Output, callback, dcc, html, clientside_callback
+from dash import Dash, Input, Output, callback, dcc, html
 
 df = px.data.gapminder()
 years = df.year.unique()
@@ -15,10 +15,14 @@ continents = df.continent.unique()
 base = "https://cdn.jsdelivr.net/gh/mckinsey/vizro@tidy/add-bs-theme/vizro-core/src/vizro/static/css/"
 vizro_bootstrap = base + "vizro-bootstrap.min.css"
 
-app = Dash(__name__, external_stylesheets=[
-  #  dbc.themes.BOOTSTRAP,
-    vizro_bootstrap,
-    dbc.icons.FONT_AWESOME])
+app = Dash(
+    __name__,
+    external_stylesheets=[
+        #  dbc.themes.BOOTSTRAP,
+        vizro_bootstrap,
+        dbc.icons.FONT_AWESOME,
+    ],
+)
 
 header = html.H3("Theme Explorer Sample App", className="bg-primary p-2 mt-4")
 
@@ -90,9 +94,14 @@ theme_colors = [
 colors = html.Div([dbc.Button(f"{color}", color=f"{color}", size="sm") for color in theme_colors])
 colors = html.Div(["Theme Colors:", colors], className="mt-2")
 
-controls = dbc.Card([dropdown, checklist, slider,
-                  #   toggle
-                     ])
+controls = dbc.Card(
+    [
+        dropdown,
+        checklist,
+        slider,
+        #   toggle
+    ]
+)
 tab1 = dbc.Tab([dcc.Graph(id="line-chart", figure=px.line())], label="Line Chart", className="p-4")
 tab2 = dbc.Tab([dcc.Graph(id="scatter-chart", figure=px.scatter())], label="Scatter Chart", className="p-4")
 tab3 = dbc.Tab([grid], label="Grid", className="p-4")
@@ -100,7 +109,7 @@ tabs = dbc.Card(dbc.Tabs([tab1, tab2, tab3]))
 
 app.layout = html.Div(
     children=[header, dbc.Row([dbc.Col(controls, width=4), dbc.Col([tabs, colors], width=8)])],
-    **{"data-bs-theme": "dark"}
+    **{"data-bs-theme": "dark"},
 )
 
 
@@ -146,8 +155,9 @@ def update(indicator, continent, yrs):
     }
     return fig, fig_scatter, dashGridOptions
 
+
 # updates the Bootstrap global light/dark color mode
-#clientside_callback(
+# clientside_callback(
 #    """
 #    switchOn => {
 #       document.documentElement.setAttribute('data-bs-theme', switchOn ? 'light' : 'dark');
@@ -156,7 +166,7 @@ def update(indicator, continent, yrs):
 #    """,
 #    Output("switch", "id"),
 #    Input("switch", "value"),
-#)
+# )
 
 
 if __name__ == "__main__":
