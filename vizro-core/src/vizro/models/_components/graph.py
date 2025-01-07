@@ -140,7 +140,7 @@ class Graph(VizroBaseModel):
     @staticmethod
     def _optimise_fig_layout_for_dashboard(fig):
         """Post layout updates to visually enhance charts used inside dashboard."""
-       # TODO: Check whether we should increase margins for all chart types in template_dashboard_overrides.py instead
+        # TODO: Check whether we should increase margins for all chart types in template_dashboard_overrides.py instead
         if any(isinstance(plotly_obj, go.Parcoords) for plotly_obj in fig.data):
             # Avoid hidden labels in Parcoords figures by increasing margins compared to dashboard defaults
             fig.update_layout(
