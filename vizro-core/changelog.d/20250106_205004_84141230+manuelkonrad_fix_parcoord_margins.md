@@ -37,7 +37,7 @@ Uncomment the section that is right (remove the HTML comment wrapper).
 
 ### Fixed
 
-- Fixed hidden axis and tick labels for Graph components using px.parallel_coordinates. ([#941](https://github.com/mckinsey/vizro/pull/941))
+- Fix hidden axis and tick labels for Graph components using `px.parallel_coordinates`. ([#941](https://github.com/mckinsey/vizro/pull/941))
 
 
 <!--
