@@ -152,3 +152,13 @@ Internally, `app = Vizro()` contains a Flask app in `app.dash.server`. However, 
 - `url_base_pathname`: serve your Vizro app at a specific path rather than at the domain root. For example, if you host your dashboard at `http://www.example.com/my_dashboard/` then you would set `url_base_pathname="/my_dashboard/"` or an environment variable `DASH_URL_BASE_PATHNAME="/my_dashboard/"`.
 - `serve_locally`: set to `False` to [serve Dash component libraries from a Content Delivery Network (CDN)](https://dash.plotly.com/external-resources#serving-dash's-component-libraries-locally-or-from-a-cdn), which reduces load on the server and can improve performance. Vizro uses [jsDeliver](https://www.jsdelivr.com/) as a CDN for CSS and JavaScript sources.
 - `assets_external_path`: when `serve_locally=False`, you can also set `assets_external_path` or an environment variable `DASH_ASSETS_EXTERNAL_PATH` to [serve your own assets from a CDN](https://dash.plotly.com/external-resources#load-assets-from-a-folder-hosted-on-a-cdn).
+
+## Dash Enterprise
+
+[Dash Enterprise](https://plotly.com/dash/) helps to deploy and scale production-grade data apps, plus integrate them with IT infrastructure such as authentication and VPC services - providing deployment, rapid development environments and authentication out of the box. 
+
+Since Vizro is built on Dash, then it creates Dash app objects, which can be natively deployed to Dash Enterprise and accessed by users there in the same way as other Dash apps.  
+
+In this way Vizro is compatible with Dash Enterprise features such as the Dash App Workspace and App Manager, allowing Dash Enterprise users to seamlessly edit and manage Vizro apps.
+
+For more information about Dash Enterprise see the [Dash Enterprise documentation](https://dash.plotly.com/dash-enterprise?_gl=1*k6wy4d*_gcl_au*MTUwMjE1MzY2Ny4xNzMxMjgxNTMz*_ga*Nzk3MzAyNjMyLjE3MzEyODE1MzQ.*_ga_6G7EE0JNSC*MTczNjIwNzc2NS41My4xLjE3MzYyMDc4NDIuNjAuMC4w).
