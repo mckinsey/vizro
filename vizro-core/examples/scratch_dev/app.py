@@ -77,7 +77,7 @@ slider = html.Div(
     className="mb-5",
 )
 
-toggle = dbc.Switch(id="switch", value=True, persistence=True, persistence_type="session")
+toggle = dbc.Switch(id="switch", value=False, persistence=True, persistence_type="session")
 
 theme_colors = [
     "primary",
@@ -102,7 +102,6 @@ tabs = dbc.Card(dbc.Tabs([tab1, tab2, tab3]))
 
 app.layout = html.Div(
     children=[header, dbc.Row([dbc.Col(controls, width=4), dbc.Col([tabs, colors], width=8)])],
-    **{"data-bs-theme": "dark"},
 )
 
 
