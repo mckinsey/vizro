@@ -12,7 +12,7 @@ years = df.year.unique()
 continents = df.continent.unique()
 
 # Test out local vizro-bootstrap file. Note: It takes a while after a commit for the updated file to be available
-base = "https://cdn.jsdelivr.net/gh/mckinsey/vizro@tidy/add-bs-theme/vizro-core/src/vizro/static/css/"
+base = "https://cdn.jsdelivr.net/gh/mckinsey/vizro@dev/try-new-branch-bs/vizro-core/src/vizro/static/css/"
 vizro_bootstrap = base + "vizro-bootstrap.min.css"
 
 app = Dash(
