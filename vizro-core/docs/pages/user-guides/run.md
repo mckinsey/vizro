@@ -1,12 +1,12 @@
 # How to launch the dashboard
 
-This guide shows you how to launch your dashboard in different ways. By default, your dashboard apps run on localhost port 8050 so is accessible at [http://127.0.0.1:8050/](http://127.0.0.1:8050/).
+This guide shows you how to launch your dashboard in different ways. By default, Vizro dashboard apps run on localhost port 8050 and are accessible at [http://127.0.0.1:8050/](http://127.0.0.1:8050/).
 
 ## PyCafe
 
-The easiest way to launch your dashboard is to edit the code live on [PyCafe](https://py.cafe/).
+The easiest way to launch a dashboard is to work on the code live on [PyCafe](https://py.cafe/).
 
-Most of our examples have a link below the code, [Run and edit this code in PyCafe](https://py.cafe/vizro-official/vizro-iris-analysis), which you can follow to experiment with the code. This opens an editor such as the one below, which displays the dashboard and the code side by side.
+Most of the Vizro documentation examples have a link below the code that reads "[Run and edit this code in PyCafe](https://py.cafe/vizro-official/vizro-iris-analysis)". Follow the link to open the code in PyCafe within an editor, such as the one below, which displays the dashboard and the code side by side.
 
 <figure markdown="span">
   ![PyCafe editor](../../assets/user_guides/run/pycafe_editor.png)
@@ -16,6 +16,12 @@ Most of our examples have a link below the code, [Run and edit this code in PyCa
 You can use [PyCafe](https://py.cafe/snippet/vizro/v1) snippet mode to experiment with your own Vizro dashboards by dropping code into a new project.
 
 ## Default built-in Flask development server
+
+Alternatively, you can launch a dashboard with the default built-in Flash development server.
+
+1. create a Python file named `app.py`.
+1. type the command `python app.py` into your terminal.
+1. Go to [http://127.0.0.1:8050/](http://127.0.0.1:8050/).
 
 !!! example "Default built-in Flask development server"
     === "app.py"
@@ -36,11 +42,12 @@ You can use [PyCafe](https://py.cafe/snippet/vizro/v1) snippet mode to experimen
         dashboard = vm.Dashboard(pages=[page])
 
         Vizro().build(dashboard).run()
+
+        # Or use this to enable hot reloading
+        #Vizro().build(dashboard).run(debug=True)
         ```
 
-1. create a Python file named `app.py`.
-1. type the command `python app.py` into your terminal.
-1. information below will be displayed in your terminal, go to [http://127.0.0.1:8050/](http://127.0.0.1:8050/).
+You'll see a warning message as shown below, which is [further explained in the Flask documentation](https://flask.palletsprojects.com/en/3.0.x/deploying/).
 
 ```
 Dash is running on http://127.0.0.1:8050/
@@ -50,18 +57,18 @@ Dash is running on http://127.0.0.1:8050/
 INFO:werkzeug:WARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.
 ```
 
-!!! warning "In production"
-    The above warning message is [further explained in the Flask documentation](https://flask.palletsprojects.com/en/3.0.x/deploying/). The Flask development server is intended for use only during local development and **should not** be used when deploying to production. Instead, you should instead use a production-ready solution such as [Gunicorn](#gunicorn).
+!!! warning "Use only for local development"
+    The Flask development server is intended for local development only and **should not** be used when deploying a Vizro dashboard to production. Instead, you should instead use a production-ready solution such as [Gunicorn](#gunicorn).
 
 ### Automatic reloading and debugging
 
-You can set up the front-end to automatically refresh whenever dashboard configuration updates are made, as described in the ["Code Reloading and Hot Reloading" section of the Dash Dev Tools documentation](https://dash.plotly.com/devtools#code-reloading-&-hot-reloading).
+You can set up the Vizro front-end to automatically refresh whenever dashboard configuration updates are made, as described in the ["Code Reloading and Hot Reloading" section of the Dash Dev Tools documentation](https://dash.plotly.com/devtools#code-reloading-&-hot-reloading).
 
 This is turned off by default in Vizro apps but can be enabled by using `debug=True` in the `run()` method: `Vizro().build(dashboard).run(debug=True)`
 
-Setting `debug=True` enables [Dash Dev Tools](https://dash.plotly.com/devtools). In addition to hot reloading, this enables several other features that are useful during development, such as detailed in-app error reporting.
+Setting `debug=True` enables [Dash Dev Tools](https://dash.plotly.com/devtools), and switches on several other features that are useful during development, such as detailed in-app error reporting.
 
-In addition, some errors generated at run time can also be viewed via the browser console (for example in `Chrome` see `View > Developer > Developer Tools > Console`).
+Some errors generated at run time can also be viewed via the browser console (for example in `Chrome` see `View > Developer > Developer Tools > Console`).
 
 ## Jupyter
 
@@ -140,7 +147,7 @@ in the command line. For more Gunicorn configuration options, refer to [Gunicorn
 
 ## Deployment
 
-A Vizro app wraps a Dash app, which itself wraps a Flask app. Hence to deploy a Vizro app, similar guidance applies as for the underlying frameworks:
+A Vizro app wraps a Dash app, which itself wraps a Flask app. Deploying a Vizro app is similar to deployment for the underlying frameworks:
 
 - [Flask deployment documentation](https://flask.palletsprojects.com/en/2.0.x/deploying/)
 - [Dash deployment documentation](https://dash.plotly.com/deployment)
@@ -152,3 +159,9 @@ Internally, `app = Vizro()` contains a Flask app in `app.dash.server`. However, 
 - `url_base_pathname`: serve your Vizro app at a specific path rather than at the domain root. For example, if you host your dashboard at `http://www.example.com/my_dashboard/` then you would set `url_base_pathname="/my_dashboard/"` or an environment variable `DASH_URL_BASE_PATHNAME="/my_dashboard/"`.
 - `serve_locally`: set to `False` to [serve Dash component libraries from a Content Delivery Network (CDN)](https://dash.plotly.com/external-resources#serving-dash's-component-libraries-locally-or-from-a-cdn), which reduces load on the server and can improve performance. Vizro uses [jsDeliver](https://www.jsdelivr.com/) as a CDN for CSS and JavaScript sources.
 - `assets_external_path`: when `serve_locally=False`, you can also set `assets_external_path` or an environment variable `DASH_ASSETS_EXTERNAL_PATH` to [serve your own assets from a CDN](https://dash.plotly.com/external-resources#load-assets-from-a-folder-hosted-on-a-cdn).
+
+### Dash Enterprise
+
+Since Vizro is built on Dash and creates Dash app objects, Vizro dashboards can be deployed to [Dash Enterprise](https://plotly.com/dash/) and accessed in the same way as other Dash apps.
+
+Dash Enterprise helps to deploy and scale production-grade data apps and integrate them with IT infrastructure such as authentication and VPC services. Vizro users may find it suitable for deployment, rapid development environments, and authentication.
