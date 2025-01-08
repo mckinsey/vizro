@@ -166,6 +166,6 @@ Vizro is compatible with the following functionality within Dash Enterprise:
 - [Centralized data app management](https://plotly.com/dash/centralized-data-app-management/)
 - [CI/CD](https://plotly.com/dash/continuous-integration/)
 - [Redis](https://plotly.com/dash/big-data-for-python/)
-- [Dash Enterprise Authentication](https://plotly.com/dash/authentication/).
+- [Dash Enterprise Authentication](https://plotly.com/dash/authentication/)
 
 Note that Vizro is not currently compatible with certain Dash Enterprise functionality such as the Dashboard Engine or Dash Design Kit), and cannot produce static reports accessed via the Snapshot Engine.
