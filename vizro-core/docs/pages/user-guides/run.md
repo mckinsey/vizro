@@ -155,6 +155,17 @@ Internally, `app = Vizro()` contains a Flask app in `app.dash.server`. However, 
 
 ### Dash Enterprise
 
-Since Vizro is built on Dash and creates Dash app objects, Vizro dashboards can be deployed to [Dash Enterprise](https://plotly.com/dash/) and accessed in the same way as other Dash apps.
+Since Vizro is built on Dash and creates Dash app objects, Vizro dashboards can be deployed to [Dash Enterprise](https://plotly.com/dash/) and accessed in the same way as other Dash apps. Dash Enterprise helps to deploy and scale production-grade data apps and integrate them with IT infrastructure such as authentication and VPC services. Vizro users may find it suitable for deployment, rapid development environments, and authentication.
 
-Dash Enterprise helps to deploy and scale production-grade data apps and integrate them with IT infrastructure such as authentication and VPC services. Vizro users may find it suitable for deployment, rapid development environments, and authentication.
+Vizro is compatible with the following functionality within Dash Enterprise:
+
+- [App Portal](https://dash.plotly.com/dash-enterprise/portal?de-version=5.5)
+- [App Manager](https://plotly.com/dash/app-manager/)
+- [Dash App Workspaces](https://plotly.com/dash/workspaces/)
+- [App logs and viewer statistics](https://dash.plotly.com/dash-enterprise/logs?de-version=5.5)
+- [Centralized data app management](https://plotly.com/dash/centralized-data-app-management/)
+- [CI/CD](https://plotly.com/dash/continuous-integration/)
+- [Redis](https://plotly.com/dash/big-data-for-python/)
+- [Dash Enterprise Authentication](https://plotly.com/dash/authentication/).
+
+Note that Vizro is not currently compatible with certain Dash Enterprise functionality such as the Dashboard Engine or Dash Design Kit), and cannot produce static reports accessed via the Snapshot Engine.
