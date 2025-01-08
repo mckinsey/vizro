@@ -117,10 +117,8 @@ class TestBuildMethod:
             min="2023-01-01", max="2023-07-01", range=range, value=value, id="datepicker_id", title="Test title"
         ).build()
 
-        additional_kwargs = {}
         expected_datepicker = html.Div(
             [
-
                 dbc.Label("Test title", html_for="datepicker_id"),
                 dmc.DatePickerInput(
                     id="datepicker_id",
@@ -134,7 +132,6 @@ class TestBuildMethod:
                     className="datepicker",
                     # removes the default red color for  weekend days
                     styles={"day": {"color": "var(--mantine-color-text"}},
-                    **additional_kwargs,
                 )
             ],
         )
