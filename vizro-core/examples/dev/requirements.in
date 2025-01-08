@@ -2,3 +2,4 @@
 gunicorn
 openpyxl
 vizro==0.1.28
+dash>=2.18.2  # To fix dependabot vulnerability on jinja2

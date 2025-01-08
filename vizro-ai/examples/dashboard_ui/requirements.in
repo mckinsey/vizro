@@ -5,3 +5,4 @@ black
 openpyxl
 langchain_anthropic
 langchain_mistralai
+dash>=2.18.2  # To fix dependabot vulnerability on jinja2

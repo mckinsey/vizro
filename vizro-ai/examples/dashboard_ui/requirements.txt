@@ -45,8 +45,9 @@ click==8.1.7
     # via
     #   black
     #   flask
-dash==2.18.1
+dash==2.18.2
     # via
+    #   -r requirements.in
     #   dash-ag-grid
     #   dash-bootstrap-components
     #   vizro
