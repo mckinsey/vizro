@@ -5,4 +5,4 @@ isort==5.13.2
 plotly==5.24.1
 vizro==0.1.28
 gunicorn
-dash>=2.18.2  # To fix dependabot vulnerability on jinja2
+jinja2>=3.1.5  # To fix dependabot vulnerability on jinja2

@@ -47,7 +47,6 @@ click==8.1.7
     #   flask
 dash==2.18.2
     # via
-    #   -r requirements.in
     #   dash-ag-grid
     #   dash-bootstrap-components
     #   vizro
@@ -117,8 +116,10 @@ importlib-metadata==8.5.0
     #   flask
 itsdangerous==2.2.0
     # via flask
-jinja2==3.1.4
-    # via flask
+jinja2==3.1.5
+    # via
+    #   -r requirements.in
+    #   flask
 jiter==0.5.0
     # via
     #   anthropic
