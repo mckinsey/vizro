@@ -155,7 +155,9 @@ Internally, `app = Vizro()` contains a Flask app in `app.dash.server`. However, 
 
 ### Dash Enterprise
 
-Since Vizro is built on Dash and creates Dash app objects, Vizro dashboards can be deployed to [Dash Enterprise](https://plotly.com/dash/) and accessed in the same way as other Dash apps. Dash Enterprise helps to deploy and scale production-grade data apps and integrate them with IT infrastructure such as authentication and VPC services. Vizro users may find it suitable for deployment, rapid development environments, and authentication.
+Since Vizro creates data visualization apps as Dash app objects, they can be deployed to [Dash Enterprise](https://plotly.com/dash/) and accessed in the same way as other Dash apps. 
+
+Dash Enterprise helps to deploy and scale production-grade data apps and integrate them with IT infrastructure such as authentication and VPC services. Vizro users may find it suitable for deployment, rapid development environments, and authentication.
 
 Vizro is compatible with the following functionality within Dash Enterprise:
 
