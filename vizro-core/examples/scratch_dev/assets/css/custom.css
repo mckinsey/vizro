@@ -1,3 +1,19 @@
-#page-header {
-  padding-left: 8px;
+[data-bs-theme="dark"] {
+  --bs-border-radius: 0;
+}
+
+[data-bs-theme="light"] {
+  --bs-border-radius: 0;
+}
+
+
+
+/* Custom overwrites */
+.dbc .Select-control {
+  border-radius: var(--bs-border-radius); /*Add to AM*/
+}
+
+
+.Select-menu-outer {
+  border-radius: var(--bs-border-radius); /*Add to AM*/
 }

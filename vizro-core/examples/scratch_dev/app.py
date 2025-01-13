@@ -14,13 +14,14 @@ continents = df.continent.unique()
 # Test out local vizro-bootstrap file. Note: It takes a while after a commit for the updated file to be available
 base = "https://cdn.jsdelivr.net/gh/mckinsey/vizro@main/vizro-core/src/vizro/static/css/"
 vizro_bootstrap = base + "vizro-bootstrap.min.css"
+dbc_css = "https://cdn.jsdelivr.net/gh/AnnMarieW/dash-bootstrap-templates/dbc.min.css"
 
 app = Dash(
     __name__,
     external_stylesheets=[
-        #  dbc.themes.BOOTSTRAP,
         vizro_bootstrap,
         dbc.icons.FONT_AWESOME,
+        dbc_css
     ],
 )
 
@@ -103,6 +104,9 @@ tabs = dbc.Card(dbc.Tabs([tab1, tab2, tab3]))
 
 app.layout = html.Div(
     children=[header, dbc.Row([dbc.Col(controls, width=4), dbc.Col([tabs, colors], width=8)])],
+    # Required for translation layer of other component
+    # See: https://hellodash.pythonanywhere.com/adding-themes/dcc-components
+    className="dbc dbc-ag-grid"
 )
 
 
