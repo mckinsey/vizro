@@ -5,6 +5,7 @@ def href_path(href):
 def theme_toggle_path():
     return '//*[@id="theme-selector"]'
 
+
 # Navigation
 
 
@@ -22,6 +23,7 @@ def page_title_path(page_title):
 
 def tab_path(tab_id, classname):
     return f'//*[@class="{classname}"][text()="{tab_id}"]'
+
 
 # Components
 
@@ -79,5 +81,3 @@ def button_path(button_text):
 
 def graph_path(graph_id):
     return f'//*[@id="{graph_id}"]//*[@class="main-svg"]'
-
-

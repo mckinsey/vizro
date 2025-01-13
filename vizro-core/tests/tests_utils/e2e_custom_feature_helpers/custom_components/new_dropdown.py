@@ -1,13 +1,15 @@
 from typing import List, Optional, Union
 
-import vizro.models as vm
 from dash import dcc, html
+
+import vizro.models as vm
 
 try:
     from pydantic.v1 import Field, PrivateAttr
 except ImportError:
     from pydantic import Field, PrivateAttr
 from typing_extensions import Literal
+
 from vizro.models import Action
 from vizro.models._action._actions_chain import _action_validator_factory
 from vizro.models._base import VizroBaseModel, _log_call
@@ -21,16 +23,12 @@ class NewDropdown(VizroBaseModel):
     """Categorical single/multi-selector `Dropdown` to be provided to `Filter`."""
 
     type: Literal["new-dropdown"] = "new-dropdown"
-    options: Optional[MultiOptionType] = Field(
-        None, description="Possible options the user can select from"
-    )
+    options: Optional[MultiOptionType] = Field(None, description="Possible options the user can select from")
     value: Optional[Union[SingleOptionType, MultiOptionType]] = Field(
         None, description="Options that are selected by default"
     )
-    multi: bool = Field(
-        True, description="Whether to allow selection of multiple values"
-    )
-    actions: List[Action] = []  # noqa: RUF012
+    multi: bool = Field(True, description="Whether to allow selection of multiple values")
+    actions: List[Action] = []
     title: Optional[str] = Field(None, description="Title to be displayed")
 
     # Component properties for actions and interactions
