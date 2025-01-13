@@ -4,11 +4,13 @@
 
 #dashboard-container .dash-spreadsheet-inner th {
   background-color: inherit;
+  color: var(--text-primary);
   padding: 10px 0;
 }
 
 #dashboard-container .dash-spreadsheet-inner td {
   background-color: inherit;
+  color: var(--text-primary);
 }
 
 #dashboard-container .dash-spreadsheet-inner table {
