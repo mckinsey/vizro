@@ -2,5 +2,4 @@
 
 import os
 
-os.chdir("tests/e2e/dashboards/default")
 os.system("gunicorn dashboard:app -b 0.0.0.0:5001 -w 3 --timeout 90 &")

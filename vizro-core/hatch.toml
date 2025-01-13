@@ -37,6 +37,7 @@ dependencies = [
   "gunicorn"
 ]
 installer = "uv"
+#env-vars = { PYTHONPATH = "tests:tests_utils" }
 
 [envs.default.scripts]
 example = "hatch run examples:example {args:scratch_dev}"  # shortcut script to underlying example environment script.
@@ -70,6 +71,9 @@ test-unit-coverage = [
   "- coverage combine",
   "coverage report"
 ]
+
+[envs.default.env-vars]
+PYTHONPATH = "tests/e2e/dashboards/default:tests/tests_utils"
 
 [envs.docs]
 dependencies = [
