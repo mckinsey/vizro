@@ -2,4 +2,4 @@
 
 import os
 
-os.system("gunicorn dashboard:app -b 0.0.0.0:5001 -w 3 --timeout 90 &")
+os.system("gunicorn dashboard:app -b 0.0.0.0:5002 -w 3 --timeout 90 &")
