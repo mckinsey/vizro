@@ -33,7 +33,8 @@ dependencies = [
   "PyGithub",
   "imutils",
   "opencv-python",
-  "pyhamcrest"
+  "pyhamcrest",
+  "gunicorn"
 ]
 installer = "uv"
 
