@@ -1,10 +1,9 @@
-from hamcrest import assert_that, equal_to, any_of, contains_string
+import e2e_constants as cnst
+from e2e_helpers import graph_load_waiter, webdriver_waiter
+from e2e_paths import accordion_path
+from hamcrest import any_of, assert_that, contains_string, equal_to
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support.color import Color
-
-import e2e_constants as cnst
-from e2e_helpers import webdriver_waiter, graph_load_waiter
-from e2e_paths import accordion_path
 
 
 def check_text(driver, xpath, text):
@@ -36,9 +35,7 @@ def browser_console_warnings_checker(log_level, log_levels):
 
 
 def check_graph_is_loading(driver, graph_id):
-    webdriver_waiter(
-        driver, f'//*[@id="{graph_id}"][@data-dash-is-loading="true"]'
-    )
+    webdriver_waiter(driver, f'//*[@id="{graph_id}"][@data-dash-is-loading="true"]')
     graph_load_waiter(driver, graph_id)
 
 
@@ -74,9 +71,7 @@ def check_slider_value(driver, num, elem_id):
 
 def check_accordion(driver, accordion_name):
     webdriver_waiter(driver, accordion_path(accordion_name))
-    webdriver_waiter(
-        driver, f'//*{accordion_path(accordion_name)}[@aria-expanded="true"]'
-    )
+    webdriver_waiter(driver, f'//*{accordion_path(accordion_name)}[@aria-expanded="true"]')
 
 
 def check_theme_color(driver, color):
@@ -89,9 +84,7 @@ def check_ag_grid_theme_color(driver, ag_grid_id, color):
 
 def check_graph_color(driver, xpath, style_background, color):
     webdriver_waiter(driver, f'{xpath}[@style="{style_background}"]')
-    rgb = webdriver_waiter(driver, xpath).value_of_css_property(
-        "background-color"
-    )
+    rgb = webdriver_waiter(driver, xpath).value_of_css_property("background-color")
     graph_color = Color.from_string(rgb).hex
     assert_that(
         graph_color,

@@ -1,13 +1,13 @@
+import e2e_constants as cnst
+import pandas as pd
 from flask_caching import Cache
 
 import vizro.models as vm
-import e2e_constants as cnst
 import vizro.plotly.express as px
-import pandas as pd
 from vizro.actions import export_data
 from vizro.figures import kpi_card, kpi_card_reference
-from vizro.tables import dash_data_table, dash_ag_grid
 from vizro.managers import data_manager
+from vizro.tables import dash_ag_grid, dash_data_table
 
 iris = px.data.iris()
 gapminder = px.data.gapminder()
@@ -17,12 +17,67 @@ kpi_df = pd.DataFrame(
 )
 datepicker_df = pd.DataFrame(
     [
-        ["2016-05-16 20:42:31", "Male", 35, "$30,000 to $39,999", "Employed for wages", "mechanical drafter", "Associate degree", None],
-        ["2016-05-16", "Male", 21, "$1 to $10,000", "Out of work and looking for work", "-", "Some college, no degree", "join clubs/socual clubs/meet ups"],
-        ["2016-05-17", "Male", 22, "$0", "Out of work but not currently looking for work", "unemployed, Some college", "no degree", "Other exercise"],
-        ["2016-05-18", "Male", 19, "$1 to $10,000", "A student", "student", "Some college, no degree", "Joined a gym/go to the gym"],
-        ["2016-05-18", "Male", 23, "$30,000 to $39,999", "Employed for wages", "Factory worker", "High school graduate, diploma or the equivalent (for example: GED)", None],
-        ["2016-05-19", "Male", 23, "$30,000 to $39,999", "Employed for wages", "Factory worker", "High school graduate, diploma or the equivalent (for example: GED)", None]],
+        [
+            "2016-05-16 20:42:31",
+            "Male",
+            35,
+            "$30,000 to $39,999",
+            "Employed for wages",
+            "mechanical drafter",
+            "Associate degree",
+            None,
+        ],
+        [
+            "2016-05-16",
+            "Male",
+            21,
+            "$1 to $10,000",
+            "Out of work and looking for work",
+            "-",
+            "Some college, no degree",
+            "join clubs/socual clubs/meet ups",
+        ],
+        [
+            "2016-05-17",
+            "Male",
+            22,
+            "$0",
+            "Out of work but not currently looking for work",
+            "unemployed, Some college",
+            "no degree",
+            "Other exercise",
+        ],
+        [
+            "2016-05-18",
+            "Male",
+            19,
+            "$1 to $10,000",
+            "A student",
+            "student",
+            "Some college, no degree",
+            "Joined a gym/go to the gym",
+        ],
+        [
+            "2016-05-18",
+            "Male",
+            23,
+            "$30,000 to $39,999",
+            "Employed for wages",
+            "Factory worker",
+            "High school graduate, diploma or the equivalent (for example: GED)",
+            None,
+        ],
+        [
+            "2016-05-19",
+            "Male",
+            23,
+            "$30,000 to $39,999",
+            "Employed for wages",
+            "Factory worker",
+            "High school graduate, diploma or the equivalent (for example: GED)",
+            None,
+        ],
+    ],
     columns=["time", "gender", "age", "income", "employment", "job_title", "edu_level", "improve_yourself_how"],
 )
 
@@ -32,9 +87,7 @@ def load_datepicker_data():
     return datepicker_df
 
 
-data_manager.cache = Cache(
-    config={"CACHE_TYPE": "FileSystemCache", "CACHE_DIR": "cache"}
-)
+data_manager.cache = Cache(config={"CACHE_TYPE": "FileSystemCache", "CACHE_DIR": "cache"})
 data_manager["datepicker_df"] = load_datepicker_data
 data_manager["datepicker_df"].timeout = 10
 
@@ -273,15 +326,11 @@ parameters_page = vm.Page(
     controls=[
         vm.Parameter(
             targets=[f"{cnst.HISTOGRAM_GRAPH_ID}.color_discrete_map.setosa"],
-            selector=vm.Dropdown(
-                options=["NONE", "red", "blue"], multi=False, value="blue"
-            ),
+            selector=vm.Dropdown(options=["NONE", "red", "blue"], multi=False, value="blue"),
         ),
         vm.Parameter(
             targets=[f"{cnst.BAR_GRAPH_ID}.color_discrete_map.virginica"],
-            selector=vm.Dropdown(
-                options=["NONE", "red", "blue"], multi=False, value="blue"
-            ),
+            selector=vm.Dropdown(options=["NONE", "red", "blue"], multi=False, value="blue"),
         ),
         vm.Parameter(
             targets=[f"{cnst.BAR_GRAPH_ID}.title", f"{cnst.HISTOGRAM_GRAPH_ID}.title"],
@@ -289,15 +338,11 @@ parameters_page = vm.Page(
         ),
         vm.Parameter(
             targets=[f"{cnst.BAR_GRAPH_ID}.y"],
-            selector=vm.RadioItems(
-                options=["petal_width", "petal_length"], value="petal_width"
-            ),
+            selector=vm.RadioItems(options=["petal_width", "petal_length"], value="petal_width"),
         ),
         vm.Parameter(
             targets=[f"{cnst.BAR_GRAPH_ID}.opacity"],
-            selector=vm.Slider(
-                min=0, max=1, value=0.2, step=0.2, title="Bubble opacity"
-            ),
+            selector=vm.Slider(min=0, max=1, value=0.2, step=0.2, title="Bubble opacity"),
         ),
         vm.Parameter(
             targets=[f"{cnst.HISTOGRAM_GRAPH_ID}.range_x"],
@@ -467,15 +512,11 @@ ag_grid_page = vm.Page(
                 vm.AgGrid(
                     id=cnst.TABLE_AG_GRID_ID,
                     title="Equal Title One",
-                    figure=dash_ag_grid(
-                        data_frame=gapminder, dashGridOptions={"pagination": True}
-                    ),
+                    figure=dash_ag_grid(data_frame=gapminder, dashGridOptions={"pagination": True}),
                 ),
                 vm.Graph(
                     id=cnst.BOX_AG_GRID_PAGE_ID,
-                    figure=px.box(
-                        gapminder, x="continent", y="lifeExp", title="Equal Title One"
-                    )
+                    figure=px.box(gapminder, x="continent", y="lifeExp", title="Equal Title One"),
                 ),
             ],
         )

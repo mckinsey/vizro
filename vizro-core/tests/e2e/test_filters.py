@@ -1,14 +1,11 @@
-import pytest
-from hamcrest import assert_that, equal_to
-from selenium.webdriver.common.by import By
-
 import e2e_constants as cnst
+import pytest
 from e2e_checkers import (
     check_graph_is_loading,
     check_range_slider_value,
     check_slider_value,
 )
-from e2e_helpers import webdriver_click_waiter, webdriver_waiter, graph_load_waiter
+from e2e_helpers import graph_load_waiter, webdriver_click_waiter, webdriver_waiter
 from e2e_navigation import page_select
 from e2e_paths import (
     checklist_value_path,
@@ -20,6 +17,8 @@ from e2e_paths import (
     range_slider_value_path,
     slider_value_path,
 )
+from hamcrest import assert_that, equal_to
+from selenium.webdriver.common.by import By
 
 pytestmark = pytest.mark.e2e_integration_tests
 

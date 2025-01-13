@@ -1,10 +1,10 @@
 from datetime import datetime
 
+import e2e_constants as cnst
 import pytest
+from e2e_checkers import browser_console_warnings_checker
 from selenium.common import WebDriverException
 from selenium.webdriver.chrome.options import Options as ChromeOptions
-from e2e_checkers import browser_console_warnings_checker
-import e2e_constants as cnst
 
 # functions
 
@@ -20,11 +20,7 @@ def pytest_setup_options():
 def make_teardown(driver):
     # checking for browser console errors
     try:
-        log_levels = [
-            level
-            for level in driver.get_log("browser")
-            if level["level"] == "SEVERE" or "WARNING"
-        ]
+        log_levels = [level for level in driver.get_log("browser") if level["level"] == "SEVERE" or "WARNING"]
         if log_levels:
             for log_level in log_levels:
                 browser_console_warnings_checker(log_level, log_levels)
@@ -35,10 +31,8 @@ def make_teardown(driver):
 
 # make a screenshot with a name of the test, date and time
 def take_screenshot(driver, nodeid):
-    file_name = (
-        f'{nodeid}_{datetime.today().strftime("%Y-%m-%d_%H-%M-%S-%f")}.png'.replace(
-            "/", "_"
-        ).replace("::", "__")
+    file_name = f'{nodeid}_{datetime.today().strftime("%Y-%m-%d_%H-%M-%S-%f")}.png'.replace("/", "_").replace(
+        "::", "__"
     )
     driver.save_screenshot(file_name)
 

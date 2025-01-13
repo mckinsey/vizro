@@ -1,15 +1,16 @@
-import pytest
-
 import e2e_constants as cnst
+import pytest
 from e2e_checkers import (
     check_accordion,
+    check_ag_grid_theme_color,
     check_graph_color,
     check_text,
-    check_theme_color, check_ag_grid_theme_color,
+    check_theme_color,
 )
 from e2e_helpers import (
+    graph_load_waiter,
     webdriver_click_waiter,
-    webdriver_waiter, graph_load_waiter,
+    webdriver_waiter,
 )
 from e2e_navigation import page_select
 from e2e_paths import (
@@ -79,8 +80,12 @@ def test_themes(dash_br_driver, dashboard_id):
     indirect=["dash_br_driver"],
 )
 def test_ag_grid_themes(dash_br_driver, dashboard_id):
-    page_select(dash_br_driver, page_name=cnst.TABLE_AG_GRID_PAGE,
-                graph_id=cnst.BOX_AG_GRID_PAGE_ID, accordion_name=cnst.AG_GRID_ACCORDION)
+    page_select(
+        dash_br_driver,
+        page_name=cnst.TABLE_AG_GRID_PAGE,
+        graph_id=cnst.BOX_AG_GRID_PAGE_ID,
+        accordion_name=cnst.AG_GRID_ACCORDION,
+    )
     if dashboard_id == cnst.DASHBOARD_DEFAULT:
         check_ag_grid_theme_color(dash_br_driver, ag_grid_id=cnst.TABLE_AG_GRID_ID, color=cnst.AG_GRID_LIGHT)
         webdriver_click_waiter(dash_br_driver, xpath=theme_toggle_path())
@@ -106,7 +111,9 @@ def test_themes_page_change(dash_br_driver, dashboard_id):
     def _logic(style_background, graph_color, theme_color):
         check_graph_color(dash_br_driver, xpath=graph_bar, style_background=style_background, color=graph_color)
         check_theme_color(dash_br_driver, color=theme_color)
-        webdriver_click_waiter(dash_br_driver, tab_path(tab_id=cnst.PARAMETERS_SUB_TAB_CONTAINER_TWO, classname="nav-link"))
+        webdriver_click_waiter(
+            dash_br_driver, tab_path(tab_id=cnst.PARAMETERS_SUB_TAB_CONTAINER_TWO, classname="nav-link")
+        )
         check_graph_color(dash_br_driver, xpath=graph_bar, style_background=style_background, color=graph_color)
         page_select(dash_br_driver, page_name=cnst.FILTERS_PAGE, graph_id=cnst.SCATTER_GRAPH_ID)
         page_select(dash_br_driver, page_name=cnst.PARAMETERS_PAGE, graph_id=cnst.BAR_GRAPH_ID)
