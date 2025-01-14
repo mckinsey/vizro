@@ -20,8 +20,6 @@ from e2e_paths import (
 from hamcrest import assert_that, equal_to
 from selenium.webdriver.common.by import By
 
-pytestmark = pytest.mark.e2e_integration_tests
-
 
 def test_dropdown(dash_br_driver):
     page_select(dash_br_driver, page_name=cnst.FILTERS_PAGE, graph_id=cnst.SCATTER_GRAPH_ID)

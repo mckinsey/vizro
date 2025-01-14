@@ -22,8 +22,6 @@ from e2e_paths import (
     theme_toggle_path,
 )
 
-pytestmark = pytest.mark.e2e_integration_tests
-
 
 def test_pages(dash_br_driver):
     graph_load_waiter(dash_br_driver, graph_id=cnst.AREA_GRAPH_ID)

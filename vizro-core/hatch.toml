@@ -63,7 +63,7 @@ schema-check = ["python schemas/generate.py --check"]
 # See comments added in https://github.com/mckinsey/vizro/pull/444.
 test = "pytest tests --headless {args}"
 test-e2e-component-library = "pytest tests/e2e/test_component_library.py --headless {args}"
-test-e2e-integration = "pytest tests/e2e -m 'e2e_integration_tests' --headless {args}"
+test-e2e-integration = "pytest tests/e2e/tests_integration --headless {args}"
 test-e2e-run-dashboards = "python tests/e2e/dashboards/run_all_dashboards.py; tests/e2e/dashboards/wait_for_dashboard.sh"
 test-integration = "pytest tests/integration --headless {args}"
 test-js = "./tools/run_jest.sh {args}"

@@ -1,10 +1,7 @@
 import e2e_constants as cnst
-import pytest
 from e2e_checkers import check_text
 from e2e_helpers import webdriver_click_waiter, webdriver_waiter
 from e2e_paths import href_path, nav_card_text_path
-
-pytestmark = pytest.mark.e2e_integration_tests
 
 
 def test_modebar(dash_br_driver):
