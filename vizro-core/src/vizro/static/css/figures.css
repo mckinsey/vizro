@@ -21,7 +21,7 @@ Note the relative url works with both serve_locally=True and serve_locally=False
   display: inline-block;
   font-family: MaterialSymbolsOutlined, sans-serif;
   font-feature-settings: "liga";
-  font-size: 24px;
+  font-size: 20px;
   -webkit-font-smoothing: antialiased;
   font-style: normal;
   font-weight: 400;
@@ -39,8 +39,6 @@ Note the relative url works with both serve_locally=True and serve_locally=False
 /* This should be replaced, when the bootstrap theme is finalized. Currently our font tokens don't match with the
  bootstrap font tokens, leading to deviations which we need to overwrite. */
 .card-kpi-title {
-  font-size: 1.2rem;
-  line-height: normal;
   margin: 0;
 }
 
@@ -64,9 +62,8 @@ Note the relative url works with both serve_locally=True and serve_locally=False
   color: var(--bs-secondary);
   display: flex;
   flex-grow: 1;
-  font-size: 3.6vh;
+  font-size: 2rem;
   font-weight: 600;
-  padding: 1rem 0;
 }
 
 .card-kpi .card-footer {
