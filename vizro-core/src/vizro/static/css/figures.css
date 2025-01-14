@@ -16,12 +16,13 @@ Note the relative url works with both serve_locally=True and serve_locally=False
   src: url("./fonts/material-symbols-outlined.woff2") format("woff2");
 }
 
+/* This applies to all icons inside vizro */
 .material-symbols-outlined {
   direction: ltr;
   display: inline-block;
   font-family: MaterialSymbolsOutlined, sans-serif;
   font-feature-settings: "liga";
-  font-size: 20px;
+  font-size: 24px;
   -webkit-font-smoothing: antialiased;
   font-style: normal;
   font-weight: 400;
@@ -33,6 +34,7 @@ Note the relative url works with both serve_locally=True and serve_locally=False
 }
 
 .card-kpi .material-symbols-outlined {
+  font-size: 20px;
   margin: auto 0;
 }
 
