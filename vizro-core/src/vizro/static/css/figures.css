@@ -34,7 +34,6 @@ Note the relative url works with both serve_locally=True and serve_locally=False
 }
 
 .card-kpi .material-symbols-outlined {
-  font-size: 20px;
   margin: auto 0;
 }
 
@@ -52,6 +51,7 @@ Note the relative url works with both serve_locally=True and serve_locally=False
   border: none;
   margin: 0;
   padding: 0;
+  align-items: center;
 }
 
 .card-kpi .card-header {
