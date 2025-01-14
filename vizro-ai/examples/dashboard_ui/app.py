@@ -5,7 +5,7 @@ import subprocess
 
 import dash_bootstrap_components as dbc
 import vizro.models as vm
-from _utils import find_available_port, format_output
+from _utils import find_available_port, format_output, kill_process_on_port
 from actions import data_upload_action, display_filename, save_files
 from components import (
     CodeClipboard,
@@ -25,9 +25,7 @@ from vizro import Vizro
 
 SUPPORTED_MODELS = [
     "gpt-4o-mini",
-    "gpt-4",
     "gpt-4-turbo",
-    "gpt-3.5-turbo",
     "gpt-4o",
 ]
 vm.Container.add_type("components", UserUpload)
@@ -235,7 +233,10 @@ def save_to_file(generated_code):
     gen_ai_file = "output_files/run_vizro_ai_output.py"
 
     # format code
-    generated_code = format_output(generated_code)
+    kill_process_on_port(8051)
+    port = 8051
+    # port = find_available_port()
+    generated_code = format_output(generated_code, port)
 
     if generated_code:
         with open(gen_ai_file, "w") as f:
@@ -252,7 +253,9 @@ def show_button(ai_response):
     """Displays a button to launch the dashboard in a subprocess."""
     if not ai_response:
         raise PreventUpdate
-    port = find_available_port()
+    kill_process_on_port(8051)
+    port = 8051
+    # port = find_available_port()
     subprocess.Popen(["python", "output_files/run_vizro_ai_output.py", str(port)])
     href = f"http://localhost:{port}/"
     return {}, href

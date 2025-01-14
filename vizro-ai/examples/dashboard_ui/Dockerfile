@@ -1,7 +1,7 @@
-# read the doc: https://huggingface.co/docs/hub/spaces-sdks-docker
-# you will also find guides on how best to write your Dockerfile
+FROM python:3.12-slim
 
-FROM python:3.12
+# Install lsof
+RUN apt-get update && apt-get install -y lsof && rm -rf /var/lib/apt/lists/*
 
 RUN useradd -m -u 1000 user
 
@@ -13,8 +13,8 @@ RUN pip install --no-cache-dir --upgrade -r requirements.txt
 
 COPY --chown=user . /app
 
-EXPOSE 7868
+EXPOSE 7868 8051
 
 USER user
 
-CMD ["gunicorn", "-w", "4", "-b", "0.0.0.0:7868", "app:server"]
+CMD ["gunicorn", "-w", "4", "-b", "0.0.0.0:7868", "--timeout", "180", "app:server"]
