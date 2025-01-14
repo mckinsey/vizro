@@ -47,11 +47,11 @@ Note the relative url works with both serve_locally=True and serve_locally=False
 .card-kpi .card-header,
 .card-kpi .card-footer,
 .card-kpi .card-body {
+  align-items: center;
   background: none;
   border: none;
   margin: 0;
   padding: 0;
-  align-items: center;
 }
 
 .card-kpi .card-header {
