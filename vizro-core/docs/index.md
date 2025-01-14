@@ -1,6 +1,6 @@
 # Vizro
 
-Vizro is a toolkit for creating modular data visualization applications.
+Vizro is a nice toolkit for creating modular data visualization applications.
 
 <div class="grid cards" markdown>
 
