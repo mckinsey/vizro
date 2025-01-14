@@ -1,4 +1,4 @@
-from typing import List, Optional, Union
+from typing import Optional, Union
 
 from dash import dcc, html
 
@@ -16,7 +16,7 @@ from vizro.models._base import VizroBaseModel, _log_call
 
 # Case 2: Entirely new component (actually exists, but for ease of explanation chosen)
 SingleOptionType = Union[bool, float, str]
-MultiOptionType = Union[List[bool], List[float], List[str]]
+MultiOptionType = Union[list[bool], list[float], list[str]]
 
 
 class NewDropdown(VizroBaseModel):
@@ -28,7 +28,7 @@ class NewDropdown(VizroBaseModel):
         None, description="Options that are selected by default"
     )
     multi: bool = Field(True, description="Whether to allow selection of multiple values")
-    actions: List[Action] = []
+    actions: list[Action] = []
     title: Optional[str] = Field(None, description="Title to be displayed")
 
     # Component properties for actions and interactions
@@ -38,7 +38,7 @@ class NewDropdown(VizroBaseModel):
 
     @_log_call
     def build(self):
-        full_options = self.options if self.multi else self.options
+        full_options = self.options
 
         return html.Div(
             [
