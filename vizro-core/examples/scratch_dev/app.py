@@ -3,6 +3,7 @@
 import pandas as pd
 import vizro.models as vm
 from vizro import Vizro
+
 # For more information, refer to the API reference for kpi_card and kpi_card_reference
 from vizro.figures import kpi_card, kpi_card_reference
 
@@ -59,12 +60,7 @@ example_reference_cards = [
 # Create a layout with four rows and columns. The KPI cards are positioned in the first eight cells, while the remaining cells are empty.
 page = vm.Page(
     title="KPI cards",
-    layout=vm.Layout(grid=[[0, 1, 2, 3],
-                           [4, 5, 6, 7],
-                           [-1, -1, -1, -1],
-                           [-1, -1, -1, -1],
-                           [-1, -1, -1, -1]]),
-
+    layout=vm.Layout(grid=[[0, 1, 2, 3], [4, 5, 6, 7], [-1, -1, -1, -1], [-1, -1, -1, -1], [-1, -1, -1, -1]]),
     components=[vm.Figure(figure=figure) for figure in example_cards + example_reference_cards],
     controls=[vm.Filter(column="Category")],
 )
