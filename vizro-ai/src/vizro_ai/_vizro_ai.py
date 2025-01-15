@@ -8,7 +8,7 @@ import vizro.models as vm
 from langchain_core.language_models.chat_models import BaseChatModel
 from langchain_core.messages import HumanMessage
 
-from vizro_ai._llm_models import _get_llm_model, _get_model_name
+from vizro_ai._llm_models import _get_llm_model
 from vizro_ai.dashboard._graph.dashboard_creation import _create_and_compile_graph
 from vizro_ai.dashboard._pydantic_output import _get_pydantic_model  # TODO: make general, ie remove from dashboard
 from vizro_ai.dashboard.utils import DashboardOutputs, _extract_overall_imports_and_code, _register_data
@@ -50,12 +50,10 @@ class VizroAI:
         self.components_instances = {}
 
         # TODO add pending URL link to docs
-        model_name = _get_model_name(self.model)
         logger.info(
-            f"You have selected {model_name},"
-            f"Engaging with LLMs (Large Language Models) carries certain risks. "
-            f"Users are advised to become familiar with these risks to make informed decisions, "
-            f"and visit this page for detailed information: "
+            "Engaging with LLMs (Large Language Models) carries certain risks. "
+            "Users are advised to become familiar with these risks to make informed decisions, "
+            "and visit this page for detailed information: "
             "https://vizro-ai.readthedocs.io/en/latest/pages/explanation/disclaimer/"
         )
 
