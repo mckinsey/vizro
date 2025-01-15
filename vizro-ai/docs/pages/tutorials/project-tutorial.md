@@ -212,7 +212,7 @@ The following code shows the code to make the request to Vizro-AI to build and d
 
 Using `gpt-4-turbo`, Vizro-AI generates a set of plotly chart code and the necessary Vizro support code to build a dashboard. The generated code is displayed as output in the Notebook with the dashboard, although the dashboard is better viewed at `http://localhost:8006/`.
 
-You can see the code output in the [Notebook stored on the Vizro GitHub repository](https://raw.githubusercontent.com/stichbury/vizro_projects/refs/heads/main/goodreads_project/filtered_books.csv) <!--TO DO change this when uploaded-->, or generate similar output by running it yourself.
+You can see the code output in the [Notebook stored on the Vizro GitHub repository](https://raw.githubusercontent.com/stichbury/vizro_projects/refs/heads/main/goodreads_project/goodreads.ipynb) <!--TO DO change this when uploaded-->, or generate similar output by running it yourself.
 
 The charts generated were similar to those created by the PyCafe host above, although the first chart was improved by spacing the books proportionate to the date read and rolling over each point gave the book title as well as the date read.
 
