@@ -462,6 +462,8 @@ In the second chart that shows the cumulative total of pages and books read, the
 
 In the third chart that shows the ratings comparison, the color scheme has been updated to make it clearer which is the `My Rating` value compared to the `Average Rating`.
 
+Follow the link at the bottom of the code snippet titled **☕️ Run and edit this code in PyCafe** to use and edit the dashboard.
+
 ??? example "Click to expand"
     === "PyCafe project based on Notebook code"
         ```{.python pycafe-link}
