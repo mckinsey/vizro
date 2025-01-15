@@ -6,8 +6,7 @@ This tutorial uses Vizro-AI to build a prototype dashboard with three charts tha
 
 The dataset for this project was a set of books data [exported from a personal Goodreads account](https://www.goodreads.com/review/import). If you use Goodreads, you can export your own data in CSV format and use it with the code for this project.
 
-The dataset was filtered to retain only books with an ISBN, since that can be used with [Google Books API](https://developers.google.com/books) to retrieve additional data about a book. The Books API wasn't used in this project, but by including ISBN data, there is scope to extend the prototype project in future. The dataset used can be downloaded from the [Vizro repository](https://raw.githubusercontent.com/stichbury/vizro_projects/refs/heads/main/goodreads_project/filtered_books.csv). <!--TO DO -- This will change when data is uploaded to Vizro repo-->
-
+The dataset was filtered to retain only books with an ISBN, since that can be used with [Google Books API](https://developers.google.com/books) to retrieve additional data about a book. The Books API wasn't used in this project, but by including ISBN data, there is scope to extend the prototype project in future. The dataset used can be downloaded from the [Vizro repository](https://raw.githubusercontent.com/stichbury/vizro_projects/refs/heads/main/goodreads_project/filtered_books.csv). \<!--TO DO -- This will change when data is uploaded to Vizro repo-->
 
 ## OpenAI
 
