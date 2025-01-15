@@ -37,7 +37,7 @@ Uncomment the section that is right (remove the HTML comment wrapper).
 <!--
 ### Fixed
 
-- Fixed the "Model name could not be retrieved" error when using with AWS Bedrock. ([#1](https://github.com/mckinsey/vizro/pull/1))
+- Fixed the "Model name could not be retrieved" error when using with AWS Bedrock. ([#953](https://github.com/mckinsey/vizro/pull/953))
 
 -->
 <!--
