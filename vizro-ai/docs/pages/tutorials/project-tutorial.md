@@ -234,4 +234,195 @@ The project isn't particularly easy to share at present either: sharing a Notebo
 
 At this point, to share and iterate the prototype the best course of action is to transfer the generated code from the output of Vizro-AI in the Notebook into a PyCafe project.
 
+There are three changes to the Notebook code needed for it to run on PyCafe:
 
+1. Add `from vizro import Vizro` to the imports list
+2. Add `Vizro().build(model).run()` at the end of the code block
+3. Uncomment the data manager code and replace it with code needed to access the dataset:
+
+        - If you are building your own PyCafe project, you can download the dataset from the Vizro GitHub repository and upload it to the PyCafe project.
+        - Alternatively, you can use the code specified below to read the dataset directly from online storage.
+
+	
+	
+!!! example "First dashboard"
+    === "app.py"
+        ```{.python pycafe-link}
+        from vizro import Vizro
+        import vizro.models as vm
+        from vizro.models.types import capture
+        import pandas as pd
+        import plotly.graph_objects as go
+        from vizro.models.types import capture
+		
+        ####### Function definitions ######
+        @capture("graph")
+        def sequence_reading(data_frame):
+            fig = go.Figure()
+            fig.add_trace(
+                go.Scatter(
+                    x=data_frame["Date Read"],
+                    y=[1] * len(data_frame),
+                    mode="markers",
+                    marker=dict(size=10, color="blue"),
+                )
+            )
+            fig.update_layout(
+                title="Sequence of reading",
+                xaxis_title="Date Read",
+                yaxis_title="Sequence",
+                yaxis=dict(showticklabels=False, showgrid=False),
+                xaxis=dict(tickangle=-45),
+            )
+            return fig
+
+
+        @capture("graph")
+        def pages_books_totals(data_frame):
+            # Prepare data
+            data_frame["Date Read"] = pd.to_datetime(data_frame["Date Read"])
+            data_frame.sort_values("Date Read", inplace=True)
+            data_frame["Cumulative Pages"] = data_frame["Number of Pages"].cumsum()
+
+            # Aggregate data by year for total books read
+            yearly_books = data_frame.groupby(data_frame["Date Read"].dt.year).size()
+
+            # Create figure with secondary y-axis
+            fig = go.Figure()
+
+            # Add line for cumulative pages
+            fig.add_trace(
+                go.Scatter(
+                    x=data_frame["Date Read"],
+                    y=data_frame["Cumulative Pages"],
+                    mode="lines",
+                    name="Cumulative Pages Read",
+                )
+            )
+
+            # Add bars for books read per year
+            fig.add_trace(
+                go.Bar(
+                    x=yearly_books.index, y=yearly_books, name="Books Read per Year", yaxis="y2"
+                )
+            )
+
+            # Set up the layout
+            fig.update_layout(
+                title="Cumulative Pages Read and Books Read per Year",
+                xaxis_title="Date",
+                yaxis=dict(title="Number of Pages"),
+                yaxis2=dict(title="Total Books", overlaying="y", side="right"),
+            )
+
+            return fig
+
+
+        @capture("graph")
+        def rating_comparison(data_frame):
+            # Filter out rows where 'My Rating' is 0
+            df = data_frame[data_frame["My Rating"] != 0]
+
+            # Create a figure
+            fig = go.Figure()
+
+            # Add dumbbell traces
+            for index, row in df.iterrows():
+                fig.add_trace(
+                    go.Scatter(
+                        x=[row["My Rating"], row["Average Rating"]],
+                        y=[row["Title"], row["Title"]],
+                        mode="markers+lines",
+                        name=row["Title"],
+                        marker=dict(size=10),
+                        line=dict(width=2),
+                    )
+                )
+
+            # Update layout
+            fig.update_layout(
+                title="Comparison of My Rating vs Average Rating",
+                xaxis_title="Rating",
+                yaxis_title="Book Title",
+                showlegend=False,
+            )
+
+            return fig
+
+        ########### Read data ############
+        # Define the URL of the raw CSV file
+        # TO DO -- This will change when data is uploaded to Vizro repo
+        import requests
+        url = "https://raw.githubusercontent.com/stichbury/vizro_projects/refs/heads/main/goodreads_project/filtered_books.csv"
+
+        # Fetch the CSV file
+        response = requests.get(url)
+        response.raise_for_status()  # Ensure we notice bad responses
+
+        # Load the CSV data into a pandas DataFrame
+        from io import StringIO
+        csv_data = StringIO(response.text)
+        df = pd.read_csv(csv_data)
+        df["Date Read"] = pd.to_datetime(df['Date Read'],dayfirst=True)
+
+
+        ########### Model code ############
+        model = vm.Dashboard(
+            pages=[
+                vm.Page(
+                    components=[
+                        vm.Graph(
+                            id="sequence_reading",
+                            figure=sequence_reading(df),
+                        )
+                    ],
+                    title="Sequence of Reading",
+                    layout=vm.Layout(grid=[[0]]),
+                    controls=[
+                        vm.Filter(
+                            column="Year Published",
+                            targets=["sequence_reading"],
+                            selector=vm.RangeSlider(type="range_slider"),
+                        )
+                    ],
+                ),
+                vm.Page(
+                    components=[
+                        vm.Graph(
+                            id="pages_books_totals",
+                            figure=pages_books_totals(df),
+                        )
+                    ],
+                    title="Pages and Book Totals",
+                    layout=vm.Layout(grid=[[0]]),
+                    controls=[
+                        vm.Filter(
+                            column="Year Published",
+                            targets=["pages_books_totals"],
+                            selector=vm.RangeSlider(type="range_slider"),
+                        )
+                    ],
+                ),
+                vm.Page(
+                    components=[
+                        vm.Graph(
+                            id="rating_comparison",
+                            figure=rating_comparison(df),
+                        )
+                    ],
+                    title="Rating Comparison",
+                    layout=vm.Layout(grid=[[0]]),
+                    controls=[],
+                ),
+            ],
+            title="Book Reading Analysis Dashboard",
+        )        		
+
+        Vizro().build(model).run()
+        ```
+
+ 
+ 
+ 
+ 
+ 
