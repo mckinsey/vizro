@@ -14,7 +14,7 @@ try:
 except ImportError:  # pragma: no cov
     from pydantic import Field, PrivateAttr, validator
 
-from vizro._constants import ALL_OPTION, FILTER_ACTION_PREFIX
+from vizro._constants import FILTER_ACTION_PREFIX
 from vizro.actions import _filter
 from vizro.managers import data_manager, model_manager
 from vizro.managers._data_manager import _DynamicData
@@ -311,4 +311,4 @@ class Filter(VizroBaseModel):
         # The dropna() isn't strictly required here but will be in future pandas versions when the behavior of stack
         # changes. See https://pandas.pydata.org/docs/whatsnew/v2.1.0.html#whatsnew-210-enhancements-new-stack.
         targeted_data = pd.concat([targeted_data, pd.Series(current_value)]).stack().dropna()  # noqa: PD013
-        return sorted(set(targeted_data) - {ALL_OPTION})
+        return sorted(set(targeted_data))

@@ -8,7 +8,7 @@ from typing import TYPE_CHECKING, Any, Literal, Optional, TypedDict, Union, cast
 
 import pandas as pd
 
-from vizro._constants import ALL_OPTION, NONE_OPTION
+from vizro._constants import NONE_OPTION
 from vizro.managers import data_manager, model_manager
 from vizro.managers._data_manager import DataSourceName
 from vizro.managers._model_manager import ModelID
@@ -66,13 +66,6 @@ def _apply_filter_controls(
         selector_actions = _get_component_actions(model_manager[ctd["id"]])
 
         for action in selector_actions:
-            if (
-                action.function._function.__name__ != "_filter"
-                or target not in action.function["targets"]
-                or ALL_OPTION in selector_value
-            ):
-                continue
-
             _filter_function = action.function["filter_function"]
             _filter_column = action.function["filter_column"]
             _filter_value = selector_value
@@ -190,7 +183,7 @@ def _get_parametrized_config(
         parameter_value = ctd["value"]
 
         selector: SelectorType = model_manager[ctd["id"]]
-        if hasattr(parameter_value, "__iter__") and ALL_OPTION in parameter_value:  # type: ignore[operator]
+        if hasattr(parameter_value, "__iter__"):  # type: ignore[operator]
             # Even if an option is provided as list[dict], the Dash component only returns a list of values.
             # So we need to ensure that we always return a list only as well to provide consistent types.
             parameter_value = [option["value"] if isinstance(option, dict) else option for option in selector.options]
