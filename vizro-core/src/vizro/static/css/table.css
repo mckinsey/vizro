@@ -1,93 +1,40 @@
-#right-side .dash-cell {
-  height: 48px !important;
+#dashboard-container .dash-cell {
+  height: 3rem !important;
 }
 
-#right-side .dash-table-container {
-  padding-bottom: 12px;
-}
-
-#right-side
-  .dash-table-container
-  .dash-spreadsheet-container
-  .dash-spreadsheet-inner
-  th {
-  background-color: var(--right-side-bg);
+#dashboard-container .dash-spreadsheet-inner th {
+  background-color: inherit;
   color: var(--text-primary);
   padding: 10px 0;
 }
 
-#right-side
-  .dash-table-container
-  .dash-spreadsheet-container
-  .dash-spreadsheet-inner
-  td {
-  background-color: var(--right-side-bg);
+#dashboard-container .dash-spreadsheet-inner td {
+  background-color: inherit;
   color: var(--text-primary);
 }
 
-#right-side
-  .dash-table-container
-  .dash-spreadsheet-container
-  .dash-spreadsheet-inner
-  table {
-  --hover: var(--right-side-bg);
-
-  width: 100%;
+#dashboard-container .dash-spreadsheet-inner table {
+  --hover: inherit;
 }
 
-#right-side
-  .dash-table-container
-  .dash-spreadsheet-container
-  .dash-spreadsheet-inner
-  td
-  .dash-cell-value.unfocused {
-  font-size: 14px;
+/* Styling for pagination element */
+#dashboard-container .first-page,
+#dashboard-container .previous-page,
+#dashboard-container .next-page,
+#dashboard-container .last-page {
+  background: inherit;
+  color: var(--text-secondary);
 }
 
-#right-side
-  .dash-table-container
-  .dash-spreadsheet-container
-  .dash-spreadsheet-inner
-  .column-header-name {
-  font-size: 14px;
-}
-
-.dash-table-container .previous-next-container .page-number {
-  color: var(--text-primary);
-}
-
-#right-side .dash-table-container .previous-next-container {
-  font-size: 14px;
-  padding: 4px 0;
-}
-
-#right-side .dash-table-container .previous-next-container button,
-#right-side
-  .dash-table-container
-  .previous-next-container
-  .page-number
-  .current-page-container
-  .current-page-shadow,
-.dash-table-container
-  .previous-next-container
-  .page-number
-  .current-page-container
-  input.current-page {
-  background: transparent;
-  color: var(--text-primary);
-  font-size: 14px;
-}
-
-#right-side
-  .dash-table-container
-  .previous-next-container
-  .page-number
-  .current-page-container
-  .current-page-shadow::placeholder,
-.dash-table-container
-  .previous-next-container
-  .page-number
-  .current-page-container
-  input.current-page::placeholder {
+#dashboard-container input.current-page,
+.table-container input.current-page::placeholder {
+  background: inherit;
   color: var(--text-primary) !important;
+}
+
+#dashboard-container button.first-page:hover,
+#dashboard-container button.previous-page:hover,
+#dashboard-container button.next-page:hover,
+#dashboard-container button.last-page:hover {
+  color: var(--text-primaryHover) !important;
 }

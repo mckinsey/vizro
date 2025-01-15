@@ -29,6 +29,11 @@ All the HEX values starting with --text-code are taken from the Github code high
 }
 
 /* CARDS */
+.card {
+  height: 100%;
+  width: 100%;
+}
+
 .card .nav-link {
   height: 100%;
 }
@@ -70,4 +75,10 @@ To ensure the dynamic height adjustment and prevent scrolling, the height must b
 /* Remove label that automatically gets added when calling `dbc.Switch` to remove gap. */
 label[for="theme-selector"] {
   display: none;
+}
+
+/* This is currently required as the usage of dbc.NavBar automatically adds classNames such as `navbar-light` and
+`bg-light`, which come with an important tag from bootstrap. So we need below to overwrite these properties again. */
+.navbar {
+  background: var(--surfaces-bg02) !important;
 }

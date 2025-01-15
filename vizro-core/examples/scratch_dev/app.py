@@ -1,26 +1,16 @@
 """Dev app to try things out."""
-
-import dash
-
-from vizro import Vizro
-import vizro.models as vm
 import vizro.plotly.express as px
+import vizro.models as vm
+from vizro import Vizro
 
 from vizro.tables import dash_ag_grid
-from vizro.managers import data_manager
+
 
 df = px.data.gapminder()
 
 gapminder_data = (
     df.groupby(by=["continent", "year"]).agg({"lifeExp": "mean", "pop": "sum", "gdpPercap": "mean"}).reset_index()
 )
-
-
-def dynamic_gapminder_data():
-    return gapminder_data
-
-
-data_manager["dynamic_gapminder_data"] = dynamic_gapminder_data
 
 
 first_page = vm.Page(
