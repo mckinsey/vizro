@@ -38,7 +38,7 @@ To ask Vizro-AI to build a chart, describe what you want to see. This chart shou
 
 You can adjust the model used: the chart below was generated from `gpt-4o-mini`. The chart displays on the right hand side of the screen and the Plotly code to generate the chart is below the prompt.
 
-The plot this code returns looks as follows:
+The plot this code returns looks as follows. Hovering over each point gave the date the book was read, but not the title of the book. You'll also notice that the points are spaced evenly rather than proportionately:
 ![](../../assets/tutorials/project/chart1.png)
 
 ### Chart 2: Reading velocity
@@ -109,7 +109,6 @@ The third chart should illustrate the difference between the rating the Goodread
 
 > For each row, create a dumbbell chart to show the difference between My Rating and Average Rating for each book - use shapes to add the horizontal lines between markers. Omit the legend. Don't show any row where My Rating is 0.
 
-
 ```python
 import plotly.graph_objects as go
 from vizro.models.types import capture
@@ -157,5 +156,82 @@ The plot this code returns looks as follows:
 
 ## Dashboard generation with Vizro-AI
 
+### Set up a Jupyter Notebook in which to use Vizro-AI
+At this point, we have prototypes for three plotly charts for the Goodreads data. To display these as an interactive dashboard, we need some additional code and Vizro-AI can generate this for us, but not through the PyCafe host at the time of writing. We'll use a Jupyter Notebook
+
+Before running the Notebook code, you need to [set up Vizro-AI](https://vizro.readthedocs.io/projects/vizro-ai/en/latest/pages/user-guides/install/) inside a virtual environment with Python 3.10 or later. Install the package with `pip install vizro_ai`.
+
+You need to give Vizro-AI your API key to access OpenAI by adding it to your environment so the code you write in the next step can access it to successfully call OpenAI. There are some [straightforward instructions in the OpenAI docs](https://platform.openai.com/docs/quickstart/step-2-set-up-your-api-key), and the process is also covered in the our [LLM setup guide](https://vizro.readthedocs.io/projects/vizro-ai/en/latest/pages/user-guides/install/#set-up-access-to-a-large-language-model).
+
+### Build a dashboard
+At this point you can open a Jupyter Notebook to make the dashboard. We'll submit a prompt that combines the three prompts listed above, with some small edits to ask for a dashboard that has three pages: one for each chart.
+
+The following code shows the code to make the request to Vizro-AI to build and display the dashboard.  The Notebook is available for download on [Vizro's GitHub repository](TO DO):
+
+```python
+user_question = """
+Create a dashboard with 3 pages, one for each chart. 
+
+On the first page, plot a chart with the title "Sequence of reading" . 
+It is a scatter chart. Use the x axis to show the date a book was read. Plot it at y=1.
+
+On the second page, lot a chart with the title "Pages and Book totals" . 
+It shows the cumulative total number of pages read by summing the Number of Pages of each book read in each year, using the Date Read data. 
+Plot date on the x axis and the number of pages on the y axis using a scale on the left hand side of the chart.
+Superimpose a bar chart showing the total books read for each year, taking data from the Date Read column. 
+Show the total books read using the right hand side of the chart which can be a different scale to the y axis shown on the left hand side. 
+
+On the third page, for each row, create a dumbbell chart to show the difference between My Rating and Average Rating for each book.
+Use shapes to add the horizontal lines between markers. Omit the legend. Don't show any row where My Rating is 0.
+"""
+
+result = vizro_ai.dashboard([df_cleaned], user_question, return_elements=True)
+Vizro().build(result.dashboard).run(port=8006)
+print(result.code)
+```
+
+Using `gpt-4-turbo`, Vizro-AI generates a set of plotly chart code and the necessary Vizro support code to build a dashboard. The generated code is displayed as output in the Notebook with the dashboard, although the dashboard is better viewed at `http://localhost:8006/`.
+
+You can see the code output in the Notebook stored on the Vizro GitHub repository, or generate similar output by running it yourself.
+
+The charts generated were similar to those created by the PyCafe host above, although the first chart was improved by spacing the books proportionate to the date read and rolling over each point gave the book title as well as the date read.
+
+![](../../assets/tutorials/project/chart1v2.png)
+
+### Dashboard interactivity
+To make the Vizro dashboards more interactive, we can ask Vizro-AI to add the code for a control. As a simple example, we can extend the prompt to ask for a filter to modify the time period displayed. 
+
+```diff
+user_question = """
+Create a dashboard with 3 pages, one for each chart. 
+
+On the first page, plot a chart with the title "Sequence of reading" . 
+It is a scatter chart. Use the x axis to show the date a book was read. Plot it at y=1.
+-
++ Add a filter so the user can change the x axis to adjust the range of dates by year on the x axis, using a slider to range from Jan 2023 to Dec 2024.
+
+On the second page, plot a chart with the title "Pages and Book totals" . 
+It shows the cumulative total number of pages read by summing the Number of Pages of each book read in each year, using the Date Read data. 
+Plot date on the x axis and the number of pages on the y axis using a scale on the left hand side of the chart.
+Superimpose a bar chart showing the total books read for each year, taking data from the Date Read column. 
+
+Show the total books read using the right hand side of the chart which can be a different scale to the y axis shown on the left hand side. 
+-
++ Add a filter so the user can change the x axis to adjust the range of dates by year on the x axis, using a slider to range from Jan 2023 to Dec 2024.
+
+On the third page, for each row, create a dumbbell chart to show the difference between My Rating and Average Rating for each book.
+Use shapes to add the horizontal lines between markers. Omit the legend. Don't show any row where My Rating is 0.
+"""
+
+```
+
 ## Interactive Vizro dashboards on PyCafe
- 
+At this point, we have a Notebook with code to call Vizro-AI to build a prototype Vizro dashboard with a set of three pages and three charts, plus a control to filter the view.
+
+As we've already seen, the code generated by Vizro-AI can vary from run to run, and calling OpenAI each time a dashboard is needed can get costly. 
+
+The project isn't particularly easy to share at present either: sharing a Notebook requires every user to have an OpenAI key and set up an environment.
+
+At this point, to share and iterate the prototype the best course of action is to transfer the generated code from the output of Vizro-AI in the Notebook into a PyCafe project.
+
+
