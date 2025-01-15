@@ -16,7 +16,6 @@ from vizro.models._components.form._user_input import UserInput
 from dash import clientside_callback, exceptions, Input, Output
 from pathlib import Path
 
-
 # ============================== CONSTANTS ==============================
 DF_COLUMNS = ["Item", "Discount", "Rebate", "Final Sales", "Profit", "Offer Name"]
 MAIN_DATA_RELATIVE_PATH = "data.csv"
@@ -28,10 +27,10 @@ MAIN_DATA_RELATIVE_PATH = "data.csv"
 def load_main_data(file_path=None):
     file_path = file_path or Path.cwd().joinpath(MAIN_DATA_RELATIVE_PATH)
 
-    if file_path.exists():
+    try:
         return pd.read_csv(file_path)
-
-    return pd.DataFrame(columns=DF_COLUMNS)
+    except:
+        return pd.DataFrame(columns=DF_COLUMNS)
 
 
 def load_main_data_sorted():
