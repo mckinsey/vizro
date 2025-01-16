@@ -59,13 +59,19 @@
   }
 }
 
-/* Hover on month or year */
+/* Single month or year selection */
+.mantine-PickerControl-pickerControl,
+.mantine-DatePickerInput-monthsListControl {
+  border-radius: 0;
+  color: var(--text-secondary);
+}
+
 .mantine-PickerControl-pickerControl:hover,
 .mantine-DatePickerInput-monthsListControl:hover {
-  border-radius: 0;
   background-color: var(--stateOverlays-hover);
   color: var(--text-primaryHover);
 }
+
 
 
 /* Remove gaps between dates */
