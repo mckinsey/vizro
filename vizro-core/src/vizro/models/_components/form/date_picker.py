@@ -42,7 +42,6 @@ class DatePicker(VizroBaseModel):
     value: Optional[Union[list[date], date]] = Field(None, description="Default date for date picker")
     title: str = Field("", description="Title to be displayed.")
 
-    # Could probably delete the `range` arg, but keeping it makes it backwards compatible
     range: bool = Field(True, description="Boolean flag for displaying range picker.")
     actions: list[Action] = []
 
