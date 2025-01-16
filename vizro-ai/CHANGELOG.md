@@ -21,7 +21,7 @@ See the fragment files in the [changelog.d directory](https://github.com/mckinse
 
 ## Fixed
 
-- Fixed the "Model name could not be retrieved" error when using with AWS Bedrock. ([#953](https://github.com/mckinsey/vizro/pull/953))
+- Fixed the "Model name could not be retrieved" error when using VizroAI with AWS Bedrock. ([#953](https://github.com/mckinsey/vizro/pull/953))
 
 <a id='changelog-0.3.2'></a>
 
