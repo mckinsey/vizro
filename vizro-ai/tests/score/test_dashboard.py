@@ -2,6 +2,7 @@
 
 import csv
 import os
+import statistics
 from collections import Counter
 from dataclasses import dataclass
 from datetime import datetime
@@ -19,6 +20,7 @@ from vizro_ai import VizroAI
 df1 = px.data.gapminder()
 df2 = px.data.stocks()
 df3 = px.data.tips()
+df4 = px.data.wind()
 
 
 @dataclass
@@ -36,6 +38,12 @@ def setup_test_environment():
     # We only need to install chromedriver outside CI.
     if not os.getenv("CI"):
         chromedriver_autoinstaller.install()
+
+
+# If len() is 0, it means that nothing was entered for this score in config,
+# in this case in should be 1.0.
+def score_calculator(score_name):
+    return statistics.mean(score_name) if len(score_name) != 0 else 1.0
 
 
 def logic(  # noqa: PLR0912, PLR0915
@@ -91,8 +99,8 @@ def logic(  # noqa: PLR0912, PLR0915
         branch = "local"
         python_version = "local"
 
-    pages_exist = [1 if dashboard.pages else 0]
-    pages_exist_report = bool(pages_exist[0])
+    pages_exist = [1.0 if dashboard.pages else 0][0]
+    pages_exist_report = bool(pages_exist)
     pages_num = [1 if len(dashboard.pages) == len(config["pages"]) else 0]
     pages_num_report = [f'{len(config["pages"])} page(s) for dashboard is {bool(pages_num[0])}']
 
@@ -160,24 +168,24 @@ def logic(  # noqa: PLR0912, PLR0915
         controls_types_names.append(controls_types)
         controls_types_names_report.append("page or control does not exists")
 
-    pages_exist.extend(pages_num)
 
     # Every separate score has its own weight.
     scores = [
         {"score_name": "app_started_score", "weight": 0.4, "score": app_started},
         {"score_name": "no_browser_console_errors_score", "weight": 0.1, "score": no_browser_console_errors},
-        {"score_name": "pages_score", "weight": 0.2, "score": sum(pages_exist) / len(pages_exist)},
-        {"score_name": "components_score", "weight": 0.1, "score": sum(components_num) / len(components_num)},
+        {"score_name": "pages_score", "weight": 0.3, "score": pages_exist},
+        {"score_name": "pages_number", "weight": 0.2, "score": score_calculator(score_name=pages_num)},
+        {"score_name": "components_score", "weight": 0.2, "score": score_calculator(score_name=components_num)},
         {
             "score_name": "component_types_score",
-            "weight": 0.1,
-            "score": sum(components_types_names) / len(components_types_names),
+            "weight": 0.2,
+            "score": score_calculator(score_name=components_types_names),
         },
-        {"score_name": "controls_score", "weight": 0.1, "score": sum(controls_num) / len(controls_num)},
+        {"score_name": "controls_score", "weight": 0.2, "score": score_calculator(score_name=controls_num)},
         {
             "score_name": "controls_types_score",
-            "weight": 0.1,
-            "score": sum(controls_types_names) / len(controls_types_names),
+            "weight": 0.2,
+            "score": score_calculator(score_name=controls_types_names),
         },
     ]
 
@@ -215,9 +223,7 @@ def logic(  # noqa: PLR0912, PLR0915
                 ]
                 header_rows.extend(score["score_name"] for score in scores)
                 writer.writerow(header_rows)
-                writer.writerow(data_rows)
-            else:
-                writer.writerow(data_rows)
+            writer.writerow(data_rows)
 
     # Readable report for the console output
     print(f"App started: {app_started_report}")  # noqa: T201
@@ -258,12 +264,6 @@ def test_easy_dashboard(dash_duo, model_name):
                 {
                     "components": [
                         Component(type="ag_grid"),
-                    ],
-                    "controls": [],
-                },
-                {
-                    "components": [
-                        Component(type="card"),
                         Component(type="card"),
                         Component(type="graph"),
                     ],
@@ -336,7 +336,7 @@ def test_medium_dashboard(dash_duo, model_name):
     ids=["gpt-4o-mini"],
 )
 def test_complex_dashboard(dash_duo, model_name):
-    dashboard = VizroAI(model=model_name).dashboard([df1, df2, df3], complex_prompt)
+    dashboard = VizroAI(model=model_name).dashboard([df1, df2, df3, df4], complex_prompt)
 
     logic(
         dashboard=dashboard,
@@ -349,17 +349,17 @@ def test_complex_dashboard(dash_duo, model_name):
                 {
                     "components": [
                         Component(type="ag_grid"),
-                        Component(type="graph"),
-                        Component(type="graph"),
-                        Component(type="graph"),
                     ],
-                    "controls": [Control(type="filter"), Control(type="filter"), Control(type="filter")],
+                    "controls": [Control(type="filter"), Control(type="filter")],
+                },
+                {
+                    "components": [Component(type="graph"), Component(type="graph")],
+                    "controls": [Control(type="filter")],
                 },
                 {
                     "components": [
-                        Component(type="card"),
-                        Component(type="card"),
-                        Component(type="card"),
+                        Component(type="graph"),
+                        Component(type="graph"),
                         Component(type="graph"),
                         Component(type="graph"),
                         Component(type="graph"),
@@ -368,26 +368,28 @@ def test_complex_dashboard(dash_duo, model_name):
                     "controls": [
                         Control(type="filter"),
                         Control(type="filter"),
+                        Control(type="filter"),
+                        Control(type="filter"),
+                        Control(type="filter"),
+                        Control(type="filter"),
                     ],
                 },
                 {
                     "components": [
-                        Component(type="graph"),
+                        Component(type="ag_grid"),
                         Component(type="graph"),
                         Component(type="graph"),
                         Component(type="graph"),
                     ],
                     "controls": [
                         Control(type="filter"),
+                        Control(type="filter"),
+                        Control(type="filter"),
+                        Control(type="filter"),
+                        Control(type="filter"),
+                        Control(type="filter"),
+                        Control(type="filter"),
                     ],
-                },
-                {
-                    "components": [
-                        Component(type="card"),
-                        Component(type="card"),
-                        Component(type="card"),
-                    ],
-                    "controls": [],
                 },
             ],
         },
