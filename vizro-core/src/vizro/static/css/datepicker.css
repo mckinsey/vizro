@@ -72,8 +72,6 @@
   color: var(--text-primaryHover);
 }
 
-
-
 /* Remove gaps between dates */
 .mantine-DatePickerInput-monthRow .m_8f457cd5:where([data-with-spacing]) {
   padding: 0;
@@ -87,6 +85,6 @@
 
 .mantine-DatePickerInput-calendarHeaderControlIcon:hover,
 .mantine-DatePickerInput-calendarHeader .mantine-UnstyledButton-root:hover {
-  color: var(--text-primaryHover);
   background: transparent;
+  color: var(--text-primaryHover);
 }
