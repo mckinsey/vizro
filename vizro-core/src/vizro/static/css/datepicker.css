@@ -1,0 +1,76 @@
+/* DatePicker day style */
+.mantine-DatePickerInput-day {
+  background: var(--field-enabled);
+  border-radius: 0;
+  color: var(--text-secondary);
+  font-family: unset;
+}
+
+.mantine-DatePickerInput-day[data-in-range] {
+  background: var(--stateOverlays-selected);
+  color: var(--text-primary);
+}
+
+.mantine-DatePickerInput-day[data-selected] {
+  background: var(--stateOverlays-selected-inverted);
+  color: var(--text-primary-inverted);
+  text-decoration: underline;
+}
+
+/* DatePicker month and year style */
+.mantine-DatePickerInput-monthsListControl,
+.mantine-DatePickerInput-yearsListCell .mantine-UnstyledButton-root {
+  border-radius: 0;
+  color: var(--text-secondary);
+  font-family: unset;
+  font-weight: 400;
+}
+
+/* DatePicker general style */
+.mantine-DatePickerInput-dropdown,
+.mantine-Popover-dropdown {
+  background: var(--field-enabled);
+  border: none;
+  border-radius: 0;
+  box-shadow: var(--elevation-1);
+  padding: 1rem 11px;
+}
+
+.mantine-DatePickerInput-input {
+  background-color: var(--field-enabled);
+  border: none;
+  border-radius: 0;
+  box-shadow: var(--elevation-0);
+  color: var(--text-secondary);
+  font-size: 0.875rem;
+  height: 2rem;
+  line-height: 1rem;
+  min-height: 2rem;
+  padding: 0 0.5rem;
+}
+
+.mantine-DatePickerInput-input:hover {
+  color: var(--text-primary);
+}
+
+/* DatePicker header style */
+.mantine-DatePickerInput-calendarHeader {
+  border-radius: 0;
+  color: var(--text-secondary);
+  font-family: unset;
+  font-weight: 400;
+}
+
+.mantine-DatePickerInput-calendarHeaderControlIcon {
+  color: rgb(134, 142, 150);
+  margin-left: 4px;
+}
+
+.mantine-DatePickerInput-calendarHeaderControlIcon:hover {
+  color: var(--text-primary);
+}
+
+.mantine-DatePickerInput-calendarHeader .mantine-UnstyledButton-root:hover {
+  background: transparent;
+  color: var(--text-primary);
+}

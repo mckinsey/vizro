@@ -1,4 +1,5 @@
 """Dev app to try things out."""
+
 from vizro import Vizro
 import vizro.models as vm
 import vizro.plotly.express as px
