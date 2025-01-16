@@ -174,7 +174,7 @@ The plot this code returns looks as follows: ![](../../assets/tutorials/project/
 
 ### Set up a Jupyter Notebook
 
-At this point, we have prototypes for three plotly charts for the Goodreads data. To display these as an interactive dashboard, we need some additional code and Vizro-AI can generate this for us, but not through the PyCafe host at the time of writing. We'll use a Jupyter Notebook
+At this point, we have prototypes for three plotly charts for the Goodreads data. To display these as an interactive dashboard, we need some additional code and Vizro-AI can generate this for us, but not through the application hosted on PyCafe at the time of writing. We'll use a Jupyter Notebook
 
 Before running the Notebook code, [set up Vizro-AI](https://vizro.readthedocs.io/projects/vizro-ai/en/latest/pages/user-guides/install/) inside a virtual environment with Python 3.10 or later. Install the package with `pip install vizro_ai`.
 
