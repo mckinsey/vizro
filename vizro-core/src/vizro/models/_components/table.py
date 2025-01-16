@@ -3,14 +3,10 @@ from typing import Annotated, Literal
 
 import pandas as pd
 from dash import State, dcc, html
-from pydantic import AfterValidator, Field, PrivateAttr, field_validator, validator
+from pydantic import AfterValidator, Field, PrivateAttr, field_validator
 from pydantic.functional_serializers import PlainSerializer
 from pydantic.json_schema import SkipJsonSchema
 
-# try:
-#     from pydantic.v1 import Field, PrivateAttr, validator
-# except ImportError:  # pragma: no cov
-#     from pydantic import Field, PrivateAttr, validator
 from vizro.actions._actions_utils import CallbackTriggerDict, _get_component_actions, _get_parent_model
 from vizro.managers import data_manager
 from vizro.models import Action, VizroBaseModel
@@ -39,11 +35,16 @@ class Table(VizroBaseModel):
     """
 
     type: Literal["table"] = "table"
-    figure: SkipJsonSchema[CapturedCallable] = Field(
-        ...,
-        json_schema_extra={"mode": "table", "import_path": "vizro.tables"},
-        description="Function that returns a `Dash DataTable`.",
-    )
+    figure: Annotated[
+        SkipJsonSchema[CapturedCallable],
+        AfterValidator(_process_callable_data_frame),
+        Field(
+            ...,
+            json_schema_extra={"mode": "table", "import_path": "vizro.tables"},
+            description="Function that returns a `Dash DataTable`.",
+            validate_default=True,
+        ),
+    ]
     title: str = Field("", description="Title of the `Table`")
     header: str = Field(
         "",
@@ -69,7 +70,6 @@ class Table(VizroBaseModel):
 
     # Validators
     _validate_figure = field_validator("figure", mode="before")(validate_captured_callable)
-    _validate_callable = validator("figure", allow_reuse=True, always=True)(_process_callable_data_frame)
 
     # Convenience wrapper/syntactic sugar.
     def __call__(self, **kwargs):

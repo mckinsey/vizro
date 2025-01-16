@@ -2,13 +2,8 @@ import logging
 from typing import Annotated, Literal
 
 import pandas as pd
-
-# try:
-#     from pydantic.v1 import Field, PrivateAttr, validator
-# except ImportError:  # pragma: no cov
-#     from pydantic import Field, PrivateAttr, validator
 from dash import ClientsideFunction, Input, Output, State, clientside_callback, dcc, html
-from pydantic import AfterValidator, Field, PrivateAttr, field_validator, validator
+from pydantic import AfterValidator, Field, PrivateAttr, field_validator
 from pydantic.functional_serializers import PlainSerializer
 from pydantic.json_schema import SkipJsonSchema
 
@@ -40,12 +35,17 @@ class AgGrid(VizroBaseModel):
     """
 
     type: Literal["ag_grid"] = "ag_grid"
-    figure: SkipJsonSchema[CapturedCallable] = Field(
-        ...,
-        json_schema_extra={"mode": "ag_grid", "import_path": "vizro.tables"},
-        description="Function that returns a `Dash AG Grid`.",
-    )
-    title: str = Field("", description="Title of the `AgGrid`")
+    figure: Annotated[
+        SkipJsonSchema[CapturedCallable],
+        AfterValidator(_process_callable_data_frame),
+        Field(
+            ...,
+            json_schema_extra={"mode": "ag_grid", "import_path": "vizro.tables"},
+            description="Function that returns a `Dash AG Grid`.",
+            validate_default=True,
+        ),
+    ]
+    title: str = Field("", description="Title of the `AgGrid`.")
     header: str = Field(
         "",
         description="Markdown text positioned below the `AgGrid.title`. Follows the CommonMark specification. Ideal "
@@ -70,7 +70,6 @@ class AgGrid(VizroBaseModel):
 
     # Validators
     _validate_figure = field_validator("figure", mode="before")(validate_captured_callable)
-    _validate_callable = validator("figure", allow_reuse=True, always=True)(_process_callable_data_frame)
 
     # Convenience wrapper/syntactic sugar.
     def __call__(self, **kwargs):

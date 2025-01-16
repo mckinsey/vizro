@@ -3,15 +3,11 @@ import warnings
 from contextlib import suppress
 from typing import Annotated, Literal
 
-# try:
-#     from pydantic.v1 import Field, PrivateAttr, validator
-# except ImportError:  # pragma: no cov
-#     from pydantic import Field, PrivateAttr, validator
 import pandas as pd
 from dash import ClientsideFunction, Input, Output, State, clientside_callback, dcc, html, set_props
 from dash.exceptions import MissingCallbackContextException
 from plotly import graph_objects as go
-from pydantic import AfterValidator, Field, PrivateAttr, field_validator, validator
+from pydantic import AfterValidator, Field, PrivateAttr, field_validator
 from pydantic.functional_serializers import PlainSerializer
 from pydantic.json_schema import SkipJsonSchema
 
@@ -45,11 +41,16 @@ class Graph(VizroBaseModel):
     """
 
     type: Literal["graph"] = "graph"
-    figure: SkipJsonSchema[CapturedCallable] = Field(
-        ...,
-        json_schema_extra={"mode": "graph", "import_path": "vizro.plotly.express"},
-        description="Function that returns a plotly `go.Figure`",
-    )
+    figure: Annotated[
+        SkipJsonSchema[CapturedCallable],
+        AfterValidator(_process_callable_data_frame),
+        Field(
+            ...,
+            json_schema_extra={"mode": "graph", "import_path": "vizro.plotly.express"},
+            description="Function that returns a plotly `go.Figure`",
+            validate_default=True,
+        ),
+    ]
     title: str = Field("", description="Title of the `Graph`")
     header: str = Field(
         "",
@@ -73,7 +74,6 @@ class Graph(VizroBaseModel):
 
     # Validators
     _validate_figure = field_validator("figure", mode="before")(validate_captured_callable)
-    _validate_callable = validator("figure", allow_reuse=True)(_process_callable_data_frame)
 
     # Convenience wrapper/syntactic sugar.
     def __call__(self, **kwargs):
