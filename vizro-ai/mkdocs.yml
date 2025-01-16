@@ -5,7 +5,7 @@ nav:
   - Tutorials:
       - Chart generation: pages/tutorials/quickstart.md
       - Dashboard generation: pages/tutorials/quickstart-dashboard.md
-      - Goodreads tutorial: pages/tutorials/project-tutorial.md
+      - Goodreads tutorial: pages/tutorials/goodreads-tutorial.md
   - How-to guides:
       - FUNDAMENTALS:
           - Install Vizro-AI: pages/user-guides/install.md
