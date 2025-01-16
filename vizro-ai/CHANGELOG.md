@@ -17,7 +17,7 @@ See the fragment files in the [changelog.d directory](https://github.com/mckinse
 
 ## Changed
 
-- Pinned the Vizro upper bound to prepare for Pydantic2 migration. ([#923](https://github.com/mckinsey/vizro/pull/923))
+- Pinned the Vizro upper bound to prepare for Pydantic V2 migration. ([#923](https://github.com/mckinsey/vizro/pull/923))
 
 ## Fixed
 
