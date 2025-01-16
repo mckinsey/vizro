@@ -6,7 +6,7 @@ import dash_bootstrap_components as dbc
 import dash_mantine_components as dmc
 import pytest
 from asserts import assert_component_equal
-from dash import dcc, html
+from dash import html
 
 try:
     from pydantic.v1 import ValidationError
@@ -132,7 +132,7 @@ class TestBuildMethod:
                     className="datepicker",
                     # removes the default red color for  weekend days
                     styles={"day": {"color": "var(--mantine-color-text"}},
-                )
+                ),
             ],
         )
         assert_component_equal(date_picker, expected_datepicker)
