@@ -1,14 +1,24 @@
 """Dev app to try things out."""
 
-
-
 import dash_bootstrap_components as dbc
-from dash import html, dcc, Dash, callback, Input, Output, State, clientside_callback
+from dash import html, Dash, callback, Input, Output, State, clientside_callback
 
-
-# ------ Make Subheading
 
 DBC_DOCS = "https://dash-bootstrap-components.opensource.faculty.ai/docs/components/"
+
+# LQ: I don't find the cdn link very reliable - these two give you different results - why?
+# "https://cdn.jsdelivr.net/gh/mckinsey/vizro/vizro-core/src/vizro/static/css/vizro-bootstrap.min.css"
+# "https://cdn.jsdelivr.net/gh/mckinsey/vizro@main/vizro-core/src/vizro/static/css/vizro-bootstrap.min.css"
+VIZRO_BOOTSTRAP = "https://cdn.jsdelivr.net/gh/mckinsey/vizro@dev/test-pure-dash-bootstrap/vizro-core/src/vizro/static/css/vizro-bootstrap.min.css"
+
+app = Dash(
+    __name__,
+    external_stylesheets=[
+        #   dbc.themes.BOOTSTRAP,
+        VIZRO_BOOTSTRAP,
+        dbc.icons.FONT_AWESOME,
+    ],
+)
 
 
 def make_subheading(label, link):
@@ -654,9 +664,7 @@ navbar = html.Div(
 popover = html.Div(
     [
         make_subheading("dbc.Popover", "popover"),
-        dbc.Button(
-            "Click to toggle popover", id="dbc-gallery-x-popover-target", color="danger"
-        ),
+        dbc.Button("Click to toggle popover", id="dbc-gallery-x-popover-target", color="danger"),
         dbc.Popover(
             [
                 dbc.PopoverHeader("Popover header"),
@@ -808,13 +816,16 @@ tabs = html.Div(
 )
 
 
-#----- toast
+# ----- toast
 
 toast = html.Div(
     [
         make_subheading("dbc.Toast", "toast"),
         dbc.Button(
-            "Open toast", id="dbc-gallery-x-auto-toast-toggle", color="primary", className="mb-3",
+            "Open toast",
+            id="dbc-gallery-x-auto-toast-toggle",
+            color="primary",
+            className="mb-3",
         ),
         dbc.Toast(
             html.P("This is the content of the toast", className="mb-0"),
@@ -891,19 +902,11 @@ layout = html.Div(
     className="dbc",
 )
 
-# LQ: I don't find the cdn link very reliable for example - these two give you different results - why?
-#"https://cdn.jsdelivr.net/gh/mckinsey/vizro/vizro-core/src/vizro/static/css/vizro-bootstrap.min.css"
-#"https://cdn.jsdelivr.net/gh/mckinsey/vizro@main/vizro-core/src/vizro/static/css/vizro-bootstrap.min.css"
-vizro_bootstrap = "https://cdn.jsdelivr.net/gh/mckinsey/vizro@main/vizro-core/src/vizro/static/css/vizro-bootstrap.min.css"
-app = Dash(__name__, external_stylesheets=[
- #   dbc.themes.BOOTSTRAP,
-    vizro_bootstrap,
-    dbc.icons.FONT_AWESOME])
 
-color_mode_switch =  html.Span(
+color_mode_switch = html.Span(
     [
         dbc.Label(className="fa fa-moon", html_for="color-mode-switch"),
-        dbc.Switch( id="color-mode-switch", value=False, className="d-inline-block ms-1", persistence=True),
+        dbc.Switch(id="color-mode-switch", value=False, className="d-inline-block ms-1", persistence=True),
         dbc.Label(className="fa fa-sun", html_for="color-mode-switch"),
     ]
 )
@@ -913,17 +916,14 @@ app.layout = dbc.Container(
         html.Div(["Bootstrap Light Dark Color Modes Demo"], className="bg-primary h3 p-2"),
         color_mode_switch,
         layout,
-
     ]
-
 )
-
 
 
 clientside_callback(
     """
     (switchOn) => {
-       document.documentElement.setAttribute('data-bs-theme', switchOn ? 'light' : 'dark');  
+       document.documentElement.setAttribute('data-bs-theme', switchOn ? 'light' : 'dark');
        return window.dash_clientside.no_update
     }
     """,
