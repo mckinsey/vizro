@@ -38,8 +38,8 @@ We can now dive use Vizro-AI to build some charts by iterating text to write eff
 To ask Vizro-AI to build a chart, we describe what we want to see. This chart should show an ordered horiontal timeline to illustrate the sequence of reading the books.
 
 ```
-Plot a chart with the title "Sequence of reading" . 
-It is a scatter chart. Use the x axis to show the date a book was read. 
+Plot a chart with the title "Sequence of reading" .
+It is a scatter chart. Use the x axis to show the date a book was read.
 Plot it at y=1.
 ```
 
@@ -66,15 +66,15 @@ The plot this code returns looks as follows. Hovering over each point gave the d
 The second chart should plot the cumulative total of pages read and the cumulative total of books read per year. The prompt took a few iterations to refine:
 
 ```
-Plot a chart with the title "Pages and Book totals" . 
-It shows the cumulative total number of pages read by summing the 
-Number of Pages of each book read in each year, using the Date Read data. 
-Plot date on the x axis and the number of pages on the y axis 
+Plot a chart with the title "Pages and Book totals" .
+It shows the cumulative total number of pages read by summing the
+Number of Pages of each book read in each year, using the Date Read data.
+Plot date on the x axis and the number of pages on the y axis
 using a scale on the left hand side of the chart.
 
-Superimpose a bar chart showing the total books read for each year, 
-taking data from the Date Read column. 
-Show the total books read using the right hand side of the chart, 
+Superimpose a bar chart showing the total books read for each year,
+taking data from the Date Read column.
+Show the total books read using the right hand side of the chart,
 which can be a different scale to the y axis shown on the left hand side.
 ```
 
@@ -137,9 +137,9 @@ The plot this code returns looks as follows: ![](../../assets/tutorials/project/
 The third chart should illustrate the difference between the rating the Goodreads reader assigned a book and the average rating across the Goodreads community. This prompt took a degree of iteration and needed us to specify how to draw the lines between the points. It was run several times before it colored each line differently, which is a key learning when using generative AI: your results will vary from run to run.
 
 ```
-For each row, create a dumbbell chart to show the difference 
+For each row, create a dumbbell chart to show the difference
 between My Rating and Average Rating for each book.
-Use shapes to add the horizontal lines between markers. 
+Use shapes to add the horizontal lines between markers.
 Omit the legend. Don't show any row where My Rating is 0.
 ```
 
