@@ -543,7 +543,7 @@ list_group = html.Div(
         make_subheading("dbc.ListGroup", "list_group"),
         dbc.ListGroup(
             [
-                dbc.ListGroupItem("Item 1", color="primary", action=True),
+                dbc.ListGroupItem("Item 1", action=True, active=True),
                 dbc.ListGroupItem("Item 2"),
                 dbc.ListGroupItem("Item 3"),
                 dbc.ListGroupItem(
@@ -910,7 +910,7 @@ color_mode_switch =  html.Span(
 
 app.layout = dbc.Container(
     [
-        html.Div(["Bootstrap Light Dark Color Modes Demo"], className="bg-primary text-white h3 p-2"),
+        html.Div(["Bootstrap Light Dark Color Modes Demo"], className="bg-primary h3 p-2"),
         color_mode_switch,
         layout,
 
