@@ -10,7 +10,7 @@ The dataset was filtered to retain only books with an ISBN, since that can be us
 
 ## OpenAI
 
-This tutorial uses OpenAI with Vizro-AI. To run through the steps, you must have an account with paid-for credits available. None of the free accounts will suffice. [Check the OpenAI models and pricing on their website](https://platform.openai.com/docs/models).
+This tutorial uses OpenAI models with Vizro-AI. To run through the steps, you must have an account with paid-for credits available. None of the free accounts will suffice. [Check the OpenAI models and pricing on their website](https://platform.openai.com/docs/models).
 
 !!! note
     Before using a model, please review OpenAI's guidelines on risk mitigation to understand potential model limitations and best practices. [See the OpenAI site for more details on responsible usage](https://platform.openai.com/docs/guides/safety-best-practices).
