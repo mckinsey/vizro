@@ -27,6 +27,7 @@ dependencies = [
   "langchain-community",
   "langchain_mistralai",
   "langchain-anthropic",
+  "langchain-aws",
   "pre-commit"
 ]
 installer = "uv"
@@ -39,6 +40,7 @@ example = "cd examples; python example.py"
 example-create-dashboard = "cd examples; python example_dashboard.py"
 example-ui = "cd examples/dashboard_ui; python app.py"
 lint = "pre-commit run {args} --all-files"
+notebook = "cd examples; jupyter notebook"
 pip = '"{env:HATCH_UV}" pip {args}'
 prep-release = [
   "hatch version release",
@@ -76,11 +78,6 @@ build = "mkdocs build --strict"
 link-check = "linkchecker site --check-extern --no-warnings --ignore=404.html --ignore-url=127.0.0.1 --ignore-url=https://vizro.readthedocs.io/ --ignore-url=https://platform.openai.com/docs/models --ignore-url=openai.com --ignore-url=https://openai.com/"
 pip = '"{env:HATCH_UV}" pip {args}'
 serve = "mkdocs serve --open"
-
-[envs.hatch-uv]
-dependencies = [
-  "uv<0.5.10"  # https://github.com/astral-sh/uv/issues/10039
-]
 
 [envs.lower-bounds]
 extra-dependencies = ["pydantic==1.10.16"]
