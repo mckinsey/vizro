@@ -4,7 +4,7 @@ import base64
 import logging
 from functools import partial
 from pathlib import Path
-from typing import TYPE_CHECKING, Literal, Optional, TypedDict
+from typing import TYPE_CHECKING, Annotated, Literal, Optional, TypedDict
 
 import dash
 import dash_bootstrap_components as dbc
@@ -20,13 +20,8 @@ from dash import (
     get_relative_path,
     html,
 )
-
-# try:
-#     from pydantic.v1 import Field, validator
-# except ImportError:  # pragma: no cov
-#     from pydantic import Field, validator
 from dash.development.base_component import Component
-from pydantic import Field, validator
+from pydantic import AfterValidator, Field, ValidationInfo
 
 import vizro
 from vizro._constants import MODULE_PAGE_404, VIZRO_ASSETS_PATH
@@ -74,6 +69,21 @@ _PageDivsType = TypedDict(
 )
 
 
+def validate_pages(pages: list[Page]) -> list[Page]:
+    if not pages:
+        raise ValueError("Ensure this value has at least 1 item.")
+    return pages
+
+
+def set_navigation_pages(navigation: Optional[Navigation], info: ValidationInfo) -> Optional[Navigation]:
+    if "pages" not in info.data:
+        return navigation
+
+    navigation = navigation or Navigation()
+    navigation.pages = navigation.pages or [page.id for page in info.data["pages"]]
+    return navigation
+
+
 class Dashboard(VizroBaseModel):
     """Vizro Dashboard to be used within [`Vizro`][vizro._vizro.Vizro.build].
 
@@ -86,33 +96,14 @@ class Dashboard(VizroBaseModel):
 
     """
 
-    pages: list[Page]
+    pages: Annotated[list[Page], AfterValidator(validate_pages), Field(..., validate_default=True)]
     theme: Literal["vizro_dark", "vizro_light"] = Field(
-        "vizro_dark", description="Layout theme to be applied across dashboard. Defaults to `vizro_dark`"
+        "vizro_dark", description="Layout theme to be applied across dashboard. Defaults to `vizro_dark`."
     )
-    navigation: Optional[Navigation] = None
+    navigation: Annotated[
+        Optional[Navigation], AfterValidator(set_navigation_pages), Field(None, validate_default=True)
+    ]
     title: str = Field("", description="Dashboard title to appear on every page on top left-side.")
-
-    # TODO[pydantic]: We couldn't refactor the `validator`, please replace it by `field_validator` manually.
-    # Check https://docs.pydantic.dev/dev-v2/migration/#changes-to-validators for more information.
-    @validator("pages", always=True)
-    @classmethod
-    def validate_pages(cls, pages):
-        if not pages:
-            raise ValueError("Ensure this value has at least 1 item.")
-        return pages
-
-    # TODO[pydantic]: We couldn't refactor the `validator`, please replace it by `field_validator` manually.
-    # Check https://docs.pydantic.dev/dev-v2/migration/#changes-to-validators for more information.
-    @validator("navigation", always=True)
-    @classmethod
-    def set_navigation_pages(cls, navigation, values):
-        if "pages" not in values:
-            return navigation
-
-        navigation = navigation or Navigation()
-        navigation.pages = navigation.pages or [page.id for page in values["pages"]]
-        return navigation
 
     @_log_call
     def pre_build(self):

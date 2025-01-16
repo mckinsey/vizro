@@ -8,10 +8,6 @@ from asserts import assert_component_equal
 from dash import dcc, html
 from pydantic import ValidationError
 
-# try:
-#     from pydantic.v1 import ValidationError
-# except ImportError:  # pragma: no cov
-#     from pydantic import ValidationError
 import vizro
 import vizro.models as vm
 from vizro import Vizro
@@ -49,7 +45,7 @@ class TestDashboardInstantiation:
         assert dashboard.navigation.pages == ["Page 1"]
 
     def test_mandatory_pages_missing(self):
-        with pytest.raises(ValidationError, match="Field required"):
+        with pytest.raises(ValidationError, match="Input should be a valid list"):
             vm.Dashboard()
 
     def test_field_invalid_pages_empty_list(self):
