@@ -4,9 +4,9 @@ This tutorial uses Vizro-AI to build a prototype dashboard with three charts tha
 
 ## Project explanation
 
-The dataset for this project was a set of books data [exported from a personal Goodreads account](https://www.goodreads.com/review/import), which is provided with the project so you can run it. The dataset used can be downloaded from the [Vizro repository](https://raw.githubusercontent.com/stichbury/vizro_projects/refs/heads/main/goodreads_project/filtered_books.csv). <!--TO DO -- This will change when data is uploaded to Vizro repo-->If you use Goodreads, you can export your own data in CSV format, substitute it for the dataset provided, and explore it with the code for this project.
+The dataset for this project was a set of books data [exported from a personal Goodreads account](https://www.goodreads.com/review/import), which is provided with the project so you can run it. The dataset used can be downloaded from the [Vizro repository](https://raw.githubusercontent.com/stichbury/vizro_projects/refs/heads/main/goodreads_project/filtered_books.csv). \<!--TO DO -- This will change when data is uploaded to Vizro repo-->If you use Goodreads, you can export your own data in CSV format, substitute it for the dataset provided, and explore it with the code for this project.
 
-The dataset was filtered to retain only books with an ISBN, which can be used with [Google Books API](https://developers.google.com/books) to retrieve additional data about a book. The Books API wasn't used in this project, but by including ISBN data, there is scope to extend the prototype project in future. 
+The dataset was filtered to retain only books with an ISBN, which can be used with [Google Books API](https://developers.google.com/books) to retrieve additional data about a book. The Books API wasn't used in this project, but by including ISBN data, there is scope to extend the prototype project in future.
 
 ## OpenAI
 
@@ -132,7 +132,7 @@ The plot this code returns looks as follows: ![](../../assets/tutorials/project/
 
 ### Chart 3: Reviews comparison
 
-The third chart should illustrate the difference between the rating the Goodreads reader assigned a book and the average rating across the Goodreads community. This prompt took a degree of iteration and needed us to specify how to draw the lines between the points, which is a key learning when using generative AI: your results will vary from run to run. The type of chart ("dumbbell") was given explicitly to guide the chart creation. 
+The third chart should illustrate the difference between the rating the Goodreads reader assigned a book and the average rating across the Goodreads community. This prompt took a degree of iteration and needed us to specify how to draw the lines between the points, which is a key learning when using generative AI: your results will vary from run to run. The type of chart ("dumbbell") was given explicitly to guide the chart creation.
 
 ```
 For each row, create a dumbbell chart to show the difference
@@ -279,7 +279,7 @@ There are three changes to the Notebook code needed for it to run on PyCafe:
 1. Add `from vizro import Vizro` to the imports list
 1. Add `Vizro().build(model).run()` at the end of the code block
 1. Uncomment the data manager code and replace it with code needed to access the dataset:
-    - either download the dataset from the [Vizro GitHub repository](https://raw.githubusercontent.com/stichbury/vizro_projects/refs/heads/main/goodreads_project/filtered_books.csv)<!-- TO DO -- change this --> and upload it to the PyCafe project.
+    - either download the dataset from the [Vizro GitHub repository](https://raw.githubusercontent.com/stichbury/vizro_projects/refs/heads/main/goodreads_project/filtered_books.csv)\<!-- TO DO -- change this --> and upload it to the PyCafe project.
     - or use the code added to the snippet below to read the dataset directly from online storage.
 
 Follow the link at the bottom of the code snippet titled **☕️ Run and edit this code in PyCafe** to use and edit the dashboard.
