@@ -168,7 +168,6 @@ def logic(  # noqa: PLR0912, PLR0915
         controls_types_names.append(controls_types)
         controls_types_names_report.append("page or control does not exists")
 
-
     # Every separate score has its own weight.
     scores = [
         {"score_name": "app_started_score", "weight": 0.4, "score": app_started},
