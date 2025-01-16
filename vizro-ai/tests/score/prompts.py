@@ -77,7 +77,7 @@ Add parameter for any chart.
 
 <Page 4>
 Fourth page contains chart with wind data.
-Table with GDP data.
+Table with population data.
 Two more charts with stocks and tips representations.
 Align table beautifully relative to the charts.
 Every chart should have 2 filters.
