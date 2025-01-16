@@ -70,7 +70,7 @@ filterwarnings = [
   # Ignore deprecation warning until this is solved: https://github.com/plotly/dash/issues/2590:
   "ignore:HTTPResponse.getheader():DeprecationWarning"
 ]
-pythonpath = ["tests/tests_utils"]
+pythonpath = ["tests/tests_utils", "../tools/tests"]
 
 [tool.ruff]
 extend = "../pyproject.toml"
