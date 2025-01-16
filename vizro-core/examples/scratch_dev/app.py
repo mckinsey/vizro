@@ -891,12 +891,13 @@ layout = html.Div(
     className="dbc",
 )
 
-
-
-link = "https://cdn.jsdelivr.net/gh/mckinsey/vizro/vizro-core/src/vizro/static/css/vizro-bootstrap.min.css"
+# LQ: I don't find the cdn link very reliable for example - these two give you different results - why?
+#"https://cdn.jsdelivr.net/gh/mckinsey/vizro/vizro-core/src/vizro/static/css/vizro-bootstrap.min.css"
+#"https://cdn.jsdelivr.net/gh/mckinsey/vizro@main/vizro-core/src/vizro/static/css/vizro-bootstrap.min.css"
+vizro_bootstrap = "https://cdn.jsdelivr.net/gh/mckinsey/vizro@main/vizro-core/src/vizro/static/css/vizro-bootstrap.min.css"
 app = Dash(__name__, external_stylesheets=[
  #   dbc.themes.BOOTSTRAP,
-     link,
+    vizro_bootstrap,
     dbc.icons.FONT_AWESOME])
 
 color_mode_switch =  html.Span(
