@@ -18,6 +18,7 @@ repos:
       - id: codespell
         additional_dependencies:
           - tomli
+        exclude_types: [csv]
 
   - repo: local
     hooks:
@@ -28,7 +29,7 @@ repos:
         language: node
         types: [text]
         additional_dependencies: ["prettier@3.3.3"]
-        exclude_types: [markdown, csv]
+        exclude_types: [markdown]
 
   - repo: https://github.com/macisamuele/language-formatters-pre-commit-hooks
     rev: v2.14.0
