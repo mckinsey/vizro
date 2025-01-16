@@ -4,7 +4,18 @@ from collections.abc import Iterable, Mapping
 from typing import Annotated, Any, Optional, TypedDict, Union, cast
 
 from dash import dcc, html
-from pydantic import BeforeValidator, Field, conlist, model_validator, validator
+from pydantic import (
+    BeforeValidator,
+    Field,
+    FieldSerializationInfo,
+    SerializationInfo,
+    SerializerFunctionWrapHandler,
+    conlist,
+    field_serializer,
+    model_serializer,
+    model_validator,
+    validator,
+)
 
 # except ImportError:  # pragma: no cov
 #     from pydantic import Field, validator
@@ -92,6 +103,18 @@ class Page(VizroBaseModel):
 
     def __vizro_exclude_fields__(self) -> Optional[Union[set[str], Mapping[str, Any]]]:
         return {"id"} if self.id == self.title else None
+
+    # This is a modification of the original `model_serializer` decorator that allows for the `context` to be passed
+    # It allows skipping the `id` serialization if it is the same as the `title`
+    @model_serializer(mode="wrap")
+    def _serialize_id(self, nxt: SerializerFunctionWrapHandler, info: FieldSerializationInfo):
+        result = nxt(self)
+        if info.context is not None and info.context.get("add_name", False):
+            result["__vizro_model__"] = self.__class__.__name__
+        if self.title == self.id:
+            result.pop("id", None)
+            return result
+        return result
 
     @_log_call
     def pre_build(self):

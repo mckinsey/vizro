@@ -9,13 +9,19 @@
 import inspect
 import logging
 import textwrap
-from collections.abc import Mapping
-from contextlib import contextmanager
 from typing import Annotated, Any, Optional, Union, get_args, get_origin
 
 import autoflake
 import black
-from pydantic import BaseModel, ConfigDict, Field, field_validator
+from pydantic import (
+    BaseModel,
+    ConfigDict,
+    Field,
+    SerializationInfo,
+    SerializerFunctionWrapHandler,
+    field_validator,
+    model_serializer,
+)
 from pydantic.fields import FieldInfo
 from pydantic_core import core_schema
 
@@ -56,21 +62,6 @@ DATA_TEMPLATE = """
 # from vizro.managers import data_manager
 {data_setting}
 """
-
-# Global variable to dictate whether VizroBaseModel.dict should be patched to work for _to_python.
-# This is always False outside the _patch_vizro_base_model_dict context manager to ensure that, unless explicitly
-# called for, dict behavior is unmodified from pydantic's default.
-_PATCH_VIZRO_BASE_MODEL_DICT = False
-
-
-@contextmanager
-def _patch_vizro_base_model_dict():
-    global _PATCH_VIZRO_BASE_MODEL_DICT  # noqa
-    _PATCH_VIZRO_BASE_MODEL_DICT = True
-    try:
-        yield
-    finally:
-        _PATCH_VIZRO_BASE_MODEL_DICT = False
 
 
 def _format_and_lint(code_string: str) -> str:
@@ -223,8 +214,6 @@ class VizroBaseModel(BaseModel):
         validate_default=True,
     )
 
-    # TODO[pydantic]: We couldn't refactor the `validator`, please replace it by `field_validator` manually.
-    # Check https://docs.pydantic.dev/dev-v2/migration/#changes-to-validators for more information.
     @field_validator("id")
     @classmethod
     def set_id(cls, id) -> str:
@@ -237,6 +226,27 @@ class VizroBaseModel(BaseModel):
         # using the new model_post_init method to avoid overriding __init__.
         super().__init__(**data)
         model_manager[self.id] = self
+
+    # Previously in V1, we used to have an overwritten `.dict` method, that would add __vizro_model__ to the dictionary
+    # if called in the correct context.
+    # In addition, it was possible to exclude fields specified in __vizro_exclude_fields__.
+    # This was like pydantic's own __exclude_fields__ but this is not possible in V2 due to the non-recursive nature of
+    # the model_dump method. Now this serializer allows to add the model name to the dictionary when serializing the
+    # model if called with context {"add_name": True}.
+    # Excluding specific fields is now down via overwriting this serializer (see e.g. Page model).
+    # Useful threads that were started:
+    # https://stackoverflow.com/questions/79272335/remove-field-from-all-nested-pydantic-models
+    # https://github.com/pydantic/pydantic/issues/11099
+    @model_serializer(mode="wrap")
+    def serialize(
+        self,
+        handler: SerializerFunctionWrapHandler,
+        info: SerializationInfo,
+    ) -> dict[str, Any]:
+        result = handler(self)
+        if info.context is not None and info.context.get("add_name", False):
+            result["__vizro_model__"] = self.__class__.__name__
+        return result
 
     @classmethod
     def add_type(cls, field_name: str, new_type: type[Any]):
@@ -262,29 +272,6 @@ class VizroBaseModel(BaseModel):
 
         cls.model_rebuild(force=True, _types_namespace=vm.__dict__.copy())
         new_type.model_rebuild(force=True, _types_namespace=vm.__dict__.copy())
-
-    def dict(self, **kwargs):
-        global _PATCH_VIZRO_BASE_MODEL_DICT  # noqa
-        if not _PATCH_VIZRO_BASE_MODEL_DICT:
-            # Whenever dict is called outside _patch_vizro_base_model_dict, we don't modify the behavior of the dict.
-            return super().dict(**kwargs)
-
-        # When used in _to_python, we overwrite pydantic's own `dict` method to add __vizro_model__ to the dictionary
-        # and to exclude fields specified dynamically in __vizro_exclude_fields__.
-        # To get exclude as an argument is a bit fiddly because this function is called recursively inside pydantic,
-        # which sets exclude=None by default.
-        if kwargs.get("exclude") is None:
-            kwargs["exclude"] = self.__vizro_exclude_fields__()
-        _dict = super().dict(**kwargs)
-        _dict["__vizro_model__"] = self.__class__.__name__
-        return _dict
-
-    # This is like pydantic's own __exclude_fields__ but safer to use (it looks like __exclude_fields__ no longer
-    # exists in pydantic v2).
-    # Root validators with pre=True are always included, even when exclude_default=True, and so this is needed
-    # to potentially exclude fields set this way, like Page.id.
-    def __vizro_exclude_fields__(self) -> Optional[Union[set[str], Mapping[str, Any]]]:
-        return None
 
     def _to_python(
         self, extra_imports: Optional[set[str]] = None, extra_callable_defs: Optional[set[str]] = None
@@ -329,8 +316,7 @@ class VizroBaseModel(BaseModel):
         data_defs_concat = "\n".join(data_defs_set) if data_defs_set else None
 
         # Model code
-        with _patch_vizro_base_model_dict():
-            model_dict = self.dict(exclude_unset=True)
+        model_dict = self.model_dump(context={"add_name": True}, exclude_unset=True)
 
         model_code = "model = " + _dict_to_python(model_dict)
 
@@ -351,11 +337,15 @@ class VizroBaseModel(BaseModel):
             logging.exception("Code formatting failed; returning unformatted code")
             return unformatted_code
 
-    # TODO[pydantic]: The following keys were removed: `smart_union`, `copy_on_model_validation`.
-    # Check https://docs.pydantic.dev/dev-v2/migration/#changes-to-config for more information.
     model_config = ConfigDict(
-        extra="forbid",
-        smart_union=True,
-        validate_assignment=True,
-        copy_on_model_validation="none",
+        extra="forbid",  # Good for spotting user typos and being strict.
+        validate_assignment=True,  # Run validators when a field is assigned after model instantiation.
     )
+
+
+# Then:
+# - double check all validators that still exist
+# - deprecation warnings,
+# - all counts of V1
+# - go through issue list again
+# - test with vizro-ai

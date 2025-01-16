@@ -1,6 +1,6 @@
 import math
 from datetime import date
-from typing import Literal, Optional, Union
+from typing import Annotated, Literal, Optional, Union
 
 # try:
 #     from pydantic.v1 import Field, PrivateAttr, StrictBool, root_validator, validator
@@ -9,7 +9,8 @@ from typing import Literal, Optional, Union
 import dash_bootstrap_components as dbc
 import dash_mantine_components as dmc
 from dash import dcc, html
-from pydantic import Field, PrivateAttr, StrictBool, root_validator, validator
+from pydantic import AfterValidator, Field, PrivateAttr, StrictBool, root_validator, validator
+from pydantic.functional_serializers import PlainSerializer
 
 from vizro.models import Action, VizroBaseModel
 from vizro.models._action._actions_chain import _action_validator_factory
@@ -63,7 +64,12 @@ class Dropdown(VizroBaseModel):
     value: Optional[Union[SingleValueType, MultiValueType]] = None
     multi: bool = Field(True, description="Whether to allow selection of multiple values")
     title: str = Field("", description="Title to be displayed")
-    actions: list[Action] = []
+    actions: Annotated[
+        list[Action],
+        AfterValidator(_action_validator_factory("value")),
+        PlainSerializer(lambda x: x[0].actions),
+        Field(default=[]),
+    ]
 
     # Consider making the _dynamic public later. The same property could also be used for all other components.
     # For example: vm.Graph could have a dynamic that is by default set on True.
@@ -73,7 +79,6 @@ class Dropdown(VizroBaseModel):
     _input_property: str = PrivateAttr("value")
 
     # Re-used validators
-    _set_actions = _action_validator_factory("value")
     _validate_options = root_validator(allow_reuse=True, pre=True)(validate_options_dict)
     _validate_value = validator("value", allow_reuse=True, always=True)(validate_value)
 

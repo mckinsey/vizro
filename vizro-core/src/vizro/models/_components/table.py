@@ -1,9 +1,10 @@
 import logging
-from typing import Literal
+from typing import Annotated, Literal
 
 import pandas as pd
 from dash import State, dcc, html
-from pydantic import Field, PrivateAttr, field_validator, validator
+from pydantic import AfterValidator, Field, PrivateAttr, field_validator, validator
+from pydantic.functional_serializers import PlainSerializer
 from pydantic.json_schema import SkipJsonSchema
 
 # try:
@@ -54,7 +55,12 @@ class Table(VizroBaseModel):
         description="Markdown text positioned below the `Table`. Follows the CommonMark specification. Ideal for "
         "providing further details such as sources, disclaimers, or additional notes.",
     )
-    actions: list[Action] = []
+    actions: Annotated[
+        list[Action],
+        AfterValidator(_action_validator_factory("active_cell")),
+        PlainSerializer(lambda x: x[0].actions),
+        Field(default=[]),
+    ]
 
     _input_component_id: str = PrivateAttr()
 
@@ -63,7 +69,6 @@ class Table(VizroBaseModel):
 
     # Validators
     _validate_figure = field_validator("figure", mode="before")(validate_captured_callable)
-    set_actions = _action_validator_factory("active_cell")
     _validate_callable = validator("figure", allow_reuse=True, always=True)(_process_callable_data_frame)
 
     # Convenience wrapper/syntactic sugar.

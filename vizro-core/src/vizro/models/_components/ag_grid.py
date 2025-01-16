@@ -1,5 +1,5 @@
 import logging
-from typing import Literal
+from typing import Annotated, Literal
 
 import pandas as pd
 
@@ -8,7 +8,8 @@ import pandas as pd
 # except ImportError:  # pragma: no cov
 #     from pydantic import Field, PrivateAttr, validator
 from dash import ClientsideFunction, Input, Output, State, clientside_callback, dcc, html
-from pydantic import Field, PrivateAttr, field_validator, validator
+from pydantic import AfterValidator, Field, PrivateAttr, field_validator, validator
+from pydantic.functional_serializers import PlainSerializer
 from pydantic.json_schema import SkipJsonSchema
 
 from vizro.actions._actions_utils import CallbackTriggerDict, _get_component_actions, _get_parent_model
@@ -55,7 +56,12 @@ class AgGrid(VizroBaseModel):
         description="Markdown text positioned below the `AgGrid`. Follows the CommonMark specification. Ideal for "
         "providing further details such as sources, disclaimers, or additional notes.",
     )
-    actions: list[Action] = []
+    actions: Annotated[
+        list[Action],
+        AfterValidator(_action_validator_factory("cellClicked")),
+        PlainSerializer(lambda x: x[0].actions),
+        Field(default=[]),
+    ]
 
     _input_component_id: str = PrivateAttr()
 
@@ -64,7 +70,6 @@ class AgGrid(VizroBaseModel):
 
     # Validators
     _validate_figure = field_validator("figure", mode="before")(validate_captured_callable)
-    set_actions = _action_validator_factory("cellClicked")
     _validate_callable = validator("figure", allow_reuse=True, always=True)(_process_callable_data_frame)
 
     # Convenience wrapper/syntactic sugar.

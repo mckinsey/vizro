@@ -1,4 +1,4 @@
-from typing import Literal, Optional
+from typing import Annotated, Literal, Optional
 
 # try:
 #     from pydantic.v1 import Field, PrivateAttr, root_validator, validator
@@ -6,7 +6,8 @@ from typing import Literal, Optional
 #     from pydantic import Field, PrivateAttr, root_validator, validator
 import dash_bootstrap_components as dbc
 from dash import html
-from pydantic import Field, PrivateAttr, root_validator, validator
+from pydantic import AfterValidator, Field, PrivateAttr, root_validator, validator
+from pydantic.functional_serializers import PlainSerializer
 
 from vizro.models import Action, VizroBaseModel
 from vizro.models._action._actions_chain import _action_validator_factory
@@ -36,7 +37,12 @@ class RadioItems(VizroBaseModel):
     options: OptionsType = []
     value: Optional[SingleValueType] = None
     title: str = Field("", description="Title to be displayed")
-    actions: list[Action] = []
+    actions: Annotated[
+        list[Action],
+        AfterValidator(_action_validator_factory("value")),
+        PlainSerializer(lambda x: x[0].actions),
+        Field(default=[]),
+    ]
 
     _dynamic: bool = PrivateAttr(False)
 
@@ -44,7 +50,6 @@ class RadioItems(VizroBaseModel):
     _input_property: str = PrivateAttr("value")
 
     # Re-used validators
-    _set_actions = _action_validator_factory("value")
     _validate_options = root_validator(allow_reuse=True, pre=True)(validate_options_dict)
     _validate_value = validator("value", allow_reuse=True, always=True)(validate_value)
 

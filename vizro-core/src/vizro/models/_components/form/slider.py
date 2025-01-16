@@ -1,4 +1,4 @@
-from typing import Literal, Optional
+from typing import Annotated, Literal, Optional
 
 # try:
 #     from pydantic.v1 import Field, PrivateAttr, validator
@@ -6,7 +6,8 @@ from typing import Literal, Optional
 #     from pydantic import Field, PrivateAttr, validator
 import dash_bootstrap_components as dbc
 from dash import ClientsideFunction, Input, Output, State, clientside_callback, dcc, html
-from pydantic import Field, PrivateAttr, validator
+from pydantic import AfterValidator, Field, PrivateAttr, validator
+from pydantic.functional_serializers import PlainSerializer
 
 from vizro.models import Action, VizroBaseModel
 from vizro.models._action._actions_chain import _action_validator_factory
@@ -45,7 +46,12 @@ class Slider(VizroBaseModel):
     marks: Optional[dict[float, str]] = Field({}, description="Marks to be displayed on slider.")
     value: Optional[float] = Field(None, description="Default value for slider.")
     title: str = Field("", description="Title to be displayed.")
-    actions: list[Action] = []
+    actions: Annotated[
+        list[Action],
+        AfterValidator(_action_validator_factory("value")),
+        PlainSerializer(lambda x: x[0].actions),
+        Field(default=[]),
+    ]
 
     _dynamic: bool = PrivateAttr(False)
 
@@ -57,7 +63,6 @@ class Slider(VizroBaseModel):
     _validate_value = validator("value", allow_reuse=True)(validate_range_value)
     _validate_step = validator("step", allow_reuse=True)(validate_step)
     _set_default_marks = validator("marks", allow_reuse=True, always=True)(set_default_marks)
-    _set_actions = _action_validator_factory("value")
 
     def __call__(self, min, max, current_value):
         output = [

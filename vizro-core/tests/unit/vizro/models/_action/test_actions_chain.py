@@ -1,6 +1,9 @@
 """Unit tests for vizro.models.ActionChain."""
 
+from dataclasses import dataclass
+
 import pytest
+from pydantic import ValidationInfo
 
 from vizro.models._action._action import Action
 from vizro.models._action._actions_chain import ActionsChain, Trigger, _set_actions
@@ -15,6 +18,16 @@ def test_trigger():
 @pytest.fixture
 def test_action(identity_action_function):
     return Action(function=identity_action_function())
+
+
+@pytest.fixture
+def validation_info():
+    @dataclass
+    class MockValidationInfo:
+        data: dict
+
+    validation_info = MockValidationInfo(data={"id": "component_id"})
+    return validation_info
 
 
 class TestActionsChainInstantiation:
@@ -36,8 +49,8 @@ class TestActionsChainInstantiation:
         assert actions_chain.actions[0] == test_action
 
 
-def test_set_actions(test_action):
-    result = _set_actions(actions=[test_action], values={"id": "component_id"}, trigger_property="value")
+def test_set_actions(test_action, validation_info):
+    result = _set_actions(value=[test_action], info=validation_info, trigger_property="value")
     actions_chain = result[0]
     action = actions_chain.actions[0]
 

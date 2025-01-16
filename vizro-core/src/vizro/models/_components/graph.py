@@ -1,7 +1,7 @@
 import logging
 import warnings
 from contextlib import suppress
-from typing import Literal
+from typing import Annotated, Literal
 
 # try:
 #     from pydantic.v1 import Field, PrivateAttr, validator
@@ -11,7 +11,8 @@ import pandas as pd
 from dash import ClientsideFunction, Input, Output, State, clientside_callback, dcc, html, set_props
 from dash.exceptions import MissingCallbackContextException
 from plotly import graph_objects as go
-from pydantic import Field, PrivateAttr, field_validator, validator
+from pydantic import AfterValidator, Field, PrivateAttr, field_validator, validator
+from pydantic.functional_serializers import PlainSerializer
 from pydantic.json_schema import SkipJsonSchema
 
 from vizro.actions._actions_utils import CallbackTriggerDict, _get_component_actions
@@ -60,14 +61,18 @@ class Graph(VizroBaseModel):
         description="Markdown text positioned below the `Graph`. Follows the CommonMark specification. Ideal for "
         "providing further details such as sources, disclaimers, or additional notes.",
     )
-    actions: list[Action] = []
+    actions: Annotated[
+        list[Action],
+        AfterValidator(_action_validator_factory("clickData")),
+        PlainSerializer(lambda x: x[0].actions),
+        Field(default=[]),
+    ]
 
     # Component properties for actions and interactions
     _output_component_property: str = PrivateAttr("figure")
 
     # Validators
     _validate_figure = field_validator("figure", mode="before")(validate_captured_callable)
-    _set_actions = _action_validator_factory("clickData")
     _validate_callable = validator("figure", allow_reuse=True)(_process_callable_data_frame)
 
     # Convenience wrapper/syntactic sugar.

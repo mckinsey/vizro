@@ -4,12 +4,13 @@
 #     from pydantic import Field, PrivateAttr, validator
 import datetime
 from datetime import date
-from typing import Literal, Optional, Union
+from typing import Annotated, Literal, Optional, Union
 
 import dash_bootstrap_components as dbc
 import dash_mantine_components as dmc
 from dash import ClientsideFunction, Input, Output, State, clientside_callback, dcc, html
-from pydantic import Field, PrivateAttr, validator
+from pydantic import AfterValidator, Field, PrivateAttr, validator
+from pydantic.functional_serializers import PlainSerializer
 
 from vizro.models import Action, VizroBaseModel
 from vizro.models._action._actions_chain import _action_validator_factory
@@ -40,10 +41,14 @@ class DatePicker(VizroBaseModel):
     value: Optional[Union[list[date], date]] = Field(None, description="Default date for date picker")
     title: str = Field("", description="Title to be displayed.")
     range: bool = Field(True, description="Boolean flag for displaying range picker.")
-    actions: list[Action] = []
+    actions: Annotated[
+        list[Action],
+        AfterValidator(_action_validator_factory("value")),
+        PlainSerializer(lambda x: x[0].actions),
+        Field(default=[]),
+    ]
 
     _input_property: str = PrivateAttr("value")
-    _set_actions = _action_validator_factory("value")
 
     # Re-used validators
     _validate_value = validator("value", allow_reuse=True)(validate_range_value)
