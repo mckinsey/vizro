@@ -5,20 +5,17 @@ from typing import Annotated, Any, Optional, TypedDict, Union, cast
 
 from dash import dcc, html
 from pydantic import (
+    AfterValidator,
     BeforeValidator,
     Field,
     FieldSerializationInfo,
-    SerializationInfo,
     SerializerFunctionWrapHandler,
+    ValidationInfo,
     conlist,
-    field_serializer,
     model_serializer,
     model_validator,
-    validator,
 )
 
-# except ImportError:  # pragma: no cov
-#     from pydantic import Field, validator
 from vizro._constants import ON_PAGE_LOAD_ACTION_PREFIX
 from vizro.actions import _on_page_load
 from vizro.managers import model_manager
@@ -37,6 +34,20 @@ from .types import ComponentType, ControlType
 _PageBuildType = TypedDict("_PageBuildType", {"control-panel": html.Div, "page-components": html.Div})
 
 
+def set_path(path: str, info: ValidationInfo) -> str:
+    # Based on how Github generates anchor links - see:
+    # https://stackoverflow.com/questions/72536973/how-are-github-markdown-anchor-links-constructed.
+    def clean_path(path: str, allowed_characters: str) -> str:
+        path = path.strip().lower().replace(" ", "-")
+        path = "".join(character for character in path if character.isalnum() or character in allowed_characters)
+        return path if path.startswith("/") else "/" + path
+
+    # Allow "/" in path if provided by user, otherwise turn page id into suitable URL path (not allowing "/")
+    if path:
+        return clean_path(path, "-_/")
+    return clean_path(info.data["id"], "-_")
+
+
 class Page(VizroBaseModel):
     """A page in [`Dashboard`][vizro.models.Dashboard] with its own URL path and place in the `Navigation`.
 
@@ -45,7 +56,7 @@ class Page(VizroBaseModel):
             has to be provided.
         title (str): Title to be displayed.
         description (str): Description for meta tags.
-        layout (Layout): Layout to place components in. Defaults to `None`.
+        layout (Optional[Layout]): Layout to place components in. Defaults to `None`.
         controls (list[ControlType]): See [ControlType][vizro.models.types.ControlType]. Defaults to `[]`.
         path (str): Path to navigate to page. Defaults to `""`.
 
@@ -56,15 +67,14 @@ class Page(VizroBaseModel):
     )  # since no default, can skip validate_default
     title: str = Field(..., description="Title to be displayed.")
     description: str = Field("", description="Description for meta tags.")
-    layout: Optional[Layout] = None
+    layout: Annotated[Optional[Layout], AfterValidator(set_layout), Field(None, validate_default=True)]
     controls: list[ControlType] = []
-    path: str = Field("", description="Path to navigate to page.")
+    path: Annotated[
+        str, AfterValidator(set_path), Field("", description="Path to navigate to page.", validate_default=True)
+    ]
 
     # TODO: Remove default on page load action if possible
     actions: list[ActionsChain] = []
-
-    # Re-used validators
-    _validate_layout = validator("layout", allow_reuse=True, always=True)(set_layout)
 
     @model_validator(mode="before")
     @classmethod
@@ -74,22 +84,6 @@ class Page(VizroBaseModel):
 
         values.setdefault("id", values["title"])
         return values
-
-    # TODO[pydantic]: We couldn't refactor the `validator`, please replace it by `field_validator` manually.
-    # Check https://docs.pydantic.dev/dev-v2/migration/#changes-to-validators for more information.
-    @validator("path", always=True)
-    def set_path(cls, path, values) -> str:
-        # Based on how Github generates anchor links - see:
-        # https://stackoverflow.com/questions/72536973/how-are-github-markdown-anchor-links-constructed.
-        def clean_path(path: str, allowed_characters: str) -> str:
-            path = path.strip().lower().replace(" ", "-")
-            path = "".join(character for character in path if character.isalnum() or character in allowed_characters)
-            return path if path.startswith("/") else "/" + path
-
-        # Allow "/" in path if provided by user, otherwise turn page id into suitable URL path (not allowing "/")
-        if path:
-            return clean_path(path, "-_/")
-        return clean_path(values["id"], "-_")
 
     def __init__(self, **data):
         """Adds the model instance to the model manager."""

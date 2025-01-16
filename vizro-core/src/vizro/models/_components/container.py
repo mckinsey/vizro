@@ -3,12 +3,8 @@ from __future__ import annotations
 from typing import TYPE_CHECKING, Annotated, Literal, Optional
 
 from dash import html
-from pydantic import BeforeValidator, Field, conlist, validator
+from pydantic import AfterValidator, BeforeValidator, Field, conlist
 
-# try:
-#     from pydantic.v1 import Field, validator
-# except ImportError:  # pragma: no cov
-#     from pydantic import Field, validator
 from vizro.models import VizroBaseModel
 from vizro.models._layout import set_layout
 from vizro.models._models_utils import _log_call, check_captured_callable
@@ -26,19 +22,14 @@ class Container(VizroBaseModel):
         components (list[ComponentType]): See [ComponentType][vizro.models.types.ComponentType]. At least one component
             has to be provided.
         title (str): Title to be displayed.
-        layout (Layout): Layout to place components in. Defaults to `None`.
+        layout (Optional[Layout]): Layout to place components in. Defaults to `None`.
 
     """
 
     type: Literal["container"] = "container"
-    components: conlist(
-        Annotated[ComponentType, BeforeValidator(check_captured_callable), Field(...)], min_length=1
-    )  # since no default, can skip validate_default
+    components: conlist(Annotated[ComponentType, BeforeValidator(check_captured_callable), Field(...)], min_length=1)
     title: str = Field(..., description="Title to be displayed.")
-    layout: Optional[Layout] = None
-
-    # Re-used validators
-    _validate_layout = validator("layout", allow_reuse=True, always=True)(set_layout)
+    layout: Annotated[Optional[Layout], AfterValidator(set_layout), Field(None, validate_default=True)]
 
     @_log_call
     def build(self):
