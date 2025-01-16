@@ -65,7 +65,7 @@ Add filters by bill and by tip amount using range slider
 <Page 2>
 Second page should contain kpi cards with population trends and
 two popular charts that display population per capita vs. continent.
-Filter charts by GDP using slider.
+Filter charts by GDP using dropdown.
 Align kpi cards in one row and charts in different.
 Both charts should be in tabs.
 
