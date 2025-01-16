@@ -242,7 +242,7 @@ To make the Vizro dashboards more interactive, we can ask Vizro-AI to add the co
         It is a scatter chart. Use the x axis to show the date a book was read. Plot it at y=1.
 
         + Add a date picker filter so the user can adjust the range of dates for the Date Read on the x axis.
-        
+
         On the second page, plot a chart with the title "Pages and Book totals" .
         It shows the cumulative total number of pages read by summing the Number of Pages of each book read in each year, using the Date Read data.
         Plot date on the x axis and the number of pages on the y axis using a scale on the left hand side of the chart.
@@ -259,6 +259,7 @@ To make the Vizro dashboards more interactive, we can ask Vizro-AI to add the co
         ```
 
 ### Get the Notebook
+
 You can see the code output in the [Notebook stored on the Vizro GitHub repository](https://raw.githubusercontent.com/mckinsey/vizro/834c8d9c198420e8b315c0dc045b7aa12534719d/vizro-ai/examples/goodreads_tutorial/goodreads.ipynb), and generate similar output by running it yourself, although it will not necessarily be identical because of the variability of restuls returned from generative AI.
 
 The charts generated were similar to those created by the PyCafe host above, although the first chart was improved by spacing the books proportionate to the date read and the hover text included the book title as well as the date read, without an explicit request to do so.
