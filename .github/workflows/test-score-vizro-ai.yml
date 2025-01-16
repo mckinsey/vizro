@@ -125,7 +125,7 @@ jobs:
           cd /home/runner/work/vizro/vizro/
           ls */*.csv | head -n1 | xargs head -n1 > report-aggregated-${{ steps.date.outputs.date }}.csv && tail -n+2 -q */*.csv >> report-aggregated-${{ steps.date.outputs.date }}.csv
           # replace all timestamps in aggregated report to current date
-          gawk -F, -i inplace 'FNR>1 {$1="${{ steps.date.outputs.date }}"} {print}' report-aggregated-${{ steps.date.outputs.date }}.csv
+          gawk -F, -i inplace 'FNR>1 {$1="${{ steps.date.outputs.date }}"} {print}' OFS=, report-aggregated-${{ steps.date.outputs.date }}.csv
 
       - name: Report artifacts
         uses: actions/upload-artifact@v4
