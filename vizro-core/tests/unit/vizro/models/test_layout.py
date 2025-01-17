@@ -1,7 +1,3 @@
-# try:
-#     from pydantic.v1 import ValidationError
-# except ImportError:  # pragma: no cov
-#     from pydantic import ValidationError
 import numpy as np
 import pytest
 from asserts import assert_component_equal
@@ -191,8 +187,8 @@ class TestLayoutBuild:
             style={
                 "gridRowGap": "24px",
                 "gridColumnGap": "24px",
-                "gridTemplateColumns": f"repeat(2," f"minmax({'0px'}, 1fr))",
-                "gridTemplateRows": f"repeat(2," f"minmax({'0px'}, 1fr))",
+                "gridTemplateColumns": f"repeat(2,minmax({'0px'}, 1fr))",
+                "gridTemplateRows": f"repeat(2,minmax({'0px'}, 1fr))",
             },
             className="grid-layout",
         )

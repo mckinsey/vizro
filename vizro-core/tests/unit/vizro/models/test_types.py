@@ -7,10 +7,6 @@ import pytest
 from pydantic import Field, ValidationError, field_validator
 from pydantic.json_schema import SkipJsonSchema
 
-# try:
-#     from pydantic.v1 import Field, ValidationError
-# except ImportError:  # pragma: no cov
-#     from pydantic import Field, ValidationError
 from vizro.models import VizroBaseModel
 from vizro.models.types import CapturedCallable, capture, validate_captured_callable
 

@@ -1,11 +1,3 @@
-# try:
-# from pydantic.v1 import BaseModel, Field, validator
-#     from pydantic.v1.fields import SHAPE_LIST, ModelField
-#     from pydantic.v1.typing import get_args
-# except ImportError:  # pragma: no cov
-#     from pydantic import BaseModel, Field, validator
-#     from pydantic.fields import SHAPE_LIST, ModelField
-#     from pydantic.typing import get_args
 import inspect
 import logging
 import textwrap
@@ -14,6 +6,7 @@ from typing import Annotated, Any, Optional, Union, get_args, get_origin
 import autoflake
 import black
 from pydantic import (
+    AfterValidator,
     BaseModel,
     ConfigDict,
     Field,
@@ -198,6 +191,10 @@ def _add_type_to_annotated_union_if_found(
         )
 
 
+def set_id(id: str) -> str:
+    return id or model_manager._generate_id()
+
+
 class VizroBaseModel(BaseModel):
     """All models that are registered to the model manager should inherit from this class.
 
@@ -207,17 +204,16 @@ class VizroBaseModel(BaseModel):
 
     """
 
-    id: str = Field(
-        "",
-        description="ID to identify model. Must be unique throughout the whole dashboard."
-        "When no ID is chosen, ID will be automatically generated.",
-        validate_default=True,
-    )
-
-    @field_validator("id")
-    @classmethod
-    def set_id(cls, id) -> str:
-        return id or model_manager._generate_id()
+    id: Annotated[
+        str,
+        AfterValidator(set_id),
+        Field(
+            "",
+            description="ID to identify model. Must be unique throughout the whole dashboard."
+            "When no ID is chosen, ID will be automatically generated.",
+            validate_default=True,
+        ),
+    ]
 
     @_log_call
     def __init__(self, **data: Any):  # TODO: model_post_init
@@ -233,7 +229,7 @@ class VizroBaseModel(BaseModel):
     # This was like pydantic's own __exclude_fields__ but this is not possible in V2 due to the non-recursive nature of
     # the model_dump method. Now this serializer allows to add the model name to the dictionary when serializing the
     # model if called with context {"add_name": True}.
-    # Excluding specific fields is now down via overwriting this serializer (see e.g. Page model).
+    # Excluding specific fields is now done via overwriting this serializer (see e.g. Page model).
     # Useful threads that were started:
     # https://stackoverflow.com/questions/79272335/remove-field-from-all-nested-pydantic-models
     # https://github.com/pydantic/pydantic/issues/11099
@@ -344,9 +340,9 @@ class VizroBaseModel(BaseModel):
 
 
 # Then:
-# - double check all validators that still exist
-# - deprecation warnings,
-# - all counts of V1
+# - merge main
 # - go through issue list again
+# - go through A comments
 # - test with vizro-ai
 # - check validate default
+# - check conlist and json-schema again

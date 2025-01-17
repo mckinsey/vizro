@@ -3,10 +3,6 @@ import re
 import pytest
 from pydantic import ValidationError
 
-# try:
-#     from pydantic.v1 import ValidationError
-# except ImportError:  # pragma: no cov
-#     from pydantic import ValidationError
 import vizro.models as vm
 from vizro._constants import ON_PAGE_LOAD_ACTION_PREFIX
 from vizro.models._action._actions_chain import ActionsChain

@@ -1,11 +1,6 @@
 """Contains custom components used inside the dashboard."""
 
 from typing import Literal
-
-# try:
-#     from pydantic.v1 import Field
-# except ImportError:  # pragma: no cov
-#     from pydantic import Field
 from urllib.parse import quote
 
 import dash_bootstrap_components as dbc

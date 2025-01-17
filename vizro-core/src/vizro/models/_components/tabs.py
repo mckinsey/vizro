@@ -5,10 +5,6 @@ from typing import TYPE_CHECKING, Literal
 import dash_bootstrap_components as dbc
 from pydantic import conlist
 
-# try:
-#     from pydantic.v1 import validator
-# except ImportError:  # pragma: no cov
-#     from pydantic import validator
 from vizro.models import VizroBaseModel
 from vizro.models._models_utils import _log_call
 

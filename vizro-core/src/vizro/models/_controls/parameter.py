@@ -3,10 +3,6 @@ from typing import Annotated, Literal, cast
 
 from pydantic import AfterValidator, Field
 
-# try:
-#     from pydantic.v1 import Field, validator
-# except ImportError:  # pragma: no cov
-#     from pydantic import Field, validator
 from vizro._constants import PARAMETER_ACTION_PREFIX
 from vizro.actions import _parameter
 from vizro.managers import model_manager
@@ -67,7 +63,7 @@ class Parameter(VizroBaseModel):
     """
 
     type: Literal["parameter"] = "parameter"
-    targets: Annotated[  # TODO: check if the double annotation is the best way to do this
+    targets: Annotated[  # TODO[MS]: check if the double annotation is the best way to do this
         list[
             Annotated[
                 str,

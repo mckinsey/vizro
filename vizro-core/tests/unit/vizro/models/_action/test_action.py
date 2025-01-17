@@ -4,11 +4,6 @@ import sys
 
 import pandas as pd
 import pytest
-
-# try:
-#     from pydantic.v1 import ValidationError
-# except ImportError:  # pragma: no cov
-#     from pydantic import ValidationError
 from asserts import assert_component_equal
 from dash import Output, State, html
 from pydantic import ValidationError
@@ -130,7 +125,7 @@ class TestActionInstantiation:
 
     def test_export_data_file_format_invalid(self):
         with pytest.raises(
-            ValueError, match='Unknown "file_format": invalid_file_format.' ' Known file formats: "csv", "xlsx".'
+            ValueError, match='Unknown "file_format": invalid_file_format. Known file formats: "csv", "xlsx".'
         ):
             Action(function=export_data(file_format="invalid_file_format"))
 

@@ -1,14 +1,10 @@
 from __future__ import annotations
 
-from typing import TYPE_CHECKING, Annotated, Literal
+from typing import TYPE_CHECKING, Annotated, Literal, Optional
 
 from dash import html
-from pydantic import BeforeValidator, Field, conlist, validator
+from pydantic import AfterValidator, BeforeValidator, Field, conlist
 
-# try:
-#     from pydantic.v1 import validator
-# except ImportError:  # pragma: no cov
-#     from pydantic import validator
 from vizro.models import VizroBaseModel
 from vizro.models._components.form import Checklist, Dropdown, RadioItems, RangeSlider, Slider
 from vizro.models._layout import set_layout
@@ -25,18 +21,13 @@ class Form(VizroBaseModel):
     Args:
         type (Literal["form"]): Defaults to `"form"`.
         components (list[FormComponentType]): List of components used in the form.
-        layout (Layout): Defaults to `None`.
+        layout (Optional[Layout]): Defaults to `None`.
 
     """
 
     type: Literal["form"] = "form"
-    components: conlist(
-        Annotated[_FormComponentType, BeforeValidator(check_captured_callable), Field(...)], min_length=1
-    )  # since no default, can skip validate_default
-    layout: Optional[Layout] = None  # type: ignore[assignment]
-
-    # Re-used validators
-    _validate_layout = validator("layout", allow_reuse=True, always=True)(set_layout)
+    components: conlist(Annotated[_FormComponentType, BeforeValidator(check_captured_callable)], min_length=1)
+    layout: Annotated[Optional[Layout], AfterValidator(set_layout), Field(None, validate_default=True)]
 
     @_log_call
     def pre_build(self):

@@ -1,7 +1,3 @@
-# try:
-#     from pydantic.v1 import Field, ValidationError, root_validator, validator
-# except ImportError:  # pragma: no cov
-#     from pydantic import Field, ValidationError, validator
 import logging
 import textwrap
 from typing import Annotated, Literal, Optional, Union

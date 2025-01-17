@@ -4,10 +4,6 @@ from collections.abc import Collection, Mapping
 from pprint import pformat
 from typing import Annotated, Any, Union
 
-# try:
-# from pydantic.v1 import Field
-# except ImportError:  # pragma: no cov
-#     from pydantic import Field
 from dash import Input, Output, State, callback, html
 from pydantic import Field, StringConstraints, field_validator
 from pydantic.json_schema import SkipJsonSchema
@@ -57,7 +53,7 @@ class Action(VizroBaseModel):
         if function._function.__name__ == "export_data":
             file_format = function._arguments.get("file_format")
             if file_format not in [None, "csv", "xlsx"]:
-                raise ValueError(f'Unknown "file_format": {file_format}.' f' Known file formats: "csv", "xlsx".')
+                raise ValueError(f'Unknown "file_format": {file_format}. Known file formats: "csv", "xlsx".')
             if file_format == "xlsx":
                 if importlib.util.find_spec("openpyxl") is None and importlib.util.find_spec("xlsxwriter") is None:
                     raise ModuleNotFoundError(

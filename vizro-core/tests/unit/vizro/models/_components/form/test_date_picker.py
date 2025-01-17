@@ -9,10 +9,6 @@ from asserts import assert_component_equal
 from dash import dcc, html
 from pydantic import ValidationError
 
-# try:
-#     from pydantic.v1 import ValidationError
-# except ImportError:  # pragma: no cov
-#     from pydantic import ValidationError
 import vizro.models as vm
 
 
