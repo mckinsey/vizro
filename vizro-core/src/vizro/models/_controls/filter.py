@@ -1,17 +1,13 @@
 from __future__ import annotations
 
 from collections.abc import Iterable
-from typing import Any, Literal, Optional, Union, cast
+from typing import Annotated, Any, Literal, Optional, Union, cast
 
 import pandas as pd
 from dash import dcc
 from pandas.api.types import is_datetime64_any_dtype, is_numeric_dtype
-from pydantic import Field, PrivateAttr, validator
+from pydantic import AfterValidator, Field, PrivateAttr
 
-# try:
-#     from pydantic.v1 import Field, PrivateAttr, validator
-# except ImportError:  # pragma: no cov
-#     from pydantic import Field, PrivateAttr, validator
 from vizro._constants import ALL_OPTION, FILTER_ACTION_PREFIX
 from vizro.actions import _filter
 from vizro.managers import data_manager, model_manager
@@ -69,6 +65,12 @@ def _filter_isin(series: pd.Series, value: MultiValueType) -> pd.Series:
     return series.isin(value)
 
 
+def check_target_present(target):
+    if target not in model_manager:
+        raise ValueError(f"Target {target} not found in model_manager.")
+    return target
+
+
 class Filter(VizroBaseModel):
     """Filter the data supplied to `targets` on the [`Page`][vizro.models.Page].
 
@@ -79,14 +81,14 @@ class Filter(VizroBaseModel):
         type (Literal["filter"]): Defaults to `"filter"`.
         column (str): Column of `DataFrame` to filter.
         targets (list[ModelID]): Target component to be affected by filter. If none are given then target all components
-            on the page that use `column`.
-        selector (SelectorType): See [SelectorType][vizro.models.types.SelectorType]. Defaults to `None`.
+            on the page that use `column`. Defaults to `[]`.
+        selector (Optional[SelectorType]): See [SelectorType][vizro.models.types.SelectorType]. Defaults to `None`.
 
     """
 
     type: Literal["filter"] = "filter"
     column: str = Field(..., description="Column of DataFrame to filter.")
-    targets: list[ModelID] = Field(
+    targets: list[Annotated[ModelID, AfterValidator(check_target_present)]] = Field(
         [],
         description="Target component to be affected by filter. "
         "If none are given then target all components on the page that use `column`.",
@@ -99,14 +101,6 @@ class Filter(VizroBaseModel):
     _output_component_property: str = PrivateAttr("children")
 
     _column_type: Literal["numerical", "categorical", "temporal"] = PrivateAttr()
-
-    # TODO[pydantic]: We couldn't refactor the `validator`, please replace it by `field_validator` manually.
-    # Check https://docs.pydantic.dev/dev-v2/migration/#changes-to-validators for more information.
-    @validator("targets", each_item=True)
-    def check_target_present(cls, target):
-        if target not in model_manager:
-            raise ValueError(f"Target {target} not found in model_manager.")
-        return target
 
     def __call__(self, target_to_data_frame: dict[ModelID, pd.DataFrame], current_value: Any):
         # Only relevant for a dynamic filter.
