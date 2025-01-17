@@ -2,14 +2,17 @@ import math
 from datetime import date
 from typing import Annotated, Literal, Optional, Union
 
-# try:
-#     from pydantic.v1 import Field, PrivateAttr, StrictBool, root_validator, validator
-# except ImportError:  # pragma: no cov
-#     from pydantic import Field, PrivateAttr, StrictBool, root_validator, validator
 import dash_bootstrap_components as dbc
 import dash_mantine_components as dmc
 from dash import dcc, html
-from pydantic import AfterValidator, Field, PrivateAttr, StrictBool, root_validator, validator
+from pydantic import (
+    AfterValidator,
+    Field,
+    PrivateAttr,
+    StrictBool,
+    ValidationInfo,
+    model_validator,
+)
 from pydantic.functional_serializers import PlainSerializer
 
 from vizro.models import Action, VizroBaseModel
@@ -40,6 +43,15 @@ def _calculate_option_height(full_options: OptionsType) -> int:
     return 8 + 24 * number_of_lines
 
 
+def validate_multi(multi, info: ValidationInfo):
+    if "value" not in info.data:
+        return multi
+
+    if info.data["value"] and multi is False and isinstance(info.data["value"], list):
+        raise ValueError("Please set multi=True if providing a list of default values.")
+    return multi
+
+
 class Dropdown(VizroBaseModel):
     """Categorical single/multi-option selector `Dropdown`.
 
@@ -61,8 +73,16 @@ class Dropdown(VizroBaseModel):
 
     type: Literal["dropdown"] = "dropdown"
     options: OptionsType = []
-    value: Optional[Union[SingleValueType, MultiValueType]] = None
-    multi: bool = Field(True, description="Whether to allow selection of multiple values")
+    value: Annotated[
+        Optional[Union[SingleValueType, MultiValueType]],
+        AfterValidator(validate_value),
+        Field(None, validate_default=True),
+    ]
+    multi: Annotated[
+        bool,
+        AfterValidator(validate_multi),
+        Field(True, description="Whether to allow selection of multiple values", validate_default=True),
+    ]
     title: str = Field("", description="Title to be displayed")
     actions: Annotated[
         list[Action],
@@ -79,19 +99,7 @@ class Dropdown(VizroBaseModel):
     _input_property: str = PrivateAttr("value")
 
     # Re-used validators
-    _validate_options = root_validator(allow_reuse=True, pre=True)(validate_options_dict)
-    _validate_value = validator("value", allow_reuse=True, always=True)(validate_value)
-
-    # TODO[pydantic]: We couldn't refactor the `validator`, please replace it by `field_validator` manually.
-    # Check https://docs.pydantic.dev/dev-v2/migration/#changes-to-validators for more information.
-    @validator("multi", always=True)
-    def validate_multi(cls, multi, values):
-        if "value" not in values:
-            return multi
-
-        if values["value"] and multi is False and isinstance(values["value"], list):
-            raise ValueError("Please set multi=True if providing a list of default values.")
-        return multi
+    _validate_options = model_validator(mode="before")(validate_options_dict)
 
     def __call__(self, options):
         full_options, default_value = get_options_and_default(options=options, multi=self.multi)

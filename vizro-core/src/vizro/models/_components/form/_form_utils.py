@@ -1,7 +1,9 @@
 """Helper functions for models inside form folder."""
 
 from datetime import date
-from typing import Union
+from typing import Any, Union
+
+from pydantic import ValidationInfo
 
 from vizro._constants import ALL_OPTION
 from vizro.models.types import MultiValueType, OptionsType, SingleValueType
@@ -34,24 +36,26 @@ def is_value_contained(value: Union[SingleValueType, MultiValueType], options: O
 
 
 # Validators for reuse
-def validate_options_dict(cls, values):
+def validate_options_dict(cls, data: Any) -> Any:
     """Reusable validator for the "options" argument of categorical selectors."""
-    if "options" not in values or not isinstance(values["options"], list):
-        return values
+    if "options" not in data or not isinstance(data["options"], list):
+        return data
 
-    for entry in values["options"]:
+    for entry in data["options"]:
         if isinstance(entry, dict) and not set(entry.keys()) == {"label", "value"}:
             raise ValueError("Invalid argument `options` passed. Expected a dict with keys `label` and `value`.")
-    return values
+    return data
 
 
-def validate_value(cls, value, values):
+def validate_value(value, info: ValidationInfo):
     """Reusable validator for the "value" argument of categorical selectors."""
-    if "options" not in values or not values["options"]:
+    if "options" not in info.data or not info.data["options"]:
         return value
 
     possible_values = (
-        [entry["value"] for entry in values["options"]] if isinstance(values["options"][0], dict) else values["options"]
+        [entry["value"] for entry in info.data["options"]]
+        if isinstance(info.data["options"][0], dict)
+        else info.data["options"]
     )
 
     if hasattr(value, "__iter__") and ALL_OPTION in value:

@@ -349,3 +349,4 @@ class VizroBaseModel(BaseModel):
 # - all counts of V1
 # - go through issue list again
 # - test with vizro-ai
+# - check validate default

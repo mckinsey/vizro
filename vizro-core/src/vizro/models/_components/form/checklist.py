@@ -1,12 +1,8 @@
 from typing import Annotated, Literal, Optional
 
-# try:
-#     from pydantic.v1 import Field, PrivateAttr, root_validator, validator
-# except ImportError:  # pragma: no cov
-#     from pydantic import Field, PrivateAttr, root_validator, validator
 import dash_bootstrap_components as dbc
 from dash import html
-from pydantic import AfterValidator, Field, PrivateAttr, root_validator, validator
+from pydantic import AfterValidator, Field, PrivateAttr, model_validator
 from pydantic.functional_serializers import PlainSerializer
 
 from vizro.models import Action, VizroBaseModel
@@ -34,7 +30,7 @@ class Checklist(VizroBaseModel):
 
     type: Literal["checklist"] = "checklist"
     options: OptionsType = []
-    value: Optional[MultiValueType] = None
+    value: Annotated[Optional[MultiValueType], AfterValidator(validate_value), Field(None, validate_default=True)]
     title: str = Field("", description="Title to be displayed")
     actions: Annotated[
         list[Action],
@@ -49,8 +45,7 @@ class Checklist(VizroBaseModel):
     _input_property: str = PrivateAttr("value")
 
     # Re-used validators
-    _validate_options = root_validator(allow_reuse=True, pre=True)(validate_options_dict)
-    _validate_value = validator("value", allow_reuse=True, always=True)(validate_value)
+    _validate_options = model_validator(mode="before")(validate_options_dict)
 
     def __call__(self, options):
         full_options, default_value = get_options_and_default(options=options, multi=True)
