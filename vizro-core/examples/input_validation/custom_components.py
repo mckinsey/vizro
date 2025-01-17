@@ -53,7 +53,7 @@ class ValidationComponent(vm.VizroBaseModel):
                 html.Div(
                     id=f"{self.id}-error-id",
                     children="",
-                    style={"color": "red"},
+                    style={"color": "#FF0066"},
                 ),
             ]
         )
@@ -79,3 +79,16 @@ class InitiallyHiddenCard(vm.Card):
         card_build_obj.id = f"{self.id}-outer-div"
         card_build_obj.style = {"display": "none", "cursor": "pointer"}
         return card_build_obj
+
+class ContainerWithLine(vm.Container):  
+    """New custom component `ContainerWithLine`."""
+
+    type: Literal["containerwithline"] = "containerwithline"  
+
+    def build(self):  
+        container_build_obj = super().build()
+        container_build_obj.id = f"{self.id}-outer-div"
+        container_build_obj.style={
+            "border-left": "1px solid rgba(255, 255, 255, 0.1)",
+        }
+        return container_build_obj

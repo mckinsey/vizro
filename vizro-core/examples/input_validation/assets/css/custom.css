@@ -1,0 +1,13 @@
+#run-pipeline-container_title {
+    padding: 0 24px 0 8px;
+  }
+#run-pipeline-status-container_title {
+  padding: 0 24px 0 8px;
+}
+
+#run-pipeline-container-outer-div .grid-layout {
+    padding: 0 24px 0 8px;
+}
+#run-pipeline-status-container-outer-div .grid-layout {
+    padding: 0 24px 0 8px;
+}

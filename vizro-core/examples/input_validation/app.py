@@ -1,5 +1,6 @@
 """Validation of inputs example"""
 
+from datetime import datetime
 import pandas as pd
 
 import vizro.models as vm
@@ -10,7 +11,7 @@ from vizro.managers import data_manager
 from vizro.tables import dash_ag_grid
 from vizro.models.types import capture
 
-from custom_components import InitiallyHiddenCard, LoadingSpinner, NumberInput, ValidationComponent
+from custom_components import InitiallyHiddenCard, LoadingSpinner, NumberInput, ValidationComponent, ContainerWithLine
 from vizro.models._components.form._user_input import UserInput
 
 from dash import clientside_callback, exceptions, Input, Output
@@ -61,14 +62,14 @@ def run_pipeline_action(button_n_clicks: int, item: str, discount: float, rebate
     # TODO: Remove this sleep statement in production.
     # Artificial delay to simulate a long-running script
     from time import sleep
-    sleep(2)
+    sleep(1.5)
 
     if None in [item, discount, rebate, offer_name]:
         output_validation_message = "Please properly fill all the fields."
     elif item == "Apple" and discount > 0.9:
         output_validation_message = "Discount for Apple must be less than 0.9."
     elif offer_name in df["Offer Name"].values:
-        output_validation_message = "Offer name must be unique."
+        output_validation_message = f"An offer named '{offer_name}' already exists. Please try a different name."
 
     # After validation check, if there is an error, return the error message and hide the navigation card.
     if output_validation_message:
@@ -88,7 +89,7 @@ def run_pipeline_action(button_n_clicks: int, item: str, discount: float, rebate
     # Write data back to the file
     df.to_csv(MAIN_DATA_RELATIVE_PATH, index=False)
 
-    return "Script status: Done", "", {"display": "block"}
+    return f"Success! Your calculations for offer '{offer_name}' are ready. ({datetime.now().strftime('%m/%d/%Y, %I:%M:%S %p')})", "", {"display": "block"}
 
 
 # ============================== Page Create New Offer ==============================
@@ -97,21 +98,36 @@ def run_pipeline_action(button_n_clicks: int, item: str, discount: float, rebate
 vm.Container.add_type("components", ValidationComponent)
 vm.Container.add_type("components", LoadingSpinner)
 vm.Container.add_type("components", UserInput)
-vm.Container.add_type("components", InitiallyHiddenCard)
+vm.Page.add_type("components", ContainerWithLine)
+ContainerWithLine.add_type("components", InitiallyHiddenCard)
+ContainerWithLine.add_type("components", LoadingSpinner)
 
 page_create_new_offer = vm.Page(
     title="Offer Analysis Creation",
-    # TODO: Reordering the layout won't cause crashes, so feel free to reorganize components on the grid as needed.
     layout=vm.Layout(grid=[
-        [0, 1, 2],
-        [0, 1, 2],
-        [0, 1, 2],
-        [3, 3, 3],
+        [1, 1, 2],
+        [1, 1, 2],
+        [0, 0, 3],
+        [0, 0, 3],
+        [0, 0, 3],
     ]),
     components=[
         vm.Container(
             title="Create New Offer",
+            layout=vm.Layout(grid=[
+                [0, -1],
+                [1, 2],
+                [3, 4],
+                [5, 6],
+            ]),
             components=[
+                ValidationComponent(
+                    id="offer-name-input",
+                    wrapped_component=UserInput(
+                        title="Offer Name:",
+                        placeholder="Enter offer name",
+                    ),
+                ),
                 ValidationComponent(
                     id="item-input",
                     wrapped_component=vm.Dropdown(
@@ -141,30 +157,42 @@ page_create_new_offer = vm.Page(
                     ),
                 ),
                 ValidationComponent(
-                    id="offer-name-input",
+                    id="dummy-input1",
+                    wrapped_component=vm.Dropdown(
+                        title="(Placeholder) Dummy Input 1:",
+                        options=[
+                            {"label": "Option 1", "value": "1"},
+                            {"label": "Option 2", "value": "2"},
+                            {"label": "option 3", "value": "3"},
+                        ],
+                        multi=False,
+                    )
+                ),
+                ValidationComponent(
+                    id="dummy-input2",
                     wrapped_component=UserInput(
-                        title="Offer Name:",
-                        placeholder="Enter offer name",
+                        title="(Placeholder) Dummy Input 2:",
+                        placeholder="Placeholder text",
                     ),
                 ),
-            ]
-        ),
-        vm.Container(
-            title="Another group input form can go here",
-            components=[
-                vm.Card(text="Dummy card")
+                ValidationComponent(
+                    id="dummy-input3",
+                    wrapped_component=UserInput(
+                        title="(Placeholder) Dummy Input 3:",
+                        placeholder="Placeholder text",
+                    ),
+                ),
             ]
         ),
         vm.AgGrid(
             title="Reference Data",
             figure=dash_ag_grid(data_frame=cost_price_data_frame, columnSize="sizeToFit")
         ),
-        vm.Container(
-            title="Run pipeline",
-            # TODO: Reordering the layout won't cause crashes, so feel free to reorganize components on the grid.
+        ContainerWithLine(
+            title="Run Pipeline",
+            id="run-pipeline-container",
             layout=vm.Layout(grid=[
-                [0, 2, 3],
-                [1, 2, 3]
+                [0, 1],
             ]),
             components=[
                 vm.Button(
@@ -189,8 +217,18 @@ page_create_new_offer = vm.Page(
                     ]
                 ),
                 LoadingSpinner(id="run-pipeline-loading-spinner"),
+            ]
+        ),
+        ContainerWithLine(
+            title="Run Status",
+            id="run-pipeline-status-container",
+            layout=vm.Layout(grid=[
+                [0,],
+                [0,],
+                [1,]
+            ]),
+            components=[
                 vm.Card(id="run-pipeline-message-card", text=""),
-                # TODO: There's a hacky way, but not intuitive, to set red vs green color for the message card.
                 InitiallyHiddenCard(
                     id=f"run-pipeline-nav-card",
                     href="offer-analysis-results",
@@ -202,7 +240,7 @@ page_create_new_offer = vm.Page(
                         """
                     ),
                 )
-            ]
+            ],
         ),
     ],
 )
@@ -215,7 +253,7 @@ clientside_callback(
       const value = parseFloat(input_value);
 
       if (value < 0.8 || value > 1 || (value * 100) % 1 !== 0) {
-        return "Discount must be a number between 0.8 and 1 with 0.01 step.";
+        return "Enter a discount value from 0.80 to 1.00 (0.01 increments).";
       }
       return "";
     }
@@ -231,7 +269,7 @@ clientside_callback(
       const value = parseFloat(input_value);
 
       if (value < 0 || value > 5 || (value * 10) % 1 !== 0) {
-        return "Discount must be a number between 0.8 and 1 with 0.1 step.";
+        return "Enter a rebate value between 0-5 with one decimal place.";
       }
       return "";
     }
@@ -261,26 +299,38 @@ clientside_callback(
 
 page_results = vm.Page(
     title="Offer Analysis Results",
+    layout=vm.Layout(grid=[
+        [0, 1],
+        [2, 2],
+    ]),
     components=[
+        vm.Graph(
+            title="Profit by offer",
+            figure=px.bar(
+                data_frame="load_main_data_sorted_key",
+                y="Offer Name",
+                x="Profit",
+                color="Item",
+                orientation="h",
+            )
+        ),
+        vm.Graph(
+            title="Offer by Item",
+            figure=px.pie(
+                data_frame="load_main_data_sorted_key",
+                names="Item",
+            )
+        ),
         vm.AgGrid(
             title="Offer Analysis Data",
             figure=dash_ag_grid(
                 data_frame="load_main_data_key",
             )
         ),
-        vm.Graph(
-            title="Profit by offer",
-            figure=px.bar(
-                data_frame="load_main_data_sorted_key",
-                x="Offer Name",
-                y="Profit",
-                color="Item",
-            )
-        )
     ],
     controls=[
-        vm.Filter(column="Item"),
-        vm.Filter(column="Profit", selector=vm.RangeSlider(step=0.01, marks=None)),
+        vm.Filter(column="Item", selector=vm.Dropdown(options=["Apple", "Banana", "Cherry"], multi=True, title="Select Item")),
+        vm.Filter(column="Profit", selector=vm.RangeSlider(step=0.01, marks=None, min=0, max=100, title="Select Profit Range")),
     ]
 )
 
