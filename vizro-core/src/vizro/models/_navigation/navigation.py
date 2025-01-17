@@ -1,14 +1,10 @@
 from __future__ import annotations
 
-from typing import Optional
+from typing import Annotated, Optional
 
-# try:
-#     from pydantic.v1 import validator
-# except ImportError:  # pragma: no cov
-#     from pydantic import validator
 import dash_bootstrap_components as dbc
 from dash import html
-from pydantic import validator
+from pydantic import AfterValidator, Field
 
 from vizro.models import VizroBaseModel
 from vizro.models._models_utils import _log_call
@@ -22,16 +18,13 @@ class Navigation(VizroBaseModel):
 
     Args:
         pages (NavPagesType): See [`NavPagesType`][vizro.models.types.NavPagesType]. Defaults to `[]`.
-        nav_selector (NavSelectorType): See [`NavSelectorType`][vizro.models.types.NavSelectorType].
+        nav_selector (Optional[NavSelectorType]): See [`NavSelectorType`][vizro.models.types.NavSelectorType].
             Defaults to `None`.
 
     """
 
-    pages: NavPagesType = []
+    pages: Annotated[NavPagesType, AfterValidator(_validate_pages), Field([])]
     nav_selector: Optional[NavSelectorType] = None
-
-    # validators
-    _validate_pages = validator("pages", allow_reuse=True)(_validate_pages)
 
     @_log_call
     def pre_build(self):

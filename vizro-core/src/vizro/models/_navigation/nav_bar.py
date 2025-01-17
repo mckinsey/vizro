@@ -1,20 +1,22 @@
 from __future__ import annotations
 
 from collections.abc import Mapping
-from typing import Literal
+from typing import Annotated, Any, Literal
 
 import dash_bootstrap_components as dbc
 from dash import html
-from pydantic import Field, field_validator, validator
+from pydantic import AfterValidator, BeforeValidator, Field
 
-# try:
-#     from pydantic.v1 import Field, validator
-# except ImportError:  # pragma: no cov
-#     from pydantic import Field, validator
 from vizro.models import VizroBaseModel
 from vizro.models._models_utils import _log_call
 from vizro.models._navigation._navigation_utils import _NavBuildType, _validate_pages
 from vizro.models._navigation.nav_link import NavLink
+
+
+def coerce_pages_type(pages: Any) -> dict[str, list[str]]:
+    if isinstance(pages, Mapping):
+        return pages
+    return {page: [page] for page in pages}
 
 
 class NavBar(VizroBaseModel):
@@ -28,18 +30,13 @@ class NavBar(VizroBaseModel):
     """
 
     type: Literal["nav_bar"] = "nav_bar"
-    pages: dict[str, list[str]] = Field({}, description="Mapping from name of a pages group to a list of page IDs.")
+    pages: Annotated[
+        dict[str, list[str]],
+        AfterValidator(_validate_pages),
+        BeforeValidator(coerce_pages_type),
+        Field({}, description="Mapping from name of a pages group to a list of page IDs."),
+    ]
     items: list[NavLink] = []
-
-    # validators
-    _validate_pages = validator("pages", allow_reuse=True)(_validate_pages)
-
-    @field_validator("pages", mode="before")
-    @classmethod
-    def coerce_pages_type(cls, pages):
-        if isinstance(pages, Mapping):
-            return pages
-        return {page: [page] for page in pages}
 
     @_log_call
     def pre_build(self):

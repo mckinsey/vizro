@@ -1,21 +1,22 @@
 from __future__ import annotations
 
 import itertools
+from typing import Annotated
 
 import dash_bootstrap_components as dbc
 from dash import get_relative_path, html
-from pydantic import Field, PrivateAttr, field_validator, validator
+from pydantic import AfterValidator, Field, PrivateAttr
 
-# try:
-#     from pydantic.v1 import Field, PrivateAttr, validator
-# except ImportError:  # pragma: no cov
-#     from pydantic import Field, PrivateAttr, validator
 from vizro.managers._model_manager import ModelID, model_manager
 from vizro.models import VizroBaseModel
 from vizro.models._models_utils import _log_call
 from vizro.models._navigation._navigation_utils import _validate_pages
 from vizro.models._navigation.accordion import Accordion
 from vizro.models.types import NavPagesType
+
+
+def validate_icon(icon) -> str:
+    return icon.strip().lower().replace(" ", "_")
 
 
 class NavLink(VizroBaseModel):
@@ -28,18 +29,12 @@ class NavLink(VizroBaseModel):
 
     """
 
-    pages: NavPagesType = []
+    pages: Annotated[NavPagesType, AfterValidator(_validate_pages), Field(default=[])]
     label: str = Field(..., description="Text description of the icon for use in tooltip.")
-    icon: str = Field("", description="Icon name from Google Material icons library.")
+    icon: Annotated[
+        str, AfterValidator(validate_icon), Field("", description="Icon name from Google Material icons library.")
+    ]
     _nav_selector: Accordion = PrivateAttr()
-
-    # Re-used validators
-    _validate_pages = validator("pages", allow_reuse=True)(_validate_pages)
-
-    @field_validator("icon")
-    @classmethod
-    def validate_icon(cls, icon) -> str:
-        return icon.strip().lower().replace(" ", "_")
 
     @_log_call
     def pre_build(self):

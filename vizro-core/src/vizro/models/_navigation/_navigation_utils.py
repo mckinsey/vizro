@@ -9,7 +9,7 @@ import dash_bootstrap_components as dbc
 from vizro.managers import model_manager
 
 
-def _validate_pages(pages):
+def _validate_pages(pages: dict[str, list[str]]) -> dict[str, list[str]]:
     """Reusable validator to check if provided Page IDs exist as registered pages."""
     from vizro.models import Page
 
