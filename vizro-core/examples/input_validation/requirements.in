@@ -1,0 +1,2 @@
+gunicorn
+vizro==0.1.30

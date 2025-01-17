@@ -62,7 +62,7 @@ def run_pipeline_action(button_n_clicks: int, item: str, discount: float, rebate
     # TODO: Remove this sleep statement in production.
     # Artificial delay to simulate a long-running script
     from time import sleep
-    sleep(1.5)
+    sleep(1)
 
     if None in [item, discount, rebate, offer_name]:
         output_validation_message = "Please properly fill all the fields."
