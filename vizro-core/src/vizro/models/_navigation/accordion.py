@@ -1,20 +1,22 @@
 import itertools
 from collections.abc import Mapping
-from typing import Literal
+from typing import Annotated, Literal
 
 import dash_bootstrap_components as dbc
 from dash import get_relative_path
-from pydantic import Field, field_validator, validator
+from pydantic import AfterValidator, BeforeValidator, Field
 
-# try:
-#     from pydantic.v1 import Field, validator
-# except ImportError:  # pragma: no cov
-#     from pydantic import Field, validator
 from vizro._constants import ACCORDION_DEFAULT_TITLE
 from vizro.managers._model_manager import ModelID, model_manager
 from vizro.models import VizroBaseModel
 from vizro.models._models_utils import _log_call
 from vizro.models._navigation._navigation_utils import _validate_pages
+
+
+def coerce_pages_type(pages):
+    if isinstance(pages, Mapping):
+        return pages
+    return {ACCORDION_DEFAULT_TITLE: pages}
 
 
 class Accordion(VizroBaseModel):
@@ -27,16 +29,12 @@ class Accordion(VizroBaseModel):
     """
 
     type: Literal["accordion"] = "accordion"
-    pages: dict[str, list[str]] = Field({}, description="Mapping from name of a pages group to a list of page IDs.")
-
-    _validate_pages = validator("pages", allow_reuse=True)(_validate_pages)
-
-    @field_validator("pages", mode="before")
-    @classmethod
-    def coerce_pages_type(cls, pages):
-        if isinstance(pages, Mapping):
-            return pages
-        return {ACCORDION_DEFAULT_TITLE: pages}
+    pages: Annotated[
+        dict[str, list[str]],
+        AfterValidator(_validate_pages),
+        BeforeValidator(coerce_pages_type),
+        Field({}, description="Mapping from name of a pages group to a list of page IDs."),
+    ]
 
     @_log_call
     def build(self, *, active_page_id=None):
