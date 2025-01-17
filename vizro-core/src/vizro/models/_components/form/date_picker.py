@@ -1,7 +1,3 @@
-# try:
-#     from pydantic.v1 import Field, PrivateAttr, validator
-# except ImportError:  # pragma: no cov
-#     from pydantic import Field, PrivateAttr, validator
 import datetime
 from datetime import date
 from typing import Annotated, Literal, Optional, Union
@@ -9,7 +5,7 @@ from typing import Annotated, Literal, Optional, Union
 import dash_bootstrap_components as dbc
 import dash_mantine_components as dmc
 from dash import ClientsideFunction, Input, Output, State, clientside_callback, dcc, html
-from pydantic import AfterValidator, Field, PrivateAttr, validator
+from pydantic import AfterValidator, Field, PrivateAttr
 from pydantic.functional_serializers import PlainSerializer
 
 from vizro.models import Action, VizroBaseModel
@@ -28,19 +24,27 @@ class DatePicker(VizroBaseModel):
         type (Literal["date_picker"]): Defaults to `"date_picker"`.
         min (Optional[date]): Start date for date picker. Defaults to `None`.
         max (Optional[date]): End date for date picker. Defaults to `None`.
-        value (Union[list[date], date]): Default date/dates for date picker. Defaults to `None`.
+        value (Optional[Union[list[date], date]]): Default date/dates for date picker. Defaults to `None`.
         title (str): Title to be displayed. Defaults to `""`.
-        range (bool): Boolean flag for displaying range picker. Default to `True`.
+        range (bool): Boolean flag for displaying range picker. Defaults to `True`.
         actions (list[Action]): See [`Action`][vizro.models.Action]. Defaults to `[]`.
 
     """
 
     type: Literal["date_picker"] = "date_picker"
     min: Optional[date] = Field(None, description="Start date for date picker.")
-    max: Optional[date] = Field(None, description="End date for date picker.")
-    value: Optional[Union[list[date], date]] = Field(None, description="Default date for date picker")
+    max: Annotated[Optional[date], AfterValidator(validate_max), Field(None, description="End date for date picker.")]
+    value: Annotated[
+        Optional[Union[list[date], date]],
+        AfterValidator(validate_range_value),
+        Field(None, description="Default date/dates for date picker."),
+    ]
     title: str = Field("", description="Title to be displayed.")
-    range: bool = Field(True, description="Boolean flag for displaying range picker.")
+    range: Annotated[
+        bool,
+        AfterValidator(validate_date_picker_range),
+        Field(True, description="Boolean flag for displaying range picker.", validate_default=True),
+    ]
     actions: Annotated[
         list[Action],
         AfterValidator(_action_validator_factory("value")),
@@ -49,11 +53,6 @@ class DatePicker(VizroBaseModel):
     ]
 
     _input_property: str = PrivateAttr("value")
-
-    # Re-used validators
-    _validate_value = validator("value", allow_reuse=True)(validate_range_value)
-    _validate_max = validator("max", allow_reuse=True)(validate_max)
-    _validate_range = validator("range", allow_reuse=True, always=True)(validate_date_picker_range)
 
     def build(self):
         init_value = self.value or ([self.min, self.max] if self.range else self.min)  # type: ignore[list-item]

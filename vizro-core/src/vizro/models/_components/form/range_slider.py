@@ -1,12 +1,8 @@
 from typing import Annotated, Literal, Optional
 
-# try:
-#     from pydantic.v1 import Field, PrivateAttr, validator
-# except ImportError:  # pragma: no cov
-#     from pydantic import Field, PrivateAttr, validator
 import dash_bootstrap_components as dbc
 from dash import ClientsideFunction, Input, Output, State, clientside_callback, dcc, html
-from pydantic import AfterValidator, Field, PrivateAttr, validator
+from pydantic import AfterValidator, Field, PrivateAttr, conlist
 from pydantic.functional_serializers import PlainSerializer
 
 from vizro.models import Action, VizroBaseModel
@@ -41,12 +37,21 @@ class RangeSlider(VizroBaseModel):
 
     type: Literal["range_slider"] = "range_slider"
     min: Optional[float] = Field(None, description="Start value for slider.")
-    max: Optional[float] = Field(None, description="End value for slider.")
-    step: Optional[float] = Field(None, description="Step-size for marks on slider.")
-    marks: Optional[dict[float, str]] = Field({}, description="Marks to be displayed on slider.")
-    value: Optional[list[float]] = Field(
-        None, description="Default start and end value for slider", min_length=2, max_length=2
-    )
+    max: Annotated[Optional[float], AfterValidator(validate_max), Field(None, description="End value for slider.")]
+    step: Annotated[
+        Optional[float], AfterValidator(validate_step), Field(None, description="Step-size for marks on slider.")
+    ]
+    marks: Annotated[
+        Optional[dict[float, str]],
+        AfterValidator(set_default_marks),
+        Field({}, description="Marks to be displayed on slider.", validate_default=True),
+    ]
+    value: Optional[
+        Annotated[
+            conlist(float, min_length=2, max_length=2),
+            AfterValidator(validate_range_value),
+        ]
+    ] = Field(default=None, validate_default=True)
     title: str = Field("", description="Title to be displayed.")
     actions: Annotated[
         list[Action],
@@ -59,12 +64,6 @@ class RangeSlider(VizroBaseModel):
 
     # Component properties for actions and interactions
     _input_property: str = PrivateAttr("value")
-
-    # Re-used validators
-    _validate_max = validator("max", allow_reuse=True)(validate_max)
-    _validate_value = validator("value", allow_reuse=True)(validate_range_value)
-    _validate_step = validator("step", allow_reuse=True)(validate_step)
-    _set_default_marks = validator("marks", allow_reuse=True, always=True)(set_default_marks)
 
     def __call__(self, min, max, current_value):
         output = [
