@@ -50,16 +50,19 @@ prep-release = [
 ]
 pypath = "hatch run python -c 'import sys; print(sys.executable)'"
 test = "pytest tests {args}"
-test-e2e-vizro-ai-ui = "pytest -vs --reruns 1 tests/e2e/test_vizro_ai_ui.py --headless {args}"
-test-integration = "pytest -vs --reruns 1 tests/integration --headless {args}"
-test-score = "pytest -vs --reruns 1 tests/score --headless {args}"
+test-e2e-dashboard-score = "pytest -vs tests/e2e/test_dashboard.py --headless {args}"
+test-e2e-plot = "pytest -vs --reruns 1 tests/e2e/test_plot.py --headless {args}"
 test-unit = "pytest tests/unit {args}"
 test-unit-coverage = [
   "coverage run -m pytest tests/unit {args}",
   "- coverage combine",
   "coverage report"
 ]
-vizro-ai-ui = "python examples/dashboard_ui/app.py &"
+test-vizro-ai-ui = "pytest -vs --reruns 1 tests/vizro_ai_ui/test_vizro_ai_ui.py --headless {args}"
+vizro-ai-ui = [
+  "python examples/dashboard_ui/app.py &",
+  "../tools/tests/wait-for-it.sh 127.0.0.1:8051 -t 30"
+]
 
 [envs.docs]
 dependencies = [
@@ -79,12 +82,6 @@ build = "mkdocs build --strict"
 # throwing 403 errors, but these are not real errors.
 link-check = "linkchecker site --check-extern --no-warnings --ignore=404.html --ignore-url=127.0.0.1 --ignore-url=https://vizro.readthedocs.io/ --ignore-url=https://platform.openai.com/docs/models --ignore-url=openai.com --ignore-url=https://openai.com/"
 pip = '"{env:HATCH_UV}" pip {args}'
-serve = "mkdocs serve --open"
-
-[envs.hatch-uv]
-dependencies = [
-  "uv<0.5.10"  # https://github.com/astral-sh/uv/issues/10039
-]
 
 [envs.lower-bounds]
 extra-dependencies = ["pydantic==1.10.16"]

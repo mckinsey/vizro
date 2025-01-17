@@ -1,7 +1,7 @@
 from datetime import datetime
 
 import pytest
-from e2e_asserts import browser_console_warnings_checker
+from e2e_common_asserts import browser_console_warnings_checker
 from selenium import webdriver
 from selenium.webdriver.chrome.options import Options
 

@@ -1,13 +1,13 @@
 import os
 
 import pytest
-from e2e_fake_data_generator import create_genre_popularity_by_country
-from e2e_waiters import (
+from e2e_common_waiters import (
     wait_for,
     webdriver_click_waiter,
     webdriver_waiter,
     webdriver_waiter_css,
 )
+from fake_data_generator import create_genre_popularity_by_country
 from selenium.common import InvalidSelectorException, TimeoutException
 
 
@@ -20,7 +20,7 @@ def test_chart_ui(chromedriver):
     # Create test dataset
     popularity_dataset = create_genre_popularity_by_country(start_year=1980, end_year=2023, records_per_year=10)
     # Save to a CSV file
-    popularity_dataset.to_csv("tests/tests_utils/genre_popularity_by_country.csv", index=False)
+    popularity_dataset.to_csv("tests/vizro_ai_ui/genre_popularity_by_country.csv", index=False)
 
     # fill in values
     api_key = webdriver_waiter(chromedriver, '//*[@id="settings-api-key"]')
@@ -33,7 +33,7 @@ def test_chart_ui(chromedriver):
 
     # upload file
     file_input = webdriver_waiter_css(chromedriver, 'input[type="file"]')
-    file_input.send_keys(os.path.abspath("tests/tests_utils/genre_popularity_by_country.csv"))
+    file_input.send_keys(os.path.abspath("tests/vizro_ai_ui/genre_popularity_by_country.csv"))
     webdriver_click_waiter(chromedriver, '//*[@id="data-upload"]')
 
     # enter prompt

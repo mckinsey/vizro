@@ -1,4 +1,4 @@
-name: e2e tests for VizroAI UI
+name: tests for VizroAI UI
 
 defaults:
   run:
@@ -20,7 +20,7 @@ env:
   PYTHON_VERSION: "3.12"
 
 jobs:
-  test-e2e-vizro-ai-ui-fork:
+  test-vizro-ai-ui-fork:
     if: ${{ github.event.pull_request.head.repo.fork }}
     runs-on: ubuntu-latest
 
@@ -30,7 +30,7 @@ jobs:
       - name: Passed fork step
         run: echo "Success!"
 
-  test-e2e-vizro-ai-ui:
+  test-vizro-ai-ui:
     if: ${{ ! github.event.pull_request.head.repo.fork }}
     runs-on: ubuntu-latest
 
@@ -48,11 +48,10 @@ jobs:
       - name: Show dependency tree
         run: hatch run pip tree
 
-      - name: Run e2e VizroAI UI tests
+      - name: Run VizroAI UI tests
         run: |
           hatch run vizro-ai-ui
-          tests/tests_utils/wait-for-it.sh 127.0.0.1:8050 -t 30
-          hatch run test-e2e-vizro-ai-ui
+          hatch run test-vizro-ai-ui
         env:
           OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
           OPENAI_API_BASE: ${{ secrets.OPENAI_API_BASE }}
@@ -61,6 +60,6 @@ jobs:
         if: failure()
         uses: ./.github/actions/failed-artifacts-and-slack-notifications
         env:
-          TESTS_NAME: e2e VizroAI UI tests
+          TESTS_NAME: VizroAI UI tests
           SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
           PROJECT_PATH: /home/runner/work/vizro/vizro/vizro-ai/
