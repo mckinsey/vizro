@@ -41,9 +41,9 @@ def setup_test_environment():
 
 
 # If len() is 0, it means that nothing was entered for this score in config,
-# in this case in should be 1.0.
-def score_calculator(score_name):
-    return statistics.mean(score_name) if len(score_name) != 0 else 1.0
+# in this case it should be 1.
+def score_calculator(metrics_score: list[int]):
+    return statistics.mean(metrics_score) if len(metrics_score) != 0 else 1
 
 
 def logic(  # noqa: PLR0912, PLR0915
@@ -65,6 +65,7 @@ def logic(  # noqa: PLR0912, PLR0915
         config: json config of the expected dashboard
 
     """
+    # TODO: Add layout score
     report_dir = "tests/score/reports"
     os.makedirs(report_dir, exist_ok=True)
 
@@ -72,7 +73,7 @@ def logic(  # noqa: PLR0912, PLR0915
 
     try:
         dash_duo.start_server(app)
-        app_started = 1.0
+        app_started = 1
         app_started_report = "App started!"
     except Exception as e:
         app_started = 0
@@ -81,7 +82,7 @@ def logic(  # noqa: PLR0912, PLR0915
 
     try:
         assert dash_duo.get_logs() == []
-        no_browser_console_errors = 1.0
+        no_browser_console_errors = 1
         no_browser_console_errors_report = "No error logs in browser console!"
     except AssertionError as e:
         no_browser_console_errors = 0
@@ -99,7 +100,7 @@ def logic(  # noqa: PLR0912, PLR0915
         branch = "local"
         python_version = "local"
 
-    pages_exist = [1.0 if dashboard.pages else 0][0]
+    pages_exist = [1 if dashboard.pages else 0][0]
     pages_exist_report = bool(pages_exist)
     pages_num = [1 if len(dashboard.pages) == len(config["pages"]) else 0]
     pages_num_report = [f'{len(config["pages"])} page(s) for dashboard is {bool(pages_num[0])}']
@@ -173,18 +174,18 @@ def logic(  # noqa: PLR0912, PLR0915
         {"score_name": "app_started_score", "weight": 0.4, "score": app_started},
         {"score_name": "no_browser_console_errors_score", "weight": 0.1, "score": no_browser_console_errors},
         {"score_name": "pages_score", "weight": 0.3, "score": pages_exist},
-        {"score_name": "pages_number", "weight": 0.2, "score": score_calculator(score_name=pages_num)},
-        {"score_name": "components_score", "weight": 0.2, "score": score_calculator(score_name=components_num)},
+        {"score_name": "pages_number", "weight": 0.2, "score": score_calculator(metrics_score=pages_num)},
+        {"score_name": "components_score", "weight": 0.2, "score": score_calculator(metrics_score=components_num)},
         {
             "score_name": "component_types_score",
             "weight": 0.2,
-            "score": score_calculator(score_name=components_types_names),
+            "score": score_calculator(metrics_score=components_types_names),
         },
-        {"score_name": "controls_score", "weight": 0.2, "score": score_calculator(score_name=controls_num)},
+        {"score_name": "controls_score", "weight": 0.2, "score": score_calculator(metrics_score=controls_num)},
         {
             "score_name": "controls_types_score",
             "weight": 0.2,
-            "score": score_calculator(score_name=controls_types_names),
+            "score": score_calculator(metrics_score=controls_types_names),
         },
     ]
 
