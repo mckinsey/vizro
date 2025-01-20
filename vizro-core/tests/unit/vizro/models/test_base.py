@@ -182,9 +182,9 @@ class TestParentForwardRefDiscriminatedUnion:
 
 class TestChildWithForwardRef:
     def test_no_type_match(self, Parent):
-        # TODO: [MS] I am not sure why this worked before, but in my understanding, we need to define the forward ref before rebuilding the model
-        # that contains it.
-        ChildXForwardRef = ChildX
+        # TODO: [MS] I am not sure why this worked before, but in my understanding,
+        # we need to define the forward ref before rebuilding the model that contains it.
+        ChildXForwardRef = ChildX  # noqa: F841
         ChildWithForwardRef.model_rebuild()
         child = ChildWithForwardRef()
         with pytest.raises(

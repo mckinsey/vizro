@@ -12,7 +12,6 @@ from pydantic import (
     Field,
     SerializationInfo,
     SerializerFunctionWrapHandler,
-    field_validator,
     model_serializer,
 )
 from pydantic.fields import FieldInfo
@@ -340,7 +339,6 @@ class VizroBaseModel(BaseModel):
 
 
 # Then:
-# - merge main
 # - go through issue list again
 # - go through A comments
 # - test with vizro-ai

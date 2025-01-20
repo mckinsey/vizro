@@ -1,7 +1,7 @@
 """Example app to show all features of Vizro."""
 
 from time import sleep
-from typing import Optional
+from typing import Literal, Optional
 
 import dash_bootstrap_components as dbc
 import pandas as pd
@@ -492,7 +492,7 @@ selectors = vm.Page(
             column="size",
             selector=vm.Slider(title="Slider (Tips - size)", step=1, value=2),
         ),
-        # vm.Filter(targets=["graph-stocks"], column="date", selector=vm.DatePicker(title="Date Picker (Stocks - date)")),
+        vm.Filter(targets=["graph-stocks"], column="date", selector=vm.DatePicker(title="Date Picker (Stocks - date)")),
     ],
 )
 
@@ -643,65 +643,65 @@ custom_tables = vm.Page(
 
 # CUSTOM COMPONENTS -------------------------------------------------------------
 # 1. Extend existing components
-# class TooltipNonCrossRangeSlider(vm.RangeSlider):
-#     """Custom numeric multi-selector `TooltipNonCrossRangeSlider`."""
+class TooltipNonCrossRangeSlider(vm.RangeSlider):
+    """Custom numeric multi-selector `TooltipNonCrossRangeSlider`."""
 
-#     type: Literal["other_range_slider"] = "other_range_slider"
+    type: Literal["other_range_slider"] = "other_range_slider"
 
-#     def build(self):
-#         """Extend existing component by calling the super build and update properties."""
-#         range_slider_build_obj = super().build()
-#         range_slider_build_obj[self.id].allowCross = False
-#         range_slider_build_obj[self.id].tooltip = {"always_visible": True, "placement": "bottom"}
-#         return range_slider_build_obj
+    def build(self):
+        """Extend existing component by calling the super build and update properties."""
+        range_slider_build_obj = super().build()
+        range_slider_build_obj[self.id].allowCross = False
+        range_slider_build_obj[self.id].tooltip = {"always_visible": True, "placement": "bottom"}
+        return range_slider_build_obj
 
 
-# vm.Filter.add_type("selector", TooltipNonCrossRangeSlider)
+vm.Filter.add_type("selector", TooltipNonCrossRangeSlider)
 
 
 # 2. Create new custom component
-# class Jumbotron(vm.VizroBaseModel):
-#     """New custom component `Jumbotron`."""
+class Jumbotron(vm.VizroBaseModel):
+    """New custom component `Jumbotron`."""
 
-#     type: Literal["jumbotron"] = "jumbotron"
-#     title: str
-#     subtitle: str
-#     text: str
+    type: Literal["jumbotron"] = "jumbotron"
+    title: str
+    subtitle: str
+    text: str
 
-#     def build(self):
-#         """Build the new component based on Dash components."""
-#         return html.Div([html.H2(self.title), html.H3(self.subtitle), html.P(self.text)])
+    def build(self):
+        """Build the new component based on Dash components."""
+        return html.Div([html.H2(self.title), html.H3(self.subtitle), html.P(self.text)])
 
 
-# vm.Page.add_type("components", Jumbotron)
+vm.Page.add_type("components", Jumbotron)
 
-# custom_components = vm.Page(
-#     title="Custom Components",
-#     components=[
-#         Jumbotron(
-#             title="Custom component based on new creation",
-#             subtitle="This is a subtitle to summarize some content.",
-#             text="This is the main body of text of the Jumbotron.",
-#         ),
-#         vm.Graph(
-#             id="for_custom_chart",
-#             figure=px.scatter(
-#                 iris,
-#                 title="Iris Dataset",
-#                 x="sepal_length",
-#                 y="petal_width",
-#                 color="sepal_width",
-#             ),
-#         ),
-#     ],
-#     controls=[
-#         vm.Filter(
-#             column="sepal_length",
-#             targets=["for_custom_chart"],
-#             selector=TooltipNonCrossRangeSlider(title="Custom component based on extension"),
-#         )
-#     ],
-# )
+custom_components = vm.Page(
+    title="Custom Components",
+    components=[
+        Jumbotron(
+            title="Custom component based on new creation",
+            subtitle="This is a subtitle to summarize some content.",
+            text="This is the main body of text of the Jumbotron.",
+        ),
+        vm.Graph(
+            id="for_custom_chart",
+            figure=px.scatter(
+                iris,
+                title="Iris Dataset",
+                x="sepal_length",
+                y="petal_width",
+                color="sepal_width",
+            ),
+        ),
+    ],
+    controls=[
+        vm.Filter(
+            column="sepal_length",
+            targets=["for_custom_chart"],
+            selector=TooltipNonCrossRangeSlider(title="Custom component based on extension"),
+        )
+    ],
+)
 
 
 # CUSTOM ACTIONS ---------------------------------------------------------------
@@ -778,7 +778,7 @@ kpi_indicators = vm.Page(
 components = [graphs, ag_grid, table, cards, figure, button, containers, tabs]
 controls = [filters, parameters, selectors]
 actions = [export_data_action, chart_interaction]
-extensions = [custom_charts, custom_tables, custom_actions, custom_figures]  # custom_components
+extensions = [custom_charts, custom_tables, custom_actions, custom_figures, custom_components]
 
 dashboard = vm.Dashboard(
     title="Vizro Features",
@@ -805,7 +805,7 @@ dashboard = vm.Dashboard(
                         "Extensions": [
                             "Custom Charts",
                             "Custom Tables",
-                            # "Custom Components",
+                            "Custom Components",
                             "Custom Actions",
                             "Custom Figures",
                         ],

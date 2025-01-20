@@ -40,7 +40,8 @@ class TestSharedValidators:
         with pytest.raises(
             ValidationError,
             match=re.escape(
-                "'type' does not match any of the expected tags: 'ag_grid', 'button', 'card', 'container', 'figure', 'graph', 'table', 'tabs'"
+                "'type' does not match any of the expected tags: 'ag_grid', 'button', 'card', 'container', 'figure', "
+                "'graph', 'table', 'tabs'"
             ),
         ):
             model_with_layout(title="Page Title", components=[vm.Checklist()])

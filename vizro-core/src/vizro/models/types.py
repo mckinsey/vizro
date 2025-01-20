@@ -36,6 +36,7 @@ class _SupportsCapturedCallable(Protocol):
 
 
 def validate_captured_callable(cls, value, info: ValidationInfo):
+    """Reusable validator for the `figure` argument of Figure like models."""
     # TODO: We may want to double check on the mechanism of how field info is brought to
     field_info = cls.model_fields[info.field_name]
     return CapturedCallable._validate_captured_callable(value, field_info)
