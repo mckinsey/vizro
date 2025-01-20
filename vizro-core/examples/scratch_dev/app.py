@@ -34,7 +34,7 @@ first_page = vm.Page(
         ),
     ],
     controls=[
-        # vm.Filter(column="continent", selector=vm.Checklist()),
+        vm.Filter(column="continent", selector=vm.Checklist()),
         vm.Filter(
             column="continent",
             selector=vm.Dropdown(
@@ -45,9 +45,9 @@ first_page = vm.Page(
                 #     {"label": "AMERICAS", "value": "Americas"},
                 #     {"label": "OCEANIA", "value": "Oceania"},
                 # ],
-                value=["Europe"],
-                # value="Europe",
-                # multi=False,
+                # value=["Europe"],
+                value="Europe",
+                multi=False,
             ),
         )
     ],
