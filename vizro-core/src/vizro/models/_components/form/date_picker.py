@@ -41,7 +41,6 @@ class DatePicker(VizroBaseModel):
     max: Optional[date] = Field(None, description="End date for date picker.")
     value: Optional[Union[list[date], date]] = Field(None, description="Default date for date picker")
     title: str = Field("", description="Title to be displayed.")
-
     range: bool = Field(True, description="Boolean flag for displaying range picker.")
     actions: list[Action] = []
 
@@ -65,9 +64,8 @@ class DatePicker(VizroBaseModel):
             persistence_type="session",
             type="range" if self.range else "default",
             allowSingleDateInRange=True,
-            className="datepicker",
-            # removes the default red color for  weekend days
-            styles={"day": {"color": "var(--mantine-color-text"}},
+            # Required for styling to remove gaps between cells
+            withCellSpacing=False,
         )
 
         return html.Div(
