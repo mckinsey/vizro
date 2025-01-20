@@ -153,6 +153,7 @@ wrapper **/
 }
 
 #dashboard-container .VirtualizedSelectOption:nth-child(1):has(> div) {
-  padding: 0;
   border-bottom: 1px solid var(--border-subtleAlpha01);
+  padding: 0;
+  padding-left: 0.5rem;
 }

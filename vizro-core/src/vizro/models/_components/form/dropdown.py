@@ -39,18 +39,15 @@ def _calculate_option_height(full_options: OptionsType) -> int:
     return 8 + 24 * number_of_lines
 
 
-def _add_select_all_option(full_options: OptionsType, component_id: str, multi: bool):
-    """Adds checklist component for select all option."""
+def _add_select_all_option(full_options: OptionsType, multi: bool):
+    """Adds div component for select all option."""
     if not multi:
         return full_options
 
     def create_select_all_option():
         """Creates the "Select All" option as a dictionary."""
         return {
-            "label": html.Div(
-                [html.Span("ALL")],
-                className="checklist-dropdown-div",
-            ),
+            "label": html.Div(["ALL"]),
             "value": "ALL",
         }
 
@@ -62,7 +59,7 @@ def _add_select_all_option(full_options: OptionsType, component_id: str, multi: 
             else:
                 altered_options.append({"label": option, "value": option})
         elif isinstance(option, dict):
-            if option["value"] == "ALL":
+            if option.get("value") == "ALL":
                 altered_options.append(create_select_all_option())
             else:
                 altered_options.append(option)
@@ -120,14 +117,14 @@ class Dropdown(VizroBaseModel):
     def __call__(self, options):
         full_options, default_value = get_options_and_default(options=options, multi=self.multi)
         option_height = _calculate_option_height(full_options)
-        full_options = _add_select_all_option(full_options=full_options, component_id=self.id, multi=self.multi)
+        altered_options = _add_select_all_option(full_options=full_options, multi=self.multi)
 
         return html.Div(
             children=[
                 dbc.Label(self.title, html_for=self.id) if self.title else None,
                 dcc.Dropdown(
                     id=self.id,
-                    options=full_options,
+                    options=altered_options,
                     value=self.value if self.value is not None else default_value,
                     multi=self.multi,
                     optionHeight=option_height,

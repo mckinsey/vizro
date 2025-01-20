@@ -17,8 +17,8 @@ page = vm.Page(
         )
     ],
     controls=[
-        vm.Filter(column="continent"),
-        vm.Filter(column="continent", selector=vm.Checklist()),
+        vm.Filter(column="continent", selector=vm.Dropdown(value=["Europe"])),
+        # vm.Filter(column="continent", selector=vm.Checklist()),
     ],
 )
 
