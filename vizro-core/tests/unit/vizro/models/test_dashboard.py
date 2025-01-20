@@ -292,7 +292,7 @@ class TestDashboardBuild:
                     dash.page_container,
                 ],
             ),
-            theme={"primaryColor": "gray"},
+            theme={"fontFamily": "Inter, sans-serif, Arial, serif", "primaryColor": "gray", "defaultRadius": 0},
         )
         assert_component_equal(dashboard.build(), expected_dashboard_container)
 

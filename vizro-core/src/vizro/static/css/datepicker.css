@@ -43,7 +43,7 @@
   color: var(--text-secondary);
 }
 
-/*Important tags are required as otherwise mantine media queries will have higher specificity*/
+/* Important tags are required as otherwise mantine media queries will have higher specificity */
 .mantine-DatePickerInput-day:hover,
 .mantine-PickerControl-pickerControl:hover,
 .mantine-DatePickerInput-monthsListControl:hover {
