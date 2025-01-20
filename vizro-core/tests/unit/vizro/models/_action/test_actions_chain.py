@@ -3,7 +3,6 @@
 from dataclasses import dataclass
 
 import pytest
-from pydantic import ValidationInfo
 
 from vizro.models._action._action import Action
 from vizro.models._action._actions_chain import ActionsChain, Trigger, _set_actions

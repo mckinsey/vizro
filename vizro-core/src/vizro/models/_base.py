@@ -12,7 +12,6 @@ from pydantic import (
     Field,
     SerializationInfo,
     SerializerFunctionWrapHandler,
-    field_validator,
     model_serializer,
 )
 from pydantic.fields import FieldInfo
