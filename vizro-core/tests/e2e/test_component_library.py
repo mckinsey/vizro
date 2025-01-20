@@ -5,6 +5,8 @@ from e2e_asserts import assert_image_equal, make_screenshot_and_paths
 
 from vizro.figures.library import kpi_card, kpi_card_reference
 
+# just testing
+
 df_kpi = pd.DataFrame(
     {
         "Actual": [100, 200, 700],
