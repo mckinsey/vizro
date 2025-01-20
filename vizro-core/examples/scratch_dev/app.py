@@ -4,18 +4,21 @@ from vizro import Vizro
 import vizro.models as vm
 import vizro.plotly.express as px
 
-stocks = px.data.stocks(datetimes=True)
+from vizro.tables import dash_data_table
+
+gapminder = px.data.gapminder()
 
 page = vm.Page(
     title="Page",
     components=[
-        vm.Graph(
-            figure=px.line(stocks, x="date", y="GOOG", title="Stocks Data"),
-        ),
+        vm.Table(
+            figure=dash_data_table(data_frame=gapminder),
+            title="Gapminder Data Insights",
+        )
     ],
     controls=[
-        vm.Filter(column="GOOG"),
-        vm.Filter(column="date", selector=vm.DatePicker(title="Date Picker (Stocks - date)")),
+        vm.Filter(column="continent"),
+        vm.Filter(column="continent", selector=vm.Checklist()),
     ],
 )
 
