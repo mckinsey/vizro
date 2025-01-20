@@ -172,7 +172,7 @@ class Dashboard(VizroBaseModel):
                 dash.page_container,
             ],
         )
-       
+
         # children=[layout] as a list rather than children=layout, so that app.dash.layout.children.append works to
         # easily add things to the Dash layout. In future we might have a neater function for patching components into
         # the Dash layout in which case this could change.
