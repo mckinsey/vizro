@@ -1,8 +1,10 @@
 function update_dashboard_theme(theme_selector_checked) {
-  document.documentElement.setAttribute(
-    "data-bs-theme",
-    theme_selector_checked ? "light" : "dark",
-  );
+  const theme = theme_selector_checked ? "light" : "dark";
+
+  // Update theme attributes for Bootstrap and Mantine
+  document.documentElement.setAttribute("data-bs-theme", theme);
+  document.documentElement.setAttribute("data-mantine-color-scheme", theme);
+
   return window.dash_clientside.no_update;
 }
 

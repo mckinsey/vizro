@@ -8,6 +8,7 @@ from typing import TYPE_CHECKING, Literal, TypedDict
 
 import dash
 import dash_bootstrap_components as dbc
+import dash_mantine_components as dmc
 import plotly.io as pio
 from dash import (
     ClientsideFunction,
@@ -156,7 +157,7 @@ class Dashboard(VizroBaseModel):
                 State("collapsable-left-side", "is_open"),
             )
 
-        return html.Div(
+        layout = html.Div(
             id="dashboard-container",
             children=[
                 html.Div(id="vizro_version", children=vizro.__version__, hidden=True),
@@ -170,6 +171,11 @@ class Dashboard(VizroBaseModel):
                 ActionLoop._create_app_callbacks(),
                 dash.page_container,
             ],
+        )
+        return dmc.MantineProvider(
+            layout,
+            # Use the `theme` to style all Mantine components with a Vizro theme. For more info see https://www.dash-mantine-components.com/components/mantineprovider
+            theme={"primaryColor": "gray"},
         )
 
     def _validate_logos(self):

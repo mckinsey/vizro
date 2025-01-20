@@ -1,43 +1,22 @@
 """Dev app to try things out."""
 
-import dash_bootstrap_components as dbc
-
-import vizro.models as vm
 from vizro import Vizro
+import vizro.models as vm
 import vizro.plotly.express as px
 
-
-from typing import Literal
-
-gapminder = px.data.gapminder()
-
-
-class NumberInput(vm.VizroBaseModel):
-    type: Literal["number_input"] = "number_input"
-
-    def build(self):
-        return (
-            dbc.Input(
-                id="number-input",
-                type="number",
-                min=0,
-                max=10,
-                step=1,
-                value=5,
-                debounce=True,
-            ),
-        )
-
-
-vm.Page.add_type("components", NumberInput)
+stocks = px.data.stocks(datetimes=True)
 
 page = vm.Page(
-    title="Charts UI",
+    title="Page",
     components=[
-        NumberInput(),
-        vm.Graph(figure=px.box(gapminder, x="year", y="gdpPercap", color="continent")),
+        vm.Graph(
+            figure=px.line(stocks, x="date", y="GOOG", title="Stocks Data"),
+        ),
     ],
-    controls=[vm.Filter(column="year")],
+    controls=[
+        vm.Filter(column="GOOG"),
+        vm.Filter(column="date", selector=vm.DatePicker(title="Date Picker (Stocks - date)")),
+    ],
 )
 
 dashboard = vm.Dashboard(pages=[page])
