@@ -1,10 +1,8 @@
-from typing import List, Literal
+"""Dev app to try things out."""
 
 import vizro.models as vm
 import vizro.plotly.express as px
-from dash import html
 from vizro import Vizro
-from vizro._themes._color_values import COLORS
 from vizro.actions import export_data
 
 df = px.data.iris()
@@ -22,6 +20,7 @@ page = vm.Page(
             ],
         ),
     ],
+    controls=[vm.Filter(column="year")],
 )
 
 dashboard = vm.Dashboard(pages=[page])

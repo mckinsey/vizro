@@ -239,35 +239,20 @@ class TestDashboardPreBuild:
         # vizro_app fixture is needed to avoid mocking out get_relative_path.
         expected = html.Div(
             [
-                html.Div(
-                    children=dbc.Switch(
-                        id="theme-selector",
-                        value=False,
-                        persistence=True,
-                        persistence_type="session",
-                    ),
-                    id="settings",
+                dbc.Switch(
+                    id="theme-selector",
+                    value=False,
+                    persistence=True,
+                    persistence_type="session",
                 ),
                 html.Img(),
-                html.Div(
-                    [
-                        html.Div(
-                            [
-                                html.H3("This page could not be found.", className="heading-3-600"),
-                                html.P("Make sure the URL you entered is correct."),
-                            ],
-                            className="error-text-container",
-                        ),
-                        dbc.Button("Take me home", href="/"),
-                    ],
-                    className="error-content-container",
-                ),
+                html.H3("This page could not be found."),
+                html.P("Make sure the URL you entered is correct."),
+                dbc.Button(children="Take me home", href="/", className="mt-4"),
             ],
-            className="page-error-container",
+            className="d-flex flex-column align-items-center justify-content-center min-vh-100",
         )
-
-        # Strip out src since it's too long to be worth comparing and just comes directly
-        # from reading a file.
+        # Strip out src since it's too long to be worth comparing and just comes directly from reading a file.
         assert_component_equal(vm.Dashboard(pages=[page_1])._make_page_404_layout(), expected, keys_to_strip={"src"})
 
 

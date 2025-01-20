@@ -1,8 +1,6 @@
 # Components
 
-The [`Page`][vizro.models.Page] model accepts the `components` argument, where you can enter any of the components
-listed below to fill your dashboard with visuals.
-
+The [`Page`][vizro.models.Page] model accepts the `components` argument, where you can enter any of the components listed below to fill your dashboard with visuals.
 
 <div class="grid cards" markdown>
 
@@ -37,7 +35,6 @@ listed below to fill your dashboard with visuals.
     Use cards and buttons to visualize text, navigate to different URLs or attach any [action](actions.md).
 
     [:octicons-arrow-right-24: View user guide](card-button.md)
-
 
 - :octicons-table-16:{ .lg .middle } __Containers__
 

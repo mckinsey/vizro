@@ -16,6 +16,7 @@ Note the relative url works with both serve_locally=True and serve_locally=False
   src: url("./fonts/material-symbols-outlined.woff2") format("woff2");
 }
 
+/* This applies to all icons inside vizro */
 .material-symbols-outlined {
   direction: ltr;
   display: inline-block;
@@ -39,14 +40,14 @@ Note the relative url works with both serve_locally=True and serve_locally=False
 /* This should be replaced, when the bootstrap theme is finalized. Currently our font tokens don't match with the
  bootstrap font tokens, leading to deviations which we need to overwrite. */
 .card-kpi-title {
-  font-size: 1.2rem;
-  line-height: normal;
+  font-size: 1rem;
   margin: 0;
 }
 
 .card-kpi .card-header,
 .card-kpi .card-footer,
 .card-kpi .card-body {
+  align-items: center;
   background: none;
   border: none;
   margin: 0;
@@ -64,9 +65,8 @@ Note the relative url works with both serve_locally=True and serve_locally=False
   color: var(--bs-secondary);
   display: flex;
   flex-grow: 1;
-  font-size: 3.6vh;
+  font-size: 2rem;
   font-weight: 600;
-  padding: 1rem 0;
 }
 
 .card-kpi .card-footer {

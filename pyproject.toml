@@ -6,6 +6,7 @@ authors = [
   {name = "Vizro Team"}
 ]
 description = "Vizro is a package to facilitate visual analytics."
+dynamic = ["version"]
 name = "vizro"
 
 [tool.bandit]
@@ -14,7 +15,7 @@ exclude_dirs = ["tests"]
 [tool.codespell]
 builtin = "clear,rare,en-GB_to_en-US"
 ignore-words-list = "grey,ned,sav,Thur"
-skip = "*.min.css.map,*.min.css,.vale/*, *assets/*"
+skip = "*.min.css.map,*.min.css,.vale/*, *assets/*,.github/*"
 
 [tool.mypy]
 # strict checks : strict = true

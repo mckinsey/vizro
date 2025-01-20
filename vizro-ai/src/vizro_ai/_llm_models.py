@@ -1,4 +1,3 @@
-from contextlib import suppress
 from typing import Optional, Union
 
 from langchain_core.language_models.chat_models import BaseChatModel
@@ -72,19 +71,6 @@ def _get_llm_model(model: Optional[Union[BaseChatModel, str]] = None) -> BaseCha
     raise ValueError(
         f"Model {model} not found! List of available model can be found at https://vizro.readthedocs.io/projects/vizro-ai/en/latest/pages/user-guides/customize-vizro-ai/#supported-models"
     )
-
-
-def _get_model_name(model: BaseChatModel) -> str:
-    methods = [
-        lambda: model.model_name,  # OpenAI models
-        lambda: model.model,  # Anthropic models
-    ]
-
-    for method in methods:
-        with suppress(AttributeError):
-            return method()
-
-    raise ValueError("Model name could not be retrieved")
 
 
 if __name__ == "__main__":

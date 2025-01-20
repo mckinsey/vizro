@@ -3,7 +3,6 @@ from datetime import date
 from typing import Annotated, Literal, Optional, Union
 
 import dash_bootstrap_components as dbc
-import dash_mantine_components as dmc
 from dash import dcc, html
 from pydantic import (
     AfterValidator,
@@ -129,18 +128,7 @@ class Dropdown(VizroBaseModel):
             _, default_value = get_options_and_default(self.options, self.multi)
             self.value = default_value
 
-        # TODO-NEXT: Replace this with the "universal Vizro placeholder" component.
-        return html.Div(
-            children=[
-                html.Legend(children=self.title, className="form-label") if self.title else None,
-                dmc.DateRangePicker(
-                    id=self.id,
-                    value=self.value,
-                    persistence=True,
-                    persistence_type="session",
-                ),
-            ]
-        )
+        return self.__call__(self.options)
 
     @_log_call
     def build(self):

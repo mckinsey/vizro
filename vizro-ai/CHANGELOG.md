@@ -11,6 +11,18 @@ See the fragment files in the [changelog.d directory](https://github.com/mckinse
 
 <!-- scriv-insert-here -->
 
+<a id='changelog-0.3.3'></a>
+
+# 0.3.3 — 2025-01-16
+
+## Changed
+
+- Pinned the Vizro upper bound to prepare for Pydantic V2 migration. ([#923](https://github.com/mckinsey/vizro/pull/923))
+
+## Fixed
+
+- Fixed the "Model name could not be retrieved" error when using VizroAI with AWS Bedrock. ([#953](https://github.com/mckinsey/vizro/pull/953))
+
 <a id='changelog-0.3.2'></a>
 
 # 0.3.2 — 2024-11-08
@@ -141,5 +153,4 @@ See the fragment files in the [changelog.d directory](https://github.com/mckinse
 
 ## Highlights ✨
 
-- Initial release of Vizro-AI package. Vizro-AI is a tool for generating data
-  visualizations. ([#138](https://github.com/mckinsey/vizro/pull/138))
+- Initial release of Vizro-AI package. Vizro-AI is a tool for generating data visualizations. ([#138](https://github.com/mckinsey/vizro/pull/138))
