@@ -4,8 +4,6 @@
   border: none;
   box-shadow: var(--elevation-0);
   color: var(--text-secondary);
-  min-height: 2rem;
-  padding: 0 0.5rem;
 }
 
 .mantine-DatePickerInput-input:hover {
