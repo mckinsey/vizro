@@ -101,7 +101,6 @@ ci:
     - check-case-conflict
     - check-yaml
     - check-json
-    - check-datafiles
     - codespell
     - bandit
     - mypy
