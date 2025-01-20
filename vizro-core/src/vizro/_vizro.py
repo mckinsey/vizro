@@ -8,7 +8,6 @@ from pathlib import Path, PurePosixPath
 from typing import TYPE_CHECKING, TypedDict, cast
 
 import dash
-import dash_mantine_components as dmc
 import plotly.io as pio
 from dash.development.base_component import ComponentRegistry
 from flask_caching import SimpleCache
