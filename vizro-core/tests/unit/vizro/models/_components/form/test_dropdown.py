@@ -154,7 +154,12 @@ class TestDropdownBuild:
                 dbc.Label("Title", html_for="dropdown_id"),
                 dcc.Dropdown(
                     id="dropdown_id",
-                    options=["ALL", "A", "B", "C"],
+                    options=[
+                        {"label": html.Div(["ALL"]), "value": "ALL"},
+                        {"label": "A", "value": "A"},
+                        {"label": "B", "value": "B"},
+                        {"label": "C", "value": "C"},
+                    ],
                     optionHeight=32,
                     value="ALL",
                     multi=True,
