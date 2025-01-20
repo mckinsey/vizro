@@ -67,7 +67,7 @@ class DatePicker(VizroBaseModel):
             type="range" if self.range else "default",
             allowSingleDateInRange=True,
             # Required for styling to remove gaps between cells
-            withCellSpacing=False
+            withCellSpacing=False,
         )
 
         return html.Div(
