@@ -68,10 +68,6 @@
   color: var(--text-primaryHover);
 }
 
-/* Remove gaps between dates */
-.mantine-DatePickerInput-monthRow .m_8f457cd5:where([data-with-spacing]) {
-  padding: 0;
-}
 
 /* Header inside calendar view */
 .mantine-DatePickerInput-calendarHeader {
