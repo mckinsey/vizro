@@ -69,12 +69,6 @@ _PageDivsType = TypedDict(
 )
 
 
-def validate_pages(pages: list[Page]) -> list[Page]:
-    if not pages:
-        raise ValueError("Ensure this value has at least 1 item.")
-    return pages
-
-
 def set_navigation_pages(navigation: Optional[Navigation], info: ValidationInfo) -> Optional[Navigation]:
     if "pages" not in info.data:
         return navigation
@@ -96,7 +90,7 @@ class Dashboard(VizroBaseModel):
 
     """
 
-    pages: Annotated[list[Page], AfterValidator(validate_pages), Field(..., validate_default=True)]
+    pages: Annotated[list[Page], Field(..., validate_default=True)]
     theme: Literal["vizro_dark", "vizro_light"] = Field(
         "vizro_dark", description="Layout theme to be applied across dashboard. Defaults to `vizro_dark`."
     )

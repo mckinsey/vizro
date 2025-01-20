@@ -45,7 +45,7 @@ class TestDashboardInstantiation:
         assert dashboard.navigation.pages == ["Page 1"]
 
     def test_mandatory_pages_missing(self):
-        with pytest.raises(ValidationError, match="Input should be a valid list"):
+        with pytest.raises(ValidationError, match="Field required"):
             vm.Dashboard()
 
     def test_field_invalid_pages_empty_list(self):
