@@ -175,7 +175,9 @@ class Dashboard(VizroBaseModel):
         return dmc.MantineProvider(
             layout,
             # Applies to all Mantine components
-            theme={"fontFamily": "Inter, sans-serif, Arial, serif"},
+            theme={"fontFamily": "Inter, sans-serif, Arial, serif",
+                   "primaryColor": "gray",
+                   "defaultRadius": 0},
         )
 
     def _validate_logos(self):
