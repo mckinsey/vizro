@@ -36,7 +36,6 @@
 #dashboard-container .ag-header-cell {
   align-items: center;
   display: flex;
-  height: 40px;
   padding: 0 0.75rem;
 }
 
@@ -45,7 +44,6 @@
   line-height: 1rem;
   overflow: hidden;
   text-overflow: ellipsis;
-  white-space: nowrap;
 }
 
 #dashboard-container .ag-header-cell:hover {

@@ -128,8 +128,8 @@ input.dash-input:invalid {
 }
 
 /* To remove number input spin box */
-.slider-text-input-container input::-webkit-outer-spin-button,
-input::-webkit-inner-spin-button {
+.slider-text-input-container input[type="number"]::-webkit-outer-spin-button,
+.slider-text-input-container input[type="number"]::-webkit-inner-spin-button {
   appearance: none;
   margin: 0;
 }

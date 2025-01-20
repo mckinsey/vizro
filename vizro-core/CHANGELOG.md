@@ -11,6 +11,20 @@ See the fragment files in the [changelog.d directory](https://github.com/mckinse
 
 <!-- scriv-insert-here -->
 
+<a id='changelog-0.1.30'></a>
+
+# 0.1.30 — 2024-12-16
+
+## Removed
+
+- Remove built-in CSS shortcuts `#floating-*` to float images. These can still be provided manually. ([#919](https://github.com/mckinsey/vizro/pull/919))
+
+## Fixed
+
+- Ensure the single-select dropdown value can be cleared when used as a dynamic filter. ([#915](https://github.com/mckinsey/vizro/pull/915))
+
+- Remove static CSS that prevented header text from wrapping in `AgGrid`. ([#928](https://github.com/mckinsey/vizro/pull/928))
+
 <a id='changelog-0.1.29'></a>
 
 # 0.1.29 — 2024-12-03
