@@ -1,109 +1,61 @@
-.datepicker .mantine-Input-wrapper {
-  font-family: unset;
-  height: 2rem;
-}
-
-.datepicker .mantine-DateRangePicker-input,
-.datepicker .mantine-DatePicker-input {
+/* Dropdown field showing selection */
+.mantine-DatePickerInput-input {
   background-color: var(--field-enabled);
   border: none;
-  border-radius: 0;
   box-shadow: var(--elevation-0);
   color: var(--text-secondary);
-  font-size: 0.875rem;
-  height: 2rem;
-  line-height: 1rem;
-  min-height: 2rem;
-  padding: 0 0.5rem;
 }
 
-.datepicker .mantine-DateRangePicker-input:hover,
-.datepicker .mantine-DatePicker-input:hover {
-  color: var(--text-primary);
+.mantine-DatePickerInput-input:hover {
+  color: var(--text-primaryHover);
 }
 
-.datepicker .mantine-DateRangePicker-dropdown,
-.datepicker .mantine-DatePicker-dropdown {
+/* Calendar view with selected range */
+.mantine-DatePickerInput-dropdown,
+.mantine-Popover-dropdown {
   background: var(--field-enabled);
-  border: none;
-  border-radius: 0;
+  border: inherit;
   box-shadow: var(--elevation-1);
-  padding: 1rem 11px; /* 11px otherwise not aligned with controls */
+  padding: 0.5rem 0.75rem;
 }
 
-.datepicker .mantine-UnstyledButton-root {
-  border-radius: 0;
-  color: var(--text-secondary);
-  font-family: unset;
-  font-weight: 400;
-}
-
-.datepicker .mantine-UnstyledButton-root:hover {
-  background: var(--stateOverlays-hover);
-  color: var(--text-primary);
-}
-
-.datepicker .mantine-DateRangePicker-weekday,
-.datepicker .mantine-DatePicker-weekday {
-  color: var(--text-secondary);
-  font-family: unset;
-  padding: 0.5rem;
-}
-
-.datepicker .mantine-DateRangePicker-cell,
-.datepicker .mantine-DatePicker-cell {
-  border: none;
-}
-
-.datepicker .mantine-DateRangePicker-day,
-.datepicker .mantine-DatePicker-day {
+.mantine-DatePickerInput-day {
   background: var(--field-enabled);
-  border-radius: 0;
   color: var(--text-secondary);
-  font-family: unset;
 }
 
-.datepicker .mantine-DateRangePicker-day[data-outside],
-.datepicker .mantine-DateRangePicker-day:disabled,
-.datepicker .mantine-DatePicker-day[data-outside],
-.datepicker .mantine-DatePicker-day:disabled,
-.datepicker .mantine-UnstyledButton-root:disabled {
-  color: var(--text-disabled);
-}
-
-.datepicker .mantine-DateRangePicker-day:hover,
-.datepicker .mantine-DateRangePicker-day:focus-visible,
-.datepicker .mantine-DatePicker-day:hover,
-.datepicker .mantine-DatePicker-day:focus-visible {
-  background: var(--stateOverlays-hover);
-  border: none;
-  color: var(--text-primary);
-  outline: none;
-  text-decoration: none;
-}
-
-.datepicker .mantine-DateRangePicker-day[data-in-range] {
-  background: var(--stateOverlays-selected);
+.mantine-DatePickerInput-day[data-in-range] {
+  background: var(--stateOverlays-selectedRange);
   color: var(--text-primary);
 }
 
-.datepicker .mantine-DateRangePicker-day[data-selected],
-.datepicker .mantine-DateRangePicker-yearPickerControlActive,
-.datepicker .mantine-DateRangePicker-monthPickerControlActive,
-.datepicker .mantine-DatePicker-day[data-selected],
-.datepicker .mantine-DatePicker-yearPickerControlActive,
-.datepicker .mantine-DatePicker-monthPickerControlActive {
+.mantine-DatePickerInput-day[data-selected] {
   background: var(--stateOverlays-selected-inverted);
   color: var(--text-primary-inverted);
   text-decoration: underline;
 }
 
-.datepicker
-  .mantine-DateRangePicker-calendarHeader
-  .mantine-UnstyledButton-root:hover,
-.datepicker
-  .mantine-DatePicker-calendarHeader
-  .mantine-UnstyledButton-root:hover {
+/* Single month or year selection */
+.mantine-PickerControl-pickerControl,
+.mantine-DatePickerInput-monthsListControl {
+  color: var(--text-secondary);
+}
+
+/* Important tags are required as otherwise mantine media queries will have higher specificity */
+.mantine-DatePickerInput-day:hover,
+.mantine-PickerControl-pickerControl:hover,
+.mantine-DatePickerInput-monthsListControl:hover {
+  background: var(--stateOverlays-hover) !important;
+  color: var(--text-primaryHover) !important;
+}
+
+/* Header inside calendar view */
+.mantine-DatePickerInput-calendarHeader {
+  color: var(--text-secondary);
+}
+
+.mantine-DatePickerInput-calendarHeaderControlIcon:hover,
+.mantine-DatePickerInput-calendarHeader .mantine-UnstyledButton-root:hover {
   background: transparent;
-  color: var(--text-primary);
+  color: var(--text-primaryHover);
 }
