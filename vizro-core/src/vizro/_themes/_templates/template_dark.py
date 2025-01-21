@@ -91,7 +91,7 @@ def create_template_dark() -> Template:
     template_dark.data.bar = [
         go.Bar(
             # This hides the border lines in a bar chart created from unaggregated data.
-            marker={"line": {"color": template_dark["layout"]["paper_bgcolor"]}},
+            marker={"line": {"color": template_dark.layout.paper_bgcolor}},
         )
     ]
 
