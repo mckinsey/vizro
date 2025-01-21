@@ -6,6 +6,16 @@ from plotly.graph_objs.layout._template import Template
 from vizro._themes._color_values import COLORS
 from vizro._themes._templates.common_values import create_template_common
 
+# VARIABLES
+FONT_COLOR_PRIMARY = COLORS["BLACK_85"]
+FONT_COLOR_SECONDARY = COLORS["BLACK_55"]
+BG_COLOR = COLORS["Light_BG01"]
+GRID_COLOR = COLORS["BLACK_12"]
+AXIS_COLOR = COLORS["BLACK_30"]
+DISCRETE_DEFAULT = COLORS["DISCRETE_10"]
+DIVERGING_DEFAULT = COLORS["DIVERGING_RED_CYAN"]
+SEQUENTIAL_DEFAULT = COLORS["SEQUENTIAL_CYAN"]
+SEQUENTIAL_MINUS_DEFAULT = COLORS["SEQUENTIAL_RED"][::-1]
 
 def create_template_light() -> Template:
     """Create light themed plotly template.
@@ -16,17 +26,6 @@ def create_template_light() -> Template:
 
     """
     template_light = create_template_common()
-
-    # VARIABLES
-    FONT_COLOR_PRIMARY = COLORS["BLACK_85"]
-    FONT_COLOR_SECONDARY = COLORS["BLACK_55"]
-    BG_COLOR = COLORS["Light_BG01"]
-    GRID_COLOR = COLORS["BLACK_12"]
-    AXIS_COLOR = COLORS["BLACK_30"]
-    DISCRETE_DEFAULT = COLORS["DISCRETE_10"]
-    DIVERGING_DEFAULT = COLORS["DIVERGING_RED_CYAN"]
-    SEQUENTIAL_DEFAULT = COLORS["SEQUENTIAL_CYAN"]
-    SEQUENTIAL_MINUS_DEFAULT = COLORS["SEQUENTIAL_RED"][::-1]
 
     # LAYOUT
     template_light["layout"]["font"]["color"] = FONT_COLOR_PRIMARY
