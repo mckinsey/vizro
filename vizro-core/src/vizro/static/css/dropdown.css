@@ -152,7 +152,9 @@ wrapper **/
   padding: 4px 8px;
 }
 
-#dashboard-container .VirtualizedSelectOption:nth-child(1):has(> div) {
+#dashboard-container
+  .dropdown
+  .VirtualizedSelectOption:nth-child(1):has(> div) {
   border-bottom: 1px solid var(--border-subtleAlpha01);
   padding: 0;
   padding-left: 0.5rem;

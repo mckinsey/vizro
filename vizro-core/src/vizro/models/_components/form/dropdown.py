@@ -39,32 +39,18 @@ def _calculate_option_height(full_options: OptionsType) -> int:
     return 8 + 24 * number_of_lines
 
 
-def _add_select_all_option(full_options: OptionsType, multi: bool):
-    """Adds div component for select all option."""
-    if not multi:
-        return full_options
+def _convert_to_dict(option: Union[str, dict[str, str]]) -> dict[str, Union[str, html.Div]]:
+    """Converts a string option to a dictionary format."""
+    if isinstance(option, str):
+        return {"label": option, "value": option}
+    return option
 
-    def create_select_all_option():
-        """Creates the "Select All" option as a dictionary."""
-        return {
-            "label": html.Div(["ALL"]),
-            "value": "ALL",
-        }
 
-    altered_options = []
-    for option in full_options:
-        if isinstance(option, str):
-            if option == "ALL":
-                altered_options.append(create_select_all_option())
-            else:
-                altered_options.append({"label": option, "value": option})
-        elif isinstance(option, dict):
-            if option.get("value") == "ALL":
-                altered_options.append(create_select_all_option())
-            else:
-                altered_options.append(option)
-
-    return altered_options
+def _add_select_all_option(full_options: OptionsType) -> OptionsType:
+    """Adds a 'Select All' option to the list of options."""
+    options_dict = [_convert_to_dict(option) for option in full_options]
+    select_all_option = {"label": html.Div(["ALL"]), "value": "ALL"}
+    return [select_all_option if option.get("value") == "ALL" else option for option in options_dict]
 
 
 class Dropdown(VizroBaseModel):
@@ -117,7 +103,7 @@ class Dropdown(VizroBaseModel):
     def __call__(self, options):
         full_options, default_value = get_options_and_default(options=options, multi=self.multi)
         option_height = _calculate_option_height(full_options)
-        altered_options = _add_select_all_option(full_options=full_options, multi=self.multi)
+        altered_options = _add_select_all_option(full_options=full_options) if self.multi else full_options
 
         return html.Div(
             children=[
@@ -130,6 +116,7 @@ class Dropdown(VizroBaseModel):
                     optionHeight=option_height,
                     persistence=True,
                     persistence_type="session",
+                    className="dropdown",
                 ),
             ]
         )
