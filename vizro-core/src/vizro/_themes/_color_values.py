@@ -1,21 +1,21 @@
 """Colors for plotly templates."""
 
 COLORS = {
-    # GRID COLOR - var(--fill-subtle)
+    # GRID COLOR - var(--fill-subtle) / var(--bs-border-color)
     "WHITE_12": "rgba(255, 255, 255, 0.1)",
     "BLACK_12": "rgba(20, 23, 33, 0.1) ",
-    # AXIS COLOR - var(--fill-disabled)
+    # AXIS COLOR - var(--fill-disabled) / var(--bs-tertiary)
     "WHITE_30": "rgba(255, 255, 255, 0.30)",
     "BLACK_30": "rgba(20, 23, 33, 0.30)",
-    # FONT COLOR SECONDARY - var(--text-secondary)
+    # FONT COLOR SECONDARY - var(--text-secondary) / var(--bs-secondary)
     "WHITE_55": "rgba(255, 255, 255, 0.6)",
     "BLACK_55": "rgba(20, 23, 33, 0.6)",
-    # FONT COLOR PRIMARY - var(--text-primary)
+    # FONT COLOR PRIMARY - var(--text-primary) / var(--bs-primary)
     "WHITE_85": "rgba(255, 255, 255, 0.88)",
     "BLACK_85": "rgba(20, 23, 33, 0.88)",
-    # BG COLOR
-    "DARK_BG03": "#141721",   # var(--surfaces-bg03) - dark
-    "Light_BG01": "#FFFFFF",  # var(--surfaces-bg01) - light
+    # BG COLOR - var(--bs-body-bg), var(--surfaces-bg03) - dark, var(--surfaces-bg01) - light
+    "DARK_BG03": "#141721",
+    "Light_BG01": "#FFFFFF",
     # OTHER
     "GREY_30": "#C0C6CB",
     "GREY_55": "#747F88",
