@@ -129,9 +129,7 @@ class TestBuildMethod:
                     persistence_type="session",
                     type="range" if range else "default",
                     allowSingleDateInRange=True,
-                    className="datepicker",
-                    # removes the default red color for  weekend days
-                    styles={"day": {"color": "var(--mantine-color-text"}},
+                    withCellSpacing=False,
                 ),
             ],
         )

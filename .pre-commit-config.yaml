@@ -29,7 +29,7 @@ repos:
         language: node
         types: [text]
         additional_dependencies: ["prettier@3.3.3"]
-        exclude_types: [markdown]
+        exclude_types: [markdown, css]
 
   - repo: https://github.com/macisamuele/language-formatters-pre-commit-hooks
     rev: v2.14.0
@@ -76,6 +76,7 @@ repos:
           - stylelint-config-standard@36.0.0
           - stylelint-order@4.1.0
         args: ["--fix"]
+        exclude: ^vizro-core/src/vizro/static/css/.+\.min.*|^vizro-core/src/vizro/static/css/mantine_dates.css
 
   - repo: https://github.com/executablebooks/mdformat
     rev: 0.7.21
