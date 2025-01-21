@@ -4,7 +4,7 @@ COLORS = {
     # GRID COLOR - var(--fill-subtle) / var(--bs-border-color)
     "WHITE_12": "rgba(255, 255, 255, 0.1)",
     "BLACK_12": "rgba(20, 23, 33, 0.1) ",
-    # AXIS COLOR - var(--fill-disabled) / var(--bs-tertiary)
+    # AXIS COLOR - var(--fill-disabled) / var(--bs-tertiary-color)
     "WHITE_30": "rgba(255, 255, 255, 0.30)",
     "BLACK_30": "rgba(20, 23, 33, 0.30)",
     # FONT COLOR SECONDARY - var(--text-secondary) / var(--bs-secondary)
