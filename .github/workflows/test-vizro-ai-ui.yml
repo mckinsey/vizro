@@ -50,16 +50,19 @@ jobs:
 
       - name: Run VizroAI UI tests
         run: |
-          hatch run vizro-ai-ui
           hatch run test-vizro-ai-ui
         env:
           OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
           OPENAI_API_BASE: ${{ secrets.OPENAI_API_BASE }}
 
-      - name: Create artifacts and slack notifications
-        if: failure()
-        uses: ./.github/actions/failed-artifacts-and-slack-notifications
-        env:
-          TESTS_NAME: VizroAI UI tests
-          SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
-          PROJECT_PATH: /home/runner/work/vizro/vizro/vizro-ai/
+      - name: Send custom JSON data to Slack
+          id: slack
+          uses: slackapi/slack-github-action@v1.26.0
+          with:
+            payload: |
+              {
+                "text": "VizroAI UI tests build result: ${{ job.status }}\nBranch: ${{ github.head_ref }}\n${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}"
+              }
+          env:
+            SLACK_WEBHOOK_URL: ${{ env.SLACK_WEBHOOK_URL }}
+            SLACK_WEBHOOK_TYPE: INCOMING_WEBHOOK
