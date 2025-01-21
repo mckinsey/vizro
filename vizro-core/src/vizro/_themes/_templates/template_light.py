@@ -17,6 +17,7 @@ DIVERGING_DEFAULT = COLORS["DIVERGING_RED_CYAN"]
 SEQUENTIAL_DEFAULT = COLORS["SEQUENTIAL_CYAN"]
 SEQUENTIAL_MINUS_DEFAULT = COLORS["SEQUENTIAL_RED"][::-1]
 
+
 def create_template_light() -> Template:
     """Create light themed plotly template.
 
