@@ -165,6 +165,7 @@ class TestDropdownBuild:
                     multi=True,
                     persistence=True,
                     persistence_type="session",
+                    className="dropdown",
                 ),
             ]
         )
@@ -184,6 +185,7 @@ class TestDropdownBuild:
                     multi=False,
                     persistence=True,
                     persistence_type="session",
+                    className="dropdown",
                 ),
             ]
         )
@@ -219,6 +221,7 @@ class TestDropdownBuild:
                     value=default_value,
                     persistence=True,
                     persistence_type="session",
+                    className="dropdown",
                 ),
             ]
         )

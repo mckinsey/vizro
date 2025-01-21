@@ -139,6 +139,7 @@ class TestChecklistBuild:
                     value=["ALL"],
                     persistence=True,
                     persistence_type="session",
+                    className="checklist",
                 ),
             ],
         )
