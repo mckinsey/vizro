@@ -68,7 +68,9 @@ filterwarnings = [
   # Ignore warning for Pydantic v1 API and Python 3.13:
   "ignore:Failing to pass a value to the 'type_params' parameter of 'typing.ForwardRef._evaluate' is deprecated:DeprecationWarning",
   # Ignore deprecation warning until this is solved: https://github.com/plotly/dash/issues/2590:
-  "ignore:HTTPResponse.getheader():DeprecationWarning"
+  "ignore:HTTPResponse.getheader():DeprecationWarning",
+  # Happens during dash_duo teardown in vizro_ai_ui tests. Not affecting functionality:
+  "ignore:Exception in thread"
 ]
 pythonpath = ["../tools/tests"]
 

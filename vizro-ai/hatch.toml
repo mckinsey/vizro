@@ -58,11 +58,7 @@ test-unit-coverage = [
   "- coverage combine",
   "coverage report"
 ]
-test-vizro-ai-ui = "pytest -vs --reruns 1 tests/vizro_ai_ui/test_vizro_ai_ui.py --headless {args}"
-vizro-ai-ui = [
-  "python examples/dashboard_ui/app.py &",
-  "../tools/tests/wait-for-it.sh 127.0.0.1:8050 -t 30"
-]
+test-vizro-ai-ui = "pytest -vs tests/vizro_ai_ui/test_vizro_ai_ui.py --headless"
 
 [envs.docs]
 dependencies = [
