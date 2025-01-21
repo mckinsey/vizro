@@ -56,13 +56,13 @@ jobs:
           OPENAI_API_BASE: ${{ secrets.OPENAI_API_BASE }}
 
       - name: Send custom JSON data to Slack
-          id: slack
-          uses: slackapi/slack-github-action@v1.26.0
-          with:
-            payload: |
-              {
-                "text": "VizroAI UI tests build result: ${{ job.status }}\nBranch: ${{ github.head_ref }}\n${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}"
-              }
-          env:
-            SLACK_WEBHOOK_URL: ${{ env.SLACK_WEBHOOK_URL }}
-            SLACK_WEBHOOK_TYPE: INCOMING_WEBHOOK
+        id: slack
+        uses: slackapi/slack-github-action@v1.26.0
+        with:
+          payload: |
+            {
+              "text": "VizroAI UI tests build result: ${{ job.status }}\nBranch: ${{ github.head_ref }}\n${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}"
+            }
+        env:
+          SLACK_WEBHOOK_URL: ${{ env.SLACK_WEBHOOK_URL }}
+          SLACK_WEBHOOK_TYPE: INCOMING_WEBHOOK
