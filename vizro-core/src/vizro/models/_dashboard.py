@@ -172,10 +172,14 @@ class Dashboard(VizroBaseModel):
                 dash.page_container,
             ],
         )
+
+        # children=[layout] as a list rather than children=layout, so that app.dash.layout.children.append works to
+        # easily add things to the Dash layout. In future we might have a neater function for patching components into
+        # the Dash layout in which case this could change.
         return dmc.MantineProvider(
-            layout,
-            # Applies to all Mantine components
-            theme={"fontFamily": "Inter, sans-serif, Arial, serif", "primaryColor": "gray", "defaultRadius": 0},
+            children=[layout],
+            # Use the `theme` to style all Mantine components with a Vizro theme. For more info see https://www.dash-mantine-components.com/components/mantineprovider
+            theme={"primaryColor": "gray"},
         )
 
     def _validate_logos(self):
