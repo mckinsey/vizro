@@ -17,6 +17,7 @@ def create_template_light() -> Template:
     """
     template_light = create_template_common()
 
+    # VARIABLES
     FONT_COLOR_PRIMARY = COLORS["BLACK_85"]
     FONT_COLOR_SECONDARY = COLORS["BLACK_55"]
     BG_COLOR = COLORS["Light_BG01"]
