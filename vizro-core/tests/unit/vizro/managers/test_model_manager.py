@@ -147,14 +147,14 @@ class TestGetModels:
             (lambda x: [x]),
             # model as a value in a dictionary
             (lambda x: {"key": x}),
+            # model nested in a tuple
+            (lambda x: (x,)),
             # model nested within a list of lists
             (lambda x: [[x]]),
             # model nested in a dictionary of dictionaries
             (lambda x: {"key_1": {"key_2": x}}),
-            # model nested in a list of dictionaries
-            (lambda x: [{"key": x}]),
-            # model nested in a dictionary of lists
-            (lambda x: {"key": [x]}),
+            # model nested in a tuple of tuples
+            (lambda x: ((x,),)),
         ],
     )
     def test_nested_models(self, page_1, get_nested_control):

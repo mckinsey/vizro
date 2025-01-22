@@ -4,7 +4,7 @@ from __future__ import annotations
 
 import random
 import uuid
-from collections.abc import Generator, Iterable
+from collections.abc import Collection, Generator, Iterable, Mapping
 from typing import TYPE_CHECKING, NewType, Optional, TypeVar, Union, cast
 
 from vizro.managers._managers_utils import _state_modifier
@@ -91,12 +91,12 @@ class ModelManager:
 
         if isinstance(model, VizroBaseModel):
             yield model
-        elif isinstance(model, list):
-            for single_model in model:
-                yield from self.__get_model_children(single_model)
-        elif isinstance(model, dict):
+        elif isinstance(model, Mapping):
             # We don't look through keys because Vizro models aren't hashable.
             for single_model in model.values():
+                yield from self.__get_model_children(single_model)
+        elif isinstance(model, Collection) and not isinstance(model, str):
+            for single_model in model:
                 yield from self.__get_model_children(single_model)
 
         # TODO: in future this list should not be maintained manually. Instead we should look through all model children
