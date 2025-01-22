@@ -37,7 +37,7 @@ Uncomment the section that is right (remove the HTML comment wrapper).
 
 ### Fixed
 
-- Enable arbitrary deep nesting of custom components. All models can now be nested arbitrarily deep within lists or dicts. ([#929](https://github.com/mckinsey/vizro/pull/929))
+- Enable arbitrarily deep nesting of custom components within lists or dicts. ([#929](https://github.com/mckinsey/vizro/pull/929))
 
 
 <!--
