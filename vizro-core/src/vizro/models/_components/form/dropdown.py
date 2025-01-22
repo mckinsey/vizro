@@ -39,15 +39,14 @@ def _calculate_option_height(full_options: OptionsType) -> int:
     return 8 + 24 * number_of_lines
 
 
-def _add_select_all_option(full_options: OptionsType, multi: bool) -> OptionsType:
+def _add_select_all_option(full_options: OptionsType) -> OptionsType:
     """Adds a 'Select All' option to the list of options."""
     options_dict = [
         cast(OptionsDictType, {"label": option, "value": option}) if not isinstance(option, dict) else option
         for option in full_options
     ]
-    if multi:
-        options_dict[0] = {"label": html.Div(["ALL"]), "value": "ALL"}
 
+    options_dict[0] = {"label": html.Div(["ALL"]), "value": "ALL"}
     return options_dict
 
 
@@ -101,7 +100,7 @@ class Dropdown(VizroBaseModel):
     def __call__(self, options):
         full_options, default_value = get_options_and_default(options=options, multi=self.multi)
         option_height = _calculate_option_height(full_options)
-        altered_options = _add_select_all_option(full_options=full_options, multi=self.multi)
+        altered_options = _add_select_all_option(full_options=full_options) if self.multi else full_options
 
         return html.Div(
             children=[
