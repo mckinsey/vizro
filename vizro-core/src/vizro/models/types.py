@@ -11,7 +11,6 @@ from datetime import date
 from typing import Any, Literal, Protocol, Union, runtime_checkable
 
 import plotly.io as pio
-from dash import html
 
 try:
     from pydantic.v1 import Field, StrictBool
@@ -463,7 +462,7 @@ class OptionsDictType(TypedDict):
     """Permissible sub-type for OptionsType. Needs to be in the format of {"label": XXX, "value": XXX}."""
 
     label: str
-    value: Union[SingleValueType, html.Div]
+    value: SingleValueType
 
 
 OptionsType = Union[list[StrictBool], list[float], list[str], list[date], list[OptionsDictType]]
