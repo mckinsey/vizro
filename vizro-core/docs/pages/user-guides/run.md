@@ -95,15 +95,7 @@ This runs Vizro using the Flask development server and shows the resulting dashb
     - Restart the Jupyter kernel and re-run your notebook.
     - Add a cell containing `from vizro import Vizro; Vizro._reset()` to the top of your notebook and re-run it. With this method, there is no need to restart the Jupyter kernel.
 
----
-
-start launch
-
-!!! Flowchart?
-
 ## PyCafe
-
-FEEDBACK LOOP
 
 The easiest way to run a dashboard is to work on the code live on [PyCafe](https://py.cafe/).
 

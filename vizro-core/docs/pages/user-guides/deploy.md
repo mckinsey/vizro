@@ -55,15 +55,12 @@ The best way to get started with Vizro on Hugging Face is to copy an existing Vi
 If this is your first Vizro deployment then we recommend using our ["first dashboard" example](https://huggingface.co/spaces/vizro/demo-first-dashboard). This is a minimal example that is designed to make it as simple as possible to get started. You can create your own Vizro deployment on Hugging Face based on this template as follows:
 
 1. [Sign up for a Hugging Face account](https://huggingface.co/join).
-2. Copy our example Hugging Face dashboard by duplicating our ["first dashboard" example](https://huggingface.co/spaces/vizro/demo-first-dashboard) Space. To do so, click the following button: 
-[![Duplicate this Space](https://huggingface.co/datasets/huggingface/badges/resolve/main/duplicate-this-space-md.svg)](https://huggingface.co/spaces/vizro/demo-first-dashboard?duplicate=true). This should open a window with the following form:
-[![]](../../assets/user_guides/deploy/hugging_face_duplicate_this_space.png)
-3. You do not need to alter any of the default options but if you would like to then refer to the [Hugging Face documentation](https://huggingface.co/docs/hub/en/spaces-overview#duplicating-a-space) for an explanation of each.
-4. Click "Duplicate Space" to start building your Hugging Face Space. This takes around 10 seconds, and when complete you should see the following dashboard running.
-[![]](../../assets/user_guides/deploy/hugging_face_space.png)
+1. Copy our example Hugging Face dashboard by duplicating our ["first dashboard" example](https://huggingface.co/spaces/vizro/demo-first-dashboard) Space. To do so, click the following button: [![Duplicate this Space](https://huggingface.co/datasets/huggingface/badges/resolve/main/duplicate-this-space-md.svg)](https://huggingface.co/spaces/vizro/demo-first-dashboard?duplicate=true). This should open a window with the following form: ![Form to duplicate Space](../../assets/user_guides/deploy/hugging_face_duplicate_this_space.png)
+1. You do not need to alter any of the default options but if you would like to then refer to the [Hugging Face documentation](https://huggingface.co/docs/hub/en/spaces-overview#duplicating-a-space) for an explanation of each.
+1. Click "Duplicate Space" to start building your Hugging Face Space. This takes around 10 seconds, and when complete you should see the following dashboard running. ![Running dashboard](../../assets/user_guides/deploy/hugging_face_space.png)
 
-To turn the example app into your own, you will need to edit the code in the `app.py` file. To do so, click on the Files tab at the top of your app and select `app.py`. Click the Edit button highlighted in the below screenshot to enter an editor view of the file.  
-[![]](../../assets/user_guides/deploy/hugging_face_edit_app.png)
+To turn the example app into your own, you will need to edit the code in the `app.py` file. To do so, click on the Files tab at the top of your app and select `app.py`. Click the Edit button highlighted in the below screenshot to enter an editor view of the file.
+![Edit app.py](../../assets/user_guides/deploy/hugging_face_edit_app.png)
 
 You can now copy and paste your app code into the editor. When you've finished editing, click "Commit changes to `main`". This immediately triggers a rebuild of your Space. As with the initial build this takes around 10 seconds, and when complete you should be able to view your own app deployed on Hugging Face!
 
@@ -73,15 +70,16 @@ You can now copy and paste your app code into the editor. When you've finished e
 Under the hood, your Space is a Git repository. Instead of editing files through your browser, you can use `git` from the command line and the Hugging Face CLI. The Hugging Face documentation contains [full instructions](https://huggingface.co/docs/hub/en/repositories-getting-started) on how to interact with your Space's git repository. Every time you make a commit to your repository, the Space is automatically rebuilt and restarted.
 
 In addition to `app.py`, your Space contains a few other files:
-* `.gitattributes` is used by [Git Large File Storage (LFS)](https://git-lfs.com/) and is only relevant if you have files larger than 10MB. See the [Hugging Face documentation](https://huggingface.co/docs/hub/en/repositories-getting-started) for more information.
-* `Dockerfile` gives instructions to configure your app's environment and start the app. See our [section on Dockerfiles](#dockerfile) for more information.
-* `README.md` configures your Space, for example its title, description and licence. See the [Hugging Face documentation](https://huggingface.co/docs/hub/en/spaces-config-reference) for more information.
-* `requirements.txt` gives your Python package dependencies. See our [section on dependencies](#dependencies) for more information. 
+
+- `.gitattributes` is used by [Git Large File Storage (LFS)](https://git-lfs.com/) and is only relevant if you have files larger than 10MB. See the [Hugging Face documentation](https://huggingface.co/docs/hub/en/repositories-getting-started) for more information.
+- `Dockerfile` gives instructions to configure your app's environment and start the app. See our [section on Dockerfiles](#dockerfile) for more information.
+- `README.md` configures your Space, for example its title, description and licence. See the [Hugging Face documentation](https://huggingface.co/docs/hub/en/spaces-config-reference) for more information.
+- `requirements.txt` gives your Python package dependencies. See our [section on dependencies](#dependencies) for more information.
 
 !!! tip
     If you'd like to show your Vizro app off to the community then you can add it to our [Vizro dashboard gallery](https://huggingface.co/collections/vizro/community-demos-666987c8e9f56afc7bc1d0fc).
 
-On Hugging Face, Vizro apps are hosted on Docker Spaces. Hugging Face has thorough documentation on [Spaces in general](https://huggingface.co/docs/hub/en/spaces-overview) and specifically on [Docker Spaces](https://huggingface.co/docs/hub/en/spaces-sdks-docker-first-demo). There are many features that go beyond simply hosting a Vizro app. For example, you can [make a collection](https://huggingface.co/docs/hub/en/collections) of multiple Spaces, collaborate on your code using [pull requests and discussions](https://huggingface.co/docs/hub/en/repositories-pull-requests-discussions), or create an [organization](https://huggingface.co/docs/hub/en/organizations) to group accounts and Spaces together.  
+On Hugging Face, Vizro apps are hosted on Docker Spaces. Hugging Face has thorough documentation on [Spaces in general](https://huggingface.co/docs/hub/en/spaces-overview) and specifically on [Docker Spaces](https://huggingface.co/docs/hub/en/spaces-sdks-docker-first-demo). There are many features that go beyond simply hosting a Vizro app. For example, you can [make a collection](https://huggingface.co/docs/hub/en/collections) of multiple Spaces, collaborate on your code using [pull requests and discussions](https://huggingface.co/docs/hub/en/repositories-pull-requests-discussions), or create an [organization](https://huggingface.co/docs/hub/en/organizations) to group accounts and Spaces together.
 
 ## Ploomber Cloud
 
