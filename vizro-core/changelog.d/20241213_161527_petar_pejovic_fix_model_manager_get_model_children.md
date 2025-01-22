@@ -37,7 +37,7 @@ Uncomment the section that is right (remove the HTML comment wrapper).
 
 ### Fixed
 
-- Enable arbitrarily deep nesting of custom components within lists or dicts. ([#929](https://github.com/mckinsey/vizro/pull/929))
+- Enable arbitrarily deep nesting of custom components within lists, tuples or dictionaries. ([#929](https://github.com/mckinsey/vizro/pull/929))
 
 
 <!--

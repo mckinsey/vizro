@@ -17,7 +17,7 @@ def page_1(standard_px_chart):
     )
 
 
-@pytest.fixture
+@pytest.fixture(autouse=True)
 def managers_dashboard_two_pages(vizro_app, page_1, standard_kpi_card):
     return vm.Dashboard(
         pages=[
@@ -32,9 +32,6 @@ def managers_dashboard_two_pages(vizro_app, page_1, standard_kpi_card):
             ),
         ]
     )
-
-
-pytestmark = pytest.mark.usefixtures("managers_dashboard_two_pages")
 
 
 class TestGetModels:
@@ -53,6 +50,8 @@ class TestGetModels:
             "page_2_figure_id",
         }
 
+        # model_manager._get_models() returns all models in the dashboard, all along with Layout, Navigation, Dashboard
+        # models. That's the reason why we assert with the 'issubset' instead of 'equal'.
         assert expected.issubset(result)
 
     def test_model_type_page_none(self):
@@ -138,9 +137,12 @@ class TestGetModels:
         assert "page_1_graph_id" in vm_graph_result
 
     # This test checks if the model manager can find model_type under a nested model.
+    # Using vm.Filter with a fixed ID as a pytest fixture causes DuplicationID errors during the test collection phase.
+    # Lazy instantiation via a lambda avoids this issue.
     @pytest.mark.parametrize(
-        "get_nested_control",
+        "make_nested_control",
         [
+            # "x" represents the vm.Filter model that is nested under another model.
             # model as a property of a custom model
             (lambda x: x),
             # model inside a list
@@ -157,14 +159,14 @@ class TestGetModels:
             (lambda x: ((x,),)),
         ],
     )
-    def test_nested_models(self, page_1, get_nested_control):
+    def test_nested_models(self, page_1, make_nested_control):
         """Model is nested under another model and known property in different ways -> return the model."""
 
         class ControlGroup(vm.VizroBaseModel):
             controls: Any
 
         page_1.controls.append(
-            ControlGroup(controls=get_nested_control(vm.Filter(id="page_1_control_1", column="year")))
+            ControlGroup(controls=make_nested_control(vm.Filter(id="page_1_control_1", column="year")))
         )
 
         result = [model.id for model in model_manager._get_models(model_type=vm.Filter, page=page_1)]
