@@ -1,0 +1,61 @@
+/* Dropdown field showing selection */
+.mantine-DatePickerInput-input {
+  background-color: var(--field-enabled);
+  border: none;
+  box-shadow: var(--elevation-0);
+  color: var(--text-secondary);
+}
+
+.mantine-DatePickerInput-input:hover {
+  color: var(--text-primaryHover);
+}
+
+/* Calendar view with selected range */
+.mantine-DatePickerInput-dropdown,
+.mantine-Popover-dropdown {
+  background: var(--field-enabled);
+  border: inherit;
+  box-shadow: var(--elevation-1);
+  padding: 0.5rem 0.75rem;
+}
+
+.mantine-DatePickerInput-day {
+  background: var(--field-enabled);
+  color: var(--text-secondary);
+}
+
+.mantine-DatePickerInput-day[data-in-range] {
+  background: var(--stateOverlays-selectedRange);
+  color: var(--text-primary);
+}
+
+.mantine-DatePickerInput-day[data-selected] {
+  background: var(--stateOverlays-selected-inverted);
+  color: var(--text-primary-inverted);
+  text-decoration: underline;
+}
+
+/* Single month or year selection */
+.mantine-PickerControl-pickerControl,
+.mantine-DatePickerInput-monthsListControl {
+  color: var(--text-secondary);
+}
+
+/* Important tags are required as otherwise mantine media queries will have higher specificity */
+.mantine-DatePickerInput-day:hover,
+.mantine-PickerControl-pickerControl:hover,
+.mantine-DatePickerInput-monthsListControl:hover {
+  background: var(--stateOverlays-hover) !important;
+  color: var(--text-primaryHover) !important;
+}
+
+/* Header inside calendar view */
+.mantine-DatePickerInput-calendarHeader {
+  color: var(--text-secondary);
+}
+
+.mantine-DatePickerInput-calendarHeaderControlIcon:hover,
+.mantine-DatePickerInput-calendarHeader .mantine-UnstyledButton-root:hover {
+  background: transparent;
+  color: var(--text-primaryHover);
+}

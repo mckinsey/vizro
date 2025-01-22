@@ -827,6 +827,6 @@ if __name__ == "__main__":
         target="_blank",
         className="anchor-container",
     )
-    app.dash.layout.children = [app.dash.layout.children, banner]
+    app.dash.layout.children.append(banner)
     server = app.dash.server
     app.run()
