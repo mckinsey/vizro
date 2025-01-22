@@ -59,9 +59,8 @@ def logic(  # noqa: PLR0912, PLR0913, PLR0915
     report_dir = "tests/score/reports"
     os.makedirs(report_dir, exist_ok=True)
 
-    app = Vizro().build(dashboard).dash
-
     try:
+        app = Vizro().build(dashboard).dash
         dash_duo.start_server(app)
         app_started = 1
         app_started_report = "App started!"
@@ -192,10 +191,10 @@ def logic(  # noqa: PLR0912, PLR0913, PLR0915
         model_name,
         prompt_tier,
         prompt_name,
-        prompt_text,
         weighted_score,
     ]
     data_rows.extend(score["score"] for score in scores)
+    data_rows.extend([prompt_text])
 
     with open(f"{report_dir}/report_model_{model_name}_{vizro_type}.csv", "a", newline=""):
         with open(f"{report_dir}/report_model_{model_name}_{vizro_type}.csv", "r+", newline="") as csvfile:
@@ -210,10 +209,10 @@ def logic(  # noqa: PLR0912, PLR0913, PLR0915
                     "model",
                     "prompt_tier",
                     "prompt_name",
-                    "prompt_text",
                     "weighted_score",
                 ]
                 header_rows.extend(score["score_name"] for score in scores)
+                header_rows.extend(["prompt_text"])
                 writer.writerow(header_rows)
             writer.writerow(data_rows)
 
@@ -265,7 +264,42 @@ def logic(  # noqa: PLR0912, PLR0913, PLR0915
         ),
     ],
 )
-def test_dashboard(dash_duo, model_name, tier_type, prompt_name, prompt_text, expected_config, dfs):  # noqa: PLR0913
+def test_dashboard_openai(dash_duo, model_name, tier_type, prompt_name, prompt_text, expected_config, dfs):  # noqa: PLR0913
+    created_dashboard = VizroAI(model=model_name).dashboard(dfs, prompt_text)
+
+    logic(
+        dashboard=created_dashboard,
+        model_name=model_name,
+        dash_duo=dash_duo,
+        prompt_tier=tier_type,
+        prompt_name=prompt_name,
+        prompt_text=prompt_text.replace("\n", " "),
+        config=expected_config,
+    )
+
+
+@pytest.mark.parametrize(
+    "model_name",
+    [
+        "claude-3-5-sonnet-latest",
+    ],
+    ids=[
+        "claude-3-5-sonnet-latest",
+    ],
+)
+@pytest.mark.parametrize(
+    "tier_type, prompt_name, prompt_text, expected_config, dfs",
+    [
+        (
+            easy_prompt["tier_type"],
+            easy_prompt["prompt_name"],
+            easy_prompt["prompt_text"],
+            easy_prompt["expected_config"],
+            [df1, df2],
+        ),
+    ],
+)
+def test_dashboard_anthropic(dash_duo, model_name, tier_type, prompt_name, prompt_text, expected_config, dfs):  # noqa: PLR0913
     created_dashboard = VizroAI(model=model_name).dashboard(dfs, prompt_text)
 
     logic(
