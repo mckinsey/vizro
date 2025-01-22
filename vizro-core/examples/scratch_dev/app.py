@@ -1,49 +1,27 @@
 """Dev app to try things out."""
 
-import pandas as pd
+from vizro import Vizro
 import vizro.models as vm
 import vizro.plotly.express as px
-from vizro import Vizro
-from typing import List, Literal, Tuple
-from vizro.models.types import ControlType
-from dash import html
 
+from vizro.tables import dash_data_table
 
-class CustomGroup(vm.VizroBaseModel):
-    """Container to group controls."""
-
-    type: Literal["custom_group"] = "custom_group"
-    controls: dict[str, List[ControlType]] = {}
-
-    def build(self):
-        return html.Div(
-            children=[
-                html.Div(
-                    children=[html.Br(), html.H5(control_title), *[control.build() for control in controls]],
-                )
-                for control_title, controls in self.controls.items()
-            ]
-        )
-
-
-vm.Page.add_type("controls", CustomGroup)
-
+gapminder = px.data.gapminder()
 
 page = vm.Page(
-    title="Title",
+    title="Page",
     components=[
-        vm.Graph(id="graph_id", figure=px.scatter(px.data.iris(), x="sepal_width", y="sepal_length", color="species")),
+        vm.Table(
+            figure=dash_data_table(data_frame=gapminder),
+            title="Gapminder Data Insights",
+        )
     ],
     controls=[
-        CustomGroup(
-            controls={
-                "Categorical Filters": [vm.Filter(column="species", selector=vm.Dropdown(value=["setosa"]))],
-                "Numeric Filters": [vm.Filter(column="petal_length"), vm.Filter(column="sepal_length")],
-            }
-        ),
+        vm.Filter(column="continent", selector=vm.Dropdown(value=["Europe"])),
+        vm.Filter(column="continent", selector=vm.Dropdown(value="Europe", multi=False)),
+        vm.Filter(column="continent", selector=vm.Checklist()),
     ],
 )
-
 
 dashboard = vm.Dashboard(pages=[page])
 
