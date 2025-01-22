@@ -13,11 +13,6 @@ BG_COLOR = COLORS["DARK_BG03"]
 GRID_COLOR = COLORS["WHITE_12"]
 AXIS_COLOR = COLORS["WHITE_30"]
 
-DISCRETE_DEFAULT = COLORS["DISCRETE_10"]
-DIVERGING_DEFAULT = COLORS["DIVERGING_RED_CYAN"]
-SEQUENTIAL_DEFAULT = COLORS["SEQUENTIAL_CYAN"]
-SEQUENTIAL_MINUS_DEFAULT = COLORS["SEQUENTIAL_RED"][::-1]
-
 
 def create_template_dark() -> Template:
     """Create dark themed plotly template.
@@ -59,15 +54,6 @@ def create_template_dark() -> Template:
     template_dark["layout"]["coloraxis"]["colorbar"]["tickfont"]["color"] = FONT_COLOR_SECONDARY
     template_dark["layout"]["coloraxis"]["colorbar"]["title"]["font"]["color"] = FONT_COLOR_SECONDARY
 
-    # COLOR PALETTES
-    # Diverging, sequential and sequentialminus colorscale will only be applied automatically if
-    # `coloraxis_autocolorscale=True`. Otherwise, they have no effect, and the default for continuous color scales
-    # will be the color sequence applied to ["colorscale"]["sequential"].
-    template_dark["layout"]["colorscale"]["diverging"] = DIVERGING_DEFAULT
-    template_dark["layout"]["colorscale"]["sequential"] = SEQUENTIAL_DEFAULT
-    template_dark["layout"]["colorscale"]["sequentialminus"] = SEQUENTIAL_MINUS_DEFAULT
-    template_dark["layout"]["colorway"] = DISCRETE_DEFAULT
-
     # X AXIS
     template_dark["layout"]["xaxis"]["title"]["font"]["color"] = FONT_COLOR_PRIMARY
     template_dark["layout"]["xaxis"]["tickcolor"] = AXIS_COLOR
@@ -98,8 +84,8 @@ def create_template_dark() -> Template:
 
     template_dark.data.waterfall = [
         go.Waterfall(
-            decreasing={"marker": {"color": DISCRETE_DEFAULT[1]}},
-            increasing={"marker": {"color": DISCRETE_DEFAULT[0]}},
+            decreasing={"marker": {"color": COLORS["DISCRETE_10"][1]}},
+            increasing={"marker": {"color": COLORS["DISCRETE_10"][0]}},
             totals={"marker": {"color": COLORS["GREY_55"]}},
             textfont_color=template_dark.layout.title.font.color,
             textposition="outside",

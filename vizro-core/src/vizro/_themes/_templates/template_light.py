@@ -12,10 +12,6 @@ FONT_COLOR_SECONDARY = COLORS["BLACK_55"]
 BG_COLOR = COLORS["Light_BG01"]
 GRID_COLOR = COLORS["BLACK_12"]
 AXIS_COLOR = COLORS["BLACK_30"]
-DISCRETE_DEFAULT = COLORS["DISCRETE_10"]
-DIVERGING_DEFAULT = COLORS["DIVERGING_RED_CYAN"]
-SEQUENTIAL_DEFAULT = COLORS["SEQUENTIAL_CYAN"]
-SEQUENTIAL_MINUS_DEFAULT = COLORS["SEQUENTIAL_RED"][::-1]
 
 
 def create_template_light() -> Template:
@@ -58,10 +54,6 @@ def create_template_light() -> Template:
     template_light["layout"]["coloraxis"]["colorbar"]["tickcolor"] = AXIS_COLOR
     template_light["layout"]["coloraxis"]["colorbar"]["tickfont"]["color"] = FONT_COLOR_SECONDARY
     template_light["layout"]["coloraxis"]["colorbar"]["title"]["font"]["color"] = FONT_COLOR_SECONDARY
-    template_light["layout"]["colorscale"]["diverging"] = DIVERGING_DEFAULT
-    template_light["layout"]["colorscale"]["sequential"] = SEQUENTIAL_DEFAULT
-    template_light["layout"]["colorscale"]["sequentialminus"] = SEQUENTIAL_MINUS_DEFAULT
-    template_light["layout"]["colorway"] = DISCRETE_DEFAULT
 
     # X AXIS
     template_light["layout"]["xaxis"]["title"]["font"]["color"] = FONT_COLOR_PRIMARY
@@ -93,8 +85,8 @@ def create_template_light() -> Template:
 
     template_light.data.waterfall = [
         go.Waterfall(
-            decreasing={"marker": {"color": DISCRETE_DEFAULT[1]}},
-            increasing={"marker": {"color": DISCRETE_DEFAULT[0]}},
+            decreasing={"marker": {"color": COLORS["DISCRETE_10"][1]}},
+            increasing={"marker": {"color": COLORS["DISCRETE_10"][0]}},
             totals={"marker": {"color": COLORS["GREY_30"]}},
             textfont_color=template_light.layout.title.font.color,
             textposition="outside",

@@ -2,6 +2,8 @@
 
 from plotly import graph_objects as go
 
+from vizro._themes._color_values import COLORS
+
 
 def create_template_common():
     """Create general themed plotly template.
@@ -42,6 +44,13 @@ def create_template_common():
         margin_b=64,
         margin_pad=0,
         margin_autoexpand=True,
+        # Diverging, sequential and sequentialminus colorscale will only be applied automatically if
+        # coloraxis_autocolorscale=True`. Otherwise, they have no effect, and the default for continuous color scales
+        # will be the color sequence applied to ["colorscale"]["sequential"].
+        colorway=COLORS["DISCRETE_10"],
+        colorscale_diverging=COLORS["DIVERGING_RED_CYAN"],
+        colorscale_sequential=COLORS["SEQUENTIAL_CYAN"],
+        colorscale_sequentialminus=COLORS["SEQUENTIAL_RED"][::-1],
         coloraxis_autocolorscale=False,  # Set to False as otherwise users cannot customize via `color_continous_scale`
         coloraxis_colorbar_outlinewidth=0,
         coloraxis_colorbar_thickness=20,
