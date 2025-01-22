@@ -9,6 +9,7 @@
 
 /* Dropdown menu when clicking on expand arrow */
 #dashboard-container .Select-menu-outer {
+  margin-top: 4px;
   background-color: var(--field-enabled);
   border: none;
   border-radius: 0;
