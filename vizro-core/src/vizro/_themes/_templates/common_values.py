@@ -45,7 +45,7 @@ def create_template_common():
         margin_pad=0,
         margin_autoexpand=True,
         # Diverging, sequential and sequentialminus colorscale will only be applied automatically if
-        # coloraxis_autocolorscale=True`. Otherwise, they have no effect, and the default for continuous color scales
+        # `coloraxis_autocolorscale=True`. Otherwise, they have no effect, and the default for continuous color scales
         # will be the color sequence applied to ["colorscale"]["sequential"].
         colorway=COLORS["DISCRETE_10"],
         colorscale_diverging=COLORS["DIVERGING_RED_CYAN"],
