@@ -1,6 +1,6 @@
 import math
 from datetime import date
-from typing import Literal, Optional, Union
+from typing import Literal, Optional, Union, cast
 
 from dash import dcc, html
 
@@ -15,7 +15,7 @@ from vizro.models import Action, VizroBaseModel
 from vizro.models._action._actions_chain import _action_validator_factory
 from vizro.models._components.form._form_utils import get_options_and_default, validate_options_dict, validate_value
 from vizro.models._models_utils import _log_call
-from vizro.models.types import MultiValueType, OptionsType, SingleValueType
+from vizro.models.types import MultiValueType, OptionsDictType, OptionsType, SingleValueType
 
 
 def _get_list_of_labels(full_options: OptionsType) -> Union[list[StrictBool], list[float], list[str], list[date]]:
@@ -39,16 +39,12 @@ def _calculate_option_height(full_options: OptionsType) -> int:
     return 8 + 24 * number_of_lines
 
 
-def _convert_to_dict(option: Union[str, dict[str, str]]) -> dict[str, Union[str, html.Div]]:
-    """Converts a string option to a dictionary format."""
-    if isinstance(option, str):
-        return {"label": option, "value": option}
-    return option
-
-
 def _add_select_all_option(full_options: OptionsType) -> OptionsType:
     """Adds a 'Select All' option to the list of options."""
-    options_dict = [_convert_to_dict(option) for option in full_options]
+    options_dict = [
+        cast(OptionsDictType, {"label": option, "value": option}) if not isinstance(option, dict) else option
+        for option in full_options
+    ]
     select_all_option = {"label": html.Div(["ALL"]), "value": "ALL"}
     return [select_all_option if option.get("value") == "ALL" else option for option in options_dict]
 
