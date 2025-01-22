@@ -84,16 +84,19 @@ class ModelManager:
     def __get_model_children(self, model: Model) -> Generator[Model, None, None]:
         """Iterates through children of `model`.
 
-        Currently, this method looks only through certain fields so might miss some children models.
+        Currently, this method looks only through certain fields (components, tabs, controls, actions, selector) and
+            their children so might miss some children models.
         """
         from vizro.models import VizroBaseModel
 
         if isinstance(model, VizroBaseModel):
             yield model
-
-        # We don't handle dicts of models at the moment. See below TO-DOs for how this will all be improved in future.
-        if isinstance(model, (list, tuple)):
+        elif isinstance(model, list):
             for single_model in model:
+                yield from self.__get_model_children(single_model)
+        elif isinstance(model, dict):
+            # We don't look through keys because Vizro models aren't hashable.
+            for single_model in model.values():
                 yield from self.__get_model_children(single_model)
 
         # TODO: in future this list should not be maintained manually. Instead we should look through all model children
