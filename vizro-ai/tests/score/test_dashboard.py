@@ -4,9 +4,7 @@ import csv
 import os
 import statistics
 from collections import Counter
-from dataclasses import dataclass
 from datetime import datetime
-from typing import Literal
 
 import chromedriver_autoinstaller
 import numpy as np
@@ -23,16 +21,6 @@ df3 = px.data.tips()
 df4 = px.data.wind()
 
 
-@dataclass
-class Component:
-    type: Literal["ag_grid", "card", "graph"]
-
-
-@dataclass
-class Control:
-    type: Literal["filter", "parameter"]
-
-
 @pytest.fixture(scope="module", autouse=True)
 def setup_test_environment():
     # We only need to install chromedriver outside CI.
@@ -46,11 +34,12 @@ def score_calculator(metrics_score: list[int]):
     return statistics.mean(metrics_score) if len(metrics_score) != 0 else 1
 
 
-def logic(  # noqa: PLR0912, PLR0915
+def logic(  # noqa: PLR0912, PLR0913, PLR0915
     dashboard,
     model_name,
     dash_duo,
     prompt_tier,
+    prompt_name,
     prompt_text,
     config: dict,
 ):
@@ -61,6 +50,7 @@ def logic(  # noqa: PLR0912, PLR0915
         model_name: GenAI model name
         dash_duo: dash_duo fixture
         prompt_tier: complexity of the prompt
+        prompt_name: short prompt description
         prompt_text: prompt text
         config: json config of the expected dashboard
 
@@ -201,6 +191,7 @@ def logic(  # noqa: PLR0912, PLR0915
         python_version,
         model_name,
         prompt_tier,
+        prompt_name,
         prompt_text,
         weighted_score,
     ]
@@ -218,6 +209,7 @@ def logic(  # noqa: PLR0912, PLR0915
                     "python_version",
                     "model",
                     "prompt_tier",
+                    "prompt_name",
                     "prompt_text",
                     "weighted_score",
                 ]
@@ -238,159 +230,50 @@ def logic(  # noqa: PLR0912, PLR0915
     print(f"Scores: {scores}")  # noqa: T201
 
 
-@pytest.mark.easy_dashboard
 @pytest.mark.parametrize(
     "model_name",
     [
         "gpt-4o-mini",
-        "claude-3-5-sonnet-latest",
     ],
     ids=[
         "gpt-4o-mini",
-        "claude-3-5-sonnet-latest",
     ],
 )
-def test_easy_dashboard(dash_duo, model_name):
-    dashboard = VizroAI(model=model_name).dashboard([df1, df2], easy_prompt)
-
-    logic(
-        dashboard=dashboard,
-        model_name=model_name,
-        dash_duo=dash_duo,
-        prompt_tier="easy",
-        prompt_text=easy_prompt.replace("\n", " "),
-        config={
-            "pages": [
-                {
-                    "components": [
-                        Component(type="ag_grid"),
-                        Component(type="card"),
-                        Component(type="graph"),
-                    ],
-                    "controls": [
-                        Control(type="filter"),
-                        Control(type="filter"),
-                    ],
-                },
-            ],
-        },
-    )
-
-
-@pytest.mark.medium_dashboard
-@pytest.mark.parametrize("model_name", ["gpt-4o-mini"], ids=["gpt-4o-mini"])
-def test_medium_dashboard(dash_duo, model_name):
-    dashboard = VizroAI(model=model_name).dashboard([df1, df2, df3], medium_prompt)
-
-    logic(
-        dashboard=dashboard,
-        model_name=model_name,
-        dash_duo=dash_duo,
-        prompt_tier="medium",
-        prompt_text=medium_prompt.replace("\n", " "),
-        config={
-            "pages": [
-                {
-                    "components": [
-                        Component(type="ag_grid"),
-                        Component(type="graph"),
-                    ],
-                    "controls": [],
-                },
-                {
-                    "components": [
-                        Component(type="card"),
-                        Component(type="graph"),
-                    ],
-                    "controls": [
-                        Control(type="filter"),
-                        Control(type="filter"),
-                    ],
-                },
-                {
-                    "components": [
-                        Component(type="graph"),
-                        Component(type="graph"),
-                    ],
-                    "controls": [
-                        Control(type="filter"),
-                    ],
-                },
-                {
-                    "components": [
-                        Component(type="card"),
-                        Component(type="card"),
-                        Component(type="card"),
-                    ],
-                    "controls": [],
-                },
-            ],
-        },
-    )
-
-
-@pytest.mark.complex_dashboard
 @pytest.mark.parametrize(
-    "model_name",
-    ["gpt-4o-mini"],
-    ids=["gpt-4o-mini"],
+    "tier_type, prompt_name, prompt_text, expected_config, dfs",
+    [
+        (
+            easy_prompt["tier_type"],
+            easy_prompt["prompt_name"],
+            easy_prompt["prompt_text"],
+            easy_prompt["expected_config"],
+            [df1, df2],
+        ),
+        (
+            medium_prompt["tier_type"],
+            medium_prompt["prompt_name"],
+            medium_prompt["prompt_text"],
+            medium_prompt["expected_config"],
+            [df1, df2, df3],
+        ),
+        (
+            complex_prompt["tier_type"],
+            complex_prompt["prompt_name"],
+            complex_prompt["prompt_text"],
+            complex_prompt["expected_config"],
+            [df1, df2, df3, df4],
+        ),
+    ],
 )
-def test_complex_dashboard(dash_duo, model_name):
-    dashboard = VizroAI(model=model_name).dashboard([df1, df2, df3, df4], complex_prompt)
+def test_dashboard(dash_duo, model_name, tier_type, prompt_name, prompt_text, expected_config, dfs):  # noqa: PLR0913
+    created_dashboard = VizroAI(model=model_name).dashboard(dfs, prompt_text)
 
     logic(
-        dashboard=dashboard,
+        dashboard=created_dashboard,
         model_name=model_name,
         dash_duo=dash_duo,
-        prompt_tier="complex",
-        prompt_text=complex_prompt.replace("\n", " "),
-        config={
-            "pages": [
-                {
-                    "components": [
-                        Component(type="ag_grid"),
-                    ],
-                    "controls": [Control(type="filter"), Control(type="filter")],
-                },
-                {
-                    "components": [Component(type="graph"), Component(type="graph")],
-                    "controls": [Control(type="filter")],
-                },
-                {
-                    "components": [
-                        Component(type="graph"),
-                        Component(type="graph"),
-                        Component(type="graph"),
-                        Component(type="graph"),
-                        Component(type="graph"),
-                        Component(type="graph"),
-                    ],
-                    "controls": [
-                        Control(type="filter"),
-                        Control(type="filter"),
-                        Control(type="filter"),
-                        Control(type="filter"),
-                        Control(type="filter"),
-                        Control(type="filter"),
-                    ],
-                },
-                {
-                    "components": [
-                        Component(type="ag_grid"),
-                        Component(type="graph"),
-                        Component(type="graph"),
-                        Component(type="graph"),
-                    ],
-                    "controls": [
-                        Control(type="filter"),
-                        Control(type="filter"),
-                        Control(type="filter"),
-                        Control(type="filter"),
-                        Control(type="filter"),
-                        Control(type="filter"),
-                        Control(type="filter"),
-                    ],
-                },
-            ],
-        },
+        prompt_tier=tier_type,
+        prompt_name=prompt_name,
+        prompt_text=prompt_text.replace("\n", " "),
+        config=expected_config,
     )

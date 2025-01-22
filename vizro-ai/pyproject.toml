@@ -66,7 +66,11 @@ filterwarnings = [
   # Ignore LLMchian deprecation warning:
   "ignore:.*The class `LLMChain` was deprecated in LangChain 0.1.17",
   # Ignore warning for Pydantic v1 API and Python 3.13:
-  "ignore:Failing to pass a value to the 'type_params' parameter of 'typing.ForwardRef._evaluate' is deprecated:DeprecationWarning"
+  "ignore:Failing to pass a value to the 'type_params' parameter of 'typing.ForwardRef._evaluate' is deprecated:DeprecationWarning",
+  # Ignore deprecation warning until this is solved: https://github.com/plotly/dash/issues/2590:
+  "ignore:HTTPResponse.getheader():DeprecationWarning",
+  "ignore:CapturedCallable function is excluded from the schema",
+  "ignore:Exception in thread"
 ]
 
 [tool.ruff]
