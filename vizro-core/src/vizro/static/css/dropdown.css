@@ -9,13 +9,13 @@
 
 /* Dropdown menu when clicking on expand arrow */
 #dashboard-container .Select-menu-outer {
-  margin-top: 4px;
   background-color: var(--field-enabled);
   border: none;
   border-radius: 0;
   box-shadow: var(--elevation-0);
   font-size: 0.875rem;
   line-height: 1.5rem;
+  margin-top: 4px;
 }
 
 /* Dropdown menu options */
