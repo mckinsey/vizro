@@ -41,6 +41,7 @@ def _calculate_option_height(full_options: OptionsType) -> int:
 
 def _add_select_all_option(full_options: OptionsType) -> OptionsType:
     """Adds a 'Select All' option to the list of options."""
+    # TODO: Move option to dictionary conversion within `get_options_and_default` function as here: https://github.com/mckinsey/vizro/pull/961#discussion_r1923356781
     options_dict = [
         cast(OptionsDictType, {"label": option, "value": option}) if not isinstance(option, dict) else option
         for option in full_options
