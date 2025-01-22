@@ -59,8 +59,7 @@ If this is your first Vizro deployment then we recommend using our ["first dashb
 1. You do not need to alter any of the default options but if you would like to then refer to the [Hugging Face documentation](https://huggingface.co/docs/hub/en/spaces-overview#duplicating-a-space) for an explanation of each.
 1. Click "Duplicate Space" to start building your Hugging Face Space. This takes around 10 seconds, and when complete you should see the following dashboard running. ![Running dashboard](../../assets/user_guides/deploy/hugging_face_space.png)
 
-To turn the example app into your own, you will need to edit the code in the `app.py` file. To do so, click on the Files tab at the top of your app and select `app.py`. Click the Edit button highlighted in the below screenshot to enter an editor view of the file.
-![Edit app.py](../../assets/user_guides/deploy/hugging_face_edit_app.png)
+To turn the example app into your own, you will need to edit the code in the `app.py` file. To do so, click on the Files tab at the top of your app and select `app.py`. Click the Edit button highlighted in the below screenshot to enter an editor view of the file. ![Edit app.py](../../assets/user_guides/deploy/hugging_face_edit_app.png)
 
 You can now copy and paste your app code into the editor. When you've finished editing, click "Commit changes to `main`". This immediately triggers a rebuild of your Space. As with the initial build this takes around 10 seconds, and when complete you should be able to view your own app deployed on Hugging Face!
 
@@ -161,7 +160,7 @@ FROM ghcr.io/astral-sh/uv:python3.12-bookworm-slim  # (1)!
 WORKDIR /app
 
 COPY requirements.txt .
-RUN uv pip install --system -r requirements.txt 
+RUN uv pip install --system -r requirements.txt
 COPY . .
 # (2)!
 
