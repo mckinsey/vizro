@@ -13,15 +13,15 @@ class CustomGroup(vm.VizroBaseModel):
     """Container to group controls."""
 
     type: Literal["custom_group"] = "custom_group"
-    controls: List[Tuple[str, List[ControlType]]] = [[]]
+    controls: dict[str, List[ControlType]] = {}
 
     def build(self):
         return html.Div(
             children=[
                 html.Div(
-                    children=[html.Br(), html.H5(control_tuple[0]), *[control.build() for control in control_tuple[1]]],
+                    children=[html.Br(), html.H5(control_title), *[control.build() for control in controls]],
                 )
-                for control_tuple in self.controls
+                for control_title, controls in self.controls.items()
             ]
         )
 
@@ -36,29 +36,10 @@ page = vm.Page(
     ],
     controls=[
         CustomGroup(
-            controls=[
-                (
-                    "Categorical Filters",
-                    [
-                        vm.Filter(column="species"),
-                    ],
-                ),
-                (
-                    "Numeric Filters",
-                    [
-                        vm.Filter(column="petal_length"),
-                        vm.Filter(column="sepal_length"),
-                    ],
-                ),
-            ],
-        ),
-        vm.Parameter(
-            targets=["graph_id.x"],
-            selector=vm.RadioItems(
-                title="Select X Axis",
-                options=["sepal_width", "sepal_length", "petal_width", "petal_length"],
-                value="sepal_width",
-            ),
+            controls={
+                "Categorical Filters": [vm.Filter(column="species", selector=vm.Dropdown(value=["setosa"]))],
+                "Numeric Filters": [vm.Filter(column="petal_length"), vm.Filter(column="sepal_length")],
+            }
         ),
     ],
 )
