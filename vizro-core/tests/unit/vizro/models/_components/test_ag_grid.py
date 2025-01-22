@@ -176,7 +176,7 @@ class TestBuildAgGrid:
     @pytest.mark.parametrize(
         "ag_grid, underlying_id_expected",
         [
-            ("ag_grid_with_id_and_conf", "underlying_ag_grid_id"),
+            ("ag_grid_with_id", "underlying_ag_grid_id"),
             ("standard_ag_grid", "__input_text_ag_grid"),
         ],
     )
