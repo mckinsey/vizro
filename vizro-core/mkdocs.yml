@@ -10,7 +10,8 @@ nav:
           - Install Vizro: pages/user-guides/install.md
           - Dashboards: pages/user-guides/dashboard.md
           - Pages: pages/user-guides/pages.md
-          - Launch the dashboard: pages/user-guides/run.md
+          - Run your dashboard: pages/user-guides/run.md
+          - Deploy your dashboard: pages/user-guides/deploy.md
       - COMPONENTS:
           - Overview: pages/user-guides/components.md
           - Graphs: pages/user-guides/graph.md
