@@ -162,7 +162,7 @@ FROM ghcr.io/astral-sh/uv:python3.12-bookworm-slim  # (1)!
 WORKDIR /app
 
 COPY requirements.txt .
-RUN uv pip install --system -r requirements.txt 
+RUN uv pip install --system -r requirements.txt
 COPY . .
 # (2)!
 
