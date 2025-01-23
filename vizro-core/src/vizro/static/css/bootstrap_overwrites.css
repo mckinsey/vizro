@@ -28,7 +28,7 @@ All the HEX values starting with --text-code are taken from the Github code high
   --collapse-icon-bg: var(--primary-300);
 }
 
-/* This is currently as the NavBar comes with `navbar-light` even on dark theme */
+/* This is currently required as dbc.NavBar comes with the `navbar-light` class even on a dark theme */
 .nav-link {
    color: var(--text-secondary) !important;
 }
