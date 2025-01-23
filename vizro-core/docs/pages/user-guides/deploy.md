@@ -88,7 +88,7 @@ On Hugging Face, Vizro apps are hosted on Docker Spaces. Hugging Face has thorou
 
 The [Ploomber Cloud documentation](https://docs.cloud.ploomber.io/en/latest/apps/vizro.html) contains detailed instructions on how to deploy Vizro on Ploomber Cloud. In short, the process is as follows:
 
-1. [Sign up for a Ploomber Cloud account](https://platform.ploomber.io/register?utm_source=dash&utm_medium=documentation).
+1. [Sign up for a Ploomber Cloud account](https://platform.ploomber.io/register).
 1. Modify the last line of your `app.py` to [expose the Vizro `app` object](#overview) as `app = Vizro().build(dashboard)`.
 1. Create a `requirements.txt` file to give your Python package dependencies. This should include `vizro` and `gunicorn`. See our [section on dependencies](#dependencies) for more information.
 1. Create a `Dockerfile` by copying the [example given in the Ploomber Cloud documentation](https://docs.cloud.ploomber.io/en/latest/apps/vizro.html#application-setup). See our [section on Dockerfiles](#dockerfile) for more information.
