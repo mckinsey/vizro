@@ -96,7 +96,7 @@ def generate_json_template(extracted_values):
 
     # "map" only available in plotly>=5.24.0, will replace "mapbox" soon. Until then, we need to set both.
     # We need the if statement here in case the user is using an older version of plotly.
-    if "map" in template.layout:
+    if "map" in template["layout"]:
         template.layout.map.style = "carto-darkmatter"
 
     template.data.bar = [go.Bar(marker_line_color=BG_COLOR)]
