@@ -1,25 +1,6 @@
-"""Colors for plotly templates."""
+"""Color sequences by Vizro."""
 
 COLORS = {
-    # GRID COLOR - var(--fill-subtle) / var(--bs-border-color)
-    "WHITE_12": "rgba(255, 255, 255, 0.1)",
-    "BLACK_12": "rgba(20, 23, 33, 0.1) ",
-    # AXIS COLOR - var(--fill-disabled) / var(--bs-tertiary-color)
-    "WHITE_30": "rgba(255, 255, 255, 0.30)",
-    "BLACK_30": "rgba(20, 23, 33, 0.30)",
-    # FONT COLOR SECONDARY - var(--text-secondary) / var(--bs-secondary)
-    "WHITE_55": "rgba(255, 255, 255, 0.6)",
-    "BLACK_55": "rgba(20, 23, 33, 0.6)",
-    # FONT COLOR PRIMARY - var(--text-primary) / var(--bs-primary)
-    "WHITE_85": "rgba(255, 255, 255, 0.88)",
-    "BLACK_85": "rgba(20, 23, 33, 0.88)",
-    # BG COLOR - var(--bs-body-bg), var(--surfaces-bg03) - dark, var(--surfaces-bg01) - light
-    "DARK_BG03": "#141721",
-    "Light_BG01": "#FFFFFF",
-    # OTHER
-    "GREY_30": "#C0C6CB",
-    "GREY_55": "#747F88",
-    # SEQUENCES
     "DIVERGING_PURPLE_ORANGE": [
         "#0f237c",
         "#2b3794",
