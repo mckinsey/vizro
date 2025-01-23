@@ -76,11 +76,6 @@ def ag_grid_with_id(gapminder):
 
 
 @pytest.fixture
-def ag_grid_with_id_and_conf(gapminder):
-    return dash_ag_grid(id="underlying_ag_grid_id", data_frame=gapminder)
-
-
-@pytest.fixture
 def standard_dash_table(gapminder):
     return dash_data_table(data_frame=gapminder)
 

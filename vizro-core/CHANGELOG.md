@@ -11,6 +11,22 @@ See the fragment files in the [changelog.d directory](https://github.com/mckinse
 
 <!-- scriv-insert-here -->
 
+<a id='changelog-0.1.31'></a>
+
+# 0.1.31 — 2025-01-23
+
+## Changed
+
+- Bumped library used for `vm.DatePicker` to `dash_mantine_components~=0.15.1`. ([#924](https://github.com/mckinsey/vizro/pull/924))
+
+## Fixed
+
+- Enable arbitrarily deep nesting of custom components within lists, tuples or dictionaries. ([#929](https://github.com/mckinsey/vizro/pull/929))
+
+- Fix hidden axis and tick labels for Graph components using `px.parallel_coordinates`. ([#941](https://github.com/mckinsey/vizro/pull/941))
+
+- Enable visibility of the spinner buttons in number inputs. ([#954](https://github.com/mckinsey/vizro/pull/954))
+
 <a id='changelog-0.1.30'></a>
 
 # 0.1.30 — 2024-12-16
