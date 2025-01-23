@@ -83,7 +83,9 @@ In addition to `app.py`, your Space contains a few other files:
 
 !!! tip
     If you'd like to show your Vizro app off to the community then you can add it to our Vizro dashboard community gallery.
+
 <!-- TODO: add (https://huggingface.co/collections/vizro/community-demos-666987c8e9f56afc7bc1d0fc) -->
+
 On Hugging Face, Vizro apps are hosted on Docker Spaces. Hugging Face has thorough documentation on [Spaces in general](https://huggingface.co/docs/hub/en/spaces-overview) and specifically on [Docker Spaces](https://huggingface.co/docs/hub/en/spaces-sdks-docker-first-demo). There are many features that go beyond simply hosting a Vizro app. For example, you can [make a collection](https://huggingface.co/docs/hub/en/collections) of multiple Spaces, collaborate on your code using [pull requests and discussions](https://huggingface.co/docs/hub/en/repositories-pull-requests-discussions), or create an [organization](https://huggingface.co/docs/hub/en/organizations) to group accounts and Spaces together.
 
 ## Ploomber Cloud
