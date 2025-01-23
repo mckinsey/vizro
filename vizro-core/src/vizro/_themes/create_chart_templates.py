@@ -1,5 +1,7 @@
+import argparse
 import json
 import re
+import sys
 from pathlib import Path
 
 from plotly import graph_objects as go
@@ -115,6 +117,18 @@ if __name__ == "__main__":
     extracted_dark, extracted_light = extract_bs_variables_from_css_file(VARIABLES, CSS_FILE)
     template_dark = generate_json_template(extracted_dark)
     template_light = generate_json_template(extracted_light)
-    Path(f"{THEMES_FOLDER}/vizro_dark.json").write_text(json.dumps(template_dark, indent=4, cls=PlotlyJSONEncoder))
-    Path(f"{THEMES_FOLDER}/vizro_light.json").write_text(json.dumps(template_light, indent=4, cls=PlotlyJSONEncoder))
-    print("🎉 The templates have been successfully created!")  # noqa: T201
+
+    parser = argparse.ArgumentParser(description="Generate JSON for Vizro chart templates.")
+    parser.add_argument("--check", help="check chart templates are up to date", action="store_true")
+    args = parser.parse_args()
+
+    for generated_template, file_name in zip([template_dark, template_light], ["vizro_dark.json", "vizro_light.json"]):
+        existing_template_path = Path(f"{THEMES_FOLDER}/{file_name}")
+        existing_template = json.loads(existing_template_path.read_text())
+
+        if args.check:
+            if existing_template != generated_template:
+                sys.exit(f"Vizro chart template `{file_name}` is out of date. Run `hatch run templates` to update it.")
+            print(f"Vizro chart template `{file_name}` is up to date 🎉")  # noqa: T201
+        else:
+            existing_template_path.write_text(json.dumps(generated_template, indent=4, cls=PlotlyJSONEncoder))

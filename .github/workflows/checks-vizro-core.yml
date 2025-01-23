@@ -44,6 +44,9 @@ jobs:
       - name: Check schema is up to date
         run: hatch run schema-check
 
+      - name: Check plotly template is up to date
+        run: hatch run template-check
+
       - name: Find changed files to see if changelog fragment needed
         id: changed-files
         if: ${{ github.event_name == 'pull_request' }}
