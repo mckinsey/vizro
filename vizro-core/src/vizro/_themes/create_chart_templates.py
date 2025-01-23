@@ -118,7 +118,7 @@ if __name__ == "__main__":
     template_dark = generate_json_template(extracted_dark)
     template_light = generate_json_template(extracted_light)
 
-    parser = argparse.ArgumentParser(description="Generate JSON for Vizro chart templates.")
+    parser = argparse.ArgumentParser(description="Generate JSON chart templates.")
     parser.add_argument("--check", help="check chart templates are up to date", action="store_true")
     args = parser.parse_args()
 
@@ -128,7 +128,7 @@ if __name__ == "__main__":
 
         if args.check:
             if existing_template != generated_template:
-                sys.exit(f"Vizro chart template `{file_name}` is out of date. Run `hatch run templates` to update it.")
-            print(f"Vizro chart template `{file_name}` is up to date 🎉")  # noqa: T201
+                sys.exit(f"Chart template `{file_name}` is out of date. Run `hatch run templates` to update it.")
+            print(f"Chart template `{file_name}` is up to date 🎉")  # noqa: T201
         else:
             existing_template_path.write_text(json.dumps(generated_template, indent=4, cls=PlotlyJSONEncoder))
