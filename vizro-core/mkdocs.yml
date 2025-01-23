@@ -66,7 +66,6 @@ repo_name: mckinsey/vizro
 theme:
   name: material
   language: en
-  custom_dir: docs/overrides
   palette:
     - scheme: default
   font:
