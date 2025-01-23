@@ -1,7 +1,7 @@
 import dash_bootstrap_components as dbc
 import pandas as pd
 from dash import Dash, html
-from e2e_asserts import assert_image_equal, make_screenshot_and_paths
+from e2e.asserts import assert_image_equal, make_screenshot_and_paths
 
 from vizro.figures.library import kpi_card, kpi_card_reference
 

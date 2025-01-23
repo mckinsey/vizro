@@ -1,4 +1,4 @@
-from e2e_paths import graph_xaxis_tick_path
+from e2e.paths import graph_xaxis_tick_path
 from selenium.common import StaleElementReferenceException
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support import expected_conditions

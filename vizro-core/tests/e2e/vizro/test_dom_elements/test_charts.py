@@ -1,7 +1,7 @@
-import e2e_constants as cnst
-from e2e_checkers import check_text
-from e2e_helpers import webdriver_click_waiter, webdriver_waiter
-from e2e_paths import href_path, nav_card_text_path
+import e2e.constants as cnst
+from e2e.checkers import check_text
+from e2e.helpers import webdriver_click_waiter, webdriver_waiter
+from e2e.paths import href_path, nav_card_text_path
 
 
 def test_modebar(dash_br_driver):

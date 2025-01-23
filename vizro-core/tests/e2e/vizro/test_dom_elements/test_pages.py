@@ -1,19 +1,19 @@
-import e2e_constants as cnst
+import e2e.constants as cnst
 import pytest
-from e2e_checkers import (
+from e2e.checkers import (
     check_accordion,
     check_ag_grid_theme_color,
     check_graph_color,
     check_text,
     check_theme_color,
 )
-from e2e_helpers import (
+from e2e.helpers import (
     graph_load_waiter,
     webdriver_click_waiter,
     webdriver_waiter,
 )
-from e2e_navigation import page_select
-from e2e_paths import (
+from e2e.navigation import page_select
+from e2e.paths import (
     button_path,
     graph_path,
     href_path,

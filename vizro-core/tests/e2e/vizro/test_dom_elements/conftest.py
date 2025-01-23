@@ -1,8 +1,8 @@
 from datetime import datetime
 
-import e2e_constants as cnst
+import e2e.constants as cnst
 import pytest
-from e2e_checkers import browser_console_warnings_checker
+from e2e.checkers import browser_console_warnings_checker
 from selenium.common import WebDriverException
 from selenium.webdriver.chrome.options import Options as ChromeOptions
 

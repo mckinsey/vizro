@@ -1,4 +1,4 @@
-import e2e_constants as cnst
+import e2e.constants as cnst
 import pandas as pd
 from flask_caching import Cache
 

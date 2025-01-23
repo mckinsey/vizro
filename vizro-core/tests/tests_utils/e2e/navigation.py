@@ -1,7 +1,7 @@
 import time
 
-from e2e_helpers import graph_load_waiter, webdriver_click_waiter, webdriver_waiter
-from e2e_paths import accordion_path, page_accordion_path, page_title_path
+from e2e.helpers import graph_load_waiter, webdriver_click_waiter, webdriver_waiter
+from e2e.paths import accordion_path, page_accordion_path, page_title_path
 
 
 def accordion_select(chromdriver, accordion_name):

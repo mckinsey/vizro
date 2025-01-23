@@ -1,13 +1,13 @@
-import e2e_constants as cnst
+import e2e.constants as cnst
 import pytest
-from e2e_checkers import (
+from e2e.checkers import (
     check_graph_is_loading,
     check_range_slider_value,
     check_slider_value,
 )
-from e2e_helpers import graph_load_waiter, webdriver_click_waiter, webdriver_waiter
-from e2e_navigation import page_select
-from e2e_paths import (
+from e2e.helpers import graph_load_waiter, webdriver_click_waiter, webdriver_waiter
+from e2e.navigation import page_select
+from e2e.paths import (
     checklist_value_path,
     dropdown_arrow_path,
     dropdown_clear_all_path,

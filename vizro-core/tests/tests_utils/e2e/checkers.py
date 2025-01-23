@@ -1,6 +1,6 @@
-import e2e_constants as cnst
-from e2e_helpers import graph_load_waiter, webdriver_waiter
-from e2e_paths import accordion_path
+import e2e.constants as cnst
+from e2e.helpers import graph_load_waiter, webdriver_waiter
+from e2e.paths import accordion_path
 from hamcrest import any_of, assert_that, contains_string, equal_to
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support.color import Color

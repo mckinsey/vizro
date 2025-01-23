@@ -1,4 +1,4 @@
-import e2e_constants as cnst
+import e2e.constants as cnst
 from dashboard_pages import ag_grid_page, datepicker_page, filters_page, homepage, kpi_indicators_page, parameters_page
 
 import vizro.models as vm
