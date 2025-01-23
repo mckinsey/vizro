@@ -1,8 +1,10 @@
-import pytest
 from pathlib import Path
 from unittest.mock import mock_open, patch
 
+import pytest
+
 from vizro._themes.create_chart_templates import _extract_last_two_occurrences, extract_bs_variables_from_css_file
+
 
 @pytest.fixture
 def css_content():
@@ -14,7 +16,7 @@ def css_content():
         :root, [data-bs-theme=dark] {
             --bs-primary: #375a7f;
             --bs-secondary: #6c757d;
-            
+
         }
         [data-bs-theme=light] {
             --bs-primary: #976fd1;
@@ -24,18 +26,18 @@ def css_content():
 
     return css_content
 
+
 @pytest.mark.parametrize(
-        "variable, expected",
-        [
-            ("--bs-primary", ("#375a7f", "#976fd1")),
-            ("--bs-secondary", ("#6c757d", "#444fff")),
-            ("--bs-tertiary", (None, None)),
-        ],
-    )
+    "variable, expected",
+    [
+        ("--bs-primary", ("#375a7f", "#976fd1")),
+        ("--bs-secondary", ("#6c757d", "#444fff")),
+        ("--bs-tertiary", (None, None)),
+    ],
+)
 def test_extract_last_two_occurrences(variable, css_content, expected):
     result_dark, result_light = _extract_last_two_occurrences(variable, css_content)
     assert (result_dark, result_light) == expected
-
 
 
 def test_extract_bs_variables_from_css_file(css_content):
