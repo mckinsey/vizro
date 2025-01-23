@@ -3,6 +3,7 @@ import json
 import re
 import sys
 from pathlib import Path
+from typing import Optional
 
 from plotly import graph_objects as go
 from plotly.utils import PlotlyJSONEncoder
@@ -15,7 +16,7 @@ CSS_FILE = THEMES_FOLDER.parent / "static" / "css" / "vizro-bootstrap.min.css"
 VARIABLES = ["--bs-primary", "--bs-secondary", "--bs-tertiary-color", "--bs-border-color", "--bs-body-bg"]
 
 
-def _extract_last_two_occurrences(variable: str, content):
+def _extract_last_two_occurrences(variable: str, content: str) -> tuple[Optional[str], Optional[str]]:
     """Extracts the last two occurrences of a variable from the CSS content.
 
     Within the `vizro-bootstrap.min.css` file, variables appear multiple times: initially from the default Bootstrap
@@ -30,8 +31,10 @@ def _extract_last_two_occurrences(variable: str, content):
     return None, None
 
 
-def extract_bs_variables_from_css_file(variables, css_file_path):
-    """Extract the last two occurrences for each variable in the list."""
+def extract_bs_variables_from_css_file(
+    variables: list[str], css_file_path: Path
+) -> tuple[dict[str, Optional[str]], dict[str, Optional[str]]]:
+    """Extract the last two occurrences for each variable in the CSS file."""
     extracted_dark = {}
     extracted_light = {}
 
@@ -47,8 +50,8 @@ def extract_bs_variables_from_css_file(variables, css_file_path):
     return extracted_dark, extracted_light
 
 
-def generate_json_template(extracted_values):
-    """Generate the Python file content from the extracted values."""
+def generate_json_template(extracted_values: dict[str, Optional[str]]):
+    """Generates the Plotly JSON chart template."""
     FONT_COLOR_PRIMARY = extracted_values["BS-PRIMARY"]
     BG_COLOR = extracted_values["BS-BODY-BG"]
     FONT_COLOR_SECONDARY = extracted_values["BS-SECONDARY"]
