@@ -137,7 +137,7 @@ Although these services work in slightly different ways, there are some general 
     - Optional: set [advanced configuration](#advanced-configuration), for example to serve assets using a Content Delivery Network (CDN).
 1. Optional: configure further settings on your hosting provider, for example to make your dashboard private or to configure computing resources.
 
-The method for providing instructions on how to handle your app varies between hosting providers. For example, on Render there are [build and deploy commands](https://render.com/docs/deploys); on Heroku there is a [Procfile](https://devcenter.heroku.com/articles/procfile). One common cross-platform way to configure an environment is using a Dockerfile. This is used by both Hugging Face and Ploomber Cloud among others. See the [section on Dockerfile](#dockerfile) for more information.
+The method for providing instructions on how to handle your app varies between hosting providers. For example, on Render there are [build and deploy commands](https://render.com/docs/deploys); on Heroku and Dash Enterprise there is a [Procfile](https://devcenter.heroku.com/articles/procfile). One common cross-platform way to configure an environment is using a Dockerfile. This is used by both Hugging Face and Ploomber Cloud among others. See the [section on Dockerfile](#dockerfile) for more information.
 
 ### Dependencies
 
