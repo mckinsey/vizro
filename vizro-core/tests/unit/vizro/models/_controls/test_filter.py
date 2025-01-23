@@ -440,7 +440,7 @@ class TestFilterCall:
         filter = vm.Filter(
             column="column_categorical",
             targets=["column_categorical_exists_1", "column_categorical_exists_2"],
-            selector=vm.Dropdown(id="test_selector_id"),
+            selector=vm.Checklist(id="test_selector_id"),
         )
         filter.pre_build()
 
