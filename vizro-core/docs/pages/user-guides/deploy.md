@@ -52,15 +52,17 @@ Enterprise users should look at our [guidance on Dash Enterprise](#dash-enterpri
 
 [Hugging Face](https://huggingface.co/) is a platform for machine learning models, datasets and demos. Within Hugging Face, the [Spaces feature](https://huggingface.co/spaces/launch) offers a one click experience to deploy a Vizro dashboard for free. This is the easiest way to deploy a Vizro app if you do not mind your app's code being public or shared within your [Hugging Face organization](https://huggingface.co/organizations). Paid plans include features such as authentication, developer mode for debugging, user analytics and more powerful computing resources.
 
-The best way to get started with Vizro on Hugging Face is to copy an existing Vizro dashboard and then modify it to add your own app. Vizro maintains an [official gallery of example dashboards](https://huggingface.co/collections/vizro/vizro-official-gallery-66697d414646eeac61eae6de) and a [gallery of example dashboards made by the community](https://huggingface.co/collections/vizro/community-demos-666987c8e9f56afc7bc1d0fc). Any of these example dashboards can be used as a template for your app. In Hugging Face terminology, a Vizro dashboard lives in a _Space_, and you can copy a dashboard by [duplicating the Space](https://huggingface.co/docs/hub/en/spaces-overview#duplicating-a-space).
+The best way to get started with Vizro on Hugging Face is to copy an existing Vizro dashboard and then modify it to add your own app. Vizro maintains an [official gallery of example dashboards](https://huggingface.co/collections/vizro/vizro-official-gallery-66697d414646eeac61eae6de) and a gallery of example dashboards made by the community. Any of these example dashboards can be used as a template for your app. In Hugging Face terminology, a Vizro dashboard lives in a _Space_, and you can copy a dashboard by [duplicating the Space](https://huggingface.co/docs/hub/en/spaces-overview#duplicating-a-space).
+
+<!-- TODO: add (https://huggingface.co/collections/vizro/community-demos-666987c8e9f56afc7bc1d0fc) -->
 
 If this is your first Vizro deployment then we recommend using our ["first dashboard" example](https://huggingface.co/spaces/vizro/demo-first-dashboard). This is a minimal example that is designed to make it as simple as possible to get started on Hugging Face. You can create your own Vizro deployment based on this template as follows:
 
-1. [Sign up for a Hugging Face account](https://huggingface.co/join).
+1. [Sign up for a Hugging Face account](https://huggingface.co).
 1. Copy our example Hugging Face dashboard by duplicating our ["first dashboard" example Space](https://huggingface.co/spaces/vizro/demo-first-dashboard). To do so, click the following button: [![Duplicate this Space](https://huggingface.co/datasets/huggingface/badges/resolve/main/duplicate-this-space-md.svg)](https://huggingface.co/spaces/vizro/demo-first-dashboard?duplicate=true). This should open a window with the following form: ![Form to duplicate Space](../../assets/user_guides/deploy/hugging_face_duplicate_this_space.png)
 1. You do not need to alter any of the default options but if you would like to then refer to the [Hugging Face documentation](https://huggingface.co/docs/hub/en/spaces-overview#duplicating-a-space) for an explanation of each.
 1. Click "Duplicate Space" to start building your Hugging Face Space. This takes around 10 seconds, and when complete you should see the following dashboard running. ![Running dashboard](../../assets/user_guides/deploy/hugging_face_space.png)
-
+<!-- TODO: add https://huggingface.co/join -->
 To turn the example app into your own, you will need to edit the code in the `app.py` file. Click on the Files tab at the top of your app and select `app.py`. Click the Edit button highlighted in the below screenshot to enter an editor view of the file. ![Edit app.py](../../assets/user_guides/deploy/hugging_face_edit_app.png)
 
 You can now copy and paste your app code into the editor. When you've finished editing, click "Commit changes to `main`". This immediately triggers a rebuild of your Space. As with the initial build this takes around 10 seconds, and when complete you should be able to view your own app deployed on Hugging Face!
@@ -88,13 +90,13 @@ On Hugging Face, Vizro apps are hosted on Docker Spaces. Hugging Face has thorou
 
 The [Ploomber Cloud documentation](https://docs.cloud.ploomber.io/en/latest/apps/vizro.html) contains detailed instructions on how to deploy Vizro on Ploomber Cloud. In short, the process is as follows:
 
-1. [Sign up for a Ploomber Cloud account](https://platform.ploomber.io/register).
+1. [Sign up for a Ploomber Cloud account](https://platform.ploomber.io/).
 1. Modify the last line of your `app.py` to [expose the Vizro `app` object](#overview) as `app = Vizro().build(dashboard)`.
 1. Create a `requirements.txt` file to give your Python package dependencies. This should include `vizro` and `gunicorn`. See our [section on dependencies](#dependencies) for more information.
 1. Create a `Dockerfile` by copying the [example given in the Ploomber Cloud documentation](https://docs.cloud.ploomber.io/en/latest/apps/vizro.html#application-setup). See our [section on Dockerfiles](#dockerfile) for more information.
 1. Compress your `app.py`, `requirements.txt` and `Dockerfile` into a single zip file.
 1. Upload the zip file to Ploomber Cloud.
-
+<!-- TODO: https://platform.ploomber.io/register -->
 ## Dash Enterprise
 
 Since a Vizro app is a Dash app under the hood, they can be deployed to [Dash Enterprise](https://plotly.com/dash/) and accessed in the same way as other Dash apps.
