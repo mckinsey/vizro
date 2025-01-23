@@ -18,7 +18,6 @@ def create_template_common():
     template_common = go.layout.Template()
 
     template_common.layout = go.Layout(
-        # LAYOUT
         font_family="Inter, sans-serif, Arial",
         font_size=14,
         title_font_size=20,
@@ -64,7 +63,6 @@ def create_template_common():
         bargroupgap=0.1,
         uniformtext_minsize=12,
         uniformtext_mode="hide",
-        # X AXIS
         xaxis_visible=True,
         xaxis_title_font_size=16,
         xaxis_title_standoff=8,
@@ -79,7 +77,6 @@ def create_template_common():
         xaxis_layer="below traces",
         xaxis_linewidth=1,
         xaxis_zeroline=False,
-        # Y AXIS
         yaxis_visible=True,
         yaxis_title_font_size=16,
         yaxis_title_standoff=8,
@@ -94,6 +91,8 @@ def create_template_common():
         yaxis_layer="below traces",
         yaxis_linewidth=1,
         yaxis_zeroline=False,
+        annotationdefaults_showarrow=False,
+        annotationdefaults_font_size=14,
     )
 
     return template_common
