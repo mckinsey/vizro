@@ -22,7 +22,7 @@ def _extract_last_two_occurrences(variable: str, content):
     """
     pattern = re.compile(rf"{variable}:\s*([^;]+);")
     matches = pattern.findall(content)
-    if len(matches) >= 2:
+    if len(matches) >= 2:  # noqa: PLR2004
         return matches[-2].strip(), matches[-1].strip()
 
     return None, None
@@ -117,4 +117,4 @@ if __name__ == "__main__":
     template_light = generate_json_template(extracted_light)
     Path(f"{THEMES_FOLDER}/vizro_dark.json").write_text(json.dumps(template_dark, indent=4, cls=PlotlyJSONEncoder))
     Path(f"{THEMES_FOLDER}/vizro_light.json").write_text(json.dumps(template_light, indent=4, cls=PlotlyJSONEncoder))
-    print("🎉 The templates have been successfully created!")
+    print("🎉 The templates have been successfully created!")  # noqa: T201

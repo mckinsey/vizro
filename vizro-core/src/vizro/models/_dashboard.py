@@ -23,7 +23,6 @@ from dash import (
 )
 
 import vizro
-
 from vizro._themes.template_dashboard_overrides import dashboard_overrides
 
 try:
