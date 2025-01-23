@@ -45,7 +45,7 @@ jobs:
         run: hatch run schema-check
 
       - name: Check plotly template is up to date
-        run: hatch run template-check
+        run: hatch run templates-check
 
       - name: Find changed files to see if changelog fragment needed
         id: changed-files
