@@ -259,8 +259,9 @@ class CapturedCallable:
     @classmethod
     def _check_type(cls, captured_callable: CapturedCallable, field_info: FieldInfo) -> CapturedCallable:
         """Checks captured_callable is right type and mode."""
-        expected_mode = field_info.json_schema_extra["mode"]
-        import_path = field_info.json_schema_extra["import_path"]
+        # TODO[mypy]: mypy cannot realise that all json_schema_extra are properly defined on all models
+        expected_mode = field_info.json_schema_extra["mode"]  # type: ignore[index]
+        import_path = field_info.json_schema_extra["import_path"]  # type: ignore[index]
 
         if not isinstance(captured_callable, CapturedCallable):
             raise ValueError(
@@ -522,3 +523,8 @@ NavSelectorType = Annotated[
 ]
 """Discriminated union. Type of component for rendering navigation:
 [`Accordion`][vizro.models.Accordion] or [`NavBar`][vizro.models.NavBar]."""
+
+
+# Extra type groups used for mypy casting
+FigureWithFilterInteractionType = Union["Graph", "Table", "AgGrid"]
+FigureType = Union["Graph", "Table", "AgGrid", "Figure"]

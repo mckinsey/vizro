@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from typing import TYPE_CHECKING, Annotated, Literal, Optional
+from typing import TYPE_CHECKING, Annotated, Literal, Optional, cast
 
 from dash import html
 from pydantic import AfterValidator, BeforeValidator, Field, conlist
@@ -41,6 +41,7 @@ class Form(VizroBaseModel):
 
     @_log_call
     def build(self):
+        self.layout = cast(Layout, self.layout)  # TODO[mypy]: debatable as could be none?
         components_container = self.layout.build()
         for component_idx, component in enumerate(self.components):
             components_container[f"{self.layout.id}_{component_idx}"].children = component.build()

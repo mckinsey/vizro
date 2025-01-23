@@ -1,6 +1,6 @@
 import math
 from datetime import date
-from typing import Annotated, Literal, Optional, Union
+from typing import Annotated, Literal, Optional, Union, cast
 
 import dash_bootstrap_components as dbc
 from dash import dcc, html
@@ -26,7 +26,7 @@ def _get_list_of_labels(full_options: OptionsType) -> Union[list[StrictBool], li
     if all(isinstance(option, dict) for option in full_options):
         return [option["label"] for option in full_options]  # type: ignore[index]
     else:
-        return full_options
+        return cast(Union[list[StrictBool], list[float], list[str], list[date]], full_options)
 
 
 def _calculate_option_height(full_options: OptionsType) -> int:

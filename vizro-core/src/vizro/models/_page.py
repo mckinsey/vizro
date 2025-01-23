@@ -62,12 +62,10 @@ class Page(VizroBaseModel):
 
     """
 
-    components: conlist(
-        Annotated[ComponentType, BeforeValidator(check_captured_callable), Field(...)], min_length=1
-    )  # since no default, can skip validate_default
+    components: conlist(Annotated[ComponentType, BeforeValidator(check_captured_callable)], min_length=1)
     title: str = Field(..., description="Title to be displayed.")
     description: str = Field("", description="Description for meta tags.")
-    layout: Annotated[Optional[Layout], AfterValidator(set_layout), Field(None, validate_default=True)]
+    layout: Annotated[Optional[Layout], AfterValidator(set_layout), Field(default=None, validate_default=True)]
     controls: list[ControlType] = []
     path: Annotated[
         str, AfterValidator(set_path), Field("", description="Path to navigate to page.", validate_default=True)
@@ -94,9 +92,6 @@ class Page(VizroBaseModel):
                 f"Page with id={self.id} already exists. Page id is automatically set to the same "
                 f"as the page title. If you have multiple pages with the same title then you must assign a unique id."
             ) from exc
-
-    def __vizro_exclude_fields__(self) -> Optional[Union[set[str], Mapping[str, Any]]]:
-        return {"id"} if self.id == self.title else None
 
     # This is a modification of the original `model_serializer` decorator that allows for the `context` to be passed
     # It allows skipping the `id` serialization if it is the same as the `title`
@@ -142,6 +137,7 @@ class Page(VizroBaseModel):
         controls_content = [control.build() for control in self.controls]
         control_panel = html.Div(id="control-panel", children=controls_content, hidden=not controls_content)
 
+        self.layout = cast(Layout, self.layout)  # TODO[mypy]: debatable, as could be None?
         components_container = self.layout.build()
         for component_idx, component in enumerate(self.components):
             components_container[f"{self.layout.id}_{component_idx}"].children = component.build()

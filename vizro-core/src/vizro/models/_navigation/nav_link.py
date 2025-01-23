@@ -1,7 +1,7 @@
 from __future__ import annotations
 
 import itertools
-from typing import Annotated
+from typing import Annotated, cast
 
 import dash_bootstrap_components as dbc
 from dash import get_relative_path, html
@@ -40,17 +40,19 @@ class NavLink(VizroBaseModel):
     def pre_build(self):
         from vizro.models._navigation.accordion import Accordion
 
-        self._nav_selector = Accordion(pages=self.pages)
+        self._nav_selector = Accordion(pages=self.pages)  # type: ignore[arg-type] #TODO[mypy]: this is fine, but how best to fix?
 
     @_log_call
     def build(self, *, active_page_id=None):
         # _nav_selector is an Accordion, so _nav_selector._pages is guaranteed to be dict[str, list[str]].
         # `active_page_id` is still required here for the automatic opening of the Accordion when navigating
         # from homepage to a page within the Accordion and there are several Accordions within the page.
+        from vizro.models import Page
+
         all_page_ids = list(itertools.chain(*self._nav_selector.pages.values()))
         first_page_id = all_page_ids[0]
         item_active = active_page_id in all_page_ids
-        first_page = model_manager[ModelID(str(first_page_id))]
+        first_page = cast(Page, model_manager[ModelID(str(first_page_id))])
 
         nav_link = dbc.NavLink(
             [

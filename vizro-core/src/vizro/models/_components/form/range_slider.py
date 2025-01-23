@@ -36,15 +36,19 @@ class RangeSlider(VizroBaseModel):
     """
 
     type: Literal["range_slider"] = "range_slider"
-    min: Optional[float] = Field(None, description="Start value for slider.")
-    max: Annotated[Optional[float], AfterValidator(validate_max), Field(None, description="End value for slider.")]
+    min: Optional[float] = Field(default=None, description="Start value for slider.")
+    max: Annotated[
+        Optional[float], AfterValidator(validate_max), Field(default=None, description="End value for slider.")
+    ]
     step: Annotated[
-        Optional[float], AfterValidator(validate_step), Field(None, description="Step-size for marks on slider.")
+        Optional[float],
+        AfterValidator(validate_step),
+        Field(default=None, description="Step-size for marks on slider."),
     ]
     marks: Annotated[
         Optional[dict[float, str]],
         AfterValidator(set_default_marks),
-        Field({}, description="Marks to be displayed on slider.", validate_default=True),
+        Field(default={}, description="Marks to be displayed on slider.", validate_default=True),
     ]
     value: Optional[
         Annotated[
@@ -145,7 +149,7 @@ class RangeSlider(VizroBaseModel):
 
     @_log_call
     def build(self):
-        current_value = self.value or [self.min, self.max]  # type: ignore[list-item]
+        current_value = self.value or [self.min, self.max]
         return (
             self._build_dynamic_placeholder(current_value)
             if self._dynamic

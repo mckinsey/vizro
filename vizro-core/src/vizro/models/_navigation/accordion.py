@@ -1,6 +1,6 @@
 import itertools
 from collections.abc import Mapping
-from typing import Annotated, Literal
+from typing import Annotated, Literal, cast
 
 import dash_bootstrap_components as dbc
 from dash import get_relative_path
@@ -30,10 +30,12 @@ class Accordion(VizroBaseModel):
 
     type: Literal["accordion"] = "accordion"
     pages: Annotated[
-        dict[str, list[str]],
+        dict[
+            str, list[str]  # TODO[MS]:this is the type after validation, but the type before validation is NavPagesType
+        ],
         AfterValidator(_validate_pages),
         BeforeValidator(coerce_pages_type),
-        Field({}, description="Mapping from name of a pages group to a list of page IDs."),
+        Field(default={}, description="Mapping from name of a pages group to a list of page IDs."),
     ]
 
     @_log_call
@@ -78,10 +80,12 @@ class Accordion(VizroBaseModel):
 
     def _create_nav_links(self, pages: list[str]):
         """Creates a `NavLink` for each provided page."""
+        from vizro.models import Page
+
         nav_links = []
 
         for page_id in pages:
-            page = model_manager[ModelID(str(page_id))]
+            page = cast(Page, model_manager[ModelID(str(page_id))])
             nav_links.append(
                 dbc.NavLink(
                     children=page.title,

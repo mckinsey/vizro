@@ -1,7 +1,7 @@
 import inspect
 import logging
 import textwrap
-from typing import Annotated, Any, Optional, Union, get_args, get_origin
+from typing import Annotated, Any, Optional, Union, cast, get_args, get_origin
 
 import autoflake
 import black
@@ -137,12 +137,12 @@ def _extract_captured_callable_data_info() -> set[str]:
     }
 
 
-def _add_type_to_union(union: Union[type[Any], type[Any]], new_type: type[Any]) -> Union[type[Any], type[Any]]:
+def _add_type_to_union(union: type[Any], new_type: type[Any]):  # TODO[mypy]: not sure how to type the return type
     args = get_args(union)
     return Union[*args, new_type]
 
 
-def _add_type_to_annotated_union(union, new_type: type[Any]) -> Annotated:
+def _add_type_to_annotated_union(union, new_type: type[Any]):  # TODO[mypy]: not sure how to type the return type
     args = get_args(union)
     return Annotated[_add_type_to_union(args[0], new_type), args[1]]
 
@@ -207,7 +207,7 @@ class VizroBaseModel(BaseModel):
         str,
         AfterValidator(set_id),
         Field(
-            "",
+            default="",
             description="ID to identify model. Must be unique throughout the whole dashboard."
             "When no ID is chosen, ID will be automatically generated.",
             validate_default=True,
@@ -253,10 +253,11 @@ class VizroBaseModel(BaseModel):
 
         """
         field = cls.model_fields[field_name]
+        old_type = cast(type[Any], field.annotation)
         new_annotation = (
-            _add_type_to_union(field.annotation, new_type)
+            _add_type_to_union(old_type, new_type)
             if _is_discriminated_union_via_field_info(field)
-            else _add_type_to_annotated_union_if_found(field.annotation, new_type, field_name)
+            else _add_type_to_annotated_union_if_found(old_type, new_type, field_name)
         )
         field = cls.model_fields[field_name] = FieldInfo.merge_field_infos(field, annotation=new_annotation)
 

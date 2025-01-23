@@ -36,18 +36,24 @@ class Slider(VizroBaseModel):
     """
 
     type: Literal["slider"] = "slider"
-    min: Optional[float] = Field(None, description="Start value for slider.")
-    max: Annotated[Optional[float], AfterValidator(validate_max), Field(None, description="End value for slider.")]
+    min: Optional[float] = Field(default=None, description="Start value for slider.")
+    max: Annotated[
+        Optional[float], AfterValidator(validate_max), Field(default=None, description="End value for slider.")
+    ]
     step: Annotated[
-        Optional[float], AfterValidator(validate_step), Field(None, description="Step-size for marks on slider.")
+        Optional[float],
+        AfterValidator(validate_step),
+        Field(default=None, description="Step-size for marks on slider."),
     ]
     marks: Annotated[
         Optional[dict[float, str]],
         AfterValidator(set_default_marks),
-        Field({}, description="Marks to be displayed on slider.", validate_default=True),
+        Field(default={}, description="Marks to be displayed on slider.", validate_default=True),
     ]
     value: Annotated[
-        Optional[float], AfterValidator(validate_range_value), Field(None, description="Default value for slider.")
+        Optional[float],
+        AfterValidator(validate_range_value),
+        Field(default=None, description="Default value for slider."),
     ]
     title: str = Field("", description="Title to be displayed.")
     actions: Annotated[

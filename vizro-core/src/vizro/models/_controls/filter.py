@@ -13,7 +13,7 @@ from vizro.actions import _filter
 from vizro.managers import data_manager, model_manager
 from vizro.managers._data_manager import DataSourceName, _DynamicData
 from vizro.managers._model_manager import FIGURE_MODELS, ModelID
-from vizro.models import Action, VizroBaseModel
+from vizro.models import Action, AgGrid, Figure, Graph, Table, VizroBaseModel
 from vizro.models._components.form import (
     Checklist,
     DatePicker,
@@ -23,16 +23,22 @@ from vizro.models._components.form import (
     Slider,
 )
 from vizro.models._models_utils import _log_call
-from vizro.models.types import MultiValueType, SelectorType
+from vizro.models.types import FigureType, MultiValueType, SelectorType
 
 # Ideally we might define these as NumericalSelectorType = Union[RangeSlider, Slider] etc., but that will not work
 # with isinstance checks.
 # First entry in each tuple is the default selector for that column type.
+# MS: For mypy we need to do this anyway - i have tried to make a function that takes the tuples and converts them, but
+# I think it does not work
+# Q: Does it make sense to just define them quickly here, or would a more central place, maybe even in types.py
+# make more sense? Current choice: reused ones are in types, rest is in files
 SELECTORS = {
     "numerical": (RangeSlider, Slider),
     "categorical": (Dropdown, Checklist, RadioItems),
     "temporal": (DatePicker,),
 }
+CategoricalSelectorType = Union[Dropdown, Checklist, RadioItems]
+NumericalTemporalSelectorType = Union[RangeSlider, Slider, DatePicker]
 
 # This disallowed selectors for each column type map is based on the discussion at the following link:
 # See https://github.com/mckinsey/vizro/pull/319#discussion_r1524888171
@@ -45,6 +51,7 @@ DISALLOWED_SELECTORS = {
 # TODO: Remove DYNAMIC_SELECTORS along with its validation check when support dynamic mode for the DatePicker selector.
 # Tuple of filter selectors that support dynamic mode
 DYNAMIC_SELECTORS = (Dropdown, Checklist, RadioItems, Slider, RangeSlider)
+DynamicNonCategoricalSelectorType = Union[Slider, RangeSlider]
 
 
 def _filter_between(series: pd.Series, value: Union[list[float], list[str]]) -> pd.Series:
@@ -118,8 +125,10 @@ class Filter(VizroBaseModel):
             )
 
         if isinstance(self.selector, SELECTORS["categorical"]):
+            self.selector = cast(CategoricalSelectorType, self.selector)
             return self.selector(options=self._get_options(targeted_data, current_value))
         else:
+            self.selector = cast(DynamicNonCategoricalSelectorType, self.selector)
             _min, _max = self._get_min_max(targeted_data, current_value)
             # "current_value" is propagated only to support dcc.Input and dcc.Store components in numerical selectors
             # to work with a dynamic selector. This can be removed when dash persistence bug is fixed.
@@ -146,7 +155,7 @@ class Filter(VizroBaseModel):
         #  Find more about the mentioned limitation at: https://github.com/mckinsey/vizro/pull/879/files#r1846609956
         # Even if the solution changes for dynamic data, static data should still use {} as the arguments here.
         multi_data_source_name_load_kwargs: list[tuple[DataSourceName, dict[str, Any]]] = [
-            (model_manager[target]["data_frame"], {}) for target in proposed_targets
+            (cast(FigureType, model_manager[target])["data_frame"], {}) for target in proposed_targets
         ]
 
         target_to_data_frame = dict(zip(proposed_targets, data_manager._multi_load(multi_data_source_name_load_kwargs)))
@@ -177,7 +186,7 @@ class Filter(VizroBaseModel):
             and getattr(self.selector, "max", None) is None
         ):
             for target_id in self.targets:
-                data_source_name = model_manager[target_id]["data_frame"]
+                data_source_name = cast(FigureType, model_manager[target_id])["data_frame"]
                 if isinstance(data_manager[data_source_name], _DynamicData):
                     self._dynamic = True
                     self.selector._dynamic = True
@@ -185,6 +194,7 @@ class Filter(VizroBaseModel):
 
         # Set appropriate properties for the selector.
         if isinstance(self.selector, SELECTORS["numerical"] + SELECTORS["temporal"]):
+            self.selector = cast(NumericalTemporalSelectorType, self.selector)
             _min, _max = self._get_min_max(targeted_data)
             # Note that manually set self.selector.min/max = 0 are Falsey but should not be overwritten.
             if self.selector.min is None:
@@ -193,6 +203,7 @@ class Filter(VizroBaseModel):
                 self.selector.max = _max
         else:
             # Categorical selector.
+            self.selector = cast(CategoricalSelectorType, self.selector)
             self.selector.options = self.selector.options or self._get_options(targeted_data)
 
         if not self.selector.actions:
@@ -212,7 +223,9 @@ class Filter(VizroBaseModel):
 
     @_log_call
     def build(self):
-        selector_build_obj = self.selector.build()
+        # Cast is justified as the selector is set in pre_build and is not None.
+        selector = cast(SelectorType, self.selector)
+        selector_build_obj = selector.build()
         # TODO: Align the (dynamic) object's return structure with the figure's components when the Dash bug is fixed.
         #  This means returning an empty "html.Div(id=self.id, className=...)" as a placeholder from Filter.build().
         #  Also, make selector.title visible when the filter is reloading.
@@ -225,11 +238,11 @@ class Filter(VizroBaseModel):
         # Note: dcc.Slider and dcc.RangeSlider do not support the "style" property directly,
         # so the "className" attribute is used to apply custom CSS for visibility control.
         # Reference for Dash class names: https://dashcheatsheet.pythonanywhere.com/
-        selector_build_obj[self.selector.id].className = "invisible"
-        if f"{self.selector.id}_start_value" in selector_build_obj:
-            selector_build_obj[f"{self.selector.id}_start_value"].className = "d-none"
-        if f"{self.selector.id}_end_value" in selector_build_obj:
-            selector_build_obj[f"{self.selector.id}_end_value"].className = "d-none"
+        selector_build_obj[selector.id].className = "invisible"
+        if f"{selector.id}_start_value" in selector_build_obj:
+            selector_build_obj[f"{selector.id}_start_value"].className = "d-none"
+        if f"{selector.id}_end_value" in selector_build_obj:
+            selector_build_obj[f"{selector.id}_end_value"].className = "d-none"
 
         return dcc.Loading(
             id=self.id,

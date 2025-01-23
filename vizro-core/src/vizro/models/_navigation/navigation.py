@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from typing import Annotated, Optional
+from typing import Annotated, Optional, cast
 
 import dash_bootstrap_components as dbc
 from dash import html
@@ -37,7 +37,7 @@ class Navigation(VizroBaseModel):
 
     @_log_call
     def build(self, *, active_page_id=None) -> _NavBuildType:
-        nav_selector = self.nav_selector.build(active_page_id=active_page_id)
+        nav_selector = cast(NavSelectorType, self.nav_selector).build(active_page_id=active_page_id)
 
         if "nav-bar" not in nav_selector:
             # e.g. nav_selector is Accordion and nav_selector.build returns single html.Div with id="nav-panel".

@@ -1,7 +1,7 @@
 from __future__ import annotations
 
 from collections.abc import Mapping
-from typing import Annotated, Any, Literal
+from typing import Annotated, Literal, Union
 
 import dash_bootstrap_components as dbc
 from dash import html
@@ -13,7 +13,7 @@ from vizro.models._navigation._navigation_utils import _NavBuildType, _validate_
 from vizro.models._navigation.nav_link import NavLink
 
 
-def coerce_pages_type(pages: Any) -> dict[str, list[str]]:
+def coerce_pages_type(pages: Union[list[str], dict[str, list[str]]]) -> dict[str, list[str]]:
     if isinstance(pages, Mapping):
         return pages
     return {page: [page] for page in pages}

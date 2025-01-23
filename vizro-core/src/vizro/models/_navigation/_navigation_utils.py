@@ -7,9 +7,10 @@ from typing import TypedDict, cast
 import dash_bootstrap_components as dbc
 
 from vizro.managers import model_manager
+from vizro.models.types import NavPagesType
 
 
-def _validate_pages(pages: dict[str, list[str]]) -> dict[str, list[str]]:
+def _validate_pages(pages: NavPagesType) -> NavPagesType:
     """Reusable validator to check if provided Page IDs exist as registered pages."""
     from vizro.models import Page
 

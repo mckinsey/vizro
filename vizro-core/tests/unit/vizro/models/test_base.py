@@ -264,7 +264,6 @@ class TestDict:
         assert model.model_dump(exclude={"id"}) == {"type": "model"}
 
     def test_dict_exclude_type(self):
-        # __vizro_exclude_fields__ should have no effect here.
         model = Model(id="model_id")
         assert model.model_dump(exclude={"type"}) == {"id": "model_id"}
 

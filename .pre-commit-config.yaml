@@ -63,7 +63,7 @@ repos:
     # Upgrade to v1.11.1 not possible as it doesn't seem compatible with pydantic<2 plugin.
     # Similar issue with previous v.1.11.X versions: https://github.com/pydantic/pydantic/issues/10000
     # We need to revert the changes from the pre-commit autoupdate for now.
-    rev: v1.10.1
+    rev: v1.10.1 #v1.14.1 mainly gives more of the missing named argument errors
     hooks:
       - id: mypy
         files: ^vizro-core/src/
@@ -72,7 +72,7 @@ repos:
           # pydantic>=1.10.15 includes this fix which flags some genuine type problems. These will take a while to fix
           # or ignore so for now we just pin to 1.10.14 which doesn't flag the problems.
           # https://github.com/pydantic/pydantic/pull/8765
-          - pydantic==1.10.14
+          - pydantic==2.9.0
 
   - repo: https://github.com/awebdeveloper/pre-commit-stylelint
     rev: "0.0.2"

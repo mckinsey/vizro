@@ -57,11 +57,11 @@ def _get_inputs_of_figure_interactions(
         for attribute in required_attributes:
             if not hasattr(triggered_model, attribute):
                 raise ValueError(f"Model {triggered_model.id} does not have required attribute `{attribute}`.")
-        if "modelID" not in triggered_model._filter_interaction_input:
+        if "modelID" not in triggered_model._filter_interaction_input:  # type: ignore[attr-defined] #TODO[mypy]: define on base model?
             raise ValueError(
                 f"Model {triggered_model.id} does not have required State `modelID` in `_filter_interaction_input`."
             )
-        inputs.append(triggered_model._filter_interaction_input)
+        inputs.append(triggered_model._filter_interaction_input)  # type: ignore[attr-defined] #TODO[mypy]: define on base model?
     return inputs
 
 
@@ -102,7 +102,7 @@ def _get_action_callback_outputs(action: Action) -> dict[str, Output]:
     return {
         target: Output(
             component_id=target,
-            component_property=model_manager[target]._output_component_property,
+            component_property=model_manager[target]._output_component_property,  # type: ignore[attr-defined] #TODO[mypy]: define on base model?
             allow_duplicate=True,
         )
         for target in targets

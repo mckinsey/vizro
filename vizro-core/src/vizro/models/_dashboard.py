@@ -4,7 +4,7 @@ import base64
 import logging
 from functools import partial
 from pathlib import Path
-from typing import TYPE_CHECKING, Annotated, Literal, Optional, TypedDict
+from typing import TYPE_CHECKING, Annotated, Literal, Optional, TypedDict, cast
 
 import dash
 import dash_bootstrap_components as dbc
@@ -92,10 +92,10 @@ class Dashboard(VizroBaseModel):
 
     pages: Annotated[list[Page], Field(..., validate_default=True)]
     theme: Literal["vizro_dark", "vizro_light"] = Field(
-        "vizro_dark", description="Layout theme to be applied across dashboard. Defaults to `vizro_dark`."
+        default="vizro_dark", description="Layout theme to be applied across dashboard. Defaults to `vizro_dark`."
     )
     navigation: Annotated[
-        Optional[Navigation], AfterValidator(set_navigation_pages), Field(None, validate_default=True)
+        Optional[Navigation], AfterValidator(set_navigation_pages), Field(default=None, validate_default=True)
     ]
     title: str = Field("", description="Dashboard title to appear on every page on top left-side.")
 
@@ -210,7 +210,9 @@ class Dashboard(VizroBaseModel):
         # Shared across pages but slightly differ in content. These could possibly be done by a clientside
         # callback instead.
         page_title = html.H2(id="page-title", children=page.title)
-        navigation: _NavBuildType = self.navigation.build(active_page_id=page.id)
+        navigation: _NavBuildType = cast(Navigation, self.navigation).build(  # TODO[mypy]: debatable, as could be None?
+            active_page_id=page.id
+        )
         nav_bar = navigation["nav-bar"]
         nav_panel = navigation["nav-panel"]
 

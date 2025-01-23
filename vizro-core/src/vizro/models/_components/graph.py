@@ -1,7 +1,7 @@
 import logging
 import warnings
 from contextlib import suppress
-from typing import Annotated, Literal
+from typing import Annotated, Literal, cast
 
 import pandas as pd
 from dash import ClientsideFunction, Input, Output, State, clientside_callback, dcc, html, set_props
@@ -125,7 +125,7 @@ class Graph(VizroBaseModel):
         source_graph_id: ModelID = ctd_click_data["id"]
         source_graph_actions = _get_component_actions(model_manager[source_graph_id])
         try:
-            custom_data_columns = model_manager[source_graph_id]["custom_data"]
+            custom_data_columns = cast(Graph, model_manager[source_graph_id])["custom_data"]
         except KeyError as exc:
             raise KeyError(
                 f"Missing 'custom_data' for the source graph with id {source_graph_id}. "
