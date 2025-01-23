@@ -1,45 +1,51 @@
-import re
 import json
-from plotly.utils import PlotlyJSONEncoder
-from vizro._themes.common_values import create_template_common
-from vizro._themes._color_values import COLORS
+import re
+from pathlib import Path
+
 from plotly import graph_objects as go
-import pathlib
-# File paths
-CSS_FILE = "../vizro-core/src/vizro/static/css/vizro-bootstrap.min.css"
-OUTPUT_FILE = "../vizro-core/src/vizro/_themes/vizro_dark.json"
+from plotly.utils import PlotlyJSONEncoder
 
-# List of CSS variables to extract
-VARIABLES = [
-    '--bs-primary',
-    '--bs-secondary',
-    '--bs-tertiary-color',
-    '--bs-border-color',
-    '--bs-body-bg'
-]
+from vizro._themes._color_values import COLORS
+from vizro._themes.common_values import create_template_common
 
-def _extract_last_two_occurrences(variable, content):
-    """Extract the last two occurrences of a variable from the CSS content."""
-    pattern = re.compile(rf'{variable}:\s*([^;]+);')
+THEMES_FOLDER = Path(__file__).resolve().parent
+CSS_FILE = THEMES_FOLDER.parent / "static" / "css" / "vizro-bootstrap.min.css"
+VARIABLES = ["--bs-primary", "--bs-secondary", "--bs-tertiary-color", "--bs-border-color", "--bs-body-bg"]
+
+
+def _extract_last_two_occurrences(variable: str, content):
+    """Extracts the last two occurrences of a variable from the CSS content.
+
+    Within the `vizro-bootstrap.min.css` file, variables appear multiple times: initially from the default Bootstrap
+    values, followed by the dark theme, and lastly the light theme. We are interested in the final two occurrences,
+    as these represent the values for our dark and light themes.
+    """
+    pattern = re.compile(rf"{variable}:\s*([^;]+);")
     matches = pattern.findall(content)
     if len(matches) >= 2:
         return matches[-2].strip(), matches[-1].strip()
+
     return None, None
 
 
 def extract_bs_variables_from_css_file(variables, css_file_path):
     """Extract the last two occurrences for each variable in the list."""
-    extracted_values = {}
+    extracted_dark = {}
+    extracted_light = {}
 
-    with open(css_file_path, 'r') as css_content:
-        for variable in variables:
-            dark_values, light_values = _extract_last_two_occurrences(variable, css_content.read())
-            extracted_values[f'{variable[2:].upper()}'] = dark_values
-           # extracted_values["LIGHT"][f'{variable[2:].upper()}'] = light_values
-    return extracted_values
+    with open(css_file_path) as css_file:
+        css_content = css_file.read()
+
+    for variable in variables:
+        dark_values, light_values = _extract_last_two_occurrences(variable, css_content)
+        cleaned_variable = variable.replace("--", "").upper()
+        extracted_dark[cleaned_variable] = dark_values
+        extracted_light[cleaned_variable] = light_values
+
+    return extracted_dark, extracted_light
 
 
-def generate_json_templates(extracted_values):
+def generate_json_template(extracted_values):
     """Generate the Python file content from the extracted values."""
     FONT_COLOR_PRIMARY = extracted_values["BS-PRIMARY"]
     BG_COLOR = extracted_values["BS-BODY-BG"]
@@ -91,7 +97,7 @@ def generate_json_templates(extracted_values):
     if "map" in template.layout:
         template.layout.map.style = "carto-darkmatter"
 
-    template.data.bar = [go.Bar(marker_line_color= BG_COLOR)]
+    template.data.bar = [go.Bar(marker_line_color=BG_COLOR)]
     template.data.waterfall = [
         go.Waterfall(
             decreasing={"marker": {"color": COLORS["DISCRETE_10"][1]}},
@@ -105,15 +111,10 @@ def generate_json_templates(extracted_values):
     return template.to_plotly_json()
 
 
-def write_json_file(file_path, template):
-    """Write the generated content to the specified Python file."""
-    #with open(file_path, "w") as file:
-    #    json.dump(template, file,  indent=4, cls=PlotlyJSONEncoder)
-    pathlib.Path(file_path).write_text(json.dumps(template, indent=4, cls=PlotlyJSONEncoder))
-
-
 if __name__ == "__main__":
-    extracted_values = extract_bs_variables_from_css_file(VARIABLES, CSS_FILE)
-    chart_template = generate_json_templates(extracted_values)
-    write_json_file(OUTPUT_FILE, chart_template)
+    extracted_dark, extracted_light = extract_bs_variables_from_css_file(VARIABLES, CSS_FILE)
+    template_dark = generate_json_template(extracted_dark)
+    template_light = generate_json_template(extracted_light)
+    Path(f"{THEMES_FOLDER}/vizro_dark.json").write_text(json.dumps(template_dark, indent=4, cls=PlotlyJSONEncoder))
+    Path(f"{THEMES_FOLDER}/vizro_light.json").write_text(json.dumps(template_light, indent=4, cls=PlotlyJSONEncoder))
     print("🎉 The templates have been successfully created!")
