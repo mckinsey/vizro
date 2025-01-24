@@ -1,9 +1,6 @@
-from pathlib import Path
-from unittest.mock import mock_open, patch
-
 import pytest
 
-from vizro._themes.generate_plotly_templates import _extract_last_two_occurrences, extract_bs_variables_from_css_file
+from vizro._themes.generate_plotly_templates import _extract_last_two_occurrences, extract_bs_variables_from_css
 
 
 @pytest.fixture
@@ -41,7 +38,6 @@ def test_extract_last_two_occurrences(variable, css_content, expected):
 
 
 def test_extract_bs_variables_from_css_file(css_content):
-    variables = ["--bs-primary", "--bs-secondary", "--bs-tertiary"]
     expected_dark = {
         "BS-PRIMARY": "#375a7f",
         "BS-SECONDARY": "#6c757d",
@@ -53,9 +49,9 @@ def test_extract_bs_variables_from_css_file(css_content):
         "BS-TERTIARY": None,
     }
 
-    mock_path = Path("/fake/path/to/css/vizro-bootstrap.css")
-    with patch("builtins.open", mock_open(read_data=css_content)):
-        result_dark, result_light = extract_bs_variables_from_css_file(variables, mock_path)
+    result_dark, result_light = extract_bs_variables_from_css(
+        ["--bs-primary", "--bs-secondary", "--bs-tertiary"], css_content
+    )
 
     assert result_dark == expected_dark
     assert result_light == expected_light

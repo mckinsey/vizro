@@ -1,5 +1,6 @@
 """Color sequences by Vizro."""
 
+
 def get_colors():
     return {
         "DIVERGING_PURPLE_ORANGE": [

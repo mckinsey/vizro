@@ -12,32 +12,30 @@ from vizro._themes._colors import get_colors
 from vizro._themes._common_template import create_template_common
 
 THEMES_FOLDER = Path(__file__).parent
-CSS_FILE = THEMES_FOLDER.parent / "static" / "css" / "vizro-bootstrap.min.css"
+CSS_PATH = THEMES_FOLDER.parent / "static/css/vizro-bootstrap.min.css"
 VARIABLES = ["--bs-primary", "--bs-secondary", "--bs-tertiary-color", "--bs-border-color", "--bs-body-bg"]
 
 
-def _extract_last_two_occurrences(variable: str, content: str) -> tuple[Optional[str], Optional[str]]:
+def _extract_last_two_occurrences(variable: str, css_content: str) -> tuple[Optional[str], Optional[str]]:
     """Extracts the last two occurrences of a variable from the CSS content.
 
     Within the `vizro-bootstrap.min.css` file, variables appear multiple times: initially from the default Bootstrap
     values, followed by the dark theme, and lastly the light theme. We are interested in the final two occurrences,
     as these represent the values for our dark and light themes.
     """
-    matches = re.findall(rf"{variable}:\s*([^;]+);", content)
+    matches = re.findall(rf"{variable}:\s*([^;]+);", css_content)
     if len(matches) >= 2:  # noqa: PLR2004
         return matches[-2].strip(), matches[-1].strip()
 
     return None, None
 
 
-def extract_bs_variables_from_css_file(
-    variables: list[str], css_file_path: Path
+def extract_bs_variables_from_css(
+    variables: list[str], css_content: str
 ) -> tuple[dict[str, Optional[str]], dict[str, Optional[str]]]:
     """Extract the last two occurrences for each variable in the CSS file."""
     extracted_dark = {}
     extracted_light = {}
-
-    css_content = css_file_path.read_text()
 
     for variable in variables:
         dark_value, light_value = _extract_last_two_occurrences(variable, css_content)
@@ -117,7 +115,7 @@ def generate_json_template(extracted_values: dict[str, Optional[str]]):
 
 
 if __name__ == "__main__":
-    extracted_dark, extracted_light = extract_bs_variables_from_css_file(VARIABLES, CSS_FILE)
+    extracted_dark, extracted_light = extract_bs_variables_from_css(VARIABLES, CSS_PATH.read_text())
     template_dark = generate_json_template(extracted_dark)
     template_light = generate_json_template(extracted_light)
 
