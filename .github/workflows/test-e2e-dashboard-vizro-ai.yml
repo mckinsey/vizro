@@ -1,4 +1,4 @@
-name: e2e dashboard score tests for VizroAI
+name: e2e dashboard tests for VizroAI
 
 defaults:
   run:
@@ -12,9 +12,9 @@ env:
   FORCE_COLOR: 1
 
 jobs:
-  test-e2e-dashboard-score-vizro-ai-fork:
+  test-e2e-dashboard-vizro-ai-fork:
     if: ${{ github.event.pull_request.head.repo.fork }}
-    name: test-e2e-dashboard-score-vizro-ai on Py${{ matrix.config.python-version }} ${{ matrix.config.label }}
+    name: test-e2e-dashboard-vizro-ai on Py${{ matrix.config.python-version }} ${{ matrix.config.label }}
     runs-on: ubuntu-latest
     strategy:
       fail-fast: false
@@ -38,9 +38,9 @@ jobs:
       - name: Passed fork step
         run: echo "Success!"
 
-  test-e2e-dashboard-score-vizro-ai:
+  test-e2e-dashboard-vizro-ai:
     if: ${{ ! github.event.pull_request.head.repo.fork }}
-    name: test-e2e-dashboard-score-vizro-ai on Py${{ matrix.config.python-version }} ${{ matrix.config.label }}
+    name: test-e2e-dashboard-vizro-ai on Py${{ matrix.config.python-version }} ${{ matrix.config.label }}
     runs-on: ubuntu-latest
     strategy:
       fail-fast: false
@@ -72,8 +72,8 @@ jobs:
       - name: Show dependency tree
         run: hatch run ${{ matrix.config.hatch-env }}:pip tree
 
-      - name: Run vizro-ai e2e dashboard score tests with PyPI vizro
-        run: hatch run ${{ matrix.config.hatch-env }}:test-e2e-dashboard-score
+      - name: Run vizro-ai e2e dashboard tests with PyPI vizro
+        run: hatch run ${{ matrix.config.hatch-env }}:test-e2e-dashboard
         env:
           OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
           OPENAI_API_BASE: ${{ secrets.OPENAI_API_BASE }}
@@ -81,10 +81,10 @@ jobs:
           BRANCH: ${{ github.head_ref }}
           PYTHON_VERSION: ${{ matrix.config.python-version }}
 
-      - name: Run vizro-ai e2e dashboard score tests with local vizro
+      - name: Run vizro-ai e2e dashboard tests with local vizro
         run: |
           hatch run ${{ matrix.config.hatch-env }}:pip install ../vizro-core
-          hatch run ${{ matrix.config.hatch-env }}:test-e2e-dashboard-score
+          hatch run ${{ matrix.config.hatch-env }}:test-e2e-dashboard
         env:
           OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
           OPENAI_API_BASE: ${{ secrets.OPENAI_API_BASE }}
@@ -99,7 +99,7 @@ jobs:
         with:
           payload: |
             {
-              "text": "Vizro-ai ${{ matrix.config.hatch-env }} e2e dashboard score tests build result: ${{ job.status }}\nBranch: ${{ github.head_ref }}\n${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}"
+              "text": "Vizro-ai ${{ matrix.config.hatch-env }} e2e dashboard tests build result: ${{ job.status }}\nBranch: ${{ github.head_ref }}\n${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}"
             }
         env:
           SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
@@ -113,8 +113,8 @@ jobs:
           path: |
             /home/runner/work/vizro/vizro/vizro-ai/tests/e2e/reports/report*.csv
 
-  test-e2e-dashboard-score-vizro-ai-report:
-    needs: test-e2e-dashboard-score-vizro-ai
+  test-e2e-dashboard-vizro-ai-report:
+    needs: test-e2e-dashboard-vizro-ai
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
