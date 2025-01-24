@@ -120,7 +120,7 @@ Vizro is compatible with the following functionality within Dash Enterprise:
 - [Redis](https://plotly.com/dash/big-data-for-python/)
 - [Dash Enterprise Authentication](https://plotly.com/dash/authentication/)
 
-Vizro is not currently compatible with the [Dashboard Engine](https://plotly.com/dash/snapshot-engine/) or [Dash Design Kit](https://plotly.com/dash/design-kit/), and cannot produce static reports accessed via the [Snapshot Engine](https://plotly.com/dash/snapshot-engine/).
+Vizro is not currently compatible with the [Dashboard Engine](https://plotly.com/dash/dashboard-engine/) or [Dash Design Kit](https://plotly.com/dash/design-kit/), and cannot produce static reports accessed via the [Snapshot Engine](https://plotly.com/dash/snapshot-engine/).
 
 ## General principles
 
