@@ -40,8 +40,9 @@ def extract_bs_variables_from_css(
     for variable in variables:
         dark_value, light_value = _extract_last_two_occurrences(variable, css_content)
         cleaned_variable = variable.replace("--", "").upper()
-        extracted_dark[cleaned_variable] = dark_value
-        extracted_light[cleaned_variable] = light_value
+        if dark_value and light_value:
+            extracted_dark[cleaned_variable] = dark_value
+            extracted_light[cleaned_variable] = light_value
 
     return extracted_dark, extracted_light
 

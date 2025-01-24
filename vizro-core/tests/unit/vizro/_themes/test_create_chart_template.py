@@ -41,12 +41,10 @@ def test_extract_bs_variables_from_css_file(css_content):
     expected_dark = {
         "BS-PRIMARY": "#375a7f",
         "BS-SECONDARY": "#6c757d",
-        "BS-TERTIARY": None,
     }
     expected_light = {
         "BS-PRIMARY": "#976fd1",
         "BS-SECONDARY": "#444fff",
-        "BS-TERTIARY": None,
     }
 
     result_dark, result_light = extract_bs_variables_from_css(
