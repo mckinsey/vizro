@@ -3,7 +3,7 @@ from unittest.mock import mock_open, patch
 
 import pytest
 
-from vizro._themes.create_chart_templates import _extract_last_two_occurrences, extract_bs_variables_from_css_file
+from vizro._themes.generate_plotly_templates import _extract_last_two_occurrences, extract_bs_variables_from_css_file
 
 
 @pytest.fixture

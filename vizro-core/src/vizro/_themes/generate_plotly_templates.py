@@ -9,9 +9,9 @@ from plotly import graph_objects as go
 from plotly.utils import PlotlyJSONEncoder
 
 from vizro._themes._color_values import COLORS
-from vizro._themes.common_values import create_template_common
+from vizro._themes._common_template import create_template_common
 
-THEMES_FOLDER = Path(__file__).resolve().parent
+THEMES_FOLDER = Path(__file__).parent
 CSS_FILE = THEMES_FOLDER.parent / "static" / "css" / "vizro-bootstrap.min.css"
 VARIABLES = ["--bs-primary", "--bs-secondary", "--bs-tertiary-color", "--bs-border-color", "--bs-body-bg"]
 
@@ -23,8 +23,7 @@ def _extract_last_two_occurrences(variable: str, content: str) -> tuple[Optional
     values, followed by the dark theme, and lastly the light theme. We are interested in the final two occurrences,
     as these represent the values for our dark and light themes.
     """
-    pattern = re.compile(rf"{variable}:\s*([^;]+);")
-    matches = pattern.findall(content)
+    matches = re.findall(rf"{variable}:\s*([^;]+);", content)
     if len(matches) >= 2:  # noqa: PLR2004
         return matches[-2].strip(), matches[-1].strip()
 
@@ -38,14 +37,13 @@ def extract_bs_variables_from_css_file(
     extracted_dark = {}
     extracted_light = {}
 
-    with open(css_file_path) as css_file:
-        css_content = css_file.read()
+    css_content = css_file_path.read_text()
 
     for variable in variables:
-        dark_values, light_values = _extract_last_two_occurrences(variable, css_content)
+        dark_value, light_value = _extract_last_two_occurrences(variable, css_content)
         cleaned_variable = variable.replace("--", "").upper()
-        extracted_dark[cleaned_variable] = dark_values
-        extracted_light[cleaned_variable] = light_values
+        extracted_dark[cleaned_variable] = dark_value
+        extracted_light[cleaned_variable] = light_value
 
     return extracted_dark, extracted_light
 
@@ -60,6 +58,7 @@ def generate_json_template(extracted_values: dict[str, Optional[str]]):
 
     # Apply common values
     template = create_template_common()
+
     template.layout.font.color = FONT_COLOR_PRIMARY
     template.layout.title.font.color = FONT_COLOR_PRIMARY
     template.layout.legend.font.color = FONT_COLOR_PRIMARY
@@ -121,8 +120,8 @@ if __name__ == "__main__":
     template_dark = generate_json_template(extracted_dark)
     template_light = generate_json_template(extracted_light)
 
-    parser = argparse.ArgumentParser(description="Generate JSON chart templates.")
-    parser.add_argument("--check", help="check chart templates are up to date", action="store_true")
+    parser = argparse.ArgumentParser(description="Generate JSON plotly templates.")
+    parser.add_argument("--check", help="check plotly templates are up to date", action="store_true")
     args = parser.parse_args()
 
     for generated_template, file_name in zip([template_dark, template_light], ["vizro_dark.json", "vizro_light.json"]):
