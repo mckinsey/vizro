@@ -114,7 +114,7 @@ Vizro is compatible with the following functionality within Dash Enterprise:
 - [App Portal](https://dash.plotly.com/dash-enterprise/portal?de-version=5.5)
 - [App Manager](https://plotly.com/dash/app-manager/)
 - [Dash App Workspaces](https://plotly.com/dash/workspaces/)
-- [App logs and viewer statistics](https://dash.plotly.com/dash-enterprise/logs?de-version=5.5)
+- [App logs and viewer statistics](https://dash.plotly.com/dash-enterprise/logs)
 - [Centralized data app management](https://plotly.com/dash/centralized-data-app-management/)
 - [CI/CD](https://plotly.com/dash/continuous-integration/)
 - [Redis](https://plotly.com/dash/big-data-for-python/)
