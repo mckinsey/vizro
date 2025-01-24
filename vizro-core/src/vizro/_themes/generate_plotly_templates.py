@@ -8,7 +8,7 @@ from typing import Optional
 from plotly import graph_objects as go
 from plotly.utils import PlotlyJSONEncoder
 
-from vizro._themes._color_values import COLORS
+from vizro._themes._colors import get_colors
 from vizro._themes._common_template import create_template_common
 
 THEMES_FOLDER = Path(__file__).parent
@@ -57,6 +57,7 @@ def generate_json_template(extracted_values: dict[str, Optional[str]]):
     AXIS_COLOR = extracted_values["BS-TERTIARY-COLOR"]
 
     # Apply common values
+    COLORS = get_colors()
     template = create_template_common()
 
     template.layout.font.color = FONT_COLOR_PRIMARY

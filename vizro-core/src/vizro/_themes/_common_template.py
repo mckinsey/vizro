@@ -2,12 +2,9 @@
 
 from plotly import graph_objects as go
 
-from vizro._themes._color_values import COLORS
+from vizro._themes._colors import get_colors
 
 
-# LQ: I kind of like that this is all in a separate file. Makes it easier to read for me.
-# But wondering how others feel about it. Would you rather prefer this to also live inside `generate_plotly_templates.py`
-# so we only have one place to look for all the template creation logic?
 def create_template_common():
     """Create general themed plotly template.
 
@@ -18,8 +15,9 @@ def create_template_common():
         https://plotly.com/python/reference/layout/
 
     """
-    template_common = go.layout.Template()
+    COLORS = get_colors()
 
+    template_common = go.layout.Template()
     template_common.layout = go.Layout(
         font_family="Inter, sans-serif, Arial",
         font_size=14,
