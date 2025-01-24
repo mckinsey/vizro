@@ -25,8 +25,7 @@ def _extract_last_two_occurrences(variable: str, css_content: str) -> tuple[Opti
     """
     matches = re.findall(rf"{variable}:\s*([^;]+);", css_content)
     if len(matches) >= 2:  # noqa: PLR2004
-        return matches[-2].strip(), matches[-1].strip()
-
+        return matches[-2], matches[-1]
     return None, None
 
 
