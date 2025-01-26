@@ -18,7 +18,10 @@
 
 [![Python version](https://img.shields.io/badge/python-3.9%20%7C%203.10%20%7C%203.11%20%7C%203.12-blue.svg)](https://pypi.org/project/vizro/) [![PyPI version](https://badge.fury.io/py/vizro_ai.svg)](https://badge.fury.io/py/vizro_ai) [![License](https://img.shields.io/badge/license-Apache%202.0-blue.svg)](https://github.com/mckinsey/vizro/blob/main/LICENSE.md) [![Documentation](https://readthedocs.org/projects/vizro-ai/badge/?version=latest)](https://vizro-ai.readthedocs.io/) [![OpenSSF Best Practices](https://www.bestpractices.dev/projects/7858/badge)](https://www.bestpractices.dev/projects/7858)
 
-<img src="./docs/assets/readme/readme_animation.gif" alt="Gif to demonstrate vizro-ai">
+<picture>
+  <source srcset="https://raw.githubusercontent.com/mckinsey/vizro/main/.github/images/toolkit_vizro_ai.gif">
+  <img alt="Gif to demonstrate Vizro-AI" src="https://raw.githubusercontent.com/mckinsey/vizro/main/.github/images/toolkit_vizro_ai.gif" width="600">
+</picture>
 
 <p>
 <font size="+1">

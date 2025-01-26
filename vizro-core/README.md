@@ -14,7 +14,10 @@
 
 [Documentation](https://vizro.readthedocs.io/en/stable/) | [Get Started](https://vizro.readthedocs.io/en/stable/pages/tutorials/first_dashboard/) | [Vizro examples gallery](http://vizro.mckinsey.com/)
 
-<img src="https://raw.githubusercontent.com/mckinsey/vizro/main/.github/images/vizro_spash_teaser.gif" width="600"/>
+<picture>
+  <source srcset="https://raw.githubusercontent.com/mckinsey/vizro/main/.github/images/vizro_spash_teaser.gif">
+  <img alt="Gif to demonstrate Vizro features" src="https://raw.githubusercontent.com/mckinsey/vizro/main/.github/images/vizro_spash_teaser.gif" width="600">
+</picture>
 <br>
 <br>
 <img src="https://raw.githubusercontent.com/mckinsey/vizro/main/.github/images/logo_watermarks.svg" width="300">
@@ -120,7 +123,10 @@ Vizro-AI is a separate package (called `vizro_ai`) that extends Vizro to incorpo
 
 Visit the [Vizro-AI documentation](https://vizro.readthedocs.io/projects/vizro-ai/) for more details.
 
-<img width="600" src="https://raw.githubusercontent.com/mckinsey/vizro/main/.github/images/toolkit_vizro_ai.gif">
+<picture>
+  <source srcset="https://raw.githubusercontent.com/mckinsey/vizro/main/.github/images/toolkit_vizro_ai.gif">
+  <img alt="Gif to demonstrate Vizro-AI" src="https://raw.githubusercontent.com/mckinsey/vizro/main/.github/images/toolkit_vizro_ai.gif" width="600">
+</picture>
 
 ## Installation and first steps
 
