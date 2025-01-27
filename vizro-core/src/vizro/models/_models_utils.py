@@ -18,12 +18,6 @@ def _log_call(method):
 
 
 # Validators for reuse
-def validate_min_length(cls, value):
-    if not value:
-        raise ValueError("Ensure this value has at least 1 item.")
-    return value
-
-
 def check_captured_callable_model(value):
     if isinstance(value, CapturedCallable):
         captured_callable = value

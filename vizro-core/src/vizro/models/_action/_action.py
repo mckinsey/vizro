@@ -5,7 +5,7 @@ from pprint import pformat
 from typing import Annotated, Any, Union
 
 from dash import Input, Output, State, callback, html
-from pydantic import Field, StringConstraints, field_validator
+from pydantic import AfterValidator, Field, StringConstraints, field_validator
 from pydantic.json_schema import SkipJsonSchema
 
 from vizro.models import VizroBaseModel
@@ -13,6 +13,22 @@ from vizro.models._models_utils import _log_call
 from vizro.models.types import CapturedCallable, validate_captured_callable
 
 logger = logging.getLogger(__name__)
+
+
+# TODO: Problem: generic Action model shouldn't depend on details of particular actions like export_data.
+# Possible solutions: make a generic mapping of action functions to validation functions or the imports they
+# require, and make the code here look up the appropriate validation using the function as key
+# This could then also involve other validations currently only carried out at run-time in pre-defined actions, such
+# as e.g. checking if the correct arguments have been provided to the file_format in export_data.
+def validate_predefined_actions(function):
+    if function._function.__name__ == "export_data":
+        file_format = function._arguments.get("file_format")
+        if file_format not in [None, "csv", "xlsx"]:
+            raise ValueError(f'Unknown "file_format": {file_format}. Known file formats: "csv", "xlsx".')
+        if file_format == "xlsx":
+            if importlib.util.find_spec("openpyxl") is None and importlib.util.find_spec("xlsxwriter") is None:
+                raise ModuleNotFoundError("You must install either openpyxl or xlsxwriter to export to xlsx format.")
+    return function
 
 
 class Action(VizroBaseModel):
@@ -27,9 +43,13 @@ class Action(VizroBaseModel):
 
     """
 
-    function: SkipJsonSchema[CapturedCallable] = Field(
-        ..., json_schema_extra={"mode": "action", "import_path": "vizro.actions"}, description="Action function."
-    )
+    function: Annotated[
+        SkipJsonSchema[CapturedCallable],
+        AfterValidator(validate_predefined_actions),
+        Field(
+            ..., json_schema_extra={"mode": "action", "import_path": "vizro.actions"}, description="Action function."
+        ),
+    ]
     inputs: list[Annotated[str, StringConstraints(pattern="^[^.]+[.][^.]+$")]] = Field(
         [],
         description="Inputs in the form `<component_id>.<property>` passed to the action function.",
@@ -41,25 +61,6 @@ class Action(VizroBaseModel):
 
     # Validators
     _validate_function = field_validator("function", mode="before")(validate_captured_callable)
-
-    # TODO: Problem: generic Action model shouldn't depend on details of particular actions like export_data.
-    # Possible solutions: make a generic mapping of action functions to validation functions or the imports they
-    # require, and make the code here look up the appropriate validation using the function as key
-    # This could then also involve other validations currently only carried out at run-time in pre-defined actions, such
-    # as e.g. checking if the correct arguments have been provided to the file_format in export_data.
-    @field_validator("function")
-    @classmethod
-    def validate_predefined_actions(cls, function):
-        if function._function.__name__ == "export_data":
-            file_format = function._arguments.get("file_format")
-            if file_format not in [None, "csv", "xlsx"]:
-                raise ValueError(f'Unknown "file_format": {file_format}. Known file formats: "csv", "xlsx".')
-            if file_format == "xlsx":
-                if importlib.util.find_spec("openpyxl") is None and importlib.util.find_spec("xlsxwriter") is None:
-                    raise ModuleNotFoundError(
-                        "You must install either openpyxl or xlsxwriter to export to xlsx format."
-                    )
-        return function
 
     def _get_callback_mapping(self):
         """Builds callback inputs and outputs for the Action model callback, and returns action required components.

@@ -27,7 +27,6 @@ class Figure(VizroBaseModel):
         Field(
             json_schema_extra={"mode": "figure", "import_path": "vizro.figures"},
             description="Function that returns a figure-like object.",
-            validate_default=True,
         ),
     ]
 

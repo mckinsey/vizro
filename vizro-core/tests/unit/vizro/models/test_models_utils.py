@@ -7,10 +7,6 @@ import vizro.models as vm
 
 
 class TestSharedValidators:
-    def test_validate_min_length(self, model_with_layout):
-        with pytest.raises(ValidationError, match="List should have at least 1 item after validation, not 0"):
-            model_with_layout(title="Title", components=[])
-
     @pytest.mark.parametrize(
         "captured_callable, error_message",
         [
