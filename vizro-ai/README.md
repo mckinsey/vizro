@@ -1,17 +1,3 @@
-<br><br>
-
-<div align="center">
-
-<picture>
-  <source media="(prefers-color-scheme: dark)" srcset="https://raw.githubusercontent.com/mckinsey/vizro/main/.github/images/Vizro_Github_Banner_Dark_Mode.png">
-  <source media="(prefers-color-scheme: light)" srcset="https://raw.githubusercontent.com/mckinsey/vizro/main/.github/images/Vizro_Github_Banner_Light_Mode.png">
-  <img alt="Vizro logo" src="https://raw.githubusercontent.com/mckinsey/vizro/main/.github/images/Vizro_Github_Banner_Light_Mode.png" width="250">
-</picture>
-
-</div>
-
-<br>
-
 <h1 align="center">Vizro-AI</h1>
 
 <div align="center" markdown="1">
