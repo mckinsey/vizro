@@ -96,12 +96,6 @@ def generate_json_template(extracted_values: dict[str, str]) -> go.layout.Templa
         yaxis_gridcolor=GRID_COLOR,
         annotationdefaults_font_color=FONT_COLOR_PRIMARY,
     )
-
-    # "map" only available in plotly>=5.24.0, will replace "mapbox" soon. Until then, we need to set both.
-    # We need the if statement here in case the user is using an older version of plotly.
-    if "map" in layout:
-        layout.map.style = "carto-darkmatter"
-
     template.data.bar = [go.Bar(marker_line_color=BG_COLOR)]
     template.data.waterfall = [
         go.Waterfall(
