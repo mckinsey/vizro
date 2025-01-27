@@ -4,21 +4,14 @@ from typing import Annotated, Literal, Optional, Union, cast
 
 import dash_bootstrap_components as dbc
 from dash import dcc, html
-from pydantic import (
-    AfterValidator,
-    Field,
-    PrivateAttr,
-    StrictBool,
-    ValidationInfo,
-    model_validator,
-)
+from pydantic import AfterValidator, Field, PrivateAttr, StrictBool, ValidationInfo, model_validator
 from pydantic.functional_serializers import PlainSerializer
 
 from vizro.models import Action, VizroBaseModel
 from vizro.models._action._actions_chain import _action_validator_factory
 from vizro.models._components.form._form_utils import get_options_and_default, validate_options_dict, validate_value
 from vizro.models._models_utils import _log_call
-from vizro.models.types import MultiValueType, OptionsType, SingleValueType
+from vizro.models.types import MultiValueType, OptionsDictType, OptionsType, SingleValueType
 
 
 def _get_list_of_labels(full_options: OptionsType) -> Union[list[StrictBool], list[float], list[str], list[date]]:
@@ -49,6 +42,18 @@ def validate_multi(multi, info: ValidationInfo):
     if info.data["value"] and multi is False and isinstance(info.data["value"], list):
         raise ValueError("Please set multi=True if providing a list of default values.")
     return multi
+
+
+def _add_select_all_option(full_options: OptionsType) -> OptionsType:
+    """Adds a 'Select All' option to the list of options."""
+    # TODO: Move option to dictionary conversion within `get_options_and_default` function as here: https://github.com/mckinsey/vizro/pull/961#discussion_r1923356781
+    options_dict = [
+        cast(OptionsDictType, {"label": option, "value": option}) if not isinstance(option, dict) else option
+        for option in full_options
+    ]
+
+    options_dict[0] = {"label": html.Div(["ALL"]), "value": "ALL"}
+    return options_dict
 
 
 class Dropdown(VizroBaseModel):
@@ -103,18 +108,20 @@ class Dropdown(VizroBaseModel):
     def __call__(self, options):
         full_options, default_value = get_options_and_default(options=options, multi=self.multi)
         option_height = _calculate_option_height(full_options)
+        altered_options = _add_select_all_option(full_options=full_options) if self.multi else full_options
 
         return html.Div(
             children=[
                 dbc.Label(self.title, html_for=self.id) if self.title else None,
                 dcc.Dropdown(
                     id=self.id,
-                    options=full_options,
+                    options=altered_options,
                     value=self.value if self.value is not None else default_value,
                     multi=self.multi,
                     optionHeight=option_height,
                     persistence=True,
                     persistence_type="session",
+                    className="dropdown",
                 ),
             ]
         )

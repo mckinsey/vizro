@@ -20,7 +20,6 @@ page = vm.Page(
             ],
         ),
     ],
-    controls=[vm.Filter(column="year")],
 )
 
 dashboard = vm.Dashboard(pages=[page])

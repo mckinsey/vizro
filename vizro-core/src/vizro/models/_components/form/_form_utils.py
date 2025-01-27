@@ -9,7 +9,7 @@ from vizro._constants import ALL_OPTION
 from vizro.models.types import MultiValueType, OptionsType, SingleValueType
 
 
-def get_options_and_default(options: OptionsType, multi: bool = False):
+def get_options_and_default(options: OptionsType, multi: bool = False) -> tuple[OptionsType, SingleValueType]:
     """Gets list of full options and default value based on user input type of `options`."""
     if multi:
         if all(isinstance(option, dict) for option in options):

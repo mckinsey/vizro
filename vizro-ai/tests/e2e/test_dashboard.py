@@ -55,7 +55,7 @@ def logic(  # noqa: PLR0912, PLR0915
         config: json config of the expected dashboard
 
     """
-    report_dir = "tests/score/reports"
+    report_dir = "tests/e2e/reports"
     os.makedirs(report_dir, exist_ok=True)
 
     app = Vizro().build(dashboard).dash

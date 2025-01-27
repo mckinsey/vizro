@@ -2,6 +2,7 @@ from pathlib import Path
 
 import dash
 import dash_bootstrap_components as dbc
+import dash_mantine_components as dmc
 import plotly.io as pio
 import pytest
 from asserts import assert_component_equal
@@ -271,20 +272,25 @@ class TestDashboardBuild:
             layout={"title": {"pad_l": 0, "pad_r": 0}, "margin_l": 24, "margin_t": 24, "margin_b": 16}
         )
 
-        expected_dashboard_container = html.Div(
-            id="dashboard-container",
+        expected_dashboard_container = dmc.MantineProvider(
             children=[
-                html.Div(id="vizro_version", children=vizro.__version__, hidden=True),
-                dcc.Store(
-                    id="vizro_themes",
-                    data={
-                        "vizro_dark": dashboard_vizro_dark,
-                        "vizro_light": dashboard_vizro_light,
-                    },
-                ),
-                ActionLoop._create_app_callbacks(),
-                dash.page_container,
+                html.Div(
+                    id="dashboard-container",
+                    children=[
+                        html.Div(id="vizro_version", children=vizro.__version__, hidden=True),
+                        dcc.Store(
+                            id="vizro_themes",
+                            data={
+                                "vizro_dark": dashboard_vizro_dark,
+                                "vizro_light": dashboard_vizro_light,
+                            },
+                        ),
+                        ActionLoop._create_app_callbacks(),
+                        dash.page_container,
+                    ],
+                )
             ],
+            theme={"primaryColor": "gray"},
         )
         assert_component_equal(dashboard.build(), expected_dashboard_container)
 

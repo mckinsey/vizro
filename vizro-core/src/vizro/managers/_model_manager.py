@@ -4,7 +4,7 @@ from __future__ import annotations
 
 import random
 import uuid
-from collections.abc import Generator, Iterable
+from collections.abc import Collection, Generator, Iterable, Mapping
 from typing import TYPE_CHECKING, NewType, Optional, TypeVar, Union, cast
 
 from vizro.managers._managers_utils import _state_modifier
@@ -84,28 +84,28 @@ class ModelManager:
     def __get_model_children(self, model: Model) -> Generator[Model, None, None]:
         """Iterates through children of `model`.
 
-        Currently looks only through certain fields so might miss some children models.
+        Currently, this method looks only through certain fields (components, tabs, controls, actions, selector) and
+            their children so might miss some children models.
         """
         from vizro.models import VizroBaseModel
 
         if isinstance(model, VizroBaseModel):
             yield model
+        elif isinstance(model, Mapping):
+            # We don't look through keys because Vizro models aren't hashable.
+            for single_model in model.values():
+                yield from self.__get_model_children(single_model)
+        elif isinstance(model, Collection) and not isinstance(model, str):
+            for single_model in model:
+                yield from self.__get_model_children(single_model)
 
         # TODO: in future this list should not be maintained manually. Instead we should look through all model children
-        # by looking at model.model_fields.
+        #  by looking at model.model_fields.
         model_fields = ["components", "tabs", "controls", "actions", "selector"]
 
         for model_field in model_fields:
             if (model_field_value := getattr(model, model_field, None)) is not None:
-                if isinstance(model_field_value, list):
-                    # For fields like components that are list of models.
-                    for single_model_field_value in model_field_value:
-                        yield from self.__get_model_children(single_model_field_value)
-                else:
-                    # For fields that have single model like selector.
-                    yield from self.__get_model_children(model_field_value)
-                # We don't handle dicts of models at the moment. See below TODO for how this will all be improved in
-                #  future.
+                yield from self.__get_model_children(model_field_value)
 
         # TODO: Add navigation, accordions and other page objects. Won't be needed once have made whole model
         #  manager work better recursively and have better ways to navigate the hierarchy. In pydantic v2 this would use

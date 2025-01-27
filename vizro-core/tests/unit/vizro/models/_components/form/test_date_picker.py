@@ -6,7 +6,7 @@ import dash_bootstrap_components as dbc
 import dash_mantine_components as dmc
 import pytest
 from asserts import assert_component_equal
-from dash import dcc, html
+from dash import html
 from pydantic import ValidationError
 
 import vizro.models as vm
@@ -113,25 +113,20 @@ class TestBuildMethod:
             min="2023-01-01", max="2023-07-01", range=range, value=value, id="datepicker_id", title="Test title"
         ).build()
 
-        date_picker_class = dmc.DateRangePicker if range else dmc.DatePicker
-        additional_kwargs = {"allowSingleDateInRange": True} if range else {}
         expected_datepicker = html.Div(
             [
                 dbc.Label("Test title", html_for="datepicker_id"),
-                date_picker_class(
+                dmc.DatePickerInput(
                     id="datepicker_id",
                     minDate="2023-01-01",
-                    maxDate="2023-07-02",
                     value=value,
+                    maxDate="2023-07-01",
                     persistence=True,
                     persistence_type="session",
-                    dropdownPosition="bottom-start",
-                    disabledDates="2023-07-02",
-                    clearable=False,
-                    className="datepicker",
-                    **additional_kwargs,
+                    type="range" if range else "default",
+                    allowSingleDateInRange=True,
+                    withCellSpacing=False,
                 ),
-                dcc.Store(id="datepicker_id_input_store", storage_type="session", data=value),
             ],
         )
         assert_component_equal(date_picker, expected_datepicker)

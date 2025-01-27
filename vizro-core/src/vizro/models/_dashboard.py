@@ -8,6 +8,7 @@ from typing import TYPE_CHECKING, Annotated, Literal, Optional, TypedDict, cast
 
 import dash
 import dash_bootstrap_components as dbc
+import dash_mantine_components as dmc
 import plotly.io as pio
 from dash import (
     ClientsideFunction,
@@ -146,7 +147,7 @@ class Dashboard(VizroBaseModel):
                 State("collapsable-left-side", "is_open"),
             )
 
-        return html.Div(
+        layout = html.Div(
             id="dashboard-container",
             children=[
                 html.Div(id="vizro_version", children=vizro.__version__, hidden=True),
@@ -160,6 +161,15 @@ class Dashboard(VizroBaseModel):
                 ActionLoop._create_app_callbacks(),
                 dash.page_container,
             ],
+        )
+
+        # children=[layout] as a list rather than children=layout, so that app.dash.layout.children.append works to
+        # easily add things to the Dash layout. In future we might have a neater function for patching components into
+        # the Dash layout in which case this could change.
+        return dmc.MantineProvider(
+            children=[layout],
+            # Use the `theme` to style all Mantine components with a Vizro theme. For more info see https://www.dash-mantine-components.com/components/mantineprovider
+            theme={"primaryColor": "gray"},
         )
 
     def _validate_logos(self):
