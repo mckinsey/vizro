@@ -301,7 +301,7 @@
   background: var(--text-primary);
   border-top-left-radius: 8px;
   bottom: 0;
-  color: var(--text-primary-inverted);
+  color: var(--text-primary-inverted) !important;
   display: flex;
   font-size: 0.8rem;
   font-weight: 500;
