@@ -8,7 +8,7 @@ from pydantic import AfterValidator, BeforeValidator, Field, conlist
 from vizro.models import VizroBaseModel
 from vizro.models._components.form import Checklist, Dropdown, RadioItems, RangeSlider, Slider
 from vizro.models._layout import set_layout
-from vizro.models._models_utils import _log_call, check_captured_callable
+from vizro.models._models_utils import _log_call, check_captured_callable_model
 from vizro.models.types import _FormComponentType
 
 if TYPE_CHECKING:
@@ -27,7 +27,7 @@ class Form(VizroBaseModel):
 
     type: Literal["form"] = "form"
     # TODO[mypy], see: https://github.com/pydantic/pydantic/issues/156 for components field
-    components: conlist(Annotated[_FormComponentType, BeforeValidator(check_captured_callable)], min_length=1)  # type: ignore[valid-type]
+    components: conlist(Annotated[_FormComponentType, BeforeValidator(check_captured_callable_model)], min_length=1)  # type: ignore[valid-type]
     layout: Annotated[Optional[Layout], AfterValidator(set_layout), Field(default=None, validate_default=True)]
 
     @_log_call

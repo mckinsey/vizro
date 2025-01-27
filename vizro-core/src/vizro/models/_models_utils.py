@@ -24,7 +24,7 @@ def validate_min_length(cls, value):
     return value
 
 
-def check_captured_callable(value):
+def check_captured_callable_model(value):
     if isinstance(value, CapturedCallable):
         captured_callable = value
     elif isinstance(value, _SupportsCapturedCallable):

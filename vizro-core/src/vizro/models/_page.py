@@ -23,7 +23,7 @@ from vizro.managers._model_manager import FIGURE_MODELS, DuplicateIDError
 from vizro.models import Action, Filter, Layout, VizroBaseModel
 from vizro.models._action._actions_chain import ActionsChain, Trigger
 from vizro.models._layout import set_layout
-from vizro.models._models_utils import _log_call, check_captured_callable
+from vizro.models._models_utils import _log_call, check_captured_callable_model
 
 from .types import ComponentType, ControlType
 
@@ -63,7 +63,7 @@ class Page(VizroBaseModel):
     """
 
     # TODO[mypy], see: https://github.com/pydantic/pydantic/issues/156 for components field
-    components: conlist(Annotated[ComponentType, BeforeValidator(check_captured_callable)], min_length=1)  # type: ignore[valid-type]
+    components: conlist(Annotated[ComponentType, BeforeValidator(check_captured_callable_model)], min_length=1)  # type: ignore[valid-type]
     title: str = Field(default=..., description="Title to be displayed.")
     description: str = Field("", description="Description for meta tags.")
     layout: Annotated[Optional[Layout], AfterValidator(set_layout), Field(default=None, validate_default=True)]

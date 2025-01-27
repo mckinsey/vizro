@@ -7,7 +7,7 @@ from pydantic import AfterValidator, BeforeValidator, Field, conlist
 
 from vizro.models import VizroBaseModel
 from vizro.models._layout import set_layout
-from vizro.models._models_utils import _log_call, check_captured_callable
+from vizro.models._models_utils import _log_call, check_captured_callable_model
 from vizro.models.types import ComponentType
 
 if TYPE_CHECKING:
@@ -29,7 +29,7 @@ class Container(VizroBaseModel):
     type: Literal["container"] = "container"
     # TODO[mypy], see: https://github.com/pydantic/pydantic/issues/156 for components field
     components: conlist(
-        Annotated[ComponentType, BeforeValidator(check_captured_callable), Field(default=...)],  # type: ignore[valid-type]
+        Annotated[ComponentType, BeforeValidator(check_captured_callable_model), Field(default=...)],  # type: ignore[valid-type]
         min_length=1,
     )
     title: str = Field(default=..., description="Title to be displayed.")
