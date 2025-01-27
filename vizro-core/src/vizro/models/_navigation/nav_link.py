@@ -40,7 +40,7 @@ class NavLink(VizroBaseModel):
     def pre_build(self):
         from vizro.models._navigation.accordion import Accordion
 
-        self._nav_selector = Accordion(pages=self.pages)  # type: ignore[arg-type] #TODO[mypy]: this is fine, but how best to fix?
+        self._nav_selector = Accordion(pages=self.pages)  # type: ignore[arg-type]
 
     @_log_call
     def build(self, *, active_page_id=None):

@@ -210,9 +210,8 @@ class Dashboard(VizroBaseModel):
         # Shared across pages but slightly differ in content. These could possibly be done by a clientside
         # callback instead.
         page_title = html.H2(id="page-title", children=page.title)
-        navigation: _NavBuildType = cast(Navigation, self.navigation).build(  # TODO[mypy]: debatable, as could be None?
-            active_page_id=page.id
-        )
+        # cannot actually be None if you check pages and layout field together
+        navigation: _NavBuildType = cast(Navigation, self.navigation).build(active_page_id=page.id)
         nav_bar = navigation["nav-bar"]
         nav_panel = navigation["nav-panel"]
 

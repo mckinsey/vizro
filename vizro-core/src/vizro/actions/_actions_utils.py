@@ -114,9 +114,7 @@ def _apply_filter_interaction(
     """
     for ctd_filter_interaction in ctds_filter_interaction:
         triggered_model = model_manager[ctd_filter_interaction["modelID"]["id"]]
-        data_frame = cast(  # TODO[mypy]: define on base model?
-            FigureWithFilterInteractionType, triggered_model
-        )._filter_interaction(
+        data_frame = cast(FigureWithFilterInteractionType, triggered_model)._filter_interaction(
             data_frame=data_frame,
             target=target,
             ctd_filter_interaction=ctd_filter_interaction,
@@ -129,7 +127,7 @@ def _validate_selector_value_none(value: Union[SingleValueType, MultiValueType])
     if value == NONE_OPTION:
         return None
     elif isinstance(value, list):
-        return [i for i in value if i != NONE_OPTION] or [None]
+        return [i for i in value if i != NONE_OPTION] or [None]  # type: ignore[list-item]
     return value
 
 
@@ -203,7 +201,7 @@ def _get_parametrized_config(
             # So we need to ensure that we always return a list only as well to provide consistent types.
             parameter_value = [option["value"] if isinstance(option, dict) else option for option in selector.options]
 
-        parameter_value = _validate_selector_value_none(parameter_value)
+        parameter_value = _validate_selector_value_none(parameter_value)  # type: ignore[arg-type]
 
         for action in _get_component_actions(selector):
             if action.function._function.__name__ != "_parameter":

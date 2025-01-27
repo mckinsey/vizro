@@ -224,7 +224,7 @@ class TestRangeSliderInstantiation:
     @pytest.mark.parametrize(
         "marks, expected",
         [
-            # TODO[pydantic],MS: why is this not failing, should it not be converted to float?
+            # TODO[MS]: why is this not failing, should it not be converted to float?
             ({i: str(i) for i in range(0, 10, 5)}, {i: str(i) for i in range(0, 10, 5)}),  # int - str
             ({1.0: "1", 1.5: "1.5"}, {1: "1", 1.5: "1.5"}),  # float - str (but see validator)
             (None, None),

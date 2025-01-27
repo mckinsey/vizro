@@ -22,7 +22,8 @@ class Tabs(VizroBaseModel):
     """
 
     type: Literal["tabs"] = "tabs"
-    tabs: conlist(Container, min_length=1)
+    # TODO[mypy], see: https://github.com/pydantic/pydantic/issues/156 for tabs field
+    tabs: conlist(Container, min_length=1)  # type: ignore[valid-type]
 
     @_log_call
     def build(self):

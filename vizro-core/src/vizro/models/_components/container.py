@@ -27,7 +27,8 @@ class Container(VizroBaseModel):
     """
 
     type: Literal["container"] = "container"
-    components: conlist(Annotated[ComponentType, BeforeValidator(check_captured_callable), Field(...)], min_length=1)
+    # TODO[mypy], see: https://github.com/pydantic/pydantic/issues/156 for components field
+    components: conlist(Annotated[ComponentType, BeforeValidator(check_captured_callable), Field(...)], min_length=1)  # type: ignore[valid-type]
     title: str = Field(..., description="Title to be displayed.")
     layout: Annotated[Optional[Layout], AfterValidator(set_layout), Field(default=None, validate_default=True)]
 
@@ -42,7 +43,10 @@ class Container(VizroBaseModel):
         # 3) New field in Container like short_title to allow tab label to be set independently
         from vizro.models import Layout
 
-        self.layout = cast(Layout, self.layout)  # TODO[mypy]: debatable as could be none?
+        self.layout = cast(
+            Layout,  # cannot actually be None if you check components and layout field together
+            self.layout,
+        )
         components_container = self.layout.build()
         for component_idx, component in enumerate(self.components):
             components_container[f"{self.layout.id}_{component_idx}"].children = component.build()

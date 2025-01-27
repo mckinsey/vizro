@@ -34,6 +34,7 @@ warn_redundant_casts = true
 warn_return_any = false
 warn_unused_configs = true
 warn_unused_ignores = true
+disable_error_code = "call-arg" # https://github.com/python/mypy/issues/14850 seems to not fix it
 
 [[tool.mypy.overrides]]
 disable_error_code = "name-defined"

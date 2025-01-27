@@ -26,7 +26,8 @@ class Form(VizroBaseModel):
     """
 
     type: Literal["form"] = "form"
-    components: conlist(Annotated[_FormComponentType, BeforeValidator(check_captured_callable)], min_length=1)
+    # TODO[mypy], see: https://github.com/pydantic/pydantic/issues/156 for components field
+    components: conlist(Annotated[_FormComponentType, BeforeValidator(check_captured_callable)], min_length=1)  # type: ignore[valid-type]
     layout: Annotated[Optional[Layout], AfterValidator(set_layout), Field(None, validate_default=True)]
 
     @_log_call
@@ -41,7 +42,10 @@ class Form(VizroBaseModel):
 
     @_log_call
     def build(self):
-        self.layout = cast(Layout, self.layout)  # TODO[mypy]: debatable as could be none?
+        self.layout = cast(
+            Layout,  # cannot actually be None if you check components and layout field together
+            self.layout,
+        )
         components_container = self.layout.build()
         for component_idx, component in enumerate(self.components):
             components_container[f"{self.layout.id}_{component_idx}"].children = component.build()

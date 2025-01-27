@@ -169,7 +169,7 @@ def _add_type_to_annotated_union_if_found(
 ) -> type[Any]:
     def _split_types(type_annotation: type[Any]) -> type[Any]:
         outer_type = get_origin(type_annotation)
-        inner_types = get_args(type_annotation)  # TODO: [MS] what if multiple, or what if not first
+        inner_types = get_args(type_annotation)  # TODO[MS]:  what if multiple, or what if not first?
         if outer_type is None or len(inner_types) < 1:
             raise ValueError("Unsupported annotation type")
         if len(inner_types) > 1:

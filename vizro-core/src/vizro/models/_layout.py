@@ -32,6 +32,9 @@ def _get_unique_grid_component_ids(grid: list[list[int]]):
 def set_layout(layout, info: ValidationInfo):
     from vizro.models import Layout
 
+    # This exists only to eagerly raise the error, otherwise obscure error message on eg Page()
+    # Same for similar code in other places
+    # TODO: find another solution that clashes less with typing
     if "components" not in info.data:
         return layout
 

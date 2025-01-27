@@ -62,7 +62,8 @@ class Page(VizroBaseModel):
 
     """
 
-    components: conlist(Annotated[ComponentType, BeforeValidator(check_captured_callable)], min_length=1)
+    # TODO[mypy], see: https://github.com/pydantic/pydantic/issues/156 for components field
+    components: conlist(Annotated[ComponentType, BeforeValidator(check_captured_callable)], min_length=1)  # type: ignore[valid-type]
     title: str = Field(..., description="Title to be displayed.")
     description: str = Field("", description="Description for meta tags.")
     layout: Annotated[Optional[Layout], AfterValidator(set_layout), Field(default=None, validate_default=True)]
@@ -95,9 +96,9 @@ class Page(VizroBaseModel):
 
     # This is a modification of the original `model_serializer` decorator that allows for the `context` to be passed
     # It allows skipping the `id` serialization if it is the same as the `title`
-    @model_serializer(mode="wrap")
-    def _serialize_id(self, nxt: SerializerFunctionWrapHandler, info: FieldSerializationInfo):
-        result = nxt(self)
+    @model_serializer(mode="wrap")  # type: ignore[type-var]
+    def _serialize_id(self, handler: SerializerFunctionWrapHandler, info: FieldSerializationInfo):
+        result = handler(self)
         if info.context is not None and info.context.get("add_name", False):
             result["__vizro_model__"] = self.__class__.__name__
         if self.title == self.id:
@@ -137,7 +138,10 @@ class Page(VizroBaseModel):
         controls_content = [control.build() for control in self.controls]
         control_panel = html.Div(id="control-panel", children=controls_content, hidden=not controls_content)
 
-        self.layout = cast(Layout, self.layout)  # TODO[mypy]: debatable, as could be None?
+        self.layout = cast(
+            Layout,
+            self.layout,  # cannot actually be None if you check components and layout field together
+        )
         components_container = self.layout.build()
         for component_idx, component in enumerate(self.components):
             components_container[f"{self.layout.id}_{component_idx}"].children = component.build()
