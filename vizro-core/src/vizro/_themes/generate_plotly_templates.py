@@ -46,7 +46,7 @@ def extract_bs_variables_from_css(variables: list[str], css_content: str) -> tup
     return extracted_dark, extracted_light
 
 
-def generate_json_template(extracted_values: dict[str, str]):
+def generate_json_template(extracted_values: dict[str, str]) -> go.layout.Template:
     """Generates the Plotly JSON chart template."""
     FONT_COLOR_PRIMARY = extracted_values["BS-PRIMARY"]
     BG_COLOR = extracted_values["BS-BODY-BG"]
@@ -58,43 +58,44 @@ def generate_json_template(extracted_values: dict[str, str]):
     COLORS = get_colors()
     template = create_template_common()
     layout = template.layout
-
-    layout.font.color = FONT_COLOR_PRIMARY
-    layout.title.font.color = FONT_COLOR_PRIMARY
-    layout.legend.font.color = FONT_COLOR_PRIMARY
-    layout.legend.title.font.color = FONT_COLOR_PRIMARY
-    layout.paper_bgcolor = BG_COLOR
-    layout.plot_bgcolor = BG_COLOR
-    layout.geo.bgcolor = BG_COLOR
-    layout.geo.lakecolor = BG_COLOR
-    layout.geo.landcolor = BG_COLOR
-    layout.polar.bgcolor = BG_COLOR
-    layout.polar.angularaxis.gridcolor = GRID_COLOR
-    layout.polar.angularaxis.linecolor = AXIS_COLOR
-    layout.polar.radialaxis.gridcolor = GRID_COLOR
-    layout.polar.radialaxis.linecolor = AXIS_COLOR
-    layout.ternary.bgcolor = BG_COLOR
-    layout.ternary.aaxis.gridcolor = GRID_COLOR
-    layout.ternary.aaxis.linecolor = AXIS_COLOR
-    layout.ternary.baxis.gridcolor = GRID_COLOR
-    layout.ternary.baxis.linecolor = AXIS_COLOR
-    layout.ternary.caxis.gridcolor = GRID_COLOR
-    layout.ternary.caxis.linecolor = AXIS_COLOR
-    layout.mapbox.style = "carto-darkmatter"
-    layout.coloraxis.colorbar.tickcolor = AXIS_COLOR
-    layout.coloraxis.colorbar.tickfont.color = FONT_COLOR_SECONDARY
-    layout.coloraxis.colorbar.title.font.color = FONT_COLOR_SECONDARY
-    layout.xaxis.title.font.color = FONT_COLOR_PRIMARY
-    layout.xaxis.tickcolor = AXIS_COLOR
-    layout.xaxis.tickfont.color = FONT_COLOR_SECONDARY
-    layout.xaxis.linecolor = AXIS_COLOR
-    layout.xaxis.gridcolor = GRID_COLOR
-    layout.yaxis.title.font.color = FONT_COLOR_PRIMARY
-    layout.yaxis.tickcolor = AXIS_COLOR
-    layout.yaxis.tickfont.color = FONT_COLOR_SECONDARY
-    layout.yaxis.linecolor = AXIS_COLOR
-    layout.yaxis.gridcolor = GRID_COLOR
-    layout.annotationdefaults.font.color = FONT_COLOR_PRIMARY
+    layout.update(
+        font_color=FONT_COLOR_PRIMARY,
+        title_font_color=FONT_COLOR_PRIMARY,
+        legend_font_color=FONT_COLOR_PRIMARY,
+        legend_title_font_color=FONT_COLOR_PRIMARY,
+        paper_bgcolor=BG_COLOR,
+        plot_bgcolor=BG_COLOR,
+        geo_bgcolor=BG_COLOR,
+        geo_lakecolor=BG_COLOR,
+        geo_landcolor=BG_COLOR,
+        polar_bgcolor=BG_COLOR,
+        polar_angularaxis_gridcolor=GRID_COLOR,
+        polar_angularaxis_linecolor=AXIS_COLOR,
+        polar_radialaxis_gridcolor=GRID_COLOR,
+        polar_radialaxis_linecolor=AXIS_COLOR,
+        ternary_bgcolor=BG_COLOR,
+        ternary_aaxis_gridcolor=GRID_COLOR,
+        ternary_aaxis_linecolor=AXIS_COLOR,
+        ternary_baxis_gridcolor=GRID_COLOR,
+        ternary_baxis_linecolor=AXIS_COLOR,
+        ternary_caxis_gridcolor=GRID_COLOR,
+        ternary_caxis_linecolor=AXIS_COLOR,
+        mapbox_style="carto-darkmatter",
+        coloraxis_colorbar_tickcolor=AXIS_COLOR,
+        coloraxis_colorbar_tickfont_color=FONT_COLOR_SECONDARY,
+        coloraxis_colorbar_title_font_color=FONT_COLOR_SECONDARY,
+        xaxis_title_font_color=FONT_COLOR_PRIMARY,
+        xaxis_tickcolor=AXIS_COLOR,
+        xaxis_tickfont_color=FONT_COLOR_SECONDARY,
+        xaxis_linecolor=AXIS_COLOR,
+        xaxis_gridcolor=GRID_COLOR,
+        yaxis_title_font_color=FONT_COLOR_PRIMARY,
+        yaxis_tickcolor=AXIS_COLOR,
+        yaxis_tickfont_color=FONT_COLOR_SECONDARY,
+        yaxis_linecolor=AXIS_COLOR,
+        yaxis_gridcolor=GRID_COLOR,
+        annotationdefaults_font_color=FONT_COLOR_PRIMARY,
+    )
 
     # "map" only available in plotly>=5.24.0, will replace "mapbox" soon. Until then, we need to set both.
     # We need the if statement here in case the user is using an older version of plotly.

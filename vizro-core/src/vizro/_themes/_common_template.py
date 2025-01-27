@@ -5,18 +5,12 @@ from plotly import graph_objects as go
 from vizro._themes._colors import get_colors
 
 
-def create_template_common():
-    """Create general themed plotly template.
+def create_template_common() -> go.layout.Template:
+    """Creates template with common values for dark and light theme.
 
-    Returns:
-    -------
-        A plotly template object containing the general theme
-        with optional keys specified here:
-        https://plotly.com/python/reference/layout/
-
+    Returns: A plotly template object, see https://plotly.com/python/reference/layout/.
     """
     COLORS = get_colors()
-
     template_common = go.layout.Template()
     template_common.layout = go.Layout(
         font_family="Inter, sans-serif, Arial",
@@ -95,5 +89,4 @@ def create_template_common():
         annotationdefaults_showarrow=False,
         annotationdefaults_font_size=14,
     )
-
     return template_common
