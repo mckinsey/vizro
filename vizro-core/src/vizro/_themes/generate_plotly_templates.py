@@ -1,3 +1,5 @@
+"""Generates Plotly JSON templates for the dark and light themes."""
+
 import argparse
 import json
 import re
@@ -29,9 +31,7 @@ def _extract_last_two_occurrences(variable: str, css_content: str) -> tuple[Opti
     return None, None
 
 
-def extract_bs_variables_from_css(
-    variables: list[str], css_content: str
-) -> tuple[dict[str, Optional[str]], dict[str, Optional[str]]]:
+def extract_bs_variables_from_css(variables: list[str], css_content: str) -> tuple[dict[str, str], dict[str, str]]:
     """Extract the last two occurrences for each variable in the CSS file."""
     extracted_dark = {}
     extracted_light = {}
@@ -46,7 +46,7 @@ def extract_bs_variables_from_css(
     return extracted_dark, extracted_light
 
 
-def generate_json_template(extracted_values: dict[str, Optional[str]]):
+def generate_json_template(extracted_values: dict[str, str]):
     """Generates the Plotly JSON chart template."""
     FONT_COLOR_PRIMARY = extracted_values["BS-PRIMARY"]
     BG_COLOR = extracted_values["BS-BODY-BG"]
@@ -57,48 +57,49 @@ def generate_json_template(extracted_values: dict[str, Optional[str]]):
     # Apply common values
     COLORS = get_colors()
     template = create_template_common()
+    layout = template.layout
 
-    template.layout.font.color = FONT_COLOR_PRIMARY
-    template.layout.title.font.color = FONT_COLOR_PRIMARY
-    template.layout.legend.font.color = FONT_COLOR_PRIMARY
-    template.layout.legend.title.font.color = FONT_COLOR_PRIMARY
-    template.layout.paper_bgcolor = BG_COLOR
-    template.layout.plot_bgcolor = BG_COLOR
-    template.layout.geo.bgcolor = BG_COLOR
-    template.layout.geo.lakecolor = BG_COLOR
-    template.layout.geo.landcolor = BG_COLOR
-    template.layout.polar.bgcolor = BG_COLOR
-    template.layout.polar.angularaxis.gridcolor = GRID_COLOR
-    template.layout.polar.angularaxis.linecolor = AXIS_COLOR
-    template.layout.polar.radialaxis.gridcolor = GRID_COLOR
-    template.layout.polar.radialaxis.linecolor = AXIS_COLOR
-    template.layout.ternary.bgcolor = BG_COLOR
-    template.layout.ternary.aaxis.gridcolor = GRID_COLOR
-    template.layout.ternary.aaxis.linecolor = AXIS_COLOR
-    template.layout.ternary.baxis.gridcolor = GRID_COLOR
-    template.layout.ternary.baxis.linecolor = AXIS_COLOR
-    template.layout.ternary.caxis.gridcolor = GRID_COLOR
-    template.layout.ternary.caxis.linecolor = AXIS_COLOR
-    template.layout.mapbox.style = "carto-darkmatter"
-    template.layout.coloraxis.colorbar.tickcolor = AXIS_COLOR
-    template.layout.coloraxis.colorbar.tickfont.color = FONT_COLOR_SECONDARY
-    template.layout.coloraxis.colorbar.title.font.color = FONT_COLOR_SECONDARY
-    template.layout.xaxis.title.font.color = FONT_COLOR_PRIMARY
-    template.layout.xaxis.tickcolor = AXIS_COLOR
-    template.layout.xaxis.tickfont.color = FONT_COLOR_SECONDARY
-    template.layout.xaxis.linecolor = AXIS_COLOR
-    template.layout.xaxis.gridcolor = GRID_COLOR
-    template.layout.yaxis.title.font.color = FONT_COLOR_PRIMARY
-    template.layout.yaxis.tickcolor = AXIS_COLOR
-    template.layout.yaxis.tickfont.color = FONT_COLOR_SECONDARY
-    template.layout.yaxis.linecolor = AXIS_COLOR
-    template.layout.yaxis.gridcolor = GRID_COLOR
-    template.layout.annotationdefaults.font.color = FONT_COLOR_PRIMARY
+    layout.font.color = FONT_COLOR_PRIMARY
+    layout.title.font.color = FONT_COLOR_PRIMARY
+    layout.legend.font.color = FONT_COLOR_PRIMARY
+    layout.legend.title.font.color = FONT_COLOR_PRIMARY
+    layout.paper_bgcolor = BG_COLOR
+    layout.plot_bgcolor = BG_COLOR
+    layout.geo.bgcolor = BG_COLOR
+    layout.geo.lakecolor = BG_COLOR
+    layout.geo.landcolor = BG_COLOR
+    layout.polar.bgcolor = BG_COLOR
+    layout.polar.angularaxis.gridcolor = GRID_COLOR
+    layout.polar.angularaxis.linecolor = AXIS_COLOR
+    layout.polar.radialaxis.gridcolor = GRID_COLOR
+    layout.polar.radialaxis.linecolor = AXIS_COLOR
+    layout.ternary.bgcolor = BG_COLOR
+    layout.ternary.aaxis.gridcolor = GRID_COLOR
+    layout.ternary.aaxis.linecolor = AXIS_COLOR
+    layout.ternary.baxis.gridcolor = GRID_COLOR
+    layout.ternary.baxis.linecolor = AXIS_COLOR
+    layout.ternary.caxis.gridcolor = GRID_COLOR
+    layout.ternary.caxis.linecolor = AXIS_COLOR
+    layout.mapbox.style = "carto-darkmatter"
+    layout.coloraxis.colorbar.tickcolor = AXIS_COLOR
+    layout.coloraxis.colorbar.tickfont.color = FONT_COLOR_SECONDARY
+    layout.coloraxis.colorbar.title.font.color = FONT_COLOR_SECONDARY
+    layout.xaxis.title.font.color = FONT_COLOR_PRIMARY
+    layout.xaxis.tickcolor = AXIS_COLOR
+    layout.xaxis.tickfont.color = FONT_COLOR_SECONDARY
+    layout.xaxis.linecolor = AXIS_COLOR
+    layout.xaxis.gridcolor = GRID_COLOR
+    layout.yaxis.title.font.color = FONT_COLOR_PRIMARY
+    layout.yaxis.tickcolor = AXIS_COLOR
+    layout.yaxis.tickfont.color = FONT_COLOR_SECONDARY
+    layout.yaxis.linecolor = AXIS_COLOR
+    layout.yaxis.gridcolor = GRID_COLOR
+    layout.annotationdefaults.font.color = FONT_COLOR_PRIMARY
 
     # "map" only available in plotly>=5.24.0, will replace "mapbox" soon. Until then, we need to set both.
     # We need the if statement here in case the user is using an older version of plotly.
-    if "map" in template["layout"]:
-        template.layout.map.style = "carto-darkmatter"
+    if "map" in layout:
+        layout.map.style = "carto-darkmatter"
 
     template.data.bar = [go.Bar(marker_line_color=BG_COLOR)]
     template.data.waterfall = [
