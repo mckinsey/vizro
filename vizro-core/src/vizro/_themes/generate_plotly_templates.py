@@ -107,7 +107,7 @@ def generate_json_template(extracted_values: dict[str, str]) -> go.layout.Templa
             connector={"line": {"color": AXIS_COLOR, "width": 1}},
         )
     ]
-    return template.to_plotly_json()
+    return template
 
 
 if __name__ == "__main__":

@@ -228,9 +228,6 @@
     },
     "mapbox": {
       "style": "carto-darkmatter"
-    },
-    "map": {
-      "style": "carto-darkmatter"
     }
   },
   "data": {
