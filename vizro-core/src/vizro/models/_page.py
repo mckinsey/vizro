@@ -64,7 +64,7 @@ class Page(VizroBaseModel):
 
     # TODO[mypy], see: https://github.com/pydantic/pydantic/issues/156 for components field
     components: conlist(Annotated[ComponentType, BeforeValidator(check_captured_callable)], min_length=1)  # type: ignore[valid-type]
-    title: str = Field(..., description="Title to be displayed.")
+    title: str = Field(default=..., description="Title to be displayed.")
     description: str = Field("", description="Description for meta tags.")
     layout: Annotated[Optional[Layout], AfterValidator(set_layout), Field(default=None, validate_default=True)]
     controls: list[ControlType] = []

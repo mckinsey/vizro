@@ -218,8 +218,8 @@ class Model(vm.VizroBaseModel):
 
 class ModelWithFieldSetting(vm.VizroBaseModel):
     type: Literal["exclude_model"] = "exclude_model"
-    title: str = Field(..., description="Title to be displayed.")
-    foo: Optional[str] = Field(None, description="Foo field.", validate_default=True)
+    title: str = Field(default=..., description="Title to be displayed.")
+    foo: Optional[str] = Field(default=None, description="Foo field.", validate_default=True)
 
     # Set a field with regular validator
     @field_validator("foo")

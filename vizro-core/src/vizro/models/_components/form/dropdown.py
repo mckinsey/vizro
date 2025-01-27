@@ -80,7 +80,7 @@ class Dropdown(VizroBaseModel):
     value: Annotated[
         Optional[Union[SingleValueType, MultiValueType]],
         AfterValidator(validate_value),
-        Field(None, validate_default=True),
+        Field(default=None, validate_default=True),
     ]
     multi: Annotated[
         bool,

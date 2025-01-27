@@ -31,12 +31,14 @@ class DatePicker(VizroBaseModel):
     """
 
     type: Literal["date_picker"] = "date_picker"
-    min: Optional[date] = Field(None, description="Start date for date picker.")
-    max: Annotated[Optional[date], AfterValidator(validate_max), Field(None, description="End date for date picker.")]
+    min: Optional[date] = Field(default=None, description="Start date for date picker.")
+    max: Annotated[
+        Optional[date], AfterValidator(validate_max), Field(default=None, description="End date for date picker.")
+    ]
     value: Annotated[
         Optional[Union[list[date], date]],
         AfterValidator(validate_range_value),
-        Field(None, description="Default date/dates for date picker."),
+        Field(default=None, description="Default date/dates for date picker."),
     ]
     title: str = Field("", description="Title to be displayed.")
     range: Annotated[

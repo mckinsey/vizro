@@ -30,7 +30,9 @@ class Checklist(VizroBaseModel):
 
     type: Literal["checklist"] = "checklist"
     options: OptionsType = []
-    value: Annotated[Optional[MultiValueType], AfterValidator(validate_value), Field(None, validate_default=True)]
+    value: Annotated[
+        Optional[MultiValueType], AfterValidator(validate_value), Field(default=None, validate_default=True)
+    ]
     title: str = Field("", description="Title to be displayed")
     actions: Annotated[
         list[Action],

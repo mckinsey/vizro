@@ -94,7 +94,7 @@ class Filter(VizroBaseModel):
     """
 
     type: Literal["filter"] = "filter"
-    column: str = Field(..., description="Column of DataFrame to filter.")
+    column: str = Field(default=..., description="Column of DataFrame to filter.")
     targets: list[Annotated[ModelID, AfterValidator(check_target_present)]] = Field(
         [],
         description="Target component to be affected by filter. "

@@ -28,7 +28,7 @@ class Form(VizroBaseModel):
     type: Literal["form"] = "form"
     # TODO[mypy], see: https://github.com/pydantic/pydantic/issues/156 for components field
     components: conlist(Annotated[_FormComponentType, BeforeValidator(check_captured_callable)], min_length=1)  # type: ignore[valid-type]
-    layout: Annotated[Optional[Layout], AfterValidator(set_layout), Field(None, validate_default=True)]
+    layout: Annotated[Optional[Layout], AfterValidator(set_layout), Field(default=None, validate_default=True)]
 
     @_log_call
     def pre_build(self):

@@ -91,7 +91,7 @@ class Dashboard(VizroBaseModel):
 
     """
 
-    pages: Annotated[list[Page], Field(..., validate_default=True)]
+    pages: list[Page]
     theme: Literal["vizro_dark", "vizro_light"] = Field(
         default="vizro_dark", description="Layout theme to be applied across dashboard. Defaults to `vizro_dark`."
     )

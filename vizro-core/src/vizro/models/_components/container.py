@@ -28,8 +28,11 @@ class Container(VizroBaseModel):
 
     type: Literal["container"] = "container"
     # TODO[mypy], see: https://github.com/pydantic/pydantic/issues/156 for components field
-    components: conlist(Annotated[ComponentType, BeforeValidator(check_captured_callable), Field(...)], min_length=1)  # type: ignore[valid-type]
-    title: str = Field(..., description="Title to be displayed.")
+    components: conlist(
+        Annotated[ComponentType, BeforeValidator(check_captured_callable), Field(default=...)],  # type: ignore[valid-type]
+        min_length=1,
+    )
+    title: str = Field(default=..., description="Title to be displayed.")
     layout: Annotated[Optional[Layout], AfterValidator(set_layout), Field(default=None, validate_default=True)]
 
     @_log_call
