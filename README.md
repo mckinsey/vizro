@@ -16,7 +16,7 @@
 
 <picture>
   <source srcset="https://raw.githubusercontent.com/mckinsey/vizro/main/.github/images/vizro_spash_teaser.gif">
-  <img alt="Gif to demonstrate Vizro features" src="https://raw.githubusercontent.com/mckinsey/vizro/main/.github/images/vizro_spash_teaser.gif" width="600">
+  <img alt="Gif to demonstrate Vizro features" src="https://raw.githubusercontent.com/mckinsey/vizro/main/.github/images/vizro_spash_teaser_fallback.png" width="600">
 </picture>
 <br>
 <br>
@@ -125,7 +125,7 @@ Visit the [Vizro-AI documentation](https://vizro.readthedocs.io/projects/vizro-a
 
 <picture>
   <source srcset="https://raw.githubusercontent.com/mckinsey/vizro/main/.github/images/toolkit_vizro_ai.gif">
-  <img alt="Gif to demonstrate Vizro-AI" src="https://raw.githubusercontent.com/mckinsey/vizro/main/.github/images/toolkit_vizro_ai.gif" width="600">
+  <img alt="Gif to demonstrate Vizro-AI" src="https://raw.githubusercontent.com/mckinsey/vizro/main/.github/images/toolkit_vizro_ai_fallback.png" width="600">
 </picture>
 
 ## Installation and first steps
