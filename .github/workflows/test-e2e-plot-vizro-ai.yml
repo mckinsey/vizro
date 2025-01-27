@@ -1,4 +1,4 @@
-name: Integration tests for VizroAI
+name: e2e plot tests for VizroAI
 
 defaults:
   run:
@@ -20,9 +20,9 @@ env:
   FORCE_COLOR: 1
 
 jobs:
-  test-integration-vizro-ai-fork:
+  test-e2e-plot-vizro-ai-fork:
     if: ${{ github.event.pull_request.head.repo.fork }}
-    name: test-integration-vizro-ai on Py${{ matrix.config.python-version }} ${{ matrix.config.label }}
+    name: test-e2e-plot-vizro-ai on Py${{ matrix.config.python-version }} ${{ matrix.config.label }}
     runs-on: ${{ matrix.config.os }}
     strategy:
       fail-fast: false
@@ -69,9 +69,9 @@ jobs:
       - name: Passed fork step
         run: echo "Success!"
 
-  test-integration-vizro-ai:
+  test-e2e-plot-vizro-ai:
     if: ${{ ! github.event.pull_request.head.repo.fork }}
-    name: test-integration-vizro-ai on Py${{ matrix.config.python-version }} ${{ matrix.config.label }}
+    name: test-e2e-plot-vizro-ai on Py${{ matrix.config.python-version }} ${{ matrix.config.label }}
     runs-on: ${{ matrix.config.os }}
     strategy:
       fail-fast: false
@@ -126,17 +126,17 @@ jobs:
       - name: Show dependency tree
         run: hatch run ${{ matrix.config.hatch-env }}:pip tree
 
-      - name: Run vizro-ai integration tests with PyPI vizro
-        run: hatch run ${{ matrix.config.hatch-env }}:test-integration
+      - name: Run vizro-ai e2e plot tests with PyPI vizro
+        run: hatch run ${{ matrix.config.hatch-env }}:test-e2e-plot
         env:
           OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
           OPENAI_API_BASE: ${{ secrets.OPENAI_API_BASE }}
           VIZRO_TYPE: pypi
 
-      - name: Run vizro-ai integration tests with local vizro
+      - name: Run vizro-ai e2e plot tests with local vizro
         run: |
           hatch run ${{ matrix.config.hatch-env }}:pip install ../vizro-core
-          hatch run ${{ matrix.config.hatch-env }}:test-integration
+          hatch run ${{ matrix.config.hatch-env }}:test-e2e-plot
         env:
           OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
           OPENAI_API_BASE: ${{ secrets.OPENAI_API_BASE }}
@@ -149,7 +149,7 @@ jobs:
         with:
           payload: |
             {
-              "text": "Vizro-ai ${{ matrix.config.hatch-env }} integration tests build result: ${{ job.status }}\nBranch: ${{ github.head_ref }}\n${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}"
+              "text": "Vizro-ai ${{ matrix.config.hatch-env }} e2e plot tests build result: ${{ job.status }}\nBranch: ${{ github.head_ref }}\n${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}"
             }
         env:
           SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
