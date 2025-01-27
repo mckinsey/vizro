@@ -1,20 +1,22 @@
 import itertools
 from collections.abc import Mapping
-from typing import Literal
+from typing import Annotated, Literal, cast
 
 import dash_bootstrap_components as dbc
 from dash import get_relative_path
-
-try:
-    from pydantic.v1 import Field, validator
-except ImportError:  # pragma: no cov
-    from pydantic import Field, validator
+from pydantic import AfterValidator, BeforeValidator, Field
 
 from vizro._constants import ACCORDION_DEFAULT_TITLE
 from vizro.managers._model_manager import ModelID, model_manager
 from vizro.models import VizroBaseModel
 from vizro.models._models_utils import _log_call
 from vizro.models._navigation._navigation_utils import _validate_pages
+
+
+def coerce_pages_type(pages):
+    if isinstance(pages, Mapping):
+        return pages
+    return {ACCORDION_DEFAULT_TITLE: pages}
 
 
 class Accordion(VizroBaseModel):
@@ -27,15 +29,14 @@ class Accordion(VizroBaseModel):
     """
 
     type: Literal["accordion"] = "accordion"
-    pages: dict[str, list[str]] = Field({}, description="Mapping from name of a pages group to a list of page IDs.")
-
-    _validate_pages = validator("pages", allow_reuse=True)(_validate_pages)
-
-    @validator("pages", pre=True)
-    def coerce_pages_type(cls, pages):
-        if isinstance(pages, Mapping):
-            return pages
-        return {ACCORDION_DEFAULT_TITLE: pages}
+    pages: Annotated[
+        dict[
+            str, list[str]  # TODO[MS]:this is the type after validation, but the type before validation is NavPagesType
+        ],
+        AfterValidator(_validate_pages),
+        BeforeValidator(coerce_pages_type),
+        Field(default={}, description="Mapping from name of a pages group to a list of page IDs."),
+    ]
 
     @_log_call
     def build(self, *, active_page_id=None):
@@ -79,10 +80,12 @@ class Accordion(VizroBaseModel):
 
     def _create_nav_links(self, pages: list[str]):
         """Creates a `NavLink` for each provided page."""
+        from vizro.models import Page
+
         nav_links = []
 
         for page_id in pages:
-            page = model_manager[ModelID(str(page_id))]
+            page = cast(Page, model_manager[ModelID(str(page_id))])
             nav_links.append(
                 dbc.NavLink(
                     children=page.title,

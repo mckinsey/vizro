@@ -7,11 +7,7 @@ import plotly.io as pio
 import pytest
 from asserts import assert_component_equal
 from dash import dcc, html
-
-try:
-    from pydantic.v1 import ValidationError
-except ImportError:  # pragma: no cov
-    from pydantic import ValidationError
+from pydantic import ValidationError
 
 import vizro
 import vizro.models as vm
@@ -50,7 +46,7 @@ class TestDashboardInstantiation:
         assert dashboard.navigation.pages == ["Page 1"]
 
     def test_mandatory_pages_missing(self):
-        with pytest.raises(ValidationError, match="field required"):
+        with pytest.raises(ValidationError, match="Field required"):
             vm.Dashboard()
 
     def test_field_invalid_pages_empty_list(self):
@@ -58,11 +54,11 @@ class TestDashboardInstantiation:
             vm.Dashboard(pages=[])
 
     def test_field_invalid_pages_input_type(self):
-        with pytest.raises(ValidationError, match="5 validation errors for Dashboard"):
+        with pytest.raises(ValidationError, match="Input should be a valid dictionary or instance of Page"):
             vm.Dashboard(pages=[vm.Button()])
 
     def test_field_invalid_theme_input_type(self, page_1):
-        with pytest.raises(ValidationError, match="unexpected value; permitted: 'vizro_dark', 'vizro_light'"):
+        with pytest.raises(ValidationError, match="Input should be 'vizro_dark' or 'vizro_light'"):
             vm.Dashboard(pages=[page_1], theme="not_existing")
 
 

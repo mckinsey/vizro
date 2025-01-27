@@ -2,11 +2,7 @@ from typing import Literal
 
 import dash_bootstrap_components as dbc
 from dash import html
-
-try:
-    from pydantic.v1 import Field, PrivateAttr
-except ImportError:  # pragma: no cov
-    from pydantic import Field, PrivateAttr
+from pydantic import Field, PrivateAttr
 
 from vizro.models import Action, VizroBaseModel
 from vizro.models._action._actions_chain import _action_validator_factory

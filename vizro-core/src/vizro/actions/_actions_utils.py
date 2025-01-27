@@ -12,12 +12,18 @@ from vizro._constants import ALL_OPTION, NONE_OPTION
 from vizro.managers import data_manager, model_manager
 from vizro.managers._data_manager import DataSourceName
 from vizro.managers._model_manager import ModelID
-from vizro.models.types import MultiValueType, SelectorType, SingleValueType
+from vizro.models.types import (
+    FigureType,
+    FigureWithFilterInteractionType,
+    MultiValueType,
+    SelectorType,
+    SingleValueType,
+)
 
 if TYPE_CHECKING:
     from vizro.models import Action, VizroBaseModel
 
-ValidatedNoneValueType = Union[SingleValueType, MultiValueType, None, list[None]]
+ValidatedNoneValueType = Union[SingleValueType, MultiValueType, None, list[None], list[SingleValueType]]
 
 
 class CallbackTriggerDict(TypedDict):
@@ -108,7 +114,7 @@ def _apply_filter_interaction(
     """
     for ctd_filter_interaction in ctds_filter_interaction:
         triggered_model = model_manager[ctd_filter_interaction["modelID"]["id"]]
-        data_frame = triggered_model._filter_interaction(
+        data_frame = cast(FigureWithFilterInteractionType, triggered_model)._filter_interaction(
             data_frame=data_frame,
             target=target,
             ctd_filter_interaction=ctd_filter_interaction,
@@ -121,7 +127,7 @@ def _validate_selector_value_none(value: Union[SingleValueType, MultiValueType])
     if value == NONE_OPTION:
         return None
     elif isinstance(value, list):
-        return [i for i in value if i != NONE_OPTION] or [None]
+        return [i for i in value if i != NONE_OPTION] or [None]  # type: ignore[list-item]
     return value
 
 
@@ -182,20 +188,20 @@ def _get_parametrized_config(
     else:
         # TODO - avoid calling _captured_callable. Once we have done this we can remove _arguments from
         #  CapturedCallable entirely. This might mean not being able to address nested parameters.
-        config = deepcopy(model_manager[target].figure._arguments)
+        config = deepcopy(cast(FigureType, model_manager[target]).figure._arguments)
         del config["data_frame"]
 
     for ctd in ctds_parameter:
         # TODO: needs to be refactored so that it is independent of implementation details
         parameter_value = ctd["value"]
 
-        selector: SelectorType = model_manager[ctd["id"]]
+        selector = cast(SelectorType, model_manager[ctd["id"]])
         if hasattr(parameter_value, "__iter__") and ALL_OPTION in parameter_value:  # type: ignore[operator]
             # Even if an option is provided as list[dict], the Dash component only returns a list of values.
             # So we need to ensure that we always return a list only as well to provide consistent types.
             parameter_value = [option["value"] if isinstance(option, dict) else option for option in selector.options]
 
-        parameter_value = _validate_selector_value_none(parameter_value)
+        parameter_value = _validate_selector_value_none(parameter_value)  # type: ignore[arg-type]
 
         for action in _get_component_actions(selector):
             if action.function._function.__name__ != "_parameter":
@@ -241,7 +247,7 @@ def _get_unfiltered_data(
         dynamic_data_load_params = _get_parametrized_config(
             ctds_parameter=ctds_parameter, target=target, data_frame=True
         )
-        data_source_name = model_manager[target]["data_frame"]
+        data_source_name = cast(FigureType, model_manager[target])["data_frame"]
         multi_data_source_name_load_kwargs.append((data_source_name, dynamic_data_load_params["data_frame"]))
 
     return dict(zip(targets, data_manager._multi_load(multi_data_source_name_load_kwargs)))
@@ -276,19 +282,20 @@ def _get_modified_page_figures(
     #  Consider restructuring ctds to a more convenient form to make this possible.
     for target, unfiltered_data in target_to_data_frame.items():
         filtered_data = _apply_filters(unfiltered_data, ctds_filter, ctds_filter_interaction, target)
-        outputs[target] = model_manager[target](
+        outputs[target] = cast(FigureType, model_manager[target])(
             data_frame=filtered_data,
             **_get_parametrized_config(ctds_parameter=ctds_parameter, target=target, data_frame=False),
         )
 
     for target in control_targets:
-        ctd_filter = [item for item in ctds_filter if item["id"] == model_manager[target].selector.id]
+        target_model = cast(Filter, model_manager[target])
+        ctd_filter = [item for item in ctds_filter if item["id"] == cast(SelectorType, target_model.selector).id]
 
         # This only covers the case of cross-page actions when Filter in an output, but is not an input of the action.
         current_value = ctd_filter[0]["value"] if ctd_filter else None
 
         # target_to_data_frame contains all targets, including some which might not be relevant for the filter in
         # question. We filter to use just the relevant targets in Filter.__call__.
-        outputs[target] = model_manager[target](target_to_data_frame=target_to_data_frame, current_value=current_value)
+        outputs[target] = target_model(target_to_data_frame=target_to_data_frame, current_value=current_value)
 
     return outputs

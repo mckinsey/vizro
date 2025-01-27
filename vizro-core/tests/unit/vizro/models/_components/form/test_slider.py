@@ -4,11 +4,7 @@ import dash_bootstrap_components as dbc
 import pytest
 from asserts import assert_component_equal
 from dash import dcc, html
-
-try:
-    from pydantic.v1 import ValidationError
-except ImportError:  # pragma: no cov
-    from pydantic import ValidationError
+from pydantic import ValidationError
 
 import vizro.models as vm
 
@@ -119,11 +115,9 @@ class TestSliderInstantiation:
     @pytest.mark.parametrize(
         "marks, expected",
         [
-            ({i: str(i) for i in range(0, 10, 5)}, {i: str(i) for i in range(0, 10, 5)}),
-            ({15: 15, 25: 25}, {15: "15", 25: "25"}),  # all int
-            ({15.5: 15.5, 25.5: 25.5}, {15.5: "15.5", 25.5: "25.5"}),  # all floats
-            ({15.0: 15, 25.5: 25.5}, {15: "15", 25.5: "25.5"}),  # mixed floats
-            ({"15": 15, "25": 25}, {15: "15", 25: "25"}),  # all string
+            # TODO[MS]: why is this not failing, should it not be converted to float?
+            ({i: str(i) for i in range(0, 10, 5)}, {i: str(i) for i in range(0, 10, 5)}),  # int - str
+            ({1.0: "1", 1.5: "1.5"}, {1: "1", 1.5: "1.5"}),  # float - str (but see validator)
             (None, None),
         ],
     )
@@ -137,7 +131,7 @@ class TestSliderInstantiation:
             ]
 
     def test_invalid_marks(self):
-        with pytest.raises(ValidationError, match="2 validation errors for Slider"):
+        with pytest.raises(ValidationError, match="4 validation errors for Slider"):
             vm.Slider(min=1, max=10, marks={"start": 0, "end": 10})
 
     @pytest.mark.parametrize("step, expected", [(1, {}), (None, None)])
@@ -163,7 +157,7 @@ class TestSliderInstantiation:
         assert slider["slider-id"].marks == expected_marks
         assert slider["slider-id"].className == expected_class
 
-    @pytest.mark.parametrize("title", ["test", 1, 1.0, """## Test header""", ""])
+    @pytest.mark.parametrize("title", ["test", """## Test header""", ""])
     def test_valid_title(self, title):
         slider = vm.Slider(title=title)
 

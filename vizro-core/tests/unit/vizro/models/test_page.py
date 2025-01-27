@@ -1,11 +1,7 @@
 import re
 
 import pytest
-
-try:
-    from pydantic.v1 import ValidationError
-except ImportError:  # pragma: no cov
-    from pydantic import ValidationError
+from pydantic import ValidationError
 
 import vizro.models as vm
 from vizro._constants import ON_PAGE_LOAD_ACTION_PREFIX
@@ -42,11 +38,11 @@ class TestPageInstantiation:
         assert page.actions == []
 
     def test_mandatory_title_missing(self):
-        with pytest.raises(ValidationError, match="field required"):
+        with pytest.raises(ValidationError, match="Field required"):
             vm.Page(id="my-id", components=[vm.Button()])
 
     def test_mandatory_components_missing(self):
-        with pytest.raises(ValidationError, match="field required"):
+        with pytest.raises(ValidationError, match="Field required"):
             vm.Page(title="Page 1")
 
     def test_set_id_duplicate_title_valid(self):
@@ -85,7 +81,9 @@ class TestPageInstantiation:
         assert page.path == "/this-needs-fixing"
 
     def test_check_for_valid_control_types(self):
-        with pytest.raises(ValidationError, match=re.escape("(allowed values: 'filter', 'parameter')")):
+        with pytest.raises(
+            ValidationError, match=re.escape("'type' does not match any of the expected tags: 'filter', 'parameter'")
+        ):
             vm.Page(title="Page Title", components=[vm.Button()], controls=[vm.Button()])
 
 

@@ -402,18 +402,12 @@ As mentioned above, custom components can trigger action. To enable the custom c
 
     === "app.py"
         ```py
-        from typing import Literal
+        from typing import Annotated, Literal
 
         import dash_bootstrap_components as dbc
         import vizro.models as vm
-        from dash import html
+        from pydantic import AfterValidator, Field, PlainSerializer
         from vizro import Vizro
-
-        try:
-            from pydantic.v1 import Field, PrivateAttr
-        except ImportError:
-            from pydantic import PrivateAttr
-
         from vizro.models import Action
         from vizro.models._action._actions_chain import _action_validator_factory
         from vizro.models.types import capture
@@ -423,9 +417,14 @@ As mentioned above, custom components can trigger action. To enable the custom c
         class Carousel(vm.VizroBaseModel):
             type: Literal["carousel"] = "carousel"
             items: list
-            actions: list[Action] = []
-            # Here we set the action so a change in the active_index property of the custom component triggers the action
-            _set_actions = _action_validator_factory("active_index")
+            actions: Annotated[
+                list[Action],
+                # Here we set the action so a change in the active_index property of the custom component triggers the action
+                AfterValidator(_action_validator_factory("active_index")),
+                # Here we tell the serializer to only serialize the actions field
+                PlainSerializer(lambda x: x[0].actions),
+                Field(default=[]),
+            ]
 
             def build(self):
                 return dbc.Carousel(
@@ -437,6 +436,7 @@ As mentioned above, custom components can trigger action. To enable the custom c
         # 2. Add new components to expected type - here the selector of the parent components
         vm.Page.add_type("components", Carousel)
 
+
         # 3. Create custom action
         @capture("action")
         def slide_next_card(active_index):
@@ -444,6 +444,7 @@ As mentioned above, custom components can trigger action. To enable the custom c
                 return "Second slide"
 
             return "First slide"
+
 
         page = vm.Page(
             title="Custom Component",
@@ -459,9 +460,9 @@ As mentioned above, custom components can trigger action. To enable the custom c
                         vm.Action(
                             function=slide_next_card(),
                             inputs=["carousel.active_index"],
-                            outputs=["carousel-card.children"]
+                            outputs=["carousel-card.children"],
                         )
-                    ]
+                    ],
                 ),
             ],
         )

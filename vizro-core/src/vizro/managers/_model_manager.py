@@ -73,13 +73,13 @@ class ModelManager:
         import vizro.models as vm
 
         if model_type is FIGURE_MODELS:
-            model_type = (vm.Graph, vm.AgGrid, vm.Table, vm.Figure)
+            model_type = (vm.Graph, vm.AgGrid, vm.Table, vm.Figure)  # type: ignore[assignment]
         models = self.__get_model_children(page) if page is not None else self.__models.values()
 
         # Convert to list to avoid changing size when looping through at runtime.
         for model in list(models):
             if model_type is None or isinstance(model, model_type):
-                yield model
+                yield model  # type: ignore[misc]
 
     def __get_model_children(self, model: Model) -> Generator[Model, None, None]:
         """Iterates through children of `model`.
@@ -120,7 +120,7 @@ class ModelManager:
             return model
 
         for page in cast(Iterable[Page], self._get_models(Page)):
-            if model in self.__get_model_children(page):
+            if model in self.__get_model_children(page):  # type: ignore[operator]
                 return page
 
     @staticmethod

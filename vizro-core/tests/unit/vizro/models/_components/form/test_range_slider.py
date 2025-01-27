@@ -4,11 +4,7 @@ import dash_bootstrap_components as dbc
 import pytest
 from asserts import assert_component_equal
 from dash import dcc, html
-
-try:
-    from pydantic.v1 import ValidationError
-except ImportError:  # pragma: no cov
-    from pydantic import ValidationError
+from pydantic import ValidationError
 
 import vizro.models as vm
 
@@ -199,13 +195,13 @@ class TestRangeSliderInstantiation:
     @pytest.mark.parametrize(
         "value, match",
         [
-            ([0], "ensure this value has at least 2 items"),
-            ([], "ensure this value has at least 2 items"),
-            (2, "value is not a valid list"),
-            ([0, None], "1 validation error for RangeSlider"),
+            ([0], "List should have at least 2 items after validation"),
+            ([], "List should have at least 2 items after validation"),
+            (2, "Input should be a valid list"),
+            ([0, None], "Input should be a valid number"),
             ([None, None], "2 validation errors for RangeSlider"),
             ([-1, 11], "Please provide a valid value between the min and max value."),
-            ([1, 2, 3], "ensure this value has at most 2 items"),
+            ([1, 2, 3], "List should have at most 2 items after validation, not 3"),
         ],
     )
     def test_validate_slider_value_invalid(self, value, match):
@@ -228,11 +224,9 @@ class TestRangeSliderInstantiation:
     @pytest.mark.parametrize(
         "marks, expected",
         [
-            ({i: str(i) for i in range(0, 10, 5)}, {i: str(i) for i in range(0, 10, 5)}),
-            ({15: 15, 25: 25}, {15: "15", 25: "25"}),  # all int
-            ({15.5: 15.5, 25.5: 25.5}, {15.5: "15.5", 25.5: "25.5"}),  # all floats
-            ({15.0: 15, 25.5: 25.5}, {15: "15", 25.5: "25.5"}),  # mixed floats
-            ({"15": 15, "25": 25}, {15: "15", 25: "25"}),  # all string
+            # TODO[MS]: why is this not failing, should it not be converted to float?
+            ({i: str(i) for i in range(0, 10, 5)}, {i: str(i) for i in range(0, 10, 5)}),  # int - str
+            ({1.0: "1", 1.5: "1.5"}, {1: "1", 1.5: "1.5"}),  # float - str (but see validator)
             (None, None),
         ],
     )
@@ -246,7 +240,7 @@ class TestRangeSliderInstantiation:
             ]
 
     def test_invalid_marks(self):
-        with pytest.raises(ValidationError, match="2 validation errors for RangeSlider"):
+        with pytest.raises(ValidationError, match="4 validation errors for RangeSlider"):
             vm.RangeSlider(min=1, max=10, marks={"start": 0, "end": 10})
 
     @pytest.mark.parametrize("step, expected", [(1, {}), (None, None)])
@@ -272,7 +266,7 @@ class TestRangeSliderInstantiation:
         assert slider["slider-id"].marks == expected_marks
         assert slider["slider-id"].className == expected_class
 
-    @pytest.mark.parametrize("title", ["test", 1, 1.0, """## Test header""", ""])
+    @pytest.mark.parametrize("title", ["test", """## Test header""", ""])
     def test_valid_title(self, title):
         slider = vm.RangeSlider(title=title)
 

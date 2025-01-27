@@ -5,11 +5,7 @@ import re
 import pytest
 from asserts import assert_component_equal
 from dash import dcc, html
-
-try:
-    from pydantic.v1 import ValidationError
-except ImportError:  # pragma: no cov
-    from pydantic import ValidationError
+from pydantic import ValidationError
 
 import vizro.models as vm
 import vizro.plotly.express as px
@@ -51,7 +47,7 @@ class TestAgGridInstantiation:
         assert ag_grid.figure == standard_ag_grid
 
     def test_mandatory_figure_missing(self):
-        with pytest.raises(ValidationError, match="field required"):
+        with pytest.raises(ValidationError, match="Field required"):
             vm.AgGrid()
 
     def test_captured_callable_invalid(self, standard_go_chart):

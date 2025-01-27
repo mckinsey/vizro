@@ -1,18 +1,14 @@
 from __future__ import annotations
 
-from typing import TYPE_CHECKING, Literal
+from typing import TYPE_CHECKING, Annotated, Literal, Optional, cast
 
 from dash import html
-
-try:
-    from pydantic.v1 import validator
-except ImportError:  # pragma: no cov
-    from pydantic import validator
+from pydantic import AfterValidator, BeforeValidator, Field, conlist
 
 from vizro.models import VizroBaseModel
 from vizro.models._components.form import Checklist, Dropdown, RadioItems, RangeSlider, Slider
 from vizro.models._layout import set_layout
-from vizro.models._models_utils import _log_call, check_captured_callable, validate_min_length
+from vizro.models._models_utils import _log_call, check_captured_callable_model
 from vizro.models.types import _FormComponentType
 
 if TYPE_CHECKING:
@@ -25,20 +21,14 @@ class Form(VizroBaseModel):
     Args:
         type (Literal["form"]): Defaults to `"form"`.
         components (list[FormComponentType]): List of components used in the form.
-        layout (Layout): Defaults to `None`.
+        layout (Optional[Layout]): Defaults to `None`.
 
     """
 
     type: Literal["form"] = "form"
-    components: list[_FormComponentType]
-    layout: Layout = None  # type: ignore[assignment]
-
-    # Re-used validators
-    _check_captured_callable = validator("components", allow_reuse=True, each_item=True, pre=True)(
-        check_captured_callable
-    )
-    _validate_min_length = validator("components", allow_reuse=True, always=True)(validate_min_length)
-    _validate_layout = validator("layout", allow_reuse=True, always=True)(set_layout)
+    # TODO[mypy], see: https://github.com/pydantic/pydantic/issues/156 for components field
+    components: conlist(Annotated[_FormComponentType, BeforeValidator(check_captured_callable_model)], min_length=1)  # type: ignore[valid-type]
+    layout: Annotated[Optional[Layout], AfterValidator(set_layout), Field(default=None, validate_default=True)]
 
     @_log_call
     def pre_build(self):
@@ -52,6 +42,10 @@ class Form(VizroBaseModel):
 
     @_log_call
     def build(self):
+        self.layout = cast(
+            Layout,  # cannot actually be None if you check components and layout field together
+            self.layout,
+        )
         components_container = self.layout.build()
         for component_idx, component in enumerate(self.components):
             components_container[f"{self.layout.id}_{component_idx}"].children = component.build()

@@ -1,13 +1,10 @@
 from __future__ import annotations
 
-from dash import html
-
-try:
-    from pydantic.v1 import validator
-except ImportError:  # pragma: no cov
-    from pydantic import validator
+from typing import Annotated, Optional, cast
 
 import dash_bootstrap_components as dbc
+from dash import html
+from pydantic import AfterValidator, Field
 
 from vizro.models import VizroBaseModel
 from vizro.models._models_utils import _log_call
@@ -21,16 +18,13 @@ class Navigation(VizroBaseModel):
 
     Args:
         pages (NavPagesType): See [`NavPagesType`][vizro.models.types.NavPagesType]. Defaults to `[]`.
-        nav_selector (NavSelectorType): See [`NavSelectorType`][vizro.models.types.NavSelectorType].
+        nav_selector (Optional[NavSelectorType]): See [`NavSelectorType`][vizro.models.types.NavSelectorType].
             Defaults to `None`.
 
     """
 
-    pages: NavPagesType = []
-    nav_selector: NavSelectorType = None
-
-    # validators
-    _validate_pages = validator("pages", allow_reuse=True)(_validate_pages)
+    pages: Annotated[NavPagesType, AfterValidator(_validate_pages), Field(default=[])]
+    nav_selector: Optional[NavSelectorType] = None
 
     @_log_call
     def pre_build(self):
@@ -43,7 +37,7 @@ class Navigation(VizroBaseModel):
 
     @_log_call
     def build(self, *, active_page_id=None) -> _NavBuildType:
-        nav_selector = self.nav_selector.build(active_page_id=active_page_id)
+        nav_selector = cast(NavSelectorType, self.nav_selector).build(active_page_id=active_page_id)
 
         if "nav-bar" not in nav_selector:
             # e.g. nav_selector is Accordion and nav_selector.build returns single html.Div with id="nav-panel".

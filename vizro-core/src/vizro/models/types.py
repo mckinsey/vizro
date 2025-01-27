@@ -8,22 +8,12 @@ import importlib
 import inspect
 from contextlib import contextmanager
 from datetime import date
-from typing import Any, Literal, Protocol, Union, runtime_checkable
+from typing import Annotated, Any, Literal, Protocol, Union, runtime_checkable
 
 import plotly.io as pio
-
-try:
-    from pydantic.v1 import Field, StrictBool
-    from pydantic.v1.fields import ModelField
-    from pydantic.v1.schema import SkipField
-except ImportError:  # pragma: no cov
-    from pydantic import Field, StrictBool
-    from pydantic.fields import ModelField
-    from pydantic.schema import SkipField
-
-
-from typing import Annotated
-
+import pydantic_core as cs
+from pydantic import Field, StrictBool, ValidationInfo
+from pydantic.fields import FieldInfo
 from typing_extensions import TypedDict
 
 from vizro.charts._charts_utils import _DashboardReadyFigure
@@ -43,6 +33,13 @@ def _clean_module_string(module_string: str) -> str:
 @runtime_checkable
 class _SupportsCapturedCallable(Protocol):
     _captured_callable: CapturedCallable
+
+
+def validate_captured_callable(cls, value, info: ValidationInfo):
+    """Reusable validator for the `figure` argument of Figure like models."""
+    # TODO: We may want to double check on the mechanism of how field info is brought to
+    field_info = cls.model_fields[info.field_name]
+    return CapturedCallable._validate_captured_callable(value, field_info)
 
 
 class CapturedCallable:
@@ -172,29 +169,46 @@ class CapturedCallable:
         return self.__function
 
     @classmethod
-    def __modify_schema__(cls, field_schema: dict[str, Any], field: ModelField):
-        """Generates schema for field of this type."""
-        raise SkipField(f"{cls.__name__} {field.name} is excluded from the schema.")
+    def _validate_captured_callable(
+        cls,
+        captured_callable: Union[dict[str, Any], _SupportsCapturedCallable, CapturedCallable],
+        field_info: FieldInfo,
+    ):
+        value = cls._parse_json(captured_callable, field_info)
+        value = cls._extract_from_attribute(value)
+        value = cls._check_type(value, field_info)
+        return value
 
+    # TODO: The below could be transferred to a custom type similar to this example:
+    # https://docs.pydantic.dev/2.9/concepts/types/#handling-third-party-types
     @classmethod
-    def __get_validators__(cls):
-        """Makes type compatible with pydantic model without needing `arbitrary_types_allowed`."""
-        # Each validator receives as an input the value returned from the previous validator.
-        # captured_callable could be _SupportsCapturedCallable, CapturedCallable, dictionary from JSON/YAML or
-        # invalid type at this point. Begin by parsing it from JSON/YAML if applicable:
-        yield cls._parse_json
-        # At this point captured_callable is _SupportsCapturedCallable, CapturedCallable or invalid type. Next extract
-        # it from _SupportsCapturedCallable if applicable:
-        yield cls._extract_from_attribute
-        # At this point captured_callable is CapturedCallable or invalid type. Check it is in fact CapturedCallable
-        # and do final checks:
-        yield cls._check_type
+    def __get_pydantic_core_schema__(cls, source: Any, handler: Any) -> cs.core_schema.CoreSchema:
+        """Core validation, which boils down to checking if it is a custom type."""
+        return cs.core_schema.no_info_plain_validator_function(cls.core_validation)
+
+    @staticmethod
+    def core_validation(value: Any):
+        """Core validation logic."""
+        if not isinstance(value, CapturedCallable):
+            raise ValueError(f"Expected CustomType, got {type(value)}")
+        return value
+
+    # Once we have a custom schema for captured callables, we can bypass the core schema and return a custom schema.
+    # @classmethod
+    # def __get_pydantic_json_schema__(
+    #     cls, core_schema: cs.core_schema.CoreSchema, handler: GetJsonSchemaHandler
+    # ) -> JsonSchemaValue:
+    #     # Completely bypass the core schema and return a custom schema
+    #     return {
+    #         "type": "object",
+    #         "additionalProperties": {"oneOf": [{"type": "string"}, {"type": "object"}]},
+    #     }
 
     @classmethod
     def _parse_json(
         cls,
         captured_callable_config: Union[_SupportsCapturedCallable, CapturedCallable, dict[str, Any]],
-        field: ModelField,
+        field,
     ) -> Union[CapturedCallable, _SupportsCapturedCallable]:
         """Parses captured_callable_config specification from JSON/YAML.
 
@@ -217,7 +231,7 @@ class CapturedCallable:
                 "CapturedCallable object must contain the key '_target_' that gives the target function."
             ) from exc
 
-        import_path = field.field_info.extra["import_path"]
+        import_path = field.json_schema_extra["import_path"]
         try:
             function = getattr(importlib.import_module(import_path), function_name)
         except (AttributeError, ModuleNotFoundError) as exc:
@@ -243,10 +257,11 @@ class CapturedCallable:
         return captured_callable._captured_callable
 
     @classmethod
-    def _check_type(cls, captured_callable: CapturedCallable, field: ModelField) -> CapturedCallable:
+    def _check_type(cls, captured_callable: CapturedCallable, field_info: FieldInfo) -> CapturedCallable:
         """Checks captured_callable is right type and mode."""
-        expected_mode = field.field_info.extra["mode"]
-        import_path = field.field_info.extra["import_path"]
+        # TODO[mypy]: mypy doesn't recognize that all json_schema_extra are properly defined on all models that need it
+        expected_mode = field_info.json_schema_extra["mode"]  # type: ignore[index]
+        import_path = field_info.json_schema_extra["import_path"]  # type: ignore[index]
 
         if not isinstance(captured_callable, CapturedCallable):
             raise ValueError(
@@ -508,3 +523,8 @@ NavSelectorType = Annotated[
 ]
 """Discriminated union. Type of component for rendering navigation:
 [`Accordion`][vizro.models.Accordion] or [`NavBar`][vizro.models.NavBar]."""
+
+
+# Extra type groups used for mypy casting
+FigureWithFilterInteractionType = Union["Graph", "Table", "AgGrid"]
+FigureType = Union["Graph", "Table", "AgGrid", "Figure"]

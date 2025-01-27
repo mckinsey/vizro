@@ -3,14 +3,10 @@ from __future__ import annotations
 from typing import TYPE_CHECKING, Literal
 
 import dash_bootstrap_components as dbc
-
-try:
-    from pydantic.v1 import validator
-except ImportError:  # pragma: no cov
-    from pydantic import validator
+from pydantic import conlist
 
 from vizro.models import VizroBaseModel
-from vizro.models._models_utils import _log_call, validate_min_length
+from vizro.models._models_utils import _log_call
 
 if TYPE_CHECKING:
     from vizro.models._components import Container
@@ -26,9 +22,8 @@ class Tabs(VizroBaseModel):
     """
 
     type: Literal["tabs"] = "tabs"
-    tabs: list[Container]
-
-    _validate_tabs = validator("tabs", allow_reuse=True, always=True)(validate_min_length)
+    # TODO[mypy], see: https://github.com/pydantic/pydantic/issues/156 for tabs field
+    tabs: conlist(Container, min_length=1)  # type: ignore[valid-type]
 
     @_log_call
     def build(self):

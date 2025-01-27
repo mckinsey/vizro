@@ -1,17 +1,12 @@
 """Contains custom components used inside the dashboard."""
 
 from typing import Literal
+from urllib.parse import quote
 
 import dash_bootstrap_components as dbc
 import vizro.models as vm
 from dash import dcc, html
-
-try:
-    from pydantic.v1 import Field
-except ImportError:  # pragma: no cov
-    from pydantic import Field
-
-from urllib.parse import quote
+from pydantic import Field
 
 
 class CodeClipboard(vm.VizroBaseModel):

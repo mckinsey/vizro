@@ -4,11 +4,7 @@ import dash_bootstrap_components as dbc
 import pytest
 from asserts import assert_component_equal
 from dash import html
-
-try:
-    from pydantic.v1 import ValidationError
-except ImportError:  # pragma: no cov
-    from pydantic import ValidationError
+from pydantic import ValidationError
 
 import vizro.models as vm
 
@@ -31,7 +27,7 @@ class TestTabsInstantiation:
         assert tabs.type == "tabs"
 
     def test_mandatory_tabs_missing(self):
-        with pytest.raises(ValidationError, match="field required"):
+        with pytest.raises(ValidationError, match="Field required"):
             vm.Tabs(id="tabs-id")
 
 
