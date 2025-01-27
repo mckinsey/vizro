@@ -20,6 +20,7 @@ skip = "*.min.css.map,*.min.css,.vale/*, *assets/*,.github/*"
 [tool.mypy]
 # strict checks : strict = true
 check_untyped_defs = true
+disable_error_code = "call-arg"  # https://github.com/python/mypy/issues/14850 seems to not fix it
 disallow_any_generics = true
 disallow_incomplete_defs = false
 disallow_subclassing_any = false
@@ -34,7 +35,6 @@ warn_redundant_casts = true
 warn_return_any = false
 warn_unused_configs = true
 warn_unused_ignores = true
-disable_error_code = "call-arg" # https://github.com/python/mypy/issues/14850 seems to not fix it
 
 [[tool.mypy.overrides]]
 disable_error_code = "name-defined"

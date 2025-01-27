@@ -259,7 +259,7 @@ class CapturedCallable:
     @classmethod
     def _check_type(cls, captured_callable: CapturedCallable, field_info: FieldInfo) -> CapturedCallable:
         """Checks captured_callable is right type and mode."""
-        # TODO[mypy]: mypy cannot realise that all json_schema_extra are properly defined on all models
+        # TODO[mypy]: mypy doesn't recognize that all json_schema_extra are properly defined on all models that need it
         expected_mode = field_info.json_schema_extra["mode"]  # type: ignore[index]
         import_path = field_info.json_schema_extra["import_path"]  # type: ignore[index]
 
