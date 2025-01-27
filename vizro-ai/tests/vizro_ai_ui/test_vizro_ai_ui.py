@@ -70,6 +70,7 @@ def test_chart_ui(dash_duo, dashboard, fake_data):
 
     # check result
     dash_duo.wait_for_element(".language-python")
+    dash_duo.wait_for_contains_text("span[class='hljs-keyword']", "import")
 
     # check console logs for errors
     assert dash_duo.get_logs() == []
