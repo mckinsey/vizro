@@ -122,9 +122,8 @@ if __name__ == "__main__":
     for generated_template, file_name in zip([template_dark, template_light], ["vizro_dark.json", "vizro_light.json"]):
         existing_template_path = Path(f"{THEMES_FOLDER}/{file_name}")
         existing_template = json.loads(existing_template_path.read_text())
-
         if args.check:
-            if existing_template != generated_template:
+            if existing_template != generated_template.to_plotly_json():
                 sys.exit(f"Chart template `{file_name}` is out of date. Run `hatch run templates` to update it.")
             print(f"Chart template `{file_name}` is up to date 🎉")  # noqa: T201
         else:
