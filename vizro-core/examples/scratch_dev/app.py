@@ -683,7 +683,7 @@ def toggle_popover(n, is_open):
 progress = html.Div(
     [
         make_subheading("dbc.Progress", "progress"),
-        dbc.Progress("25%", value=25),
+        dbc.Progress(value=25, label="25%"),
         dbc.Progress(value=50, striped=True, className="my-2"),
         dbc.Progress(value=75, color="success"),
     ],
