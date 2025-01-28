@@ -23,7 +23,7 @@ from dash import (
 )
 
 import vizro
-from vizro._themes._templates.template_dashboard_overrides import dashboard_overrides
+from vizro._themes.template_dashboard_overrides import dashboard_overrides
 
 try:
     from pydantic.v1 import Field, validator
