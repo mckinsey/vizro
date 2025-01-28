@@ -25,7 +25,7 @@ Uncomment the section that is right (remove the HTML comment wrapper).
 
 ### Changed
 
-- Update `material-symbols-outlined.wolff2` to include the latest icons. ([#971](https://github.com/mckinsey/vizro/pull/971))
+- Update `material-symbols-outlined.wolff2` to include the latest icons. ([#972](https://github.com/mckinsey/vizro/pull/972))
 
 
 <!--
