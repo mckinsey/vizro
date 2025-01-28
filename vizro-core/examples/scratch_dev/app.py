@@ -1,26 +1,28 @@
 """Dev app to try things out."""
 
-from vizro import Vizro
 import vizro.models as vm
 import vizro.plotly.express as px
+from vizro import Vizro
+from vizro.figures import kpi_card
 
-from vizro.tables import dash_data_table
+tips = px.data.tips
 
-gapminder = px.data.gapminder()
-
+# Create a layout with five rows and four columns. The KPI card is positioned in the first cell, while the remaining cells are empty.
 page = vm.Page(
-    title="Page",
+    title="KPI card",
+    layout=vm.Layout(grid=[[0, 0, -1, -1]] + [[-1, -1, -1, -1]] * 2),
     components=[
-        vm.Table(
-            figure=dash_data_table(data_frame=gapminder),
-            title="Gapminder Data Insights",
+        vm.Figure(
+            figure=kpi_card(  # For more information, refer to the API reference for kpi_card
+                data_frame=tips,
+                value_column="tip",
+                value_format="${value:.2f}",
+                icon="folder_check",
+                title="KPI card I",
+            )
         )
     ],
-    controls=[
-        vm.Filter(column="continent", selector=vm.Dropdown(value=["Europe"])),
-        vm.Filter(column="continent", selector=vm.Dropdown(value="Europe", multi=False)),
-        vm.Filter(column="continent", selector=vm.Checklist()),
-    ],
+    controls=[vm.Filter(column="day", selector=vm.RadioItems())],
 )
 
 dashboard = vm.Dashboard(pages=[page])
