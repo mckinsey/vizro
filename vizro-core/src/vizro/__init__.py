@@ -16,9 +16,13 @@ pio.templates["vizro_dark"] = json.loads((base_path / "vizro_dark.json").read_te
 pio.templates["vizro_light"] = json.loads((base_path / "vizro_light.json").read_text())
 
 __all__ = ["Vizro"]
-
 __version__ = "0.1.32.dev0"
 
+
+# Enables the use of our own Bootstrap theme as `external_stylesheets=vizro.bootstrap`
+_git_branch = __version__ if "dev" not in __version__ else "main"
+BASE_EXTERNAL_URL = f"https://cdn.jsdelivr.net/gh/mckinsey/vizro@{_git_branch}/vizro-core/src/vizro/"
+bootstrap = f"{BASE_EXTERNAL_URL}static/css/vizro-bootstrap.min.css"
 
 # For the below _css_dist and _js_dist to be used by Dash, they must be retrieved by dash.resources.Css.get_all_css().
 # This means adding them to dash.development.base_component.ComponentRegistry. The simplest way to do this is to run
