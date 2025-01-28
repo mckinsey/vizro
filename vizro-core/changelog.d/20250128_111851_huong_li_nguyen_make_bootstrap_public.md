@@ -19,7 +19,7 @@ Uncomment the section that is right (remove the HTML comment wrapper).
 
 ### Added
 
-- Make `vizro-bootstrap` public so it can be used within `external_stylesheets`. ([#1](https://github.com/mckinsey/vizro/pull/1))
+- Make `vizro-bootstrap` public so it can be used within `external_stylesheets`. ([#970](https://github.com/mckinsey/vizro/pull/970))
 
 
 <!--
