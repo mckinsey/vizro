@@ -20,7 +20,7 @@ __version__ = "0.1.32.dev0"
 
 
 # Enables the use of our own Bootstrap theme as `external_stylesheets=vizro.bootstrap`
-_git_branch = __version__ if "dev" not in __version__ else "main"
+_git_branch = "tidy/make-bootstrap-public"
 BASE_EXTERNAL_URL = f"https://cdn.jsdelivr.net/gh/mckinsey/vizro@{_git_branch}/vizro-core/src/vizro/"
 bootstrap = f"{BASE_EXTERNAL_URL}static/css/vizro-bootstrap.min.css"
 
