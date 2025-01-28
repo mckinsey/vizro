@@ -1,4 +1,5 @@
 """Dev app to try things out."""
+
 import dash_bootstrap_components as dbc
 from dash import html, dcc, Dash, callback, Input, Output, State, clientside_callback
 import vizro
@@ -6,7 +7,6 @@ import vizro
 app = Dash(__name__, external_stylesheets=[vizro.bootstrap, dbc.icons.FONT_AWESOME])
 
 DBC_DOCS = "https://dash-bootstrap-components.opensource.faculty.ai/docs/components/"
-
 
 
 def make_subheading(label, link):
@@ -652,9 +652,7 @@ navbar = html.Div(
 popover = html.Div(
     [
         make_subheading("dbc.Popover", "popover"),
-        dbc.Button(
-            "Click to toggle popover", id="dbc-gallery-x-popover-target", color="danger"
-        ),
+        dbc.Button("Click to toggle popover", id="dbc-gallery-x-popover-target", color="danger"),
         dbc.Popover(
             [
                 dbc.PopoverHeader("Popover header"),
@@ -806,13 +804,16 @@ tabs = html.Div(
 )
 
 
-#----- toast
+# ----- toast
 
 toast = html.Div(
     [
         make_subheading("dbc.Toast", "toast"),
         dbc.Button(
-            "Open toast", id="dbc-gallery-x-auto-toast-toggle", color="primary", className="mb-3",
+            "Open toast",
+            id="dbc-gallery-x-auto-toast-toggle",
+            color="primary",
+            className="mb-3",
         ),
         dbc.Toast(
             html.P("This is the content of the toast", className="mb-0"),
@@ -889,10 +890,10 @@ layout = html.Div(
     className="dbc",
 )
 
-color_mode_switch =  html.Span(
+color_mode_switch = html.Span(
     [
         dbc.Label(className="fa fa-moon", html_for="color-mode-switch"),
-        dbc.Switch( id="color-mode-switch", value=False, className="d-inline-block ms-1", persistence=True),
+        dbc.Switch(id="color-mode-switch", value=False, className="d-inline-block ms-1", persistence=True),
         dbc.Label(className="fa fa-sun", html_for="color-mode-switch"),
     ]
 )
@@ -902,11 +903,8 @@ app.layout = dbc.Container(
         html.Div(["Bootstrap Light Dark Color Modes Demo"], className="bg-primary h3 p-2"),
         color_mode_switch,
         layout,
-
     ]
-
 )
-
 
 
 clientside_callback(
