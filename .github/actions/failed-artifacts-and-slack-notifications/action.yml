@@ -11,6 +11,7 @@ runs:
         cd ${{ env.PROJECT_PATH }}
         ls -l /tmp/dash_artifacts
         cp -r /tmp/dash_artifacts failed_screenshots
+        ls -l failed_screenshots
         cp *.png failed_screenshots || true
 
     - name: Archive production artifacts
