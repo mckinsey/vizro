@@ -30,18 +30,13 @@ jobs:
       - name: Update Material font
         run: |
           hatch run update-icons
-      - name: Check for changes
-        run: |
-          git config --global user.name "github-actions"
-          git config --global user.email "github-actions@github.com"
-          git fetch origin
-          git diff --exit-code || git checkout -b update-material-icons && git commit -am "Update Material Icons" && git push origin update-material-icons
-      - name: Create Pull Request
+      - name: Create PR if change detected
         uses: peter-evans/create-pull-request@v5
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
           commit-message: Update Material Icons
-          branch: tidy/update-material-icons
-          title: "[Tidy] Update Material Icons"
+          branch: bot/update-material-icons
+          title: "[Bot] Update Material Icons"
           body: "Automated update of Material Icons"
           base: main
+          delete-branch: true
