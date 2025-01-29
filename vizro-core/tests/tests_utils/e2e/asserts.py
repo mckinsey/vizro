@@ -36,8 +36,8 @@ def _create_image_difference(expected_image, result_image):
         # Calculate bounding rectangles around detected contour
         (x, y, width, height) = cv2.boundingRect(contour)
         # Draw red rectangle around difference area
-        cv2.rectangle(result_image, (x, y), (x + width, y + height), (0, 0, 255), 2)
-    return result_image
+        cv2.rectangle(expected_image, (x, y), (x + width, y + height), (0, 0, 255), 2)
+    return expected_image
 
 
 def make_screenshot_and_paths(driver, request_node_name):
@@ -54,7 +54,7 @@ def assert_image_equal(result_image_path, expected_image_path):
     expected_image_name = Path(expected_image_path).name
     result_image = cv2.imread(result_image_path)
     try:
-        _compare_images(expected_image, result_image)
+        _compare_images(expected_image=expected_image, result_image=result_image)
         # Deleting created branch image to leave only failed for github artifacts
         Path(result_image_path).unlink()
     except AssertionError as exc:

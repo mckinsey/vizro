@@ -73,8 +73,16 @@ To change the theme to `vizro_light` for all charts, run:
 
 ```python
 import plotly.io as pio
+import vizro.plotly.express as px
 
 pio.templates.default = "vizro_light"
+
+df = px.data.iris()
+px.scatter_matrix(
+    df,
+    dimensions=["sepal_length", "sepal_width", "petal_length", "petal_width"],
+    color="species",
+)
 ```
 
 ### Set themes for selected charts
