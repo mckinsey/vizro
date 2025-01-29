@@ -19,7 +19,7 @@ runs:
       with:
         name: Failed screenshots
         path: |
-          ${{ env.PROJECT_PATH }}failed_screenshots
+          ${{ env.PROJECT_PATH }}failed_screenshots/*.png
 
     - name: Send custom JSON data to Slack
       id: slack
