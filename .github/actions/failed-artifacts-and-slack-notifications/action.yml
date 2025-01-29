@@ -9,7 +9,7 @@ runs:
       run: |
         mkdir ${{ env.PROJECT_PATH }}failed_screenshots
         cd ${{ env.PROJECT_PATH }}
-        cp *.png failed_screenshots 2>/dev/null
+        cp *.png failed_screenshots || true
         cp -r /tmp/dash_artifacts failed_screenshots
 
     - name: Archive production artifacts
