@@ -20,6 +20,7 @@ example_cards = [
         value_column="Actual",
         title="KPI with aggregation",
         agg_func="median",
+        icon="folder_check_2",
     ),
     kpi_card(
         data_frame=df_kpi,
@@ -82,8 +83,20 @@ def test_kpi_card_component_library(dash_duo, request):
         ]
     )
     dash_duo.start_server(app)
-    dash_duo.wait_for_page(timeout=20)
-    dash_duo.wait_for_text_to_equal(".material-symbols-outlined", "shopping_cart")
+    dash_duo.wait_for_text_to_equal(
+        "div[class='vstack gap-4'] div:nth-of-type(1) div:nth-of-type(2) p[class='material-symbols-outlined']",
+        "folder_check_2",
+    )
+    dash_duo.wait_for_text_to_equal(
+        "div[class='vstack gap-4'] div:nth-of-type(1) div:nth-of-type(2) div[class='card-body']", "200.0"
+    )
+    dash_duo.wait_for_text_to_equal(
+        "div[class='vstack gap-4'] div:nth-of-type(2) div:nth-of-type(4) p[class='material-symbols-outlined']",
+        "shopping_cart",
+    )
+    dash_duo.wait_for_text_to_equal(
+        "div[class='vstack gap-4'] div:nth-of-type(2) div:nth-of-type(4) div[class='card-body']", "1000"
+    )
     result_image_path, expected_image_path = make_screenshot_and_paths(dash_duo.driver, request.node.name)
     assert_image_equal(result_image_path, expected_image_path)
     assert dash_duo.get_logs() == [], "browser console should contain no error"
