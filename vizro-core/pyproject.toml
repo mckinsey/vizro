@@ -81,7 +81,10 @@ filterwarnings = [
   # Ignore warning for Pydantic v1 API and Python 3.13:
   "ignore:Failing to pass a value to the 'type_params' parameter of 'typing.ForwardRef._evaluate' is deprecated:DeprecationWarning",
   # Ignore deprecation warning until this is solved: https://github.com/plotly/dash/issues/2590:
-  "ignore:HTTPResponse.getheader():DeprecationWarning"
+  "ignore:HTTPResponse.getheader():DeprecationWarning",
+  # Ignore deprecation warning as it comes from the plotly default template. In our templates `vizro_dark` and
+  # `vizro_light`, we do not use mapbox anymore, see: https://github.com/mckinsey/vizro/pull/974
+  "ignore:.*scattermapbox.*is deprecated.*Use.*scattermap.*instead:DeprecationWarning"
 ]
 norecursedirs = ["tests/tests_utils", "tests/js"]
 pythonpath = ["tests/tests_utils"]
