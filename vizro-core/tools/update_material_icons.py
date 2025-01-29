@@ -2,7 +2,7 @@
 import requests
 from pathlib import Path
 
-FONT_URL = "https://github.com/google/material-design-icons/blob/master/variablefont/MaterialSymbolsOutlined%5BFILL%2CGRAD%2Copsz%2Cwght%5D.woff2"
+FONT_URL = "https://github.com/google/material-design-icons/raw/refs/heads/master/variablefont/MaterialSymbolsOutlined%5BFILL,GRAD,opsz,wght%5D.woff2"
 LOCAL_PATH = Path(__file__).parent.parent / "src/vizro/static/css/fonts/material-symbols-outlined.woff2"
 
 def download_font(url, path):
