@@ -1,0 +1,47 @@
+name: Update Material Icons
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches:
+      - main
+  schedule:
+    - cron: "0 0 1 * *"  # Runs at midnight on the 1st of every month
+
+defaults:
+  run:
+    working-directory: vizro-core
+
+env:
+  PYTHON_VERSION: "3.12"
+
+jobs:
+  update-icons:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: ${{ env.PYTHON_VERSION }}
+      - name: Install Hatch
+        run: pip install hatch
+      - name: Update Material font
+        run: |
+          hatch run update-icons
+      - name: Check for changes
+        run: |
+          git config --global user.name "github-actions"
+          git config --global user.email "github-actions@github.com"
+          git fetch origin
+          git diff --exit-code || git checkout -b update-material-icons && git commit -am "Update Material Icons" && git push origin update-material-icons
+      - name: Create Pull Request
+        uses: peter-evans/create-pull-request@v5
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+          commit-message: Update Material Icons
+          branch: tidy/update-material-icons
+          title: "[Tidy] Update Material Icons"
+          body: "Automated update of Material Icons"
+          base: main
