@@ -1,5 +1,10 @@
-import e2e.constants as cnst
-from dashboard_pages import ag_grid_page, datepicker_page, filters_page, homepage, kpi_indicators_page, parameters_page
+import e2e.vizro.constants as cnst
+from pages.ag_grid_page import ag_grid_page
+from pages.datepicker_page import datepicker_page
+from pages.filters_page import filters_page
+from pages.homepage import homepage
+from pages.kpi_indicators_page import kpi_indicators_page
+from pages.parameters_page import parameters_page
 
 import vizro.models as vm
 from vizro import Vizro
