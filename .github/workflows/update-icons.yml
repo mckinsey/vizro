@@ -52,7 +52,6 @@ jobs:
       - name: Create Pull Request
         if: env.has_changes == 'true'
         run: |
-          gh auth login --with-token <<< "${{ secrets.GITHUB_TOKEN }}"
           gh pr create -B main -H bot/update-material-icons --title "[Bot] Update Material Icons" --body "Automated update of Material Icons"
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
