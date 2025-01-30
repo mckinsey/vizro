@@ -275,7 +275,7 @@ class TestModelFieldJSONConfig:
         class ModelWithInvalidModule(VizroBaseModel):
             # The import_path doesn't exist.
             function: CapturedCallable = Field(json_schema_extra={"mode": "graph", "import_path": "invalid.module"})
-            # Validators
+
             _validate_figure = field_validator("function", mode="before")(validate_captured_callable)
 
         config = {"_target_": "decorated_graph_function", "data_frame": "data_source_name"}

@@ -70,7 +70,6 @@ class Graph(VizroBaseModel):
     # Component properties for actions and interactions
     _output_component_property: str = PrivateAttr("figure")
 
-    # Validators
     _validate_figure = field_validator("figure", mode="before")(validate_captured_callable)
 
     # Convenience wrapper/syntactic sugar.
