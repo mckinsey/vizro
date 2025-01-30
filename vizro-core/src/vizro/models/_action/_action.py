@@ -46,9 +46,7 @@ class Action(VizroBaseModel):
     function: Annotated[
         SkipJsonSchema[CapturedCallable],
         AfterValidator(validate_predefined_actions),
-        Field(
-            ..., json_schema_extra={"mode": "action", "import_path": "vizro.actions"}, description="Action function."
-        ),
+        Field(json_schema_extra={"mode": "action", "import_path": "vizro.actions"}, description="Action function."),
     ]
     inputs: list[Annotated[str, StringConstraints(pattern="^[^.]+[.][^.]+$")]] = Field(
         [],

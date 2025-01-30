@@ -30,7 +30,7 @@ class NavLink(VizroBaseModel):
     """
 
     pages: Annotated[NavPagesType, AfterValidator(_validate_pages), Field(default=[])]
-    label: str = Field(default=..., description="Text description of the icon for use in tooltip.")
+    label: str = Field(description="Text description of the icon for use in tooltip.")
     icon: Annotated[
         str, AfterValidator(validate_icon), Field("", description="Icon name from Google Material icons library.")
     ]

@@ -160,17 +160,13 @@ def invalid_decorated_graph_function():
 
 class ModelWithAction(VizroBaseModel):
     # The import_path here makes it possible to import the above function using getattr(import_path, _target_).
-    function: SkipJsonSchema[CapturedCallable] = Field(
-        ..., json_schema_extra={"mode": "action", "import_path": __name__}
-    )
+    function: SkipJsonSchema[CapturedCallable] = Field(json_schema_extra={"mode": "action", "import_path": __name__})
     _validate_figure = field_validator("function", mode="before")(validate_captured_callable)
 
 
 class ModelWithGraph(VizroBaseModel):
     # The import_path here makes it possible to import the above function using getattr(import_path, _target_).
-    function: SkipJsonSchema[CapturedCallable] = Field(
-        ..., json_schema_extra={"mode": "graph", "import_path": __name__}
-    )
+    function: SkipJsonSchema[CapturedCallable] = Field(json_schema_extra={"mode": "graph", "import_path": __name__})
     _validate_figure = field_validator("function", mode="before")(validate_captured_callable)
 
 
@@ -278,9 +274,7 @@ class TestModelFieldJSONConfig:
     def test_invalid_import_path(self):
         class ModelWithInvalidModule(VizroBaseModel):
             # The import_path doesn't exist.
-            function: CapturedCallable = Field(
-                ..., json_schema_extra={"mode": "graph", "import_path": "invalid.module"}
-            )
+            function: CapturedCallable = Field(json_schema_extra={"mode": "graph", "import_path": "invalid.module"})
             # Validators
             _validate_figure = field_validator("function", mode="before")(validate_captured_callable)
 

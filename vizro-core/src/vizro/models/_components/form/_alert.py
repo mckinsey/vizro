@@ -21,7 +21,7 @@ class Alert(VizroBaseModel):
     """
 
     type: Literal["alert"] = "alert"
-    text: str = Field(default=..., description="Text to be displayed in the alert.")
+    text: str = Field(description="Text to be displayed in the alert.")
     is_open: bool = Field(True, description="Flag indicating whether alert should be open by default.")
     duration: Optional[int] = Field(default=None, description="Duration in milliseconds for the alert to appear.", ge=0)
     actions: list[Action] = []

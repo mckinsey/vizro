@@ -39,10 +39,8 @@ class Table(VizroBaseModel):
         SkipJsonSchema[CapturedCallable],
         AfterValidator(_process_callable_data_frame),
         Field(
-            ...,
             json_schema_extra={"mode": "table", "import_path": "vizro.tables"},
             description="Function that returns a `Dash DataTable`.",
-            validate_default=True,
         ),
     ]
     title: str = Field("", description="Title of the `Table`")

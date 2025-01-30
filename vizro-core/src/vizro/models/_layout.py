@@ -173,7 +173,7 @@ class Layout(VizroBaseModel):
     grid: Annotated[
         list[list[int]],
         AfterValidator(validate_grid),
-        Field(default=..., description="Grid specification to arrange components on screen."),
+        Field(description="Grid specification to arrange components on screen."),
     ]
     row_gap: str = Field(GAP_DEFAULT, description="Gap between rows in px.", pattern="[0-9]+px")
     col_gap: str = Field(GAP_DEFAULT, description="Gap between columns in px.", pattern="[0-9]+px")

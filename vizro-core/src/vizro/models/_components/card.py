@@ -21,7 +21,7 @@ class Card(VizroBaseModel):
 
     type: Literal["card"] = "card"
     text: str = Field(
-        ..., description="Markdown string to create card title/text that should adhere to the CommonMark Spec."
+        description="Markdown string to create card title/text that should adhere to the CommonMark Spec."
     )
     href: str = Field(
         "",

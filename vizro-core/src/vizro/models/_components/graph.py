@@ -45,10 +45,8 @@ class Graph(VizroBaseModel):
         SkipJsonSchema[CapturedCallable],
         AfterValidator(_process_callable_data_frame),
         Field(
-            ...,
             json_schema_extra={"mode": "graph", "import_path": "vizro.plotly.express"},
             description="Function that returns a plotly `go.Figure`",
-            validate_default=True,
         ),
     ]
     title: str = Field("", description="Title of the `Graph`")

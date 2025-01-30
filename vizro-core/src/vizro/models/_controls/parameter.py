@@ -70,7 +70,7 @@ class Parameter(VizroBaseModel):
                 AfterValidator(check_dot_notation),
                 AfterValidator(check_target_present),
                 AfterValidator(check_data_frame_as_target_argument),
-                Field(default=..., description="Targets in the form of `<target_component>.<target_argument>`."),
+                Field(description="Targets in the form of `<target_component>.<target_argument>`."),
             ]
         ],
         AfterValidator(check_duplicate_parameter_target),

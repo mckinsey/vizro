@@ -39,10 +39,8 @@ class AgGrid(VizroBaseModel):
         SkipJsonSchema[CapturedCallable],
         AfterValidator(_process_callable_data_frame),
         Field(
-            ...,
             json_schema_extra={"mode": "ag_grid", "import_path": "vizro.tables"},
             description="Function that returns a `Dash AG Grid`.",
-            validate_default=True,
         ),
     ]
     title: str = Field("", description="Title of the `AgGrid`.")
