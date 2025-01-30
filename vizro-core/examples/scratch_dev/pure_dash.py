@@ -1,8 +1,8 @@
 """Dev app to try things out."""
 
 import dash_bootstrap_components as dbc
-from dash import html, dcc, Dash, callback, Input, Output, State, clientside_callback
 import vizro
+from dash import Dash, Input, Output, State, callback, clientside_callback, html
 
 app = Dash(__name__, external_stylesheets=[vizro.bootstrap, dbc.icons.FONT_AWESOME])
 
@@ -452,7 +452,7 @@ checklist_items = html.Div(
                         id="gallery_checklist1",
                         options=[
                             {
-                                "label": "Option {}".format(i),
+                                "label": f"Option {i}",
                                 "value": i,
                             }
                             for i in range(3)
@@ -465,7 +465,7 @@ checklist_items = html.Div(
                         id="gallery_checklist2",
                         options=[
                             {
-                                "label": "Option {}".format(i),
+                                "label": f"Option {i}",
                                 "value": i,
                             }
                             for i in range(3)
@@ -559,7 +559,7 @@ list_group = html.Div(
 # ----- modal
 
 
-COOKIE = "https://todaysmama.com/.image/t_share/MTU5OTEwMzkyMDIyMTE1NzAz/cookie-monster.png"  # noqa
+COOKIE = "https://todaysmama.com/.image/t_share/MTU5OTEwMzkyMDIyMTE1NzAz/cookie-monster.png"
 modal = html.Div(
     [
         make_subheading("dbc.Modal", "modal"),
