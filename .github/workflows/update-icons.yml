@@ -35,18 +35,20 @@ jobs:
           git config user.email "145135826+vizro-svc@users.noreply.github.com"
           git config user.name "Vizro Team"
           git diff --exit-code || echo "has_changes=true" >> $GITHUB_ENV
-      - name: Commit and push changes
+      - name: Delete old branch if exists
+        if: env.has_changes == 'true'
+        run: |
+          git push origin --delete bot/update-material-icons || true
+      - name: Create and push changes
         if: env.has_changes == 'true'
         run: |
           git checkout -b bot/update-material-icons
           git add -A
           git commit -m "Update Material Icons"
           git push --set-upstream origin bot/update-material-icons
-
       - name: Install GitHub CLI
         if: env.has_changes == 'true'
         run: sudo apt-get install -y gh
-
       - name: Create Pull Request
         if: env.has_changes == 'true'
         run: |
