@@ -24,8 +24,8 @@ class UserInput(VizroBaseModel):
 
     type: Literal["user_input"] = "user_input"
     # TODO: before making public consider naming this field (or giving an alias) label instead of title
-    title: str = Field("", description="Title to be displayed")
-    placeholder: str = Field("", description="Default text to display in input field")
+    title: str = Field(default="", description="Title to be displayed")
+    placeholder: str = Field(default="", description="Default text to display in input field")
     # TODO: Before making public, consider how actions should be triggered and what the default property should be
     # See comment thread: https://github.com/mckinsey/vizro/pull/298#discussion_r1478137654
     actions: Annotated[

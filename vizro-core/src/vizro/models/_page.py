@@ -65,11 +65,11 @@ class Page(VizroBaseModel):
     # TODO[mypy], see: https://github.com/pydantic/pydantic/issues/156 for components field
     components: conlist(Annotated[ComponentType, BeforeValidator(check_captured_callable_model)], min_length=1)  # type: ignore[valid-type]
     title: str = Field(description="Title to be displayed.")
-    description: str = Field("", description="Description for meta tags.")
+    description: str = Field(default="", description="Description for meta tags.")
     layout: Annotated[Optional[Layout], AfterValidator(set_layout), Field(default=None, validate_default=True)]
     controls: list[ControlType] = []
     path: Annotated[
-        str, AfterValidator(set_path), Field("", description="Path to navigate to page.", validate_default=True)
+        str, AfterValidator(set_path), Field(default="", description="Path to navigate to page.", validate_default=True)
     ]
 
     # TODO: Remove default on page load action if possible

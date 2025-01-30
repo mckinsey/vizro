@@ -600,6 +600,3 @@ class TestPydanticPython:
         # Test more complete and nested model
         result = complete_dashboard._to_python(extra_imports={"from typing import Optional"})
         assert result == expected_complete_dashboard
-
-
-# TODO MONDAY: write tests for new add_type functionality, then start tackling _to_python

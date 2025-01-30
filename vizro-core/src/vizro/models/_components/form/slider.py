@@ -55,7 +55,7 @@ class Slider(VizroBaseModel):
         AfterValidator(validate_range_value),
         Field(default=None, description="Default value for slider."),
     ]
-    title: str = Field("", description="Title to be displayed.")
+    title: str = Field(default="", description="Title to be displayed.")
     actions: Annotated[
         list[Action],
         AfterValidator(_action_validator_factory("value")),

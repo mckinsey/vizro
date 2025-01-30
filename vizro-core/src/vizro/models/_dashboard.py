@@ -98,7 +98,7 @@ class Dashboard(VizroBaseModel):
     navigation: Annotated[
         Optional[Navigation], AfterValidator(set_navigation_pages), Field(default=None, validate_default=True)
     ]
-    title: str = Field("", description="Dashboard title to appear on every page on top left-side.")
+    title: str = Field(default="", description="Dashboard title to appear on every page on top left-side.")
 
     @_log_call
     def pre_build(self):

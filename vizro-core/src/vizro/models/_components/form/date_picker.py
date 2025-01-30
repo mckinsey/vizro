@@ -37,14 +37,16 @@ class DatePicker(VizroBaseModel):
     ]
     value: Annotated[
         Optional[Union[list[date], date]],
+        # TODO[MS]: check here and similar if the early exit clause in below validator or similar is
+        # necessary given we don't validate on default
         AfterValidator(validate_range_value),
         Field(default=None, description="Default date/dates for date picker."),
     ]
-    title: str = Field("", description="Title to be displayed.")
+    title: str = Field(default="", description="Title to be displayed.")
     range: Annotated[
         bool,
         AfterValidator(validate_date_picker_range),
-        Field(True, description="Boolean flag for displaying range picker.", validate_default=True),
+        Field(default=True, description="Boolean flag for displaying range picker.", validate_default=True),
     ]
     actions: Annotated[
         list[Action],

@@ -29,7 +29,7 @@ class Container(VizroBaseModel):
     type: Literal["container"] = "container"
     # TODO[mypy], see: https://github.com/pydantic/pydantic/issues/156 for components field
     components: conlist(  # type: ignore[valid-type]
-        Annotated[ComponentType, BeforeValidator(check_captured_callable_model), Field(default=...)],
+        Annotated[ComponentType, BeforeValidator(check_captured_callable_model)],
         min_length=1,
     )
     title: str = Field(description="Title to be displayed.")

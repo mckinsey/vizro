@@ -30,8 +30,6 @@ from vizro.models.types import FigureType, MultiValueType, SelectorType
 # First entry in each tuple is the default selector for that column type.
 # MS: For mypy we need to do this anyway - i have tried to make a function that takes the tuples and converts them, but
 # I think it does not work
-# Q: Does it make sense to just define them quickly here, or would a more central place, maybe even in types.py
-# make more sense? Current choice: reused ones are in types, rest is in files
 SELECTORS = {
     "numerical": (RangeSlider, Slider),
     "categorical": (Dropdown, Checklist, RadioItems),
@@ -96,7 +94,7 @@ class Filter(VizroBaseModel):
     type: Literal["filter"] = "filter"
     column: str = Field(description="Column of DataFrame to filter.")
     targets: list[Annotated[ModelID, AfterValidator(check_target_present)]] = Field(
-        [],
+        default=[],
         description="Target component to be affected by filter. "
         "If none are given then target all components on the page that use `column`.",
     )

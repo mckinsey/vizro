@@ -34,7 +34,7 @@ class NavBar(VizroBaseModel):
         dict[str, list[str]],
         AfterValidator(_validate_pages),
         BeforeValidator(coerce_pages_type),
-        Field({}, description="Mapping from name of a pages group to a list of page IDs."),
+        Field(default={}, description="Mapping from name of a pages group to a list of page IDs."),
     ]
     items: list[NavLink] = []
 

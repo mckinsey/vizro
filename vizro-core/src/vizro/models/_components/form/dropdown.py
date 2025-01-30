@@ -85,9 +85,9 @@ class Dropdown(VizroBaseModel):
     multi: Annotated[
         bool,
         AfterValidator(validate_multi),
-        Field(True, description="Whether to allow selection of multiple values", validate_default=True),
+        Field(default=True, description="Whether to allow selection of multiple values", validate_default=True),
     ]
-    title: str = Field("", description="Title to be displayed")
+    title: str = Field(default="", description="Title to be displayed")
     actions: Annotated[
         list[Action],
         AfterValidator(_action_validator_factory("value")),

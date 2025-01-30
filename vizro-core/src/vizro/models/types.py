@@ -193,6 +193,7 @@ class CapturedCallable:
     # TODO: Ultimately we are calling this, but it is always true, as the before validator catches things anyway
     # In future: we should really get rid of this and make a custom type annotation that does the job of validation
     # and schema generation.
+    # Once we have a custom schema for captured callables, we can bypass the core schema and return a custom schema.
     @classmethod
     def __get_pydantic_core_schema__(cls, source: Any, handler: Any) -> cs.core_schema.CoreSchema:
         """Core validation, which boils down to checking if it is a custom type."""
@@ -204,17 +205,6 @@ class CapturedCallable:
         if not isinstance(value, CapturedCallable):
             raise ValueError(f"Expected CapturedCallable, got {type(value)}")
         return value
-
-    # Once we have a custom schema for captured callables, we can bypass the core schema and return a custom schema.
-    # @classmethod
-    # def __get_pydantic_json_schema__(
-    #     cls, core_schema: cs.core_schema.CoreSchema, handler: GetJsonSchemaHandler
-    # ) -> JsonSchemaValue:
-    #     # Completely bypass the core schema and return a custom schema
-    #     return {
-    #         "type": "object",
-    #         "additionalProperties": {"oneOf": [{"type": "string"}, {"type": "object"}]},
-    #     }
 
     @classmethod
     def _parse_json(

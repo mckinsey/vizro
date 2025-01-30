@@ -15,12 +15,9 @@ from pydantic import (
     model_serializer,
 )
 from pydantic.fields import FieldInfo
-from pydantic_core import core_schema
 
 from vizro.managers import model_manager
 from vizro.models._models_utils import REPLACEMENT_STRINGS, _log_call
-
-field = core_schema.model_field(schema=core_schema.int_schema())
 
 ACTIONS_CHAIN = "ActionsChain"
 ACTION = "actions"
@@ -337,13 +334,3 @@ class VizroBaseModel(BaseModel):
         extra="forbid",  # Good for spotting user typos and being strict.
         validate_assignment=True,  # Run validators when a field is assigned after model instantiation.
     )
-
-
-# Then:
-# - go through issue list again
-# - go through A comments
-# - test with vizro-ai
-# - check validate default
-# - check conlist and json-schema again
-# - check https://docs.pydantic.dev/2.10/concepts/validators/#json-schema-and-field-validators
-# - also re-read the types section

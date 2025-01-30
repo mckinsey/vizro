@@ -49,14 +49,14 @@ class Graph(VizroBaseModel):
             description="Function that returns a plotly `go.Figure`",
         ),
     ]
-    title: str = Field("", description="Title of the `Graph`")
+    title: str = Field(default="", description="Title of the `Graph`")
     header: str = Field(
-        "",
+        default="",
         description="Markdown text positioned below the `Graph.title`. Follows the CommonMark specification. Ideal for "
         "adding supplementary information such as subtitles, descriptions, or additional context.",
     )
     footer: str = Field(
-        "",
+        default="",
         description="Markdown text positioned below the `Graph`. Follows the CommonMark specification. Ideal for "
         "providing further details such as sources, disclaimers, or additional notes.",
     )

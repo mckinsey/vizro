@@ -21,8 +21,8 @@ class Button(VizroBaseModel):
     """
 
     type: Literal["button"] = "button"
-    text: str = Field("Click me!", description="Text to be displayed on button.")
-    href: str = Field("", description="URL (relative or absolute) to navigate to.")
+    text: str = Field(default="Click me!", description="Text to be displayed on button.")
+    href: str = Field(default="", description="URL (relative or absolute) to navigate to.")
     actions: Annotated[
         list[Action],
         AfterValidator(_action_validator_factory("n_clicks")),

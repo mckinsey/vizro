@@ -24,8 +24,8 @@ class TextArea(VizroBaseModel):
 
     type: Literal["text_area"] = "text_area"
     # TODO: before making public consider naming this field (or giving an alias) label instead of title
-    title: str = Field("", description="Title to be displayed")
-    placeholder: str = Field("", description="Default text to display in input field")
+    title: str = Field(default="", description="Title to be displayed")
+    placeholder: str = Field(default="", description="Default text to display in input field")
     actions: list[Action] = []
 
     # Component properties for actions and interactions

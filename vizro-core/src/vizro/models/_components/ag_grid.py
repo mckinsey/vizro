@@ -43,9 +43,9 @@ class AgGrid(VizroBaseModel):
             description="Function that returns a `Dash AG Grid`.",
         ),
     ]
-    title: str = Field("", description="Title of the `AgGrid`.")
+    title: str = Field(default="", description="Title of the `AgGrid`.")
     header: str = Field(
-        "",
+        default="",
         description="Markdown text positioned below the `AgGrid.title`. Follows the CommonMark specification. Ideal "
         "for adding supplementary information such as subtitles, descriptions, or additional context.",
     )
@@ -58,7 +58,7 @@ class AgGrid(VizroBaseModel):
         list[Action],
         AfterValidator(_action_validator_factory("cellClicked")),
         PlainSerializer(lambda x: x[0].actions),
-        Field(default=[]),
+        Field(default=[]),  # TODO[MS]: here and elsewhere: do we need to validate default here?
     ]
 
     _input_component_id: str = PrivateAttr()

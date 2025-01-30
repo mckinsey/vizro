@@ -43,14 +43,14 @@ class Table(VizroBaseModel):
             description="Function that returns a `Dash DataTable`.",
         ),
     ]
-    title: str = Field("", description="Title of the `Table`")
+    title: str = Field(default="", description="Title of the `Table`")
     header: str = Field(
-        "",
+        default="",
         description="Markdown text positioned below the `Table.title`. Follows the CommonMark specification. Ideal for "
         "adding supplementary information such as subtitles, descriptions, or additional context.",
     )
     footer: str = Field(
-        "",
+        default="",
         description="Markdown text positioned below the `Table`. Follows the CommonMark specification. Ideal for "
         "providing further details such as sources, disclaimers, or additional notes.",
     )

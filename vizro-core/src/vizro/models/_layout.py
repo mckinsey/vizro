@@ -34,7 +34,7 @@ def set_layout(layout, info: ValidationInfo):
 
     # This exists only to eagerly raise the error, otherwise obscure error message on eg Page()
     # Same for similar code in other places
-    # TODO: find another solution that clashes less with typing
+    # TODO[MS]: find another solution that clashes less with typing
     if "components" not in info.data:
         return layout
 
@@ -175,10 +175,10 @@ class Layout(VizroBaseModel):
         AfterValidator(validate_grid),
         Field(description="Grid specification to arrange components on screen."),
     ]
-    row_gap: str = Field(GAP_DEFAULT, description="Gap between rows in px.", pattern="[0-9]+px")
-    col_gap: str = Field(GAP_DEFAULT, description="Gap between columns in px.", pattern="[0-9]+px")
-    row_min_height: str = Field(MIN_DEFAULT, description="Minimum row height in px.", pattern="[0-9]+px")
-    col_min_width: str = Field(MIN_DEFAULT, description="Minimum column width in px.", pattern="[0-9]+px")
+    row_gap: str = Field(default=GAP_DEFAULT, description="Gap between rows in px.", pattern="[0-9]+px")
+    col_gap: str = Field(default=GAP_DEFAULT, description="Gap between columns in px.", pattern="[0-9]+px")
+    row_min_height: str = Field(default=MIN_DEFAULT, description="Minimum row height in px.", pattern="[0-9]+px")
+    col_min_width: str = Field(default=MIN_DEFAULT, description="Minimum column width in px.", pattern="[0-9]+px")
     _component_grid_lines: Optional[list[ColRowGridLines]] = PrivateAttr()
 
     def __init__(self, **data):
