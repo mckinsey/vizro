@@ -46,7 +46,7 @@ class RangeSlider(VizroBaseModel):
         Field(default=None, description="Step-size for marks on slider."),
     ]
     marks: Annotated[
-        Optional[dict[Union[float, int], str]],
+        Optional[dict[float, str]],
         AfterValidator(set_default_marks),
         Field(default={}, description="Marks to be displayed on slider.", validate_default=True),
     ]

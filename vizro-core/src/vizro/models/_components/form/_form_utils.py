@@ -115,7 +115,7 @@ def validate_step(step, info: ValidationInfo):
 
 
 def set_default_marks(
-    marks: Optional[dict[Union[float, int], str]], info: ValidationInfo
+    marks: Optional[dict[float, str]], info: ValidationInfo
 ) -> Optional[dict[Union[float, int], str]]:
     if not marks and info.data.get("step") is None:
         marks = None
