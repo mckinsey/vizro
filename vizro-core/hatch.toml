@@ -72,6 +72,7 @@ test-unit-coverage = [
   "- coverage combine",
   "coverage report"
 ]
+update-icons = ["python tools/update_material_icons.py"]
 
 [envs.docs]
 dependencies = [

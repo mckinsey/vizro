@@ -1,0 +1,57 @@
+name: Update Material Icons
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches:
+      - main
+  schedule:
+    - cron: "0 0 1 * *" # Runs at midnight on the 1st of every month
+
+defaults:
+  run:
+    working-directory: vizro-core
+
+env:
+  PYTHON_VERSION: "3.12"
+
+jobs:
+  update-icons:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: ${{ env.PYTHON_VERSION }}
+      - name: Install Hatch
+        run: pip install hatch
+      - name: Update Material font
+        run: |
+          hatch run update-icons
+      - name: Check for changes
+        run: |
+          git config user.email "145135826+vizro-svc@users.noreply.github.com"
+          git config user.name "Vizro Team"
+          git diff --exit-code || echo "has_changes=true" >> $GITHUB_ENV
+      - name: Delete old branch if exists
+        if: env.has_changes == 'true'
+        run: |
+          git push origin --delete bot/update-material-icons || true
+      - name: Create and push changes
+        if: env.has_changes == 'true'
+        run: |
+          git checkout -b bot/update-material-icons
+          git add -A
+          git commit -m "Update Material Icons"
+          git push --set-upstream origin bot/update-material-icons
+      - name: Install GitHub CLI
+        if: env.has_changes == 'true'
+        run: sudo apt-get install -y gh
+      - name: Create Pull Request
+        if: env.has_changes == 'true'
+        run: |
+          gh pr create -B main -H bot/update-material-icons --title "[Bot] Update Material Icons" --body "Automated update of Material Icons"
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
