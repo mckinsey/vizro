@@ -33,9 +33,9 @@ jobs:
       - name: Check for changes
         id: check-changes
         run: |
-            git config user.email "145135826+vizro-svc@users.noreply.github.com"
-            git config user.name "Vizro Team"
-            git diff --exit-code || echo "has_changes=true" >> $GITHUB_ENV
+          git config user.email "145135826+vizro-svc@users.noreply.github.com"
+          git config user.name "Vizro Team"
+          git diff --exit-code || echo "has_changes=true" >> $GITHUB_ENV
       - name: Commit and push changes
         if: env.has_changes == 'true'
         run: |
