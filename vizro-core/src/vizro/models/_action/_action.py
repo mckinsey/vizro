@@ -57,7 +57,6 @@ class Action(VizroBaseModel):
         description="Outputs in the form `<component_id>.<property>` changed by the action function.",
     )
 
-    # Validators
     _validate_function = field_validator("function", mode="before")(validate_captured_callable)
 
     def _get_callback_mapping(self):

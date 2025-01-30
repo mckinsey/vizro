@@ -27,5 +27,3 @@ dashboard = vm.Dashboard(pages=[page])
 
 if __name__ == "__main__":
     Vizro().build(dashboard).run()
-    # print(dashboard._to_python())
-    # print(dashboard.model_dump(context={"add_name": True}))

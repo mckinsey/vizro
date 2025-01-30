@@ -28,8 +28,8 @@ from vizro.models.types import FigureType, MultiValueType, SelectorType
 # Ideally we might define these as NumericalSelectorType = Union[RangeSlider, Slider] etc., but that will not work
 # with isinstance checks.
 # First entry in each tuple is the default selector for that column type.
-# MS: For mypy we need to do this anyway - i have tried to make a function that takes the tuples and converts them, but
-# I think it does not work
+# MS: For mypy we need to do this anyway, see below - I have tried to make a function that takes the tuples and
+# converts them in order to reuse code, but I think it does not work
 SELECTORS = {
     "numerical": (RangeSlider, Slider),
     "categorical": (Dropdown, Checklist, RadioItems),

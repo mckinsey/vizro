@@ -1,7 +1,7 @@
 """Helper functions for models inside form folder."""
 
 from datetime import date
-from typing import Any, Union
+from typing import Any, Optional, Union
 
 from pydantic import ValidationInfo
 
@@ -114,7 +114,9 @@ def validate_step(step, info: ValidationInfo):
     return step
 
 
-def set_default_marks(marks, info: ValidationInfo):
+def set_default_marks(
+    marks: Optional[dict[Union[float, int], str]], info: ValidationInfo
+) -> Optional[dict[Union[float, int], str]]:
     if not marks and info.data.get("step") is None:
         marks = None
 
