@@ -13,13 +13,9 @@ from ._dashboard import Dashboard
 from ._layout import Layout
 from ._page import Page
 
-Tabs.model_rebuild()
-Container.model_rebuild()
-Page.model_rebuild()
-Navigation.model_rebuild()
+
 Dashboard.model_rebuild()
-NavBar.model_rebuild()
-NavLink.model_rebuild()
+
 
 __all__ = [
     "Accordion",
