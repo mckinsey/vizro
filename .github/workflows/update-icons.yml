@@ -20,7 +20,7 @@ jobs:
       - name: Checkout main branch
         uses: actions/checkout@v4
         with:
-          ref: main
+          ref: ${{ github.head_ref }}
       - name: Set up Python
         uses: actions/setup-python@v5
         with:
