@@ -139,7 +139,7 @@ def _extract_captured_callable_data_info() -> set[str]:
 
 def _add_type_to_union(union: type[Any], new_type: type[Any]):  # TODO[mypy]: not sure how to type the return type
     args = get_args(union)
-    return Union[*args, new_type]
+    return Union[args + (new_type,)]
 
 
 def _add_type_to_annotated_union(union, new_type: type[Any]):  # TODO[mypy]: not sure how to type the return type
