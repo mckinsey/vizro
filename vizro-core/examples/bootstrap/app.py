@@ -1,17 +1,19 @@
-"""Dev app to try things out."""
+"""Dash app with dbc components used for testing.
+
+Thanks to https://github.com/AnnMarieW for providing the file.
+"""
 
 import dash_bootstrap_components as dbc
-from dash import html, dcc, Dash, callback, Input, Output, State, clientside_callback
 import vizro
+from dash import Dash, Input, Output, State, callback, clientside_callback, html
 
 app = Dash(__name__, external_stylesheets=[vizro.bootstrap, dbc.icons.FONT_AWESOME])
-
 DBC_DOCS = "https://dash-bootstrap-components.opensource.faculty.ai/docs/components/"
 
 
 def make_subheading(label, link):
+    """Creates a subheading with a link to the docs."""
     slug = label.replace(" ", "")
-
     heading = html.H3(
         html.Span(
             [
@@ -35,11 +37,6 @@ def make_subheading(label, link):
     )
 
 
-# ----- Intro
-
-
-# ------------ Alerts
-
 alerts1 = dbc.Col(
     [
         dbc.Alert("This is a primary alert", color="primary"),
@@ -50,7 +47,6 @@ alerts1 = dbc.Col(
     md=6,
     xs=12,
 )
-
 alerts2 = dbc.Col(
     [
         dbc.Alert("This is a danger alert. Scary!", color="danger"),
@@ -61,13 +57,10 @@ alerts2 = dbc.Col(
     md=6,
     xs=12,
 )
-
 alerts = html.Div(
     [make_subheading("dbc.Alert", "alert"), dbc.Row([alerts1, alerts2])],
     className="mb-4",
 )
-
-# -------------------
 
 
 badge = html.Div(
@@ -102,7 +95,6 @@ badges = html.Div(
     className="mb-4",
 )
 
-# ------- buttons
 buttons1 = dbc.Col(
     [
         make_subheading("dbc.Button", "button"),
@@ -222,8 +214,6 @@ buttons2 = dbc.Col(
 
 buttons = dbc.Row([buttons1, buttons2], className="mb-4")
 
-# ----- cards
-
 cards = html.Div(
     [
         make_subheading("dbc.Card", "card"),
@@ -292,8 +282,6 @@ cards = html.Div(
     className="mb-4",
 )
 
-# ------ collapse
-
 collapse = html.Div(
     [
         make_subheading("dbc.Collapse", "collapse"),
@@ -321,12 +309,11 @@ collapse = html.Div(
     [State("dbc-gallery-x-collapse", "is_open")],
 )
 def toggle_collapse(n, is_open):
+    """Make toggle collapse."""
     if n:
         return not is_open
     return is_open
 
-
-# ----- fade
 
 fade = html.Div(
     [
@@ -362,12 +349,11 @@ fade = html.Div(
     [State("dbc-gallery-x-fade", "is_in")],
 )
 def toggle_fade(n, is_in):
+    """Make toggle fade."""
     if n:
         return not is_in
     return is_in
 
-
-# ------ form
 
 form = html.Div(
     [
@@ -420,8 +406,6 @@ form = html.Div(
     className="mb-4",
 )
 
-# ------ input
-
 input_ = html.Div(
     [
         make_subheading("dbc.Input", "input"),
@@ -452,7 +436,7 @@ checklist_items = html.Div(
                         id="gallery_checklist1",
                         options=[
                             {
-                                "label": "Option {}".format(i),
+                                "label": f"Option {i}",
                                 "value": i,
                             }
                             for i in range(3)
@@ -465,7 +449,7 @@ checklist_items = html.Div(
                         id="gallery_checklist2",
                         options=[
                             {
-                                "label": "Option {}".format(i),
+                                "label": f"Option {i}",
                                 "value": i,
                             }
                             for i in range(3)
@@ -533,9 +517,6 @@ input_group = html.Div(
     className="mb-4",
 )
 
-
-# ----- list_group
-
 list_group = html.Div(
     [
         make_subheading("dbc.ListGroup", "list_group"),
@@ -556,10 +537,8 @@ list_group = html.Div(
     className="mb-4",
 )
 
-# ----- modal
 
-
-COOKIE = "https://todaysmama.com/.image/t_share/MTU5OTEwMzkyMDIyMTE1NzAz/cookie-monster.png"  # noqa
+COOKIE = "https://todaysmama.com/.image/t_share/MTU5OTEwMzkyMDIyMTE1NzAz/cookie-monster.png"
 modal = html.Div(
     [
         make_subheading("dbc.Modal", "modal"),
@@ -587,12 +566,11 @@ modal = html.Div(
     [State("dbc-gallery-x-modal", "is_open")],
 )
 def toggle_modal(n, is_open):
+    """Enable modal to work."""
     if n:
         return not is_open
     return is_open
 
-
-# ------ navbar
 
 DBC_HOME = "https://dash-bootstrap-components.opensource.faculty.ai/"
 DBC_GITHUB = "https://github.com/facultyai/dash-bootstrap-components"
@@ -647,8 +625,6 @@ navbar = html.Div(
     className="mb-4",
 )
 
-# ----- popover
-
 popover = html.Div(
     [
         make_subheading("dbc.Popover", "popover"),
@@ -673,12 +649,11 @@ popover = html.Div(
     [State("dbc-gallery-x-popover", "is_open")],
 )
 def toggle_popover(n, is_open):
+    """Make popover reactive."""
     if n:
         return not is_open
     return is_open
 
-
-# ------ progress
 
 progress = html.Div(
     [
@@ -724,8 +699,6 @@ spinner = html.Div(
     ],
     className="mb-4",
 )
-
-# ------ table
 
 table = html.Div(
     [
@@ -775,8 +748,6 @@ table = html.Div(
     className="mb-4",
 )
 
-# ------ tabs
-
 tabs = html.Div(
     [
         make_subheading("dbc.Tabs", "tabs"),
@@ -802,9 +773,6 @@ tabs = html.Div(
     ],
     className="mb-4",
 )
-
-
-# ----- toast
 
 toast = html.Div(
     [
@@ -832,10 +800,9 @@ toast = html.Div(
     [Input("dbc-gallery-x-auto-toast-toggle", "n_clicks")],
 )
 def open_toast(_):
+    """Make toast reactive."""
     return True
 
-
-# ------ tooltip
 
 tooltip = html.Div(
     [
