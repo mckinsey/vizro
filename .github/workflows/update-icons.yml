@@ -30,13 +30,29 @@ jobs:
       - name: Update Material font
         run: |
           hatch run update-icons
-      - name: Create PR if change detected
-        uses: peter-evans/create-pull-request@v5
+      - name: Check for changes
+        id: check-changes
+        run: |
+            git config user.email "145135826+vizro-svc@users.noreply.github.com"
+            git config user.name "Vizro Team"
+            git diff --exit-code || echo "has_changes=true" >> $GITHUB_ENV
+      - name: Commit and push changes
+        if: env.has_changes == 'true'
+        run: |
+          git checkout -b bot/update-material-icons
+          git add -A
+          git commit -m "Update Material Icons"
+          git push --set-upstream origin bot/update-material-icons
+      - name: Create PR
+        if: env.has_changes == 'true'
+        uses: actions/github-script@v6
         with:
-          token: ${{ secrets.GITHUB_TOKEN }}
-          commit-message: Update Material Icons
-          branch: bot/update-material-icons
-          title: "[Bot] Update Material Icons"
-          body: "Automated update of Material Icons"
-          base: main
-          delete-branch: true
+          script: |
+            github.pulls.create({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              title: "[Bot] Update Material Icons",
+              body: "Automated update of Material Icons",
+              head: "bot/update-material-icons",
+              base: "main"
+            });
