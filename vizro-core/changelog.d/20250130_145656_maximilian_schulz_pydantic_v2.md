@@ -25,7 +25,7 @@ Uncomment the section that is right (remove the HTML comment wrapper).
 
 ### Changed
 
-- Moved from pydantic V1 to V2. This is a big change, but should not affect anything user-facing. Please contact us in case of bug!. ([#917](https://github.com/mckinsey/vizro/pull/917))
+- Moved from pydantic V1 to V2. This is a big change, but should not affect anything user-facing. Please contact us in case of bug! ([#917](https://github.com/mckinsey/vizro/pull/917))
 
 
 <!--
