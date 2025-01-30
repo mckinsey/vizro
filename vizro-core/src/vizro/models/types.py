@@ -13,7 +13,6 @@ from typing import Annotated, Any, Literal, Protocol, Union, runtime_checkable
 import plotly.io as pio
 import pydantic_core as cs
 from pydantic import Field, StrictBool, ValidationInfo
-from pydantic.fields import FieldInfo
 from typing_extensions import TypedDict
 
 from vizro.charts._charts_utils import _DashboardReadyFigure
@@ -36,6 +35,8 @@ class _SupportsCapturedCallable(Protocol):
 
 
 class JsonSchemaExtraType(TypedDict):
+    """Type that specifies the extra information needed to parse a CapturedCallable from JSON/YAML."""
+
     import_path: str
     mode: str
 
@@ -43,7 +44,7 @@ class JsonSchemaExtraType(TypedDict):
 def validate_captured_callable(cls, value, info: ValidationInfo):
     """Reusable validator for the `figure` argument of Figure like models."""
     # TODO[MS]: We may want to double check on the mechanism of how field info is brought to. This seems
-    # to get deprectated in V3
+    # to get deprecated in V3
     json_schema_extra: JsonSchemaExtraType = cls.model_fields[info.field_name].json_schema_extra
     return CapturedCallable._validate_captured_callable(
         captured_callable_config=value, json_schema_extra=json_schema_extra
