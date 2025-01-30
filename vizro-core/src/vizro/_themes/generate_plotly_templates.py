@@ -80,7 +80,6 @@ def generate_json_template(extracted_values: dict[str, str]) -> go.layout.Templa
         ternary_baxis_linecolor=AXIS_COLOR,
         ternary_caxis_gridcolor=GRID_COLOR,
         ternary_caxis_linecolor=AXIS_COLOR,
-        mapbox_style="carto-darkmatter",
         coloraxis_colorbar_tickcolor=AXIS_COLOR,
         coloraxis_colorbar_tickfont_color=FONT_COLOR_SECONDARY,
         coloraxis_colorbar_title_font_color=FONT_COLOR_SECONDARY,
