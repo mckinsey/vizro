@@ -69,7 +69,7 @@ addopts = [
   "--import-mode=importlib"
 ]
 filterwarnings = [
-  # "error",
+  "error",
   # Ignore until pandas is made compatible with Python 3.12:
   "ignore:.*utcfromtimestamp:DeprecationWarning",
   # Ignore until pandas 3 is released:
