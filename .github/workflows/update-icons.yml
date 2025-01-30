@@ -41,6 +41,7 @@ jobs:
         if: env.has_changes == 'true'
         run: |
           git checkout -b bot/update-material-icons
+          hatch run changelog:add
           git add -A
           git commit -m "Update Material Icons"
           git push --set-upstream origin bot/update-material-icons
