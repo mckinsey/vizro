@@ -1,6 +1,8 @@
 name: Update Material Icons
 
 on:
+  pull_request:
+    branches: [main]
   schedule:
     - cron: "0 0 1 * *" # Runs at midnight on the 1st of every month
 
