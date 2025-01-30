@@ -8,6 +8,7 @@ from vizro.actions import export_data
 df = px.data.iris()
 
 
+# Create a layout with five rows and four columns. The KPI card is positioned in the first cell, while the remaining cells are empty.
 page = vm.Page(
     title="Page 1",
     components=[
