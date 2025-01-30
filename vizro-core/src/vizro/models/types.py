@@ -35,11 +35,19 @@ class _SupportsCapturedCallable(Protocol):
     _captured_callable: CapturedCallable
 
 
+class JsonSchemaExtraType(TypedDict):
+    import_path: str
+    mode: str
+
+
 def validate_captured_callable(cls, value, info: ValidationInfo):
     """Reusable validator for the `figure` argument of Figure like models."""
-    # TODO: We may want to double check on the mechanism of how field info is brought to
-    field_info = cls.model_fields[info.field_name]
-    return CapturedCallable._validate_captured_callable(value, field_info)
+    # TODO[MS]: We may want to double check on the mechanism of how field info is brought to. This seems
+    # to get deprectated in V3
+    json_schema_extra: JsonSchemaExtraType = cls.model_fields[info.field_name].json_schema_extra
+    return CapturedCallable._validate_captured_callable(
+        captured_callable_config=value, json_schema_extra=json_schema_extra
+    )
 
 
 class CapturedCallable:
@@ -171,16 +179,19 @@ class CapturedCallable:
     @classmethod
     def _validate_captured_callable(
         cls,
-        captured_callable: Union[dict[str, Any], _SupportsCapturedCallable, CapturedCallable],
-        field_info: FieldInfo,
+        captured_callable_config: Union[dict[str, Any], _SupportsCapturedCallable, CapturedCallable],
+        json_schema_extra: JsonSchemaExtraType,
     ):
-        value = cls._parse_json(captured_callable, field_info)
+        value = cls._parse_json(captured_callable_config=captured_callable_config, json_schema_extra=json_schema_extra)
         value = cls._extract_from_attribute(value)
-        value = cls._check_type(value, field_info)
+        value = cls._check_type(captured_callable=value, json_schema_extra=json_schema_extra)
         return value
 
     # TODO: The below could be transferred to a custom type similar to this example:
     # https://docs.pydantic.dev/2.9/concepts/types/#handling-third-party-types
+    # TODO: Ultimately we are calling this, but it is always true, as the before validator catches things anyway
+    # In future: we should really get rid of this and make a custom type annotation that does the job of validation
+    # and schema generation.
     @classmethod
     def __get_pydantic_core_schema__(cls, source: Any, handler: Any) -> cs.core_schema.CoreSchema:
         """Core validation, which boils down to checking if it is a custom type."""
@@ -190,7 +201,7 @@ class CapturedCallable:
     def core_validation(value: Any):
         """Core validation logic."""
         if not isinstance(value, CapturedCallable):
-            raise ValueError(f"Expected CustomType, got {type(value)}")
+            raise ValueError(f"Expected CapturedCallable, got {type(value)}")
         return value
 
     # Once we have a custom schema for captured callables, we can bypass the core schema and return a custom schema.
@@ -208,7 +219,7 @@ class CapturedCallable:
     def _parse_json(
         cls,
         captured_callable_config: Union[_SupportsCapturedCallable, CapturedCallable, dict[str, Any]],
-        field,
+        json_schema_extra: JsonSchemaExtraType,
     ) -> Union[CapturedCallable, _SupportsCapturedCallable]:
         """Parses captured_callable_config specification from JSON/YAML.
 
@@ -231,7 +242,7 @@ class CapturedCallable:
                 "CapturedCallable object must contain the key '_target_' that gives the target function."
             ) from exc
 
-        import_path = field.json_schema_extra["import_path"]
+        import_path = json_schema_extra["import_path"]
         try:
             function = getattr(importlib.import_module(import_path), function_name)
         except (AttributeError, ModuleNotFoundError) as exc:
@@ -257,11 +268,12 @@ class CapturedCallable:
         return captured_callable._captured_callable
 
     @classmethod
-    def _check_type(cls, captured_callable: CapturedCallable, field_info: FieldInfo) -> CapturedCallable:
+    def _check_type(
+        cls, captured_callable: CapturedCallable, json_schema_extra: JsonSchemaExtraType
+    ) -> CapturedCallable:
         """Checks captured_callable is right type and mode."""
-        # TODO[mypy]: mypy doesn't recognize that all json_schema_extra are properly defined on all models that need it
-        expected_mode = field_info.json_schema_extra["mode"]  # type: ignore[index]
-        import_path = field_info.json_schema_extra["import_path"]  # type: ignore[index]
+        expected_mode = json_schema_extra["mode"]
+        import_path = json_schema_extra["import_path"]
 
         if not isinstance(captured_callable, CapturedCallable):
             raise ValueError(

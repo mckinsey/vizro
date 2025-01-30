@@ -345,3 +345,5 @@ class VizroBaseModel(BaseModel):
 # - test with vizro-ai
 # - check validate default
 # - check conlist and json-schema again
+# - check https://docs.pydantic.dev/2.10/concepts/validators/#json-schema-and-field-validators
+# - also re-read the types section
