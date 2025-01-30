@@ -2,7 +2,7 @@
 
 This guide shows you how to use themes. Themes are pre-designed collections of stylings that are applied to entire charts and dashboards. The themes provided by Vizro are infused with our design best practices that make charts and dashboards look visually consistent and professional.
 
-## Themes in dashboards
+## Vizro themes in dashboards
 
 The [`Dashboard`][vizro.models.Dashboard] model accepts an optional `theme` argument, where you can choose between a `vizro_dark` and a `vizro_light` theme. If not specified then `theme` defaults to `vizro_dark`. The theme is applied to the entire dashboard and its charts/components when a user first loads your dashboard. Regardless of the theme applied on first load, users can always switch between light and dark themes via the toggle button in the upper-right corner of the dashboard.
 
@@ -53,7 +53,7 @@ The [`Dashboard`][vizro.models.Dashboard] model accepts an optional `theme` argu
     === "Result - vizro_dark"
         [![Dark]][dark]
 
-## Themes in plotly charts
+## Vizro themes in plotly charts
 
 You can also use our templates for plotly charts outside the dashboard. This is useful in a few contexts:
 
@@ -100,6 +100,23 @@ px.scatter_matrix(
     template="vizro_light",
 )
 ```
+
+## Vizro themes in dash app (vizro-bootstrap)
+
+If you have a Dash app and want to use Vizro's themes, you can apply our `vizro.bootstrap` theme. This theme is visually similar to our `vizro_dark` and `vizro_light` themes but may have some differences because we use custom CSS to style certain Dash components that are not part of Bootstrap. You can view all our custom CSS files in our static folder [here](https://github.com/mckinsey/vizro/tree/main/vizro-core/src/vizro/static/css).
+
+To add the `vizro.bootstrap` theme to your Dash app, import vizro and include `vizro.bootstrap` in your `external_stylesheets`:
+
+```python
+import vizro
+from dash import Dash
+
+app = Dash(__name__, external_stylesheets=[vizro.bootstrap])
+```
+
+To apply the bootstrap theme to your Plotly charts, we recommend using the [`dash-bootstrap-templates`](https://github.com/AnnMarieW/dash-bootstrap-templates) library. You can find examples of how to do this in the [dash-bootstrap-templates documentation on styling Plotly Figures with a Bootstrap theme](https://hellodash.pythonanywhere.com/adding-themes/figure-templates).
+
+Note that adding a Bootstrap stylesheet will only apply the theme to Bootstrap components in your app. To extend the Bootstrap theme to other components, such as the `Dash AgGrid` or `Dash Core Components`, include the stylesheet from the `dash-bootstrap-templates` library. For more details, refer to the [Dash Core Components](https://hellodash.pythonanywhere.com/adding-themes/dcc-components) and [Dash AgGrid](https://hellodash.pythonanywhere.com/adding-themes/ag-grid) sections of the `dash-bootstrap-templates` documentation.
 
 [dark]: ../../assets/user_guides/themes/dark.png
 [light]: ../../assets/user_guides/themes/light.png
