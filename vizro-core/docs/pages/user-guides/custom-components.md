@@ -363,6 +363,7 @@ Add the custom action `open_offcanvas` as a `function` argument inside the [`Act
                     ],
                 ),
                 OffCanvas(
+                    id="offcanvas",
                     content="OffCanvas content",
                     title="Offcanvas Title",
                 ),
