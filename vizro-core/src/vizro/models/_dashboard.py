@@ -26,7 +26,6 @@ from pydantic import AfterValidator, Field, ValidationInfo
 
 import vizro
 from vizro._constants import MODULE_PAGE_404, VIZRO_ASSETS_PATH
-from vizro._themes._templates.template_dashboard_overrides import dashboard_overrides
 from vizro._themes.template_dashboard_overrides import dashboard_overrides
 from vizro.actions._action_loop._action_loop import ActionLoop
 from vizro.models import Navigation, VizroBaseModel
