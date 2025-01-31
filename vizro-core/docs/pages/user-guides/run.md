@@ -91,7 +91,7 @@ This runs Vizro using the Flask development server and shows the resulting dashb
     Code reloading and hot reloading do not work in Jupyter. There are two alternatve methods to reload the dashboard after you change your code:
 
     - Restart the Jupyter kernel and re-run your notebook.
-    - Add a cell containing `from vizro import Vizro; Vizro._reset()` to the top of your notebook and re-run it. With this method, there is no need to restart the Jupyter kernel.
+    - Add a cell containing `from vizro import Vizro; Vizro._reset()` to the top of your notebook and re-run it before you re-run your code. With this method, there is no need to restart the Jupyter kernel.
 
 ## PyCafe
 
