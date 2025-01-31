@@ -114,7 +114,7 @@ Vizro is compatible with the following functionality within Dash Enterprise:
 
 Vizro is not currently compatible with the [Dashboard Engine](https://plotly.com/dash/dashboard-engine/) or [Dash Design Kit](https://plotly.com/dash/design-kit/), and cannot produce static reports accessed via the [Snapshot Engine](https://plotly.com/dash/snapshot-engine/).
 
-## General principles
+## General principles when deploying Vizro dashboards
 
 There are many other hosting providers, such as [Render](https://render.com/), [Heroku](https://www.heroku.com/), and [Fly](https://fly.io/). Some of these, such as Render, offer a free tier.
 
