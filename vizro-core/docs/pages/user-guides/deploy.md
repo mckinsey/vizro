@@ -24,7 +24,7 @@ When developing your dashboard you typically run it _locally_ (on your own compu
 
 Vizro is a production-ready framework, which means that the dashboard created during development is immediately suitable for deployment to production with minimal changes. Under the hood, Vizro uses [Dash's stateless architecture](https://dash.plotly.com/sharing-data-between-callbacks#dash-is-stateless), designed for scaling to thousands of concurrent users.
 
-In general, there is only one code change that is required for deployment. During development, the last line of your `app.py` file should be `Vizro().build(dashboard).run()`. 
+In general, there is only one code change that is required for deployment. During development, the last line of your `app.py` file should be `Vizro().build(dashboard).run()`.
 
 For deployment, this should be replaced with:
 
