@@ -34,7 +34,7 @@ if __name__ == "__main__":  # (2)!
 ```
 
 1. The Vizro `app` object needs to be exposed so that the app can be started in production.
-1. This code is only executed when you run `python app.py` and does not run in production. It's there to enable you to [run the same app in development](run.md#development-server) using the Flask development server. 
+1. This code is only executed when you run `python app.py` and does not run in production. It's there to enable you to [run the same app in development](run.md#development-server) using the Flask development server.
 
 That's it! Your app is now suitable for deployment to production.
 
