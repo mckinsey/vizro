@@ -22,7 +22,7 @@ Vizro is built on top of [Dash](https://dash.plotly.com/), which itself uses [Fl
 
 When developing your dashboard you typically run it _locally_ (on your own computer) using the Flask development server. When you deploy to production, this is no longer suitable. Instead, you need a solution that can handle multiple users in a stable, secure and efficient way.
 
-Vizro is designed to be a production-ready framework, which means that the dashboard you created during development is immediately suitable for deployment to production with minimal changes. Under the hood, Vizro benefits from [Dash's stateless architecture](https://dash.plotly.com/sharing-data-between-callbacks#dash-is-stateless), which makes it simple to scale your app to thousands of concurrent users.
+Vizro is a production-ready framework, which means that the dashboard created during development is immediately suitable for deployment to production with minimal changes. Under the hood, Vizro uses [Dash's stateless architecture](https://dash.plotly.com/sharing-data-between-callbacks#dash-is-stateless), designed for scaling to thousands of concurrent users.
 
 In general, there is only one code change that is required. The last of your `app.py` file should look like `Vizro().build(dashboard).run()`. This should be replaced with:
 
