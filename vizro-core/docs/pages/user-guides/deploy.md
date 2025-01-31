@@ -174,7 +174,7 @@ ENTRYPOINT ["gunicorn", "app:app", "--workers", "4", "--bind", "0.0.0.0:7860"]
 1. Install the [Python dependencies](#dependencies) as [described in the `uv` documentation](https://docs.astral.sh/uv/guides/integration/docker/#installing-requirements). The app files are copied into the container after installing dependencies to optimise Docker's [build cache](https://docs.docker.com/build/cache/).
 1. Run the Vizro app using [Gunicorn](#gunicorn).
 
-### Advanced configuration
+### Advanced Dockerfile configuration
 
 Vizro is built on top of [Dash](https://dash.plotly.com/), which itself uses [Flask](https://flask.palletsprojects.com/). Deployment of Vizro is essentially the same as deployment of the underlying frameworks, and more guidance can be found in [Flask's deployment documentation](https://flask.palletsprojects.com/en/2.0.x/deploying/) and [Dash's deployment documentation](https://dash.plotly.com/deployment).
 
