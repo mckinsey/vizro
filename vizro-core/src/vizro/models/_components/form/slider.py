@@ -1,13 +1,9 @@
-from typing import Literal, Optional
-
-from dash import ClientsideFunction, Input, Output, State, clientside_callback, dcc, html
-
-try:
-    from pydantic.v1 import Field, PrivateAttr, validator
-except ImportError:  # pragma: no cov
-    from pydantic import Field, PrivateAttr, validator
+from typing import Annotated, Literal, Optional
 
 import dash_bootstrap_components as dbc
+from dash import ClientsideFunction, Input, Output, State, clientside_callback, dcc, html
+from pydantic import AfterValidator, Field, PrivateAttr
+from pydantic.functional_serializers import PlainSerializer
 
 from vizro.models import Action, VizroBaseModel
 from vizro.models._action._actions_chain import _action_validator_factory
@@ -32,7 +28,7 @@ class Slider(VizroBaseModel):
         min (Optional[float]): Start value for slider. Defaults to `None`.
         max (Optional[float]): End value for slider. Defaults to `None`.
         step (Optional[float]): Step-size for marks on slider. Defaults to `None`.
-        marks (Optional[dict[int, Union[str, dict]]]): Marks to be displayed on slider. Defaults to `{}`.
+        marks (Optional[dict[Union[float, int], str]]): Marks to be displayed on slider. Defaults to `{}`.
         value (Optional[float]): Default value for slider. Defaults to `None`.
         title (str): Title to be displayed. Defaults to `""`.
         actions (list[Action]): See [`Action`][vizro.models.Action]. Defaults to `[]`.
@@ -40,25 +36,37 @@ class Slider(VizroBaseModel):
     """
 
     type: Literal["slider"] = "slider"
-    min: Optional[float] = Field(None, description="Start value for slider.")
-    max: Optional[float] = Field(None, description="End value for slider.")
-    step: Optional[float] = Field(None, description="Step-size for marks on slider.")
-    marks: Optional[dict[float, str]] = Field({}, description="Marks to be displayed on slider.")
-    value: Optional[float] = Field(None, description="Default value for slider.")
-    title: str = Field("", description="Title to be displayed.")
-    actions: list[Action] = []
+    min: Optional[float] = Field(default=None, description="Start value for slider.")
+    max: Annotated[
+        Optional[float], AfterValidator(validate_max), Field(default=None, description="End value for slider.")
+    ]
+    step: Annotated[
+        Optional[float],
+        AfterValidator(validate_step),
+        Field(default=None, description="Step-size for marks on slider."),
+    ]
+    marks: Annotated[
+        Optional[dict[float, str]],
+        AfterValidator(set_default_marks),
+        Field(default={}, description="Marks to be displayed on slider.", validate_default=True),
+    ]
+    value: Annotated[
+        Optional[float],
+        AfterValidator(validate_range_value),
+        Field(default=None, description="Default value for slider."),
+    ]
+    title: str = Field(default="", description="Title to be displayed.")
+    actions: Annotated[
+        list[Action],
+        AfterValidator(_action_validator_factory("value")),
+        PlainSerializer(lambda x: x[0].actions),
+        Field(default=[]),
+    ]
 
     _dynamic: bool = PrivateAttr(False)
 
     # Component properties for actions and interactions
     _input_property: str = PrivateAttr("value")
-
-    # Re-used validators
-    _validate_max = validator("max", allow_reuse=True)(validate_max)
-    _validate_value = validator("value", allow_reuse=True)(validate_range_value)
-    _validate_step = validator("step", allow_reuse=True)(validate_step)
-    _set_default_marks = validator("marks", allow_reuse=True, always=True)(set_default_marks)
-    _set_actions = _action_validator_factory("value")
 
     def __call__(self, min, max, current_value):
         output = [

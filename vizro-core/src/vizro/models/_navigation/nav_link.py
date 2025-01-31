@@ -1,15 +1,11 @@
 from __future__ import annotations
 
 import itertools
+from typing import Annotated, cast
 
 import dash_bootstrap_components as dbc
 from dash import get_relative_path, html
-
-try:
-    from pydantic.v1 import Field, PrivateAttr, validator
-except ImportError:  # pragma: no cov
-    from pydantic import Field, PrivateAttr, validator
-
+from pydantic import AfterValidator, Field, PrivateAttr
 
 from vizro.managers._model_manager import ModelID, model_manager
 from vizro.models import VizroBaseModel
@@ -17,6 +13,10 @@ from vizro.models._models_utils import _log_call
 from vizro.models._navigation._navigation_utils import _validate_pages
 from vizro.models._navigation.accordion import Accordion
 from vizro.models.types import NavPagesType
+
+
+def validate_icon(icon) -> str:
+    return icon.strip().lower().replace(" ", "_")
 
 
 class NavLink(VizroBaseModel):
@@ -29,33 +29,32 @@ class NavLink(VizroBaseModel):
 
     """
 
-    pages: NavPagesType = []
-    label: str = Field(..., description="Text description of the icon for use in tooltip.")
-    icon: str = Field("", description="Icon name from Google Material icons library.")
+    pages: Annotated[NavPagesType, AfterValidator(_validate_pages), Field(default=[])]
+    label: str = Field(description="Text description of the icon for use in tooltip.")
+    icon: Annotated[
+        str,
+        AfterValidator(validate_icon),
+        Field(default="", description="Icon name from Google Material icons library."),
+    ]
     _nav_selector: Accordion = PrivateAttr()
-
-    # Re-used validators
-    _validate_pages = validator("pages", allow_reuse=True)(_validate_pages)
-
-    @validator("icon")
-    def validate_icon(cls, icon) -> str:
-        return icon.strip().lower().replace(" ", "_")
 
     @_log_call
     def pre_build(self):
         from vizro.models._navigation.accordion import Accordion
 
-        self._nav_selector = Accordion(pages=self.pages)
+        self._nav_selector = Accordion(pages=self.pages)  # type: ignore[arg-type]
 
     @_log_call
     def build(self, *, active_page_id=None):
         # _nav_selector is an Accordion, so _nav_selector._pages is guaranteed to be dict[str, list[str]].
         # `active_page_id` is still required here for the automatic opening of the Accordion when navigating
         # from homepage to a page within the Accordion and there are several Accordions within the page.
+        from vizro.models import Page
+
         all_page_ids = list(itertools.chain(*self._nav_selector.pages.values()))
         first_page_id = all_page_ids[0]
         item_active = active_page_id in all_page_ids
-        first_page = model_manager[ModelID(str(first_page_id))]
+        first_page = cast(Page, model_manager[ModelID(str(first_page_id))])
 
         nav_link = dbc.NavLink(
             [

@@ -12,7 +12,7 @@ parser = argparse.ArgumentParser(description="Generate JSON schema.")
 parser.add_argument("--check", help="check schema is up to date", action="store_true")
 args = parser.parse_args()
 
-schema_json = Dashboard.schema_json(indent=4, by_alias=False)
+schema_json = json.dumps(Dashboard.model_json_schema(by_alias=False), indent=4)
 schema_path = Path(__file__).with_name(f"{__version__}.json")
 
 if args.check:

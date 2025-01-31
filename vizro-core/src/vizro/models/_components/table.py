@@ -1,13 +1,11 @@
 import logging
-from typing import Literal
+from typing import Annotated, Literal
 
 import pandas as pd
 from dash import State, dcc, html
-
-try:
-    from pydantic.v1 import Field, PrivateAttr, validator
-except ImportError:  # pragma: no cov
-    from pydantic import Field, PrivateAttr, validator
+from pydantic import AfterValidator, Field, PrivateAttr, field_validator
+from pydantic.functional_serializers import PlainSerializer
+from pydantic.json_schema import SkipJsonSchema
 
 from vizro.actions._actions_utils import CallbackTriggerDict, _get_component_actions, _get_parent_model
 from vizro.managers import data_manager
@@ -15,7 +13,7 @@ from vizro.models import Action, VizroBaseModel
 from vizro.models._action._actions_chain import _action_validator_factory
 from vizro.models._components._components_utils import _process_callable_data_frame
 from vizro.models._models_utils import _log_call
-from vizro.models.types import CapturedCallable
+from vizro.models.types import CapturedCallable, validate_captured_callable
 
 logger = logging.getLogger(__name__)
 
@@ -37,30 +35,38 @@ class Table(VizroBaseModel):
     """
 
     type: Literal["table"] = "table"
-    figure: CapturedCallable = Field(
-        ..., import_path="vizro.tables", mode="table", description="Function that returns a `Dash DataTable`."
-    )
-    title: str = Field("", description="Title of the `Table`")
+    figure: Annotated[
+        SkipJsonSchema[CapturedCallable],
+        AfterValidator(_process_callable_data_frame),
+        Field(
+            json_schema_extra={"mode": "table", "import_path": "vizro.tables"},
+            description="Function that returns a `Dash DataTable`.",
+        ),
+    ]
+    title: str = Field(default="", description="Title of the `Table`")
     header: str = Field(
-        "",
+        default="",
         description="Markdown text positioned below the `Table.title`. Follows the CommonMark specification. Ideal for "
         "adding supplementary information such as subtitles, descriptions, or additional context.",
     )
     footer: str = Field(
-        "",
+        default="",
         description="Markdown text positioned below the `Table`. Follows the CommonMark specification. Ideal for "
         "providing further details such as sources, disclaimers, or additional notes.",
     )
-    actions: list[Action] = []
+    actions: Annotated[
+        list[Action],
+        AfterValidator(_action_validator_factory("active_cell")),
+        PlainSerializer(lambda x: x[0].actions),
+        Field(default=[]),
+    ]
 
     _input_component_id: str = PrivateAttr()
 
     # Component properties for actions and interactions
     _output_component_property: str = PrivateAttr("children")
 
-    # Validators
-    set_actions = _action_validator_factory("active_cell")
-    _validate_callable = validator("figure", allow_reuse=True, always=True)(_process_callable_data_frame)
+    _validate_figure = field_validator("figure", mode="before")(validate_captured_callable)
 
     # Convenience wrapper/syntactic sugar.
     def __call__(self, **kwargs):

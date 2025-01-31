@@ -1,13 +1,9 @@
-from typing import Literal, Optional
-
-from dash import html
-
-try:
-    from pydantic.v1 import Field, PrivateAttr, root_validator, validator
-except ImportError:  # pragma: no cov
-    from pydantic import Field, PrivateAttr, root_validator, validator
+from typing import Annotated, Literal, Optional
 
 import dash_bootstrap_components as dbc
+from dash import html
+from pydantic import AfterValidator, Field, PrivateAttr, model_validator
+from pydantic.functional_serializers import PlainSerializer
 
 from vizro.models import Action, VizroBaseModel
 from vizro.models._action._actions_chain import _action_validator_factory
@@ -34,9 +30,16 @@ class Checklist(VizroBaseModel):
 
     type: Literal["checklist"] = "checklist"
     options: OptionsType = []
-    value: Optional[MultiValueType] = None
-    title: str = Field("", description="Title to be displayed")
-    actions: list[Action] = []
+    value: Annotated[
+        Optional[MultiValueType], AfterValidator(validate_value), Field(default=None, validate_default=True)
+    ]
+    title: str = Field(default="", description="Title to be displayed")
+    actions: Annotated[
+        list[Action],
+        AfterValidator(_action_validator_factory("value")),
+        PlainSerializer(lambda x: x[0].actions),
+        Field(default=[]),
+    ]
 
     _dynamic: bool = PrivateAttr(False)
 
@@ -44,9 +47,7 @@ class Checklist(VizroBaseModel):
     _input_property: str = PrivateAttr("value")
 
     # Re-used validators
-    _set_actions = _action_validator_factory("value")
-    _validate_options = root_validator(allow_reuse=True, pre=True)(validate_options_dict)
-    _validate_value = validator("value", allow_reuse=True, always=True)(validate_value)
+    _validate_options = model_validator(mode="before")(validate_options_dict)
 
     def __call__(self, options):
         full_options, default_value = get_options_and_default(options=options, multi=True)
@@ -67,7 +68,7 @@ class Checklist(VizroBaseModel):
     def _build_dynamic_placeholder(self):
         if self.value is None:
             _, default_value = get_options_and_default(self.options, multi=True)
-            self.value = [default_value]
+            self.value = [default_value]  # type: ignore[assignment]
 
         return self.__call__(self.options)
 

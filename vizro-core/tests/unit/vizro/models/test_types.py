@@ -4,14 +4,11 @@ import pandas as pd
 import plotly.graph_objects as go
 import plotly.io as pio
 import pytest
-
-try:
-    from pydantic.v1 import Field, ValidationError
-except ImportError:  # pragma: no cov
-    from pydantic import Field, ValidationError
+from pydantic import Field, ValidationError, field_validator
+from pydantic.json_schema import SkipJsonSchema
 
 from vizro.models import VizroBaseModel
-from vizro.models.types import CapturedCallable, capture
+from vizro.models.types import CapturedCallable, capture, validate_captured_callable
 
 
 def positional_only_function(a, /):
@@ -163,12 +160,14 @@ def invalid_decorated_graph_function():
 
 class ModelWithAction(VizroBaseModel):
     # The import_path here makes it possible to import the above function using getattr(import_path, _target_).
-    function: CapturedCallable = Field(..., import_path=__name__, mode="action")
+    function: SkipJsonSchema[CapturedCallable] = Field(json_schema_extra={"mode": "action", "import_path": __name__})
+    _validate_figure = field_validator("function", mode="before")(validate_captured_callable)
 
 
 class ModelWithGraph(VizroBaseModel):
     # The import_path here makes it possible to import the above function using getattr(import_path, _target_).
-    function: CapturedCallable = Field(..., import_path=__name__, mode="graph")
+    function: SkipJsonSchema[CapturedCallable] = Field(json_schema_extra={"mode": "graph", "import_path": __name__})
+    _validate_figure = field_validator("function", mode="before")(validate_captured_callable)
 
 
 class TestModelFieldPython:
@@ -247,7 +246,7 @@ class TestModelFieldJSONConfig:
 
     def test_invalid_arguments(self):
         config = {"_target_": "decorated_action_function", "e": 5}
-        with pytest.raises(ValidationError, match="got an unexpected keyword argument"):
+        with pytest.raises(TypeError, match="got an unexpected keyword argument"):
             ModelWithGraph(function=config)
 
     def test_undecorated_function(self):
@@ -275,7 +274,9 @@ class TestModelFieldJSONConfig:
     def test_invalid_import_path(self):
         class ModelWithInvalidModule(VizroBaseModel):
             # The import_path doesn't exist.
-            function: CapturedCallable = Field(..., import_path="invalid.module", mode="graph")
+            function: CapturedCallable = Field(json_schema_extra={"mode": "graph", "import_path": "invalid.module"})
+
+            _validate_figure = field_validator("function", mode="before")(validate_captured_callable)
 
         config = {"_target_": "decorated_graph_function", "data_frame": "data_source_name"}
 
