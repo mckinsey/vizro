@@ -1,13 +1,9 @@
-from typing import NamedTuple, Optional
+from typing import Annotated, NamedTuple, Optional
 
 import numpy as np
 from dash import html
 from numpy import ma
-
-try:
-    from pydantic.v1 import Field, PrivateAttr, validator
-except ImportError:  # pragma: no cov
-    from pydantic import Field, PrivateAttr, validator
+from pydantic import AfterValidator, Field, PrivateAttr, ValidationInfo
 
 from vizro._constants import EMPTY_SPACE_CONST
 from vizro.models import VizroBaseModel
@@ -33,20 +29,38 @@ def _get_unique_grid_component_ids(grid: list[list[int]]):
 
 
 # Validators for reuse
-def set_layout(cls, layout, values):
+def set_layout(layout, info: ValidationInfo):
     from vizro.models import Layout
 
-    if "components" not in values:
+    # This exists only to eagerly raise the error, otherwise obscure error message on eg Page()
+    # Same for similar code in other places
+    # TODO[MS]: find another solution that clashes less with typing
+    if "components" not in info.data:
         return layout
 
     if layout is None:
-        grid = [[i] for i in range(len(values["components"]))]
+        grid = [[i] for i in range(len(info.data["components"]))]
         return Layout(grid=grid)
 
     unique_grid_idx = _get_unique_grid_component_ids(layout.grid)
-    if len(unique_grid_idx) != len(values["components"]):
+    if len(unique_grid_idx) != len(info.data["components"]):
         raise ValueError("Number of page and grid components need to be the same.")
     return layout
+
+
+def validate_grid(grid):
+    if len({len(row) for row in grid}) > 1:
+        raise ValueError("All rows must be of same length.")
+
+    # Validate grid type and values
+    unique_grid_idx = _get_unique_grid_component_ids(grid)
+    if 0 not in unique_grid_idx or not np.array_equal(unique_grid_idx, np.arange(unique_grid_idx.max() + 1)):
+        raise ValueError("Grid must contain consecutive integers starting from 0.")
+
+    # Validates grid areas spanned by components and spaces
+    component_grid_lines, space_grid_lines = _get_grid_lines(grid)
+    _validate_grid_areas(component_grid_lines + space_grid_lines)
+    return grid
 
 
 def _convert_to_combined_grid_coord(matrix: ma.MaskedArray) -> ColRowGridLines:
@@ -156,29 +170,16 @@ class Layout(VizroBaseModel):
 
     """
 
-    grid: list[list[int]] = Field(..., description="Grid specification to arrange components on screen.")
-    row_gap: str = Field(GAP_DEFAULT, description="Gap between rows in px. Defaults to 12px.", regex="[0-9]+px")
-    col_gap: str = Field(GAP_DEFAULT, description="Gap between columns in px. Defaults to 12px.", regex="[0-9]+px")
-    row_min_height: str = Field(MIN_DEFAULT, description="Minimum row height in px. Defaults to 0px.", regex="[0-9]+px")
-    col_min_width: str = Field(
-        MIN_DEFAULT, description="Minimum column width in px. Defaults to 0px.", regex="[0-9]+px"
-    )
+    grid: Annotated[
+        list[list[int]],
+        AfterValidator(validate_grid),
+        Field(description="Grid specification to arrange components on screen."),
+    ]
+    row_gap: str = Field(default=GAP_DEFAULT, description="Gap between rows in px.", pattern="[0-9]+px")
+    col_gap: str = Field(default=GAP_DEFAULT, description="Gap between columns in px.", pattern="[0-9]+px")
+    row_min_height: str = Field(default=MIN_DEFAULT, description="Minimum row height in px.", pattern="[0-9]+px")
+    col_min_width: str = Field(default=MIN_DEFAULT, description="Minimum column width in px.", pattern="[0-9]+px")
     _component_grid_lines: Optional[list[ColRowGridLines]] = PrivateAttr()
-
-    @validator("grid")
-    def validate_grid(cls, grid):
-        if len({len(row) for row in grid}) > 1:
-            raise ValueError("All rows must be of same length.")
-
-        # Validate grid type and values
-        unique_grid_idx = _get_unique_grid_component_ids(grid)
-        if 0 not in unique_grid_idx or not np.array_equal(unique_grid_idx, np.arange(unique_grid_idx.max() + 1)):
-            raise ValueError("Grid must contain consecutive integers starting from 0.")
-
-        # Validates grid areas spanned by components and spaces
-        component_grid_lines, space_grid_lines = _get_grid_lines(grid)
-        _validate_grid_areas(component_grid_lines + space_grid_lines)
-        return grid
 
     def __init__(self, **data):
         super().__init__(**data)
@@ -216,8 +217,8 @@ class Layout(VizroBaseModel):
             style={
                 "gridRowGap": self.row_gap,
                 "gridColumnGap": self.col_gap,
-                "gridTemplateColumns": f"repeat({len(self.grid[0])}," f"minmax({self.col_min_width}, 1fr))",
-                "gridTemplateRows": f"repeat({len(self.grid)}," f"minmax({self.row_min_height}, 1fr))",
+                "gridTemplateColumns": f"repeat({len(self.grid[0])},minmax({self.col_min_width}, 1fr))",
+                "gridTemplateRows": f"repeat({len(self.grid)},minmax({self.row_min_height}, 1fr))",
             },
             className="grid-layout",
             id=self.id,

@@ -54,6 +54,11 @@ pypath = "python -c 'import sys; print(sys.executable)'"
 # Only run pre-commit hooks when schema is generated, not when it's checked. This keeps the check fast in CI.
 schema = ["python schemas/generate.py", '- pre-commit run --files="schemas/$(hatch version).json" > /dev/null']
 schema-check = ["python schemas/generate.py --check"]
+templates = [
+  "python src/vizro/_themes/generate_plotly_templates.py",
+  '- pre-commit run --files src/vizro/_themes/vizro_dark.json src/vizro/_themes/vizro_light.json > /dev/null'
+]
+templates-check = ["python src/vizro/_themes/generate_plotly_templates.py --check"]
 # Note `hatch run test` currently fails due to interference between integration tests and unit tests. Ideally we would
 # fix this, but we don't actually use `hatch run test` anywhere right now.
 # See comments added in https://github.com/mckinsey/vizro/pull/444.
@@ -67,6 +72,7 @@ test-unit-coverage = [
   "- coverage combine",
   "coverage report"
 ]
+update-icons = ["python tools/update_material_icons.py"]
 
 [envs.docs]
 dependencies = [
@@ -113,7 +119,7 @@ VIZRO_LOG_LEVEL = "DEBUG"
 
 [envs.lower-bounds]
 extra-dependencies = [
-  "pydantic==1.10.16",
+  "pydantic==2.9.0",
   "dash==2.18.0",
   "plotly==5.12.0",
   "pandas==2.0.0",

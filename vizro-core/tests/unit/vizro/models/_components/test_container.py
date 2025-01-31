@@ -4,11 +4,7 @@ import dash_bootstrap_components as dbc
 import pytest
 from asserts import STRIP_ALL, assert_component_equal
 from dash import html
-
-try:
-    from pydantic.v1 import ValidationError
-except ImportError:  # pragma: no cov
-    from pydantic import ValidationError
+from pydantic import ValidationError
 
 import vizro.models as vm
 
@@ -32,11 +28,11 @@ class TestContainerInstantiation:
         assert container.title == "Title"
 
     def test_mandatory_title_missing(self):
-        with pytest.raises(ValidationError, match="field required"):
+        with pytest.raises(ValidationError, match="Field required"):
             vm.Container(components=[vm.Button()])
 
     def test_mandatory_components_missing(self):
-        with pytest.raises(ValidationError, match="field required"):
+        with pytest.raises(ValidationError, match="Field required"):
             vm.Container(title="Title")
 
 

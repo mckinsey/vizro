@@ -4,14 +4,9 @@ import sys
 
 import pandas as pd
 import pytest
-from dash import Output, State, html
-
-try:
-    from pydantic.v1 import ValidationError
-except ImportError:  # pragma: no cov
-    from pydantic import ValidationError
-
 from asserts import assert_component_equal
+from dash import Output, State, html
+from pydantic import ValidationError
 
 import vizro.models as vm
 import vizro.plotly.express as px
@@ -105,7 +100,7 @@ class TestActionInstantiation:
         ],
     )
     def test_inputs_invalid(self, inputs, identity_action_function):
-        with pytest.raises(ValidationError, match="string does not match regex"):
+        with pytest.raises(ValidationError, match="String should match pattern"):
             Action(function=identity_action_function(), inputs=inputs, outputs=[])
 
     @pytest.mark.parametrize(
@@ -118,7 +113,7 @@ class TestActionInstantiation:
         ],
     )
     def test_outputs_invalid(self, outputs, identity_action_function):
-        with pytest.raises(ValidationError, match="string does not match regex"):
+        with pytest.raises(ValidationError, match="String should match pattern"):
             Action(function=identity_action_function(), inputs=[], outputs=outputs)
 
     @pytest.mark.parametrize("file_format", [None, "csv", "xlsx"])
@@ -130,7 +125,7 @@ class TestActionInstantiation:
 
     def test_export_data_file_format_invalid(self):
         with pytest.raises(
-            ValueError, match='Unknown "file_format": invalid_file_format.' ' Known file formats: "csv", "xlsx".'
+            ValueError, match='Unknown "file_format": invalid_file_format. Known file formats: "csv", "xlsx".'
         ):
             Action(function=export_data(file_format="invalid_file_format"))
 

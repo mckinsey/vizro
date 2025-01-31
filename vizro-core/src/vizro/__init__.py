@@ -1,20 +1,23 @@
+import json
 import logging
 import os
+from pathlib import Path
 
 import plotly.io as pio
 from dash.development.base_component import ComponentRegistry
 
 from ._constants import VIZRO_ASSETS_PATH
-from ._themes import dark, light
 from ._vizro import Vizro, _make_resource_spec
 
 logging.basicConfig(level=os.getenv("VIZRO_LOG_LEVEL", "WARNING"))
-pio.templates["vizro_dark"] = dark
-pio.templates["vizro_light"] = light
+
+base_path = Path(__file__).parent / "_themes"
+pio.templates["vizro_dark"] = json.loads((base_path / "vizro_dark.json").read_text())
+pio.templates["vizro_light"] = json.loads((base_path / "vizro_light.json").read_text())
 
 __all__ = ["Vizro"]
 
-__version__ = "0.1.32.dev0"
+__version__ = "0.2.0.dev0"
 
 
 # For the below _css_dist and _js_dist to be used by Dash, they must be retrieved by dash.resources.Css.get_all_css().

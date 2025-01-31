@@ -778,7 +778,7 @@ kpi_indicators = vm.Page(
 components = [graphs, ag_grid, table, cards, figure, button, containers, tabs]
 controls = [filters, parameters, selectors]
 actions = [export_data_action, chart_interaction]
-extensions = [custom_charts, custom_tables, custom_components, custom_actions, custom_figures]
+extensions = [custom_charts, custom_tables, custom_actions, custom_figures, custom_components]
 
 dashboard = vm.Dashboard(
     title="Vizro Features",

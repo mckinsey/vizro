@@ -1,19 +1,21 @@
-from typing import Literal, Optional, Union
-
-import pytest
-
-try:
-    from pydantic.v1 import Field, ValidationError, root_validator, validator
-except ImportError:  # pragma: no cov
-    from pydantic import Field, ValidationError, root_validator, validator
 import logging
 import textwrap
-from typing import Annotated
+from typing import Annotated, Literal, Optional, Union
+
+import pytest
+from pydantic import (
+    Field,
+    FieldSerializationInfo,
+    SerializerFunctionWrapHandler,
+    ValidationError,
+    field_validator,
+    model_serializer,
+    model_validator,
+)
 
 import vizro.models as vm
 import vizro.plotly.express as px
 from vizro.actions import export_data
-from vizro.models._base import _patch_vizro_base_model_dict
 from vizro.models.types import capture
 from vizro.tables import dash_ag_grid
 
@@ -70,9 +72,12 @@ def ParentWithList():
 @pytest.fixture()
 def ParentWithForwardRef():
     class _ParentWithForwardRef(vm.VizroBaseModel):
-        child: Annotated[Union["ChildXForwardRef", "ChildYForwardRef"], Field(discriminator="type")]  # noqa: F821
+        child: Annotated[Union["ChildXForwardRef", "ChildYForwardRef"], Field(discriminator="type")]
 
-    _ParentWithForwardRef.update_forward_refs(ChildXForwardRef=ChildX, ChildYForwardRef=ChildY)
+    # TODO: [MS] This is how I would update the forward refs, but we should double check
+    ChildXForwardRef = ChildX
+    ChildYForwardRef = ChildY
+    _ParentWithForwardRef.model_rebuild()
     return _ParentWithForwardRef
 
 
@@ -87,7 +92,9 @@ def ParentWithNonDiscriminatedUnion():
 class TestDiscriminatedUnion:
     def test_no_type_match(self, Parent):
         child = ChildZ()
-        with pytest.raises(ValidationError, match="No match for discriminator 'type' and value 'child_Z'"):
+        with pytest.raises(
+            ValidationError, match="'type' does not match any of the expected tags: 'child_x', 'child_y'"
+        ):
             Parent(child=child)
 
     def test_add_type_model_instantiation(self, Parent):
@@ -115,7 +122,9 @@ class TestOptionalDiscriminatedUnion:
     # The current error message is the non-discriminated union one.
     def test_no_type_match_current_behaviour(self, ParentWithOptional):
         child = ChildZ()
-        with pytest.raises(ValidationError, match="unexpected value; permitted: 'child_x'"):
+        with pytest.raises(
+            ValidationError, match="'type' does not match any of the expected tags: 'child_x', 'child_y'"
+        ):
             ParentWithOptional(child=child)
 
     def test_add_type_model_instantiation(self, ParentWithOptional):
@@ -132,7 +141,9 @@ class TestOptionalDiscriminatedUnion:
 class TestListDiscriminatedUnion:
     def test_no_type_match(self, ParentWithList):
         child = ChildZ()
-        with pytest.raises(ValidationError, match="No match for discriminator 'type' and value 'child_Z'"):
+        with pytest.raises(
+            ValidationError, match="'type' does not match any of the expected tags: 'child_x', 'child_y'"
+        ):
             ParentWithList(child=[child])
 
     def test_add_type_model_instantiation(self, ParentWithList):
@@ -149,7 +160,9 @@ class TestListDiscriminatedUnion:
 class TestParentForwardRefDiscriminatedUnion:
     def test_no_type_match(self, ParentWithForwardRef):
         child = ChildZ()
-        with pytest.raises(ValidationError, match="No match for discriminator 'type' and value 'child_Z'"):
+        with pytest.raises(
+            ValidationError, match="'type' does not match any of the expected tags: 'child_x', 'child_y'"
+        ):
             ParentWithForwardRef(child=child)
 
     def test_add_type_model_instantiation(self, ParentWithForwardRef, mocker):
@@ -169,9 +182,13 @@ class TestParentForwardRefDiscriminatedUnion:
 
 class TestChildWithForwardRef:
     def test_no_type_match(self, Parent):
+        # TODO: [MS] I am not sure why this worked before, but in my understanding,
+        # we need to define the forward ref before rebuilding the model that contains it.
+        ChildXForwardRef = ChildX  # noqa: F841
+        ChildWithForwardRef.model_rebuild()
         child = ChildWithForwardRef()
         with pytest.raises(
-            ValidationError, match="No match for discriminator 'type' and value 'child_with_forward_ref'"
+            ValidationError, match="'type' does not match any of the expected tags: 'child_x', 'child_y'"
         ):
             Parent(child=child)
 
@@ -201,17 +218,19 @@ class Model(vm.VizroBaseModel):
 
 class ModelWithFieldSetting(vm.VizroBaseModel):
     type: Literal["exclude_model"] = "exclude_model"
-    title: str = Field(..., description="Title to be displayed.")
-    foo: str = ""
+    title: str = Field(description="Title to be displayed.")
+    foo: Optional[str] = Field(default=None, description="Foo field.", validate_default=True)
 
     # Set a field with regular validator
-    @validator("foo", always=True)
-    def set_foo(cls, foo) -> str:
+    @field_validator("foo")
+    @classmethod
+    def set_foo(cls, foo: Optional[str]) -> str:
         return foo or "long-random-thing"
 
     # Set a field with a pre=True root-validator -->
     # # this will not be caught by exclude_unset=True
-    @root_validator(pre=True)
+    @model_validator(mode="before")
+    @classmethod
     def set_id(cls, values):
         if "title" not in values:
             return values
@@ -219,46 +238,50 @@ class ModelWithFieldSetting(vm.VizroBaseModel):
         values.setdefault("id", values["title"])
         return values
 
-    # Exclude field even if missed by exclude_unset=True
-    def __vizro_exclude_fields__(self):
-        """Exclude id field if it is the same as the title."""
-        return {"id"}
+    # Exclude field when id is the same as title
+    @model_serializer(mode="wrap")
+    def _serialize_id(self, nxt: SerializerFunctionWrapHandler, info: FieldSerializationInfo):
+        result = nxt(self)
+        if info.context is not None and info.context.get("add_name", False):
+            result["__vizro_model__"] = self.__class__.__name__
+        if self.title == self.id:
+            result.pop("id", None)
+            return result
+        return result
 
 
 class TestDict:
     def test_dict_no_args(self):
         model = Model(id="model_id")
-        assert model.dict() == {"id": "model_id", "type": "model"}
+        assert model.model_dump() == {"id": "model_id", "type": "model"}
 
     def test_dict_exclude_unset(self):
         model = Model(id="model_id")
-        assert model.dict(exclude_unset=True) == {"id": "model_id"}
+        assert model.model_dump(exclude_unset=True) == {"id": "model_id"}
 
     def test_dict_exclude_id(self):
         model = Model()
-        assert model.dict(exclude={"id"}) == {"type": "model"}
+        assert model.model_dump(exclude={"id"}) == {"type": "model"}
 
     def test_dict_exclude_type(self):
-        # __vizro_exclude_fields__ should have no effect here.
         model = Model(id="model_id")
-        assert model.dict(exclude={"type"}) == {"id": "model_id"}
+        assert model.model_dump(exclude={"type"}) == {"id": "model_id"}
 
     def test_dict_exclude_in_model_unset_with_and_without_context(self):
         model = ModelWithFieldSetting(title="foo")
-        with _patch_vizro_base_model_dict():
-            assert model.dict(exclude_unset=True) == {"title": "foo", "__vizro_model__": "ModelWithFieldSetting"}
-        assert model.dict(exclude_unset=True) == {"id": "foo", "title": "foo"}
+        assert model.model_dump(context={"add_name": True}, exclude_unset=True) == {
+            "title": "foo",
+            "__vizro_model__": "ModelWithFieldSetting",
+        }
 
     def test_dict_exclude_in_model_no_args_with_and_without_context(self):
         model = ModelWithFieldSetting(title="foo")
-        with _patch_vizro_base_model_dict():
-            assert model.dict() == {
-                "title": "foo",
-                "type": "exclude_model",
-                "__vizro_model__": "ModelWithFieldSetting",
-                "foo": "long-random-thing",
-            }
-        assert model.dict() == {"id": "foo", "type": "exclude_model", "title": "foo", "foo": "long-random-thing"}
+        assert model.model_dump(context={"add_name": True}) == {
+            "title": "foo",
+            "type": "exclude_model",
+            "__vizro_model__": "ModelWithFieldSetting",
+            "foo": "long-random-thing",
+        }
 
 
 @pytest.fixture

@@ -7,8 +7,8 @@ runs:
     - name: Copy failed screenshots
       shell: bash
       run: |
-        mkdir /home/runner/work/vizro/vizro/vizro-core/failed_screenshots/
-        cd /home/runner/work/vizro/vizro/vizro-core/
+        mkdir ${{ env.PROJECT_PATH }}failed_screenshots/
+        cd ${{ env.PROJECT_PATH }}
         cp *.png failed_screenshots
 
     - name: Archive production artifacts
@@ -16,7 +16,7 @@ runs:
       with:
         name: Failed screenshots
         path: |
-          /home/runner/work/vizro/vizro/vizro-core/failed_screenshots/*.png
+          ${{ env.PROJECT_PATH }}failed_screenshots/*.png
 
     - name: Send custom JSON data to Slack
       id: slack
