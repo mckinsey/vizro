@@ -2,7 +2,7 @@
 
 Typically when you create a dashboard, there are two distinct stages:
 
-1. Development. This is when you build your app. You make frequent changes to your code and want to see how the dashboard looks after each change. You may or may not want to make the dashboard accessible to other people.
+1. Development. This is when you build your app. You make frequent changes to your code and want a simple way to see how the dashboard looks after each change. At this point, you may, or may not, want to make it possible for other people to access your dashboard.
 1. Production. When you complete development of your app, you _deploy_ it to production. The dashboard should be accessible to other people.
 
 This page describes methods to run your dashboard _in production_. If your dashboard is still in development then you should read our [guide to development](run.md).
