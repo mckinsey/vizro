@@ -48,7 +48,7 @@ Now that your `app.py` file is ready, you need to choose a _hosting provider_. T
 
 Enterprise users should look at our guidance for [deploying Vizro dashboards on Dash Enterprise](#dash-enterprise). We also discuss the [general principles for deploying a Vizro app](#general-principles) that apply to all hosting providers.
 
-## Hugging Face
+## Deploy a Vizro dashboard to Hugging Face
 
 [Hugging Face](https://huggingface.co/) is a platform for machine learning models, datasets and demos. Within Hugging Face, the [Spaces feature](https://huggingface.co/spaces/launch) offers a one click experience to deploy a Vizro dashboard for free. This is the easiest way to deploy a Vizro app if you do not mind your app's code being public or shared within your [Hugging Face organization](https://huggingface.co/organizations). Paid plans include features such as authentication, developer mode for debugging, user analytics and more powerful computing resources.
 
