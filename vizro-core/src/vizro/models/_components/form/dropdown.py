@@ -2,7 +2,7 @@ import math
 from datetime import date
 from typing import Literal, Optional, Union, cast
 
-from dash import dcc, html
+from dash import ClientsideFunction, Input, Output, State, clientside_callback, dcc, html
 
 try:
     from pydantic.v1 import Field, PrivateAttr, StrictBool, root_validator, validator
@@ -39,7 +39,7 @@ def _calculate_option_height(full_options: OptionsType) -> int:
     return 8 + 24 * number_of_lines
 
 
-def _add_select_all_option(full_options: OptionsType) -> OptionsType:
+def _add_select_all_option(full_options: OptionsType, component_id: str) -> OptionsType:
     """Adds a 'Select All' option to the list of options."""
     # TODO: Move option to dictionary conversion within `get_options_and_default` function as here: https://github.com/mckinsey/vizro/pull/961#discussion_r1923356781
     options_dict = [
@@ -47,7 +47,22 @@ def _add_select_all_option(full_options: OptionsType) -> OptionsType:
         for option in full_options
     ]
 
-    options_dict[0] = {"label": html.Div(["ALL"]), "value": "ALL"}
+    options_dict[0] = {
+        "label": html.Div(
+            [
+                dcc.Checklist(
+                    options=[{"label": "", "value": "ALL"}],
+                    value=[],
+                    id=f"{component_id}_checklist_all",
+                    persistence=True,
+                    persistence_type="session",
+                ),
+                html.Span("ALL"),
+            ],
+            className="checklist-dropdown-div",
+        ),
+        "value": "ALL",
+    }
     return options_dict
 
 
@@ -99,9 +114,22 @@ class Dropdown(VizroBaseModel):
         return multi
 
     def __call__(self, options):
+        output = [Output(f"{self.id}", "value"), Output(f"{self.id}_checklist_all", "value")]
+        inputs = [
+            Input(f"{self.id}", "value"),
+            State(f"{self.id}", "options"),
+        ]
+
+        clientside_callback(
+            ClientsideFunction(namespace="dropdown", function_name="update_dropdown_values"),
+            output=output,
+            inputs=inputs,
+        )
         full_options, default_value = get_options_and_default(options=options, multi=self.multi)
         option_height = _calculate_option_height(full_options)
-        altered_options = _add_select_all_option(full_options=full_options) if self.multi else full_options
+        altered_options = (
+            _add_select_all_option(full_options=full_options, component_id=self.id) if self.multi else full_options
+        )
 
         return html.Div(
             children=[

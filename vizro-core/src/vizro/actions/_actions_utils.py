@@ -66,13 +66,6 @@ def _apply_filter_controls(
         selector_actions = _get_component_actions(model_manager[ctd["id"]])
 
         for action in selector_actions:
-            if (
-                action.function._function.__name__ != "_filter"
-                or target not in action.function["targets"]
-                or ALL_OPTION in selector_value
-            ):
-                continue
-
             _filter_function = action.function["filter_function"]
             _filter_column = action.function["filter_column"]
             _filter_value = selector_value

@@ -1,31 +1,60 @@
 """Dev app to try things out."""
 
-import vizro.models as vm
 import vizro.plotly.express as px
+import vizro.models as vm
 from vizro import Vizro
-from vizro.figures import kpi_card
 
-tips = px.data.tips
+from vizro.tables import dash_ag_grid
 
-# Create a layout with five rows and four columns. The KPI card is positioned in the first cell, while the remaining cells are empty.
-page = vm.Page(
-    title="KPI card",
-    layout=vm.Layout(grid=[[0, 0, -1, -1]] + [[-1, -1, -1, -1]] * 2),
-    components=[
-        vm.Figure(
-            figure=kpi_card(  # For more information, refer to the API reference for kpi_card
-                data_frame=tips,
-                value_column="tip",
-                value_format="${value:.2f}",
-                icon="folder_check",
-                title="KPI card I",
-            )
-        )
-    ],
-    controls=[vm.Filter(column="day", selector=vm.RadioItems())],
+
+df = px.data.gapminder()
+
+gapminder_data = (
+    df.groupby(by=["continent", "year"]).agg({"lifeExp": "mean", "pop": "sum", "gdpPercap": "mean"}).reset_index()
 )
 
-dashboard = vm.Dashboard(pages=[page])
+
+first_page = vm.Page(
+    title="First Page",
+    layout=vm.Layout(grid=[[0, 0], [1, 1], [1, 1], [1, 1]]),
+    components=[
+        vm.Card(
+            text="""
+                # First dashboard page
+                This pages shows the inclusion of markdown text in a page and how components
+                can be structured using Layout.
+            """,
+        ),
+        vm.AgGrid(
+            figure=dash_ag_grid(data_frame=gapminder_data, dashGridOptions={"pagination": True}),
+            # TODO: Test it in dynamic mode.
+            # figure=dash_ag_grid(data_frame="dynamic_gapminder_data", dashGridOptions={"pagination": True}),
+            title="Gapminder Data Insights",
+            header="""#### An Interactive Exploration of Global Health, Wealth, and Population""",
+            footer="""SOURCE: **Plotly gapminder data set, 2024**""",
+        ),
+    ],
+    controls=[
+        # vm.Filter(column="continent", selector=vm.Checklist()),
+        vm.Filter(
+            column="continent",
+            selector=vm.Dropdown(
+                # options=[
+                #     {"label": "EUROPE", "value": "Europe"},
+                #     {"label": "AFRICA", "value": "Africa"},
+                #     {"label": "ASIA", "value": "Asia"},
+                #     {"label": "AMERICAS", "value": "Americas"},
+                #     {"label": "OCEANIA", "value": "Oceania"},
+                # ],
+                value=["Europe"],
+                # value="Europe",
+                # multi=False,
+            ),
+        )
+    ],
+)
+
+dashboard = vm.Dashboard(pages=[first_page])
 
 if __name__ == "__main__":
     Vizro().build(dashboard).run()

@@ -160,3 +160,9 @@ wrapper **/
   padding: 0;
   padding-left: 0.5rem;
 }
+
+.checklist-dropdown-div {
+  display: flex;
+  flex-direction: row;
+  gap: 8px;
+}
