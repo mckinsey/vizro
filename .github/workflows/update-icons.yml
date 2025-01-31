@@ -12,7 +12,7 @@ env:
   PYTHON_VERSION: "3.12"
 
 jobs:
-  update-icons:
+  check-update:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout main branch
@@ -33,12 +33,17 @@ jobs:
           git config user.email "145135826+vizro-svc@users.noreply.github.com"
           git config user.name "Vizro Team"
           git diff --exit-code || echo "has_changes=true" >> $GITHUB_ENV
+
+  update-icons:
+    runs-on: ubuntu-latest
+    needs: [check-update]
+    if: |
+      env.has_changes == 'true'
+    steps:
       - name: Delete old branch if exists
-        if: env.has_changes == 'true'
         run: |
           git push origin --delete bot/update-material-icons || true
       - name: Create and push changes
-        if: env.has_changes == 'true'
         run: |
           git checkout -b bot/update-material-icons
           hatch run changelog:add
@@ -46,10 +51,8 @@ jobs:
           git commit -m "Update Material Icons"
           git push --set-upstream origin bot/update-material-icons
       - name: Install GitHub CLI
-        if: env.has_changes == 'true'
         run: sudo apt-get install -y gh
       - name: Create Pull Request
-        if: env.has_changes == 'true'
         run: |
           gh pr create -B main -H bot/update-material-icons --title "[Bot] Update Material Icons" --body "Automated update of Material Icons"
         env:
