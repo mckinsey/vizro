@@ -95,7 +95,7 @@ The [Ploomber Cloud documentation](https://docs.cloud.ploomber.io/en/latest/apps
 1. Compress your `app.py`, `requirements.txt` and `Dockerfile` into a single zip file.
 1. Upload the zip file to Ploomber Cloud.
 
-## Dash Enterprise
+## Deploying Vizro dashboards to Dash Enterprise
 
 Since a Vizro app is a Dash app under the hood, they can be deployed to [Dash Enterprise](https://plotly.com/dash/) and accessed in the same way as other Dash apps.
 
