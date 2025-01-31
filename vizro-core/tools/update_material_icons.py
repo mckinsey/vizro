@@ -23,8 +23,8 @@ def download_font(url, path):
             logger.info(f"✍️ Material font downloaded and saved to {path}")
         else:
             logger.error(f"❌ Failed to download Material font. Status code: {response.status_code}")
-    except requests.RequestException:
-        logger.error("❌ Failed to download Material font due to time out.")
+    except requests.RequestException as e:
+        logger.error(f"❌ Failed to download Material font due to an unexpected error: {e}")
 
 
 if __name__ == "__main__":
