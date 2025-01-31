@@ -46,7 +46,7 @@ Now that your `app.py` file is ready, you need to choose a _hosting provider_. T
 - [Deploy a Vizro dashboard to Hugging Face](#hugging-face)
 - [Deploy a Vizro dashboard to Ploomber Cloud](#ploomber-cloud)
 
-Enterprise users should look at our [guidance on Dash Enterprise](#dash-enterprise). We also discuss the [general principles](#general-principles) for deploying a Vizro app that apply to all hosting providers.
+Enterprise users should look at our guidance for [deploying Vizro dashboards on Dash Enterprise](#dash-enterprise). We also discuss the [general principles for deploying a Vizro app](#general-principles) that apply to all hosting providers.
 
 ## Hugging Face
 
