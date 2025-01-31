@@ -135,6 +135,7 @@ def kpi_card_reference(  # noqa: PLR0913
         >>> vm.Page(title="Page", components=[vm.Figure(figure=kpi_card_reference(...))])
 
     """
+
     def _get_footer_class(delta, invert_color_scheme):
         delta_pos_color, delta_neg_color = "color-neg", "color-pos" if invert_color_scheme else "color-pos", "color-neg"
         return delta_pos_color if delta > 0 else delta_neg_color if delta < 0 else ""
