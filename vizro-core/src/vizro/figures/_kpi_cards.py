@@ -136,9 +136,9 @@ def kpi_card_reference(  # noqa: PLR0913
 
     """
 
-    def _get_footer_class(delta, invert_color_scheme):
-        delta_pos_color, delta_neg_color = "color-neg", "color-pos" if invert_color_scheme else "color-pos", "color-neg"
-        return delta_pos_color if delta > 0 else delta_neg_color if delta < 0 else ""
+    def _get_footer_class(delta: float, invert_color_scheme: bool) -> str:
+        pos_color, neg_color = ("color-neg", "color-pos") if invert_color_scheme else ("color-pos", "color-neg")
+        return pos_color if delta > 0 else neg_color if delta < 0 else ""
 
     title = title or f"{agg_func} {value_column}".title()
     value, reference = data_frame[[value_column, reference_column]].agg(agg_func)
