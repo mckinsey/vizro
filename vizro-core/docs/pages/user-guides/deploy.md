@@ -43,7 +43,7 @@ That's it! Your app is now suitable for deployment to production.
 
 Now that your `app.py` file is ready, you need to choose a _hosting provider_. There are many services out there with different offerings, but for most users we recommend two in particular: [Hugging Face](https://huggingface.co/) and [Ploomber Cloud](https://docs.cloud.ploomber.io/). These both have a free tier with the possibility of paying more for extras, and they are both quick and easy to get started with. We give step-by-step instructions on how to use each:
 
-- [Instructions for Hugging Face](#hugging-face)
+- [Deploy a Vizro dashboard to Hugging Face](#hugging-face)
 - [Instructions for Ploomber Cloud](#ploomber-cloud)
 
 Enterprise users should look at our [guidance on Dash Enterprise](#dash-enterprise). We also discuss the [general principles](#general-principles) for deploying a Vizro app that apply to all hosting providers.
