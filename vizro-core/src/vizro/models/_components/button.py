@@ -1,12 +1,9 @@
-from typing import Literal
+from typing import Annotated, Literal
 
 import dash_bootstrap_components as dbc
 from dash import get_relative_path
-
-try:
-    from pydantic.v1 import Field
-except ImportError:  # pragma: no cov
-    from pydantic import Field
+from pydantic import AfterValidator, Field
+from pydantic.functional_serializers import PlainSerializer
 
 from vizro.models import Action, VizroBaseModel
 from vizro.models._action._actions_chain import _action_validator_factory
@@ -24,12 +21,14 @@ class Button(VizroBaseModel):
     """
 
     type: Literal["button"] = "button"
-    text: str = Field("Click me!", description="Text to be displayed on button.")
-    href: str = Field("", description="URL (relative or absolute) to navigate to.")
-    actions: list[Action] = []
-
-    # Re-used validators
-    _set_actions = _action_validator_factory("n_clicks")
+    text: str = Field(default="Click me!", description="Text to be displayed on button.")
+    href: str = Field(default="", description="URL (relative or absolute) to navigate to.")
+    actions: Annotated[
+        list[Action],
+        AfterValidator(_action_validator_factory("n_clicks")),
+        PlainSerializer(lambda x: x[0].actions),
+        Field(default=[]),
+    ]
 
     @_log_call
     def build(self):

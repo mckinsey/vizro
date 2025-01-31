@@ -2,11 +2,7 @@ from typing import Literal
 
 import dash_bootstrap_components as dbc
 from dash import dcc, get_relative_path
-
-try:
-    from pydantic.v1 import Field
-except ImportError:  # pragma: no cov
-    from pydantic import Field
+from pydantic import Field
 
 from vizro.models import VizroBaseModel
 from vizro.models._models_utils import _log_call
@@ -25,7 +21,7 @@ class Card(VizroBaseModel):
 
     type: Literal["card"] = "card"
     text: str = Field(
-        ..., description="Markdown string to create card title/text that should adhere to the CommonMark Spec."
+        description="Markdown string to create card title/text that should adhere to the CommonMark Spec."
     )
     href: str = Field(
         "",

@@ -16,7 +16,7 @@ pio.templates["vizro_dark"] = json.loads((base_path / "vizro_dark.json").read_te
 pio.templates["vizro_light"] = json.loads((base_path / "vizro_light.json").read_text())
 
 __all__ = ["Vizro"]
-__version__ = "0.1.32.dev0"
+__version__ = "0.2.0.dev0"
 
 
 # Enables the use of our own Bootstrap theme as `external_stylesheets=vizro.bootstrap`

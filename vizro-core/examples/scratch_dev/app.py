@@ -3,26 +3,24 @@
 import vizro.models as vm
 import vizro.plotly.express as px
 from vizro import Vizro
-from vizro.figures import kpi_card
+from vizro.actions import export_data
 
-tips = px.data.tips
+df = px.data.iris()
+
 
 # Create a layout with five rows and four columns. The KPI card is positioned in the first cell, while the remaining cells are empty.
 page = vm.Page(
-    title="KPI card",
-    layout=vm.Layout(grid=[[0, 0, -1, -1]] + [[-1, -1, -1, -1]] * 2),
+    title="Page 1",
     components=[
-        vm.Figure(
-            figure=kpi_card(  # For more information, refer to the API reference for kpi_card
-                data_frame=tips,
-                value_column="tip",
-                value_format="${value:.2f}",
-                icon="folder_check",
-                title="KPI card I",
-            )
-        )
+        vm.Graph(figure=px.bar(df, x="sepal_width", y="sepal_length")),
+        vm.Button(
+            text="Export data",
+            actions=[
+                vm.Action(function=export_data()),
+                vm.Action(function=export_data()),
+            ],
+        ),
     ],
-    controls=[vm.Filter(column="day", selector=vm.RadioItems())],
 )
 
 dashboard = vm.Dashboard(pages=[page])
