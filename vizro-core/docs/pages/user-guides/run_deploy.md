@@ -20,7 +20,7 @@ Vizro is built on top of [Dash](https://dash.plotly.com/), which itself uses [Fl
 
 ## Development
 
-When developing a dashboard, you have several options on how to get started. The below table can guide you in making a choice. The [fastest way to a running dashboard is to use PyCafe](https://py.cafe/snippet/vizro/v1), as shown in our [First Dashboard tutorial](../tutorials/first-dashboard.md).
+When developing a dashboard, you have several options on how to get started. The below table can guide you in making a choice. Clicking the links will lead you to the relevant docs section explaining more. The [fastest way to a running dashboard is to use PyCafe](https://py.cafe/snippet/vizro/v1), as shown in our [First Dashboard tutorial](../tutorials/first-dashboard.md).
 
 | Method                                     | Description                                                | Requires                         |
 | ------------------------------------------ | ---------------------------------------------------------- | -------------------------------- |
@@ -133,7 +133,9 @@ In PyCafe there is no need to set anything as your dashboard will automatically 
 
 ## Production
 
-When developing your dashboard you typically run it _locally_ (on your own computer) using the Flask development server. When you deploy to production, this is no longer suitable. Instead, you need a solution that can handle multiple users in a stable, secure and efficient way. The below table is a **TLDR** that provides an overview of the most common options.
+When developing your dashboard you typically run it _locally_ (on your own computer) using the Flask development server. When you deploy to production, this is no longer suitable. Instead, you need a solution that can handle multiple users in a stable, secure and efficient way. 
+
+The below table is a **TLDR** that provides an overview of the most common options. Clicking the links will lead you to the relevant docs section explaining more.
 
 | Method                                         | Free Tier         | Some key features (not exhaustive)                                                                                                                                     | Requires                                                      |
 | ---------------------------------------------- | ----------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------- |
