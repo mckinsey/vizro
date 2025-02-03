@@ -45,6 +45,13 @@ jobs:
     if: |
       needs.check-update.outputs.has_changes == 'true'
     steps:
+      - uses: actions/checkout@v4
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: ${{ env.PYTHON_VERSION }}
+      - name: Install Hatch
+        run: pip install hatch
       - name: Delete old branch if exists
         run: |
           git push origin --delete bot/update-material-icons || true
