@@ -66,6 +66,7 @@ repo_name: mckinsey/vizro
 theme:
   name: material
   language: en
+  custom_dir: docs/overrides
   palette:
     - scheme: default
   font:
@@ -112,7 +113,7 @@ markdown_extensions:
             kwds:
               type: vizro
               requirements: |
-                vizro==0.1.30
+                vizro==0.1.31
   - pymdownx.tabbed:
       alternate_style: true
   - pymdownx.mark

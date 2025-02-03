@@ -7,11 +7,7 @@ import pytest
 from asserts import assert_component_equal
 from dash import dcc, html
 from dash.exceptions import MissingCallbackContextException
-
-try:
-    from pydantic.v1 import ValidationError
-except ImportError:  # pragma: no cov
-    from pydantic import ValidationError
+from pydantic import ValidationError
 
 import vizro.models as vm
 import vizro.plotly.express as px
@@ -55,7 +51,7 @@ class TestGraphInstantiation:
         assert graph.figure == standard_px_chart._captured_callable
 
     def test_mandatory_figure_missing(self):
-        with pytest.raises(ValidationError, match="field required"):
+        with pytest.raises(ValidationError, match="Field required"):
             vm.Graph()
 
     def test_captured_callable_invalid(self, standard_go_chart):

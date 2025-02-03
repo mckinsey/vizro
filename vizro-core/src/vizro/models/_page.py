@@ -1,14 +1,20 @@
 from __future__ import annotations
 
-from collections.abc import Iterable, Mapping
-from typing import Any, Optional, TypedDict, Union, cast
+from collections.abc import Iterable
+from typing import Annotated, Optional, TypedDict, cast
 
 from dash import dcc, html
-
-try:
-    from pydantic.v1 import Field, root_validator, validator
-except ImportError:  # pragma: no cov
-    from pydantic import Field, root_validator, validator
+from pydantic import (
+    AfterValidator,
+    BeforeValidator,
+    Field,
+    FieldSerializationInfo,
+    SerializerFunctionWrapHandler,
+    ValidationInfo,
+    conlist,
+    model_serializer,
+    model_validator,
+)
 
 from vizro._constants import ON_PAGE_LOAD_ACTION_PREFIX
 from vizro.actions import _on_page_load
@@ -17,7 +23,7 @@ from vizro.managers._model_manager import FIGURE_MODELS, DuplicateIDError
 from vizro.models import Action, Filter, Layout, VizroBaseModel
 from vizro.models._action._actions_chain import ActionsChain, Trigger
 from vizro.models._layout import set_layout
-from vizro.models._models_utils import _log_call, check_captured_callable, validate_min_length
+from vizro.models._models_utils import _log_call, check_captured_callable_model
 
 from .types import ComponentType, ControlType
 
@@ -28,6 +34,20 @@ from .types import ComponentType, ControlType
 _PageBuildType = TypedDict("_PageBuildType", {"control-panel": html.Div, "page-components": html.Div})
 
 
+def set_path(path: str, info: ValidationInfo) -> str:
+    # Based on how Github generates anchor links - see:
+    # https://stackoverflow.com/questions/72536973/how-are-github-markdown-anchor-links-constructed.
+    def clean_path(path: str, allowed_characters: str) -> str:
+        path = path.strip().lower().replace(" ", "-")
+        path = "".join(character for character in path if character.isalnum() or character in allowed_characters)
+        return path if path.startswith("/") else "/" + path
+
+    # Allow "/" in path if provided by user, otherwise turn page id into suitable URL path (not allowing "/")
+    if path:
+        return clean_path(path, "-_/")
+    return clean_path(info.data["id"], "-_")
+
+
 class Page(VizroBaseModel):
     """A page in [`Dashboard`][vizro.models.Dashboard] with its own URL path and place in the `Navigation`.
 
@@ -36,50 +56,33 @@ class Page(VizroBaseModel):
             has to be provided.
         title (str): Title to be displayed.
         description (str): Description for meta tags.
-        layout (Layout): Layout to place components in. Defaults to `None`.
+        layout (Optional[Layout]): Layout to place components in. Defaults to `None`.
         controls (list[ControlType]): See [ControlType][vizro.models.types.ControlType]. Defaults to `[]`.
         path (str): Path to navigate to page. Defaults to `""`.
 
     """
 
-    components: list[ComponentType]
-    title: str = Field(..., description="Title to be displayed.")
-    description: str = Field("", description="Description for meta tags.")
-    layout: Layout = None  # type: ignore[assignment]
+    # TODO[mypy], see: https://github.com/pydantic/pydantic/issues/156 for components field
+    components: conlist(Annotated[ComponentType, BeforeValidator(check_captured_callable_model)], min_length=1)  # type: ignore[valid-type]
+    title: str = Field(description="Title to be displayed.")
+    description: str = Field(default="", description="Description for meta tags.")
+    layout: Annotated[Optional[Layout], AfterValidator(set_layout), Field(default=None, validate_default=True)]
     controls: list[ControlType] = []
-    path: str = Field("", description="Path to navigate to page.")
+    path: Annotated[
+        str, AfterValidator(set_path), Field(default="", description="Path to navigate to page.", validate_default=True)
+    ]
 
     # TODO: Remove default on page load action if possible
     actions: list[ActionsChain] = []
 
-    # Re-used validators
-    _check_captured_callable = validator("components", allow_reuse=True, each_item=True, pre=True)(
-        check_captured_callable
-    )
-    _validate_min_length = validator("components", allow_reuse=True, always=True)(validate_min_length)
-    _validate_layout = validator("layout", allow_reuse=True, always=True)(set_layout)
-
-    @root_validator(pre=True)
+    @model_validator(mode="before")
+    @classmethod
     def set_id(cls, values):
         if "title" not in values:
             return values
 
         values.setdefault("id", values["title"])
         return values
-
-    @validator("path", always=True)
-    def set_path(cls, path, values) -> str:
-        # Based on how Github generates anchor links - see:
-        # https://stackoverflow.com/questions/72536973/how-are-github-markdown-anchor-links-constructed.
-        def clean_path(path: str, allowed_characters: str) -> str:
-            path = path.strip().lower().replace(" ", "-")
-            path = "".join(character for character in path if character.isalnum() or character in allowed_characters)
-            return path if path.startswith("/") else "/" + path
-
-        # Allow "/" in path if provided by user, otherwise turn page id into suitable URL path (not allowing "/")
-        if path:
-            return clean_path(path, "-_/")
-        return clean_path(values["id"], "-_")
 
     def __init__(self, **data):
         """Adds the model instance to the model manager."""
@@ -91,8 +94,17 @@ class Page(VizroBaseModel):
                 f"as the page title. If you have multiple pages with the same title then you must assign a unique id."
             ) from exc
 
-    def __vizro_exclude_fields__(self) -> Optional[Union[set[str], Mapping[str, Any]]]:
-        return {"id"} if self.id == self.title else None
+    # This is a modification of the original `model_serializer` decorator that allows for the `context` to be passed
+    # It allows skipping the `id` serialization if it is the same as the `title`
+    @model_serializer(mode="wrap")  # type: ignore[type-var]
+    def _serialize_id(self, handler: SerializerFunctionWrapHandler, info: FieldSerializationInfo):
+        result = handler(self)
+        if info.context is not None and info.context.get("add_name", False):
+            result["__vizro_model__"] = self.__class__.__name__
+        if self.title == self.id:
+            result.pop("id", None)
+            return result
+        return result
 
     @_log_call
     def pre_build(self):
@@ -126,6 +138,10 @@ class Page(VizroBaseModel):
         controls_content = [control.build() for control in self.controls]
         control_panel = html.Div(id="control-panel", children=controls_content, hidden=not controls_content)
 
+        self.layout = cast(
+            Layout,
+            self.layout,  # cannot actually be None if you check components and layout field together
+        )
         components_container = self.layout.build()
         for component_idx, component in enumerate(self.components):
             components_container[f"{self.layout.id}_{component_idx}"].children = component.build()

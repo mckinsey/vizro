@@ -1,21 +1,25 @@
 """Dev app to try things out."""
 
-from vizro import Vizro
 import vizro.models as vm
 import vizro.plotly.express as px
+from vizro import Vizro
+from vizro.actions import export_data
 
-stocks = px.data.stocks(datetimes=True)
+df = px.data.iris()
 
+
+# Create a layout with five rows and four columns. The KPI card is positioned in the first cell, while the remaining cells are empty.
 page = vm.Page(
-    title="Page",
+    title="Page 1",
     components=[
-        vm.Graph(
-            figure=px.line(stocks, x="date", y="GOOG", title="Stocks Data"),
+        vm.Graph(figure=px.bar(df, x="sepal_width", y="sepal_length")),
+        vm.Button(
+            text="Export data",
+            actions=[
+                vm.Action(function=export_data()),
+                vm.Action(function=export_data()),
+            ],
         ),
-    ],
-    controls=[
-        vm.Filter(column="GOOG"),
-        vm.Filter(column="date", selector=vm.DatePicker(title="Date Picker (Stocks - date)")),
     ],
 )
 

@@ -6,7 +6,7 @@ By using Vizro's themes, you can incorporate design best practices by default. I
 
 Even if you are an experienced data practitioner, Vizro-AI optimizes how you create visually appealing layouts to present detailed insights about your data.
 
-<img src=".//assets/readme/readme_animation.gif" alt="Gif to demonstrate vizro-ai">
+<img src="https://raw.githubusercontent.com/mckinsey/vizro/main/.github/images/toolkit_vizro_ai.gif" alt="Gif to demonstrate vizro-ai">
 
 <div class="grid cards" markdown>
 

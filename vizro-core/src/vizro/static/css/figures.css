@@ -6,9 +6,8 @@
 
 /* We currently ship this CSS file with the package, so the font definitions need to live here at the moment.
 The CSS is taken from https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined and the corresponding font file
-downloaded to fonts/material-symbols-outlined.woff2. See:
-https://developers.google.com/fonts/docs/material_symbols#self-hosting_the_font
-https://fonts.google.com/knowledge/using_type/self_hosting_web_fonts
+downloaded from: https://github.com/google/material-design-icons/tree/master/variablefont
+See: https://developers.google.com/fonts/docs/material_symbols#self-hosting_the_font
 Note the relative url works with both serve_locally=True and serve_locally=False through the CDN.
 */
 @font-face {
@@ -16,7 +15,6 @@ Note the relative url works with both serve_locally=True and serve_locally=False
   src: url("./fonts/material-symbols-outlined.woff2") format("woff2");
 }
 
-/* This applies to all icons inside vizro */
 .material-symbols-outlined {
   direction: ltr;
   display: inline-block;
