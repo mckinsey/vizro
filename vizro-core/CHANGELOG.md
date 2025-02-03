@@ -11,6 +11,22 @@ See the fragment files in the [changelog.d directory](https://github.com/mckinse
 
 <!-- scriv-insert-here -->
 
+<a id='changelog-0.2.0'></a>
+
+# 0.2.0 — 2025-02-03
+
+## Highlights ✨
+
+- Vizro now uses pydantic V2 instead of V1 for its models. This is a big change, but it does not affect the API defined by the models. However, when interacting with the VIzro models, e.g. in custom components or when calling pydantic V1 methods, code may break. Please contact us in case you detect a bug or something breaks unexpectedly! ([#917](https://github.com/mckinsey/vizro/pull/917))
+
+## Changed
+
+- Update `material-symbols-outlined.wolff2` to include the latest icons. ([#972](https://github.com/mckinsey/vizro/pull/972))
+
+## Fixed
+
+- Fix coloring of `NavLink` inside `NavBar`. ([#968](https://github.com/mckinsey/vizro/pull/968))
+
 <a id='changelog-0.1.31'></a>
 
 # 0.1.31 — 2025-01-23
