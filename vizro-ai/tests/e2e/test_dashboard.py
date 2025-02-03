@@ -92,7 +92,7 @@ def logic(  # noqa: PLR0912, PLR0915
     pages_exist = [1 if dashboard.pages else 0]
     pages_exist_report = bool(pages_exist[0])
     pages_num = [1 if len(dashboard.pages) == len(config["pages"]) else 0]
-    pages_num_report = [f'{len(config["pages"])} page(s) for dashboard is {bool(pages_num[0])}']
+    pages_num_report = [f"{len(config['pages'])} page(s) for dashboard is {bool(pages_num[0])}"]
 
     components_num = []
     components_num_report = []
@@ -105,7 +105,7 @@ def logic(  # noqa: PLR0912, PLR0915
             components = 0
         components_num.append(components)
         components_num_report.append(
-            f'{len(config["pages"][page]["components"])} component(s) for page {page} is {bool(components)}'
+            f"{len(config['pages'][page]['components'])} component(s) for page {page} is {bool(components)}"
         )
 
     controls_num = []
@@ -117,7 +117,7 @@ def logic(  # noqa: PLR0912, PLR0915
             controls = 0
         controls_num.append(controls)
         controls_num_report.append(
-            f'{len(config["pages"][page]["controls"])} control(s) for page {page} is {bool(controls)}'
+            f"{len(config['pages'][page]['controls'])} control(s) for page {page} is {bool(controls)}"
         )
 
     components_types_names = []
