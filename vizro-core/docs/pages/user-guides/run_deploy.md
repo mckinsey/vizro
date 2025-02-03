@@ -20,7 +20,6 @@ Vizro is built on top of [Dash](https://dash.plotly.com/), which itself uses [Fl
 
 ## Development
 
-
 When developing a dashboard, you have several options on how to get started. The below table can guide you in making a choice. The [fastest way to a running dashboard is to use PyCafe](https://py.cafe/snippet/vizro/v1), as shown in our [First Dashboard tutorial](../tutorials/first-dashboard.md).
 
 | Method | Description | Requires | | ------------------------------------- | ------------------------------------ | | | [Python script](#develop-in-python-script) | Run a local python script using a Flask development server | Local Python | | [Jupyter](#develop-in-jupyter) | Run a cell in a notebook using a Flask development server | Local Python, Jupyter/JupyterLab | | [PyCafe](#develop-in-pycafe) | Run code in your Browser using WASM technology | No requirements |
