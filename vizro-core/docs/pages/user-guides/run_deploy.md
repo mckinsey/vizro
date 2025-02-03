@@ -19,15 +19,12 @@ Vizro is built on top of [Dash](https://dash.plotly.com/), which itself uses [Fl
     - There might be additional stages or _environments_ for Quality Assurance (QA) to test that the app works correctly before it is deployed.
 
 ## Development
+
 When developing a dashboard, you have several options on how to get started. The below table can guide you in making a choice. The [fastest way to a running dashboard is to use PyCafe](https://py.cafe/snippet/vizro/v1), as shown in our [First Dashboard tutorial](../tutorials/first-dashboard.md).
 
-| Method                                | Description                                                   | Requires                          |
-| ------------------------------------- | ------------------------------------                          |                                   | 
-| [Python script](#python-script)       | Run a local python script using a Flask development server    | Local Python                      |
-| [Jupyter](#jupyter)                   | Run a cell in a notebook using a Flask development server     | Local Python, Jupyter/JupyterLab  |
-| [PyCafe](#pycafe)                     | Run code in your Browser using WASM technology                | No requirements                   |
+| Method | Description | Requires | | ------------------------------------- | ------------------------------------ | | | [Python script](#develop-in-python-script) | Run a local python script using a Flask development server | Local Python | | [Jupyter](#develop-in-jupyter) | Run a cell in a notebook using a Flask development server | Local Python, Jupyter/JupyterLab | | [PyCafe](#develop-in-pycafe) | Run code in your Browser using WASM technology | No requirements |
 
-### Python script
+### Develop in Python script
 
 The most common way to run your dashboard in development is to run it _locally_ (on your own computer) using the Flask development server.
 
@@ -58,14 +55,14 @@ The `run` method wraps [Dash's run method](https://dash.plotly.com/reference#app
 
 - `port`. If not specified, this defaults to `8050`. If you run multiple dashboards on your computer then you may need to avoid a clash by specifying a different port with, for example, `run(port=8051)`.
 - `debug`. This is described more below in the [section on debugging](#automatic-reloading-and-debugging).
-- `jupyter_mode`. This is described more below in the [section on Jupyter](#jupyter).
+- `jupyter_mode`. This is described more below in the [section on Jupyter](#develop-in-jupyter).
 
 !!! warning "Use only for local development"
-    The Flask development server is [intended for local development only](https://flask.palletsprojects.com/en/3.0.x/deploying/) and should not be used when deploying a Vizro dashboard to production. See our [guide to deployment](deploy.md) for information on how to deploy.
+    The Flask development server is [intended for local development only](https://flask.palletsprojects.com/en/3.0.x/deploying/) and should not be used when deploying a Vizro dashboard to production. See our [section on deployment](#production) for information on how to deploy.
 
-### Jupyter
+### Develop in Jupyter
 
-If you develop in a Jupyter notebook or JupyterLab then you should use exactly the [same code as above](#development-server):
+If you develop in a Jupyter notebook or JupyterLab then you should use exactly the [same code as above](#develop-in-python-script):
 
 ```python
 from vizro import Vizro
@@ -77,8 +74,7 @@ iris = px.data.iris()
 page = vm.Page(
     title="My first page",
     components=[
-        vm.Graph(figure=px.scatter(iris,
-            x="sepal_length", y="petal_width", color="species")),
+        vm.Graph(figure=px.scatter(iris, x="sepal_length", y="petal_width", color="species")),
     ],
 )
 
@@ -92,7 +88,7 @@ This runs Vizro using the Flask development server and shows the resulting dashb
 !!! note "Reloading and debugging"
     Code reloading and hot reloading do not work in Jupyter. See the [section on reloading for alternatives when using Jupyter](#automatic-reloading-and-debugging).
 
-### PyCafe
+### Develop in PyCafe
 
 The easiest way to run a dashboard is to work on the code live on [PyCafe](https://py.cafe/).
 
@@ -107,7 +103,7 @@ You can use [PyCafe](https://py.cafe/snippet/vizro/v1) snippet mode to experimen
 
 !!! note
     Note that when you save your code as a project, the dashboard and the code will be visible to the public. PyCafe is planning to implement a paid tier that allows private dashboards.
-    
+
     As long as you remain in [snippet mode](https://py.cafe/snippet/vizro/v1) - not having clicked "Push" - your code is only local on your machine and not visible.
 
 ### Automatic reloading and debugging
@@ -127,7 +123,6 @@ Code reloading and hot reloading do not work in Jupyter. There are two alternati
 - Restart the Jupyter kernel and re-run your notebook.
 - Add a cell containing `from vizro import Vizro; Vizro._reset()` to the top of your notebook and re-run it before you re-run your code. With this method, there is no need to restart the Jupyter kernel.
 
-
 **... in PyCafe**
 
 In PyCafe there is no need to set anything as your dashboard will automatically reload and update when you make code changes. You can change in the settings whether this should happen automatically or on file save.
@@ -136,16 +131,9 @@ In PyCafe there is no need to set anything as your dashboard will automatically 
 
 When developing your dashboard you typically run it _locally_ (on your own computer) using the Flask development server. When you deploy to production, this is no longer suitable. Instead, you need a solution that can handle multiple users in a stable, secure and efficient way. The below table is a **TLDR** that provides an overview of the most common options.
 
-| Method                                | Free Tier         | Some key features (not exhaustive)                                                    | Requires                          |
-| ------------------------------------- |--                 | ------------------------------------                                                  |                                   | 
-| [Hugging Face](#hugging-face)         |:simple-ticktick:  | Easy cloning of apps, Gallery features, easy access to HF model hub                      | Hugging Face account                      |
-| [Ploomber Cloud](#ploomber-cloud)     |:simple-ticktick:  | Easy drag and drop and CLI deployment, authentication features and serverless functions in paid tier       | Ploomber Account  |
-| [Dash Enterprise](#dash-enterprise)   |:x:                | Enterprise grade deployment solution with many more features going above and beyond                         | Dash Enterprise subscription                                  | 
-| [PyCafe](#pycafe)                     |:simple-ticktick:  | No deployment in traditional sense (with backend server) as it uses WASM technology to run python in the Browser, but very scalable and easy alternative in some cases                | No requirements (in snippet mode), otherwise a PyCafe account                   |
+| Method | Free Tier | Some key features (not exhaustive) | Requires | | ------------------------------------- |-- | ------------------------------------ | | | [Hugging Face](#deploy-to-hugging-face) |:simple-ticktick: | Easy cloning of apps, Gallery features, easy access to HF model hub | Hugging Face account | | [Ploomber Cloud](#deploy-to-ploomber-cloud) |:simple-ticktick: | Easy drag and drop and CLI deployment, authentication features and serverless functions in paid tier | Ploomber Account | | [Dash Enterprise](#deploy-via-dash-enterprise) |:x: | Enterprise grade deployment solution with many more features going above and beyond | Dash Enterprise subscription | | [PyCafe](#develop-in-pycafe) |:simple-ticktick: | No deployment in traditional sense (with backend server) as it uses WASM technology to run python in the Browser, but very scalable and easy alternative in some cases | No requirements (in snippet mode), otherwise a PyCafe account |
 
 ### Overview
-
-
 
 Vizro is a production-ready framework, which means that the dashboard created during development is immediately suitable for deployment to production with minimal changes. Under the hood, Vizro uses [Dash's stateless architecture](https://dash.plotly.com/sharing-data-between-callbacks#dash-is-stateless), designed for scaling to thousands of concurrent users.
 
@@ -161,7 +149,7 @@ if __name__ == "__main__":  # (2)!
 ```
 
 1. The Vizro `app` object needs to be exposed so that the app can be started in production.
-1. This code is only executed when you run `python app.py` and does not run in production. It's there to enable you to [run the same app in development](run.md#development-server) using the Flask development server.
+1. This code is only executed when you run `python app.py` and does not run in production. It's there to enable you to [run the same app in development](#develop-in-python-script) using the Flask development server.
 
 That's it! Your app is now suitable for deployment to production.
 
@@ -170,12 +158,12 @@ That's it! Your app is now suitable for deployment to production.
 
 Now that your `app.py` file is ready, you need to choose a _hosting provider_. There are many services out there with different offerings, but for most users we recommend two in particular: [Hugging Face](https://huggingface.co/) and [Ploomber Cloud](https://docs.cloud.ploomber.io/). These both have a free tier with the possibility of paying more for extras, and they are both quick and easy to get started with. We give step-by-step instructions on how to use each:
 
-- [Deploy a Vizro dashboard to Hugging Face](#hugging-face)
-- [Deploy a Vizro dashboard to Ploomber Cloud](#ploomber-cloud)
+- [Deploy a Vizro dashboard to Hugging Face](#deploy-to-hugging-face)
+- [Deploy a Vizro dashboard to Ploomber Cloud](#deploy-to-ploomber-cloud)
 
-Enterprise users should look at our guidance for [deploying Vizro dashboards on Dash Enterprise](#dash-enterprise). We also discuss the [general principles for deploying a Vizro app](#general-principles) that apply to all hosting providers.
+Enterprise users should look at our guidance for [deploying Vizro dashboards on Dash Enterprise](#deploy-via-dash-enterprise). We also discuss the [general principles for deploying a Vizro app](#general-principles-when-deploying-vizro-dashboards) that apply to all hosting providers.
 
-### Hugging Face
+### Deploy to Hugging Face
 
 [Hugging Face](https://huggingface.co/) is a platform for machine learning models, datasets and demos. Within Hugging Face, the [Spaces feature](https://huggingface.co/spaces/launch) offers a one click experience to deploy a Vizro dashboard for free. This is the easiest way to deploy a Vizro app if you do not mind your app's code being public or shared within your [Hugging Face organization](https://huggingface.co/organizations). Paid plans include features such as authentication, developer mode for debugging, user analytics and more powerful computing resources.
 
@@ -209,7 +197,7 @@ In addition to `app.py`, your Space contains a few other files:
 
 On Hugging Face, Vizro apps are hosted on Docker Spaces. Hugging Face has thorough documentation on [Spaces in general](https://huggingface.co/docs/hub/en/spaces-overview) and specifically on [Docker Spaces](https://huggingface.co/docs/hub/en/spaces-sdks-docker-first-demo). There are many features that go beyond simply hosting a Vizro app. For example, you can [make a collection](https://huggingface.co/docs/hub/en/collections) of multiple Spaces, collaborate on your code using [pull requests and discussions](https://huggingface.co/docs/hub/en/repositories-pull-requests-discussions), or create an [organization](https://huggingface.co/docs/hub/en/organizations) to group accounts and Spaces together.
 
-### Ploomber Cloud
+### Deploy to Ploomber Cloud
 
 [Ploomber Cloud](https://ploomber.io/) is a platform specifically built to deploy data visualization apps built using frameworks such as Vizro. Its free tier offers an easy deployment by drag and drop, the [Ploomber Cloud CLI](https://docs.cloud.ploomber.io/en/latest/user-guide/cli.html), or `git push`. Paid plans include features such as a custom domain, enterprise-grade authentication, user analytics and more powerful computing resources.
 
@@ -222,7 +210,7 @@ The [Ploomber Cloud documentation](https://docs.cloud.ploomber.io/en/latest/apps
 1. Compress your `app.py`, `requirements.txt` and `Dockerfile` into a single zip file.
 1. Upload the zip file to Ploomber Cloud.
 
-### Dash Enterprise
+### Deploy via Dash Enterprise
 
 Since a Vizro app is a Dash app under the hood, they can be deployed to [Dash Enterprise](https://plotly.com/dash/) and accessed in the same way as other Dash apps.
 
@@ -253,7 +241,7 @@ Although these services work in slightly different ways, there are some general 
 1. Specify on your hosting provider how to handle your app:
     - Before the app is started, the environment needs to be built. Python dependencies should be installed with `pip install -r requirements.txt`.
     - To start the app, you should use the command `gunicorn app:app --workers 4`. See the [section on Gunicorn](#gunicorn) for more information.
-    - Optional: set [advanced configuration](#advanced-configuration), for example to serve assets using a Content Delivery Network (CDN).
+    - Optional: set [advanced configuration](#advanced-dockerfile-configuration), for example to serve assets using a Content Delivery Network (CDN).
 1. Optional: configure further settings on your hosting provider, for example to make your dashboard private or to configure computing resources.
 
 The method for providing instructions on how to handle your app varies between hosting providers. For example, on Render there are [build and deploy commands](https://render.com/docs/deploys); on Heroku and Dash Enterprise there is a [Procfile](https://devcenter.heroku.com/articles/procfile). One common cross-platform way to configure an environment is using a Dockerfile. This is used by both Hugging Face and Ploomber Cloud among others. See the [section on Dockerfile](#dockerfile) for more information.
