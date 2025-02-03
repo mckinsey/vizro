@@ -29,16 +29,19 @@ jobs:
         run: |
           hatch run update-icons
       - name: Check for changes
+        id: check_changes
         run: |
           git config user.email "145135826+vizro-svc@users.noreply.github.com"
           git config user.name "Vizro Team"
-          git diff --exit-code || echo "has_changes=true" >> $GITHUB_ENV
+          git diff --exit-code || echo "has_changes=true" >> $GITHUB_OUTPUT
+    outputs:
+      has_changes: ${{ steps.check_changes.outputs.has_changes }}
 
   update-icons:
     runs-on: ubuntu-latest
     needs: [check-update]
     if: |
-      env.has_changes == 'true'
+      needs.check-update.outputs.has_changes == 'true'
     steps:
       - name: Delete old branch if exists
         run: |
