@@ -76,7 +76,7 @@ In addition to `app.py`, your Space contains a few other files:
 
 - `.gitattributes` is used by [Git Large File Storage (LFS)](https://git-lfs.com/) and is only relevant if you have files larger than 10MB. See the [Hugging Face documentation](https://huggingface.co/docs/hub/en/repositories-getting-started) for more information.
 - `Dockerfile` gives instructions to configure your app's environment and start the app. See our [section on Dockerfiles](#dockerfile) for more information.
-- `README.md` configures your Space, for example its title, description and licence. See the [Hugging Face documentation](https://huggingface.co/docs/hub/en/spaces-config-reference) for more information.
+- `README.md` configures your Space, for example its title, description and license. See the [Hugging Face documentation](https://huggingface.co/docs/hub/en/spaces-config-reference) for more information.
 - `requirements.txt` gives your Python package dependencies. See our [section on dependencies](#dependencies) for more information.
 
 !!! tip
@@ -173,7 +173,7 @@ ENTRYPOINT ["gunicorn", "app:app", "--workers", "4", "--bind", "0.0.0.0:7860"]
 ```
 
 1. Use a Docker image that [includes `uv` pre-installed](https://docs.astral.sh/uv/guides/integration/docker/).
-1. Install the [Python dependencies](#dependencies) as [described in the `uv` documentation](https://docs.astral.sh/uv/guides/integration/docker/#installing-requirements). The app files are copied into the container after installing dependencies to optimise Docker's [build cache](https://docs.docker.com/build/cache/).
+1. Install the [Python dependencies](#dependencies) as [described in the `uv` documentation](https://docs.astral.sh/uv/guides/integration/docker/#installing-requirements). The app files are copied into the container after installing dependencies to optimize Docker's [build cache](https://docs.docker.com/build/cache/).
 1. Run the Vizro app using [Gunicorn](#gunicorn).
 
 ### Advanced Dockerfile configuration

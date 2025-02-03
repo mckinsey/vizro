@@ -88,7 +88,7 @@ Vizro().build(dashboard).run()
 This runs Vizro using the Flask development server and shows the resulting dashboard inline in your notebook. You can change where the dashboard appears with the [`jupyter_mode` argument](https://dash.plotly.com/dash-in-jupyter). For example, `run(jupyter_mode="external")` provides a link to open the dashboard in a new window.
 
 !!! note "Reloading and debugging"
-    Code reloading and hot reloading do not work in Jupyter. There are two alternatve methods to reload the dashboard after you change your code:
+    Code reloading and hot reloading do not work in Jupyter. There are two alternative methods to reload the dashboard after you change your code:
 
     - Restart the Jupyter kernel and re-run your notebook.
     - Add a cell containing `from vizro import Vizro; Vizro._reset()` to the top of your notebook and re-run it before you re-run your code. With this method, there is no need to restart the Jupyter kernel.
