@@ -20,7 +20,7 @@ Vizro is built on top of [Dash](https://dash.plotly.com/), which itself uses [Fl
 
 ## Development
 
-When developing a dashboard, you have several options on how to get started. The below table can guide you in making a choice. Clicking the links will lead you to the relevant docs section explaining more. The [fastest way to a running dashboard is to use PyCafe](https://py.cafe/snippet/vizro/v1), as shown in our [First Dashboard tutorial](../tutorials/first-dashboard.md).
+When developing a dashboard, you have several options on how to get started as the table below describes. Clicking the links will lead you to the relevant docs section explaining more. The [fastest way to a running dashboard is to use PyCafe](https://py.cafe/snippet/vizro/v1), as shown in our [First Dashboard tutorial](../tutorials/first-dashboard.md).
 
 | Method                                     | Description                                                | Requires                         |
 | ------------------------------------------ | ---------------------------------------------------------- | -------------------------------- |
