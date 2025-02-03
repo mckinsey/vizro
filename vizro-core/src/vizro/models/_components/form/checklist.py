@@ -49,7 +49,6 @@ class Checklist(VizroBaseModel):
     _validate_value = validator("value", allow_reuse=True, always=True)(validate_value)
 
     def __call__(self, options):
-        # full_options, default_value = get_options_and_default(options=options, multi=True)
         output = [Output(f"{self.id}", "value"), Output(f"{self.id}_select_all", "value")]
         inputs = [
             Input(f"{self.id}_select_all", "value"),
