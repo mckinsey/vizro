@@ -99,7 +99,7 @@ The easiest way to run a dashboard is to work on the code live on [PyCafe](https
 Most of the Vizro documentation examples have a link below the code that reads [Run and edit this code in PyCafe](https://py.cafe/vizro-official/vizro-iris-analysis). Follow the link to open the code in PyCafe within an editor, such as the one below, which displays the dashboard and the code side by side.
 
 <figure markdown="span">
-  ![PyCafe editor](../../assets/user_guides/run/pycafe_editor.png)
+  ![PyCafe editor](../../assets/user_guides/run_deploy/pycafe_editor.png)
   <figcaption>Enter your dashboard code on the left, and see the results immediately reflected in the app on the right.</figcaption>
 </figure>
 
@@ -140,7 +140,7 @@ When developing your dashboard you typically run it _locally_ (on your own compu
 | [Hugging Face](#deploy-to-hugging-face)        | :simple-ticktick: | Easy cloning of apps, Gallery features, easy access to HF model hub                                                                                                    | Hugging Face account                                          |
 | [Ploomber Cloud](#deploy-to-ploomber-cloud)    | :simple-ticktick: | Easy drag and drop and CLI deployment, authentication features and serverless functions in paid tier                                                                   | Ploomber Account                                              |
 | [Dash Enterprise](#deploy-via-dash-enterprise) | :x:               | Enterprise deployment solution with many more features going above and beyond                                                                                          | Dash Enterprise subscription                                  |
-| [PyCafe](#develop-in-pycafe)                   | :simple-ticktick: | No deployment in traditional sense (with backend server) as it uses WASM technology to run python in the Browser, but very scalable and easy alternative in some cases | No requirements (in snippet mode), otherwise a PyCafe account |
+| [PyCafe](#deploy-via-pycafe)                   | :simple-ticktick: | No deployment in traditional sense (with backend server) as it uses WASM technology to run python in the Browser, but very scalable and easy alternative in some cases | No requirements (in snippet mode), otherwise a PyCafe account |
 
 ### Overview
 
@@ -181,11 +181,11 @@ The best way to get started with Vizro on Hugging Face is to copy an existing Vi
 If this is your first Vizro deployment then we recommend using our [first dashboard example](https://huggingface.co/spaces/vizro/demo-first-dashboard). This is a minimal example that is designed to make it as simple as possible to get started on Hugging Face. You can create your own Vizro deployment based on this template as follows:
 
 1. [Sign up for a Hugging Face account](https://huggingface.co/join).
-1. Copy our example Hugging Face dashboard by duplicating our [first dashboard example Space](https://huggingface.co/spaces/vizro/demo-first-dashboard). To do so, click the following button: [![Duplicate this Space](https://huggingface.co/datasets/huggingface/badges/resolve/main/duplicate-this-space-md.svg)](https://huggingface.co/spaces/vizro/demo-first-dashboard?duplicate=true). This should open a window with the following form: ![Form to duplicate Space](../../assets/user_guides/deploy/hugging_face_duplicate_this_space.png)
+1. Copy our example Hugging Face dashboard by duplicating our [first dashboard example Space](https://huggingface.co/spaces/vizro/demo-first-dashboard). To do so, click the following button: [![Duplicate this Space](https://huggingface.co/datasets/huggingface/badges/resolve/main/duplicate-this-space-md.svg)](https://huggingface.co/spaces/vizro/demo-first-dashboard?duplicate=true). This should open a window with the following form: ![Form to duplicate Space](../../assets/user_guides/run_deploy/hugging_face_duplicate_this_space.png)
 1. You do not need to alter any of the default options but the [Hugging Face documentation](https://huggingface.co/docs/hub/en/spaces-overview#duplicating-a-space) gives an explanation of each.
-1. Click "Duplicate Space" to build your Hugging Face Space. This takes around 10 seconds, and when complete you should see the following dashboard running. ![Running dashboard](../../assets/user_guides/deploy/hugging_face_space.png)
+1. Click "Duplicate Space" to build your Hugging Face Space. This takes around 10 seconds, and when complete you should see the following dashboard running. ![Running dashboard](../../assets/user_guides/run_deploy/hugging_face_space.png)
 
-To turn the example app into your own, you will need to edit the code in the `app.py` file. Click on the Files tab at the top of your app and select `app.py`. Click the Edit button highlighted in the below screenshot to enter an editor view of the file. ![Edit app.py](../../assets/user_guides/deploy/hugging_face_edit_app.png)
+To turn the example app into your own, you will need to edit the code in the `app.py` file. Click on the Files tab at the top of your app and select `app.py`. Click the Edit button highlighted in the below screenshot to enter an editor view of the file. ![Edit app.py](../../assets/user_guides/run_deploy/hugging_face_edit_app.png)
 
 You can now copy and paste your app code into the editor. When you've finished editing, click "Commit changes to `main`". This immediately triggers a rebuild of your Space. As with the initial build this takes around 10 seconds, and when complete you should be able to view your own app deployed on Hugging Face!
 
@@ -237,6 +237,19 @@ Vizro is compatible with the following functionality within Dash Enterprise:
 - [Dash Enterprise Authentication](https://plotly.com/dash/authentication/)
 
 Vizro is not currently compatible with the [Dashboard Engine](https://plotly.com/dash/dashboard-engine/) or [Dash Design Kit](https://plotly.com/dash/design-kit/), and cannot produce static reports accessed via the [Snapshot Engine](https://plotly.com/dash/snapshot-engine/).
+
+### Deploy via PyCafe
+
+You can also share your Vizro application using [PyCafe](#develop-in-pycafe) - which we introduced in the [development](#development) section. This is not a traditional deployment (using a backend server), but [uses WebAssembly and Pyodide to run Python in your browser](#webassembly-wasm-and-pyodide). If you are happy with the constraints and advantages of this technology, then this is likely the easiest and fastest way to share your application.
+
+The two menu options of interest are highlighted in red below. "Push" let's you save a snippet to your account, so you can come back to edit it, and "Share" shows you how to share your code and dashboard.
+
+<figure markdown="span">
+  ![PyCafe editor](../../assets/user_guides/run_deploy/pycafe_editor_share.png)
+  <figcaption>Highlighted in red are the options that help you share your dashboard.</figcaption>
+</figure>
+
+Since this solution runs the dashboard in every visitors Browser, scalability to many viewers is not an issue.
 
 ### General principles when deploying Vizro dashboards
 
