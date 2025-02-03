@@ -1,10 +1,7 @@
 from collections.abc import Iterable
-from typing import Literal, cast
+from typing import Annotated, Literal, cast
 
-try:
-    from pydantic.v1 import Field, validator
-except ImportError:  # pragma: no cov
-    from pydantic import Field, validator
+from pydantic import AfterValidator, Field
 
 from vizro._constants import PARAMETER_ACTION_PREFIX
 from vizro.actions import _parameter
@@ -13,6 +10,42 @@ from vizro.models import Action, VizroBaseModel
 from vizro.models._components.form import Checklist, DatePicker, Dropdown, RadioItems, RangeSlider, Slider
 from vizro.models._models_utils import _log_call
 from vizro.models.types import SelectorType
+
+
+def check_dot_notation(target):
+    if "." not in target:
+        raise ValueError(
+            f"Invalid target {target}. Targets must be supplied in the form <target_component>.<target_argument>"
+        )
+    return target
+
+
+def check_target_present(target):
+    target_id = target.split(".")[0]
+    if target_id not in model_manager:
+        raise ValueError(f"Target {target_id} not found in model_manager.")
+    return target
+
+
+def check_data_frame_as_target_argument(target):
+    targeted_argument = target.split(".", 1)[1]
+    if targeted_argument.startswith("data_frame") and targeted_argument.count(".") != 1:
+        raise ValueError(
+            f"Invalid target {target}. 'data_frame' target must be supplied in the form "
+            "<target_component>.data_frame.<dynamic_data_argument>"
+        )
+    # TODO: Add validation: Make sure the target data_frame is _DynamicData.
+    return target
+
+
+def check_duplicate_parameter_target(targets):
+    all_targets = targets.copy()
+    for param in cast(Iterable[Parameter], model_manager._get_models(Parameter)):
+        all_targets.extend(param.targets)
+    duplicate_targets = {item for item in all_targets if all_targets.count(item) > 1}
+    if duplicate_targets:
+        raise ValueError(f"Duplicate parameter targets {duplicate_targets} found.")
+    return targets
 
 
 class Parameter(VizroBaseModel):
@@ -30,44 +63,19 @@ class Parameter(VizroBaseModel):
     """
 
     type: Literal["parameter"] = "parameter"
-    targets: list[str] = Field(..., description="Targets in the form of `<target_component>.<target_argument>`.")
+    targets: Annotated[  # TODO[MS]: check if the double annotation is the best way to do this
+        list[
+            Annotated[
+                str,
+                AfterValidator(check_dot_notation),
+                AfterValidator(check_target_present),
+                AfterValidator(check_data_frame_as_target_argument),
+                Field(description="Targets in the form of `<target_component>.<target_argument>`."),
+            ]
+        ],
+        AfterValidator(check_duplicate_parameter_target),
+    ]
     selector: SelectorType
-
-    @validator("targets", each_item=True)
-    def check_dot_notation(cls, target):
-        if "." not in target:
-            raise ValueError(
-                f"Invalid target {target}. Targets must be supplied in the form <target_component>.<target_argument>"
-            )
-        return target
-
-    @validator("targets", each_item=True)
-    def check_target_present(cls, target):
-        target_id = target.split(".")[0]
-        if target_id not in model_manager:
-            raise ValueError(f"Target {target_id} not found in model_manager.")
-        return target
-
-    @validator("targets", each_item=True)
-    def check_data_frame_as_target_argument(cls, target):
-        targeted_argument = target.split(".", 1)[1]
-        if targeted_argument.startswith("data_frame") and targeted_argument.count(".") != 1:
-            raise ValueError(
-                f"Invalid target {target}. 'data_frame' target must be supplied in the form "
-                "<target_component>.data_frame.<dynamic_data_argument>"
-            )
-        # TODO: Add validation: Make sure the target data_frame is _DynamicData.
-        return target
-
-    @validator("targets")
-    def check_duplicate_parameter_target(cls, targets):
-        all_targets = targets.copy()
-        for param in cast(Iterable[Parameter], model_manager._get_models(Parameter)):
-            all_targets.extend(param.targets)
-        duplicate_targets = {item for item in all_targets if all_targets.count(item) > 1}
-        if duplicate_targets:
-            raise ValueError(f"Duplicate parameter targets {duplicate_targets} found.")
-        return targets
 
     @_log_call
     def pre_build(self):

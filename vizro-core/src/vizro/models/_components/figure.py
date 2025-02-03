@@ -1,17 +1,14 @@
-from typing import Literal
+from typing import Annotated, Literal
 
 from dash import dcc, html
-
-try:
-    from pydantic.v1 import Field, PrivateAttr, validator
-except ImportError:  # pragma: no cov
-    from pydantic import Field, PrivateAttr, validator
+from pydantic import AfterValidator, Field, PrivateAttr, field_validator
+from pydantic.json_schema import SkipJsonSchema
 
 from vizro.managers import data_manager
 from vizro.models import VizroBaseModel
 from vizro.models._components._components_utils import _process_callable_data_frame
 from vizro.models._models_utils import _log_call
-from vizro.models.types import CapturedCallable
+from vizro.models.types import CapturedCallable, validate_captured_callable
 
 
 class Figure(VizroBaseModel):
@@ -24,17 +21,19 @@ class Figure(VizroBaseModel):
     """
 
     type: Literal["figure"] = "figure"
-    figure: CapturedCallable = Field(
-        import_path="vizro.figures",
-        mode="figure",
-        description="Function that returns a figure-like object.",
-    )
+    figure: Annotated[
+        SkipJsonSchema[CapturedCallable],
+        AfterValidator(_process_callable_data_frame),
+        Field(
+            json_schema_extra={"mode": "figure", "import_path": "vizro.figures"},
+            description="Function that returns a figure-like object.",
+        ),
+    ]
 
     # Component properties for actions and interactions
     _output_component_property: str = PrivateAttr("children")
 
-    # Validators
-    _validate_callable = validator("figure", allow_reuse=True, always=True)(_process_callable_data_frame)
+    _validate_figure = field_validator("figure", mode="before")(validate_captured_callable)
 
     def __call__(self, **kwargs):
         # This default value is not actually used anywhere at the moment since __call__ is always used with data_frame

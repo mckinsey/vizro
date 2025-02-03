@@ -1,18 +1,15 @@
 import logging
 import warnings
 from contextlib import suppress
-from typing import Literal
+from typing import Annotated, Literal, cast
 
+import pandas as pd
 from dash import ClientsideFunction, Input, Output, State, clientside_callback, dcc, html, set_props
 from dash.exceptions import MissingCallbackContextException
 from plotly import graph_objects as go
-
-try:
-    from pydantic.v1 import Field, PrivateAttr, validator
-except ImportError:  # pragma: no cov
-    from pydantic import Field, PrivateAttr, validator
-
-import pandas as pd
+from pydantic import AfterValidator, Field, PrivateAttr, field_validator
+from pydantic.functional_serializers import PlainSerializer
+from pydantic.json_schema import SkipJsonSchema
 
 from vizro.actions._actions_utils import CallbackTriggerDict, _get_component_actions
 from vizro.managers import data_manager, model_manager
@@ -21,7 +18,7 @@ from vizro.models import Action, VizroBaseModel
 from vizro.models._action._actions_chain import _action_validator_factory
 from vizro.models._components._components_utils import _process_callable_data_frame
 from vizro.models._models_utils import _log_call
-from vizro.models.types import CapturedCallable
+from vizro.models.types import CapturedCallable, validate_captured_callable
 
 logger = logging.getLogger(__name__)
 
@@ -44,28 +41,36 @@ class Graph(VizroBaseModel):
     """
 
     type: Literal["graph"] = "graph"
-    figure: CapturedCallable = Field(
-        ..., import_path="vizro.plotly.express", mode="graph", description="Function that returns a plotly `go.Figure`"
-    )
-    title: str = Field("", description="Title of the `Graph`")
+    figure: Annotated[
+        SkipJsonSchema[CapturedCallable],
+        AfterValidator(_process_callable_data_frame),
+        Field(
+            json_schema_extra={"mode": "graph", "import_path": "vizro.plotly.express"},
+            description="Function that returns a plotly `go.Figure`",
+        ),
+    ]
+    title: str = Field(default="", description="Title of the `Graph`")
     header: str = Field(
-        "",
+        default="",
         description="Markdown text positioned below the `Graph.title`. Follows the CommonMark specification. Ideal for "
         "adding supplementary information such as subtitles, descriptions, or additional context.",
     )
     footer: str = Field(
-        "",
+        default="",
         description="Markdown text positioned below the `Graph`. Follows the CommonMark specification. Ideal for "
         "providing further details such as sources, disclaimers, or additional notes.",
     )
-    actions: list[Action] = []
+    actions: Annotated[
+        list[Action],
+        AfterValidator(_action_validator_factory("clickData")),
+        PlainSerializer(lambda x: x[0].actions),
+        Field(default=[]),
+    ]
 
     # Component properties for actions and interactions
     _output_component_property: str = PrivateAttr("figure")
 
-    # Validators
-    _set_actions = _action_validator_factory("clickData")
-    _validate_callable = validator("figure", allow_reuse=True)(_process_callable_data_frame)
+    _validate_figure = field_validator("figure", mode="before")(validate_captured_callable)
 
     # Convenience wrapper/syntactic sugar.
     def __call__(self, **kwargs):
@@ -117,7 +122,7 @@ class Graph(VizroBaseModel):
         source_graph_id: ModelID = ctd_click_data["id"]
         source_graph_actions = _get_component_actions(model_manager[source_graph_id])
         try:
-            custom_data_columns = model_manager[source_graph_id]["custom_data"]
+            custom_data_columns = cast(Graph, model_manager[source_graph_id])["custom_data"]
         except KeyError as exc:
             raise KeyError(
                 f"Missing 'custom_data' for the source graph with id {source_graph_id}. "

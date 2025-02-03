@@ -1,23 +1,20 @@
-from collections.abc import Mapping
-from contextlib import contextmanager
-from typing import Annotated, Any, Optional, Union
-
-try:
-    from pydantic.v1 import BaseModel, Field, validator
-    from pydantic.v1.fields import SHAPE_LIST, ModelField
-    from pydantic.v1.typing import get_args
-except ImportError:  # pragma: no cov
-    from pydantic import BaseModel, Field, validator
-    from pydantic.fields import SHAPE_LIST, ModelField
-    from pydantic.typing import get_args
-
-
 import inspect
 import logging
 import textwrap
+from typing import Annotated, Any, Optional, Union, cast, get_args, get_origin
 
 import autoflake
 import black
+from pydantic import (
+    AfterValidator,
+    BaseModel,
+    ConfigDict,
+    Field,
+    SerializationInfo,
+    SerializerFunctionWrapHandler,
+    model_serializer,
+)
+from pydantic.fields import FieldInfo
 
 from vizro.managers import model_manager
 from vizro.models._models_utils import REPLACEMENT_STRINGS, _log_call
@@ -54,21 +51,6 @@ DATA_TEMPLATE = """
 # from vizro.managers import data_manager
 {data_setting}
 """
-
-# Global variable to dictate whether VizroBaseModel.dict should be patched to work for _to_python.
-# This is always False outside the _patch_vizro_base_model_dict context manager to ensure that, unless explicitly
-# called for, dict behavior is unmodified from pydantic's default.
-_PATCH_VIZRO_BASE_MODEL_DICT = False
-
-
-@contextmanager
-def _patch_vizro_base_model_dict():
-    global _PATCH_VIZRO_BASE_MODEL_DICT  # noqa
-    _PATCH_VIZRO_BASE_MODEL_DICT = True
-    try:
-        yield
-    finally:
-        _PATCH_VIZRO_BASE_MODEL_DICT = False
 
 
 def _format_and_lint(code_string: str) -> str:
@@ -152,6 +134,63 @@ def _extract_captured_callable_data_info() -> set[str]:
     }
 
 
+def _add_type_to_union(union: type[Any], new_type: type[Any]):  # TODO[mypy]: not sure how to type the return type
+    args = get_args(union)
+    return Union[args + (new_type,)]  # noqa: RUF005 #as long as we support Python 3.9, we can't use the new syntax
+
+
+def _add_type_to_annotated_union(union, new_type: type[Any]):  # TODO[mypy]: not sure how to type the return type
+    args = get_args(union)
+    return Annotated[_add_type_to_union(args[0], new_type), args[1]]
+
+
+def _is_discriminated_union_via_field_info(field: FieldInfo) -> bool:
+    if hasattr(field, "annotation") and field.annotation is None:
+        raise ValueError("Field annotation is None")
+    return hasattr(field, "discriminator") and field.discriminator is not None
+
+
+def _is_discriminated_union_via_annotation(annotation) -> bool:
+    if get_origin(annotation) is not Annotated:
+        return False
+    metadata = get_args(annotation)[1:]
+    return hasattr(metadata[0], "discriminator")
+
+
+def _is_not_annotated(field: type[Any]) -> bool:
+    return get_origin(field) is not None and get_origin(field) is not Annotated
+
+
+def _add_type_to_annotated_union_if_found(
+    type_annotation: type[Any], additional_type: type[Any], field_name: str
+) -> type[Any]:
+    def _split_types(type_annotation: type[Any]) -> type[Any]:
+        outer_type = get_origin(type_annotation)
+        inner_types = get_args(type_annotation)  # TODO[MS]:  what if multiple, or what if not first?
+        if outer_type is None or len(inner_types) < 1:
+            raise ValueError("Unsupported annotation type")
+        if len(inner_types) > 1:
+            return outer_type[
+                _add_type_to_annotated_union_if_found(inner_types[0], additional_type, field_name),
+                inner_types[1],
+            ]
+        return outer_type[_add_type_to_annotated_union_if_found(inner_types[0], additional_type, field_name)]
+
+    if _is_not_annotated(type_annotation):
+        return _split_types(type_annotation)
+    elif _is_discriminated_union_via_annotation(type_annotation):
+        return _add_type_to_annotated_union(type_annotation, additional_type)
+    else:
+        raise ValueError(
+            f"Field '{field_name}' must be a discriminated union or list of discriminated union type. "
+            "You probably do not need to call add_type to use your new type."
+        )
+
+
+def set_id(id: str) -> str:
+    return id or model_manager._generate_id()
+
+
 class VizroBaseModel(BaseModel):
     """All models that are registered to the model manager should inherit from this class.
 
@@ -161,23 +200,45 @@ class VizroBaseModel(BaseModel):
 
     """
 
-    id: str = Field(
-        "",
-        description="ID to identify model. Must be unique throughout the whole dashboard."
-        "When no ID is chosen, ID will be automatically generated.",
-    )
-
-    @validator("id", always=True)
-    def set_id(cls, id) -> str:
-        return id or model_manager._generate_id()
+    id: Annotated[
+        str,
+        AfterValidator(set_id),
+        Field(
+            default="",
+            description="ID to identify model. Must be unique throughout the whole dashboard."
+            "When no ID is chosen, ID will be automatically generated.",
+            validate_default=True,
+        ),
+    ]
 
     @_log_call
-    def __init__(self, **data: Any):
+    def __init__(self, **data: Any):  # TODO: model_post_init
         """Adds this model instance to the model manager."""
         # Note this runs after the set_id validator, so self.id is available here. In pydantic v2 we should do this
         # using the new model_post_init method to avoid overriding __init__.
         super().__init__(**data)
         model_manager[self.id] = self
+
+    # Previously in V1, we used to have an overwritten `.dict` method, that would add __vizro_model__ to the dictionary
+    # if called in the correct context.
+    # In addition, it was possible to exclude fields specified in __vizro_exclude_fields__.
+    # This was like pydantic's own __exclude_fields__ but this is not possible in V2 due to the non-recursive nature of
+    # the model_dump method. Now this serializer allows to add the model name to the dictionary when serializing the
+    # model if called with context {"add_name": True}.
+    # Excluding specific fields is now done via overwriting this serializer (see e.g. Page model).
+    # Useful threads that were started:
+    # https://stackoverflow.com/questions/79272335/remove-field-from-all-nested-pydantic-models
+    # https://github.com/pydantic/pydantic/issues/11099
+    @model_serializer(mode="wrap")
+    def serialize(
+        self,
+        handler: SerializerFunctionWrapHandler,
+        info: SerializationInfo,
+    ) -> dict[str, Any]:
+        result = handler(self)
+        if info.context is not None and info.context.get("add_name", False):
+            result["__vizro_model__"] = self.__class__.__name__
+        return result
 
     @classmethod
     def add_type(cls, field_name: str, new_type: type[Any]):
@@ -188,78 +249,22 @@ class VizroBaseModel(BaseModel):
             new_type: New type to add to discriminated union
 
         """
-
-        def _add_to_discriminated_union(union):
-            # Returning Annotated here isn't strictly necessary but feels safer because the new discriminated union
-            # will then be annotated the same way as the old one.
-            args = get_args(union)
-            # args[0] is the original union, e.g. Union[Filter, Parameter]. args[1] is the FieldInfo annotated metadata.
-            return Annotated[Union[args[0], new_type], args[1]]
-
-        def _is_discriminated_union(field):
-            # Really this should be done as follows:
-            # return field.discriminator_key is not None
-            # However, this does not work with Optional[DiscriminatedUnion]. See also TestOptionalDiscriminatedUnion.
-            return hasattr(field.outer_type_, "__metadata__") and get_args(field.outer_type_)[1].discriminator
-
-        field = cls.__fields__[field_name]
-        sub_field = field.sub_fields[0] if field.shape == SHAPE_LIST else None
-
-        if _is_discriminated_union(field):
-            # Field itself is a non-optional discriminated union, e.g. selector: SelectorType or Optional[SelectorType].
-            new_annotation = _add_to_discriminated_union(field.outer_type_)
-        elif sub_field is not None and _is_discriminated_union(sub_field):
-            # Field is a list of discriminated union e.g. components: list[ComponentType].
-            new_annotation = list[_add_to_discriminated_union(sub_field.outer_type_)]  # type: ignore[misc]
-        else:
-            raise ValueError(
-                f"Field '{field_name}' must be a discriminated union or list of discriminated union type. "
-                "You probably do not need to call add_type to use your new type."
-            )
-
-        cls.__fields__[field_name] = ModelField(
-            name=field.name,
-            type_=new_annotation,
-            class_validators=field.class_validators,
-            model_config=field.model_config,
-            default=field.default,
-            default_factory=field.default_factory,
-            required=field.required,
-            final=field.final,
-            alias=field.alias,
-            field_info=field.field_info,
+        field = cls.model_fields[field_name]
+        old_type = cast(type[Any], field.annotation)
+        new_annotation = (
+            _add_type_to_union(old_type, new_type)
+            if _is_discriminated_union_via_field_info(field)
+            else _add_type_to_annotated_union_if_found(old_type, new_type, field_name)
         )
+        field = cls.model_fields[field_name] = FieldInfo.merge_field_infos(field, annotation=new_annotation)
 
         # We need to resolve all ForwardRefs again e.g. in the case of Page, which requires update_forward_refs in
         # vizro.models. The vm.__dict__.copy() is inspired by pydantic's own implementation of update_forward_refs and
         # effectively replaces all ForwardRefs defined in vizro.models.
         import vizro.models as vm
 
-        cls.update_forward_refs(**vm.__dict__.copy())
-        new_type.update_forward_refs(**vm.__dict__.copy())
-
-    def dict(self, **kwargs):
-        global _PATCH_VIZRO_BASE_MODEL_DICT  # noqa
-        if not _PATCH_VIZRO_BASE_MODEL_DICT:
-            # Whenever dict is called outside _patch_vizro_base_model_dict, we don't modify the behavior of the dict.
-            return super().dict(**kwargs)
-
-        # When used in _to_python, we overwrite pydantic's own `dict` method to add __vizro_model__ to the dictionary
-        # and to exclude fields specified dynamically in __vizro_exclude_fields__.
-        # To get exclude as an argument is a bit fiddly because this function is called recursively inside pydantic,
-        # which sets exclude=None by default.
-        if kwargs.get("exclude") is None:
-            kwargs["exclude"] = self.__vizro_exclude_fields__()
-        _dict = super().dict(**kwargs)
-        _dict["__vizro_model__"] = self.__class__.__name__
-        return _dict
-
-    # This is like pydantic's own __exclude_fields__ but safer to use (it looks like __exclude_fields__ no longer
-    # exists in pydantic v2).
-    # Root validators with pre=True are always included, even when exclude_default=True, and so this is needed
-    # to potentially exclude fields set this way, like Page.id.
-    def __vizro_exclude_fields__(self) -> Optional[Union[set[str], Mapping[str, Any]]]:
-        return None
+        cls.model_rebuild(force=True, _types_namespace=vm.__dict__.copy())
+        new_type.model_rebuild(force=True, _types_namespace=vm.__dict__.copy())
 
     def _to_python(
         self, extra_imports: Optional[set[str]] = None, extra_callable_defs: Optional[set[str]] = None
@@ -304,8 +309,7 @@ class VizroBaseModel(BaseModel):
         data_defs_concat = "\n".join(data_defs_set) if data_defs_set else None
 
         # Model code
-        with _patch_vizro_base_model_dict():
-            model_dict = self.dict(exclude_unset=True)
+        model_dict = self.model_dump(context={"add_name": True}, exclude_unset=True)
 
         model_code = "model = " + _dict_to_python(model_dict)
 
@@ -326,8 +330,7 @@ class VizroBaseModel(BaseModel):
             logging.exception("Code formatting failed; returning unformatted code")
             return unformatted_code
 
-    class Config:
-        extra = "forbid"  # Good for spotting user typos and being strict.
-        smart_union = True  # Makes unions work without unexpected coercion (will be the default in pydantic v2).
-        validate_assignment = True  # Run validators when a field is assigned after model instantiation.
-        copy_on_model_validation = "none"  # Don't copy sub-models. Essential for the model_manager to work correctly.
+    model_config = ConfigDict(
+        extra="forbid",  # Good for spotting user typos and being strict.
+        validate_assignment=True,  # Run validators when a field is assigned after model instantiation.
+    )
