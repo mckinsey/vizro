@@ -17,7 +17,7 @@ See the fragment files in the [changelog.d directory](https://github.com/mckinse
 
 ## Highlights ✨
 
-- Vizro now uses pydantic V2 instead of V1 for its models. This is a big change, but it does not affect the API defined by the models. However, when interacting with the Vizro models, e.g. in custom components or when calling pydantic V1 methods, code may break. Please contact us in case you detect a bug or something breaks unexpectedly! ([#917](https://github.com/mckinsey/vizro/pull/917))
+- Vizro now uses pydantic V2 instead of V1 for its models. This is a big change, but it does not affect the API defined by the models. However, when interacting with the Vizro models, e.g. in custom components or when calling pydantic V1 methods, code may break. If your code has pydantic V1 features that interact with our models, please continue to use `vizro=0.1.31`. ([#917](https://github.com/mckinsey/vizro/pull/917))
 
 ## Changed
 
