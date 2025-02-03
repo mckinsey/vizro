@@ -1,6 +1,8 @@
 name: Update Material Icons
 
 on:
+  pull_request:
+    branches: [main]
   schedule:
     - cron: "0 0 1 * *" # Runs at midnight on the 1st of every month
 
@@ -18,7 +20,7 @@ jobs:
       - name: Checkout main branch
         uses: actions/checkout@v4
         with:
-          ref: main
+          ref: ${{ github.head_ref }}
       - name: Set up Python
         uses: actions/setup-python@v5
         with:
