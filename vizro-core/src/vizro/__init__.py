@@ -6,7 +6,7 @@ from pathlib import Path
 import plotly.io as pio
 from dash.development.base_component import ComponentRegistry
 
-from ._constants import VIZRO_ASSETS_PATH
+from ._constants import VIZRO_ASSETS_PATH, BASE_EXTERNAL_URL
 from ._vizro import Vizro, _make_resource_spec
 
 logging.basicConfig(level=os.getenv("VIZRO_LOG_LEVEL", "WARNING"))
@@ -20,8 +20,6 @@ __version__ = "0.2.0.dev0"
 
 
 # Enables the use of our own Bootstrap theme in a pure Dash app as `external_stylesheets=vizro.bootstrap`
-_git_branch = __version__ if "dev" not in __version__ else "main"
-BASE_EXTERNAL_URL = f"https://cdn.jsdelivr.net/gh/mckinsey/vizro@{_git_branch}/vizro-core/src/vizro/"
 bootstrap = f"{BASE_EXTERNAL_URL}static/css/vizro-bootstrap.min.css"
 
 # For the below _css_dist and _js_dist to be used by Dash, they must be retrieved by dash.resources.Css.get_all_css().
