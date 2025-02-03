@@ -22,7 +22,11 @@ Vizro is built on top of [Dash](https://dash.plotly.com/), which itself uses [Fl
 
 When developing a dashboard, you have several options on how to get started. The below table can guide you in making a choice. The [fastest way to a running dashboard is to use PyCafe](https://py.cafe/snippet/vizro/v1), as shown in our [First Dashboard tutorial](../tutorials/first-dashboard.md).
 
-| Method | Description | Requires | | ------------------------------------- | ------------------------------------ | | | [Python script](#develop-in-python-script) | Run a local python script using a Flask development server | Local Python | | [Jupyter](#develop-in-jupyter) | Run a cell in a notebook using a Flask development server | Local Python, Jupyter/JupyterLab | | [PyCafe](#develop-in-pycafe) | Run code in your Browser using WASM technology | No requirements |
+| Method                                     | Description                                                | Requires                         |
+| ------------------------------------------ | ---------------------------------------------------------- | -------------------------------- |
+| [Python script](#develop-in-python-script) | Run a local python script using a Flask development server | Local Python                     |
+| [Jupyter](#develop-in-jupyter)             | Run a cell in a notebook using a Flask development server  | Local Python, Jupyter/JupyterLab |
+| [PyCafe](#develop-in-pycafe)               | Run code in your Browser using WASM technology             | No requirements                  |
 
 ### Develop in Python script
 
@@ -131,7 +135,12 @@ In PyCafe there is no need to set anything as your dashboard will automatically 
 
 When developing your dashboard you typically run it _locally_ (on your own computer) using the Flask development server. When you deploy to production, this is no longer suitable. Instead, you need a solution that can handle multiple users in a stable, secure and efficient way. The below table is a **TLDR** that provides an overview of the most common options.
 
-| Method | Free Tier | Some key features (not exhaustive) | Requires | | ------------------------------------- |-- | ------------------------------------ | | | [Hugging Face](#deploy-to-hugging-face) |:simple-ticktick: | Easy cloning of apps, Gallery features, easy access to HF model hub | Hugging Face account | | [Ploomber Cloud](#deploy-to-ploomber-cloud) |:simple-ticktick: | Easy drag and drop and CLI deployment, authentication features and serverless functions in paid tier | Ploomber Account | | [Dash Enterprise](#deploy-via-dash-enterprise) |:x: | Enterprise grade deployment solution with many more features going above and beyond | Dash Enterprise subscription | | [PyCafe](#develop-in-pycafe) |:simple-ticktick: | No deployment in traditional sense (with backend server) as it uses WASM technology to run python in the Browser, but very scalable and easy alternative in some cases | No requirements (in snippet mode), otherwise a PyCafe account |
+| Method                                         | Free Tier         | Some key features (not exhaustive)                                                                                                                                     | Requires                                                      |
+| ---------------------------------------------- | ----------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------- |
+| [Hugging Face](#deploy-to-hugging-face)        | :simple-ticktick: | Easy cloning of apps, Gallery features, easy access to HF model hub                                                                                                    | Hugging Face account                                          |
+| [Ploomber Cloud](#deploy-to-ploomber-cloud)    | :simple-ticktick: | Easy drag and drop and CLI deployment, authentication features and serverless functions in paid tier                                                                   | Ploomber Account                                              |
+| [Dash Enterprise](#deploy-via-dash-enterprise) | :x:               | Enterprise deployment solution with many more features going above and beyond                                                                                          | Dash Enterprise subscription                                  |
+| [PyCafe](#develop-in-pycafe)                   | :simple-ticktick: | No deployment in traditional sense (with backend server) as it uses WASM technology to run python in the Browser, but very scalable and easy alternative in some cases | No requirements (in snippet mode), otherwise a PyCafe account |
 
 ### Overview
 
