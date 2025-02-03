@@ -8,6 +8,3 @@ Typically when you create a dashboard, there are two distinct stages:
 This page describes methods to run your dashboard _in development_. When you are ready to deploy your app to production, read our [guide to deployment](deploy.md).
 
 Vizro is built on top of [Dash](https://dash.plotly.com/), which itself uses [Flask](https://flask.palletsprojects.com/). Most of our guidance on how to run a Vizro app in development or production is very similar to guidance on Dash and Flask.
-
-
-

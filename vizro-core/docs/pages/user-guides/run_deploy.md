@@ -19,13 +19,10 @@ Vizro is built on top of [Dash](https://dash.plotly.com/), which itself uses [Fl
     - There might be additional stages or _environments_ for Quality Assurance (QA) to test that the app works correctly before it is deployed.
 
 ## Development
+
 When developing a dashboard, you have several options on how to get started. The below table can guide you in making a choice. The [fastest way to a running dashboard is to use PyCafe](https://py.cafe/snippet/vizro/v1), as shown in our [First Dashboard tutorial](../tutorials/first-dashboard.md).
 
-| Method                                | Description                                                   | Requires                          |
-| ------------------------------------- | ------------------------------------                          |                                   | 
-| [Python script](#python-script)       | Run a local python script using a Flask development server    | Local Python                      |
-| [Jupyter](#jupyter)                   | Run a cell in a notebook using a Flask development server     | Local Python, Jupyter/JupyterLab  |
-| [PyCafe](#pycafe)                     | Run code in your Browser using WASM technology                | No requirements                   |
+| Method | Description | Requires | | ------------------------------------- | ------------------------------------ | | | [Python script](#python-script) | Run a local python script using a Flask development server | Local Python | | [Jupyter](#jupyter) | Run a cell in a notebook using a Flask development server | Local Python, Jupyter/JupyterLab | | [PyCafe](#pycafe) | Run code in your Browser using WASM technology | No requirements |
 
 ### Python script
 
@@ -77,8 +74,7 @@ iris = px.data.iris()
 page = vm.Page(
     title="My first page",
     components=[
-        vm.Graph(figure=px.scatter(iris,
-            x="sepal_length", y="petal_width", color="species")),
+        vm.Graph(figure=px.scatter(iris, x="sepal_length", y="petal_width", color="species")),
     ],
 )
 
@@ -107,7 +103,7 @@ You can use [PyCafe](https://py.cafe/snippet/vizro/v1) snippet mode to experimen
 
 !!! note
     Note that when you save your code as a project, the dashboard and the code will be visible to the public. PyCafe is planning to implement a paid tier that allows private dashboards.
-    
+
     As long as you remain in [snippet mode](https://py.cafe/snippet/vizro/v1) - not having clicked "Push" - your code is only local on your machine and not visible.
 
 ### Automatic reloading and debugging
@@ -127,7 +123,6 @@ Code reloading and hot reloading do not work in Jupyter. There are two alternati
 - Restart the Jupyter kernel and re-run your notebook.
 - Add a cell containing `from vizro import Vizro; Vizro._reset()` to the top of your notebook and re-run it before you re-run your code. With this method, there is no need to restart the Jupyter kernel.
 
-
 **... in PyCafe**
 
 In PyCafe there is no need to set anything as your dashboard will automatically reload and update when you make code changes. You can change in the settings whether this should happen automatically or on file save.
@@ -136,16 +131,9 @@ In PyCafe there is no need to set anything as your dashboard will automatically 
 
 When developing your dashboard you typically run it _locally_ (on your own computer) using the Flask development server. When you deploy to production, this is no longer suitable. Instead, you need a solution that can handle multiple users in a stable, secure and efficient way. The below table is a **TLDR** that provides an overview of the most common options.
 
-| Method                                | Free Tier         | Some key features (not exhaustive)                                                    | Requires                          |
-| ------------------------------------- |--                 | ------------------------------------                                                  |                                   | 
-| [Hugging Face](#hugging-face)         |:simple-ticktick:  | Easy cloning of apps, Gallery features, easy access to HF model hub                      | Hugging Face account                      |
-| [Ploomber Cloud](#ploomber-cloud)     |:simple-ticktick:  | Easy drag and drop and CLI deployment, authentication features and serverless functions in paid tier       | Ploomber Account  |
-| [Dash Enterprise](#dash-enterprise)   |:x:                | Enterprise grade deployment solution with many more features going above and beyond                         | Dash Enterprise subscription                                  | 
-| [PyCafe](#pycafe)                     |:simple-ticktick:  | No deployment in traditional sense (with backend server) as it uses WASM technology to run python in the Browser, but very scalable and easy alternative in some cases                | No requirements (in snippet mode), otherwise a PyCafe account                   |
+| Method | Free Tier | Some key features (not exhaustive) | Requires | | ------------------------------------- |-- | ------------------------------------ | | | [Hugging Face](#hugging-face) |:simple-ticktick: | Easy cloning of apps, Gallery features, easy access to HF model hub | Hugging Face account | | [Ploomber Cloud](#ploomber-cloud) |:simple-ticktick: | Easy drag and drop and CLI deployment, authentication features and serverless functions in paid tier | Ploomber Account | | [Dash Enterprise](#dash-enterprise) |:x: | Enterprise grade deployment solution with many more features going above and beyond | Dash Enterprise subscription | | [PyCafe](#pycafe) |:simple-ticktick: | No deployment in traditional sense (with backend server) as it uses WASM technology to run python in the Browser, but very scalable and easy alternative in some cases | No requirements (in snippet mode), otherwise a PyCafe account |
 
 ### Overview
-
-
 
 Vizro is a production-ready framework, which means that the dashboard created during development is immediately suitable for deployment to production with minimal changes. Under the hood, Vizro uses [Dash's stateless architecture](https://dash.plotly.com/sharing-data-between-callbacks#dash-is-stateless), designed for scaling to thousands of concurrent users.
 
