@@ -24,6 +24,7 @@
   display: flex;
 }
 
+/* Fixes flickering scroll-bar when using new plotly maps: https://github.com/mckinsey/vizro/pull/984 */
 .js-plotly-plot {
   overflow: hidden;
 }
