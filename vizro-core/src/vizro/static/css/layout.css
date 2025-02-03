@@ -63,7 +63,7 @@
 }
 
 #page-components {
-  overflow: auto;
+  overflow: scroll;
   padding-top: 0.25rem;
 }
 
@@ -232,4 +232,9 @@
 /* Hide Loading... text on loading page */
 ._dash-loading {
   display: none;
+}
+
+/* Improve footnote of plotly maps */
+.maplibregl-ctrl {
+  display: flex;
 }

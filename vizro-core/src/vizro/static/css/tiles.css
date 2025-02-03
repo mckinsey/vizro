@@ -1,8 +1,11 @@
 .table-container,
 .dash-graph {
   flex: 1 1 auto;
-  overflow: auto;
   width: 100%;
+}
+
+.table-container {
+  overflow: auto;
 }
 
 .figure-title,
