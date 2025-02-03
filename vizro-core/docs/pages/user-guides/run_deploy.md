@@ -26,7 +26,7 @@ When developing a dashboard, you have several options on how to get started. The
 | ------------------------------------------ | ---------------------------------------------------------- | -------------------------------- |
 | [Python script](#develop-in-python-script) | Run a local python script using a Flask development server | Local Python                     |
 | [Jupyter](#develop-in-jupyter)             | Run a cell in a notebook using a Flask development server  | Local Python, Jupyter/JupyterLab |
-| [PyCafe](#develop-in-pycafe)               | Run code in your Browser using WASM technology             | No requirements                  |
+| [PyCafe](#develop-in-pycafe)               | Run code in your Browser using WebAssembly                 | No requirements                  |
 
 ### Develop in Python script
 
@@ -181,7 +181,7 @@ The best way to get started with Vizro on Hugging Face is to copy an existing Vi
 If this is your first Vizro deployment then we recommend using our [first dashboard example](https://huggingface.co/spaces/vizro/demo-first-dashboard). This is a minimal example that is designed to make it as simple as possible to get started on Hugging Face. You can create your own Vizro deployment based on this template as follows:
 
 1. [Sign up for a Hugging Face account](https://huggingface.co/join).
-1. Copy our example Hugging Face dashboard by duplicating our ["first dashboard" example Space](https://huggingface.co/spaces/vizro/demo-first-dashboard). To do so, click the following button: [![Duplicate this Space](https://huggingface.co/datasets/huggingface/badges/resolve/main/duplicate-this-space-md.svg)](https://huggingface.co/spaces/vizro/demo-first-dashboard?duplicate=true). This should open a window with the following form: ![Form to duplicate Space](../../assets/user_guides/deploy/hugging_face_duplicate_this_space.png)
+1. Copy our example Hugging Face dashboard by duplicating our [first dashboard example Space](https://huggingface.co/spaces/vizro/demo-first-dashboard). To do so, click the following button: [![Duplicate this Space](https://huggingface.co/datasets/huggingface/badges/resolve/main/duplicate-this-space-md.svg)](https://huggingface.co/spaces/vizro/demo-first-dashboard?duplicate=true). This should open a window with the following form: ![Form to duplicate Space](../../assets/user_guides/deploy/hugging_face_duplicate_this_space.png)
 1. You do not need to alter any of the default options but the [Hugging Face documentation](https://huggingface.co/docs/hub/en/spaces-overview#duplicating-a-space) gives an explanation of each.
 1. Click "Duplicate Space" to build your Hugging Face Space. This takes around 10 seconds, and when complete you should see the following dashboard running. ![Running dashboard](../../assets/user_guides/deploy/hugging_face_space.png)
 
@@ -202,13 +202,13 @@ In addition to `app.py`, your Space contains a few other files:
 - `requirements.txt` gives your Python package dependencies. See our [section on dependencies](#dependencies) for more information.
 
 !!! tip
-    If you'd like to show your Vizro app off to the community then you can add it to our [Vizro dashboard community gallery](https://huggingface.co/collections/vizro/community-demos-666987c8e9f56afc7bc1d0fc).
+    If you'd like to show your Vizro app off to the community then you can add it to our [Vizro dashboard community gallery](https://huggingface.co/collections/vizro/community-demos-666987c8e9f56afc7bc1d0fc). Notify us on GitHub in case you are interested.
 
 On Hugging Face, Vizro apps are hosted on Docker Spaces. Hugging Face has thorough documentation on [Spaces in general](https://huggingface.co/docs/hub/en/spaces-overview) and specifically on [Docker Spaces](https://huggingface.co/docs/hub/en/spaces-sdks-docker-first-demo). There are many features that go beyond simply hosting a Vizro app. For example, you can [make a collection](https://huggingface.co/docs/hub/en/collections) of multiple Spaces, collaborate on your code using [pull requests and discussions](https://huggingface.co/docs/hub/en/repositories-pull-requests-discussions), or create an [organization](https://huggingface.co/docs/hub/en/organizations) to group accounts and Spaces together.
 
 ### Deploy to Ploomber Cloud
 
-[Ploomber Cloud](https://ploomber.io/) is a platform specifically built to deploy data visualization apps built using frameworks such as Vizro. Its free tier offers an easy deployment by drag and drop, the [Ploomber Cloud CLI](https://docs.cloud.ploomber.io/en/latest/user-guide/cli.html), or `git push`. Paid plans include features such as a custom domain, enterprise-grade authentication, user analytics and more powerful computing resources.
+[Ploomber Cloud](https://ploomber.io/) is a platform specifically built to deploy data visualization apps built using frameworks such as Vizro. Its free tier offers an easy deployment by drag and drop, the [Ploomber Cloud CLI](https://docs.cloud.ploomber.io/en/latest/user-guide/cli.html), or `git push`. Paid plans include features such as a custom domains, enterprise-grade authentication, user analytics and more powerful computing resources.
 
 The [Ploomber Cloud documentation](https://docs.cloud.ploomber.io/en/latest/apps/vizro.html) contains detailed instructions on how to deploy Vizro on Ploomber Cloud. In short, the process is as follows:
 
@@ -309,3 +309,19 @@ Vizro is built on top of [Dash](https://dash.plotly.com/), which itself uses [Fl
 - `assets_external_path`: when `serve_locally=False`, you can also set `assets_external_path` or an environment variable `DASH_ASSETS_EXTERNAL_PATH` to [serve your own assets from a CDN](https://dash.plotly.com/external-resources#load-assets-from-a-folder-hosted-on-a-cdn).
 
 In fact, the only difference between deploying a Vizro app and deploying a Dash app is that Vizro implements a small simplification that makes it unnecessary for you to add a line like `server = app.server`, as you would do with Dash. Internally, `app = Vizro()` contains a Flask app in `app.dash.server`. As a convenience, the Vizro `app` itself implements the [WSGI application interface](https://werkzeug.palletsprojects.com/en/3.0.x/terms/#wsgi) as a shortcut to the underlying Flask app. This means that the Vizro `app` object can be directly supplied to the WSGI server in the command `gunicorn app:app`.
+
+#### WebAssembly (WASM) and Pyodide
+
+Vizro applications traditionally run on a Python backend, serving dynamic content to a web-based frontend. However, [advancements in WASM](https://en.wikipedia.org/wiki/WebAssembly) and [Pyodide](https://github.com/pyodide/pyodide) as used by [PyCafe](#develop-in-pycafe) now allow Vizro to run entirely in the browser without a dedicated server.
+
+**WASM**
+
+WASM is a low-level binary instruction format that enables high-performance execution of code on web browsers. Unlike JavaScript, which is typically interpreted, WASM code is compiled and executed at near-native speed. This allows languages like C, Rust, and even Python (via Pyodide) to run efficiently in the browser.
+
+**Pyodide**
+
+[Pyodide is a Python distribution compiled to WebAssembly, enabling Python execution in a browser’s JavaScript runtime](https://hacks.mozilla.org/2019/04/pyodide-bringing-the-scientific-python-stack-to-the-browser/). It includes a standard Python interpreter, common scientific libraries (NumPy, Pandas, Matplotlib, etc.), and interoperability with JavaScript, allowing seamless interaction with the browser environment. In the context of Vizro, Pyodide allows the execution of Dash callbacks, component updates, and even external Python libraries directly in the client’s browser, reducing the need for a persistent backend.
+
+Some potential advantages include serverless execution, reduced latency and easier "deployment", while some potential disadvantages include limited performance compared to a native server, limited library support and memory constraints.
+
+By leveraging WASM and Pyodide, Vizro applications can become more accessible, performant, and deployable, though with some trade-offs in computational power and compatibility. [PyCafe](#develop-in-pycafe) offers a great way to experience this technology and to develop and/or "host" dashboards that run entirely in the browser.
