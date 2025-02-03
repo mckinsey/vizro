@@ -63,8 +63,8 @@
 }
 
 #page-components {
-  overflow: scroll;
   padding-top: 0.25rem;
+  overflow: auto;
 }
 
 .grid-layout {
@@ -232,9 +232,4 @@
 /* Hide Loading... text on loading page */
 ._dash-loading {
   display: none;
-}
-
-/* Improve footnote of plotly maps */
-.maplibregl-ctrl {
-  display: flex;
 }

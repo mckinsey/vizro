@@ -1,11 +1,8 @@
 .table-container,
 .dash-graph {
   flex: 1 1 auto;
-  width: 100%;
-}
-
-.table-container {
   overflow: auto;
+  width: 100%;
 }
 
 .figure-title,
@@ -20,4 +17,13 @@
 
 .figure-footer a {
   font-size: inherit;
+}
+
+/* Improve footnote of plotly maps */
+.maplibregl-ctrl {
+  display: flex;
+}
+
+.js-plotly-plot {
+  overflow: hidden;
 }
