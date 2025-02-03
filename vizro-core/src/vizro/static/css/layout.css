@@ -63,8 +63,8 @@
 }
 
 #page-components {
-  padding-top: 0.25rem;
   overflow: auto;
+  padding-top: 0.25rem;
 }
 
 .grid-layout {
