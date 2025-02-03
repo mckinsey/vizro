@@ -114,17 +114,19 @@ class Dropdown(VizroBaseModel):
         return multi
 
     def __call__(self, options):
-        output = [Output(f"{self.id}", "value"), Output(f"{self.id}_checklist_all", "value")]
-        inputs = [
-            Input(f"{self.id}", "value"),
-            State(f"{self.id}", "options"),
-        ]
+        if self.multi:
+            output = [Output(f"{self.id}", "value"), Output(f"{self.id}_checklist_all", "value")]
+            inputs = [
+                Input(f"{self.id}", "value"),
+                Input(f"{self.id}_checklist_all", "value"),
+                State(f"{self.id}", "options"),
+            ]
 
-        clientside_callback(
-            ClientsideFunction(namespace="dropdown", function_name="update_dropdown_values"),
-            output=output,
-            inputs=inputs,
-        )
+            clientside_callback(
+                ClientsideFunction(namespace="dropdown", function_name="update_dropdown_values"),
+                output=output,
+                inputs=inputs,
+            )
         full_options, default_value = get_options_and_default(options=options, multi=self.multi)
         option_height = _calculate_option_height(full_options)
         altered_options = (

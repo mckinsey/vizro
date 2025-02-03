@@ -1,6 +1,5 @@
 function update_checklist_values(value1 = [], value2 = [], options = []) {
   const ctx = dash_clientside.callback_context.triggered;
-  console.log("triggered");
   if (!ctx.length) {
     return dash_clientside.no_update;
   } else {

@@ -129,14 +129,21 @@ class TestChecklistBuild:
     """Tests model build method."""
 
     def test_checklist_build(self):
-        checklist = Checklist(id="checklist_id", options=["A", "B", "C"], title="Title").build()
+        checklist = Checklist(id="checklist_id", value=["A"], options=["A", "B", "C"], title="Title").build()
         expected_checklist = html.Fieldset(
             [
                 html.Legend("Title", className="form-label"),
                 dbc.Checklist(
+                    id="checklist_id_select_all",
+                    options=["ALL"],
+                    value=[],
+                    persistence=True,
+                    persistence_type="session",
+                ),
+                dbc.Checklist(
                     id="checklist_id",
-                    options=["ALL", "A", "B", "C"],
-                    value=["ALL"],
+                    options=["A", "B", "C"],
+                    value=["A"],
                     persistence=True,
                     persistence_type="session",
                 ),

@@ -155,7 +155,22 @@ class TestDropdownBuild:
                 dcc.Dropdown(
                     id="dropdown_id",
                     options=[
-                        {"label": html.Div(["ALL"]), "value": "ALL"},
+                        {
+                            "label": html.Div(
+                                [
+                                    dcc.Checklist(
+                                        options=[{"label": "", "value": "ALL"}],
+                                        value=[],
+                                        id="dropdown_id_checklist_all",
+                                        persistence=True,
+                                        persistence_type="session",
+                                    ),
+                                    html.Span("ALL"),
+                                ],
+                                className="checklist-dropdown-div",
+                            ),
+                            "value": "ALL",
+                        },
                         {"label": "A", "value": "A"},
                         {"label": "B", "value": "B"},
                         {"label": "C", "value": "C"},
