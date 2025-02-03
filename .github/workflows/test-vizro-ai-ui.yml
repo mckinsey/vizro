@@ -56,7 +56,7 @@ jobs:
 
       - name: Send custom JSON data to Slack
         id: slack
-        uses: slackapi/slack-github-action@v1.26.0
+        uses: slackapi/slack-github-action@v2.0.0
         if: failure()
         with:
           payload: |
