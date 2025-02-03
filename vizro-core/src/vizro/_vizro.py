@@ -9,10 +9,10 @@ from typing import TYPE_CHECKING, TypedDict, cast
 
 import dash
 import plotly.io as pio
-from _constants import BASE_EXTERNAL_URL
 from dash.development.base_component import ComponentRegistry
 from flask_caching import SimpleCache
 
+import vizro
 from vizro._constants import VIZRO_ASSETS_PATH
 from vizro.managers import data_manager, model_manager
 from vizro.models import Dashboard, Filter
@@ -204,6 +204,15 @@ class _ResourceSpec(TypedDict, total=False):
 
 
 def _make_resource_spec(path: Path) -> _ResourceSpec:
+    # For dev versions, a branch or tag called e.g. 0.1.20.dev0 does not exist and so won't work with the CDN. We point
+    # to main instead, but this can be manually overridden to the current feature branch name if required.
+    # This would only be the case where you need to test something with serve_locally=False and have changed
+    # assets compared to main. In this case you need to push your assets changes to remote for the CDN to update,
+    # and it might also be necessary to clear the CDN cache: https://www.jsdelivr.com/tools/purge.
+
+    _git_branch = vizro.__version__ if "dev" not in vizro.__version__ else "main"
+    BASE_EXTERNAL_URL = f"https://cdn.jsdelivr.net/gh/mckinsey/vizro@{_git_branch}/vizro-core/src/vizro/"
+
     # Get path relative to the vizro package root, where this file resides.
     # This must be a posix path to work on Windows, so that we convert all \ to / and routing works correctly.
     # See https://github.com/mckinsey/vizro/issues/836.
