@@ -133,7 +133,7 @@ In PyCafe there is no need to set anything as your dashboard will automatically 
 
 ## Production
 
-When developing your dashboard you typically run it _locally_ (on your own computer) using the Flask development server. When you deploy to production, this is no longer suitable. Instead, you need a solution that can handle multiple users in a stable, secure and efficient way. 
+When developing your dashboard you typically run it _locally_ (on your own computer) using the Flask development server. When you deploy to production, this is no longer suitable. Instead, you need a solution that can handle multiple users in a stable, secure and efficient way.
 
 The below table is a **TLDR** that provides an overview of the most common options. Clicking the links will lead you to the relevant docs section explaining more.
 
