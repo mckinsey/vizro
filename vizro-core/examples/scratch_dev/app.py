@@ -12,8 +12,6 @@ df = px.data.gapminder()
 gapminder_data = (
     df.groupby(by=["continent", "year"]).agg({"lifeExp": "mean", "pop": "sum", "gdpPercap": "mean"}).reset_index()
 )
-
-
 first_page = vm.Page(
     title="First Page",
     layout=vm.Layout(grid=[[0, 0], [1, 1], [1, 1], [1, 1]]),

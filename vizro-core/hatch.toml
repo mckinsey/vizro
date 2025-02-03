@@ -72,6 +72,7 @@ test-unit-coverage = [
   "- coverage combine",
   "coverage report"
 ]
+update-icons = ["python tools/update_material_icons.py"]
 
 [envs.docs]
 dependencies = [
@@ -118,7 +119,7 @@ VIZRO_LOG_LEVEL = "DEBUG"
 
 [envs.lower-bounds]
 extra-dependencies = [
-  "pydantic==1.10.16",
+  "pydantic==2.9.0",
   "dash==2.18.0",
   "plotly==5.12.0",
   "pandas==2.0.0",

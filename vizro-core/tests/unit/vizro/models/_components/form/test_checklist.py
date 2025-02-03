@@ -4,11 +4,7 @@ import dash_bootstrap_components as dbc
 import pytest
 from asserts import assert_component_equal
 from dash import html
-
-try:
-    from pydantic.v1 import ValidationError
-except ImportError:  # pragma: no cov
-    from pydantic import ValidationError
+from pydantic import ValidationError
 
 from vizro.models._action._action import Action
 from vizro.models._components.form import Checklist
@@ -56,7 +52,6 @@ class TestChecklistInstantiation:
                 [{"label": "True", "value": True}, {"label": "False", "value": False}],
                 [{"label": "True", "value": True}, {"label": "False", "value": False}],
             ),
-            ([True, 2.0, 1.0, "A", "B"], ["True", "2.0", "1.0", "A", "B"]),
         ],
     )
     def test_create_checklist_valid_options(self, test_options, expected):
@@ -69,9 +64,9 @@ class TestChecklistInstantiation:
         assert checklist.title == ""
         assert checklist.actions == []
 
-    @pytest.mark.parametrize("test_options", [1, "A", True, 1.0])
+    @pytest.mark.parametrize("test_options", [1, "A", True, 1.0, [True, 2.0, 1.0, "A", "B"]])
     def test_create_checklist_invalid_options_type(self, test_options):
-        with pytest.raises(ValidationError, match="value is not a valid list"):
+        with pytest.raises(ValidationError, match="Input should be a valid"):
             Checklist(options=test_options)
 
     def test_create_checklist_invalid_options_dict(self):
@@ -88,7 +83,6 @@ class TestChecklistInstantiation:
             ([1.0, 2.0], [1.0, 2.0, 3.0]),
             ([False, True], [True, False]),
             (["A", "B"], [{"label": "A", "value": "A"}, {"label": "B", "value": "B"}]),
-            (["True", "A"], [True, 2.0, 1.0, "A", "B"]),
         ],
     )
     def test_create_checklist_valid_value(self, test_value, options):
@@ -116,7 +110,7 @@ class TestChecklistInstantiation:
             Checklist(value=test_value, options=options)
 
     def test_create_checklist_invalid_value_format(self):
-        with pytest.raises(ValidationError, match="value is not a valid list"):
+        with pytest.raises(ValidationError, match="Input should be a valid list"):
             Checklist(value="A", options=["A", "B", "C"])
 
     def test_set_action_via_validator(self, identity_action_function):

@@ -2,11 +2,7 @@ from typing import Literal
 
 import dash_bootstrap_components as dbc
 from dash import html
-
-try:
-    from pydantic.v1 import Field, PrivateAttr
-except ImportError:  # pragma: no cov
-    from pydantic import Field, PrivateAttr
+from pydantic import Field, PrivateAttr
 
 from vizro.models import Action, VizroBaseModel
 from vizro.models._action._actions_chain import _action_validator_factory
@@ -28,8 +24,8 @@ class TextArea(VizroBaseModel):
 
     type: Literal["text_area"] = "text_area"
     # TODO: before making public consider naming this field (or giving an alias) label instead of title
-    title: str = Field("", description="Title to be displayed")
-    placeholder: str = Field("", description="Default text to display in input field")
+    title: str = Field(default="", description="Title to be displayed")
+    placeholder: str = Field(default="", description="Default text to display in input field")
     actions: list[Action] = []
 
     # Component properties for actions and interactions

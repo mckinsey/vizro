@@ -1,12 +1,8 @@
-from typing import Literal
+from typing import Annotated, Literal
 
 import dash_bootstrap_components as dbc
 from dash import html
-
-try:
-    from pydantic.v1 import Field, PrivateAttr
-except ImportError:  # pragma: no cov
-    from pydantic import Field, PrivateAttr
+from pydantic import AfterValidator, Field, PlainSerializer, PrivateAttr
 
 from vizro.models import Action, VizroBaseModel
 from vizro.models._action._actions_chain import _action_validator_factory
@@ -28,17 +24,19 @@ class UserInput(VizroBaseModel):
 
     type: Literal["user_input"] = "user_input"
     # TODO: before making public consider naming this field (or giving an alias) label instead of title
-    title: str = Field("", description="Title to be displayed")
-    placeholder: str = Field("", description="Default text to display in input field")
-    actions: list[Action] = []
+    title: str = Field(default="", description="Title to be displayed")
+    placeholder: str = Field(default="", description="Default text to display in input field")
+    # TODO: Before making public, consider how actions should be triggered and what the default property should be
+    # See comment thread: https://github.com/mckinsey/vizro/pull/298#discussion_r1478137654
+    actions: Annotated[
+        list[Action],
+        AfterValidator(_action_validator_factory("value")),
+        PlainSerializer(lambda x: x[0].actions),
+        Field(default=[]),
+    ]
 
     # Component properties for actions and interactions
     _input_property: str = PrivateAttr("value")
-
-    # Re-used validators
-    # TODO: Before making public, consider how actions should be triggered and what the default property should be
-    # See comment thread: https://github.com/mckinsey/vizro/pull/298#discussion_r1478137654
-    _set_actions = _action_validator_factory("value")
 
     @_log_call
     def build(self):
