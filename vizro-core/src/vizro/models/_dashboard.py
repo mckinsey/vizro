@@ -4,7 +4,7 @@ import base64
 import logging
 from functools import partial
 from pathlib import Path
-from typing import TYPE_CHECKING, Literal, TypedDict
+from typing import TYPE_CHECKING, Annotated, Literal, Optional, TypedDict, cast
 
 import dash
 import dash_bootstrap_components as dbc
@@ -21,18 +21,12 @@ from dash import (
     get_relative_path,
     html,
 )
+from dash.development.base_component import Component
+from pydantic import AfterValidator, Field, ValidationInfo
 
 import vizro
-from vizro._themes._templates.template_dashboard_overrides import dashboard_overrides
-
-try:
-    from pydantic.v1 import Field, validator
-except ImportError:  # pragma: no cov
-    from pydantic import Field, validator
-
-from dash.development.base_component import Component
-
 from vizro._constants import MODULE_PAGE_404, VIZRO_ASSETS_PATH
+from vizro._themes.template_dashboard_overrides import dashboard_overrides
 from vizro.actions._action_loop._action_loop import ActionLoop
 from vizro.models import Navigation, VizroBaseModel
 from vizro.models._models_utils import _log_call
@@ -76,6 +70,15 @@ _PageDivsType = TypedDict(
 )
 
 
+def set_navigation_pages(navigation: Optional[Navigation], info: ValidationInfo) -> Optional[Navigation]:
+    if "pages" not in info.data:
+        return navigation
+
+    navigation = navigation or Navigation()
+    navigation.pages = navigation.pages or [page.id for page in info.data["pages"]]
+    return navigation
+
+
 class Dashboard(VizroBaseModel):
     """Vizro Dashboard to be used within [`Vizro`][vizro._vizro.Vizro.build].
 
@@ -90,25 +93,12 @@ class Dashboard(VizroBaseModel):
 
     pages: list[Page]
     theme: Literal["vizro_dark", "vizro_light"] = Field(
-        "vizro_dark", description="Layout theme to be applied across dashboard. Defaults to `vizro_dark`"
+        default="vizro_dark", description="Layout theme to be applied across dashboard. Defaults to `vizro_dark`."
     )
-    navigation: Navigation = None  # type: ignore[assignment]
-    title: str = Field("", description="Dashboard title to appear on every page on top left-side.")
-
-    @validator("pages", always=True)
-    def validate_pages(cls, pages):
-        if not pages:
-            raise ValueError("Ensure this value has at least 1 item.")
-        return pages
-
-    @validator("navigation", always=True)
-    def set_navigation_pages(cls, navigation, values):
-        if "pages" not in values:
-            return navigation
-
-        navigation = navigation or Navigation()
-        navigation.pages = navigation.pages or [page.id for page in values["pages"]]
-        return navigation
+    navigation: Annotated[
+        Optional[Navigation], AfterValidator(set_navigation_pages), Field(default=None, validate_default=True)
+    ]
+    title: str = Field(default="", description="Dashboard title to appear on every page on top left-side.")
 
     @_log_call
     def pre_build(self):
@@ -230,7 +220,8 @@ class Dashboard(VizroBaseModel):
         # Shared across pages but slightly differ in content. These could possibly be done by a clientside
         # callback instead.
         page_title = html.H2(id="page-title", children=page.title)
-        navigation: _NavBuildType = self.navigation.build(active_page_id=page.id)
+        # cannot actually be None if you check pages and layout field together
+        navigation: _NavBuildType = cast(Navigation, self.navigation).build(active_page_id=page.id)
         nav_bar = navigation["nav-bar"]
         nav_panel = navigation["nav-panel"]
 

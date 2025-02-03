@@ -5,11 +5,7 @@ import re
 import dash_bootstrap_components as dbc
 import pytest
 from asserts import STRIP_ALL, assert_component_equal
-
-try:
-    from pydantic.v1 import ValidationError
-except ImportError:  # pragma: no cov
-    from pydantic import ValidationError
+from pydantic import ValidationError
 
 import vizro.models as vm
 
@@ -38,7 +34,7 @@ class TestNavigationInstantiation:
             vm.Navigation(pages=pages)
 
     def test_invalid_field_pages_wrong_input_type(self):
-        with pytest.raises(ValidationError, match="str type expected"):
+        with pytest.raises(ValidationError, match="Input should be a valid"):
             vm.Navigation(pages=[vm.Page(title="Page 3", components=[vm.Button()])])
 
     @pytest.mark.parametrize("pages", [["non existent page"], {"Group": ["non existent page"]}])
