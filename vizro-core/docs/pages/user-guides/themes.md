@@ -101,23 +101,29 @@ px.scatter_matrix(
 )
 ```
 
-## Vizro bootstrap in dash app
+## Vizro Bootstrap in a pure Dash app
 
-If you have a Dash app and want to use Vizro's themes, you can apply the `vizro.bootstrap` theme. This theme is visually similar to our `vizro_dark` and `vizro_light` themes but has some differences because it uses custom CSS to style certain Dash components that are not part of Bootstrap. You can view all the custom CSS files in our static folder [here](https://github.com/mckinsey/vizro/tree/main/vizro-core/src/vizro/static/css).
+Vizro apps use the [Dash Bootstrap Components](https://dash-bootstrap-components.opensource.faculty.ai/) library of 
+Bootstrap components for Dash. If you have a pure Dash app and want to use Vizro's themes, you can apply Vizro's 
+Bootstrap stylesheet in a [similar way to other Dash Bootstrap Components themes](https://dash-bootstrap-components.opensource.faculty.ai/docs/themes/) 
+through the `vizro.bootstrap` variable:
 
-To add the `vizro.bootstrap` theme to your Dash app, import vizro and include `vizro.bootstrap` in your `external_stylesheets`:
-
-```python
+```
 import vizro
 from dash import Dash
-
-app = Dash(__name__, external_stylesheets=[vizro.bootstrap])
+app = Dash(external_stylesheets=[vizro.bootstrap])
 ```
 
-??? note "Apply bootstrap theme to charts and other components"
-    To apply the bootstrap theme to your Plotly charts, we recommend using the [`dash-bootstrap-templates`](https://github.com/AnnMarieW/dash-bootstrap-templates) library. You can find examples of how to do this in the [dash-bootstrap-templates documentation on styling Plotly figures with a Bootstrap theme](https://hellodash.pythonanywhere.com/adding-themes/figure-templates).
+Note that Vizro uses some extra CSS in addition to the Bootstrap stylesheet to style some Dash components that are used 
+in Vizro but are not part of Bootstrap (for example, [`DatePicker`][vizro.models.DatePicker] is based on 
+[Dash Mantine Components](https://www.dash-mantine-components.com/). If you would like your pure Dash app to look as 
+close to Vizro as possible then you will also need [this extra CSS](https://github.com/mckinsey/vizro/tree/main/vizro-core/src/vizro/static/css).
 
-    Note that adding a Bootstrap stylesheet will only apply the theme to Bootstrap components in your app. To extend the Bootstrap theme to other components, such as the `Dash AgGrid` or `Dash Core Components`, include the stylesheet from the `dash-bootstrap-templates` library. For more details, refer to the [Dash Core Components](https://hellodash.pythonanywhere.com/adding-themes/dcc-components) and [Dash AgGrid](https://hellodash.pythonanywhere.com/adding-themes/ag-grid) sections of the `dash-bootstrap-templates` documentation.
+??? note "Apply Bootstrap theme to charts and other components"
+
+    To apply the Vizro Bootstrap theme to your Plotly charts, we recommend using the 
+    [`dash-bootstrap-templates`](https://github.com/AnnMarieW/dash-bootstrap-templates) library. You can find examples 
+    of how to do this in their [documentation on styling Plotly figures with a Bootstrap theme](https://hellodash.pythonanywhere.com/adding-themes/figure-templates).
 
 [dark]: ../../assets/user_guides/themes/dark.png
 [light]: ../../assets/user_guides/themes/light.png

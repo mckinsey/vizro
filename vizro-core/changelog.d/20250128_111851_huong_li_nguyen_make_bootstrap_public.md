@@ -4,10 +4,9 @@ A new scriv changelog fragment.
 Uncomment the section that is right (remove the HTML comment wrapper).
 -->
 
-<!--
 ### Highlights ✨
 
-- A bullet item for the Highlights ✨ category with a link to the relevant PR at the end of your entry, e.g. Enable feature XXX. ([#1](https://github.com/mckinsey/vizro/pull/1))
+- Release Vizro's Bootstrap theme that can be used in a pure Dash app with `Dash(external_stylesheets=[vizro.bootstrap])`. ([#970](https://github.com/mckinsey/vizro/pull/970))
 
 -->
 <!--
@@ -16,12 +15,12 @@ Uncomment the section that is right (remove the HTML comment wrapper).
 - A bullet item for the Removed category with a link to the relevant PR at the end of your entry, e.g. Enable feature XXX. ([#1](https://github.com/mckinsey/vizro/pull/1))
 
 -->
-
+<!--
 ### Added
 
-- Make `vizro-bootstrap` public so it can be used within `external_stylesheets`. ([#970](https://github.com/mckinsey/vizro/pull/970))
+- A bullet item for the Added category with a link to the relevant PR at the end of your entry, e.g. Enable feature XXX. ([#1](https://github.com/mckinsey/vizro/pull/1))
 
-
+-->
 <!--
 ### Changed
 
