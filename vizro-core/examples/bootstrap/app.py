@@ -815,7 +815,7 @@ tooltip = html.Div(
             ]
         ),
         dbc.Tooltip(
-            "Noun: rare, " "the action or habit of estimating something as worthless.",
+            "Noun: rare, the action or habit of estimating something as worthless.",
             target="gallery-tooltip-target",
         ),
     ],
