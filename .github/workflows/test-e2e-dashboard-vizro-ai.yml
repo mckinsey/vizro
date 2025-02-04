@@ -7,11 +7,7 @@ defaults:
 on:
   schedule:
     - cron: "30 10 * * 1" # run every Monday at 10:30 UTC
-  workflow_dispatch:
-  #temporary for development
-  pull_request:
-    branches:
-      - main
+  workflow_dispatch: # helps to run this job manually from GitHub Actions UI
 
 env:
   PYTHONUNBUFFERED: 1
@@ -68,19 +64,6 @@ jobs:
           ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
           ANTHROPIC_BASE_URL: ${{ secrets.ANTHROPIC_BASE_URL }}
           VIZRO_TYPE: pypi
-          BRANCH: ${{ github.head_ref }}
-          PYTHON_VERSION: ${{ matrix.config.python-version }}
-
-      - name: Run vizro-ai e2e dashboard tests with local vizro
-        run: |
-          hatch run ${{ matrix.config.hatch-env }}:pip install ../vizro-core
-          hatch run ${{ matrix.config.hatch-env }}:test-e2e-dashboard
-        env:
-          OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
-          OPENAI_API_BASE: ${{ secrets.OPENAI_API_BASE }}
-          ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
-          ANTHROPIC_BASE_URL: ${{ secrets.ANTHROPIC_BASE_URL }}
-          VIZRO_TYPE: local
           BRANCH: ${{ github.head_ref }}
           PYTHON_VERSION: ${{ matrix.config.python-version }}
 
