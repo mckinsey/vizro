@@ -63,6 +63,26 @@ def _create_message_content(
     return message_content
 
 
+def _handle_gemini_model(schema: dict) -> dict:
+    """Handle schema modifications specific to Gemini models."""
+    if isinstance(schema, dict) and "parameters" in schema:
+        params = schema["parameters"]
+        if isinstance(params, dict) and "properties" in params:
+            for prop in params["properties"].values():
+                if prop.get("type") == "object":
+                    if prop.get("anyOf") and isinstance(prop["anyOf"], list) and isinstance(prop["anyOf"][0], dict):
+                        prop.update(prop["anyOf"][0])
+
+                    v_properties = prop.get("properties")
+                    if v_properties:
+                        prop["properties"] = v_properties
+                        if isinstance(v_properties, dict):
+                            prop["required"] = [k for k, v in v_properties.items() if "default" not in v]
+                    else:
+                        prop["type"] = "string"
+    return schema
+
+
 def _get_pydantic_model(
     query: str,
     llm_model: BaseChatModel,
@@ -79,13 +99,34 @@ def _get_pydantic_model(
         message_content = _create_message_content(
             query, df_info, str(last_validation_error) if attempt_is_retry else None, retry=attempt_is_retry
         )
-        pydantic_llm = prompt | llm_model.with_structured_output(response_model)
+
         try:
-            res = pydantic_llm.invoke(message_content)
+            # Apply the fix for nested structures, following langchain-google-genai implementation
+            # referred to https://github.com/langchain-ai/langchain-google/pull/658/files
+            # TODO: revisit this temporary fix once pydantic v2 is implemented in vizro-ai
+            if "google" in llm_model.__class__.__module__.lower():
+                from langchain_core.utils.function_calling import convert_to_openai_function
+
+                schema = convert_to_openai_function(response_model)
+                schema = _handle_gemini_model(schema)
+
+                pydantic_llm = prompt | llm_model.with_structured_output(schema)
+                res = pydantic_llm.invoke(message_content)
+
+                # Handle case where response is a list, which is the case for Gemini models
+                if isinstance(res, list) and len(res) > 0:
+                    res = res[0]
+                    if isinstance(res, dict) and "args" in res:
+                        res = res["args"]
+
+                return response_model.parse_obj(res)
+
+            # For other models, use standard structured output
+            pydantic_llm = prompt | llm_model.with_structured_output(response_model)
+            return pydantic_llm.invoke(message_content)
+
         except ValidationError as validation_error:
             last_validation_error = validation_error
-        else:
-            return res  # TODO: problem is response is None, then it returns without raising an error. Wrong typing!
     # TODO: should this be shifted to logging so that that one can control what output gets shown (e.g. in public demos)
     raise last_validation_error
 
