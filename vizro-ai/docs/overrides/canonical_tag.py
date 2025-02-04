@@ -1,8 +1,8 @@
-""" Add a canonical tag. """
+"""Add a canonical tag."""
 
 
 def on_page_markdown(markdown, *, page, config, files):
-    """ Add a canonical tag. """
+    """Add a canonical tag."""
     # Get key from front matter
     canonical_url = page.meta.get("canonical_url")
 
