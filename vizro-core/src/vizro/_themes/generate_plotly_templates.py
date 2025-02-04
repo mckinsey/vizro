@@ -94,6 +94,7 @@ def generate_json_template(extracted_values: dict[str, str]) -> go.layout.Templa
         yaxis_linecolor=AXIS_COLOR,
         yaxis_gridcolor=GRID_COLOR,
         annotationdefaults_font_color=FONT_COLOR_PRIMARY,
+        map_style="carto-darkmatter",
     )
     template.data.bar = [go.Bar(marker_line_color=BG_COLOR)]
     template.data.waterfall = [
