@@ -115,7 +115,6 @@ app = Dash(external_stylesheets=[vizro.bootstrap])
 Vizro uses some extra CSS in addition to the Bootstrap stylesheet to style some Dash components that are used in Vizro but are not part of Bootstrap (for example, [`DatePicker`][vizro.models.DatePicker] is based on [Dash Mantine Components](https://www.dash-mantine-components.com/)). If you would like your pure Dash app to look as close to Vizro as possible then you will also need [this extra CSS](https://github.com/mckinsey/vizro/tree/main/vizro-core/src/vizro/static/css).
 
 ??? note "Apply Vizro Bootstrap theme to charts and other components"
-
     To apply the Vizro theme to plotly charts, refer to the above section [Vizro themes in plotly charts](#vizro-themes-in-plotly-charts). This is possible with or without Vizro Bootstrap.
 
     If you want to style your entire Dash app with Vizro Bootstrap and have your plotly figures automatically match then we recommend [`dash-bootstrap-templates`](https://github.com/AnnMarieW/dash-bootstrap-templates). You can find examples of how to do this in their [documentation on styling plotly figures with a Bootstrap theme](https://hellodash.pythonanywhere.com/adding-themes/figure-templates).
