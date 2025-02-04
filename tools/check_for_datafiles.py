@@ -39,9 +39,9 @@ def check_for_data_files():
     whitelisted_files = {files for dir in whitelist_dir for files in found_files if files.startswith(dir)}
     to_be_removed_files = found_files - whitelisted_files
 
-    assert (
-        len(to_be_removed_files) == 0
-    ), f"Caution! Please remove your data files {to_be_removed_files} before merging!"
+    assert len(to_be_removed_files) == 0, (
+        f"Caution! Please remove your data files {to_be_removed_files} before merging!"
+    )
 
 
 if __name__ == "__main__":
