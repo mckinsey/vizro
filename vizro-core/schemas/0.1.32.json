@@ -13,6 +13,7 @@
         "type": {
           "const": "accordion",
           "default": "accordion",
+          "enum": ["accordion"],
           "title": "Type",
           "type": "string"
         },
@@ -104,6 +105,7 @@
         "type": {
           "const": "ag_grid",
           "default": "ag_grid",
+          "enum": ["ag_grid"],
           "title": "Type",
           "type": "string"
         },
@@ -150,6 +152,7 @@
         "type": {
           "const": "button",
           "default": "button",
+          "enum": ["button"],
           "title": "Type",
           "type": "string"
         },
@@ -190,6 +193,7 @@
         "type": {
           "const": "card",
           "default": "card",
+          "enum": ["card"],
           "title": "Type",
           "type": "string"
         },
@@ -222,6 +226,7 @@
         "type": {
           "const": "checklist",
           "default": "checklist",
+          "enum": ["checklist"],
           "title": "Type",
           "type": "string"
         },
@@ -327,6 +332,7 @@
         "type": {
           "const": "container",
           "default": "container",
+          "enum": ["container"],
           "title": "Type",
           "type": "string"
         },
@@ -411,6 +417,7 @@
         "type": {
           "const": "date_picker",
           "default": "date_picker",
+          "enum": ["date_picker"],
           "title": "Type",
           "type": "string"
         },
@@ -500,6 +507,7 @@
         "type": {
           "const": "dropdown",
           "default": "dropdown",
+          "enum": ["dropdown"],
           "title": "Type",
           "type": "string"
         },
@@ -624,6 +632,7 @@
         "type": {
           "const": "figure",
           "default": "figure",
+          "enum": ["figure"],
           "title": "Type",
           "type": "string"
         }
@@ -644,6 +653,7 @@
         "type": {
           "const": "filter",
           "default": "filter",
+          "enum": ["filter"],
           "title": "Type",
           "type": "string"
         },
@@ -722,6 +732,7 @@
         "type": {
           "const": "graph",
           "default": "graph",
+          "enum": ["graph"],
           "title": "Type",
           "type": "string"
         },
@@ -822,6 +833,7 @@
         "type": {
           "const": "nav_bar",
           "default": "nav_bar",
+          "enum": ["nav_bar"],
           "title": "Type",
           "type": "string"
         },
@@ -1122,6 +1134,7 @@
         "type": {
           "const": "parameter",
           "default": "parameter",
+          "enum": ["parameter"],
           "title": "Type",
           "type": "string"
         },
@@ -1186,6 +1199,7 @@
         "type": {
           "const": "radio_items",
           "default": "radio_items",
+          "enum": ["radio_items"],
           "title": "Type",
           "type": "string"
         },
@@ -1279,6 +1293,7 @@
         "type": {
           "const": "range_slider",
           "default": "range_slider",
+          "enum": ["range_slider"],
           "title": "Type",
           "type": "string"
         },
@@ -1385,6 +1400,7 @@
         "type": {
           "const": "slider",
           "default": "slider",
+          "enum": ["slider"],
           "title": "Type",
           "type": "string"
         },
@@ -1487,6 +1503,7 @@
         "type": {
           "const": "table",
           "default": "table",
+          "enum": ["table"],
           "title": "Type",
           "type": "string"
         },
@@ -1533,6 +1550,7 @@
         "type": {
           "const": "tabs",
           "default": "tabs",
+          "enum": ["tabs"],
           "title": "Type",
           "type": "string"
         },
