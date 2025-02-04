@@ -50,9 +50,7 @@ gunicorn==23.0.0
 idna==3.10
     # via requests
 importlib-metadata==8.5.0
-    # via
-    #   dash
-    #   flask
+    # via dash
 isort==5.13.2
     # via -r requirements.in
 itsdangerous==2.2.0
@@ -65,6 +63,8 @@ markupsafe==3.0.2
     #   werkzeug
 mypy-extensions==1.0.0
     # via black
+narwhals==1.25.0
+    # via plotly
 nest-asyncio==1.6.0
     # via dash
 numpy==2.0.2
@@ -80,7 +80,7 @@ pathspec==0.12.1
     # via black
 platformdirs==4.2.2
     # via black
-plotly==5.24.1
+plotly==6.0.0
     # via
     #   -r requirements.in
     #   dash
@@ -105,15 +105,8 @@ six==1.16.0
     # via
     #   python-dateutil
     #   retrying
-tenacity==9.0.0
-    # via plotly
-tomli==2.1.0
-    # via
-    #   autoflake
-    #   black
 typing-extensions==4.12.2
     # via
-    #   black
     #   dash
     #   pydantic
     #   pydantic-core
