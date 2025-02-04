@@ -13,7 +13,7 @@ repos:
       - id: end-of-file-fixer
 
   - repo: https://github.com/codespell-project/codespell
-    rev: v2.3.0
+    rev: v2.4.1
     hooks:
       - id: codespell
         additional_dependencies:
@@ -38,7 +38,7 @@ repos:
         args: [--autofix]
 
   - repo: https://github.com/astral-sh/ruff-pre-commit
-    rev: v0.8.6
+    rev: v0.9.4
     hooks:
       - id: ruff
         args: [--fix]
@@ -46,7 +46,7 @@ repos:
       - id: ruff-format
 
   - repo: https://github.com/PyCQA/bandit
-    rev: 1.8.0
+    rev: 1.8.2
     hooks:
       - id: bandit
         args: [-c, pyproject.toml, -ll]
@@ -76,7 +76,7 @@ repos:
         exclude: ^vizro-core/src/vizro/static/css/.+\.min.*|^vizro-core/src/vizro/static/css/mantine_dates.css
 
   - repo: https://github.com/executablebooks/mdformat
-    rev: 0.7.21
+    rev: 0.7.22
     hooks:
       - id: mdformat
         args:

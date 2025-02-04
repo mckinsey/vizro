@@ -401,7 +401,7 @@ class TestParameter:
 
     @pytest.mark.usefixtures("managers_one_page_two_graphs_with_dynamic_data")
     @pytest.mark.parametrize(
-        "ctx_parameter_data_frame_argument, " "target_scatter_parameter_data_frame_first_n_last_n",
+        "ctx_parameter_data_frame_argument, target_scatter_parameter_data_frame_first_n_last_n",
         [
             ((["scatter_chart"], {"first_n": 50}), {"first_n": 50}),
             ((["scatter_chart"], {"first_n": 50, "last_n": 50}), {"first_n": 50, "last_n": 50}),

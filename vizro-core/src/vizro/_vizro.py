@@ -58,15 +58,15 @@ class Vizro:
         # Vizro library resources are already present thanks to ComponentRegistry.registry.add("vizro") in
         # __init__.py. However, since Dash serves these before those added below it means that vizro-bootstrap.css would
         # be served  *after* Vizro library's figures.css. We always want vizro-bootstrap.css to be served first
-        # so that it can be overridden. For pure Dash users this is achieved vizro-boostrap.css is supplied as an
-        # external_stylesheet. We could add vizro-boostrap.css as an external_stylesheet here but it is awkward
+        # so that it can be overridden. For pure Dash users this is achieved vizro-bootstrap.css is supplied as an
+        # external_stylesheet. We could add vizro-bootstrap.css as an external_stylesheet here but it is awkward
         # because it means providing href="_dash-component-suite/..." or using the external_url. Instead we remove
         # Vizro as a component library and then just serve all the resources again. ValueError is suppressed so that
         # repeated calls to Vizro() don't give an error.
         with suppress(ValueError):
             ComponentRegistry.registry.discard("vizro")
 
-        # vizro-boostrap.min.css must be first so that it can be overridden, e.g. by boostrap_overrides.css.
+        # vizro-bootstrap.min.css must be first so that it can be overridden, e.g. by bootstrap_overrides.css.
         # After that, all other items are sorted alphabetically.
         for path in sorted(
             VIZRO_ASSETS_PATH.rglob("*.*"), key=lambda file: (file.name != "vizro-bootstrap.min.css", file)
@@ -209,7 +209,6 @@ def _make_resource_spec(path: Path) -> _ResourceSpec:
     # This would only be the case where you need to test something with serve_locally=False and have changed
     # assets compared to main. In this case you need to push your assets changes to remote for the CDN to update,
     # and it might also be necessary to clear the CDN cache: https://www.jsdelivr.com/tools/purge.
-
     _git_branch = vizro.__version__ if "dev" not in vizro.__version__ else "main"
     BASE_EXTERNAL_URL = f"https://cdn.jsdelivr.net/gh/mckinsey/vizro@{_git_branch}/vizro-core/src/vizro/"
 

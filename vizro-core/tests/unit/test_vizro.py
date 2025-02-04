@@ -9,6 +9,13 @@ from vizro._constants import VIZRO_ASSETS_PATH
 _git_branch = vizro.__version__ if "dev" not in vizro.__version__ else "main"
 
 
+def test_vizro_bootstrap():
+    assert (
+        vizro.bootstrap
+        == f"https://cdn.jsdelivr.net/gh/mckinsey/vizro@{_git_branch}/vizro-core/src/vizro/static/css/vizro-bootstrap.min.css"
+    )
+
+
 # Using Vizro as a framework should include both the library and framework resources i.e. all files in
 # VIZRO_ASSETS_PATH.
 class TestVizroResources:
