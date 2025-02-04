@@ -67,7 +67,8 @@ dependencies = [
   "mkdocs-material",
   "mkdocs-git-revision-date-localized-plugin>=1.2.5",
   "mkdocstrings[python]",
-  "linkchecker"
+  "linkchecker",
+  "mkdocs-pycafe"
 ]
 detached = true
 installer = "uv"

@@ -150,6 +150,7 @@ cython_debug/
 
 # Ignore data files except for white-listed folders
 *.csv
+!vizro-ai/examples/goodreads_tutorial/*.csv
 *.xls
 *.xlsx
 *.parquet
