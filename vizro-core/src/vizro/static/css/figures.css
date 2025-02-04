@@ -22,7 +22,7 @@ Note the relative url works with both serve_locally=True and serve_locally=False
 .material-symbols-outlined {
   direction: ltr;
   display: inline-block;
-  font-family: 'Material Symbols Outlined';
+  font-family: 'Material Symbols Outlined', sans-serif;
   font-feature-settings: 'liga';
   font-size: 24px;
   -webkit-font-smoothing: antialiased;
