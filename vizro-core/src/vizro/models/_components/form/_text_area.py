@@ -31,7 +31,7 @@ class TextArea(VizroBaseModel):
     # Component properties for actions and interactions
     _input_property: str = PrivateAttr("value")
 
-    # Re-used validators
+    # Reused validators
     # TODO: Before making public, consider how actions should be triggered and what the default property should be
     # See comment thread: https://github.com/mckinsey/vizro/pull/298#discussion_r1478137654
     _set_actions = _action_validator_factory("value")

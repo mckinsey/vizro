@@ -98,10 +98,6 @@ class TestDunderMethodsGraph:
         with pytest.raises(KeyError):
             graph["unknown_args"]
 
-    # Ignore for lower bounds because of plotly==5.12.0
-    @pytest.mark.filterwarnings(
-        "ignore:.*The behavior of DatetimeProperties.to_pydatetime is deprecated.*:FutureWarning"
-    )
     @pytest.mark.parametrize(
         "title, margin_t",
         [(None, None), ("Graph with title", 64), ("Graph with title..<br> and subtitle", 64)],
