@@ -4,12 +4,12 @@ A new scriv changelog fragment.
 Uncomment the section that is right (remove the HTML comment wrapper).
 -->
 
-
+<!--
 ### Highlights ✨
 
-- Vizro now uses Pydantic V2 for its models. This should not affect most users, but if you use custom components that rely on Pydantic V1 features then you should consult [Pydantic's migration guide](https://docs.pydantic.dev/latest/migration/) or use `vizro<0.1.32`. ([#917](https://github.com/mckinsey/vizro/pull/917))
+- A bullet item for the Highlights ✨ category with a link to the relevant PR at the end of your entry, e.g. Enable feature XXX. ([#1](https://github.com/mckinsey/vizro/pull/1))
 
-
+-->
 <!--
 ### Removed
 
@@ -22,12 +22,12 @@ Uncomment the section that is right (remove the HTML comment wrapper).
 - A bullet item for the Added category with a link to the relevant PR at the end of your entry, e.g. Enable feature XXX. ([#1](https://github.com/mckinsey/vizro/pull/1))
 
 -->
+<!--
+### Changed
 
-<!-- ### Changed
+- A bullet item for the Changed category with a link to the relevant PR at the end of your entry, e.g. Enable feature XXX. ([#1](https://github.com/mckinsey/vizro/pull/1))
 
-- Moved from pydantic V1 to V2. This is a big change, but should not affect anything user-facing. Please contact us in case of bug! ([#917](https://github.com/mckinsey/vizro/pull/917)) -->
-
-
+-->
 <!--
 ### Deprecated
 
