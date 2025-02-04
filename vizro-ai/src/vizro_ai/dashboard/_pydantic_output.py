@@ -102,7 +102,8 @@ def _get_pydantic_model(
 
         try:
             # Apply the fix for nested structures, following langchain-google-genai implementation
-            # referred to https://github.com/langchain-ai/langchain-google/pull/658/files
+            # referred to https://github.com/langchain-ai/langchain/issues/24225
+            # and https://github.com/langchain-ai/langchain-google/pull/658/files
             # TODO: revisit this temporary fix once pydantic v2 is implemented in vizro-ai
             if "google" in llm_model.__class__.__module__.lower():
                 from langchain_core.utils.function_calling import convert_to_openai_function
