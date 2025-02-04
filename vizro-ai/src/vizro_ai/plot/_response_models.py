@@ -199,9 +199,9 @@ class ChartPlanFactory:
                     f"Produced code execution failed the following error: <{e}>. Please check the code and try again, "
                     f"alternatively try with a more powerful model."
                 )
-            assert isinstance(
-                fig, go.Figure
-            ), f"Expected chart code to return a plotly go.Figure object, but got {type(fig)}"
+            assert isinstance(fig, go.Figure), (
+                f"Expected chart code to return a plotly go.Figure object, but got {type(fig)}"
+            )
             return v
 
         return create_model(
