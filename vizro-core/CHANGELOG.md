@@ -24,6 +24,7 @@ See the fragment files in the [changelog.d directory](https://github.com/mckinse
 ## Changed
 
 - Update `material-symbols-outlined.wolff2` to include the latest icons. ([#972](https://github.com/mckinsey/vizro/pull/972))
+
 ## Fixed
 
 - Fix coloring of `NavLink` inside `NavBar`. ([#968](https://github.com/mckinsey/vizro/pull/968))
