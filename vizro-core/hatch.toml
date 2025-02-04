@@ -22,6 +22,7 @@ dependencies = [
   "coverage[toml]>=6.5",
   "pytest",
   "pytest-mock",
+  "pytest-rerunfailures",
   "freezegun>=1.5.0",
   "dash[testing]",
   "chromedriver-autoinstaller>=0.6.4",
