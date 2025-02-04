@@ -40,11 +40,11 @@ def _create_image_difference(expected_image, result_image):
     return expected_image
 
 
-def make_screenshot_and_paths(browserdriver, request_node_name):
+def make_screenshot_and_paths(driver, request_node_name):
     """Creates image paths and makes screenshot during the test run."""
     result_image_path = f"{request_node_name}_branch.png"
     expected_image_path = f"tests/e2e/screenshots/{request_node_name.replace('test', 'main')}.png"
-    browserdriver.save_screenshot(result_image_path)
+    driver.save_screenshot(result_image_path)
     return result_image_path, expected_image_path
 
 
