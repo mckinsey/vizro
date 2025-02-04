@@ -233,9 +233,13 @@ def logic(  # noqa: PLR0912, PLR0913, PLR0915
     "model_name",
     [
         "gpt-4o-mini",
+        "gpt-4o",
+        "gpt-4-turbo",
     ],
     ids=[
         "gpt-4o-mini",
+        "gpt-4o",
+        "gpt-4-turbo",
     ],
 )
 @pytest.mark.parametrize(
@@ -282,9 +286,15 @@ def test_dashboard_openai(dash_duo, model_name, tier_type, prompt_name, prompt_t
     "model_name",
     [
         "claude-3-5-sonnet-latest",
+        "claude-3-opus-latest",
+        "claude-3-sonnet-20240229",
+        "claude-3-haiku-20240307",
     ],
     ids=[
         "claude-3-5-sonnet-latest",
+        "claude-3-opus-latest",
+        "claude-3-sonnet-20240229",
+        "claude-3-haiku-20240307",
     ],
 )
 @pytest.mark.parametrize(

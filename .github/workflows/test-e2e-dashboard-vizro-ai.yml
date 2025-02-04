@@ -108,6 +108,7 @@ jobs:
   test-e2e-dashboard-vizro-ai-report:
     needs: test-e2e-dashboard-vizro-ai
     runs-on: ubuntu-latest
+    if: always()
     steps:
       - uses: actions/checkout@v4
 
