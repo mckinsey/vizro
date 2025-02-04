@@ -2,15 +2,15 @@
 
 Typically when you create a dashboard, there are two distinct stages:
 
-1. [Development](#development). This is when you build your app. You make frequent changes to your code and want a simple way to see how the dashboard looks after each change. At this point, you may, or may not, want to make it possible for other people to access your dashboard.
-1. [Production](#production). When you complete development of your app, you _deploy_ it to production. The dashboard should be accessible to other people.
+1. [Development](#development). This is when you build your dashboard. You make frequent changes to your code and want a simple way to see how it looks after each change. At this point, you may, or may not, want to make it possible for other people to access your dashboard.
+1. [Production](#production). When you complete development, you _deploy_ it to production to make it accessible to other people.
 
-This guide describes methods to run your dashboard _in development_ and _in production_. Just follow either section based on your current need.
+This guide describes methods to run your dashboard _in development_ and _in production_. Follow either section based on your current need.
 
 Vizro is built on top of [Dash](https://dash.plotly.com/), which itself uses [Flask](https://flask.palletsprojects.com/). Most of our guidance on how to run a Vizro app in development or production is very similar to guidance on Dash and Flask.
 
 !!! note
-    There are many possible workflows depending on your requirements. The above describes a simple workflow that applies to many people but is not suitable for everyone. For example:
+    There are many possible workflows depending on your requirements. We are considering a simple workflow that applies to many people but is not suitable for everyone. For example:
 
     - If you are the only user of your app then the process is often simpler since you might never want to deploy to production.
     - If there are multiple people involved with development then you will need some way to coordinate code changes, such as a [GitHub repository](https://github.com/) or [Hugging Face Space](https://huggingface.co/spaces).
@@ -20,13 +20,13 @@ Vizro is built on top of [Dash](https://dash.plotly.com/), which itself uses [Fl
 
 ## Development
 
-When developing a dashboard, you have several options on how to get started as the table below describes. Clicking the links will lead you to the relevant docs section explaining more. The [fastest way to a running dashboard is to use PyCafe](https://py.cafe/snippet/vizro/v1), as shown in our [First Dashboard tutorial](../tutorials/first-dashboard.md).
+When developing a dashboard, you have several options on how to get started as the table below describes. Clicking the links will lead you to the relevant docs section explaining more. The [fastest way to run a dashboard is to use PyCafe](https://py.cafe/snippet/vizro/v1), as shown in our [First Dashboard tutorial](../tutorials/first-dashboard.md).
 
 | Method                                     | Description                                                | Requires                         |
 | ------------------------------------------ | ---------------------------------------------------------- | -------------------------------- |
-| [Python script](#develop-in-python-script) | Run a local python script using a Flask development server | Local Python                     |
-| [Jupyter](#develop-in-jupyter)             | Run a cell in a notebook using a Flask development server  | Local Python, Jupyter/JupyterLab |
-| [PyCafe](#develop-in-pycafe)               | Run code in your Browser using WebAssembly                 | No requirements                  |
+| [Python script](#develop-in-python-script) | Run a local Python script using a Flask development server | Local Python                     |
+| [Jupyter](#develop-in-a-notebook)          | Run a cell in a Notebook using a Flask development server  | Local Python, Jupyter/JupyterLab |
+| [PyCafe](#develop-in-pycafe)               | Run code in your browser using WebAssembly                 | No requirements                  |
 
 ### Develop in Python script
 
@@ -59,14 +59,14 @@ The `run` method wraps [Dash's run method](https://dash.plotly.com/reference#app
 
 - `port`. If not specified, this defaults to `8050`. If you run multiple dashboards on your computer then you may need to avoid a clash by specifying a different port with, for example, `run(port=8051)`.
 - `debug`. This is described more below in the [section on debugging](#automatic-reloading-and-debugging).
-- `jupyter_mode`. This is described more below in the [section on Jupyter](#develop-in-jupyter).
+- `jupyter_mode`. This is described more below in the [section on Jupyter](#develop-in-a-notebook).
 
 !!! warning "Use only for local development"
     The Flask development server is [intended for local development only](https://flask.palletsprojects.com/en/3.0.x/deploying/) and should not be used when deploying a Vizro dashboard to production. See our [section on deployment](#production) for information on how to deploy.
 
-### Develop in Jupyter
+### Develop in a Notebook
 
-If you develop in a Jupyter notebook or JupyterLab then you should use exactly the [same code as above](#develop-in-python-script):
+If you develop in a Jupyter Notebook or JupyterLab then you should use exactly the [same code as above](#develop-in-python-script):
 
 ```python
 from vizro import Vizro
@@ -87,7 +87,7 @@ dashboard = vm.Dashboard(pages=[page])
 Vizro().build(dashboard).run()
 ```
 
-This runs Vizro using the Flask development server and shows the resulting dashboard inline in your notebook. You can change where the dashboard appears with the [`jupyter_mode` argument](https://dash.plotly.com/dash-in-jupyter). For example, `run(jupyter_mode="external")` provides a link to open the dashboard in a new window.
+The code runs Vizro using a Flask development server and shows the resulting dashboard inline in your Notebook. You can change where the dashboard appears with the [`jupyter_mode` argument](https://dash.plotly.com/dash-in-jupyter). For example, `run(jupyter_mode="external")` provides a link to open the dashboard in a new window.
 
 !!! note "Reloading and debugging"
     Code reloading and hot reloading do not work in Jupyter. See the [section on reloading for alternatives when using Jupyter](#automatic-reloading-and-debugging).
@@ -108,7 +108,7 @@ You can use [PyCafe](https://py.cafe/snippet/vizro/v1) snippet mode to experimen
 !!! note
     Note that when you save your code as a project, the dashboard and the code will be visible to the public. PyCafe is planning to implement a paid tier that allows private dashboards.
 
-    As long as you remain in [snippet mode](https://py.cafe/snippet/vizro/v1) - not having clicked "Push" - your code is only local on your machine and not visible.
+    As long as you remain in [snippet mode](https://py.cafe/snippet/vizro/v1) - not having clicked "Push" - your code is only local to your machine and is not visible to others.
 
 ### Automatic reloading and debugging
 
@@ -120,12 +120,12 @@ Turn on [Dash Dev Tools](https://dash.plotly.com/devtools) by setting `debug=Tru
 
 Dash Dev Tools can also be [configured using environment variables](https://dash.plotly.com/devtools#configuring-with-environment-variables). For example, setting the environment variable `DASH_DEBUG=true` is equivalent to setting `debug=True` in the `run()` method.
 
-**... in Jupyter**
+**... in a Notebook**
 
-Code reloading and hot reloading do not work in Jupyter. There are two alternative methods to reload the dashboard after you change your code:
+Vizro code reloading and hot reloading do not work in Jupyter Notebooks. There are two alternative methods to reload the dashboard after you change your code:
 
-- Restart the Jupyter kernel and re-run your notebook.
-- Add a cell containing `from vizro import Vizro; Vizro._reset()` to the top of your notebook and re-run it before you re-run your code. With this method, there is no need to restart the Jupyter kernel.
+- Restart the Jupyter kernel and re-run your Notebook.
+- Add a cell containing `from vizro import Vizro; Vizro._reset()` to the top of your Notebook and re-run it before you re-run your code. With this method, there is no need to restart the Jupyter kernel.
 
 **... in PyCafe**
 
@@ -135,7 +135,7 @@ In PyCafe there is no need to set anything as your dashboard will automatically 
 
 When developing your dashboard you typically run it _locally_ (on your own computer) using the Flask development server. When you deploy to production, this is no longer suitable. Instead, you need a solution that can handle multiple users in a stable, secure and efficient way.
 
-The below table is a **TLDR** that provides an overview of the most common options. Clicking the links will lead you to the relevant docs section explaining more.
+The below table is a **TLDR** that provides an overview of the most common options. Clicking the links will lead you to the relevant section below.
 
 | Method                                         | Free Tier         | Some key features (not exhaustive)                                                                                                                                     | Requires                                                      |
 | ---------------------------------------------- | ----------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------- |
@@ -180,7 +180,7 @@ Enterprise users should look at our guidance for [deploying Vizro dashboards on 
 
 The best way to get started with Vizro on Hugging Face is to copy an existing Vizro dashboard and then modify it to add your own app. Vizro maintains an [official gallery of example dashboards](https://huggingface.co/collections/vizro/vizro-official-gallery-66697d414646eeac61eae6de) and a [gallery of example dashboards made by the community](https://huggingface.co/collections/vizro/vizro-official-gallery-66697d414646eeac61eae6de). Any of these example dashboards can be used as a template for your app. In Hugging Face terminology, a Vizro dashboard lives in a _Space_, and you can copy a dashboard by [duplicating the Space](https://huggingface.co/docs/hub/en/spaces-overview#duplicating-a-space).
 
-If this is your first Vizro deployment then we recommend using our [first dashboard example](https://huggingface.co/spaces/vizro/demo-first-dashboard). This is a minimal example that is designed to make it as simple as possible to get started on Hugging Face. You can create your own Vizro deployment based on this template as follows:
+If this is your first Vizro deployment, we recommend using our [first dashboard example](https://huggingface.co/spaces/vizro/demo-first-dashboard). This is a minimal example that is designed to make it as simple as possible to get started on Hugging Face. You can create your own Vizro deployment based on this template as follows:
 
 1. [Sign up for a Hugging Face account](https://huggingface.co/join).
 1. Copy our example Hugging Face dashboard by duplicating our [first dashboard example Space](https://huggingface.co/spaces/vizro/demo-first-dashboard). To do so, click the following button: [![Duplicate this Space](https://huggingface.co/datasets/huggingface/badges/resolve/main/duplicate-this-space-md.svg)](https://huggingface.co/spaces/vizro/demo-first-dashboard?duplicate=true). This should open a window with the following form: ![Form to duplicate Space](../../assets/user_guides/run_deploy/hugging_face_duplicate_this_space.png)
@@ -325,16 +325,14 @@ In fact, the only difference between deploying a Vizro app and deploying a Dash 
 
 #### WebAssembly (WASM) and Pyodide
 
-Vizro applications traditionally run on a Python backend, serving dynamic content to a web-based frontend. However, [advancements in WASM](https://en.wikipedia.org/wiki/WebAssembly) and [Pyodide](https://github.com/pyodide/pyodide) as used by [PyCafe](#develop-in-pycafe) now allow Vizro to run entirely in the browser without a dedicated server.
+Vizro applications traditionally run on a Python backend, serving dynamic content to a web-based frontend. However, [advancements in WASM](https://en.wikipedia.org/wiki/WebAssembly) and [Pyodide](https://github.com/pyodide/pyodide) as used by [PyCafe](#develop-in-pycafe) now enable Vizro to run entirely in the browser without a dedicated server.
 
 **WASM**
 
-WASM is a low-level binary instruction format that enables high-performance execution of code on web browsers. Unlike JavaScript, which is typically interpreted, WASM code is compiled and executed at near-native speed. This allows languages like C, Rust, and even Python (via Pyodide) to run efficiently in the browser.
+WASM is a low-level binary instruction format that enables high-performance execution of code on web browsers. Unlike JavaScript, which is typically interpreted, WASM code is compiled and executed at near-native speed. This enables languages like C, Rust, and even Python (via Pyodide) to run efficiently in the browser.
 
 **Pyodide**
 
-[Pyodide is a Python distribution compiled to WebAssembly, enabling Python execution in a browser’s JavaScript runtime](https://hacks.mozilla.org/2019/04/pyodide-bringing-the-scientific-python-stack-to-the-browser/). It includes a standard Python interpreter, common scientific libraries (NumPy, Pandas, Matplotlib, etc.), and interoperability with JavaScript, allowing seamless interaction with the browser environment. In the context of Vizro, Pyodide allows the execution of Dash callbacks, component updates, and even external Python libraries directly in the client’s browser, reducing the need for a persistent backend.
+[Pyodide is a Python distribution compiled to WebAssembly, enabling Python execution in a browser’s JavaScript runtime](https://hacks.mozilla.org/2019/04/pyodide-bringing-the-scientific-python-stack-to-the-browser/). It includes a standard Python interpreter, common scientific libraries (NumPy, Pandas, Matplotlib, etc.), and interoperability with JavaScript within the browser environment. In the context of Vizro, Pyodide enables the execution of Dash callbacks, component updates, and external Python libraries directly in the client’s browser, without a persistent backend.
 
-Some potential advantages include serverless execution, reduced latency and easier "deployment", while some potential disadvantages include limited performance compared to a native server, limited library support and memory constraints.
-
-By leveraging WASM and Pyodide, Vizro applications can become more accessible, performant, and deployable, though with some trade-offs in computational power and compatibility. [PyCafe](#develop-in-pycafe) offers a great way to experience this technology and to develop and/or "host" dashboards that run entirely in the browser.
+While potential advantages include serverless execution, reduced latency and easier "deployment", the disadvantages include limited performance compared to a native server, limited library support, and memory constraints.
