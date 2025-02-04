@@ -94,8 +94,7 @@ def generate_json_template(extracted_values: dict[str, str]) -> go.layout.Templa
         yaxis_linecolor=AXIS_COLOR,
         yaxis_gridcolor=GRID_COLOR,
         annotationdefaults_font_color=FONT_COLOR_PRIMARY,
-        # TODO: Add default styling for map_style when we drop support for Plotly < 5.24.0
-        # map_style="carto-darkmatter"
+        map_style="carto-darkmatter",
     )
     template.data.bar = [go.Bar(marker_line_color=BG_COLOR)]
     template.data.waterfall = [

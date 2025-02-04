@@ -121,7 +121,7 @@ VIZRO_LOG_LEVEL = "DEBUG"
 extra-dependencies = [
   "pydantic==2.9.0",
   "dash==2.18.0",
-  "plotly==5.12.0",
+  "plotly==5.24.0",
   "pandas==2.0.0",
   "numpy==1.23.0"  # Need numpy<2 to work with pandas==2.0.0. See https://stackoverflow.com/questions/78634235/.
 ]
