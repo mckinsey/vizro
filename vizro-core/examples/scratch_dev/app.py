@@ -3,7 +3,7 @@
 import pandas as pd
 import vizro.models as vm
 from vizro import Vizro
-from vizro.figures import kpi_card, kpi_card_reference
+from vizro.figures import kpi_card_reference
 
 df_kpi = pd.DataFrame({"Actual": [100, 200, 700], "Reference": [100, 300, 500], "Category": ["A", "B", "C"]})
 
@@ -37,7 +37,7 @@ page_two = vm.Page(
     ],
 )
 
-dashboard = vm.Dashboard(pages=[page], navigation=vm.NavBar())
+dashboard = vm.Dashboard(pages=[page, page_two], navigation=vm.Navigation(nav_selector=vm.NavBar()))
 
 if __name__ == "__main__":
     Vizro().build(dashboard).run()
