@@ -17,11 +17,9 @@ See the fragment files in the [changelog.d directory](https://github.com/mckinse
 
 ## Highlights ✨
 
-- Release Vizro's Bootstrap theme that can be used in a pure Dash app with `Dash(external_stylesheets=[vizro.bootstrap])`. ([#970](https://github.com/mckinsey/vizro/pull/970))
-
--->
-
 - Vizro now uses Pydantic V2 for its models. This should not affect most users, but if you use custom components that rely on Pydantic V1 features then you should consult [Pydantic's migration guide](https://docs.pydantic.dev/latest/migration/) or use `vizro<0.1.32`. ([#917](https://github.com/mckinsey/vizro/pull/917))
+
+- Release Vizro's Bootstrap theme that can be used in a pure Dash app with `Dash(external_stylesheets=[vizro.bootstrap])`. ([#970](https://github.com/mckinsey/vizro/pull/970))
 
 ## Changed
 
