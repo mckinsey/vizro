@@ -1,44 +1,43 @@
 """Dev app to try things out."""
 
+import pandas as pd
 import vizro.models as vm
-import vizro.plotly.express as px
 from vizro import Vizro
+from vizro.figures import kpi_card_reference
 
+df_kpi = pd.DataFrame({"Actual": [100, 200, 700], "Reference": [100, 300, 500], "Category": ["A", "B", "C"]})
 
-carshare = px.data.carshare()
-
-page_one = vm.Page(
-    title="Scatter map",
+page = vm.Page(
+    title="KPI card I",
     components=[
-        vm.Graph(
-            figure=px.scatter_map(
-                carshare,
-                lat="centroid_lat",
-                lon="centroid_lon",
-                color="peak_hour",
-                size="car_hours",
-                color_continuous_scale=px.colors.cyclical.IceFire,
-                size_max=15,
-                zoom=10,
+        vm.Figure(
+            figure=kpi_card_reference(
+                data_frame=df_kpi,
+                value_column="Actual",
+                reference_column="Reference",
+                title="KPI reference with icon",
+                icon="folder_check_2",
             )
-        ),
+        )
     ],
 )
 
-page_four = vm.Page(
-    title="Density map",
+page_two = vm.Page(
+    title="KPI card II",
     components=[
-        vm.Graph(
-            figure=px.density_map(
-                carshare,
-                lat="centroid_lat",
-                lon="centroid_lon",
+        vm.Figure(
+            figure=kpi_card_reference(
+                data_frame=df_kpi,
+                value_column="Actual",
+                reference_column="Reference",
+                title="KPI reference with icon",
+                icon="folder_check",
             )
-        ),
+        )
     ],
 )
 
-dashboard = vm.Dashboard(pages=[page_one, page_four])
+dashboard = vm.Dashboard(pages=[page, page_two], navigation=vm.Navigation(nav_selector=vm.NavBar()))
 
 if __name__ == "__main__":
     Vizro().build(dashboard).run()
