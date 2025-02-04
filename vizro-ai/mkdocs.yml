@@ -119,8 +119,8 @@ plugins:
       enable_creation_date: false
 
 hooks:
-  - docs/overrides/canonical_tag.py 
-  
+  - docs/overrides/canonical_tag.py
+
 extra_css:
   - stylesheets/extra.css
 
