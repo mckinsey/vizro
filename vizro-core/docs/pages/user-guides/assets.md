@@ -17,8 +17,8 @@ To add images, custom CSS or JS files, create a folder named `assets` in the roo
 │   ├── favicon.ico
 ```
 
-!!! warning "Dash Bootstrap Themes"
-    Note that Vizro is currently not compatible with [Dash Bootstrap Themes](https://dash-bootstrap-components.opensource.faculty.ai/docs/themes/). Adding a Bootstrap stylesheet will have no visual effect on the [components](https://vizro.readthedocs.io/en/stable/pages/user_guides/components/) included in Vizro.
+!!! note "Dash Bootstrap Themes"
+    Vizro is not compatible with other [Dash Bootstrap themes](https://dash-bootstrap-components.opensource.faculty.ai/docs/themes/), as it uses its own Bootstrap theme. If you like, you can [use the Vizro Bootstrap theme in a pure Dash app](themes.md#vizro-bootstrap-in-a-pure-dash-app).
 
 ## Change the favicon
 
