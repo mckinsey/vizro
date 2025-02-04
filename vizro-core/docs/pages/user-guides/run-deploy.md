@@ -219,7 +219,7 @@ The [Ploomber Cloud documentation](https://docs.cloud.ploomber.io/en/latest/apps
 1. Compress your `app.py`, `requirements.txt` and `Dockerfile` into a single zip file.
 1. Upload the zip file to Ploomber Cloud.
 
-There is also a [similar guide on the Ploomber Cloud Blog](https://ploomber.io/blog/vizro-deploy).
+You can find a [similar guide on the Ploomber Cloud Blog](https://ploomber.io/blog/vizro-deploy).
 
 ### Deploy via Dash Enterprise
 
