@@ -34,9 +34,6 @@ example_cards = [
         title="KPI with icon",
         icon="shopping_cart",
     ),
-]
-
-example_reference_cards = [
     kpi_card_reference(
         data_frame=df_kpi,
         value_column="Actual",
@@ -65,9 +62,6 @@ example_reference_cards = [
         title="KPI ref. with icon",
         icon="shopping_cart",
     ),
-]
-
-example_reference_reverse = [
     kpi_card_reference(
         data_frame=df_kpi,
         value_column="Actual",
@@ -90,12 +84,10 @@ def test_kpi_card_component_library(dash_duo, request):
     app = Dash(__name__, external_stylesheets=[dbc.themes.BOOTSTRAP])
     app.layout = dbc.Container(
         [
-            html.H1(children="KPI Cards"),
             dbc.Stack(
                 children=[
-                    dbc.Row([dbc.Col(kpi_card) for kpi_card in example_cards]),
-                    dbc.Row([dbc.Col(kpi_card) for kpi_card in example_reference_cards]),
-                    dbc.Row([dbc.Col(kpi_card) for kpi_card in example_reference_reverse]),
+                    dbc.Row([dbc.Col(kpi_card) for kpi_card in example_cards[:4]]),
+                    dbc.Row([dbc.Col(kpi_card) for kpi_card in example_cards[4:]]),
                 ],
                 gap=4,
             ),
