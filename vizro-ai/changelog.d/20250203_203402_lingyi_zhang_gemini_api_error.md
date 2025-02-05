@@ -37,7 +37,7 @@ Uncomment the section that is right (remove the HTML comment wrapper).
 
 ### Fixed
 
-- Added temporary compatibility fix for Gemini models in `_pydantic_output.py` until Pydantic v2 implementation (#issue_number). ([#986](https://github.com/mckinsey/vizro/pull/986))
+- Added temporary compatibility fix for Gemini models in `_pydantic_output.py`. ([#986](https://github.com/mckinsey/vizro/pull/986))
 
 <!--
 ### Security
