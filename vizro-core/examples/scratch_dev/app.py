@@ -1,43 +1,68 @@
-"""Dev app to try things out."""
+from typing import Annotated, Literal
 
-import pandas as pd
+import dash_bootstrap_components as dbc
 import vizro.models as vm
+from pydantic import AfterValidator, Field, PlainSerializer
 from vizro import Vizro
-from vizro.figures import kpi_card_reference
+from vizro.models import Action
+from vizro.models._action._actions_chain import _action_validator_factory
+from vizro.models.types import capture
 
-df_kpi = pd.DataFrame({"Actual": [100, 200, 700], "Reference": [100, 300, 500], "Category": ["A", "B", "C"]})
+
+# 1. Create new custom component
+class Carousel(vm.VizroBaseModel):
+    type: Literal["carousel"] = "carousel"
+    items: list
+    actions: Annotated[
+        list[Action],
+        # Here we set the action so a change in the active_index property of the custom component triggers the action
+        AfterValidator(_action_validator_factory("active_index")),
+        # Here we tell the serializer to only serialize the actions field
+        PlainSerializer(lambda x: x[0].actions),
+        Field(default=[]),
+    ]
+
+    def build(self):
+        return dbc.Carousel(
+            id=self.id,
+            items=self.items,
+        )
+
+
+# 2. Add new components to expected type - here the selector of the parent components
+vm.Page.add_type("components", Carousel)
+
+
+# 3. Create custom action
+@capture("action")
+def slide_next_card(active_index):
+    if active_index:
+        return "Second slide"
+
+    return "First slide"
+
 
 page = vm.Page(
-    title="KPI card I",
+    title="Custom Component",
     components=[
-        vm.Figure(
-            figure=kpi_card_reference(
-                data_frame=df_kpi,
-                value_column="Actual",
-                reference_column="Reference",
-                title="KPI reference with icon",
-                icon="folder_check_2",
-            )
-        )
+        vm.Card(text="First slide", id="carousel-card"),
+        Carousel(
+            id="carousel",
+            items=[
+                {"key": "1", "src": "assets/slide_1.jpg"},
+                {"key": "2", "src": "assets/slide_2.jpg"},
+            ],
+            actions=[
+                vm.Action(
+                    function=slide_next_card(),
+                    inputs=["carousel.active_index"],
+                    outputs=["carousel-card.children"],
+                )
+            ],
+        ),
     ],
 )
 
-page_two = vm.Page(
-    title="KPI card II",
-    components=[
-        vm.Figure(
-            figure=kpi_card_reference(
-                data_frame=df_kpi,
-                value_column="Actual",
-                reference_column="Reference",
-                title="KPI reference with icon",
-                icon="folder_check",
-            )
-        )
-    ],
-)
+dashboard = vm.Dashboard(pages=[page])
 
-dashboard = vm.Dashboard(pages=[page, page_two], navigation=vm.Navigation(nav_selector=vm.NavBar()))
-
-if __name__ == "__main__":
-    Vizro().build(dashboard).run()
+Vizro().build(dashboard).run()
