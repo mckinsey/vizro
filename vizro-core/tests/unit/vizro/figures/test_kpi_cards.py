@@ -141,7 +141,7 @@ class TestKPICardReference:
             value_format="A {value} is +{delta:.1f} ({delta_relative}:%) vs. {reference:.1f}",
             reference_format="B {value} is +{delta:.1f} ({delta_relative}:%) vs. {reference:.1f}",
             agg_func="mean",
-            reverse_color=True
+            reverse_color=True,
         )()
         expected = dbc.Card(
             [
