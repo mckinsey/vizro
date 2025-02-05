@@ -9,72 +9,62 @@ df_kpi = pd.DataFrame(
     {
         "Actual": [100, 200, 700],
         "Reference": [100, 300, 500],
+        "Reference_2": [100, 300, 500],
         "Category": ["A", "B", "C"],
     }
 )
 
 example_cards = [
-    kpi_card(data_frame=df_kpi, value_column="Actual", title="KPI with value"),
+    kpi_card(data_frame=df_kpi, value_column="Actual", title="KPI (default)"),
     kpi_card(
         data_frame=df_kpi,
         value_column="Actual",
-        title="KPI with aggregation",
+        title="KPI (agg, icon, format)",
         agg_func="median",
         icon="folder_check_2",
-    ),
-    kpi_card(
-        data_frame=df_kpi,
-        value_column="Actual",
-        title="KPI formatted",
         value_format="${value:.2f}",
     ),
-    kpi_card(
+    kpi_card_reference(
         data_frame=df_kpi,
         value_column="Actual",
-        title="KPI with icon",
-        icon="shopping_cart",
+        reference_column="Reference",
+        title="KPI ref. (pos-default)",
+    ),
+    kpi_card_reference(
+        data_frame=df_kpi,
+        value_column="Reference",
+        reference_column="Actual",
+        title="KPI ref. (neg-default)",
+    ),
+    kpi_card_reference(
+        data_frame=df_kpi,
+        value_column="Reference",
+        reference_column="Reference_2",
+        title="KPI ref. (zero-default)",
     ),
     kpi_card_reference(
         data_frame=df_kpi,
         value_column="Actual",
         reference_column="Reference",
-        title="KPI ref. (pos)",
-    ),
-    kpi_card_reference(
-        data_frame=df_kpi,
-        value_column="Actual",
-        reference_column="Reference",
-        agg_func="median",
-        title="KPI ref. (neg)",
-    ),
-    kpi_card_reference(
-        data_frame=df_kpi,
-        value_column="Actual",
-        reference_column="Reference",
-        title="KPI ref. formatted",
-        value_format="{value}€",
-        reference_format="{delta}€ vs. last year ({reference}€)",
-    ),
-    kpi_card_reference(
-        data_frame=df_kpi,
-        value_column="Actual",
-        reference_column="Reference",
-        title="KPI ref. with icon",
-        icon="shopping_cart",
-    ),
-    kpi_card_reference(
-        data_frame=df_kpi,
-        value_column="Actual",
-        reference_column="Reference",
-        title="KPI ref. (pos-reverse color)",
+        title="KPI ref. (pos-reverse)",
         reverse_color=True,
     ),
     kpi_card_reference(
         data_frame=df_kpi,
         value_column="Reference",
         reference_column="Actual",
-        title="KPI ref. (neg-reverse color)",
+        title="KPI ref. (neg-reverse)",
         reverse_color=True,
+    ),
+    kpi_card_reference(
+        data_frame=df_kpi,
+        value_column="Actual",
+        reference_column="Reference",
+        agg_func="median",
+        title="KPI ref. (agg, icon, format)",
+        value_format="{value}€",
+        reference_format="{delta}€ vs. last year ({reference}€)",
+        icon="shopping_cart",
     ),
 ]
 
@@ -85,8 +75,8 @@ def test_kpi_card_component_library(dash_duo, request):
         [
             dbc.Stack(
                 children=[
-                    dbc.Row([dbc.Col(kpi_card) for kpi_card in example_cards[:4]]),
-                    dbc.Row([dbc.Col(kpi_card) for kpi_card in example_cards[4:]]),
+                    dbc.Row([dbc.Col(kpi_card) for kpi_card in example_cards[:3]]),
+                    dbc.Row([dbc.Col(kpi_card) for kpi_card in example_cards[3:]]),
                 ],
                 gap=4,
             ),
