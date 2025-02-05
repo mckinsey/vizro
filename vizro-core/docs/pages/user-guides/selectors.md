@@ -36,9 +36,7 @@ For more information, refer to the API reference of the selector, or the documen
 
 For more information, refer to the API reference of the selector, or the documentation of its underlying Dash component:
 
-- [`DatePicker`][vizro.models.DatePicker] based on [`dmc.DateRangePicker`](https://www.dash-mantine-components.com/components/datepicker#daterangepicker) and [`dmc.DatePicker`](https://www.dash-mantine-components.com/components/datepicker)
+- [`DatePicker`][vizro.models.DatePicker] based on [`dmc.DatePickerInput`](https://www.dash-mantine-components.com/components/datepickerinput)
 
 !!! note
-    When the [`DatePicker`][vizro.models.DatePicker] is configured with `range=True` (the default), the underlying component is `dmc.DateRangePicker`. When `range=False` the underlying component is `dmc.DatePicker`.
-
     When configuring the [`DatePicker`][vizro.models.DatePicker] make sure to provide your dates for `min`, `max` and `value` arguments in `"yyyy-mm-dd"` format or as `datetime` type (for example, `datetime.datetime(2024, 01, 01)`).

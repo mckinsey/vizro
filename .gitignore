@@ -148,7 +148,7 @@ cython_debug/
 # Ruff
 .ruff_cache/
 
-# Ignore data files except for white-listed folders
+# Ignore data files
 *.csv
 *.xls
 *.xlsx

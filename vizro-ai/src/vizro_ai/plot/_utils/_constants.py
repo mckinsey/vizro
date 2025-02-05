@@ -239,7 +239,7 @@ REDLISTED_DATA_HANDLING = [
     ".loadtxt",
     ".genfromtxt",
     ".load",
-    ".fromfile" ".save",
+    ".fromfile.save",
     ".savetxt",
     ".tofile",
     ".loadmat",

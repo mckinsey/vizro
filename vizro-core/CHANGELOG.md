@@ -11,6 +11,28 @@ See the fragment files in the [changelog.d directory](https://github.com/mckinse
 
 <!-- scriv-insert-here -->
 
+<a id='changelog-0.1.32'></a>
+
+# 0.1.32 — 2025-02-04
+
+## Highlights ✨
+
+- Vizro now uses Pydantic V2 for its models. This should not affect most users, but if you use custom components that rely on Pydantic V1 features then you should consult [Pydantic's migration guide](https://docs.pydantic.dev/latest/migration/) or use `vizro<0.1.32`. ([#917](https://github.com/mckinsey/vizro/pull/917))
+
+- Release Vizro's Bootstrap theme that can be used in a pure Dash app with `Dash(external_stylesheets=[vizro.bootstrap])`. ([#970](https://github.com/mckinsey/vizro/pull/970))
+
+## Changed
+
+- Update `material-symbols-outlined.wolff2` to include the latest icons. ([#972](https://github.com/mckinsey/vizro/pull/972))
+
+## Fixed
+
+- Fix coloring of `NavLink` inside `NavBar`. ([#968](https://github.com/mckinsey/vizro/pull/968))
+
+- Fix flickering scroll bars when using new Plotly map figures with `plotly==6.0.0`. ([#984](https://github.com/mckinsey/vizro/pull/984))
+
+- Remove flash of unstyled text before Google Material icons font is loaded. ([#987](https://github.com/mckinsey/vizro/pull/987))
+
 <a id='changelog-0.1.31'></a>
 
 # 0.1.31 — 2025-01-23

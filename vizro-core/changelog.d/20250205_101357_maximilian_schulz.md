@@ -37,7 +37,7 @@ Uncomment the section that is right (remove the HTML comment wrapper).
 
 ### Fixed
 
-- Fix coloring of `NavLink` inside `NavBar`. ([#968](https://github.com/mckinsey/vizro/pull/968))
+- Adjust the lower bound of pydantic to `2.7.0` so that Vizro can run on pyodide. ([#993](https://github.com/mckinsey/vizro/pull/993))
 
 
 <!--
