@@ -65,13 +65,6 @@ example_reference_cards = [
         title="KPI ref. with icon",
         icon="shopping_cart",
     ),
-    kpi_card_reference(
-        data_frame=df_kpi,
-        value_column="Actual",
-        reference_column="Reference",
-        title="KPI ref. (reverse color)",
-        reverse_color=True
-    ),
 ]
 
 example_reference_reverse = [
