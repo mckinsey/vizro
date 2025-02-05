@@ -35,8 +35,7 @@ jobs:
         run: hatch run pip tree
 
       - name: Run e2e vizro-dom-elements tests
-        run: |
-          hatch run test-e2e-vizro-dom-elements
+        run: hatch run test-e2e-vizro-dom-elements
 
       - name: Create artifacts and slack notifications
         if: failure()
