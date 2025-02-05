@@ -69,14 +69,14 @@ class Checklist(VizroBaseModel):
                 dbc.Checklist(
                     id=f"{self.id}_select_all",
                     options=["ALL"],
-                    value=[],
+                    value=["ALL"] if self.value == self.options or self.value is None else [],
                     persistence=True,
                     persistence_type="session",
                 ),
                 dbc.Checklist(
                     id=self.id,
                     options=options,
-                    value=self.value if self.value is not None else [],
+                    value=self.value if self.value is not None else options,
                     persistence=True,
                     persistence_type="session",
                 ),

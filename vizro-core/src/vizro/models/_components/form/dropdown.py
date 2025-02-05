@@ -44,20 +44,20 @@ def validate_multi(multi, info: ValidationInfo):
     return multi
 
 
-def _add_select_all_option(full_options: OptionsType, component_id: str) -> OptionsType:
+def _add_select_all_option(
+    full_options: OptionsType, component_id: str, value: Optional[Union[SingleValueType, MultiValueType]]
+) -> OptionsType:
     """Adds a 'Select All' option to the list of options."""
-    # TODO: Move option to dictionary conversion within `get_options_and_default` function as here: https://github.com/mckinsey/vizro/pull/961#discussion_r1923356781
-    options_dict = [
-        cast(OptionsDictType, {"label": option, "value": option}) if not isinstance(option, dict) else option
-        for option in full_options
-    ]
-
-    options_dict[0] = {
+    checklist_value = (
+        ["ALL"] if value is None or (isinstance(value, list) and len(value) == len(full_options) - 1) else []
+    )
+    full_options = cast(list[OptionsDictType], full_options)
+    full_options[0] = {
         "label": html.Div(
             [
                 dcc.Checklist(
                     options=[{"label": "", "value": "ALL"}],
-                    value=[],
+                    value=checklist_value,
                     id=f"{component_id}_checklist_all",
                     persistence=True,
                     persistence_type="session",
@@ -68,7 +68,7 @@ def _add_select_all_option(full_options: OptionsType, component_id: str) -> Opti
         ),
         "value": "ALL",
     }
-    return options_dict
+    return full_options
 
 
 class Dropdown(VizroBaseModel):
@@ -137,7 +137,9 @@ class Dropdown(VizroBaseModel):
         full_options, default_value = get_options_and_default(options=options, multi=self.multi)
         option_height = _calculate_option_height(full_options)
         altered_options = (
-            _add_select_all_option(full_options=full_options, component_id=self.id) if self.multi else full_options
+            _add_select_all_option(full_options=full_options, component_id=self.id, value=self.value)
+            if self.multi
+            else full_options
         )
 
         return html.Div(

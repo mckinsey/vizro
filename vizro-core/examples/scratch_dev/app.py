@@ -44,7 +44,7 @@ first_page = vm.Page(
                 #     {"label": "AMERICAS", "value": "Americas"},
                 #     {"label": "OCEANIA", "value": "Oceania"},
                 # ],
-                value=["Europe"],
+                # value=["Europe", "Africa", "Asia", "Americas", "Oceania"],
                 # value="Europe",
                 # multi=False,
             ),

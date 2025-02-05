@@ -152,7 +152,7 @@ class TestDropdownBuild:
                                 [
                                     dcc.Checklist(
                                         options=[{"label": "", "value": "ALL"}],
-                                        value=[],
+                                        value=["ALL"],
                                         id="dropdown_id_checklist_all",
                                         persistence=True,
                                         persistence_type="session",
@@ -168,7 +168,7 @@ class TestDropdownBuild:
                         {"label": "C", "value": "C"},
                     ],
                     optionHeight=32,
-                    value="ALL",
+                    value=["A", "B", "C"],
                     multi=True,
                     persistence=True,
                     persistence_type="session",
