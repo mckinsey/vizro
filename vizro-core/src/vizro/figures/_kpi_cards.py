@@ -161,6 +161,6 @@ def kpi_card_reference(  # noqa: PLR0913
                 reference_format.format(value=value, reference=reference, delta=delta, delta_relative=delta_relative)
             ),
         ],
-        className=footer_class
+        className=footer_class,
     )
     return dbc.Card([header, body, footer], className="card-kpi")
