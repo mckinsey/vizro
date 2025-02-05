@@ -11,6 +11,14 @@ See the fragment files in the [changelog.d directory](https://github.com/mckinse
 
 <!-- scriv-insert-here -->
 
+<a id='changelog-0.1.33'></a>
+
+# 0.1.33 — 2025-02-05
+
+## Fixed
+
+- Adjust the lower bound of pydantic to `2.7.0` so that Vizro can run on `pyodide==0.26.2`. ([#993](https://github.com/mckinsey/vizro/pull/993))
+
 <a id='changelog-0.1.32'></a>
 
 # 0.1.32 — 2025-02-04
