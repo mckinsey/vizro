@@ -88,7 +88,7 @@ def test_kpi_card_component_library(dash_duo, request):
         "folder_check_2",
     )
     dash_duo.wait_for_text_to_equal(
-        "div[class='vstack gap-4'] div:nth-of-type(1) div:nth-of-type(2) div[class='card-body']", "200.0"
+        "div[class='vstack gap-4'] div:nth-of-type(1) div:nth-of-type(2) div[class='card-body']", "$200.00"
     )
     dash_duo.wait_for_text_to_equal(
         "div[class='vstack gap-4'] div:nth-of-type(2) div:nth-of-type(4) p[class='material-symbols-outlined']",
