@@ -58,10 +58,7 @@ repos:
       - id: mypy
         files: ^vizro-core/src/
         additional_dependencies:
-          # Deliberately pinned to <2 until we bump our pydantic requirement to strictly >=2.
-          # pydantic>=1.10.15 includes this fix which flags some genuine type problems. These will take a while to fix
-          # or ignore so for now we just pin to 1.10.14 which doesn't flag the problems.
-          # https://github.com/pydantic/pydantic/pull/8765
+          # Deliberately pinned to 2.9.0 (and not lower) as there are issues building the wheel for pydantic-core
           - pydantic==2.9.0
 
   - repo: https://github.com/awebdeveloper/pre-commit-stylelint
