@@ -135,15 +135,12 @@ def kpi_card_reference(  # noqa: PLR0913
         >>> vm.Page(title="Page", components=[vm.Figure(figure=kpi_card_reference(...))])
 
     """
-
-    def _get_footer_class(delta: float, reverse_color: bool) -> str:
-        pos_color, neg_color = ("color-neg", "color-pos") if reverse_color else ("color-pos", "color-neg")
-        return pos_color if delta > 0 else neg_color if delta < 0 else ""
-
     title = title or f"{agg_func} {value_column}".title()
     value, reference = data_frame[[value_column, reference_column]].agg(agg_func)
     delta = value - reference
     delta_relative = delta / reference if reference else np.nan
+    pos_color, neg_color = ("color-neg", "color-pos") if reverse_color else ("color-pos", "color-neg")
+    footer_class = pos_color if delta > 0 else neg_color if delta < 0 else ""
 
     header = dbc.CardHeader(
         [
@@ -164,6 +161,6 @@ def kpi_card_reference(  # noqa: PLR0913
                 reference_format.format(value=value, reference=reference, delta=delta, delta_relative=delta_relative)
             ),
         ],
-        className=_get_footer_class(delta, reverse_color),
+        className=footer_class
     )
     return dbc.Card([header, body, footer], className="card-kpi")

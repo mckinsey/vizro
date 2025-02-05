@@ -65,6 +65,31 @@ example_reference_cards = [
         title="KPI ref. with icon",
         icon="shopping_cart",
     ),
+    kpi_card_reference(
+        data_frame=df_kpi,
+        value_column="Actual",
+        reference_column="Reference",
+        title="KPI ref. (reverse color)",
+        reverse_color=True
+    ),
+]
+
+example_reference_reverse = [
+    kpi_card_reference(
+        data_frame=df_kpi,
+        value_column="Actual",
+        reference_column="Reference",
+        title="KPI ref. (pos-reverse color)",
+        reverse_color=True
+    ),
+    kpi_card_reference(
+        data_frame=df_kpi,
+        value_column="Reference",
+        reference_column="Actual",
+        title="KPI ref. (neg-reverse color)",
+        reverse_color=True
+    ),
+
 ]
 
 
@@ -77,6 +102,7 @@ def test_kpi_card_component_library(dash_duo, request):
                 children=[
                     dbc.Row([dbc.Col(kpi_card) for kpi_card in example_cards]),
                     dbc.Row([dbc.Col(kpi_card) for kpi_card in example_reference_cards]),
+                    dbc.Row([dbc.Col(kpi_card) for kpi_card in example_reference_reverse]),
                 ],
                 gap=4,
             ),
