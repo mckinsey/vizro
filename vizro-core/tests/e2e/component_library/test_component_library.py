@@ -73,16 +73,15 @@ example_reference_reverse = [
         value_column="Actual",
         reference_column="Reference",
         title="KPI ref. (pos-reverse color)",
-        reverse_color=True
+        reverse_color=True,
     ),
     kpi_card_reference(
         data_frame=df_kpi,
         value_column="Reference",
         reference_column="Actual",
         title="KPI ref. (neg-reverse color)",
-        reverse_color=True
+        reverse_color=True,
     ),
-
 ]
 
 
