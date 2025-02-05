@@ -50,8 +50,8 @@ pages:
           value_column: Actual
           reference_column: Reference
           title: KPI reference with formatting
-          value_format: '{value:.2f}€'
-          reference_format: '{delta:+.2f}€ vs. last year ({reference:.2f}€)'
+          value_format: "{value:.2f}€"
+          reference_format: "{delta:+.2f}€ vs. last year ({reference:.2f}€)"
         type: figure
       - figure:
           _target_: kpi_card_reference
