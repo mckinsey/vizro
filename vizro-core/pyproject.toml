@@ -19,8 +19,8 @@ dependencies = [
   "dash_bootstrap_components",
   "dash-ag-grid>=31.0.0",
   "pandas>=2",
-  "plotly>=5.12.0",
-  "pydantic>=2.9.0",  # must be synced with pre-commit mypy hook manually
+  "plotly>=5.24.0",
+  "pydantic>=2.7.0",  # must be <= the version in pre-commit mypy hook, sync manually
   "dash_mantine_components~=0.15.1",
   "flask_caching>=2",
   "wrapt>=1",

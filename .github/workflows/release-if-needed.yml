@@ -18,14 +18,10 @@ jobs:
         with:
           python-version: ${{ env.PYTHON_VERSION }}
       - name: Install dependencies
-        run: |
-          python -m pip install --upgrade pip
-          pip install -r tools/tools_requirements.txt
-          pip install hatch
+        run: pip install hatch requests
 
       - name: Check which 📦 needs to be released
-        run: |
-          python tools/check_package_release.py
+        run: python tools/check_package_release.py
 
       - name: Set outputs
         id: version_check
@@ -50,10 +46,7 @@ jobs:
         with:
           python-version: ${{ env.PYTHON_VERSION }}
       - name: Install dependencies
-        run: |
-          python -m pip install --upgrade pip
-          pip install -r tools/tools_requirements.txt
-          pip install hatch
+        run: pip install hatch requests werkzeug>=3.0.1
       - name: Extract release notes from ${{needs.check-version.outputs.package_name}}/CHANGELOG.md
         id: extract
         run: |
@@ -98,9 +91,7 @@ jobs:
         with:
           python-version: ${{ env.PYTHON_VERSION }}
       - name: Install dependencies
-        run: |
-          python -m pip install --upgrade pip
-          pip install hatch
+        run: pip install hatch
       # if you want to change this step please contact tech lead
       - name: Push bumped version to main
         run: |

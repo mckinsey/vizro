@@ -225,6 +225,9 @@
         "gridcolor": "rgba(255, 255, 255, 0.1019607843)",
         "linecolor": "rgba(255, 255, 255, 0.3019607843)"
       }
+    },
+    "map": {
+      "style": "carto-darkmatter"
     }
   },
   "data": {

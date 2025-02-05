@@ -165,12 +165,19 @@ As described in the [API reference](../API-reference/figure-callables.md) and il
                 title="KPI reference with icon",
                 icon="shopping_cart",
             ),
+            kpi_card_reference(
+                data_frame=df_kpi,
+                value_column="Actual",
+                reference_column="Reference",
+                title="KPI reference (reverse color)",
+                reverse_color=True
+            ),
         ]
 
-        # Create a layout with four rows and columns. The KPI cards are positioned in the first eight cells, while the remaining cells are empty.
+        # Create a layout with four rows and columns. The KPI cards are positioned in the first nine cells, while the remaining cells are empty.
         page = vm.Page(
             title="KPI cards",
-            layout=vm.Layout(grid=[[0, 1, 2, 3], [4, 5, 6, 7], [-1, -1, -1, -1], [-1, -1, -1, -1]]),
+            layout=vm.Layout(grid=[[0, 1, 2, 3], [4, 5, 6, 7], [8, -1, -1, -1], [-1, -1, -1, -1]]),
 
             components=[vm.Figure(figure=figure) for figure in example_cards + example_reference_cards],
             controls=[vm.Filter(column="Category")],
@@ -245,11 +252,19 @@ As described in the [API reference](../API-reference/figure-callables.md) and il
                   title: KPI reference with icon
                   icon: shopping_cart
                 type: figure
+              - figure:
+                  _target_: kpi_card_reference
+                  data_frame: df_kpi
+                  value_column: Actual
+                  reference_column: Reference
+                  title: KPI reference (reverse color)
+                  reverse_color: true
+                type: figure
             controls:
               - column: Category
                 type: filter
             layout:
-              grid: [[0, 1, 2, 3], [4, 5, 6, 7], [-1, -1, -1, -1], [-1, -1, -1, -1]]
+              grid: [[0, 1, 2, 3], [4, 5, 6, 7], [8, -1, -1, -1], [-1, -1, -1, -1]]
             title: KPI cards
         ```
 

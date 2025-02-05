@@ -6,24 +6,28 @@
 
 /* We currently ship this CSS file with the package, so the font definitions need to live here at the moment.
 The CSS is taken from https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined and the corresponding font file
-downloaded from: https://github.com/google/material-design-icons/tree/master/variablefont
+(located inside the CSS file under @font-face src: url()) downloaded to fonts/material-symbols-outlined.woff2.
 See: https://developers.google.com/fonts/docs/material_symbols#self-hosting_the_font
+https://fonts.google.com/knowledge/using_type/self_hosting_web_fonts
 Note the relative url works with both serve_locally=True and serve_locally=False through the CDN.
 */
 @font-face {
-  font-family: MaterialSymbolsOutlined;
+  font-display: block;
+  font-family: 'Material Symbols Outlined';
+  font-style: normal;
+  font-weight: 400;
   src: url("./fonts/material-symbols-outlined.woff2") format("woff2");
 }
 
 .material-symbols-outlined {
   direction: ltr;
   display: inline-block;
-  font-family: MaterialSymbolsOutlined, sans-serif;
-  font-feature-settings: "liga";
+  font-family: 'Material Symbols Outlined', sans-serif;
+  font-feature-settings: 'liga';
   font-size: 24px;
   -webkit-font-smoothing: antialiased;
   font-style: normal;
-  font-weight: 400;
+  font-weight: normal;
   letter-spacing: normal;
   line-height: 1;
   text-transform: none;

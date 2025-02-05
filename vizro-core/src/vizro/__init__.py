@@ -16,9 +16,17 @@ pio.templates["vizro_dark"] = json.loads((base_path / "vizro_dark.json").read_te
 pio.templates["vizro_light"] = json.loads((base_path / "vizro_light.json").read_text())
 
 __all__ = ["Vizro"]
+__version__ = "0.1.34.dev0"
 
-__version__ = "0.2.0.dev0"
-
+# For dev versions, a branch or tag called e.g. 0.1.20.dev0 does not exist and so won't work with the CDN. We point
+# to main instead, but this can be manually overridden to the current feature branch name if required.
+# This would only be the case where you need to test something with serve_locally=False and have changed
+# assets compared to main. In this case you need to push your assets changes to remote for the CDN to update,
+# and it might also be necessary to clear the CDN cache: https://www.jsdelivr.com/tools/purge.
+_git_branch = __version__ if "dev" not in __version__ else "main"
+BASE_EXTERNAL_URL = f"https://cdn.jsdelivr.net/gh/mckinsey/vizro@{_git_branch}/vizro-core/src/vizro/"
+# Enables the use of our own Bootstrap theme in a pure Dash app with `external_stylesheets=vizro.bootstrap`.
+bootstrap = f"{BASE_EXTERNAL_URL}static/css/vizro-bootstrap.min.css"
 
 # For the below _css_dist and _js_dist to be used by Dash, they must be retrieved by dash.resources.Css.get_all_css().
 # This means adding them to dash.development.base_component.ComponentRegistry. The simplest way to do this is to run
