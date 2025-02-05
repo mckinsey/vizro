@@ -37,7 +37,7 @@ Uncomment the section that is right (remove the HTML comment wrapper).
 
 ### Fixed
 
-- Adjust the lower bound of pydantic to `2.7.0` such that Vizro can run on pyodide. ([#1](https://github.com/mckinsey/vizro/pull/1))
+- Adjust the lower bound of pydantic to `2.7.0` such that Vizro can run on pyodide. ([#993](https://github.com/mckinsey/vizro/pull/993))
 
 
 <!--
