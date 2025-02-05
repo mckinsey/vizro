@@ -46,7 +46,7 @@ jobs:
         with:
           python-version: ${{ env.PYTHON_VERSION }}
       - name: Install dependencies
-        run: pip install hatch requests
+        run: pip install hatch requests werkzeug>=3.0.1
       - name: Extract release notes from ${{needs.check-version.outputs.package_name}}/CHANGELOG.md
         id: extract
         run: |
