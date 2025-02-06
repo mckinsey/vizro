@@ -5,38 +5,31 @@ function update_dropdown_values(
   options = [],
 ) {
   const ctx = dash_clientside.callback_context.triggered;
-  let options_list = options.map((dict) => dict["value"]);
-  let updated_options = options_list.filter((element) => element !== "ALL");
+  if (!ctx.length) return dash_clientside.no_update;
 
-  if (!ctx.length) {
-    return dash_clientside.no_update;
-  } else {
-    const triggeredId =
-      dash_clientside.callback_context.triggered[0]["prop_id"].split(".")[0];
-    if (!value.length) {
-      return [[], []];
-    }
-    if (triggeredId.includes("_checklist_all")) {
-      if (value.length === updated_options.length + 1) {
-        return [[], []];
-      }
-      return [updated_options, ["ALL"]];
-    } else {
-      if (value.includes("ALL")) {
-        if (value.length === updated_options.length + 1) {
-          return [[], []];
-        } else {
-          return [updated_options, ["ALL"]];
-        }
-      } else {
-        if (value.length === updated_options.length) {
-          return [updated_options, ["ALL"]];
-        } else {
-          return [value, []];
-        }
-      }
-    }
+  const triggeredId = ctx[0]["prop_id"].split(".")[0];
+  const options_list = options.map((dict) => dict["value"]);
+  const updated_options = options_list.filter((element) => element !== "ALL");
+
+  if (!value.length) return [[], []];
+
+  const isTriggeredByChecklist = triggeredId.includes("_checklist_all");
+  const hasAllSelected = value.includes("ALL");
+  const allOptionsSelected = value.length === updated_options.length;
+
+  if (isTriggeredByChecklist) {
+    return value.length === updated_options.length + 1
+      ? [[], []]
+      : [updated_options, ["ALL"]];
   }
+
+  if (hasAllSelected) {
+    return value.length === updated_options.length + 1
+      ? [[], []]
+      : [updated_options, ["ALL"]];
+  }
+
+  return allOptionsSelected ? [updated_options, ["ALL"]] : [value, []];
 }
 
 window.dash_clientside = {
