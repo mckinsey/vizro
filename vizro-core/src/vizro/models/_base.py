@@ -138,6 +138,7 @@ def _add_type_to_union(union: type[Any], new_type: type[Any]):  # TODO[mypy]: no
     args = get_args(union)
     all_types = args + (new_type,)  # noqa: RUF005 #as long as we support Python 3.9, we can't use the new syntax
     # The below removes duplicates by type, which would trigger a pydantic error otherwise
+    # Last added type will be the one that is kept - this is replicating V1 behavior that would other raise an error in V2
     unique_types = tuple({t.model_fields["type"].default: t for t in all_types}.values())
     return Union[unique_types]
 
