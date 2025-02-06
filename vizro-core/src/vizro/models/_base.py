@@ -136,7 +136,10 @@ def _extract_captured_callable_data_info() -> set[str]:
 
 def _add_type_to_union(union: type[Any], new_type: type[Any]):  # TODO[mypy]: not sure how to type the return type
     args = get_args(union)
-    return Union[args + (new_type,)]  # noqa: RUF005 #as long as we support Python 3.9, we can't use the new syntax
+    all_types = args + (new_type,)  # noqa: RUF005 #as long as we support Python 3.9, we can't use the new syntax
+    # The below removes duplicates by type, which would trigger a pydantic error otherwise
+    unique_types = tuple({t.model_fields["type"].default: t for t in all_types}.values())
+    return Union[unique_types]
 
 
 def _add_type_to_annotated_union(union, new_type: type[Any]):  # TODO[mypy]: not sure how to type the return type
@@ -256,7 +259,7 @@ class VizroBaseModel(BaseModel):
             if _is_discriminated_union_via_field_info(field)
             else _add_type_to_annotated_union_if_found(old_type, new_type, field_name)
         )
-        field = cls.model_fields[field_name] = FieldInfo.merge_field_infos(field, annotation=new_annotation)
+        cls.model_fields[field_name] = FieldInfo.merge_field_infos(field, annotation=new_annotation)
 
         # We need to resolve all ForwardRefs again e.g. in the case of Page, which requires update_forward_refs in
         # vizro.models. The vm.__dict__.copy() is inspired by pydantic's own implementation of update_forward_refs and
