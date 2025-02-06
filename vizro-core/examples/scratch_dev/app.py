@@ -9,9 +9,9 @@ from vizro.tables import dash_ag_grid
 
 df = px.data.gapminder()
 
-gapminder_data = (
-    df.groupby(by=["continent", "year"]).agg({"lifeExp": "mean", "pop": "sum", "gdpPercap": "mean"}).reset_index()
-)
+# gapminder_data = (
+#     df.groupby(by=["continent", "year"]).agg({"lifeExp": "mean", "pop": "sum", "gdpPercap": "mean"}).reset_index()
+# )
 first_page = vm.Page(
     title="First Page",
     layout=vm.Layout(grid=[[0, 0], [1, 1], [1, 1], [1, 1]]),
@@ -24,7 +24,7 @@ first_page = vm.Page(
             """,
         ),
         vm.AgGrid(
-            figure=dash_ag_grid(data_frame=gapminder_data, dashGridOptions={"pagination": True}),
+            figure=dash_ag_grid(data_frame=df, dashGridOptions={"pagination": True}),
             # TODO: Test it in dynamic mode.
             # figure=dash_ag_grid(data_frame="dynamic_gapminder_data", dashGridOptions={"pagination": True}),
             title="Gapminder Data Insights",
@@ -35,7 +35,8 @@ first_page = vm.Page(
     controls=[
         # vm.Filter(column="continent", selector=vm.Checklist()),
         vm.Filter(
-            column="continent",
+            column="country",
+            # column="continent",
             selector=vm.Dropdown(
                 # options=[
                 #     {"label": "EUROPE", "value": "Europe"},
@@ -48,7 +49,7 @@ first_page = vm.Page(
                 # value="Europe",
                 # multi=False,
             ),
-        )
+        ),
     ],
 )
 

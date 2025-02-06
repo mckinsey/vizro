@@ -59,7 +59,7 @@
 
 /* Border on focus */
 #dashboard-container .is-focused:not(.is-open) > .Select-control {
-  box-shadow: 0 0 0 2px var(--focus) inset;
+  box-shadow: 0 0 0 2px var(--focus);
 }
 
 /* Single-select dropdown only ------------------- */
@@ -150,6 +150,8 @@ wrapper **/
   display: flex;
   flex-wrap: wrap;
   gap: 4px;
+  max-height: 90px;
+  overflow: auto;
   padding: 4px 8px;
 }
 

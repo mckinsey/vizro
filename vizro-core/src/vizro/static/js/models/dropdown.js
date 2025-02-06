@@ -22,10 +22,18 @@ function update_dropdown_values(
       }
       return [updated_options, ["ALL"]];
     } else {
-      if (value.length === updated_options.length) {
-        return [updated_options, ["ALL"]];
+      if (value.includes("ALL")) {
+        if (value.length === updated_options.length + 1) {
+          return [[], []];
+        } else {
+          return [updated_options, ["ALL"]];
+        }
       } else {
-        return [value, []];
+        if (value.length === updated_options.length) {
+          return [updated_options, ["ALL"]];
+        } else {
+          return [value, []];
+        }
       }
     }
   }
