@@ -62,6 +62,7 @@ def _create_message_content(
 
     return message_content
 
+
 def _handle_google_llm_response(
     llm_model: BaseChatModel, response_model: BaseModel, prompt: ChatPromptTemplate, message_content: dict
 ) -> BaseModel:
