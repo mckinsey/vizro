@@ -1,34 +1,29 @@
 """Helper functions for models inside form folder."""
 
 from datetime import date
-from typing import Any, Optional, Union, cast
+from typing import Any, Optional, Union
 
 from pydantic import ValidationInfo
 
 from vizro._constants import ALL_OPTION
-from vizro.models.types import MultiValueType, OptionsDictType, OptionsType, SingleValueType
+from vizro.models.types import MultiValueType, OptionsType, SingleValueType
 
 
 def get_options_and_default(options: OptionsType, multi: bool = False) -> tuple[OptionsType, SingleValueType]:
     """Gets list of full options and default value based on user input type of `options`."""
+    # [{"label": "Option 1", "value": "Option 1"}, {"label": "Option 2", "value": "Option 2"}]
+    dict_options = [
+        option if isinstance(option, dict) else {"label": str(option), "value": option} for option in options
+    ]
+
+    # ["Option 1", "Option 2", ...]
+    all_values = [dict_option["value"] for dict_option in dict_options]
+    default_value = all_values if multi else all_values[0]
+
     if multi:
-        dict_options = [
-            cast(OptionsDictType, {"label": option, "value": option}) if not isinstance(option, dict) else option
-            for option in options
-        ]
-        full_options = [{"label": ALL_OPTION, "value": ALL_OPTION}, *dict_options]
-        default_value = (
-            [option["value"] for option in options] if all(isinstance(option, dict) for option in options) else options  # type: ignore[index]
-        )
+        dict_options.insert(0, {"label": ALL_OPTION, "value": ALL_OPTION})
 
-        return full_options, default_value
-
-    if all(isinstance(option, dict) for option in options):
-        # Each option is a OptionsDictType
-        default_value = options[0]["value"]  # type: ignore[index]
-    else:
-        default_value = options[0]
-    return options, default_value
+    return dict_options, default_value
 
 
 # Utils for validators

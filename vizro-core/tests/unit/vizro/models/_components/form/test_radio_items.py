@@ -129,7 +129,7 @@ class TestRadioItemsBuild:
                 html.Legend("Title", className="form-label"),
                 dbc.RadioItems(
                     id="radio_items_id",
-                    options=["A", "B", "C"],
+                    options=[{"label": "A", "value": "A"}, {"label": "B", "value": "B"}, {"label": "C", "value": "C"}],
                     value="A",
                     persistence=True,
                     persistence_type="session",
