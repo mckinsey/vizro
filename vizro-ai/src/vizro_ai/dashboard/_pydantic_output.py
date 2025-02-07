@@ -62,46 +62,6 @@ def _create_message_content(
 
     return message_content
 
-
-def _handle_gemini_model(schema: dict) -> dict:
-    """Handle schema modifications specific to Gemini models."""
-    if isinstance(schema, dict) and "parameters" in schema:
-        params = schema["parameters"]
-        if isinstance(params, dict) and "properties" in params:
-            if "selector" in params["properties"]:
-                selector = params["properties"]["selector"]
-                selector["type"] = "object"
-
-                if "oneOf" in selector:
-                    for schema_option in selector["oneOf"]:
-                        if isinstance(schema_option, dict) and "type" not in schema_option:
-                            schema_option["type"] = "object"
-
-            for prop in params["properties"].values():
-                if prop.get("type") == "object":
-                    # if prop.get("anyOf") and isinstance(prop["anyOf"], list) and isinstance(prop["anyOf"][0], dict):
-                    #     prop.update(prop["anyOf"][0])
-                    v_properties = prop.get("properties")
-                    if v_properties:
-                        prop["properties"] = v_properties
-                        if isinstance(v_properties, dict):
-                            prop["required"] = [k for k, v in v_properties.items() if "default" not in v]
-                    else:
-                        prop["type"] = "string"
-    return schema
-
-
-def _remove_null_values(d):
-    """Recursively remove keys with None values from dictionaries."""
-    if not isinstance(d, (dict, list)):
-        return d
-
-    if isinstance(d, list):
-        return [_remove_null_values(i) for i in d if i is not None]
-
-    return {k: _remove_null_values(v) for k, v in d.items() if v is not None}
-
-
 def _handle_google_llm_response(
     llm_model: BaseChatModel, response_model: BaseModel, prompt: ChatPromptTemplate, message_content: dict
 ) -> BaseModel:
@@ -109,7 +69,6 @@ def _handle_google_llm_response(
     from langchain_core.utils.function_calling import convert_to_openai_function
 
     schema = convert_to_openai_function(response_model)
-    # schema = _handle_gemini_model(schema)
 
     pydantic_llm = prompt | llm_model.with_structured_output(schema)
     res = pydantic_llm.invoke(message_content)
@@ -117,8 +76,6 @@ def _handle_google_llm_response(
     # Handle case where response is a list, which is the case for Gemini models
     if isinstance(res, list):
         res = res[0].get("args", res[0]) if isinstance(res[0], dict) else res[0]
-
-    # res = _remove_null_values(res)
 
     return response_model.parse_obj(res)
 
