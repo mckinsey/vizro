@@ -5,6 +5,7 @@ nav:
   - Tutorials:
       - Chart generation: pages/tutorials/quickstart.md
       - Dashboard generation: pages/tutorials/quickstart-dashboard.md
+      - Goodreads tutorial: pages/tutorials/goodreads-tutorial.md
   - How-to guides:
       - FUNDAMENTALS:
           - Install Vizro-AI: pages/user-guides/install.md
@@ -74,7 +75,19 @@ markdown_extensions:
       generic: true
   - footnotes
   - pymdownx.details
-  - pymdownx.superfences
+  - pymdownx.superfences:
+      custom_fences:
+        - name: mermaid
+          class: mermaid
+          format: !!python/name:pymdownx.superfences.fence_code_format
+        - name: python
+          class: "highlight"
+          validator: !!python/name:mkdocs_pycafe.validator
+          format: !!python/object/apply:mkdocs_pycafe.formatter
+            kwds:
+              type: vizro
+              requirements: |
+                vizro==0.1.30
   - pymdownx.tabbed:
       alternate_style: true
   - pymdownx.mark
@@ -104,6 +117,9 @@ plugins:
           paths: [src]
   - git-revision-date-localized:
       enable_creation_date: false
+
+hooks:
+  - docs/overrides/canonical_tag.py
 
 extra_css:
   - stylesheets/extra.css

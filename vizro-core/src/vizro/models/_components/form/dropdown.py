@@ -117,7 +117,7 @@ class Dropdown(VizroBaseModel):
     # Component properties for actions and interactions
     _input_property: str = PrivateAttr("value")
 
-    # Re-used validators
+    # Reused validators
     _validate_options = model_validator(mode="before")(validate_options_dict)
 
     def __call__(self, options):
