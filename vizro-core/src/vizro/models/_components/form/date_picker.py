@@ -10,6 +10,7 @@ from pydantic.functional_serializers import PlainSerializer
 from vizro.models import Action, VizroBaseModel
 from vizro.models._action._actions_chain import _action_validator_factory
 from vizro.models._components.form._form_utils import validate_date_picker_range, validate_max, validate_range_value
+from vizro.models._models_utils import _log_call
 
 
 class DatePicker(VizroBaseModel):
@@ -54,17 +55,19 @@ class DatePicker(VizroBaseModel):
         PlainSerializer(lambda x: x[0].actions),
         Field(default=[]),
     ]
+    _dynamic: bool = PrivateAttr(False)
 
     _input_property: str = PrivateAttr("value")
 
-    def build(self):
-        init_value = self.value or ([self.min, self.max] if self.range else self.min)  # type: ignore[list-item]
+    def __call__(self, min, max, current_value):
+    # def build(self):
+        init_value = current_value or ([min, max] if self.range else min)  # type: ignore[list-item]
 
         date_picker = dmc.DatePickerInput(
             id=self.id,
-            minDate=self.min,
+            minDate=min,
             value=init_value,
-            maxDate=self.max,
+            maxDate=max,
             persistence=True,
             persistence_type="session",
             type="range" if self.range else "default",
@@ -78,4 +81,16 @@ class DatePicker(VizroBaseModel):
                 dbc.Label(children=self.title, html_for=self.id) if self.title else None,
                 date_picker,
             ],
+        )
+
+    def _build_dynamic_placeholder(self, current_value):
+        return self.__call__(self.min, self.max, current_value)
+
+    @_log_call
+    def build(self):
+        current_value = self.value or [self.min, self.max]
+        return (
+            self._build_dynamic_placeholder(current_value)
+            if self._dynamic
+            else self.__call__(self.min, self.max, current_value)
         )
