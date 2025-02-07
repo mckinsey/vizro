@@ -600,3 +600,26 @@ class TestPydanticPython:
         # Test more complete and nested model
         result = complete_dashboard._to_python(extra_imports={"from typing import Optional"})
         assert result == expected_complete_dashboard
+
+
+class TestAddingDuplicateDiscriminator:
+    def test_add_same_model(self, Parent):
+        """Test whether adding same model re-defined avoids pydantic discriminator error."""
+
+        class MultipleChild(vm.VizroBaseModel):
+            type: Literal["derived"] = "derived"
+
+        Parent.add_type("child", MultipleChild)
+
+        class MultipleChild(vm.VizroBaseModel):
+            type: Literal["derived"] = "derived"
+
+        Parent.add_type("child", MultipleChild)
+
+    def test_add_duplicate_type(self, Parent):
+        """Test whether adding model of same type avoids pydantic discriminator error."""
+
+        class MultipleChild(ChildX):
+            pass
+
+        Parent.add_type("child", MultipleChild)
