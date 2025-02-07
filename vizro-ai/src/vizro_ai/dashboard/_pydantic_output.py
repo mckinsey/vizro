@@ -68,11 +68,19 @@ def _handle_gemini_model(schema: dict) -> dict:
     if isinstance(schema, dict) and "parameters" in schema:
         params = schema["parameters"]
         if isinstance(params, dict) and "properties" in params:
+            if "selector" in params["properties"]:
+                selector = params["properties"]["selector"]
+                selector["type"] = "object"
+
+                if "oneOf" in selector:
+                    for schema_option in selector["oneOf"]:
+                        if isinstance(schema_option, dict) and "type" not in schema_option:
+                            schema_option["type"] = "object"
+
             for prop in params["properties"].values():
                 if prop.get("type") == "object":
-                    if prop.get("anyOf") and isinstance(prop["anyOf"], list) and isinstance(prop["anyOf"][0], dict):
-                        prop.update(prop["anyOf"][0])
-
+                    # if prop.get("anyOf") and isinstance(prop["anyOf"], list) and isinstance(prop["anyOf"][0], dict):
+                    #     prop.update(prop["anyOf"][0])
                     v_properties = prop.get("properties")
                     if v_properties:
                         prop["properties"] = v_properties
@@ -81,6 +89,38 @@ def _handle_gemini_model(schema: dict) -> dict:
                     else:
                         prop["type"] = "string"
     return schema
+
+
+def _remove_null_values(d):
+    """Recursively remove keys with None values from dictionaries."""
+    if not isinstance(d, (dict, list)):
+        return d
+
+    if isinstance(d, list):
+        return [_remove_null_values(i) for i in d if i is not None]
+
+    return {k: _remove_null_values(v) for k, v in d.items() if v is not None}
+
+
+def _handle_google_llm_response(
+    llm_model: BaseChatModel, response_model: BaseModel, prompt: ChatPromptTemplate, message_content: dict
+) -> BaseModel:
+    """Handle the LLM response specifically for Google models."""
+    from langchain_core.utils.function_calling import convert_to_openai_function
+
+    schema = convert_to_openai_function(response_model)
+    # schema = _handle_gemini_model(schema)
+
+    pydantic_llm = prompt | llm_model.with_structured_output(schema)
+    res = pydantic_llm.invoke(message_content)
+
+    # Handle case where response is a list, which is the case for Gemini models
+    if isinstance(res, list):
+        res = res[0].get("args", res[0]) if isinstance(res[0], dict) else res[0]
+
+    # res = _remove_null_values(res)
+
+    return response_model.parse_obj(res)
 
 
 def _get_pydantic_model(
@@ -106,21 +146,7 @@ def _get_pydantic_model(
             # and https://github.com/langchain-ai/langchain-google/pull/658/files
             # TODO: revisit this temporary fix once pydantic v2 is implemented in vizro-ai
             if "google" in llm_model.__class__.__module__.lower():
-                from langchain_core.utils.function_calling import convert_to_openai_function
-
-                schema = convert_to_openai_function(response_model)
-                schema = _handle_gemini_model(schema)
-
-                pydantic_llm = prompt | llm_model.with_structured_output(schema)
-                res = pydantic_llm.invoke(message_content)
-
-                # Handle case where response is a list, which is the case for Gemini models
-                if isinstance(res, list) and len(res) > 0:
-                    res = res[0]
-                    if isinstance(res, dict) and "args" in res:
-                        res = res["args"]
-
-                return response_model.parse_obj(res)
+                return _handle_google_llm_response(llm_model, response_model, prompt, message_content)
 
             # For other models, use standard structured output
             pydantic_llm = prompt | llm_model.with_structured_output(response_model)
