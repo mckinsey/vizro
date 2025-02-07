@@ -37,7 +37,7 @@ Uncomment the section that is right (remove the HTML comment wrapper).
 
 ### Fixed
 
-- Fixed a bug where adding a model of the same discriminated type as an existing type would raise an error. Now added types overwrite previous type. ([#999](https://github.com/mckinsey/vizro/pull/999))
+- Fix a bug where `add_type` would raise an error if the `type` had already been added. ([#999](https://github.com/mckinsey/vizro/pull/999))
 
 
 <!--
