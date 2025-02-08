@@ -12,7 +12,7 @@ pip install vizro[kedro]
 
 ## Use datasets from the Kedro Data Catalog
 
-`vizro.integrations.kedro` provides functions to help generate and process a [Kedro Data Catalog](https://docs.kedro.org/en/stable/data/index.html). Given a Kedro Data Catalog `catalog`, the general pattern to add datasets into the Vizro data manager is:
+`vizro.integrations.kedro` provides functions to help generate and process a [Kedro Data Catalog](https://docs.kedro.org/en/stable/data/index.html). It supports both the original [DataCatalog](https://docs.kedro.org/en/stable/data/data_catalog.html) and the more recently introduced [KedroDataCatalog](https://docs.kedro.org/en/stable/data/index.html#kedrodatacatalog-experimental-feature). Given a Kedro Data Catalog `catalog`, the general pattern to add datasets into the Vizro data manager is:
 
 ```python
 from vizro.integrations import kedro as kedro_integration
@@ -20,6 +20,19 @@ from vizro.managers import data_manager
 
 
 for dataset_name, dataset in kedro_integration.datasets_from_catalog(catalog).items():
+    data_manager[dataset_name] = dataset
+```
+
+To add datasets that are defined using the [Kedro dataset factory](https://docs.kedro.org/en/stable/data/kedro_dataset_factories.html), `datasets_from_catalog` needs to access the pipelines that use them.
+
+```python
+from vizro.integrations import kedro as kedro_integration
+from vizro.managers import data_manager
+
+
+pipeline = pipelines.get("my_pipeline_name")
+
+for dataset_name, dataset in kedro_integration.datasets_from_catalog(catalog, pipeline=pipeline).items():
     data_manager[dataset_name] = dataset
 ```
 
@@ -31,6 +44,11 @@ The `catalog` variable may have been created in a number of different ways:
 1. [Kedro Jupyter session](https://docs.kedro.org/en/stable/notebooks_and_ipython/kedro_and_notebooks.html). This automatically exposes `catalog`.
 1. Data Catalog configuration file (`catalog.yaml`). This can create a `catalog` entirely independently of a Kedro project using [`kedro.io.DataCatalog.from_config`](https://docs.kedro.org/en/stable/kedro.io.DataCatalog.html#kedro.io.DataCatalog.from_config).
 
+Conversely, the `pipelines` variable may have been created the following ways:
+
+1. Kedro project path. Vizro exposes a helper function `vizro.integrations.kedro.pipelines_from_project` to generate a `pipelines` given the path to a Kedro project.
+1. [Kedro Jupyter session](https://docs.kedro.org/en/stable/notebooks_and_ipython/kedro_and_notebooks.html). This automatically exposes `pipelines`.
+
 The full code for these different cases is given below.
 
 !!! example "Import a Kedro Data Catalog into the Vizro data manager"
@@ -39,10 +57,13 @@ The full code for these different cases is given below.
         from vizro.integrations import kedro as kedro_integration
         from vizro.managers import data_manager
 
+        project_path = "/path/to/kedro/project"
+        catalog = kedro_integration.catalog_from_project(project_path)
+        pipelines = kedro_integration.catalog_from_project(project_path)
 
-        catalog = kedro_integration.catalog_from_project("/path/to/kedro/project")
+        pipeline = pipelines.get("my_pipeline")
 
-        for dataset_name, dataset in kedro_integration.datasets_from_catalog(catalog).items():
+        for dataset_name, dataset in kedro_integration.datasets_from_catalog(catalog, pipeline=pipeline).items():
             data_manager[dataset_name] = dataset
         ```
 
@@ -51,7 +72,9 @@ The full code for these different cases is given below.
         from vizro.managers import data_manager
 
 
-        for dataset_name, dataset in kedro_integration.datasets_from_catalog(catalog).items():
+        pipeline = pipelines.get("my_pipeline")
+
+        for dataset_name, dataset in kedro_integration.datasets_from_catalog(catalog, pipeline=pipeline).items():
             data_manager[dataset_name] = dataset
         ```
 

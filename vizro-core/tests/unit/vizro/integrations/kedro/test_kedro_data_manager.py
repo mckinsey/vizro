@@ -8,6 +8,7 @@ import yaml
 
 kedro = pytest.importorskip("kedro")
 
+import kedro.pipeline as kp  # noqa: E402
 from kedro.io import DataCatalog  # noqa: E402
 
 from vizro.integrations.kedro import datasets_from_catalog  # noqa: E402
@@ -20,6 +21,25 @@ def catalog_path():
 
 def test_datasets_from_catalog(catalog_path):
     catalog = DataCatalog.from_config(yaml.safe_load(catalog_path.read_text(encoding="utf-8")))
-    assert "companies" in datasets_from_catalog(catalog)
-    assert isinstance(datasets_from_catalog(catalog), dict)
-    assert isinstance(datasets_from_catalog(catalog)["companies"], types.MethodType)
+
+    datasets = datasets_from_catalog(catalog)
+    assert isinstance(datasets, dict)
+    assert set(datasets) == {"pandas_excel", "pandas_parquet"}
+    for dataset in datasets.values():
+        assert isinstance(dataset, types.MethodType)
+
+
+def test_datasets_from_catalog_with_pipeline(catalog_path):
+    catalog = DataCatalog.from_config(yaml.safe_load(catalog_path.read_text(encoding="utf-8")))
+    pipeline = kp.pipeline(
+        [
+            kp.node(
+                func=lambda *args: None,
+                inputs=["pandas_excel", "C1", "polars", "Z", "parameters", "params:z"],
+                outputs=["pandas_parquet", "not_dataframe"],
+            ),
+        ]
+    )
+
+    datasets = datasets_from_catalog(catalog, pipeline=pipeline)
+    assert set(datasets) == {"pandas_excel", "pandas_parquet", "C1"}
