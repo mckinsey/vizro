@@ -11,7 +11,7 @@ from vizro.managers._data_manager import pd_DataFrameCallable
 
 def catalog_from_project(
     project_path: Union[str, Path], env: Optional[str] = None, extra_params: Optional[dict[str, Any]] = None
-) -> CatalogProtocol | KedroDataCatalog:
+) -> Union[CatalogProtocol, KedroDataCatalog]:
     bootstrap_project(project_path)
     with KedroSession.create(
         project_path=project_path, env=env, save_on_close=False, extra_params=extra_params
@@ -27,7 +27,7 @@ def pipelines_from_project(project_path: Union[str, Path]) -> Pipeline:
 
 
 def datasets_from_catalog(
-    catalog: CatalogProtocol | KedroDataCatalog, *, pipeline: Pipeline = None
+    catalog: Union[CatalogProtocol, KedroDataCatalog], *, pipeline: Pipeline = None
 ) -> dict[str, pd_DataFrameCallable]:
     # This doesn't include things added to the catalog at run time but that is ok for our purposes.
     config_resolver = catalog.config_resolver
