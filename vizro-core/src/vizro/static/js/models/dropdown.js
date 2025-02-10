@@ -10,8 +10,6 @@ function update_dropdown_values(
   const options_list = options.map((dict) => dict["value"]);
   const updated_options = options_list.filter((element) => element !== "ALL");
 
-  if (!value.length) return [[], []];
-
   const isTriggeredByChecklist = triggeredId.includes("_checklist_all");
   const hasAllSelected = value.includes("ALL");
   const allOptionsSelected = value.length === updated_options.length;
