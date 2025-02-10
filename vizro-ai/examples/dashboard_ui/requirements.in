@@ -1,7 +1,8 @@
 gunicorn
-vizro-ai>=0.3.2
-vizro==0.1.28
+vizro-ai==0.3.4
+#vizro==0.1.28
 black
 openpyxl
 langchain_anthropic
 langchain_mistralai
+langchain_google_genai

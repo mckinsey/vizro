@@ -39,6 +39,11 @@ try:
 except ImportError:
     ChatMistralAI = None
 
+try:
+    from langchain_google_genai import ChatGoogleGenerativeAI
+except ImportError:
+    ChatGoogleGenerativeAI = None
+
 vm.Container.add_type("components", UserUpload)
 vm.Container.add_type("components", MyDropdown)
 vm.Container.add_type("components", OffCanvas)
@@ -67,6 +72,7 @@ SUPPORTED_MODELS = {
         "claude-3-haiku-20240307",
     ],
     "Mistral": ["mistral-large-latest", "open-mistral-nemo", "codestral-latest"],
+    "Google Gemini": ["gemini-1.5-flash-latest", "gemini-1.5-pro-latest"],
     "xAI": ["grok-beta"],
 }
 
@@ -151,7 +157,7 @@ plot_page = vm.Page(
                         ),
                         OffCanvas(
                             id="settings",
-                            options=["OpenAI", "Anthropic", "Mistral", "xAI"],
+                            options=["OpenAI", "Anthropic", "Mistral", "Google Gemini", "xAI"],
                             value="OpenAI",
                         ),
                     ],

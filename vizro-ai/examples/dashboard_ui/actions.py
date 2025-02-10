@@ -25,6 +25,11 @@ try:
 except ImportError:
     ChatMistralAI = None
 
+try:
+    from langchain_google_genai import ChatGoogleGenerativeAI
+except ImportError:
+    ChatGoogleGenerativeAI = None
+
 logger = logging.getLogger(__name__)
 logger.setLevel(logging.INFO)  # TODO: remove manual setting and make centrally controlled
 
@@ -32,6 +37,7 @@ SUPPORTED_VENDORS = {
     "OpenAI": ChatOpenAI,
     "Anthropic": ChatAnthropic,
     "Mistral": ChatMistralAI,
+    "Google Gemini": ChatGoogleGenerativeAI,
     "xAI": ChatOpenAI,
 }
 
@@ -48,6 +54,7 @@ SUPPORTED_MODELS = {
         "claude-3-haiku-20240307",
     ],
     "Mistral": ["mistral-large-latest", "open-mistral-nemo", "codestral-latest"],
+    "Google Gemini": ["gemini-1.5-flash-latest", "gemini-1.5-pro-latest"],
     "xAI": ["grok-beta"],
 }
 DEFAULT_TEMPERATURE = 0.1
@@ -68,6 +75,8 @@ def get_vizro_ai_plot(user_prompt, df, model, api_key, api_base, vendor_input):
         )
     if vendor_input == "Mistral":
         llm = vendor(model=model, mistral_api_key=api_key, mistral_api_url=api_base, temperature=DEFAULT_TEMPERATURE)
+    if vendor_input == "Google Gemini":
+        llm = vendor(model=model, google_api_key=api_key, temperature=DEFAULT_TEMPERATURE)
     if vendor_input == "xAI":
         llm = vendor(model=model, openai_api_key=api_key, openai_api_base=api_base, temperature=DEFAULT_TEMPERATURE)
 
