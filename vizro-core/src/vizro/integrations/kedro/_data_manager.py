@@ -26,9 +26,7 @@ def pipelines_from_project(project_path: Union[str, Path]) -> Pipeline:
     return pipelines
 
 
-def datasets_from_catalog(
-    catalog: CatalogProtocol, *, pipeline: Pipeline = None
-) -> dict[str, pd_DataFrameCallable]:
+def datasets_from_catalog(catalog: CatalogProtocol, *, pipeline: Pipeline = None) -> dict[str, pd_DataFrameCallable]:
     # This doesn't include things added to the catalog at run time but that is ok for our purposes.
     config_resolver = catalog.config_resolver
     kedro_datasets = config_resolver.config.copy()

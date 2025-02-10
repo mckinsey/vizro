@@ -35,7 +35,15 @@ def test_datasets_from_catalog_with_pipeline(catalog_path):
         [
             kp.node(
                 func=lambda *args: None,
-                inputs=["pandas_excel", "something#csv", "not_dataframe", "not_in_catalog", "pandas_parquet", "parameters", "params:z"],
+                inputs=[
+                    "pandas_excel",
+                    "something#csv",
+                    "not_dataframe",
+                    "not_in_catalog",
+                    "pandas_parquet",
+                    "parameters",
+                    "params:z",
+                ],
                 outputs=None,
             ),
         ]
