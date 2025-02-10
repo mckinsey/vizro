@@ -50,10 +50,10 @@ def _add_select_all_option(
 ) -> OptionsType:
     """Adds a 'Select All' option to the list of options."""
     checklist_value = (
-        [ALL_OPTION] if value is None or (isinstance(value, list) and len(value) == len(full_options) - 1) else []
+        [ALL_OPTION] if value is None or (isinstance(value, list) and len(value) == len(full_options)) else []
     )
     full_options = cast(list[OptionsDictType], full_options)
-    full_options[0] = {
+    all_options = {
         "label": html.Div(
             [
                 dcc.Checklist(
@@ -69,6 +69,7 @@ def _add_select_all_option(
         ),
         "value": ALL_OPTION,
     }
+    full_options.insert(0, all_options)  # type: ignore
     return full_options
 
 

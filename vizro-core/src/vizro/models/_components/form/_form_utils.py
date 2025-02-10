@@ -18,9 +18,6 @@ def get_options_and_default(options: OptionsType, multi: bool = False) -> tuple[
     all_values = [dict_option["value"] for dict_option in dict_options]
     default_value = all_values if multi else all_values[0]
 
-    if multi:
-        dict_options.insert(0, {"label": ALL_OPTION, "value": ALL_OPTION})
-
     return dict_options, default_value
 
 
