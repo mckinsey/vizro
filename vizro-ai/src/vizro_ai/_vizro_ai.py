@@ -14,6 +14,7 @@ from vizro_ai.dashboard._pydantic_output import _get_pydantic_model  # TODO: mak
 from vizro_ai.dashboard.utils import DashboardOutputs, _extract_overall_imports_and_code, _register_data
 from vizro_ai.plot._response_models import ChartPlan, ChartPlanFactory
 from vizro_ai.utils.helper import _get_df_info
+import time
 
 logger = logging.getLogger(__name__)
 
@@ -81,7 +82,14 @@ class VizroAI:
 
         """
         response_model = ChartPlanFactory(data_frame=df) if validate_code else ChartPlan
+        
+        # Time _get_df_info
+        start_time = time.time()
         _, df_sample = _get_df_info(df, n_sample=10)
+        logging.info(f"_get_df_info took {time.time() - start_time:.2f} seconds")
+        
+        # Time _get_pydantic_model
+        start_time = time.time()
         response = _get_pydantic_model(
             query=user_input,
             llm_model=self.model,
@@ -89,10 +97,16 @@ class VizroAI:
             df_info=df_sample,
             max_retry=max_debug_retry,
         )
+        logging.info(f"_get_pydantic_model took {time.time() - start_time:.2f} seconds")
+        
         if return_elements:
             return response
         else:
-            return response.get_fig_object(data_frame=df)
+            # Time get_fig_object
+            start_time = time.time()
+            fig = response.get_fig_object(data_frame=df)
+            logging.info(f"get_fig_object took {time.time() - start_time:.2f} seconds")
+            return fig
 
     def dashboard(
         self,
