@@ -88,5 +88,7 @@ def create_template_common() -> go.layout.Template:
         yaxis_zeroline=False,
         annotationdefaults_showarrow=False,
         annotationdefaults_font_size=14,
+        modebar_bgcolor="rgba(0,0,0,0)",
+        modebar_orientation="v",
     )
     return template_common
