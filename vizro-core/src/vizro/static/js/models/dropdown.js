@@ -1,7 +1,6 @@
-// TO-DO: Check if this function triggered when a page is opened
 function update_dropdown_values(
-  value = [],
   checklist_value = [],
+  value = [],
   options = [],
 ) {
   const ctx = dash_clientside.callback_context.triggered;

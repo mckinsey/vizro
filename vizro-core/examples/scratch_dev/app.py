@@ -30,8 +30,8 @@ first_page = vm.Page(
     controls=[
         # vm.Filter(column="continent", selector=vm.Checklist()),
         vm.Filter(
-            column="country",
-            # column="continent",
+            # column="country",
+            column="continent",
             selector=vm.Dropdown(
                 # options=[
                 #     {"label": "EUROPE", "value": "Europe"},

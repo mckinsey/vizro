@@ -7,6 +7,7 @@ from dash import ClientsideFunction, Input, Output, State, clientside_callback, 
 from pydantic import AfterValidator, Field, PrivateAttr, StrictBool, ValidationInfo, model_validator
 from pydantic.functional_serializers import PlainSerializer
 
+from vizro._constants import ALL_OPTION
 from vizro.models import Action, VizroBaseModel
 from vizro.models._action._actions_chain import _action_validator_factory
 from vizro.models._components.form._form_utils import get_options_and_default, validate_options_dict, validate_value
@@ -49,24 +50,24 @@ def _add_select_all_option(
 ) -> OptionsType:
     """Adds a 'Select All' option to the list of options."""
     checklist_value = (
-        ["ALL"] if value is None or (isinstance(value, list) and len(value) == len(full_options) - 1) else []
+        [ALL_OPTION] if value is None or (isinstance(value, list) and len(value) == len(full_options) - 1) else []
     )
     full_options = cast(list[OptionsDictType], full_options)
     full_options[0] = {
         "label": html.Div(
             [
                 dcc.Checklist(
-                    options=[{"label": "", "value": "ALL"}],
+                    options=[{"label": "", "value": ALL_OPTION}],
                     value=checklist_value,
                     id=f"{component_id}_checklist_all",
                     persistence=True,
                     persistence_type="session",
                 ),
-                html.Span("ALL"),
+                html.Span(ALL_OPTION),
             ],
             className="checklist-dropdown-div",
         ),
-        "value": "ALL",
+        "value": ALL_OPTION,
     }
     return full_options
 
@@ -122,17 +123,14 @@ class Dropdown(VizroBaseModel):
 
     def __call__(self, options):
         if self.multi:
-            output = [Output(f"{self.id}", "value"), Output(f"{self.id}_checklist_all", "value")]
-            inputs = [
-                Input(f"{self.id}", "value"),
-                Input(f"{self.id}_checklist_all", "value"),
-                State(f"{self.id}", "options"),
-            ]
-
             clientside_callback(
                 ClientsideFunction(namespace="dropdown", function_name="update_dropdown_values"),
-                output=output,
-                inputs=inputs,
+                output=[Output(f"{self.id}", "value"), Output(f"{self.id}_checklist_all", "value")],
+                inputs=[
+                    Input(f"{self.id}_checklist_all", "value"),
+                    Input(f"{self.id}", "value"),
+                    State(f"{self.id}", "options"),
+                ],
             )
         full_options, default_value = get_options_and_default(options=options, multi=self.multi)
         option_height = _calculate_option_height(full_options)
