@@ -116,6 +116,10 @@
       "r": 24,
       "t": 64
     },
+    "modebar": {
+      "bgcolor": "rgba(0,0,0,0)",
+      "orientation": "v"
+    },
     "showlegend": true,
     "title": {
       "font": {
