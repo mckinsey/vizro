@@ -20,7 +20,10 @@ page = vm.Page(
         vm.Graph(figure=px.box("iris", x="species", y="petal_width", color="species")),
         vm.Graph(figure=px.box(gapminder, x="year", y="lifeExp", color="continent")),
     ],
-    controls=[vm.Filter(column="continent"), vm.Filter(column="species"), vm.Filter(column="species"), vm.Filter(column="species")]
+    controls=[vm.Filter(column="continent"), vm.Filter(column="species",
+                                                       selector=vm.Checklist()),
+              vm.Filter(column="species"),
+              vm.Filter(column="petal_width")]
 )
 
 dashboard = vm.Dashboard(pages=[page])
