@@ -1,5 +1,5 @@
 from __future__ import annotations
-
+import dash_bootstrap_components as dbc
 from typing import TYPE_CHECKING, Annotated, Literal, Optional, cast
 
 from dash import html
@@ -34,6 +34,14 @@ class Container(VizroBaseModel):
     )
     title: str = Field(description="Title to be displayed.")
     layout: Annotated[Optional[Layout], AfterValidator(set_layout), Field(default=None, validate_default=True)]
+    # TODO: Refine API later, just for testing now
+    # TODO: Check what bootstrap adds to .container and .container-fluid - currently overflows, adds too much padding...
+    # We could be very strict and just allow bools, but my preference would be being semi-strict and allowing
+    # classNames. This way we can allow for more flexibility in the future. Default styling should then come from
+    # Bootstrap utility classes but they also have the flexibility to override them.
+    # border: bool = False
+    # background: bool = False
+    classname: str = ""
 
     @_log_call
     def build(self):
@@ -53,11 +61,11 @@ class Container(VizroBaseModel):
         components_container = self.layout.build()
         for component_idx, component in enumerate(self.components):
             components_container[f"{self.layout.id}_{component_idx}"].children = component.build()
-        return html.Div(
+        return dbc.Container(
             id=self.id,
             children=[
                 html.H3(children=self.title, className="container-title", id=f"{self.id}_title"),
                 components_container,
             ],
-            className="page-component-container",
+            className=self.classname,
         )
