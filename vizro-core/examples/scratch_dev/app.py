@@ -1,11 +1,26 @@
 """Test app"""
 
-import vizro.models as vm
-import vizro.plotly.express as px
 from vizro import Vizro
+import pandas as pd
+import vizro.plotly.express as px
+import vizro.models as vm
+
+from vizro.managers import data_manager
+
+def load_iris_data():
+    iris = px.data.iris()
+    return iris.sample(50)
+
+data_manager["iris"] = load_iris_data
+gapminder = px.data.gapminder()
 
 page = vm.Page(
-    title="foo", components=[vm.Graph(figure=px.scatter(data_frame=px.data.iris(), x="sepal_width", y="sepal_length"))]
+    title="Update the chart on page refresh",
+    components=[
+        vm.Graph(figure=px.box("iris", x="species", y="petal_width", color="species")),
+        vm.Graph(figure=px.box(gapminder, x="year", y="lifeExp", color="continent")),
+    ],
+    controls=[vm.Filter(column="continent"), vm.Filter(column="species"), vm.Filter(column="species"), vm.Filter(column="species")]
 )
 
 dashboard = vm.Dashboard(pages=[page])
