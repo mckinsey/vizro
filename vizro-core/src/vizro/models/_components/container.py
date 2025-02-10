@@ -1,7 +1,8 @@
 from __future__ import annotations
-import dash_bootstrap_components as dbc
+
 from typing import TYPE_CHECKING, Annotated, Literal, Optional, cast
 
+import dash_bootstrap_components as dbc
 from dash import html
 from pydantic import AfterValidator, BeforeValidator, Field, conlist
 

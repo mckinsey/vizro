@@ -2,7 +2,7 @@
   padding-left: 8px;
 }
 
-/*TODO: Check why overwrites are needed on native dbc component*/
+/* TODO: Check why overwrites are needed on native dbc component */
 .container {
   display: flex;
   flex-direction: column;
