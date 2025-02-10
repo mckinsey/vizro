@@ -35,11 +35,11 @@ def test_datasets_from_catalog_with_pipeline(catalog_path):
         [
             kp.node(
                 func=lambda *args: None,
-                inputs=["pandas_excel", "C1", "polars", "Z", "parameters", "params:z"],
-                outputs=["pandas_parquet", "not_dataframe"],
+                inputs=["pandas_excel", "something#csv", "not_dataframe", "not_in_catalog", "pandas_parquet", "parameters", "params:z"],
+                outputs=None,
             ),
         ]
     )
 
     datasets = datasets_from_catalog(catalog, pipeline=pipeline)
-    assert set(datasets) == {"pandas_excel", "pandas_parquet", "C1"}
+    assert set(datasets) == {"pandas_excel", "pandas_parquet", "something#csv"}
