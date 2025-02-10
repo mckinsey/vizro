@@ -9,19 +9,19 @@ import yaml
 kedro = pytest.importorskip("kedro")
 
 import kedro.pipeline as kp  # noqa: E402
-from kedro.io import DataCatalog  # noqa: E402
+from kedro.io import DataCatalog, KedroDataCatalog  # noqa: E402
 
 from vizro.integrations.kedro import datasets_from_catalog  # noqa: E402
 
 
-@pytest.fixture
-def catalog_path():
-    return Path(__file__).parent / "fixtures/test_catalog.yaml"
+@pytest.fixture(params=[DataCatalog, KedroDataCatalog])
+def catalog(request):
+    catalog_class = request.param
+    catalog_path = Path(__file__).parent / "fixtures/test_catalog.yaml"
+    return catalog_class.from_config(yaml.safe_load(catalog_path.read_text(encoding="utf-8")))
 
 
-def test_datasets_from_catalog(catalog_path):
-    catalog = DataCatalog.from_config(yaml.safe_load(catalog_path.read_text(encoding="utf-8")))
-
+def test_datasets_from_catalog(catalog):
     datasets = datasets_from_catalog(catalog)
     assert isinstance(datasets, dict)
     assert set(datasets) == {"pandas_excel", "pandas_parquet"}
@@ -29,8 +29,7 @@ def test_datasets_from_catalog(catalog_path):
         assert isinstance(dataset, types.MethodType)
 
 
-def test_datasets_from_catalog_with_pipeline(catalog_path):
-    catalog = DataCatalog.from_config(yaml.safe_load(catalog_path.read_text(encoding="utf-8")))
+def test_datasets_from_catalog_with_pipeline(catalog):
     pipeline = kp.pipeline(
         [
             kp.node(
