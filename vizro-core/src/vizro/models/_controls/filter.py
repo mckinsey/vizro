@@ -4,7 +4,7 @@ from collections.abc import Iterable
 from typing import Annotated, Any, Literal, Optional, Union, cast
 
 import pandas as pd
-from dash import dcc, html
+from dash import html
 from pandas.api.types import is_datetime64_any_dtype, is_numeric_dtype
 from pydantic import AfterValidator, Field, PrivateAttr
 
@@ -242,15 +242,7 @@ class Filter(VizroBaseModel):
         if f"{selector.id}_end_value" in selector_build_obj:
             selector_build_obj[f"{selector.id}_end_value"].className = "d-none"
 
-        with_spinner = dcc.Loading(
-            id=self.id,
-            children=selector_build_obj,
-            color="grey",
-            overlay_style={"visibility": "visible"},
-        )
-
-        without_spinner = html.Div(selector_build_obj, id=self.id)
-        return with_spinner
+        return html.Div(selector_build_obj, id=self.id)
 
     def _validate_targeted_data(
         self, target_to_data_frame: dict[ModelID, pd.DataFrame], eagerly_raise_column_not_found_error
