@@ -11,6 +11,14 @@ See the fragment files in the [changelog.d directory](https://github.com/mckinse
 
 <!-- scriv-insert-here -->
 
+<a id='changelog-0.3.4'></a>
+
+# 0.3.4 — 2025-02-10
+
+## Fixed
+
+- Added temporary compatibility fix for Gemini models in `_pydantic_output.py`. ([#986](https://github.com/mckinsey/vizro/pull/986))
+
 <a id='changelog-0.3.3'></a>
 
 # 0.3.3 — 2025-01-16
