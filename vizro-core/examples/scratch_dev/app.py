@@ -3,6 +3,13 @@
 import vizro.models as vm
 import vizro.plotly.express as px
 from vizro import Vizro
+import plotly.io as pio
+
+# TODO: Move somewhere else, just for testing
+pio.templates["vizro_dark"].layout.paper_bgcolor = "rgba(0, 0, 0, 0)"
+pio.templates["vizro_light"].layout.paper_bgcolor = "rgba(0, 0, 0, 0)"
+pio.templates["vizro_dark"].layout.plot_bgcolor = "rgba(0, 0, 0, 0)"
+pio.templates["vizro_light"].layout.plot_bgcolor = "rgba(0, 0, 0, 0)"
 
 page = vm.Page(
     title="foo",
