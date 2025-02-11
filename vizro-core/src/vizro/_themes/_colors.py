@@ -1,5 +1,7 @@
 """Color sequences by Vizro."""
 
+TRANSPARENT = "rgba(0, 0, 0, 0)"
+
 
 def get_colors():
     return {

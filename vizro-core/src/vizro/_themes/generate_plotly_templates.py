@@ -69,8 +69,6 @@ def generate_json_template(extracted_values: dict[str, str]) -> go.layout.Templa
         geo_landcolor=BG_COLOR,
         legend_font_color=FONT_COLOR_PRIMARY,
         legend_title_font_color=FONT_COLOR_PRIMARY,
-        modebar_activecolor=FONT_COLOR_PRIMARY,
-        modebar_color=FONT_COLOR_SECONDARY,
         paper_bgcolor=BG_COLOR,
         plot_bgcolor=BG_COLOR,
         polar_angularaxis_gridcolor=GRID_COLOR,

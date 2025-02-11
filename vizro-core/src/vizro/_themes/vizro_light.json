@@ -94,7 +94,7 @@
       "color": "rgba(20, 23, 33, 0.8784313725)"
     },
     "legend": {
-      "bgcolor": "rgba(0,0,0,0)",
+      "bgcolor": "rgba(0, 0, 0, 0)",
       "font": {
         "size": 14,
         "color": "rgba(20, 23, 33, 0.8784313725)"
@@ -120,10 +120,9 @@
       "t": 64
     },
     "modebar": {
-      "bgcolor": "rgba(0,0,0,0)",
-      "orientation": "v",
-      "activecolor": "rgba(20, 23, 33, 0.8784313725)",
-      "color": "rgba(20, 23, 33, 0.6)"
+      "activecolor": "darkgrey",
+      "bgcolor": "rgba(0, 0, 0, 0)",
+      "color": "dimgrey"
     },
     "showlegend": true,
     "title": {
