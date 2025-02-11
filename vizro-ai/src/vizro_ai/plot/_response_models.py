@@ -60,6 +60,35 @@ def _exec_code(code: str, namespace: dict) -> dict:
     return namespace
 
 
+def _test_execute_chart_code(data_frame: pd.DataFrame):
+    def validator(v, values):
+        """Test the execution of the chart code."""
+        imports = "\n".join(values.get("imports", []))
+        code_to_validate = imports + "\n\n" + v
+        try:
+            _safeguard_check(code_to_validate)
+        except Exception as e:
+            raise ValueError(
+                f"Produced code failed the safeguard validation: <{e}>. Please check the code and try again."
+            )
+        try:
+            namespace = globals()
+            namespace = _exec_code(code_to_validate, namespace)
+            custom_chart = namespace[f"{CUSTOM_CHART_NAME}"]
+            fig = custom_chart(data_frame.sample(10, replace=True))
+        except Exception as e:
+            raise ValueError(
+                f"Produced code execution failed the following error: <{e}>. Please check the code and try again, "
+                f"alternatively try with a more powerful model."
+            )
+        assert isinstance(fig, go.Figure), (
+            f"Expected chart code to return a plotly go.Figure object, but got {type(fig)}"
+        )
+        return v
+
+    return validator
+
+
 class BaseChartPlan(BaseModel):
     """Base chart plan model with core fields."""
 
@@ -184,36 +213,17 @@ class ChartPlan(BaseChartPlan):
 
 
 class ChartPlanFactory:
-    def __new__(cls, data_frame: pd.DataFrame) -> ChartPlan:  # TODO: change to ChartPlanDynamic
-        def _test_execute_chart_code(v, values):
-            """Test the execution of the chart code."""
-            imports = "\n".join(values.get("imports", []))
-            code_to_validate = imports + "\n\n" + v
-            try:
-                _safeguard_check(code_to_validate)
-            except Exception as e:
-                raise ValueError(
-                    f"Produced code failed the safeguard validation: <{e}>. Please check the code and try again."
-                )
-            try:
-                namespace = globals()
-                namespace = _exec_code(code_to_validate, namespace)
-                custom_chart = namespace[f"{CUSTOM_CHART_NAME}"]
-                fig = custom_chart(data_frame.sample(10, replace=True))
-            except Exception as e:
-                raise ValueError(
-                    f"Produced code execution failed the following error: <{e}>. Please check the code and try again, "
-                    f"alternatively try with a more powerful model."
-                )
-            assert isinstance(fig, go.Figure), (
-                f"Expected chart code to return a plotly go.Figure object, but got {type(fig)}"
-            )
-            return v
+    def __new__(cls, data_frame: pd.DataFrame, base_model: BaseChartPlan = ChartPlan) -> BaseChartPlan:
+        """Creates a ChartPlan with validation using the provided data_frame.
 
+        Args:
+            data_frame: DataFrame to use for validation
+            base_model: Base model to run extended validation against. Defaults to ChartPlan.
+        """
         return create_model(
             "ChartPlanDynamic",
+            __base__=base_model,
             __validators__={
-                "validator1": validator("chart_code", allow_reuse=True)(_test_execute_chart_code),
+                "validator1": validator("chart_code", allow_reuse=True)(_test_execute_chart_code(data_frame)),
             },
-            __base__=ChartPlan,
         )

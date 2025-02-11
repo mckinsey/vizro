@@ -83,10 +83,8 @@ class VizroAI:
             go.Figure or ChartPlan pydantic model
 
         """
-        if _minimal_output:
-            response_model = BaseChartPlan
-        else:
-            response_model = ChartPlanFactory(data_frame=df) if validate_code else ChartPlan
+        base_model = BaseChartPlan if _minimal_output else ChartPlan
+        response_model = ChartPlanFactory(data_frame=df, base_model=base_model) if validate_code else base_model
 
         _, df_sample = _get_df_info(df, n_sample=10)
         response = _get_pydantic_model(
