@@ -3,13 +3,12 @@
 import types
 from pathlib import Path
 
+import kedro.pipeline as kp
 import pytest
 import yaml
-
-import kedro.pipeline as kp
 from kedro.io import DataCatalog, KedroDataCatalog
 
-from vizro.integrations.kedro import datasets_from_catalog 
+from vizro.integrations.kedro import datasets_from_catalog
 
 
 @pytest.fixture(params=[DataCatalog, KedroDataCatalog])
