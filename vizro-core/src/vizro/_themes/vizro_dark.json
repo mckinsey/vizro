@@ -171,9 +171,9 @@
       },
       "visible": true,
       "zeroline": false,
-      "tickcolor": "rgba(255, 255, 255, 0.3019607843)",
+      "gridcolor": "rgba(255, 255, 255, 0.1019607843)",
       "linecolor": "rgba(255, 255, 255, 0.3019607843)",
-      "gridcolor": "rgba(255, 255, 255, 0.1019607843)"
+      "tickcolor": "rgba(255, 255, 255, 0.3019607843)"
     },
     "yaxis": {
       "automargin": true,
@@ -198,30 +198,29 @@
       },
       "visible": true,
       "zeroline": false,
-      "tickcolor": "rgba(255, 255, 255, 0.3019607843)",
+      "gridcolor": "rgba(255, 255, 255, 0.1019607843)",
       "linecolor": "rgba(255, 255, 255, 0.3019607843)",
-      "gridcolor": "rgba(255, 255, 255, 0.1019607843)"
+      "tickcolor": "rgba(255, 255, 255, 0.3019607843)"
     },
-    "paper_bgcolor": "#141721",
-    "plot_bgcolor": "#141721",
     "geo": {
       "bgcolor": "#141721",
       "lakecolor": "#141721",
       "landcolor": "#141721"
     },
+    "paper_bgcolor": "#141721",
+    "plot_bgcolor": "#141721",
     "polar": {
-      "bgcolor": "#141721",
       "angularaxis": {
         "gridcolor": "rgba(255, 255, 255, 0.1019607843)",
         "linecolor": "rgba(255, 255, 255, 0.3019607843)"
       },
+      "bgcolor": "#141721",
       "radialaxis": {
         "gridcolor": "rgba(255, 255, 255, 0.1019607843)",
         "linecolor": "rgba(255, 255, 255, 0.3019607843)"
       }
     },
     "ternary": {
-      "bgcolor": "#141721",
       "aaxis": {
         "gridcolor": "rgba(255, 255, 255, 0.1019607843)",
         "linecolor": "rgba(255, 255, 255, 0.3019607843)"
@@ -230,6 +229,7 @@
         "gridcolor": "rgba(255, 255, 255, 0.1019607843)",
         "linecolor": "rgba(255, 255, 255, 0.3019607843)"
       },
+      "bgcolor": "#141721",
       "caxis": {
         "gridcolor": "rgba(255, 255, 255, 0.1019607843)",
         "linecolor": "rgba(255, 255, 255, 0.3019607843)"
