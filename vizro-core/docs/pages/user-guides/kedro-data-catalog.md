@@ -23,19 +23,6 @@ for dataset_name, dataset in kedro_integration.datasets_from_catalog(catalog).it
     data_manager[dataset_name] = dataset
 ```
 
-To add datasets that are defined using the [Kedro dataset factory](https://docs.kedro.org/en/stable/data/kedro_dataset_factories.html), `datasets_from_catalog` needs to access the pipelines that use them.
-
-```python
-from vizro.integrations import kedro as kedro_integration
-from vizro.managers import data_manager
-
-
-pipeline = pipelines.get("my_pipeline_name")
-
-for dataset_name, dataset_loader in kedro_integration.datasets_from_catalog(catalog, pipeline=pipeline).items():
-    data_manager[dataset_name] = dataset
-```
-
 This imports all datasets of type [`kedro_datasets.pandas`](https://docs.kedro.org/en/stable/kedro_datasets.html) from the Kedro `catalog` into the Vizro `data_manager`.
 
 The `catalog` variable may have been created in a number of different ways:
