@@ -89,7 +89,6 @@ class VizroAI:
             response_model = ChartPlanFactory(data_frame=df) if validate_code else ChartPlan
 
         _, df_sample = _get_df_info(df, n_sample=10)
-
         response = _get_pydantic_model(
             query=user_input,
             llm_model=self.model,
@@ -97,13 +96,10 @@ class VizroAI:
             df_info=df_sample,
             max_retry=max_debug_retry,
         )
-
         if return_elements:
             return response
         else:
-            # Time get_fig_object
-            fig = response.get_fig_object(data_frame=df)
-            return fig
+            return response.get_fig_object(data_frame=df)
 
     def dashboard(
         self,

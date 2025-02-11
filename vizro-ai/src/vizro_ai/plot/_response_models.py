@@ -1,7 +1,5 @@
 """Code powering the plot command."""
 
-import logging
-
 try:
     from pydantic.v1 import BaseModel, Field, PrivateAttr, create_model, validator
 except ImportError:  # pragma: no cov
@@ -181,12 +179,11 @@ class ChartPlan(BaseChartPlan):
 
 
 class ChartPlanFactory:
-    def __new__(cls, data_frame: pd.DataFrame) -> ChartPlan:
+    def __new__(cls, data_frame: pd.DataFrame) -> ChartPlan: # TODO: change to ChartPlanDynamic
         def _test_execute_chart_code(v, values):
             """Test the execution of the chart code."""
             imports = "\n".join(values.get("imports", []))
             code_to_validate = imports + "\n\n" + v
-
             try:
                 _safeguard_check(code_to_validate)
             except Exception as e:

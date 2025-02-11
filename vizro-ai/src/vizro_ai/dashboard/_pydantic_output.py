@@ -93,7 +93,6 @@ def _get_pydantic_model(
     """Get the pydantic output from the LLM model with retry logic."""
     for attempt in range(max_retry):
         attempt_is_retry = attempt > 0
-
         prompt = _create_prompt(retry=attempt_is_retry)
         message_content = _create_message_content(
             query, df_info, str(last_validation_error) if attempt_is_retry else None, retry=attempt_is_retry
@@ -108,10 +107,7 @@ def _get_pydantic_model(
                 return _handle_google_llm_response(llm_model, response_model, prompt, message_content)
 
             pydantic_llm = prompt | llm_model.with_structured_output(response_model)
-
-            result = pydantic_llm.invoke(message_content)
-
-            return result
+            return pydantic_llm.invoke(message_content)
 
         except ValidationError as validation_error:
             last_validation_error = validation_error
