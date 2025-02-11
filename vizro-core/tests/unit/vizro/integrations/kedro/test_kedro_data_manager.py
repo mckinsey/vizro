@@ -6,12 +6,10 @@ from pathlib import Path
 import pytest
 import yaml
 
-kedro = pytest.importorskip("kedro")
+import kedro.pipeline as kp
+from kedro.io import DataCatalog, KedroDataCatalog
 
-import kedro.pipeline as kp  # noqa: E402
-from kedro.io import DataCatalog, KedroDataCatalog  # noqa: E402
-
-from vizro.integrations.kedro import datasets_from_catalog  # noqa: E402
+from vizro.integrations.kedro import datasets_from_catalog 
 
 
 @pytest.fixture(params=[DataCatalog, KedroDataCatalog])

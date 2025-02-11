@@ -36,7 +36,7 @@ requires-python = ">=3.9"
 
 [project.optional-dependencies]
 kedro = [
-  "kedro>=0.17.3",
+  "kedro>=0.19.9",
   "kedro-datasets"  # no longer a dependency of kedro for kedro>=0.19.2
 ]
 
