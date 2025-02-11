@@ -355,7 +355,10 @@ By default, the logo appears in the top left corner of the dashboard. You can mo
 
 If you want to make the subsections of your dashboard stand out more, you can do this by placing your components inside a [Container](container.md) and changing the container's styling, for example, background color, borders, padding, etc.
 
-To do this, you need to change the container's CSS class. Using the DevTool, as explained in the section on [identifying the correct CSS selector](#identify-the-correct-css-selector), you'll find that the CSS class for the `Container` is `page-component-container`. You can then use this class to set a new `background-color` and `padding`. The charts automatically align with the background colors of the container because they are transparent.
+To do this, you need to change the container's CSS class. Using the DevTool, as explained in the section on 
+[identifying the correct CSS selector](#identify-the-correct-css-selector), you'll find that the CSS class for the `Container` is 
+`page-component-container`. You can then use this class to set a new `background-color` and `padding`. 
+Chart backgrounds are transparent so they automatically match the background color of the container.
 
 !!! example "Style a container"
     === "custom.css"
