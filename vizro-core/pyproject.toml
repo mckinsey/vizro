@@ -25,7 +25,8 @@ dependencies = [
   "flask_caching>=2",
   "wrapt>=1",
   "black",
-  "autoflake"
+  "autoflake",
+  "packaging"
 ]
 description = "Vizro is a package to facilitate visual analytics."
 dynamic = ["version"]
