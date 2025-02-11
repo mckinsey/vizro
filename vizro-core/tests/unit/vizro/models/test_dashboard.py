@@ -12,7 +12,6 @@ from pydantic import ValidationError
 import vizro
 import vizro.models as vm
 from vizro import Vizro
-from vizro._themes._colors import TRANSPARENT
 from vizro.actions._action_loop._action_loop import ActionLoop
 from vizro.models._dashboard import _all_hidden
 
@@ -268,31 +267,31 @@ class TestDashboardBuild:
         # Test application of template_dashboard_overrides.
         dashboard_vizro_dark = pio.templates["vizro_dark"]
         dashboard_vizro_dark.layout.update(
-            geo_bgcolor=TRANSPARENT,
-            geo_lakecolor=TRANSPARENT,
-            geo_landcolor=TRANSPARENT,
+            geo_bgcolor="rgba(0, 0, 0, 0)",
+            geo_lakecolor="rgba(0, 0, 0, 0)",
+            geo_landcolor="rgba(0, 0, 0, 0)",
             margin_b=16,
             margin_l=24,
             margin_t=24,
-            paper_bgcolor=TRANSPARENT,
-            plot_bgcolor=TRANSPARENT,
-            polar_bgcolor=TRANSPARENT,
-            ternary_bgcolor=TRANSPARENT,
+            paper_bgcolor="rgba(0, 0, 0, 0)",
+            plot_bgcolor="rgba(0, 0, 0, 0)",
+            polar_bgcolor="rgba(0, 0, 0, 0)",
+            ternary_bgcolor="rgba(0, 0, 0, 0)",
             title_pad_l=0,
             title_pad_r=0,
         )
         dashboard_vizro_light = pio.templates["vizro_light"]
         dashboard_vizro_light.layout.update(
-            geo_bgcolor=TRANSPARENT,
-            geo_lakecolor=TRANSPARENT,
-            geo_landcolor=TRANSPARENT,
+            geo_bgcolor="rgba(0, 0, 0, 0)",
+            geo_lakecolor="rgba(0, 0, 0, 0)",
+            geo_landcolor="rgba(0, 0, 0, 0)",
             margin_b=16,
             margin_l=24,
             margin_t=24,
-            paper_bgcolor=TRANSPARENT,
-            plot_bgcolor=TRANSPARENT,
-            polar_bgcolor=TRANSPARENT,
-            ternary_bgcolor=TRANSPARENT,
+            paper_bgcolor="rgba(0, 0, 0, 0)",
+            plot_bgcolor="rgba(0, 0, 0, 0)",
+            polar_bgcolor="rgba(0, 0, 0, 0)",
+            ternary_bgcolor="rgba(0, 0, 0, 0)",
             title_pad_l=0,
             title_pad_r=0,
         )

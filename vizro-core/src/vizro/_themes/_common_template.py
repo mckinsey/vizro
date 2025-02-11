@@ -2,7 +2,7 @@
 
 from plotly import graph_objects as go
 
-from vizro._themes._colors import TRANSPARENT, get_colors
+from vizro._themes._colors import get_colors
 
 
 def create_template_common() -> go.layout.Template:
@@ -35,7 +35,7 @@ def create_template_common() -> go.layout.Template:
         colorway=COLORS["DISCRETE_10"],
         font_family="Inter, sans-serif, Arial",
         font_size=14,
-        legend_bgcolor=TRANSPARENT,
+        legend_bgcolor=COLORS["TRANSPARENT"],
         legend_font_size=14,
         legend_orientation="h",
         legend_title_font_size=14,
@@ -51,7 +51,7 @@ def create_template_common() -> go.layout.Template:
         # However, our rgba values are not displayed correctly with a transparent bg color.
         # Hence, we use darkgrey and dimgrey for now, which seems to work fine.
         modebar_activecolor="darkgrey",
-        modebar_bgcolor=TRANSPARENT,
+        modebar_bgcolor=COLORS["TRANSPARENT"],
         modebar_color="dimgrey",
         showlegend=True,
         title_font_size=20,

@@ -2,7 +2,7 @@
 
 import plotly.graph_objs as go
 
-from vizro._themes._colors import TRANSPARENT
+TRANSPARENT = "rgba(0, 0, 0, 0)"
 
 dashboard_overrides = go.layout.Template()
 dashboard_overrides.layout = go.Layout(
