@@ -31,7 +31,7 @@ def datasets_from_catalog(catalog: CatalogProtocol, *, pipeline: Pipeline = None
     config_resolver = catalog.config_resolver
     kedro_datasets = config_resolver.config.copy()
 
-    if pipeline is not None:
+    if pipeline:
         # Go through all dataset names that weren't in catalog and try to resolve them. Those that cannot be
         # resolved give an empty dictionary and are ignored.
         for dataset_name in set(pipeline.datasets()) - set(kedro_datasets):
