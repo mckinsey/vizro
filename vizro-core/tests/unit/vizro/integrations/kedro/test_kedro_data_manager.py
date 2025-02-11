@@ -1,17 +1,29 @@
 """Unit tests for vizro.integrations.kedro."""
 
 import types
+from packaging.version import parse
 from pathlib import Path
 
 import kedro.pipeline as kp
 import pytest
 import yaml
-from kedro.io import DataCatalog, KedroDataCatalog
+import kedro
+from kedro.io import DataCatalog
+
+from importlib.metadata import version
 
 from vizro.integrations.kedro import datasets_from_catalog
 
+if parse(version("kedro")) >= parse("0.19.9"):
+    # KedroDataCatalog only exists and hence can only be tested against in kedro>=0.19.9.
+    from kedro.io import KedroDataCatalog
 
-@pytest.fixture(params=[DataCatalog, KedroDataCatalog])
+    data_catalog_classes = [DataCatalog, KedroDataCatalog]
+else:
+    data_catalog_classes = [DataCatalog]
+
+
+@pytest.fixture(params=data_catalog_classes)
 def catalog(request):
     catalog_class = request.param
     catalog_path = Path(__file__).parent / "fixtures/test_catalog.yaml"
@@ -46,4 +58,11 @@ def test_datasets_from_catalog_with_pipeline(catalog):
     )
 
     datasets = datasets_from_catalog(catalog, pipeline=pipeline)
-    assert set(datasets) == {"pandas_excel", "pandas_parquet", "something#csv"}
+    # Dataset factories only work for kedro>=0.19.9.
+    expected_datasets = (
+        {"pandas_excel", "pandas_parquet", "something#csv"}
+        if parse(version("kedro")) >= parse("0.19.9")
+        else {"pandas_excel", "pandas_parquet"}
+    )
+
+    assert set(datasets) == expected_datasets
