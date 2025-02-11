@@ -128,7 +128,7 @@ extra-dependencies = [
   "plotly==5.24.0",
   "pandas==2.0.0",
   "numpy==1.23.0",  # Need numpy<2 to work with pandas==2.0.0. See https://stackoverflow.com/questions/78634235/.
-  "kedro==0.19.0",  # Includes kedro-datasets as a dependency.
+  "kedro==0.19.0"  # Includes kedro-datasets as a dependency.
 ]
 python = "3.9"
 

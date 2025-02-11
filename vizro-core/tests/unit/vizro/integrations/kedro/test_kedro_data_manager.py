@@ -1,16 +1,14 @@
 """Unit tests for vizro.integrations.kedro."""
 
 import types
-from packaging.version import parse
+from importlib.metadata import version
 from pathlib import Path
 
 import kedro.pipeline as kp
 import pytest
 import yaml
-import kedro
 from kedro.io import DataCatalog
-
-from importlib.metadata import version
+from packaging.version import parse
 
 from vizro.integrations.kedro import datasets_from_catalog
 
