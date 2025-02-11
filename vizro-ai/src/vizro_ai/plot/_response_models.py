@@ -213,16 +213,19 @@ class ChartPlan(BaseChartPlan):
 
 
 class ChartPlanFactory:
-    def __new__(cls, data_frame: pd.DataFrame, base_model: BaseChartPlan = ChartPlan) -> BaseChartPlan:
-        """Creates a ChartPlan with validation using the provided data_frame.
+    def __new__(cls, data_frame: pd.DataFrame, chart_plan: type[BaseChartPlan] = ChartPlan) -> type[BaseChartPlan]:
+        """Creates a new chart plan model with additional validation.
 
         Args:
             data_frame: DataFrame to use for validation
-            base_model: Base model to run extended validation against. Defaults to ChartPlan.
+            chart_plan: Chart plan model to run extended validation against. Defaults to ChartPlan.
+
+        Returns:
+            Chart plan model with additional validation
         """
         return create_model(
             "ChartPlanDynamic",
-            __base__=base_model,
+            __base__=chart_plan,
             __validators__={
                 "validator1": validator("chart_code", allow_reuse=True)(_test_execute_chart_code(data_frame)),
             },
