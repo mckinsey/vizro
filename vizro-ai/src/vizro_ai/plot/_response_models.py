@@ -2,13 +2,6 @@
 
 import logging
 
-# Configure basic logging
-logging.basicConfig(
-    level=logging.INFO,
-    format='%(asctime)s - %(levelname)s - %(message)s',
-    force=True  # This will override any existing logging configuration
-)
-
 try:
     from pydantic.v1 import BaseModel, Field, PrivateAttr, create_model, validator
 except ImportError:  # pragma: no cov
@@ -19,7 +12,6 @@ import autoflake
 import black
 import pandas as pd
 import plotly.graph_objects as go
-import time
 
 from vizro_ai.plot._utils._safeguard import _safeguard_check
 
@@ -69,8 +61,8 @@ def _exec_code(code: str, namespace: dict) -> dict:
     return namespace
 
 
-class ChartPlan(BaseModel):
-    """Chart plan model."""
+class BaseChartPlan(BaseModel):
+    """Base chart plan model with core fields."""
 
     chart_type: str = Field(
         ...,
@@ -98,16 +90,6 @@ class ChartPlan(BaseModel):
         4. All data used in the chart must be derived from the data_frame argument, all data manipulations
         must be done within the function.
         """,
-    )
-    chart_insights: str = Field(
-        ...,
-        description="""
-        Insights to what the chart explains or tries to show. Ideally concise and between 30 and 60 words.""",
-    )
-    code_explanation: str = Field(
-        ...,
-        description="""
-        Explanation of the code steps used for `chart_code` field.""",
     )
 
     _additional_vizro_imports: list[str] = PrivateAttr(ADDITIONAL_IMPORTS)
@@ -186,26 +168,31 @@ and it should be the first argument of the chart."""
         return self._get_complete_code(vizro=True)
 
 
+class ChartPlan(BaseChartPlan):
+    """Extended chart plan model with additional explanatory fields."""
+
+    chart_insights: str = Field(
+        ...,
+        description="""
+        Insights to what the chart explains or tries to show.
+        Ideally concise and between 30 and 60 words.""",
+    )
+    code_explanation: str = Field(..., description="Explanation of the code steps used for `chart_code` field.")
+
+
 class ChartPlanFactory:
     def __new__(cls, data_frame: pd.DataFrame) -> ChartPlan:
         def _test_execute_chart_code(v, values):
             """Test the execution of the chart code."""
             imports = "\n".join(values.get("imports", []))
             code_to_validate = imports + "\n\n" + v
-            
-            # Time the safeguard check
-            start_safeguard = time.time()
+
             try:
                 _safeguard_check(code_to_validate)
             except Exception as e:
                 raise ValueError(
                     f"Produced code failed the safeguard validation: <{e}>. Please check the code and try again."
                 )
-            safeguard_time = time.time() - start_safeguard
-            logging.info(f"Safeguard check took {safeguard_time:.4f} seconds")
-            
-            # Time the code execution
-            start_exec = time.time()
             try:
                 namespace = globals()
                 namespace = _exec_code(code_to_validate, namespace)
@@ -216,9 +203,6 @@ class ChartPlanFactory:
                     f"Produced code execution failed the following error: <{e}>. Please check the code and try again, "
                     f"alternatively try with a more powerful model."
                 )
-            exec_time = time.time() - start_exec
-            logging.info(f"Code execution took {exec_time:.4f} seconds")
-            
             assert isinstance(fig, go.Figure), (
                 f"Expected chart code to return a plotly go.Figure object, but got {type(fig)}"
             )

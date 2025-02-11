@@ -3,7 +3,6 @@
 # ruff: noqa: F821
 
 import logging
-import time
 
 try:
     from pydantic.v1 import BaseModel, ValidationError
@@ -94,18 +93,11 @@ def _get_pydantic_model(
     """Get the pydantic output from the LLM model with retry logic."""
     for attempt in range(max_retry):
         attempt_is_retry = attempt > 0
-        
-        # Time _create_prompt
-        start_time = time.time()
+
         prompt = _create_prompt(retry=attempt_is_retry)
-        logging.info(f"_create_prompt took {time.time() - start_time:.2f} seconds")
-        
-        # Time _create_message_content
-        start_time = time.time()
         message_content = _create_message_content(
             query, df_info, str(last_validation_error) if attempt_is_retry else None, retry=attempt_is_retry
         )
-        logging.info(f"_create_message_content took {time.time() - start_time:.2f} seconds")
 
         try:
             # Apply the fix for nested structures, following langchain-google-genai implementation
@@ -115,15 +107,10 @@ def _get_pydantic_model(
             if "google" in llm_model.__class__.__module__.lower():
                 return _handle_google_llm_response(llm_model, response_model, prompt, message_content)
 
-            # Time structured output setup and invocation
-            start_time = time.time()
             pydantic_llm = prompt | llm_model.with_structured_output(response_model)
-            logging.info(f"Setting up structured output took {time.time() - start_time:.2f} seconds")
-            
-            start_time = time.time()
+
             result = pydantic_llm.invoke(message_content)
-            logging.info(f"LLM invocation took {time.time() - start_time:.2f} seconds")
-            
+
             return result
 
         except ValidationError as validation_error:
