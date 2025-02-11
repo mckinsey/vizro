@@ -266,7 +266,8 @@ class TestDashboardBuild:
         dashboard.pre_build()
 
         # Test application of template_dashboard_overrides.
-        dashboard_vizro_dark = pio.templates["vizro_dark"].layout.update(
+        dashboard_vizro_dark = pio.templates["vizro_dark"]
+        dashboard_vizro_dark.layout.update(
             geo_bgcolor=TRANSPARENT,
             geo_lakecolor=TRANSPARENT,
             geo_landcolor=TRANSPARENT,
@@ -280,7 +281,8 @@ class TestDashboardBuild:
             title_pad_l=0,
             title_pad_r=0,
         )
-        dashboard_vizro_light = pio.templates["vizro_light"].layout.update(
+        dashboard_vizro_light = pio.templates["vizro_light"]
+        dashboard_vizro_light.layout.update(
             geo_bgcolor=TRANSPARENT,
             geo_lakecolor=TRANSPARENT,
             geo_landcolor=TRANSPARENT,
