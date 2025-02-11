@@ -106,6 +106,7 @@ def _get_pydantic_model(
             if "google" in llm_model.__class__.__module__.lower():
                 return _handle_google_llm_response(llm_model, response_model, prompt, message_content)
 
+            # For other models, use standard structured output
             pydantic_llm = prompt | llm_model.with_structured_output(response_model)
             return pydantic_llm.invoke(message_content)
 

@@ -4,6 +4,7 @@ try:
     from pydantic.v1 import BaseModel, Field, PrivateAttr, create_model, validator
 except ImportError:  # pragma: no cov
     from pydantic import BaseModel, Field, PrivateAttr, create_model, validator
+import logging
 from typing import Optional, Union
 
 import autoflake
@@ -175,7 +176,11 @@ class ChartPlan(BaseChartPlan):
         Insights to what the chart explains or tries to show.
         Ideally concise and between 30 and 60 words.""",
     )
-    code_explanation: str = Field(..., description="Explanation of the code steps used for `chart_code` field.")
+    code_explanation: str = Field(
+        ...,
+        description="""
+        Explanation of the code steps used for `chart_code` field.""",
+    )
 
 
 class ChartPlanFactory:
