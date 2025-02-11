@@ -214,7 +214,7 @@ class ChartPlan(BaseChartPlan):
 
 class ChartPlanFactory:
     def __new__(cls, data_frame: pd.DataFrame, chart_plan: type[BaseChartPlan] = ChartPlan) -> type[BaseChartPlan]:
-        """Creates a new chart plan model with additional validation.
+        """Creates a chart plan model with additional validation.
 
         Args:
             data_frame: DataFrame to use for validation
