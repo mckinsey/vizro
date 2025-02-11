@@ -192,10 +192,6 @@ def _get_parametrized_config(
         parameter_value = ctd["value"]
 
         selector = cast(SelectorType, model_manager[ctd["id"]])
-        if hasattr(parameter_value, "__iter__") and ALL_OPTION in parameter_value:  # type: ignore[operator]
-            # Even if an option is provided as list[dict], the Dash component only returns a list of values.
-            # So we need to ensure that we always return a list only as well to provide consistent types.
-            parameter_value = [option["value"] if isinstance(option, dict) else option for option in selector.options]
 
         parameter_value = _validate_selector_value_none(parameter_value)  # type: ignore[arg-type]
 

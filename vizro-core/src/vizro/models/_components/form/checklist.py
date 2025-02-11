@@ -51,18 +51,17 @@ class Checklist(VizroBaseModel):
     _validate_options = model_validator(mode="before")(validate_options_dict)
 
     def __call__(self, options):
-        output = [Output(f"{self.id}", "value"), Output(f"{self.id}_select_all", "value")]
-        inputs = [
-            Input(f"{self.id}_select_all", "value"),
-            Input(f"{self.id}", "value"),
-            State(f"{self.id}", "options"),
-        ]
-
         clientside_callback(
             ClientsideFunction(namespace="checklist", function_name="update_checklist_values"),
-            output=output,
-            inputs=inputs,
+            output=[Output(f"{self.id}_select_all", "value"), Output(f"{self.id}", "value")],
+            inputs=[
+                Input(f"{self.id}_select_all", "value"),
+                Input(f"{self.id}", "value"),
+                State(f"{self.id}", "options"),
+            ],
         )
+        dict_options, default_value = get_options_and_default(options=options, multi=True)
+        final_value = self.value if self.value is not None else default_value
 
         return html.Fieldset(
             children=[
@@ -70,14 +69,14 @@ class Checklist(VizroBaseModel):
                 dbc.Checklist(
                     id=f"{self.id}_select_all",
                     options=[ALL_OPTION],
-                    value=[ALL_OPTION] if self.value == self.options or self.value is None else [],
+                    value=[ALL_OPTION] if len(final_value) == len(dict_options) else [],
                     persistence=True,
                     persistence_type="session",
                 ),
                 dbc.Checklist(
                     id=self.id,
                     options=options,
-                    value=self.value if self.value is not None else options,
+                    value=final_value,
                     persistence=True,
                     persistence_type="session",
                 ),

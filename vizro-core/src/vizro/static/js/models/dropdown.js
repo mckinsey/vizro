@@ -17,16 +17,16 @@ function update_dropdown_values(
   if (isTriggeredByChecklist) {
     return value.length === updated_options.length + 1
       ? [[], []]
-      : [updated_options, ["ALL"]];
+      : [["ALL"], updated_options];
   }
 
   if (hasAllSelected) {
     return value.length === updated_options.length + 1
       ? [[], []]
-      : [updated_options, ["ALL"]];
+      : [["ALL"], updated_options];
   }
 
-  return allOptionsSelected ? [updated_options, ["ALL"]] : [value, []];
+  return allOptionsSelected ? [["ALL"], updated_options] : [[], value];
 }
 
 window.dash_clientside = {

@@ -12,15 +12,15 @@ function update_checklist_values(
 
   if (triggeredId.includes("select_all")) {
     return checklist_all_value.length
-      ? [options, checklist_all_value]
+      ? [checklist_all_value, options]
       : [[], []];
   }
 
   if (checklist_all_value.length) {
-    return noneSelected ? [[], []] : [checklist_value, []];
+    return noneSelected ? [[], []] : [[], checklist_value];
   }
 
-  return allSelected ? [options, ["ALL"]] : [checklist_value, []];
+  return allSelected ? [["ALL"], options] : [[], checklist_value];
 }
 
 window.dash_clientside = {

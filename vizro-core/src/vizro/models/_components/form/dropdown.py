@@ -46,20 +46,20 @@ def validate_multi(multi, info: ValidationInfo):
 
 
 def _add_select_all_option(
-    full_options: OptionsType, component_id: str, value: Optional[Union[SingleValueType, MultiValueType]]
-) -> OptionsType:
+    options: OptionsType, component_id: str, value: Optional[Union[SingleValueType, MultiValueType]]
+) -> list[OptionsDictType]:
     """Adds a 'Select All' option to the list of options."""
     checklist_value = (
-        [ALL_OPTION] if value is None or (isinstance(value, list) and len(value) == len(full_options)) else []
+        [ALL_OPTION] if value is None or (isinstance(value, list) and len(value) == len(options)) else []
     )
-    full_options = cast(list[OptionsDictType], full_options)
-    all_options = {
+    # options = cast(list[OptionsDictType], options)
+    all_option = {
         "label": html.Div(
             [
                 dcc.Checklist(
+                    id=f"{component_id}_checklist_all",
                     options=[{"label": "", "value": ALL_OPTION}],
                     value=checklist_value,
-                    id=f"{component_id}_checklist_all",
                     persistence=True,
                     persistence_type="session",
                 ),
@@ -69,8 +69,8 @@ def _add_select_all_option(
         ),
         "value": ALL_OPTION,
     }
-    full_options.insert(0, all_options)  # type: ignore
-    return full_options
+    dict_options_with_all = [all_option, *options]  # type: ignore
+    return dict_options_with_all
 
 
 class Dropdown(VizroBaseModel):
@@ -126,19 +126,19 @@ class Dropdown(VizroBaseModel):
         if self.multi:
             clientside_callback(
                 ClientsideFunction(namespace="dropdown", function_name="update_dropdown_values"),
-                output=[Output(f"{self.id}", "value"), Output(f"{self.id}_checklist_all", "value")],
+                output=[Output(f"{self.id}_checklist_all", "value"), Output(f"{self.id}", "value")],
                 inputs=[
                     Input(f"{self.id}_checklist_all", "value"),
                     Input(f"{self.id}", "value"),
                     State(f"{self.id}", "options"),
                 ],
             )
-        full_options, default_value = get_options_and_default(options=options, multi=self.multi)
-        option_height = _calculate_option_height(full_options)
-        altered_options = (
-            _add_select_all_option(full_options=full_options, component_id=self.id, value=self.value)
+        dict_options, default_value = get_options_and_default(options=options, multi=self.multi)
+        option_height = _calculate_option_height(dict_options)
+        dict_options_with_all = (
+            _add_select_all_option(options=dict_options, component_id=self.id, value=self.value)
             if self.multi
-            else full_options
+            else dict_options
         )
 
         return html.Div(
@@ -146,7 +146,7 @@ class Dropdown(VizroBaseModel):
                 dbc.Label(self.title, html_for=self.id) if self.title else None,
                 dcc.Dropdown(
                     id=self.id,
-                    options=altered_options,
+                    options=dict_options_with_all,
                     value=self.value if self.value is not None else default_value,
                     multi=self.multi,
                     optionHeight=option_height,

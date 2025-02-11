@@ -15,8 +15,8 @@ def get_options_and_default(options: OptionsType, multi: bool = False) -> tuple[
         option if isinstance(option, dict) else {"label": str(option), "value": option} for option in options
     ]
 
-    all_values = [dict_option["value"] for dict_option in dict_options]
-    default_value = all_values if multi else all_values[0]
+    list_values = [dict_option["value"] for dict_option in dict_options]
+    default_value = list_values if multi else list_values[0]
 
     return dict_options, default_value
 
