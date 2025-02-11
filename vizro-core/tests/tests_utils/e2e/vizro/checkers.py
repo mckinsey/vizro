@@ -59,7 +59,7 @@ def check_ag_grid_theme_color(driver, ag_grid_id, color):
 
 def check_graph_color(driver, style_background, color):
     rgba = driver.wait_for_element(f"svg[style='{style_background}']").value_of_css_property("background-color")
-    graph_color = Color.from_string(rgba)
+    graph_color = Color.from_string(rgba).rgba
     assert_that(
         graph_color,
         equal_to(color),
