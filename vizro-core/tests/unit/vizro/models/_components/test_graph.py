@@ -217,6 +217,7 @@ class TestBuildGraph:
                             "autosizable": True,
                             "frameMargins": 0,
                             "responsive": True,
+                            "modeBarButtonsToRemove": ["toImage"],
                         },
                     ),
                     dcc.Markdown("""SOURCE: **DATA**""", className="figure-footer"),
