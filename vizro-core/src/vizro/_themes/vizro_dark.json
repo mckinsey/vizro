@@ -108,6 +108,9 @@
       },
       "y": -0.2
     },
+    "map": {
+      "style": "carto-darkmatter"
+    },
     "margin": {
       "autoexpand": true,
       "b": 64,
@@ -118,7 +121,9 @@
     },
     "modebar": {
       "bgcolor": "rgba(0,0,0,0)",
-      "orientation": "v"
+      "orientation": "v",
+      "activecolor": "rgba(255, 255, 255, 0.8784313725)",
+      "color": "rgba(255, 255, 255, 0.6)"
     },
     "showlegend": true,
     "title": {
@@ -229,9 +234,6 @@
         "gridcolor": "rgba(255, 255, 255, 0.1019607843)",
         "linecolor": "rgba(255, 255, 255, 0.3019607843)"
       }
-    },
-    "map": {
-      "style": "carto-darkmatter"
     }
   },
   "data": {

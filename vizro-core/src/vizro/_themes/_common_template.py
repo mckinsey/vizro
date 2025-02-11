@@ -90,5 +90,6 @@ def create_template_common() -> go.layout.Template:
         annotationdefaults_font_size=14,
         modebar_bgcolor="rgba(0,0,0,0)",
         modebar_orientation="v",
+        map_style="carto-darkmatter",
     )
     return template_common
