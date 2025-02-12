@@ -2,11 +2,12 @@ import operator
 
 import dash
 import pytest
+from packaging.version import parse
 
 import vizro
 from vizro._constants import VIZRO_ASSETS_PATH
 
-_git_branch = vizro.__version__ if "dev" not in vizro.__version__ else "main"
+_git_branch = vizro.__version__ if not parse(vizro.__version__).is_devrelease else "main"
 
 
 def test_vizro_bootstrap():
