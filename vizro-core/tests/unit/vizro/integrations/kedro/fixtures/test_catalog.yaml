@@ -1,7 +1,15 @@
-companies:
-  type: pandas.JSONDataset
-  filepath: companies.json
+"{pandas_factory}#csv":
+  type: pandas.CSVDataset
+  filepath: "{pandas_factory}.csv"
 
-reviews:
+pandas_excel:
+  type: pandas.ExcelDataset
+  filepath: pandas_excel.xlsx
+
+pandas_parquet:
+  type: pandas.ParquetDataset
+  filepath: pandas_parquet.parquet
+
+not_dataframe:
   type: pickle.PickleDataset
-  filepath: reviews.pkl
+  filepath: pickle.pkl
