@@ -7,6 +7,7 @@ from dash import ClientsideFunction, Input, Output, State, clientside_callback, 
 from pydantic import AfterValidator, Field, PrivateAttr, StrictBool, ValidationInfo, model_validator
 from pydantic.functional_serializers import PlainSerializer
 
+from vizro._constants import ALL_OPTION
 from vizro.models import Action, VizroBaseModel
 from vizro.models._action._actions_chain import _action_validator_factory
 from vizro.models._components.form._form_utils import get_options_and_default, validate_options_dict, validate_value
@@ -45,30 +46,29 @@ def validate_multi(multi, info: ValidationInfo):
 
 
 def _add_select_all_option(
-    full_options: OptionsType, component_id: str, value: Optional[Union[SingleValueType, MultiValueType]]
-) -> OptionsType:
+    options: OptionsType, component_id: str, value: Optional[Union[SingleValueType, MultiValueType]]
+) -> list[OptionsDictType]:
     """Adds a 'Select All' option to the list of options."""
-    checklist_value = (
-        ["ALL"] if value is None or (isinstance(value, list) and len(value) == len(full_options) - 1) else []
-    )
-    full_options = cast(list[OptionsDictType], full_options)
-    full_options[0] = {
+    checklist_value = [ALL_OPTION] if value is None or (isinstance(value, list) and len(value) == len(options)) else []
+
+    all_option = {
         "label": html.Div(
             [
                 dcc.Checklist(
-                    options=[{"label": "", "value": "ALL"}],
-                    value=checklist_value,
                     id=f"{component_id}_checklist_all",
+                    options=[{"label": "", "value": ALL_OPTION}],
+                    value=checklist_value,
                     persistence=True,
                     persistence_type="session",
                 ),
-                html.Span("ALL"),
+                html.Span(ALL_OPTION),
             ],
             className="checklist-dropdown-div",
         ),
-        "value": "ALL",
+        "value": ALL_OPTION,
     }
-    return full_options
+    dict_options_with_all = [all_option, *options]
+    return dict_options_with_all
 
 
 class Dropdown(VizroBaseModel):
@@ -122,24 +122,22 @@ class Dropdown(VizroBaseModel):
 
     def __call__(self, options):
         if self.multi:
-            output = [Output(f"{self.id}", "value"), Output(f"{self.id}_checklist_all", "value")]
-            inputs = [
-                Input(f"{self.id}", "value"),
-                Input(f"{self.id}_checklist_all", "value"),
-                State(f"{self.id}", "options"),
-            ]
-
             clientside_callback(
                 ClientsideFunction(namespace="dropdown", function_name="update_dropdown_values"),
-                output=output,
-                inputs=inputs,
+                output=[Output(f"{self.id}_checklist_all", "value"), Output(f"{self.id}", "value")],
+                inputs=[
+                    Input(f"{self.id}_checklist_all", "value"),
+                    Input(f"{self.id}", "value"),
+                    State(f"{self.id}", "options"),
+                ],
+                prevent_initial_call=True,
             )
-        full_options, default_value = get_options_and_default(options=options, multi=self.multi)
-        option_height = _calculate_option_height(full_options)
-        altered_options = (
-            _add_select_all_option(full_options=full_options, component_id=self.id, value=self.value)
+        dict_options, default_value = get_options_and_default(options=options, multi=self.multi)
+        option_height = _calculate_option_height(dict_options)
+        dict_options_with_all = (
+            _add_select_all_option(options=dict_options, component_id=self.id, value=self.value)
             if self.multi
-            else full_options
+            else dict_options
         )
 
         return html.Div(
@@ -147,7 +145,7 @@ class Dropdown(VizroBaseModel):
                 dbc.Label(self.title, html_for=self.id) if self.title else None,
                 dcc.Dropdown(
                     id=self.id,
-                    options=altered_options,
+                    options=dict_options_with_all,
                     value=self.value if self.value is not None else default_value,
                     multi=self.multi,
                     optionHeight=option_height,

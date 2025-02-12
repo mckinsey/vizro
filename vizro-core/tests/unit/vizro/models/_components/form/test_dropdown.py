@@ -140,8 +140,36 @@ class TestDropdownInstantiation:
 class TestDropdownBuild:
     """Tests model build method."""
 
-    def test_dropdown_with_all_option(self):
-        dropdown = Dropdown(options=["A", "B", "C"], title="Title", id="dropdown_id").build()
+    @pytest.mark.parametrize(
+        "value, options, expected_checklist_all_value, expected_options, expected_value",
+        [
+            (
+                ["A"],
+                ["A", "B", "C"],
+                [],
+                [{"label": "A", "value": "A"}, {"label": "B", "value": "B"}, {"label": "C", "value": "C"}],
+                ["A"],
+            ),
+            (
+                ["A", "B", "C"],
+                ["A", "B", "C"],
+                ["ALL"],
+                [{"label": "A", "value": "A"}, {"label": "B", "value": "B"}, {"label": "C", "value": "C"}],
+                ["A", "B", "C"],
+            ),
+            (
+                None,
+                ["A", "B", "C"],
+                ["ALL"],
+                [{"label": "A", "value": "A"}, {"label": "B", "value": "B"}, {"label": "C", "value": "C"}],
+                ["A", "B", "C"],
+            ),
+        ],
+    )
+    def test_dropdown_with_all_option(
+        self, value, options, expected_checklist_all_value, expected_options, expected_value
+    ):
+        dropdown = Dropdown(value=value, options=options, title="Title", id="dropdown_id").build()
         expected_dropdown = html.Div(
             [
                 dbc.Label("Title", html_for="dropdown_id"),
@@ -153,7 +181,7 @@ class TestDropdownBuild:
                                 [
                                     dcc.Checklist(
                                         options=[{"label": "", "value": "ALL"}],
-                                        value=["ALL"],
+                                        value=expected_checklist_all_value,
                                         id="dropdown_id_checklist_all",
                                         persistence=True,
                                         persistence_type="session",
@@ -164,12 +192,10 @@ class TestDropdownBuild:
                             ),
                             "value": "ALL",
                         },
-                        {"label": "A", "value": "A"},
-                        {"label": "B", "value": "B"},
-                        {"label": "C", "value": "C"},
+                        *expected_options,
                     ],
                     optionHeight=32,
-                    value=["A", "B", "C"],
+                    value=expected_value,
                     multi=True,
                     persistence=True,
                     persistence_type="session",

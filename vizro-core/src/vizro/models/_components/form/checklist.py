@@ -5,6 +5,7 @@ from dash import ClientsideFunction, Input, Output, State, clientside_callback, 
 from pydantic import AfterValidator, Field, PrivateAttr, model_validator
 from pydantic.functional_serializers import PlainSerializer
 
+from vizro._constants import ALL_OPTION
 from vizro.models import Action, VizroBaseModel
 from vizro.models._action._actions_chain import _action_validator_factory
 from vizro.models._components.form._form_utils import get_options_and_default, validate_options_dict, validate_value
@@ -50,33 +51,33 @@ class Checklist(VizroBaseModel):
     _validate_options = model_validator(mode="before")(validate_options_dict)
 
     def __call__(self, options):
-        output = [Output(f"{self.id}", "value"), Output(f"{self.id}_select_all", "value")]
-        inputs = [
-            Input(f"{self.id}_select_all", "value"),
-            Input(f"{self.id}", "value"),
-            State(f"{self.id}", "options"),
-        ]
-
         clientside_callback(
             ClientsideFunction(namespace="checklist", function_name="update_checklist_values"),
-            output=output,
-            inputs=inputs,
+            output=[Output(f"{self.id}_select_all", "value"), Output(f"{self.id}", "value")],
+            inputs=[
+                Input(f"{self.id}_select_all", "value"),
+                Input(f"{self.id}", "value"),
+                State(f"{self.id}", "options"),
+            ],
+            prevent_initial_call=True,
         )
+        dict_options, default_value = get_options_and_default(options=options, multi=True)
+        final_value = self.value if self.value is not None else default_value
 
         return html.Fieldset(
             children=[
                 html.Legend(children=self.title, className="form-label") if self.title else None,
                 dbc.Checklist(
                     id=f"{self.id}_select_all",
-                    options=["ALL"],
-                    value=["ALL"] if self.value == self.options or self.value is None else [],
+                    options=[ALL_OPTION],
+                    value=[ALL_OPTION] if len(final_value) == len(dict_options) else [],
                     persistence=True,
                     persistence_type="session",
                 ),
                 dbc.Checklist(
                     id=self.id,
                     options=options,
-                    value=self.value if self.value is not None else options,
+                    value=final_value,
                     persistence=True,
                     persistence_type="session",
                 ),
