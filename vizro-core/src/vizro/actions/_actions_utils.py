@@ -8,7 +8,7 @@ from typing import TYPE_CHECKING, Any, Literal, Optional, TypedDict, Union, cast
 
 import pandas as pd
 
-from vizro._constants import ALL_OPTION, NONE_OPTION
+from vizro._constants import NONE_OPTION
 from vizro.managers import data_manager, model_manager
 from vizro.managers._data_manager import DataSourceName
 from vizro.managers._model_manager import ModelID

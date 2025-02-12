@@ -122,22 +122,29 @@ class TestChecklistInstantiation:
 class TestChecklistBuild:
     """Tests model build method."""
 
-    def test_checklist_build(self):
-        checklist = Checklist(id="checklist_id", value=["A"], options=["A", "B", "C"], title="Title").build()
+    @pytest.mark.parametrize(
+        "value, options, expected_checklist_all_value",
+        [
+            (["A"], ["A", "B", "C"], []),
+            (["A", "B", "C"], ["A", "B", "C"], ["ALL"]),
+        ],
+    )
+    def test_checklist_build(self, value, options, expected_checklist_all_value):
+        checklist = Checklist(id="checklist_id", value=value, options=options, title="Title").build()
         expected_checklist = html.Fieldset(
             [
                 html.Legend("Title", className="form-label"),
                 dbc.Checklist(
                     id="checklist_id_select_all",
                     options=["ALL"],
-                    value=[],
+                    value=expected_checklist_all_value,
                     persistence=True,
                     persistence_type="session",
                 ),
                 dbc.Checklist(
                     id="checklist_id",
-                    options=["A", "B", "C"],
-                    value=["A"],
+                    options=options,
+                    value=value,
                     persistence=True,
                     persistence_type="session",
                 ),

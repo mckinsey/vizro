@@ -49,10 +49,8 @@ def _add_select_all_option(
     options: OptionsType, component_id: str, value: Optional[Union[SingleValueType, MultiValueType]]
 ) -> list[OptionsDictType]:
     """Adds a 'Select All' option to the list of options."""
-    checklist_value = (
-        [ALL_OPTION] if value is None or (isinstance(value, list) and len(value) == len(options)) else []
-    )
-    # options = cast(list[OptionsDictType], options)
+    checklist_value = [ALL_OPTION] if value is None or (isinstance(value, list) and len(value) == len(options)) else []
+
     all_option = {
         "label": html.Div(
             [
@@ -69,7 +67,7 @@ def _add_select_all_option(
         ),
         "value": ALL_OPTION,
     }
-    dict_options_with_all = [all_option, *options]  # type: ignore
+    dict_options_with_all = [all_option, *options]
     return dict_options_with_all
 
 
@@ -132,7 +130,7 @@ class Dropdown(VizroBaseModel):
                     Input(f"{self.id}", "value"),
                     State(f"{self.id}", "options"),
                 ],
-                prevent_initial_call=True
+                prevent_initial_call=True,
             )
         dict_options, default_value = get_options_and_default(options=options, multi=self.multi)
         option_height = _calculate_option_height(dict_options)

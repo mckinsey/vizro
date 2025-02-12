@@ -3,7 +3,8 @@ function update_checklist_values(
   checklist_value = [],
   options = [],
 ) {
-  const triggeredId = dash_clientside.callback_context.triggered[0]["prop_id"].split(".")[0];
+  const triggeredId =
+    dash_clientside.callback_context.triggered[0]["prop_id"].split(".")[0];
   const allSelected = checklist_value.length === options.length;
 
   if (triggeredId.includes("select_all")) {
