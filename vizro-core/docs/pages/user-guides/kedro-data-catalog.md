@@ -29,7 +29,7 @@ motorbikes:
   type: pandas.CSVDataset
   filepath: s3://your_bucket/data/motorbikes.csv   # (3)!
   load_args:   # (4)!
-    sep: ","
+    sep: ','
     na_values: [NA]
 
 trains:
@@ -48,9 +48,9 @@ trucks:
 ```
 
 1. The [minimum details needed](https://docs.kedro.org/en/stable/data/data_catalog.html#the-basics-of-catalog-yml) for a Kedro Data Catalog entry are the data source name (`cars`), the type of data (`type`), and the file's location (`filepath`).
-2. Vizro supports all [`kedro_datasets.pandas`](https://docs.kedro.org/en/stable/kedro_datasets.html) datasets. This includes, for example, CSV, Excel and Parquet files.
-3. Kedro supports a [variety of data stores](https://docs.kedro.org/en/stable/data/data_catalog.html#dataset-filepath) including local file systems, network file systems and cloud object store.
-4. You can [pass data loading arguments](https://docs.kedro.org/en/stable/data/data_catalog.html#load-save-and-filesystem-arguments) to specify how to load the data source.
+1. Vizro supports all [`kedro_datasets.pandas`](https://docs.kedro.org/en/stable/kedro_datasets.html) datasets. This includes, for example, CSV, Excel and Parquet files.
+1. Kedro supports a [variety of data stores](https://docs.kedro.org/en/stable/data/data_catalog.html#dataset-filepath) including local file systems, network file systems and cloud object store.
+1. You can [pass data loading arguments](https://docs.kedro.org/en/stable/data/data_catalog.html#load-save-and-filesystem-arguments) to specify how to load the data source.
 
 For more details, refer to Kedro's [introduction to the Data Catalog](https://docs.kedro.org/en/stable/data/data_catalog.html) and their [collection of YAML examples](https://docs.kedro.org/en/stable/data/data_catalog_yaml_examples.html).
 
@@ -70,7 +70,6 @@ for dataset_name, dataset_loader in kedro_integration.datasets_from_catalog(cata
 This registers in the Vizro `data_manager` all data sources of type [`kedro_datasets.pandas`](https://docs.kedro.org/en/stable/kedro_datasets.html) from the Kedro `catalog`. You can now [reference the data source](data.md#reference-by-name) by name. For example, given the [above `catalog.yaml` file](#create-a-kedro-data-catalog), you could use the data source names `"cars"`, `"motorbikes"`, `"trains"` and `"trucks"`, for example with `px.scatter("cars", ...)`.
 
 !!! note
-   
     Data sources imported from Kedro in this way are [dynamic data](data.md#dynamic-data). This means that the data can be refreshed while your dashboard is running. For example, if you execute a Kedro pipeline run then the latest data can be shown in your dashboard without restarting it.
 
 The `catalog` variable may have been created in a number of different ways:
@@ -97,9 +96,9 @@ The full code for these different cases is given below.
             data_manager[dataset_name] = dataset_loader
         ```
 
-        1. Kedro's [experimental `KedroDataCatalog`](https://docs.kedro.org/en/stable/data/index.html#kedrodatacatalog-experimental-feature) would also work. 
-        2. The contents of `catalog.yaml` is [described above](#create-a-kedro-data-catalog).
-   
+        1. Kedro's [experimental `KedroDataCatalog`](https://docs.kedro.org/en/stable/data/index.html#kedrodatacatalog-experimental-feature) would also work.
+        1. The contents of `catalog.yaml` is [described above](#create-a-kedro-data-catalog).
+
     === "app.py (Kedro project path)"
         ```python
         from vizro.integrations import kedro as kedro_integration
@@ -121,8 +120,6 @@ The full code for these different cases is given below.
         for dataset_name, dataset_loader in kedro_integration.datasets_from_catalog(catalog).items():
             data_manager[dataset_name] = dataset_loader
         ```
-
-
 
 ### Use dataset factories
 

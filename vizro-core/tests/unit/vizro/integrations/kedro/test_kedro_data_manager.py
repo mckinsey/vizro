@@ -1,6 +1,5 @@
 """Unit tests for vizro.integrations.kedro."""
 
-import types
 from importlib.metadata import version
 from pathlib import Path
 
