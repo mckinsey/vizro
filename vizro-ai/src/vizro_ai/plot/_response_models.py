@@ -60,8 +60,37 @@ def _exec_code(code: str, namespace: dict) -> dict:
     return namespace
 
 
-class ChartPlan(BaseModel):
-    """Chart plan model."""
+def _test_execute_chart_code(data_frame: pd.DataFrame):
+    def validator(v, values):
+        """Test the execution of the chart code."""
+        imports = "\n".join(values.get("imports", []))
+        code_to_validate = imports + "\n\n" + v
+        try:
+            _safeguard_check(code_to_validate)
+        except Exception as e:
+            raise ValueError(
+                f"Produced code failed the safeguard validation: <{e}>. Please check the code and try again."
+            )
+        try:
+            namespace = globals()
+            namespace = _exec_code(code_to_validate, namespace)
+            custom_chart = namespace[f"{CUSTOM_CHART_NAME}"]
+            fig = custom_chart(data_frame.sample(10, replace=True))
+        except Exception as e:
+            raise ValueError(
+                f"Produced code execution failed the following error: <{e}>. Please check the code and try again, "
+                f"alternatively try with a more powerful model."
+            )
+        assert isinstance(fig, go.Figure), (
+            f"Expected chart code to return a plotly go.Figure object, but got {type(fig)}"
+        )
+        return v
+
+    return validator
+
+
+class BaseChartPlan(BaseModel):
+    """Base chart plan model with core fields."""
 
     chart_type: str = Field(
         ...,
@@ -89,16 +118,6 @@ class ChartPlan(BaseModel):
         4. All data used in the chart must be derived from the data_frame argument, all data manipulations
         must be done within the function.
         """,
-    )
-    chart_insights: str = Field(
-        ...,
-        description="""
-        Insights to what the chart explains or tries to show. Ideally concise and between 30 and 60 words.""",
-    )
-    code_explanation: str = Field(
-        ...,
-        description="""
-        Explanation of the code steps used for `chart_code` field.""",
     )
 
     _additional_vizro_imports: list[str] = PrivateAttr(ADDITIONAL_IMPORTS)
@@ -177,37 +196,37 @@ and it should be the first argument of the chart."""
         return self._get_complete_code(vizro=True)
 
 
-class ChartPlanFactory:
-    def __new__(cls, data_frame: pd.DataFrame) -> ChartPlan:  # TODO: change to ChartPlanDynamic
-        def _test_execute_chart_code(v, values):
-            """Test the execution of the chart code."""
-            imports = "\n".join(values.get("imports", []))
-            code_to_validate = imports + "\n\n" + v
-            try:
-                _safeguard_check(code_to_validate)
-            except Exception as e:
-                raise ValueError(
-                    f"Produced code failed the safeguard validation: <{e}>. Please check the code and try again."
-                )
-            try:
-                namespace = globals()
-                namespace = _exec_code(code_to_validate, namespace)
-                custom_chart = namespace[f"{CUSTOM_CHART_NAME}"]
-                fig = custom_chart(data_frame.sample(10, replace=True))
-            except Exception as e:
-                raise ValueError(
-                    f"Produced code execution failed the following error: <{e}>. Please check the code and try again, "
-                    f"alternatively try with a more powerful model."
-                )
-            assert isinstance(fig, go.Figure), (
-                f"Expected chart code to return a plotly go.Figure object, but got {type(fig)}"
-            )
-            return v
+class ChartPlan(BaseChartPlan):
+    """Extended chart plan model with additional explanatory fields."""
 
+    chart_insights: str = Field(
+        ...,
+        description="""
+        Insights to what the chart explains or tries to show.
+        Ideally concise and between 30 and 60 words.""",
+    )
+    code_explanation: str = Field(
+        ...,
+        description="""
+        Explanation of the code steps used for `chart_code` field.""",
+    )
+
+
+class ChartPlanFactory:
+    def __new__(cls, data_frame: pd.DataFrame, chart_plan: type[BaseChartPlan] = ChartPlan) -> type[BaseChartPlan]:
+        """Creates a chart plan model with additional validation.
+
+        Args:
+            data_frame: DataFrame to use for validation
+            chart_plan: Chart plan model to run extended validation against. Defaults to ChartPlan.
+
+        Returns:
+            Chart plan model with additional validation
+        """
         return create_model(
             "ChartPlanDynamic",
+            __base__=chart_plan,
             __validators__={
-                "validator1": validator("chart_code", allow_reuse=True)(_test_execute_chart_code),
+                "validator1": validator("chart_code", allow_reuse=True)(_test_execute_chart_code(data_frame)),
             },
-            __base__=ChartPlan,
         )
