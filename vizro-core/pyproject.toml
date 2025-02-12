@@ -25,7 +25,8 @@ dependencies = [
   "flask_caching>=2",
   "wrapt>=1",
   "black",
-  "autoflake"
+  "autoflake",
+  "packaging"
 ]
 description = "Vizro is a package to facilitate visual analytics."
 dynamic = ["version"]
@@ -36,7 +37,7 @@ requires-python = ">=3.9"
 
 [project.optional-dependencies]
 kedro = [
-  "kedro>=0.17.3",
+  "kedro>=0.19.0",
   "kedro-datasets"  # no longer a dependency of kedro for kedro>=0.19.2
 ]
 
