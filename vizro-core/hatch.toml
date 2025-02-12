@@ -35,7 +35,9 @@ dependencies = [
   "imutils",
   "opencv-python",
   "pyhamcrest",
-  "gunicorn"
+  "gunicorn",
+  "openai",
+  "dash-chat",
 ]
 installer = "uv"
 

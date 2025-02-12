@@ -25,7 +25,11 @@ dependencies = [
   "flask_caching>=2",
   "wrapt>=1",
   "black",
-  "autoflake"
+  "autoflake",
+  "openai",
+  "python-dotenv",
+  "dash-chat",
+  "dash-mantine-components",
 ]
 description = "Vizro is a package to facilitate visual analytics."
 dynamic = ["version"]
