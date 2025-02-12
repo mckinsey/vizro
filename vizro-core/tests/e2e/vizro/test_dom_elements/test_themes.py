@@ -17,23 +17,24 @@ from e2e.vizro.paths import tab_path, theme_toggle_path
 )
 def test_themes(dash_br, dashboard_id):
     page_select(dash_br, page_path=cnst.FILTERS_PAGE_PATH, page_name=cnst.FILTERS_PAGE, graph_id=cnst.SCATTER_GRAPH_ID)
+
     if dashboard_id == cnst.DASHBOARD_DEFAULT:
-        check_graph_color(dash_br, style_background=cnst.STYLE_GREY, color=cnst.HEX_GREY)
+        check_graph_color(dash_br, style_background=cnst.STYLE_TRANSPARENT, color=cnst.RGBA_TRANSPARENT)
         check_theme_color(dash_br, color=cnst.THEME_LIGHT)
         dash_br.multiple_click(theme_toggle_path(), 1)
-        check_graph_color(dash_br, style_background=cnst.STYLE_BLACK, color=cnst.HEX_BLACK)
+        check_graph_color(dash_br, style_background=cnst.STYLE_TRANSPARENT, color=cnst.RGBA_TRANSPARENT)
         check_theme_color(dash_br, color=cnst.THEME_DARK)
         dash_br.multiple_click(theme_toggle_path(), 1)
-        check_graph_color(dash_br, style_background=cnst.STYLE_GREY, color=cnst.HEX_GREY)
+        check_graph_color(dash_br, style_background=cnst.STYLE_TRANSPARENT, color=cnst.RGBA_TRANSPARENT)
         check_theme_color(dash_br, color=cnst.THEME_LIGHT)
     else:
-        check_graph_color(dash_br, style_background=cnst.STYLE_BLACK, color=cnst.HEX_BLACK)
+        check_graph_color(dash_br, style_background=cnst.STYLE_TRANSPARENT, color=cnst.RGBA_TRANSPARENT)
         check_theme_color(dash_br, color=cnst.THEME_DARK)
         dash_br.multiple_click(theme_toggle_path(), 1)
-        check_graph_color(dash_br, style_background=cnst.STYLE_GREY, color=cnst.HEX_GREY)
+        check_graph_color(dash_br, style_background=cnst.STYLE_TRANSPARENT, color=cnst.RGBA_TRANSPARENT)
         check_theme_color(dash_br, color=cnst.THEME_LIGHT)
         dash_br.multiple_click(theme_toggle_path(), 1)
-        check_graph_color(dash_br, style_background=cnst.STYLE_BLACK, color=cnst.HEX_BLACK)
+        check_graph_color(dash_br, style_background=cnst.STYLE_TRANSPARENT, color=cnst.RGBA_TRANSPARENT)
         check_theme_color(dash_br, color=cnst.THEME_DARK)
 
 
@@ -101,6 +102,6 @@ def test_themes_page_change(dash_br, dashboard_id):
         check_theme_color(dash_br, color=theme_color)
 
     if dashboard_id == cnst.DASHBOARD_DEFAULT:
-        _logic(style_background=cnst.STYLE_BLACK, graph_color=cnst.HEX_BLACK, theme_color=cnst.THEME_DARK)
+        _logic(style_background=cnst.STYLE_TRANSPARENT, graph_color=cnst.RGBA_TRANSPARENT, theme_color=cnst.THEME_DARK)
     else:
-        _logic(style_background=cnst.STYLE_BLACK, graph_color=cnst.HEX_GREY, theme_color=cnst.THEME_LIGHT)
+        _logic(style_background=cnst.STYLE_TRANSPARENT, graph_color=cnst.RGBA_TRANSPARENT, theme_color=cnst.THEME_LIGHT)

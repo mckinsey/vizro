@@ -94,7 +94,7 @@
       "color": "rgba(20, 23, 33, 0.8784313725)"
     },
     "legend": {
-      "bgcolor": "rgba(0,0,0,0)",
+      "bgcolor": "rgba(0, 0, 0, 0)",
       "font": {
         "size": 14,
         "color": "rgba(20, 23, 33, 0.8784313725)"
@@ -108,6 +108,9 @@
       },
       "y": -0.2
     },
+    "map": {
+      "style": "carto-darkmatter"
+    },
     "margin": {
       "autoexpand": true,
       "b": 64,
@@ -117,8 +120,9 @@
       "t": 64
     },
     "modebar": {
-      "bgcolor": "rgba(0,0,0,0)",
-      "orientation": "v"
+      "activecolor": "darkgrey",
+      "bgcolor": "rgba(0, 0, 0, 0)",
+      "color": "dimgrey"
     },
     "showlegend": true,
     "title": {
@@ -166,9 +170,9 @@
       },
       "visible": true,
       "zeroline": false,
-      "tickcolor": "rgba(20, 23, 33, 0.3019607843)",
+      "gridcolor": "rgba(20, 23, 33, 0.1019607843)",
       "linecolor": "rgba(20, 23, 33, 0.3019607843)",
-      "gridcolor": "rgba(20, 23, 33, 0.1019607843)"
+      "tickcolor": "rgba(20, 23, 33, 0.3019607843)"
     },
     "yaxis": {
       "automargin": true,
@@ -193,30 +197,29 @@
       },
       "visible": true,
       "zeroline": false,
-      "tickcolor": "rgba(20, 23, 33, 0.3019607843)",
+      "gridcolor": "rgba(20, 23, 33, 0.1019607843)",
       "linecolor": "rgba(20, 23, 33, 0.3019607843)",
-      "gridcolor": "rgba(20, 23, 33, 0.1019607843)"
+      "tickcolor": "rgba(20, 23, 33, 0.3019607843)"
     },
-    "paper_bgcolor": "white",
-    "plot_bgcolor": "white",
     "geo": {
       "bgcolor": "white",
       "lakecolor": "white",
       "landcolor": "white"
     },
+    "paper_bgcolor": "white",
+    "plot_bgcolor": "white",
     "polar": {
-      "bgcolor": "white",
       "angularaxis": {
         "gridcolor": "rgba(20, 23, 33, 0.1019607843)",
         "linecolor": "rgba(20, 23, 33, 0.3019607843)"
       },
+      "bgcolor": "white",
       "radialaxis": {
         "gridcolor": "rgba(20, 23, 33, 0.1019607843)",
         "linecolor": "rgba(20, 23, 33, 0.3019607843)"
       }
     },
     "ternary": {
-      "bgcolor": "white",
       "aaxis": {
         "gridcolor": "rgba(20, 23, 33, 0.1019607843)",
         "linecolor": "rgba(20, 23, 33, 0.3019607843)"
@@ -225,13 +228,11 @@
         "gridcolor": "rgba(20, 23, 33, 0.1019607843)",
         "linecolor": "rgba(20, 23, 33, 0.3019607843)"
       },
+      "bgcolor": "white",
       "caxis": {
         "gridcolor": "rgba(20, 23, 33, 0.1019607843)",
         "linecolor": "rgba(20, 23, 33, 0.3019607843)"
       }
-    },
-    "map": {
-      "style": "carto-darkmatter"
     }
   },
   "data": {

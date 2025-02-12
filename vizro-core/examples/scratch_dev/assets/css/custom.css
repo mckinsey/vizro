@@ -2,19 +2,16 @@
   padding-left: 8px;
 }
 
-/* TODO: Check why overwrites are needed on native dbc component */
-.container {
-  display: flex;
-  flex-direction: column;
-  height: 100%;
-  overflow: auto;
-  padding-bottom: 16px;
+[data-bs-theme="dark"] {
+            --container-bg-color: #232632;
 }
 
-.container-title {
-  margin: 8px 0;
+[data-bs-theme="light"] {
+    --container-bg-color: #F5F6F6;
 }
 
-.bg-container {
-  background: var(--surfaces-bg-card);
+/* Use the custom variable var(--container-bg-color) */
+.page-component-container {
+    background: var(--container-bg-color);
+    padding: 12px;
 }
