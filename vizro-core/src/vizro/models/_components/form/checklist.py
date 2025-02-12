@@ -59,6 +59,7 @@ class Checklist(VizroBaseModel):
                 Input(f"{self.id}", "value"),
                 State(f"{self.id}", "options"),
             ],
+            prevent_initial_call=True
         )
         dict_options, default_value = get_options_and_default(options=options, multi=True)
         final_value = self.value if self.value is not None else default_value

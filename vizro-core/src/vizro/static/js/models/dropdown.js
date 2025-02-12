@@ -3,10 +3,7 @@ function update_dropdown_values(
   value = [],
   options = [],
 ) {
-  const ctx = dash_clientside.callback_context.triggered;
-  if (!ctx.length) return dash_clientside.no_update;
-
-  const triggeredId = ctx[0]["prop_id"].split(".")[0];
+  const triggeredId = dash_clientside.callback_context.triggered[0]["prop_id"].split(".")[0];
   const options_list = options.map((dict) => dict["value"]);
   const updated_options = options_list.filter((element) => element !== "ALL");
 

@@ -132,6 +132,7 @@ class Dropdown(VizroBaseModel):
                     Input(f"{self.id}", "value"),
                     State(f"{self.id}", "options"),
                 ],
+                prevent_initial_call=True
             )
         dict_options, default_value = get_options_and_default(options=options, multi=self.multi)
         option_height = _calculate_option_height(dict_options)
