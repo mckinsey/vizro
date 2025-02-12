@@ -10,12 +10,12 @@ Uncomment the section that is right (remove the HTML comment wrapper).
 - A bullet item for the Highlights ✨ category with a link to the relevant PR at the end of your entry, e.g. Enable feature XXX. ([#1](https://github.com/mckinsey/vizro/pull/1))
 
 -->
-<!--
+
 ### Removed
 
-- A bullet item for the Removed category with a link to the relevant PR at the end of your entry, e.g. Enable feature XXX. ([#1](https://github.com/mckinsey/vizro/pull/1))
+- Remove export png button from modebar inside `Graph`. ([#1005](https://github.com/mckinsey/vizro/pull/1005))
 
--->
+
 <!--
 ### Added
 
