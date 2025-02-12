@@ -24,6 +24,7 @@ class Container(VizroBaseModel):
             has to be provided.
         title (str): Title to be displayed.
         layout (Optional[Layout]): Layout to place components in. Defaults to `None`.
+        background (bool): Flag indicating whether to apply default container background color. Defaults to `False`.
 
     """
 
@@ -35,14 +36,7 @@ class Container(VizroBaseModel):
     )
     title: str = Field(description="Title to be displayed.")
     layout: Annotated[Optional[Layout], AfterValidator(set_layout), Field(default=None, validate_default=True)]
-    # TODO: Refine API later, just for testing now
-    # TODO: Check what bootstrap adds to .container and .container-fluid - currently overflows, adds too much padding...
-    # We could be very strict and just allow bools, but my preference would be being semi-strict and allowing
-    # classNames. This way we can allow for more flexibility in the future. Default styling should then come from
-    # Bootstrap utility classes but they also have the flexibility to override them.
-    # border: bool = False
-    # background: bool = False
-    classname: str = ""
+    background: bool = Field(False, description="Flag indicating whether to apply default container background color.")
 
     @_log_call
     def build(self):
@@ -62,11 +56,12 @@ class Container(VizroBaseModel):
         components_container = self.layout.build()
         for component_idx, component in enumerate(self.components):
             components_container[f"{self.layout.id}_{component_idx}"].children = component.build()
+
         return dbc.Container(
             id=self.id,
             children=[
                 html.H3(children=self.title, className="container-title", id=f"{self.id}_title"),
                 components_container,
             ],
-            className=self.classname,
+            className="bg-container" if self.background else "",
         )
