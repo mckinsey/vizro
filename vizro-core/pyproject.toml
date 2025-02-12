@@ -87,7 +87,7 @@ filterwarnings = [
   "ignore:.*scattermapbox.*is deprecated.*Use.*scattermap.*instead:DeprecationWarning"
 ]
 norecursedirs = ["tests/tests_utils", "tests/js"]
-pythonpath = ["tests/tests_utils"]
+pythonpath = ["tests/tests_utils", "tests/e2e/vizro/custom_components"]
 
 [tool.ruff]
 extend = "../pyproject.toml"

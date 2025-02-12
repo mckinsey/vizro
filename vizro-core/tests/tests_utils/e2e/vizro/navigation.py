@@ -20,10 +20,3 @@ def page_select(driver, page_path, page_name, graph_id=None):
     driver.wait_for_text_to_equal(page_title_path(), page_name)
     if graph_id:
         graph_load_waiter(driver, graph_id)
-
-
-def select_dropdown_value(driver, value):
-    """Steps to select value in dropdown."""
-    driver.multiple_click(".Select-clear", 1)
-    driver.multiple_click(".Select-arrow", 1)
-    driver.multiple_click(f".ReactVirtualized__Grid__innerScrollContainer div:nth-of-type({value})", 1)
