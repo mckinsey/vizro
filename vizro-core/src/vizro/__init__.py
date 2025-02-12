@@ -5,6 +5,7 @@ from pathlib import Path
 
 import plotly.io as pio
 from dash.development.base_component import ComponentRegistry
+from packaging.version import parse
 
 from ._constants import VIZRO_ASSETS_PATH
 from ._vizro import Vizro, _make_resource_spec
@@ -23,7 +24,7 @@ __version__ = "0.1.34.dev0"
 # This would only be the case where you need to test something with serve_locally=False and have changed
 # assets compared to main. In this case you need to push your assets changes to remote for the CDN to update,
 # and it might also be necessary to clear the CDN cache: https://www.jsdelivr.com/tools/purge.
-_git_branch = __version__ if "dev" not in __version__ else "main"
+_git_branch = __version__ if not parse(__version__).is_devrelease else "main"
 BASE_EXTERNAL_URL = f"https://cdn.jsdelivr.net/gh/mckinsey/vizro@{_git_branch}/vizro-core/src/vizro/"
 # Enables the use of our own Bootstrap theme in a pure Dash app with `external_stylesheets=vizro.bootstrap`.
 bootstrap = f"{BASE_EXTERNAL_URL}static/css/vizro-bootstrap.min.css"
