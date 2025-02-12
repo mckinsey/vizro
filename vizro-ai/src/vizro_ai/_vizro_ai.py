@@ -12,7 +12,7 @@ from vizro_ai._llm_models import _get_llm_model
 from vizro_ai.dashboard._graph.dashboard_creation import _create_and_compile_graph
 from vizro_ai.dashboard._pydantic_output import _get_pydantic_model  # TODO: make general, ie remove from dashboard
 from vizro_ai.dashboard.utils import DashboardOutputs, _extract_overall_imports_and_code, _register_data
-from vizro_ai.plot._response_models import ChartPlan, ChartPlanFactory
+from vizro_ai.plot._response_models import BaseChartPlan, ChartPlan, ChartPlanFactory
 from vizro_ai.utils.helper import _get_df_info
 
 logger = logging.getLogger(__name__)
@@ -65,6 +65,7 @@ class VizroAI:
         max_debug_retry: int = 1,
         return_elements: bool = False,
         validate_code: bool = True,
+        _minimal_output: bool = False,
     ) -> Union[go.Figure, ChartPlan]:
         """Plot visuals using vizro via english descriptions, english to chart translation.
 
@@ -75,12 +76,16 @@ class VizroAI:
             return_elements: Flag to return ChartPlan pydantic model that includes all
                 possible elements generated. Defaults to `False`.
             validate_code: Flag if produced code should be executed to validate it. Defaults to `True`.
+            _minimal_output: Internal flag to exclude chart insights and code explanations and
+                skip validation. Defaults to `False`.
 
         Returns:
             go.Figure or ChartPlan pydantic model
 
         """
-        response_model = ChartPlanFactory(data_frame=df) if validate_code else ChartPlan
+        chart_plan = BaseChartPlan if _minimal_output else ChartPlan
+        response_model = ChartPlanFactory(data_frame=df, chart_plan=chart_plan) if validate_code else chart_plan
+
         _, df_sample = _get_df_info(df, n_sample=10)
         response = _get_pydantic_model(
             query=user_input,
