@@ -170,6 +170,8 @@ class DataManager:
             # Once partial has been used, all dynamic data sources are on equal footing since they're all treated as
             # functions rather than bound methods, e.g. by flask_caching.utils.function_namespace. This makes it much
             # simpler to use flask-caching reliably.
+            # Note that for kedro>=0.19.9 we use lambda: catalog.load(dataset_name) rather than dataset.load so the
+            # bound method case no longer arises when using kedro integration.
             # It's important the __qualname__ is the same across all workers, so use the data source name rather than
             # e.g. the repr method that includes the id of the instance so would only work in the case that gunicorn is
             # running with --preload.
