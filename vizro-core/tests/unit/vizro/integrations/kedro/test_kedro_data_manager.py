@@ -44,9 +44,9 @@ def test_datasets_from_catalog_with_pipeline(catalog):
                 inputs=[
                     "pandas_excel",
                     "something#csv",
+                    "something_else#csv",
                     "not_dataframe",
                     "not_in_catalog",
-                    "pandas_parquet",
                     "parameters",
                     "params:z",
                 ],
@@ -58,7 +58,7 @@ def test_datasets_from_catalog_with_pipeline(catalog):
     datasets = datasets_from_catalog(catalog, pipeline=pipeline)
     # Dataset factories only work for kedro>=0.19.9.
     expected_datasets = (
-        {"pandas_excel", "pandas_parquet", "something#csv"}
+        {"pandas_excel", "pandas_parquet", "something#csv", "something_else#csv"}
         if parse(version("kedro")) >= parse("0.19.9")
         else {"pandas_excel", "pandas_parquet"}
     )

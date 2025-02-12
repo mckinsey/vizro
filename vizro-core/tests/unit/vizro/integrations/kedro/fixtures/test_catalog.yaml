@@ -1,6 +1,6 @@
 "{pandas_factory}#csv":
   type: pandas.CSVDataset
-  filepath: ./{pandas_factory}.csv
+  filepath: "{pandas_factory}.csv"
 
 pandas_excel:
   type: pandas.ExcelDataset

@@ -210,7 +210,6 @@ def _make_resource_spec(path: Path) -> _ResourceSpec:
     # This would only be the case where you need to test something with serve_locally=False and have changed
     # assets compared to main. In this case you need to push your assets changes to remote for the CDN to update,
     # and it might also be necessary to clear the CDN cache: https://www.jsdelivr.com/tools/purge.
-
     _git_branch = vizro.__version__ if not parse(vizro.__version__).is_devrelease else "main"
     BASE_EXTERNAL_URL = f"https://cdn.jsdelivr.net/gh/mckinsey/vizro@{_git_branch}/vizro-core/src/vizro/"
 
