@@ -13,7 +13,7 @@ page = vm.Page(
         vm.Container(
             title="Container I",
             components=[vm.Graph(figure=px.scatter(iris, x="sepal_width", y="sepal_length", color="species"))],
-            background=True
+            background=True,
         ),
         vm.Container(
             title="Container II",
