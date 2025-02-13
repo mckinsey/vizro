@@ -11,6 +11,30 @@ See the fragment files in the [changelog.d directory](https://github.com/mckinse
 
 <!-- scriv-insert-here -->
 
+<a id='changelog-0.1.34'></a>
+
+# 0.1.34 — 2025-02-13
+
+## Removed
+
+- Remove export png button from modebar inside `Graph`. ([#1005](https://github.com/mckinsey/vizro/pull/1005))
+
+## Added
+
+- Add `reverse_color` argument to `kpi_card_reference`, enabling color inversion based on delta values. ([#995](https://github.com/mckinsey/vizro/pull/995))
+
+- Kedro integration function `datasets_from_catalog` can handle dataset factories for `kedro>=0.19.9`. ([#1001](https://github.com/mckinsey/vizro/pull/1001))
+
+## Changed
+
+- Bump optional dependency lower bound to `kedro>=0.19.0`. ([#1001](https://github.com/mckinsey/vizro/pull/1001))
+
+- Make chart background transparent when used inside dashboard. ([#1005](https://github.com/mckinsey/vizro/pull/1005))
+
+## Fixed
+
+- Fix a bug where `add_type` would raise an error if the `type` had already been added. ([#999](https://github.com/mckinsey/vizro/pull/999))
+
 <a id='changelog-0.1.33'></a>
 
 # 0.1.33 — 2025-02-05
