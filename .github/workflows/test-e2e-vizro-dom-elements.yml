@@ -18,7 +18,18 @@ env:
 
 jobs:
   test-e2e-vizro-dom-elements:
+    name: test-e2e-vizro-dom-elements on Py${{ matrix.config.python-version }} ${{ matrix.config.label }}
     runs-on: ubuntu-latest
+
+    strategy:
+      fail-fast: false
+      matrix:
+        config:
+          - python-version: "3.12"
+            hatch-env: all.py3.12
+          - python-version: "3.9"
+            hatch-env: lower-bounds
+            label: lower bounds
 
     steps:
       - uses: actions/checkout@v4

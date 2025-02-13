@@ -67,6 +67,8 @@ def test_dropdown_kpi_indicators_page(dash_br):
                 "$73902.00",
                 "24634€",
                 "6434.0",
+                "73902",
+                "72159",
             ]
         ),
     )
@@ -87,6 +89,8 @@ def test_dropdown_kpi_indicators_page(dash_br):
                 "$67434.00",
                 "67434€",
                 "67434.0",
+                "67434",
+                "65553",
             ]
         ),
     )
