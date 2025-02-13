@@ -61,7 +61,6 @@ def _add_select_all_option(
                     persistence=True,
                     persistence_type="session",
                 ),
-                # html.Span(ALL_OPTION),
             ],
             className="checklist-dropdown-div",
         ),
