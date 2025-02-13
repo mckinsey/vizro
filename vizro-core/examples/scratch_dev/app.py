@@ -14,7 +14,6 @@ import dash_bootstrap_components as dbc
 from dotenv import load_dotenv
 from vizro.models import VizroBaseModel
 from vizro.models import Page
-from dash_chat import ChatComponent as DashChatComponent
 import json
 from flask import request, Response
 
@@ -28,59 +27,13 @@ client = OpenAI(api_key=api_key)
 assets_path = os.path.join(os.path.dirname(os.path.abspath(__file__)), "assets")
 vizro_app = Vizro(assets_folder=assets_path)
 
-# TODO: It should be able to connect to any LLM
-class ChatComponent(VizroBaseModel):
-   """Chat component for Vizro dashboards."""
-   
-   type: Literal["chatcomponent"] = "chatcomponent"
-   id: str 
-   messages: List[Dict[str, str]] = [{"role": "assistant", "content": "Hello!"}]
-   
-   def build(self):
-        return DashChatComponent(
-           id=self.id,
-           messages=self.messages,
-           container_style={
-               "backgroundColor": "var(--background-l0)",
-               "color": "var(--text-primary)",
-               "borderRadius": "8px",
-               "padding": "16px",
-               "border": "1px solid var(--border-primary)",
-               "height": "calc(100vh - 200px)",  # Adjust this value as needed
-               "minHeight": "400px",  # Set a minimum height
-               "maxHeight": "calc(100vh - 200px)",  # Match height for consistency
-               "display": "flex",
-               "flexDirection": "column"
-           },
-           input_container_style={
-               "borderTop": "1px solid var(--border-primary)",
-               "padding": "16px 0 0 0",
-               "marginTop": "16px",
-               "marginTop": "auto"  # Push input to bottom
-           },
-           input_text_style={
-               "backgroundColor": "var(--background-page)",
-               "color": "var(--text-primary)",
-               "border": "1px solid var(--border-primary)",
-               "borderRadius": "4px",
-               "padding": "8px 12px",
-               "width": "100%"
-           },
-           fill_height=True,
-           fill_width=True,
-           typing_indicator="dots"
-       )
 
-
-# Register component
-Page.add_type("components", ChatComponent)
-
-class DashGPTComponent(VizroBaseModel):
-    """DashGPT component for Vizro dashboards."""
+class CNXAssistantComponent(VizroBaseModel):
+    """CNX Assistant component for Vizro dashboards."""
     
-    type: Literal["dashgpt"] = "dashgpt"
+    type: Literal["cnx_assistant"] = "cnx_assistant"
     id: str
-    messages: List[Dict[str, str]] = [{"role": "assistant", "content": "Hello! I'm DashGPT, your data visualization assistant. How can I help you today?"}]
+    messages: List[Dict[str, str]] = [{"role": "assistant", "content": "Hello! I'm your CNX Assistant. How can I help you today?"}]
     
     def build(self):
         return html.Div([
@@ -106,9 +59,8 @@ class DashGPTComponent(VizroBaseModel):
                             id=f"{self.id}-input",
                             placeholder="Ask me a question...",
                             style={
-                                "height": "50px",
+                                "height": "80px",
                                 "resize": "none",
-                                # "borderRadius": "8px 0 0 8px"
                             },
                             n_submit=0,  # Add this to enable Enter key submissions
                         ),
@@ -116,18 +68,12 @@ class DashGPTComponent(VizroBaseModel):
                             "Send", outline=True, color="secondary", className="me-1",
                             id=f"{self.id}-submit",
                             style={
-                                # "borderRadius": "0 8px 8px 0",
-                                # "backgroundColor": "var(--border-primary)",
-                                # "backgroundColor": "#2d695e",
-                                # "border": "none",
-                                "height": "50px",
+                                "height": "80px",
                             }
                         )
                     ])
                 ], style={
                     "padding": "20px",
-                    # "borderTop": "1px solid var(--border-primary)",
-                    # "backgroundColor": "var(--background-l0)",
                     "flex": "0 0 auto",
                 })
             ], style={
@@ -136,7 +82,6 @@ class DashGPTComponent(VizroBaseModel):
                 "height": "100%",
                 "width": "100%",
                 "background-color": "var(--mantine-color-dark-light)",
-                # "border-left": "1px solid white",
             })
         ], style={
             "width": "90%", 
@@ -146,7 +91,7 @@ class DashGPTComponent(VizroBaseModel):
         })
 
 # Register component
-Page.add_type("components", DashGPTComponent)
+Page.add_type("components", CNXAssistantComponent)
 
 df = px.data.iris()
 
@@ -174,58 +119,15 @@ page = vm.Page(
     ],
     controls=[vm.Filter(column="species"), vm.Filter(column="petal_length"), vm.Filter(column="sepal_width")],
 )
-
-# Second page - Chat dashboard
-page_chat = vm.Page(
-   title="Chat Dashboard",
-   components=[
-       ChatComponent(
-           id="chat-component",
-           messages=[{"role": "assistant", "content": "Hello!"}]
-       )
-   ],
-#    layout=vm.Layout(grid=[[-1, 0, 0, -1], [-1, 0, 0, -1]]),
-)
-
-# Add callback to update UI
-@callback(
-    Output("chat-component", "messages"),
-    Input("chat-component", "new_message"),
-    State("chat-component", "messages"),
-    prevent_initial_call=True,
-)
-def handle_chat(new_message, messages):
-    if not new_message:
-        raise PreventUpdate
-    updated_messages = messages + [new_message]
-
-    if new_message["role"] == "user":
-        response = client.chat.completions.create(
-            model="gpt-4o-mini",
-            messages=updated_messages,
-            temperature=1.0,
-        )
-        bot_response = {
-            "role": "assistant",
-            "content": response.choices[0].message.content.strip()
-        }
-        updated_messages.append(bot_response)
-    return updated_messages
-
-        
+       
 
 
-# Third page - DashGPT
-page_dashgpt = vm.Page(
-    title="DashGPT",
+# Third page - CNX Assistant
+page_cnx = vm.Page(
+    title="CNX Assistant",
     components=[
-        # vm.Card(
-        #     text="""
-        #         ### DashGPT Assistant
-        #         An AI-powered assistant to help you analyze and understand your data visualization."""
-        # ),
-        DashGPTComponent(
-            id="dashgpt-chat"
+        CNXAssistantComponent(
+            id="cnx-assistant"
         )
     ],
     # layout=vm.Layout(grid=[
@@ -239,8 +141,8 @@ page_dashgpt = vm.Page(
 
 # Add callback to update UI
 @callback(
-    Output("dashgpt-chat-input", "value"),  # Only clear the input
-    Input("dashgpt-chat-messages", "data"),
+    Output("cnx-assistant-input", "value"),  # Only clear the input
+    Input("cnx-assistant-messages", "data"),
     prevent_initial_call=True
 )
 def update_chat_ui(messages_json):
@@ -251,12 +153,12 @@ def update_chat_ui(messages_json):
 # Add clientside callback for user input and streaming
 clientside_callback(
     ClientsideFunction(namespace="clientside", function_name="streaming_GPT"),
-    Output("dashgpt-chat-messages", "data", allow_duplicate=True),
-    [Input("dashgpt-chat-submit", "n_clicks"),
-     Input("dashgpt-chat-input", "n_submit")],  # Add Enter key input
+    Output("cnx-assistant-messages", "data", allow_duplicate=True),
+    [Input("cnx-assistant-submit", "n_clicks"),
+     Input("cnx-assistant-input", "n_submit")],  # Add Enter key input
     [
-        State("dashgpt-chat-input", "value"),
-        State("dashgpt-chat-messages", "data"),
+        State("cnx-assistant-input", "value"),
+        State("cnx-assistant-messages", "data"),
     ],
     prevent_initial_call=True
 )
@@ -283,5 +185,5 @@ def streaming_chat():
     return Response(response_stream(), mimetype="text/event-stream")
 
 # Build and run the dashboard
-dashboard = vm.Dashboard(pages=[page, page_chat, page_dashgpt])
+dashboard = vm.Dashboard(pages=[page, page_cnx])
 vizro_app.build(dashboard).run()

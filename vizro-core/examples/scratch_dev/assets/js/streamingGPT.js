@@ -9,7 +9,7 @@ window.dash_clientside.clientside.streaming_GPT = async function(n_clicks, n_sub
 
     try {
         const messages = JSON.parse(messages_json);
-        const chatHistory = document.getElementById("dashgpt-chat-history");
+        const chatHistory = document.getElementById("cnx-assistant-history");
         
         // Add user message
         messages.push({"role": "user", "content": user_input});
@@ -82,7 +82,7 @@ window.dash_clientside.clientside.streaming_GPT = async function(n_clicks, n_sub
                             // Add assistant response to messages and update store
                             messages.push({"role": "assistant", "content": text.trim()});
                             window.dash_clientside.callback_context = {
-                                triggered: { prop_id: "dashgpt-chat-messages.data" }
+                                triggered: { prop_id: "cnx-assistant-messages.data" }
                             };
                             return;
                         }
