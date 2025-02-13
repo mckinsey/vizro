@@ -65,7 +65,7 @@ class PagePlan(BaseModel):
         Field(..., description="List of components. Must contain at least one component."),
     ]
     controls_plan: list[ControlPlan] = Field([], description="Controls of the page.")
-    layout_plan: LayoutPlan = Field(None, description="Layout of components on the page.")
+    layout_plan: Optional[LayoutPlan] = Field(None, description="Layout of components on the page.")
     unsupported_specs: Annotated[
         list[str],
         AfterValidator(_check_unsupported_specs),

@@ -3,41 +3,11 @@ from typing import Any
 import pandas as pd
 import pytest
 import vizro.models as vm
-from langchain.output_parsers import PydanticOutputParser
-from langchain_community.llms.fake import FakeListLLM
 
 from vizro_ai.dashboard._response_models.components import ComponentPlan
 from vizro_ai.dashboard._response_models.page import PagePlan
 from vizro_ai.dashboard.utils import AllDfMetadata, DfMetadata
 from vizro_ai.plot._response_models import ChartPlan
-
-
-class MockStructuredOutputLLM(FakeListLLM):
-    def bind_tools(self, tools: list[Any]):
-        return super().bind(tools=tools)
-
-    def with_structured_output(self, schema):
-        llm = self
-        output_parser = PydanticOutputParser(pydantic_object=schema)
-        return llm | output_parser
-
-
-@pytest.fixture
-def fake_llm_card():
-    response = ['{"text":"this is a card","href":""}']
-    return MockStructuredOutputLLM(responses=response)
-
-
-@pytest.fixture
-def fake_llm_layout():
-    response = ['{"grid":[[0,1]]}']
-    return MockStructuredOutputLLM(responses=response)
-
-
-@pytest.fixture
-def fake_llm_filter():
-    response = ['{"column": "a", "targets": ["bar_chart"]}']
-    return MockStructuredOutputLLM(responses=response)
 
 
 @pytest.fixture

@@ -29,7 +29,7 @@ class ComponentPlan(BaseModel):
         """,
     )
     component_id: str = Field(
-        pattern=r"^[a-z]+(_[a-z]+)?$", description="Small snake case description of this component."
+        pattern=r"^[a-z0-9]+(_[a-z0-9]+)?$", description="Small snake case description of this component."
     )
     df_name: str = Field(
         ...,

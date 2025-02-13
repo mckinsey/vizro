@@ -50,10 +50,7 @@ class GraphState(BaseModel):
     custom_charts_code: Annotated[list, operator.add]
     custom_charts_imports: Annotated[list, operator.add]
 
-    class Config:
-        """Pydantic configuration."""
-
-        arbitrary_types_allowed = True
+    model_config = ConfigDict(arbitrary_types_allowed=True)
 
 
 def _store_df_info(state: GraphState, config: RunnableConfig) -> dict[str, AllDfMetadata]:
