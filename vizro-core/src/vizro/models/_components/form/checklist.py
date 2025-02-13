@@ -5,7 +5,6 @@ from dash import ClientsideFunction, Input, Output, State, clientside_callback, 
 from pydantic import AfterValidator, Field, PrivateAttr, model_validator
 from pydantic.functional_serializers import PlainSerializer
 
-from vizro._constants import ALL_OPTION
 from vizro.models import Action, VizroBaseModel
 from vizro.models._action._actions_chain import _action_validator_factory
 from vizro.models._components.form._form_utils import get_options_and_default, validate_options_dict, validate_value
@@ -53,11 +52,11 @@ class Checklist(VizroBaseModel):
     def __call__(self, options):
         clientside_callback(
             ClientsideFunction(namespace="checklist", function_name="update_checklist_values"),
-            output=[Output(f"{self.id}_select_all", "value"), Output(f"{self.id}", "value")],
+            output=[Output(f"{self.id}_select_all", "value"), Output(self.id, "value")],
             inputs=[
                 Input(f"{self.id}_select_all", "value"),
-                Input(f"{self.id}", "value"),
-                State(f"{self.id}", "options"),
+                Input(self.id, "value"),
+                State(self.id, "options"),
             ],
             prevent_initial_call=True,
         )
@@ -67,10 +66,10 @@ class Checklist(VizroBaseModel):
         return html.Fieldset(
             children=[
                 html.Legend(children=self.title, className="form-label") if self.title else None,
-                dbc.Checklist(
+                dbc.Checkbox(
                     id=f"{self.id}_select_all",
-                    options=[ALL_OPTION],
-                    value=[ALL_OPTION] if len(final_value) == len(dict_options) else [],
+                    value=len(final_value) == len(dict_options),
+                    label="Select All",
                     persistence=True,
                     persistence_type="session",
                 ),

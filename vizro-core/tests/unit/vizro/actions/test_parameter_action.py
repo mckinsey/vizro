@@ -244,9 +244,9 @@ class TestParameter:
             (["NONE"], [None]),
             (["NONE", "pop"], ["pop"]),
             (["NONE", "NONE"], [None]),
-            (["ALL"], ["lifeExp", "pop", "gdpPercap"]),
-            (["ALL", "lifeExp"], ["lifeExp", "pop", "gdpPercap"]),
-            (["ALL", "NONE"], ["lifeExp", "pop", "gdpPercap"]),
+            (["lifeExp", "pop", "gdpPercap"], ["lifeExp", "pop", "gdpPercap"]),
+            (["lifeExp", "pop", "gdpPercap", "lifeExp"], ["lifeExp", "pop", "gdpPercap"]),
+            (["lifeExp", "pop", "gdpPercap", "NONE"], ["lifeExp", "pop", "gdpPercap"]),
         ],
         indirect=True,
     )
@@ -509,7 +509,13 @@ class TestParameter:
     @pytest.mark.usefixtures("managers_one_page_one_graph_with_dict_param_input")
     @pytest.mark.parametrize(
         "ctx_parameter_dimensions, target_scatter_matrix_parameter_dimensions",
-        [("ALL", ["sepal_length", "sepal_width", "petal_length", "petal_width"]), (["sepal_width"], ["sepal_width"])],
+        [
+            (
+                ["sepal_length", "sepal_width", "petal_length", "petal_width"],
+                ["sepal_length", "sepal_width", "petal_length", "petal_width"],
+            ),
+            (["sepal_width"], ["sepal_width"]),
+        ],
         indirect=True,
     )
     def test_one_parameter_with_dict_input_as_options(

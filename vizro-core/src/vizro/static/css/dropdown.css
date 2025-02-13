@@ -160,7 +160,8 @@ wrapper **/
   .VirtualizedSelectOption:nth-child(1):has(> div) {
   border-bottom: 1px solid var(--border-subtleAlpha01);
   padding: 0;
-  padding-left: 0.5rem;
+  padding-left: 0.35rem;
+  padding-top: 0.5rem;
 }
 
 .checklist-dropdown-div {

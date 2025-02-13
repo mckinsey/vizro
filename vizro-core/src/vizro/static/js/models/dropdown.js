@@ -3,8 +3,7 @@ function update_dropdown_values(
   value = [],
   options = [],
 ) {
-  const triggeredId =
-    dash_clientside.callback_context.triggered[0]["prop_id"].split(".")[0];
+  const triggeredId = dash_clientside.callback_context.triggered_id;
   const options_list = options.map((dict) => dict["value"]);
   const updated_options = options_list.filter((element) => element !== "ALL");
 
@@ -14,17 +13,17 @@ function update_dropdown_values(
 
   if (isTriggeredByChecklist) {
     return value.length === updated_options.length + 1
-      ? [[], []]
-      : [["ALL"], updated_options];
+      ? [false, []]
+      : [true, updated_options];
   }
 
   if (hasAllSelected) {
     return value.length === updated_options.length + 1
-      ? [[], []]
-      : [["ALL"], updated_options];
+      ? [false, []]
+      : [true, updated_options];
   }
 
-  return allOptionsSelected ? [["ALL"], updated_options] : [[], value];
+  return allOptionsSelected ? [true, updated_options] : [false, value];
 }
 
 window.dash_clientside = {

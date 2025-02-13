@@ -49,19 +49,19 @@ def _add_select_all_option(
     options: OptionsType, component_id: str, value: Optional[Union[SingleValueType, MultiValueType]]
 ) -> list[OptionsDictType]:
     """Adds a 'Select All' option to the list of options."""
-    checklist_value = [ALL_OPTION] if value is None or (isinstance(value, list) and len(value) == len(options)) else []
+    checklist_value = True if value is None or (isinstance(value, list) and len(value) == len(options)) else False
 
     all_option = {
         "label": html.Div(
             [
-                dcc.Checklist(
+                dbc.Checkbox(
                     id=f"{component_id}_checklist_all",
-                    options=[{"label": "", "value": ALL_OPTION}],
                     value=checklist_value,
+                    label="Select All",
                     persistence=True,
                     persistence_type="session",
                 ),
-                html.Span(ALL_OPTION),
+                # html.Span(ALL_OPTION),
             ],
             className="checklist-dropdown-div",
         ),
@@ -124,11 +124,11 @@ class Dropdown(VizroBaseModel):
         if self.multi:
             clientside_callback(
                 ClientsideFunction(namespace="dropdown", function_name="update_dropdown_values"),
-                output=[Output(f"{self.id}_checklist_all", "value"), Output(f"{self.id}", "value")],
+                output=[Output(f"{self.id}_checklist_all", "value"), Output(self.id, "value")],
                 inputs=[
                     Input(f"{self.id}_checklist_all", "value"),
-                    Input(f"{self.id}", "value"),
-                    State(f"{self.id}", "options"),
+                    Input(self.id, "value"),
+                    State(self.id, "options"),
                 ],
                 prevent_initial_call=True,
             )

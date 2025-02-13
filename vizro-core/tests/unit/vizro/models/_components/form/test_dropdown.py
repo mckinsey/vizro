@@ -146,21 +146,21 @@ class TestDropdownBuild:
             (
                 ["A"],
                 ["A", "B", "C"],
-                [],
+                False,
                 [{"label": "A", "value": "A"}, {"label": "B", "value": "B"}, {"label": "C", "value": "C"}],
                 ["A"],
             ),
             (
                 ["A", "B", "C"],
                 ["A", "B", "C"],
-                ["ALL"],
+                True,
                 [{"label": "A", "value": "A"}, {"label": "B", "value": "B"}, {"label": "C", "value": "C"}],
                 ["A", "B", "C"],
             ),
             (
                 None,
                 ["A", "B", "C"],
-                ["ALL"],
+                True,
                 [{"label": "A", "value": "A"}, {"label": "B", "value": "B"}, {"label": "C", "value": "C"}],
                 ["A", "B", "C"],
             ),
@@ -179,14 +179,13 @@ class TestDropdownBuild:
                         {
                             "label": html.Div(
                                 [
-                                    dcc.Checklist(
-                                        options=[{"label": "", "value": "ALL"}],
-                                        value=expected_checklist_all_value,
+                                    dbc.Checkbox(
                                         id="dropdown_id_checklist_all",
+                                        value=expected_checklist_all_value,
+                                        label="Select All",
                                         persistence=True,
                                         persistence_type="session",
                                     ),
-                                    html.Span("ALL"),
                                 ],
                                 className="checklist-dropdown-div",
                             ),
