@@ -1,7 +1,7 @@
 from typing import Annotated, Literal, Optional
 
 import dash_bootstrap_components as dbc
-from dash import html
+from dash import ClientsideFunction, Input, Output, State, clientside_callback, html
 from pydantic import AfterValidator, Field, PrivateAttr, model_validator
 from pydantic.functional_serializers import PlainSerializer
 
@@ -50,15 +50,33 @@ class Checklist(VizroBaseModel):
     _validate_options = model_validator(mode="before")(validate_options_dict)
 
     def __call__(self, options):
-        full_options, default_value = get_options_and_default(options=options, multi=True)
+        clientside_callback(
+            ClientsideFunction(namespace="checklist", function_name="update_checklist_values"),
+            output=[Output(f"{self.id}_select_all", "value"), Output(self.id, "value")],
+            inputs=[
+                Input(f"{self.id}_select_all", "value"),
+                Input(self.id, "value"),
+                State(self.id, "options"),
+            ],
+            prevent_initial_call=True,
+        )
+        dict_options, default_value = get_options_and_default(options=options, multi=True)
+        final_value = self.value if self.value is not None else default_value
 
         return html.Fieldset(
             children=[
                 html.Legend(children=self.title, className="form-label") if self.title else None,
+                dbc.Checkbox(
+                    id=f"{self.id}_select_all",
+                    value=len(final_value) == len(dict_options),
+                    label="Select All",
+                    persistence=True,
+                    persistence_type="session",
+                ),
                 dbc.Checklist(
                     id=self.id,
-                    options=full_options,
-                    value=self.value if self.value is not None else [default_value],
+                    options=options,
+                    value=final_value,
                     persistence=True,
                     persistence_type="session",
                 ),
@@ -68,7 +86,7 @@ class Checklist(VizroBaseModel):
     def _build_dynamic_placeholder(self):
         if self.value is None:
             _, default_value = get_options_and_default(self.options, multi=True)
-            self.value = [default_value]  # type: ignore[assignment]
+            self.value = default_value  # type: ignore[assignment]
 
         return self.__call__(self.options)
 

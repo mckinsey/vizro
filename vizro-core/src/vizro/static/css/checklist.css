@@ -1,0 +1,3 @@
+.form-check-label[for*="select_all"] {
+  margin-bottom: 0;
+}
