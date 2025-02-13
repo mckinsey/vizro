@@ -2,15 +2,11 @@ import logging
 
 import pytest
 import vizro.models as vm
+from pydantic import ValidationError
 from vizro.managers import model_manager
 from vizro.models import VizroBaseModel
 
 from vizro_ai.dashboard._response_models.controls import ControlPlan, _create_filter_proxy
-
-try:
-    from pydantic.v1 import ValidationError
-except ImportError:  # pragma: no cov
-    from pydantic import ValidationError
 
 # Needed for testing control creation.
 model_manager.__setitem__("bar_chart", VizroBaseModel)

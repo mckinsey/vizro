@@ -3,12 +3,8 @@
 import logging
 
 import vizro.models as vm
-
-try:
-    from pydantic.v1 import BaseModel, Field, ValidationError
-except ImportError:  # pragma: no cov
-    from pydantic import BaseModel, Field, ValidationError
 from langchain_core.language_models.chat_models import BaseChatModel
+from pydantic import BaseModel, Field, ValidationError
 from vizro.tables import dash_ag_grid
 
 from vizro_ai.dashboard._pydantic_output import _get_pydantic_model
@@ -85,9 +81,9 @@ class ComponentPlan(BaseModel):
                 Create a card based on the card description: {self.component_description}.
                 """
                 result_proxy = _get_pydantic_model(query=card_prompt, llm_model=model, response_model=vm.Card)
-                proxy_dict = result_proxy.dict()
+                proxy_dict = result_proxy.model_dump()
                 proxy_dict["id"] = self.component_id
-                return ComponentResult(component=vm.Card.parse_obj(proxy_dict))
+                return ComponentResult(component=vm.Card(**proxy_dict))
 
         except (DebugFailure, ValidationError) as e:
             logger.warning(

@@ -2,10 +2,8 @@
 
 import logging
 
-try:
-    from pydantic.v1 import BaseModel, Field
-except ImportError:  # pragma: no cov
-    from pydantic import BaseModel, Field
+from pydantic import BaseModel, Field
+
 from vizro_ai.dashboard._response_models.page import PagePlan
 
 logger = logging.getLogger(__name__)

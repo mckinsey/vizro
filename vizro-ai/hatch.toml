@@ -28,6 +28,7 @@ dependencies = [
   "langchain_mistralai",
   "langchain-anthropic",
   "langchain-aws",
+  "logfire",
   "pre-commit"
 ]
 installer = "uv"

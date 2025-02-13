@@ -3,17 +3,20 @@
 # ruff: noqa: F821
 
 import logging
-
-try:
-    from pydantic.v1 import BaseModel, ValidationError
-except ImportError:  # pragma: no cov
-    from pydantic import BaseModel, ValidationError
-
 from typing import Any, Optional
 
+import nest_asyncio
+import plotly.express as px
+import vizro.models as vm
 from langchain_core.language_models.chat_models import BaseChatModel
 from langchain_core.messages import HumanMessage
 from langchain_core.prompts import ChatPromptTemplate
+from pydantic import BaseModel, ValidationError
+from pydantic_ai import Agent, capture_run_messages
+from pydantic_ai.exceptions import UnexpectedModelBehavior
+
+nest_asyncio.apply()  # https://ai.pydantic.dev/troubleshooting/#runtimeerror-this-event-loop-is-already-running
+
 
 logger = logging.getLogger(__name__)
 
@@ -44,6 +47,13 @@ def _create_prompt_template(additional_info: str) -> ChatPromptTemplate:
 
 SINGLE_MODEL_PROMPT = _create_prompt_template("")
 MODEL_REPROMPT = _create_prompt_template("Pay special attention to the following error: {validation_error}")
+BASE_PROMPT = """
+    You are a front-end developer with expertise in Plotly, Dash, and the visualization library named Vizro.
+    Your goal is to summarize the given specifications into the given Pydantic schema.
+
+    {df_info}
+
+    """
 
 
 def _create_prompt(retry: bool = False) -> ChatPromptTemplate:
@@ -63,7 +73,7 @@ def _create_message_content(
     return message_content
 
 
-def _get_pydantic_model(
+def _get_pydantic_model_old(
     query: str,
     llm_model: BaseChatModel,
     response_model: BaseModel,
@@ -74,12 +84,17 @@ def _get_pydantic_model(
     # At the very least it should include the string type of the validation error
     """Get the pydantic output from the LLM model with retry logic."""
     for attempt in range(max_retry):
+        print("Attempt:", attempt)  # noqa: T201
         attempt_is_retry = attempt > 0
         prompt = _create_prompt(retry=attempt_is_retry)
         message_content = _create_message_content(
             query, df_info, str(last_validation_error) if attempt_is_retry else None, retry=attempt_is_retry
         )
-        pydantic_llm = prompt | llm_model.with_structured_output(response_model)
+        pydantic_llm = prompt | llm_model.with_structured_output(
+            response_model,
+            method="function_calling",  # method 'json_schema' does not work with `pattern` in Field
+            # (for OpenAI, maybe others): https://platform.openai.com/docs/guides/structured-outputs/some-type-specific-keywords-are-not-yet-supported#supported-schemas
+        )
         try:
             res = pydantic_llm.invoke(message_content)
         except ValidationError as validation_error:
@@ -88,6 +103,34 @@ def _get_pydantic_model(
             return res  # TODO: problem is response is None, then it returns without raising an error. Wrong typing!
     # TODO: should this be shifted to logging so that that one can control what output gets shown (e.g. in public demos)
     raise last_validation_error
+
+
+def _get_pydantic_model(  # TODO: much more to explore here: https://ai.pydantic.dev/results/
+    query: str,
+    llm_model,
+    response_model,
+    df_info: Optional[str] = None,  # TODO: this should potentially not be part of this function.
+    max_retry: int = 3,
+) -> BaseModel:
+    model_agent = Agent(
+        model=llm_model,
+        result_type=response_model,
+        retries=max_retry,
+        model_settings=dict(
+            parallel_tool_calls=False  # see: https://github.com/pydantic/pydantic-ai/issues/741
+        ),
+        system_prompt=BASE_PROMPT.format(df_info=df_info),
+    )
+
+    with capture_run_messages() as messages:
+        try:
+            result = model_agent.run_sync(query)
+        except UnexpectedModelBehavior:
+            raise ValueError(
+                "Failed to create pydantic model, see model behaviour for more details:",
+                messages,
+            )
+    return result.data
 
 
 if __name__ == "__main__":

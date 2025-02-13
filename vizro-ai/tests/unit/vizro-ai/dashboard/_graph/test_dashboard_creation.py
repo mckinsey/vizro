@@ -1,12 +1,7 @@
 import pandas as pd
 import pytest
-
-try:
-    from pydantic.v1 import ValidationError
-except ImportError:  # pragma: no cov
-    from pydantic import ValidationError
-
 from langchain_core.messages import HumanMessage
+from pydantic import ValidationError
 
 from vizro_ai.dashboard._graph.dashboard_creation import GraphState
 
