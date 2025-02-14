@@ -11,6 +11,6 @@
 }
 
 .bg-container {
-    background: var(--container-bg-color);
+    background: var(--container-bg-color) !important;
     padding: 1rem;
 }
