@@ -23,3 +23,15 @@ uv pip install -e .
 cd $EXAMPLE_DIR
 PYTHONPATH=$VIZRO_CHAT_DIR:$PYTHONPATH python app.py
 """
+
+[envs.test]
+dependencies = [
+  "openai",
+  "pytest>=7.0",
+  "pytest-mock>=3.10.0",
+  "dash[testing]>=2.0.0",
+]
+installer = "uv"
+
+[envs.test.scripts]
+test = "pytest {args:tests}"

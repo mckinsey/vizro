@@ -1,7 +1,7 @@
 """Vizro chat component."""
 
 import json
-from typing import ClassVar, Literal, Optional
+from typing import Literal, Optional
 
 import dash_bootstrap_components as dbc
 from dash import Input, Output, State, dcc, html
@@ -21,12 +21,16 @@ class VizroChatComponent(VizroBaseModel):
 
     type: Literal["chat"] = "chat"
     id: str
-    messages: ClassVar[list[dict[str, str]]] = [{"role": "assistant", "content": "Hello! How can I help you today?"}]
     input_placeholder: str = "Ask me a question..."
     input_height: str = "80px"
     button_text: str = "Send"
     vizro_app: Optional[Vizro] = None
     processor: ChatProcessor = EchoProcessor()  # Default to echo processor
+
+    @property
+    def messages(self) -> list[dict[str, str]]:
+        """Get initial messages list."""
+        return [{"role": "assistant", "content": "Hello! How can I help you today?"}]
 
     @_log_call
     def pre_build(self):
@@ -39,7 +43,8 @@ class VizroChatComponent(VizroBaseModel):
             def streaming_chat():
                 try:
                     data = request.json
-                    user_prompt = data["prompt"]
+                    user_prompt = data["prompt"].strip()
+                        
                     messages = json.loads(data.get("chat_history", "[]"))
 
                     def response_stream():
@@ -59,8 +64,13 @@ class VizroChatComponent(VizroBaseModel):
 
                     window.dash_clientside.chat.streaming_GPT = function(n_clicks, n_submit, value, messages) {
                         // Check if either button was clicked or Enter was pressed
-                        if ((!n_clicks && !n_submit) || !value || !messages) {
+                        if ((!n_clicks && !n_submit) || !messages) {
                             return [messages, value];  // Return both values if no action
+                        }
+
+                        // Check if input is empty or only whitespace
+                        if (!value || !value.trim()) {
+                            return [messages, ""];  // Clear input but don't send request
                         }
 
                         try {
@@ -134,7 +144,7 @@ class VizroChatComponent(VizroBaseModel):
                                         "Content-Type": "application/json",
                                     },
                                     body: JSON.stringify({ // Send user prompt and chat history
-                                        prompt: value,
+                                        prompt: value.trim(),  // Ensure trimmed value is sent
                                         chat_history: JSON.stringify(messages_array.slice(0, -1))
                                     }),
                                 }).then(response => {

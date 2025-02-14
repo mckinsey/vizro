@@ -21,6 +21,9 @@ class EchoProcessor(ChatProcessor):
     def get_response(self, messages: list[dict[str, str]], user_prompt: str) -> Iterator[str]:
         """Echo the user's message back 10 times."""
         try:
+            if messages is None or user_prompt is None:
+                raise ValueError("Messages and prompt cannot be None")
+            
             for i in range(10):
                 yield f"Echo {i + 1}: {user_prompt}\n"
         except Exception as e:
