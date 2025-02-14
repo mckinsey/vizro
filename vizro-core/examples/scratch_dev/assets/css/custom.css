@@ -2,16 +2,7 @@
   padding-left: 8px;
 }
 
-[data-bs-theme="dark"] {
-            --container-bg-color: #232632;
-}
-
-[data-bs-theme="light"] {
-    --container-bg-color: #F5F6F6;
-}
-
-/* Use the custom variable var(--container-bg-color) */
-.page-component-container {
-    background: var(--container-bg-color);
-    padding: 12px;
+#old-line-height p {
+    line-height: 1;
+    margin-bottom: 0.5rem;
 }
