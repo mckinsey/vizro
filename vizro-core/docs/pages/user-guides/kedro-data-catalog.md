@@ -1,6 +1,6 @@
 # How to integrate Vizro with the Kedro Data Catalog
 
-This page describes how to integrate Vizro with [Kedro](https://docs.kedro.org/en/stable/index.html), an open-source Python framework to create reproducible, maintainable, and modular data science code. For Pandas datasets registered in a [Kedro Data Catalog](https://docs.kedro.org/en/stable/data/index.html), Vizro provides a convenient way to visualize them.
+This page describes how to integrate Vizro with [Kedro](https://docs.kedro.org/en/stable/index.html), an open-source Python framework to create reproducible, maintainable, and modular data science code. Vizro provides a convenient way to visualize Pandas datasets registered in a [Kedro Data Catalog](https://docs.kedro.org/en/stable/data/index.html).
 
 Even if you do not have a Kedro project, you can still [use a Kedro Data Catalog](#create-a-kedro-data-catalog) to manage your dashboard's data sources.
 
@@ -49,14 +49,14 @@ trucks:
 
 1. The [minimum details needed](https://docs.kedro.org/en/stable/data/data_catalog.html#the-basics-of-catalog-yml) for a Kedro Data Catalog entry are the data source name (`cars`), the type of data (`type`), and the file's location (`filepath`).
 1. Vizro supports all [`kedro_datasets.pandas`](https://docs.kedro.org/en/stable/kedro_datasets.html) datasets. This includes, for example, CSV, Excel and Parquet files.
-1. Kedro supports a [variety of data stores](https://docs.kedro.org/en/stable/data/data_catalog.html#dataset-filepath) including local file systems, network file systems and cloud object store.
+1. Kedro supports a [variety of data stores](https://docs.kedro.org/en/stable/data/data_catalog.html#dataset-filepath) including local file systems, network file systems and cloud object stores.
 1. You can [pass data loading arguments](https://docs.kedro.org/en/stable/data/data_catalog.html#load-save-and-filesystem-arguments) to specify how to load the data source.
 
 For more details, refer to Kedro's [introduction to the Data Catalog](https://docs.kedro.org/en/stable/data/data_catalog.html) and their [collection of YAML examples](https://docs.kedro.org/en/stable/data/data_catalog_yaml_examples.html).
 
 ## Use datasets from the Kedro Data Catalog
 
-Vizro provides functions to help generate and process a [Kedro Data Catalog](https://docs.kedro.org/en/stable/data/index.html) in the module `vizro.integrations.kedro`. This supports both the original [`DataCatalog`](https://docs.kedro.org/en/stable/data/data_catalog.html) and the more recently introduced [`KedroDataCatalog`](https://docs.kedro.org/en/stable/data/index.html#kedrodatacatalog-experimental-feature). Given a Kedro `catalog`, the general pattern to add datasets to the Vizro data manager is:
+Vizro provides functions to help generate and process a [Kedro Data Catalog](https://docs.kedro.org/en/stable/data/index.html) in the module `vizro.integrations.kedro`. These functions support both the original [`DataCatalog`](https://docs.kedro.org/en/stable/data/data_catalog.html) and the more recently introduced [`KedroDataCatalog`](https://docs.kedro.org/en/stable/data/index.html#kedrodatacatalog-experimental-feature). Given a Kedro `catalog`, the general pattern to add datasets to the Vizro data manager is:
 
 ```python
 from vizro.integrations import kedro as kedro_integration
@@ -67,10 +67,10 @@ for dataset_name, dataset_loader in kedro_integration.datasets_from_catalog(cata
     data_manager[dataset_name] = dataset_loader
 ```
 
-This registers in the Vizro `data_manager` all data sources of type [`kedro_datasets.pandas`](https://docs.kedro.org/en/stable/kedro_datasets.html) from the Kedro `catalog`. You can now [reference the data source](data.md#reference-by-name) by name. For example, given the [above `catalog.yaml` file](#create-a-kedro-data-catalog), you could use the data source names `"cars"`, `"motorbikes"`, `"trains"` and `"trucks"`, for example with `px.scatter("cars", ...)`.
+The code above registers all data sources of type [`kedro_datasets.pandas`](https://docs.kedro.org/en/stable/kedro_datasets.html) in the Kedro `catalog` with Vizro's `data_manager` . You can now [reference the data source](data.md#reference-by-name) by name. For example, given the [above `catalog.yaml` file](#create-a-kedro-data-catalog), you could use the data source names `"cars"`, `"motorbikes"`, `"trains"`, and `"trucks"` with `px.scatter("cars", ...)`.
 
 !!! note
-    Data sources imported from Kedro in this way are [dynamic data](data.md#dynamic-data). This means that the data can be refreshed while your dashboard is running. For example, if you execute a Kedro pipeline run then the latest data can be shown in your dashboard without restarting it.
+    Data sources imported from Kedro in this way are [dynamic data](data.md#dynamic-data). This means that the data can be refreshed while your dashboard is running. For example, if you run a Kedro pipeline, the latest data is shown in the Vizro dashboard without restarting it.
 
 The `catalog` variable may have been created in a number of different ways:
 
