@@ -76,7 +76,7 @@ test-unit-coverage = [
   "- coverage combine",
   "coverage report"
 ]
-update-icons = ["python tools/update_material_icons.py"]
+download-static-files = "python tools/download_static_files.py"
 
 [envs.docs]
 dependencies = [
