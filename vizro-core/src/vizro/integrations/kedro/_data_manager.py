@@ -75,14 +75,14 @@ def _legacy_datasets_from_catalog(catalog: CatalogProtocol) -> dict[str, pd_Data
 
 
 def datasets_from_catalog(catalog: CatalogProtocol, *, pipeline: Pipeline = None) -> dict[str, pd_DataFrameCallable]:
-    """Return the Kedro Dataset loaders associated to a Kedro Data Catalog.
+    """Return the Kedro Dataset loading functions associated to a Kedro Data Catalog.
 
     Args:
         catalog: Path to the Kedro project root directory.
         pipeline: Optional Kedro pipeline. If specified, the factory-based Kedro datasets it defines are returned.
 
     Returns:
-         A dictionary mapping dataset names to Kedro Dataset loaders.
+         A dictionary mapping dataset names to Kedro Dataset loading functions.
 
     Examples:
         >>> from vizro.integrations import kedro as kedro_integration
