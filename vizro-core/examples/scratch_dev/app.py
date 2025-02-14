@@ -12,7 +12,9 @@ page = vm.Page(
     components=[
         vm.Container(
             title="Container I",
-            components=[vm.Graph(figure=px.scatter(iris, x="sepal_width", y="sepal_length", color="species"))],
+            components=[
+                vm.Card(text="""Hello, this is a card with a [link](https://www.google.com)"""),
+                vm.Graph(figure=px.scatter(iris, x="sepal_width", y="sepal_length", color="species"))],
             background=True,
         ),
         vm.Container(
