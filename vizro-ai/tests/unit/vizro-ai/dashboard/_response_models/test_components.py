@@ -2,7 +2,11 @@ import re
 
 import pytest
 import vizro.models as vm
+from pydantic_ai.models.test import (
+    TestModel,
+)  # TODO[NG]: Fix all unit tests that needed Mock model, now probably TestModel
 
+# https://ai.pydantic.dev/testing-evals/#unit-testing-with-testmodel
 from vizro_ai.dashboard._response_models.components import ComponentPlan
 
 
@@ -40,9 +44,9 @@ class TestComponentCreate:
         assert chart.dict(exclude={"id": True}) == expected.dict(exclude={"id": True})
         assert re.search(r"\bimport\b.*?@capture\('graph'\)", code, re.DOTALL)
 
-    def test_create_card(self, fake_llm_card, component_plan_card, expected_card):
+    def test_create_card(self, component_plan_card, expected_card):
         result = component_plan_card.create(
-            model=fake_llm_card,
+            model=TestModel,
             all_df_metadata=None,
         )
         card, code = result.component, result.code

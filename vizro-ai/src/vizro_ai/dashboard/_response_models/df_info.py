@@ -1,12 +1,7 @@
 """Data Summary Node."""
 
 import pandas as pd
-
-try:
-    from pydantic.v1 import BaseModel, Field
-except ImportError:  # pragma: no cov
-    from pydantic import BaseModel, Field
-
+from pydantic import BaseModel, Field
 
 DF_SUMMARY_PROMPT = """
 Inspect the provided data and give a short unique name to the dataset. \n
@@ -41,4 +36,4 @@ if __name__ == "__main__":
     df_schema, df_sample = _get_df_info(df)
     current_df_names = ["df1", "df2"]
     print(_create_df_info_content(df_schema, df_sample, current_df_names))  # noqa: T201
-    print(DfInfo(dataset="test").dict())  # noqa: T201
+    print(DfInfo(dataset="test").model_dump())  # noqa: T201

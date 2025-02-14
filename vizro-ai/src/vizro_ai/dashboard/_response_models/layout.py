@@ -4,11 +4,7 @@ import logging
 from typing import Optional
 
 import vizro.models as vm
-
-try:
-    from pydantic.v1 import BaseModel, Field, ValidationError
-except ImportError:  # pragma: no cov
-    from pydantic import BaseModel, Field, ValidationError
+from pydantic import BaseModel, Field, ValidationError
 
 logger = logging.getLogger(__name__)
 

@@ -1,12 +1,7 @@
 import pandas as pd
 import pytest
-
-try:
-    from pydantic.v1 import ValidationError
-except ImportError:  # pragma: no cov
-    from pydantic import ValidationError
-
 from langchain_core.messages import HumanMessage
+from pydantic import ValidationError
 
 from vizro_ai.dashboard._graph.dashboard_creation import GraphState
 
@@ -22,6 +17,7 @@ class TestConfig:
         assert graph_state.pages == []
         assert graph_state.custom_charts_code == []
 
+    # TODO[LZ]: This test is failing but I am not sure why it wasn't before, please check typing
     @pytest.mark.parametrize(
         "dataframes, output_error",
         [

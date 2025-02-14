@@ -31,7 +31,7 @@ class TestLayoutCreate:
         result = layout_plan.create(component_ids=component_ids)
         expected = vm.Layout(grid=grid)
 
-        assert result.dict(exclude={"id": True}) == expected.dict(exclude={"id": True})
+        assert result.model_dump(exclude={"id": True}) == expected.model_dump(exclude={"id": True})
 
     @pytest.mark.parametrize(
         "layout_grid_template_areas, component_ids, error_message",

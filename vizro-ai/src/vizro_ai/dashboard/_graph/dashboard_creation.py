@@ -10,6 +10,7 @@ from langchain_core.messages import BaseMessage
 from langchain_core.runnables import RunnableConfig
 from langgraph.constants import END, Send
 from langgraph.graph import StateGraph
+from pydantic import BaseModel, ConfigDict, ValidationError
 from tqdm.auto import tqdm
 
 from vizro_ai.dashboard._pydantic_output import _get_pydantic_model
@@ -18,12 +19,6 @@ from vizro_ai.dashboard._response_models.df_info import DfInfo, _create_df_info_
 from vizro_ai.dashboard._response_models.page import PagePlan
 from vizro_ai.dashboard.utils import AllDfMetadata, DfMetadata, _execute_step
 from vizro_ai.utils.helper import DebugFailure
-
-try:
-    from pydantic.v1 import BaseModel, ValidationError
-except ImportError:  # pragma: no cov
-    from pydantic import BaseModel, ValidationError
-
 
 logger = logging.getLogger(__name__)
 
@@ -55,10 +50,7 @@ class GraphState(BaseModel):
     custom_charts_code: Annotated[list, operator.add]
     custom_charts_imports: Annotated[list, operator.add]
 
-    class Config:
-        """Pydantic configuration."""
-
-        arbitrary_types_allowed = True
+    model_config = ConfigDict(arbitrary_types_allowed=True)
 
 
 def _store_df_info(state: GraphState, config: RunnableConfig) -> dict[str, AllDfMetadata]:
@@ -144,6 +136,7 @@ class BuildPageState(BaseModel):
 
     """
 
+    model_config = ConfigDict(arbitrary_types_allowed=True)  # this is due to pandas df
     all_df_metadata: AllDfMetadata
     page_plan: Optional[PagePlan] = None
 
