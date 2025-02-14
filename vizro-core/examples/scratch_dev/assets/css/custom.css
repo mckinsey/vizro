@@ -1,16 +1,3 @@
 #page-header {
   padding-left: 8px;
 }
-
-[data-bs-theme="dark"] {
-   --container-bg-color: #232632;
-}
-
-[data-bs-theme="light"] {
-    --container-bg-color: #F5F6F6;
-}
-
-.bg-container {
-    background: var(--container-bg-color) !important;
-    padding: 1rem;
-}
