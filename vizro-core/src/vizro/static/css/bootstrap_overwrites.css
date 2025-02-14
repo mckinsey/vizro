@@ -13,6 +13,7 @@ All the HEX values starting with --text-code are taken from the Github code high
   --text-code-literal: #6bb5fd;
   --slider-rail-bg: var(--primary-100);
   --collapse-icon-bg: var(--primary-500);
+  --container-bg-color: #232632;
 }
 
 [data-bs-theme="light"] {
@@ -26,6 +27,7 @@ All the HEX values starting with --text-code are taken from the Github code high
   --fill-icon-image-card: invert(64%) sepia(0%) saturate(1375%);
   --slider-rail-bg: var(--primary-900);
   --collapse-icon-bg: var(--primary-300);
+  --container-bg-color: #F5F6F6;
 }
 
 /* This is currently required as dbc.NavBar comes with the `navbar-light` class even on a dark theme */
@@ -101,4 +103,10 @@ label[for="theme-selector"] {
 /* Remove bottom margin of last child as card comes with padding */
 .card-text > *:last-child {
   margin-bottom: 0;
+}
+
+/* Introduce vizro utility classes here */
+.bg-container {
+    background: var(--container-bg-color) !important;
+    padding: 1rem;
 }
