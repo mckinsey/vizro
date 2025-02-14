@@ -37,7 +37,6 @@ dependencies = [
   "pyhamcrest",
   "gunicorn",
   "openai",
-  "dash-chat",
 ]
 installer = "uv"
 
@@ -118,11 +117,25 @@ dependencies = [
   "autoflake==2.3.1",
   "black==24.4.2",
   "isort==5.13.2",
-  "plotly==6.0.0"  # to leverage new MapLibre features in visual-vocabulary
+  "plotly==6.0.0",
+  "dash-bootstrap-components>=1.2.1",
+  "openai>=1.3.0",
 ]
 installer = "uv"
-scripts = {example = "cd examples/{args:scratch_dev}; python app.py"}
-# This environment doesn't inherit from default but does install Vizro.
+scripts.example = "cd examples/{args:scratch_dev}; python app.py"
+scripts.chat = """
+REPO_ROOT=$(git rev-parse --show-toplevel)
+VIZRO_CHAT_DIR=$REPO_ROOT/vizro_chat
+EXAMPLE_DIR=$REPO_ROOT/vizro-core/examples/dev_1
+
+# Install the package in development mode
+cd $VIZRO_CHAT_DIR
+uv pip install -e .
+
+# Run the example with the correct Python path
+cd $EXAMPLE_DIR
+PYTHONPATH=$VIZRO_CHAT_DIR:$PYTHONPATH python app.py
+"""
 template = "examples"
 
 [envs.examples.env-vars]

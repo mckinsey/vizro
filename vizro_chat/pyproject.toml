@@ -1,0 +1,28 @@
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[project]
+name = "vizro-chat"
+version = "0.0.1"
+description = "A chat component for Vizro dashboards"
+requires-python = ">=3.9"
+dependencies = [
+    "vizro>=0.1.32",
+    "dash-bootstrap-components>=1.0.0",
+    "openai>=1.3.0",
+    "python-dotenv>=0.21.0",
+]
+
+[project.optional-dependencies]
+dev = [
+    "pytest>=7.0",
+]
+
+[tool.hatch.build]
+include = [
+    "vizro_chat/**/*.py",
+]
+
+[tool.hatch.build.targets.wheel]
+packages = ["vizro_chat"] 
