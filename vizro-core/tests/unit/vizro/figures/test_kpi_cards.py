@@ -141,6 +141,7 @@ class TestKPICardReference:
             value_format="A {value} is +{delta:.1f} ({delta_relative}:%) vs. {reference:.1f}",
             reference_format="B {value} is +{delta:.1f} ({delta_relative}:%) vs. {reference:.1f}",
             agg_func="mean",
+            reverse_color=True,
         )()
         expected = dbc.Card(
             [
@@ -156,7 +157,7 @@ class TestKPICardReference:
                         html.Span("arrow_circle_down", className="material-symbols-outlined"),
                         html.Span("B 2.0 is +-2.0 (-0.5:%) vs. 4.0"),
                     ],
-                    className="color-neg",
+                    className="color-pos",
                 ),
             ],
             className="card-kpi",

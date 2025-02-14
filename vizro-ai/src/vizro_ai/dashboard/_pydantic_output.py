@@ -73,6 +73,42 @@ def _create_message_content(
     return message_content
 
 
+def _handle_google_llm_response(
+    llm_model: BaseChatModel, response_model: BaseModel, prompt: ChatPromptTemplate, message_content: dict
+) -> BaseModel:
+    """Handle the LLM response specifically for Google models."""
+    from langchain_core.utils.function_calling import convert_to_openai_function
+
+    schema = convert_to_openai_function(response_model)
+
+    pydantic_llm = prompt | llm_model.with_structured_output(schema)
+    res = pydantic_llm.invoke(message_content)
+
+    # Handle case where response is a list, which is the case for Gemini models
+    if isinstance(res, list):
+        res = res[0].get("args", res[0]) if isinstance(res[0], dict) else res[0]
+
+    return response_model.parse_obj(res)
+
+
+def _handle_google_llm_response(
+    llm_model: BaseChatModel, response_model: BaseModel, prompt: ChatPromptTemplate, message_content: dict
+) -> BaseModel:
+    """Handle the LLM response specifically for Google models."""
+    from langchain_core.utils.function_calling import convert_to_openai_function
+
+    schema = convert_to_openai_function(response_model)
+
+    pydantic_llm = prompt | llm_model.with_structured_output(schema)
+    res = pydantic_llm.invoke(message_content)
+
+    # Handle case where response is a list, which is the case for Gemini models
+    if isinstance(res, list):
+        res = res[0].get("args", res[0]) if isinstance(res[0], dict) else res[0]
+
+    return response_model.parse_obj(res)
+
+
 def _get_pydantic_model_old(
     query: str,
     llm_model: BaseChatModel,
@@ -90,17 +126,25 @@ def _get_pydantic_model_old(
         message_content = _create_message_content(
             query, df_info, str(last_validation_error) if attempt_is_retry else None, retry=attempt_is_retry
         )
-        pydantic_llm = prompt | llm_model.with_structured_output(
-            response_model,
-            method="function_calling",  # method 'json_schema' does not work with `pattern` in Field
-            # (for OpenAI, maybe others): https://platform.openai.com/docs/guides/structured-outputs/some-type-specific-keywords-are-not-yet-supported#supported-schemas
-        )
+
         try:
-            res = pydantic_llm.invoke(message_content)
+            # Apply the fix for nested structures, following langchain-google-genai implementation
+            # referred to https://github.com/langchain-ai/langchain/issues/24225
+            # and https://github.com/langchain-ai/langchain-google/pull/658/files
+            # TODO: revisit this temporary fix once pydantic v2 is implemented in vizro-ai
+            if "google" in llm_model.__class__.__module__.lower():
+                return _handle_google_llm_response(llm_model, response_model, prompt, message_content)
+
+            # For other models, use standard structured output
+            pydantic_llm = prompt | llm_model.with_structured_output(
+                response_model,
+                method="function_calling",  # method 'json_schema' does not work with `pattern` in Field
+                # (for OpenAI, maybe others): https://platform.openai.com/docs/guides/structured-outputs/some-type-specific-keywords-are-not-yet-supported#supported-schemas
+            )
+            return pydantic_llm.invoke(message_content)
+
         except ValidationError as validation_error:
             last_validation_error = validation_error
-        else:
-            return res  # TODO: problem is response is None, then it returns without raising an error. Wrong typing!
     # TODO: should this be shifted to logging so that that one can control what output gets shown (e.g. in public demos)
     raise last_validation_error
 

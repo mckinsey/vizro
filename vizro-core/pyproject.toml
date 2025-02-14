@@ -20,12 +20,13 @@ dependencies = [
   "dash-ag-grid>=31.0.0",
   "pandas>=2",
   "plotly>=5.24.0",
-  "pydantic>=2.9.0",  # must be synced with pre-commit mypy hook manually
+  "pydantic>=2.7.0",  # must be <= the version in pre-commit mypy hook, sync manually
   "dash_mantine_components~=0.15.1",
   "flask_caching>=2",
   "wrapt>=1",
   "black",
-  "autoflake"
+  "autoflake",
+  "packaging"
 ]
 description = "Vizro is a package to facilitate visual analytics."
 dynamic = ["version"]
@@ -36,7 +37,7 @@ requires-python = ">=3.9"
 
 [project.optional-dependencies]
 kedro = [
-  "kedro>=0.17.3",
+  "kedro>=0.19.0",
   "kedro-datasets"  # no longer a dependency of kedro for kedro>=0.19.2
 ]
 

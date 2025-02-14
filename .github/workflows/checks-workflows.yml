@@ -25,5 +25,4 @@ jobs:
           python-version: ${{ env.PYTHON_VERSION }}
 
       - name: Checks for GitHub workflows
-        run: |
-          python tools/scan_yaml_for_risky_text.py .github/workflows
+        run: python tools/scan_yaml_for_risky_text.py .github/workflows

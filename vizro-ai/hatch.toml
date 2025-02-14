@@ -29,6 +29,7 @@ dependencies = [
   "langchain-anthropic",
   "langchain-aws",
   "logfire",
+  "langchain-google-genai",
   "pre-commit"
 ]
 installer = "uv"
@@ -51,6 +52,7 @@ prep-release = [
 ]
 pypath = "hatch run python -c 'import sys; print(sys.executable)'"
 test = "pytest tests {args}"
+# to run dashboard and plot tests please configure base url and api key for the selected model
 test-e2e-dashboard = "pytest -vs tests/e2e/test_dashboard.py --headless {args}"
 test-e2e-plot = "pytest -vs --reruns 1 tests/e2e/test_plot.py --headless {args}"
 test-unit = "pytest tests/unit {args}"
@@ -67,7 +69,8 @@ dependencies = [
   "mkdocs-material",
   "mkdocs-git-revision-date-localized-plugin>=1.2.5",
   "mkdocstrings[python]",
-  "linkchecker"
+  "linkchecker",
+  "mkdocs-pycafe"
 ]
 detached = true
 installer = "uv"

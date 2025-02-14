@@ -11,6 +11,60 @@ See the fragment files in the [changelog.d directory](https://github.com/mckinse
 
 <!-- scriv-insert-here -->
 
+<a id='changelog-0.1.34'></a>
+
+# 0.1.34 — 2025-02-13
+
+## Removed
+
+- Remove export png button from modebar inside `Graph`. ([#1005](https://github.com/mckinsey/vizro/pull/1005))
+
+## Added
+
+- Add `reverse_color` argument to `kpi_card_reference`, enabling color inversion based on delta values. ([#995](https://github.com/mckinsey/vizro/pull/995))
+
+- Kedro integration function `datasets_from_catalog` can handle dataset factories for `kedro>=0.19.9`. ([#1001](https://github.com/mckinsey/vizro/pull/1001))
+
+## Changed
+
+- Bump optional dependency lower bound to `kedro>=0.19.0`. ([#1001](https://github.com/mckinsey/vizro/pull/1001))
+
+- Make chart background transparent when used inside dashboard. ([#1005](https://github.com/mckinsey/vizro/pull/1005))
+
+## Fixed
+
+- Fix a bug where `add_type` would raise an error if the `type` had already been added. ([#999](https://github.com/mckinsey/vizro/pull/999))
+
+<a id='changelog-0.1.33'></a>
+
+# 0.1.33 — 2025-02-05
+
+## Fixed
+
+- Adjust the lower bound of pydantic to `2.7.0` so that Vizro can run on `pyodide==0.26.2`. ([#993](https://github.com/mckinsey/vizro/pull/993))
+
+<a id='changelog-0.1.32'></a>
+
+# 0.1.32 — 2025-02-04
+
+## Highlights ✨
+
+- Vizro now uses Pydantic V2 for its models. This should not affect most users, but if you use custom components that rely on Pydantic V1 features then you should consult [Pydantic's migration guide](https://docs.pydantic.dev/latest/migration/) or use `vizro<0.1.32`. ([#917](https://github.com/mckinsey/vizro/pull/917))
+
+- Release Vizro's Bootstrap theme that can be used in a pure Dash app with `Dash(external_stylesheets=[vizro.bootstrap])`. ([#970](https://github.com/mckinsey/vizro/pull/970))
+
+## Changed
+
+- Update `material-symbols-outlined.wolff2` to include the latest icons. ([#972](https://github.com/mckinsey/vizro/pull/972))
+
+## Fixed
+
+- Fix coloring of `NavLink` inside `NavBar`. ([#968](https://github.com/mckinsey/vizro/pull/968))
+
+- Fix flickering scroll bars when using new Plotly map figures with `plotly==6.0.0`. ([#984](https://github.com/mckinsey/vizro/pull/984))
+
+- Remove flash of unstyled text before Google Material icons font is loaded. ([#987](https://github.com/mckinsey/vizro/pull/987))
+
 <a id='changelog-0.1.31'></a>
 
 # 0.1.31 — 2025-01-23

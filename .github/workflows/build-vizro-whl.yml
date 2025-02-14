@@ -29,8 +29,7 @@ jobs:
       - name: Install Hatch
         run: pip install hatch
       - name: Build vizro-core package
-        run: |
-          hatch build -t wheel
+        run: hatch build -t wheel
       - name: Upload artifact
         uses: actions/upload-artifact@v4
         with:

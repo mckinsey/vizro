@@ -83,6 +83,7 @@ def kpi_card_reference(  # noqa: PLR0913
     agg_func: str = "sum",
     title: Optional[str] = None,
     icon: Optional[str] = None,
+    reverse_color: bool = False,
 ) -> dbc.Card:
     """Creates a styled KPI (Key Performance Indicator) card displaying a value in comparison to a reference value.
 
@@ -118,6 +119,11 @@ def kpi_card_reference(  # noqa: PLR0913
         title: KPI title displayed on top of the card. If not provided, it defaults to the capitalized `value_column`.
         icon: Name of the icon from the [Google Material Icon Library](https://fonts.google.com/icons) to be displayed
             on the left side of the KPI title. If not provided, no icon is displayed.
+        reverse_color: If `False`, a positive delta will be colored positively (e.g., blue) and a negative delta
+            negatively (e.g., red). If `True`, the colors will be inverted: a positive delta will be colored
+            negatively (e.g., red) and a negative delta positively (e.g., blue). Defaults to `False`.
+
+
 
     Returns:
         A Dash Bootstrap Components card (`dbc.Card`) containing the formatted KPI value and reference.
@@ -133,6 +139,8 @@ def kpi_card_reference(  # noqa: PLR0913
     value, reference = data_frame[[value_column, reference_column]].agg(agg_func)
     delta = value - reference
     delta_relative = delta / reference if reference else np.nan
+    pos_color, neg_color = ("color-neg", "color-pos") if reverse_color else ("color-pos", "color-neg")
+    footer_class = pos_color if delta > 0 else neg_color if delta < 0 else ""
 
     header = dbc.CardHeader(
         [
@@ -153,6 +161,6 @@ def kpi_card_reference(  # noqa: PLR0913
                 reference_format.format(value=value, reference=reference, delta=delta, delta_relative=delta_relative)
             ),
         ],
-        className="color-pos" if delta > 0 else "color-neg" if delta < 0 else "",
+        className=footer_class,
     )
     return dbc.Card([header, body, footer], className="card-kpi")

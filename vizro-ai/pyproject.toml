@@ -74,7 +74,8 @@ filterwarnings = [
   "ignore:Exception in thread",
   # Ignore deprecation warning as it comes from the plotly default template. In our templates `vizro_dark` and
   # `vizro_light`, we do not use mapbox anymore, see: https://github.com/mckinsey/vizro/pull/974
-  "ignore:.*scattermapbox.*is deprecated.*Use.*scattermap.*instead:DeprecationWarning"
+  "ignore:.*scattermapbox.*is deprecated.*Use.*scattermap.*instead:DeprecationWarning",
+  "ignore:CapturedCallable function is excluded from the schema"
 ]
 pythonpath = ["../tools/tests"]
 
@@ -86,3 +87,4 @@ src = ["src"]
 # Ignore print, line length, and import violations in Colab notebooks
 "examples/chart_by_vizro_ai.ipynb" = ["T201", "E501"]
 "examples/dashboard_by_vizro_ai.ipynb" = ["T201", "E402", "E501"]
+"examples/goodreads_tutorial/goodreads.ipynb" = ["T201", "E402", "E501", "W291", "F811"]

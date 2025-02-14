@@ -26,8 +26,7 @@ jobs:
       - name: Install Hatch
         run: pip install hatch
       - name: Update Material font
-        run: |
-          hatch run update-icons
+        run: hatch run update-icons
       - name: Check for changes
         id: check_changes
         run: |
@@ -51,8 +50,7 @@ jobs:
       - name: Install Hatch
         run: pip install hatch
       - name: Delete old branch if exists
-        run: |
-          git push origin --delete bot/update-material-icons || true
+        run: git push origin --delete bot/update-material-icons || true
       - name: Create and push changes
         run: |
           git config user.email "145135826+vizro-svc@users.noreply.github.com"

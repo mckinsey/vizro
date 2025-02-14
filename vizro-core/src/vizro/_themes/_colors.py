@@ -165,4 +165,5 @@ def get_colors():
             "#f781bf",
             "#52733e",
         ],
+        "TRANSPARENT": "rgba(0, 0, 0, 0)",
     }

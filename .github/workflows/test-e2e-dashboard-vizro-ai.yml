@@ -5,7 +5,9 @@ defaults:
     working-directory: vizro-ai
 
 on:
-  workflow_dispatch:
+  schedule:
+    - cron: "30 10 * * 1" # run every Monday at 10:30 UTC
+  workflow_dispatch: # helps to run this job manually from GitHub Actions UI
 
 env:
   PYTHONUNBUFFERED: 1
@@ -20,17 +22,8 @@ jobs:
       fail-fast: false
       matrix:
         config:
-          - python-version: "3.9"
-            hatch-env: all.py3.9
-          - python-version: "3.10"
-            hatch-env: all.py3.10
-          - python-version: "3.11"
-            hatch-env: all.py3.11
           - python-version: "3.12"
             hatch-env: all.py3.12
-          - python-version: "3.9"
-            hatch-env: lower-bounds
-            label: lower bounds
 
     steps:
       - uses: actions/checkout@v4
@@ -46,17 +39,8 @@ jobs:
       fail-fast: false
       matrix:
         config:
-          - python-version: "3.9"
-            hatch-env: all.py3.9
-          - python-version: "3.10"
-            hatch-env: all.py3.10
-          - python-version: "3.11"
-            hatch-env: all.py3.11
           - python-version: "3.12"
             hatch-env: all.py3.12
-          - python-version: "3.9"
-            hatch-env: lower-bounds
-            label: lower bounds
 
     steps:
       - uses: actions/checkout@v4
@@ -77,18 +61,9 @@ jobs:
         env:
           OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
           OPENAI_API_BASE: ${{ secrets.OPENAI_API_BASE }}
+          ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
+          ANTHROPIC_BASE_URL: ${{ secrets.ANTHROPIC_BASE_URL }}
           VIZRO_TYPE: pypi
-          BRANCH: ${{ github.head_ref }}
-          PYTHON_VERSION: ${{ matrix.config.python-version }}
-
-      - name: Run vizro-ai e2e dashboard tests with local vizro
-        run: |
-          hatch run ${{ matrix.config.hatch-env }}:pip install ../vizro-core
-          hatch run ${{ matrix.config.hatch-env }}:test-e2e-dashboard
-        env:
-          OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
-          OPENAI_API_BASE: ${{ secrets.OPENAI_API_BASE }}
-          VIZRO_TYPE: local
           BRANCH: ${{ github.head_ref }}
           PYTHON_VERSION: ${{ matrix.config.python-version }}
 
@@ -116,6 +91,7 @@ jobs:
   test-e2e-dashboard-vizro-ai-report:
     needs: test-e2e-dashboard-vizro-ai
     runs-on: ubuntu-latest
+    if: always()
     steps:
       - uses: actions/checkout@v4
 
@@ -131,7 +107,8 @@ jobs:
       - name: Create one csv report
         run: |
           cd /home/runner/work/vizro/vizro/
-          head -n 1 Report-3.11-/report_model_gpt-4o-mini_pypi.csv > report-aggregated-${{ steps.date.outputs.date }}.csv && tail -n+2 -q */*.csv >> report-aggregated-${{ steps.date.outputs.date }}.csv
+          ls */*.csv | head -n1 | xargs head -n1 > report-aggregated-${{ steps.date.outputs.date }}.csv && tail -n+2 -q */*.csv >> report-aggregated-${{ steps.date.outputs.date }}.csv
+          # replace all timestamps in aggregated report to current date
           gawk -F, -i inplace 'FNR>1 {$1="${{ steps.date.outputs.date }}"} {print}' OFS=, report-aggregated-${{ steps.date.outputs.date }}.csv
 
       - name: Report artifacts

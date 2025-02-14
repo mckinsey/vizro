@@ -1,43 +1,27 @@
-"""Dev app to try things out."""
+"""Test app"""
 
-import pandas as pd
 import vizro.models as vm
+import vizro.plotly.express as px
 from vizro import Vizro
-from vizro.figures import kpi_card_reference
 
-df_kpi = pd.DataFrame({"Actual": [100, 200, 700], "Reference": [100, 300, 500], "Category": ["A", "B", "C"]})
+iris = px.data.iris()
 
 page = vm.Page(
-    title="KPI card I",
+    title="Page with subsections",
+    layout=vm.Layout(grid=[[0, 1]]),
     components=[
-        vm.Figure(
-            figure=kpi_card_reference(
-                data_frame=df_kpi,
-                value_column="Actual",
-                reference_column="Reference",
-                title="KPI reference with icon",
-                icon="folder_check_2",
-            )
-        )
+        vm.Container(
+            title="Container I",
+            components=[vm.Graph(figure=px.scatter(iris, x="sepal_width", y="sepal_length", color="species"))],
+        ),
+        vm.Container(
+            title="Container II",
+            components=[vm.Graph(figure=px.box(iris, x="species", y="sepal_length", color="species"))],
+        ),
     ],
 )
 
-page_two = vm.Page(
-    title="KPI card II",
-    components=[
-        vm.Figure(
-            figure=kpi_card_reference(
-                data_frame=df_kpi,
-                value_column="Actual",
-                reference_column="Reference",
-                title="KPI reference with icon",
-                icon="folder_check",
-            )
-        )
-    ],
-)
-
-dashboard = vm.Dashboard(pages=[page, page_two], navigation=vm.Navigation(nav_selector=vm.NavBar()))
+dashboard = vm.Dashboard(pages=[page])
 
 if __name__ == "__main__":
     Vizro().build(dashboard).run()

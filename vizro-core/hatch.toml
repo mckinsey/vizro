@@ -3,13 +3,6 @@
 [[envs.all.matrix]]
 python = ["3.9", "3.10", "3.11", "3.12", "3.13"]
 
-[envs.all.overrides]
-# Kedro is currently not compatible with Python 3.13 and returns exceptions when trying to run the unit tests on
-# Python 3.13. These exceptions turned out to be difficult to ignore: https://github.com/mckinsey/vizro/pull/216
-matrix.python.features = [
-  {value = "kedro", if = ["3.9", "3.10", "3.11", "3.12"]}
-]
-
 [envs.changelog]
 dependencies = ["scriv"]
 detached = true
@@ -22,6 +15,7 @@ dependencies = [
   "coverage[toml]>=6.5",
   "pytest",
   "pytest-mock",
+  "pytest-rerunfailures",
   "freezegun>=1.5.0",
   "dash[testing]",
   "chromedriver-autoinstaller>=0.6.4",
@@ -33,9 +27,14 @@ dependencies = [
   "PyGithub",
   "imutils",
   "opencv-python",
-  "pyhamcrest"
+  "pyhamcrest",
+  "gunicorn"
 ]
+features = ["kedro"]
 installer = "uv"
+
+[envs.default.env-vars]
+PYTHONPATH = "tests/e2e/vizro/dashboards/default:tests/tests_utils"
 
 [envs.default.scripts]
 example = "hatch run examples:example {args:scratch_dev}"  # shortcut script to underlying example environment script.
@@ -63,7 +62,12 @@ templates-check = ["python src/vizro/_themes/generate_plotly_templates.py --chec
 # fix this, but we don't actually use `hatch run test` anywhere right now.
 # See comments added in https://github.com/mckinsey/vizro/pull/444.
 test = "pytest tests --headless {args}"
-test-e2e-component-library = "pytest tests/e2e/test_component_library.py --headless {args}"
+test-e2e-component-library = "pytest tests/e2e/component_library/test_component_library.py --headless {args}"
+test-e2e-vizro-dom-elements = [
+  "gunicorn dashboard:app -b 0.0.0.0:5002 -w 1 --timeout 90 &",
+  "tests/tests_utils/e2e/vizro/dashboards/wait-for-it.sh 127.0.0.1:5002 -t 30",
+  "pytest -vs --reruns 1 tests/e2e/vizro/test_dom_elements --headless {args}"
+]
 test-integration = "pytest tests/integration --headless {args}"
 test-js = "./tools/run_jest.sh {args}"
 test-unit = "pytest tests/unit {args}"
@@ -90,7 +94,7 @@ installer = "uv"
 build = "mkdocs build --strict"
 # Disable warnings on the linkcheck so that HTTP redirects are accepted. We could ignore only that warning and specify
 # more advanced settings using a linkcheckerrc config file.
-link-check = "linkchecker site --check-extern --no-warnings --ignore=404.html --ignore-url=127.0.0.1 --ignore-url=https://vizro.readthedocs.io/"
+link-check = "linkchecker site --check-extern --no-warnings --ignore=404.html --ignore-url=127.0.0.1 --ignore-url=https://vizro.readthedocs.io/ --ignore-url=https://platform.ploomber.io/register --ignore-url=https://huggingface.co/join"
 pip = '"{env:HATCH_UV}" pip {args}'
 serve = "mkdocs serve --open"
 
@@ -119,13 +123,13 @@ VIZRO_LOG_LEVEL = "DEBUG"
 
 [envs.lower-bounds]
 extra-dependencies = [
-  "pydantic==2.9.0",
+  "pydantic==2.7.0",
   "dash==2.18.0",
   "plotly==5.24.0",
   "pandas==2.0.0",
-  "numpy==1.23.0"  # Need numpy<2 to work with pandas==2.0.0. See https://stackoverflow.com/questions/78634235/.
+  "numpy==1.23.0",  # Need numpy<2 to work with pandas==2.0.0. See https://stackoverflow.com/questions/78634235/.
+  "kedro==0.19.0"  # Includes kedro-datasets as a dependency.
 ]
-features = ["kedro"]
 python = "3.9"
 
 [publish.index]

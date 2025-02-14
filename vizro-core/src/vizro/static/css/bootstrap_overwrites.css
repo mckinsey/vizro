@@ -92,3 +92,8 @@ label[for="theme-selector"] {
 .navbar {
   background: var(--surfaces-bg02) !important;
 }
+
+.form-switch .form-check-input {
+  margin-right: 0;
+  padding-left: 0;
+}
