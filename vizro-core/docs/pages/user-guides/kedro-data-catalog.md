@@ -63,7 +63,7 @@ As [shown below](#use-datasets-from-the-kedro-data-catalog), the best way to use
 
 ## Use datasets from the Kedro Data Catalog
 
-Vizro provides functions to help generate and process a [Kedro Data Catalog](https://docs.kedro.org/en/stable/data/index.html) in the module `vizro.integrations.kedro`. These functions support both the original [`DataCatalog`](https://docs.kedro.org/en/stable/data/data_catalog.html) and the more recently introduced [`KedroDataCatalog`](https://docs.kedro.org/en/stable/data/index.html#kedrodatacatalog-experimental-feature). Given a Kedro `catalog`, the general pattern to add datasets to the Vizro data manager is:
+Vizro provides functions to help generate and process a [Kedro Data Catalog](https://docs.kedro.org/en/stable/data/index.html) in the module [`vizro.integrations.kedro`](../API-reference/kedro-integration.md). These functions support both the original [`DataCatalog`](https://docs.kedro.org/en/stable/data/data_catalog.html) and the more recently introduced [`KedroDataCatalog`](https://docs.kedro.org/en/stable/data/index.html#kedrodatacatalog-experimental-feature). Given a Kedro `catalog`, the general pattern to add datasets to the Vizro data manager is:
 
 ```python
 from vizro.integrations import kedro as kedro_integration
@@ -82,7 +82,7 @@ The code above registers all data sources of type [`kedro_datasets.pandas`](http
 The `catalog` variable may have been created in a number of different ways:
 
 1. Data Catalog configuration file (`catalog.yaml`), [created as described above](#create-a-kedro-data-catalog). This generates a `catalog` variable independently of a Kedro project using [`DataCatalog.from_config`](https://docs.kedro.org/en/stable/kedro.io.DataCatalog.html#kedro.io.DataCatalog.from_config).
-1. Kedro project path. Vizro exposes a helper function `catalog_from_project` to generate a `catalog` given the path to a Kedro project.
+1. Kedro project path. Vizro exposes a helper function [`catalog_from_project`](../API-reference/kedro-integration.md#vizro.integrations.kedro.catalog_from_project) to generate a `catalog` given the path to a Kedro project.
 1. [Kedro Jupyter session](https://docs.kedro.org/en/stable/notebooks_and_ipython/kedro_and_notebooks.html). This automatically exposes `catalog`.
 
 The full code for these different cases is given below.
@@ -141,7 +141,7 @@ kedro_integration.datasets_from_catalog(catalog, pipeline=pipelines["__default__
 
 The `pipelines` variable may have been created the following ways:
 
-1. Kedro project path. Vizro exposes a helper function `pipelines_from_project` to generate a `pipelines` given the path to a Kedro project.
+1. Kedro project path. Vizro exposes a helper function [`pipelines_from_project`](../API-reference/kedro-integration.md#vizro.integrations.kedro.pipelines_from_project) to generate a `pipelines` given the path to a Kedro project.
 1. [Kedro Jupyter session](https://docs.kedro.org/en/stable/notebooks_and_ipython/kedro_and_notebooks.html). This automatically exposes `pipelines`.
 
 The full code for these different cases is given below.
