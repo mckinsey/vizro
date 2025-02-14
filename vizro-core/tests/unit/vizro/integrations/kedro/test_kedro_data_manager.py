@@ -1,12 +1,11 @@
 """Unit tests for vizro.integrations.kedro."""
 
-import types
 from importlib.metadata import version
 from pathlib import Path
 
 import kedro.pipeline as kp
 import pytest
-import yaml
+from kedro.config import OmegaConfigLoader
 from kedro.io import DataCatalog
 from packaging.version import parse
 
@@ -24,19 +23,16 @@ else:
 @pytest.fixture(params=data_catalog_classes)
 def catalog(request):
     catalog_class = request.param
-    catalog_path = Path(__file__).parent / "fixtures/test_catalog.yaml"
-    return catalog_class.from_config(yaml.safe_load(catalog_path.read_text(encoding="utf-8")))
+    conf_loader = OmegaConfigLoader(conf_source=str(Path(__file__).parent))
+    return catalog_class.from_config(conf_loader["catalog"])
 
 
-def test_datasets_from_catalog(catalog):
+def test_datasets_from_catalog(catalog, mocker):
     datasets = datasets_from_catalog(catalog)
-    assert isinstance(datasets, dict)
-    assert set(datasets) == {"pandas_excel", "pandas_parquet"}
-    for dataset in datasets.values():
-        assert isinstance(dataset, types.MethodType)
+    assert datasets == {"pandas_excel": mocker.ANY, "pandas_parquet": mocker.ANY}
 
 
-def test_datasets_from_catalog_with_pipeline(catalog):
+def test_datasets_from_catalog_with_pipeline(catalog, mocker):
     pipeline = kp.pipeline(
         [
             kp.node(
@@ -57,10 +53,10 @@ def test_datasets_from_catalog_with_pipeline(catalog):
 
     datasets = datasets_from_catalog(catalog, pipeline=pipeline)
     # Dataset factories only work for kedro>=0.19.9.
-    expected_datasets = (
+    expected_dataset_names = (
         {"pandas_excel", "pandas_parquet", "something#csv", "something_else#csv"}
         if parse(version("kedro")) >= parse("0.19.9")
         else {"pandas_excel", "pandas_parquet"}
     )
 
-    assert set(datasets) == expected_datasets
+    assert datasets == {dataset_name: mocker.ANY for dataset_name in expected_dataset_names}
