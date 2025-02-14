@@ -41,7 +41,7 @@ graph TD
 If you have a [Kedro](https://kedro.org/) project, you should use Vizro's [integration with the Kedro Data Catalog](kedro-data-catalog.md) to add [`kedro_datasets.pandas`](https://docs.kedro.org/en/stable/kedro_datasets.html) data to the Vizro data manager.
 
 !!! note "Kedro Data Catalog as a data source registry"
-    Even if you do not have a Kedro project, you can still [use a Kedro Data Catalog](kedro-data-catalog.md#create-a-kedro-data-catalog) as a YAML registry of your dashboard's data sources. This separates configuration of your data sources from your app's code. Here is an example `catalog.yaml` file:
+    Even if you do not have a Kedro project, you can still [use a Kedro Data Catalog](kedro-data-catalog.md#create-a-kedro-data-catalog) as a YAML registry of your dashboard's data sources. This separates configuration of your data sources from your app's code and is the recommended approach if you have many data sources or a complex project. Here is an example `catalog.yaml` file:
 
     ```yaml
     motorbikes:
@@ -50,6 +50,7 @@ If you have a [Kedro](https://kedro.org/) project, you should use Vizro's [integ
       load_args:
         sep: ','
         na_values: [NA]
+      credentials: s3_credentials
     ```
 
 ## Static data

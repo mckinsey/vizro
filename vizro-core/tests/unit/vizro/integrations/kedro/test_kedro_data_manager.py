@@ -5,7 +5,7 @@ from pathlib import Path
 
 import kedro.pipeline as kp
 import pytest
-import yaml
+from kedro.config import OmegaConfigLoader
 from kedro.io import DataCatalog
 from packaging.version import parse
 
@@ -23,8 +23,8 @@ else:
 @pytest.fixture(params=data_catalog_classes)
 def catalog(request):
     catalog_class = request.param
-    catalog_path = Path(__file__).parent / "fixtures/test_catalog.yaml"
-    return catalog_class.from_config(yaml.safe_load(catalog_path.read_text(encoding="utf-8")))
+    conf_loader = OmegaConfigLoader(conf_source=str(Path(__file__).parent))
+    return catalog_class.from_config(conf_loader["catalog"])
 
 
 def test_datasets_from_catalog(catalog, mocker):

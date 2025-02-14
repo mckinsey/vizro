@@ -7,6 +7,8 @@ Typically when you create a dashboard, there are two distinct stages:
 
 This guide describes methods to run your dashboard _in development_ and _in production_. Follow either section based on your current need.
 
+If your data sources in development and production are different (for example, you have different s3 buckets for development and production data) then you might like to [use the Kedro Data Catalog](kedro-data-catalog.md#use-datasets-from-the-kedro-data-catalog) to manage your data source configuration.
+
 Vizro is built on top of [Dash](https://dash.plotly.com/), which itself uses [Flask](https://flask.palletsprojects.com/). Most of our guidance on how to run a Vizro app in development or production is very similar to guidance on Dash and Flask.
 
 !!! note
