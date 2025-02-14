@@ -57,7 +57,7 @@ class Container(VizroBaseModel):
         for component_idx, component in enumerate(self.components):
             components_container[f"{self.layout.id}_{component_idx}"].children = component.build()
 
-        classname="page-component-container"
+        classname = "page-component-container"
         if self.background:
             classname += " bg-container"
 
@@ -67,5 +67,5 @@ class Container(VizroBaseModel):
                 html.H3(children=self.title, className="container-title", id=f"{self.id}_title"),
                 components_container,
             ],
-            className=classname
+            className=classname,
         )
