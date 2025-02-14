@@ -6,7 +6,7 @@ import vizro.models as vm
 from vizro import Vizro
 from vizro_chat import EchoProcessor, VizroChatComponent
 
-from vizro_chat import OpenAIProcessor
+# from vizro_chat import OpenAIProcessor
 
 # Initialize Vizro with assets folder
 assets_path = os.path.join(os.path.dirname(os.path.abspath(__file__)), "assets")

@@ -4,10 +4,7 @@ import json
 
 import pytest
 from dash import html
-from flask import Flask
 from vizro import Vizro
-from dash.testing.application_runners import import_app
-from dash.testing.composite import DashComposite
 
 from vizro_chat.component import VizroChatComponent
 from vizro_chat.processors import EchoProcessor
@@ -33,14 +30,14 @@ def test_build_method():
     """Test the build method creates correct UI structure."""
     component = VizroChatComponent(id="test-chat")
     result = component.build()
-    
+
     assert isinstance(result, html.Div)
-    
+
     # Check Store component
     store = result.children[0]
     assert store.id == "test-chat-messages"
     assert store.data == json.dumps([{"role": "assistant", "content": "Hello! How can I help you today?"}])
-    
+
     # Check input and button existence
     input_group = result.children[1].children[1].children[0]
     assert len(input_group.children) == 2  # Textarea and Button

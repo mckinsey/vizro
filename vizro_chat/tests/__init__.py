@@ -1,1 +1,1 @@
-"""Test package for vizro-chat.""" 
+"""Test package for vizro-chat."""

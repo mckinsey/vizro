@@ -29,7 +29,7 @@ dependencies = [
   "openai",
   "pytest>=7.0",
   "pytest-mock>=3.10.0",
-  "dash[testing]>=2.0.0",
+  "dash[testing]>=2.0.0"
 ]
 installer = "uv"
 

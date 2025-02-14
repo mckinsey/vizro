@@ -8,4 +8,4 @@ from vizro import Vizro
 def reset_vizro():
     """Reset Vizro state before each test."""
     Vizro._reset()
-    yield 
+    yield

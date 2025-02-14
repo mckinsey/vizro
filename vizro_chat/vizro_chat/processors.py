@@ -23,7 +23,7 @@ class EchoProcessor(ChatProcessor):
         try:
             if messages is None or user_prompt is None:
                 raise ValueError("Messages and prompt cannot be None")
-            
+
             for i in range(10):
                 yield f"Echo {i + 1}: {user_prompt}\n"
         except Exception as e:

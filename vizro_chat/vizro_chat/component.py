@@ -44,7 +44,7 @@ class VizroChatComponent(VizroBaseModel):
                 try:
                     data = request.json
                     user_prompt = data["prompt"].strip()
-                        
+
                     messages = json.loads(data.get("chat_history", "[]"))
 
                     def response_stream():
