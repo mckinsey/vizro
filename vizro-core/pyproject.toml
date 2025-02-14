@@ -29,7 +29,7 @@ dependencies = [
   "openai",
   "python-dotenv",
   "dash-chat",
-  "dash-mantine-components",
+  "dash-mantine-components"
 ]
 description = "Vizro is a package to facilitate visual analytics."
 dynamic = ["version"]

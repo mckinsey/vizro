@@ -1,0 +1,25 @@
+[envs.examples]
+dependencies = [
+  "."
+]
+installer = "uv"
+
+[envs.examples.env-vars]
+DASH_DEBUG = "true"
+PYTHONPATH = "vizro-core/src"
+VIZRO_LOG_LEVEL = "DEBUG"
+
+[envs.examples.scripts]
+chat = """
+REPO_ROOT=$(git rev-parse --show-toplevel)
+VIZRO_CHAT_DIR=$REPO_ROOT/vizro_chat
+EXAMPLE_DIR=$REPO_ROOT/vizro-core/examples/dev_1
+
+# Install the package in development mode
+cd $VIZRO_CHAT_DIR
+uv pip install -e .
+
+# Run the example with the correct Python path
+cd $EXAMPLE_DIR
+PYTHONPATH=$VIZRO_CHAT_DIR:$PYTHONPATH python app.py
+"""

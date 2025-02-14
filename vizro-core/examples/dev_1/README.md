@@ -45,7 +45,7 @@ from typing import Literal
 class CustomChatComponent(VizroChatComponent):
     type: Literal["custom_chat"] = "custom_chat"
     button_color: str = "primary"
-    
+
     def build(self):
         base_component = super().build()
         button = base_component.find_component(f"{self.id}-submit")
@@ -65,4 +65,4 @@ pip install vizro-chat
 python app.py
 ```
 
-3. To use the custom component, modify app.py to use CustomChatComponent instead of VizroChatComponent. 
+3. To use the custom component, extend VizroChatComponent.

@@ -36,7 +36,7 @@ dependencies = [
   "opencv-python",
   "pyhamcrest",
   "gunicorn",
-  "openai",
+  "openai"
 ]
 installer = "uv"
 
@@ -119,28 +119,26 @@ dependencies = [
   "isort==5.13.2",
   "plotly==6.0.0",
   "dash-bootstrap-components>=1.2.1",
-  "openai>=1.3.0",
+  "openai>=1.3.0"
 ]
 installer = "uv"
-scripts.example = "cd examples/{args:scratch_dev}; python app.py"
-scripts.chat = """
-REPO_ROOT=$(git rev-parse --show-toplevel)
-VIZRO_CHAT_DIR=$REPO_ROOT/vizro_chat
-EXAMPLE_DIR=$REPO_ROOT/vizro-core/examples/dev_1
-
-# Install the package in development mode
-cd $VIZRO_CHAT_DIR
-uv pip install -e .
-
-# Run the example with the correct Python path
-cd $EXAMPLE_DIR
-PYTHONPATH=$VIZRO_CHAT_DIR:$PYTHONPATH python app.py
-"""
 template = "examples"
 
 [envs.examples.env-vars]
 DASH_DEBUG = "true"
 VIZRO_LOG_LEVEL = "DEBUG"
+
+[envs.examples.scripts]
+chat = [
+  """
+  REPO_ROOT=$(git rev-parse --show-toplevel) && \
+  cd $REPO_ROOT/vizro_chat && \
+  uv pip install -e . && \
+  cd $REPO_ROOT/vizro-core/examples/dev_1 && \
+  PYTHONPATH=$REPO_ROOT/vizro_chat python app.py
+  """
+]
+example = "cd examples/{args:scratch_dev}; python app.py"
 
 [envs.lower-bounds]
 extra-dependencies = [
