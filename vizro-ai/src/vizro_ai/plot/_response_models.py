@@ -15,7 +15,6 @@ from pydantic import (
     ValidationInfo,
     create_model,
     field_validator,
-    validator,
 )
 
 from vizro_ai.plot._utils._safeguard import _safeguard_check

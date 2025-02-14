@@ -1,5 +1,3 @@
-from typing import Any
-
 import pytest
 import vizro.models as vm
 from langchain_core.messages import HumanMessage

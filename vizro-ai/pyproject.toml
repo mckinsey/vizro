@@ -17,7 +17,7 @@ dependencies = [
   "pandas",
   "tabulate",
   "openai>=1.0.0",
-  "langgraph-checkpoint",#TODO[LZ]: revisit deps after final decision
+  "langgraph-checkpoint",  # TODO[LZ]: revisit deps after final decision
   "langchain>=0.3.0",
   "langgraph>=0.1.2",
   "pydantic-ai",
