@@ -211,7 +211,12 @@ class Graph(VizroBaseModel):
                                 "yaxis": {"visible": False},
                             }
                         ),
-                        config={"autosizable": True, "frameMargins": 0, "responsive": True},
+                        config={
+                            "autosizable": True,
+                            "frameMargins": 0,
+                            "responsive": True,
+                            "modeBarButtonsToRemove": ["toImage"],
+                        },
                     ),
                     dcc.Markdown(self.footer, className="figure-footer") if self.footer else None,
                 ],
