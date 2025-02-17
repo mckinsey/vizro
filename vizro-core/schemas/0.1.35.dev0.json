@@ -316,7 +316,7 @@
     },
     "Container": {
       "additionalProperties": false,
-      "description": "Container to group together a set of components on a page.\n\nArgs:\n    type (Literal[\"container\"]): Defaults to `\"container\"`.\n    components (list[ComponentType]): See [ComponentType][vizro.models.types.ComponentType]. At least one component\n        has to be provided.\n    title (str): Title to be displayed.\n    layout (Optional[Layout]): Layout to place components in. Defaults to `None`.",
+      "description": "Container to group together a set of components on a page.\n\nArgs:\n    type (Literal[\"container\"]): Defaults to `\"container\"`.\n    components (list[ComponentType]): See [ComponentType][vizro.models.types.ComponentType]. At least one component\n        has to be provided.\n    title (str): Title to be displayed.\n    layout (Optional[Layout]): Layout to place components in. Defaults to `None`.\n    background (bool): Flag indicating whether to apply default container background color. Defaults to `False`.",
       "properties": {
         "id": {
           "default": "",
@@ -392,6 +392,12 @@
             }
           ],
           "default": null
+        },
+        "background": {
+          "default": false,
+          "description": "Flag indicating whether to apply default container background color.",
+          "title": "Background",
+          "type": "boolean"
         }
       },
       "required": ["components", "title"],
