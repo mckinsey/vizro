@@ -28,7 +28,8 @@ dependencies = [
   "imutils",
   "opencv-python",
   "pyhamcrest",
-  "gunicorn"
+  "gunicorn",
+  "pytest-playwright"
 ]
 features = ["kedro"]
 installer = "uv"
@@ -110,7 +111,8 @@ dependencies = [
   "autoflake==2.3.1",
   "black==24.4.2",
   "isort==5.13.2",
-  "plotly==6.0.0"  # to leverage new MapLibre features in visual-vocabulary
+  "plotly==6.0.0",  # to leverage new MapLibre features in visual-vocabulary,
+  
 ]
 installer = "uv"
 scripts = {example = "cd examples/{args:scratch_dev}; python app.py"}
