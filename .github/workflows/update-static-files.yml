@@ -3,6 +3,9 @@ name: Update Static Files
 on:
   schedule:
     - cron: "0 0 * * 0" # Runs at midnight every Sunday
+  pull_request:
+    branches:
+      - main
 
 defaults:
   run:
