@@ -236,11 +236,11 @@ class Filter(VizroBaseModel):
         # Note: dcc.Slider and dcc.RangeSlider do not support the "style" property directly,
         # so the "className" attribute is used to apply custom CSS for visibility control.
         # Reference for Dash class names: https://dashcheatsheet.pythonanywhere.com/
-        selector_build_obj[selector.id].className = "invisible"
-        if f"{selector.id}_start_value" in selector_build_obj:
-            selector_build_obj[f"{selector.id}_start_value"].className = "d-none"
-        if f"{selector.id}_end_value" in selector_build_obj:
-            selector_build_obj[f"{selector.id}_end_value"].className = "d-none"
+        selector_build_obj[f"{selector.id}-loading"].className = "material-symbols-outlined d-block"
+        # if f"{selector.id}_start_value" in selector_build_obj:
+        #    selector_build_obj[f"{selector.id}_start_value"].className = "d-none"
+        # if f"{selector.id}_end_value" in selector_build_obj:
+        #    selector_build_obj[f"{selector.id}_end_value"].className = "d-none"
 
         return html.Div(selector_build_obj, id=self.id)
 

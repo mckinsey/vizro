@@ -112,7 +112,13 @@ class Dropdown(VizroBaseModel):
 
         return html.Div(
             children=[
-                dbc.Label(self.title, html_for=self.id) if self.title else None,
+                html.Div(
+                    [
+                        dbc.Label(self.title, html_for=self.id) if self.title else None,
+                        html.Span("sync", className="material-symbols-outlined d-none", id=f"{self.id}-loading"),
+                    ],
+                    className="control-label",
+                ),
                 dcc.Dropdown(
                     id=self.id,
                     options=altered_options,

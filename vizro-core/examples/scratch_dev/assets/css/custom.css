@@ -6,3 +6,13 @@
 #control-panel .loading-container {
   gap: 1.5rem;
 }
+
+.control-label {
+  display: flex;
+  justify-content: space-between;
+}
+
+.control-label .material-symbols-outlined {
+  font-size: 14px;
+  color: var(--text-primaryHover);
+}

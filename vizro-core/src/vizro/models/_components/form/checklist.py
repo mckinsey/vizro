@@ -54,7 +54,13 @@ class Checklist(VizroBaseModel):
 
         return html.Fieldset(
             children=[
-                html.Legend(children=self.title, className="form-label") if self.title else None,
+                html.Div(
+                    [
+                        html.Legend(children=self.title, className="form-label") if self.title else None,
+                        html.Span("sync", className="material-symbols-outlined d-none", id=f"{self.id}-loading"),
+                    ],
+                    className="control-label",
+                ),
                 dbc.Checklist(
                     id=self.id,
                     options=full_options,

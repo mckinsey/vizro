@@ -96,7 +96,14 @@ class RangeSlider(VizroBaseModel):
                 dcc.Store(f"{self.id}_callback_data", data={"id": self.id, "min": min, "max": max}),
                 html.Div(
                     children=[
-                        dbc.Label(children=self.title, html_for=self.id) if self.title else None,
+                        html.Div(
+                            [
+                                dbc.Label(self.title, html_for=self.id) if self.title else None,
+                                html.Span("sync", className="material-symbols-outlined d-none",
+                                          id=f"{self.id}-loading"),
+                            ],
+                            className="control-label",
+                        ),
                         html.Div(
                             [
                                 dcc.Input(

@@ -136,16 +136,7 @@ class Page(VizroBaseModel):
     @_log_call
     def build(self) -> _PageBuildType:
         controls_content = [control.build() for control in self.controls]
-        control_panel = html.Div(
-            id="control-panel",
-            children=dcc.Loading(
-                controls_content,
-                color="grey",
-                parent_className="loading-container",
-                overlay_style={"visibility": "visible", "opacity": 0.3},
-            ),
-            hidden=not controls_content,
-        )
+        control_panel = html.Div(id="control-panel", children=controls_content, hidden=not controls_content)
 
         self.layout = cast(
             Layout,
