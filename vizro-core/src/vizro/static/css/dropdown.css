@@ -164,7 +164,7 @@ wrapper **/
   padding-top: 0.5rem;
 }
 
-.checklist-dropdown-div {
+.checkbox-dropdown {
   display: flex;
   flex-direction: row;
   gap: 8px;

@@ -141,7 +141,7 @@ class TestDropdownBuild:
     """Tests model build method."""
 
     @pytest.mark.parametrize(
-        "value, options, expected_checklist_all_value, expected_options, expected_value",
+        "value, options, expected_checkbox_value, expected_options, expected_value",
         [
             (
                 ["A"],
@@ -166,9 +166,7 @@ class TestDropdownBuild:
             ),
         ],
     )
-    def test_dropdown_with_all_option(
-        self, value, options, expected_checklist_all_value, expected_options, expected_value
-    ):
+    def test_dropdown_with_all_option(self, value, options, expected_checkbox_value, expected_options, expected_value):
         dropdown = Dropdown(value=value, options=options, title="Title", id="dropdown_id").build()
         expected_dropdown = html.Div(
             [
@@ -180,14 +178,14 @@ class TestDropdownBuild:
                             "label": html.Div(
                                 [
                                     dbc.Checkbox(
-                                        id="dropdown_id_checklist_all",
-                                        value=expected_checklist_all_value,
+                                        id="dropdown_id_select_all",
+                                        value=expected_checkbox_value,
                                         label="Select All",
                                         persistence=True,
                                         persistence_type="session",
                                     ),
                                 ],
-                                className="checklist-dropdown-div",
+                                className="checkbox-dropdown",
                             ),
                             "value": "ALL",
                         },

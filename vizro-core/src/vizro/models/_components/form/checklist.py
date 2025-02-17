@@ -57,6 +57,7 @@ class Checklist(VizroBaseModel):
                 Input(f"{self.id}_select_all", "value"),
                 Input(self.id, "value"),
                 State(self.id, "options"),
+                State(f"{self.id}_select_all", "id"),
             ],
             prevent_initial_call=True,
         )
@@ -75,7 +76,7 @@ class Checklist(VizroBaseModel):
                 ),
                 dbc.Checklist(
                     id=self.id,
-                    options=options,
+                    options=dict_options,
                     value=final_value,
                     persistence=True,
                     persistence_type="session",

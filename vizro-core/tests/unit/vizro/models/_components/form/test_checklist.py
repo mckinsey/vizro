@@ -123,28 +123,46 @@ class TestChecklistBuild:
     """Tests model build method."""
 
     @pytest.mark.parametrize(
-        "value, options, expected_checklist_all_value, expected_value",
+        "value, options, expected_checkbox_value, expected_value, expected_options",
         [
-            (["A"], ["A", "B", "C"], False, ["A"]),
-            (["A", "B", "C"], ["A", "B", "C"], True, ["A", "B", "C"]),
-            (None, ["A", "B", "C"], True, ["A", "B", "C"]),
+            (
+                ["A"],
+                ["A", "B", "C"],
+                False,
+                ["A"],
+                [{"label": "A", "value": "A"}, {"label": "B", "value": "B"}, {"label": "C", "value": "C"}],
+            ),
+            (
+                ["A", "B", "C"],
+                ["A", "B", "C"],
+                True,
+                ["A", "B", "C"],
+                [{"label": "A", "value": "A"}, {"label": "B", "value": "B"}, {"label": "C", "value": "C"}],
+            ),
+            (
+                None,
+                ["A", "B", "C"],
+                True,
+                ["A", "B", "C"],
+                [{"label": "A", "value": "A"}, {"label": "B", "value": "B"}, {"label": "C", "value": "C"}],
+            ),
         ],
     )
-    def test_checklist_build(self, value, options, expected_checklist_all_value, expected_value):
+    def test_checklist_build(self, value, options, expected_checkbox_value, expected_value, expected_options):
         checklist = Checklist(id="checklist_id", value=value, options=options, title="Title").build()
         expected_checklist = html.Fieldset(
             [
                 html.Legend("Title", className="form-label"),
                 dbc.Checkbox(
                     id="checklist_id_select_all",
-                    value=expected_checklist_all_value,
+                    value=expected_checkbox_value,
                     label="Select All",
                     persistence=True,
                     persistence_type="session",
                 ),
                 dbc.Checklist(
                     id="checklist_id",
-                    options=options,
+                    options=expected_options,
                     value=expected_value,
                     persistence=True,
                     persistence_type="session",

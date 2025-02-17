@@ -2,12 +2,13 @@ function update_dropdown_values(
   checklist_value = [],
   value = [],
   options = [],
+  checklist_value_id,
 ) {
   const triggeredId = dash_clientside.callback_context.triggered_id;
   const options_list = options.map((dict) => dict["value"]);
   const updated_options = options_list.filter((element) => element !== "ALL");
 
-  const isTriggeredByChecklist = triggeredId.includes("_checklist_all");
+  const isTriggeredByChecklist = triggeredId === checklist_value_id;
   const hasAllSelected = value.includes("ALL");
   const allOptionsSelected = value.length === updated_options.length;
 

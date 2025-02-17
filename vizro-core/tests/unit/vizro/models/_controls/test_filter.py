@@ -445,7 +445,11 @@ class TestFilterCall:
         filter.pre_build()
 
         selector_build = filter(target_to_data_frame=target_to_data_frame, current_value=["a", "b"])["test_selector_id"]
-        assert selector_build.options == ["a", "b", "c"]
+        assert selector_build.options == [
+            {"label": "a", "value": "a"},
+            {"label": "b", "value": "b"},
+            {"label": "c", "value": "c"},
+        ]
 
     def test_filter_call_numerical_valid(self, target_to_data_frame):
         filter = vm.Filter(
