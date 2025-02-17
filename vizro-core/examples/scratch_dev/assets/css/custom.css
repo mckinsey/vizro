@@ -13,6 +13,6 @@
 }
 
 .control-label .material-symbols-outlined {
-  font-size: 14px;
   color: var(--text-primaryHover);
+  font-size: 14px;
 }

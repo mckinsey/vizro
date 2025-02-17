@@ -99,8 +99,9 @@ class RangeSlider(VizroBaseModel):
                         html.Div(
                             [
                                 dbc.Label(self.title, html_for=self.id) if self.title else None,
-                                html.Span("sync", className="material-symbols-outlined d-none",
-                                          id=f"{self.id}-loading"),
+                                html.Span(
+                                    "sync", className="material-symbols-outlined d-none", id=f"{self.id}-loading"
+                                ),
                             ],
                             className="control-label",
                         ),
