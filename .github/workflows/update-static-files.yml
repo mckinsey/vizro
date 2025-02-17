@@ -39,7 +39,7 @@ jobs:
         run: git diff --exit-code || echo "has_changes=true" >> $GITHUB_OUTPUT
 
     outputs:
-      has_changes: ${{ steps.check_changes.outputs.has_changes }}
+      has_changes: ${{ steps.changed-files.outputs.has_changes }}
 
   update-files:
     runs-on: ubuntu-latest
