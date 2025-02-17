@@ -2,7 +2,7 @@
   padding-left: 8px;
 }
 
-/*Custom CSS for testing*/
+/* Custom CSS for testing */
 .card {
   background: var(--surfaces-bg02);
 }
@@ -11,7 +11,7 @@
   --surfaces-bg01: #f5f6f6ff; /* Used for main bg color on the right */
   --surfaces-bg02: #ffffffff; /* Used for container color */
   --surfaces-bg03: #e6e8eaff;
-  --surfaces-bg-container: var(--surfaces-bg02);  /*#F5F6F6*/
+  --surfaces-bg-container: var(--surfaces-bg02);  /* #F5F6F6 */
 }
 
 #left-main {
