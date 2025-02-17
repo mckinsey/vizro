@@ -1,4 +1,4 @@
-"""Script to update the Google Material Design Icons font in the static folder."""
+"""Script to update the static files that come from other libraries."""
 # ruff: noqa: T201
 
 import re
@@ -11,10 +11,6 @@ import requests
 from vizro import VIZRO_ASSETS_PATH
 
 TIMEOUT = 10  # seconds
-
-# check hatch.toml and github script
-# run it once per week
-
 
 @dataclass
 class StaticFileConfig:
