@@ -72,7 +72,7 @@ jobs:
 
       - name: Create Pull Request
         run: |
-          gh pr create -B main -H bot/update-static-files --title "[Bot] Update Static Files" --body "Automated update of static files"
+          gh pr create -B main -H bot/update-static-files --title "[Bot] Update static files" --body "Automated update of static files"
 
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
