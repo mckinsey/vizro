@@ -176,12 +176,6 @@
   width: 0;
 }
 
-.page-component-container {
-  display: flex;
-  flex-direction: column;
-  height: 100%;
-}
-
 /* Note: This is only meant as a quick-fix to improve some of the mobile layouts. */
 
 /* Long-term wise this should be replaced by refactoring our CSS code and components to be mobile-compatible. */

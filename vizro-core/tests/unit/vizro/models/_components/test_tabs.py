@@ -49,8 +49,8 @@ class TestTabsBuildMethod:
         assert_component_equal(
             [tab.children for tab in result.children],
             [
-                html.Div(id="container-1", className="page-component-container"),
-                html.Div(id="container-2", className="page-component-container"),
+                dbc.Container(id="container-1", className="", fluid=True),
+                dbc.Container(id="container-2", className="", fluid=True),
             ],
             keys_to_strip={"children"},
         )
