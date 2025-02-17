@@ -15,6 +15,7 @@ TIMEOUT = 10  # seconds
 # check hatch.toml and github script
 # run it once per week
 
+
 @dataclass
 class StaticFileConfig:
     """Configuration to fetch a static file.
@@ -27,6 +28,7 @@ class StaticFileConfig:
         destination: path to download `url_to_download` file to.
         headers: optional argument for headers to pass with the initial request to source_url.
     """
+
     source_url: str
     pattern: str
     destination: Path
@@ -49,6 +51,7 @@ def fetch_extracted_url(source_url: str, pattern: str, headers: dict[str, str]) 
 
     return response.content
 
+
 # The Google fonts API returns different CSS depending on the user agent. If we don't manually specify a user agent then
 # it will point us to a ttf rather than woff2 file. So we take a user agent from https://www.useragents.me/ to fake
 # being a real Chrome browser so we get the woff2 file.
@@ -61,7 +64,7 @@ static_file_configs = [
         source_url="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined",
         pattern=r"src: url\((?P<url_to_download>.+)\) format\('woff2'\)",
         destination=VIZRO_ASSETS_PATH / "css/fonts/material-symbols-outlined.woff2",
-        headers={"user-agent": USER_AGENT}
+        headers={"user-agent": USER_AGENT},
     ),
     StaticFileConfig(
         source_url="https://raw.githubusercontent.com/snehilvj/dash-mantine-components/refs/heads/master/dash_mantine_components/styles.py",
