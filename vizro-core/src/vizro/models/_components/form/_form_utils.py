@@ -11,19 +11,14 @@ from vizro.models.types import MultiValueType, OptionsType, SingleValueType
 
 def get_options_and_default(options: OptionsType, multi: bool = False) -> tuple[OptionsType, SingleValueType]:
     """Gets list of full options and default value based on user input type of `options`."""
-    if multi:
-        if all(isinstance(option, dict) for option in options):
-            options = [{"label": ALL_OPTION, "value": ALL_OPTION}, *options]
-        else:
-            options = [ALL_OPTION, *options]
+    dict_options = [
+        option if isinstance(option, dict) else {"label": str(option), "value": option} for option in options
+    ]
 
-    if all(isinstance(option, dict) for option in options):
-        # Each option is a OptionsDictType
-        default_value = options[0]["value"]  # type: ignore[index]
-    else:
-        default_value = options[0]
+    list_values = [dict_option["value"] for dict_option in dict_options]
+    default_value = list_values if multi else list_values[0]
 
-    return options, default_value
+    return dict_options, default_value
 
 
 # Utils for validators

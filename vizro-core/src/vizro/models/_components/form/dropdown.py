@@ -3,10 +3,11 @@ from datetime import date
 from typing import Annotated, Literal, Optional, Union, cast
 
 import dash_bootstrap_components as dbc
-from dash import dcc, html
+from dash import ClientsideFunction, Input, Output, State, clientside_callback, dcc, html
 from pydantic import AfterValidator, Field, PrivateAttr, StrictBool, ValidationInfo, model_validator
 from pydantic.functional_serializers import PlainSerializer
 
+from vizro._constants import ALL_OPTION
 from vizro.models import Action, VizroBaseModel
 from vizro.models._action._actions_chain import _action_validator_factory
 from vizro.models._components.form._form_utils import get_options_and_default, validate_options_dict, validate_value
@@ -44,16 +45,29 @@ def validate_multi(multi, info: ValidationInfo):
     return multi
 
 
-def _add_select_all_option(full_options: OptionsType) -> OptionsType:
+def _add_select_all_option(
+    options: OptionsType, component_id: str, value: Optional[Union[SingleValueType, MultiValueType]]
+) -> list[OptionsDictType]:
     """Adds a 'Select All' option to the list of options."""
-    # TODO: Move option to dictionary conversion within `get_options_and_default` function as here: https://github.com/mckinsey/vizro/pull/961#discussion_r1923356781
-    options_dict = [
-        cast(OptionsDictType, {"label": option, "value": option}) if not isinstance(option, dict) else option
-        for option in full_options
-    ]
+    checklist_value = value is None or (isinstance(value, list) and len(value) == len(options))
 
-    options_dict[0] = {"label": html.Div(["ALL"]), "value": "ALL"}
-    return options_dict
+    all_option = {
+        "label": html.Div(
+            [
+                dbc.Checkbox(
+                    id=f"{component_id}_select_all",
+                    value=checklist_value,
+                    label="Select All",
+                    persistence=True,
+                    persistence_type="session",
+                ),
+            ],
+            className="checkbox-dropdown",
+        ),
+        "value": ALL_OPTION,
+    }
+    dict_options_with_all = [all_option, *options]
+    return dict_options_with_all
 
 
 class Dropdown(VizroBaseModel):
@@ -106,16 +120,35 @@ class Dropdown(VizroBaseModel):
     _validate_options = model_validator(mode="before")(validate_options_dict)
 
     def __call__(self, options):
-        full_options, default_value = get_options_and_default(options=options, multi=self.multi)
-        option_height = _calculate_option_height(full_options)
-        altered_options = _add_select_all_option(full_options=full_options) if self.multi else full_options
+        if self.multi:
+            clientside_callback(
+                ClientsideFunction(namespace="dropdown", function_name="update_dropdown_values"),
+                output=[
+                    Output(f"{self.id}_select_all", "value"),
+                    Output(self.id, "value"),
+                ],
+                inputs=[
+                    Input(f"{self.id}_select_all", "value"),
+                    Input(self.id, "value"),
+                    State(self.id, "options"),
+                    State(f"{self.id}_select_all", "id"),
+                ],
+                prevent_initial_call=True,
+            )
+        dict_options, default_value = get_options_and_default(options=options, multi=self.multi)
+        option_height = _calculate_option_height(dict_options)
+        dict_options_with_all = (
+            _add_select_all_option(options=dict_options, component_id=self.id, value=self.value)
+            if self.multi
+            else dict_options
+        )
 
         return html.Div(
             children=[
                 dbc.Label(self.title, html_for=self.id) if self.title else None,
                 dcc.Dropdown(
                     id=self.id,
-                    options=altered_options,
+                    options=dict_options_with_all,
                     value=self.value if self.value is not None else default_value,
                     multi=self.multi,
                     optionHeight=option_height,

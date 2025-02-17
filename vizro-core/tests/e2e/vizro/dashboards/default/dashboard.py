@@ -4,6 +4,7 @@ from pages.datepicker_page import datepicker_page
 from pages.filters_page import filters_page
 from pages.homepage import homepage
 from pages.kpi_indicators_page import kpi_indicators_page
+from pages.parameters_multi_page import parameters_multi_page
 from pages.parameters_page import parameters_page
 
 import vizro.models as vm
@@ -11,13 +12,22 @@ from vizro import Vizro
 
 dashboard = vm.Dashboard(
     title="Vizro dashboard for integration testing",
-    pages=[homepage, filters_page, parameters_page, kpi_indicators_page, datepicker_page, ag_grid_page],
+    pages=[
+        homepage,
+        filters_page,
+        parameters_page,
+        parameters_multi_page,
+        kpi_indicators_page,
+        datepicker_page,
+        ag_grid_page,
+    ],
     navigation=vm.Navigation(
         pages={
             cnst.GENERAL_ACCORDION: [
                 cnst.HOME_PAGE_ID,
                 cnst.FILTERS_PAGE,
                 cnst.PARAMETERS_PAGE,
+                cnst.PARAMETERS_MULTI_PAGE,
                 cnst.KPI_INDICATORS_PAGE,
             ],
             cnst.DATEPICKER_ACCORDION: [cnst.DATEPICKER_PAGE],
