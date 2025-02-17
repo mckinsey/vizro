@@ -128,7 +128,9 @@ This defines a single row that occupies the entire width and height, divided int
 
 ## Grid - advanced example
 
-If you want to divide the grid into subgrids with finer control over these, you can use [`Containers`](container.md). See our section on [when to use `Containers` vs. `Page.layout`](container.md#when-to-use-containers) for more information.
+If you need to divide the grid into subgrids for finer control or want to visually distinguish your subgrids using 
+background colors, you can use [`Containers`](container.md). See our section on 
+[when to use `Containers` vs. `Page.layout`](container.md#when-to-use-containers) for more information.
 
 The `Layout` provides full control over the arrangement of top-level components within a page, allowing arbitrarily granular control of the grid by creating larger grids.
 
@@ -409,14 +411,17 @@ For further customization, such as changing the gap between row and column, refe
 
 ## Alternative layout approaches
 
-In general, any arbitrarily granular layout can already be achieved using [`Page.layout`](layouts.md) alone and is our recommended approach if you want to arrange components on a page with consistent row and/or column spacing.
+In general, any arbitrarily granular layout can already be achieved using [`Page.layout`](layouts.md) alone and is our 
+recommended approach if you want to arrange components on a page with consistent row and/or column spacing.
 
 !!! note "Alternative layout approaches: `Tabs` and `Containers`"
-    [`Tabs`][vizro.models.Tabs] and [`Containers`][vizro.models.Container] offer an alternative approach to customize your page layout. For example, if you want to have more granular control and break the overall page grid into subgrids, see our [user guide on Containers](container.md).
 
-    If you want to display multiple containers on one page by putting them into the same screen space, and letting the user switch between them, see our [user guide on Tabs](tabs.md).
-
-    ![tabs](../../assets/user_guides/components/tabs-info.png){ width="500" }
+    [`Tabs`][vizro.models.Tabs] and [`Containers`][vizro.models.Container] provide alternative methods for customizing 
+    your page layout. For instance, if you need more granular control, want to break the overall page grid into 
+    subgrids, or wish to visually distinguish your subgrid with background colors, refer to our 
+    [user guide on Containers](container.md).
+    
+![tabs](../../assets/user_guides/components/tabs-info.png){ width="500" }
 
 [grid]: ../../assets/user_guides/layout/one_left_two_right.png
 [gridadv]: ../../assets/user_guides/layout/grid_advanced.png
