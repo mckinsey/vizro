@@ -1,5 +1,4 @@
 import re
-from typing import Optional
 
 from playwright.sync_api import Page, expect
 
