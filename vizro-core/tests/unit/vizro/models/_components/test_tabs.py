@@ -3,7 +3,6 @@
 import dash_bootstrap_components as dbc
 import pytest
 from asserts import assert_component_equal
-from dash import html
 from pydantic import ValidationError
 
 import vizro.models as vm
