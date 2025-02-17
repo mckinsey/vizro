@@ -37,6 +37,7 @@ installer = "uv"
 PYTHONPATH = "tests/e2e/vizro/dashboards/default:tests/tests_utils"
 
 [envs.default.scripts]
+download-static-files = "python tools/download_static_files.py"
 example = "hatch run examples:example {args:scratch_dev}"  # shortcut script to underlying example environment script.
 lint = "pre-commit run {args} --all-files"
 pip = '"{env:HATCH_UV}" pip {args}'
@@ -76,7 +77,6 @@ test-unit-coverage = [
   "- coverage combine",
   "coverage report"
 ]
-download-static-files = "python tools/download_static_files.py"
 
 [envs.docs]
 dependencies = [
