@@ -12,6 +12,7 @@ from vizro import VIZRO_ASSETS_PATH
 
 TIMEOUT = 10  # seconds
 
+
 @dataclass
 class StaticFileConfig:
     """Configuration to fetch a static file.
