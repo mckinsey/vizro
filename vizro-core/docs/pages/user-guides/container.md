@@ -157,4 +157,75 @@ To create nested containers, add a `Container` to the `components` argument of a
 vm.Container(title="Parent Container", components=[vm.Container(title="Child Container", components=[vm.Button()])])
 ```
 
+## Styled containers
+
+To enhance the visibility of the `Container` as a distinct section within your dashboard, you can enable the background color.
+
+!!! example "Container with background color"
+    === "app.py"
+        ```{.python pycafe-link}
+        import vizro.models as vm
+        import vizro.plotly.express as px
+        from vizro import Vizro
+
+        iris = px.data.iris()
+
+        page = vm.Page(
+            title="Container with background color",
+            layout=vm.Layout(grid=[[0, 1]]),
+            components=[
+                vm.Container(
+                    title="Container I",
+                    components=[vm.Graph(figure=px.scatter(iris, x="sepal_width", y="sepal_length", color="species"))],
+                    background=True
+                ),
+                vm.Container(
+                    title="Container II",
+                    components=[vm.Graph(figure=px.box(iris, x="species", y="sepal_length", color="species"))],
+                    background=True
+                )
+            ],
+        )
+
+        dashboard = vm.Dashboard(pages=[page])
+        Vizro().build(dashboard).run()
+        ```
+
+    === "app.yaml"
+        ```yaml
+        # Still requires a .py to add data to the data manager and parse YAML configuration
+        # See yaml_version example
+        pages:
+          - title: Container with background color
+            layout:
+              grid: [[0, 1]]
+            components:
+              - type: container
+                title: Container I
+                components:
+                  - type: graph
+                    figure:
+                      _target_: scatter
+                      data_frame: iris
+                      x: sepal_width
+                      y: sepal_length
+                      color: species
+                background: true
+              - type: container
+                title: Container II
+                components:
+                  - type: graph
+                    figure:
+                      _target_: box
+                      data_frame: iris
+                      x: species
+                      y: sepal_length
+                      color: species
+                background: true
+        ```
+
+    === "Result"
+        [![StyleContainer]][stylecontainer]
+
 [container]: ../../assets/user_guides/components/containers.png
+[stylecontainer]: ../../assets/user_guides/components/container_with_background.png
