@@ -107,9 +107,6 @@ def datasets_from_catalog(catalog: CatalogProtocol, *, pipeline: Pipeline = None
     for dataset_name, dataset_config in kedro_datasets.items():
         # "type" key always exists because we filtered out patterns that resolve to empty dictionary above.
         if "pandas" in dataset_config["type"]:
-            # TODO: in future update to use lambda: catalog.load(dataset_name) instead of _get_dataset
-            #  but need to check if works with caching.
-            dataset = catalog._get_dataset(dataset_name, suggest=False)
-            vizro_data_sources[dataset_name] = dataset.load
+            vizro_data_sources[dataset_name] = lambda: catalog.load(dataset_name)
 
     return vizro_data_sources
