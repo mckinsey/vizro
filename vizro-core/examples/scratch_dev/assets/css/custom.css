@@ -2,7 +2,17 @@
   padding-left: 8px;
 }
 
-#old-line-height p {
-    line-height: 1;
-    margin-bottom: 0.5rem;
+
+#control-panel .loading-container {
+  gap: 1.5rem;
+}
+
+.control-label {
+  display: flex;
+  justify-content: space-between;
+}
+
+.control-label .material-symbols-outlined {
+  color: var(--text-primaryHover);
+  font-size: 14px;
 }
