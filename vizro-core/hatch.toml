@@ -28,7 +28,7 @@ dependencies = [
   "imutils",
   "opencv-python",
   "pyhamcrest",
-  "gunicorn",
+  "gunicorn"
 ]
 features = ["kedro"]
 installer = "uv"
