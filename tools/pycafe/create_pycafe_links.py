@@ -49,9 +49,11 @@ def _get_vizro_requirement(use_latest_release: bool = False) -> str:
     return f"{PYCAFE_URL}/gh/artifact/mckinsey/vizro/actions/runs/{RUN_ID}/pip/vizro-{PACKAGE_VERSION}-py3-none-any.whl"
 
 
-def generate_link(directory: str, extra_requirements: Optional[list[str]] = None, use_latest_release: bool = False):
+def generate_link(
+    directory_path: str, extra_requirements: Optional[list[str]] = None, use_latest_release: bool = False
+):
     """Generate a PyCafe link for the example dashboards."""
-    base_url = f"{VIZRO_RAW_URL}/{COMMIT_SHA}/{directory}"
+    base_url = f"{VIZRO_RAW_URL}/{COMMIT_SHA}/{directory_path}"
 
     # Requirements - either use latest release or commit's wheel file
     requirements = "\n".join(
@@ -83,17 +85,18 @@ def generate_link(directory: str, extra_requirements: Optional[list[str]] = None
         # Get the JSON response with the file tree
         files = response.json().get("tree", [])
         # Filter files for the specific folder path
-        folder_files = [file for file in files if file["path"].startswith(directory)]
+        folder_files = [file for file in files if file["path"].startswith(directory_path)]
 
         # Add files to the json_object
         json_object["files"] = [
             {
-                "name": file["path"].removeprefix(f"{directory}"),
-                "url": f"{base_url}{file['path'].removeprefix(f'{directory}')}",
+                "name": file["path"].removeprefix(f"{directory_path}"),
+                "url": f"{base_url}{file['path'].removeprefix(f'{directory_path}')}",
             }
             for file in folder_files
             # Filter out app.py and requirements.txt (as already added above)
-            if file["type"] == "blob" and file["path"] not in {f"{directory}/app.py", f"{directory}/requirements.txt"}
+            if file["type"] == "blob"
+            and file["path"] not in {f"{directory_path}/app.py", f"{directory_path}/requirements.txt"}
         ]
     else:
         raise Exception(f"Failed to fetch file tree from GitHub API: {response.status_code} {response.text}")
@@ -105,18 +108,18 @@ def generate_link(directory: str, extra_requirements: Optional[list[str]] = None
     return f"{PYCAFE_URL}/snippet/vizro/v1?{query}"
 
 
-def generate_comparison_links(directory: str, extra_requirements: Optional[list[str]] = None) -> dict[str, str]:
+def generate_comparison_links(directory_path: str, extra_requirements: Optional[list[str]] = None) -> dict[str, str]:
     """Generate both commit and release links for comparison."""
     return {
-        "commit": generate_link(directory, extra_requirements, use_latest_release=False),
-        "release": generate_link(directory, extra_requirements, use_latest_release=True),
+        "commit": generate_link(directory_path, extra_requirements, use_latest_release=False),
+        "release": generate_link(directory_path, extra_requirements, use_latest_release=True),
     }
 
 
-def post_comment(pr, comparison_urls: dict[str, dict[str, str]]):
+def post_comment(pr_object, comparison_urls_dict: dict[str, dict[str, str]]):
     """Post a comment on the pull request with the links to the PyCafe dashboards."""
     # Find existing comments by the bot
-    comments = pr.get_issue_comments()
+    comments = pr_object.get_issue_comments()
     bot_comment = None
     for comment in comments:
         if comment.body.startswith("## View the example dashboards of the current commit live"):
@@ -130,7 +133,7 @@ def post_comment(pr, comparison_urls: dict[str, dict[str, str]]):
     dashboards = "\n\n".join(
         f"### {directory}\n"
         f"[View with commit's wheel]({urls['commit']}) vs [View with latest release]({urls['release']})"
-        for directory, urls in comparison_urls.items()
+        for directory, urls in comparison_urls_dict.items()
     )
 
     # Update the existing comment or create a new one
@@ -144,7 +147,7 @@ def post_comment(pr, comparison_urls: dict[str, dict[str, str]]):
         bot_comment.edit(comment_body)
         print("Comment updated on the pull request.")  # noqa
     else:
-        pr.create_issue_comment(comment_body)
+        pr_object.create_issue_comment(comment_body)
         print("Comment added to the pull request.")  # noqa
 
 
