@@ -1,3 +1,4 @@
+import os
 import re
 import shutil
 import subprocess
@@ -37,13 +38,14 @@ from pathlib import Path
 #         cv2.rectangle(expected_image, (x, y), (x + width, y + height), (0, 0, 255), 2)
 #     return expected_image
 import pytest
-import os
 
 
 def make_screenshot_and_paths(driver, request_node_name):
     """Creates image paths and makes screenshot during the test run."""
     result_image_path = f"{request_node_name}_branch.png"
-    expected_image_path = f"tests/e2e/screenshots/{os.getenv('BROWSER')}/{request_node_name.replace('test', 'main')}.png"
+    expected_image_path = (
+        f"tests/e2e/screenshots/{os.getenv('BROWSER')}/{request_node_name.replace('test', 'main')}.png"
+    )
     driver.save_screenshot(result_image_path)
     return result_image_path, expected_image_path
 
@@ -80,6 +82,7 @@ def assert_image_equal(result_image_path, expected_image_path):
         ],
         capture_output=True,
         text=True,
+        check=False,
     )
     if "error: 0%" in result.stdout:
         Path(result_image_path).unlink()
