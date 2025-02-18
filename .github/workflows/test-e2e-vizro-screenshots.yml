@@ -47,7 +47,7 @@ jobs:
         run: hatch run pip tree
 
       - name: Run e2e vizro-screenshots tests
-        run: hatch run test-e2e-vizro-screenshots ${{ matrix.config.label }}
+        run: hatch run test-e2e-vizro-screenshots ${{ matrix.config.command }}
 
       - name: Create artifacts and slack notifications
         if: failure()
