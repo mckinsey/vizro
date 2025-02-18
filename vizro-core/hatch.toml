@@ -119,7 +119,12 @@ dependencies = [
   "isort==5.13.2",
   "plotly==6.0.0",
   "dash-bootstrap-components>=1.2.1",
-  "openai>=1.3.0"
+  "openai>=1.3.0",
+  "jupyter",
+  "langgraph",
+  "langchain_openai",
+  "langchain_community",
+  "langsmith",
 ]
 installer = "uv"
 template = "examples"
@@ -139,6 +144,7 @@ chat = [
   """
 ]
 example = "cd examples/{args:scratch_dev}; python app.py"
+notebook = "cd examples; jupyter notebook"
 
 [envs.lower-bounds]
 extra-dependencies = [
