@@ -7,7 +7,7 @@ from vizro import Vizro
 iris = px.data.iris()
 
 page = vm.Page(
-    title="Page with subsections",
+    title="Colored Container",
     layout=vm.Layout(grid=[[0, 3, 3, 3, 4, 4], [1, 3, 3, 3, 4, 4], [2, 3, 3, 3, 4, 4]]),
     components=[
         vm.Card(text="""Hello, this is a card with a [link](https://www.google.com)"""),
@@ -25,13 +25,12 @@ page = vm.Page(
             components=[
                 vm.Graph(figure=px.scatter(iris, x="sepal_width", y="sepal_length", color="species")),
             ],
-            background=True,
         ),
     ],
 )
 
 page_two = vm.Page(
-    title="Container",
+    title="Non-colored Container",
     components=[
         vm.Container(
             title="Container III",
