@@ -29,6 +29,7 @@ def dash_br_driver(dash_br, request):
     """Built-in driver from the dash library."""
     port = request.param.get("port", cnst.DEFAULT_PORT) if hasattr(request, "param") else cnst.DEFAULT_PORT
     path = request.param.get("path", "") if hasattr(request, "param") else ""
+    dash_br.driver.set_window_size(1920, 1080)
     dash_br.server_url = f"http://127.0.0.1:{port}/{path}"
 
 
