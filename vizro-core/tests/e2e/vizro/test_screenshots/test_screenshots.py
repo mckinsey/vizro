@@ -1,6 +1,6 @@
 from e2e.asserts import assert_image_equal, make_screenshot_and_paths
 from e2e.vizro import constants as cnst
-from e2e.vizro.navigation import page_select
+from e2e.vizro.navigation import accordion_select, page_select
 from e2e.vizro.waiters import graph_load_waiter
 
 
@@ -27,6 +27,9 @@ def test_homepage(dash_br):
 
 @image_assertion
 def test_ag_grid_page(dash_br):
+    accordion_select(
+        dash_br, accordion_name=cnst.AG_GRID_ACCORDION.upper(), accordion_number=cnst.AG_GRID_ACCORDION_NUMBER
+    )
     page_select(
         dash_br,
         page_path=cnst.TABLE_AG_GRID_PAGE_PATH,
