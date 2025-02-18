@@ -23,7 +23,6 @@ parser.add_argument("--run-id", required=True, help="GitHub Actions run ID")
 parser.add_argument("--commit-sha", required=True, help="Commit SHA")
 parser.add_argument("--pr-number", type=int, help="Pull request number (optional)")
 
-
 args = parser.parse_args()
 
 GITHUB_TOKEN = args.github_token
@@ -38,26 +37,26 @@ BOT_COMMENT_TEMPLATE = """## View the example dashboards of the current commit l
 Updated on: {current_utc_time}
 Commit: {commit_sha}
 
+Compare the examples using the commit's wheel file vs the latest released version:
 {dashboards}
 """
 
-# Access
-auth = Auth.Token(GITHUB_TOKEN)
-g = Github(auth=auth)
 
-# Get PR and commits
-repo = g.get_repo(REPO_NAME)
-commit = repo.get_commit(COMMIT_SHA)
+def _get_vizro_requirement(use_latest_release: bool = False) -> str:
+    """Get the Vizro requirement string."""
+    if use_latest_release:
+        return "vizro"
+    return f"{PYCAFE_URL}/gh/artifact/mckinsey/vizro/actions/runs/{RUN_ID}/pip/vizro-{PACKAGE_VERSION}-py3-none-any.whl"
 
 
-def generate_link(directory: str, extra_requirements: Optional[list[str]] = None):
+def generate_link(directory: str, extra_requirements: Optional[list[str]] = None, use_latest_release: bool = False):
     """Generate a PyCafe link for the example dashboards."""
     base_url = f"{VIZRO_RAW_URL}/{COMMIT_SHA}/{directory}"
 
-    # Requirements
+    # Requirements - either use latest release or commit's wheel file
     requirements = "\n".join(
         [
-            f"{PYCAFE_URL}/gh/artifact/mckinsey/vizro/actions/runs/{RUN_ID}/pip/vizro-{PACKAGE_VERSION}-py3-none-any.whl",
+            _get_vizro_requirement(use_latest_release),
             *(extra_requirements or []),
         ]
     )
@@ -106,10 +105,16 @@ def generate_link(directory: str, extra_requirements: Optional[list[str]] = None
     return f"{PYCAFE_URL}/snippet/vizro/v1?{query}"
 
 
-def post_comment(urls: dict[str, str]):
-    """Post a comment on the pull request with the links to the PyCafe dashboards."""
-    # Inspired by https://github.com/snehilvj/dash-mantine-components
+def generate_comparison_links(directory: str, extra_requirements: Optional[list[str]] = None) -> dict[str, str]:
+    """Generate both commit and release links for comparison."""
+    return {
+        "commit": generate_link(directory, extra_requirements, use_latest_release=False),
+        "release": generate_link(directory, extra_requirements, use_latest_release=True),
+    }
 
+
+def post_comment(pr, comparison_urls: dict[str, dict[str, str]]):
+    """Post a comment on the pull request with the links to the PyCafe dashboards."""
     # Find existing comments by the bot
     comments = pr.get_issue_comments()
     bot_comment = None
@@ -121,23 +126,35 @@ def post_comment(urls: dict[str, str]):
     # Get current UTC datetime
     current_utc_time = datetime.datetime.now(datetime.UTC).strftime("%Y-%m-%d %H:%M:%S UTC")
 
-    # Define the comment body with datetime
-    dashboards = "\n\n".join(f"Link: [{directory}]({url})" for directory, url in urls.items())
+    # Format the comparison links
+    dashboards = "\n\n".join(
+        f"### {directory}\n"
+        f"[View with commit's wheel]({urls['commit']}) vs [View with latest release]({urls['release']})"
+        for directory, urls in comparison_urls.items()
+    )
 
     # Update the existing comment or create a new one
+    comment_body = BOT_COMMENT_TEMPLATE.format(
+        current_utc_time=current_utc_time,
+        commit_sha=COMMIT_SHA,
+        dashboards=dashboards,
+    )
+
     if bot_comment:
-        bot_comment.edit(
-            BOT_COMMENT_TEMPLATE.format(current_utc_time=current_utc_time, commit_sha=COMMIT_SHA, dashboards=dashboards)
-        )
+        bot_comment.edit(comment_body)
         print("Comment updated on the pull request.")  # noqa
     else:
-        pr.create_issue_comment(
-            BOT_COMMENT_TEMPLATE.format(current_utc_time=current_utc_time, commit_sha=COMMIT_SHA, dashboards=dashboards)
-        )
+        pr.create_issue_comment(comment_body)
         print("Comment added to the pull request.")  # noqa
 
 
 if __name__ == "__main__":
+    # Initialize GitHub connection
+    auth = Auth.Token(GITHUB_TOKEN)
+    g = Github(auth=auth)
+    repo = g.get_repo(REPO_NAME)
+    commit = repo.get_commit(COMMIT_SHA)
+
     directories_with_requirements = {
         "vizro-core/examples/dev/": ["openpyxl"],
         "vizro-core/examples/scratch_dev": None,
@@ -159,25 +176,25 @@ if __name__ == "__main__":
             "https://py.cafe/files/maartenbreddels/tokenizers-demo/tokenizers-0.20.2.dev0-cp312-cp312-pyodide_2024_0_wasm32.whl",
         ],
     }
-    urls = {
-        directory: generate_link(directory, extra_requirements)
+
+    # Generate comparison links for each directory
+    comparison_urls = {
+        directory: generate_comparison_links(directory, extra_requirements)
         for directory, extra_requirements in directories_with_requirements.items()
     }
 
-    # Create status
-    for directory, url in urls.items():
-        # Define the deployment status
-        state = "success"  # Options: 'error', 'failure', 'pending', 'success'
+    # Create status for each URL - use the commit version for status
+    for directory, urls in comparison_urls.items():
+        state = "success"
         description = "Test out the app live on PyCafe"
         context = f"PyCafe Example ({directory})"
 
-        # Create the status on the commit
-        commit.create_status(state=state, target_url=url, description=description, context=context)
-        print(f"Status created for {context} with URL: {url}")  # noqa
+        commit.create_status(state=state, target_url=urls["commit"], description=description, context=context)
+        print(f"Status created for {context} with URL: {urls['commit']}")  # noqa
 
-    # Post the comment with the links
+    # Post the comment with the comparison links
     if PR_NUMBER is not None:
         pr = repo.get_pull(PR_NUMBER)
-        post_comment(urls)
+        post_comment(pr, comparison_urls)
 
 # Try out if this sticks with the local files that have just been changed. Add some files to scratch dev
