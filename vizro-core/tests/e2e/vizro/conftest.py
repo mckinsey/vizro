@@ -17,7 +17,7 @@ from selenium.common import WebDriverException
 
 def make_teardown(dash_br):
     # checking for browser console errors
-    if os.getenv("BROWSER") == "firefox":
+    if os.getenv("BROWSER") == "chrome":
         try:
             log_levels = [level for level in dash_br.get_logs() if level["level"] == "SEVERE" or "WARNING"]
             if log_levels:
