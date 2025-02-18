@@ -28,7 +28,9 @@ dependencies = [
   "imutils",
   "opencv-python",
   "pyhamcrest",
-  "gunicorn"
+  "gunicorn",
+  "pillow",
+  "pixelmatch"
 ]
 features = ["kedro"]
 installer = "uv"
@@ -62,11 +64,16 @@ templates-check = ["python src/vizro/_themes/generate_plotly_templates.py --chec
 # fix this, but we don't actually use `hatch run test` anywhere right now.
 # See comments added in https://github.com/mckinsey/vizro/pull/444.
 test = "pytest tests --headless {args}"
-test-e2e-component-library = "pytest tests/e2e/component_library/test_component_library.py --headless {args}"
+test-e2e-component-library = "pytest -vs tests/e2e/component_library/test_component_library.py --headless {args}"
 test-e2e-vizro-dom-elements = [
   "gunicorn dashboard:app -b 0.0.0.0:5002 -w 1 --timeout 90 &",
   "tests/tests_utils/e2e/vizro/dashboards/wait-for-it.sh 127.0.0.1:5002 -t 30",
   "pytest -vs --reruns 1 tests/e2e/vizro/test_dom_elements --headless {args}"
+]
+test-e2e-vizro-screenshots = [
+  "gunicorn dashboard:app -b 0.0.0.0:5002 -w 1 --timeout 90 &",
+  "tests/tests_utils/e2e/vizro/dashboards/wait-for-it.sh 127.0.0.1:5002 -t 30",
+  "pytest -vs tests/e2e/vizro/test_screenshots/ --headless {args}"
 ]
 test-integration = "pytest tests/integration --headless {args}"
 test-js = "./tools/run_jest.sh {args}"

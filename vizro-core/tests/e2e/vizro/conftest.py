@@ -2,15 +2,15 @@ import e2e.vizro.constants as cnst
 import pytest
 from e2e.vizro.checkers import browser_console_warnings_checker
 from selenium.common import WebDriverException
-from selenium.webdriver.chrome.options import Options as ChromeOptions
 
-
-# dash_br_driver options hook
-def pytest_setup_options():
-    options = ChromeOptions()
-    options.add_argument("--headless")
-    options.add_argument("--window-size=1920,1080")
-    return options
+# # dash_br_driver options hook
+# def pytest_setup_options():
+#     # options = ChromeOptions()
+#     options = FFOptions()
+#     options.binary_location = "/Applications/Firefox.app/Contents/MacOS/firefox"
+# #     options.add_argument("--headless")
+# #     options.add_argument("--window-size=1920,1080")
+#     return options`
 
 
 def make_teardown(dash_br):
