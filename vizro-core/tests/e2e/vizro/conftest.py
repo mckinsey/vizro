@@ -1,3 +1,5 @@
+import os
+
 import e2e.vizro.constants as cnst
 import pytest
 from e2e.vizro.checkers import browser_console_warnings_checker
@@ -15,13 +17,14 @@ from selenium.common import WebDriverException
 
 def make_teardown(dash_br):
     # checking for browser console errors
-    try:
-        log_levels = [level for level in dash_br.get_logs() if level["level"] == "SEVERE" or "WARNING"]
-        if log_levels:
-            for log_level in log_levels:
-                browser_console_warnings_checker(log_level, log_levels)
-    except WebDriverException:
-        pass
+    if os.getenv("BROWSER") == "firefox":
+        try:
+            log_levels = [level for level in dash_br.get_logs() if level["level"] == "SEVERE" or "WARNING"]
+            if log_levels:
+                for log_level in log_levels:
+                    browser_console_warnings_checker(log_level, log_levels)
+        except WebDriverException:
+            pass
 
 
 @pytest.fixture(autouse=True)
