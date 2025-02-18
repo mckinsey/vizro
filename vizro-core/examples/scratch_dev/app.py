@@ -1,4 +1,5 @@
 """Dev app to try things out."""
+
 from os import chown
 
 import pandas as pd
@@ -12,9 +13,9 @@ from vizro.models.types import capture
 df = px.data.iris()
 
 
-@capture('ag_grid')
+@capture("ag_grid")
 def my_custom_ag_grid(data_frame, chosen_columns, **kwargs):
-    print(f'\nChosen column: {chosen_columns}\n')
+    print(f"\nChosen column: {chosen_columns}\n")
     return dash_ag_grid(data_frame=data_frame[chosen_columns], **kwargs)()
 
 
@@ -26,7 +27,7 @@ page = vm.Page(
             figure=my_custom_ag_grid(
                 data_frame=df,
                 chosen_columns=df.columns.to_list(),
-            )
+            ),
         )
     ],
     controls=[
@@ -38,7 +39,7 @@ page = vm.Page(
                 multi=True,
             ),
         ),
-    ]
+    ],
 )
 
 dashboard = vm.Dashboard(pages=[page])
