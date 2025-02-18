@@ -1,0 +1,73 @@
+"""Script to test PyCafe links using Playwright."""
+
+import argparse
+
+from playwright.sync_api import sync_playwright
+from pycafe_utils import (
+    PyCafeConfig,
+    create_github_client,
+    generate_comparison_links,
+)
+
+
+def test_pycafe_link(url: str, wait_for_text: str):
+    """Test if a PyCafe link loads and renders correctly."""
+    with sync_playwright() as p:
+        browser = p.chromium.launch(headless=True)
+        page = browser.new_page()
+
+        try:
+            # Navigate to the page and wait for network to be idle
+            page.goto(url, wait_until="networkidle")
+
+            # Get the app frame and wait for title
+            frame = page.frame_locator("#app")
+            frame.get_by_text(wait_for_text).wait_for()
+
+            print(f"✅ Successfully verified PyCafe link: {url}")  # noqa
+            return True
+
+        except Exception as e:
+            print(f"❌ Failed to verify PyCafe link: {url}")  # noqa
+            print(f"Error: {str(e)}")  # noqa
+            page.screenshot(path="pycafe_error.png")
+            return False
+
+        finally:
+            browser.close()
+
+
+if __name__ == "__main__":
+    parser = argparse.ArgumentParser(description="Test PyCafe links for the example dashboards.")
+    parser.add_argument("--github-token", required=True, help="GitHub token for authentication")
+    parser.add_argument("--repo-name", required=True, help="Name of the GitHub repository")
+    parser.add_argument("--run-id", required=True, help="GitHub Actions run ID")
+    parser.add_argument("--commit-sha", required=True, help="Commit SHA")
+
+    args = parser.parse_args()
+
+    # Create configuration
+    config = PyCafeConfig(
+        github_token=args.github_token,
+        repo_name=args.repo_name,
+        run_id=args.run_id,
+        commit_sha=args.commit_sha,
+    )
+
+    # Initialize GitHub connection
+    _, repo, commit = create_github_client(config)
+
+    # Test dev example with both commit and release versions
+    dev_directory = "vizro-core/examples/dev/"
+    extra_requirements = ["openpyxl"]
+    urls = generate_comparison_links(config, dev_directory, extra_requirements)
+
+    # Test both versions
+    success = True
+    for version, url in urls.items():
+        print(f"\nTesting {version} version...")  # noqa
+        if not test_pycafe_link(url=url, wait_for_text="Vizro Features"):
+            success = False
+
+    # Exit with appropriate status code
+    exit(0 if success else 1)

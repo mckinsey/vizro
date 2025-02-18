@@ -29,7 +29,6 @@ dependencies = [
   "opencv-python",
   "pyhamcrest",
   "gunicorn",
-  "pytest-playwright"
 ]
 features = ["kedro"]
 installer = "uv"
@@ -69,7 +68,7 @@ test-e2e-vizro-dom-elements = [
   "tests/tests_utils/e2e/vizro/dashboards/wait-for-it.sh 127.0.0.1:5002 -t 30",
   "pytest -vs --reruns 1 tests/e2e/vizro/test_dom_elements --headless {args}"
 ]
-test-integration = "playwright install --with-deps chromium; pytest tests/integration --headless {args}"
+test-integration = "pytest tests/integration --headless {args}"
 test-js = "./tools/run_jest.sh {args}"
 test-unit = "pytest tests/unit {args}"
 test-unit-coverage = [
