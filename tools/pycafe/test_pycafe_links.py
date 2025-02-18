@@ -1,6 +1,7 @@
 """Script to test PyCafe links using Playwright."""
 
 import argparse
+import sys
 
 from playwright.sync_api import sync_playwright
 from pycafe_utils import (
@@ -70,4 +71,4 @@ if __name__ == "__main__":
             success = False
 
     # Exit with appropriate status code
-    exit(0 if success else 1)
+    sys.exit(0 if success else 1)
