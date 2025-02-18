@@ -31,8 +31,7 @@ Compare the examples using the commit's wheel file vs the latest released versio
             break
 
     # Get current UTC datetime
-    current_utc_time = datetime.datetime.now(datetime.UTC).strftime("%Y-%m-%d %H:%M:%S UTC")
-
+    current_utc_time = datetime.datetime.now(datetime.timezone.utc).strftime("%Y-%m-%d %H:%M:%S UTC")
     # Format the comparison links
     dashboards = "\n\n".join(
         f"### {directory}\n"
