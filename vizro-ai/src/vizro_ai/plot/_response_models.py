@@ -1,16 +1,21 @@
 """Code powering the plot command."""
 
-try:
-    from pydantic.v1 import BaseModel, Field, PrivateAttr, create_model, validator
-except ImportError:  # pragma: no cov
-    from pydantic import BaseModel, Field, PrivateAttr, create_model, validator
 import logging
-from typing import Optional, Union
+from typing import Annotated, Optional, Union
 
 import autoflake
 import black
 import pandas as pd
 import plotly.graph_objects as go
+from pydantic import (
+    AfterValidator,
+    BaseModel,
+    Field,
+    PrivateAttr,
+    ValidationInfo,
+    create_model,
+    field_validator,
+)
 
 from vizro_ai.plot._utils._safeguard import _safeguard_check
 
@@ -60,10 +65,26 @@ def _exec_code(code: str, namespace: dict) -> dict:
     return namespace
 
 
+def _check_chart_code(v):
+    v = _strip_markdown(v)
+
+    # TODO: add more checks: ends with return, has return, no second function def, only one indented line
+    if f"def {CUSTOM_CHART_NAME}(" not in v:
+        raise ValueError(f"The chart code must be wrapped in a function named `{CUSTOM_CHART_NAME}`")
+
+    first_line = v.split("\n")[0].strip()
+    if "data_frame" not in first_line:
+        raise ValueError(
+            """The chart code must accept a single argument `data_frame`,
+and it should be the first argument of the chart."""
+        )
+    return v
+
+
 def _test_execute_chart_code(data_frame: pd.DataFrame):
-    def validator(v, values):
+    def validator_code(v, info: ValidationInfo):
         """Test the execution of the chart code."""
-        imports = "\n".join(values.get("imports", []))
+        imports = "\n".join(info.data.get("imports", []))
         code_to_validate = imports + "\n\n" + v
         try:
             _safeguard_check(code_to_validate)
@@ -86,7 +107,7 @@ def _test_execute_chart_code(data_frame: pd.DataFrame):
         )
         return v
 
-    return validator
+    return validator_code
 
 
 class BaseChartPlan(BaseModel):
@@ -108,9 +129,12 @@ class BaseChartPlan(BaseModel):
         `import plotly.express as px`]
         """,
     )
-    chart_code: str = Field(
-        ...,
-        description=f"""
+    chart_code: Annotated[
+        str,
+        AfterValidator(_check_chart_code),
+        Field(
+            ...,
+            description=f"""
         Python code that generates a generates a plotly go.Figure object. It must fulfill the following criteria:
         1. Must be wrapped in a function named `{CUSTOM_CHART_NAME}`
         2. Must accept a single argument `data_frame` which is a pandas DataFrame
@@ -118,25 +142,10 @@ class BaseChartPlan(BaseModel):
         4. All data used in the chart must be derived from the data_frame argument, all data manipulations
         must be done within the function.
         """,
-    )
+        ),
+    ]
 
     _additional_vizro_imports: list[str] = PrivateAttr(ADDITIONAL_IMPORTS)
-
-    @validator("chart_code")
-    def _check_chart_code(cls, v):
-        v = _strip_markdown(v)
-
-        # TODO: add more checks: ends with return, has return, no second function def, only one indented line
-        if f"def {CUSTOM_CHART_NAME}(" not in v:
-            raise ValueError(f"The chart code must be wrapped in a function named `{CUSTOM_CHART_NAME}`")
-
-        first_line = v.split("\n")[0].strip()
-        if "data_frame" not in first_line:
-            raise ValueError(
-                """The chart code must accept a single argument `data_frame`,
-and it should be the first argument of the chart."""
-            )
-        return v
 
     def _get_imports(self, vizro: bool = False):
         imports = list(dict.fromkeys(self.imports + self._additional_vizro_imports))  # remove duplicates
@@ -227,6 +236,6 @@ class ChartPlanFactory:
             "ChartPlanDynamic",
             __base__=chart_plan,
             __validators__={
-                "validator1": validator("chart_code", allow_reuse=True)(_test_execute_chart_code(data_frame)),
+                "validator1": field_validator("chart_code")(_test_execute_chart_code(data_frame)),
             },
         )

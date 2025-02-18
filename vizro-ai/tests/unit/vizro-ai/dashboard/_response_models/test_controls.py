@@ -2,15 +2,12 @@ import logging
 
 import pytest
 import vizro.models as vm
+from pydantic import ValidationError
+from pydantic_ai.models.test import TestModel
 from vizro.managers import model_manager
 from vizro.models import VizroBaseModel
 
 from vizro_ai.dashboard._response_models.controls import ControlPlan, _create_filter_proxy
-
-try:
-    from pydantic.v1 import ValidationError
-except ImportError:  # pragma: no cov
-    from pydantic import ValidationError
 
 # Needed for testing control creation.
 model_manager.__setitem__("bar_chart", VizroBaseModel)
@@ -38,22 +35,22 @@ class TestFilterProxyCreate:
         filter_proxy = _create_filter_proxy(df_cols, df_schema, controllable_components)
         result = filter_proxy(targets=["bar_chart"], column="a")
 
-        assert result.dict(exclude={"id": True}) == expected_filter.dict(exclude={"id": True})
+        assert result.model_dump(exclude={"id": True}) == expected_filter.model_dump(exclude={"id": True})
 
 
 class TestControlCreate:
     """Test control creation."""
 
-    def test_control_create_valid(self, fake_llm_filter, controllable_components, df_metadata):
+    def test_control_create_valid(self, controllable_components, df_metadata):
         control_plan = ControlPlan(
             control_type="Filter",
             control_description="Create a parameter that targets the data based on the column 'a'.",
             df_name="bar_chart",
         )
         result = control_plan.create(
-            model=fake_llm_filter, controllable_components=controllable_components, all_df_metadata=df_metadata
+            model=TestModel, controllable_components=controllable_components, all_df_metadata=df_metadata
         )
-        assert result.dict(exclude={"id": True}) == vm.Filter(targets=["bar_chart"], column="a").dict(
+        assert result.model_dump(exclude={"id": True}) == vm.Filter(targets=["bar_chart"], column="a").model_dump(
             exclude={"id": True}
         )
 
