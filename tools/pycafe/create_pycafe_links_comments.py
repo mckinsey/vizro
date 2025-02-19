@@ -74,7 +74,7 @@ if __name__ == "__main__":
     )
 
     # Initialize GitHub connection
-    _, repo, commit = create_github_client(config)
+    repo, commit = create_github_client(config)
 
     # Get example directories
     directories_with_requirements = get_example_directories()

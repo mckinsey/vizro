@@ -29,13 +29,13 @@ class PyCafeConfig:
     package_version: str = vizro.__version__
 
 
-def create_github_client(config: PyCafeConfig) -> tuple[Github, Repository, Commit]:
-    """Create GitHub client and return github, repo, and commit objects."""
+def create_github_client(config: PyCafeConfig) -> tuple[Repository, Commit]:
+    """Create GitHub client and return repo and commit objects."""
     auth = Auth.Token(config.github_token)
     github = Github(auth=auth)
     repo = github.get_repo(config.repo_name)
     commit = repo.get_commit(config.commit_sha)
-    return github, repo, commit
+    return repo, commit
 
 
 def _get_vizro_requirement(config: PyCafeConfig, use_latest_release: bool = False) -> str:

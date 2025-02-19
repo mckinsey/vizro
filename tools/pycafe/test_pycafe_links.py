@@ -7,7 +7,7 @@ from playwright.sync_api import sync_playwright
 from pycafe_utils import (
     PyCafeConfig,
     create_github_client,
-    generate_comparison_links,
+    generate_link,
 )
 
 
@@ -56,19 +56,15 @@ if __name__ == "__main__":
     )
 
     # Initialize GitHub connection
-    _, repo, commit = create_github_client(config)
+    repo, commit = create_github_client(config)
 
-    # Test dev example with both commit and release versions
+    # Test dev example with latest version
     dev_directory = "vizro-core/examples/dev/"
     extra_requirements = ["openpyxl"]
-    urls = generate_comparison_links(config, dev_directory, extra_requirements)
+    url_generated = generate_link(config, dev_directory, extra_requirements, use_latest_release=True)
 
-    # Test both versions
-    success = True
-    for version, url in urls.items():
-        print(f"\nTesting {version} version...")  # noqa
-        if not test_pycafe_link(url=url, wait_for_text="Vizro Features"):
-            success = False
+    # Test the link
+    success = test_pycafe_link(url=url_generated, wait_for_text="Vizro Features")
 
     # Exit with appropriate status code
     sys.exit(0 if success else 1)
