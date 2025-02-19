@@ -20,15 +20,14 @@ page = vm.Page(
     title="Fix empty dropdown as parameter",
     components=[
         vm.Card(text="This is a test to fix the empty dropdown as parameter."),
-        vm.Card(text="This is a test to fix the empty dropdown as parameter.",
-                href="https://www.google.com"),
+        vm.Card(text="This is a test to fix the empty dropdown as parameter.", href="https://www.google.com"),
         vm.AgGrid(
             id="my_custom_ag_grid",
             figure=my_custom_ag_grid(
                 data_frame=df,
                 chosen_columns=df.columns.to_list(),
             ),
-        )
+        ),
     ],
     controls=[
         vm.Parameter(
