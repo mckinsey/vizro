@@ -47,7 +47,7 @@ class TestBuildMethod:
 
         expected_card = dbc.Card(
             dbc.NavLink(
-                dcc.Markdown(id="card_id", children="Hello", dangerously_allow_html=False),
+                dcc.Markdown(id="card_id", children="Hello", dangerously_allow_html=False, className="card-text"),
                 href="https://www.google.com",
                 target="_top",
             ),
@@ -60,7 +60,11 @@ class TestBuildMethod:
         card = vm.Card(id="card_id", text="Hello")
         card = card.build()
         assert_component_equal(
-            card, dbc.Card(dcc.Markdown(id="card_id", children="Hello", dangerously_allow_html=False), className="")
+            card,
+            dbc.Card(
+                dcc.Markdown(id="card_id", children="Hello", dangerously_allow_html=False, className="card-text"),
+                className="",
+            ),
         )
 
     @pytest.mark.parametrize(
