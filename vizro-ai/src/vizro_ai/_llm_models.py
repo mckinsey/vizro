@@ -13,8 +13,6 @@ try:
 except ImportError:
     ChatMistralAI = None
 
-from pydantic_ai.models import Model
-
 SUPPORTED_MODELS = {
     "OpenAI": [
         "gpt-4-turbo",
@@ -60,7 +58,7 @@ def _get_llm_model(model: Optional[Union[BaseChatModel, str]] = None) -> BaseCha
     if not model:
         return ChatOpenAI(model_name=DEFAULT_MODEL, temperature=DEFAULT_TEMPERATURE)
 
-    if isinstance(model, BaseChatModel) or isinstance(model, Model):  # TODO[LZ]: take out langchain if decision final
+    if isinstance(model, BaseChatModel):
         return model
 
     if isinstance(model, str):

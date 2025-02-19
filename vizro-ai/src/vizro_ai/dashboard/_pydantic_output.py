@@ -47,13 +47,6 @@ def _create_prompt_template(additional_info: str) -> ChatPromptTemplate:
 
 SINGLE_MODEL_PROMPT = _create_prompt_template("")
 MODEL_REPROMPT = _create_prompt_template("Pay special attention to the following error: {validation_error}")
-BASE_PROMPT = """
-    You are a front-end developer with expertise in Plotly, Dash, and the visualization library named Vizro.
-    Your goal is to summarize the given specifications into the given Pydantic schema.
-
-    {df_info}
-
-    """
 
 
 def _create_prompt(retry: bool = False) -> ChatPromptTemplate:

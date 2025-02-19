@@ -3,10 +3,10 @@
 import logging
 import re
 from collections import Counter
-from typing import Annotated, Optional, Union
+from typing import Annotated, Optional, Union, Dict, List, Any, get_args
 
 import vizro.models as vm
-from pydantic import AfterValidator, BaseModel, Field, PrivateAttr, ValidationError, ValidationInfo
+from pydantic import AfterValidator, BaseModel, Field, PrivateAttr, ValidationError, ValidationInfo, model_validator
 from tqdm.auto import tqdm
 
 from vizro_ai.dashboard._response_models.components import ComponentPlan

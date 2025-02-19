@@ -1,25 +1,13 @@
 """Example of creating a dashboard using VizroAI."""
 
-import os
-
-import logfire
 import vizro.plotly.express as px
 from dotenv import load_dotenv
-from pydantic_ai.models.openai import OpenAIModel
 from vizro import Vizro
 from vizro_ai import VizroAI
 
-logfire.configure()
-
-model = OpenAIModel(
-    "gpt-4o",
-    api_key=os.environ["OPENAI_API_KEY"],
-    base_url=os.environ.get("OPENAI_BASE_URL"),
-)
-
 load_dotenv()
 
-vizro_ai = VizroAI(model=model)
+vizro_ai = VizroAI(model="gpt-4o")
 # vizro_ai = VizroAI()
 
 gapminder_data = px.data.gapminder()
