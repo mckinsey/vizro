@@ -73,7 +73,7 @@ test-e2e-vizro-dom-elements = [
 test-e2e-vizro-screenshots = [
   "gunicorn dashboard:app -b 0.0.0.0:5002 -w 1 --timeout 90 &",
   "tests/tests_utils/e2e/vizro/dashboards/wait-for-it.sh 127.0.0.1:5002 -t 30",
-  "pytest -vs tests/e2e/vizro/test_screenshots/ --headless {args}"
+  "pytest -vs --reruns 1 tests/e2e/vizro/test_screenshots/ --headless {args}"
 ]
 test-integration = "pytest tests/integration --headless {args}"
 test-js = "./tools/run_jest.sh {args}"
