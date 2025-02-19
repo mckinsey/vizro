@@ -23,14 +23,21 @@ jobs:
           python-version: ${{ env.PYTHON_VERSION }}
       - name: Install Hatch
         run: pip install hatch
+      - name: Install Playwright and browser
+        run: |
+          hatch run pip install playwright
+          hatch run playwright install --with-deps chromium
       - name: Print PR Number
         run: |
           echo "Pull Request Number: ${{ github.event.workflow_run.pull_requests[0].number }}"
+      - name: Test PyCafe links
+        run: |
+          hatch run python ../tools/pycafe/test_pycafe_links.py --github-token ${{ github.token }} --repo-name ${{ github.repository }} --run-id ${{ github.event.workflow_run.id }} --commit-sha ${{ github.event.workflow_run.head_sha }}
       - name: Create PyCafe links
         run: |
           PR_NUMBER=${{ github.event.workflow_run.pull_requests[0].number || '' }}
           if [ -n "$PR_NUMBER" ]; then
-            hatch run python ../tools/pycafe/create_pycafe_links.py --github-token ${{ github.token }} --repo-name ${{ github.repository }} --pr-number $PR_NUMBER --run-id ${{ github.event.workflow_run.id }} --commit-sha ${{ github.event.workflow_run.head_sha }}
+            hatch run python ../tools/pycafe/create_pycafe_links_comments.py --github-token ${{ github.token }} --repo-name ${{ github.repository }} --pr-number $PR_NUMBER --run-id ${{ github.event.workflow_run.id }} --commit-sha ${{ github.event.workflow_run.head_sha }}
           else
-            hatch run python ../tools/pycafe/create_pycafe_links.py --github-token ${{ github.token }} --repo-name ${{ github.repository }} --run-id ${{ github.event.workflow_run.id }} --commit-sha ${{ github.event.workflow_run.head_sha }}
+            hatch run python ../tools/pycafe/create_pycafe_links_comments.py --github-token ${{ github.token }} --repo-name ${{ github.repository }} --run-id ${{ github.event.workflow_run.id }} --commit-sha ${{ github.event.workflow_run.head_sha }}
           fi
