@@ -10,7 +10,7 @@ page = vm.Page(
     title="Colored Container",
     layout=vm.Layout(grid=[[0, 3, 3, 3, 4, 4], [1, 3, 3, 3, 4, 4], [2, 3, 3, 3, 4, 4]]),
     components=[
-        vm.Card(text="""Hello, this is a card with a [link](https://www.google.com)"""),
+        vm.Card(text="""Hello, this is a card with a [link](https://www.google.com)""", href="https://www.google.com"),
         vm.Card(text="""Hello, this is a card with a [link](https://www.google.com)"""),
         vm.Card(text="""Hello, this is a card with a [link](https://www.google.com)"""),
         vm.Container(

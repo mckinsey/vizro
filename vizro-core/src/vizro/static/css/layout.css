@@ -20,17 +20,18 @@
   overflow: auto;
   padding: 24px 24px 0;
   width: 324px;
+  border-right: 1px solid var(--bs-border-color);
 }
 
 #left-side {
-  background-color: var(--surfaces-bg02);
+  background-color: var(--bg-left-side);
   display: flex;
   flex-direction: row;
   height: 100%;
 }
 
 #right-side {
-  background: var(--right-side-bg);
+  background: var(--bg-right-side);
   display: flex;
   flex-direction: column;
   gap: 1.25rem;
@@ -48,7 +49,7 @@
 
 #page-header {
   align-items: center;
-  background-color: var(--surfaces-bg02);
+  background-color: var(--bg-page-header);
   display: flex;
   flex-direction: row;
   height: 60px;
