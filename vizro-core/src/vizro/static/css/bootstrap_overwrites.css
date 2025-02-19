@@ -32,7 +32,7 @@ All the HEX values starting with --text-code are taken from the Github code high
   --surfaces-bg-container: var(--surfaces-bg01);
   --bg-page-header: var(--surfaces-bg01);
   --bg-left-side: var(--surfaces-bg01);
-  --bg-right-side: #fafafbff; /*J. picked out*/
+  --bg-right-side: #fafafbff; /* J. picked out */
 }
 
 /* This is currently required as dbc.NavBar comes with the `navbar-light` class even on a dark theme */

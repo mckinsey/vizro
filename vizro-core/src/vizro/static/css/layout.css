@@ -13,6 +13,7 @@
 
 #left-main {
   align-items: flex-start;
+  border-right: 1px solid var(--bs-border-color);
   display: flex;
   flex: 0 0 auto;
   flex-direction: column;
@@ -20,7 +21,6 @@
   overflow: auto;
   padding: 24px 24px 0;
   width: 324px;
-  border-right: 1px solid var(--bs-border-color);
 }
 
 #left-side {
