@@ -91,25 +91,7 @@ def _handle_google_llm_response(
     return response_model.parse_obj(res)
 
 
-def _handle_google_llm_response(
-    llm_model: BaseChatModel, response_model: BaseModel, prompt: ChatPromptTemplate, message_content: dict
-) -> BaseModel:
-    """Handle the LLM response specifically for Google models."""
-    from langchain_core.utils.function_calling import convert_to_openai_function
-
-    schema = convert_to_openai_function(response_model)
-
-    pydantic_llm = prompt | llm_model.with_structured_output(schema)
-    res = pydantic_llm.invoke(message_content)
-
-    # Handle case where response is a list, which is the case for Gemini models
-    if isinstance(res, list):
-        res = res[0].get("args", res[0]) if isinstance(res[0], dict) else res[0]
-
-    return response_model.parse_obj(res)
-
-
-def _get_pydantic_model_old(
+def _get_pydantic_model(
     query: str,
     llm_model: BaseChatModel,
     response_model: BaseModel,
@@ -120,7 +102,6 @@ def _get_pydantic_model_old(
     # At the very least it should include the string type of the validation error
     """Get the pydantic output from the LLM model with retry logic."""
     for attempt in range(max_retry):
-        print("Attempt:", attempt)  # noqa: T201
         attempt_is_retry = attempt > 0
         prompt = _create_prompt(retry=attempt_is_retry)
         message_content = _create_message_content(
@@ -149,7 +130,7 @@ def _get_pydantic_model_old(
     raise last_validation_error
 
 
-def _get_pydantic_model(  # TODO: much more to explore here: https://ai.pydantic.dev/results/
+def _get_pydantic_model_experimental(  # TODO: much more to explore here: https://ai.pydantic.dev/results/
     query: str,
     llm_model,
     response_model,

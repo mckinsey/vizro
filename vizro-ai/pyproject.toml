@@ -17,7 +17,6 @@ dependencies = [
   "pandas",
   "tabulate",
   "openai>=1.0.0",
-  "langgraph-checkpoint",  # TODO[LZ]: revisit deps after final decision
   "langchain>=0.3.0",
   "langgraph>=0.1.2",
   "pydantic-ai",
@@ -35,8 +34,8 @@ readme = "README.md"
 requires-python = ">=3.9"
 
 [project.optional-dependencies]
-anthropic = ["langchain-anthropic"]
-mistral = ["langchain-mistralai>=0.1.13"]
+anthropic = ["langchain-anthropic"]  # TODO: decide if we want to use this
+mistral = ["langchain-mistralai>=0.1.13"]  # TODO: decide if we want to use this
 
 [tool.coverage.paths]
 vizro = ["src/vizro_ai"]  # omit tests for clarity, although this can be useful to see what test lines DID NOT run
