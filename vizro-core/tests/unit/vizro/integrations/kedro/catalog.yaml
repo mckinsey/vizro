@@ -3,7 +3,7 @@
   filepath: "{pandas_factory}.csv"
 
 pandas_excel:
-  type: pandas.ExcelDataset
+  type: ${_pandas_excel_type}
   filepath: pandas_excel.xlsx
 
 pandas_parquet:
@@ -13,3 +13,6 @@ pandas_parquet:
 not_dataframe:
   type: pickle.PickleDataset
   filepath: pickle.pkl
+
+# Use variable interpolation to check OmegaConfigLoader does what is expected over just yaml.safe_load.
+_pandas_excel_type: pandas.ExcelDataset
