@@ -36,7 +36,7 @@ Uncomment the section that is right (remove the HTML comment wrapper).
 -->
 ### Fixed
 
-- Fix a bug where an empty parameter selection incorrectly sent the `[None]` value to its target. ([#1026](https://github.com/mckinsey/vizro/pull/1026))
+- Fix a bug where an empty parameter selection incorrectly sent `[None]` to its target. ([#1026](https://github.com/mckinsey/vizro/pull/1026))
 
 <!--
 ### Security
