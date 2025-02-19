@@ -59,7 +59,8 @@ if __name__ == "__main__":
     # Initialize GitHub connection
     repo, commit = create_github_client(config)
 
-    # Test dev example with latest version
+    # Test dev example with latest version - we currently one test this for simplicity, but this could be changed
+    # This would mean that we need to change also what the wait_for_text is
     dev_directory = "vizro-core/examples/dev/"
     extra_requirements = ["openpyxl"]
     url_generated = generate_link(config, dev_directory, extra_requirements, use_latest_release=True)
