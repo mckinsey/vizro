@@ -42,9 +42,9 @@ All the HEX values starting with --text-code are taken from the Github code high
 
 /* Add margin and calculated with, otherwise box-shadows on the side are not visible */
 .card {
-  margin: 0 0.1rem;
+  margin: 0 0.2rem;
   height: 100%;
-  width: calc(100% - 0.2rem);
+  width: calc(100% - 0.4rem);
 }
 
 .card .nav-link {
