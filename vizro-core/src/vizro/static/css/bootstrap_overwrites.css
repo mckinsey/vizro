@@ -40,10 +40,11 @@ All the HEX values starting with --text-code are taken from the Github code high
 }
 
 
-/* CARDS */
+/* Add margin and calculated with, otherwise box-shadows on the side are not visible */
 .card {
+  margin: 0 0.1rem;
   height: 100%;
-  width: 100%;
+  width: calc(100% - 0.2rem);
 }
 
 .card .nav-link {
