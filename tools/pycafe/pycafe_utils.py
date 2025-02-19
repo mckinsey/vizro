@@ -136,8 +136,8 @@ def create_status_check(commit: Commit, directory: str, url: str, state: str = "
 def get_example_directories() -> dict[str, Optional[list[str]]]:
     """Return a dictionary of example directories and their requirements."""
     return {
-        "vizro-core/examples/dev/": ["openpyxl"],
         "vizro-core/examples/scratch_dev": None,
+        "vizro-core/examples/dev/": ["openpyxl"],
         "vizro-core/examples/visual-vocabulary/": [
             "autoflake==2.3.1",
             "black==24.4.2",
