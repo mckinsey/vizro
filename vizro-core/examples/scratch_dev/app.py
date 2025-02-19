@@ -1,8 +1,5 @@
 """Dev app to try things out."""
 
-from os import chown
-
-import pandas as pd
 import vizro.models as vm
 import vizro.plotly.express as px
 from vizro import Vizro
@@ -22,6 +19,9 @@ def my_custom_ag_grid(data_frame, chosen_columns, **kwargs):
 page = vm.Page(
     title="Fix empty dropdown as parameter",
     components=[
+        vm.Card(text="This is a test to fix the empty dropdown as parameter."),
+        vm.Card(text="This is a test to fix the empty dropdown as parameter.",
+                href="https://www.google.com"),
         vm.AgGrid(
             id="my_custom_ag_grid",
             figure=my_custom_ag_grid(
