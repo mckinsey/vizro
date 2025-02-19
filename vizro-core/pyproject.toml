@@ -89,6 +89,9 @@ filterwarnings = [
   # ignore this warning for firefox screenshot tests
   "ignore:get_logs always return None with webdrivers other than Chrome"
 ]
+markers = [
+  "mobile_screenshots: marks tests for chrome mobile screenshots"
+]
 norecursedirs = ["tests/tests_utils", "tests/js"]
 pythonpath = ["tests/tests_utils"]
 

@@ -26,6 +26,8 @@ jobs:
       matrix:
         config:
           - browser: chrome
+          - browser: chrome_mobile
+            command: "-m mobile_screenshots"
           - browser: firefox
             command: "--webdriver Firefox"
 

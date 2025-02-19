@@ -4,20 +4,23 @@ import e2e.vizro.constants as cnst
 import pytest
 from e2e.vizro.checkers import browser_console_warnings_checker
 from selenium.common import WebDriverException
+from selenium.webdriver.chrome.options import Options as ChromeOptions
 
-# # dash_br_driver options hook
-# def pytest_setup_options():
-#     # options = ChromeOptions()
-#     options = FFOptions()
-#     options.binary_location = "/Applications/Firefox.app/Contents/MacOS/firefox"
-# #     options.add_argument("--headless")
-# #     options.add_argument("--window-size=1920,1080")
-#     return options`
+
+# dash_br_driver options hook
+def pytest_setup_options():
+    # if os.getenv("BROWSER") == "firefox":
+    #     options = FFOptions()
+    #     options.binary_location = "/Applications/Firefox.app/Contents/MacOS/firefox"
+    if os.getenv("BROWSER") == "chrome_mobile":
+        options = ChromeOptions()
+        options.add_experimental_option("mobileEmulation", {"deviceName": "iPhone 12 Pro"})
+        return options
 
 
 def make_teardown(dash_br):
     # checking for browser console errors
-    if os.getenv("BROWSER") == "chrome":
+    if os.getenv("BROWSER") != "firefox":
         try:
             log_levels = [level for level in dash_br.get_logs() if level["level"] == "SEVERE" or "WARNING"]
             if log_levels:
@@ -34,6 +37,7 @@ def dash_br_driver(dash_br, request):
     path = request.param.get("path", "") if hasattr(request, "param") else ""
     dash_br.driver.set_window_size(1920, 1080)
     dash_br.server_url = f"http://127.0.0.1:{port}/{path}"
+    return dash_br
 
 
 @pytest.fixture(autouse=True)

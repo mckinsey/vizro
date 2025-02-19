@@ -1,0 +1,115 @@
+#page-header {
+  padding-left: 8px;
+}
+
+#left-main {
+  width: 288px;
+}
+
+img[src*="#chart-icon"] {
+  width: 100%;
+}
+
+.open-in-new {
+  font-size: inherit;
+  margin-left: 4px;
+  vertical-align: middle;
+}
+
+.code-clipboard {
+  float: right;
+  font-size: 20px;
+}
+
+.code-clipboard pre {
+  font-family: monospace;
+  margin-bottom: 12px;
+}
+
+.code-clipboard-container {
+  background: var(--surfaces-bg-card);
+  max-height: 500px;
+  overflow: auto;
+  padding: 1rem;
+  position: relative;
+}
+
+.code-clipboard-container .pycafe-link {
+  margin-bottom: 12px;
+}
+
+.code-clipboard-container::-webkit-scrollbar-thumb {
+  border-color: var(--surfaces-bg-card);
+}
+
+.flex-container {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 24px;
+  justify-content: flex-start;
+}
+
+.flex-container h4 {
+  color: var(--text-secondary);
+  margin: 0;
+  padding-top: 12px;
+  text-align: center;
+}
+
+.flex-container .card {
+  height: 232px;
+  margin: 0 0 auto;
+  opacity: 0.3;
+  width: 176px;
+}
+
+.flex-container .card-nav {
+  opacity: 1;
+}
+
+.flex-container .card img {
+  width: 100%;
+}
+
+.intro-text {
+  border-left: 4px solid var(--text-secondary);
+  padding: 4px 12px;
+}
+
+.intro-text h4 {
+  color: var(--text-secondary);
+}
+
+.intro-text p {
+  font-size: 12px;
+  margin: 0;
+}
+
+.intro-text ul:last-of-type {
+  margin-bottom: 0;
+}
+
+.anchor-container {
+  align-items: center;
+  background: var(--text-primary);
+  border-top-left-radius: 8px;
+  bottom: 0;
+  color: var(--text-primary-inverted) !important;
+  display: flex;
+  font-size: 0.8rem;
+  font-weight: 500;
+  height: 24px;
+  padding: 0 12px;
+  position: fixed;
+  right: 0;
+}
+
+.anchor-container:focus,
+.anchor-container:hover {
+  background: var(--text-secondary);
+  color: var(--text-primary-inverted);
+}
+
+img#banner {
+  height: 16px;
+}

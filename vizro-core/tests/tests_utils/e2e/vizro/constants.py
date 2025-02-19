@@ -39,6 +39,12 @@ BAR_GRAPH_ID = "b@R-graph"
 BAR_GRAPH_ID_CONTAINER = "b@R-graph__container"
 HISTOGRAM_GRAPH_ID = "-histogram-graph--"
 
+FILTER_INTERACTIONS_PAGE = "filter interactions page"
+FILTER_INTERACTIONS_PAGE_PATH = "/filter-interactions-page"
+SCATTER_INTERACTIONS_ID = "scatter_inter"
+BOX_INTERACTIONS_ID = "box_inter"
+CARD_INTERACTIONS_ID = "card_inter"
+
 KPI_INDICATORS_PAGE = "kpi indicators page"
 KPI_INDICATORS_PAGE_PATH = "/kpi-indicators-page"
 
@@ -57,6 +63,21 @@ TABLE_AG_GRID_PAGE_PATH = "/table-ag-grid-page"
 TABLE_AG_GRID_ID = "123_ag_grid_table"
 BOX_AG_GRID_PAGE_ID = "B@x on ag grid page"
 TABLE_AG_GRID_CONTAINER = "table_ag_grid_container"
+
+TABLE_PAGE = "table page"
+TABLE_PAGE_PATH = "/table-page"
+TABLE_ID = "123_table"
+TABLE_CONTAINER = "table container"
+
+TABLE_INTERACTIONS_PAGE = "table inter page"
+TABLE_INTERACTIONS_PAGE_PATH = "/table-inter-page"
+TABLE_INTERACTIONS_CONTAINER = "table inter container"
+TABLE_INTERACTIONS_ID = "interactions-123_table"
+LINE_INTERACTIONS_CONTAINER_ONE = "line inter container 1"
+LINE_INTERACTIONS_ID_ONE = "line inter id 1"
+LINE_INTERACTIONS_CONTAINER_TWO = "line inter container 2"
+LINE_INTERACTIONS_ID_TWO = "line inter id 2"
+
 
 PAGE_404_PATH = "/404-page"
 
