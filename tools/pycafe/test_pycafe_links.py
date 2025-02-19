@@ -7,6 +7,7 @@ from playwright.sync_api import sync_playwright
 from pycafe_utils import (
     PyCafeConfig,
     create_github_client,
+    create_status_check,
     generate_link,
 )
 
@@ -66,6 +67,11 @@ if __name__ == "__main__":
 
     # Test the link
     success = test_pycafe_link(url=url_generated, wait_for_text="Vizro Features")
+
+    # Only create a status check if the test fails. On success, the status check will be created
+    # by the create_pycafe_links_comments.py script when it posts the comment.
+    if not success:
+        create_status_check(commit, dev_directory, url_generated, state="failure")
 
     # Exit with appropriate status code
     sys.exit(0 if success else 1)
