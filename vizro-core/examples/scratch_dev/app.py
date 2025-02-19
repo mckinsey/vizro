@@ -18,7 +18,7 @@ def my_custom_ag_grid(data_frame, chosen_columns, **kwargs):
 
 page = vm.Page(
     title="Fix empty dropdown as parameter",
-    layout=vm.Layout(grid=[[0,1], [2, 2]]),
+    layout=vm.Layout(grid=[[0, 1], [2, 2]]),
     components=[
         vm.Card(text="This is a test to fix the empty dropdown as parameter."),
         vm.Card(text="This is a test to fix the empty dropdown as parameter.", href="https://www.google.com"),
