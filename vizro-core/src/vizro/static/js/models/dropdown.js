@@ -1,11 +1,11 @@
 function update_dropdown_select_all(dropdown_value, options) {
-  // Turn into array of values excluding the ALL one.
+  // Turn into array of values excluding the __SELECT_ALL one.
   const realOptions = options
     .map((dict) => dict["value"])
-    .filter((value) => value !== "ALL");
+    .filter((value) => value !== "__SELECT_ALL");
 
   // When "Select All" option is clicked (includes when clicks on checkbox itself and area next to checkbox).
-  if (dropdown_value.includes("ALL")) {
+  if (dropdown_value.includes("__SELECT_ALL")) {
     // All the real options are already selected, so untick the checkbox and empty the dropdown value.
     if (dropdown_value.length === realOptions.length + 1) {
       return [false, []];

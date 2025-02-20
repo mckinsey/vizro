@@ -187,7 +187,7 @@ class TestDropdownBuild:
                                 ],
                                 className="checkbox-dropdown",
                             ),
-                            "value": "ALL",
+                            "value": "__SELECT_ALL",
                         },
                         *expected_options,
                     ],

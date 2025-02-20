@@ -523,7 +523,7 @@ class TestParameter:
         self, ctx_parameter_dimensions, target_scatter_matrix_parameter_dimensions
     ):
         # If the options are provided as a list of dictionaries, the value should be correctly passed to the
-        # target as a list. So when "ALL" is selected, a list of all possible values should be returned.
+        # target as a list. So when "Select All" is selected, a list of all possible values should be returned.
         dimensions_parameter = vm.Parameter(
             id="test_parameter_dimensions",
             targets=["scatter_matrix_chart.dimensions"],

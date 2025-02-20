@@ -28,23 +28,24 @@ first_page = vm.Page(
         ),
     ],
     controls=[
-        # vm.Filter(column="continent", selector=vm.Checklist()),
-        vm.Filter(
-            # column="country",
-            column="continent",
-            selector=vm.Dropdown(
-                # options=[
-                #     {"label": "EUROPE", "value": "Europe"},
-                #     {"label": "AFRICA", "value": "Africa"},
-                #     {"label": "ASIA", "value": "Asia"},
-                #     {"label": "AMERICAS", "value": "Americas"},
-                #     {"label": "OCEANIA", "value": "Oceania"},
-                # ],
-                # value=["Europe", "Africa", "Asia", "Americas", "Oceania"],
-                # value="Europe",
-                # multi=False,
-            ),
-        ),
+        vm.Filter(column="continent", selector=vm.Checklist()),
+        vm.Filter(column="continent"),
+        vm.Filter(column="country", selector=vm.Checklist()),
+        vm.Filter(column="country"),
+        # column="country",
+        # column="continent",
+        # selector=vm.Dropdown(
+        # options=[
+        #     {"label": "EUROPE", "value": "Europe"},
+        #     {"label": "AFRICA", "value": "Africa"},
+        #     {"label": "ASIA", "value": "Asia"},
+        #     {"label": "AMERICAS", "value": "Americas"},
+        #     {"label": "OCEANIA", "value": "Oceania"},
+        # ],
+        # value=["Europe", "Africa", "Asia", "Americas", "Oceania"],
+        # value="Europe",
+        # multi=False,
+        # ),
     ],
 )
 

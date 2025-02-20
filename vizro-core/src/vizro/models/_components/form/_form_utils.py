@@ -5,7 +5,6 @@ from typing import Any, Optional, Union
 
 from pydantic import ValidationInfo
 
-from vizro._constants import ALL_OPTION
 from vizro.models.types import MultiValueType, OptionsType, SingleValueType
 
 
@@ -52,9 +51,6 @@ def validate_value(value, info: ValidationInfo):
         if isinstance(info.data["options"][0], dict)
         else info.data["options"]
     )
-
-    if hasattr(value, "__iter__") and ALL_OPTION in value:
-        return value
 
     if value and not is_value_contained(value, possible_values):
         raise ValueError("Please provide a valid value from `options`.")

@@ -285,9 +285,6 @@ class TestFilterStaticMethods:
         "data_columns, current_value, expected",
         [
             ([[]], None, []),
-            ([[]], "ALL", []),
-            ([[]], ["ALL", "A"], ["A"]),
-            ([["A"]], ["ALL", "B"], ["A", "B"]),
             ([[]], "A", ["A"]),
             ([[]], ["A", "B"], ["A", "B"]),
             ([["A"]], "B", ["A", "B"]),

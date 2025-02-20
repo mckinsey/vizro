@@ -7,7 +7,6 @@ from dash import ClientsideFunction, Input, Output, State, clientside_callback, 
 from pydantic import AfterValidator, Field, PrivateAttr, StrictBool, ValidationInfo, model_validator
 from pydantic.functional_serializers import PlainSerializer
 
-from vizro._constants import ALL_OPTION
 from vizro.models import Action, VizroBaseModel
 from vizro.models._action._actions_chain import _action_validator_factory
 from vizro.models._components.form._form_utils import get_options_and_default, validate_options_dict, validate_value
@@ -64,7 +63,9 @@ def _add_select_all_option(
             ],
             className="checkbox-dropdown",
         ),
-        "value": ALL_OPTION,
+        # Special sentinel value used in update_dropdown_select_all.
+        # This never gets sent to the server.
+        "value": "__SELECT_ALL",
     }
     dict_options_with_all = [all_option, *options]
     return dict_options_with_all
