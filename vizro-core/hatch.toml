@@ -37,6 +37,7 @@ installer = "uv"
 PYTHONPATH = "tests/e2e/vizro/dashboards/default:tests/tests_utils"
 
 [envs.default.scripts]
+download-static-files = "python tools/download_static_files.py"
 example = "hatch run examples:example {args:scratch_dev}"  # shortcut script to underlying example environment script.
 lint = "pre-commit run {args} --all-files"
 pip = '"{env:HATCH_UV}" pip {args}'
@@ -76,7 +77,6 @@ test-unit-coverage = [
   "- coverage combine",
   "coverage report"
 ]
-update-icons = ["python tools/update_material_icons.py"]
 
 [envs.docs]
 dependencies = [
@@ -110,7 +110,7 @@ dependencies = [
   "autoflake==2.3.1",
   "black==24.4.2",
   "isort==5.13.2",
-  "plotly==6.0.0"  # to leverage new MapLibre features in visual-vocabulary
+  "plotly==6.0.0"  # to leverage new MapLibre features in visual-vocabulary,
 ]
 installer = "uv"
 scripts = {example = "cd examples/{args:scratch_dev}; python app.py"}

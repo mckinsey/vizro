@@ -5,10 +5,7 @@
 }
 
 /* We currently ship this CSS file with the package, so the font definitions need to live here at the moment.
-The CSS is taken from https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined and the corresponding font file
-(located inside the CSS file under @font-face src: url()) downloaded to fonts/material-symbols-outlined.woff2.
-See: https://developers.google.com/fonts/docs/material_symbols#self-hosting_the_font
-https://fonts.google.com/knowledge/using_type/self_hosting_web_fonts
+The file fonts/material-symbols-outlined.woff2 is created using `hatch run download-static-files`.
 Note the relative url works with both serve_locally=True and serve_locally=False through the CDN.
 */
 @font-face {
