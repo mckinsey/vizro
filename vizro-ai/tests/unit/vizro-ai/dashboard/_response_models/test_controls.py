@@ -3,7 +3,6 @@ import logging
 import pytest
 import vizro.models as vm
 from pydantic import ValidationError
-from pydantic_ai.models.test import TestModel
 from vizro.managers import model_manager
 from vizro.models import VizroBaseModel
 
@@ -41,14 +40,14 @@ class TestFilterProxyCreate:
 class TestControlCreate:
     """Test control creation."""
 
-    def test_control_create_valid(self, controllable_components, df_metadata):
+    def test_control_create_valid(self, fake_llm_filter, controllable_components, df_metadata):
         control_plan = ControlPlan(
             control_type="Filter",
             control_description="Create a parameter that targets the data based on the column 'a'.",
             df_name="bar_chart",
         )
         result = control_plan.create(
-            model=TestModel, controllable_components=controllable_components, all_df_metadata=df_metadata
+            model=fake_llm_filter, controllable_components=controllable_components, all_df_metadata=df_metadata
         )
         assert result.model_dump(exclude={"id": True}) == vm.Filter(targets=["bar_chart"], column="a").model_dump(
             exclude={"id": True}

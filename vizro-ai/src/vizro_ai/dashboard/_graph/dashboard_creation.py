@@ -10,7 +10,7 @@ from langchain_core.messages import BaseMessage
 from langchain_core.runnables import RunnableConfig
 from langgraph.constants import END, Send
 from langgraph.graph import StateGraph
-from pydantic import BaseModel, ConfigDict, ValidationError
+from pydantic import BaseModel, BeforeValidator, ConfigDict, ValidationError
 from tqdm.auto import tqdm
 
 from vizro_ai.dashboard._pydantic_output import _get_pydantic_model
@@ -25,6 +25,20 @@ logger = logging.getLogger(__name__)
 
 Messages = list[BaseMessage]
 """List of messages."""
+
+
+def _validate_dfs(v):
+    if isinstance(v, pd.DataFrame):
+        raise ValueError(
+            "A single DataFrame was provided to 'dfs'. Please pass a list of DataFrames instead, "
+            "e.g., [df] or [df1, df2, ...]"
+        )
+    if not isinstance(v, list):
+        raise ValueError("Input should be a list of DataFrames")
+    for i, df in enumerate(v):
+        if not isinstance(df, pd.DataFrame):
+            raise ValueError("Input should be a list of DataFrames")
+    return v
 
 
 class GraphState(BaseModel):
@@ -42,7 +56,7 @@ class GraphState(BaseModel):
     """
 
     messages: list[BaseMessage]
-    dfs: list[pd.DataFrame]
+    dfs: Annotated[list[pd.DataFrame], BeforeValidator(_validate_dfs)]
     all_df_metadata: AllDfMetadata
     dashboard_plan: Optional[DashboardPlan] = None
     pages: Annotated[list, operator.add]
@@ -136,9 +150,10 @@ class BuildPageState(BaseModel):
 
     """
 
-    model_config = ConfigDict(arbitrary_types_allowed=True)  # this is due to pandas df
     all_df_metadata: AllDfMetadata
     page_plan: Optional[PagePlan] = None
+
+    model_config = ConfigDict(arbitrary_types_allowed=True)  # this is due to pandas df
 
 
 def _build_page(state: BuildPageState, config: RunnableConfig) -> dict[str, list[vm.Page]]:

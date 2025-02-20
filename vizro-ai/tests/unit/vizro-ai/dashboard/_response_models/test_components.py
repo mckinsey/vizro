@@ -2,11 +2,7 @@ import re
 
 import pytest
 import vizro.models as vm
-from pydantic_ai.models.test import (
-    TestModel,
-)  # TODO[NG]: Fix all unit tests that needed Mock model, now probably TestModel
 
-# https://ai.pydantic.dev/testing-evals/#unit-testing-with-testmodel
 from vizro_ai.dashboard._response_models.components import ComponentPlan
 
 
@@ -41,15 +37,15 @@ class TestComponentCreate:
             figure=mock_vizro_ai_return.get_fig_object(chart_name="graph_1", data_frame="bar_chart", vizro=True),
         )
 
-        assert chart.dict(exclude={"id": True}) == expected.dict(exclude={"id": True})
+        assert chart.model_dump(exclude={"id": True}) == expected.model_dump(exclude={"id": True})
         assert re.search(r"\bimport\b.*?@capture\('graph'\)", code, re.DOTALL)
 
-    def test_create_card(self, component_plan_card, expected_card):
+    def test_create_card(self, fake_llm_card, component_plan_card, expected_card):
         result = component_plan_card.create(
-            model=TestModel,
+            model=fake_llm_card,
             all_df_metadata=None,
         )
         card, code = result.component, result.code
 
-        assert card.dict(exclude={"id": True}) == expected_card.dict(exclude={"id": True})
+        assert card.model_dump(exclude={"id": True}) == expected_card.model_dump(exclude={"id": True})
         assert code is None

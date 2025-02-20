@@ -1,6 +1,26 @@
+from typing import Any, Optional
+
 import pytest
 import vizro.models as vm
+from langchain.output_parsers import PydanticOutputParser
+from langchain_community.llms.fake import FakeListLLM
 from langchain_core.messages import HumanMessage
+
+
+class MockStructuredOutputLLM(FakeListLLM):
+    def bind_tools(self, tools: list[Any]):
+        return super().bind(tools=tools)
+
+    def with_structured_output(self, schema, *, method: Optional[str] = None):
+        llm = self
+        output_parser = PydanticOutputParser(pydantic_object=schema)
+        return llm | output_parser
+
+
+@pytest.fixture
+def fake_llm():
+    response = ['{"text":"this is a card","href":""}']
+    return MockStructuredOutputLLM(responses=response)
 
 
 @pytest.fixture

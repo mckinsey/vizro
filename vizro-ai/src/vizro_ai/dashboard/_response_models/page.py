@@ -6,7 +6,7 @@ from collections import Counter
 from typing import Annotated, Optional, Union
 
 import vizro.models as vm
-from pydantic import AfterValidator, BaseModel, Field, PrivateAttr, ValidationError, ValidationInfo
+from pydantic import AfterValidator, BaseModel, Field, PrivateAttr, ValidationInfo
 from tqdm.auto import tqdm
 
 from vizro_ai.dashboard._response_models.components import ComponentPlan
@@ -40,7 +40,7 @@ def _validate_component_id_unique(components_list):
     component_ids = [comp.component_id for comp in components_list]
     duplicates = [id for id, count in Counter(component_ids).items() if count > 1]
     if duplicates:
-        raise ValidationError(f"Component ids must be unique. Duplicated component ids: {duplicates}")
+        raise ValueError(f"Component ids must be unique. Duplicated component ids: {duplicates}")
     return components_list
 
 

@@ -21,15 +21,18 @@ class TestConfig:
     @pytest.mark.parametrize(
         "dataframes, output_error",
         [
-            (pd.DataFrame(), "value is not a valid list"),
-            ([pd.DataFrame(), {}], "instance of DataFrame expected"),
+            (pd.DataFrame(), "A single DataFrame was provided to 'dfs'"),
+            ([pd.DataFrame(), {}], "Input should be a list of DataFrames"),
+            ((pd.DataFrame(),), "Input should be a list of DataFrames"),
         ],
     )
-    def test_check_dataframes(self, dataframes, output_error, df_metadata):
+    def test_check_dataframes_validation_error(self, dataframes, output_error, df_metadata):
         with pytest.raises(ValidationError, match=output_error):
             GraphState(
                 messages=[HumanMessage(content="contents of the message")],
                 dfs=dataframes,
                 all_df_metadata=df_metadata,
                 pages=[],
+                custom_charts_code=[],
+                custom_charts_imports=[],
             )

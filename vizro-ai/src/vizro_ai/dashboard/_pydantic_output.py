@@ -134,9 +134,9 @@ def _get_pydantic_model_experimental(  # TODO: much more to explore here: https:
         model=llm_model,
         result_type=response_model,
         retries=max_retry,
-        model_settings=dict(
-            parallel_tool_calls=False  # see: https://github.com/pydantic/pydantic-ai/issues/741
-        ),
+        model_settings={
+            "parallel_tool_calls": False  # see: https://github.com/pydantic/pydantic-ai/issues/741
+        },
         system_prompt=BASE_PROMPT.format(df_info=df_info),
     )
 
@@ -145,7 +145,7 @@ def _get_pydantic_model_experimental(  # TODO: much more to explore here: https:
             result = model_agent.run_sync(query)
         except UnexpectedModelBehavior:
             raise ValueError(
-                "Failed to create pydantic model, see model behaviour for more details:",
+                "Failed to create pydantic model, see model behavior for more details:",
                 messages,
             )
     return result.data
