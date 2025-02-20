@@ -18,6 +18,39 @@ def bar_mean(data_frame, x, y):
     fig.update_traces(width=0.6)
     return fig
 
+page_data = vm.Page(
+    title="Data",
+    layout=vm.Layout(grid=[[0], [1], [1], [1], [2]]),
+    components=[
+        vm.Card(
+            text="""
+
+            ### Description
+            One waiter recorded information about each tip he received over a period of a few months working in
+            one restaurant. In all he recorded 244 tips. He collected several variables:
+
+            * tip in dollars,
+            * bill in dollars,
+            * sex of the bill payer,
+            * whether there were smokers in the party,
+            * day of the week,
+            * time of day,
+            * size of the party.
+        """
+        ),
+        vm.AgGrid(
+            figure=dash_ag_grid(tips, columnSize="responsiveSizeToFit"),
+            footer="""**Data Source:** Bryant, P. G. and Smith, M (1995) Practical Data Analysis: Case Studies in Business Statistics. Homewood, IL: Richard D. Irwin Publishing.""",
+        ),
+        vm.Button(
+            text="Export data",
+            actions=[
+                vm.Action(function=export_data()),
+            ],
+        ),
+    ],
+)
+
 
 page_charts = vm.Page(
     title="Summary",
@@ -92,40 +125,6 @@ page_analysis = vm.Page(
         ),
     ],
 )
-
-page_data = vm.Page(
-    title="Data",
-    layout=vm.Layout(grid=[[0], [0], [1], [1], [1], [2]]),
-    components=[
-        vm.Card(
-            text="""
-
-            ### Description
-            One waiter recorded information about each tip he received over a period of a few months working in
-            one restaurant. In all he recorded 244 tips. He collected several variables:
-
-            * tip in dollars,
-            * bill in dollars,
-            * sex of the bill payer,
-            * whether there were smokers in the party,
-            * day of the week,
-            * time of day,
-            * size of the party.
-        """
-        ),
-        vm.AgGrid(
-            figure=dash_ag_grid(tips, columnSize="responsiveSizeToFit"),
-            footer="""**Data Source:** Bryant, P. G. and Smith, M (1995) Practical Data Analysis: Case Studies in Business Statistics. Homewood, IL: Richard D. Irwin Publishing.""",
-        ),
-        vm.Button(
-            text="Export data",
-            actions=[
-                vm.Action(function=export_data()),
-            ],
-        ),
-    ],
-)
-
 
 dashboard = vm.Dashboard(
     pages=[page_data, page_charts, page_analysis],
