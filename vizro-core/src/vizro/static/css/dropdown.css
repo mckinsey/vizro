@@ -164,8 +164,14 @@ wrapper **/
   padding-top: 0.5rem;
 }
 
-.checkbox-dropdown {
+.dropdown-select-all {
   display: flex;
   flex-direction: row;
   gap: 8px;
+}
+
+/* When you click "Select All", it flashes up very quickly in the selected items before update_dropdown_select_all
+ is executed to remove it. So we hide the option altogether to prevent this flicker. */
+#dashboard-container .Select--multi .Select-value:has(.dropdown-select-all) {
+    display: none;
 }

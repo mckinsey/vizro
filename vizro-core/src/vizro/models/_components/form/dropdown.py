@@ -41,17 +41,13 @@ def _make_select_all(
     select_all_value = value is None or (isinstance(value, list) and len(value) == len(options))
 
     return {
-        "label": html.Div(
-            [
-                dbc.Checkbox(
-                    id=f"{component_id}_select_all",
-                    value=select_all_value,
-                    label="Select All",
-                    persistence=True,
-                    persistence_type="session",
-                ),
-            ],
-            className="checkbox-dropdown",
+        "label": dbc.Checkbox(
+            id=f"{component_id}_select_all",
+            value=select_all_value,
+            label="Select All",
+            persistence=True,
+            persistence_type="session",
+            className="dropdown-select-all",
         ),
         # Special sentinel value used in update_dropdown_select_all.
         # This never gets sent to the server.

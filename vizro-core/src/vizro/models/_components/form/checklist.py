@@ -72,6 +72,7 @@ class Checklist(VizroBaseModel):
                     label="Select All",
                     persistence=True,
                     persistence_type="session",
+                    className="checklist-select-all",
                 ),
                 dbc.Checklist(
                     id=self.id,
