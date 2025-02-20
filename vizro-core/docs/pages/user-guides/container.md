@@ -154,7 +154,7 @@ Containers can be nested, providing a hierarchical structure for organizing comp
 To create nested containers, add a `Container` to the `components` argument of another `Container`.
 
 ```python title="Example"
-
+vm.Container(title="Parent Container", components=[vm.Container(title="Child Container", components=[vm.Button()])])
 ```
 
 [container]: ../../assets/user_guides/components/containers.png
