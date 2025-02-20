@@ -63,7 +63,7 @@ if __name__ == "__main__":
     # This would mean that we need to change also what the wait_for_text is
     dev_directory = "vizro-core/examples/dev/"
     extra_requirements = ["openpyxl"]
-    url_generated = generate_link(config, dev_directory, extra_requirements, use_latest_release=True)
+    url_generated = generate_link(config, dev_directory, extra_requirements, use_latest_release=False)
 
     # Test the link
     success = test_pycafe_link(url=url_generated, wait_for_text="Vizro Features")
