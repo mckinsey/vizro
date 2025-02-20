@@ -1,3 +1,8 @@
 #page-header {
   padding-left: 8px;
 }
+
+#old-line-height p {
+    line-height: 1;
+    margin-bottom: 0.5rem;
+}

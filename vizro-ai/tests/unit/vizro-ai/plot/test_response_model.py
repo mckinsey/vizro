@@ -1,8 +1,9 @@
+import pandas as pd
 import plotly.express as ppx
 import pytest
 import vizro.plotly.express as px
 
-from vizro_ai.plot._response_models import ChartPlan, ChartPlanFactory
+from vizro_ai.plot._response_models import BaseChartPlan, ChartPlan, ChartPlanFactory
 
 df = px.data.iris()
 
@@ -19,6 +20,18 @@ def chart_plan():
         chart_insights="Very good insights",
         code_explanation="Very good explanation",
     )
+
+
+@pytest.fixture
+def sample_df():
+    return pd.DataFrame({"x": [1, 2, 3], "y": [4, 5, 6]})
+
+
+@pytest.fixture
+def valid_chart_code():
+    return """def custom_chart(data_frame):
+    import plotly.express as px
+    return px.scatter(data_frame, x='x', y='y')"""
 
 
 class TestChartPlanInstantiation:
@@ -227,3 +240,92 @@ def {expected_chart_name}(data_frame):
         def test_get_fig_object(self, chart_plan, vizro, expected_fig):
             fig = chart_plan.get_fig_object(data_frame=df, vizro=vizro)
             assert fig == expected_fig
+
+
+def test_chart_plan_factory_with_base_chart_plan(sample_df, valid_chart_code):
+    """Test factory creates validated BaseChartPlan."""
+    ValidatedModel = ChartPlanFactory(data_frame=sample_df, chart_plan=BaseChartPlan)
+
+    assert issubclass(ValidatedModel, BaseChartPlan)
+    assert ValidatedModel is not BaseChartPlan
+
+    instance = ValidatedModel(
+        chart_type="scatter", imports=["import plotly.express as px"], chart_code=valid_chart_code
+    )
+    assert isinstance(instance, BaseChartPlan)
+
+
+def test_chart_plan_factory_with_chart_plan(sample_df, valid_chart_code):
+    """Test factory creates validated ChartPlan."""
+    ValidatedModel = ChartPlanFactory(data_frame=sample_df, chart_plan=ChartPlan)
+
+    assert issubclass(ValidatedModel, ChartPlan)
+    assert ValidatedModel is not ChartPlan
+
+    instance = ValidatedModel(
+        chart_type="scatter",
+        imports=["import plotly.express as px"],
+        chart_code=valid_chart_code,
+        chart_insights="Test insights",
+        code_explanation="Test explanation",
+    )
+    assert isinstance(instance, ChartPlan)
+
+
+def test_chart_plan_factory_validation_failure(sample_df):
+    """Test factory validation fails with invalid code."""
+    ValidatedModel = ChartPlanFactory(data_frame=sample_df, chart_plan=BaseChartPlan)
+
+    with pytest.raises(ValueError, match="The chart code must be wrapped in a function named"):
+        ValidatedModel(chart_type="scatter", imports=["import plotly.express as px"], chart_code="invalid_code")
+
+
+def test_base_chart_plan_without_validation(valid_chart_code):
+    """Test BaseChartPlan without validation."""
+    instance = BaseChartPlan(chart_type="scatter", imports=["import plotly.express as px"], chart_code=valid_chart_code)
+    assert isinstance(instance, BaseChartPlan)
+
+
+def test_chart_plan_without_validation(valid_chart_code):
+    """Test ChartPlan without validation."""
+    instance = ChartPlan(
+        chart_type="scatter",
+        imports=["import plotly.express as px"],
+        chart_code=valid_chart_code,
+        chart_insights="Test insights",
+        code_explanation="Test explanation",
+    )
+    assert isinstance(instance, ChartPlan)
+    assert instance.chart_insights == "Test insights"
+    assert instance.code_explanation == "Test explanation"
+
+
+def test_chart_plan_factory_preserves_fields(sample_df, valid_chart_code):
+    """Test factory preserves all fields from base class."""
+    ValidatedModel = ChartPlanFactory(data_frame=sample_df, chart_plan=ChartPlan)
+
+    instance = ValidatedModel(
+        chart_type="scatter",
+        imports=["import plotly.express as px"],
+        chart_code=valid_chart_code,
+        chart_insights="Test insights",
+        code_explanation="Test explanation",
+    )
+
+    # Check all fields are preserved
+    assert instance.chart_type == "scatter"
+    assert instance.imports == ["import plotly.express as px"]
+    assert instance.chart_code == valid_chart_code
+    assert instance.chart_insights == "Test insights"
+    assert instance.code_explanation == "Test explanation"
+
+
+def test_base_chart_plan_no_explanatory_fields(valid_chart_code):
+    """Test BaseChartPlan doesn't have explanatory fields."""
+    instance = BaseChartPlan(chart_type="scatter", imports=["import plotly.express as px"], chart_code=valid_chart_code)
+
+    with pytest.raises(AttributeError):
+        _ = instance.chart_insights
+
+    with pytest.raises(AttributeError):
+        _ = instance.code_explanation

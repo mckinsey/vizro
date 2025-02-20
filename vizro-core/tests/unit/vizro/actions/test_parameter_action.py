@@ -241,6 +241,7 @@ class TestParameter:
     @pytest.mark.parametrize(
         "ctx_parameter_hover_data, target_scatter_parameter_hover_data",
         [
+            ([], []),
             (["NONE"], [None]),
             (["NONE", "pop"], ["pop"]),
             (["NONE", "NONE"], [None]),

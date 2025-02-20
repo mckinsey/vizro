@@ -454,8 +454,8 @@ As mentioned above, custom components can trigger action. To enable the custom c
                 Carousel(
                     id="carousel",
                     items=[
-                        {"key": "1", "src": "path_to_your_image"},
-                        {"key": "2", "src": "path_to_your_image"},
+                        {"key": "1", "src": "assets/slide_1.jpg"},
+                        {"key": "2", "src": "assets/slide_2.jpg"},
                     ],
                     actions=[
                         vm.Action(

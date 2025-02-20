@@ -16,10 +16,12 @@ Uncomment the section that is right (remove the HTML comment wrapper).
 - A bullet item for the Removed category with a link to the relevant PR at the end of your entry, e.g. Enable feature XXX. ([#1](https://github.com/mckinsey/vizro/pull/1))
 
 -->
+<!--
 ### Added
 
-- Add `reverse_color` argument to `kpi_card_reference`, enabling color inversion based on delta values. ([#995](https://github.com/mckinsey/vizro/pull/995))
+- A bullet item for the Added category with a link to the relevant PR at the end of your entry, e.g. Enable feature XXX. ([#1](https://github.com/mckinsey/vizro/pull/1))
 
+-->
 <!--
 ### Changed
 
@@ -32,12 +34,10 @@ Uncomment the section that is right (remove the HTML comment wrapper).
 - A bullet item for the Deprecated category with a link to the relevant PR at the end of your entry, e.g. Enable feature XXX. ([#1](https://github.com/mckinsey/vizro/pull/1))
 
 -->
-<!--
 ### Fixed
 
-- A bullet item for the Fixed category with a link to the relevant PR at the end of your entry, e.g. Enable feature XXX. ([#1](https://github.com/mckinsey/vizro/pull/1))
+- Fix a bug where an empty parameter selection incorrectly sent `[None]` to its target. ([#1026](https://github.com/mckinsey/vizro/pull/1026))
 
--->
 <!--
 ### Security
 
