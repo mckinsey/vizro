@@ -70,7 +70,6 @@ if __name__ == "__main__":
 
     # Only create a status check if the test fails. On success, the status check will be created
     # by the create_pycafe_links_comments.py script when it posts the comment.
-    # Dummy
     if not success:
         create_status_check(commit, dev_directory, url_generated, state="failure")
 
