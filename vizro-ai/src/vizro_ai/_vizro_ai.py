@@ -65,7 +65,7 @@ class VizroAI:
         max_debug_retry: int = 1,
         return_elements: bool = False,
         validate_code: bool = True,
-        _minimal_output: bool = True,
+        _minimal_output: bool = False,
     ) -> Union[go.Figure, ChartPlan]:
         """Plot visuals using vizro via english descriptions, english to chart translation.
 
@@ -76,7 +76,8 @@ class VizroAI:
             return_elements: Flag to return ChartPlan pydantic model that includes all
                 possible elements generated. Defaults to `False`.
             validate_code: Flag if produced code should be executed to validate it. Defaults to `True`.
-            _minimal_output: Internal flag to exclude chart insights and code explanations. Defaults to `True`.
+            _minimal_output: Internal flag to exclude chart insights and code explanations and
+                skip validation. Defaults to `False`.
 
         Returns:
             go.Figure or ChartPlan pydantic model

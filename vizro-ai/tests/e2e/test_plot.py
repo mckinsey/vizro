@@ -1,5 +1,5 @@
 import vizro.plotly.express as px
-from hamcrest import any_of, assert_that, contains_string, has_property, matches_regexp, not_
+from hamcrest import any_of, assert_that, contains_string, is_not, matches_regexp
 
 from vizro_ai import VizroAI
 
@@ -61,5 +61,18 @@ def test_chart_with_explanation():
         ),
     )
     assert_that(resp.code, any_of(*y_conditions))
-    assert_that(resp, not_(has_property("chart_insights")))
-    assert_that(resp, not_(has_property("code_explanation")))
+    assert_that(
+        resp.chart_insights,
+        any_of(
+            contains_string("GDP per capita"),
+            contains_string("GDP"),
+        ),
+    )
+    assert_that(
+        resp.chart_insights,
+        any_of(
+            contains_string("United States"),
+            contains_string("US"),
+        ),
+    )
+    assert_that(resp.code_explanation, is_not(None))

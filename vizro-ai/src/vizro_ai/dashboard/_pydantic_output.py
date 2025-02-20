@@ -12,8 +12,6 @@ from langchain_core.language_models.chat_models import BaseChatModel
 from langchain_core.messages import HumanMessage
 from langchain_core.prompts import ChatPromptTemplate
 from pydantic import BaseModel, ValidationError
-from pydantic_ai import Agent, capture_run_messages
-from pydantic_ai.exceptions import UnexpectedModelBehavior
 
 nest_asyncio.apply()  # https://ai.pydantic.dev/troubleshooting/#runtimeerror-this-event-loop-is-already-running
 
@@ -121,34 +119,6 @@ def _get_pydantic_model(
             last_validation_error = validation_error
     # TODO: should this be shifted to logging so that that one can control what output gets shown (e.g. in public demos)
     raise last_validation_error
-
-
-def _get_pydantic_model_experimental(  # TODO: much more to explore here: https://ai.pydantic.dev/results/
-    query: str,
-    llm_model,
-    response_model,
-    df_info: Optional[str] = None,  # TODO: this should potentially not be part of this function.
-    max_retry: int = 3,
-) -> BaseModel:
-    model_agent = Agent(
-        model=llm_model,
-        result_type=response_model,
-        retries=max_retry,
-        model_settings={
-            "parallel_tool_calls": False  # see: https://github.com/pydantic/pydantic-ai/issues/741
-        },
-        system_prompt=BASE_PROMPT.format(df_info=df_info),
-    )
-
-    with capture_run_messages() as messages:
-        try:
-            result = model_agent.run_sync(query)
-        except UnexpectedModelBehavior:
-            raise ValueError(
-                "Failed to create pydantic model, see model behavior for more details:",
-                messages,
-            )
-    return result.data
 
 
 if __name__ == "__main__":

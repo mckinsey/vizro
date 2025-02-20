@@ -28,7 +28,6 @@ dependencies = [
   "langchain_mistralai",
   "langchain-anthropic",
   "langchain-aws",
-  "logfire",
   "langchain-google-genai",
   "pre-commit"
 ]
