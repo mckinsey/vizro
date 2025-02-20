@@ -1,0 +1,47 @@
+import e2e.vizro.constants as cnst
+from pages.datepicker_page import datepicker_page
+from pages.kpi_indicators_page import kpi_indicators_page
+from pages.table_page import table_page
+
+import vizro.models as vm
+from vizro import Vizro
+
+dashboard = vm.Dashboard(
+    title="Vizro dashboard for integration testing",
+    pages=[
+        table_page,
+        datepicker_page,
+        kpi_indicators_page,
+    ],
+    navigation=vm.Navigation(
+        nav_selector=vm.NavBar(
+            items=[
+                vm.NavLink(
+                    pages={
+                        cnst.AG_GRID_ACCORDION: [
+                            cnst.TABLE_PAGE,
+                        ],
+                    },
+                    icon="Arrow Back IOS",
+                    label="Text to be used for Arrow Back IOS icon description",
+                ),
+                vm.NavLink(
+                    pages={
+                        cnst.GENERAL_ACCORDION: [
+                            cnst.DATEPICKER_PAGE,
+                            cnst.KPI_INDICATORS_PAGE,
+                        ],
+                    },
+                    icon="Bolt",
+                    label="Text to be used for Bolt icon description",
+                ),
+            ]
+        )
+    ),
+    theme="vizro_light",
+)
+
+app = Vizro(assets_folder="../assets").build(dashboard)
+
+if __name__ == "__main__":
+    app.run(debug=True)

@@ -4,7 +4,7 @@ from e2e.asserts import assert_image_equal, make_screenshot_and_paths
 from e2e.vizro import constants as cnst
 from e2e.vizro.checkers import check_graph_color, check_theme_color
 from e2e.vizro.navigation import accordion_select, page_select
-from e2e.vizro.paths import theme_toggle_path
+from e2e.vizro.paths import nav_card_link_path, theme_toggle_path
 from e2e.vizro.waiters import graph_load_waiter
 
 
@@ -87,6 +87,36 @@ def test_tabs_parameters_page(dash_br):
 @image_assertion
 def test_nested_tabs_filters_page(dash_br):
     page_select(dash_br, page_path=cnst.FILTERS_PAGE_PATH, page_name=cnst.FILTERS_PAGE, graph_id=cnst.SCATTER_GRAPH_ID)
+
+
+@pytest.mark.parametrize(
+    "dash_br_driver", [({"port": cnst.ONE_PAGE_PORT})], ids=["one_page"], indirect=["dash_br_driver"]
+)
+@image_assertion
+def test_export_action_page(dash_br_driver):
+    graph_load_waiter(dash_br_driver, graph_id=cnst.LINE_EXPORT_ID)
+
+
+@pytest.mark.parametrize(
+    "dash_br_driver",
+    [
+        ({"port": cnst.NAVBAR_ACCORDIONS_PORT}),
+        ({"port": cnst.NAVBAR_NAVLINK_PORT}),
+    ],
+    ids=["navbar_accordions", "navbar_navlink"],
+    indirect=["dash_br_driver"],
+)
+@image_assertion
+def test_datepicker_page(dash_br_driver):
+    dash_br_driver.multiple_click(nav_card_link_path(cnst.DATEPICKER_PAGE_PATH), 1)
+
+
+@pytest.mark.parametrize(
+    "dash_br_driver", [({"port": cnst.NAVBAR_PAGES_PORT})], ids=["navbar_pages"], indirect=["dash_br_driver"]
+)
+@image_assertion
+def test_filters_page(dash_br_driver):
+    dash_br_driver.multiple_click(nav_card_link_path(cnst.FILTERS_PAGE_PATH), 1)
 
 
 @pytest.mark.mobile_screenshots

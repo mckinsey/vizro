@@ -50,6 +50,7 @@ KPI_INDICATORS_PAGE_PATH = "/kpi-indicators-page"
 
 EXPORT_PAGE = "export page"
 EXPORT_PAGE_PATH = "/exportp"
+LINE_EXPORT_ID = "line--export--id"
 
 DATEPICKER_PAGE = "DATEpicker page"
 DATEPICKER_PAGE_PATH = "/datepicker-page"
@@ -91,6 +92,10 @@ AG_GRID_ACCORDION_NUMBER = 3
 # Ports
 
 DEFAULT_PORT = 5002
+ONE_PAGE_PORT = 5003
+NAVBAR_ACCORDIONS_PORT = 5004
+NAVBAR_PAGES_PORT = 5005
+NAVBAR_NAVLINK_PORT = 5006
 
 # Dashboards
 
