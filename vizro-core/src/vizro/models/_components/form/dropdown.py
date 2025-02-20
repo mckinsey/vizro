@@ -122,16 +122,14 @@ class Dropdown(VizroBaseModel):
     def __call__(self, options):
         if self.multi:
             clientside_callback(
-                ClientsideFunction(namespace="dropdown", function_name="update_dropdown_values"),
+                ClientsideFunction(namespace="dropdown", function_name="update_dropdown_select_all"),
                 output=[
                     Output(f"{self.id}_select_all", "value"),
                     Output(self.id, "value"),
                 ],
                 inputs=[
-                    Input(f"{self.id}_select_all", "value"),
                     Input(self.id, "value"),
                     State(self.id, "options"),
-                    State(f"{self.id}_select_all", "id"),
                 ],
                 prevent_initial_call=True,
             )

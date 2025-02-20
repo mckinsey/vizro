@@ -51,7 +51,7 @@ class Checklist(VizroBaseModel):
 
     def __call__(self, options):
         clientside_callback(
-            ClientsideFunction(namespace="checklist", function_name="update_checklist_values"),
+            ClientsideFunction(namespace="checklist", function_name="update_checklist_select_all"),
             output=[Output(f"{self.id}_select_all", "value"), Output(self.id, "value")],
             inputs=[
                 Input(f"{self.id}_select_all", "value"),

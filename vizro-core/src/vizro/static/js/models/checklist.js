@@ -1,23 +1,26 @@
-function update_checklist_values(
-  checklist_all_value,
-  checklist_value = [],
-  options = [],
-  checklist_all_value_id,
+function update_checklist_select_all(
+  select_all_value,
+  checklist_value,
+  options,
+  select_all_id,
 ) {
-  const triggeredId = dash_clientside.callback_context.triggered_id;
-  const allSelected = checklist_value.length === options.length;
-  const options_list = options.map((dict) => dict["value"]);
-
-  if (checklist_all_value_id === triggeredId) {
-    return checklist_all_value ? [true, options_list] : [false, []];
+  // When "Select All" checkbox is clicked, set checklist value to be:
+  // - all the values in options if checkbox is ticked (select_all_value=True)
+  // - none of the options if checkbox is unticked (select_all_value=False)
+  if (dash_clientside.callback_context.triggered_id === select_all_id) {
+    const newChecklistValue = select_all_value ? options.map(dict => dict["value"]) : []
+    return [window.dash_clientside.no_update, newChecklistValue]
   }
 
-  return allSelected ? [true, checklist_value] : [false, checklist_value];
+  // Otherwise callback is triggered by clicking a "real" (non-"Select All") value in the checklist.
+  // Now we tick or untick the checkbox depending on whether all the checklist values have been selected.
+  const allOptionsSelected = checklist_value.length === options.length;
+  return [allOptionsSelected, window.dash_clientside.no_update]
 }
 
 window.dash_clientside = {
   ...window.dash_clientside,
   checklist: {
-    update_checklist_values: update_checklist_values,
+    update_checklist_select_all: update_checklist_select_all,
   },
 };
