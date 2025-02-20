@@ -173,17 +173,13 @@ class TestDropdownBuild:
                     id="dropdown_id",
                     options=[
                         {
-                            "label": html.Div(
-                                [
-                                    dbc.Checkbox(
-                                        id="dropdown_id_select_all",
-                                        value=expected_checkbox_value,
-                                        label="Select All",
-                                        persistence=True,
-                                        persistence_type="session",
-                                    ),
-                                ],
-                                className="checkbox-dropdown",
+                            "label": dbc.Checkbox(
+                                id="dropdown_id_select_all",
+                                value=expected_checkbox_value,
+                                label="Select All",
+                                persistence=True,
+                                persistence_type="session",
+                                className="dropdown-select-all",
                             ),
                             "value": "__SELECT_ALL",
                         },
