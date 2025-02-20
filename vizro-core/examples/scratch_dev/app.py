@@ -10,7 +10,6 @@ from vizro.actions import export_data
 
 tips = px.data.tips()
 
-
 @capture("graph")
 def bar_mean(data_frame, x, y):
     df_agg = data_frame.groupby(x).agg({y: "mean"}).reset_index()
@@ -18,22 +17,50 @@ def bar_mean(data_frame, x, y):
     return fig
 
 
+@capture("graph")
+def violin(data_frame, **kwargs):
+    fig = px.violin(data_frame, **kwargs)
+    fig.update_layout(showlegend=False)
+    return fig
+
+
 page_charts = vm.Page(
     title="Summary",
-    layout=vm.Layout(grid=[[0, 1, 2, 3], [4, 4, 4, 4], [4, 4, 4, 4], [4, 4, 4, 4]]),
+    layout=vm.Layout(grid=[[0, 1, 2, 3],
+                           [4, 4, 4, 4],
+                           [4, 4, 4, 4],
+                           [4, 4, 4, 4],
+                           [4, 4, 4, 4],
+                           ]),
     components=[
-        vm.Figure(figure=kpi_card(data_frame=tips, value_column="total_bill")),
-        vm.Figure(figure=kpi_card(data_frame=tips, value_column="tip")),
-        vm.Figure(figure=kpi_card(data_frame=tips, value_column="total_bill", agg_func="mean")),
-        vm.Figure(figure=kpi_card(data_frame=tips, value_column="tip", agg_func="mean")),
-        vm.Graph(title="Histogram", figure=px.histogram(tips, x="tip", labels={"tip": "Total Tips ($)"})),
+        vm.Figure(figure=kpi_card(data_frame=tips, value_column="total_bill", value_format="${value:.2f}", title="Total Bill")),
+        vm.Figure(figure=kpi_card(data_frame=tips, value_column="tip",  value_format="${value:.2f}", title="Total Tips")),
+        vm.Figure(figure=kpi_card(data_frame=tips, value_column="total_bill", agg_func="mean", value_format="${value:.2f}", title="Average Bill")),
+        vm.Figure(figure=kpi_card(data_frame=tips, value_column="tip", agg_func="mean", value_format="${value:.2f}", title="Average Tips")),
+        vm.Tabs(
+            tabs=[
+                vm.Container(
+                    title="Total Bill ($)",
+                    components=[
+                        vm.Graph(figure=px.histogram(tips, x="total_bill", labels={"total_bill": "Total Bill ($)"})),
+                    ],
+                ),
+                vm.Container(
+                    title="Total Tips ($)",
+                    components=[
+                        vm.Graph(figure=px.histogram(tips, x="tip", labels={"tip": "Total Tips ($)"})),
+                    ],
+                ),
+            ],
+        ),
     ],
     controls=[vm.Filter(column="day"), vm.Filter(column="time", selector=vm.Checklist()), vm.Filter(column="size")],
 )
 
 page_analysis = vm.Page(
     title="Analysis",
-    layout=vm.Layout(grid=[[0,1], [2, 2]]),
+    layout=vm.Layout(grid=[[0, 1],
+                           [2, 2]]),
     components=[
         vm.Graph(
             title="Where do we get more tips on average?",
@@ -41,17 +68,17 @@ page_analysis = vm.Page(
         ),
         vm.Graph(
             title="Is the average driven by a few outliers?",
-            id="violin", figure=px.violin(tips, y="tip", x="day", color="day", box=True)),
+            id="violin", figure=violin(tips, y="tip", x="day", color="day", box=True, labels={"tip": "Tip ($)"})),
         vm.Graph(
             id="heatmap",
             title="Which shift is more profitable?",
-            figure=px.density_heatmap(tips, x="day", y="time", z="tip"),
+            figure=px.density_heatmap(tips, x="day", y="time", z="tip", histfunc="avg"),
         ),
     ],
     controls=[
         vm.Parameter(
-            targets=["violin.x", "violin.color", "bar.x","heatmap.x"],
-            selector=vm.RadioItems(options=["day", "time", "sex", "smoker", "size"], value="day"),
+            targets=["violin.x", "violin.color", "heatmap.x",  "bar.x"],
+            selector=vm.RadioItems(options=["day", "time", "sex", "smoker", "size"], value="day", title="Change x-axis inside charts:"),
         ),
     ],
 )
@@ -60,14 +87,16 @@ page_data = vm.Page(
     title="Data",
     layout=vm.Layout(grid=[[0],
                            [1],
-                           [1]]),
+                           [1],
+                           [2]
+                           ]),
     components=[
         vm.Card(text="""
-            
+
             ### Description
-            One waiter recorded information about each tip he received over a period of a few months working in 
+            One waiter recorded information about each tip he received over a period of a few months working in
             one restaurant. In all he recorded 244 tips. He collected several variables:
-                
+
             * tip in dollars,
             * bill in dollars,
             * sex of the bill payer,
@@ -75,10 +104,19 @@ page_data = vm.Page(
             * day of the week,
             * time of day,
             * size of the party.
-            
-            **Data Source:** Bryant, P. G. and Smith, M (1995) Practical Data Analysis: Case Studies in Business Statistics. Homewood, IL: Richard D. Irwin Publishing.
         """),
-        vm.AgGrid(figure=dash_ag_grid(tips, columnSize="responsiveSizeToFit", dashGridOptions={"pagination": True})),
+        vm.AgGrid(
+            figure=dash_ag_grid(tips, columnSize="responsiveSizeToFit"),
+            footer="""**Data Source:** Bryant, P. G. and Smith, M (1995) Practical Data Analysis: Case Studies in Business Statistics. Homewood, IL: Richard D. Irwin Publishing.""",
+        ),
+        vm.Button(
+            text="Export data",
+            actions=[
+                vm.Action(
+                    function=export_data()
+                ),
+            ],
+        ),
     ],
 )
 
