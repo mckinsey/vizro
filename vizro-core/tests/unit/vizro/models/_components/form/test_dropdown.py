@@ -74,9 +74,7 @@ class TestDropdownInstantiation:
             Dropdown(options=test_options)
 
     def test_create_dropdown_invalid_options_dict(self):
-        with pytest.raises(
-            ValidationError, match="Invalid argument `options` passed. Expected a dict with keys `label` and `value`."
-        ):
+        with pytest.raises(ValidationError, match="Field required"):
             Dropdown(options=[{"hello": "A", "world": "A"}, {"hello": "B", "world": "B"}])
 
     @pytest.mark.parametrize(
@@ -215,6 +213,7 @@ class TestDropdownBuild:
                     optionHeight=32,
                     value="A",
                     multi=False,
+                    clearable=False,
                     persistence=True,
                     persistence_type="session",
                     className="dropdown",
@@ -251,6 +250,7 @@ class TestDropdownBuild:
                     optionHeight=option_height,
                     multi=False,
                     value=default_value,
+                    clearable=False,
                     persistence=True,
                     persistence_type="session",
                     className="dropdown",

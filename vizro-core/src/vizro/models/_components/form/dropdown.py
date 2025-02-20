@@ -1,10 +1,9 @@
 import math
-from datetime import date
-from typing import Annotated, Literal, Optional, Union, cast
+from typing import Annotated, Literal, Optional, Union
 
 import dash_bootstrap_components as dbc
 from dash import ClientsideFunction, Input, Output, State, clientside_callback, dcc, html
-from pydantic import AfterValidator, Field, PrivateAttr, StrictBool, ValidationInfo, model_validator
+from pydantic import AfterValidator, Field, PrivateAttr, ValidationInfo, model_validator
 from pydantic.functional_serializers import PlainSerializer
 
 from vizro.models import Action, VizroBaseModel
@@ -14,23 +13,14 @@ from vizro.models._models_utils import _log_call
 from vizro.models.types import MultiValueType, OptionsDictType, OptionsType, SingleValueType
 
 
-def _get_list_of_labels(full_options: OptionsType) -> Union[list[StrictBool], list[float], list[str], list[date]]:
-    """Returns a list of labels from the selector options provided."""
-    if all(isinstance(option, dict) for option in full_options):
-        return [option["label"] for option in full_options]  # type: ignore[index]
-    else:
-        return cast(Union[list[StrictBool], list[float], list[str], list[date]], full_options)
-
-
-def _calculate_option_height(full_options: OptionsType) -> int:
+def _calculate_option_height(options: list[OptionsDictType]) -> int:
     """Calculates the height of the dropdown options based on the longest option."""
     # 30 characters is roughly the number of "A" characters you can fit comfortably on a line in the dropdown.
     # "A" is representative of a slightly wider than average character:
     # https://stackoverflow.com/questions/3949422/which-letter-of-the-english-alphabet-takes-up-most-pixels
     # We look at the longest option to find number_of_lines it requires. Option height is the same for all options
     # and needs 24px for each line + 8px padding.
-    list_of_labels = _get_list_of_labels(full_options)
-    max_length = max(len(str(option)) for option in list_of_labels)
+    max_length = max(len(option["label"]) for option in options)
     number_of_lines = math.ceil(max_length / 30)
     return 8 + 24 * number_of_lines
 
@@ -44,18 +34,18 @@ def validate_multi(multi, info: ValidationInfo):
     return multi
 
 
-def _add_select_all_option(
+def _make_select_all(
     options: OptionsType, component_id: str, value: Optional[Union[SingleValueType, MultiValueType]]
-) -> list[OptionsDictType]:
-    """Adds a 'Select All' option to the list of options."""
-    checklist_value = value is None or (isinstance(value, list) and len(value) == len(options))
+) -> OptionsDictType:
+    """Creates a 'Select All' option to add to the list of options."""
+    select_all_value = value is None or (isinstance(value, list) and len(value) == len(options))
 
-    all_option = {
+    return {
         "label": html.Div(
             [
                 dbc.Checkbox(
                     id=f"{component_id}_select_all",
-                    value=checklist_value,
+                    value=select_all_value,
                     label="Select All",
                     persistence=True,
                     persistence_type="session",
@@ -67,8 +57,6 @@ def _add_select_all_option(
         # This never gets sent to the server.
         "value": "__SELECT_ALL",
     }
-    dict_options_with_all = [all_option, *options]
-    return dict_options_with_all
 
 
 class Dropdown(VizroBaseModel):
@@ -121,7 +109,15 @@ class Dropdown(VizroBaseModel):
     _validate_options = model_validator(mode="before")(validate_options_dict)
 
     def __call__(self, options):
+        dict_options, default_value = get_options_and_default(options=options, multi=self.multi)
+        option_height = _calculate_option_height(dict_options)
+
         if self.multi:
+            dict_options = [
+                _make_select_all(options=dict_options, component_id=self.id, value=self.value),
+                *dict_options,
+            ]
+
             clientside_callback(
                 ClientsideFunction(namespace="dropdown", function_name="update_dropdown_select_all"),
                 output=[
@@ -134,20 +130,13 @@ class Dropdown(VizroBaseModel):
                 ],
                 prevent_initial_call=True,
             )
-        dict_options, default_value = get_options_and_default(options=options, multi=self.multi)
-        option_height = _calculate_option_height(dict_options)
-        dict_options_with_all = (
-            _add_select_all_option(options=dict_options, component_id=self.id, value=self.value)
-            if self.multi
-            else dict_options
-        )
 
         return html.Div(
             children=[
                 dbc.Label(self.title, html_for=self.id) if self.title else None,
                 dcc.Dropdown(
                     id=self.id,
-                    options=dict_options_with_all,
+                    options=dict_options,
                     value=self.value if self.value is not None else default_value,
                     multi=self.multi,
                     optionHeight=option_height,
@@ -165,7 +154,7 @@ class Dropdown(VizroBaseModel):
         # guarantees that. We can call Filter.selector.pre_build() from the Filter.pre_build() method if we decide that.
         # TODO: move this to pre_build once we have better control of the ordering.
         if self.value is None:
-            _, default_value = get_options_and_default(self.options, self.multi)
+            _, default_value = get_options_and_default(self.options, multi=self.multi)
             self.value = default_value
 
         return self.__call__(self.options)

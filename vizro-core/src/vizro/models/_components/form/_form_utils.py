@@ -3,12 +3,14 @@
 from datetime import date
 from typing import Any, Optional, Union
 
-from pydantic import ValidationInfo
+from pydantic import TypeAdapter, ValidationInfo
 
-from vizro.models.types import MultiValueType, OptionsType, SingleValueType
+from vizro.models.types import MultiValueType, OptionsDictType, OptionsType, SingleValueType
 
 
-def get_options_and_default(options: OptionsType, multi: bool = False) -> tuple[OptionsType, SingleValueType]:
+def get_options_and_default(
+    options: OptionsType, multi: bool
+) -> tuple[list[OptionsDictType], Union[SingleValueType, MultiValueType]]:
     """Gets list of full options and default value based on user input type of `options`."""
     dict_options = [
         option if isinstance(option, dict) else {"label": str(option), "value": option} for option in options
@@ -35,9 +37,9 @@ def validate_options_dict(cls, data: Any) -> Any:
     if "options" not in data or not isinstance(data["options"], list):
         return data
 
-    for entry in data["options"]:
-        if isinstance(entry, dict) and not set(entry.keys()) == {"label", "value"}:
-            raise ValueError("Invalid argument `options` passed. Expected a dict with keys `label` and `value`.")
+    for option in data["options"]:
+        if isinstance(option, dict):
+            TypeAdapter(OptionsDictType).validate_python(option)
     return data
 
 

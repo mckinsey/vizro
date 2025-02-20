@@ -62,14 +62,13 @@ class Checklist(VizroBaseModel):
             prevent_initial_call=True,
         )
         dict_options, default_value = get_options_and_default(options=options, multi=True)
-        final_value = self.value if self.value is not None else default_value
 
         return html.Fieldset(
             children=[
                 html.Legend(children=self.title, className="form-label") if self.title else None,
                 dbc.Checkbox(
                     id=f"{self.id}_select_all",
-                    value=len(final_value) == len(dict_options),
+                    value=self.value is None or len(self.value) == len(options),
                     label="Select All",
                     persistence=True,
                     persistence_type="session",
@@ -77,7 +76,7 @@ class Checklist(VizroBaseModel):
                 dbc.Checklist(
                     id=self.id,
                     options=dict_options,
-                    value=final_value,
+                    value=self.value if self.value is not None else default_value,
                     persistence=True,
                     persistence_type="session",
                 ),
