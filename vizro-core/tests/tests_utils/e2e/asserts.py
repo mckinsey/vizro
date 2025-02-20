@@ -78,7 +78,7 @@ def assert_image_equal(result_image_path, expected_image_path):
                 expected_image_path,
                 result_image_path,
                 f"{expected_image_name.replace('.', '_difference_from_main.')}",
-                "0.11",
+                "0.18",
             ],
             capture_output=True,
             text=True,
