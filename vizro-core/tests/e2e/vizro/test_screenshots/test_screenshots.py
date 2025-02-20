@@ -107,15 +107,16 @@ def test_export_action_page(dash_br_driver):
     indirect=["dash_br_driver"],
 )
 @image_assertion
-def test_datepicker_page(dash_br_driver):
-    dash_br_driver.multiple_click(nav_card_link_path(cnst.DATEPICKER_PAGE_PATH), 1)
+def test_navbar_kpi_indicators_page(dash_br_driver):
+    dash_br_driver.multiple_click(nav_card_link_path(cnst.KPI_INDICATORS_PAGE_PATH), 1)
+    dash_br_driver.wait_for_text_to_equal(".card-body", "73902")
 
 
 @pytest.mark.parametrize(
     "dash_br_driver", [({"port": cnst.NAVBAR_PAGES_PORT})], ids=["navbar_pages"], indirect=["dash_br_driver"]
 )
 @image_assertion
-def test_filters_page(dash_br_driver):
+def test_navbar_filters_page(dash_br_driver):
     dash_br_driver.multiple_click(nav_card_link_path(cnst.FILTERS_PAGE_PATH), 1)
 
 

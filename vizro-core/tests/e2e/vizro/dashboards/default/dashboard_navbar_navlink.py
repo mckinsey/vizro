@@ -10,8 +10,8 @@ dashboard = vm.Dashboard(
     title="Vizro dashboard for integration testing",
     pages=[
         table_page,
-        datepicker_page,
         kpi_indicators_page,
+        datepicker_page,
     ],
     navigation=vm.Navigation(
         nav_selector=vm.NavBar(
@@ -28,8 +28,8 @@ dashboard = vm.Dashboard(
                 vm.NavLink(
                     pages={
                         cnst.GENERAL_ACCORDION: [
-                            cnst.DATEPICKER_PAGE,
                             cnst.KPI_INDICATORS_PAGE,
+                            cnst.DATEPICKER_PAGE,
                         ],
                     },
                     icon="Bolt",
