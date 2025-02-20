@@ -85,7 +85,7 @@ pip = '"{env:HATCH_UV}" pip {args}'
 serve = "mkdocs serve --open"
 
 [envs.lower-bounds]
-extra-dependencies = ["pydantic==1.10.16"]
+extra-dependencies = ["pydantic==2.7.0"]
 python = "3.9"
 
 [version]
