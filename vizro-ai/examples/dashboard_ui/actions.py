@@ -72,7 +72,14 @@ def get_vizro_ai_plot(user_prompt, df, model, api_key, api_base, vendor_input):
         llm = vendor(model=model, openai_api_key=api_key, openai_api_base=api_base, temperature=DEFAULT_TEMPERATURE)
 
     vizro_ai = VizroAI(model=llm)
-    ai_outputs = vizro_ai.plot(df, user_prompt, max_debug_retry=DEFAULT_RETRY, return_elements=True)
+    ai_outputs = vizro_ai.plot(
+        df,
+        user_prompt,
+        max_debug_retry=DEFAULT_RETRY,
+        return_elements=True,
+        _minimal_output=True,
+        validate_code=False,
+    )
 
     return ai_outputs
 

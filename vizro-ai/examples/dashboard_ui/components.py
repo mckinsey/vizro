@@ -238,7 +238,7 @@ class OffCanvas(vm.VizroBaseModel):
             {"name": "OpenAI", "url": "https://openai.com/index/openai-api/"},
             {"name": "Anthropic", "url": "https://docs.anthropic.com/en/api/getting-started"},
             {"name": "Mistral", "url": "https://docs.mistral.ai/getting-started/quickstart/"},
-            {"name": "xAI", "url": "https://x.ai/blog/api", "note": "(Free API credits available)"},
+            {"name": "xAI", "url": "https://x.ai/api", "note": ""},
         ]
 
         api_instructions = html.Div(
