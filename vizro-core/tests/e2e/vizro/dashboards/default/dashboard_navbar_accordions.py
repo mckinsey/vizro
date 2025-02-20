@@ -16,7 +16,7 @@ dashboard = vm.Dashboard(
     navigation=vm.Navigation(
         pages={
             cnst.GENERAL_ACCORDION: [cnst.HOME_PAGE_ID],
-            cnst.AG_GRID_ACCORDION: [cnst.KPI_INDICATORS_PAGE],
+            cnst.KPI_ACCORDION: [cnst.KPI_INDICATORS_PAGE],
         },
         nav_selector=vm.NavBar(),
     ),
