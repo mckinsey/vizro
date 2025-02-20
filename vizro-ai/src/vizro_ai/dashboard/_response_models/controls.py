@@ -1,7 +1,7 @@
 """Controls plan model."""
 
 import logging
-from typing import Any, Optional
+from typing import Any, Optional, get_args
 
 import pandas as pd
 import vizro.models as vm
@@ -53,7 +53,7 @@ def _create_filter_proxy(df_cols, df_schema, controllable_components) -> BaseMod
         """Validate the column for date picker."""
         column = data.get("column")
         selector = data.get("selector")
-        if selector and selector["type"] == "date_picker":
+        if selector and hasattr(selector, "type") and selector.type == "date_picker":
             if not pd.api.types.is_datetime64_any_dtype(df_schema[column]):
                 raise ValueError(
                     f"""
@@ -80,7 +80,7 @@ def _create_filter_proxy(df_cols, df_schema, controllable_components) -> BaseMod
             "validator1": field_validator("targets", mode="before")(validate_targets),
             "validator2": field_validator("column")(validate_column),
             "validator3": field_validator("targets", mode="before")(validate_targets_not_empty),
-            # "validator4": validate_date_picker_column, #TODO[LZ]: this causes trouble so far
+            "validator4": validate_date_picker_column,
         },
         __base__=vm.Filter,
     )
@@ -97,7 +97,16 @@ def _create_filter(filter_prompt, model, df_cols, df_schema, controllable_compon
 class ControlPlan(BaseModel):
     """Control plan model."""
 
-    control_type: ControlType
+    control_type: ControlType = Field(
+        ...,
+        description=f"""
+        IMPORTANT: This field MUST be one of the following values ONLY:
+        {", ".join(repr(t) for t in get_args(ControlType))}
+
+        NO OTHER VALUES are allowed. The value must match exactly one of the options above.
+        Any other value will result in a validation error.
+        """,
+    )
     control_description: str = Field(
         ...,
         description="""

@@ -29,6 +29,12 @@ Messages = list[BaseMessage]
 
 def _validate_dfs(v):
     if isinstance(v, pd.DataFrame):
+        # without this, the model will not be able to validate the dfs properly.
+        # for example, if a single df is passed, it's parsed as a list of strings.
+        # which then raises validation error like:
+        # dfs.0
+        #  Input should be an instance of DataFrame [type=is_instance_of, input_value='country', input_type=str]
+        #    For further information visit https://errors.pydantic.dev/2.10/v/is_instance_of
         raise ValueError(
             "A single DataFrame was provided to 'dfs'. Please pass a list of DataFrames instead, "
             "e.g., [df] or [df1, df2, ...]"

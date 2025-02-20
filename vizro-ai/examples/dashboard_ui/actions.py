@@ -78,7 +78,7 @@ def get_vizro_ai_plot(user_prompt, df, model, api_key, api_base, vendor_input):
         max_debug_retry=DEFAULT_RETRY,
         return_elements=True,
         _minimal_output=True,
-        validate_code=False,
+        validate_code=True,
     )
 
     return ai_outputs

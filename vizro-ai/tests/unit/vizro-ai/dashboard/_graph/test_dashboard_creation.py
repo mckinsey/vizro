@@ -17,7 +17,6 @@ class TestConfig:
         assert graph_state.pages == []
         assert graph_state.custom_charts_code == []
 
-    # TODO[LZ]: This test is failing but I am not sure why it wasn't before, please check typing
     @pytest.mark.parametrize(
         "dataframes, output_error",
         [

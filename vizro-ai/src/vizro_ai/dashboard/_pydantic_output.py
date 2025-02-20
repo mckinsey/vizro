@@ -5,16 +5,12 @@
 import logging
 from typing import Any, Optional
 
-import nest_asyncio
 import plotly.express as px
 import vizro.models as vm
 from langchain_core.language_models.chat_models import BaseChatModel
 from langchain_core.messages import HumanMessage
 from langchain_core.prompts import ChatPromptTemplate
 from pydantic import BaseModel, ValidationError
-
-nest_asyncio.apply()  # https://ai.pydantic.dev/troubleshooting/#runtimeerror-this-event-loop-is-already-running
-
 
 logger = logging.getLogger(__name__)
 
