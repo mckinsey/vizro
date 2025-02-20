@@ -1,7 +1,8 @@
 import pytest
+from dash.testing.wait import until
 from e2e.asserts import assert_image_equal, make_screenshot_and_paths
 from e2e.vizro import constants as cnst
-from e2e.vizro.checkers import check_graph_color, check_graph_is_loading, check_theme_color
+from e2e.vizro.checkers import check_graph_color, check_theme_color
 from e2e.vizro.navigation import accordion_select, page_select
 from e2e.vizro.paths import theme_toggle_path
 from e2e.vizro.waiters import graph_load_waiter
@@ -10,6 +11,7 @@ from e2e.vizro.waiters import graph_load_waiter
 def image_assertion(func):
     def wrapper(dash_br, request):
         result = func(dash_br)
+        until(dash_br._wait_for_callbacks, timeout=40, poll=0.3)
         result_image_path, expected_image_path = make_screenshot_and_paths(dash_br.driver, request.node.name)
         assert_image_equal(result_image_path, expected_image_path)
         return result
@@ -70,7 +72,6 @@ def test_table_interactions_page(dash_br):
     dash_br.multiple_click(
         f"div[id='{cnst.TABLE_INTERACTIONS_ID}'] tr:nth-of-type(5) div[class='unfocused selectable dash-cell-value']", 1
     )
-    check_graph_is_loading(dash_br, graph_id=cnst.LINE_INTERACTIONS_ID_TWO)
 
 
 @image_assertion
