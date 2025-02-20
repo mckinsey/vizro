@@ -10,7 +10,6 @@ from e2e.vizro.waiters import graph_load_waiter
 
 def image_assertion(func):
     def wrapper(dash_br, request):
-        until(dash_br._wait_for_callbacks, timeout=40, poll=0.3)
         result = func(dash_br)
         until(dash_br._wait_for_callbacks, timeout=40, poll=0.3)
         result_image_path, expected_image_path = make_screenshot_and_paths(dash_br.driver, request.node.name)

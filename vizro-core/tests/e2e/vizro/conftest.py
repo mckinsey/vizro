@@ -2,6 +2,7 @@ import os
 
 import e2e.vizro.constants as cnst
 import pytest
+from dash.testing.wait import until
 from e2e.vizro.checkers import browser_console_warnings_checker
 from selenium.common import WebDriverException
 from selenium.webdriver.chrome.options import Options as ChromeOptions
@@ -38,6 +39,11 @@ def dash_br_driver(dash_br, request):
     dash_br.driver.set_window_size(1920, 1080)
     dash_br.server_url = f"http://127.0.0.1:{port}/{path}"
     return dash_br
+
+
+@pytest.fixture(autouse=True)
+def wait_for_callbacks(dash_br):
+    until(dash_br._wait_for_callbacks, timeout=40, poll=0.3)
 
 
 @pytest.fixture(autouse=True)
