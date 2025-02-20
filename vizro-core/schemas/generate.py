@@ -21,15 +21,3 @@ if args.check:
     print("JSON schema is up to date.")  # noqa: T201
 else:
     schema_path.write_text(schema_json)
-
-import vizro.models as vm
-
-vm.Container(
-    title="Parent Container",
-    components=[
-        vm.Container(
-            title="Child Container",
-            components=[vm.Button()],
-        )
-    ]
-)
