@@ -151,6 +151,7 @@ class Dropdown(VizroBaseModel):
                     value=self.value if self.value is not None else default_value,
                     multi=self.multi,
                     optionHeight=option_height,
+                    clearable=False,
                     persistence=True,
                     persistence_type="session",
                     className="dropdown",

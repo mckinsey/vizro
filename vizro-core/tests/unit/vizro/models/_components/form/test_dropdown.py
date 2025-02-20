@@ -194,6 +194,7 @@ class TestDropdownBuild:
                     optionHeight=32,
                     value=expected_value,
                     multi=True,
+                    clearable=False,
                     persistence=True,
                     persistence_type="session",
                     className="dropdown",
