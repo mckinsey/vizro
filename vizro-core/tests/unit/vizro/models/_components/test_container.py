@@ -42,7 +42,7 @@ class TestContainerBuildMethod:
             id="container", title="Title", components=[vm.Button()], layout=vm.Layout(id="layout_id", grid=[[0]])
         ).build()
         assert_component_equal(
-            result, html.Div(id="container", className="page-component-container"), keys_to_strip={"children"}
+            result, dbc.Container(id="container", className="", fluid=True), keys_to_strip={"children"}
         )
         assert_component_equal(result.children, [html.H3(), html.Div()], keys_to_strip=STRIP_ALL)
         # We still want to test the exact H3 produced in Container.build:

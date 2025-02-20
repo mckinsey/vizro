@@ -2,9 +2,9 @@
 
 This guide shows you how to use containers to group your components into sections and subsections within the page.
 
-A [`Container`][vizro.models.Container] complements the idea of a [`Page`][vizro.models.Page], and the two models have almost identical arguments. [`Page.layout`](layouts.md) offers a way to structure the overall layout of the page, and a `Container` enables more granular control within a specific section of that page.
+A [Container][vizro.models.Container] complements a [Page][vizro.models.Page], and both models share nearly identical arguments. While `Page.layout` provides a method for structuring the overall page layout, a `Container` offers more detailed control within a particular section of the page.
 
-While there is currently no clear difference in rendering, extra functionality will be added to the `Container` soon (including controls specific to that container), enhancing the ability to manage related components.
+Unlike the `Page.layout`, the `Container` includes a `background` argument, allowing you to color its background to differentiate it from the rest of the page. Additional functionality will soon be added to the Container, including controls specific to it, which will further enhance the management of related components.
 
 !!! note "Displaying multiple containers inside Tabs"
     An alternative way to display multiple containers on one page is to place them inside [Tabs](tabs.md).
@@ -24,6 +24,7 @@ Here are a few cases where you might want to use a `Container` instead of `Page.
 - If you want to split up your grid into subgrids to organize components together
 - If you want to add a title to your subgrids
 - If you want different row and column spacing between subgrids
+- If you want to apply a background color to distinguish your subgrid better
 - If you want to apply controls to selected subgrids (will be supported soon)
 
 ## Basic containers
@@ -154,7 +155,88 @@ Containers can be nested, providing a hierarchical structure for organizing comp
 To create nested containers, add a `Container` to the `components` argument of another `Container`.
 
 ```python title="Example"
-vm.Container(title="Parent Container", components=[vm.Container(title="Child Container", components=[vm.Button()])])
+vm.Container(
+    title="Parent Container",
+    components=[
+        vm.Container(
+            title="Child Container",
+            components=[vm.Button()],
+        )
+    ],
+)
 ```
 
+## Styled containers
+
+To enhance the visibility of the `Container` as a distinct section within your dashboard, you can enable the background color.
+
+!!! example "Container with background color"
+    === "app.py"
+        ```{.python pycafe-link}
+        import vizro.models as vm
+        import vizro.plotly.express as px
+        from vizro import Vizro
+
+        iris = px.data.iris()
+
+        page = vm.Page(
+            title="Container with background color",
+            layout=vm.Layout(grid=[[0, 1]]),
+            components=[
+                vm.Container(
+                    title="Container I",
+                    components=[vm.Graph(figure=px.scatter(iris, x="sepal_width", y="sepal_length", color="species"))],
+                    background=True
+                ),
+                vm.Container(
+                    title="Container II",
+                    components=[vm.Graph(figure=px.box(iris, x="species", y="sepal_length", color="species"))],
+                    background=True
+                )
+            ],
+        )
+
+        dashboard = vm.Dashboard(pages=[page])
+        Vizro().build(dashboard).run()
+        ```
+
+    === "app.yaml"
+        ```yaml
+        # Still requires a .py to add data to the data manager and parse YAML configuration
+        # See yaml_version example
+        pages:
+          - title: Container with background color
+            layout:
+              grid: [[0, 1]]
+            components:
+              - type: container
+                title: Container I
+                components:
+                  - type: graph
+                    figure:
+                      _target_: scatter
+                      data_frame: iris
+                      x: sepal_width
+                      y: sepal_length
+                      color: species
+                background: true
+              - type: container
+                title: Container II
+                components:
+                  - type: graph
+                    figure:
+                      _target_: box
+                      data_frame: iris
+                      x: species
+                      y: sepal_length
+                      color: species
+                background: true
+        ```
+
+    === "Result"
+        [![StyleContainer]][stylecontainer]
+
+If you want to style your `Container` beyond the default background color, please refer to our user guide on [overwriting CSS for selected components](custom-css.md#overwrite-css-for-selected-components).
+
 [container]: ../../assets/user_guides/components/containers.png
+[stylecontainer]: ../../assets/user_guides/components/container_with_background.png
