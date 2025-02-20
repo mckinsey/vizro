@@ -11,7 +11,7 @@ class MockStructuredOutputLLM(FakeListLLM):
     def bind_tools(self, tools: list[Any]):
         return super().bind(tools=tools)
 
-    def with_structured_output(self, schema, *, method: Optional[str] = None):
+    def with_structured_output(self, schema, method: Optional[str] = None):
         llm = self
         output_parser = PydanticOutputParser(pydantic_object=schema)
         return llm | output_parser
