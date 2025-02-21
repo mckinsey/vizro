@@ -98,7 +98,6 @@ class ControlPlan(BaseModel):
     """Control plan model."""
 
     control_type: ControlType = Field(
-        ...,
         description=f"""
         IMPORTANT:
         This field MUST be one of the following values ONLY: [{", ".join(repr(t) for t in get_args(ControlType))}].
@@ -107,7 +106,6 @@ class ControlPlan(BaseModel):
         """,
     )
     control_description: str = Field(
-        ...,
         description="""
         Description of the control. Include everything that seems to relate to this control.
         Be as detailed as possible. Keep the original relevant description AS IS. If this control is used
@@ -115,7 +113,6 @@ class ControlPlan(BaseModel):
         """,
     )
     df_name: str = Field(
-        ...,
         description="""
         The name of the dataframe that the target component will use.
         If the dataframe is not used, please specify that.

@@ -51,26 +51,25 @@ class PagePlan(BaseModel):
         str,
         AfterValidator(_check_title),
         Field(
-            ...,
             description="""
-        Title of the page. If no description is provided,
-        make a concise and descriptive title from the components.
-        """,
+            Title of the page. If no description is provided,
+            make a concise and descriptive title from the components.
+            """,
         ),
     ]
     components_plan: Annotated[
         list[ComponentPlan],
         AfterValidator(_check_components_plan),
         AfterValidator(_validate_component_id_unique),
-        Field(..., description="List of components. Must contain at least one component."),
+        Field(description="List of components. Must contain at least one component."),
     ]
     controls_plan: list[ControlPlan] = Field([], description="Controls of the page.")
-    layout_plan: Optional[LayoutPlan] = Field(None, description="Layout of components on the page.")
+    layout_plan: Optional[LayoutPlan] = Field(default=None, description="Layout of components on the page.")
     unsupported_specs: Annotated[
         list[str],
         AfterValidator(_check_unsupported_specs),
         Field(
-            [],
+            default=[],
             description="""
         List of unsupported specs. If there are any unsupported specs,
         list them here. If not, leave this as an empty list.

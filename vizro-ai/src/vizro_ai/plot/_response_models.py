@@ -116,16 +116,14 @@ def _test_execute_chart_code(data_frame: pd.DataFrame):
 
 
 class BaseChartPlan(BaseModel):
-    """Base chart plan model with core fields."""
+    """Base chart plan used to generate chart code based on user visualization requirements."""
 
     chart_type: str = Field(
-        ...,
         description="""
         Describes the chart type that best reflects the user request.
         """,
     )
     imports: list[str] = Field(
-        ...,
         description="""
         List of import statements required to render the chart defined by the `chart_code` field. Ensure that every
         import statement is a separate list/array entry: An example of valid list of import statements would be:
@@ -138,7 +136,6 @@ class BaseChartPlan(BaseModel):
         str,
         AfterValidator(_check_chart_code),
         Field(
-            ...,
             description=f"""
         Python code that generates a generates a plotly go.Figure object. It must fulfill the following criteria:
         1. Must be wrapped in a function named `{CUSTOM_CHART_NAME}`
@@ -214,13 +211,11 @@ class ChartPlan(BaseChartPlan):
     """Extended chart plan model with additional explanatory fields."""
 
     chart_insights: str = Field(
-        ...,
         description="""
         Insights to what the chart explains or tries to show.
         Ideally concise and between 30 and 60 words.""",
     )
     code_explanation: str = Field(
-        ...,
         description="""
         Explanation of the code steps used for `chart_code` field.""",
     )

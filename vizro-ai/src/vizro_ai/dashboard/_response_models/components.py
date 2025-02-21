@@ -20,7 +20,6 @@ class ComponentPlan(BaseModel):
 
     component_type: ComponentType
     component_description: str = Field(
-        ...,
         description="""
         Description of the component. Include everything that relates to this component.
         Be as specific and detailed as possible.
@@ -32,7 +31,6 @@ class ComponentPlan(BaseModel):
         pattern=r"^[a-z0-9]+(_[a-z0-9]+)*$", description="Small snake case description of this component."
     )
     df_name: str = Field(
-        ...,
         description="""
         The name of the dataframe that this component will use. If no dataframe is
         used, please specify that as N/A.
@@ -62,6 +60,7 @@ class ComponentPlan(BaseModel):
                     user_input=self.component_description,
                     max_debug_retry=2,  # TODO must be flexible
                     return_elements=True,
+                    _minimal_output=True,
                 )
                 return ComponentResult(
                     component=vm.Graph(
