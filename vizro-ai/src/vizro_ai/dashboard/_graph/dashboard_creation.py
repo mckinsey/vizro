@@ -36,14 +36,12 @@ def _validate_dfs(v):
         #  Input should be an instance of DataFrame [type=is_instance_of, input_value='country', input_type=str]
         #    For further information visit https://errors.pydantic.dev/2.10/v/is_instance_of
         raise ValueError(
-            "A single DataFrame was provided to 'dfs'. Please pass a list of DataFrames instead, "
-            "e.g., [df] or [df1, df2, ...]"
+            "A single DataFrame was provided to 'dfs'. Please pass a list of DataFrames instead, e.g., [df] or [df1, df2, ...]"
         )
-    if not isinstance(v, list):
+
+    if not isinstance(v, list) or not all(isinstance(df, pd.DataFrame) for df in v):
         raise ValueError("Input should be a list of DataFrames")
-    for i, df in enumerate(v):
-        if not isinstance(df, pd.DataFrame):
-            raise ValueError("Input should be a list of DataFrames")
+
     return v
 
 
