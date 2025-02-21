@@ -8,11 +8,11 @@ import importlib
 import inspect
 from contextlib import contextmanager
 from datetime import date
-from typing import Annotated, Any, Literal, Protocol, Union, runtime_checkable
+from typing import Annotated, Any, Literal, Optional, Protocol, Union, runtime_checkable
 
 import plotly.io as pio
 import pydantic_core as cs
-from pydantic import Field, StrictBool, ValidationInfo
+from pydantic import BaseModel, ConfigDict, Field, StrictBool, ValidationInfo
 from typing_extensions import TypedDict
 
 from vizro.charts._charts_utils import _DashboardReadyFigure
@@ -531,3 +531,33 @@ NavSelectorType = Annotated[
 # Extra type groups used for mypy casting
 FigureWithFilterInteractionType = Union["Graph", "Table", "AgGrid"]
 FigureType = Union["Graph", "Table", "AgGrid", "Figure"]
+
+
+class ExtraBaseModel(BaseModel):
+    model_config = ConfigDict(extra="forbid")
+
+
+class ContainerExtra(ExtraBaseModel):
+    """Extra arguments to pass to the container.
+
+    Args:
+        class_name (Optional[str]): The class name of the container. Defaults to `None`.
+        key (Optional[str]): The key of the container. Defaults to `None`.
+        loading_state (Optional[dict[str, Any]]): The loading state of the container. Defaults to `None`.
+        style (Optional[dict[str, Any]]): The style of the container. Defaults to `None`.
+        tag (Optional[str]): The tag of the container. Defaults to `None`.
+    """
+
+    class_name: Optional[str] = Field(
+        default=None,
+        description="The class name of the container. See dbc docs for more info.",
+        deprecated="The field moved to vm.Container... yay!",  # For some reason doesn't work
+    )
+    key: Optional[str] = None
+    loading_state: Optional[dict[str, Any]] = None
+    style: Optional[dict[str, Any]] = None
+    tag: Optional[str] = None
+
+
+if __name__ == "__main__":
+    foo = ContainerExtra(class_name="bg-container")

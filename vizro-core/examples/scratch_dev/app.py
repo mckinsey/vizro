@@ -9,7 +9,7 @@ from vizro import Vizro
 from vizro.models.types import capture
 from vizro.tables import dash_ag_grid
 
-df = px.data.iris()
+iris = px.data.iris()
 
 
 @capture("ag_grid")
@@ -30,14 +30,15 @@ page = vm.Page(
             components=[
                 vm.Graph(figure=px.scatter(iris, x="sepal_width", y="sepal_length", color="species")),
             ],
-            background=True,
+            # extra={"class_name": "bg-container", }, # "fluid": False
+            extra_2={"class_name": "bg-container"},  # , "fluid": False
         ),
         vm.Container(
             title="Container II",
             components=[
                 vm.Graph(figure=px.scatter(iris, x="sepal_width", y="sepal_length", color="species")),
             ],
-            background=True,
+            # extra={"class_name": "bg-container"},
         ),
     ],
 )

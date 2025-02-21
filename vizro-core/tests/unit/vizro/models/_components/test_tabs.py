@@ -48,8 +48,8 @@ class TestTabsBuildMethod:
         assert_component_equal(
             [tab.children for tab in result.children],
             [
-                dbc.Container(id="container-1", className="", fluid=True),
-                dbc.Container(id="container-2", className="", fluid=True),
+                dbc.Container(id="container-1", fluid=True),
+                dbc.Container(id="container-2", fluid=True),
             ],
             keys_to_strip={"children"},
         )
