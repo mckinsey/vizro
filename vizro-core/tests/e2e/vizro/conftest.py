@@ -2,8 +2,9 @@ import os
 
 import e2e.vizro.constants as cnst
 import pytest
-from dash.testing.wait import until
+import yaml
 from e2e.vizro.checkers import browser_console_warnings_checker
+from e2e.vizro.waiters import callbacks_finish_waiter
 from selenium.common import WebDriverException
 from selenium.webdriver.chrome.options import Options as ChromeOptions
 
@@ -20,6 +21,15 @@ def pytest_setup_options():
 
 
 def make_teardown(dash_br):
+    data = {
+        "max": 7,
+        "min": 6,
+        "setosa": 5,
+        "versicolor": 10,
+        "virginica": 15,
+    }
+    with open("tests/e2e/vizro/dashboards/default/dynamic_filters_data.yaml", "w") as file:
+        yaml.dump(data, file)
     # checking for browser console errors
     if os.getenv("BROWSER") != "firefox":
         try:
@@ -43,7 +53,7 @@ def dash_br_driver(dash_br, request):
 
 @pytest.fixture(autouse=True)
 def wait_for_callbacks(dash_br):
-    until(dash_br._wait_for_callbacks, timeout=40, poll=0.3)
+    callbacks_finish_waiter(dash_br)
 
 
 @pytest.fixture(autouse=True)

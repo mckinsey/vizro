@@ -68,24 +68,29 @@ def make_screenshot_and_paths(driver, request_node_name):
 #         raise ValueError(exc)
 
 
+def assert_pixelmatch(result_image_path, expected_image_path):
+    expected_image_name = Path(expected_image_path).name
+    subprocess.run(
+        [
+            "pixelmatch",
+            expected_image_path,
+            result_image_path,
+            f"{expected_image_name.replace('.', '_difference_from_main.')}",
+            "0.18",
+        ],
+        capture_output=True,
+        text=True,
+        check=True,
+    )
+    Path(f"{expected_image_name.replace('.', '_difference_from_main.')}").unlink()
+
+
 def assert_image_equal(result_image_path, expected_image_path):
     """Comparison logic and diff files creation."""
     expected_image_name = Path(expected_image_path).name
     try:
-        subprocess.run(
-            [
-                "pixelmatch",
-                expected_image_path,
-                result_image_path,
-                f"{expected_image_name.replace('.', '_difference_from_main.')}",
-                "0.18",
-            ],
-            capture_output=True,
-            text=True,
-            check=True,
-        )
+        assert_pixelmatch(result_image_path, expected_image_path)
         Path(result_image_path).unlink()
-        Path(f"{expected_image_name.replace('.', '_difference_from_main.')}").unlink()
     except subprocess.CalledProcessError as err:
         shutil.copy(result_image_path, expected_image_name)
         shutil.copy(expected_image_path, f"{expected_image_name.replace('.', '_old.')}")

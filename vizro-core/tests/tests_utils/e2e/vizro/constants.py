@@ -79,6 +79,26 @@ LINE_INTERACTIONS_ID_ONE = "line inter id 1"
 LINE_INTERACTIONS_CONTAINER_TWO = "line inter container 2"
 LINE_INTERACTIONS_ID_TWO = "line inter id 2"
 
+DYNAMIC_DATA_PAGE = "dynamic data page"
+DYNAMIC_DATA_PAGE_PATH = "/dynamic-data-page"
+SCATTER_DYNAMIC_CACHED_ID = "scatter_dynamic_cached"
+SCATTER_DYNAMIC_ID = "scatter_dynamic"
+SLIDER_DYNAMIC_DATA_CACHED_ID = "slider_dynamic_data_cached"
+SLIDER_DYNAMIC_DATA_ID = "slider_dynamic_data"
+
+DYNAMIC_FILTERS_CATEGORICAL_PAGE = "dynamic filters categorical"
+DYNAMIC_FILTERS_CATEGORICAL_PAGE_PATH = "/dynamic-filters-categorical"
+BOX_DYNAMIC_FILTERS_ID = "box dynamic"
+DROPDOWN_MULTI_DYNAMIC_FILTER_ID = "dropdown_multi_dynamic"
+DROPDOWN_DYNAMIC_FILTER_ID = "dropdown_dynamic"
+CHECKLIST_DYNAMIC_FILTER_ID = "checklist_dynamic"
+RADIOITEMS_DYNAMIC_FILTER_ID = "radio_dynamic"
+
+DYNAMIC_FILTERS_NUMERICAL_PAGE = "dynamic filters numerical"
+DYNAMIC_FILTERS_NUMERICAL_PAGE_PATH = "/dynamic-filters-numerical"
+BAR_DYNAMIC_FILTER_ID = "bar_dynamic"
+SLIDER_DYNAMIC_FILTER_ID = "slider_dynamic"
+RANGE_SLIDER_DYNAMIC_FILTER_ID = "range_slider_dynamic"
 
 PAGE_404_PATH = "/404-page"
 
@@ -88,6 +108,8 @@ GENERAL_ACCORDION = "generAl"
 DATEPICKER_ACCORDION = "DATEpicker"
 AG_GRID_ACCORDION = "AGgrid"
 AG_GRID_ACCORDION_NUMBER = 3
+DYNAMIC_DATA_ACCORDION = "DYNAMIC data"
+DYNAMIC_DATA_ACCORDION_NUMBER = 4
 KPI_ACCORDION = "KPI"
 
 # Ports
