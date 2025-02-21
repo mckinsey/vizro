@@ -392,6 +392,14 @@ As mentioned above, custom components can trigger action. To enable the custom c
 1. **Add the `actions` argument to your custom component**. The type of the `actions` argument is `list[Action]`.
 2. **Set the action through `_action_validator_factory`**. In doing so, any change in the `"active_index"` property of the custom component triggers the action.
 
+    ```py
+    actions: Annotated[
+        list[Action],
+        AfterValidator(_action_validator_factory("active_index")),
+        PlainSerializer(lambda x: x[0].actions),
+        Field(default=[]),
+        ]
+    ```
 
 
 ??? example "Example of triggering action with custom component"
