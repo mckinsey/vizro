@@ -5,8 +5,8 @@ import pytest
 from e2e.asserts import assert_image_equal, assert_pixelmatch, make_screenshot_and_paths
 from e2e.vizro import constants as cnst
 from e2e.vizro.checkers import check_graph_color, check_theme_color
-from e2e.vizro.navigation import accordion_select, page_select
-from e2e.vizro.paths import nav_card_link_path, slider_value_path, theme_toggle_path
+from e2e.vizro.navigation import accordion_select, page_select, select_slider_handler
+from e2e.vizro.paths import nav_card_link_path, theme_toggle_path
 from e2e.vizro.waiters import callbacks_finish_waiter, graph_load_waiter
 
 
@@ -43,7 +43,7 @@ def test_ag_grid_page(dash_br):
         page_name=cnst.TABLE_AG_GRID_PAGE,
         graph_id=cnst.BOX_AG_GRID_PAGE_ID,
     )
-    dash_br.wait_for_element(f"div[id='{cnst.TABLE_AG_GRID_ID}' div:nth-of-type(1) div[col-id='country']")
+    dash_br.wait_for_element(f"div[id='{cnst.TABLE_AG_GRID_ID}'] div:nth-of-type(1) div[col-id='country']")
 
 
 @image_assertion
@@ -88,16 +88,16 @@ def test_tabs_parameters_page(dash_br):
 
 
 @pytest.mark.parametrize(
-    "cache, slider_id",
+    "cache, slider_id, graph_id",
     [
-        ("cached", cnst.SLIDER_DYNAMIC_DATA_CACHED_ID),
-        ("not_cached", cnst.SLIDER_DYNAMIC_DATA_ID),
+        ("cached", cnst.SLIDER_DYNAMIC_DATA_CACHED_ID, cnst.SCATTER_DYNAMIC_CACHED_ID),
+        # ("cached_not", cnst.SLIDER_DYNAMIC_DATA_ID, cnst.SCATTER_DYNAMIC_ID),
     ],
 )
-def test_data_dynamic_parametrization(dash_br, cache, slider_id):
-    first_screen = f"test_data_dynamic_parametrization_first_screen_{cache}.png"
-    second_screen = f"test_data_dynamic_parametrization_second_screen_{cache}.png"
-    third_screen = f"test_data_dynamic_parametrization_third_screen_{cache}.png"
+def test_data_dynamic_parametrization(dash_br, cache, slider_id, graph_id):
+    first_screen = f"{cache}_screen_first_test_data_dynamic_parametrization.png"
+    second_screen = f"{cache}_screen_second_test_data_dynamic_parametrization.png"
+    third_screen = f"{cache}_screen_third_test_data_dynamic_parametrization.png"
     accordion_select(
         dash_br, accordion_name=cnst.DYNAMIC_DATA_ACCORDION.upper(), accordion_number=cnst.DYNAMIC_DATA_ACCORDION_NUMBER
     )
@@ -107,15 +107,15 @@ def test_data_dynamic_parametrization(dash_br, cache, slider_id):
         page_name=cnst.DYNAMIC_DATA_PAGE,
         graph_id=cnst.SCATTER_DYNAMIC_ID,
     )
-    dash_br.multiple_click(slider_value_path(elem_id=slider_id, value=2), 1)
-    dash_br.multiple_click(slider_value_path(elem_id=slider_id, value=1), 1)
+    select_slider_handler(dash_br, elem_id=slider_id, value=2)
+    select_slider_handler(dash_br, elem_id=slider_id, value=1)
     callbacks_finish_waiter(dash_br)
     dash_br.driver.save_screenshot(first_screen)
-    dash_br.multiple_click(slider_value_path(elem_id=slider_id, value=6), 1)
+    select_slider_handler(dash_br, elem_id=slider_id, value=6)
     callbacks_finish_waiter(dash_br)
     dash_br.driver.save_screenshot(second_screen)
-    dash_br.multiple_click(slider_value_path(elem_id=slider_id, value=2), 1)
-    dash_br.multiple_click(slider_value_path(elem_id=slider_id, value=1), 1)
+    select_slider_handler(dash_br, elem_id=slider_id, value=2)
+    select_slider_handler(dash_br, elem_id=slider_id, value=1)
     callbacks_finish_waiter(dash_br)
     dash_br.driver.save_screenshot(third_screen)
     assert_pixelmatch(first_screen, third_screen)
@@ -124,7 +124,7 @@ def test_data_dynamic_parametrization(dash_br, cache, slider_id):
         pytest.fail("Images should be different")
     except subprocess.CalledProcessError:
         pass
-    for file in Path(".").glob("test_data_dynamic_parametrization*"):
+    for file in Path(".").glob("*test_data_dynamic_parametrization*"):
         file.unlink()
 
 

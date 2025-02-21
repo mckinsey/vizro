@@ -24,5 +24,9 @@ def slider_value_path(elem_id, value):
     return f"div[id='{elem_id}'] div div span:nth-of-type({value})"
 
 
+def slider_handler_path(elem_id, handler_class="rc-slider-handle"):
+    return f"div[id='{elem_id}'] div[class^='{handler_class}']"
+
+
 def categorical_components_value_path(elem_id, value):
     return f"div[id='{elem_id}'] div:nth-of-type({value}) input"

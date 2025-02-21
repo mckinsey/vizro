@@ -6,18 +6,22 @@ import yaml
 from e2e.vizro.checkers import browser_console_warnings_checker
 from e2e.vizro.waiters import callbacks_finish_waiter
 from selenium.common import WebDriverException
-from selenium.webdriver.chrome.options import Options as ChromeOptions
+
+# from selenium.webdriver.chrome.options import Options as ChromeOptions
 
 
 # dash_br_driver options hook
 def pytest_setup_options():
-    # if os.getenv("BROWSER") == "firefox":
-    #     options = FFOptions()
-    #     options.binary_location = "/Applications/Firefox.app/Contents/MacOS/firefox"
-    if os.getenv("BROWSER") == "chrome_mobile":
-        options = ChromeOptions()
-        options.add_experimental_option("mobileEmulation", {"deviceName": "iPhone 12 Pro"})
+    from selenium.webdriver.firefox.options import Options as FFOptions
+
+    if os.getenv("BROWSER") == "firefox":
+        options = FFOptions()
+        options.binary_location = "/Applications/Firefox.app/Contents/MacOS/firefox"
         return options
+    # if os.getenv("BROWSER") == "chrome_mobile":
+    #     options = ChromeOptions()
+    #     options.add_experimental_option("mobileEmulation", {"deviceName": "iPhone 12 Pro"})
+    #     return options
 
 
 def make_teardown(dash_br):
