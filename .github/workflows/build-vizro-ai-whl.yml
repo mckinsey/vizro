@@ -1,0 +1,37 @@
+name: Build Vizro AI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches:
+      - main
+    paths:
+      - "vizro-ai/**"
+
+defaults:
+  run:
+    working-directory: vizro-ai
+
+env:
+  PYTHON_VERSION: "3.12"
+
+jobs:
+  build-whl:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: ${{ env.PYTHON_VERSION }}
+      - name: Install Hatch
+        run: pip install hatch
+      - name: Build vizro-ai package
+        run: hatch build -t wheel
+      - name: Upload vizro-ai artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: pip
+          path: vizro-ai/dist/*.whl
+          retention-days: 14 

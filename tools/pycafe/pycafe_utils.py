@@ -48,6 +48,16 @@ def _get_vizro_requirement(config: PyCafeConfig, use_latest_release: bool = Fals
     )
 
 
+def _get_vizro_ai_requirement(config: PyCafeConfig, use_latest_release: bool = False) -> str:
+    """Get the Vizro AI requirement string for PyCafe."""
+    if use_latest_release:
+        return "vizro-ai"
+    return (
+        f"{config.pycafe_url}/gh/artifact/mckinsey/vizro/actions/runs/{config.run_id}/"
+        f"pip/vizro_ai-{config.package_version}-py3-none-any.whl"
+    )
+
+
 def _fetch_app_content(base_url: str) -> str:
     """Fetch and process app.py content from the repository."""
     response = requests.get(f"{base_url}/app.py", timeout=10)
@@ -80,12 +90,15 @@ def generate_link(
     base_url = f"{config.vizro_raw_url}/{config.commit_sha}/{directory_path}"
 
     # Requirements - either use latest release or commit's wheel file
-    requirements = "\n".join(
-        [
-            _get_vizro_requirement(config, use_latest_release),
-            *(extra_requirements or []),
-        ]
-    )
+    requirements_list = [
+        _get_vizro_requirement(config, use_latest_release),
+        *(extra_requirements or []),
+    ]
+
+    if directory_path.startswith("vizro-ai/"):
+        requirements_list.append(_get_vizro_ai_requirement(config, use_latest_release))
+
+    requirements = "\n".join(requirements_list)
 
     # App file - get current commit, and modify to remove if clause
     app_content = _fetch_app_content(base_url)
@@ -145,7 +158,6 @@ def get_example_directories() -> dict[str, Optional[list[str]]]:
             "plotly==5.24.1",
         ],
         "vizro-ai/examples/dashboard_ui/": [
-            "vizro-ai>=0.3.0",
             "black",
             "openpyxl",
             "langchain_anthropic",
