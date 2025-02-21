@@ -34,4 +34,4 @@ jobs:
         with:
           name: pip
           path: vizro-ai/dist/*.whl
-          retention-days: 14 
+          retention-days: 14
