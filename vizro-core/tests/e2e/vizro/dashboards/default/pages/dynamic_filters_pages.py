@@ -23,7 +23,7 @@ def load_from_file(filter_column=None, parametrized_species=None):
     if parametrized_species:
         return df[df["species"].isin(parametrized_species)]
 
-    with open("dynamic_filters_data.yaml") as file:
+    with open(cnst.DYNAMIC_FILTERS_DATA_CONFIG) as file:
         data = yaml.safe_load(file)
         data = data or {}
 

@@ -28,7 +28,7 @@ def make_teardown(dash_br):
         "versicolor": 10,
         "virginica": 15,
     }
-    with open("tests/e2e/vizro/dashboards/default/dynamic_filters_data.yaml", "w") as file:
+    with open(cnst.DYNAMIC_FILTERS_DATA_CONFIG, "w") as file:
         yaml.dump(data, file)
     # checking for browser console errors
     if os.getenv("BROWSER") != "firefox":

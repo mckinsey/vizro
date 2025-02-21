@@ -132,3 +132,7 @@ RGBA_TRANSPARENT = "rgba(0, 0, 0, 0)"
 STYLE_TRANSPARENT = "background: rgba(0, 0, 0, 0);"
 AG_GRID_DARK = "ag-theme-quartz-dark ag-theme-vizro"
 AG_GRID_LIGHT = "ag-theme-quartz ag-theme-vizro"
+
+# Configs
+
+DYNAMIC_FILTERS_DATA_CONFIG = "tests/e2e/vizro/dashboards/default/dynamic_filters_data.yaml"
