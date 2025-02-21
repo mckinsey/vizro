@@ -43,6 +43,7 @@ def test_ag_grid_page(dash_br):
         page_name=cnst.TABLE_AG_GRID_PAGE,
         graph_id=cnst.BOX_AG_GRID_PAGE_ID,
     )
+    dash_br.wait_for_element(f"div[id='{cnst.TABLE_AG_GRID_ID}' div:nth-of-type(1) div[col-id='country']")
 
 
 @image_assertion
@@ -96,7 +97,7 @@ def test_tabs_parameters_page(dash_br):
 def test_data_dynamic_parametrization(dash_br, cache, slider_id):
     first_screen = f"test_data_dynamic_parametrization_first_screen_{cache}.png"
     second_screen = f"test_data_dynamic_parametrization_second_screen_{cache}.png"
-    third_screen = f"test_data_dynamic_parametrization_screen_{cache}.png"
+    third_screen = f"test_data_dynamic_parametrization_third_screen_{cache}.png"
     accordion_select(
         dash_br, accordion_name=cnst.DYNAMIC_DATA_ACCORDION.upper(), accordion_number=cnst.DYNAMIC_DATA_ACCORDION_NUMBER
     )
