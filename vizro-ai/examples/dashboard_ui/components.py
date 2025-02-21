@@ -1,12 +1,12 @@
 """Contains custom components used within a dashboard."""
 
-from typing import Literal
+from typing import Annotated, Literal
 
 import black
 import dash_bootstrap_components as dbc
 import vizro.models as vm
 from dash import dcc, get_asset_url, html
-from pydantic import PrivateAttr
+from pydantic import AfterValidator, Field
 from vizro.models import Action
 from vizro.models._action._actions_chain import _action_validator_factory
 from vizro.models._models_utils import _log_call
@@ -46,22 +46,10 @@ class UserPromptTextArea(vm.VizroBaseModel):
 
 
 class UserUpload(vm.VizroBaseModel):
-    """Component enabling data upload.
-
-    Args:
-        type (Literal["upload"]): Defaults to `"upload"`.
-        title (str): Title to be displayed.
-        actions (list[Action]): See [`Action`][vizro.models.Action]. Defaults to `[]`.
-
-    """
+    """Component enabling data upload."""
 
     type: Literal["upload"] = "upload"
-    actions: list[Action] = []  # noqa: RUF012
-
-    # 'contents' property is input to custom action callback
-    _input_property: str = PrivateAttr("contents")
-    # change in 'contents' property of Upload component triggers the actions
-    _set_actions = _action_validator_factory("contents")
+    actions: Annotated[list[Action], AfterValidator(_action_validator_factory("contents")), Field(default_factory=list)]
 
     def build(self):
         """Returns the upload component for data upload."""
