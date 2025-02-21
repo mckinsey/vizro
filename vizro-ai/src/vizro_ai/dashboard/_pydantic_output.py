@@ -11,6 +11,7 @@ from langchain_core.language_models.chat_models import BaseChatModel
 from langchain_core.messages import HumanMessage
 from langchain_core.prompts import ChatPromptTemplate
 from pydantic import BaseModel, ValidationError
+from inspect import signature
 
 logger = logging.getLogger(__name__)
 
@@ -96,18 +97,21 @@ def _get_pydantic_model(
         )
 
         try:
-            # Apply the fix for nested structures, following langchain-google-genai implementation
-            # referred to https://github.com/langchain-ai/langchain/issues/24225
-            # and https://github.com/langchain-ai/langchain-google/pull/658/files
-            # TODO: revisit this temporary fix once pydantic v2 is implemented in vizro-ai
-            if "google" in llm_model.__class__.__module__.lower():
-                return _handle_google_llm_response(llm_model, response_model, prompt, message_content)
+            kwargs = {}
+            # Only pass `method` parameter if the model's with_structured_output accepts it
+            # This is determined by checking the signature of the method
+            # By the time this code written, the `method` parameter is supported by
+            # model providers like OpenAI, MistralAI, VertexAI, etc.
+            try:
+                sig = signature(llm_model.with_structured_output)
+                if "method" in sig.parameters:
+                    kwargs["method"] = "function_calling"  # method 'json_schema' does not work with `pattern` in Field
+            except (ValueError, AttributeError):
+                pass
 
-            # For other models, use standard structured output
             pydantic_llm = prompt | llm_model.with_structured_output(
                 response_model,
-                method="function_calling",  # method 'json_schema' does not work with `pattern` in Field
-                # (for OpenAI, maybe others): https://platform.openai.com/docs/guides/structured-outputs/some-type-specific-keywords-are-not-yet-supported#supported-schemas
+                **kwargs
             )
             return pydantic_llm.invoke(message_content)
 
