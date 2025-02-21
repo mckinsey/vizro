@@ -4,7 +4,7 @@ from typing import TYPE_CHECKING, Annotated, Any, Literal, Optional, cast
 
 import dash_bootstrap_components as dbc
 from dash import html
-from pydantic import AfterValidator, BaseModel, BeforeValidator, Field, conlist
+from pydantic import AfterValidator, BeforeValidator, Field, conlist
 from pydantic.json_schema import SkipJsonSchema
 
 from vizro.models import VizroBaseModel
