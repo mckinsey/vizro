@@ -31,17 +31,11 @@ CUSTOM_CHART_NAME = "custom_chart"
 
 def _strip_markdown(code_string: str) -> str:
     """Remove any code block wrappers (markdown or triple quotes)."""
-    wrappers = [
-        ("```python\n", "```"),
-        ("```py\n", "```"), 
-        ("```\n", "```"),
-        ('"""', '"""'),
-        ("'''", "'''")
-    ]
+    wrappers = [("```python\n", "```"), ("```py\n", "```"), ("```\n", "```"), ('"""', '"""'), ("'''", "'''")]
 
     for start, end in wrappers:
         if code_string.startswith(start) and code_string.endswith(end):
-            code_string = code_string[len(start):-len(end)]
+            code_string = code_string[len(start) : -len(end)]
             break
 
     return code_string.strip()
@@ -78,10 +72,10 @@ def _check_chart_code(v):
     func_def = f"def {CUSTOM_CHART_NAME}("
     if func_def not in v:
         raise ValueError(f"The chart code must be wrapped in a function named `{CUSTOM_CHART_NAME}`")
-    
+
     # Keep only the function definition and everything after it
     # Sometimes models like Gemini return extra imports in chart_code field
-    v = v[v.index(func_def):].strip()
+    v = v[v.index(func_def) :].strip()
 
     first_line = v.split("\n")[0].strip()
     if "data_frame" not in first_line:

@@ -100,7 +100,8 @@ class ControlPlan(BaseModel):
     control_type: ControlType = Field(
         ...,
         description=f"""
-        IMPORTANT: This field MUST be one of the following values ONLY: [{", ".join(repr(t) for t in get_args(ControlType))}].
+        IMPORTANT:
+        This field MUST be one of the following values ONLY: [{", ".join(repr(t) for t in get_args(ControlType))}].
         NO OTHER VALUES are allowed. The value must match exactly one of the options above.
         Any other value will result in a validation error.
         """,
