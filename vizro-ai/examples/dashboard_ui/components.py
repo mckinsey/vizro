@@ -6,7 +6,7 @@ import black
 import dash_bootstrap_components as dbc
 import vizro.models as vm
 from dash import dcc, get_asset_url, html
-from pydantic import AfterValidator, Field
+from pydantic import AfterValidator, Field, PlainSerializer
 from vizro.models import Action
 from vizro.models._action._actions_chain import _action_validator_factory
 from vizro.models._models_utils import _log_call
@@ -27,9 +27,12 @@ class UserPromptTextArea(vm.VizroBaseModel):
     """
 
     type: Literal["user_text_area"] = "user_text_area"
-    actions: list[Action] = []  # noqa: RUF012
-
-    _set_actions = _action_validator_factory("value")
+    actions: Annotated[
+        list[Action],
+        AfterValidator(_action_validator_factory("value")),
+        PlainSerializer(lambda x: x[0].actions),
+        Field(default=[]),
+    ]
 
     @_log_call
     def build(self):
@@ -49,7 +52,12 @@ class UserUpload(vm.VizroBaseModel):
     """Component enabling data upload."""
 
     type: Literal["upload"] = "upload"
-    actions: Annotated[list[Action], AfterValidator(_action_validator_factory("contents")), Field(default_factory=list)]
+    actions: Annotated[
+        list[Action],
+        AfterValidator(_action_validator_factory("contents")),
+        PlainSerializer(lambda x: x[0].actions),
+        Field(default=[]),
+    ]
 
     def build(self):
         """Returns the upload component for data upload."""
