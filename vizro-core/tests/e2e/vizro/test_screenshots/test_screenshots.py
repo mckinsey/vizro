@@ -88,13 +88,13 @@ def test_tabs_parameters_page(dash_br):
 
 
 @pytest.mark.parametrize(
-    "cache, slider_id, graph_id",
+    "cache, slider_id",
     [
         ("cached", cnst.SLIDER_DYNAMIC_DATA_CACHED_ID, cnst.SCATTER_DYNAMIC_CACHED_ID),
-        # ("cached_not", cnst.SLIDER_DYNAMIC_DATA_ID, cnst.SCATTER_DYNAMIC_ID),
+        ("cached_not", cnst.SLIDER_DYNAMIC_DATA_ID, cnst.SCATTER_DYNAMIC_ID),
     ],
 )
-def test_data_dynamic_parametrization(dash_br, cache, slider_id, graph_id):
+def test_data_dynamic_parametrization(dash_br, cache, slider_id):
     first_screen = f"{cache}_screen_first_test_data_dynamic_parametrization.png"
     second_screen = f"{cache}_screen_second_test_data_dynamic_parametrization.png"
     third_screen = f"{cache}_screen_third_test_data_dynamic_parametrization.png"
