@@ -17,7 +17,7 @@ function update_dropdown_select_all(dropdown_value, options) {
   // A real option has been selected, so the only special treatment that's needed is to update the checkbox to reflect
   // whether all real options have been selected. The dropdown value itself doesn't need anything done to it.
   const allRealOptionsSelected = dropdown_value.length === realOptions.length;
-  return [allRealOptionsSelected, dropdown_value];
+  return [allRealOptionsSelected, dash_clientside.no_update];
 }
 
 window.dash_clientside = {

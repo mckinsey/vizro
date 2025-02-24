@@ -7,7 +7,11 @@ from pydantic.functional_serializers import PlainSerializer
 
 from vizro.models import Action, VizroBaseModel
 from vizro.models._action._actions_chain import _action_validator_factory
-from vizro.models._components.form._form_utils import get_options_and_default, validate_options_dict, validate_value
+from vizro.models._components.form._form_utils import (
+    get_dict_options_and_default,
+    validate_options_dict,
+    validate_value,
+)
 from vizro.models._models_utils import _log_call
 from vizro.models.types import OptionsType, SingleValueType
 
@@ -51,14 +55,14 @@ class RadioItems(VizroBaseModel):
     _validate_options = model_validator(mode="before")(validate_options_dict)
 
     def __call__(self, options):
-        full_options, default_value = get_options_and_default(options=options, multi=False)
+        dict_options, default_value = get_dict_options_and_default(options=options, multi=False)
 
         return html.Fieldset(
             children=[
                 html.Legend(children=self.title, className="form-label") if self.title else None,
                 dbc.RadioItems(
                     id=self.id,
-                    options=full_options,
+                    options=dict_options,
                     value=self.value if self.value is not None else default_value,
                     persistence=True,
                     persistence_type="session",
@@ -68,7 +72,7 @@ class RadioItems(VizroBaseModel):
 
     def _build_dynamic_placeholder(self):
         if self.value is None:
-            _, default_value = get_options_and_default(self.options, multi=False)
+            _, default_value = get_dict_options_and_default(options=self.options, multi=False)
             self.value = default_value  # type: ignore[assignment]
 
         return self.__call__(self.options)

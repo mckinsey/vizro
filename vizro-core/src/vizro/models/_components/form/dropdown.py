@@ -8,7 +8,11 @@ from pydantic.functional_serializers import PlainSerializer
 
 from vizro.models import Action, VizroBaseModel
 from vizro.models._action._actions_chain import _action_validator_factory
-from vizro.models._components.form._form_utils import get_options_and_default, validate_options_dict, validate_value
+from vizro.models._components.form._form_utils import (
+    get_dict_options_and_default,
+    validate_options_dict,
+    validate_value,
+)
 from vizro.models._models_utils import _log_call
 from vizro.models.types import MultiValueType, OptionsDictType, OptionsType, SingleValueType
 
@@ -32,27 +36,6 @@ def validate_multi(multi, info: ValidationInfo):
     if info.data["value"] and multi is False and isinstance(info.data["value"], list):
         raise ValueError("Please set multi=True if providing a list of default values.")
     return multi
-
-
-def _make_select_all(
-    options: OptionsType, component_id: str, value: Optional[Union[SingleValueType, MultiValueType]]
-) -> OptionsDictType:
-    """Creates a 'Select All' option to add to the list of options."""
-    select_all_value = value is None or (isinstance(value, list) and len(value) == len(options))
-
-    return {
-        "label": dbc.Checkbox(
-            id=f"{component_id}_select_all",
-            value=select_all_value,
-            label="Select All",
-            persistence=True,
-            persistence_type="session",
-            className="dropdown-select-all",
-        ),
-        # Special sentinel value used in update_dropdown_select_all.
-        # This never gets sent to the server.
-        "value": "__SELECT_ALL",
-    }
 
 
 class Dropdown(VizroBaseModel):
@@ -105,12 +88,26 @@ class Dropdown(VizroBaseModel):
     _validate_options = model_validator(mode="before")(validate_options_dict)
 
     def __call__(self, options):
-        dict_options, default_value = get_options_and_default(options=options, multi=self.multi)
+        dict_options, default_value = get_dict_options_and_default(options=options, multi=self.multi)
         option_height = _calculate_option_height(dict_options)
+
+        value = self.value if self.value is not None else default_value
 
         if self.multi:
             dict_options = [
-                _make_select_all(options=dict_options, component_id=self.id, value=self.value),
+                {
+                    "label": dbc.Checkbox(
+                        id=f"{self.id}_select_all",
+                        value=len(value) == len(dict_options),  # type: ignore[arg-type]
+                        label="Select All",
+                        persistence=True,
+                        persistence_type="session",
+                        className="dropdown-select-all",
+                    ),
+                    # Special sentinel value used in update_dropdown_select_all.
+                    # This never gets sent to the server.
+                    "value": "__SELECT_ALL",
+                },
                 *dict_options,
             ]
 
@@ -133,7 +130,7 @@ class Dropdown(VizroBaseModel):
                 dcc.Dropdown(
                     id=self.id,
                     options=dict_options,
-                    value=self.value if self.value is not None else default_value,
+                    value=value,
                     multi=self.multi,
                     optionHeight=option_height,
                     clearable=False,
@@ -150,7 +147,7 @@ class Dropdown(VizroBaseModel):
         # guarantees that. We can call Filter.selector.pre_build() from the Filter.pre_build() method if we decide that.
         # TODO: move this to pre_build once we have better control of the ordering.
         if self.value is None:
-            _, default_value = get_options_and_default(self.options, multi=self.multi)
+            _, default_value = get_dict_options_and_default(options=self.options, multi=self.multi)
             self.value = default_value
 
         return self.__call__(self.options)

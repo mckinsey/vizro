@@ -8,7 +8,7 @@ from pydantic import TypeAdapter, ValidationInfo
 from vizro.models.types import MultiValueType, OptionsDictType, OptionsType, SingleValueType
 
 
-def get_options_and_default(
+def get_dict_options_and_default(
     options: OptionsType, multi: bool
 ) -> tuple[list[OptionsDictType], Union[SingleValueType, MultiValueType]]:
     """Gets list of full options and default value based on user input type of `options`."""
@@ -19,7 +19,7 @@ def get_options_and_default(
     list_values = [dict_option["value"] for dict_option in dict_options]
     default_value = list_values if multi else list_values[0]
 
-    return dict_options, default_value
+    return dict_options, default_value  # type: ignore[return-value]
 
 
 # Utils for validators

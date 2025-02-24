@@ -8,7 +8,7 @@ from pydantic import ValidationError
 
 from vizro.models._action._action import Action
 from vizro.models._components.form import Dropdown
-from vizro.models._components.form._form_utils import get_options_and_default
+from vizro.models._components.form._form_utils import get_dict_options_and_default
 
 
 class TestDropdownInstantiation:
@@ -139,32 +139,32 @@ class TestDropdownBuild:
     """Tests model build method."""
 
     @pytest.mark.parametrize(
-        "value, options, expected_checkbox_value, expected_options, expected_value",
+        "value, options, expected_checkbox_value, expected_value, expected_options",
         [
             (
                 ["A"],
                 ["A", "B", "C"],
                 False,
-                [{"label": "A", "value": "A"}, {"label": "B", "value": "B"}, {"label": "C", "value": "C"}],
                 ["A"],
+                [{"label": "A", "value": "A"}, {"label": "B", "value": "B"}, {"label": "C", "value": "C"}],
             ),
             (
                 ["A", "B", "C"],
                 ["A", "B", "C"],
                 True,
-                [{"label": "A", "value": "A"}, {"label": "B", "value": "B"}, {"label": "C", "value": "C"}],
                 ["A", "B", "C"],
+                [{"label": "A", "value": "A"}, {"label": "B", "value": "B"}, {"label": "C", "value": "C"}],
             ),
             (
                 None,
                 ["A", "B", "C"],
                 True,
-                [{"label": "A", "value": "A"}, {"label": "B", "value": "B"}, {"label": "C", "value": "C"}],
                 ["A", "B", "C"],
+                [{"label": "A", "value": "A"}, {"label": "B", "value": "B"}, {"label": "C", "value": "C"}],
             ),
         ],
     )
-    def test_dropdown_with_all_option(self, value, options, expected_checkbox_value, expected_options, expected_value):
+    def test_dropdown_with_all_option(self, value, options, expected_checkbox_value, expected_value, expected_options):
         dropdown = Dropdown(value=value, options=options, title="Title", id="dropdown_id").build()
         expected_dropdown = html.Div(
             [
@@ -235,14 +235,14 @@ class TestDropdownBuild:
         ],
     )
     def test_dropdown_dynamic_option_height(self, options, option_height):
-        options, default_value = get_options_and_default(options=options, multi=False)
-        dropdown = Dropdown(id="dropdown_id", multi=False, options=options).build()
+        dict_options, default_value = get_dict_options_and_default(options=options, multi=False)
+        dropdown = Dropdown(id="dropdown_id", multi=False, options=dict_options).build()
         expected_dropdown = html.Div(
             [
                 None,
                 dcc.Dropdown(
                     id="dropdown_id",
-                    options=options,
+                    options=dict_options,
                     optionHeight=option_height,
                     multi=False,
                     value=default_value,
