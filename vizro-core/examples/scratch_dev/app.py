@@ -1,7 +1,5 @@
 """Dev app to try things out."""
 
-from os import chown
-
 import pandas as pd
 import vizro.models as vm
 import vizro.plotly.express as px
