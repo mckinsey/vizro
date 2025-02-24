@@ -36,7 +36,7 @@ jobs:
 
       - name: Check for changes
         id: changed-files
-        run: echo "static_files_changed=$(git diff --exit-code)" >> $GITHUB_OUTPUT
+        run: echo "static_files_changed=$(git diff --quiet)" >> $GITHUB_OUTPUT
 
       - name: Create and push changes
         if: steps.changed-files.outputs.static_files_changed
@@ -47,6 +47,7 @@ jobs:
           hatch run changelog:add
           git add -A
           git commit -m "Update static files"
+          
           git push origin --delete bot/update-static-files || true
           git push --set-upstream origin bot/update-static-files
 
