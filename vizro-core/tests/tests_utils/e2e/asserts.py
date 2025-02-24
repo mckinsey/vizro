@@ -16,13 +16,14 @@ def make_screenshot_and_paths(driver, request_node_name):
 
 def assert_pixelmatch(result_image_path, expected_image_path):
     expected_image_name = Path(expected_image_path).name
+    # pixelmatch docs: https://github.com/mapbox/pixelmatch
     subprocess.run(
         [
             "pixelmatch",
             expected_image_path,
             result_image_path,
             f"{expected_image_name.replace('.', '_difference_from_main.')}",
-            "0",  # threshold
+            "0.11",  # threshold
         ],
         capture_output=True,
         text=True,

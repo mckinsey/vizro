@@ -18,6 +18,7 @@ def pytest_setup_options():
 
 
 def make_teardown(dash_br):
+    # rewriting dynamic_filters_data.yml after each test
     data = {
         "max": 7,
         "min": 6,
