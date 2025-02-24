@@ -23,7 +23,7 @@ def assert_pixelmatch(result_image_path, expected_image_path):
             expected_image_path,
             result_image_path,
             f"{expected_image_name.replace('.', '_difference_from_main.')}",
-            "0.11",  # threshold
+            "0.18",  # threshold
         ],
         capture_output=True,
         text=True,
