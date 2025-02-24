@@ -39,7 +39,7 @@ jobs:
         run: echo "static_files_changed=$(git diff --quiet)" >> $GITHUB_OUTPUT
 
       - name: Create and push changes
-        if: steps.changed-files.outputs.static_files_changed
+        if: ${{ steps.changed-files.outputs.static_files_changed }}
         run: |
           git config user.email "145135826+vizro-svc@users.noreply.github.com"
           git config user.name "Vizro Team"
@@ -47,7 +47,6 @@ jobs:
           hatch run changelog:add
           git add -A
           git commit -m "Update static files"
-
           git push origin --delete bot/update-static-files || true
           git push --set-upstream origin bot/update-static-files
 
