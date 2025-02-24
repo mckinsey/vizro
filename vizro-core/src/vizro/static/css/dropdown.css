@@ -158,10 +158,9 @@ wrapper **/
 #dashboard-container
   .dropdown
   .VirtualizedSelectOption:nth-child(1):has(> div) {
+  align-items: baseline;
   border-bottom: 1px solid var(--border-subtleAlpha01);
-  padding: 0;
-  padding-left: 0.35rem;
-  padding-top: 0.5rem;
+  padding: 8px 4px;
 }
 
 .dropdown-select-all {
