@@ -47,7 +47,7 @@ jobs:
           hatch run changelog:add
           git add -A
           git commit -m "Update static files"
-          
+
           git push origin --delete bot/update-static-files || true
           git push --set-upstream origin bot/update-static-files
 
