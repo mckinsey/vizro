@@ -70,20 +70,12 @@ print(df.head())
 # TODO-DEV: Turn on/off caching to see how it affects the app.
 # data_manager.cache = Cache(config={"CACHE_TYPE": "SimpleCache", "CACHE_DEFAULT_TIMEOUT": 10})
 
-
-homepage = vm.Page(
-    title="Homepage",
-    components=[
-        vm.Card(text="This is the homepage."),
-    ],
-)
-
 page_1 = vm.Page(
     title="Dynamic vs Static filter",
     components=[
         vm.Graph(
             id="p1-G-1",
-            figure=px.bar(data_frame="load_from_file_species", **BAR_CHART_CONF),
+            figure=px.bar(data_frame="load_from_file_date_column", **BAR_CHART_CONF),
         ),
         vm.Graph(
             id="p1-G-2",
@@ -91,8 +83,9 @@ page_1 = vm.Page(
         ),
     ],
     controls=[
-        vm.Filter(id="p1-F-1", column="date_column", targets=["p1-G-1"], selector=vm.DatePicker(title="Dynamic filter")),
-        # vm.Filter(id="p1-F-2", column="species", targets=["p1-G-2"], selector=vm.Dropdown(title="Static filter")),
+        vm.Filter(
+            id="p1-F-1", column="date_column", targets=["p1-G-1"], selector=vm.DatePicker(title="Dynamic filter")
+        ),
         vm.Parameter(
             targets=["p1-G-1.x", "p1-G-2.x"],
             selector=vm.RadioItems(options=["species", "sepal_width"], title="Simple X-axis parameter"),
@@ -100,146 +93,7 @@ page_1 = vm.Page(
     ],
 )
 
-
-# page_2 = vm.Page(
-#     title="Categorical dynamic selectors",
-#     components=[
-#         vm.Graph(
-#             id="p2-G-1",
-#             figure=px.bar(data_frame="load_from_file_species", **BAR_CHART_CONF),
-#         ),
-#     ],
-#     controls=[
-#         vm.Filter(id="p2-F-1", column="species", selector=vm.Dropdown()),
-#         vm.Filter(id="p2-F-2", column="species", selector=vm.Dropdown(multi=False)),
-#         vm.Filter(id="p2-F-3", column="species", selector=vm.Checklist()),
-#         vm.Filter(id="p2-F-4", column="species", selector=vm.RadioItems()),
-#         vm.Parameter(
-#             targets=["p2-G-1.x"],
-#             selector=vm.RadioItems(
-#                 options=["species", "sepal_width"], value="species", title="Simple X-axis parameter"
-#             ),
-#         ),
-#     ],
-# )
-#
-#
-# page_3 = vm.Page(
-#     title="Numerical dynamic selectors",
-#     components=[
-#         vm.Graph(
-#             id="p3-G-1",
-#             figure=px.bar(data_frame="load_from_file_sepal_length", **BAR_CHART_CONF),
-#         ),
-#     ],
-#     controls=[
-#         vm.Filter(id="p3-F-1", column="sepal_length", selector=vm.Slider()),
-#         vm.Filter(id="p3-F-2", column="sepal_length", selector=vm.RangeSlider()),
-#         vm.Parameter(
-#             targets=["p3-G-1.x"],
-#             selector=vm.RadioItems(
-#                 options=["species", "sepal_width"], value="species", title="Simple X-axis parameter"
-#             ),
-#         ),
-#     ],
-# )
-#
-# page_4 = vm.Page(
-#     title="[TO BE DONE IN THE FOLLOW UP PR] Temporal dynamic selectors",
-#     components=[
-#         vm.Graph(
-#             id="p4-G-1",
-#             figure=px.bar(data_frame="load_from_file_date_column", **BAR_CHART_CONF),
-#         ),
-#     ],
-#     controls=[
-#         vm.Filter(id="p4-F-1", column="date_column", selector=vm.DatePicker(range=False)),
-#         vm.Filter(id="p4-F-2", column="date_column", selector=vm.DatePicker()),
-#         vm.Parameter(
-#             targets=["p4-G-1.x"],
-#             selector=vm.RadioItems(
-#                 options=["species", "sepal_width"], value="species", title="Simple X-axis parameter"
-#             ),
-#         ),
-#     ],
-# )
-#
-# page_5 = vm.Page(
-#     title="Parametrised dynamic selectors",
-#     components=[
-#         vm.Graph(
-#             id="p5-G-1",
-#             figure=px.bar(data_frame="load_from_file_species", **BAR_CHART_CONF),
-#         ),
-#     ],
-#     controls=[
-#         vm.Filter(id="p5-F-1", column="species", targets=["p5-G-1"], selector=vm.Checklist()),
-#         vm.Parameter(
-#             targets=[
-#                 "p5-G-1.data_frame.parametrized_species",
-#                 # TODO: Uncomment the following target and see the magic :D
-#                 #  Is this the indicator that parameter.targets prop has to support 'target' definition without the '.'?
-#                 # "p5-F-1.",
-#             ],
-#             selector=vm.Dropdown(
-#                 options=["setosa", "versicolor", "virginica"], multi=True, title="Parametrized species"
-#             ),
-#         ),
-#         vm.Parameter(
-#             targets=[
-#                 "p5-G-1.x",
-#                 # TODO: Uncomment the following target and see the magic :D
-#                 # "p5-F-1.",
-#             ],
-#             selector=vm.RadioItems(
-#                 options=["species", "sepal_width"], value="species", title="Simple X-axis parameter"
-#             ),
-#         ),
-#     ],
-# )
-#
-#
-# page_6 = vm.Page(
-#     title="Page to test things out",
-#     components=[
-#         vm.Graph(id="graph_dynamic", figure=px.bar(data_frame="load_from_file_species", **BAR_CHART_CONF)),
-#         vm.Graph(
-#             id="graph_static",
-#             figure=px.scatter(data_frame=px.data.iris(), **SCATTER_CHART_CONF),
-#         ),
-#     ],
-#     controls=[
-#         vm.Filter(
-#             id="filter_container_id",
-#             column="species",
-#             targets=["graph_dynamic"],
-#             # targets=["graph_static"],
-#             # selector=vm.Dropdown(id="filter_id"),
-#             # selector=vm.Dropdown(id="filter_id", value=["setosa"]),
-#             # selector=vm.Checklist(id="filter_id"),
-#             # selector=vm.Checklist(id="filter_id", value=["setosa"]),
-#             # TODO-BUG: vm.Dropdown(multi=False) Doesn't work if value is cleared. The persistence storage become
-#             #  "null" and our placeholder component dmc.DateRangePicker can't process null value. It expects a value or
-#             #  a list of values.
-#             #  SOLUTION -> Create the "Universal Vizro placeholder component".
-#             #  TEMPORARY SOLUTION -> set clearable=False for the dynamic Dropdown(multi=False)
-#             # selector=vm.Dropdown(id="filter_id", multi=False),
-#             # selector=vm.Dropdown(id="filter_id", multi=False, value="setosa"),
-#             # selector=vm.RadioItems(id="filter_id"),
-#             # selector=vm.RadioItems(id="filter_id", value="setosa"),
-#             # selector=vm.Slider(id="filter_id"),
-#             # selector=vm.Slider(id="filter_id", value=5),
-#             # selector=vm.RangeSlider(id="filter_id"),
-#             # selector=vm.RangeSlider(id="filter_id", value=[5, 7]),
-#         ),
-#         vm.Parameter(
-#             targets=["graph_dynamic.x"],
-#             selector=vm.RadioItems(options=["species", "sepal_width"], title="Simple X-axis parameter"),
-#         ),
-#     ],
-# )
-
-dashboard = vm.Dashboard(pages=[homepage, page_1])
+dashboard = vm.Dashboard(pages=[page_1])
 
 if __name__ == "__main__":
     app = Vizro().build(dashboard)

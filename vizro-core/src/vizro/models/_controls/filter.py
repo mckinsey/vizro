@@ -46,10 +46,7 @@ DISALLOWED_SELECTORS = {
     "categorical": SELECTORS["numerical"] + SELECTORS["temporal"],
 }
 
-# TODO: Remove DYNAMIC_SELECTORS along with its validation check when support dynamic mode for the DatePicker selector.
-# Tuple of filter selectors that support dynamic mode
-DYNAMIC_SELECTORS = (Dropdown, Checklist, RadioItems, Slider, RangeSlider)
-DynamicNonCategoricalSelectorType = Union[Slider, RangeSlider]
+DynamicNonCategoricalSelectorType = Union[Slider, RangeSlider, DatePicker]
 
 
 def _filter_between(series: pd.Series, value: Union[list[float], list[str]]) -> pd.Series:
@@ -178,7 +175,7 @@ class Filter(VizroBaseModel):
         # The filter is dynamic iff mentioned attributes ("options"/"min"/"max") are not explicitly provided and
         # filter targets at least one figure that uses dynamic data source. Note that min or max = 0 are Falsey values
         # but should still count as manually set.
-        if isinstance(self.selector, DYNAMIC_SELECTORS) and (
+        if (
             not getattr(self.selector, "options", [])
             and getattr(self.selector, "min", None) is None
             and getattr(self.selector, "max", None) is None

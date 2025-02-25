@@ -60,13 +60,10 @@ class DatePicker(VizroBaseModel):
     _input_property: str = PrivateAttr("value")
 
     def __call__(self, min, max, current_value):
-    # def build(self):
-        init_value = current_value or ([min, max] if self.range else min)  # type: ignore[list-item]
-
         date_picker = dmc.DatePickerInput(
             id=self.id,
             minDate=min,
-            value=init_value,
+            value=self.value or current_value,
             maxDate=max,
             persistence=True,
             persistence_type="session",
@@ -83,14 +80,12 @@ class DatePicker(VizroBaseModel):
             ],
         )
 
-    def _build_dynamic_placeholder(self, current_value):
-        return self.__call__(self.min, self.max, current_value)
+    def _build_dynamic_placeholder(self):
+        if self.value is None:
+            self.value = [self.min, self.max] if self.range else self.min
+        return self.__call__(self.min, self.max, self.value)
 
     @_log_call
     def build(self):
         current_value = self.value or [self.min, self.max]
-        return (
-            self._build_dynamic_placeholder(current_value)
-            if self._dynamic
-            else self.__call__(self.min, self.max, current_value)
-        )
+        return self._build_dynamic_placeholder() if self._dynamic else self.__call__(self.min, self.max, current_value)

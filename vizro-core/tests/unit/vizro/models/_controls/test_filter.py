@@ -661,6 +661,7 @@ class TestPreBuildMethod:
             ("continent", vm.RadioItems()),
             ("pop", vm.Slider()),
             ("pop", vm.RangeSlider()),
+            ("year", vm.DatePicker()),
         ],
     )
     def test_filter_is_dynamic_with_dynamic_selectors(
@@ -673,14 +674,6 @@ class TestPreBuildMethod:
         # Filter is dynamic because it targets a figure that uses dynamic data
         assert filter._dynamic
         assert filter.selector._dynamic
-
-    @pytest.mark.usefixtures("managers_one_page_two_graphs_with_dynamic_data")
-    def test_filter_is_not_dynamic_with_non_dynamic_selectors(self, gapminder_dynamic_first_n_last_n_function):
-        data_manager["gapminder_dynamic_first_n_last_n"] = gapminder_dynamic_first_n_last_n_function
-        filter = vm.Filter(column="year", selector=vm.DatePicker())
-        model_manager["test_page"].controls = [filter]
-        filter.pre_build()
-        assert not filter._dynamic
 
     @pytest.mark.usefixtures("managers_one_page_two_graphs_with_dynamic_data")
     @pytest.mark.parametrize(
@@ -876,18 +869,3 @@ class TestFilterBuild:
         )
 
         assert_component_equal(result, expected, keys_to_strip={"className"})
-
-    @pytest.mark.usefixtures("managers_one_page_two_graphs_with_dynamic_data")
-    def test_dynamic_filter_build_with_non_dynamic_selectors(self, gapminder_dynamic_first_n_last_n_function):
-        # Adding dynamic data_frame to data_manager
-        data_manager["gapminder_dynamic_first_n_last_n"] = gapminder_dynamic_first_n_last_n_function
-
-        test_selector = vm.DatePicker()
-        filter = vm.Filter(column="year", selector=test_selector)
-        model_manager["test_page"].controls = [filter]
-        filter.pre_build()
-
-        result = filter.build()
-        expected = test_selector.build()
-
-        assert_component_equal(result, expected)
