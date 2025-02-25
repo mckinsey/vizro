@@ -13,10 +13,12 @@ from vizro.models._action._action import NewAction
 
 
 class export_data(NewAction):
+    # implementation independent, appear in schema
     targets: list[ModelID] = []  # TODO FUTURE: maybe rename this so it doesn't inconsistently use
     # targets?
     file_format: Literal["csv", "xlsx"] = "csv"
 
+    # implementation dependent, can't go in schema. Prefix with vizro_ or _ or similar.
     def function(
         self,
         filters: list[State],

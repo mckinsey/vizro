@@ -49,7 +49,8 @@ page1 = vm.Page(
 # @capture("action")
 @capture_new_action
 def my_custom_action(points_data: VizroState, output: VizroOutput):
-    # Problem: have unused argument, but that is ok. Better than argument not existing.
+    # Problem: have unused argument, but that is ok. Better than argument not existing. To improve linting give it _
+    # name?
     """Custom action."""
     clicked_point = points_data["points"][0]
     x, y = clicked_point["x"], clicked_point["y"]
@@ -77,14 +78,36 @@ page2 = vm.Page(
             id="scatter_chart",
             figure=px.scatter(df, x="sepal_length", y="petal_width", color="species", custom_data=["species"]),
             actions=[
-                my_custom_action(points_data="scatter_chart.clickData", output="my_card_1.children"),
-                # Alternatives:
-                # {my_custom_action(points_data="scatter_chart.clickData"): "my_card_1"},
+                my_custom_action(
+                    points_data="scatter_chart.clickData", output="my_card_1.children"
+                ),  # Don't like this.
+                # Alternatives - don't like these either but better? Could be shortcut for full vm.Action version.
+                # {my_custom_action(points_data="scatter_chart.clickData"): "my_card_1"}, ##### PREFERRED as shortcut
+                # syntax
                 # could make NewCustomAction hashable by hasing model id
-                # {"my_card_1.children": my_custom_action(points_data="scatter_chart.clickData")},
-                # vm.Action(
-                #     function=my_custom_action(points_data="scatter_chart.clickData"), outputs="my_card_1.children"
-                # ),
+                # {"my_card_1.children": my_custom_action(points_data="scatter_chart.clickData")}, # This doesn't
+                # work as well - what if have two actions with None output.
+                # vm.GenericCustomAction(
+                #     function=my_specific_action(points_data="scatter_chart.clickData"), outputs="my_card_1.children"
+                # ), # ok
+                # this is only sensible option but then what is point of removing inputs? c.f.
+                # vm.GenericCustomAction(
+                #     function=my_specific_action(),  # could supply static arguments here if you wanted to?? Or just
+                #     ban them and make it my_specific_action without ()?
+                #     inputs=dict(points_data="scatter_chart.clickData")),
+                #     outputs="my_card_1.children"
+                # )
+                # Make this possible and consider shortcut syntax of {"my_card_1.children": my_custom_action(
+                # points_data="scatter_chart.clickData")}.
+                # {"function": ..., "outputs": ...} possible without explicit vm.Action
+                # vm.ActionXXX(function: NewCustomAction, outputs: Optional ...)
+                # XXX to distinguish from current
+                # want to match inbuilt actions to this
+                # but also want shortcut, so would be same plain unwrapped export_data(targets="a") as syntax
+                # export_data is then subclass of vm.ActionXXX with its own fields inculding outputs,
+                # just like current NewAction
+                # <-- gives space to make trigger/non-triggering, alerts etc.
+                # can have syntactic sugar shortcuts?
                 # vm.Action(
                 #     function=my_custom_action(),
                 #     inputs=["scatter_chart.clickData"],

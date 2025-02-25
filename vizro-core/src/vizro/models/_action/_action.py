@@ -425,8 +425,7 @@ if __name__ == "__main__":
     def f(
         x: str,
         any_variable_name_but_expects_dropdown_value: VizroState,  # for people who care abotu type safety: Annotated[int, ""],
-        # could also do as defeault value = State like in FastAPI old
-        # convention
+        # could also do as defeault value = State like in FastAPI old convention
         # for dropdown that gives int value
         # filters: Annotated[dict, Depends] = "filters",  # maybe dont need to provide default value or even type hint
     ):
@@ -461,6 +460,16 @@ if __name__ == "__main__":
     # Don't want to do type hint.
     # OR ENABLE BOTH?
     # even better to just provide component_id and then it guesses property if not supplied
+
+    # OR don't allow static arguments for custom callbacks - instead need to define full pydantic class or make
+    # function factory? So all arguments are Dash inputs. This is the case in Dash and seems ok there.
+    # Could enable special static arguments if required using one of the above ideas - make them the ones which are
+    # harder to do since they're less common.
+    # Type hint shouldn't be needed for detection of Dash input but ideally would be possible to do type annotations
+    # nicely somehow e.g. Annotated. Or custom action decorator changes type hints on the fly.
+    # Don't worry about typing currently, just interpret all arguments as states and fix trigger with parent
+    # component. SOUNDS LIKE GOOD IDEA.
+    # So can't do outputs using type hint
     f(x=2, any_variable_name_but_expects_dropdown_value="state:dropdown_id.value").function()
 
 # T = TypeVar('T')
