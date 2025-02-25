@@ -129,7 +129,37 @@ page_checklist = vm.Page(
     ],
 )
 
-dashboard = vm.Dashboard(pages=[page, page_two, page_card, page_button, page_dropdown, page_checklist])
+vm.Container.add_type("components", vm.RadioItems)
+
+page_radio = vm.Page(
+    title="Radio Items",
+    components=[
+        vm.Container(
+            title="Radio Items examples",
+            components=[
+                vm.RadioItems(
+                    title="Default radio items",
+                    options=["Option 1", "Option 2", "Option 3"],
+                ),
+                vm.RadioItems(
+                    title="Inline radio items",
+                    options=["Option 1", "Option 2", "Option 3"],
+                    extra={"inline": True},
+                ),
+                vm.RadioItems(
+                    title="Custom styled radio items",
+                    options=["Option 1", "Option 2", "Option 3"],
+                    extra={
+                        "input_checked_style": {"backgroundColor": "#198754"},
+                        "input_style": {"borderColor": "#198754"},
+                    },
+                ),
+            ],
+        ),
+    ],
+)
+
+dashboard = vm.Dashboard(pages=[page, page_two, page_card, page_button, page_dropdown, page_checklist, page_radio])
 
 if __name__ == "__main__":
     Vizro().build(dashboard).run()
