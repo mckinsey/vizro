@@ -94,6 +94,7 @@ class Dropdown(VizroBaseModel):
         value = self.value if self.value is not None else default_value
 
         if self.multi:
+            value = value if isinstance(value, list) else [value]  # type: ignore[assignment]
             dict_options = [
                 {
                     "label": dbc.Checkbox(
