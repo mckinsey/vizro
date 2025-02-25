@@ -10,11 +10,12 @@ from pydantic.json_schema import SkipJsonSchema
 from vizro.models import VizroBaseModel
 from vizro.models._layout import set_layout
 from vizro.models._models_utils import _log_call, check_captured_callable_model
-from vizro.models.types import ComponentType, ContainerExtra
+from vizro.models.types import ComponentType
 
 if TYPE_CHECKING:
     from vizro.models import Layout
 
+# TODO[MS]: Remove or move comments in this file
 # Ways to implement kwargs:
 # 1. Use a dict[str, Any] that gets inserted as **kwargs into the dbc component
 # 2. Use a dict[str, Any] that gets merged with the existing defaults, potentially spit out a warning if overlapping
@@ -25,6 +26,7 @@ if TYPE_CHECKING:
 # ---> Given the code in _convert_pydantic_to_openai_function, I think it would skip the schema!
 
 # Extremely powerful, here and if not here, definitely in schema work: https://docs.pydantic.dev/latest/concepts/validation_decorator
+# Also check: print(json.dumps(TypeAdapter(say_hello_to).json_schema(), indent=2))
 
 
 # Further ideas:
@@ -36,6 +38,7 @@ if TYPE_CHECKING:
 # - Discuss which method?
 # - Discuss which models quickly
 # - Discuss SkipJsonSchema and how we should announce it
+# # add dbc in field description, make a central schema page
 
 
 class Container(VizroBaseModel):
@@ -47,8 +50,11 @@ class Container(VizroBaseModel):
             has to be provided.
         title (str): Title to be displayed.
         layout (Optional[Layout]): Layout to place components in. Defaults to `None`.
-        extra (Optional[dict[str, Any]]): Extra arguments to pass to the container. Defaults to `{}`.
-        extra_2 (Optional[ContainerExtra]): See [ContainerExtra][vizro.models.types.ContainerExtra]. Defaults to `{}`.
+        extra (Optional[dict[str, Any]]): Extra keyword arguments that are passed to `dbc.Container` and overwrite any
+            defaults chosen by the Vizro team. This may have unexpected behavior if the defaults change.
+            Visit the [dbc documentation](https://dash-bootstrap-components.opensource.faculty.ai/docs/components/layout/)
+            to see all available arguments. [Not part of the official Vizro schema](../explanation/schema.md) and may
+            not be supported in the future. Defaults to `{}`.
 
     """
 
@@ -60,11 +66,19 @@ class Container(VizroBaseModel):
     )
     title: str = Field(description="Title to be displayed.")
     layout: Annotated[Optional[Layout], AfterValidator(set_layout), Field(default=None, validate_default=True)]
-    # background: bool = Field(False, description="Flag indicating whether to apply default container background color.")
     extra: SkipJsonSchema[
-        Annotated[dict[str, Any], Field(default={}, description="Extra arguments to pass to the container.")]
+        Annotated[
+            dict[str, Any],
+            Field(
+                default={},
+                description="""Extra keyword arguments that are passed to `dbc.Container` and overwrite any
+            defaults chosen by the Vizro team. This may have unexpected behavior if the defaults change.
+            Visit the [dbc documentation](https://dash-bootstrap-components.opensource.faculty.ai/docs/components/layout/)
+            to see all available arguments. [Not part of the official Vizro schema](../explanation/schema.md) and may
+            not be supported in the future. Defaults to `{}`.""",
+            ),
+        ]
     ]
-    extra_2: SkipJsonSchema[Optional[ContainerExtra]] = None
 
     @_log_call
     def build(self):
@@ -85,14 +99,14 @@ class Container(VizroBaseModel):
         for component_idx, component in enumerate(self.components):
             components_container[f"{self.layout.id}_{component_idx}"].children = component.build()
 
-        return dbc.Container(
-            id=self.id,
-            children=[
+        defaults = {
+            "id": self.id,
+            "children": [
                 html.H3(children=self.title, className="container-title", id=f"{self.id}_title"),
                 components_container,
             ],
-            fluid=True,
-            **self.extra,
-            **self.extra_2.model_dump(exclude_none=True) if self.extra_2 else {},
-            # className="bg-container" if self.background else "",
-        )
+            "fluid": True,
+        }
+
+        finals = defaults | self.extra
+        return dbc.Container(**finals)

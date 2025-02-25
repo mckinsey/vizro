@@ -15,30 +15,29 @@ iris = px.data.iris()
 @capture("ag_grid")
 def my_custom_ag_grid(data_frame, chosen_columns, **kwargs):
     print(f"\nChosen column: {chosen_columns}\n")
-    return dash_ag_grid(data_frame=data_frame[chosen_columns], **kwargs)()
+    return dash_ag_grid(data_frame=data_frame[chosen_columns], **kwargs)()  # type: ignore
 
 
 page = vm.Page(
     title="Page with subsections",
     layout=vm.Layout(grid=[[0, 3, 3, 3, 4, 4], [1, 3, 3, 3, 4, 4], [2, 3, 3, 3, 4, 4]]),
     components=[
-        vm.Card(text="""Hello, this is a card with a [link](https://www.google.com)"""),
-        vm.Card(text="""Hello, this is a card with a [link](https://www.google.com)"""),
-        vm.Card(text="""Hello, this is a card with a [link](https://www.google.com)"""),
+        vm.Card(text="""Hello, this is a card with a [link](https://www.google.com)"""),  # type: ignore
+        vm.Card(text="""Hello, this is a card with a [link](https://www.google.com)"""),  # type: ignore
+        vm.Card(text="""Hello, this is a card with a [link](https://www.google.com)"""),  # type: ignore
         vm.Container(
             title="Container I",
             components=[
-                vm.Graph(figure=px.scatter(iris, x="sepal_width", y="sepal_length", color="species")),
+                vm.Graph(figure=px.scatter(iris, x="sepal_width", y="sepal_length", color="species")),  # type: ignore
             ],
-            # extra={"class_name": "bg-container", }, # "fluid": False
-            extra_2={"class_name": "bg-container"},  # , "fluid": False
+            extra={"class_name": "bg-container", "fluid": False},
         ),
         vm.Container(
             title="Container II",
             components=[
-                vm.Graph(figure=px.scatter(iris, x="sepal_width", y="sepal_length", color="species")),
+                vm.Graph(figure=px.scatter(iris, x="sepal_width", y="sepal_length", color="species")),  # type: ignore
             ],
-            # extra={"class_name": "bg-container"},
+            extra={"class_name": "bg-container"},
         ),
     ],
 )
@@ -49,7 +48,7 @@ page_two = vm.Page(
         vm.Container(
             title="Container III",
             components=[
-                vm.Graph(figure=px.scatter(iris, x="sepal_width", y="sepal_length", color="species")),
+                vm.Graph(figure=px.scatter(iris, x="sepal_width", y="sepal_length", color="species")),  # type: ignore
             ],
         ),
     ],
