@@ -11,6 +11,14 @@ See the fragment files in the [changelog.d directory](https://github.com/mckinse
 
 <!-- scriv-insert-here -->
 
+<a id='changelog-0.3.5'></a>
+
+# 0.3.5 — 2025-02-24
+
+## Added
+
+- Added `_minimal_output` flag to allow excluding "chart insights" and "code explanations" from LLM responses. ([#1007](https://github.com/mckinsey/vizro/pull/1007))
+
 <a id='changelog-0.3.4'></a>
 
 # 0.3.4 — 2025-02-10
