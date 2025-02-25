@@ -82,24 +82,54 @@ page_dropdown = vm.Page(
                 vm.Dropdown(
                     title="Default dropdown",
                     options=["Option 1", "Option 2", "Option 3"],
-                ),  # type: ignore
+                ),
                 vm.Dropdown(
                     title="Custom styled dropdown",
                     options=["Option 1", "Option 2", "Option 3"],
                     extra={"clearable": True, "placeholder": "Select an option...", "style": {"width": "300px"}},
-                ),  # type: ignore
+                ),
                 vm.Dropdown(
                     title="Single select dropdown",
                     options=["Option 1", "Option 2", "Option 3"],
                     multi=False,
                     extra={"style": {"backgroundColor": "#f8f9fa"}, "optionHeight": 200},
-                ),  # type: ignore
+                ),
             ],
         ),
     ],
 )
 
-dashboard = vm.Dashboard(pages=[page, page_two, page_card, page_button, page_dropdown])
+vm.Container.add_type("components", vm.Checklist)
+
+page_checklist = vm.Page(
+    title="Checklist",
+    components=[
+        vm.Container(
+            title="Checklist examples",
+            components=[
+                vm.Checklist(
+                    title="Default checklist",
+                    options=["Option 1", "Option 2", "Option 3"],
+                ),
+                vm.Checklist(
+                    title="Custom styled checklist",
+                    options=["Option 1", "Option 2", "Option 3"],
+                    extra={"switch": True, "inline": True},
+                ),
+                vm.Checklist(
+                    title="Colored checklist",
+                    options=["Option 1", "Option 2", "Option 3"],
+                    extra={
+                        "input_checked_style": {"backgroundColor": "#198754"},
+                        "input_style": {"borderColor": "#198754"},
+                    },
+                ),
+            ],
+        ),
+    ],
+)
+
+dashboard = vm.Dashboard(pages=[page, page_two, page_card, page_button, page_dropdown, page_checklist])
 
 if __name__ == "__main__":
     Vizro().build(dashboard).run()
