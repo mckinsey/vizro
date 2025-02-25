@@ -387,16 +387,19 @@ Add the custom action `open_offcanvas` as a `function` argument inside the [`Act
 
 ### Trigger actions with a custom component
 
-As mentioned above, custom components can trigger action. To enable the custom component to trigger the action, we need to add some extra code:
+As mentioned above, custom components can trigger actions. To enable the custom component to trigger the action, add the `actions` field and specify which property triggers the actions:
 
 1. **Add the `actions` argument to your custom component**. The type of the `actions` argument is `list[Action]`.
-   ```py
-    actions: list[Action] = []
-   ```
-2. **Set the action through `_set_actions`**. In doing so, any change in the `"active_index"` property of the custom component triggers the action.
-   ```py
-    _set_actions = _action_validator_factory("active_index")
-   ```
+2. **Set the action through `_action_validator_factory`**. In doing so, any change in the `"active_index"` property of the custom component triggers the action.
+
+    ```py
+    actions: Annotated[
+        list[Action],
+        AfterValidator(_action_validator_factory("active_index")),
+        PlainSerializer(lambda x: x[0].actions),
+        Field(default=[]),
+        ]
+    ```
 
 
 ??? example "Example of triggering action with custom component"
@@ -454,8 +457,8 @@ As mentioned above, custom components can trigger action. To enable the custom c
                 Carousel(
                     id="carousel",
                     items=[
-                        {"key": "1", "src": "path_to_your_image"},
-                        {"key": "2", "src": "path_to_your_image"},
+                        {"key": "1", "src": "assets/slide_1.jpg"},
+                        {"key": "2", "src": "assets/slide_2.jpg"},
                     ],
                     actions=[
                         vm.Action(

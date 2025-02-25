@@ -1,7 +1,0 @@
-companies:
-  type: pandas.JSONDataset
-  filepath: companies.json
-
-reviews:
-  type: pickle.PickleDataset
-  filepath: reviews.pkl

@@ -28,6 +28,7 @@ dependencies = [
   "langchain_mistralai",
   "langchain-anthropic",
   "langchain-aws",
+  "langchain-google-genai",
   "pre-commit"
 ]
 installer = "uv"

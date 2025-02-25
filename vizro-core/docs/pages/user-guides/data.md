@@ -38,7 +38,20 @@ graph TD
     | Can be refreshed while dashboard is running                   | No               | Yes                                      |
     | Production-ready                                              | Yes              | Yes                                      |
 
-If you have a [Kedro](https://kedro.org/) project or would like to use the [Kedro Data Catalog](https://docs.kedro.org/en/stable/data/index.html) to manage your data independently of a Kedro project then you should use Vizro's [integration with the Kedro Data Catalog](kedro-data-catalog.md). This offers helper functions to add [`kedro_datasets.pandas`](https://docs.kedro.org/en/stable/kedro_datasets.html) as dynamic data in the Vizro data manager.
+If you have a [Kedro](https://kedro.org/) project, you should use Vizro's [integration with the Kedro Data Catalog](kedro-data-catalog.md) to add [`kedro_datasets.pandas`](https://docs.kedro.org/en/stable/kedro_datasets.html) data to the Vizro data manager.
+
+!!! note "Kedro Data Catalog as a data source registry"
+    Even if you do not have a Kedro project, you can still [use a Kedro Data Catalog](kedro-data-catalog.md#create-a-kedro-data-catalog) as a YAML registry of your dashboard's data sources. This separates configuration of your data sources from your app's code and is the recommended approach if you have many data sources or a complex project. Here is an example `catalog.yaml` file:
+
+    ```yaml
+    motorbikes:
+      type: pandas.CSVDataset
+      filepath: s3://your_bucket/data/motorbikes.csv
+      load_args:
+        sep: ','
+        na_values: [NA]
+      credentials: s3_credentials
+    ```
 
 ## Static data
 
@@ -222,7 +235,7 @@ data_manager.cache = Cache(config={"CACHE_TYPE": "SimpleCache", "CACHE_DEFAULT_T
 ```
 
 !!! warning
-    Simple cache exists purely for single-process development purposes and is not intended to be used in production. If you deploy with multiple workers, [for example with Gunicorn](run.md/#gunicorn), then you should use a production-ready cache backend. All of Flask-Caching's [built-in backends](https://flask-caching.readthedocs.io/en/latest/#built-in-cache-backends) other than `SimpleCache` are suitable for production. In particular, you might like to use [`FileSystemCache`](https://cachelib.readthedocs.io/en/stable/file/) or [`RedisCache`](https://cachelib.readthedocs.io/en/stable/redis/):
+    Simple cache exists purely for single-process development purposes and is not intended to be used in production. If you deploy with multiple workers, [for example with Gunicorn](run-deploy.md/#gunicorn), then you should use a production-ready cache backend. All of Flask-Caching's [built-in backends](https://flask-caching.readthedocs.io/en/latest/#built-in-cache-backends) other than `SimpleCache` are suitable for production. In particular, you might like to use [`FileSystemCache`](https://cachelib.readthedocs.io/en/stable/file/) or [`RedisCache`](https://cachelib.readthedocs.io/en/stable/redis/):
 
     ```py title="Production-ready caches"
     # Store cached data in CACHE_DIR

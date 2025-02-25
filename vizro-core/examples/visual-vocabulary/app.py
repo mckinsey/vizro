@@ -118,7 +118,6 @@ app.dash.layout.children.append(
         className="anchor-container",
     )
 )
-server = app.dash.server
 
 if __name__ == "__main__":
     app.run(port=8051)

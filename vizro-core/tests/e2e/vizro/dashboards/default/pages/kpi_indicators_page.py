@@ -11,7 +11,7 @@ kpi_df = pd.DataFrame(
 
 kpi_indicators_page = vm.Page(
     title=cnst.KPI_INDICATORS_PAGE,
-    layout=vm.Layout(grid=[[0, 1, 2], [3, 4, 5], [6, 7, 8]]),
+    layout=vm.Layout(grid=[[0, 1, 2], [3, 4, 5], [6, 7, 8], [9, 10, -1]]),
     components=[
         # Style 1: Value Only
         vm.Figure(
@@ -97,6 +97,25 @@ kpi_indicators_page = vm.Page(
                 title="Icon III",
                 agg_func="median",
             )
+        ),
+        # Style 4: Reference value and reverse coloring
+        vm.Figure(
+            figure=kpi_card_reference(
+                data_frame=kpi_df,
+                value_column="Actual",
+                reference_column="Reference",
+                title="Ref. Value (pos-reverse)",
+                reverse_color=True,
+            )
+        ),
+        vm.Figure(
+            figure=kpi_card_reference(
+                data_frame=kpi_df,
+                value_column="Reference",
+                reference_column="Actual",
+                title="Ref. Value (neg-reverse)",
+                reverse_color=True,
+            ),
         ),
     ],
     controls=[vm.Filter(column="Category")],
