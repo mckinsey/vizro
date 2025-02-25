@@ -4,11 +4,7 @@ import logging
 from typing import Optional
 
 import vizro.models as vm
-
-try:
-    from pydantic.v1 import BaseModel, Field, ValidationError
-except ImportError:  # pragma: no cov
-    from pydantic import BaseModel, Field, ValidationError
+from pydantic import BaseModel, Field, ValidationError
 
 logger = logging.getLogger(__name__)
 
@@ -43,13 +39,13 @@ class LayoutPlan(BaseModel):
     """Layout plan model, which only applies to Vizro Components(Graph, AgGrid, Card)."""
 
     layout_grid_template_areas: list[str] = Field(
-        [],
+        default=[],
         description="""
         Generate grid template areas for the layout adhering to the grid-template-areas CSS property syntax.
         If no layout requested, return an empty list.
         If requested, represent each component by 'component_id'.
         IMPORTANT: Ensure that the `component_id` matches the `component_id` in the ComponentPlan.
-        If a grid area is empty, use a dot ('.') to represent it.
+        If a grid area is empty, use a single dot ('.') to represent it.
         Ensure that each row of the grid layout is represented by a string, with each grid area separated by a space.
         Return the grid template areas as a list of strings, where each string corresponds to a row in the grid.
         No more than 600 characters in total.

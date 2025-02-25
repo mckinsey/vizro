@@ -7,7 +7,7 @@ from vizro_ai.dashboard._pydantic_output import _create_message_content, _create
 def test_get_pydantic_model_valid(component_description, fake_llm, expected_card):
     result = _get_pydantic_model(query=component_description, llm_model=fake_llm, response_model=vm.Card, df_info=None)
 
-    assert result.dict(exclude={"id": True}) == expected_card.dict(exclude={"id": True})
+    assert result.model_dump(exclude={"id": True}) == expected_card.model_dump(exclude={"id": True})
 
 
 def test_get_pydantic_model_invalid(component_description, fake_llm_invalid):
