@@ -135,6 +135,7 @@ class Dropdown(VizroBaseModel):
                     multi=self.multi,
                     optionHeight=option_height,
                     clearable=False,
+                    placeholder="Select option",
                     persistence=True,
                     persistence_type="session",
                     className="dropdown",

@@ -7,8 +7,7 @@ Uncomment the section that is right (remove the HTML comment wrapper).
 
 ### Highlights ✨
 
-- Add "Select All" functionality for `vm.Checklist` and `vm.Dropdown(multi=True)`. ([#1000](https://github.com/mckinsey/vizro/pull/100))
-
+- Introduce the "Select All" option for `Checklist` and multi-select `Dropdown`. Easily select or deselect all options with a single click within the selector. ([#1000](https://github.com/mckinsey/vizro/pull/1000))
 
 <!--
 ### Removed
