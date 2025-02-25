@@ -113,3 +113,5 @@ img[src*="#chart-icon"] {
 img#banner {
   height: 16px;
 }
+
+h2 {font-size: 25px}
