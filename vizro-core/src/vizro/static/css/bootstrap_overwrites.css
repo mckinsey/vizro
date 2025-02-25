@@ -6,6 +6,7 @@ All the HEX values starting with --text-code are taken from the Github code high
 [data-bs-theme="dark"] {
   --dropdown-label-bg: var(--primary-800);
   --right-side-bg: var(--surfaces-bg03);
+  --right-side-inner-bg: var(--surfaces-bg03);
   --left-side-bg: var(--surfaces-bg02);
   --text-code-string: #95c2e7;
   --text-code-keyword: #f4766e;
@@ -18,7 +19,8 @@ All the HEX values starting with --text-code are taken from the Github code high
 
 [data-bs-theme="light"] {
   --dropdown-label-bg: var(--primary-300);
-  --right-side-bg: var(--primary-100);
+  --right-side-bg: var(--surfaces-bg02);
+  --right-side-inner-bg: var(--surfaces-bg01);
   --left-side-bg: var(--surfaces-bg01);
   --text-code-string: #0a3069;
   --text-code-keyword: #d12d39;
@@ -104,4 +106,9 @@ label[for="theme-selector"] {
 /* Remove bottom margin of last child as card comes with padding */
 .card-text > *:last-child {
   margin-bottom: 0;
+}
+
+
+#page-components {
+    background: var(--right-side-inner-bg);
 }

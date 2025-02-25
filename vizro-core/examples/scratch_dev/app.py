@@ -42,7 +42,16 @@ page = vm.Page(
     ],
 )
 
-dashboard = vm.Dashboard(pages=[page])
+page_two = vm.Page(
+    title="Graph",
+    components=[
+        vm.Graph(
+            figure=px.scatter(df, x="sepal_width", y="sepal_length", color="species"),
+        ),
+    ],
+)
+
+dashboard = vm.Dashboard(pages=[page, page_two])
 
 if __name__ == "__main__":
     Vizro().build(dashboard).run()
