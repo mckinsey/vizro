@@ -108,5 +108,4 @@ class Container(VizroBaseModel):
             "fluid": True,
         }
 
-        finals = defaults | self.extra
-        return dbc.Container(**finals)
+        return dbc.Container(**(defaults | self.extra))

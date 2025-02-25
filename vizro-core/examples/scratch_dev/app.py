@@ -54,7 +54,24 @@ page_two = vm.Page(
     ],
 )
 
-dashboard = vm.Dashboard(pages=[page, page_two])
+page_card = vm.Page(
+    title="Card",
+    components=[
+        vm.Card(text="""First card"""),  # type: ignore
+        vm.Card(text="""Second card""", extra={"class_name": "bg-success"}),  # type: ignore
+    ],
+)
+
+page_button = vm.Page(
+    title="Button",
+    components=[
+        vm.Button(text="Default button"),  # type: ignore
+        vm.Button(text="Primary button", extra={"color": "primary"}),  # type: ignore
+        vm.Button(text="Success button", extra={"color": "success", "outline": True}),  # type: ignore
+    ],
+)
+
+dashboard = vm.Dashboard(pages=[page, page_two, page_card, page_button])
 
 if __name__ == "__main__":
     Vizro().build(dashboard).run()
