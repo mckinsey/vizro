@@ -222,7 +222,6 @@ class TestDropdownBuild:
 
     def test_dropdown_build_with_extra(self):
         """Test that extra arguments correctly override defaults."""
-
         dropdown = Dropdown(
             options=["A", "B", "C"],
             title="Title",
