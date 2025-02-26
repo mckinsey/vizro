@@ -39,24 +39,28 @@ This schema tells us that whenever we receive JSON data, and want to check wheth
 In practice this means that the following data would be valid or invalid.
 
 === "valid"
-
     ```json
     {
-    "A": 1,
-    "B": ["a", "b"]
+      "A": 1,
+      "B": [
+        "a",
+        "b"
+      ]
     }
     ```
 
 === "invalid"
-
     ```json
     {
-    "A": 1,
-    "B": ["a", 3]
+      "A": 1,
+      "B": [
+        "a",
+        3
+      ]
     }
     ```
-=== "also invalid"
 
+=== "also invalid"
     ```json
     {
     "A": 1,
@@ -67,44 +71,43 @@ In practice this means that the following data would be valid or invalid.
 
 Similar to the above example, the Vizro framework also has a JSON schema. It can be [found on our GitHub repository](https://github.com/mckinsey/vizro/tree/main/vizro-core/schemas). It is of course much more complicated than the simple schema above, but it follows generally the same principle.
 
-This means you can configure a Vizro dashboard according to a set of constraints that are defined in the schema. The configuration language that you choose is secondary - it can be via Python, but also via JSON or YAML. Exactly this is shown in [our showcase of configuration options](../user-guides/dashboard.md#use-dashboard-configuration-options). 
-
+This means you can configure a Vizro dashboard according to a set of constraints that are defined in the schema. The configuration language that you choose is secondary - it can be via Python, but also via JSON or YAML. Exactly this is shown in [our showcase of configuration options](../user-guides/dashboard.md#use-dashboard-configuration-options).
 
 === "This json..."
     ```json
     {
-        "pages": [
+      "pages": [
         {
-            "components": [
+          "components": [
             {
-                "figure": {
+              "figure": {
                 "_target_": "scatter",
                 "color": "species",
                 "data_frame": "iris",
                 "x": "sepal_length",
                 "y": "petal_width"
-                },
-                "type": "graph"
+              },
+              "type": "graph"
             },
             {
-                "figure": {
+              "figure": {
                 "_target_": "histogram",
                 "color": "species",
                 "data_frame": "iris",
                 "x": "sepal_width"
-                },
-                "type": "graph"
+              },
+              "type": "graph"
             }
-            ],
-            "controls": [
+          ],
+          "controls": [
             {
-                "column": "species",
-                "type": "filter"
+              "column": "species",
+              "type": "filter"
             }
-            ],
-            "title": "My first dashboard"
+          ],
+          "title": "My first dashboard"
         }
-        ]
+      ]
     }
     ```
 
@@ -115,17 +118,19 @@ This means you can configure a Vizro dashboard according to a set of constraints
     The Vizro schema is not yet complete. This means that it does not yet define everything that we consider a core and supported functionality of Vizro. The most prominent example of this is the [`CapturedCallable`][vizro.models.types.CapturedCallable] - the objects you insert into many models such as `vm.Graph`, `vm.Table` or `vm.Action`, often into the `figure` argument.
 
     This does not mean that it cannot be configured in JSON - in fact, in the config above we have used the following JSON:
+
     ```json
     {
-        "figure": {
+      "figure": {
         "_target_": "histogram",
         "color": "species",
         "data_frame": "iris",
         "x": "sepal_width"
-        },
-        "type": "graph"
+      },
+      "type": "graph"
     }
     ```
+
     It does mean however that e.g. `figure` does not appear in the schema - and as such is not clearly defined as part of the Vizro framework, although it should. We are working on completing the Vizro schema in the future.
 
 ## The role of Pydantic
@@ -147,7 +152,5 @@ At the moment, the Vizro framework serves [Dash](https://github.com/plotly/dash)
 Some of our models, e.g. the [`Container`][vizro.models.Container], have an argument called `extra`. This argument allows the user to pass extra arguments directly to the underlying component of the model. In the case of the `Container` this would be the [`dbc.Container`](https://dash-bootstrap-components.opensource.faculty.ai/docs/components/layout/).
 
 This is clearly implementation specific, and as such, the `extra` argument of on purpose excluded from the Vizro schema. The argument helps users to get the maximum flexibility quickly without having to go beyond the Vizro framework, but it should not be assumed to be a core part of Vizro. As such, this argument may break in future releases of Vizro.
-
-
 
 [dashboard]: ../../assets/user_guides/dashboard/dashboard.png
