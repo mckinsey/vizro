@@ -123,6 +123,65 @@ def expected_range_slider_with_optional():
     )
 
 
+@pytest.fixture()
+def expected_range_slider_with_extra():
+    return html.Div(
+        [
+            dcc.Store(id="range_slider_callback_data", data={"id": "range_slider", "min": 0.0, "max": 10.0}),
+            html.Div(
+                [
+                    dbc.Label("Title", html_for="range_slider"),
+                    html.Div(
+                        [
+                            dcc.Input(
+                                id="range_slider_start_value",
+                                type="number",
+                                placeholder="min",
+                                min=0.0,
+                                max=10.0,
+                                step=2.0,
+                                value=[0, 10][0],
+                                persistence=True,
+                                persistence_type="session",
+                                className="slider-text-input-field",
+                            ),
+                            html.Span("-", className="slider-text-input-range-separator"),
+                            dcc.Input(
+                                id="range_slider_end_value",
+                                type="number",
+                                placeholder="max",
+                                min=0.0,
+                                max=10.0,
+                                step=2.0,
+                                value=[0, 10][1],
+                                persistence=True,
+                                persistence_type="session",
+                                className="slider-text-input-field",
+                            ),
+                            dcc.Store(id="range_slider_input_store", storage_type="session"),
+                        ],
+                        className="slider-text-input-container",
+                    ),
+                ],
+                className="slider-label-input",
+            ),
+            dcc.RangeSlider(
+                id="range_slider",
+                min=0.0,
+                max=10.0,
+                step=2.0,
+                marks={1: "1", 5: "5", 10: "10"},
+                value=[0, 10],
+                persistence=True,
+                persistence_type="session",
+                className="slider-track-with-marks",
+                tooltip={"placement": "bottom", "always_visible": True},
+                pushable=20,
+            ),
+        ]
+    )
+
+
 class TestRangeSliderInstantiation:
     """Tests model instantiation."""
 
@@ -284,7 +343,6 @@ class TestRangeSliderBuild:
 
     def test_range_slider_build_default(self, expected_range_slider_default):
         range_slider = vm.RangeSlider(id="range_slider").build()
-
         assert_component_equal(range_slider, expected_range_slider_default)
 
     def test_range_slider_build_with_optional(self, expected_range_slider_with_optional):
@@ -297,5 +355,22 @@ class TestRangeSliderBuild:
             value=[0, 10],
             title="Title",
         ).build()
-
         assert_component_equal(range_slider, expected_range_slider_with_optional)
+
+    def test_range_slider_build_with_extra(self, expected_range_slider_with_extra):
+        """Test that extra arguments correctly override defaults."""
+        range_slider = vm.RangeSlider(
+            id="range_slider",
+            min=0,
+            max=10,
+            step=2,
+            marks={1: "1", 5: "5", 10: "10"},
+            value=[0, 10],
+            title="Title",
+            extra={
+                "tooltip": {"placement": "bottom", "always_visible": True},
+                "pushable": 20,
+            },
+        ).build()
+
+        assert_component_equal(range_slider, expected_range_slider_with_extra)

@@ -44,6 +44,17 @@ class TestButtonInstantiation:
 
 
 class TestBuildMethod:
+    def test_button_build(self):
+        result = vm.Button(id="button", text="Click me").build()
+        assert_component_equal(result, dbc.Button("Click me", id="button", href="", target="_top"))
+
+    def test_button_build_with_extra(self):
+        """Test that extra arguments correctly override defaults."""
+        result = vm.Button(id="button", text="Click me", extra={"color": "success", "outline": True}).build()
+        assert_component_equal(
+            result, dbc.Button("Click me", id="button", color="success", outline=True, href="", target="_top")
+        )
+
     def test_button_build_wo_href(self):
         button = vm.Button(id="button_id", text="My text").build()
         expected = dbc.Button(id="button_id", children="My text", href="", target="_top")

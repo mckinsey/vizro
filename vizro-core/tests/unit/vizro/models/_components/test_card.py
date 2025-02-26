@@ -41,6 +41,19 @@ class TestCardInstantiation:
 class TestBuildMethod:
     """Tests build method."""
 
+    def test_card_build_with_extra(self):
+        """Test that extra arguments correctly override defaults."""
+        card = vm.Card(id="card_id", text="Hello", extra={"color": "success", "outline": True}).build()
+        assert_component_equal(
+            card,
+            dbc.Card(
+                dcc.Markdown(id="card_id", children="Hello", dangerously_allow_html=False, className="card-text"),
+                class_name="",
+                color="success",
+                outline=True,
+            ),
+        )
+
     def test_card_build_with_href(self):
         card = vm.Card(id="card_id", text="Hello", href="https://www.google.com")
         card = card.build()
