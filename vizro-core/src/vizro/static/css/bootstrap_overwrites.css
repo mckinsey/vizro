@@ -7,7 +7,7 @@ All the HEX values starting with --text-code are taken from the Github code high
   --dropdown-label-bg: var(--primary-800);
   --right-side-bg: var(--surfaces-bg03);
   --right-side-inner-bg: var(--surfaces-bg03);
-  --figure-container-bg: var(--surfaces-bg03);
+  --figure-container-bg: var(--surfaces-bg-card);
   --left-side-bg: var(--surfaces-bg02);
   --text-code-string: #95c2e7;
   --text-code-keyword: #f4766e;
@@ -22,7 +22,7 @@ All the HEX values starting with --text-code are taken from the Github code high
   --dropdown-label-bg: var(--primary-300);
   --right-side-bg: var(--surfaces-bg02);
   --right-side-inner-bg: var(--surfaces-bg02);
-  --figure-container-bg: var(--surfaces-bg01);
+  --figure-container-bg: var(--surfaces-bg-card);
   --left-side-bg: var(--surfaces-bg01);
   --text-code-string: #0a3069;
   --text-code-keyword: #d12d39;
@@ -120,6 +120,6 @@ label[for="theme-selector"] {
   background: var(--figure-container-bg);
 }
 
-[data-bs-theme="light"] .figure-container {
+.figure-container {
   padding: 12px;
 }
