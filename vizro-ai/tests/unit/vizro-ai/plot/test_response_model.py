@@ -3,7 +3,13 @@ import plotly.express as ppx
 import pytest
 import vizro.plotly.express as px
 
-from vizro_ai.plot._response_models import BaseChartPlan, ChartPlan, ChartPlanFactory
+from vizro_ai.plot._response_models import (
+    BaseChartPlan,
+    ChartPlan,
+    ChartPlanFactory,
+    _check_chart_code,
+    _strip_markdown,
+)
 
 df = px.data.iris()
 
@@ -329,3 +335,58 @@ def test_base_chart_plan_no_explanatory_fields(valid_chart_code):
 
     with pytest.raises(AttributeError):
         _ = instance.code_explanation
+
+
+class TestStripMarkdown:
+    """Tests for the _strip_markdown function."""
+
+    @pytest.mark.parametrize(
+        "input_code, expected_output",
+        [
+            ('"""def custom_chart():\n    return None"""', "def custom_chart():\n    return None"),
+            ("```python\ndef custom_chart():\n    return None\n```", "def custom_chart():\n    return None"),
+            ("```py\ndef custom_chart():\n    return None\n```", "def custom_chart():\n    return None"),
+            ("```\ndef custom_chart():\n    return None\n```", "def custom_chart():\n    return None"),
+            ("def custom_chart():\n    return None", "def custom_chart():\n    return None"),
+        ],
+    )
+    def test_strip_markdown_variations(self, input_code, expected_output):
+        assert _strip_markdown(input_code) == expected_output
+
+
+class TestCheckChartCode:
+    """Tests for the _check_chart_code function."""
+
+    def test_valid_chart_code(self):
+        valid_code = """def custom_chart(data_frame):
+    return px.scatter(data_frame)"""
+        assert _check_chart_code(valid_code) == valid_code
+
+    @pytest.mark.parametrize(
+        "invalid_code, expected_error",
+        [
+            (
+                """def wrong_name(data_frame):
+    return px.scatter(data_frame)""",
+                "The chart code must be wrapped in a function named `custom_chart`",
+            ),
+            (
+                """def custom_chart(df):
+    return px.scatter(df)""",
+                "The chart code must accept a single argument `data_frame`",
+            ),
+            (
+                """import px
+def custom_chart(data_frame):
+    return px.scatter(data_frame)""",
+                None,  # Should pass - imports before function are stripped
+            ),
+        ],
+    )
+    def test_invalid_chart_code(self, invalid_code, expected_error):
+        if expected_error:
+            with pytest.raises(ValueError, match=expected_error):
+                _check_chart_code(invalid_code)
+        else:
+            result = _check_chart_code(invalid_code)
+            assert result.startswith("def custom_chart")
