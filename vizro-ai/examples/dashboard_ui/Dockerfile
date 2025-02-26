@@ -34,4 +34,4 @@ COPY --chown=user . $HOME/app
 
 EXPOSE 7860
 
-CMD ["gunicorn", "-w", "4", "-b", "0.0.0.0:7860", "app:server"]
+CMD ["gunicorn", "-w", "4", "-b", "0.0.0.0:7860", "app:app"]

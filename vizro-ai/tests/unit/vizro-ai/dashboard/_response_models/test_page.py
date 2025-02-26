@@ -1,11 +1,7 @@
 import pytest
+from pydantic import ValidationError
 
 from vizro_ai.dashboard._response_models.page import PagePlan
-
-try:
-    from pydantic.v1 import ValidationError
-except ImportError:  # pragma: no cov
-    from pydantic import ValidationError
 
 
 class TestPageCreate:
