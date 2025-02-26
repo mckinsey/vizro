@@ -1,5 +1,6 @@
 """Dev app to try things out."""
 
+from datetime import date
 from os import chown
 
 import pandas as pd
@@ -159,7 +160,118 @@ page_radio = vm.Page(
     ],
 )
 
-dashboard = vm.Dashboard(pages=[page, page_two, page_card, page_button, page_dropdown, page_checklist, page_radio])
+vm.Container.add_type("components", vm.Slider)
+
+page_slider = vm.Page(
+    title="Slider",
+    components=[
+        vm.Container(
+            title="Slider examples",
+            components=[
+                vm.Slider(
+                    title="Default slider",
+                    min=0,
+                    max=100,
+                    step=20,
+                ),
+                vm.Slider(
+                    title="Slider with tooltip",
+                    min=0,
+                    max=100,
+                    step=20,
+                    extra={"tooltip": {"placement": "bottom", "always_visible": True}},
+                ),
+            ],
+        ),
+    ],
+)
+
+vm.Container.add_type("components", vm.RangeSlider)
+
+page_range_slider = vm.Page(
+    title="Range Slider",
+    components=[
+        vm.Container(
+            title="Range Slider examples",
+            components=[
+                vm.RangeSlider(
+                    title="Default range slider",
+                    min=0,
+                    max=100,
+                    step=20,
+                ),
+                vm.RangeSlider(
+                    title="Range slider with marks",
+                    min=0,
+                    max=100,
+                    step=20,
+                    marks={0: "0%", 20: "20%", 40: "40%", 60: "60%", 80: "80%", 100: "100%"},
+                    extra={
+                        "tooltip": {"placement": "bottom", "always_visible": True},
+                        "pushable": 20,
+                    },
+                ),
+            ],
+        ),
+    ],
+)
+
+vm.Container.add_type("components", vm.DatePicker)
+
+page_date_picker = vm.Page(
+    title="Date Picker",
+    components=[
+        vm.Container(
+            title="Date Picker examples",
+            components=[
+                vm.DatePicker(
+                    title="Default date picker",
+                    min=date(2024, 1, 1),
+                    max=date(2024, 12, 31),
+                ),
+                vm.DatePicker(
+                    title="Custom styled date picker",
+                    min=date(2024, 1, 1),
+                    max=date(2024, 12, 31),
+                    range=False,
+                    extra={
+                        "size": "lg",
+                        "valueFormat": "DD/MM/YYYY",
+                        "placeholder": "Select a date",
+                    },
+                ),
+                vm.DatePicker(
+                    title="Range date picker with custom style",
+                    min=date(2024, 1, 1),
+                    max=date(2024, 12, 31),
+                    range=True,
+                    extra={
+                        "size": "lg",
+                        "valueFormat": "DD/MM/YYYY",
+                        "placeholder": "Select date range",
+                        "style": {"width": "300px"},
+                        "dropdownType": "modal",
+                    },
+                ),
+            ],
+        ),
+    ],
+)
+
+dashboard = vm.Dashboard(
+    pages=[
+        page,
+        page_two,
+        page_card,
+        page_button,
+        page_dropdown,
+        page_checklist,
+        page_radio,
+        page_slider,
+        page_range_slider,
+        page_date_picker,
+    ]
+)
 
 if __name__ == "__main__":
     Vizro().build(dashboard).run()
