@@ -1,76 +1,30 @@
 # Explore Vizro
+
 In this tutorial, we will develop an interactive dashboard featuring multiple pages. By the end, you'll be able to:
 
 - Get to know most of [Vizro's components](../user-guides/components.md)
 - Use the Vizro visual vocabulary as guidance to create charts
 - Create custom charts using [Plotly Express](https://plotly.com/python-api-reference/plotly.express.html).
 - Build multiple dashboard pages.
-- Customize the layout of your pages.
-- Add interactivity to your dashboard using controls and actions.
-- Configure the navigation within your dashboard.
+- Customize the layout of our pages.
+- Add interactivity to our dashboard using controls and actions.
+- Configure the navigation within our dashboard.
+- Add a logo to our dashboard
 
-
-We will be using the [tips dataset](https://plotly.com/python-api-reference/generated/plotly.express.data.html#plotly.express.data.tips).
-for this example to understand when to get the best tips!
+We will be using the [tips dataset](https://plotly.com/python-api-reference/generated/plotly.express.data.html#plotly.express.data.tips). for this example to understand when to get the best tips!
 
 If you haven't yet done so, you may want to review the [first dashboard tutorial](../tutorials/first-dashboard.md) before starting on this one.
 
 Ready to get started? Let's go!
 
-
 ## 1. (Optional) Install Vizro and get ready to run your code
 
-The code for this tutorial is all available for you to experiment with in [PyCafe](https://py.cafe/) so there is no need to install Vizro and run it locally. For more about how this works, check out the [PyCafe documentation](https://py.cafe/docs/apps/vizro).
+The code for this tutorial is all available for you to experiment with in [PyCafe](https://py.cafe/huong-li-nguyen/vizro-analyzing-restaurant-tips) so there is no need to install Vizro and run it locally. For more about how this works, check out the [PyCafe documentation](https://py.cafe/docs/apps/vizro).
 
 However, if you prefer working in a Notebook or Python script, you should [install Vizro](../user-guides/install.md).
 
-## 2. Create a first dashboard page
-
-In this section we create a new [`Page`][vizro.models.Page] called `first_page`.
-
-The foundation of every Vizro dashboard is a [`Page`][vizro.models.Page] object. A page uses a set of [component types](../user-guides/components.md) to display the content of the page. These components can be objects such as [`Graph`][vizro.models.Graph], [`Table`][vizro.models.Table], [`Card`][vizro.models.Card], [`Button`][vizro.models.Button], [`Container`][vizro.models.Container], or [`Tabs`][vizro.models.Tabs].
-
-### 2.1. Add the first figure
-
-Vizro uses [`Graph`][vizro.models.Graph] objects and [Plotly Express functions](https://plotly.com/python-api-reference/plotly.express.html) to build different types of [figures](https://plotly.com/python-api-reference/generated/plotly.graph_objects.Figure.html).
-
-The code below shows the steps necessary to add a box plot to the page:
-
-1. Add a Vizro [`Graph`][vizro.models.Graph] to the `components` list.
-1. Add a [`plotly.express.box`](https://plotly.com/python-api-reference/generated/plotly.express.box.html#plotly.express.box) figure to the list of components.
-
-!!! example "First component"
-    === "app.py"
-        ```{.python pycafe-link}
-        from vizro import Vizro
-        import vizro.models as vm
-        import vizro.plotly.express as px
-
-        df = px.data.gapminder()
-        gapminder_data = (
-                df.groupby(by=["continent", "year"]).
-                    agg({"lifeExp": "mean", "pop": "sum", "gdpPercap": "mean"}).reset_index()
-            )
-
-        first_page = vm.Page(
-            title="First Page",
-            components=[
-                vm.Graph(
-                    figure=px.box(gapminder_data, x="continent", y="lifeExp", color="continent",
-                                    labels={"lifeExp": "Life Expectancy", "continent": "Continent"}),
-                ),
-            ],
-        )
-
-        dashboard = vm.Dashboard(pages=[first_page])
-        Vizro().build(dashboard).run()
-        ```
-
-    === "Result"
-        [![FirstPage1]][firstpage1]
-
 ??? note "To run the dashboard in a Notebook or script"
-    Paste the above code into a Notebook cell, run the Notebook, and evaluate it.
+    Paste the code in a Notebook cell, run the Notebook, and evaluate it.
 
     ---
 
@@ -83,7 +37,50 @@ The code below shows the steps necessary to add a box plot to the page:
 
     Once the script is running, open your web browser and go to `localhost:8050`. You should see the dashboard page with the gapminder data displayed, as shown in the `Result` tab above.
 
+## 2. Create a first dashboard page with a figure
+In this section, we will create a new [`Page`][vizro.models.Page] and store it inside a variable called `first_page`.
+
+A [Page][vizro.models.Page] model is the foundation of any Vizro dashboard. A page uses a set of [component types](../user-guides/components.md) to display content.
+These components can include models such as [Graph][vizro.models.Graph], [AgGrid][vizro.models.AgGrid], [Card][vizro.models.Card], [Figure][vizro.models.Figure], [Button][vizro.models.Button], [Container][vizro.models.Container], and [Tabs][vizro.models.Tabs].
+
+To start, let's get an overview of the data and display it in a table using [AgGrid][vizro.models.AgGrid]. 
+To create a page and add a table to it, follow these steps:
+
+1. Set the title of the [Page][vizro.models.Page] to "Data".
+1. Add a Vizro [AgGrid][vizro.models.AgGrid] to the components list.
+1. Use the `dash_ag_grid` function for the figure argument in vm.AgGrid.
+1. Provide details about the data source in the footer argument of the AgGrid.
+
+
+!!! example "First Page"
+    === "app.py"
+        ```{.python pycafe-link}
+        import vizro.models as vm
+        from vizro import Vizro
+        from vizro.tables import dash_ag_grid
+
+        tips = px.data.tips()
+
+        first_page = vm.Page(
+            title="Data",
+            components=[
+                vm.AgGrid(
+                    figure=dash_ag_grid(tips),
+                    footer="""**Data Source:** Bryant, P. G. and Smith, M (1995) Practical Data Analysis: Case Studies in Business Statistics. Homewood, IL: Richard D. Irwin Publishing.""",
+                ),
+            ],
+        )
+
+        dashboard = vm.Dashboard(pages=[first_page])
+        Vizro().build(dashboard).run()
+        ```
+
+    === "Result"
+        [![FirstPage1]][firstpage1]
+
 As you can see from the code, `first_page` is added to the [`Dashboard`][vizro.models.Dashboard] and the dashboard is displayed by running `Vizro().build(dashboard).run()`.
+
+**Congratulations, you created your first page! 🎉**
 
 ### 2.2. Add further components
 
@@ -587,7 +584,7 @@ Vizro doesn't end here, and we only covered the key features, but there is still
 
 [finalpage1]: ../../assets/tutorials/dashboard/dashboard-first-page.png
 [finalpage2]: ../../assets/tutorials/dashboard/dashboard-second-page.png
-[firstpage1]: ../../assets/tutorials/dashboard/dashboard21.png
+[firstpage1]: ../../assets/tutorials/dashboard/01-first-page-table.png
 [firstpage2]: ../../assets/tutorials/dashboard/dashboard22.png
 [firstpage3]: ../../assets/tutorials/dashboard/dashboard23.png
 [firstpage4]: ../../assets/tutorials/dashboard/dashboard24.png
