@@ -6,7 +6,7 @@ from vizro.models.types import capture
 
 
 @capture("table")
-def custom_table(data_frame=None, chosen_columns: Optional[list[str]] = None):
+def table_with_filtered_columns(data_frame=None, chosen_columns: Optional[list[str]] = None):
     """Custom table with added logic to filter on chosen columns."""
     columns = [{"name": i, "id": i} for i in chosen_columns]
     defaults = {

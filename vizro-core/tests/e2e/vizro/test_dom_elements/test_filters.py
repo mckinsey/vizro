@@ -7,18 +7,26 @@ from e2e.vizro.checkers import (
     check_slider_value,
 )
 from e2e.vizro.navigation import page_select
-from e2e.vizro.paths import categorical_components_value_path, select_all_path, slider_value_path
+from e2e.vizro.paths import categorical_components_value_path, dropdown_arrow_path, select_all_path, slider_value_path
 from e2e.vizro.waiters import graph_load_waiter
 from hamcrest import assert_that, equal_to
 
 
-def test_dropdown_all_value(dash_br):
+def test_dropdown_select_all_value(dash_br):
+    """Test interacts with Select All checkbox in dropdown.
+
+    1. Click 'Select All'. It will clear all chosen options.
+    2. Check how options in dropdown looks like.
+    3. Click 'Select All'. It will make all options chosen.
+    4. Check how options in dropdown looks like.
+    """
     page_select(dash_br, page_path=cnst.FILTERS_PAGE_PATH, page_name=cnst.FILTERS_PAGE, graph_id=cnst.SCATTER_GRAPH_ID)
-    # unselect 'ALL'
-    dash_br.multiple_click(".Select-arrow", 1)
+    # click dropdown arrow to open the list
+    dash_br.multiple_click(dropdown_arrow_path(), 1)
+    # unselect 'Select All'
     dash_br.multiple_click(select_all_path(elem_id=cnst.DROPDOWN_FILTER_FILTERS_PAGE), 1)
     check_graph_is_loading(dash_br, graph_id=cnst.SCATTER_GRAPH_ID)
-    dash_br.multiple_click(".Select-arrow", 1)
+    dash_br.multiple_click(dropdown_arrow_path(), 1)
     check_selected_dropdown(
         dash_br,
         dropdown_id=cnst.DROPDOWN_FILTER_FILTERS_PAGE,
@@ -26,10 +34,10 @@ def test_dropdown_all_value(dash_br):
         expected_selected_options=[],
         expected_unselected_options=["setosa", "versicolor", "virginica"],
     )
-    # select 'ALL'
+    # select 'Select All'
     dash_br.multiple_click(select_all_path(elem_id=cnst.DROPDOWN_FILTER_FILTERS_PAGE), 1)
     check_graph_is_loading(dash_br, graph_id=cnst.SCATTER_GRAPH_ID)
-    dash_br.multiple_click(".Select-arrow", 1)
+    dash_br.multiple_click(dropdown_arrow_path(), 1)
     check_selected_dropdown(
         dash_br,
         dropdown_id=cnst.DROPDOWN_FILTER_FILTERS_PAGE,
@@ -39,7 +47,14 @@ def test_dropdown_all_value(dash_br):
     )
 
 
-def test_dropdown_options_value(dash_br):
+def test_dropdown_options_values(dash_br):
+    """Test interacts with options values in dropdown.
+
+    1. Delete 'virginica' option.
+    2. Check how options in dropdown looks like.
+    3. Clear all chosen options and select 'setosa' only.
+    4. Check how options in dropdown looks like.
+    """
     page_select(dash_br, page_path=cnst.FILTERS_PAGE_PATH, page_name=cnst.FILTERS_PAGE, graph_id=cnst.SCATTER_GRAPH_ID)
     # delete last option 'virginica'
     dash_br.clear_input(f"#{cnst.DROPDOWN_FILTER_FILTERS_PAGE}")
@@ -51,11 +66,13 @@ def test_dropdown_options_value(dash_br):
         expected_selected_options=["setosa", "versicolor"],
         expected_unselected_options=["virginica"],
     )
-    # clear dropdown and choose one option 'setosa'
-    dash_br.multiple_click(".Select-clear", 1)
+    # clear dropdown
+    dash_br.clear_input(f"#{cnst.DROPDOWN_FILTER_FILTERS_PAGE}")
+    dash_br.clear_input(f"#{cnst.DROPDOWN_FILTER_FILTERS_PAGE}")
+    # choose one option 'setosa'
     dash_br.select_dcc_dropdown(f"#{cnst.DROPDOWN_FILTER_FILTERS_PAGE}", "setosa")
     check_graph_is_loading(dash_br, graph_id=cnst.SCATTER_GRAPH_ID)
-    dash_br.multiple_click(".Select-arrow", 1)
+    dash_br.multiple_click(dropdown_arrow_path(), 1)
     check_selected_dropdown(
         dash_br,
         dropdown_id=cnst.DROPDOWN_FILTER_FILTERS_PAGE,
@@ -66,13 +83,14 @@ def test_dropdown_options_value(dash_br):
 
 
 def test_dropdown_persistence(dash_br):
+    """Check that chosen values persistent after page reload."""
     page_select(dash_br, page_path=cnst.FILTERS_PAGE_PATH, page_name=cnst.FILTERS_PAGE, graph_id=cnst.SCATTER_GRAPH_ID)
     # delete last option 'virginica'
     dash_br.clear_input(f"#{cnst.DROPDOWN_FILTER_FILTERS_PAGE}")
     check_graph_is_loading(dash_br, graph_id=cnst.SCATTER_GRAPH_ID)
     page_select(dash_br, page_path=cnst.HOME_PAGE_PATH, page_name=cnst.HOME_PAGE, graph_id=cnst.AREA_GRAPH_ID)
     page_select(dash_br, page_path=cnst.FILTERS_PAGE_PATH, page_name=cnst.FILTERS_PAGE, graph_id=cnst.SCATTER_GRAPH_ID)
-    dash_br.multiple_click(".Select-arrow", 1)
+    dash_br.multiple_click(dropdown_arrow_path(), 1)
     check_selected_dropdown(
         dash_br,
         dropdown_id=cnst.DROPDOWN_FILTER_FILTERS_PAGE,
@@ -88,6 +106,7 @@ def test_dropdown_persistence(dash_br):
     ids=["checklist", "radio_items"],
 )
 def test_categorical_filters(dash_br, filter_id):
+    """Check if checklist and radio_items available and triggering graph reload."""
     page_select(dash_br, page_path=cnst.FILTERS_PAGE_PATH, page_name=cnst.FILTERS_PAGE, graph_id=cnst.SCATTER_GRAPH_ID)
     dash_br.multiple_click(categorical_components_value_path(elem_id=filter_id, value=2), 1)
     check_graph_is_loading(dash_br, graph_id=cnst.SCATTER_GRAPH_ID)
@@ -136,11 +155,12 @@ def test_categorical_filters(dash_br, filter_id):
         "unchecked one option",
         "checked one option only",
         "unchecked all options",
-        "unchecked 'ALL' only",
-        "checked 'ALL' only",
+        "unchecked 'Select All' only",
+        "checked 'Select All' only",
     ],
 )
 def test_checklist(dash_br, value_paths, select_all_status, options_value_status):
+    """Checks checklist with different options selected."""
     filter_id = cnst.CHECK_LIST_FILTER_FILTERS_PAGE
     page_select(dash_br, page_path=cnst.FILTERS_PAGE_PATH, page_name=cnst.FILTERS_PAGE, graph_id=cnst.SCATTER_GRAPH_ID)
     for path in value_paths:
@@ -152,6 +172,7 @@ def test_checklist(dash_br, value_paths, select_all_status, options_value_status
 
 
 def test_checklist_persistence(dash_br):
+    """Check that chosen values persistent after page reload."""
     filter_id = cnst.CHECK_LIST_FILTER_FILTERS_PAGE
     page_select(dash_br, page_path=cnst.FILTERS_PAGE_PATH, page_name=cnst.FILTERS_PAGE, graph_id=cnst.SCATTER_GRAPH_ID)
     dash_br.multiple_click(categorical_components_value_path(elem_id=cnst.CHECK_LIST_FILTER_FILTERS_PAGE, value=2), 1)
@@ -171,6 +192,7 @@ def test_checklist_persistence(dash_br):
 
 
 def test_slider(dash_br):
+    """Checks if slider available and triggering graph reload. Also checks new slider value."""
     page_select(dash_br, page_path=cnst.FILTERS_PAGE_PATH, page_name=cnst.FILTERS_PAGE, graph_id=cnst.SCATTER_GRAPH_ID)
     dash_br.multiple_click(slider_value_path(elem_id=cnst.SLIDER_FILTER_FILTERS_PAGE, value=2), 1)
     check_graph_is_loading(dash_br, graph_id=cnst.SCATTER_GRAPH_ID)
@@ -181,6 +203,7 @@ def test_slider(dash_br):
 # Right now is failing with the next error:
 # AssertionError: Element number is '4', but expected number is '4.3'
 def test_range_slider(dash_br):
+    """Checks if range_slider available and triggering graph reload. Also checks new range_slider values."""
     page_select(dash_br, page_path=cnst.FILTERS_PAGE_PATH, page_name=cnst.FILTERS_PAGE, graph_id=cnst.SCATTER_GRAPH_ID)
     dash_br.multiple_click(slider_value_path(elem_id=cnst.RANGE_SLIDER_FILTER_FILTERS_PAGE, value=4), 1)
     check_graph_is_loading(dash_br, graph_id=cnst.SCATTER_GRAPH_ID)
@@ -189,13 +212,15 @@ def test_range_slider(dash_br):
     )
 
 
-def test_dropdown_homepage(dash_br):
+def test_dropdown_multi_false_homepage(dash_br):
+    """Checks dropdown with multi=False."""
     graph_load_waiter(dash_br, graph_id=cnst.AREA_GRAPH_ID)
     dash_br.select_dcc_dropdown(f"#{cnst.DROPDOWN_FILTER_HOMEPAGE}", "virginica")
     check_graph_is_loading(dash_br, cnst.AREA_GRAPH_ID)
 
 
 def test_dropdown_kpi_indicators_page(dash_br):
+    """Checks filtering for KPI cards."""
     page_select(dash_br, page_path=cnst.KPI_INDICATORS_PAGE_PATH, page_name=cnst.KPI_INDICATORS_PAGE)
     dash_br.wait_for_text_to_equal(".card-body", "67434")
     values = dash_br.find_elements(".card-body")

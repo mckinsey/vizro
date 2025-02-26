@@ -1,4 +1,4 @@
-from custom_charts.table_custom import custom_table
+from custom_charts.table_custom import table_with_filtered_columns
 from e2e.vizro import constants as cnst
 
 import vizro.models as vm
@@ -13,7 +13,7 @@ parameters_multi_page = vm.Page(
         vm.Table(
             id=cnst.TABLE_DROPDOWN,
             title="Dropdown",
-            figure=custom_table(
+            figure=table_with_filtered_columns(
                 data_frame=gapminder_2007,
                 chosen_columns=["country", "continent", "lifeExp", "pop", "gdpPercap"],
             ),
@@ -21,7 +21,7 @@ parameters_multi_page = vm.Page(
         vm.Table(
             id=cnst.TABLE_CHECKLIST,
             title="Checklist",
-            figure=custom_table(
+            figure=table_with_filtered_columns(
                 data_frame=gapminder_2007,
                 chosen_columns=["country", "continent", "lifeExp", "pop", "gdpPercap"],
             ),
@@ -38,7 +38,6 @@ parameters_multi_page = vm.Page(
                 id=cnst.DROPDOWN_PARAM_MULTI,
                 title="Choose columns",
                 options=gapminder_2007.columns.to_list(),
-                multi=True,
             ),
         ),
     ],

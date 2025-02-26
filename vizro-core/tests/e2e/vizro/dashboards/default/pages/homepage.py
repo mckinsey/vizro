@@ -66,7 +66,6 @@ homepage = vm.Page(
     controls=[
         vm.Filter(
             column="species",
-            targets=[cnst.AREA_GRAPH_ID],
             selector=vm.Dropdown(id=cnst.DROPDOWN_FILTER_HOMEPAGE, multi=False),
         ),
     ],
