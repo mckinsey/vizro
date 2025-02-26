@@ -36,7 +36,6 @@ parameters_multi_page = vm.Page(
             targets=[f"{cnst.TABLE_DROPDOWN}.chosen_columns"],
             selector=vm.Dropdown(
                 id=cnst.DROPDOWN_PARAM_MULTI,
-                title="Choose columns",
                 options=gapminder_2007.columns.to_list(),
             ),
         ),
