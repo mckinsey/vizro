@@ -1,1 +1,1 @@
-# Vizro schema and grammer of dashboards
+# Vizro schema and grammar of dashboards

@@ -51,7 +51,7 @@ class TestBuildMethod:
                 href="https://www.google.com",
                 target="_top",
             ),
-            className="card-nav",
+            class_name="card-nav",
         )
 
         assert_component_equal(card, expected_card)
@@ -63,7 +63,7 @@ class TestBuildMethod:
             card,
             dbc.Card(
                 dcc.Markdown(id="card_id", children="Hello", dangerously_allow_html=False, className="card-text"),
-                className="",
+                class_name="",
             ),
         )
 
