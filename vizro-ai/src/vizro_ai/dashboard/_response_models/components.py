@@ -3,12 +3,8 @@
 import logging
 
 import vizro.models as vm
-
-try:
-    from pydantic.v1 import BaseModel, Field, ValidationError
-except ImportError:  # pragma: no cov
-    from pydantic import BaseModel, Field, ValidationError
 from langchain_core.language_models.chat_models import BaseChatModel
+from pydantic import BaseModel, Field, ValidationError
 from vizro.tables import dash_ag_grid
 
 from vizro_ai.dashboard._pydantic_output import _get_pydantic_model
@@ -24,7 +20,6 @@ class ComponentPlan(BaseModel):
 
     component_type: ComponentType
     component_description: str = Field(
-        ...,
         description="""
         Description of the component. Include everything that relates to this component.
         Be as specific and detailed as possible.
@@ -33,10 +28,9 @@ class ComponentPlan(BaseModel):
         """,
     )
     component_id: str = Field(
-        pattern=r"^[a-z]+(_[a-z]+)?$", description="Small snake case description of this component."
+        pattern=r"^[a-z0-9]+(_[a-z0-9]+)*$", description="Small snake case description of this component."
     )
     df_name: str = Field(
-        ...,
         description="""
         The name of the dataframe that this component will use. If no dataframe is
         used, please specify that as N/A.
@@ -66,6 +60,7 @@ class ComponentPlan(BaseModel):
                     user_input=self.component_description,
                     max_debug_retry=2,  # TODO must be flexible
                     return_elements=True,
+                    _minimal_output=True,
                 )
                 return ComponentResult(
                     component=vm.Graph(
@@ -85,9 +80,9 @@ class ComponentPlan(BaseModel):
                 Create a card based on the card description: {self.component_description}.
                 """
                 result_proxy = _get_pydantic_model(query=card_prompt, llm_model=model, response_model=vm.Card)
-                proxy_dict = result_proxy.dict()
+                proxy_dict = result_proxy.model_dump()
                 proxy_dict["id"] = self.component_id
-                return ComponentResult(component=vm.Card.parse_obj(proxy_dict))
+                return ComponentResult(component=vm.Card(**proxy_dict))
 
         except (DebugFailure, ValidationError) as e:
             logger.warning(

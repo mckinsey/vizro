@@ -1,12 +1,12 @@
 """Contains custom components used within a dashboard."""
 
-from typing import Literal
+from typing import Annotated, Literal
 
 import black
 import dash_bootstrap_components as dbc
 import vizro.models as vm
 from dash import dcc, get_asset_url, html
-from pydantic import PrivateAttr
+from pydantic import AfterValidator, Field, PlainSerializer
 from vizro.models import Action
 from vizro.models._action._actions_chain import _action_validator_factory
 from vizro.models._models_utils import _log_call
@@ -27,9 +27,12 @@ class UserPromptTextArea(vm.VizroBaseModel):
     """
 
     type: Literal["user_text_area"] = "user_text_area"
-    actions: list[Action] = []  # noqa: RUF012
-
-    _set_actions = _action_validator_factory("value")
+    actions: Annotated[
+        list[Action],
+        AfterValidator(_action_validator_factory("value")),
+        PlainSerializer(lambda x: x[0].actions),
+        Field(default=[]),
+    ]
 
     @_log_call
     def build(self):
@@ -46,22 +49,15 @@ class UserPromptTextArea(vm.VizroBaseModel):
 
 
 class UserUpload(vm.VizroBaseModel):
-    """Component enabling data upload.
-
-    Args:
-        type (Literal["upload"]): Defaults to `"upload"`.
-        title (str): Title to be displayed.
-        actions (list[Action]): See [`Action`][vizro.models.Action]. Defaults to `[]`.
-
-    """
+    """Component enabling data upload."""
 
     type: Literal["upload"] = "upload"
-    actions: list[Action] = []  # noqa: RUF012
-
-    # 'contents' property is input to custom action callback
-    _input_property: str = PrivateAttr("contents")
-    # change in 'contents' property of Upload component triggers the actions
-    _set_actions = _action_validator_factory("contents")
+    actions: Annotated[
+        list[Action],
+        AfterValidator(_action_validator_factory("contents")),
+        PlainSerializer(lambda x: x[0].actions),
+        Field(default=[]),
+    ]
 
     def build(self):
         """Returns the upload component for data upload."""
@@ -238,7 +234,7 @@ class OffCanvas(vm.VizroBaseModel):
             {"name": "OpenAI", "url": "https://openai.com/index/openai-api/"},
             {"name": "Anthropic", "url": "https://docs.anthropic.com/en/api/getting-started"},
             {"name": "Mistral", "url": "https://docs.mistral.ai/getting-started/quickstart/"},
-            {"name": "xAI", "url": "https://x.ai/blog/api", "note": "(Free API credits available)"},
+            {"name": "xAI", "url": "https://x.ai/api", "note": ""},
         ]
 
         api_instructions = html.Div(

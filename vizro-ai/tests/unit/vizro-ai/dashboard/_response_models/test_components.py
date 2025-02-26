@@ -37,7 +37,7 @@ class TestComponentCreate:
             figure=mock_vizro_ai_return.get_fig_object(chart_name="graph_1", data_frame="bar_chart", vizro=True),
         )
 
-        assert chart.dict(exclude={"id": True}) == expected.dict(exclude={"id": True})
+        assert chart.model_dump(exclude={"id": True}) == expected.model_dump(exclude={"id": True})
         assert re.search(r"\bimport\b.*?@capture\('graph'\)", code, re.DOTALL)
 
     def test_create_card(self, fake_llm_card, component_plan_card, expected_card):
@@ -47,5 +47,5 @@ class TestComponentCreate:
         )
         card, code = result.component, result.code
 
-        assert card.dict(exclude={"id": True}) == expected_card.dict(exclude={"id": True})
+        assert card.model_dump(exclude={"id": True}) == expected_card.model_dump(exclude={"id": True})
         assert code is None
