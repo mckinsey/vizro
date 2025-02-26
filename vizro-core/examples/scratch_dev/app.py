@@ -46,8 +46,7 @@ page = vm.Page(
 
 page_two = vm.Page(
     title="Graph",
-    layout=vm.Layout(grid=[[2, 2],
-                           [0, 1]]),
+    layout=vm.Layout(grid=[[2, 2], [0, 1]]),
     components=[
         vm.Graph(
             figure=px.scatter(iris, x="sepal_width", y="sepal_length", color="species"),
