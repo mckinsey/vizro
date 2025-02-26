@@ -1,8 +1,22 @@
 # Explore Vizro
+In this tutorial, we will develop an interactive dashboard featuring multiple pages. By the end, you'll be able to:
 
-In this tutorial, we walk through the process of creating a sophisticated dashboard. You'll be introduced to some Vizro components and learn how to create a pair of dashboard pages and configure their layout to suit the functionality you need. The example uses the [gapminder data](https://plotly.com/python-api-reference/generated/plotly.express.data.html#plotly.express.data.gapminder).
+- Get to know most of [Vizro's components](../user-guides/components.md)
+- Use the Vizro visual vocabulary as guidance to create charts
+- Create custom charts using [Plotly Express](https://plotly.com/python-api-reference/plotly.express.html).
+- Build multiple dashboard pages.
+- Customize the layout of your pages.
+- Add interactivity to your dashboard using controls and actions.
+- Configure the navigation within your dashboard.
+
+
+We will be using the [tips dataset](https://plotly.com/python-api-reference/generated/plotly.express.data.html#plotly.express.data.tips).
+for this example to understand when to get the best tips!
 
 If you haven't yet done so, you may want to review the [first dashboard tutorial](../tutorials/first-dashboard.md) before starting on this one.
+
+Ready to get started? Let's go!
+
 
 ## 1. (Optional) Install Vizro and get ready to run your code
 
