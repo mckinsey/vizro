@@ -165,7 +165,6 @@ wrapper **/
 
 .dropdown-select-all {
   display: flex;
-  flex-direction: row;
   gap: 8px;
 }
 

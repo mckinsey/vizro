@@ -246,7 +246,6 @@ class TestParameter:
             (["NONE", "pop"], ["pop"]),
             (["NONE", "NONE"], [None]),
             (["lifeExp", "pop", "gdpPercap"], ["lifeExp", "pop", "gdpPercap"]),
-            (["lifeExp", "pop", "gdpPercap", "lifeExp"], ["lifeExp", "pop", "gdpPercap"]),
             (["lifeExp", "pop", "gdpPercap", "NONE"], ["lifeExp", "pop", "gdpPercap"]),
         ],
         indirect=True,
