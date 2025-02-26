@@ -4,7 +4,7 @@ import inspect
 import logging
 from collections.abc import Collection, Mapping
 from pprint import pformat
-from typing import TYPE_CHECKING, Any, Callable, TypedDict, TypeVar, Union
+from typing import TYPE_CHECKING, Any, Callable, TypedDict, TypeVar, Union, Annotated, ClassVar, get_args
 
 from dash import Input, Output, State, callback, html
 from dash.development.base_component import Component
@@ -13,7 +13,7 @@ from vizro.managers import model_manager
 from vizro.managers._model_manager import ModelID
 
 try:
-    from pydantic.v1 import Field, validator
+    from pydantic.v1 import Field, validator, create_model
 except ImportError:  # pragma: no cov
     from pydantic import Field
 
@@ -91,6 +91,10 @@ class Action(VizroBaseModel):
 
         if isinstance(inputs, Mapping):
             # TODO NOW: comment this is only NewAction
+            # inject static arguments (like ones set initially in CC)
+
+            schema_args = set(inspect.signature(self.function).parameters) & set(self.__fields__) - self.runtime_args
+            inputs |= {key: getattr(self, key) for key in schema_args}
             return_value = self.function(**inputs)
         else:
             # TODO NOW: comment this is only old action
@@ -220,10 +224,21 @@ class ControlInputs(TypedDict):
     # TODO NOW: figure out where this class lives
 
 
+NOT_USED = object()
+
+
 class NewAction(VizroBaseModel):
+    # can't define things like target here or won't get told if not available
+    # just need to record somehwere to make sure it's only used when defined or to make private proxies of them like
+    # _targets etc.
+    # targets: Annotated[list[ModelID], "reserved"] = None
+    # either two type hint or different sentinel value
+
+    function: ClassVar[Callable]
+
     # TODO NOW: Maybe make abstractmethod.
-    def function(self, *args, **kwargs):
-        pass
+    # def function(self, *args, **kwargs):
+    #     pass
 
     # # TODO FUTURE: this would be removed. It's just here for compatability with CapturedCallable,
     # @property
@@ -235,6 +250,16 @@ class NewAction(VizroBaseModel):
     #     # TODO NOW: figure out how to name for debugging - maybe need to alter Action debugging code.
     #     # _function.__func__._function.__name__ = type(self)
     #     return _function
+
+    @property
+    def runtime_args(self):
+        x = set()
+        for field_name, field in self.__fields__.items():
+            args = get_args(field.annotation)
+            if len(args) > 1:
+                if args[1] == "runtime":
+                    x.add(field_name)
+        return x
 
     def _get_callback_mapping(self):
         """Builds callback inputs and outputs for the Action model callback, and returns action required components.
@@ -254,8 +279,11 @@ class NewAction(VizroBaseModel):
     def outputs(self) -> dict[str, Output]:
         # TODO NOW: tidy and decide where this bit of code goes and how to get targets for filter and opl vs. parameter
 
-        # TODO NOW: check if targets defined
-        targets = self.targets
+        # TODO NOW: check if targets right type
+        if hasattr(self, "targets"):
+            targets = self.targets
+        else:
+            targets = []
         output_targets = []
         for target in targets:
             if "." in target:
@@ -290,9 +318,15 @@ class NewAction(VizroBaseModel):
             "parameters": _get_inputs_of_controls(page=page, control_type=Parameter),
             "filter_interaction": _get_inputs_of_figure_interactions(page=page, model_type=filter_interaction),
         }
-        return {
-            key: value for key, value in reserved_kwargs.items() if key in inspect.signature(self.function).parameters
-        }
+
+        runtime_inputs = {}
+        for key in inspect.signature(self.function).parameters:
+            if key in reserved_kwargs:
+                runtime_inputs[key] = reserved_kwargs[key]
+            elif key in self.runtime_args:
+                runtime_inputs[key] = State(*getattr(self, key).split("."))
+
+        return runtime_inputs
 
     @property
     def dash_components(self) -> list[Component]:
@@ -328,6 +362,34 @@ class capture_new_action:
         print("creating NewCustomAction")
         # return NewAction(func=validate_call(self.func), **kwargs)
         return NewCustomAction(actual_function=self.actual_function, **kwargs)
+
+
+class capture_new_action2:
+    def __new__(self, function):
+        print("new capture_new_action2")
+        # could put validation into the created model to make sure the specified id exists etc.
+        runtime = {param: (Annotated[str, "runtime"], ...) for param in inspect.signature(function).parameters}
+        # mimic NewAction but this is horrible
+        function = staticmethod(function)
+        function.__func__._function = function
+        model = create_model(function.__name__, function=(ClassVar, function), **runtime, __base__=NewAction)
+        return model
+
+    # ONLY TO MAKE MODEL WITH CUSTOM NAME, NOTHING ELSE:
+    # def __new__(cls, *args, **kwargs):
+    #     print("new capture_new_action")
+    #     return NewAction
+
+    # def __call__(self, **kwargs):
+    #     # returns model instance - correct
+    #     # TODO NOW:
+    #     # if use validate_call here then make it more lenient than default config e.g. arbitrary_types_allowed=True)
+    #     # if self.func asks for **filters then put in here. . Easier to mark using name rather than type hint
+    #     # that it's provided by vizro.
+    #     # validate_call can only do validators as Annotations of fields
+    #     print("creating NewCustomAction")
+    #     # return NewAction(func=validate_call(self.func), **kwargs)
+    #     return NewCustomAction(actual_function=self.actual_function, **kwargs)
 
 
 class NewCustomAction(VizroBaseModel):
@@ -421,18 +483,22 @@ VizroOutput = TypeVar("VizroOutput")
 
 if __name__ == "__main__":
     # Needs to work with default values too - need to parse these in NewCustomAction.
-    @capture_new_action
     def f(
         x: str,
-        any_variable_name_but_expects_dropdown_value: VizroState,  # for people who care abotu type safety: Annotated[int, ""],
+        # targets: Annotated[str, "reserved"],
+        # any_variable_name_but_expects_dropdown_value: VizroState,  # for people who care abotu type safety: Annotated[int, ""],
         # could also do as defeault value = State like in FastAPI old convention
         # for dropdown that gives int value
         # filters: Annotated[dict, Depends] = "filters",  # maybe dont need to provide default value or even type hint
     ):
         print("running function")
         print(f"{x=}")
-        print(f"{any_variable_name_but_expects_dropdown_value=}")
         # print(f"{filters=}")
+
+    f = capture_new_action2(f)
+    1 / 0
+    # f is capture_new_action2 type
+    # f(x="a") -> gives NewCustomAction instance - correct
 
     # in config, user would do actions=[f(x="a")]
     # definitely don't provide filters
@@ -469,8 +535,12 @@ if __name__ == "__main__":
     # nicely somehow e.g. Annotated. Or custom action decorator changes type hints on the fly.
     # Don't worry about typing currently, just interpret all arguments as states and fix trigger with parent
     # component. SOUNDS LIKE GOOD IDEA.
-    # So can't do outputs using type hint
     f(x=2, any_variable_name_but_expects_dropdown_value="state:dropdown_id.value").function()
+    # LATEST THINKING:
+    # Interpret all arguments as states, don't worry about literal ones (Dash doesn't) but could make it work with
+    # type hint in future
+    # Do type hint match and name match on reserved args including output.
+    # Would defined on Vizro side Targets = Annotated[str, "RESERVED"] or similar.
 
 # T = TypeVar('T')
 # Const = Annotated[T, my_annotations.CONST]

@@ -1,7 +1,7 @@
 """Pre-defined action function "export_data" to be reused in `action` parameter of VizroBaseModels."""
 
 from collections.abc import Iterable
-from typing import Any, Literal, cast
+from typing import Any, Literal, cast, Annotated, ClassVar, Callable, TypeVar, get_args
 
 from dash import Output, State, ctx, dcc
 
@@ -11,19 +11,34 @@ from vizro.managers._model_manager import FIGURE_MODELS, ModelID
 from vizro.models import VizroBaseModel
 from vizro.models._action._action import NewAction
 
+T = TypeVar("T")
+S = Annotated[ClassVar[T], "s"]
+
 
 class export_data(NewAction):
     # implementation independent, appear in schema
-    targets: list[ModelID] = []  # TODO FUTURE: maybe rename this so it doesn't inconsistently use
-    # targets?
+    # BUILD TIME PARAMS
+    # SOME REINTERPRETED AT RUNTIME
+    targets: list[ModelID] = []  # TODO FUTURE: maybe rename this so it doesn't inconsistently
+    # use targets?
     file_format: Literal["csv", "xlsx"] = "csv"
+    runtime_arg: Annotated[str, "runtime"] = "button.n_clicks"  # would be user specified in reality though could
+    # still have default value
 
-    # implementation dependent, can't go in schema. Prefix with vizro_ or _ or similar.
-    def function(
-        self,
-        filters: list[State],
-        parameters: list[State],
-        filter_interaction: list[dict[str, State]],
+    # implementation dependent, can't go in schema. Prefix with vizro_ or _ or similar?
+    # RUN TIME FUNCTION
+    # could also have targets and file_format as arguments rather than using self
+    # Should include filters etc. since used in function. But these don't appear in function call.
+
+    # COULD MAYBE GO BACK TO NON-staticmethod and self for built in function
+    @staticmethod
+    def actual_function(
+        targets,
+        file_format,
+        runtime_arg,
+        filters,
+        parameters,
+        filter_interaction,
     ) -> dict[str, Any]:
         # TODO NOW: docstring
         """Exports visible data of target charts/components on page after being triggered.
@@ -43,7 +58,8 @@ class export_data(NewAction):
 
         """
         # TODO NOW: move the setting of targets to validator. Reused in outputs and components
-        targets = self.targets or [
+        print(f"{runtime_arg=}")
+        targets = targets or [
             output["id"]["target_id"]
             for output in ctx.outputs_list
             if isinstance(output["id"], dict) and output["id"]["type"] == "download_dataframe"
@@ -58,19 +74,25 @@ class export_data(NewAction):
         for target, unfiltered_data in _get_unfiltered_data(ctds["parameters"], targets).items():
             filtered_data = _apply_filters(unfiltered_data, ctds["filters"], ctds["filter_interaction"], target)
             # TODO NOW: refactor to dictionary lookup with validation
-            if self.file_format == "csv":
+            if file_format == "csv":
                 writer = filtered_data.to_csv
-            elif self.file_format == "xlsx":
+            elif file_format == "xlsx":
                 writer = filtered_data.to_excel
             # Invalid file_format should be caught by Action validation
 
             outputs[f"download_dataframe_{target}"] = dcc.send_data_frame(
-                writer=writer, filename=f"{target}.{self.file_format}", index=False
+                writer=writer, filename=f"{target}.{file_format}", index=False
             )
 
         return outputs
 
-    function._function = function
+    # this would make it static function - GOOD IDEA?
+    # FOR CUSTOM ACTION FUNCTION, EVERYTHING IS RUNTIME ONLY - no file_format
+
+    # __func__ needed since it's staticmethod. Maybe not a good way to do it compard to just a function outside the
+    # class
+    actual_function.__func__._function = actual_function.__func__
+    function: ClassVar[Callable] = actual_function
 
     @property
     def outputs(self) -> dict[str, Output]:

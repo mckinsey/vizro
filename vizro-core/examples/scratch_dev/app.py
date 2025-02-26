@@ -2,7 +2,7 @@ import vizro.models as vm
 import vizro.plotly.express as px
 from vizro import Vizro
 from vizro.actions import filter_interaction, export_data
-from vizro.models._action._action import capture_new_action, VizroState, VizroOutput
+from vizro.models._action._action import capture_new_action, VizroState, VizroOutput, capture_new_action2
 from vizro.models.types import capture
 
 df_gapminder = px.data.gapminder().query("year == 2007")
@@ -31,6 +31,7 @@ page1 = vm.Page(
             ),
         ),
         vm.Button(
+            id="button",
             text="Export data",
             actions=[export_data(targets=["scatter_relation_2007"])],
         ),
@@ -47,17 +48,23 @@ page1 = vm.Page(
 
 
 # @capture("action")
-@capture_new_action
-def my_custom_action(points_data: VizroState, output: VizroOutput):
+# Options:
+# @capture_new_action(use="trigger, output")
+# could have in function signature or not - up to user
+# OR use type hint
+# OR match by name and just break
+@capture_new_action2
+def my_custom_action(points_data: VizroState):
     # Problem: have unused argument, but that is ok. Better than argument not existing. To improve linting give it _
-    # name?
+    # name? Then would match just on type hint, not name and type hint.
     """Custom action."""
     clicked_point = points_data["points"][0]
     x, y = clicked_point["x"], clicked_point["y"]
     species = clicked_point["customdata"][0]
     card_1_text = f"Clicked point has sepal length {x}, petal width {y}"
     # card_2_text = f"Clicked point has species {species}"
-    return card_1_text  # , card_2_text
+    print(f"{card_1_text=}")
+    # return card_1_text  # , card_2_text
 
 
 df = px.data.iris()
@@ -78,9 +85,15 @@ page2 = vm.Page(
             id="scatter_chart",
             figure=px.scatter(df, x="sepal_length", y="petal_width", color="species", custom_data=["species"]),
             actions=[
-                my_custom_action(
-                    points_data="scatter_chart.clickData", output="my_card_1.children"
-                ),  # Don't like this.
+                my_custom_action(points_data="scatter_chart.clickData")
+                # vm.Action(
+                #     function=my_custom_action(),
+                #     inputs=["scatter_chart.clickData"],
+                #     outputs=["my_card_1.children"],
+                # ),
+                # my_custom_action(
+                #     points_data="scatter_chart.clickData", output="my_card_1.children"
+                # ),  # Don't like this.
                 # Alternatives - don't like these either but better? Could be shortcut for full vm.Action version.
                 # {my_custom_action(points_data="scatter_chart.clickData"): "my_card_1"}, ##### PREFERRED as shortcut
                 # syntax
