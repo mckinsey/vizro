@@ -17,7 +17,7 @@ See the fragment files in the [changelog.d directory](https://github.com/mckinse
 
 ## Changed
 
-- VizroAI now uses Pydantic V2 for its models. ([#1018](https://github.com/mckinsey/vizro/pull/1018))
+- VizroAI now uses Pydantic V2 for its models and supports langchain>=0.3.0 and vizro>=0.1.32. ([#1018](https://github.com/mckinsey/vizro/pull/1018))
 
 <a id='changelog-0.3.5'></a>
 
