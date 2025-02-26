@@ -46,13 +46,16 @@ page = vm.Page(
 
 page_two = vm.Page(
     title="Graph",
-    layout=vm.Layout(grid=[[2, 2],
-                           [0, 1]]),
+    layout=vm.Layout(grid=[[2, 2], [0, 1]]),
     components=[
         vm.Graph(
+            title="Lorem ipsum dolor sit ame",
+            header="""Lorem ipsum dolor sit amet, consectetur adipiscing elit. Donec fermentum lobortis ex, ac euismod sem imperdiet ut.""",
             figure=px.scatter(iris, x="sepal_width", y="sepal_length", color="species"),
         ),
         vm.Graph(
+            title="Lorem ipsum dolor sit ame",
+            header="""Lorem ipsum dolor sit amet, consectetur adipiscing elit. Donec fermentum lobortis ex, ac euismod sem imperdiet ut.""",
             figure=px.histogram(
                 tips,
                 x="day",
@@ -60,9 +63,13 @@ page_two = vm.Page(
                 color="sex",
                 barmode="group",
                 category_orders={"day": ["Thur", "Fri", "Sat", "Sun"]},
-            )
+            ),
         ),
-        vm.Graph(figure=px.scatter(gapminder, x="gdpPercap", y="lifeExp", size="pop", size_max=60)),
+        vm.Graph(
+            title="Lorem ipsum dolor sit ame",
+            header="""Lorem ipsum dolor sit amet, consectetur adipiscing elit. Donec fermentum lobortis ex, ac euismod sem imperdiet ut.""",
+            figure=px.scatter(gapminder, x="gdpPercap", y="lifeExp", size="pop", size_max=60),
+        ),
     ],
 )
 
