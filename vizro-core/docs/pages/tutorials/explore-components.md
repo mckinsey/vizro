@@ -3,7 +3,7 @@
 In this tutorial, we will develop an interactive dashboard featuring multiple pages. By the end, you'll be able to:
 
 - Get to know most of [Vizro's components](../user-guides/components.md)
-- Use the Vizro visual vocabulary as guidance to create charts
+- Use the [Vizro visual vocabulary](https://vizro-demo-visual-vocabulary.hf.space/) as guidance to create charts
 - Create custom charts using [Plotly Express](https://plotly.com/python-api-reference/plotly.express.html).
 - Build multiple dashboard pages.
 - Customize the layout of our pages.
@@ -11,11 +11,11 @@ In this tutorial, we will develop an interactive dashboard featuring multiple pa
 - Configure the navigation within our dashboard.
 - Add a logo to our dashboard
 
-We will be using the [tips dataset](https://plotly.com/python-api-reference/generated/plotly.express.data.html#plotly.express.data.tips). for this example to understand when to get the best tips!
+We will be using the [tips dataset](https://plotly.com/python-api-reference/generated/plotly.express.data.html#plotly.express.data.tips) for this example to understand when to get the best tips!
 
 If you haven't yet done so, you may want to review the [first dashboard tutorial](../tutorials/first-dashboard.md) before starting on this one.
 
-Ready to get started? Let's go!
+**Ready to get started? Let's go! 🚀**
 
 ## 1. (Optional) Install Vizro and get ready to run your code
 
@@ -37,23 +37,23 @@ However, if you prefer working in a Notebook or Python script, you should [insta
 
     Once the script is running, open your web browser and go to `localhost:8050`. You should see the dashboard page with the gapminder data displayed, as shown in the `Result` tab above.
 
-## 2. Create a first dashboard page with a figure
+## 2. Create a first dashboard page
+
 In this section, we will create a new [`Page`][vizro.models.Page] and store it inside a variable called `first_page`.
 
-A [Page][vizro.models.Page] model is the foundation of any Vizro dashboard. A page uses a set of [component types](../user-guides/components.md) to display content.
-These components can include models such as [Graph][vizro.models.Graph], [AgGrid][vizro.models.AgGrid], [Card][vizro.models.Card], [Figure][vizro.models.Figure], [Button][vizro.models.Button], [Container][vizro.models.Container], and [Tabs][vizro.models.Tabs].
+A [Page][vizro.models.Page] model is the foundation of any Vizro dashboard. A page uses a set of [component types](../user-guides/components.md) to display content. These components can include models such as [Graph][vizro.models.Graph], [AgGrid][vizro.models.AgGrid], [Card][vizro.models.Card], [Figure][vizro.models.Figure], [Button][vizro.models.Button], [Container][vizro.models.Container], and [Tabs][vizro.models.Tabs].
 
-To start, let's get an overview of the data and display it in a table using [AgGrid][vizro.models.AgGrid]. 
-To create a page and add a table to it, follow these steps:
+### 2.1 Add a table to the page
 
-1. Set the title of the [Page][vizro.models.Page] to "Data".
+To start, let's get an overview of the data and display it in a table using [AgGrid][vizro.models.AgGrid]. To create a page and add a table to it, follow these steps:
+
+1. Create a [Page][vizro.models.Page] and set the title to "Data".
 1. Add a Vizro [AgGrid][vizro.models.AgGrid] to the components list.
 1. Use the `dash_ag_grid` function for the figure argument in vm.AgGrid.
 1. Provide details about the data source in the footer argument of the AgGrid.
 
-
 !!! example "First Page"
-    === "app.py"
+    === "Code - dashboard"
         ```{.python pycafe-link}
         import vizro.models as vm
         from vizro import Vizro
@@ -76,11 +76,85 @@ To create a page and add a table to it, follow these steps:
         ```
 
     === "Result"
-        [![FirstPage1]][firstpage1]
+        [![FirstPage]][firstpage]
 
 As you can see from the code, `first_page` is added to the [`Dashboard`][vizro.models.Dashboard] and the dashboard is displayed by running `Vizro().build(dashboard).run()`.
 
-**Congratulations, you created your first page! 🎉**
+Feel free to get familiar with the data in the table. You can sort, filter, and search inside the `AgGrid` to get a better understanding of the dataset.
+
+Notice that there is a toggle added automatically to the top-right corner of the dashboard. This enables switching between a dark and light theme.
+
+**Done! We created our first page! 🎉**
+
+## 3. Create a second dashboard page
+
+Let's create a second page for the dashboard using charts and KPI cards. Vizro uses Graph models and Plotly Express functions to build different types of charts.
+
+You can find a collection of available chart types along with code examples inside our visual vocabulary. Indeed, let's just copy/paste the code from the visual vocabulary to create a histogram to get an overview of the two numeric columns in the tips dataset: `total_bill` and `tip`.
+
+The code below shows the steps necessary to add a histogram to the page:
+
+1. Create a [Page][vizro.models.Page] and set the title to "Summary".
+1. Add a Vizro [Graph][vizro.models.Graph] to the components list.
+1. Copy the Plotly figure code for the `px.histogram` from the [visual-vocabulary](https://vizro-demo-visual-vocabulary.hf.space/distribution/histogram) and insert it into the `figure` argument of the `Graph`.
+1. Add the new page to the list of pages in the [`Dashboard`][vizro.models.Dashboard].
+
+!!! example "Second Page"
+    === "Code - second page"
+        ```py
+
+        second_page = vm.Page(
+            title="Summary",
+            components=[
+                vm.Graph(figure=px.histogram(tips, x="total_bill")),
+                vm.Graph(figure=px.histogram(tips, x="tip")),
+            ],
+        )
+
+        ```
+
+    === "Code - dashboard"
+        ```{.python pycafe-link}
+        import vizro.models as vm
+        import vizro.plotly.express as px
+        from vizro import Vizro
+        from vizro.tables import dash_ag_grid
+        from vizro.models.types import capture
+        from vizro.figures import kpi_card
+        from vizro.actions import export_data
+
+        tips = px.data.tips()
+
+        first_page = vm.Page(
+            title="Data",
+            components=[
+                vm.AgGrid(
+                    figure=dash_ag_grid(tips),
+                    footer="""**Data Source:** Bryant, P. G. and Smith, M (1995) Practical Data Analysis: Case Studies in Business Statistics. Homewood, IL: Richard D. Irwin Publishing.""",
+                ),
+            ],
+        )
+
+        second_page = vm.Page(
+            title="Summary",
+            components=[
+                vm.Graph(figure=px.histogram(tips, x="total_bill")),
+                vm.Graph(figure=px.histogram(tips, x="tip")),
+            ],
+        )
+
+        ```
+
+````
+    dashboard = vm.Dashboard(pages=[first_page, second_page])
+    Vizro().build(dashboard).run()
+    ```
+
+=== "Result"
+    [![SecondPage]][secondpage]
+````
+
+---
 
 ### 2.2. Add further components
 
@@ -159,7 +233,7 @@ The code below adds two components to the page:
         ```
 
     === "Result"
-        [![FirstPage2]][firstpage2]
+        [![SecondPage]][secondpage]
 
 As you explore the dashboard, you may notice that the current layout could be further enhanced. The charts appear cramped, while the text component has ample unused space. The next section explains how to configure the layout and arrange the components.
 
@@ -584,8 +658,7 @@ Vizro doesn't end here, and we only covered the key features, but there is still
 
 [finalpage1]: ../../assets/tutorials/dashboard/dashboard-first-page.png
 [finalpage2]: ../../assets/tutorials/dashboard/dashboard-second-page.png
-[firstpage1]: ../../assets/tutorials/dashboard/01-first-page-table.png
-[firstpage2]: ../../assets/tutorials/dashboard/dashboard22.png
+[firstpage]: ../../assets/tutorials/dashboard/01-first-page.png
 [firstpage3]: ../../assets/tutorials/dashboard/dashboard23.png
 [firstpage4]: ../../assets/tutorials/dashboard/dashboard24.png
-[secondpage]: ../../assets/tutorials/dashboard/dashboard3.png
+[secondpage]: ../../assets/tutorials/dashboard/02-second-page.png
