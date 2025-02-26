@@ -6,6 +6,9 @@ All the HEX values starting with --text-code are taken from the Github code high
 [data-bs-theme="dark"] {
   --dropdown-label-bg: var(--primary-800);
   --right-side-bg: var(--surfaces-bg03);
+  --right-side-inner-bg: var(--surfaces-bg03);
+  --figure-container-bg: var(--surfaces-bg-card);
+  --left-side-bg: var(--surfaces-bg02);
   --text-code-string: #95c2e7;
   --text-code-keyword: #f4766e;
   --text-code-meta: #c8ace1;
@@ -17,7 +20,10 @@ All the HEX values starting with --text-code are taken from the Github code high
 
 [data-bs-theme="light"] {
   --dropdown-label-bg: var(--primary-300);
-  --right-side-bg: var(--surfaces-bg01);
+  --right-side-bg: var(--surfaces-bg02);
+  --right-side-inner-bg: var(--surfaces-bg02);
+  --figure-container-bg: var(--surfaces-bg-card);
+  --left-side-bg: var(--surfaces-bg01);
   --text-code-string: #0a3069;
   --text-code-keyword: #d12d39;
   --text-code-meta: #6f42c1;
@@ -38,10 +44,11 @@ All the HEX values starting with --text-code are taken from the Github code high
 }
 
 
-/* CARDS */
+/* Add margin and calculated with, otherwise box-shadows on the side are not visible */
 .card {
   height: 100%;
-  width: 100%;
+  margin: 0 0.2rem;
+  width: calc(100% - 0.4rem);
 }
 
 .card .nav-link {
@@ -101,4 +108,18 @@ label[for="theme-selector"] {
 /* Remove bottom margin of last child as card comes with padding */
 .card-text > *:last-child {
   margin-bottom: 0;
+}
+
+
+#page-components {
+    background: var(--right-side-inner-bg);
+}
+
+
+.figure-container {
+  background: var(--figure-container-bg);
+}
+
+.figure-container {
+  padding: 12px;
 }
