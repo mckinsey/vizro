@@ -1,12 +1,12 @@
 import e2e.vizro.constants as cnst
 from e2e.vizro.checkers import check_selected_checklist, check_selected_dropdown
 from e2e.vizro.navigation import page_select
-from e2e.vizro.paths import categorical_components_value_path, checklist_select_all_path
+from e2e.vizro.paths import categorical_components_value_path, select_all_path
 
 
 def test_checklist_all_value(dash_br):
     page_select(dash_br, page_path=cnst.PARAMETERS_MULTI_PAGE_PATH, page_name=cnst.PARAMETERS_MULTI_PAGE)
-    dash_br.multiple_click(checklist_select_all_path(elem_id=cnst.CHECKLIST_PARAM), 1)
+    dash_br.multiple_click(select_all_path(elem_id=cnst.CHECKLIST_PARAM), 1)
     dash_br.multiple_click(categorical_components_value_path(elem_id=cnst.CHECKLIST_PARAM, value=1), 1)
     dash_br.multiple_click(categorical_components_value_path(elem_id=cnst.CHECKLIST_PARAM, value=3), 1)
     dash_br.wait_for_element(f"#{cnst.TABLE_CHECKLIST} th[data-dash-column='country']")
@@ -33,7 +33,7 @@ def test_checklist_all_value(dash_br):
 def test_dropdown_all_value(dash_br):
     page_select(dash_br, page_path=cnst.PARAMETERS_MULTI_PAGE_PATH, page_name=cnst.PARAMETERS_MULTI_PAGE)
     dash_br.multiple_click(".Select-arrow", 1)
-    dash_br.multiple_click(f"#{cnst.DROPDOWN_PARAM_MULTI}_checklist_all input[type='checkbox']", 1)
+    dash_br.multiple_click(select_all_path(elem_id=cnst.DROPDOWN_PARAM_MULTI), 1)
     dash_br.multiple_click(".Select-arrow", 1)
     dash_br.select_dcc_dropdown(f"#{cnst.DROPDOWN_PARAM_MULTI}", "pop")
     dash_br.select_dcc_dropdown(f"#{cnst.DROPDOWN_PARAM_MULTI}", "gdpPercap")

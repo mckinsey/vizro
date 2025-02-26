@@ -7,7 +7,7 @@ from e2e.vizro.checkers import (
     check_slider_value,
 )
 from e2e.vizro.navigation import page_select
-from e2e.vizro.paths import categorical_components_value_path, checklist_select_all_path, slider_value_path
+from e2e.vizro.paths import categorical_components_value_path, select_all_path, slider_value_path
 from e2e.vizro.waiters import graph_load_waiter
 from hamcrest import assert_that, equal_to
 
@@ -16,7 +16,7 @@ def test_dropdown_all_value(dash_br):
     page_select(dash_br, page_path=cnst.FILTERS_PAGE_PATH, page_name=cnst.FILTERS_PAGE, graph_id=cnst.SCATTER_GRAPH_ID)
     # unselect 'ALL'
     dash_br.multiple_click(".Select-arrow", 1)
-    dash_br.multiple_click(f"#{cnst.DROPDOWN_FILTER_FILTERS_PAGE}_checklist_all input[type='checkbox']", 1)
+    dash_br.multiple_click(select_all_path(elem_id=cnst.DROPDOWN_FILTER_FILTERS_PAGE), 1)
     check_graph_is_loading(dash_br, graph_id=cnst.SCATTER_GRAPH_ID)
     dash_br.multiple_click(".Select-arrow", 1)
     check_selected_dropdown(
@@ -27,7 +27,7 @@ def test_dropdown_all_value(dash_br):
         expected_unselected_options=["setosa", "versicolor", "virginica"],
     )
     # select 'ALL'
-    dash_br.multiple_click(f"#{cnst.DROPDOWN_FILTER_FILTERS_PAGE}_checklist_all input[type='checkbox']", 1)
+    dash_br.multiple_click(select_all_path(elem_id=cnst.DROPDOWN_FILTER_FILTERS_PAGE), 1)
     check_graph_is_loading(dash_br, graph_id=cnst.SCATTER_GRAPH_ID)
     dash_br.multiple_click(".Select-arrow", 1)
     check_selected_dropdown(
@@ -103,7 +103,7 @@ def test_categorical_filters(dash_br, filter_id):
         ),
         (
             [
-                checklist_select_all_path(elem_id=cnst.CHECK_LIST_FILTER_FILTERS_PAGE),
+                select_all_path(elem_id=cnst.CHECK_LIST_FILTER_FILTERS_PAGE),
                 categorical_components_value_path(elem_id=cnst.CHECK_LIST_FILTER_FILTERS_PAGE, value=3),
             ],
             False,
@@ -119,14 +119,14 @@ def test_categorical_filters(dash_br, filter_id):
             [{"value": 1, "status": False}, {"value": 2, "status": False}, {"value": 3, "status": False}],
         ),
         (
-            [checklist_select_all_path(elem_id=cnst.CHECK_LIST_FILTER_FILTERS_PAGE)],
+            [select_all_path(elem_id=cnst.CHECK_LIST_FILTER_FILTERS_PAGE)],
             False,
             [{"value": 1, "status": False}, {"value": 2, "status": False}, {"value": 3, "status": False}],
         ),
         (
             [
-                checklist_select_all_path(elem_id=cnst.CHECK_LIST_FILTER_FILTERS_PAGE),
-                checklist_select_all_path(elem_id=cnst.CHECK_LIST_FILTER_FILTERS_PAGE),
+                select_all_path(elem_id=cnst.CHECK_LIST_FILTER_FILTERS_PAGE),
+                select_all_path(elem_id=cnst.CHECK_LIST_FILTER_FILTERS_PAGE),
             ],
             True,
             [{"value": 1, "status": True}, {"value": 2, "status": True}, {"value": 3, "status": True}],
@@ -213,6 +213,8 @@ def test_dropdown_kpi_indicators_page(dash_br):
                 "$67434.00",
                 "67434€",
                 "67434.0",
+                "67434",
+                "65553",
             ]
         ),
     )
@@ -233,6 +235,8 @@ def test_dropdown_kpi_indicators_page(dash_br):
                 "$34.00",
                 "34€",
                 "34.0",
+                "34",
+                "53",
             ]
         ),
     )

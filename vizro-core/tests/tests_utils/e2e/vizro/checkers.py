@@ -1,5 +1,5 @@
 import e2e.vizro.constants as cnst
-from e2e.vizro.paths import categorical_components_value_path, checklist_select_all_path
+from e2e.vizro.paths import categorical_components_value_path, select_all_path
 from e2e.vizro.waiters import graph_load_waiter
 from hamcrest import any_of, assert_that, contains_string, equal_to
 from selenium.webdriver.support.color import Color
@@ -69,7 +69,7 @@ def check_graph_color(driver, style_background, color):
 
 
 def check_selected_checklist(driver, checklist_id, select_all_status, options_value_status):
-    select_all = driver.find_element(checklist_select_all_path(elem_id=checklist_id))
+    select_all = driver.find_element(select_all_path(elem_id=checklist_id))
     assert_that(select_all.is_selected(), equal_to(select_all_status))
     for option in options_value_status:
         status = driver.find_element(categorical_components_value_path(elem_id=checklist_id, value=option["value"]))
@@ -77,7 +77,7 @@ def check_selected_checklist(driver, checklist_id, select_all_status, options_va
 
 
 def check_selected_dropdown(driver, dropdown_id, all_value, expected_selected_options, expected_unselected_options):
-    status = driver.find_element(f"#{dropdown_id}_checklist_all input[type='checkbox']")
+    status = driver.find_element(select_all_path(elem_id=dropdown_id))
     assert_that(status.is_selected(), equal_to(all_value))
     unselected_options = driver.find_elements("div[class='VirtualizedSelectOption']")
     unselected_options_list = ["".join(option.text.split()) for option in unselected_options]

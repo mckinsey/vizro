@@ -28,5 +28,6 @@ def categorical_components_value_path(elem_id, value):
     return f"div[id='{elem_id}'] div:nth-of-type({value}) input"
 
 
-def checklist_select_all_path(elem_id):
-    return f"input[id='_dbcprivate_checklist_{elem_id}_select_all_input_ALL']"
+def select_all_path(elem_id):
+    """Select All option path for checklist and dropdown."""
+    return f"input[id='{elem_id}_select_all']"
