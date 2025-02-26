@@ -18,14 +18,14 @@ page = vm.Page(
             components=[
                 vm.Graph(figure=px.scatter(iris, x="sepal_width", y="sepal_length", color="species")),
             ],
-            background=True,
+            theme="outlined",
         ),
         vm.Container(
             title="Container II",
             components=[
                 vm.Graph(figure=px.scatter(iris, x="sepal_width", y="sepal_length", color="species")),
             ],
-            background=True,
+            theme="filled",
         ),
     ],
 )
@@ -42,7 +42,33 @@ page_two = vm.Page(
     ],
 )
 
-dashboard = vm.Dashboard(pages=[page, page_two])
+page_three = vm.Page(
+    title="Container Style",
+    components=[
+        vm.Container(
+            title="Container I",
+            components=[
+                vm.Graph(figure=px.scatter(iris, x="sepal_width", y="sepal_length", color="species")),
+            ],
+            theme="outlined",
+        ),
+        vm.Container(
+            title="Container II",
+            components=[
+                vm.Graph(figure=px.scatter(iris, x="sepal_width", y="sepal_length", color="species")),
+            ],
+            theme="filled",
+        ),
+        vm.Container(
+            title="Container III",
+            components=[
+                vm.Graph(figure=px.scatter(iris, x="sepal_width", y="sepal_length", color="species")),
+            ],
+            theme="elevated",
+        ),
+    ],
+)
+dashboard = vm.Dashboard(pages=[page, page_two, page_three])
 
 if __name__ == "__main__":
     Vizro().build(dashboard).run()
