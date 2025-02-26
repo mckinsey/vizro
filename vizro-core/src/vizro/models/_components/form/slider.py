@@ -21,8 +21,7 @@ class Slider(VizroBaseModel):
     """Numeric single-option selector `Slider`.
 
     Can be provided to [`Filter`][vizro.models.Filter] or
-    [`Parameter`][vizro.models.Parameter]. Based on the underlying
-    [`dcc.Slider`](https://dash.plotly.com/dash-core-components/slider).
+    [`Parameter`][vizro.models.Parameter].
 
     Args:
         type (Literal["range_slider"]): Defaults to `"range_slider"`.

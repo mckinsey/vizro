@@ -21,8 +21,7 @@ class RangeSlider(VizroBaseModel):
     """Numeric multi-option selector `RangeSlider`.
 
     Can be provided to [`Filter`][vizro.models.Filter] or
-    [`Parameter`][vizro.models.Parameter]. Based on the underlying
-    [`dcc.RangeSlider`](https://dash.plotly.com/dash-core-components/rangeslider).
+    [`Parameter`][vizro.models.Parameter].
 
     Args:
         type (Literal["range_slider"]): Defaults to `"range_slider"`.
