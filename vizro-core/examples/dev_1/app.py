@@ -32,7 +32,8 @@ chat_component = VizroChatComponent(
     input_placeholder="Ask about the Chinook database...",
     button_text="Send",
     vizro_app=vizro_app,
-    processor=OpenAIProcessor(model="gpt-4o-mini", temperature=0.7),
+    # processor=OpenAIProcessor(model="gpt-4o-mini", temperature=0.7),
+    processor=EchoProcessor(),
     show_settings=True  # Enable settings icon
 )
 

@@ -108,7 +108,7 @@ class VizroChatComponent(VizroBaseModel):
     input_placeholder: str = "Ask me a question..."
     input_height: str = "80px"
     button_text: str = "Send"
-    vizro_app: Optional[Vizro] = None
+    vizro_app: Vizro
     processor: ChatProcessor = EchoProcessor()  # Default to echo processor
     show_settings: bool = True  # Parameter to control settings visibility
 
@@ -144,7 +144,7 @@ class VizroChatComponent(VizroBaseModel):
                 
                 # Get API settings if available
                 api_settings = data.get("api_settings") or {}
-                if api_settings and isinstance(self.processor, OpenAIProcessor):
+                if api_settings and hasattr(self.processor, "initialize_client"):
                     api_key = api_settings.get("api_key")
                     api_base = api_settings.get("api_base")
                     if api_key:  # Only initialize if we have an API key
