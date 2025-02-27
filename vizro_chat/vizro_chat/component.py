@@ -82,124 +82,6 @@ MESSAGE_STYLE = {
     "letterSpacing": "0.2px",
 }
 
-# JavaScript for client-side streaming
-STREAMING_CALLBACK_JS = """
-function(n_clicks, n_submit, value, messages, api_settings) {
-    // Check for initial load or no action
-    if (n_clicks === null && n_submit === null) {
-        return [messages, ""];
-    }
-
-    // Check if either button was clicked or Enter was pressed
-    if ((!n_clicks && !n_submit) || !messages) {
-        return [messages, value];  // Return both values if no action
-    }
-
-    // Check if input is empty or only whitespace
-    if (!value || !value.trim()) {
-        return [messages, ""];  // Clear input but don't send request
-    }
-
-    try {
-        const messages_json = JSON.stringify(JSON.parse(messages));
-        const triggeredId = window.dash_clientside.callback_context.triggered[0].prop_id;
-        const componentId = triggeredId.split('-')[0];
-        const chatHistory = document.getElementById(`${componentId}-history`);
-        const messages_array = JSON.parse(messages_json);
-        
-        // Add user message to messages array
-        messages_array.push({"role": "user", "content": value});
-
-        // Clear the input field
-        const inputField = document.getElementById(`${componentId}-input`);
-        if (inputField) {
-            inputField.value = '';
-        }
-
-        // Start streaming in background
-        setTimeout(() => {
-            // Create streaming message div
-            const streamingDiv = document.createElement('div');
-            streamingDiv.style.backgroundColor = "var(--mantine-color-dark-light-hover)";
-            streamingDiv.style.color = "var(--text-primary)";
-            streamingDiv.style.padding = "10px 15px";
-            streamingDiv.style.maxWidth = "70%";
-            streamingDiv.style.marginRight = "auto";
-            streamingDiv.style.marginBottom = "15px";
-            streamingDiv.style.whiteSpace = "pre-wrap";
-            streamingDiv.style.wordBreak = "break-word";
-            streamingDiv.style.width = "fit-content";
-            streamingDiv.style.minWidth = "100px";
-            streamingDiv.style.lineHeight = "1.25";
-            streamingDiv.style.letterSpacing = "0.2px";
-            streamingDiv.style.borderLeft = "2px solid #aaa9ba";
-
-            if (chatHistory) {
-                chatHistory.appendChild(streamingDiv);
-                chatHistory.scrollTop = chatHistory.scrollHeight;
-            }
-
-            // Start streaming
-            fetch(`/streaming-${componentId}`, {
-                method: "POST",
-                headers: {
-                    "Content-Type": "application/json",
-                },
-                body: JSON.stringify({
-                    prompt: value.trim(),
-                    chat_history: JSON.stringify(messages_array.slice(0, -1)),
-                    api_settings: api_settings
-                }),
-            }).then(response => {
-                if (!response.ok) {
-                    throw new Error(`HTTP error! status: ${response.status}`);
-                }
-                const reader = response.body.getReader();
-                const decoder = new TextDecoder();
-                let text = "";
-
-                function readChunk() {
-                    reader.read().then(({done, value}) => {
-                        if (done) {
-                            // Add assistant's response to messages array and trigger update
-                            messages_array.push({"role": "assistant", "content": text.trim()});
-                            window.dash_clientside.no_update = false;
-                            window.dispatchEvent(new CustomEvent('dash-update-component', {
-                                detail: {
-                                    output: `${componentId}-messages.data`,
-                                    value: JSON.stringify(messages_array)
-                                }
-                            }));
-                            return;
-                        }
-
-                        const chunk = decoder.decode(value);
-                        text += chunk;
-                        streamingDiv.textContent = text;
-
-                        if (chatHistory) {
-                            chatHistory.scrollTop = chatHistory.scrollHeight;
-                        }
-
-                        readChunk();
-                    });
-                }
-
-                readChunk();
-            }).catch(error => {
-                console.error("Streaming error:", error);
-                streamingDiv.textContent = "Error: Could not get response from server.";
-            });
-        }, 0);
-
-        // Return updated messages and empty string to clear input
-        return [JSON.stringify(messages_array), ""];
-    } catch (error) {
-        console.error("Streaming error:", error);
-        return [messages_json, value];  // Keep input on error
-    }
-}
-"""
 
 class VizroChatComponent(VizroBaseModel):
     """A chat component for Vizro dashboards.
@@ -337,6 +219,22 @@ class VizroChatComponent(VizroBaseModel):
 
     def _register_streaming_callback(self):
         """Register callbacks for chat functionality."""
+        # Add callback to clear input immediately on submit
+        @self.vizro_app.dash.callback(
+            Output(f"{self.id}-input", "value"),
+            [
+                Input(f"{self.id}-submit", "n_clicks"),
+                Input(f"{self.id}-input", "n_submit"),
+            ],
+            State(f"{self.id}-input", "value"),
+            prevent_initial_call=True,
+        )
+        def clear_input(n_clicks, n_submit, value):
+            """Clear input field immediately when user submits."""
+            if (n_clicks or n_submit) and value and value.strip():
+                return ""
+            return dash.no_update
+
         # Add callback to initialize messages if empty
         @self.vizro_app.dash.callback(
             Output(f"{self.id}-messages", "data"),
