@@ -810,15 +810,13 @@ Run the code below to apply the layout to the dashboard page:
 
 This section explains how to add a [Parameter][vizro.models.Parameter] to your dashboard.
 
-A [Parameter][vizro.models.Parameter] lets you dynamically change a component’s argument, making the dashboard more interactive. 
-Here we want to switch the `x` and `color` variable across all charts, allowing data analysis from different perspectives.
+A [Parameter][vizro.models.Parameter] lets you dynamically change a component’s argument, making the dashboard more interactive. Here we want to switch the `x` and `color` variable across all charts, allowing data analysis from different perspectives.
 
-In creating a [`Parameter`][vizro.models.Parameter] object, you define the `target` it applies to. 
-In general, `targets` for [`Parameters`][vizro.models.Parameter] are set following the structure of `component_id.argument`. 
-More information on how to set `targets` for [`Parameters`][vizro.models.Parameter] can be found in the [how-to guide for parameters](../user-guides/parameters.md).
+In creating a [`Parameter`][vizro.models.Parameter] object, you define the `target` it applies to. In general, `targets` for [`Parameters`][vizro.models.Parameter] are set following the structure of `component_id.argument`. More information on how to set `targets` for [`Parameters`][vizro.models.Parameter] can be found in the [how-to guide for parameters](../user-guides/parameters.md).
 
 To add a parameter to the dashboard:
-1. Add a [Parameter][vizro.models.Parameter] to the `controls` list of the page. 
+
+1. Add a [Parameter][vizro.models.Parameter] to the `controls` list of the page.
 1. Assign an `id` to each `Graph` in the `components` list that the parameter should target.
 1. Define the parameter's `targets` using the format `component-id.argument`.
 1. Set the `selector` of the [Parameter][vizro.models.Parameter] to a [`RadioItems`][vizro.models.RadioItems].
@@ -845,9 +843,9 @@ To add a parameter to the dashboard:
         from vizro.tables import dash_ag_grid
         from vizro.models.types import capture
         from vizro.figures import kpi_card
-        
+
         tips = px.data.tips()
-        
+
         first_page = vm.Page(
             title="Data",
             components=[
@@ -859,7 +857,7 @@ To add a parameter to the dashboard:
                 ),
             ],
         )
-        
+
         second_page = vm.Page(
             title="Summary",
             layout=vm.Layout(grid=[[0, 1, -1, -1], [2, 2, 2, 2], [2, 2, 2, 2], [2, 2, 2, 2]]),
@@ -901,7 +899,7 @@ To add a parameter to the dashboard:
             ],
             controls=[vm.Filter(column="day"), vm.Filter(column="time", selector=vm.Checklist()), vm.Filter(column="size")]
         )
-        
+
         third_page = vm.Page(
             title="Analysis",
             layout=vm.Layout(grid=[[0, 1], [2, 2]]),
@@ -931,7 +929,7 @@ To add a parameter to the dashboard:
                 ),
             ],
         )
-        
+
         dashboard = vm.Dashboard(pages=[first_page, second_page, third_page])
         Vizro().build(dashboard).run()
         ```
@@ -971,9 +969,9 @@ To create a custom chart, we follow these steps:
         from vizro.tables import dash_ag_grid
         from vizro.models.types import capture
         from vizro.figures import kpi_card
-        
+
         tips = px.data.tips()
-        
+
 
         @capture("graph")
         def bar_mean(data_frame, x, y):
@@ -981,7 +979,7 @@ To create a custom chart, we follow these steps:
             fig = px.bar(df_agg, x=x, y=y, labels={"tip": "Average Tip ($)"})
             fig.update_traces(width=0.6)
             return fig
-        
+
 
         first_page = vm.Page(
             title="Data",
@@ -994,7 +992,7 @@ To create a custom chart, we follow these steps:
                 ),
             ],
         )
-        
+
         second_page = vm.Page(
             title="Summary",
             layout=vm.Layout(grid=[[0, 1, -1, -1], [2, 2, 2, 2], [2, 2, 2, 2], [2, 2, 2, 2]]),
@@ -1036,7 +1034,7 @@ To create a custom chart, we follow these steps:
             ],
             controls=[vm.Filter(column="day"), vm.Filter(column="time", selector=vm.Checklist()), vm.Filter(column="size")]
         )
-        
+
         third_page = vm.Page(
             title="Analysis",
             layout=vm.Layout(grid=[[0, 1], [2, 2]]),
@@ -1066,7 +1064,7 @@ To create a custom chart, we follow these steps:
                 ),
             ],
         )
-        
+
         dashboard = vm.Dashboard(pages=[first_page, second_page, third_page])
         Vizro().build(dashboard).run()
         ```
