@@ -313,6 +313,7 @@ class NewAction(VizroBaseModel):
         # TODO: consider names of these reserved arguments. vizro_filters? runtime_filters? __filters__? filters? Don't
         #  do using type
         #  hints - too complicated for user.
+        # CHANGE TO TYPE HINTS OR vizro_ reserved words
         reserved_kwargs = {
             "filters": _get_inputs_of_controls(page=page, control_type=Filter),
             "parameters": _get_inputs_of_controls(page=page, control_type=Parameter),
@@ -367,12 +368,30 @@ class capture_new_action:
 class capture_new_action2:
     def __new__(self, function):
         print("new capture_new_action2")
+
         # could put validation into the created model to make sure the specified id exists etc.
-        runtime = {param: (Annotated[str, "runtime"], ...) for param in inspect.signature(function).parameters}
+        def _get_metadata(annotation):
+            args = get_args(annotation)
+            if len(args) > 1:
+                return args[1]
+            return None
+
+        # these ones go to fields so get validated
+        # reserved never supplied manually so doesn't
+        runtime = {
+            param_name: (Annotated[str, "runtime"], ...)
+            for param_name, param in inspect.signature(function).parameters.items()
+            if _get_metadata(param.annotation) != "reserved"
+        }
         # mimic NewAction but this is horrible
         function = staticmethod(function)
         function.__func__._function = function
-        model = create_model(function.__name__, function=(ClassVar, function), **runtime, __base__=NewAction)
+        model = create_model(
+            function.__name__,
+            function=(ClassVar, function),
+            **runtime,
+            __base__=VizroBaseModel,
+        )
         return model
 
     # ONLY TO MAKE MODEL WITH CUSTOM NAME, NOTHING ELSE:
@@ -393,90 +412,78 @@ class capture_new_action2:
 
 
 class NewCustomAction(VizroBaseModel):
-    actual_function: Callable
+    action: Any  # should be NewAction but hard to get working due to current state of code
+    outputs: list[str]
+
+    # COPIED AND PASTED BUT SHOULD BE TAKEN FROM action
+    @property
+    def runtime_args(self):
+        x = set()
+        for field_name, field in self.action.__fields__.items():
+            args = get_args(field.annotation)
+            if len(args) > 1:
+                if args[1] == "runtime":
+                    x.add(field_name)
+        return x
+
+    # COPIED AND PASTED BUT SHOULD BE TAKEN FROM action
+    @property
+    def inputs(self) -> ControlInputs:
+        from vizro.actions import filter_interaction
+        from vizro.models import Filter, Parameter
+
+        page = model_manager._get_model_page(self)
+
+        # TODO NOW: create comment about refactoring ctds format in future. Comment that List[State] here would match
+        #  custom actions.
+        # TODO: consider names of these reserved arguments. vizro_filters? runtime_filters? __filters__? filters? Don't
+        #  do using type
+        #  hints - too complicated for user.
+        # CHANGE TO TYPE HINTS OR vizro_ reserved words
+        reserved_kwargs = {
+            "filters": _get_inputs_of_controls(page=page, control_type=Filter),
+            "parameters": _get_inputs_of_controls(page=page, control_type=Parameter),
+            "filter_interaction": _get_inputs_of_figure_interactions(page=page, model_type=filter_interaction),
+        }
+
+        runtime_inputs = {}
+        for key in inspect.signature(self.function).parameters:
+            if key in reserved_kwargs:
+                runtime_inputs[key] = reserved_kwargs[key]
+            elif key in self.runtime_args:
+                runtime_inputs[key] = State(*getattr(self.action, key).split("."))
+
+        return runtime_inputs
 
     @property
-    def inputs(self):
-        extra_fields = set(self.__dict__) - set(self.__fields__)
+    def function(self):
+        return self.action.function
 
-        arguments_provided_upfront = {
-            key: getattr(self, key) for key in extra_fields
-        }  # easier with model_extra in pydantic v2
+    def _get_callback_mapping(self):
+        """Builds callback inputs and outputs for the Action model callback, and returns action required components.
 
-        all_parameters = inspect.signature(self.actual_function).parameters
+        callback_inputs, and callback_outputs are "dash.State" and "dash.Output" objects made of three parts:
+            1. User configured inputs/outputs - for custom actions,
+            2. Vizro configured inputs/outputs - for predefined actions,
+            3. Hardcoded inputs/outputs - for custom and predefined actions
+                (enable callbacks to live inside the Action loop).
 
-        dash_inputs = {}
-
-        for key, value in arguments_provided_upfront.items():
-            if all_parameters[key].annotation is VizroState:
-                dash_inputs[key] = State(*value.split("."))
-
-        return dash_inputs
-
-    def function(self, **kwargs):
-        # called at runtime
-        # TODO NOW: note:
-        # NO MORE OVERRIDING ARGS AT RUNTIME POSSIBLE - actuallyl dictionary override as it stands will do this though
-        # KWARGS ONLY, no positional - ok
-        # Actually just want to pass special run time things in here?
-        # Maybe need inputs that are always provided when requested and extra_inputs you can have in addition to those.
-
-        # # Not sure whether to populate kwargs inside here or will be provided by caller.
-
-        # all_required_parameters = inspect.signature(
-        #     self.actual_function
-        # ).parameters  # maybe check for non-optional only
-        #
-        # # THIS ONLY NEEDED IF USE OTHER APPROACH WITH ARGUMENT NAME TELLING YOU required state, NOT VALUE
-        # remaining_inputs = set(all_required_parameters) - extra_fields
-
-        # THESE DEFINITELY NEED TO BE HANDLED AS ARGUMENT NAMES AND NOT VALUES. Otherwise you'd need to do
-        # export_data(filters=...) etc.
-        # reserved_kwargs = {
-        #     "filters": _get_inputs_of_controls(page=page, control_type=Filter),
-        #     "parameters": _get_inputs_of_controls(page=page, control_type=Parameter),
-        #     "filter_interaction": _get_inputs_of_figure_interactions(page=page, model_type=filter_interaction),
-        # }
-        # built_in_inputs = {
-        #     key: value for key, value in reserved_kwargs.items() if key in remaining_inputs
-        # }  # actually filters isn't reserved arguments since  it only looks at remaining_inptus here
-        # rquired from function signature
-        requested_inputs = {}  # from function signature or provided arguments
-
-        return self.actual_function(
-            **self.inputs,
-        )
-
-        # arguments_provided_upfront, **built_in_inputs, **requested_inputs,
-        # **kwargs)
+        Returns: List of required components (e.g. dcc.Download) for the Action model added to the `Dashboard`
+            container. Those components represent the return value of the Action build method.
+        """
+        outputs = [Output(*output.split(".")) for output in self.outputs]
+        return self.inputs, outputs, self.dash_components
 
     @property
-    def outputs(self):
-        # Maybe for outputs don't look at special argument called target. Instead look for type VizroOutput.
-        # But then have unused arguments in the user-written custom action function.
-        # Code here copied and pasted from inputs:
-        # But what to do about supplying values to these fields for running self.actual_function?
-        extra_fields = set(self.__dict__) - set(self.__fields__)
-
-        arguments_provided_upfront = {
-            key: getattr(self, key) for key in extra_fields
-        }  # easier with model_extra in pydantic v2
-
-        all_parameters = inspect.signature(self.actual_function).parameters
-
-        dash_outputs = {}
-
-        for key, value in arguments_provided_upfront.items():
-            if all_parameters[key].annotation is VizroOutput:
-                dash_outputs[key] = Output(*value.split("."))
-
-        return dash_outputs
-
-    class Config:
-        extra = "allow"
+    def dash_components(self) -> list[Component]:
+        return []
 
 
 Action.register(NewCustomAction)
+
+
+NewCustomAction.build = Action.build
+NewCustomAction._action_callback_function = Action._action_callback_function
 
 VizroState = TypeVar("VizroState")
 VizroOutput = TypeVar("VizroOutput")

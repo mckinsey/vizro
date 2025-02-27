@@ -30,13 +30,14 @@ class export_data(NewAction):
     # could also have targets and file_format as arguments rather than using self
     # Should include filters etc. since used in function. But these don't appear in function call.
 
-    # COULD MAYBE GO BACK TO NON-staticmethod and self for built in function
+    # COULD MAYBE GO BACK TO NON-staticmethod and self for class-based action so can easily use targets etc. without
+    # needing to repeat them here
     @staticmethod
     def actual_function(
         targets,
         file_format,
         runtime_arg,
-        filters,
+        filters,  # need to type hint theese
         parameters,
         filter_interaction,
     ) -> dict[str, Any]:
