@@ -134,7 +134,7 @@ class Dropdown(VizroBaseModel):
                     value=value,
                     multi=self.multi,
                     optionHeight=option_height,
-                    clearable=False,
+                    clearable=self.multi,  # Set clearable=False only for single-select dropdowns
                     placeholder="Select option",
                     persistence=True,
                     persistence_type="session",

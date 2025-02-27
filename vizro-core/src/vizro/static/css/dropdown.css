@@ -140,8 +140,7 @@
 }
 
 #dashboard-container .Select--multi .Select-clear-zone {
-  color: var(--text-secondary);
-  width: 16px;
+  display: none;
 }
 
 /** spacing for tag elements only when elements are present inside
