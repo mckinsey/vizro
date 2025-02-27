@@ -55,7 +55,6 @@ To start, let's get an overview of the data and display it in a table using [AgG
 1. Provide details about the data source in the `footer` argument of the `AgGrid`.
 
 !!! example "First Page"
-
     === "Code - dashboard"
         ```{.python pycafe-link}
         import vizro.models as vm
@@ -108,7 +107,6 @@ Follow these steps to add a histogram to the page:
 1. Add the new page to the list of pages in the [Dashboard][vizro.models.Dashboard].
 
 !!! example "Second Page"
-
     === "Snippet - second page"
         ```py
 
@@ -172,7 +170,6 @@ Let's add two KPI cards to our second page. Follow these steps:
 1. Repeat the above steps to add another KPI card to the page.
 
 !!! example "Add KPI Cards"
-
     === "Snippet - KPI Card I"
         ```py
 
@@ -192,10 +189,10 @@ Let's add two KPI cards to our second page. Follow these steps:
 
         vm.Figure(
             figure=kpi_card(
-                data_frame=tips, 
-                value_column="tip", 
-                agg_func="mean", 
-                value_format="${value:.2f}", 
+                data_frame=tips,
+                value_column="tip",
+                agg_func="mean",
+                value_format="${value:.2f}",
                 title="Average Tips"
             )
         )
@@ -251,6 +248,7 @@ Let's add two KPI cards to our second page. Follow these steps:
         dashboard = vm.Dashboard(pages=[first_page, second_page])
         Vizro().build(dashboard).run()
         ```
+
     === "Result"
         [![SecondPage2]][secondpage2]
 
@@ -266,7 +264,6 @@ Let's place the two histograms in separate tabs. Follow these steps:
 1. Add the `Tabs` component to the `components` list of the Page.
 
 !!! example "Add Tabs"
-
     === "Snippet - Tabs"
         ```py
 
@@ -348,6 +345,7 @@ Let's place the two histograms in separate tabs. Follow these steps:
         dashboard = vm.Dashboard(pages=[first_page, second_page])
         Vizro().build(dashboard).run()
         ```
+
     === "Result"
         [![SecondPage3]][secondpage3]
 
@@ -369,7 +367,6 @@ grid = [[0, 1, -1, -1],
 Run the code below to apply the layout to the dashboard page:
 
 !!! example "Code - Layout"
-
     === "Code"
         ```py
         layout=vm.Layout(
@@ -447,6 +444,7 @@ Run the code below to apply the layout to the dashboard page:
         dashboard = vm.Dashboard(pages=[first_page, second_page])
         Vizro().build(dashboard).run()
         ```
+
     === "Result"
         [![SecondPage4]][secondpage4]
 
