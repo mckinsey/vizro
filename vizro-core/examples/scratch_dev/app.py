@@ -36,11 +36,7 @@ second_page = vm.Page(
         ),
         vm.Figure(
             figure=kpi_card(
-                data_frame=tips,
-                value_column="tip",
-                agg_func="mean",
-                value_format="${value:.2f}",
-                title="Average Tips"
+                data_frame=tips, value_column="tip", agg_func="mean", value_format="${value:.2f}", title="Average Tips"
             )
         ),
         vm.Tabs(
@@ -58,9 +54,9 @@ second_page = vm.Page(
                     ],
                 ),
             ],
-        )
+        ),
     ],
-    controls=[vm.Filter(column="day"), vm.Filter(column="time", selector=vm.Checklist()), vm.Filter(column="size")]
+    controls=[vm.Filter(column="day"), vm.Filter(column="time", selector=vm.Checklist()), vm.Filter(column="size")],
 )
 
 third_page = vm.Page(
