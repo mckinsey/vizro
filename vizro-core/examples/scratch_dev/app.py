@@ -21,9 +21,7 @@ SCATTER_CHART_CONF = dict(x="sepal_length", y="petal_length", color="species", c
 
 def _get_static_iris():
     static_iris = px.data.iris()
-    static_iris["date_column"] = pd.date_range(
-        start=pd.to_datetime("2024-01-01"), periods=len(static_iris), freq="D"
-    )
+    static_iris["date_column"] = pd.date_range(start=pd.to_datetime("2024-01-01"), periods=len(static_iris), freq="D")
     return static_iris
 
 
