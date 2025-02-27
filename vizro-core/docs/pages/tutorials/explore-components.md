@@ -1,7 +1,6 @@
 # Explore Vizro
 
-In this tutorial, we will build an interactive dashboard with multiple pages, incorporating a wide range of Vizro's components. 
-If you're seeking a quickstart guide, consider reviewing the [first dashboard tutorial]([first dashboard tutorial](../tutorials/first-dashboard.md)) before diving into this one.
+In this tutorial, we will build an interactive dashboard with multiple pages, incorporating a wide range of Vizro's components. If you're seeking a quickstart guide, consider reviewing the \[first dashboard tutorial\]([first dashboard tutorial](../tutorials/first-dashboard.md)) before diving into this one.
 
 By the end of this tutorial, we will:
 
@@ -14,10 +13,7 @@ By the end of this tutorial, we will:
 - Set up navigation within the dashboard.
 - Incorporate a logo into our dashboard.
 
-We will use the [tips dataset](https://plotly.com/python-api-reference/generated/plotly.express.data.html#plotly.express.data.tips)  for this example. 
-This dataset was collected by a waiter who recorded information about each tip he received over several months at a restaurant. 
-**Let's find out when he received the highest tips! 🚀**
-
+We will use the [tips dataset](https://plotly.com/python-api-reference/generated/plotly.express.data.html#plotly.express.data.tips) for this example. This dataset was collected by a waiter who recorded information about each tip he received over several months at a restaurant. **Let's find out when he received the highest tips! 🚀**
 
 ## 1. (Optional) Install Vizro and get ready to run your code
 
@@ -39,6 +35,9 @@ However, if you prefer working in a Notebook or Python script, you should [insta
 
     Once the script is running, open your web browser and go to `localhost:8050`. You should see the dashboard page with the gapminder data displayed, as shown in the `Result` tab above.
 
+!!! warning "Running the code in a Jupyter Notebook"
+    If you are following this tutorial in a Jupyter Notebook, you might need to restart the kernel each time you evaluate the code. If you do not, you will see error messages such as "Components must uniquely map..." because those components already exist from the previous evaluation.
+
 ## 2. Create a first dashboard page
 
 In this section, we will create a new [`Page`][vizro.models.Page] and store it inside a variable called `first_page`.
@@ -49,17 +48,21 @@ A [Page][vizro.models.Page] model is the foundation of any Vizro dashboard. A pa
 
 To start, let's get an overview of the data and display it in a table using [AgGrid][vizro.models.AgGrid]. To create a page and add a table to it, follow these steps:
 
+1. Import all relevant packages and load in the data for this tutorial.
 1. Create a [Page][vizro.models.Page] and set the title to "Data".
 1. Add a Vizro [AgGrid][vizro.models.AgGrid] to the components list.
-1. Use the `dash_ag_grid` function for the figure argument in vm.AgGrid.
-1. Provide details about the data source in the footer argument of the AgGrid.
+1. Inside the `figure` argument of the `AgGrid`, use the `dash_ag_grid` function.
+1. Provide details about the data source in the `footer` argument of the `AgGrid`.
 
 !!! example "First Page"
     === "Code - dashboard"
         ```{.python pycafe-link}
         import vizro.models as vm
+        import vizro.plotly.express as px
         from vizro import Vizro
         from vizro.tables import dash_ag_grid
+        from vizro.models.types import capture
+        from vizro.figures import kpi_card
 
         tips = px.data.tips()
 
@@ -82,24 +85,26 @@ To start, let's get an overview of the data and display it in a table using [AgG
 
 As you can see from the code, `first_page` is added to the [`Dashboard`][vizro.models.Dashboard] and the dashboard is displayed by running `Vizro().build(dashboard).run()`.
 
-Feel free to get familiar with the data in the table. You can sort, filter, and search inside the `AgGrid` to get a better understanding of the dataset.
+Take a moment to explore the data in the table. You can sort, filter, and search within the \`AgGrid columns to gain a better understanding of the dataset.
 
-Notice that there is a toggle added automatically to the top-right corner of the dashboard. This enables switching between a dark and light theme.
+You'll notice a toggle in the top-right corner of the dashboard. This allows you to switch between dark and light themes. Give it a try!
 
-**Done! We created our first page! 🎉**
+**Great job! We've successfully created our first page! 🎉**
 
 ## 3. Create a second dashboard page
 
-Let's create a second page for the dashboard using charts and KPI cards. Vizro uses Graph models and Plotly Express functions to build different types of charts.
+Next, we'll add a second page to our dashboard, featuring charts and KPI (key performance indicator) cards.
 
-You can find a collection of available chart types along with code examples inside our visual vocabulary. Indeed, let's just copy/paste the code from the visual vocabulary to create a histogram to get an overview of the two numeric columns in the tips dataset: `total_bill` and `tip`.
+### 3.1 Add a chart to the page
 
-The code below shows the steps necessary to add a histogram to the page:
+Vizro leverages [Graph][vizro.models.Graph] models and Plotly Express functions to create various types of charts. You can explore the available chart types and their code examples in our [visual-vocabulary](https://vizro-demo-visual-vocabulary.hf.space).
 
-1. Create a [Page][vizro.models.Page] and set the title to "Summary".
+Follow these steps to add a histogram to the page:
+
+1. Create a second [Page][vizro.models.Page] and store it in a variable called second_page. Set its title to "Summary".
 1. Add a Vizro [Graph][vizro.models.Graph] to the components list.
-1. Copy the Plotly figure code for the `px.histogram` from the [visual-vocabulary](https://vizro-demo-visual-vocabulary.hf.space/distribution/histogram) and insert it into the `figure` argument of the `Graph`.
-1. Add the new page to the list of pages in the [`Dashboard`][vizro.models.Dashboard].
+1. Inside the `figure` argument of the `Graph`, use the code for the [px.histogram from the visual-vocabulary](https://vizro-demo-visual-vocabulary.hf.space/distribution/histogram).
+1. Add the new page to the list of pages in the [Dashboard][vizro.models.Dashboard].
 
 !!! example "Second Page"
     === "Code - second page"
@@ -112,7 +117,7 @@ The code below shows the steps necessary to add a histogram to the page:
                 vm.Graph(figure=px.histogram(tips, x="tip")),
             ],
         )
-
+        dashboard = vm.Dashboard(pages=[first_page, second_page])
         ```
 
     === "Code - dashboard"
@@ -123,7 +128,6 @@ The code below shows the steps necessary to add a histogram to the page:
         from vizro.tables import dash_ag_grid
         from vizro.models.types import capture
         from vizro.figures import kpi_card
-        from vizro.actions import export_data
 
         tips = px.data.tips()
 
@@ -145,104 +149,115 @@ The code below shows the steps necessary to add a histogram to the page:
             ],
         )
 
+        dashboard = vm.Dashboard(pages=[first_page, second_page])
+        Vizro().build(dashboard).run()
+
         ```
 
-````
-    dashboard = vm.Dashboard(pages=[first_page, second_page])
-    Vizro().build(dashboard).run()
-    ```
+        === "Result"
+            [![SecondPage]][secondpage]
 
-=== "Result"
-    [![SecondPage]][secondpage]
-````
+Observe that the charts are automatically stacked one below the other in the order specified. This is Vizro's default behavior, but we'll customize the layout later on!
+
+Additionally, note that a page navigation menu has been added to the left side of the dashboard. This allows you to switch between the two pages we have created.
 
 ---
 
 ### 2.2. Add further components
 
-You can combine and arrange various types of `components` on a dashboard page. The `components` currently available are [`Card`][vizro.models.Card], [`Graph`][vizro.models.Graph], and [`Button`][vizro.models.Button]. For more information, refer to the [components](../user-guides/components.md) overview page to find the guide for each type.
+You can combine and arrange various types of `components` on a dashboard page. Refer to the [components overview page](../user-guides/components.md) for a comprehensive list of available components.
 
-The code below adds two components to the page:
+Let's add two KPI cards to our second page. Follow these steps:
 
-- A [`Card`][vizro.models.Card] to insert markdown text into the dashboard.
-- A [`Graph`][vizro.models.Graph] to illustrate GDP development per continent since 1952 as a line graph.
+1. Add a [Figure][vizro.models.Figure] to the list of components
+1. Inside the `figure` argument of the `Figure`, use the \`kpi_card function.
+1. Configure your `kpi_card` by setting the `value_column`, `agg_func`, and `value_format` and `title` arguments. For more details on how to configure these, refer to our [KPI card user-guide](../user-guides/figure.md#key-performance-indicator-kpi-cards).
+1. Repeat the above steps to add another KPI card to the page.
 
-!!! warning "Before you run this code in a Jupyter Notebook"
-    If you are following this tutorial in a Jupyter Notebook, you need to restart the kernel each time you evaluate the code. If you do not, you will see error messages such as "Components must uniquely map..." because those components already exist from the previous evaluation.
-
-!!! example "Add components"
-    === "Code first component"
+!!! example "Add KPI Cards"
+    === "Code - first KPI Card"
         ```py
 
-        vm.Card(
-            text="""
-                # First dashboard page
-                This pages shows the inclusion of markdown text in a page and how components
-                can be structured using Layout.
-            """,
+        vm.Figure(
+            figure=kpi_card(
+                data_frame=tips,
+                value_column="total_bill",
+                agg_func="mean",
+                value_format="${value:.2f}",
+                title="Average Bill",
+            )
         )
 
         ```
 
-    === "Code second component"
+    === "Code - second KPI Card"
         ```py
 
-        vm.Graph(
-            id="line_gdp",
-            figure=px.line(gapminder_data, x="year", y="gdpPercap", color="continent",
-                            labels={"year": "Year", "continent": "Continent",
-                            "gdpPercap":"GDP Per Cap"}),
-        )
+         vm.Figure(
+            figure=kpi_card(
+                data_frame=tips, value_column="tip", agg_func="mean", value_format="${value:.2f}", title="Average Tips"
+            )
+         )
         ```
 
-    === "app.py"
+    === "Code - dashboard"
         ```{.python pycafe-link}
-        from vizro import Vizro
         import vizro.models as vm
         import vizro.plotly.express as px
+        from vizro import Vizro
+        from vizro.tables import dash_ag_grid
+        from vizro.models.types import capture
+        from vizro.figures import kpi_card
 
-        df = px.data.gapminder()
-        gapminder_data = (
-                df.groupby(by=["continent", "year"]).
-                    agg({"lifeExp": "mean", "pop": "sum", "gdpPercap": "mean"}).reset_index()
-            )
+        tips = px.data.tips()
 
         first_page = vm.Page(
-            title="First Page",
+            title="Data",
             components=[
-                vm.Card(
-                    text="""
-                        # First dashboard page
-                        This pages shows the inclusion of markdown text in a page and how components
-                        can be structured using Layout.
-                    """,
+                vm.AgGrid(
+                    figure=dash_ag_grid(tips),
+                    footer="""**Data Source:** Bryant, P. G. and Smith, M (1995) Practical Data Analysis: Case Studies in Business Statistics. Homewood, IL: Richard D. Irwin Publishing.""",
                 ),
-                vm.Graph(
-                    figure=px.box(gapminder_data, x="continent", y="lifeExp", color="continent",
-                                    labels={"lifeExp": "Life Expectancy", "continent": "Continent"}),
-                ),
-                vm.Graph(
-                    figure=px.line(gapminder_data, x="year", y="gdpPercap", color="continent",
-                                    labels={"year": "Year", "continent": "Continent",
-                                    "gdpPercap":"GDP Per Cap"}),
-                ),
-
             ],
         )
 
-        dashboard = vm.Dashboard(pages=[first_page])
+        second_page = vm.Page(
+            title="Summary",
+            components=[
+                vm.Figure(
+                    figure=kpi_card(
+                        data_frame=tips,
+                        value_column="total_bill",
+                        agg_func="mean",
+                        value_format="${value:.2f}",
+                        title="Average Bill",
+                    )
+                ),
+                vm.Figure(
+                    figure=kpi_card(
+                        data_frame=tips,
+                        value_column="tip",
+                        agg_func="mean",
+                        value_format="${value:.2f}",
+                        title="Average Tips"
+                    )
+                ),
+                vm.Graph(figure=px.histogram(tips, x="total_bill")),
+                vm.Graph(figure=px.histogram(tips, x="tip")),
+            ],
+        )
+
+        dashboard = vm.Dashboard(pages=[first_page, second_page])
         Vizro().build(dashboard).run()
         ```
 
     === "Result"
-        [![SecondPage]][secondpage]
+
+    [![SecondPage2]][secondpage2]
+
+---
 
 As you explore the dashboard, you may notice that the current layout could be further enhanced. The charts appear cramped, while the text component has ample unused space. The next section explains how to configure the layout and arrange the components.
-
-!!! note "An introduction to Vizro-AI"
-    In the example above, the code to create the line graph was generated using [Vizro-AI](https://vizro.readthedocs.io/en/latest/pages/tutorials/first-dashboard/). Vizro-AI enables you to use English, or other languages, to create interactive charts with [Plotly](https://plotly.com/python/) by simplifying the process through use of a large language model. In essence, Vizro-AI generates code from natural language instructions so that you can add it into a Vizro dashboard, such as in the example above.
-
-    Find out more in the [Vizro-AI documentation](https://vizro.readthedocs.io/projects/vizro-ai/)!
 
 ### 2.3. Configure the layout
 
@@ -316,7 +331,7 @@ Run the code below to apply the layout to the dashboard page:
         ```
 
     === "Result"
-        [![FirstPage3]][firstpage3]
+        \[![FirstPage3]\][firstpage3]
 
 ### 2.4. Add a control for dashboard interactivity
 
@@ -386,7 +401,7 @@ To illustrate, let's add a [`Filter`][vizro.models.Filter] on specific continent
         ```
 
     === "Result"
-        [![FirstPage4]][firstpage4]
+        \[![FirstPage4]\][firstpage4]
 
 Fantastic job! You have completed first dashboard page and gained valuable skills to:
 
@@ -638,10 +653,10 @@ By default, a navigation panel on the left side enables the user to switch betwe
         ```
 
     === "Subpage1"
-        [![FinalPage1]][finalpage1]
+        \[![FinalPage1]\][finalpage1]
 
     === "Subpage2"
-        [![FinalPage2]][finalpage2]
+        \[![FinalPage2]\][finalpage2]
 
 Congratulations on completing this tutorial! You have acquired the knowledge to configure layouts, add components, and implement interactivity in Vizro dashboards, working across two navigable pages.
 
@@ -658,9 +673,11 @@ Vizro doesn't end here, and we only covered the key features, but there is still
 - How to use [Actions](../user-guides/actions.md) for example, for chart interaction or custom controls.
 - How to create dashboards from `yaml`, `dict` or `json` following the [dashboard guide](../user-guides/dashboard.md).
 
-[finalpage1]: ../../assets/tutorials/dashboard/dashboard-first-page.png
-[finalpage2]: ../../assets/tutorials/dashboard/dashboard-second-page.png
+!!! note "An introduction to Vizro-AI"
+    In the example above, the code to create the line graph was generated using [Vizro-AI](https://vizro.readthedocs.io/en/latest/pages/tutorials/first-dashboard/). Vizro-AI enables you to use English, or other languages, to create interactive charts with [Plotly](https://plotly.com/python/) by simplifying the process through use of a large language model. In essence, Vizro-AI generates code from natural language instructions so that you can add it into a Vizro dashboard, such as in the example above.
+
+    Find out more in the [Vizro-AI documentation](https://vizro.readthedocs.io/projects/vizro-ai/)!
+
 [firstpage]: ../../assets/tutorials/dashboard/01-first-page.png
-[firstpage3]: ../../assets/tutorials/dashboard/dashboard23.png
-[firstpage4]: ../../assets/tutorials/dashboard/dashboard24.png
 [secondpage]: ../../assets/tutorials/dashboard/02-second-page.png
+[secondpage2]: ../../assets/tutorials/dashboard/02-second-page-kpi.png
