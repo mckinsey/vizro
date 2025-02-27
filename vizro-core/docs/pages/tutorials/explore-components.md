@@ -543,6 +543,151 @@ You will see that a [Dropdown](vizro.models.Dropdown) is selected for categorica
 1. [Arrange our components by customizing the layout](#34-configure-the-layout).
 1. [Add a filter to interact with the dashboard](#35-add-a-filter).
 
+
+## 4. Create a third page
+
+Now that we've learned how to create pages, add components, and configure layouts, let's create a third page for our dashboard. 
+This will give us the opportunity to practice our skills and introduce some new concepts!
+
+This page will feature a bar chart, a violin chart, and a heatmap. We'll once again leverage the 
+[Vizro visual vocabulary](https://vizro-demo-visual-vocabulary.hf.space/).
+
+
+### 4.1. Add multiple charts
+
+This step should feel familiar. Let's add all three charts to the page.
+
+1. Create a third [Page][vizro.models.Page] and store it in a variable called `third_page`. Set its title to "Analysis".
+1. Add three Vizro [Graphs][vizro.models.Graph] to the components list.
+1. For each `Graph`, use the `figure` argument to provide one of the Plotly express functions:
+For `px.violin and px.density_heatmap`, you can use the Plotly figure code directly from the visual vocabulary.
+For `px.bar`, copy the code but update the `data`, `x`, and `y` arguments to match our dataset.
+   - [px.violin from the visual-vocabulary](https://vizro-demo-visual-vocabulary.hf.space/distribution/violin)
+   - [px.bar from the visual-vocabulary](https://vizro-demo-visual-vocabulary.hf.space/magnitude/column)
+   - [px.density_heatmap from the visual-vocabulary](https://vizro-demo-visual-vocabulary.hf.space/time/heatmap)
+1. Provide a title for each `Graph`.
+1. Add the new page to the list of pages in the [Dashboard][vizro.models.Dashboard].
+
+!!! example "Third page"
+    === "Snippet - third page"
+        ```py
+
+        third_page = vm.Page(
+            title="Analysis",
+            components=[
+                vm.Graph(
+                    title="Where do we get more tips?",
+                    figure=px.bar(tips, y="tip", x="day"),
+                ),
+                vm.Graph(
+                    title="Is the average driven by a few outliers?",
+                    figure=px.violin(tips, y="tip", x="day", color="day", box=True),
+                ),
+                vm.Graph(
+                    title="Which group size is more profitable?",
+                    figure=px.density_heatmap(
+                    tips, x="day", y="size", z="tip", histfunc="avg", text_auto="$.2f"
+                )
+                ),
+            ],
+       )
+    
+        dashboard = vm.Dashboard(pages=[first_page, second_page, third_page])
+        ```
+
+    === "Code - dashboard"
+        ```{.python pycafe-link}
+        import vizro.models as vm
+        import vizro.plotly.express as px
+        from vizro import Vizro
+        from vizro.tables import dash_ag_grid
+        from vizro.models.types import capture
+        from vizro.figures import kpi_card
+        
+        tips = px.data.tips()
+        
+        first_page = vm.Page(
+        title="Data",
+        components=[
+            vm.AgGrid(
+                figure=dash_ag_grid(tips),
+                footer="""**Data Source:** Bryant, P. G. and Smith, M (1995) Practical Data Analysis: Case Studies in Business Statistics. Homewood, IL: Richard D. Irwin Publishing.""",
+            ),
+        ],
+        )
+        
+        second_page = vm.Page(
+                    title="Summary",
+                    layout=vm.Layout(grid=[[0, 1, -1, -1],
+                                    [2, 2, 2, 2],
+                                    [2, 2, 2, 2],
+                                    [2, 2, 2, 2],
+                                    [2, 2, 2, 2]]),
+                    components=[
+                        vm.Figure(
+                            figure=kpi_card(
+                                data_frame=tips,
+                                value_column="total_bill",
+                                agg_func="mean",
+                                value_format="${value:.2f}",
+                                title="Average Bill",
+                            )
+                        ),
+                        vm.Figure(
+                            figure=kpi_card(
+                                data_frame=tips, value_column="tip", agg_func="mean", value_format="${value:.2f}", title="Average Tips"
+                            )
+                        ),
+                       vm.Tabs(
+                        tabs=[
+                            vm.Container(
+                                title="Total Bill ($)",
+                                components=[
+                                    vm.Graph(figure=px.histogram(tips, x="total_bill")),
+                                ],
+                            ),
+                            vm.Container(
+                                title="Total Tips ($)",
+                                components=[
+                                    vm.Graph(figure=px.histogram(tips, x="tip")),
+                                ],
+                            ),
+                        ],
+                    )
+                ],
+                controls=[vm.Filter(column="day"), vm.Filter(column="time", selector=vm.Checklist()), vm.Filter(column="size")],
+            )
+        
+        
+        third_page = vm.Page(
+            title="Analysis",
+            components=[
+                vm.Graph(
+                    title="Where do we get more tips?",
+                    figure=px.bar(tips, y="tip", x="day"),
+                ),
+                vm.Graph(
+                    title="Is the average driven by a few outliers?",
+                    figure=px.violin(tips, y="tip", x="day", color="day", box=True),
+                ),
+                vm.Graph(
+                    title="Which group size is more profitable?",
+                    figure=px.density_heatmap(
+                    tips, x="day", y="size", z="tip", histfunc="avg", text_auto="$.2f"
+                )
+                ),
+            ],
+        )
+        
+        dashboard = vm.Dashboard(pages=[first_page, second_page, third_page])
+        Vizro().build(dashboard).run()
+        ```
+
+    === "Result"
+        [![ThirdPage]][thirdpage]
+
+You may notice that the third chart is not visible. This issue can occur with Plotly charts when there isn't enough space to display them properly. Let's customize the layout again to allocate more space to the heatmap.
+
 ## 3. Create a second dashboard page
 
 This section adds a second dashboard page and explains how to use controls and selectors. The new page is structured similarly to the page you created, but contains two charts that visualize the [iris data](https://plotly.com/python-api-reference/generated/plotly.express.data.html#plotly.express.data.iris).
@@ -817,3 +962,4 @@ Vizro doesn't end here, and we only covered the key features, but there is still
 [secondpage3]: ../../assets/tutorials/dashboard/04-second-page-tabs.png
 [secondpage4]: ../../assets/tutorials/dashboard/05-second-page-layout.png
 [secondpage5]: ../../assets/tutorials/dashboard/06-second-page-controls.png
+[thirdpage]: ../../assets/tutorials/dashboard/07-third-page.png
