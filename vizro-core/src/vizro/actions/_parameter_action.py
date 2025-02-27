@@ -13,11 +13,11 @@ from vizro.models._action._action import NewAction
 class _parameter(NewAction):
     targets: list[ModelID]
 
-    def function(
+    def actual_function(
         self,
-        filters: list[State],
-        parameters: list[State],
-        filter_interaction: list[dict[str, State]],
+        filters,
+        parameters,
+        filter_interaction,
     ) -> dict[ModelID, Any]:
         # TODO NOW: work out where this goes. Probably better here than in _get_modified_page_figures.
         targets = [target.partition(".")[0] for target in self.targets]
@@ -27,8 +27,6 @@ class _parameter(NewAction):
             ctds_parameter=ctx.args_grouping["external"]["parameters"],
             targets=targets,
         )
-
-    function._function = function
 
     # pararmeter_action
     # def _post_init(self):

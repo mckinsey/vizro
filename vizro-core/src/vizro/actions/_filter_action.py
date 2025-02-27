@@ -19,11 +19,11 @@ class _filter(NewAction):
     filter_column: str
     filter_function: Callable
 
-    def function(
+    def actual_function(
         self,
-        filters: list[State],
-        parameters: list[State],
-        filter_interaction: list[dict[str, State]],
+        filters,
+        parameters,
+        filter_interaction,
     ) -> dict[ModelID, Any]:
         return _get_modified_page_figures(
             ctds_filter=ctx.args_grouping["external"]["filters"],
@@ -31,8 +31,6 @@ class _filter(NewAction):
             ctds_parameter=ctx.args_grouping["external"]["parameters"],
             targets=self.targets,
         )
-
-    function._function = function
 
 
 # TODO NOW: validation

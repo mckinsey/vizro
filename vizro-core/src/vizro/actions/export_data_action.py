@@ -15,6 +15,7 @@ from vizro.models._action._action import (
     ControlInputs,
     _get_inputs_of_controls,
     _get_inputs_of_figure_interactions,
+    RESERVED_ARGS,
 )
 from vizro.models.types import capture, CapturedCallable
 
@@ -33,31 +34,12 @@ class export_data(NewAction):
 
     runtime_arg: str
 
-    # implementation dependent, can't go in schema. Prefix with vizro_ or _ or similar?
-    # RUN TIME FUNCTION
-    # not classvar actually if captured callable since depends on this instance's inputs
-    # Must be set using property or as private attribute assigned using validator or default factory.
-
-    @property
-    def function(self) -> CapturedCallable:
-        # static and runtime args in here but not auto vizro args - runtime ones will get overridden later which is fine
-        inputs = {
-            key: getattr(self, key)
-            for key in inspect.signature(self.actual_function).parameters
-            if key in self.__fields__  # to exclude filters etc.
-        }
-        return capture("action")(self.actual_function)(**inputs)
-
-    # THIS IS STATICMETHOD or EXTERNAL TO CLASS
     # assume always runtime unless explicitly set as static to be consistent with UDF
     # so STATIC IS SPECIAL CASE - YES
-    # MAKE ABSTRACT IN GENERIC
-    # like a classvar but no point making it one
-    # OR USE self for static and then all others are runtime
     def actual_function(
         self,
         runtime_arg,
-        filters,  # need to type hint theese
+        filters,  # maybe need type hints
         parameters,
         filter_interaction,
     ) -> dict[str, Any]:
@@ -109,8 +91,7 @@ class export_data(NewAction):
 
     # like function,  Must be set using property or as private attribute assigned using validator or default factory.
     # The default factory can also take a single required argument, in which the case the already validated data will be passed as a dictionary.
-    # inconsistent format c.f. NewCustomAction.outputs but that is sort of ok
-    # MAYBE move to GENERIC
+
     @property
     def outputs(self) -> dict[str, Output]:
         # TODO NOW: comment
@@ -154,40 +135,6 @@ class export_data(NewAction):
             dcc.Download(id={"type": "download_dataframe", "action_id": self.id, "target_id": target})
             for target in targets
         ]
-
-    # basically same as NewCustomAction
-    # MOVE TO NewAction IF COMMON LOGIC EVERYWHERE WHICH IT IS - JUST NOT YET SINCE NED TO CONVERT FILTER_INTERACION
-    # ETC.
-    # MOVE TO GENERIC
-    @property
-    def inputs(self) -> ControlInputs:
-        from vizro.actions import filter_interaction
-        from vizro.models import Filter, Parameter
-
-        page = model_manager._get_model_page(self)
-
-        # TODO NOW: create comment about refactoring ctds format in future. Comment that List[State] here would match
-        #  custom actions.
-        # TODO: consider names of these reserved arguments. vizro_filters? runtime_filters? __filters__? filters? Don't
-        #  do using type
-        #  hints - too complicated for user.
-        # CHANGE TO TYPE HINTS OR vizro_ reserved words
-        reserved_kwargs = {
-            "filters": _get_inputs_of_controls(page=page, control_type=Filter),
-            "parameters": _get_inputs_of_controls(page=page, control_type=Parameter),
-            "filter_interaction": _get_inputs_of_figure_interactions(page=page, model_type=filter_interaction),
-        }
-
-        # basically same as NewCustomAction
-        runtime_inputs = {}
-        # exclude self and hence all static args
-        for key in inspect.signature(self.actual_function).parameters:
-            if key in reserved_kwargs:
-                runtime_inputs[key] = reserved_kwargs[key]
-            else:
-                runtime_inputs[key] = State(*self.function[key].split("."))
-
-        return runtime_inputs
 
 
 # TODO NOW: validation

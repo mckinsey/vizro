@@ -2,6 +2,7 @@ from __future__ import annotations
 
 import inspect
 import logging
+from abc import abstractmethod
 from collections.abc import Collection, Mapping
 from pprint import pformat
 from typing import TYPE_CHECKING, Any, Callable, ClassVar, TypedDict, TypeVar, Union, get_args
@@ -24,7 +25,7 @@ if TYPE_CHECKING:
     from vizro.models import Page
 from vizro.models import VizroBaseModel
 from vizro.models._models_utils import _log_call
-from vizro.models.types import CapturedCallable, ControlType
+from vizro.models.types import CapturedCallable, ControlType, capture
 
 logger = logging.getLogger(__name__)
 
@@ -220,7 +221,8 @@ class ControlInputs(TypedDict):
     # TODO NOW: figure out where this class lives
 
 
-NOT_USED = object()
+# do by type hint or vizro_
+RESERVED_ARGS = {"filters", "parameters", "filter_interaction"}
 
 
 # can't subclass NewCustomAction since would then have outputs field which would need removing
@@ -238,6 +240,26 @@ class NewAction(VizroBaseModel):
     # or just keep it as abstract staticmethod
     # should not be optional, just temporarily that before rewrite filter_interaction
 
+    # implementation dependent, can't go in schema. Prefix with vizro_ or _ or similar?
+    # RUN TIME FUNCTION
+    # not classvar actually if captured callable since depends on this instance's inputs
+    # Must be set using property or as private attribute assigned using validator or default factory.
+    @property
+    def function(self) -> CapturedCallable:
+        # only need runtime args that aren't reserved
+        # static args go through self
+        inputs = {
+            key: getattr(self, key)
+            for key in inspect.signature(self.actual_function).parameters
+            if key not in RESERVED_ARGS
+        }
+        return capture("action")(self.actual_function)(**inputs)
+
+    # @abstractmethod
+    # keyword args only?
+    def actual_function(self):
+        return
+
     def _get_callback_mapping(self):
         """Builds callback inputs and outputs for the Action model callback, and returns action required components.
 
@@ -252,15 +274,13 @@ class NewAction(VizroBaseModel):
         """
         return self.inputs, self.outputs, self.dash_components
 
+    # DIFFERENT TYPES TO NewCustomAction since dict[str, Output] and not just jsonable stuff - inconsistent format c.f. NewCustomAction.outputs but that is sort of ok
     @property
     def outputs(self) -> dict[str, Output]:
         # TODO NOW: tidy and decide where this bit of code goes and how to get targets for filter and opl vs. parameter
 
         # TODO NOW: check if targets right type
-        if hasattr(self, "targets"):
-            targets = self.targets
-        else:
-            targets = []
+        targets = self.targets or []
         output_targets = []
         for target in targets:
             if "." in target:
@@ -278,6 +298,7 @@ class NewAction(VizroBaseModel):
             for target in output_targets
         }
 
+    # basically same as NewCustomAction
     @property
     def inputs(self) -> ControlInputs:
         from vizro.actions import filter_interaction
@@ -297,13 +318,14 @@ class NewAction(VizroBaseModel):
             "filter_interaction": _get_inputs_of_figure_interactions(page=page, model_type=filter_interaction),
         }
 
+        # basically same as NewCustomAction
         runtime_inputs = {}
-
-        for key in inspect.signature(self.function).parameters:
+        # exclude self and hence all static args
+        for key in inspect.signature(self.actual_function).parameters:
             if key in reserved_kwargs:
                 runtime_inputs[key] = reserved_kwargs[key]
-            elif key in self.runtime_args:
-                runtime_inputs[key] = State(*getattr(self, key).split("."))
+            else:
+                runtime_inputs[key] = State(*self.function[key].split("."))
 
         return runtime_inputs
 

@@ -16,11 +16,11 @@ class filter_interaction(NewAction):
     targets: list[ModelID] = []
     # TODO NOW: comment it's optional
 
-    def function(
+    def actual_function(
         self,
-        filters: list[State],
-        parameters: list[State],
-        filter_interaction: list[dict[str, State]],
+        filters,
+        parameters,
+        filter_interaction,
     ) -> dict[ModelID, Any]:
         """Applies controls to charts on page once the page is opened (or refreshed).
 
@@ -42,8 +42,6 @@ class filter_interaction(NewAction):
             ctds_parameter=ctx.args_grouping["external"]["parameters"],
             targets=self.targets,
         )
-
-    function._function = function
 
     # filter_interaction_action
     # def _post_init(self):
