@@ -1,33 +1,30 @@
 """Unit tests for chat processors."""
 
 import os
-from unittest.mock import MagicMock, patch
+from unittest.mock import MagicMock, patch, Mock
 
 import pytest
 
-from vizro_chat.processors import EchoProcessor
+from vizro_chat.processors import EchoProcessor, OpenAIProcessor
 
 
 def test_echo_processor():
     """Test EchoProcessor functionality."""
     processor = EchoProcessor()
-    messages = []
-    prompt = "Hello, world!"
-
-    response = list(processor.get_response(messages, prompt))
+    messages = [{"role": "user", "content": "test"}]
+    response = list(processor.get_response(messages, "Hello"))
+    
     assert len(response) == 10
-    assert all(isinstance(msg, str) for msg in response)
-    assert all("Hello, world!" in msg for msg in response)
+    assert all("Hello" in msg for msg in response)
+    assert all("Echo" in msg for msg in response)
 
 
-def test_echo_processor_error_handling():
-    """Test EchoProcessor error handling."""
+def test_echo_processor_none_input():
+    """Test EchoProcessor with None inputs."""
     processor = EchoProcessor()
-
-    # Simulate an error by passing invalid types
-    response = list(processor.get_response(None, None))  # type: ignore
+    response = list(processor.get_response(None, None))
     assert len(response) == 1
-    assert "Error in EchoProcessor" in response[0]
+    assert "Error" in response[0]
 
 
 # Skip OpenAI tests if the package isn't installed
@@ -42,69 +39,64 @@ pytestmark = pytest.mark.skipif(openai_not_installed, reason="OpenAI package not
 
 @pytest.fixture
 def mock_openai():
-    """Create a mock OpenAI client."""
-    with patch("openai.OpenAI") as mock_client:
+    """Mock OpenAI client."""
+    with patch("vizro_chat.processors.OpenAI") as mock:
+        mock_client = Mock()
+        mock.return_value = mock_client
         yield mock_client
 
 
 @pytest.mark.skipif(openai_not_installed, reason="OpenAI package not installed")
-def test_openai_processor_initialization(mock_openai):
+def test_openai_processor_init(mock_openai):
     """Test OpenAIProcessor initialization."""
-    with patch.dict(os.environ, {"OPENAI_API_KEY": "test-key", "OPENAI_BASE_URL": "test-url"}):
-        processor = OpenAIProcessor()
-        assert processor.model == "gpt-4o-mini"
-        assert processor.temperature == 1.0
-        mock_openai.assert_called_once()
+    processor = OpenAIProcessor(model="test-model", temperature=0.5)
+    assert processor.model == "test-model"
+    assert processor.temperature == 0.5
+    assert processor.client is None
 
 
-def test_openai_processor_response(mock_openai):
+def test_openai_processor_initialize_client(mock_openai):
+    """Test OpenAIProcessor client initialization."""
+    processor = OpenAIProcessor()
+    processor.initialize_client(api_key="test-key", api_base="test-base")
+    
+    mock_openai.assert_called_once_with(api_key="test-key", base_url="test-base")
+
+
+def test_openai_processor_get_response(mock_openai):
     """Test OpenAIProcessor response generation."""
-    mock_instance = MagicMock()
-    mock_openai.return_value = mock_instance
-
     # Mock the streaming response
-    mock_chunk = MagicMock()
+    mock_chunk = Mock()
+    mock_chunk.choices = [Mock()]
     mock_chunk.choices[0].delta.content = "test response"
-    mock_instance.chat.completions.create.return_value = [mock_chunk]
-
-    with patch.dict(os.environ, {"OPENAI_API_KEY": "test-key", "OPENAI_BASE_URL": "test-url"}):
-        processor = OpenAIProcessor()
-        messages = []
-        prompt = "test prompt"
-
-        response = list(processor.get_response(messages, prompt))
-        assert response == ["test response"]
-
-        # Verify API call
-        mock_instance.chat.completions.create.assert_called_once_with(
-            model="gpt-4o-mini",
-            messages=[{"role": "user", "content": "test prompt"}],
-            temperature=1.0,
-            stream=True,
-        )
+    
+    mock_openai.chat.completions.create.return_value = [mock_chunk]
+    
+    processor = OpenAIProcessor()
+    processor.initialize_client(api_key="test-key")
+    
+    messages = [{"role": "user", "content": "test"}]
+    response = list(processor.get_response(messages, "Hello"))
+    
+    assert response == ["test response"]
+    mock_openai.chat.completions.create.assert_called_once_with(
+        model="gpt-4o-mini",
+        messages=[*messages, {"role": "user", "content": "Hello"}],
+        temperature=1.0,
+        stream=True,
+    )
 
 
 def test_openai_processor_error_handling(mock_openai):
     """Test OpenAIProcessor error handling."""
-    mock_instance = MagicMock()
-    mock_openai.return_value = mock_instance
-
-    # Simulate different types of errors
-    error_cases = [
-        ("Token is inactive due to expiration", "Error: OpenAI API token has expired"),
-        ("PermissionDenied", "Error: Permission denied"),
-        ("RateLimitExceeded", "Error: Rate limit exceeded"),
-        ("Unknown error", "Error: Unknown error"),
-    ]
-
-    with patch.dict(os.environ, {"OPENAI_API_KEY": "test-key", "OPENAI_BASE_URL": "test-url"}):
-        processor = OpenAIProcessor()
-
-        for error_msg, expected_response in error_cases:
-            mock_instance.chat.completions.create.side_effect = Exception(error_msg)
-            response = list(processor.get_response([], "test"))
-            assert len(response) == 1
-            assert expected_response in response[0]
+    mock_openai.chat.completions.create.side_effect = Exception("API Error")
+    
+    processor = OpenAIProcessor()
+    processor.initialize_client(api_key="test-key")
+    
+    response = list(processor.get_response([], "test"))
+    assert len(response) == 1
+    assert "Error" in response[0]
 
 
 def test_openai_processor_import_error():

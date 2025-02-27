@@ -4,7 +4,7 @@ import os
 from abc import ABC, abstractmethod
 from collections.abc import Iterator
 from pathlib import Path
-
+from openai import OpenAI
 
 class ChatProcessor(ABC):
     """Abstract base class for chat processors."""
@@ -36,23 +36,28 @@ class OpenAIProcessor(ChatProcessor):
     def __init__(self, model: str = "gpt-4o-mini", temperature: float = 1.0):
         """Initialize OpenAI chat processor."""
         try:
-            from openai import OpenAI
-
-            env_path = Path(__file__).parent.parent.parent / "vizro-core" / "examples" / "dev_1" / ".env"
-            if env_path.exists():
-                from dotenv import load_dotenv
-
-                load_dotenv(env_path)
-
-            self.client = OpenAI(api_key=os.getenv("OPENAI_API_KEY"), base_url=os.getenv("OPENAI_BASE_URL"))
             self.model = model
             self.temperature = temperature
-        except ImportError:
-            raise ImportError("OpenAI package not installed. Install with 'pip install openai'")
+            self.client = None
+        except Exception as e:
+            raise
+
+    def initialize_client(self, api_key: str = None, api_base: str = None):
+        """Initialize OpenAI client with provided credentials."""
+        try:
+            self.client = OpenAI(
+                api_key=api_key or os.getenv("OPENAI_API_KEY"),
+                base_url=api_base or os.getenv("OPENAI_BASE_URL")
+            )
+        except Exception as e:
+            raise
 
     def get_response(self, messages: list[dict[str, str]], user_prompt: str) -> Iterator[str]:
         """Generate streaming response using OpenAI API."""
         try:
+            if not self.client:
+                self.initialize_client()
+
             response = self.client.chat.completions.create(
                 model=self.model,
                 messages=[*messages, {"role": "user", "content": user_prompt}],
