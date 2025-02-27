@@ -5,6 +5,8 @@ from abc import ABC, abstractmethod
 from collections.abc import Iterator
 from pathlib import Path
 from openai import OpenAI
+from time import sleep
+
 
 class ChatProcessor(ABC):
     """Abstract base class for chat processors."""
@@ -25,6 +27,7 @@ class EchoProcessor(ChatProcessor):
                 raise ValueError("Messages and prompt cannot be None")
 
             for i in range(10):
+                sleep(1)
                 yield f"Echo {i + 1}: {user_prompt}\n"
         except Exception as e:
             yield f"Error in EchoProcessor: {e!s}"

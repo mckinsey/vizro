@@ -22,21 +22,30 @@ CHAT_CONTAINER_STYLE = {
     "width": "100%",
     "backgroundColor": "var(--mantine-color-dark-light)",
     "position": "relative",
+    "overflow": "hidden",  # Prevent container overflow
 }
 
 CHAT_HISTORY_STYLE = {
-    "overflowY": "auto",
+    "position": "absolute",  # Position absolutely
+    "top": "0",            # Align to top
+    "left": "0",          # Align to left
+    "right": "0",         # Stretch to right
+    "bottom": "120px",    # Leave space for input
     "padding": "20px",
     "gap": "10px",
-    "width": "100%",
-    "flex": "1 1 auto",
-    "display": "flex",
-    "flexDirection": "column",
+    "overflow-y": "auto",  # Enable vertical scrolling
+    "overflow-x": "hidden", # Prevent horizontal scrolling
 }
 
 CHAT_INPUT_CONTAINER_STYLE = {
     "padding": "20px",
-    "flex": "0 0 auto",
+    "position": "absolute",
+    "bottom": "0",
+    "left": "0",
+    "right": "0",
+    "backgroundColor": "var(--mantine-color-dark-light)",
+    "borderTop": "1px solid var(--mantine-color-dark-light-hover)",
+    "zIndex": "1",  # Ensure input stays on top
 }
 
 SETTINGS_ICON_STYLE = {
@@ -80,6 +89,7 @@ MESSAGE_STYLE = {
     "minWidth": "100px",
     "lineHeight": "1.25",
     "letterSpacing": "0.2px",
+    "borderRadius": "10px",
 }
 
 
@@ -272,7 +282,7 @@ class VizroChatComponent(VizroBaseModel):
                                 msg["content"],
                                 style={
                                     **MESSAGE_STYLE,
-                                    "borderLeft": f"2px solid {'#00b4ff' if is_user else '#aaa9ba'}",
+                                    "borderLeft": f"4px solid {'#aaa9ba' if is_user else '#00b4ff'}",
                                 }
                             )
                         )
@@ -314,7 +324,8 @@ class VizroChatComponent(VizroBaseModel):
                     tempUserDiv.style.minWidth = "100px";
                     tempUserDiv.style.lineHeight = "1.25";
                     tempUserDiv.style.letterSpacing = "0.2px";
-                    tempUserDiv.style.borderLeft = "2px solid #00b4ff";
+                    tempUserDiv.style.borderRadius = "10px";
+                    tempUserDiv.style.borderLeft = "4px solid #aaa9ba";
                     tempUserDiv.textContent = value.trim();
 
                     if (chatHistory) {
@@ -344,7 +355,8 @@ class VizroChatComponent(VizroBaseModel):
                         tempContainer.style.minWidth = "100px";
                         tempContainer.style.lineHeight = "1.25";
                         tempContainer.style.letterSpacing = "0.2px";
-                        tempContainer.style.borderLeft = "2px solid #aaa9ba";
+                        tempContainer.style.borderLeft = "4px solid #00b4ff";
+                        tempContainer.style.borderRadius = "10px";
                         tempContainer.setAttribute('data-streaming', 'true');
 
                         if (chatHistory) {
