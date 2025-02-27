@@ -40,7 +40,7 @@ page1 = vm.Page(
         vm.Button(
             id="button",
             text="Export data",
-            actions=[export_data(targets=["scatter_relation_2007"])],
+            actions=[export_data(targets=["scatter_relation_2007"], runtime_arg="button.n_clicks")],
         ),
     ],
     controls=[
@@ -58,10 +58,11 @@ page1 = vm.Page(
 # Options:
 # @capture_new_action(use="trigger, output")
 # could have in function signature or not - up to user
-# OR use type hint
+# OR use type hint s: Annotated[..., "reserved"]
 # OR match by name and just break
+# SIMPLEST: all arguments that aren't defined in initial CC are assumed to be reserved ones
 @capture("action")
-def my_custom_action(points_data, filters: Annotated[..., "reserved"]):
+def my_custom_action(points_data, filters):
     # HERE HERE HERE. What would reserved arguments actually be?
     # def my_custom_action(points_data, filters: Annotated[..., "reserved"], outputs):
     # outputs as reserved keyword

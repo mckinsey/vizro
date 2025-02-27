@@ -91,12 +91,6 @@ class Action(VizroBaseModel):
 
         if isinstance(inputs, Mapping):
             # TODO NOW: comment this is only NewAction
-            # inject static arguments if have class-based action
-            if not isinstance(self.function, CapturedCallable):
-                schema_args = (
-                    set(inspect.signature(self.function).parameters) & set(self.__fields__) - self.runtime_args
-                )
-                inputs |= {key: getattr(self, key) for key in schema_args}
             return_value = self.function(**inputs)
         else:
             # TODO NOW: comment this is only old action
@@ -229,6 +223,7 @@ class ControlInputs(TypedDict):
 NOT_USED = object()
 
 
+# can't subclass NewCustomAction since would then have outputs field which would need removing
 class NewAction(VizroBaseModel):
     # can't define things like target here or won't get told if not available
     # just need to record somehwere to make sure it's only used when defined or to make private proxies of them like
@@ -236,31 +231,25 @@ class NewAction(VizroBaseModel):
     # targets: Annotated[list[ModelID], "reserved"] = None
     # either two type hint or different sentinel value
 
+    # just here to make filter_interacion etc. work, in reality should be instance and not class and use captured
+    # callable
     function: ClassVar[Callable]
 
-    # TODO NOW: Maybe make abstractmethod.
-    # def function(self, *args, **kwargs):
-    #     pass
-
-    # # TODO FUTURE: this would be removed. It's just here for compatability with CapturedCallable,
-    # @property
-    # def function(self):
-    #     # TODO NOW: comment. Horrible hack to make compatible with CapturedCallable.
-    #     _function = self.new_function
-    #     # TODO NOW: see if this is necessary still after tidying
-    #     _function.__func__._function = self.new_function
-    #     # TODO NOW: figure out how to name for debugging - maybe need to alter Action debugging code.
-    #     # _function.__func__._function.__name__ = type(self)
-    #     return _function
+    # or just keep it as abstract staticmethod
+    # should not be optional, just temporarily that before rewrite filter_interaction
 
     @property
     def runtime_args(self):
         x = set()
-        for field_name, field in self.__fields__.items():
-            args = get_args(field.annotation)
+        for parameter in inspect.signature(self.actual_function).parameters.values():
+            args = get_args(parameter.annotation)
             if len(args) > 1:
-                if args[1] == "runtime":
-                    x.add(field_name)
+                if args[1] != "static":
+                    # annotaetd with something else - needs to be made more robust
+                    x.add(parameter.name)
+            else:
+                # not annotated
+                x.add(parameter.name)
         return x
 
     def _get_callback_mapping(self):
@@ -346,6 +335,12 @@ Action.register(NewAction)
 
 
 class NewCustomAction(VizroBaseModel):
+    # note this is the same as Action so far but with inputs field different
+    # only real enhancements are ability to inject filters etc. reserved arguments
+    # and do inputs directly in function rather than as inputs argument
+    # and possible new shorthand
+    # could probably do as extension to existing class by populating inputs if not specified manually by matching
+    # keyword arguments and splitting into State(*...)
     function: CapturedCallable = Field(..., import_path="vizro.actions", mode="action", description="Action function.")
     outputs: list[str]
 
@@ -373,6 +368,7 @@ class NewCustomAction(VizroBaseModel):
             "filter_interaction": _get_inputs_of_figure_interactions(page=page, model_type=filter_interaction),
         }
 
+        # assume all arguments are runtime arguments
         runtime_inputs = {}
         bound_args = {key: State(*value.split(".")) for key, value in self.function._arguments.items()}
         runtime_inputs |= bound_args
@@ -396,6 +392,7 @@ class NewCustomAction(VizroBaseModel):
         Returns: List of required components (e.g. dcc.Download) for the Action model added to the `Dashboard`
             container. Those components represent the return value of the Action build method.
         """
+        # just same as current Action model for outputs
         outputs = [Output(*output.split(".")) for output in self.outputs]
         return self.inputs, outputs, self.dash_components
 

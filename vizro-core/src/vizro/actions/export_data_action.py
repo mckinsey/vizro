@@ -1,15 +1,22 @@
 """Pre-defined action function "export_data" to be reused in `action` parameter of VizroBaseModels."""
 
+import inspect
 from collections.abc import Iterable
 from typing import Annotated, Any, Callable, ClassVar, Literal, TypeVar, cast
 
-from dash import Output, ctx, dcc
+from dash import Output, ctx, dcc, State
 
 from vizro.actions._actions_utils import _apply_filters, _get_unfiltered_data
 from vizro.managers import model_manager
 from vizro.managers._model_manager import FIGURE_MODELS, ModelID
 from vizro.models import VizroBaseModel
-from vizro.models._action._action import NewAction
+from vizro.models._action._action import (
+    NewAction,
+    ControlInputs,
+    _get_inputs_of_controls,
+    _get_inputs_of_figure_interactions,
+)
+from vizro.models.types import capture
 
 T = TypeVar("T")
 S = Annotated[ClassVar[T], "s"]
@@ -18,12 +25,13 @@ S = Annotated[ClassVar[T], "s"]
 class export_data(NewAction):
     # implementation independent, appear in schema
     # BUILD TIME PARAMS
-    # SOME REINTERPRETED AT RUNTIME
+    # SOME REINTERPRETED AT RUNTIME as in NewAction
+    # but also have possibility of static arguments that you can't do (at least not without type hint) in Action
     targets: list[ModelID] = []  # TODO FUTURE: maybe rename this so it doesn't inconsistently
     # use targets?
     file_format: Literal["csv", "xlsx"] = "csv"
-    runtime_arg: Annotated[str, "runtime"] = "button.n_clicks"  # would be user specified in reality though could
-    # still have default value
+
+    runtime_arg: str
 
     # implementation dependent, can't go in schema. Prefix with vizro_ or _ or similar?
     # RUN TIME FUNCTION
@@ -32,10 +40,25 @@ class export_data(NewAction):
 
     # COULD MAYBE GO BACK TO NON-staticmethod and self for class-based action so can easily use targets etc. without
     # needing to repeat them here
+    # not classvar actually if captured callable
+    # THIS IS NOT STAT since depends on this instance's inputs
+    @property
+    def function(self):
+        # static and runtime args in here but not auto vizro args - runtime ones will get overridden later which is fine
+        inputs = {
+            key: getattr(self, key)
+            for key in inspect.signature(self.actual_function).parameters
+            if key in self.__fields__  # to exclude filters etc.
+        }
+        return capture("action")(self.actual_function)(**inputs)
+
+    # THIS IS STATIC/CLASSVAR/EXTERNAL TO CLASS
+    # assume always runtime unless explicitly set as static to be consistent with UDF
+    # so STATIC IS SPECIAL CASE - YES
     @staticmethod
     def actual_function(
-        targets,
-        file_format,
+        targets: Annotated[..., "static"],
+        file_format: Annotated[..., "static"],
         runtime_arg,
         filters,  # need to type hint theese
         parameters,
@@ -88,13 +111,16 @@ class export_data(NewAction):
         return outputs
 
     # this would make it static function - GOOD IDEA?
-    # FOR CUSTOM ACTION FUNCTION, EVERYTHING IS RUNTIME ONLY - no file_format
 
     # __func__ needed since it's staticmethod. Maybe not a good way to do it compard to just a function outside the
     # class
-    actual_function.__func__._function = actual_function.__func__
-    function: ClassVar[Callable] = actual_function
+    # actual_function.__func__._function = actual_function.__func__
+    # function: ClassVar[Callable] = actual_function
 
+    # outputs can't be classvar because it depends on instance properties
+    # so must be property or private attribute set by validator or default_factory:
+    # The default factory can also take a single required argument, in which the case the already validated data will be passed as a dictionary.
+    # inconsistent format c.f. NewCustomAction.outputs but that is sort of ok
     @property
     def outputs(self) -> dict[str, Output]:
         # TODO NOW: comment
@@ -114,6 +140,7 @@ class export_data(NewAction):
             for target in targets
         }
 
+    # same arguments hold as for outputs for type of argumnet
     @property
     # TODO NOW: put these thoughts somewhere
     # For multiple files could use single dcc.Download but zip file.
@@ -137,6 +164,38 @@ class export_data(NewAction):
             dcc.Download(id={"type": "download_dataframe", "action_id": self.id, "target_id": target})
             for target in targets
         ]
+
+    # basically same as NewCustomAction
+    # MOVE TO NewAction IF COMMON LOGIC EVERYWHERE WHICH IT IS - JUST NOT YET SINCE NED TO CONVERT FILTER_INTERACION
+    # ETC.
+    @property
+    def inputs(self) -> ControlInputs:
+        from vizro.actions import filter_interaction
+        from vizro.models import Filter, Parameter
+
+        page = model_manager._get_model_page(self)
+
+        # TODO NOW: create comment about refactoring ctds format in future. Comment that List[State] here would match
+        #  custom actions.
+        # TODO: consider names of these reserved arguments. vizro_filters? runtime_filters? __filters__? filters? Don't
+        #  do using type
+        #  hints - too complicated for user.
+        # CHANGE TO TYPE HINTS OR vizro_ reserved words
+        reserved_kwargs = {
+            "filters": _get_inputs_of_controls(page=page, control_type=Filter),
+            "parameters": _get_inputs_of_controls(page=page, control_type=Parameter),
+            "filter_interaction": _get_inputs_of_figure_interactions(page=page, model_type=filter_interaction),
+        }
+
+        # basically same as NewCustomAction
+        runtime_inputs = {}
+        bound_args = {
+            key: State(*self.function[key].split(".")) for key in self.runtime_args if key in self.function._arguments
+        }
+        runtime_inputs |= bound_args
+        runtime_inputs |= {key: value for key, value in reserved_kwargs.items() if key in self.runtime_args}
+
+        return runtime_inputs
 
 
 # TODO NOW: validation
