@@ -1,9 +1,9 @@
 """Pre-defined action function "export_data" to be reused in `action` parameter of VizroBaseModels."""
 
 from collections.abc import Iterable
-from typing import Any, Literal, cast, Annotated, ClassVar, Callable, TypeVar, get_args
+from typing import Annotated, Any, Callable, ClassVar, Literal, TypeVar, cast
 
-from dash import Output, State, ctx, dcc
+from dash import Output, ctx, dcc
 
 from vizro.actions._actions_utils import _apply_filters, _get_unfiltered_data
 from vizro.managers import model_manager

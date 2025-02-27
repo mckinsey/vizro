@@ -5,11 +5,10 @@ import vizro.plotly.express as px
 from vizro import Vizro
 from vizro.actions import filter_interaction, export_data
 from vizro.models._action._action import (
-    capture_new_action,
     VizroState,
     VizroOutput,
-    capture_new_action2,
     NewCustomAction,
+    NewAction,
 )
 from vizro.models.types import capture
 
@@ -61,7 +60,7 @@ page1 = vm.Page(
 # could have in function signature or not - up to user
 # OR use type hint
 # OR match by name and just break
-@capture_new_action2
+@capture("action")
 def my_custom_action(points_data, filters: Annotated[..., "reserved"]):
     # HERE HERE HERE. What would reserved arguments actually be?
     # def my_custom_action(points_data, filters: Annotated[..., "reserved"], outputs):
@@ -107,7 +106,8 @@ page2 = vm.Page(
             figure=px.scatter(df, x="sepal_length", y="petal_width", color="species", custom_data=["species"]),
             actions=[
                 NewCustomAction(
-                    action=my_custom_action(points_data="scatter_chart.clickData"),
+                    function=my_custom_action(points_data="scatter_chart.clickData"),
+                    # no need to specify filters or make it optional argument - thanks to CC
                     outputs=["my_card_1.children", "my_card_2.children"],
                 ),
             ],

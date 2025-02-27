@@ -4,7 +4,7 @@ import inspect
 import logging
 from collections.abc import Collection, Mapping
 from pprint import pformat
-from typing import TYPE_CHECKING, Any, Callable, TypedDict, TypeVar, Union, Annotated, ClassVar, get_args
+from typing import TYPE_CHECKING, Any, Callable, ClassVar, TypedDict, TypeVar, Union, get_args
 
 from dash import Input, Output, State, callback, html
 from dash.development.base_component import Component
@@ -13,7 +13,7 @@ from vizro.managers import model_manager
 from vizro.managers._model_manager import ModelID
 
 try:
-    from pydantic.v1 import Field, validator, create_model
+    from pydantic.v1 import Field, create_model, validator
 except ImportError:  # pragma: no cov
     from pydantic import Field
 
@@ -91,10 +91,12 @@ class Action(VizroBaseModel):
 
         if isinstance(inputs, Mapping):
             # TODO NOW: comment this is only NewAction
-            # inject static arguments (like ones set initially in CC)
-
-            schema_args = set(inspect.signature(self.function).parameters) & set(self.__fields__) - self.runtime_args
-            inputs |= {key: getattr(self, key) for key in schema_args}
+            # inject static arguments if have class-based action
+            if not isinstance(self.function, CapturedCallable):
+                schema_args = (
+                    set(inspect.signature(self.function).parameters) & set(self.__fields__) - self.runtime_args
+                )
+                inputs |= {key: getattr(self, key) for key in schema_args}
             return_value = self.function(**inputs)
         else:
             # TODO NOW: comment this is only old action
@@ -343,90 +345,15 @@ NewAction._action_callback_function = Action._action_callback_function
 Action.register(NewAction)
 
 
-##### How user writes custom action. Compare to capture() decorator and do as capture("new_action").
-# Probably not a good idea to have this as same NewAction class - good to have a separate model.
-# e.g. want extra="allow" only in Custom Action
-# But then need to repeat code that injects inputs etc. into here :(
-# OR that needs to live elsewhere and not as property in NewAction. Given the arguments are always optional this is
-# probably ok?
-class capture_new_action:
-    def __init__(self, function):
-        print("init capture_new_action")
-        self.actual_function = function
-
-    def __call__(self, **kwargs):
-        # TODO NOW:
-        # if use validate_call here then make it more lenient than default config e.g. arbitrary_types_allowed=True)
-        # if self.func asks for **filters then put in here. . Easier to mark using name rather than type hint
-        # that it's provided by vizro.
-        # validate_call can only do validators as Annotations of fields
-        print("creating NewCustomAction")
-        # return NewAction(func=validate_call(self.func), **kwargs)
-        return NewCustomAction(actual_function=self.actual_function, **kwargs)
-
-
-class capture_new_action2:
-    def __new__(self, function):
-        print("new capture_new_action2")
-
-        # could put validation into the created model to make sure the specified id exists etc.
-        def _get_metadata(annotation):
-            args = get_args(annotation)
-            if len(args) > 1:
-                return args[1]
-            return None
-
-        # these ones go to fields so get validated
-        # reserved never supplied manually so doesn't
-        runtime = {
-            param_name: (Annotated[str, "runtime"], ...)
-            for param_name, param in inspect.signature(function).parameters.items()
-            if _get_metadata(param.annotation) != "reserved"
-        }
-        # mimic NewAction but this is horrible
-        function = staticmethod(function)
-        function.__func__._function = function
-        model = create_model(
-            function.__name__,
-            function=(ClassVar, function),
-            **runtime,
-            __base__=VizroBaseModel,
-        )
-        return model
-
-    # ONLY TO MAKE MODEL WITH CUSTOM NAME, NOTHING ELSE:
-    # def __new__(cls, *args, **kwargs):
-    #     print("new capture_new_action")
-    #     return NewAction
-
-    # def __call__(self, **kwargs):
-    #     # returns model instance - correct
-    #     # TODO NOW:
-    #     # if use validate_call here then make it more lenient than default config e.g. arbitrary_types_allowed=True)
-    #     # if self.func asks for **filters then put in here. . Easier to mark using name rather than type hint
-    #     # that it's provided by vizro.
-    #     # validate_call can only do validators as Annotations of fields
-    #     print("creating NewCustomAction")
-    #     # return NewAction(func=validate_call(self.func), **kwargs)
-    #     return NewCustomAction(actual_function=self.actual_function, **kwargs)
-
-
 class NewCustomAction(VizroBaseModel):
-    action: Any  # should be NewAction but hard to get working due to current state of code
+    function: CapturedCallable = Field(..., import_path="vizro.actions", mode="action", description="Action function.")
     outputs: list[str]
 
-    # COPIED AND PASTED BUT SHOULD BE TAKEN FROM action
-    @property
-    def runtime_args(self):
-        x = set()
-        for field_name, field in self.action.__fields__.items():
-            args = get_args(field.annotation)
-            if len(args) > 1:
-                if args[1] == "runtime":
-                    x.add(field_name)
-        return x
-
-    # COPIED AND PASTED BUT SHOULD BE TAKEN FROM action
+    # all args are runtime states for now anyway - could add type hint for literals in future or just enable through
+    # class only
+    # hence no def runtime_args here
+    # no dash_components possible here
+    # c.f. NewAction
     @property
     def inputs(self) -> ControlInputs:
         from vizro.actions import filter_interaction
@@ -447,17 +374,15 @@ class NewCustomAction(VizroBaseModel):
         }
 
         runtime_inputs = {}
-        for key in inspect.signature(self.function).parameters:
-            if key in reserved_kwargs:
-                runtime_inputs[key] = reserved_kwargs[key]
-            elif key in self.runtime_args:
-                runtime_inputs[key] = State(*getattr(self.action, key).split("."))
+        bound_args = {key: State(*value.split(".")) for key, value in self.function._arguments.items()}
+        runtime_inputs |= bound_args
+        runtime_inputs |= {
+            key: value
+            for key, value in reserved_kwargs.items()
+            if key in inspect.signature(self.function._function).parameters
+        }
 
         return runtime_inputs
-
-    @property
-    def function(self):
-        return self.action.function
 
     def _get_callback_mapping(self):
         """Builds callback inputs and outputs for the Action model callback, and returns action required components.
@@ -474,6 +399,7 @@ class NewCustomAction(VizroBaseModel):
         outputs = [Output(*output.split(".")) for output in self.outputs]
         return self.inputs, outputs, self.dash_components
 
+    # ALWAYS EMPTY for this sort of udf
     @property
     def dash_components(self) -> list[Component]:
         return []
