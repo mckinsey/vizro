@@ -106,7 +106,7 @@ Follow these steps to add a histogram to the page:
 1. Create a second [Page][vizro.models.Page] and store it in a variable called second_page. Set its title to "Summary".
 1. Add a Vizro [Graph][vizro.models.Graph] to the components list.
 1. Inside the `figure` argument of the `Graph`, use the code for the [px.histogram from the visual-vocabulary](https://vizro-demo-visual-vocabulary.hf.space/distribution/histogram).
-1. Add the new page to the list of pages in the [Dashboard][vizro.models.Dashboard].
+1. Add the new page to the list of pages in the [Dashboard][vizro.models.Dashboard] to display it by calling `vm.Dashboard(pages=[first_page,second_page])`.
 
 !!! example "Second Page"
     === "Snippet - second page"
@@ -160,7 +160,7 @@ Follow these steps to add a histogram to the page:
     === "Result"
         [![SecondPage]][secondpage]
 
-Notice that the charts are automatically stacked vertically in the specified order, each occupying equal space. This is Vizro's default behavior, but we'll customize the layout later! Additionally, note that a page navigation menu has been added to the left side of the dashboard. This allows you to switch between the two pages we have created.
+Notice that the charts are automatically stacked vertically in the specified order, each taking up equal space. This is the default behavior in Vizro, but we'll customize the layout later! Additionally, a page navigation menu has been added to the left side of the dashboard, allowing you to switch between the two pages we’ve created. The order of the pages in the list provided to the Dashboard also determines their sequence in the page navigation menu.
 
 ### 3.2. Add KPI cards
 
@@ -808,31 +808,36 @@ Run the code below to apply the layout to the dashboard page:
 
 ### 4.3. Add a parameter
 
-### 4.4. Add a custom chart
+This section explains how to add a [Parameter][vizro.models.Parameter] to your dashboard.
 
-You may notice that the `bar` chart appears cluttered with many lines. This happens because each inner bar represents a unique data point when an unaggregated dataset is provided. To avoid this, we can aggregate the data before plotting. However, the aggregation needs to be dynamic based on the parameter we added in the previous step.
+A [Parameter][vizro.models.Parameter] lets you dynamically change a component’s argument, making the dashboard more interactive. 
+Here we want to switch the `x` and `color` variable across all charts, allowing data analysis from different perspectives.
 
-To achieve this, we need to include the data aggregation inside the chart function. This requires creating a custom chart. For more information on when to create a custom chart, check out the [How to create custom charts](../user-guides/custom-charts.md) guide.
+In creating a [`Parameter`][vizro.models.Parameter] object, you define the `target` it applies to. 
+In general, `targets` for [`Parameters`][vizro.models.Parameter] are set following the structure of `component_id.argument`. 
+More information on how to set `targets` for [`Parameters`][vizro.models.Parameter] can be found in the [how-to guide for parameters](../user-guides/parameters.md).
 
-To create a custom chart, we follow these steps:
+To add a parameter to the dashboard:
+1. Add a [Parameter][vizro.models.Parameter] to the `controls` list of the page. 
+1. Assign an `id` to each `Graph` in the `components` list that the parameter should target.
+1. Define the parameter's `targets` using the format `component-id.argument`.
+1. Set the `selector` of the [Parameter][vizro.models.Parameter] to a [`RadioItems`][vizro.models.RadioItems].
+1. Provide options for the `RadioItems` selector.
 
-1. Create a function that takes the `data_frame` as input and returns a Plotly figure.
-1. Decorate the function with the `@capture(graph)` decorator.
-1. Inside the function, aggregate the data, provide a label to the chart and update the bar width.
-1. Use this custom function in the `Graph` component instead of `px.bar`.
-
-!!! example "Add custom chart"
-    === "Snippet - custom chart"
+!!! example "Add a parameter"
+    === "Snippet - parameter"
         ```py
-        @capture("graph")
-        def bar_mean(data_frame, x, y):
-            df_agg = data_frame.groupby(x).agg({y: "mean"}).reset_index()
-            fig = px.bar(df_agg, x=x, y=y, labels={"tip": "Average Tip ($)"})
-            fig.update_traces(width=0.6)
-            return fig
+        controls=[
+            vm.Parameter(
+                targets=["violin.x", "violin.color", "heatmap.x", "bar.x"],
+                selector=vm.RadioItems(
+                    options=["day", "time", "sex", "smoker", "size"], value="day", title="Change x-axis inside charts:"
+                ),
+            ),
+        ],
         ```
 
-    === "app.py"
+    === "Code - dashboard"
         ```{.python pycafe-link}
         import vizro.models as vm
         import vizro.plotly.express as px
@@ -840,18 +845,9 @@ To create a custom chart, we follow these steps:
         from vizro.tables import dash_ag_grid
         from vizro.models.types import capture
         from vizro.figures import kpi_card
-
+        
         tips = px.data.tips()
-
-
-        @capture("graph")
-        def bar_mean(data_frame, x, y):
-            df_agg = data_frame.groupby(x).agg({y: "mean"}).reset_index()
-            fig = px.bar(df_agg, x=x, y=y, labels={"tip": "Average Tip ($)"})
-            fig.update_traces(width=0.6)
-            return fig
-
-
+        
         first_page = vm.Page(
             title="Data",
             components=[
@@ -863,7 +859,7 @@ To create a custom chart, we follow these steps:
                 ),
             ],
         )
-
+        
         second_page = vm.Page(
             title="Summary",
             layout=vm.Layout(grid=[[0, 1, -1, -1], [2, 2, 2, 2], [2, 2, 2, 2], [2, 2, 2, 2]]),
@@ -905,26 +901,172 @@ To create a custom chart, we follow these steps:
             ],
             controls=[vm.Filter(column="day"), vm.Filter(column="time", selector=vm.Checklist()), vm.Filter(column="size")]
         )
-
+        
         third_page = vm.Page(
             title="Analysis",
             layout=vm.Layout(grid=[[0, 1], [2, 2]]),
             components=[
                 vm.Graph(
-                    title="When do we get more tips?",
-                    figure=bar_mean(tips, y="tip", x="day"),
+                    id="bar",
+                    title="Where do we get more tips?",
+                    figure=px.bar(tips, y="tip", x="day"),
                 ),
                 vm.Graph(
+                    id="violin",
                     title="Is the average driven by a few outliers?",
                     figure=px.violin(tips, y="tip", x="day", color="day", box=True),
                 ),
                 vm.Graph(
+                    id="heatmap",
                     title="Which group size is more profitable?",
                     figure=px.density_heatmap(tips, x="day", y="size", z="tip", histfunc="avg", text_auto="$.2f"),
                 ),
             ],
+            controls=[
+                vm.Parameter(
+                    targets=["violin.x", "violin.color", "heatmap.x", "bar.x"],
+                    selector=vm.RadioItems(
+                        options=["day", "time", "sex", "smoker", "size"], value="day", title="Change x-axis inside charts:"
+                    ),
+                ),
+            ],
         )
+        
+        dashboard = vm.Dashboard(pages=[first_page, second_page, third_page])
+        Vizro().build(dashboard).run()
+        ```
 
+    === "Result"
+        [![ThirdPage3]][thirdpage3]
+
+### 4.4. Add a custom chart
+
+You may notice that the `bar` chart appears cluttered with many lines. This happens because each inner bar represents a unique data point when an unaggregated dataset is provided. To avoid this, we can aggregate the data before plotting. However, the aggregation needs to be dynamic based on the parameter we added in the previous step.
+
+To achieve this, we need to include the data aggregation inside the chart function. This requires creating a custom chart. For more information on when to create a custom chart, check out the [How to create custom charts](../user-guides/custom-charts.md) guide.
+
+To create a custom chart, we follow these steps:
+
+1. Create a function that takes the `data_frame` as input and returns a Plotly figure.
+1. Decorate the function with the `@capture(graph)` decorator.
+1. Inside the function, aggregate the data, provide a label to the chart and update the bar width.
+1. Use this custom function in the `Graph` component instead of `px.bar`.
+
+!!! example "Add custom chart"
+    === "Snippet - custom chart"
+        ```py
+        @capture("graph")
+        def bar_mean(data_frame, x, y):
+            df_agg = data_frame.groupby(x).agg({y: "mean"}).reset_index()
+            fig = px.bar(df_agg, x=x, y=y, labels={"tip": "Average Tip ($)"})
+            fig.update_traces(width=0.6)
+            return fig
+        ```
+
+    === "app.py"
+        ```{.python pycafe-link}
+        import vizro.models as vm
+        import vizro.plotly.express as px
+        from vizro import Vizro
+        from vizro.tables import dash_ag_grid
+        from vizro.models.types import capture
+        from vizro.figures import kpi_card
+        
+        tips = px.data.tips()
+        
+
+        @capture("graph")
+        def bar_mean(data_frame, x, y):
+            df_agg = data_frame.groupby(x).agg({y: "mean"}).reset_index()
+            fig = px.bar(df_agg, x=x, y=y, labels={"tip": "Average Tip ($)"})
+            fig.update_traces(width=0.6)
+            return fig
+        
+
+        first_page = vm.Page(
+            title="Data",
+            components=[
+                vm.AgGrid(
+                    figure=dash_ag_grid(tips),
+                    footer="""**Data Source:** Bryant, P. G. and Smith, M (1995)
+                    Practical Data Analysis: Case Studies in Business Statistics.
+                    Homewood, IL: Richard D. Irwin Publishing.""",
+                ),
+            ],
+        )
+        
+        second_page = vm.Page(
+            title="Summary",
+            layout=vm.Layout(grid=[[0, 1, -1, -1], [2, 2, 2, 2], [2, 2, 2, 2], [2, 2, 2, 2]]),
+            components=[
+                vm.Figure(
+                    figure=kpi_card(
+                        data_frame=tips,
+                        value_column="total_bill",
+                        agg_func="mean",
+                        value_format="${value:.2f}",
+                        title="Average Bill",
+                    )
+                ),
+                vm.Figure(
+                    figure=kpi_card(
+                        data_frame=tips,
+                        value_column="tip",
+                        agg_func="mean",
+                        value_format="${value:.2f}",
+                        title="Average Tips"
+                    )
+                ),
+                vm.Tabs(
+                    tabs=[
+                        vm.Container(
+                            title="Total Bill ($)",
+                            components=[
+                                vm.Graph(figure=px.histogram(tips, x="total_bill")),
+                            ],
+                        ),
+                        vm.Container(
+                            title="Total Tips ($)",
+                            components=[
+                                vm.Graph(figure=px.histogram(tips, x="tip")),
+                            ],
+                        ),
+                    ],
+                )
+            ],
+            controls=[vm.Filter(column="day"), vm.Filter(column="time", selector=vm.Checklist()), vm.Filter(column="size")]
+        )
+        
+        third_page = vm.Page(
+            title="Analysis",
+            layout=vm.Layout(grid=[[0, 1], [2, 2]]),
+            components=[
+                vm.Graph(
+                    id="bar",
+                    title="Where do we get more tips?",
+                    figure=bar_mean(tips, y="tip", x="day"),
+                ),
+                vm.Graph(
+                    id="violin",
+                    title="Is the average driven by a few outliers?",
+                    figure=px.violin(tips, y="tip", x="day", color="day", box=True),
+                ),
+                vm.Graph(
+                    id="heatmap",
+                    title="Which group size is more profitable?",
+                    figure=px.density_heatmap(tips, x="day", y="size", z="tip", histfunc="avg", text_auto="$.2f"),
+                ),
+            ],
+            controls=[
+                vm.Parameter(
+                    targets=["violin.x", "violin.color", "heatmap.x", "bar.x"],
+                    selector=vm.RadioItems(
+                        options=["day", "time", "sex", "smoker", "size"], value="day", title="Change x-axis inside charts:"
+                    ),
+                ),
+            ],
+        )
+        
         dashboard = vm.Dashboard(pages=[first_page, second_page, third_page])
         Vizro().build(dashboard).run()
         ```
@@ -946,4 +1088,5 @@ To create a custom chart, we follow these steps:
 [secondpage5]: ../../assets/tutorials/dashboard/06-second-page-controls.png
 [thirdpage]: ../../assets/tutorials/dashboard/07-third-page.png
 [thirdpage2]: ../../assets/tutorials/dashboard/08-third-page-layout.png
-[thirdpage4]: ../../assets/tutorials/dashboard/10-third-page-layout.png
+[thirdpage3]: ../../assets/tutorials/dashboard/09-third-page-parameter.png
+[thirdpage4]: ../../assets/tutorials/dashboard/10-third-page-custom-chart.png
