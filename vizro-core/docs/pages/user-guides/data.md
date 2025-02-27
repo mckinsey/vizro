@@ -355,14 +355,14 @@ When the page is refreshed, the behavior of a dynamic filter is as follows:
 
 - The filter's selector updates its available values:
     - For [categorical selectors](selectors.md#categorical-selectors), `options` updates to give all unique values found in `column` across all the data sources of components in `targets`.
-    - For [numerical selectors](selectors.md#numerical-selectors), `min` and `max` update to give the overall minimum and maximum values found in `column` across all the data sources of components in `targets`.
+    - For [numerical selectors](selectors.md#numerical-selectors) and [temporal selectors](selectors.md#temporal-selectors), `min` and `max` update to give the overall minimum and maximum values found in `column` across all the data sources of components in `targets`.
 - The value selected on screen by a dashboard user _does not_ change. If the selected value is not already present in the new set of available values then the `options` or `min` and `max` are modified to include it. In this case, the filtering operation might result in an empty DataFrame.
 - Even though the values present in a data source can change, the schema should not: `column` should remain present and of the same type in the data sources. The `targets` of the filter and selector type cannot change while the dashboard is running. For example, a `vm.Dropdown` selector cannot turn into `vm.RadioItems`.
 
-For example, let us add two filters to the [dynamic data example](#dynamic-data) above:
+For example, let us add three filters to the [dynamic data example](#dynamic-data) above:
 
 !!! example "Dynamic filters"
-    ```py hl_lines="10 20 21"
+    ```py hl_lines="10 11 21 22 23"
     from vizro import Vizro
     import pandas as pd
     import vizro.plotly.express as px
@@ -372,7 +372,8 @@ For example, let us add two filters to the [dynamic data example](#dynamic-data)
 
     def load_iris_data():
         iris = pd.read_csv("iris.csv")
-        return iris.sample(5)  # (1)!
+        iris["date_column"] = pd.date_range(start=pd.to_datetime("2025-01-01"), periods=len(iris), freq="D")  # (1)!
+        return iris.sample(5)  # (2)!
 
     data_manager["iris"] = load_iris_data
 
@@ -382,8 +383,9 @@ For example, let us add two filters to the [dynamic data example](#dynamic-data)
             vm.Graph(figure=px.box("iris", x="species", y="petal_width", color="species"))
         ],
         controls=[
-            vm.Filter(column="species"),  # (2)!
-            vm.Filter(column="sepal_length"),  # (3)!
+            vm.Filter(column="species"),  # (3)!
+            vm.Filter(column="sepal_length"),  # (4)!
+            vm.Filter(column="date_column"),  # (5)!
         ],
     )
 
@@ -392,25 +394,29 @@ For example, let us add two filters to the [dynamic data example](#dynamic-data)
     Vizro().build(dashboard).run()
     ```
 
+    1. Add a new column `"date_column"` to the `"iris"` data source. This column is used to demonstrate usage of a temporal dynamic filter.
     1. We sample only 5 rather than 50 points so that changes to the available values in the filtered columns are more apparent when the page is refreshed.
     1. This filter implicitly controls the dynamic data source `"iris"`, which supplies the `data_frame` to the targeted `vm.Graph`. On page refresh, Vizro reloads this data, finds all the unique values in the `"species"` column and sets the categorical selector's `options` accordingly.
     1. Similarly, on page refresh, Vizro finds the minimum and maximum values of the `"sepal_length"` column in the reloaded data and sets new `min` and `max` values for the numerical selector accordingly.
+    1. Similarly, on page refresh, Vizro finds the minimum and maximum values of the `"date_column"` column in the reloaded data and sets new `min` and `max` values for the temporal selector accordingly.
 
-Consider a filter that depends on dynamic data, where you do **not** want the available values to change when the dynamic data changes. You should manually specify the `selector`'s `options` field (categorical selector) or `min` and `max` fields (numerical selector). In the above example, this could be achieved as follows:
+Consider a filter that depends on dynamic data, where you do **not** want the available values to change when the dynamic data changes. You should manually specify the `selector`'s `options` field (categorical selector) or `min` and `max` fields (numerical and temporal selector). In the above example, this could be achieved as follows:
 
 ```python title="Override selector options to make a dynamic filter static"
 controls = [
     vm.Filter(column="species", selector=vm.Dropdown(options=["setosa", "versicolor", "virginica"])),
     vm.Filter(column="sepal_length", selector=vm.RangeSlider(min=4.3, max=7.9)),
+    vm.Filter(column="date_column", selector=vm.DatePickerRange(min="2025-01-01", max="2025-05-29")),
 ]
 ```
 
-If you [use a specific selector](filters.md#change-selector) for a dynamic filter without manually specifying `options` (categorical selector) or `min` and `max` (numerical selector) then the selector remains dynamic. For example:
+If you [use a specific selector](filters.md#change-selector) for a dynamic filter without manually specifying `options` (categorical selector) or `min` and `max` (numerical and temporal selector) then the selector remains dynamic. For example:
 
 ```python title="Dynamic filter with specific selector is still dynamic"
 controls = [
     vm.Filter(column="species", selector=vm.Checklist()),
     vm.Filter(column="sepal_length", selector=vm.Slider()),
+    vm.Filter(column="date_column", selector=vm.DatePicker(range=False)),
 ]
 ```
 

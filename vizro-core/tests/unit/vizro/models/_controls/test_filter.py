@@ -302,7 +302,7 @@ class TestFilterStaticMethods:
                         datetime(2024, 1, 1),
                     ]
                 ],
-                datetime(2024, 1, 2),
+                "2024-01-02",
                 [
                     datetime(2024, 1, 1),
                     datetime(2024, 1, 2),
@@ -315,8 +315,8 @@ class TestFilterStaticMethods:
                     ]
                 ],
                 [
-                    datetime(2024, 1, 2),
-                    datetime(2024, 1, 3),
+                    "2024-01-02",
+                    "2024-01-03",
                 ],
                 [
                     datetime(2024, 1, 1),
@@ -373,7 +373,7 @@ class TestFilterStaticMethods:
                         datetime(2024, 1, 2),
                     ]
                 ],
-                datetime(2024, 1, 3),
+                "2024-01-03",
                 (
                     datetime(2024, 1, 1),
                     datetime(2024, 1, 3),
@@ -387,8 +387,8 @@ class TestFilterStaticMethods:
                     ]
                 ],
                 [
-                    datetime(2024, 1, 3),
-                    datetime(2024, 1, 4),
+                    "2024-01-03",
+                    "2024-01-04",
                 ],
                 (
                     datetime(2024, 1, 1),
@@ -657,7 +657,6 @@ class TestPreBuildMethod:
         [
             ("continent", vm.Checklist()),
             ("continent", vm.Dropdown()),
-            ("continent", vm.Dropdown(multi=False)),
             ("continent", vm.RadioItems()),
             ("pop", vm.Slider()),
             ("pop", vm.RangeSlider()),
@@ -681,7 +680,6 @@ class TestPreBuildMethod:
         [
             ("continent", vm.Checklist(options=["Africa", "Europe"])),
             ("continent", vm.Dropdown(options=["Africa", "Europe"])),
-            ("continent", vm.Dropdown(multi=False, options=["Africa", "Europe"])),
             ("continent", vm.RadioItems(options=["Africa", "Europe"])),
             ("pop", vm.Slider(min=2002)),
             ("pop", vm.Slider(max=2007)),
@@ -689,6 +687,9 @@ class TestPreBuildMethod:
             ("pop", vm.RangeSlider(min=2002)),
             ("pop", vm.RangeSlider(max=2007)),
             ("pop", vm.RangeSlider(min=2002, max=2007)),
+            ("year", vm.DatePicker(min="2002-01-01")),
+            ("year", vm.DatePicker(max="2007-01-01")),
+            ("year", vm.DatePicker(min="2002-01-01", max="2007-01-01")),
         ],
     )
     def test_filter_is_not_dynamic_with_options_min_max_specified(
@@ -851,6 +852,8 @@ class TestFilterBuild:
             ("continent", vm.RadioItems()),
             ("pop", vm.Slider()),
             ("pop", vm.RangeSlider()),
+            ("year", vm.DatePicker()),
+            ("year", vm.DatePicker(range=False)),
         ],
     )
     def test_dynamic_filter_build(self, test_column, test_selector, gapminder_dynamic_first_n_last_n_function):

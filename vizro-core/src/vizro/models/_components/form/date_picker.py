@@ -39,7 +39,7 @@ class DatePicker(VizroBaseModel):
     value: Annotated[
         Optional[Union[list[date], date]],
         # TODO[MS]: check here and similar if the early exit clause in below validator or similar is
-        # necessary given we don't validate on default
+        #  necessary given we don't validate on default
         AfterValidator(validate_range_value),
         Field(default=None, description="Default date/dates for date picker."),
     ]
@@ -59,11 +59,20 @@ class DatePicker(VizroBaseModel):
 
     _input_property: str = PrivateAttr("value")
 
-    def __call__(self, min, max, current_value):
+    def __call__(self, min, max, current_value=None):
+        # TODO: Refactor value calculation logic after the Dash persistence bug is fixed and "Select All" PR is merged.
+        #  The underlying component's value calculation will need to account for:
+        #  - Changes introduced by Pydantic V2.
+        #  - The way how the new Vizro solution is built on top of the Dash persistence bugfix.
+        #  - Whether the current value is included in the updated options.
+        #  - The way how the validate_options_dict validator and tests are improved.
+        if not self.value:
+            self.value = [min, max] if self.range else min
+
         date_picker = dmc.DatePickerInput(
             id=self.id,
             minDate=min,
-            value=self.value or current_value,
+            value=self.value,
             maxDate=max,
             persistence=True,
             persistence_type="session",
@@ -80,12 +89,6 @@ class DatePicker(VizroBaseModel):
             ],
         )
 
-    def _build_dynamic_placeholder(self):
-        if self.value is None:
-            self.value = [self.min, self.max] if self.range else self.min
-        return self.__call__(self.min, self.max, self.value)
-
     @_log_call
     def build(self):
-        current_value = self.value or [self.min, self.max]
-        return self._build_dynamic_placeholder() if self._dynamic else self.__call__(self.min, self.max, current_value)
+        return self.__call__(self.min, self.max)
