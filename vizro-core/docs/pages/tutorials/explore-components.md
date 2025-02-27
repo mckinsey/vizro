@@ -167,7 +167,7 @@ Let's add two KPI cards to our second page. Follow these steps:
 
 1. Add a [Figure][vizro.models.Figure] to the list of components
 1. Inside the `figure` argument of the `Figure`, use the \`kpi_card function.
-1. Configure your `kpi_card` by setting the `value_column`, `agg_func`, and `value_format` and `title` arguments. For more details on how to configure these, refer to our [KPI card user-guide](../user-guides/figure.md#key-performance-indicator-kpi-cards).
+1. Configure your `kpi_card` by setting the `value_column`, `agg_func`, and `value_format` and `title` arguments. To learn more about how to configure KPI cards, check out [our how-to-guide on KPI vards](../user-guides/figure.md#key-performance-indicator-kpi-cards).
 1. Repeat the above steps to add another KPI card to the page.
 
 !!! example "Add KPI Cards"
@@ -356,77 +356,98 @@ Take a moment to switch between the Tabs! As you explore the dashboard, you migh
 
 ### 3.4. Configure the layout
 
-By default, Vizro places each element in the order it was added to `components` list, and spaces them equally.
+By default, Vizro places each element in the order it was added to `components` list, and spaces them equally. You can use the [`Layout`][vizro.models.Layout] object to specify the placement and size of components on the page. To learn more about how to configure layouts, check out [How to use layouts](../user-guides/layouts.md).
 
-You can use the [`Layout`][vizro.models.Layout] object to specify the placement and size of components on the page. To learn more about how to configure layouts, check out [How to use layouts](../user-guides/layouts.md).
-
-The following layout configuration positions the text at the top and the two charts side by side, giving them more space relative to the text component:
+In the following layout configuration, the layout is divided into four columns and four rows. The two KPI cards are positioned at the top, each occupying one cell in the first row, with two empty cells to the right. The `Tabs` component is placed below the KPI cards, spanning all cells across the remaining three rows, providing it with more space compared to the KPI cards.
 
 ```python
-grid = [[0, 0], [1, 2], [1, 2], [1, 2]]
+grid = [[0, 1, -1, -1], [2, 2, 2, 2], [2, 2, 2, 2], [2, 2, 2, 2]]
 ```
-
-Vizro interprets these values as follows. First, the configuration divides the available space into two columns and four rows. Each element in the list (such as `[0,0]`) represents one row of the grid layout:
-
-![image1](../../assets/tutorials/dashboard/dashboard231.png)
-
-Each element in the `components` list is referenced with a unique number, and placed on the grid as visualized with the white frames. The `Card`, is referenced by 0 as it is the first element in the `components` list. It is placed in the first row and spans across both columns (`[0, 0]`). The two `Graph` objects, referenced by 1 and 2, are positioned next to each other and occupy a column each.
-
-![image2](../../assets/tutorials/dashboard/dashboard233.png)
-
-The `Graph` objects occupy three rows, denoted by `[1, 2], [1, 2], [1, 2]`, while the `Card` only occupies one row `[0, 0]`. As a result, the `Graph` objects occupy three-quarters of the vertical space, while the `Card` occupies one-quarter of it.
-
-![image3](../../assets/tutorials/dashboard/dashboard232.png)
 
 Run the code below to apply the layout to the dashboard page:
 
-!!! example "Configure layout"
+!!! example "Code - Layout"
     === "Code"
         ```py
-        layout=vm.Layout(grid=[[0, 0], [1, 2], [1, 2], [1, 2]])
+        layout=vm.Layout(
+            grid=[[0, 1,-1,-1],
+                  [2, 2, 2, 2],
+                  [2, 2, 2, 2],
+                  [2, 2, 2, 2]])
         ```
 
     === "app.py"
         ```{.python pycafe-link}
-        from vizro import Vizro
         import vizro.models as vm
         import vizro.plotly.express as px
+        from vizro import Vizro
+        from vizro.tables import dash_ag_grid
+        from vizro.models.types import capture
+        from vizro.figures import kpi_card
 
-        df = px.data.gapminder()
-        gapminder_data = (
-                df.groupby(by=["continent", "year"]).
-                    agg({"lifeExp": "mean", "pop": "sum", "gdpPercap": "mean"}).reset_index()
-            )
+        tips = px.data.tips()
 
         first_page = vm.Page(
-            title="First Page",
-            layout=vm.Layout(grid=[[0, 0], [1, 2], [1, 2], [1, 2]]),
-            components=[
-                vm.Card(
-                    text="""
-                        # First dashboard page
-                        This pages shows the inclusion of markdown text in a page and how components
-                        can be structured using Layout.
-                    """,
-                ),
-                vm.Graph(
-                    figure=px.box(gapminder_data, x="continent", y="lifeExp", color="continent",
-                                    labels={"lifeExp": "Life Expectancy", "continent": "Continent"}),
-                ),
-                vm.Graph(
-                    figure=px.line(gapminder_data, x="year", y="gdpPercap", color="continent",
-                                    labels={"year": "Year", "continent": "Continent",
-                                    "gdpPercap":"GDP Per Cap"}),
-                    ),
-            ],
+        title="Data",
+        components=[
+            vm.AgGrid(
+                figure=dash_ag_grid(tips),
+                footer="""**Data Source:** Bryant, P. G. and Smith, M (1995) Practical Data Analysis: Case Studies in Business Statistics. Homewood, IL: Richard D. Irwin Publishing.""",
+            ),
+        ],
         )
 
-        dashboard = vm.Dashboard(pages=[first_page])
+        second_page = vm.Page(
+                    title="Summary",
+                    layout=vm.Layout(grid=[[0, 1, -1, -1],
+                                    [2, 2, 2, 2],
+                                    [2, 2, 2, 2],
+                                    [2, 2, 2, 2]]),
+                    components=[
+                        vm.Figure(
+                            figure=kpi_card(
+                                data_frame=tips,
+                                value_column="total_bill",
+                                agg_func="mean",
+                                value_format="${value:.2f}",
+                                title="Average Bill",
+                            )
+                        ),
+                        vm.Figure(
+                            figure=kpi_card(
+                                data_frame=tips,
+                                value_column="tip",
+                                agg_func="mean",
+                                value_format="${value:.2f}",
+                                title="Average Tips"
+                            )
+                        ),
+                       vm.Tabs(
+                        tabs=[
+                            vm.Container(
+                                title="Total Bill ($)",
+                                components=[
+                                    vm.Graph(figure=px.histogram(tips, x="total_bill")),
+                                ],
+                            ),
+                            vm.Container(
+                                title="Total Tips ($)",
+                                components=[
+                                    vm.Graph(figure=px.histogram(tips, x="tip")),
+                                ],
+                            ),
+                        ],
+                    )
+                ],
+            )
+
+        dashboard = vm.Dashboard(pages=[first_page, second_page])
         Vizro().build(dashboard).run()
+
         ```
 
     === "Result"
-        \[![FirstPage3]\][firstpage3]
+        [![SecondPage4]][secondpage4]
 
 ### 2.4. Add a control for dashboard interactivity
 
@@ -777,3 +798,4 @@ Vizro doesn't end here, and we only covered the key features, but there is still
 [secondpage]: ../../assets/tutorials/dashboard/02-second-page.png
 [secondpage2]: ../../assets/tutorials/dashboard/03-second-page-kpi.png
 [secondpage3]: ../../assets/tutorials/dashboard/04-second-page-tabs.png
+[secondpage4]: ../../assets/tutorials/dashboard/05-second-page-layout.png
