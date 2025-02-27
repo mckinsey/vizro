@@ -42,7 +42,7 @@ However, if you prefer working in a Notebook or Python script, you should [insta
 
 In this section, we will create a new [`Page`][vizro.models.Page] and store it inside a variable called `first_page`.
 
-A [Page][vizro.models.Page] model is the foundation of any Vizro dashboard. A page uses a set of [component types](../user-guides/components.md) to display content. These components can include models such as [Graph][vizro.models.Graph], [AgGrid][vizro.models.AgGrid], [Card][vizro.models.Card], [Figure][vizro.models.Figure], [Button][vizro.models.Button], [Container][vizro.models.Container], and [Tabs][vizro.models.Tabs].
+A [Page][vizro.models.Page] model is the foundation of any Vizro dashboard. A page uses a set of [component types](../user-guides/components.md) to display content. For a comprehensive list of available components, refer to the [components overview page](../user-guides/components.md).
 
 ### 2.1. Add a table
 
@@ -55,6 +55,7 @@ To start, let's get an overview of the data and display it in a table using [AgG
 1. Provide details about the data source in the `footer` argument of the `AgGrid`.
 
 !!! example "First Page"
+
     === "Code - dashboard"
         ```{.python pycafe-link}
         import vizro.models as vm
@@ -107,7 +108,8 @@ Follow these steps to add a histogram to the page:
 1. Add the new page to the list of pages in the [Dashboard][vizro.models.Dashboard].
 
 !!! example "Second Page"
-    === "Code - second page"
+
+    === "Snippet - second page"
         ```py
 
         second_page = vm.Page(
@@ -151,11 +153,10 @@ Follow these steps to add a histogram to the page:
 
         dashboard = vm.Dashboard(pages=[first_page, second_page])
         Vizro().build(dashboard).run()
-
         ```
 
-        === "Result"
-            [![SecondPage]][secondpage]
+    === "Result"
+        [![SecondPage]][secondpage]
 
 Notice that the charts are automatically stacked vertically in the specified order, each occupying equal space. This is Vizro's default behavior, but we'll customize the layout later! Additionally, note that a page navigation menu has been added to the left side of the dashboard. This allows you to switch between the two pages we have created.
 
@@ -171,7 +172,8 @@ Let's add two KPI cards to our second page. Follow these steps:
 1. Repeat the above steps to add another KPI card to the page.
 
 !!! example "Add KPI Cards"
-    === "Code - first KPI Card"
+
+    === "Snippet - KPI Card I"
         ```py
 
         vm.Figure(
@@ -183,17 +185,20 @@ Let's add two KPI cards to our second page. Follow these steps:
                 title="Average Bill",
             )
         )
-
         ```
 
-    === "Code - second KPI Card"
+    === "Snippet - KPI Card II"
         ```py
 
-         vm.Figure(
+        vm.Figure(
             figure=kpi_card(
-                data_frame=tips, value_column="tip", agg_func="mean", value_format="${value:.2f}", title="Average Tips"
+                data_frame=tips, 
+                value_column="tip", 
+                agg_func="mean", 
+                value_format="${value:.2f}", 
+                title="Average Tips"
             )
-         )
+        )
         ```
 
     === "Code - dashboard"
@@ -246,12 +251,10 @@ Let's add two KPI cards to our second page. Follow these steps:
         dashboard = vm.Dashboard(pages=[first_page, second_page])
         Vizro().build(dashboard).run()
         ```
-
     === "Result"
+        [![SecondPage2]][secondpage2]
 
-    [![SecondPage2]][secondpage2]
-
-### 3.3. Add Tabs to organize content
+### 3.3. Add Tabs to switch views
 
 Suppose we don't want to display both histograms simultaneously and prefer to switch between these views. We can achieve this by using the [Tabs](vizro.models.tabs) component to organize the content on the page. For more details on using the Tabs component, refer to our [Tabs user-guide](../user-guides/tabs.md).
 
@@ -263,7 +266,8 @@ Let's place the two histograms in separate tabs. Follow these steps:
 1. Add the `Tabs` component to the `components` list of the Page.
 
 !!! example "Add Tabs"
-    === "Code - Tabs"
+
+    === "Snippet - Tabs"
         ```py
 
         vm.Tabs(
@@ -282,7 +286,6 @@ Let's place the two histograms in separate tabs. Follow these steps:
                 ),
             ],
         )
-
         ```
 
     === "Code - dashboard"
@@ -345,12 +348,8 @@ Let's place the two histograms in separate tabs. Follow these steps:
         dashboard = vm.Dashboard(pages=[first_page, second_page])
         Vizro().build(dashboard).run()
         ```
-
     === "Result"
-
-    [![SecondPage3]][secondpage3]
-
----
+        [![SecondPage3]][secondpage3]
 
 Take a moment to switch between the Tabs! As you explore the dashboard, you might notice that the current layout could use some adjustments. The histograms appear cramped, while the KPI cards have too much space. In the next section, we'll learn how to configure the layout and better arrange the components.
 
@@ -360,13 +359,17 @@ By default, Vizro places each element in the order it was added to `components` 
 
 In the following layout configuration, the layout is divided into four columns and four rows. The two KPI cards are positioned at the top, each occupying one cell in the first row, with two empty cells to the right. The `Tabs` component is placed below the KPI cards, spanning all cells across the remaining three rows, providing it with more space compared to the KPI cards.
 
-```python
-grid = [[0, 1, -1, -1], [2, 2, 2, 2], [2, 2, 2, 2], [2, 2, 2, 2]]
+```
+grid = [[0, 1, -1, -1],
+        [2, 2, 2, 2],
+        [2, 2, 2, 2],
+        [2, 2, 2, 2]]
 ```
 
 Run the code below to apply the layout to the dashboard page:
 
 !!! example "Code - Layout"
+
     === "Code"
         ```py
         layout=vm.Layout(
@@ -443,9 +446,7 @@ Run the code below to apply the layout to the dashboard page:
 
         dashboard = vm.Dashboard(pages=[first_page, second_page])
         Vizro().build(dashboard).run()
-
         ```
-
     === "Result"
         [![SecondPage4]][secondpage4]
 
