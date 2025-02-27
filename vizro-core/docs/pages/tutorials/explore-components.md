@@ -38,13 +38,13 @@ However, if you prefer working in a Notebook or Python script, you should [insta
 !!! warning "Running the code in a Jupyter Notebook"
     If you are following this tutorial in a Jupyter Notebook, you might need to restart the kernel each time you evaluate the code. If you do not, you will see error messages such as "Components must uniquely map..." because those components already exist from the previous evaluation.
 
-## 2. Create a first dashboard page
+## 2. Create a first page
 
 In this section, we will create a new [`Page`][vizro.models.Page] and store it inside a variable called `first_page`.
 
 A [Page][vizro.models.Page] model is the foundation of any Vizro dashboard. A page uses a set of [component types](../user-guides/components.md) to display content. These components can include models such as [Graph][vizro.models.Graph], [AgGrid][vizro.models.AgGrid], [Card][vizro.models.Card], [Figure][vizro.models.Figure], [Button][vizro.models.Button], [Container][vizro.models.Container], and [Tabs][vizro.models.Tabs].
 
-### 2.1 Add a table to the page
+### 2.1. Add a table
 
 To start, let's get an overview of the data and display it in a table using [AgGrid][vizro.models.AgGrid]. To create a page and add a table to it, follow these steps:
 
@@ -91,11 +91,11 @@ You'll notice a toggle in the top-right corner of the dashboard. This allows you
 
 **Great job! We've successfully created our first page! 🎉**
 
-## 3. Create a second dashboard page
+## 3. Create a second page
 
 Next, we'll add a second page to our dashboard, featuring charts and KPI (key performance indicator) cards.
 
-### 3.1 Add a chart to the page
+### 3.1. Add a chart
 
 Vizro leverages [Graph][vizro.models.Graph] models and Plotly Express functions to create various types of charts. You can explore the available chart types and their code examples in our [visual-vocabulary](https://vizro-demo-visual-vocabulary.hf.space).
 
@@ -157,13 +157,9 @@ Follow these steps to add a histogram to the page:
         === "Result"
             [![SecondPage]][secondpage]
 
-Observe that the charts are automatically stacked one below the other in the order specified. This is Vizro's default behavior, but we'll customize the layout later on!
+Notice that the charts are automatically stacked vertically in the specified order, each occupying equal space. This is Vizro's default behavior, but we'll customize the layout later! Additionally, note that a page navigation menu has been added to the left side of the dashboard. This allows you to switch between the two pages we have created.
 
-Additionally, note that a page navigation menu has been added to the left side of the dashboard. This allows you to switch between the two pages we have created.
-
----
-
-### 2.2. Add further components
+### 3.2. Add KPI cards
 
 You can combine and arrange various types of `components` on a dashboard page. Refer to the [components overview page](../user-guides/components.md) for a comprehensive list of available components.
 
@@ -255,11 +251,110 @@ Let's add two KPI cards to our second page. Follow these steps:
 
     [![SecondPage2]][secondpage2]
 
+### 3.3. Add Tabs to organize content
+
+Suppose we don't want to display both histograms simultaneously and prefer to switch between these views. We can achieve this by using the [Tabs](vizro.models.tabs) component to organize the content on the page. For more details on using the Tabs component, refer to our [Tabs user-guide](../user-guides/tabs.md).
+
+Let's place the two histograms in separate tabs. Follow these steps:
+
+1. Add each `Graph` to the `components` list of a [Container](vizro.models.Container).
+1. Set the `title` argument inside each `Container` to the desired tab name.
+1. Add the Containers to the `tabs` list of the `Tabs` component.
+1. Add the `Tabs` component to the `components` list of the Page.
+
+!!! example "Add Tabs"
+    === "Code - Tabs"
+        ```py
+
+        vm.Tabs(
+            tabs=[
+                vm.Container(
+                    title="Total Bill ($)",
+                    components=[
+                        vm.Graph(figure=px.histogram(tips, x="total_bill")),
+                    ],
+                ),
+                vm.Container(
+                    title="Total Tips ($)",
+                    components=[
+                        vm.Graph(figure=px.histogram(tips, x="tip")),
+                    ],
+                ),
+            ],
+        )
+
+        ```
+
+    === "Code - dashboard"
+        ```{.python pycafe-link}
+        import vizro.models as vm
+        import vizro.plotly.express as px
+        from vizro import Vizro
+        from vizro.tables import dash_ag_grid
+        from vizro.models.types import capture
+        from vizro.figures import kpi_card
+
+        tips = px.data.tips()
+
+        first_page = vm.Page(
+        title="Data",
+        components=[
+            vm.AgGrid(
+                figure=dash_ag_grid(tips),
+                footer="""**Data Source:** Bryant, P. G. and Smith, M (1995) Practical Data Analysis: Case Studies in Business Statistics. Homewood, IL: Richard D. Irwin Publishing.""",
+            ),
+        ],
+        )
+
+        second_page = vm.Page(
+                    title="Summary",
+                    components=[
+                        vm.Figure(
+                            figure=kpi_card(
+                                data_frame=tips,
+                                value_column="total_bill",
+                                agg_func="mean",
+                                value_format="${value:.2f}",
+                                title="Average Bill",
+                            )
+                        ),
+                        vm.Figure(
+                            figure=kpi_card(
+                                data_frame=tips, value_column="tip", agg_func="mean", value_format="${value:.2f}", title="Average Tips"
+                            )
+                        ),
+                       vm.Tabs(
+                        tabs=[
+                            vm.Container(
+                                title="Total Bill ($)",
+                                components=[
+                                    vm.Graph(figure=px.histogram(tips, x="total_bill")),
+                                ],
+                            ),
+                            vm.Container(
+                                title="Total Tips ($)",
+                                components=[
+                                    vm.Graph(figure=px.histogram(tips, x="tip")),
+                                ],
+                            ),
+                        ],
+                    )
+                ],
+            )
+
+        dashboard = vm.Dashboard(pages=[first_page, second_page])
+        Vizro().build(dashboard).run()
+        ```
+
+    === "Result"
+
+    [![SecondPage3]][secondpage3]
+
 ---
 
-As you explore the dashboard, you may notice that the current layout could be further enhanced. The charts appear cramped, while the text component has ample unused space. The next section explains how to configure the layout and arrange the components.
+Take a moment to switch between the Tabs! As you explore the dashboard, you might notice that the current layout could use some adjustments. The histograms appear cramped, while the KPI cards have too much space. In the next section, we'll learn how to configure the layout and better arrange the components.
 
-### 2.3. Configure the layout
+### 3.4. Configure the layout
 
 By default, Vizro places each element in the order it was added to `components` list, and spaces them equally.
 
@@ -680,4 +775,5 @@ Vizro doesn't end here, and we only covered the key features, but there is still
 
 [firstpage]: ../../assets/tutorials/dashboard/01-first-page.png
 [secondpage]: ../../assets/tutorials/dashboard/02-second-page.png
-[secondpage2]: ../../assets/tutorials/dashboard/02-second-page-kpi.png
+[secondpage2]: ../../assets/tutorials/dashboard/03-second-page-kpi.png
+[secondpage3]: ../../assets/tutorials/dashboard/04-second-page-tabs.png
