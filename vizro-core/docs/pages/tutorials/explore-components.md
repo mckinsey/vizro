@@ -546,10 +546,10 @@ You will see that a [Dropdown](vizro.models.Dropdown) is selected for categorica
 
 ## 4. Create a third page
 
-Now that we've learned how to create pages, add components, and configure layouts, let's create a third page for our dashboard. 
+Now that we've learned how to create pages, add components, and configure layouts, let's create a third page for our dashboard.
 This will give us the opportunity to practice our skills and introduce some new concepts!
 
-This page will feature a bar chart, a violin chart, and a heatmap. We'll once again leverage the 
+This page will feature a bar chart, a violin chart, and a heatmap. We'll once again leverage the
 [Vizro visual vocabulary](https://vizro-demo-visual-vocabulary.hf.space/).
 
 
@@ -591,7 +591,7 @@ For `px.bar`, copy the code but update the `data`, `x`, and `y` arguments to mat
                 ),
             ],
        )
-    
+
         dashboard = vm.Dashboard(pages=[first_page, second_page, third_page])
         ```
 
@@ -603,9 +603,9 @@ For `px.bar`, copy the code but update the `data`, `x`, and `y` arguments to mat
         from vizro.tables import dash_ag_grid
         from vizro.models.types import capture
         from vizro.figures import kpi_card
-        
+
         tips = px.data.tips()
-        
+
         first_page = vm.Page(
         title="Data",
         components=[
@@ -615,7 +615,7 @@ For `px.bar`, copy the code but update the `data`, `x`, and `y` arguments to mat
             ),
         ],
         )
-        
+
         second_page = vm.Page(
                     title="Summary",
                     layout=vm.Layout(grid=[[0, 1, -1, -1],
@@ -657,8 +657,8 @@ For `px.bar`, copy the code but update the `data`, `x`, and `y` arguments to mat
                 ],
                 controls=[vm.Filter(column="day"), vm.Filter(column="time", selector=vm.Checklist()), vm.Filter(column="size")],
             )
-        
-        
+
+
         third_page = vm.Page(
             title="Analysis",
             components=[
@@ -678,7 +678,7 @@ For `px.bar`, copy the code but update the `data`, `x`, and `y` arguments to mat
                 ),
             ],
         )
-        
+
         dashboard = vm.Dashboard(pages=[first_page, second_page, third_page])
         Vizro().build(dashboard).run()
         ```
