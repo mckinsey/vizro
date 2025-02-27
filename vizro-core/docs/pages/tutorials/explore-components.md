@@ -55,7 +55,6 @@ To start, let's get an overview of the data and display it in a table using [AgG
 1. Provide details about the data source in the `footer` argument of the `AgGrid`.
 
 !!! example "First Page"
-
     === "Code - dashboard"
         ```{.python pycafe-link}
         import vizro.models as vm
@@ -108,7 +107,6 @@ Follow these steps to add a histogram to the page:
 1. Add the new page to the list of pages in the [Dashboard][vizro.models.Dashboard].
 
 !!! example "Second Page"
-
     === "Snippet - second page"
         ```py
 
@@ -172,7 +170,6 @@ Let's add two KPI cards to our second page. Follow these steps:
 1. Repeat the above steps to add another KPI card to the page.
 
 !!! example "Add KPI Cards"
-
     === "Snippet - KPI Card I"
         ```py
 
@@ -192,10 +189,10 @@ Let's add two KPI cards to our second page. Follow these steps:
 
         vm.Figure(
             figure=kpi_card(
-                data_frame=tips, 
-                value_column="tip", 
-                agg_func="mean", 
-                value_format="${value:.2f}", 
+                data_frame=tips,
+                value_column="tip",
+                agg_func="mean",
+                value_format="${value:.2f}",
                 title="Average Tips"
             )
         )
@@ -251,6 +248,7 @@ Let's add two KPI cards to our second page. Follow these steps:
         dashboard = vm.Dashboard(pages=[first_page, second_page])
         Vizro().build(dashboard).run()
         ```
+
     === "Result"
         [![SecondPage2]][secondpage2]
 
@@ -266,7 +264,6 @@ Let's place the two histograms in separate tabs. Follow these steps:
 1. Add the `Tabs` component to the `components` list of the Page.
 
 !!! example "Add Tabs"
-
     === "Snippet - Tabs"
         ```py
 
@@ -348,6 +345,7 @@ Let's place the two histograms in separate tabs. Follow these steps:
         dashboard = vm.Dashboard(pages=[first_page, second_page])
         Vizro().build(dashboard).run()
         ```
+
     === "Result"
         [![SecondPage3]][secondpage3]
 
@@ -369,7 +367,6 @@ grid = [[0, 1, -1, -1],
 Run the code below to apply the layout to the dashboard page:
 
 !!! example "Code - Layout"
-
     === "Code"
         ```py
         layout=vm.Layout(
@@ -447,85 +444,104 @@ Run the code below to apply the layout to the dashboard page:
         dashboard = vm.Dashboard(pages=[first_page, second_page])
         Vizro().build(dashboard).run()
         ```
+
     === "Result"
         [![SecondPage4]][secondpage4]
 
-### 2.4. Add a control for dashboard interactivity
+### 3.5. Add a filter
 
-Controls add interactivity to the dashboard page and make it more dynamic, enabling users to have greater control and customization over the displayed data and components.
+[Filters][vizro.models.Filter] enable you to interact with the dashboard by selecting specific data points to display.
 
-There are two types of control:
+To add a filter to the dashboard, follow these steps:
 
-- [`Filters`][vizro.models.Filter] enable users to filter a column of the underlying data.
-- [`Parameters`][vizro.models.Parameter] enable users to change arguments or properties of the components, such as adjusting colors.
+1. Add a [`Filter`][vizro.models.Filter] to the `controls` list of the page.
+1. Specify the column to be filtered using the `column` argument of the [Filter][vizro.models.Filter].
+1. Change the `selector` in of the [`Filter`][vizro.models.Filter] to a [`Checklist`][vizro.models.Checklist]. For further customization, refer to the guide on [`How to use selectors`](../user-guides/selectors.md).
 
-The guides on [`How to use Filters`](../user-guides/filters.md) and [`How to use Parameters`](../user-guides/parameters.md) offer instructions on their application. For further customization, refer to the guide on [`How to use selectors`](../user-guides/selectors.md).
-
-To link a control to a component, use an `id` assigned to the component, which is unique across all dashboard pages and serves as a reference to target it.
-
-To illustrate, let's add a [`Filter`][vizro.models.Filter] on specific continents of the underlying gapminder data. The [`Filter`][vizro.models.Filter] requires the `column` argument, that denotes the target column to be filtered. Each `control` also has a `targets` parameter, to specify the data and components targeted by the `control`. For this dashboard, both charts are listed in the `targets` parameter, meaning that the filter is be applied to both charts. However, you can apply the [`Filter`][vizro.models.Filter] to only one specific chart if required.
-
-!!! example "Configure filter"
-    === "Code"
+!!! example "Add a filter"
+    === "Snippet - Filter"
         ```py
-        controls=[
-                vm.Filter(column="continent", targets=["box_cont", "line_gdp"]),
-            ]
+        controls=[vm.Filter(column="day"), vm.Filter(column="time", selector=vm.Checklist()), vm.Filter(column="size")]
         ```
 
     === "app.py"
         ```{.python pycafe-link}
-        from vizro import Vizro
         import vizro.models as vm
         import vizro.plotly.express as px
+        from vizro import Vizro
+        from vizro.tables import dash_ag_grid
+        from vizro.models.types import capture
+        from vizro.figures import kpi_card
 
-        df = px.data.gapminder()
-        gapminder_data = (
-                df.groupby(by=["continent", "year"]).
-                    agg({"lifeExp": "mean", "pop": "sum", "gdpPercap": "mean"}).reset_index()
-            )
+        tips = px.data.tips()
 
         first_page = vm.Page(
-            title="First Page",
-            layout=vm.Layout(grid=[[0, 0], [1, 2], [1, 2], [1, 2]]),
+            title="Data",
             components=[
-                vm.Card(
-                    text="""
-                        # First dashboard page
-                        This pages shows the inclusion of markdown text in a page and how components
-                        can be structured using Layout.
-                    """,
+                vm.AgGrid(
+                    figure=dash_ag_grid(tips),
+                    footer="""**Data Source:** Bryant, P. G. and Smith, M (1995) Practical Data Analysis: Case Studies in Business Statistics. Homewood, IL: Richard D. Irwin Publishing.""",
                 ),
-                vm.Graph(
-                    id="box_cont",
-                    figure=px.box(gapminder_data, x="continent", y="lifeExp", color="continent",
-                                    labels={"lifeExp": "Life Expectancy", "continent": "Continent"}),
-                ),
-                vm.Graph(
-                    id="line_gdp",
-                    figure=px.line(gapminder_data, x="year", y="gdpPercap", color="continent",
-                                    labels={"year": "Year", "continent": "Continent",
-                                    "gdpPercap":"GDP Per Cap"}),
-                    ),
-            ],
-            controls=[
-                vm.Filter(column="continent", targets=["box_cont", "line_gdp"]),
             ],
         )
 
-        dashboard = vm.Dashboard(pages=[first_page])
+        second_page = vm.Page(
+                    title="Summary",
+                    layout=vm.Layout(grid=[[0, 1, -1, -1],
+                                            [2, 2, 2, 2],
+                                            [2, 2, 2, 2],
+                                            [2, 2, 2, 2]]),
+                    components=[
+                        vm.Figure(
+                            figure=kpi_card(
+                                data_frame=tips,
+                                value_column="total_bill",
+                                agg_func="mean",
+                                value_format="${value:.2f}",
+                                title="Average Bill",
+                            )
+                        ),
+                        vm.Figure(
+                            figure=kpi_card(
+                                data_frame=tips, value_column="tip", agg_func="mean", value_format="${value:.2f}", title="Average Tips"
+                            )
+                        ),
+                       vm.Tabs(
+                        tabs=[
+                            vm.Container(
+                                title="Total Bill ($)",
+                                components=[
+                                    vm.Graph(figure=px.histogram(tips, x="total_bill")),
+                                ],
+                            ),
+                            vm.Container(
+                                title="Total Tips ($)",
+                                components=[
+                                    vm.Graph(figure=px.histogram(tips, x="tip")),
+                                ],
+                            ),
+                        ],
+                    )
+                ],
+                controls=[vm.Filter(column="day"), vm.Filter(column="time", selector=vm.Checklist()), vm.Filter(column="size")],
+            )
+
+        dashboard = vm.Dashboard(pages=[first_page, second_page])
         Vizro().build(dashboard).run()
         ```
 
     === "Result"
-        \[![FirstPage4]\][firstpage4]
+        [![SecondPage5]][secondpage5]
 
-Fantastic job! You have completed first dashboard page and gained valuable skills to:
+You will see that a [Dropdown](vizro.models.Dropdown) is selected for categorical data and a [RangeSlider](vizro.models.RangeSlider) for numerical data. Additionally, the Filters are applied to all components on the page by default. If you want to apply a filter to specific components only, check out the [How to use filters](../user-guides/filters.md) guide.
 
-1. [Create an initial figure on a dashboard page](#2-create-a-first-dashboard-page)
-1. [Add extra components](#22-add-further-components)
-1. [Arrange them in a layout configuration](#23-configure-the-layout)
-1. [Set up an interactive dashboard control](#24-add-a-control-for-dashboard-interactivity).
+**Great work! 📖 We've just completed our second dashboard page and learned how to:**
+
+1. [Add a chart to a page using the visual vocabulary](#31-add-a-chart)
+1. [Add KPI cards to display summary statistics](#32-add-kpi-cards)
+1. [Add Tabs to switch views](#33-add-tabs-to-switch-views)
+1. [Arrange our components by customizing the layout](#34-configure-the-layout).
+1. [Add a filter to interact with the dashboard](#35-add-a-filter).
 
 ## 3. Create a second dashboard page
 
@@ -800,3 +816,4 @@ Vizro doesn't end here, and we only covered the key features, but there is still
 [secondpage2]: ../../assets/tutorials/dashboard/03-second-page-kpi.png
 [secondpage3]: ../../assets/tutorials/dashboard/04-second-page-tabs.png
 [secondpage4]: ../../assets/tutorials/dashboard/05-second-page-layout.png
+[secondpage5]: ../../assets/tutorials/dashboard/06-second-page-controls.png
