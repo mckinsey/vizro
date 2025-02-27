@@ -359,7 +359,7 @@ When the page is refreshed, the behavior of a dynamic filter is as follows:
 - The value selected on screen by a dashboard user _does not_ change. If the selected value is not already present in the new set of available values then the `options` or `min` and `max` are modified to include it. In this case, the filtering operation might result in an empty DataFrame.
 - Even though the values present in a data source can change, the schema should not: `column` should remain present and of the same type in the data sources. The `targets` of the filter and selector type cannot change while the dashboard is running. For example, a `vm.Dropdown` selector cannot turn into `vm.RadioItems`.
 
-For example, let us add three filters to the [dynamic data example](#dynamic-data) above:
+For example, to add three filters to the [dynamic data example](#dynamic-data) above:
 
 !!! example "Dynamic filters"
     ```py hl_lines="10 11 21 22 23"
