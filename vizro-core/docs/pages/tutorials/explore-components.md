@@ -349,13 +349,19 @@ Let's place the two histograms in separate tabs. Follow these steps:
     === "Result"
         [![SecondPage3]][secondpage3]
 
-Take a moment to switch between the Tabs! As you explore the dashboard, you might notice that the current layout could use some adjustments. The histograms appear cramped, while the KPI cards have too much space. In the next section, we'll learn how to configure the layout and better arrange the components.
+Take a moment to switch between the Tabs! As you explore the dashboard, you might notice that the current layout could
+use some adjustments. The histograms appear cramped, while the KPI cards have too much space. In the next section,
+we'll learn how to configure the layout and better arrange the components.
 
 ### 3.4. Configure the layout
 
-By default, Vizro places each element in the order it was added to `components` list, and spaces them equally. You can use the [`Layout`][vizro.models.Layout] object to specify the placement and size of components on the page. To learn more about how to configure layouts, check out [How to use layouts](../user-guides/layouts.md).
+By default, Vizro places each element in the order it was added to `components` list, and spaces them equally.
+You can use the [`Layout`][vizro.models.Layout] object to specify the placement and size of components on the page. To learn more about how to configure layouts, check out [How to use layouts](../user-guides/layouts.md).
 
-In the following layout configuration, the layout is divided into four columns and four rows. The two KPI cards are positioned at the top, each occupying one cell in the first row, with two empty cells to the right. The `Tabs` component is placed below the KPI cards, spanning all cells across the remaining three rows, providing it with more space compared to the KPI cards.
+In the following layout configuration, the layout is divided into four columns and four rows.
+The two KPI cards (index 0 and 1) are positioned at the top, each occupying one cell in the first row, with two empty
+cells to the right. The `Tabs` component (index 2) is placed below the KPI cards, spanning all cells across the
+remaining three rows, providing it with more space compared to the KPI cards.
 
 ```
 grid = [[0, 1, -1, -1],
@@ -546,10 +552,10 @@ You will see that a [Dropdown](vizro.models.Dropdown) is selected for categorica
 
 ## 4. Create a third page
 
-Now that we've learned how to create pages, add components, and configure layouts, let's create a third page for our dashboard. 
+Now that we've learned how to create pages, add components, and configure layouts, let's create a third page for our dashboard.
 This will give us the opportunity to practice our skills and introduce some new concepts!
 
-This page will feature a bar chart, a violin chart, and a heatmap. We'll once again leverage the 
+This page will feature a bar chart, a violin chart, and a heatmap. We'll once again leverage the
 [Vizro visual vocabulary](https://vizro-demo-visual-vocabulary.hf.space/).
 
 
@@ -591,7 +597,7 @@ For `px.bar`, copy the code but update the `data`, `x`, and `y` arguments to mat
                 ),
             ],
        )
-    
+
         dashboard = vm.Dashboard(pages=[first_page, second_page, third_page])
         ```
 
@@ -603,9 +609,9 @@ For `px.bar`, copy the code but update the `data`, `x`, and `y` arguments to mat
         from vizro.tables import dash_ag_grid
         from vizro.models.types import capture
         from vizro.figures import kpi_card
-        
+
         tips = px.data.tips()
-        
+
         first_page = vm.Page(
         title="Data",
         components=[
@@ -615,7 +621,7 @@ For `px.bar`, copy the code but update the `data`, `x`, and `y` arguments to mat
             ),
         ],
         )
-        
+
         second_page = vm.Page(
                     title="Summary",
                     layout=vm.Layout(grid=[[0, 1, -1, -1],
@@ -657,8 +663,8 @@ For `px.bar`, copy the code but update the `data`, `x`, and `y` arguments to mat
                 ],
                 controls=[vm.Filter(column="day"), vm.Filter(column="time", selector=vm.Checklist()), vm.Filter(column="size")],
             )
-        
-        
+
+
         third_page = vm.Page(
             title="Analysis",
             components=[
@@ -678,7 +684,7 @@ For `px.bar`, copy the code but update the `data`, `x`, and `y` arguments to mat
                 ),
             ],
         )
-        
+
         dashboard = vm.Dashboard(pages=[first_page, second_page, third_page])
         Vizro().build(dashboard).run()
         ```
@@ -688,273 +694,123 @@ For `px.bar`, copy the code but update the `data`, `x`, and `y` arguments to mat
 
 You may notice that the third chart is not visible. This issue can occur with Plotly charts when there isn't enough space to display them properly. Let's customize the layout again to allocate more space to the heatmap.
 
-## 3. Create a second dashboard page
+## 4.2. Configure the layout
 
-This section adds a second dashboard page and explains how to use controls and selectors. The new page is structured similarly to the page you created, but contains two charts that visualize the [iris data](https://plotly.com/python-api-reference/generated/plotly.express.data.html#plotly.express.data.iris).
+This step should also feel more familiar by now. Let's arrange the charts to provide more space to the heatmap.
 
-Every [`Page`][vizro.models.Page] that you want to display needs to be added to the [`Dashboard`][vizro.models.Dashboard] object. The code below illustrates how to add the page, titled `second_page` to the dashboard by calling `vm.Dashboard(pages=[first_page,second_page])`. There are two `Graph` objects added to the list of components. To enable interactivity on those components, we add two [`Parameters`][vizro.models.Parameter] to the list of `controls`.
+In the following layout configuration, the layout is divided into two columns and two rows.
+The bar chart (index 0) and violin chart (index 1) are placed side by side in the first row, while the heatmap
+(index 2) spans the entire second row. Remember the index corresponds to the order in which the components are added
+to the `components` list.
 
-In creating a [`Parameter`][vizro.models.Parameter] object, you define the `target` it applies to. In the code below:
 
-- The first parameter enables the user to change the color mapping for the `virginica` category of the iris data, targeting both charts.
-- The second parameter adjusts the opacity of the first chart alone, through `scatter_iris.opacity`.
+```
+grid = [[0, 1],
+        [2, 2]]
+```
 
-In general, `targets` for [`Parameters`][vizro.models.Parameter] are set following the structure of `component_id.argument`. In certain cases, you may see a nested structure for the `targets`. An example of this is `scatter_iris.color_discrete_map.virginica`. A nested structure targets a specific attribute within a component. In this particular example, it specifies that only the color of the virginica flower type should be changed. More information on how to set `targets` for [`Parameters`][vizro.models.Parameter] can be found in the [how-to guide for parameters](../user-guides/parameters.md).
+Run the code below to apply the layout to the dashboard page:
 
-!!! example "Second page"
+!!! example "Code - Layout"
     === "Code"
         ```py
-        iris_data = px.data.iris()
-        second_page = vm.Page(
-            title="Second Page",
-            components=[
-                vm.Graph(
-                    id="scatter_iris",
-                    figure=px.scatter(iris_data, x="sepal_width", y="sepal_length", color="species",
-                        color_discrete_map={"setosa": "#00b4ff", "versicolor": "#ff9222"},
-                        labels={"sepal_width": "Sepal Width", "sepal_length": "Sepal Length",
-                                "species": "Species"},
-                    ),
-                ),
-                vm.Graph(
-                    id="hist_iris",
-                    figure=px.histogram(iris_data, x="sepal_width", color="species",
-                        color_discrete_map={"setosa": "#00b4ff", "versicolor": "#ff9222"},
-                        labels={"sepal_width": "Sepal Width", "count": "Count",
-                                "species": "Species"},
-                    ),
-                ),
-            ],
-            controls=[
-                vm.Parameter(
-                    targets=["scatter_iris.color_discrete_map.virginica",
-                                "hist_iris.color_discrete_map.virginica"],
-                    selector=vm.Dropdown(
-                        options=["#ff5267", "#3949ab"], multi=False, value="#3949ab", title="Color Virginica"),
-                    ),
-                vm.Parameter(
-                    targets=["scatter_iris.opacity"],
-                    selector=vm.Slider(min=0, max=1, value=0.8, title="Opacity"),
-                ),
-            ],
-        )
+            layout=vm.Layout(grid=[[0, 1], [2, 2]]),
         ```
 
     === "app.py"
         ```{.python pycafe-link}
-        from vizro import Vizro
         import vizro.models as vm
         import vizro.plotly.express as px
+        from vizro import Vizro
+        from vizro.tables import dash_ag_grid
+        from vizro.models.types import capture
+        from vizro.figures import kpi_card
 
-        df = px.data.gapminder()
-        gapminder_data = (
-                df.groupby(by=["continent", "year"]).
-                    agg({"lifeExp": "mean", "pop": "sum", "gdpPercap": "mean"}).reset_index()
-            )
+        tips = px.data.tips()
+
         first_page = vm.Page(
-            title="First Page",
-            layout=vm.Layout(grid=[[0, 0], [1, 2], [1, 2], [1, 2]]),
-            components=[
-                vm.Card(
-                    text="""
-                        # First dashboard page
-                        This pages shows the inclusion of markdown text in a page and how components
-                        can be structured using Layout.
-                    """,
-                ),
-                vm.Graph(
-                    id="box_cont",
-                    figure=px.box(gapminder_data, x="continent", y="lifeExp", color="continent",
-                                    labels={"lifeExp": "Life Expectancy", "continent": "Continent"}),
-                ),
-                vm.Graph(
-                    id="line_gdp",
-                    figure=px.line(gapminder_data, x="year", y="gdpPercap", color="continent",
-                                    labels={"year": "Year", "continent": "Continent",
-                                    "gdpPercap":"GDP Per Cap"}),
-                    ),
-            ],
-            controls=[
-                vm.Filter(column="continent", targets=["box_cont", "line_gdp"]),
-            ],
+        title="Data",
+        components=[
+            vm.AgGrid(
+                figure=dash_ag_grid(tips),
+                footer="""**Data Source:** Bryant, P. G. and Smith, M (1995) Practical Data Analysis: Case Studies in Business Statistics. Homewood, IL: Richard D. Irwin Publishing.""",
+            ),
+        ],
         )
 
-        iris_data = px.data.iris()
         second_page = vm.Page(
-            title="Second Page",
+                    title="Summary",
+                    layout=vm.Layout(grid=[[0, 1, -1, -1],
+                                    [2, 2, 2, 2],
+                                    [2, 2, 2, 2],
+                                    [2, 2, 2, 2],
+                                    [2, 2, 2, 2]]),
+                    components=[
+                        vm.Figure(
+                            figure=kpi_card(
+                                data_frame=tips,
+                                value_column="total_bill",
+                                agg_func="mean",
+                                value_format="${value:.2f}",
+                                title="Average Bill",
+                            )
+                        ),
+                        vm.Figure(
+                            figure=kpi_card(
+                                data_frame=tips, value_column="tip", agg_func="mean", value_format="${value:.2f}", title="Average Tips"
+                            )
+                        ),
+                       vm.Tabs(
+                        tabs=[
+                            vm.Container(
+                                title="Total Bill ($)",
+                                components=[
+                                    vm.Graph(figure=px.histogram(tips, x="total_bill")),
+                                ],
+                            ),
+                            vm.Container(
+                                title="Total Tips ($)",
+                                components=[
+                                    vm.Graph(figure=px.histogram(tips, x="tip")),
+                                ],
+                            ),
+                        ],
+                    )
+                ],
+                controls=[vm.Filter(column="day"), vm.Filter(column="time", selector=vm.Checklist()), vm.Filter(column="size")],
+            )
+
+
+        third_page = vm.Page(
+            title="Analysis",
+            layout=vm.Layout(grid=[[0, 1], [2, 2]]),
             components=[
                 vm.Graph(
-                    id="scatter_iris",
-                    figure=px.scatter(iris_data, x="sepal_width", y="sepal_length", color="species",
-                        color_discrete_map={"setosa": "#00b4ff", "versicolor": "#ff9222"},
-                        labels={"sepal_width": "Sepal Width", "sepal_length": "Sepal Length",
-                                "species": "Species"},
-                    ),
+                    title="Where do we get more tips?",
+                    figure=px.bar(tips, y="tip", x="day"),
                 ),
                 vm.Graph(
-                    id="hist_iris",
-                    figure=px.histogram(iris_data, x="sepal_width", color="species",
-                        color_discrete_map={"setosa": "#00b4ff", "versicolor": "#ff9222"},
-                        labels={"sepal_width": "Sepal Width", "count": "Count",
-                                "species": "Species"},
-                    ),
+                    title="Is the average driven by a few outliers?",
+                    figure=px.violin(tips, y="tip", x="day", color="day", box=True),
                 ),
-            ],
-            controls=[
-                vm.Parameter(
-                    targets=["scatter_iris.color_discrete_map.virginica",
-                                "hist_iris.color_discrete_map.virginica"],
-                    selector=vm.Dropdown(
-                        options=["#ff5267", "#3949ab"], multi=False, value="#3949ab", title="Color Virginica"),
-                    ),
-                vm.Parameter(
-                    targets=["scatter_iris.opacity"],
-                    selector=vm.Slider(min=0, max=1, value=0.8, title="Opacity"),
+                vm.Graph(
+                    title="Which group size is more profitable?",
+                    figure=px.density_heatmap(
+                    tips, x="day", y="size", z="tip", histfunc="avg", text_auto="$.2f"
+                )
                 ),
             ],
         )
 
-        dashboard = vm.Dashboard(pages=[first_page,second_page])
+        dashboard = vm.Dashboard(pages=[first_page, second_page, third_page])
         Vizro().build(dashboard).run()
         ```
 
     === "Result"
-        [![SecondPage]][secondpage]
+        [![ThirdPage2]][thirdpage2]
 
-### 3.1. Customize with selectors
 
-The code in the example above uses two different types of [`selector`](../user-guides/selectors.md) objects, namely [`Dropdown`][vizro.models.Dropdown] and [`Slider`][vizro.models.Slider] upon the [`Parameters`][vizro.models.Parameter]. The `selectors` enable configuration of the controls to customize their behavior and appearance.
-
-The first parameter is a [`Dropdown`][vizro.models.Dropdown]. It is configured with two available options, disables multi-selection, and has a default `value` set to blue. Users can choose a single option from the dropdown.
-
-The second parameter is a [`Slider`][vizro.models.Slider] with a default value of 0.8. Users can adjust a value within the specified range of `min=0` and `max=1`.
-
-You can apply selectors to configure [`Filters`][vizro.models.Filter] and [`Parameters`][vizro.models.Parameter] to fine-tune the behavior and appearance of the controls. The selectors currently available are as follows:
-
-- [`Parameter`][vizro.models.Parameter]:
-- [`Checklist`][vizro.models.Checklist]
-- [`Dropdown`][vizro.models.Dropdown]
-- [`RadioItems`][vizro.models.RadioItems]
-- [`RangeSlider`][vizro.models.RangeSlider]
-- [`Slider`][vizro.models.Slider]
-
-## 4. The final touches
-
-Each page is added to the dashboard using the following line of code: `vm.Dashboard(pages=[first_page, second_page])`. This ensures that all the pages are accessible.
-
-By default, a navigation panel on the left side enables the user to switch between the two pages.
-
-!!! example "Final dashboard"
-    === "Code"
-        ```python
-        dashboard = vm.Dashboard(pages=[home_page, first_page, second_page])
-        Vizro().build(dashboard).run()
-        ```
-
-    === "app.py"
-        ```{.python pycafe-link}
-
-        from vizro import Vizro
-        import vizro.models as vm
-        import vizro.plotly.express as px
-
-        df = px.data.gapminder()
-        gapminder_data = (
-                df.groupby(by=["continent", "year"]).
-                    agg({"lifeExp": "mean", "pop": "sum", "gdpPercap": "mean"}).reset_index()
-            )
-        first_page = vm.Page(
-            title="First Page",
-            layout=vm.Layout(grid=[[0, 0], [1, 2], [1, 2], [1, 2]]),
-            components=[
-                vm.Card(
-                    text="""
-                        # First dashboard page
-                        This pages shows the inclusion of markdown text in a page and how components
-                        can be structured using Layout.
-                    """,
-                ),
-                vm.Graph(
-                    id="box_cont",
-                    figure=px.box(gapminder_data, x="continent", y="lifeExp", color="continent",
-                                    labels={"lifeExp": "Life Expectancy", "continent": "Continent"}),
-                ),
-                vm.Graph(
-                    id="line_gdp",
-                    figure=px.line(gapminder_data, x="year", y="gdpPercap", color="continent",
-                                    labels={"year": "Year", "continent": "Continent",
-                                    "gdpPercap":"GDP Per Cap"}),
-                    ),
-            ],
-            controls=[
-                vm.Filter(column="continent", targets=["box_cont", "line_gdp"]),
-            ],
-        )
-
-        iris_data = px.data.iris()
-        second_page = vm.Page(
-            title="Second Page",
-            components=[
-                vm.Graph(
-                    id="scatter_iris",
-                    figure=px.scatter(iris_data, x="sepal_width", y="sepal_length", color="species",
-                        color_discrete_map={"setosa": "#00b4ff", "versicolor": "#ff9222"},
-                        labels={"sepal_width": "Sepal Width", "sepal_length": "Sepal Length",
-                                "species": "Species"},
-                    ),
-                ),
-                vm.Graph(
-                    id="hist_iris",
-                    figure=px.histogram(iris_data, x="sepal_width", color="species",
-                        color_discrete_map={"setosa": "#00b4ff", "versicolor": "#ff9222"},
-                        labels={"sepal_width": "Sepal Width", "count": "Count",
-                                "species": "Species"},
-                    ),
-                ),
-            ],
-            controls=[
-                vm.Parameter(
-                    targets=["scatter_iris.color_discrete_map.virginica",
-                                "hist_iris.color_discrete_map.virginica"],
-                    selector=vm.Dropdown(
-                        options=["#ff5267", "#3949ab"], multi=False, value="#3949ab", title="Color Virginica"),
-                    ),
-                vm.Parameter(
-                    targets=["scatter_iris.opacity"],
-                    selector=vm.Slider(min=0, max=1, value=0.8, title="Opacity"),
-                ),
-            ],
-        )
-
-        dashboard = vm.Dashboard(pages=[first_page, second_page])
-        Vizro().build(dashboard).run()
-        ```
-
-    === "Subpage1"
-        \[![FinalPage1]\][finalpage1]
-
-    === "Subpage2"
-        \[![FinalPage2]\][finalpage2]
-
-Congratulations on completing this tutorial! You have acquired the knowledge to configure layouts, add components, and implement interactivity in Vizro dashboards, working across two navigable pages.
-
-## Find out more
-
-After completing the tutorial you now have a solid understanding of the main elements of Vizro and how to bring them together to create dynamic and interactive data visualizations.
-
-You can find out more about the Vizro by reading the [components overview page](../user-guides/components.md). To gain more in-depth knowledge about the usage and configuration details of individual controls, check out the guides dedicated to [Filters](../user-guides/filters.md), [Parameters](../user-guides/parameters.md), and [Selectors](../user-guides/selectors.md). If you'd like to understand more about different ways to configure the navigation of your dashboard, head to [Navigation](../user-guides/navigation.md).
-
-Vizro doesn't end here, and we only covered the key features, but there is still much more to explore! You can learn:
-
-- How to create you own components under [custom components](../user-guides/custom-components.md).
-- How to add custom styling using [static assets](../user-guides/assets.md) such as custom css or JavaScript files.
-- How to use [Actions](../user-guides/actions.md) for example, for chart interaction or custom controls.
-- How to create dashboards from `yaml`, `dict` or `json` following the [dashboard guide](../user-guides/dashboard.md).
-
-!!! note "An introduction to Vizro-AI"
-    In the example above, the code to create the line graph was generated using [Vizro-AI](https://vizro.readthedocs.io/en/latest/pages/tutorials/first-dashboard/). Vizro-AI enables you to use English, or other languages, to create interactive charts with [Plotly](https://plotly.com/python/) by simplifying the process through use of a large language model. In essence, Vizro-AI generates code from natural language instructions so that you can add it into a Vizro dashboard, such as in the example above.
-
-    Find out more in the [Vizro-AI documentation](https://vizro.readthedocs.io/projects/vizro-ai/)!
+**Fantastic work! This looks so much better, doesn't it? 🎨**
 
 [firstpage]: ../../assets/tutorials/dashboard/01-first-page.png
 [secondpage]: ../../assets/tutorials/dashboard/02-second-page.png
@@ -963,3 +819,4 @@ Vizro doesn't end here, and we only covered the key features, but there is still
 [secondpage4]: ../../assets/tutorials/dashboard/05-second-page-layout.png
 [secondpage5]: ../../assets/tutorials/dashboard/06-second-page-controls.png
 [thirdpage]: ../../assets/tutorials/dashboard/07-third-page.png
+[thirdpage2]: ../../assets/tutorials/dashboard/08-third-page-layout.png
