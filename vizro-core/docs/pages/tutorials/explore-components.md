@@ -1,21 +1,23 @@
 # Explore Vizro
 
-In this tutorial, we will develop an interactive dashboard featuring multiple pages. By the end, you'll be able to:
+In this tutorial, we will build an interactive dashboard with multiple pages, incorporating a wide range of Vizro's components. 
+If you're seeking a quickstart guide, consider reviewing the [first dashboard tutorial]([first dashboard tutorial](../tutorials/first-dashboard.md)) before diving into this one.
 
-- Get to know most of [Vizro's components](../user-guides/components.md)
-- Use the [Vizro visual vocabulary](https://vizro-demo-visual-vocabulary.hf.space/) as guidance to create charts
-- Create custom charts using [Plotly Express](https://plotly.com/python-api-reference/plotly.express.html).
-- Build multiple dashboard pages.
-- Customize the layout of our pages.
+By the end of this tutorial, we will:
+
+- Explore most of [Vizro's components](../user-guides/components.md)
+- Use the [Vizro visual vocabulary](https://vizro-demo-visual-vocabulary.hf.space/) to guide our chart creation.
+- Design custom charts with [Plotly Express](https://plotly.com/python-api-reference/plotly.express.html).
+- Develop multiple pages for our dashboard.
+- Customize the layout of these pages.
 - Add interactivity to our dashboard using controls and actions.
-- Configure the navigation within our dashboard.
-- Add a logo to our dashboard
+- Set up navigation within the dashboard.
+- Incorporate a logo into our dashboard.
 
-We will be using the [tips dataset](https://plotly.com/python-api-reference/generated/plotly.express.data.html#plotly.express.data.tips) for this example to understand when to get the best tips!
+We will use the [tips dataset](https://plotly.com/python-api-reference/generated/plotly.express.data.html#plotly.express.data.tips)  for this example. 
+This dataset was collected by a waiter who recorded information about each tip he received over several months at a restaurant. 
+**Let's find out when he received the highest tips! 🚀**
 
-If you haven't yet done so, you may want to review the [first dashboard tutorial](../tutorials/first-dashboard.md) before starting on this one.
-
-**Ready to get started? Let's go! 🚀**
 
 ## 1. (Optional) Install Vizro and get ready to run your code
 
