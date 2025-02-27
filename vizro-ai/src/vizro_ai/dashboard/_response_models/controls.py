@@ -1,15 +1,19 @@
 """Controls plan model."""
 
 import logging
-from typing import Optional
+from typing import Any, Optional, get_args
 
 import pandas as pd
 import vizro.models as vm
+from pydantic import (
+    BaseModel,
+    Field,
+    ValidationError,
+    create_model,
+    field_validator,
+    model_validator,
+)
 
-try:
-    from pydantic.v1 import BaseModel, Field, ValidationError, create_model, root_validator, validator
-except ImportError:  # pragma: no cov
-    from pydantic import BaseModel, Field, ValidationError, create_model, root_validator, validator
 from vizro_ai.dashboard._pydantic_output import _get_pydantic_model
 from vizro_ai.dashboard._response_models.types import ControlType
 
@@ -21,8 +25,9 @@ def _create_filter_proxy(df_cols, df_schema, controllable_components) -> BaseMod
 
     def validate_targets(v):
         """Validate the targets."""
-        if v not in controllable_components:
-            raise ValueError(f"targets must be one of {controllable_components}")
+        for target in v:
+            if target not in controllable_components:
+                raise ValueError(f"targets must be one of {controllable_components}")
         return v
 
     def validate_targets_not_empty(v):
@@ -42,12 +47,13 @@ def _create_filter_proxy(df_cols, df_schema, controllable_components) -> BaseMod
             raise ValueError(f"column must be one of {df_cols}")
         return v
 
-    @root_validator(allow_reuse=True)
-    def validate_date_picker_column(cls, values):
+    @model_validator(mode="before")
+    @classmethod
+    def validate_date_picker_column(cls, data: Any):
         """Validate the column for date picker."""
-        column = values.get("column")
-        selector = values.get("selector")
-        if selector and selector.type == "date_picker":
+        column = data.get("column")
+        selector = data.get("selector")
+        if selector and hasattr(selector, "type") and selector.type == "date_picker":
             if not pd.api.types.is_datetime64_any_dtype(df_schema[column]):
                 raise ValueError(
                     f"""
@@ -55,7 +61,7 @@ def _create_filter_proxy(df_cols, df_schema, controllable_components) -> BaseMod
                     not allowed. Use 'dropdown' instead.
                     """
                 )
-        return values
+        return data
 
     return create_model(
         "FilterProxy",
@@ -71,9 +77,9 @@ def _create_filter_proxy(df_cols, df_schema, controllable_components) -> BaseMod
         ),
         column=(str, Field(..., description="Column name of DataFrame to filter. ALWAYS REQUIRED.")),
         __validators__={
-            "validator1": validator("targets", pre=True, each_item=True, allow_reuse=True)(validate_targets),
-            "validator2": validator("column", allow_reuse=True)(validate_column),
-            "validator3": validator("targets", pre=True, allow_reuse=True)(validate_targets_not_empty),
+            "validator1": field_validator("targets", mode="before")(validate_targets),
+            "validator2": field_validator("column")(validate_column),
+            "validator3": field_validator("targets", mode="before")(validate_targets_not_empty),
             "validator4": validate_date_picker_column,
         },
         __base__=vm.Filter,
@@ -85,15 +91,21 @@ def _create_filter(filter_prompt, model, df_cols, df_schema, controllable_compon
         df_cols=df_cols, df_schema=df_schema, controllable_components=controllable_components
     )
     proxy = _get_pydantic_model(query=filter_prompt, llm_model=model, response_model=result_proxy, df_info=df_schema)
-    return vm.Filter.parse_obj(proxy.dict(exclude_unset=True))
+    return vm.Filter(**proxy.model_dump(exclude_unset=True))
 
 
 class ControlPlan(BaseModel):
     """Control plan model."""
 
-    control_type: ControlType
+    control_type: ControlType = Field(
+        description=f"""
+        IMPORTANT:
+        This field MUST be one of the following values ONLY: [{", ".join(repr(t) for t in get_args(ControlType))}].
+        NO OTHER VALUES are allowed. The value must match exactly one of the options above.
+        Any other value will result in a validation error.
+        """,
+    )
     control_description: str = Field(
-        ...,
         description="""
         Description of the control. Include everything that seems to relate to this control.
         Be as detailed as possible. Keep the original relevant description AS IS. If this control is used
@@ -101,7 +113,6 @@ class ControlPlan(BaseModel):
         """,
     )
     df_name: str = Field(
-        ...,
         description="""
         The name of the dataframe that the target component will use.
         If the dataframe is not used, please specify that.

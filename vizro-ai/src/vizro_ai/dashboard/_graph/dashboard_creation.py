@@ -10,6 +10,7 @@ from langchain_core.messages import BaseMessage
 from langchain_core.runnables import RunnableConfig
 from langgraph.constants import END, Send
 from langgraph.graph import StateGraph
+from pydantic import BaseModel, BeforeValidator, ConfigDict, ValidationError
 from tqdm.auto import tqdm
 
 from vizro_ai.dashboard._pydantic_output import _get_pydantic_model
@@ -19,17 +20,30 @@ from vizro_ai.dashboard._response_models.page import PagePlan
 from vizro_ai.dashboard.utils import AllDfMetadata, DfMetadata, _execute_step
 from vizro_ai.utils.helper import DebugFailure
 
-try:
-    from pydantic.v1 import BaseModel, ValidationError
-except ImportError:  # pragma: no cov
-    from pydantic import BaseModel, ValidationError
-
-
 logger = logging.getLogger(__name__)
 
 
 Messages = list[BaseMessage]
 """List of messages."""
+
+
+def _validate_dfs(v):
+    if isinstance(v, pd.DataFrame):
+        # without this, the model will not be able to validate the dfs properly.
+        # for example, if a single df is passed, it's parsed as a list of strings.
+        # which then raises validation error like:
+        # dfs.0
+        #  Input should be an instance of DataFrame [type=is_instance_of, input_value='country', input_type=str]
+        #    For further information visit https://errors.pydantic.dev/2.10/v/is_instance_of
+        raise ValueError(
+            "A single DataFrame was provided to 'dfs'. Please pass a list of DataFrames instead, "
+            "e.g., [df] or [df1, df2, ...]"
+        )
+
+    if not isinstance(v, list) or not all(isinstance(df, pd.DataFrame) for df in v):
+        raise ValueError("Input should be a list of DataFrames")
+
+    return v
 
 
 class GraphState(BaseModel):
@@ -47,7 +61,7 @@ class GraphState(BaseModel):
     """
 
     messages: list[BaseMessage]
-    dfs: list[pd.DataFrame]
+    dfs: Annotated[list[pd.DataFrame], BeforeValidator(_validate_dfs)]
     all_df_metadata: AllDfMetadata
     dashboard_plan: Optional[DashboardPlan] = None
     pages: Annotated[list, operator.add]
@@ -55,10 +69,7 @@ class GraphState(BaseModel):
     custom_charts_code: Annotated[list, operator.add]
     custom_charts_imports: Annotated[list, operator.add]
 
-    class Config:
-        """Pydantic configuration."""
-
-        arbitrary_types_allowed = True
+    model_config = ConfigDict(arbitrary_types_allowed=True)
 
 
 def _store_df_info(state: GraphState, config: RunnableConfig) -> dict[str, AllDfMetadata]:
@@ -146,6 +157,8 @@ class BuildPageState(BaseModel):
 
     all_df_metadata: AllDfMetadata
     page_plan: Optional[PagePlan] = None
+
+    model_config = ConfigDict(arbitrary_types_allowed=True)  # this is due to pandas df
 
 
 def _build_page(state: BuildPageState, config: RunnableConfig) -> dict[str, list[vm.Page]]:
