@@ -9,6 +9,15 @@ from vizro.figures import kpi_card
 
 tips = px.data.tips()
 
+
+@capture("graph")
+def bar_mean(data_frame, x, y):
+    df_agg = data_frame.groupby(x).agg({y: "mean"}).reset_index()
+    fig = px.bar(df_agg, x=x, y=y, labels={"tip": "Average Tip ($)"})
+    fig.update_traces(width=0.6)
+    return fig
+
+
 first_page = vm.Page(
     title="Data",
     components=[
@@ -36,11 +45,7 @@ second_page = vm.Page(
         ),
         vm.Figure(
             figure=kpi_card(
-                data_frame=tips,
-                value_column="tip",
-                agg_func="mean",
-                value_format="${value:.2f}",
-                title="Average Tips"
+                data_frame=tips, value_column="tip", agg_func="mean", value_format="${value:.2f}", title="Average Tips"
             )
         ),
         vm.Tabs(
@@ -58,9 +63,9 @@ second_page = vm.Page(
                     ],
                 ),
             ],
-        )
+        ),
     ],
-    controls=[vm.Filter(column="day"), vm.Filter(column="time", selector=vm.Checklist()), vm.Filter(column="size")]
+    controls=[vm.Filter(column="day"), vm.Filter(column="time", selector=vm.Checklist()), vm.Filter(column="size")],
 )
 
 third_page = vm.Page(
@@ -69,7 +74,7 @@ third_page = vm.Page(
     components=[
         vm.Graph(
             title="Where do we get more tips?",
-            figure=px.bar(tips, y="tip", x="day"),
+            figure=bar_mean(tips, y="tip", x="day"),
         ),
         vm.Graph(
             title="Is the average driven by a few outliers?",
