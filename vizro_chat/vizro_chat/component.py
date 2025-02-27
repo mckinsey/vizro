@@ -66,6 +66,22 @@ TOGGLE_CONTAINER_STYLE = {
     "minWidth": "50px",
 }
 
+MESSAGE_STYLE = {
+    "backgroundColor": "var(--mantine-color-dark-light-hover)",
+    "color": "var(--text-primary)",
+    "padding": "10px 15px",
+    "maxWidth": "70%",
+    "marginLeft": "0",
+    "marginRight": "auto",
+    "marginBottom": "15px",
+    "whiteSpace": "pre-wrap",
+    "wordBreak": "break-word",
+    "width": "fit-content",
+    "minWidth": "100px",
+    "lineHeight": "1.25",
+    "letterSpacing": "0.2px",
+}
+
 # JavaScript for client-side streaming
 STREAMING_CALLBACK_JS = """
 function(n_clicks, n_submit, value, messages, api_settings) {
@@ -86,38 +102,13 @@ function(n_clicks, n_submit, value, messages, api_settings) {
 
     try {
         const messages_json = JSON.stringify(JSON.parse(messages));
-
-        // Get component ID from the triggered input's ID
         const triggeredId = window.dash_clientside.callback_context.triggered[0].prop_id;
         const componentId = triggeredId.split('-')[0];
-
         const chatHistory = document.getElementById(`${componentId}-history`);
-
-        // Add user message
         const messages_array = JSON.parse(messages_json);
+        
+        // Add user message to messages array
         messages_array.push({"role": "user", "content": value});
-
-        // Create user message div first
-        const userDiv = document.createElement('div');
-        userDiv.textContent = value;
-        userDiv.style.backgroundColor = "var(--mantine-color-dark-light-hover)";
-        userDiv.style.color = "var(--text-primary)";
-        userDiv.style.padding = "10px 15px";
-        userDiv.style.maxWidth = "70%";
-        userDiv.style.marginRight = "auto";
-        userDiv.style.marginBottom = "15px";
-        userDiv.style.whiteSpace = "pre-wrap";
-        userDiv.style.wordBreak = "break-word";
-        userDiv.style.width = "fit-content";
-        userDiv.style.minWidth = "100px";
-        userDiv.style.lineHeight = "1.25";
-        userDiv.style.letterSpacing = "0.2px";
-        userDiv.style.borderLeft = "2px solid #00b4ff";
-
-        if (chatHistory) {
-            chatHistory.appendChild(userDiv);
-            chatHistory.scrollTop = chatHistory.scrollHeight;
-        }
 
         // Clear the input field
         const inputField = document.getElementById(`${componentId}-input`);
@@ -170,7 +161,15 @@ function(n_clicks, n_submit, value, messages, api_settings) {
                 function readChunk() {
                     reader.read().then(({done, value}) => {
                         if (done) {
+                            // Add assistant's response to messages array and trigger update
                             messages_array.push({"role": "assistant", "content": text.trim()});
+                            window.dash_clientside.no_update = false;
+                            window.dispatchEvent(new CustomEvent('dash-update-component', {
+                                detail: {
+                                    output: `${componentId}-messages.data`,
+                                    value: JSON.stringify(messages_array)
+                                }
+                            }));
                             return;
                         }
 
@@ -224,7 +223,7 @@ class VizroChatComponent(VizroBaseModel):
     @property
     def messages(self) -> list[dict[str, str]]:
         """Get initial messages list."""
-        return [{"role": "assistant", "content": "Hello! How can I help you today?"}]
+        return []
 
     @_log_call
     def pre_build(self):
@@ -337,12 +336,197 @@ class VizroChatComponent(VizroBaseModel):
             return saved_settings.get("api_key", ""), saved_settings.get("api_base", "")
 
     def _register_streaming_callback(self):
-        """Register the clientside callback for streaming chat responses."""
+        """Register callbacks for chat functionality."""
+        # Add callback to initialize messages if empty
+        @self.vizro_app.dash.callback(
+            Output(f"{self.id}-messages", "data"),
+            Input(f"{self.id}-messages", "data"),
+        )
+        def initialize_messages(current_messages):
+            """Initialize messages if they don't exist."""
+            if not current_messages:
+                print(f"Initializing messages for {self.id}")  # Debug log
+                return json.dumps([{"role": "assistant", "content": "Hello! How can I help you today?"}])
+            print(f"Messages already exist for {self.id}: {current_messages}")  # Debug log
+            return current_messages
+
+        # Add callback to update chat history display
+        @self.vizro_app.dash.callback(
+            Output(f"{self.id}-history", "children"),
+            Input(f"{self.id}-messages", "data"),
+        )
+        def update_chat_history(messages_json):
+            """Update the chat history display from stored messages."""
+            if not messages_json:
+                return []
+            
+            try:
+                # Only render messages when there's no chat history displayed yet
+                history_div = html.Div(id=f"{self.id}-history")
+                if not history_div.children:
+                    messages = json.loads(messages_json)
+                    chat_elements = []
+                    
+                    for msg in messages:
+                        is_user = msg["role"] == "user"
+                        chat_elements.append(
+                            html.Div(
+                                msg["content"],
+                                style={
+                                    **MESSAGE_STYLE,
+                                    "borderLeft": f"2px solid {'#00b4ff' if is_user else '#aaa9ba'}",
+                                }
+                            )
+                        )
+                    
+                    return chat_elements
+                return dash.no_update
+            except Exception as e:
+                print(f"Error updating chat history: {e}")
+                return []
+
+        # Modify the streaming callback JavaScript
         self.vizro_app.dash.clientside_callback(
-            STREAMING_CALLBACK_JS,
+            """
+            function(n_clicks, n_submit, value, messages, api_settings) {
+                if (n_clicks === null && n_submit === null) return [messages, "", null];
+                if ((!n_clicks && !n_submit) || !messages) return [messages, value, null];
+                if (!value || !value.trim()) return [messages, "", null];
+
+                try {
+                    const messages_array = JSON.parse(messages);
+                    const userMessage = {"role": "user", "content": value.trim()};
+
+                    const triggeredId = window.dash_clientside.callback_context.triggered[0].prop_id;
+                    const componentId = triggeredId.split('-')[0];
+                    const chatHistory = document.getElementById(`${componentId}-history`);
+
+                    // Create a temporary div for the user message
+                    const tempUserDiv = document.createElement('div');
+                    tempUserDiv.style.backgroundColor = "var(--mantine-color-dark-light-hover)";
+                    tempUserDiv.style.color = "var(--text-primary)";
+                    tempUserDiv.style.padding = "10px 15px";
+                    tempUserDiv.style.maxWidth = "70%";
+                    tempUserDiv.style.marginLeft = "0";
+                    tempUserDiv.style.marginRight = "auto";
+                    tempUserDiv.style.marginBottom = "15px";
+                    tempUserDiv.style.whiteSpace = "pre-wrap";
+                    tempUserDiv.style.wordBreak = "break-word";
+                    tempUserDiv.style.width = "fit-content";
+                    tempUserDiv.style.minWidth = "100px";
+                    tempUserDiv.style.lineHeight = "1.25";
+                    tempUserDiv.style.letterSpacing = "0.2px";
+                    tempUserDiv.style.borderLeft = "2px solid #00b4ff";
+                    tempUserDiv.textContent = value.trim();
+
+                    if (chatHistory) {
+                        chatHistory.appendChild(tempUserDiv);
+                        chatHistory.scrollTop = chatHistory.scrollHeight;
+                    }
+
+                    let resolvePromise;
+                    const updatePromise = new Promise((resolve) => {
+                        resolvePromise = resolve;
+                    });
+
+                    // Start streaming after a short delay to allow the UI to update
+                    setTimeout(() => {
+                        // Create a temporary container for the streaming message
+                        const tempContainer = document.createElement('div');
+                        tempContainer.style.backgroundColor = "var(--mantine-color-dark-light-hover)";
+                        tempContainer.style.color = "var(--text-primary)";
+                        tempContainer.style.padding = "10px 15px";
+                        tempContainer.style.maxWidth = "70%";
+                        tempContainer.style.marginLeft = "0";
+                        tempContainer.style.marginRight = "auto";
+                        tempContainer.style.marginBottom = "15px";
+                        tempContainer.style.whiteSpace = "pre-wrap";
+                        tempContainer.style.wordBreak = "break-word";
+                        tempContainer.style.width = "fit-content";
+                        tempContainer.style.minWidth = "100px";
+                        tempContainer.style.lineHeight = "1.25";
+                        tempContainer.style.letterSpacing = "0.2px";
+                        tempContainer.style.borderLeft = "2px solid #aaa9ba";
+                        tempContainer.setAttribute('data-streaming', 'true');
+
+                        if (chatHistory) {
+                            chatHistory.appendChild(tempContainer);
+                            chatHistory.scrollTop = chatHistory.scrollHeight;
+                        }
+
+                        // Start streaming
+                        fetch(`/streaming-${componentId}`, {
+                            method: "POST",
+                            headers: {"Content-Type": "application/json"},
+                            body: JSON.stringify({
+                                prompt: value.trim(),
+                                chat_history: JSON.stringify(messages_array),  // Send current messages without new user message
+                                api_settings: api_settings
+                            }),
+                        }).then(response => {
+                            if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
+                            const reader = response.body.getReader();
+                            const decoder = new TextDecoder();
+                            let text = "";
+
+                            function readChunk() {
+                                reader.read().then(({done, value}) => {
+                                    if (done) {
+                                        const assistantMessage = {"role": "assistant", "content": text.trim()};
+                                        
+                                        // Remove both temporary divs
+                                        if (tempUserDiv && tempUserDiv.parentNode) {
+                                            tempUserDiv.parentNode.removeChild(tempUserDiv);
+                                        }
+                                        if (tempContainer && tempContainer.parentNode) {
+                                            tempContainer.parentNode.removeChild(tempContainer);
+                                        }
+                                        
+                                        // Keep the temporary divs and just update the messages array
+                                        // for persistence (won't cause re-render)
+                                        messages_array.push(userMessage);
+                                        messages_array.push(assistantMessage);
+                                        resolvePromise([
+                                            JSON.stringify(messages_array),
+                                            "",
+                                            null
+                                        ]);
+                                        return;
+                                    }
+
+                                    const chunk = decoder.decode(value);
+                                    text += chunk;
+                                    if (tempContainer) {
+                                        tempContainer.textContent = text;
+                                        chatHistory.scrollTop = chatHistory.scrollHeight;
+                                    }
+
+                                    readChunk();
+                                });
+                            }
+
+                            readChunk();
+                        }).catch(error => {
+                            console.error("Streaming error:", error);
+                            if (tempContainer) {
+                                tempContainer.textContent = "Error: Could not get response from server.";
+                            }
+                            resolvePromise([JSON.stringify(messages_array), "", null]);
+                        });
+                    }, 50);  // Small delay to ensure smooth UI update
+
+                    // Return the promise that will resolve with the final update
+                    return updatePromise;
+                } catch (error) {
+                    console.error("Error:", error);
+                    return [messages, value, null];
+                }
+            }
+            """,
             [
                 Output(f"{self.id}-messages", "data", allow_duplicate=True),
                 Output(f"{self.id}-input", "value", allow_duplicate=True),
+                Output(f"{self.id}-stream-complete", "data"),
             ],
             [
                 Input(f"{self.id}-submit", "n_clicks"),
@@ -393,8 +577,12 @@ class VizroChatComponent(VizroBaseModel):
             ),
             dcc.Store(
                 id=f"{self.id}-messages",
-                data=json.dumps(self.messages),
                 storage_type='session'
+            ),
+            dcc.Store(  # Modified store for handling streaming completion
+                id=f"{self.id}-stream-complete",
+                storage_type='memory',
+                data=None,  # Initialize with None
             ),
         ]
         
@@ -484,9 +672,13 @@ class VizroChatComponent(VizroBaseModel):
         """Build the main chat interface."""
         return html.Div(
             [
+                # Add a loading component to handle initial load
+                dbc.Spinner(
                 html.Div(
                     id=f"{self.id}-history",
                     style=CHAT_HISTORY_STYLE,
+                    ),
+                    color="primary",
                 ),
                 html.Div(
                     [
