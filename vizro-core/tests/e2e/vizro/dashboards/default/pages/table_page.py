@@ -10,7 +10,6 @@ table_page = vm.Page(
     title=cnst.TABLE_PAGE,
     components=[
         vm.Container(
-            id=cnst.TABLE_CONTAINER,
             title=cnst.TABLE_CONTAINER,
             components=[
                 vm.Table(
@@ -24,20 +23,17 @@ table_page = vm.Page(
         )
     ],
     controls=[
-        vm.Filter(column="year", targets=[cnst.TABLE_ID], selector=vm.Dropdown(value=2007)),
+        vm.Filter(column="year", selector=vm.Dropdown(value=2007)),
         vm.Filter(
             column="continent",
-            targets=[cnst.TABLE_ID],
             selector=vm.RadioItems(options=["Europe", "Africa", "Americas"]),
         ),
         vm.Filter(
             column="continent",
-            targets=[cnst.TABLE_ID],
             selector=vm.Checklist(options=["Asia", "Oceania"]),
         ),
         vm.Filter(
             column="pop",
-            targets=[cnst.TABLE_ID],
             selector=vm.RangeSlider(step=1000000.0, min=1000000, max=10000000),
         ),
     ],

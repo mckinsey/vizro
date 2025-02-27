@@ -13,7 +13,7 @@ from selenium.webdriver.chrome.options import Options as ChromeOptions
 def pytest_setup_options():
     if os.getenv("BROWSER") == "chrome_mobile":
         options = ChromeOptions()
-        options.add_experimental_option("mobileEmulation", {"deviceName": "iPhone 12 Pro"})
+        options.add_experimental_option("mobileEmulation", {"deviceName": "iPhone 13 Pro"})
         return options
 
 
@@ -29,12 +29,11 @@ def make_teardown(dash_br):
     with open(cnst.DYNAMIC_FILTERS_DATA_CONFIG, "w") as file:
         yaml.dump(data, file)
     # checking for browser console errors
-    if os.getenv("BROWSER") != "firefox":
+    if os.getenv("BROWSER") == "chrome" or "chrome_mobile":
         try:
-            log_levels = [level for level in dash_br.get_logs() if level["level"] == "SEVERE" or "WARNING"]
-            if log_levels:
-                for log_level in log_levels:
-                    browser_console_warnings_checker(log_level, log_levels)
+            error_logs = [log for log in dash_br.get_logs() if log["level"] == "SEVERE" or "WARNING"]
+            for log in error_logs:
+                browser_console_warnings_checker(log, error_logs)
         except WebDriverException:
             pass
 

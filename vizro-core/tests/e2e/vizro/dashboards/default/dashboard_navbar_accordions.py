@@ -20,7 +20,6 @@ dashboard = vm.Dashboard(
         },
         nav_selector=vm.NavBar(),
     ),
-    theme="vizro_dark",
 )
 
 app = Vizro(assets_folder="../assets").build(dashboard)

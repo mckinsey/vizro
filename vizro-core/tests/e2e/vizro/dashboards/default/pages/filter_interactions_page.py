@@ -10,7 +10,7 @@ iris = px.data.iris()
 
 filter_interactions_page = vm.Page(
     title=cnst.FILTER_INTERACTIONS_PAGE,
-    layout=vm.Layout(grid=[[0, 0], [2, 2], [1, 1]]),
+    layout=vm.Layout(grid=[[0], [2], [1]]),
     components=[
         vm.Graph(
             id=cnst.SCATTER_INTERACTIONS_ID,
@@ -20,12 +20,6 @@ filter_interactions_page = vm.Page(
                 y="petal_width",
                 color="species",
                 custom_data=["species"],
-                hover_name="species",
-                color_discrete_map={
-                    "setosa": "#00b4ff",
-                    "versicolor": "#ff9222",
-                    "virginica": "#3949ab",
-                },
             ),
             actions=[
                 vm.Action(function=filter_interaction(targets=[cnst.BOX_INTERACTIONS_ID])),
@@ -44,12 +38,6 @@ filter_interactions_page = vm.Page(
                 x="sepal_length",
                 y="petal_width",
                 color="species",
-                hover_name="species",
-                color_discrete_map={
-                    "setosa": "#00b4ff",
-                    "versicolor": "#ff9222",
-                    "virginica": "#3949ab",
-                },
             ),
         ),
     ],

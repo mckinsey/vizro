@@ -2,6 +2,7 @@ import os
 import shutil
 import subprocess
 from pathlib import Path
+from e2e.vizro import constants as cnst
 
 
 def make_screenshot_and_paths(driver, request_node_name):
@@ -23,7 +24,7 @@ def assert_pixelmatch(result_image_path, expected_image_path):
             expected_image_path,
             result_image_path,
             f"{expected_image_name.replace('.', '_difference_from_main.')}",
-            "0.18",  # threshold
+            cnst.PIXELMATCH_THRESHOLD,
         ],
         capture_output=True,
         text=True,
