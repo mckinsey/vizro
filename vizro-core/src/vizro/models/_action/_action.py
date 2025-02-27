@@ -238,20 +238,6 @@ class NewAction(VizroBaseModel):
     # or just keep it as abstract staticmethod
     # should not be optional, just temporarily that before rewrite filter_interaction
 
-    @property
-    def runtime_args(self):
-        x = set()
-        for parameter in inspect.signature(self.actual_function).parameters.values():
-            args = get_args(parameter.annotation)
-            if len(args) > 1:
-                if args[1] != "static":
-                    # annotaetd with something else - needs to be made more robust
-                    x.add(parameter.name)
-            else:
-                # not annotated
-                x.add(parameter.name)
-        return x
-
     def _get_callback_mapping(self):
         """Builds callback inputs and outputs for the Action model callback, and returns action required components.
 
@@ -312,6 +298,7 @@ class NewAction(VizroBaseModel):
         }
 
         runtime_inputs = {}
+
         for key in inspect.signature(self.function).parameters:
             if key in reserved_kwargs:
                 runtime_inputs[key] = reserved_kwargs[key]
