@@ -6,40 +6,25 @@ from vizro import Vizro
 from vizro.tables import dash_ag_grid
 from vizro.models.types import capture
 from vizro.figures import kpi_card
-from vizro.actions import export_data
 
 tips = px.data.tips()
-
-
-@capture("graph")
-def bar_mean(data_frame, x, y):
-    df_agg = data_frame.groupby(x).agg({y: "mean"}).reset_index()
-    fig = px.bar(df_agg, x=x, y=y, labels={"tip": "Average Tip ($)"})
-    fig.update_traces(width=0.6)
-    return fig
-
 
 first_page = vm.Page(
     title="Data",
     components=[
         vm.AgGrid(
             figure=dash_ag_grid(tips),
-            footer="""**Data Source:** Bryant, P. G. and Smith, M (1995) Practical Data Analysis: Case Studies in Business Statistics. Homewood, IL: Richard D. Irwin Publishing.""",
+            footer="""**Data Source:** Bryant, P. G. and Smith, M (1995)
+            Practical Data Analysis: Case Studies in Business Statistics.
+            Homewood, IL: Richard D. Irwin Publishing.""",
         ),
     ],
 )
 
-
 second_page = vm.Page(
     title="Summary",
-    layout=vm.Layout(grid=[[0, 1, 2, 3]] + [[4, 4, 4, 4]] * 4),
+    layout=vm.Layout(grid=[[0, 1, -1, -1], [2, 2, 2, 2], [2, 2, 2, 2], [2, 2, 2, 2]]),
     components=[
-        vm.Figure(
-            figure=kpi_card(data_frame=tips, value_column="total_bill", value_format="${value:.2f}", title="Total Bill")
-        ),
-        vm.Figure(
-            figure=kpi_card(data_frame=tips, value_column="tip", value_format="${value:.2f}", title="Total Tips")
-        ),
         vm.Figure(
             figure=kpi_card(
                 data_frame=tips,
@@ -51,7 +36,11 @@ second_page = vm.Page(
         ),
         vm.Figure(
             figure=kpi_card(
-                data_frame=tips, value_column="tip", agg_func="mean", value_format="${value:.2f}", title="Average Tips"
+                data_frame=tips,
+                value_column="tip",
+                agg_func="mean",
+                value_format="${value:.2f}",
+                title="Average Tips"
             )
         ),
         vm.Tabs(
@@ -59,19 +48,19 @@ second_page = vm.Page(
                 vm.Container(
                     title="Total Bill ($)",
                     components=[
-                        vm.Graph(figure=px.histogram(tips, x="total_bill", labels={"total_bill": "Total Bill ($)"})),
+                        vm.Graph(figure=px.histogram(tips, x="total_bill")),
                     ],
                 ),
                 vm.Container(
                     title="Total Tips ($)",
                     components=[
-                        vm.Graph(figure=px.histogram(tips, x="tip", labels={"tip": "Total Tips ($)"})),
+                        vm.Graph(figure=px.histogram(tips, x="tip")),
                     ],
                 ),
             ],
-        ),
+        )
     ],
-    controls=[vm.Filter(column="day"), vm.Filter(column="time", selector=vm.Checklist()), vm.Filter(column="size")],
+    controls=[vm.Filter(column="day"), vm.Filter(column="time", selector=vm.Checklist()), vm.Filter(column="size")]
 )
 
 third_page = vm.Page(
@@ -79,43 +68,21 @@ third_page = vm.Page(
     layout=vm.Layout(grid=[[0, 1], [2, 2]]),
     components=[
         vm.Graph(
-            title="Where do we get more tips on average?",
-            id="bar",
-            figure=bar_mean(tips, y="tip", x="day"),
+            title="Where do we get more tips?",
+            figure=px.bar(tips, y="tip", x="day"),
         ),
         vm.Graph(
             title="Is the average driven by a few outliers?",
-            id="violin",
-            figure=px.violin(tips, y="tip", x="day", color="day", box=True, labels={"tip": "Tip ($)"}),
+            figure=px.violin(tips, y="tip", x="day", color="day", box=True),
         ),
         vm.Graph(
-            id="heatmap",
-            title="Which shift is more profitable?",
-            figure=px.density_heatmap(tips, x="day", y="time", z="tip", histfunc="avg"),
-        ),
-    ],
-    controls=[
-        vm.Parameter(
-            targets=["violin.x", "violin.color", "heatmap.x", "bar.x"],
-            selector=vm.RadioItems(
-                options=["day", "time", "sex", "smoker", "size"], value="day", title="Change x-axis inside charts:"
-            ),
+            title="Which group size is more profitable?",
+            figure=px.density_heatmap(tips, x="day", y="size", z="tip", histfunc="avg", text_auto="$.2f"),
         ),
     ],
 )
 
-dashboard = vm.Dashboard(
-    pages=[first_page, second_page, third_page],
-    title="Analyzing tips",
-    navigation=vm.Navigation(
-        nav_selector=vm.NavBar(
-            items=[
-                vm.NavLink(label="Data", pages=["Data"], icon="database"),
-                vm.NavLink(label="Charts", pages=["Summary", "Analysis"], icon="bar_chart"),
-            ]
-        )
-    ),
-)
+dashboard = vm.Dashboard(pages=[first_page, second_page, third_page])
 
 if __name__ == "__main__":
     Vizro().build(dashboard).run()

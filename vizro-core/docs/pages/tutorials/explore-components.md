@@ -71,7 +71,9 @@ To start, let's get an overview of the data and display it in a table using [AgG
             components=[
                 vm.AgGrid(
                     figure=dash_ag_grid(tips),
-                    footer="""**Data Source:** Bryant, P. G. and Smith, M (1995) Practical Data Analysis: Case Studies in Business Statistics. Homewood, IL: Richard D. Irwin Publishing.""",
+                    footer="""**Data Source:** Bryant, P. G. and Smith, M (1995)
+                    Practical Data Analysis: Case Studies in Business Statistics.
+                    Homewood, IL: Richard D. Irwin Publishing.""",
                 ),
             ],
         )
@@ -136,7 +138,9 @@ Follow these steps to add a histogram to the page:
             components=[
                 vm.AgGrid(
                     figure=dash_ag_grid(tips),
-                    footer="""**Data Source:** Bryant, P. G. and Smith, M (1995) Practical Data Analysis: Case Studies in Business Statistics. Homewood, IL: Richard D. Irwin Publishing.""",
+                    footer="""**Data Source:** Bryant, P. G. and Smith, M (1995)
+                    Practical Data Analysis: Case Studies in Business Statistics.
+                    Homewood, IL: Richard D. Irwin Publishing.""",
                 ),
             ],
         )
@@ -214,7 +218,9 @@ Let's add two KPI cards to our second page. Follow these steps:
             components=[
                 vm.AgGrid(
                     figure=dash_ag_grid(tips),
-                    footer="""**Data Source:** Bryant, P. G. and Smith, M (1995) Practical Data Analysis: Case Studies in Business Statistics. Homewood, IL: Richard D. Irwin Publishing.""",
+                    footer="""**Data Source:** Bryant, P. G. and Smith, M (1995)
+                    Practical Data Analysis: Case Studies in Business Statistics.
+                    Homewood, IL: Richard D. Irwin Publishing.""",
                 ),
             ],
         )
@@ -297,50 +303,56 @@ Let's place the two histograms in separate tabs. Follow these steps:
         tips = px.data.tips()
 
         first_page = vm.Page(
-        title="Data",
-        components=[
-            vm.AgGrid(
-                figure=dash_ag_grid(tips),
-                footer="""**Data Source:** Bryant, P. G. and Smith, M (1995) Practical Data Analysis: Case Studies in Business Statistics. Homewood, IL: Richard D. Irwin Publishing.""",
-            ),
-        ],
+            title="Data",
+            components=[
+                vm.AgGrid(
+                    figure=dash_ag_grid(tips),
+                    footer="""**Data Source:** Bryant, P. G. and Smith, M (1995)
+                    Practical Data Analysis: Case Studies in Business Statistics.
+                    Homewood, IL: Richard D. Irwin Publishing.""",
+                ),
+            ],
         )
 
         second_page = vm.Page(
-                    title="Summary",
-                    components=[
-                        vm.Figure(
-                            figure=kpi_card(
-                                data_frame=tips,
-                                value_column="total_bill",
-                                agg_func="mean",
-                                value_format="${value:.2f}",
-                                title="Average Bill",
-                            )
-                        ),
-                        vm.Figure(
-                            figure=kpi_card(
-                                data_frame=tips, value_column="tip", agg_func="mean", value_format="${value:.2f}", title="Average Tips"
-                            )
-                        ),
-                       vm.Tabs(
-                        tabs=[
-                            vm.Container(
-                                title="Total Bill ($)",
-                                components=[
-                                    vm.Graph(figure=px.histogram(tips, x="total_bill")),
-                                ],
-                            ),
-                            vm.Container(
-                                title="Total Tips ($)",
-                                components=[
-                                    vm.Graph(figure=px.histogram(tips, x="tip")),
-                                ],
-                            ),
-                        ],
+            title="Summary",
+            components=[
+                vm.Figure(
+                    figure=kpi_card(
+                        data_frame=tips,
+                        value_column="total_bill",
+                        agg_func="mean",
+                        value_format="${value:.2f}",
+                        title="Average Bill",
                     )
-                ],
-            )
+                ),
+                vm.Figure(
+                    figure=kpi_card(
+                        data_frame=tips,
+                        value_column="tip",
+                        agg_func="mean",
+                        value_format="${value:.2f}",
+                        title="Average Tips"
+                    )
+                ),
+                vm.Tabs(
+                    tabs=[
+                        vm.Container(
+                            title="Total Bill ($)",
+                            components=[
+                                vm.Graph(figure=px.histogram(tips, x="total_bill")),
+                            ],
+                        ),
+                        vm.Container(
+                            title="Total Tips ($)",
+                            components=[
+                                vm.Graph(figure=px.histogram(tips, x="tip")),
+                            ],
+                        ),
+                    ],
+                )
+            ],
+        )
 
         dashboard = vm.Dashboard(pages=[first_page, second_page])
         Vizro().build(dashboard).run()
@@ -349,19 +361,13 @@ Let's place the two histograms in separate tabs. Follow these steps:
     === "Result"
         [![SecondPage3]][secondpage3]
 
-Take a moment to switch between the Tabs! As you explore the dashboard, you might notice that the current layout could
-use some adjustments. The histograms appear cramped, while the KPI cards have too much space. In the next section,
-we'll learn how to configure the layout and better arrange the components.
+Take a moment to switch between the Tabs! As you explore the dashboard, you might notice that the current layout could use some adjustments. The histograms appear cramped, while the KPI cards have too much space. In the next section, we'll learn how to configure the layout and better arrange the components.
 
 ### 3.4. Configure the layout
 
-By default, Vizro places each element in the order it was added to `components` list, and spaces them equally.
-You can use the [`Layout`][vizro.models.Layout] object to specify the placement and size of components on the page. To learn more about how to configure layouts, check out [How to use layouts](../user-guides/layouts.md).
+By default, Vizro places each element in the order it was added to `components` list, and spaces them equally. You can use the [`Layout`][vizro.models.Layout] object to specify the placement and size of components on the page. To learn more about how to configure layouts, check out [How to use layouts](../user-guides/layouts.md).
 
-In the following layout configuration, the layout is divided into four columns and four rows.
-The two KPI cards (index 0 and 1) are positioned at the top, each occupying one cell in the first row, with two empty
-cells to the right. The `Tabs` component (index 2) is placed below the KPI cards, spanning all cells across the
-remaining three rows, providing it with more space compared to the KPI cards.
+In the following layout configuration, the layout is divided into four columns and four rows. The two KPI cards (index 0 and 1) are positioned at the top, each occupying one cell in the first row, with two empty cells to the right. The `Tabs` component (index 2) is placed below the KPI cards, spanning all cells across the remaining three rows, providing it with more space compared to the KPI cards.
 
 ```
 grid = [[0, 1, -1, -1],
@@ -379,7 +385,8 @@ Run the code below to apply the layout to the dashboard page:
             grid=[[0, 1,-1,-1],
                   [2, 2, 2, 2],
                   [2, 2, 2, 2],
-                  [2, 2, 2, 2]])
+                  [2, 2, 2, 2]]
+        )
         ```
 
     === "app.py"
@@ -394,58 +401,57 @@ Run the code below to apply the layout to the dashboard page:
         tips = px.data.tips()
 
         first_page = vm.Page(
-        title="Data",
-        components=[
-            vm.AgGrid(
-                figure=dash_ag_grid(tips),
-                footer="""**Data Source:** Bryant, P. G. and Smith, M (1995) Practical Data Analysis: Case Studies in Business Statistics. Homewood, IL: Richard D. Irwin Publishing.""",
-            ),
-        ],
+            title="Data",
+            components=[
+                vm.AgGrid(
+                    figure=dash_ag_grid(tips),
+                    footer="""**Data Source:** Bryant, P. G. and Smith, M (1995)
+                    Practical Data Analysis: Case Studies in Business Statistics.
+                    Homewood, IL: Richard D. Irwin Publishing.""",
+                ),
+            ],
         )
 
         second_page = vm.Page(
-                    title="Summary",
-                    layout=vm.Layout(grid=[[0, 1, -1, -1],
-                                    [2, 2, 2, 2],
-                                    [2, 2, 2, 2],
-                                    [2, 2, 2, 2]]),
-                    components=[
-                        vm.Figure(
-                            figure=kpi_card(
-                                data_frame=tips,
-                                value_column="total_bill",
-                                agg_func="mean",
-                                value_format="${value:.2f}",
-                                title="Average Bill",
-                            )
-                        ),
-                        vm.Figure(
-                            figure=kpi_card(
-                                data_frame=tips,
-                                value_column="tip",
-                                agg_func="mean",
-                                value_format="${value:.2f}",
-                                title="Average Tips"
-                            )
-                        ),
-                       vm.Tabs(
-                        tabs=[
-                            vm.Container(
-                                title="Total Bill ($)",
-                                components=[
-                                    vm.Graph(figure=px.histogram(tips, x="total_bill")),
-                                ],
-                            ),
-                            vm.Container(
-                                title="Total Tips ($)",
-                                components=[
-                                    vm.Graph(figure=px.histogram(tips, x="tip")),
-                                ],
-                            ),
-                        ],
+            title="Summary",
+            layout=vm.Layout(grid=[[0, 1, -1, -1], [2, 2, 2, 2], [2, 2, 2, 2], [2, 2, 2, 2]]),
+            components=[
+                vm.Figure(
+                    figure=kpi_card(
+                        data_frame=tips,
+                        value_column="total_bill",
+                        agg_func="mean",
+                        value_format="${value:.2f}",
+                        title="Average Bill",
                     )
-                ],
-            )
+                ),
+                vm.Figure(
+                    figure=kpi_card(
+                        data_frame=tips,
+                        value_column="tip",
+                        agg_func="mean",
+                        value_format="${value:.2f}",
+                        title="Average Tips"
+                    )
+                ),
+                vm.Tabs(
+                    tabs=[
+                        vm.Container(
+                            title="Total Bill ($)",
+                            components=[
+                                vm.Graph(figure=px.histogram(tips, x="total_bill")),
+                            ],
+                        ),
+                        vm.Container(
+                            title="Total Tips ($)",
+                            components=[
+                                vm.Graph(figure=px.histogram(tips, x="tip")),
+                            ],
+                        ),
+                    ],
+                )
+            ],
+        )
 
         dashboard = vm.Dashboard(pages=[first_page, second_page])
         Vizro().build(dashboard).run()
@@ -486,51 +492,54 @@ To add a filter to the dashboard, follow these steps:
             components=[
                 vm.AgGrid(
                     figure=dash_ag_grid(tips),
-                    footer="""**Data Source:** Bryant, P. G. and Smith, M (1995) Practical Data Analysis: Case Studies in Business Statistics. Homewood, IL: Richard D. Irwin Publishing.""",
+                    footer="""**Data Source:** Bryant, P. G. and Smith, M (1995)
+                    Practical Data Analysis: Case Studies in Business Statistics.
+                    Homewood, IL: Richard D. Irwin Publishing.""",
                 ),
             ],
         )
 
         second_page = vm.Page(
-                    title="Summary",
-                    layout=vm.Layout(grid=[[0, 1, -1, -1],
-                                            [2, 2, 2, 2],
-                                            [2, 2, 2, 2],
-                                            [2, 2, 2, 2]]),
-                    components=[
-                        vm.Figure(
-                            figure=kpi_card(
-                                data_frame=tips,
-                                value_column="total_bill",
-                                agg_func="mean",
-                                value_format="${value:.2f}",
-                                title="Average Bill",
-                            )
-                        ),
-                        vm.Figure(
-                            figure=kpi_card(
-                                data_frame=tips, value_column="tip", agg_func="mean", value_format="${value:.2f}", title="Average Tips"
-                            )
-                        ),
-                       vm.Tabs(
-                        tabs=[
-                            vm.Container(
-                                title="Total Bill ($)",
-                                components=[
-                                    vm.Graph(figure=px.histogram(tips, x="total_bill")),
-                                ],
-                            ),
-                            vm.Container(
-                                title="Total Tips ($)",
-                                components=[
-                                    vm.Graph(figure=px.histogram(tips, x="tip")),
-                                ],
-                            ),
-                        ],
+            title="Summary",
+            layout=vm.Layout(grid=[[0, 1, -1, -1], [2, 2, 2, 2], [2, 2, 2, 2], [2, 2, 2, 2]]),
+            components=[
+                vm.Figure(
+                    figure=kpi_card(
+                        data_frame=tips,
+                        value_column="total_bill",
+                        agg_func="mean",
+                        value_format="${value:.2f}",
+                        title="Average Bill",
                     )
-                ],
-                controls=[vm.Filter(column="day"), vm.Filter(column="time", selector=vm.Checklist()), vm.Filter(column="size")],
-            )
+                ),
+                vm.Figure(
+                    figure=kpi_card(
+                        data_frame=tips,
+                        value_column="tip",
+                        agg_func="mean",
+                        value_format="${value:.2f}",
+                        title="Average Tips"
+                    )
+                ),
+                vm.Tabs(
+                    tabs=[
+                        vm.Container(
+                            title="Total Bill ($)",
+                            components=[
+                                vm.Graph(figure=px.histogram(tips, x="total_bill")),
+                            ],
+                        ),
+                        vm.Container(
+                            title="Total Tips ($)",
+                            components=[
+                                vm.Graph(figure=px.histogram(tips, x="tip")),
+                            ],
+                        ),
+                    ],
+                )
+            ],
+            controls=[vm.Filter(column="day"), vm.Filter(column="time", selector=vm.Checklist()), vm.Filter(column="size")]
+        )
 
         dashboard = vm.Dashboard(pages=[first_page, second_page])
         Vizro().build(dashboard).run()
@@ -549,15 +558,11 @@ You will see that a [Dropdown](vizro.models.Dropdown) is selected for categorica
 1. [Arrange our components by customizing the layout](#34-configure-the-layout).
 1. [Add a filter to interact with the dashboard](#35-add-a-filter).
 
-
 ## 4. Create a third page
 
-Now that we've learned how to create pages, add components, and configure layouts, let's create a third page for our dashboard.
-This will give us the opportunity to practice our skills and introduce some new concepts!
+Now that we've learned how to create pages, add components, and configure layouts, let's create a third page for our dashboard. This will give us the opportunity to practice our skills and introduce some new concepts!
 
-This page will feature a bar chart, a violin chart, and a heatmap. We'll once again leverage the
-[Vizro visual vocabulary](https://vizro-demo-visual-vocabulary.hf.space/).
-
+This page will feature a bar chart, a violin chart, and a heatmap. We'll once again leverage the [Vizro visual vocabulary](https://vizro-demo-visual-vocabulary.hf.space/).
 
 ### 4.1. Add multiple charts
 
@@ -565,12 +570,10 @@ This step should feel familiar. Let's add all three charts to the page.
 
 1. Create a third [Page][vizro.models.Page] and store it in a variable called `third_page`. Set its title to "Analysis".
 1. Add three Vizro [Graphs][vizro.models.Graph] to the components list.
-1. For each `Graph`, use the `figure` argument to provide one of the Plotly express functions:
-For `px.violin and px.density_heatmap`, you can use the Plotly figure code directly from the visual vocabulary.
-For `px.bar`, copy the code but update the `data`, `x`, and `y` arguments to match our dataset.
-   - [px.violin from the visual-vocabulary](https://vizro-demo-visual-vocabulary.hf.space/distribution/violin)
-   - [px.bar from the visual-vocabulary](https://vizro-demo-visual-vocabulary.hf.space/magnitude/column)
-   - [px.density_heatmap from the visual-vocabulary](https://vizro-demo-visual-vocabulary.hf.space/time/heatmap)
+1. For each `Graph`, use the `figure` argument to provide one of the Plotly express functions: For `px.violin and px.density_heatmap`, you can use the Plotly figure code directly from the visual vocabulary. For `px.bar`, copy the code but update the `data`, `x`, and `y` arguments to match our dataset.
+    - [px.violin from the visual-vocabulary](https://vizro-demo-visual-vocabulary.hf.space/distribution/violin)
+    - [px.bar from the visual-vocabulary](https://vizro-demo-visual-vocabulary.hf.space/magnitude/column)
+    - [px.density_heatmap from the visual-vocabulary](https://vizro-demo-visual-vocabulary.hf.space/time/heatmap)
 1. Provide a title for each `Graph`.
 1. Add the new page to the list of pages in the [Dashboard][vizro.models.Dashboard].
 
@@ -591,12 +594,10 @@ For `px.bar`, copy the code but update the `data`, `x`, and `y` arguments to mat
                 ),
                 vm.Graph(
                     title="Which group size is more profitable?",
-                    figure=px.density_heatmap(
-                    tips, x="day", y="size", z="tip", histfunc="avg", text_auto="$.2f"
-                )
+                    figure=px.density_heatmap(tips, x="day", y="size", z="tip", histfunc="avg", text_auto="$.2f"),
                 ),
             ],
-       )
+        )
 
         dashboard = vm.Dashboard(pages=[first_page, second_page, third_page])
         ```
@@ -613,57 +614,58 @@ For `px.bar`, copy the code but update the `data`, `x`, and `y` arguments to mat
         tips = px.data.tips()
 
         first_page = vm.Page(
-        title="Data",
-        components=[
-            vm.AgGrid(
-                figure=dash_ag_grid(tips),
-                footer="""**Data Source:** Bryant, P. G. and Smith, M (1995) Practical Data Analysis: Case Studies in Business Statistics. Homewood, IL: Richard D. Irwin Publishing.""",
-            ),
-        ],
+            title="Data",
+            components=[
+                vm.AgGrid(
+                    figure=dash_ag_grid(tips),
+                    footer="""**Data Source:** Bryant, P. G. and Smith, M (1995)
+                    Practical Data Analysis: Case Studies in Business Statistics.
+                    Homewood, IL: Richard D. Irwin Publishing.""",
+                ),
+            ],
         )
 
         second_page = vm.Page(
-                    title="Summary",
-                    layout=vm.Layout(grid=[[0, 1, -1, -1],
-                                    [2, 2, 2, 2],
-                                    [2, 2, 2, 2],
-                                    [2, 2, 2, 2],
-                                    [2, 2, 2, 2]]),
-                    components=[
-                        vm.Figure(
-                            figure=kpi_card(
-                                data_frame=tips,
-                                value_column="total_bill",
-                                agg_func="mean",
-                                value_format="${value:.2f}",
-                                title="Average Bill",
-                            )
-                        ),
-                        vm.Figure(
-                            figure=kpi_card(
-                                data_frame=tips, value_column="tip", agg_func="mean", value_format="${value:.2f}", title="Average Tips"
-                            )
-                        ),
-                       vm.Tabs(
-                        tabs=[
-                            vm.Container(
-                                title="Total Bill ($)",
-                                components=[
-                                    vm.Graph(figure=px.histogram(tips, x="total_bill")),
-                                ],
-                            ),
-                            vm.Container(
-                                title="Total Tips ($)",
-                                components=[
-                                    vm.Graph(figure=px.histogram(tips, x="tip")),
-                                ],
-                            ),
-                        ],
+            title="Summary",
+            layout=vm.Layout(grid=[[0, 1, -1, -1], [2, 2, 2, 2], [2, 2, 2, 2], [2, 2, 2, 2]]),
+            components=[
+                vm.Figure(
+                    figure=kpi_card(
+                        data_frame=tips,
+                        value_column="total_bill",
+                        agg_func="mean",
+                        value_format="${value:.2f}",
+                        title="Average Bill",
                     )
-                ],
-                controls=[vm.Filter(column="day"), vm.Filter(column="time", selector=vm.Checklist()), vm.Filter(column="size")],
-            )
-
+                ),
+                vm.Figure(
+                    figure=kpi_card(
+                        data_frame=tips,
+                        value_column="tip",
+                        agg_func="mean",
+                        value_format="${value:.2f}",
+                        title="Average Tips"
+                    )
+                ),
+                vm.Tabs(
+                    tabs=[
+                        vm.Container(
+                            title="Total Bill ($)",
+                            components=[
+                                vm.Graph(figure=px.histogram(tips, x="total_bill")),
+                            ],
+                        ),
+                        vm.Container(
+                            title="Total Tips ($)",
+                            components=[
+                                vm.Graph(figure=px.histogram(tips, x="tip")),
+                            ],
+                        ),
+                    ],
+                )
+            ],
+            controls=[vm.Filter(column="day"), vm.Filter(column="time", selector=vm.Checklist()), vm.Filter(column="size")]
+        )
 
         third_page = vm.Page(
             title="Analysis",
@@ -678,9 +680,7 @@ For `px.bar`, copy the code but update the `data`, `x`, and `y` arguments to mat
                 ),
                 vm.Graph(
                     title="Which group size is more profitable?",
-                    figure=px.density_heatmap(
-                    tips, x="day", y="size", z="tip", histfunc="avg", text_auto="$.2f"
-                )
+                    figure=px.density_heatmap(tips, x="day", y="size", z="tip", histfunc="avg", text_auto="$.2f"),
                 ),
             ],
         )
@@ -698,11 +698,7 @@ You may notice that the third chart is not visible. This issue can occur with Pl
 
 This step should also feel more familiar by now. Let's arrange the charts to provide more space to the heatmap.
 
-In the following layout configuration, the layout is divided into two columns and two rows.
-The bar chart (index 0) and violin chart (index 1) are placed side by side in the first row, while the heatmap
-(index 2) spans the entire second row. Remember the index corresponds to the order in which the components are added
-to the `components` list.
-
+In the following layout configuration, the layout is divided into two columns and two rows. The bar chart (index 0) and violin chart (index 1) are placed side by side in the first row, while the heatmap (index 2) spans the entire second row. Remember the index corresponds to the order in which the components are added to the `components` list.
 
 ```
 grid = [[0, 1],
@@ -714,7 +710,7 @@ Run the code below to apply the layout to the dashboard page:
 !!! example "Code - Layout"
     === "Code"
         ```py
-            layout=vm.Layout(grid=[[0, 1], [2, 2]]),
+        layout=vm.Layout(grid=[[0, 1], [2, 2]]),
         ```
 
     === "app.py"
@@ -729,57 +725,58 @@ Run the code below to apply the layout to the dashboard page:
         tips = px.data.tips()
 
         first_page = vm.Page(
-        title="Data",
-        components=[
-            vm.AgGrid(
-                figure=dash_ag_grid(tips),
-                footer="""**Data Source:** Bryant, P. G. and Smith, M (1995) Practical Data Analysis: Case Studies in Business Statistics. Homewood, IL: Richard D. Irwin Publishing.""",
-            ),
-        ],
+            title="Data",
+            components=[
+                vm.AgGrid(
+                    figure=dash_ag_grid(tips),
+                    footer="""**Data Source:** Bryant, P. G. and Smith, M (1995)
+                    Practical Data Analysis: Case Studies in Business Statistics.
+                    Homewood, IL: Richard D. Irwin Publishing.""",
+                ),
+            ],
         )
 
         second_page = vm.Page(
-                    title="Summary",
-                    layout=vm.Layout(grid=[[0, 1, -1, -1],
-                                    [2, 2, 2, 2],
-                                    [2, 2, 2, 2],
-                                    [2, 2, 2, 2],
-                                    [2, 2, 2, 2]]),
-                    components=[
-                        vm.Figure(
-                            figure=kpi_card(
-                                data_frame=tips,
-                                value_column="total_bill",
-                                agg_func="mean",
-                                value_format="${value:.2f}",
-                                title="Average Bill",
-                            )
-                        ),
-                        vm.Figure(
-                            figure=kpi_card(
-                                data_frame=tips, value_column="tip", agg_func="mean", value_format="${value:.2f}", title="Average Tips"
-                            )
-                        ),
-                       vm.Tabs(
-                        tabs=[
-                            vm.Container(
-                                title="Total Bill ($)",
-                                components=[
-                                    vm.Graph(figure=px.histogram(tips, x="total_bill")),
-                                ],
-                            ),
-                            vm.Container(
-                                title="Total Tips ($)",
-                                components=[
-                                    vm.Graph(figure=px.histogram(tips, x="tip")),
-                                ],
-                            ),
-                        ],
+            title="Summary",
+            layout=vm.Layout(grid=[[0, 1, -1, -1], [2, 2, 2, 2], [2, 2, 2, 2], [2, 2, 2, 2]]),
+            components=[
+                vm.Figure(
+                    figure=kpi_card(
+                        data_frame=tips,
+                        value_column="total_bill",
+                        agg_func="mean",
+                        value_format="${value:.2f}",
+                        title="Average Bill",
                     )
-                ],
-                controls=[vm.Filter(column="day"), vm.Filter(column="time", selector=vm.Checklist()), vm.Filter(column="size")],
-            )
-
+                ),
+                vm.Figure(
+                    figure=kpi_card(
+                        data_frame=tips,
+                        value_column="tip",
+                        agg_func="mean",
+                        value_format="${value:.2f}",
+                        title="Average Tips"
+                    )
+                ),
+                vm.Tabs(
+                    tabs=[
+                        vm.Container(
+                            title="Total Bill ($)",
+                            components=[
+                                vm.Graph(figure=px.histogram(tips, x="total_bill")),
+                            ],
+                        ),
+                        vm.Container(
+                            title="Total Tips ($)",
+                            components=[
+                                vm.Graph(figure=px.histogram(tips, x="tip")),
+                            ],
+                        ),
+                    ],
+                )
+            ],
+            controls=[vm.Filter(column="day"), vm.Filter(column="time", selector=vm.Checklist()), vm.Filter(column="size")]
+        )
 
         third_page = vm.Page(
             title="Analysis",
@@ -795,9 +792,7 @@ Run the code below to apply the layout to the dashboard page:
                 ),
                 vm.Graph(
                     title="Which group size is more profitable?",
-                    figure=px.density_heatmap(
-                    tips, x="day", y="size", z="tip", histfunc="avg", text_auto="$.2f"
-                )
+                    figure=px.density_heatmap(tips, x="day", y="size", z="tip", histfunc="avg", text_auto="$.2f"),
                 ),
             ],
         )
@@ -808,7 +803,6 @@ Run the code below to apply the layout to the dashboard page:
 
     === "Result"
         [![ThirdPage2]][thirdpage2]
-
 
 **Fantastic work! This looks so much better, doesn't it? 🎨**
 
