@@ -2,6 +2,7 @@ import os
 import shutil
 import subprocess
 from pathlib import Path
+
 from e2e.vizro import constants as cnst
 
 

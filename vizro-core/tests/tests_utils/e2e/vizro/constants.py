@@ -72,12 +72,8 @@ TABLE_CONTAINER = "table container"
 
 TABLE_INTERACTIONS_PAGE = "table inter page"
 TABLE_INTERACTIONS_PAGE_PATH = "/table-inter-page"
-TABLE_INTERACTIONS_CONTAINER = "table inter container"
 TABLE_INTERACTIONS_ID = "interactions-123_table"
-LINE_INTERACTIONS_CONTAINER_ONE = "line inter container 1"
-LINE_INTERACTIONS_ID_ONE = "line inter id 1"
-LINE_INTERACTIONS_CONTAINER_TWO = "line inter container 2"
-LINE_INTERACTIONS_ID_TWO = "line inter id 2"
+LINE_INTERACTIONS_ID = "line inter id"
 
 DYNAMIC_DATA_PAGE = "dynamic data page"
 DYNAMIC_DATA_PAGE_PATH = "/dynamic-data-page"

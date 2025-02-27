@@ -6,11 +6,13 @@ from e2e.asserts import assert_image_equal, assert_pixelmatch, make_screenshot_a
 from e2e.vizro import constants as cnst
 from e2e.vizro.checkers import check_graph_color, check_theme_color
 from e2e.vizro.navigation import accordion_select, page_select, select_slider_handler
-from e2e.vizro.paths import nav_card_link_path, theme_toggle_path
+from e2e.vizro.paths import kpi_card_path, nav_card_link_path, theme_toggle_path
 from e2e.vizro.waiters import callbacks_finish_waiter, graph_load_waiter
 
 
 def image_assertion(func):
+    """Wait until all callbacks are finished and compare screenshots."""
+
     def wrapper(dash_br, request):
         result = func(dash_br)
         callbacks_finish_waiter(dash_br)
@@ -24,7 +26,8 @@ def image_assertion(func):
 @image_assertion
 def test_kpi_indicators_page(dash_br):
     page_select(dash_br, page_path=cnst.KPI_INDICATORS_PAGE_PATH, page_name=cnst.KPI_INDICATORS_PAGE)
-    dash_br.wait_for_text_to_equal(".card-body", "73902")
+    # check if first kpi card have correct value
+    dash_br.wait_for_text_to_equal(kpi_card_path(), "73902")
 
 
 @image_assertion
@@ -43,6 +46,7 @@ def test_ag_grid_page(dash_br):
         page_name=cnst.TABLE_AG_GRID_PAGE,
         graph_id=cnst.BOX_AG_GRID_PAGE_ID,
     )
+    # check if column 'country' is available
     dash_br.wait_for_element(f"div[id='{cnst.TABLE_AG_GRID_ID}'] div:nth-of-type(1) div[col-id='country']")
 
 
@@ -56,6 +60,7 @@ def test_table_page(dash_br):
         page_path=cnst.TABLE_PAGE_PATH,
         page_name=cnst.TABLE_PAGE,
     )
+    # check if country Albania is available
     dash_br.wait_for_text_to_equal(
         f"div[id='{cnst.TABLE_ID}'] tr:nth-of-type(2) div[class='unfocused selectable dash-cell-value']", "Albania"
     )
@@ -72,6 +77,7 @@ def test_table_interactions_page(dash_br):
         page_name=cnst.TABLE_INTERACTIONS_PAGE,
         graph_id=cnst.LINE_INTERACTIONS_ID_ONE,
     )
+    # click on Bosnia and Herzegovina country
     dash_br.multiple_click(
         f"div[id='{cnst.TABLE_INTERACTIONS_ID}'] tr:nth-of-type(5) div[class='unfocused selectable dash-cell-value']", 1
     )
@@ -95,6 +101,7 @@ def test_tabs_parameters_page(dash_br):
     ],
 )
 def test_data_dynamic_parametrization(dash_br, cache, slider_id):
+    """This test checks parametrized data loading and how it is working with and without cache."""
     first_screen = f"{cache}_screen_first_test_data_dynamic_parametrization.png"
     second_screen = f"{cache}_screen_second_test_data_dynamic_parametrization.png"
     third_screen = f"{cache}_screen_third_test_data_dynamic_parametrization.png"
@@ -107,18 +114,25 @@ def test_data_dynamic_parametrization(dash_br, cache, slider_id):
         page_name=cnst.DYNAMIC_DATA_PAGE,
         graph_id=cnst.SCATTER_DYNAMIC_ID,
     )
+    # move slider to value '20'
     select_slider_handler(dash_br, elem_id=slider_id, value=2)
+    # move slider to value '10'
     select_slider_handler(dash_br, elem_id=slider_id, value=1)
     callbacks_finish_waiter(dash_br)
     dash_br.driver.save_screenshot(first_screen)
+    # move slider to value '60'
     select_slider_handler(dash_br, elem_id=slider_id, value=6)
     callbacks_finish_waiter(dash_br)
     dash_br.driver.save_screenshot(second_screen)
+    # move slider to value '20'
     select_slider_handler(dash_br, elem_id=slider_id, value=2)
+    # move slider to value '10'
     select_slider_handler(dash_br, elem_id=slider_id, value=1)
     callbacks_finish_waiter(dash_br)
     dash_br.driver.save_screenshot(third_screen)
+    # first and second screens should be the same
     assert_pixelmatch(first_screen, third_screen)
+    # first and second screens should be different
     try:
         assert_pixelmatch(first_screen, second_screen)
         pytest.fail("Images should be different")
@@ -153,7 +167,8 @@ def test_export_action_page(dash_br_driver):
 @image_assertion
 def test_navbar_kpi_indicators_page(dash_br_driver):
     dash_br_driver.multiple_click(nav_card_link_path(cnst.KPI_INDICATORS_PAGE_PATH), 1)
-    dash_br_driver.wait_for_text_to_equal(".card-body", "73902")
+    # check if first kpi card have correct value
+    dash_br_driver.wait_for_text_to_equal(kpi_card_path(), "73902")
 
 
 @pytest.mark.parametrize(

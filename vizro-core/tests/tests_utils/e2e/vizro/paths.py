@@ -30,3 +30,7 @@ def slider_handler_path(elem_id, handler_class="rc-slider-handle"):
 
 def categorical_components_value_path(elem_id, value):
     return f"div[id='{elem_id}'] div:nth-of-type({value}) input"
+
+
+def kpi_card_path():
+    return ".card-body"

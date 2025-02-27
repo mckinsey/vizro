@@ -25,11 +25,8 @@ dependencies = [
   "jupyter",
   "pre-commit",
   "PyGithub",
-  "imutils",
-  "opencv-python",
   "pyhamcrest",
   "gunicorn",
-  "pillow",
   "pixelmatch"
 ]
 features = ["kedro"]
