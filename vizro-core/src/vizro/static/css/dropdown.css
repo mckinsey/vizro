@@ -49,7 +49,7 @@
 }
 
 .Select-input > input {
-  padding: 0 !important; /* Required so tags don't jump caused by adding table */
+  padding-bottom: 0 !important; /* Required so tags don't jump caused by adding table */
 }
 
 #dashboard-container.Select-input > input {
