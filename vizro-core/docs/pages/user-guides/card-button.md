@@ -523,6 +523,48 @@ To create a KPI card, you can use the existing KPI card functions from [`vizro.f
 
 For detailed examples on how to create a KPI card, refer to the [figure user guide on KPI cards](figure.md#key-performance-indicator-kpi-cards).
 
+### The `extra` argument
+
+Currently the `Card` is based on the underlying [`dbc.Card`](https://dash-bootstrap-components.opensource.faculty.ai/docs/components/card/). Using the `extra` argument you pass additional arguments to the underlying object in order to alter it beyond the chosen defaults.
+
+!!! warning
+    Using `extra` is a quick and flexible way to alter a component beyond what Vizro offers. However, [it is not a part of the official Vizro schema](../explanation/schema.md#what-is-the-vizro-json-schema) and we do not consider it a breaking change if we alter/remove it. This is unlikely to happen any time soon. 
+
+An example use would be to change the background color of the card. For this, you can use `extra={"color": "info"}`.
+
+!!! example "Card with background color"
+    === "app.py"
+        ```{.python pycafe-link}
+        import vizro.models as vm
+        from vizro import Vizro
+
+        page = vm.Page(
+            title="Card with background color",
+            components=[
+                vm.Card(
+                    text="This is a card with an info background",
+                    extra={"color": "info"},
+                ),
+            ],
+        )
+
+        dashboard = vm.Dashboard(pages=[page])
+        Vizro().build(dashboard).run()
+        ```
+
+    === "app.yaml"
+        ```yaml
+        pages:
+          - title: Card with background color
+            components:
+              - type: card
+                text: This is a card with an info background
+                extra:
+                  color: info
+        ```
+    === "Result"
+        [![CardStyle]][cardstyle]
+
 ## Buttons
 
 The Button component is commonly used for interactive dashboard interactions such as form submissions, navigation links, and other action triggers.
@@ -673,9 +715,55 @@ vm.Page.add_type("controls", vm.Button)
 ...
 ```
 
+### The `extra` argument
+
+Currently the `Button` is based on the underlying [`dbc.Button`](https://dash-bootstrap-components.opensource.faculty.ai/docs/components/button/). Using the `extra` argument you can pass additional arguments to the underlying object in order to alter it beyond the chosen defaults.
+
+!!! warning
+    Using `extra` is a quick and flexible way to alter a component beyond what Vizro offers. However, [it is not a part of the official Vizro schema](../explanation/schema.md#what-is-the-vizro-json-schema) and we do not consider it a breaking change if we alter/remove it. This is unlikely to happen any time soon. 
+
+An example use would be to create an outlined success button. For this, you can use `extra={"color": "success", "outline": True}`.
+
+!!! example "Button with custom style"
+    === "app.py"
+        ```{.python pycafe-link}
+        import vizro.models as vm
+        from vizro import Vizro
+
+        page = vm.Page(
+            title="Button with custom style",
+            components=[
+                vm.Button(
+                    text="Success button",
+                    extra={"color": "success", "outline": True},
+                ),
+            ],
+        )
+
+        dashboard = vm.Dashboard(pages=[page])
+        Vizro().build(dashboard).run()
+        ```
+
+    === "app.yaml"
+        ```yaml
+        pages:
+          - title: Button with custom style
+            components:
+              - type: button
+                text: Success button
+                extra:
+                  color: success
+                  outline: true
+        ```
+    === "Result"
+        [![ButtonStyle]][buttonstyle]
+
+
 [button]: ../../assets/user_guides/components/button.png
 [buttontext]: ../../assets/user_guides/components/button_text.png
+[buttonstyle]: ../../assets/user_guides/components/buttonstyle.png
 [card]: ../../assets/user_guides/components/card.png
+[cardstyle]: ../../assets/user_guides/components/cardstyle.png
 [cardimagedefault]: ../../assets/user_guides/components/card_image_default.png
 [cardimagefloating]: ../../assets/user_guides/components/card_image_floating.png
 [cardimagestyled]: ../../assets/user_guides/components/card_image_styled.png
