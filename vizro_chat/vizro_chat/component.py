@@ -16,36 +16,26 @@ from vizro_chat.processors import ChatProcessor, EchoProcessor, OpenAIProcessor
 
 # Common style definitions
 CHAT_CONTAINER_STYLE = {
-    "display": "flex",
-    "flexDirection": "column",
-    "height": "100%",
-    "width": "100%",
-    "backgroundColor": "var(--mantine-color-dark-light)",
+    "width": "90%",
+    "margin": "0 auto",
     "position": "relative",
-    "overflow": "hidden",  # Prevent container overflow
 }
 
 CHAT_HISTORY_STYLE = {
-    "position": "absolute",  # Position absolutely
-    "top": "0",            # Align to top
-    "left": "0",          # Align to left
-    "right": "0",         # Stretch to right
-    "bottom": "120px",    # Leave space for input
-    "padding": "20px",
-    "gap": "10px",
-    "overflow-y": "auto",  # Enable vertical scrolling
-    "overflow-x": "hidden", # Prevent horizontal scrolling
+    "width": "100%",
+    "paddingBottom": "100px",
+    "paddingLeft": "5px",
 }
 
 CHAT_INPUT_CONTAINER_STYLE = {
-    "padding": "20px",
-    "position": "absolute",
-    "bottom": "0",
-    "left": "0",
-    "right": "0",
-    "backgroundColor": "var(--mantine-color-dark-light)",
-    "borderTop": "1px solid var(--mantine-color-dark-light-hover)",
-    "zIndex": "1",  # Ensure input stays on top
+    "borderRadius": "10px",
+    "height": "80px",
+    "backgroundColor": "var(--surfaces-bg-card)",
+    "zIndex": "1",
+    "position": "fixed",
+    "bottom": "20px",
+    "width": "50%",
+    "maxWidth": "760px", 
 }
 
 SETTINGS_ICON_STYLE = {
@@ -76,10 +66,9 @@ TOGGLE_CONTAINER_STYLE = {
 }
 
 MESSAGE_STYLE = {
-    "backgroundColor": "var(--mantine-color-dark-light-hover)",
     "color": "var(--text-primary)",
     "padding": "10px 15px",
-    "maxWidth": "70%",
+    "maxWidth": "96%",
     "marginLeft": "0",
     "marginRight": "auto",
     "marginBottom": "15px",
@@ -92,6 +81,14 @@ MESSAGE_STYLE = {
     "borderRadius": "10px",
 }
 
+TEXTAREA_STYLE = {
+    "height": "80px",  # This will be overridden by self.input_height
+    "resize": "none",
+    "borderBottomLeftRadius": "10px",
+    "borderTopLeftRadius": "10px",
+    "boxShadow": "none",  # Remove box-shadow
+    "border": "1px solid var(--border-subtleAlpha01)",  # Optional: add subtle border
+}
 
 class VizroChatComponent(VizroBaseModel):
     """A chat component for Vizro dashboards.
@@ -103,7 +100,7 @@ class VizroChatComponent(VizroBaseModel):
 
     model_config = ConfigDict(arbitrary_types_allowed=True)
 
-    type: Literal["chat"] = "chat"
+    type: Literal["vizro_chat_component"] = "vizro_chat_component"
     id: str
     input_placeholder: str = "Ask me a question..."
     input_height: str = "80px"
@@ -283,6 +280,7 @@ class VizroChatComponent(VizroBaseModel):
                                 style={
                                     **MESSAGE_STYLE,
                                     "borderLeft": f"4px solid {'#aaa9ba' if is_user else '#00b4ff'}",
+                                    "backgroundColor": f"var({'--surfaces-bg-card' if is_user else '--right-side-bg'})"
                                 }
                             )
                         )
@@ -311,10 +309,10 @@ class VizroChatComponent(VizroBaseModel):
 
                     // Create a temporary div for the user message
                     const tempUserDiv = document.createElement('div');
-                    tempUserDiv.style.backgroundColor = "var(--mantine-color-dark-light-hover)";
+                    tempUserDiv.style.backgroundColor = "var(--surfaces-bg-card)";
                     tempUserDiv.style.color = "var(--text-primary)";
                     tempUserDiv.style.padding = "10px 15px";
-                    tempUserDiv.style.maxWidth = "70%";
+                    tempUserDiv.style.maxWidth = "96%";
                     tempUserDiv.style.marginLeft = "0";
                     tempUserDiv.style.marginRight = "auto";
                     tempUserDiv.style.marginBottom = "15px";
@@ -342,10 +340,10 @@ class VizroChatComponent(VizroBaseModel):
                     setTimeout(() => {
                         // Create a temporary container for the streaming message
                         const tempContainer = document.createElement('div');
-                        tempContainer.style.backgroundColor = "var(--mantine-color-dark-light-hover)";
+                        tempContainer.style.backgroundColor = "var(--right-side-bg)";
                         tempContainer.style.color = "var(--text-primary)";
                         tempContainer.style.padding = "10px 15px";
-                        tempContainer.style.maxWidth = "70%";
+                        tempContainer.style.maxWidth = "96%";
                         tempContainer.style.marginLeft = "0";
                         tempContainer.style.marginRight = "auto";
                         tempContainer.style.marginBottom = "15px";
@@ -583,41 +581,38 @@ class VizroChatComponent(VizroBaseModel):
         return html.Div(
             [
                 # Add a loading component to handle initial load
-                dbc.Spinner(
                 html.Div(
                     id=f"{self.id}-history",
                     style=CHAT_HISTORY_STYLE,
                     ),
-                    color="primary",
-                ),
-                html.Div(
-                    [
-                        dbc.InputGroup(
+                dbc.InputGroup(
                             [
                                 dbc.Textarea(
                                     id=f"{self.id}-input",
                                     placeholder=self.input_placeholder,
+                                    autoFocus=True,
                                     style={
+                                        **TEXTAREA_STYLE,
                                         "height": self.input_height,
-                                        "resize": "none",
                                     },
                                     n_submit=0,
+                                    className="no-focus-shadow",
                                 ),
                                 dbc.Button(
                                     self.button_text,
                                     outline=True,
                                     color="secondary",
-                                    className="me-1",
                                     id=f"{self.id}-submit",
                                     style={
                                         "height": self.input_height,
+                                        "borderBottomRightRadius": "10px",
+                                        "borderTopRightRadius": "10px",
                                     },
                                 ),
-                            ]
-                        )
-                    ],
-                    style=CHAT_INPUT_CONTAINER_STYLE,
-                ),
+                            ],
+                            style=CHAT_INPUT_CONTAINER_STYLE,
+                        ),
             ],
             style=CHAT_CONTAINER_STYLE,
         )
+
