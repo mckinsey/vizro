@@ -4,43 +4,49 @@ import pandas as pd
 import vizro.models as vm
 import vizro.plotly.express as px
 from vizro import Vizro
-from vizro.tables import dash_ag_grid
-from vizro.models.types import capture
+from components import CollapsibleContainer, FlexContainer
+from dash import Input, Output, clientside_callback
+
+vm.Page.add_type("components", FlexContainer)
+FlexContainer.add_type("components", CollapsibleContainer)
+
+vm.Page.add_type("components", CollapsibleContainer)
 
 
-df = px.data.iris()
-
-
-@capture("ag_grid")
-def my_custom_ag_grid(data_frame, chosen_columns, **kwargs):
-    print(f"\nChosen column: {chosen_columns}\n")
-    return dash_ag_grid(data_frame=data_frame[chosen_columns], **kwargs)()
+iris = px.data.iris()
 
 
 page = vm.Page(
-    title="Fix empty dropdown as parameter",
+    title="Collapse containers with flex container",
     components=[
-        vm.AgGrid(
-            id="my_custom_ag_grid",
-            figure=my_custom_ag_grid(
-                data_frame=df,
-                chosen_columns=df.columns.to_list(),
-            ),
+        FlexContainer(
+            components=[
+                CollapsibleContainer(
+                    id="collapsible-container",
+                    title="Collapsible container",
+                    components=[
+                        vm.Graph(figure=px.scatter(iris, x="sepal_length", y="petal_width", color="species")),
+                        vm.Graph(figure=px.histogram(iris, x="sepal_width", color="species")),
+                        vm.Graph(figure=px.scatter(iris, x="sepal_length", y="petal_width", color="species")),
+                    ],
+                    layout=vm.Layout(grid=[[0, 0, 0, 0], [1, 1, 2, 2]]),
+                ),
+                CollapsibleContainer(
+                    title="Collapsible container 2",
+                    components=[
+                        vm.Graph(figure=px.scatter(iris, x="sepal_length", y="petal_width", color="species")),
+                        vm.Graph(figure=px.histogram(iris, x="sepal_width", color="species")),
+                    ],
+                    layout=vm.Layout(grid=[[0, 0, 0, 0], [1, 1, 1, 1]]),
+                ),
+            ]
         )
-    ],
-    controls=[
-        vm.Parameter(
-            targets=["my_custom_ag_grid.chosen_columns"],
-            selector=vm.Dropdown(
-                title="Choose columns",
-                options=df.columns.to_list(),
-                multi=True,
-            ),
-        ),
     ],
 )
 
+
 dashboard = vm.Dashboard(pages=[page])
+
 
 if __name__ == "__main__":
     Vizro().build(dashboard).run()
