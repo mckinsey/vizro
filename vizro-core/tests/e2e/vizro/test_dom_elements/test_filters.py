@@ -2,7 +2,7 @@ import e2e.vizro.constants as cnst
 import pytest
 from e2e.vizro.checkers import check_graph_is_loading, check_slider_value
 from e2e.vizro.navigation import page_select, select_dropdown_value
-from e2e.vizro.paths import categorical_components_value_path, slider_value_path
+from e2e.vizro.paths import categorical_components_value_path, kpi_card_path, slider_value_path
 from e2e.vizro.waiters import graph_load_waiter
 from hamcrest import assert_that, equal_to
 
@@ -51,8 +51,8 @@ def test_dropdown_homepage(dash_br):
 
 def test_dropdown_kpi_indicators_page(dash_br):
     page_select(dash_br, page_path=cnst.KPI_INDICATORS_PAGE_PATH, page_name=cnst.KPI_INDICATORS_PAGE)
-    dash_br.wait_for_text_to_equal(".card-body", "73902")
-    values = dash_br.find_elements(".card-body")
+    dash_br.wait_for_text_to_equal(kpi_card_path(), "73902")
+    values = dash_br.find_elements(kpi_card_path())
     values_text = [value.text for value in values]
     assert_that(
         actual_or_assertion=values_text,
@@ -73,8 +73,8 @@ def test_dropdown_kpi_indicators_page(dash_br):
         ),
     )
     select_dropdown_value(dash_br, value=2)
-    dash_br.wait_for_text_to_equal(".card-body", "67434")
-    values = dash_br.find_elements(".card-body")
+    dash_br.wait_for_text_to_equal(kpi_card_path(), "67434")
+    values = dash_br.find_elements(kpi_card_path())
     values_text = [value.text for value in values]
     assert_that(
         actual_or_assertion=values_text,

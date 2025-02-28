@@ -1,7 +1,7 @@
 import time
 
 from e2e.vizro.checkers import check_accordion_active
-from e2e.vizro.paths import page_title_path
+from e2e.vizro.paths import page_title_path, slider_handler_path, slider_value_path
 from e2e.vizro.waiters import graph_load_waiter
 
 
@@ -27,3 +27,8 @@ def select_dropdown_value(driver, value):
     driver.multiple_click(".Select-clear", 1)
     driver.multiple_click(".Select-arrow", 1)
     driver.multiple_click(f".ReactVirtualized__Grid__innerScrollContainer div:nth-of-type({value})", 1)
+
+
+def select_slider_handler(driver, elem_id, value, handler_class="rc-slider-handle"):
+    driver.multiple_click(slider_value_path(elem_id=elem_id, value=value), 1)
+    driver.multiple_click(slider_handler_path(elem_id=elem_id, handler_class=handler_class), 1)

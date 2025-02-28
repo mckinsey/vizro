@@ -25,16 +25,15 @@ dependencies = [
   "jupyter",
   "pre-commit",
   "PyGithub",
-  "imutils",
-  "opencv-python",
   "pyhamcrest",
-  "gunicorn"
+  "gunicorn",
+  "pixelmatch"
 ]
 features = ["kedro"]
 installer = "uv"
 
 [envs.default.env-vars]
-PYTHONPATH = "tests/e2e/vizro/dashboards/default:tests/tests_utils"
+PYTHONPATH = "tests/e2e/vizro/dashboards/default:tests/tests_utils:tests/e2e/vizro/custom_components"
 
 [envs.default.scripts]
 download-static-files = "python tools/download_static_files.py"
@@ -63,11 +62,24 @@ templates-check = ["python src/vizro/_themes/generate_plotly_templates.py --chec
 # fix this, but we don't actually use `hatch run test` anywhere right now.
 # See comments added in https://github.com/mckinsey/vizro/pull/444.
 test = "pytest tests --headless {args}"
-test-e2e-component-library = "pytest tests/e2e/component_library/test_component_library.py --headless {args}"
+test-e2e-component-library = "pytest -vs tests/e2e/component_library/test_component_library.py --headless {args}"
 test-e2e-vizro-dom-elements = [
   "gunicorn dashboard:app -b 0.0.0.0:5002 -w 1 --timeout 90 &",
   "tests/tests_utils/e2e/vizro/dashboards/wait-for-it.sh 127.0.0.1:5002 -t 30",
   "pytest -vs --reruns 1 tests/e2e/vizro/test_dom_elements --headless {args}"
+]
+test-e2e-vizro-screenshots = [
+  "gunicorn dashboard:app -b 0.0.0.0:5002 -w 1 --timeout 90 &",
+  "gunicorn dashboard_one_page:app -b 0.0.0.0:5003 -w 1 --timeout 90 &",
+  "gunicorn dashboard_navbar_accordions:app -b 0.0.0.0:5004 -w 1 --timeout 90 &",
+  "gunicorn dashboard_navbar_pages:app -b 0.0.0.0:5005 -w 1 --timeout 90 &",
+  "gunicorn dashboard_navbar_navlink:app -b 0.0.0.0:5006 -w 1 --timeout 90 &",
+  "tests/tests_utils/e2e/vizro/dashboards/wait-for-it.sh 127.0.0.1:5002 -t 30",
+  "tests/tests_utils/e2e/vizro/dashboards/wait-for-it.sh 127.0.0.1:5003 -t 30",
+  "tests/tests_utils/e2e/vizro/dashboards/wait-for-it.sh 127.0.0.1:5004 -t 30",
+  "tests/tests_utils/e2e/vizro/dashboards/wait-for-it.sh 127.0.0.1:5005 -t 30",
+  "tests/tests_utils/e2e/vizro/dashboards/wait-for-it.sh 127.0.0.1:5006 -t 30",
+  "pytest -vs --reruns 1 tests/e2e/vizro/test_screenshots/ --headless {args}"
 ]
 test-integration = "pytest tests/integration --headless {args}"
 test-js = "./tools/run_jest.sh {args}"
