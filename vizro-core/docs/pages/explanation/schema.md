@@ -4,7 +4,7 @@ This page explains the Vizro JSON schema, which is our attempt to create a "gram
 
 ## What is a JSON schema?
 
-There are many explanations out there explaining [what a JSON schema is](https://blog.postman.com/what-is-json-schema) - so here is only a very short intro.
+This is a short introduction since there are many good articles to answer the question, ["What is a JSON schema?"](https://blog.postman.com/what-is-json-schema).
 
 A JSON schema defines the rules, structure, and constraints that JSON data (a popular data format, used widely on the web) should follow, which leaves minimal room for assumptions and makes it a lot easier to predict the nature and behavior of JSON data.
 
