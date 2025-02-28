@@ -20,8 +20,8 @@
   border-radius: 50%;
   color: var(--text-disabled);
   cursor: pointer;
-  width: 24px;
   height: 24px;
+  width: 24px;
 }
 
 #collapsible-container_icon.material-symbols-outlined:hover {
