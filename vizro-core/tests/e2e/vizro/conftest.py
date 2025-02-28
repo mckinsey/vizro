@@ -11,9 +11,15 @@ from selenium.webdriver.chrome.options import Options as ChromeOptions
 
 # dash_br_driver options hook
 def pytest_setup_options():
+    from selenium.webdriver.firefox.options import Options as FFOptions
+
+    if os.getenv("BROWSER") == "firefox":
+        options = FFOptions()
+        options.binary_location = "/Applications/Firefox.app/Contents/MacOS/firefox"
+        return options
     if os.getenv("BROWSER") == "chrome_mobile":
         options = ChromeOptions()
-        options.add_experimental_option("mobileEmulation", {"deviceName": "iPhone 13 Pro"})
+        options.add_experimental_option("mobileEmulation", {"deviceName": "iPhone 14 Pro Max"})
         return options
 
 
@@ -29,7 +35,7 @@ def make_teardown(dash_br):
     with open(cnst.DYNAMIC_FILTERS_DATA_CONFIG, "w") as file:
         yaml.dump(data, file)
     # checking for browser console errors
-    if os.getenv("BROWSER") == "chrome" or "chrome_mobile":
+    if os.getenv("BROWSER") == ("chrome" or "chrome_mobile"):
         try:
             error_logs = [log for log in dash_br.get_logs() if log["level"] == "SEVERE" or "WARNING"]
             for log in error_logs:

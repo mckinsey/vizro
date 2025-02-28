@@ -75,7 +75,7 @@ def test_table_interactions_page(dash_br):
         dash_br,
         page_path=cnst.TABLE_INTERACTIONS_PAGE_PATH,
         page_name=cnst.TABLE_INTERACTIONS_PAGE,
-        graph_id=cnst.LINE_INTERACTIONS_ID_ONE,
+        graph_id=cnst.LINE_INTERACTIONS_ID,
     )
     # click on Bosnia and Herzegovina country
     dash_br.multiple_click(
