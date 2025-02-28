@@ -78,12 +78,10 @@ class Checklist(VizroBaseModel):
             "persistence_type": "session",
         }
 
-        checklist = dbc.Checklist(**(defaults | self.extra))
-
         return html.Fieldset(
             children=[
                 html.Legend(children=self.title, className="form-label") if self.title else None,
-                checklist,
+                dbc.Checklist(**(defaults | self.extra)),
             ]
         )
 

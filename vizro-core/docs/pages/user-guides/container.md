@@ -166,9 +166,14 @@ vm.Container(
 )
 ```
 
-## Styled containers
+## The `extra` argument
 
-To enhance the visibility of the `Container` as a distinct section within your dashboard, you can enable the background color.
+Currently the `Conainer` is based on the underlying `dbc.Container`. Using the `extra` argument you pass additional arguments to the underlying object in order to alter it beyond the chosen defaults.
+
+!!! warning
+    Using `extra` is a quick and flexible way to alter a component beyond what Vizro offers. However, [it is not a part of the official Vizro schema](../explanation/schema.md#what-is-the-vizro-json-schema) and we do not consider it a breaking change if we alter/remove it. This is unlikely to happen any time soon. 
+
+An example use would be to enhance the visibility of the `Container` as a distinct section within your dashboard. For this, you can use `extra={"class_name": "bg-container"}`.
 
 !!! example "Container with background color"
     === "app.py"
@@ -185,14 +190,24 @@ To enhance the visibility of the `Container` as a distinct section within your d
             components=[
                 vm.Container(
                     title="Container I",
-                    components=[vm.Graph(figure=px.scatter(iris, x="sepal_width", y="sepal_length", color="species"))],
-                    background=True
+                    components=[
+                        vm.Graph(
+                            figure=px.scatter(
+                                iris, x="sepal_width", y="sepal_length", color="species"
+                            )
+                        )
+                    ],
+                    extra={"class_name": "bg-container"},
                 ),
                 vm.Container(
                     title="Container II",
-                    components=[vm.Graph(figure=px.box(iris, x="species", y="sepal_length", color="species"))],
-                    background=True
-                )
+                    components=[
+                        vm.Graph(
+                            figure=px.box(iris, x="species", y="sepal_length", color="species")
+                        )
+                    ],
+                    extra={"class_name": "bg-container"},
+                ),
             ],
         )
 
@@ -219,7 +234,8 @@ To enhance the visibility of the `Container` as a distinct section within your d
                       x: sepal_width
                       y: sepal_length
                       color: species
-                background: true
+                extra:
+                  class_name: bg-container
               - type: container
                 title: Container II
                 components:
@@ -230,7 +246,8 @@ To enhance the visibility of the `Container` as a distinct section within your d
                       x: species
                       y: sepal_length
                       color: species
-                background: true
+                extra:
+                  class_name: bg-container
         ```
 
     === "Result"

@@ -90,11 +90,9 @@ class DatePicker(VizroBaseModel):
             "withCellSpacing": False,
         }
 
-        date_picker = dmc.DatePickerInput(**(defaults | self.extra))
-
         return html.Div(
             children=[
                 dbc.Label(children=self.title, html_for=self.id) if self.title else None,
-                date_picker,
+                dmc.DatePickerInput(**(defaults | self.extra)),
             ],
         )

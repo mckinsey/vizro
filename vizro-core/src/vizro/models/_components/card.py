@@ -65,5 +65,4 @@ class Card(VizroBaseModel):
             "class_name": "card-nav" if self.href else "",
         }
 
-        finals = defaults | self.extra
-        return dbc.Card(**finals)
+        return dbc.Card(**(defaults | self.extra))
