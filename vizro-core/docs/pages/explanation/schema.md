@@ -137,7 +137,7 @@ This means you can configure a Vizro dashboard according to a set of constraints
 
 The Vizro framework is powered by [Pydantic](https://docs.pydantic.dev/latest/) - the most widely used data validation library for Python. Pydantic is acts as the glue that connects Vizro's JSON schema to it's emergent manifestation - a React front end served by a Flask backend, facilitated by Dash.
 
-One core advantage of Pydantic is that it emits a [JSON schema](https://blog.postman.com/what-is-json-schema) - so that our models such as `vm.Page` or `vm.Filter` can easily be translated into a well-defined JSON schema. Beyond this capability, it also has support for custom validation beyond the functionality of the JSON schema.
+One core advantage of Pydantic is that it emits a [JSON schema](https://blog.postman.com/what-is-json-schema) so that our models, such as `vm.Page` or `vm.Filter`, can easily be translated into a well-defined JSON schema. Beyond this capability, it also has support for custom validation beyond the functionality of the JSON schema.
 
 Sticking with our toy example from above - we could for example define that in the array of strings, consecutive elements have to have more letters than their predecessor. This is of course fairly random, but it shows the power of custom validation for anyone using the Vizro framework. Most of the time when the user "misconfigures" - the error message is clear and concise.
 
