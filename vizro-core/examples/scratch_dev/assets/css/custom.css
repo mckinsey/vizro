@@ -1,3 +1,29 @@
-#page-header {
-  padding-left: 8px;
+.flex-container {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+}
+
+.bg-container {
+  border: 1px solid var(--border-subtleAlpha01);
+  padding: 1rem;
+}
+
+.collapsible-container-header {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  padding-right: 12px;
+}
+
+#collapsible-container_icon.material-symbols-outlined {
+  border-radius: 50%;
+  color: var(--text-disabled);
+  cursor: pointer;
+  height: 24px;
+  width: 24px;
+}
+
+#collapsible-container_icon.material-symbols-outlined:hover {
+  color: var(--text-primary);
 }
