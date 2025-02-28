@@ -31,9 +31,13 @@ page = vm.Page(
                     ],
                     layout=vm.Layout(grid=[[0, 0, 0, 0], [1, 1, 2, 2]]),
                 ),
-                vm.Container(
-                    title="Regular container",
-                    components=[vm.Graph(figure=px.scatter(iris, x="sepal_length", y="petal_width", color="species"))],
+                CollapsibleContainer(
+                    title="Collapsible container 2",
+                    components=[
+                        vm.Graph(figure=px.scatter(iris, x="sepal_length", y="petal_width", color="species")),
+                        vm.Graph(figure=px.histogram(iris, x="sepal_width", color="species")),
+                    ],
+                    layout=vm.Layout(grid=[[0, 0, 0, 0], [1, 1, 1, 1]]),
                 ),
             ]
         )
@@ -42,18 +46,6 @@ page = vm.Page(
 
 
 dashboard = vm.Dashboard(pages=[page])
-
-clientside_callback(
-    """
-    (n_clicks) => {
-       if (n_clicks % 2 === 1) {
-        return [true, {transform: "rotate(180deg)", transition: "transform 0.35s ease-in-out"}];
-    } else return [false, {transform: "rotate(0deg)", transition: "transform 0.35s ease-in-out"}];
-    }
-    """,
-    [Output("collapsible-container", "is_open"), Output("collapsible-container_icon", "style")],
-    Input("collapsible-container_title", "n_clicks"),
-)
 
 
 if __name__ == "__main__":

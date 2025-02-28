@@ -4,7 +4,7 @@ from typing import Annotated, Literal, cast
 
 import dash_bootstrap_components as dbc
 import vizro.models as vm
-from dash import html
+from dash import Input, Output, clientside_callback, html
 from pydantic import BeforeValidator, conlist
 from vizro.models import Layout, VizroBaseModel
 from vizro.models._models_utils import _log_call, check_captured_callable_model
@@ -57,6 +57,18 @@ class CollapsibleContainer(vm.Container):
         components_container = self.layout.build()
         for component_idx, component in enumerate(self.components):
             components_container[f"{self.layout.id}_{component_idx}"].children = component.build()
+
+        clientside_callback(
+            """
+            (n_clicks) => {
+               if (n_clicks % 2 === 1) {
+                return [true, {transform: "rotate(180deg)", transition: "transform 0.35s ease-in-out"}];
+            } else return [false, {transform: "rotate(0deg)", transition: "transform 0.35s ease-in-out"}];
+            }
+            """,
+            [Output(self.id, "is_open"), Output(f"{self.id}_icon", "style")],
+            Input(f"{self.id}_title", "n_clicks"),
+        )
 
         return html.Div(
             children=[

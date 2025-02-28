@@ -5,7 +5,7 @@
 }
 
 .bg-container {
-  background: var(--surfaces-bg-card);
+  border: 1px solid var(--border-subtleAlpha01);
   padding: 1rem;
 }
 
