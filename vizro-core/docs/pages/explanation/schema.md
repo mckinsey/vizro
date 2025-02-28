@@ -48,7 +48,9 @@ In practice this means that the following data would be valid.
       ]
     }
     ```
+
 While this data would be invalid.
+
 === "invalid"
     ```json
     {
