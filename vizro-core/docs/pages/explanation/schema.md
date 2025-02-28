@@ -75,7 +75,7 @@ Similar to the above example, the Vizro framework also has a JSON schema. It can
 
 You can configure a Vizro dashboard according to a set of constraints that are defined in the schema. The configuration language that you choose is secondary: it can be via Python, but also via JSON or YAML. This is shown in [our showcase of configuration options](../user-guides/dashboard.md#use-dashboard-configuration-options).
 
-=== "This json..."
+=== "This JSON..."
     ```json
     {
       "pages": [
