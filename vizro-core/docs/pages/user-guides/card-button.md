@@ -528,7 +528,7 @@ For detailed examples on how to create a KPI card, refer to the [figure user gui
 Currently the `Card` is based on the underlying [`dbc.Card`](https://dash-bootstrap-components.opensource.faculty.ai/docs/components/card/). Using the `extra` argument you pass additional arguments to the underlying object in order to alter it beyond the chosen defaults.
 
 !!! warning
-    Using `extra` is a quick and flexible way to alter a component beyond what Vizro offers. However, [it is not a part of the official Vizro schema](../explanation/schema.md#what-is-the-vizro-json-schema) and we do not consider it a breaking change if we alter/remove it. This is unlikely to happen any time soon. 
+    Using `extra` is a quick and flexible way to alter a component beyond what Vizro offers. However, [it is not a part of the official Vizro schema](../explanation/schema.md#what-is-the-vizro-json-schema) and we do not consider it a breaking change if we alter/remove it. This is unlikely to happen any time soon.
 
 An example use would be to change the background color of the card. For this, you can use `extra={"color": "info"}`.
 
@@ -562,6 +562,7 @@ An example use would be to change the background color of the card. For this, yo
                 extra:
                   color: info
         ```
+
     === "Result"
         [![CardStyle]][cardstyle]
 
@@ -720,7 +721,7 @@ vm.Page.add_type("controls", vm.Button)
 Currently the `Button` is based on the underlying [`dbc.Button`](https://dash-bootstrap-components.opensource.faculty.ai/docs/components/button/). Using the `extra` argument you can pass additional arguments to the underlying object in order to alter it beyond the chosen defaults.
 
 !!! warning
-    Using `extra` is a quick and flexible way to alter a component beyond what Vizro offers. However, [it is not a part of the official Vizro schema](../explanation/schema.md#what-is-the-vizro-json-schema) and we do not consider it a breaking change if we alter/remove it. This is unlikely to happen any time soon. 
+    Using `extra` is a quick and flexible way to alter a component beyond what Vizro offers. However, [it is not a part of the official Vizro schema](../explanation/schema.md#what-is-the-vizro-json-schema) and we do not consider it a breaking change if we alter/remove it. This is unlikely to happen any time soon.
 
 An example use would be to create an outlined success button. For this, you can use `extra={"color": "success", "outline": True}`.
 
@@ -755,17 +756,17 @@ An example use would be to create an outlined success button. For this, you can 
                   color: success
                   outline: true
         ```
+
     === "Result"
         [![ButtonStyle]][buttonstyle]
 
-
 [button]: ../../assets/user_guides/components/button.png
-[buttontext]: ../../assets/user_guides/components/button_text.png
 [buttonstyle]: ../../assets/user_guides/components/buttonstyle.png
+[buttontext]: ../../assets/user_guides/components/button_text.png
 [card]: ../../assets/user_guides/components/card.png
-[cardstyle]: ../../assets/user_guides/components/cardstyle.png
 [cardimagedefault]: ../../assets/user_guides/components/card_image_default.png
 [cardimagefloating]: ../../assets/user_guides/components/card_image_floating.png
 [cardimagestyled]: ../../assets/user_guides/components/card_image_styled.png
+[cardstyle]: ../../assets/user_guides/components/cardstyle.png
 [cardtext]: ../../assets/user_guides/components/card_text.png
 [navcard]: ../../assets/user_guides/components/nav_card.png
