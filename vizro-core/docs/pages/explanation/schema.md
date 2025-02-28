@@ -1,6 +1,6 @@
 # Vizro schema and grammar of dashboards
 
-This page explains the Vizro JSON schema, which is our attempt to create a "grammar of dashboards", and the role of Pydantic.
+This page explains the [Vizro JSON schema](#what-is-the-vizro-json-schema), which is our attempt to create a ["grammar of dashboards"](#the-grammar-of-dashboards), and the [role of Pydantic](#the-role-of-pydantic).
 
 ## What is a JSON schema?
 
@@ -73,7 +73,7 @@ While this data would be invalid.
 
 Similar to the above example, the Vizro framework also has a JSON schema. It can be [found in our GitHub repository](https://github.com/mckinsey/vizro/tree/main/vizro-core/schemas). It is more complicated than the simple schema above, but it generally follows the same principle.
 
-This means you can configure a Vizro dashboard according to a set of constraints that are defined in the schema. The configuration language that you choose is secondary - it can be via Python, but also via JSON or YAML. Exactly this is shown in [our showcase of configuration options](../user-guides/dashboard.md#use-dashboard-configuration-options).
+You can configure a Vizro dashboard according to a set of constraints that are defined in the schema. The configuration language that you choose is secondary: it can be via Python, but also via JSON or YAML. This is shown in [our showcase of configuration options](../user-guides/dashboard.md#use-dashboard-configuration-options).
 
 === "This json..."
     ```json
