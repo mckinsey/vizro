@@ -26,3 +26,12 @@ def slider_value_path(elem_id, value):
 
 def categorical_components_value_path(elem_id, value):
     return f"div[id='{elem_id}'] div:nth-of-type({value}) input"
+
+
+def select_all_path(elem_id):
+    """Select All option path for checklist and dropdown."""
+    return f"input[id='{elem_id}_select_all']"
+
+
+def dropdown_arrow_path():
+    return ".Select-arrow"

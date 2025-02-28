@@ -1,46 +1,57 @@
 """Dev app to try things out."""
 
-import pandas as pd
-import vizro.models as vm
 import vizro.plotly.express as px
+import vizro.models as vm
 from vizro import Vizro
+
 from vizro.tables import dash_ag_grid
-from vizro.models.types import capture
 
 
-df = px.data.iris()
+df = px.data.gapminder()
 
-
-@capture("ag_grid")
-def my_custom_ag_grid(data_frame, chosen_columns, **kwargs):
-    print(f"\nChosen column: {chosen_columns}\n")
-    return dash_ag_grid(data_frame=data_frame[chosen_columns], **kwargs)()
-
-
-page = vm.Page(
-    title="Fix empty dropdown as parameter",
+first_page = vm.Page(
+    title="First Page",
+    layout=vm.Layout(grid=[[0, 0], [1, 1], [1, 1], [1, 1]]),
     components=[
+        vm.Card(
+            text="""
+                # First dashboard page
+                This pages shows the inclusion of markdown text in a page and how components
+                can be structured using Layout.
+            """,
+        ),
         vm.AgGrid(
-            id="my_custom_ag_grid",
-            figure=my_custom_ag_grid(
-                data_frame=df,
-                chosen_columns=df.columns.to_list(),
-            ),
-        )
+            figure=dash_ag_grid(data_frame=df, dashGridOptions={"pagination": True}),
+            title="Gapminder Data Insights",
+            header="""#### An Interactive Exploration of Global Health, Wealth, and Population""",
+            footer="""SOURCE: **Plotly gapminder data set, 2024**""",
+        ),
     ],
     controls=[
-        vm.Parameter(
-            targets=["my_custom_ag_grid.chosen_columns"],
+        vm.Filter(column="continent"),
+        vm.Filter(column="continent", selector=vm.Checklist()),
+        vm.Filter(column="country"),
+        vm.Filter(column="country", selector=vm.Checklist()),
+        vm.Filter(column="country", selector=vm.Dropdown(multi=False)),
+        vm.Filter(
+            column="continent",
             selector=vm.Dropdown(
-                title="Choose columns",
-                options=df.columns.to_list(),
-                multi=True,
+                options=[
+                    {"label": "EUROPE", "value": "Europe"},
+                    {"label": "AFRICA", "value": "Africa"},
+                    {"label": "ASIA", "value": "Asia"},
+                    # {"label": "AMERICAS", "value": "Americas"},
+                    # {"label": "OCEANIA", "value": "Oceania"},
+                ],
+                # value=["Europe", "Africa", "Asia", "Americas", "Oceania"],
+                value="Asia",
+                multi=False,
             ),
         ),
     ],
 )
 
-dashboard = vm.Dashboard(pages=[page])
+dashboard = vm.Dashboard(pages=[first_page])
 
 if __name__ == "__main__":
     Vizro().build(dashboard).run()

@@ -70,9 +70,7 @@ class TestRadioItemsInstantiation:
             RadioItems(options=test_options)
 
     def test_create_radio_items_invalid_options_dict(self):
-        with pytest.raises(
-            ValidationError, match="Invalid argument `options` passed. Expected a dict with keys `label` and `value`."
-        ):
+        with pytest.raises(ValidationError, match="Field required"):
             RadioItems(options=[{"hello": "A", "world": "A"}, {"hello": "B", "world": "B"}])
 
     @pytest.mark.parametrize(
@@ -129,7 +127,7 @@ class TestRadioItemsBuild:
                 html.Legend("Title", className="form-label"),
                 dbc.RadioItems(
                     id="radio_items_id",
-                    options=["A", "B", "C"],
+                    options=[{"label": "A", "value": "A"}, {"label": "B", "value": "B"}, {"label": "C", "value": "C"}],
                     value="A",
                     persistence=True,
                     persistence_type="session",

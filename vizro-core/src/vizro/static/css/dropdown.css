@@ -49,7 +49,7 @@
 }
 
 .Select-input > input {
-  padding: 0 !important; /* Required so tags don't jump caused by adding table */
+  padding-bottom: 0 !important; /* Required so tags don't jump caused by adding table */
 }
 
 #dashboard-container.Select-input > input {
@@ -59,7 +59,7 @@
 
 /* Border on focus */
 #dashboard-container .is-focused:not(.is-open) > .Select-control {
-  box-shadow: 0 0 0 2px var(--focus) inset;
+  box-shadow: 0 0 0 2px var(--focus);
 }
 
 /* Single-select dropdown only ------------------- */
@@ -140,8 +140,7 @@
 }
 
 #dashboard-container .Select--multi .Select-clear-zone {
-  color: var(--text-secondary);
-  width: 16px;
+  display: none;
 }
 
 /** spacing for tag elements only when elements are present inside
@@ -150,13 +149,26 @@ wrapper **/
   display: flex;
   flex-wrap: wrap;
   gap: 4px;
+  max-height: 90px;
+  overflow: auto;
   padding: 4px 8px;
 }
 
 #dashboard-container
   .dropdown
   .VirtualizedSelectOption:nth-child(1):has(> div) {
+  align-items: baseline;
   border-bottom: 1px solid var(--border-subtleAlpha01);
-  padding: 0;
-  padding-left: 0.5rem;
+  padding: 8px 4px;
+}
+
+.dropdown-select-all {
+  display: flex;
+  gap: 8px;
+}
+
+/* When you click "Select All", it flashes up very quickly in the selected items before update_dropdown_select_all
+ is executed to remove it. So we hide the option altogether to prevent this flicker. */
+#dashboard-container .Select--multi .Select-value:has(.dropdown-select-all) {
+    display: none;
 }
