@@ -141,7 +141,7 @@ The Vizro framework is powered by [Pydantic](https://docs.pydantic.dev/latest/) 
 
 One core advantage of Pydantic is that it emits a [JSON schema](https://blog.postman.com/what-is-json-schema) so that our models, such as `vm.Page` or `vm.Filter`, can easily be translated into a well-defined JSON schema. Beyond this capability, it also has support for custom validation beyond the functionality of the JSON schema.
 
-Sticking with our toy example from above - we could for example define that in the array of strings, consecutive elements have to have more letters than their predecessor. This is of course fairly random, but it shows the power of custom validation for anyone using the Vizro framework. Most of the time when the user "misconfigures" - the error message is clear and concise.
+In our toy example from above we could define that, in the array of strings, consecutive elements have to have more letters than their predecessor. This is a fairly random example, but it illustrates the power of custom validation for anyone using the Vizro framework. Most of the time when the user "misconfigures", the error message is clear and concise.
 
 ## The grammar of dashboards
 
