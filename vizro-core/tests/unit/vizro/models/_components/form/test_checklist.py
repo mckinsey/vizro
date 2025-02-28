@@ -137,3 +137,29 @@ class TestChecklistBuild:
             ],
         )
         assert_component_equal(checklist, expected_checklist)
+
+    def test_checklist_build_with_extra(self):
+        """Test that extra arguments correctly override defaults."""
+        checklist = Checklist(
+            id="checklist_id",
+            options=["A", "B", "C"],
+            value=["A"],
+            title="Test title",
+            extra={"switch": True, "inline": True},
+        ).build()
+
+        expected_checklist = html.Fieldset(
+            [
+                html.Legend("Test title", className="form-label"),
+                dbc.Checklist(
+                    id="checklist_id",
+                    options=["ALL", "A", "B", "C"],
+                    value=["A"],
+                    persistence=True,
+                    persistence_type="session",
+                    switch=True,
+                    inline=True,
+                ),
+            ],
+        )
+        assert_component_equal(checklist, expected_checklist)

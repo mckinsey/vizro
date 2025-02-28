@@ -102,3 +102,16 @@ label[for="theme-selector"] {
 .card-text > *:last-child {
   margin-bottom: 0;
 }
+
+.container-fluid {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  padding: 0;
+}
+
+/* Introduce vizro utility classes here */
+.bg-container {
+    background: var(--surfaces-bg-card);
+    padding: 1rem;
+}

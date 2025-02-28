@@ -54,6 +54,52 @@ def expected_slider():
     )
 
 
+@pytest.fixture()
+def expected_slider_extra():
+    return html.Div(
+        [
+            dcc.Store(id="slider_id_callback_data", data={"id": "slider_id", "min": 0.0, "max": 10.0}),
+            html.Div(
+                [
+                    dbc.Label("Test title", html_for="slider_id"),
+                    html.Div(
+                        [
+                            dcc.Input(
+                                id="slider_id_end_value",
+                                type="number",
+                                placeholder="max",
+                                min=0.0,
+                                max=10.0,
+                                step=1.0,
+                                value=5.0,
+                                persistence=True,
+                                persistence_type="session",
+                                className="slider-text-input-field",
+                            ),
+                            dcc.Store(id="slider_id_input_store", storage_type="session"),
+                        ],
+                        className="slider-text-input-container",
+                    ),
+                ],
+                className="slider-label-input",
+            ),
+            dcc.Slider(
+                id="slider_id",
+                min=0.0,
+                max=10.0,
+                step=1.0,
+                marks={},
+                value=5.0,
+                included=False,
+                persistence=True,
+                persistence_type="session",
+                className="slider-track-with-marks",
+                tooltip={"placement": "bottom", "always_visible": True},
+            ),
+        ]
+    )
+
+
 class TestSliderInstantiation:
     """Tests model instantiation."""
 
@@ -175,3 +221,16 @@ class TestBuildMethod:
         slider = vm.Slider(id="slider_id", min=0, max=10, step=1, value=5, title="Test title").build()
 
         assert_component_equal(slider, expected_slider)
+
+    def test_slider_build_with_extra(self, expected_slider_extra):
+        slider = vm.Slider(
+            id="slider_id",
+            min=0,
+            max=10,
+            step=1,
+            value=5,
+            title="Test title",
+            extra={"tooltip": {"placement": "bottom", "always_visible": True}},
+        ).build()
+
+        assert_component_equal(slider, expected_slider_extra)

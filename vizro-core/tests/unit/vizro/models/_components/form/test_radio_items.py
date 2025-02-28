@@ -138,3 +138,23 @@ class TestRadioItemsBuild:
         )
 
         assert_component_equal(radio_items, expected_radio_items)
+
+    def test_radio_items_build_with_extra(self):
+        """Test that extra arguments correctly override defaults."""
+        radio_items = RadioItems(
+            id="radio_items_id", options=["A", "B", "C"], title="Title", extra={"inline": True}
+        ).build()
+        expected_radio_items = html.Fieldset(
+            [
+                html.Legend("Title", className="form-label"),
+                dbc.RadioItems(
+                    id="radio_items_id",
+                    options=["A", "B", "C"],
+                    value="A",
+                    persistence=True,
+                    persistence_type="session",
+                    inline=True,
+                ),
+            ]
+        )
+        assert_component_equal(radio_items, expected_radio_items)
