@@ -1,6 +1,6 @@
 # Vizro schema and grammar of dashboards
 
-This post aims to explain the Vizro JSON schema, our attempt to create a grammar of dashboards and the role of Pydantic.
+This page explains the Vizro JSON schema, which is our attempt to create a "grammar of dashboards", and the role of Pydantic.
 
 ## What is a JSON schema?
 
