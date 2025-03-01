@@ -1079,7 +1079,7 @@ To create a custom chart, we follow these steps:
 1. [Add a parameter to interact with the charts](#43-add-a-parameter)
 1. [Add a custom chart to our dashboard](#44-add-a-custom-chart).
 
-## 5. Configure the dashboard
+## 5. The final touches
 
 Now that we've created all the dashboard pages, let's add a personal touch by including a title, logo, and customizing the navigation.
 
@@ -1222,7 +1222,181 @@ If you can't see the logo, make sure the image is called `logo` and is stored in
 
 ### 5.2 Customize the navigation
 
+By default, a navigation panel on the left side allows users to switch between the pages. In this section, we will 
+customize this by creating a custom navigation bar.
+
+The custom navigation bar will feature two icons: one for the "Data" page and another for the "Summary" and "Analysis" 
+pages.
+
+To create a custom navigation bar, follow these steps:
+
+1. Set the `navigation` attribute of the [Dashboard][vizro.models.Dashboard] to a [Navigation][vizro.models.Navigation] object.
+1. Assign a [NavBar][vizro.models.NavBar] object to the `nav_selector` attribute of the `Navigation` object.
+1. Populate the `items` attribute of the [NavBar][vizro.models.NavBar] object with a list of [NavLink][vizro.models.NavLink] objects.
+1. Customize each [NavLink][vizro.models.NavLink] object by setting its `label`, `pages`, and `icon` attributes.
+   - The `label` attribute specifies the tooltip text displayed when hovering over the navigation icons.
+   - The `pages` attribute lists the pages included in the accordion navigation for that icon.
+   - The `icon` attribute sets the icon to display using the [Material Design Icons library](https://fonts.google.com/icons).
+
+
+!!! example "Customize navigation"
+    === "Snippet - navigation"
+        ```py
+        navigation=vm.Navigation(
+            nav_selector=vm.NavBar(
+                items=[
+                    vm.NavLink(label="Data", pages=["Data"], icon="database"),
+                    vm.NavLink(label="Charts", pages=["Summary", "Analysis"], icon="bar_chart"),
+                ]
+            )
+        )
+        ```
+
+    === "app.py"
+        ```{.python pycafe-link}
+        import vizro.models as vm
+        import vizro.plotly.express as px
+        from vizro import Vizro
+        from vizro.tables import dash_ag_grid
+        from vizro.models.types import capture
+        from vizro.figures import kpi_card
+
+        tips = px.data.tips()
+
+
+        @capture("graph")
+        def bar_mean(data_frame, x, y):
+            df_agg = data_frame.groupby(x).agg({y: "mean"}).reset_index()
+            fig = px.bar(df_agg, x=x, y=y, labels={"tip": "Average Tip ($)"})
+            fig.update_traces(width=0.6)
+            return fig
+
+
+        first_page = vm.Page(
+            title="Data",
+            components=[
+                vm.AgGrid(
+                    figure=dash_ag_grid(tips),
+                    footer="""**Data Source:** Bryant, P. G. and Smith, M (1995)
+                    Practical Data Analysis: Case Studies in Business Statistics.
+                    Homewood, IL: Richard D. Irwin Publishing.""",
+                ),
+            ],
+        )
+
+        second_page = vm.Page(
+            title="Summary",
+            layout=vm.Layout(grid=[[0, 1, -1, -1], [2, 2, 2, 2], [2, 2, 2, 2], [2, 2, 2, 2]]),
+            components=[
+                vm.Figure(
+                    figure=kpi_card(
+                        data_frame=tips,
+                        value_column="total_bill",
+                        agg_func="mean",
+                        value_format="${value:.2f}",
+                        title="Average Bill",
+                    )
+                ),
+                vm.Figure(
+                    figure=kpi_card(
+                        data_frame=tips,
+                        value_column="tip",
+                        agg_func="mean",
+                        value_format="${value:.2f}",
+                        title="Average Tips"
+                    )
+                ),
+                vm.Tabs(
+                    tabs=[
+                        vm.Container(
+                            title="Total Bill ($)",
+                            components=[
+                                vm.Graph(figure=px.histogram(tips, x="total_bill")),
+                            ],
+                        ),
+                        vm.Container(
+                            title="Total Tips ($)",
+                            components=[
+                                vm.Graph(figure=px.histogram(tips, x="tip")),
+                            ],
+                        ),
+                    ],
+                )
+            ],
+            controls=[vm.Filter(column="day"), vm.Filter(column="time", selector=vm.Checklist()), vm.Filter(column="size")]
+        )
+
+        third_page = vm.Page(
+            title="Analysis",
+            layout=vm.Layout(grid=[[0, 1], [2, 2]]),
+            components=[
+                vm.Graph(
+                    id="bar",
+                    title="Where do we get more tips?",
+                    figure=bar_mean(tips, y="tip", x="day"),
+                ),
+                vm.Graph(
+                    id="violin",
+                    title="Is the average driven by a few outliers?",
+                    figure=px.violin(tips, y="tip", x="day", color="day", box=True),
+                ),
+                vm.Graph(
+                    id="heatmap",
+                    title="Which group size is more profitable?",
+                    figure=px.density_heatmap(tips, x="day", y="size", z="tip", histfunc="avg", text_auto="$.2f"),
+                ),
+            ],
+            controls=[
+                vm.Parameter(
+                    targets=["violin.x", "violin.color", "heatmap.x", "bar.x"],
+                    selector=vm.RadioItems(
+                        options=["day", "time", "sex", "smoker", "size"], value="day", title="Change x-axis inside charts:"
+                    ),
+                ),
+            ],
+        )
+
+        dashboard = vm.Dashboard(
+            pages=[first_page, second_page, third_page],
+            title="Tips Analysis Dashboard",
+            navigation=vm.Navigation(
+                nav_selector=vm.NavBar(
+                    items=[
+                        vm.NavLink(label="Data", pages=["Data"], icon="database"),
+                        vm.NavLink(label="Charts", pages=["Summary", "Analysis"], icon="bar_chart"),
+                    ]
+                )
+            ),
+        )
+        Vizro().build(dashboard).run()
+        ```
+
+    === "Result"
+        [![DashboardFinal]][dashboardfinal]
+
+Take a moment to explore the navigation bar! Hover over the icons to view the tooltip text and click on them to navigate between the pages.
+
+**Congratulations on completing this tutorial! You now have the skills to configure layouts, add components, and implement interactivity in Vizro dashboards across multiple navigable pages.**
+
+## Find out more
+
+After completing the tutorial you now have a solid understanding of the main elements of Vizro and how to bring them together to create dynamic and interactive data visualizations.
+
+You can find out more about Vizro's component by reading the [components overview page](../user-guides/components.md). 
+To gain more in-depth knowledge about the usage and configuration details of individual controls, check out the 
+guides dedicated to [Filters](../user-guides/filters.md), [Parameters](../user-guides/parameters.md), and [Selectors](../user-guides/selectors.md). 
+
+If you'd like to understand more about different ways to configure the navigation of your dashboard, head to [Navigation](../user-guides/navigation.md).
+
+Vizro doesn't end here, and we only covered the key features, but there is still much more to explore! You can learn:
+
+- How to create you own components under [custom components](../user-guides/custom-components.md).
+- How to add custom styling using [static assets](../user-guides/assets.md) such as custom css or JavaScript files.
+- How to use [Actions](../user-guides/actions.md) for example, for chart interaction or custom controls.
+- How to create dashboards from `yaml`, `dict` or `json` following the [dashboard guide](../user-guides/dashboard.md).
+
 [dashboard]: ../../assets/tutorials/dashboard/11-dashboard-title-logo.png
+[dashboardfinal]: ../../assets/tutorials/dashboard/12-dashboard-navigation.png
 [firstpage]: ../../assets/tutorials/dashboard/01-first-page.png
 [secondpage]: ../../assets/tutorials/dashboard/02-second-page.png
 [secondpage2]: ../../assets/tutorials/dashboard/03-second-page-kpi.png

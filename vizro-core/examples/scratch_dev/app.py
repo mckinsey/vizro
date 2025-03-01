@@ -87,7 +87,18 @@ third_page = vm.Page(
     ],
 )
 
-dashboard = vm.Dashboard(pages=[first_page, second_page, third_page], title="Tips Analysis Dashboard")
+dashboard = vm.Dashboard(
+    pages=[first_page, second_page, third_page],
+    title="Tips Analysis Dashboard",
+    navigation=vm.Navigation(
+        nav_selector=vm.NavBar(
+            items=[
+                vm.NavLink(label="Data", pages=["Data"], icon="database"),
+                vm.NavLink(label="Charts", pages=["Summary", "Analysis"], icon="bar_chart"),
+            ]
+        )
+    ),
+)
 
 if __name__ == "__main__":
     Vizro().build(dashboard).run()
