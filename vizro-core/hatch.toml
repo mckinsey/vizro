@@ -118,7 +118,7 @@ scripts = {example = "cd examples/{args:scratch_dev}; python app.py"}
 template = "examples"
 
 [envs.examples.env-vars]
-DASH_DEBUG = "false"
+DASH_DEBUG = "true"
 VIZRO_LOG_LEVEL = "DEBUG"
 
 [envs.lower-bounds]
