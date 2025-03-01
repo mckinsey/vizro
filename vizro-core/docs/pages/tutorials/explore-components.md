@@ -719,7 +719,7 @@ This step should also feel more familiar by now. Let's arrange the charts to pro
 In the following layout configuration, the layout is divided into **two columns** and **two rows**:
 
 - The bar chart (0) and violin chart (1) are placed side by side in the first row
-- The heatmap (2) spans the entire second row. 
+- The heatmap (2) spans the entire second row.
 
 Remember the index corresponds to the order in which the components are added to the `components` of the `Page`.
 
@@ -831,8 +831,7 @@ Run the code below to apply the layout to the dashboard page:
 
 ### 4.3. Add a parameter
 
-This section explains how to add a [Parameter][vizro.models.Parameter] to your dashboard. A [Parameter][vizro.models.Parameter] lets you dynamically change a component’s argument, making the dashboard more interactive. 
-More information on how to configure [`Parameters`][vizro.models.Parameter] can be found in the [how-to guide for parameters](../user-guides/parameters.md).
+This section explains how to add a [Parameter][vizro.models.Parameter] to your dashboard. A [Parameter][vizro.models.Parameter] lets you dynamically change a component’s argument, making the dashboard more interactive. More information on how to configure [`Parameters`][vizro.models.Parameter] can be found in the [how-to guide for parameters](../user-guides/parameters.md).
 
 Here we want to switch the `x` and `color` argument across all charts, allowing data analysis from different perspectives.
 
@@ -958,7 +957,6 @@ To add a parameter to the dashboard:
 
     === "Result"
         [![ThirdPage3]][thirdpage3]
-
 
 Take a moment and interact with the parameter. Note how the x-axis of all charts update accordingly.
 
@@ -1245,7 +1243,7 @@ Your directory structure should look like this:
 
 After following these steps, you should see the logo in the top-left corner of your dashboard header, with the title displayed next to it.
 
-If you can't see the logo, make sure the image is called `logo` and is stored in the `assets folder. For more details on supported image formats, refer to the [How to add a logo](../user-guides/assets.md#add-a-logo-image) guide.
+If you can't see the logo, make sure the image is called `logo` and is stored in the \`assets folder. For more details on supported image formats, refer to the [How to add a logo](../user-guides/assets.md#add-a-logo-image) guide.
 
 ### 5.2. Customize the navigation
 
