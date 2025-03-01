@@ -52,7 +52,7 @@ To start, let's get an overview of the data and display it in a table using [AgG
 
 1. Import all relevant packages and load in the data for this tutorial.
 1. Create a [Page][vizro.models.Page] and set the `title` to "Data".
-1. Add an [AgGrid][vizro.models.AgGrid] to the `components list.
+1. Add an [AgGrid][vizro.models.AgGrid] to the \`components list.
 1. Inside the `figure` argument of the `AgGrid`, use the [`dash_ag_grid`][vizro.tables.dash_ag_grid] function.
 1. Provide details about the data source in the `footer` argument of the `AgGrid`.
 
@@ -89,13 +89,11 @@ To start, let's get an overview of the data and display it in a table using [AgG
 
 **Great job! We've successfully created our first page! 🎉**
 
-As you can see from the code, `first_page` is added to the [`Dashboard`][vizro.models.Dashboard] and the dashboard is displayed by running `Vizro().build(dashboard).run()`.
-Once the dashboard completes running, you should be able to open your web browser and see the dashboard under `localhost:8050`.
+As you can see from the code, `first_page` is added to the [`Dashboard`][vizro.models.Dashboard] and the dashboard is displayed by running `Vizro().build(dashboard).run()`. Once the dashboard completes running, you should be able to open your web browser and see the dashboard under `localhost:8050`.
 
 Take a moment to explore the data in the table. You can sort, filter, and search within the `AgGrid` columns to gain a better understanding of the dataset.
 
 You'll notice a toggle in the top-right corner of the dashboard. This allows you to switch between dark and light themes. Give it a try!
-
 
 ## 3. Create a second page
 
