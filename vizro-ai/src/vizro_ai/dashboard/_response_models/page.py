@@ -3,13 +3,10 @@
 import logging
 import re
 from collections import Counter
-from typing import Optional, Union
+from typing import Annotated, Optional, Union
 
-try:
-    from pydantic.v1 import BaseModel, Field, PrivateAttr, ValidationError, root_validator, validator
-except ImportError:  # pragma: no cov
-    from pydantic import BaseModel, Field, PrivateAttr, ValidationError, root_validator, validator
 import vizro.models as vm
+from pydantic import AfterValidator, BaseModel, Field, PrivateAttr, ValidationInfo
 from tqdm.auto import tqdm
 
 from vizro_ai.dashboard._response_models.components import ComponentPlan
@@ -20,62 +17,71 @@ from vizro_ai.dashboard.utils import _execute_step
 logger = logging.getLogger(__name__)
 
 
+def _check_title(v):
+    cleaned_title = re.sub(r"[^a-zA-Z0-9\s]", "", v)
+    return cleaned_title
+
+
+def _check_components_plan(v):
+    if not v:
+        raise ValueError("A page must contain at least one component.")
+    return v
+
+
+def _check_unsupported_specs(v, info: ValidationInfo):
+    title = info.data.get("title", "Unknown Title")
+    if v:
+        logger.warning(f"\n ------- \n Unsupported specs on page <{title}>: \n {v}")
+        return []
+
+
+def _validate_component_id_unique(components_list):
+    """Validate the component id is unique."""
+    component_ids = [comp.component_id for comp in components_list]
+    duplicates = [id for id, count in Counter(component_ids).items() if count > 1]
+    if duplicates:
+        raise ValueError(f"Component ids must be unique. Duplicated component ids: {duplicates}")
+    return components_list
+
+
 class PagePlan(BaseModel):
     """Page plan model."""
 
-    title: str = Field(
-        ...,
-        description="""
-        Title of the page. If no description is provided,
-        make a concise and descriptive title from the components.
-        """,
-    )
-    components_plan: list[ComponentPlan] = Field(
-        ..., description="List of components. Must contain at least one component."
-    )
+    title: Annotated[
+        str,
+        AfterValidator(_check_title),
+        Field(
+            description="""
+            Title of the page. If no description is provided,
+            make a concise and descriptive title from the components.
+            """,
+        ),
+    ]
+    components_plan: Annotated[
+        list[ComponentPlan],
+        AfterValidator(_check_components_plan),
+        AfterValidator(_validate_component_id_unique),
+        Field(description="List of components. Must contain at least one component."),
+    ]
     controls_plan: list[ControlPlan] = Field([], description="Controls of the page.")
-    layout_plan: LayoutPlan = Field(None, description="Layout of components on the page.")
-    unsupported_specs: list[str] = Field(
-        [],
-        description="""
+    layout_plan: Optional[LayoutPlan] = Field(default=None, description="Layout of components on the page.")
+    unsupported_specs: Annotated[
+        list[str],
+        AfterValidator(_check_unsupported_specs),
+        Field(
+            default=[],
+            description="""
         List of unsupported specs. If there are any unsupported specs,
         list them here. If not, leave this as an empty list.
         """,
-    )
+        ),
+    ]
 
     _components: list[Union[vm.Card, vm.AgGrid, vm.Figure]] = PrivateAttr()
     _controls: list[vm.Filter] = PrivateAttr()
     _layout: vm.Layout = PrivateAttr()
     _components_code: dict = PrivateAttr()
     _components_imports: dict = PrivateAttr()
-
-    @validator("title")
-    def _check_title(cls, v):
-        cleaned_title = re.sub(r"[^a-zA-Z0-9\s]", "", v)
-        return cleaned_title
-
-    @validator("components_plan")
-    def _check_components_plan(cls, v):
-        if not v:
-            raise ValueError("A page must contain at least one component.")
-        return v
-
-    @validator("unsupported_specs")
-    def _check_unsupported_specs(cls, v, values):
-        title = values.get("title", "Unknown Title")
-        if v:
-            logger.warning(f"\n ------- \n Unsupported specs on page <{title}>: \n {v}")
-            return []
-
-    @root_validator(allow_reuse=True)
-    def validate_component_id_unique(cls, values):
-        """Validate the component id is unique."""
-        components = values.get("components_plan", [])
-        component_ids = [comp.component_id for comp in components]
-        duplicates = [id for id, count in Counter(component_ids).items() if count > 1]
-        if duplicates:
-            raise ValidationError(f"Component ids must be unique. Duplicated component ids: {duplicates}")
-        return values
 
     def __init__(self, **data):
         """Initialize the page plan."""

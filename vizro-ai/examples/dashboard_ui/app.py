@@ -287,5 +287,4 @@ if __name__ == "__main__":
             className="anchor-container",
         )
     )
-    server = app.dash.server
     app.run()

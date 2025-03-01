@@ -828,5 +828,4 @@ if __name__ == "__main__":
         className="anchor-container",
     )
     app.dash.layout.children.append(banner)
-    server = app.dash.server
     app.run()

@@ -3,17 +3,15 @@
 # ruff: noqa: F821
 
 import logging
-
-try:
-    from pydantic.v1 import BaseModel, ValidationError
-except ImportError:  # pragma: no cov
-    from pydantic import BaseModel, ValidationError
-
+from inspect import signature
 from typing import Any, Optional
 
+import plotly.express as px
+import vizro.models as vm
 from langchain_core.language_models.chat_models import BaseChatModel
 from langchain_core.messages import HumanMessage
 from langchain_core.prompts import ChatPromptTemplate
+from pydantic import BaseModel, ValidationError
 
 logger = logging.getLogger(__name__)
 
@@ -63,24 +61,6 @@ def _create_message_content(
     return message_content
 
 
-def _handle_google_llm_response(
-    llm_model: BaseChatModel, response_model: BaseModel, prompt: ChatPromptTemplate, message_content: dict
-) -> BaseModel:
-    """Handle the LLM response specifically for Google models."""
-    from langchain_core.utils.function_calling import convert_to_openai_function
-
-    schema = convert_to_openai_function(response_model)
-
-    pydantic_llm = prompt | llm_model.with_structured_output(schema)
-    res = pydantic_llm.invoke(message_content)
-
-    # Handle case where response is a list, which is the case for Gemini models
-    if isinstance(res, list):
-        res = res[0].get("args", res[0]) if isinstance(res[0], dict) else res[0]
-
-    return response_model.parse_obj(res)
-
-
 def _get_pydantic_model(
     query: str,
     llm_model: BaseChatModel,
@@ -99,15 +79,19 @@ def _get_pydantic_model(
         )
 
         try:
-            # Apply the fix for nested structures, following langchain-google-genai implementation
-            # referred to https://github.com/langchain-ai/langchain/issues/24225
-            # and https://github.com/langchain-ai/langchain-google/pull/658/files
-            # TODO: revisit this temporary fix once pydantic v2 is implemented in vizro-ai
-            if "google" in llm_model.__class__.__module__.lower():
-                return _handle_google_llm_response(llm_model, response_model, prompt, message_content)
+            kwargs = {}
+            # Only pass `method` parameter if the model's with_structured_output accepts it
+            # This is determined by checking the signature of the method
+            # By the time this code written, the `method` parameter is supported by
+            # model providers like OpenAI, MistralAI, VertexAI, etc.
+            try:
+                sig = signature(llm_model.with_structured_output)
+                if "method" in sig.parameters:
+                    kwargs["method"] = "function_calling"  # method 'json_schema' does not work with `pattern` in Field
+            except (ValueError, AttributeError):
+                pass
 
-            # For other models, use standard structured output
-            pydantic_llm = prompt | llm_model.with_structured_output(response_model)
+            pydantic_llm = prompt | llm_model.with_structured_output(response_model, **kwargs)
             return pydantic_llm.invoke(message_content)
 
         except ValidationError as validation_error:
