@@ -52,9 +52,10 @@ To start, let's get an overview of the data and display it in a table using [AgG
 
 1. Import all relevant packages and load in the data for this tutorial.
 1. Create a [Page][vizro.models.Page] and set the `title` to "Data".
-1. Add an [AgGrid][vizro.models.AgGrid] to the `components list.
+1. Add an [AgGrid][vizro.models.AgGrid] to the `components` list.
 1. Inside the `figure` argument of the `AgGrid`, use the [`dash_ag_grid`][vizro.tables.dash_ag_grid] function.
 1. Provide details about the data source in the `footer` argument of the `AgGrid`.
+1. Add the new page to the list of `pages` in the [Dashboard][vizro.models.Dashboard].
 
 !!! example "First Page"
     === "Code - dashboard"
@@ -87,15 +88,13 @@ To start, let's get an overview of the data and display it in a table using [AgG
     === "Result"
         [![FirstPage]][firstpage]
 
-**Great job! We've successfully created our first page! 🎉**
-
-As you can see from the code, `first_page` is added to the [`Dashboard`][vizro.models.Dashboard] and the dashboard is displayed by running `Vizro().build(dashboard).run()`.
-Once the dashboard completes running, you should be able to open your web browser and see the dashboard under `localhost:8050`.
+After running `Vizro().build(dashboard).run()`, you should be able to open your web browser and see the dashboard under `localhost:8050`.
 
 Take a moment to explore the data in the table. You can sort, filter, and search within the `AgGrid` columns to gain a better understanding of the dataset.
 
 You'll notice a toggle in the top-right corner of the dashboard. This allows you to switch between dark and light themes. Give it a try!
 
+**Great job! We've successfully created our first page! 🎉**
 
 ## 3. Create a second page
 
@@ -103,14 +102,14 @@ Next, we'll add a second page to our dashboard, featuring charts and KPI (key pe
 
 ### 3.1. Add a chart
 
-Vizro leverages [Graph][vizro.models.Graph] models and Plotly Express functions to create various types of charts. You can explore the available chart types and their code examples in our [visual-vocabulary](https://vizro-demo-visual-vocabulary.hf.space).
+Vizro leverages [Graph][vizro.models.Graph] models and [Plotly Express functions](https://plotly.com/python/plotly-express/) to create various types of charts. You can explore some of the available chart types and their code examples in our [visual-vocabulary](https://vizro-demo-visual-vocabulary.hf.space).
 
 Follow these steps to add a histogram to the page:
 
 1. Create a second [Page][vizro.models.Page] and store it in a variable called `second_page`. Set its `title` to "Summary".
-1. Add a Vizro [Graph][vizro.models.Graph] to the `components` list.
+1. Add a [Graph][vizro.models.Graph] to the `components` list.
 1. Inside the `figure` argument of the `Graph`, use the code for the [px.histogram from the visual-vocabulary](https://vizro-demo-visual-vocabulary.hf.space/distribution/histogram).
-1. Add the new page to the list of `pages` in the [Dashboard][vizro.models.Dashboard] to display it by calling `vm.Dashboard(pages=[first_page,second_page])`.
+1. Add the new page to the list of `pages` in the [Dashboard][vizro.models.Dashboard] by calling `vm.Dashboard(pages=[first_page,second_page])`.
 
 !!! example "Second Page"
     === "Snippet - second page"
@@ -127,7 +126,7 @@ Follow these steps to add a histogram to the page:
         ```
 
     === "Code - dashboard"
-        ```{.python pycafe-link}
+        ```{.python pycafe-link hl_lines="22-28 30"}
         import vizro.models as vm
         import vizro.plotly.express as px
         from vizro import Vizro
@@ -164,7 +163,11 @@ Follow these steps to add a histogram to the page:
     === "Result"
         [![SecondPage]][secondpage]
 
-Notice that the charts are automatically stacked vertically in the specified order, each taking up equal space. This is the default behavior in Vizro, but we'll customize the layout later! Additionally, a page navigation menu has been added to the left side of the dashboard, allowing you to switch between the two pages we’ve created. The order of the pages in the list provided to the Dashboard also determines their sequence in the page navigation menu.
+Notice that the charts are automatically stacked vertically in the order specified under `components`, each taking up equal space. This is the default behavior in Vizro, but we'll customize the layout later! 
+
+Additionally, a page navigation has been added to the left side of the dashboard, allowing you to switch between the two pages we’ve created.
+
+You can also notice that the left-side menu can be collapsed to provide more space for the dashboard content. Give it a try!
 
 ### 3.2. Add KPI cards
 
