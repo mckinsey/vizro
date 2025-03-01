@@ -87,7 +87,7 @@ third_page = vm.Page(
     ],
 )
 
-dashboard = vm.Dashboard(pages=[first_page, second_page, third_page])
+dashboard = vm.Dashboard(pages=[first_page, second_page, third_page], title="Tips Analysis Dashboard")
 
 if __name__ == "__main__":
     Vizro().build(dashboard).run()

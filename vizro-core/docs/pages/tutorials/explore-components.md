@@ -694,7 +694,7 @@ This step should feel familiar. Let's add all three charts to the page.
 
 You may notice that the third chart is not visible. This issue can occur with Plotly charts when there isn't enough space to display them properly. Let's customize the layout again to allocate more space to the heatmap.
 
-## 4.2. Configure the layout
+### 4.2. Configure the layout
 
 This step should also feel more familiar by now. Let's arrange the charts to provide more space to the heatmap.
 
@@ -1072,12 +1072,157 @@ To create a custom chart, we follow these steps:
     === "Result"
         [![ThirdPage4]][thirdpage4]
 
+**Fantastic job reaching this point! 📖 We've just completed our final dashboard page and learned how to:**
+
+1. [Add multiple charts](#41-add-multiple-charts)
+1. [Customize our layout again](#42-configure-the-layout)
+1. [Add a parameter to interact with the charts](#43-add-a-parameter)
+1. [Add a custom chart to our dashboard](#44-add-a-custom-chart).
+
 ## 5. Configure the dashboard
+
+Now that we've created all the dashboard pages, let's add a personal touch by including a title, logo, and customizing the navigation.
 
 ### 5.1 Add a title and logo
 
+To add a title and a logo to your dashboard, follow these steps:
+
+1. Set the `title` attribute of the [Dashboard][vizro.models.Dashboard] to "Tips Analysis Dashboard".
+1. Download the `logo` from [this link](https://raw.githubusercontent.com/mckinsey/vizro/refs/heads/main/vizro-core/examples/dev/assets/logo.svg) and save it in a folder named `assets`.
+1. Place the `assets` folder in the same directory as your `app.py/app.ipynb` file.
+
+Your directory structure should look like this:
+
+```text title="Example folder structure"
+├── app.py
+├── assets
+│   ├── logo.svg
+```
+
+!!! example "Add a dashboard title and logo"
+    === "Snippet - dashboard title"
+        ```py
+        dashboard = vm.Dashboard(pages=[first_page, second_page, third_page], title="Tips Analysis Dashboard")
+        ```
+
+    === "app.py"
+        ```{.python pycafe-link}
+        import vizro.models as vm
+        import vizro.plotly.express as px
+        from vizro import Vizro
+        from vizro.tables import dash_ag_grid
+        from vizro.models.types import capture
+        from vizro.figures import kpi_card
+
+        tips = px.data.tips()
+
+
+        @capture("graph")
+        def bar_mean(data_frame, x, y):
+            df_agg = data_frame.groupby(x).agg({y: "mean"}).reset_index()
+            fig = px.bar(df_agg, x=x, y=y, labels={"tip": "Average Tip ($)"})
+            fig.update_traces(width=0.6)
+            return fig
+
+
+        first_page = vm.Page(
+            title="Data",
+            components=[
+                vm.AgGrid(
+                    figure=dash_ag_grid(tips),
+                    footer="""**Data Source:** Bryant, P. G. and Smith, M (1995)
+                    Practical Data Analysis: Case Studies in Business Statistics.
+                    Homewood, IL: Richard D. Irwin Publishing.""",
+                ),
+            ],
+        )
+
+        second_page = vm.Page(
+            title="Summary",
+            layout=vm.Layout(grid=[[0, 1, -1, -1], [2, 2, 2, 2], [2, 2, 2, 2], [2, 2, 2, 2]]),
+            components=[
+                vm.Figure(
+                    figure=kpi_card(
+                        data_frame=tips,
+                        value_column="total_bill",
+                        agg_func="mean",
+                        value_format="${value:.2f}",
+                        title="Average Bill",
+                    )
+                ),
+                vm.Figure(
+                    figure=kpi_card(
+                        data_frame=tips,
+                        value_column="tip",
+                        agg_func="mean",
+                        value_format="${value:.2f}",
+                        title="Average Tips"
+                    )
+                ),
+                vm.Tabs(
+                    tabs=[
+                        vm.Container(
+                            title="Total Bill ($)",
+                            components=[
+                                vm.Graph(figure=px.histogram(tips, x="total_bill")),
+                            ],
+                        ),
+                        vm.Container(
+                            title="Total Tips ($)",
+                            components=[
+                                vm.Graph(figure=px.histogram(tips, x="tip")),
+                            ],
+                        ),
+                    ],
+                )
+            ],
+            controls=[vm.Filter(column="day"), vm.Filter(column="time", selector=vm.Checklist()), vm.Filter(column="size")]
+        )
+
+        third_page = vm.Page(
+            title="Analysis",
+            layout=vm.Layout(grid=[[0, 1], [2, 2]]),
+            components=[
+                vm.Graph(
+                    id="bar",
+                    title="Where do we get more tips?",
+                    figure=bar_mean(tips, y="tip", x="day"),
+                ),
+                vm.Graph(
+                    id="violin",
+                    title="Is the average driven by a few outliers?",
+                    figure=px.violin(tips, y="tip", x="day", color="day", box=True),
+                ),
+                vm.Graph(
+                    id="heatmap",
+                    title="Which group size is more profitable?",
+                    figure=px.density_heatmap(tips, x="day", y="size", z="tip", histfunc="avg", text_auto="$.2f"),
+                ),
+            ],
+            controls=[
+                vm.Parameter(
+                    targets=["violin.x", "violin.color", "heatmap.x", "bar.x"],
+                    selector=vm.RadioItems(
+                        options=["day", "time", "sex", "smoker", "size"], value="day", title="Change x-axis inside charts:"
+                    ),
+                ),
+            ],
+        )
+
+        dashboard = vm.Dashboard(pages=[first_page, second_page, third_page], title="Tips Analysis Dashboard")
+        Vizro().build(dashboard).run()
+        ```
+
+    === "Result"
+        [![Dashboard]][dashboard]
+
+Both the logo and the title will be positioned within the dashboard header. After following these steps, you should see the logo in the top-left corner of your dashboard header, with the title displayed next to it.
+
+If you can't see the logo, make sure the image is called `logo` and is stored in the assets folder. For more details on supported image formats, refer to the [How to add a logo](../user-guides/assets.md#add-a-logo-image) guide.
+
 ### 5.2 Customize the navigation
 
+[dashboard]: ../../assets/tutorials/dashboard/11-dashboard-title-logo.png
 [firstpage]: ../../assets/tutorials/dashboard/01-first-page.png
 [secondpage]: ../../assets/tutorials/dashboard/02-second-page.png
 [secondpage2]: ../../assets/tutorials/dashboard/03-second-page-kpi.png
