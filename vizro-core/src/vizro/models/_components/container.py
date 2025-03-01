@@ -24,8 +24,8 @@ class Container(VizroBaseModel):
             has to be provided.
         title (str): Title to be displayed.
         layout (Optional[Layout]): Layout to place components in. Defaults to `None`.
-        theme (Optional[Literal["filled", "outlined"]]): Specifies the style preset for the container.
-            Options are 'filled' or 'outlined'. Defaults to `None`.
+        theme (Optional[Literal["filled", "outlined"]]): Predefined styles to choose from.
+            Options are `filled` or `outlined`. Defaults to `None`.
 
     """
 
@@ -39,7 +39,7 @@ class Container(VizroBaseModel):
     layout: Annotated[Optional[Layout], AfterValidator(set_layout), Field(default=None, validate_default=True)]
     theme: Optional[Literal["filled", "outlined"]] = Field(
         default=None,
-        description="Specifies the style preset for the container. Options are 'filled' or 'outlined'. Defaults to `None`.",
+        description="Predefined styles to choose from. Options are `filled` or `outlined`. Defaults to `None`.",
     )
 
     @_log_call

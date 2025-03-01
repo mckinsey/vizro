@@ -316,7 +316,7 @@
     },
     "Container": {
       "additionalProperties": false,
-      "description": "Container to group together a set of components on a page.\n\nArgs:\n    type (Literal[\"container\"]): Defaults to `\"container\"`.\n    components (list[ComponentType]): See [ComponentType][vizro.models.types.ComponentType]. At least one component\n        has to be provided.\n    title (str): Title to be displayed.\n    layout (Optional[Layout]): Layout to place components in. Defaults to `None`.\n    background (bool): Flag indicating whether to apply default container background color. Defaults to `False`.",
+      "description": "Container to group together a set of components on a page.\n\nArgs:\n    type (Literal[\"container\"]): Defaults to `\"container\"`.\n    components (list[ComponentType]): See [ComponentType][vizro.models.types.ComponentType]. At least one component\n        has to be provided.\n    title (str): Title to be displayed.\n    layout (Optional[Layout]): Layout to place components in. Defaults to `None`.\n    theme (Optional[Literal[\"filled\", \"outlined\"]]): Predefined styles to choose from.\n        Options are `filled` or `outlined`. Defaults to `None`.",
       "properties": {
         "id": {
           "default": "",
@@ -404,7 +404,7 @@
             }
           ],
           "default": null,
-          "description": "Specifies the style preset for the container. Options are 'filled' or 'outlined'. Defaults to `None`.",
+          "description": "Predefined styles to choose from. Options are `filled` or `outlined`. Defaults to `None`.",
           "title": "Theme"
         }
       },
