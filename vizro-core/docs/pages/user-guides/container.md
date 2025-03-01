@@ -4,7 +4,7 @@ This guide shows you how to use containers to group your components into section
 
 A [Container][vizro.models.Container] complements a [Page][vizro.models.Page], and both models share nearly identical arguments. While `Page.layout` provides a method for structuring the overall page layout, a `Container` offers more detailed control within a particular section of the page.
 
-Unlike the `Page.layout`, the `Container` includes a `background` argument, allowing you to color its background to differentiate it from the rest of the page. Additional functionality will soon be added to the Container, including controls specific to it, which will further enhance the management of related components.
+Unlike the `Page.layout`, the `Container` includes a `theme` argument, allowing you to choose from predefined styles to visually distinguish it from the rest of the page content. Additional functionality will soon be added to the Container, including controls specific to it, which will further enhance the management of related components.
 
 !!! note "Displaying multiple containers inside Tabs"
     An alternative way to display multiple containers on one page is to place them inside [Tabs](tabs.md).
@@ -24,7 +24,7 @@ Here are a few cases where you might want to use a `Container` instead of `Page.
 - If you want to split up your grid into subgrids to organize components together
 - If you want to add a title to your subgrids
 - If you want different row and column spacing between subgrids
-- If you want to apply a background color to distinguish your subgrid better
+- If you want to apply a background color or borders to visually distinguish your content
 - If you want to apply controls to selected subgrids (will be supported soon)
 
 ## Basic containers
@@ -168,9 +168,10 @@ vm.Container(
 
 ## Styled containers
 
-To enhance the visibility of the `Container` as a distinct section within your dashboard, you can enable the background color.
+To make the `Container` stand out as a distinct section in your dashboard, you can select from the predefined styles 
+available in its `theme` argument.
 
-!!! example "Container with background color"
+!!! example "Container with visual distinction"
     === "app.py"
         ```{.python pycafe-link}
         import vizro.models as vm
@@ -186,12 +187,12 @@ To enhance the visibility of the `Container` as a distinct section within your d
                 vm.Container(
                     title="Container I",
                     components=[vm.Graph(figure=px.scatter(iris, x="sepal_width", y="sepal_length", color="species"))],
-                    background=True
+                    theme="filled"
                 ),
                 vm.Container(
-                    title="Container II",
+                    title="Container with borders",
                     components=[vm.Graph(figure=px.box(iris, x="species", y="sepal_length", color="species"))],
-                    background=True
+                    theme="outlined"
                 )
             ],
         )
@@ -205,12 +206,12 @@ To enhance the visibility of the `Container` as a distinct section within your d
         # Still requires a .py to add data to the data manager and parse YAML configuration
         # See yaml_version example
         pages:
-          - title: Container with background color
+          - title: Container with visual distinction
             layout:
               grid: [[0, 1]]
             components:
               - type: container
-                title: Container I
+                title: Container with background color
                 components:
                   - type: graph
                     figure:
@@ -219,9 +220,9 @@ To enhance the visibility of the `Container` as a distinct section within your d
                       x: sepal_width
                       y: sepal_length
                       color: species
-                background: true
+                theme: filled
               - type: container
-                title: Container II
+                title: Container with borders
                 components:
                   - type: graph
                     figure:
@@ -230,7 +231,7 @@ To enhance the visibility of the `Container` as a distinct section within your d
                       x: species
                       y: sepal_length
                       color: species
-                background: true
+                theme: outlined
         ```
 
     === "Result"
@@ -239,4 +240,4 @@ To enhance the visibility of the `Container` as a distinct section within your d
 If you want to style your `Container` beyond the default background color, please refer to our user guide on [overwriting CSS for selected components](custom-css.md#overwrite-css-for-selected-components).
 
 [container]: ../../assets/user_guides/components/containers.png
-[stylecontainer]: ../../assets/user_guides/components/container_with_background.png
+[stylecontainer]: ../../assets/user_guides/components/container-styled.png
