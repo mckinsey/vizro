@@ -167,7 +167,7 @@ Notice that the charts are automatically stacked vertically in the order specifi
 
 Additionally, a page navigation has been added to the left side of the dashboard, allowing you to switch between the two pages we’ve created.
 
-You can also notice that the left-side menu can be collapsed to provide more space for the dashboard content. Give it a try!
+You can also notice that the left-side menu can be collapsed to provide more space for the dashboard content. **Give it a try! 🧪**
 
 ### 3.2. Add KPI cards
 
@@ -176,8 +176,8 @@ You can combine and arrange various types of `components` on a dashboard page. R
 Let's add two KPI cards to our second page. Follow these steps:
 
 1. Add a [Figure][vizro.models.Figure] to the list of `components`
-1. Inside the `figure` argument of the `Figure`, use the `kpi_card` function.
-1. Configure your `kpi_card` by setting the `value_column`, `agg_func`, and `value_format` and `title` arguments. To learn more about how to configure KPI cards, check out [our how-to-guide on KPI vards](../user-guides/figure.md#key-performance-indicator-kpi-cards).
+1. Inside the `figure` argument of the `Figure`, use the [`kpi_card`][vizro.figures.kpi_card] function.
+1. Configure your `kpi_card` by setting the `value_column`, `agg_func`, and `value_format` and `title`. To learn more about how to configure KPI cards, check out [our how-to-guide on KPI cards](../user-guides/figure.md#key-performance-indicator-kpi-cards).
 1. Repeat the above steps to add another KPI card to the page.
 
 !!! example "Add KPI Cards"
@@ -210,7 +210,7 @@ Let's add two KPI cards to our second page. Follow these steps:
         ```
 
     === "Code - dashboard"
-        ```{.python pycafe-link}
+        ```{.python pycafe-link hl_lines="25-42"}
         import vizro.models as vm
         import vizro.plotly.express as px
         from vizro import Vizro
@@ -267,14 +267,14 @@ Let's add two KPI cards to our second page. Follow these steps:
 
 ### 3.3. Add Tabs to switch views
 
-Suppose we don't want to display both histograms simultaneously and prefer to switch between these views. We can achieve this by using the [`Tabs`][vizro.models.Tabs] component to organize the content on the page. For more details on using the Tabs component, refer to our [Tabs user-guide](../user-guides/tabs.md).
+Suppose we don't want to display both histograms simultaneously and prefer to switch between these views. We can achieve this by using the [`Tabs`][vizro.models.Tabs] component to switch between views. For more details on using the `Tabs component, refer to our [Tabs user-guide](../user-guides/tabs.md).
 
 Let's place the two histograms in separate tabs. Follow these steps:
 
 1. Add each `Graph` to the `components` list of a [`Container`][vizro.models.Container].
 1. Set the `title` argument inside each `Container` to the desired tab name.
 1. Add the Containers to the `tabs` list of the `Tabs` component.
-1. Add the `Tabs` component to the `components` list of the Page.
+1. Add the `Tabs` component to the `components` list of the `Page`.
 
 !!! example "Add Tabs"
     === "Snippet - Tabs"
@@ -299,7 +299,7 @@ Let's place the two histograms in separate tabs. Follow these steps:
         ```
 
     === "Code - dashboard"
-        ```{.python pycafe-link}
+        ```{.python pycafe-link hl_lines="43-59"}
         import vizro.models as vm
         import vizro.plotly.express as px
         from vizro import Vizro
@@ -368,7 +368,9 @@ Let's place the two histograms in separate tabs. Follow these steps:
     === "Result"
         [![SecondPage3]][secondpage3]
 
-Take a moment to switch between the Tabs! As you explore the dashboard, you might notice that the current layout could use some adjustments. The histograms appear cramped, while the KPI cards have too much space. In the next section, we'll learn how to configure the layout and better arrange the components.
+**Take a moment to switch between the Tabs! 🕰️** 
+
+As you explore the dashboard, you might notice that the current layout could use some adjustments. The histograms appear cramped, while the KPI cards have too much space. In the next section, we'll learn how to configure the layout and better arrange the components.
 
 ### 3.4. Configure the layout
 

@@ -1,5 +1,3 @@
-"""Test app"""
-
 import vizro.models as vm
 import vizro.plotly.express as px
 from vizro import Vizro
@@ -8,15 +6,6 @@ from vizro.models.types import capture
 from vizro.figures import kpi_card
 
 tips = px.data.tips()
-
-
-@capture("graph")
-def bar_mean(data_frame, x, y):
-    df_agg = data_frame.groupby(x).agg({y: "mean"}).reset_index()
-    fig = px.bar(df_agg, x=x, y=y, labels={"tip": "Average Tip ($)"})
-    fig.update_traces(width=0.6)
-    return fig
-
 
 first_page = vm.Page(
     title="Data",
@@ -32,7 +21,6 @@ first_page = vm.Page(
 
 second_page = vm.Page(
     title="Summary",
-    layout=vm.Layout(grid=[[0, 1, -1, -1], [2, 2, 2, 2], [2, 2, 2, 2], [2, 2, 2, 2]]),
     components=[
         vm.Figure(
             figure=kpi_card(
@@ -45,7 +33,11 @@ second_page = vm.Page(
         ),
         vm.Figure(
             figure=kpi_card(
-                data_frame=tips, value_column="tip", agg_func="mean", value_format="${value:.2f}", title="Average Tips"
+                data_frame=tips,
+                value_column="tip",
+                agg_func="mean",
+                value_format="${value:.2f}",
+                title="Average Tips"
             )
         ),
         vm.Tabs(
@@ -63,42 +55,9 @@ second_page = vm.Page(
                     ],
                 ),
             ],
-        ),
-    ],
-    controls=[vm.Filter(column="day"), vm.Filter(column="time", selector=vm.Checklist()), vm.Filter(column="size")],
-)
-
-third_page = vm.Page(
-    title="Analysis",
-    layout=vm.Layout(grid=[[0, 1], [2, 2]]),
-    components=[
-        vm.Graph(
-            title="Where do we get more tips?",
-            figure=bar_mean(tips, y="tip", x="day"),
-        ),
-        vm.Graph(
-            title="Is the average driven by a few outliers?",
-            figure=px.violin(tips, y="tip", x="day", color="day", box=True),
-        ),
-        vm.Graph(
-            title="Which group size is more profitable?",
-            figure=px.density_heatmap(tips, x="day", y="size", z="tip", histfunc="avg", text_auto="$.2f"),
-        ),
-    ],
-)
-
-dashboard = vm.Dashboard(
-    pages=[first_page, second_page, third_page],
-    title="Tips Analysis Dashboard",
-    navigation=vm.Navigation(
-        nav_selector=vm.NavBar(
-            items=[
-                vm.NavLink(label="Data", pages=["Data"], icon="database"),
-                vm.NavLink(label="Charts", pages=["Summary", "Analysis"], icon="bar_chart"),
-            ]
         )
-    ),
+    ],
 )
 
-if __name__ == "__main__":
-    Vizro().build(dashboard).run()
+dashboard = vm.Dashboard(pages=[first_page, second_page])
+Vizro().build(dashboard).run()
