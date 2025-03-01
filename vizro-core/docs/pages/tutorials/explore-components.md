@@ -17,7 +17,9 @@ We will use the [tips dataset](https://plotly.com/python-api-reference/generated
 
 ## 1. (Optional) Install Vizro and get ready to run your code
 
-The code for this tutorial is all available for you to experiment with in [PyCafe](https://py.cafe/huong-li-nguyen/vizro-analyzing-restaurant-tips) so there is no need to install Vizro and run it locally. For more about how this works, check out the [PyCafe documentation](https://py.cafe/docs/apps/vizro).
+You can experiment with the code for this tutorial directly on [PyCafe](https://py.cafe/vizro-official/vizro-tips-analysis-tutorial), 
+so there's no need to install Vizro locally. However, we recommend starting with a [blank Vizro project on PyCafe](https://py.cafe/snippet/vizro/v1) and copying the code snippets 
+from this tutorial to see how everything integrates. For more about how this works, check out the [PyCafe documentation](https://py.cafe/docs/apps/vizro).
 
 However, if you prefer working in a Notebook or Python script, you should [install Vizro](../user-guides/install.md).
 
@@ -260,11 +262,11 @@ Let's add two KPI cards to our second page. Follow these steps:
 
 ### 3.3. Add Tabs to switch views
 
-Suppose we don't want to display both histograms simultaneously and prefer to switch between these views. We can achieve this by using the [Tabs](vizro.models.tabs) component to organize the content on the page. For more details on using the Tabs component, refer to our [Tabs user-guide](../user-guides/tabs.md).
+Suppose we don't want to display both histograms simultaneously and prefer to switch between these views. We can achieve this by using the [`Tabs`][vizro.models.Tabs] component to organize the content on the page. For more details on using the Tabs component, refer to our [Tabs user-guide](../user-guides/tabs.md).
 
 Let's place the two histograms in separate tabs. Follow these steps:
 
-1. Add each `Graph` to the `components` list of a [Container](vizro.models.Container).
+1. Add each `Graph` to the `components` list of a [`Container`][vizro.models.Container].
 1. Set the `title` argument inside each `Container` to the desired tab name.
 1. Add the Containers to the `tabs` list of the `Tabs` component.
 1. Add the `Tabs` component to the `components` list of the Page.
@@ -548,7 +550,7 @@ To add a filter to the dashboard, follow these steps:
     === "Result"
         [![SecondPage5]][secondpage5]
 
-You will see that a [Dropdown](vizro.models.Dropdown) is selected for categorical data and a [RangeSlider](vizro.models.RangeSlider) for numerical data. Additionally, the Filters are applied to all components on the page by default. If you want to apply a filter to specific components only, check out the [How to use filters](../user-guides/filters.md) guide.
+You will see that a [`Dropdown`][vizro.models.Dropdown] is selected for categorical data and a [`RangeSlider`][vizro.models.RangeSlider] for numerical data. Additionally, the Filters are applied to all components on the page by default. If you want to apply a filter to specific components only, check out the [How to use filters](../user-guides/filters.md) guide.
 
 **Great work! 📖 We've just completed our second dashboard page and learned how to:**
 
@@ -1222,11 +1224,9 @@ If you can't see the logo, make sure the image is called `logo` and is stored in
 
 ### 5.2 Customize the navigation
 
-By default, a navigation panel on the left side allows users to switch between the pages. In this section, we will
-customize this by creating a custom navigation bar.
+By default, a navigation panel on the left side allows users to switch between the pages. In this section, we will customize this by creating a custom navigation bar.
 
-The custom navigation bar will feature two icons: one for the "Data" page and another for the "Summary" and "Analysis"
-pages.
+The custom navigation bar will feature two icons: one for the "Data" page and another for the "Summary" and "Analysis" pages.
 
 To create a custom navigation bar, follow these steps:
 
@@ -1234,10 +1234,9 @@ To create a custom navigation bar, follow these steps:
 1. Assign a [NavBar][vizro.models.NavBar] object to the `nav_selector` attribute of the `Navigation` object.
 1. Populate the `items` attribute of the [NavBar][vizro.models.NavBar] object with a list of [NavLink][vizro.models.NavLink] objects.
 1. Customize each [NavLink][vizro.models.NavLink] object by setting its `label`, `pages`, and `icon` attributes.
-   - The `label` attribute specifies the tooltip text displayed when hovering over the navigation icons.
-   - The `pages` attribute lists the pages included in the accordion navigation for that icon.
-   - The `icon` attribute sets the icon to display using the [Material Design Icons library](https://fonts.google.com/icons).
-
+    - The `label` attribute specifies the tooltip text displayed when hovering over the navigation icons.
+    - The `pages` attribute lists the pages included in the accordion navigation for that icon.
+    - The `icon` attribute sets the icon to display using the [Material Design Icons library](https://fonts.google.com/icons).
 
 !!! example "Customize navigation"
     === "Snippet - navigation"
@@ -1382,9 +1381,7 @@ Take a moment to explore the navigation bar! Hover over the icons to view the to
 
 After completing the tutorial you now have a solid understanding of the main elements of Vizro and how to bring them together to create dynamic and interactive data visualizations.
 
-You can find out more about Vizro's component by reading the [components overview page](../user-guides/components.md).
-To gain more in-depth knowledge about the usage and configuration details of individual controls, check out the
-guides dedicated to [Filters](../user-guides/filters.md), [Parameters](../user-guides/parameters.md), and [Selectors](../user-guides/selectors.md).
+You can find out more about Vizro's component by reading the [components overview page](../user-guides/components.md). To gain more in-depth knowledge about the usage and configuration details of individual controls, check out the guides dedicated to [Filters](../user-guides/filters.md), [Parameters](../user-guides/parameters.md), and [Selectors](../user-guides/selectors.md).
 
 If you'd like to understand more about different ways to configure the navigation of your dashboard, head to [Navigation](../user-guides/navigation.md).
 
@@ -1392,15 +1389,16 @@ Vizro doesn't end here, and we only covered the key features, but there is still
 
 - How to use [Actions](../user-guides/actions.md) for example, for chart interaction or custom controls.
 - How to [extend and customize Vizro dashboards](../user-guides/extensions.md) by creating your own:
-  - [custom components](../user-guides/custom-components.md).
-  - [custom actions](../user-guides/custom-actions.md).
-  - [custom tables](../user-guides/custom-tables.md).
-  - [custom charts](../user-guides/custom-charts.md).
-  - [custom figures](../user-guides/custom-figures.md).
+    - [custom components](../user-guides/custom-components.md).
+    - [custom actions](../user-guides/custom-actions.md).
+    - [custom tables](../user-guides/custom-tables.md).
+    - [custom charts](../user-guides/custom-charts.md).
+    - [custom figures](../user-guides/custom-figures.md).
 - How to add custom styling using [static assets](../user-guides/assets.md) such as custom css or JavaScript files.
 - How to [customise your data connection](../user-guides/data.md)
 - How to create dashboards from `yaml`, `dict` or `json` following the [dashboard guide](../user-guides/dashboard.md).
 - How to [deploy your dashboard](../user-guides/run-deploy.md)
+- How to use [Vizro-AI](https://vizro.readthedocs.io/projects/vizro-ai/en/vizro-ai-0.3.6/) to create charts with GenAI
 
 [dashboard]: ../../assets/tutorials/dashboard/11-dashboard-title-logo.png
 [dashboardfinal]: ../../assets/tutorials/dashboard/12-dashboard-navigation.png
