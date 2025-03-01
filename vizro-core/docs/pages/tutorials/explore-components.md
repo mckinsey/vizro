@@ -581,20 +581,20 @@ If you want to apply a filter to specific components only, check out the [How to
 
 Now that we've learned how to create pages, add components, and configure layouts, let's create a third page for our dashboard. This will give us the opportunity to practice our skills and introduce some new concepts!
 
-This page will feature a bar chart, a violin chart, and a heatmap. We'll once again leverage the [Vizro visual vocabulary](https://vizro-demo-visual-vocabulary.hf.space/).
+This page will feature a bar chart, a violin chart, and a heatmap. We will once again leverage the [Vizro visual vocabulary](https://vizro-demo-visual-vocabulary.hf.space/).
 
 ### 4.1. Add multiple charts
 
 This step should feel familiar. Let's add all three charts to the page.
 
-1. Create a third [Page][vizro.models.Page] and store it in a variable called `third_page`. Set its title to "Analysis".
-1. Add three Vizro [Graphs][vizro.models.Graph] to the `components` of the `Page`.
-1. For each `Graph`, use the `figure` argument to provide one of the Plotly express functions: For `px.violin and px.density_heatmap`, you can use the Plotly figure code directly from the visual vocabulary. For `px.bar`, copy the code but update the `data`, `x`, and `y` arguments to match our dataset.
-    - [px.violin from the visual-vocabulary](https://vizro-demo-visual-vocabulary.hf.space/distribution/violin)
-    - [px.bar from the visual-vocabulary](https://vizro-demo-visual-vocabulary.hf.space/magnitude/column)
-    - [px.density_heatmap from the visual-vocabulary](https://vizro-demo-visual-vocabulary.hf.space/time/heatmap)
-1. Provide a title for each `Graph`.
-1. Add the new page to the list of `pages` in the [Dashboard][vizro.models.Dashboard].
+1. Create a third [Page][vizro.models.Page] and store it in a variable called `third_page`. Set its `title` to "Analysis".
+1. Add three [Graphs][vizro.models.Graph] to the `components` of the `Page`.
+1. For each `Graph`, use the `figure` argument to provide one of the Plotly express functions:
+    - [px.violin](https://vizro-demo-visual-vocabulary.hf.space/distribution/violin) (copy code directly)
+    - [px.bar](https://vizro-demo-visual-vocabulary.hf.space/magnitude/column) (copy code directly)
+    - [px.density_heatmap](https://vizro-demo-visual-vocabulary.hf.space/time/heatmap) (update the `data`, `x`, and `y` arguments to match our dataset)
+1. Provide a `title` for each `Graph`.
+1. Add the new `Page` to the list of `pages` in the [Dashboard][vizro.models.Dashboard].
 
 !!! example "Third page"
     === "Snippet - third page"
@@ -622,7 +622,7 @@ This step should feel familiar. Let's add all three charts to the page.
         ```
 
     === "Code - dashboard"
-        ```{.python pycafe-link}
+        ```{.python pycafe-link hl_lines="64-80 82"}
         import vizro.models as vm
         import vizro.plotly.express as px
         from vizro import Vizro
@@ -717,7 +717,12 @@ You may notice that the third chart is not visible. This issue can occur with Pl
 
 This step should also feel more familiar by now. Let's arrange the charts to provide more space to the heatmap.
 
-In the following layout configuration, the layout is divided into two columns and two rows. The bar chart (index 0) and violin chart (index 1) are placed side by side in the first row, while the heatmap (index 2) spans the entire second row. Remember the index corresponds to the order in which the components are added to the `components`.
+In the following layout configuration, the layout is divided into **two columns** and **two rows**:
+
+- The bar chart (0) and violin chart (1) are placed side by side in the first row
+- The heatmap (2) spans the entire second row. 
+
+Remember the index corresponds to the order in which the components are added to the `components` of the `Page`.
 
 ```
 grid = [[0, 1],
@@ -727,13 +732,13 @@ grid = [[0, 1],
 Run the code below to apply the layout to the dashboard page:
 
 !!! example "Code - Layout"
-    === "Code"
+    === "Snippet - Layout"
         ```py
         layout=vm.Layout(grid=[[0, 1], [2, 2]]),
         ```
 
     === "Code - dashboard"
-        ```{.python pycafe-link}
+        ```{.python pycafe-link hl_lines="66"}
         import vizro.models as vm
         import vizro.plotly.express as px
         from vizro import Vizro
@@ -823,20 +828,19 @@ Run the code below to apply the layout to the dashboard page:
     === "Result"
         [![ThirdPage2]][thirdpage2]
 
-**Fantastic work! This looks so much better, doesn't it? 🎨**
+**Fantastic work! The heatmap looks great, doesn't it? 🎨**
 
 ### 4.3. Add a parameter
 
-This section explains how to add a [Parameter][vizro.models.Parameter] to your dashboard.
+This section explains how to add a [Parameter][vizro.models.Parameter] to your dashboard. A [Parameter][vizro.models.Parameter] lets you dynamically change a component’s argument, making the dashboard more interactive. 
+More information on how to configure [`Parameters`][vizro.models.Parameter] can be found in the [how-to guide for parameters](../user-guides/parameters.md).
 
-A [Parameter][vizro.models.Parameter] lets you dynamically change a component’s argument, making the dashboard more interactive. Here we want to switch the `x` and `color` variable across all charts, allowing data analysis from different perspectives.
-
-In creating a [`Parameter`][vizro.models.Parameter] object, you define the `target` it applies to. In general, `targets` for [`Parameters`][vizro.models.Parameter] are set following the structure of `component_id.argument`. More information on how to set `targets` for [`Parameters`][vizro.models.Parameter] can be found in the [how-to guide for parameters](../user-guides/parameters.md).
+Here we want to switch the `x` and `color` argument across all charts, allowing data analysis from different perspectives.
 
 To add a parameter to the dashboard:
 
-1. Add a [Parameter][vizro.models.Parameter] to the `controls` of the page.
-1. Assign an `id` to each `Graph` in the `components` that the parameter should target.
+1. Add a [Parameter][vizro.models.Parameter] to the `controls` of the `Page`.
+1. Assign a `id` to each `Graph` that the `Parameter` should target.
 1. Define the parameter's `targets` using the format `component-id.argument`.
 1. Set the `selector` of the [Parameter][vizro.models.Parameter] to a [`RadioItems`][vizro.models.RadioItems].
 1. Provide options for the `RadioItems` selector.
@@ -851,11 +855,11 @@ To add a parameter to the dashboard:
                     options=["day", "time", "sex", "smoker", "size"], value="day", title="Change x-axis inside charts:"
                 ),
             ),
-        ],
+        ]
         ```
 
     === "Code - dashboard"
-        ```{.python pycafe-link}
+        ```{.python pycafe-link hl_lines="69 74 84-91"}
         import vizro.models as vm
         import vizro.plotly.express as px
         from vizro import Vizro
@@ -956,13 +960,18 @@ To add a parameter to the dashboard:
     === "Result"
         [![ThirdPage3]][thirdpage3]
 
+
+Take a moment and interact with the parameter. Note how the x-axis of all charts update accordingly.
+
+**Isn't it amazing how effortlessly we can shift our data analysis perspective now? 🚀**
+
 ### 4.4. Add a custom chart
 
-You may notice that the `bar` chart appears cluttered with many lines. This happens because each inner bar represents a unique data point when an unaggregated dataset is provided. To avoid this, we can aggregate the data before plotting. However, the aggregation needs to be dynamic based on the parameter we added in the previous step.
+You may notice that the `bar` chart has many inner lines. This happens because each line represents a unique data point when an unaggregated dataset is provided to the `px.bar`. To avoid this, we can aggregate the data before plotting. However, the aggregation needs to be dynamic based on the parameter we added in the previous step.
 
-To achieve this, we need to include the data aggregation inside the chart function. This requires creating a custom chart. For more information on when to create a custom chart, check out the [How to create custom charts](../user-guides/custom-charts.md) guide.
+This requires creating a custom chart. For more information on when to create a custom chart, check out the [How to create custom charts](../user-guides/custom-charts.md) guide.
 
-To create a custom chart, we follow these steps:
+To create a custom chart, follow these steps:
 
 1. Create a function that takes the `data_frame` as input and returns a Plotly figure.
 1. Decorate the function with the `@capture(graph)` decorator.
@@ -981,7 +990,7 @@ To create a custom chart, we follow these steps:
         ```
 
     === "Code - dashboard"
-        ```{.python pycafe-link}
+        ```{.python pycafe-link hl_lines="11-16 80"}
         import vizro.models as vm
         import vizro.plotly.express as px
         from vizro import Vizro
@@ -1091,18 +1100,18 @@ To create a custom chart, we follow these steps:
     === "Result"
         [![ThirdPage4]][thirdpage4]
 
-**Fantastic job reaching this point! 📖 We've just completed our final dashboard page and learned how to:**
+**Fantastic job reaching this point! 🚀 We've just completed our final dashboard page and learned how to:**
 
 1. [Add multiple charts](#41-add-multiple-charts)
 1. [Customize our layout again](#42-configure-the-layout)
 1. [Add a parameter to interact with the charts](#43-add-a-parameter)
-1. [Add a custom chart to our dashboard](#44-add-a-custom-chart).
+1. [Add a custom chart to the dashboard](#44-add-a-custom-chart)
 
 ## 5. The final touches
 
 Now that we've created all the dashboard pages, let's add a personal touch by including a title, logo, and customizing the navigation.
 
-### 5.1 Add a title and logo
+### 5.1. Add a title and logo
 
 To add a title and a logo to your dashboard, follow these steps:
 
@@ -1125,7 +1134,7 @@ Your directory structure should look like this:
         ```
 
     === "Code - dashboard"
-        ```{.python pycafe-link}
+        ```{.python pycafe-link hl_lines="103"}
         import vizro.models as vm
         import vizro.plotly.express as px
         from vizro import Vizro
@@ -1235,25 +1244,25 @@ Your directory structure should look like this:
     === "Result"
         [![Dashboard]][dashboard]
 
-Both the logo and the title will be positioned within the dashboard header. After following these steps, you should see the logo in the top-left corner of your dashboard header, with the title displayed next to it.
+After following these steps, you should see the logo in the top-left corner of your dashboard header, with the title displayed next to it.
 
-If you can't see the logo, make sure the image is called `logo` and is stored in the assets folder. For more details on supported image formats, refer to the [How to add a logo](../user-guides/assets.md#add-a-logo-image) guide.
+If you can't see the logo, make sure the image is called `logo` and is stored in the `assets folder. For more details on supported image formats, refer to the [How to add a logo](../user-guides/assets.md#add-a-logo-image) guide.
 
-### 5.2 Customize the navigation
+### 5.2. Customize the navigation
 
-By default, a navigation panel on the left side allows users to switch between the pages. In this section, we will customize this by creating a custom navigation bar.
+By default, a navigation panel on the left side allows users to switch between the pages. In this section, we will customize this by using a navigation bar with icons instead.
 
-The custom navigation bar will feature two icons: one for the "Data" page and another for the "Summary" and "Analysis" pages.
+The navigation bar will have two icons: one for the "Data" page and another for the "Summary" and "Analysis" pages.
 
-To create a custom navigation bar, follow these steps:
+To create a navigation bar, follow these steps:
 
 1. Set the `navigation` attribute of the [Dashboard][vizro.models.Dashboard] to a [Navigation][vizro.models.Navigation] object.
-1. Assign a [NavBar][vizro.models.NavBar] object to the `nav_selector` attribute of the `Navigation` object.
-1. Populate the `items` attribute of the [NavBar][vizro.models.NavBar] object with a list of [NavLink][vizro.models.NavLink] objects.
+1. Assign a [NavBar][vizro.models.NavBar] object to the `nav_selector` attribute of the `Navigation`.
+1. Populate the `items` of the [NavBar][vizro.models.NavBar] object with a list of [NavLink][vizro.models.NavLink] objects.
 1. Customize each [NavLink][vizro.models.NavLink] object by setting its `label`, `pages`, and `icon` attributes.
-    - The `label` attribute specifies the tooltip text displayed when hovering over the navigation icons.
-    - The `pages` attribute lists the pages included in the accordion navigation for that icon.
-    - The `icon` attribute sets the icon to display using the [Material Design Icons library](https://fonts.google.com/icons).
+    - The `label` controls the text displayed in the tooltip when hovering over the navigation icon.
+    - The `pages` controls the pages included in the accordion navigation for that icon.
+    - The `icon` sets the icon to display using the [Material Design Icons library](https://fonts.google.com/icons).
 
 !!! example "Customize navigation"
     === "Snippet - navigation"
@@ -1269,7 +1278,7 @@ To create a custom navigation bar, follow these steps:
         ```
 
     === "Code - dashboard"
-        ```{.python pycafe-link}
+        ```{.python pycafe-link hl_lines="106-113"}
         import vizro.models as vm
         import vizro.plotly.express as px
         from vizro import Vizro
@@ -1392,7 +1401,7 @@ To create a custom navigation bar, follow these steps:
 
 Take a moment to explore the navigation bar! Hover over the icons to view the tooltip text and click on them to navigate between the pages.
 
-**Congratulations on completing this tutorial! You now have the skills to configure layouts, add components, and implement interactivity in Vizro dashboards across multiple navigable pages.**
+**Congratulations on completing this tutorial! 🚀** You now have the skills to configure layouts, add components, and implement interactivity in Vizro dashboards across multiple navigable pages.
 
 ## Find out more
 
