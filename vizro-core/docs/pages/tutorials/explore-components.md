@@ -1222,11 +1222,9 @@ If you can't see the logo, make sure the image is called `logo` and is stored in
 
 ### 5.2 Customize the navigation
 
-By default, a navigation panel on the left side allows users to switch between the pages. In this section, we will 
-customize this by creating a custom navigation bar.
+By default, a navigation panel on the left side allows users to switch between the pages. In this section, we will customize this by creating a custom navigation bar.
 
-The custom navigation bar will feature two icons: one for the "Data" page and another for the "Summary" and "Analysis" 
-pages.
+The custom navigation bar will feature two icons: one for the "Data" page and another for the "Summary" and "Analysis" pages.
 
 To create a custom navigation bar, follow these steps:
 
@@ -1234,10 +1232,9 @@ To create a custom navigation bar, follow these steps:
 1. Assign a [NavBar][vizro.models.NavBar] object to the `nav_selector` attribute of the `Navigation` object.
 1. Populate the `items` attribute of the [NavBar][vizro.models.NavBar] object with a list of [NavLink][vizro.models.NavLink] objects.
 1. Customize each [NavLink][vizro.models.NavLink] object by setting its `label`, `pages`, and `icon` attributes.
-   - The `label` attribute specifies the tooltip text displayed when hovering over the navigation icons.
-   - The `pages` attribute lists the pages included in the accordion navigation for that icon.
-   - The `icon` attribute sets the icon to display using the [Material Design Icons library](https://fonts.google.com/icons).
-
+    - The `label` attribute specifies the tooltip text displayed when hovering over the navigation icons.
+    - The `pages` attribute lists the pages included in the accordion navigation for that icon.
+    - The `icon` attribute sets the icon to display using the [Material Design Icons library](https://fonts.google.com/icons).
 
 !!! example "Customize navigation"
     === "Snippet - navigation"
@@ -1382,9 +1379,7 @@ Take a moment to explore the navigation bar! Hover over the icons to view the to
 
 After completing the tutorial you now have a solid understanding of the main elements of Vizro and how to bring them together to create dynamic and interactive data visualizations.
 
-You can find out more about Vizro's component by reading the [components overview page](../user-guides/components.md). 
-To gain more in-depth knowledge about the usage and configuration details of individual controls, check out the 
-guides dedicated to [Filters](../user-guides/filters.md), [Parameters](../user-guides/parameters.md), and [Selectors](../user-guides/selectors.md). 
+You can find out more about Vizro's component by reading the [components overview page](../user-guides/components.md). To gain more in-depth knowledge about the usage and configuration details of individual controls, check out the guides dedicated to [Filters](../user-guides/filters.md), [Parameters](../user-guides/parameters.md), and [Selectors](../user-guides/selectors.md).
 
 If you'd like to understand more about different ways to configure the navigation of your dashboard, head to [Navigation](../user-guides/navigation.md).
 
