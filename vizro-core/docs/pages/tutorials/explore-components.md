@@ -374,9 +374,15 @@ As you explore the dashboard, you might notice that the current layout could use
 
 ### 3.4. Configure the layout
 
-By default, Vizro places each element in the order it was added to `components` list, and spaces them equally. You can use the [`Layout`][vizro.models.Layout] object to specify the placement and size of components on the page. To learn more about how to configure layouts, check out [How to use layouts](../user-guides/layouts.md).
+By default, Vizro places each element in the order it was added to `components`, and spaces them equally. You can use the [`Layout`][vizro.models.Layout] to control the placement and size of components on the page. To learn more about how to configure layouts, check out [How to use layouts](../user-guides/layouts.md).
 
-In the following layout configuration, the layout is divided into four columns and four rows. The two KPI cards (index 0 and 1) are positioned at the top, each occupying one cell in the first row, with two empty cells to the right. The `Tabs` component (index 2) is placed below the KPI cards, spanning all cells across the remaining three rows, providing it with more space compared to the KPI cards.
+In the following layout configuration, the layout is divided into **four columns** and **four rows**.
+The numbers in the grid correspond to the index of the components in the `components` list. 
+
+- The first KPI card (0) is positioned at the top, occupying the first cell in the first row.
+- The second KPI card (1) is positioned to the right of the first KPI card.
+- There are two empty cells to the right of the KPI cards (-1). 
+- The `Tabs` component (2) is placed below the KPI cards, spanning all cells across the remaining three rows.
 
 ```
 grid = [[0, 1, -1, -1],
@@ -388,7 +394,7 @@ grid = [[0, 1, -1, -1],
 Run the code below to apply the layout to the dashboard page:
 
 !!! example "Code - Layout"
-    === "Code"
+    === "Snippet - Layout"
         ```py
         layout=vm.Layout(
             grid=[[0, 1,-1,-1],
@@ -398,8 +404,8 @@ Run the code below to apply the layout to the dashboard page:
         )
         ```
 
-    === "app.py"
-        ```{.python pycafe-link}
+    === "Code - dashboard"
+        ```{.python pycafe-link hl_lines="24"}
         import vizro.models as vm
         import vizro.plotly.express as px
         from vizro import Vizro
@@ -469,6 +475,8 @@ Run the code below to apply the layout to the dashboard page:
     === "Result"
         [![SecondPage4]][secondpage4]
 
+**Much better, don't you think? 🎨 The layout now provides sufficient space to the charts!**
+
 ### 3.5. Add a filter
 
 [Filters][vizro.models.Filter] enable you to interact with the dashboard by selecting specific data points to display.
@@ -477,7 +485,7 @@ To add a filter to the dashboard, follow these steps:
 
 1. Add a [`Filter`][vizro.models.Filter] to the `controls` list of the page.
 1. Specify the column to be filtered using the `column` argument of the [Filter][vizro.models.Filter].
-1. Change the `selector` in of the [`Filter`][vizro.models.Filter] to a [`Checklist`][vizro.models.Checklist]. For further customization, refer to the guide on [`How to use selectors`](../user-guides/selectors.md).
+1. Change the `selector` in one of the `Filters` to a [`Checklist`][vizro.models.Checklist]. For further customization, refer to the guide on [`How to use selectors`](../user-guides/selectors.md).
 
 !!! example "Add a filter"
     === "Snippet - Filter"
@@ -485,8 +493,8 @@ To add a filter to the dashboard, follow these steps:
         controls=[vm.Filter(column="day"), vm.Filter(column="time", selector=vm.Checklist()), vm.Filter(column="size")]
         ```
 
-    === "app.py"
-        ```{.python pycafe-link}
+    === "Code - dashboard"
+        ```{.python pycafe-link hl_lines="61"}
         import vizro.models as vm
         import vizro.plotly.express as px
         from vizro import Vizro
@@ -557,15 +565,17 @@ To add a filter to the dashboard, follow these steps:
     === "Result"
         [![SecondPage5]][secondpage5]
 
-You will see that a [`Dropdown`][vizro.models.Dropdown] is selected for categorical data and a [`RangeSlider`][vizro.models.RangeSlider] for numerical data. Additionally, the Filters are applied to all components on the page by default. If you want to apply a filter to specific components only, check out the [How to use filters](../user-guides/filters.md) guide.
+You will see that a [`Dropdown`][vizro.models.Dropdown] is selected by default for categorical data and a [`RangeSlider`][vizro.models.RangeSlider] for numerical data. Additionally, the Filters are applied to all components on the page. 
+
+If you want to apply a filter to specific components only, check out the [How to use filters](../user-guides/filters.md) guide.
 
 **Great work! 📖 We've just completed our second dashboard page and learned how to:**
 
 1. [Add a chart to a page using the visual vocabulary](#31-add-a-chart)
 1. [Add KPI cards to display summary statistics](#32-add-kpi-cards)
 1. [Add Tabs to switch views](#33-add-tabs-to-switch-views)
-1. [Arrange our components by customizing the layout](#34-configure-the-layout).
-1. [Add a filter to interact with the dashboard](#35-add-a-filter).
+1. [Arrange our components by customizing the layout](#34-configure-the-layout)
+1. [Add a filter to interact with the dashboard](#35-add-a-filter)
 
 ## 4. Create a third page
 
@@ -722,7 +732,7 @@ Run the code below to apply the layout to the dashboard page:
         layout=vm.Layout(grid=[[0, 1], [2, 2]]),
         ```
 
-    === "app.py"
+    === "Code - dashboard"
         ```{.python pycafe-link}
         import vizro.models as vm
         import vizro.plotly.express as px
@@ -970,7 +980,7 @@ To create a custom chart, we follow these steps:
             return fig
         ```
 
-    === "app.py"
+    === "Code - dashboard"
         ```{.python pycafe-link}
         import vizro.models as vm
         import vizro.plotly.express as px
@@ -1114,7 +1124,7 @@ Your directory structure should look like this:
         dashboard = vm.Dashboard(pages=[first_page, second_page, third_page], title="Tips Analysis Dashboard")
         ```
 
-    === "app.py"
+    === "Code - dashboard"
         ```{.python pycafe-link}
         import vizro.models as vm
         import vizro.plotly.express as px
@@ -1258,7 +1268,7 @@ To create a custom navigation bar, follow these steps:
         )
         ```
 
-    === "app.py"
+    === "Code - dashboard"
         ```{.python pycafe-link}
         import vizro.models as vm
         import vizro.plotly.express as px
