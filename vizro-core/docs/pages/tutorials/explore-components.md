@@ -17,9 +17,7 @@ We will use the [tips dataset](https://plotly.com/python-api-reference/generated
 
 ## 1. (Optional) Install Vizro and get ready to run your code
 
-You can experiment with the code for this tutorial directly on [PyCafe](https://py.cafe/vizro-official/vizro-tips-analysis-tutorial),
-so there's no need to install Vizro locally. However, we recommend starting with a [blank Vizro project on PyCafe](https://py.cafe/snippet/vizro/v1) and copying the code snippets
-from this tutorial to see how everything integrates. For more about how this works, check out the [PyCafe documentation](https://py.cafe/docs/apps/vizro).
+You can experiment with the code for this tutorial directly on [PyCafe](https://py.cafe/vizro-official/vizro-tips-analysis-tutorial), so there's no need to install Vizro locally. However, we recommend starting with a [blank Vizro project on PyCafe](https://py.cafe/snippet/vizro/v1) and copying the code snippets from this tutorial to see how everything integrates. For more about how this works, check out the [PyCafe documentation](https://py.cafe/docs/apps/vizro).
 
 However, if you prefer working in a Notebook or Python script, you should [install Vizro](../user-guides/install.md).
 
