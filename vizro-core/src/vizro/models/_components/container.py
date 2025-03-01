@@ -36,21 +36,21 @@ class Container(VizroBaseModel):
     )
     title: str = Field(description="Title to be displayed.")
     layout: Annotated[Optional[Layout], AfterValidator(set_layout), Field(default=None, validate_default=True)]
-    theme: Optional[Literal["elevated", "filled", "outlined"]] = Field(
+    theme: Optional[Literal["filled", "outlined"]] = Field(
         default=None,
-        description="Layout theme to be applied across the dashboard. Defaults to `None`."
+        description="Specifies the style preset for the container. Options are 'filled' or 'outlined'. Defaults to `None`.",
     )
 
     @_log_call
     def build(self):
-        if self.theme=="outlined":
-            classname= "border p-4"
-        elif self.theme=="filled":
-            classname= "bg-container p-4"
-        elif self.theme == "elevated":
-            classname = "shadow p-4 m-4"
+        # TODO: TBD on how to encode 'elevated' from a design perspective, as box-shadows are not visible on a dark theme
+        # So it needs to be properly designed and tested out (margins have to be added etc.).
+        if self.theme == "outlined":
+            classname = "border p-3"
+        elif self.theme == "filled":
+            classname = "bg-container p-3"
         else:
-            classname= ""
+            classname = ""
 
         # Title is not displayed if Container is inside Tabs using CSS combinators (only applies to outer container)
         # Other options we might want to consider in the future to hide the title:
@@ -76,5 +76,5 @@ class Container(VizroBaseModel):
                 components_container,
             ],
             fluid=True,
-            className=classname
+            className=classname,
         )
