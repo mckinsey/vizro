@@ -13,7 +13,7 @@ By the end of this tutorial, we will:
 - Add a logo and title to the dashboard.
 - Customize the navigation within the dashboard.
 
-We will use the [tips dataset](https://plotly.com/python-api-reference/generated/plotly.express.data.html#plotly.express.data.tips) for this example. This dataset was collected by a waiter who recorded information about each tip he received over several months at a restaurant. 
+We will use the [tips dataset](https://plotly.com/python-api-reference/generated/plotly.express.data.html#plotly.express.data.tips) for this example. This dataset was collected by a waiter who recorded information about each tip he received over several months at a restaurant.
 
 **Let's find out when he received the highest tips! 🚀**
 
