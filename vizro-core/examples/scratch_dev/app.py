@@ -59,13 +59,6 @@ page_three = vm.Page(
             ],
             theme="filled",
         ),
-        vm.Container(
-            title="Container III",
-            components=[
-                vm.Graph(figure=px.scatter(iris, x="sepal_width", y="sepal_length", color="species")),
-            ],
-            theme="elevated",
-        ),
     ],
 )
 dashboard = vm.Dashboard(pages=[page, page_two, page_three])

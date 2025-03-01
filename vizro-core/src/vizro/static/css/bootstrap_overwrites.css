@@ -113,5 +113,4 @@ label[for="theme-selector"] {
 /* Introduce vizro utility classes here */
 .bg-container {
     background: var(--surfaces-bg-card);
-    padding: 1rem;
 }
