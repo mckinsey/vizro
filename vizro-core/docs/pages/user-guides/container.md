@@ -168,8 +168,7 @@ vm.Container(
 
 ## Styled containers
 
-To make the `Container` stand out as a distinct section in your dashboard, you can select from the predefined styles 
-available in its `theme` argument.
+To make the `Container` stand out as a distinct section in your dashboard, you can select from the predefined styles available in its `theme` argument.
 
 !!! example "Container with visual distinction"
     === "app.py"
