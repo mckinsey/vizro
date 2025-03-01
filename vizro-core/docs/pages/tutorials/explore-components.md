@@ -267,14 +267,14 @@ Let's add two KPI cards to our second page. Follow these steps:
 
 ### 3.3. Add Tabs to switch views
 
-Suppose we don't want to display both histograms simultaneously and prefer to switch between these views. We can achieve this by using the [`Tabs`][vizro.models.Tabs] component to switch between views. For more details on using the `Tabs component, refer to our [Tabs user-guide](../user-guides/tabs.md).
+Suppose we don't want to display both histograms simultaneously and prefer to switch between these views. We can achieve this by using the [`Tabs`][vizro.models.Tabs] component. For more details on using the `Tabs`, refer to our [Tabs user-guide](../user-guides/tabs.md).
 
 Let's place the two histograms in separate tabs. Follow these steps:
 
-1. Add each `Graph` to the `components` list of a [`Container`][vizro.models.Container].
+1. Add each `Graph` to the `components` of a [`Container`][vizro.models.Container].
 1. Set the `title` argument inside each `Container` to the desired tab name.
 1. Add the Containers to the `tabs` list of the `Tabs` component.
-1. Add the `Tabs` component to the `components` list of the `Page`.
+1. Add the `Tabs` component to the `components` of the `Page`.
 
 !!! example "Add Tabs"
     === "Snippet - Tabs"
@@ -483,7 +483,7 @@ Run the code below to apply the layout to the dashboard page:
 
 To add a filter to the dashboard, follow these steps:
 
-1. Add a [`Filter`][vizro.models.Filter] to the `controls` list of the page.
+1. Add a [`Filter`][vizro.models.Filter] to the `controls` list of the `Page`.
 1. Specify the column to be filtered using the `column` argument of the [Filter][vizro.models.Filter].
 1. Change the `selector` in one of the `Filters` to a [`Checklist`][vizro.models.Checklist]. For further customization, refer to the guide on [`How to use selectors`](../user-guides/selectors.md).
 
@@ -588,13 +588,13 @@ This page will feature a bar chart, a violin chart, and a heatmap. We'll once ag
 This step should feel familiar. Let's add all three charts to the page.
 
 1. Create a third [Page][vizro.models.Page] and store it in a variable called `third_page`. Set its title to "Analysis".
-1. Add three Vizro [Graphs][vizro.models.Graph] to the components list.
+1. Add three Vizro [Graphs][vizro.models.Graph] to the `components` of the `Page`.
 1. For each `Graph`, use the `figure` argument to provide one of the Plotly express functions: For `px.violin and px.density_heatmap`, you can use the Plotly figure code directly from the visual vocabulary. For `px.bar`, copy the code but update the `data`, `x`, and `y` arguments to match our dataset.
     - [px.violin from the visual-vocabulary](https://vizro-demo-visual-vocabulary.hf.space/distribution/violin)
     - [px.bar from the visual-vocabulary](https://vizro-demo-visual-vocabulary.hf.space/magnitude/column)
     - [px.density_heatmap from the visual-vocabulary](https://vizro-demo-visual-vocabulary.hf.space/time/heatmap)
 1. Provide a title for each `Graph`.
-1. Add the new page to the list of pages in the [Dashboard][vizro.models.Dashboard].
+1. Add the new page to the list of `pages` in the [Dashboard][vizro.models.Dashboard].
 
 !!! example "Third page"
     === "Snippet - third page"
@@ -717,7 +717,7 @@ You may notice that the third chart is not visible. This issue can occur with Pl
 
 This step should also feel more familiar by now. Let's arrange the charts to provide more space to the heatmap.
 
-In the following layout configuration, the layout is divided into two columns and two rows. The bar chart (index 0) and violin chart (index 1) are placed side by side in the first row, while the heatmap (index 2) spans the entire second row. Remember the index corresponds to the order in which the components are added to the `components` list.
+In the following layout configuration, the layout is divided into two columns and two rows. The bar chart (index 0) and violin chart (index 1) are placed side by side in the first row, while the heatmap (index 2) spans the entire second row. Remember the index corresponds to the order in which the components are added to the `components`.
 
 ```
 grid = [[0, 1],
@@ -835,8 +835,8 @@ In creating a [`Parameter`][vizro.models.Parameter] object, you define the `targ
 
 To add a parameter to the dashboard:
 
-1. Add a [Parameter][vizro.models.Parameter] to the `controls` list of the page.
-1. Assign an `id` to each `Graph` in the `components` list that the parameter should target.
+1. Add a [Parameter][vizro.models.Parameter] to the `controls` of the page.
+1. Assign an `id` to each `Graph` in the `components` that the parameter should target.
 1. Define the parameter's `targets` using the format `component-id.argument`.
 1. Set the `selector` of the [Parameter][vizro.models.Parameter] to a [`RadioItems`][vizro.models.RadioItems].
 1. Provide options for the `RadioItems` selector.
