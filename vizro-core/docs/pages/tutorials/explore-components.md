@@ -163,7 +163,7 @@ Follow these steps to add a histogram to the page:
     === "Result"
         [![SecondPage]][secondpage]
 
-Notice that the charts are automatically stacked vertically in the order specified under `components`, each taking up equal space. This is the default behavior in Vizro, but we'll customize the layout later! 
+Notice that the charts are automatically stacked vertically in the order specified under `components`, each taking up equal space. This is the default behavior in Vizro, but we'll customize the layout later!
 
 Additionally, a page navigation has been added to the left side of the dashboard, allowing you to switch between the two pages we’ve created.
 
@@ -267,7 +267,7 @@ Let's add two KPI cards to our second page. Follow these steps:
 
 ### 3.3. Add Tabs to switch views
 
-Suppose we don't want to display both histograms simultaneously and prefer to switch between these views. We can achieve this by using the [`Tabs`][vizro.models.Tabs] component to switch between views. For more details on using the `Tabs component, refer to our [Tabs user-guide](../user-guides/tabs.md).
+Suppose we don't want to display both histograms simultaneously and prefer to switch between these views. We can achieve this by using the [`Tabs`][vizro.models.Tabs] component to switch between views. For more details on using the \`Tabs component, refer to our [Tabs user-guide](../user-guides/tabs.md).
 
 Let's place the two histograms in separate tabs. Follow these steps:
 
@@ -368,7 +368,7 @@ Let's place the two histograms in separate tabs. Follow these steps:
     === "Result"
         [![SecondPage3]][secondpage3]
 
-**Take a moment to switch between the Tabs! 🕰️** 
+**Take a moment to switch between the Tabs! 🕰️**
 
 As you explore the dashboard, you might notice that the current layout could use some adjustments. The histograms appear cramped, while the KPI cards have too much space. In the next section, we'll learn how to configure the layout and better arrange the components.
 
@@ -376,12 +376,11 @@ As you explore the dashboard, you might notice that the current layout could use
 
 By default, Vizro places each element in the order it was added to `components`, and spaces them equally. You can use the [`Layout`][vizro.models.Layout] to control the placement and size of components on the page. To learn more about how to configure layouts, check out [How to use layouts](../user-guides/layouts.md).
 
-In the following layout configuration, the layout is divided into **four columns** and **four rows**.
-The numbers in the grid correspond to the index of the components in the `components` list. 
+In the following layout configuration, the layout is divided into **four columns** and **four rows**. The numbers in the grid correspond to the index of the components in the `components` list.
 
 - The first KPI card (0) is positioned at the top, occupying the first cell in the first row.
 - The second KPI card (1) is positioned to the right of the first KPI card.
-- There are two empty cells to the right of the KPI cards (-1). 
+- There are two empty cells to the right of the KPI cards (-1).
 - The `Tabs` component (2) is placed below the KPI cards, spanning all cells across the remaining three rows.
 
 ```
@@ -565,7 +564,7 @@ To add a filter to the dashboard, follow these steps:
     === "Result"
         [![SecondPage5]][secondpage5]
 
-You will see that a [`Dropdown`][vizro.models.Dropdown] is selected by default for categorical data and a [`RangeSlider`][vizro.models.RangeSlider] for numerical data. Additionally, the Filters are applied to all components on the page. 
+You will see that a [`Dropdown`][vizro.models.Dropdown] is selected by default for categorical data and a [`RangeSlider`][vizro.models.RangeSlider] for numerical data. Additionally, the Filters are applied to all components on the page.
 
 If you want to apply a filter to specific components only, check out the [How to use filters](../user-guides/filters.md) guide.
 
