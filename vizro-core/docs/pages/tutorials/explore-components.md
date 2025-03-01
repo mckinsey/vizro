@@ -1,27 +1,27 @@
 # Explore Vizro
 
-In this tutorial, we will build an interactive dashboard with multiple pages, incorporating a wide range of Vizro's components. If you're seeking a quickstart guide, consider reviewing the \[first dashboard tutorial\]([first dashboard tutorial](../tutorials/first-dashboard.md)) before diving into this one.
+In this tutorial, we will build an interactive dashboard with multiple pages, incorporating a wide range of Vizro's components. If you're seeking a quickstart guide, consider reviewing the [first dashboard tutorial](../tutorials/first-dashboard.md) before diving into this one.
 
 By the end of this tutorial, we will:
 
-- Explore most of [Vizro's components](../user-guides/components.md)
+- Explore most of [Vizro's components](../user-guides/components.md).
 - Use the [Vizro visual vocabulary](https://vizro-demo-visual-vocabulary.hf.space/) to guide our chart creation.
 - Design custom charts with [Plotly Express](https://plotly.com/python-api-reference/plotly.express.html).
 - Develop multiple pages for our dashboard.
 - Customize the layout of these pages.
-- Add interactivity to our dashboard using controls and actions.
-- Set up navigation within the dashboard.
-- Incorporate a logo into our dashboard.
+- Add interactivity to the dashboard using filters and parameters.
+- Add a logo and title to the dashboard.
+- Customize the navigation within the dashboard.
 
-We will use the [tips dataset](https://plotly.com/python-api-reference/generated/plotly.express.data.html#plotly.express.data.tips) for this example. This dataset was collected by a waiter who recorded information about each tip he received over several months at a restaurant. **Let's find out when he received the highest tips! 🚀**
+We will use the [tips dataset](https://plotly.com/python-api-reference/generated/plotly.express.data.html#plotly.express.data.tips) for this example. This dataset was collected by a waiter who recorded information about each tip he received over several months at a restaurant. 
+
+**Let's find out when he received the highest tips! 🚀**
 
 ## 1. (Optional) Install Vizro and get ready to run your code
 
-You can experiment with the code for this tutorial directly on [PyCafe](https://py.cafe/vizro-official/vizro-tips-analysis-tutorial),
-so there's no need to install Vizro locally. However, we recommend starting with a [blank Vizro project on PyCafe](https://py.cafe/snippet/vizro/v1) and copying the code snippets
-from this tutorial to see how everything integrates. For more about how this works, check out the [PyCafe documentation](https://py.cafe/docs/apps/vizro).
+You can experiment with the code for this tutorial directly on [PyCafe](https://py.cafe/vizro-official/vizro-tips-analysis-tutorial), so there's no need to install Vizro locally. However, we recommend starting with a [blank Vizro project on PyCafe](https://py.cafe/snippet/vizro/v1) and copying the code snippets from this tutorial to see how everything integrates. For more about how this works, check out the [PyCafe documentation](https://py.cafe/docs/apps/vizro).
 
-However, if you prefer working in a Notebook or Python script, you should [install Vizro](../user-guides/install.md).
+If you prefer working in a Notebook or Python script, you should [install Vizro](../user-guides/install.md).
 
 ??? note "To run the dashboard in a Notebook or script"
     Paste the code in a Notebook cell, run the Notebook, and evaluate it.
@@ -44,16 +44,16 @@ However, if you prefer working in a Notebook or Python script, you should [insta
 
 In this section, we will create a new [`Page`][vizro.models.Page] and store it inside a variable called `first_page`.
 
-A [Page][vizro.models.Page] model is the foundation of any Vizro dashboard. A page uses a set of [component types](../user-guides/components.md) to display content. For a comprehensive list of available components, refer to the [components overview page](../user-guides/components.md).
+A [Page][vizro.models.Page] model is the foundation of any Vizro dashboard. A page uses a set of components to display content. For a comprehensive list of available components, refer to the [components overview page](../user-guides/components.md).
 
 ### 2.1. Add a table
 
 To start, let's get an overview of the data and display it in a table using [AgGrid][vizro.models.AgGrid]. To create a page and add a table to it, follow these steps:
 
 1. Import all relevant packages and load in the data for this tutorial.
-1. Create a [Page][vizro.models.Page] and set the title to "Data".
-1. Add a Vizro [AgGrid][vizro.models.AgGrid] to the components list.
-1. Inside the `figure` argument of the `AgGrid`, use the `dash_ag_grid` function.
+1. Create a [Page][vizro.models.Page] and set the `title` to "Data".
+1. Add an [AgGrid][vizro.models.AgGrid] to the `components list.
+1. Inside the `figure` argument of the `AgGrid`, use the [`dash_ag_grid`][vizro.tables.dash_ag_grid] function.
 1. Provide details about the data source in the `footer` argument of the `AgGrid`.
 
 !!! example "First Page"
@@ -87,13 +87,15 @@ To start, let's get an overview of the data and display it in a table using [AgG
     === "Result"
         [![FirstPage]][firstpage]
 
-As you can see from the code, `first_page` is added to the [`Dashboard`][vizro.models.Dashboard] and the dashboard is displayed by running `Vizro().build(dashboard).run()`.
+**Great job! We've successfully created our first page! 🎉**
 
-Take a moment to explore the data in the table. You can sort, filter, and search within the \`AgGrid columns to gain a better understanding of the dataset.
+As you can see from the code, `first_page` is added to the [`Dashboard`][vizro.models.Dashboard] and the dashboard is displayed by running `Vizro().build(dashboard).run()`.
+Once the dashboard completes running, you should be able to open your web browser and see the dashboard under `localhost:8050`.
+
+Take a moment to explore the data in the table. You can sort, filter, and search within the `AgGrid` columns to gain a better understanding of the dataset.
 
 You'll notice a toggle in the top-right corner of the dashboard. This allows you to switch between dark and light themes. Give it a try!
 
-**Great job! We've successfully created our first page! 🎉**
 
 ## 3. Create a second page
 
@@ -105,10 +107,10 @@ Vizro leverages [Graph][vizro.models.Graph] models and Plotly Express functions 
 
 Follow these steps to add a histogram to the page:
 
-1. Create a second [Page][vizro.models.Page] and store it in a variable called second_page. Set its title to "Summary".
-1. Add a Vizro [Graph][vizro.models.Graph] to the components list.
+1. Create a second [Page][vizro.models.Page] and store it in a variable called `second_page`. Set its `title` to "Summary".
+1. Add a Vizro [Graph][vizro.models.Graph] to the `components` list.
 1. Inside the `figure` argument of the `Graph`, use the code for the [px.histogram from the visual-vocabulary](https://vizro-demo-visual-vocabulary.hf.space/distribution/histogram).
-1. Add the new page to the list of pages in the [Dashboard][vizro.models.Dashboard] to display it by calling `vm.Dashboard(pages=[first_page,second_page])`.
+1. Add the new page to the list of `pages` in the [Dashboard][vizro.models.Dashboard] to display it by calling `vm.Dashboard(pages=[first_page,second_page])`.
 
 !!! example "Second Page"
     === "Snippet - second page"
@@ -170,8 +172,8 @@ You can combine and arrange various types of `components` on a dashboard page. R
 
 Let's add two KPI cards to our second page. Follow these steps:
 
-1. Add a [Figure][vizro.models.Figure] to the list of components
-1. Inside the `figure` argument of the `Figure`, use the \`kpi_card function.
+1. Add a [Figure][vizro.models.Figure] to the list of `components`
+1. Inside the `figure` argument of the `Figure`, use the `kpi_card` function.
 1. Configure your `kpi_card` by setting the `value_column`, `agg_func`, and `value_format` and `title` arguments. To learn more about how to configure KPI cards, check out [our how-to-guide on KPI vards](../user-guides/figure.md#key-performance-indicator-kpi-cards).
 1. Repeat the above steps to add another KPI card to the page.
 
@@ -1395,7 +1397,7 @@ Vizro doesn't end here, and we only covered the key features, but there is still
     - [custom charts](../user-guides/custom-charts.md).
     - [custom figures](../user-guides/custom-figures.md).
 - How to add custom styling using [static assets](../user-guides/assets.md) such as custom css or JavaScript files.
-- How to [customise your data connection](../user-guides/data.md)
+- How to [customize your data connection](../user-guides/data.md)
 - How to create dashboards from `yaml`, `dict` or `json` following the [dashboard guide](../user-guides/dashboard.md).
 - How to [deploy your dashboard](../user-guides/run-deploy.md)
 - How to use [Vizro-AI](https://vizro.readthedocs.io/projects/vizro-ai/en/vizro-ai-0.3.6/) to create charts with GenAI
