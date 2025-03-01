@@ -393,11 +393,19 @@
           ],
           "default": null
         },
-        "background": {
-          "default": false,
-          "description": "Flag indicating whether to apply default container background color.",
-          "title": "Background",
-          "type": "boolean"
+        "theme": {
+          "anyOf": [
+            {
+              "enum": ["filled", "outlined"],
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "Specifies the style preset for the container. Options are 'filled' or 'outlined'. Defaults to `None`.",
+          "title": "Theme"
         }
       },
       "required": ["components", "title"],
