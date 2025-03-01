@@ -105,6 +105,7 @@ class VizroChatComponent(VizroBaseModel):
     input_placeholder: str = "Ask me a question..."
     input_height: str = "80px"
     button_text: str = "Send"
+    initial_message: str = "Hello! How can I help you today?"
     vizro_app: Vizro
     processor: ChatProcessor = EchoProcessor()  # Default to echo processor
     show_settings: bool = True  # Parameter to control settings visibility
@@ -251,7 +252,7 @@ class VizroChatComponent(VizroBaseModel):
             """Initialize messages if they don't exist."""
             if not current_messages:
                 print(f"Initializing messages for {self.id}")  # Debug log
-                return json.dumps([{"role": "assistant", "content": "Hello! How can I help you today?"}])
+                return json.dumps([{"role": "assistant", "content": self.initial_message}])
             print(f"Messages already exist for {self.id}: {current_messages}")  # Debug log
             return current_messages
 
