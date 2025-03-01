@@ -76,7 +76,7 @@ MESSAGE_STYLE = {
     "wordBreak": "break-word",
     "width": "fit-content",
     "minWidth": "100px",
-    "lineHeight": "1.25",
+    "lineHeight": "1.5",
     "letterSpacing": "0.2px",
     "borderRadius": "10px",
 }
@@ -274,9 +274,21 @@ class VizroChatComponent(VizroBaseModel):
                     
                     for msg in messages:
                         is_user = msg["role"] == "user"
+                        content = msg["content"]
+                        
+                        # For assistant messages, use dcc.Markdown
+                        if not is_user:
+                            content = dcc.Markdown(
+                                content,
+                                style={
+                                    "margin": 0,
+                                    "padding": 0,
+                                }
+                            )
+                        
                         chat_elements.append(
                             html.Div(
-                                msg["content"],
+                                content,
                                 style={
                                     **MESSAGE_STYLE,
                                     "borderLeft": f"4px solid {'#aaa9ba' if is_user else '#00b4ff'}",
@@ -320,7 +332,7 @@ class VizroChatComponent(VizroBaseModel):
                     tempUserDiv.style.wordBreak = "break-word";
                     tempUserDiv.style.width = "fit-content";
                     tempUserDiv.style.minWidth = "100px";
-                    tempUserDiv.style.lineHeight = "1.25";
+                    tempUserDiv.style.lineHeight = "1.5";
                     tempUserDiv.style.letterSpacing = "0.2px";
                     tempUserDiv.style.borderRadius = "10px";
                     tempUserDiv.style.borderLeft = "4px solid #aaa9ba";
@@ -351,7 +363,7 @@ class VizroChatComponent(VizroBaseModel):
                         tempContainer.style.wordBreak = "break-word";
                         tempContainer.style.width = "fit-content";
                         tempContainer.style.minWidth = "100px";
-                        tempContainer.style.lineHeight = "1.25";
+                        tempContainer.style.lineHeight = "1.5";
                         tempContainer.style.letterSpacing = "0.2px";
                         tempContainer.style.borderLeft = "4px solid #00b4ff";
                         tempContainer.style.borderRadius = "10px";
