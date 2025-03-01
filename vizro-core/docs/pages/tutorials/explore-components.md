@@ -1222,10 +1222,10 @@ If you can't see the logo, make sure the image is called `logo` and is stored in
 
 ### 5.2 Customize the navigation
 
-By default, a navigation panel on the left side allows users to switch between the pages. In this section, we will 
+By default, a navigation panel on the left side allows users to switch between the pages. In this section, we will
 customize this by creating a custom navigation bar.
 
-The custom navigation bar will feature two icons: one for the "Data" page and another for the "Summary" and "Analysis" 
+The custom navigation bar will feature two icons: one for the "Data" page and another for the "Summary" and "Analysis"
 pages.
 
 To create a custom navigation bar, follow these steps:
@@ -1382,18 +1382,25 @@ Take a moment to explore the navigation bar! Hover over the icons to view the to
 
 After completing the tutorial you now have a solid understanding of the main elements of Vizro and how to bring them together to create dynamic and interactive data visualizations.
 
-You can find out more about Vizro's component by reading the [components overview page](../user-guides/components.md). 
-To gain more in-depth knowledge about the usage and configuration details of individual controls, check out the 
-guides dedicated to [Filters](../user-guides/filters.md), [Parameters](../user-guides/parameters.md), and [Selectors](../user-guides/selectors.md). 
+You can find out more about Vizro's component by reading the [components overview page](../user-guides/components.md).
+To gain more in-depth knowledge about the usage and configuration details of individual controls, check out the
+guides dedicated to [Filters](../user-guides/filters.md), [Parameters](../user-guides/parameters.md), and [Selectors](../user-guides/selectors.md).
 
 If you'd like to understand more about different ways to configure the navigation of your dashboard, head to [Navigation](../user-guides/navigation.md).
 
 Vizro doesn't end here, and we only covered the key features, but there is still much more to explore! You can learn:
 
-- How to create you own components under [custom components](../user-guides/custom-components.md).
-- How to add custom styling using [static assets](../user-guides/assets.md) such as custom css or JavaScript files.
 - How to use [Actions](../user-guides/actions.md) for example, for chart interaction or custom controls.
+- How to [extend and customize Vizro dashboards](../user-guides/extensions.md) by creating your own:
+  - [custom components](../user-guides/custom-components.md).
+  - [custom actions](../user-guides/custom-actions.md).
+  - [custom tables](../user-guides/custom-tables.md).
+  - [custom charts](../user-guides/custom-charts.md).
+  - [custom figures](../user-guides/custom-figures.md).
+- How to add custom styling using [static assets](../user-guides/assets.md) such as custom css or JavaScript files.
+- How to [customise your data connection](../user-guides/data.md)
 - How to create dashboards from `yaml`, `dict` or `json` following the [dashboard guide](../user-guides/dashboard.md).
+- How to [deploy your dashboard](../user-guides/run-deploy.md)
 
 [dashboard]: ../../assets/tutorials/dashboard/11-dashboard-title-logo.png
 [dashboardfinal]: ../../assets/tutorials/dashboard/12-dashboard-navigation.png
