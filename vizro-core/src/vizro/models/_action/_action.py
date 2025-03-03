@@ -233,13 +233,6 @@ class NewAction(VizroBaseModel):
     # targets: Annotated[list[ModelID], "reserved"] = None
     # either two type hint or different sentinel value
 
-    # just here to make filter_interacion etc. work, in reality should be instance and not class and use captured
-    # callable
-    function: ClassVar[Callable]
-
-    # or just keep it as abstract staticmethod
-    # should not be optional, just temporarily that before rewrite filter_interaction
-
     # implementation dependent, can't go in schema. Prefix with vizro_ or _ or similar?
     # RUN TIME FUNCTION
     # not classvar actually if captured callable since depends on this instance's inputs
@@ -260,21 +253,9 @@ class NewAction(VizroBaseModel):
     def actual_function(self):
         return
 
-    def _get_callback_mapping(self):
-        """Builds callback inputs and outputs for the Action model callback, and returns action required components.
-
-        callback_inputs, and callback_outputs are "dash.State" and "dash.Output" objects made of three parts:
-            1. User configured inputs/outputs - for custom actions,
-            2. Vizro configured inputs/outputs - for predefined actions,
-            3. Hardcoded inputs/outputs - for custom and predefined actions
-                (enable callbacks to live inside the Action loop).
-
-        Returns: List of required components (e.g. dcc.Download) for the Action model added to the `Dashboard`
-            container. Those components represent the return value of the Action build method.
-        """
-        return self.inputs, self.outputs, self.dash_components
-
     # DIFFERENT TYPES TO NewCustomAction since dict[str, Output] and not just jsonable stuff - inconsistent format c.f. NewCustomAction.outputs but that is sort of ok
+    # In NewCustomAction this is field and not property
+    # not sure if this should exist in NewAction at all
     @property
     def outputs(self) -> dict[str, Output]:
         # TODO NOW: tidy and decide where this bit of code goes and how to get targets for filter and opl vs. parameter
@@ -298,7 +279,7 @@ class NewAction(VizroBaseModel):
             for target in output_targets
         }
 
-    # basically same as NewCustomAction
+    # identical to NewCustomAction
     @property
     def inputs(self) -> ControlInputs:
         from vizro.actions import filter_interaction
@@ -318,20 +299,37 @@ class NewAction(VizroBaseModel):
             "filter_interaction": _get_inputs_of_figure_interactions(page=page, model_type=filter_interaction),
         }
 
-        # basically same as NewCustomAction
         runtime_inputs = {}
-        # exclude self and hence all static args
-        for key in inspect.signature(self.actual_function).parameters:
-            if key in reserved_kwargs:
+        # excludes self and hence all static args
+        # if user has used reserved_kwargs then give user preference over built-in
+        # this keeps it future-proof for adding new reserved kwargs with no need for vizro_ prefix or type hint
+        for key in inspect.signature(self.function._function).parameters:  # all arguments
+            if key in reserved_kwargs and key not in self.function._arguments:  # bound arguments
                 runtime_inputs[key] = reserved_kwargs[key]
             else:
                 runtime_inputs[key] = State(*self.function[key].split("."))
 
         return runtime_inputs
 
+    # ALWAYS EMPTY for NewCustomActoin
     @property
     def dash_components(self) -> list[Component]:
         return []
+
+    # ALMOST SAME AS NewCustomAction
+    def _get_callback_mapping(self):
+        """Builds callback inputs and outputs for the Action model callback, and returns action required components.
+
+        callback_inputs, and callback_outputs are "dash.State" and "dash.Output" objects made of three parts:
+            1. User configured inputs/outputs - for custom actions,
+            2. Vizro configured inputs/outputs - for predefined actions,
+            3. Hardcoded inputs/outputs - for custom and predefined actions
+                (enable callbacks to live inside the Action loop).
+
+        Returns: List of required components (e.g. dcc.Download) for the Action model added to the `Dashboard`
+            container. Those components represent the return value of the Action build method.
+        """
+        return self.inputs, self.outputs, self.dash_components
 
 
 NewAction.build = Action.build
@@ -354,10 +352,7 @@ class NewCustomAction(VizroBaseModel):
     outputs: list[str]
 
     # all args are runtime states for now anyway - could add type hint for literals in future or just enable through
-    # class only
-    # hence no def runtime_args here
-    # no dash_components possible here
-    # c.f. NewAction
+    # class implementation only
     @property
     def inputs(self) -> ControlInputs:
         from vizro.actions import filter_interaction
@@ -377,18 +372,24 @@ class NewCustomAction(VizroBaseModel):
             "filter_interaction": _get_inputs_of_figure_interactions(page=page, model_type=filter_interaction),
         }
 
-        # assume all arguments are runtime arguments
         runtime_inputs = {}
-        bound_args = {key: State(*value.split(".")) for key, value in self.function._arguments.items()}
-        runtime_inputs |= bound_args
-        runtime_inputs |= {
-            key: value
-            for key, value in reserved_kwargs.items()
-            if key in inspect.signature(self.function._function).parameters
-        }
+        # excludes self and hence all static args
+        # if user has used reserved_kwargs then give user preference over built-in
+        # this keeps it future-proof for adding new reserved kwargs with no need for vizro_ prefix or type hint
+        for key in inspect.signature(self.function._function).parameters:  # all arguments
+            if key in reserved_kwargs and key not in self.function._arguments:  # bound arguments
+                runtime_inputs[key] = reserved_kwargs[key]
+            else:
+                runtime_inputs[key] = State(*self.function[key].split("."))
 
         return runtime_inputs
 
+    # ALWAYS EMPTY for this sort of udf
+    @property
+    def dash_components(self) -> list[Component]:
+        return []
+
+    # Same as current Action model for outputs
     def _get_callback_mapping(self):
         """Builds callback inputs and outputs for the Action model callback, and returns action required components.
 
@@ -401,14 +402,8 @@ class NewCustomAction(VizroBaseModel):
         Returns: List of required components (e.g. dcc.Download) for the Action model added to the `Dashboard`
             container. Those components represent the return value of the Action build method.
         """
-        # just same as current Action model for outputs
         outputs = [Output(*output.split(".")) for output in self.outputs]
         return self.inputs, outputs, self.dash_components
-
-    # ALWAYS EMPTY for this sort of udf
-    @property
-    def dash_components(self) -> list[Component]:
-        return []
 
 
 Action.register(NewCustomAction)

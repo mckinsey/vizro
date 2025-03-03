@@ -34,12 +34,10 @@ class export_data(NewAction):
 
     runtime_arg: str
 
-    # assume always runtime unless explicitly set as static to be consistent with UDF
-    # so STATIC IS SPECIAL CASE - YES
     def actual_function(
         self,
         runtime_arg,
-        filters,  # maybe need type hints
+        filters,
         parameters,
         filter_interaction,
     ) -> dict[str, Any]:
