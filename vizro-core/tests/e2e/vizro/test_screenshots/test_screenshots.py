@@ -1,11 +1,8 @@
-import subprocess
-from pathlib import Path
-
 import pytest
-from e2e.asserts import assert_image_equal, assert_pixelmatch, make_screenshot_and_paths
+from e2e.asserts import assert_image_equal, make_screenshot_and_paths
 from e2e.vizro import constants as cnst
 from e2e.vizro.checkers import check_graph_color, check_theme_color
-from e2e.vizro.navigation import accordion_select, page_select, select_slider_handler
+from e2e.vizro.navigation import accordion_select, page_select
 from e2e.vizro.paths import kpi_card_path, nav_card_link_path, theme_toggle_path
 from e2e.vizro.waiters import callbacks_finish_waiter, graph_load_waiter
 
@@ -91,55 +88,6 @@ def test_tabs_parameters_page(dash_br):
         page_name=cnst.PARAMETERS_PAGE,
         graph_id=cnst.BAR_GRAPH_ID,
     )
-
-
-@pytest.mark.parametrize(
-    "cache, slider_id",
-    [
-        ("cached", cnst.SLIDER_DYNAMIC_DATA_CACHED_ID),
-        ("cached_not", cnst.SLIDER_DYNAMIC_DATA_ID),
-    ],
-)
-def test_data_dynamic_parametrization(dash_br, cache, slider_id):
-    """This test checks parametrized data loading and how it is working with and without cache."""
-    first_screen = f"{cache}_screen_first_test_data_dynamic_parametrization.png"
-    second_screen = f"{cache}_screen_second_test_data_dynamic_parametrization.png"
-    third_screen = f"{cache}_screen_third_test_data_dynamic_parametrization.png"
-    accordion_select(
-        dash_br, accordion_name=cnst.DYNAMIC_DATA_ACCORDION.upper(), accordion_number=cnst.DYNAMIC_DATA_ACCORDION_NUMBER
-    )
-    page_select(
-        dash_br,
-        page_path=cnst.DYNAMIC_DATA_PAGE_PATH,
-        page_name=cnst.DYNAMIC_DATA_PAGE,
-        graph_id=cnst.SCATTER_DYNAMIC_ID,
-    )
-    # move slider to value '20'
-    select_slider_handler(dash_br, elem_id=slider_id, value=2)
-    # move slider to value '10'
-    select_slider_handler(dash_br, elem_id=slider_id, value=1)
-    callbacks_finish_waiter(dash_br)
-    dash_br.driver.save_screenshot(first_screen)
-    # move slider to value '60'
-    select_slider_handler(dash_br, elem_id=slider_id, value=6)
-    callbacks_finish_waiter(dash_br)
-    dash_br.driver.save_screenshot(second_screen)
-    # move slider to value '20'
-    select_slider_handler(dash_br, elem_id=slider_id, value=2)
-    # move slider to value '10'
-    select_slider_handler(dash_br, elem_id=slider_id, value=1)
-    callbacks_finish_waiter(dash_br)
-    dash_br.driver.save_screenshot(third_screen)
-    # first and third screens should be the same
-    assert_pixelmatch(first_screen, third_screen)
-    # first and second screens should be different
-    try:
-        assert_pixelmatch(first_screen, second_screen)
-        pytest.fail("Images should be different")
-    except subprocess.CalledProcessError:
-        pass
-    for file in Path(".").glob("*test_data_dynamic_parametrization*"):
-        file.unlink()
 
 
 @image_assertion

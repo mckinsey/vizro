@@ -3,6 +3,7 @@ import shutil
 import subprocess
 from pathlib import Path
 
+import pytest
 from e2e.vizro import constants as cnst
 
 
@@ -45,3 +46,11 @@ def assert_image_equal(result_image_path, expected_image_path):
         shutil.copy(expected_image_path, f"{expected_image_name.replace('.', '_old.')}")
         Path(result_image_path).unlink()
         raise Exception(err.stdout)
+
+
+def assert_image_not_equal(image_one, image_two):
+    try:
+        assert_pixelmatch(image_one, image_two)
+        pytest.fail("Images should be different")
+    except subprocess.CalledProcessError:
+        pass
