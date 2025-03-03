@@ -7,23 +7,25 @@
 .bg-container {
   border: 1px solid var(--border-subtleAlpha01);
   padding: 1rem;
+  background-color: inherit;
+}
+
+.collapsible-container-header h3 {
+  margin: 0;
 }
 
 .collapsible-container-header {
   display: flex;
   flex-direction: row;
   justify-content: space-between;
-  padding-right: 12px;
+  align-items: center;
 }
 
-#collapsible-container_icon.material-symbols-outlined {
-  border-radius: 50%;
-  color: var(--text-disabled);
+.collapsible-container-header .material-symbols-outlined {
+  color: var(--text-secondary);
   cursor: pointer;
-  height: 24px;
-  width: 24px;
 }
 
-#collapsible-container_icon.material-symbols-outlined:hover {
-  color: var(--text-primary);
+.collapsible-container-header .material-symbols-outlined:hover {
+  color: var(--text-primaryHover);
 }

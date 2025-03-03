@@ -45,32 +45,31 @@ class CollapsibleContainer(vm.Container):
     """
 
     type: Literal["collapse_container"] = "collapse_container"
-    # TODO[mypy], see: https://github.com/pydantic/pydantic/issues/156 for components field
+    is_open: bool = True
 
     @_log_call
     def build(self):
-        self.layout = cast(
-            Layout,  # cannot actually be None if you check components and layout field together
-            self.layout,
-        )
-
-        components_container = self.layout.build()
-        for component_idx, component in enumerate(self.components):
-            components_container[f"{self.layout.id}_{component_idx}"].children = component.build()
-
         clientside_callback(
             """
             (n_clicks) => {
-               if (n_clicks % 2 === 1) {
-                return [true, {transform: "rotate(180deg)", transition: "transform 0.35s ease-in-out"}];
-            } else return [false, {transform: "rotate(0deg)", transition: "transform 0.35s ease-in-out"}];
+                if (!n_clicks) {
+                    return dash_clientside.no_update;
+                }
+
+                const isOpen = n_clicks % 2 === 1;
+                const style = {
+                    transform: isOpen ? "rotate(180deg)" : "rotate(0deg)",
+                    transition: "transform 0.35s ease-in-out"
+                };
+
+                return [isOpen, style];
             }
             """,
             [Output(self.id, "is_open"), Output(f"{self.id}_icon", "style")],
             Input(f"{self.id}_title", "n_clicks"),
         )
 
-        return html.Div(
+        return dbc.Container(
             children=[
                 html.Div(
                     id=f"{self.id}_title",
@@ -82,9 +81,10 @@ class CollapsibleContainer(vm.Container):
                 ),
                 dbc.Collapse(
                     id=self.id,
-                    children=components_container,
-                    is_open=True,
+                    children=self._build_inner_layout(),
+                    is_open=self.is_open,
                 ),
             ],
+            fluid=True,
             className="bg-container",
         )

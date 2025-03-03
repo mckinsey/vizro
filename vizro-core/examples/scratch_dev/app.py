@@ -25,6 +25,7 @@ page = vm.Page(
                         vm.Graph(figure=px.scatter(iris, x="sepal_length", y="petal_width", color="species")),
                     ],
                     layout=vm.Layout(grid=[[0, 0, 0, 0], [1, 1, 2, 2]]),
+                    is_open=False,
                 ),
                 CollapsibleContainer(
                     title="Collapsible container 2",
