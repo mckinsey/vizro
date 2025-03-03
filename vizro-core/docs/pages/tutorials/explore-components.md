@@ -834,7 +834,7 @@ In this section, you learn how to switch the `x` and `color` arguments across al
 
 To add a parameter to the dashboard:
 
-1. Add a [Parameter][vizro.models.Parameter] to the `controls` of the `Page`.
+1. Add a [`Parameter`][vizro.models.Parameter] to the `controls` of the `Page`.
 1. Assign an `id` to each `Graph` that the [Parameter][vizro.models.Parameter] should target.
 1. Define the parameter's `targets` using the format `component-id.argument`.
 1. Set the `selector` of the [Parameter][vizro.models.Parameter] to a [`RadioItems`][vizro.models.RadioItems].
@@ -1236,7 +1236,7 @@ Your directory structure should look like this:
     === "Result"
         [![Dashboard]][dashboard]
 
-You should see the logo in the top-left corner of your dashboard header, with the title displayed next to it. If you can't see the logo, make sure the image is called `logo` and is stored in the \`assets folder. For more details on supported image formats, refer to the [How to add a logo](../user-guides/assets.md#add-a-logo-image) guide.
+You should see the logo in the top-left corner of your dashboard header, with the title displayed next to it. If you can't see the logo, make sure the image is called `logo` and is stored in the `assets` folder. For more details on supported image formats, refer to the [How to add a logo](../user-guides/assets.md#add-a-logo-image) guide.
 
 ### 5.2. Customize the navigation
 
@@ -1393,7 +1393,7 @@ To create a navigation bar, follow these steps:
 
 Take a moment to explore the navigation bar! Hover over the icons to view the tooltip text, and click on them to navigate between the pages.
 
-**Congratulations on completing this tutorial! 🚀** You now have the skills to configure layouts, add components, and interactivity to Vizro dashboards across multiple navigable pages.
+**Congratulations on completing this tutorial! 🚀** You now have the skills to configure layouts, and add components and interactivity to Vizro dashboards across multiple navigable pages.
 
 ## Find out more
 
