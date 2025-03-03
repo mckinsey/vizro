@@ -46,8 +46,6 @@ def load_from_file(filter_column=None, parametrized_species=None):
 
 data_manager.cache = Cache(config={"CACHE_TYPE": "FileSystemCache", "CACHE_DIR": "cache"})
 
-data_manager["load_from_file"] = load_from_file
-data_manager["load_from_file"].timeout = -1
 data_manager["load_from_file_species"] = partial(load_from_file, filter_column="species")
 data_manager["load_from_file_species"].timeout = -1
 data_manager["load_from_file_sepal_length"] = partial(load_from_file, filter_column="sepal_length")

@@ -18,6 +18,7 @@ def pytest_setup_options():
 
 
 def make_teardown(dash_br):
+    # TODO: move it after the specific test execution (after moving test to vizro repo)
     # rewriting dynamic_filters_data.yml after each test
     data = {
         "max": 7,
@@ -29,7 +30,7 @@ def make_teardown(dash_br):
     with open(cnst.DYNAMIC_FILTERS_DATA_CONFIG, "w") as file:
         yaml.dump(data, file)
     # checking for browser console errors
-    if os.getenv("BROWSER") == ("chrome" or "chrome_mobile"):
+    if os.getenv("BROWSER") in ["chrome", "chrome_mobile"]:
         try:
             error_logs = [log for log in dash_br.get_logs() if log["level"] == "SEVERE" or "WARNING"]
             for log in error_logs:
