@@ -130,7 +130,7 @@ def test_data_dynamic_parametrization(dash_br, cache, slider_id):
     select_slider_handler(dash_br, elem_id=slider_id, value=1)
     callbacks_finish_waiter(dash_br)
     dash_br.driver.save_screenshot(third_screen)
-    # first and second screens should be the same
+    # first and third screens should be the same
     assert_pixelmatch(first_screen, third_screen)
     # first and second screens should be different
     try:

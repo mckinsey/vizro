@@ -2,7 +2,6 @@ import os
 
 import e2e.vizro.constants as cnst
 import pytest
-import yaml
 from e2e.vizro.checkers import browser_console_warnings_checker
 from e2e.vizro.waiters import callbacks_finish_waiter
 from selenium.common import WebDriverException
@@ -20,15 +19,15 @@ def pytest_setup_options():
 def make_teardown(dash_br):
     # TODO: move it after the specific test execution (after moving test to vizro repo)
     # rewriting dynamic_filters_data.yml after each test
-    data = {
-        "max": 7,
-        "min": 6,
-        "setosa": 5,
-        "versicolor": 10,
-        "virginica": 15,
-    }
-    with open(cnst.DYNAMIC_FILTERS_DATA_CONFIG, "w") as file:
-        yaml.dump(data, file)
+    # data = {
+    #     "max": 7,
+    #     "min": 6,
+    #     "setosa": 5,
+    #     "versicolor": 10,
+    #     "virginica": 15,
+    # }
+    # with open(cnst.DYNAMIC_FILTERS_DATA_CONFIG, "w") as file:
+    #     yaml.dump(data, file)
     # checking for browser console errors
     if os.getenv("BROWSER") in ["chrome", "chrome_mobile"]:
         try:
