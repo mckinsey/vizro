@@ -554,7 +554,7 @@ class VizroChatComponent(VizroBaseModel):
                     [
                         dbc.InputGroupText("API base"),
                         dbc.Input(
-                            placeholder="(optional) API base",
+                            placeholder="(optional) API Base",
                             type="password",
                             id=f"{self.id}-api-base",
                         ),
