@@ -64,6 +64,6 @@ homepage = vm.Page(
         ),
     ],
     controls=[
-        vm.Filter(column="species", targets=[cnst.AREA_GRAPH_ID]),
+        vm.Filter(column="species"),
     ],
 )

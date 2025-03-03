@@ -18,6 +18,7 @@ dashboard = vm.Dashboard(
             items=[
                 vm.NavLink(
                     pages={
+                        # configured accordion here to see that it is not shown with one page inside
                         cnst.AG_GRID_ACCORDION: [
                             cnst.TABLE_PAGE,
                         ],

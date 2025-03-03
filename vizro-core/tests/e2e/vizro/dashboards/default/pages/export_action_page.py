@@ -25,13 +25,11 @@ export_action_page = vm.Page(
             actions=[
                 vm.Action(
                     function=export_data(
-                        targets=[cnst.LINE_EXPORT_ID],
                         file_format="csv",
                     )
                 ),
                 vm.Action(
                     function=export_data(
-                        targets=[cnst.LINE_EXPORT_ID],
                         file_format="xlsx",
                     )
                 ),
