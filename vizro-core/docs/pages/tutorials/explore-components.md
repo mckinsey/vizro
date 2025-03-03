@@ -1,9 +1,8 @@
 # Explore Vizro
 
-In this tutorial, you'll learn how to build an interactive dashboard with multiple pages, incorporating a wide range of Vizro's components. 
+In this tutorial, you'll learn how to build an interactive dashboard with multiple pages, incorporating a wide range of Vizro's components.
 
-!!! note 
-    
+!!! note
     If you're looking for a quick start to get up and running with Vizro, consider reviewing the [first dashboard tutorial](../tutorials/first-dashboard.md) before diving into this one.
 
 By the end of this tutorial, you have learned how to:
@@ -26,11 +25,10 @@ This tutorial uses the [tips dataset](https://plotly.com/python-api-reference/ge
 You can experiment with the code for this tutorial directly on [PyCafe](https://py.cafe/vizro-official/vizro-tips-analysis-tutorial), so there's no need to install Vizro locally. We recommend starting with a [blank Vizro project on PyCafe](https://py.cafe/snippet/vizro/v1) and copying the code snippets from this tutorial into it, to see how everything integrates. For more details, check out the [PyCafe documentation](https://py.cafe/docs/apps/vizro).
 
 ??? note "If you prefer working in a Notebook or Python script"
-
     To work in a Notebook or locally using a Python script, you need to [install Vizro](../user-guides/install.md).
 
     Paste the code from the tutorial into a Notebook cell, run the Notebook, and evaluate it.
-    
+
     You will need to restart the kernel each time you run the code. Otherwise, you may encounter errors such as *"Components must uniquely map..."* because those components persist from the previous execution. As an alternative to restarting the kernel each time, you can add a cell containing `from vizro import Vizro; Vizro._reset()` to the top of your Notebook and re-run it each time you re-run your code. With this method, there is no need to restart the Jupyter kernel.
 
     ---
@@ -384,10 +382,7 @@ In the following layout configuration, the layout is divided into **four columns
 - The `Tabs` component (2) is placed below the KPI cards, spanning all cells across the remaining three rows.
 
 ```python
-grid = [[0, 1, -1, -1],
-        [2, 2, 2, 2],
-        [2, 2, 2, 2],
-        [2, 2, 2, 2]]
+grid = [[0, 1, -1, -1], [2, 2, 2, 2], [2, 2, 2, 2], [2, 2, 2, 2]]
 ```
 
 Run the code below to apply the layout to the dashboard page:
