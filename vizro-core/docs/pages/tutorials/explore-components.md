@@ -18,7 +18,8 @@ By the end of this tutorial, you have learned how to:
 
 This tutorial uses the [tips dataset](https://plotly.com/python-api-reference/generated/plotly.express.data.html#plotly.express.data.tips), which was collected by a waiter who recorded information about each tip he received over several months at a restaurant.
 
-**Let's find out when he received the highest tips! 🚀**
+![](../../assets/tutorials/dashboard/00-dashboard-final.png)
+[Here is a preview of the dashboard you'll build](https://py.cafe/app/vizro-official/vizro-tips-analysis-tutorial)
 
 ## 1. (Optional) Install Vizro and get ready to run your code
 
@@ -96,7 +97,7 @@ Take a moment to explore the data in the table. You can sort, filter, and search
 
 You'll notice a toggle in the top-right corner of the dashboard, enabling you to switch between dark and light themes. Try it out!
 
-**Great job! You've successfully created a first dashboard page! 🎉**
+**Great job! You've successfully created a first dashboard page!**
 
 ## 3. Create a second page
 
@@ -168,7 +169,7 @@ Notice that the charts are automatically stacked vertically in the order specifi
 
 Additionally, a page navigation menu has been added to the left side of the dashboard, enabling you to switch between the two pages we’ve created.
 
-You'll also notice that the left-side menu can be collapsed to provide more space for the dashboard content. **Give it a try! 🧪**
+You'll also notice that the left-side menu can be collapsed to provide more space for the dashboard content. **Give it a try!**
 
 ### 3.2. Add KPI cards
 
@@ -469,7 +470,7 @@ Run the code below to apply the layout to the dashboard page:
     === "Result"
         [![SecondPage4]][secondpage4]
 
-**Much better, don't you think? 🎨 The layout now provides sufficient space for the charts!**
+**Much better, don't you think? The layout now provides sufficient space for the charts!**
 
 ### 3.5. Add a filter
 
@@ -563,7 +564,7 @@ You'll see that a [`Dropdown`][vizro.models.Dropdown] is selected by default for
 
 If you want to apply a filter to specific components only, check out [How to use filters](../user-guides/filters.md).
 
-**Great work! 📖 You've just completed a second dashboard page and learned how to:**
+**Great work! You've just completed a second dashboard page and learned how to:**
 
 1. [Add a chart to a page using the visual vocabulary](#31-add-a-chart)
 1. [Add KPI cards to display summary statistics](#32-add-kpi-cards)
@@ -824,7 +825,7 @@ Run the code below to apply the layout to the dashboard page:
     === "Result"
         [![ThirdPage2]][thirdpage2]
 
-**Fantastic work! The heatmap looks great, doesn't it? 🎨**
+**Fantastic work! The heatmap looks great, doesn't it?**
 
 ### 4.3. Add a parameter
 
@@ -957,7 +958,7 @@ To add a parameter to the dashboard:
 
 Take a moment to interact with the parameter. Note how the x-axis of all charts updates accordingly.
 
-**Isn't it amazing how effortlessly it is to shift the data analysis perspective now? 🚀**
+**Isn't it amazing how effortlessly it is to shift the data analysis perspective now?**
 
 ### 4.4. Add a custom chart
 
@@ -1092,7 +1093,7 @@ This requires creating a custom chart with the following steps. For more informa
     === "Result"
         [![ThirdPage4]][thirdpage4]
 
-**Fantastic job reaching this point! 🚀 You've just completed the final dashboard page and learned how to:**
+**Fantastic job reaching this point! You've just completed the final dashboard page and learned how to:**
 
 1. [Add multiple charts](#41-add-multiple-charts)
 1. [Customize a layout](#42-configure-the-layout)
@@ -1393,7 +1394,9 @@ To create a navigation bar, follow these steps:
 
 Take a moment to explore the navigation bar! Hover over the icons to view the tooltip text, and click on them to navigate between the pages.
 
-**Congratulations on completing this tutorial! 🚀** You now have the skills to configure layouts, and add components and interactivity to Vizro dashboards across multiple navigable pages.
+**Congratulations on completing this tutorial!** 
+
+You now have the skills to configure layouts, and add components and interactivity to Vizro dashboards across multiple navigable pages.
 
 ## Find out more
 
