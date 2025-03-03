@@ -4,8 +4,6 @@ This guide shows you how to use containers to group your components into section
 
 A [Container][vizro.models.Container] complements a [Page][vizro.models.Page], and both models share nearly identical arguments. While `Page.layout` provides a method for structuring the overall page layout, a `Container` offers more detailed control within a particular section of the page.
 
-Unlike the `Page.layout`, the `Container` includes a `background` argument, allowing you to color its background to differentiate it from the rest of the page. Additional functionality will soon be added to the Container, including controls specific to it, which will further enhance the management of related components.
-
 !!! note "Displaying multiple containers inside Tabs"
     An alternative way to display multiple containers on one page is to place them inside [Tabs](tabs.md).
 
