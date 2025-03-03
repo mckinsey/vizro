@@ -18,8 +18,7 @@ By the end of this tutorial, you have learned how to:
 
 This tutorial uses the [tips dataset](https://plotly.com/python-api-reference/generated/plotly.express.data.html#plotly.express.data.tips), which was collected by a waiter who recorded information about each tip he received over several months at a restaurant.
 
-![](../../assets/tutorials/dashboard/00-dashboard-final.png)
-[Here is a preview of the dashboard you'll build](https://py.cafe/app/vizro-official/vizro-tips-analysis-tutorial)
+![](../../assets/tutorials/dashboard/00-dashboard-final.png) [Here is a preview of the dashboard you'll build](https://py.cafe/app/vizro-official/vizro-tips-analysis-tutorial)
 
 ## 1. (Optional) Install Vizro and get ready to run your code
 
@@ -1394,7 +1393,7 @@ To create a navigation bar, follow these steps:
 
 Take a moment to explore the navigation bar! Hover over the icons to view the tooltip text, and click on them to navigate between the pages.
 
-**Congratulations on completing this tutorial!** 
+**Congratulations on completing this tutorial!**
 
 You now have the skills to configure layouts, and add components and interactivity to Vizro dashboards across multiple navigable pages.
 
