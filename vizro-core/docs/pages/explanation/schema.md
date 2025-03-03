@@ -34,7 +34,7 @@ An example of a JSON schema would be:
 }
 ```
 
-This schema tells us that whenever we receive JSON data, and want to check whether it is valid, the data needs to contain two fields - a field `A`, which must be a single integer, and a field `B`, which must be an array of strings. Both fields need to be provided - they are required.
+This schema tells us that whenever we receive JSON data, and want to check whether it is valid, the data needs to contain two fields - a field `A`, which must be a single integer, and a field `B`, which must be an array of strings. Both fields must be provided, as they are both required.
 
 In practice this means that data can be identified as valid or invalid:
 
