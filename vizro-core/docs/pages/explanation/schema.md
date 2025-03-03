@@ -8,7 +8,7 @@ This is a short introduction since there are many good articles to answer the qu
 
 A JSON schema defines the rules, structure, and constraints that JSON data (a popular data format, used widely on the web) should follow. Use of a schema leaves minimal room for assumptions and makes it easier to predict the nature and behavior of JSON data.
 
-An example of a JSON schema would be
+An example of a JSON schema would be:
 
 ```json
 {
