@@ -98,10 +98,9 @@ You'll notice a toggle in the top-right corner of the dashboard, allowing you to
 
 ## 3. Create a second page
 
-
 ### 3.1. Add a chart
-Next, we'll add a second page to our dashboard, featuring charts and KPI (Key Performance Indicator) cards.
 
+Next, we'll add a second page to our dashboard, featuring charts and KPI (Key Performance Indicator) cards.
 
 Vizro leverages [Graph][vizro.models.Graph] models and [Plotly Express functions](https://plotly.com/python/plotly-express/) to create various types of charts. You can explore some of the available chart types and their code examples in our [visual vocabulary](https://vizro-demo-visual-vocabulary.hf.space).
 
@@ -176,9 +175,9 @@ You can combine and arrange various types of `components` on a dashboard page. R
 Let's add two KPI cards to our second page. Follow these steps:
 
 1. Add a [Figure][vizro.models.Figure] to the list of `components`.
-2. Inside the `figure` argument of the `Figure`, use the [`kpi_card`][vizro.figures.kpi_card] function.
-3. Configure your `kpi_card` by setting the `value_column`, `agg_func`, `value_format`, and `title`. To learn more about configuring KPI cards, check out [our how-to guide on KPI cards](../user-guides/figure.md#key-performance-indicator-kpi-cards).
-4. Repeat the above steps to add another KPI card to the page.
+1. Inside the `figure` argument of the `Figure`, use the [`kpi_card`][vizro.figures.kpi_card] function.
+1. Configure your `kpi_card` by setting the `value_column`, `agg_func`, `value_format`, and `title`. To learn more about configuring KPI cards, check out [our how-to guide on KPI cards](../user-guides/figure.md#key-performance-indicator-kpi-cards).
+1. Repeat the above steps to add another KPI card to the page.
 
 !!! example "Add KPI Cards"
     === "Snippet - KPI Card I"
@@ -270,9 +269,9 @@ Suppose we don't want to display both histograms simultaneously and prefer to sw
 Let's place the two histograms in separate tabs. Follow these steps:
 
 1. Add each `Graph` to the `components` of a [`Container`][vizro.models.Container].
-2. Set the `title` argument inside each `Container` to the desired tab name.
-3. Add the containers to the `tabs` list of the `Tabs` component.
-4. Add the `Tabs` component to the `components` of the `Page`.
+1. Set the `title` argument inside each `Container` to the desired tab name.
+1. Add the containers to the `tabs` list of the `Tabs` component.
+1. Add the `Tabs` component to the `components` of the `Page`.
 
 !!! example "Add Tabs"
     === "Snippet - Tabs"
@@ -585,13 +584,13 @@ This page will feature a bar chart, a violin chart, and a heatmap. We will once 
 This step should feel familiar. Let's add all three charts to the page.
 
 1. Create a third [Page][vizro.models.Page] and store it in a variable called `third_page`. Set its `title` to "Analysis".
-2. Add three [Graphs][vizro.models.Graph] to the `components` of the `Page`.
-3. For each `Graph`, use the `figure` argument to provide one of the Plotly express functions:
+1. Add three [Graphs][vizro.models.Graph] to the `components` of the `Page`.
+1. For each `Graph`, use the `figure` argument to provide one of the Plotly express functions:
     - [px.violin](https://vizro-demo-visual-vocabulary.hf.space/distribution/violin) (copy the code directly)
     - [px.bar](https://vizro-demo-visual-vocabulary.hf.space/magnitude/column) (copy the code directly)
     - [px.density_heatmap](https://vizro-demo-visual-vocabulary.hf.space/time/heatmap) (update the `data`, `x`, and `y` arguments to match our dataset)
-4. Provide a `title` for each `Graph`.
-5. Add the new `Page` to the list of `pages` in the [Dashboard][vizro.models.Dashboard].
+1. Provide a `title` for each `Graph`.
+1. Add the new `Page` to the list of `pages` in the [Dashboard][vizro.models.Dashboard].
 
 !!! example "Third page"
     === "Snippet - third page"
@@ -725,8 +724,7 @@ In the following layout configuration, the layout is divided into **two columns*
 Remember, the index corresponds to the order in which the components are added to the `components` of the `Page`.
 
 ```python
-grid = [[0, 1],
-        [2, 2]]
+grid = [[0, 1], [2, 2]]
 ```
 
 Run the code below to apply the layout to the dashboard page:
@@ -839,11 +837,10 @@ In this example, we will switch the `x` and `color` arguments across all charts,
 To add a parameter to the dashboard:
 
 1. Add a [Parameter][vizro.models.Parameter] to the `controls` of the `Page`.
-2. Assign an `id` to each `Graph` that the [Parameter][vizro.models.Parameter] should target.
-3. Define the parameter's `targets` using the format `component-id.argument`.
-4. Set the `selector` of the [Parameter][vizro.models.Parameter] to a [`RadioItems`][vizro.models.RadioItems].
-5. Provide options for the `RadioItems` selector.
-
+1. Assign an `id` to each `Graph` that the [Parameter][vizro.models.Parameter] should target.
+1. Define the parameter's `targets` using the format `component-id.argument`.
+1. Set the `selector` of the [Parameter][vizro.models.Parameter] to a [`RadioItems`][vizro.models.RadioItems].
+1. Provide options for the `RadioItems` selector.
 
 !!! example "Add a parameter"
     === "Snippet - parameter"
@@ -973,9 +970,9 @@ This requires creating a custom chart. For more information on when to create a 
 To create a custom chart, follow these steps:
 
 1. Create a function that takes the `data_frame` as input and returns a Plotly figure.
-2. Decorate the function with the `@capture(graph)` decorator.
-3. Inside the function, aggregate the data, provide a label for the chart, and update the bar width.
-4. Use this custom function in the `Graph` component instead of `px.bar`.
+1. Decorate the function with the `@capture(graph)` decorator.
+1. Inside the function, aggregate the data, provide a label for the chart, and update the bar width.
+1. Use this custom function in the `Graph` component instead of `px.bar`.
 
 !!! example "Add custom chart"
     === "Snippet - custom chart"
@@ -1102,9 +1099,9 @@ To create a custom chart, follow these steps:
 **Fantastic job reaching this point! 🚀 We've just completed our final dashboard page and learned how to:**
 
 1. [Add multiple charts](#41-add-multiple-charts)
-2. [Customize our layout](#42-configure-the-layout)
-3. [Add a parameter to interact with the charts](#43-add-a-parameter)
-4. [Add a custom chart to the dashboard](#44-add-a-custom-chart)
+1. [Customize our layout](#42-configure-the-layout)
+1. [Add a parameter to interact with the charts](#43-add-a-parameter)
+1. [Add a custom chart to the dashboard](#44-add-a-custom-chart)
 
 ## 5. The final touches
 
@@ -1115,8 +1112,8 @@ Now that we've created all the dashboard pages, let's add a personal touch by in
 To add a title and logo to your dashboard, follow these steps:
 
 1. Set the `title` attribute of the [Dashboard][vizro.models.Dashboard] to "Tips Analysis Dashboard".
-2. Download the `logo` from [this link](https://raw.githubusercontent.com/mckinsey/vizro/refs/heads/main/vizro-core/examples/dev/assets/logo.svg) and save it in a folder named `assets`.
-3. Place the `assets` folder in the same directory as your `app.py/app.ipynb` file.
+1. Download the `logo` from [this link](https://raw.githubusercontent.com/mckinsey/vizro/refs/heads/main/vizro-core/examples/dev/assets/logo.svg) and save it in a folder named `assets`.
+1. Place the `assets` folder in the same directory as your `app.py/app.ipynb` file.
 
 Your directory structure should look like this:
 
@@ -1258,9 +1255,9 @@ To create a navigation bar, follow these steps:
 1. Set the `navigation` attribute of the [Dashboard][vizro.models.Dashboard] to a [Navigation][vizro.models.Navigation] object.
 1. Assign a [NavBar][vizro.models.NavBar] object to the `nav_selector` attribute of the `Navigation`.
 1. Populate the `items` of the [NavBar][vizro.models.NavBar] object with a list of [NavLink][vizro.models.NavLink] objects.
-2. Assign a [NavBar][vizro.models.NavBar] object to the `nav_selector` attribute of the `Navigation`.
-3. Populate the `items` of the [NavBar][vizro.models.NavBar] object with a list of [NavLink][vizro.models.NavLink] objects.
-4. Customize each [NavLink][vizro.models.NavLink] object by setting its `label`, `pages`, and `icon` attributes.
+1. Assign a [NavBar][vizro.models.NavBar] object to the `nav_selector` attribute of the `Navigation`.
+1. Populate the `items` of the [NavBar][vizro.models.NavBar] object with a list of [NavLink][vizro.models.NavLink] objects.
+1. Customize each [NavLink][vizro.models.NavLink] object by setting its `label`, `pages`, and `icon` attributes.
     - The `label` controls the text displayed in the tooltip when hovering over the navigation icon.
     - The `pages` controls the pages included in the accordion navigation for that icon.
     - The `icon` sets the icon to display using the [Material Design Icons library](https://fonts.google.com/icons).
