@@ -251,7 +251,7 @@ An example use would be to enhance the visibility of the `Container` as a distin
     === "Result"
         [![StyleContainer]][stylecontainer]
 
-If you want to style your `Container` beyond the default background color, please refer to our user guide on [overwriting CSS for selected components](custom-css.md#overwrite-css-for-selected-components).
+If you want to style your `Container` beyond what is available through the underlying component, please refer to our user guide on [overwriting CSS for selected components](custom-css.md#overwrite-css-for-selected-components).
 
 [container]: ../../assets/user_guides/components/containers.png
 [stylecontainer]: ../../assets/user_guides/components/container_with_background.png

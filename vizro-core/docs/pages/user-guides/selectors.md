@@ -40,3 +40,12 @@ For more information, refer to the API reference of the selector, or the documen
 
 !!! note
     When configuring the [`DatePicker`][vizro.models.DatePicker] make sure to provide your dates for `min`, `max` and `value` arguments in `"yyyy-mm-dd"` format or as `datetime` type (for example, `datetime.datetime(2024, 01, 01)`).
+
+## The `extra` argument
+
+Currently each selector is based on an underlying Dash component as mentioned in the sections above. Using the `extra` argument you can pass additional arguments to the underlying object in order to alter it beyond the chosen defaults. The available arguments can be found in the documentation of each underlying component that was linked in the respective sections above.
+
+!!! warning
+    Using `extra` is a quick and flexible way to alter a component beyond what Vizro offers. However, [it is not a part of the official Vizro schema](../explanation/schema.md#what-is-the-vizro-json-schema) and we do not consider it a breaking change if we alter/remove it. This is unlikely to happen any time soon.
+
+For examples of how to use the `extra` argument, we provided a comprehensive example in the documentation of the [`Container`](container.md#the-extra-argument).
