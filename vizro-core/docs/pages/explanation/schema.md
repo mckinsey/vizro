@@ -75,7 +75,7 @@ Similar to the above example, the Vizro framework also has a JSON schema. It can
 
 You can configure a Vizro dashboard according to a set of constraints that are defined in the schema. The configuration language that you choose is secondary: it can be via Python, but also via JSON or YAML. This is shown in [our showcase of configuration options](../user-guides/dashboard.md#use-dashboard-configuration-options).
 
-=== "This json..."
+=== "This JSON..."
     ```json
     {
       "pages": [
@@ -117,9 +117,9 @@ You can configure a Vizro dashboard according to a set of constraints that are d
     [![Dashboard]][dashboard]
 
 !!! note
-    The Vizro schema is not yet complete. This means that it does not yet define everything that we consider a core and supported functionality of Vizro. The most prominent example of this is the [`CapturedCallable`][vizro.models.types.CapturedCallable] - the objects you insert into many models such as `vm.Graph`, `vm.Table` or `vm.Action`, often into the `figure` argument.
+    The Vizro schema is still incomplete. This means that it does not yet define everything that we consider to be core and supported functionality of Vizro. The most prominent example of an omission is the [`CapturedCallable`][vizro.models.types.CapturedCallable], which are the objects you insert into many models such as `vm.Graph`, `vm.Table` or `vm.Action`, often into the `figure` argument.
 
-    This does not mean that it cannot be configured in JSON - in fact, in the config above we have used the following JSON:
+    This does not mean that it cannot be configured in JSON. In fact, in the configuration above, we have used the following JSON:
 
     ```json
     {
@@ -151,7 +151,7 @@ At the moment, the Vizro framework serves [Dash](https://github.com/plotly/dash)
 
 ## The role of `extra`
 
-Some of our models, e.g. the [`Container`][vizro.models.Container], have an argument called `extra`. This argument allows the user to pass extra arguments directly to the underlying component of the model. In the case of the `Container` this would be the [`dbc.Container`](https://dash-bootstrap-components.opensource.faculty.ai/docs/components/layout/).
+Some of our models, e.g. the [`Container`][vizro.models.Container], have an argument called `extra`. This argument enables the user to pass extra arguments directly to the underlying component of the model. In the case of the `Container`, this would be the [`dbc.Container`](https://dash-bootstrap-components.opensource.faculty.ai/docs/components/layout/).
 
 This is clearly implementation specific and, as such, the `extra` argument is (on purpose) excluded from the Vizro schema. The argument helps users to get the maximum flexibility quickly without having to go beyond the Vizro framework, but it should not be assumed to be a core part of Vizro. This argument may break in future releases of Vizro.
 
