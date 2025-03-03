@@ -36,7 +36,7 @@ An example of a JSON schema would be:
 
 This schema tells us that whenever we receive JSON data, and want to check whether it is valid, the data needs to contain two fields - a field `A`, which must be a single integer, and a field `B`, which must be an array of strings. Both fields need to be provided - they are required.
 
-In practice this means that the following data would be valid.
+In practice this means that data can be identified as valid or invalid:
 
 === "valid"
     ```json
@@ -48,8 +48,6 @@ In practice this means that the following data would be valid.
       ]
     }
     ```
-
-While this data would be invalid.
 
 === "invalid"
     ```json
@@ -133,11 +131,11 @@ You can configure a Vizro dashboard according to a set of constraints that are d
     }
     ```
 
-    It does mean however that e.g. `figure` does not appear in the schema - and as such is not clearly defined as part of the Vizro framework, although it should. We are working on completing the Vizro schema in the future.
+    It means that `figure` does not appear in the schema so, as such, it is not clearly defined as part of the Vizro framework, although it should be considered as such. We are working to complete the Vizro schema in the future.
 
 ## The role of Pydantic
 
-The Vizro framework is powered by [Pydantic](https://docs.pydantic.dev/latest/) - the most widely used data validation library for Python. Pydantic is acts as the glue that connects Vizro's JSON schema to it's emergent manifestation - a React front end served by a Flask backend, facilitated by Dash.
+The Vizro framework is powered by [Pydantic](https://docs.pydantic.dev/latest/), which is the most widely used data validation library for Python. Pydantic acts as the glue that connects Vizro's JSON schema to its actual implementation - a React front end served by a Flask backend, facilitated by Dash.
 
 One core advantage of Pydantic is that it emits a [JSON schema](https://blog.postman.com/what-is-json-schema) so that our models, such as `vm.Page` or `vm.Filter`, can easily be translated into a well-defined JSON schema. Beyond this capability, it also has support for custom validation beyond the functionality of the JSON schema.
 
@@ -153,6 +151,6 @@ At the moment, the Vizro framework serves [Dash](https://github.com/plotly/dash)
 
 Some of our models, e.g. the [`Container`][vizro.models.Container], have an argument called `extra`. This argument enables the user to pass extra arguments directly to the underlying component of the model. In the case of the `Container`, this would be the [`dbc.Container`](https://dash-bootstrap-components.opensource.faculty.ai/docs/components/layout/).
 
-This is clearly implementation specific and, as such, the `extra` argument is (on purpose) excluded from the Vizro schema. The argument helps users to get the maximum flexibility quickly without having to go beyond the Vizro framework, but it should not be assumed to be a core part of Vizro. This argument may break in future releases of Vizro.
+This is clearly implementation specific and, as such, the `extra` argument is (on purpose) excluded from the Vizro schema. The argument helps users to get the maximum flexibility quickly without having to go beyond the Vizro framework, but it should not be assumed to be a core part of Vizro. Using this argument may break your code in future releases of Vizro, although this is very unlikely in the foreseeable future.
 
 [dashboard]: ../../assets/user_guides/dashboard/dashboard.png
