@@ -43,6 +43,7 @@ You can experiment with the code for this tutorial directly on [PyCafe](https://
     Once the script is running, open your web browser and go to `localhost:8050` to see the dashboard.
 
 ## 2. Understand the basics
+
 Before we dive in, let's quickly cover some basics:
 
 At the top level, you'll be creating a [`Dashboard`][vizro.models.Dashboard]. Here's what you can configure at the dashboard-level:
@@ -57,7 +58,6 @@ For each [`Page`][vizro.models.Page], you can additionally configure the followi
 - **Controls**: Include filters and parameters.
 - **Layouts**: Customize the placement of components within a page.
 - **Actions/Interactions**: Create interactions between components and use predefined or custom actions.
-
 
 ## 3. Create a first page
 
