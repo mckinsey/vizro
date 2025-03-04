@@ -139,12 +139,10 @@ class Dropdown(VizroBaseModel):
             "className": "dropdown",
         }
 
-        dropdown = dcc.Dropdown(**(defaults | self.extra))
-
         return html.Div(
             children=[
                 dbc.Label(self.title, html_for=self.id) if self.title else None,
-                dropdown,
+                dcc.Dropdown(**(defaults | self.extra)),
             ]
         )
 

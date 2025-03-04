@@ -79,12 +79,10 @@ class RadioItems(VizroBaseModel):
             "persistence_type": "session",
         }
 
-        radio_items = dbc.RadioItems(**(defaults | self.extra))
-
         return html.Fieldset(
             children=[
                 html.Legend(children=self.title, className="form-label") if self.title else None,
-                radio_items,
+                dbc.RadioItems(**(defaults | self.extra)),
             ]
         )
 
