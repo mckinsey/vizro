@@ -45,7 +45,9 @@ def test_themes(dash_br, dashboard_id):
     indirect=["dash_br"],
 )
 def test_ag_grid_themes(dash_br, dashboard_id):
-    accordion_select(dash_br, accordion_name=cnst.AG_GRID_ACCORDION.upper(), accordion_number=3)
+    accordion_select(
+        dash_br, accordion_name=cnst.AG_GRID_ACCORDION.upper(), accordion_number=cnst.AG_GRID_ACCORDION_NUMBER
+    )
     page_select(
         dash_br,
         page_path=cnst.TABLE_AG_GRID_PAGE_PATH,
