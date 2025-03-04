@@ -10,6 +10,7 @@ from urllib.parse import quote, urlencode
 
 import requests
 import vizro
+import vizro_ai
 from github import Auth, Github
 from github.Commit import Commit
 from github.Repository import Repository
@@ -27,6 +28,7 @@ class PyCafeConfig:
     pycafe_url: str = "https://py.cafe"
     vizro_raw_url: str = "https://raw.githubusercontent.com/mckinsey/vizro"
     package_version: str = vizro.__version__
+    vizro_ai_package_version: str = vizro_ai.__version__
 
 
 def create_github_client(config: PyCafeConfig) -> tuple[Repository, Commit]:
@@ -54,7 +56,7 @@ def _get_vizro_ai_requirement(config: PyCafeConfig, use_latest_release: bool = F
         return "vizro-ai"
     return (
         f"{config.pycafe_url}/gh/artifact/mckinsey/vizro/actions/runs/{config.run_id}/"
-        f"pip2/vizro_ai-{config.package_version}-py3-none-any.whl"
+        f"pip2/vizro_ai-{config.vizro_ai_package_version}-py3-none-any.whl"
     )
 
 
@@ -92,13 +94,9 @@ def generate_link(
     # Requirements - either use latest release or commit's wheel file
     requirements = []
     if directory_path.startswith("vizro-ai/"):
-        requirements.extend(
-            [
-                _get_vizro_ai_requirement(config, use_latest_release),
-            ]
-        )
+        requirements.extend([_get_vizro_ai_requirement(config, use_latest_release)])
     else:
-        requirements.append(_get_vizro_requirement(config, use_latest_release))
+        requirements.extend([_get_vizro_requirement(config, use_latest_release)])
 
     if extra_requirements:
         requirements.extend(extra_requirements)
