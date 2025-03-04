@@ -144,6 +144,7 @@ def get_example_directories() -> dict[str, Optional[list[str]]]:
             "isort==5.13.2",
             "plotly==5.24.1",
         ],
+        "vizro-core/examples/tutorial/": None,
         "vizro-ai/examples/dashboard_ui/": [
             "vizro-ai>=0.3.0",
             "black",
