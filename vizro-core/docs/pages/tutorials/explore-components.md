@@ -18,7 +18,7 @@ In this tutorial, you'll learn how to build an interactive dashboard with multip
 
 This tutorial uses the [tips dataset](https://plotly.com/python-api-reference/generated/plotly.express.data.html#plotly.express.data.tips), which was collected by a waiter who recorded information about each tip he received over several months at a restaurant.
 
-![](../../assets/tutorials/dashboard/00-dashboard-final.png) [Here is a preview of the dashboard you'll build](https://py.cafe/app/vizro-official/vizro-tips-analysis-tutorial)
+![](../../assets/tutorials/dashboard/vizro-tutorial.gif) [Here is a preview of the dashboard you'll build](https://py.cafe/app/vizro-official/vizro-tips-analysis-tutorial)
 
 ## 1. Install Vizro or run on PyCafe
 
@@ -40,7 +40,9 @@ You can experiment with the code for this tutorial directly on [PyCafe](https://
     1. Navigate to the directory where `app.py` file is located using your terminal.
     1. Run the script by executing the command `python app.py`.
 
-    Once the script is running, open your web browser and go to `localhost:8050` to see the dashboard.
+    Once the script is running, open your web browser and navigate to `localhost:8050` to view the dashboard. To enable debug mode for hot reloading, add `debug=True` inside the run() method at the end of your `app.py` file:
+
+    `Vizro().build(dashboard).run(debug=True)`
 
 ## 2. Understand the basics
 
