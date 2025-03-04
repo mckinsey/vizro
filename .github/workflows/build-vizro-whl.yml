@@ -1,4 +1,4 @@
-name: Build
+name: Build Vizro and Vizro AI packages
 
 on:
   push:
