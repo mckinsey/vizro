@@ -28,6 +28,7 @@ def make_teardown(dash_br):
     # }
     # with open(cnst.DYNAMIC_FILTERS_DATA_CONFIG, "w") as file:
     #     yaml.dump(data, file)
+
     # checking for browser console errors
     if os.getenv("BROWSER") in ["chrome", "chrome_mobile"]:
         try:
