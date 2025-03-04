@@ -41,11 +41,18 @@ class TestContainerBuildMethod:
         result = vm.Container(
             id="container", title="Title", components=[vm.Button()], layout=vm.Layout(id="layout_id", grid=[[0]])
         ).build()
-        assert_component_equal(
-            result, html.Div(id="container", className="page-component-container"), keys_to_strip={"children"}
-        )
+        assert_component_equal(result, dbc.Container(id="container", fluid=True), keys_to_strip={"children"})
         assert_component_equal(result.children, [html.H3(), html.Div()], keys_to_strip=STRIP_ALL)
         # We still want to test the exact H3 produced in Container.build:
         assert_component_equal(result.children[0], html.H3("Title", className="container-title", id="container_title"))
         # And also that a button has been inserted in the right place:
         assert_component_equal(result["layout_id_0"].children, dbc.Button(), keys_to_strip=STRIP_ALL)
+
+    def test_container_build_with_extra(self):
+        """Test that extra arguments correctly override defaults."""
+        result = vm.Container(
+            id="container", title="Title", components=[vm.Button()], extra={"fluid": False, "className": "bg-container"}
+        ).build()
+        assert_component_equal(
+            result, dbc.Container(id="container", fluid=False, className="bg-container"), keys_to_strip={"children"}
+        )

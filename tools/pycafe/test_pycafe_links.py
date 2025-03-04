@@ -19,8 +19,8 @@ def test_pycafe_link(url: str, wait_for_text: str):
         page = browser.new_page()
 
         try:
-            # Navigate to the page and wait for network to be idle
-            page.goto(url, wait_until="networkidle")
+            # Navigate to the page
+            page.goto(url, timeout=60000)
 
             # Get the app frame and wait for title
             frame = page.frame_locator("#app")
@@ -30,9 +30,8 @@ def test_pycafe_link(url: str, wait_for_text: str):
             return True
 
         except Exception as e:
-            print(f"❌ Failed to verify PyCafe link: {url}")  # noqa
+            print("❌ Failed to verify PyCafe link")  # noqa
             print(f"Error: {str(e)}")  # noqa
-            page.screenshot(path="pycafe_error.png")
             return False
 
         finally:

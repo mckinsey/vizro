@@ -2,9 +2,7 @@
 
 This guide shows you how to use containers to group your components into sections and subsections within the page.
 
-A [`Container`][vizro.models.Container] complements the idea of a [`Page`][vizro.models.Page], and the two models have almost identical arguments. [`Page.layout`](layouts.md) offers a way to structure the overall layout of the page, and a `Container` enables more granular control within a specific section of that page.
-
-While there is currently no clear difference in rendering, extra functionality will be added to the `Container` soon (including controls specific to that container), enhancing the ability to manage related components.
+A [Container][vizro.models.Container] complements a [Page][vizro.models.Page], and both models share nearly identical arguments. While `Page.layout` provides a method for structuring the overall page layout, a `Container` offers more detailed control within a particular section of the page.
 
 !!! note "Displaying multiple containers inside Tabs"
     An alternative way to display multiple containers on one page is to place them inside [Tabs](tabs.md).
@@ -24,6 +22,7 @@ Here are a few cases where you might want to use a `Container` instead of `Page.
 - If you want to split up your grid into subgrids to organize components together
 - If you want to add a title to your subgrids
 - If you want different row and column spacing between subgrids
+- If you want to apply a background color to distinguish your subgrid better
 - If you want to apply controls to selected subgrids (will be supported soon)
 
 ## Basic containers
@@ -154,7 +153,24 @@ Containers can be nested, providing a hierarchical structure for organizing comp
 To create nested containers, add a `Container` to the `components` argument of another `Container`.
 
 ```python title="Example"
-vm.Container(title="Parent Container", components=[vm.Container(title="Child Container", components=[vm.Button()])])
+vm.Container(
+    title="Parent Container",
+    components=[
+        vm.Container(
+            title="Child Container",
+            components=[vm.Button()],
+        )
+    ],
+)
 ```
+
+## The `extra` argument
+
+Currently the `Container` is based on the underlying [`dbc.Container`](https://dash-bootstrap-components.opensource.faculty.ai/docs/components/layout/). Using the `extra` argument you can pass additional arguments to the underlying object in order to alter it beyond the chosen defaults.
+
+!!! warning
+    Using `extra` is a quick and flexible way to alter a component beyond what Vizro offers. However, [it is not a part of the official Vizro schema](../explanation/schema.md#what-is-the-vizro-json-schema) and we do not consider it a breaking change if we alter/remove it. This is unlikely to happen any time soon.
+
+For examples of how to use the `extra` argument, we provided a comprehensive example in the documentation of [`Card`](card-button.md#the-extra-argument).
 
 [container]: ../../assets/user_guides/components/containers.png

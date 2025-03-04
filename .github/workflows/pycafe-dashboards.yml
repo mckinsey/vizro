@@ -30,7 +30,7 @@ jobs:
       - name: Print PR Number
         run: |
           echo "Pull Request Number: ${{ github.event.workflow_run.pull_requests[0].number }}"
-      - name: Test PyCafe links # Eventually we should merge this with the create_pycafe_links_comments.py script
+      - name: Test if PyCafe links work with PR # Eventually we should merge this with the create_pycafe_links_comments.py script
         run: |
           hatch run python ../tools/pycafe/test_pycafe_links.py --github-token ${{ github.token }} --repo-name ${{ github.repository }} --run-id ${{ github.event.workflow_run.id }} --commit-sha ${{ github.event.workflow_run.head_sha }}
       - name: Create PyCafe links

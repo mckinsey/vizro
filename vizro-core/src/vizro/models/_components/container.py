@@ -1,9 +1,11 @@
 from __future__ import annotations
 
-from typing import TYPE_CHECKING, Annotated, Literal, Optional, cast
+from typing import TYPE_CHECKING, Annotated, Any, Literal, Optional, cast
 
+import dash_bootstrap_components as dbc
 from dash import html
 from pydantic import AfterValidator, BeforeValidator, Field, conlist
+from pydantic.json_schema import SkipJsonSchema
 
 from vizro.models import VizroBaseModel
 from vizro.models._layout import set_layout
@@ -23,6 +25,11 @@ class Container(VizroBaseModel):
             has to be provided.
         title (str): Title to be displayed.
         layout (Optional[Layout]): Layout to place components in. Defaults to `None`.
+        extra (Optional[dict[str, Any]]): Extra keyword arguments that are passed to `dbc.Container` and overwrite any
+            defaults chosen by the Vizro team. This may have unexpected behavior if the defaults change.
+            Visit the [dbc documentation](https://dash-bootstrap-components.opensource.faculty.ai/docs/components/layout/)
+            to see all available arguments. [Not part of the official Vizro schema](../explanation/schema.md) and may
+            not be supported in the future. Defaults to `{}`.
 
     """
 
@@ -34,6 +41,19 @@ class Container(VizroBaseModel):
     )
     title: str = Field(description="Title to be displayed.")
     layout: Annotated[Optional[Layout], AfterValidator(set_layout), Field(default=None, validate_default=True)]
+    extra: SkipJsonSchema[
+        Annotated[
+            dict[str, Any],
+            Field(
+                default={},
+                description="""Extra keyword arguments that are passed to `dbc.Container` and overwrite any
+            defaults chosen by the Vizro team. This may have unexpected behavior if the defaults change.
+            Visit the [dbc documentation](https://dash-bootstrap-components.opensource.faculty.ai/docs/components/layout/)
+            to see all available arguments. [Not part of the official Vizro schema](../explanation/schema.md) and may
+            not be supported in the future. Defaults to `{}`.""",
+            ),
+        ]
+    ]
 
     @_log_call
     def build(self):
@@ -53,11 +73,14 @@ class Container(VizroBaseModel):
         components_container = self.layout.build()
         for component_idx, component in enumerate(self.components):
             components_container[f"{self.layout.id}_{component_idx}"].children = component.build()
-        return html.Div(
-            id=self.id,
-            children=[
+
+        defaults = {
+            "id": self.id,
+            "children": [
                 html.H3(children=self.title, className="container-title", id=f"{self.id}_title"),
                 components_container,
             ],
-            className="page-component-container",
-        )
+            "fluid": True,
+        }
+
+        return dbc.Container(**(defaults | self.extra))
