@@ -42,11 +42,7 @@ page_three = vm.Page(
 
 page_four = vm.Page(
     title="Card",
-    components=[
-        vm.Card(text="""Hello"""),
-        vm.Card(text="""Hello"""),
-        vm.Card(text="""Hello""")
-    ],
+    components=[vm.Card(text="""Hello"""), vm.Card(text="""Hello"""), vm.Card(text="""Hello""")],
 )
 dashboard = vm.Dashboard(pages=[page, page_two, page_three, page_four])
 
