@@ -37,7 +37,7 @@ print(res.code_explanation)"""
 
 
 class VizroAI:
-    """Vizro-AI main class."""
+    """Vizro-AI main class. DUMMY CHANGE"""
 
     def __init__(self, model: Optional[Union[BaseChatModel, str]] = None):
         """Initialization of VizroAI.
