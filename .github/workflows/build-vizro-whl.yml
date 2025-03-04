@@ -53,7 +53,7 @@ jobs:
         run: |
           hatch run pip install playwright
           hatch run playwright install --with-deps chromium
-      - name: Install vizro-ai # This makes vizro-ai present in repo
+      - name: Install vizro-ai in editable mode # This makes vizro-ai present in env to get the version
         run: |
           hatch run pip install -e ../vizro-ai
       - name: Print PR Number

@@ -94,8 +94,12 @@ def generate_link(
     # Requirements - either use latest release or commit's wheel file
     requirements = []
     if directory_path.startswith("vizro-ai/"):
-        requirements.extend([_get_vizro_ai_requirement(config, use_latest_release)])
+        # An example in this folder may require the latest vizro-ai and vizro-core releases
+        requirements.extend(
+            [_get_vizro_ai_requirement(config, use_latest_release), _get_vizro_requirement(config, use_latest_release)]
+        )
     else:
+        # All other examples do not require vizro-ai, but still the latest vizro-core release
         requirements.extend([_get_vizro_requirement(config, use_latest_release)])
 
     if extra_requirements:
