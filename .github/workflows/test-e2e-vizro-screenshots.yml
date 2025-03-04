@@ -1,4 +1,4 @@
-name: e2e vizro dom elements tests for Vizro
+name: e2e vizro screenshots tests
 
 defaults:
   run:
@@ -17,27 +17,28 @@ env:
   PYTHON_VERSION: "3.12"
 
 jobs:
-  test-e2e-vizro-dom-elements:
-    name: test-e2e-vizro-dom-elements on Py${{ matrix.config.python-version }} ${{ matrix.config.label }}
+  test-e2e-vizro-screenshots:
+    name: test-e2e-vizro-screenshots for ${{ matrix.config.browser }}
     runs-on: ubuntu-latest
 
     strategy:
       fail-fast: false
       matrix:
         config:
-          - python-version: "3.12"
-            hatch-env: all.py3.12
-          - python-version: "3.9"
-            hatch-env: lower-bounds
-            label: lower bounds
+          - browser: chrome
+            command: "-m 'not mobile_screenshots'"
+          - browser: chrome_mobile
+            command: "-m mobile_screenshots"
+          - browser: firefox
+            command: "--webdriver Firefox -m 'not mobile_screenshots'"
 
     steps:
       - uses: actions/checkout@v4
 
-      - name: Set up Python ${{ matrix.config.python-version }}
+      - name: Set up Python ${{ env.PYTHON_VERSION }}
         uses: actions/setup-python@v5
         with:
-          python-version: ${{ matrix.config.python-version }}
+          python-version: ${{ env.PYTHON_VERSION }}
 
       - name: Install Hatch
         run: pip install hatch
@@ -48,13 +49,16 @@ jobs:
       - name: Show dependency tree
         run: hatch run pip tree
 
-      - name: Run e2e vizro-dom-elements tests
-        run: hatch run test-e2e-vizro-dom-elements
+      - name: Run e2e vizro-screenshots tests
+        run: |
+          export BROWSER=${{ matrix.config.browser }}
+          hatch run test-e2e-vizro-screenshots ${{ matrix.config.command }}
 
       - name: Create artifacts and slack notifications
         if: failure()
         uses: ./.github/actions/failed-artifacts-and-slack-notifications
         env:
-          TESTS_NAME: Vizro e2e vizro dom elements tests
+          TESTS_NAME: Vizro e2e vizro screenshots tests for ${{ matrix.config.browser }}
           SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
           PROJECT_PATH: /home/runner/work/vizro/vizro/vizro-core/
+          FAILED_SCREENSHOTS_ARCHIVE_POSTFIX: ${{ matrix.config.browser }}

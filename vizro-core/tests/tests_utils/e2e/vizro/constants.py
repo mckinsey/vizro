@@ -39,11 +39,18 @@ BAR_GRAPH_ID = "b@R-graph"
 BAR_GRAPH_ID_CONTAINER = "b@R-graph__container"
 HISTOGRAM_GRAPH_ID = "-histogram-graph--"
 
+FILTER_INTERACTIONS_PAGE = "filter interactions page"
+FILTER_INTERACTIONS_PAGE_PATH = "/filter-interactions-page"
+SCATTER_INTERACTIONS_ID = "scatter_inter"
+BOX_INTERACTIONS_ID = "box_inter"
+CARD_INTERACTIONS_ID = "card_inter"
+
 KPI_INDICATORS_PAGE = "kpi indicators page"
 KPI_INDICATORS_PAGE_PATH = "/kpi-indicators-page"
 
 EXPORT_PAGE = "export page"
 EXPORT_PAGE_PATH = "/exportp"
+LINE_EXPORT_ID = "line--export--id"
 
 DATEPICKER_PAGE = "DATEpicker page"
 DATEPICKER_PAGE_PATH = "/datepicker-page"
@@ -58,6 +65,37 @@ TABLE_AG_GRID_ID = "123_ag_grid_table"
 BOX_AG_GRID_PAGE_ID = "B@x on ag grid page"
 TABLE_AG_GRID_CONTAINER = "table_ag_grid_container"
 
+TABLE_PAGE = "table page"
+TABLE_PAGE_PATH = "/table-page"
+TABLE_ID = "123_table"
+TABLE_CONTAINER = "table container"
+
+TABLE_INTERACTIONS_PAGE = "table inter page"
+TABLE_INTERACTIONS_PAGE_PATH = "/table-inter-page"
+TABLE_INTERACTIONS_ID = "interactions-123_table"
+LINE_INTERACTIONS_ID = "line inter id"
+
+DYNAMIC_DATA_PAGE = "dynamic data page"
+DYNAMIC_DATA_PAGE_PATH = "/dynamic-data-page"
+SCATTER_DYNAMIC_CACHED_ID = "scatter_dynamic_cached"
+SCATTER_DYNAMIC_ID = "scatter_dynamic"
+SLIDER_DYNAMIC_DATA_CACHED_ID = "slider_dynamic_data_cached"
+SLIDER_DYNAMIC_DATA_ID = "slider_dynamic_data"
+
+DYNAMIC_FILTERS_CATEGORICAL_PAGE = "dynamic filters categorical"
+DYNAMIC_FILTERS_CATEGORICAL_PAGE_PATH = "/dynamic-filters-categorical"
+BOX_DYNAMIC_FILTERS_ID = "box dynamic"
+DROPDOWN_MULTI_DYNAMIC_FILTER_ID = "dropdown_multi_dynamic"
+DROPDOWN_DYNAMIC_FILTER_ID = "dropdown_dynamic"
+CHECKLIST_DYNAMIC_FILTER_ID = "checklist_dynamic"
+RADIOITEMS_DYNAMIC_FILTER_ID = "radio_dynamic"
+
+DYNAMIC_FILTERS_NUMERICAL_PAGE = "dynamic filters numerical"
+DYNAMIC_FILTERS_NUMERICAL_PAGE_PATH = "/dynamic-filters-numerical"
+BAR_DYNAMIC_FILTER_ID = "bar_dynamic"
+SLIDER_DYNAMIC_FILTER_ID = "slider_dynamic"
+RANGE_SLIDER_DYNAMIC_FILTER_ID = "range_slider_dynamic"
+
 PAGE_404_PATH = "/404-page"
 
 # Accordion names
@@ -65,10 +103,18 @@ PAGE_404_PATH = "/404-page"
 GENERAL_ACCORDION = "generAl"
 DATEPICKER_ACCORDION = "DATEpicker"
 AG_GRID_ACCORDION = "AGgrid"
+AG_GRID_ACCORDION_NUMBER = 3
+DYNAMIC_DATA_ACCORDION = "DYNAMIC data"
+DYNAMIC_DATA_ACCORDION_NUMBER = 4
+KPI_ACCORDION = "KPI"
 
 # Ports
 
 DEFAULT_PORT = 5002
+ONE_PAGE_PORT = 5003
+NAVBAR_ACCORDIONS_PORT = 5004
+NAVBAR_PAGES_PORT = 5005
+NAVBAR_NAVLINK_PORT = 5006
 
 # Dashboards
 
@@ -82,3 +128,8 @@ RGBA_TRANSPARENT = "rgba(0, 0, 0, 0)"
 STYLE_TRANSPARENT = "background: rgba(0, 0, 0, 0);"
 AG_GRID_DARK = "ag-theme-quartz-dark ag-theme-vizro"
 AG_GRID_LIGHT = "ag-theme-quartz ag-theme-vizro"
+
+# Configs
+
+DYNAMIC_FILTERS_DATA_CONFIG = "tests/e2e/vizro/dashboards/default/dynamic_filters_data.yaml"
+PIXELMATCH_THRESHOLD = "0.18"
