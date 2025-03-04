@@ -1,46 +1,62 @@
-"""Dev app to try things out."""
-
-import pandas as pd
 import vizro.models as vm
 import vizro.plotly.express as px
 from vizro import Vizro
 from vizro.tables import dash_ag_grid
 from vizro.models.types import capture
+from vizro.figures import kpi_card
 
+tips = px.data.tips()
 
-df = px.data.iris()
-
-
-@capture("ag_grid")
-def my_custom_ag_grid(data_frame, chosen_columns, **kwargs):
-    print(f"\nChosen column: {chosen_columns}\n")
-    return dash_ag_grid(data_frame=data_frame[chosen_columns], **kwargs)()
-
-
-page = vm.Page(
-    title="Fix empty dropdown as parameter",
+first_page = vm.Page(
+    title="Data",
     components=[
         vm.AgGrid(
-            id="my_custom_ag_grid",
-            figure=my_custom_ag_grid(
-                data_frame=df,
-                chosen_columns=df.columns.to_list(),
-            ),
-        )
-    ],
-    controls=[
-        vm.Parameter(
-            targets=["my_custom_ag_grid.chosen_columns"],
-            selector=vm.Dropdown(
-                title="Choose columns",
-                options=df.columns.to_list(),
-                multi=True,
-            ),
+            figure=dash_ag_grid(tips),
+            footer="""**Data Source:** Bryant, P. G. and Smith, M (1995)
+            Practical Data Analysis: Case Studies in Business Statistics.
+            Homewood, IL: Richard D. Irwin Publishing.""",
         ),
     ],
 )
 
-dashboard = vm.Dashboard(pages=[page])
+second_page = vm.Page(
+    title="Summary",
+    components=[
+        vm.Figure(
+            figure=kpi_card(
+                data_frame=tips,
+                value_column="total_bill",
+                agg_func="mean",
+                value_format="${value:.2f}",
+                title="Average Bill",
+            )
+        ),
+        vm.Figure(
+            figure=kpi_card(
+                data_frame=tips, value_column="tip", agg_func="mean", value_format="${value:.2f}", title="Average Tips"
+            )
+        ),
+        vm.Tabs(
+            tabs=[
+                vm.Container(
+                    title="Total Bill ($)",
+                    components=[
+                        vm.Graph(figure=px.histogram(tips, x="total_bill")),
+                    ],
+                ),
+                vm.Container(
+                    title="Total Tips ($)",
+                    components=[
+                        vm.Graph(figure=px.histogram(tips, x="tip")),
+                    ],
+                ),
+            ],
+        ),
+    ],
+)
+
+dashboard = vm.Dashboard(pages=[first_page, second_page])
+
 
 if __name__ == "__main__":
     Vizro().build(dashboard).run()
