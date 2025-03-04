@@ -43,7 +43,7 @@ class TestContainerInstantiation:
             vm.Container(title="Title")
 
     def test_invalid_variant(self):
-        with pytest.raises(ValidationError, match="Input should be 'filled', 'outlined' or 'plain'"):
+        with pytest.raises(ValidationError, match="Input should be 'plain', 'filled' or 'outlined'."):
             vm.Container(title="Title", components=[vm.Button()], variant="test")
 
 

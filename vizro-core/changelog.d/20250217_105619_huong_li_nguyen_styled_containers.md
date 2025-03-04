@@ -18,7 +18,7 @@ Uncomment the section that is right (remove the HTML comment wrapper).
 -->
 ### Added
 
-- Enable styling of `vm.Container` with a new argument `theme="outlined"/"filled"`. See the user guide on [styled containers](https://vizro.readthedocs.io/en/stable/pages/user-guides/container/#styled-containers) for more details. ([#1002](https://github.com/mckinsey/vizro/pull/1002))
+- Enable styling of `vm.Container` with a new argument `theme="plain"/"filled"/"outlined"`. See the user guide on [styled containers](https://vizro.readthedocs.io/en/stable/pages/user-guides/container/#styled-containers) for more details. ([#1002](https://github.com/mckinsey/vizro/pull/1002))
 
 <!--
 ### Changed

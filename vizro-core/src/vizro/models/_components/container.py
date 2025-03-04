@@ -24,8 +24,8 @@ class Container(VizroBaseModel):
             has to be provided.
         title (str): Title to be displayed.
         layout (Optional[Layout]): Layout to place components in. Defaults to `None`.
-        variant (Literal["filled", "outlined", "plain"]): Predefined styles to choose from. Options are `filled`,
-            `outlined` or `plain`. Defaults to `plain`.
+        variant (Literal["plain", "filled", "outlined"]): Predefined styles to choose from. Options are `plain`,
+        `filled` or `outlined`. Defaults to `plain`.
 
     """
 
@@ -37,9 +37,9 @@ class Container(VizroBaseModel):
     )
     title: str = Field(description="Title to be displayed.")
     layout: Annotated[Optional[Layout], AfterValidator(set_layout), Field(default=None, validate_default=True)]
-    variant: Literal["filled", "outlined", "plain"] = Field(
+    variant: Literal["plain", "filled", "outlined"] = Field(
         default="plain",
-        description="Predefined styles to choose from. Options are `filled`, `outlined` or `plain`. "
+        description="Predefined styles to choose from. Options are `plain`, `filled` or `outlined`. "
         "Defaults to `plain`.",
     )
 
@@ -49,7 +49,7 @@ class Container(VizroBaseModel):
         # It needs to be properly designed and tested out (margins have to be added etc.).
         # Below corresponds to bootstrap utility classnames, while 'bg-container' is introduced by us.
         # See: https://getbootstrap.com/docs/4.0/utilities
-        variants = {"outlined": "border p-3", "filled": "bg-container p-3", "plain": ""}
+        variants = {"plain": "", "filled": "bg-container p-3", "outlined": "border p-3"}
 
         return dbc.Container(
             id=self.id,
