@@ -1,0 +1,5 @@
+max: 7
+min: 6
+setosa: 5
+versicolor: 10
+virginica: 15
