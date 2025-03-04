@@ -39,7 +39,8 @@ class Container(VizroBaseModel):
     layout: Annotated[Optional[Layout], AfterValidator(set_layout), Field(default=None, validate_default=True)]
     variant: Literal["plain", "filled", "outlined"] = Field(
         default="plain",
-        description="Predefined styles to choose from. Options are `plain`, `filled` or `outlined`. Defaults to `plain`.",
+        description="Predefined styles to choose from. Options are `plain`, `filled` or `outlined`. "
+        "Defaults to `plain`.",
     )
 
     @_log_call
