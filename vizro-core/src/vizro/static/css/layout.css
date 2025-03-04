@@ -23,7 +23,7 @@
 }
 
 #left-side {
-  background-color: var(--surfaces-bg02);
+  background-color: var(--left-side-bg);
   display: flex;
   flex-direction: row;
   height: 100%;
@@ -48,7 +48,7 @@
 
 #page-header {
   align-items: center;
-  background-color: var(--surfaces-bg02);
+  background-color: var(--left-side-bg);
   display: flex;
   flex-direction: row;
   height: 60px;
@@ -174,12 +174,6 @@
   justify-content: center;
   padding-top: 28px;
   width: 0;
-}
-
-.page-component-container {
-  display: flex;
-  flex-direction: column;
-  height: 100%;
 }
 
 /* Note: This is only meant as a quick-fix to improve some of the mobile layouts. */
