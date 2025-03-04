@@ -42,9 +42,9 @@ All the HEX values starting with --text-code are taken from the Github code high
 
 /* CARDS */
 .card {
-  height: 100%;
-  margin: 0 0.2rem;
-  width: calc(100% - 0.4rem);
+  height: calc(100% - 8px);
+  margin: 4px;
+  width: calc(100% - 8px);
 }
 
 .card .nav-link {

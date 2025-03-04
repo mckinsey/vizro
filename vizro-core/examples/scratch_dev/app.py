@@ -39,7 +39,16 @@ page_three = vm.Page(
         ),
     ],
 )
-dashboard = vm.Dashboard(pages=[page, page_two, page_three])
+
+page_four = vm.Page(
+    title="Card",
+    components=[
+        vm.Card(text="""Hello"""),
+        vm.Card(text="""Hello"""),
+        vm.Card(text="""Hello""")
+    ],
+)
+dashboard = vm.Dashboard(pages=[page, page_two, page_three, page_four])
 
 if __name__ == "__main__":
     Vizro().build(dashboard).run()
