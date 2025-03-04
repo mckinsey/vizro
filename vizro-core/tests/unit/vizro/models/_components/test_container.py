@@ -17,15 +17,22 @@ class TestContainerInstantiation:
         assert isinstance(container.components[0], vm.Button) and isinstance(container.components[1], vm.Button)
         assert container.layout.grid == [[0], [1]]
         assert container.title == "Title"
+        assert container.variant == "plain"
 
-    def test_create_container_mandatory_and_optional(self):
+    @pytest.mark.parametrize("variant", ["plain", "filled", "outlined"])
+    def test_create_container_mandatory_and_optional(self, variant):
         container = vm.Container(
-            id="my-id", title="Title", components=[vm.Button(), vm.Button()], layout=vm.Layout(grid=[[0, 1]])
+            id="my-id",
+            title="Title",
+            components=[vm.Button(), vm.Button()],
+            layout=vm.Layout(grid=[[0, 1]]),
+            variant=variant,
         )
         assert container.id == "my-id"
         assert isinstance(container.components[0], vm.Button) and isinstance(container.components[1], vm.Button)
         assert container.layout.grid == [[0, 1]]
         assert container.title == "Title"
+        assert container.variant == variant
 
     def test_mandatory_title_missing(self):
         with pytest.raises(ValidationError, match="Field required"):
@@ -34,6 +41,10 @@ class TestContainerInstantiation:
     def test_mandatory_components_missing(self):
         with pytest.raises(ValidationError, match="Field required"):
             vm.Container(title="Title")
+
+    def test_invalid_variant(self):
+        with pytest.raises(ValidationError, match="Input should be 'filled', 'outlined' or 'plain'"):
+            vm.Container(title="Title", components=[vm.Button()], variant="test")
 
 
 class TestContainerBuildMethod:
@@ -49,3 +60,12 @@ class TestContainerBuildMethod:
         assert_component_equal(result.children[0], html.H3("Title", className="container-title", id="container_title"))
         # And also that a button has been inserted in the right place:
         assert_component_equal(result["layout_id_0"].children, dbc.Button(), keys_to_strip=STRIP_ALL)
+
+    @pytest.mark.parametrize(
+        "variant, expected_classname", [("plain", ""), ("filled", "bg-container p-3"), ("outlined", "border p-3")]
+    )
+    def test_container_with_variant(self, variant, expected_classname):
+        result = vm.Container(title="Title", components=[vm.Button()], variant=variant).build()
+        assert_component_equal(
+            result, dbc.Container(className=expected_classname, fluid=True), keys_to_strip={"children", "id"}
+        )
