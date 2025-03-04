@@ -166,7 +166,7 @@ def expected_range_slider_with_extra():
                 className="slider-label-input",
             ),
             dcc.RangeSlider(
-                id="range_slider",
+                id="overridden_id",
                 min=0.0,
                 max=10.0,
                 step=2.0,
@@ -361,8 +361,8 @@ class TestRangeSliderBuild:
         """Test that extra arguments correctly override defaults."""
         range_slider = vm.RangeSlider(
             id="range_slider",
-            min=0,
-            max=10,
+            min=0.0,
+            max=10.0,
             step=2,
             marks={1: "1", 5: "5", 10: "10"},
             value=[0, 10],
@@ -370,6 +370,7 @@ class TestRangeSliderBuild:
             extra={
                 "tooltip": {"placement": "bottom", "always_visible": True},
                 "pushable": 20,
+                "id": "overridden_id",
             },
         ).build()
 

@@ -229,13 +229,14 @@ class TestDropdownBuild:
             extra={
                 "clearable": True,
                 "optionHeight": 150,
+                "id": "overridden_id",
             },
         ).build()
         expected_dropdown = html.Div(
             [
                 dbc.Label("Title", html_for="dropdown_id"),
                 dcc.Dropdown(
-                    id="dropdown_id",
+                    id="overridden_id",
                     options=[
                         {"label": html.Div(["ALL"]), "value": "ALL"},
                         {"label": "A", "value": "A"},

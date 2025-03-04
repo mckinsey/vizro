@@ -142,13 +142,19 @@ class TestRadioItemsBuild:
     def test_radio_items_build_with_extra(self):
         """Test that extra arguments correctly override defaults."""
         radio_items = RadioItems(
-            id="radio_items_id", options=["A", "B", "C"], title="Title", extra={"inline": True}
+            id="radio_items_id",
+            options=["A", "B", "C"],
+            title="Title",
+            extra={
+                "inline": True,
+                "id": "overridden_id",
+            },
         ).build()
         expected_radio_items = html.Fieldset(
             [
                 html.Legend("Title", className="form-label"),
                 dbc.RadioItems(
-                    id="radio_items_id",
+                    id="overridden_id",
                     options=["A", "B", "C"],
                     value="A",
                     persistence=True,

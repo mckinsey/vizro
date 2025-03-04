@@ -84,7 +84,7 @@ def expected_slider_extra():
                 className="slider-label-input",
             ),
             dcc.Slider(
-                id="slider_id",
+                id="overridden_id",
                 min=0.0,
                 max=10.0,
                 step=1.0,
@@ -223,6 +223,7 @@ class TestBuildMethod:
         assert_component_equal(slider, expected_slider)
 
     def test_slider_build_with_extra(self, expected_slider_extra):
+        """Test that extra arguments correctly override defaults."""
         slider = vm.Slider(
             id="slider_id",
             min=0,
@@ -230,7 +231,10 @@ class TestBuildMethod:
             step=1,
             value=5,
             title="Test title",
-            extra={"tooltip": {"placement": "bottom", "always_visible": True}},
+            extra={
+                "tooltip": {"placement": "bottom", "always_visible": True},
+                "id": "overridden_id",
+            },
         ).build()
 
         assert_component_equal(slider, expected_slider_extra)

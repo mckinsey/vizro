@@ -43,14 +43,12 @@ class TestBuildMethod:
 
     def test_card_build_with_extra(self):
         """Test that extra arguments correctly override defaults."""
-        card = vm.Card(id="card_id", text="Hello", extra={"color": "success", "outline": True}).build()
+        card = vm.Card(id="card_id", text="Hello", extra={"class_name": "bg-primary p-1 mt-2 text-center h2"}).build()
         assert_component_equal(
             card,
             dbc.Card(
                 dcc.Markdown(id="card_id", children="Hello", dangerously_allow_html=False, className="card-text"),
-                class_name="",
-                color="success",
-                outline=True,
+                class_name="bg-primary p-1 mt-2 text-center h2",
             ),
         )
 

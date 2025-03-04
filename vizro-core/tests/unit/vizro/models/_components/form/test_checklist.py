@@ -145,14 +145,18 @@ class TestChecklistBuild:
             options=["A", "B", "C"],
             value=["A"],
             title="Test title",
-            extra={"switch": True, "inline": True},
+            extra={
+                "switch": True,
+                "inline": True,
+                "id": "overridden_id",
+            },
         ).build()
 
         expected_checklist = html.Fieldset(
             [
                 html.Legend("Test title", className="form-label"),
                 dbc.Checklist(
-                    id="checklist_id",
+                    id="overridden_id",
                     options=["ALL", "A", "B", "C"],
                     value=["A"],
                     persistence=True,
