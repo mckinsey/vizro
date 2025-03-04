@@ -236,7 +236,7 @@ To make the `Container` stand out as a distinct section in your dashboard, you c
     === "Result"
         [![StyleContainer]][stylecontainer]
 
-If you want to style your `Container` beyond the default background color, please refer to our user guide on [overwriting CSS for selected components](custom-css.md#overwrite-css-for-selected-components).
+If you want to style your `Container` beyond the styling options available inside `variant`, please refer to our user guide on [overwriting CSS for selected components](custom-css.md#overwrite-css-for-selected-components).
 
 [container]: ../../assets/user_guides/components/containers.png
 [stylecontainer]: ../../assets/user_guides/components/container-styled.png

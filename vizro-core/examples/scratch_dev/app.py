@@ -18,14 +18,14 @@ page = vm.Page(
             components=[
                 vm.Graph(figure=px.scatter(iris, x="sepal_width", y="sepal_length", color="species")),
             ],
-            theme="outlined",
+            variant="outlined",
         ),
         vm.Container(
             title="Container II",
             components=[
                 vm.Graph(figure=px.scatter(iris, x="sepal_width", y="sepal_length", color="species")),
             ],
-            theme="filled",
+            variant="filled",
         ),
     ],
 )
@@ -50,14 +50,14 @@ page_three = vm.Page(
             components=[
                 vm.Graph(figure=px.scatter(iris, x="sepal_width", y="sepal_length", color="species")),
             ],
-            theme="outlined",
+            variant="outlined",
         ),
         vm.Container(
             title="Container II",
             components=[
                 vm.Graph(figure=px.scatter(iris, x="sepal_width", y="sepal_length", color="species")),
             ],
-            theme="filled",
+            variant="filled",
         ),
     ],
 )
