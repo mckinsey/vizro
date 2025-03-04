@@ -48,4 +48,4 @@ Currently each selector is based on an underlying Dash component as mentioned in
 !!! warning
     Using `extra` is a quick and flexible way to alter a component beyond what Vizro offers. However, [it is not a part of the official Vizro schema](../explanation/schema.md#what-is-the-vizro-json-schema) and we do not consider it a breaking change if we alter/remove it. This is unlikely to happen any time soon.
 
-For examples of how to use the `extra` argument, we provided a comprehensive example in the documentation of the [`Container`](container.md#the-extra-argument).
+For examples of how to use the `extra` argument, we provided a comprehensive example in the documentation of [`Card`](card-button.md#the-extra-argument).

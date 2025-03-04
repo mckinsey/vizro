@@ -532,7 +532,7 @@ Currently the `Card` is based on the underlying [`dbc.Card`](https://dash-bootst
 
 An example use would be to limit the `Card` height to only take as much space as the content, and not to take up all the available height (default). For this, you can use `extra={"style": {"height": "unset"}}`.
 
-!!! example "Card with background color"
+!!! example "Card with limited height"
     === "app.py"
         ```{.python pycafe-link}
         import vizro.models as vm

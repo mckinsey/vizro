@@ -166,92 +166,11 @@ vm.Container(
 
 ## The `extra` argument
 
-Currently the `Container` is based on the underlying [`dbc.Container`](https://dash-bootstrap-components.opensource.faculty.ai/docs/components/layout/). Using the `extra` argument you pass additional arguments to the underlying object in order to alter it beyond the chosen defaults.
+Currently the `Container` is based on the underlying [`dbc.Container`](https://dash-bootstrap-components.opensource.faculty.ai/docs/components/layout/). Using the `extra` argument you can pass additional arguments to the underlying object in order to alter it beyond the chosen defaults.
 
 !!! warning
     Using `extra` is a quick and flexible way to alter a component beyond what Vizro offers. However, [it is not a part of the official Vizro schema](../explanation/schema.md#what-is-the-vizro-json-schema) and we do not consider it a breaking change if we alter/remove it. This is unlikely to happen any time soon.
 
-An example use would be to enhance the visibility of the `Container` as a distinct section within your dashboard. For this, you can use `extra={"class_name": "bg-container"}`.
-
-!!! example "Container with background color"
-    === "app.py"
-        ```{.python pycafe-link}
-        import vizro.models as vm
-        import vizro.plotly.express as px
-        from vizro import Vizro
-
-        iris = px.data.iris()
-
-        page = vm.Page(
-            title="Container with background color",
-            layout=vm.Layout(grid=[[0, 1]]),
-            components=[
-                vm.Container(
-                    title="Container I",
-                    components=[
-                        vm.Graph(
-                            figure=px.scatter(
-                                iris, x="sepal_width", y="sepal_length", color="species"
-                            )
-                        )
-                    ],
-                    extra={"class_name": "bg-container"},
-                ),
-                vm.Container(
-                    title="Container II",
-                    components=[
-                        vm.Graph(
-                            figure=px.box(iris, x="species", y="sepal_length", color="species")
-                        )
-                    ],
-                    extra={"class_name": "bg-container"},
-                ),
-            ],
-        )
-
-        dashboard = vm.Dashboard(pages=[page])
-        Vizro().build(dashboard).run()
-        ```
-
-    === "app.yaml"
-        ```yaml
-        # Still requires a .py to add data to the data manager and parse YAML configuration
-        # See yaml_version example
-        pages:
-          - title: Container with background color
-            layout:
-              grid: [[0, 1]]
-            components:
-              - type: container
-                title: Container I
-                components:
-                  - type: graph
-                    figure:
-                      _target_: scatter
-                      data_frame: iris
-                      x: sepal_width
-                      y: sepal_length
-                      color: species
-                extra:
-                  class_name: bg-container
-              - type: container
-                title: Container II
-                components:
-                  - type: graph
-                    figure:
-                      _target_: box
-                      data_frame: iris
-                      x: species
-                      y: sepal_length
-                      color: species
-                extra:
-                  class_name: bg-container
-        ```
-
-    === "Result"
-        [![StyleContainer]][stylecontainer]
-
-If you want to style your `Container` beyond what is available through the underlying component, please refer to our user guide on [overwriting CSS for selected components](custom-css.md#overwrite-css-for-selected-components).
+For examples of how to use the `extra` argument, we provided a comprehensive example in the documentation of [`Card`](card-button.md#the-extra-argument).
 
 [container]: ../../assets/user_guides/components/containers.png
-[stylecontainer]: ../../assets/user_guides/components/container_with_background.png
