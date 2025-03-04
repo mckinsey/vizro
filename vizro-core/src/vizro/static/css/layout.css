@@ -24,6 +24,7 @@
 
 #left-side {
   background-color: var(--left-side-bg);
+  border-right: 1px solid var(--bs-border-color);
   display: flex;
   flex-direction: row;
   height: 100%;

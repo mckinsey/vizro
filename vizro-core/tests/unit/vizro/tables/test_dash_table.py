@@ -39,7 +39,7 @@ class TestDashDataTable:
                 style_data={"border_bottom": "1px solid var(--border-subtleAlpha01)", "height": "40px"},
                 style_header={
                     "border_bottom": "1px solid var(--stateOverlays-selectedHover)",
-                    "border_top": "1px solid var(--right-side-bg)",
+                    "border_top": "None",
                     "height": "32px",
                 },
                 style_data_conditional=[
