@@ -530,7 +530,7 @@ Currently the `Card` is based on the underlying [`dbc.Card`](https://dash-bootst
 !!! warning
     Using `extra` is a quick and flexible way to alter a component beyond what Vizro offers. However, [it is not a part of the official Vizro schema](../explanation/schema.md#what-is-the-vizro-json-schema) and we do not consider it a breaking change if we alter/remove it. This is unlikely to happen any time soon.
 
-An example use would be to change the background color of the card. For this, you can use `extra={"color": "info"}`.
+An example use would be to limit the `Card` height to only take as much space as the content, and not to take up all the available height (default). For this, you can use `extra={"style": {"height": "unset"}}`.
 
 !!! example "Card with background color"
     === "app.py"
@@ -539,11 +539,11 @@ An example use would be to change the background color of the card. For this, yo
         from vizro import Vizro
 
         page = vm.Page(
-            title="Card with background color",
+            title="Card with limited height",
             components=[
                 vm.Card(
-                    text="This is a card with an info background",
-                    extra={"color": "info"},
+                    text="This card height is limited to the content.",
+                    extra={"style": {"height": "unset"}},
                 ),
             ],
         )
@@ -555,12 +555,13 @@ An example use would be to change the background color of the card. For this, yo
     === "app.yaml"
         ```yaml
         pages:
-          - title: Card with background color
+          - title: Card with limited height
             components:
               - type: card
-                text: This is a card with an info background
+                text: This card height is limited to the content.
                 extra:
-                  color: info
+                  style:
+                    height: unset
         ```
 
     === "Result"
