@@ -5,15 +5,15 @@ from typing import Any
 from dash import State, ctx
 
 from vizro.actions._actions_utils import _get_modified_page_figures
-from vizro.managers._model_manager import ModelID
-from vizro.models._action._action import NewAction
+from vizro.managers._model_manager import ModelID, model_manager
+from vizro.models._action._action import AbstractAction
 
 
 # TODO NOW: comments and docstrings like in opl
-class _parameter(NewAction):
+class _parameter(AbstractAction):
     targets: list[ModelID]
 
-    def actual_function(
+    def function(
         self,
         filters,
         parameters,
@@ -27,6 +27,18 @@ class _parameter(NewAction):
             ctds_parameter=ctx.args_grouping["external"]["parameters"],
             targets=targets,
         )
+
+    @property
+    def outputs(self):
+        targets = [target.partition(".")[0] for target in self.targets]
+        outputs = {}
+
+        for target in targets:
+            component_id = target
+            component_property = model_manager[component_id]._output_component_property
+            outputs[target] = f"{component_id}.{component_property}"
+
+        return outputs
 
     # pararmeter_action
     # def _post_init(self):

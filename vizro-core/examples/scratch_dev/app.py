@@ -7,8 +7,7 @@ from vizro.actions import filter_interaction, export_data
 from vizro.models._action._action import (
     VizroState,
     VizroOutput,
-    NewCustomAction,
-    NewAction,
+    AbstractAction,
 )
 from vizro.models.types import capture
 
@@ -106,9 +105,10 @@ page2 = vm.Page(
             id="scatter_chart",
             figure=px.scatter(df, x="sepal_length", y="petal_width", color="species", custom_data=["species"]),
             actions=[
-                NewCustomAction(
+                vm.Action(
                     function=my_custom_action(points_data="scatter_chart.clickData"),
-                    # no need to specify filters or make it optional argument - thanks to CC
+                    # no need to specify filters or make it optional argument - thanks to CC. This is real advantage
+                    # of CC, not rebinding static args.
                     outputs=["my_card_1.children", "my_card_2.children"],
                 ),
             ],
@@ -142,7 +142,7 @@ Builtin actions don't need this wrapper.
 # Alternatives - don't like these either but better? Could be shortcut for full vm.Action version.
 # {my_custom_action(points_data="scatter_chart.clickData"): "my_card_1"}, ##### PREFERRED as shortcut
 # syntax BUT WON'T  POINTLESS
-# could make NewCustomAction hashable by hasing model id
+# could make Action hashable by hasing model id
 # {"my_card_1.children": my_custom_action(points_data="scatter_chart.clickData")}, # This doesn't
 # work as well - what if have two actions with None output.
 # vm.GenericCustomAction(
@@ -158,12 +158,12 @@ Builtin actions don't need this wrapper.
 # Make this possible and consider shortcut syntax of {"my_card_1.children": my_custom_action(
 # points_data="scatter_chart.clickData")}.
 # {"function": ..., "outputs": ...} possible without explicit vm.Action
-# vm.ActionXXX(function: NewCustomAction, outputs: Optional ...)
+# vm.ActionXXX(function: Action, outputs: Optional ...)
 # XXX to distinguish from current
 # want to match inbuilt actions to this
 # but also want shortcut, so would be same plain unwrapped export_data(targets="a") as syntax
 # export_data is then subclass of vm.ActionXXX with its own fields inculding outputs,
-# just like current NewAction
+# just like current AbstractAction
 # <-- gives space to make trigger/non-triggering, alerts etc.
 # can have syntactic sugar shortcuts?
 # vm.Action(

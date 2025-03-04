@@ -11,11 +11,10 @@ from vizro.managers import model_manager
 from vizro.managers._model_manager import FIGURE_MODELS, ModelID
 from vizro.models import VizroBaseModel
 from vizro.models._action._action import (
-    NewAction,
+    AbstractAction,
     ControlInputs,
     _get_inputs_of_controls,
     _get_inputs_of_figure_interactions,
-    RESERVED_ARGS,
 )
 from vizro.models.types import capture, CapturedCallable
 
@@ -23,10 +22,10 @@ T = TypeVar("T")
 S = Annotated[ClassVar[T], "s"]
 
 
-class export_data(NewAction):
+class export_data(AbstractAction):
     # implementation independent, appear in schema
     # BUILD TIME PARAMS
-    # SOME REINTERPRETED AT RUNTIME as in NewAction
+    # SOME REINTERPRETED AT RUNTIME as in AbstractAction
     # but also have possibility of static arguments that you can't do (at least not without type hint) in Action
     targets: list[ModelID] = []  # TODO FUTURE: maybe rename this so it doesn't inconsistently
     # use targets?
@@ -34,7 +33,7 @@ class export_data(NewAction):
 
     runtime_arg: str
 
-    def actual_function(
+    def function(
         self,
         runtime_arg,
         filters,
@@ -87,11 +86,11 @@ class export_data(NewAction):
 
         return outputs
 
-    # like function,  Must be set using property or as private attribute assigned using validator or default factory.
-    # The default factory can also take a single required argument, in which the case the already validated data will be passed as a dictionary.
-
     @property
-    def outputs(self) -> dict[str, Output]:
+    # overrides _outputs_ not outputs
+    # could convert to string ids and use outputs
+    # leave like this because hopefully will have single download component in future anyway with a reserved id
+    def _outputs_(self) -> dict[str, Output]:
         # TODO NOW: comment
         targets = self.targets or [
             model.id

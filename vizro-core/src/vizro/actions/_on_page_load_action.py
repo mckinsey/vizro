@@ -5,15 +5,15 @@ from typing import Any
 from dash import State, ctx
 
 from vizro.actions._actions_utils import _get_modified_page_figures
-from vizro.managers._model_manager import ModelID
-from vizro.models._action._action import NewAction
+from vizro.managers._model_manager import ModelID, model_manager
+from vizro.models._action._action import AbstractAction
 
 
 # TODO NOW: rename apply_controls or similar. Docstring. Tidy comments in arguments.
-class _on_page_load(NewAction):
+class _on_page_load(AbstractAction):
     targets: list[ModelID]
 
-    def actual_function(
+    def function(
         self,
         filters,
         parameters,
@@ -27,6 +27,17 @@ class _on_page_load(NewAction):
             ctds_parameter=ctx.args_grouping["external"]["parameters"],
             targets=self.targets,
         )
+
+    @property
+    def outputs(self):
+        outputs = {}
+
+        for target in self.targets:
+            component_id = target
+            component_property = model_manager[target]._output_component_property
+            outputs[target] = f"{component_id}.{component_property}"
+
+        return outputs
 
     # update_figures
     # def _post_init(self):
