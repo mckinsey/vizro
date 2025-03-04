@@ -25,7 +25,7 @@ class Container(VizroBaseModel):
         title (str): Title to be displayed.
         layout (Optional[Layout]): Layout to place components in. Defaults to `None`.
         variant (Literal["plain", "filled", "outlined"]): Predefined styles to choose from. Options are `plain`,
-        `filled` or `outlined`. Defaults to `plain`.
+            `filled` or `outlined`. Defaults to `plain`.
 
     """
 
@@ -39,8 +39,7 @@ class Container(VizroBaseModel):
     layout: Annotated[Optional[Layout], AfterValidator(set_layout), Field(default=None, validate_default=True)]
     variant: Literal["plain", "filled", "outlined"] = Field(
         default="plain",
-        description="Predefined styles to choose from. Options are `plain`, `filled` or `outlined`. "
-        "Defaults to `plain`.",
+        description="Predefined styles to choose from. Options are `plain`, `filled` or `outlined`. Defaults to `plain`.",
     )
 
     @_log_call
