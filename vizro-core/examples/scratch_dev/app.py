@@ -7,7 +7,7 @@ from vizro.tables import dash_ag_grid, dash_data_table
 
 iris = px.data.iris()
 
-page= vm.Page(
+page = vm.Page(
     title="AgGrid",
     components=[
         vm.Container(
@@ -18,7 +18,7 @@ page= vm.Page(
     ],
 )
 
-page_two= vm.Page(
+page_two = vm.Page(
     title="Data Table",
     components=[
         vm.Container(
@@ -29,7 +29,7 @@ page_two= vm.Page(
     ],
 )
 
-page_three= vm.Page(
+page_three = vm.Page(
     title="Graph",
     components=[
         vm.Container(
