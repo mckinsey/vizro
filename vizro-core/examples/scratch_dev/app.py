@@ -35,7 +35,6 @@ page_three = vm.Page(
         vm.Container(
             title="Container II",
             components=[vm.Graph(figure=px.scatter(iris, x="sepal_width", y="sepal_length", color="species"))],
-            variant="filled",
         ),
     ],
 )
