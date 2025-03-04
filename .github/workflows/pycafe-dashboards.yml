@@ -27,10 +27,18 @@ jobs:
         run: |
           hatch run pip install playwright
           hatch run playwright install --with-deps chromium
+      # The next step has several benefits:
+      # - we can verify that the vizro-ai version is compatible with the vizro-core version from the requirements perspective
+      # - we have access to both versions in the test_pycafe_links.py and create_pycafe_links_comments.py scripts
+      - name: Install vizro-ai in editable mode to check compatibility with vizro-core and get the version
+        run: |
+          hatch run pip install -e ../vizro-ai
       - name: Print PR Number
         run: |
           echo "Pull Request Number: ${{ github.event.workflow_run.pull_requests[0].number }}"
-      - name: Test PyCafe links # Eventually we should merge this with the create_pycafe_links_comments.py script
+          # TODO: Eventually we should probably merge this with the create_pycafe_links_comments.py script
+          # TODO: We should probably also check a link that has vizro-ai and vizro-core in the requirements
+      - name: Test PyCafe links 
         run: |
           hatch run python ../tools/pycafe/test_pycafe_links.py --github-token ${{ github.token }} --repo-name ${{ github.repository }} --run-id ${{ github.event.workflow_run.id }} --commit-sha ${{ github.event.workflow_run.head_sha }}
       - name: Create PyCafe links
