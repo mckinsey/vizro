@@ -90,7 +90,7 @@ To start, let's get an overview of the data by displaying it in a table using [A
     === "Result"
         [![FirstPage]][firstpage]
 
-After running `Vizro().build(dashboard).run()`, open your web browser and navigate to `localhost:8050` to view the dashboard.
+After running your code (either locally or on PyCafe), you can now view the dashboard (on `localhost:8050` if you ran it locally, or on the right part of the screen if you are using PyCafe).
 
 Take a moment to explore the data in the table. You can sort, filter, and search within the `AgGrid` columns to better understand the dataset.
 
@@ -381,8 +381,12 @@ In the following layout configuration, the layout is divided into **four columns
 - There are two empty cells to the right of the KPI cards (-1).
 - The `Tabs` component (2) is placed below the KPI cards, spanning all cells across the remaining three rows.
 
-```python
-grid = [[0, 1, -1, -1], [2, 2, 2, 2], [2, 2, 2, 2], [2, 2, 2, 2]]
+<!-- Don't change below to python code, as otherwise it will be put on one line. -->
+```
+grid = [[0, 1,-1,-1],
+        [2, 2, 2, 2], 
+        [2, 2, 2, 2], 
+        [2, 2, 2, 2]]
 ```
 
 Run the code below to apply the layout to the dashboard page:
@@ -582,7 +586,7 @@ This page will feature a bar chart, a violin chart, and a heatmap and take inspi
 This step should feel familiar. Let's add all three charts to the page.
 
 1. Create a third [`Page`][vizro.models.Page] and store it in a variable called `third_page`. Set its `title` to "Analysis".
-1. Add three [`Graph`s][vizro.models.Graph] to the `components` of the `Page`.
+1. Add three [`Graph`][vizro.models.Graph] models to the `components` of the `Page`.
 1. For each `Graph`, use the `figure` argument to provide one of the Plotly express functions:
     - [px.violin](https://vizro-demo-visual-vocabulary.hf.space/distribution/violin) (copy the code directly)
     - [px.bar](https://vizro-demo-visual-vocabulary.hf.space/magnitude/column) (copy the code directly)
@@ -708,7 +712,7 @@ This step should feel familiar. Let's add all three charts to the page.
     === "Result"
         [![ThirdPage]][thirdpage]
 
-You may notice that the third chart is not visible. This issue can occur with Plotly charts when there isn't enough space to display them properly. Let's customize the layout again to allocate more space to the heatmap.
+Depending on your screen size, you may notice that the third chart is not visible. This issue can occur with Plotly charts when there isn't enough space to display them properly. Let's customize the layout again to allocate more space to the heatmap.
 
 ### 4.2. Configure the layout
 
@@ -721,8 +725,10 @@ In the following layout configuration, the layout is divided into **two columns*
 
 Remember, the index corresponds to the order in which the components are added to the `components` of the `Page`.
 
-```python
-grid = [[0, 1], [2, 2]]
+<!-- Don't change below to python code, as otherwise it will be put on one line. -->
+```
+grid = [[0, 1], 
+        [2, 2]]
 ```
 
 Run the code below to apply the layout to the dashboard page:
