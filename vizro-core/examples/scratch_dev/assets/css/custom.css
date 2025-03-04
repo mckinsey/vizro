@@ -5,9 +5,9 @@
 }
 
 .bg-container {
+  background-color: inherit;
   border: 1px solid var(--border-subtleAlpha01);
   padding: 1rem;
-  background-color: inherit;
 }
 
 .collapsible-container-header h3 {
@@ -15,10 +15,10 @@
 }
 
 .collapsible-container-header {
+  align-items: center;
   display: flex;
   flex-direction: row;
   justify-content: space-between;
-  align-items: center;
 }
 
 .collapsible-container-header .material-symbols-outlined {

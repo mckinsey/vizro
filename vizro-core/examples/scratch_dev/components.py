@@ -1,12 +1,12 @@
 """Contains custom components used inside the dashboard."""
 
-from typing import Annotated, Literal, cast
+from typing import Annotated, Literal
 
 import dash_bootstrap_components as dbc
 import vizro.models as vm
-from dash import Input, Output, clientside_callback, html
+from dash import Input, Output, State, clientside_callback, html
 from pydantic import BeforeValidator, conlist
-from vizro.models import Layout, VizroBaseModel
+from vizro.models import VizroBaseModel
 from vizro.models._models_utils import _log_call, check_captured_callable_model
 from vizro.models.types import ComponentType
 
@@ -31,6 +31,7 @@ class FlexContainer(VizroBaseModel):
 
     @_log_call
     def build(self):
+        """Returns custom flex container."""
         return html.Div(
             id=self.id, children=[component.build() for component in self.components], className="flex-container"
         )
@@ -49,24 +50,28 @@ class CollapsibleContainer(vm.Container):
 
     @_log_call
     def build(self):
+        """Returns custom collapsible container."""
         clientside_callback(
             """
-            (n_clicks) => {
+            (n_clicks, is_open) => {
                 if (!n_clicks) {
+                    if (is_open) {
+                        return [is_open, { transform: "rotate(180deg)", transition: "transform 0.35s ease-in-out"}];
+                    }
+
                     return dash_clientside.no_update;
                 }
 
-                const isOpen = n_clicks % 2 === 1;
-                const style = {
-                    transform: isOpen ? "rotate(180deg)" : "rotate(0deg)",
-                    transition: "transform 0.35s ease-in-out"
-                };
-
-                return [isOpen, style];
+                return [
+                    !is_open,
+                    { transform: !is_open ? "rotate(180deg)" : "rotate(0deg)",
+                     transition: "transform 0.35s ease-in-out" }
+                ];
             }
             """,
             [Output(self.id, "is_open"), Output(f"{self.id}_icon", "style")],
-            Input(f"{self.id}_title", "n_clicks"),
+            [Input(f"{self.id}_title", "n_clicks")],
+            [State(self.id, "is_open")],
         )
 
         return dbc.Container(
