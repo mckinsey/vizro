@@ -1,7 +1,6 @@
 # Explore Vizro
 
-In this tutorial, you'll learn how to build an interactive dashboard with multiple pages, incorporating a wide range of Vizro's components.
-This tutorial should take about an hour to finish, so grab a coffee or tea and let's dive in! ☕
+In this tutorial, you'll learn how to build an interactive dashboard with multiple pages, incorporating a wide range of Vizro's components. This tutorial should take about an hour to finish, so grab a coffee or tea and let's dive in! ☕
 
 !!! note
     If you're looking for a quick start to get up and running with Vizro, consider reviewing the [first dashboard tutorial](../tutorials/first-dashboard.md) before diving into this one.
@@ -383,10 +382,11 @@ In the following layout configuration, the layout is divided into **four columns
 - The `Tabs` component (2) is placed below the KPI cards, spanning all cells across the remaining three rows.
 
 <!-- Don't change below to python code, as otherwise it will be put on one line. -->
+
 ```
 grid = [[0, 1,-1,-1],
-        [2, 2, 2, 2], 
-        [2, 2, 2, 2], 
+        [2, 2, 2, 2],
+        [2, 2, 2, 2],
         [2, 2, 2, 2]]
 ```
 
@@ -727,8 +727,9 @@ In the following layout configuration, the layout is divided into **two columns*
 Remember, the index corresponds to the order in which the components are added to the `components` of the `Page`.
 
 <!-- Don't change below to python code, as otherwise it will be put on one line. -->
+
 ```
-grid = [[0, 1], 
+grid = [[0, 1],
         [2, 2]]
 ```
 
