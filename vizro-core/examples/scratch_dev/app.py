@@ -28,24 +28,47 @@ page = vm.Page(
                         vm.Graph(figure=px.scatter(iris, x="sepal_length", y="petal_width", color="species")),
                         vm.Graph(figure=px.histogram(iris, x="sepal_width", color="species")),
                         vm.Graph(figure=px.scatter(iris, x="sepal_length", y="petal_width", color="species")),
+                        vm.Card(text="helloooo")
                     ],
-                    layout=vm.Layout(grid=[[0, 0, 0, 0], [1, 1, 2, 2]]),
                 ),
                 CollapsibleContainer(
                     title="Collapsible container 2",
                     components=[
                         vm.Graph(figure=px.scatter(iris, x="sepal_length", y="petal_width", color="species")),
                         vm.Graph(figure=px.histogram(iris, x="sepal_width", color="species")),
+                        vm.Card(text="helloooo")
                     ],
-                    layout=vm.Layout(grid=[[0, 0, 0, 0], [1, 1, 1, 1]]),
                 ),
             ]
         )
     ],
 )
 
+page_grid = vm.Page(
+    title="Collapse containers withg grid",
+    components=[
+        CollapsibleContainer(
+                    title="Collapsible container",
+                    components=[
+                        vm.Graph(figure=px.scatter(iris, x="sepal_length", y="petal_width", color="species")),
+                        vm.Graph(figure=px.histogram(iris, x="sepal_width", color="species")),
+                        vm.Graph(figure=px.scatter(iris, x="sepal_length", y="petal_width", color="species")),
+                        vm.Card(text="helloooo")
+                    ],
+                ),
+                CollapsibleContainer(
+                    title="Collapsible container 2",
+                    components=[
+                        vm.Graph(figure=px.scatter(iris, x="sepal_length", y="petal_width", color="species")),
+                        vm.Graph(figure=px.histogram(iris, x="sepal_width", color="species")),
+                        vm.Card(text="helloooo")
+                    ],
+                ),
+            ]
+)
 
-dashboard = vm.Dashboard(pages=[page])
+
+dashboard = vm.Dashboard(pages=[page, page_grid])
 
 
 if __name__ == "__main__":
