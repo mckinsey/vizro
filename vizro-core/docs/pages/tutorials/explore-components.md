@@ -1,11 +1,11 @@
 # Explore Vizro
 
-In this tutorial, you'll learn how to build an interactive dashboard with multiple pages, incorporating a wide range of Vizro's components. This tutorial should take about an hour to finish, so grab a coffee or tea and let's dive in! ☕
+In this tutorial, you'll learn how to build an interactive dashboard with multiple pages, incorporating a wide range of Vizro's components. This tutorial should take **about an hour to finish**, so grab a coffee or tea and let's dive in! ☕
 
 !!! note
     If you're looking for a quick start to get up and running with Vizro, consider reviewing the [first dashboard tutorial](../tutorials/first-dashboard.md) before diving into this one.
 
-By the end of this tutorial, you have learned how to:
+**By the end of this tutorial, you have learned how to:**
 
 - Explore most of [Vizro's components](../user-guides/components.md).
 - Use the [Vizro visual vocabulary](https://vizro-demo-visual-vocabulary.hf.space/) to guide your chart creation.
@@ -20,7 +20,7 @@ This tutorial uses the [tips dataset](https://plotly.com/python-api-reference/ge
 
 ![](../../assets/tutorials/dashboard/00-dashboard-final.png) [Here is a preview of the dashboard you'll build](https://py.cafe/app/vizro-official/vizro-tips-analysis-tutorial)
 
-## 1. (Optional) Install Vizro and get ready to run your code
+## 1. Install Vizro or run on PyCafe
 
 You can experiment with the code for this tutorial directly on [PyCafe](https://py.cafe/vizro-official/vizro-tips-analysis-tutorial), so there's no need to install Vizro locally. We recommend starting with a [blank Vizro project on PyCafe](https://py.cafe/snippet/vizro/v1) and copying the code snippets from this tutorial into it, to see how everything integrates. For more details, check out the [PyCafe documentation](https://py.cafe/docs/apps/vizro).
 
@@ -42,13 +42,30 @@ You can experiment with the code for this tutorial directly on [PyCafe](https://
 
     Once the script is running, open your web browser and go to `localhost:8050` to see the dashboard.
 
-## 2. Create a first page
+## 2. Understand the basics
+Before we dive in, let's quickly cover some basics:
+
+At the top level, you'll be creating a [`Dashboard`][vizro.models.Dashboard]. Here's what you can configure at the dashboard-level:
+
+- **Pages**: You can add multiple pages; they are the building blocks of your dashboard.
+- **Navigation**: You can customize navigation between those different pages.
+- **Title/Logo**: You can add your own titles and logos.
+
+For each [`Page`][vizro.models.Page], you can additionally configure the following:
+
+- **Components**: Add charts, tables, input/output interfaces, and more.
+- **Controls**: Include filters and parameters.
+- **Layouts**: Customize the placement of components within a page.
+- **Actions/Interactions**: Create interactions between components and use predefined or custom actions.
+
+
+## 3. Create a first page
 
 In this section, you learn how to create a new [`Page`][vizro.models.Page] and store it in a variable called `first_page`.
 
 A [`Page`][vizro.models.Page] model is the foundation of any Vizro dashboard. It uses a set of components to display content. For a comprehensive list of all Vizro components, refer to the [components overview page](../user-guides/components.md).
 
-### 2.1. Add a table
+### 3.1. Add a table
 
 To start, let's get an overview of the data by displaying it in a table using [AgGrid][vizro.models.AgGrid]. Follow these steps to create a page and add a table to it:
 
@@ -98,9 +115,9 @@ You'll notice a toggle in the top-right corner of the dashboard, enabling you to
 
 **Great job! You've successfully created a first dashboard page!**
 
-## 3. Create a second page
+## 4. Create a second page
 
-### 3.1. Add a chart
+### 4.1. Add a chart
 
 Next, you'll learn how to add a second page to the dashboard, featuring charts and KPI (Key Performance Indicator) cards.
 
@@ -170,7 +187,7 @@ Additionally, a page navigation menu has been added to the left side of the dash
 
 You'll also notice that the left-side menu can be collapsed to provide more space for the dashboard content. **Give it a try!**
 
-### 3.2. Add KPI cards
+### 4.2. Add KPI cards
 
 You can combine and arrange various types of `components` on a dashboard page. Refer to the [components overview page](../user-guides/components.md) for a comprehensive list of available components.
 
@@ -264,7 +281,7 @@ Let's add two KPI cards to the second page. Follow these steps:
     === "Result"
         [![SecondPage2]][secondpage2]
 
-### 3.3. Add tabs to switch views
+### 4.3. Add tabs to switch views
 
 You may not want to display both histograms simultaneously and instead prefer to switch between views. You can achieve this by using the [`Tabs`][vizro.models.Tabs] component. For more details, refer to Vizro's [tabs user guide](../user-guides/tabs.md).
 
@@ -370,7 +387,7 @@ Let's place the two histograms in separate tabs. Follow these steps:
 
 As you explore the dashboard, you might notice that the current layout could use some adjustments. The histograms appear cramped, while the KPI cards have too much space. In the next section, you'll learn how to configure the layout and better arrange the components.
 
-### 3.4. Configure the layout
+### 4.4. Configure the layout
 
 By default, Vizro places each element in the order it was added to `components`, and spaces them equally. You can use the [`Layout`][vizro.models.Layout] to control the placement and size of components on the page. To learn more about how to configure layouts, check out [How to use layouts](../user-guides/layouts.md).
 
@@ -476,7 +493,7 @@ Run the code below to apply the layout to the dashboard page:
 
 **Much better, don't you think? The layout now provides sufficient space for the charts!**
 
-### 3.5. Add a filter
+### 4.5. Add a filter
 
 [Filters][vizro.models.Filter] enable you to interact with the dashboard by selecting specific data points to display.
 
@@ -570,19 +587,19 @@ If you want to apply a filter to specific components only, check out [How to use
 
 **Great work! You've just completed a second dashboard page and learned how to:**
 
-1. [Add a chart to a page using the visual vocabulary](#31-add-a-chart)
-1. [Add KPI cards to display summary statistics](#32-add-kpi-cards)
-1. [Add tabs to switch views](#33-add-tabs-to-switch-views)
-1. [Arrange components by customizing the layout](#34-configure-the-layout)
-1. [Add a filter to interact with the dashboard](#35-add-a-filter)
+1. [Add a chart to a page using the visual vocabulary](#41-add-a-chart)
+1. [Add KPI cards to display summary statistics](#42-add-kpi-cards)
+1. [Add tabs to switch views](#43-add-tabs-to-switch-views)
+1. [Arrange components by customizing the layout](#44-configure-the-layout)
+1. [Add a filter to interact with the dashboard](#45-add-a-filter)
 
-## 4. Create a third page
+## 5. Create a third page
 
 Now that you've learned how to create pages, add components, and configure layouts, you'll create a third page for the dashboard. This will give you the opportunity to practice your skills alongside learning some new concepts!
 
 This page will feature a bar chart, a violin chart, and a heatmap and take inspiration from the [Vizro visual vocabulary](https://vizro-demo-visual-vocabulary.hf.space/).
 
-### 4.1. Add multiple charts
+### 5.1. Add multiple charts
 
 This step should feel familiar. Let's add all three charts to the page.
 
@@ -715,7 +732,7 @@ This step should feel familiar. Let's add all three charts to the page.
 
 Depending on your screen size, you may notice that the third chart is not visible. This issue can occur with Plotly charts when there isn't enough space to display them properly. Let's customize the layout again to allocate more space to the heatmap.
 
-### 4.2. Configure the layout
+### 5.2. Configure the layout
 
 This step should also feel familiar by now. Let's arrange the charts to provide more space for the heatmap.
 
@@ -834,7 +851,7 @@ Run the code below to apply the layout to the dashboard page:
 
 **Fantastic work! The heatmap looks great, doesn't it?**
 
-### 4.3. Add a parameter
+### 5.3. Add a parameter
 
 This section explains how to add a [`Parameter`][vizro.models.Parameter] to your dashboard. A [`Parameter`][vizro.models.Parameter] enables you to dynamically change a component's argument, making the dashboard more interactive. For more information on how to configure [`Parameters`][vizro.models.Parameter], refer to the [guide to parameters](../user-guides/parameters.md).
 
@@ -967,7 +984,7 @@ Take a moment to interact with the parameter. Note how the x-axis of all charts 
 
 **Isn't it amazing how effortlessly it is to shift the data analysis perspective now?**
 
-### 4.4. Add a custom chart
+### 5.4. Add a custom chart
 
 You may notice that the `bar` chart has many inner lines. This happens because each line represents a unique data point when an unaggregated dataset is provided to `px.bar`. To avoid this, you can aggregate the data before plotting. However, the aggregation needs to be dynamic, based on the parameter you added in the previous step.
 
@@ -1102,16 +1119,16 @@ This requires creating a custom chart with the following steps. For more informa
 
 **Fantastic job reaching this point! You've just completed the final dashboard page and learned how to:**
 
-1. [Add multiple charts](#41-add-multiple-charts)
-1. [Customize a layout](#42-configure-the-layout)
-1. [Add a parameter to interact with the charts](#43-add-a-parameter)
-1. [Add a custom chart to the dashboard](#44-add-a-custom-chart)
+1. [Add multiple charts](#51-add-multiple-charts)
+1. [Customize a layout](#52-configure-the-layout)
+1. [Add a parameter to interact with the charts](#53-add-a-parameter)
+1. [Add a custom chart to the dashboard](#54-add-a-custom-chart)
 
-## 5. The final touches
+## 6. The final touches
 
 Now that you've created all the dashboard pages, let's add a personal touch by including a title, logo, and customizing the navigation.
 
-### 5.1. Add a title and logo
+### 6.1. Add a title and logo
 
 To add a title and logo to your dashboard, follow these steps:
 
@@ -1246,7 +1263,7 @@ Your directory structure should look like this:
 
 You should see the logo in the top-left corner of your dashboard header, with the title displayed next to it. If you can't see the logo, make sure the image is called `logo` and is stored in the `assets` folder. For more details on supported image formats, refer to the [How to add a logo](../user-guides/assets.md#add-a-logo-image) guide.
 
-### 5.2. Customize the navigation
+### 6.2. Customize the navigation
 
 By default, a navigation panel on the left side enables users to switch between the pages. In this section, you'll learn how to customize it by using a navigation bar with icons instead.
 
@@ -1405,7 +1422,7 @@ Take a moment to explore the navigation bar! Hover over the icons to view the to
 
 You now have the skills to configure layouts, and add components and interactivity to Vizro dashboards across multiple navigable pages.
 
-## Find out more
+## 7. Find out more
 
 After completing the tutorial, you have a solid understanding of the main elements of Vizro and how to bring them together to create dynamic and interactive data visualizations.
 
