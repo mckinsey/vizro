@@ -1,5 +1,7 @@
 site_name: Vizro
 site_url: https://vizro.readthedocs.io/en/stable/
+not_in_nav: |
+  pages/tutorials/archive-tutorial.md
 nav:
   - Vizro: index.md
   - Tutorials:
@@ -60,7 +62,6 @@ nav:
       - Gallery: https://vizro.mckinsey.com/
   - Vizro-AI:
       - Vizro-AI: https://vizro.readthedocs.io/projects/vizro-ai/
-
 repo_url: https://github.com/mckinsey/vizro
 repo_name: mckinsey/vizro
 
