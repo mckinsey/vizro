@@ -316,7 +316,7 @@
     },
     "Container": {
       "additionalProperties": false,
-      "description": "Container to group together a set of components on a page.\n\nArgs:\n    type (Literal[\"container\"]): Defaults to `\"container\"`.\n    components (list[ComponentType]): See [ComponentType][vizro.models.types.ComponentType]. At least one component\n        has to be provided.\n    title (str): Title to be displayed.\n    layout (Optional[Layout]): Layout to place components in. Defaults to `None`.\n    theme (Optional[Literal[\"filled\", \"outlined\"]]): Predefined styles to choose from.\n        Options are `filled` or `outlined`. Defaults to `None`.",
+      "description": "Container to group together a set of components on a page.\n\nArgs:\n    type (Literal[\"container\"]): Defaults to `\"container\"`.\n    components (list[ComponentType]): See [ComponentType][vizro.models.types.ComponentType]. At least one component\n        has to be provided.\n    title (str): Title to be displayed.\n    layout (Optional[Layout]): Layout to place components in. Defaults to `None`.\n    variant (Literal[\"filled\", \"outlined\", \"plain\"]): Predefined styles to choose from. Options are `filled`,\n        `outlined` or `plain`. Defaults to `plain`.",
       "properties": {
         "id": {
           "default": "",
@@ -393,19 +393,12 @@
           ],
           "default": null
         },
-        "theme": {
-          "anyOf": [
-            {
-              "enum": ["filled", "outlined"],
-              "type": "string"
-            },
-            {
-              "type": "null"
-            }
-          ],
-          "default": null,
-          "description": "Predefined styles to choose from. Options are `filled` or `outlined`. Defaults to `None`.",
-          "title": "Theme"
+        "variant": {
+          "default": "plain",
+          "description": "Predefined styles to choose from. Options are `filled`, `outlined` or `plain`. Defaults to `plain`.",
+          "enum": ["filled", "outlined", "plain"],
+          "title": "Variant",
+          "type": "string"
         }
       },
       "required": ["components", "title"],

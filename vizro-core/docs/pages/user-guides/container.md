@@ -4,7 +4,7 @@ This guide shows you how to use containers to group your components into section
 
 A [Container][vizro.models.Container] complements a [Page][vizro.models.Page], and both models share nearly identical arguments. While `Page.layout` provides a method for structuring the overall page layout, a `Container` offers more detailed control within a particular section of the page.
 
-Unlike the `Page.layout`, the `Container` includes a `theme` argument, allowing you to choose from predefined styles to visually distinguish it from the rest of the page content. Additional functionality will soon be added to the Container, including controls specific to it, which will further enhance the management of related components.
+Unlike `Page`, the `Container` includes a `variant` argument. This enables you to choose a style for your container to visually distinguish it from the rest of the page content. Additional functionality will soon be added to the Container, including controls specific to it, which will further enhance the management of related components.
 
 !!! note "Displaying multiple containers inside Tabs"
     An alternative way to display multiple containers on one page is to place them inside [Tabs](tabs.md).
@@ -168,9 +168,9 @@ vm.Container(
 
 ## Styled containers
 
-To make the `Container` stand out as a distinct section in your dashboard, you can select from the predefined styles available in its `theme` argument.
+To make the `Container` stand out as a distinct section in your dashboard, you can select from the predefined styles available in its `variant` argument.
 
-!!! example "Container with visual distinction"
+!!! example "Container with different styles"
     === "app.py"
         ```{.python pycafe-link}
         import vizro.models as vm
@@ -180,18 +180,18 @@ To make the `Container` stand out as a distinct section in your dashboard, you c
         iris = px.data.iris()
 
         page = vm.Page(
-            title="Container with background color",
+            title="Containers with different styles",
             layout=vm.Layout(grid=[[0, 1]]),
             components=[
                 vm.Container(
-                    title="Container I",
+                    title="Container with background color",
                     components=[vm.Graph(figure=px.scatter(iris, x="sepal_width", y="sepal_length", color="species"))],
-                    theme="filled"
+                    variant="filled"
                 ),
                 vm.Container(
                     title="Container with borders",
                     components=[vm.Graph(figure=px.box(iris, x="species", y="sepal_length", color="species"))],
-                    theme="outlined"
+                    variant="outlined"
                 )
             ],
         )
@@ -205,7 +205,7 @@ To make the `Container` stand out as a distinct section in your dashboard, you c
         # Still requires a .py to add data to the data manager and parse YAML configuration
         # See yaml_version example
         pages:
-          - title: Container with visual distinction
+          - title: Containers with different styles
             layout:
               grid: [[0, 1]]
             components:
@@ -219,7 +219,7 @@ To make the `Container` stand out as a distinct section in your dashboard, you c
                       x: sepal_width
                       y: sepal_length
                       color: species
-                theme: filled
+                variant: filled
               - type: container
                 title: Container with borders
                 components:
@@ -230,7 +230,7 @@ To make the `Container` stand out as a distinct section in your dashboard, you c
                       x: species
                       y: sepal_length
                       color: species
-                theme: outlined
+                variant: outlined
         ```
 
     === "Result"

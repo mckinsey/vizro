@@ -18,7 +18,7 @@ Uncomment the section that is right (remove the HTML comment wrapper).
 -->
 ### Added
 
-- Introduce the `theme` argument inside `Container`, allowing the selection of predefined stylings for the container. ([#1002](https://github.com/mckinsey/vizro/pull/1002))
+- Enable styling of `vm.Container` with a new argument `theme="outlined"/"filled"`. ([#1002](https://github.com/mckinsey/vizro/pull/1002))
 
 <!--
 ### Changed
