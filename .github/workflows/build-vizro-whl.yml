@@ -8,7 +8,7 @@ on:
       - main
     paths:
       - "vizro-core/**"
-      - "vizro-ai/examples/**"
+      - "vizro-ai/**"
 
 defaults:
   run:
@@ -35,6 +35,15 @@ jobs:
         with:
           name: pip
           path: vizro-core/dist/*.whl
+          retention-days: 14
+      - name: Build vizro-ai package
+        working-directory: vizro-ai
+        run: hatch build -t wheel
+      - name: Upload artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: pip
+          path: vizro-ai/dist/*.whl
           retention-days: 14
       # The below can be commented out in order to dry run the test creation of the PyCafe links
       # Once satisfied, comment them again, because the actual links will be created by the pycafe-dashboards.yml workflow
