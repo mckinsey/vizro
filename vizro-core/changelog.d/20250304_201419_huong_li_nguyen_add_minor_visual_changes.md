@@ -25,7 +25,7 @@ Uncomment the section that is right (remove the HTML comment wrapper).
 
 ### Changed
 
-- Turn `AgGrid` and `DataTable` background transparent. ([#1047](https://github.com/mckinsey/vizro/pull/1047))
+- Turn `AgGrid` background transparent. ([#1047](https://github.com/mckinsey/vizro/pull/1047))
 
 
 <!--

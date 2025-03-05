@@ -10,6 +10,7 @@ iris = px.data.iris()
 page = vm.Page(
     title="AgGrid",
     components=[
+        vm.AgGrid(figure=dash_ag_grid(iris)),
         vm.Container(
             title="Container II",
             components=[vm.AgGrid(figure=dash_ag_grid(iris))],
@@ -21,6 +22,7 @@ page = vm.Page(
 page_two = vm.Page(
     title="Data Table",
     components=[
+        vm.Table(figure=dash_data_table(iris)),
         vm.Container(
             title="Container II",
             components=[vm.Table(figure=dash_data_table(iris))],
@@ -32,6 +34,7 @@ page_two = vm.Page(
 page_three = vm.Page(
     title="Graph",
     components=[
+        vm.Graph(figure=px.scatter(iris, x="sepal_width", y="sepal_length", color="species")),
         vm.Container(
             title="Container II",
             components=[vm.Graph(figure=px.scatter(iris, x="sepal_width", y="sepal_length", color="species"))],
