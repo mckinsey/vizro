@@ -8,11 +8,13 @@ from vizro import Vizro
 from vizro.managers import data_manager
 
 
-static_df = pd.DataFrame({
-    "species": ["artificial_species", "artificial_species", "artificial_species"],
-    "sepal_width": [4, 5, 6],
-    "sepal_length": [4, 5, 6],
-})
+static_df = pd.DataFrame(
+    {
+        "species": ["artificial_species", "artificial_species", "artificial_species"],
+        "sepal_width": [4, 5, 6],
+        "sepal_length": [4, 5, 6],
+    }
+)
 
 
 def load_data(number_of_points=150):
@@ -34,7 +36,7 @@ page_1 = vm.Page(
         ),
         vm.Graph(
             figure=px.scatter(data_frame=static_df, x="sepal_width", y="sepal_length", color="species"),
-        )
+        ),
     ],
     controls=[
         vm.Filter(column="species", selector=vm.RadioItems()),
@@ -46,9 +48,9 @@ page_1 = vm.Page(
                 value=150,
                 title="Number of points",
                 step=10,
-            )
+            ),
         ),
-    ]
+    ],
 )
 
 dashboard = vm.Dashboard(pages=[page_1])
