@@ -12,7 +12,7 @@ from vizro.models._models_utils import _log_call, check_captured_callable_model
 from vizro.models.types import ComponentType, LayoutType
 
 if TYPE_CHECKING:
-    from vizro.models import Layout
+    pass
 
 
 class Container(VizroBaseModel):
@@ -72,6 +72,7 @@ class Container(VizroBaseModel):
     def _build_inner_layout(self):
         """Builds inner layout and assigns components to grid position."""
         from vizro.models import Layout
+
         self.layout = cast(Layout, self.layout)
 
         components_container = self.layout.build()
