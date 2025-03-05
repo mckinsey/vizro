@@ -54,6 +54,8 @@ class Form(VizroBaseModel):
             for component_idx, component in enumerate(self.components):
                 components_container[f"{self.layout.id}_{component_idx}"].children = component.build()
         else:
-            components_container.children = [component.build() for component in self.components]
+            components_container.children = [
+                html.Div(component.build(), className="flex-item") for component in self.components
+            ]
 
         return components_container

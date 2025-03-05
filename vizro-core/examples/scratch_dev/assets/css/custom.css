@@ -2,7 +2,8 @@
   padding-left: 8px;
 }
 
-.d-flex .card, .d-flex .loading-container, .d-flex .figure-container {
+
+/* To specify height of flex-items */
+.flex-item, .flex-item .figure-container, .flex-item .card {
   height: unset;
-  width: unset;
 }
