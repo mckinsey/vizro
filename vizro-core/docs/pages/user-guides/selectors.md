@@ -1,8 +1,8 @@
 # How to use selectors
 
-Test
-
 This guide highlights different selectors that can be used in a dashboard. Selectors do not serve a purpose on their own, but they enable you to change how the input is given to other models, for example, the [`Filter`][vizro.models.Filter] or the [`Parameter`][vizro.models.Parameter] model.
+
+The [`Filter`][vizro.models.Filter] or the [`Parameter`][vizro.models.Parameter] model accept the `selector` argument, where a selector model can be entered to choose how the user should input their choices for the respective models.
 
 ## Categorical selectors
 
