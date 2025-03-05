@@ -5,11 +5,10 @@ from dash import html
 from numpy import ma
 from pydantic import AfterValidator, Field, PrivateAttr, ValidationInfo
 
-from vizro._constants import EMPTY_SPACE_CONST
+from vizro._constants import EMPTY_SPACE_CONST, GAP_DEFAULT
 from vizro.models import VizroBaseModel
 from vizro.models._models_utils import _log_call
 
-GAP_DEFAULT = "24px"
 MIN_DEFAULT = "0px"
 
 
