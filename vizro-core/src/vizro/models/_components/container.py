@@ -2,6 +2,7 @@ from __future__ import annotations
 
 from typing import TYPE_CHECKING, Annotated, Literal, Optional, cast
 
+import dash_bootstrap_components as dbc
 from dash import html
 from pydantic import AfterValidator, BeforeValidator, Field, conlist
 
@@ -23,6 +24,8 @@ class Container(VizroBaseModel):
             has to be provided.
         title (str): Title to be displayed.
         layout (Optional[Layout]): Layout to place components in. Defaults to `None`.
+        variant (Literal["plain", "filled", "outlined"]): Predefined styles to choose from. Options are `plain`,
+            `filled` or `outlined`. Defaults to `plain`.
 
     """
 
@@ -34,9 +37,32 @@ class Container(VizroBaseModel):
     )
     title: str = Field(description="Title to be displayed.")
     layout: Annotated[Optional[Layout], AfterValidator(set_layout), Field(default=None, validate_default=True)]
+    variant: Literal["plain", "filled", "outlined"] = Field(
+        default="plain",
+        description="Predefined styles to choose from. Options are `plain`, `filled` or `outlined`."
+        "Defaults to `plain`.",
+    )
 
     @_log_call
     def build(self):
+        # TODO: TBD on how to encode 'elevated', as box-shadows are not visible on a dark theme
+        # It needs to be properly designed and tested out (margins have to be added etc.).
+        # Below corresponds to bootstrap utility classnames, while 'bg-container' is introduced by us.
+        # See: https://getbootstrap.com/docs/4.0/utilities
+        variants = {"plain": "", "filled": "bg-container p-3", "outlined": "border p-3"}
+
+        return dbc.Container(
+            id=self.id,
+            children=[
+                html.H3(children=self.title, className="container-title", id=f"{self.id}_title"),
+                self._build_inner_layout(),
+            ],
+            fluid=True,
+            className=variants[self.variant],
+        )
+
+    def _build_inner_layout(self):
+        """Builds inner layout and assigns components to grid position."""
         # Title is not displayed if Container is inside Tabs using CSS combinators (only applies to outer container)
         # Other options we might want to consider in the future to hide the title:
         # 1) Argument inside Container.build that flags if used inside Tabs, then sets hidden attribute for the heading
@@ -53,11 +79,5 @@ class Container(VizroBaseModel):
         components_container = self.layout.build()
         for component_idx, component in enumerate(self.components):
             components_container[f"{self.layout.id}_{component_idx}"].children = component.build()
-        return html.Div(
-            id=self.id,
-            children=[
-                html.H3(children=self.title, className="container-title", id=f"{self.id}_title"),
-                components_container,
-            ],
-            className="page-component-container",
-        )
+
+        return components_container

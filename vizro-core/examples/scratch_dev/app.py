@@ -1,62 +1,67 @@
+"""Test app"""
+
 import vizro.models as vm
 import vizro.plotly.express as px
 from vizro import Vizro
-from vizro.tables import dash_ag_grid
-from vizro.models.types import capture
-from vizro.figures import kpi_card
 
-tips = px.data.tips()
+iris = px.data.iris()
 
-first_page = vm.Page(
-    title="Data",
+page = vm.Page(
+    title="Page with subsections",
+    layout=vm.Layout(grid=[[0, 0, 1, 1, 2, 2], [3, 3, 3, 4, 4, 4], [3, 3, 3, 4, 4, 4]]),
     components=[
-        vm.AgGrid(
-            figure=dash_ag_grid(tips),
-            footer="""**Data Source:** Bryant, P. G. and Smith, M (1995)
-            Practical Data Analysis: Case Studies in Business Statistics.
-            Homewood, IL: Richard D. Irwin Publishing.""",
+        vm.Card(text="""Hello, this is a card with a [link](https://www.google.com)"""),
+        vm.Card(text="""Hello, this is a card with a [link](https://www.google.com)"""),
+        vm.Card(text="""Hello, this is a card with a [link](https://www.google.com)"""),
+        vm.Container(
+            title="Container I",
+            components=[
+                vm.Graph(figure=px.scatter(iris, x="sepal_width", y="sepal_length", color="species")),
+            ],
+            variant="outlined",
+        ),
+        vm.Container(
+            title="Container II",
+            components=[
+                vm.Graph(figure=px.scatter(iris, x="sepal_width", y="sepal_length", color="species")),
+            ],
+            variant="filled",
         ),
     ],
 )
 
-second_page = vm.Page(
-    title="Summary",
+page_two = vm.Page(
+    title="Container",
     components=[
-        vm.Figure(
-            figure=kpi_card(
-                data_frame=tips,
-                value_column="total_bill",
-                agg_func="mean",
-                value_format="${value:.2f}",
-                title="Average Bill",
-            )
-        ),
-        vm.Figure(
-            figure=kpi_card(
-                data_frame=tips, value_column="tip", agg_func="mean", value_format="${value:.2f}", title="Average Tips"
-            )
-        ),
-        vm.Tabs(
-            tabs=[
-                vm.Container(
-                    title="Total Bill ($)",
-                    components=[
-                        vm.Graph(figure=px.histogram(tips, x="total_bill")),
-                    ],
-                ),
-                vm.Container(
-                    title="Total Tips ($)",
-                    components=[
-                        vm.Graph(figure=px.histogram(tips, x="tip")),
-                    ],
-                ),
+        vm.Container(
+            title="Container III",
+            components=[
+                vm.Graph(figure=px.scatter(iris, x="sepal_width", y="sepal_length", color="species")),
             ],
         ),
     ],
 )
 
-dashboard = vm.Dashboard(pages=[first_page, second_page])
-
+page_three = vm.Page(
+    title="Container Style",
+    components=[
+        vm.Container(
+            title="Container I",
+            components=[
+                vm.Graph(figure=px.scatter(iris, x="sepal_width", y="sepal_length", color="species")),
+            ],
+            variant="outlined",
+        ),
+        vm.Container(
+            title="Container II",
+            components=[
+                vm.Graph(figure=px.scatter(iris, x="sepal_width", y="sepal_length", color="species")),
+            ],
+            variant="filled",
+        ),
+    ],
+)
+dashboard = vm.Dashboard(pages=[page, page_two, page_three])
 
 if __name__ == "__main__":
     Vizro().build(dashboard).run()
