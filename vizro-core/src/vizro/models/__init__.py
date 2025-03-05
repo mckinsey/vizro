@@ -13,6 +13,10 @@ from ._dashboard import Dashboard
 from ._layout import Layout
 from ._page import Page
 
+# Needed just to make legacy export_data and filter_interaction work still.
+from vizro.actions import export_data, filter_interaction
+
+Action.model_rebuild()
 
 Dashboard.model_rebuild()
 

@@ -43,6 +43,13 @@ class JsonSchemaExtraType(TypedDict):
 
 def validate_captured_callable(cls, value, info: ValidationInfo):
     """Reusable validator for the `figure` argument of Figure like models."""
+    # Bypass validation so that legacy vm.Action(function=filter_interaction(...)) and
+    # vm.Action(function=export_data(...)) work.
+    from vizro.actions import export_data, filter_interaction
+
+    if isinstance(value, (export_data, filter_interaction)):
+        return value
+
     # TODO[MS]: We may want to double check on the mechanism of how field info is brought to. This seems
     # to get deprecated in V3
     json_schema_extra: JsonSchemaExtraType = cls.model_fields[info.field_name].json_schema_extra

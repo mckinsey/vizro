@@ -52,8 +52,11 @@ class Action(VizroBaseModel):
     TODO NOW COMMENT: only needed for custom actions.
     """
 
+    # export_data and filter_interaction are here just so that legacy vm.Action(function=filter_interaction(...)) and
+    # vm.Action(function=export_data(...)) work. It's done as a forward ref to avoid circular imports and resolved with
+    # Action.model_rebuild() later.
     function: Annotated[
-        SkipJsonSchema[CapturedCallable],
+        SkipJsonSchema[Union[CapturedCallable, export_data, filter_interaction]],
         Field(json_schema_extra={"mode": "action", "import_path": "vizro.actions"}, description="Action function."),
     ]
     # This is a legacy field and will be deprecated. It must only be used when _legacy = True.
@@ -68,12 +71,14 @@ class Action(VizroBaseModel):
 
     @property
     def _legacy(self) -> bool:
+        # This is only relevant for custom actions, not built in. All built in ones are always legacy = False.
+        # TODO NOW: take out debugging print and put back early returns
         if "inputs" in self.model_fields_set:
-            return True
-
-        # If all supplied arguments look like states `<component_id>.<property>` then assume it's a new type of action.
-        # For the case that there's no arguments and no inputs, this gives legacy=False.
-        legacy = not all(re.fullmatch("[^.]+[.][^.]+", arg_val) for arg_val in self.function._arguments.values())
+            legacy = True
+        else:
+            # If all supplied arguments look like states `<component_id>.<property>` then assume it's a new type of action.
+            # For the case that there's no arguments and no inputs, this gives legacy=False.
+            legacy = not all(re.fullmatch("[^.]+[.][^.]+", arg_val) for arg_val in self.function._arguments.values())
         print(f"{self.function} {legacy=}")
         return legacy
 

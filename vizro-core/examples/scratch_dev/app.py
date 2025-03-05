@@ -38,8 +38,8 @@ page_1 = vm.Page(
         vm.Button(
             id="button",
             text="Export data to CSV",
-            actions=[export_data(targets=["scatter_relation_2007"], runtime_arg="button.n_clicks")],
-            # actions=[vm.Action(function=export_data(targets=["scatter_relation_2007"]))],
+            # actions=[export_data(targets=["scatter_relation_2007"], runtime_arg="button.n_clicks")],
+            actions=[vm.Action(function=export_data(targets=["scatter_relation_2007"], runtime_arg="button.n_clicks"))],
             # TODO NOW: make this work
         ),
         vm.Button(
