@@ -44,7 +44,7 @@ def test_themes(dash_br, dashboard_id):
     ids=[cnst.DASHBOARD_DEFAULT],
     indirect=["dash_br"],
 )
-def test_ag_grid_themes(dash_br, dashboard_id):
+def test_ag_grid_theme(dash_br, dashboard_id):
     accordion_select(
         dash_br, accordion_name=cnst.AG_GRID_ACCORDION.upper(), accordion_number=cnst.AG_GRID_ACCORDION_NUMBER
     )
@@ -54,14 +54,7 @@ def test_ag_grid_themes(dash_br, dashboard_id):
         page_name=cnst.TABLE_AG_GRID_PAGE,
         graph_id=cnst.BOX_AG_GRID_PAGE_ID,
     )
-    if dashboard_id == cnst.DASHBOARD_DEFAULT:
-        check_ag_grid_theme_color(dash_br, ag_grid_id=cnst.TABLE_AG_GRID_ID, color=cnst.AG_GRID_LIGHT)
-        dash_br.multiple_click(theme_toggle_path(), 1)
-        check_ag_grid_theme_color(dash_br, ag_grid_id=cnst.TABLE_AG_GRID_ID, color=cnst.AG_GRID_DARK)
-    else:
-        check_ag_grid_theme_color(dash_br, ag_grid_id=cnst.TABLE_AG_GRID_ID, color=cnst.AG_GRID_DARK)
-        dash_br.multiple_click(theme_toggle_path(), 1)
-        check_ag_grid_theme_color(dash_br, ag_grid_id=cnst.TABLE_AG_GRID_ID, color=cnst.AG_GRID_LIGHT)
+    check_ag_grid_theme_color(dash_br, ag_grid_id=cnst.TABLE_AG_GRID_ID, color=cnst.AG_GRID_THEME)
 
 
 @pytest.mark.parametrize(
