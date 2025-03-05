@@ -311,6 +311,7 @@ class AbstractAction(VizroBaseModel):
     # override _outputs_ for that
     # even if add more funcitonality here in future shoulod still support same as Action.output: list[str] so it's
     # easy for someone to write a class action isntead of function one
+    # WILL ALWAYS NEED TO SUPPORT STRING FOR WHEN DON'T SUPPLY X.Y BUT INSTEAD X
     @property
     def outputs(self) -> dict[str, str]:
         return dict()
