@@ -110,8 +110,7 @@ class Parameter(VizroBaseModel):
             page_dynamic_filters = [
                 filter
                 for filter in cast(
-                    Iterable[Filter],
-                    model_manager._get_models(Filter, page=model_manager._get_model_page(self))
+                    Iterable[Filter], model_manager._get_models(Filter, page=model_manager._get_model_page(self))
                 )
                 if filter._dynamic
             ]
