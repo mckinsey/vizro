@@ -26,6 +26,10 @@ if TYPE_CHECKING:
 ValidatedNoneValueType = Union[SingleValueType, MultiValueType, None, list[None], list[SingleValueType]]
 
 
+# TODO NOW: go through and finish tidying bits of this file I didn't look at before
+# TODO NOW: understand how parameter selector lookup works now without id name hack
+
+
 class CallbackTriggerDict(TypedDict):
     """Represent dash.ctx.args_grouping item. Shortened as 'ctd' in the code.
 
@@ -66,21 +70,20 @@ def _apply_filter_controls(
 
     Returns: filtered DataFrame.
     """
+    from vizro.actions import _filter
+
     for ctd in ctds_filter:
         selector_value = ctd["value"]
         selector_value = selector_value if isinstance(selector_value, list) else [selector_value]
         selector_actions = _get_component_actions(model_manager[ctd["id"]])
 
         for action in selector_actions:
-            if (
-                action.function._function.__name__ != "_filter"
-                or target not in action.function["targets"]
-                or ALL_OPTION in selector_value
-            ):
+            # TODO NOW: see if can be simplified or made nicer
+            if not isinstance(action, _filter) or target not in action.targets or ALL_OPTION in selector_value:
                 continue
 
-            _filter_function = action.function["filter_function"]
-            _filter_column = action.function["filter_column"]
+            _filter_function = action.filter_function
+            _filter_column = action.filter_column
             _filter_value = selector_value
             data_frame = data_frame[_filter_function(data_frame[_filter_column], _filter_value)]
 
@@ -180,6 +183,8 @@ def _get_parametrized_config(
     Returns: keyword-argument dictionary.
 
     """
+    from vizro.actions import _parameter
+
     if data_frame:
         # This entry is inserted (but will always be empty) even for static data so that the load/_multi_load calls
         # look identical for dynamic data with no arguments and static data. Note it's not possible to address nested
@@ -204,12 +209,11 @@ def _get_parametrized_config(
         parameter_value = _validate_selector_value_none(parameter_value)  # type: ignore[arg-type]
 
         for action in _get_component_actions(selector):
-            if action.function._function.__name__ != "_parameter":
+            # TODO NOW: see if can be simplified or made nicer
+            if not isinstance(action, _parameter):
                 continue
 
-            for dot_separated_string in _get_target_dot_separated_strings(
-                action.function["targets"], target, data_frame
-            ):
+            for dot_separated_string in _get_target_dot_separated_strings(action.targets, target, data_frame):
                 config = _update_nested_figure_properties(
                     figure_config=config, dot_separated_string=dot_separated_string, value=parameter_value
                 )
@@ -253,6 +257,8 @@ def _get_unfiltered_data(
     return dict(zip(targets, data_manager._multi_load(multi_data_source_name_load_kwargs)))
 
 
+# TODO NOW: rename.
+# TODO: probably take in controls + filter_interaction only once have worked out structure of filters/parameters.
 def _get_modified_page_figures(
     ctds_filter: list[CallbackTriggerDict],
     ctds_filter_interaction: list[dict[str, CallbackTriggerDict]],

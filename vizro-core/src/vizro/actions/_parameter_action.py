@@ -1,32 +1,49 @@
-"""Pre-defined action function "_parameter" to be reused in `action` parameter of VizroBaseModels."""
-
 from typing import Any
 
 from dash import ctx
+from pydantic import Field
 
 from vizro.actions._actions_utils import _get_modified_page_figures
-from vizro.managers._model_manager import ModelID
-from vizro.models.types import capture
+from vizro.managers._model_manager import ModelID, model_manager
+from vizro.models._action._action import AbstractAction, Controls
 
 
-@capture("action")
-def _parameter(targets: list[str], **inputs: dict[str, Any]) -> dict[ModelID, Any]:
-    """Modifies parameters of targeted charts/components on page.
+class _parameter(AbstractAction):
+    targets: list[ModelID] = Field(description="Targets in the form `<target_component>.<target_argument>`.")
 
-    Args:
-        targets: List of target component ids to change parameters of.
-        inputs: Dict mapping action function names with their inputs e.g.
-            inputs = {'filters': [], 'parameters': ['gdpPercap'], 'filter_interaction': []}
+    @property
+    def _target_ids(self) -> list[ModelID]:
+        # This cannot be implemented as PrivateAttr(default_factory=lambda data: ...) because, unlike Field,
+        # PrivateAttr does not yet support an argument to the default_factory function. See:
+        # https://github.com/pydantic/pydantic/issues/10992
+        return [target.partition(".")[0] for target in self.targets]
 
-    Returns:
-        Dict mapping target component ids to modified charts/components e.g. {'my_scatter': Figure({})}
+    def function(self, controls: Controls) -> dict[ModelID, Any]:
+        """Applies controls to charts on page once the page is opened (or refreshed).
 
-    """
-    target_ids: list[ModelID] = [target.split(".")[0] for target in targets]  # type: ignore[misc]
+        Returns:
+            Dict mapping target chart ids to modified figures e.g. {"my_scatter": Figure(...)}.
 
-    return _get_modified_page_figures(
-        ctds_filter=ctx.args_grouping["external"]["filters"],
-        ctds_filter_interaction=ctx.args_grouping["external"]["filter_interaction"],
-        ctds_parameter=ctx.args_grouping["external"]["parameters"],
-        targets=target_ids,
-    )
+        """
+        # This is identical to _on_page_load but with self._target_ids rather than self.targets.
+        # TODO: controls is not currently used but instead taken out of the Dash context. This
+        # will change in future once the structure of controls has been worked out and we know how to pass ids through.
+        # TODO NOW: figure out how to make this change, find old GH issues discussing it.
+        return _get_modified_page_figures(
+            ctds_filter=ctx.args_grouping["external"]["controls"]["filters"],
+            ctds_parameter=ctx.args_grouping["external"]["controls"]["parameters"],
+            ctds_filter_interaction=ctx.args_grouping["external"]["controls"]["filter_interaction"],
+            targets=self._target_ids,
+        )
+
+    @property
+    def outputs(self):
+        # This is identical to _on_page_load but with self._target_ids rather than self.targets.
+        outputs = {}
+
+        for target in self._target_ids:
+            component_id = target
+            component_property = model_manager[target]._output_component_property
+            outputs[target] = f"{component_id}.{component_property}"
+
+        return outputs

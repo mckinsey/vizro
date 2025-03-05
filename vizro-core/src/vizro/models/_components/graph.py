@@ -11,6 +11,7 @@ from pydantic import AfterValidator, Field, PrivateAttr, field_validator
 from pydantic.functional_serializers import PlainSerializer
 from pydantic.json_schema import SkipJsonSchema
 
+from vizro.actions import filter_interaction
 from vizro.actions._actions_utils import CallbackTriggerDict, _get_component_actions
 from vizro.managers import data_manager, model_manager
 from vizro.managers._model_manager import ModelID
@@ -135,7 +136,8 @@ class Graph(VizroBaseModel):
         customdata = ctd_click_data["value"]["points"][0]["customdata"]
 
         for action in source_graph_actions:
-            if action.function._function.__name__ != "filter_interaction" or target not in action.function["targets"]:
+            # TODO NOW: simplify
+            if not isinstance(action, filter_interaction) or target not in action.targets:
                 continue
             for custom_data_idx, column in enumerate(custom_data_columns):
                 data_frame = data_frame[data_frame[column].isin([customdata[custom_data_idx]])]

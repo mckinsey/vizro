@@ -17,6 +17,7 @@ if TYPE_CHECKING:
 # the randomly generated model ID for the same model matches up across workers when running gunicorn without --preload.
 rd = random.Random(0)
 
+# TODO NOW: make this less annoying.
 ModelID = NewType("ModelID", str)
 Model = TypeVar("Model", bound="VizroBaseModel")
 
@@ -47,6 +48,11 @@ class ModelManager:
                 f"use 'from vizro import Vizro; Vizro._reset()`."
             )
         self.__models[model_id] = model
+
+    @_state_modifier
+    def __delitem__(self, model_id: ModelID):
+        # Only required to handle legacy actions and could be removed when those are no longer needed.
+        del self.__models[model_id]
 
     def __getitem__(self, model_id: ModelID) -> VizroBaseModel:
         # Do we need to return deepcopy(self.__models[model_id]) to avoid adjusting element by accident?
