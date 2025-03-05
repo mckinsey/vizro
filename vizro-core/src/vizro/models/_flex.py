@@ -13,14 +13,18 @@ class Flex(VizroBaseModel):
     """Flex Container to place chart/components on the [`Page`][vizro.models.Page].
 
     Args:
+        type (Literal["flex"]): Defaults to `"flex"`.
         direction (Literal["row", "column"]): Sets the direction of the flex items inside the container. Options are
             `row` or `column`. Defaults to `row`.
-        gap (str): Specifies the gap between rows and columns. Allowed units: 'px', 'rem', 'em', or '%'. Defaults to `24px`.
+        gap (str): Specifies the gap between rows and columns. Allowed units: 'px', 'rem', 'em', or '%'.
+            Defaults to `24px`.
         wrap (bool): Determines whether flex items are forced onto a single line or can wrap onto multiple lines.
-            If `False`, all items will be on one line. If `True`, items will wrap onto multiple lines. Defaults to `False`.
+            If `False`, all items will be on one line. If `True`, items will wrap onto multiple lines.
+            Defaults to `False`.
 
     """
 
+    type: Literal["flex"] = "flex"
     direction: Literal["row", "column"] = Field(
         default="row",
         description="Sets the direction of the flex items inside the container. Options are `row` or `column`."
@@ -28,7 +32,8 @@ class Flex(VizroBaseModel):
     )
     gap: str = Field(
         default=GAP_DEFAULT,
-        description="Specifies the gap between rows and columns. Allowed units: 'px', 'rem', 'em', or '%'. Defaults to `24px`.",
+        description="Specifies the gap between rows and columns. Allowed units: 'px', 'rem', 'em', or '%'. "
+        "Defaults to `24px`.",
         pattern=re.compile(r"^\d+(px|rem|em|%)$"),
     )
     wrap: bool = Field(

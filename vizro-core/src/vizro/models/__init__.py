@@ -12,6 +12,7 @@ from ._navigation.nav_link import NavLink
 from ._dashboard import Dashboard
 from ._layout import Layout
 from ._page import Page
+from ._flex import Flex
 
 
 Dashboard.model_rebuild()
@@ -30,6 +31,7 @@ __all__ = [
     "Dropdown",
     "Figure",
     "Filter",
+    "Flex",
     "Graph",
     "Layout",
     "NavBar",

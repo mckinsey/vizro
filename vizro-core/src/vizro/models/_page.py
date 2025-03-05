@@ -25,7 +25,7 @@ from vizro.models._action._actions_chain import ActionsChain, Trigger
 from vizro.models._layout import set_layout
 from vizro.models._models_utils import _log_call, check_captured_callable_model
 
-from .types import ComponentType, ControlType
+from .types import ComponentType, ControlType, LayoutType
 
 # This is just used for type checking. Ideally it would inherit from some dash.development.base_component.Component
 # (e.g. html.Div) as well as TypedDict, but that's not possible, and Dash does not have typing support anyway. When
@@ -66,7 +66,7 @@ class Page(VizroBaseModel):
     components: conlist(Annotated[ComponentType, BeforeValidator(check_captured_callable_model)], min_length=1)  # type: ignore[valid-type]
     title: str = Field(description="Title to be displayed.")
     description: str = Field(default="", description="Description for meta tags.")
-    layout: Annotated[Optional[Layout], AfterValidator(set_layout), Field(default=None, validate_default=True)]
+    layout: Annotated[Optional[LayoutType], AfterValidator(set_layout), Field(default=None, validate_default=True)]
     controls: list[ControlType] = []
     path: Annotated[
         str, AfterValidator(set_path), Field(default="", description="Path to navigate to page.", validate_default=True)
@@ -138,13 +138,15 @@ class Page(VizroBaseModel):
         controls_content = [control.build() for control in self.controls]
         control_panel = html.Div(id="control-panel", children=controls_content, hidden=not controls_content)
 
-        self.layout = cast(
-            Layout,
-            self.layout,  # cannot actually be None if you check components and layout field together
-        )
+        # Below added to remove mypy error - cannot actually be None if you check components and layout field together
+        self.layout = cast(Layout, self.layout)
+
         components_container = self.layout.build()
-        for component_idx, component in enumerate(self.components):
-            components_container[f"{self.layout.id}_{component_idx}"].children = component.build()
+        if isinstance(self.layout, Layout):
+            for component_idx, component in enumerate(self.components):
+                components_container[f"{self.layout.id}_{component_idx}"].children = component.build()
+        else:
+            components_container.children = [component.build() for component in self.components]
 
         # Page specific CSS ID and Stores
         components_container.children.append(dcc.Store(id=f"{ON_PAGE_LOAD_ACTION_PREFIX}_trigger_{self.id}"))

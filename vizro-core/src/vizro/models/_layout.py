@@ -1,5 +1,5 @@
 import re
-from typing import Annotated, NamedTuple, Optional
+from typing import Annotated, Literal, NamedTuple, Optional
 
 import numpy as np
 from dash import html
@@ -30,7 +30,11 @@ def _get_unique_grid_component_ids(grid: list[list[int]]):
 
 # Validators for reuse
 def set_layout(layout, info: ValidationInfo):
-    from vizro.models import Layout
+    from vizro.models import Layout, Flex
+
+    # No validation for Flex layout
+    if isinstance(layout, Flex):
+        return layout
 
     # This exists only to eagerly raise the error, otherwise obscure error message on eg Page()
     # Same for similar code in other places
@@ -162,6 +166,7 @@ class Layout(VizroBaseModel):
     """Grid specification to place chart/components on the [`Page`][vizro.models.Page].
 
     Args:
+        type (Literal["layout"]): Defaults to `"layout"`.
         grid (list[list[int]]): Grid specification to arrange components on screen.
         row_gap (str): Specifies the gap between rows. Allowed units: 'px', 'rem', 'em', or '%'. Defaults to `24px`.
         col_gap (str): Specifies the gap between columns. Allowed units: 'px', 'rem', 'em', or '%'. Defaults to `24px`.
@@ -170,6 +175,7 @@ class Layout(VizroBaseModel):
 
     """
 
+    type: Literal["layout"] = "layout"
     grid: Annotated[
         list[list[int]],
         AfterValidator(validate_grid),
