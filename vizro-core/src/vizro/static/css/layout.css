@@ -23,7 +23,7 @@
 }
 
 #left-side {
-  background-color: var(--surfaces-bg02);
+  background-color: var(--left-side-bg);
   display: flex;
   flex-direction: row;
   height: 100%;
@@ -48,7 +48,7 @@
 
 #page-header {
   align-items: center;
-  background-color: var(--surfaces-bg02);
+  background-color: var(--left-side-bg);
   display: flex;
   flex-direction: row;
   height: 60px;
