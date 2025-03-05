@@ -6,7 +6,7 @@ from pydantic import AfterValidator, Field
 from vizro._constants import PARAMETER_ACTION_PREFIX
 from vizro.actions import _parameter
 from vizro.managers import model_manager
-from vizro.models import Action, VizroBaseModel
+from vizro.models import VizroBaseModel
 from vizro.models._components.form import Checklist, DatePicker, Dropdown, RadioItems, RangeSlider, Slider
 from vizro.models._models_utils import _log_call
 from vizro.models.types import SelectorType
@@ -70,7 +70,7 @@ class Parameter(VizroBaseModel):
                 AfterValidator(check_dot_notation),
                 AfterValidator(check_target_present),
                 AfterValidator(check_data_frame_as_target_argument),
-                Field(description="Targets in the form of `<target_component>.<target_argument>`."),
+                Field(description="Targets in the form `<target_component>.<target_argument>`."),
             ]
         ],
         AfterValidator(check_duplicate_parameter_target),
@@ -106,5 +106,6 @@ class Parameter(VizroBaseModel):
     def _set_actions(self):
         if not self.selector.actions:
             self.selector.actions = [
-                Action(id=f"{PARAMETER_ACTION_PREFIX}_{self.id}", function=_parameter(targets=self.targets))
+                # TODO NOW: is there any point in this id labelling? Useful for debugging?
+                _parameter(id=f"{PARAMETER_ACTION_PREFIX}_{self.id}", targets=self.targets)
             ]

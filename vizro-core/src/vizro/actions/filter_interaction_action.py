@@ -1,36 +1,49 @@
-"""Pre-defined action function "filter_interaction" to be reused in `action` parameter of VizroBaseModels."""
-
-from typing import Any, Optional
+from typing import Any
 
 from dash import ctx
+from pydantic import Field
 
 from vizro.actions._actions_utils import _get_modified_page_figures
-from vizro.managers._model_manager import ModelID
-from vizro.models.types import capture
+from vizro.managers._model_manager import ModelID, model_manager
+from vizro.models._action._action import AbstractAction, Controls
 
 
-@capture("action")
-def filter_interaction(targets: Optional[list[ModelID]] = None, **inputs: dict[str, Any]) -> dict[ModelID, Any]:
+class filter_interaction(AbstractAction):
     """Filters targeted charts/components on page by clicking on data points or table cells of the source chart.
 
     To set up filtering on specific columns of the target graph(s), include these columns in the 'custom_data'
     parameter of the source graph e.g. `px.bar(..., custom_data=["species", "sepal_length"])`.
     If the filter interaction source is a table e.g. `vm.Table(..., actions=[filter_interaction])`,
     then the table doesn't need to have a 'custom_data' parameter set up.
-
-    Args:
-        targets: List of target component ids to filter by chart interaction. If missing, will target all valid
-            components on page. Defaults to `None`.
-        inputs: Dict mapping action function names with their inputs e.g.
-            inputs = {'filters': [], 'parameters': ['gdpPercap'], 'filter_interaction': []}
-
-    Returns:
-        Dict mapping target component ids to modified charts/components e.g. {'my_scatter': Figure({})}
-
     """
-    return _get_modified_page_figures(
-        ctds_filter=ctx.args_grouping["external"]["filters"],
-        ctds_filter_interaction=ctx.args_grouping["external"]["filter_interaction"],
-        ctds_parameter=ctx.args_grouping["external"]["parameters"],
-        targets=targets or [],
-    )
+
+    # Note this has a default value, unlikely on_page_load, filter and parameter.
+    targets: list[ModelID] = Field(description="Target component IDs.", default=[])
+
+    def function(self, controls: Controls) -> dict[ModelID, Any]:
+        """Applies controls to charts on page once the page is opened (or refreshed).
+
+        Returns:
+            Dict mapping target chart ids to modified figures e.g. {"my_scatter": Figure(...)}.
+
+        """
+        # TODO: controls is not currently used but instead taken out of the Dash context. This
+        # will change in future once the structure of controls has been worked out and we know how to pass ids through.
+        # TODO NOW: figure out how to make this change, find old GH issues discussing it.
+        return _get_modified_page_figures(
+            ctds_filter=ctx.args_grouping["external"]["controls"]["filters"],
+            ctds_parameter=ctx.args_grouping["external"]["controls"]["parameters"],
+            ctds_filter_interaction=ctx.args_grouping["external"]["controls"]["filter_interaction"],
+            targets=self.targets,
+        )
+
+    @property
+    def outputs(self):
+        outputs = {}
+
+        for target in self.targets:
+            component_id = target
+            component_property = model_manager[target]._output_component_property
+            outputs[target] = f"{component_id}.{component_property}"
+
+        return outputs

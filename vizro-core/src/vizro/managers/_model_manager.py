@@ -17,6 +17,7 @@ if TYPE_CHECKING:
 # the randomly generated model ID for the same model matches up across workers when running gunicorn without --preload.
 rd = random.Random(0)
 
+# TODO NOW: make this less annoying.
 ModelID = NewType("ModelID", str)
 Model = TypeVar("Model", bound="VizroBaseModel")
 

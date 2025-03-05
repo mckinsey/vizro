@@ -13,7 +13,7 @@ from vizro.actions import _filter
 from vizro.managers import data_manager, model_manager
 from vizro.managers._data_manager import DataSourceName, _DynamicData
 from vizro.managers._model_manager import FIGURE_MODELS, ModelID
-from vizro.models import Action, VizroBaseModel
+from vizro.models import VizroBaseModel
 from vizro.models._components.form import (
     Checklist,
     DatePicker,
@@ -212,12 +212,15 @@ class Filter(VizroBaseModel):
             else:
                 filter_function = _filter_isin
 
-            self.selector.actions = [
-                Action(
-                    id=f"{FILTER_ACTION_PREFIX}_{self.id}",
-                    function=_filter(filter_column=self.column, targets=self.targets, filter_function=filter_function),
-                )
-            ]
+        self.selector.actions = [
+            # TODO NOW: is there any point in this id labelling? Useful for debugging?
+            _filter(
+                id=f"{FILTER_ACTION_PREFIX}_{self.id}",
+                filter_column=self.column,
+                filter_function=filter_function,
+                targets=self.targets,
+            ),
+        ]
 
     @_log_call
     def build(self):

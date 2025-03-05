@@ -1,4 +1,5 @@
-from typing import Annotated
+import datetime
+
 
 import vizro.models as vm
 import vizro.plotly.express as px
@@ -20,7 +21,9 @@ page_1 = vm.Page(
                 color="continent",
                 custom_data=["continent"],
             ),
-            actions=[vm.Action(function=filter_interaction(targets=["scatter_relation_2007"]))],
+            actions=[filter_interaction(targets=["scatter_relation_2007"])],
+            # actions=[vm.Action(function=filter_interaction(targets=["scatter_relation_2007"]))], # TODO NOW: make
+            # this work. Or don't bother because it's going to go in future anyway.
         ),
         vm.Graph(
             id="scatter_relation_2007",
@@ -33,12 +36,20 @@ page_1 = vm.Page(
             ),
         ),
         vm.Button(
+            id="button",
             text="Export data to CSV",
-            actions=[vm.Action(function=export_data(targets=["scatter_relation_2007"]))],
+            actions=[export_data(targets=["scatter_relation_2007"], runtime_arg="button.n_clicks")],
+            # actions=[vm.Action(function=export_data(targets=["scatter_relation_2007"]))],
+            # TODO NOW: make this work
         ),
         vm.Button(
+            id="button2",
             text="Export data to Excel",
-            actions=[vm.Action(function=export_data(targets=["scatter_relation_2007"], file_format="xlsx"))],
+            actions=[
+                export_data(targets=["scatter_relation_2007"], file_format="xlsx", runtime_arg="button2.n_clicks")
+            ],
+            # actions=[vm.Action(function=export_data(targets=["scatter_relation_2007"], file_format="xlsx"))],
+            # TODO NOW: make this work
         ),
     ],
     controls=[
@@ -52,18 +63,23 @@ page_1 = vm.Page(
 
 
 @capture("action")
-def my_custom_action(points_data):
-    # add filters and runtime argument later
-    # no need to specify filters or make it optional argument - thanks to CC. This is real advantage
-    # of CC, not rebinding static args.
+# To test legacy=True
+# def my_custom_action(points_data, controls=None):
+def my_custom_action(points_data, controls):
     """Custom action."""
     clicked_point = points_data["points"][0]
     x, y = clicked_point["x"], clicked_point["y"]
     species = clicked_point["customdata"][0]
     card_1_text = f"Clicked point has sepal length {x}, petal width {y}"
-    # card_2_text = f"Filter is {filters}"
-    card_2_text = card_1_text
+    card_2_text = f"Controls are `{controls}`"
     return card_1_text, card_2_text
+
+
+# @capture("action")
+# def my_custom_action():
+#     """Custom action."""
+#     card_1_text = card_2_text = datetime.datetime.now().strftime("%I:%M%p on %B %d, %Y")
+#     return card_1_text, card_2_text
 
 
 df = px.data.iris()
@@ -85,8 +101,12 @@ page_2 = vm.Page(
             figure=px.scatter(df, x="sepal_length", y="petal_width", color="species", custom_data=["species"]),
             actions=[
                 vm.Action(
-                    function=my_custom_action(),
-                    inputs=["scatter_chart.clickData"],
+                    function=my_custom_action("scatter_chart.clickData"),
+                    # TODO NOW: make sure user-specified argument continues to take precedence
+                    # function=my_custom_action("scatter_chart.clickData", controls="my_card_1.children"),
+                    # TODO NOW: test to make sure this old way continues to work
+                    # function=my_custom_action(),
+                    # inputs=["scatter_chart.clickData"],
                     outputs=["my_card_1.children", "my_card_2.children"],
                 ),
             ],
