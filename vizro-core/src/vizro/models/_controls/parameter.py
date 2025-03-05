@@ -104,7 +104,33 @@ class Parameter(VizroBaseModel):
             self.selector.title = ", ".join({target.rsplit(".")[-1] for target in self.targets})
 
     def _set_actions(self):
+        from vizro.models import Filter
+
         if not self.selector.actions:
+            page_dynamic_filters = [
+                filter
+                for filter in cast(
+                    Iterable[Filter],
+                    model_manager._get_models(Filter, page=model_manager._get_model_page(self))
+                )
+                if filter._dynamic
+            ]
+
+            filter_targets = set()
+
+            # Extend parameter targets with dynamic filters linked to the same figure.
+            # Also, include dynamic filter targets to ensure new filter options are correctly calculated
+            # and filter targets are updated when filter values change.
+            for figure_target in self.targets:
+                figure_target_id, figure_target_argument = figure_target.split(".", 1)
+                if figure_target_argument.startswith("data_frame"):
+                    for filter in page_dynamic_filters:
+                        if figure_target_id in filter.targets:
+                            filter_targets.add(filter.id)
+                            filter_targets |= set(filter.targets)
+
+            self.targets.extend(list(filter_targets))
+
             self.selector.actions = [
                 Action(id=f"{PARAMETER_ACTION_PREFIX}_{self.id}", function=_parameter(targets=self.targets))
             ]

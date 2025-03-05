@@ -1,67 +1,58 @@
-"""Test app"""
+import time
+
+import pandas as pd
 
 import vizro.models as vm
 import vizro.plotly.express as px
 from vizro import Vizro
+from vizro.managers import data_manager
 
-iris = px.data.iris()
 
-page = vm.Page(
-    title="Page with subsections",
-    layout=vm.Layout(grid=[[0, 0, 1, 1, 2, 2], [3, 3, 3, 4, 4, 4], [3, 3, 3, 4, 4, 4]]),
+static_df = pd.DataFrame({
+    "species": ["artificial_species", "artificial_species", "artificial_species"],
+    "sepal_width": [4, 5, 6],
+    "sepal_length": [4, 5, 6],
+})
+
+
+def load_data(number_of_points=150):
+    # Artificial delay to simulate data loading in production
+    print("\nLoading data...\n")
+    time.sleep(1)
+
+    return px.data.iris().head(number_of_points)
+
+
+data_manager["dynamic_df"] = load_data
+
+page_1 = vm.Page(
+    title="Update dynamic filter from DFP",
     components=[
-        vm.Card(text="""Hello, this is a card with a [link](https://www.google.com)"""),
-        vm.Card(text="""Hello, this is a card with a [link](https://www.google.com)"""),
-        vm.Card(text="""Hello, this is a card with a [link](https://www.google.com)"""),
-        vm.Container(
-            title="Container I",
-            components=[
-                vm.Graph(figure=px.scatter(iris, x="sepal_width", y="sepal_length", color="species")),
-            ],
-            variant="outlined",
+        vm.Graph(
+            id="dynamic_graph_1",
+            figure=px.scatter(data_frame="dynamic_df", x="sepal_width", y="sepal_length", color="species"),
         ),
-        vm.Container(
-            title="Container II",
-            components=[
-                vm.Graph(figure=px.scatter(iris, x="sepal_width", y="sepal_length", color="species")),
-            ],
-            variant="filled",
-        ),
+        vm.Graph(
+            figure=px.scatter(data_frame=static_df, x="sepal_width", y="sepal_length", color="species"),
+        )
     ],
+    controls=[
+        vm.Filter(column="species", selector=vm.RadioItems()),
+        vm.Parameter(
+            targets=["dynamic_graph_1.data_frame.number_of_points"],
+            selector=vm.Slider(
+                min=0,
+                max=150,
+                value=150,
+                title="Number of points",
+                step=10,
+            )
+        ),
+    ]
 )
 
-page_two = vm.Page(
-    title="Container",
-    components=[
-        vm.Container(
-            title="Container III",
-            components=[
-                vm.Graph(figure=px.scatter(iris, x="sepal_width", y="sepal_length", color="species")),
-            ],
-        ),
-    ],
-)
+dashboard = vm.Dashboard(pages=[page_1])
 
-page_three = vm.Page(
-    title="Container Style",
-    components=[
-        vm.Container(
-            title="Container I",
-            components=[
-                vm.Graph(figure=px.scatter(iris, x="sepal_width", y="sepal_length", color="species")),
-            ],
-            variant="outlined",
-        ),
-        vm.Container(
-            title="Container II",
-            components=[
-                vm.Graph(figure=px.scatter(iris, x="sepal_width", y="sepal_length", color="species")),
-            ],
-            variant="filled",
-        ),
-    ],
-)
-dashboard = vm.Dashboard(pages=[page, page_two, page_three])
 
 if __name__ == "__main__":
     Vizro().build(dashboard).run()
