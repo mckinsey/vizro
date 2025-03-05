@@ -2,7 +2,7 @@ import logging
 from typing import Annotated, Literal
 
 import pandas as pd
-from dash import ClientsideFunction, Input, Output, State, clientside_callback, dcc, html
+from dash import State, dcc, html
 from pydantic import AfterValidator, Field, PrivateAttr, field_validator
 from pydantic.functional_serializers import PlainSerializer
 from pydantic.json_schema import SkipJsonSchema
@@ -121,12 +121,6 @@ class AgGrid(VizroBaseModel):
         self._input_component_id = self.figure._arguments.get("id", f"__input_{self.id}")
 
     def build(self):
-        clientside_callback(
-            ClientsideFunction(namespace="dashboard", function_name="update_ag_grid_theme"),
-            Output(self._input_component_id, "className"),
-            Input("theme-selector", "value"),
-        )
-
         return dcc.Loading(
             children=html.Div(
                 children=[

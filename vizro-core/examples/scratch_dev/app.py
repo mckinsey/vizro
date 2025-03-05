@@ -2,66 +2,68 @@
 
 import vizro.models as vm
 import vizro.plotly.express as px
+from dash_ag_grid import AgGrid
 from vizro import Vizro
+from vizro.models.types import capture
+from vizro.tables import dash_ag_grid
 
-iris = px.data.iris()
+df = px.data.gapminder().query("year == 2007")
+
+
+@capture("ag_grid")
+def my_custom_aggrid(chosen_columns: list[str], data_frame=None):
+    """Custom ag_grid."""
+    defaults = {
+        "className": "ag-theme-quartz-dark ag-theme-vizro",
+        "defaultColDef": {
+            "resizable": True,
+            "sortable": True,
+            "filter": True,
+            "filterParams": {
+                "buttons": ["apply", "reset"],
+                "closeOnApply": True,
+            },
+            "flex": 1,
+            "minWidth": 70,
+        },
+        "style": {"height": "100%"},
+    }
+    return AgGrid(
+        columnDefs=[{"field": col} for col in chosen_columns], rowData=data_frame.to_dict("records"), **defaults
+    )
+
 
 page = vm.Page(
-    title="Page with subsections",
-    layout=vm.Layout(grid=[[0, 0, 1, 1, 2, 2], [3, 3, 3, 4, 4, 4], [3, 3, 3, 4, 4, 4]]),
+    title="Example of a custom Dash AgGrid",
     components=[
-        vm.Card(text="""Hello, this is a card with a [link](https://www.google.com)"""),
-        vm.Card(text="""Hello, this is a card with a [link](https://www.google.com)"""),
-        vm.Card(text="""Hello, this is a card with a [link](https://www.google.com)"""),
-        vm.Container(
-            title="Container I",
-            components=[
-                vm.Graph(figure=px.scatter(iris, x="sepal_width", y="sepal_length", color="species")),
-            ],
-            variant="outlined",
+        vm.AgGrid(
+            id="custom_ag_grid",
+            title="Custom Dash AgGrid",
+            figure=my_custom_aggrid(
+                data_frame=df, chosen_columns=["country", "continent", "lifeExp", "pop", "gdpPercap"]
+            ),
         ),
-        vm.Container(
-            title="Container II",
-            components=[
-                vm.Graph(figure=px.scatter(iris, x="sepal_width", y="sepal_length", color="species")),
-            ],
-            variant="filled",
-        ),
+    ],
+    controls=[
+        vm.Parameter(
+            targets=["custom_ag_grid.chosen_columns"],
+            selector=vm.Dropdown(title="Choose columns", options=df.columns.to_list(), multi=True),
+        )
     ],
 )
 
 page_two = vm.Page(
-    title="Container",
+    title="Example of a Dash AgGrid",
     components=[
-        vm.Container(
-            title="Container III",
-            components=[
-                vm.Graph(figure=px.scatter(iris, x="sepal_width", y="sepal_length", color="species")),
-            ],
+        vm.AgGrid(
+            title="Custom Dash AgGrid",
+            figure=dash_ag_grid(
+                data_frame=df,
+            ),
         ),
     ],
 )
-
-page_three = vm.Page(
-    title="Container Style",
-    components=[
-        vm.Container(
-            title="Container I",
-            components=[
-                vm.Graph(figure=px.scatter(iris, x="sepal_width", y="sepal_length", color="species")),
-            ],
-            variant="outlined",
-        ),
-        vm.Container(
-            title="Container II",
-            components=[
-                vm.Graph(figure=px.scatter(iris, x="sepal_width", y="sepal_length", color="species")),
-            ],
-            variant="filled",
-        ),
-    ],
-)
-dashboard = vm.Dashboard(pages=[page, page_two, page_three])
+dashboard = vm.Dashboard(pages=[page, page_two], theme="vizro_light")
 
 if __name__ == "__main__":
     Vizro().build(dashboard).run()

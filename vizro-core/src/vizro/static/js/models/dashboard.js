@@ -8,12 +8,6 @@ function update_dashboard_theme(theme_selector_checked) {
   return window.dash_clientside.no_update;
 }
 
-function update_ag_grid_theme(theme_selector_checked) {
-  return theme_selector_checked
-    ? "ag-theme-quartz ag-theme-vizro"
-    : "ag-theme-quartz-dark ag-theme-vizro";
-}
-
 function update_graph_theme(figure, theme_selector_checked, vizro_themes) {
   const theme_to_apply = theme_selector_checked ? "vizro_light" : "vizro_dark";
 
@@ -69,7 +63,6 @@ window.dash_clientside = {
   ...window.dash_clientside,
   dashboard: {
     update_dashboard_theme: update_dashboard_theme,
-    update_ag_grid_theme: update_ag_grid_theme,
     update_graph_theme: update_graph_theme,
     collapse_nav_panel: collapse_nav_panel,
   },
