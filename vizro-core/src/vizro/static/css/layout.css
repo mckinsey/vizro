@@ -126,7 +126,10 @@
 }
 
 #dashboard-title,
+#dashboard-title-title,
 #page-title {
+  display: flex;
+  gap: 4px;
   margin: 0;
 }
 
@@ -232,4 +235,8 @@
 /* Hide Loading... text on loading page */
 ._dash-loading {
   display: none;
+}
+
+#dashboard-title .material-symbols-outlined {
+  font-size: 18px;
 }

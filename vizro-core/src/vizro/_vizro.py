@@ -116,8 +116,10 @@ class Vizro:
         self.dash.index_string = self.dash.index_string.replace("<html>", f"<html data-bs-theme='{bootstrap_theme}'>")
 
         # Note Dash.index uses self.dash.title instead of self.dash.app.config.title.
+        from vizro.models import Title
+
         if dashboard.title:
-            self.dash.title = dashboard.title
+            self.dash.title = dashboard.title.title if isinstance(dashboard.title, Title) else dashboard.title
         return self
 
     def run(self, *args, **kwargs):  # if type annotated, mkdocstring stops seeing the class
