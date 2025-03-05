@@ -1,67 +1,103 @@
-"""Test app"""
+from typing import Annotated
 
 import vizro.models as vm
 import vizro.plotly.express as px
 from vizro import Vizro
+from vizro.actions import filter_interaction, export_data
+from vizro.models.types import capture
 
-iris = px.data.iris()
+df_gapminder = px.data.gapminder().query("year == 2007")
 
-page = vm.Page(
-    title="Page with subsections",
-    layout=vm.Layout(grid=[[0, 0, 1, 1, 2, 2], [3, 3, 3, 4, 4, 4], [3, 3, 3, 4, 4, 4]]),
+page_1 = vm.Page(
+    title="Built in actions",
+    layout=dict(grid=[[0, 1], [2, 3]]),
     components=[
-        vm.Card(text="""Hello, this is a card with a [link](https://www.google.com)"""),
-        vm.Card(text="""Hello, this is a card with a [link](https://www.google.com)"""),
-        vm.Card(text="""Hello, this is a card with a [link](https://www.google.com)"""),
-        vm.Container(
-            title="Container I",
-            components=[
-                vm.Graph(figure=px.scatter(iris, x="sepal_width", y="sepal_length", color="species")),
-            ],
-            variant="outlined",
+        vm.Graph(
+            figure=px.box(
+                df_gapminder,
+                x="continent",
+                y="lifeExp",
+                color="continent",
+                custom_data=["continent"],
+            ),
+            actions=[vm.Action(function=filter_interaction(targets=["scatter_relation_2007"]))],
         ),
-        vm.Container(
-            title="Container II",
-            components=[
-                vm.Graph(figure=px.scatter(iris, x="sepal_width", y="sepal_length", color="species")),
-            ],
-            variant="filled",
+        vm.Graph(
+            id="scatter_relation_2007",
+            figure=px.scatter(
+                df_gapminder,
+                x="gdpPercap",
+                y="lifeExp",
+                size="pop",
+                color="continent",
+            ),
+        ),
+        vm.Button(
+            text="Export data to CSV",
+            actions=[vm.Action(function=export_data(targets=["scatter_relation_2007"]))],
+        ),
+        vm.Button(
+            text="Export data to Excel",
+            actions=[vm.Action(function=export_data(targets=["scatter_relation_2007"], file_format="xlsx"))],
+        ),
+    ],
+    controls=[
+        vm.Filter(column="continent"),
+        vm.Parameter(
+            targets=["scatter_relation_2007.color"],
+            selector=vm.RadioItems(options=["continent", "pop"]),
         ),
     ],
 )
 
-page_two = vm.Page(
-    title="Container",
+
+@capture("action")
+def my_custom_action(points_data):
+    # add filters and runtime argument later
+    # no need to specify filters or make it optional argument - thanks to CC. This is real advantage
+    # of CC, not rebinding static args.
+    """Custom action."""
+    clicked_point = points_data["points"][0]
+    x, y = clicked_point["x"], clicked_point["y"]
+    species = clicked_point["customdata"][0]
+    card_1_text = f"Clicked point has sepal length {x}, petal width {y}"
+    # card_2_text = f"Filter is {filters}"
+    card_2_text = card_1_text
+    return card_1_text, card_2_text
+
+
+df = px.data.iris()
+
+page_2 = vm.Page(
+    title="Example of a custom action with UI inputs and outputs",
+    layout=vm.Layout(
+        grid=[
+            [0, 0],
+            [0, 0],
+            [0, 0],
+            [1, 2],
+        ],
+        row_gap="25px",
+    ),
     components=[
-        vm.Container(
-            title="Container III",
-            components=[
-                vm.Graph(figure=px.scatter(iris, x="sepal_width", y="sepal_length", color="species")),
+        vm.Graph(
+            id="scatter_chart",
+            figure=px.scatter(df, x="sepal_length", y="petal_width", color="species", custom_data=["species"]),
+            actions=[
+                vm.Action(
+                    function=my_custom_action(),
+                    inputs=["scatter_chart.clickData"],
+                    outputs=["my_card_1.children", "my_card_2.children"],
+                ),
             ],
         ),
+        vm.Card(id="my_card_1", text="Click on a point on the above graph."),
+        vm.Card(id="my_card_2", text="Click on a point on the above graph."),
     ],
+    controls=[vm.Filter(column="species", selector=vm.Dropdown(title="Species"))],
 )
 
-page_three = vm.Page(
-    title="Container Style",
-    components=[
-        vm.Container(
-            title="Container I",
-            components=[
-                vm.Graph(figure=px.scatter(iris, x="sepal_width", y="sepal_length", color="species")),
-            ],
-            variant="outlined",
-        ),
-        vm.Container(
-            title="Container II",
-            components=[
-                vm.Graph(figure=px.scatter(iris, x="sepal_width", y="sepal_length", color="species")),
-            ],
-            variant="filled",
-        ),
-    ],
-)
-dashboard = vm.Dashboard(pages=[page, page_two, page_three])
+dashboard = vm.Dashboard(pages=[page_1, page_2])
 
 if __name__ == "__main__":
     Vizro().build(dashboard).run()
