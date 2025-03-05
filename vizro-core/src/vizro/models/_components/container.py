@@ -9,7 +9,7 @@ from pydantic import AfterValidator, BeforeValidator, Field, conlist
 from vizro.models import VizroBaseModel
 from vizro.models._layout import set_layout
 from vizro.models._models_utils import _log_call, check_captured_callable_model
-from vizro.models.types import ComponentType
+from vizro.models.types import ComponentType, LayoutType
 
 if TYPE_CHECKING:
     from vizro.models import Layout
@@ -36,7 +36,7 @@ class Container(VizroBaseModel):
         min_length=1,
     )
     title: str = Field(description="Title to be displayed.")
-    layout: Annotated[Optional[Layout], AfterValidator(set_layout), Field(default=None, validate_default=True)]
+    layout: Annotated[Optional[LayoutType], AfterValidator(set_layout), Field(default=None, validate_default=True)]
     variant: Literal["plain", "filled", "outlined"] = Field(
         default="plain",
         description="Predefined styles to choose from. Options are `plain`, `filled` or `outlined`."
@@ -49,6 +49,14 @@ class Container(VizroBaseModel):
         # It needs to be properly designed and tested out (margins have to be added etc.).
         # Below corresponds to bootstrap utility classnames, while 'bg-container' is introduced by us.
         # See: https://getbootstrap.com/docs/4.0/utilities
+        # Title is not displayed if Container is inside Tabs using CSS combinators (only applies to outer container)
+        # Other options we might want to consider in the future to hide the title:
+        # 1) Argument inside Container.build that flags if used inside Tabs, then sets hidden attribute for the heading
+        # or just doesn't supply the element at all
+        # 2) Logic inside Tabs.build that sets hidden=True for the heading or uses del to remove the heading via
+        # providing an ID to the heading and accessing it in the component tree
+        # 3) New field in Container like short_title to allow tab label to be set independently
+        # Below added to remove mypy error - cannot actually be None if you check components and layout field together
         variants = {"plain": "", "filled": "bg-container p-3", "outlined": "border p-3"}
 
         return dbc.Container(
@@ -63,21 +71,14 @@ class Container(VizroBaseModel):
 
     def _build_inner_layout(self):
         """Builds inner layout and assigns components to grid position."""
-        # Title is not displayed if Container is inside Tabs using CSS combinators (only applies to outer container)
-        # Other options we might want to consider in the future to hide the title:
-        # 1) Argument inside Container.build that flags if used inside Tabs, then sets hidden attribute for the heading
-        # or just doesn't supply the element at all
-        # 2) Logic inside Tabs.build that sets hidden=True for the heading or uses del to remove the heading via
-        # providing an ID to the heading and accessing it in the component tree
-        # 3) New field in Container like short_title to allow tab label to be set independently
         from vizro.models import Layout
+        self.layout = cast(Layout, self.layout)
 
-        self.layout = cast(
-            Layout,  # cannot actually be None if you check components and layout field together
-            self.layout,
-        )
         components_container = self.layout.build()
-        for component_idx, component in enumerate(self.components):
-            components_container[f"{self.layout.id}_{component_idx}"].children = component.build()
+        if isinstance(self.layout, Layout):
+            for component_idx, component in enumerate(self.components):
+                components_container[f"{self.layout.id}_{component_idx}"].children = component.build()
+        else:
+            components_container.children = [component.build() for component in self.components]
 
         return components_container

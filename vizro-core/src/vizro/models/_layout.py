@@ -30,7 +30,7 @@ def _get_unique_grid_component_ids(grid: list[list[int]]):
 
 # Validators for reuse
 def set_layout(layout, info: ValidationInfo):
-    from vizro.models import Layout, Flex
+    from vizro.models import Flex, Layout
 
     # No validation for Flex layout
     if isinstance(layout, Flex):
