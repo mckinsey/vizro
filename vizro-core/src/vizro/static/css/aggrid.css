@@ -24,6 +24,8 @@
   --ag-header-column-resize-handle-color: var(--border-subtleAlpha02);
   --ag-range-selection-border-color: transparent;
   --ag-input-focus-border-color: transparent;
+  --ag-foreground-color: var(--text-primary);
+  --ag-secondary-foreground-color: var(--text-secondary);
 }
 
 /* Header ------- */

@@ -40,7 +40,8 @@ page = vm.Page(
             id="custom_ag_grid",
             title="Custom Dash AgGrid",
             figure=my_custom_aggrid(
-                data_frame=df, chosen_columns=["country", "continent", "lifeExp", "pop", "gdpPercap"]
+                data_frame=df,
+                chosen_columns=["country", "continent", "lifeExp", "pop", "gdpPercap"],
             ),
         ),
     ],
@@ -59,6 +60,7 @@ page_two = vm.Page(
             title="Custom Dash AgGrid",
             figure=dash_ag_grid(
                 data_frame=df,
+                dashGridOptions={"pagination": True},
             ),
         ),
     ],
