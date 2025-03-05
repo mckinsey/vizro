@@ -44,7 +44,7 @@ def _all_hidden(components: list[Component]):
     return all(
         component is None
         or getattr(component, "hidden", False)
-        or "d-none" in getattr(component, "className", "d-inline")
+        or "d-none" in getattr(component, "className", "d-inline")  # TODO: this may be important
         for component in components
     )
 
@@ -131,7 +131,7 @@ class Dashboard(VizroBaseModel):
         clientside_callback(
             ClientsideFunction(namespace="dashboard", function_name="update_dashboard_theme"),
             # This currently doesn't do anything, but we need to define an Output such that the callback is triggered.
-            Output("dashboard-container", "className"),
+            Output("dashboard-container", "className"),  # TODO: this too
             Input("theme-selector", "value"),
         )
         left_side_div_present = any([len(self.pages) > 1, self.pages[0].controls])
@@ -318,7 +318,7 @@ class Dashboard(VizroBaseModel):
                 html.Img(src=f"data:image/svg+xml;base64,{error_404_svg}"),
                 html.H3("This page could not be found."),
                 html.P("Make sure the URL you entered is correct."),
-                dbc.Button(children="Take me home", href=get_relative_path("/"), className="mt-4"),
+                dbc.Button(children="Take me home", href=get_relative_path("/"), class_name="mt-4"),
             ],
             className="d-flex flex-column align-items-center justify-content-center min-vh-100",
         )
