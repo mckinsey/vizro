@@ -26,9 +26,9 @@ class Flex(VizroBaseModel):
 
     type: Literal["flex"] = "flex"
     direction: Literal["row", "column"] = Field(
-        default="row",
+        default="column",
         description="Sets the direction of the flex items inside the container. Options are `row` or `column`."
-        "Defaults to `row`.",
+        "Defaults to `column`.",
     )
     gap: str = Field(
         default=GAP_DEFAULT,
@@ -49,7 +49,7 @@ class Flex(VizroBaseModel):
         component_container = html.Div(
             [],
             style={"gap": self.gap},
-            className=f"d-flex f-{self.direction} {bs_wrap}",
+            className=f"d-flex flex-{self.direction} {bs_wrap}",
             id=self.id,
         )
         return component_container
