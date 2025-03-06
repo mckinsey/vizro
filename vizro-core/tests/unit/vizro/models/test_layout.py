@@ -25,23 +25,38 @@ class TestLayoutInstantiation:
             ColRowGridLines(col_start=2, col_end=3, row_start=2, row_end=3),
         ]
 
-    @pytest.mark.parametrize("test_gap", ["0px", "4px", "8px"])
-    def test_create_layout_mandatory_and_optional(self, test_gap):
+    @pytest.mark.parametrize("test_unit", ["0px", "4px", "4rem", "4em", "4%"])
+    def test_create_layout_mandatory_and_optional(self, test_unit):
         layout = vm.Layout(
-            grid=[[0, 1], [0, 2]], col_gap=test_gap, row_gap=test_gap, col_min_width=test_gap, row_min_height=test_gap
+            grid=[[0, 1], [0, 2]],
+            col_gap=test_unit,
+            row_gap=test_unit,
+            col_min_width=test_unit,
+            row_min_height=test_unit,
         )
 
         assert hasattr(layout, "id")
         assert layout.grid == [[0, 1], [0, 2]]
-        assert layout.col_gap == test_gap
-        assert layout.row_gap == test_gap
-        assert layout.col_min_width == test_gap
-        assert layout.row_min_height == test_gap
+        assert layout.col_gap == test_unit
+        assert layout.row_gap == test_unit
+        assert layout.col_min_width == test_unit
+        assert layout.row_min_height == test_unit
         assert layout.component_grid_lines == [
             ColRowGridLines(col_start=1, col_end=2, row_start=1, row_end=3),
             ColRowGridLines(col_start=2, col_end=3, row_start=1, row_end=2),
             ColRowGridLines(col_start=2, col_end=3, row_start=2, row_end=3),
         ]
+
+    @pytest.mark.parametrize("test_unit", ["0", "calc(100% - 3px)", "4ex", "4ch", "4vh", "4vw", "4vmin", "4vmax"])
+    def test_invalid_unit_size(self, test_unit):
+        with pytest.raises(ValidationError, match="4 validation errors for Layout"):
+            vm.Layout(
+                grid=[[0, 1], [0, 2]],
+                col_gap=test_unit,
+                row_gap=test_unit,
+                col_min_width=test_unit,
+                row_min_height=test_unit,
+            )
 
     def test_mandatory_grid_missing(self):
         with pytest.raises(ValidationError, match="Field required"):

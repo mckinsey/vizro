@@ -162,6 +162,7 @@ def _get_grid_lines(grid: list[list[int]]) -> tuple[list[ColRowGridLines], list[
     return component_grid_lines, space_grid_lines
 
 
+# TODO: Deprecate and rename to Grid
 class Layout(VizroBaseModel):
     """Grid specification to place chart/components on the [`Page`][vizro.models.Page].
 
