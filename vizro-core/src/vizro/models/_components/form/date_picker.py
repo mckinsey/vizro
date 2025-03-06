@@ -69,7 +69,7 @@ class DatePicker(VizroBaseModel):
         date_picker = dmc.DatePickerInput(
             id=self.id,
             minDate=min,
-            value=self.value if self.value is not None else [min, max] if self.range else min,
+            value=self.value or ([min, max] if self.range else min),
             maxDate=max,
             persistence=True,
             persistence_type="session",
