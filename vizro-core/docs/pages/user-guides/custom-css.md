@@ -295,7 +295,7 @@ It's essential to understand the relationship between the targeted CSS class or 
 
 ### Make your CSS responsive to theme switches with variables
 
-To ensure your CSS adapts to theme changes, we recommend using CSS variables (`var`) whenever possible. For a comprehensive list of available variable names, refer to the [Bootstrap documentation](https://getbootstrap.com/docs/5.3/customize/css-variables/). Additionally, you can define your own CSS variables, as demonstrated in the example on [changing the container background color](#change-the-styling-of-a-container).
+To ensure your CSS adapts to theme changes, we recommend using CSS variables (`var`) whenever possible. For a comprehensive list of available variable names, refer to the [Bootstrap documentation](https://getbootstrap.com/docs/5.3/customize/css-variables/).
 
 ### Turn off page title
 
@@ -351,95 +351,6 @@ By default, the logo appears in the top left corner of the dashboard. You can mo
 
 ![Logo positioning](../../assets/user_guides/custom_css/logo-position.png)
 
-### Change the styling of a container
-
-If you want to make the subsections of your dashboard stand out more, you can do this by placing your components inside a [Container](container.md) and changing the container's styling, for example, background color, borders, padding, etc.
-
-To do this, you need to change the container's CSS class. Using the DevTool, as explained in the section on [identifying the correct CSS selector](#identify-the-correct-css-selector), you'll find that the CSS class for the `Container` is `page-component-container`. You can then use this class to set a new `background-color` and `padding`. Chart backgrounds are transparent so they automatically match the background color of the container.
-
-!!! example "Style a container"
-    === "custom.css"
-        ```css
-        /* Assign a variable to the dark and light theme */
-        [data-bs-theme="dark"] {
-            --container-bg-color: #232632;
-        }
-
-        [data-bs-theme="light"] {
-            --container-bg-color: #F5F6F6;
-        }
-
-        /* Use the custom variable var(--container-bg-color) */
-        .page-component-container {
-            background: var(--container-bg-color);
-            padding: 12px;
-        }
-        ```
-
-    === "app.py"
-        ```py
-        import vizro.models as vm
-        import vizro.plotly.express as px
-        from vizro import Vizro
-
-        iris = px.data.iris()
-
-        page = vm.Page(
-            title="Page with subsections",
-            layout=vm.Layout(grid=[[0, 1]]),
-            components=[
-                vm.Container(
-                    title="Container I",
-                    components=[vm.Graph(figure=px.scatter(iris, x="sepal_width", y="sepal_length", color="species"))]
-                ),
-                vm.Container(
-                    title="Container II",
-                    components=[vm.Graph(figure=px.box(iris, x="species", y="sepal_length", color="species"))]
-                )
-            ],
-        )
-
-        dashboard = vm.Dashboard(pages=[page])
-        Vizro().build(dashboard).run()
-        ```
-
-        <img src=https://py.cafe/logo.png alt="PyCafe logo" width="30"><b><a target="_blank" href="https://py.cafe/vizro-official/vizro-style-a-container">Run and edit this code in PyCafe</a></b>
-
-    === "app.yaml"
-        ```yaml
-        # Still requires a .py to add data to the data manager and parse YAML configuration
-        # See yaml_version example
-        pages:
-          - title: Page with subsections
-            layout:
-              grid: [[0, 1]]
-            components:
-              - type: container
-                title: Container I
-                components:
-                  - type: graph
-                    figure:
-                      _target_: scatter
-                      data_frame: iris
-                      x: sepal_width
-                      y: sepal_length
-                      color: species
-              - type: container
-                title: Container II
-                components:
-                  - type: graph
-                    figure:
-                      _target_: box
-                      data_frame: iris
-                      x: species
-                      y: sepal_length
-                      color: species
-        ```
-
-    === "Result"
-        [![StyleContainer]][stylecontainer]
-
 [assetscss]: ../../assets/user_guides/assets/css_change.png
 [cardcss]: ../../assets/user_guides/assets/css_change_card.png
 [pagetitle]: ../../assets/user_guides/assets/css_page_title.png
-[stylecontainer]: ../../assets/user_guides/custom_css/style-container.png

@@ -66,13 +66,10 @@ class DatePicker(VizroBaseModel):
         #  - The way how the new Vizro solution is built on top of the Dash persistence bugfix.
         #  - Whether the current value is included in the updated options.
         #  - The way how the validate_options_dict validator and tests are improved.
-        if not self.value:
-            self.value = [min, max] if self.range else min
-
         date_picker = dmc.DatePickerInput(
             id=self.id,
             minDate=min,
-            value=self.value,
+            value=self.value if self.value is not None else [min, max] if self.range else min,
             maxDate=max,
             persistence=True,
             persistence_type="session",
@@ -89,6 +86,12 @@ class DatePicker(VizroBaseModel):
             ],
         )
 
+    def _build_dynamic_placeholder(self):
+        if not self.value:
+            self.value = [self.min, self.max] if self.range else self.min  # type: ignore[list-item]
+
+        return self.__call__(self.min, self.max)
+
     @_log_call
     def build(self):
-        return self.__call__(self.min, self.max)
+        return self._build_dynamic_placeholder() if self._dynamic else self.__call__(self.min, self.max)

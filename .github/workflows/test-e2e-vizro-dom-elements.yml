@@ -34,13 +34,16 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
-      - name: Set up Python ${{ env.PYTHON_VERSION }}
+      - name: Set up Python ${{ matrix.config.python-version }}
         uses: actions/setup-python@v5
         with:
-          python-version: ${{ env.PYTHON_VERSION }}
+          python-version: ${{ matrix.config.python-version }}
 
       - name: Install Hatch
         run: pip install hatch
+
+      - name: Install pixelmatch
+        run: sudo npm install pixelmatch -g
 
       - name: Show dependency tree
         run: hatch run pip tree
