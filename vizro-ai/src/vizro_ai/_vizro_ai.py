@@ -13,7 +13,7 @@ from vizro_ai.dashboard._graph.dashboard_creation import _create_and_compile_gra
 from vizro_ai.dashboard._pydantic_output import _get_pydantic_model  # TODO: make general, ie remove from dashboard
 from vizro_ai.dashboard.utils import DashboardOutputs, _extract_overall_imports_and_code, _register_data
 from vizro_ai.plot._response_models import BaseChartPlan, ChartPlan, ChartPlanFactory
-from vizro_ai.utils.helper import _get_df_info
+from vizro_ai.utils.helper import _get_df_info, _get_augment_info, create_chart_type_enum
 
 logger = logging.getLogger(__name__)
 
@@ -47,9 +47,12 @@ class VizroAI:
 
         """
         self.model = _get_llm_model(model=model)
-        self.components_instances = {}
-
-        # TODO add pending URL link to docs
+        self.components_instances = {} # TODO: This line is not used anywhere?
+        
+        self.chart_type_enum = create_chart_type_enum()
+        self.chart_type_examples = [member.value for member in self.chart_type_enum]
+        print(f"Available chart types: {self.chart_type_examples}")
+        
         logger.info(
             "Engaging with LLMs (Large Language Models) carries certain risks. "
             "Users are advised to become familiar with these risks to make informed decisions, "
@@ -66,6 +69,7 @@ class VizroAI:
         return_elements: bool = False,
         validate_code: bool = True,
         _minimal_output: bool = False,
+        augment: bool = False,
     ) -> Union[go.Figure, ChartPlan]:
         """Plot visuals using vizro via english descriptions, english to chart translation.
 
@@ -78,13 +82,19 @@ class VizroAI:
             validate_code: Flag if produced code should be executed to validate it. Defaults to `True`.
             _minimal_output: Internal flag to exclude chart insights and code explanations and
                 skip validation. Defaults to `False`.
+            augment: Flag to augment the BaseChartPlan.chart_code with Vizro best practices. Defaults to `False`.
 
         Returns:
             go.Figure or ChartPlan pydantic model
 
         """
         chart_plan = BaseChartPlan if _minimal_output else ChartPlan
-        response_model = ChartPlanFactory(data_frame=df, chart_plan=chart_plan) if validate_code else chart_plan
+        response_model = ChartPlanFactory(
+            data_frame=df, 
+            chart_plan=chart_plan, 
+            validate_code=validate_code,
+            chart_type_examples=self.chart_type_examples
+        )
 
         _, df_sample = _get_df_info(df, n_sample=10)
         response = _get_pydantic_model(
@@ -94,6 +104,18 @@ class VizroAI:
             df_info=df_sample,
             max_retry=max_debug_retry,
         )
+
+        
+        if augment:
+            augmented_request = _get_augment_info(response.chart_type, response.chart_code, user_input)
+            response = _get_pydantic_model(
+                query=augmented_request,
+                llm_model=self.model,
+                response_model=response_model,
+                df_info=df_sample,
+                max_retry=max_debug_retry,
+            )
+
         if return_elements:
             return response
         else:

@@ -1,7 +1,7 @@
 """Code powering the plot command."""
 
 import logging
-from typing import Annotated, Optional, Union
+from typing import Annotated, Optional, Union, List
 
 import autoflake
 import black
@@ -222,20 +222,40 @@ class ChartPlan(BaseChartPlan):
 
 
 class ChartPlanFactory:
-    def __new__(cls, data_frame: pd.DataFrame, chart_plan: type[BaseChartPlan] = ChartPlan) -> type[BaseChartPlan]:
-        """Creates a chart plan model with additional validation.
+    def __new__(cls, 
+        data_frame: pd.DataFrame, 
+        chart_plan: type[BaseChartPlan] = ChartPlan, 
+        validate_code: bool = True,
+        chart_type_examples: Optional[List[str]] = None
+    ) -> type[BaseChartPlan]:
+        """Creates a chart plan model with additional validation."""
+        # Use provided examples or fallback to defaults
+        examples = chart_type_examples or []
+        description = f"""
+        {chart_plan.model_fields["chart_type"].description}
 
-        Args:
-            data_frame: DataFrame to use for validation
-            chart_plan: Chart plan model to run extended validation against. Defaults to ChartPlan.
-
-        Returns:
-            Chart plan model with additional validation
+        The examples list shows commonly available chart types in our visual vocabulary.
+        While these are recommended options, you may choose a different chart type if it better suits the user's needs
         """
+        
+        
+        # Create field with examples but keep original description
+        chart_type_field = Field(
+            description=description,
+            examples=examples
+        )
+
+        # Set up validators
+        validators = {}
+        if validate_code:
+            validators = {
+                "validator1": field_validator("chart_code")(_test_execute_chart_code(data_frame))
+            }
+            
+        # Create and return the dynamic model
         return create_model(
             "ChartPlanDynamic",
             __base__=chart_plan,
-            __validators__={
-                "validator1": field_validator("chart_code")(_test_execute_chart_code(data_frame)),
-            },
+            chart_type=(str, chart_type_field),
+            __validators__=validators,
         )
