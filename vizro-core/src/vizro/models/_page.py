@@ -66,7 +66,7 @@ class Page(VizroBaseModel):
     components: conlist(Annotated[ComponentType, BeforeValidator(check_captured_callable_model)], min_length=1)  # type: ignore[valid-type]
     title: Union[str, Title] = Field(
         default="", description="Dashboard title to appear on every page on top left-side."
-    )
+    ) # random change that doesnt do anything
     description: str = Field(default="", description="Description for meta tags.")
     layout: Annotated[Optional[Layout], AfterValidator(set_layout), Field(default=None, validate_default=True)]
     controls: list[ControlType] = []
