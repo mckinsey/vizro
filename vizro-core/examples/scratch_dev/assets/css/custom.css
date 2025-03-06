@@ -3,8 +3,8 @@
 }
 
 
-/* To reset all heights coming from our parent containers */
-.flex-item, .flex-item .figure-container, .flex-item .card {
+/* To reset all heights coming from our parent containers otherwise there will be sizing issues */
+.flex-item, .flex-item .figure-container {
   height: unset;
   width: unset;
 }
@@ -19,7 +19,16 @@
   width: 300px;
 }
 
-/* Apply width to all KPI Cards*/
+/* Apply width to all KPI Cards */
 #page-flex-inside-flex .card-kpi {
   width: 250px;
+}
+
+/* A height needs to be set for the parent container of the AgGrid, otherwise
+it's not visible. Below works for the specific example, but wondering if there is a better way
+to set sensible default values that always work. Eventually set a height / width to the entire flex container
+instead? Probably best to ask P. here. */
+.table-container {
+  height: 450px;
+  width: 1000px;
 }
