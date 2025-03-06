@@ -530,7 +530,7 @@ Currently the `Card` is based on the underlying Dash component [`dbc.Card`](http
 !!! warning
     Using `extra` is a quick and flexible way to alter a component beyond what Vizro offers. However, [it is not a part of the official Vizro schema](../explanation/schema.md#what-is-the-vizro-json-schema) and we do not consider it a breaking change if we alter/remove it. This is unlikely to happen any time soon.
 
-An example use would be to limit the `Card` height to only take as much space as the content, and not to take up all the available height (default). For this, you can use `extra={"style": {"height": "unset"}}`.
+An example use would be to limit the `Card` height to only take as much space as the content, and not to take up all the available height (default). For this, you can use `extra={"style": {"height": "unset"}}`. This would be a shortcut to using custom CSS in the assets folder as explained in [our guide on CSS](../user-guides/custom-css.md).
 
 !!! example "Card with limited height"
     === "app.py"
@@ -724,7 +724,7 @@ Currently the `Button` is based on the underlying Dash component [`dbc.Button`](
 !!! warning
     Using `extra` is a quick and flexible way to alter a component beyond what Vizro offers. However, [it is not a part of the official Vizro schema](../explanation/schema.md#what-is-the-vizro-json-schema) and we do not consider it a breaking change if we alter/remove it. This is unlikely to happen any time soon.
 
-An example use would be to create an outlined success button. For this, you can use `extra={"color": "success", "outline": True}`.
+An example use would be to create an outlined success button. For this, you can use `extra={"color": "success", "outline": True}`. This would be a shortcut to using custom CSS in the assets folder as explained in [our guide on CSS](../user-guides/custom-css.md).
 
 !!! example "Button with custom style"
     === "app.py"

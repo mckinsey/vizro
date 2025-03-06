@@ -19,7 +19,7 @@ Uncomment the section that is right (remove the HTML comment wrapper).
 
 ### Added
 
-- Add `extra` argument to selected models allowing the passing of arguments directly to the underlying Dash component. ([#1032](https://github.com/mckinsey/vizro/pull/1032))
+- Add `extra` argument to selected models to enable passing arguments directly to the underlying Dash component. ([#1032](https://github.com/mckinsey/vizro/pull/1032))
 
 
 <!--

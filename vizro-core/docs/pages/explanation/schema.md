@@ -6,7 +6,7 @@ This page explains the [Vizro JSON schema](#what-is-the-vizro-json-schema), whic
 
 This is a short introduction since there are many good articles to answer the question, ["What is a JSON schema?"](https://blog.postman.com/what-is-json-schema).
 
-A JSON schema defines the rules, structure, and constraints that JSON data (a popular data format, used widely on the web) should follow. Use of a schema leaves minimal room for assumptions and makes it easier to predict the nature and behavior of JSON data.
+A [JSON schema](https://json-schema.org/) defines the rules, structure, and constraints that JSON data (a popular data format, used widely on the web) should follow. Use of a schema leaves minimal room for assumptions and makes it easier to predict the nature and behavior of JSON data.
 
 An example of a JSON schema would be:
 
@@ -49,7 +49,7 @@ In practice this means that data can be identified as valid or invalid:
     }
     ```
 
-=== "invalid"
+=== "invalid  (`B` is not an array of strings)"
     ```json
     {
       "A": 1,
@@ -60,10 +60,10 @@ In practice this means that data can be identified as valid or invalid:
     }
     ```
 
-=== "also invalid"
+=== "also invalid (required field `B` is missing)"
     ```json
     {
-    "A": 1,
+      "A": 1,
     }
     ```
 
@@ -71,7 +71,93 @@ In practice this means that data can be identified as valid or invalid:
 
 Similar to the above example, the Vizro framework also has a JSON schema. It can be [found in our GitHub repository](https://github.com/mckinsey/vizro/tree/main/vizro-core/schemas). It is more complicated than the simple schema above, but it generally follows the same principle.
 
-You can configure a Vizro dashboard according to a set of constraints that are defined in the schema. The configuration language that you choose is secondary: it can be via Python, but also via JSON or YAML. This is shown in [our showcase of configuration options](../user-guides/dashboard.md#use-dashboard-configuration-options).
+To get a feeling of what it generally looks like, we have provided a simplified schema below. Reading through it shows us for example that every dashboards needs to have a set of pages, which in turn must have components, but optionally can have controls.
+
+??? example "Simplified Vizro JSON schema"
+    ```json
+    {
+      "$defs": {
+        "Page": {
+          "properties": {
+            "title": {
+              "title": "Title",
+              "type": "string"
+            },
+            "components": {
+              "items": {
+                "enum": [
+                  "Card",
+                  "Button",
+                  "Container",
+                  "Graph",
+                  "Table",
+                  "AgGrid"
+                ],
+                "type": "string"
+              },
+              "title": "Components",
+              "type": "array"
+            },
+            "controls": {
+              "anyOf": [
+                {
+                  "items": {
+                    "enum": [
+                      "Filter",
+                      "Parameter"
+                    ],
+                    "type": "string"
+                  },
+                  "type": "array"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "default": null,
+              "title": "Controls"
+            }
+          },
+          "required": [
+            "title",
+            "components"
+          ],
+          "title": "Page",
+          "type": "object"
+        }
+      },
+      "properties": {
+        "title": {
+          "title": "Title",
+          "type": "string"
+        },
+        "pages": {
+          "items": {
+            "$ref": "#/$defs/Page"
+          },
+          "title": "Pages",
+          "type": "array"
+        },
+        "theme": {
+          "enum": [
+            "vizro_dark",
+            "vizro_light"
+          ],
+          "title": "Theme",
+          "type": "string"
+        }
+      },
+      "required": [
+        "title",
+        "pages",
+        "theme"
+      ],
+      "title": "Dashboard",
+      "type": "object"
+    }
+    ```
+
+You can thus configure a Vizro dashboard according to a set of constraints that are defined in the schema. The configuration language that you choose is secondary: it can be via Python, but also via JSON or YAML. This is shown in [our showcase of configuration options](../user-guides/dashboard.md#use-dashboard-configuration-options).
 
 === "This JSON..."
     ```json
@@ -114,6 +200,43 @@ You can configure a Vizro dashboard according to a set of constraints that are d
 === "maps to this Dashboard"
     [![Dashboard]][dashboard]
 
+=== "... but would fail here (Dashboard title missing)"
+    ```json
+    {
+      "pages": [
+        {
+          "components": [
+            {
+              "figure": {
+                "_target_": "scatter",
+                "color": "species",
+                "data_frame": "iris",
+                "x": "sepal_length",
+                "y": "petal_width"
+              },
+              "type": "graph"
+            },
+            {
+              "figure": {
+                "_target_": "histogram",
+                "color": "species",
+                "data_frame": "iris",
+                "x": "sepal_width"
+              },
+              "type": "graph"
+            }
+          ],
+          "controls": [
+            {
+              "column": "species",
+              "type": "filter"
+            }
+          ],
+        }
+      ]
+    }
+    ```
+
 !!! note
     The Vizro schema is still incomplete. This means that it does not yet define everything that we consider to be core and supported functionality of Vizro. The most prominent example of an omission is the [`CapturedCallable`][vizro.models.types.CapturedCallable], which are the objects you insert into many models such as `vm.Graph`, `vm.Table` or `vm.Action`, often into the `figure` argument.
 
@@ -137,15 +260,76 @@ You can configure a Vizro dashboard according to a set of constraints that are d
 
 The Vizro framework is powered by [Pydantic](https://docs.pydantic.dev/latest/), which is the most widely used data validation library for Python. Pydantic acts as the glue that connects Vizro's JSON schema to its actual implementation - a React frontend served by a Flask backend, facilitated by Dash.
 
-One core advantage of Pydantic is that it emits a [JSON schema](https://blog.postman.com/what-is-json-schema) so that our models, such as `vm.Page` or `vm.Filter`, can easily be translated into a well-defined JSON schema. Beyond this capability, it also has support for custom validation beyond the functionality of the JSON schema.
+One core advantage of Pydantic is that it [can automatically produce a JSON schema](https://docs.pydantic.dev/latest/concepts/json_schema/) from our models (such as `vm.Page` or `vm.Filter`). Pydantic also supports custom validation beyond the functionality of JSON schema.
 
-In our toy example from above we could define that, in the array of strings, consecutive elements have to have more letters than their predecessor. This is a fairly random example, but it illustrates the power of custom validation for anyone using the Vizro framework. Most of the time when the user "misconfigures", the error message is clear and concise.
+For our [toy example above](#what-is-a-json-schema), instead of defining the JSON schema directly, we could produce it via Pydantic, using the following Python code:
+
+```python
+import json
+import pydantic
+
+
+class Example(pydantic.BaseModel):
+    A: int
+    B: list[str]
+
+
+print(json.dumps(Example.model_json_schema(), indent=2))
+```
+
+The above example shows that Pydantic makes it very easy to produce JSON schemas by using just Python classes and type annotations. The rest is taken care of by Pydantic.
+
+But Pydantic allows us to go beyond the usual constraints that a JSON schema allows. In our [toy example above](#what-is-a-json-schema), with the help of Pydantic, we could define that all string elements in `B` need to start with either `a` or `b`.
+
+```python
+import json
+import pydantic
+
+
+class Example(pydantic.BaseModel):
+    A: int
+    B: list[str]
+
+    @pydantic.field_validator("B")
+    @classmethod
+    def validate_b_strings(cls, v: list[str]) -> list[str]:
+        for string in v:
+            if not string.startswith(("a", "b")):
+                raise ValueError("All strings in B must start with either 'a' or 'b'")
+        return v
+```
+
+This is a fairly random example, but it illustrates the power of custom validation for anyone using the Vizro framework. Most of the time when the user "misconfigures", the error message is clear and concise.
+
+In the toy example, this would have the following consequences:
+
+=== "Providing this JSON config..."
+    ```json
+    {
+      "A": 1,
+      "B": [
+        "a",
+        "b",
+        "c"
+      ]
+    }
+    ```
+
+=== "... would get rejected (`c` doesn't start with `a` or `b`)"
+    ```shell
+    pydantic_core._pydantic_core.ValidationError: 1 validation error for Example
+    B
+      Value error, All strings in B must start with either 'a' or 'b' [type=value_error, input_value=['a', 'b', 'c'], input_type=list]
+        For further information visit https://errors.pydantic.dev/2.10/v/value_error
+    ```
+
+With the help of Pydantic, we were able to define a custom validation beyond the limits of JSON schema.
 
 ## The grammar of dashboards
 
-How does this all come together? One of the long-term goals of Vizro is to define a so-called **grammar of dashboards**. This means that we complete the Vizro schema and define a unified, implementation independent language to configure dashboards.
+How does this all come together? One of the long-term goals of Vizro is to define a so-called **grammar of dashboards**. This means that we complete the Vizro schema and define a unified, implementation independent language to configure dashboards. Other notable "grammars" in the area of visualization are for example [the Plotly Chart schema](https://plotly.com/chart-studio-help/json-chart-schema/) or the [Vega-Lite grammar of interactive graphics](https://vega.github.io/vega-lite/).
 
-At the moment, the Vizro framework serves [Dash](https://github.com/plotly/dash) apps - but this is not a necessary condition. In principle, the mapping of JSON to application/dashboard could be realized in any technology.
+At the moment, the Vizro framework serves [Dash](https://github.com/plotly/dash) apps — but this is not a necessary condition. In principle, the mapping of JSON to app could be realized using other technologies.
 
 ## The role of `extra`
 
