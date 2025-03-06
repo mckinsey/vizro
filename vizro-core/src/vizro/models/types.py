@@ -528,6 +528,13 @@ NavSelectorType = Annotated[
 [`Accordion`][vizro.models.Accordion] or [`NavBar`][vizro.models.NavBar]."""
 
 
+LayoutType = Annotated[
+    Union["Layout", "Flex"],
+    Field(discriminator="type", description="Type of layout to place components on the page."),
+]
+"""Discriminated union. Type of layout to place components on the page: [`Layout`][vizro.models.Layout] or
+[`Flex`][vizro.models.Flex]."""
+
 # Extra type groups used for mypy casting
 FigureWithFilterInteractionType = Union["Graph", "Table", "AgGrid"]
 FigureType = Union["Graph", "Table", "AgGrid", "Figure"]
