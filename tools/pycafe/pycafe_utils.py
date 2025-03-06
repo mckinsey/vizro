@@ -143,9 +143,14 @@ def generate_comparison_links(
     }
 
 
-def create_status_check(commit: Commit, directory: str, url: str, state: str = "success"):
+def create_status_check(
+    commit: Commit,
+    directory: str,
+    url: str,
+    state: str = "success",
+    description: str = "Test out the app live on PyCafe",
+):
     """Create a GitHub status check for a PyCafe link."""
-    description = "Test out the app live on PyCafe"
     context = f"PyCafe Example ({directory})"
     commit.create_status(state=state, target_url=url, description=description, context=context)
     print(f"Status created for {context} with URL: {url}")  # noqa

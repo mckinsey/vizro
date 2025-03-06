@@ -27,9 +27,7 @@ jobs:
         run: |
           hatch run pip install playwright
           hatch run playwright install --with-deps chromium
-      # The next step has several benefits:
-      # - we can verify that the vizro-ai version is compatible with the vizro-core version from the requirements perspective
-      # - we have access to both versions in the test_pycafe_links.py and create_pycafe_links_comments.py scripts
+      # Below: only to have access to vizro-ai latest version in the test_pycafe_links.py and create_pycafe_links_comments.py scripts
       - name: Install vizro-ai in editable mode to check compatibility with vizro-core and get the version
         run: |
           hatch run pip install -e ../vizro-ai
