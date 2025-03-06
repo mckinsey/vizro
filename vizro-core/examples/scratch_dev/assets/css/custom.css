@@ -6,4 +6,10 @@
 /* To specify height of flex-items */
 .flex-item, .flex-item .figure-container, .flex-item .card {
   height: unset;
+  width: unset;
+}
+
+/* To uniformly apply a size to all flex-items */
+#page-flex-wrap-row .flex-item {
+  width: 260px;
 }

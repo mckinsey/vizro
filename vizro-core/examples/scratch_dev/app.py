@@ -10,8 +10,8 @@ from vizro import Vizro
 
 tips = px.data.tips()
 
-page_default = vm.Page(
-    title="No Layout",
+page_one = vm.Page(
+    title="Default",
     components=[
         vm.Card(text="""# Good morning!"""),
         vm.Graph(
@@ -30,7 +30,7 @@ page_default = vm.Page(
     controls=[vm.Filter(column="day")],
 )
 
-page_grid = vm.Page(
+page_two = vm.Page(
     title="Grid",
     layout=vm.Layout(grid=[[0, -1], [1, 2], [3, 3]]),
     components=[
@@ -52,8 +52,61 @@ page_grid = vm.Page(
 )
 
 
-page_flex = vm.Page(
-    title="Flex without card",
+page_three = vm.Page(
+    title="Flex - default",
+    layout=vm.Flex(),
+    components=[vm.Card(text="""# Lorem Ipsum
+    
+    Lorem ipsum dolor sit amet, consectetur adipiscing elit. Aliquam sed elementum ligula, in pharetra velit. 
+    In ultricies est ac mauris vehicula fermentum. Curabitur faucibus elementum lectus, vitae luctus libero fermentum. 
+    Nam ut ipsum tortor. Praesent ut nulla risus. Praesent in dignissim nulla. In quis blandit ipsum. 
+    """) for i in range(6)],
+)
+
+
+page_four = vm.Page(
+    title="Flex - gap",
+    layout=vm.Flex(gap="40px"),
+    components=[
+        vm.Card(text="""
+            # Lorem Ipsum
+
+            Lorem ipsum dolor sit amet, consectetur adipiscing elit. Aliquam sed elementum ligula, in pharetra velit. 
+            In ultricies est ac mauris vehicula fermentum. Curabitur faucibus elementum lectus, vitae luctus libero fermentum. 
+            Nam ut ipsum tortor. Praesent ut nulla risus. Praesent in dignissim nulla. In quis blandit ipsum. 
+        """) for i in range(6)],
+)
+
+page_five = vm.Page(
+    title="Flex - row",
+    layout=vm.Flex(direction="row"),
+    components=[
+        vm.Card(text="""
+            # Lorem Ipsum
+
+            Lorem ipsum dolor sit amet, consectetur adipiscing elit. Aliquam sed elementum ligula, in pharetra velit. 
+            In ultricies est ac mauris vehicula fermentum. Curabitur faucibus elementum lectus, vitae luctus libero fermentum. 
+            Nam ut ipsum tortor. Praesent ut nulla risus. Praesent in dignissim nulla. In quis blandit ipsum. 
+        """) for i in range(6)],
+)
+
+page_six = vm.Page(
+    id="page-flex-wrap-row",
+    title="Flex - row/wrap",
+    layout=vm.Flex(direction="row", wrap=True),
+    components=[
+        vm.Card(text="""
+            # Lorem Ipsum
+
+            Lorem ipsum dolor sit amet, consectetur adipiscing elit. Aliquam sed elementum ligula, in pharetra velit. 
+            In ultricies est ac mauris vehicula fermentum. Curabitur faucibus elementum lectus, vitae luctus libero fermentum. 
+            Nam ut ipsum tortor. Praesent ut nulla risus. Praesent in dignissim nulla. In quis blandit ipsum. 
+        """) for i in range(6)],
+)
+
+
+page_seven = vm.Page(
+    title="Flex - Graphs",
     layout=vm.Flex(),
     components=[
         vm.Graph(
@@ -72,8 +125,8 @@ page_flex = vm.Page(
     controls=[vm.Filter(column="day")],
 )
 
-page_flex_card = vm.Page(
-    title="Flex with card - why?",
+page_eight = vm.Page(
+    title="Flex - Graphs with Card",
     layout=vm.Flex(),
     components=[
         vm.Card(text="""# Good morning!"""),
@@ -93,8 +146,8 @@ page_flex_card = vm.Page(
     controls=[vm.Filter(column="day")],
 )
 
-container_flex = vm.Page(
-    title="Container with flex",
+page_nine = vm.Page(
+    title="Flex - Container",
     components=[
         vm.Container(
             title="Container inside grid with Flex",
@@ -118,8 +171,8 @@ container_flex = vm.Page(
     controls=[vm.Filter(column="day")],
 )
 
-container_flex_card = vm.Page(
-    title="Container with flex and card",
+page_ten = vm.Page(
+    title="Flex - Container with card",
     components=[
         vm.Container(
             title="Container inside grid with Flex with card",
@@ -145,9 +198,11 @@ container_flex_card = vm.Page(
 )
 
 dashboard = vm.Dashboard(
-    pages=[page_default, page_grid, page_flex, page_flex_card, container_flex, container_flex_card],
-    title="Tips Analysis Dashboard",
+    pages=[page_one, page_two, page_three, page_four, page_five, page_six, page_seven, page_eight, page_nine, page_ten],
+    title="Test out Flex/Grid",
 )
+
+
 
 
 if __name__ == "__main__":
