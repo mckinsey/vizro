@@ -1,4 +1,4 @@
-name: PyCafe Playground Link
+name: PyCafe Playground Links
 
 on:
   workflow_run:

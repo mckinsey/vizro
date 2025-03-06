@@ -1,4 +1,4 @@
-name: Build Vizro and Vizro AI whls
+name: Build
 
 on:
   push:
