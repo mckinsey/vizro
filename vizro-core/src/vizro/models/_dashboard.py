@@ -80,7 +80,7 @@ def set_navigation_pages(navigation: Optional[Navigation], info: ValidationInfo)
 
 
 class Dashboard(VizroBaseModel):
-    """Vizro Dashboard to be used within [`Vizro`][vizro._vizro.Vizro.build]. BLA BLA BLA FOOOOO
+    """Vizro Dashboard to be used within [`Vizro`][vizro._vizro.Vizro.build]. BLA BLOOOOO
 
     Args:
         pages (list[Page]): See [`Page`][vizro.models.Page].
