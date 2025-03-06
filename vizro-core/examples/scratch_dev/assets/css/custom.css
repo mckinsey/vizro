@@ -9,7 +9,12 @@
   width: unset;
 }
 
-/* To uniformly apply a size to all flex-items */
+/* To uniformly apply a size to all flex-items - works well with cards */
 #page-flex-wrap-row .flex-item {
   width: 260px;
+}
+
+/* To uniformly apply a size to all flex-items - works nice with graphs*/
+#page-flex-wrap-row-graphs .flex-item {
+  width: 300px;
 }

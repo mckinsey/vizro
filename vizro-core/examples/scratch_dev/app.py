@@ -10,7 +10,7 @@ from vizro import Vizro
 
 tips = px.data.tips()
 
-page_one = vm.Page(
+page1 = vm.Page(
     title="Default",
     components=[
         vm.Card(text="""# Good morning!"""),
@@ -30,7 +30,7 @@ page_one = vm.Page(
     controls=[vm.Filter(column="day")],
 )
 
-page_two = vm.Page(
+page2 = vm.Page(
     title="Grid",
     layout=vm.Layout(grid=[[0, -1], [1, 2], [3, 3]]),
     components=[
@@ -52,19 +52,21 @@ page_two = vm.Page(
 )
 
 
-page_three = vm.Page(
+page3 = vm.Page(
     title="Flex - default",
     layout=vm.Flex(),
-    components=[vm.Card(text="""# Lorem Ipsum
-    
-    Lorem ipsum dolor sit amet, consectetur adipiscing elit. Aliquam sed elementum ligula, in pharetra velit. 
-    In ultricies est ac mauris vehicula fermentum. Curabitur faucibus elementum lectus, vitae luctus libero fermentum. 
-    Nam ut ipsum tortor. Praesent ut nulla risus. Praesent in dignissim nulla. In quis blandit ipsum. 
-    """) for i in range(6)],
+    components=[
+        vm.Card(text="""
+               # Lorem Ipsum
+
+               Lorem ipsum dolor sit amet, consectetur adipiscing elit. Aliquam sed elementum ligula, in pharetra velit. 
+               In ultricies est ac mauris vehicula fermentum. Curabitur faucibus elementum lectus, vitae luctus libero fermentum. 
+               Nam ut ipsum tortor. Praesent ut nulla risus. Praesent in dignissim nulla. In quis blandit ipsum. 
+           """) for i in range(6)],
 )
 
 
-page_four = vm.Page(
+page4 = vm.Page(
     title="Flex - gap",
     layout=vm.Flex(gap="40px"),
     components=[
@@ -77,7 +79,7 @@ page_four = vm.Page(
         """) for i in range(6)],
 )
 
-page_five = vm.Page(
+page5 = vm.Page(
     title="Flex - row",
     layout=vm.Flex(direction="row"),
     components=[
@@ -90,7 +92,7 @@ page_five = vm.Page(
         """) for i in range(6)],
 )
 
-page_six = vm.Page(
+page6 = vm.Page(
     id="page-flex-wrap-row",
     title="Flex - row/wrap",
     layout=vm.Flex(direction="row", wrap=True),
@@ -104,28 +106,34 @@ page_six = vm.Page(
         """) for i in range(6)],
 )
 
-
-page_seven = vm.Page(
-    title="Flex - Graphs",
+page7 = vm.Page(
+    title="Flex - default - graphs",
     layout=vm.Flex(),
-    components=[
-        vm.Graph(
-            title="Where do we get more tips?",
-            figure=px.bar(tips, y="tip", x="day"),
-        ),
-        vm.Graph(
-            title="Is the average driven by a few outliers?",
-            figure=px.violin(tips, y="tip", x="day", color="day", box=True),
-        ),
-        vm.Graph(
-            title="Which group size is more profitable?",
-            figure=px.density_heatmap(tips, x="day", y="size", z="tip", histfunc="avg", text_auto="$.2f"),
-        ),
-    ],
-    controls=[vm.Filter(column="day")],
+    components=[vm.Graph(figure=px.violin(tips, y="tip", x="day", color="day", box=True)) for i in range(6)],
 )
 
-page_eight = vm.Page(
+
+page8 = vm.Page(
+    title="Flex - gap - graphs",
+    layout=vm.Flex(gap="40px"),
+    components=[vm.Graph(figure=px.violin(tips, y="tip", x="day", color="day", box=True)) for i in range(6)],
+)
+
+page9 = vm.Page(
+    title="Flex - row - graphs",
+    layout=vm.Flex(direction="row"),
+    components=[vm.Graph(figure=px.violin(tips, y="tip", x="day", color="day", box=True)) for i in range(6)],
+)
+
+page10 = vm.Page(
+    id="page-flex-wrap-row-graphs",
+    title="Flex - row/wrap - graphs",
+    layout=vm.Flex(direction="row", wrap=True),
+    components=[vm.Graph(figure=px.violin(tips, y="tip", x="day", color="day", box=True)) for i in range(6)],
+)
+
+
+page11 = vm.Page(
     title="Flex - Graphs with Card",
     layout=vm.Flex(),
     components=[
@@ -146,7 +154,7 @@ page_eight = vm.Page(
     controls=[vm.Filter(column="day")],
 )
 
-page_nine = vm.Page(
+page12 = vm.Page(
     title="Flex - Container",
     components=[
         vm.Container(
@@ -171,7 +179,7 @@ page_nine = vm.Page(
     controls=[vm.Filter(column="day")],
 )
 
-page_ten = vm.Page(
+page13 = vm.Page(
     title="Flex - Container with card",
     components=[
         vm.Container(
@@ -198,7 +206,8 @@ page_ten = vm.Page(
 )
 
 dashboard = vm.Dashboard(
-    pages=[page_one, page_two, page_three, page_four, page_five, page_six, page_seven, page_eight, page_nine, page_ten],
+    pages=[page1, page2, page3, page4, page5, page6, page7, page8, page9, page10,
+           page11, page12, page13],
     title="Test out Flex/Grid",
 )
 
