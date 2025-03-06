@@ -32,5 +32,22 @@ def categorical_components_value_path(elem_id, value):
     return f"div[id='{elem_id}'] div:nth-of-type({value}) input"
 
 
+def categorical_components_value_name_path(elem_id, value):
+    return f"div[id='{elem_id}'] div:nth-of-type({value}) label"
+
+
 def kpi_card_path():
     return ".card-body"
+
+
+def select_all_path(elem_id):
+    """Select All option path for checklist and dropdown."""
+    return f"input[id='{elem_id}_select_all']"
+
+
+def dropdown_arrow_path(dropdown_id):
+    return f"div[id='{dropdown_id}'] .Select-arrow"
+
+
+def button_path():
+    return "button[class='btn btn-primary']"

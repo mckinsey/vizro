@@ -10,6 +10,18 @@ from selenium.webdriver.chrome.options import Options as ChromeOptions
 
 # dash_br_driver options hook
 def pytest_setup_options():
+    # if os.getenv("BROWSER") == "chrome":
+    #     print("chrome")
+    #     options = ChromeOptions()
+    #     options.add_experimental_option(
+    #         "prefs",
+    #         {
+    #             "download.default_directory": str(
+    #                 os.path.join(os.getcwd(), "exported_files")
+    #             ),
+    #             "profile.default_content_setting_values.automatic_downloads": 1,
+    #         },
+    #     )
     if os.getenv("BROWSER") == "chrome_mobile":
         options = ChromeOptions()
         options.add_experimental_option("mobileEmulation", {"deviceName": "iPhone 14 Pro Max"})
@@ -17,18 +29,6 @@ def pytest_setup_options():
 
 
 def make_teardown(dash_br):
-    # TODO: move it after the specific test execution (after moving test to vizro repo)
-    # rewriting dynamic_filters_data.yml after each test
-    # data = {
-    #     "max": 7,
-    #     "min": 6,
-    #     "setosa": 5,
-    #     "versicolor": 10,
-    #     "virginica": 15,
-    # }
-    # with open(cnst.DYNAMIC_FILTERS_DATA_CONFIG, "w") as file:
-    #     yaml.dump(data, file)
-
     # checking for browser console errors
     if os.getenv("BROWSER") in ["chrome", "chrome_mobile"]:
         try:

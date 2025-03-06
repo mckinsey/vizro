@@ -1,4 +1,8 @@
+import os
+import time
+
 import e2e.vizro.constants as cnst
+from e2e.vizro.paths import categorical_components_value_name_path, categorical_components_value_path, select_all_path
 from e2e.vizro.waiters import graph_load_waiter
 from hamcrest import any_of, assert_that, contains_string, equal_to
 from selenium.webdriver.support.color import Color
@@ -65,3 +69,39 @@ def check_graph_color(driver, style_background, color):
         equal_to(color),
         reason=f"Graph color is '{graph_color}', but expected color is '{color}'",
     )
+
+
+def check_selected_checklist(driver, checklist_id, select_all_status, options_value_status):
+    # select_all = driver.find_element(select_all_path(elem_id=checklist_id))
+    # assert_that(select_all.is_selected(), equal_to(select_all_status))
+    for option in options_value_status:
+        status = driver.find_element(categorical_components_value_path(elem_id=checklist_id, value=option["value"]))
+        value_name = driver.find_element(
+            categorical_components_value_name_path(elem_id=checklist_id, value=option["value"])
+        )
+        assert_that(status.is_selected(), equal_to(option["status"]))
+        assert_that(value_name.text, equal_to(option["value_name"]))
+
+
+def check_selected_dropdown(
+    driver, dropdown_id, expected_selected_options, expected_unselected_options, all_value=False
+):
+    selected_options = driver.find_elements(f"div[id='{dropdown_id}'] span[class='Select-value-label']")
+    selected_options_list = ["".join(option.text.split()) for option in selected_options]
+    unselected_options = driver.find_elements(f"div[id='{dropdown_id}'] .VirtualizedSelectOption")
+    unselected_options_list = ["".join(option.text.split()) for option in unselected_options]
+    assert_that(selected_options_list, equal_to(expected_selected_options))
+    assert_that(unselected_options_list, equal_to(expected_unselected_options))
+    if all_value:
+        status = driver.find_element(select_all_path(elem_id=dropdown_id))
+        assert_that(status.is_selected(), equal_to(all_value))
+
+
+def check_exported_file_exists(exported_file):
+    time_to_wait = 15
+    time_counter = 0
+    while not os.path.exists(exported_file):
+        time.sleep(0.1)
+        time_counter += 0.1
+        if time_counter > time_to_wait:
+            raise FileNotFoundError(exported_file)

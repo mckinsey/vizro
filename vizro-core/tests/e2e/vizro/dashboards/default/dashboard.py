@@ -3,6 +3,7 @@ from pages.ag_grid_page import ag_grid_page
 from pages.datepicker_page import datepicker_page
 from pages.dynamic_data_page import dynamic_data_page
 from pages.dynamic_filters_pages import dynamic_filters_categorical_page, dynamic_filters_numerical_page
+from pages.export_action_page import export_action_page
 from pages.filter_interactions_page import filter_interactions_page
 from pages.filters_page import filters_page
 from pages.homepage import homepage
@@ -22,6 +23,7 @@ dashboard = vm.Dashboard(
         parameters_page,
         filter_interactions_page,
         kpi_indicators_page,
+        export_action_page,
         datepicker_page,
         ag_grid_page,
         table_page,
@@ -38,6 +40,7 @@ dashboard = vm.Dashboard(
                 cnst.PARAMETERS_PAGE,
                 cnst.FILTER_INTERACTIONS_PAGE,
                 cnst.KPI_INDICATORS_PAGE,
+                cnst.EXPORT_PAGE,
             ],
             cnst.DATEPICKER_ACCORDION: [cnst.DATEPICKER_PAGE],
             cnst.AG_GRID_ACCORDION: [cnst.TABLE_PAGE, cnst.TABLE_INTERACTIONS_PAGE, cnst.TABLE_AG_GRID_PAGE],
