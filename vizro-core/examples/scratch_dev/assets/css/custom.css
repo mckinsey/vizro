@@ -3,7 +3,7 @@
 }
 
 
-/* To specify height of flex-items */
+/* To reset all heights coming from our parent containers */
 .flex-item, .flex-item .figure-container, .flex-item .card {
   height: unset;
   width: unset;
@@ -14,7 +14,12 @@
   width: 260px;
 }
 
-/* To uniformly apply a size to all flex-items - works nice with graphs*/
+/* To uniformly apply a size to all flex-items - works nice with graphs */
 #page-flex-wrap-row-graphs .flex-item {
   width: 300px;
+}
+
+/* Apply width to all KPI Cards*/
+#page-flex-inside-flex .card-kpi {
+  width: 250px;
 }
