@@ -1,4 +1,3 @@
-import numpy as np
 import pytest
 from asserts import assert_component_equal
 from dash import html
@@ -17,7 +16,6 @@ class TestFlexInstantiation:
         assert flex.direction == "column"
         assert flex.gap == GAP_DEFAULT
         assert flex.wrap == False
-
 
     @pytest.mark.parametrize("test_unit", ["0px", "4px", "4rem", "4em", "4%"])
     def test_create_flex_mandatory_and_optional(self, test_unit):
