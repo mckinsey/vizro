@@ -15,7 +15,7 @@ class TestFlexInstantiation:
         assert hasattr(flex, "id")
         assert flex.direction == "column"
         assert flex.gap == GAP_DEFAULT
-        assert flex.wrap == False
+        assert flex.wrap is False
 
     @pytest.mark.parametrize("test_unit", ["0px", "4px", "4rem", "4em", "4%"])
     def test_create_flex_mandatory_and_optional(self, test_unit):
@@ -24,7 +24,7 @@ class TestFlexInstantiation:
         assert hasattr(flex, "id")
         assert flex.direction == "row"
         assert flex.gap == test_unit
-        assert flex.wrap == True
+        assert flex.wrap is True
 
     @pytest.mark.parametrize("test_unit", ["0", "calc(100% - 3px)", "4ex", "4ch", "4vh", "4vw", "4vmin", "4vmax"])
     def test_invalid_unit_size(self, test_unit):
