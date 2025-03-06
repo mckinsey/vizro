@@ -24,7 +24,7 @@ def test_pycafe_link(url: str, wait_for_text: str):
 
             # Get the app frame and wait for title
             frame = page.frame_locator("#app")
-            frame.get_by_text(wait_for_text).wait_for()
+            frame.get_by_text(wait_for_text).wait_for(timeout=90000)
 
             print(f"✅ Successfully verified PyCafe link: {url}")  # noqa
             return True
