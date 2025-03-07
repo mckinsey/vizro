@@ -1,11 +1,11 @@
 .ag-theme-quartz.ag-theme-vizro,
 .ag-theme-quartz-dark.ag-theme-vizro {
   --ag-active-color: var(--stateOverlays-selectedHover);
-  --ag-background-color: var(--right-side-bg);
-  --ag-odd-row-background-color: var(--right-side-bg);
+  --ag-background-color: transparent;
+  --ag-odd-row-background-color: transparent;
   --ag-header-foreground-color: var(--text-secondary);
   --ag-data-color: var(--text-primary);
-  --ag-header-background-color: var(--right-side-bg);
+  --ag-header-background-color: transparent;
   --ag-icon-font-family: aggridquartz;
   --ag-icon-size: 0.875rem;
   --ag-row-height: 48px;

@@ -1,4 +1,4 @@
-name: PyCafe Playground Link
+name: PyCafe Playground Links
 
 on:
   workflow_run:
@@ -27,6 +27,10 @@ jobs:
         run: |
           hatch run pip install playwright
           hatch run playwright install --with-deps chromium
+      # Below: only to have access to vizro-ai latest version in the test_pycafe_links.py and create_pycafe_links_comments.py scripts
+      - name: Install vizro-ai in editable mode to check compatibility with vizro-core and get the version
+        run: |
+          hatch run pip install ../vizro-ai
       - name: Print PR Number
         run: |
           echo "Pull Request Number: ${{ github.event.workflow_run.pull_requests[0].number }}"

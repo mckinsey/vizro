@@ -5,6 +5,7 @@ from datetime import date
 import vizro.models as vm
 import vizro.plotly.express as px
 from vizro import Vizro
+from vizro.tables import dash_data_table
 
 iris = px.data.iris()
 
@@ -55,6 +56,7 @@ vm.Container.add_type("components", vm.Dropdown)
 page_dropdown = vm.Page(
     title="Dropdown",
     components=[
+        vm.Table(figure=dash_data_table(iris)),
         vm.Container(
             title="Dropdown examples",
             components=[

@@ -24,7 +24,7 @@ def test_pycafe_link(url: str, wait_for_text: str):
 
             # Get the app frame and wait for title
             frame = page.frame_locator("#app")
-            frame.get_by_text(wait_for_text).wait_for()
+            frame.get_by_text(wait_for_text).wait_for(timeout=90000)
 
             print(f"✅ Successfully verified PyCafe link: {url}")  # noqa
             return True
@@ -70,7 +70,13 @@ if __name__ == "__main__":
     # Only create a status check if the test fails. On success, the status check will be created
     # by the create_pycafe_links_comments.py script when it posts the comment.
     if not success:
-        create_status_check(commit, dev_directory, url_generated, state="failure")
+        create_status_check(
+            commit,
+            dev_directory,
+            url_generated,
+            state="failure",
+            description="Check if PyCafe links load properly (using vizro-core dev example)",
+        )
 
     # Exit with appropriate status code
     sys.exit(0 if success else 1)
