@@ -18,7 +18,7 @@ Uncomment the section that is right (remove the HTML comment wrapper).
 -->
 ### Added
 
-- Automatically update dynamic `Filter` and all its targets when a dynamic data `Parameter` is changed. ([#1051](https://github.com/mckinsey/vizro/pull/1051))
+- Update relevant dynamic `Filters` and their associated targets whenever a dynamic data `Parameter` is modified. ([#1051](https://github.com/mckinsey/vizro/pull/1051))
 
 <!--
 ### Changed

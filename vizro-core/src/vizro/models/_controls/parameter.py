@@ -120,11 +120,11 @@ class Parameter(VizroBaseModel):
             # Extend parameter targets with dynamic filters linked to the same figure.
             # Also, include dynamic filter targets to ensure new filter options are correctly calculated
             # and filter targets are updated when filter values change.
-            for figure_target in self.targets:
-                figure_target_id, figure_target_argument = figure_target.split(".", 1)
-                if figure_target_argument.startswith("data_frame"):
+            for figure in self.targets:
+                figure_id, figure_arg = figure.split(".", 1)
+                if figure_arg.startswith("data_frame"):
                     for filter in page_dynamic_filters:
-                        if figure_target_id in filter.targets:
+                        if figure_id in filter.targets:
                             filter_targets.add(filter.id)
                             filter_targets |= set(filter.targets)
 
