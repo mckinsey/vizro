@@ -4,7 +4,7 @@ This guide shows you how to use cards and buttons to visualize and interact with
 
 ## Cards
 
-The [`Card`][vizro.models.Card] is a flexible and extensible component that enables customization via markdown text. Refer to any online guide for [basic markdown usage](https://markdown-guide.readthedocs.io/en/latest/).
+The [`Card`][vizro.models.Card] is a flexible and extensible component that enables customization via markdown text. Refer to any online guide for [basic markdown usage](https://markdown-guide.readthedocs.io/en/latest/). It is based on the underlying Dash component [`dbc.Card`](https://dash-bootstrap-components.opensource.faculty.ai/docs/components/card/).
 
 You can add a [`Card`][vizro.models.Card] to your dashboard by inserting the [`Card`][vizro.models.Card] into the `components` argument of the [`Page`][vizro.models.Page].
 
@@ -525,7 +525,7 @@ For detailed examples on how to create a KPI card, refer to the [figure user gui
 
 ### The `extra` argument
 
-Currently the `Card` is based on the underlying Dash component [`dbc.Card`](https://dash-bootstrap-components.opensource.faculty.ai/docs/components/card/). Using the `extra` argument you can pass additional arguments to `dbc.Card` in order to alter it beyond the chosen defaults.
+The `Card` is based on the underlying Dash component [`dbc.Card`](https://dash-bootstrap-components.opensource.faculty.ai/docs/components/card/). Using the `extra` argument you can pass additional arguments to `dbc.Card` in order to alter it beyond the chosen defaults.
 
 !!! note
     Using `extra` is a quick and flexible way to alter a component beyond what Vizro offers. However, [it is not a part of the official Vizro schema](../explanation/schema.md#what-is-the-vizro-json-schema) and the underlying implementation details may change. If you want to guarantee that your apps keep running, we recommend that you pin your Vizro version.
@@ -569,7 +569,7 @@ An example use would be to limit the `Card` height to only take as much space as
 
 ## Buttons
 
-The Button component is commonly used for interactive dashboard interactions such as form submissions, navigation links, and other action triggers.
+The Button component is commonly used for interactive dashboard interactions such as form submissions, navigation links, and other action triggers. It is based on the underlying Dash component [`dbc.Button`](https://dash-bootstrap-components.opensource.faculty.ai/docs/components/button/).
 
 To add a [`Button`][vizro.models.Button], insert it into the `components` argument of the [`Page`][vizro.models.Page].
 
@@ -719,7 +719,7 @@ vm.Page.add_type("controls", vm.Button)
 
 ### The `extra` argument
 
-Currently the `Button` is based on the underlying Dash component [`dbc.Button`](https://dash-bootstrap-components.opensource.faculty.ai/docs/components/button/). Using the `extra` argument you can pass additional arguments to `dbc.Button` in order to alter it beyond the chosen defaults.
+The `Button` is based on the underlying Dash component [`dbc.Button`](https://dash-bootstrap-components.opensource.faculty.ai/docs/components/button/). Using the `extra` argument you can pass additional arguments to `dbc.Button` in order to alter it beyond the chosen defaults.
 
 !!! warning
     Using `extra` is a quick and flexible way to alter a component beyond what Vizro offers. However, [it is not a part of the official Vizro schema](../explanation/schema.md#what-is-the-vizro-json-schema) and the underlying implementation details may change. If you want to guarantee that your apps keep running, we recommend that you pin your Vizro version.

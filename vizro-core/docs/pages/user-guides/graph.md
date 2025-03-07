@@ -2,7 +2,7 @@
 
 This guide shows you how to use graphs to visualize your data in the dashboard.
 
-The [`Graph`][vizro.models.Graph] model is the most used component in many dashboards, allowing you to visualize data in a variety of ways.
+The [`Graph`][vizro.models.Graph] model is the most used component in many dashboards, allowing you to visualize data in a variety of ways. It is based on [`dcc.Graph`](https://dash.plotly.com/dash-core-components/graph).
 
 To add a [`Graph`][vizro.models.Graph] to your page, do the following:
 
