@@ -4,7 +4,6 @@ In cases where the available arguments for the [`dash_ag_grid`][vizro.tables.das
 
 The [`Table`][vizro.models.Table] and the [`AgGrid`][vizro.models.AgGrid] model accept the `figure` argument, where you can enter _any_ [`dash_ag_grid`][vizro.tables.dash_ag_grid] or [`dash_data_table`][vizro.tables.dash_data_table] chart as explained in the [user guide on tables](table.md).
 
-
 !!! note "More examples of AG Grid"
     If you would like to see more than the below examples on what can be done with AG Grid and Dash DataTables, head to the [Dash AG Grid](https://dash.plotly.com/dash-ag-grid) and [Dash DataTable](https://dash.plotly.com/datatable) documentation respectively. Almost anything you see there is possible in Vizro by modifying the examples below.
 
