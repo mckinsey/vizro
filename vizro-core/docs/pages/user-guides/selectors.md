@@ -101,8 +101,8 @@ An example would be to make the [`RadioItem`][vizro.models.RadioItems] display i
                   extra:
                     inline: true
         ```
+
     === "Result"
         [![InlineRadio]][inlineradio]
-        
 
 [inlineradio]: ../../assets/user_guides/selectors/inlineradio.png
