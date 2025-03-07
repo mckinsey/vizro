@@ -8,6 +8,10 @@ To make customizations, you need to:
 1. **Identify the correct CSS selector** for the component you want to style.
 1. **Change the relevant CSS properties** in your CSS file.
 
+!!! note "For quick visual fixes, you may shortcut by using the `extra` argument"
+    If you want to alter the visual appearance of a single component quickly, or if you are not yet comfortable with creating a CSS file, you could opt for an alternative approach. Many of our models have an `extra` argument, that let's you pass arguments to the underlying Dash component directly. Often these components have a `style` or `className` argument that let's you alter the style directly. You can check the [API reference](../API-reference/models.md) of the model in question. An example of this would be to make the [`Button`][vizro.models.Button] [outlined and green](../user-guides/card-button.md#the-extra-argument-1).
+    
+
 ## Introduction to Vizro CSS
 
 For a short introduction to CSS, we recommend reading this article: [Get Started with CSS in 5 Minutes](https://www.freecodecamp.org/news/get-started-with-css-in-5-minutes-e0804813fc3e/).

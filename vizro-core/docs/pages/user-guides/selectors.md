@@ -14,7 +14,7 @@ For more information, refer to the API reference of the selector, or the documen
 - [`Checklist`][vizro.models.Checklist] based on [`dcc.Checklist`](https://dash.plotly.com/dash-core-components/checklist)
 - [`RadioItems`][vizro.models.RadioItems] based on [`dcc.RadioItems`](https://dash.plotly.com/dash-core-components/radioitems)
 
-!!! note
+!!! note "Configuring `options`"
     When configuring the `options` of the categorical selectors, you can either give:
 
     - a list of values `options = ['Value A', 'Value B', 'Value C']`
@@ -29,7 +29,7 @@ For more information, refer to the API reference of the selector, or the documen
 - [`Slider`][vizro.models.Slider] based on [`dcc.Slider`](https://dash.plotly.com/dash-core-components/slider)
 - [`RangeSlider`][vizro.models.RangeSlider] based on [`dcc.RangeSlider`](https://dash.plotly.com/dash-core-components/rangeslider)
 
-!!! note
+!!! note "Using float values and `step` with an integer value"
     When configuring the [`Slider`][vizro.models.Slider] and the [`RangeSlider`][vizro.models.RangeSlider] with float values, and using `step` with an integer value, you may notice unexpected behavior, such as the drag value being outside its indicated marks. To our knowledge, this is a current bug in the underlying [`dcc.Slider`](https://dash.plotly.com/dash-core-components/slider) and [`dcc.RangeSlider`](https://dash.plotly.com/dash-core-components/rangeslider) component, which you can circumvent by adapting the `step` size as needed.
 
 ## Temporal selectors

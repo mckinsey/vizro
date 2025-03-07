@@ -78,7 +78,7 @@ The [`Graph`][vizro.models.Graph] accepts a `title`, `header` and `footer` argum
 - **header**: Accepts markdown text, ideal for extra descriptions, subtitles, or detailed data insights.
 - **footer**: Accepts markdown text, commonly used for citing data sources, providing information on the last update, or adding disclaimers.
 
-!!! note
+!!! note "Use `Graph.title` instead of the Plotly Express chart title"
     Although you can directly give a `title` to the Plotly Express chart, we recommend using `Graph.title` for proper alignment with other components on the screen.
 
 !!! example "Formatted Graph"
