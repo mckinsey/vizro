@@ -120,7 +120,9 @@ class BaseChartPlan(BaseModel):
 
     chart_type: str = Field(
         description="""
-        Describes the chart type that best reflects the user request.
+        Describes the chart type that:
+        1. Best reflects the user request.
+        2. Is feasible to implement given the data schema.
         """,
     )
     imports: list[str] = Field(
@@ -234,8 +236,8 @@ class ChartPlanFactory:
         description = f"""
         {chart_plan.model_fields["chart_type"].description}
 
-        The examples list shows commonly available chart types in our visual vocabulary.
-        While these are recommended options, you may choose a different chart type if it better suits the user's needs
+        The examples list shows commonly available chart types.
+        If none of them match the user's request, you may choose a different chart type if it better suits the user's needs.
         """
         
         
