@@ -48,4 +48,61 @@ Currently each selector is based on an underlying Dash component as mentioned in
 !!! warning
     Using `extra` is a quick and flexible way to alter a component beyond what Vizro offers. However, [it is not a part of the official Vizro schema](../explanation/schema.md#what-is-the-vizro-json-schema) and we do not consider it a breaking change if we alter/remove it. This is unlikely to happen any time soon.
 
-For examples of how to use the `extra` argument, we provided a comprehensive example in the documentation of [`Card`](card-button.md#the-extra-argument).
+An example would be to make the [`RadioItem`][vizro.models.RadioItems] display inline instead of stacked vertically. For this you can use `extra={"inline": True}` argument:
+
+!!! example "Radio Items with inline layout"
+    === "app.py"
+        ```{.python pycafe-link hl_lines="19"}
+        import vizro.models as vm
+        import vizro.plotly.express as px
+        from vizro import Vizro
+
+        iris = px.data.iris()
+
+        page = vm.Page(
+            title="Inline Radio Items",
+            components=[
+                vm.Graph(
+                    figure=px.scatter(iris, x="sepal_length", y="sepal_width")
+                ),
+            ],
+            controls=[
+                vm.Filter(
+                    column="species",
+                    selector=vm.RadioItems(
+                        title="Select Species",
+                        extra={"inline": True}
+                    )
+                )
+            ]
+        )
+
+        dashboard = vm.Dashboard(pages=[page])
+        Vizro().build(dashboard).run()
+        ```
+
+    === "app.yaml"
+        ```{.yaml hl_lines="16 17"}
+        pages:
+          - title: Inline Radio Items
+            components:
+              - type: graph
+                figure:
+                  _target_: scatter
+                  data_frame: iris
+                  x: sepal_length
+                  y: sepal_width
+            controls:
+              - column: species
+                type: filter
+                selector:
+                  type: radio_items
+                  title: Select Species
+                  extra:
+                    inline: true
+        ```
+    === "Result"
+        [![InlineRadio]][inlineradio]
+        
+
+[inlineradio]: ../../assets/user_guides/selectors/inlineradio.png

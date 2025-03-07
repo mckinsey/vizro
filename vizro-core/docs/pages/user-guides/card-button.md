@@ -534,7 +534,7 @@ An example use would be to limit the `Card` height to only take as much space as
 
 !!! example "Card with limited height"
     === "app.py"
-        ```{.python pycafe-link}
+        ```{.python pycafe-link hl_lines="9"}
         import vizro.models as vm
         from vizro import Vizro
 
@@ -553,7 +553,7 @@ An example use would be to limit the `Card` height to only take as much space as
         ```
 
     === "app.yaml"
-        ```yaml
+        ```{.yaml hl_lines="6-8"}
         pages:
           - title: Card with limited height
             components:
@@ -728,7 +728,7 @@ An example use would be to create an outlined success button. For this, you can 
 
 !!! example "Button with custom style"
     === "app.py"
-        ```{.python pycafe-link}
+        ```{.python pycafe-link hl_lines="9"}
         import vizro.models as vm
         from vizro import Vizro
 
@@ -747,7 +747,7 @@ An example use would be to create an outlined success button. For this, you can 
         ```
 
     === "app.yaml"
-        ```yaml
+        ```{.yaml hl_lines="6-8"}
         pages:
           - title: Button with custom style
             components:
