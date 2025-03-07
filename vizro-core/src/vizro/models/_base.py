@@ -214,7 +214,7 @@ class VizroBaseModel(BaseModel):
         str,
         AfterValidator(set_id),
         Field(
-            default="",  # TODO[MS]: potentially change to None
+            default="",
             description="ID to identify model. Must be unique throughout the whole dashboard."
             "When no ID is chosen, ID will be automatically generated.",
             validate_default=True,

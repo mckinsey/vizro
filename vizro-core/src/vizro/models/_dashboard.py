@@ -44,7 +44,7 @@ def _all_hidden(components: list[Component]):
     return all(
         component is None
         or getattr(component, "hidden", False)
-        or "d-none" in getattr(component, "className", "d-inline")  # TODO: this may be important
+        or "d-none" in getattr(component, "className", "d-inline")
         for component in components
     )
 
