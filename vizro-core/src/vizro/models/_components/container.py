@@ -28,10 +28,10 @@ class Container(VizroBaseModel):
         variant (Literal["plain", "filled", "outlined"]): Predefined styles to choose from. Options are `plain`,
             `filled` or `outlined`. Defaults to `plain`.
         extra (Optional[dict[str, Any]]): Extra keyword arguments that are passed to `dbc.Container` and overwrite any
-            defaults chosen by the Vizro team. This may have unexpected behavior if the defaults change.
+            defaults chosen by the Vizro team. This may have unexpected behavior.
             Visit the [dbc documentation](https://dash-bootstrap-components.opensource.faculty.ai/docs/components/layout/)
-            to see all available arguments. [Not part of the official Vizro schema](../explanation/schema.md) and may
-            not be supported in the future. Defaults to `{}`.
+            to see all available arguments. [Not part of the official Vizro schema](../explanation/schema.md) and the
+            underlying component may change in the future. Defaults to `{}`.
 
 
     """
@@ -55,10 +55,10 @@ class Container(VizroBaseModel):
             Field(
                 default={},
                 description="""Extra keyword arguments that are passed to `dbc.Container` and overwrite any
-            defaults chosen by the Vizro team. This may have unexpected behavior if the defaults change.
+            defaults chosen by the Vizro team. This may have unexpected behavior.
             Visit the [dbc documentation](https://dash-bootstrap-components.opensource.faculty.ai/docs/components/layout/)
-            to see all available arguments. [Not part of the official Vizro schema](../explanation/schema.md) and may
-            not be supported in the future. Defaults to `{}`.""",
+            to see all available arguments. [Not part of the official Vizro schema](../explanation/schema.md) and the
+            underlying component may change in the future. Defaults to `{}`.""",
             ),
         ]
     ]

@@ -45,8 +45,8 @@ For more information, refer to the API reference of the selector, or the documen
 
 Currently each selector is based on an underlying Dash component as mentioned in the sections above. Using the `extra` argument you can pass additional arguments to the underlying object in order to alter it beyond the chosen defaults. The available arguments can be found in the documentation of each underlying component that was linked in the respective sections above.
 
-!!! warning
-    Using `extra` is a quick and flexible way to alter a component beyond what Vizro offers. However, [it is not a part of the official Vizro schema](../explanation/schema.md#what-is-the-vizro-json-schema) and we do not consider it a breaking change if we alter/remove it. This is unlikely to happen any time soon.
+!!! note
+    Using `extra` is a quick and flexible way to alter a component beyond what Vizro offers. However, [it is not a part of the official Vizro schema](../explanation/schema.md#what-is-the-vizro-json-schema) and the underlying implementation details may change. If you want to guarantee that your apps keep running, we recommend that you pin your Vizro version.
 
 An example would be to make the [`RadioItem`][vizro.models.RadioItems] display inline instead of stacked vertically. For this you can use `extra={"inline": True}` argument:
 

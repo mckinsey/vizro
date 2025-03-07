@@ -527,8 +527,8 @@ For detailed examples on how to create a KPI card, refer to the [figure user gui
 
 Currently the `Card` is based on the underlying Dash component [`dbc.Card`](https://dash-bootstrap-components.opensource.faculty.ai/docs/components/card/). Using the `extra` argument you can pass additional arguments to `dbc.Card` in order to alter it beyond the chosen defaults.
 
-!!! warning
-    Using `extra` is a quick and flexible way to alter a component beyond what Vizro offers. However, [it is not a part of the official Vizro schema](../explanation/schema.md#what-is-the-vizro-json-schema) and we do not consider it a breaking change if we alter/remove it. This is unlikely to happen any time soon.
+!!! note
+    Using `extra` is a quick and flexible way to alter a component beyond what Vizro offers. However, [it is not a part of the official Vizro schema](../explanation/schema.md#what-is-the-vizro-json-schema) and the underlying implementation details may change. If you want to guarantee that your apps keep running, we recommend that you pin your Vizro version.
 
 An example use would be to limit the `Card` height to only take as much space as the content, and not to take up all the available height (default). For this, you can use `extra={"style": {"height": "unset"}}`. This would be a shortcut to using custom CSS in the assets folder as explained in [our guide on CSS](../user-guides/custom-css.md).
 
@@ -722,7 +722,7 @@ vm.Page.add_type("controls", vm.Button)
 Currently the `Button` is based on the underlying Dash component [`dbc.Button`](https://dash-bootstrap-components.opensource.faculty.ai/docs/components/button/). Using the `extra` argument you can pass additional arguments to `dbc.Button` in order to alter it beyond the chosen defaults.
 
 !!! warning
-    Using `extra` is a quick and flexible way to alter a component beyond what Vizro offers. However, [it is not a part of the official Vizro schema](../explanation/schema.md#what-is-the-vizro-json-schema) and we do not consider it a breaking change if we alter/remove it. This is unlikely to happen any time soon.
+    Using `extra` is a quick and flexible way to alter a component beyond what Vizro offers. However, [it is not a part of the official Vizro schema](../explanation/schema.md#what-is-the-vizro-json-schema) and the underlying implementation details may change. If you want to guarantee that your apps keep running, we recommend that you pin your Vizro version.
 
 An example use would be to create an outlined success button. For this, you can use `extra={"color": "success", "outline": True}`. This would be a shortcut to using custom CSS in the assets folder as explained in [our guide on CSS](../user-guides/custom-css.md).
 

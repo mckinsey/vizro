@@ -27,10 +27,10 @@ class DatePicker(VizroBaseModel):
         range (bool): Boolean flag for displaying range picker. Defaults to `True`.
         actions (list[Action]): See [`Action`][vizro.models.Action]. Defaults to `[]`.
         extra (Optional[dict[str, Any]]): Extra keyword arguments that are passed to `dmc.DatePickerInput` and overwrite
-            any defaults chosen by the Vizro team. This may have unexpected behavior if the defaults change.
+            any defaults chosen by the Vizro team. This may have unexpected behavior.
             Visit the [dmc documentation](https://www.dash-mantine-components.com/components/datepicker)
-            to see all available arguments. [Not part of the official Vizro schema](../explanation/schema.md) and may
-            not be supported in the future. Defaults to `{}`.
+            to see all available arguments. [Not part of the official Vizro schema](../explanation/schema.md) and the
+            underlying component may change in the future. Defaults to `{}`.
 
     """
 
@@ -64,10 +64,10 @@ class DatePicker(VizroBaseModel):
             Field(
                 default={},
                 description="""Extra keyword arguments that are passed to `dmc.DatePickerInput` and overwrite
-            any defaults chosen by the Vizro team. This may have unexpected behavior if the defaults change.
+            any defaults chosen by the Vizro team. This may have unexpected behavior.
             Visit the [dmc documentation](https://www.dash-mantine-components.com/components/datepicker)
-            to see all available arguments. [Not part of the official Vizro schema](../explanation/schema.md) and may
-            not be supported in the future. Defaults to `{}`.""",
+            to see all available arguments. [Not part of the official Vizro schema](../explanation/schema.md) and the
+            underlying component may change in the future. Defaults to `{}`.""",
             ),
         ]
     ]
