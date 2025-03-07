@@ -18,6 +18,9 @@ Both approaches have similar base features, and are configurable in similar ways
 
 The Vizro [`AgGrid`][vizro.models.AgGrid] model is based on the [Dash AG Grid](https://dash.plotly.com/dash-ag-grid), which is in turn based the original [Javascript implementation](https://www.ag-grid.com/).
 
+!!! note "More examples of AG Grid"
+    If you would like to see more examples on what can be done with AG Grid, head to the [Dash AG Grid](https://dash.plotly.com/dash-ag-grid) documentation. Almost anything you see there is possible in Vizro by [creating a custom AG Grid callable](custom-tables.md).
+
 ### Basic usage
 
 To add a [`AgGrid`][vizro.models.AgGrid] to your page, do the following:
@@ -315,6 +318,9 @@ Similar to AG Grid, the [Dash DataTable](https://dash.plotly.com/datatable) is a
 In general, we recommend using [AG Grid](#ag-grid) for tables unless you have a particular reason to prefer Dash DataTable.
 
 The Vizro [`Table`][vizro.models.Table] model is based on the [Dash DataTable](https://dash.plotly.com/datatable).
+
+!!! note "More examples of Dash DataTable"
+    If you would like to see more examples on what can be done with Dash DataTable, head to the [Dash DataTable](https://dash.plotly.com/datatable) documentation. Almost anything you see there is possible in Vizro by [creating a custom Dash DataTable callable](custom-tables.md).
 
 ### Basic usage
 

@@ -130,3 +130,35 @@ class TestBuildMethod:
             ],
         )
         assert_component_equal(date_picker, expected_datepicker)
+
+    def test_datepicker_build_with_extra(self):
+        """Test that extra arguments correctly override defaults."""
+        date_picker = vm.DatePicker(
+            id="datepicker_id",
+            min="2023-01-01",
+            max="2023-07-01",
+            value="2023-01-05",
+            range=False,
+            title="Test title",
+            extra={"clearable": True, "placeholder": "Select a date"},
+        ).build()
+
+        expected_datepicker = html.Div(
+            [
+                dbc.Label("Test title", html_for="datepicker_id"),
+                dmc.DatePickerInput(
+                    id="datepicker_id",
+                    minDate="2023-01-01",
+                    value="2023-01-05",
+                    maxDate="2023-07-01",
+                    persistence=True,
+                    persistence_type="session",
+                    type="default",
+                    allowSingleDateInRange=True,
+                    withCellSpacing=False,
+                    clearable=True,
+                    placeholder="Select a date",
+                ),
+            ],
+        )
+        assert_component_equal(date_picker, expected_datepicker)

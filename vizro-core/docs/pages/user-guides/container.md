@@ -2,7 +2,7 @@
 
 This guide shows you how to use containers to group your components into sections and subsections within the page.
 
-A [Container][vizro.models.Container] complements a [Page][vizro.models.Page], and both models share nearly identical arguments. While `Page.layout` provides a method for structuring the overall page layout, a `Container` offers more detailed control within a particular section of the page.
+A [Container][vizro.models.Container] complements a [Page][vizro.models.Page], and both models share nearly identical arguments. While `Page.layout` provides a method for structuring the overall page layout, a `Container` offers more detailed control within a particular section of the page. The `Container` is based on the underlying Dash component [`dbc.Container`](https://dash-bootstrap-components.opensource.faculty.ai/docs/components/layout/).
 
 Unlike `Page`, the `Container` includes a `variant` argument. This enables you to choose a style for your container to visually distinguish it from the rest of the page content. Additional functionality will soon be added to the Container, including controls specific to it, which will further enhance the management of related components.
 
@@ -237,6 +237,15 @@ To make the `Container` stand out as a distinct section in your dashboard, you c
         [![StyleContainer]][stylecontainer]
 
 If you want to style your `Container` beyond the styling options available inside `variant`, please refer to our user guide on [overwriting CSS for selected components](custom-css.md#overwrite-css-for-selected-components).
+
+## The `extra` argument
+
+The `Container` is based on the underlying Dash component [`dbc.Container`](https://dash-bootstrap-components.opensource.faculty.ai/docs/components/layout/). Using the `extra` argument you can pass additional arguments to `dbc.Container` in order to alter it beyond the chosen defaults.
+
+!!! note
+    Using `extra` is a quick and flexible way to alter a component beyond what Vizro offers. However, [it is not a part of the official Vizro schema](../explanation/schema.md#what-is-the-vizro-json-schema) and the underlying implementation details may change. If you want to guarantee that your apps keep running, we recommend that you pin your Vizro version.
+
+For examples of how to use the `extra` argument, see an example in the documentation of [`Card`](card-button.md#the-extra-argument).
 
 [container]: ../../assets/user_guides/components/containers.png
 [stylecontainer]: ../../assets/user_guides/components/container-styled.png

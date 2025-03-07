@@ -1,10 +1,11 @@
 from __future__ import annotations
 
-from typing import TYPE_CHECKING, Annotated, Literal, Optional, cast
+from typing import TYPE_CHECKING, Annotated, Any, Literal, Optional, cast
 
 import dash_bootstrap_components as dbc
 from dash import html
 from pydantic import AfterValidator, BeforeValidator, Field, conlist
+from pydantic.json_schema import SkipJsonSchema
 
 from vizro.models import VizroBaseModel
 from vizro.models._layout import set_layout
@@ -26,6 +27,12 @@ class Container(VizroBaseModel):
         layout (Optional[Layout]): Layout to place components in. Defaults to `None`.
         variant (Literal["plain", "filled", "outlined"]): Predefined styles to choose from. Options are `plain`,
             `filled` or `outlined`. Defaults to `plain`.
+        extra (Optional[dict[str, Any]]): Extra keyword arguments that are passed to `dbc.Container` and overwrite any
+            defaults chosen by the Vizro team. This may have unexpected behavior.
+            Visit the [dbc documentation](https://dash-bootstrap-components.opensource.faculty.ai/docs/components/layout/)
+            to see all available arguments. [Not part of the official Vizro schema](../explanation/schema.md) and the
+            underlying component may change in the future. Defaults to `{}`.
+
 
     """
 
@@ -42,6 +49,19 @@ class Container(VizroBaseModel):
         description="Predefined styles to choose from. Options are `plain`, `filled` or `outlined`."
         "Defaults to `plain`.",
     )
+    extra: SkipJsonSchema[
+        Annotated[
+            dict[str, Any],
+            Field(
+                default={},
+                description="""Extra keyword arguments that are passed to `dbc.Container` and overwrite any
+            defaults chosen by the Vizro team. This may have unexpected behavior.
+            Visit the [dbc documentation](https://dash-bootstrap-components.opensource.faculty.ai/docs/components/layout/)
+            to see all available arguments. [Not part of the official Vizro schema](../explanation/schema.md) and the
+            underlying component may change in the future. Defaults to `{}`.""",
+            ),
+        ]
+    ]
 
     @_log_call
     def build(self):
@@ -51,15 +71,17 @@ class Container(VizroBaseModel):
         # See: https://getbootstrap.com/docs/4.0/utilities
         variants = {"plain": "", "filled": "bg-container p-3", "outlined": "border p-3"}
 
-        return dbc.Container(
-            id=self.id,
-            children=[
+        defaults = {
+            "id": self.id,
+            "children": [
                 html.H3(children=self.title, className="container-title", id=f"{self.id}_title"),
                 self._build_inner_layout(),
             ],
-            fluid=True,
-            className=variants[self.variant],
-        )
+            "fluid": True,
+            "class_name": variants[self.variant],
+        }
+
+        return dbc.Container(**(defaults | self.extra))
 
     def _build_inner_layout(self):
         """Builds inner layout and assigns components to grid position."""

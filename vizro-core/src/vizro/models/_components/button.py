@@ -1,9 +1,10 @@
-from typing import Annotated, Literal
+from typing import Annotated, Any, Literal
 
 import dash_bootstrap_components as dbc
 from dash import get_relative_path
 from pydantic import AfterValidator, Field
 from pydantic.functional_serializers import PlainSerializer
+from pydantic.json_schema import SkipJsonSchema
 
 from vizro.models import Action, VizroBaseModel
 from vizro.models._action._actions_chain import _action_validator_factory
@@ -16,7 +17,13 @@ class Button(VizroBaseModel):
     Args:
         type (Literal["button"]): Defaults to `"button"`.
         text (str): Text to be displayed on button. Defaults to `"Click me!"`.
+        href (str): URL (relative or absolute) to navigate to. Defaults to `""`.
         actions (list[Action]): See [`Action`][vizro.models.Action]. Defaults to `[]`.
+        extra (Optional[dict[str, Any]]): Extra keyword arguments that are passed to `dbc.Button` and overwrite any
+            defaults chosen by the Vizro team. This may have unexpected behavior.
+            Visit the [dbc documentation](https://dash-bootstrap-components.opensource.faculty.ai/docs/components/button/)
+            to see all available arguments. [Not part of the official Vizro schema](../explanation/schema.md) and the
+            underlying component may change in the future. Defaults to `{}`.
 
     """
 
@@ -29,12 +36,27 @@ class Button(VizroBaseModel):
         PlainSerializer(lambda x: x[0].actions),
         Field(default=[]),
     ]
+    extra: SkipJsonSchema[
+        Annotated[
+            dict[str, Any],
+            Field(
+                default={},
+                description="""Extra keyword arguments that are passed to `dbc.Button` and overwrite any
+            defaults chosen by the Vizro team. This may have unexpected behavior.
+            Visit the [dbc documentation](https://dash-bootstrap-components.opensource.faculty.ai/docs/components/button/)
+            to see all available arguments. [Not part of the official Vizro schema](../explanation/schema.md) and the
+            underlying component may change in the future. Defaults to `{}`.""",
+            ),
+        ]
+    ]
 
     @_log_call
     def build(self):
-        return dbc.Button(
-            id=self.id,
-            children=self.text,
-            href=get_relative_path(self.href) if self.href.startswith("/") else self.href,
-            target="_top",
-        )
+        defaults = {
+            "id": self.id,
+            "children": self.text,
+            "href": get_relative_path(self.href) if self.href.startswith("/") else self.href,
+            "target": "_top",
+        }
+
+        return dbc.Button(**(defaults | self.extra))
