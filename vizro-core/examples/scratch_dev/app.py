@@ -13,21 +13,26 @@ page = vm.Page(
     components=[vm.Graph(figure=px.scatter(iris, x="sepal_length", y="petal_width", color="species"))],
     controls=[vm.Filter(column="species")],
 )
+page_2 = vm.Page(
+    title="Test",
+    components=[vm.Graph(figure=px.scatter(iris, x="sepal_length", y="petal_width", color="species"))],
+    controls=[vm.Filter(column="species")],
+)
 
 dashboard = vm.Dashboard(
-    pages=[page],
+    pages=[page, page_2],
     title=vm.Title(
-        title="Test dev dashboard with icon",
-        icon=True,
-        tooltip_text="""
+        text="Test dev dashboard with icon",
+        tooltip="""
 
-            # Tooltip title <h1> tag
+            ### Tooltip title
 
-            ## Lorem ipsum <h2> tag
+            #### Lorem ipsum
 
-            ###### "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum." <h6> tag
+            "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum."
         """,
     ),
+    # title="This is a plain title"
 )
 
 if __name__ == "__main__":

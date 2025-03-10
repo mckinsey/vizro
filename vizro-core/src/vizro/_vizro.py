@@ -119,7 +119,7 @@ class Vizro:
         from vizro.models import Title
 
         if dashboard.title:
-            self.dash.title = dashboard.title.title if isinstance(dashboard.title, Title) else dashboard.title
+            self.dash.title = dashboard.title.text if isinstance(dashboard.title, Title) else dashboard.title
         return self
 
     def run(self, *args, **kwargs):  # if type annotated, mkdocstring stops seeing the class

@@ -28,12 +28,12 @@ import vizro
 from vizro._constants import MODULE_PAGE_404, VIZRO_ASSETS_PATH
 from vizro._themes.template_dashboard_overrides import dashboard_overrides
 from vizro.actions._action_loop._action_loop import ActionLoop
-from vizro.models import Navigation, VizroBaseModel
+from vizro.models import Navigation, Title, VizroBaseModel
 from vizro.models._models_utils import _log_call
 from vizro.models._navigation._navigation_utils import _NavBuildType
 
 if TYPE_CHECKING:
-    from vizro.models import Page, Title
+    from vizro.models import Page
     from vizro.models._page import _PageBuildType
 
 logger = logging.getLogger(__name__)
@@ -87,7 +87,7 @@ class Dashboard(VizroBaseModel):
         theme (Literal["vizro_dark", "vizro_light"]): Layout theme to be applied across dashboard.
             Defaults to `vizro_dark`.
         navigation (Navigation): See [`Navigation`][vizro.models.Navigation]. Defaults to `None`.
-        title (Title): Dashboard title to appear on every page on top left-side. Defaults to `""`.
+        title (Optional[Union[str, Title]]): Dashboard title to appear on every page on top left-side. Defaults to `""`.
 
     """
 
@@ -114,7 +114,7 @@ class Dashboard(VizroBaseModel):
 
         from vizro.models import Title
 
-        dashboard_title = self.title.title if isinstance(self.title, Title) else self.title
+        dashboard_title = self.title.text if isinstance(self.title, Title) else self.title
 
         for order, page in enumerate(self.pages):
             dash.register_page(
@@ -122,7 +122,7 @@ class Dashboard(VizroBaseModel):
                 name=page.title,
                 description=page.description,
                 image=meta_img,
-                title=f"{dashboard_title}: {page.title}",
+                title=f"{dashboard_title}: {page.title}" if self.title else page.title,
                 path=page.path,
                 order=order,
                 layout=partial(self._make_page_layout, page),
@@ -196,15 +196,14 @@ class Dashboard(VizroBaseModel):
 
     def _get_page_divs(self, page: Page) -> _PageDivsType:
         # Identical across pages
-        dashboard_title = self.title.build()
 
-        # dashboard_title = (
-        #     self.title.build()
-        #     if isinstance(self.title, Title)
-        #     else html.H2(id="dashboard-title", children=self.title)
-        #     if self.title
-        #     else html.H2(id="dashboard-title", hidden=True)
-        # )
+        dashboard_title = (
+            self.title.build()
+            if isinstance(self.title, Title)
+            else html.H2(id="dashboard-title", children=self.title)
+            if self.title
+            else html.H2(id="dashboard-title", hidden=True)
+        )
 
         settings = html.Div(
             children=dbc.Switch(

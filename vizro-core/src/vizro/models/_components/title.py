@@ -1,11 +1,15 @@
-from typing import Literal
+from typing import Annotated, Literal
 
 import dash_bootstrap_components as dbc
 from dash import dcc, html
-from pydantic import Field
+from pydantic import AfterValidator, Field
 
 from vizro.models import VizroBaseModel
 from vizro.models._models_utils import _log_call
+
+
+def validate_icon(icon) -> str:
+    return icon.strip().lower().replace(" ", "_")
 
 
 class Title(VizroBaseModel):
@@ -13,37 +17,34 @@ class Title(VizroBaseModel):
 
     Args:
         type (Literal["title"]): Defaults to `"title"`.
-        title (str): Dashboard title to appear on every page on top left-side. Defaults to `""`.
-        icon (bool): Boolean to add information icon to dashboard title. Defaults to `""`.
-        tooltip_text (str): Markdown string to create  text that appears on icon hover.
+        text (str): Dashboard title to appear on every page on top left-side. Defaults to `""`.
+        icon (str): Icon name from [Google Material icons library](https://fonts.google.com/icons).
+            Defaults to `"info"`.
+        tooltip (str): Markdown string to create text that appears on icon hover.
 
     """
 
     type: Literal["title"] = "title"
-    title: str = Field(default="", description="Dashboard title to appear on every page on top left-side.")
-    icon: bool = False
-    tooltip_text: str = Field(description="Markdown string to create card text that appears on icon hover.")
+    text: str = Field(description="Dashboard title to appear on every page on top left-side.")
+    icon: Annotated[
+        str,
+        AfterValidator(validate_icon),
+        Field(default="info", description="Icon name from Google Material icons library."),
+    ]
+    tooltip: str = Field(description="Markdown string to create text that appears on icon hover.")
 
     @_log_call
     def build(self):
-        tooltip_text = dcc.Markdown(self.tooltip_text, dangerously_allow_html=True, id="dashboard-title-markdown")
-
-        dashboard_title = (
-            html.H2(id="dashboard-title-title", children=self.title)
-            if self.title
-            else html.H2(id="dashboard-title-title", hidden=True)
-        )
-        tooltip = dbc.Tooltip(
-            children=tooltip_text,
-            placement="right",
-            target=f"{self.id}-icon",
-        )
-        complete_title = html.Div(
+        return html.Div(
             id="dashboard-title",
             children=[
-                dashboard_title,
-                html.Span("info", className="material-symbols-outlined", id=f"{self.id}-icon"),
-                html.Div(tooltip, style={"whiteSpace": "normal"}),
+                html.H2(id="dashboard-title-text", children=self.text),
+                html.Span(self.icon, className="material-symbols-outlined", id=f"{self.id}-icon"),
+                dbc.Tooltip(
+                    id=f"{self.id}-tooltip",
+                    children=dcc.Markdown(self.tooltip, dangerously_allow_html=True, id="dashboard-title-markdown"),
+                    placement="left",
+                    target=f"{self.id}-icon",
+                ),
             ],
         )
-        return complete_title
