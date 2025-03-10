@@ -48,6 +48,14 @@ def managers_column_only_exists_in_some():
             vm.Graph(
                 id="column_categorical_exists_2", figure=px.scatter(pd.DataFrame({"column_categorical": ["a", "b"]}))
             ),
+            vm.Graph(
+                id="column_temporal_exists_1",
+                figure=px.scatter(pd.DataFrame({"column_temporal": [datetime(2024, 1, 1)]})),
+            ),
+            vm.Graph(
+                id="column_temporal_exists_2",
+                figure=px.scatter(pd.DataFrame({"column_temporal": [datetime(2024, 1, 1), datetime(2024, 1, 2)]})),
+            ),
         ],
     )
     Vizro._pre_build()
@@ -74,6 +82,16 @@ def target_to_data_frame():
         "column_categorical_exists_2": pd.DataFrame(
             {
                 "column_categorical": ["b", "c"],
+            }
+        ),
+        "column_temporal_exists_1": pd.DataFrame(
+            {
+                "column_temporal": [datetime(2024, 1, 1), datetime(2024, 1, 2)],
+            }
+        ),
+        "column_temporal_exists_2": pd.DataFrame(
+            {
+                "column_temporal": [datetime(2024, 1, 2), datetime(2024, 1, 3)],
             }
         ),
     }
@@ -444,8 +462,8 @@ class TestFilterCall:
         )
         filter.pre_build()
 
-        selector_build = filter(target_to_data_frame=target_to_data_frame, current_value=["a", "b"])["test_selector_id"]
-        assert selector_build.options == ["ALL", "a", "b", "c"]
+        selector_build = filter(target_to_data_frame=target_to_data_frame, current_value=["c", "d"])["test_selector_id"]
+        assert selector_build.options == ["ALL", "a", "b", "c", "d"]
 
     def test_filter_call_numerical_valid(self, target_to_data_frame):
         filter = vm.Filter(
@@ -455,9 +473,23 @@ class TestFilterCall:
         )
         filter.pre_build()
 
-        selector_build = filter(target_to_data_frame=target_to_data_frame, current_value=[1, 2])["test_selector_id"]
+        selector_build = filter(target_to_data_frame=target_to_data_frame, current_value=[3, 4])["test_selector_id"]
         assert selector_build.min == 1
-        assert selector_build.max == 3
+        assert selector_build.max == 4
+
+    def test_filter_call_temporal_valid(self, target_to_data_frame):
+        filter = vm.Filter(
+            column="column_temporal",
+            targets=["column_temporal_exists_1", "column_temporal_exists_2"],
+            selector=vm.DatePicker(id="test_selector_id"),
+        )
+        filter.pre_build()
+
+        selector_build = filter(target_to_data_frame=target_to_data_frame, current_value=["2024-01-03", "2024-01-04"])[
+            "test_selector_id"
+        ]
+        assert selector_build.minDate == datetime(2024, 1, 1)
+        assert selector_build.maxDate == datetime(2024, 1, 4)
 
     def test_filter_call_column_is_changed(self, target_to_data_frame):
         filter = vm.Filter(

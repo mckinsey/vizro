@@ -72,6 +72,7 @@ class DatePicker(VizroBaseModel):
             ),
         ]
     ]
+
     _dynamic: bool = PrivateAttr(False)
 
     _input_property: str = PrivateAttr("value")
