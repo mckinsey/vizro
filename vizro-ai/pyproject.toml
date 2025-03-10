@@ -23,7 +23,8 @@ dependencies = [
   "vizro>=0.1.32",
   "langchain_openai",  # Base dependency, ie minimum model working
   "black",
-  "autoflake"
+  "autoflake",
+  "vizro_visual_vocabulary @ file:///Users/lingyi_zhang/vizx/os/vizro/vizro-ai/wheels/vizro_visual_vocabulary-0.0.1-py3-none-any.whl"
 ]
 description = "Vizro-AI is a tool for generating data visualizations"
 dynamic = ["version"]
@@ -81,3 +82,6 @@ src = ["src"]
 "examples/chart_by_vizro_ai.ipynb" = ["T201", "E501"]
 "examples/dashboard_by_vizro_ai.ipynb" = ["T201", "E402", "E501"]
 "examples/goodreads_tutorial/goodreads.ipynb" = ["T201", "E402", "E501", "W291", "F811"]
+
+[tool.hatch.metadata]
+allow-direct-references = true # TODO: remove once we have a proper package

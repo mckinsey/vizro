@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="376px" height="376px" viewBox="0 0 376 376" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+    <!-- Generator: Sketch 52.6 (67491) - http://www.bohemiancoding.com/sketch -->
+    <title>Group 6 Copy 36</title>
+    <desc>Created with Sketch.</desc>
+    <g id="Data-viz-vocabulary" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+        <g id="Details-large-2" transform="translate(-132.000000, -1736.000000)">
+            <g id="Group-6-Copy-36" transform="translate(132.000000, 1736.000000)">
+                <rect id="Rectangle-Copy-3" fill="#001521" x="0" y="0" width="376" height="376"></rect>
+                <g id="Group" transform="translate(48.000000, 90.000000)">
+                    <polygon id="Path-16" fill="#046B99" points="1.21430643e-16 -5.68434189e-14 280 -5.68434189e-14 230 44 194 85 166 132 150 196 124 196 106 132 74 84 50 44"></polygon>
+                    <path d="M192,88.3571429 L166,132 L106,132 L76.6666667,88 L192,88 L192,88.3571429 Z" id="Combined-Shape" fill="#2C5985"></path>
+                    <path d="M230,44 L194,85 L192.212766,88 L76.6666667,88 L74,84 L50,44 L230,44 Z" id="Path-17" fill="#358EAD"></path>
+                    <path d="M0,-5.82645043e-13 L280,-5.82645043e-13 L230,44 L50,44 L0,-5.82645043e-13 Z" id="Combined-Shape" fill="#7EC1CA"></path>
+                </g>
+            </g>
+        </g>
+    </g>
+</svg>

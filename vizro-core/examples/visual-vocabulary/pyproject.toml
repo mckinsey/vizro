@@ -1,0 +1,31 @@
+[build-system]
+build-backend = "hatchling.build"
+requires = ["hatchling"]
+
+[project]
+name = "vizro_visual_vocabulary"
+version = "0.0.1"
+description = "Visual vocabulary of charts implemented in Vizro"
+readme = "README.md"
+requires-python = ">=3.9"
+dependencies = [
+  "vizro>=0.1.32",
+  "plotly==6.0.0",
+  "gunicorn",
+  "autoflake==2.3.1",
+  "black==24.4.2",
+  "isort==5.13.2",
+]
+
+[tool.hatch.build.targets.wheel]
+packages = ["vizro_visual_vocabulary"]
+
+[tool.hatch.envs.default]
+dependencies = [
+  "vizro>=0.1.32",
+  "plotly==6.0.0",
+  "gunicorn",
+  "autoflake==2.3.1",
+  "black==24.4.2",
+  "isort==5.13.2",
+]

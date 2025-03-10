@@ -7,6 +7,10 @@ from typing import Optional, Type
 import pandas as pd
 import vizro
 
+# Import from our packaged vizro_visual_vocabulary instead
+from vizro_visual_vocabulary.utils import _get_code_templates as vv_get_code_templates
+from vizro_visual_vocabulary.utils import create_chart_type_enum as vv_create_chart_type_enum
+
 
 # Dictionary of general best practices for chart creation
 GENERAL_CHART_BEST_PRACTICES = {
@@ -26,99 +30,17 @@ GENERAL_CHART_BEST_PRACTICES = {
 }
 
 def _get_code_templates() -> dict[str, str]:
-    """Get code templates from examples directory in vizro package.
+    """Get code templates using the vizro_visual_vocabulary package.
     
     Returns:
         Dictionary mapping chart types to their example code.
     """
-    code_templates = {}
-    
-    # Try multiple possible locations for examples
-    possible_paths = []
-    
-    try:
-        # 1. First try: Standard repo layout path
-        repo_root = Path(__file__).parent.parent.parent.parent.parent  # Navigate up to repo root
-        possible_paths.append(repo_root / "vizro-core/examples/visual-vocabulary/pages/examples")
-        
-        # 2. Second try: Monorepo layout
-        monorepo_root = Path(__file__).parent.parent.parent.parent.parent.parent
-        possible_paths.append(monorepo_root / "vizro/vizro-core/examples/visual-vocabulary/pages/examples")
-        
-        # 3. Third try: Check for packaged examples if installed via pip
-        if hasattr(vizro, '__file__'):
-            vizro_pkg_path = Path(vizro.__file__).parent
-            possible_paths.append(vizro_pkg_path / "examples/visual-vocabulary/pages/examples")
-        
-        # Debug all paths we're checking
-        print(f"Searching for examples in these locations:")
-        for p in possible_paths:
-            print(f"- {p.absolute()}")
-        
-        # Try each path until we find one that exists
-        examples_path = None
-        for path in possible_paths:
-            if path.exists():
-                examples_path = path
-                print(f"Found examples at: {examples_path}")
-                break
-        
-        if not examples_path:
-            print(f"Warning: Examples directory not found at any of the expected locations")
-            # Fall back to hardcoded chart types
-            return {}
-            
-        # Iterate through all .py files in the directory
-        for file_path in examples_path.glob("*.py"):
-            # Get chart type from filename (without .py extension)
-            chart_type = file_path.stem
-            
-            # Read the file content
-            code_content = file_path.read_text()
-            code_templates[chart_type] = code_content
-            print(f"Loaded template: {chart_type}")
-            
-    except Exception as e:
-        print(f"Warning: Could not load example templates: {e}")
-        return {}
-    
-    return code_templates
+    return vv_get_code_templates()
 
 
 def create_chart_type_enum() -> Type[Enum]:
-    """Create a dynamic Enum from the available chart types."""
-    print("Starting create_chart_type_enum()")
-    templates = _get_code_templates()
-    
-    # Filter out __init__ if present
-    chart_types = [k for k in templates.keys() if k != "__init__"]
-    print(f"After filtering __init__: {len(chart_types)} chart types")
-    
-    if not chart_types:
-        print("Using fallback chart types since no valid templates were found")
-        chart_types = [
-            "scatter", "bar", "line", "pie", "histogram"
-        ]
-    
-    # Create enum via dictionary comprehension
-    enum_dict = {k.upper(): k for k in chart_types}
-    print(f"Created enum_dict with {len(enum_dict)} items")
-    
-    try:
-        # Use functional API to create enum
-        print("About to create Enum")
-        chart_type_enum = Enum('VisualVocabularyChartType', enum_dict)
-        print("Enum created successfully")
-        
-        # Verify the enum is properly populated
-        enum_values = [member.value for member in chart_type_enum]
-        print(f"Created enum with {len(enum_values)} values: {enum_values[:10]}...")
-        
-        return chart_type_enum
-    except Exception as e:
-        print(f"Error creating enum: {e}")
-        # Return a minimal enum as fallback
-        return Enum('VisualVocabularyChartType', {'SCATTER': 'scatter', 'BAR': 'bar'})
+    """Create a dynamic Enum from the available chart types using vizro_visual_vocabulary."""
+    return vv_create_chart_type_enum()
 
 
 def _get_df_info(df: pd.DataFrame, n_sample: int = 5) -> tuple[str, str]:
@@ -148,7 +70,7 @@ def _get_augment_info(chart_type: str, chart_code: str, user_input: str) -> str:
 
     vivivo_best_practices_text = f"""
     Follow a STEP-BY-STEP approach:
-       a. First, understand the current code
+       a. First, understand the current code.
        b. Study the best practice implementation below thoroughly. 
         - Understand what the key operations are and why they are used.
         - Pay close attention to the styling and layout of the chart.

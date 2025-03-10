@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="376px" height="376px" viewBox="0 0 376 376" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+    <!-- Generator: Sketch 52.6 (67491) - http://www.bohemiancoding.com/sketch -->
+    <title>Group 6 Copy 39</title>
+    <desc>Created with Sketch.</desc>
+    <g id="Data-viz-vocabulary" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+        <g id="Details-large-2" transform="translate(-132.000000, -2136.000000)">
+            <g id="Group-6-Copy-39" transform="translate(132.000000, 2136.000000)">
+                <rect id="Rectangle-Copy-3" fill="#001521" x="0" y="0" width="376" height="376"></rect>
+                <g id="Group-75" transform="translate(51.000000, 90.000000)">
+                    <polyline id="Path" stroke="#009FE3" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" points="0 92.2476051 8.39708218 109.49521 17.0619331 83.6238025 26.6002981 126.742815 42.7176657 135.366618 51.2978116 126.742815 59.8779575 144 77.0382493 118.119013 95.845114 83.6238025 111.358833 75 119.938979 85.7797532 130.664161 109.49521 145.736835 144 162.839708 118.119013 180 109.49521"></polyline>
+                    <polygon id="Path" fill-opacity="0.3" fill="#009FE3" points="180 109.833333 197.307001 66.9166667 214.248643 34.7291667 232.001566 25.284903 248.438863 25.284903 274 24 274 127 256.909091 118.416667 239.818182 118.416667 222.36972 118.416667 214.181818 120.5625 205.636364 116.270833 195.051418 116.270833 188.545455 109.833333"></polygon>
+                    <polygon id="Path" fill-opacity="0.3" fill="#009FE3" points="180 110 197.307001 75.5 214.248643 49.625 232.001566 42.0329123 248.438863 42.0329123 274 41 274 107.607057 259.097019 101.518491 248.363636 101.375 233.106479 105.805574 223.179557 105.687718 214.318595 107.91332 198.832457 107.91332 190.681818 107.84375"></polygon>
+                    <path d="M180,109 L197.307001,83.5 L214.248643,64.375 L232.001566,58.7634569 L248.438863,58.7634569 L274,58 L274,83.5 L265.521463,83.5 L254.772727,85.625 L244.090909,81.375 L229.136364,81.375 L218.454545,85.625 L203.5,89.875 L197.090909,98.375 C192.818182,99.6717648 189.969697,101.088431 188.545455,102.625 C187.121212,104.161569 184.272727,106.286569 180,109 Z" id="Path" fill-opacity="0.5" fill="#009FE3"></path>
+                    <path d="M180.5,0 L180.5,196" id="Line" stroke="#45545D" stroke-width="2" stroke-dasharray="4,4"></path>
+                    <path d="M0,97 L274,97" id="Line-5" stroke-opacity="0.55" stroke="#FFFFFF" stroke-width="2"></path>
+                </g>
+            </g>
+        </g>
+    </g>
+</svg>

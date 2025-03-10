@@ -47,7 +47,7 @@ class VizroAI:
 
         """
         self.model = _get_llm_model(model=model)
-        self.components_instances = {} # TODO: This line is not used anywhere?
+        # self.components_instances = {} # TODO: This line is not used anywhere?
         
         self.chart_type_enum = create_chart_type_enum()
         self.chart_type_examples = [member.value for member in self.chart_type_enum]
