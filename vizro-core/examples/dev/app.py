@@ -825,7 +825,7 @@ if __name__ == "__main__":
         ["Made with ", html.Img(src=get_asset_url("logo.svg"), id="banner", alt="Vizro logo"), "vizro"],
         href="https://github.com/mckinsey/vizro",
         target="_blank",
-        className="anchor-container",
+        class_name="anchor-container",
     )
     app.dash.layout.children.append(banner)
     app.run()

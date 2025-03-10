@@ -69,7 +69,7 @@ def kpi_card(
         ]
     )
     body = dbc.CardBody(value_format.format(value=value))
-    return dbc.Card([header, body], className="card-kpi")
+    return dbc.Card([header, body], class_name="card-kpi")
 
 
 @capture("figure")
@@ -161,6 +161,6 @@ def kpi_card_reference(  # noqa: PLR0913
                 reference_format.format(value=value, reference=reference, delta=delta, delta_relative=delta_relative)
             ),
         ],
-        className=footer_class,
+        class_name=footer_class,
     )
-    return dbc.Card([header, body, footer], className="card-kpi")
+    return dbc.Card([header, body, footer], class_name="card-kpi")

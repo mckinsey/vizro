@@ -34,9 +34,7 @@ jobs:
       - name: Print PR Number
         run: |
           echo "Pull Request Number: ${{ github.event.workflow_run.pull_requests[0].number }}"
-          # TODO: Eventually we should probably merge this with the create_pycafe_links_comments.py script
-          # TODO: We should probably also check a link that has vizro-ai and vizro-core in the requirements
-      - name: Test PyCafe links
+      - name: Test if PyCafe links work with PR # Eventually we should merge this with the create_pycafe_links_comments.py script
         run: |
           hatch run python ../tools/pycafe/test_pycafe_links.py --github-token ${{ github.token }} --repo-name ${{ github.repository }} --run-id ${{ github.event.workflow_run.id }} --commit-sha ${{ github.event.workflow_run.head_sha }}
       - name: Create PyCafe links

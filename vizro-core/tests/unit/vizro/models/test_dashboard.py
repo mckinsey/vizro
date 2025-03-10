@@ -249,7 +249,7 @@ class TestDashboardPreBuild:
                 html.Img(),
                 html.H3("This page could not be found."),
                 html.P("Make sure the URL you entered is correct."),
-                dbc.Button(children="Take me home", href="/", className="mt-4"),
+                dbc.Button(children="Take me home", href="/", class_name="mt-4"),
             ],
             className="d-flex flex-column align-items-center justify-content-center min-vh-100",
         )
