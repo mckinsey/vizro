@@ -10,6 +10,7 @@ from urllib.parse import quote, urlencode
 
 import requests
 import vizro
+import vizro_ai
 from github import Auth, Github
 from github.Commit import Commit
 from github.Repository import Repository
@@ -27,6 +28,7 @@ class PyCafeConfig:
     pycafe_url: str = "https://py.cafe"
     vizro_raw_url: str = "https://raw.githubusercontent.com/mckinsey/vizro"
     package_version: str = vizro.__version__
+    vizro_ai_package_version: str = vizro_ai.__version__
 
 
 def create_github_client(config: PyCafeConfig) -> tuple[Repository, Commit]:
@@ -45,6 +47,16 @@ def _get_vizro_requirement(config: PyCafeConfig, use_latest_release: bool = Fals
     return (
         f"{config.pycafe_url}/gh/artifact/mckinsey/vizro/actions/runs/{config.run_id}/"
         f"pip/vizro-{config.package_version}-py3-none-any.whl"
+    )
+
+
+def _get_vizro_ai_requirement(config: PyCafeConfig, use_latest_release: bool = False) -> str:
+    """Get the Vizro AI requirement string for PyCafe."""
+    if use_latest_release:
+        return "vizro-ai"
+    return (
+        f"{config.pycafe_url}/gh/artifact/mckinsey/vizro/actions/runs/{config.run_id}/"
+        f"pip2/vizro_ai-{config.vizro_ai_package_version}-py3-none-any.whl"
     )
 
 
@@ -80,12 +92,18 @@ def generate_link(
     base_url = f"{config.vizro_raw_url}/{config.commit_sha}/{directory_path}"
 
     # Requirements - either use latest release or commit's wheel file
-    requirements = "\n".join(
-        [
-            _get_vizro_requirement(config, use_latest_release),
-            *(extra_requirements or []),
-        ]
-    )
+    requirements = []
+    if directory_path.startswith("vizro-ai/"):
+        # An example in this folder may require the latest vizro-ai and vizro-core releases
+        requirements.extend(
+            [_get_vizro_ai_requirement(config, use_latest_release), _get_vizro_requirement(config, use_latest_release)]
+        )
+    else:
+        # All other examples do not require vizro-ai, but still the latest vizro-core release
+        requirements.extend([_get_vizro_requirement(config, use_latest_release)])
+
+    if extra_requirements:
+        requirements.extend(extra_requirements)
 
     # App file - get current commit, and modify to remove if clause
     app_content = _fetch_app_content(base_url)
@@ -96,7 +114,7 @@ def generate_link(
     # JSON object
     json_object = {
         "code": app_content,
-        "requirements": requirements,
+        "requirements": "\n".join(requirements),
         "files": [
             {
                 "name": file["path"].removeprefix(f"{directory_path}"),
@@ -125,9 +143,14 @@ def generate_comparison_links(
     }
 
 
-def create_status_check(commit: Commit, directory: str, url: str, state: str = "success"):
+def create_status_check(
+    commit: Commit,
+    directory: str,
+    url: str,
+    state: str = "success",
+    description: str = "Test out the app live on PyCafe",
+):
     """Create a GitHub status check for a PyCafe link."""
-    description = "Test out the app live on PyCafe"
     context = f"PyCafe Example ({directory})"
     commit.create_status(state=state, target_url=url, description=description, context=context)
     print(f"Status created for {context} with URL: {url}")  # noqa
@@ -146,7 +169,6 @@ def get_example_directories() -> dict[str, Optional[list[str]]]:
         ],
         "vizro-core/examples/tutorial/": None,
         "vizro-ai/examples/dashboard_ui/": [
-            "vizro-ai>=0.3.0",
             "black",
             "openpyxl",
             "langchain_anthropic",

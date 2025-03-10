@@ -1,11 +1,12 @@
 from datetime import date
-from typing import Annotated, Literal, Optional, Union
+from typing import Annotated, Any, Literal, Optional, Union
 
 import dash_bootstrap_components as dbc
 import dash_mantine_components as dmc
 from dash import html
 from pydantic import AfterValidator, Field, PrivateAttr
 from pydantic.functional_serializers import PlainSerializer
+from pydantic.json_schema import SkipJsonSchema
 
 from vizro.models import Action, VizroBaseModel
 from vizro.models._action._actions_chain import _action_validator_factory
@@ -17,8 +18,6 @@ class DatePicker(VizroBaseModel):
     """Temporal single/range option selector `DatePicker`.
 
     Can be provided to [`Filter`][vizro.models.Filter] or [`Parameter`][vizro.models.Parameter].
-    Based on the underlying [`dmc.DatePicker`](https://www.dash-mantine-components.com/components/datepicker) or
-    [`dmc.DateRangePicker`](https://www.dash-mantine-components.com/components/datepicker#daterangepicker).
 
     Args:
         type (Literal["date_picker"]): Defaults to `"date_picker"`.
@@ -28,6 +27,11 @@ class DatePicker(VizroBaseModel):
         title (str): Title to be displayed. Defaults to `""`.
         range (bool): Boolean flag for displaying range picker. Defaults to `True`.
         actions (list[Action]): See [`Action`][vizro.models.Action]. Defaults to `[]`.
+        extra (Optional[dict[str, Any]]): Extra keyword arguments that are passed to `dmc.DatePickerInput` and overwrite
+            any defaults chosen by the Vizro team. This may have unexpected behavior.
+            Visit the [dmc documentation](https://www.dash-mantine-components.com/components/datepicker)
+            to see all available arguments. [Not part of the official Vizro schema](../explanation/schema.md) and the
+            underlying component may change in the future. Defaults to `{}`.
 
     """
 
@@ -55,6 +59,19 @@ class DatePicker(VizroBaseModel):
         PlainSerializer(lambda x: x[0].actions),
         Field(default=[]),
     ]
+    extra: SkipJsonSchema[
+        Annotated[
+            dict[str, Any],
+            Field(
+                default={},
+                description="""Extra keyword arguments that are passed to `dmc.DatePickerInput` and overwrite
+            any defaults chosen by the Vizro team. This may have unexpected behavior.
+            Visit the [dmc documentation](https://www.dash-mantine-components.com/components/datepicker)
+            to see all available arguments. [Not part of the official Vizro schema](../explanation/schema.md) and the
+            underlying component may change in the future. Defaults to `{}`.""",
+            ),
+        ]
+    ]
     _dynamic: bool = PrivateAttr(False)
 
     _input_property: str = PrivateAttr("value")
@@ -66,23 +83,23 @@ class DatePicker(VizroBaseModel):
         #  - The way how the new Vizro solution is built on top of the Dash persistence bugfix.
         #  - Whether the current value is included in the updated options.
         #  - The way how the validate_options_dict validator and tests are improved.
-        date_picker = dmc.DatePickerInput(
-            id=self.id,
-            minDate=min,
-            value=self.value or ([min, max] if self.range else min),
-            maxDate=max,
-            persistence=True,
-            persistence_type="session",
-            type="range" if self.range else "default",
-            allowSingleDateInRange=True,
+        defaults = {
+            "id": self.id,
+            "minDate": min,
+            "value": self.value or ([min, max] if self.range else min),
+            "maxDate": max,
+            "persistence": True,
+            "persistence_type": "session",
+            "type": "range" if self.range else "default",
+            "allowSingleDateInRange": True,
             # Required for styling to remove gaps between cells
-            withCellSpacing=False,
-        )
+            "withCellSpacing": False,
+        }
 
         return html.Div(
             children=[
                 dbc.Label(children=self.title, html_for=self.id) if self.title else None,
-                date_picker,
+                dmc.DatePickerInput(**(defaults | self.extra)),
             ],
         )
 
