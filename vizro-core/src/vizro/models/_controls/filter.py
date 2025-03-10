@@ -24,7 +24,7 @@ from vizro.models._components.form import (
     Slider,
 )
 from vizro.models._models_utils import _log_call
-from vizro.models.types import FigureType, MultiValueType, SelectorType
+from vizro.models.types import FigureType, MultiValueType, SelectorType, SingleValueType
 
 # Ideally we might define these as NumericalSelectorType = Union[RangeSlider, Slider] etc., but that will not work
 # with isinstance checks.
@@ -294,7 +294,7 @@ class Filter(VizroBaseModel):
     @staticmethod
     def _get_min_max(
         targeted_data: pd.DataFrame,
-        current_value=None,
+        current_value: Optional[Union[SingleValueType, MultiValueType]] = None,
     ) -> Union[tuple[float, float], tuple[pd.Timestamp, pd.Timestamp]]:
         # Try to convert the current value to a datetime object. If it fails (like for Slider), it will be left as is.
         # By default, DatePicker produces inputs in the following format: "YYYY-MM-DD".
@@ -317,7 +317,10 @@ class Filter(VizroBaseModel):
         return _min, _max
 
     @staticmethod
-    def _get_options(targeted_data: pd.DataFrame, current_value=None) -> list[Any]:
+    def _get_options(
+        targeted_data: pd.DataFrame,
+        current_value: Optional[Union[SingleValueType, MultiValueType]] = None,
+    ) -> list[Any]:
         # Try to convert the current value to a datetime object. If it fails (like for Slider), it will be left as is.
         # By default, DatePicker produces inputs in the following format: "YYYY-MM-DD".
         # "ISO8601" is used to enable the conversion process for custom DatePicker components and custom formats.
