@@ -104,4 +104,4 @@ src = ["src"]
 # See: https://github.com/astral-sh/ruff/issues/5243#issuecomment-1860776975
 "**/models/**" = ["RUF012"]
 # Ignore missing docstrings in visual-vocabulary examples to keep them succinct.
-"examples/visual-vocabulary/pages/examples/**" = ["D100", "D103"]
+"examples/visual-vocabulary/vizro_visual_vocabulary/pages/examples/**" = ["D100", "D103"]
