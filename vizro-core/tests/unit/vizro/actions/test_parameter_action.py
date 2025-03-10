@@ -1,4 +1,5 @@
 import pytest
+from asserts import assert_component_equal
 from dash._callback_context import context_value
 from dash._utils import AttributeDict
 
@@ -179,6 +180,7 @@ def ctx_parameter_data_frame_argument(request):
     """Mock dash.ctx that represents parameter applied."""
     targets, first_n_last_n_args = request.param
 
+    dynamic_filters = []
     parameters = [
         CallbackTriggerDict(
             id="first_n_parameter",
@@ -200,8 +202,19 @@ def ctx_parameter_data_frame_argument(request):
             )
         )
 
+    if dynamic_filter_value := first_n_last_n_args.get("dynamic_filter_value"):
+        dynamic_filters.append(
+            CallbackTriggerDict(
+                id="dynamic_filter_id_selector",
+                property="value",
+                value=dynamic_filter_value,
+                str_id="dynamic_filter_id_selector",
+                triggered=False,
+            )
+        )
+
     mock_ctx = {
-        "args_grouping": {"external": {"filters": [], "filter_interaction": [], "parameters": parameters}},
+        "args_grouping": {"external": {"filters": dynamic_filters, "filter_interaction": [], "parameters": parameters}},
         "outputs_list": [
             {"id": {"action_id": "test_action", "target_id": target, "type": "download_dataframe"}, "property": "data"}
             for target in targets
@@ -407,10 +420,7 @@ class TestParameter:
             ((["scatter_chart"], {"first_n": 50}), {"first_n": 50}),
             ((["scatter_chart"], {"first_n": 50, "last_n": 50}), {"first_n": 50, "last_n": 50}),
         ],
-        indirect=[
-            "ctx_parameter_data_frame_argument",
-            "target_scatter_parameter_data_frame_first_n_last_n",
-        ],
+        indirect=True,
     )
     def test_data_frame_parameters_one_target(
         self,
@@ -464,11 +474,7 @@ class TestParameter:
                 {"first_n": 50, "last_n": 50},
             ),
         ],
-        indirect=[
-            "ctx_parameter_data_frame_argument",
-            "target_scatter_parameter_data_frame_first_n_last_n",
-            "target_box_parameter_data_frame_first_n_last_n",
-        ],
+        indirect=True,
     )
     def test_data_frame_parameters_multiple_targets(
         self,
@@ -506,6 +512,63 @@ class TestParameter:
         }
 
         assert result == expected
+
+    @pytest.mark.usefixtures("managers_one_page_two_graphs_with_dynamic_data")
+    @pytest.mark.parametrize(
+        "ctx_parameter_data_frame_argument, "
+        "target_scatter_parameter_data_frame_first_n_last_n, "
+        "target_box_parameter_data_frame_first_n_last_n",
+        [
+            (
+                (["scatter_chart", "box_chart"], {"first_n": 10, "dynamic_filter_value": ["Asia"]}),
+                {"first_n": 10},
+                {"first_n": 10},
+            ),
+        ],
+        indirect=True,
+    )
+    def test_data_frame_parameters_one_target_and_one_filter(
+        self,
+        ctx_parameter_data_frame_argument,
+        target_scatter_parameter_data_frame_first_n_last_n,
+        target_box_parameter_data_frame_first_n_last_n,
+        gapminder_dynamic_first_n_last_n_function,
+    ):
+        data_manager["gapminder_dynamic_first_n_last_n"] = gapminder_dynamic_first_n_last_n_function
+
+        # Creating and adding a dynamic Filter object to the existing Page
+        dynamic_filter = vm.Filter(
+            id="dynamic_filter_id",
+            column="continent",
+            targets=["scatter_chart", "box_chart"],
+            selector=vm.Dropdown(id="dynamic_filter_id_selector"),
+        )
+        model_manager["test_page"].controls.append(dynamic_filter)
+        dynamic_filter.pre_build()
+
+        # Creating and adding a Parameter object (data_frame function argument parametrizing) to the existing Page
+        first_n_parameter = vm.Parameter(
+            id="test_data_frame_parameter",
+            targets=["scatter_chart.data_frame.first_n", "box_chart.data_frame.first_n"],
+            selector=vm.Slider(id="first_n_parameter", min=1, max=10, step=1),
+        )
+        model_manager["test_page"].controls.append(first_n_parameter)
+        first_n_parameter.pre_build()
+
+        # Run action by picking the above added action function and executing it with ()
+        result_figures = model_manager[f"{PARAMETER_ACTION_PREFIX}_test_data_frame_parameter"].function()
+
+        # Result and expected dynamic filter object
+        result_dynamic_filter = result_figures.pop("dynamic_filter_id")
+        expected_dynamic_filter = dynamic_filter.selector(options=["Asia"])
+        assert_component_equal(result_dynamic_filter, expected_dynamic_filter)
+
+        expected_figures = {
+            "scatter_chart": target_scatter_parameter_data_frame_first_n_last_n,
+            "box_chart": target_box_parameter_data_frame_first_n_last_n,
+        }
+
+        assert result_figures == expected_figures
 
     @pytest.mark.usefixtures("managers_one_page_one_graph_with_dict_param_input")
     @pytest.mark.parametrize(

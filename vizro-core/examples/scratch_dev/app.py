@@ -1,106 +1,60 @@
-"""Dev app to try things out."""
-
 import time
-import yaml
 
-import dash
 import pandas as pd
-from flask_caching import Cache
 
 import vizro.models as vm
 import vizro.plotly.express as px
 from vizro import Vizro
 from vizro.managers import data_manager
-from functools import partial
 
 
-SPECIES_COLORS = {"setosa": "#00b4ff", "versicolor": "#ff9222", "virginica": "#3949ab"}
-BAR_CHART_CONF = dict(x="species", color="species", color_discrete_map=SPECIES_COLORS)
-SCATTER_CHART_CONF = dict(x="sepal_length", y="petal_length", color="species", color_discrete_map=SPECIES_COLORS)
+static_df = pd.DataFrame(
+    {
+        "species": ["artificial_species", "artificial_species", "artificial_species"],
+        "sepal_width": [4, 5, 6],
+        "sepal_length": [4, 5, 6],
+    }
+)
 
 
-def _get_static_iris():
-    static_iris = px.data.iris()
-    static_iris["date_column"] = pd.date_range(start=pd.to_datetime("2024-01-01"), periods=len(static_iris), freq="D")
-    return static_iris
+def load_data(number_of_points=150):
+    # Artificial delay to simulate data loading in production
+    print("\nLoading data...\n")
+    time.sleep(1)
+
+    return px.data.iris().head(number_of_points)
 
 
-def load_dynamic_iris_data():
-    time.sleep(0.5)
-
-    df = _get_static_iris()
-
-    with open("data.yaml", "r") as file:
-        data = {
-            "setosa": 0,
-            "versicolor": 0,
-            "virginica": 0,
-            "min": 0,
-            "max": 10,
-            "date_min": "2024-01-01",
-            "date_max": "2024-05-29",
-        }
-        data.update(yaml.safe_load(file) or {})
-
-    date_min = pd.to_datetime(data["date_min"])
-    date_max = pd.to_datetime(data["date_max"])
-    df = df[df["date_column"].between(date_min, date_max, inclusive="both")]
-
-    return df
-
-
-data_manager["static_iris"] = _get_static_iris()
-data_manager["dynamic_iris"] = load_dynamic_iris_data
-
+data_manager["dynamic_df"] = load_data
 
 page_1 = vm.Page(
-    title="Dynamic vs Static filter",
+    title="Update dynamic filter from DFP",
     components=[
         vm.Graph(
-            id="dynamic_graph",
-            title="Dynamic Graph",
-            figure=px.bar(data_frame="dynamic_iris", **BAR_CHART_CONF),
+            id="dynamic_graph_1",
+            figure=px.scatter(data_frame="dynamic_df", x="sepal_width", y="sepal_length", color="species"),
         ),
         vm.Graph(
-            id="static_graph",
-            title="Static Graph",
-            figure=px.scatter(data_frame="static_iris", **SCATTER_CHART_CONF),
+            figure=px.scatter(data_frame=static_df, x="sepal_width", y="sepal_length", color="species"),
         ),
     ],
     controls=[
-        # Dynamic Single
-        vm.Filter(
-            column="date_column",
-            targets=["dynamic_graph"],
-            selector=vm.DatePicker(title="Dynamic Single", range=False),
+        vm.Filter(column="species", selector=vm.RadioItems()),
+        vm.Parameter(
+            targets=["dynamic_graph_1.data_frame.number_of_points"],
+            selector=vm.Slider(
+                min=0,
+                max=150,
+                value=150,
+                title="Number of points",
+                step=10,
+            ),
         ),
-        # Dynamic Multi
-        vm.Filter(
-            column="date_column",
-            targets=["dynamic_graph"],
-            selector=vm.DatePicker(title="Dynamic Multi"),
-        ),
-        # Static Single
-        vm.Filter(
-            column="date_column",
-            targets=["static_graph"],
-            selector=vm.DatePicker(title="Static Single", range=False),
-        ),
-        # Static Multi
-        vm.Filter(
-            column="date_column",
-            targets=["static_graph"],
-            selector=vm.DatePicker(title="Static Multi"),
-        ),
-        # Default one (targets static and dynamic graphs):
-        vm.Filter(column="date_column"),
-        # Other filter types:
-        # vm.Filter(column="species"),
-        # vm.Filter(column="sepal_length"),
     ],
 )
 
 dashboard = vm.Dashboard(pages=[page_1])
+
 
 if __name__ == "__main__":
     Vizro().build(dashboard).run()

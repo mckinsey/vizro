@@ -6,6 +6,7 @@ from pydantic import AfterValidator, Field
 from vizro._constants import PARAMETER_ACTION_PREFIX
 from vizro.actions import _parameter
 from vizro.managers import model_manager
+from vizro.managers._model_manager import ModelID
 from vizro.models import Action, VizroBaseModel
 from vizro.models._components.form import Checklist, DatePicker, Dropdown, RadioItems, RangeSlider, Slider
 from vizro.models._models_utils import _log_call
@@ -104,7 +105,34 @@ class Parameter(VizroBaseModel):
             self.selector.title = ", ".join({target.rsplit(".")[-1] for target in self.targets})
 
     def _set_actions(self):
+        from vizro.models import Filter
+
         if not self.selector.actions:
+            page_dynamic_filters = [
+                filter
+                for filter in cast(
+                    Iterable[Filter], model_manager._get_models(Filter, page=model_manager._get_model_page(self))
+                )
+                if filter._dynamic
+            ]
+
+            existing_target_ids: set[ModelID] = {cast(ModelID, target.split(".")[0]) for target in self.targets}
+            additional_targets: set[ModelID] = set()
+
+            # Extend parameter targets with dynamic filters linked to the same figure.
+            # Also, include dynamic filter targets to ensure new filter options are correctly calculated
+            # and filter targets are updated when filter values change.
+            for figure in self.targets:
+                figure_id, figure_arg = figure.split(".", 1)
+                if figure_arg.startswith("data_frame"):
+                    for filter in page_dynamic_filters:
+                        if figure_id in filter.targets:
+                            additional_targets.add(cast(ModelID, filter.id))
+                            # Exclude existing targets defined with the "dot" notation to avoid duplicates
+                            additional_targets |= set(filter.targets) - existing_target_ids
+
+            self.targets.extend(list(additional_targets))
+
             self.selector.actions = [
                 Action(id=f"{PARAMETER_ACTION_PREFIX}_{self.id}", function=_parameter(targets=self.targets))
             ]

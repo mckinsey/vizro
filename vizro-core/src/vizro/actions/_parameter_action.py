@@ -22,7 +22,7 @@ def _parameter(targets: list[str], **inputs: dict[str, Any]) -> dict[ModelID, An
         Dict mapping target component ids to modified charts/components e.g. {'my_scatter': Figure({})}
 
     """
-    target_ids: list[ModelID] = [target.split(".")[0] for target in targets]  # type: ignore[misc]
+    target_ids: list[ModelID] = [target.split(".")[0] if "." in target else target for target in targets]  # type: ignore[misc]
 
     return _get_modified_page_figures(
         ctds_filter=ctx.args_grouping["external"]["filters"],

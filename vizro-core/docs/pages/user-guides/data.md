@@ -426,9 +426,6 @@ When Vizro initially builds a filter that depends on parametrized dynamic data l
 - check which data sources contain the specified `column` (unless `targets` is explicitly specified) and
 - find the type of selector to use (unless `selector` is explicitly specified).
 
-!!! note
-    When the value of a dynamic data parameter is changed by a dashboard user, the data underlying a dynamic filter can change. Currently this change affects page components such as `vm.Graph` but does not affect the available values shown in a dynamic filter, which only update on page refresh. This functionality will be coming soon!
-
 [databasic]: ../../assets/user_guides/data/data_pandas_dataframe.png
 [dynamicdata]: ../../assets/user_guides/data/dynamic_data.gif
 [parametrizeddynamicdata]: ../../assets/user_guides/data/parametrized_dynamic_data.gif
