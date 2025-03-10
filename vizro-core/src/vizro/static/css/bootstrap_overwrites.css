@@ -106,16 +106,6 @@ label[for="theme-selector"] {
   margin-bottom: 0;
 }
 
-#dashboard-title-markdown h1,
-#dashboard-title-markdown h2,
-#dashboard-title-markdown h3,
-#dashboard-title-markdown h4,
-#dashboard-title-markdown h5,
-#dashboard-title-markdown h6,
-#dashboard-title-markdown p {
-  color: var(--text-primary-inverted) !important;
-}
-
 .tooltip-inner {
   max-width: 500px !important;
 }
