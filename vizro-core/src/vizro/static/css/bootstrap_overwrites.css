@@ -106,6 +106,10 @@ label[for="theme-selector"] {
   margin-bottom: 0;
 }
 
+.tooltip-inner {
+  max-width: 500px !important;
+}
+
 .container-fluid {
   display: flex;
   flex-direction: column;

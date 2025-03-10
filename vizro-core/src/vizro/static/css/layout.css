@@ -61,6 +61,7 @@
 
 #page-header:not(:empty) {
   border-bottom: 1px solid var(--border-subtleAlpha01);
+  gap: 4px;
 }
 
 #page-components {
@@ -127,8 +128,21 @@
 }
 
 #dashboard-title,
+#dashboard-title-text,
 #page-title {
+  display: flex;
+  gap: 4px;
   margin: 0;
+  width: 100%;
+}
+
+#dashboard-title .material-symbols-outlined {
+  align-content: center;
+  font-size: 20px;
+}
+
+#dashboard-title .material-symbols-outlined:hover {
+  color: var(--text-primaryHover);
 }
 
 #logo,
@@ -156,6 +170,7 @@
   flex-direction: row;
   gap: 8px;
   height: 100%;
+  width: 100%;
 }
 
 #collapse-icon.material-symbols-outlined {
@@ -227,4 +242,15 @@
 /* Hide Loading... text on loading page */
 ._dash-loading {
   display: none;
+}
+
+
+#dashboard-title-markdown h1,
+#dashboard-title-markdown h2,
+#dashboard-title-markdown h3,
+#dashboard-title-markdown h4,
+#dashboard-title-markdown h5,
+#dashboard-title-markdown h6,
+#dashboard-title-markdown p {
+  color: var(--text-primary-inverted) !important;
 }
