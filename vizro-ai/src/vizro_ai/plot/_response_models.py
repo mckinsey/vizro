@@ -231,8 +231,17 @@ class ChartPlanFactory:
         validate_code: bool = True,
         chart_type_examples: Optional[list[str]] = None,
     ) -> type[BaseChartPlan]:
-        """Creates a chart plan model with additional validation."""
-        # Use provided examples or fallback to defaults
+        """Creates a chart plan model with additional enrichments.
+
+        Args:
+            data_frame: DataFrame to use for validation.
+            chart_plan: Chart plan model to run extended validation against. Defaults to ChartPlan.
+            validate_code: Whether to validate the code.
+            chart_type_examples: List of chart type examples.
+
+        Returns:
+            Chart plan model with additional enrichments.
+        """
         examples = chart_type_examples or []
         description = f"""
         {chart_plan.model_fields["chart_type"].description}
@@ -242,15 +251,12 @@ class ChartPlanFactory:
         you may choose a different chart type if it better suits the user's needs.
         """
 
-        # Create field with examples but keep original description
         chart_type_field = Field(description=description, examples=examples)
 
-        # Set up validators
         validators = {}
         if validate_code:
             validators = {"validator1": field_validator("chart_code")(_test_execute_chart_code(data_frame))}
 
-        # Create and return the dynamic model
         return create_model(
             "ChartPlanDynamic",
             __base__=chart_plan,

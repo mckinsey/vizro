@@ -23,20 +23,6 @@ GENERAL_CHART_BEST_PRACTICES = {
 }
 
 
-# def _get_code_templates() -> dict[str, str]:
-#     """Get code templates using the vizro_visual_vocabulary package.
-
-#     Returns:
-#         Dictionary mapping chart types to their example code.
-#     """
-#     return vv_get_code_templates()
-
-
-# def create_chart_type_enum() -> type[Enum]:
-#     """Create a dynamic Enum from the available chart types using vizro_visual_vocabulary."""
-#     return vv_create_chart_type_enum()
-
-
 def _get_df_info(df: pd.DataFrame, n_sample: int = 5) -> tuple[str, str]:
     """Get the dataframe schema and head info as string."""
     formatted_pairs = [f"{col_name}: {dtype}" for col_name, dtype in df.dtypes.items()]
