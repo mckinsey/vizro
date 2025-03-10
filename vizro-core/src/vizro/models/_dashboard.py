@@ -329,7 +329,7 @@ class Dashboard(VizroBaseModel):
                 html.Img(src=f"data:image/svg+xml;base64,{error_404_svg}"),
                 html.H3("This page could not be found."),
                 html.P("Make sure the URL you entered is correct."),
-                dbc.Button(children="Take me home", href=get_relative_path("/"), className="mt-4"),
+                dbc.Button(children="Take me home", href=get_relative_path("/"), class_name="mt-4"),
             ],
             className="d-flex flex-column align-items-center justify-content-center min-vh-100",
         )

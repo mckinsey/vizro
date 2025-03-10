@@ -35,7 +35,7 @@ class Alert(VizroBaseModel):
                     children=[html.P(self.text)],
                     duration=self.duration,
                     is_open=self.is_open,
-                    className="alert",
+                    class_name="alert",
                 )
             ],
         )

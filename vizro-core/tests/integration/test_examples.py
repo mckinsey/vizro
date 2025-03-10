@@ -54,6 +54,7 @@ examples_path = Path(__file__).parents[2] / "examples"
         (examples_path / "scratch_dev", "yaml_version"),
         (examples_path / "dev", ""),
         (examples_path / "dev", "yaml_version"),
+        (examples_path / "tutorial", ""),
     ],
     ids=str,
 )
