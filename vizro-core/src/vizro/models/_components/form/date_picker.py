@@ -11,6 +11,7 @@ from pydantic.json_schema import SkipJsonSchema
 from vizro.models import Action, VizroBaseModel
 from vizro.models._action._actions_chain import _action_validator_factory
 from vizro.models._components.form._form_utils import validate_date_picker_range, validate_max, validate_range_value
+from vizro.models._models_utils import _log_call
 
 
 class DatePicker(VizroBaseModel):
@@ -42,7 +43,7 @@ class DatePicker(VizroBaseModel):
     value: Annotated[
         Optional[Union[list[date], date]],
         # TODO[MS]: check here and similar if the early exit clause in below validator or similar is
-        # necessary given we don't validate on default
+        #  necessary given we don't validate on default
         AfterValidator(validate_range_value),
         Field(default=None, description="Default date/dates for date picker."),
     ]
@@ -72,16 +73,22 @@ class DatePicker(VizroBaseModel):
         ]
     ]
 
+    _dynamic: bool = PrivateAttr(False)
+
     _input_property: str = PrivateAttr("value")
 
-    def build(self):
-        init_value = self.value or ([self.min, self.max] if self.range else self.min)  # type: ignore[list-item]
-
+    def __call__(self, min, max, current_value=None):
+        # TODO: Refactor value calculation logic after the Dash persistence bug is fixed and "Select All" PR is merged.
+        #  The underlying component's value calculation will need to account for:
+        #  - Changes introduced by Pydantic V2.
+        #  - The way how the new Vizro solution is built on top of the Dash persistence bugfix.
+        #  - Whether the current value is included in the updated options.
+        #  - The way how the validate_options_dict validator and tests are improved.
         defaults = {
             "id": self.id,
-            "minDate": self.min,
-            "value": init_value,
-            "maxDate": self.max,
+            "minDate": min,
+            "value": self.value or ([min, max] if self.range else min),
+            "maxDate": max,
             "persistence": True,
             "persistence_type": "session",
             "type": "range" if self.range else "default",
@@ -96,3 +103,13 @@ class DatePicker(VizroBaseModel):
                 dmc.DatePickerInput(**(defaults | self.extra)),
             ],
         )
+
+    def _build_dynamic_placeholder(self):
+        if not self.value:
+            self.value = [self.min, self.max] if self.range else self.min  # type: ignore[list-item]
+
+        return self.__call__(self.min, self.max)
+
+    @_log_call
+    def build(self):
+        return self._build_dynamic_placeholder() if self._dynamic else self.__call__(self.min, self.max)
