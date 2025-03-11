@@ -5,7 +5,7 @@ import logging
 import re
 from collections.abc import Collection, Iterable, Mapping
 from pprint import pformat
-from typing import Annotated, Any, NewType, TypedDict, Union, cast
+from typing import Annotated, Any, NewType, TypedDict, Union, cast, Callable
 
 from dash import Input, Output, State, callback, html
 from dash.development.base_component import Component
@@ -57,10 +57,9 @@ class Action(VizroBaseModel):
     # vm.Action(function=export_data(...)) work. It's done as a forward ref to avoid circular imports and resolved with
     # Action.model_rebuild() later.
     function: Annotated[
-        SkipJsonSchema[Union[CapturedCallable, export_data, filter_interaction]],
+        SkipJsonSchema[Union[Callable, CapturedCallable, export_data, filter_interaction]],
         Field(json_schema_extra={"mode": "action", "import_path": "vizro.actions"}, description="Action function."),
     ]
-    # This is a legacy field and will be deprecated. It must only be used when _legacy = True.
     inputs: list[Annotated[str, StringConstraints(pattern="^[^.]+[.][^.]+$")]] = Field(
         [],
         description="Inputs in the form `<component_id>.<property>` passed to the action function.",
@@ -73,22 +72,11 @@ class Action(VizroBaseModel):
     @property
     def _legacy(self) -> bool:
         # This is only relevant for custom actions, not built in. All built in ones are always legacy = False.
-        # TODO NOW: take out debugging print and put back early returns
-        if "inputs" in self.model_fields_set:
-            legacy = True
-        else:
-            # If all supplied arguments look like states `<component_id>.<property>` then assume it's a new type of action.
-            # For the case that there's no arguments and no inputs, this gives legacy=False.
-            legacy = not all(re.fullmatch("[^.]+[.][^.]+", arg_val) for arg_val in self.function._arguments.values())
-        print(f"{self.function} {legacy=}")
-        return legacy
+        # TODO: Put in deprecation warning.
+        return isinstance(self.function, CapturedCallable)
 
-    _validate_function = field_validator("function", mode="before")(validate_captured_callable)
-
-    @property
-    def _function_(self) -> CapturedCallable:
-        # TODO NOW COMMENT
-        return self.function
+    # TODO NOW: figure out how to put this back. Also think about how YAML configuration will work.
+    # _validate_function = field_validator("function", mode="before")(validate_captured_callable)
 
     @property
     def dash_components(self):
@@ -104,6 +92,16 @@ class Action(VizroBaseModel):
 
         from vizro.models import Filter, Parameter
 
+        # TODO NOW OR SOON: allow self.inputs to be mapping
+        # TODO NOW: consider applying default values - not sure if this matters, probably not worth enabling,
+        #  but do it if it would match class
+        # has not yet been bound
+        if isinstance(self.inputs, list):
+            arguments = inspect.signature(self.function).bind_partial(*self.inputs).arguments
+        else:
+            arguments = inspect.signature(self.function).bind_partial(**self.inputs).arguments
+        parameters = inspect.signature(self.function).parameters
+
         # TODO NOW: consider what else could be added, especially trigger.
         builtin_args = {
             "controls": {
@@ -116,19 +114,15 @@ class Action(VizroBaseModel):
         # Fetch all runtime arguments, both user-specified and built in ones. User specified arguments take precedence
         # over built in reserved arguments. Static arguments are excluded
         runtime_args = {}
-        # TODO NOW: look again at captured callable for how to handle _function etc. Maybe if used wrapt it would be
-        #  nicer?
-        # TODO NOW: check below statemtn and test overriding works as expected
-        # The signature parameters don't include self and hence all static arguments are excluded.
-        for arg_name in inspect.signature(self._function_._function).parameters:
-            # If the argument name is a builtin one and hasn't already been bound then take it from the built ins.
-            # Otherwise, interpret the value given as a state.
-            if arg_name in builtin_args and arg_name not in self._function_._arguments:
-                runtime_args[arg_name] = builtin_args[arg_name]
-            else:
+
+        for arg_name in parameters:
+            if arg_name in arguments:
                 # TODO NOW: add some validation so this hits an error somewhere before this if can't do split. Bear
                 #  in mind that in future it should work with just component name with no "."
-                runtime_args[arg_name] = State(*self._function_[arg_name].split("."))
+                runtime_args[arg_name] = State(*arguments[arg_name].split("."))
+            elif arg_name in builtin_args:
+                runtime_args[arg_name] = builtin_args[arg_name]
+            # TODO NOW: what to do in else? Raise error?
 
         return runtime_args
 
@@ -213,19 +207,17 @@ class Action(VizroBaseModel):
         outputs: Union[dict[str, Output], list[Output], Output, None],
     ) -> Any:
         # TODO NOW: check how this works.
-        logger.debug("===== Running action with id %s, function %s =====", self.id, self._function_._function.__name__)
+        name = self.function._function.__name__ if self._legacy else self.function
+        logger.debug("===== Running action with id %s, function %s =====", self.id, name)
         if logger.isEnabledFor(logging.DEBUG):
             logger.debug("Action inputs:\n%s", pformat(inputs, depth=3, width=200))
             logger.debug("Action outputs:\n%s", pformat(outputs, width=200))
 
         if self._legacy:
             # Inputs must be list[str].
-            return_value = self._function_(*inputs)
+            return_value = self.function(*inputs)
         else:
-            # TODO NOW: check this:
-            # even if user supplies positional arguments (if remains to be possible), captured callable will handle
-            # it to bind to kwargs
-            return_value = self._function_(**inputs)
+            return_value = self.function(**inputs)
 
         # Delegate all handling of the return_value and mapping to appropriate outputs to Dash - we don't modify
         # return_value to reshape it in any way. All we do is do some error checking to raise clearer error messages.
@@ -266,6 +258,7 @@ class Action(VizroBaseModel):
             Div containing a list of required components (e.g. dcc.Download) for the Action model
 
         """
+        # TODO NOW: could just become helper functions
         external_callback_inputs = self._inputs_
         external_callback_outputs = self._outputs_
         action_components = [] if self._legacy else self.dash_components
@@ -286,10 +279,11 @@ class Action(VizroBaseModel):
         if external_callback_outputs:
             callback_outputs["external"] = external_callback_outputs
 
+        name = self.function._function.__name__ if self._legacy else self.function
         logger.debug(
             "===== Building callback for Action with id %s, function %s =====",
             self.id,
-            self._function_._function.__name__,
+            name,
         )
         if logger.isEnabledFor(logging.DEBUG):
             logger.debug("Callback inputs:\n%s", pformat(callback_inputs["external"], width=200))
@@ -314,16 +308,7 @@ class AbstractAction(VizroBaseModel):
 
     # TODO NOW COMMENT: Check schema and make sure these don't appear, comment on importance of this.
 
-    @property
-    def _function_(self) -> CapturedCallable:
-        # Capture just runtime arguments that aren't reserved. Static argument go through self and built in runtime
-        # arguments are not known upfront. Hence look at arguments that are model fields and explicitly in the
-        # function signature. This also excludes fields like id that have been inherited from VizroBaseModel.
-        arg_names = set(self.model_fields) & set(inspect.signature(self.function).parameters)
-        captured_callable = capture("action")(self.function)
-        return captured_callable(**{arg_name: getattr(self, arg_name) for arg_name in arg_names})
-
-    # TODO NOW: work out if should be @abstractmethod. Or maybe use decorator instead of function/_function_ relationship here.
+    # TODO NOW: work out if should be @abstractmethod.
     # TODO NOW: make keyword args only? What are actual limitations here? Don't worry much about it.
     def function(self, *args, **kwargs):
         """Function that must be defined by concrete action.
@@ -335,6 +320,11 @@ class AbstractAction(VizroBaseModel):
           - built in runtime arguments: not model fields, explicitly in function signature. Uses Dash State
         """
         raise NotImplementedError
+
+    @property
+    def inputs(self) -> dict[str, IdProperty]:
+        parameters = inspect.signature(self.function).parameters
+        return {arg_name: getattr(self, arg_name) for arg_name in self.model_fields if arg_name in parameters}
 
     @property
     def outputs(self) -> dict[str, IdProperty]:

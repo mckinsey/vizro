@@ -21,8 +21,8 @@ page_1 = vm.Page(
                 color="continent",
                 custom_data=["continent"],
             ),
-            actions=[filter_interaction(targets=["scatter_relation_2007"])],
-            # actions=[vm.Action(function=filter_interaction(targets=["scatter_relation_2007"]))],  # TODO NOW CHECK
+            # \actions=[filter_interaction(targets=["scatter_relation_2007"])],
+            actions=[vm.Action(function=filter_interaction(targets=["scatter_relation_2007"]))],  # TODO NOW CHECK
         ),
         vm.Graph(
             id="scatter_relation_2007",
@@ -37,8 +37,8 @@ page_1 = vm.Page(
         vm.Button(
             id="button",
             text="Export data to CSV",
-            actions=[export_data(targets=["scatter_relation_2007"], runtime_arg="button.n_clicks")],
-            # actions=[vm.Action(function=export_data(targets=["scatter_relation_2007"], runtime_arg="button.n_clicks"))],
+            # actions=[export_data(targets=["scatter_relation_2007"], runtime_arg="button.n_clicks")],
+            actions=[vm.Action(function=export_data(targets=["scatter_relation_2007"], runtime_arg="button.n_clicks"))],
             # TODO NOW CHECK
         ),
         vm.Button(
@@ -64,20 +64,20 @@ page_1 = vm.Page(
 @capture("action")
 # To test legacy=True
 # def my_custom_action(points_data, controls=None):
-def my_custom_action(points_data, controls):
+def my_custom_action(t, points_data, controls=None):
     """Custom action."""
     clicked_point = points_data["points"][0]
     x, y = clicked_point["x"], clicked_point["y"]
     species = clicked_point["customdata"][0]
-    card_1_text = f"Clicked point has sepal length {x}, petal width {y}"
-    card_2_text = f"Controls are `{controls}`"
+    card_1_text = f"Clicked point has sepal length {x}, petal width {y}. {t=}"
+    card_2_text = f"Controls are `{controls}`. {t=}"
     return card_1_text, card_2_text
 
 
 # @capture("action")
 # def my_custom_action():
 #     """Custom action."""
-#     card_1_text = card_2_text = datetime.datetime.now().strftime("%I:%M%p on %B %d, %Y")
+#     card_1_text = card_2_text = str(datetime.datetime.now().time())
 #     return card_1_text, card_2_text
 
 
@@ -100,12 +100,13 @@ page_2 = vm.Page(
             figure=px.scatter(df, x="sepal_length", y="petal_width", color="species", custom_data=["species"]),
             actions=[
                 vm.Action(
-                    function=my_custom_action("scatter_chart.clickData"),
+                    # function=my_custom_action,
+                    # inputs=["scatter_chart.clickData"],
                     # TODO NOW CHECK: make sure user-specified argument continues to take precedence
                     # function=my_custom_action("scatter_chart.clickData", controls="my_card_1.children"),
                     # TODO NOW CHECK: test to make sure this old way continues to work
-                    # function=my_custom_action(),
-                    # inputs=["scatter_chart.clickData"],
+                    function=my_custom_action(t=4),
+                    inputs=["scatter_chart.clickData"],
                     outputs=["my_card_1.children", "my_card_2.children"],
                 ),
             ],
