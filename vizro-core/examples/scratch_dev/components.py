@@ -93,4 +93,3 @@ class CollapsibleContainer(vm.Container):
             fluid=True,
             className="bg-container",
         )
-    
