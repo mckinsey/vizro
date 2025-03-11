@@ -54,7 +54,7 @@ class export_data(AbstractAction):
         """
         # TODO: controls is not currently used but instead taken out of the Dash context. This
         # will change in future once the structure of controls has been worked out and we know how to pass ids through.
-        # TODO NOW: figure out how to make this change, find old GH issues discussing it.
+        # See https://github.com/mckinsey/vizro/pull/880
         # TODO NOW: move the setting of targets to validator. Reused in outputs and components
         # TODO NOW: test this runtime argument
         # print(f"{runtime_arg=}")

@@ -25,7 +25,8 @@ IdProperty = NewType("IdProperty", str)
 
 
 # TODO NOW: check actual structure of this. Does it use IdProperty?
-# TODO FUTURE: improve structure. Needs pattern mathcing?
+# TODO: improve this structure. See https://github.com/mckinsey/vizro/pull/880.
+# TODO NOW: change to _controls if not public yet?
 class Controls(TypedDict):
     filters: list[Any]
     parameters: list[Any]

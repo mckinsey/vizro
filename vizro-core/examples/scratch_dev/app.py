@@ -22,8 +22,7 @@ page_1 = vm.Page(
                 custom_data=["continent"],
             ),
             actions=[filter_interaction(targets=["scatter_relation_2007"])],
-            # actions=[vm.Action(function=filter_interaction(targets=["scatter_relation_2007"]))], # TODO NOW: make
-            # this work. Or don't bother because it's going to go in future anyway.
+            # actions=[vm.Action(function=filter_interaction(targets=["scatter_relation_2007"]))],  # TODO NOW CHECK
         ),
         vm.Graph(
             id="scatter_relation_2007",
@@ -38,9 +37,9 @@ page_1 = vm.Page(
         vm.Button(
             id="button",
             text="Export data to CSV",
-            # actions=[export_data(targets=["scatter_relation_2007"], runtime_arg="button.n_clicks")],
-            actions=[vm.Action(function=export_data(targets=["scatter_relation_2007"], runtime_arg="button.n_clicks"))],
-            # TODO NOW: make this work
+            actions=[export_data(targets=["scatter_relation_2007"], runtime_arg="button.n_clicks")],
+            # actions=[vm.Action(function=export_data(targets=["scatter_relation_2007"], runtime_arg="button.n_clicks"))],
+            # TODO NOW CHECK
         ),
         vm.Button(
             id="button2",
@@ -49,7 +48,7 @@ page_1 = vm.Page(
                 export_data(targets=["scatter_relation_2007"], file_format="xlsx", runtime_arg="button2.n_clicks")
             ],
             # actions=[vm.Action(function=export_data(targets=["scatter_relation_2007"], file_format="xlsx"))],
-            # TODO NOW: make this work
+            # TODO NOW CHECK
         ),
     ],
     controls=[
@@ -102,9 +101,9 @@ page_2 = vm.Page(
             actions=[
                 vm.Action(
                     function=my_custom_action("scatter_chart.clickData"),
-                    # TODO NOW: make sure user-specified argument continues to take precedence
+                    # TODO NOW CHECK: make sure user-specified argument continues to take precedence
                     # function=my_custom_action("scatter_chart.clickData", controls="my_card_1.children"),
-                    # TODO NOW: test to make sure this old way continues to work
+                    # TODO NOW CHECK: test to make sure this old way continues to work
                     # function=my_custom_action(),
                     # inputs=["scatter_chart.clickData"],
                     outputs=["my_card_1.children", "my_card_2.children"],

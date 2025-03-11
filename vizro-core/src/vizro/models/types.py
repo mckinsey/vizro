@@ -444,7 +444,7 @@ class capture:
         elif self._mode == "action":
             # The "normal" case where we just capture the function call.
             @functools.wraps(func)
-            def wrapped(*args, **kwargs):
+            def wrapped(*args, **kwargs) -> CapturedCallable:
                 # Note this is basically the same as partial(func, *args, **kwargs)
                 captured_callable: CapturedCallable = CapturedCallable(func, *args, **kwargs)
                 captured_callable._mode = self._mode
@@ -455,7 +455,7 @@ class capture:
         elif self._mode in ["table", "ag_grid", "figure"]:
 
             @functools.wraps(func)
-            def wrapped(*args, **kwargs):
+            def wrapped(*args, **kwargs) -> CapturedCallable:
                 if "data_frame" not in inspect.signature(func).parameters:
                     raise ValueError(f"{func.__name__} must have data_frame argument to use capture('table').")
 
