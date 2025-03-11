@@ -32,6 +32,10 @@ def check_captured_callable_model(value):
     )
 
 
+def validate_icon(icon) -> str:
+    return icon.strip().lower().replace(" ", "_")
+
+
 REPLACEMENT_STRINGS = {
     # "substring to match a larger general module string": "string to replace with"
     # dot required so that in the case where no replacement is used, we do not

@@ -58,7 +58,7 @@ _PageDivsType = TypedDict(
     {
         "dashboard-title": html.Div,
         "settings": html.Div,
-        "page-title": html.Div,
+        "page-title": html.H2,
         "nav-bar": dbc.Navbar,
         "nav-panel": dbc.Nav,
         "logo": html.Div,

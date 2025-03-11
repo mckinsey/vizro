@@ -5,11 +5,7 @@ from dash import dcc, html
 from pydantic import AfterValidator, Field
 
 from vizro.models import VizroBaseModel
-from vizro.models._models_utils import _log_call
-
-
-def validate_icon(icon) -> str:
-    return icon.strip().lower().replace(" ", "_")
+from vizro.models._models_utils import _log_call, validate_icon
 
 
 class Title(VizroBaseModel):
@@ -17,7 +13,7 @@ class Title(VizroBaseModel):
 
     Args:
         type (Literal["title"]): Defaults to `"title"`.
-        text (str): Dashboard title to appear on every page on top left-side. Defaults to `""`.
+        text (str): Dashboard title to appear on every page on top left-side.
         icon (str): Icon name from [Google Material icons library](https://fonts.google.com/icons).
             Defaults to `"info"`.
         tooltip (str): Markdown string to create text that appears on icon hover.
