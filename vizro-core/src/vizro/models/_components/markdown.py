@@ -33,7 +33,7 @@ class Markdown(VizroBaseModel):
         defaults = {
             "id": self.id,
             "children": self.text,
-            "dangerously_allow_html": False
+            "dangerously_allow_html": False,
         }
 
         return dcc.Markdown(**(defaults | self.extra))
