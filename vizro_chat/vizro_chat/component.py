@@ -308,9 +308,9 @@ class VizroChatComponent(VizroBaseModel):
         self.vizro_app.dash.clientside_callback(
             """
             function(n_clicks, n_submit, value, messages, api_settings) {
-                if (n_clicks === null && n_submit === null) return [messages, "", null];
-                if ((!n_clicks && !n_submit) || !messages) return [messages, value, null];
-                if (!value || !value.trim()) return [messages, "", null];
+                if (n_clicks === null && n_submit === null) return [messages, ""];
+                if ((!n_clicks && !n_submit) || !messages) return [messages, ""];
+                if (!value || !value.trim()) return [messages, ""];
 
                 try {
                     const messages_array = JSON.parse(messages);
@@ -341,7 +341,9 @@ class VizroChatComponent(VizroBaseModel):
 
                     if (chatHistory) {
                         chatHistory.appendChild(tempUserDiv);
-                        chatHistory.scrollTop = chatHistory.scrollHeight;
+                        
+                        // Make sure user message is visible
+                        tempUserDiv.scrollIntoView({ behavior: 'smooth', block: 'start' });
                     }
 
                     let resolvePromise;
@@ -372,7 +374,6 @@ class VizroChatComponent(VizroBaseModel):
 
                         if (chatHistory) {
                             chatHistory.appendChild(tempContainer);
-                            chatHistory.scrollTop = chatHistory.scrollHeight;
                         }
 
                         // Start streaming
@@ -403,14 +404,13 @@ class VizroChatComponent(VizroBaseModel):
                                             tempContainer.parentNode.removeChild(tempContainer);
                                         }
                                         
-                                        // Keep the temporary divs and just update the messages array
+                                        // Update the messages array
                                         // for persistence (won't cause re-render)
                                         messages_array.push(userMessage);
                                         messages_array.push(assistantMessage);
                                         resolvePromise([
                                             JSON.stringify(messages_array),
-                                            "",
-                                            null
+                                            ""
                                         ]);
                                         return;
                                     }
@@ -419,7 +419,6 @@ class VizroChatComponent(VizroBaseModel):
                                     text += chunk;
                                     if (tempContainer) {
                                         tempContainer.textContent = text;
-                                        chatHistory.scrollTop = chatHistory.scrollHeight;
                                     }
 
                                     readChunk();
@@ -432,7 +431,7 @@ class VizroChatComponent(VizroBaseModel):
                             if (tempContainer) {
                                 tempContainer.textContent = "Error: Could not get response from server.";
                             }
-                            resolvePromise([JSON.stringify(messages_array), "", null]);
+                            resolvePromise([JSON.stringify(messages_array), ""]);
                         });
                     }, 50);  // Small delay to ensure smooth UI update
 
@@ -440,14 +439,13 @@ class VizroChatComponent(VizroBaseModel):
                     return updatePromise;
                 } catch (error) {
                     console.error("Error:", error);
-                    return [messages, value, null];
+                    return [messages, value];
                 }
             }
             """,
             [
                 Output(f"{self.id}-messages", "data", allow_duplicate=True),
                 Output(f"{self.id}-input", "value", allow_duplicate=True),
-                Output(f"{self.id}-stream-complete", "data"),
             ],
             [
                 Input(f"{self.id}-submit", "n_clicks"),
@@ -499,11 +497,6 @@ class VizroChatComponent(VizroBaseModel):
             dcc.Store(
                 id=f"{self.id}-messages",
                 storage_type='session'
-            ),
-            dcc.Store(  # Modified store for handling streaming completion
-                id=f"{self.id}-stream-complete",
-                storage_type='memory',
-                data=None,  # Initialize with None
             ),
         ]
         

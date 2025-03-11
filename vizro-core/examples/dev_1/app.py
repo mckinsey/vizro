@@ -57,7 +57,7 @@ FlexContainer.add_type("components", VizroChatComponent)
 # Create chat component with OpenAI processor and settings
 chat_component = VizroChatComponent(
     id="chat",
-    input_placeholder="Ask about the Chinook database...",
+    # input_placeholder="Ask about the Chinook database...",
     button_text="Send",
     vizro_app=vizro_app,
     processor=OpenAIProcessor(model="gpt-4o-mini", temperature=0.7),
