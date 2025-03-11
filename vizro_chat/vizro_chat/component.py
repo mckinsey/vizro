@@ -1,18 +1,18 @@
 """Vizro chat component."""
 
 import json
-from typing import Literal, Optional
+from typing import Literal
 
 import dash
 import dash_bootstrap_components as dbc
-from dash import Input, Output, State, dcc, html, callback
+from dash import Input, Output, State, dcc, html
 from flask import Response, request
 from pydantic import ConfigDict
 from vizro._vizro import Vizro
 from vizro.models import VizroBaseModel
 from vizro.models._models_utils import _log_call
 
-from vizro_chat.processors import ChatProcessor, EchoProcessor, OpenAIProcessor
+from vizro_chat.processors import ChatProcessor, EchoProcessor
 
 # Common style definitions
 CHAT_CONTAINER_STYLE = {
@@ -35,7 +35,7 @@ CHAT_INPUT_CONTAINER_STYLE = {
     "position": "fixed",
     "bottom": "20px",
     "width": "50%",
-    "maxWidth": "760px", 
+    "maxWidth": "760px",
 }
 
 SETTINGS_ICON_STYLE = {
@@ -90,9 +90,10 @@ TEXTAREA_STYLE = {
     "border": "1px solid var(--border-subtleAlpha01)",  # Optional: add subtle border
 }
 
+
 class VizroChatComponent(VizroBaseModel):
     """A chat component for Vizro dashboards.
-    
+
     This component provides interactive chat functionality that can be
     integrated into Vizro dashboards. It supports different processors
     for handling chat responses, including simple echoing and OpenAI integration.
@@ -122,9 +123,10 @@ class VizroChatComponent(VizroBaseModel):
             self._register_streaming_route()
             self._register_settings_callbacks()
             self._register_streaming_callback()
-            
+
     def _register_streaming_route(self):
         """Register the streaming endpoint for the chat component."""
+
         @self.vizro_app.dash.server.route(
             f"/streaming-{self.id}", methods=["POST"], endpoint=f"streaming_chat_{self.id}"
         )
@@ -133,37 +135,34 @@ class VizroChatComponent(VizroBaseModel):
                 data = request.json
                 if not data:
                     raise ValueError("No data received")
-                
+
                 user_prompt = data.get("prompt", "").strip()
                 if not user_prompt:
                     raise ValueError("Empty prompt")
 
                 messages = json.loads(data.get("chat_history", "[]"))
-                
+
                 # Get API settings if available
                 api_settings = data.get("api_settings") or {}
                 if api_settings and hasattr(self.processor, "initialize_client"):
                     api_key = api_settings.get("api_key")
                     api_base = api_settings.get("api_base")
                     if api_key:  # Only initialize if we have an API key
-                        self.processor.initialize_client(
-                            api_key=api_key,
-                            api_base=api_base
-                        )
+                        self.processor.initialize_client(api_key=api_key, api_base=api_base)
 
                 def response_stream():
                     try:
-                        for chunk in self.processor.get_response(messages, user_prompt):
-                            yield chunk
+                        yield from self.processor.get_response(messages, user_prompt)
                     except Exception as e:
-                        yield f"Error: {str(e)}"
+                        yield f"Error: {e!s}"
 
                 return Response(response_stream(), mimetype="text/event-stream")
             except Exception as e:
-                return Response(f"Error: {str(e)}", status=500)
+                return Response(f"Error: {e!s}", status=500)
 
     def _register_settings_callbacks(self):
         """Register callbacks for managing API settings."""
+
         @self.vizro_app.dash.callback(
             Output(f"{self.id}-settings", "is_open"),
             Input(f"{self.id}-settings-icon", "n_clicks"),
@@ -204,11 +203,11 @@ class VizroChatComponent(VizroBaseModel):
             """Save API settings and provide user feedback."""
             if n_clicks is None:
                 return dash.no_update, dash.no_update
-            
+
             # Check if API key is provided
             if not api_key or api_key.strip() == "":
                 return {"api_key": "", "api_base": api_base}, "No API Key provided."
-            
+
             return {"api_key": api_key, "api_base": api_base}, "API Key added."
 
         @self.vizro_app.dash.callback(
@@ -227,6 +226,7 @@ class VizroChatComponent(VizroBaseModel):
 
     def _register_streaming_callback(self):
         """Register callbacks for chat functionality."""
+
         # Add callback to clear input immediately on submit
         @self.vizro_app.dash.callback(
             Output(f"{self.id}-input", "value"),
@@ -251,9 +251,7 @@ class VizroChatComponent(VizroBaseModel):
         def initialize_messages(current_messages):
             """Initialize messages if they don't exist."""
             if not current_messages:
-                print(f"Initializing messages for {self.id}")  # Debug log
                 return json.dumps([{"role": "assistant", "content": self.initial_message}])
-            print(f"Messages already exist for {self.id}: {current_messages}")  # Debug log
             return current_messages
 
         # Add callback to update chat history display
@@ -265,18 +263,18 @@ class VizroChatComponent(VizroBaseModel):
             """Update the chat history display from stored messages."""
             if not messages_json:
                 return []
-            
+
             try:
                 # Only render messages when there's no chat history displayed yet
                 history_div = html.Div(id=f"{self.id}-history")
                 if not history_div.children:
                     messages = json.loads(messages_json)
                     chat_elements = []
-                    
+
                     for msg in messages:
                         is_user = msg["role"] == "user"
                         content = msg["content"]
-                        
+
                         # For assistant messages, use dcc.Markdown
                         if not is_user:
                             content = dcc.Markdown(
@@ -284,24 +282,23 @@ class VizroChatComponent(VizroBaseModel):
                                 style={
                                     "margin": 0,
                                     "padding": 0,
-                                }
+                                },
                             )
-                        
+
                         chat_elements.append(
                             html.Div(
                                 content,
                                 style={
                                     **MESSAGE_STYLE,
                                     "borderLeft": f"4px solid {'#aaa9ba' if is_user else '#00b4ff'}",
-                                    "backgroundColor": f"var({'--surfaces-bg-card' if is_user else '--right-side-bg'})"
-                                }
+                                    "backgroundColor": f"var({'--surfaces-bg-card' if is_user else '--right-side-bg'})",
+                                },
                             )
                         )
-                    
+
                     return chat_elements
                 return dash.no_update
-            except Exception as e:
-                print(f"Error updating chat history: {e}")
+            except Exception:
                 return []
 
         # Modify the streaming callback JavaScript
@@ -341,7 +338,7 @@ class VizroChatComponent(VizroBaseModel):
 
                     if (chatHistory) {
                         chatHistory.appendChild(tempUserDiv);
-                        
+
                         // Make sure user message is visible
                         tempUserDiv.scrollIntoView({ behavior: 'smooth', block: 'start' });
                     }
@@ -382,7 +379,7 @@ class VizroChatComponent(VizroBaseModel):
                             headers: {"Content-Type": "application/json"},
                             body: JSON.stringify({
                                 prompt: value.trim(),
-                                chat_history: JSON.stringify(messages_array),  // Send current messages without new user message
+                                chat_history: JSON.stringify(messages_array),
                                 api_settings: api_settings
                             }),
                         }).then(response => {
@@ -395,7 +392,7 @@ class VizroChatComponent(VizroBaseModel):
                                 reader.read().then(({done, value}) => {
                                     if (done) {
                                         const assistantMessage = {"role": "assistant", "content": text.trim()};
-                                        
+
                                         // Remove both temporary divs
                                         if (tempUserDiv && tempUserDiv.parentNode) {
                                             tempUserDiv.parentNode.removeChild(tempUserDiv);
@@ -403,7 +400,7 @@ class VizroChatComponent(VizroBaseModel):
                                         if (tempContainer && tempContainer.parentNode) {
                                             tempContainer.parentNode.removeChild(tempContainer);
                                         }
-                                        
+
                                         // Update the messages array
                                         // for persistence (won't cause re-render)
                                         messages_array.push(userMessage);
@@ -456,7 +453,7 @@ class VizroChatComponent(VizroBaseModel):
                 State(f"{self.id}-messages", "data"),
                 State(f"{self.id}-api-settings", "data"),
             ],
-            prevent_initial_call='initial_duplicate',
+            prevent_initial_call="initial_duplicate",
         )
 
     @_log_call
@@ -464,19 +461,15 @@ class VizroChatComponent(VizroBaseModel):
         """Build the complete chat component UI."""
         # Create data stores
         stores = self._build_data_stores()
-        
+
         # Build the chat interface components
         settings_icon = self._build_settings_icon()
         settings_offcanvas = self._build_settings_offcanvas()
         chat_interface = self._build_chat_interface()
-        
+
         # Assemble the complete component
         chat_component = html.Div(
-            stores + [
-                settings_icon,
-                settings_offcanvas,
-                chat_interface
-            ],
+            [*stores, settings_icon, settings_offcanvas, chat_interface],
             style={
                 "width": "90%",
                 "height": "90%",
@@ -486,36 +479,30 @@ class VizroChatComponent(VizroBaseModel):
         )
 
         return chat_component
-    
+
     def _build_data_stores(self):
         """Build the data store components for the chat."""
         return [
-            dcc.Store(
-                id=f"{self.id}-api-settings",
-                storage_type='session'
-            ),
-            dcc.Store(
-                id=f"{self.id}-messages",
-                storage_type='session'
-            ),
+            dcc.Store(id=f"{self.id}-api-settings", storage_type="session"),
+            dcc.Store(id=f"{self.id}-messages", storage_type="session"),
         ]
-        
+
     def _build_settings_icon(self):
         """Build the settings icon component."""
         if not self.show_settings:
             return html.Div()
-            
+
         return html.Div(
             children=[
                 html.Span(
                     "vpn_key",
                     className="material-symbols-outlined",
                     id=f"{self.id}-settings-icon",
-                    style=SETTINGS_ICON_STYLE
+                    style=SETTINGS_ICON_STYLE,
                 ),
             ],
         )
-        
+
     def _build_settings_offcanvas(self):
         """Build the settings offcanvas component."""
         return dbc.Offcanvas(
@@ -581,7 +568,7 @@ class VizroChatComponent(VizroBaseModel):
             ],
             is_open=False,
         )
-        
+
     def _build_chat_interface(self):
         """Build the main chat interface."""
         return html.Div(
@@ -590,35 +577,34 @@ class VizroChatComponent(VizroBaseModel):
                 html.Div(
                     id=f"{self.id}-history",
                     style=CHAT_HISTORY_STYLE,
-                    ),
+                ),
                 dbc.InputGroup(
-                            [
-                                dbc.Textarea(
-                                    id=f"{self.id}-input",
-                                    placeholder=self.input_placeholder,
-                                    autoFocus=True,
-                                    style={
-                                        **TEXTAREA_STYLE,
-                                        "height": self.input_height,
-                                    },
-                                    n_submit=0,
-                                    className="no-focus-shadow",
-                                ),
-                                dbc.Button(
-                                    self.button_text,
-                                    outline=True,
-                                    color="secondary",
-                                    id=f"{self.id}-submit",
-                                    style={
-                                        "height": self.input_height,
-                                        "borderBottomRightRadius": "10px",
-                                        "borderTopRightRadius": "10px",
-                                    },
-                                ),
-                            ],
-                            style=CHAT_INPUT_CONTAINER_STYLE,
+                    [
+                        dbc.Textarea(
+                            id=f"{self.id}-input",
+                            placeholder=self.input_placeholder,
+                            autoFocus=True,
+                            style={
+                                **TEXTAREA_STYLE,
+                                "height": self.input_height,
+                            },
+                            n_submit=0,
+                            className="no-focus-shadow",
                         ),
+                        dbc.Button(
+                            self.button_text,
+                            outline=True,
+                            color="secondary",
+                            id=f"{self.id}-submit",
+                            style={
+                                "height": self.input_height,
+                                "borderBottomRightRadius": "10px",
+                                "borderTopRightRadius": "10px",
+                            },
+                        ),
+                    ],
+                    style=CHAT_INPUT_CONTAINER_STYLE,
+                ),
             ],
             style=CHAT_CONTAINER_STYLE,
         )
-

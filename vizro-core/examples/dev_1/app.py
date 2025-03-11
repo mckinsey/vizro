@@ -1,28 +1,24 @@
 """Example of a chat assistant using VizroChatComponent."""
 
 import os
-from dotenv import load_dotenv
-import vizro.plotly.express as px
 from typing import Literal
+
 import dash_bootstrap_components as dbc
-
 import vizro.models as vm
+import vizro.plotly.express as px
+from dotenv import load_dotenv
 from vizro import Vizro
-from vizro_chat import EchoProcessor, VizroChatComponent
-
-from vizro_chat import VizroChatComponent
-from custom_processor import SQLAgentProcessor
-from vizro_chat import OpenAIProcessor
+from vizro_chat import OpenAIProcessor, VizroChatComponent
 
 # Load environment variables from .env file
 # env_path = Path(__file__).parent / ".env"
 # load_dotenv(env_path)
 load_dotenv()
-from langsmith import traceable
 
 # Initialize Vizro with assets folder
 assets_path = os.path.join(os.path.dirname(os.path.abspath(__file__)), "assets")
 vizro_app = Vizro(assets_folder=assets_path)
+
 
 # Add FlexContainer class definition first
 class FlexContainer(vm.Container):
@@ -31,7 +27,7 @@ class FlexContainer(vm.Container):
     type: Literal["flex_container"] = "flex_container"
     title: str = None  # Title exists in vm.Container but we don't want to use it here.
     # Add "chat" to the allowed component types
-    # components: list[vm.ComponentType | VizroChatComponent]  
+    # components: list[vm.ComponentType | VizroChatComponent]
 
     def build(self):
         """Returns a flex container."""
@@ -51,6 +47,7 @@ class FlexContainer(vm.Container):
             },
         )
 
+
 vm.Page.add_type("components", FlexContainer)
 FlexContainer.add_type("components", VizroChatComponent)
 
@@ -62,7 +59,7 @@ chat_component = VizroChatComponent(
     vizro_app=vizro_app,
     processor=OpenAIProcessor(model="gpt-4o-mini", temperature=0.7),
     # processor=EchoProcessor(),
-    show_settings=True  # Enable settings icon
+    show_settings=True,  # Enable settings icon
 )
 
 chat_page = vm.Page(
@@ -72,7 +69,7 @@ chat_page = vm.Page(
             components=[chat_component],
         ),
     ],
-    layout=vm.Layout(grid=[[0]])
+    layout=vm.Layout(grid=[[0]]),
 )
 
 iris = px.data.iris()

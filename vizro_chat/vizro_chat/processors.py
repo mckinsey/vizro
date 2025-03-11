@@ -3,9 +3,10 @@
 import os
 from abc import ABC, abstractmethod
 from collections.abc import Iterator
-from pathlib import Path
-from openai import OpenAI
 from time import sleep
+from typing import Optional
+
+from openai import OpenAI
 
 
 class ChatProcessor(ABC):
@@ -42,17 +43,16 @@ class OpenAIProcessor(ChatProcessor):
             self.model = model
             self.temperature = temperature
             self.client = None
-        except Exception as e:
+        except Exception:
             raise
 
-    def initialize_client(self, api_key: str = None, api_base: str = None):
+    def initialize_client(self, api_key: Optional[str] = None, api_base: Optional[str] = None):
         """Initialize OpenAI client with provided credentials."""
         try:
             self.client = OpenAI(
-                api_key=api_key or os.getenv("OPENAI_API_KEY"),
-                base_url=api_base or os.getenv("OPENAI_BASE_URL")
+                api_key=api_key or os.getenv("OPENAI_API_KEY"), base_url=api_base or os.getenv("OPENAI_BASE_URL")
             )
-        except Exception as e:
+        except Exception:
             raise
 
     def get_response(self, messages: list[dict[str, str]], user_prompt: str) -> Iterator[str]:

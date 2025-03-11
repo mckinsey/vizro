@@ -124,7 +124,7 @@ dependencies = [
   "langgraph",
   "langchain_openai",
   "langchain_community",
-  "langsmith",
+  "langsmith"
 ]
 installer = "uv"
 template = "examples"
