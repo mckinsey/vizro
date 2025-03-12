@@ -1,4 +1,4 @@
-"""_Controls plan model."""
+"""Controls plan model."""
 
 import logging
 from typing import Any, Optional, get_args
