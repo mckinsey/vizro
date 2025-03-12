@@ -3,7 +3,8 @@ from __future__ import annotations
 import abc
 import inspect
 
-from vizro.models._action._action import IdProperty, _BaseAction
+from vizro.models._action._action import _BaseAction
+from vizro.models.types import IdProperty
 
 
 class AbstractAction(_BaseAction, abc.ABC):
@@ -19,7 +20,7 @@ class AbstractAction(_BaseAction, abc.ABC):
         Uses self and not Dash State
       - runtime arguments, e.g. arg_name="dropdown.value": model fields, explicitly in function signature. Uses Dash
         State
-      - built in runtime arguments, e.g. controls: not model fields, explicitly in function signature. Uses Dash State
+      - built in runtime arguments, e.g. _controls: not model fields, explicitly in function signature. Uses Dash State
     """
 
     _legacy = False
@@ -36,7 +37,6 @@ class AbstractAction(_BaseAction, abc.ABC):
     @abc.abstractmethod
     def outputs(self) -> dict[str, IdProperty]:
         """Must be defined by concrete action, even if there's no output."""
-        # TODO NOW OR IN FUTURE: handle list[str], align with Action. Maybe allow more deeply nested things too.
         # TODO NOW: should it handle dictionary ids too? Currently this needs overriding _get_outputs. Pattern matching
         # probably not needed for outputs and only for built-in inputs. Even if add more functionality here in future
         # we shoulod still at least the support same as Action.output so it's easy for someone to move from a function

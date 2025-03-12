@@ -10,7 +10,7 @@ from vizro.actions._actions_utils import _apply_filters, _get_unfiltered_data
 from vizro.managers import model_manager
 from vizro.managers._model_manager import FIGURE_MODELS, ModelID
 from vizro.models import VizroBaseModel
-from vizro.models._action._action import Controls
+from vizro.models.types import _Controls
 
 
 # TODO NOW: check how schema for this is generated.
@@ -28,7 +28,7 @@ class export_data(AbstractAction):
     def function(
         self,
         runtime_arg,
-        controls: Controls,
+        _controls: _Controls,
     ) -> dict[str, Any]:
         # TODO NOW: docstring
         """Exports visible data of target charts/components on page after being triggered.
@@ -47,8 +47,8 @@ class export_data(AbstractAction):
             Dict mapping target component id to modified charts/components e.g. {'my_scatter': Figure({})}
 
         """
-        # TODO: controls is not currently used but instead taken out of the Dash context. This
-        # will change in future once the structure of controls has been worked out and we know how to pass ids through.
+        # TODO: _controls is not currently used but instead taken out of the Dash context. This
+        # will change in future once the structure of _controls has been worked out and we know how to pass ids through.
         # See https://github.com/mckinsey/vizro/pull/880
         # TODO NOW: move the setting of targets to validator. Reused in outputs and components
         targets = self.targets or [
@@ -60,7 +60,7 @@ class export_data(AbstractAction):
             if target not in model_manager:
                 raise ValueError(f"Component '{target}' does not exist.")
 
-        ctds = ctx.args_grouping["external"]["controls"]
+        ctds = ctx.args_grouping["external"]["_controls"]
         outputs = {}
 
         for target, unfiltered_data in _get_unfiltered_data(ctds["parameters"], targets).items():

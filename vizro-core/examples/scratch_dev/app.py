@@ -67,13 +67,13 @@ page_1 = vm.Page(
 @capture("action")
 # To test legacy=True
 # def my_custom_action(points_data, controls=None):
-def my_custom_action(points_data, controls):
+def my_custom_action(points_data, _controls):
     """Custom action."""
     clicked_point = points_data["points"][0]
     x, y = clicked_point["x"], clicked_point["y"]
     species = clicked_point["customdata"][0]
     card_1_text = f"Clicked point has sepal length {x}, petal width {y}."
-    card_2_text = f"Controls are `{controls}`"
+    card_2_text = f"Controls are `{_controls}`"
     return card_1_text, card_2_text
 
 
@@ -91,7 +91,7 @@ def my_custom_action(points_data, controls):
 #         x, y = clicked_point["x"], clicked_point["y"]
 #         species = clicked_point["customdata"][0]
 #         card_1_text = f"Clicked point has sepal length {x}, petal width {y}."
-#         card_2_text = f"Controls are `{controls}`"
+#         card_2_text = f"_Controls are `{controls}`"
 #         return card_1_text, card_2_text
 #
 #     @property

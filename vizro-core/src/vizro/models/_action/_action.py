@@ -5,7 +5,7 @@ import logging
 import re
 from collections.abc import Collection, Iterable, Mapping
 from pprint import pformat
-from typing import Annotated, Any, Literal, NewType, TypedDict, Union, cast
+from typing import Annotated, Any, Literal, TypedDict, Union, cast
 
 from dash import Input, Output, State, callback, html
 from dash.development.base_component import Component
@@ -15,23 +15,16 @@ from pydantic.json_schema import SkipJsonSchema
 from vizro.managers._model_manager import ModelID, model_manager
 from vizro.models import VizroBaseModel
 from vizro.models._models_utils import _log_call
-from vizro.models.types import CapturedCallable, ControlType, validate_captured_callable
+from vizro.models.types import CapturedCallable, ControlType, IdProperty, validate_captured_callable
 
 logger = logging.getLogger(__name__)
 
-# TODO NOW: work out where these definitions go and if they're a good idea.
-# For "component_id.component_property", e.g. "dropdown_id.value".
-IdProperty = NewType("IdProperty", str)
 
-
-# TODO NOW: check actual structure of this. Does it use IdProperty?
-# TODO: improve this structure. See https://github.com/mckinsey/vizro/pull/880.
-# TODO NOW: change to _controls if not public yet?
-class Controls(TypedDict):
-    filters: list[Any]
-    parameters: list[Any]
+class ControlsStates(TypedDict):
+    filters: list[State]
+    parameters: list[State]
     # TODO: filter_interaction won't be here in future.
-    filter_interaction: list[dict[str, Any]]
+    filter_interaction: list[dict[str, State]]
 
 
 class _BaseAction(VizroBaseModel):
@@ -78,20 +71,22 @@ class _BaseAction(VizroBaseModel):
         return states
 
     @property
-    def _transformed_inputs(self) -> dict[str, Union[State, dict[str, State]]]:
-        """Creates the actual Dash States given the user-specified runtime arguments and built in ones."""
-        # TODO NOW: figure out return type, how nested it can be, how to match custom action inputs
+    def _transformed_inputs(self) -> Union[list[State], dict[str, Union[State, ControlsStates]]]:
+        """Creates the actual Dash States given the user-specified runtime arguments and built in ones.
+
+        Return type is list only for legacy actions. Otherwise it will always be a dictionary (unlike
+        for _transformed_outputs, where new behaviour can still give a list). Keys are the parameter names. For
+        user-specified inputs, values are Dash States. For built-in inputs, values can be more complicated nested
+        structure of states.
+        """
         if self._legacy:
             return [State(*input.split(".")) for input in self.inputs]
 
         from vizro.models import Filter, Parameter
 
-        # TODO NOW OR SOON: allow self.inputs to be mapping
-        # TODO NOW: consider applying default values - not sure if this matters, probably not worth enabling,
-        #  but do it if it would match class
         # TODO NOW: consider what else could be added, especially trigger.
         builtin_args = {
-            "controls": {
+            "_controls": {
                 "filters": self._get_control_states(control_type=Filter),
                 "parameters": self._get_control_states(control_type=Parameter),
                 "filter_interaction": self._get_filter_interaction_states(),
@@ -114,33 +109,26 @@ class _BaseAction(VizroBaseModel):
 
     @property
     def _transformed_outputs(self) -> Union[list[Output], dict[str, Output]]:
-        """Creates the actual Dash Outputs based on self.outputs."""
-        # list[Output] is relevant for both legacy and new versions.
-        # dict[str, Output] is currently only possible with AbstractAction but should be possible in future also with
-        # Action.
-        # TODO: enable both list and dict for both sorts of action.
-        # In general we might want to handle more general structures than this for both input and output.
-        # TODO NOW: make proper helper function that goes through nested list/dict/etc. of dotted strings and converts
-        #  to Output. Is it also relevant for inputs? These should always be built in (for complex cases), in which
-        #  case no need to work with strings (e.g. if use pattern matching) or just a single string. Might want to
-        #  allow list[str] even for inputs though? Think about this.
+        """Creates the actual Dash Outputs based on self.outputs.
+
+        Return type list[Output] is for legacy and new versions of Action. dict[str, Output] is for AbstractAction.
+        """
+        # TODO: enable both list and dict for both Action and AbstractAction.
         if isinstance(self.outputs, list):
             callback_outputs = [Output(*output.split("."), allow_duplicate=True) for output in self.outputs]
 
             # Need to use a single Output in the @callback decorator rather than a single element list for the case
             # of a single output. This means the action function can return a single value (e.g. "text") rather than a
             # single element list (e.g. ["text"]).
-            # TODO NOW: check this is the best way to do this.
             if len(callback_outputs) == 1:
                 callback_outputs = callback_outputs[0]
             return callback_outputs
 
-        # AbstractAction case:
         callback_outputs = {
             output_name: Output(*output.split("."), allow_duplicate=True)
             for output_name, output in self.outputs.items()
         }
-        # TODO NOW: check what happens if no outputs?
+
         return callback_outputs
 
     @property
@@ -157,7 +145,6 @@ class _BaseAction(VizroBaseModel):
         inputs: Union[dict[str, Any], list[Any]],
         outputs: Union[dict[str, Output], list[Output], Output, None],
     ) -> Any:
-        # TODO NOW: check how this works.
         logger.debug("===== Running action with id %s, function %s =====", self.id, self._action_name)
         if logger.isEnabledFor(logging.DEBUG):
             logger.debug("Action inputs:\n%s", pformat(inputs, depth=3, width=200))
@@ -313,6 +300,8 @@ class Action(_BaseAction):
         # CapturedCallable.
         # Note this is a dictionary even if arguments were originally provided as positional ones, since they are
         # bound in CapturedCallable.
+        # Currently this does not use default values of function parameters. To do so, we would need to
+        # use inspect.BoundArguments.apply_defaults.
         return self.function._arguments
 
     @property

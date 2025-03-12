@@ -8,7 +8,7 @@ import importlib
 import inspect
 from contextlib import contextmanager
 from datetime import date
-from typing import Annotated, Any, Literal, Protocol, Union, runtime_checkable
+from typing import Annotated, Any, Literal, NewType, Protocol, TypedDict, Union, runtime_checkable
 
 import plotly.io as pio
 import pydantic_core as cs
@@ -546,3 +546,15 @@ ActionsType = Annotated[
 # Extra type groups used for mypy casting
 FigureWithFilterInteractionType = Union["Graph", "Table", "AgGrid"]
 FigureType = Union["Graph", "Table", "AgGrid", "Figure"]
+
+# TODO NOW: work out whether this definition is a good idea.
+# For "component_id.component_property", e.g. "dropdown_id.value".
+IdProperty = NewType("IdProperty", str)
+
+
+# TODO: improve this structure. See https://github.com/mckinsey/vizro/pull/880.
+class _Controls(TypedDict):
+    filters: list[Any]
+    parameters: list[Any]
+    # TODO: filter_interaction won't be here in future.
+    filter_interaction: list[dict[str, Any]]

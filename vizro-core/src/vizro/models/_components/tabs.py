@@ -12,7 +12,6 @@ if TYPE_CHECKING:
     from vizro.models._components import Container
 
 
-
 class Tabs(VizroBaseModel):
     """Tabs to group together a set of containers on a page.
 
