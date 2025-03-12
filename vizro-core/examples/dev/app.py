@@ -609,7 +609,7 @@ def my_custom_table(data_frame=None, chosen_columns: Optional[list[str]] = None)
         "style_data": {"border_bottom": "1px solid var(--border-subtleAlpha01)", "height": "40px"},
         "style_header": {
             "border_bottom": "1px solid var(--stateOverlays-selectedHover)",
-            "border_top": "1px solid var(--right-side-bg)",
+            "border_top": "None",
             "height": "32px",
         },
     }
@@ -825,7 +825,7 @@ if __name__ == "__main__":
         ["Made with ", html.Img(src=get_asset_url("logo.svg"), id="banner", alt="Vizro logo"), "vizro"],
         href="https://github.com/mckinsey/vizro",
         target="_blank",
-        className="anchor-container",
+        class_name="anchor-container",
     )
     app.dash.layout.children.append(banner)
     app.run()
