@@ -177,6 +177,7 @@ class CapturedCallable:
     def _arguments(self):
         # TODO: This is used twice: in _get_parametrized_config and in vm.Action and should be removed when those
         # references are removed.
+        # TODO NOW: use this and __getitem__/__setitem__ properly or set as future todo.
         return self.__bound_arguments
 
     # TODO-actions: Find a way how to compare CapturedCallable and function

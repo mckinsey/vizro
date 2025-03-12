@@ -8,8 +8,6 @@ from vizro.actions._actions_utils import _apply_filters, _get_unfiltered_data
 from vizro.managers import model_manager
 from vizro.managers._model_manager import ModelID
 
-"""Pre-defined action function "export_data" to be reused in `action` parameter of VizroBaseModels."""
-
 from collections.abc import Iterable
 from typing import Literal, cast
 
@@ -27,7 +25,7 @@ class export_data(AbstractAction):
     ] = []  # TODO NOW: think about whether should in future rename this so it doesn't inconsistently use targets? May be ok now that targets doesn't yet have special role.
     file_format: Literal["csv", "xlsx"] = "csv"
 
-    # TODO NOW: continue testing this and eventually remove.
+    # TODO NOW CHECK: continue testing this and eventually remove.
     runtime_arg: str
 
     def function(
@@ -56,8 +54,6 @@ class export_data(AbstractAction):
         # will change in future once the structure of controls has been worked out and we know how to pass ids through.
         # See https://github.com/mckinsey/vizro/pull/880
         # TODO NOW: move the setting of targets to validator. Reused in outputs and components
-        # TODO NOW: test this runtime argument
-        # print(f"{runtime_arg=}")
         targets = self.targets or [
             output["id"]["target_id"]
             for output in ctx.outputs_list
@@ -84,12 +80,12 @@ class export_data(AbstractAction):
 
         return outputs
 
-    @property
     # TODO NOW: think about if this is best way.
     # overrides _outputs_ not outputs
     # could convert to string ids and use outputs
     # leave like this because hopefully will have single download component in future anyway with a reserved id
-    def _outputs_(self) -> dict[str, Output]:
+    @property
+    def _transformed_outputs(self) -> dict[str, Output]:
         # TODO NOW: comment
         targets = self.targets or [
             model.id
@@ -107,7 +103,11 @@ class export_data(AbstractAction):
             for target in targets
         }
 
+    # TODO NOW: just needed due to abstractmethod
     @property
+    def outputs(self):
+        pass
+
     # TODO NOW: put these thoughts somewhere
     # For multiple files could use single dcc.Download but zip file.
     # Will need some way to add new components on the fly for other actions though.
@@ -116,7 +116,8 @@ class export_data(AbstractAction):
     # Petar qn: what other actions would require new components on page?
     # Note name clash with "components" and current model_manager __get_model_children that looks for "components"
     # for Page.components. Hence call dash_components, which is probably better name anyway.
-    def dash_components(self) -> list[dcc.Download]:
+    @property
+    def _dash_components(self) -> list[dcc.Download]:
         """Creates dcc.Downloads for target components of the `export_data` action."""
         targets = self.targets or [
             model.id
