@@ -23,6 +23,7 @@
 
 TODO future: rename _on_page_load if desired and make _filter etc. public.
 Add deprecation warnings etc. for when legacy=True
+ActionsChain.add_type("actions", f) is needed as well as vm.Graph.add_type("actions", f). Remove ActionsChain and then this will be possible. Should you need to add_type at all though compared to just having AbstractAction as an allowed type? Probably yes.
 
 # Put in PR/docs
 

@@ -41,7 +41,6 @@ class ActionLoop:
             List of required components for each `Action` in the `Dashboard` e.g. list[dcc.Download]
 
         """
-
         return html.Div(
             [action.build() for action in cast(Iterable[_BaseAction], model_manager._get_models(_BaseAction))],
             id="app_action_models_components_div",

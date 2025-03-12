@@ -4,7 +4,7 @@ from typing import NamedTuple
 from pydantic import ValidationInfo
 
 from vizro.managers import model_manager
-from vizro.models import Action, VizroBaseModel
+from vizro.models import VizroBaseModel
 from vizro.models.types import ActionsType
 
 

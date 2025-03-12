@@ -1,23 +1,16 @@
 import importlib
-from typing import Any
+from collections.abc import Iterable
+from typing import Any, Literal, cast
 
-from dash import ctx, dcc
+from dash import Output, ctx, dcc
 from typing_extensions import Literal
 
+from vizro.actions import AbstractAction
 from vizro.actions._actions_utils import _apply_filters, _get_unfiltered_data
 from vizro.managers import model_manager
-from vizro.managers._model_manager import ModelID
-
-from collections.abc import Iterable
-from typing import Literal, cast
-
-from dash import Output
-
-from vizro.managers._model_manager import FIGURE_MODELS
+from vizro.managers._model_manager import FIGURE_MODELS, ModelID
 from vizro.models import VizroBaseModel
-from vizro.models._action._action import AbstractAction, Controls
-
-from typing import Literal
+from vizro.models._action._action import Controls
 
 
 # TODO NOW: check how schema for this is generated.

@@ -11,7 +11,6 @@ from vizro.models._models_utils import _log_call
 if TYPE_CHECKING:
     from vizro.models._components import Container
 
-from vizro.models.types import ActionsType
 
 
 class Tabs(VizroBaseModel):

@@ -9,7 +9,6 @@ from vizro.models import VizroBaseModel
 from vizro.models._components._components_utils import _process_callable_data_frame
 from vizro.models._models_utils import _log_call
 from vizro.models.types import CapturedCallable, validate_captured_callable
-from vizro.models.types import ActionsType
 
 
 class Figure(VizroBaseModel):

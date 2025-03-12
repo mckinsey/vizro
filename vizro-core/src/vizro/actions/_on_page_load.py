@@ -1,28 +1,18 @@
-from typing import Any
+from typing import Any, Literal
 
 from dash import ctx
 from pydantic import Field
 
+from vizro.actions import AbstractAction
 from vizro.actions._actions_utils import _get_modified_page_figures
 from vizro.managers._model_manager import ModelID, model_manager
-from vizro.models._action._action import AbstractAction, Controls
-
-from typing import Literal
+from vizro.models._action._action import Controls
 
 
-class filter_interaction(AbstractAction):
-    """Filters targeted charts/components on page by clicking on data points or table cells of the source chart.
+class _on_page_load(AbstractAction):
+    type: Literal["_on_page_load"] = "_on_page_load"
 
-    To set up filtering on specific columns of the target graph(s), include these columns in the 'custom_data'
-    parameter of the source graph e.g. `px.bar(..., custom_data=["species", "sepal_length"])`.
-    If the filter interaction source is a table e.g. `vm.Table(..., actions=[filter_interaction])`,
-    then the table doesn't need to have a 'custom_data' parameter set up.
-    """
-
-    type: Literal["filter_interaction"] = "filter_interaction"
-
-    # Note this has a default value, unlikely on_page_load, filter and parameter.
-    targets: list[ModelID] = Field(description="Target component IDs.", default=[])
+    targets: list[ModelID] = Field(description="Target component IDs.")
 
     def function(self, controls: Controls) -> dict[ModelID, Any]:
         """Applies controls to charts on page once the page is opened (or refreshed).

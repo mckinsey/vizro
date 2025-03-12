@@ -6,7 +6,6 @@ from dash import ClientsideFunction, Input, Output, State, clientside_callback
 
 from vizro.managers import model_manager
 from vizro.managers._model_manager import ModelID
-from vizro.models import Action
 from vizro.models._action._action import _BaseAction
 from vizro.models._action._actions_chain import ActionsChain
 

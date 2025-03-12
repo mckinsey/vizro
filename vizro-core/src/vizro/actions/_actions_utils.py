@@ -21,7 +21,7 @@ from vizro.models.types import (
 )
 
 if TYPE_CHECKING:
-    from vizro.models import Action, VizroBaseModel
+    from vizro.models import VizroBaseModel
     from vizro.models.type import ActionsType
 
 ValidatedNoneValueType = Union[SingleValueType, MultiValueType, None, list[None], list[SingleValueType]]

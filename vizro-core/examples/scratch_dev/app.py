@@ -7,6 +7,9 @@ from vizro import Vizro
 from vizro.actions import filter_interaction, export_data
 from vizro.models.types import capture
 
+# TODO NOW: move this
+from vizro.actions import AbstractAction
+
 df_gapminder = px.data.gapminder().query("year == 2007")
 
 page_1 = vm.Page(
@@ -74,6 +77,35 @@ def my_custom_action(points_data, controls):
     return card_1_text, card_2_text
 
 
+# from typing import Literal
+#
+#
+# class f(AbstractAction):
+#     type: Literal["f"] = "f"
+#     points_data: str
+#     swap: bool = False
+#
+#     def function(self, points_data, controls):
+#         """Custom action."""
+#         clicked_point = points_data["points"][0]
+#         x, y = clicked_point["x"], clicked_point["y"]
+#         species = clicked_point["customdata"][0]
+#         card_1_text = f"Clicked point has sepal length {x}, petal width {y}."
+#         card_2_text = f"Controls are `{controls}`"
+#         return card_1_text, card_2_text
+#
+#     @property
+#     def outputs(self):
+#         return (
+#             ["my_card_2.children", "my_card_1.children"] if self.swap else ["my_card_1.children", "my_card_2.children"]
+#         )
+#
+#
+# from vizro.models._action._actions_chain import ActionsChain
+#
+# # vm.Graph.add_type("actions", f)
+# # ActionsChain.add_type("actions", f)
+
 # @capture("action")
 # def my_custom_action():
 #     """Custom action."""
@@ -102,13 +134,14 @@ page_2 = vm.Page(
                 vm.Action(
                     function=my_custom_action("scatter_chart.clickData"),
                     # TODO NOW CHECK: make sure user-specified argument continues to take precedence
-                    # function=my_custom_action("scatter_chart.clickData", controls="my_card_1.children"),
-                    # TODO NOW CHECK: test to make sure this old way continues to work
-                    # function=my_custom_action(),
-                    # function=my_custom_action(t=4),
-                    # inputs=["scatter_chart.clickData"],
+                    #     # function=my_custom_action("scatter_chart.clickData", controls="my_card_1.children"),
+                    #     # TODO NOW CHECK: test to make sure this old way continues to work
+                    #     # function=my_custom_action(),
+                    #     # function=my_custom_action(t=4),
+                    #     # inputs=["scatter_chart.clickData"],
                     outputs=["my_card_1.children", "my_card_2.children"],
                 ),
+                # f(swap=True, points_data="scatter_chart.clickData")
             ],
         ),
         vm.Card(id="my_card_1", text="Click on a point on the above graph."),

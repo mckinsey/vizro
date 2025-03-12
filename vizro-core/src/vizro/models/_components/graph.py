@@ -15,12 +15,11 @@ from vizro.actions import filter_interaction
 from vizro.actions._actions_utils import CallbackTriggerDict, _get_component_actions
 from vizro.managers import data_manager, model_manager
 from vizro.managers._model_manager import ModelID
-from vizro.models import Action, VizroBaseModel
+from vizro.models import VizroBaseModel
 from vizro.models._action._actions_chain import _action_validator_factory
 from vizro.models._components._components_utils import _process_callable_data_frame
 from vizro.models._models_utils import _log_call
-from vizro.models.types import CapturedCallable, validate_captured_callable, ActionsType
-from vizro.models.types import ActionsType
+from vizro.models.types import ActionsType, CapturedCallable, validate_captured_callable
 
 logger = logging.getLogger(__name__)
 

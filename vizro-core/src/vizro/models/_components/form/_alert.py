@@ -4,9 +4,8 @@ import dash_bootstrap_components as dbc
 from dash import html
 from pydantic import Field
 
-from vizro.models import Action, VizroBaseModel
+from vizro.models import VizroBaseModel
 from vizro.models._models_utils import _log_call
-
 from vizro.models.types import ActionsType
 
 

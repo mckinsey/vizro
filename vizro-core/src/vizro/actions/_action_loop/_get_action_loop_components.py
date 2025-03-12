@@ -3,9 +3,8 @@
 from dash import dcc, html
 
 from vizro.managers import model_manager
-from vizro.models import Action
-from vizro.models._action._actions_chain import ActionsChain
 from vizro.models._action._action import _BaseAction
+from vizro.models._action._actions_chain import ActionsChain
 
 
 def _get_action_loop_components() -> html.Div:
