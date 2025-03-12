@@ -14,6 +14,7 @@ from vizro.models._components.form._form_utils import (
     validate_step,
 )
 from vizro.models._models_utils import _log_call
+from vizro.models.types import ActionsType
 
 
 class Slider(VizroBaseModel):
@@ -31,7 +32,7 @@ class Slider(VizroBaseModel):
         marks (Optional[dict[Union[float, int], str]]): Marks to be displayed on slider. Defaults to `{}`.
         value (Optional[float]): Default value for slider. Defaults to `None`.
         title (str): Title to be displayed. Defaults to `""`.
-        actions (list[Action]): See [`Action`][vizro.models.Action]. Defaults to `[]`.
+        actions (list[ActionsType]): See [`ActionsType`][vizro.models.types.ActionsType]. Defaults to `[]`.
 
     """
 
@@ -57,7 +58,7 @@ class Slider(VizroBaseModel):
     ]
     title: str = Field(default="", description="Title to be displayed.")
     actions: Annotated[
-        list[Action],
+        list[ActionsType],
         AfterValidator(_action_validator_factory("value")),
         PlainSerializer(lambda x: x[0].actions),
         Field(default=[]),

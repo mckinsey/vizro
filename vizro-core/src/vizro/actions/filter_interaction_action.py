@@ -7,6 +7,8 @@ from vizro.actions._actions_utils import _get_modified_page_figures
 from vizro.managers._model_manager import ModelID, model_manager
 from vizro.models._action._action import AbstractAction, Controls
 
+from typing import Literal
+
 
 class filter_interaction(AbstractAction):
     """Filters targeted charts/components on page by clicking on data points or table cells of the source chart.
@@ -16,6 +18,8 @@ class filter_interaction(AbstractAction):
     If the filter interaction source is a table e.g. `vm.Table(..., actions=[filter_interaction])`,
     then the table doesn't need to have a 'custom_data' parameter set up.
     """
+
+    type: Literal["filter_interaction"] = "filter_interaction"
 
     # Note this has a default value, unlikely on_page_load, filter and parameter.
     targets: list[ModelID] = Field(description="Target component IDs.", default=[])

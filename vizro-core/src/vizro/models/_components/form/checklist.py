@@ -11,6 +11,8 @@ from vizro.models._components.form._form_utils import get_options_and_default, v
 from vizro.models._models_utils import _log_call
 from vizro.models.types import MultiValueType, OptionsType
 
+from vizro.models.types import ActionsType
+
 
 class Checklist(VizroBaseModel):
     """Categorical multi-option selector `Checklist`.
@@ -24,7 +26,7 @@ class Checklist(VizroBaseModel):
         options (OptionsType): See [`OptionsType`][vizro.models.types.OptionsType]. Defaults to `[]`.
         value (Optional[MultiValueType]): See [`MultiValueType`][vizro.models.types.MultiValueType]. Defaults to `None`.
         title (str): Title to be displayed. Defaults to `""`.
-        actions (list[Action]): See [`Action`][vizro.models.Action]. Defaults to `[]`.
+        actions (list[ActionsType]): See [`ActionsType`][vizro.models.types.ActionsType]. Defaults to `[]`.
 
     """
 
@@ -35,7 +37,7 @@ class Checklist(VizroBaseModel):
     ]
     title: str = Field(default="", description="Title to be displayed")
     actions: Annotated[
-        list[Action],
+        list[ActionsType],
         AfterValidator(_action_validator_factory("value")),
         PlainSerializer(lambda x: x[0].actions),
         Field(default=[]),

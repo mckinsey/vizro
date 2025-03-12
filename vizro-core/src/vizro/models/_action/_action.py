@@ -18,6 +18,8 @@ from vizro.models import VizroBaseModel
 from vizro.models._models_utils import _log_call
 from vizro.models.types import CapturedCallable, ControlType, capture, validate_captured_callable
 
+from typing import Literal
+
 logger = logging.getLogger(__name__)
 
 # TODO NOW: work out where these definitions go and if they're a good idea.
@@ -35,12 +37,7 @@ class Controls(TypedDict):
     filter_interaction: list[dict[str, Any]]
 
 
-class ControlsState(TypedDict):
-    filters: list[State]
-    parameters: list[State]
-    filter_interaction: list[dict[str, State]]
-
-
+# TODO NOW: probably split into one model per file structure
 class _BaseAction(VizroBaseModel):
     def _get_control_states(self, control_type: ControlType) -> list[State]:
         """Gets list of `States` for selected `control_type` that appear on page where this Action is defined."""
@@ -57,7 +54,7 @@ class _BaseAction(VizroBaseModel):
 
         # TODO NOW: see if this logic can be simplified.
 
-        def _get_action_trigger(action: Action) -> VizroBaseModel:  # type: ignore[return]
+        def _get_action_trigger(action: _BaseAction) -> VizroBaseModel:  # type: ignore[return]
             """Gets the model that triggers the action with "action_id"."""
             # TODO NOW: maybe make model_manager._get_parent_model for this sort of thing. Maybe encode parent in id with
             #  dictionary id.
@@ -271,10 +268,11 @@ class Action(_BaseAction):
             Defaults to `[]`.
     """
 
+    type: Literal["action"] = "action"
     # export_data and filter_interaction are here just so that legacy vm.Action(function=filter_interaction(...)) and
     # vm.Action(function=export_data(...)) work. They are always replaced with the new implementation by extracting
     # actions.function in _set_actions. It's done as a forward ref here to avoid circular imports and resolved with
-    # Action.model_rebuild() later.
+    # Dashboard.model_rebuild() later.
     function: Annotated[
         SkipJsonSchema[Union[CapturedCallable, export_data, filter_interaction]],
         Field(json_schema_extra={"mode": "action", "import_path": "vizro.actions"}, description="Action function."),
@@ -383,7 +381,3 @@ class AbstractAction(_BaseAction, abc.ABC):
     @property
     def _action_name(self):
         return self.__class__.__name__
-
-
-# TODO NOW: remove this
-Action.register(AbstractAction)

@@ -7,8 +7,12 @@ from vizro.actions._actions_utils import _get_modified_page_figures
 from vizro.managers._model_manager import ModelID, model_manager
 from vizro.models._action._action import AbstractAction, Controls
 
+from typing import Literal
+
 
 class _parameter(AbstractAction):
+    type: Literal["_parameter"] = "_parameter"
+
     targets: list[ModelID] = Field(description="Targets in the form `<target_component>.<target_argument>`.")
 
     @property

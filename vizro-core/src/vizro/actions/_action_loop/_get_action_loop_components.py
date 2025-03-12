@@ -5,6 +5,7 @@ from dash import dcc, html
 from vizro.managers import model_manager
 from vizro.models import Action
 from vizro.models._action._actions_chain import ActionsChain
+from vizro.models._action._action import _BaseAction
 
 
 def _get_action_loop_components() -> html.Div:
@@ -16,7 +17,7 @@ def _get_action_loop_components() -> html.Div:
     """
     # actions_chain and actions are iterated over multiple times so must be realized into a list.
     actions_chains: list[ActionsChain] = list(model_manager._get_models(ActionsChain))
-    actions: list[Action] = list(model_manager._get_models(Action))
+    actions: list[_BaseAction] = list(model_manager._get_models(_BaseAction))
 
     if not actions_chains:
         return html.Div(id="action_loop_components_div")

@@ -11,6 +11,8 @@ from vizro.models import Action, VizroBaseModel
 from vizro.models._action._actions_chain import _action_validator_factory
 from vizro.models._components.form._form_utils import validate_date_picker_range, validate_max, validate_range_value
 
+from vizro.models.types import ActionsType
+
 
 class DatePicker(VizroBaseModel):
     """Temporal single/range option selector `DatePicker`.
@@ -26,7 +28,7 @@ class DatePicker(VizroBaseModel):
         value (Optional[Union[list[date], date]]): Default date/dates for date picker. Defaults to `None`.
         title (str): Title to be displayed. Defaults to `""`.
         range (bool): Boolean flag for displaying range picker. Defaults to `True`.
-        actions (list[Action]): See [`Action`][vizro.models.Action]. Defaults to `[]`.
+        actions (list[ActionsType]): See [`ActionsType`][vizro.models.types.ActionsType]. Defaults to `[]`.
 
     """
 
@@ -49,7 +51,7 @@ class DatePicker(VizroBaseModel):
         Field(default=True, description="Boolean flag for displaying range picker.", validate_default=True),
     ]
     actions: Annotated[
-        list[Action],
+        list[ActionsType],
         AfterValidator(_action_validator_factory("value")),
         PlainSerializer(lambda x: x[0].actions),
         Field(default=[]),

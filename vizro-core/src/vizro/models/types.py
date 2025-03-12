@@ -535,6 +535,13 @@ NavSelectorType = Annotated[
 """Discriminated union. Type of component for rendering navigation:
 [`Accordion`][vizro.models.Accordion] or [`NavBar`][vizro.models.NavBar]."""
 
+# TODO NOW: check built docs and write action docstrings etc.
+ActionsType = Annotated[
+    Union["Action", "export_data", "filter_interaction", "_filter", "_parameter", "_on_page_load"],
+    Field(discriminator="type", description=""),
+]
+"""Discriminated union. Actions"""
+
 
 # Extra type groups used for mypy casting
 FigureWithFilterInteractionType = Union["Graph", "Table", "AgGrid"]

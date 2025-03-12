@@ -8,8 +8,12 @@ from vizro.actions._actions_utils import _get_modified_page_figures
 from vizro.managers._model_manager import ModelID, model_manager
 from vizro.models._action._action import AbstractAction, Controls
 
+from typing import Literal
+
 
 class _filter(AbstractAction):
+    type: Literal["_filter"] = "_filter"
+
     # TODO NOW: rename arguments to remove "filter"?
     filter_column: str = Field(description="Column to filter on.")
     filter_function: Callable[[pd.Series, Any], pd.Series] = Field(

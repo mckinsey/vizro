@@ -17,9 +17,13 @@ from vizro.managers._model_manager import FIGURE_MODELS
 from vizro.models import VizroBaseModel
 from vizro.models._action._action import AbstractAction, Controls
 
+from typing import Literal
+
 
 # TODO NOW: check how schema for this is generated.
 class export_data(AbstractAction):
+    type: Literal["export_data"] = "export_data"
+
     targets: list[
         ModelID
     ] = []  # TODO NOW: think about whether should in future rename this so it doesn't inconsistently use targets? May be ok now that targets doesn't yet have special role.

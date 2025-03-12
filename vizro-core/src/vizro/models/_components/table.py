@@ -15,6 +15,7 @@ from vizro.models._action._actions_chain import _action_validator_factory
 from vizro.models._components._components_utils import _process_callable_data_frame
 from vizro.models._models_utils import _log_call
 from vizro.models.types import CapturedCallable, validate_captured_callable
+from vizro.models.types import ActionsType
 
 logger = logging.getLogger(__name__)
 
@@ -31,7 +32,7 @@ class Table(VizroBaseModel):
             Defaults to `""`.
         footer (str): Markdown text positioned below the `Table`. Follows the CommonMark specification.
             Ideal for providing further details such as sources, disclaimers, or additional notes. Defaults to `""`.
-        actions (list[Action]): See [`Action`][vizro.models.Action]. Defaults to `[]`.
+        actions (list[ActionsType]): See [`ActionsType`][vizro.models.types.ActionsType]. Defaults to `[]`.
 
     """
 
@@ -56,7 +57,7 @@ class Table(VizroBaseModel):
         "providing further details such as sources, disclaimers, or additional notes.",
     )
     actions: Annotated[
-        list[Action],
+        list[ActionsType],
         AfterValidator(_action_validator_factory("active_cell")),
         PlainSerializer(lambda x: x[0].actions),
         Field(default=[]),

@@ -10,6 +10,7 @@ from vizro.models._components.form import Checklist, Dropdown, RadioItems, Range
 from vizro.models._layout import set_layout
 from vizro.models._models_utils import _log_call, check_captured_callable_model
 from vizro.models.types import _FormComponentType
+from vizro.models.types import ActionsType
 
 if TYPE_CHECKING:
     from vizro.models import Layout

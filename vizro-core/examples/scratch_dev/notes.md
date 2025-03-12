@@ -23,3 +23,7 @@
 
 TODO future: rename _on_page_load if desired and make _filter etc. public.
 Add deprecation warnings etc. for when legacy=True
+
+# Put in PR/docs
+
+Note need to do `add_type` for udf. TODO NOW: actually try this out.

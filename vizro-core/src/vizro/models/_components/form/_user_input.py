@@ -8,6 +8,8 @@ from vizro.models import Action, VizroBaseModel
 from vizro.models._action._actions_chain import _action_validator_factory
 from vizro.models._models_utils import _log_call
 
+from vizro.models.types import ActionsType
+
 
 class UserInput(VizroBaseModel):
     """Single-line text input component `UserInput`.
@@ -18,7 +20,7 @@ class UserInput(VizroBaseModel):
         type (Literal["user_input"]): Defaults to `"user_input"`.
         title (str): Title to be displayed. Defaults to `""`.
         placeholder (str): Default text to display in input field. Defaults to `""`.
-        actions (Optional[list[Action]]): Defaults to `[]`.
+        actions (Optional[list[ActionsType]]): Defaults to `[]`.
 
     """
 
@@ -29,7 +31,7 @@ class UserInput(VizroBaseModel):
     # TODO: Before making public, consider how actions should be triggered and what the default property should be
     # See comment thread: https://github.com/mckinsey/vizro/pull/298#discussion_r1478137654
     actions: Annotated[
-        list[Action],
+        list[ActionsType],
         AfterValidator(_action_validator_factory("value")),
         PlainSerializer(lambda x: x[0].actions),
         Field(default=[]),

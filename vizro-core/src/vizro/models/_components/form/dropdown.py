@@ -13,6 +13,8 @@ from vizro.models._components.form._form_utils import get_options_and_default, v
 from vizro.models._models_utils import _log_call
 from vizro.models.types import MultiValueType, OptionsDictType, OptionsType, SingleValueType
 
+from vizro.models.types import ActionsType
+
 
 def _get_list_of_labels(full_options: OptionsType) -> Union[list[StrictBool], list[float], list[str], list[date]]:
     """Returns a list of labels from the selector options provided."""
@@ -71,7 +73,7 @@ class Dropdown(VizroBaseModel):
             [`MultiValueType`][vizro.models.types.MultiValueType]. Defaults to `None`.
         multi (bool): Whether to allow selection of multiple values. Defaults to `True`.
         title (str): Title to be displayed. Defaults to `""`.
-        actions (list[Action]): See [`Action`][vizro.models.Action]. Defaults to `[]`.
+        actions (list[ActionsType]): See [`ActionsType`][vizro.models.types.ActionsType]. Defaults to `[]`.
 
     """
 
@@ -89,7 +91,7 @@ class Dropdown(VizroBaseModel):
     ]
     title: str = Field(default="", description="Title to be displayed")
     actions: Annotated[
-        list[Action],
+        list[ActionsType],
         AfterValidator(_action_validator_factory("value")),
         PlainSerializer(lambda x: x[0].actions),
         Field(default=[]),

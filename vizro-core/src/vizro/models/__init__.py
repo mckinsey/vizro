@@ -14,9 +14,7 @@ from ._layout import Layout
 from ._page import Page
 
 # Needed just to make legacy export_data and filter_interaction work still.
-from vizro.actions import export_data, filter_interaction
-
-Action.model_rebuild()
+from vizro.actions import export_data, filter_interaction, _filter, _parameter, _on_page_load
 
 Dashboard.model_rebuild()
 

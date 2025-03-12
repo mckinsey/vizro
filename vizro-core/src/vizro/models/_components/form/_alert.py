@@ -7,6 +7,8 @@ from pydantic import Field
 from vizro.models import Action, VizroBaseModel
 from vizro.models._models_utils import _log_call
 
+from vizro.models.types import ActionsType
+
 
 class Alert(VizroBaseModel):
     """Component `Alert` to provide user feedback.
@@ -16,7 +18,7 @@ class Alert(VizroBaseModel):
         text (str): Text to be displayed in the alert.
         is_open (bool): Flag indicating whether alert should be open by default. Defaults to `True`.
         duration (Optional[int]): Duration in milliseconds for the alert to appear. Defaults to `None`.
-        actions (list[Action]): See [`Action`][vizro.models.Action]. Defaults to `[]`.
+        actions (list[ActionsType]): See [`ActionsType`][vizro.models.types.ActionsType]. Defaults to `[]`.
 
     """
 
@@ -24,7 +26,7 @@ class Alert(VizroBaseModel):
     text: str = Field(description="Text to be displayed in the alert.")
     is_open: bool = Field(True, description="Flag indicating whether alert should be open by default.")
     duration: Optional[int] = Field(default=None, description="Duration in milliseconds for the alert to appear.", ge=0)
-    actions: list[Action] = []
+    actions: list[ActionsType] = []
 
     @_log_call
     def build(self):
