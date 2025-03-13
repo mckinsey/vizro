@@ -3,11 +3,9 @@
 import importlib
 import json
 import re
-import sys
 from pathlib import Path
 
-# Add parent directory to path so we can import chart_groups
-sys.path.append(str(Path(__file__).resolve().parent.parent))
+import vizro.models as vm
 from chart_groups import CHART_GROUPS
 
 
@@ -31,7 +29,7 @@ def extract_card_text_sections(text):
 def get_example_code(var_name, group_name=None):
     """Get the example code for a chart type."""
     script_dir = Path(__file__).resolve().parent
-    examples_dir = script_dir.parent / "pages" / "examples"
+    examples_dir = script_dir / "pages" / "examples"
 
     possible_files = [
         f"{group_name}_{var_name}.py",  # e.g., time_column.py
@@ -41,8 +39,7 @@ def get_example_code(var_name, group_name=None):
     for filename in possible_files:
         example_file = examples_dir / filename
         if example_file.exists():
-            with open(example_file) as f:
-                return f.read()
+            return example_file.read_text()
 
     return ""
 
@@ -80,7 +77,7 @@ def generate_visual_vocabulary():
 
                 card_text = ""
                 for component in page.components:
-                    if component.type == "card":
+                    if isinstance(component, vm.Card):
                         card_text = component.text
                         break
 
@@ -102,10 +99,9 @@ def generate_visual_vocabulary():
 
     visual_vocabulary = {"chart_groups": chart_groups}
 
-    output_path = Path(__file__).resolve().parent.parent / "visual_vocabulary.json"
+    output_path = Path(__file__).resolve().parent / "visual_vocabulary.json"
 
-    with open(output_path, "w") as f:
-        json.dump(visual_vocabulary, f, indent=2)
+    output_path.write_text(json.dumps(visual_vocabulary, indent=2))
 
     return visual_vocabulary
 

@@ -37,7 +37,6 @@ installer = "uv"
 VIZRO_AI_LOG_LEVEL = "DEBUG"
 
 [envs.default.scripts]
-copy-vivivo = "python tools/copy_visual_vocabulary.py"
 example = "cd examples; python example.py"
 example-create-dashboard = "cd examples; python example_dashboard.py"
 example-ui = "cd examples/dashboard_ui; python app.py"

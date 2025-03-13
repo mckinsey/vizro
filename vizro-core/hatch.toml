@@ -38,7 +38,6 @@ PYTHONPATH = "tests/e2e/vizro/dashboards/default:tests/tests_utils:tests/e2e/viz
 [envs.default.scripts]
 download-static-files = "python tools/download_static_files.py"
 example = "hatch run examples:example {args:scratch_dev}"  # shortcut script to underlying example environment script.
-gen-vivivo = "hatch run examples:python examples/visual-vocabulary/tools/generate_vivivo_json.py"
 lint = "pre-commit run {args} --all-files"
 pip = '"{env:HATCH_UV}" pip {args}'
 prep-release = [
@@ -126,13 +125,19 @@ dependencies = [
   "plotly==6.0.0"  # to leverage new MapLibre features in visual-vocabulary,
 ]
 installer = "uv"
-scripts = {example = "cd examples/{args:scratch_dev}; python app.py"}
 # This environment doesn't inherit from default but does install Vizro.
 template = "examples"
 
 [envs.examples.env-vars]
 DASH_DEBUG = "true"
 VIZRO_LOG_LEVEL = "DEBUG"
+
+[envs.examples.scripts]
+example = "cd examples/{args:scratch_dev}; python app.py"
+gen-vivivo = [
+  "python examples/visual-vocabulary/generate_vivivo_json.py",
+  "mv examples/visual-vocabulary/visual_vocabulary.json ../vizro-ai/src/vizro_ai/visual_vocabulary.json"
+]
 
 [envs.lower-bounds]
 extra-dependencies = [

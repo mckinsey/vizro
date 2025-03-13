@@ -162,6 +162,3 @@ cython_debug/
 *.sqlite
 *.sqlite3
 *.orc
-
-# Generated file
-vizro-core/examples/visual-vocabulary/visual_vocabulary.json
