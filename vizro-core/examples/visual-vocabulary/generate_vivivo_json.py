@@ -63,7 +63,7 @@ def generate_visual_vocabulary() -> dict:
     - Each page variable follows the naming convention: {chart_name}_page. e.g., `magnitude_page`
     - Chart descriptions are contained within vm.Card components.
     - Card text contains specific headings: "#### What is ...?" and "#### When should I use it?"
-    - Example code files follow naming conventions like "{group_name}_{var_name}.py" 
+    - Example code files follow naming conventions like "{group_name}_{var_name}.py"
       or "{var_name}.py". e.g., `magnitude_column.py` or `radar.py`
 
     Returns:
