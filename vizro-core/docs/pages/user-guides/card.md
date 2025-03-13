@@ -45,7 +45,7 @@ You can add a [`Card`][vizro.models.Card] to your dashboard by inserting the [`C
     === "Result"
         [![Card]][card]
 
-### Customize card text
+## Customize card text
 
 The [`Card`][vizro.models.Card] uses the `dcc.Markdown` component from Dash as its underlying text component. For more details on customizing the markdown text, refer to the [`dcc.Markdown` component documentation](https://dash.plotly.com/dash-core-components/markdown). Based on examples from Dash, the [`Card`][vizro.models.Card] model supports the following:
 
@@ -177,7 +177,7 @@ The [`Card`][vizro.models.Card] uses the `dcc.Markdown` component from Dash as i
     === "Result"
         [![CardText]][cardtext]
 
-### Place an image on a card
+## Place an image on a card
 
 Images can be added to the `text` parameter by using the standard markdown syntax:
 
@@ -248,7 +248,7 @@ An image ALT text offers a description to your image and serves as a text placeh
 
 You might notice that the image is quite large. You'll find out how to style images in terms of their position and size in the next section.
 
-### Style a card image
+## Style a card image
 
 To change the size or position of the image, add a URL hash to your image like this:
 
@@ -402,7 +402,7 @@ To float an image for example to the right of the text, use the `src` attribute 
     === "Result"
         [![CardImageFloating]][cardimagefloating]
 
-### Make an icon responsive to theme switch
+## Make an icon responsive to theme switch
 
 To make an icon responsive to theme switching, override its [`filter` CSS property](https://developer.mozilla.org/en-US/docs/Web/CSS/filter).
 
@@ -419,7 +419,7 @@ img[src*="#my-image"] {
 !!! example "Responsive icon"
     ![responsive icon](../../assets/user_guides/components/responsive_icon.gif)
 
-### Create a navigation card
+## Create a navigation card
 
 This section describes how to use the [`Card`][vizro.models.Card] component to create a navigation card, enabling users to navigate to another page by clicking on the card area.
 
@@ -515,13 +515,13 @@ If you now click on the card area, you should automatically be redirected to the
     - If the href given is a relative URL, it should match the `path` of the [`Page`][vizro.models.Page] that the [`Card`][vizro.models.Card] should navigate to.
     - If the href given is an absolute link, it should start with `https://` or an equivalent protocol.
 
-### Create a KPI card
+## Create a KPI card
 
 To create a KPI card, you can use the existing KPI card functions from [`vizro.figures`](../API-reference/figure-callables.md). Unlike the static text card `vm.Card`, a KPI card must be created using a figure function, which enables the text content of the KPI to change based on input from controls or actions.
 
 For detailed examples on how to create a KPI card, refer to the [figure user guide on KPI cards](figure.md#key-performance-indicator-kpi-cards).
 
-### The `extra` argument
+## The `extra` argument
 
 The `Card` is based on the underlying Dash component [`dbc.Card`](https://dash-bootstrap-components.opensource.faculty.ai/docs/components/card/). Using the `extra` argument you can pass additional arguments to `dbc.Card` in order to alter it beyond the chosen defaults.
 
