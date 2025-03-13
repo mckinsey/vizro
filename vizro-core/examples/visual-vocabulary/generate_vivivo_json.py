@@ -53,11 +53,11 @@ def get_chart_name_from_example(var_name: str, group_name: str) -> str:
 
 def generate_visual_vocabulary() -> dict:
     """Generate the visual vocabulary JSON file.
-    
+
     This function processes all the chart groups defined in CHART_GROUPS and extracts
     information from corresponding modules to create a JSON representation
     of the visual vocabulary.
-    
+
     Assumptions:
     - Each chart group in CHART_GROUPS has a corresponding module in the pages package. e.g., pages/magnitude.py
     - Each page variable follows the naming convention: {chart_name}_page. e.g., `magnitude_page`
@@ -115,7 +115,7 @@ def generate_visual_vocabulary() -> dict:
 
     output_path = Path(__file__).resolve().parent / "visual_vocabulary.json"
     output_path.write_text(json.dumps(visual_vocabulary, indent=2))
-    
+
     return visual_vocabulary
 
 
