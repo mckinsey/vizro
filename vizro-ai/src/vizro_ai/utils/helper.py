@@ -1,7 +1,10 @@
 """Helper Functions For Vizro AI."""
 
+import json
+from enum import Enum
+from pathlib import Path
+
 import pandas as pd
-from vizro_visual_vocabulary import get_code_templates
 
 # Dictionary of general best practices for chart creation
 GENERAL_CHART_BEST_PRACTICES = {
@@ -34,6 +37,51 @@ class DebugFailure(Exception):
     """Debug Failure."""
 
     pass
+
+
+def get_code_templates() -> dict[str, str]:
+    """Extract the code templates from visual vocabulary JSON.
+
+    Returns:
+        Dictionary mapping chart type names to their code templates.
+    """
+    # Find the path to the JSON file
+    json_path = Path(__file__).parent.parent / "visual_vocabulary.json"
+
+    # Ensure the file exists
+    if not json_path.exists():
+        return {}
+
+    # Load the JSON data
+    with open(json_path) as f:
+        vocabulary_data = json.load(f)
+
+    templates = {}
+
+    # Extract code examples from the JSON
+    for group_data in vocabulary_data.get("chart_groups", {}).values():
+        for chart in group_data.get("charts", []):
+            chart_type = chart.get("chart_name", "")
+            example_code = chart.get("example_code", "")
+
+            if chart_type and example_code:
+                templates[chart_type] = example_code
+
+    return templates
+
+
+def _create_chart_type_enum() -> Enum:
+    """Create an Enum of all available chart types.
+
+    Returns:
+        Enum with all chart types available in the visual vocabulary.
+    """
+    templates = get_code_templates()
+
+    # Create the enum from the templates dictionary
+    ChartType = Enum("ChartType", {k.replace("-", "_").upper(): k for k in templates.keys()})
+
+    return ChartType
 
 
 def _get_augment_info(chart_type: str, chart_code: str, user_input: str) -> str:
@@ -74,9 +122,9 @@ def _get_augment_info(chart_type: str, chart_code: str, user_input: str) -> str:
     The chart_code field MUST:
     1. Keep the function name as 'custom_chart'
     2. Keep the same parameter signature (data_frame)
-    4. Do not include imports in the chart_code field
-    5. Use only the provided data_frame parameter - no hardcoded data
-    6. Ensure the function always returns a plotly figure object
+    3. Do not include imports in the chart_code field
+    4. Use only the provided data_frame parameter - no hardcoded data
+    5. Ensure the function always returns a plotly figure object
 
     {vivivo_best_practices}
 

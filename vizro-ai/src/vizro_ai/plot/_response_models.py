@@ -139,7 +139,7 @@ class BaseChartPlan(BaseModel):
         AfterValidator(_check_chart_code),
         Field(
             description=f"""
-        Python code that generates a generates a plotly go.Figure object. It must fulfill the following criteria:
+        Python code that generates a plotly go.Figure object. It must fulfill the following criteria:
         1. Must be wrapped in a function named `{CUSTOM_CHART_NAME}`
         2. Must accept a single argument `data_frame` which is a pandas DataFrame
         3. Must return a plotly go.Figure object

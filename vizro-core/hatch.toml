@@ -38,6 +38,7 @@ PYTHONPATH = "tests/e2e/vizro/dashboards/default:tests/tests_utils:tests/e2e/viz
 [envs.default.scripts]
 download-static-files = "python tools/download_static_files.py"
 example = "hatch run examples:example {args:scratch_dev}"  # shortcut script to underlying example environment script.
+gen-vivivo = "hatch run examples:python examples/visual-vocabulary/tools/generate_vivivo_json.py"
 lint = "pre-commit run {args} --all-files"
 pip = '"{env:HATCH_UV}" pip {args}'
 prep-release = [

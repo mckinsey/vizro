@@ -143,7 +143,7 @@ time_chart_group = ChartGroup(
 
 
 part_to_whole_intro_text = """
-#### Part-to-whole helps you show how one whole item breaks down into its component parts. If you consider the size of\
+#### Part-to-whole helps you show how one whole item breaks down into its component parts. If you consider the size of \
 the parts to be most important, a magnitude chart may be more appropriate.
 """
 part_to_whole_chart_group = ChartGroup(

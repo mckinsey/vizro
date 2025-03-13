@@ -23,8 +23,7 @@ dependencies = [
   "vizro>=0.1.32",
   "langchain_openai",  # Base dependency, ie minimum model working
   "black",
-  "autoflake",
-  "vizro_visual_vocabulary @ file:///Users/lingyi_zhang/vizx/os/vizro/vizro-ai/wheels/vizro_visual_vocabulary-0.0.1-py3-none-any.whl"
+  "autoflake"
 ]
 description = "Vizro-AI is a tool for generating data visualizations"
 dynamic = ["version"]
