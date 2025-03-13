@@ -6,7 +6,7 @@ The Button component is commonly used for interactive dashboard interactions suc
 
 To add a [`Button`][vizro.models.Button], insert it into the `components` argument of the [`Page`][vizro.models.Page].
 
-### Customize button text
+## Customize button text
 
 You can configure the `text` argument to alter the display text of the [`Button`][vizro.models.Button].
 
@@ -39,7 +39,7 @@ You can configure the `text` argument to alter the display text of the [`Button`
     === "Result"
         [![ButtonText]][buttontext]
 
-### Create a link button
+## Create a link button
 
 To navigate to a different page using a button with an anchor tag, assign an absolute or relative URL to the `Button.href`.
 
@@ -49,7 +49,7 @@ import vizro.models as vm
 vm.Button(text="Leave us a star! ⭐", href="https://github.com/mckinsey/vizro")
 ```
 
-### Attach an action
+## Attach an action
 
 You can use the [`Button`][vizro.models.Button] to trigger predefined action functions, such as exporting data. To explore the available options for [`Actions`][vizro.models.Action], refer to our [API reference][vizro.actions]. Use the `Button.actions` argument to specify which action function executes when the button is clicked.
 
@@ -134,7 +134,7 @@ The example below demonstrates how to configure a button to export the filtered 
     === "Result"
         [![Button]][button]
 
-### Use as a control
+## Use as a control
 
 The [`Button`][vizro.models.Button] component is currently reserved to be used inside the main panel (right-side) of the dashboard. However, there might be use cases where one would like to place the `Button` inside the control panel (left-side) with the other controls.
 
@@ -150,7 +150,7 @@ vm.Page.add_type("controls", vm.Button)
 ...
 ```
 
-### The `extra` argument
+## The `extra` argument
 
 The `Button` is based on the underlying Dash component [`dbc.Button`](https://dash-bootstrap-components.opensource.faculty.ai/docs/components/button/). Using the `extra` argument you can pass additional arguments to `dbc.Button` in order to alter it beyond the chosen defaults.
 
