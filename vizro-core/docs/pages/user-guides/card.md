@@ -423,7 +423,7 @@ img[src*="#my-image"] {
 
 This section describes how to use the [`Card`][vizro.models.Card] component to create a navigation card, enabling users to navigate to another page by clicking on the card area.
 
-For a button-style link navigation component, see the [separate guide on creating a link button](#create-a-link-button). To configure the navigation panel on the left hand side of the screen, refer to the [separate guide on navigation](navigation.md).
+For a button-style link navigation component, see the [separate guide on creating a link button](./card.md#create-a-link-button). To configure the navigation panel on the left hand side of the screen, refer to the [separate guide on navigation](navigation.md).
 
 To create a navigation card:
 
