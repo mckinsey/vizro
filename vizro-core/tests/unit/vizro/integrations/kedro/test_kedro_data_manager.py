@@ -31,6 +31,12 @@ def test_datasets_from_catalog(catalog, mocker):
     datasets = datasets_from_catalog(catalog)
     assert datasets == {"pandas_excel": mocker.ANY, "pandas_parquet": mocker.ANY}
 
+    # Make sure that dataset_name is bound early to the data loading function.
+    mocker.patch.object(catalog, "load")
+    for dataset_name, dataset_loader in datasets.items():
+        dataset_loader()
+        catalog.load.assert_called_with(dataset_name)
+
 
 def test_datasets_from_catalog_with_pipeline(catalog, mocker):
     pipeline = kp.pipeline(
@@ -60,3 +66,9 @@ def test_datasets_from_catalog_with_pipeline(catalog, mocker):
     )
 
     assert datasets == {dataset_name: mocker.ANY for dataset_name in expected_dataset_names}
+
+    # Make sure that dataset_name is bound early to the data loading function.
+    mocker.patch.object(catalog, "load")
+    for dataset_name, dataset_loader in datasets.items():
+        dataset_loader()
+        catalog.load.assert_called_with(dataset_name)

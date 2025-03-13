@@ -3,7 +3,7 @@ from __future__ import annotations
 from importlib.metadata import version
 from pathlib import Path
 from typing import TYPE_CHECKING, Any, Optional, Union
-
+from functools import partial
 from kedro.framework.session import KedroSession
 from kedro.framework.startup import bootstrap_project
 from kedro.pipeline import Pipeline
@@ -102,11 +102,19 @@ def datasets_from_catalog(catalog: CatalogProtocol, *, pipeline: Pipeline = None
             if dataset_config := config_resolver.resolve_pattern(dataset_name):
                 kedro_datasets[dataset_name] = dataset_config
 
+    def _catalog_release_load(dataset_name: str):
+        # release is needed to clear the Kedro load version cache so that the dashboard always fetches the most recent
+        # version rather than being stuck on the same version as when the app started.
+        catalog.release(dataset_name)
+        return catalog.load(dataset_name)
+
     vizro_data_sources = {}
 
     for dataset_name, dataset_config in kedro_datasets.items():
         # "type" key always exists because we filtered out patterns that resolve to empty dictionary above.
         if "pandas" in dataset_config["type"]:
-            vizro_data_sources[dataset_name] = lambda: catalog.load(dataset_name)
+            # We need to bind dataset_name=dataset_name early to avoid dataset_name late-binding to the last value in
+            # the for loop.
+            vizro_data_sources[dataset_name] = lambda dataset_name=dataset_name: _catalog_release_load(dataset_name)
 
     return vizro_data_sources
