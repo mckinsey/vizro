@@ -9,14 +9,10 @@ import pandas as pd
 # Dictionary of general best practices for chart creation
 GENERAL_CHART_BEST_PRACTICES = {
     "color_usage": """
-    1. AVOID using hard-coded colors.
-    2. AVOID using plotly color palettes, color scales, or color sequence
-
-    If you must use colors:
-    Use the default Vizro color palette by accessing `fig.layout.template.layout.colorway`.
-
-    When to make exceptions:
-    Only if it's suggested by the visual vocabulary or the user request.
+    - Default Vizro colors apply automatically if no colors are specified
+    - If custom colors are needed, select from Vizro palette via `fig.layout.template.layout.colorway`
+    - No hard-coded colors, background colors, or plotly color palettes/scales/sequences
+    - Exception: Only when visual vocabulary or user explicitly requests specific colors
     """,
     # "data_aggregation": "When using px.bar or px.line charts,
     # aggregate the data appropriately rather than plotting raw values.",

@@ -1,4 +1,3 @@
-#!/usr/bin/env python3
 """Generate visual vocabulary JSON from vivivo directory."""
 
 import importlib

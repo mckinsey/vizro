@@ -231,7 +231,7 @@ class ChartPlanFactory:
         validate_code: bool = True,
         chart_type_examples: Optional[list[str]] = None,
     ) -> type[BaseChartPlan]:
-        """Creates a chart plan model with additional enrichments.
+        """Creates a chart plan model with additional enhancements.
 
         Args:
             data_frame: DataFrame to use for validation.
@@ -240,15 +240,14 @@ class ChartPlanFactory:
             chart_type_examples: List of chart type examples.
 
         Returns:
-            Chart plan model with additional enrichments.
+            Chart plan model with additional enhancements.
         """
         examples = chart_type_examples or []
         description = f"""
         {chart_plan.model_fields["chart_type"].description}
 
-        The examples list shows commonly available chart types.
-        If none of them match the user's request,
-        you may choose a different chart type if it better suits the user's needs.
+        Select the most appropriate chart type from the examples list based on the user's
+        data and visualization needs. If no example chart matches their request, recommend a suitable alternative.
         """
 
         chart_type_field = Field(description=description, examples=examples)

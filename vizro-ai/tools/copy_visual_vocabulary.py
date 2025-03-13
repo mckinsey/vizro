@@ -1,4 +1,3 @@
-#!/usr/bin/env python3
 """Copy the visual vocabulary JSON file from vizro-core to vizro-ai."""
 
 import shutil

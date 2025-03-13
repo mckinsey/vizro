@@ -54,9 +54,6 @@ branch = true
 parallel = true
 source_pkgs = ["vizro_ai"]
 
-[tool.hatch.metadata]
-allow-direct-references = true  # TODO: remove once we have a proper package
-
 [tool.pytest.ini_options]
 filterwarnings = [
   "error",
