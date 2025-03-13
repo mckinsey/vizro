@@ -82,11 +82,9 @@ def generate_visual_vocabulary():
                 # Get the page object - this is already a Pydantic model
                 page = getattr(module, page_var)
 
-                # Extract card text directly from the Pydantic model's components
                 card_text = ""
                 for component in page.components:
-                    # Use the component's class name to identify Card components
-                    if component.__class__.__name__ == "Card":
+                    if component.type == "card":
                         card_text = component.text
                         break
 
