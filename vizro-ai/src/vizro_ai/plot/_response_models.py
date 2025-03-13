@@ -246,8 +246,8 @@ class ChartPlanFactory:
         description = f"""
         {chart_plan.model_fields["chart_type"].description}
 
-        Select the most appropriate chart type from the examples list based on the user's
-        data and visualization needs. If no example chart matches their request, recommend a suitable alternative.
+        Choose the most appropriate chart type from the examples list based on the user's
+        data and visualization needs. If no chart type matches their request, recommend a suitable alternative.
         """
 
         chart_type_field = Field(description=description, examples=examples)
