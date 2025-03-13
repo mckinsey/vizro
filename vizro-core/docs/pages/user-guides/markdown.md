@@ -110,7 +110,7 @@ The `Markdown` is based on the underlying Dash component [`dcc.Markdown`](https:
 !!! note
     Using `extra` is a quick and flexible way to alter a component beyond what Vizro offers. However, [it is not a part of the official Vizro schema](../explanation/schema.md#what-is-the-vizro-json-schema) and the underlying implementation details may change. If you want to guarantee that your apps keep running, we recommend that you pin your Vizro version.
 
-An example use would be to extend the `Markdown` height to only take as much space as the content, and not to take up all the available height (default). For this, you can use `extra={"style": {"height": "unset"}}`. This would be a shortcut to using custom CSS in the assets folder as explained in [our guide on CSS](../user-guides/custom-css.md).
+An example use would be to set `Markdown` `mathjax=True` (defaults to `False`) to display the mathematical equations. For this, you can use `extra={"mathjax": True}`.
 
 !!! example "Markdown with extra argument"
     === "app.py"

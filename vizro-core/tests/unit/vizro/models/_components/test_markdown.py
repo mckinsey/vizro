@@ -37,6 +37,7 @@ class TestBuildMethod:
             id="markdown_id",
             children="Test",
             dangerously_allow_html=False,
+            className="markdown",
         )
 
         assert_component_equal(markdown, expected_markdown)
@@ -54,26 +55,3 @@ class TestBuildMethod:
         )
 
         assert_component_equal(markdown, expected_markdown)
-
-    @pytest.mark.parametrize(
-        "test_text, expected",
-        [
-            ("""# Header""", "# Header"),
-            ("""_This **tests** emphasis_""", "_This **tests** emphasis_"),
-            ("""> This tests blockquotes""", "> This tests blockquotes"),
-            ("""* This tests list items""", "* This tests list items"),
-            ("Text to test card", "Text to test card"),
-            ("", ""),
-            (
-                """![](assets/images/icons/content/hypotheses.svg)""",
-                "![](assets/images/icons/content/hypotheses.svg)",
-            ),
-            ("""Code block: ```python print(1)```""", "Code block: ```python print(1)```"),
-            ("""[Example page](/test_page)""", "[Example page](/test_page)"),
-        ],
-    )
-    def test_markdown_text(self, test_text, expected):
-        markdown = vm.Markdown(id="id_valid", text=test_text)
-        markdown = markdown.build()
-
-        assert markdown.children == expected
