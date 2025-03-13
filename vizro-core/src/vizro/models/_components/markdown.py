@@ -9,9 +9,22 @@ from vizro.models._models_utils import _log_call
 
 
 class Markdown(VizroBaseModel):
+    """Creates a text component.
+
+    Args:
+        type (Literal["markdown"]): Defaults to `"markdown"`.
+        text (str): Markdown string to create text that should adhere to the CommonMark Spec.
+        extra (Optional[dict[str, Any]]): Extra keyword arguments that are passed to `dcc.Markdown` and overwrite any
+            defaults chosen by the Vizro team. This may have unexpected behavior.
+            Visit the [dcc documentation](https://dash.plotly.com/dash-core-components/markdown/)
+            to see all available arguments. [Not part of the official Vizro schema](../explanation/schema.md) and the
+            underlying component may change in the future. Defaults to `{}`.
+
+    """
+
     type: Literal["markdown"] = "markdown"
     text: str = Field(
-        description="Markdown string to create card title/text that should adhere to the CommonMark Spec."
+        description="Markdown string to create text that should adhere to the CommonMark Spec.",
     )
     extra: SkipJsonSchema[
         Annotated[
@@ -29,11 +42,12 @@ class Markdown(VizroBaseModel):
 
     @_log_call
     def build(self):
-        """Returns a markdown component with an optional classname."""
+        """Returns a markdown component."""
         defaults = {
             "id": self.id,
             "children": self.text,
             "dangerously_allow_html": False,
+            "className": "markdown",
         }
 
         return dcc.Markdown(**(defaults | self.extra))

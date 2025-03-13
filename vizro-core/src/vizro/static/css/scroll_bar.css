@@ -38,3 +38,8 @@
 .ag-root ::-webkit-scrollbar-thumb:hover {
   background: var(--field-enabled);
 }
+
+.markdown::-webkit-scrollbar-thumb,
+.hljs::-webkit-scrollbar-thumb {
+  border-color: var(--right-side-bg);
+}

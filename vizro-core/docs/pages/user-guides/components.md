@@ -34,7 +34,7 @@ The [`Page`][vizro.models.Page] model accepts the `components` argument, where y
 
     Use cards and buttons to visualize text, navigate to different URLs or attach any [action](actions.md).
 
-    [:octicons-arrow-right-24: View user guide](card-button.md)
+    [:octicons-arrow-right-24: View user guide](card.md)
 
 - :octicons-table-16:{ .lg .middle } __Containers__
 

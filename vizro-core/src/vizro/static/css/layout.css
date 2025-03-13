@@ -228,3 +228,8 @@
 ._dash-loading {
   display: none;
 }
+
+.markdown {
+  height: 100%;
+  overflow: auto;
+}
