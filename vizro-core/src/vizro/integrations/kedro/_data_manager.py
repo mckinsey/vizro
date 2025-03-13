@@ -3,7 +3,7 @@ from __future__ import annotations
 from importlib.metadata import version
 from pathlib import Path
 from typing import TYPE_CHECKING, Any, Optional, Union
-from functools import partial
+
 from kedro.framework.session import KedroSession
 from kedro.framework.startup import bootstrap_project
 from kedro.pipeline import Pipeline
