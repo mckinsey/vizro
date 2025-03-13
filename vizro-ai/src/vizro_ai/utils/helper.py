@@ -45,24 +45,17 @@ def get_code_templates() -> dict[str, str]:
         FileNotFoundError: If the visual_vocabulary.json file doesn't exist.
         ValueError: If the JSON structure is invalid or missing expected keys.
     """
-    # Find the path to the JSON file
     json_path = Path(__file__).parent.parent / "visual_vocabulary.json"
-
-    # Ensure the file exists
     if not json_path.exists():
         raise FileNotFoundError(f"Visual vocabulary file not found at {json_path}")
 
-    # Load the JSON data
     with open(json_path) as f:
         vocabulary_data = json.load(f)
 
-    # Check if the JSON has the expected structure
     if "chart_groups" not in vocabulary_data:
         raise ValueError("Invalid visual vocabulary JSON: 'chart_groups' key is missing")
 
     templates = {}
-
-    # Extract code examples from the JSON
     for group_name, group_data in vocabulary_data.get("chart_groups", {}).items():
         if "charts" not in group_data:
             raise ValueError(f"Invalid visual vocabulary JSON: 'charts' key is missing in group '{group_name}'")
@@ -91,8 +84,6 @@ def _create_chart_type_enum() -> Enum:
         Enum with all chart types available in the visual vocabulary.
     """
     templates = get_code_templates()
-
-    # Create the enum from the templates dictionary
     ChartType = Enum("ChartType", {k.replace("-", "_").upper(): k for k in templates.keys()})
 
     return ChartType
@@ -106,7 +97,6 @@ def _get_augment_info(chart_type: str, chart_code: str, user_input: str) -> str:
     else:
         best_practices = code_template[chart_type]
 
-    # Create a section for general best practices
     general_practices_text = "\n".join([f"- {key}: {value}" for key, value in GENERAL_CHART_BEST_PRACTICES.items()])
 
     vivivo_best_practices_text = f"""

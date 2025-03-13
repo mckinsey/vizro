@@ -71,15 +71,11 @@ def generate_visual_vocabulary():
             module = importlib.import_module(f"pages.{group_name}")
 
             for page_info in chart_group.pages:
-                # Extract page variable name from title
                 var_name = page_info.title.lower().replace(" ", "_").replace("-", "_")
-
-                # Access the page object directly from the module
                 page_var = f"{var_name}_page"
                 if not hasattr(module, page_var):
                     continue
 
-                # Get the page object - this is already a Pydantic model
                 page = getattr(module, page_var)
 
                 card_text = ""
