@@ -47,6 +47,9 @@ jobs:
       - name: Check plotly template is up to date
         run: hatch run templates-check
 
+      - name: Install vizro-ai to check compatibility with vizro-core
+        run: hatch run pip install ../vizro-ai
+
       - name: Find changed files to see if changelog fragment needed
         id: changed-files
         if: ${{ github.event_name == 'pull_request' }}

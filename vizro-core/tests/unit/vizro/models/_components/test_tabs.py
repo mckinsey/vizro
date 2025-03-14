@@ -3,7 +3,6 @@
 import dash_bootstrap_components as dbc
 import pytest
 from asserts import assert_component_equal
-from dash import html
 from pydantic import ValidationError
 
 import vizro.models as vm
@@ -49,8 +48,8 @@ class TestTabsBuildMethod:
         assert_component_equal(
             [tab.children for tab in result.children],
             [
-                html.Div(id="container-1", className="page-component-container"),
-                html.Div(id="container-2", className="page-component-container"),
+                dbc.Container(id="container-1", class_name="", fluid=True),
+                dbc.Container(id="container-2", class_name="", fluid=True),
             ],
             keys_to_strip={"children"},
         )
