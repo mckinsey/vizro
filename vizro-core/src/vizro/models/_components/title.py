@@ -1,4 +1,4 @@
-from typing import Annotated, Literal
+from typing import Annotated, Literal, Optional
 
 import dash_bootstrap_components as dbc
 from dash import dcc, html
@@ -23,25 +23,28 @@ class Title(VizroBaseModel):
     type: Literal["title"] = "title"
     text: str = Field(description="Dashboard title to appear on every page on top left-side.")
     icon: Annotated[
-        str,
+        Optional[str],
         AfterValidator(validate_icon),
         Field(default="info", description="Icon name from Google Material icons library."),
     ]
-    tooltip: str = Field(description="Markdown string to create text that appears on icon hover.")
+    tooltip: Optional[str] = Field(
+        default=None, description="Markdown string to create text that appears on icon hover.",
+    )
 
     @_log_call
     def build(self):
         return html.Div(
-            id="dashboard-title",
+            id=self.id,
             children=[
-                html.H2(id="dashboard-title-text", children=self.text),
-                html.Span(self.icon, className="material-symbols-outlined", id=f"{self.id}-icon"),
+                self.text,
+                html.Span(self.icon, className="material-symbols-outlined", id=f"{self.id}-icon")
+                if self.tooltip else html.Span(),
                 dbc.Tooltip(
                     id=f"{self.id}-tooltip",
-                    children=dcc.Markdown(self.tooltip, id="dashboard-title-markdown"),
+                    children=dcc.Markdown(self.tooltip, className="markdown"),
                     target=f"{self.id}-icon",
                     autohide=False,
                     fade=True,
-                ),
+                ) if self.tooltip else [],
             ],
         )

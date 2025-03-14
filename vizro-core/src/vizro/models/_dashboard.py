@@ -22,7 +22,7 @@ from dash import (
     html,
 )
 from dash.development.base_component import Component
-from pydantic import AfterValidator, Field, ValidationInfo
+from pydantic import AfterValidator, Field, ValidationInfo, BeforeValidator
 
 import vizro
 from vizro._constants import MODULE_PAGE_404, VIZRO_ASSETS_PATH
@@ -79,6 +79,14 @@ def set_navigation_pages(navigation: Optional[Navigation], info: ValidationInfo)
     return navigation
 
 
+def set_dashboard_title(title: Optional[Union[str, Title]]):
+    if isinstance(title, str):
+        title = Title(text=title)
+        return title
+
+    return title
+
+
 class Dashboard(VizroBaseModel):
     """Vizro Dashboard to be used within [`Vizro`][vizro._vizro.Vizro.build].
 
@@ -98,9 +106,13 @@ class Dashboard(VizroBaseModel):
     navigation: Annotated[
         Optional[Navigation], AfterValidator(set_navigation_pages), Field(default=None, validate_default=True)
     ]
-    title: Union[str, Title] = Field(
-        default="", description="Dashboard title to appear on every page on top left-side."
-    )
+    # title: Optional[Title] =
+    # Field(default=None, description="Dashboard title to appear on every page on top left-side."
+    # )
+    title: Annotated[
+        Title, BeforeValidator(func=set_dashboard_title, json_schema_input_type=Union[str, Title]),
+        Field(default="", validate_default=True)
+    ]
 
     @_log_call
     def pre_build(self):
@@ -112,9 +124,7 @@ class Dashboard(VizroBaseModel):
         self.pages[0].path = "/"
         meta_img = self._infer_image("app") or self._infer_image("logo") or self._infer_image("logo_dark")
 
-        from vizro.models import Title
-
-        dashboard_title = self.title.text if isinstance(self.title, Title) else self.title
+        dashboard_title = self.title.text
 
         for order, page in enumerate(self.pages):
             dash.register_page(
@@ -196,13 +206,13 @@ class Dashboard(VizroBaseModel):
 
     def _get_page_divs(self, page: Page) -> _PageDivsType:
         # Identical across pages
-
-        dashboard_title = (
-            self.title.build()
-            if isinstance(self.title, Title)
-            else html.H2(id="dashboard-title", children=self.title)
-            if self.title
-            else html.H2(id="dashboard-title", hidden=True)
+        dashboard_title = self.title.build()
+        dashboard_title = html.Div(
+            id="dashboard-title",
+            children=[
+                html.H2(dashboard_title.children[0], className="dashboard-title"),
+                *dashboard_title.children[1:],
+            ]
         )
 
         settings = html.Div(

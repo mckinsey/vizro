@@ -128,12 +128,10 @@
 }
 
 #dashboard-title,
-#dashboard-title-text,
 #page-title {
   display: flex;
   gap: 4px;
   margin: 0;
-  width: 100%;
 }
 
 #dashboard-title .material-symbols-outlined {
@@ -244,6 +242,12 @@
   display: none;
 }
 
-#dashboard-title-markdown * {
+.markdown * {
   color: var(--text-primary-inverted);
+}
+
+.dashboard-title {
+  display: flex;
+  gap: 4px;
+  margin: 0;
 }
