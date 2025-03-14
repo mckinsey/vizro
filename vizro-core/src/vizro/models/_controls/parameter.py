@@ -116,23 +116,19 @@ class Parameter(VizroBaseModel):
                 if filter._dynamic
             ]
 
-            existing_target_ids: set[ModelID] = {cast(ModelID, target.split(".")[0]) for target in self.targets}
-            additional_targets: set[ModelID] = set()
+            targets = set(self.targets)
 
             # Extend parameter targets with dynamic filters linked to the same figure.
-            # Also, include dynamic filter targets to ensure new filter options are correctly calculated
-            # and filter targets are updated when filter values change.
+            # Also, include dynamic filter targets to ensure that the new filter options are correctly calculated. This
+            # also ensures that the dynamic filter target is updated which is necessary if the filter value changes.
             for figure in self.targets:
                 figure_id, figure_arg = figure.split(".", 1)
                 if figure_arg.startswith("data_frame"):
                     for filter in page_dynamic_filters:
                         if figure_id in filter.targets:
-                            additional_targets.add(cast(ModelID, filter.id))
-                            # Exclude existing targets defined with the "dot" notation to avoid duplicates
-                            additional_targets |= set(filter.targets) - existing_target_ids
-
-            self.targets.extend(list(additional_targets))
+                            targets.add(cast(ModelID, filter.id))
+                            targets |= set(filter.targets)
 
             self.selector.actions = [
-                Action(id=f"{PARAMETER_ACTION_PREFIX}_{self.id}", function=_parameter(targets=self.targets))
+                Action(id=f"{PARAMETER_ACTION_PREFIX}_{self.id}", function=_parameter(targets=list(targets)))
             ]

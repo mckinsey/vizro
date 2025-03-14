@@ -119,11 +119,14 @@ class TestPreBuildMethod:
         "filter_targets, expected_parameter_targets",
         [
             ([], {"scatter_chart.data_frame.first_n"}),
-            (["scatter_chart"], {"scatter_chart.data_frame.first_n", "filter_id"}),
-            (["scatter_chart", "box_chart"], {"scatter_chart.data_frame.first_n", "filter_id", "box_chart"}),
+            (["scatter_chart"], {"scatter_chart.data_frame.first_n", "filter_id", "scatter_chart"}),
+            (
+                ["scatter_chart", "box_chart"],
+                {"scatter_chart.data_frame.first_n", "filter_id", "scatter_chart", "box_chart"},
+            ),
         ],
     )
-    def test_targets_for_data_frame_parameter(
+    def test_targets_argument_for_data_frame_parameter_action(
         self, filter_targets, expected_parameter_targets, gapminder_dynamic_first_n_last_n_function
     ):
         data_manager["gapminder_dynamic_first_n_last_n"] = gapminder_dynamic_first_n_last_n_function
@@ -141,7 +144,8 @@ class TestPreBuildMethod:
         model_manager["test_page"].controls.append(data_frame_parameter)
         data_frame_parameter.pre_build()
 
-        assert set(data_frame_parameter.targets) == expected_parameter_targets
+        default_action = data_frame_parameter.selector.actions[0].actions[0]
+        assert set(default_action.function._arguments["targets"]) == expected_parameter_targets
 
 
 @pytest.mark.usefixtures("managers_one_page_two_graphs")
