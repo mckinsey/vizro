@@ -105,3 +105,23 @@ def check_exported_file_exists(exported_file):
         time_counter += 0.1
         if time_counter > time_to_wait:
             raise FileNotFoundError(exported_file)
+
+
+def check_table_rows_number(driver, table_id, expected_rows_num):
+    actual_rows_num = driver.find_elements(f"div[id='{table_id}'] tbody tr")
+    assert_that(
+        len(actual_rows_num),
+        equal_to(expected_rows_num),
+        reason=f"Rows number is '{actual_rows_num}', but expected number is '{expected_rows_num}'",
+    )
+
+
+def check_table_ag_grid_rows_number(driver, table_id, expected_rows_num):
+    actual_rows_num = driver.find_elements(
+        f"div[id='{table_id}'] div[class='ag-center-cols-container'] div[role='row']"
+    )
+    assert_that(
+        len(actual_rows_num),
+        equal_to(expected_rows_num),
+        reason=f"Rows number is '{actual_rows_num}', but expected number is '{expected_rows_num}'",
+    )

@@ -51,3 +51,14 @@ def dropdown_arrow_path(dropdown_id):
 
 def button_path():
     return "button[class='btn btn-primary']"
+
+
+def table_cell_value_path(table_id, row_number, column_number):
+    return f"div[id='{table_id}'] tr:nth-of-type({row_number}) td:nth-of-type({column_number}) div"
+
+
+def table_ag_grid_cell_value_path(table_id, row_number, column_number):
+    return (
+        f"div[id='{table_id}'] div[class='ag-center-cols-container'] div:nth-of-type({row_number}) "
+        f"div:nth-of-type({column_number})"
+    )

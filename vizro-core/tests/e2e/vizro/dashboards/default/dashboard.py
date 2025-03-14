@@ -1,5 +1,7 @@
 import e2e.vizro.constants as cnst
+from pages.ag_grid_interactions_page import ag_grid_interactions_page
 from pages.ag_grid_page import ag_grid_page
+from pages.custom_components_page import custom_components_page
 from pages.datepicker_page import datepicker_page
 from pages.dynamic_data_page import dynamic_data_page
 from pages.dynamic_filters_pages import dynamic_filters_categorical_page, dynamic_filters_numerical_page
@@ -26,11 +28,13 @@ dashboard = vm.Dashboard(
         export_action_page,
         datepicker_page,
         ag_grid_page,
+        ag_grid_interactions_page,
         table_page,
         table_interactions_page,
         dynamic_data_page,
         dynamic_filters_categorical_page,
         dynamic_filters_numerical_page,
+        custom_components_page,
     ],
     navigation=vm.Navigation(
         pages={
@@ -41,9 +45,15 @@ dashboard = vm.Dashboard(
                 cnst.FILTER_INTERACTIONS_PAGE,
                 cnst.KPI_INDICATORS_PAGE,
                 cnst.EXPORT_PAGE,
+                cnst.CUSTOM_COMPONENTS_PAGE,
             ],
             cnst.DATEPICKER_ACCORDION: [cnst.DATEPICKER_PAGE],
-            cnst.AG_GRID_ACCORDION: [cnst.TABLE_PAGE, cnst.TABLE_INTERACTIONS_PAGE, cnst.TABLE_AG_GRID_PAGE],
+            cnst.AG_GRID_ACCORDION: [
+                cnst.TABLE_PAGE,
+                cnst.TABLE_INTERACTIONS_PAGE,
+                cnst.TABLE_AG_GRID_PAGE,
+                cnst.TABLE_AG_GRID_INTERACTIONS_PAGE,
+            ],
             cnst.DYNAMIC_DATA_ACCORDION: [
                 cnst.DYNAMIC_DATA_PAGE,
                 cnst.DYNAMIC_FILTERS_NUMERICAL_PAGE,

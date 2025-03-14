@@ -42,10 +42,12 @@ filter_interactions_page = vm.Page(
         ),
     ],
     controls=[
-        vm.Filter(column="species", targets=[cnst.BOX_INTERACTIONS_ID]),
+        vm.Filter(
+            column="species", targets=[cnst.BOX_INTERACTIONS_ID], selector=vm.Dropdown(id=cnst.DROPDOWN_INTER_FILTER)
+        ),
         vm.Parameter(
             targets=[f"{cnst.BOX_INTERACTIONS_ID}.title"],
-            selector=vm.RadioItems(options=["red", "blue"], value="blue"),
+            selector=vm.RadioItems(id=cnst.RADIOITEM_INTER_PARAM, options=["red", "blue"], value="blue"),
         ),
     ],
 )
