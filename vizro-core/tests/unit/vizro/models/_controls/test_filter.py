@@ -445,10 +445,6 @@ class TestFilterInstantiation:
     def test_check_target_present_valid(self):
         Filter(column="foo", targets=["scatter_chart", "bar_chart"])
 
-    def test_check_target_present_invalid(self):
-        with pytest.raises(ValueError, match="Target invalid_target not found in model_manager."):
-            Filter(column="foo", targets=["invalid_target"])
-
 
 @pytest.mark.usefixtures("managers_column_only_exists_in_some")
 class TestFilterCall:
@@ -549,6 +545,10 @@ class TestPreBuildMethod:
         model_manager["test_page"].controls = [filter]
         filter.pre_build()
         assert filter.targets == ["column_numerical_exists_1"]
+
+    def test_targets_specific_present_invalid(self, managers_column_only_exists_in_some):
+        with pytest.raises(ValueError, match="Target invalid_target not found in model_manager."):
+            Filter(column="column_numerical", targets=["invalid_target"]).pre_build()
 
     def test_targets_default_invalid(self, managers_column_only_exists_in_some):
         filter = vm.Filter(column="invalid_choice")

@@ -29,10 +29,6 @@ class TestParameterInstantiation:
         ):
             Parameter(targets=["scatter_chart"], selector=vm.Dropdown(options=["lifeExp", "pop"]))
 
-    def test_check_target_present_failed(self):
-        with pytest.raises(ValueError, match="Target scatter_chart_invalid not found in model_manager."):
-            Parameter(targets=["scatter_chart_invalid.x"], selector=vm.Dropdown(options=["lifeExp", "pop"]))
-
     @pytest.mark.parametrize("target", ["scatter_chart.data_frame", "scatter_chart.data_frame.argument.nested_arg"])
     def test_check_data_frame_as_target_argument_failed(self, target):
         with pytest.raises(
@@ -72,6 +68,10 @@ class TestPreBuildMethod:
         parameter.pre_build()
         assert parameter.targets == ["scatter_chart.x"]
         assert parameter.selector.title == title
+
+    def test_targets_present_invalid(self):
+        with pytest.raises(ValueError, match="Target scatter_chart_invalid not found in model_manager."):
+            Parameter(targets=["scatter_chart_invalid.x"], selector=vm.Dropdown(options=["lifeExp", "pop"])).pre_build()
 
     @pytest.mark.parametrize("test_input", [vm.Slider(), vm.RangeSlider(), vm.DatePicker()])
     def test_numerical_and_temporal_selectors_missing_values(self, test_input):

@@ -2,12 +2,12 @@ from __future__ import annotations
 
 from collections.abc import Iterable
 from contextlib import suppress
-from typing import Annotated, Any, Literal, Optional, Union, cast
+from typing import Any, Literal, Optional, Union, cast
 
 import pandas as pd
 from dash import dcc
 from pandas.api.types import is_datetime64_any_dtype, is_numeric_dtype
-from pydantic import AfterValidator, Field, PrivateAttr
+from pydantic import Field, PrivateAttr
 
 from vizro._constants import ALL_OPTION, FILTER_ACTION_PREFIX
 from vizro.actions import _filter
@@ -66,12 +66,6 @@ def _filter_isin(series: pd.Series, value: MultiValueType) -> pd.Series:
     return series.isin(value)
 
 
-def check_target_present(target):
-    if target not in model_manager:
-        raise ValueError(f"Target {target} not found in model_manager.")
-    return target
-
-
 class Filter(VizroBaseModel):
     """Filter the data supplied to `targets` on the [`Page`][vizro.models.Page].
 
@@ -89,7 +83,7 @@ class Filter(VizroBaseModel):
 
     type: Literal["filter"] = "filter"
     column: str = Field(description="Column of DataFrame to filter.")
-    targets: list[Annotated[ModelID, AfterValidator(check_target_present)]] = Field(
+    targets: list[ModelID] = Field(
         default=[],
         description="Target component to be affected by filter. "
         "If none are given then target all components on the page that use `column`.",
@@ -129,7 +123,13 @@ class Filter(VizroBaseModel):
             return self.selector(min=_min, max=_max, current_value=current_value)
 
     @_log_call
-    def pre_build(self):
+    def pre_build(self):  # noqa: PLR0912
+        # Validate that targets present in model_manager.
+        # Validation has to be triggered in pre_build because all targets are not initialized until then.
+        for target in self.targets:
+            if target not in model_manager:
+                raise ValueError(f"Target {target} not found in model_manager.")
+
         # If targets aren't explicitly provided then try to target all figures on the page. In this case we don't
         # want to raise an error if the column is not found in a figure's data_frame, it will just be ignored.
         # This is the case when bool(self.targets) is False.
