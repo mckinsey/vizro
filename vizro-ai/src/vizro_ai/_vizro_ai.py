@@ -13,7 +13,7 @@ from vizro_ai.dashboard._graph.dashboard_creation import _create_and_compile_gra
 from vizro_ai.dashboard._pydantic_output import _get_pydantic_model  # TODO: make general, ie remove from dashboard
 from vizro_ai.dashboard.utils import DashboardOutputs, _extract_overall_imports_and_code, _register_data
 from vizro_ai.plot._response_models import BaseChartPlan, ChartPlan, ChartPlanFactory
-from vizro_ai.utils.helper import _create_chart_type_enum, _get_augment_info, _get_df_info
+from vizro_ai.utils.helper import _get_augment_info, _get_df_info, _get_vivivo_chart_type_list
 
 logger = logging.getLogger(__name__)
 
@@ -47,8 +47,7 @@ class VizroAI:
 
         """
         self.model = _get_llm_model(model=model)
-        self.chart_type_enum = _create_chart_type_enum()
-        self.chart_type_examples = [member.value for member in self.chart_type_enum]
+        self.chart_type_examples = _get_vivivo_chart_type_list()
 
         logger.info(
             "Engaging with LLMs (Large Language Models) carries certain risks. "

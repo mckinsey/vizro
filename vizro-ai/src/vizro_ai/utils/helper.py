@@ -1,7 +1,6 @@
 """Helper Functions For Vizro AI."""
 
 import json
-from enum import Enum
 from pathlib import Path
 
 import pandas as pd
@@ -35,7 +34,7 @@ class DebugFailure(Exception):
     pass
 
 
-def get_code_templates() -> dict[str, str]:
+def get_vivivo_code_templates() -> dict[str, str]:
     """Extract the code templates from visual vocabulary JSON.
 
     Returns:
@@ -77,21 +76,34 @@ def get_code_templates() -> dict[str, str]:
     return templates
 
 
-def _create_chart_type_enum() -> Enum:
-    """Create an Enum of all available chart types.
+def _get_vivivo_chart_type_list() -> list[str]:
+    """Get a list of all available chart types from the visual vocabulary.
 
     Returns:
-        Enum with all chart types available in the visual vocabulary.
+        List of all chart types available in the visual vocabulary.
     """
-    templates = get_code_templates()
-    ChartType = Enum("ChartType", {k.replace("-", "_").upper(): k for k in templates.keys()})
-
-    return ChartType
+    templates = get_vivivo_code_templates()
+    return list(templates.keys())
 
 
 def _get_augment_info(chart_type: str, chart_code: str, user_input: str) -> str:
-    """Get the augment info."""
-    code_template = get_code_templates()
+    """Get augmentated prompt to improve chart code with best practices.
+
+    This function takes a chart type, code and user input and returns a formatted string containing:
+    1. The original user request
+    2. Best practice implementation examples for the specific chart type (if available)
+    3. General best practices that apply to all chart types
+    4. Instructions for improving the code while maintaining required structure
+
+    Args:
+        chart_type: The type of chart (e.g. "scatter", "bar", etc.)
+        chart_code: The current chart code implementation to be improved
+        user_input: The original user request
+
+    Returns:
+        Augmentated prompt containing best practices and instructions for improving the chart code
+    """
+    code_template = get_vivivo_code_templates()
     if chart_type not in code_template:
         best_practices = None
     else:
