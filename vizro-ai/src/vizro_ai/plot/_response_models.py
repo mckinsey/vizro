@@ -237,7 +237,7 @@ class ChartPlanFactory:
             data_frame: DataFrame to use for validation.
             chart_plan: Chart plan model to run extended validation against. Defaults to ChartPlan.
             validate_code: Whether to validate the code.
-            chart_type_examples: List of chart type examples.
+            chart_type_examples: List of chart types as examples.
 
         Returns:
             Chart plan model with additional enhancements.
