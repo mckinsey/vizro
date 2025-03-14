@@ -18,7 +18,7 @@ Uncomment the section that is right (remove the HTML comment wrapper).
 -->
 ### Added
 
-- Added `Title` model to use within `vm.Dashboard`, enabling support for info icon and tooltip in the dashboard header. ([#1053](https://github.com/mckinsey/vizro/pull/1053))
+- Add `Title` model to use within `vm.Dashboard`, enabling support for an info icon with tooltip in the dashboard header. ([#1053](https://github.com/mckinsey/vizro/pull/1053))
 
 <!--
 ### Changed

@@ -38,9 +38,10 @@ class Title(VizroBaseModel):
                 html.Span(self.icon, className="material-symbols-outlined", id=f"{self.id}-icon"),
                 dbc.Tooltip(
                     id=f"{self.id}-tooltip",
-                    children=dcc.Markdown(self.tooltip, dangerously_allow_html=True, id="dashboard-title-markdown"),
-                    placement="left",
+                    children=dcc.Markdown(self.tooltip, id="dashboard-title-markdown"),
                     target=f"{self.id}-icon",
+                    autohide=False,
+                    fade=True,
                 ),
             ],
         )
