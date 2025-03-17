@@ -4,7 +4,7 @@ import base64
 import logging
 from functools import partial
 from pathlib import Path
-from typing import TYPE_CHECKING, Annotated, Literal, Optional, TypedDict, cast
+from typing import TYPE_CHECKING, Annotated, Literal, Optional, TypedDict, Union, cast
 
 import dash
 import dash_bootstrap_components as dbc
@@ -22,13 +22,13 @@ from dash import (
     html,
 )
 from dash.development.base_component import Component
-from pydantic import AfterValidator, Field, ValidationInfo
+from pydantic import AfterValidator, BeforeValidator, Field, ValidationInfo
 
 import vizro
 from vizro._constants import MODULE_PAGE_404, VIZRO_ASSETS_PATH
 from vizro._themes.template_dashboard_overrides import dashboard_overrides
 from vizro.actions._action_loop._action_loop import ActionLoop
-from vizro.models import Navigation, VizroBaseModel
+from vizro.models import Navigation, Title, VizroBaseModel
 from vizro.models._models_utils import _log_call
 from vizro.models._navigation._navigation_utils import _NavBuildType
 
@@ -79,6 +79,10 @@ def set_navigation_pages(navigation: Optional[Navigation], info: ValidationInfo)
     return navigation
 
 
+def set_dashboard_title(title: Optional[Union[str, Title]]) -> Optional[Title]:
+    return Title(text=title) if isinstance(title, str) else title
+
+
 class Dashboard(VizroBaseModel):
     """Vizro Dashboard to be used within [`Vizro`][vizro._vizro.Vizro.build].
 
@@ -87,7 +91,7 @@ class Dashboard(VizroBaseModel):
         theme (Literal["vizro_dark", "vizro_light"]): Layout theme to be applied across dashboard.
             Defaults to `vizro_dark`.
         navigation (Navigation): See [`Navigation`][vizro.models.Navigation]. Defaults to `None`.
-        title (str): Dashboard title to appear on every page on top left-side. Defaults to `""`.
+        title (Optional[Union[str, Title]]): Dashboard title to appear on every page on top left-side. Defaults to `""`.
 
     """
 
@@ -98,7 +102,13 @@ class Dashboard(VizroBaseModel):
     navigation: Annotated[
         Optional[Navigation], AfterValidator(set_navigation_pages), Field(default=None, validate_default=True)
     ]
-    title: str = Field(default="", description="Dashboard title to appear on every page on top left-side.")
+    title: Annotated[
+        Title,
+        BeforeValidator(set_dashboard_title, json_schema_input_type=Union[str, Title]),
+        Field(
+            default="", validate_default=True, description="Dashboard title to appear on every page on top left-side"
+        ),
+    ]
 
     @_log_call
     def pre_build(self):
@@ -110,13 +120,15 @@ class Dashboard(VizroBaseModel):
         self.pages[0].path = "/"
         meta_img = self._infer_image("app") or self._infer_image("logo") or self._infer_image("logo_dark")
 
+        dashboard_title = self.title.text
+
         for order, page in enumerate(self.pages):
             dash.register_page(
                 module=page.id,
                 name=page.title,
                 description=page.description,
                 image=meta_img,
-                title=f"{self.title}: {page.title}" if self.title else page.title,
+                title=f"{dashboard_title}: {page.title}" if self.title else page.title,
                 path=page.path,
                 order=order,
                 layout=partial(self._make_page_layout, page),
@@ -190,11 +202,15 @@ class Dashboard(VizroBaseModel):
 
     def _get_page_divs(self, page: Page) -> _PageDivsType:
         # Identical across pages
-        dashboard_title = (
-            html.H2(id="dashboard-title", children=self.title)
-            if self.title
-            else html.H2(id="dashboard-title", hidden=True)
+        dashboard_title = self.title.build()
+        dashboard_title = html.Div(
+            id="dashboard-title",
+            children=[
+                html.H2(dashboard_title.children[0], className="dashboard-title"),
+                *dashboard_title.children[1:],
+            ],
         )
+
         settings = html.Div(
             children=dbc.Switch(
                 id="theme-selector",
@@ -291,6 +307,7 @@ class Dashboard(VizroBaseModel):
 
         page_header = html.Div(id="page-header", children=page_header_divs, hidden=_all_hidden(page_header_divs))
         page_main = html.Div(id="page-main", children=[collapsable_left_side, collapsable_icon, right_side])
+
         return html.Div(children=[page_header, page_main], className="page-container")
 
     def _make_page_layout(self, page: Page, **kwargs):

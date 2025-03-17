@@ -80,7 +80,6 @@ class Page(VizroBaseModel):
     def set_id(cls, values):
         if "title" not in values:
             return values
-
         values.setdefault("id", values["title"])
         return values
 
