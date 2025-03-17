@@ -28,23 +28,34 @@ class Title(VizroBaseModel):
         Field(default="info", description="Icon name from Google Material icons library."),
     ]
     tooltip: Optional[str] = Field(
-        default=None, description="Markdown string to create text that appears on icon hover.",
+        default=None,
+        description="Markdown string to create text that appears on icon hover.",
     )
 
     @_log_call
     def build(self):
+        icon = (
+            html.Span(
+                self.icon,
+                className="material-symbols-outlined",
+                id=f"{self.id}-icon",
+            )
+            if self.tooltip
+            else None
+        )
+        tooltip = (
+            dbc.Tooltip(
+                id=f"{self.id}-tooltip",
+                children=dcc.Markdown(self.tooltip, className="markdown"),
+                target=f"{self.id}-icon",
+                autohide=False,
+                fade=True,
+            )
+            if self.tooltip
+            else None
+        )
+
         return html.Div(
             id=self.id,
-            children=[
-                self.text,
-                html.Span(self.icon, className="material-symbols-outlined", id=f"{self.id}-icon")
-                if self.tooltip else html.Span(),
-                dbc.Tooltip(
-                    id=f"{self.id}-tooltip",
-                    children=dcc.Markdown(self.tooltip, className="markdown"),
-                    target=f"{self.id}-icon",
-                    autohide=False,
-                    fade=True,
-                ) if self.tooltip else [],
-            ],
+            children=[self.text, icon, tooltip] if self.tooltip else [self.text],
         )

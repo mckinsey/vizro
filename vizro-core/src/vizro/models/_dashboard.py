@@ -22,7 +22,7 @@ from dash import (
     html,
 )
 from dash.development.base_component import Component
-from pydantic import AfterValidator, Field, ValidationInfo, BeforeValidator
+from pydantic import AfterValidator, BeforeValidator, Field, ValidationInfo
 
 import vizro
 from vizro._constants import MODULE_PAGE_404, VIZRO_ASSETS_PATH
@@ -79,12 +79,8 @@ def set_navigation_pages(navigation: Optional[Navigation], info: ValidationInfo)
     return navigation
 
 
-def set_dashboard_title(title: Optional[Union[str, Title]]):
-    if isinstance(title, str):
-        title = Title(text=title)
-        return title
-
-    return title
+def set_dashboard_title(title: Optional[Union[str, Title]]) -> Optional[Title]:
+    return Title(text=title) if isinstance(title, str) else title
 
 
 class Dashboard(VizroBaseModel):
@@ -106,12 +102,12 @@ class Dashboard(VizroBaseModel):
     navigation: Annotated[
         Optional[Navigation], AfterValidator(set_navigation_pages), Field(default=None, validate_default=True)
     ]
-    # title: Optional[Title] =
-    # Field(default=None, description="Dashboard title to appear on every page on top left-side."
-    # )
     title: Annotated[
-        Title, BeforeValidator(func=set_dashboard_title, json_schema_input_type=Union[str, Title]),
-        Field(default="", validate_default=True)
+        Title,
+        BeforeValidator(set_dashboard_title, json_schema_input_type=Union[str, Title]),
+        Field(
+            default="", validate_default=True, description="Dashboard title to appear on every page on top left-side"
+        ),
     ]
 
     @_log_call
@@ -212,7 +208,7 @@ class Dashboard(VizroBaseModel):
             children=[
                 html.H2(dashboard_title.children[0], className="dashboard-title"),
                 *dashboard_title.children[1:],
-            ]
+            ],
         )
 
         settings = html.Div(
