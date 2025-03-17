@@ -1,8 +1,8 @@
 # How to use markdown
 
-This guide shows you how to use markdown to visualize your data in the dashboard.
+This guide shows you how to use markdown to display plain text without any additional styling like borders or background in the dashboard.
 
-The [`Markdown` component][vizro.models.Markdown] is flexible and extensible and is for use in customizing markdown text. To find out more about basic Markdown syntax, refer to [this or any other online guide](https://markdown-guide.readthedocs.io/en/latest/).
+The [`Markdown` component][vizro.models.Markdown] is used for displaying plain text. It is flexible and extensible due to its underlying usage of Markdown syntax. To find out more about basic Markdown syntax, refer to [this or any other online guide](https://markdown-guide.readthedocs.io/en/latest/).
 
 The `Markdown` component is based on the underlying Dash component [`dcc.Markdown`](https://dash.plotly.com/dash-core-components/markdown/). You can add a [`Markdown`][vizro.models.Markdown] component to your dashboard by inserting [`Markdown`][vizro.models.Markdown] into the `components` argument of the [`Page`][vizro.models.Page] or the [`Container`][vizro.models.Container] model.
 
@@ -47,7 +47,7 @@ The `Markdown` component is based on the underlying Dash component [`dcc.Markdow
 
 ## Customize Markdown text
 
-The [`Markdown`][vizro.models.Markdown] component uses the `dcc.Markdown` component from Dash as its underlying text component. For more details on customizing markdown text, refer to the [`dcc.Markdown` component documentation](https://dash.plotly.com/dash-core-components/markdown). As it is based on examples from Dash, the [`Markdown`][vizro.models.Markdown] model supports the following:
+The [`Markdown`][vizro.models.Markdown] component uses the `dcc.Markdown` component from Dash as its underlying text component. For more details on customizing markdown text, refer to the [`dcc.Markdown` component documentation](https://dash.plotly.com/dash-core-components/markdown). It supports (among other things) the following features:
 
 - Headers
 - Emphasis
@@ -107,7 +107,7 @@ The [`Markdown`][vizro.models.Markdown] component uses the `dcc.Markdown` compon
 
 ## The `extra` argument
 
-Use the `extra` argument to pass additional arguments to `dcc.Markdown` to change the defaults.
+The `Markdown` is based on the underlying Dash component [`dcc.Markdown`](https://dash.plotly.com/dash-core-components/markdown/). Using the `extra` argument you can pass additional arguments to `dcc.Markdown` in order to alter it beyond the chosen defaults.
 
 !!! note
     Using `extra` is a quick and flexible way to alter a component beyond what Vizro offers. However, [it is not a part of the official Vizro schema](../explanation/schema.md#what-is-the-vizro-json-schema) and the underlying implementation details may change. If you want to guarantee that your apps keep running, we recommend that you pin your Vizro version.

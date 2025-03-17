@@ -9,7 +9,7 @@ from vizro.models._models_utils import _log_call
 
 
 class Markdown(VizroBaseModel):
-    """Creates a text component.
+    """Creates a text component based on Markdown syntax.
 
     Args:
         type (Literal["markdown"]): Defaults to `"markdown"`.
