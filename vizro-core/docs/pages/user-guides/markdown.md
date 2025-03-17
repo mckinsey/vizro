@@ -47,7 +47,7 @@ The `Markdown` component is based on the underlying Dash component [`dcc.Markdow
 
 ## Customize Markdown text
 
-The [`Markdown`][vizro.models.Markdown] component uses the `dcc.Markdown` component from Dash as its underlying text component. For more details on customizing markdown text, refer to the [`dcc.Markdown` component documentation](https://dash.plotly.com/dash-core-components/markdown). It supports (among other things) the following features:
+The [`Markdown`][vizro.models.Markdown] component uses the `dcc.Markdown` component from Dash as its underlying text component. For more details on customizing markdown text, refer to the [`dcc.Markdown` component documentation](https://dash.plotly.com/dash-core-components/markdown/). It supports (among other things) the following features:
 
 - Headers
 - Emphasis
