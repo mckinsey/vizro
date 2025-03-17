@@ -69,7 +69,7 @@ For instance, to make a KPI card with the icon positioned on the right side of t
                 ]
             )
             body = dbc.CardBody([value_format.format(value=value)])
-            return dbc.Card([header, body], className="card-kpi")
+            return dbc.Card([header, body], class_name="card-kpi")
 
 
         page = vm.Page(
