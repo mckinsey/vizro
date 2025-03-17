@@ -22,10 +22,11 @@ def page_select(driver, page_path, page_name, graph_id=None):
         graph_load_waiter(driver, graph_id)
 
 
-def select_dropdown_value(driver, value, dropdown_id):
+def select_dropdown_value(driver, value, dropdown_id, multi=True):
     """Steps to select value in dropdown."""
     dropdown_path = f"div[id='{dropdown_id}']"
-    driver.multiple_click(f"{dropdown_path} .Select-clear", 1)
+    if multi:
+        driver.multiple_click(f"{dropdown_path} .Select-clear", 1)
     driver.multiple_click(f"{dropdown_path} .Select-arrow", 1)
     driver.multiple_click(f"{dropdown_path} .ReactVirtualized__Grid__innerScrollContainer div:nth-of-type({value})", 1)
 
