@@ -1,5 +1,3 @@
-"""Dev app to try things out."""
-
 import vizro.models as vm
 import vizro.plotly.express as px
 from vizro import Vizro
@@ -61,9 +59,10 @@ page_2 = vm.Page(
                 vm.Graph(figure=px.histogram(iris, x="sepal_width", color="species")),
             ],
             layout=vm.Layout(grid=[[0, 0, 0, 0], [1, 1, 1, 1]]),
-        ),
-    ],
+        )
+    ]
 )
+
 
 dashboard = vm.Dashboard(pages=[page_1, page_2])
 
