@@ -245,7 +245,7 @@ The `Container` is based on the underlying Dash component [`dbc.Container`](http
 !!! note
     Using `extra` is a quick and flexible way to alter a component beyond what Vizro offers. However, [it is not a part of the official Vizro schema](../explanation/schema.md#what-is-the-vizro-json-schema) and the underlying implementation details may change. If you want to guarantee that your apps keep running, we recommend that you pin your Vizro version.
 
-For examples of how to use the `extra` argument, see an example in the documentation of [`Card`](card-button.md#the-extra-argument).
+For examples of how to use the `extra` argument, see an example in the documentation of [`Card`](card.md#the-extra-argument).
 
 [container]: ../../assets/user_guides/components/containers.png
 [stylecontainer]: ../../assets/user_guides/components/container-styled.png

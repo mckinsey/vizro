@@ -1,5 +1,6 @@
-import vizro.models as vm
 import vizro.plotly.express as px
+
+import vizro.models as vm
 from vizro import Vizro
 from components import CollapsibleContainer, FlexContainer
 
