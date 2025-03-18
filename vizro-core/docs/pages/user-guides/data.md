@@ -347,7 +347,7 @@ You cannot pass [nested parameters](parameters.md#nested-parameters) to dynamic 
 
 ### Filters
 
-When a [filter](filters.md) depends on dynamic data and no `selector` is explicitly defined in the `vm.Filter` model, the available selector values update either when the page refreshes or when a relevant [dynamic data parameter](#parametrize-data-loading) changes. This ensures the filter always reflects the latest data, which is called a _dynamic filter_.
+When a [filter](filters.md) depends on dynamic data and no `selector` is explicitly defined in the `vm.Filter` model, it is called a _dynamic filter_. A dynamic filter always reflects the latest data since the available selector values update either when the page refreshes or when a relevant [dynamic data parameter](#parametrize-data-loading) changes.
 
 The mechanism behind updating dynamic filters works exactly like other non-control components such as `vm.Graph`. However, unlike such components, a filter can depend on multiple data sources. If at least one data source of the components in the filter's `targets` is dynamic then the filter is dynamic. Remember that when `targets` is not explicitly specified, a filter applies to all the components on a page that use a DataFrame including `column`.
 
@@ -396,7 +396,7 @@ For example, let us extend the [parametrized dynamic data example](#parametrize-
         Vizro().build(dashboard).run()
         ```
 
-        1. This filter implicitly controls the dynamic data source `"iris"`, which supplies the `data_frame` to the targeted `vm.Graph`. On page refresh or when the dynamic data parameter changes, Vizro reloads this data, finds all the unique values in the `"species"` column and sets the categorical selector's `options` accordingly.
+        1. This filter implicitly controls the dynamic data source `"iris"`, which supplies the `data_frame` to the targeted `vm.Graph`. On page refresh or when the dynamic data parameter changes, Vizro reloads this data, finds all the unique values in the `"species"` column and sets the categorical selector's `options` accordingly. We set `selector=vm.RadioItems()` just to make the `options` more obvious in the example app; if `selector` had not been specified then the filter would have defaulted to using `vm.Dropdown` but options would refresh exactly the same way.
 
     === "Result"
         [![DynamicFilter]][dynamicfilter]

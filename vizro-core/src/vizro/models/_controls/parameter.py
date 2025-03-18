@@ -110,7 +110,7 @@ class Parameter(VizroBaseModel):
                 if filter._dynamic
             ]
 
-            targets = set(self.targets)
+            filter_targets: set[ModelID] = set()
 
             # Extend parameter targets with dynamic filters linked to the same figure.
             # Also, include dynamic filter targets to ensure that the new filter options are correctly calculated. This
@@ -120,9 +120,16 @@ class Parameter(VizroBaseModel):
                 if figure_arg.startswith("data_frame"):
                     for filter in page_dynamic_filters:
                         if figure_id in filter.targets:
-                            targets.add(cast(ModelID, filter.id))
-                            targets |= set(filter.targets)
+                            filter_targets.add(cast(ModelID, filter.id))
+                            filter_targets |= set(filter.targets)
 
+            # Extending `self.targets` with `filter_targets` instead of redefining it to avoid triggering the
+            # pydantic validator like `check_dot_notation` on the `self.targets` again.
+            self.targets.extend(list(filter_targets))
+
+            # Ensure `Action.function["targets"]` remains consistent with `self.targets` by passing the updated
+            # `self.targets` directly to `_parameter`. This maintains synchronization between `self.targets` and
+            # `Action.function["targets"]`, preventing potential inconsistencies and confusion.
             self.selector.actions = [
-                Action(id=f"{PARAMETER_ACTION_PREFIX}_{self.id}", function=_parameter(targets=list(targets)))
+                Action(id=f"{PARAMETER_ACTION_PREFIX}_{self.id}", function=_parameter(targets=self.targets))
             ]
