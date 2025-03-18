@@ -179,7 +179,7 @@
     },
     "Card": {
       "additionalProperties": false,
-      "description": "Creates a card utilizing markdown as title and text component.\n\nArgs:\n    type (Literal[\"card\"]): Defaults to `\"card\"`.\n    text (str): Markdown string to create card title/text that should adhere to the CommonMark Spec.\n    href (str): URL (relative or absolute) to navigate to. If not provided the Card serves as a text card\n        only. Defaults to `\"\"`.\n    extra (Optional[dict[str, Any]]): Extra keyword arguments that are passed to `dbc.Card` and overwrite any\n        defaults chosen by the Vizro team. This may have unexpected behavior.\n        Visit the [dbc documentation](https://dash-bootstrap-components.opensource.faculty.ai/docs/components/card/)\n        to see all available arguments. [Not part of the official Vizro schema](../explanation/schema.md) and the\n        underlying component may change in the future. Defaults to `{}`.",
+      "description": "Creates a card based on Markdown syntax.\n\nArgs:\n    type (Literal[\"card\"]): Defaults to `\"card\"`.\n    text (str): Markdown string to create card title/text that should adhere to the CommonMark Spec.\n    href (str): URL (relative or absolute) to navigate to. If not provided the Card serves as a text card\n        only. Defaults to `\"\"`.\n    extra (Optional[dict[str, Any]]): Extra keyword arguments that are passed to `dbc.Card` and overwrite any\n        defaults chosen by the Vizro team. This may have unexpected behavior.\n        Visit the [dbc documentation](https://dash-bootstrap-components.opensource.faculty.ai/docs/components/card/)\n        to see all available arguments. [Not part of the official Vizro schema](../explanation/schema.md) and the\n        underlying component may change in the future. Defaults to `{}`.",
       "properties": {
         "id": {
           "default": "",
@@ -341,9 +341,9 @@
                 "container": "#/$defs/Container",
                 "figure": "#/$defs/Figure",
                 "graph": "#/$defs/Graph",
-                "markdown": "#/$defs/Markdown",
                 "table": "#/$defs/Table",
-                "tabs": "#/$defs/Tabs"
+                "tabs": "#/$defs/Tabs",
+                "text": "#/$defs/Text"
               },
               "propertyName": "type"
             },
@@ -367,7 +367,7 @@
                 "$ref": "#/$defs/Graph"
               },
               {
-                "$ref": "#/$defs/Markdown"
+                "$ref": "#/$defs/Text"
               },
               {
                 "$ref": "#/$defs/Table"
@@ -820,32 +820,6 @@
       "title": "Layout",
       "type": "object"
     },
-    "Markdown": {
-      "additionalProperties": false,
-      "description": "Creates a text component based on Markdown syntax.\n\nArgs:\n    type (Literal[\"markdown\"]): Defaults to `\"markdown\"`.\n    text (str): Markdown string to create text that should adhere to the CommonMark Spec.\n    extra (Optional[dict[str, Any]]): Extra keyword arguments that are passed to `dcc.Markdown` and overwrite any\n        defaults chosen by the Vizro team. This may have unexpected behavior.\n        Visit the [dcc documentation](https://dash.plotly.com/dash-core-components/markdown/)\n        to see all available arguments. [Not part of the official Vizro schema](../explanation/schema.md) and the\n        underlying component may change in the future. Defaults to `{}`.",
-      "properties": {
-        "id": {
-          "default": "",
-          "description": "ID to identify model. Must be unique throughout the whole dashboard.When no ID is chosen, ID will be automatically generated.",
-          "title": "Id",
-          "type": "string"
-        },
-        "type": {
-          "const": "markdown",
-          "default": "markdown",
-          "title": "Type",
-          "type": "string"
-        },
-        "text": {
-          "description": "Markdown string to create text that should adhere to the CommonMark Spec.",
-          "title": "Text",
-          "type": "string"
-        }
-      },
-      "required": ["text"],
-      "title": "Markdown",
-      "type": "object"
-    },
     "NavBar": {
       "additionalProperties": false,
       "description": "Navigation bar to be used as a nav_selector for `Navigation`.\n\nArgs:\n    type (Literal[\"nav_bar\"]): Defaults to `\"nav_bar\"`.\n    pages (dict[str, list[str]]): Mapping from name of a pages group to a list of page IDs. Defaults to `{}`.\n    items (list[NavLink]): See [`NavLink`][vizro.models.NavLink]. Defaults to `[]`.",
@@ -1046,9 +1020,9 @@
                 "container": "#/$defs/Container",
                 "figure": "#/$defs/Figure",
                 "graph": "#/$defs/Graph",
-                "markdown": "#/$defs/Markdown",
                 "table": "#/$defs/Table",
-                "tabs": "#/$defs/Tabs"
+                "tabs": "#/$defs/Tabs",
+                "text": "#/$defs/Text"
               },
               "propertyName": "type"
             },
@@ -1072,7 +1046,7 @@
                 "$ref": "#/$defs/Graph"
               },
               {
-                "$ref": "#/$defs/Markdown"
+                "$ref": "#/$defs/Text"
               },
               {
                 "$ref": "#/$defs/Table"
@@ -1588,6 +1562,32 @@
       },
       "required": ["tabs"],
       "title": "Tabs",
+      "type": "object"
+    },
+    "Text": {
+      "additionalProperties": false,
+      "description": "Creates a text component based on Markdown syntax.\n\nArgs:\n    type (Literal[\"text\"]): Defaults to `\"text\"`.\n    text (str): Markdown string to create text that should adhere to the CommonMark Spec.\n    extra (Optional[dict[str, Any]]): Extra keyword arguments that are passed to `dcc.Markdown` and overwrite any\n        defaults chosen by the Vizro team. This may have unexpected behavior.\n        Visit the [dcc documentation](https://dash.plotly.com/dash-core-components/markdown/)\n        to see all available arguments. [Not part of the official Vizro schema](../explanation/schema.md) and the\n        underlying component may change in the future. Defaults to `{}`.",
+      "properties": {
+        "id": {
+          "default": "",
+          "description": "ID to identify model. Must be unique throughout the whole dashboard.When no ID is chosen, ID will be automatically generated.",
+          "title": "Id",
+          "type": "string"
+        },
+        "type": {
+          "const": "text",
+          "default": "text",
+          "title": "Type",
+          "type": "string"
+        },
+        "text": {
+          "description": "Markdown string to create text that should adhere to the CommonMark Spec.",
+          "title": "Text",
+          "type": "string"
+        }
+      },
+      "required": ["text"],
+      "title": "Text",
       "type": "object"
     },
     "Trigger": {

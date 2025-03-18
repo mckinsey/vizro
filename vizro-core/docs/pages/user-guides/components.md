@@ -4,67 +4,67 @@ The [`Page`][vizro.models.Page] model accepts the `components` argument, where y
 
 <div class="grid cards" markdown>
 
-- :octicons-graph-16:{ .lg .middle } __Graphs__
+- :octicons-graph-16:{ .lg .middle } __Graph__
 
     ---
 
-    Use graphs to visualize your data with any Plotly chart.
+    Visualize data with any Plotly chart.
 
     [:octicons-arrow-right-24: View user guide](graph.md)
 
-- :material-table-large:{ .lg .middle } __Tables__
+- :material-table-large:{ .lg .middle } __Table__
 
     ---
 
-    Use tables to visualize your tabular data.
+    Visualize tabular data.
 
     [:octicons-arrow-right-24: View user guide](table.md)
 
-- :material-graph:{ .lg .middle } __Figures__
+- :material-graph:{ .lg .middle } __Figure__
 
     ---
 
-    Use figures to make any [Dash component](https://dash.plotly.com/#open-source-component-libraries) reactive.
+    Make any [Dash component](https://dash.plotly.com/#open-source-component-libraries) reactive.
 
     [:octicons-arrow-right-24: View user guide](figure.md)
 
-- :material-cards-outline:{ .lg .middle } __Cards__
+- :material-cards-outline:{ .lg .middle } __Card__
 
     ---
 
-    Use cards to visualize data or display relevant KPI information.
+    Call out text or display KPIs.
 
     [:octicons-arrow-right-24: View user guide](card.md)
 
-- :material-play-box-outline:{ .lg .middle } __Buttons__
-
+- :material-play-box-outline:{ .lg .middle } __Button__
+  
     ---
 
-    Use buttons to navigate to different URLs or attach any [action](actions.md).
+    Navigate to different URLs or attach any [action](actions.md).
 
     [:octicons-arrow-right-24: View user guide](button.md)
 
-- :material-language-markdown:{ .lg .middle } __Texts__
+- :material-language-markdown:{ .lg .middle } __Text__
 
     ---
 
-    Use markdown to display plain text, add images, links & more.
+    Display plain text, add images, links and more.
 
     [:octicons-arrow-right-24: View user guide](text)
 
-- :octicons-table-16:{ .lg .middle } __Containers__
+- :octicons-table-16:{ .lg .middle } __Container__
 
     ---
 
-    Use containers to group your page components into sections and subsections.
+    Group components into sections and subsections.
 
     [:octicons-arrow-right-24: View user guide](container.md)
 
-- :material-tab-plus:{ .lg .middle } __Tabs__
+- :material-tab-plus:{ .lg .middle } __Tab__
 
     ---
 
-    Use tabs to group your containers and navigate between them.
+    Group containers and navigate between them.
 
     [:octicons-arrow-right-24: View user guide](tabs.md)
 

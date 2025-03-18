@@ -42,7 +42,6 @@ class Text(VizroBaseModel):
 
     @_log_call
     def build(self):
-        """Returns a markdown component."""
         defaults = {
             "id": self.id,
             "children": self.text,

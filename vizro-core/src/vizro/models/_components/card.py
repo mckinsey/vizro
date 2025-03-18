@@ -10,7 +10,7 @@ from vizro.models._models_utils import _log_call
 
 
 class Card(VizroBaseModel):
-    """Creates a card utilizing markdown as title and text component.
+    """Creates a card based on Markdown syntax.
 
     Args:
         type (Literal["card"]): Defaults to `"card"`.

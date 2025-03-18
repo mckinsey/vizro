@@ -1,4 +1,4 @@
-# Customizing Vizro dashboard CSS
+# How to customize dashboard CSS
 
 Vizro is opinionated about visual formatting, and some elements, such as the layout of the navigation and controls, are fixed. You can customize some settings such as background colors, fonts, and other styles via CSS overrides.
 
