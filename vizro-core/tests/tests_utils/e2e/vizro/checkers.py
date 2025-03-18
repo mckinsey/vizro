@@ -3,9 +3,12 @@ import time
 
 import e2e.vizro.constants as cnst
 from e2e.vizro.paths import categorical_components_value_name_path, categorical_components_value_path, select_all_path
-from e2e.vizro.waiters import graph_load_waiter
+from e2e.vizro.waiters import graph_load_waiter, graph_load_waiter_selenium
 from hamcrest import any_of, assert_that, contains_string, equal_to
+from selenium.webdriver.common.by import By
+from selenium.webdriver.support import expected_conditions
 from selenium.webdriver.support.color import Color
+from selenium.webdriver.support.wait import WebDriverWait
 
 
 def browser_console_warnings_checker(log_level, log_levels):
@@ -31,6 +34,16 @@ def check_graph_is_loading(driver, graph_id):
     """Waiting for graph to start reloading."""
     driver.wait_for_element(f"div[id='{graph_id}'][data-dash-is-loading='true']")
     graph_load_waiter(driver, graph_id)
+
+
+def check_graph_is_loading_selenium(driver, graph_id, timeout=cnst.SELENIUM_WAITERS_TIMEOUT):
+    """Waiting for graph to start reloading for pure selenium."""
+    WebDriverWait(driver, timeout).until(
+        expected_conditions.presence_of_element_located(
+            (By.CSS_SELECTOR, f"div[id='{graph_id}'][data-dash-is-loading='true']")
+        )
+    )
+    graph_load_waiter_selenium(driver, graph_id, timeout)
 
 
 def check_slider_value(driver, elem_id, expected_end_value, expected_start_value=None):
@@ -63,6 +76,20 @@ def check_ag_grid_theme_color(driver, ag_grid_id, color):
 
 def check_graph_color(driver, style_background, color):
     rgba = driver.wait_for_element(f"svg[style='{style_background}']").value_of_css_property("background-color")
+    graph_color = Color.from_string(rgba).rgba
+    assert_that(
+        graph_color,
+        equal_to(color),
+        reason=f"Graph color is '{graph_color}', but expected color is '{color}'",
+    )
+
+
+def check_graph_color_selenium(driver, style_background, color, timeout=cnst.SELENIUM_WAITERS_TIMEOUT):
+    rgba = (
+        WebDriverWait(driver, timeout)
+        .until(expected_conditions.presence_of_element_located((By.CSS_SELECTOR, f"svg[style='{style_background}']")))
+        .value_of_css_property("background-color")
+    )
     graph_color = Color.from_string(rgba).rgba
     assert_that(
         graph_color,

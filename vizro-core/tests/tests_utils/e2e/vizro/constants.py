@@ -181,3 +181,4 @@ AG_GRID_LIGHT = "ag-theme-quartz ag-theme-vizro"
 
 DYNAMIC_FILTERS_DATA_CONFIG = "tests/e2e/vizro/dashboards/default/dynamic_filters_data.yaml"
 PIXELMATCH_THRESHOLD = "0.18"
+SELENIUM_WAITERS_TIMEOUT = 10
