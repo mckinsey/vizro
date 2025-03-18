@@ -28,13 +28,29 @@ The [`Page`][vizro.models.Page] model accepts the `components` argument, where y
 
     [:octicons-arrow-right-24: View user guide](figure.md)
 
-- :material-cards-outline:{ .lg .middle } __Cards & buttons__
+- :material-cards-outline:{ .lg .middle } __Cards__
 
     ---
 
-    Use cards and buttons to visualize text, navigate to different URLs or attach any [action](actions.md).
+    Use cards to visualize data or display relevant KPI information.
 
     [:octicons-arrow-right-24: View user guide](card.md)
+
+- :material-play-box-outline:{ .lg .middle } __Buttons__
+
+    ---
+
+    Use buttons to navigate to different URLs or attach any [action](actions.md).
+
+    [:octicons-arrow-right-24: View user guide](button.md)
+
+- :material-language-markdown:{ .lg .middle } __Markdowns__
+
+    ---
+
+    Use markdown to display plain text, add images, links & more.
+
+    [:octicons-arrow-right-24: View user guide](markdown.md)
 
 - :octicons-table-16:{ .lg .middle } __Containers__
 

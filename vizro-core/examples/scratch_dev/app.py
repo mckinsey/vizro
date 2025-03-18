@@ -32,12 +32,11 @@ page_1 = vm.Page(
             title="Dynamic Graph",
             figure=px.scatter(iris, x="sepal_length", y="petal_width", color="species"),
         ),
-        # vm.Graph(
-        #     id="static_graph",
-        #     title="Static Graph",
-        #     figure=px.bar(iris, x="species", y="sepal_length"),
-        # ),
-        vm.Container(title="Container", components=[vm.Markdown(text="Test for markdown in Containers")]),
+        vm.Graph(
+            id="static_graph",
+            title="Static Graph",
+            figure=px.bar(iris, x="species", y="sepal_length"),
+        ),
     ],
     layout=vm.Layout(
         grid=[
