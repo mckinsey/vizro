@@ -9,7 +9,7 @@ iris = px.data.iris()
 page_1 = vm.Page(
     title="Dynamic vs Static filter",
     components=[
-        vm.Markdown(
+        vm.Text(
             text="""Lorem ipsum dolor sit amet, consectetur adipiscing elit
          sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.Lorem ipsum dolor sit amet, consectetur adipiscing elit,
          sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.Lorem ipsum dolor sit amet, consectetur adipiscing elit,
@@ -32,11 +32,12 @@ page_1 = vm.Page(
             title="Dynamic Graph",
             figure=px.scatter(iris, x="sepal_length", y="petal_width", color="species"),
         ),
-        vm.Graph(
-            id="static_graph",
-            title="Static Graph",
-            figure=px.bar(iris, x="species", y="sepal_length"),
-        ),
+        # vm.Graph(
+        #     id="static_graph",
+        #     title="Static Graph",
+        #     figure=px.bar(iris, x="species", y="sepal_length"),
+        # ),
+        vm.Container(title="Container", components=[vm.Text(text="Test for markdown in Containers")]),
     ],
     layout=vm.Layout(
         grid=[

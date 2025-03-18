@@ -6,7 +6,7 @@ Uncomment the section that is right (remove the HTML comment wrapper).
 
 ### Highlights ✨
 
-- Add `vm.Markdown` component to easily add arbitrary text to your dashboard. ([#1061](https://github.com/mckinsey/vizro/pull/1061))
+- Add `vm.Text` component to easily add arbitrary text to your dashboard. ([#1061](https://github.com/mckinsey/vizro/pull/1061))
 
 <!--
 ### Removed

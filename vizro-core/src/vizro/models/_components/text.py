@@ -8,11 +8,11 @@ from vizro.models import VizroBaseModel
 from vizro.models._models_utils import _log_call
 
 
-class Markdown(VizroBaseModel):
+class Text(VizroBaseModel):
     """Creates a text component based on Markdown syntax.
 
     Args:
-        type (Literal["markdown"]): Defaults to `"markdown"`.
+        type (Literal["text"]): Defaults to `"text"`.
         text (str): Markdown string to create text that should adhere to the CommonMark Spec.
         extra (Optional[dict[str, Any]]): Extra keyword arguments that are passed to `dcc.Markdown` and overwrite any
             defaults chosen by the Vizro team. This may have unexpected behavior.
@@ -22,7 +22,7 @@ class Markdown(VizroBaseModel):
 
     """
 
-    type: Literal["markdown"] = "markdown"
+    type: Literal["text"] = "text"
     text: str = Field(
         description="Markdown string to create text that should adhere to the CommonMark Spec.",
     )
@@ -47,7 +47,7 @@ class Markdown(VizroBaseModel):
             "id": self.id,
             "children": self.text,
             "dangerously_allow_html": False,
-            "className": "markdown",
+            "className": "text",
         }
 
         return dcc.Markdown(**(defaults | self.extra))

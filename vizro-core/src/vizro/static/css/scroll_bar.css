@@ -39,7 +39,7 @@
   background: var(--field-enabled);
 }
 
-.markdown::-webkit-scrollbar-thumb,
+.text::-webkit-scrollbar-thumb,
 .hljs::-webkit-scrollbar-thumb {
   border-color: var(--right-side-bg);
 }
