@@ -153,7 +153,8 @@ class Vizro:
             # Run pre_build on all filters first, then on all other models. This handles dependency between Filter
             # and Page pre_build and ensures that filters are pre-built before the Page objects that use them.
             # This is important because the Page pre_build method checks whether filters are dynamic or not, which is
-            # defined in the filter's pre_build method.
+            # defined in the filter's pre_build method. Also, the calculation of the data_frame Parameter targets
+            # depends on the filter targets, so they should be pre-built after the filters as well.
             filter.pre_build()
         for model_id in set(model_manager):
             model = model_manager[model_id]
