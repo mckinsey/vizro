@@ -97,7 +97,9 @@ def _get_action_callback_outputs(action: Action) -> dict[str, Output]:
         targets = []
 
     if action_function == _parameter.__wrapped__:
-        targets = [target.split(".")[0] for target in targets]
+        # Targets without "." are implicitly added by the `Parameter._set_actions` method
+        # to handle cases where a dynamic data parameter affects a filter or its targets.
+        targets = [target.split(".")[0] if "." in target else target for target in targets]
 
     return {
         target: Output(

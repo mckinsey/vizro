@@ -1,40 +1,28 @@
-"""Dev app to try things out."""
-
 import vizro.models as vm
-import vizro.plotly.express as px
 from vizro import Vizro
 
 
-# Comment to restart the CI
-df = px.data.iris()
-
-
-# Enable vm.Filter object to be used within the "Page.components"
-vm.Page.add_type("components", vm.Filter)
-vm.Page.add_type("components", vm.Parameter)
-
-page_1 = vm.Page(
-    title="Page 1",
-    controls=[
-        # DOES NOT work from the main branch
-        vm.Filter(column="species", targets=["graph"]),
-        vm.Parameter(targets=["graph.x"], selector=vm.RadioItems(options=["sepal_length", "sepal_width"])),
-        # WORKS from the main branch
-        vm.Filter(column="species"),
-    ],
+page = vm.Page(
+    title="Text with extra argument",
     components=[
-        # DOES NOT work from the main branch
-        vm.Filter(column="species", targets=["graph"]),
-        vm.Parameter(targets=["graph.y"], selector=vm.RadioItems(options=["sepal_length", "sepal_width"])),
-        # Graph
-        vm.Graph(id="graph", figure=px.scatter(df, x="sepal_length", y="petal_length", color="species")),
-        # WORKS from the main branch
-        vm.Filter(column="species", targets=["graph"]),
-        vm.Parameter(targets=["graph.color"], selector=vm.RadioItems(options=["species", "petal_width"])),
+        vm.Text(
+            text="""
+              This example uses the block delimiter:
+              $$
+              \\int_0^\\infty e^{-x^2} dx = \\frac{\\sqrt{\\pi}}{2}
+              $$
+
+              This example uses the inline delimiter:
+              $x = \\frac{-b \\pm \\sqrt{b^2 - 4ac}}{2a}$
+            """,
+            extra={"mathjax": True},
+
+        ),
     ],
 )
 
-dashboard = vm.Dashboard(pages=[page_1])
+dashboard = vm.Dashboard(pages=[page])
+
 
 if __name__ == "__main__":
     Vizro().build(dashboard).run()

@@ -1,7 +1,7 @@
 # Keep this import at the top to avoid circular imports since it's used in every model.
 from ._base import VizroBaseModel  # noqa: I001
 from ._action import Action
-from ._components import Card, Container, Graph, Table, Tabs, Figure
+from ._components import Card, Container, Graph, Text, Table, Tabs, Figure
 from ._components import AgGrid
 from ._components.form import Button, Checklist, DatePicker, Dropdown, RadioItems, RangeSlider, Slider
 from ._controls import Filter, Parameter
@@ -42,5 +42,6 @@ __all__ = [
     "Slider",
     "Table",
     "Tabs",
+    "Text",
     "VizroBaseModel",
 ]
