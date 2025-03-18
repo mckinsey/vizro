@@ -1,7 +1,6 @@
-"""Dev app to try things out."""
-
 import vizro.models as vm
 from vizro import Vizro
+
 
 page = vm.Page(
     title="Text with extra argument",
@@ -17,11 +16,13 @@ page = vm.Page(
               $x = \\frac{-b \\pm \\sqrt{b^2 - 4ac}}{2a}$
             """,
             extra={"mathjax": True},
+
         ),
     ],
 )
 
 dashboard = vm.Dashboard(pages=[page])
+
 
 if __name__ == "__main__":
     Vizro().build(dashboard).run()
