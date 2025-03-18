@@ -5,6 +5,7 @@ import vizro.plotly.express as px
 from vizro import Vizro
 
 
+# Comment to restart the CI
 df = px.data.iris()
 
 
