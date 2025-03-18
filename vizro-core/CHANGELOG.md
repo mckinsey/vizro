@@ -17,7 +17,7 @@ See the fragment files in the [changelog.d directory](https://github.com/mckinse
 
 ## Highlights ✨
 
-- Add `vm.Text` component to easily add arbitrary text to your dashboard. See the user guide on [vm.Text component](https://vizro.readthedocs.io/en/stable/pages/user-guides/text/) for more details. ([#1061](https://github.com/mckinsey/vizro/pull/1061))
+- Add `vm.Text` component to easily add arbitrary text to your dashboard. See the user guide on the [`vm.Text` component](https://vizro.readthedocs.io/en/stable/pages/user-guides/text/) for more details. ([#1061](https://github.com/mckinsey/vizro/pull/1061))
 
 ## Added
 
