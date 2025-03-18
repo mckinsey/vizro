@@ -58,3 +58,4 @@ jobs:
           TESTS_NAME: Vizro e2e vizro dom elements tests
           SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
           PROJECT_PATH: /home/runner/work/vizro/vizro/vizro-core/
+          FAILED_SCREENSHOTS_ARCHIVE_POSTFIX: ${{ matrix.config.label }}-${{ matrix.config.python-version }}
