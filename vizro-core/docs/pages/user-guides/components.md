@@ -50,7 +50,7 @@ The [`Page`][vizro.models.Page] model accepts the `components` argument, where y
 
     Display plain text, add images, links and more.
 
-    [:octicons-arrow-right-24: View user guide](text)
+    [:octicons-arrow-right-24: View user guide](text.md)
 
 - :octicons-table-16:{ .lg .middle } __Container__
 
