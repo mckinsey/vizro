@@ -25,6 +25,7 @@ def load_data(number_of_points=150):
     return px.data.iris().head(number_of_points)
 
 
+# A comment to rerun the docs build CI process
 data_manager["dynamic_df"] = load_data
 
 page_1 = vm.Page(
