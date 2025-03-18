@@ -17,13 +17,13 @@ See the fragment files in the [changelog.d directory](https://github.com/mckinse
 
 ## Highlights ✨
 
-- Add `vm.Text` component to easily add arbitrary text to your dashboard. ([#1061](https://github.com/mckinsey/vizro/pull/1061))
+- Add `vm.Text` component to easily add arbitrary text to your dashboard. See the user guide on [vm.Text component](https://vizro.readthedocs.io/en/stable/pages/user-guides/text) for more details. ([#1061](https://github.com/mckinsey/vizro/pull/1061))
 
 ## Added
 
 - Enable styling of `vm.Container` with a new argument `theme="plain"/"filled"/"outlined"`. See the user guide on [styled containers](https://vizro.readthedocs.io/en/stable/pages/user-guides/container/#styled-containers) for more details. ([#1002](https://github.com/mckinsey/vizro/pull/1002))
 
-- `DatePicker` filters update automatically when underlying dynamic data changes. See the [user guide on dynamic filters](https://vizro.readthedocs.io/en/stable/pages/user-guides/data/#filters) for more information. ([#1039](https://github.com/mckinsey/vizro/pull/1039))
+- `DatePicker` filters update automatically when underlying dynamic data changes. See the user guide on [dynamic filters](https://vizro.readthedocs.io/en/stable/pages/user-guides/data/#filters) for more information. ([#1039](https://github.com/mckinsey/vizro/pull/1039))
 
 - Add `extra` argument to selected models to enable passing arguments directly to the underlying Dash component. ([#1032](https://github.com/mckinsey/vizro/pull/1032))
 
