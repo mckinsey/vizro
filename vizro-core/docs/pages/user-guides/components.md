@@ -44,13 +44,13 @@ The [`Page`][vizro.models.Page] model accepts the `components` argument, where y
 
     [:octicons-arrow-right-24: View user guide](button.md)
 
-- :material-language-markdown:{ .lg .middle } __Markdowns__
+- :material-language-markdown:{ .lg .middle } __Texts__
 
     ---
 
     Use markdown to display plain text, add images, links & more.
 
-    [:octicons-arrow-right-24: View user guide](markdown.md)
+    [:octicons-arrow-right-24: View user guide](text)
 
 - :octicons-table-16:{ .lg .middle } __Containers__
 

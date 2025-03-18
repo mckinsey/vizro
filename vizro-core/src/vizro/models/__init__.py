@@ -32,7 +32,6 @@ __all__ = [
     "Filter",
     "Graph",
     "Layout",
-    "Text",
     "NavBar",
     "NavLink",
     "Navigation",
@@ -43,5 +42,6 @@ __all__ = [
     "Slider",
     "Table",
     "Tabs",
+    "Text",
     "VizroBaseModel",
 ]

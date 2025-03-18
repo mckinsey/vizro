@@ -1,10 +1,15 @@
 # How to use cards
 
-This guide shows you how to use cards to visualize your data in the dashboard.
+This guide shows you how to use cards in your dashboard.
 
-The [`Card`][vizro.models.Card] is a flexible and extensible component that enables customization via markdown text. Refer to any online guide for [basic markdown usage](https://markdown-guide.readthedocs.io/en/latest/). It is based on the underlying Dash component [`dbc.Card`](https://dash-bootstrap-components.opensource.faculty.ai/docs/components/card/).
+!!! note "Card and Text components"
+    The `Card` component and [`Text`](text.md) component both enable you to add text to your page using [Markdown syntax](https://markdown-guide.readthedocs.io/en/latest/) through the underlying Dash component [`dcc.Markdown`](https://dash.plotly.com/dash-core-components/markdown/).
 
-You can add a [`Card`][vizro.models.Card] to your dashboard by inserting the [`Card`][vizro.models.Card] into the `components` argument of the [`Page`][vizro.models.Page].
+    You should use `Text` to display plain Markdown text without any additional styling like borders or background, for example to add an introductory paragraph to your page.
+
+    You should use `Card` to display Markdown text that needs attention drawn to it. Generally, this would be relatively short portions of text. Unlike `Text`, a `Card` can also be [used for navigation](#create-a-navigation-card).
+
+You can add a [`Card`][vizro.models.Card] to your dashboard by inserting the [`Card`][vizro.models.Card] into the `components` argument of the [`Page`][vizro.models.Page] or the [`Container`][vizro.models.Container] model.
 
 !!! example "Card"
     === "app.py"
@@ -53,9 +58,10 @@ The [`Card`][vizro.models.Card] uses the `dcc.Markdown` component from Dash as i
 - Emphasis
 - Lists
 - Block Quotes
+- Images
 - Links
 
-!!! example "Card with custom text"
+!!! example "Card using markdown"
     === "app.py"
         ```{.python pycafe-link}
         import vizro.models as vm
