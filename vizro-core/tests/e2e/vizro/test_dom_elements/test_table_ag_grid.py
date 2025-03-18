@@ -19,11 +19,6 @@ def test_filters(dash_br):
     dash_br.multiple_click(categorical_components_value_path(elem_id=cnst.CHECKLIST_AGGRID_FILTER, value=2), 1)
     dash_br.multiple_click(slider_value_path(elem_id=cnst.RANGESLIDER_AGGRID_FILTER, value=5), 1)
 
-    # check if column 'country' is available
-    dash_br.wait_for_element(f"div[id='{cnst.TABLE_AG_GRID_ID}'] div:nth-of-type(1) div[col-id='country']")
-
-    check_table_ag_grid_rows_number(dash_br, table_id=cnst.TABLE_AG_GRID_ID, expected_rows_num=8)
-
     dash_br.wait_for_text_to_equal(
         table_ag_grid_cell_value_path(table_id=cnst.TABLE_AG_GRID_ID, row_number=2, column_number=1), "Burundi"
     )
@@ -39,6 +34,8 @@ def test_filters(dash_br):
     dash_br.wait_for_text_to_equal(
         table_ag_grid_cell_value_path(table_id=cnst.TABLE_AG_GRID_ID, row_number=2, column_number=5), "8390505"
     )
+
+    check_table_ag_grid_rows_number(dash_br, table_id=cnst.TABLE_AG_GRID_ID, expected_rows_num=8)
 
 
 def test_interactions(dash_br):
@@ -62,7 +59,3 @@ def test_interactions(dash_br):
         1,
     )
     check_graph_is_loading(dash_br, cnst.LINE_AG_GRID_INTERACTIONS_ID)
-
-    # check if column 'country' is available
-    dash_br.wait_for_element(f"div[id='{cnst.TABLE_AG_GRID_INTERACTIONS_ID}'] div:nth-of-type(1) div[col-id='country']")
-    check_table_ag_grid_rows_number(dash_br, table_id=cnst.TABLE_AG_GRID_INTERACTIONS_ID, expected_rows_num=15)

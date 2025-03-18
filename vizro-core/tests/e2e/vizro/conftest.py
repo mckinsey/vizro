@@ -10,18 +10,12 @@ from selenium.webdriver.chrome.options import Options as ChromeOptions
 
 # dash_br_driver options hook
 def pytest_setup_options():
-    # if os.getenv("BROWSER") == "chrome":
-    #     print("chrome")
-    #     options = ChromeOptions()
-    #     options.add_experimental_option(
-    #         "prefs",
-    #         {
-    #             "download.default_directory": str(
-    #                 os.path.join(os.getcwd(), "exported_files")
-    #             ),
-    #             "profile.default_content_setting_values.automatic_downloads": 1,
-    #         },
-    #     )
+    from selenium.webdriver.firefox.options import Options as FFOptions
+
+    if os.getenv("BROWSER") == "firefox":
+        options = FFOptions()
+        options.binary_location = "/Applications/Firefox.app/Contents/MacOS/firefox"
+        return options
     if os.getenv("BROWSER") == "chrome_mobile":
         options = ChromeOptions()
         options.add_experimental_option("mobileEmulation", {"deviceName": "iPhone 14 Pro Max"})

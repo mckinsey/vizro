@@ -75,6 +75,13 @@ BAR_POP_RANGE_ID = "bar pop range"
 BAR_POP_DATE_ID = "bar pop date"
 TABLE_POP_RANGE_ID = "table pop range"
 TABLE_POP_DATE_ID = "table pop date"
+DATEPICKER_RANGE_ID = "datepicker range"
+DATEPICKER_SINGLE_ID = "datepicker single"
+
+DATEPICKER_PARAMS_PAGE = "datepicker parameters page"
+DATEPICKER_PARAMS_PAGE_PATH = "/datepicker-parameters-page"
+DATEPICKER_PARAMS_ID = "datepicker_params"
+BAR_CUSTOM_ID = "bar_custom"
 
 TABLE_AG_GRID_PAGE = "table AG grid page"
 TABLE_AG_GRID_PAGE_PATH = "/table-ag-grid-page"
@@ -142,6 +149,7 @@ PAGE_404_PATH = "/404-page"
 
 GENERAL_ACCORDION = "generAl"
 DATEPICKER_ACCORDION = "DATEpicker"
+DATEPICKER_ACCORDION_NUMBER = 2
 AG_GRID_ACCORDION = "AGgrid"
 AG_GRID_ACCORDION_NUMBER = 3
 DYNAMIC_DATA_ACCORDION = "DYNAMIC data"

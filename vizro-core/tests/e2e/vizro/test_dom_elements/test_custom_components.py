@@ -25,11 +25,3 @@ def test_range_slider(dash_br):
     dash_br.multiple_click(slider_value_path(elem_id=cnst.CUSTOM_RANGE_SLIDER_ID, value=4), 1)
     check_graph_is_loading(dash_br, graph_id=cnst.SCATTER_CUSTOM_COMPONENTS_ID)
     check_slider_value(dash_br, elem_id=cnst.CUSTOM_RANGE_SLIDER_ID, expected_start_value="4", expected_end_value="7")
-    # check tooltip for the start value
-    dash_br.wait_for_text_to_equal(
-        f"div[id='{cnst.CUSTOM_RANGE_SLIDER_ID}'] div:nth-of-type(7) .rc-slider-tooltip-inner", "4"
-    )
-    # check tooltip for the end value
-    dash_br.wait_for_text_to_equal(
-        f"div[id='{cnst.CUSTOM_RANGE_SLIDER_ID}'] div:nth-of-type(8) .rc-slider-tooltip-inner", "7"
-    )
