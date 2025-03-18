@@ -16,7 +16,6 @@ page = vm.Page(
               $x = \\frac{-b \\pm \\sqrt{b^2 - 4ac}}{2a}$
             """,
             extra={"mathjax": True},
-
         ),
     ],
 )
