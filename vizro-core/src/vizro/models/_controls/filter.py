@@ -23,6 +23,7 @@ from vizro.models._components.form import (
     RangeSlider,
     Slider,
 )
+from vizro.models._controls._controls_utils import check_targets_present_on_page
 from vizro.models._models_utils import _log_call
 from vizro.models.types import FigureType, MultiValueType, SelectorType, SingleValueType
 
@@ -123,12 +124,10 @@ class Filter(VizroBaseModel):
             return self.selector(min=_min, max=_max, current_value=current_value)
 
     @_log_call
-    def pre_build(self):  # noqa: PLR0912
-        # Validate that targets present in model_manager.
+    def pre_build(self):
+        # Validate that targets present on the page where the filter is defined.
         # Validation has to be triggered in pre_build because all targets are not initialized until then.
-        for target in self.targets:
-            if target not in model_manager:
-                raise ValueError(f"Target {target} not found in model_manager.")
+        check_targets_present_on_page(control=self)
 
         # If targets aren't explicitly provided then try to target all figures on the page. In this case we don't
         # want to raise an error if the column is not found in a figure's data_frame, it will just be ignored.

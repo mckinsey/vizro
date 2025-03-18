@@ -456,6 +456,7 @@ class TestFilterCall:
             targets=["column_categorical_exists_1", "column_categorical_exists_2"],
             selector=vm.Checklist(id="test_selector_id"),
         )
+        model_manager["test_page"].controls = [filter]
         filter.pre_build()
 
         selector_build = filter(target_to_data_frame=target_to_data_frame, current_value=["c", "d"])["test_selector_id"]
@@ -467,6 +468,7 @@ class TestFilterCall:
             targets=["column_numerical_exists_1", "column_numerical_exists_2"],
             selector=vm.RangeSlider(id="test_selector_id"),
         )
+        model_manager["test_page"].controls = [filter]
         filter.pre_build()
 
         selector_build = filter(target_to_data_frame=target_to_data_frame, current_value=[3, 4])["test_selector_id"]
@@ -479,6 +481,7 @@ class TestFilterCall:
             targets=["column_temporal_exists_1", "column_temporal_exists_2"],
             selector=vm.DatePicker(id="test_selector_id"),
         )
+        model_manager["test_page"].controls = [filter]
         filter.pre_build()
 
         selector_build = filter(target_to_data_frame=target_to_data_frame, current_value=["2024-01-03", "2024-01-04"])[
@@ -491,6 +494,7 @@ class TestFilterCall:
         filter = vm.Filter(
             column="column_categorical", targets=["column_categorical_exists_1", "column_categorical_exists_2"]
         )
+        model_manager["test_page"].controls = [filter]
         filter.pre_build()
 
         filter._column_type = "numerical"
@@ -504,6 +508,7 @@ class TestFilterCall:
 
     def test_filter_call_selected_column_not_found_in_target(self):
         filter = vm.Filter(column="column_categorical", targets=["column_categorical_exists_1"])
+        model_manager["test_page"].controls = [filter]
         filter.pre_build()
 
         with pytest.raises(
@@ -514,6 +519,7 @@ class TestFilterCall:
 
     def test_filter_call_targeted_data_empty(self):
         filter = vm.Filter(column="column_categorical", targets=["column_categorical_exists_1"])
+        model_manager["test_page"].controls = [filter]
         filter.pre_build()
 
         with pytest.raises(
@@ -528,6 +534,10 @@ class TestFilterCall:
 
 
 class TestPreBuildMethod:
+    def test_filter_not_in_page(self):
+        with pytest.raises(ValueError, match="Control filter_id should be defined within a Page object"):
+            vm.Filter(id="filter_id", column="column_numerical").pre_build()
+
     def test_targets_default_valid(self, managers_column_only_exists_in_some):
         # Core of tests is still interface level
         filter = vm.Filter(column="column_numerical")
@@ -547,8 +557,11 @@ class TestPreBuildMethod:
         assert filter.targets == ["column_numerical_exists_1"]
 
     def test_targets_specific_present_invalid(self, managers_column_only_exists_in_some):
-        with pytest.raises(ValueError, match="Target invalid_target not found in model_manager."):
-            Filter(column="column_numerical", targets=["invalid_target"]).pre_build()
+        filter = vm.Filter(column="column_numerical", targets=["invalid_target"])
+        model_manager["test_page"].controls = [filter]
+
+        with pytest.raises(ValueError, match="Target invalid_target not found within the page test_page."):
+            filter.pre_build()
 
     def test_targets_default_invalid(self, managers_column_only_exists_in_some):
         filter = vm.Filter(column="invalid_choice")

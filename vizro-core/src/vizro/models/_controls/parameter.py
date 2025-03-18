@@ -6,9 +6,9 @@ from pydantic import AfterValidator, Field
 from vizro._constants import PARAMETER_ACTION_PREFIX
 from vizro.actions import _parameter
 from vizro.managers import model_manager
-from vizro.managers._model_manager import ModelID
 from vizro.models import Action, VizroBaseModel
 from vizro.models._components.form import Checklist, DatePicker, Dropdown, RadioItems, RangeSlider, Slider
+from vizro.models._controls._controls_utils import check_targets_present_on_page
 from vizro.models._models_utils import _log_call
 from vizro.models.types import SelectorType
 
@@ -72,7 +72,7 @@ class Parameter(VizroBaseModel):
 
     @_log_call
     def pre_build(self):
-        self._check_targets_present()
+        check_targets_present_on_page(control=self)
         self._check_numerical_and_temporal_selectors_values()
         self._check_categorical_selectors_options()
         self._set_selector_title()
@@ -81,11 +81,6 @@ class Parameter(VizroBaseModel):
     @_log_call
     def build(self):
         return self.selector.build()
-
-    def _check_targets_present(self):
-        for target in self.targets:
-            if (target_id := cast(ModelID, target.split(".")[0])) not in model_manager:
-                raise ValueError(f"Target {target_id} not found in model_manager.")
 
     def _check_numerical_and_temporal_selectors_values(self):
         if isinstance(self.selector, (Slider, RangeSlider, DatePicker)):
