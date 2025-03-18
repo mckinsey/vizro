@@ -29,10 +29,6 @@ class TestParameterInstantiation:
         ):
             Parameter(targets=["scatter_chart"], selector=vm.Dropdown(options=["lifeExp", "pop"]))
 
-    def test_check_target_present_failed(self):
-        with pytest.raises(ValueError, match="Target scatter_chart_invalid not found in model_manager."):
-            Parameter(targets=["scatter_chart_invalid.x"], selector=vm.Dropdown(options=["lifeExp", "pop"]))
-
     @pytest.mark.parametrize("target", ["scatter_chart.data_frame", "scatter_chart.data_frame.argument.nested_arg"])
     def test_check_data_frame_as_target_argument_failed(self, target):
         with pytest.raises(
@@ -53,6 +49,14 @@ class TestParameterInstantiation:
 
 
 class TestPreBuildMethod:
+    def test_filter_not_in_page(self):
+        with pytest.raises(ValueError, match="Control parameter_id should be defined within a Page object"):
+            Parameter(
+                id="parameter_id",
+                targets=["scatter_chart.x"],
+                selector=vm.Dropdown(options=["lifeExp", "pop"]),
+            ).pre_build()
+
     @pytest.mark.usefixtures("managers_one_page_two_graphs")
     @pytest.mark.parametrize(
         "test_input, title",
@@ -72,6 +76,13 @@ class TestPreBuildMethod:
         parameter.pre_build()
         assert parameter.targets == ["scatter_chart.x"]
         assert parameter.selector.title == title
+
+    @pytest.mark.usefixtures("managers_one_page_two_graphs")
+    def test_targets_present_invalid(self):
+        parameter = Parameter(targets=["scatter_chart_invalid.x"], selector=vm.Dropdown(options=["lifeExp", "pop"]))
+        model_manager["test_page"].controls = [parameter]
+        with pytest.raises(ValueError, match="Target scatter_chart_invalid not found within the page test_page."):
+            parameter.pre_build()
 
     @pytest.mark.usefixtures("managers_one_page_two_graphs")
     @pytest.mark.parametrize("test_input", [vm.Slider(), vm.RangeSlider(), vm.DatePicker()])
