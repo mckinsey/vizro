@@ -12,7 +12,7 @@ FlexContainer.add_type("components", CollapsibleContainer)
 
 iris = px.data.iris()
 
-page_1 = vm.Page(
+page_1=vm.Page(
     title="Collapse containers with flex container",
     components=[
         FlexContainer(
@@ -37,7 +37,7 @@ page_1 = vm.Page(
                 ),
             ]
         )
-    ],
+    ]
 )
 
 
