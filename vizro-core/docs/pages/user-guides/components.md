@@ -37,7 +37,7 @@ The [`Page`][vizro.models.Page] model accepts the `components` argument, where y
     [:octicons-arrow-right-24: View user guide](card.md)
 
 - :material-play-box-outline:{ .lg .middle } __Button__
-  
+
     ---
 
     Navigate to different URLs or attach any [action](actions.md).
