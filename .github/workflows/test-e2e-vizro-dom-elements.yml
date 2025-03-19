@@ -18,13 +18,13 @@ env:
 
 jobs:
   test-e2e-vizro-dom-elements:
-    name: test-e2e-vizro-dom-elements on Py${{ matrix.python-version }} ${{ matrix.label }}
+    name: test-e2e-vizro-dom-elements on Py${{ matrix.python-version }} ${{ matrix.label }}-${{ matrix.group }}
     runs-on: ubuntu-latest
 
     strategy:
       fail-fast: false
       matrix:
-        group: [1, 2]
+        group: [1, 2, 3]
         label: [upper bounds, lower bounds]
         include:
           - python-version: "3.12"
@@ -52,7 +52,7 @@ jobs:
         run: hatch run pip tree
 
       - name: Run e2e vizro-dom-elements tests
-        run: hatch run test-e2e-vizro-dom-elements --splits 2 --group ${{ matrix.group }}
+        run: hatch run test-e2e-vizro-dom-elements --splits 3 --group ${{ matrix.group }}
 
       - name: Create artifacts and slack notifications
         if: failure()
