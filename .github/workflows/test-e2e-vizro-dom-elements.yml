@@ -30,7 +30,7 @@ jobs:
           - python-version: "3.12"
             hatch-env: all.py3.12
             label: upper bounds
-          - python-version: "3.9
+          - python-version: "3.9"
             hatch-env: lower-bounds
             label: lower bounds
 
