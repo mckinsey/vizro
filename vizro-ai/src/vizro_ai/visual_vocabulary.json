@@ -1,0 +1,322 @@
+{
+  "chart_groups": {
+    "deviation": {
+      "display_name": "Deviation",
+      "description": "#### Deviation enables you to draw attention to variations (+/-) from a fixed reference point. Often this reference point is zero, but you might also show a target or a long term average. You can also use deviation to express a positive, neutral or negative sentiment.",
+      "charts": [
+        {
+          "chart_name": "butterfly",
+          "definition": "A butterfly chart (also called a tornado chart) is a bar chart for displaying two sets of data series\n                side by side.",
+          "when_to_use": "Use a butterfly chart when you wish to emphasize the comparison between two data sets sharing the same\n                parameters. Sharing this chart with your audience will help them see at a glance how two groups differ\n                within the same parameters. You can also **stack** two bars on each side to divide your\n                categories.",
+          "example_code": "import pandas as pd\nimport plotly.express as px\nimport plotly.graph_objects as go\nfrom vizro.models.types import capture\n\n\n@capture(\"graph\")\ndef butterfly(data_frame: pd.DataFrame, **kwargs) -> go.Figure:\n    fig = px.bar(data_frame, **kwargs)\n\n    orientation = fig.data[0].orientation\n    x_or_y = \"x\" if orientation == \"h\" else \"y\"\n\n    fig.update_traces({f\"{x_or_y}axis\": f\"{x_or_y}2\"}, selector=1)\n    fig.update_layout({f\"{x_or_y}axis2\": fig.layout[f\"{x_or_y}axis\"]})\n    fig.update_layout(\n        {f\"{x_or_y}axis\": {\"autorange\": \"reversed\", \"domain\": [0, 0.5]}, f\"{x_or_y}axis2\": {\"domain\": [0.5, 1]}}\n    )\n\n    if orientation == \"h\":\n        fig.add_vline(x=0, line_width=2, line_color=\"grey\")\n    else:\n        fig.add_hline(y=0, line_width=2, line_color=\"grey\")\n\n    return fig\n\n\nages = pd.DataFrame(\n    {\n        \"Age\": [\"0-19\", \"20-29\", \"30-39\", \"40-49\", \"50-59\", \">=60\"],\n        \"Male\": [800, 2000, 4200, 5000, 2100, 800],\n        \"Female\": [1000, 3000, 3500, 3800, 3600, 700],\n    }\n)\n\nfig = butterfly(ages, x=[\"Male\", \"Female\"], y=\"Age\", labels={\"value\": \"Population\", \"variable\": \"Sex\"})\n"
+        },
+        {
+          "chart_name": "diverging_bar",
+          "definition": "A diverging bar chart is a version of a bar chart used to display both positive and negative values across\n            a common baseline. Bars extend either to the left or right of the central axis, indicating negative or\n            positive values, respectively. This allows for easy comparison of data points that deviate in opposite\n            directions.",
+          "when_to_use": "Use a diverging bar chart to compare positive and negative values from a central baseline. These charts are\n            suitable for visualizing profit and loss, survey results, and performance metrics. Apply color coding\n            effectively, using distinct colors for positive and negative values to quickly distinguish categories.\n            Alternatively, use a continuous diverging color scale for a more nuanced view, especially with a wide range\n            of values. Ensure a consistent scale on both sides of the baseline to avoid misleading interpretations.",
+          "example_code": "import pandas as pd\nimport vizro.plotly.express as px\n\npastries = pd.DataFrame(\n    {\n        \"pastry\": [\n            \"Scones\",\n            \"Bagels\",\n            \"Muffins\",\n            \"Cakes\",\n            \"Donuts\",\n            \"Cookies\",\n            \"Croissants\",\n            \"Eclairs\",\n        ],\n        \"Profit Ratio\": [-0.10, -0.05, 0.10, 0.05, 0.15, -0.08, 0.08, -0.12],\n    }\n).sort_values(\"Profit Ratio\")\n\nfig = px.bar(pastries, x=\"Profit Ratio\", y=\"pastry\")\n"
+        },
+        {
+          "chart_name": "diverging_stacked_bar",
+          "definition": "A diverging stacked bar chart is like a stacked bar chart but aligns bars on a central baseline instead of\n            the left or right. It displays positive and negative values, with each bar divided into segments for\n            different categories. This type of chart is commonly used for percentage shares, especially in survey\n            results using Likert scales (e.g., Strongly Disagree, Disagree, Agree, Strongly Agree).",
+          "when_to_use": "A diverging stacked bar chart is useful for comparing positive and negative values and showing the\n            composition of each bar. However, use this chart with caution: since none of the segments share a\n            common baseline, direct comparisons can be more challenging. For clearer comparisons, consider using a\n            100% stacked bar chart with a baseline starting from the left or right. For more insights on the potential\n            pitfalls, we recommend reading the article from\n            [Datawrapper on diverging stacked bar charts](https://blog.datawrapper.de/divergingbars/).",
+          "example_code": "import pandas as pd\nimport plotly.express as px\nimport plotly.graph_objects as go\nfrom vizro.models.types import capture\n\n\n@capture(\"graph\")\ndef diverging_stacked_bar(data_frame: pd.DataFrame, **kwargs) -> go.Figure:\n    fig = px.bar(data_frame, **kwargs)\n\n    for i, trace in enumerate(fig.data):\n        trace.update(legendrank=i)\n\n    if \"color_discrete_sequence\" not in kwargs and \"color_discrete_map\" not in kwargs:\n        colorscale = [list(x) for x in fig.layout.template.layout.colorscale.diverging]\n        colors = px.colors.sample_colorscale(colorscale, len(fig.data), 0.2, 0.8)\n        for trace, color in zip(fig.data, colors):\n            trace.update(marker_color=color)\n\n    mutable_traces = list(fig.data)\n    mutable_traces[: len(fig.data) // 2] = reversed(fig.data[: len(fig.data) // 2])\n    fig.data = mutable_traces\n\n    orientation = fig.data[0].orientation\n    x_or_y = \"x\" if orientation == \"h\" else \"y\"\n\n    for trace_idx in range(len(fig.data) // 2, len(fig.data)):\n        fig.update_traces({f\"{x_or_y}axis\": f\"{x_or_y}2\"}, selector=trace_idx)\n\n    fig.update_layout({f\"{x_or_y}axis\": {\"ticksuffix\": \"%\"}})\n    fig.update_layout({f\"{x_or_y}axis2\": fig.layout[f\"{x_or_y}axis\"]})\n    fig.update_layout(\n        {\n            f\"{x_or_y}axis\": {\"domain\": [0, 0.5], \"range\": [100, 0]},\n            f\"{x_or_y}axis2\": {\"domain\": [0.5, 1], \"range\": [0, 100]},\n        }\n    )\n\n    if orientation == \"h\":\n        fig.add_vline(x=0, line_width=2, line_color=\"grey\")\n    else:\n        fig.add_hline(y=0, line_width=2, line_color=\"grey\")\n\n    return fig\n\n\npastries = pd.DataFrame(\n    {\n        \"pastry\": [\n            \"Scones\",\n            \"Bagels\",\n            \"Muffins\",\n            \"Cakes\",\n            \"Donuts\",\n            \"Cookies\",\n            \"Croissants\",\n            \"Eclairs\",\n        ],\n        \"Strongly Disagree\": [20, 30, 10, 5, 15, 5, 10, 25],\n        \"Disagree\": [30, 25, 20, 10, 20, 10, 15, 30],\n        \"Agree\": [30, 25, 40, 40, 45, 40, 40, 25],\n        \"Strongly Agree\": [20, 20, 30, 45, 20, 45, 35, 20],\n    }\n)\n\nfig = diverging_stacked_bar(\n    data_frame=pastries,\n    x=[\"Strongly Disagree\", \"Disagree\", \"Agree\", \"Strongly Agree\"],\n    y=\"pastry\",\n    labels={\"value\": \"\", \"variable\": \"\", \"pastry\": \"\"},\n    title=\"I would recommend this pastry to my friends\",\n)\n"
+        }
+      ]
+    },
+    "correlation": {
+      "display_name": "Correlation",
+      "description": "#### Correlation helps you show the relationship between two or more variables. It is important that you make it clear to your audience whether or not the relationship is causal, i.e., whether one causes the other.",
+      "charts": [
+        {
+          "chart_name": "scatter",
+          "definition": "A scatter plot is a two-dimensional data visualization using dots to represent the values obtained for two\n            different variables - one plotted along the x-axis and the other plotted along the y-axis.",
+          "when_to_use": "Use scatter plots when you want to show the relationship between two variables. Scatter plots are sometimes\n            called _Correlation plots_ because they show how two variables are correlated. Scatter plots are ideal when\n            you have paired numerical data and you want to see if one variable impacts the other. However, do remember\n            that correlation is not causation. Make sure your audience does not draw the wrong conclusions.",
+          "example_code": "import vizro.plotly.express as px\n\niris = px.data.iris()\n\nfig = px.scatter(iris, x=\"sepal_width\", y=\"sepal_length\", color=\"species\")\n"
+        },
+        {
+          "chart_name": "connected_scatter",
+          "definition": "A connected scatter chart visualizes two variables (x and y) using dots, with lines connecting the dots\n                in the order of the data points. One variable is plotted along the x-axis and the other along the\n                y-axis, showing both the relationship and a sequence of the data.",
+          "when_to_use": "Use connected scatter charts to show the relationship between two variables and the sequence of data\n                points. They are ideal for paired numerical data, helping to reveal trends and patterns over time or in\n                a specific order. Remember, correlation is not causation, so ensure your audience understands this to\n                avoid misinterpretation.",
+          "example_code": "import vizro.plotly.express as px\n\ngapminder = px.data.gapminder().query(\"country == 'Australia'\")\n\nfig = px.line(gapminder, x=\"year\", y=\"lifeExp\", markers=True)\n"
+        },
+        {
+          "chart_name": "scatter_matrix",
+          "definition": "A scatter matrix, also known as a SPLOM chart, is a multi-dimensional data visualization that displays\n            scatter plots for every pair of variables in a dataset. Each scatter plot is positioned in a matrix format,\n            where rows and columns represent different variables.",
+          "when_to_use": "Use a scatter matrix when you want to explore relationships between multiple pairs of variables\n            simultaneously. They are particularly useful for identifying correlations, patterns, and potential outliers\n            within a dataset containing multiple numerical variables. Carefully select the most relevant variables to\n            ensure clarity and readability of the chart.",
+          "example_code": "import vizro.plotly.express as px\n\niris = px.data.iris()\n\nfig = px.scatter_matrix(iris, dimensions=[\"sepal_length\", \"sepal_width\", \"petal_length\", \"petal_width\"])\n"
+        },
+        {
+          "chart_name": "bubble",
+          "definition": "A bubble chart is a type of data visualization that displays three dimensions of data. Each point on the\n            chart is represented by a bubble, where the x-axis and y-axis denote two of the data dimensions, and the\n            size of the bubble represents the third dimension.",
+          "when_to_use": "Use a bubble chart when you want to explore and compare relationships between three variables\n            simultaneously. They are particularly useful for identifying patterns, trends, and outliers in\n            multi-dimensional data. Bubble charts can help you visualize the impact of a third variable,\n            providing deeper insights than a standard scatter plot.",
+          "example_code": "import vizro.plotly.express as px\n\ngapminder = px.data.gapminder().query(\"year==2007\")\n\nfig = px.scatter(gapminder, x=\"gdpPercap\", y=\"lifeExp\", size=\"pop\", size_max=60)\n"
+        },
+        {
+          "chart_name": "column_and_line",
+          "definition": "A combined column and line chart helps you demonstrate the relationship between an amount\n                (displayed in columns) and a trend or rate (displayed as a line running across the columns).",
+          "when_to_use": "Use this type of chart when you wish to compare quantities of one item with changes in another item.\n                It's ideal for showing patterns over time (e.g., monthly sales and growth rates) but can also be used\n                for other types of data comparisons.",
+          "example_code": "from typing import Union\n\nimport pandas as pd\nimport plotly.graph_objects as go\nimport vizro.plotly.express as px\nfrom plotly.subplots import make_subplots\nfrom vizro.models.types import capture\n\n\n@capture(\"graph\")\ndef column_and_line(\n    data_frame: pd.DataFrame,\n    x: Union[str, pd.Series, list[str], list[pd.Series]],\n    y_column: Union[str, pd.Series, list[str], list[pd.Series]],\n    y_line: Union[str, pd.Series, list[str], list[pd.Series]],\n) -> go.Figure:\n    bar = px.bar(data_frame, x=x, y=y_column)\n    fig = make_subplots(figure=bar, specs=[[{\"secondary_y\": True}]])\n\n    line = px.line(\n        data_frame,\n        x=x,\n        y=y_line,\n        markers=True,\n        color_discrete_sequence=fig.layout.template.layout.colorway[len(bar.data) :],\n    )\n\n    for trace in line.data:\n        fig.add_trace(trace, secondary_y=True)\n\n    fig.update_layout(yaxis2={\"tickmode\": \"sync\", \"overlaying\": \"y\", \"title\": line.layout.yaxis.title})\n\n    return fig\n\n\ngapminder = px.data.gapminder().query(\"country == 'Vietnam'\")\n\nfig = column_and_line(gapminder, y_column=\"gdpPercap\", y_line=\"lifeExp\", x=\"year\")\n"
+        }
+      ]
+    },
+    "ranking": {
+      "display_name": "Ranking",
+      "description": "#### Ranking enables you to present items in an ordered list. Use this when you want to highlight the position of an item rather than its absolute or relative value. You might want to emphasize the most interesting points with highlighting or labels to ensure the reader understands what matters most.",
+      "charts": [
+        {
+          "chart_name": "ordered_bar",
+          "definition": "An ordered bar chart displays bars with lengths proportional to their values, arranged in descending or\n            ascending order. One axis shows the categories, and the other provides a value scale starting from zero.",
+          "when_to_use": "Use an ordered bar chart to help your audience compare sizes and identify patterns in categorical data,\n            emphasizing the order of categories. This is ideal for showing rankings or priorities.\n            Ensure clear labeling, especially with many bars, and consider using a legend or abbreviations with fuller\n            descriptions below.",
+          "example_code": "import vizro.plotly.express as px\n\ngapminder = (\n    px.data.gapminder()\n    .query(\"year == 2007 and country.isin(['United States', 'Pakistan', 'India', 'China', 'Indonesia'])\")\n    .sort_values(\"pop\")\n)\n\nfig = px.bar(gapminder, x=\"pop\", y=\"country\", orientation=\"h\")\n"
+        },
+        {
+          "chart_name": "ordered_column",
+          "definition": "An ordered column chart is a vertical bar chart where columns are arranged in descending or ascending order\n            based on their values. The column lengths vary according to the categorical value they represent, with the\n            scale on the y-axis starting from zero.",
+          "when_to_use": "Use an ordered column chart to help your audience compare sizes and identify patterns in categorical data,\n            emphasizing the order of categories. This is ideal for showing rankings or progressions. Ensure clear\n            labeling, especially with many columns, and consider using a legend or abbreviations with fuller\n            descriptions below.",
+          "example_code": "import vizro.plotly.express as px\n\ngapminder = (\n    px.data.gapminder()\n    .query(\"year == 2007 and country.isin(['United States', 'Pakistan', 'India', 'China', 'Indonesia'])\")\n    .sort_values(\"pop\")\n)\n\nfig = px.bar(gapminder, y=\"pop\", x=\"country\")\n"
+        },
+        {
+          "chart_name": "lollipop",
+          "definition": "A lollipop chart is a variation of a bar chart where each data point is represented by a line and a\n                dot at the end to mark the value. It functions like a bar chart but offers a cleaner visual,\n                especially useful when dealing with a large number of high values, to avoid the clutter of tall columns.\n                However, it can be less precise due to the difficulty in judging the exact center of the circle.",
+          "when_to_use": "Use a lollipop chart to compare values across categories, especially when dealing with many high values.\n                It highlights differences and trends clearly without the visual bulk of a bar chart. Ensure clarity by\n                limiting categories, using consistent scales, and clearly labeling axes. Consider alternatives if\n                precise value representation is crucial.",
+          "example_code": "import pandas as pd\nimport plotly.express as px\nimport plotly.graph_objects as go\nfrom vizro.models.types import capture\n\n\n@capture(\"graph\")\ndef lollipop(data_frame: pd.DataFrame, **kwargs):\n    \"\"\"Creates a lollipop chart using Plotly.\"\"\"\n    fig = px.scatter(data_frame, **kwargs)\n\n    orientation = fig.data[0].orientation\n    x_or_y = \"x\" if orientation == \"h\" else \"y\"\n    y_or_x = \"y\" if orientation == \"h\" else \"x\"\n\n    for x_or_y_value, y_or_x_value in zip(fig.data[0][x_or_y], fig.data[0][y_or_x]):\n        fig.add_trace(go.Scatter({x_or_y: [0, x_or_y_value], y_or_x: [y_or_x_value, y_or_x_value], \"mode\": \"lines\"}))\n\n    fig.update_traces(\n        marker_size=12,\n        line_width=3,\n        line_color=fig.layout.template.layout.colorway[0],\n    )\n\n    fig.update_layout(\n        {\n            \"showlegend\": False,\n            f\"{x_or_y}axis_showgrid\": True,\n            f\"{y_or_x}axis_showgrid\": False,\n            f\"{x_or_y}axis_rangemode\": \"tozero\",\n        },\n    )\n    return fig\n\n\ngapminder = (\n    px.data.gapminder()\n    .query(\"year == 2007 and country.isin(['United States', 'Pakistan', 'India', 'China', 'Indonesia'])\")\n    .sort_values(\"pop\")\n)\n\nfig = lollipop(gapminder, y=\"country\", x=\"pop\")\n"
+        }
+      ]
+    },
+    "distribution": {
+      "display_name": "Distribution",
+      "description": "#### Distribution helps you to present all the possible values (or intervals) of your data and how often they occur. You can organize the data to show the number or percentage of items in a specified group, what shape the group takes, where the center lies, and how much variability there is in the data. This shape (or _skew_) of a distribution can be  a powerful way for you to highlight either the existence or lack of uniformity or equality in the data.",
+      "charts": [
+        {
+          "chart_name": "violin",
+          "definition": "A violin chart is similar to a box plot, but works better for visualizing more complex distributions and\n            their probability density at different values.",
+          "when_to_use": "Use this chart to go beyond the simple box plot and show the distribution shape of the data, the\n            inter-quartile range, the confidence intervals and the median.",
+          "example_code": "import vizro.plotly.express as px\n\ntips = px.data.tips()\n\nfig = px.violin(tips, y=\"tip\", x=\"day\", color=\"day\", box=True)\n"
+        },
+        {
+          "chart_name": "boxplot",
+          "definition": "A box plot (also known as whisker plot) provides a visual display of multiple datasets,\n            indicating the median (center) and the range of the data for each.",
+          "when_to_use": "Choose a box plot when you need to summarize distributions between many groups or datasets. It takes up\n            less space than many other charts.\n\n            Create boxes to display the median, and the upper and lower quartiles. Add whiskers to highlight\n            variability outside the upper and lower quartiles. You can add outliers as dots beyond, but in line with\n            the whiskers.",
+          "example_code": "import vizro.plotly.express as px\n\ntips = px.data.tips()\n\nfig = px.box(tips, y=\"total_bill\", x=\"day\", color=\"day\")\n"
+        },
+        {
+          "chart_name": "butterfly",
+          "definition": "A butterfly chart (also called a tornado chart) is a bar chart for displaying two sets of data series\n                side by side.",
+          "when_to_use": "Use a butterfly chart when you wish to emphasize the comparison between two data sets sharing the same\n                parameters. Sharing this chart with your audience will help them see at a glance how two groups differ\n                within the same parameters. You can also **stack** two bars on each side to divide your\n                categories.",
+          "example_code": "import pandas as pd\nimport plotly.express as px\nimport plotly.graph_objects as go\nfrom vizro.models.types import capture\n\n\n@capture(\"graph\")\ndef butterfly(data_frame: pd.DataFrame, **kwargs) -> go.Figure:\n    fig = px.bar(data_frame, **kwargs)\n\n    orientation = fig.data[0].orientation\n    x_or_y = \"x\" if orientation == \"h\" else \"y\"\n\n    fig.update_traces({f\"{x_or_y}axis\": f\"{x_or_y}2\"}, selector=1)\n    fig.update_layout({f\"{x_or_y}axis2\": fig.layout[f\"{x_or_y}axis\"]})\n    fig.update_layout(\n        {f\"{x_or_y}axis\": {\"autorange\": \"reversed\", \"domain\": [0, 0.5]}, f\"{x_or_y}axis2\": {\"domain\": [0.5, 1]}}\n    )\n\n    if orientation == \"h\":\n        fig.add_vline(x=0, line_width=2, line_color=\"grey\")\n    else:\n        fig.add_hline(y=0, line_width=2, line_color=\"grey\")\n\n    return fig\n\n\nages = pd.DataFrame(\n    {\n        \"Age\": [\"0-19\", \"20-29\", \"30-39\", \"40-49\", \"50-59\", \">=60\"],\n        \"Male\": [800, 2000, 4200, 5000, 2100, 800],\n        \"Female\": [1000, 3000, 3500, 3800, 3600, 700],\n    }\n)\n\nfig = butterfly(ages, x=[\"Male\", \"Female\"], y=\"Age\", labels={\"value\": \"Population\", \"variable\": \"Sex\"})\n"
+        },
+        {
+          "chart_name": "dumbbell",
+          "definition": "A dumbbell chart emphasizes the gap between two categorical groups. Each data point is depicted by a\n            symbol, typically a circle, representing its quantitative value. These symbols are connected by a line,\n            visually indicating the gap between the two points. Categories or groups are displayed along one axis,\n            while quantitative values are plotted along the other.",
+          "when_to_use": "Dumbbell charts are ideal for illustrating differences or gaps between two points. They are less cluttered\n            than bar charts, making it easier to compare groups. Common uses include comparing groups, such as showing\n            differences in performance metrics across various categories. Colors can be used to emphasize the direction\n            of changes or to distinguish between categories.",
+          "example_code": "import pandas as pd\nimport plotly.graph_objects as go\nimport vizro.plotly.express as px\nfrom vizro.models.types import capture\n\n\n@capture(\"graph\")\ndef dumbbell(data_frame: pd.DataFrame, **kwargs) -> go.Figure:\n    fig = px.scatter(data_frame, **kwargs)\n\n    orientation = fig.data[0].orientation\n    x_or_y = \"x\" if orientation == \"h\" else \"y\"\n    y_or_x = \"y\" if orientation == \"h\" else \"x\"\n\n    for x_or_y_0, x_or_y_1, y_or_x_0, y_or_x_1 in zip(\n        fig.data[0][x_or_y],\n        fig.data[1][x_or_y],\n        fig.data[0][y_or_x],\n        fig.data[1][y_or_x],\n    ):\n        fig.add_shape(\n            **{f\"{x_or_y}0\": x_or_y_0, f\"{x_or_y}1\": x_or_y_1, f\"{y_or_x}0\": y_or_x_0, f\"{y_or_x}1\": y_or_x_1},\n            type=\"line\",\n            layer=\"below\",\n            line_color=\"grey\",\n            line_width=3,\n        )\n\n    fig.update_traces(marker_size=12)\n    return fig\n\n\nsalaries = pd.DataFrame(\n    {\n        \"Job\": [\"Developer\", \"Analyst\", \"Manager\", \"Specialist\"],\n        \"Min\": [60000, 55000, 70000, 50000],\n        \"Max\": [130000, 110000, 96400, 80000],\n    }\n)\n\nfig = dumbbell(salaries, y=\"Job\", x=[\"Min\", \"Max\"], labels={\"variable\": \"\", \"value\": \"Salary in $\"})\n"
+        },
+        {
+          "chart_name": "histogram",
+          "definition": "A histogram organizes numerical data into columns, with the size of each column representing how frequently\n            values fall within specified ranges. It visualizes data across a continuous interval.",
+          "when_to_use": "A histogram is useful for showing your audience where specific values are concentrated, identifying the\n            extremes, and spotting any gaps or outliers. It can also help you visualize a rough probability\n            distribution. Ensure that the gaps between columns are minimal to make the 'shape' of your data\n            immediately clear.",
+          "example_code": "import vizro.plotly.express as px\n\ntips = px.data.tips()\n\nfig = px.histogram(tips, x=\"total_bill\")\n"
+        }
+      ]
+    },
+    "magnitude": {
+      "display_name": "Magnitude",
+      "description": "#### Magnitude allows you to emphasize size comparisons of **counted** items in your data set. You can show relative comparisons (whether something is larger or smaller) or absolute differences (where the nuances are most interesting). Typically, you will use magnitude for actual numbers versus calculated rates or percentages.",
+      "charts": [
+        {
+          "chart_name": "bar",
+          "definition": "A bar chart displays bars with lengths proportional to the values they represent. One axis shows the\n            categories to compare, and the other provides a value scale starting from zero.",
+          "when_to_use": "Use a bar chart to help your audience compare sizes and identify patterns in categorical data, such as\n            **how many?** in each category. Arrange the bars in any order to fit the message you want to emphasize.\n            Ensure clear labeling, especially with many bars, and consider using a legend or abbreviations with fuller\n            descriptions below.",
+          "example_code": "import vizro.plotly.express as px\n\ngapminder = px.data.gapminder().query(\n    \"year == 2007 and country.isin(['United States', 'Pakistan', 'India', 'China', 'Indonesia'])\"\n)\n\nfig = px.bar(gapminder, x=\"pop\", y=\"country\", orientation=\"h\")\n"
+        },
+        {
+          "chart_name": "column",
+          "definition": "A column chart is a type of bar chart where data is represented with vertical columns. Each\n                column's height corresponds to the value it represents, with the y-axis starting from zero.",
+          "when_to_use": "Use a column chart to compare sizes and identify patterns in categorical data, including time-based\n                data. Arrange columns to fit your message, and for time-based data, order them chronologically to\n                highlight trends. Ensure clear labeling, especially with many categories, and consider using a legend\n                or abbreviations with fuller descriptions below.",
+          "example_code": "import vizro.plotly.express as px\n\ngapminder = px.data.gapminder().query(\n    \"year == 2007 and country.isin(['United States', 'Pakistan', 'India', 'China', 'Indonesia'])\"\n)\n\nfig = px.bar(gapminder, y=\"pop\", x=\"country\")\n"
+        },
+        {
+          "chart_name": "paired_bar",
+          "definition": "A paired bar chart, also known as a grouped bar chart, displays bars grouped together in pairs for each\n            category, with the lengths of the bars proportional to the values they represent. One axis shows the\n            categories to compare, while the other provides a value scale starting from zero.",
+          "when_to_use": "Use a paired bar chart to compare multiple sets of data within the same categories. This type of chart is\n            particularly useful for highlighting differences and similarities between groups, such as **how many?** in\n            each category across different groups. Arrange the paired bars clearly to fit the message you want to\n            emphasize. Ensure clear labeling, especially with many bars, and consider using a legend or abbreviations\n            with fuller descriptions below.",
+          "example_code": "import vizro.plotly.express as px\n\ntips = px.data.tips()\n\nfig = px.histogram(\n    tips,\n    y=\"day\",\n    x=\"total_bill\",\n    color=\"sex\",\n    barmode=\"group\",\n    orientation=\"h\",\n    category_orders={\"day\": [\"Thur\", \"Fri\", \"Sat\", \"Sun\"]},\n)\n"
+        },
+        {
+          "chart_name": "paired_column",
+          "definition": "A paired column chart, also known as a grouped column chart, displays columns grouped together in pairs for\n            each category, with the heights of the columns proportional to the values they represent. One axis shows the\n            categories to compare, while the other provides a value scale starting from zero.",
+          "when_to_use": "Use a paired column chart to compare multiple sets of data within the same categories. This type of chart is\n            particularly useful for highlighting differences and similarities between groups, such as **how many?** in\n            each category across different groups. Arrange the paired columns clearly to fit the message you want to\n            emphasize. Ensure clear labeling, especially with many columns, and consider using a legend or abbreviations\n            with fuller descriptions below.",
+          "example_code": "import vizro.plotly.express as px\n\ntips = px.data.tips()\n\nfig = px.histogram(\n    tips, x=\"day\", y=\"total_bill\", color=\"sex\", barmode=\"group\", category_orders={\"day\": [\"Thur\", \"Fri\", \"Sat\", \"Sun\"]}\n)\n"
+        },
+        {
+          "chart_name": "parallel_coordinates",
+          "definition": "A parallel coordinates chart is a type of data visualization used to plot multivariate numerical data.\n                Each axis represents a different variable, and lines connecting the axes indicate the values of\n                individual data points across these variables.",
+          "when_to_use": "Use a parallel coordinates chart to explore relationships and patterns in high-dimensional data.\n                This chart is particularly useful for comparing multiple variables simultaneously and identifying\n                correlations or clusters within the data. Ensure clear labeling of each axis and consider using color\n                coding to distinguish between different data points or groups.",
+          "example_code": "import vizro.plotly.express as px\n\niris = px.data.iris()\n\nfig = px.parallel_coordinates(\n    iris, color=\"species_id\", dimensions=[\"sepal_width\", \"sepal_length\", \"petal_width\", \"petal_length\"]\n)\n"
+        },
+        {
+          "chart_name": "radar",
+          "definition": "A radar chart, also known as a spider plot or star plot, is a type of data visualization\n                used to display multivariate data. It consists of three or more variables represented\n                on axes that originate from the same central point.",
+          "when_to_use": "Use a radar chart to compare performance or characteristics across multiple variables.\n                The chart effectively highlights strengths, weaknesses, patterns, and outliers.\n                To maintain clarity, use consistent scales for all axes and clearly mark labels and data points.",
+          "example_code": "import pandas as pd\nimport vizro.plotly.express as px\nfrom vizro.models.types import capture\n\n\n@capture(\"graph\")\ndef radar(data_frame: pd.DataFrame, **kwargs):\n    fig = px.line_polar(data_frame, **kwargs)\n    fig.update_traces(fill=\"toself\")\n    return fig\n\n\nwind = px.data.wind().query(\"strength == '1-2'\")\n\nfig = radar(wind, r=\"frequency\", theta=\"direction\", line_close=True)\n"
+        },
+        {
+          "chart_name": "lollipop",
+          "definition": "A lollipop chart is a variation of a bar chart where each data point is represented by a line and a\n                dot at the end to mark the value. It functions like a bar chart but offers a cleaner visual,\n                especially useful when dealing with a large number of high values, to avoid the clutter of tall columns.\n                However, it can be less precise due to the difficulty in judging the exact center of the circle.",
+          "when_to_use": "Use a lollipop chart to compare values across categories, especially when dealing with many high values.\n                It highlights differences and trends clearly without the visual bulk of a bar chart. Ensure clarity by\n                limiting categories, using consistent scales, and clearly labeling axes. Consider alternatives if\n                precise value representation is crucial.",
+          "example_code": "import pandas as pd\nimport plotly.express as px\nimport plotly.graph_objects as go\nfrom vizro.models.types import capture\n\n\n@capture(\"graph\")\ndef lollipop(data_frame: pd.DataFrame, **kwargs):\n    \"\"\"Creates a lollipop chart using Plotly.\"\"\"\n    fig = px.scatter(data_frame, **kwargs)\n\n    orientation = fig.data[0].orientation\n    x_or_y = \"x\" if orientation == \"h\" else \"y\"\n    y_or_x = \"y\" if orientation == \"h\" else \"x\"\n\n    for x_or_y_value, y_or_x_value in zip(fig.data[0][x_or_y], fig.data[0][y_or_x]):\n        fig.add_trace(go.Scatter({x_or_y: [0, x_or_y_value], y_or_x: [y_or_x_value, y_or_x_value], \"mode\": \"lines\"}))\n\n    fig.update_traces(\n        marker_size=12,\n        line_width=3,\n        line_color=fig.layout.template.layout.colorway[0],\n    )\n\n    fig.update_layout(\n        {\n            \"showlegend\": False,\n            f\"{x_or_y}axis_showgrid\": True,\n            f\"{y_or_x}axis_showgrid\": False,\n            f\"{x_or_y}axis_rangemode\": \"tozero\",\n        },\n    )\n    return fig\n\n\ngapminder = (\n    px.data.gapminder()\n    .query(\"year == 2007 and country.isin(['United States', 'Pakistan', 'India', 'China', 'Indonesia'])\")\n    .sort_values(\"pop\")\n)\n\nfig = lollipop(gapminder, y=\"country\", x=\"pop\")\n"
+        }
+      ]
+    },
+    "time": {
+      "display_name": "Time",
+      "description": "#### Time helps you draw attention to important trends emerging over a specified period. The time period you select could be as short as seconds or as long as centuries. What matters most is selecting the correct period of time to best show your audience the message they need to take away.",
+      "charts": [
+        {
+          "chart_name": "line",
+          "definition": "A line chart presents a series of data points over a continuous interval or time period, joined together\n            with straight lines.",
+          "when_to_use": "You should select a line chart when you want to show trends over time. Usually, your y-axis will show a\n            quantitative value and your x-axis will be marked as a timescale or a sequence of intervals. You can also\n            display negative values below the x-axis. To group several lines (different data series) in the\n            same chart, try to limit yourself to 3-4 to avoid cluttering up your chart.",
+          "example_code": "import vizro.plotly.express as px\n\nstocks = px.data.stocks()\n\nfig = px.line(stocks, x=\"date\", y=\"GOOG\")\n"
+        },
+        {
+          "chart_name": "column",
+          "definition": "A column chart is a type of bar chart where data is represented with vertical columns. Each\n                column's height corresponds to the value it represents, with the y-axis starting from zero.",
+          "when_to_use": "Use a column chart to compare sizes and identify patterns in categorical data, including time-based\n                data. Arrange columns to fit your message, and for time-based data, order them chronologically to\n                highlight trends. Ensure clear labeling, especially with many categories, and consider using a legend\n                or abbreviations with fuller descriptions below.",
+          "example_code": "import pandas as pd\nimport plotly.graph_objects as go\nimport vizro.plotly.express as px\nfrom vizro.models.types import capture\n\n\n@capture(\"graph\")\ndef categorical_column(data_frame: pd.DataFrame, **kwargs) -> go.Figure:\n    fig = px.bar(data_frame, **kwargs)\n    fig.update_xaxes(type=\"category\")\n    return fig\n\n\ngapminder = px.data.gapminder().query(\"country == 'Nigeria' and year > 1970\")\n\nfig = categorical_column(gapminder, x=\"year\", y=\"lifeExp\")\n"
+        },
+        {
+          "chart_name": "area",
+          "definition": "An area chart displays data points over a continuous interval or time period, with the area between the line\n            and the axis filled in to emphasize the magnitude of the values.",
+          "when_to_use": "An area chart is ideal for showing trends over time and emphasizing the volume of data. Typically,\n            the y-axis represents a quantitative value, while the x-axis is marked with a timescale or sequence of\n            intervals. Area charts can also display negative values below the x-axis. If you need to compare multiple\n            data series in the same chart, try to limit yourself to 3-4 to maintain clarity and avoid clutter.",
+          "example_code": "import vizro.plotly.express as px\n\nstocks = px.data.stocks()\n\nfig = px.area(stocks, x=\"date\", y=\"GOOG\")\n"
+        },
+        {
+          "chart_name": "connected_scatter",
+          "definition": "A connected scatter chart visualizes two variables (x and y) using dots, with lines connecting the dots\n                in the order of the data points. One variable is plotted along the x-axis and the other along the\n                y-axis, showing both the relationship and a sequence of the data.",
+          "when_to_use": "Use connected scatter charts to show the relationship between two variables and the sequence of data\n                points. They are ideal for paired numerical data, helping to reveal trends and patterns over time or in\n                a specific order. Remember, correlation is not causation, so ensure your audience understands this to\n                avoid misinterpretation.",
+          "example_code": "import vizro.plotly.express as px\n\ngapminder = px.data.gapminder().query(\"country == 'Australia'\")\n\nfig = px.line(gapminder, x=\"year\", y=\"lifeExp\", markers=True)\n"
+        },
+        {
+          "chart_name": "column_and_line",
+          "definition": "A combined column and line chart helps you demonstrate the relationship between an amount\n                (displayed in columns) and a trend or rate (displayed as a line running across the columns).",
+          "when_to_use": "Use this type of chart when you wish to compare quantities of one item with changes in another item.\n                It's ideal for showing patterns over time (e.g., monthly sales and growth rates) but can also be used\n                for other types of data comparisons.",
+          "example_code": "from typing import Union\n\nimport pandas as pd\nimport plotly.graph_objects as go\nimport vizro.plotly.express as px\nfrom plotly.subplots import make_subplots\nfrom vizro.models.types import capture\n\n\n@capture(\"graph\")\ndef column_and_line(\n    data_frame: pd.DataFrame,\n    x: Union[str, pd.Series, list[str], list[pd.Series]],\n    y_column: Union[str, pd.Series, list[str], list[pd.Series]],\n    y_line: Union[str, pd.Series, list[str], list[pd.Series]],\n) -> go.Figure:\n    bar = px.bar(data_frame, x=x, y=y_column)\n    fig = make_subplots(figure=bar, specs=[[{\"secondary_y\": True}]])\n\n    line = px.line(\n        data_frame,\n        x=x,\n        y=y_line,\n        markers=True,\n        color_discrete_sequence=fig.layout.template.layout.colorway[len(bar.data) :],\n    )\n\n    for trace in line.data:\n        fig.add_trace(trace, secondary_y=True)\n\n    fig.update_layout(yaxis2={\"tickmode\": \"sync\", \"overlaying\": \"y\", \"title\": line.layout.yaxis.title})\n\n    return fig\n\n\ngapminder = px.data.gapminder().query(\"country == 'Vietnam'\")\n\nfig = column_and_line(gapminder, y_column=\"gdpPercap\", y_line=\"lifeExp\", x=\"year\")\n"
+        },
+        {
+          "chart_name": "stepped_line",
+          "definition": "A stepped line chart is much like a standard line chart but, instead of connecting two points with the\n            shortest line, the line forms a series of steps between data points.",
+          "when_to_use": "You should use a stepped line chart when you wish to draw attention to changes occurring at specific points.\n            By contrast, a line chart would suggest that changes occur gradually.",
+          "example_code": "import pandas as pd\nimport vizro.plotly.express as px\n\nstepped_line_data = pd.DataFrame(\n    {\n        \"year\": [1995, 1996, 1997, 1998, 1999, 2000, 2001, 2002, 2003],\n        \"rate\": [0.10, 0.12, 0.15, 0.13, 0.14, 0.13, 0.14, 0.16, 0.15],\n    }\n)\n\nfig = px.line(data_frame=stepped_line_data, x=\"year\", y=\"rate\", line_shape=\"vh\")\n"
+        },
+        {
+          "chart_name": "heatmap",
+          "definition": "A heatmap chart depicts values for a main variable of interest across two axis variables as a grid of\n            colored squares. The color intensity of each cell represents the value of the main variable within a\n            specific range.",
+          "when_to_use": "Use a heatmap chart to visualize time patterns and identify trends between two variables.\n            Typically, the x-axis represents time intervals (e.g., hours, days, months), while the y-axis represents\n            categories or different variables. By observing color changes across the grid, you can easily spot\n            patterns and correlations.",
+          "example_code": "import vizro.plotly.express as px\n\ntips = px.data.tips()\n\nfig = px.density_heatmap(tips, x=\"day\", y=\"size\", z=\"tip\", histfunc=\"avg\", text_auto=\"$.2f\")\n"
+        },
+        {
+          "chart_name": "gantt",
+          "definition": "A gantt chart is a type of bar chart that visualizes a project schedule.\n                It shows the start and end dates of a project element, such as tasks, activities, or\n                events, in a timeline format. Each element is represented by a bar whose length indicates\n                its duration.",
+          "when_to_use": "Gantt charts are ideal for visualizing project timelines, tracking\n                progress, and managing dependencies. They clearly display task start and end dates, making\n                it easy to monitor project status and manage interdependencies. However, they can become\n                complex if not regularly updated, especially for large projects.",
+          "example_code": "import pandas as pd\nimport vizro.plotly.express as px\n\ntasks = pd.DataFrame(\n    [\n        {\"Task\": \"Job A\", \"Start\": \"2009-01-01\", \"Finish\": \"2009-02-28\"},\n        {\"Task\": \"Job B\", \"Start\": \"2009-03-05\", \"Finish\": \"2009-04-15\"},\n        {\"Task\": \"Job C\", \"Start\": \"2009-02-20\", \"Finish\": \"2009-05-30\"},\n    ]\n).sort_values(\"Start\", ascending=False)\n\nfig = px.timeline(tasks, x_start=\"Start\", x_end=\"Finish\", y=\"Task\")\n"
+        },
+        {
+          "chart_name": "sparkline",
+          "definition": "A sparkline chart is a compact line or area chart that displays multiple time series over a continuous\n                period. Without visible axes or labels, they are ideal for embedding within text, tables, or dashboards,\n                highlighting relative movement rather than precise values for a quick visual summary of trends.",
+          "when_to_use": "Use sparkline charts to show trends for multiple time series sharing the same y-axis quantity over the\n                same x-axis time range. They emphasize relative movement rather than precise values. To keep them\n                effective, ensure simplicity by avoiding clutter. Use consistent scales and distinct colors for\n                different series. Remove labels and gridlines, limit annotations, and place sparklines near relevant\n                text or data.",
+          "example_code": "import plotly.express as px\nfrom vizro.models.types import capture\n\nstocks = px.data.stocks()\n\n\n@capture(\"graph\")\ndef sparkline(data_frame, **kwargs):\n    fig = px.line(data_frame, **kwargs)\n    fig.update_xaxes(ticks=\"\", showgrid=False, title=\"\")\n    fig.update_yaxes(visible=False)\n    fig.update_layout(showlegend=False)\n    return fig\n\n\nfig = sparkline(stocks, x=\"date\", y=[\"GOOG\", \"AMZN\", \"AAPL\"], labels={\"variable\": \"stock\"}, facet_row=\"variable\")\n"
+        }
+      ]
+    },
+    "part_to_whole": {
+      "display_name": "Part-to-whole",
+      "description": "#### Part-to-whole helps you show how one whole item breaks down into its component parts. If you consider the size of the parts to be most important, a magnitude chart may be more appropriate.",
+      "charts": [
+        {
+          "chart_name": "donut",
+          "definition": "A donut chart looks like a pie chart, but has a blank space in the center which may contain additional\n            information.",
+          "when_to_use": "A donut chart can be used in place of a pie chart, particularly when you are short of space or have extra\n            information you would like to share about the data. It may also be more effective if you wish your audience\n            to focus on the length of the arcs of the sections instead of the proportions of the segment sizes.",
+          "example_code": "import vizro.plotly.express as px\n\ntips = px.data.tips()\n\nfig = px.pie(tips, values=\"tip\", names=\"day\", hole=0.4)\n"
+        },
+        {
+          "chart_name": "pie",
+          "definition": "A pie chart is a circular chart divided into segments to show proportions and percentages between\n            categories. The circle represents the whole.",
+          "when_to_use": "Use the pie chart when you need to show your audience a quick view of how data is distributed\n            proportionately, with percentages highlighted. The different values you present must add up to a total and\n            equal 100%.\n\n            The downsides are that pie charts tend to occupy more space than other charts, they don't\n            work well with more than a few values because labeling small segments is challenging, and it can be\n            difficult to accurately compare the sizes of the segments.",
+          "example_code": "import vizro.plotly.express as px\n\ntips = px.data.tips()\n\nfig = px.pie(tips, values=\"tip\", names=\"day\")\n"
+        },
+        {
+          "chart_name": "treemap",
+          "definition": "A treemap shows hierarchical data arranged as a set of nested rectangles: rectangles are sized\n                proportionately to the quantity they represent, combined together to form larger parent category\n                rectangles.",
+          "when_to_use": "It's helpful to use a treemap when you wish to display hierarchical part-to-whole relationships. You can\n                compare groups and single elements nested within them. Consider using them instead of Pie charts when\n                you have a higher number of categories. Treemaps are very compact and allow audiences to get a quick\n                overview of the data.",
+          "example_code": "import vizro.plotly.express as px\n\ngapminder = px.data.gapminder().query(\"year == 2007\")\n\nfig = px.treemap(gapminder, path=[px.Constant(\"world\"), \"continent\", \"country\"], values=\"pop\", color=\"lifeExp\")\n"
+        },
+        {
+          "chart_name": "stacked_bar",
+          "definition": "A stacked bar chart displays bars divided into segments, with each segment's length proportional to the\n            value it represents. One axis shows the categories being compared, while the other provides a value scale\n            starting from zero. The segments within each bar are stacked on top of each other, allowing for a cumulative\n            comparison.",
+          "when_to_use": "Use a stacked bar chart to help your audience compare the total sizes of categories as well as the\n            individual components within those categories. This chart type is ideal for visualizing part-to-whole\n            relationships and identifying patterns within categorical data. Ensure clear labeling for each segment,\n            especially when there are many categories, and consider using a legend or abbreviations with fuller\n            descriptions below.",
+          "example_code": "import vizro.plotly.express as px\n\ntips = px.data.tips()\n\nfig = px.histogram(tips, y=\"sex\", x=\"total_bill\", color=\"day\", orientation=\"h\")\n"
+        },
+        {
+          "chart_name": "stacked_column",
+          "definition": "A stacked column chart displays columns divided into segments, with each segment's height proportional to\n            the value it represents. One axis shows the categories being compared, while the other provides a value\n            scale starting from zero. The segments within each column are stacked on top of each other, allowing for a\n            cumulative comparison.",
+          "when_to_use": "Use a stacked column chart to help your audience compare the total sizes of categories as well as the\n            individual components within those categories. This chart type is ideal for visualizing part-to-whole\n            relationships and identifying patterns within categorical data. Ensure clear labeling for each segment,\n            especially when there are many categories, and consider using a legend or abbreviations with fuller\n            descriptions below.",
+          "example_code": "import vizro.plotly.express as px\n\ntips = px.data.tips()\n\nfig = px.histogram(tips, x=\"sex\", y=\"total_bill\", color=\"day\")\n"
+        },
+        {
+          "chart_name": "funnel",
+          "definition": "A funnel area chart is a type of data visualization that represents stages in a process, with the size of\n            each area proportional to its value. The chart typically narrows as it progresses, visually depicting the\n            reduction in numbers through each stage. One axis represents the stages of the process, while the other axis\n            indicates the values or quantities at each stage.",
+          "when_to_use": "Use a funnel area chart to help your audience understand and compare the progression of data through\n            different stages of a process. This chart type is particularly effective for visualizing conversion rates,\n            sales processes, or any sequential data where you want to highlight drop-offs or reductions between stages.",
+          "example_code": "import pandas as pd\nimport vizro.plotly.express as px\n\nfunnel_data = pd.DataFrame(\n    {\"Stage\": [\"Leads\", \"Sales calls\", \"Follow-up\", \"Conversion\", \"Sales\"], \"Value\": [10, 7, 4, 2, 1]}\n)\n\nfig = px.funnel_area(funnel_data, names=\"Stage\", values=\"Value\")\n"
+        },
+        {
+          "chart_name": "waterfall",
+          "definition": "A waterfall chart is a bar chart that shows the cumulative effect of sequential positive or negative\n                values. It starts with an initial value, displays individual changes as steps, and ends with the\n                final total.",
+          "when_to_use": "Use a waterfall chart to visualize how individual factors contribute to a total, such as changes in\n                revenue or costs by category. It helps you understand the incremental impact of each factor, making\n                data analysis and interpretation easier. Ensure all bars and changes are clearly labeled, use consistent\n                colors for positive and negative values, and arrange categories logically to tell a coherent story.",
+          "example_code": "import pandas as pd\nimport plotly.graph_objects as go\nfrom vizro.models.types import capture\n\n\n@capture(\"graph\")\ndef waterfall(\n    data_frame: pd.DataFrame,\n    x: str,\n    y: str,\n    measure: list[str],\n):\n    return go.Figure(\n        data=go.Waterfall(x=data_frame[x], y=data_frame[y], measure=data_frame[measure]),\n        layout={\"showlegend\": False},\n    )\n\n\nwaterfall_data = pd.DataFrame(\n    {\n        \"x\": [\"Sales\", \"Consulting\", \"Net revenue\", \"Purchases\", \"Other expenses\", \"Profit before tax\"],\n        \"y\": [60, 80, 0, -40, -20, 0],\n        \"measure\": [\"relative\", \"relative\", \"total\", \"relative\", \"relative\", \"total\"],\n    }\n)\n\nfig = waterfall(waterfall_data, x=\"x\", y=\"y\", measure=\"measure\")\n"
+        }
+      ]
+    },
+    "flow": {
+      "display_name": "Flow",
+      "description": "#### With flow charts, you can highlight the quantity or the intensity of the movement between more than one state or condition. The flow might be steps in a logical sequence or movement between different geographical locations.",
+      "charts": [
+        {
+          "chart_name": "sankey",
+          "definition": "A Sankey chart is a type of flow diagram that illustrates how resources or values move between different\n            stages or entities. The width of the arrows in the chart is proportional to the quantity of the flow,\n            making it easy to see where the largest movements occur.",
+          "when_to_use": "Use a Sankey chart when you want to visualize the flow of resources, energy, money, or other values from\n            one point to another. It is particularly useful for showing distributions and transfers within a system,\n            such as energy usage, cost breakdowns, or material flows.\n\n            Be mindful that Sankey charts can become cluttered if there are too many nodes or flows.\n            To maintain clarity, focus on highlighting the most significant flows and keep the chart as simple as\n            possible.",
+          "example_code": "import pandas as pd\nimport plotly.graph_objects as go\nfrom vizro.models.types import capture\n\n\n@capture(\"graph\")\ndef sankey(\n    data_frame: pd.DataFrame,\n    source: str,\n    target: str,\n    value: str,\n    labels: list[str],\n):\n    return go.Figure(\n        data=go.Sankey(\n            node={\n                \"pad\": 16,\n                \"thickness\": 16,\n                \"label\": labels,\n            },\n            link={\n                \"source\": data_frame[source],\n                \"target\": data_frame[target],\n                \"value\": data_frame[value],\n                \"label\": labels,\n                \"color\": \"rgba(205, 209, 228, 0.4)\",\n            },\n        ),\n        layout={\"barmode\": \"relative\"},\n    )\n\n\nsankey_data = pd.DataFrame(\n    {\n        \"Origin\": [0, 1, 0, 2, 3, 3],  # indices inside labels\n        \"Destination\": [2, 3, 3, 4, 4, 5],  # indices inside labels\n        \"Value\": [8, 4, 2, 8, 4, 2],\n    }\n)\n\nfig = sankey(\n    sankey_data, labels=[\"A1\", \"A2\", \"B1\", \"B2\", \"C1\", \"C2\"], source=\"Origin\", target=\"Destination\", value=\"Value\"\n)\n"
+        },
+        {
+          "chart_name": "waterfall",
+          "definition": "A waterfall chart is a bar chart that shows the cumulative effect of sequential positive or negative\n                values. It starts with an initial value, displays individual changes as steps, and ends with the\n                final total.",
+          "when_to_use": "Use a waterfall chart to visualize how individual factors contribute to a total, such as changes in\n                revenue or costs by category. It helps you understand the incremental impact of each factor, making\n                data analysis and interpretation easier. Ensure all bars and changes are clearly labeled, use consistent\n                colors for positive and negative values, and arrange categories logically to tell a coherent story.",
+          "example_code": "import pandas as pd\nimport plotly.graph_objects as go\nfrom vizro.models.types import capture\n\n\n@capture(\"graph\")\ndef waterfall(\n    data_frame: pd.DataFrame,\n    x: str,\n    y: str,\n    measure: list[str],\n):\n    return go.Figure(\n        data=go.Waterfall(x=data_frame[x], y=data_frame[y], measure=data_frame[measure]),\n        layout={\"showlegend\": False},\n    )\n\n\nwaterfall_data = pd.DataFrame(\n    {\n        \"x\": [\"Sales\", \"Consulting\", \"Net revenue\", \"Purchases\", \"Other expenses\", \"Profit before tax\"],\n        \"y\": [60, 80, 0, -40, -20, 0],\n        \"measure\": [\"relative\", \"relative\", \"total\", \"relative\", \"relative\", \"total\"],\n    }\n)\n\nfig = waterfall(waterfall_data, x=\"x\", y=\"y\", measure=\"measure\")\n"
+        }
+      ]
+    },
+    "spatial": {
+      "display_name": "Spatial",
+      "description": "#### Spatial charts allow you to demonstrate precise locations or geographical patterns in your data.",
+      "charts": [
+        {
+          "chart_name": "choropleth",
+          "definition": "A choropleth map is a map in which geographical areas are colored, shaded or patterned in relation to a\n            specific data variable.",
+          "when_to_use": "Use a chloropleth map when you wish to show how a measurement varies across a geographic area, or to show\n            variability or patterns within a region. Typically, you will blend one color into another, take a color\n            shade from light to dark, or introduce patterns to depict the variation in the data.\n\n            Be aware that it may be difficult for your audience to accurately read or compare values on the map\n            depicted by color.",
+          "example_code": "import vizro.plotly.express as px\n\ngapminder = px.data.gapminder().query(\"year == 2007\")\n\nfig = px.choropleth(gapminder, locations=\"iso_alpha\", color=\"lifeExp\", hover_name=\"country\")\n"
+        },
+        {
+          "chart_name": "dot_map",
+          "definition": "A dot map, or scatter map, uses dots to represent the value of a specific variable at geographic locations.",
+          "when_to_use": "Use a dot map to visually display the distribution and concentration of data points across a geographic\n            area. It's ideal for showing the frequency or density of an attribute, helping to identify patterns,\n            clusters, or anomalies.\n\n            Dot maps offer a clear visual impression of spatial distributions, but overlapping dots can make it hard to\n            distinguish individual data points in dense areas. Consider adding opacity to your dots to improve clarity.",
+          "example_code": "import vizro.plotly.express as px\n\ncarshare = px.data.carshare()\n\nfig = px.scatter_map(carshare, lat=\"centroid_lat\", lon=\"centroid_lon\", opacity=0.5, zoom=10)\n"
+        },
+        {
+          "chart_name": "bubble_map",
+          "definition": "A bubble map uses bubbles of varying sizes to represent the value of a specific variable at geographic\n            locations.",
+          "when_to_use": "Use a bubble map to show the distribution, concentration, and size of data points on a map.\n            It's great for highlighting patterns, clusters, and anomalies.\n\n            Bubble maps clearly display spatial distributions and magnitudes, but overlapping bubbles can obscure\n            details in crowded areas. Adjust the opacity and size of your bubbles to enhance clarity.",
+          "example_code": "import vizro.plotly.express as px\n\ncarshare = px.data.carshare()\n\nfig = px.scatter_map(\n    carshare, lat=\"centroid_lat\", lon=\"centroid_lon\", size=\"car_hours\", size_max=15, opacity=0.5, zoom=10\n)\n"
+        }
+      ]
+    }
+  }
+}
