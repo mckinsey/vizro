@@ -18,26 +18,29 @@ env:
 
 jobs:
   test-e2e-vizro-dom-elements:
-    name: test-e2e-vizro-dom-elements on Py${{ matrix.config.python-version }} ${{ matrix.config.label }}
+    name: test-e2e-vizro-dom-elements on Py${{ matrix.python-version }} ${{ matrix.label }}
     runs-on: ubuntu-latest
 
     strategy:
       fail-fast: false
       matrix:
-        config:
+        group: [1, 2]
+        label: [upper bounds, lower bounds]
+        include:
           - python-version: "3.12"
             hatch-env: all.py3.12
-          - python-version: "3.9"
+            label: upper bounds
+          - python-version: "3.9
             hatch-env: lower-bounds
             label: lower bounds
 
     steps:
       - uses: actions/checkout@v4
 
-      - name: Set up Python ${{ matrix.config.python-version }}
+      - name: Set up Python ${{ matrix.python-version }}
         uses: actions/setup-python@v5
         with:
-          python-version: ${{ matrix.config.python-version }}
+          python-version: ${{ matrix.python-version }}
 
       - name: Install Hatch
         run: pip install hatch
@@ -55,7 +58,7 @@ jobs:
         if: failure()
         uses: ./.github/actions/failed-artifacts-and-slack-notifications
         env:
-          TESTS_NAME: Vizro e2e vizro dom elements tests ${{ matrix.config.label }}-${{ matrix.config.python-version }}
+          TESTS_NAME: Vizro e2e vizro dom elements tests ${{ matrix.label }}-${{ matrix.python-version }}
           SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
           PROJECT_PATH: /home/runner/work/vizro/vizro/vizro-core/
-          FAILED_SCREENSHOTS_ARCHIVE_POSTFIX: ${{ matrix.config.label }}-${{ matrix.config.python-version }}
+          FAILED_SCREENSHOTS_ARCHIVE_POSTFIX: ${{ matrix.label }}-${{ matrix.python-version }}
