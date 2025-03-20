@@ -58,7 +58,9 @@ if __name__ == "__main__":
 
     # Fetch package versions directly and update config
     try:
-        config.vizro_version, config.vizro_ai_version = fetch_package_versions(config.repo_name, config.commit_sha)
+        config.package_version, config.vizro_ai_package_version = fetch_package_versions(
+            config.repo_name, config.commit_sha
+        )
     except Exception as e:
         print(f"Error fetching versions: {e}")  # noqa
         # Keep the default values if an error occurs
@@ -68,8 +70,8 @@ if __name__ == "__main__":
 
     # Print package versions from the repository at the current commit
     print("Fetching package versions from repository...")  # noqa
-    print(f"Vizro version from repo: {config.vizro_version}")  # noqa
-    print(f"Vizro-AI version from repo: {config.vizro_ai_version}")  # noqa
+    print(f"Vizro version from repo: {config.package_version}")  # noqa
+    print(f"Vizro-AI version from repo: {config.vizro_ai_package_version}")  # noqa
 
     # Test dev example with latest version - we currently one test this for simplicity, but this could be changed
     # This would mean that we need to change also what the wait_for_text is
