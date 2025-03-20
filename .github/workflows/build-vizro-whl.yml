@@ -49,10 +49,10 @@ jobs:
       # Once satisfied, comment them again, because the actual links will be created by the pycafe-dashboards.yml workflow
       # which is run from the main branch
       ############### Start of PyCafe links creation ###############
-      # - name: Install Playwright and browser
-      #   run: |
-      #     hatch run pip install playwright
-      #     hatch run playwright install --with-deps chromium
+      - name: Install Playwright and browser
+        run: |
+          hatch run pip install playwright
+          hatch run playwright install --with-deps chromium
       - name: Install vizro-ai in editable mode # This makes vizro-ai present in env to get the version
         run: |
           hatch run pip install -e ../vizro-ai
