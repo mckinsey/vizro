@@ -33,3 +33,7 @@
 .collapsible-container-header .material-symbols-outlined:hover {
   color: var(--text-primaryHover);
 }
+
+.collapsible-container {
+  height: 100%;
+}

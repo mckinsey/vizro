@@ -21,9 +21,8 @@ page_1=vm.Page(
                     components=[
                         vm.Graph(figure=px.scatter(iris, x="sepal_length", y="petal_width", color="species")),
                         vm.Graph(figure=px.histogram(iris, x="sepal_width", color="species")),
-                        vm.Graph(figure=px.scatter(iris, x="sepal_length", y="petal_width", color="species")),
                     ],
-                    layout=vm.Layout(grid=[[0, 0, 0, 0], [1, 1, 2, 2]]),
+                    layout=vm.Layout(grid=[[0, 0, 1, 1]]),
                     is_open=False,
                 ),
                 CollapsibleContainer(
@@ -32,7 +31,7 @@ page_1=vm.Page(
                         vm.Graph(figure=px.scatter(iris, x="sepal_length", y="petal_width", color="species")),
                         vm.Graph(figure=px.histogram(iris, x="sepal_width", color="species")),
                     ],
-                    layout=vm.Layout(grid=[[0, 0, 0, 0], [1, 1, 1, 1]]),
+                    layout=vm.Layout(grid=[[0, 0, 1, 1]]),
                 ),
             ]
         )
@@ -48,9 +47,8 @@ page_2 = vm.Page(
             components=[
                 vm.Graph(figure=px.scatter(iris, x="sepal_length", y="petal_width", color="species")),
                 vm.Graph(figure=px.histogram(iris, x="sepal_width", color="species")),
-                vm.Graph(figure=px.scatter(iris, x="sepal_length", y="petal_width", color="species")),
             ],
-            layout=vm.Layout(grid=[[0, 0, 0, 0], [1, 1, 2, 2]]),
+            layout=vm.Layout(grid=[[0, 0, 1, 1]]),
             is_open=False,
         ),
         CollapsibleContainer(
@@ -59,9 +57,9 @@ page_2 = vm.Page(
                 vm.Graph(figure=px.scatter(iris, x="sepal_length", y="petal_width", color="species")),
                 vm.Graph(figure=px.histogram(iris, x="sepal_width", color="species")),
             ],
-            layout=vm.Layout(grid=[[0, 0, 0, 0], [1, 1, 1, 1]]),
-        )
-    ]
+            layout=vm.Layout(grid=[[0, 0, 1, 1]]),
+        ),
+    ],
 )
 
 

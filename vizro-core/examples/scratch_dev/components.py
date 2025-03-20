@@ -88,6 +88,7 @@ class CollapsibleContainer(vm.Container):
                     id=self.id,
                     children=self._build_inner_layout(),
                     is_open=self.is_open,
+                    className="collapsible-container",
                 ),
             ],
             fluid=True,
