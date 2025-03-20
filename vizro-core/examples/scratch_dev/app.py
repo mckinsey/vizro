@@ -1,26 +1,69 @@
+import vizro.plotly.express as px
+
 import vizro.models as vm
 from vizro import Vizro
+from components import CollapsibleContainer, FlexContainer
 
+vm.Page.add_type("components", FlexContainer)
+vm.Page.add_type("components", CollapsibleContainer)
 
-page = vm.Page(
-    title="Text with extra argument",
+FlexContainer.add_type("components", CollapsibleContainer)
+
+iris = px.data.iris()
+
+page_1 = vm.Page(
+    title="Collapse containers with flex container",
     components=[
-        vm.Text(
-            text="""
-              This example uses the block delimiter:
-              $$
-              \\int_0^\\infty e^{-x^2} dx = \\frac{\\sqrt{\\pi}}{2}
-              $$
+        FlexContainer(
+            components=[
+                CollapsibleContainer(
+                    title="Collapsible container",
+                    components=[
+                        vm.Graph(figure=px.scatter(iris, x="sepal_length", y="petal_width", color="species")),
+                        vm.Graph(figure=px.histogram(iris, x="sepal_width", color="species")),
+                    ],
+                    layout=vm.Layout(grid=[[0, 0, 1, 1]]),
+                    is_open=False,
+                ),
+                CollapsibleContainer(
+                    title="Collapsible container 2",
+                    components=[
+                        vm.Graph(figure=px.scatter(iris, x="sepal_length", y="petal_width", color="species")),
+                        vm.Graph(figure=px.histogram(iris, x="sepal_width", color="species")),
+                    ],
+                    layout=vm.Layout(grid=[[0, 0, 1, 1]]),
+                ),
+            ]
+        )
+    ],
+)
 
-              This example uses the inline delimiter:
-              $x = \\frac{-b \\pm \\sqrt{b^2 - 4ac}}{2a}$
-            """,
-            extra={"mathjax": True},
+
+page_2 = vm.Page(
+    title="Collapsible containers inside grid layout",
+    components=[
+        CollapsibleContainer(
+            title="Collapsible container",
+            components=[
+                vm.Graph(figure=px.scatter(iris, x="sepal_length", y="petal_width", color="species")),
+                vm.Graph(figure=px.histogram(iris, x="sepal_width", color="species")),
+            ],
+            layout=vm.Layout(grid=[[0, 0, 1, 1]]),
+            is_open=False,
+        ),
+        CollapsibleContainer(
+            title="Collapsible container 2",
+            components=[
+                vm.Graph(figure=px.scatter(iris, x="sepal_length", y="petal_width", color="species")),
+                vm.Graph(figure=px.histogram(iris, x="sepal_width", color="species")),
+            ],
+            layout=vm.Layout(grid=[[0, 0, 1, 1]]),
         ),
     ],
 )
 
-dashboard = vm.Dashboard(pages=[page])
+
+dashboard = vm.Dashboard(pages=[page_1, page_2])
 
 
 if __name__ == "__main__":
