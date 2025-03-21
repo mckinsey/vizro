@@ -8,6 +8,7 @@ from pycafe_utils import (
     PyCafeConfig,
     create_github_client,
     create_status_check,
+    fetch_package_versions,
     generate_link,
 )
 
@@ -55,8 +56,20 @@ if __name__ == "__main__":
         commit_sha=args.commit_sha,
     )
 
+    # Fetch package versions directly and update config
+    try:
+        config.vizro_version, config.vizro_ai_version = fetch_package_versions(config.repo_name, config.commit_sha)
+    except Exception as e:
+        print(f"Error fetching versions: {e}")  # noqa
+        # Keep the default values if an error occurs
+
     # Initialize GitHub connection
     repo, commit = create_github_client(config)
+
+    # Print package versions from the repository at the current commit
+    print("Fetching package versions from repository...")  # noqa
+    print(f"Vizro version from repo: {config.vizro_version}")  # noqa
+    print(f"Vizro-AI version from repo: {config.vizro_ai_version}")  # noqa
 
     # Test dev example with latest version - we currently one test this for simplicity, but this could be changed
     # This would mean that we need to change also what the wait_for_text is
