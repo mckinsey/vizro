@@ -10,7 +10,6 @@ from typing import Optional, Tuple
 from urllib.parse import quote, urlencode
 
 import requests
-import vizro
 from github import Auth, Github
 from github.Commit import Commit
 from github.Repository import Repository
