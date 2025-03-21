@@ -6,7 +6,7 @@ import json
 import re
 import textwrap
 from dataclasses import dataclass
-from typing import Optional, Tuple
+from typing import Optional
 from urllib.parse import quote, urlencode
 
 import requests
@@ -23,7 +23,7 @@ def _extract_version(content: str) -> str:
     return "unknown"
 
 
-def fetch_package_versions(repo_name: str, commit_sha: str) -> Tuple[str, str]:
+def fetch_package_versions(repo_name: str, commit_sha: str) -> tuple[str, str]:
     """Fetch package versions directly from the repository files.
 
     This function retrieves the version strings from the __init__.py files of vizro and vizro-ai
