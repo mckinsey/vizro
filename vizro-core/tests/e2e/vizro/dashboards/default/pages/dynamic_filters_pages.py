@@ -62,20 +62,17 @@ dynamic_filters_categorical_page = vm.Page(
     ],
     controls=[
         vm.Filter(
-            id=cnst.DROPDOWN_MULTI_DYNAMIC_FILTER_ID,
             column="species",
-            selector=vm.Dropdown(),
+            selector=vm.Dropdown(id=cnst.DROPDOWN_MULTI_DYNAMIC_FILTER_ID),
         ),
         vm.Filter(
-            id=cnst.DROPDOWN_DYNAMIC_FILTER_ID,
             column="species",
-            selector=vm.Dropdown(multi=False),
+            selector=vm.Dropdown(id=cnst.DROPDOWN_DYNAMIC_FILTER_ID, multi=False),
         ),
-        vm.Filter(id=cnst.CHECKLIST_DYNAMIC_FILTER_ID, column="species", selector=vm.Checklist()),
+        vm.Filter(column="species", selector=vm.Checklist(id=cnst.CHECKLIST_DYNAMIC_FILTER_ID)),
         vm.Filter(
-            id=cnst.RADIOITEMS_DYNAMIC_FILTER_ID,
             column="species",
-            selector=vm.RadioItems(),
+            selector=vm.RadioItems(id=cnst.RADIOITEMS_DYNAMIC_FILTER_ID),
         ),
     ],
 )
@@ -90,14 +87,12 @@ dynamic_filters_numerical_page = vm.Page(
     ],
     controls=[
         vm.Filter(
-            id=cnst.SLIDER_DYNAMIC_FILTER_ID,
             column="sepal_length",
-            selector=vm.Slider(step=0.5),
+            selector=vm.Slider(id=cnst.SLIDER_DYNAMIC_FILTER_ID, step=0.5),
         ),
         vm.Filter(
-            id=cnst.RANGE_SLIDER_DYNAMIC_FILTER_ID,
             column="sepal_length",
-            selector=vm.RangeSlider(step=0.5),
+            selector=vm.RangeSlider(id=cnst.RANGE_SLIDER_DYNAMIC_FILTER_ID, step=0.5),
         ),
     ],
 )

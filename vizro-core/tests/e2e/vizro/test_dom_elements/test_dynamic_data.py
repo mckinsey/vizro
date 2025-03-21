@@ -1,10 +1,46 @@
+from functools import wraps
 from pathlib import Path
 
 import pytest
+import yaml
 from e2e.asserts import assert_image_not_equal, assert_pixelmatch
 from e2e.vizro import constants as cnst
-from e2e.vizro.navigation import accordion_select, page_select, select_slider_handler
+from e2e.vizro.checkers import (
+    check_graph_is_loading,
+    check_selected_checklist,
+    check_selected_dropdown,
+    check_slider_value,
+)
+from e2e.vizro.navigation import accordion_select, page_select, select_dropdown_value, select_slider_handler
+from e2e.vizro.paths import categorical_components_value_path, dropdown_arrow_path, slider_value_path
 from e2e.vizro.waiters import callbacks_finish_waiter
+
+
+def dynamic_filters_data_config_manipulation(key, set_value=None):
+    with open(cnst.DYNAMIC_FILTERS_DATA_CONFIG) as file:
+        data = yaml.safe_load(file)
+        data[key] = set_value
+    with open(cnst.DYNAMIC_FILTERS_DATA_CONFIG, "w") as file:
+        yaml.dump(data, file, default_flow_style=False)
+
+
+def rewrite_dynamic_filters_data_config(func):
+    """Rewriting dynamic_filters_data.yml."""
+
+    @wraps(func)
+    def wrapper(*args, **kwargs):
+        data = {
+            "max": 7,
+            "min": 6,
+            "setosa": 5,
+            "versicolor": 10,
+            "virginica": 15,
+        }
+        with open(cnst.DYNAMIC_FILTERS_DATA_CONFIG, "w") as file:
+            yaml.dump(data, file)
+        func(*args, **kwargs)
+
+    return wrapper
 
 
 @pytest.mark.parametrize(
@@ -54,3 +90,244 @@ def test_data_dynamic_parametrization(dash_br, cache, slider_id):
         assert_image_not_equal(first_screen, third_screen)
     for file in Path(".").glob("*test_data_dynamic_parametrization*"):
         file.unlink()
+
+
+@rewrite_dynamic_filters_data_config
+def test_dropdown_filter_multi(dash_br):
+    # Select page and wait until it's loaded
+    accordion_select(
+        dash_br, accordion_name=cnst.DYNAMIC_DATA_ACCORDION.upper(), accordion_number=cnst.DYNAMIC_DATA_ACCORDION_NUMBER
+    )
+    page_select(
+        dash_br,
+        page_path=cnst.DYNAMIC_FILTERS_CATEGORICAL_PAGE_PATH,
+        page_name=cnst.DYNAMIC_FILTERS_CATEGORICAL_PAGE,
+        graph_id=cnst.BOX_DYNAMIC_FILTERS_ID,
+    )
+
+    # Choose "versicolor" value and check that graph is reloaded
+    select_dropdown_value(dash_br, value=3, dropdown_id=cnst.DROPDOWN_MULTI_DYNAMIC_FILTER_ID)
+    check_graph_is_loading(dash_br, graph_id=cnst.BOX_DYNAMIC_FILTERS_ID)
+
+    # Remove "setosa" and "versicolor" from the dynamic data and simulate refreshing the page
+    page_select(
+        dash_br,
+        page_path=cnst.DYNAMIC_FILTERS_NUMERICAL_PAGE_PATH,
+        page_name=cnst.DYNAMIC_FILTERS_NUMERICAL_PAGE,
+        graph_id=cnst.BAR_DYNAMIC_FILTER_ID,
+    )
+    dynamic_filters_data_config_manipulation(key="setosa", set_value=0)
+    dynamic_filters_data_config_manipulation(key="versicolor", set_value=0)
+    page_select(
+        dash_br,
+        page_path=cnst.DYNAMIC_FILTERS_CATEGORICAL_PAGE_PATH,
+        page_name=cnst.DYNAMIC_FILTERS_CATEGORICAL_PAGE,
+        graph_id=cnst.BOX_DYNAMIC_FILTERS_ID,
+    )
+
+    dash_br.multiple_click(dropdown_arrow_path(dropdown_id=cnst.DROPDOWN_MULTI_DYNAMIC_FILTER_ID), 1)
+    check_selected_dropdown(
+        dash_br,
+        dropdown_id=cnst.DROPDOWN_MULTI_DYNAMIC_FILTER_ID,
+        expected_selected_options=["versicolor"],
+        expected_unselected_options=["ALL", "virginica"],
+    )
+
+
+@rewrite_dynamic_filters_data_config
+def test_dropdown_filter(dash_br):
+    # Select page and wait until it's loaded
+    accordion_select(
+        dash_br, accordion_name=cnst.DYNAMIC_DATA_ACCORDION.upper(), accordion_number=cnst.DYNAMIC_DATA_ACCORDION_NUMBER
+    )
+    page_select(
+        dash_br,
+        page_path=cnst.DYNAMIC_FILTERS_CATEGORICAL_PAGE_PATH,
+        page_name=cnst.DYNAMIC_FILTERS_CATEGORICAL_PAGE,
+        graph_id=cnst.BOX_DYNAMIC_FILTERS_ID,
+    )
+
+    # Choose "versicolor" value and check that graph is reloaded
+    select_dropdown_value(dash_br, value=2, dropdown_id=cnst.DROPDOWN_DYNAMIC_FILTER_ID)
+    check_graph_is_loading(dash_br, graph_id=cnst.BOX_DYNAMIC_FILTERS_ID)
+
+    # Remove "setosa" and "versicolor" from the dynamic data and simulate refreshing the page
+    page_select(
+        dash_br,
+        page_path=cnst.DYNAMIC_FILTERS_NUMERICAL_PAGE_PATH,
+        page_name=cnst.DYNAMIC_FILTERS_NUMERICAL_PAGE,
+        graph_id=cnst.BAR_DYNAMIC_FILTER_ID,
+    )
+    dynamic_filters_data_config_manipulation(key="setosa", set_value=0)
+    dynamic_filters_data_config_manipulation(key="versicolor", set_value=0)
+    page_select(
+        dash_br,
+        page_path=cnst.DYNAMIC_FILTERS_CATEGORICAL_PAGE_PATH,
+        page_name=cnst.DYNAMIC_FILTERS_CATEGORICAL_PAGE,
+        graph_id=cnst.BOX_DYNAMIC_FILTERS_ID,
+    )
+
+    dash_br.multiple_click(dropdown_arrow_path(dropdown_id=cnst.DROPDOWN_DYNAMIC_FILTER_ID), 1)
+    check_selected_dropdown(
+        dash_br,
+        dropdown_id=cnst.DROPDOWN_DYNAMIC_FILTER_ID,
+        expected_selected_options=["versicolor"],
+        expected_unselected_options=["versicolor", "virginica"],
+    )
+
+
+@rewrite_dynamic_filters_data_config
+def test_checklist_filter(dash_br):
+    accordion_select(
+        dash_br, accordion_name=cnst.DYNAMIC_DATA_ACCORDION.upper(), accordion_number=cnst.DYNAMIC_DATA_ACCORDION_NUMBER
+    )
+    page_select(
+        dash_br,
+        page_path=cnst.DYNAMIC_FILTERS_CATEGORICAL_PAGE_PATH,
+        page_name=cnst.DYNAMIC_FILTERS_CATEGORICAL_PAGE,
+        graph_id=cnst.BOX_DYNAMIC_FILTERS_ID,
+    )
+
+    # Choose "versicolor" value and check that graph is reloaded
+    dash_br.multiple_click(categorical_components_value_path(elem_id=cnst.CHECKLIST_DYNAMIC_FILTER_ID, value=1), 1)
+    dash_br.multiple_click(categorical_components_value_path(elem_id=cnst.CHECKLIST_DYNAMIC_FILTER_ID, value=3), 1)
+    check_graph_is_loading(dash_br, cnst.BOX_DYNAMIC_FILTERS_ID)
+
+    # Remove "setosa" and "versicolor" from the dynamic data and simulate refreshing the page
+    page_select(
+        dash_br,
+        page_path=cnst.DYNAMIC_FILTERS_NUMERICAL_PAGE_PATH,
+        page_name=cnst.DYNAMIC_FILTERS_NUMERICAL_PAGE,
+        graph_id=cnst.BAR_DYNAMIC_FILTER_ID,
+    )
+    dynamic_filters_data_config_manipulation(key="setosa", set_value=0)
+    dynamic_filters_data_config_manipulation(key="versicolor", set_value=0)
+    page_select(
+        dash_br,
+        page_path=cnst.DYNAMIC_FILTERS_CATEGORICAL_PAGE_PATH,
+        page_name=cnst.DYNAMIC_FILTERS_CATEGORICAL_PAGE,
+        graph_id=cnst.BOX_DYNAMIC_FILTERS_ID,
+    )
+
+    # Check that "versicolor" and "virginica" is the only listed options
+    check_selected_checklist(
+        dash_br,
+        checklist_id=cnst.CHECKLIST_DYNAMIC_FILTER_ID,
+        select_all_status=False,
+        options_value_status=[
+            {"value": 1, "status": False, "value_name": "ALL"},
+            {"value": 2, "status": True, "value_name": "versicolor"},
+            {"value": 3, "status": False, "value_name": "virginica"},
+        ],
+    )
+
+
+@rewrite_dynamic_filters_data_config
+def test_radio_items_filter(dash_br):
+    accordion_select(
+        dash_br, accordion_name=cnst.DYNAMIC_DATA_ACCORDION.upper(), accordion_number=cnst.DYNAMIC_DATA_ACCORDION_NUMBER
+    )
+    page_select(
+        dash_br,
+        page_path=cnst.DYNAMIC_FILTERS_CATEGORICAL_PAGE_PATH,
+        page_name=cnst.DYNAMIC_FILTERS_CATEGORICAL_PAGE,
+        graph_id=cnst.BOX_DYNAMIC_FILTERS_ID,
+    )
+
+    # Choose "versicolor" value and check that graph is reloaded
+    dash_br.multiple_click(categorical_components_value_path(elem_id=cnst.RADIOITEMS_DYNAMIC_FILTER_ID, value=2), 1)
+    check_graph_is_loading(dash_br, cnst.BOX_DYNAMIC_FILTERS_ID)
+
+    # Remove "setosa" and "versicolor" from the dynamic data and simulate refreshing the page
+    page_select(
+        dash_br,
+        page_path=cnst.DYNAMIC_FILTERS_NUMERICAL_PAGE_PATH,
+        page_name=cnst.DYNAMIC_FILTERS_NUMERICAL_PAGE,
+        graph_id=cnst.BAR_DYNAMIC_FILTER_ID,
+    )
+    dynamic_filters_data_config_manipulation(key="setosa", set_value=0)
+    dynamic_filters_data_config_manipulation(key="versicolor", set_value=0)
+    page_select(
+        dash_br,
+        page_path=cnst.DYNAMIC_FILTERS_CATEGORICAL_PAGE_PATH,
+        page_name=cnst.DYNAMIC_FILTERS_CATEGORICAL_PAGE,
+        graph_id=cnst.BOX_DYNAMIC_FILTERS_ID,
+    )
+
+    # Check that "versicolor" and "virginica" is the only listed options
+    check_selected_checklist(
+        dash_br,
+        checklist_id=cnst.RADIOITEMS_DYNAMIC_FILTER_ID,
+        select_all_status=False,
+        options_value_status=[
+            {"value": 1, "status": True, "value_name": "versicolor"},
+            {"value": 2, "status": False, "value_name": "virginica"},
+        ],
+    )
+
+
+@rewrite_dynamic_filters_data_config
+def test_sliders_filters(dash_br):
+    accordion_select(
+        dash_br, accordion_name=cnst.DYNAMIC_DATA_ACCORDION.upper(), accordion_number=cnst.DYNAMIC_DATA_ACCORDION_NUMBER
+    )
+    page_select(
+        dash_br,
+        page_path=cnst.DYNAMIC_FILTERS_NUMERICAL_PAGE_PATH,
+        page_name=cnst.DYNAMIC_FILTERS_NUMERICAL_PAGE,
+        graph_id=cnst.BAR_DYNAMIC_FILTER_ID,
+    )
+
+    # Set "min" option to "5" for the dynamic data and simulate refreshing the page
+    page_select(
+        dash_br,
+        page_path=cnst.DYNAMIC_FILTERS_CATEGORICAL_PAGE_PATH,
+        page_name=cnst.DYNAMIC_FILTERS_CATEGORICAL_PAGE,
+        graph_id=cnst.BOX_DYNAMIC_FILTERS_ID,
+    )
+    dynamic_filters_data_config_manipulation(key="min", set_value=5)
+    page_select(
+        dash_br,
+        page_path=cnst.DYNAMIC_FILTERS_NUMERICAL_PAGE_PATH,
+        page_name=cnst.DYNAMIC_FILTERS_NUMERICAL_PAGE,
+        graph_id=cnst.BAR_DYNAMIC_FILTER_ID,
+    )
+
+    # Check slider values
+    check_slider_value(dash_br, expected_end_value="6", elem_id=cnst.SLIDER_DYNAMIC_FILTER_ID)
+    check_slider_value(
+        dash_br, elem_id=cnst.RANGE_SLIDER_DYNAMIC_FILTER_ID, expected_start_value="6", expected_end_value="7"
+    )
+
+    # Change "min" slider and range slider values to "5"
+    dash_br.multiple_click(slider_value_path(elem_id=cnst.SLIDER_DYNAMIC_FILTER_ID, value=1), 1)
+    check_graph_is_loading(dash_br, graph_id=cnst.BAR_DYNAMIC_FILTER_ID)
+    dash_br.multiple_click(slider_value_path(elem_id=cnst.RANGE_SLIDER_DYNAMIC_FILTER_ID, value=1), 1)
+    check_graph_is_loading(dash_br, graph_id=cnst.BAR_DYNAMIC_FILTER_ID)
+
+    # Check slider values
+    check_slider_value(dash_br, expected_end_value="5", elem_id=cnst.SLIDER_DYNAMIC_FILTER_ID)
+    check_slider_value(
+        dash_br, elem_id=cnst.RANGE_SLIDER_DYNAMIC_FILTER_ID, expected_start_value="5", expected_end_value="7"
+    )
+
+    # Set "min" option to "6" for the dynamic data and simulate refreshing the page
+    page_select(
+        dash_br,
+        page_path=cnst.DYNAMIC_FILTERS_CATEGORICAL_PAGE_PATH,
+        page_name=cnst.DYNAMIC_FILTERS_CATEGORICAL_PAGE,
+        graph_id=cnst.BOX_DYNAMIC_FILTERS_ID,
+    )
+    dynamic_filters_data_config_manipulation(key="min", set_value=6)
+    page_select(
+        dash_br,
+        page_path=cnst.DYNAMIC_FILTERS_NUMERICAL_PAGE_PATH,
+        page_name=cnst.DYNAMIC_FILTERS_NUMERICAL_PAGE,
+        graph_id=cnst.BAR_DYNAMIC_FILTER_ID,
+    )
+
+    # Check slider values
+    check_slider_value(dash_br, expected_end_value="5", elem_id=cnst.SLIDER_DYNAMIC_FILTER_ID)
+    check_slider_value(
+        dash_br, elem_id=cnst.RANGE_SLIDER_DYNAMIC_FILTER_ID, expected_start_value="5", expected_end_value="7"
+    )

@@ -118,5 +118,5 @@ kpi_indicators_page = vm.Page(
             ),
         ),
     ],
-    controls=[vm.Filter(column="Category")],
+    controls=[vm.Filter(column="Category", selector=vm.Dropdown(id=cnst.DROPDOWN_FILTER_KPI_PAGE))],
 )

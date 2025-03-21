@@ -74,6 +74,7 @@ filters_page = vm.Page(
         vm.Filter(
             column="species",
             targets=[cnst.SCATTER_GRAPH_ID, cnst.BOX_GRAPH_ID],
+            selector=vm.Dropdown(id=cnst.DROPDOWN_FILTER_FILTERS_PAGE),
         ),
         vm.Filter(
             column="species",

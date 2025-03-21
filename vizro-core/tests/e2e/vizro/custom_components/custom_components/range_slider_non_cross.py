@@ -3,7 +3,7 @@ from typing import Literal
 import vizro.models as vm
 
 
-# Case 1: Based on existing component
+# Custom component based on existing component
 class RangeSliderNonCross(vm.RangeSlider):
     """Custom numeric multi-selector `RangeSliderNonCross` to be provided to `Filter`."""
 

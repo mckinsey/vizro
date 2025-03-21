@@ -9,7 +9,7 @@ from hamcrest import assert_that, equal_to
 
 def test_dropdown(dash_br):
     page_select(dash_br, page_path=cnst.FILTERS_PAGE_PATH, page_name=cnst.FILTERS_PAGE, graph_id=cnst.SCATTER_GRAPH_ID)
-    select_dropdown_value(dash_br, value=2)
+    select_dropdown_value(dash_br, value=2, dropdown_id=cnst.DROPDOWN_FILTER_FILTERS_PAGE)
     check_graph_is_loading(dash_br, graph_id=cnst.SCATTER_GRAPH_ID)
 
 
@@ -45,7 +45,7 @@ def test_range_slider(dash_br):
 
 def test_dropdown_homepage(dash_br):
     graph_load_waiter(dash_br, graph_id=cnst.AREA_GRAPH_ID)
-    select_dropdown_value(dash_br, value=2)
+    select_dropdown_value(dash_br, value=2, dropdown_id=cnst.DROPDOWN_FILTER_HOMEPAGEPAGE)
     check_graph_is_loading(dash_br, cnst.AREA_GRAPH_ID)
 
 
@@ -72,7 +72,7 @@ def test_dropdown_kpi_indicators_page(dash_br):
             ]
         ),
     )
-    select_dropdown_value(dash_br, value=2)
+    select_dropdown_value(dash_br, value=2, dropdown_id=cnst.DROPDOWN_FILTER_KPI_PAGE)
     dash_br.wait_for_text_to_equal(kpi_card_path(), "67434")
     values = dash_br.find_elements(kpi_card_path())
     values_text = [value.text for value in values]
