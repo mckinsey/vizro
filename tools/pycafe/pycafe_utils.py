@@ -74,8 +74,8 @@ class PyCafeConfig:
     pr_number: Optional[int] = None
     pycafe_url: str = "https://py.cafe"
     vizro_raw_url: str = "https://raw.githubusercontent.com/mckinsey/vizro"
-    package_version: str = "unknown"
-    vizro_ai_package_version: str = "unknown"
+    vizro_version: str = "unknown"
+    vizro_ai_version: str = "unknown"
 
 
 def create_github_client(config: PyCafeConfig) -> tuple[Repository, Commit]:
@@ -93,7 +93,7 @@ def _get_vizro_requirement(config: PyCafeConfig, use_latest_release: bool = Fals
         return "vizro"
     return (
         f"{config.pycafe_url}/gh/artifact/mckinsey/vizro/actions/runs/{config.run_id}/"
-        f"pip/vizro-{config.package_version}-py3-none-any.whl"
+        f"pip/vizro-{config.vizro_version}-py3-none-any.whl"
     )
 
 
@@ -103,7 +103,7 @@ def _get_vizro_ai_requirement(config: PyCafeConfig, use_latest_release: bool = F
         return "vizro-ai"
     return (
         f"{config.pycafe_url}/gh/artifact/mckinsey/vizro/actions/runs/{config.run_id}/"
-        f"pip2/vizro_ai-{config.vizro_ai_package_version}-py3-none-any.whl"
+        f"pip2/vizro_ai-{config.vizro_ai_version}-py3-none-any.whl"
     )
 
 
