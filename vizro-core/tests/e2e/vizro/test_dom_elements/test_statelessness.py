@@ -99,7 +99,7 @@ def test_export_action(chrome_driver, dash_br):
         graph_id=cnst.SCATTER_GRAPH_ID,
     )
 
-    # change slider values for scatter grapg for the first user
+    # change slider values for scatter graph for the first user
     WebDriverWait(chrome_driver, cnst.SELENIUM_WAITERS_TIMEOUT).until(
         expected_conditions.element_to_be_clickable(
             (By.CSS_SELECTOR, slider_value_path(elem_id=cnst.SLIDER_FILTER_FILTERS_PAGE, value=3))

@@ -59,15 +59,19 @@ def assert_image_not_equal(image_one, image_two):
 
 
 def assert_files_equal(base_file, exported_file):
-    df_first = pd.read_csv(
-        base_file,
-        header=0,
-        on_bad_lines="skip",
-    )
-    df_second = pd.read_csv(exported_file, header=0, on_bad_lines="skip")
-    result_diff = df_first[~df_first.apply(tuple, 1).isin(df_second.apply(tuple, 1))]
+    df_first = pd.read_csv(base_file)
+    df_second = pd.read_csv(exported_file)
+
+    # Check rows in base_file that are missing in exported_file
+    missing_in_exported = df_first[~df_first.apply(tuple, 1).isin(df_second.apply(tuple, 1))]
+
+    # Check rows in exported_file that are missing in base_file
+    missing_in_base = df_second[~df_second.apply(tuple, 1).isin(df_first.apply(tuple, 1))]
+
+    differences = pd.concat([missing_in_exported, missing_in_base])
+
     assert_that(
-        result_diff.empty,
+        differences.empty,
         equal_to(True),
-        reason=f"{exported_file} is not equal to {base_file}\nDifference is: {result_diff}",
+        reason=f"{exported_file} is not equal to {base_file}\nDifference is:\n{differences}",
     )

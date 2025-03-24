@@ -14,15 +14,23 @@ def test_single_date(dash_br):
         page_name=cnst.DATEPICKER_PAGE,
         graph_id=cnst.BAR_POP_DATE_ID,
     )
+
+    # open datepicker calendar and choose date 17 May 2016
     dash_br.multiple_click(f'button[id="{cnst.DATEPICKER_SINGLE_ID}"]', 1)
     dash_br.wait_for_element('div[data-calendar="true"]')
     dash_br.multiple_click('button[aria-label="17 May 2016"]', 1)
     check_graph_is_loading(dash_br, cnst.BAR_POP_DATE_ID)
+    dash_br.wait_for_text_to_equal(f'button[id="{cnst.DATEPICKER_SINGLE_ID}"]', "May 17, 2016")
+
+    # check that date in the row is correct
+    # we're using 'row_number=2' because the first row is a header
     dash_br.wait_for_text_to_equal(
         table_cell_value_path(table_id=cnst.TABLE_POP_DATE_ID, row_number=2, column_number=1), "2016-05-17T00:00:00"
     )
+
+    # check that we have only 1 row in the table
+    # we're using 'expected_rows_num=2' because the first row is a header
     check_table_rows_number(dash_br, table_id=cnst.TABLE_POP_DATE_ID, expected_rows_num=2)
-    dash_br.wait_for_text_to_equal(f'button[id="{cnst.DATEPICKER_SINGLE_ID}"]', "May 17, 2016")
 
 
 def test_date_range(dash_br):
@@ -35,16 +43,30 @@ def test_date_range(dash_br):
         page_name=cnst.DATEPICKER_PAGE,
         graph_id=cnst.BAR_POP_DATE_ID,
     )
+
+    # open datepicker calendar and choose dates from 17 to 18 May 2016
     dash_br.multiple_click(f'button[id="{cnst.DATEPICKER_RANGE_ID}"]', 1)
     dash_br.wait_for_element('div[data-calendar="true"]')
     dash_br.multiple_click('button[aria-label="17 May 2016"]', 1)
     dash_br.multiple_click('button[aria-label="18 May 2016"]', 1)
     check_graph_is_loading(dash_br, cnst.BAR_POP_RANGE_ID)
+    dash_br.wait_for_text_to_equal(f'button[id="{cnst.DATEPICKER_RANGE_ID}"]', "May 17, 2016 – May 18, 2016")  # noqa: RUF001
+
+    # check that dates in the rows are within the chosen range
+    # we're starting from 'row_number=2' because the first row is a header
     dash_br.wait_for_text_to_equal(
         table_cell_value_path(table_id=cnst.TABLE_POP_RANGE_ID, row_number=2, column_number=1), "2016-05-17T00:00:00"
     )
+    dash_br.wait_for_text_to_equal(
+        table_cell_value_path(table_id=cnst.TABLE_POP_RANGE_ID, row_number=3, column_number=1), "2016-05-18T00:00:00"
+    )
+    dash_br.wait_for_text_to_equal(
+        table_cell_value_path(table_id=cnst.TABLE_POP_RANGE_ID, row_number=4, column_number=1), "2016-05-18T00:00:00"
+    )
+
+    # check that we have only 3 rows in the table
+    # we're using 'expected_rows_num=4' because the first row is a header
     check_table_rows_number(dash_br, table_id=cnst.TABLE_POP_RANGE_ID, expected_rows_num=4)
-    dash_br.wait_for_text_to_equal(f'button[id="{cnst.DATEPICKER_RANGE_ID}"]', "May 17, 2016 – May 18, 2016")  # noqa: RUF001
 
 
 def test_single_date_param(dash_br):
@@ -57,8 +79,13 @@ def test_single_date_param(dash_br):
         page_name=cnst.DATEPICKER_PARAMS_PAGE,
         graph_id=cnst.BAR_CUSTOM_ID,
     )
+    # check that specific bar has blue color
+    dash_br.wait_for_element(f"div[id='{cnst.BAR_CUSTOM_ID}'] g:nth-of-type(14) path[style*='(0, 0, 255)'")
+
+    # open datepicker calendar and choose date 2 May 2018
     dash_br.multiple_click(f'button[id="{cnst.DATEPICKER_PARAMS_ID}"]', 1)
     dash_br.wait_for_element('div[data-calendar="true"]')
     dash_br.multiple_click('button[aria-label="2 April 2018"]', 1)
-    # check that one of the bars change color from blue to orange
+
+    # check that specific bar change color from blue to orange
     dash_br.wait_for_element(f"div[id='{cnst.BAR_CUSTOM_ID}'] g:nth-of-type(14) path[style*='(255, 165, 0)'")

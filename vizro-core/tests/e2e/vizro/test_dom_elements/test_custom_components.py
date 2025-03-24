@@ -1,21 +1,27 @@
 import e2e.vizro.constants as cnst
-from e2e.vizro.checkers import check_graph_is_loading, check_slider_value
+from e2e.vizro.checkers import check_graph_is_loading, check_selected_dropdown, check_slider_value
 from e2e.vizro.navigation import page_select, select_dropdown_value
 from e2e.vizro.paths import slider_value_path
 
 
-def test_dropdown(dash_br):
+def test_custom_dropdown(dash_br):
     page_select(
         dash_br,
         page_path=cnst.CUSTOM_COMPONENTS_PAGE_PATH,
         page_name=cnst.CUSTOM_COMPONENTS_PAGE,
         graph_id=cnst.SCATTER_CUSTOM_COMPONENTS_ID,
     )
+    # choose 'versicolor' value
     select_dropdown_value(dash_br, value=2, dropdown_id=cnst.CUSTOM_DROPDOWN_ID, multi=False)
     check_graph_is_loading(dash_br, cnst.SCATTER_CUSTOM_COMPONENTS_ID)
+    check_selected_dropdown(
+        dash_br,
+        dropdown_id=cnst.CUSTOM_DROPDOWN_ID,
+        expected_selected_options=["versicolor"],
+    )
 
 
-def test_range_slider(dash_br):
+def test_custom_range_slider(dash_br):
     page_select(
         dash_br,
         page_path=cnst.CUSTOM_COMPONENTS_PAGE_PATH,

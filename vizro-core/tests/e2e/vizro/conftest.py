@@ -57,9 +57,7 @@ def wait_for_callbacks(dash_br):
 
 
 @pytest.fixture(autouse=True)
-def teardown_method(request):
+def teardown_method(dash_br):
     """Fixture checks log errors and quits the driver after each test."""
     yield
-    for driver_name in ["dash_br"]:
-        if (driver := request.node.funcargs.get(driver_name)) is not None:
-            make_teardown(driver)
+    make_teardown(dash_br)

@@ -17,11 +17,13 @@ from e2e.vizro.waiters import callbacks_finish_waiter
 
 
 def dynamic_filters_data_config_manipulation(key, set_value=None):
-    with open(cnst.DYNAMIC_FILTERS_DATA_CONFIG) as file:
+    with open(cnst.DYNAMIC_FILTERS_DATA_CONFIG, "r+") as file:
         data = yaml.safe_load(file)
         data[key] = set_value
-    with open(cnst.DYNAMIC_FILTERS_DATA_CONFIG, "w") as file:
+
+        file.seek(0)
         yaml.dump(data, file, default_flow_style=False)
+        file.truncate()
 
 
 def rewrite_dynamic_filters_data_config(func):
@@ -94,6 +96,7 @@ def test_data_dynamic_parametrization(dash_br, cache, slider_id):
 
 @rewrite_dynamic_filters_data_config
 def test_dropdown_filter_multi(dash_br):
+    """Initial selected value is 'ALL'."""
     # Select page and wait until it's loaded
     accordion_select(
         dash_br, accordion_name=cnst.DYNAMIC_DATA_ACCORDION.upper(), accordion_number=cnst.DYNAMIC_DATA_ACCORDION_NUMBER
@@ -136,6 +139,7 @@ def test_dropdown_filter_multi(dash_br):
 
 @rewrite_dynamic_filters_data_config
 def test_dropdown_filter(dash_br):
+    """Initial selected value is 'setosa'."""
     # Select page and wait until it's loaded
     accordion_select(
         dash_br, accordion_name=cnst.DYNAMIC_DATA_ACCORDION.upper(), accordion_number=cnst.DYNAMIC_DATA_ACCORDION_NUMBER
@@ -178,6 +182,7 @@ def test_dropdown_filter(dash_br):
 
 @rewrite_dynamic_filters_data_config
 def test_checklist_filter(dash_br):
+    """Initial selected value is 'ALL'."""
     accordion_select(
         dash_br, accordion_name=cnst.DYNAMIC_DATA_ACCORDION.upper(), accordion_number=cnst.DYNAMIC_DATA_ACCORDION_NUMBER
     )
@@ -224,6 +229,7 @@ def test_checklist_filter(dash_br):
 
 @rewrite_dynamic_filters_data_config
 def test_radio_items_filter(dash_br):
+    """Initial selected value is 'setosa'."""
     accordion_select(
         dash_br, accordion_name=cnst.DYNAMIC_DATA_ACCORDION.upper(), accordion_number=cnst.DYNAMIC_DATA_ACCORDION_NUMBER
     )
@@ -267,7 +273,8 @@ def test_radio_items_filter(dash_br):
 
 
 @rewrite_dynamic_filters_data_config
-def test_sliders_filters(dash_br):
+def test_numerical_filters(dash_br):
+    """Initial selected value for slider is 6. Initial selected values for range_slider are 6 and 7."""
     accordion_select(
         dash_br, accordion_name=cnst.DYNAMIC_DATA_ACCORDION.upper(), accordion_number=cnst.DYNAMIC_DATA_ACCORDION_NUMBER
     )
@@ -293,8 +300,9 @@ def test_sliders_filters(dash_br):
         graph_id=cnst.BAR_DYNAMIC_FILTER_ID,
     )
 
-    # Check slider values
+    # Check slider value
     check_slider_value(dash_br, expected_end_value="6", elem_id=cnst.SLIDER_DYNAMIC_FILTER_ID)
+    # Check range slider values
     check_slider_value(
         dash_br, elem_id=cnst.RANGE_SLIDER_DYNAMIC_FILTER_ID, expected_start_value="6", expected_end_value="7"
     )
@@ -305,8 +313,9 @@ def test_sliders_filters(dash_br):
     dash_br.multiple_click(slider_value_path(elem_id=cnst.RANGE_SLIDER_DYNAMIC_FILTER_ID, value=1), 1)
     check_graph_is_loading(dash_br, graph_id=cnst.BAR_DYNAMIC_FILTER_ID)
 
-    # Check slider values
+    # Check slider value
     check_slider_value(dash_br, expected_end_value="5", elem_id=cnst.SLIDER_DYNAMIC_FILTER_ID)
+    # Check range slider values
     check_slider_value(
         dash_br, elem_id=cnst.RANGE_SLIDER_DYNAMIC_FILTER_ID, expected_start_value="5", expected_end_value="7"
     )
@@ -326,8 +335,9 @@ def test_sliders_filters(dash_br):
         graph_id=cnst.BAR_DYNAMIC_FILTER_ID,
     )
 
-    # Check slider values
+    # Check slider value
     check_slider_value(dash_br, expected_end_value="5", elem_id=cnst.SLIDER_DYNAMIC_FILTER_ID)
+    # Check range slider values
     check_slider_value(
         dash_br, elem_id=cnst.RANGE_SLIDER_DYNAMIC_FILTER_ID, expected_start_value="5", expected_end_value="7"
     )

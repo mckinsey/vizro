@@ -54,4 +54,3 @@ class CustomDropdown(VizroBaseModel):
 
 # Important: Add new components to expected type - here the selector of the parent components
 vm.Filter.add_type("selector", CustomDropdown)
-vm.Parameter.add_type("selector", CustomDropdown)
