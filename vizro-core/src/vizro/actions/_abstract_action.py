@@ -3,6 +3,8 @@ from __future__ import annotations
 import abc
 import inspect
 
+from dash.development.base_component import Component
+
 from vizro.models._action._action import _BaseAction
 from vizro.models.types import IdProperty
 
@@ -23,8 +25,6 @@ class AbstractAction(_BaseAction, abc.ABC):
       - built in runtime arguments, e.g. _controls: not model fields, explicitly in function signature. Uses Dash State
     """
 
-    _legacy = False
-
     # TODO NOW COMMENT: Check schema and make sure these don't appear, comment on importance of this.
 
     # TODO NOW: make keyword args only? What are actual limitations here? Don't worry much about it.
@@ -35,17 +35,28 @@ class AbstractAction(_BaseAction, abc.ABC):
 
     @property
     @abc.abstractmethod
-    def outputs(self) -> dict[str, IdProperty]:
+    def outputs(self) -> dict[str, IdProperty]:  # type: ignore[override]
         """Must be defined by concrete action, even if there's no output."""
         # TODO NOW: should it handle dictionary ids too? Currently this needs overriding _get_outputs. Pattern matching
         # probably not needed for outputs and only for built-in inputs. Even if add more functionality here in future
         # we shoulod still at least the support same as Action.output so it's easy for someone to move from a function
         # action to a class one. In future we'd even like to just allow specifying the component id without the property.
 
-        # Maybe there will be some special built-in behaviour here e.g. to generate outputs automatically from
+        # Maybe there will be some special built-in behavior here e.g. to generate outputs automatically from
         # certain reserved arguments like self.targets. Would need to make sure it's not breaking if someone already
         # uses that variable name though.
         pass
+
+    @property
+    def _dash_components(self) -> list[Component]:
+        # This can be overridden in subclasses now but will probably not exist in future. Instead we will have built in
+        # components like dcc.Download which are used by user-defined actions and (probably) built-in ones.
+        # See https://github.com/mckinsey/vizro/pull/1054#discussion_r1989405177.
+        return []
+
+    @property
+    def _legacy(self) -> bool:
+        return False
 
     @property
     def _parameters(self) -> set[str]:
@@ -61,5 +72,5 @@ class AbstractAction(_BaseAction, abc.ABC):
         return {arg_name: getattr(self, arg_name) for arg_name in self.model_fields if arg_name in self._parameters}
 
     @property
-    def _action_name(self):
+    def _action_name(self) -> str:
         return self.__class__.__name__

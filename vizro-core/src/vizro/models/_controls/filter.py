@@ -9,7 +9,7 @@ from pandas.api.types import is_datetime64_any_dtype, is_numeric_dtype
 from pydantic import AfterValidator, Field, PrivateAttr
 
 from vizro._constants import ALL_OPTION, FILTER_ACTION_PREFIX
-from vizro.actions import _filter
+from vizro.actions._filter_action import _filter
 from vizro.managers import data_manager, model_manager
 from vizro.managers._data_manager import DataSourceName, _DynamicData
 from vizro.managers._model_manager import FIGURE_MODELS, ModelID
@@ -213,7 +213,7 @@ class Filter(VizroBaseModel):
                 filter_function = _filter_isin
 
         self.selector.actions = [
-            # TODO NOW: is there any point in this id labelling? Useful for debugging?
+            # TODO NOW: is there any point in this id labeling? Useful for debugging?
             _filter(
                 id=f"{FILTER_ACTION_PREFIX}_{self.id}",
                 filter_column=self.column,

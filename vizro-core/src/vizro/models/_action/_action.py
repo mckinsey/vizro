@@ -5,7 +5,7 @@ import logging
 import re
 from collections.abc import Collection, Iterable, Mapping
 from pprint import pformat
-from typing import Annotated, Any, Literal, TypedDict, Union, cast
+from typing import TYPE_CHECKING, Annotated, Any, Literal, TypedDict, Union, cast, ClassVar, Callable
 
 from dash import Input, Output, State, callback, html
 from dash.development.base_component import Component
@@ -19,6 +19,9 @@ from vizro.models.types import CapturedCallable, ControlType, IdProperty, valida
 
 logger = logging.getLogger(__name__)
 
+if TYPE_CHECKING:
+    from vizro.actions import export_data, filter_interaction
+
 
 class ControlsStates(TypedDict):
     filters: list[State]
@@ -28,6 +31,33 @@ class ControlsStates(TypedDict):
 
 
 class _BaseAction(VizroBaseModel):
+    # The common interface shared between Action and AbstractAction all raise NotImplementedError or are ClassVar.
+    # This mypy type-check this class.
+    # function and outputs are overridden as fields in Action and abstract methods in AbstractAction. Using ClassVar
+    # for these is the easiest way to appease mypy and have something that actually works at runtime.
+    function: ClassVar[Callable[..., Any]]
+    outputs: ClassVar[Union[list[str], dict[str, IdProperty]]]
+
+    @property
+    def _dash_components(self) -> list[Component]:
+        raise NotImplementedError
+
+    @property
+    def _legacy(self):
+        raise NotImplementedError
+
+    @property
+    def _parameters(self) -> set[str]:
+        raise NotImplementedError
+
+    @property
+    def _runtime_args(self) -> dict[str, IdProperty]:
+        raise NotImplementedError
+
+    @property
+    def _action_name(self) -> str:
+        raise NotImplementedError
+
     def _get_control_states(self, control_type: ControlType) -> list[State]:
         """Gets list of `States` for selected `control_type` that appear on page where this Action is defined."""
         page = model_manager._get_model_page(self)
@@ -75,12 +105,13 @@ class _BaseAction(VizroBaseModel):
         """Creates the actual Dash States given the user-specified runtime arguments and built in ones.
 
         Return type is list only for legacy actions. Otherwise it will always be a dictionary (unlike
-        for _transformed_outputs, where new behaviour can still give a list). Keys are the parameter names. For
+        for _transformed_outputs, where new behavior can still give a list). Keys are the parameter names. For
         user-specified inputs, values are Dash States. For built-in inputs, values can be more complicated nested
         structure of states.
         """
         if self._legacy:
-            return [State(*input.split(".")) for input in self.inputs]
+            # Must be an Action rather than AbstractAction.
+            return [State(*input.split(".")) for input in cast(Action, self).inputs]
 
         from vizro.models import Filter, Parameter
 
@@ -131,15 +162,6 @@ class _BaseAction(VizroBaseModel):
 
         return callback_outputs
 
-    @property
-    def _dash_components(self) -> list[Component]:
-        """Optional to override in subclasses of AbstractAction but defined here to keep interface same between
-        Action and AbstractAction.
-
-        This might not exist in future. TODO NOW COMMENT with link to github issue.
-        """
-        return []
-
     def _action_callback_function(
         self,
         inputs: Union[dict[str, Any], list[Any]],
@@ -152,9 +174,9 @@ class _BaseAction(VizroBaseModel):
 
         if self._legacy:
             # Inputs must be list[str].
-            return_value = self.function(*inputs)
+            return_value = cast(Action, self).function(*inputs)  # type: ignore[operator]
         else:
-            return_value = self.function(**inputs)
+            return_value = self.function(**inputs)  # type: ignore[arg-type]
 
         # Delegate all handling of the return_value and mapping to appropriate outputs to Dash - we don't modify
         # return_value to reshape it in any way. All we do is do some error checking to raise clearer error messages.
@@ -197,7 +219,6 @@ class _BaseAction(VizroBaseModel):
         """
         external_callback_inputs = self._transformed_inputs
         external_callback_outputs = self._transformed_outputs
-        action_components = self._dash_components
 
         callback_inputs = {
             "external": external_callback_inputs,
@@ -231,9 +252,7 @@ class _BaseAction(VizroBaseModel):
                 return {"internal": {"action_finished": None}, "external": return_value}
             return {"internal": {"action_finished": None}}
 
-        # TODO NOW: figure out where this belongs - in export_data? WHat other actions will have components? Does it
-        #  matter where to put them on the page or they're all like Download?
-        return html.Div(id=f"{self.id}_action_model_components_div", children=action_components, hidden=True)
+        return html.Div(id=f"{self.id}_action_model_components_div", children=self._dash_components, hidden=True)
 
 
 class Action(_BaseAction):
@@ -256,7 +275,7 @@ class Action(_BaseAction):
     # vm.Action(function=export_data(...)) work. They are always replaced with the new implementation by extracting
     # actions.function in _set_actions. It's done as a forward ref here to avoid circular imports and resolved with
     # Dashboard.model_rebuild() later.
-    function: Annotated[
+    function: Annotated[  # type: ignore[misc, assignment]
         SkipJsonSchema[Union[CapturedCallable, export_data, filter_interaction]],
         Field(json_schema_extra={"mode": "action", "import_path": "vizro.actions"}, description="Action function."),
     ]
@@ -266,10 +285,15 @@ class Action(_BaseAction):
         [],
         description="Inputs in the form `<component_id>.<property>` passed to the action function.",
     )
-    outputs: list[Annotated[str, StringConstraints(pattern="^[^.]+[.][^.]+$")]] = Field(
+    outputs: list[Annotated[str, StringConstraints(pattern="^[^.]+[.][^.]+$")]] = Field(  # type: ignore[misc]
         [],
         description="Outputs in the form `<component_id>.<property>` changed by the action function.",
     )
+
+    @property
+    def _dash_components(self) -> list[Component]:
+        # Users cannot add Dash components using vm.Action.
+        return []
 
     @property
     def _legacy(self) -> bool:
@@ -292,7 +316,7 @@ class Action(_BaseAction):
         #  this could be done the same way as in AbstractAction and avoid looking at _function. Then we could remove
         #  this _parameters property from both Action and AbstractAction. Possibly also the _action_name one.
         # Note order of parameters doesn't matter since we always handle things with keyword arguments.
-        return set(inspect.signature(self.function._function).parameters)
+        return set(inspect.signature(self.function._function).parameters)  # type:ignore[union-attr]
 
     @property
     def _runtime_args(self) -> dict[str, IdProperty]:
@@ -302,8 +326,8 @@ class Action(_BaseAction):
         # bound in CapturedCallable.
         # Currently this does not use default values of function parameters. To do so, we would need to
         # use inspect.BoundArguments.apply_defaults.
-        return self.function._arguments
+        return self.function._arguments  # type:ignore[union-attr]
 
     @property
-    def _action_name(self):
-        return self.function._function.__name__
+    def _action_name(self) -> str:
+        return self.function._function.__name__  # type:ignore[union-attr]

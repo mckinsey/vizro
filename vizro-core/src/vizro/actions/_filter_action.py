@@ -1,4 +1,4 @@
-from typing import Any, Callable, Literal
+from typing import Any, Callable, Literal, cast
 
 import pandas as pd
 from dash import ctx
@@ -7,7 +7,7 @@ from pydantic import Field
 from vizro.actions import AbstractAction
 from vizro.actions._actions_utils import _get_modified_page_figures
 from vizro.managers._model_manager import ModelID, model_manager
-from vizro.models.types import _Controls
+from vizro.models.types import _Controls, FigureType
 
 
 class _filter(AbstractAction):
@@ -45,7 +45,7 @@ class _filter(AbstractAction):
 
         for target in self.targets:
             component_id = target
-            component_property = model_manager[target]._output_component_property
+            component_property = cast(FigureType, model_manager[target])._output_component_property
             outputs[target] = f"{component_id}.{component_property}"
 
         return outputs

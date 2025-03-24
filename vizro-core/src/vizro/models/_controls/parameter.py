@@ -4,7 +4,7 @@ from typing import Annotated, Literal, cast
 from pydantic import AfterValidator, Field
 
 from vizro._constants import PARAMETER_ACTION_PREFIX
-from vizro.actions import _parameter
+from vizro.actions._parameter_action import _parameter
 from vizro.managers import model_manager
 from vizro.models import VizroBaseModel
 from vizro.models._components.form import Checklist, DatePicker, Dropdown, RadioItems, RangeSlider, Slider
@@ -106,6 +106,6 @@ class Parameter(VizroBaseModel):
     def _set_actions(self):
         if not self.selector.actions:
             self.selector.actions = [
-                # TODO NOW: is there any point in this id labelling? Useful for debugging?
+                # TODO NOW: is there any point in this id labeling? Useful for debugging?
                 _parameter(id=f"{PARAMETER_ACTION_PREFIX}_{self.id}", targets=self.targets)
             ]

@@ -31,8 +31,9 @@ def _set_actions(actions: list[ActionsType], info: ValidationInfo, trigger_prope
     for action in actions:
         if isinstance(action.function, (export_data, filter_interaction)):
             del model_manager[action.id]
-            action = action.function
-        converted_actions.append(action)
+            converted_actions.append(action.function)
+        else:
+            converted_actions.append(action)
 
     return [
         ActionsChain(

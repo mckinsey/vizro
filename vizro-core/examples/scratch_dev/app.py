@@ -7,8 +7,6 @@ from vizro import Vizro
 from vizro.actions import filter_interaction, export_data
 from vizro.models.types import capture
 
-# TODO NOW: move this
-from vizro.actions import AbstractAction
 
 df_gapminder = px.data.gapminder().query("year == 2007")
 

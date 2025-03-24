@@ -22,7 +22,7 @@ from vizro.models.types import (
 
 if TYPE_CHECKING:
     from vizro.models import VizroBaseModel
-    from vizro.models.type import ActionsType
+    from vizro.models.types import ActionsType
 
 ValidatedNoneValueType = Union[SingleValueType, MultiValueType, None, list[None], list[SingleValueType]]
 
@@ -71,7 +71,7 @@ def _apply_filter_controls(
 
     Returns: filtered DataFrame.
     """
-    from vizro.actions import _filter
+    from vizro.actions._filter_action import _filter
 
     for ctd in ctds_filter:
         selector_value = ctd["value"]
@@ -184,7 +184,7 @@ def _get_parametrized_config(
     Returns: keyword-argument dictionary.
 
     """
-    from vizro.actions import _parameter
+    from vizro.actions._parameter_action import _parameter
 
     if data_frame:
         # This entry is inserted (but will always be empty) even for static data so that the load/_multi_load calls

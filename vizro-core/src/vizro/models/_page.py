@@ -17,7 +17,7 @@ from pydantic import (
 )
 
 from vizro._constants import ON_PAGE_LOAD_ACTION_PREFIX
-from vizro.actions import _on_page_load
+from vizro.actions._on_page_load import _on_page_load
 from vizro.managers import model_manager
 from vizro.managers._model_manager import FIGURE_MODELS, DuplicateIDError
 from vizro.models import Filter, Layout, VizroBaseModel
@@ -117,7 +117,7 @@ class Page(VizroBaseModel):
         targets = figure_targets + filter_targets
 
         if targets:
-            # TODO NOW: is there any point in this id labelling? Useful for debugging?
+            # TODO NOW: is there any point in this id labeling? Useful for debugging?
             self.actions = [
                 ActionsChain(
                     id=f"{ON_PAGE_LOAD_ACTION_PREFIX}_{self.id}",

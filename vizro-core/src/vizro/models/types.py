@@ -13,7 +13,6 @@ from typing import Annotated, Any, Literal, NewType, Protocol, TypedDict, Union,
 import plotly.io as pio
 import pydantic_core as cs
 from pydantic import Field, StrictBool, ValidationInfo
-from typing_extensions import TypedDict
 
 from vizro.charts._charts_utils import _DashboardReadyFigure
 

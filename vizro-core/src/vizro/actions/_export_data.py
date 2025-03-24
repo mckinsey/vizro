@@ -3,7 +3,6 @@ from collections.abc import Iterable
 from typing import Any, Literal, cast
 
 from dash import Output, ctx, dcc
-from typing_extensions import Literal
 
 from vizro.actions import AbstractAction
 from vizro.actions._actions_utils import _apply_filters, _get_unfiltered_data
@@ -105,14 +104,6 @@ class export_data(AbstractAction):
     def outputs(self):
         pass
 
-    # TODO NOW: put these thoughts somewhere
-    # For multiple files could use single dcc.Download but zip file.
-    # Will need some way to add new components on the fly for other actions though.
-    # e.g. for key-value pairs on screen
-    # This could be built into e.g. KeyValuePairs model.
-    # Petar qn: what other actions would require new components on page?
-    # Note name clash with "components" and current model_manager __get_model_children that looks for "components"
-    # for Page.components. Hence call dash_components, which is probably better name anyway.
     @property
     def _dash_components(self) -> list[dcc.Download]:
         """Creates dcc.Downloads for target components of the `export_data` action."""
