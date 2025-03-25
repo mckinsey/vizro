@@ -17,17 +17,6 @@ def pytest_setup_options():
         return options
 
 
-def make_teardown(dash_br):
-    # checking for browser console errors
-    if os.getenv("BROWSER") in ["chrome", "chrome_mobile"]:
-        try:
-            error_logs = [log for log in dash_br.get_logs() if log["level"] == "SEVERE" or "WARNING"]
-            for log in error_logs:
-                browser_console_warnings_checker(log, error_logs)
-        except WebDriverException:
-            pass
-
-
 @pytest.fixture(autouse=True)
 def dash_br_driver(dash_br, request):
     """Built-in driver from the dash library."""
@@ -60,4 +49,11 @@ def wait_for_callbacks(dash_br):
 def teardown_method(dash_br):
     """Fixture checks log errors and quits the driver after each test."""
     yield
-    make_teardown(dash_br)
+    # checking for browser console errors
+    if os.getenv("BROWSER") in ["chrome", "chrome_mobile"]:
+        try:
+            error_logs = [log for log in dash_br.get_logs() if log["level"] == "SEVERE" or "WARNING"]
+            for log in error_logs:
+                browser_console_warnings_checker(log, error_logs)
+        except WebDriverException:
+            pass
