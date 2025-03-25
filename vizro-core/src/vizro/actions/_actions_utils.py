@@ -71,22 +71,11 @@ def _apply_filter_controls(
 
     Returns: filtered DataFrame.
     """
-    from vizro.actions._filter_action import _filter
-
-    for ctd in ctds_filter:
-        selector_value = ctd["value"]
-        selector_value = selector_value if isinstance(selector_value, list) else [selector_value]
-        selector_actions = _get_component_actions(model_manager[ctd["id"]])
-
-        for action in selector_actions:
-            # TODO NOW: see if can be simplified or made nicer
-            if not isinstance(action, _filter) or target not in action.targets or ALL_OPTION in selector_value:
-                continue
-
-            _filter_function = action.filter_function
-            _filter_column = action.filter_column
-            _filter_value = selector_value
-            data_frame = data_frame[_filter_function(data_frame[_filter_column], _filter_value)]
+    for selector_value, action_id in zip(ctds_filter["selector_values"], ctds_filter["action_ids"]):
+        # action_id is a dictionary {"type": "action_trigger", "action_name": action.id}
+        action = model_manager[action_id["action_name"]]
+        if target in action.targets:
+            data_frame = action._filter_data_frame(data_frame, selector_value)
 
     return data_frame
 
@@ -118,6 +107,10 @@ def _apply_filter_interaction(
     """
     for ctd_filter_interaction in ctds_filter_interaction:
         triggered_model = model_manager[ctd_filter_interaction["modelID"]["id"]]
+        # TODO NOW: SHOULD REALLY JUST PASS IN filter_intraction and targets
+        # one dataframe and target
+        # one itneraction
+        # filter_interaction is now in MM so can use action.target directly
         data_frame = cast(FigureWithFilterInteractionType, triggered_model)._filter_interaction(
             data_frame=data_frame,
             target=target,

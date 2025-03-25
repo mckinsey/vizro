@@ -33,7 +33,7 @@ class _parameter(AbstractAction):
         # will change in future once the structure of _controls has been worked out and we know how to pass ids through.
         # See https://github.com/mckinsey/vizro/pull/880
         return _get_modified_page_figures(
-            ctds_filter=ctx.args_grouping["external"]["_controls"]["filters"],
+            _controls["filters"],
             ctds_parameter=ctx.args_grouping["external"]["_controls"]["parameters"],
             ctds_filter_interaction=ctx.args_grouping["external"]["_controls"]["filter_interaction"],
             targets=self._target_ids,

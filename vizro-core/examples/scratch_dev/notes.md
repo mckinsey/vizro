@@ -27,7 +27,7 @@
 
 - add trigger or similar to builtin args. Not until actions chain handled and have new interact action to understand what it needs 
 
-- look at actions chain next
+- look at actions chain next. Should each component only be allowed one single action?
 
 - something that validates target has _output_component_property
 
