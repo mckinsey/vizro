@@ -55,4 +55,4 @@ jobs:
           sudo apt-get install -y gh
           gh pr create -B main -H bot/update-static-files --title "[Bot] Update static files" --body "Automated update of static files"
         env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GITHUB_TOKEN: ${{ secrets.VIZRO_SVC_PAT }}
