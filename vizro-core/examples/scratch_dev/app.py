@@ -14,6 +14,11 @@ page_1 = vm.Page(
     title="Built in actions",
     layout=dict(grid=[[0, 1], [2, 3]]),
     components=[
+        # vm.Button(
+        #     text="asdf",
+        #     actions=[filter_interaction(targets=["scatter_relation_2007"])],
+        #     # actions=[vm.Action(function=filter_interaction(targets=["scatter_relation_2007"]))],  # TODO NOW CHECK
+        # ),
         vm.Graph(
             figure=px.box(
                 df_gapminder,
@@ -45,9 +50,7 @@ page_1 = vm.Page(
         vm.Button(
             id="button2",
             text="Export data to Excel",
-            actions=[
-                export_data(targets=["scatter_relation_2007"], file_format="xlsx", runtime_arg="button2.n_clicks")
-            ],
+            actions=[export_data(targets=["scatter_relation_2007"], file_format="xlsx", runtime_arg="button2")],
             # actions=[vm.Action(function=export_data(targets=["scatter_relation_2007"], file_format="xlsx"))],
             # TODO NOW CHECK
         ),

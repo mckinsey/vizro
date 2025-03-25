@@ -9,7 +9,7 @@ from typing import TYPE_CHECKING, Annotated, Any, Literal, TypedDict, Union, cas
 
 from dash import Input, Output, State, callback, html
 from dash.development.base_component import Component
-from pydantic import Field, StringConstraints, field_validator
+from pydantic import Field, StringConstraints, field_validator, TypeAdapter, ValidationError
 from pydantic.json_schema import SkipJsonSchema
 
 from vizro.managers._model_manager import ModelID, model_manager
@@ -58,8 +58,36 @@ class _BaseAction(VizroBaseModel):
     def _action_name(self) -> str:
         raise NotImplementedError
 
+    def _validate_dash_dependency(self, /, dependencies, *, type: Literal["output", "input"]):
+        # Validate that dependencies are in the form component_id.component_property. This uses the same annotation as
+        # Action.inputs/outputs.
+        # TODO: in future we will expand this to also allow passing a model name without a property specified.
+        #  Possibly make a built in a type hint that we can use as field annotation for runtime arguments in
+        #  subclasses of AbstractAction instead of just using str. Possibly apply this to non-annotated arguments of
+        #  vm.Action.function and use pydantic's validate_call to apply the same validation there for function inputs.
+        #  We won't be able to do all the checks at validation time though if we need to look up a model in the model
+        #  manager.
+        #  Note this is needed for inputs in both vm.Action and AbstractAction but outputs only in AbstractAction.
+        try:
+            TypeAdapter(list[Annotated[str, StringConstraints(pattern="^[^.]+[.][^.]+$")]]).validate_python(
+                dependencies
+            )
+        except ValidationError as exc:
+            invalid_dependencies = {
+                error["input"] for error in exc.errors() if error["type"] == "string_pattern_mismatch"
+            }
+            raise ValueError(
+                f"Action {type}s {invalid_dependencies} of {self._action_name} must be a string of the form "
+                "<component_name>.<component_property>."
+            ) from exc
+
     def _get_control_states(self, control_type: ControlType) -> list[State]:
         """Gets list of `States` for selected `control_type` that appear on page where this Action is defined."""
+        # Possibly the code that specifies the state associated with a control will move to an inputs property
+        # of the filter and parameter models in future. This property could match outputs and return just a dotted
+        # string that is then transformed to State inside _transformed_inputs. This would prevent us from using
+        # pattern-matching callback here though.
+        # See also notes in filter_interaction._get_triggered_model.
         page = model_manager._get_model_page(self)
         return [
             State(component_id=control.selector.id, component_property=control.selector._input_property)
@@ -69,36 +97,12 @@ class _BaseAction(VizroBaseModel):
     def _get_filter_interaction_states(self) -> list[dict[str, State]]:
         """Gets list of `States` for selected chart interaction `filter_interaction`."""
         from vizro.actions import filter_interaction
-        from vizro.models._action._actions_chain import ActionsChain
-
-        # TODO NOW: see if this logic can be simplified.
-
-        def _get_action_trigger(action: _BaseAction) -> VizroBaseModel:  # type: ignore[return]
-            """Gets the model that triggers the action with "action_id"."""
-            # TODO NOW: maybe make model_manager._get_parent_model for this sort of thing. Maybe encode parent in id with
-            #  dictionary id.
-
-            for actions_chain in cast(Iterable[ActionsChain], model_manager._get_models(ActionsChain)):
-                if action in actions_chain.actions:
-                    return model_manager[ModelID(str(actions_chain.trigger.component_id))]
 
         page = model_manager._get_model_page(self)
-        figure_interactions_on_page = model_manager._get_models(model_type=filter_interaction, page=page)
-        states = []
-
-        for action in figure_interactions_on_page:
-            triggered_model = _get_action_trigger(action)
-            required_attributes = ["_filter_interaction_input", "_filter_interaction"]
-            for attribute in required_attributes:
-                if not hasattr(triggered_model, attribute):
-                    raise ValueError(f"Model {triggered_model.id} does not have required attribute `{attribute}`.")
-            if "modelID" not in triggered_model._filter_interaction_input:
-                raise ValueError(
-                    f"Model {triggered_model.id} does not have required State `modelID` in `_filter_interaction_input`."
-                )
-            states.append(triggered_model._filter_interaction_input)
-
-        return states
+        return [
+            action._get_triggered_model()._filter_interaction_input
+            for action in model_manager._get_models(filter_interaction, page=page)
+        ]
 
     @property
     def _transformed_inputs(self) -> Union[list[State], dict[str, Union[State, ControlsStates]]]:
@@ -110,12 +114,11 @@ class _BaseAction(VizroBaseModel):
         structure of states.
         """
         if self._legacy:
-            # Must be an Action rather than AbstractAction.
+            # Must be an Action rather than AbstractAction, so has already been validated by pydantic field annotation.
             return [State(*input.split(".")) for input in cast(Action, self).inputs]
 
         from vizro.models import Filter, Parameter
 
-        # TODO NOW: consider what else could be added, especially trigger.
         builtin_args = {
             "_controls": {
                 "filters": self._get_control_states(control_type=Filter),
@@ -129,8 +132,13 @@ class _BaseAction(VizroBaseModel):
             arg_name: arg_value for arg_name, arg_value in builtin_args.items() if arg_name in self._parameters
         }
 
-        # TODO NOW: add some validation so this hits an error somewhere before this if can't do split. Bear
-        #  in mind that in future it should work with just component name with no "."
+        # Validate that the runtime arguments are in the same form as the legacy Action.inputs field, so a string
+        # of the form component_id.component_property. Currently this code only runs for subclasses of
+        # AbstractAction but not vm.Action instances because a vm.Action that does not pass this check will
+        # have already been classified as legacy in Action._legacy. In future when vm.Action.inputs is deprecated
+        # then this will be used for vm.Action instances also.
+        self._validate_dash_dependency(self._runtime_args.values(), type="input")
+
         # User specified arguments runtime_args take precedence over built in reserved arguments. No static arguments
         # ar relevant here, just Dash States. Static arguments values are stored in the state of the relevant
         # AbstractAction instance.
@@ -146,6 +154,11 @@ class _BaseAction(VizroBaseModel):
         """
         # TODO: enable both list and dict for both Action and AbstractAction.
         if isinstance(self.outputs, list):
+            # At the moment this check isn't needed because the list case only applies to vm.Action models, which has
+            # pydantic validation of outputs built into the field annotation. In future when we allow AbstractAction to
+            # return list also then this will be useful though. At that point, possibly the validation should move to
+            # AbstractAction somehow since it is only actually relevant for that model.
+            self._validate_dash_dependency(self.outputs, type="output")
             callback_outputs = [Output(*output.split("."), allow_duplicate=True) for output in self.outputs]
 
             # Need to use a single Output in the @callback decorator rather than a single element list for the case
@@ -155,6 +168,7 @@ class _BaseAction(VizroBaseModel):
                 callback_outputs = callback_outputs[0]
             return callback_outputs
 
+        self._validate_dash_dependency(self.outputs.values(), type="output")
         callback_outputs = {
             output_name: Output(*output.split("."), allow_duplicate=True)
             for output_name, output in self.outputs.items()
@@ -217,6 +231,8 @@ class _BaseAction(VizroBaseModel):
             Div containing a list of required components (e.g. dcc.Download) for the Action model
 
         """
+        # TODO: after sorting out model manager and pre-build order, lots of this should probably move to happen
+        #  some time before the build phase.
         external_callback_inputs = self._transformed_inputs
         external_callback_outputs = self._transformed_outputs
 
