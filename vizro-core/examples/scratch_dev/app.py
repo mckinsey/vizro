@@ -1,22 +1,21 @@
+import vizro.plotly.express as px
+
 import vizro.models as vm
 from vizro import Vizro
 
+iris = px.data.iris()
 
 page = vm.Page(
-    title="Text with extra argument",
+    title="Collapse container",
     components=[
-        vm.Text(
-            text="""
-              This example uses the block delimiter:
-              $$
-              \\int_0^\\infty e^{-x^2} dx = \\frac{\\sqrt{\\pi}}{2}
-              $$
-
-              This example uses the inline delimiter:
-              $x = \\frac{-b \\pm \\sqrt{b^2 - 4ac}}{2a}$
-            """,
-            extra={"mathjax": True},
-        ),
+        vm.Container(
+            title="Container title",
+            collapse=True,
+            components=[
+                vm.Graph(figure=px.scatter(iris, x="sepal_length", y="petal_width", color="species")),
+                vm.Graph(figure=px.histogram(iris, x="sepal_width", color="species")),
+            ]
+        )
     ],
 )
 

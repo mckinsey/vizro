@@ -62,6 +62,7 @@ class Container(VizroBaseModel):
             ),
         ]
     ]
+    collapse: Optional[bool] = None
 
     @_log_call
     def build(self):
@@ -74,8 +75,8 @@ class Container(VizroBaseModel):
         defaults = {
             "id": self.id,
             "children": [
-                html.H3(children=self.title, className="container-title", id=f"{self.id}_title"),
-                self._build_inner_layout(),
+                self._build_container_title(),
+                self._build_collapse_container(),
             ],
             "fluid": True,
             "class_name": variants[self.variant],
@@ -103,3 +104,33 @@ class Container(VizroBaseModel):
             components_container[f"{self.layout.id}_{component_idx}"].children = component.build()
 
         return components_container
+
+    def _build_collapse_container(self):
+        """Returns collapsible container."""
+
+        if self.collapse is None:
+            return self._build_inner_layout()
+
+        else:
+            return dbc.Collapse(
+                id=f"{self.id}_main_container",
+                children=self._build_inner_layout(),
+                is_open=self.collapse,
+                className="collapsible-container",
+            )
+
+    def _build_container_title(self):
+        """Returns container title"""
+        if self.collapse is None:
+            return html.H3(children=self.title, className="container-title", id=f"{self.id}_title")
+
+        return html.Div(
+                    id=f"{self.id}_title",
+                    children=[
+                        html.H3(children=self.title, className="container-title"),
+                        html.Span("keyboard_arrow_up", className="material-symbols-outlined", id=f"{self.id}_icon"),
+                    ],
+                    className="collapsible-container-header",
+                )
+
+
