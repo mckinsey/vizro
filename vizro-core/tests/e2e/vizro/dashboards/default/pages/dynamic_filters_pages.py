@@ -38,6 +38,11 @@ def load_from_file(filter_column=None, parametrized_species=None):
         )
     elif filter_column == "sepal_length":
         final_df = df[df[filter_column].between(data.get("min"), data.get("max"), inclusive="both")]
+    elif filter_column == "date_column":
+        df["date_column"] = pd.date_range(start=pd.to_datetime("2024-01-01"), periods=len(df), freq="D")
+        date_min = pd.to_datetime(data["date_min"])
+        date_max = pd.to_datetime(data["date_max"])
+        final_df = df[df["date_column"].between(date_min, date_max, inclusive="both")]
     else:
         raise ValueError("Invalid FILTER_COLUMN")
 
@@ -50,6 +55,8 @@ data_manager["load_from_file_species"] = partial(load_from_file, filter_column="
 data_manager["load_from_file_species"].timeout = -1
 data_manager["load_from_file_sepal_length"] = partial(load_from_file, filter_column="sepal_length")
 data_manager["load_from_file_sepal_length"].timeout = -1
+data_manager["load_from_file_date_column"] = partial(load_from_file, filter_column="date_column")
+data_manager["load_from_file_date_column"].timeout = -1
 
 
 dynamic_filters_categorical_page = vm.Page(
@@ -93,6 +100,34 @@ dynamic_filters_numerical_page = vm.Page(
         vm.Filter(
             column="sepal_length",
             selector=vm.RangeSlider(id=cnst.RANGE_SLIDER_DYNAMIC_FILTER_ID, step=0.5),
+        ),
+    ],
+)
+
+dynamic_filters_datepicker_page = vm.Page(
+    title=cnst.DYNAMIC_FILTERS_DATEPICKER_PAGE,
+    components=[
+        vm.Graph(
+            id=cnst.BAR_DYNAMIC_DATEPICKER_SINGLE_FILTER_ID,
+            figure=px.bar(data_frame="load_from_file_date_column", **BAR_CHART_CONF),
+        ),
+        vm.Graph(
+            id=cnst.BAR_DYNAMIC_DATEPICKER_FILTER_ID,
+            figure=px.bar(data_frame="load_from_file_date_column", **BAR_CHART_CONF),
+        ),
+    ],
+    controls=[
+        # Dynamic Single
+        vm.Filter(
+            column="date_column",
+            targets=[cnst.BAR_DYNAMIC_DATEPICKER_SINGLE_FILTER_ID],
+            selector=vm.DatePicker(id=cnst.DATEPICKER_DYNAMIC_SINGLE_ID, title="Dynamic Single", range=False),
+        ),
+        # Dynamic Multi
+        vm.Filter(
+            column="date_column",
+            targets=[cnst.BAR_DYNAMIC_DATEPICKER_FILTER_ID],
+            selector=vm.DatePicker(id=cnst.DATEPICKER_DYNAMIC_RANGE_ID, title="Dynamic Multi"),
         ),
     ],
 )

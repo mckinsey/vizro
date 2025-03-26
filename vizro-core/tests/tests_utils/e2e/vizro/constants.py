@@ -131,6 +131,13 @@ BAR_DYNAMIC_FILTER_ID = "bar_dynamic"
 SLIDER_DYNAMIC_FILTER_ID = "slider_dynamic"
 RANGE_SLIDER_DYNAMIC_FILTER_ID = "range_slider_dynamic"
 
+DYNAMIC_FILTERS_DATEPICKER_PAGE = "dynamic filters datepicker numerical"
+DYNAMIC_FILTERS_DATEPICKER_PAGE_PATH = "/dynamic-filters-datepicker-numerical"
+BAR_DYNAMIC_DATEPICKER_SINGLE_FILTER_ID = "bar_dynamic_single_datepicker"
+BAR_DYNAMIC_DATEPICKER_FILTER_ID = "bar_dynamic_datepicker"
+DATEPICKER_DYNAMIC_RANGE_ID = "datepicker dynamic range"
+DATEPICKER_DYNAMIC_SINGLE_ID = "datepicker dynamic single"
+
 CUSTOM_COMPONENTS_PAGE = "custom components page"
 CUSTOM_COMPONENTS_PAGE_PATH = "/custom-components-page"
 SCATTER_CUSTOM_COMPONENTS_ID = "scatter_custom_id"
