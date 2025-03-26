@@ -3,7 +3,6 @@ from __future__ import annotations
 import inspect
 import logging
 import re
-from collections import defaultdict
 from collections.abc import Collection, Iterable, Mapping
 from pprint import pformat
 from typing import TYPE_CHECKING, Annotated, Any, Literal, TypedDict, Union, cast, ClassVar, Callable
@@ -12,7 +11,6 @@ from dash import Input, Output, State, callback, html
 from dash.development.base_component import Component
 from pydantic import Field, StringConstraints, field_validator, TypeAdapter, ValidationError
 from pydantic.json_schema import SkipJsonSchema
-
 
 from vizro.managers._model_manager import ModelID, model_manager
 from vizro.models import VizroBaseModel
@@ -25,7 +23,6 @@ if TYPE_CHECKING:
     from vizro.actions import export_data, filter_interaction
 
 
-# TODO NOW: UPDATE THIS with new filters sturcture
 class ControlsStates(TypedDict):
     filters: list[State]
     parameters: list[State]
@@ -84,38 +81,13 @@ class _BaseAction(VizroBaseModel):
                 "<component_name>.<component_property>."
             ) from exc
 
-    def _get_control_states(self, control_type: ControlType, action_type) -> list[State]:
+    def _get_control_states(self, control_type: ControlType) -> list[State]:
         """Gets list of `States` for selected `control_type` that appear on page where this Action is defined."""
         # Possibly the code that specifies the state associated with a control will move to an inputs property
         # of the filter and parameter models in future. This property could match outputs and return just a dotted
         # string that is then transformed to State inside _transformed_inputs. This would prevent us from using
         # pattern-matching callback here though.
         # See also notes in filter_interaction._get_triggered_model.
-        page = model_manager._get_model_page(self)
-
-        states = defaultdict(list)
-
-        # e.g. when control_type=Filter and action_type=_filter, this goes through all the _filter actions that are
-        # found inside Filter models. To apply the filter we need the selector value and the action id. There are
-        # various different ways to fetch the action id given the selector id or vice versa by traversing
-        # model_manager or trying to save the selector id inside the action or vice versa, but to avoid relying on
-        # model_manager we pass both as Dash States. This would be simpler but not fully resolved if there were a
-        # one to one mapping between selectors and actions rather than having ActionsChain with multiple actions.
-
-        for control in cast(Iterable[ControlType], model_manager._get_models(control_type, page)):
-            selector = control.selector
-            actions = [action for actions_chain in selector.actions for action in actions_chain.actions]
-            for action in actions:
-                if isinstance(action, action_type):
-                    states["selector_values"].append(
-                        State(component_id=selector.id, component_property=selector._input_property)
-                    )
-                    # For now the action_ids just piggyback off some states that are already stored in the actions loop.
-                    states["action_ids"].append(State({"type": "action_trigger", "action_name": action.id}, "id"))
-
-        return states
-
-    def _get_control_states_old(self, control_type):
         page = model_manager._get_model_page(self)
         return [
             State(component_id=control.selector.id, component_property=control.selector._input_property)
@@ -146,13 +118,11 @@ class _BaseAction(VizroBaseModel):
             return [State(*input.split(".")) for input in cast(Action, self).inputs]
 
         from vizro.models import Filter, Parameter
-        from vizro.actions._filter_action import _filter
-        from vizro.actions._parameter_action import _parameter
 
         builtin_args = {
             "_controls": {
-                "filters": self._get_control_states(control_type=Filter, action_type=_filter),
-                "parameters": self._get_control_states_old(control_type=Parameter),
+                "filters": self._get_control_states(control_type=Filter),
+                "parameters": self._get_control_states(control_type=Parameter),
                 "filter_interaction": self._get_filter_interaction_states(),
             }
         }

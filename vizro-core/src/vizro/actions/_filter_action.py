@@ -4,7 +4,6 @@ import pandas as pd
 from dash import ctx
 from pydantic import Field
 
-from vizro._constants import ALL_OPTION
 from vizro.actions import AbstractAction
 from vizro.actions._actions_utils import _get_modified_page_figures
 from vizro.managers._model_manager import ModelID, model_manager
@@ -33,7 +32,7 @@ class _filter(AbstractAction):
         # will change in future once the structure of _controls has been worked out and we know how to pass ids through.
         # See https://github.com/mckinsey/vizro/pull/880
         return _get_modified_page_figures(
-            _controls["filters"],
+            ctds_filter=ctx.args_grouping["external"]["_controls"]["filters"],
             ctds_parameter=ctx.args_grouping["external"]["_controls"]["parameters"],
             ctds_filter_interaction=ctx.args_grouping["external"]["_controls"]["filter_interaction"],
             targets=self.targets,
@@ -50,15 +49,3 @@ class _filter(AbstractAction):
             outputs[target] = f"{component_id}.{component_property}"
 
         return outputs
-
-    def _filter_data_frame(self, data_frame, selector_value):
-        selector_value = selector_value if isinstance(selector_value, list) else [selector_value]
-
-        if ALL_OPTION in selector_value:
-            return data_frame
-
-        # TODO NOW: tidy this, just done this way for ease of seeing diff
-        _filter_function = self.filter_function
-        _filter_column = self.filter_column
-        _filter_value = selector_value
-        return data_frame[_filter_function(data_frame[_filter_column], _filter_value)]

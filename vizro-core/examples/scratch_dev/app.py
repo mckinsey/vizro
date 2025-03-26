@@ -20,7 +20,6 @@ page_1 = vm.Page(
         #     # actions=[vm.Action(function=filter_interaction(targets=["scatter_relation_2007"]))],  # TODO NOW CHECK
         # ),
         vm.Graph(
-            id="source",
             figure=px.box(
                 df_gapminder,
                 x="continent",
@@ -51,9 +50,7 @@ page_1 = vm.Page(
         vm.Button(
             id="button2",
             text="Export data to Excel",
-            actions=[
-                export_data(targets=["scatter_relation_2007"], file_format="xlsx", runtime_arg="button2.n_clicks")
-            ],
+            actions=[export_data(targets=["scatter_relation_2007"], file_format="xlsx", runtime_arg="button2")],
             # actions=[vm.Action(function=export_data(targets=["scatter_relation_2007"], file_format="xlsx"))],
             # TODO NOW CHECK
         ),
