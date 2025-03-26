@@ -57,7 +57,7 @@ class filter_interaction(AbstractAction):
             Dict mapping target chart ids to modified figures e.g. {"my_scatter": Figure(...)}.
 
         """
-        # TODO: _controls is not currently used but instead taken out of the Dash context. This
+        # TODO NEXT A 1: _controls is not currently used but instead taken out of the Dash context. This
         # will change in future once the structure of _controls has been worked out and we know how to pass ids through.
         # See https://github.com/mckinsey/vizro/pull/880
         return _get_modified_page_figures(

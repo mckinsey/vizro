@@ -13,8 +13,7 @@ from vizro.models.types import _Controls, FigureType
 class _filter(AbstractAction):
     type: Literal["_filter"] = "_filter"
 
-    # TODO NOW: rename arguments to remove "filter"?
-    filter_column: str = Field(description="Column to filter on.")
+    column: str = Field(description="Column to filter on.")
     filter_function: Callable[[pd.Series, Any], pd.Series] = Field(
         description="Function to apply to column to perform filtering"
     )
@@ -28,7 +27,7 @@ class _filter(AbstractAction):
 
         """
         # This is identical to _on_page_load.
-        # TODO: _controls is not currently used but instead taken out of the Dash context. This
+        # TODO NEXT A 1: _controls is not currently used but instead taken out of the Dash context. This
         # will change in future once the structure of _controls has been worked out and we know how to pass ids through.
         # See https://github.com/mckinsey/vizro/pull/880
         return _get_modified_page_figures(

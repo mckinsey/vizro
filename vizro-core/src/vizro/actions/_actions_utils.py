@@ -27,7 +27,7 @@ if TYPE_CHECKING:
 ValidatedNoneValueType = Union[SingleValueType, MultiValueType, None, list[None], list[SingleValueType]]
 
 
-# TODO NEXT 2: go through and finish tidying bits that weren't already. Potentially there won't be much code left here
+# TODO NEXT A 2: go through and finish tidying bits that weren't already. Potentially there won't be much code left here
 #  at all.
 
 
@@ -79,15 +79,13 @@ def _apply_filter_controls(
         selector_actions = _get_component_actions(model_manager[ctd["id"]])
 
         for action in selector_actions:
-            # TODO NEXT 1: simplify this as in
+            # TODO NEXT A 1: simplify this as in
             #  https://github.com/mckinsey/vizro/pull/1054/commits/f4c8c5b153f3a71b93c018e9f8c6f1b918ca52f6
             if not isinstance(action, _filter) or target not in action.targets or ALL_OPTION in selector_value:
                 continue
 
-            _filter_function = action.filter_function
-            _filter_column = action.filter_column
-            _filter_value = selector_value
-            data_frame = data_frame[_filter_function(data_frame[_filter_column], _filter_value)]
+            mask = action.filter_function(data_frame[action.column], selector_value)
+            data_frame = data_frame[mask]
 
     return data_frame
 
@@ -211,7 +209,7 @@ def _get_parametrized_config(
         parameter_value = _validate_selector_value_none(parameter_value)  # type: ignore[arg-type]
 
         for action in _get_component_actions(selector):
-            # TODO NEXT 1: simplify this as in
+            # TODO NEXT A 1: simplify this as in
             #  https://github.com/mckinsey/vizro/pull/1054/commits/f4c8c5b153f3a71b93c018e9f8c6f1b918ca52f6
             #  Potentially this function would move to the filter_interaction action. That will be deprecated so
             #  no need to worry too much if it doesn't work well, but we'll need to do something similar for the
@@ -263,7 +261,7 @@ def _get_unfiltered_data(
     return dict(zip(targets, data_manager._multi_load(multi_data_source_name_load_kwargs)))
 
 
-# TODO NEXT 2: rename this, make sure it could become public in future but don't make public yet. Probably take in
+# TODO NEXT A 2: rename this, make sure it could become public in future but don't make public yet. Probably take in
 #  controls + filter_interaction only once have worked out structure of filters/parameters. Then make public once
 #  have removed filter_interaction.
 def _get_modified_page_figures(

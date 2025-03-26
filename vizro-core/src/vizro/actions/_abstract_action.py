@@ -27,24 +27,28 @@ class AbstractAction(_BaseAction, abc.ABC):
 
     # TODO NOW COMMENT: Check schema and make sure these don't appear, comment on importance of this.
 
-    # TODO NOW: make keyword args only? What are actual limitations here? Don't worry much about it.
     @abc.abstractmethod
-    def function(self, *args, **kwargs):
-        """Function that must be defined by concrete action."""
+    def function(self, **kwargs):
+        """Function that must be defined by concrete action.
+
+        This is always called using keyword-arguments so cannot have positional-only arguments"""
         pass
 
     @property
     @abc.abstractmethod
     def outputs(self) -> dict[str, IdProperty]:  # type: ignore[override]
-        """Must be defined by concrete action, even if there's no output."""
-        # TODO NOW: should it handle dictionary ids too? Currently this needs overriding _get_outputs. Pattern matching
-        # probably not needed for outputs and only for built-in inputs. Even if add more functionality here in future
-        # we shoulod still at least the support same as Action.output so it's easy for someone to move from a function
-        # action to a class one. In future we'd even like to just allow specifying the component id without the property.
+        """Must be defined by concrete action, even if there's no output.
 
-        # Maybe there will be some special built-in behavior here e.g. to generate outputs automatically from
-        # certain reserved arguments like self.targets. Would need to make sure it's not breaking if someone already
-        # uses that variable name though.
+        There should be no need to support dictionary IDs here. The only possible use is for pattern-matching IDs, but
+        that will probably only be needed for built-in inputs. export_data currently overrides transformed_outputs to
+        supply a dictionary ID but in future will probably change to use a single built-in vizro_download component. See
+        https://github.com/mckinsey/vizro/pull/1054#discussion_r1989405177.
+
+        In future maybe there will be some special built-in behavior here e.g. to generate outputs automatically from
+        certain reserved arguments like self.targets. Would need to make sure it's not breaking if someone already
+        uses that variable name though.
+        """
+
         pass
 
     @property

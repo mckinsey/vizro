@@ -6,6 +6,7 @@ from __future__ import annotations
 import functools
 import importlib
 import inspect
+from collections.abc import Mapping
 from contextlib import contextmanager
 from datetime import date
 from typing import Annotated, Any, Literal, NewType, Protocol, TypedDict, Union, runtime_checkable
@@ -176,12 +177,14 @@ class CapturedCallable:
     def _arguments(self):
         # TODO: This is used twice: in _get_parametrized_config and in vm.Action and should be removed when those
         # references are removed.
-        # TODO NOW: use this and __getitem__/__setitem__ properly or set as future todo.
+        # TODO NEXT B 1: try to subclass Mapping. Check if anything requires MutableMapping (used in Vizro AI tests
+        #  and to set data_frame only?). Try to remove these by making special method for setting data_frame. Then
+        # can remove as many uses of _arguments as possible and use .items() where suitable instead.
         return self.__bound_arguments
 
-    # TODO-actions: Find a way how to compare CapturedCallable and function
     @property
     def _function(self):
+        # TODO NEXT B 2: see if this can be removed.
         return self.__function
 
     @classmethod
@@ -551,7 +554,7 @@ FigureType = Union["Graph", "Table", "AgGrid", "Figure"]
 IdProperty = NewType("IdProperty", str)
 
 
-# TODO NEXT 1: improve this structure. See https://github.com/mckinsey/vizro/pull/880.
+# TODO NEXT A 1: improve this structure. See https://github.com/mckinsey/vizro/pull/880.
 # Remember filter_interaction won't be here in future.
 class _Controls(TypedDict):
     filters: list[Any]

@@ -23,7 +23,7 @@ if TYPE_CHECKING:
     from vizro.actions import export_data, filter_interaction
 
 
-# TODO NEXT 1: improve this structure. See https://github.com/mckinsey/vizro/pull/880.
+# TODO NEXT A 1: improve this structure. See https://github.com/mckinsey/vizro/pull/880.
 # Remember filter_interaction won't be here in future.
 class ControlsStates(TypedDict):
     filters: list[State]
@@ -62,7 +62,7 @@ class _BaseAction(VizroBaseModel):
     def _validate_dash_dependency(self, /, dependencies, *, type: Literal["output", "input"]):
         # Validate that dependencies are in the form component_id.component_property. This uses the same annotation as
         # Action.inputs/outputs.
-        # TODO: in future we will expand this to also allow passing a model name without a property specified.
+        # TODO NEXT A 4: in future we will expand this to also allow passing a model name without a property specified.
         #  Possibly make a built in a type hint that we can use as field annotation for runtime arguments in
         #  subclasses of AbstractAction instead of just using str. Possibly apply this to non-annotated arguments of
         #  vm.Action.function and use pydantic's validate_call to apply the same validation there for function inputs.
@@ -153,7 +153,7 @@ class _BaseAction(VizroBaseModel):
 
         Return type list[Output] is for legacy and new versions of Action. dict[str, Output] is for AbstractAction.
         """
-        # TODO: enable both list and dict for both Action and AbstractAction.
+        # TODO NEXT A 3: enable both list and dict for both Action and AbstractAction.
         if isinstance(self.outputs, list):
             # At the moment this check isn't needed because the list case only applies to vm.Action models, which has
             # pydantic validation of outputs built into the field annotation. In future when we allow AbstractAction to
@@ -329,9 +329,10 @@ class Action(_BaseAction):
 
     @property
     def _parameters(self) -> set[str]:
-        # TODO: in future, if we improve wrapping of __call__ inside CapturedCallable (e.g. by using wrapt),
+        # TODO NEXT B 2: in future, if we improve wrapping of __call__ inside CapturedCallable (e.g. by using wrapt),
         #  this could be done the same way as in AbstractAction and avoid looking at _function. Then we could remove
         #  this _parameters property from both Action and AbstractAction. Possibly also the _action_name one.
+        #  Try and get IDE completion to work for action arguments.
         # Note order of parameters doesn't matter since we always handle things with keyword arguments.
         return set(inspect.signature(self.function._function).parameters)  # type:ignore[union-attr]
 
