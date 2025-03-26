@@ -117,7 +117,6 @@ class Page(VizroBaseModel):
         targets = figure_targets + filter_targets
 
         if targets:
-            # TODO NOW: is there any point in this id labeling? Useful for debugging?
             self.actions = [
                 ActionsChain(
                     id=f"{ON_PAGE_LOAD_ACTION_PREFIX}_{self.id}",

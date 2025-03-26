@@ -27,8 +27,8 @@ if TYPE_CHECKING:
 ValidatedNoneValueType = Union[SingleValueType, MultiValueType, None, list[None], list[SingleValueType]]
 
 
-# TODO NOW: go through and finish tidying bits of this file I didn't look at before
-# TODO NOW: understand how parameter selector lookup works now without id name hack
+# TODO NEXT 2: go through and finish tidying bits that weren't already. Potentially there won't be much code left here
+#  at all.
 
 
 class CallbackTriggerDict(TypedDict):
@@ -79,7 +79,8 @@ def _apply_filter_controls(
         selector_actions = _get_component_actions(model_manager[ctd["id"]])
 
         for action in selector_actions:
-            # TODO NOW: see if can be simplified or made nicer
+            # TODO NEXT 1: simplify this as in
+            #  https://github.com/mckinsey/vizro/pull/1054/commits/f4c8c5b153f3a71b93c018e9f8c6f1b918ca52f6
             if not isinstance(action, _filter) or target not in action.targets or ALL_OPTION in selector_value:
                 continue
 
@@ -210,7 +211,11 @@ def _get_parametrized_config(
         parameter_value = _validate_selector_value_none(parameter_value)  # type: ignore[arg-type]
 
         for action in _get_component_actions(selector):
-            # TODO NOW: see if can be simplified or made nicer
+            # TODO NEXT 1: simplify this as in
+            #  https://github.com/mckinsey/vizro/pull/1054/commits/f4c8c5b153f3a71b93c018e9f8c6f1b918ca52f6
+            #  Potentially this function would move to the filter_interaction action. That will be deprecated so
+            #  no need to worry too much if it doesn't work well, but we'll need to do something similar for the
+            #  new interaction functionality anyway.
             if not isinstance(action, _parameter):
                 continue
 
@@ -258,8 +263,9 @@ def _get_unfiltered_data(
     return dict(zip(targets, data_manager._multi_load(multi_data_source_name_load_kwargs)))
 
 
-# TODO NOW: rename.
-# TODO: probably take in controls + filter_interaction only once have worked out structure of filters/parameters.
+# TODO NEXT 2: rename this, make sure it could become public in future but don't make public yet. Probably take in
+#  controls + filter_interaction only once have worked out structure of filters/parameters. Then make public once
+#  have removed filter_interaction.
 def _get_modified_page_figures(
     ctds_filter: list[CallbackTriggerDict],
     ctds_filter_interaction: list[dict[str, CallbackTriggerDict]],

@@ -551,9 +551,9 @@ FigureType = Union["Graph", "Table", "AgGrid", "Figure"]
 IdProperty = NewType("IdProperty", str)
 
 
-# TODO: improve this structure. See https://github.com/mckinsey/vizro/pull/880.
+# TODO NEXT 1: improve this structure. See https://github.com/mckinsey/vizro/pull/880.
+# Remember filter_interaction won't be here in future.
 class _Controls(TypedDict):
     filters: list[Any]
     parameters: list[Any]
-    # TODO: filter_interaction won't be here in future.
     filter_interaction: list[dict[str, Any]]

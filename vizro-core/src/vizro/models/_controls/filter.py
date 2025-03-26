@@ -213,7 +213,6 @@ class Filter(VizroBaseModel):
                 filter_function = _filter_isin
 
         self.selector.actions = [
-            # TODO NOW: is there any point in this id labeling? Useful for debugging?
             _filter(
                 id=f"{FILTER_ACTION_PREFIX}_{self.id}",
                 filter_column=self.column,

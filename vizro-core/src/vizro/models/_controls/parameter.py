@@ -106,6 +106,5 @@ class Parameter(VizroBaseModel):
     def _set_actions(self):
         if not self.selector.actions:
             self.selector.actions = [
-                # TODO NOW: is there any point in this id labeling? Useful for debugging?
                 _parameter(id=f"{PARAMETER_ACTION_PREFIX}_{self.id}", targets=self.targets)
             ]

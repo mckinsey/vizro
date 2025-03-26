@@ -109,7 +109,11 @@ class AgGrid(VizroBaseModel):
         source_table_actions = _get_component_actions(_get_parent_model(ctd_cellClicked["id"]))
 
         for action in source_table_actions:
-            # TODO NOW: simplify
+            # TODO NEXT 1: simplify this as in
+            #  https://github.com/mckinsey/vizro/pull/1054/commits/f4c8c5b153f3a71b93c018e9f8c6f1b918ca52f6
+            #  Potentially this function would move to the filter_interaction action. That will be deprecated so
+            #  no need to worry too much if it doesn't work well, but we'll need to do something similar for the
+            #  new interaction functionality anyway.
             if not isinstance(action, filter_interaction) or target not in action.targets:
                 continue
             column = ctd_cellClicked["value"]["colId"]

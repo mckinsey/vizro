@@ -23,10 +23,11 @@ if TYPE_CHECKING:
     from vizro.actions import export_data, filter_interaction
 
 
+# TODO NEXT 1: improve this structure. See https://github.com/mckinsey/vizro/pull/880.
+# Remember filter_interaction won't be here in future.
 class ControlsStates(TypedDict):
     filters: list[State]
     parameters: list[State]
-    # TODO: filter_interaction won't be here in future.
     filter_interaction: list[dict[str, State]]
 
 
