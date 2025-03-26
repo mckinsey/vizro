@@ -11,10 +11,10 @@ import pandas as pd
 from vizro._constants import ALL_OPTION, NONE_OPTION
 from vizro.managers import data_manager, model_manager
 from vizro.managers._data_manager import DataSourceName
-from vizro.managers._model_manager import ModelID
 from vizro.models.types import (
     FigureType,
     FigureWithFilterInteractionType,
+    ModelID,
     MultiValueType,
     SelectorType,
     SingleValueType,

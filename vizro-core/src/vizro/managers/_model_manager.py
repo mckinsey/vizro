@@ -5,20 +5,19 @@ from __future__ import annotations
 import random
 import uuid
 from collections.abc import Collection, Generator, Iterable, Mapping
-from typing import TYPE_CHECKING, NewType, Optional, TypeVar, Union, cast
+from typing import TYPE_CHECKING, Optional, TypeVar, Union, cast
 
 from vizro.managers._managers_utils import _state_modifier
 
 if TYPE_CHECKING:
     from vizro.models import Page, VizroBaseModel
+    from vizro.models.types import ModelID
 
 
 # As done for Dash components in dash.development.base_component, fixing the random seed is required to make sure that
 # the randomly generated model ID for the same model matches up across workers when running gunicorn without --preload.
 rd = random.Random(0)
 
-# TODO NOW: make this less annoying.
-ModelID = NewType("ModelID", str)
 Model = TypeVar("Model", bound="VizroBaseModel")
 
 
@@ -131,7 +130,7 @@ class ModelManager:
 
     @staticmethod
     def _generate_id() -> ModelID:
-        return ModelID(str(uuid.UUID(int=rd.getrandbits(128))))
+        return str(uuid.UUID(int=rd.getrandbits(128)))
 
     def _clear(self):
         self.__init__()  # type: ignore[misc]

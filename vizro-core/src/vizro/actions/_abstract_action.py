@@ -6,7 +6,7 @@ import inspect
 from dash.development.base_component import Component
 
 from vizro.models._action._action import _BaseAction
-from vizro.models.types import IdProperty
+from vizro.models.types import _IdProperty
 
 
 class AbstractAction(_BaseAction, abc.ABC):
@@ -25,18 +25,20 @@ class AbstractAction(_BaseAction, abc.ABC):
       - built in runtime arguments, e.g. _controls: not model fields, explicitly in function signature. Uses Dash State
     """
 
+    # TODO NOW COMMENT: more docstring, check built docs.
     # TODO NOW COMMENT: Check schema and make sure these don't appear, comment on importance of this.
 
     @abc.abstractmethod
-    def function(self, **kwargs):
+    def function(self, *args, **kwargs):
         """Function that must be defined by concrete action.
 
-        This is always called using keyword-arguments so cannot have positional-only arguments"""
+        This is always called using keyword-arguments so cannot have positional-only arguments
+        """
         pass
 
     @property
     @abc.abstractmethod
-    def outputs(self) -> dict[str, IdProperty]:  # type: ignore[override]
+    def outputs(self) -> dict[str, _IdProperty]:  # type: ignore[override]
         """Must be defined by concrete action, even if there's no output.
 
         There should be no need to support dictionary IDs here. The only possible use is for pattern-matching IDs, but
@@ -48,7 +50,6 @@ class AbstractAction(_BaseAction, abc.ABC):
         certain reserved arguments like self.targets. Would need to make sure it's not breaking if someone already
         uses that variable name though.
         """
-
         pass
 
     @property
@@ -68,7 +69,7 @@ class AbstractAction(_BaseAction, abc.ABC):
         return set(inspect.signature(self.function).parameters)
 
     @property
-    def _runtime_args(self) -> dict[str, IdProperty]:
+    def _runtime_args(self) -> dict[str, _IdProperty]:
         # Since function is not a CapturedCallable, input arguments have not yet been bound. They correspond to the
         # model fields that are present in the function signature. This is just the user-specified runtime arguments, as
         # static arguments are not in the function signature (they're in self) and built in runtime arguments are not

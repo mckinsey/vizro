@@ -7,13 +7,21 @@ from dash import Output, ctx, dcc
 from vizro.actions import AbstractAction
 from vizro.actions._actions_utils import _apply_filters, _get_unfiltered_data
 from vizro.managers import model_manager
-from vizro.managers._model_manager import FIGURE_MODELS, ModelID
+from vizro.managers._model_manager import FIGURE_MODELS
 from vizro.models import VizroBaseModel
-from vizro.models.types import _Controls
+from vizro.models.types import ModelID, _Controls
 
 
 # TODO NOW: check how schema for this is generated.
 class export_data(AbstractAction):
+    """Exports visible data of target charts/components.
+
+    Args:
+        targets (list[ModelID]): List of target component ids to download data from. If none are given then download
+             from all components on the page.
+        file_format (Literal["csv", "xlsx"]): Format of downloaded files. Defaults to `csv`.
+    """
+
     type: Literal["export_data"] = "export_data"
 
     targets: list[
@@ -39,7 +47,6 @@ class export_data(AbstractAction):
                 inputs = {'filters': [], 'parameters': ['gdpPercap'], 'filter_interaction': []}
 
         Raises:
-            ValueError: If unknown file extension is provided.
             ValueError: If target component does not exist on page.
 
         Returns:

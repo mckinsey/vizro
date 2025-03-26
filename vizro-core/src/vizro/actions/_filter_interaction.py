@@ -1,14 +1,15 @@
-from typing import Any, Literal, cast, Iterable
+from collections.abc import Iterable
+from typing import Any, Literal, cast
 
 from dash import ctx
 from pydantic import Field
 
 from vizro.actions import AbstractAction
 from vizro.actions._actions_utils import _get_modified_page_figures
-from vizro.managers._model_manager import ModelID, model_manager
+from vizro.managers._model_manager import model_manager
 from vizro.models._action._actions_chain import ActionsChain
 from vizro.models._models_utils import _log_call
-from vizro.models.types import _Controls, FigureType, FigureWithFilterInteractionType
+from vizro.models.types import FigureType, FigureWithFilterInteractionType, ModelID, _Controls
 
 
 class filter_interaction(AbstractAction):
@@ -18,14 +19,18 @@ class filter_interaction(AbstractAction):
     parameter of the source graph e.g. `px.bar(..., custom_data=["species", "sepal_length"])`.
     If the filter interaction source is a table e.g. `vm.Table(..., actions=[filter_interaction])`,
     then the table doesn't need to have a 'custom_data' parameter set up.
+
+    Args:
+        targets (list[ModelID]): Target component to be affected by filter. If none are given then target all
+            valid components on the page.
     """
 
     type: Literal["filter_interaction"] = "filter_interaction"
 
-    # Note this has a default value, unlikely on_page_load, filter and parameter.
+    # Note this has a default value, unlike on_page_load, filter and parameter.
     targets: list[ModelID] = Field(description="Target component IDs.", default=[])
 
-    def _get_triggered_model(self) -> FigureWithFilterInteractionType:
+    def _get_triggered_model(self) -> FigureWithFilterInteractionType:  # type: ignore[return]
         """Gets the model that triggers the action with "action_id"."""
         # In future we should have a better way of doing this:
         #  - maybe through the model manager
@@ -33,7 +38,7 @@ class filter_interaction(AbstractAction):
         #  - maybe need to be able to define inputs property for actions that subclass AbstractAction
         for actions_chain in cast(Iterable[ActionsChain], model_manager._get_models(ActionsChain)):
             if self in actions_chain.actions:
-                return model_manager[ModelID(str(actions_chain.trigger.component_id))]
+                return model_manager[actions_chain.trigger.component_id]
 
     @_log_call
     def pre_build(self):
@@ -55,7 +60,6 @@ class filter_interaction(AbstractAction):
 
         Returns:
             Dict mapping target chart ids to modified figures e.g. {"my_scatter": Figure(...)}.
-
         """
         # TODO NEXT A 1: _controls is not currently used but instead taken out of the Dash context. This
         # will change in future once the structure of _controls has been worked out and we know how to pass ids through.

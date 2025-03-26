@@ -5,7 +5,6 @@ import logging
 from dash import ClientsideFunction, Input, Output, State, clientside_callback
 
 from vizro.managers import model_manager
-from vizro.managers._model_manager import ModelID
 from vizro.models._action._action import _BaseAction
 from vizro.models._action._actions_chain import ActionsChain
 
@@ -27,7 +26,7 @@ def _build_action_loop_callbacks() -> None:
         # Recalculating the trigger component id to use the underlying callable object as a trigger component if needed.
         actions_chain_trigger_component_id = actions_chain.trigger.component_id
         try:
-            actions_chain_trigger_component = model_manager[ModelID(str(actions_chain_trigger_component_id))]
+            actions_chain_trigger_component = model_manager[actions_chain_trigger_component_id]
             # Use underlying callable object as a trigger component.
             if hasattr(actions_chain_trigger_component, "_input_component_id"):
                 actions_chain_trigger_component_id = actions_chain_trigger_component._input_component_id

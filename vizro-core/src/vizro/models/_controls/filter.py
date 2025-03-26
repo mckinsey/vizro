@@ -12,7 +12,7 @@ from vizro._constants import ALL_OPTION, FILTER_ACTION_PREFIX
 from vizro.actions._filter_action import _filter
 from vizro.managers import data_manager, model_manager
 from vizro.managers._data_manager import DataSourceName, _DynamicData
-from vizro.managers._model_manager import FIGURE_MODELS, ModelID
+from vizro.managers._model_manager import FIGURE_MODELS
 from vizro.models import VizroBaseModel
 from vizro.models._components.form import (
     Checklist,
@@ -23,7 +23,7 @@ from vizro.models._components.form import (
     Slider,
 )
 from vizro.models._models_utils import _log_call
-from vizro.models.types import FigureType, MultiValueType, SelectorType
+from vizro.models.types import FigureType, ModelID, MultiValueType, SelectorType
 
 # Ideally we might define these as NumericalSelectorType = Union[RangeSlider, Slider] etc., but that will not work
 # with isinstance checks.
@@ -139,7 +139,7 @@ class Filter(VizroBaseModel):
         # This is the case when bool(self.targets) is False.
         # Possibly in future this will change (which would be breaking change).
         proposed_targets = self.targets or [
-            cast(ModelID, model.id)
+            model.id
             for model in cast(
                 Iterable[VizroBaseModel], model_manager._get_models(FIGURE_MODELS, model_manager._get_model_page(self))
             )

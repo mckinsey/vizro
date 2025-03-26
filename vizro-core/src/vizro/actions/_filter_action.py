@@ -6,8 +6,8 @@ from pydantic import Field
 
 from vizro.actions import AbstractAction
 from vizro.actions._actions_utils import _get_modified_page_figures
-from vizro.managers._model_manager import ModelID, model_manager
-from vizro.models.types import _Controls, FigureType
+from vizro.managers._model_manager import model_manager
+from vizro.models.types import FigureType, ModelID, _Controls
 
 
 class _filter(AbstractAction):

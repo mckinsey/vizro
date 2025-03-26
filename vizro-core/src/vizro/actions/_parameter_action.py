@@ -5,14 +5,14 @@ from pydantic import Field
 
 from vizro.actions import AbstractAction
 from vizro.actions._actions_utils import _get_modified_page_figures
-from vizro.managers._model_manager import ModelID, model_manager
-from vizro.models.types import _Controls, FigureType
+from vizro.managers._model_manager import model_manager
+from vizro.models.types import FigureType, ModelID, _Controls
 
 
 class _parameter(AbstractAction):
     type: Literal["_parameter"] = "_parameter"
 
-    targets: list[ModelID] = Field(description="Targets in the form `<target_component>.<target_argument>`.")
+    targets: list[str] = Field(description="Targets in the form `<target_component>.<target_argument>`.")
 
     @property
     def _target_ids(self) -> list[ModelID]:

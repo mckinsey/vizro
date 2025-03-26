@@ -5,17 +5,17 @@ import logging
 import re
 from collections.abc import Collection, Iterable, Mapping
 from pprint import pformat
-from typing import TYPE_CHECKING, Annotated, Any, Literal, TypedDict, Union, cast, ClassVar, Callable
+from typing import TYPE_CHECKING, Annotated, Any, Callable, ClassVar, Literal, TypedDict, Union, cast
 
 from dash import Input, Output, State, callback, html
 from dash.development.base_component import Component
-from pydantic import Field, StringConstraints, field_validator, TypeAdapter, ValidationError
+from pydantic import Field, StringConstraints, TypeAdapter, ValidationError, field_validator
 from pydantic.json_schema import SkipJsonSchema
 
-from vizro.managers._model_manager import ModelID, model_manager
+from vizro.managers._model_manager import model_manager
 from vizro.models import VizroBaseModel
 from vizro.models._models_utils import _log_call
-from vizro.models.types import CapturedCallable, ControlType, IdProperty, validate_captured_callable
+from vizro.models.types import CapturedCallable, ControlType, _IdProperty, validate_captured_callable
 
 logger = logging.getLogger(__name__)
 
@@ -37,7 +37,7 @@ class _BaseAction(VizroBaseModel):
     # function and outputs are overridden as fields in Action and abstract methods in AbstractAction. Using ClassVar
     # for these is the easiest way to appease mypy and have something that actually works at runtime.
     function: ClassVar[Callable[..., Any]]
-    outputs: ClassVar[Union[list[str], dict[str, IdProperty]]]
+    outputs: ClassVar[Union[list[str], dict[str, _IdProperty]]]
 
     @property
     def _dash_components(self) -> list[Component]:
@@ -52,7 +52,7 @@ class _BaseAction(VizroBaseModel):
         raise NotImplementedError
 
     @property
-    def _runtime_args(self) -> dict[str, IdProperty]:
+    def _runtime_args(self) -> dict[str, _IdProperty]:
         raise NotImplementedError
 
     @property
@@ -170,7 +170,7 @@ class _BaseAction(VizroBaseModel):
             return callback_outputs
 
         self._validate_dash_dependency(self.outputs.values(), type="output")
-        callback_outputs = {
+        callback_outputs = {  # type: ignore[assignment]
             output_name: Output(*output.split("."), allow_duplicate=True)
             for output_name, output in self.outputs.items()
         }
@@ -241,7 +241,7 @@ class _BaseAction(VizroBaseModel):
             "external": external_callback_inputs,
             "internal": {"trigger": Input({"type": "action_trigger", "action_name": self.id}, "data")},
         }
-        callback_outputs = {
+        callback_outputs: dict[str, Union[list[Output], dict[str, Output]]] = {
             "internal": {"action_finished": Output("action_finished", "data", allow_duplicate=True)},
         }
 
@@ -315,6 +315,8 @@ class Action(_BaseAction):
     @property
     def _legacy(self) -> bool:
         # TODO: Put in deprecation warning.
+        # TODO NOW: fix this.
+
         if "inputs" in self.model_fields_set:
             legacy = True
         else:
@@ -337,7 +339,7 @@ class Action(_BaseAction):
         return set(inspect.signature(self.function._function).parameters)  # type:ignore[union-attr]
 
     @property
-    def _runtime_args(self) -> dict[str, IdProperty]:
+    def _runtime_args(self) -> dict[str, _IdProperty]:
         # Since function is a CapturedCallable, input arguments have already been bound and should be found from the
         # CapturedCallable.
         # Note this is a dictionary even if arguments were originally provided as positional ones, since they are

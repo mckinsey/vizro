@@ -6,10 +6,9 @@ from __future__ import annotations
 import functools
 import importlib
 import inspect
-from collections.abc import Mapping
 from contextlib import contextmanager
 from datetime import date
-from typing import Annotated, Any, Literal, NewType, Protocol, TypedDict, Union, runtime_checkable
+from typing import Annotated, Any, Literal, NewType, Protocol, TypeAlias, TypedDict, Union, runtime_checkable
 
 import plotly.io as pio
 import pydantic_core as cs
@@ -479,6 +478,15 @@ class capture:
         )
 
 
+# For "component_id.component_property", e.g. "dropdown_id.value".
+_IdProperty = NewType("_IdProperty", str)
+
+# Really this should be NewType and used for models like VizroBaseModel.id, but that clutters the code with casts and
+# means that to get user code to type-check successfully they would need to cast to ModelID.
+ModelID: TypeAlias = str
+"""Represents a Vizro model ID."""
+
+
 # Types used for selector values and options. Note the docstrings here are rendered on the API reference.
 SingleValueType = Union[StrictBool, float, str, date]
 """Permissible value types for single-value selectors. Values are displayed as default."""
@@ -528,7 +536,7 @@ ComponentType = Annotated[
 [`Button`][vizro.models.Button], [`Card`][vizro.models.Card], [`Table`][vizro.models.Table],
 [`Graph`][vizro.models.Graph] or [`AgGrid`][vizro.models.AgGrid]."""
 
-NavPagesType = Union[list[str], dict[str, list[str]]]
+NavPagesType = Union[list[ModelID], dict[str, list[ModelID]]]
 "List of page IDs or a mapping from name of a group to a list of page IDs (for hierarchical sub-navigation)."
 
 NavSelectorType = Annotated[
@@ -537,21 +545,17 @@ NavSelectorType = Annotated[
 """Discriminated union. Type of component for rendering navigation:
 [`Accordion`][vizro.models.Accordion] or [`NavBar`][vizro.models.NavBar]."""
 
-# TODO NOW: check built docs and write action docstrings etc.
 ActionsType = Annotated[
     Union["Action", "export_data", "filter_interaction", "_filter", "_parameter", "_on_page_load"],
     Field(discriminator="type", description=""),
 ]
-"""Discriminated union. Actions"""
+"""Discriminated union. Type of action: [`Action`][vizro.models.Action], [`export_data`][vizro.models.export_data] or [
+`filter_interaction`][vizro.models.filter_interaction]."""
 
 
 # Extra type groups used for mypy casting
 FigureWithFilterInteractionType = Union["Graph", "Table", "AgGrid"]
 FigureType = Union["Graph", "Table", "AgGrid", "Figure"]
-
-# TODO NOW: work out whether this definition is a good idea.
-# For "component_id.component_property", e.g. "dropdown_id.value".
-IdProperty = NewType("IdProperty", str)
 
 
 # TODO NEXT A 1: improve this structure. See https://github.com/mckinsey/vizro/pull/880.

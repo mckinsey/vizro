@@ -5,6 +5,8 @@
 
 # Improvements to note
 
+- ModelID public and now alias instead of NewType
+
 ## Built-in actions
 
 - clearer signatures
