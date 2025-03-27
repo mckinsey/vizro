@@ -12,7 +12,12 @@ from e2e.vizro.checkers import (
     check_slider_value,
 )
 from e2e.vizro.navigation import accordion_select, page_select, select_dropdown_value, select_slider_handler
-from e2e.vizro.paths import categorical_components_value_path, dropdown_arrow_path, slider_value_path
+from e2e.vizro.paths import (
+    categorical_components_value_path,
+    dropdown_arrow_path,
+    graph_y_axis_value_path,
+    slider_value_path,
+)
 from e2e.vizro.waiters import callbacks_finish_waiter
 
 
@@ -358,6 +363,22 @@ def test_datepicker_range_filters(dash_br):
         graph_id=cnst.BAR_DYNAMIC_DATEPICKER_FILTER_ID,
     )
 
+    # Check y axis min value is '0'
+    dash_br.wait_for_text_to_equal(
+        graph_y_axis_value_path(
+            graph_id=cnst.BAR_DYNAMIC_DATEPICKER_FILTER_ID, y_axis_value_number="1", y_axis_value="0"
+        ),
+        "0",
+    )
+
+    # Check y axis max value is '6'
+    dash_br.wait_for_text_to_equal(
+        graph_y_axis_value_path(
+            graph_id=cnst.BAR_DYNAMIC_DATEPICKER_FILTER_ID, y_axis_value_number="4", y_axis_value="6"
+        ),
+        "6",
+    )
+
     # check current date values
     dash_br.wait_for_text_to_equal(f'button[id="{cnst.DATEPICKER_DYNAMIC_RANGE_ID}"]', "March 5, 2024 – March 10, 2024")  # noqa: RUF001
 
@@ -379,7 +400,10 @@ def test_datepicker_range_filters(dash_br):
 
     # Check y axis max value is '5'
     dash_br.wait_for_text_to_equal(
-        f"div[id='{cnst.BAR_DYNAMIC_DATEPICKER_FILTER_ID}'] g:nth-of-type(6) text[text-anchor='end']", "5"
+        graph_y_axis_value_path(
+            graph_id=cnst.BAR_DYNAMIC_DATEPICKER_FILTER_ID, y_axis_value_number="6", y_axis_value="5"
+        ),
+        "5",
     )
 
     # open datepicker calendar and choose dates from 6 to 10 March 2024
@@ -391,7 +415,10 @@ def test_datepicker_range_filters(dash_br):
 
     # Check y axis max value is '4'
     dash_br.wait_for_text_to_equal(
-        f"div[id='{cnst.BAR_DYNAMIC_DATEPICKER_FILTER_ID}'] g:nth-of-type(9) text[text-anchor='end']", "4"
+        graph_y_axis_value_path(
+            graph_id=cnst.BAR_DYNAMIC_DATEPICKER_FILTER_ID, y_axis_value_number="5", y_axis_value="4"
+        ),
+        "4",
     )
 
     # Set "date_min" option to "2024-03-06" for the dynamic data and simulate refreshing the page
@@ -432,9 +459,20 @@ def test_datepicker_single_filters(dash_br):
     # check current date value
     dash_br.wait_for_text_to_equal(f'button[id="{cnst.DATEPICKER_DYNAMIC_SINGLE_ID}"]', "March 5, 2024")
 
+    # Check y axis min value is '0'
+    dash_br.wait_for_text_to_equal(
+        graph_y_axis_value_path(
+            graph_id=cnst.BAR_DYNAMIC_DATEPICKER_SINGLE_FILTER_ID, y_axis_value_number="1", y_axis_value="0"
+        ),
+        "0",
+    )
+
     # Check y axis max value is '1'
     dash_br.wait_for_text_to_equal(
-        f"div[id='{cnst.BAR_DYNAMIC_DATEPICKER_SINGLE_FILTER_ID}'] g:nth-of-type(6) text[text-anchor='end']", "1"
+        graph_y_axis_value_path(
+            graph_id=cnst.BAR_DYNAMIC_DATEPICKER_SINGLE_FILTER_ID, y_axis_value_number="6", y_axis_value="1"
+        ),
+        "1",
     )
 
     # Set "date_min" option to "2024-03-06" for the dynamic data and simulate refreshing the page
@@ -453,9 +491,22 @@ def test_datepicker_single_filters(dash_br):
     )
     dash_br.wait_for_text_to_equal(f'button[id="{cnst.DATEPICKER_DYNAMIC_SINGLE_ID}"]', "March 5, 2024")
 
+    # Check y axis min value is '-1' (empty chart)
+    dash_br.wait_for_text_to_equal(
+        graph_y_axis_value_path(
+            graph_id=cnst.BAR_DYNAMIC_DATEPICKER_SINGLE_FILTER_ID,
+            y_axis_value_number="1",
+            y_axis_value="−1",  # noqa: RUF001
+        ),
+        "−1",  # noqa: RUF001
+    )
+
     # Check y axis max value is '4'
     dash_br.wait_for_text_to_equal(
-        f"div[id='{cnst.BAR_DYNAMIC_DATEPICKER_SINGLE_FILTER_ID}'] g:nth-of-type(6) text[text-anchor='end']", "4"
+        graph_y_axis_value_path(
+            graph_id=cnst.BAR_DYNAMIC_DATEPICKER_SINGLE_FILTER_ID, y_axis_value_number="6", y_axis_value="4"
+        ),
+        "4",
     )
 
     # open datepicker calendar and choose 6 March 2024
@@ -467,7 +518,10 @@ def test_datepicker_single_filters(dash_br):
 
     # Check y axis max value is '4'
     dash_br.wait_for_text_to_equal(
-        f"div[id='{cnst.BAR_DYNAMIC_DATEPICKER_SINGLE_FILTER_ID}'] g:nth-of-type(6) text[text-anchor='end']", "1"
+        graph_y_axis_value_path(
+            graph_id=cnst.BAR_DYNAMIC_DATEPICKER_SINGLE_FILTER_ID, y_axis_value_number="6", y_axis_value="1"
+        ),
+        "1",
     )
 
     # simulate refreshing the page

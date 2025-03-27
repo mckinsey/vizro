@@ -62,3 +62,7 @@ def table_ag_grid_cell_value_path(table_id, row_number, column_number):
         f"div[id='{table_id}'] div[class='ag-center-cols-container'] div:nth-of-type({row_number}) "
         f"div:nth-of-type({column_number})"
     )
+
+
+def graph_y_axis_value_path(graph_id, y_axis_value_number, y_axis_value):
+    return f"div[id='{graph_id}'] g:nth-of-type({y_axis_value_number}) text[data-unformatted='{y_axis_value}'"
