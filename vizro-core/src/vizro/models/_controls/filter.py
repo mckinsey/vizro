@@ -2,12 +2,12 @@ from __future__ import annotations
 
 from collections.abc import Iterable
 from contextlib import suppress
-from typing import Any, Literal, Optional, Union, cast
+from typing import Annotated, Any, Literal, Optional, Union, cast
 
 import pandas as pd
 from dash import dcc
 from pandas.api.types import is_datetime64_any_dtype, is_numeric_dtype
-from pydantic import Field, PrivateAttr
+from pydantic import AfterValidator, Field, PrivateAttr
 
 from vizro._constants import ALL_OPTION, FILTER_ACTION_PREFIX
 from vizro.actions._filter_action import _filter
@@ -24,9 +24,7 @@ from vizro.models._components.form import (
     Slider,
 )
 from vizro.models._models_utils import _log_call
-from vizro.models.types import FigureType, ModelID, MultiValueType, SelectorType
-from vizro.models._controls._controls_utils import check_targets_present_on_page
-from vizro.models.types import FigureType, MultiValueType, SelectorType, SingleValueType
+from vizro.models.types import FigureType, ModelID, MultiValueType, SelectorType, SingleValueType
 
 # Ideally we might define these as NumericalSelectorType = Union[RangeSlider, Slider] etc., but that will not work
 # with isinstance checks.
@@ -223,7 +221,6 @@ class Filter(VizroBaseModel):
                 targets=self.targets,
             ),
         ]
-
 
     @_log_call
     def build(self):

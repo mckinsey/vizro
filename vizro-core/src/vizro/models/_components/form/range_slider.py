@@ -1,9 +1,10 @@
-from typing import Annotated, Literal, Optional
+from typing import Annotated, Any, Literal, Optional
 
 import dash_bootstrap_components as dbc
 from dash import ClientsideFunction, Input, Output, State, clientside_callback, dcc, html
 from pydantic import AfterValidator, Field, PrivateAttr, conlist
 from pydantic.functional_serializers import PlainSerializer
+from pydantic.json_schema import SkipJsonSchema
 
 from vizro.models import VizroBaseModel
 from vizro.models._action._actions_chain import _action_validator_factory
@@ -22,6 +23,7 @@ class RangeSlider(VizroBaseModel):
 
     Can be provided to [`Filter`][vizro.models.Filter] or
     [`Parameter`][vizro.models.Parameter].
+
     Args:
         type (Literal["range_slider"]): Defaults to `"range_slider"`.
         min (Optional[float]): Start value for slider. Defaults to `None`.
@@ -81,7 +83,6 @@ class RangeSlider(VizroBaseModel):
             ),
         ]
     ]
-
 
     _dynamic: bool = PrivateAttr(False)
 

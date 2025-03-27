@@ -8,10 +8,10 @@ from vizro.actions._parameter_action import _parameter
 from vizro.managers import model_manager
 from vizro.models import VizroBaseModel
 from vizro.models._components.form import Checklist, DatePicker, Dropdown, RadioItems, RangeSlider, Slider
-from vizro.models._models_utils import _log_call
-from vizro.models.types import SelectorType
 from vizro.models._controls._controls_utils import check_targets_present_on_page
-from vizro.managers._model_manager import ModelID
+from vizro.models._models_utils import _log_call
+from vizro.models.types import ModelID, SelectorType
+
 
 def check_dot_notation(target):
     if "." not in target:
@@ -137,6 +137,4 @@ class Parameter(VizroBaseModel):
             # Ensure `Action.function["targets"]` remains consistent with `self.targets` by passing the updated
             # `self.targets` directly to `_parameter`. This maintains synchronization between `self.targets` and
             # `Action.function["targets"]`, preventing potential inconsistencies and confusion.
-            self.selector.actions = [
-                Action(id=f"{PARAMETER_ACTION_PREFIX}_{self.id}", function=_parameter(targets=self.targets))
-            ]
+            self.selector.actions = [_parameter(id=f"{PARAMETER_ACTION_PREFIX}_{self.id}", targets=self.targets)]

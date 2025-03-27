@@ -1,9 +1,10 @@
-from typing import Annotated, Literal
+from typing import Annotated, Any, Literal
 
 import dash_bootstrap_components as dbc
 from dash import get_relative_path
 from pydantic import AfterValidator, Field
 from pydantic.functional_serializers import PlainSerializer
+from pydantic.json_schema import SkipJsonSchema
 
 from vizro.models import VizroBaseModel
 from vizro.models._action._actions_chain import _action_validator_factory
