@@ -1,9 +1,10 @@
-from typing import Annotated, Literal, Optional
+from typing import Annotated, Any, Literal, Optional
 
 import dash_bootstrap_components as dbc
 from dash import ClientsideFunction, Input, Output, State, clientside_callback, dcc, html
 from pydantic import AfterValidator, Field, PrivateAttr
 from pydantic.functional_serializers import PlainSerializer
+from pydantic.json_schema import SkipJsonSchema
 
 from vizro.models import VizroBaseModel
 from vizro.models._action._actions_chain import _action_validator_factory
@@ -21,8 +22,7 @@ class Slider(VizroBaseModel):
     """Numeric single-option selector `Slider`.
 
     Can be provided to [`Filter`][vizro.models.Filter] or
-    [`Parameter`][vizro.models.Parameter]. Based on the underlying
-    [`dcc.Slider`](https://dash.plotly.com/dash-core-components/slider).
+    [`Parameter`][vizro.models.Parameter].
 
     Args:
         type (Literal["range_slider"]): Defaults to `"range_slider"`.
@@ -33,7 +33,11 @@ class Slider(VizroBaseModel):
         value (Optional[float]): Default value for slider. Defaults to `None`.
         title (str): Title to be displayed. Defaults to `""`.
         actions (list[ActionsType]): See [`ActionsType`][vizro.models.types.ActionsType]. Defaults to `[]`.
-
+        extra (Optional[dict[str, Any]]): Extra keyword arguments that are passed to `dcc.Slider` and overwrite any
+            defaults chosen by the Vizro team. This may have unexpected behavior.
+            Visit the [dcc documentation](https://dash.plotly.com/dash-core-components/slider)
+            to see all available arguments. [Not part of the official Vizro schema](../explanation/schema.md) and the
+            underlying component may change in the future. Defaults to `{}`.
     """
 
     type: Literal["slider"] = "slider"
@@ -63,6 +67,19 @@ class Slider(VizroBaseModel):
         PlainSerializer(lambda x: x[0].actions),
         Field(default=[]),
     ]
+    extra: SkipJsonSchema[
+        Annotated[
+            dict[str, Any],
+            Field(
+                default={},
+                description="""Extra keyword arguments that are passed to `dcc.Slider` and overwrite any
+            defaults chosen by the Vizro team. This may have unexpected behavior.
+            Visit the [dcc documentation](https://dash.plotly.com/dash-core-components/slider)
+            to see all available arguments. [Not part of the official Vizro schema](../explanation/schema.md) and the
+            underlying component may change in the future. Defaults to `{}`.""",
+            ),
+        ]
+    ]
 
     _dynamic: bool = PrivateAttr(False)
 
@@ -87,6 +104,19 @@ class Slider(VizroBaseModel):
             output=output,
             inputs=inputs,
         )
+
+        defaults = {
+            "id": self.id,
+            "min": min,
+            "max": max,
+            "step": self.step,
+            "marks": self.marks,
+            "value": current_value,
+            "included": False,
+            "persistence": True,
+            "persistence_type": "session",
+            "className": "slider-track-without-marks" if self.marks is None else "slider-track-with-marks",
+        }
 
         return html.Div(
             children=[
@@ -115,18 +145,7 @@ class Slider(VizroBaseModel):
                     ],
                     className="slider-label-input",
                 ),
-                dcc.Slider(
-                    id=self.id,
-                    min=min,
-                    max=max,
-                    step=self.step,
-                    marks=self.marks,
-                    value=current_value,
-                    included=False,
-                    persistence=True,
-                    persistence_type="session",
-                    className="slider-track-without-marks" if self.marks is None else "slider-track-with-marks",
-                ),
+                dcc.Slider(**(defaults | self.extra)),
             ]
         )
 

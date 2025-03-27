@@ -4,7 +4,10 @@ In cases where the available arguments for the [`dash_ag_grid`][vizro.tables.das
 
 The [`Table`][vizro.models.Table] and the [`AgGrid`][vizro.models.AgGrid] model accept the `figure` argument, where you can enter _any_ [`dash_ag_grid`][vizro.tables.dash_ag_grid] or [`dash_data_table`][vizro.tables.dash_data_table] chart as explained in the [user guide on tables](table.md).
 
-One reason could be that you want to create a table/grid that requires computations that can be controlled by parameters (see the example below).
+!!! note "More examples of AG Grid"
+    If you would like to see more than the below examples on what can be done with AG Grid and Dash DataTables, head to the [Dash AG Grid](https://dash.plotly.com/dash-ag-grid) and [Dash DataTable](https://dash.plotly.com/datatable) documentation respectively. Almost anything you see there is possible in Vizro by modifying the examples below.
+
+One reason to customize could be that you want to create a table/grid that requires computations that can be controlled by parameters. The below example shows this for the case of AG Grid and Dash DataTable.
 
 ### Steps to create a custom table
 
@@ -38,7 +41,7 @@ The following examples show a possible version of a custom table. In this case t
                 "style_data": {"border_bottom": "1px solid var(--border-subtleAlpha01)", "height": "40px"},
                 "style_header": {
                     "border_bottom": "1px solid var(--stateOverlays-selectedHover)",
-                    "border_top": "1px solid var(--right-side-bg)",
+                    "border_top": "None",
                     "height": "32px",
                 },
             }

@@ -97,7 +97,8 @@ dependencies = [
   "mkdocs-git-revision-date-localized-plugin>=1.2.5",
   "mkdocstrings[python]",
   "linkchecker",
-  "mkdocs-pycafe"
+  "mkdocs-pycafe",
+  "griffe==1.6.0"  # Required for hatch run docs:build to work.
 ]
 detached = true
 installer = "uv"

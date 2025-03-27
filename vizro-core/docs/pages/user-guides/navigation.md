@@ -1,4 +1,4 @@
-# How to use navigation
+# How to configure dashboard navigation
 
 This guide shows you how to use and customize the navigation that appears on the left of your dashboard.
 

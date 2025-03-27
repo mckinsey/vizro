@@ -1,12 +1,13 @@
 from __future__ import annotations
 
 from collections.abc import Iterable
-from typing import Annotated, Any, Literal, Optional, Union, cast
+from contextlib import suppress
+from typing import Any, Literal, Optional, Union, cast
 
 import pandas as pd
 from dash import dcc
 from pandas.api.types import is_datetime64_any_dtype, is_numeric_dtype
-from pydantic import AfterValidator, Field, PrivateAttr
+from pydantic import Field, PrivateAttr
 
 from vizro._constants import ALL_OPTION, FILTER_ACTION_PREFIX
 from vizro.actions._filter_action import _filter
@@ -24,6 +25,8 @@ from vizro.models._components.form import (
 )
 from vizro.models._models_utils import _log_call
 from vizro.models.types import FigureType, ModelID, MultiValueType, SelectorType
+from vizro.models._controls._controls_utils import check_targets_present_on_page
+from vizro.models.types import FigureType, MultiValueType, SelectorType, SingleValueType
 
 # Ideally we might define these as NumericalSelectorType = Union[RangeSlider, Slider] etc., but that will not work
 # with isinstance checks.
@@ -221,6 +224,7 @@ class Filter(VizroBaseModel):
             ),
         ]
 
+
     @_log_call
     def build(self):
         # Cast is justified as the selector is set in pre_build and is not None.
@@ -298,7 +302,16 @@ class Filter(VizroBaseModel):
             )
 
     @staticmethod
-    def _get_min_max(targeted_data: pd.DataFrame, current_value=None) -> tuple[float, float]:
+    def _get_min_max(
+        targeted_data: pd.DataFrame,
+        current_value: Optional[Union[SingleValueType, MultiValueType]] = None,
+    ) -> Union[tuple[float, float], tuple[pd.Timestamp, pd.Timestamp]]:
+        # Try to convert the current value to a datetime object. If it fails (like for Slider), it will be left as is.
+        # By default, DatePicker produces inputs in the following format: "YYYY-MM-DD".
+        # "ISO8601" is used to enable the conversion process for custom DatePicker components and custom formats.
+        with suppress(ValueError):
+            current_value = pd.to_datetime(current_value, format="ISO8601")
+
         targeted_data = pd.concat([targeted_data, pd.Series(current_value)]).stack().dropna()  # noqa: PD013
 
         _min = targeted_data.min(axis=None)
@@ -314,7 +327,16 @@ class Filter(VizroBaseModel):
         return _min, _max
 
     @staticmethod
-    def _get_options(targeted_data: pd.DataFrame, current_value=None) -> list[Any]:
+    def _get_options(
+        targeted_data: pd.DataFrame,
+        current_value: Optional[Union[SingleValueType, MultiValueType]] = None,
+    ) -> list[Any]:
+        # Try to convert the current value to a datetime object. If it fails (like for Slider), it will be left as is.
+        # By default, DatePicker produces inputs in the following format: "YYYY-MM-DD".
+        # "ISO8601" is used to enable the conversion process for custom DatePicker components and custom formats.
+        with suppress(ValueError):
+            current_value = pd.to_datetime(current_value, format="ISO8601")
+
         # The dropna() isn't strictly required here but will be in future pandas versions when the behavior of stack
         # changes. See https://pandas.pydata.org/docs/whatsnew/v2.1.0.html#whatsnew-210-enhancements-new-stack.
         targeted_data = pd.concat([targeted_data, pd.Series(current_value)]).stack().dropna()  # noqa: PD013

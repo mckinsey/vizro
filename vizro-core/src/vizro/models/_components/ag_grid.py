@@ -127,6 +127,8 @@ class AgGrid(VizroBaseModel):
         self._input_component_id = self.figure._arguments.get("id", f"__input_{self.id}")
 
     def build(self):
+        # Most of the theming in AgGrid is controlled through CSS in `aggrid.css`. However, this callback is necessary
+        # to ensure that all grid elements, such as menu icons and filter icons, are consistent with the theme.
         clientside_callback(
             ClientsideFunction(namespace="dashboard", function_name="update_ag_grid_theme"),
             Output(self._input_component_id, "className"),

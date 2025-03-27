@@ -21,9 +21,7 @@ class RangeSlider(VizroBaseModel):
     """Numeric multi-option selector `RangeSlider`.
 
     Can be provided to [`Filter`][vizro.models.Filter] or
-    [`Parameter`][vizro.models.Parameter]. Based on the underlying
-    [`dcc.RangeSlider`](https://dash.plotly.com/dash-core-components/rangeslider).
-
+    [`Parameter`][vizro.models.Parameter].
     Args:
         type (Literal["range_slider"]): Defaults to `"range_slider"`.
         min (Optional[float]): Start value for slider. Defaults to `None`.
@@ -33,6 +31,11 @@ class RangeSlider(VizroBaseModel):
         value (Optional[list[float]]): Default start and end value for slider. Must be 2 items. Defaults to `None`.
         title (str): Title to be displayed. Defaults to `""`.
         actions (list[ActionsType]): See [`ActionsType`][vizro.models.types.ActionsType]. Defaults to `[]`.
+        extra (Optional[dict[str, Any]]): Extra keyword arguments that are passed to `dcc.RangeSlider` and overwrite any
+            defaults chosen by the Vizro team. This may have unexpected behavior.
+            Visit the [dcc documentation](https://dash.plotly.com/dash-core-components/rangeslider)
+            to see all available arguments. [Not part of the official Vizro schema](../explanation/schema.md) and the
+            underlying component may change in the future. Defaults to `{}`.
 
     """
 
@@ -65,6 +68,20 @@ class RangeSlider(VizroBaseModel):
         PlainSerializer(lambda x: x[0].actions),
         Field(default=[]),
     ]
+    extra: SkipJsonSchema[
+        Annotated[
+            dict[str, Any],
+            Field(
+                default={},
+                description="""Extra keyword arguments that are passed to `dcc.RangeSlider` and overwrite any
+            defaults chosen by the Vizro team. This may have unexpected behavior.
+            Visit the [dcc documentation](https://dash.plotly.com/dash-core-components/rangeslider)
+            to see all available arguments. [Not part of the official Vizro schema](../explanation/schema.md) and the
+            underlying component may change in the future. Defaults to `{}`.""",
+            ),
+        ]
+    ]
+
 
     _dynamic: bool = PrivateAttr(False)
 
@@ -91,6 +108,18 @@ class RangeSlider(VizroBaseModel):
             output=output,
             inputs=inputs,
         )
+
+        defaults = {
+            "id": self.id,
+            "min": min,
+            "max": max,
+            "step": self.step,
+            "marks": self.marks,
+            "value": current_value,
+            "persistence": True,
+            "persistence_type": "session",
+            "className": "slider-track-without-marks" if self.marks is None else "slider-track-with-marks",
+        }
 
         return html.Div(
             children=[
@@ -132,17 +161,7 @@ class RangeSlider(VizroBaseModel):
                     ],
                     className="slider-label-input",
                 ),
-                dcc.RangeSlider(
-                    id=self.id,
-                    min=min,
-                    max=max,
-                    step=self.step,
-                    marks=self.marks,
-                    value=current_value,
-                    persistence=True,
-                    persistence_type="session",
-                    className="slider-track-without-marks" if self.marks is None else "slider-track-with-marks",
-                ),
+                dcc.RangeSlider(**(defaults | self.extra)),
             ]
         )
 
