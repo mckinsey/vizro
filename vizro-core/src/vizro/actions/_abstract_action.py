@@ -10,29 +10,41 @@ from vizro.models.types import _IdProperty
 
 
 class AbstractAction(_BaseAction, abc.ABC):
-    """AbstractAction to be inserted into `actions` of relevant component.
+    """`AbstractAction` to be used in an `actions` field.
 
     To use this class, you must subclass it and define `function` and `outputs` to make a concrete action class. All
-    built in actions follow this pattern, and it's also an option for user-defined acftions. This class is not
-    relevant for user-defined actions using @capture("action").
+    built in actions follow this pattern, and it's also possible for user-defined actions. This class is not relevant
+     for user-defined actions using `@capture("action")`.
 
-    When subclassing, you can optionally define model fields. The handling of fields depends on whether it is also
-    present in the function signature:
-      - static arguments, e.g. file_format = "csv": model fields, not explicitly in function signature, go through self.
-        Uses self and not Dash State
-      - runtime arguments, e.g. arg_name="dropdown.value": model fields, explicitly in function signature. Uses Dash
-        State
-      - built in runtime arguments, e.g. _controls: not model fields, explicitly in function signature. Uses Dash State
+    When subclassing, you can optionally define model fields. These can be either static or runtime arguments and
+    define the configuration that a user specifies to use the action:
+
+      * static arguments, e.g. `file_format = "csv"`, are fixed upfront and do not change depending on the state of the
+      dashboard.
+      * runtime arguments are Dash State are determined at runtime depending on the state of the dashboard. These
+      correspond to Dash States, e.g. `country="dropdown.value"` becomes `State("dropdown", "value")`
     """
 
-    # TODO NOW COMMENT: more docstring, check built docs.
-    # TODO NOW COMMENT: Check schema and make sure these don't appear, comment on importance of this.
+    # Note this model itself cannot have any fields (aside from `id` that comes from `VizroBaseModel`) or that field
+    # would be inherited by all subclasses.
 
     @abc.abstractmethod
     def function(self, *args, **kwargs):
         """Function that must be defined by concrete action.
 
-        This is always called using keyword-arguments so cannot have positional-only arguments
+        This is always called using keyword-arguments so cannot have positional-only arguments.
+
+        Any static arguments should not go explicitly in the function signature but instead be accessed through
+        `self`, e.g. `self.file_format`.
+
+        Any runtime arguments that were defined as model fields must go explicitly in the function signature,
+        e.g. `country`.
+
+        In addition to the runtime arguments specified as model fields, you can also use the following built-in
+        arguments:
+
+        * `_controls`: state of all the controls on the page. The format of is not yet decided and is likely to
+        change in future versions.
         """
         pass
 
@@ -41,15 +53,21 @@ class AbstractAction(_BaseAction, abc.ABC):
     def outputs(self) -> dict[str, _IdProperty]:  # type: ignore[override]
         """Must be defined by concrete action, even if there's no output.
 
-        There should be no need to support dictionary IDs here. The only possible use is for pattern-matching IDs, but
-        that will probably only be needed for built-in inputs. export_data currently overrides transformed_outputs to
-        supply a dictionary ID but in future will probably change to use a single built-in vizro_download component. See
-        https://github.com/mckinsey/vizro/pull/1054#discussion_r1989405177.
-
-        In future maybe there will be some special built-in behavior here e.g. to generate outputs automatically from
-        certain reserved arguments like self.targets. Would need to make sure it's not breaking if someone already
-        uses that variable name though.
+        This should return a dictionary of the form `{"key": "dropdown.value"}`, where the key corresponds to the key
+        in the dictionary returned by the action `function`, and the value `"dropdown.value"` is converted into
+        `Output("dropdown", "value", allow_duplicate=True)`.
         """
+        # There should be no need to support dictionary IDs here. The only possible use is for pattern-matching IDs, but
+        #  that will probably only be needed for built-in inputs. export_data currently overrides transformed_outputs to
+        #  supply a dictionary ID but in future will probably change to use a single built-in vizro_download component.
+        #  See https://github.com/mckinsey/vizro/pull/1054#discussion_r1989405177.
+        #
+        # We should probably not build -in behavior here e.g. to generate outputs automatically from certain reserved
+        # arguments since this would only work well for class-based actions and not @capture("action") ones. Instead
+        # the code that does make_outputs_from_targets would be put into a reusable function.
+        #
+        # TODO-AV D 4: build in a vizro_download component. At some point after that consider changing export_data to
+        #  use it, but that's not urgent. See  https://github.com/mckinsey/vizro/pull/1054#discussion_r1989405177.
         pass
 
     @property

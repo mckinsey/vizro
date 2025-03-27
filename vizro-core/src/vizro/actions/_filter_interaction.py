@@ -6,7 +6,7 @@ from pydantic import Field
 
 from vizro.actions import AbstractAction
 from vizro.actions._actions_utils import _get_modified_page_figures
-from vizro.managers._model_manager import model_manager
+from vizro.managers._model_manager import FIGURE_MODELS, model_manager
 from vizro.models._action._actions_chain import ActionsChain
 from vizro.models._models_utils import _log_call
 from vizro.models.types import FigureType, FigureWithFilterInteractionType, ModelID, _Controls
@@ -27,8 +27,8 @@ class filter_interaction(AbstractAction):
 
     type: Literal["filter_interaction"] = "filter_interaction"
 
-    # Note this has a default value, unlike on_page_load, filter and parameter.
-    targets: list[ModelID] = Field(description="Target component IDs.", default=[])
+    # Note this has a default value, unlike on_page_load, filter and parameter. It's like export_data.
+    targets: list[ModelID] = Field(default=[], description="Target component IDs.")
 
     def _get_triggered_model(self) -> FigureWithFilterInteractionType:  # type: ignore[return]
         """Gets the model that triggers the action with "action_id"."""
@@ -42,6 +42,24 @@ class filter_interaction(AbstractAction):
 
     @_log_call
     def pre_build(self):
+        # Set targets to all figures on the page if not already set. In this case we don't need to check the targets
+        # are valid.
+        # TODO-AV D 2: work out where this duplicated get_all_targets_on_page logic should live. Not important for
+        #  filter_interaction given that will disappear but possibly relevant to other actions. Do we even want to
+        #  keep behavior that not specifying targets downloads everything on the page? We'd still want the validation
+        #  using the model_manager though.
+        figure_ids_on_page = [
+            model.id
+            for model in cast(
+                Iterable[FigureType], model_manager._get_models(FIGURE_MODELS, page=model_manager._get_model_page(self))
+            )
+        ]
+
+        if not self.targets:
+            self.targets = figure_ids_on_page
+        elif invalid_targets := set(self.targets) - set(figure_ids_on_page):
+            raise ValueError(f"targets {invalid_targets} are not valid figures on the page.")
+
         # Check that the triggered model has the required attributes (e.g. Graph does but Button doesn't).
         # This could potentially be done with isinstance and FigureWithFilterInteractionType but filter_interaction
         # will be removed in future anyway.
@@ -61,7 +79,7 @@ class filter_interaction(AbstractAction):
         Returns:
             Dict mapping target chart ids to modified figures e.g. {"my_scatter": Figure(...)}.
         """
-        # TODO NEXT A 1: _controls is not currently used but instead taken out of the Dash context. This
+        # TODO-AV2 A 1: _controls is not currently used but instead taken out of the Dash context. This
         # will change in future once the structure of _controls has been worked out and we know how to pass ids through.
         # See https://github.com/mckinsey/vizro/pull/880
         return _get_modified_page_figures(

@@ -134,9 +134,9 @@ class Filter(VizroBaseModel):
         # This is the case when bool(self.targets) is False.
         # Possibly in future this will change (which would be breaking change).
         proposed_targets = self.targets or [
-            cast(ModelID, model.id)
+            model.id
             for model in cast(
-                Iterable[VizroBaseModel], model_manager._get_models(FIGURE_MODELS, model_manager._get_model_page(self))
+                Iterable[FigureType], model_manager._get_models(FIGURE_MODELS, model_manager._get_model_page(self))
             )
         ]
         # TODO: Currently dynamic data functions require a default value for every argument. Even when there is a

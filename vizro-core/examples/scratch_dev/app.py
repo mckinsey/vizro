@@ -115,7 +115,7 @@ def my_custom_action(points_data, _controls):
 #     card_1_text = card_2_text = str(datetime.datetime.now().time())
 #     return card_1_text, card_2_text
 
-# TODO NOW CHECK: curent docs examples
+# TODO NOW CHECK: current docs examples
 df = px.data.iris()
 
 page_2 = vm.Page(

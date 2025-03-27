@@ -119,7 +119,7 @@ class Parameter(VizroBaseModel):
                 if figure_arg.startswith("data_frame"):
                     for filter in page_dynamic_filters:
                         if figure_id in filter.targets:
-                            filter_targets.add(cast(ModelID, filter.id))
+                            filter_targets.add(filter.id)
                             filter_targets |= set(filter.targets)
 
             # Extending `self.targets` with `filter_targets` instead of redefining it to avoid triggering the
