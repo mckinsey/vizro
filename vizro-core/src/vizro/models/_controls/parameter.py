@@ -6,11 +6,11 @@ from pydantic import AfterValidator, Field
 from vizro._constants import PARAMETER_ACTION_PREFIX
 from vizro.actions._parameter_action import _parameter
 from vizro.managers import model_manager
-from vizro.models import VizroBaseModel
+from vizro.models import Action, VizroBaseModel
 from vizro.models._components.form import Checklist, DatePicker, Dropdown, RadioItems, RangeSlider, Slider
 from vizro.models._controls._controls_utils import check_targets_present_on_page
 from vizro.models._models_utils import _log_call
-from vizro.models.types import ModelID, SelectorType
+from vizro.models.types import SelectorType, ModelID
 
 
 def check_dot_notation(target):
@@ -18,13 +18,6 @@ def check_dot_notation(target):
         raise ValueError(
             f"Invalid target {target}. Targets must be supplied in the form <target_component>.<target_argument>"
         )
-    return target
-
-
-def check_target_present(target):
-    target_id = target.split(".")[0]
-    if target_id not in model_manager:
-        raise ValueError(f"Target {target_id} not found in model_manager.")
     return target
 
 
@@ -69,9 +62,8 @@ class Parameter(VizroBaseModel):
             Annotated[
                 str,
                 AfterValidator(check_dot_notation),
-                AfterValidator(check_target_present),
                 AfterValidator(check_data_frame_as_target_argument),
-                Field(description="Targets in the form `<target_component>.<target_argument>`."),
+                Field(description="Targets in the form of `<target_component>.<target_argument>`."),
             ]
         ],
         AfterValidator(check_duplicate_parameter_target),

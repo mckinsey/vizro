@@ -2,19 +2,19 @@ from __future__ import annotations
 
 from collections.abc import Iterable
 from contextlib import suppress
-from typing import Annotated, Any, Literal, Optional, Union, cast
+from typing import Any, Literal, Optional, Union, cast
 
 import pandas as pd
 from dash import dcc
 from pandas.api.types import is_datetime64_any_dtype, is_numeric_dtype
-from pydantic import AfterValidator, Field, PrivateAttr
+from pydantic import Field, PrivateAttr
 
 from vizro._constants import ALL_OPTION, FILTER_ACTION_PREFIX
 from vizro.actions._filter_action import _filter
 from vizro.managers import data_manager, model_manager
 from vizro.managers._data_manager import DataSourceName, _DynamicData
 from vizro.managers._model_manager import FIGURE_MODELS
-from vizro.models import VizroBaseModel
+from vizro.models import Action, VizroBaseModel
 from vizro.models._components.form import (
     Checklist,
     DatePicker,
@@ -23,8 +23,9 @@ from vizro.models._components.form import (
     RangeSlider,
     Slider,
 )
+from vizro.models._controls._controls_utils import check_targets_present_on_page
 from vizro.models._models_utils import _log_call
-from vizro.models.types import FigureType, ModelID, MultiValueType, SelectorType, SingleValueType
+from vizro.models.types import FigureType, MultiValueType, SelectorType, SingleValueType, ModelID
 
 # Ideally we might define these as NumericalSelectorType = Union[RangeSlider, Slider] etc., but that will not work
 # with isinstance checks.
@@ -66,12 +67,6 @@ def _filter_isin(series: pd.Series, value: MultiValueType) -> pd.Series:
     return series.isin(value)
 
 
-def check_target_present(target):
-    if target not in model_manager:
-        raise ValueError(f"Target {target} not found in model_manager.")
-    return target
-
-
 class Filter(VizroBaseModel):
     """Filter the data supplied to `targets` on the [`Page`][vizro.models.Page].
 
@@ -89,7 +84,7 @@ class Filter(VizroBaseModel):
 
     type: Literal["filter"] = "filter"
     column: str = Field(description="Column of DataFrame to filter.")
-    targets: list[Annotated[ModelID, AfterValidator(check_target_present)]] = Field(
+    targets: list[ModelID] = Field(
         default=[],
         description="Target component to be affected by filter. "
         "If none are given then target all components on the page that use `column`.",
@@ -122,7 +117,7 @@ class Filter(VizroBaseModel):
             self.selector = cast(CategoricalSelectorType, self.selector)
             return self.selector(options=self._get_options(targeted_data, current_value))
         else:
-            self.selector = cast(DynamicNonCategoricalSelectorType, self.selector)
+            self.selector = cast(NumericalTemporalSelectorType, self.selector)
             _min, _max = self._get_min_max(targeted_data, current_value)
             # "current_value" is propagated only to support dcc.Input and dcc.Store components in numerical selectors
             # to work with a dynamic selector. This can be removed when dash persistence bug is fixed.
@@ -130,12 +125,16 @@ class Filter(VizroBaseModel):
 
     @_log_call
     def pre_build(self):
+        # Validate that targets present on the page where the filter is defined.
+        # Validation has to be triggered in pre_build because all targets are not initialized until then.
+        check_targets_present_on_page(control=self)
+
         # If targets aren't explicitly provided then try to target all figures on the page. In this case we don't
         # want to raise an error if the column is not found in a figure's data_frame, it will just be ignored.
         # This is the case when bool(self.targets) is False.
         # Possibly in future this will change (which would be breaking change).
         proposed_targets = self.targets or [
-            model.id
+            cast(ModelID, model.id)
             for model in cast(
                 Iterable[VizroBaseModel], model_manager._get_models(FIGURE_MODELS, model_manager._get_model_page(self))
             )
@@ -174,7 +173,7 @@ class Filter(VizroBaseModel):
         # The filter is dynamic iff mentioned attributes ("options"/"min"/"max") are not explicitly provided and
         # filter targets at least one figure that uses dynamic data source. Note that min or max = 0 are Falsey values
         # but should still count as manually set.
-        if isinstance(self.selector, DYNAMIC_SELECTORS) and (
+        if (
             not getattr(self.selector, "options", [])
             and getattr(self.selector, "min", None) is None
             and getattr(self.selector, "max", None) is None

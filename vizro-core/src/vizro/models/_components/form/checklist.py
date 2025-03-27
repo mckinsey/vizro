@@ -1,9 +1,10 @@
-from typing import Annotated, Literal, Optional
+from typing import Annotated, Literal, Optional, Any
 
 import dash_bootstrap_components as dbc
 from dash import html
 from pydantic import AfterValidator, Field, PrivateAttr, model_validator
 from pydantic.functional_serializers import PlainSerializer
+from pydantic.json_schema import SkipJsonSchema
 
 from vizro.models import VizroBaseModel
 from vizro.models._action._actions_chain import _action_validator_factory
@@ -43,7 +44,7 @@ class Checklist(VizroBaseModel):
         PlainSerializer(lambda x: x[0].actions),
         Field(default=[]),
     ]
-        extra: SkipJsonSchema[
+    extra: SkipJsonSchema[
         Annotated[
             dict[str, Any],
             Field(
