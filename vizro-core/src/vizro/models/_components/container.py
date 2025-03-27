@@ -3,7 +3,7 @@ from __future__ import annotations
 from typing import TYPE_CHECKING, Annotated, Any, Literal, Optional, cast
 
 import dash_bootstrap_components as dbc
-from dash import html
+from dash import ClientsideFunction, Input, Output, State, clientside_callback, html
 from pydantic import AfterValidator, BeforeValidator, Field, conlist
 from pydantic.json_schema import SkipJsonSchema
 
@@ -70,6 +70,14 @@ class Container(VizroBaseModel):
         # It needs to be properly designed and tested out (margins have to be added etc.).
         # Below corresponds to bootstrap utility classnames, while 'bg-container' is introduced by us.
         # See: https://getbootstrap.com/docs/4.0/utilities
+
+        if self.collapse is not None:
+            clientside_callback(
+                ClientsideFunction(namespace="container", function_name="toggle_container"),
+                output=[Output(f"{self.id}_main_container", "is_open"), Output(f"{self.id}_icon", "style")],
+                inputs=[Input(f"{self.id}_title", "n_clicks"), State(f"{self.id}_main_container", "is_open")],
+            )
+
         variants = {"plain": "", "filled": "bg-container p-3", "outlined": "border p-3"}
 
         defaults = {
@@ -107,7 +115,6 @@ class Container(VizroBaseModel):
 
     def _build_collapse_container(self):
         """Returns collapsible container."""
-
         if self.collapse is None:
             return self._build_inner_layout()
 
@@ -120,17 +127,15 @@ class Container(VizroBaseModel):
             )
 
     def _build_container_title(self):
-        """Returns container title"""
+        """Returns container title."""
         if self.collapse is None:
             return html.H3(children=self.title, className="container-title", id=f"{self.id}_title")
 
         return html.Div(
-                    id=f"{self.id}_title",
-                    children=[
-                        html.H3(children=self.title, className="container-title"),
-                        html.Span("keyboard_arrow_up", className="material-symbols-outlined", id=f"{self.id}_icon"),
-                    ],
-                    className="collapsible-container-header",
-                )
-
-
+            id=f"{self.id}_title",
+            children=[
+                html.H3(children=self.title, className="container-title"),
+                html.Span("keyboard_arrow_up", className="material-symbols-outlined", id=f"{self.id}_icon"),
+            ],
+            className="collapsible-header",
+        )

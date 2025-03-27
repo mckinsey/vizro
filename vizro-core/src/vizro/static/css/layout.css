@@ -233,3 +233,23 @@
   height: 100%;
   overflow: auto;
 }
+
+.collapsible-container {
+  height: 100%;
+}
+
+.collapsible-header {
+  align-items: center;
+  display: flex;
+  justify-content: space-between;
+  padding: 1rem;
+}
+
+.collapsible-header .material-symbols-outlined {
+  color: var(--text-secondary);
+  cursor: pointer;
+}
+
+.collapsible-header .material-symbols-outlined:hover {
+  color: var(--text-primaryHover);
+}

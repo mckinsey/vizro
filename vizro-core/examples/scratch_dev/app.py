@@ -14,8 +14,10 @@ page = vm.Page(
             components=[
                 vm.Graph(figure=px.scatter(iris, x="sepal_length", y="petal_width", color="species")),
                 vm.Graph(figure=px.histogram(iris, x="sepal_width", color="species")),
-            ]
-        )
+            ],
+            layout=vm.Layout(grid=[[0, 1]]),
+        ),
+        vm.Graph(figure=px.scatter(iris, x="sepal_length", y="petal_width", color="species")),
     ],
 )
 
