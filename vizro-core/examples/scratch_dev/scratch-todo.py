@@ -65,8 +65,7 @@
 # TODO-AV D 4: build in a vizro_download component. At some point after that consider changing export_data to use it,
 #  but that's not urgent. See  https://github.com/mckinsey/vizro/pull/1054#discussion_r1989405177.
 
-"""
-Other tickets:
+"""Other tickets:
 
 - new interact action(s)
 - override on_page_load by exposing page.actions
