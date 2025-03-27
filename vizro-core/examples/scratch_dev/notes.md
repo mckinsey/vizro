@@ -29,11 +29,11 @@
 
 - use wrapt in CapturedCallable to help with IDE completing arguments for @capture("action") functions and other things
 
-- add trigger or similar to builtin args. Not until actions chain handled and have new interact action to understand what it needs 
+- add trigger or similar to builtin args. Not until actions chain handled and have new interact action to understand what it needs
 
 - look at actions chain next
 
-- something that validates target has _output_component_property
+- something that validates target has \_output_component_property
 
 - something that does lookup to enable shortcut for input/output component name only
 
