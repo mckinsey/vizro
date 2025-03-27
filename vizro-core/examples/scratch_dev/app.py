@@ -135,7 +135,7 @@ page_2 = vm.Page(
             figure=px.scatter(df, x="sepal_length", y="petal_width", color="species", custom_data=["species"]),
             actions=[
                 vm.Action(
-                    function=my_custom_action(123),
+                    function=my_custom_action("scatter_chart.clickData"),
                     # TODO NOW CHECK: make sure user-specified argument continues to take precedence
                     #     # function=my_custom_action("scatter_chart.clickData", controls="my_card_1.children"),
                     #     # TODO NOW CHECK: test to make sure this old way continues to work

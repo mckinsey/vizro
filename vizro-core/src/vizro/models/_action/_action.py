@@ -297,7 +297,7 @@ class Action(_BaseAction):
         Field(json_schema_extra={"mode": "action", "import_path": "vizro.actions"}, description="Action function."),
     ]
     # inputs is a legacy field and will be deprecated. It must only be used when _legacy = True.
-    # TODO: Put in deprecation warning.
+    # TODO NEXT C 1: Put in deprecation warning.
     inputs: list[Annotated[str, StringConstraints(pattern="^[^.]+[.][^.]+$")]] = Field(
         [],
         description="Inputs in the form `<component_id>.<property>` passed to the action function.",
@@ -314,15 +314,18 @@ class Action(_BaseAction):
 
     @property
     def _legacy(self) -> bool:
-        # TODO: Put in deprecation warning.
-        # TODO NOW: fix this.
+        # TODO NEXT C 1: add deprecation warnings
 
         if "inputs" in self.model_fields_set:
             legacy = True
         else:
             # If all supplied arguments look like states `<component_id>.<property>` then assume it's a new type of
             # action. For the case that there's no arguments and no inputs, this gives legacy=False.
-            legacy = not all(re.fullmatch("[^.]+[.][^.]+", arg_val) for arg_val in self._runtime_args.values())
+            try:
+                legacy = not all(re.fullmatch("[^.]+[.][^.]+", arg_val) for arg_val in self._runtime_args.values())
+            except TypeError:
+                # arg_val isn't a string so it must be treated as a legacy action.
+                legacy = True
 
         logger.debug("Action with id %s, function %s, has legacy=%s", self.id, self._action_name, legacy)
         return legacy
