@@ -5,7 +5,11 @@ from pages.custom_components_page import custom_components_page
 from pages.datepicker_page import datepicker_page
 from pages.datepicker_parameters_page import datepicker_parameters_page
 from pages.dynamic_data_page import dynamic_data_page
-from pages.dynamic_filters_pages import dynamic_filters_categorical_page, dynamic_filters_numerical_page
+from pages.dynamic_filters_pages import (
+    dynamic_filters_categorical_page,
+    dynamic_filters_datepicker_page,
+    dynamic_filters_numerical_page,
+)
 from pages.export_action_page import export_action_page
 from pages.filter_and_param_page import filter_and_param_page
 from pages.filter_interactions_page import filter_interactions_page
@@ -37,6 +41,7 @@ dashboard = vm.Dashboard(
         dynamic_data_page,
         dynamic_filters_categorical_page,
         dynamic_filters_numerical_page,
+        dynamic_filters_datepicker_page,
         custom_components_page,
         filter_and_param_page,
     ],
@@ -66,6 +71,7 @@ dashboard = vm.Dashboard(
                 cnst.DYNAMIC_DATA_PAGE,
                 cnst.DYNAMIC_FILTERS_NUMERICAL_PAGE,
                 cnst.DYNAMIC_FILTERS_CATEGORICAL_PAGE,
+                cnst.DYNAMIC_FILTERS_DATEPICKER_PAGE,
             ],
         }
     ),

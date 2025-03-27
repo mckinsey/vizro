@@ -12,7 +12,12 @@ from e2e.vizro.checkers import (
     check_slider_value,
 )
 from e2e.vizro.navigation import accordion_select, page_select, select_dropdown_value, select_slider_handler
-from e2e.vizro.paths import categorical_components_value_path, dropdown_arrow_path, slider_value_path
+from e2e.vizro.paths import (
+    categorical_components_value_path,
+    dropdown_arrow_path,
+    graph_y_axis_value_path,
+    slider_value_path,
+)
 from e2e.vizro.waiters import callbacks_finish_waiter
 
 
@@ -32,6 +37,8 @@ def rewrite_dynamic_filters_data_config(func):
     @wraps(func)
     def wrapper(*args, **kwargs):
         data = {
+            "date_max": "2024-03-10",
+            "date_min": "2024-03-05",
             "max": 7,
             "min": 6,
             "setosa": 5,
@@ -341,3 +348,198 @@ def test_numerical_filters(dash_br):
     check_slider_value(
         dash_br, elem_id=cnst.RANGE_SLIDER_DYNAMIC_FILTER_ID, expected_start_value="5", expected_end_value="7"
     )
+
+
+@rewrite_dynamic_filters_data_config
+def test_datepicker_range_filters(dash_br):
+    """Initial selected values are 5 March 2024 and 10 March 2024."""
+    accordion_select(
+        dash_br, accordion_name=cnst.DYNAMIC_DATA_ACCORDION.upper(), accordion_number=cnst.DYNAMIC_DATA_ACCORDION_NUMBER
+    )
+    page_select(
+        dash_br,
+        page_path=cnst.DYNAMIC_FILTERS_DATEPICKER_PAGE_PATH,
+        page_name=cnst.DYNAMIC_FILTERS_DATEPICKER_PAGE,
+        graph_id=cnst.BAR_DYNAMIC_DATEPICKER_FILTER_ID,
+    )
+
+    # Check y axis min value is '0'
+    dash_br.wait_for_text_to_equal(
+        graph_y_axis_value_path(
+            graph_id=cnst.BAR_DYNAMIC_DATEPICKER_FILTER_ID, y_axis_value_number="1", y_axis_value="0"
+        ),
+        "0",
+    )
+
+    # Check y axis max value is '6'
+    dash_br.wait_for_text_to_equal(
+        graph_y_axis_value_path(
+            graph_id=cnst.BAR_DYNAMIC_DATEPICKER_FILTER_ID, y_axis_value_number="4", y_axis_value="6"
+        ),
+        "6",
+    )
+
+    # check current date values
+    dash_br.wait_for_text_to_equal(f'button[id="{cnst.DATEPICKER_DYNAMIC_RANGE_ID}"]', "March 5, 2024 – March 10, 2024")  # noqa: RUF001
+
+    # Set "date_max" option to "2024-03-09" for the dynamic data and simulate refreshing the page
+    page_select(
+        dash_br,
+        page_path=cnst.DYNAMIC_FILTERS_CATEGORICAL_PAGE_PATH,
+        page_name=cnst.DYNAMIC_FILTERS_CATEGORICAL_PAGE,
+        graph_id=cnst.BOX_DYNAMIC_FILTERS_ID,
+    )
+    dynamic_filters_data_config_manipulation(key="date_max", set_value="2024-03-09")
+    page_select(
+        dash_br,
+        page_path=cnst.DYNAMIC_FILTERS_DATEPICKER_PAGE_PATH,
+        page_name=cnst.DYNAMIC_FILTERS_DATEPICKER_PAGE,
+        graph_id=cnst.BAR_DYNAMIC_DATEPICKER_FILTER_ID,
+    )
+    dash_br.wait_for_text_to_equal(f'button[id="{cnst.DATEPICKER_DYNAMIC_RANGE_ID}"]', "March 5, 2024 – March 10, 2024")  # noqa: RUF001
+
+    # Check y axis max value is '5'
+    dash_br.wait_for_text_to_equal(
+        graph_y_axis_value_path(
+            graph_id=cnst.BAR_DYNAMIC_DATEPICKER_FILTER_ID, y_axis_value_number="6", y_axis_value="5"
+        ),
+        "5",
+    )
+
+    # open datepicker calendar and choose dates from 6 to 10 March 2024
+    dash_br.multiple_click(f'button[id="{cnst.DATEPICKER_DYNAMIC_RANGE_ID}"]', 1)
+    dash_br.wait_for_element('div[data-calendar="true"]')
+    dash_br.multiple_click('button[aria-label="6 March 2024"]', 1)
+    dash_br.multiple_click('button[aria-label="10 March 2024"]', 1)
+    check_graph_is_loading(dash_br, cnst.BAR_DYNAMIC_DATEPICKER_FILTER_ID)
+
+    # Check y axis max value is '4'
+    dash_br.wait_for_text_to_equal(
+        graph_y_axis_value_path(
+            graph_id=cnst.BAR_DYNAMIC_DATEPICKER_FILTER_ID, y_axis_value_number="5", y_axis_value="4"
+        ),
+        "4",
+    )
+
+    # Set "date_min" option to "2024-03-06" for the dynamic data and simulate refreshing the page
+    page_select(
+        dash_br,
+        page_path=cnst.DYNAMIC_FILTERS_CATEGORICAL_PAGE_PATH,
+        page_name=cnst.DYNAMIC_FILTERS_CATEGORICAL_PAGE,
+        graph_id=cnst.BOX_DYNAMIC_FILTERS_ID,
+    )
+    dynamic_filters_data_config_manipulation(key="date_min", set_value="2024-03-06")
+    page_select(
+        dash_br,
+        page_path=cnst.DYNAMIC_FILTERS_DATEPICKER_PAGE_PATH,
+        page_name=cnst.DYNAMIC_FILTERS_DATEPICKER_PAGE,
+        graph_id=cnst.BAR_DYNAMIC_DATEPICKER_FILTER_ID,
+    )
+    dash_br.wait_for_text_to_equal(f'button[id="{cnst.DATEPICKER_DYNAMIC_RANGE_ID}"]', "March 6, 2024 – March 10, 2024")  # noqa: RUF001
+
+    # open the calendar and check if '5 March' is disabled
+    dash_br.multiple_click(f'button[id="{cnst.DATEPICKER_DYNAMIC_RANGE_ID}"]', 1)
+    dash_br.wait_for_element('div[data-calendar="true"]')
+    dash_br.wait_for_element('button[aria-label="5 March 2024"][data-disabled="true"]')
+
+
+@rewrite_dynamic_filters_data_config
+def test_datepicker_single_filters(dash_br):
+    """Initial selected value is 5 March 2024."""
+    accordion_select(
+        dash_br, accordion_name=cnst.DYNAMIC_DATA_ACCORDION.upper(), accordion_number=cnst.DYNAMIC_DATA_ACCORDION_NUMBER
+    )
+    page_select(
+        dash_br,
+        page_path=cnst.DYNAMIC_FILTERS_DATEPICKER_PAGE_PATH,
+        page_name=cnst.DYNAMIC_FILTERS_DATEPICKER_PAGE,
+        graph_id=cnst.BAR_DYNAMIC_DATEPICKER_SINGLE_FILTER_ID,
+    )
+
+    # check current date value
+    dash_br.wait_for_text_to_equal(f'button[id="{cnst.DATEPICKER_DYNAMIC_SINGLE_ID}"]', "March 5, 2024")
+
+    # Check y axis min value is '0'
+    dash_br.wait_for_text_to_equal(
+        graph_y_axis_value_path(
+            graph_id=cnst.BAR_DYNAMIC_DATEPICKER_SINGLE_FILTER_ID, y_axis_value_number="1", y_axis_value="0"
+        ),
+        "0",
+    )
+
+    # Check y axis max value is '1'
+    dash_br.wait_for_text_to_equal(
+        graph_y_axis_value_path(
+            graph_id=cnst.BAR_DYNAMIC_DATEPICKER_SINGLE_FILTER_ID, y_axis_value_number="6", y_axis_value="1"
+        ),
+        "1",
+    )
+
+    # Set "date_min" option to "2024-03-06" for the dynamic data and simulate refreshing the page
+    page_select(
+        dash_br,
+        page_path=cnst.DYNAMIC_FILTERS_CATEGORICAL_PAGE_PATH,
+        page_name=cnst.DYNAMIC_FILTERS_CATEGORICAL_PAGE,
+        graph_id=cnst.BOX_DYNAMIC_FILTERS_ID,
+    )
+    dynamic_filters_data_config_manipulation(key="date_min", set_value="2024-03-06")
+    page_select(
+        dash_br,
+        page_path=cnst.DYNAMIC_FILTERS_DATEPICKER_PAGE_PATH,
+        page_name=cnst.DYNAMIC_FILTERS_DATEPICKER_PAGE,
+        graph_id=cnst.BAR_DYNAMIC_DATEPICKER_SINGLE_FILTER_ID,
+    )
+    dash_br.wait_for_text_to_equal(f'button[id="{cnst.DATEPICKER_DYNAMIC_SINGLE_ID}"]', "March 5, 2024")
+
+    # Check y axis min value is '-1' (empty chart)
+    dash_br.wait_for_text_to_equal(
+        graph_y_axis_value_path(
+            graph_id=cnst.BAR_DYNAMIC_DATEPICKER_SINGLE_FILTER_ID,
+            y_axis_value_number="1",
+            y_axis_value="−1",  # noqa: RUF001
+        ),
+        "−1",  # noqa: RUF001
+    )
+
+    # Check y axis max value is '4'
+    dash_br.wait_for_text_to_equal(
+        graph_y_axis_value_path(
+            graph_id=cnst.BAR_DYNAMIC_DATEPICKER_SINGLE_FILTER_ID, y_axis_value_number="6", y_axis_value="4"
+        ),
+        "4",
+    )
+
+    # open datepicker calendar and choose 6 March 2024
+    dash_br.multiple_click(f'button[id="{cnst.DATEPICKER_DYNAMIC_SINGLE_ID}"]', 1)
+    dash_br.wait_for_element('div[data-calendar="true"]')
+    dash_br.multiple_click('button[aria-label="6 March 2024"]', 1)
+    check_graph_is_loading(dash_br, cnst.BAR_DYNAMIC_DATEPICKER_SINGLE_FILTER_ID)
+    dash_br.wait_for_text_to_equal(f'button[id="{cnst.DATEPICKER_DYNAMIC_SINGLE_ID}"]', "March 6, 2024")
+
+    # Check y axis max value is '4'
+    dash_br.wait_for_text_to_equal(
+        graph_y_axis_value_path(
+            graph_id=cnst.BAR_DYNAMIC_DATEPICKER_SINGLE_FILTER_ID, y_axis_value_number="6", y_axis_value="1"
+        ),
+        "1",
+    )
+
+    # simulate refreshing the page
+    page_select(
+        dash_br,
+        page_path=cnst.DYNAMIC_FILTERS_CATEGORICAL_PAGE_PATH,
+        page_name=cnst.DYNAMIC_FILTERS_CATEGORICAL_PAGE,
+        graph_id=cnst.BOX_DYNAMIC_FILTERS_ID,
+    )
+    page_select(
+        dash_br,
+        page_path=cnst.DYNAMIC_FILTERS_DATEPICKER_PAGE_PATH,
+        page_name=cnst.DYNAMIC_FILTERS_DATEPICKER_PAGE,
+        graph_id=cnst.BAR_DYNAMIC_DATEPICKER_SINGLE_FILTER_ID,
+    )
+    dash_br.wait_for_text_to_equal(f'button[id="{cnst.DATEPICKER_DYNAMIC_SINGLE_ID}"]', "March 6, 2024")
+
+    # open the calendar and check if '5 March' is disabled
+    dash_br.multiple_click(f'button[id="{cnst.DATEPICKER_DYNAMIC_SINGLE_ID}"]', 1)
+    dash_br.wait_for_element('div[data-calendar="true"]')
+    dash_br.wait_for_element('button[aria-label="5 March 2024"][data-disabled="true"]')
