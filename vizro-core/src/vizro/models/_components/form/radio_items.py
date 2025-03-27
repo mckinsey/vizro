@@ -17,8 +17,7 @@ class RadioItems(VizroBaseModel):
     """Categorical single-option selector `RadioItems`.
 
     Can be provided to [`Filter`][vizro.models.Filter] or
-    [`Parameter`][vizro.models.Parameter]. Based on the underlying
-    [`dcc.RadioItems`](https://dash.plotly.com/dash-core-components/radioitems).
+    [`Parameter`][vizro.models.Parameter].
 
     Args:
         type (Literal["radio_items"]): Defaults to `"radio_items"`.

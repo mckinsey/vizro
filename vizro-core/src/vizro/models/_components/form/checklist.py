@@ -16,8 +16,7 @@ class Checklist(VizroBaseModel):
     """Categorical multi-option selector `Checklist`.
 
     Can be provided to [`Filter`][vizro.models.Filter] or
-    [`Parameter`][vizro.models.Parameter]. Based on the underlying
-    [`dcc.Checklist`](https://dash.plotly.com/dash-core-components/checklist).
+    [`Parameter`][vizro.models.Parameter].
 
     Args:
         type (Literal["checklist"]): Defaults to `"checklist"`.
@@ -43,6 +42,19 @@ class Checklist(VizroBaseModel):
         AfterValidator(_action_validator_factory("value")),
         PlainSerializer(lambda x: x[0].actions),
         Field(default=[]),
+    ]
+        extra: SkipJsonSchema[
+        Annotated[
+            dict[str, Any],
+            Field(
+                default={},
+                description="""Extra keyword arguments that are passed to `dbc.Checklist` and overwrite any
+            defaults chosen by the Vizro team. This may have unexpected behavior.
+            Visit the [dbc documentation](https://dash-bootstrap-components.opensource.faculty.ai/docs/components/input/)
+            to see all available arguments. [Not part of the official Vizro schema](../explanation/schema.md) and the
+            underlying component may change in the future. Defaults to `{}`.""",
+            ),
+        ]
     ]
 
     _dynamic: bool = PrivateAttr(False)

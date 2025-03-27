@@ -19,8 +19,6 @@ class DatePicker(VizroBaseModel):
     """Temporal single/range option selector `DatePicker`.
 
     Can be provided to [`Filter`][vizro.models.Filter] or [`Parameter`][vizro.models.Parameter].
-    Based on the underlying [`dmc.DatePicker`](https://www.dash-mantine-components.com/components/datepicker) or
-    [`dmc.DateRangePicker`](https://www.dash-mantine-components.com/components/datepicker#daterangepicker).
 
     Args:
         type (Literal["date_picker"]): Defaults to `"date_picker"`.

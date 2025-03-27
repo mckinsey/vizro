@@ -18,8 +18,8 @@ class Button(VizroBaseModel):
     Args:
         type (Literal["button"]): Defaults to `"button"`.
         text (str): Text to be displayed on button. Defaults to `"Click me!"`.
-        actions (list[ActionsType]): See [`ActionsType`][vizro.models.types.ActionsType]. Defaults to `[]`.
         href (str): URL (relative or absolute) to navigate to. Defaults to `""`.
+        actions (list[ActionsType]): See [`ActionsType`][vizro.models.types.ActionsType]. Defaults to `[]`.
         extra (Optional[dict[str, Any]]): Extra keyword arguments that are passed to `dbc.Button` and overwrite any
             defaults chosen by the Vizro team. This may have unexpected behavior.
             Visit the [dbc documentation](https://dash-bootstrap-components.opensource.faculty.ai/docs/components/button/)

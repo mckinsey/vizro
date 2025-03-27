@@ -47,11 +47,6 @@ DISALLOWED_SELECTORS = {
     "categorical": SELECTORS["numerical"] + SELECTORS["temporal"],
 }
 
-# TODO: Remove DYNAMIC_SELECTORS along with its validation check when support dynamic mode for the DatePicker selector.
-# Tuple of filter selectors that support dynamic mode
-DYNAMIC_SELECTORS = (Dropdown, Checklist, RadioItems, Slider, RangeSlider)
-DynamicNonCategoricalSelectorType = Union[Slider, RangeSlider]
-
 
 def _filter_between(series: pd.Series, value: Union[list[float], list[str]]) -> pd.Series:
     if is_datetime64_any_dtype(series):
