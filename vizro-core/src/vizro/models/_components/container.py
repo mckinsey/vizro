@@ -27,6 +27,7 @@ class Container(VizroBaseModel):
         layout (Optional[Layout]): Layout to place components in. Defaults to `None`.
         variant (Literal["plain", "filled", "outlined"]): Predefined styles to choose from. Options are `plain`,
             `filled` or `outlined`. Defaults to `plain`.
+        collapse (Optional[bool]): Boolean flag for enabling collapse behavior. Defaults to `None`.
         extra (Optional[dict[str, Any]]): Extra keyword arguments that are passed to `dbc.Container` and overwrite any
             defaults chosen by the Vizro team. This may have unexpected behavior.
             Visit the [dbc documentation](https://dash-bootstrap-components.opensource.faculty.ai/docs/components/layout/)
@@ -49,6 +50,7 @@ class Container(VizroBaseModel):
         description="Predefined styles to choose from. Options are `plain`, `filled` or `outlined`."
         "Defaults to `plain`.",
     )
+    collapse: Optional[bool] = None
     extra: SkipJsonSchema[
         Annotated[
             dict[str, Any],
@@ -62,7 +64,6 @@ class Container(VizroBaseModel):
             ),
         ]
     ]
-    collapse: Optional[bool] = None
 
     @_log_call
     def build(self):
@@ -74,7 +75,11 @@ class Container(VizroBaseModel):
         if self.collapse is not None:
             clientside_callback(
                 ClientsideFunction(namespace="container", function_name="toggle_container"),
-                output=[Output(f"{self.id}_main_container", "is_open"), Output(f"{self.id}_icon", "style")],
+                output=[
+                    Output(f"{self.id}_main_container", "is_open"),
+                    Output(f"{self.id}_icon", "style"),
+                    Output(f"{self.id}_tooltip", "children"),
+                ],
                 inputs=[Input(f"{self.id}_title", "n_clicks"), State(f"{self.id}_main_container", "is_open")],
             )
 
@@ -84,7 +89,7 @@ class Container(VizroBaseModel):
             "id": self.id,
             "children": [
                 self._build_container_title(),
-                self._build_collapse_container(),
+                self._build_container(),
             ],
             "fluid": True,
             "class_name": variants[self.variant],
@@ -113,29 +118,37 @@ class Container(VizroBaseModel):
 
         return components_container
 
-    def _build_collapse_container(self):
+    def _build_container(self):
         """Returns collapsible container."""
-        if self.collapse is None:
-            return self._build_inner_layout()
-
-        else:
-            return dbc.Collapse(
+        return (
+            dbc.Collapse(
                 id=f"{self.id}_main_container",
                 children=self._build_inner_layout(),
                 is_open=self.collapse,
                 className="collapsible-container",
             )
+            if self.collapse is not None
+            else self._build_inner_layout()
+        )
 
     def _build_container_title(self):
         """Returns container title."""
-        if self.collapse is None:
-            return html.H3(children=self.title, className="container-title", id=f"{self.id}_title")
+        title = html.H3(children=self.title, className="container-title")
 
-        return html.Div(
-            id=f"{self.id}_title",
-            children=[
-                html.H3(children=self.title, className="container-title"),
-                html.Span("keyboard_arrow_up", className="material-symbols-outlined", id=f"{self.id}_icon"),
-            ],
-            className="collapsible-header",
+        return (
+            html.Div(
+                id=f"{self.id}_title",
+                children=[
+                    title,
+                    html.Span("keyboard_arrow_up", className="material-symbols-outlined", id=f"{self.id}_icon"),
+                    dbc.Tooltip(
+                        id=f"{self.id}_tooltip",
+                        children="Hide Content" if self.collapse is True else "Show Content",
+                        target=f"{self.id}_icon",
+                    ),
+                ],
+                className="collapsible-header",
+            )
+            if self.collapse is not None
+            else title
         )

@@ -234,15 +234,13 @@
   overflow: auto;
 }
 
-.collapsible-container {
-  height: 100%;
-}
 
 .collapsible-header {
   align-items: center;
   display: flex;
+  height: 28px;
   justify-content: space-between;
-  padding: 1rem;
+  padding-right: 1rem;
 }
 
 .collapsible-header .material-symbols-outlined {
@@ -252,4 +250,9 @@
 
 .collapsible-header .material-symbols-outlined:hover {
   color: var(--text-primaryHover);
+}
+
+.collapsible-container {
+  flex: 1;
+  overflow: auto;
 }
