@@ -14,7 +14,7 @@ from vizro.actions._filter_action import _filter
 from vizro.managers import data_manager, model_manager
 from vizro.managers._data_manager import DataSourceName, _DynamicData
 from vizro.managers._model_manager import FIGURE_MODELS
-from vizro.models import Action, VizroBaseModel
+from vizro.models import VizroBaseModel
 from vizro.models._components.form import (
     Checklist,
     DatePicker,
@@ -25,7 +25,7 @@ from vizro.models._components.form import (
 )
 from vizro.models._controls._controls_utils import check_targets_present_on_page
 from vizro.models._models_utils import _log_call
-from vizro.models.types import FigureType, MultiValueType, SelectorType, SingleValueType, ModelID
+from vizro.models.types import FigureType, ModelID, MultiValueType, SelectorType, SingleValueType
 
 # Ideally we might define these as NumericalSelectorType = Union[RangeSlider, Slider] etc., but that will not work
 # with isinstance checks.
