@@ -6,7 +6,6 @@ from pathlib import Path
 import kedro.pipeline as kp
 import pytest
 from kedro.config import OmegaConfigLoader
-from kedro.io import DataCatalog
 from packaging.version import parse
 
 from vizro.integrations.kedro import datasets_from_catalog
@@ -15,10 +14,15 @@ LEGACY_KEDRO = parse(version("kedro")) < parse("0.19.9")
 
 if not LEGACY_KEDRO:
     # KedroDataCatalog only exists and hence can only be tested against in kedro>=0.19.9.
+    # We could also still test against DataCatalog, but that would require filtering the deprecation warnings.
+    # Since there is no development expected on DataCatalog before deprecation, we might as well only test
+    # KedroDataCatalog
     from kedro.io import KedroDataCatalog
 
-    data_catalog_classes = [DataCatalog, KedroDataCatalog]
+    data_catalog_classes = [KedroDataCatalog]
 else:
+    from kedro.io import DataCatalog
+
     data_catalog_classes = [DataCatalog]
 
 
