@@ -127,6 +127,7 @@ class Page(VizroBaseModel):
         targets = figure_targets + filter_targets
 
         if targets:
+            # TODO-AV2 A 3: can we simplify this to not use ActionsChain, just like we do for filters and parameters?
             self.actions = [
                 ActionsChain(
                     id=f"{ON_PAGE_LOAD_ACTION_PREFIX}_{self.id}",
