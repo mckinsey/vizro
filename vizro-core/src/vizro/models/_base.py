@@ -18,6 +18,7 @@ from pydantic.fields import FieldInfo
 
 from vizro.managers import model_manager
 from vizro.models._models_utils import REPLACEMENT_STRINGS, _log_call
+from vizro.models.types import ModelID
 
 ACTIONS_CHAIN = "ActionsChain"
 ACTION = "actions"
@@ -197,7 +198,7 @@ def _add_type_to_annotated_union_if_found(
         )
 
 
-def set_id(id: str) -> str:
+def set_id(id: ModelID) -> ModelID:
     return id or model_manager._generate_id()
 
 
@@ -205,13 +206,13 @@ class VizroBaseModel(BaseModel):
     """All models that are registered to the model manager should inherit from this class.
 
     Args:
-        id (str): ID to identify model. Must be unique throughout the whole dashboard. Defaults to `""`.
+        id (ModelID): ID to identify model. Must be unique throughout the whole dashboard. Defaults to `""`.
             When no ID is chosen, ID will be automatically generated.
 
     """
 
     id: Annotated[
-        str,
+        ModelID,
         AfterValidator(set_id),
         Field(
             default="",

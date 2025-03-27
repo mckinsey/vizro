@@ -7,10 +7,11 @@ from dash import get_relative_path
 from pydantic import AfterValidator, BeforeValidator, Field
 
 from vizro._constants import ACCORDION_DEFAULT_TITLE
-from vizro.managers._model_manager import ModelID, model_manager
+from vizro.managers._model_manager import model_manager
 from vizro.models import VizroBaseModel
 from vizro.models._models_utils import _log_call
 from vizro.models._navigation._navigation_utils import _validate_pages
+from vizro.models.types import ModelID
 
 
 def coerce_pages_type(pages):
@@ -24,14 +25,15 @@ class Accordion(VizroBaseModel):
 
     Args:
         type (Literal["accordion"]): Defaults to `"accordion"`.
-        pages (dict[str, list[str]]): Mapping from name of a pages group to a list of page IDs. Defaults to `{}`.
+        pages (dict[str, list[ModelID]]): Mapping from name of a pages group to a list of page IDs. Defaults to `{}`.
 
     """
 
     type: Literal["accordion"] = "accordion"
     pages: Annotated[
         dict[
-            str, list[str]  # TODO[MS]:this is the type after validation, but the type before validation is NavPagesType
+            str,
+            list[ModelID],  # TODO[MS]:this is the type after validation, but the type before validation is NavPagesType
         ],
         AfterValidator(_validate_pages),
         BeforeValidator(coerce_pages_type),
@@ -78,14 +80,14 @@ class Accordion(VizroBaseModel):
             id="nav-panel",
         )
 
-    def _create_nav_links(self, pages: list[str]):
+    def _create_nav_links(self, pages: list[ModelID]):
         """Creates a `NavLink` for each provided page."""
         from vizro.models import Page
 
         nav_links = []
 
         for page_id in pages:
-            page = cast(Page, model_manager[ModelID(str(page_id))])
+            page = cast(Page, model_manager[page_id])
             nav_links.append(
                 dbc.NavLink(
                     children=page.title,

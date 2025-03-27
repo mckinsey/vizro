@@ -9,28 +9,19 @@ from vizro.managers._model_manager import model_manager
 from vizro.models.types import FigureType, ModelID, _Controls
 
 
-class _parameter(AbstractAction):
-    type: Literal["_parameter"] = "_parameter"
+# TODO-AV2 A 3: rename _on_page_load if desired and make public. Similarly for other built-in actions.
+class _on_page_load(AbstractAction):
+    type: Literal["_on_page_load"] = "_on_page_load"
 
-    targets: list[str] = Field(description="Targets in the form `<target_component>.<target_argument>`.")
-
-    @property
-    def _target_ids(self) -> list[ModelID]:
-        # This cannot be implemented as PrivateAttr(default_factory=lambda data: ...) because, unlike Field,
-        # PrivateAttr does not yet support an argument to the default_factory function. See:
-        # https://github.com/pydantic/pydantic/issues/10992
-        # Targets without "." are implicitly added by the `Parameter._set_actions` method
-        # to handle cases where a dynamic data parameter affects a filter or its targets.
-        return [target.partition(".")[0] if "." in target else target for target in self.targets]
+    targets: list[ModelID] = Field(description="Target component IDs.")
 
     def function(self, _controls: _Controls) -> dict[ModelID, Any]:
-        """Applies _controls to charts on page once the page is opened (or refreshed).
+        """Applies controls to charts on page once the page is opened (or refreshed).
 
         Returns:
             Dict mapping target chart ids to modified figures e.g. {"my_scatter": Figure(...)}.
 
         """
-        # This is identical to _on_page_load but with self._target_ids rather than self.targets.
         # TODO-AV2 A 1: _controls is not currently used but instead taken out of the Dash context. This
         # will change in future once the structure of _controls has been worked out and we know how to pass ids through.
         # See https://github.com/mckinsey/vizro/pull/880
@@ -38,15 +29,14 @@ class _parameter(AbstractAction):
             ctds_filter=ctx.args_grouping["external"]["_controls"]["filters"],
             ctds_parameter=ctx.args_grouping["external"]["_controls"]["parameters"],
             ctds_filter_interaction=ctx.args_grouping["external"]["_controls"]["filter_interaction"],
-            targets=self._target_ids,
+            targets=self.targets,
         )
 
     @property
     def outputs(self):
-        # This is identical to _on_page_load but with self._target_ids rather than self.targets.
         outputs = {}
 
-        for target in self._target_ids:
+        for target in self.targets:
             component_id = target
             component_property = cast(FigureType, model_manager[target])._output_component_property
             outputs[target] = f"{component_id}.{component_property}"
