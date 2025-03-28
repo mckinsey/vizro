@@ -120,35 +120,33 @@ class Container(VizroBaseModel):
 
     def _build_container(self):
         """Returns collapsible container."""
-        return (
-            dbc.Collapse(
+
+        if self.collapse is None:
+            return self._build_inner_layout()
+
+        return dbc.Collapse(
                 id=f"{self.id}_main_container",
                 children=self._build_inner_layout(),
-                is_open=self.collapse,
+                is_open=not self.collapse,
                 className="collapsible-container",
             )
-            if self.collapse is not None
-            else self._build_inner_layout()
-        )
 
     def _build_container_title(self):
         """Returns container title."""
-        title = html.H3(children=self.title, className="container-title")
 
-        return (
-            html.Div(
+        if self.collapse is None:
+            return html.H3(id=f"{self.id}_title", children=self.title, className="container-title")
+
+        return html.Div(
                 id=f"{self.id}_title",
                 children=[
-                    title,
+                    html.H3(children=self.title, className="container-title"),
                     html.Span("keyboard_arrow_up", className="material-symbols-outlined", id=f"{self.id}_icon"),
                     dbc.Tooltip(
                         id=f"{self.id}_tooltip",
-                        children="Hide Content" if self.collapse is True else "Show Content",
+                        children="Show Content",
                         target=f"{self.id}_icon",
                     ),
                 ],
                 className="collapsible-header",
             )
-            if self.collapse is not None
-            else title
-        )
