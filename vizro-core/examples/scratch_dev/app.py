@@ -16,7 +16,7 @@ page = vm.Page(
                 vm.Graph(figure=px.histogram(iris, x="sepal_width", color="species")),
             ],
             layout=vm.Layout(grid=[[0, 1]]),
-            variant="outlined"
+            variant="outlined",
         ),
         vm.Container(
             title="Container title 2",
@@ -24,7 +24,7 @@ page = vm.Page(
                 vm.Graph(figure=px.scatter(iris, x="sepal_length", y="petal_width", color="species")),
             ],
             collapse=True,
-            variant="outlined"
+            variant="outlined",
         ),
     ],
 )
