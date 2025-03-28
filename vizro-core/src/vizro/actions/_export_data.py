@@ -29,12 +29,8 @@ class export_data(AbstractAction):
     ] = []  # TODO NOW: think about whether should in future rename this so it doesn't inconsistently use targets? May be ok now that targets doesn't yet have special role.
     file_format: Literal["csv", "xlsx"] = "csv"
 
-    # TODO NOW CHECK: continue testing this and eventually remove.
-    runtime_arg: str
-
     def function(
         self,
-        runtime_arg,
         _controls: _Controls,
     ) -> dict[str, Any]:
         # TODO NOW: docstring
@@ -78,7 +74,7 @@ class export_data(AbstractAction):
                 writer = filtered_data.to_excel
 
             outputs[f"download_dataframe_{target}"] = dcc.send_data_frame(
-                writer=writer, filename=f"{runtime_arg}{target}.{self.file_format}", index=False
+                writer=writer, filename=f"{target}.{self.file_format}", index=False
             )
 
         return outputs

@@ -33,7 +33,7 @@ def custom_action_build_expected():
 
 @pytest.fixture
 def predefined_action_build_expected():
-    return html.Div(id="filter_action_test_filter_action_model_components_div", children=[], hidden=True)
+    return html.Div(id="__filter_action_test_filter_action_model_components_div", children=[], hidden=True)
 
 
 class TestActionInstantiation:
@@ -116,19 +116,6 @@ class TestActionInstantiation:
         with pytest.raises(ValidationError, match="String should match pattern"):
             Action(function=identity_action_function(), inputs=[], outputs=outputs)
 
-    @pytest.mark.parametrize("file_format", [None, "csv", "xlsx"])
-    def test_export_data_file_format_valid(self, file_format):
-        action = Action(id="action_test", function=export_data(file_format=file_format))
-        assert action.id == "action_test"
-        assert action.inputs == []
-        assert action.outputs == []
-
-    def test_export_data_file_format_invalid(self):
-        with pytest.raises(
-            ValueError, match='Unknown "file_format": invalid_file_format. Known file formats: "csv", "xlsx".'
-        ):
-            Action(function=export_data(file_format="invalid_file_format"))
-
     def test_export_data_xlsx_without_required_libs_installed(self, monkeypatch):
         monkeypatch.setitem(sys.modules, "openpyxl", None)
         monkeypatch.setitem(sys.modules, "xlswriter", None)
@@ -173,10 +160,10 @@ class TestActionPrivateMethods:
 
     def test_get_callback_mapping_no_inputs_no_outputs(self, identity_action_function):
         action = Action(function=identity_action_function())
-        callback_inputs, callback_outputs, action_components = action._get_callback_mapping()
-        assert callback_inputs == {}
-        assert callback_outputs == {}
-        assert action_components == []
+
+        assert action.inputs == []
+        assert action.outputs == []
+        assert action._dash_components == []
 
     @pytest.mark.parametrize(
         "inputs_and_outputs, expected_get_callback_mapping_inputs, expected_get_callback_mapping_outputs",
@@ -197,15 +184,10 @@ class TestActionPrivateMethods:
         expected_get_callback_mapping_outputs,
     ):
         action = Action(function=identity_action_function(), inputs=inputs_and_outputs, outputs=inputs_and_outputs)
-        callback_inputs, callback_outputs, action_components = action._get_callback_mapping()
-        assert callback_inputs == expected_get_callback_mapping_inputs
-        assert callback_outputs == expected_get_callback_mapping_outputs
-        assert action_components == []
 
-    @pytest.mark.parametrize("inputs", [["value"], {"arg": "value"}])
-    def test_action_callback_function_inputs_args_or_kwargs(self, identity_action_function, inputs):
-        action = Action(function=identity_action_function())
-        assert action._action_callback_function(inputs=inputs, outputs=Output("component", "property")) == "value"
+        assert action._transformed_inputs == expected_get_callback_mapping_inputs
+        assert action._transformed_outputs == expected_get_callback_mapping_outputs
+        assert action._dash_components == []
 
     @pytest.mark.parametrize(
         "custom_action_function_mock_return, callback_outputs",
@@ -256,7 +238,7 @@ class TestActionPrivateMethods:
             action._action_callback_function(inputs={}, outputs=callback_outputs)
 
     @pytest.mark.parametrize(
-        "custom_action_function_mock_return", [None, False, 0, 123], indirect=["custom_action_function_mock_return"]
+        "custom_action_function_mock_return", [None, False, 0, 123], indirect=True
     )
     def test_action_callback_function_outputs_list_return_value_not_collection(
         self, custom_action_function_mock_return

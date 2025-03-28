@@ -3,6 +3,7 @@ from asserts import assert_component_equal
 
 import vizro.models as vm
 from vizro.managers import model_manager
+from vizro.actions._abstract_action import AbstractAction
 from vizro.models._action._actions_chain import ActionsChain
 from vizro.models._controls.parameter import Parameter
 from vizro.models.types import CapturedCallable
@@ -106,10 +107,13 @@ class TestPreBuildMethod:
         page = model_manager["test_page"]
         page.controls = [parameter]
         parameter.pre_build()
-        default_action = parameter.selector.actions[0]
-        assert isinstance(default_action, ActionsChain)
-        assert isinstance(default_action.actions[0].function, CapturedCallable)
-        assert default_action.actions[0].id == f"parameter_action_{parameter.id}"
+
+        default_actions_chain = parameter.selector.actions[0]
+        default_action = default_actions_chain.actions[0]
+
+        assert isinstance(default_actions_chain, ActionsChain)
+        assert isinstance(default_action, AbstractAction)
+        assert default_action.id == f"__parameter_action_{parameter.id}"
 
 
 @pytest.mark.usefixtures("managers_one_page_two_graphs")

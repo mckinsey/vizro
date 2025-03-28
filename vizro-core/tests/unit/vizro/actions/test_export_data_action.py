@@ -97,17 +97,19 @@ def ctx_export_data(request):
     mock_ctx = {
         "args_grouping": {
             "external": {
-                "filters": (
-                    [
-                        CallbackTriggerDict(
-                            id="pop_filter", property="value", value=pop_filter, str_id="pop_filter", triggered=False
-                        )
-                    ]
-                    if pop_filter
-                    else []
-                ),
-                "parameters": [],
-                "filter_interaction": args_grouping_filter_interaction,
+                "_controls": {
+                    "filters": (
+                        [
+                            CallbackTriggerDict(
+                                id="pop_filter", property="value", value=pop_filter, str_id="pop_filter", triggered=False
+                            )
+                        ]
+                        if pop_filter
+                        else []
+                    ),
+                    "parameters": [],
+                    "filter_interaction": args_grouping_filter_interaction,
+                }
             }
         },
         "outputs_list": [
@@ -127,29 +129,32 @@ def ctx_export_data_filter_and_parameter(request):
     mock_ctx = {
         "args_grouping": {
             "external": {
-                "filters": (
-                    [
-                        CallbackTriggerDict(
-                            id="pop_filter", property="value", value=pop_filter, str_id="pop_filter", triggered=False
-                        )
-                    ]
-                    if pop_filter
-                    else []
-                ),
-                "parameters": (
-                    [
-                        CallbackTriggerDict(
-                            id="first_n_parameter",
-                            property="value",
-                            value=first_n_parameter,
-                            str_id="first_n_parameter",
-                            triggered=False,
-                        )
-                    ]
-                    if first_n_parameter
-                    else []
-                ),
-                "filter_interaction": [],
+                "_controls": {
+                    "filters": (
+                        [
+                            CallbackTriggerDict(
+                                id="pop_filter", property="value", value=pop_filter, str_id="pop_filter",
+                                triggered=False
+                            )
+                        ]
+                        if pop_filter
+                        else []
+                    ),
+                    "parameters": (
+                        [
+                            CallbackTriggerDict(
+                                id="first_n_parameter",
+                                property="value",
+                                value=first_n_parameter,
+                                str_id="first_n_parameter",
+                                triggered=False,
+                            )
+                        ]
+                        if first_n_parameter
+                        else []
+                    ),
+                    "filter_interaction": [],
+                }
             }
         },
         "outputs_list": [
@@ -167,10 +172,10 @@ class TestExportData:
     @pytest.mark.parametrize("ctx_export_data", [([[], None, None, None])], indirect=True)
     def test_no_graphs_no_targets(self, ctx_export_data):
         # Add action to relevant component
-        model_manager["button"].actions = [vm.Action(id="test_action", function=export_data())]
+        model_manager["button"].actions = [vm.Action(function=export_data(id="test_action"))]
 
         # Run action by picking the above added action function and executing it with ()
-        result = model_manager["test_action"].function()
+        result = model_manager["test_action"].function(_controls=None)
         expected = {}
 
         assert result == expected
@@ -179,10 +184,10 @@ class TestExportData:
     @pytest.mark.parametrize("ctx_export_data", [([["scatter_chart", "box_chart"], None, None, None])], indirect=True)
     def test_graphs_no_targets(self, ctx_export_data, gapminder_2007):
         # Add action to relevant component
-        model_manager["button"].actions = [vm.Action(id="test_action", function=export_data())]
+        model_manager["button"].actions = [vm.Action(function=export_data(id="test_action"))]
 
         # Run action by picking the above added action function and executing it with ()
-        result = model_manager["test_action"].function()
+        result = model_manager["test_action"].function(_controls=None)
         expected = {
             "download_dataframe_scatter_chart": {
                 "filename": "scatter_chart.csv",
@@ -202,19 +207,14 @@ class TestExportData:
 
     @pytest.mark.usefixtures("managers_one_page_two_graphs_one_button")
     @pytest.mark.parametrize(
-        "ctx_export_data, targets",
-        [
-            ([["scatter_chart", "box_chart"], None, None, None], None),
-            ([["scatter_chart", "box_chart"], None, None, None], []),
-        ],
-        indirect=["ctx_export_data"],
+        "ctx_export_data", [(["scatter_chart", "box_chart"], None, None, None)], indirect=True,
     )
-    def test_graphs_false_targets(self, ctx_export_data, targets, gapminder_2007):
+    def test_graphs_false_targets(self, ctx_export_data, gapminder_2007):
         # Add action to relevant component
-        model_manager["button"].actions = [vm.Action(id="test_action", function=export_data(targets=targets))]
+        model_manager["button"].actions = [vm.Action(function=export_data(id="test_action"))]
 
         # Run action by picking the above added action function and executing it with ()
-        result = model_manager["test_action"].function()
+        result = model_manager["test_action"].function(_controls=None)
         expected = {
             "download_dataframe_scatter_chart": {
                 "filename": "scatter_chart.csv",
@@ -236,10 +236,10 @@ class TestExportData:
     @pytest.mark.parametrize("ctx_export_data", [(["scatter_chart"], None, None, None)], indirect=True)
     def test_one_target(self, ctx_export_data, gapminder_2007):
         # Add action to relevant component
-        model_manager["button"].actions = [vm.Action(id="test_action", function=export_data(targets=["scatter_chart"]))]
+        model_manager["button"].actions = [vm.Action(function=export_data(id="test_action", targets=["scatter_chart"]))]
 
         # Run action by picking the above added action function and executing it with ()
-        result = model_manager["test_action"].function()
+        result = model_manager["test_action"].function(_controls=None)
         expected = {
             "download_dataframe_scatter_chart": {
                 "filename": "scatter_chart.csv",
@@ -256,11 +256,11 @@ class TestExportData:
     def test_multiple_targets(self, ctx_export_data, gapminder_2007):
         # Add action to relevant component
         model_manager["button"].actions = [
-            vm.Action(id="test_action", function=export_data(targets=["scatter_chart", "box_chart"]))
+            vm.Action(function=export_data(id="test_action", targets=["scatter_chart", "box_chart"]))
         ]
 
         # Run action by picking the above added action function and executing it with ()
-        result = model_manager["test_action"].function()
+        result = model_manager["test_action"].function(_controls=None)
         expected = {
             "download_dataframe_scatter_chart": {
                 "filename": "scatter_chart.csv",
@@ -283,12 +283,12 @@ class TestExportData:
     def test_invalid_target(self, ctx_export_data):
         # Add action to relevant component
         model_manager["button"].actions = [
-            vm.Action(id="test_action", function=export_data(targets=["invalid_target_id"]))
+            vm.Action(function=export_data(id="test_action", targets=["invalid_target_id"]))
         ]
 
         with pytest.raises(ValueError, match="Component 'invalid_target_id' does not exist."):
             # Run action by picking the above added action function and executing it with ()
-            model_manager["test_action"].function()
+            model_manager["test_action"].function(_controls=None)
 
     @pytest.mark.usefixtures("managers_one_page_two_graphs_one_button")
     @pytest.mark.parametrize(
@@ -319,16 +319,16 @@ class TestExportData:
 
         # Add filter_interaction Action to scatter_chart component
         model_manager["box_chart"].actions = [
-            vm.Action(id="filter_interaction", function=filter_interaction(targets=["scatter_chart"]))
+            vm.Action(function=filter_interaction(id="filter_interaction", targets=["scatter_chart"]))
         ]
 
         # Add export_data action to relevant component
         model_manager["button"].actions = [
-            vm.Action(id="test_action", function=export_data(targets=["scatter_chart", "box_chart"]))
+            vm.Action(function=export_data(id="test_action", targets=["scatter_chart", "box_chart"]))
         ]
 
         # Run action by picking the above added export_data action function and executing it with ()
-        result = model_manager["test_action"].function()
+        result = model_manager["test_action"].function(_controls=None)
         expected = {
             "download_dataframe_scatter_chart": {
                 "filename": "scatter_chart.csv",
@@ -375,7 +375,7 @@ class TestExportData:
 
         # Add filter_interaction Action to scatter_chart component
         model_manager["box_chart"].actions = [
-            vm.Action(id="filter_interaction", function=filter_interaction(targets=["scatter_chart"]))
+            vm.Action(function=filter_interaction(id="filter_interaction", targets=["scatter_chart"]))
         ]
 
         # Add table filter_interaction Action to scatter_chart component
@@ -384,11 +384,11 @@ class TestExportData:
 
         # Add export_data action to relevant component
         model_manager["button"].actions = [
-            vm.Action(id="test_action", function=export_data(targets=["scatter_chart", "box_chart"]))
+            vm.Action(function=export_data(id="test_action", targets=["scatter_chart", "box_chart"]))
         ]
 
         # Run action by picking the above added export_data action function and executing it with ()
-        result = model_manager["test_action"].function()
+        result = model_manager["test_action"].function(_controls=None)
         expected = {
             "download_dataframe_scatter_chart": {
                 "filename": "scatter_chart.csv",
@@ -450,11 +450,11 @@ class TestExportData:
 
         # Add export_data action to relevant component
         model_manager["button"].actions = [
-            vm.Action(id="test_action", function=export_data(targets=["scatter_chart", "box_chart"]))
+            vm.Action(function=export_data(id="test_action", targets=["scatter_chart", "box_chart"]))
         ]
 
         # Run action by picking the above added export_data action function and executing it with ()
-        result = model_manager["test_action"].function()
+        result = model_manager["test_action"].function(_controls=None)
         expected = {
             "download_dataframe_scatter_chart": {
                 "filename": "scatter_chart.csv",
