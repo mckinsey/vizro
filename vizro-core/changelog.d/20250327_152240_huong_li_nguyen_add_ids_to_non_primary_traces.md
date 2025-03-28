@@ -25,7 +25,7 @@ Uncomment the section that is right (remove the HTML comment wrapper).
 
 ### Changed
 
-- Add an `id` to the header and footer HTML elements of `Graph`, `Table`, and `AgGrid` to enable targeting through callbacks. ([#1080](https://github.com/mckinsey/vizro/pull/1080))
+- Add an `id` to the header and footer HTML elements of `Graph`, `Table`, and `AgGrid` to enable targeting through actions/callbacks. ([#1080](https://github.com/mckinsey/vizro/pull/1080))
 
 
 <!--
