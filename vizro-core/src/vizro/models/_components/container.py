@@ -3,7 +3,7 @@ from __future__ import annotations
 from typing import TYPE_CHECKING, Annotated, Any, Literal, Optional, cast
 
 import dash_bootstrap_components as dbc
-from dash import html
+from dash import ClientsideFunction, Input, Output, State, clientside_callback, html
 from pydantic import AfterValidator, BeforeValidator, Field, conlist
 from pydantic.json_schema import SkipJsonSchema
 
@@ -27,6 +27,7 @@ class Container(VizroBaseModel):
         layout (Optional[Layout]): Layout to place components in. Defaults to `None`.
         variant (Literal["plain", "filled", "outlined"]): Predefined styles to choose from. Options are `plain`,
             `filled` or `outlined`. Defaults to `plain`.
+        collapse (Optional[bool]): Boolean flag for enabling collapse behavior. Defaults to `None`.
         extra (Optional[dict[str, Any]]): Extra keyword arguments that are passed to `dbc.Container` and overwrite any
             defaults chosen by the Vizro team. This may have unexpected behavior.
             Visit the [dbc documentation](https://dash-bootstrap-components.opensource.faculty.ai/docs/components/layout/)
@@ -49,6 +50,7 @@ class Container(VizroBaseModel):
         description="Predefined styles to choose from. Options are `plain`, `filled` or `outlined`."
         "Defaults to `plain`.",
     )
+    collapse: Optional[bool] = Field(default=None, description="Boolean flag for enabling collapse behavior.")
     extra: SkipJsonSchema[
         Annotated[
             dict[str, Any],
@@ -69,13 +71,25 @@ class Container(VizroBaseModel):
         # It needs to be properly designed and tested out (margins have to be added etc.).
         # Below corresponds to bootstrap utility classnames, while 'bg-container' is introduced by us.
         # See: https://getbootstrap.com/docs/4.0/utilities
+
+        if self.collapse is not None:
+            clientside_callback(
+                ClientsideFunction(namespace="container", function_name="collapse_container"),
+                output=[
+                    Output(f"{self.id}_collapse", "is_open"),
+                    Output(f"{self.id}_icon", "style"),
+                    Output(f"{self.id}_tooltip", "children"),
+                ],
+                inputs=[Input(f"{self.id}_title", "n_clicks"), State(f"{self.id}_collapse", "is_open")],
+            )
+
         variants = {"plain": "", "filled": "bg-container p-3", "outlined": "border p-3"}
 
         defaults = {
             "id": self.id,
             "children": [
-                html.H3(children=self.title, className="container-title", id=f"{self.id}_title"),
-                self._build_inner_layout(),
+                self._build_container_title(),
+                self._build_container(),
             ],
             "fluid": True,
             "class_name": variants[self.variant],
@@ -103,3 +117,34 @@ class Container(VizroBaseModel):
             components_container[f"{self.layout.id}_{component_idx}"].children = component.build()
 
         return components_container
+
+    def _build_container(self):
+        """Returns collapsible container."""
+        if self.collapse is None:
+            return self._build_inner_layout()
+
+        return dbc.Collapse(
+            id=f"{self.id}_collapse",
+            children=self._build_inner_layout(),
+            is_open=not self.collapse,
+            className="collapsible-container",
+            key=self.id,
+        )
+
+    def _build_container_title(self):
+        """Returns container title."""
+        title_content = [self.title]
+
+        if self.collapse is not None:
+            title_content.extend(
+                [
+                    html.Span("keyboard_arrow_up", className="material-symbols-outlined", id=f"{self.id}_icon"),
+                    dbc.Tooltip(
+                        id=f"{self.id}_tooltip",
+                        children="Show Content" if self.collapse else "Hide Content",
+                        target=f"{self.id}_icon",
+                    ),
+                ]
+            )
+
+        return html.H3(children=title_content, className="container-title", id=f"{self.id}_title")

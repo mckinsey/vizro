@@ -1,42 +1,87 @@
+from typing import Literal
 import vizro.models as vm
 import vizro.plotly.express as px
 from vizro import Vizro
-from vizro.models.types import capture
-from typing import Optional
 
-df = px.data.iris()
+from dash import html
 
-
-@capture("action")
-def custom_action_obtiene_seleccion(points_data: Optional[dict] = None):
-    """Custom action."""
-    clicked_point = points_data["points"][0]
-    x = clicked_point["x"]
-    text = f"Clicked point has sepal length {x}"
-    return text, text
+iris = px.data.iris()
 
 
-page = vm.Page(
-    title="Action with clickData as input",
+class FlexContainer(vm.Container):
+    """FlexContainer for testing."""
+
+    type: Literal["flex_container"] = "flex_container"
+
+    def build(self):
+        """Returns custom flex container."""
+        return html.Div(
+            id=self.id, children=[component.build() for component in self.components], className="flex-container"
+        )
+
+
+vm.Page.add_type("components", FlexContainer)
+
+page_flex = vm.Page(
+    title="Flex - Collapse",
+    controls=[vm.Filter(column="species")],
     components=[
-        vm.Graph(
-            id="scatter_chart",
-            title="Title",
-            footer="Footer",
-            header="Header",
-            figure=px.scatter(df, x="sepal_length", y="petal_width", color="species", custom_data=["species"]),
-            actions=[
-                vm.Action(
-                    function=custom_action_obtiene_seleccion(),
-                    inputs=["scatter_chart.clickData"],
-                    outputs=["my_card.children", "scatter_chart_header.children"],
+        FlexContainer(
+            title="Flex-Container",
+            components=[
+                vm.Container(
+                    title="Container title 1",
+                    collapse=False,
+                    components=[
+                        vm.Graph(figure=px.scatter(iris, x="sepal_length", y="petal_width", color="species")),
+                        vm.Graph(figure=px.histogram(iris, x="sepal_width", color="species")),
+                    ],
+                    layout=vm.Layout(grid=[[0, 1]]),
+                    variant="outlined",
+                ),
+                vm.Container(
+                    title="Container title 2",
+                    components=[
+                        vm.Graph(figure=px.scatter(iris, x="sepal_length", y="petal_width", color="species")),
+                        vm.Graph(figure=px.histogram(iris, x="sepal_width", color="species")),
+                    ],
+                    collapse=True,
+                    variant="outlined",
+                    layout=vm.Layout(grid=[[0, 1]]),
                 ),
             ],
-        ),
-        vm.Card(id="my_card", text="Click on a point on the above graph."),
+        )
     ],
 )
-dashboard = vm.Dashboard(pages=[page])
+
+page_grid = vm.Page(
+    title="Grid - Collapse",
+    controls=[vm.Filter(column="species")],
+    components=[
+        vm.Container(
+            title="Container title 1",
+            collapse=False,
+            components=[
+                vm.Graph(figure=px.scatter(iris, x="sepal_length", y="petal_width", color="species")),
+                vm.Graph(figure=px.histogram(iris, x="sepal_width", color="species")),
+            ],
+            layout=vm.Layout(grid=[[0, 1]]),
+            variant="outlined",
+        ),
+        vm.Container(
+            title="Container title 2",
+            components=[
+                vm.Graph(figure=px.scatter(iris, x="sepal_length", y="petal_width", color="species")),
+                vm.Graph(figure=px.histogram(iris, x="sepal_width", color="species")),
+            ],
+            collapse=True,
+            variant="outlined",
+            layout=vm.Layout(grid=[[0, 1]]),
+        ),
+    ],
+)
+
+dashboard = vm.Dashboard(pages=[page_grid, page_flex])
 
 if __name__ == "__main__":
     Vizro().build(dashboard).run()
