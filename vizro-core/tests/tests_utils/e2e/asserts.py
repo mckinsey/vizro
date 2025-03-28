@@ -3,8 +3,10 @@ import shutil
 import subprocess
 from pathlib import Path
 
+import pandas as pd
 import pytest
 from e2e.vizro import constants as cnst
+from hamcrest import assert_that, equal_to
 
 
 def make_screenshot_and_paths(driver, request_node_name):
@@ -54,3 +56,22 @@ def assert_image_not_equal(image_one, image_two):
         pytest.fail("Images should be different")
     except subprocess.CalledProcessError:
         pass
+
+
+def assert_files_equal(base_file, exported_file):
+    df_first = pd.read_csv(base_file)
+    df_second = pd.read_csv(exported_file)
+
+    # Check rows in base_file that are missing in exported_file
+    missing_in_exported = df_first[~df_first.apply(tuple, 1).isin(df_second.apply(tuple, 1))]
+
+    # Check rows in exported_file that are missing in base_file
+    missing_in_base = df_second[~df_second.apply(tuple, 1).isin(df_first.apply(tuple, 1))]
+
+    differences = pd.concat([missing_in_exported, missing_in_base])
+
+    assert_that(
+        differences.empty,
+        equal_to(True),
+        reason=f"{exported_file} is not equal to {base_file}\nDifference is:\n{differences}",
+    )

@@ -1,5 +1,5 @@
 import e2e.vizro.constants as cnst
-from custom_actions.custom_actions import my_custom_action
+from custom_actions.custom_actions import scatter_click_data_custom_action
 
 import vizro.models as vm
 import vizro.plotly.express as px
@@ -24,7 +24,7 @@ filter_interactions_page = vm.Page(
             actions=[
                 vm.Action(function=filter_interaction(targets=[cnst.BOX_INTERACTIONS_ID])),
                 vm.Action(
-                    function=my_custom_action(),
+                    function=scatter_click_data_custom_action(),
                     inputs=[f"{cnst.SCATTER_INTERACTIONS_ID}.clickData"],
                     outputs=[f"{cnst.CARD_INTERACTIONS_ID}.children"],
                 ),
@@ -42,10 +42,12 @@ filter_interactions_page = vm.Page(
         ),
     ],
     controls=[
-        vm.Filter(column="species", targets=[cnst.BOX_INTERACTIONS_ID]),
+        vm.Filter(
+            column="species", targets=[cnst.BOX_INTERACTIONS_ID], selector=vm.Dropdown(id=cnst.DROPDOWN_INTER_FILTER)
+        ),
         vm.Parameter(
             targets=[f"{cnst.BOX_INTERACTIONS_ID}.title"],
-            selector=vm.RadioItems(options=["red", "blue"], value="blue"),
+            selector=vm.RadioItems(id=cnst.RADIOITEM_INTER_PARAM, options=["red", "blue"], value="blue"),
         ),
     ],
 )

@@ -8,8 +8,11 @@ from hamcrest import assert_that, equal_to
 
 
 def test_dropdown(dash_br):
+    """Test simple dropdown filter."""
     page_select(dash_br, page_path=cnst.FILTERS_PAGE_PATH, page_name=cnst.FILTERS_PAGE, graph_id=cnst.SCATTER_GRAPH_ID)
-    select_dropdown_value(dash_br, value=2)
+
+    # select 'setosa'
+    select_dropdown_value(dash_br, value=2, dropdown_id=cnst.DROPDOWN_FILTER_FILTERS_PAGE)
     check_graph_is_loading(dash_br, graph_id=cnst.SCATTER_GRAPH_ID)
 
 
@@ -19,13 +22,19 @@ def test_dropdown(dash_br):
     ids=["checklist", "radio_items"],
 )
 def test_categorical_filters(dash_br, filter_id):
+    """Test simple checklist and radio_items filters."""
     page_select(dash_br, page_path=cnst.FILTERS_PAGE_PATH, page_name=cnst.FILTERS_PAGE, graph_id=cnst.SCATTER_GRAPH_ID)
+
+    # select 'setosa'
     dash_br.multiple_click(categorical_components_value_path(elem_id=filter_id, value=2), 1)
     check_graph_is_loading(dash_br, graph_id=cnst.SCATTER_GRAPH_ID)
 
 
 def test_slider(dash_br):
+    """Test simple slider filter."""
     page_select(dash_br, page_path=cnst.FILTERS_PAGE_PATH, page_name=cnst.FILTERS_PAGE, graph_id=cnst.SCATTER_GRAPH_ID)
+
+    # select value '0.6'
     dash_br.multiple_click(slider_value_path(elem_id=cnst.SLIDER_FILTER_FILTERS_PAGE, value=2), 1)
     check_graph_is_loading(dash_br, graph_id=cnst.SCATTER_GRAPH_ID)
     check_slider_value(dash_br, expected_end_value="0.6", elem_id=cnst.SLIDER_FILTER_FILTERS_PAGE)
@@ -35,7 +44,10 @@ def test_slider(dash_br):
 # Right now is failing with the next error:
 # AssertionError: Element number is '4', but expected number is '4.3'
 def test_range_slider(dash_br):
+    """Test simple range slider filter."""
     page_select(dash_br, page_path=cnst.FILTERS_PAGE_PATH, page_name=cnst.FILTERS_PAGE, graph_id=cnst.SCATTER_GRAPH_ID)
+
+    # select min value '4.3'
     dash_br.multiple_click(slider_value_path(elem_id=cnst.RANGE_SLIDER_FILTER_FILTERS_PAGE, value=4), 1)
     check_graph_is_loading(dash_br, graph_id=cnst.SCATTER_GRAPH_ID)
     check_slider_value(
@@ -44,13 +56,19 @@ def test_range_slider(dash_br):
 
 
 def test_dropdown_homepage(dash_br):
+    """Test dropdown filter for the homepage."""
     graph_load_waiter(dash_br, graph_id=cnst.AREA_GRAPH_ID)
-    select_dropdown_value(dash_br, value=2)
+
+    # select 'setosa'
+    select_dropdown_value(dash_br, value=2, dropdown_id=cnst.DROPDOWN_FILTER_HOMEPAGEPAGE)
     check_graph_is_loading(dash_br, cnst.AREA_GRAPH_ID)
 
 
 def test_dropdown_kpi_indicators_page(dash_br):
+    """Test dropdown to filter kpi cards."""
     page_select(dash_br, page_path=cnst.KPI_INDICATORS_PAGE_PATH, page_name=cnst.KPI_INDICATORS_PAGE)
+
+    # wait for cards value is loaded and checking its values
     dash_br.wait_for_text_to_equal(kpi_card_path(), "73902")
     values = dash_br.find_elements(kpi_card_path())
     values_text = [value.text for value in values]
@@ -72,7 +90,11 @@ def test_dropdown_kpi_indicators_page(dash_br):
             ]
         ),
     )
-    select_dropdown_value(dash_br, value=2)
+
+    # select 'A' value
+    select_dropdown_value(dash_br, value=2, dropdown_id=cnst.DROPDOWN_FILTER_KPI_PAGE)
+
+    # wait for cards value is loaded and checking its values
     dash_br.wait_for_text_to_equal(kpi_card_path(), "67434")
     values = dash_br.find_elements(kpi_card_path())
     values_text = [value.text for value in values]
