@@ -5,6 +5,7 @@ from e2e.vizro.paths import categorical_components_value_path, slider_value_path
 
 
 def test_filters(dash_br):
+    """Test ag_grid filtering."""
     accordion_select(
         dash_br, accordion_name=cnst.AG_GRID_ACCORDION.upper(), accordion_number=cnst.AG_GRID_ACCORDION_NUMBER
     )
@@ -15,10 +16,14 @@ def test_filters(dash_br):
         graph_id=cnst.BOX_AG_GRID_PAGE_ID,
     )
 
+    # select 'Africa'
     dash_br.multiple_click(categorical_components_value_path(elem_id=cnst.RADIOITEMS_AGGRID_FILTER, value=2), 1)
+    # select 'Asia', but 'ALL' still selected
     dash_br.multiple_click(categorical_components_value_path(elem_id=cnst.CHECKLIST_AGGRID_FILTER, value=2), 1)
+    # select '5000000' as min value
     dash_br.multiple_click(slider_value_path(elem_id=cnst.RANGESLIDER_AGGRID_FILTER, value=5), 1)
 
+    # check data for the 2nd row
     dash_br.wait_for_text_to_equal(
         table_ag_grid_cell_value_path(table_id=cnst.TABLE_AG_GRID_ID, row_number=2, column_number=1), "Burundi"
     )
@@ -35,10 +40,12 @@ def test_filters(dash_br):
         table_ag_grid_cell_value_path(table_id=cnst.TABLE_AG_GRID_ID, row_number=2, column_number=5), "8390505"
     )
 
+    # check that number of rows with data is 8
     check_table_ag_grid_rows_number(dash_br, table_id=cnst.TABLE_AG_GRID_ID, expected_rows_num=8)
 
 
 def test_interactions(dash_br):
+    """Test filter interaction between ag_grid and line graph."""
     accordion_select(
         dash_br, accordion_name=cnst.AG_GRID_ACCORDION.upper(), accordion_number=cnst.AG_GRID_ACCORDION_NUMBER
     )

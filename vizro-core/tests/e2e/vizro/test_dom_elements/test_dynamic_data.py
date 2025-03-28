@@ -135,6 +135,7 @@ def test_dropdown_filter_multi(dash_br):
         graph_id=cnst.BOX_DYNAMIC_FILTERS_ID,
     )
 
+    # open dropdown and check selected and unselected values
     dash_br.multiple_click(dropdown_arrow_path(dropdown_id=cnst.DROPDOWN_MULTI_DYNAMIC_FILTER_ID), 1)
     check_selected_dropdown(
         dash_br,
@@ -178,6 +179,7 @@ def test_dropdown_filter(dash_br):
         graph_id=cnst.BOX_DYNAMIC_FILTERS_ID,
     )
 
+    # open dropdown and check selected and unselected values
     dash_br.multiple_click(dropdown_arrow_path(dropdown_id=cnst.DROPDOWN_DYNAMIC_FILTER_ID), 1)
     check_selected_dropdown(
         dash_br,

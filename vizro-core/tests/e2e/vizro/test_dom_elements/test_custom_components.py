@@ -5,6 +5,7 @@ from e2e.vizro.paths import slider_value_path
 
 
 def test_custom_dropdown(dash_br):
+    """Testing setting up and filter of the custom dropdown."""
     page_select(
         dash_br,
         page_path=cnst.CUSTOM_COMPONENTS_PAGE_PATH,
@@ -22,6 +23,7 @@ def test_custom_dropdown(dash_br):
 
 
 def test_custom_range_slider(dash_br):
+    """Testing setting up and filter of the custom range slider."""
     page_select(
         dash_br,
         page_path=cnst.CUSTOM_COMPONENTS_PAGE_PATH,

@@ -16,6 +16,7 @@ from selenium.webdriver.support.wait import WebDriverWait
 
 
 def test_parameters_title(chrome_driver, dash_br):
+    """Tests that graph title is changing by parameter independently for every user."""
     # select parameters page for the first user
     page_select_selenium(
         chrome_driver,
@@ -50,6 +51,7 @@ def test_parameters_title(chrome_driver, dash_br):
 
 
 def test_theme_color(chrome_driver, dash_br):
+    """Tests that theme color is changing independently for every user."""
     # select parameters page for the first user
     page_select_selenium(
         chrome_driver,
@@ -83,6 +85,7 @@ def test_theme_color(chrome_driver, dash_br):
 
 
 def test_export_action(chrome_driver, dash_br):
+    """Tests that export action is giving different results according to what every user filters."""
     # select filters page for the first user
     page_select_selenium(
         chrome_driver,

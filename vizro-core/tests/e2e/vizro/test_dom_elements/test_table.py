@@ -5,6 +5,7 @@ from e2e.vizro.paths import categorical_components_value_path, slider_value_path
 
 
 def test_filters(dash_br):
+    """Test table filtering."""
     accordion_select(
         dash_br, accordion_name=cnst.AG_GRID_ACCORDION.upper(), accordion_number=cnst.AG_GRID_ACCORDION_NUMBER
     )
@@ -13,15 +14,23 @@ def test_filters(dash_br):
         page_path=cnst.TABLE_PAGE_PATH,
         page_name=cnst.TABLE_PAGE,
     )
+
+    # select 'Africa'
     dash_br.multiple_click(categorical_components_value_path(elem_id=cnst.RADIOITEMS_TABLE_FILTER, value=2), 1)
+    # select 'Asia', but 'ALL' still selected
     dash_br.multiple_click(categorical_components_value_path(elem_id=cnst.CHECKLIST_TABLE_FILTER, value=2), 1)
+    # select '5000000' as min value
     dash_br.multiple_click(slider_value_path(elem_id=cnst.RANGESLIDER_TABLE_FILTER, value=5), 1)
 
     # check if country Benin is available
     dash_br.wait_for_text_to_equal(
         f"div[id='{cnst.TABLE_ID}'] tr:nth-of-type(2) div[class='unfocused selectable dash-cell-value']", "Benin"
     )
+
+    # check that number of rows is 9, because we're counting it with header
     check_table_rows_number(dash_br, table_id=cnst.TABLE_ID, expected_rows_num=9)
+
+    # check data for the 3rd row
     dash_br.wait_for_text_to_equal(
         table_cell_value_path(table_id=cnst.TABLE_ID, row_number=3, column_number=1), "Burundi"
     )
@@ -43,6 +52,7 @@ def test_filters(dash_br):
 
 
 def test_interactions(dash_br):
+    """Test filter interaction between table and line graph."""
     accordion_select(
         dash_br, accordion_name=cnst.AG_GRID_ACCORDION.upper(), accordion_number=cnst.AG_GRID_ACCORDION_NUMBER
     )

@@ -5,6 +5,7 @@ from e2e.vizro.paths import slider_value_path
 
 
 def test_sliders_state(dash_br):
+    """Verify that sliders values stays the same after page reload."""
     page_select(
         dash_br,
         page_path=cnst.PARAMETERS_PAGE_PATH,
@@ -35,6 +36,7 @@ def test_sliders_state(dash_br):
 
 
 def test_none_parameter(dash_br):
+    """Test if one of the parameter values is NONE."""
     page_select(
         dash_br,
         page_path=cnst.PARAMETERS_PAGE_PATH,
