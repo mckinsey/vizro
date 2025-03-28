@@ -262,7 +262,7 @@ class Dashboard(VizroBaseModel):
             html.Div(
                 children=[
                     html.Span(
-                        id="collapse-icon", children="keyboard_double_arrow_left", className="material-symbols-outlined"
+                        id="collapse-icon", children="keyboard_arrow_left", className="material-symbols-outlined"
                     ),
                     dbc.Tooltip(
                         id="collapse-tooltip",

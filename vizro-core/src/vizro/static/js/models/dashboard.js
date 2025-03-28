@@ -38,6 +38,7 @@ function collapse_nav_panel(n_clicks, is_open) {
         {
           transform: "rotate(180deg)",
           transition: "transform 0.35s ease-in-out",
+          marginLeft: "8px",
         },
         "Show Menu",
       ];
@@ -50,6 +51,7 @@ function collapse_nav_panel(n_clicks, is_open) {
       {
         transform: "rotate(180deg)",
         transition: "transform 0.35s ease-in-out",
+        marginLeft: "8px",
       },
       "Show Menu",
     ];

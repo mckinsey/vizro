@@ -123,7 +123,7 @@ label[for="theme-selector"] {
   background-color: var(--right-side-bg);
 }
 
-/* Check whether we want to change this inside Bootstrap*/
+/* Check whether we want to change this inside Bootstrap */
 h1, h2, h3, h4, h5, h6 {
   margin-bottom: 0;
 }
