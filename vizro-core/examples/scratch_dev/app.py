@@ -332,7 +332,7 @@ page24 = vm.Page(
                     components=[
                         vm.Card(text="This is card inside first tab!"),
                         vm.Graph(figure=px.histogram(tips, x="tip")),
-                    ]
+                    ],
                 ),
                 vm.Container(
                     title="tab2",
@@ -340,13 +340,13 @@ page24 = vm.Page(
                     components=[
                         vm.Card(text="This is card inside second tab!"),
                         vm.Graph(figure=px.bar(tips, y="tip", x="day")),
-                    ]
-                )
+                    ],
+                ),
             ]
         ),
         vm.Card(text="This is card below the tabs!"),
         vm.Graph(figure=px.violin(tips, y="tip", x="day", color="day", box=True)),
-    ]
+    ],
 )
 
 dashboard = vm.Dashboard(
@@ -374,7 +374,7 @@ dashboard = vm.Dashboard(
         page21,
         page22,
         page23,
-        page24
+        page24,
     ],
     title="Test out Flex/Grid",
 )
