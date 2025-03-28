@@ -1,7 +1,8 @@
-import vizro.plotly.express as px
 from typing import Literal
 import vizro.models as vm
+import vizro.plotly.express as px
 from vizro import Vizro
+
 from dash import html
 
 iris = px.data.iris()
@@ -76,12 +77,11 @@ page_grid = vm.Page(
             collapse=True,
             variant="outlined",
             layout=vm.Layout(grid=[[0, 1]]),
-        ),
+        )
     ],
 )
 
 dashboard = vm.Dashboard(pages=[page_grid, page_flex])
-
 
 if __name__ == "__main__":
     Vizro().build(dashboard).run()
