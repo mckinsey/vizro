@@ -115,7 +115,7 @@ def my_custom_action(points_data, _controls):
 #     card_1_text = card_2_text = str(datetime.datetime.now().time())
 #     return card_1_text, card_2_text
 
-# TODO NOW CHECK: curent docs examples
+# TODO NOW CHECK: current docs examples
 df = px.data.iris()
 
 page_2 = vm.Page(
@@ -135,7 +135,7 @@ page_2 = vm.Page(
             figure=px.scatter(df, x="sepal_length", y="petal_width", color="species", custom_data=["species"]),
             actions=[
                 vm.Action(
-                    function=my_custom_action(123),
+                    function=my_custom_action("scatter_chart.clickData"),
                     # TODO NOW CHECK: make sure user-specified argument continues to take precedence
                     #     # function=my_custom_action("scatter_chart.clickData", controls="my_card_1.children"),
                     #     # TODO NOW CHECK: test to make sure this old way continues to work

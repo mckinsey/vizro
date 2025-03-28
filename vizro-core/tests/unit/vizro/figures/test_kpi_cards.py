@@ -16,7 +16,7 @@ class TestKPICard:
             result,
             dbc.Card(
                 [dbc.CardHeader([None, html.H4("Sum Actual", className="card-kpi-title")]), dbc.CardBody("6")],
-                className="card-kpi",
+                class_name="card-kpi",
             ),
         )
 
@@ -41,7 +41,7 @@ class TestKPICard:
                     ),
                     dbc.CardBody("$2.00"),
                 ],
-                className="card-kpi",
+                class_name="card-kpi",
             ),
         )
 
@@ -69,10 +69,10 @@ class TestKPICardReference:
                         html.Span("arrow_circle_down", className="material-symbols-outlined"),
                         html.Span("-50.0% vs. reference (12)"),
                     ],
-                    className="color-neg",
+                    class_name="color-neg",
                 ),
             ],
-            className="card-kpi",
+            class_name="card-kpi",
         )
         assert_component_equal(result, expected)
 
@@ -87,10 +87,10 @@ class TestKPICardReference:
                         html.Span("arrow_circle_up", className="material-symbols-outlined"),
                         html.Span("+100.0% vs. reference (6)"),
                     ],
-                    className="color-pos",
+                    class_name="color-pos",
                 ),
             ],
-            className="card-kpi",
+            class_name="card-kpi",
         )
         assert_component_equal(result, expected)
 
@@ -105,10 +105,10 @@ class TestKPICardReference:
                         html.Span("arrow_circle_right", className="material-symbols-outlined"),
                         html.Span("+0.0% vs. reference (6)"),
                     ],
-                    className="",
+                    class_name="",
                 ),
             ],
-            className="card-kpi",
+            class_name="card-kpi",
         )
         assert_component_equal(result, expected)
 
@@ -123,10 +123,10 @@ class TestKPICardReference:
                         html.Span("arrow_circle_up", className="material-symbols-outlined"),
                         html.Span("+nan% vs. reference (0)"),
                     ],
-                    className="color-pos",
+                    class_name="color-pos",
                 ),
             ],
-            className="card-kpi",
+            class_name="card-kpi",
         )
         assert_component_equal(result, expected)
 
@@ -157,10 +157,10 @@ class TestKPICardReference:
                         html.Span("arrow_circle_down", className="material-symbols-outlined"),
                         html.Span("B 2.0 is +-2.0 (-0.5:%) vs. 4.0"),
                     ],
-                    className="color-pos",
+                    class_name="color-pos",
                 ),
             ],
-            className="card-kpi",
+            class_name="card-kpi",
         )
 
         assert_component_equal(result, expected)

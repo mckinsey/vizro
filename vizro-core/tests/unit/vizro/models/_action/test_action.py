@@ -123,7 +123,7 @@ class TestActionInstantiation:
         with pytest.raises(
             ModuleNotFoundError, match="You must install either openpyxl or xlsxwriter to export to xlsx format."
         ):
-            Action(function=export_data(file_format="xlsx"))
+            export_data(file_format="xlsx").pre_build()
 
 
 @pytest.fixture

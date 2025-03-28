@@ -113,7 +113,7 @@ class AgGrid(VizroBaseModel):
         source_table_actions = _get_component_actions(_get_parent_model(ctd_cellClicked["id"]))
 
         for action in source_table_actions:
-            # TODO NEXT A 1: simplify this as in
+            # TODO-AV2 A 1: simplify this as in
             #  https://github.com/mckinsey/vizro/pull/1054/commits/f4c8c5b153f3a71b93c018e9f8c6f1b918ca52f6
             #  Potentially this function would move to the filter_interaction action. That will be deprecated so
             #  no need to worry too much if it doesn't work well, but we'll need to do something similar for the
@@ -131,6 +131,8 @@ class AgGrid(VizroBaseModel):
         self._input_component_id = self.figure._arguments.get("id", f"__input_{self.id}")
 
     def build(self):
+        # Most of the theming in AgGrid is controlled through CSS in `aggrid.css`. However, this callback is necessary
+        # to ensure that all grid elements, such as menu icons and filter icons, are consistent with the theme.
         clientside_callback(
             ClientsideFunction(namespace="dashboard", function_name="update_ag_grid_theme"),
             Output(self._input_component_id, "className"),

@@ -8,6 +8,7 @@ from pycafe_utils import (
     PyCafeConfig,
     create_github_client,
     create_status_check,
+    fetch_package_versions,
     generate_link,
 )
 
@@ -19,20 +20,19 @@ def test_pycafe_link(url: str, wait_for_text: str):
         page = browser.new_page()
 
         try:
-            # Navigate to the page and wait for network to be idle
-            page.goto(url, wait_until="networkidle")
+            # Navigate to the page
+            page.goto(url, timeout=60000)
 
             # Get the app frame and wait for title
             frame = page.frame_locator("#app")
-            frame.get_by_text(wait_for_text).wait_for()
+            frame.get_by_text(wait_for_text).wait_for(timeout=90000)
 
             print(f"✅ Successfully verified PyCafe link: {url}")  # noqa
             return True
 
         except Exception as e:
-            print(f"❌ Failed to verify PyCafe link: {url}")  # noqa
+            print("❌ Failed to verify PyCafe link")  # noqa
             print(f"Error: {str(e)}")  # noqa
-            page.screenshot(path="pycafe_error.png")
             return False
 
         finally:
@@ -56,8 +56,20 @@ if __name__ == "__main__":
         commit_sha=args.commit_sha,
     )
 
+    # Fetch package versions directly and update config
+    try:
+        config.vizro_version, config.vizro_ai_version = fetch_package_versions(config.repo_name, config.commit_sha)
+    except Exception as e:
+        print(f"Error fetching versions: {e}")  # noqa
+        # Keep the default values if an error occurs
+
     # Initialize GitHub connection
     repo, commit = create_github_client(config)
+
+    # Print package versions from the repository at the current commit
+    print("Fetching package versions from repository...")  # noqa
+    print(f"Vizro version from repo: {config.vizro_version}")  # noqa
+    print(f"Vizro-AI version from repo: {config.vizro_ai_version}")  # noqa
 
     # Test dev example with latest version - we currently one test this for simplicity, but this could be changed
     # This would mean that we need to change also what the wait_for_text is
@@ -71,7 +83,13 @@ if __name__ == "__main__":
     # Only create a status check if the test fails. On success, the status check will be created
     # by the create_pycafe_links_comments.py script when it posts the comment.
     if not success:
-        create_status_check(commit, dev_directory, url_generated, state="failure")
+        create_status_check(
+            commit,
+            dev_directory,
+            url_generated,
+            state="failure",
+            description="Check if PyCafe links load properly (using vizro-core dev example)",
+        )
 
     # Exit with appropriate status code
     sys.exit(0 if success else 1)

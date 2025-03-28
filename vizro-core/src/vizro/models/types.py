@@ -176,14 +176,14 @@ class CapturedCallable:
     def _arguments(self):
         # TODO: This is used twice: in _get_parametrized_config and in vm.Action and should be removed when those
         # references are removed.
-        # TODO NEXT B 1: try to subclass Mapping. Check if anything requires MutableMapping (used in Vizro AI tests
+        # TODO-AV2 B 1: try to subclass Mapping. Check if anything requires MutableMapping (used in Vizro AI tests
         #  and to set data_frame only?). Try to remove these by making special method for setting data_frame. Then
         # can remove as many uses of _arguments as possible and use .items() where suitable instead.
         return self.__bound_arguments
 
     @property
     def _function(self):
-        # TODO NEXT B 2: see if this can be removed.
+        # TODO-AV2 B 2: see if this can be removed.
         return self.__function
 
     @classmethod
@@ -526,7 +526,7 @@ ControlType = Annotated[
 [`Parameter`][vizro.models.Parameter]."""
 
 ComponentType = Annotated[
-    Union["AgGrid", "Button", "Card", "Container", "Figure", "Graph", "Table", "Tabs"],
+    Union["AgGrid", "Button", "Card", "Container", "Figure", "Graph", "Text", "Table", "Tabs"],
     Field(
         discriminator="type",
         description="Component that makes up part of the layout on the page.",
@@ -558,7 +558,7 @@ FigureWithFilterInteractionType = Union["Graph", "Table", "AgGrid"]
 FigureType = Union["Graph", "Table", "AgGrid", "Figure"]
 
 
-# TODO NEXT A 1: improve this structure. See https://github.com/mckinsey/vizro/pull/880.
+# TODO-AV2 A 1: improve this structure. See https://github.com/mckinsey/vizro/pull/880.
 # Remember filter_interaction won't be here in future.
 class _Controls(TypedDict):
     filters: list[Any]

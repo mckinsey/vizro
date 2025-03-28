@@ -118,7 +118,7 @@ class Table(VizroBaseModel):
         source_table_actions = _get_component_actions(_get_parent_model(ctd_active_cell["id"]))
 
         for action in source_table_actions:
-            # TODO NEXT A 1: simplify this as in
+            # TODO-AV2 A 1: simplify this as in
             #  https://github.com/mckinsey/vizro/pull/1054/commits/f4c8c5b153f3a71b93c018e9f8c6f1b918ca52f6
             #  Potentially this function would move to the filter_interaction action. That will be deprecated so
             #  no need to worry too much if it doesn't work well, but we'll need to do something similar for the

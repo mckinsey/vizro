@@ -19,7 +19,9 @@ class _parameter(AbstractAction):
         # This cannot be implemented as PrivateAttr(default_factory=lambda data: ...) because, unlike Field,
         # PrivateAttr does not yet support an argument to the default_factory function. See:
         # https://github.com/pydantic/pydantic/issues/10992
-        return [target.partition(".")[0] for target in self.targets]
+        # Targets without "." are implicitly added by the `Parameter._set_actions` method
+        # to handle cases where a dynamic data parameter affects a filter or its targets.
+        return [target.partition(".")[0] if "." in target else target for target in self.targets]
 
     def function(self, _controls: _Controls) -> dict[ModelID, Any]:
         """Applies _controls to charts on page once the page is opened (or refreshed).
@@ -29,7 +31,7 @@ class _parameter(AbstractAction):
 
         """
         # This is identical to _on_page_load but with self._target_ids rather than self.targets.
-        # TODO NEXT A 1: _controls is not currently used but instead taken out of the Dash context. This
+        # TODO-AV2 A 1: _controls is not currently used but instead taken out of the Dash context. This
         # will change in future once the structure of _controls has been worked out and we know how to pass ids through.
         # See https://github.com/mckinsey/vizro/pull/880
         return _get_modified_page_figures(

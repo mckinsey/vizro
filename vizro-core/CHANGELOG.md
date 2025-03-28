@@ -11,6 +11,38 @@ See the fragment files in the [changelog.d directory](https://github.com/mckinse
 
 <!-- scriv-insert-here -->
 
+<a id='changelog-0.1.35'></a>
+
+# 0.1.35 — 2025-03-18
+
+## Highlights ✨
+
+- Add `vm.Text` component to easily add arbitrary text to your dashboard. See the user guide on the [`vm.Text` component](https://vizro.readthedocs.io/en/stable/pages/user-guides/text/) for more details. ([#1061](https://github.com/mckinsey/vizro/pull/1061))
+
+## Added
+
+- Enable styling of `vm.Container` with a new argument `theme="plain"/"filled"/"outlined"`. See the user guide on [styled containers](https://vizro.readthedocs.io/en/stable/pages/user-guides/container/#styled-containers) for more details. ([#1002](https://github.com/mckinsey/vizro/pull/1002))
+
+- `DatePicker` filters update automatically when underlying dynamic data changes. See the user guide on [dynamic filters](https://vizro.readthedocs.io/en/stable/pages/user-guides/data/#filters) for more information. ([#1039](https://github.com/mckinsey/vizro/pull/1039))
+
+- Add `extra` argument to selected models to enable passing arguments directly to the underlying Dash component. ([#1032](https://github.com/mckinsey/vizro/pull/1032))
+
+- Dynamic data parameters automatically refresh the relevant dynamic filters. ([#1051](https://github.com/mckinsey/vizro/pull/1051))
+
+## Changed
+
+- Turn `AgGrid` background transparent. ([#1047](https://github.com/mckinsey/vizro/pull/1047))
+
+## Fixed
+
+- Fix a bug where an empty parameter selection incorrectly sent `[None]` to its target. ([#1026](https://github.com/mckinsey/vizro/pull/1026))
+
+- Fix `datasets_from_catalog` for `kedro>=0.19.9`. ([#1063](https://github.com/mckinsey/vizro/pull/1063))
+
+- `datasets_from_catalog` now loads the latest version of versioned datasets. ([#1063](https://github.com/mckinsey/vizro/pull/1063))
+
+- `Filter` and `Parameter` can now be initialized before their targeted components. ([#1065](https://github.com/mckinsey/vizro/pull/1065))
+
 <a id='changelog-0.1.34'></a>
 
 # 0.1.34 — 2025-02-13

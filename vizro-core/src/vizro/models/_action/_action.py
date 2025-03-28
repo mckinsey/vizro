@@ -23,7 +23,7 @@ if TYPE_CHECKING:
     from vizro.actions import export_data, filter_interaction
 
 
-# TODO NEXT A 1: improve this structure. See https://github.com/mckinsey/vizro/pull/880.
+# TODO-AV2 A 1: improve this structure. See https://github.com/mckinsey/vizro/pull/880.
 # Remember filter_interaction won't be here in future.
 class ControlsStates(TypedDict):
     filters: list[State]
@@ -62,12 +62,18 @@ class _BaseAction(VizroBaseModel):
     def _validate_dash_dependency(self, /, dependencies, *, type: Literal["output", "input"]):
         # Validate that dependencies are in the form component_id.component_property. This uses the same annotation as
         # Action.inputs/outputs.
-        # TODO NEXT A 4: in future we will expand this to also allow passing a model name without a property specified.
+        # TODO-AV2 D 2: in future we will expand this to also allow passing a model name without a property specified,
+        #  so long as _output_component_property exists - need to handle case it doesn't with error.
         #  Possibly make a built in a type hint that we can use as field annotation for runtime arguments in
         #  subclasses of AbstractAction instead of just using str. Possibly apply this to non-annotated arguments of
         #  vm.Action.function and use pydantic's validate_call to apply the same validation there for function inputs.
         #  We won't be able to do all the checks at validation time though if we need to look up a model in the model
-        #  manager.
+        #  manager. When this change is made the outputs property for filter, parameter and on_page_load should just
+        #  become `return self.targets` or similar. Consider again whether to do this translation automatically if
+        # targets is defined as a field, but sounds like bad idea since it doesn't carry over into the capture("action")
+        # style of action.
+        # TODO-AV D 3: try to enable properties that aren't Dash properties but are instead model fields e.g. header,
+        #  title. See https://github.com/mckinsey/vizro/issues/1078.
         #  Note this is needed for inputs in both vm.Action and AbstractAction but outputs only in AbstractAction.
         try:
             TypeAdapter(list[Annotated[str, StringConstraints(pattern="^[^.]+[.][^.]+$")]]).validate_python(
@@ -153,7 +159,7 @@ class _BaseAction(VizroBaseModel):
 
         Return type list[Output] is for legacy and new versions of Action. dict[str, Output] is for AbstractAction.
         """
-        # TODO NEXT A 3: enable both list and dict for both Action and AbstractAction.
+        # TODO-AV2 D 1: enable both list and dict for both Action and AbstractAction.
         if isinstance(self.outputs, list):
             # At the moment this check isn't needed because the list case only applies to vm.Action models, which has
             # pydantic validation of outputs built into the field annotation. In future when we allow AbstractAction to
@@ -297,7 +303,7 @@ class Action(_BaseAction):
         Field(json_schema_extra={"mode": "action", "import_path": "vizro.actions"}, description="Action function."),
     ]
     # inputs is a legacy field and will be deprecated. It must only be used when _legacy = True.
-    # TODO: Put in deprecation warning.
+    # TODO-AV2 C 1: Put in deprecation warning.
     inputs: list[Annotated[str, StringConstraints(pattern="^[^.]+[.][^.]+$")]] = Field(
         [],
         description="Inputs in the form `<component_id>.<property>` passed to the action function.",
@@ -314,15 +320,18 @@ class Action(_BaseAction):
 
     @property
     def _legacy(self) -> bool:
-        # TODO: Put in deprecation warning.
-        # TODO NOW: fix this.
+        # TODO-AV2 C 1: add deprecation warnings
 
         if "inputs" in self.model_fields_set:
             legacy = True
         else:
             # If all supplied arguments look like states `<component_id>.<property>` then assume it's a new type of
             # action. For the case that there's no arguments and no inputs, this gives legacy=False.
-            legacy = not all(re.fullmatch("[^.]+[.][^.]+", arg_val) for arg_val in self._runtime_args.values())
+            try:
+                legacy = not all(re.fullmatch("[^.]+[.][^.]+", arg_val) for arg_val in self._runtime_args.values())
+            except TypeError:
+                # arg_val isn't a string so it must be treated as a legacy action.
+                legacy = True
 
         logger.debug("Action with id %s, function %s, has legacy=%s", self.id, self._action_name, legacy)
         return legacy
@@ -331,7 +340,7 @@ class Action(_BaseAction):
 
     @property
     def _parameters(self) -> set[str]:
-        # TODO NEXT B 2: in future, if we improve wrapping of __call__ inside CapturedCallable (e.g. by using wrapt),
+        # TODO-AV2 B 2: in future, if we improve wrapping of __call__ inside CapturedCallable (e.g. by using wrapt),
         #  this could be done the same way as in AbstractAction and avoid looking at _function. Then we could remove
         #  this _parameters property from both Action and AbstractAction. Possibly also the _action_name one.
         #  Try and get IDE completion to work for action arguments.

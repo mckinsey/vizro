@@ -1,4 +1,4 @@
-# How to use layouts
+# How to change the layout of your page
 
 The [`Page`][vizro.models.Page] model accepts a `layout` argument that enables custom arrangement of charts and components on the screen. This guide shows how to customize the grid specifications in the [`Layout`][vizro.models.Layout].
 

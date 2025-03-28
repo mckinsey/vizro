@@ -49,6 +49,14 @@ def managers_column_only_exists_in_some():
             vm.Graph(
                 id="column_categorical_exists_2", figure=px.scatter(pd.DataFrame({"column_categorical": ["a", "b"]}))
             ),
+            vm.Graph(
+                id="column_temporal_exists_1",
+                figure=px.scatter(pd.DataFrame({"column_temporal": [datetime(2024, 1, 1)]})),
+            ),
+            vm.Graph(
+                id="column_temporal_exists_2",
+                figure=px.scatter(pd.DataFrame({"column_temporal": [datetime(2024, 1, 1), datetime(2024, 1, 2)]})),
+            ),
         ],
     )
     Vizro._pre_build()
@@ -75,6 +83,16 @@ def target_to_data_frame():
         "column_categorical_exists_2": pd.DataFrame(
             {
                 "column_categorical": ["b", "c"],
+            }
+        ),
+        "column_temporal_exists_1": pd.DataFrame(
+            {
+                "column_temporal": [datetime(2024, 1, 1), datetime(2024, 1, 2)],
+            }
+        ),
+        "column_temporal_exists_2": pd.DataFrame(
+            {
+                "column_temporal": [datetime(2024, 1, 2), datetime(2024, 1, 3)],
             }
         ),
     }
@@ -303,7 +321,7 @@ class TestFilterStaticMethods:
                         datetime(2024, 1, 1),
                     ]
                 ],
-                datetime(2024, 1, 2),
+                "2024-01-02",
                 [
                     datetime(2024, 1, 1),
                     datetime(2024, 1, 2),
@@ -316,8 +334,8 @@ class TestFilterStaticMethods:
                     ]
                 ],
                 [
-                    datetime(2024, 1, 2),
-                    datetime(2024, 1, 3),
+                    "2024-01-02",
+                    "2024-01-03",
                 ],
                 [
                     datetime(2024, 1, 1),
@@ -374,7 +392,7 @@ class TestFilterStaticMethods:
                         datetime(2024, 1, 2),
                     ]
                 ],
-                datetime(2024, 1, 3),
+                "2024-01-03",
                 (
                     datetime(2024, 1, 1),
                     datetime(2024, 1, 3),
@@ -388,8 +406,8 @@ class TestFilterStaticMethods:
                     ]
                 ],
                 [
-                    datetime(2024, 1, 3),
-                    datetime(2024, 1, 4),
+                    "2024-01-03",
+                    "2024-01-04",
                 ],
                 (
                     datetime(2024, 1, 1),
@@ -428,10 +446,6 @@ class TestFilterInstantiation:
     def test_check_target_present_valid(self):
         Filter(column="foo", targets=["scatter_chart", "bar_chart"])
 
-    def test_check_target_present_invalid(self):
-        with pytest.raises(ValueError, match="Target invalid_target not found in model_manager."):
-            Filter(column="foo", targets=["invalid_target"])
-
 
 @pytest.mark.usefixtures("managers_column_only_exists_in_some")
 class TestFilterCall:
@@ -443,10 +457,11 @@ class TestFilterCall:
             targets=["column_categorical_exists_1", "column_categorical_exists_2"],
             selector=vm.Checklist(id="test_selector_id"),
         )
+        model_manager["test_page"].controls = [filter]
         filter.pre_build()
 
-        selector_build = filter(target_to_data_frame=target_to_data_frame, current_value=["a", "b"])["test_selector_id"]
-        assert selector_build.options == ["ALL", "a", "b", "c"]
+        selector_build = filter(target_to_data_frame=target_to_data_frame, current_value=["c", "d"])["test_selector_id"]
+        assert selector_build.options == ["ALL", "a", "b", "c", "d"]
 
     def test_filter_call_numerical_valid(self, target_to_data_frame):
         filter = vm.Filter(
@@ -454,16 +469,33 @@ class TestFilterCall:
             targets=["column_numerical_exists_1", "column_numerical_exists_2"],
             selector=vm.RangeSlider(id="test_selector_id"),
         )
+        model_manager["test_page"].controls = [filter]
         filter.pre_build()
 
-        selector_build = filter(target_to_data_frame=target_to_data_frame, current_value=[1, 2])["test_selector_id"]
+        selector_build = filter(target_to_data_frame=target_to_data_frame, current_value=[3, 4])["test_selector_id"]
         assert selector_build.min == 1
-        assert selector_build.max == 3
+        assert selector_build.max == 4
+
+    def test_filter_call_temporal_valid(self, target_to_data_frame):
+        filter = vm.Filter(
+            column="column_temporal",
+            targets=["column_temporal_exists_1", "column_temporal_exists_2"],
+            selector=vm.DatePicker(id="test_selector_id"),
+        )
+        model_manager["test_page"].controls = [filter]
+        filter.pre_build()
+
+        selector_build = filter(target_to_data_frame=target_to_data_frame, current_value=["2024-01-03", "2024-01-04"])[
+            "test_selector_id"
+        ]
+        assert selector_build.minDate == datetime(2024, 1, 1)
+        assert selector_build.maxDate == datetime(2024, 1, 4)
 
     def test_filter_call_column_is_changed(self, target_to_data_frame):
         filter = vm.Filter(
             column="column_categorical", targets=["column_categorical_exists_1", "column_categorical_exists_2"]
         )
+        model_manager["test_page"].controls = [filter]
         filter.pre_build()
 
         filter._column_type = "numerical"
@@ -477,6 +509,7 @@ class TestFilterCall:
 
     def test_filter_call_selected_column_not_found_in_target(self):
         filter = vm.Filter(column="column_categorical", targets=["column_categorical_exists_1"])
+        model_manager["test_page"].controls = [filter]
         filter.pre_build()
 
         with pytest.raises(
@@ -487,6 +520,7 @@ class TestFilterCall:
 
     def test_filter_call_targeted_data_empty(self):
         filter = vm.Filter(column="column_categorical", targets=["column_categorical_exists_1"])
+        model_manager["test_page"].controls = [filter]
         filter.pre_build()
 
         with pytest.raises(
@@ -501,6 +535,10 @@ class TestFilterCall:
 
 
 class TestPreBuildMethod:
+    def test_filter_not_in_page(self):
+        with pytest.raises(ValueError, match="Control filter_id should be defined within a Page object"):
+            vm.Filter(id="filter_id", column="column_numerical").pre_build()
+
     def test_targets_default_valid(self, managers_column_only_exists_in_some):
         # Core of tests is still interface level
         filter = vm.Filter(column="column_numerical")
@@ -518,6 +556,13 @@ class TestPreBuildMethod:
         model_manager["test_page"].controls = [filter]
         filter.pre_build()
         assert filter.targets == ["column_numerical_exists_1"]
+
+    def test_targets_specific_present_invalid(self, managers_column_only_exists_in_some):
+        filter = vm.Filter(column="column_numerical", targets=["invalid_target"])
+        model_manager["test_page"].controls = [filter]
+
+        with pytest.raises(ValueError, match="Target invalid_target not found within the page test_page."):
+            filter.pre_build()
 
     def test_targets_default_invalid(self, managers_column_only_exists_in_some):
         filter = vm.Filter(column="invalid_choice")
@@ -658,10 +703,10 @@ class TestPreBuildMethod:
         [
             ("continent", vm.Checklist()),
             ("continent", vm.Dropdown()),
-            ("continent", vm.Dropdown(multi=False)),
             ("continent", vm.RadioItems()),
             ("pop", vm.Slider()),
             ("pop", vm.RangeSlider()),
+            ("year", vm.DatePicker()),
         ],
     )
     def test_filter_is_dynamic_with_dynamic_selectors(
@@ -676,20 +721,11 @@ class TestPreBuildMethod:
         assert filter.selector._dynamic
 
     @pytest.mark.usefixtures("managers_one_page_two_graphs_with_dynamic_data")
-    def test_filter_is_not_dynamic_with_non_dynamic_selectors(self, gapminder_dynamic_first_n_last_n_function):
-        data_manager["gapminder_dynamic_first_n_last_n"] = gapminder_dynamic_first_n_last_n_function
-        filter = vm.Filter(column="year", selector=vm.DatePicker())
-        model_manager["test_page"].controls = [filter]
-        filter.pre_build()
-        assert not filter._dynamic
-
-    @pytest.mark.usefixtures("managers_one_page_two_graphs_with_dynamic_data")
     @pytest.mark.parametrize(
         "test_column ,test_selector",
         [
             ("continent", vm.Checklist(options=["Africa", "Europe"])),
             ("continent", vm.Dropdown(options=["Africa", "Europe"])),
-            ("continent", vm.Dropdown(multi=False, options=["Africa", "Europe"])),
             ("continent", vm.RadioItems(options=["Africa", "Europe"])),
             ("pop", vm.Slider(min=2002)),
             ("pop", vm.Slider(max=2007)),
@@ -697,6 +733,9 @@ class TestPreBuildMethod:
             ("pop", vm.RangeSlider(min=2002)),
             ("pop", vm.RangeSlider(max=2007)),
             ("pop", vm.RangeSlider(min=2002, max=2007)),
+            ("year", vm.DatePicker(min="2002-01-01")),
+            ("year", vm.DatePicker(max="2007-01-01")),
+            ("year", vm.DatePicker(min="2002-01-01", max="2007-01-01")),
         ],
     )
     def test_filter_is_not_dynamic_with_options_min_max_specified(
@@ -864,6 +903,8 @@ class TestFilterBuild:
             ("continent", vm.RadioItems()),
             ("pop", vm.Slider()),
             ("pop", vm.RangeSlider()),
+            ("year", vm.DatePicker()),
+            ("year", vm.DatePicker(range=False)),
         ],
     )
     def test_dynamic_filter_build(self, test_column, test_selector, gapminder_dynamic_first_n_last_n_function):
@@ -882,18 +923,3 @@ class TestFilterBuild:
         )
 
         assert_component_equal(result, expected, keys_to_strip={"className"})
-
-    @pytest.mark.usefixtures("managers_one_page_two_graphs_with_dynamic_data")
-    def test_dynamic_filter_build_with_non_dynamic_selectors(self, gapminder_dynamic_first_n_last_n_function):
-        # Adding dynamic data_frame to data_manager
-        data_manager["gapminder_dynamic_first_n_last_n"] = gapminder_dynamic_first_n_last_n_function
-
-        test_selector = vm.DatePicker()
-        filter = vm.Filter(column="year", selector=test_selector)
-        model_manager["test_page"].controls = [filter]
-        filter.pre_build()
-
-        result = filter.build()
-        expected = test_selector.build()
-
-        assert_component_equal(result, expected)
