@@ -38,7 +38,7 @@ class TestFlexBuild:
         expected = html.Div(
             [],
             style={"gap": GAP_DEFAULT},
-            className="d-flex flex-column flex-nowrap overflow-auto",
+            className="d-flex flex-column flex-nowrap",
             id="flex",
         )
         assert_component_equal(result, expected)
@@ -48,7 +48,7 @@ class TestFlexBuild:
         expected = html.Div(
             [],
             style={"gap": "40px"},
-            className="d-flex flex-row flex-wrap overflow-auto",
+            className="d-flex flex-row flex-wrap",
             id="flex",
         )
         assert_component_equal(result, expected)

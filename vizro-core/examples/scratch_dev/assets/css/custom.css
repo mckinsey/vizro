@@ -30,5 +30,8 @@ to set sensible default values that always work. Eventually set a height / width
 instead? Probably best to ask P. here. */
 .table-container {
   height: 450px;
-  width: 1000px;
+}
+
+.container-fluid {
+  overflow: auto;
 }
