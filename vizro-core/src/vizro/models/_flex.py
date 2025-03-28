@@ -49,7 +49,7 @@ class Flex(VizroBaseModel):
         component_container = html.Div(
             [],
             style={"gap": self.gap},
-            className=f"d-flex flex-{self.direction} {bs_wrap}",
+            className=f"d-flex flex-{self.direction} {bs_wrap} overflow-auto",
             id=self.id,
         )
         return component_container
