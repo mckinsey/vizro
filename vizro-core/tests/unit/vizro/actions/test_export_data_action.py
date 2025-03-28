@@ -101,7 +101,11 @@ def ctx_export_data(request):
                     "filters": (
                         [
                             CallbackTriggerDict(
-                                id="pop_filter", property="value", value=pop_filter, str_id="pop_filter", triggered=False
+                                id="pop_filter",
+                                property="value",
+                                value=pop_filter,
+                                str_id="pop_filter",
+                                triggered=False,
                             )
                         ]
                         if pop_filter
@@ -133,8 +137,11 @@ def ctx_export_data_filter_and_parameter(request):
                     "filters": (
                         [
                             CallbackTriggerDict(
-                                id="pop_filter", property="value", value=pop_filter, str_id="pop_filter",
-                                triggered=False
+                                id="pop_filter",
+                                property="value",
+                                value=pop_filter,
+                                str_id="pop_filter",
+                                triggered=False,
                             )
                         ]
                         if pop_filter
@@ -209,7 +216,9 @@ class TestExportData:
 
     @pytest.mark.usefixtures("managers_one_page_two_graphs_one_button")
     @pytest.mark.parametrize(
-        "ctx_export_data", [(["scatter_chart", "box_chart"], None, None, None)], indirect=True,
+        "ctx_export_data",
+        [(["scatter_chart", "box_chart"], None, None, None)],
+        indirect=True,
     )
     def test_graphs_false_targets(self, ctx_export_data, gapminder_2007):
         # Add action to relevant component

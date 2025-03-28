@@ -9,11 +9,10 @@ from dash import dcc
 import vizro.models as vm
 import vizro.plotly.express as px
 from vizro import Vizro
-from vizro.managers import data_manager, model_manager
 from vizro.actions._abstract_action import AbstractAction
+from vizro.managers import data_manager, model_manager
 from vizro.models._action._actions_chain import ActionsChain
 from vizro.models._controls.filter import Filter, _filter_between, _filter_isin
-from vizro.models.types import CapturedCallable
 
 
 @pytest.fixture

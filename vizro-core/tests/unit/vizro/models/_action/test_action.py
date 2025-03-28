@@ -237,9 +237,7 @@ class TestActionPrivateMethods:
         ):
             action._action_callback_function(inputs={}, outputs=callback_outputs)
 
-    @pytest.mark.parametrize(
-        "custom_action_function_mock_return", [None, False, 0, 123], indirect=True
-    )
+    @pytest.mark.parametrize("custom_action_function_mock_return", [None, False, 0, 123], indirect=True)
     def test_action_callback_function_outputs_list_return_value_not_collection(
         self, custom_action_function_mock_return
     ):

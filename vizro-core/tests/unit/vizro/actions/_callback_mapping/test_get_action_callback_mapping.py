@@ -67,8 +67,7 @@ def config_for_testing_all_components_with_actions(request, dash_data_table_with
                 actions=[
                     vm.Action(
                         function=filter_interaction(
-                            id="table_filter_interaction_action",
-                            targets=["scatter_chart", "scatter_chart_2"]
+                            id="table_filter_interaction_action", targets=["scatter_chart", "scatter_chart_2"]
                         ),
                     )
                 ],

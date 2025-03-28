@@ -2,11 +2,10 @@ import pytest
 from asserts import assert_component_equal
 
 import vizro.models as vm
-from vizro.managers import data_manager, model_manager
 from vizro.actions._abstract_action import AbstractAction
+from vizro.managers import data_manager, model_manager
 from vizro.models._action._actions_chain import ActionsChain
 from vizro.models._controls.parameter import Parameter
-from vizro.models.types import CapturedCallable
 
 
 @pytest.mark.usefixtures("managers_one_page_two_graphs")

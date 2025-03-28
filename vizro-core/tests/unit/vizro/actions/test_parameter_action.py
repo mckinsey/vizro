@@ -223,9 +223,7 @@ def ctx_parameter_data_frame_argument(request):
 
     mock_ctx = {
         "args_grouping": {
-            "external": {
-                "_controls": {"filters": dynamic_filters, "filter_interaction": [], "parameters": parameters}
-            }
+            "external": {"_controls": {"filters": dynamic_filters, "filter_interaction": [], "parameters": parameters}}
         },
         "outputs_list": [
             {"id": {"action_id": "test_action", "target_id": target, "type": "download_dataframe"}, "property": "data"}
