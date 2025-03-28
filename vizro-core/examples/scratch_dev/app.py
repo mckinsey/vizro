@@ -77,7 +77,7 @@ page_grid = vm.Page(
             collapse=True,
             variant="outlined",
             layout=vm.Layout(grid=[[0, 1]]),
-        )
+        ),
     ],
 )
 
