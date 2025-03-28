@@ -50,7 +50,7 @@ class Container(VizroBaseModel):
         description="Predefined styles to choose from. Options are `plain`, `filled` or `outlined`."
         "Defaults to `plain`.",
     )
-    collapse: Optional[bool] = None
+    collapse: Optional[bool] = Field(default=None, description="Boolean flag for enabling collapse behavior.")
     extra: SkipJsonSchema[
         Annotated[
             dict[str, Any],
@@ -74,13 +74,13 @@ class Container(VizroBaseModel):
 
         if self.collapse is not None:
             clientside_callback(
-                ClientsideFunction(namespace="container", function_name="toggle_container"),
+                ClientsideFunction(namespace="container", function_name="collapse_container"),
                 output=[
-                    Output(f"{self.id}_main_container", "is_open"),
+                    Output(f"{self.id}_collapse", "is_open"),
                     Output(f"{self.id}_icon", "style"),
                     Output(f"{self.id}_tooltip", "children"),
                 ],
-                inputs=[Input(f"{self.id}_title", "n_clicks"), State(f"{self.id}_main_container", "is_open")],
+                inputs=[Input(f"{self.id}_title", "n_clicks"), State(f"{self.id}_collapse", "is_open")],
             )
 
         variants = {"plain": "", "filled": "bg-container p-3", "outlined": "border p-3"}
@@ -120,33 +120,31 @@ class Container(VizroBaseModel):
 
     def _build_container(self):
         """Returns collapsible container."""
-
         if self.collapse is None:
             return self._build_inner_layout()
 
         return dbc.Collapse(
-                id=f"{self.id}_main_container",
-                children=self._build_inner_layout(),
-                is_open=not self.collapse,
-                className="collapsible-container",
-            )
+            id=f"{self.id}_collapse",
+            children=self._build_inner_layout(),
+            is_open=not self.collapse,
+            className="collapsible-container",
+            key=self.id,
+        )
 
     def _build_container_title(self):
         """Returns container title."""
+        title_content = [self.title]
 
-        if self.collapse is None:
-            return html.H3(id=f"{self.id}_title", children=self.title, className="container-title")
-
-        return html.Div(
-                id=f"{self.id}_title",
-                children=[
-                    html.H3(children=self.title, className="container-title"),
+        if self.collapse is not None:
+            title_content.extend(
+                [
                     html.Span("keyboard_arrow_up", className="material-symbols-outlined", id=f"{self.id}_icon"),
                     dbc.Tooltip(
                         id=f"{self.id}_tooltip",
-                        children="Show Content",
+                        children="Show Content" if self.collapse else "Hide Content",
                         target=f"{self.id}_icon",
                     ),
-                ],
-                className="collapsible-header",
+                ]
             )
+
+        return html.H3(children=title_content, className="container-title", id=f"{self.id}_title")

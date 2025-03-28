@@ -234,21 +234,18 @@
   overflow: auto;
 }
 
-
-.collapsible-header {
+.container-title {
   align-items: center;
   display: flex;
-  height: 28px;
   justify-content: space-between;
-  padding-right: 1rem;
 }
 
-.collapsible-header .material-symbols-outlined {
+.container-title .material-symbols-outlined {
   color: var(--text-secondary);
   cursor: pointer;
 }
 
-.collapsible-header .material-symbols-outlined:hover {
+.container-title .material-symbols-outlined:hover {
   color: var(--text-primaryHover);
 }
 
@@ -256,7 +253,6 @@
   flex: 1;
   overflow: auto;
 }
-
 
 .container-fluid:has(.collapse:not(.show)) {
   height: 60px; /* height of title (28px) + 2 x container padding (16px) */

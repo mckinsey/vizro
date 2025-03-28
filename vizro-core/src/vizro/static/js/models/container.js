@@ -1,4 +1,4 @@
-function toggle_container(n_clicks, is_open) {
+function collapse_container(n_clicks, is_open) {
   if (!n_clicks) {
     if (is_open) {
       return [
@@ -24,5 +24,5 @@ function toggle_container(n_clicks, is_open) {
 
 window.dash_clientside = {
   ...window.dash_clientside,
-  container: { toggle_container: toggle_container },
+  container: { collapse_container: collapse_container },
 };
