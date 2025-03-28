@@ -22,7 +22,9 @@ def _parameter(targets: list[str], **inputs: dict[str, Any]) -> dict[ModelID, An
         Dict mapping target component ids to modified charts/components e.g. {'my_scatter': Figure({})}
 
     """
-    target_ids: list[ModelID] = [target.split(".")[0] for target in targets]  # type: ignore[misc]
+    # Targets without "." are implicitly added by the `Parameter._set_actions` method
+    # to handle cases where a dynamic data parameter affects a filter or its targets.
+    target_ids: list[ModelID] = [target.split(".")[0] if "." in target else target for target in targets]  # type: ignore[misc]
 
     return _get_modified_page_figures(
         ctds_filter=ctx.args_grouping["external"]["filters"],
