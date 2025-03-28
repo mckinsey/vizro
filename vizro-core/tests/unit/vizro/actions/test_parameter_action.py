@@ -75,17 +75,19 @@ def ctx_parameter_y(request):
     mock_ctx = {
         "args_grouping": {
             "external": {
-                "filter_interaction": [],
-                "filters": [],
-                "parameters": [
-                    CallbackTriggerDict(
-                        id="y_parameter",
-                        property="value",
-                        value=y,
-                        str_id="y_parameter",
-                        triggered=False,
-                    )
-                ],
+                "_controls": {
+                    "filter_interaction": [],
+                    "filters": [],
+                    "parameters": [
+                        CallbackTriggerDict(
+                            id="y_parameter",
+                            property="value",
+                            value=y,
+                            str_id="y_parameter",
+                            triggered=False,
+                        )
+                    ],
+                }
             }
         }
     }
@@ -100,17 +102,19 @@ def ctx_parameter_dimensions(request):
     mock_ctx = {
         "args_grouping": {
             "external": {
-                "filter_interaction": [],
-                "filters": [],
-                "parameters": [
-                    CallbackTriggerDict(
-                        id="dimensions_parameter",
-                        property="value",
-                        value=y,
-                        str_id="dimensions_parameter",
-                        triggered=False,
-                    )
-                ],
+                "_controls": {
+                    "filter_interaction": [],
+                    "filters": [],
+                    "parameters": [
+                        CallbackTriggerDict(
+                            id="dimensions_parameter",
+                            property="value",
+                            value=y,
+                            str_id="dimensions_parameter",
+                            triggered=False,
+                        )
+                    ],
+                }
             }
         }
     }
@@ -125,17 +129,19 @@ def ctx_parameter_hover_data(request):
     mock_ctx = {
         "args_grouping": {
             "external": {
-                "filter_interaction": [],
-                "filters": [],
-                "parameters": [
-                    CallbackTriggerDict(
-                        id="hover_data_parameter",
-                        property="value",
-                        value=hover_data,
-                        str_id="hover_data_parameter",
-                        triggered=False,
-                    )
-                ],
+                "_controls": {
+                    "filter_interaction": [],
+                    "filters": [],
+                    "parameters": [
+                        CallbackTriggerDict(
+                            id="hover_data_parameter",
+                            property="value",
+                            value=hover_data,
+                            str_id="hover_data_parameter",
+                            triggered=False,
+                        )
+                    ],
+                }
             }
         }
     }
@@ -150,24 +156,26 @@ def ctx_parameter_y_and_x(request):
     mock_ctx = {
         "args_grouping": {
             "external": {
-                "filter_interaction": [],
-                "filters": [],
-                "parameters": [
-                    CallbackTriggerDict(
-                        id="y_parameter",
-                        property="value",
-                        value=y,
-                        str_id="y_parameter",
-                        triggered=False,
-                    ),
-                    CallbackTriggerDict(
-                        id="x_parameter",
-                        property="value",
-                        value=x,
-                        str_id="x_parameter",
-                        triggered=False,
-                    ),
-                ],
+                "_controls": {
+                    "filter_interaction": [],
+                    "filters": [],
+                    "parameters": [
+                        CallbackTriggerDict(
+                            id="y_parameter",
+                            property="value",
+                            value=y,
+                            str_id="y_parameter",
+                            triggered=False,
+                        ),
+                        CallbackTriggerDict(
+                            id="x_parameter",
+                            property="value",
+                            value=x,
+                            str_id="x_parameter",
+                            triggered=False,
+                        ),
+                    ],
+                }
             }
         }
     }
@@ -214,7 +222,9 @@ def ctx_parameter_data_frame_argument(request):
         )
 
     mock_ctx = {
-        "args_grouping": {"external": {"filters": dynamic_filters, "filter_interaction": [], "parameters": parameters}},
+        "args_grouping": {
+            "external": {"_controls": {"filters": dynamic_filters, "filter_interaction": [], "parameters": parameters}}
+        },
         "outputs_list": [
             {"id": {"action_id": "test_action", "target_id": target, "type": "download_dataframe"}, "property": "data"}
             for target in targets
@@ -245,7 +255,7 @@ class TestParameter:
         y_parameter.pre_build()
 
         # Run action by picking the above added action function and executing it with ()
-        result = model_manager[f"{PARAMETER_ACTION_PREFIX}_test_parameter"].function()
+        result = model_manager[f"{PARAMETER_ACTION_PREFIX}_test_parameter"].function(_controls=None)
         expected = {"scatter_chart": target_scatter_parameter_y}
 
         assert result == expected
@@ -279,7 +289,7 @@ class TestParameter:
         y_parameter.pre_build()
 
         # Run action by picking the above added action function and executing it with ()
-        result = model_manager[f"{PARAMETER_ACTION_PREFIX}_test_parameter"].function()
+        result = model_manager[f"{PARAMETER_ACTION_PREFIX}_test_parameter"].function(_controls=None)
         expected = {"scatter_chart": target_scatter_parameter_hover_data}
 
         assert result == expected
@@ -303,7 +313,7 @@ class TestParameter:
         y_parameter.pre_build()
 
         # Run action by picking the above added action function and executing it with ()
-        result = model_manager[f"{PARAMETER_ACTION_PREFIX}_test_parameter"].function()
+        result = model_manager[f"{PARAMETER_ACTION_PREFIX}_test_parameter"].function(_controls=None)
         expected = {"scatter_chart": target_scatter_parameter_y, "box_chart": target_box_parameter_y}
 
         assert result == expected
@@ -333,7 +343,7 @@ class TestParameter:
         x_parameter.pre_build()
 
         # Run action by picking the above added action function and executing it with ()
-        result = model_manager[f"{PARAMETER_ACTION_PREFIX}_test_parameter_x"].function()
+        result = model_manager[f"{PARAMETER_ACTION_PREFIX}_test_parameter_x"].function(_controls=None)
         expected = {"scatter_chart": target_scatter_parameter_y_and_x}
 
         assert result == expected
@@ -368,7 +378,7 @@ class TestParameter:
         x_parameter.pre_build()
 
         # Run action by picking the above added action function and executing it with ()
-        result = model_manager[f"{PARAMETER_ACTION_PREFIX}_test_parameter_x"].function()
+        result = model_manager[f"{PARAMETER_ACTION_PREFIX}_test_parameter_x"].function(_controls=None)
         expected = {"scatter_chart": target_scatter_parameter_y_and_x, "box_chart": target_box_parameter_y_and_x}
 
         assert result == expected
@@ -403,12 +413,12 @@ class TestParameter:
         box_parameter.pre_build()
 
         # Run action by picking the above added action function and executing it with ()
-        result = model_manager[f"{PARAMETER_ACTION_PREFIX}_test_parameter_scatter"].function()
+        result = model_manager[f"{PARAMETER_ACTION_PREFIX}_test_parameter_scatter"].function(_controls=None)
         expected = {"scatter_chart": target_scatter_parameter_y_and_x}
 
         assert result == expected
 
-        result = model_manager[f"{PARAMETER_ACTION_PREFIX}_test_parameter_box"].function()
+        result = model_manager[f"{PARAMETER_ACTION_PREFIX}_test_parameter_box"].function(_controls=None)
         expected = {"box_chart": target_box_parameter_y_and_x}
 
         assert result == expected
@@ -449,7 +459,7 @@ class TestParameter:
         last_n_parameter.pre_build()
 
         # Run action by picking the above added action function and executing it with ()
-        result = model_manager[f"{PARAMETER_ACTION_PREFIX}_test_data_frame_parameter"].function()
+        result = model_manager[f"{PARAMETER_ACTION_PREFIX}_test_data_frame_parameter"].function(_controls=None)
 
         expected = {
             "scatter_chart": target_scatter_parameter_data_frame_first_n_last_n,
@@ -504,7 +514,7 @@ class TestParameter:
         last_n_parameter.pre_build()
 
         # Run action by picking the above added action function and executing it with ()
-        result = model_manager[f"{PARAMETER_ACTION_PREFIX}_test_data_frame_parameter"].function()
+        result = model_manager[f"{PARAMETER_ACTION_PREFIX}_test_data_frame_parameter"].function(_controls=None)
 
         expected = {
             "scatter_chart": target_scatter_parameter_data_frame_first_n_last_n,
@@ -556,7 +566,7 @@ class TestParameter:
         first_n_parameter.pre_build()
 
         # Run action by picking the above added action function and executing it with ()
-        result_figures = model_manager[f"{PARAMETER_ACTION_PREFIX}_test_data_frame_parameter"].function()
+        result_figures = model_manager[f"{PARAMETER_ACTION_PREFIX}_test_data_frame_parameter"].function(_controls=None)
 
         # Result and expected dynamic filter object
         result_dynamic_filter = result_figures.pop("dynamic_filter_id")
@@ -598,7 +608,7 @@ class TestParameter:
         dimensions_parameter.pre_build()
 
         # Run action by picking the above added action function and executing it with ()
-        result = model_manager[f"{PARAMETER_ACTION_PREFIX}_test_parameter_dimensions"].function()
+        result = model_manager[f"{PARAMETER_ACTION_PREFIX}_test_parameter_dimensions"].function(_controls=None)
         expected = {"scatter_matrix_chart": target_scatter_matrix_parameter_dimensions}
 
         assert result == expected

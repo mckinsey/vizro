@@ -79,9 +79,11 @@ def ctx_filter_interaction(request):
     mock_ctx = {
         "args_grouping": {
             "external": {
-                "filters": [],
-                "filter_interaction": args_grouping_filter_interaction,
-                "parameters": [],
+                "_controls": {
+                    "filters": [],
+                    "filter_interaction": args_grouping_filter_interaction,
+                    "parameters": [],
+                }
             }
         }
     }
@@ -122,10 +124,10 @@ class TestFilterInteraction:
         self, ctx_filter_interaction
     ):
         # Add action to relevant component - here component[0] is the source_chart
-        model_manager["box_chart"].actions = [vm.Action(id="test_action", function=filter_interaction())]
+        model_manager["box_chart"].actions = [vm.Action(function=filter_interaction(id="test_action"))]
 
         # Run action by picking the above added action function and executing it with ()
-        result = model_manager["test_action"].function()
+        result = model_manager["test_action"].function(_controls=None)
         expected = {}
 
         assert result == expected
@@ -144,10 +146,10 @@ class TestFilterInteraction:
         self, ctx_filter_interaction, target_scatter_filtered_continent, target_box_filtered_continent
     ):
         # Add action to relevant component - here component[0] is the source_chart
-        model_manager["box_chart"].actions = [vm.Action(id="test_action", function=filter_interaction())]
+        model_manager["box_chart"].actions = [vm.Action(function=filter_interaction(id="test_action"))]
 
         # Run action by picking the above added action function and executing it with ()
-        result = model_manager["test_action"].function()
+        result = model_manager["test_action"].function(_controls=None)
         expected = {"scatter_chart": target_scatter_filtered_continent, "box_chart": target_box_filtered_continent}
 
         assert result == expected
@@ -164,11 +166,11 @@ class TestFilterInteraction:
     def test_filter_interaction_with_one_target(self, ctx_filter_interaction, target_scatter_filtered_continent):
         # Add action to relevant component - here component[0] is the source_chart
         model_manager["box_chart"].actions = [
-            vm.Action(id="test_action", function=filter_interaction(targets=["scatter_chart"]))
+            vm.Action(function=filter_interaction(id="test_action", targets=["scatter_chart"]))
         ]
 
         # Run action by picking the above added action function and executing it with ()
-        result = model_manager["test_action"].function()
+        result = model_manager["test_action"].function(_controls=None)
         expected = {"scatter_chart": target_scatter_filtered_continent}
 
         assert result == expected
@@ -187,23 +189,23 @@ class TestFilterInteraction:
     ):
         # Add action to relevant component - here component[0] is the source_chart
         model_manager["box_chart"].actions = [
-            vm.Action(id="test_action", function=filter_interaction(targets=["scatter_chart", "box_chart"]))
+            vm.Action(function=filter_interaction(id="test_action", targets=["scatter_chart", "box_chart"]))
         ]
 
         # Run action by picking the above added action function and executing it with ()
-        result = model_manager["test_action"].function()
+        result = model_manager["test_action"].function(_controls=None)
         expected = {"scatter_chart": target_scatter_filtered_continent, "box_chart": target_box_filtered_continent}
 
         assert result == expected
 
     @pytest.mark.xfail  # This (or similar code) should raise a Value/Validation error explaining next steps
-    @pytest.mark.parametrize("target", ["scatter_chart", ["scatter_chart"]])
+    @pytest.mark.parametrize("target", ["invalid_target", ["invalid_target"]])
     @pytest.mark.parametrize("ctx_filter_interaction", [("Africa", None, None), ("Europe", None, None)], indirect=True)
     def test_filter_interaction_with_invalid_targets(self, target, ctx_filter_interaction):
         with pytest.raises(ValueError, match="Target invalid_target not found in model_manager."):
             # Add action to relevant component - here component[0] is the source_chart
             model_manager["box_chart"].actions = [
-                vm.Action(id="test_action", function=filter_interaction(targets=target))
+                vm.Action(function=filter_interaction(id="test_action", targets=target))
             ]
 
     @pytest.mark.parametrize(
@@ -217,14 +219,14 @@ class TestFilterInteraction:
     )
     def test_table_filter_interaction_with_one_target(self, ctx_filter_interaction, target_scatter_filtered_continent):
         model_manager["box_chart"].actions = [
-            vm.Action(id="test_action", function=filter_interaction(targets=["scatter_chart"]))
+            vm.Action(function=filter_interaction(id="test_action", targets=["scatter_chart"]))
         ]
 
         model_manager["vizro_table"].actions = [vm.Action(function=filter_interaction(targets=["scatter_chart"]))]
         model_manager["vizro_table"].pre_build()
 
         # Run action by picking the above added action function and executing it with ()
-        result = model_manager["test_action"].function()
+        result = model_manager["test_action"].function(_controls=None)
         expected = {"scatter_chart": target_scatter_filtered_continent}
 
         assert result == expected
@@ -246,12 +248,12 @@ class TestFilterInteraction:
         ]
 
         model_manager["vizro_table"].actions = [
-            vm.Action(id="test_action", function=filter_interaction(targets=["scatter_chart", "box_chart"]))
+            vm.Action(function=filter_interaction(id="test_action", targets=["scatter_chart", "box_chart"]))
         ]
         model_manager["vizro_table"].pre_build()
 
         # Run action by picking the above added action function and executing it with ()
-        result = model_manager["test_action"].function()
+        result = model_manager["test_action"].function(_controls=None)
         expected = {"scatter_chart": target_scatter_filtered_continent, "box_chart": target_box_filtered_continent}
 
         assert result == expected
@@ -275,12 +277,12 @@ class TestFilterInteraction:
         ]
 
         model_manager["ag_grid"].actions = [
-            vm.Action(id="test_action", function=filter_interaction(targets=["scatter_chart", "box_chart"]))
+            vm.Action(function=filter_interaction(id="test_action", targets=["scatter_chart", "box_chart"]))
         ]
         model_manager["ag_grid"].pre_build()
 
         # Run action by picking the above added action function and executing it with ()
-        result = model_manager["test_action"].function()
+        result = model_manager["test_action"].function(_controls=None)
         expected = {"scatter_chart": target_scatter_filtered_continent, "box_chart": target_box_filtered_continent}
 
         assert result == expected
@@ -298,7 +300,7 @@ class TestFilterInteraction:
         self, ctx_filter_interaction, target_scatter_filtered_continent, target_box_filtered_continent
     ):
         model_manager["box_chart"].actions = [
-            vm.Action(id="test_action", function=filter_interaction(targets=["scatter_chart", "box_chart"]))
+            vm.Action(function=filter_interaction(id="test_action", targets=["scatter_chart", "box_chart"]))
         ]
 
         model_manager["vizro_table"].actions = [
@@ -307,7 +309,7 @@ class TestFilterInteraction:
         model_manager["vizro_table"].pre_build()
 
         # Run action by picking the above added action function and executing it with ()
-        result = model_manager["test_action"].function()
+        result = model_manager["test_action"].function(_controls=None)
         expected = {"scatter_chart": target_scatter_filtered_continent, "box_chart": target_box_filtered_continent}
 
         assert result == expected
