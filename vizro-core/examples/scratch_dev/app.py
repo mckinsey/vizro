@@ -44,14 +44,14 @@ page_1 = vm.Page(
             id="button",
             text="Export data to CSV",
             # actions=[export_data(targets=["scatter_relation_2007"], runtime_arg="button.n_clicks")],
-            actions=[vm.Action(function=export_data(targets=["scatter_relation_2007"], runtime_arg="button.n_clicks"))],
+            actions=[vm.Action(function=export_data(targets=["scatter_relation_2007"]))],
             # TODO NOW CHECK
         ),
         vm.Button(
             id="button2",
             text="Export data to Excel",
             actions=[
-                export_data(targets=["scatter_relation_2007"], file_format="xlsx", runtime_arg="button2.n_clicks")
+                export_data(targets=["scatter_relation_2007"], file_format="xlsx")
             ],
             # actions=[vm.Action(function=export_data(targets=["scatter_relation_2007"], file_format="xlsx"))],
             # TODO NOW CHECK
