@@ -349,6 +349,26 @@ page24 = vm.Page(
     ],
 )
 
+
+page25 = vm.Page(
+    title="FlexItem - dimension - graphs",
+    layout=vm.Flex(direction="row", wrap=True),
+    components=[vm.Graph(figure=px.violin(tips, y="tip", x="day", color="day", box=True, width=300)) for i in range(6)],
+)
+
+page26 = vm.Page(
+    title="FlexItem - dimension - tables",
+    layout=vm.Flex(direction="row", wrap=True),
+    components=[vm.Table(figure=dash_data_table(tips, style_table={"width": "300px"})) for i in range(3)],
+)
+
+page27 = vm.Page(
+    title="FlexItem - dimension - aggrid",
+    layout=vm.Flex(direction="row", wrap=True),
+    components=[vm.AgGrid(figure=dash_ag_grid(tips, style={"width": 300})) for i in range(3)],
+)
+
+
 dashboard = vm.Dashboard(
     pages=[
         page1,
@@ -375,6 +395,9 @@ dashboard = vm.Dashboard(
         page22,
         page23,
         page24,
+        page25,
+        page26,
+        page27,
     ],
     title="Test out Flex/Grid",
 )
