@@ -28,7 +28,7 @@ dependencies = [
   "autoflake",
   "packaging"
 ]
-description = "Vizro is a package to facilitate visual analytics."
+description = "Vizro is a low-code framework for building high-quality data visualization apps."
 dynamic = ["version"]
 license-files = {paths = ["LICENSE.txt"]}
 name = "vizro"

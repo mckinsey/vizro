@@ -16,23 +16,34 @@ from e2e.vizro.paths import tab_path, theme_toggle_path
     indirect=["dash_br"],
 )
 def test_themes(dash_br, dashboard_id):
+    """Test switching the themes and checking the graph and theme color."""
     page_select(dash_br, page_path=cnst.FILTERS_PAGE_PATH, page_name=cnst.FILTERS_PAGE, graph_id=cnst.SCATTER_GRAPH_ID)
 
     if dashboard_id == cnst.DASHBOARD_DEFAULT:
+        # dashboard loaded with light theme
         check_graph_color(dash_br, style_background=cnst.STYLE_TRANSPARENT, color=cnst.RGBA_TRANSPARENT)
         check_theme_color(dash_br, color=cnst.THEME_LIGHT)
+
+        # switch theme to dark
         dash_br.multiple_click(theme_toggle_path(), 1)
         check_graph_color(dash_br, style_background=cnst.STYLE_TRANSPARENT, color=cnst.RGBA_TRANSPARENT)
         check_theme_color(dash_br, color=cnst.THEME_DARK)
+
+        # switch theme back to light
         dash_br.multiple_click(theme_toggle_path(), 1)
         check_graph_color(dash_br, style_background=cnst.STYLE_TRANSPARENT, color=cnst.RGBA_TRANSPARENT)
         check_theme_color(dash_br, color=cnst.THEME_LIGHT)
     else:
+        # dashboard loaded with dark theme
         check_graph_color(dash_br, style_background=cnst.STYLE_TRANSPARENT, color=cnst.RGBA_TRANSPARENT)
         check_theme_color(dash_br, color=cnst.THEME_DARK)
+
+        # switch theme to light
         dash_br.multiple_click(theme_toggle_path(), 1)
         check_graph_color(dash_br, style_background=cnst.STYLE_TRANSPARENT, color=cnst.RGBA_TRANSPARENT)
         check_theme_color(dash_br, color=cnst.THEME_LIGHT)
+
+        # switch theme back to dark
         dash_br.multiple_click(theme_toggle_path(), 1)
         check_graph_color(dash_br, style_background=cnst.STYLE_TRANSPARENT, color=cnst.RGBA_TRANSPARENT)
         check_theme_color(dash_br, color=cnst.THEME_DARK)
@@ -45,6 +56,7 @@ def test_themes(dash_br, dashboard_id):
     indirect=["dash_br"],
 )
 def test_ag_grid_themes(dash_br, dashboard_id):
+    """Test switching themes for ag_grid."""
     accordion_select(
         dash_br, accordion_name=cnst.AG_GRID_ACCORDION.upper(), accordion_number=cnst.AG_GRID_ACCORDION_NUMBER
     )
@@ -55,11 +67,17 @@ def test_ag_grid_themes(dash_br, dashboard_id):
         graph_id=cnst.BOX_AG_GRID_PAGE_ID,
     )
     if dashboard_id == cnst.DASHBOARD_DEFAULT:
+        # dashboard loaded with light theme
         check_ag_grid_theme_color(dash_br, ag_grid_id=cnst.TABLE_AG_GRID_ID, color=cnst.AG_GRID_LIGHT)
+
+        # switch theme to dark
         dash_br.multiple_click(theme_toggle_path(), 1)
         check_ag_grid_theme_color(dash_br, ag_grid_id=cnst.TABLE_AG_GRID_ID, color=cnst.AG_GRID_DARK)
     else:
+        # dashboard loaded with dark theme
         check_ag_grid_theme_color(dash_br, ag_grid_id=cnst.TABLE_AG_GRID_ID, color=cnst.AG_GRID_DARK)
+
+        # switch theme to light
         dash_br.multiple_click(theme_toggle_path(), 1)
         check_ag_grid_theme_color(dash_br, ag_grid_id=cnst.TABLE_AG_GRID_ID, color=cnst.AG_GRID_LIGHT)
 
@@ -71,19 +89,23 @@ def test_ag_grid_themes(dash_br, dashboard_id):
     indirect=["dash_br"],
 )
 def test_themes_page_change(dash_br, dashboard_id):
+    """Test switching themes after reloading the page with two tabs."""
     page_select(
         dash_br,
         page_path=cnst.PARAMETERS_PAGE_PATH,
         page_name=cnst.PARAMETERS_PAGE,
         graph_id=cnst.BAR_GRAPH_ID,
     )
-    dash_br.multiple_click(theme_toggle_path(), 1)
 
     def _logic(style_background, graph_color, theme_color):
         check_graph_color(dash_br, style_background=style_background, color=graph_color)
         check_theme_color(dash_br, color=theme_color)
+
+        # switch to the second tab
         dash_br.multiple_click(tab_path(tab_id=cnst.PARAMETERS_SUB_TAB_ID, classname="nav-link"), 1)
         check_graph_color(dash_br, style_background=style_background, color=graph_color)
+
+        # simulate reloading the page
         page_select(
             dash_br,
             page_path=cnst.FILTERS_PAGE_PATH,
@@ -96,14 +118,22 @@ def test_themes_page_change(dash_br, dashboard_id):
             page_name=cnst.PARAMETERS_PAGE,
             graph_id=cnst.BAR_GRAPH_ID,
         )
+
+        # check that second tab still active
         dash_br.wait_for_text_to_equal(
             tab_path(tab_id=cnst.PARAMETERS_SUB_TAB_ID, classname="active nav-link"),
             cnst.PARAMETERS_SUB_TAB_CONTAINER_TWO,
         )
+
+        # check that graph and theme color is the same as before page reload
         check_graph_color(dash_br, style_background=style_background, color=graph_color)
         check_theme_color(dash_br, color=theme_color)
 
     if dashboard_id == cnst.DASHBOARD_DEFAULT:
+        # dashboard switched to dark theme
+        dash_br.multiple_click(theme_toggle_path(), 1)
         _logic(style_background=cnst.STYLE_TRANSPARENT, graph_color=cnst.RGBA_TRANSPARENT, theme_color=cnst.THEME_DARK)
     else:
+        # dashboard switched to light theme
+        dash_br.multiple_click(theme_toggle_path(), 1)
         _logic(style_background=cnst.STYLE_TRANSPARENT, graph_color=cnst.RGBA_TRANSPARENT, theme_color=cnst.THEME_LIGHT)

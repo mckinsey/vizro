@@ -19,7 +19,16 @@ from vizro.actions._filter_action import _filter
 from vizro.actions._parameter_action import _parameter
 from vizro.actions._on_page_load import _on_page_load
 
+# Since pydantic==2.11.0 we need to rebuilt more than the Dashboard model
+# The below model rebuilds are the minimal set of models that need to be rebuilt,
+# presumably because they contain types that are not fully resolved during the initial build.
 Dashboard.model_rebuild()
+Page.model_rebuild()
+Container.model_rebuild()
+NavBar.model_rebuild()
+NavLink.model_rebuild()
+Navigation.model_rebuild()
+Tabs.model_rebuild()
 
 
 __all__ = [
