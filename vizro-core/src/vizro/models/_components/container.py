@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from typing import TYPE_CHECKING, Annotated, Any, Literal, Optional, cast
+from typing import Annotated, Any, Literal, Optional, cast
 
 import dash_bootstrap_components as dbc
 from dash import html
@@ -11,9 +11,6 @@ from vizro.models import VizroBaseModel
 from vizro.models._layout import set_layout
 from vizro.models._models_utils import _log_call, check_captured_callable_model
 from vizro.models.types import ComponentType, LayoutType
-
-if TYPE_CHECKING:
-    pass
 
 
 class Container(VizroBaseModel):

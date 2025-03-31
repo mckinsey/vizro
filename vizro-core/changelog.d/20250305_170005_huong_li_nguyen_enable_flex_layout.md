@@ -7,7 +7,7 @@ Uncomment the section that is right (remove the HTML comment wrapper).
 
 ### Highlights ✨
 
-- Add `Flex` model support to the `layout` argument. ([#1050](https://github.com/mckinsey/vizro/pull/1050))
+- Add `Flex` model support to the `layout` argument of the `Page` and `Container`. See the user guide on the `Flex` layout for more details. ([#1050](https://github.com/mckinsey/vizro/pull/1050))
 
 
 <!--
