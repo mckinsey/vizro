@@ -8,15 +8,15 @@ from vizro.models import Action
 from vizro.models._action._actions_chain import _action_validator_factory
 from vizro.models._base import VizroBaseModel, _log_call
 
-# Case 2: Entirely new component (actually exists, but for ease of explanation chosen)
+# Entirely new component (actually exists, but for ease of explanation chosen)
 SingleOptionType = Union[bool, float, str]
 MultiOptionType = Union[list[bool], list[float], list[str]]
 
 
-class NewDropdown(VizroBaseModel):
+class CustomDropdown(VizroBaseModel):
     """Categorical single/multi-selector `Dropdown` to be provided to `Filter`."""
 
-    type: Literal["new-dropdown"] = "new-dropdown"
+    type: Literal["custom-dropdown"] = "custom-dropdown"
     options: Optional[MultiOptionType] = Field(default=None, description="Possible options the user can select from")
     value: Optional[Union[SingleOptionType, MultiOptionType]] = Field(
         default=None, description="Options that are selected by default"
@@ -53,5 +53,4 @@ class NewDropdown(VizroBaseModel):
 
 
 # Important: Add new components to expected type - here the selector of the parent components
-vm.Filter.add_type("selector", NewDropdown)
-vm.Parameter.add_type("selector", NewDropdown)
+vm.Filter.add_type("selector", CustomDropdown)

@@ -205,7 +205,9 @@ class Graph(VizroBaseModel):
             children=html.Div(
                 children=[
                     html.H3(self.title, className="figure-title", id=f"{self.id}_title") if self.title else None,
-                    dcc.Markdown(self.header, className="figure-header") if self.header else None,
+                    dcc.Markdown(self.header, className="figure-header", id=f"{self.id}_header")
+                    if self.header
+                    else None,
                     dcc.Graph(
                         id=self.id,
                         figure=go.Figure(
@@ -223,7 +225,9 @@ class Graph(VizroBaseModel):
                             "modeBarButtonsToRemove": ["toImage"],
                         },
                     ),
-                    dcc.Markdown(self.footer, className="figure-footer") if self.footer else None,
+                    dcc.Markdown(self.footer, className="figure-footer", id=f"{self.id}_footer")
+                    if self.footer
+                    else None,
                 ],
                 className="figure-container",
             ),
