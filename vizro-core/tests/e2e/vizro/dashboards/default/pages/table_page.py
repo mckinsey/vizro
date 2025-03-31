@@ -26,15 +26,15 @@ table_page = vm.Page(
         vm.Filter(column="year", selector=vm.Dropdown(value=2007)),
         vm.Filter(
             column="continent",
-            selector=vm.RadioItems(options=["Europe", "Africa", "Americas"]),
+            selector=vm.RadioItems(id=cnst.RADIOITEMS_TABLE_FILTER, options=["Europe", "Africa", "Americas"]),
         ),
         vm.Filter(
             column="continent",
-            selector=vm.Checklist(options=["Asia", "Oceania"]),
+            selector=vm.Checklist(id=cnst.CHECKLIST_TABLE_FILTER, options=["Asia", "Oceania"]),
         ),
         vm.Filter(
             column="pop",
-            selector=vm.RangeSlider(step=1000000.0, min=1000000, max=10000000),
+            selector=vm.RangeSlider(id=cnst.RANGESLIDER_TABLE_FILTER, step=1000000.0, min=1000000, max=10000000),
         ),
     ],
 )

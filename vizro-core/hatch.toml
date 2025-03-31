@@ -16,6 +16,7 @@ dependencies = [
   "pytest",
   "pytest-mock",
   "pytest-rerunfailures",
+  "pytest-split",
   "freezegun>=1.5.0",
   "dash[testing]",
   "chromedriver-autoinstaller>=0.6.4",
