@@ -98,3 +98,7 @@ class TestContainerBuildMethod:
             result.children[0].children[1],
             html.Span("keyboard_arrow_up", className="material-symbols-outlined", id="test_icon"),
         )
+        # We want to test if correct class_name has been applied
+        assert_component_equal(
+            result, dbc.Container(class_name="border p-3", fluid=True), keys_to_strip={"children", "id"}
+        )

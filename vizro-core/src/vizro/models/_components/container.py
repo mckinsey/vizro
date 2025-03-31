@@ -92,7 +92,7 @@ class Container(VizroBaseModel):
                 self._build_container(),
             ],
             "fluid": True,
-            "class_name": variants[self.variant],
+            "class_name": variants[self.variant] if self.collapse is None else variants["outlined"],
         }
 
         return dbc.Container(**(defaults | self.extra))
