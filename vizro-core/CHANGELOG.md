@@ -11,6 +11,14 @@ See the fragment files in the [changelog.d directory](https://github.com/mckinse
 
 <!-- scriv-insert-here -->
 
+<a id='changelog-0.1.36'></a>
+
+# 0.1.36 — 2025-03-31
+
+## Changed
+
+- Add an `id` to the header and footer HTML elements of `Graph`, `Table`, and `AgGrid` to enable targeting through actions/callbacks. ([#1080](https://github.com/mckinsey/vizro/pull/1080))
+
 <a id='changelog-0.1.35'></a>
 
 # 0.1.35 — 2025-03-18
