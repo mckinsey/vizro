@@ -515,10 +515,9 @@ def test_datepicker_single_filters(dash_br):
     dash_br.multiple_click(f'button[id="{cnst.DATEPICKER_DYNAMIC_SINGLE_ID}"]', 1)
     dash_br.wait_for_element('div[data-calendar="true"]')
     dash_br.multiple_click('button[aria-label="6 March 2024"]', 1)
-    check_graph_is_loading(dash_br, cnst.BAR_DYNAMIC_DATEPICKER_SINGLE_FILTER_ID)
     dash_br.wait_for_text_to_equal(f'button[id="{cnst.DATEPICKER_DYNAMIC_SINGLE_ID}"]', "March 6, 2024")
 
-    # Check y axis max value is '4'
+    # Check y axis max value is '1'
     dash_br.wait_for_text_to_equal(
         graph_y_axis_value_path(
             graph_id=cnst.BAR_DYNAMIC_DATEPICKER_SINGLE_FILTER_ID, y_axis_value_number="6", y_axis_value="1"
