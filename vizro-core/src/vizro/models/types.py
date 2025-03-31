@@ -13,6 +13,7 @@ from typing import Annotated, Any, Literal, NewType, Protocol, TypeAlias, TypedD
 import plotly.io as pio
 import pydantic_core as cs
 from pydantic import Field, StrictBool, ValidationInfo
+from pydantic.json_schema import SkipJsonSchema
 
 from vizro.charts._charts_utils import _DashboardReadyFigure
 
@@ -545,8 +546,21 @@ NavSelectorType = Annotated[
 """Discriminated union. Type of component for rendering navigation:
 [`Accordion`][vizro.models.Accordion] or [`NavBar`][vizro.models.NavBar]."""
 
+# JSONSchema should be skipped for private actions that are not part of the public API.
+# In addition, `_filter` doesn't have a well defined schema due the Callables,
+# so if we were to include it, the JSONSchema would need to be defined.
+# TODO: Note that atm ActionsType violates our (and pydantic's) convention that the type of the model ensures
+# the type AFTER validation. Since ActionsType is used as annotation for the actions field,
+# this is not true as long as we convert to ActionsChain.
 ActionsType = Annotated[
-    Union["Action", "export_data", "filter_interaction", "_filter", "_parameter", "_on_page_load"],
+    Union[
+        "Action",
+        "export_data",
+        "filter_interaction",
+        SkipJsonSchema["_filter"],
+        SkipJsonSchema["_parameter"],
+        SkipJsonSchema["_on_page_load"],
+    ],
     Field(discriminator="type", description=""),
 ]
 """Discriminated union. Type of action: [`Action`][vizro.models.Action], [`export_data`][vizro.models.export_data] or [
