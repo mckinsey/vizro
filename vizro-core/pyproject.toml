@@ -20,10 +20,7 @@ dependencies = [
   "dash-ag-grid>=31.0.0",
   "pandas>=2",
   "plotly>=5.24.0",
-  # must be <= the version in pre-commit mypy hook, sync manually
-  # Hotfix currently sets upper bound on pydantic due to deprecations introduced in
-  # https://github.com/pydantic/pydantic/releases/tag/v2.11.0
-  "pydantic>=2.7.0,<2.11.0",
+  "pydantic>=2.7.0",  # must be <= the version in pre-commit mypy hook, sync manually
   "dash_mantine_components~=0.15.1",
   "flask_caching>=2",
   "wrapt>=1",
@@ -31,7 +28,7 @@ dependencies = [
   "autoflake",
   "packaging"
 ]
-description = "Vizro is a package to facilitate visual analytics."
+description = "Vizro is a low-code framework for building high-quality data visualization apps."
 dynamic = ["version"]
 license-files = {paths = ["LICENSE.txt"]}
 name = "vizro"
