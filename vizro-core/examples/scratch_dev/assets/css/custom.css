@@ -6,7 +6,7 @@
 and all containers need to have a white background on that page */
 [data-bs-theme="light"] #right-side:has(.bg-container),
 [data-bs-theme="light"] #right-side:has(.card){
-  /*Use --surfaces-bg02 or --surfaces-bg03 or */
+  /* Use --surfaces-bg02 or --surfaces-bg03 or */
   background: var(--surfaces-bg03);
 }
 
@@ -22,13 +22,13 @@ and all containers need to have a white background on that page */
 }
 
 
-/* Turn off jumping of card-nav*/
+/* Turn off jumping of card-nav */
 #page-components {
   padding-top: 0;
 }
 
 .card-nav:hover {
+  border: 2px solid var(--border-subtleAlpha02);
   transform: unset;
   will-change: unset;
-  border: 2px solid var(--border-subtleAlpha02);
 }
