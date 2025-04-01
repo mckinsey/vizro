@@ -530,7 +530,7 @@ NavSelectorType = Annotated[
 
 LayoutType = Annotated[
     Union["Layout", "Flex"],
-    Field(discriminator="type", description="Type of layout to place components on the page."),
+    Field(description="Type of layout to place components on the page."),
 ]
 """Discriminated union. Type of layout to place components on the page: [`Layout`][vizro.models.Layout] or
 [`Flex`][vizro.models.Flex]."""
