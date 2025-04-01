@@ -28,7 +28,7 @@ dependencies = [
   "autoflake",
   "packaging"
 ]
-description = "Vizro is a package to facilitate visual analytics."
+description = "Vizro is a low-code framework for building high-quality data visualization apps."
 dynamic = ["version"]
 license-files = {paths = ["LICENSE.txt"]}
 name = "vizro"
@@ -37,7 +37,7 @@ requires-python = ">=3.9"
 
 [project.optional-dependencies]
 kedro = [
-  "kedro>=0.19.0",
+  "kedro>=0.19.0,<1.0",  # remove once we have tested the released Kedro 1.0
   "kedro-datasets"  # no longer a dependency of kedro for kedro>=0.19.2
 ]
 

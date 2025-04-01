@@ -1,21 +1,27 @@
-from typing import Literal
+from typing import Annotated, Any, Literal
 
 import dash_bootstrap_components as dbc
 from dash import dcc, get_relative_path
 from pydantic import Field
+from pydantic.json_schema import SkipJsonSchema
 
 from vizro.models import VizroBaseModel
 from vizro.models._models_utils import _log_call
 
 
 class Card(VizroBaseModel):
-    """Creates a card utilizing `dcc.Markdown` as title and text component.
+    """Creates a card based on Markdown syntax.
 
     Args:
         type (Literal["card"]): Defaults to `"card"`.
         text (str): Markdown string to create card title/text that should adhere to the CommonMark Spec.
         href (str): URL (relative or absolute) to navigate to. If not provided the Card serves as a text card
             only. Defaults to `""`.
+        extra (Optional[dict[str, Any]]): Extra keyword arguments that are passed to `dbc.Card` and overwrite any
+            defaults chosen by the Vizro team. This may have unexpected behavior.
+            Visit the [dbc documentation](https://dash-bootstrap-components.opensource.faculty.ai/docs/components/card/)
+            to see all available arguments. [Not part of the official Vizro schema](../explanation/schema.md) and the
+            underlying component may change in the future. Defaults to `{}`.
 
     """
 
@@ -27,6 +33,19 @@ class Card(VizroBaseModel):
         "",
         description="URL (relative or absolute) to navigate to. If not provided the Card serves as a text card only.",
     )
+    extra: SkipJsonSchema[
+        Annotated[
+            dict[str, Any],
+            Field(
+                default={},
+                description="""Extra keyword arguments that are passed to `dbc.Card` and overwrite any
+            defaults chosen by the Vizro team. This may have unexpected behavior.
+            Visit the [dbc documentation](https://dash-bootstrap-components.opensource.faculty.ai/docs/components/card/)
+            to see all available arguments. [Not part of the official Vizro schema](../explanation/schema.md) and the
+            underlying component may change in the future. Defaults to `{}`.""",
+            ),
+        ]
+    ]
 
     @_log_call
     def build(self):
@@ -41,5 +60,9 @@ class Card(VizroBaseModel):
             else text
         )
 
-        card_class = "card-nav" if self.href else ""
-        return dbc.Card(children=card_content, className=card_class)
+        defaults = {
+            "children": card_content,
+            "class_name": "card-nav" if self.href else "",
+        }
+
+        return dbc.Card(**(defaults | self.extra))

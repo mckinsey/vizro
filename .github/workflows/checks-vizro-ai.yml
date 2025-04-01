@@ -41,6 +41,9 @@ jobs:
       - name: Show dependency tree
         run: hatch run pip tree
 
+      - name: Install vizro-core to check compatibility with vizro-ai
+        run: hatch run pip install ../vizro-core
+
       - name: Find changed files to see if changelog fragment needed
         id: changed-files
         if: ${{ github.event_name == 'pull_request' }}

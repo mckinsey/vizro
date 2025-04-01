@@ -3,16 +3,64 @@
 import base64
 import gzip
 import json
+import re
 import textwrap
 from dataclasses import dataclass
 from typing import Optional
 from urllib.parse import quote, urlencode
 
 import requests
-import vizro
 from github import Auth, Github
 from github.Commit import Commit
 from github.Repository import Repository
+
+
+# Function to extract version string from file content using regex
+def _extract_version(content: str) -> str:
+    version_match = re.search(r'__version__\s*=\s*["\']([^"\']+)["\']', content)
+    if version_match:
+        return version_match.group(1)
+    return "unknown"
+
+
+def fetch_package_versions(repo_name: str, commit_sha: str) -> tuple[str, str]:
+    """Fetch package versions directly from the repository files.
+
+    This function retrieves the version strings from the __init__.py files of vizro and vizro-ai
+    packages for the specific commit being tested.
+
+    Args:
+        repo_name: Name of the GitHub repository
+        commit_sha: The commit SHA to fetch versions from
+
+    Returns:
+        A tuple with (vizro_version, vizro_ai_version)
+    """
+    vizro_version = "unknown"
+    vizro_ai_version = "unknown"
+
+    # Define paths to __init__.py files that contain version information
+    version_files = {"vizro": "vizro-core/src/vizro/__init__.py", "vizro-ai": "vizro-ai/src/vizro_ai/__init__.py"}
+
+    # Fetch each file and extract the version
+    for package, file_path in version_files.items():
+        url = f"https://raw.githubusercontent.com/{repo_name}/{commit_sha}/{file_path}"
+        try:
+            response = requests.get(url, timeout=10)
+            response.raise_for_status()
+            content = response.text
+
+            # Update the appropriate version
+            version = _extract_version(content)
+            if package == "vizro" and version != "unknown":
+                vizro_version = version
+            elif package == "vizro-ai" and version != "unknown":
+                vizro_ai_version = version
+
+        except Exception as e:
+            print(f"Failed to fetch version for {package}: {str(e)}")  # noqa
+
+    return vizro_version, vizro_ai_version
 
 
 @dataclass
@@ -26,7 +74,8 @@ class PyCafeConfig:
     pr_number: Optional[int] = None
     pycafe_url: str = "https://py.cafe"
     vizro_raw_url: str = "https://raw.githubusercontent.com/mckinsey/vizro"
-    package_version: str = vizro.__version__
+    vizro_version: str = "unknown"
+    vizro_ai_version: str = "unknown"
 
 
 def create_github_client(config: PyCafeConfig) -> tuple[Repository, Commit]:
@@ -44,7 +93,17 @@ def _get_vizro_requirement(config: PyCafeConfig, use_latest_release: bool = Fals
         return "vizro"
     return (
         f"{config.pycafe_url}/gh/artifact/mckinsey/vizro/actions/runs/{config.run_id}/"
-        f"pip/vizro-{config.package_version}-py3-none-any.whl"
+        f"pip/vizro-{config.vizro_version}-py3-none-any.whl"
+    )
+
+
+def _get_vizro_ai_requirement(config: PyCafeConfig, use_latest_release: bool = False) -> str:
+    """Get the Vizro AI requirement string for PyCafe."""
+    if use_latest_release:
+        return "vizro-ai"
+    return (
+        f"{config.pycafe_url}/gh/artifact/mckinsey/vizro/actions/runs/{config.run_id}/"
+        f"pip2/vizro_ai-{config.vizro_ai_version}-py3-none-any.whl"
     )
 
 
@@ -80,12 +139,18 @@ def generate_link(
     base_url = f"{config.vizro_raw_url}/{config.commit_sha}/{directory_path}"
 
     # Requirements - either use latest release or commit's wheel file
-    requirements = "\n".join(
-        [
-            _get_vizro_requirement(config, use_latest_release),
-            *(extra_requirements or []),
-        ]
-    )
+    requirements = []
+    if directory_path.startswith("vizro-ai/"):
+        # An example in this folder may require the latest vizro-ai and vizro-core releases
+        requirements.extend(
+            [_get_vizro_ai_requirement(config, use_latest_release), _get_vizro_requirement(config, use_latest_release)]
+        )
+    else:
+        # All other examples do not require vizro-ai, but still the latest vizro-core release
+        requirements.extend([_get_vizro_requirement(config, use_latest_release)])
+
+    if extra_requirements:
+        requirements.extend(extra_requirements)
 
     # App file - get current commit, and modify to remove if clause
     app_content = _fetch_app_content(base_url)
@@ -96,7 +161,7 @@ def generate_link(
     # JSON object
     json_object = {
         "code": app_content,
-        "requirements": requirements,
+        "requirements": "\n".join(requirements),
         "files": [
             {
                 "name": file["path"].removeprefix(f"{directory_path}"),
@@ -125,9 +190,14 @@ def generate_comparison_links(
     }
 
 
-def create_status_check(commit: Commit, directory: str, url: str, state: str = "success"):
+def create_status_check(
+    commit: Commit,
+    directory: str,
+    url: str,
+    state: str = "success",
+    description: str = "Test out the app live on PyCafe",
+):
     """Create a GitHub status check for a PyCafe link."""
-    description = "Test out the app live on PyCafe"
     context = f"PyCafe Example ({directory})"
     commit.create_status(state=state, target_url=url, description=description, context=context)
     print(f"Status created for {context} with URL: {url}")  # noqa
@@ -144,8 +214,8 @@ def get_example_directories() -> dict[str, Optional[list[str]]]:
             "isort==5.13.2",
             "plotly==5.24.1",
         ],
+        "vizro-core/examples/tutorial/": None,
         "vizro-ai/examples/dashboard_ui/": [
-            "vizro-ai>=0.3.0",
             "black",
             "openpyxl",
             "langchain_anthropic",

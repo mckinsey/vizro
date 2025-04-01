@@ -121,6 +121,8 @@ class AgGrid(VizroBaseModel):
         self._input_component_id = self.figure._arguments.get("id", f"__input_{self.id}")
 
     def build(self):
+        # Most of the theming in AgGrid is controlled through CSS in `aggrid.css`. However, this callback is necessary
+        # to ensure that all grid elements, such as menu icons and filter icons, are consistent with the theme.
         clientside_callback(
             ClientsideFunction(namespace="dashboard", function_name="update_ag_grid_theme"),
             Output(self._input_component_id, "className"),
@@ -131,7 +133,9 @@ class AgGrid(VizroBaseModel):
             children=html.Div(
                 children=[
                     html.H3(self.title, className="figure-title", id=f"{self.id}_title") if self.title else None,
-                    dcc.Markdown(self.header, className="figure-header") if self.header else None,
+                    dcc.Markdown(self.header, className="figure-header", id=f"{self.id}_header")
+                    if self.header
+                    else None,
                     # The Div component with `id=self._input_component_id` is rendered during the build phase.
                     # This placeholder component is quickly replaced by the actual AgGrid object, which is generated
                     # using a filtered data_frame and parameterized arguments as part of the on_page_load mechanism.
@@ -144,7 +148,9 @@ class AgGrid(VizroBaseModel):
                         children=[html.Div(id=self._input_component_id)],
                         className="table-container",
                     ),
-                    dcc.Markdown(self.footer, className="figure-footer") if self.footer else None,
+                    dcc.Markdown(self.footer, className="figure-footer", id=f"{self.id}_footer")
+                    if self.footer
+                    else None,
                 ],
                 className="figure-container",
             ),
