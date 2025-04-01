@@ -4,7 +4,7 @@ This guide shows you how to use containers to group your components into section
 
 A [Container][vizro.models.Container] complements a [Page][vizro.models.Page], and both models share nearly identical arguments. While `Page.layout` provides a method for structuring the overall page layout, a `Container` offers more detailed control within a particular section of the page. The `Container` is based on the underlying Dash component [`dbc.Container`](https://dash-bootstrap-components.opensource.faculty.ai/docs/components/layout/).
 
-Unlike `Page`, the `Container` includes a `variant` argument. This enables you to choose a style for your container to visually distinguish it from the rest of the page content. Additional functionality will soon be added to the Container, including controls specific to it, which will further enhance the management of related components.
+Unlike `Page`, the `Container` includes a `variant` and `collapse` arguments. The `variant` argument enables you to choose a style for your container to visually distinguish it from the rest of the page content. The `collapse` argument enables you to make the container collapsible, defining whether its contents is initially hidden or visible. Additional functionality will soon be added to the Container, including controls specific to it, which will further enhance the management of related components.
 
 !!! note "Displaying multiple containers inside Tabs"
     An alternative way to display multiple containers on one page is to place them inside [Tabs](tabs.md).
@@ -238,6 +238,76 @@ To make the `Container` stand out as a distinct section in your dashboard, you c
 
 If you want to style your `Container` beyond the styling options available inside `variant`, please refer to our user guide on [overwriting CSS for selected components](custom-css.md#overwrite-css-for-selected-components).
 
+## The collapsible containers
+
+To make a `Container` collapsible, set the `collapse` argument to `True` to start in a collapsed state or `False` to have it expanded by default. This allows you to toggle the container's visibility as needed.
+
+!!! example "Collapsible container"
+    === "app.py"
+        ```{.python pycafe-link}
+        import vizro.models as vm
+        import vizro.plotly.express as px
+        from vizro import Vizro
+
+        iris = px.data.iris()
+
+        page = vm.Page(
+            title="Collapsible containers",
+            layout=vm.Layout(grid=[[0, 1]]),
+            components=[
+                vm.Container(
+                    title="Initially collapsed container",
+                    components=[vm.Graph(figure=px.scatter(iris, x="sepal_width", y="sepal_length", color="species"))],
+                    collapse=True,
+                ),
+                vm.Container(
+                    title="Initially expanded container",
+                    components=[vm.Graph(figure=px.box(iris, x="species", y="sepal_length", color="species"))],
+                    collapse=False,
+                )
+            ],
+        )
+
+        dashboard = vm.Dashboard(pages=[page])
+        Vizro().build(dashboard).run()
+        ```
+
+    === "app.yaml"
+        ```yaml
+        # Still requires a .py to add data to the data manager and parse YAML configuration
+        # See yaml_version example
+        pages:
+          - title: Collapsible containers
+            layout:
+              grid: [[0, 1]]
+            components:
+              - type: container
+                title: Initially collapsed container
+                components:
+                  - type: graph
+                    figure:
+                      _target_: scatter
+                      data_frame: iris
+                      x: sepal_width
+                      y: sepal_length
+                      color: species
+                collapse: true
+              - type: container
+                title: Initially expanded container
+                components:
+                  - type: graph
+                    figure:
+                      _target_: box
+                      data_frame: iris
+                      x: species
+                      y: sepal_length
+                      color: species
+                collapse: false
+        ```
+
+    === "Result"
+        [![CollapsibleContainer]][collapsiblecontainer]
+
 ## The `extra` argument
 
 The `Container` is based on the underlying Dash component [`dbc.Container`](https://dash-bootstrap-components.opensource.faculty.ai/docs/components/layout/). Using the `extra` argument you can pass additional arguments to `dbc.Container` in order to alter it beyond the chosen defaults.
@@ -247,5 +317,6 @@ The `Container` is based on the underlying Dash component [`dbc.Container`](http
 
 For examples of how to use the `extra` argument, see an example in the documentation of [`Card`](card.md#the-extra-argument).
 
+[collapsiblecontainer]: ../../assets/user_guides/components/collapsible-containers.gif
 [container]: ../../assets/user_guides/components/containers.png
 [stylecontainer]: ../../assets/user_guides/components/container-styled.png
