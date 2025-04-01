@@ -126,6 +126,7 @@ datepicker_page = vm.Page(
         vm.Filter(
             column="time",
             selector=vm.DatePicker(
+                id=cnst.DATEPICKER_RANGE_ID,
                 title="Pick a date range",
                 value=["2016-05-16", "2016-05-19"],
                 max="2016-06-01",
@@ -134,7 +135,7 @@ datepicker_page = vm.Page(
         ),
         vm.Filter(
             column="time",
-            selector=vm.DatePicker(title="Pick a date", range=False),
+            selector=vm.DatePicker(id=cnst.DATEPICKER_SINGLE_ID, title="Pick a date", range=False),
             targets=[cnst.TABLE_POP_DATE_ID, cnst.BAR_POP_DATE_ID],
         ),
     ],

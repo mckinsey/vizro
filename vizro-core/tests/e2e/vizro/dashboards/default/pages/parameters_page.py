@@ -84,28 +84,34 @@ parameters_page = vm.Page(
     ],
     controls=[
         vm.Parameter(
-            targets=[f"{cnst.HISTOGRAM_GRAPH_ID}.color_discrete_map.setosa"],
-            selector=vm.Dropdown(options=["NONE", "red", "blue"], multi=False, value="blue"),
+            targets=[f"{cnst.BAR_GRAPH_ID}.color_discrete_map.virginica"],
+            selector=vm.Dropdown(
+                id=cnst.DROPDOWN_PARAMETERS_TWO, options=["NONE", "red", "blue"], multi=False, value="blue"
+            ),
         ),
         vm.Parameter(
-            targets=[f"{cnst.BAR_GRAPH_ID}.color_discrete_map.virginica"],
-            selector=vm.Dropdown(options=["NONE", "red", "blue"], multi=False, value="blue"),
+            targets=[f"{cnst.HISTOGRAM_GRAPH_ID}.color_discrete_map.setosa"],
+            selector=vm.Dropdown(
+                id=cnst.DROPDOWN_PARAMETERS_ONE, options=["NONE", "red", "blue"], multi=False, value="blue"
+            ),
         ),
         vm.Parameter(
             targets=[f"{cnst.BAR_GRAPH_ID}.title", f"{cnst.HISTOGRAM_GRAPH_ID}.title"],
-            selector=vm.RadioItems(options=["red", "blue"], value="blue"),
+            selector=vm.RadioItems(id=cnst.RADIO_ITEMS_PARAMETERS_ONE, options=["red", "blue"], value="blue"),
         ),
         vm.Parameter(
             targets=[f"{cnst.BAR_GRAPH_ID}.y"],
-            selector=vm.RadioItems(options=["petal_width", "petal_length"], value="petal_width"),
+            selector=vm.RadioItems(
+                id=cnst.RADIO_ITEMS_PARAMETERS_TWO, options=["petal_width", "petal_length"], value="petal_width"
+            ),
         ),
         vm.Parameter(
             targets=[f"{cnst.BAR_GRAPH_ID}.opacity"],
-            selector=vm.Slider(min=0, max=1, value=0.2, step=0.2, title="Bubble opacity"),
+            selector=vm.Slider(id=cnst.SLIDER_PARAMETERS, min=0, max=1, value=0.2, step=0.2, title="Bubble opacity"),
         ),
         vm.Parameter(
             targets=[f"{cnst.HISTOGRAM_GRAPH_ID}.range_x"],
-            selector=vm.RangeSlider(min=4, max=8, step=1.0, title="Range X Histogram"),
+            selector=vm.RangeSlider(id=cnst.RANGE_SLIDER_PARAMETERS, min=4, max=8, step=1.0, title="Range X Histogram"),
         ),
     ],
 )
