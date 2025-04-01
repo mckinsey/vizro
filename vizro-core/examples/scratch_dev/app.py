@@ -359,13 +359,13 @@ page25 = vm.Page(
 page26 = vm.Page(
     title="FlexItem - dimension - tables",
     layout=vm.Flex(direction="row", wrap=True),
-    components=[vm.Table(figure=dash_data_table(tips, style_table={"width": "300px"})) for i in range(3)],
+    components=[vm.Table(figure=dash_data_table(tips, style_table={"width": "1000px"})) for i in range(3)],
 )
 
 page27 = vm.Page(
     title="FlexItem - dimension - aggrid",
     layout=vm.Flex(direction="row", wrap=True),
-    components=[vm.AgGrid(figure=dash_ag_grid(tips, style={"width": 300})) for i in range(3)],
+    components=[vm.AgGrid(figure=dash_ag_grid(tips, style={"width": 1000})) for i in range(3)],
 )
 
 

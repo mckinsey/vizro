@@ -8,5 +8,5 @@
 Specifications are taken from default height/width of Plotly charts. */
 .flex-item .table-container {
   height: 450px;
-  max-width: 700px;
+  width: 700px;
 }
