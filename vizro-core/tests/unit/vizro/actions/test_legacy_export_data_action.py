@@ -179,7 +179,7 @@ class TestExportData:
     @pytest.mark.parametrize("ctx_export_data", [([[], None, None, None])], indirect=True)
     def test_no_graphs_no_targets(self, ctx_export_data):
         # Add action to relevant component
-        model_manager["button"].actions = [export_data(id="test_action")]
+        model_manager["button"].actions = [vm.Action(function=export_data(id="test_action"))]
 
         # Run action by picking the above added action function and executing it with ()
         result = model_manager["test_action"].function(_controls=None)
@@ -191,7 +191,7 @@ class TestExportData:
     @pytest.mark.parametrize("ctx_export_data", [([["scatter_chart", "box_chart"], None, None, None])], indirect=True)
     def test_graphs_no_targets(self, ctx_export_data, gapminder_2007):
         # Add action to relevant component
-        model_manager["button"].actions = [export_data(id="test_action")]
+        model_manager["button"].actions = [vm.Action(function=export_data(id="test_action"))]
         action = model_manager["test_action"]
         action.pre_build()
 
@@ -222,7 +222,7 @@ class TestExportData:
     )
     def test_graphs_false_targets(self, ctx_export_data, gapminder_2007):
         # Add action to relevant component
-        model_manager["button"].actions = [export_data(id="test_action")]
+        model_manager["button"].actions = [vm.Action(function=export_data(id="test_action"))]
         action = model_manager["test_action"]
         action.pre_build()
 
@@ -249,7 +249,7 @@ class TestExportData:
     @pytest.mark.parametrize("ctx_export_data", [(["scatter_chart"], None, None, None)], indirect=True)
     def test_one_target(self, ctx_export_data, gapminder_2007):
         # Add action to relevant component
-        model_manager["button"].actions = [export_data(id="test_action", targets=["scatter_chart"])]
+        model_manager["button"].actions = [vm.Action(function=export_data(id="test_action", targets=["scatter_chart"]))]
         action = model_manager["test_action"]
         action.pre_build()
 
@@ -270,7 +270,9 @@ class TestExportData:
     @pytest.mark.parametrize("ctx_export_data", [(["scatter_chart", "box_chart"], None, None, None)], indirect=True)
     def test_multiple_targets(self, ctx_export_data, gapminder_2007):
         # Add action to relevant component
-        model_manager["button"].actions = [export_data(id="test_action", targets=["scatter_chart", "box_chart"])]
+        model_manager["button"].actions = [
+            vm.Action(function=export_data(id="test_action", targets=["scatter_chart", "box_chart"]))
+        ]
 
         # Run action by picking the above added action function and executing it with ()
         result = model_manager["test_action"].function(_controls=None)
@@ -295,7 +297,9 @@ class TestExportData:
     @pytest.mark.parametrize("ctx_export_data", [(["invalid_target_id"], None, None, None)], indirect=True)
     def test_invalid_target(self, ctx_export_data):
         # Add action to relevant component
-        model_manager["button"].actions = [export_data(id="test_action", targets=["invalid_target_id"])]
+        model_manager["button"].actions = [
+            vm.Action(function=export_data(id="test_action", targets=["invalid_target_id"]))
+        ]
         action = model_manager["test_action"]
 
         with pytest.raises(ValueError, match="targets {'invalid_target_id'} are not valid figures on the page."):
@@ -329,10 +333,14 @@ class TestExportData:
         pop_filter.pre_build()
 
         # Add filter_interaction Action to scatter_chart component
-        model_manager["box_chart"].actions = [filter_interaction(id="filter_interaction", targets=["scatter_chart"])]
+        model_manager["box_chart"].actions = [
+            vm.Action(function=filter_interaction(id="filter_interaction", targets=["scatter_chart"]))
+        ]
 
         # Add export_data action to relevant component
-        model_manager["button"].actions = [export_data(id="test_action", targets=["scatter_chart", "box_chart"])]
+        model_manager["button"].actions = [
+            vm.Action(function=export_data(id="test_action", targets=["scatter_chart", "box_chart"]))
+        ]
 
         # Run action by picking the above added export_data action function and executing it with ()
         result = model_manager["test_action"].function(_controls=None)
@@ -381,14 +389,18 @@ class TestExportData:
         pop_filter.pre_build()
 
         # Add filter_interaction Action to scatter_chart component
-        model_manager["box_chart"].actions = [filter_interaction(id="filter_interaction", targets=["scatter_chart"])]
+        model_manager["box_chart"].actions = [
+            vm.Action(function=filter_interaction(id="filter_interaction", targets=["scatter_chart"]))
+        ]
 
         # Add table filter_interaction Action to scatter_chart component
-        model_manager["vizro_table"].actions = [filter_interaction(targets=["scatter_chart"])]
+        model_manager["vizro_table"].actions = [vm.Action(function=filter_interaction(targets=["scatter_chart"]))]
         model_manager["vizro_table"].pre_build()
 
         # Add export_data action to relevant component
-        model_manager["button"].actions = [export_data(id="test_action", targets=["scatter_chart", "box_chart"])]
+        model_manager["button"].actions = [
+            vm.Action(function=export_data(id="test_action", targets=["scatter_chart", "box_chart"]))
+        ]
 
         # Run action by picking the above added export_data action function and executing it with ()
         result = model_manager["test_action"].function(_controls=None)
@@ -452,7 +464,9 @@ class TestExportData:
         first_n_parameter.pre_build()
 
         # Add export_data action to relevant component
-        model_manager["button"].actions = [export_data(id="test_action", targets=["scatter_chart", "box_chart"])]
+        model_manager["button"].actions = [
+            vm.Action(function=export_data(id="test_action", targets=["scatter_chart", "box_chart"]))
+        ]
 
         # Run action by picking the above added export_data action function and executing it with ()
         result = model_manager["test_action"].function(_controls=None)
