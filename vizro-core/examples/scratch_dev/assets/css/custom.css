@@ -1,3 +1,34 @@
 #page-header {
   padding-left: 8px;
 }
+
+/* If a filled container is detected, then the right-bg color will change to grey
+and all containers need to have a white background on that page */
+[data-bs-theme="light"] #right-side:has(.bg-container),
+[data-bs-theme="light"] #right-side:has(.card){
+  /*Use --surfaces-bg02 or --surfaces-bg03 or */
+  background: var(--surfaces-bg03);
+}
+
+
+/* Probably need to add a border around the collapse button now
+#collapse-icon.material-symbols-outlined {
+  border: 1px solid var(--border-subtleAlpha01);
+}
+*/
+
+[data-bs-theme="light"] .card {
+  background: var(--surfaces-bg01);
+}
+
+
+/* Turn off jumping of card-nav*/
+#page-components {
+  padding-top: 0;
+}
+
+.card-nav:hover {
+  transform: unset;
+  will-change: unset;
+  border: 2px solid var(--border-subtleAlpha02);
+}
