@@ -7,15 +7,10 @@ from vizro.managers import data_manager
 
 
 def load_iris_data_sample(number_of_points=10):
-    iris = px.data.iris().sample(number_of_points)
-    return iris
+    return px.data.iris().sample(number_of_points)
 
 
 def load_iris_data_head(number_of_points=150):
-    # # Artificial delay to simulate data loading in production
-    # print("\nLoading data...\n")
-    # time.sleep(1)
-
     return px.data.iris().head(number_of_points)
 
 
