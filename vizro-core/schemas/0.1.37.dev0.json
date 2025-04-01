@@ -389,22 +389,15 @@
         "layout": {
           "anyOf": [
             {
-              "description": "Type of layout to place components on the page.",
-              "discriminator": {
-                "mapping": {
-                  "flex": "#/$defs/Flex",
-                  "layout": "#/$defs/Layout"
-                },
-                "propertyName": "type"
-              },
-              "oneOf": [
+              "anyOf": [
                 {
                   "$ref": "#/$defs/Layout"
                 },
                 {
                   "$ref": "#/$defs/Flex"
                 }
-              ]
+              ],
+              "description": "Type of layout to place components on the page."
             },
             {
               "type": "null"
@@ -1136,22 +1129,15 @@
         "layout": {
           "anyOf": [
             {
-              "description": "Type of layout to place components on the page.",
-              "discriminator": {
-                "mapping": {
-                  "flex": "#/$defs/Flex",
-                  "layout": "#/$defs/Layout"
-                },
-                "propertyName": "type"
-              },
-              "oneOf": [
+              "anyOf": [
                 {
                   "$ref": "#/$defs/Layout"
                 },
                 {
                   "$ref": "#/$defs/Flex"
                 }
-              ]
+              ],
+              "description": "Type of layout to place components on the page."
             },
             {
               "type": "null"
