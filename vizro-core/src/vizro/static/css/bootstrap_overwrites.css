@@ -101,8 +101,8 @@ label[for="theme-selector"] {
   padding-left: 0;
 }
 
-/* Remove bottom margin of last child as card comes with padding */
-.card-text > *:last-child {
+/* Remove bottom margin of last child as markdown comes with padding */
+.card-text > *:last-child, .tooltip-text > *:last-child {
   margin-bottom: 0;
 }
 
@@ -111,6 +111,19 @@ label[for="theme-selector"] {
   flex-direction: column;
   height: 100%;
   padding: 0;
+}
+
+.tooltip-inner {
+  max-width: 500px !important;
+}
+
+/*TODO NOW: fix light theme readability*/
+.tooltip-inner * {
+  color: var(--text-primary-inverted);
+}
+
+.tooltip-inner a:hover {
+  color: var(--text-primaryHover-inverted);
 }
 
 /* Introduce vizro utility classes here */

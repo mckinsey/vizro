@@ -4,14 +4,15 @@ from typing import Annotated, Any, Literal, Optional, Union, cast
 
 import dash_bootstrap_components as dbc
 from dash import dcc, html
-from pydantic import AfterValidator, Field, PrivateAttr, StrictBool, ValidationInfo, model_validator
+from pydantic import AfterValidator, Field, PrivateAttr, StrictBool, ValidationInfo, model_validator, BeforeValidator
 from pydantic.functional_serializers import PlainSerializer
 from pydantic.json_schema import SkipJsonSchema
 
-from vizro.models import Action, VizroBaseModel
+from vizro.models import Action, Tooltip, VizroBaseModel
 from vizro.models._action._actions_chain import _action_validator_factory
 from vizro.models._components.form._form_utils import get_options_and_default, validate_options_dict, validate_value
 from vizro.models._models_utils import _log_call
+from vizro.models._tooltip import coerce_str_to_tooltip
 from vizro.models.types import MultiValueType, OptionsDictType, OptionsType, SingleValueType
 
 
@@ -71,6 +72,7 @@ class Dropdown(VizroBaseModel):
             [`MultiValueType`][vizro.models.types.MultiValueType]. Defaults to `None`.
         multi (bool): Whether to allow selection of multiple values. Defaults to `True`.
         title (str): Title to be displayed. Defaults to `""`.
+        description (Optional[Tooltip]): Additional information about the selector shown in a tooltip.
         actions (list[Action]): See [`Action`][vizro.models.Action]. Defaults to `[]`.
         extra (Optional[dict[str, Any]]): Extra keyword arguments that are passed to `dcc.Dropdown` and overwrite any
             defaults chosen by the Vizro team. This may have unexpected behavior.
@@ -93,6 +95,11 @@ class Dropdown(VizroBaseModel):
         Field(default=True, description="Whether to allow selection of multiple values", validate_default=True),
     ]
     title: str = Field(default="", description="Title to be displayed")
+    description: Annotated[
+        Optional[Tooltip],
+        BeforeValidator(coerce_str_to_tooltip, json_schema_input_type=Union[str, Tooltip]),
+        Field(default=None, description="Additional information about the selector shown in a tooltip."),
+    ]
     actions: Annotated[
         list[Action],
         AfterValidator(_action_validator_factory("value")),
@@ -127,6 +134,7 @@ class Dropdown(VizroBaseModel):
         full_options, default_value = get_options_and_default(options=options, multi=self.multi)
         option_height = _calculate_option_height(full_options)
         altered_options = _add_select_all_option(full_options=full_options) if self.multi else full_options
+        description = self.description.build().children if self.description is not None else [None]
 
         defaults = {
             "id": self.id,
@@ -141,7 +149,7 @@ class Dropdown(VizroBaseModel):
 
         return html.Div(
             children=[
-                dbc.Label(self.title, html_for=self.id) if self.title else None,
+                dbc.Label([self.title, *description], html_for=self.id) if self.title else None,
                 dcc.Dropdown(**(defaults | self.extra)),
             ]
         )

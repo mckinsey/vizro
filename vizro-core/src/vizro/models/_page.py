@@ -1,7 +1,7 @@
 from __future__ import annotations
 
 from collections.abc import Iterable
-from typing import Annotated, Optional, TypedDict, cast
+from typing import Annotated, Optional, TypedDict, cast, Union
 
 from dash import dcc, html
 from pydantic import (
@@ -20,10 +20,11 @@ from vizro._constants import ON_PAGE_LOAD_ACTION_PREFIX
 from vizro.actions import _on_page_load
 from vizro.managers import model_manager
 from vizro.managers._model_manager import FIGURE_MODELS, DuplicateIDError
-from vizro.models import Action, Filter, Layout, VizroBaseModel
+from vizro.models import Action, Filter, Layout, VizroBaseModel, Tooltip
 from vizro.models._action._actions_chain import ActionsChain, Trigger
 from vizro.models._layout import set_layout
 from vizro.models._models_utils import _log_call, check_captured_callable_model
+from ._tooltip import coerce_str_to_tooltip
 
 from .types import ComponentType, ControlType
 
@@ -55,7 +56,8 @@ class Page(VizroBaseModel):
         components (list[ComponentType]): See [ComponentType][vizro.models.types.ComponentType]. At least one component
             has to be provided.
         title (str): Title to be displayed.
-        description (str): Description for meta tags.
+        description (Optional[Tooltip]): Additional information about the page shown in a tooltip and used for
+            description meta tag.
         layout (Optional[Layout]): Layout to place components in. Defaults to `None`.
         controls (list[ControlType]): See [ControlType][vizro.models.types.ControlType]. Defaults to `[]`.
         path (str): Path to navigate to page. Defaults to `""`.
@@ -65,7 +67,15 @@ class Page(VizroBaseModel):
     # TODO[mypy], see: https://github.com/pydantic/pydantic/issues/156 for components field
     components: conlist(Annotated[ComponentType, BeforeValidator(check_captured_callable_model)], min_length=1)  # type: ignore[valid-type]
     title: str = Field(description="Title to be displayed.")
-    description: str = Field(default="", description="Description for meta tags.")
+    description: Annotated[
+        Optional[Tooltip],
+        BeforeValidator(coerce_str_to_tooltip, json_schema_input_type=Union[str, Tooltip]),
+        Field(
+            default=None,
+            description="Additional information about the page shown in a tooltip and used for description meta tag.",
+        ),
+    ]
+
     layout: Annotated[Optional[Layout], AfterValidator(set_layout), Field(default=None, validate_default=True)]
     controls: list[ControlType] = []
     path: Annotated[

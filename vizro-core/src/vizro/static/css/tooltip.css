@@ -1,0 +1,11 @@
+.tooltip-icon
+{
+    padding-left: 8px;
+    vertical-align: middle;
+    cursor: pointer;
+    font-size: max(20px, 1em);
+}
+
+.tooltip-icon:hover {
+  color: var(--text-primaryHover);
+}
