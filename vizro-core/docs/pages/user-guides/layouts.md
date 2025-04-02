@@ -418,7 +418,7 @@ For further customization, such as changing the gap between row and column, refe
 
 The [Flex][vizro.models.Flex] layout offers a dynamic and flexible way to organize components within a page. Built on the CSS Flexbox model, it is specifically designed to create responsive layouts that adjust to varying screen sizes and available space.
 
-Unlike the [Grid][vizro.models.Layout] layout, which uses a predefined row-and-column structure, the `Flex` layout provides greater flexibility by allowing components to resize, align, and position themselves dynamically based on the layout configuration.
+Unlike the [Grid][vizro.models.Layout] layout, which uses a predefined row-and-column structure, the `Flex` layout provides greater flexibility by enabling components to resize, align, and position themselves dynamically based on the layout configuration.
 
 If you're new to Flexbox, we strongly recommend exploring [An Interactive Guide to Flexbox](https://www.joshwcomeau.com/css/interactive-guide-to-flexbox/). This tutorial provides a visual introduction to the core concepts of Flexbox, making it easier to understand how to leverage the `Flex` layout effectively.
 
