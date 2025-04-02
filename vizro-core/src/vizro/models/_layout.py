@@ -1,4 +1,4 @@
-from typing import Annotated, NamedTuple, Optional
+from typing import Annotated, Any, NamedTuple, Optional
 
 import numpy as np
 from dash import html
@@ -181,8 +181,7 @@ class Layout(VizroBaseModel):
     col_min_width: str = Field(default=MIN_DEFAULT, description="Minimum column width in px.", pattern="[0-9]+px")
     _component_grid_lines: Optional[list[ColRowGridLines]] = PrivateAttr()
 
-    def __init__(self, **data):
-        super().__init__(**data)
+    def model_post_init(self, context: Any) -> None:
         self._component_grid_lines = _get_grid_lines(self.grid)[0]
 
     @property

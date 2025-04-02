@@ -221,14 +221,6 @@ class VizroBaseModel(BaseModel):
         ),
     ]
 
-    # @_log_call
-    # def __init__(self, **data: Any):  # TODO: model_post_init
-    #     """Adds this model instance to the model manager."""
-    #     # Note this runs after the set_id validator, so self.id is available here. In pydantic v2 we should do this
-    #     # using the new model_post_init method to avoid overriding __init__.
-    #     super().__init__(**data)
-    #     model_manager[self.id] = self
-
     @_log_call
     def model_post_init(self, context: Any) -> None:
         model_manager[self.id] = self

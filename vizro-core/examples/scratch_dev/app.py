@@ -1,8 +1,9 @@
+from typing import Optional
+
 import vizro.models as vm
 import vizro.plotly.express as px
 from vizro import Vizro
 from vizro.models.types import capture
-from typing import Optional
 
 df = px.data.iris()
 
@@ -35,7 +36,10 @@ page = vm.Page(
         ),
         vm.Card(id="my_card", text="Click on a point on the above graph."),
     ],
+    layout=vm.Layout(grid=[[0, 1], [0, 1]]),
 )
+
+
 dashboard = vm.Dashboard(pages=[page])
 
 if __name__ == "__main__":
