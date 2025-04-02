@@ -700,9 +700,9 @@ For example, in the layout below, we use the `Grid` layout to arrange two charts
         import vizro.models as vm
         import vizro.plotly.express as px
         from vizro import Vizro
-        
+
         tips = px.data.tips()
-        
+
         page = vm.Page(
             title="Combine Flex and Grid",
             layout=vm.Layout(grid=[[0, 1], [2, 2]]),
@@ -716,7 +716,7 @@ For example, in the layout below, we use the `Grid` layout to arrange two charts
                         vm.Card(
                             text="""
                                     # Lorem Ipsum
-        
+
                                     Lorem ipsum dolor sit amet, consectetur adipiscing elit. Aliquam sed elementum ligula, in pharetra velit.
                                     In ultricies est ac mauris vehicula fermentum. Curabitur faucibus elementum lectus, vitae luctus libero fermentum.
                                     Name ut ipsum tortor. Praesent ut nulla risus. Praesent in dignissim nulla. In quis blandit ipsum.
@@ -734,7 +734,7 @@ For example, in the layout below, we use the `Grid` layout to arrange two charts
         ```
 
     === "Result"
-        [![FlexGridCombined]][FlexGridCombined]
+        [![FlexGridCombined]][flexgridcombined]
 
 ## Alternative layout approaches
 
@@ -747,6 +747,7 @@ In general, any arbitrarily granular layout can already be achieved using [`Page
 
 [flexadvanced]: ../../assets/user_guides/layout/flex_advanced.png
 [flexbasic]: ../../assets/user_guides/layout/flex_basic.png
+[flexgridcombined]: ../../assets/user_guides/layout/flex_with_grid_combined.png
 [flexitemsizearg]: ../../assets/user_guides/layout/flex_item_size_args.png
 [flexitemsizecss]: ../../assets/user_guides/layout/flex_item_size_css.png
 [grid]: ../../assets/user_guides/layout/one_left_two_right.png
@@ -754,4 +755,3 @@ In general, any arbitrarily granular layout can already be achieved using [`Page
 [gridempty]: ../../assets/user_guides/layout/layout_empty_spaces.png
 [gridscroll]: ../../assets/user_guides/layout/grid_scroll.png
 [layout]: ../../assets/user_guides/layout/two_left.png
-[FlexGridCombined]: ../../assets/user_guides/layout/flex_with_grid_combined.png
