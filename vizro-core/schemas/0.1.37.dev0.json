@@ -389,15 +389,15 @@
         "layout": {
           "anyOf": [
             {
-              "anyOf": [
+              "description": "Type of layout to place components on the page.",
+              "oneOf": [
                 {
                   "$ref": "#/$defs/Layout"
                 },
                 {
                   "$ref": "#/$defs/Flex"
                 }
-              ],
-              "description": "Type of layout to place components on the page."
+              ]
             },
             {
               "type": "null"
@@ -1129,15 +1129,15 @@
         "layout": {
           "anyOf": [
             {
-              "anyOf": [
+              "description": "Type of layout to place components on the page.",
+              "oneOf": [
                 {
                   "$ref": "#/$defs/Layout"
                 },
                 {
                   "$ref": "#/$defs/Flex"
                 }
-              ],
-              "description": "Type of layout to place components on the page."
+              ]
             },
             {
               "type": "null"
