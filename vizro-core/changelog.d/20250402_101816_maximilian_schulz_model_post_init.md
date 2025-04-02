@@ -7,7 +7,7 @@ Uncomment the section that is right (remove the HTML comment wrapper).
 
 ### Highlights ✨
 
-- Vizro models now have autocomplete functionality for configuration when using the relevant [configuration/plugin](https://docs.pydantic.dev/latest/integrations/visual_studio_code/) ([#1089](https://github.com/mckinsey/vizro/pull/1089))
+- Vizro models now have autocomplete functionality in IDE configuration when using the relevant [configuration/plugin](https://docs.pydantic.dev/latest/integrations/visual_studio_code/) ([#1089](https://github.com/mckinsey/vizro/pull/1089))
 
 
 <!--
