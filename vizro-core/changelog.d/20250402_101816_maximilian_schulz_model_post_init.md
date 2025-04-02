@@ -4,12 +4,12 @@ A new scriv changelog fragment.
 Uncomment the section that is right (remove the HTML comment wrapper).
 -->
 
-<!--
+
 ### Highlights ✨
 
-- A bullet item for the Highlights ✨ category with a link to the relevant PR at the end of your entry, e.g. Enable feature XXX. ([#1](https://github.com/mckinsey/vizro/pull/1))
+- Vizro models now have autocomplete functionality for configuration when using the relevant [configuration/plugin](https://docs.pydantic.dev/latest/integrations/visual_studio_code/) ([#1089](https://github.com/mckinsey/vizro/pull/1089))
 
--->
+
 <!--
 ### Removed
 
