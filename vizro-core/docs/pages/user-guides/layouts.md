@@ -418,23 +418,15 @@ For further customization, such as changing the gap between row and column, refe
 
 ## Flex Layout
 
-The [Flex][vizro.models.Flex] layout offers a dynamic and flexible way to organize components within a page. 
-Built on the CSS Flexbox model, it is specifically designed to create responsive layouts that seamlessly adjust to 
-varying screen sizes and available space.
+The [Flex][vizro.models.Flex] layout offers a dynamic and flexible way to organize components within a page. Built on the CSS Flexbox model, it is specifically designed to create responsive layouts that seamlessly adjust to varying screen sizes and available space.
 
-Unlike the [Grid][vizro.models.Layout] layout, which uses a predefined row-and-column structure, the `Flex` layout 
-provides greater flexibility by allowing components to resize, align, and position themselves dynamically based on the 
-layout configuration.
+Unlike the [Grid][vizro.models.Layout] layout, which uses a predefined row-and-column structure, the `Flex` layout provides greater flexibility by allowing components to resize, align, and position themselves dynamically based on the layout configuration.
 
-If you're new to Flexbox, we strongly recommend exploring [An Interactive Guide to Flexbox](https://www.joshwcomeau.com/css/interactive-guide-to-flexbox/). 
-This tutorial provides a visual introduction to the core concepts of Flexbox, making it easier to understand how to leverage the `Flex` layout effectively.
+If you're new to Flexbox, we strongly recommend exploring [An Interactive Guide to Flexbox](https://www.joshwcomeau.com/css/interactive-guide-to-flexbox/). This tutorial provides a visual introduction to the core concepts of Flexbox, making it easier to understand how to leverage the `Flex` layout effectively.
 
 ### Flex - basic example
 
-To switch to a `Flex` layout, simply pass `vm.Flex()` to the `layout` argument of the [Page][vizro.models.Page]. 
-This replaces the default `Grid` layout with a `Flex` layout, where components (flex items) are arranged 
-vertically (`direction="column"`), remain on a single line (`wrap=False`), and have a default spacing (`gap=24px`) 
-between them.
+To switch to a `Flex` layout, simply pass `vm.Flex()` to the `layout` argument of the [Page][vizro.models.Page]. This replaces the default `Grid` layout with a `Flex` layout, where components (flex items) are arranged vertically (`direction="column"`), remain on a single line (`wrap=False`), and have a default spacing (`gap=24px`) between them.
 
 !!! example "Flex - basic example"
     === "app.py"
@@ -442,15 +434,15 @@ between them.
         import vizro.models as vm
         from vizro import Vizro
         import vizro.plotly.express as px
-        
+
         tips = px.data.tips()
-        
+
         page = vm.Page(
             title="Flex - basic example",
             layout=vm.Flex(),
             components=[vm.Graph(figure=px.violin(tips, y="tip", x="day", color="day")) for i in range(3)],
         )
-        
+
         dashboard = vm.Dashboard(pages=[page])
         Vizro().build(dashboard).run()
         ```
@@ -488,7 +480,7 @@ between them.
         ```
 
     === "Result"
-        [![FlexBasic]][FlexBasic]
+        [![FlexBasic]][flexbasic]
 
 ### Flex - advanced example
 
@@ -504,15 +496,15 @@ If you want to customize the default behavior, the [Flex][vizro.models.Flex] mod
         import vizro.models as vm
         from vizro import Vizro
         import vizro.plotly.express as px
-        
+
         tips = px.data.tips()
-        
+
         page = vm.Page(
             title="Flex - advanced example",
             layout=vm.Flex(direction="row", gap="40px", wrap=True),
             components=[vm.Graph(figure=px.violin(tips, y="tip", x="day", color="day")) for i in range(3)],
         )
-        
+
         dashboard = vm.Dashboard(pages=[page])
         Vizro().build(dashboard).run()
         ```
@@ -548,12 +540,12 @@ If you want to customize the default behavior, the [Flex][vizro.models.Flex] mod
               type: flex
               direction: row
               gap: 40px
-              wrap: True
+              wrap: true
             title: Flex - advanced example
         ```
 
     === "Result"
-        [![FlexAdvanced]][FlexAdvanced]
+        [![FlexAdvanced]][flexadvanced]
 
 ### Change the size of flex-items
 
@@ -566,10 +558,10 @@ In general, any arbitrarily granular layout can already be achieved using [`Page
 
 ![tabs](../../assets/user_guides/components/tabs-info.png){ width="500" }
 
+[flexadvanced]: ../../assets/user_guides/layout/flex_advanced.png
+[flexbasic]: ../../assets/user_guides/layout/flex_basic.png
 [grid]: ../../assets/user_guides/layout/one_left_two_right.png
 [gridadv]: ../../assets/user_guides/layout/grid_advanced.png
 [gridempty]: ../../assets/user_guides/layout/layout_empty_spaces.png
 [gridscroll]: ../../assets/user_guides/layout/grid_scroll.png
 [layout]: ../../assets/user_guides/layout/two_left.png
-[FlexBasic]: ../../assets/user_guides/layout/flex_basic.png
-[FlexAdvanced]: ../../assets/user_guides/layout/flex_advanced.png
