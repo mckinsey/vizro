@@ -1,10 +1,9 @@
 # How to change the layout of your page
 
-The [`Page`][vizro.models.Page] and the [`Container`][vizro.models.Container] model accept a `layout` argument that enables custom arrangement of charts and components on the screen.
-This guide shows how to customize the `layout` with:
+The [`Page`][vizro.models.Page] and the [`Container`][vizro.models.Container] model accept a `layout` argument that enables custom arrangement of charts and components on the screen. This guide shows how to customize the `layout` with:
 
-* [either the default [`Grid`][vizro.models.Layout] model](#grid-layout)
-* [or the optional [`Flex`][vizro.models.Flex] model](#flex-layout)
+- \[either the default [`Grid`][vizro.models.Layout] model\](#grid-layout)
+- \[or the optional [`Flex`][vizro.models.Flex] model\](#flex-layout)
 
 ## Layout options: Grid and Flex
 
@@ -555,7 +554,7 @@ There may be times when resizing your flex items is necessary, such as when desi
 
 You can achieve this by:
 
-- [either specifying the `width` and `height` directly on the components](#change-size-via-components-arguments) 
+- [either specifying the `width` and `height` directly on the components](#change-size-via-components-arguments)
 - [or by applying custom CSS](#change-size-via-custom-css)
 
 #### Change size via component's arguments
