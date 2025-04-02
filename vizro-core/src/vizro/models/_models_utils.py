@@ -1,5 +1,8 @@
 import logging
 from functools import wraps
+from typing import cast
+
+from dash import html
 
 from vizro.models.types import CapturedCallable, _SupportsCapturedCallable
 
@@ -42,3 +45,20 @@ REPLACEMENT_STRINGS = {
     "vizro.actions": "va.",
     "vizro.charts": "vc.",
 }
+
+
+def _build_inner_layout(layout, components):
+    """Builds inner layout and adds components to grid or flex. Used inside `Page`, `Container` and `Form`."""
+    # Below added to remove mypy error - cannot actually be None if you check components and layout field together
+    from vizro.models import Layout
+
+    layout = cast(Layout, layout)
+
+    components_container = layout.build()
+    if isinstance(layout, Layout):
+        for idx, component in enumerate(components):
+            components_container[f"{layout.id}_{idx}"].children = component.build()
+    else:
+        components_container.children = [html.Div(component.build(), className="flex-item") for component in components]
+
+    return components_container
