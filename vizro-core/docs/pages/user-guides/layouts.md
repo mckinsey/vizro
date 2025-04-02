@@ -1,22 +1,17 @@
 # How to change the layout of your page
 
-The [`Page`][vizro.models.Page] model accepts a `layout` argument that enables custom arrangement of charts and components on the screen.
-This guide shows how to customize the layout using either the default [`Layout`][vizro.models.Layout] model or the 
-optional [`Flex`][vizro.models.Flex] inside the `layout` argument.
-
+The [`Page`][vizro.models.Page] model accepts a `layout` argument that enables custom arrangement of charts and components on the screen. This guide shows how to customize the layout using either the default [`Layout`][vizro.models.Layout] model or the optional [`Flex`][vizro.models.Flex] inside the `layout` argument.
 
 ## Layout options: Grid and Flex
-The `layout` argument allows you to choose between two layout models: Grid (default) and Flex. Both models provide 
-different ways to organize components on the page.
 
+The `layout` argument allows you to choose between two layout models: Grid (default) and Flex. Both models provide different ways to organize components on the page.
 
-- **Grid layout**: The Grid layout arranges components in a structured grid where rows and columns are explicitly defined. 
-This layout is ideal for precise control over the placement of components.
+- **Grid layout**: The Grid layout arranges components in a structured grid where rows and columns are explicitly defined. This layout is ideal for precise control over the placement of components.
 - **Flex layout**: The Flex layout arranges components using a flexible box model, where items can grow, shrink, and wrap dynamically based on available space. This layout is ideal for responsive designs where components need to adapt to different screen sizes.
 
 ### The default layout
-The `layout` argument of the [`Page`][vizro.models.Page] model is optional.
-If no layout is specified, it will default to a grid layout - all charts/components are then automatically [**stacked vertically**](layouts.md#vertical-and-horizontal-stacking) on the page in one column.
+
+The `layout` argument of the [`Page`][vizro.models.Page] model is optional. If no layout is specified, it will default to a grid layout - all charts/components are then automatically [**stacked vertically**](layouts.md#vertical-and-horizontal-stacking) on the page in one column.
 
 !!! example "Default Layout"
     === "app.py"
@@ -52,7 +47,6 @@ If no layout is specified, it will default to a grid layout - all charts/compone
 
     === "Result"
         [![Layout]][layout]
-
 
 ## Grid Layout
 
@@ -422,6 +416,147 @@ By default, the grid fits all charts/components on the screen. This can lead to 
 
 For further customization, such as changing the gap between row and column, refer to the documentation of the [`Layout`][vizro.models.Layout] model.
 
+## Flex Layout
+
+The [Flex][vizro.models.Flex] layout offers a dynamic and flexible way to organize components within a page. 
+Built on the CSS Flexbox model, it is specifically designed to create responsive layouts that seamlessly adjust to 
+varying screen sizes and available space.
+
+Unlike the [Grid][vizro.models.Layout] layout, which uses a predefined row-and-column structure, the `Flex` layout 
+provides greater flexibility by allowing components to resize, align, and position themselves dynamically based on the 
+layout configuration.
+
+If you're new to Flexbox, we strongly recommend exploring [An Interactive Guide to Flexbox](https://www.joshwcomeau.com/css/interactive-guide-to-flexbox/). 
+This tutorial provides a visual introduction to the core concepts of Flexbox, making it easier to understand how to leverage the `Flex` layout effectively.
+
+### Flex - basic example
+
+To switch to a `Flex` layout, simply pass `vm.Flex()` to the `layout` argument of the [Page][vizro.models.Page]. 
+This replaces the default `Grid` layout with a `Flex` layout, where components (flex items) are arranged 
+vertically (`direction="column"`), remain on a single line (`wrap=False`), and have a default spacing (`gap=24px`) 
+between them.
+
+!!! example "Flex - basic example"
+    === "app.py"
+        ```{.python pycafe-link}
+        import vizro.models as vm
+        from vizro import Vizro
+        import vizro.plotly.express as px
+        
+        tips = px.data.tips()
+        
+        page = vm.Page(
+            title="Flex - basic example",
+            layout=vm.Flex(),
+            components=[vm.Graph(figure=px.violin(tips, y="tip", x="day", color="day")) for i in range(3)],
+        )
+        
+        dashboard = vm.Dashboard(pages=[page])
+        Vizro().build(dashboard).run()
+        ```
+
+    === "app.yaml"
+        ```yaml
+        # Still requires a .py to add data to the data manager and parse YAML configuration
+        # See yaml_version example
+        pages:
+          - components:
+              - figure:
+                  _target_: violin
+                  x: day
+                  y: tip
+                  color: day
+                  data_frame: tips
+                type: graph
+              - figure:
+                  _target_: violin
+                  x: day
+                  y: tip
+                  color: day
+                  data_frame: tips
+                type: graph
+              - figure:
+                  _target_: violin
+                  x: day
+                  y: tip
+                  color: day
+                  data_frame: tips
+                type: graph
+            layout:
+              type: flex
+            title: Flex - basic example
+        ```
+
+    === "Result"
+        [![FlexBasic]][FlexBasic]
+
+### Flex - advanced example
+
+If you want to customize the default behavior, the [Flex][vizro.models.Flex] model allows you to configure three optional arguments:
+
+- `direction`: Defines the layout direction of the components within the flex container, determining whether they are arranged in rows or columns.
+- `gap`: Controls the spacing between components in the flex container, enabling you to set consistent horizontal and vertical spacing between items.
+- `wrap`: Determines whether components should wrap onto multiple lines or remain on a single line when there isn't enough space in the container.
+
+!!! example "Flex - advanced example"
+    === "app.py"
+        ```{.python pycafe-link}
+        import vizro.models as vm
+        from vizro import Vizro
+        import vizro.plotly.express as px
+        
+        tips = px.data.tips()
+        
+        page = vm.Page(
+            title="Flex - advanced example",
+            layout=vm.Flex(direction="row", gap="40px", wrap=True),
+            components=[vm.Graph(figure=px.violin(tips, y="tip", x="day", color="day")) for i in range(3)],
+        )
+        
+        dashboard = vm.Dashboard(pages=[page])
+        Vizro().build(dashboard).run()
+        ```
+
+    === "app.yaml"
+        ```yaml
+        # Still requires a .py to add data to the data manager and parse YAML configuration
+        # See yaml_version example
+        pages:
+          - components:
+              - figure:
+                  _target_: violin
+                  x: day
+                  y: tip
+                  color: day
+                  data_frame: tips
+                type: graph
+              - figure:
+                  _target_: violin
+                  x: day
+                  y: tip
+                  color: day
+                  data_frame: tips
+                type: graph
+              - figure:
+                  _target_: violin
+                  x: day
+                  y: tip
+                  color: day
+                  data_frame: tips
+                type: graph
+            layout:
+              type: flex
+              direction: row
+              gap: 40px
+              wrap: True
+            title: Flex - advanced example
+        ```
+
+    === "Result"
+        [![FlexAdvanced]][FlexAdvanced]
+
+### Change the size of flex-items
+
 ## Alternative layout approaches
 
 In general, any arbitrarily granular layout can already be achieved using [`Page.layout`](layouts.md) alone and is our recommended approach if you want to arrange components on a page with consistent row and/or column spacing.
@@ -436,3 +571,5 @@ In general, any arbitrarily granular layout can already be achieved using [`Page
 [gridempty]: ../../assets/user_guides/layout/layout_empty_spaces.png
 [gridscroll]: ../../assets/user_guides/layout/grid_scroll.png
 [layout]: ../../assets/user_guides/layout/two_left.png
+[FlexBasic]: ../../assets/user_guides/layout/flex_basic.png
+[FlexAdvanced]: ../../assets/user_guides/layout/flex_advanced.png
