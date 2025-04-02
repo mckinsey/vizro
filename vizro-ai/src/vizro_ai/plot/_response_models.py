@@ -120,7 +120,9 @@ class BaseChartPlan(BaseModel):
 
     chart_type: str = Field(
         description="""
-        Describes the chart type that best reflects the user request.
+        Describes the chart type that:
+        1. Best reflects the user request.
+        2. Is feasible to implement given the data schema.
         """,
     )
     imports: list[str] = Field(
@@ -137,7 +139,7 @@ class BaseChartPlan(BaseModel):
         AfterValidator(_check_chart_code),
         Field(
             description=f"""
-        Python code that generates a generates a plotly go.Figure object. It must fulfill the following criteria:
+        Python code that generates a plotly go.Figure object. It must fulfill the following criteria:
         1. Must be wrapped in a function named `{CUSTOM_CHART_NAME}`
         2. Must accept a single argument `data_frame` which is a pandas DataFrame
         3. Must return a plotly go.Figure object
@@ -222,20 +224,41 @@ class ChartPlan(BaseChartPlan):
 
 
 class ChartPlanFactory:
-    def __new__(cls, data_frame: pd.DataFrame, chart_plan: type[BaseChartPlan] = ChartPlan) -> type[BaseChartPlan]:
-        """Creates a chart plan model with additional validation.
+    def __new__(
+        cls,
+        data_frame: pd.DataFrame,
+        chart_plan: type[BaseChartPlan] = ChartPlan,
+        validate_code: bool = True,
+        chart_type_examples: Optional[list[str]] = None,
+    ) -> type[BaseChartPlan]:
+        """Creates a chart plan model with additional enhancements.
 
         Args:
-            data_frame: DataFrame to use for validation
+            data_frame: DataFrame to use for validation.
             chart_plan: Chart plan model to run extended validation against. Defaults to ChartPlan.
+            validate_code: Whether to validate the code.
+            chart_type_examples: List of chart types as examples.
 
         Returns:
-            Chart plan model with additional validation
+            Chart plan model with additional enhancements.
         """
+        examples = chart_type_examples or []
+        description = f"""
+        {chart_plan.model_fields["chart_type"].description}
+
+        Choose the most appropriate chart type from the examples list based on the user's
+        data and visualization needs. If no chart type matches their request, recommend a suitable alternative.
+        """
+
+        chart_type_field = Field(description=description, examples=examples)
+
+        validators = {}
+        if validate_code:
+            validators = {"validator1": field_validator("chart_code")(_test_execute_chart_code(data_frame))}
+
         return create_model(
             "ChartPlanDynamic",
             __base__=chart_plan,
-            __validators__={
-                "validator1": field_validator("chart_code")(_test_execute_chart_code(data_frame)),
-            },
+            chart_type=(str, chart_type_field),
+            __validators__=validators,
         )
