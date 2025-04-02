@@ -648,7 +648,7 @@ Custom CSS is often a preferred choice over using component arguments for settin
 
 Each item within the `Flex` layout is wrapped in a `Div` with the `classname="flex-item"`, which can be targeted with CSS. To learn how to identify the correct selectors, refer to our [user guide on custom CSS](custom-css.md).
 
-!!! example "Customizing CSS properties in selective components"
+!!! example "Change the width of all flex items with CSS"
     === "my_css_file.css"
         ```css
         /* Apply styling to all flex items */
@@ -688,6 +688,54 @@ Each item within the `Flex` layout is wrapped in a `Div` with the `classname="fl
     === "Result"
         [![FlexItemSizeCSS]][flexitemsizecss]
 
+### Combine Flex and Grid
+
+You can also combine the `Flex` and `Grid` layout to benefit from both. The `Grid` layout is ideal for defining the overall page structure, while the `Flex` layout enables flexibility within individual sections.
+
+For example, in the layout below, we use the `Grid` layout to arrange two charts at the top and a container with multiple cards at the bottom. Within this card container, we apply the `Flex` layout so that the cards automatically adjust their positioning based on the available space.
+
+!!! example "Grid with Flex container"
+    === "app.py"
+        ```{.python pycafe-link}
+        import vizro.models as vm
+        import vizro.plotly.express as px
+        from vizro import Vizro
+        
+        tips = px.data.tips()
+        
+        page = vm.Page(
+            title="Combine Flex and Grid",
+            layout=vm.Layout(grid=[[0, 1], [2, 2]]),
+            components=[
+                vm.Graph(figure=px.violin(tips, y="tip", x="day", color="day", box=True)),
+                vm.Graph(figure=px.histogram(tips, x="total_bill")),
+                vm.Container(
+                    title="Flexbox with Cards",
+                    layout=vm.Flex(direction="row", wrap=True),
+                    components=[
+                        vm.Card(
+                            text="""
+                                    # Lorem Ipsum
+        
+                                    Lorem ipsum dolor sit amet, consectetur adipiscing elit. Aliquam sed elementum ligula, in pharetra velit.
+                                    In ultricies est ac mauris vehicula fermentum. Curabitur faucibus elementum lectus, vitae luctus libero fermentum.
+                                    Name ut ipsum tortor. Praesent ut nulla risus. Praesent in dignissim nulla. In quis blandit ipsum.
+                                """,
+                            extra={"style": {"width": "240px"}},
+                        )
+                        for i in range(6)
+                    ],
+                ),
+            ],
+        )
+
+        dashboard = vm.Dashboard(pages=[page])
+        Vizro().build(dashboard).run()
+        ```
+
+    === "Result"
+        [![FlexGridCombined]][FlexGridCombined]
+
 ## Alternative layout approaches
 
 In general, any arbitrarily granular layout can already be achieved using [`Page.layout`](layouts.md) alone and is our recommended approach if you want to arrange components on a page with consistent row and/or column spacing.
@@ -706,3 +754,4 @@ In general, any arbitrarily granular layout can already be achieved using [`Page
 [gridempty]: ../../assets/user_guides/layout/layout_empty_spaces.png
 [gridscroll]: ../../assets/user_guides/layout/grid_scroll.png
 [layout]: ../../assets/user_guides/layout/two_left.png
+[FlexGridCombined]: ../../assets/user_guides/layout/flex_with_grid_combined.png
