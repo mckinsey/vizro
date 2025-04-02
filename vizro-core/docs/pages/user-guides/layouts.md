@@ -1,10 +1,22 @@
 # How to change the layout of your page
 
-The [`Page`][vizro.models.Page] model accepts a `layout` argument that enables custom arrangement of charts and components on the screen. This guide shows how to customize the grid specifications in the [`Layout`][vizro.models.Layout].
+The [`Page`][vizro.models.Page] model accepts a `layout` argument that enables custom arrangement of charts and components on the screen.
+This guide shows how to customize the layout using either the default [`Layout`][vizro.models.Layout] model or the 
+optional [`Flex`][vizro.models.Flex] inside the `layout` argument.
 
-## The default layout
 
-The `layout` argument of the [`Page`][vizro.models.Page] model is optional. If no layout is specified, all charts/components are automatically [**stacked vertically**](layouts.md#vertical-and-horizontal-stacking) on the page in one column. If you are happy with that arrangement, you can create your charts/components without providing a [`Layout`][vizro.models.Layout].
+## Layout options: Grid and Flex
+The `layout` argument allows you to choose between two layout models: Grid (default) and Flex. Both models provide 
+different ways to organize components on the page.
+
+
+- **Grid layout**: The Grid layout arranges components in a structured grid where rows and columns are explicitly defined. 
+This layout is ideal for precise control over the placement of components.
+- **Flex layout**: The Flex layout arranges components using a flexible box model, where items can grow, shrink, and wrap dynamically based on available space. This layout is ideal for responsive designs where components need to adapt to different screen sizes.
+
+### The default layout
+The `layout` argument of the [`Page`][vizro.models.Page] model is optional.
+If no layout is specified, it will default to a grid layout - all charts/components are then automatically [**stacked vertically**](layouts.md#vertical-and-horizontal-stacking) on the page in one column.
 
 !!! example "Default Layout"
     === "app.py"
@@ -41,7 +53,10 @@ The `layout` argument of the [`Page`][vizro.models.Page] model is optional. If n
     === "Result"
         [![Layout]][layout]
 
-## Configure the grid
+
+## Grid Layout
+
+### Configure the grid
 
 To customize the grid arrangement, configure the `grid` parameter of the [`Layout`][vizro.models.Layout] model.
 
@@ -61,7 +76,7 @@ grid = [[0, 1], [0, 2]]
 - The area spanned by a chart/component in the grid must be rectangular.
 - The grid can be arbitrarily large, allowing arbitrarily granular control of the grid.
 
-## Vertical and horizontal stacking
+### Understand stacking direction
 
 As described above, when no `Layout` is specified, components are presented **vertically** as a single-column stack. If you have three components, the default `Layout.grid` will be as follows, with three equally sized rows, each containing a component spanning the entire width:
 
@@ -81,7 +96,7 @@ This defines a single row that occupies the entire width and height, divided int
   ![Stacking components](../../assets/user_guides/layout/stacking.png){ width="680" }
 </figure>
 
-## Grid - basic example
+### Grid - basic example
 
 !!! example "Grid Arrangement - Basic Example"
     === "app.py"
@@ -126,7 +141,7 @@ This defines a single row that occupies the entire width and height, divided int
     === "Result"
         [![Grid]][grid]
 
-## Grid - advanced example
+### Grid - advanced example
 
 If you need to divide the grid into subgrids for finer control or want to visually distinguish your subgrids, you can use [`Containers`](container.md). See our section on [when to use `Containers` vs. `Page.layout`](container.md#when-to-use-containers) for more information.
 
@@ -256,7 +271,7 @@ The `Layout` provides full control over the arrangement of top-level components 
     === "Result"
         [![GridAdv]][gridadv]
 
-## Custom layout examples
+### Cheatsheet - grid examples
 
 Here is a reference table of example layouts:
 
@@ -281,7 +296,7 @@ one row with one component, second row with two components stacked horizontally
 
 <!--vale on -->
 
-## Add empty sections to the grid
+### Add empty sections
 
 One approach to organize the dashboard's layout involves integrating empty sections by specifying `-1` within the grid layout.
 
@@ -332,7 +347,7 @@ grid = [[0, 1, -1], [0, 2, -1]]
     === "Result"
         [![GridEmpty]][gridempty]
 
-## Control the scroll behavior
+### Control the scroll behavior
 
 By default, the grid fits all charts/components on the screen. This can lead to distortions such that the chart/component looks squashed. To control the scroll behavior, you can specify the following:
 
@@ -403,7 +418,7 @@ By default, the grid fits all charts/components on the screen. This can lead to 
     === "Result"
         [![GridScroll]][gridscroll]
 
-## Further customization
+### Further customization
 
 For further customization, such as changing the gap between row and column, refer to the documentation of the [`Layout`][vizro.models.Layout] model.
 
