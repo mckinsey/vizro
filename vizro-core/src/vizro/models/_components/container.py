@@ -96,8 +96,8 @@ class Container(VizroBaseModel):
 
         components_container = self.layout.build()
         if isinstance(self.layout, Layout):
-            for component_idx, component in enumerate(self.components):
-                components_container[f"{self.layout.id}_{component_idx}"].children = component.build()
+            for idx, component in enumerate(self.components):
+                components_container[f"{self.layout.id}_{idx}"].children = component.build()
         else:
             components_container.children = [
                 html.Div(component.build(), className="flex-item") for component in self.components
