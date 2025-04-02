@@ -1,8 +1,8 @@
 """Unit tests for vizro.models.Action."""
 
-import dash
 import sys
 
+import dash
 import pandas as pd
 import pytest
 from asserts import assert_component_equal
@@ -470,51 +470,51 @@ class TestActionTransformedInputsOutputs:
         "action_id, action_callback_outputs_expected",
         [
             (
-                    "__filter_action_filter_continent",
-                    [
-                        {"component_id": "scatter_chart", "component_property": "figure"},
-                        {"component_id": "scatter_chart_2", "component_property": "figure"},
-                        {"component_id": "vizro_table", "component_property": "children"},
-                    ],
+                "__filter_action_filter_continent",
+                [
+                    {"component_id": "scatter_chart", "component_property": "figure"},
+                    {"component_id": "scatter_chart_2", "component_property": "figure"},
+                    {"component_id": "vizro_table", "component_property": "children"},
+                ],
             ),
             (
-                    "filter_interaction_action",
-                    [
-                        {"component_id": "scatter_chart_2", "component_property": "figure"},
-                    ],
+                "filter_interaction_action",
+                [
+                    {"component_id": "scatter_chart_2", "component_property": "figure"},
+                ],
             ),
             (
-                    "table_filter_interaction_action",
-                    [
-                        {"component_id": "scatter_chart", "component_property": "figure"},
-                        {"component_id": "scatter_chart_2", "component_property": "figure"},
-                    ],
+                "table_filter_interaction_action",
+                [
+                    {"component_id": "scatter_chart", "component_property": "figure"},
+                    {"component_id": "scatter_chart_2", "component_property": "figure"},
+                ],
             ),
             (
-                    "__parameter_action_parameter_x",
-                    [
-                        {"component_id": "scatter_chart", "component_property": "figure"},
-                        {"component_id": "scatter_chart_2", "component_property": "figure"},
-                    ],
+                "__parameter_action_parameter_x",
+                [
+                    {"component_id": "scatter_chart", "component_property": "figure"},
+                    {"component_id": "scatter_chart_2", "component_property": "figure"},
+                ],
             ),
             (
-                    "__parameter_action_parameter_y",
-                    [
-                        {"component_id": "scatter_chart", "component_property": "figure"},
-                        {"component_id": "scatter_chart_2", "component_property": "figure"},
-                    ],
+                "__parameter_action_parameter_y",
+                [
+                    {"component_id": "scatter_chart", "component_property": "figure"},
+                    {"component_id": "scatter_chart_2", "component_property": "figure"},
+                ],
             ),
             (
-                    "__on_page_load_action_action_test_page",
-                    [
-                        {"component_id": "scatter_chart", "component_property": "figure"},
-                        {"component_id": "scatter_chart_2", "component_property": "figure"},
-                        {"component_id": "vizro_table", "component_property": "children"},
-                    ],
+                "__on_page_load_action_action_test_page",
+                [
+                    {"component_id": "scatter_chart", "component_property": "figure"},
+                    {"component_id": "scatter_chart_2", "component_property": "figure"},
+                    {"component_id": "vizro_table", "component_property": "children"},
+                ],
             ),
             (
-                    "__parameter_action_vizro_table_row_selectable",
-                    [{"component_id": "vizro_table", "component_property": "children"}],
+                "__parameter_action_vizro_table_row_selectable",
+                [{"component_id": "vizro_table", "component_property": "children"}],
             ),
         ],
         indirect=["action_callback_outputs_expected"],
