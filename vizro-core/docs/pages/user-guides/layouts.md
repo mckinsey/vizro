@@ -1,6 +1,6 @@
 # How to change the layout of your page
 
-The [`Page`][vizro.models.Page] model accepts a `layout` argument that enables custom arrangement of charts and components on the screen. This guide shows how to customize the layout using either the default [`Grid`][vizro.models.Layout] model or the optional [`Flex`][vizro.models.Flex] model inside the `layout` argument of the [`Page`][vizro.models.Page] or the [`Container`][vizro.models.Container]. 
+The [`Page`][vizro.models.Page] model accepts a `layout` argument that enables custom arrangement of charts and components on the screen. This guide shows how to customize the layout using either the default [`Grid`][vizro.models.Layout] model or the optional [`Flex`][vizro.models.Flex] model inside the `layout` argument of the [`Page`][vizro.models.Page] or the [`Container`][vizro.models.Container].
 
 ## Layout options: Grid and Flex
 
@@ -547,7 +547,7 @@ If you want to customize the default behavior, the [Flex][vizro.models.Flex] mod
 
 ### Change the size of flex-items
 
-There may be times when resizing your flex items is necessary, such as when designing for different screen sizes or combining elements with diverse content types (e.g., charts, text, or images). 
+There may be times when resizing your flex items is necessary, such as when designing for different screen sizes or combining elements with diverse content types (e.g., charts, text, or images).
 
 You can achieve this by either specifying the `width` and `height` directly on the components or, if you're comfortable, applying custom CSS.
 
@@ -638,7 +638,7 @@ The syntax for setting `width` and `height` varies between components. Refer to 
 
 #### Change size via custom CSS
 
-Custom CSS is often a better choice than setting sizes through component arguments when you need to apply a consistent `height` and/or `width` across multiple elements without repeating code. This is especially helpful for ensuring uniform sizing of all flex items. 
+Custom CSS is often a better choice than setting sizes through component arguments when you need to apply a consistent `height` and/or `width` across multiple elements without repeating code. This is especially helpful for ensuring uniform sizing of all flex items.
 
 Each item within the `Flex` layout is wrapped in a `Div` with the `classname="flex-item"`, which can be targeted with CSS. For more information on identifying the correct selectors, refer to our [user guide on custom CSS](custom-css.md).
 
