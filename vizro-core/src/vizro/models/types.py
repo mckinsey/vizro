@@ -19,12 +19,13 @@ from vizro.charts._charts_utils import _DashboardReadyFigure
 
 
 def get_layout_discriminator(layout: Any) -> str:
+    """Helper function for callable discriminator used for LayoutType."""
     # It is not immediately possible to introduce a discriminated union as a field type without it breaking existing
     # YAML/dictionary configuration in which `type` is not specified. This function is needed to handle the legacy case.
     if isinstance(layout, dict):
         # If type is supplied then use that (like saying discriminator="type"). Otherwise, it's the legacy case where
         # type is not specified, in which case we want to use vm.Layout, which has type="grid".
-        return layout.get("type", "grid")
+        return layout.get("type", "layout")
 
     # If a model has been specified then this is equivalent to saying discriminator="type". When None is returned,
     # union_tag_not_found error is raised.
@@ -542,7 +543,7 @@ NavSelectorType = Annotated[
 
 
 LayoutType = Annotated[
-    Union[Annotated["Layout", Tag("grid")], Annotated["Flex", Tag("flex")]],
+    Union[Annotated["Layout", Tag("layout")], Annotated["Flex", Tag("flex")]],
     Field(
         discriminator=Discriminator(get_layout_discriminator),
         description="Type of layout to place components on the page.",
