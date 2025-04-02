@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from typing import TYPE_CHECKING, Annotated, Literal, Optional, cast
+from typing import Annotated, Literal, Optional
 
 from dash import html
 from pydantic import AfterValidator, BeforeValidator, Field, conlist
@@ -8,11 +8,8 @@ from pydantic import AfterValidator, BeforeValidator, Field, conlist
 from vizro.models import VizroBaseModel
 from vizro.models._components.form import Checklist, Dropdown, RadioItems, RangeSlider, Slider
 from vizro.models._layout import set_layout
-from vizro.models._models_utils import _log_call, check_captured_callable_model
+from vizro.models._models_utils import _build_inner_layout, _log_call, check_captured_callable_model
 from vizro.models.types import LayoutType, _FormComponentType
-
-if TYPE_CHECKING:
-    from vizro.models import Layout
 
 
 class Form(VizroBaseModel):
@@ -42,20 +39,4 @@ class Form(VizroBaseModel):
 
     @_log_call
     def build(self):
-        return html.Div(id=self.id, children=self._build_inner_layout())
-
-    def _build_inner_layout(self):
-        """Builds inner layout and adds components to grid or flex."""
-        # Below added to remove mypy error - cannot actually be None if you check components and layout field together
-        self.layout = cast(Layout, self.layout)
-
-        components_container = self.layout.build()
-        if isinstance(self.layout, Layout):
-            for idx, component in enumerate(self.components):
-                components_container[f"{self.layout.id}_{idx}"].children = component.build()
-        else:
-            components_container.children = [
-                html.Div(component.build(), className="flex-item") for component in self.components
-            ]
-
-        return components_container
+        return html.Div(id=self.id, children=_build_inner_layout(self.layout, self.components))

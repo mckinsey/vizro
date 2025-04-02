@@ -20,10 +20,10 @@ from vizro._constants import ON_PAGE_LOAD_ACTION_PREFIX
 from vizro.actions import _on_page_load
 from vizro.managers import model_manager
 from vizro.managers._model_manager import FIGURE_MODELS, DuplicateIDError
-from vizro.models import Action, Filter, Layout, VizroBaseModel
+from vizro.models import Action, Filter, VizroBaseModel
 from vizro.models._action._actions_chain import ActionsChain, Trigger
 from vizro.models._layout import set_layout
-from vizro.models._models_utils import _log_call, check_captured_callable_model
+from vizro.models._models_utils import _build_inner_layout, _log_call, check_captured_callable_model
 
 from .types import ComponentType, ControlType, LayoutType
 
@@ -140,23 +140,7 @@ class Page(VizroBaseModel):
         control_panel = html.Div(id="control-panel", children=controls_content, hidden=not controls_content)
 
         # Build layout with components
-        components_container = self._build_inner_layout()
+        components_container = _build_inner_layout(self.layout, self.components)
         components_container.children.append(dcc.Store(id=f"{ON_PAGE_LOAD_ACTION_PREFIX}_trigger_{self.id}"))
         components_container.id = "page-components"
         return html.Div([control_panel, components_container])
-
-    def _build_inner_layout(self):
-        """Builds inner layout and adds components to grid or flex."""
-        # Below added to remove mypy error - cannot actually be None if you check components and layout field together
-        self.layout = cast(Layout, self.layout)
-
-        components_container = self.layout.build()
-        if isinstance(self.layout, Layout):
-            for idx, component in enumerate(self.components):
-                components_container[f"{self.layout.id}_{idx}"].children = component.build()
-        else:
-            components_container.children = [
-                html.Div(component.build(), className="flex-item") for component in self.components
-            ]
-
-        return components_container

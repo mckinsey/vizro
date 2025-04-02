@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from typing import Annotated, Any, Literal, Optional, cast
+from typing import Annotated, Any, Literal, Optional
 
 import dash_bootstrap_components as dbc
 from dash import html
@@ -9,7 +9,7 @@ from pydantic.json_schema import SkipJsonSchema
 
 from vizro.models import VizroBaseModel
 from vizro.models._layout import set_layout
-from vizro.models._models_utils import _log_call, check_captured_callable_model
+from vizro.models._models_utils import _build_inner_layout, _log_call, check_captured_callable_model
 from vizro.models.types import ComponentType, LayoutType
 
 
@@ -80,27 +80,10 @@ class Container(VizroBaseModel):
             "id": self.id,
             "children": [
                 html.H3(children=self.title, className="container-title", id=f"{self.id}_title"),
-                self._build_inner_layout(),
+                _build_inner_layout(self.layout, self.components),
             ],
             "fluid": True,
             "class_name": variants[self.variant],
         }
 
         return dbc.Container(**(defaults | self.extra))
-
-    def _build_inner_layout(self):
-        """Builds inner layout and assigns components to grid position."""
-        from vizro.models import Layout
-
-        self.layout = cast(Layout, self.layout)
-
-        components_container = self.layout.build()
-        if isinstance(self.layout, Layout):
-            for idx, component in enumerate(self.components):
-                components_container[f"{self.layout.id}_{idx}"].children = component.build()
-        else:
-            components_container.children = [
-                html.Div(component.build(), className="flex-item") for component in self.components
-            ]
-
-        return components_container
