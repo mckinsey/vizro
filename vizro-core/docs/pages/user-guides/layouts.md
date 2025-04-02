@@ -4,7 +4,7 @@ The [`Page`][vizro.models.Page] model accepts a `layout` argument that enables c
 
 ## Layout options: Grid and Flex
 
-The `layout` argument allows you to choose between two layout models: [`Grid`][vizro.models.Layout] (default) and [`Flex`][vizro.models.Flex]. Both models provide different ways to organize components on the page.
+The `layout` argument enables you to choose between two layout models: [`Grid`][vizro.models.Layout] (default) and [`Flex`][vizro.models.Flex]. Both models provide different ways to organize components on the page.
 
 - **Grid layout**: The [`Grid`][vizro.models.Layout] layout arranges components in a structured grid where rows and columns are explicitly defined. This layout is ideal for precise control over the placement of components.
 - **Flex layout**: The [`Flex`][vizro.models.Flex] layout arranges components using a flexible box model, where items can grow, shrink, and wrap dynamically based on available space. This layout is ideal for responsive designs where components need to adapt to different screen sizes.
@@ -416,9 +416,9 @@ For further customization, such as changing the gap between row and column, refe
 
 ## Flex Layout
 
-The [Flex][vizro.models.Flex] layout offers a dynamic and flexible way to organize components within a page. Built on the CSS Flexbox model, it is specifically designed to create responsive layouts that seamlessly adjust to varying screen sizes and available space.
+The [Flex][vizro.models.Flex] layout offers a dynamic and flexible way to organize components within a page. Built on the CSS Flexbox model, it is specifically designed to create responsive layouts that adjust to varying screen sizes and available space.
 
-Unlike the [Grid][vizro.models.Layout] layout, which uses a predefined row-and-column structure, the `Flex` layout provides greater flexibility by allowing components to resize, align, and position themselves dynamically based on the layout configuration.
+Unlike the [Grid][vizro.models.Layout] layout, which uses a predefined row-and-column structure, the `Flex` layout provides greater flexibility by enabling components to resize, align, and position themselves dynamically based on the layout configuration.
 
 If you're new to Flexbox, we strongly recommend exploring [An Interactive Guide to Flexbox](https://www.joshwcomeau.com/css/interactive-guide-to-flexbox/). This tutorial provides a visual introduction to the core concepts of Flexbox, making it easier to understand how to leverage the `Flex` layout effectively.
 
@@ -482,7 +482,7 @@ To switch to a `Flex` layout, simply pass `vm.Flex()` to the `layout` argument o
 
 ### Flex - advanced example
 
-If you want to customize the default behavior, the [Flex][vizro.models.Flex] model allows you to configure three optional arguments:
+If you want to customize the default behavior, the [Flex][vizro.models.Flex] model enables you to configure three optional arguments:
 
 - `direction`: Defines the layout direction of the components within the flex container, determining whether they are arranged in rows or columns.
 - `gap`: Controls the spacing between components in the flex container, enabling you to set consistent horizontal and vertical spacing between items.
@@ -640,7 +640,7 @@ The syntax for setting `width` and `height` varies between components. Refer to 
 
 Custom CSS is often a better choice than setting sizes through component arguments when you need to apply a consistent `height` and/or `width` across multiple elements without repeating code. This is especially helpful for ensuring uniform sizing of all flex items.
 
-Each item within the `Flex` layout is wrapped in a `Div` with the `classname="flex-item"`, which can be targeted with CSS. For more information on identifying the correct selectors, refer to our [user guide on custom CSS](custom-css.md).
+Each item within the `Flex` layout is wrapped in a `Div` with the `classname="flex-item"`, which can be targeted with CSS. To learn how to identify the correct selectors, refer to our [user guide on custom CSS](custom-css.md).
 
 !!! example "Customizing CSS properties in selective components"
     === "my_css_file.css"
