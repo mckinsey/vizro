@@ -548,9 +548,9 @@ If you want to customize the default behavior, the [Flex][vizro.models.Flex] mod
     === "Result"
         [![FlexAdvanced]][flexadvanced]
 
-### Change the size of flex-items
+### Change the size of flex items
 
-There may be times when resizing your flex items is necessary, such as when designing for different screen sizes or combining elements with diverse content types (e.g., charts, text, or images).
+There may be times when resizing your flex items is necessary, such as when designing for different screen sizes or combining elements with diverse content types (e.g. charts, text, or images).
 
 You can achieve this by:
 
