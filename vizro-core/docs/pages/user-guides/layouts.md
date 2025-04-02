@@ -1,15 +1,13 @@
 # How to change the layout of your page
 
-The [`Page`][vizro.models.Page] model accepts a `layout` argument that enables custom arrangement of charts and components on the screen. This guide shows how to customize the layout using either the default [`Layout`][vizro.models.Layout] model or the optional [`Flex`][vizro.models.Flex] inside the `layout` argument.
+The [`Page`][vizro.models.Page] model accepts a `layout` argument that enables custom arrangement of charts and components on the screen. This guide shows how to customize the layout using either the default [`Grid`][vizro.models.Layout] model or the optional [`Flex`][vizro.models.Flex] model inside the `layout` argument of the [`Page`][vizro.models.Page] or the [`Container`][vizro.models.Container]. 
 
 ## Layout options: Grid and Flex
 
-The `layout` argument allows you to choose between two layout models: Grid (default) and Flex. Both models provide different ways to organize components on the page.
+The `layout` argument allows you to choose between two layout models: [`Grid`][vizro.models.Layout] (default) and [`Flex`][vizro.models.Flex]. Both models provide different ways to organize components on the page.
 
-- **Grid layout**: The Grid layout arranges components in a structured grid where rows and columns are explicitly defined. This layout is ideal for precise control over the placement of components.
-- **Flex layout**: The Flex layout arranges components using a flexible box model, where items can grow, shrink, and wrap dynamically based on available space. This layout is ideal for responsive designs where components need to adapt to different screen sizes.
-
-### The default layout
+- **Grid layout**: The [`Grid`][vizro.models.Layout] layout arranges components in a structured grid where rows and columns are explicitly defined. This layout is ideal for precise control over the placement of components.
+- **Flex layout**: The [`Flex`][vizro.models.Flex] layout arranges components using a flexible box model, where items can grow, shrink, and wrap dynamically based on available space. This layout is ideal for responsive designs where components need to adapt to different screen sizes.
 
 The `layout` argument of the [`Page`][vizro.models.Page] model is optional. If no layout is specified, it will default to a grid layout - all charts/components are then automatically [**stacked vertically**](layouts.md#vertical-and-horizontal-stacking) on the page in one column.
 
@@ -52,7 +50,7 @@ The `layout` argument of the [`Page`][vizro.models.Page] model is optional. If n
 
 ### Configure the grid
 
-To customize the grid arrangement, configure the `grid` parameter of the [`Layout`][vizro.models.Layout] model.
+To customize the grid arrangement, configure the `grid` parameter of the [`Grid`][vizro.models.Layout] model.
 
 The example below shows an example of a valid `grid`:
 
@@ -549,7 +547,9 @@ If you want to customize the default behavior, the [Flex][vizro.models.Flex] mod
 
 ### Change the size of flex-items
 
-There may be times when resizing your flex items is necessary, such as when designing for different screen sizes or combining elements with diverse content types (e.g., charts, text, or images). You can achieve this by either specifying the `width` and `height` directly on the components or, if you're comfortable, applying custom CSS.
+There may be times when resizing your flex items is necessary, such as when designing for different screen sizes or combining elements with diverse content types (e.g., charts, text, or images). 
+
+You can achieve this by either specifying the `width` and `height` directly on the components or, if you're comfortable, applying custom CSS.
 
 #### Change size via component's arguments
 
@@ -638,7 +638,9 @@ The syntax for setting `width` and `height` varies between components. Refer to 
 
 #### Change size via custom CSS
 
-Custom CSS is often a better choice than setting sizes through component arguments when you need to apply a consistent `height` and/or `width` across multiple elements without repeating code. This is especially helpful for ensuring uniform sizing of all flex items. Each item within the `Flex` layout is wrapped in a `Div` with the `classname="flex-item"`, which can be targeted with CSS. For more information on identifying the correct selectors, refer to our [user guide on custom CSS](custom-css.md).
+Custom CSS is often a better choice than setting sizes through component arguments when you need to apply a consistent `height` and/or `width` across multiple elements without repeating code. This is especially helpful for ensuring uniform sizing of all flex items. 
+
+Each item within the `Flex` layout is wrapped in a `Div` with the `classname="flex-item"`, which can be targeted with CSS. For more information on identifying the correct selectors, refer to our [user guide on custom CSS](custom-css.md).
 
 !!! example "Customizing CSS properties in selective components"
     === "my_css_file.css"
