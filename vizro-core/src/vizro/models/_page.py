@@ -1,7 +1,7 @@
 from __future__ import annotations
 
 from collections.abc import Iterable
-from typing import Annotated, Optional, TypedDict, cast, Union
+from typing import Annotated, Optional, TypedDict, Union, cast
 
 from dash import dcc, html
 from pydantic import (
@@ -20,12 +20,12 @@ from vizro._constants import ON_PAGE_LOAD_ACTION_PREFIX
 from vizro.actions import _on_page_load
 from vizro.managers import model_manager
 from vizro.managers._model_manager import FIGURE_MODELS, DuplicateIDError
-from vizro.models import Action, Filter, Layout, VizroBaseModel, Tooltip
+from vizro.models import Action, Filter, Layout, Tooltip, VizroBaseModel
 from vizro.models._action._actions_chain import ActionsChain, Trigger
 from vizro.models._layout import set_layout
 from vizro.models._models_utils import _log_call, check_captured_callable_model
-from ._tooltip import coerce_str_to_tooltip
 
+from ._tooltip import coerce_str_to_tooltip
 from .types import ComponentType, ControlType
 
 # This is just used for type checking. Ideally it would inherit from some dash.development.base_component.Component

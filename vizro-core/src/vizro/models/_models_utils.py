@@ -17,7 +17,6 @@ def _log_call(method):
     return _wrapper
 
 
-
 def validate_icon(icon) -> str:
     return icon.strip().lower().replace(" ", "_")
 

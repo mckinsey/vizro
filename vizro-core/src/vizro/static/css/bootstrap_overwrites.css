@@ -117,7 +117,7 @@ label[for="theme-selector"] {
   max-width: 500px !important;
 }
 
-/*TODO NOW: fix light theme readability*/
+/* TODO NOW: fix light theme readability */
 .tooltip-inner * {
   color: var(--text-primary-inverted);
 }

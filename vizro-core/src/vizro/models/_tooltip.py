@@ -49,7 +49,7 @@ class Tooltip(VizroBaseModel):
             Field(
                 default={},
                 description="""Extra keyword arguments that are passed to `dbc.Tooltip` and overwrite any
-                defaults chosen by the Vizro team. This may have unexpected behavior. Visit the 
+                defaults chosen by the Vizro team. This may have unexpected behavior. Visit the
                 [dbc documentation](https://dash-bootstrap-components.opensource.faculty.ai/docs/components/tooltip/)
                 to see all available arguments. [Not part of the official Vizro schema](../explanation/schema.md) and the
                 underlying component may change in the future. Defaults to `{}`.""",

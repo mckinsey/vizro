@@ -4,7 +4,7 @@ from typing import Annotated, Any, Literal, Optional, Union, cast
 
 import dash_bootstrap_components as dbc
 from dash import dcc, html
-from pydantic import AfterValidator, Field, PrivateAttr, StrictBool, ValidationInfo, model_validator, BeforeValidator
+from pydantic import AfterValidator, BeforeValidator, Field, PrivateAttr, StrictBool, ValidationInfo, model_validator
 from pydantic.functional_serializers import PlainSerializer
 from pydantic.json_schema import SkipJsonSchema
 

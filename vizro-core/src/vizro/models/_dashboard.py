@@ -4,7 +4,7 @@ import base64
 import logging
 from functools import partial
 from pathlib import Path
-from typing import TYPE_CHECKING, Annotated, Literal, Optional, TypedDict, cast, Union
+from typing import TYPE_CHECKING, Annotated, Literal, Optional, TypedDict, Union, cast
 
 import dash
 import dash_bootstrap_components as dbc
@@ -22,13 +22,13 @@ from dash import (
     html,
 )
 from dash.development.base_component import Component
-from pydantic import AfterValidator, Field, ValidationInfo, BeforeValidator
+from pydantic import AfterValidator, BeforeValidator, Field, ValidationInfo
 
 import vizro
 from vizro._constants import MODULE_PAGE_404, VIZRO_ASSETS_PATH
 from vizro._themes.template_dashboard_overrides import dashboard_overrides
 from vizro.actions._action_loop._action_loop import ActionLoop
-from vizro.models import Navigation, VizroBaseModel, Tooltip
+from vizro.models import Navigation, Tooltip, VizroBaseModel
 from vizro.models._models_utils import _log_call
 from vizro.models._navigation._navigation_utils import _NavBuildType
 from vizro.models._tooltip import coerce_str_to_tooltip

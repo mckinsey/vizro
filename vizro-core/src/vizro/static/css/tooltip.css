@@ -1,9 +1,9 @@
 .tooltip-icon
 {
-    padding-left: 8px;
-    vertical-align: middle;
     cursor: pointer;
     font-size: max(20px, 1em);
+    padding-left: 8px;
+    vertical-align: middle;
 }
 
 .tooltip-icon:hover {
