@@ -19,6 +19,7 @@ from vizro.charts._charts_utils import _DashboardReadyFigure
 
 
 def get_layout_discriminator(layout: Any) -> str:
+    """Helper function for callable discriminator used for LayoutType."""
     # It is not immediately possible to introduce a discriminated union as a field type without it breaking existing
     # YAML/dictionary configuration in which `type` is not specified. This function is needed to handle the legacy case.
     if isinstance(layout, dict):
