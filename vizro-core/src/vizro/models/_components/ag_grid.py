@@ -91,10 +91,6 @@ class AgGrid(VizroBaseModel):
     @property
     def _filter_interaction_input(self):
         """Required properties when using pre-defined `filter_interaction`."""
-        # We need to call pre_build here to ensure that the self._input_component_id is set.
-        # This is required for the filter_interaction.pre_build validation.
-        self.pre_build()
-
         return {
             "cellClicked": State(component_id=self._input_component_id, component_property="cellClicked"),
             "modelID": State(component_id=self.id, component_property="id"),  # required, to determine triggered model
