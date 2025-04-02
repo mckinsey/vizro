@@ -640,7 +640,7 @@ The syntax for setting `width` and `height` varies between components. Refer to 
 
 Custom CSS is often a better choice than setting sizes through component arguments when you need to apply a consistent `height` and/or `width` across multiple elements without repeating code. This is especially helpful for ensuring uniform sizing of all flex items.
 
-Each item within the `Flex` layout is wrapped in a `Div` with the `classname="flex-item"`, which can be targeted with CSS. For more information on identifying the correct selectors, refer to our [user guide on custom CSS](custom-css.md).
+Each item within the `Flex` layout is wrapped in a `Div` with the `classname="flex-item"`, which can be targeted with CSS. To learn how to identify the correct selectors, refer to our [user guide on custom CSS](custom-css.md).
 
 !!! example "Customizing CSS properties in selective components"
     === "my_css_file.css"
