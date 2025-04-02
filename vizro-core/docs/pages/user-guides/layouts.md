@@ -418,23 +418,15 @@ For further customization, such as changing the gap between row and column, refe
 
 ## Flex Layout
 
-The [Flex][vizro.models.Flex] layout offers a dynamic and flexible way to organize components within a page. 
-Built on the CSS Flexbox model, it is specifically designed to create responsive layouts that seamlessly adjust to 
-varying screen sizes and available space.
+The [Flex][vizro.models.Flex] layout offers a dynamic and flexible way to organize components within a page. Built on the CSS Flexbox model, it is specifically designed to create responsive layouts that seamlessly adjust to varying screen sizes and available space.
 
-Unlike the [Grid][vizro.models.Layout] layout, which uses a predefined row-and-column structure, the `Flex` layout 
-provides greater flexibility by allowing components to resize, align, and position themselves dynamically based on the 
-layout configuration.
+Unlike the [Grid][vizro.models.Layout] layout, which uses a predefined row-and-column structure, the `Flex` layout provides greater flexibility by allowing components to resize, align, and position themselves dynamically based on the layout configuration.
 
-If you're new to Flexbox, we strongly recommend exploring [An Interactive Guide to Flexbox](https://www.joshwcomeau.com/css/interactive-guide-to-flexbox/). 
-This tutorial provides a visual introduction to the core concepts of Flexbox, making it easier to understand how to leverage the `Flex` layout effectively.
+If you're new to Flexbox, we strongly recommend exploring [An Interactive Guide to Flexbox](https://www.joshwcomeau.com/css/interactive-guide-to-flexbox/). This tutorial provides a visual introduction to the core concepts of Flexbox, making it easier to understand how to leverage the `Flex` layout effectively.
 
 ### Flex - basic example
 
-To switch to a `Flex` layout, simply pass `vm.Flex()` to the `layout` argument of the [Page][vizro.models.Page]. 
-This replaces the default `Grid` layout with a `Flex` layout, where components (flex items) are arranged 
-vertically (`direction="column"`), remain on a single line (`wrap=False`), and have a default spacing (`gap=24px`) 
-between them.
+To switch to a `Flex` layout, simply pass `vm.Flex()` to the `layout` argument of the [Page][vizro.models.Page]. This replaces the default `Grid` layout with a `Flex` layout, where components (flex items) are arranged vertically (`direction="column"`), remain on a single line (`wrap=False`), and have a default spacing (`gap=24px`) between them.
 
 !!! example "Flex - basic example"
     === "app.py"
@@ -442,15 +434,15 @@ between them.
         import vizro.models as vm
         from vizro import Vizro
         import vizro.plotly.express as px
-        
+
         tips = px.data.tips()
-        
+
         page = vm.Page(
             title="Flex - basic example",
             layout=vm.Flex(),
             components=[vm.Graph(figure=px.violin(tips, y="tip", x="day", color="day")) for i in range(3)],
         )
-        
+
         dashboard = vm.Dashboard(pages=[page])
         Vizro().build(dashboard).run()
         ```
@@ -488,7 +480,7 @@ between them.
         ```
 
     === "Result"
-        [![FlexBasic]][FlexBasic]
+        [![FlexBasic]][flexbasic]
 
 ### Flex - advanced example
 
@@ -504,15 +496,15 @@ If you want to customize the default behavior, the [Flex][vizro.models.Flex] mod
         import vizro.models as vm
         from vizro import Vizro
         import vizro.plotly.express as px
-        
+
         tips = px.data.tips()
-        
+
         page = vm.Page(
             title="Flex - advanced example",
             layout=vm.Flex(direction="row", gap="40px", wrap=True),
             components=[vm.Graph(figure=px.violin(tips, y="tip", x="day", color="day")) for i in range(3)],
         )
-        
+
         dashboard = vm.Dashboard(pages=[page])
         Vizro().build(dashboard).run()
         ```
@@ -548,14 +540,145 @@ If you want to customize the default behavior, the [Flex][vizro.models.Flex] mod
               type: flex
               direction: row
               gap: 40px
-              wrap: True
+              wrap: true
             title: Flex - advanced example
         ```
 
     === "Result"
-        [![FlexAdvanced]][FlexAdvanced]
+        [![FlexAdvanced]][flexadvanced]
 
 ### Change the size of flex-items
+
+There may be times when resizing your flex items is necessary, such as when designing for different screen sizes or combining elements with diverse content types (e.g., charts, text, or images). You can achieve this by either specifying the `width` and `height` directly on the components or, if you're comfortable, applying custom CSS.
+
+#### Change size via component's arguments
+
+The syntax for setting `width` and `height` varies between components. Refer to the component's documentation for the correct syntax and usage, such as:
+
+- `Graph`: See the documentation on [Plotly - Adjust Graph Size in Python](https://plotly.com/python/setting-graph-size/).
+- `AgGrid`: See the documentation on [Dash - Change Grid Size](https://dash.plotly.com/dash-ag-grid/grid-size)
+- `DataTable`: See the documentation on [Dash - Setting Table Height](https://dash.plotly.com/datatable/height#setting-table-height-with-vertical-scroll)
+- `Card`: See our documentation on [Card - The extra argument](https://vizro.readthedocs.io/en/stable/pages/user-guides/card/#the-extra-argument)
+
+!!! example "Change the width for Graph"
+    === "app.py"
+        ```{.python pycafe-link}
+        import vizro.models as vm
+        from vizro import Vizro
+        import vizro.plotly.express as px
+
+        tips = px.data.tips()
+
+        page = vm.Page(
+            title="Change the width for Graph",
+            layout=vm.Flex(direction="row", gap="40px", wrap=True),
+            components=[vm.Graph(figure=px.violin(tips, y="tip", x="day", color="day", width=400)) for i in range(5)],
+        )
+
+        dashboard = vm.Dashboard(pages=[page])
+        Vizro().build(dashboard).run()
+        ```
+
+    === "app.yaml"
+        ```yaml
+        # Still requires a .py to add data to the data manager and parse YAML configuration
+        # See yaml_version example
+        pages:
+          - components:
+              - figure:
+                  _target_: violin
+                  x: day
+                  y: tip
+                  color: day
+                  data_frame: tips
+                  width: 400
+                type: graph
+              - figure:
+                  _target_: violin
+                  x: day
+                  y: tip
+                  color: day
+                  data_frame: tips
+                  width: 400
+                type: graph
+              - figure:
+                  _target_: violin
+                  x: day
+                  y: tip
+                  color: day
+                  data_frame: tips
+                  width: 400
+                type: graph
+              - figure:
+                  _target_: violin
+                  x: day
+                  y: tip
+                  color: day
+                  data_frame: tips
+                  width: 400
+                type: graph
+              - figure:
+                  _target_: violin
+                  x: day
+                  y: tip
+                  color: day
+                  data_frame: tips
+                  width: 400
+                type: graph
+            layout:
+              type: flex
+              direction: row
+              gap: 40px
+              wrap: true
+            title: Change the width for Graph
+        ```
+
+    === "Result"
+        [![FlexItemSizeArg]][flexitemsizearg]
+
+#### Change size via custom CSS
+
+Custom CSS is often a better choice than setting sizes through component arguments when you need to apply a consistent `height` and/or `width` across multiple elements without repeating code. This is especially helpful for ensuring uniform sizing of all flex items. Each item within the `Flex` layout is wrapped in a `Div` with the `classname="flex-item"`, which can be targeted with CSS. For more information on identifying the correct selectors, refer to our [user guide on custom CSS](custom-css.md).
+
+!!! example "Customizing CSS properties in selective components"
+    === "my_css_file.css"
+        ```css
+        /* Apply styling to all flex items */
+        #page-with-uniform-flex-items .flex-item {
+            width: 260px;
+        }
+        ```
+
+    === "app.py"
+        ```py
+        import vizro.models as vm
+        from vizro import Vizro
+
+        page = vm.Page(
+            id="page-with-uniform-flex-items",
+            title="Change the width via CSS",
+            layout=vm.Flex(direction="row", wrap=True),
+            components=[
+                vm.Card(
+                    text="""
+                       # Lorem Ipsum
+
+                       Lorem ipsum dolor sit amet, consectetur adipiscing elit. Aliquam sed elementum ligula.
+                       In ultricies est ac mauris vehicula fermentum. Curabitur faucibus elementum lectus.
+                       Name ut ipsum tortor. Praesent ut nulla risus. Praesent in dignissim nulla.
+                   """
+                )
+                for i in range(12)
+            ],
+        )
+
+        dashboard = vm.Dashboard(pages=[page])
+        ```
+
+        <img src=https://py.cafe/logo.png alt="PyCafe logo" width="30"><b><a target="_blank" href="https://py.cafe/vizro-official/vizro-custom-card-styling">Run and edit this code in PyCafe</a></b>
+
+    === "Result"
+        [![FlexItemSizeCSS]][flexitemsizecss]
 
 ## Alternative layout approaches
 
@@ -566,10 +689,12 @@ In general, any arbitrarily granular layout can already be achieved using [`Page
 
 ![tabs](../../assets/user_guides/components/tabs-info.png){ width="500" }
 
+[flexadvanced]: ../../assets/user_guides/layout/flex_advanced.png
+[flexbasic]: ../../assets/user_guides/layout/flex_basic.png
+[flexitemsizearg]: ../../assets/user_guides/layout/flex_item_size_args.png
+[flexitemsizecss]: ../../assets/user_guides/layout/flex_item_size_css.png
 [grid]: ../../assets/user_guides/layout/one_left_two_right.png
 [gridadv]: ../../assets/user_guides/layout/grid_advanced.png
 [gridempty]: ../../assets/user_guides/layout/layout_empty_spaces.png
 [gridscroll]: ../../assets/user_guides/layout/grid_scroll.png
 [layout]: ../../assets/user_guides/layout/two_left.png
-[FlexBasic]: ../../assets/user_guides/layout/flex_basic.png
-[FlexAdvanced]: ../../assets/user_guides/layout/flex_advanced.png
