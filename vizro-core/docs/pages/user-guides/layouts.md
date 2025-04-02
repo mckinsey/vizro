@@ -482,7 +482,7 @@ To switch to a `Flex` layout, simply pass `vm.Flex()` to the `layout` argument o
 
 ### Flex - advanced example
 
-If you want to customize the default behavior, the [Flex][vizro.models.Flex] model allows you to configure three optional arguments:
+If you want to customize the default behavior, the [Flex][vizro.models.Flex] model enables you to configure three optional arguments:
 
 - `direction`: Defines the layout direction of the components within the flex container, determining whether they are arranged in rows or columns.
 - `gap`: Controls the spacing between components in the flex container, enabling you to set consistent horizontal and vertical spacing between items.
