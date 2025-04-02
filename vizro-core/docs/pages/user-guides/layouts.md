@@ -4,7 +4,7 @@ The [`Page`][vizro.models.Page] model accepts a `layout` argument that enables c
 
 ## Layout options: Grid and Flex
 
-The `layout` argument allows you to choose between two layout models: [`Grid`][vizro.models.Layout] (default) and [`Flex`][vizro.models.Flex]. Both models provide different ways to organize components on the page.
+The `layout` argument enables you to choose between two layout models: [`Grid`][vizro.models.Layout] (default) and [`Flex`][vizro.models.Flex]. Both models provide different ways to organize components on the page.
 
 - **Grid layout**: The [`Grid`][vizro.models.Layout] layout arranges components in a structured grid where rows and columns are explicitly defined. This layout is ideal for precise control over the placement of components.
 - **Flex layout**: The [`Flex`][vizro.models.Flex] layout arranges components using a flexible box model, where items can grow, shrink, and wrap dynamically based on available space. This layout is ideal for responsive designs where components need to adapt to different screen sizes.
