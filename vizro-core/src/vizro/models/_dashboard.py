@@ -101,9 +101,11 @@ class Dashboard(VizroBaseModel):
         Optional[Navigation], AfterValidator(set_navigation_pages), Field(default=None, validate_default=True)
     ]
     title: str = Field(default="", description="Dashboard title to appear on every page on top left-side.")
+    # TODO: ideally description would have json_schema_input_type=Union[str, Tooltip] attached to the BeforeValidator,
+    #  but this requires pydantic >= 2.9.
     description: Annotated[
         Optional[Tooltip],
-        BeforeValidator(coerce_str_to_tooltip, json_schema_input_type=Union[str, Tooltip]),
+        BeforeValidator(coerce_str_to_tooltip),
         Field(
             default=None,
             description="Additional information about the dashboard shown in a tooltip and used for description "

@@ -67,9 +67,11 @@ class Page(VizroBaseModel):
     # TODO[mypy], see: https://github.com/pydantic/pydantic/issues/156 for components field
     components: conlist(Annotated[ComponentType, BeforeValidator(check_captured_callable_model)], min_length=1)  # type: ignore[valid-type]
     title: str = Field(description="Title to be displayed.")
+    # TODO: ideally description would have json_schema_input_type=Union[str, Tooltip] attached to the BeforeValidator,
+    #  but this requires pydantic >= 2.9.
     description: Annotated[
         Optional[Tooltip],
-        BeforeValidator(coerce_str_to_tooltip, json_schema_input_type=Union[str, Tooltip]),
+        BeforeValidator(coerce_str_to_tooltip),
         Field(
             default=None,
             description="Additional information about the page shown in a tooltip and used for description meta tag.",
