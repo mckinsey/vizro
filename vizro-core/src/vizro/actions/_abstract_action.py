@@ -14,7 +14,7 @@ class AbstractAction(_BaseAction, abc.ABC):
 
     To use this class, you must subclass it and define `function` and `outputs` to make a concrete action class. All
     built in actions follow this pattern, and it's also possible for user-defined actions. This class is not relevant
-     for user-defined actions using `@capture("action")`.
+    for user-defined actions using `@capture("action")`.
 
     When subclassing, you can optionally define model fields. These can be either static or runtime arguments and
     define the configuration that a user specifies to use the action:
