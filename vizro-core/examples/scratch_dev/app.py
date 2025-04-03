@@ -67,7 +67,24 @@ page_one = vm.Page(
 page_two = vm.Page(
     title="Styled containers",
     path="page-two",
+    layout=vm.Layout(grid=[[0, 1], [2, 3]]),
     components=[
+        vm.Card(
+            text="""
+        ### Actions
+
+        Standard predefined actions are made available including **export data** and **filter interactions**.
+        """,
+            href="/page-one",
+        ),
+        vm.Card(
+            text="""
+        ### Actions
+
+        Standard predefined actions are made available including **export data** and **filter interactions**.
+        """,
+            href="/page-one",
+        ),
         vm.Container(
             title="Container - filled",
             components=[vm.Graph(figure=px.scatter(iris, x="sepal_length", y="petal_width", color="species"))],
@@ -78,6 +95,30 @@ page_two = vm.Page(
             components=[vm.Graph(figure=px.scatter(iris, x="sepal_length", y="petal_width", color="species"))],
             variant="outlined",
         ),
+    ],
+    controls=[vm.Filter(column="species"), vm.Filter(column="petal_length")],
+)
+
+page_four = vm.Page(
+    title="Card with Graph",
+    components=[
+        vm.Card(
+            text="""
+        ### Actions
+
+        Standard predefined actions are made available including **export data** and **filter interactions**.
+        """,
+            href="/page-one",
+        ),
+        vm.Card(
+            text="""
+        ### Actions
+
+        Standard predefined actions are made available including **export data** and **filter interactions**.
+        """,
+            href="/page-one",
+        ),
+        vm.Graph(figure=px.scatter(iris, x="sepal_length", y="petal_width", color="species")),
     ],
     controls=[vm.Filter(column="species"), vm.Filter(column="petal_length")],
 )
