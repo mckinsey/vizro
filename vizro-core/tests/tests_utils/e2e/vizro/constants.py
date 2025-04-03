@@ -150,6 +150,26 @@ BOX_FILTER_AND_PARAM_ID = "box mix graph"
 DROPDOWN_FILTER_AND_PARAM = "dropdown mix filter"
 RADIO_ITEMS_FILTER_AND_PARAM = "radioitems mix param"
 
+CONTAINER_VARIANTS_PAGE = "Container variants"
+CONTAINER_VARIANTS_PAGE_PATH = "/container-variants"
+SCATTER_FILLED = "scatter filled"
+
+LAYOUT_FLEX_DEFAULT = "Flex - default"
+LAYOUT_FLEX_DEFAULT_PATH = "/flex---default"
+
+LAYOUT_FLEX_ALL_PARAMS = "Flex - all params"
+LAYOUT_FLEX_ALL_PARAMS_PATH = "/flex---all-params"
+
+LAYOUT_FLEX_DIRECTION_AND_GRAPH = "Flex - direction and graph"
+LAYOUT_FLEX_DIRECTION_AND_GRAPH_PATH = "/flex---direction-and-graph"
+
+LAYOUT_FLEX_GAP_AND_TABLE = "Flex - gap and table"
+LAYOUT_FLEX_GAP_AND_TABLE_PATH = "/flex---gap-and-table"
+
+LAYOUT_FLEX_WRAP_AND_AG_GRID = "Flex - wrap and ag_grid"
+LAYOUT_FLEX_WRAP_AND_AG_GRID_PATH = "/flex---wrap-and-ag_grid"
+
+
 PAGE_404_PATH = "/404-page"
 
 # Accordion names
@@ -162,6 +182,10 @@ AG_GRID_ACCORDION_NUMBER = 3
 DYNAMIC_DATA_ACCORDION = "DYNAMIC data"
 DYNAMIC_DATA_ACCORDION_NUMBER = 4
 KPI_ACCORDION = "KPI"
+CONTAINER_ACCORDION = "Containers"
+CONTAINER_ACCORDION_NUMBER = 5
+LAYOUT_ACCORDION = "Layouts"
+LAYOUT_ACCORDION_NUMBER = 6
 
 # Ports
 

@@ -127,6 +127,101 @@ def test_navbar_filters_page(dash_br_driver):
     dash_br_driver.multiple_click(nav_card_link_path(cnst.FILTERS_PAGE_PATH), 1)
 
 
+@image_assertion
+def test_container_variants_light_theme(dash_br):
+    accordion_select(
+        dash_br, accordion_name=cnst.CONTAINER_ACCORDION.upper(), accordion_number=cnst.CONTAINER_ACCORDION_NUMBER
+    )
+    page_select(
+        dash_br,
+        page_path=cnst.CONTAINER_VARIANTS_PAGE_PATH,
+        page_name=cnst.CONTAINER_VARIANTS_PAGE,
+        graph_id=cnst.SCATTER_FILLED,
+    )
+
+
+@image_assertion
+def test_container_variants_dark_theme(dash_br):
+    accordion_select(
+        dash_br, accordion_name=cnst.CONTAINER_ACCORDION.upper(), accordion_number=cnst.CONTAINER_ACCORDION_NUMBER
+    )
+    page_select(
+        dash_br,
+        page_path=cnst.CONTAINER_VARIANTS_PAGE_PATH,
+        page_name=cnst.CONTAINER_VARIANTS_PAGE,
+        graph_id=cnst.SCATTER_FILLED,
+    )
+    dash_br.multiple_click(theme_toggle_path(), 1)
+    check_graph_color(dash_br, style_background=cnst.STYLE_TRANSPARENT, color=cnst.RGBA_TRANSPARENT)
+    check_theme_color(dash_br, color=cnst.THEME_DARK)
+
+
+@image_assertion
+def test_flex_default_layout(dash_br):
+    accordion_select(
+        dash_br, accordion_name=cnst.LAYOUT_ACCORDION.upper(), accordion_number=cnst.LAYOUT_ACCORDION_NUMBER
+    )
+    page_select(
+        dash_br,
+        page_path=cnst.LAYOUT_FLEX_DEFAULT_PATH,
+        page_name=cnst.LAYOUT_FLEX_DEFAULT,
+    )
+
+
+@image_assertion
+def test_flex_layout_all_params(dash_br):
+    accordion_select(
+        dash_br, accordion_name=cnst.LAYOUT_ACCORDION.upper(), accordion_number=cnst.LAYOUT_ACCORDION_NUMBER
+    )
+    page_select(
+        dash_br,
+        page_path=cnst.LAYOUT_FLEX_ALL_PARAMS_PATH,
+        page_name=cnst.LAYOUT_FLEX_ALL_PARAMS,
+    )
+
+
+@image_assertion
+def test_flex_layout_direction_and_graph(dash_br):
+    accordion_select(
+        dash_br, accordion_name=cnst.LAYOUT_ACCORDION.upper(), accordion_number=cnst.LAYOUT_ACCORDION_NUMBER
+    )
+    page_select(
+        dash_br,
+        page_path=cnst.LAYOUT_FLEX_DIRECTION_AND_GRAPH_PATH,
+        page_name=cnst.LAYOUT_FLEX_DIRECTION_AND_GRAPH,
+    )
+
+
+@image_assertion
+def test_flex_layout_gap_and_table(dash_br):
+    accordion_select(
+        dash_br, accordion_name=cnst.LAYOUT_ACCORDION.upper(), accordion_number=cnst.LAYOUT_ACCORDION_NUMBER
+    )
+    page_select(
+        dash_br,
+        page_path=cnst.LAYOUT_FLEX_GAP_AND_TABLE_PATH,
+        page_name=cnst.LAYOUT_FLEX_GAP_AND_TABLE,
+    )
+    # check if Total_bill 16.99 is available
+    dash_br.wait_for_text_to_equal(
+        "div[class='dash-table-container'] tr:nth-of-type(2) div[class='unfocused selectable dash-cell-value']", "16.99"
+    )
+
+
+@image_assertion
+def test_flex_layout_wrap_and_ag_grid(dash_br):
+    accordion_select(
+        dash_br, accordion_name=cnst.LAYOUT_ACCORDION.upper(), accordion_number=cnst.LAYOUT_ACCORDION_NUMBER
+    )
+    page_select(
+        dash_br,
+        page_path=cnst.LAYOUT_FLEX_WRAP_AND_AG_GRID_PATH,
+        page_name=cnst.LAYOUT_FLEX_WRAP_AND_AG_GRID,
+    )
+    # check if column 'Total_bill' is available
+    dash_br.wait_for_element("div[class='ag-theme-quartz ag-theme-vizro'] div:nth-of-type(1) div[col-id='total_bill']")
+
+
 @pytest.mark.mobile_screenshots
 @image_assertion
 def test_homepage_mobile(dash_br):
