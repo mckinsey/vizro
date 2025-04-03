@@ -31,7 +31,7 @@ page1 = vm.Page(
             components=[
                 vm.Graph(
                     id="graph2",
-                    figure=px.scatter(df, x="sepal_length", y="petal_width", color="species", custom_data=["species"]),
+                    figure=px.bar(df, x="sepal_length", y="sepal_width", color="species", title="Container I - Bar"),
                 ),
             ],
             variant="outlined",
@@ -46,49 +46,155 @@ page1 = vm.Page(
     ],
 )
 
-# page2 = vm.Page(
-#     title="Controls above tabs",
-#     components=[
-#         vm.Container(
-#             title="Container with tabs and controls",
-#             controls=[
-#                 vm.Filter(
-#                     column="species",
-#                     selector=vm.Checklist(title="Species", extra={"inline": True}),
-#                     targets=["graph3", "graph4"]
-#                 )
-#             ],
-#             components=[
-#                 vm.Tabs(
-#                     tabs=[
-#                         vm.Container(
-#                             title="Tab1",
-#                             components=[
-#                                 vm.Graph(
-#                                     id="graph3",
-#                                     figure=px.scatter(df, x="sepal_length", y="petal_width", color="species",
-#                                                       custom_data=["species"]),
-#                                 ),
-#                             ]
-#                         ),
-#                         vm.Container(
-#                             title="Tab2",
-#                             components=[
-#                                 vm.Graph(
-#                                     id="graph4",
-#                                     figure=px.scatter(df, x="sepal_length", y="petal_width", color="species",
-#                                                       custom_data=["species"]),
-#                                 ),
-#                             ]
-#                         )
-#                     ]
-#                 )
-#             ]
-#         )
-#     ]
-# )
+page2 = vm.Page(
+    title="Controls above tabs",
+    components=[
+        vm.Container(
+            title="Container with tabs and controls",
+            controls=[
+                vm.Filter(
+                    column="species",
+                    selector=vm.Checklist(title="Species", extra={"inline": True}),
+                    targets=["graph3", "graph4"],
+                )
+            ],
+            components=[
+                vm.Tabs(
+                    tabs=[
+                        vm.Container(
+                            title="Tab1",
+                            components=[
+                                vm.Graph(
+                                    id="graph3",
+                                    figure=px.bar(
+                                        df,
+                                        x="sepal_length",
+                                        y="sepal_width",
+                                        color="species",
+                                        title="Container II - Bar",
+                                    ),
+                                ),
+                            ],
+                        ),
+                        vm.Container(
+                            title="Tab2",
+                            components=[
+                                vm.Graph(
+                                    id="graph4",
+                                    figure=px.scatter(
+                                        df, x="sepal_length", y="petal_width", color="species", custom_data=["species"]
+                                    ),
+                                ),
+                            ],
+                        ),
+                    ]
+                )
+            ],
+        )
+    ],
+)
 
-dashboard = vm.Dashboard(pages=[page1])
+page3 = vm.Page(
+    title="Controls in the tabs",
+    components=[
+        vm.Container(
+            title="Container with tabs and controls",
+            controls=[
+                vm.Filter(
+                    column="species", selector=vm.Checklist(title="Species", extra={"inline": True}), targets=["graph6"]
+                )
+            ],
+            components=[
+                vm.Tabs(
+                    tabs=[
+                        vm.Container(
+                            title="Tab3",
+                            components=[
+                                vm.Container(
+                                    title="Container within tab",
+                                    components=[
+                                        vm.Graph(
+                                            id="graph5",
+                                            figure=px.bar(
+                                                df,
+                                                x="sepal_length",
+                                                y="sepal_width",
+                                                color="species",
+                                                title="Container - Bar",
+                                            ),
+                                        ),
+                                    ],
+                                    controls=[
+                                        vm.Filter(
+                                            column="species",
+                                            selector=vm.RadioItems(title="Species", extra={"inline": True}),
+                                        )
+                                    ],
+                                ),
+                            ],
+                        ),
+                        vm.Container(
+                            title="Tab4",
+                            components=[
+                                vm.Graph(
+                                    id="graph6",
+                                    figure=px.scatter(
+                                        df, x="sepal_length", y="petal_width", color="species", custom_data=["species"]
+                                    ),
+                                ),
+                            ],
+                        ),
+                    ]
+                )
+            ],
+        )
+    ],
+)
+
+page4 = vm.Page(
+    title="Container within container",
+    components=[
+        vm.Container(
+            title="Outer container",
+            layout=vm.Layout(grid=[[0, 0], [1, 2]]),
+            components=[
+                vm.Container(
+                    title="Inner container",
+                    components=[
+                        vm.Graph(
+                            id="graph9",
+                            figure=px.scatter(
+                                df, x="sepal_length", y="petal_width", color="species", custom_data=["species"]
+                            ),
+                        ),
+                    ],
+                    controls=[
+                        vm.Filter(
+                            column="petal_width",
+                            selector=vm.RangeSlider(title="Petal width"),
+                        ),
+                    ],
+                    variant="filled",
+                ),
+                vm.Graph(
+                    id="graph7",
+                    figure=px.bar(df, x="sepal_length", y="sepal_width", color="species", title="Container I - Bar"),
+                ),
+                vm.Graph(id="graph10", figure=px.violin(px.data.iris(), x="species", y="sepal_width", box=True)),
+            ],
+            variant="outlined",
+            controls=[
+                vm.Filter(
+                    column="species",
+                    selector=vm.Checklist(value=["setosa"], title="Species", extra={"inline": True}),
+                ),
+            ],
+        ),
+    ],
+)
+
+
+dashboard = vm.Dashboard(pages=[page1, page2, page3, page4])
 
 if __name__ == "__main__":
     Vizro().build(dashboard).run()
