@@ -193,8 +193,57 @@ page4 = vm.Page(
     ],
 )
 
+page5 = vm.Page(
+    title="Page with dropdown",
+    components=[
+        vm.Container(
+            title="Controls - Dropdown",
+            components=[
+                vm.Graph(
+                    title="Bar chart",
+                    figure=px.bar(df, x="sepal_length", y="sepal_width", color="species"),
+                ),
+                vm.Graph(
+                    title="Scatter chart",
+                    figure=px.scatter(df, x="sepal_length", y="petal_width", color="species", custom_data=["species"]),
+                ),
+            ],
+            layout=vm.Layout(grid=[[0, 1]]),
+            controls=[
+                vm.Filter(column="species", selector=vm.Dropdown(title="Species")),
+            ],
+            variant="filled",
+        )
+    ],
+)
 
-dashboard = vm.Dashboard(pages=[page1, page2, page3, page4])
+page6 = vm.Page(
+    title="Page with multiple controls",
+    components=[
+        vm.Container(
+            title="Controls - Multiple",
+            components=[
+                vm.Graph(
+                    title="Bar chart",
+                    figure=px.bar(df, x="sepal_length", y="sepal_width", color="species"),
+                ),
+                vm.Graph(
+                    title="Scatter chart",
+                    figure=px.scatter(df, x="sepal_length", y="petal_width", color="species", custom_data=["species"]),
+                ),
+            ],
+            layout=vm.Layout(grid=[[0, 1]]),
+            controls=[
+                vm.Filter(column="species", selector=vm.Dropdown()),
+                vm.Filter(column="sepal_length", selector=vm.RangeSlider()),
+            ],
+            variant="filled",
+        )
+    ],
+)
+
+
+dashboard = vm.Dashboard(pages=[page1, page2, page3, page4, page5, page6])
 
 if __name__ == "__main__":
     Vizro().build(dashboard).run()

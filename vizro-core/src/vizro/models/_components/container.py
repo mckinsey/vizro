@@ -79,20 +79,24 @@ class Container(VizroBaseModel):
         # Below corresponds to bootstrap utility classnames, while 'bg-container' is introduced by us.
         # See: https://getbootstrap.com/docs/4.0/utilities
         variants = {"plain": "", "filled": "bg-container p-3", "outlined": "border p-3"}
-        controls_content = [control.build() for control in self.controls]
-        control_panel = html.Div(
-            id=f"{self.id}-control-panel",
-            children=controls_content,
-            hidden=not controls_content,
-            style={
-                "display": "flex",
-                "flexDirection": "row",
-                "flexWrap": "wrap",
-                "justifyContent": "start",
-                "alignItems": "center",
-                "gap": "12px",
-                "marginBottom": "0.5rem",
-            },
+        controls_content = [control.build() for control in self.controls] if self.controls else []
+        control_panel = (
+            html.Div(
+                id=f"{self.id}-control-panel",
+                children=controls_content,
+                hidden=not controls_content,
+                style={
+                    "display": "flex",
+                    "flexDirection": "row",
+                    "flexWrap": "wrap",
+                    "justifyContent": "start",
+                    "alignItems": "center",
+                    "gap": "12px",
+                    "marginBottom": "0.5rem",
+                },
+            )
+            if self.controls
+            else html.Div(hidden=True)
         )
 
         defaults = {
