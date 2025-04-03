@@ -77,7 +77,7 @@ class export_data(AbstractAction):
             filtered_data = _apply_filters(unfiltered_data, ctds["filters"], ctds["filter_interaction"], target)
             writer = getattr(filtered_data, writers[self.file_format])
             outputs[f"download_dataframe_{target}"] = dcc.send_data_frame(
-                writer=writer, filename=f"{runtime_arg}{target}.{self.file_format}", index=False
+                writer=writer, filename=f"{runtime_arg=} {target}.{self.file_format}", index=False
             )
 
         return outputs
