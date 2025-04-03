@@ -153,6 +153,7 @@ RADIO_ITEMS_FILTER_AND_PARAM = "radioitems mix param"
 CONTAINER_VARIANTS_PAGE = "Container variants"
 CONTAINER_VARIANTS_PAGE_PATH = "/container-variants"
 SCATTER_FILLED = "scatter filled"
+SCATTER_OUTLINED = "scatter outlined"
 
 LAYOUT_FLEX_DEFAULT = "Flex - default"
 LAYOUT_FLEX_DEFAULT_PATH = "/flex---default"
