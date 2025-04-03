@@ -1,3 +1,5 @@
+import os
+
 import pytest
 from e2e.asserts import assert_image_equal, make_screenshot_and_paths
 from e2e.vizro import constants as cnst
@@ -142,6 +144,7 @@ def test_container_variants_light_theme(dash_br):
 
 @image_assertion
 def test_container_variants_dark_theme(dash_br):
+    style_background = cnst.STYLE_TRANSPARENT_FIREFOX if os.getenv("BROWSER") == "firefox" else cnst.STYLE_TRANSPARENT
     accordion_select(
         dash_br, accordion_name=cnst.CONTAINER_ACCORDION.upper(), accordion_number=cnst.CONTAINER_ACCORDION_NUMBER
     )
@@ -152,7 +155,7 @@ def test_container_variants_dark_theme(dash_br):
         graph_id=cnst.SCATTER_FILLED,
     )
     dash_br.multiple_click(theme_toggle_path(), 1)
-    check_graph_color(dash_br, style_background=cnst.STYLE_TRANSPARENT, color=cnst.RGBA_TRANSPARENT)
+    check_graph_color(dash_br, style_background=style_background, color=cnst.RGBA_TRANSPARENT)
     check_theme_color(dash_br, color=cnst.THEME_DARK)
 
 
