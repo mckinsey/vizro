@@ -4,16 +4,24 @@ from typing import TYPE_CHECKING, Annotated, Any, Literal, Optional, cast
 
 import dash_bootstrap_components as dbc
 from dash import html
-from pydantic import AfterValidator, BeforeValidator, Field, conlist
 from pydantic.json_schema import SkipJsonSchema
+
+from vizro.models.types import ComponentType, ControlType
+
+if TYPE_CHECKING:
+    from vizro.models import Layout
+
+
+from pydantic import (
+    AfterValidator,
+    BeforeValidator,
+    Field,
+    conlist,
+)
 
 from vizro.models import VizroBaseModel
 from vizro.models._layout import set_layout
 from vizro.models._models_utils import _log_call, check_captured_callable_model
-from vizro.models.types import ComponentType
-
-if TYPE_CHECKING:
-    from vizro.models import Layout
 
 
 class Container(VizroBaseModel):
@@ -62,6 +70,7 @@ class Container(VizroBaseModel):
             ),
         ]
     ]
+    controls: list[ControlType] = []
 
     @_log_call
     def build(self):
@@ -70,11 +79,27 @@ class Container(VizroBaseModel):
         # Below corresponds to bootstrap utility classnames, while 'bg-container' is introduced by us.
         # See: https://getbootstrap.com/docs/4.0/utilities
         variants = {"plain": "", "filled": "bg-container p-3", "outlined": "border p-3"}
+        controls_content = [control.build() for control in self.controls]
+        control_panel = html.Div(
+            id=f"{self.id}-control-panel",
+            children=controls_content,
+            hidden=not controls_content,
+            style={
+                "display": "flex",
+                "flexDirection": "row",
+                "flexWrap": "wrap",
+                "justifyContent": "start",
+                "alignItems": "center",
+                "gap": "12px",
+                "marginBottom": "0.5rem",
+            },
+        )
 
         defaults = {
             "id": self.id,
             "children": [
                 html.H3(children=self.title, className="container-title", id=f"{self.id}_title"),
+                control_panel,
                 self._build_inner_layout(),
             ],
             "fluid": True,

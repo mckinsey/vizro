@@ -14,7 +14,7 @@ from vizro.actions import _filter
 from vizro.managers import data_manager, model_manager
 from vizro.managers._data_manager import DataSourceName, _DynamicData
 from vizro.managers._model_manager import FIGURE_MODELS, ModelID
-from vizro.models import Action, VizroBaseModel
+from vizro.models import Action, Container, VizroBaseModel
 from vizro.models._components.form import (
     Checklist,
     DatePicker,
@@ -133,12 +133,10 @@ class Filter(VizroBaseModel):
         # want to raise an error if the column is not found in a figure's data_frame, it will just be ignored.
         # This is the case when bool(self.targets) is False.
         # Possibly in future this will change (which would be breaking change).
-        proposed_targets = self.targets or [
-            cast(ModelID, model.id)
-            for model in cast(
-                Iterable[VizroBaseModel], model_manager._get_models(FIGURE_MODELS, model_manager._get_model_page(self))
-            )
-        ]
+
+        page = model_manager._get_model_page(self)
+        proposed_targets = self._get_proposed_targets(page=page)
+
         # TODO: Currently dynamic data functions require a default value for every argument. Even when there is a
         #  dataframe parameter, the default value is used when pre-build the filter e.g. to find the targets,
         #  column type (and hence selector) and initial values. There are three ways to handle this:
@@ -330,3 +328,32 @@ class Filter(VizroBaseModel):
         # changes. See https://pandas.pydata.org/docs/whatsnew/v2.1.0.html#whatsnew-210-enhancements-new-stack.
         targeted_data = pd.concat([targeted_data, pd.Series(current_value)]).stack().dropna()  # noqa: PD013
         return sorted(set(targeted_data) - {ALL_OPTION})
+
+    def _get_proposed_targets(self, page):
+        if self.targets:
+            return self.targets
+
+        is_page_control = any(control.id == self.id for control in page.controls)
+
+        if is_page_control:
+            return [
+                cast(ModelID, model.id)
+                for model in cast(Iterable[VizroBaseModel], model_manager._get_models(FIGURE_MODELS, page))
+            ]
+
+        # Find the container that holds the control
+        page_containers = cast(Iterable[VizroBaseModel], model_manager._get_models(Container, page))
+
+        control_container = next(
+            (
+                container
+                for container in page_containers
+                if any(control.id == self.id for control in container.controls)
+            ),
+            None,
+        )
+        if control_container:
+            return [
+                cast(ModelID, model.id)
+                for model in cast(Iterable[VizroBaseModel], model_manager._get_models(FIGURE_MODELS, control_container))
+            ]
