@@ -41,6 +41,12 @@ All the HEX values starting with --text-code are taken from the Github code high
 }
 
 /* Move background color to BS */
+.accordion-item .nav-link:active, .accordion-item .nav-link.active,
+.accordion-item .nav-link:hover, .accordion-item .nav-link.hover {
+  background: var(--primary-300);
+}
+
+/* Move background color to BS */
 .card {
   background: var(--left-side-bg);
   height: calc(100% - 8px);
