@@ -297,6 +297,9 @@ class Action(_BaseAction):
     # vm.Action(function=export_data(...)) work. They are always replaced with the new implementation by extracting
     # actions.function in _set_actions. It's done as a forward ref here to avoid circular imports and resolved with
     # Dashboard.model_rebuild() later.
+    # TODO-AV2 C 1: Need to think about which parts of validation in CapturedCallable are legacy and how user
+    # now specifies a user defined action in YAML (ok if not possible initially since it's not already) - could just
+    # enable class-based one? Presumably import_path is no longer relevant though.
     function: Annotated[  # type: ignore[misc, assignment]
         SkipJsonSchema[Union[CapturedCallable, export_data, filter_interaction]],
         Field(json_schema_extra={"mode": "action", "import_path": "vizro.actions"}, description="Action function."),
@@ -307,7 +310,7 @@ class Action(_BaseAction):
         [],
         description="Inputs in the form `<component_id>.<property>` passed to the action function.",
     )
-    outputs: list[Annotated[str, StringConstraints(pattern="^[^.]+[.][^.]+$")]] = Field(  # type: ignore[misc]
+    outputs: list[Annotated[str, StringConstraints(pattern="^[^.]+[.][^.]+$")]] = Field(  # type: ignore
         [],
         description="Outputs in the form `<component_id>.<property>` changed by the action function.",
     )

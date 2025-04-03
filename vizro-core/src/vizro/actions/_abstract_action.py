@@ -2,6 +2,7 @@ from __future__ import annotations
 
 import abc
 import inspect
+from typing import Union
 
 from dash.development.base_component import Component
 

@@ -8,14 +8,28 @@ import importlib
 import inspect
 from contextlib import contextmanager
 from datetime import date
-from typing import Annotated, Any, Literal, NewType, Protocol, TypeAlias, TypedDict, Union, runtime_checkable
+from typing import Annotated, Any, Literal, NewType, Optional, Protocol, TypeAlias, TypedDict, Union, runtime_checkable
 
 import plotly.io as pio
 import pydantic_core as cs
-from pydantic import Field, StrictBool, ValidationInfo
+from pydantic import Discriminator, Field, StrictBool, Tag, ValidationInfo
 from pydantic.json_schema import SkipJsonSchema
 
 from vizro.charts._charts_utils import _DashboardReadyFigure
+
+
+def _get_action_discriminator(action: Any) -> Optional[str]:
+    """Helper function for callable discriminator used for ActionType."""
+    # It is not immediately possible to introduce a discriminated union as a field type without it breaking existing
+    # YAML/dictionary configuration in which `type` is not specified. This function is needed to handle the legacy case.
+    if isinstance(action, dict):
+        # If type is supplied then use that (like saying discriminator="type"). Otherwise, it's the legacy case where
+        # type is not specified, in which case we want to use vm.Action, which has type="action".
+        return action.get("type", "action")
+
+    # If a model has been specified then this is equivalent to saying discriminator="type". When None is returned,
+    # union_tag_not_found error is raised.
+    return getattr(action, "type", None)
 
 
 def _clean_module_string(module_string: str) -> str:
@@ -273,6 +287,13 @@ class CapturedCallable:
         cls, captured_callable: CapturedCallable, json_schema_extra: JsonSchemaExtraType
     ) -> CapturedCallable:
         """Checks captured_callable is right type and mode."""
+        from vizro.actions import export_data, filter_interaction
+
+        # Bypass validation so that legacy {"function": {"_target_": "filter_interaction"}} and
+        # {"function": {"_target_": "export_data"}} work.
+        if isinstance(captured_callable, (export_data, filter_interaction)):
+            return captured_callable
+
         expected_mode = json_schema_extra["mode"]
         import_path = json_schema_extra["import_path"]
 
@@ -554,14 +575,14 @@ NavSelectorType = Annotated[
 # this is not true as long as we convert to ActionsChain.
 ActionType = Annotated[
     Union[
-        "Action",
-        "export_data",
-        "filter_interaction",
-        SkipJsonSchema["_filter"],
-        SkipJsonSchema["_parameter"],
-        SkipJsonSchema["_on_page_load"],
+        Annotated["Action", Tag("action")],
+        Annotated["export_data", Tag("export_data")],
+        Annotated["filter_interaction", Tag("filter_interaction")],
+        SkipJsonSchema[Annotated["_filter", Tag("_filter")]],
+        SkipJsonSchema[Annotated["_parameter", Tag("_parameter")]],
+        SkipJsonSchema[Annotated["_on_page_load", Tag("_on_page_load")]],
     ],
-    Field(discriminator="type", description=""),
+    Field(discriminator=Discriminator(_get_action_discriminator), description="Action."),
 ]
 """Discriminated union. Type of action: [`Action`][vizro.models.Action], [`export_data`][vizro.models.export_data] or [
 `filter_interaction`][vizro.models.filter_interaction]."""
