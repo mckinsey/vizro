@@ -240,9 +240,16 @@
   justify-content: space-between;
 }
 
+/* Change cursor for the whole container title when it's a collapsible container.
+Doing has(.material-symbols-outlined) isn't a very nice way to identify when the title
+is for a collapsible container but due to the order of elements, sibling selectors
+with collapsible-container don't work here. */
+.container-title:has(.material-symbols-outlined)  {
+  cursor: pointer;
+}
+
 .container-title .material-symbols-outlined {
   color: var(--text-secondary);
-  cursor: pointer;
 }
 
 .container-title .material-symbols-outlined:hover {
