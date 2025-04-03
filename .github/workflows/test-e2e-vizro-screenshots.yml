@@ -11,7 +11,7 @@ on:
     branches:
       - main
       # TODO: delete before merge
-      - qa/flex-layout-screenshot-tests
+      - feat/enable-flex-layout
 
 env:
   PYTHONUNBUFFERED: 1
