@@ -1,7 +1,7 @@
 from __future__ import annotations
 
 from collections.abc import Iterable
-from typing import Annotated, Optional, TypedDict, Union, cast
+from typing import Annotated, Optional, TypedDict, cast
 
 from dash import dcc, html
 from pydantic import (

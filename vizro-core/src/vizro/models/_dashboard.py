@@ -4,7 +4,7 @@ import base64
 import logging
 from functools import partial
 from pathlib import Path
-from typing import TYPE_CHECKING, Annotated, Literal, Optional, TypedDict, Union, cast
+from typing import TYPE_CHECKING, Annotated, Literal, Optional, TypedDict, cast
 
 import dash
 import dash_bootstrap_components as dbc
