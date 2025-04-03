@@ -50,7 +50,7 @@ class AbstractAction(_BaseAction, abc.ABC):
 
     @property
     @abc.abstractmethod
-    def outputs(self) -> dict[str, _IdProperty]:  # type: ignore[override]
+    def outputs(self) -> Union[list[_IdProperty], dict[str, _IdProperty]]:  # type: ignore[override]
         """Must be defined by concrete action, even if there's no output.
 
         This should return a dictionary of the form `{"key": "dropdown.value"}`, where the key corresponds to the key
@@ -62,7 +62,7 @@ class AbstractAction(_BaseAction, abc.ABC):
         #  supply a dictionary ID but in future will probably change to use a single built-in vizro_download component.
         #  See https://github.com/mckinsey/vizro/pull/1054#discussion_r1989405177.
         #
-        # We should probably not build -in behavior here e.g. to generate outputs automatically from certain reserved
+        # We should probably not build in behavior here e.g. to generate outputs automatically from certain reserved
         # arguments since this would only work well for class-based actions and not @capture("action") ones. Instead
         # the code that does make_outputs_from_targets would be put into a reusable function.
         #

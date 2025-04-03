@@ -13,7 +13,6 @@ from vizro.models._models_utils import _log_call
 from vizro.models.types import FigureType, ModelID, _Controls
 
 
-# TODO NOW: fix generation of schema and check it.
 class export_data(AbstractAction):
     """Exports visible data of target charts/components.
 

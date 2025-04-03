@@ -128,6 +128,7 @@ class Page(VizroBaseModel):
 
         if targets:
             # TODO-AV2 A 3: can we simplify this to not use ActionsChain, just like we do for filters and parameters?
+            # See https://github.com/mckinsey/vizro/pull/363#discussion_r2021020062.
             self.actions = [
                 ActionsChain(
                     id=f"{ON_PAGE_LOAD_ACTION_PREFIX}_{self.id}",
