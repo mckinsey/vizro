@@ -19,7 +19,7 @@ Uncomment the section that is right (remove the HTML comment wrapper).
 
 ### Added
 
-- Added `collapse` argument to `vm.Container` enabling collapse functionality. ([#1079](https://github.com/mckinsey/vizro/pull/1079))
+- Add `collapsed` argument to `vm.Container` to enable collapsible containers. ([#1079](https://github.com/mckinsey/vizro/pull/1079))
 
 <!--
 ### Changed

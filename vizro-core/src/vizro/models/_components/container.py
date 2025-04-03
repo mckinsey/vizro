@@ -27,7 +27,8 @@ class Container(VizroBaseModel):
         layout (Optional[Layout]): Layout to place components in. Defaults to `None`.
         variant (Literal["plain", "filled", "outlined"]): Predefined styles to choose from. Options are `plain`,
             `filled` or `outlined`. Defaults to `plain`.
-        collapse (Optional[bool]): Boolean flag for enabling collapse behavior. Defaults to `None`.
+        collapsed (Optional[bool]): Boolean flag for whether container is collapsed on initial load. Defaults to `None`,
+            in which case the container is not collapsible at all.
         extra (Optional[dict[str, Any]]): Extra keyword arguments that are passed to `dbc.Container` and overwrite any
             defaults chosen by the Vizro team. This may have unexpected behavior.
             Visit the [dbc documentation](https://dash-bootstrap-components.opensource.faculty.ai/docs/components/layout/)
@@ -50,7 +51,11 @@ class Container(VizroBaseModel):
         description="Predefined styles to choose from. Options are `plain`, `filled` or `outlined`."
         "Defaults to `plain`.",
     )
-    collapse: Optional[bool] = Field(default=None, description="Boolean flag for enabling collapse behavior.")
+    collapsed: Optional[bool] = Field(
+        default=None,
+        description="Boolean flag for whether container is collapsed on initial load. Defaults to `None`, "
+        "in which case the container is not collapsible at all.",
+    )
     extra: SkipJsonSchema[
         Annotated[
             dict[str, Any],
@@ -72,7 +77,7 @@ class Container(VizroBaseModel):
         # Below corresponds to bootstrap utility classnames, while 'bg-container' is introduced by us.
         # See: https://getbootstrap.com/docs/4.0/utilities
 
-        if self.collapse is not None:
+        if self.collapsed is not None:
             clientside_callback(
                 ClientsideFunction(namespace="container", function_name="collapse_container"),
                 output=[
@@ -93,7 +98,7 @@ class Container(VizroBaseModel):
                 self._build_container(),
             ],
             "fluid": True,
-            "class_name": variants[self.variant] if self.collapse is None else variants["outlined"],
+            "class_name": variants[self.variant] if self.collapsed is None else variants["outlined"],
         }
 
         return dbc.Container(**(defaults | self.extra))
@@ -121,13 +126,13 @@ class Container(VizroBaseModel):
 
     def _build_container(self):
         """Returns collapsible container."""
-        if self.collapse is None:
+        if self.collapsed is None:
             return self._build_inner_layout()
 
         return dbc.Collapse(
             id=f"{self.id}_collapse",
             children=self._build_inner_layout(),
-            is_open=not self.collapse,
+            is_open=not self.collapsed,
             className="collapsible-container",
             key=self.id,
         )
@@ -136,19 +141,19 @@ class Container(VizroBaseModel):
         """Returns container title."""
         title_content = [self.title]
 
-        if self.collapse is not None:
+        if self.collapsed is not None:
             # collapse_container is not run when page is initially loaded, so we set the content correctly conditional
-            # on self.collapse upfront. This prevents the up/down arrow rotating on in initial load.
+            # on self.collapsed upfront. This prevents the up/down arrow rotating on in initial load.
             title_content.extend(
                 [
                     html.Span(
-                        "keyboard_arrow_down" if self.collapse else "keyboard_arrow_up",
+                        "keyboard_arrow_down" if self.collapsed else "keyboard_arrow_up",
                         className="material-symbols-outlined",
                         id=f"{self.id}_icon",
                     ),
                     dbc.Tooltip(
                         id=f"{self.id}_tooltip",
-                        children="Show Content" if self.collapse else "Hide Content",
+                        children="Show Content" if self.collapsed else "Hide Content",
                         target=f"{self.id}_icon",
                     ),
                 ]

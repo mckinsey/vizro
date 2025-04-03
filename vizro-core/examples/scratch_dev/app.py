@@ -31,7 +31,7 @@ page_flex = vm.Page(
             components=[
                 vm.Container(
                     title="Container title 1",
-                    collapse=False,
+                    # collapse=False,
                     components=[
                         vm.Graph(figure=px.scatter(iris, x="sepal_length", y="petal_width", color="species")),
                         vm.Graph(figure=px.histogram(iris, x="sepal_width", color="species")),
@@ -45,7 +45,7 @@ page_flex = vm.Page(
                         vm.Graph(figure=px.scatter(iris, x="sepal_length", y="petal_width", color="species")),
                         vm.Graph(figure=px.histogram(iris, x="sepal_width", color="species")),
                     ],
-                    collapse=True,
+                    collapsed=True,
                     variant="outlined",
                     layout=vm.Layout(grid=[[0, 1]]),
                 ),
@@ -60,7 +60,7 @@ page_grid = vm.Page(
     components=[
         vm.Container(
             title="Container title 1",
-            collapse=False,
+            collapsed=False,
             components=[
                 vm.Graph(figure=px.scatter(iris, x="sepal_length", y="petal_width", color="species")),
                 vm.Graph(figure=px.histogram(iris, x="sepal_width", color="species")),
@@ -74,7 +74,7 @@ page_grid = vm.Page(
                 vm.Graph(figure=px.scatter(iris, x="sepal_length", y="petal_width", color="species")),
                 vm.Graph(figure=px.histogram(iris, x="sepal_width", color="species")),
             ],
-            collapse=True,
+            collapsed=True,
             variant="outlined",
             layout=vm.Layout(grid=[[0, 1]]),
         ),

@@ -4,7 +4,7 @@ This guide shows you how to use containers to group your components into section
 
 A [Container][vizro.models.Container] complements a [Page][vizro.models.Page], and both models share nearly identical arguments. While `Page.layout` provides a method for structuring the overall page layout, a `Container` offers more detailed control within a particular section of the page. The `Container` is based on the underlying Dash component [`dbc.Container`](https://dash-bootstrap-components.opensource.faculty.ai/docs/components/layout/).
 
-Unlike `Page`, the `Container` includes a `variant` and `collapse` arguments. The `variant` argument enables you to choose a style for your container to visually distinguish it from the rest of the page content. The `collapse` argument enables you to make the container collapsible, defining whether its contents is initially hidden or visible. Additional functionality will soon be added to the Container, including controls specific to it, which will further enhance the management of related components.
+Unlike `Page`, the `Container` includes a `variant` and `collapsed` arguments. The `variant` argument enables you to choose a style for your container to visually distinguish it from the rest of the page content. The `collapsed` argument enables you to make the container collapsible, defining whether its contents is initially hidden or visible. Additional functionality will soon be added to the Container, including controls specific to it, which will further enhance the management of related components.
 
 !!! note "Displaying multiple containers inside Tabs"
     An alternative way to display multiple containers on one page is to place them inside [Tabs](tabs.md).
@@ -240,7 +240,7 @@ If you want to style your `Container` beyond the styling options available insid
 
 ## The collapsible containers
 
-To make a `Container` collapsible, set the `collapse` argument to `True` to start in a collapsed state or `False` to have it expanded by default. This allows you to toggle the container's visibility as needed.
+To make a `Container` collapsible, set the `collapsed` argument to `True` to start in a collapsed state or `False` to have it expanded by default. This allows you to toggle the container's visibility as needed.
 
 !!! example "Collapsible container"
     === "app.py"
@@ -258,12 +258,12 @@ To make a `Container` collapsible, set the `collapse` argument to `True` to star
                 vm.Container(
                     title="Initially collapsed container",
                     components=[vm.Graph(figure=px.scatter(iris, x="sepal_width", y="sepal_length", color="species"))],
-                    collapse=True,
+                    collapsed=True,
                 ),
                 vm.Container(
                     title="Initially expanded container",
                     components=[vm.Graph(figure=px.box(iris, x="species", y="sepal_length", color="species"))],
-                    collapse=False,
+                    collapsed=False,
                 )
             ],
         )
@@ -291,7 +291,7 @@ To make a `Container` collapsible, set the `collapse` argument to `True` to star
                       x: sepal_width
                       y: sepal_length
                       color: species
-                collapse: true
+                collapsed: true
               - type: container
                 title: Initially expanded container
                 components:
@@ -302,7 +302,7 @@ To make a `Container` collapsible, set the `collapse` argument to `True` to star
                       x: species
                       y: sepal_length
                       color: species
-                collapse: false
+                collapsed: false
         ```
 
     === "Result"
