@@ -4,7 +4,7 @@ from typing import TYPE_CHECKING, Annotated, Any, Literal, Optional, cast
 
 import dash_bootstrap_components as dbc
 from dash import ClientsideFunction, Input, Output, State, clientside_callback, html
-from pydantic import AfterValidator, BeforeValidator, Field, conlist
+from pydantic import AfterValidator, BeforeValidator, Field, conlist, model_validator
 from pydantic.json_schema import SkipJsonSchema
 
 from vizro.models import VizroBaseModel
@@ -70,6 +70,12 @@ class Container(VizroBaseModel):
         ]
     ]
 
+    @model_validator(mode="before")
+    def set_variant(cls, values):
+        if "variant" not in values and "collapsed" in values:
+            values.setdefault("variant", "outlined")
+        return values
+
     @_log_call
     def build(self):
         # TODO: TBD on how to encode 'elevated', as box-shadows are not visible on a dark theme
@@ -98,7 +104,7 @@ class Container(VizroBaseModel):
                 self._build_container(),
             ],
             "fluid": True,
-            "class_name": variants[self.variant] if self.collapsed is None else variants["outlined"],
+            "class_name": variants[self.variant],
         }
 
         return dbc.Container(**(defaults | self.extra))

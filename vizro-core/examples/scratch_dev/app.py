@@ -12,6 +12,7 @@ page = vm.Page(
             title="Initially collapsed container",
             components=[vm.Graph(figure=px.scatter(iris, x="sepal_width", y="sepal_length", color="species"))],
             collapsed=True,
+            variant="filled",
         ),
         vm.Container(
             title="Initially expanded container",
