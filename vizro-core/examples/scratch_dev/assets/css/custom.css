@@ -9,26 +9,3 @@ and all containers need to have a white background on that page */
   /* Use --surfaces-bg02 or --surfaces-bg03 or */
   background: var(--surfaces-bg03);
 }
-
-
-/* Probably need to add a border around the collapse button now
-#collapse-icon.material-symbols-outlined {
-  border: 1px solid var(--border-subtleAlpha01);
-}
-*/
-
-[data-bs-theme="light"] .card {
-  background: var(--surfaces-bg01);
-}
-
-
-/* Turn off jumping of card-nav */
-#page-components {
-  padding-top: 0;
-}
-
-.card-nav:hover {
-  border: 2px solid var(--border-subtleAlpha02);
-  transform: unset;
-  will-change: unset;
-}

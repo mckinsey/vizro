@@ -47,6 +47,13 @@ All the HEX values starting with --text-code are taken from the Github code high
   width: calc(100% - 8px);
 }
 
+/* Move to bootstrap */
+.card-nav:hover {
+  border: 2px solid var(--border-subtleAlpha02);
+  transform: unset;
+  will-change: unset;
+}
+
 .card .nav-link {
   height: 100%;
 }
@@ -121,4 +128,9 @@ label[for="theme-selector"] {
 /* Change filled container bg inside filled container */
 .bg-container .bg-container {
   background-color: var(--right-side-bg);
+}
+
+
+[data-bs-theme="light"] .card {
+  background: var(--left-side-bg);
 }
