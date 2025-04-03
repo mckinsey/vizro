@@ -1,3 +1,14 @@
 #page-header {
   padding-left: 8px;
 }
+
+#container_1-control-panel fieldset {
+  display: flex;
+  flex-direction: row;
+  gap: 12px;
+}
+
+#checklist {
+  display: flex;
+  flex-direction: row;
+}
