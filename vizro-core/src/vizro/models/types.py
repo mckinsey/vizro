@@ -8,14 +8,28 @@ import importlib
 import inspect
 from contextlib import contextmanager
 from datetime import date
-from typing import Annotated, Any, Literal, Protocol, Union, runtime_checkable
+from typing import Annotated, Any, Literal, NewType, Optional, Protocol, TypeAlias, TypedDict, Union, runtime_checkable
 
 import plotly.io as pio
 import pydantic_core as cs
-from pydantic import Field, StrictBool, ValidationInfo
-from typing_extensions import TypedDict
+from pydantic import Discriminator, Field, StrictBool, Tag, ValidationInfo
+from pydantic.json_schema import SkipJsonSchema
 
 from vizro.charts._charts_utils import _DashboardReadyFigure
+
+
+def _get_action_discriminator(action: Any) -> Optional[str]:
+    """Helper function for callable discriminator used for ActionType."""
+    # It is not immediately possible to introduce a discriminated union as a field type without it breaking existing
+    # YAML/dictionary configuration in which `type` is not specified. This function is needed to handle the legacy case.
+    if isinstance(action, dict):
+        # If type is supplied then use that (like saying discriminator="type"). Otherwise, it's the legacy case where
+        # type is not specified, in which case we want to use vm.Action, which has type="action".
+        return action.get("type", "action")
+
+    # If a model has been specified then this is equivalent to saying discriminator="type". When None is returned,
+    # union_tag_not_found error is raised.
+    return getattr(action, "type", None)
 
 
 def _clean_module_string(module_string: str) -> str:
@@ -43,6 +57,13 @@ class JsonSchemaExtraType(TypedDict):
 
 def validate_captured_callable(cls, value, info: ValidationInfo):
     """Reusable validator for the `figure` argument of Figure like models."""
+    # Bypass validation so that legacy vm.Action(function=filter_interaction(...)) and
+    # vm.Action(function=export_data(...)) work.
+    from vizro.actions import export_data, filter_interaction
+
+    if isinstance(value, (export_data, filter_interaction)):
+        return value
+
     # TODO[MS]: We may want to double check on the mechanism of how field info is brought to. This seems
     # to get deprecated in V3
     json_schema_extra: JsonSchemaExtraType = cls.model_fields[info.field_name].json_schema_extra
@@ -170,11 +191,14 @@ class CapturedCallable:
     def _arguments(self):
         # TODO: This is used twice: in _get_parametrized_config and in vm.Action and should be removed when those
         # references are removed.
+        # TODO-AV2 B 1: try to subclass Mapping. Check if anything requires MutableMapping (used in Vizro AI tests
+        #  and to set data_frame only?). Try to remove these by making special method for setting data_frame. Then
+        # can remove as many uses of _arguments as possible and use .items() where suitable instead.
         return self.__bound_arguments
 
-    # TODO-actions: Find a way how to compare CapturedCallable and function
     @property
     def _function(self):
+        # TODO-AV2 B 2: see if this can be removed.
         return self.__function
 
     @classmethod
@@ -263,6 +287,13 @@ class CapturedCallable:
         cls, captured_callable: CapturedCallable, json_schema_extra: JsonSchemaExtraType
     ) -> CapturedCallable:
         """Checks captured_callable is right type and mode."""
+        from vizro.actions import export_data, filter_interaction
+
+        # Bypass validation so that legacy {"function": {"_target_": "filter_interaction"}} and
+        # {"function": {"_target_": "export_data"}} work.
+        if isinstance(captured_callable, (export_data, filter_interaction)):
+            return captured_callable
+
         expected_mode = json_schema_extra["mode"]
         import_path = json_schema_extra["import_path"]
 
@@ -437,7 +468,7 @@ class capture:
         elif self._mode == "action":
             # The "normal" case where we just capture the function call.
             @functools.wraps(func)
-            def wrapped(*args, **kwargs):
+            def wrapped(*args, **kwargs) -> CapturedCallable:
                 # Note this is basically the same as partial(func, *args, **kwargs)
                 captured_callable: CapturedCallable = CapturedCallable(func, *args, **kwargs)
                 captured_callable._mode = self._mode
@@ -448,7 +479,7 @@ class capture:
         elif self._mode in ["table", "ag_grid", "figure"]:
 
             @functools.wraps(func)
-            def wrapped(*args, **kwargs):
+            def wrapped(*args, **kwargs) -> CapturedCallable:
                 if "data_frame" not in inspect.signature(func).parameters:
                     raise ValueError(f"{func.__name__} must have data_frame argument to use capture('table').")
 
@@ -467,6 +498,15 @@ class capture:
             "Valid modes of the capture decorator are @capture('graph'), @capture('action'), @capture('table'), "
             "@capture('ag_grid') and @capture('figure')."
         )
+
+
+# For "component_id.component_property", e.g. "dropdown_id.value".
+_IdProperty = NewType("_IdProperty", str)
+
+# Really this should be NewType and used for models like VizroBaseModel.id, but that clutters the code with casts and
+# means that to get user code to type-check successfully they would need to cast to ModelID.
+ModelID: TypeAlias = str
+"""Represents a Vizro model ID."""
 
 
 # Types used for selector values and options. Note the docstrings here are rendered on the API reference.
@@ -518,7 +558,7 @@ ComponentType = Annotated[
 [`Button`][vizro.models.Button], [`Card`][vizro.models.Card], [`Table`][vizro.models.Table],
 [`Graph`][vizro.models.Graph] or [`AgGrid`][vizro.models.AgGrid]."""
 
-NavPagesType = Union[list[str], dict[str, list[str]]]
+NavPagesType = Union[list[ModelID], dict[str, list[ModelID]]]
 "List of page IDs or a mapping from name of a group to a list of page IDs (for hierarchical sub-navigation)."
 
 NavSelectorType = Annotated[
@@ -527,7 +567,35 @@ NavSelectorType = Annotated[
 """Discriminated union. Type of component for rendering navigation:
 [`Accordion`][vizro.models.Accordion] or [`NavBar`][vizro.models.NavBar]."""
 
+# JSONSchema should be skipped for private actions that are not part of the public API.
+# In addition, `_filter` doesn't have a well defined schema due the Callables,
+# so if we were to include it, the JSONSchema would need to be defined.
+# TODO: Note that atm ActionType violates our (and pydantic's) convention that the type of the model ensures
+# the type AFTER validation. Since ActionType is used as annotation for the actions field,
+# this is not true as long as we convert to ActionsChain.
+ActionType = Annotated[
+    Union[
+        Annotated["Action", Tag("action")],
+        Annotated["export_data", Tag("export_data")],
+        Annotated["filter_interaction", Tag("filter_interaction")],
+        SkipJsonSchema[Annotated["_filter", Tag("_filter")]],
+        SkipJsonSchema[Annotated["_parameter", Tag("_parameter")]],
+        SkipJsonSchema[Annotated["_on_page_load", Tag("_on_page_load")]],
+    ],
+    Field(discriminator=Discriminator(_get_action_discriminator), description="Action."),
+]
+"""Discriminated union. Type of action: [`Action`][vizro.models.Action], [`export_data`][vizro.models.export_data] or [
+`filter_interaction`][vizro.models.filter_interaction]."""
+
 
 # Extra type groups used for mypy casting
 FigureWithFilterInteractionType = Union["Graph", "Table", "AgGrid"]
 FigureType = Union["Graph", "Table", "AgGrid", "Figure"]
+
+
+# TODO-AV2 A 1: improve this structure. See https://github.com/mckinsey/vizro/pull/880.
+# Remember filter_interaction won't be here in future.
+class _Controls(TypedDict):
+    filters: list[Any]
+    parameters: list[Any]
+    filter_interaction: list[dict[str, Any]]

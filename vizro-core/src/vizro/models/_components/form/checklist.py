@@ -6,11 +6,11 @@ from pydantic import AfterValidator, Field, PrivateAttr, model_validator
 from pydantic.functional_serializers import PlainSerializer
 from pydantic.json_schema import SkipJsonSchema
 
-from vizro.models import Action, VizroBaseModel
+from vizro.models import VizroBaseModel
 from vizro.models._action._actions_chain import _action_validator_factory
 from vizro.models._components.form._form_utils import get_options_and_default, validate_options_dict, validate_value
 from vizro.models._models_utils import _log_call
-from vizro.models.types import MultiValueType, OptionsType
+from vizro.models.types import ActionType, MultiValueType, OptionsType
 
 
 class Checklist(VizroBaseModel):
@@ -24,13 +24,12 @@ class Checklist(VizroBaseModel):
         options (OptionsType): See [`OptionsType`][vizro.models.types.OptionsType]. Defaults to `[]`.
         value (Optional[MultiValueType]): See [`MultiValueType`][vizro.models.types.MultiValueType]. Defaults to `None`.
         title (str): Title to be displayed. Defaults to `""`.
-        actions (list[Action]): See [`Action`][vizro.models.Action]. Defaults to `[]`.
+        actions (list[ActionType]): See [`ActionType`][vizro.models.types.ActionType]. Defaults to `[]`.
         extra (Optional[dict[str, Any]]): Extra keyword arguments that are passed to `dbc.Checklist` and overwrite any
             defaults chosen by the Vizro team. This may have unexpected behavior.
             Visit the [dbc documentation](https://dash-bootstrap-components.opensource.faculty.ai/docs/components/input/)
             to see all available arguments. [Not part of the official Vizro schema](../explanation/schema.md) and the
             underlying component may change in the future. Defaults to `{}`.
-
     """
 
     type: Literal["checklist"] = "checklist"
@@ -40,7 +39,7 @@ class Checklist(VizroBaseModel):
     ]
     title: str = Field(default="", description="Title to be displayed")
     actions: Annotated[
-        list[Action],
+        list[ActionType],
         AfterValidator(_action_validator_factory("value")),
         PlainSerializer(lambda x: x[0].actions),
         Field(default=[]),

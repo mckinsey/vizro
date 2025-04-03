@@ -17,15 +17,15 @@ from pydantic import (
 )
 
 from vizro._constants import ON_PAGE_LOAD_ACTION_PREFIX
-from vizro.actions import _on_page_load
+from vizro.actions._on_page_load import _on_page_load
 from vizro.managers import model_manager
 from vizro.managers._model_manager import FIGURE_MODELS, DuplicateIDError
-from vizro.models import Action, Filter, Layout, VizroBaseModel
+from vizro.models import Filter, Layout, VizroBaseModel
 from vizro.models._action._actions_chain import ActionsChain, Trigger
 from vizro.models._layout import set_layout
 from vizro.models._models_utils import _log_call, check_captured_callable_model
 
-from .types import ComponentType, ControlType
+from .types import ComponentType, ControlType, FigureType
 
 # This is just used for type checking. Ideally it would inherit from some dash.development.base_component.Component
 # (e.g. html.Div) as well as TypedDict, but that's not possible, and Dash does not have typing support anyway. When
@@ -71,8 +71,6 @@ class Page(VizroBaseModel):
     path: Annotated[
         str, AfterValidator(set_path), Field(default="", description="Path to navigate to page.", validate_default=True)
     ]
-
-    # TODO: Remove default on page load action if possible
     actions: list[ActionsChain] = []
 
     @model_validator(mode="before")
@@ -108,8 +106,18 @@ class Page(VizroBaseModel):
 
     @_log_call
     def pre_build(self):
+        # TODO-AV D 2: work out the best place to put this logic. It could feasibly go in _on_page_load instead.
+        #  Probably it's better where it is now since it avoid navigating up the model hierarchy
+        #  (action -> page -> figures) and instead just looks down (page -> figures).
+        #  Should there be validation inside _on_page_load to check that targets exist and are
+        #  on the page and target-able components (i.e. are dynamic and hence have _output_component_property)?
+        #  It's not needed urgently since we always calculate the targets ourselves so we know they are valid.
+        #  Similar comments apply to filter and parameter. Note that export_data has this logic built into the action
+        #  itself since the user specifies the target. In future we'll probably have a helper function like
+        #  get_all_targets_on_page() that's used in many actions. So maybe it makes sense to put it in the action for
+        #  on_page_load/filter/parameter too.
         figure_targets = [
-            model.id for model in cast(Iterable[VizroBaseModel], model_manager._get_models(FIGURE_MODELS, page=self))
+            model.id for model in cast(Iterable[FigureType], model_manager._get_models(FIGURE_MODELS, page=self))
         ]
         filter_targets = [
             filter.id
@@ -119,6 +127,8 @@ class Page(VizroBaseModel):
         targets = figure_targets + filter_targets
 
         if targets:
+            # TODO-AV2 A 3: can we simplify this to not use ActionsChain, just like we do for filters and parameters?
+            # See https://github.com/mckinsey/vizro/pull/363#discussion_r2021020062.
             self.actions = [
                 ActionsChain(
                     id=f"{ON_PAGE_LOAD_ACTION_PREFIX}_{self.id}",
@@ -126,8 +136,9 @@ class Page(VizroBaseModel):
                         component_id=f"{ON_PAGE_LOAD_ACTION_PREFIX}_trigger_{self.id}", component_property="data"
                     ),
                     actions=[
-                        Action(
-                            id=f"{ON_PAGE_LOAD_ACTION_PREFIX}_action_{self.id}", function=_on_page_load(targets=targets)
+                        _on_page_load(
+                            id=f"{ON_PAGE_LOAD_ACTION_PREFIX}_action_{self.id}",
+                            targets=targets,
                         )
                     ],
                 )

@@ -4,9 +4,10 @@ import dash_bootstrap_components as dbc
 from dash import html
 from pydantic import Field, PrivateAttr
 
-from vizro.models import Action, VizroBaseModel
+from vizro.models import VizroBaseModel
 from vizro.models._action._actions_chain import _action_validator_factory
 from vizro.models._models_utils import _log_call
+from vizro.models.types import ActionType
 
 
 class TextArea(VizroBaseModel):
@@ -18,7 +19,7 @@ class TextArea(VizroBaseModel):
         type (Literal["text_area"]): Defaults to `"text_area"`.
         title (str): Title to be displayed. Defaults to `""`.
         placeholder (str): Default text to display in input field. Defaults to `""`.
-        actions (Optional[list[Action]]): Defaults to `[]`.
+        actions (Optional[list[ActionType]]): Defaults to `[]`.
 
     """
 
@@ -26,7 +27,7 @@ class TextArea(VizroBaseModel):
     # TODO: before making public consider naming this field (or giving an alias) label instead of title
     title: str = Field(default="", description="Title to be displayed")
     placeholder: str = Field(default="", description="Default text to display in input field")
-    actions: list[Action] = []
+    actions: list[ActionType] = []
 
     # Component properties for actions and interactions
     _input_property: str = PrivateAttr("value")
