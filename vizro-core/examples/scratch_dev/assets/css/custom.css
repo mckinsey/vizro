@@ -1,11 +1,3 @@
 #page-header {
   padding-left: 8px;
 }
-
-/* If a filled container is detected, then the right-bg color will change to grey
-and all containers need to have a white background on that page */
-[data-bs-theme="light"] #right-side:has(.bg-container),
-[data-bs-theme="light"] #right-side:has(.card){
-  /* Use --surfaces-bg02 or --surfaces-bg03 or */
-  background: var(--surfaces-bg03);
-}

@@ -79,7 +79,7 @@ page_two = vm.Page(
             variant="outlined",
         ),
     ],
-    controls=[vm.Filter(column="species"), vm.Filter(column="petal_length"), vm.Filter(column="sepal_width")],
+    controls=[vm.Filter(column="species"), vm.Filter(column="petal_length")],
 )
 
 dashboard = vm.Dashboard(pages=[page_home, page_one, page_two], title="Dashboard Title")

@@ -167,8 +167,8 @@
 }
 
 #collapse-icon.material-symbols-outlined:hover {
-  color: var(--text-primaryHover);
   border-color: var(--border-subtleAlpha02);
+  color: var(--text-primaryHover);
 }
 
 .collapse-icon-div {
