@@ -16,7 +16,7 @@ from vizro.models._models_utils import _log_call, validate_icon
 
 def coerce_str_to_tooltip(text: Any) -> Any:
     if isinstance(text, str):
-        return Tooltip(text=text)
+        return Tooltip(text=text, icon="Info")
     return text
 
 
@@ -26,7 +26,6 @@ class Tooltip(VizroBaseModel):
     Args:
         text (str): Markdown string for text shown when hovering over the icon. Should adhere to the CommonMark Spec.
         icon (str): Icon name from [Google Material icons library](https://fonts.google.com/icons).
-            Defaults to `"Info"`.
         extra (Optional[dict[str, Any]]): Extra keyword arguments that are passed to `dbc.Tooltip` and overwrite any
             chosen by the Vizro team. This may have unexpected behavior. Visit the
            [dbc documentation](https://dash-bootstrap-components.opensource.faculty.ai/docs/components/tooltip/)
@@ -41,7 +40,7 @@ class Tooltip(VizroBaseModel):
     icon: Annotated[
         str,
         AfterValidator(validate_icon),
-        Field(default="Info", description="Icon name from Google Material icons library."),
+        Field(description="Icon name from Google Material icons library."),
     ]
     extra: SkipJsonSchema[
         Annotated[
