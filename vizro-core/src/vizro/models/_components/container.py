@@ -81,6 +81,7 @@ class Container(VizroBaseModel):
                     Output(f"{self.id}_tooltip", "children"),
                 ],
                 inputs=[Input(f"{self.id}_title", "n_clicks"), State(f"{self.id}_collapse", "is_open")],
+                prevent_initial_call=True,
             )
 
         variants = {"plain": "", "filled": "bg-container p-3", "outlined": "border p-3"}
@@ -136,9 +137,15 @@ class Container(VizroBaseModel):
         title_content = [self.title]
 
         if self.collapse is not None:
+            # collapse_container is not run when page is initially loaded, so we set the content correctly conditional
+            # on self.collapse upfront. This prevents the up/down arrow rotating on in initial load.
             title_content.extend(
                 [
-                    html.Span("keyboard_arrow_up", className="material-symbols-outlined", id=f"{self.id}_icon"),
+                    html.Span(
+                        "keyboard_arrow_down" if self.collapse else "keyboard_arrow_up",
+                        className="material-symbols-outlined",
+                        id=f"{self.id}_icon",
+                    ),
                     dbc.Tooltip(
                         id=f"{self.id}_tooltip",
                         children="Show Content" if self.collapse else "Hide Content",

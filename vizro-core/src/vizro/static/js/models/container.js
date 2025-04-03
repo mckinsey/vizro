@@ -1,24 +1,13 @@
 function collapse_container(n_clicks, is_open) {
-  if (!n_clicks) {
-    if (is_open) {
-      return [
-        is_open,
-        {
-          transform: "rotate(180deg)",
-          transition: "transform 0.35s ease-in-out",
-        },
-        is_open ? "Hide Content" : "Show Content",
-      ];
-    }
-    return dash_clientside.no_update;
-  }
   return [
     !is_open,
     {
-      transform: !is_open ? "rotate(180deg)" : "rotate(0deg)",
+      // The arrow is correctly pointing up/down to begin with, so we only rotate it when there's an odd number of
+      // clicks. If this was conditional instead on is_open then it wouldn't work correctly.
+      transform: n_clicks % 2 ? "rotate(180deg)" : "rotate(0deg)",
       transition: "transform 0.35s ease-in-out",
     },
-    !is_open ? "Hide Content" : "Show Content",
+    is_open ? "Show Content" : "Hide Content",
   ];
 }
 
