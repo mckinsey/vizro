@@ -70,8 +70,8 @@ class _BaseAction(VizroBaseModel):
         #  We won't be able to do all the checks at validation time though if we need to look up a model in the model
         #  manager. When this change is made the outputs property for filter, parameter and on_page_load should just
         #  become `return self.targets` or similar. Consider again whether to do this translation automatically if
-        # targets is defined as a field, but sounds like bad idea since it doesn't carry over into the capture("action")
-        # style of action.
+        #  targets is defined as a field, but sounds like bad idea since it doesn't carry over into the
+        #  capture("action") style of action.
         # TODO-AV D 3: try to enable properties that aren't Dash properties but are instead model fields e.g. header,
         #  title. See https://github.com/mckinsey/vizro/issues/1078.
         #  Note this is needed for inputs in both vm.Action and AbstractAction but outputs only in AbstractAction.

@@ -88,8 +88,8 @@ def my_custom_action(points_data, _controls):
 
 
 # from typing import Literal
-#
-#
+# from vizro.actions import AbstractAction
+
 # class f(AbstractAction):
 #     type: Literal["f"] = "f"
 #     points_data: str
