@@ -123,7 +123,7 @@ page_four = vm.Page(
     controls=[vm.Filter(column="species"), vm.Filter(column="petal_length")],
 )
 
-dashboard = vm.Dashboard(pages=[page_home, page_one, page_two], title="Dashboard Title")
+dashboard = vm.Dashboard(pages=[page_home, page_one, page_two, page_four], title="Dashboard Title")
 
 if __name__ == "__main__":
     Vizro().build(dashboard).run()
