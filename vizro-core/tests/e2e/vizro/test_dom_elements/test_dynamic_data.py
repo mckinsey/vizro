@@ -228,9 +228,9 @@ def test_checklist_filter(dash_br):
         dash_br,
         component_id=cnst.CHECKLIST_DYNAMIC_FILTER_ID,
         options_value_status=[
-            {"value": 1, "status": False, "value_name": "ALL"},
-            {"value": 2, "status": True, "value_name": "versicolor"},
-            {"value": 3, "status": False, "value_name": "virginica"},
+            {"value": 1, "selected": False, "value_name": "ALL"},
+            {"value": 2, "selected": True, "value_name": "versicolor"},
+            {"value": 3, "selected": False, "value_name": "virginica"},
         ],
     )
 
@@ -273,8 +273,8 @@ def test_radio_items_filter(dash_br):
         dash_br,
         component_id=cnst.RADIOITEMS_DYNAMIC_FILTER_ID,
         options_value_status=[
-            {"value": 1, "status": True, "value_name": "versicolor"},
-            {"value": 2, "status": False, "value_name": "virginica"},
+            {"value": 1, "selected": True, "value_name": "versicolor"},
+            {"value": 2, "selected": False, "value_name": "virginica"},
         ],
     )
 
@@ -576,8 +576,8 @@ def test_dynamic_data_parameter_refresh_dynamic_filters(dash_br):
         dash_br,
         component_id=cnst.RADIOITEMS_FILTER_DF_PARAMETER,
         options_value_status=[
-            {"value": 1, "status": False, "value_name": "setosa"},
-            {"value": 2, "status": True, "value_name": "versicolor"},
+            {"value": 1, "selected": False, "value_name": "setosa"},
+            {"value": 2, "selected": True, "value_name": "versicolor"},
         ],
     )
 
@@ -610,8 +610,8 @@ def test_dynamic_data_parameter_refresh_dynamic_filters(dash_br):
         dash_br,
         component_id=cnst.RADIOITEMS_FILTER_DF_PARAMETER,
         options_value_status=[
-            {"value": 1, "status": False, "value_name": "setosa"},
-            {"value": 2, "status": True, "value_name": "versicolor"},
+            {"value": 1, "selected": False, "value_name": "setosa"},
+            {"value": 2, "selected": True, "value_name": "versicolor"},
         ],
     )
 
@@ -624,8 +624,8 @@ def test_dynamic_data_parameter_refresh_dynamic_filters(dash_br):
         dash_br,
         component_id=cnst.RADIOITEMS_FILTER_DF_PARAMETER,
         options_value_status=[
-            {"value": 1, "status": True, "value_name": "setosa"},
-            {"value": 2, "status": False, "value_name": "versicolor"},
+            {"value": 1, "selected": True, "value_name": "setosa"},
+            {"value": 2, "selected": False, "value_name": "versicolor"},
         ],
     )
 
@@ -648,6 +648,6 @@ def test_dynamic_data_parameter_refresh_dynamic_filters(dash_br):
         dash_br,
         component_id=cnst.RADIOITEMS_FILTER_DF_PARAMETER,
         options_value_status=[
-            {"value": 1, "status": True, "value_name": "setosa"},
+            {"value": 1, "selected": True, "value_name": "setosa"},
         ],
     )

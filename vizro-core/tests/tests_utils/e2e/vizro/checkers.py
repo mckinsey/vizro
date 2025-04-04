@@ -107,7 +107,7 @@ def check_selected_categorical_component(driver, component_id, options_value_sta
         options_value_status: list of dicts with the next syntax
             [{
                 "value": int, number of the value inside dom structure,
-                "status": bool, checks if value selected or not,
+                "selected": bool, checks if value selected or not,
                 "value_name": str, component value name,
             }]
     """
@@ -118,7 +118,7 @@ def check_selected_categorical_component(driver, component_id, options_value_sta
             categorical_components_value_name_path(elem_id=component_id, value=option["value"]), option["value_name"]
         )
         status = driver.find_element(categorical_components_value_path(elem_id=component_id, value=option["value"]))
-        assert_that(status.is_selected(), equal_to(option["status"]))
+        assert_that(status.is_selected(), equal_to(option["selected"]))
 
 
 def check_selected_dropdown(
