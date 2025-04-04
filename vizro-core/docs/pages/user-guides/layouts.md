@@ -429,9 +429,11 @@ If you're new to Flexbox, we strongly recommend exploring [An Interactive Guide 
 
 To switch to a `Flex` layout, simply pass `vm.Flex()` to the `layout` argument of the [Page][vizro.models.Page]. This replaces the default `Grid` layout with a `Flex` layout, where components (flex items) are arranged vertically (`direction="column"`), remain on a single line (`wrap=False`), and have a default spacing (`gap=24px`) between them.
 
+Open the PyCafe link below to see how the `Flex` layout behaves. Unlike the `Grid` layout, the charts retain their original height and width and won’t be squeezed to fit on one page—a scrollbar appears instead. You can clearly see the difference by removing `layout=vm.Flex()` in your example or toggling between the two result screenshots below.
+
 !!! example "Flex - basic example"
     === "app.py"
-        ```{.python pycafe-link}
+        ```{.python pycafe-link hl_lines="9"}
         import vizro.models as vm
         from vizro import Vizro
         import vizro.plotly.express as px
@@ -441,7 +443,7 @@ To switch to a `Flex` layout, simply pass `vm.Flex()` to the `layout` argument o
         page = vm.Page(
             title="Flex - basic example",
             layout=vm.Flex(),
-            components=[vm.Graph(figure=px.violin(tips, y="tip", x="day", color="day")) for i in range(3)],
+            components=[vm.Graph(figure=px.violin(tips, y="tip", x="day", color="day")) for i in range(5)],
         )
 
         dashboard = vm.Dashboard(pages=[page])
@@ -475,13 +477,30 @@ To switch to a `Flex` layout, simply pass `vm.Flex()` to the `layout` argument o
                   color: day
                   data_frame: tips
                 type: graph
+              - figure:
+                  _target_: violin
+                  x: day
+                  y: tip
+                  color: day
+                  data_frame: tips
+                type: graph
+              - figure:
+                  _target_: violin
+                  x: day
+                  y: tip
+                  color: day
+                  data_frame: tips
+                type: graph
             layout:
               type: flex
             title: Flex - basic example
         ```
 
-    === "Result"
+    === "Result - Flex"
         [![FlexBasic]][flexbasic]
+
+    === "Result - Grid"
+        [![FlexBasicGridComparison]][flexbasicgridcomparison]
 
 ### Flex - advanced example
 
@@ -491,9 +510,11 @@ If you want to customize the default behavior, the [`Flex`][vizro.models.Flex] m
 - `gap`: Controls the spacing between components in the flex container, enabling you to set consistent horizontal and vertical spacing between items.
 - `wrap`: Determines whether components should wrap onto multiple lines or remain on a single line when there isn't enough space in the container.
 
+In this example, there isn’t enough space to fit all three graphs in a single row while preserving their original height and width. Since `wrap=True`, the layout automatically wraps the graphs onto a new row. If `wrap=False`, a horizontal scrollbar would appear instead. We've also set `direction="row"` and `gap="40px"`, so the items are laid out in a horizontal row with `40px` spacing between them.
+
 !!! example "Flex - advanced example"
     === "app.py"
-        ```{.python pycafe-link}
+        ```{.python pycafe-link hl_lines="9"}
         import vizro.models as vm
         from vizro import Vizro
         import vizro.plotly.express as px
@@ -566,9 +587,12 @@ The syntax for setting `width` and `height` varies between components. Refer to 
 - `DataTable`: See the documentation on [Dash - Setting Table Height](https://dash.plotly.com/datatable/height#setting-table-height-with-vertical-scroll). For example, `vm.Table(figure=dash_data_table(tips, style_table={"width": "1000px"}))`.
 - `Card`: See our documentation on [Card - The extra argument](https://vizro.readthedocs.io/en/stable/pages/user-guides/card/#the-extra-argument). For example, `vm.Card(..., extra={"style": {"height": "200px"}})`.
 
+We will re-use the example from the [previous section](#flex---advanced-example), but this time we set `width=400` within the Plotly function to control the graph width. This changes how many graphs can fit on a single row, as reducing the width allows more graphs to fit before wrapping to the next line.
+To see the difference in results, compare the screenshots from this section with those in the previous one.
+
 !!! example "Change the width for Graph"
     === "app.py"
-        ```{.python pycafe-link}
+        ```{.python pycafe-link hl_lines="10"}
         import vizro.models as vm
         from vizro import Vizro
         import vizro.plotly.express as px
@@ -692,7 +716,7 @@ Each item within the `Flex` layout is wrapped in a `<div class="flex-item">`, wh
 
 You can also combine the `Flex` and `Grid` layout to benefit from both. The `Grid` layout is ideal for defining the overall page structure, while the `Flex` layout enables flexibility within individual sections.
 
-For example, in the layout below, we use the `Grid` layout to arrange two charts at the top and a container with multiple cards at the bottom. Within this card container, we apply the `Flex` layout so that the cards automatically adjust their positioning based on the available space.
+For example, in the layout below, we use the `Grid` layout to arrange two charts at the top and a [`Container`][vizro.models.Container] at the bottom with multiple cards. Within the [`Container`][vizro.models.Container], we apply the `Flex` layout so that the cards automatically adjust their positioning based on the available space. If you have not worked with a `Container` before, refer to our user guide on [how to use `Container`](container.md).
 
 !!! example "Grid with Flex container"
     === "app.py"
@@ -738,7 +762,7 @@ For example, in the layout below, we use the `Grid` layout to arrange two charts
 
 ## Alternative layout approaches
 
-In general, any arbitrarily granular layout can already be achieved using [`Page.layout`](layouts.md) alone and is our recommended approach if you want to arrange components on a page with consistent row and/or column spacing.
+In general, any arbitrarily granular layout can already be achieved using either the [`Grid`][vizro.models.Layout] (default) and/or the [`Flex`][vizro.models.Flex] model and is our recommended approach if you want to arrange components on a page with consistent row and column spacing.
 
 !!! note "Alternative layout approaches: `Tabs` and `Containers`"
     [`Tabs`][vizro.models.Tabs] and [`Containers`][vizro.models.Container] provide alternative methods for customizing your page layout. For instance, if you need more granular control, want to break the overall page grid into subgrids, or wish to visually distinguish your subgrid, refer to our [user guide on Containers](container.md).
@@ -747,6 +771,7 @@ In general, any arbitrarily granular layout can already be achieved using [`Page
 
 [flexadvanced]: ../../assets/user_guides/layout/flex_advanced.png
 [flexbasic]: ../../assets/user_guides/layout/flex_basic.png
+[flexbasicgridcomparison]: ../../assets/user_guides/layout/flex_basic_grid_comparison.png
 [flexgridcombined]: ../../assets/user_guides/layout/flex_with_grid_combined.png
 [flexitemsizearg]: ../../assets/user_guides/layout/flex_item_size_args.png
 [flexitemsizecss]: ../../assets/user_guides/layout/flex_item_size_css.png
