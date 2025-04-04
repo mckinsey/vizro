@@ -12,7 +12,7 @@ from vizro.models import VizroBaseModel
 from vizro.models._action._actions_chain import _action_validator_factory
 from vizro.models._components.form._form_utils import validate_date_picker_range, validate_max, validate_range_value
 from vizro.models._models_utils import _log_call
-from vizro.models.types import ActionsType
+from vizro.models.types import ActionType
 
 
 class DatePicker(VizroBaseModel):
@@ -27,7 +27,7 @@ class DatePicker(VizroBaseModel):
         value (Optional[Union[list[date], date]]): Default date/dates for date picker. Defaults to `None`.
         title (str): Title to be displayed. Defaults to `""`.
         range (bool): Boolean flag for displaying range picker. Defaults to `True`.
-        actions (list[ActionsType]): See [`ActionsType`][vizro.models.types.ActionsType]. Defaults to `[]`.
+        actions (list[ActionType]): See [`ActionType`][vizro.models.types.ActionType]. Defaults to `[]`.
         extra (Optional[dict[str, Any]]): Extra keyword arguments that are passed to `dmc.DatePickerInput` and overwrite
             any defaults chosen by the Vizro team. This may have unexpected behavior.
             Visit the [dmc documentation](https://www.dash-mantine-components.com/components/datepicker)
@@ -54,7 +54,7 @@ class DatePicker(VizroBaseModel):
         Field(default=True, description="Boolean flag for displaying range picker.", validate_default=True),
     ]
     actions: Annotated[
-        list[ActionsType],
+        list[ActionType],
         AfterValidator(_action_validator_factory("value")),
         PlainSerializer(lambda x: x[0].actions),
         Field(default=[]),

@@ -117,6 +117,7 @@ class TestActionInstantiation:
         with pytest.raises(ValidationError, match="String should match pattern"):
             Action(function=identity_action_function(), inputs=[], outputs=outputs)
 
+    # TODO: move this
     def test_export_data_xlsx_without_required_libs_installed(self, monkeypatch):
         monkeypatch.setitem(sys.modules, "openpyxl", None)
         monkeypatch.setitem(sys.modules, "xlswriter", None)
@@ -150,12 +151,20 @@ class TestActionBuild:
         action = Action(id="action_test", function=identity_action_function()).build()
         assert_component_equal(action, custom_action_build_expected)
 
+    # TODO: Remove this test
     @pytest.mark.usefixtures("managers_one_page_without_graphs_one_button")
     def test_predefined_export_data_action_build(self, predefined_action_build_expected):
         predefined_filter_action = model_manager["test_page"].controls[0].selector.actions[0].actions[0].build()
         assert_component_equal(predefined_filter_action, predefined_action_build_expected)
 
 
+# TODO: testing AbstractAction (class based) and vm.Action (function based) - everything tested for function has to be tested for abstract one.
+#  but some things that are tested for function based action are not relevant for abstract one.
+#
+# TODO: test _BaseAction and move most of this content to the test for _BaseAction
+# TODO: focus on inputs.outputs handling - assert and compare with transformed inputs/outputs
+# TODO: legacy detection
+# TODO:
 class TestActionPrivateMethods:
     """Test action private methods."""
 

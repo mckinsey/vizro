@@ -22,7 +22,7 @@ from vizro.models.types import (
 
 if TYPE_CHECKING:
     from vizro.models import VizroBaseModel
-    from vizro.models.types import ActionsType
+    from vizro.models.types import ActionType
 
 ValidatedNoneValueType = Union[SingleValueType, MultiValueType, None, list[None], list[SingleValueType]]
 
@@ -52,7 +52,7 @@ class CallbackTriggerDict(TypedDict):
 
 
 # Utility functions for helper functions used in pre-defined actions ----
-def _get_component_actions(component) -> list[ActionsType]:
+def _get_component_actions(component) -> list[ActionType]:
     return (
         [action for actions_chain in component.actions for action in actions_chain.actions]
         if hasattr(component, "actions")

@@ -2,6 +2,7 @@ from __future__ import annotations
 
 import abc
 import inspect
+from typing import Union
 
 from dash.development.base_component import Component
 
@@ -14,7 +15,7 @@ class AbstractAction(_BaseAction, abc.ABC):
 
     To use this class, you must subclass it and define `function` and `outputs` to make a concrete action class. All
     built in actions follow this pattern, and it's also possible for user-defined actions. This class is not relevant
-     for user-defined actions using `@capture("action")`.
+    for user-defined actions using `@capture("action")`.
 
     When subclassing, you can optionally define model fields. These can be either static or runtime arguments and
     define the configuration that a user specifies to use the action:
@@ -50,7 +51,7 @@ class AbstractAction(_BaseAction, abc.ABC):
 
     @property
     @abc.abstractmethod
-    def outputs(self) -> dict[str, _IdProperty]:  # type: ignore[override]
+    def outputs(self) -> Union[list[_IdProperty], dict[str, _IdProperty]]:  # type: ignore[override]
         """Must be defined by concrete action, even if there's no output.
 
         This should return a dictionary of the form `{"key": "dropdown.value"}`, where the key corresponds to the key
@@ -62,7 +63,7 @@ class AbstractAction(_BaseAction, abc.ABC):
         #  supply a dictionary ID but in future will probably change to use a single built-in vizro_download component.
         #  See https://github.com/mckinsey/vizro/pull/1054#discussion_r1989405177.
         #
-        # We should probably not build -in behavior here e.g. to generate outputs automatically from certain reserved
+        # We should probably not build in behavior here e.g. to generate outputs automatically from certain reserved
         # arguments since this would only work well for class-based actions and not @capture("action") ones. Instead
         # the code that does make_outputs_from_targets would be put into a reusable function.
         #

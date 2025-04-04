@@ -50,8 +50,18 @@ page_1 = vm.Page(
         vm.Button(
             id="button2",
             text="Export data to Excel",
-            actions=[export_data(targets=["scatter_relation_2007"], file_format="xlsx")],
-            # actions=[vm.Action(function=export_data(targets=["scatter_relation_2007"], file_format="xlsx"))],
+            actions=[
+                export_data(targets=["scatter_relation_2007"], file_format="xlsx")
+            ],
+            # actions=[
+            #     vm.Action(
+            #         function=export_data(
+            #             targets=["scatter_relation_2007"],
+            #             runtime_arg="button2.n_clicks",
+            #             file_format="xlsx"
+            #         )
+            #     )
+            # ],
             # TODO NOW CHECK
         ),
     ],
@@ -67,32 +77,30 @@ page_1 = vm.Page(
 
 @capture("action")
 # To test legacy=True
-# def my_custom_action(points_data, controls=None):
+# def my_custom_action(points_data, _controls=None):
 def my_custom_action(points_data, _controls):
     """Custom action."""
     clicked_point = points_data["points"][0]
     x, y = clicked_point["x"], clicked_point["y"]
-    species = clicked_point["customdata"][0]
     card_1_text = f"Clicked point has sepal length {x}, petal width {y}."
     card_2_text = f"Controls are `{_controls}`"
     return card_1_text, card_2_text
 
 
 # from typing import Literal
-#
-#
+# from vizro.actions import AbstractAction
+
 # class f(AbstractAction):
 #     type: Literal["f"] = "f"
 #     points_data: str
 #     swap: bool = False
 #
-#     def function(self, points_data, controls):
+#     def function(self, points_data, _controls):
 #         """Custom action."""
 #         clicked_point = points_data["points"][0]
 #         x, y = clicked_point["x"], clicked_point["y"]
-#         species = clicked_point["customdata"][0]
 #         card_1_text = f"Clicked point has sepal length {x}, petal width {y}."
-#         card_2_text = f"_Controls are `{controls}`"
+#         card_2_text = f"_Controls are `{_controls}`"
 #         return card_1_text, card_2_text
 #
 #     @property
@@ -104,8 +112,8 @@ def my_custom_action(points_data, _controls):
 #
 # from vizro.models._action._actions_chain import ActionsChain
 #
-# # vm.Graph.add_type("actions", f)
-# # ActionsChain.add_type("actions", f)
+# vm.Graph.add_type("actions", f)
+# ActionsChain.add_type("actions", f)
 
 # @capture("action")
 # def my_custom_action():

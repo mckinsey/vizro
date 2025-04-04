@@ -13,7 +13,6 @@
         "type": {
           "const": "accordion",
           "default": "accordion",
-          "enum": ["accordion"],
           "title": "Type",
           "type": "string"
         },
@@ -56,7 +55,6 @@
         "type": {
           "const": "action",
           "default": "action",
-          "enum": ["action"],
           "title": "Type",
           "type": "string"
         },
@@ -89,14 +87,7 @@
         "actions": {
           "default": [],
           "items": {
-            "discriminator": {
-              "mapping": {
-                "action": "#/$defs/Action",
-                "export_data": "#/$defs/export_data",
-                "filter_interaction": "#/$defs/filter_interaction"
-              },
-              "propertyName": "type"
-            },
+            "description": "",
             "oneOf": [
               {
                 "$ref": "#/$defs/Action"
@@ -119,7 +110,7 @@
     },
     "AgGrid": {
       "additionalProperties": false,
-      "description": "Wrapper for `dash-ag-grid.AgGrid` to visualize grids in dashboard.\n\nArgs:\n    type (Literal[\"ag_grid\"]): Defaults to `\"ag_grid\"`.\n    figure (CapturedCallable): Function that returns a Dash AgGrid. See [`vizro.tables`][vizro.tables].\n    title (str): Title of the `AgGrid`. Defaults to `\"\"`.\n    header (str): Markdown text positioned below the `AgGrid.title`. Follows the CommonMark specification.\n        Ideal for adding supplementary information such as subtitles, descriptions, or additional context.\n        Defaults to `\"\"`.\n    footer (str): Markdown text positioned below the `AgGrid`. Follows the CommonMark specification.\n        Ideal for providing further details such as sources, disclaimers, or additional notes. Defaults to `\"\"`.\n    actions (list[ActionsType]): See [`ActionsType`][vizro.models.types.ActionsType]. Defaults to `[]`.",
+      "description": "Wrapper for `dash-ag-grid.AgGrid` to visualize grids in dashboard.\n\nArgs:\n    type (Literal[\"ag_grid\"]): Defaults to `\"ag_grid\"`.\n    figure (CapturedCallable): Function that returns a Dash AgGrid. See [`vizro.tables`][vizro.tables].\n    title (str): Title of the `AgGrid`. Defaults to `\"\"`.\n    header (str): Markdown text positioned below the `AgGrid.title`. Follows the CommonMark specification.\n        Ideal for adding supplementary information such as subtitles, descriptions, or additional context.\n        Defaults to `\"\"`.\n    footer (str): Markdown text positioned below the `AgGrid`. Follows the CommonMark specification.\n        Ideal for providing further details such as sources, disclaimers, or additional notes. Defaults to `\"\"`.\n    actions (list[ActionType]): See [`ActionType`][vizro.models.types.ActionType]. Defaults to `[]`.",
       "properties": {
         "id": {
           "default": "",
@@ -130,7 +121,6 @@
         "type": {
           "const": "ag_grid",
           "default": "ag_grid",
-          "enum": ["ag_grid"],
           "title": "Type",
           "type": "string"
         },
@@ -155,14 +145,7 @@
         "actions": {
           "default": [],
           "items": {
-            "discriminator": {
-              "mapping": {
-                "action": "#/$defs/Action",
-                "export_data": "#/$defs/export_data",
-                "filter_interaction": "#/$defs/filter_interaction"
-              },
-              "propertyName": "type"
-            },
+            "description": "",
             "oneOf": [
               {
                 "$ref": "#/$defs/Action"
@@ -184,7 +167,7 @@
     },
     "Button": {
       "additionalProperties": false,
-      "description": "Component provided to `Page` to trigger any defined `action` in `Page`.\n\nArgs:\n    type (Literal[\"button\"]): Defaults to `\"button\"`.\n    text (str): Text to be displayed on button. Defaults to `\"Click me!\"`.\n    href (str): URL (relative or absolute) to navigate to. Defaults to `\"\"`.\n    actions (list[ActionsType]): See [`ActionsType`][vizro.models.types.ActionsType]. Defaults to `[]`.\n    extra (Optional[dict[str, Any]]): Extra keyword arguments that are passed to `dbc.Button` and overwrite any\n        defaults chosen by the Vizro team. This may have unexpected behavior.\n        Visit the [dbc documentation](https://dash-bootstrap-components.opensource.faculty.ai/docs/components/button/)\n        to see all available arguments. [Not part of the official Vizro schema](../explanation/schema.md) and the\n        underlying component may change in the future. Defaults to `{}`.",
+      "description": "Component provided to `Page` to trigger any defined `action` in `Page`.\n\nArgs:\n    type (Literal[\"button\"]): Defaults to `\"button\"`.\n    text (str): Text to be displayed on button. Defaults to `\"Click me!\"`.\n    href (str): URL (relative or absolute) to navigate to. Defaults to `\"\"`.\n    actions (list[ActionType]): See [`ActionType`][vizro.models.types.ActionType]. Defaults to `[]`.\n    extra (Optional[dict[str, Any]]): Extra keyword arguments that are passed to `dbc.Button` and overwrite any\n        defaults chosen by the Vizro team. This may have unexpected behavior.\n        Visit the [dbc documentation](https://dash-bootstrap-components.opensource.faculty.ai/docs/components/button/)\n        to see all available arguments. [Not part of the official Vizro schema](../explanation/schema.md) and the\n        underlying component may change in the future. Defaults to `{}`.",
       "properties": {
         "id": {
           "default": "",
@@ -195,7 +178,6 @@
         "type": {
           "const": "button",
           "default": "button",
-          "enum": ["button"],
           "title": "Type",
           "type": "string"
         },
@@ -214,14 +196,7 @@
         "actions": {
           "default": [],
           "items": {
-            "discriminator": {
-              "mapping": {
-                "action": "#/$defs/Action",
-                "export_data": "#/$defs/export_data",
-                "filter_interaction": "#/$defs/filter_interaction"
-              },
-              "propertyName": "type"
-            },
+            "description": "",
             "oneOf": [
               {
                 "$ref": "#/$defs/Action"
@@ -254,7 +229,6 @@
         "type": {
           "const": "card",
           "default": "card",
-          "enum": ["card"],
           "title": "Type",
           "type": "string"
         },
@@ -276,7 +250,7 @@
     },
     "Checklist": {
       "additionalProperties": false,
-      "description": "Categorical multi-option selector `Checklist`.\n\nCan be provided to [`Filter`][vizro.models.Filter] or\n[`Parameter`][vizro.models.Parameter].\n\nArgs:\n    type (Literal[\"checklist\"]): Defaults to `\"checklist\"`.\n    options (OptionsType): See [`OptionsType`][vizro.models.types.OptionsType]. Defaults to `[]`.\n    value (Optional[MultiValueType]): See [`MultiValueType`][vizro.models.types.MultiValueType]. Defaults to `None`.\n    title (str): Title to be displayed. Defaults to `\"\"`.\n    actions (list[ActionsType]): See [`ActionsType`][vizro.models.types.ActionsType]. Defaults to `[]`.\n    extra (Optional[dict[str, Any]]): Extra keyword arguments that are passed to `dbc.Checklist` and overwrite any\n        defaults chosen by the Vizro team. This may have unexpected behavior.\n        Visit the [dbc documentation](https://dash-bootstrap-components.opensource.faculty.ai/docs/components/input/)\n        to see all available arguments. [Not part of the official Vizro schema](../explanation/schema.md) and the\n        underlying component may change in the future. Defaults to `{}`.",
+      "description": "Categorical multi-option selector `Checklist`.\n\nCan be provided to [`Filter`][vizro.models.Filter] or\n[`Parameter`][vizro.models.Parameter].\n\nArgs:\n    type (Literal[\"checklist\"]): Defaults to `\"checklist\"`.\n    options (OptionsType): See [`OptionsType`][vizro.models.types.OptionsType]. Defaults to `[]`.\n    value (Optional[MultiValueType]): See [`MultiValueType`][vizro.models.types.MultiValueType]. Defaults to `None`.\n    title (str): Title to be displayed. Defaults to `\"\"`.\n    actions (list[ActionType]): See [`ActionType`][vizro.models.types.ActionType]. Defaults to `[]`.\n    extra (Optional[dict[str, Any]]): Extra keyword arguments that are passed to `dbc.Checklist` and overwrite any\n        defaults chosen by the Vizro team. This may have unexpected behavior.\n        Visit the [dbc documentation](https://dash-bootstrap-components.opensource.faculty.ai/docs/components/input/)\n        to see all available arguments. [Not part of the official Vizro schema](../explanation/schema.md) and the\n        underlying component may change in the future. Defaults to `{}`.",
       "properties": {
         "id": {
           "default": "",
@@ -287,7 +261,6 @@
         "type": {
           "const": "checklist",
           "default": "checklist",
-          "enum": ["checklist"],
           "title": "Type",
           "type": "string"
         },
@@ -371,14 +344,7 @@
         "actions": {
           "default": [],
           "items": {
-            "discriminator": {
-              "mapping": {
-                "action": "#/$defs/Action",
-                "export_data": "#/$defs/export_data",
-                "filter_interaction": "#/$defs/filter_interaction"
-              },
-              "propertyName": "type"
-            },
+            "description": "",
             "oneOf": [
               {
                 "$ref": "#/$defs/Action"
@@ -411,7 +377,6 @@
         "type": {
           "const": "container",
           "default": "container",
-          "enum": ["container"],
           "title": "Type",
           "type": "string"
         },
@@ -496,7 +461,7 @@
     },
     "DatePicker": {
       "additionalProperties": false,
-      "description": "Temporal single/range option selector `DatePicker`.\n\nCan be provided to [`Filter`][vizro.models.Filter] or [`Parameter`][vizro.models.Parameter].\n\nArgs:\n    type (Literal[\"date_picker\"]): Defaults to `\"date_picker\"`.\n    min (Optional[date]): Start date for date picker. Defaults to `None`.\n    max (Optional[date]): End date for date picker. Defaults to `None`.\n    value (Optional[Union[list[date], date]]): Default date/dates for date picker. Defaults to `None`.\n    title (str): Title to be displayed. Defaults to `\"\"`.\n    range (bool): Boolean flag for displaying range picker. Defaults to `True`.\n    actions (list[ActionsType]): See [`ActionsType`][vizro.models.types.ActionsType]. Defaults to `[]`.\n    extra (Optional[dict[str, Any]]): Extra keyword arguments that are passed to `dmc.DatePickerInput` and overwrite\n        any defaults chosen by the Vizro team. This may have unexpected behavior.\n        Visit the [dmc documentation](https://www.dash-mantine-components.com/components/datepicker)\n        to see all available arguments. [Not part of the official Vizro schema](../explanation/schema.md) and the\n        underlying component may change in the future. Defaults to `{}`.",
+      "description": "Temporal single/range option selector `DatePicker`.\n\nCan be provided to [`Filter`][vizro.models.Filter] or [`Parameter`][vizro.models.Parameter].\n\nArgs:\n    type (Literal[\"date_picker\"]): Defaults to `\"date_picker\"`.\n    min (Optional[date]): Start date for date picker. Defaults to `None`.\n    max (Optional[date]): End date for date picker. Defaults to `None`.\n    value (Optional[Union[list[date], date]]): Default date/dates for date picker. Defaults to `None`.\n    title (str): Title to be displayed. Defaults to `\"\"`.\n    range (bool): Boolean flag for displaying range picker. Defaults to `True`.\n    actions (list[ActionType]): See [`ActionType`][vizro.models.types.ActionType]. Defaults to `[]`.\n    extra (Optional[dict[str, Any]]): Extra keyword arguments that are passed to `dmc.DatePickerInput` and overwrite\n        any defaults chosen by the Vizro team. This may have unexpected behavior.\n        Visit the [dmc documentation](https://www.dash-mantine-components.com/components/datepicker)\n        to see all available arguments. [Not part of the official Vizro schema](../explanation/schema.md) and the\n        underlying component may change in the future. Defaults to `{}`.",
       "properties": {
         "id": {
           "default": "",
@@ -507,7 +472,6 @@
         "type": {
           "const": "date_picker",
           "default": "date_picker",
-          "enum": ["date_picker"],
           "title": "Type",
           "type": "string"
         },
@@ -575,14 +539,7 @@
         "actions": {
           "default": [],
           "items": {
-            "discriminator": {
-              "mapping": {
-                "action": "#/$defs/Action",
-                "export_data": "#/$defs/export_data",
-                "filter_interaction": "#/$defs/filter_interaction"
-              },
-              "propertyName": "type"
-            },
+            "description": "",
             "oneOf": [
               {
                 "$ref": "#/$defs/Action"
@@ -604,7 +561,7 @@
     },
     "Dropdown": {
       "additionalProperties": false,
-      "description": "Categorical single/multi-option selector `Dropdown`.\n\nCan be provided to [`Filter`][vizro.models.Filter] or\n[`Parameter`][vizro.models.Parameter].\n\nArgs:\n    type (Literal[\"dropdown\"]): Defaults to `\"dropdown\"`.\n    options (OptionsType): See [`OptionsType`][vizro.models.types.OptionsType]. Defaults to `[]`.\n    value (Optional[Union[SingleValueType, MultiValueType]]): See\n        [`SingleValueType`][vizro.models.types.SingleValueType] and\n        [`MultiValueType`][vizro.models.types.MultiValueType]. Defaults to `None`.\n    multi (bool): Whether to allow selection of multiple values. Defaults to `True`.\n    title (str): Title to be displayed. Defaults to `\"\"`.\n    actions (list[ActionsType]): See [`ActionsType`][vizro.models.types.ActionsType]. Defaults to `[]`.\n    extra (Optional[dict[str, Any]]): Extra keyword arguments that are passed to `dcc.Dropdown` and overwrite any\n        defaults chosen by the Vizro team. This may have unexpected behavior.\n        Visit the [dcc documentation](https://dash.plotly.com/dash-core-components/dropdown)\n        to see all available arguments. [Not part of the official Vizro schema](../explanation/schema.md) and the\n        underlying component may change in the future. Defaults to `{}`.",
+      "description": "Categorical single/multi-option selector `Dropdown`.\n\nCan be provided to [`Filter`][vizro.models.Filter] or\n[`Parameter`][vizro.models.Parameter].\n\nArgs:\n    type (Literal[\"dropdown\"]): Defaults to `\"dropdown\"`.\n    options (OptionsType): See [`OptionsType`][vizro.models.types.OptionsType]. Defaults to `[]`.\n    value (Optional[Union[SingleValueType, MultiValueType]]): See\n        [`SingleValueType`][vizro.models.types.SingleValueType] and\n        [`MultiValueType`][vizro.models.types.MultiValueType]. Defaults to `None`.\n    multi (bool): Whether to allow selection of multiple values. Defaults to `True`.\n    title (str): Title to be displayed. Defaults to `\"\"`.\n    actions (list[ActionType]): See [`ActionType`][vizro.models.types.ActionType]. Defaults to `[]`.\n    extra (Optional[dict[str, Any]]): Extra keyword arguments that are passed to `dcc.Dropdown` and overwrite any\n        defaults chosen by the Vizro team. This may have unexpected behavior.\n        Visit the [dcc documentation](https://dash.plotly.com/dash-core-components/dropdown)\n        to see all available arguments. [Not part of the official Vizro schema](../explanation/schema.md) and the\n        underlying component may change in the future. Defaults to `{}`.",
       "properties": {
         "id": {
           "default": "",
@@ -615,7 +572,6 @@
         "type": {
           "const": "dropdown",
           "default": "dropdown",
-          "enum": ["dropdown"],
           "title": "Type",
           "type": "string"
         },
@@ -718,14 +674,7 @@
         "actions": {
           "default": [],
           "items": {
-            "discriminator": {
-              "mapping": {
-                "action": "#/$defs/Action",
-                "export_data": "#/$defs/export_data",
-                "filter_interaction": "#/$defs/filter_interaction"
-              },
-              "propertyName": "type"
-            },
+            "description": "",
             "oneOf": [
               {
                 "$ref": "#/$defs/Action"
@@ -758,7 +707,6 @@
         "type": {
           "const": "figure",
           "default": "figure",
-          "enum": ["figure"],
           "title": "Type",
           "type": "string"
         }
@@ -779,7 +727,6 @@
         "type": {
           "const": "filter",
           "default": "filter",
-          "enum": ["filter"],
           "title": "Type",
           "type": "string"
         },
@@ -847,7 +794,7 @@
     },
     "Graph": {
       "additionalProperties": false,
-      "description": "Wrapper for `dcc.Graph` to visualize charts in dashboard.\n\nArgs:\n    type (Literal[\"graph\"]): Defaults to `\"graph\"`.\n    figure (CapturedCallable): Function that returns a graph.\n        See `CapturedCallable`][vizro.models.types.CapturedCallable].\n    title (str): Title of the `Graph`. Defaults to `\"\"`.\n    header (str): Markdown text positioned below the `Graph.title`. Follows the CommonMark specification.\n        Ideal for adding supplementary information such as subtitles, descriptions, or additional context.\n        Defaults to `\"\"`.\n    footer (str): Markdown text positioned below the `Graph`. Follows the CommonMark specification.\n        Ideal for providing further details such as sources, disclaimers, or additional notes. Defaults to `\"\"`.\n    actions (list[ActionsType]): See [`ActionsType`][vizro.models.types.ActionsType]. Defaults to `[]`.",
+      "description": "Wrapper for `dcc.Graph` to visualize charts in dashboard.\n\nArgs:\n    type (Literal[\"graph\"]): Defaults to `\"graph\"`.\n    figure (CapturedCallable): Function that returns a graph.\n        See `CapturedCallable`][vizro.models.types.CapturedCallable].\n    title (str): Title of the `Graph`. Defaults to `\"\"`.\n    header (str): Markdown text positioned below the `Graph.title`. Follows the CommonMark specification.\n        Ideal for adding supplementary information such as subtitles, descriptions, or additional context.\n        Defaults to `\"\"`.\n    footer (str): Markdown text positioned below the `Graph`. Follows the CommonMark specification.\n        Ideal for providing further details such as sources, disclaimers, or additional notes. Defaults to `\"\"`.\n    actions (list[ActionType]): See [`ActionType`][vizro.models.types.ActionType]. Defaults to `[]`.",
       "properties": {
         "id": {
           "default": "",
@@ -858,7 +805,6 @@
         "type": {
           "const": "graph",
           "default": "graph",
-          "enum": ["graph"],
           "title": "Type",
           "type": "string"
         },
@@ -883,14 +829,7 @@
         "actions": {
           "default": [],
           "items": {
-            "discriminator": {
-              "mapping": {
-                "action": "#/$defs/Action",
-                "export_data": "#/$defs/export_data",
-                "filter_interaction": "#/$defs/filter_interaction"
-              },
-              "propertyName": "type"
-            },
+            "description": "",
             "oneOf": [
               {
                 "$ref": "#/$defs/Action"
@@ -977,7 +916,6 @@
         "type": {
           "const": "nav_bar",
           "default": "nav_bar",
-          "enum": ["nav_bar"],
           "title": "Type",
           "type": "string"
         },
@@ -1282,7 +1220,6 @@
         "type": {
           "const": "parameter",
           "default": "parameter",
-          "enum": ["parameter"],
           "title": "Type",
           "type": "string"
         },
@@ -1336,7 +1273,7 @@
     },
     "RadioItems": {
       "additionalProperties": false,
-      "description": "Categorical single-option selector `RadioItems`.\n\nCan be provided to [`Filter`][vizro.models.Filter] or\n[`Parameter`][vizro.models.Parameter].\n\nArgs:\n    type (Literal[\"radio_items\"]): Defaults to `\"radio_items\"`.\n    options (OptionsType): See [`OptionsType`][vizro.models.types.OptionsType]. Defaults to `[]`.\n    value (Optional[SingleValueType]): See [`SingleValueType`][vizro.models.types.SingleValueType].\n        Defaults to `None`.\n    title (str): Title to be displayed. Defaults to `\"\"`.\n    actions (list[ActionsType]): See [`ActionsType`][vizro.models.types.ActionsType]. Defaults to `[]`.\n    extra (Optional[dict[str, Any]]): Extra keyword arguments that are passed to `dbc.RadioItems` and overwrite any\n        defaults chosen by the Vizro team. This may have unexpected behavior.\n        Visit the [dbc documentation](https://dash-bootstrap-components.opensource.faculty.ai/docs/components/input/)\n        to see all available arguments. [Not part of the official Vizro schema](../explanation/schema.md) and the\n        underlying component may change in the future. Defaults to `{}`.",
+      "description": "Categorical single-option selector `RadioItems`.\n\nCan be provided to [`Filter`][vizro.models.Filter] or\n[`Parameter`][vizro.models.Parameter].\n\nArgs:\n    type (Literal[\"radio_items\"]): Defaults to `\"radio_items\"`.\n    options (OptionsType): See [`OptionsType`][vizro.models.types.OptionsType]. Defaults to `[]`.\n    value (Optional[SingleValueType]): See [`SingleValueType`][vizro.models.types.SingleValueType].\n        Defaults to `None`.\n    title (str): Title to be displayed. Defaults to `\"\"`.\n    actions (list[ActionType]): See [`ActionType`][vizro.models.types.ActionType]. Defaults to `[]`.\n    extra (Optional[dict[str, Any]]): Extra keyword arguments that are passed to `dbc.RadioItems` and overwrite any\n        defaults chosen by the Vizro team. This may have unexpected behavior.\n        Visit the [dbc documentation](https://dash-bootstrap-components.opensource.faculty.ai/docs/components/input/)\n        to see all available arguments. [Not part of the official Vizro schema](../explanation/schema.md) and the\n        underlying component may change in the future. Defaults to `{}`.",
       "properties": {
         "id": {
           "default": "",
@@ -1347,7 +1284,6 @@
         "type": {
           "const": "radio_items",
           "default": "radio_items",
-          "enum": ["radio_items"],
           "title": "Type",
           "type": "string"
         },
@@ -1419,14 +1355,7 @@
         "actions": {
           "default": [],
           "items": {
-            "discriminator": {
-              "mapping": {
-                "action": "#/$defs/Action",
-                "export_data": "#/$defs/export_data",
-                "filter_interaction": "#/$defs/filter_interaction"
-              },
-              "propertyName": "type"
-            },
+            "description": "",
             "oneOf": [
               {
                 "$ref": "#/$defs/Action"
@@ -1448,7 +1377,7 @@
     },
     "RangeSlider": {
       "additionalProperties": false,
-      "description": "Numeric multi-option selector `RangeSlider`.\n\nCan be provided to [`Filter`][vizro.models.Filter] or\n[`Parameter`][vizro.models.Parameter].\n\nArgs:\n    type (Literal[\"range_slider\"]): Defaults to `\"range_slider\"`.\n    min (Optional[float]): Start value for slider. Defaults to `None`.\n    max (Optional[float]): End value for slider. Defaults to `None`.\n    step (Optional[float]): Step-size for marks on slider. Defaults to `None`.\n    marks (Optional[dict[Union[float, int], str]]): Marks to be displayed on slider. Defaults to `{}`.\n    value (Optional[list[float]]): Default start and end value for slider. Must be 2 items. Defaults to `None`.\n    title (str): Title to be displayed. Defaults to `\"\"`.\n    actions (list[ActionsType]): See [`ActionsType`][vizro.models.types.ActionsType]. Defaults to `[]`.\n    extra (Optional[dict[str, Any]]): Extra keyword arguments that are passed to `dcc.RangeSlider` and overwrite any\n        defaults chosen by the Vizro team. This may have unexpected behavior.\n        Visit the [dcc documentation](https://dash.plotly.com/dash-core-components/rangeslider)\n        to see all available arguments. [Not part of the official Vizro schema](../explanation/schema.md) and the\n        underlying component may change in the future. Defaults to `{}`.",
+      "description": "Numeric multi-option selector `RangeSlider`.\n\nCan be provided to [`Filter`][vizro.models.Filter] or\n[`Parameter`][vizro.models.Parameter].\n\nArgs:\n    type (Literal[\"range_slider\"]): Defaults to `\"range_slider\"`.\n    min (Optional[float]): Start value for slider. Defaults to `None`.\n    max (Optional[float]): End value for slider. Defaults to `None`.\n    step (Optional[float]): Step-size for marks on slider. Defaults to `None`.\n    marks (Optional[dict[Union[float, int], str]]): Marks to be displayed on slider. Defaults to `{}`.\n    value (Optional[list[float]]): Default start and end value for slider. Must be 2 items. Defaults to `None`.\n    title (str): Title to be displayed. Defaults to `\"\"`.\n    actions (list[ActionType]): See [`ActionType`][vizro.models.types.ActionType]. Defaults to `[]`.\n    extra (Optional[dict[str, Any]]): Extra keyword arguments that are passed to `dcc.RangeSlider` and overwrite any\n        defaults chosen by the Vizro team. This may have unexpected behavior.\n        Visit the [dcc documentation](https://dash.plotly.com/dash-core-components/rangeslider)\n        to see all available arguments. [Not part of the official Vizro schema](../explanation/schema.md) and the\n        underlying component may change in the future. Defaults to `{}`.",
       "properties": {
         "id": {
           "default": "",
@@ -1459,7 +1388,6 @@
         "type": {
           "const": "range_slider",
           "default": "range_slider",
-          "enum": ["range_slider"],
           "title": "Type",
           "type": "string"
         },
@@ -1544,14 +1472,7 @@
         "actions": {
           "default": [],
           "items": {
-            "discriminator": {
-              "mapping": {
-                "action": "#/$defs/Action",
-                "export_data": "#/$defs/export_data",
-                "filter_interaction": "#/$defs/filter_interaction"
-              },
-              "propertyName": "type"
-            },
+            "description": "",
             "oneOf": [
               {
                 "$ref": "#/$defs/Action"
@@ -1573,7 +1494,7 @@
     },
     "Slider": {
       "additionalProperties": false,
-      "description": "Numeric single-option selector `Slider`.\n\nCan be provided to [`Filter`][vizro.models.Filter] or\n[`Parameter`][vizro.models.Parameter].\n\nArgs:\n    type (Literal[\"range_slider\"]): Defaults to `\"range_slider\"`.\n    min (Optional[float]): Start value for slider. Defaults to `None`.\n    max (Optional[float]): End value for slider. Defaults to `None`.\n    step (Optional[float]): Step-size for marks on slider. Defaults to `None`.\n    marks (Optional[dict[Union[float, int], str]]): Marks to be displayed on slider. Defaults to `{}`.\n    value (Optional[float]): Default value for slider. Defaults to `None`.\n    title (str): Title to be displayed. Defaults to `\"\"`.\n    actions (list[ActionsType]): See [`ActionsType`][vizro.models.types.ActionsType]. Defaults to `[]`.\n    extra (Optional[dict[str, Any]]): Extra keyword arguments that are passed to `dcc.Slider` and overwrite any\n        defaults chosen by the Vizro team. This may have unexpected behavior.\n        Visit the [dcc documentation](https://dash.plotly.com/dash-core-components/slider)\n        to see all available arguments. [Not part of the official Vizro schema](../explanation/schema.md) and the\n        underlying component may change in the future. Defaults to `{}`.",
+      "description": "Numeric single-option selector `Slider`.\n\nCan be provided to [`Filter`][vizro.models.Filter] or\n[`Parameter`][vizro.models.Parameter].\n\nArgs:\n    type (Literal[\"range_slider\"]): Defaults to `\"range_slider\"`.\n    min (Optional[float]): Start value for slider. Defaults to `None`.\n    max (Optional[float]): End value for slider. Defaults to `None`.\n    step (Optional[float]): Step-size for marks on slider. Defaults to `None`.\n    marks (Optional[dict[Union[float, int], str]]): Marks to be displayed on slider. Defaults to `{}`.\n    value (Optional[float]): Default value for slider. Defaults to `None`.\n    title (str): Title to be displayed. Defaults to `\"\"`.\n    actions (list[ActionType]): See [`ActionType`][vizro.models.types.ActionType]. Defaults to `[]`.\n    extra (Optional[dict[str, Any]]): Extra keyword arguments that are passed to `dcc.Slider` and overwrite any\n        defaults chosen by the Vizro team. This may have unexpected behavior.\n        Visit the [dcc documentation](https://dash.plotly.com/dash-core-components/slider)\n        to see all available arguments. [Not part of the official Vizro schema](../explanation/schema.md) and the\n        underlying component may change in the future. Defaults to `{}`.",
       "properties": {
         "id": {
           "default": "",
@@ -1584,7 +1505,6 @@
         "type": {
           "const": "slider",
           "default": "slider",
-          "enum": ["slider"],
           "title": "Type",
           "type": "string"
         },
@@ -1665,14 +1585,7 @@
         "actions": {
           "default": [],
           "items": {
-            "discriminator": {
-              "mapping": {
-                "action": "#/$defs/Action",
-                "export_data": "#/$defs/export_data",
-                "filter_interaction": "#/$defs/filter_interaction"
-              },
-              "propertyName": "type"
-            },
+            "description": "",
             "oneOf": [
               {
                 "$ref": "#/$defs/Action"
@@ -1694,7 +1607,7 @@
     },
     "Table": {
       "additionalProperties": false,
-      "description": "Wrapper for `dash_table.DataTable` to visualize tables in dashboard.\n\nArgs:\n    type (Literal[\"table\"]): Defaults to `\"table\"`.\n    figure (CapturedCallable): Function that returns a Dash DataTable. See [`vizro.tables`][vizro.tables].\n    title (str): Title of the `Table`. Defaults to `\"\"`.\n    header (str): Markdown text positioned below the `Table.title`. Follows the CommonMark specification.\n        Ideal for adding supplementary information such as subtitles, descriptions, or additional context.\n        Defaults to `\"\"`.\n    footer (str): Markdown text positioned below the `Table`. Follows the CommonMark specification.\n        Ideal for providing further details such as sources, disclaimers, or additional notes. Defaults to `\"\"`.\n    actions (list[ActionsType]): See [`ActionsType`][vizro.models.types.ActionsType]. Defaults to `[]`.",
+      "description": "Wrapper for `dash_table.DataTable` to visualize tables in dashboard.\n\nArgs:\n    type (Literal[\"table\"]): Defaults to `\"table\"`.\n    figure (CapturedCallable): Function that returns a Dash DataTable. See [`vizro.tables`][vizro.tables].\n    title (str): Title of the `Table`. Defaults to `\"\"`.\n    header (str): Markdown text positioned below the `Table.title`. Follows the CommonMark specification.\n        Ideal for adding supplementary information such as subtitles, descriptions, or additional context.\n        Defaults to `\"\"`.\n    footer (str): Markdown text positioned below the `Table`. Follows the CommonMark specification.\n        Ideal for providing further details such as sources, disclaimers, or additional notes. Defaults to `\"\"`.\n    actions (list[ActionType]): See [`ActionType`][vizro.models.types.ActionType]. Defaults to `[]`.",
       "properties": {
         "id": {
           "default": "",
@@ -1705,7 +1618,6 @@
         "type": {
           "const": "table",
           "default": "table",
-          "enum": ["table"],
           "title": "Type",
           "type": "string"
         },
@@ -1730,14 +1642,7 @@
         "actions": {
           "default": [],
           "items": {
-            "discriminator": {
-              "mapping": {
-                "action": "#/$defs/Action",
-                "export_data": "#/$defs/export_data",
-                "filter_interaction": "#/$defs/filter_interaction"
-              },
-              "propertyName": "type"
-            },
+            "description": "",
             "oneOf": [
               {
                 "$ref": "#/$defs/Action"
@@ -1770,7 +1675,6 @@
         "type": {
           "const": "tabs",
           "default": "tabs",
-          "enum": ["tabs"],
           "title": "Type",
           "type": "string"
         },
@@ -1800,7 +1704,6 @@
         "type": {
           "const": "text",
           "default": "text",
-          "enum": ["text"],
           "title": "Type",
           "type": "string"
         },
@@ -1842,7 +1745,6 @@
         "type": {
           "const": "export_data",
           "default": "export_data",
-          "enum": ["export_data"],
           "title": "Type",
           "type": "string"
         },
@@ -1861,13 +1763,8 @@
           "enum": ["csv", "xlsx"],
           "title": "File Format",
           "type": "string"
-        },
-        "runtime_arg": {
-          "title": "Runtime Arg",
-          "type": "string"
         }
       },
-      "required": ["runtime_arg"],
       "title": "export_data",
       "type": "object"
     },
@@ -1884,7 +1781,6 @@
         "type": {
           "const": "filter_interaction",
           "default": "filter_interaction",
-          "enum": ["filter_interaction"],
           "title": "Type",
           "type": "string"
         },

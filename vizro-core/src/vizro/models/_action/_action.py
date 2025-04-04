@@ -37,7 +37,7 @@ class _BaseAction(VizroBaseModel):
     # function and outputs are overridden as fields in Action and abstract methods in AbstractAction. Using ClassVar
     # for these is the easiest way to appease mypy and have something that actually works at runtime.
     function: ClassVar[Callable[..., Any]]
-    outputs: ClassVar[Union[list[str], dict[str, _IdProperty]]]
+    outputs: ClassVar[Union[list[_IdProperty], dict[str, _IdProperty]]]
 
     @property
     def _dash_components(self) -> list[Component]:
@@ -59,7 +59,7 @@ class _BaseAction(VizroBaseModel):
     def _action_name(self) -> str:
         raise NotImplementedError
 
-    def _validate_dash_dependency(self, /, dependencies, *, type: Literal["output", "input"]):
+    def _validate_dash_dependencies(self, /, dependencies, *, type: Literal["output", "input"]):
         # Validate that dependencies are in the form component_id.component_property. This uses the same annotation as
         # Action.inputs/outputs.
         # TODO-AV2 D 2: in future we will expand this to also allow passing a model name without a property specified,
@@ -70,8 +70,8 @@ class _BaseAction(VizroBaseModel):
         #  We won't be able to do all the checks at validation time though if we need to look up a model in the model
         #  manager. When this change is made the outputs property for filter, parameter and on_page_load should just
         #  become `return self.targets` or similar. Consider again whether to do this translation automatically if
-        # targets is defined as a field, but sounds like bad idea since it doesn't carry over into the capture("action")
-        # style of action.
+        #  targets is defined as a field, but sounds like bad idea since it doesn't carry over into the
+        #  capture("action") style of action.
         # TODO-AV D 3: try to enable properties that aren't Dash properties but are instead model fields e.g. header,
         #  title. See https://github.com/mckinsey/vizro/issues/1078.
         #  Note this is needed for inputs in both vm.Action and AbstractAction but outputs only in AbstractAction.
@@ -144,7 +144,7 @@ class _BaseAction(VizroBaseModel):
         # AbstractAction but not vm.Action instances because a vm.Action that does not pass this check will
         # have already been classified as legacy in Action._legacy. In future when vm.Action.inputs is deprecated
         # then this will be used for vm.Action instances also.
-        self._validate_dash_dependency(self._runtime_args.values(), type="input")
+        self._validate_dash_dependencies(self._runtime_args.values(), type="input")
 
         # User specified arguments runtime_args take precedence over built in reserved arguments. No static arguments
         # ar relevant here, just Dash States. Static arguments values are stored in the state of the relevant
@@ -157,15 +157,14 @@ class _BaseAction(VizroBaseModel):
     def _transformed_outputs(self) -> Union[list[Output], dict[str, Output]]:
         """Creates the actual Dash Outputs based on self.outputs.
 
-        Return type list[Output] is for legacy and new versions of Action. dict[str, Output] is for AbstractAction.
+        Legacy and new versions of Action just support list[Output]. AbstractAction subclasses support dict[str, Output]
+        and list[Output].
         """
-        # TODO-AV2 D 1: enable both list and dict for both Action and AbstractAction.
+        # TODO-AV2 D 1: enable dict for Action. Also think about where all the validation in this function should go
+        #  since it's only relevant for AbstractAction because vm.Action models have pydantic validation built into the
+        #  field annotation.
         if isinstance(self.outputs, list):
-            # At the moment this check isn't needed because the list case only applies to vm.Action models, which has
-            # pydantic validation of outputs built into the field annotation. In future when we allow AbstractAction to
-            # return list also then this will be useful though. At that point, possibly the validation should move to
-            # AbstractAction somehow since it is only actually relevant for that model.
-            self._validate_dash_dependency(self.outputs, type="output")
+            self._validate_dash_dependencies(self.outputs, type="output")
             callback_outputs = [Output(*output.split("."), allow_duplicate=True) for output in self.outputs]
 
             # Need to use a single Output in the @callback decorator rather than a single element list for the case
@@ -175,7 +174,7 @@ class _BaseAction(VizroBaseModel):
                 callback_outputs = callback_outputs[0]
             return callback_outputs
 
-        self._validate_dash_dependency(self.outputs.values(), type="output")
+        self._validate_dash_dependencies(self.outputs.values(), type="output")
         callback_outputs = {  # type: ignore[assignment]
             output_name: Output(*output.split("."), allow_duplicate=True)
             for output_name, output in self.outputs.items()
@@ -298,6 +297,9 @@ class Action(_BaseAction):
     # vm.Action(function=export_data(...)) work. They are always replaced with the new implementation by extracting
     # actions.function in _set_actions. It's done as a forward ref here to avoid circular imports and resolved with
     # Dashboard.model_rebuild() later.
+    # TODO-AV2 C 1: Need to think about which parts of validation in CapturedCallable are legacy and how user
+    # now specifies a user defined action in YAML (ok if not possible initially since it's not already) - could just
+    # enable class-based one? Presumably import_path is no longer relevant though.
     function: Annotated[  # type: ignore[misc, assignment]
         SkipJsonSchema[Union[CapturedCallable, export_data, filter_interaction]],
         Field(json_schema_extra={"mode": "action", "import_path": "vizro.actions"}, description="Action function."),
@@ -308,7 +310,7 @@ class Action(_BaseAction):
         [],
         description="Inputs in the form `<component_id>.<property>` passed to the action function.",
     )
-    outputs: list[Annotated[str, StringConstraints(pattern="^[^.]+[.][^.]+$")]] = Field(  # type: ignore[misc]
+    outputs: list[Annotated[str, StringConstraints(pattern="^[^.]+[.][^.]+$")]] = Field(  # type: ignore
         [],
         description="Outputs in the form `<component_id>.<property>` changed by the action function.",
     )

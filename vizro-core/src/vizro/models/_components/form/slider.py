@@ -15,7 +15,7 @@ from vizro.models._components.form._form_utils import (
     validate_step,
 )
 from vizro.models._models_utils import _log_call
-from vizro.models.types import ActionsType
+from vizro.models.types import ActionType
 
 
 class Slider(VizroBaseModel):
@@ -32,7 +32,7 @@ class Slider(VizroBaseModel):
         marks (Optional[dict[Union[float, int], str]]): Marks to be displayed on slider. Defaults to `{}`.
         value (Optional[float]): Default value for slider. Defaults to `None`.
         title (str): Title to be displayed. Defaults to `""`.
-        actions (list[ActionsType]): See [`ActionsType`][vizro.models.types.ActionsType]. Defaults to `[]`.
+        actions (list[ActionType]): See [`ActionType`][vizro.models.types.ActionType]. Defaults to `[]`.
         extra (Optional[dict[str, Any]]): Extra keyword arguments that are passed to `dcc.Slider` and overwrite any
             defaults chosen by the Vizro team. This may have unexpected behavior.
             Visit the [dcc documentation](https://dash.plotly.com/dash-core-components/slider)
@@ -62,7 +62,7 @@ class Slider(VizroBaseModel):
     ]
     title: str = Field(default="", description="Title to be displayed.")
     actions: Annotated[
-        list[ActionsType],
+        list[ActionType],
         AfterValidator(_action_validator_factory("value")),
         PlainSerializer(lambda x: x[0].actions),
         Field(default=[]),
