@@ -9,6 +9,7 @@ page1 = vm.Page(
     title="Page with custom container",
     components=[
         vm.Container(
+            id="container_0",
             title="Inline default styling",
             components=[
                 vm.Graph(
@@ -21,7 +22,6 @@ page1 = vm.Page(
                 vm.Filter(
                     column="species",
                     selector=vm.Checklist(value=["setosa"], title="Species", extra={"inline": True}),
-                    # targets=["graph1"]
                 ),
             ],
         ),
@@ -39,10 +39,12 @@ page1 = vm.Page(
                 vm.Filter(
                     column="species",
                     selector=vm.Checklist(id="checklist", title="Species", extra={"inline": True}),
-                    # targets=["graph2"]
                 ),
             ],
         ),
+    ],
+    controls=[
+        vm.Filter(column="species", selector=vm.Checklist()),
     ],
 )
 
@@ -242,8 +244,31 @@ page6 = vm.Page(
     ],
 )
 
+page7 = vm.Page(
+    title="Normal (not inline) controls at top of container ",
+    components=[
+        vm.Container(
+            title="Controls - Multiple",
+            components=[
+                vm.Graph(
+                    title="Bar chart",
+                    figure=px.bar(df, x="sepal_length", y="sepal_width", color="species"),
+                ),
+                vm.Graph(
+                    title="Scatter chart",
+                    figure=px.scatter(df, x="sepal_length", y="petal_width", color="species", custom_data=["species"]),
+                ),
+            ],
+            layout=vm.Layout(grid=[[0, 1]]),
+            controls=[
+                vm.Filter(column="species", selector=vm.Checklist(value=["setosa"], title="Species")),
+            ],
+        )
+    ],
+)
 
-dashboard = vm.Dashboard(pages=[page1, page2, page3, page4, page5, page6])
+
+dashboard = vm.Dashboard(pages=[page1, page2, page3, page4, page5, page6, page7])
 
 if __name__ == "__main__":
     Vizro().build(dashboard).run()

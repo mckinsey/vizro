@@ -85,15 +85,7 @@ class Container(VizroBaseModel):
                 id=f"{self.id}-control-panel",
                 children=controls_content,
                 hidden=not controls_content,
-                style={
-                    "display": "flex",
-                    "flexDirection": "row",
-                    "flexWrap": "wrap",
-                    "justifyContent": "start",
-                    "alignItems": "center",
-                    "gap": "12px",
-                    "marginBottom": "0.5rem",
-                },
+                className="container-controls-panel",
             )
             if self.controls
             else html.Div(hidden=True)

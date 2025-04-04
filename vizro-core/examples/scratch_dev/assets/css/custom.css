@@ -10,5 +10,9 @@
 
 #checklist {
   display: flex;
-  flex-direction: row;
+}
+
+#side-controls {
+  display: flex;
+  flex-direction: column;
 }

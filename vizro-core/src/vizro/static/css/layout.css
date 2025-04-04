@@ -233,3 +233,13 @@
   height: 100%;
   overflow: auto;
 }
+
+.container-controls-panel {
+  border-bottom: 1px solid var(--border-subtleAlpha01);
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+  justify-content: start;
+  margin-bottom: 0.5rem;
+  padding-bottom: 0.5rem;
+}
