@@ -16,12 +16,12 @@ Uncomment the section that is right (remove the HTML comment wrapper).
 - A bullet item for the Removed category with a link to the relevant PR at the end of your entry, e.g. Enable feature XXX. ([#1](https://github.com/mckinsey/vizro/pull/1))
 
 -->
-<!--
+
 ### Added
 
-- A bullet item for the Added category with a link to the relevant PR at the end of your entry, e.g. Enable feature XXX. ([#1](https://github.com/mckinsey/vizro/pull/1))
+- Added support for additional CSS units (rem, em, %) for `row_min_height`, `row_gap`, `col_gap`, and `col_min_width` in `Layout. ([#1050](https://github.com/mckinsey/vizro/pull/1050))
 
--->
+
 <!--
 ### Changed
 
