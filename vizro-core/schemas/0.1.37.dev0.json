@@ -731,7 +731,7 @@
     },
     "Flex": {
       "additionalProperties": false,
-      "description": "Flex Container to place chart/components on the [`Page`][vizro.models.Page].\n\nArgs:\n    type (Literal[\"flex\"]): Defaults to `\"flex\"`.\n    direction (Literal[\"row\", \"column\"]): Sets the direction of the flex items inside the container. Options are\n        `row` or `column`. Defaults to `row`.\n    gap (str): Specifies the gap between rows and columns. Allowed units: 'px', 'rem', 'em', or '%'.\n        Defaults to `24px`.\n    wrap (bool): Determines whether flex items are forced onto a single line or can wrap onto multiple lines.\n        If `False`, all items will be on one line. If `True`, items will wrap onto multiple lines.\n        Defaults to `False`.",
+      "description": "Flex Container to place chart/components on the [`Page`][vizro.models.Page].\n\nArgs:\n    type (Literal[\"flex\"]): Defaults to `\"flex\"`.\n    direction (Literal[\"row\", \"column\"]): Sets the direction of the flex items inside the container. Options are\n        `row` or `column`. Defaults to `column`.\n    gap (str): Specifies the gap between rows and columns. Allowed units: 'px', 'rem', 'em', or '%'.\n        Defaults to `24px`.\n    wrap (bool): Determines whether flex items are forced onto a single line or can wrap onto multiple lines.\n        If `False`, all items will be on one line. If `True`, items will wrap onto multiple lines.\n        Defaults to `False`.",
       "properties": {
         "id": {
           "default": "",
@@ -817,7 +817,7 @@
     },
     "Layout": {
       "additionalProperties": false,
-      "description": "Grid specification to place chart/components on the [`Page`][vizro.models.Page].\n\nArgs:\n    type (Literal[\"layout\"]): Defaults to `\"layout\"`.\n    grid (list[list[int]]): Grid specification to arrange components on screen.\n    row_gap (str): Specifies the gap between rows. Allowed units: 'px', 'rem', 'em', or '%'. Defaults to `24px`.\n    col_gap (str): Specifies the gap between columns. Allowed units: 'px', 'rem', 'em', or '%'. Defaults to `24px`.\n    row_min_height (str): Minimum row height in px. Allowed units: 'px', 'rem', 'em', or '%'. Defaults to `0px`.\n    col_min_width (str): Minimum column width in px. Allowed unit are: 'px', 'rem', 'em', or '%'. Defaults to `0px`.",
+      "description": "Grid specification to place chart/components on the [`Page`][vizro.models.Page].\n\nArgs:\n    type (Literal[\"grid\"]): Defaults to `\"grid\"`.\n    grid (list[list[int]]): Grid specification to arrange components on screen.\n    row_gap (str): Specifies the gap between rows. Allowed units: 'px', 'rem', 'em', or '%'. Defaults to `24px`.\n    col_gap (str): Specifies the gap between columns. Allowed units: 'px', 'rem', 'em', or '%'. Defaults to `24px`.\n    row_min_height (str): Minimum row height in px. Allowed units: 'px', 'rem', 'em', or '%'. Defaults to `0px`.\n    col_min_width (str): Minimum column width in px. Allowed unit are: 'px', 'rem', 'em', or '%'. Defaults to `0px`.",
       "properties": {
         "id": {
           "default": "",
@@ -826,8 +826,8 @@
           "type": "string"
         },
         "type": {
-          "const": "layout",
-          "default": "layout",
+          "const": "grid",
+          "default": "grid",
           "title": "Type",
           "type": "string"
         },
