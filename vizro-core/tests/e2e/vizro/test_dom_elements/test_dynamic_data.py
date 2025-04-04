@@ -69,9 +69,7 @@ def test_data_dynamic_parametrization(dash_br, cache, slider_id):
     )
     page_select(
         dash_br,
-        page_path=cnst.DYNAMIC_DATA_PAGE_PATH,
         page_name=cnst.DYNAMIC_DATA_PAGE,
-        graph_id=cnst.SCATTER_DYNAMIC_ID,
     )
 
     # move slider to value '20'
@@ -110,9 +108,7 @@ def test_dropdown_filter_multi(dash_br):
     )
     page_select(
         dash_br,
-        page_path=cnst.DYNAMIC_FILTERS_CATEGORICAL_PAGE_PATH,
         page_name=cnst.DYNAMIC_FILTERS_CATEGORICAL_PAGE,
-        graph_id=cnst.BOX_DYNAMIC_FILTERS_ID,
     )
 
     # Choose "versicolor" value and check that graph is reloaded
@@ -122,17 +118,13 @@ def test_dropdown_filter_multi(dash_br):
     # Remove "setosa" and "versicolor" from the dynamic data and simulate refreshing the page
     page_select(
         dash_br,
-        page_path=cnst.DYNAMIC_FILTERS_NUMERICAL_PAGE_PATH,
         page_name=cnst.DYNAMIC_FILTERS_NUMERICAL_PAGE,
-        graph_id=cnst.BAR_DYNAMIC_FILTER_ID,
     )
     dynamic_filters_data_config_manipulation(key="setosa", set_value=0)
     dynamic_filters_data_config_manipulation(key="versicolor", set_value=0)
     page_select(
         dash_br,
-        page_path=cnst.DYNAMIC_FILTERS_CATEGORICAL_PAGE_PATH,
         page_name=cnst.DYNAMIC_FILTERS_CATEGORICAL_PAGE,
-        graph_id=cnst.BOX_DYNAMIC_FILTERS_ID,
     )
 
     # open dropdown and check selected and unselected values
@@ -154,9 +146,7 @@ def test_dropdown_filter(dash_br):
     )
     page_select(
         dash_br,
-        page_path=cnst.DYNAMIC_FILTERS_CATEGORICAL_PAGE_PATH,
         page_name=cnst.DYNAMIC_FILTERS_CATEGORICAL_PAGE,
-        graph_id=cnst.BOX_DYNAMIC_FILTERS_ID,
     )
 
     # Choose "versicolor" value and check that graph is reloaded
@@ -166,17 +156,13 @@ def test_dropdown_filter(dash_br):
     # Remove "setosa" and "versicolor" from the dynamic data and simulate refreshing the page
     page_select(
         dash_br,
-        page_path=cnst.DYNAMIC_FILTERS_NUMERICAL_PAGE_PATH,
         page_name=cnst.DYNAMIC_FILTERS_NUMERICAL_PAGE,
-        graph_id=cnst.BAR_DYNAMIC_FILTER_ID,
     )
     dynamic_filters_data_config_manipulation(key="setosa", set_value=0)
     dynamic_filters_data_config_manipulation(key="versicolor", set_value=0)
     page_select(
         dash_br,
-        page_path=cnst.DYNAMIC_FILTERS_CATEGORICAL_PAGE_PATH,
         page_name=cnst.DYNAMIC_FILTERS_CATEGORICAL_PAGE,
-        graph_id=cnst.BOX_DYNAMIC_FILTERS_ID,
     )
 
     # open dropdown and check selected and unselected values
@@ -197,9 +183,7 @@ def test_checklist_filter(dash_br):
     )
     page_select(
         dash_br,
-        page_path=cnst.DYNAMIC_FILTERS_CATEGORICAL_PAGE_PATH,
         page_name=cnst.DYNAMIC_FILTERS_CATEGORICAL_PAGE,
-        graph_id=cnst.BOX_DYNAMIC_FILTERS_ID,
     )
 
     # Choose "versicolor" value and check that graph is reloaded
@@ -210,17 +194,13 @@ def test_checklist_filter(dash_br):
     # Remove "setosa" and "versicolor" from the dynamic data and simulate refreshing the page
     page_select(
         dash_br,
-        page_path=cnst.DYNAMIC_FILTERS_NUMERICAL_PAGE_PATH,
         page_name=cnst.DYNAMIC_FILTERS_NUMERICAL_PAGE,
-        graph_id=cnst.BAR_DYNAMIC_FILTER_ID,
     )
     dynamic_filters_data_config_manipulation(key="setosa", set_value=0)
     dynamic_filters_data_config_manipulation(key="versicolor", set_value=0)
     page_select(
         dash_br,
-        page_path=cnst.DYNAMIC_FILTERS_CATEGORICAL_PAGE_PATH,
         page_name=cnst.DYNAMIC_FILTERS_CATEGORICAL_PAGE,
-        graph_id=cnst.BOX_DYNAMIC_FILTERS_ID,
     )
 
     # Check that "versicolor" and "virginica" is the only listed options
@@ -244,9 +224,7 @@ def test_radio_items_filter(dash_br):
     )
     page_select(
         dash_br,
-        page_path=cnst.DYNAMIC_FILTERS_CATEGORICAL_PAGE_PATH,
         page_name=cnst.DYNAMIC_FILTERS_CATEGORICAL_PAGE,
-        graph_id=cnst.BOX_DYNAMIC_FILTERS_ID,
     )
 
     # Choose "versicolor" value and check that graph is reloaded
@@ -256,17 +234,13 @@ def test_radio_items_filter(dash_br):
     # Remove "setosa" and "versicolor" from the dynamic data and simulate refreshing the page
     page_select(
         dash_br,
-        page_path=cnst.DYNAMIC_FILTERS_NUMERICAL_PAGE_PATH,
         page_name=cnst.DYNAMIC_FILTERS_NUMERICAL_PAGE,
-        graph_id=cnst.BAR_DYNAMIC_FILTER_ID,
     )
     dynamic_filters_data_config_manipulation(key="setosa", set_value=0)
     dynamic_filters_data_config_manipulation(key="versicolor", set_value=0)
     page_select(
         dash_br,
-        page_path=cnst.DYNAMIC_FILTERS_CATEGORICAL_PAGE_PATH,
         page_name=cnst.DYNAMIC_FILTERS_CATEGORICAL_PAGE,
-        graph_id=cnst.BOX_DYNAMIC_FILTERS_ID,
     )
 
     # Check that "versicolor" and "virginica" is the only listed options
@@ -289,24 +263,18 @@ def test_numerical_filters(dash_br):
     )
     page_select(
         dash_br,
-        page_path=cnst.DYNAMIC_FILTERS_NUMERICAL_PAGE_PATH,
         page_name=cnst.DYNAMIC_FILTERS_NUMERICAL_PAGE,
-        graph_id=cnst.BAR_DYNAMIC_FILTER_ID,
     )
 
     # Set "min" option to "5" for the dynamic data and simulate refreshing the page
     page_select(
         dash_br,
-        page_path=cnst.DYNAMIC_FILTERS_CATEGORICAL_PAGE_PATH,
         page_name=cnst.DYNAMIC_FILTERS_CATEGORICAL_PAGE,
-        graph_id=cnst.BOX_DYNAMIC_FILTERS_ID,
     )
     dynamic_filters_data_config_manipulation(key="min", set_value=5)
     page_select(
         dash_br,
-        page_path=cnst.DYNAMIC_FILTERS_NUMERICAL_PAGE_PATH,
         page_name=cnst.DYNAMIC_FILTERS_NUMERICAL_PAGE,
-        graph_id=cnst.BAR_DYNAMIC_FILTER_ID,
     )
 
     # Check slider value
@@ -332,16 +300,12 @@ def test_numerical_filters(dash_br):
     # Set "min" option to "6" for the dynamic data and simulate refreshing the page
     page_select(
         dash_br,
-        page_path=cnst.DYNAMIC_FILTERS_CATEGORICAL_PAGE_PATH,
         page_name=cnst.DYNAMIC_FILTERS_CATEGORICAL_PAGE,
-        graph_id=cnst.BOX_DYNAMIC_FILTERS_ID,
     )
     dynamic_filters_data_config_manipulation(key="min", set_value=6)
     page_select(
         dash_br,
-        page_path=cnst.DYNAMIC_FILTERS_NUMERICAL_PAGE_PATH,
         page_name=cnst.DYNAMIC_FILTERS_NUMERICAL_PAGE,
-        graph_id=cnst.BAR_DYNAMIC_FILTER_ID,
     )
 
     # Check slider value
@@ -360,9 +324,7 @@ def test_datepicker_range_filters(dash_br):
     )
     page_select(
         dash_br,
-        page_path=cnst.DYNAMIC_FILTERS_DATEPICKER_PAGE_PATH,
         page_name=cnst.DYNAMIC_FILTERS_DATEPICKER_PAGE,
-        graph_id=cnst.BAR_DYNAMIC_DATEPICKER_FILTER_ID,
     )
 
     # Check y axis min value is '0'
@@ -387,16 +349,12 @@ def test_datepicker_range_filters(dash_br):
     # Set "date_max" option to "2024-03-09" for the dynamic data and simulate refreshing the page
     page_select(
         dash_br,
-        page_path=cnst.DYNAMIC_FILTERS_CATEGORICAL_PAGE_PATH,
         page_name=cnst.DYNAMIC_FILTERS_CATEGORICAL_PAGE,
-        graph_id=cnst.BOX_DYNAMIC_FILTERS_ID,
     )
     dynamic_filters_data_config_manipulation(key="date_max", set_value="2024-03-09")
     page_select(
         dash_br,
-        page_path=cnst.DYNAMIC_FILTERS_DATEPICKER_PAGE_PATH,
         page_name=cnst.DYNAMIC_FILTERS_DATEPICKER_PAGE,
-        graph_id=cnst.BAR_DYNAMIC_DATEPICKER_FILTER_ID,
     )
     dash_br.wait_for_text_to_equal(f'button[id="{cnst.DATEPICKER_DYNAMIC_RANGE_ID}"]', "March 5, 2024 – March 10, 2024")  # noqa: RUF001
 
@@ -426,16 +384,12 @@ def test_datepicker_range_filters(dash_br):
     # Set "date_min" option to "2024-03-06" for the dynamic data and simulate refreshing the page
     page_select(
         dash_br,
-        page_path=cnst.DYNAMIC_FILTERS_CATEGORICAL_PAGE_PATH,
         page_name=cnst.DYNAMIC_FILTERS_CATEGORICAL_PAGE,
-        graph_id=cnst.BOX_DYNAMIC_FILTERS_ID,
     )
     dynamic_filters_data_config_manipulation(key="date_min", set_value="2024-03-06")
     page_select(
         dash_br,
-        page_path=cnst.DYNAMIC_FILTERS_DATEPICKER_PAGE_PATH,
         page_name=cnst.DYNAMIC_FILTERS_DATEPICKER_PAGE,
-        graph_id=cnst.BAR_DYNAMIC_DATEPICKER_FILTER_ID,
     )
     dash_br.wait_for_text_to_equal(f'button[id="{cnst.DATEPICKER_DYNAMIC_RANGE_ID}"]', "March 6, 2024 – March 10, 2024")  # noqa: RUF001
 
@@ -453,9 +407,7 @@ def test_datepicker_single_filters(dash_br):
     )
     page_select(
         dash_br,
-        page_path=cnst.DYNAMIC_FILTERS_DATEPICKER_PAGE_PATH,
         page_name=cnst.DYNAMIC_FILTERS_DATEPICKER_PAGE,
-        graph_id=cnst.BAR_DYNAMIC_DATEPICKER_SINGLE_FILTER_ID,
     )
 
     # check current date value
@@ -480,16 +432,12 @@ def test_datepicker_single_filters(dash_br):
     # Set "date_min" option to "2024-03-06" for the dynamic data and simulate refreshing the page
     page_select(
         dash_br,
-        page_path=cnst.DYNAMIC_FILTERS_CATEGORICAL_PAGE_PATH,
         page_name=cnst.DYNAMIC_FILTERS_CATEGORICAL_PAGE,
-        graph_id=cnst.BOX_DYNAMIC_FILTERS_ID,
     )
     dynamic_filters_data_config_manipulation(key="date_min", set_value="2024-03-06")
     page_select(
         dash_br,
-        page_path=cnst.DYNAMIC_FILTERS_DATEPICKER_PAGE_PATH,
         page_name=cnst.DYNAMIC_FILTERS_DATEPICKER_PAGE,
-        graph_id=cnst.BAR_DYNAMIC_DATEPICKER_SINGLE_FILTER_ID,
     )
     dash_br.wait_for_text_to_equal(f'button[id="{cnst.DATEPICKER_DYNAMIC_SINGLE_ID}"]', "March 5, 2024")
 
@@ -528,15 +476,11 @@ def test_datepicker_single_filters(dash_br):
     # simulate refreshing the page
     page_select(
         dash_br,
-        page_path=cnst.DYNAMIC_FILTERS_CATEGORICAL_PAGE_PATH,
         page_name=cnst.DYNAMIC_FILTERS_CATEGORICAL_PAGE,
-        graph_id=cnst.BOX_DYNAMIC_FILTERS_ID,
     )
     page_select(
         dash_br,
-        page_path=cnst.DYNAMIC_FILTERS_DATEPICKER_PAGE_PATH,
         page_name=cnst.DYNAMIC_FILTERS_DATEPICKER_PAGE,
-        graph_id=cnst.BAR_DYNAMIC_DATEPICKER_SINGLE_FILTER_ID,
     )
     dash_br.wait_for_text_to_equal(f'button[id="{cnst.DATEPICKER_DYNAMIC_SINGLE_ID}"]', "March 6, 2024")
 
