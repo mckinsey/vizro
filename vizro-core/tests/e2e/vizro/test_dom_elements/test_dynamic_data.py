@@ -7,7 +7,7 @@ from e2e.asserts import assert_image_not_equal, assert_pixelmatch
 from e2e.vizro import constants as cnst
 from e2e.vizro.checkers import (
     check_graph_is_loading,
-    check_selected_checklist,
+    check_selected_categorical_component,
     check_selected_dropdown,
     check_slider_value,
 )
@@ -224,10 +224,9 @@ def test_checklist_filter(dash_br):
     )
 
     # Check that "versicolor" and "virginica" is the only listed options
-    check_selected_checklist(
+    check_selected_categorical_component(
         dash_br,
-        checklist_id=cnst.CHECKLIST_DYNAMIC_FILTER_ID,
-        select_all_status=False,
+        component_id=cnst.CHECKLIST_DYNAMIC_FILTER_ID,
         options_value_status=[
             {"value": 1, "status": False, "value_name": "ALL"},
             {"value": 2, "status": True, "value_name": "versicolor"},
@@ -270,10 +269,9 @@ def test_radio_items_filter(dash_br):
     )
 
     # Check that "versicolor" and "virginica" is the only listed options
-    check_selected_checklist(
+    check_selected_categorical_component(
         dash_br,
-        checklist_id=cnst.RADIOITEMS_DYNAMIC_FILTER_ID,
-        select_all_status=False,
+        component_id=cnst.RADIOITEMS_DYNAMIC_FILTER_ID,
         options_value_status=[
             {"value": 1, "status": True, "value_name": "versicolor"},
             {"value": 2, "status": False, "value_name": "virginica"},
@@ -544,3 +542,112 @@ def test_datepicker_single_filters(dash_br):
     dash_br.multiple_click(f'button[id="{cnst.DATEPICKER_DYNAMIC_SINGLE_ID}"]', 1)
     dash_br.wait_for_element('div[data-calendar="true"]')
     dash_br.wait_for_element('button[aria-label="5 March 2024"][data-disabled="true"]')
+
+
+def test_dynamic_data_parameter_refresh_dynamic_filters(dash_br):
+    """Test automatic refreshing of the dynamic filters and their targets when the data_frame parameter is changed."""
+    accordion_select(
+        dash_br, accordion_name=cnst.DYNAMIC_DATA_ACCORDION.upper(), accordion_number=cnst.DYNAMIC_DATA_ACCORDION_NUMBER
+    )
+    page_select(
+        dash_br,
+        page_path=cnst.DYNAMIC_DATA_DF_PARAMETER_PAGE_PATH,
+        page_name=cnst.DYNAMIC_DATA_DF_PARAMETER_PAGE,
+        graph_id=cnst.SCATTER_DF_PARAMETER,
+    )
+
+    # select 'versicolor' value and check scatter graph point color
+    dash_br.multiple_click(categorical_components_value_path(elem_id=cnst.RADIOITEMS_FILTER_DF_PARAMETER, value=2), 1)
+    dash_br.wait_for_element(f"div[id='{cnst.SCATTER_DF_PARAMETER}'] path[style*='rgb(255, 146, 34)']:nth-of-type(1)")
+
+    # select '10' points for slider which is showing only 'setosa' data and check that graph is empty
+    select_slider_handler(dash_br, elem_id=cnst.SLIDER_DF_PARAMETER, value=2)
+    dash_br.wait_for_text_to_equal(
+        graph_y_axis_value_path(
+            graph_id=cnst.SCATTER_DF_PARAMETER,
+            y_axis_value_number="1",
+            y_axis_value="−1",  # noqa: RUF001
+        ),
+        "−1",  # noqa: RUF001
+    )
+
+    # Check that "setosa" and "versicolor" is the only listed options
+    check_selected_categorical_component(
+        dash_br,
+        component_id=cnst.RADIOITEMS_FILTER_DF_PARAMETER,
+        options_value_status=[
+            {"value": 1, "status": False, "value_name": "setosa"},
+            {"value": 2, "status": True, "value_name": "versicolor"},
+        ],
+    )
+
+    # simulate refreshing the page
+    page_select(
+        dash_br,
+        page_path=cnst.DYNAMIC_FILTERS_CATEGORICAL_PAGE_PATH,
+        page_name=cnst.DYNAMIC_FILTERS_CATEGORICAL_PAGE,
+        graph_id=cnst.BOX_DYNAMIC_FILTERS_ID,
+    )
+    page_select(
+        dash_br,
+        page_path=cnst.DYNAMIC_DATA_DF_PARAMETER_PAGE_PATH,
+        page_name=cnst.DYNAMIC_DATA_DF_PARAMETER_PAGE,
+        graph_id=cnst.SCATTER_DF_PARAMETER,
+    )
+
+    # check that graph is empty
+    dash_br.wait_for_text_to_equal(
+        graph_y_axis_value_path(
+            graph_id=cnst.SCATTER_DF_PARAMETER,
+            y_axis_value_number="1",
+            y_axis_value="−1",  # noqa: RUF001
+        ),
+        "−1",  # noqa: RUF001
+    )
+
+    # Check that "setosa" and "versicolor" is the only listed options
+    check_selected_categorical_component(
+        dash_br,
+        component_id=cnst.RADIOITEMS_FILTER_DF_PARAMETER,
+        options_value_status=[
+            {"value": 1, "status": False, "value_name": "setosa"},
+            {"value": 2, "status": True, "value_name": "versicolor"},
+        ],
+    )
+
+    # select 'setosa' value and check scatter graph point color
+    dash_br.multiple_click(categorical_components_value_path(elem_id=cnst.RADIOITEMS_FILTER_DF_PARAMETER, value=1), 1)
+    dash_br.wait_for_element(f"div[id='{cnst.SCATTER_DF_PARAMETER}'] path[style*='rgb(0, 180, 255)']:nth-of-type(1)")
+
+    # Check that "setosa" and "versicolor" is the only listed options
+    check_selected_categorical_component(
+        dash_br,
+        component_id=cnst.RADIOITEMS_FILTER_DF_PARAMETER,
+        options_value_status=[
+            {"value": 1, "status": True, "value_name": "setosa"},
+            {"value": 2, "status": False, "value_name": "versicolor"},
+        ],
+    )
+
+    # simulate refreshing the page
+    page_select(
+        dash_br,
+        page_path=cnst.DYNAMIC_FILTERS_CATEGORICAL_PAGE_PATH,
+        page_name=cnst.DYNAMIC_FILTERS_CATEGORICAL_PAGE,
+        graph_id=cnst.BOX_DYNAMIC_FILTERS_ID,
+    )
+    page_select(
+        dash_br,
+        page_path=cnst.DYNAMIC_DATA_DF_PARAMETER_PAGE_PATH,
+        page_name=cnst.DYNAMIC_DATA_DF_PARAMETER_PAGE,
+        graph_id=cnst.SCATTER_DF_PARAMETER,
+    )
+
+    # Check that "setosa" is the only listed options
+    check_selected_categorical_component(
+        dash_br,
+        component_id=cnst.RADIOITEMS_FILTER_DF_PARAMETER,
+        options_value_status=[
+            {"value": 1, "status": True, "value_name": "setosa"},
+        ],
+    )
