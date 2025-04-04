@@ -101,8 +101,8 @@ label[for="theme-selector"] {
   padding-left: 0;
 }
 
-/* Remove bottom margin of last child as card comes with padding */
-.card-text > *:last-child {
+/* Remove bottom margin of last child as markdown comes with padding */
+.card-text > *:last-child, .tooltip-text > *:last-child {
   margin-bottom: 0;
 }
 
@@ -113,6 +113,7 @@ label[for="theme-selector"] {
   overflow: auto;  /* For a scroll to be properly added per container */
   padding: 0;
 }
+
 
 /* Introduce vizro utility classes here */
 .bg-container {

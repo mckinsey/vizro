@@ -20,6 +20,10 @@ def _log_call(method):
     return _wrapper
 
 
+def validate_icon(icon) -> str:
+    return icon.strip().lower().replace(" ", "_")
+
+
 # Validators for reuse
 def check_captured_callable_model(value):
     if isinstance(value, CapturedCallable):
