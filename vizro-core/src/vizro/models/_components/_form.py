@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from typing import TYPE_CHECKING, Annotated, Literal, Optional, cast
+from typing import Annotated, Literal, Optional
 
 from dash import html
 from pydantic import AfterValidator, BeforeValidator, Field, conlist
@@ -8,11 +8,8 @@ from pydantic import AfterValidator, BeforeValidator, Field, conlist
 from vizro.models import VizroBaseModel
 from vizro.models._components.form import Checklist, Dropdown, RadioItems, RangeSlider, Slider
 from vizro.models._layout import set_layout
-from vizro.models._models_utils import _log_call, check_captured_callable_model
-from vizro.models.types import _FormComponentType
-
-if TYPE_CHECKING:
-    from vizro.models import Layout
+from vizro.models._models_utils import _build_inner_layout, _log_call, check_captured_callable_model
+from vizro.models.types import LayoutType, _FormComponentType
 
 
 class Form(VizroBaseModel):
@@ -28,7 +25,7 @@ class Form(VizroBaseModel):
     type: Literal["form"] = "form"
     # TODO[mypy], see: https://github.com/pydantic/pydantic/issues/156 for components field
     components: conlist(Annotated[_FormComponentType, BeforeValidator(check_captured_callable_model)], min_length=1)  # type: ignore[valid-type]
-    layout: Annotated[Optional[Layout], AfterValidator(set_layout), Field(default=None, validate_default=True)]
+    layout: Annotated[Optional[LayoutType], AfterValidator(set_layout), Field(default=None, validate_default=True)]
 
     @_log_call
     def pre_build(self):
@@ -42,11 +39,4 @@ class Form(VizroBaseModel):
 
     @_log_call
     def build(self):
-        self.layout = cast(
-            Layout,  # cannot actually be None if you check components and layout field together
-            self.layout,
-        )
-        components_container = self.layout.build()
-        for component_idx, component in enumerate(self.components):
-            components_container[f"{self.layout.id}_{component_idx}"].children = component.build()
-        return html.Div(id=self.id, children=components_container)
+        return html.Div(id=self.id, children=_build_inner_layout(self.layout, self.components))
