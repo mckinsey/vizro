@@ -1,13 +1,13 @@
 # How to change the layout of your page
 
-The [`Page`][vizro.models.Page] and the [`Container`][vizro.models.Container] model accept a `layout` argument that enables custom arrangement of charts and components on the screen. This guide shows how to customize the `layout` with:
+The [`Page`][vizro.models.Page] and [`Container`][vizro.models.Container] models accept a `layout` argument that enables custom arrangement of charts and components on the screen. This guide shows how to customize the `layout` with:
 
-- \[either the default [`Grid`][vizro.models.Layout] model\](#grid-layout)
-- \[or the optional [`Flex`][vizro.models.Flex] model\](#flex-layout)
+- [a grid layout](#grid-layout) using the [`Grid`][vizro.models.Layout] model (the default if no `layout` is specified)
+- [a flexible box layout](#flex-layout) using the [`Flex`][vizro.models.Flex] model
 
 ## Layout options: Grid and Flex
 
-The `layout` argument enables you to choose between two layout models: [`Grid`][vizro.models.Layout] (default) and [`Flex`][vizro.models.Flex]. Both models provide different ways to organize components on the page.
+The `layout` argument enables you to choose between two layout models: [`Grid`][vizro.models.Layout] (default) and [`Flex`][vizro.models.Flex]. These models provide different ways to arrange components on the page.
 
 - **Grid layout**: The [`Grid`][vizro.models.Layout] layout arranges components in a structured grid where rows and columns are explicitly defined. This layout is ideal for precise control over the placement of components.
 - **Flex layout**: The [`Flex`][vizro.models.Flex] layout arranges components using a flexible box model, where items can grow, shrink, and wrap dynamically based on available space. This layout is ideal for responsive designs where components need to adapt to different screen sizes.
@@ -419,7 +419,7 @@ For further customization, such as changing the gap between row and column, refe
 
 ## Flex Layout
 
-The [Flex][vizro.models.Flex] layout offers a dynamic and flexible way to organize components within a page. Built on the CSS Flexbox model, it is specifically designed to create responsive layouts that adjust to varying screen sizes and available space.
+The [Flex][vizro.models.Flex] layout offers a dynamic and flexible way to organize components within a page. Built on the [CSS Flexbox (flexible box) concept](https://developer.mozilla.org/en-US/docs/Web/CSS/CSS_flexible_box_layout/Basic_concepts_of_flexbox), it is designed to create responsive layouts that adjust to varying screen sizes and available space.
 
 Unlike the [Grid][vizro.models.Layout] layout, which uses a predefined row-and-column structure, the `Flex` layout provides greater flexibility by enabling components to resize, align, and position themselves dynamically based on the layout configuration.
 
@@ -485,7 +485,7 @@ To switch to a `Flex` layout, simply pass `vm.Flex()` to the `layout` argument o
 
 ### Flex - advanced example
 
-If you want to customize the default behavior, the [Flex][vizro.models.Flex] model enables you to configure three optional arguments:
+If you want to customize the default behavior, the [`Flex`][vizro.models.Flex] model enables you to configure three optional arguments:
 
 - `direction`: Defines the layout direction of the components within the flex container, determining whether they are arranged in rows or columns.
 - `gap`: Controls the spacing between components in the flex container, enabling you to set consistent horizontal and vertical spacing between items.
@@ -561,10 +561,10 @@ You can achieve this by:
 
 The syntax for setting `width` and `height` varies between components. Refer to the component's documentation for the correct syntax and usage, such as:
 
-- `Graph`: See the documentation on [Plotly - Adjust Graph Size in Python](https://plotly.com/python/setting-graph-size/).
-- `AgGrid`: See the documentation on [Dash - Change Grid Size](https://dash.plotly.com/dash-ag-grid/grid-size)
-- `DataTable`: See the documentation on [Dash - Setting Table Height](https://dash.plotly.com/datatable/height#setting-table-height-with-vertical-scroll)
-- `Card`: See our documentation on [Card - The extra argument](https://vizro.readthedocs.io/en/stable/pages/user-guides/card/#the-extra-argument)
+- `Graph`: See the documentation on [Plotly - Adjust Graph Size in Python](https://plotly.com/python/setting-graph-size/). For example, `vm.Graph(figure=px.violin(..., width=300))`.
+- `AgGrid`: See the documentation on [Dash - Change Grid Size](https://dash.plotly.com/dash-ag-grid/grid-size). For example, `vm.AgGrid(figure=dash_ag_grid(tips, style={"width": 1000}))`.
+- `DataTable`: See the documentation on [Dash - Setting Table Height](https://dash.plotly.com/datatable/height#setting-table-height-with-vertical-scroll). For example, `vm.Table(figure=dash_data_table(tips, style_table={"width": "1000px"}))`.
+- `Card`: See our documentation on [Card - The extra argument](https://vizro.readthedocs.io/en/stable/pages/user-guides/card/#the-extra-argument). For example, `vm.Card(..., extra={"style": {"height": "200px"}})`.
 
 !!! example "Change the width for Graph"
     === "app.py"
@@ -646,7 +646,7 @@ The syntax for setting `width` and `height` varies between components. Refer to 
 
 Custom CSS is often a preferred choice over using component arguments for setting sizes when you need to apply a consistent `height` and/or `width` across multiple elements, as it doesn't require repeating code. This is especially helpful for ensuring uniform sizing of all flex items.
 
-Each item within the `Flex` layout is wrapped in a `Div` with the `classname="flex-item"`, which can be targeted with CSS. To learn how to identify the correct selectors, refer to our [user guide on custom CSS](custom-css.md).
+Each item within the `Flex` layout is wrapped in a `<div class="flex-item">`, which can be targeted with CSS. To learn how to identify the correct selectors, refer to our [user guide on custom CSS](custom-css.md).
 
 !!! example "Change the width of all flex items with CSS"
     === "my_css_file.css"
