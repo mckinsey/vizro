@@ -1,15 +1,15 @@
-from typing import Annotated, Any, NamedTuple, Optional
+import re
+from typing import Annotated, Any, Literal, NamedTuple, Optional
 
 import numpy as np
 from dash import html
 from numpy import ma
 from pydantic import AfterValidator, Field, PrivateAttr, ValidationInfo
 
-from vizro._constants import EMPTY_SPACE_CONST
+from vizro._constants import EMPTY_SPACE_CONST, GAP_DEFAULT
 from vizro.models import VizroBaseModel
 from vizro.models._models_utils import _log_call
 
-GAP_DEFAULT = "24px"
 MIN_DEFAULT = "0px"
 
 
@@ -30,7 +30,13 @@ def _get_unique_grid_component_ids(grid: list[list[int]]):
 
 # Validators for reuse
 def set_layout(layout, info: ValidationInfo):
-    from vizro.models import Layout
+    from vizro.models import Flex, Layout
+
+    # No validation for Flex layout
+    # Possibly some of this validator should be attached directly to the grid Layout model type rather than
+    # the LayoutType Union to avoid needing this check.
+    if isinstance(layout, Flex):
+        return layout
 
     # This exists only to eagerly raise the error, otherwise obscure error message on eg Page()
     # Same for similar code in other places
@@ -158,27 +164,46 @@ def _get_grid_lines(grid: list[list[int]]) -> tuple[list[ColRowGridLines], list[
     return component_grid_lines, space_grid_lines
 
 
+# TODO: Deprecate and rename to Grid
 class Layout(VizroBaseModel):
     """Grid specification to place chart/components on the [`Page`][vizro.models.Page].
 
     Args:
+        type (Literal["grid"]): Defaults to `"grid"`.
         grid (list[list[int]]): Grid specification to arrange components on screen.
-        row_gap (str): Gap between rows in px. Defaults to `"12px"`.
-        col_gap (str): Gap between columns in px. Defaults to `"12px"`.
-        row_min_height (str): Minimum row height in px. Defaults to `"0px"`.
-        col_min_width (str): Minimum column width in px. Defaults to `"0px"`.
+        row_gap (str): Specifies the gap between rows. Allowed units: 'px', 'rem', 'em', or '%'. Defaults to `24px`.
+        col_gap (str): Specifies the gap between columns. Allowed units: 'px', 'rem', 'em', or '%'. Defaults to `24px`.
+        row_min_height (str): Minimum row height in px. Allowed units: 'px', 'rem', 'em', or '%'. Defaults to `0px`.
+        col_min_width (str): Minimum column width in px. Allowed unit are: 'px', 'rem', 'em', or '%'. Defaults to `0px`.
 
     """
 
+    type: Literal["grid"] = "grid"
     grid: Annotated[
         list[list[int]],
         AfterValidator(validate_grid),
         Field(description="Grid specification to arrange components on screen."),
     ]
-    row_gap: str = Field(default=GAP_DEFAULT, description="Gap between rows in px.", pattern="[0-9]+px")
-    col_gap: str = Field(default=GAP_DEFAULT, description="Gap between columns in px.", pattern="[0-9]+px")
-    row_min_height: str = Field(default=MIN_DEFAULT, description="Minimum row height in px.", pattern="[0-9]+px")
-    col_min_width: str = Field(default=MIN_DEFAULT, description="Minimum column width in px.", pattern="[0-9]+px")
+    row_gap: str = Field(
+        default=GAP_DEFAULT,
+        description="Specifies the gap between rows. Allowed units: 'px', 'rem', 'em', or '%'. Defaults to `24px`.",
+        pattern=re.compile(r"^\d+(px|rem|em|%)$"),
+    )
+    col_gap: str = Field(
+        default=GAP_DEFAULT,
+        description="Specifies the gap between columns. Allowed units: 'px', 'rem', 'em', or '%'. Defaults to `24px`.",
+        pattern=re.compile(r"^\d+(px|rem|em|%)$"),
+    )
+    row_min_height: str = Field(
+        default=MIN_DEFAULT,
+        description="Minimum row height in px. Allowed units: 'px', 'rem', 'em', or '%'. Defaults to `0px`.",
+        pattern=re.compile(r"^\d+(px|rem|em|%)$"),
+    )
+    col_min_width: str = Field(
+        default=MIN_DEFAULT,
+        description="Minimum column width in px. Allowed units: 'px', 'rem', 'em', or '%'. Defaults to `0px`.",
+        pattern=re.compile(r"^\d+(px|rem|em|%)$"),
+    )
     _component_grid_lines: Optional[list[ColRowGridLines]] = PrivateAttr()
 
     def model_post_init(self, context: Any) -> None:
