@@ -33,6 +33,8 @@ def set_layout(layout, info: ValidationInfo):
     from vizro.models import Flex, Layout
 
     # No validation for Flex layout
+    # Possibly some of this validator should be attached directly to the grid Layout model type rather than
+    # the LayoutType Union to avoid needing this check.
     if isinstance(layout, Flex):
         return layout
 
@@ -167,7 +169,7 @@ class Layout(VizroBaseModel):
     """Grid specification to place chart/components on the [`Page`][vizro.models.Page].
 
     Args:
-        type (Literal["layout"]): Defaults to `"layout"`.
+        type (Literal["grid"]): Defaults to `"grid"`.
         grid (list[list[int]]): Grid specification to arrange components on screen.
         row_gap (str): Specifies the gap between rows. Allowed units: 'px', 'rem', 'em', or '%'. Defaults to `24px`.
         col_gap (str): Specifies the gap between columns. Allowed units: 'px', 'rem', 'em', or '%'. Defaults to `24px`.
@@ -176,7 +178,7 @@ class Layout(VizroBaseModel):
 
     """
 
-    type: Literal["layout"] = "layout"
+    type: Literal["grid"] = "grid"
     grid: Annotated[
         list[list[int]],
         AfterValidator(validate_grid),
