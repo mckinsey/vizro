@@ -578,7 +578,7 @@ You can achieve this by:
 - [either specifying the `width` and `height` directly on the components](#change-size-via-components-arguments)
 - [or by applying custom CSS](#change-size-via-custom-css)
 
-#### Change size via component's arguments
+#### Change size via arguments
 
 The syntax for setting `width` and `height` varies between components. Refer to the component's documentation for the correct syntax and usage, such as:
 
@@ -587,7 +587,7 @@ The syntax for setting `width` and `height` varies between components. Refer to 
 - `DataTable`: See the documentation on [Dash - Setting Table Height](https://dash.plotly.com/datatable/height#setting-table-height-with-vertical-scroll). For example, `vm.Table(figure=dash_data_table(tips, style_table={"width": "1000px"}))`.
 - `Card`: See our documentation on [Card - The extra argument](https://vizro.readthedocs.io/en/stable/pages/user-guides/card/#the-extra-argument). For example, `vm.Card(..., extra={"style": {"height": "200px"}})`.
 
-We will re-use the example from the [previous section](#flex---advanced-example), but this time we set `width=400` within the Plotly function to control the graph width. This changes how many graphs can fit on a single row, as reducing the width allows more graphs to fit before wrapping to the next line. To see the difference in results, compare the screenshots from this section with those in the previous one.
+We will reuse the example from the [previous section](#flex---advanced-example), but this time we set `width=400` within the Plotly function to control the graph width. This changes how many graphs can fit on a single row, as reducing the width allows more graphs to fit before wrapping to the next line. To see the difference in results, compare the screenshots from this section with those in the previous one.
 
 !!! example "Change the width for Graph"
     === "app.py"
@@ -665,7 +665,7 @@ We will re-use the example from the [previous section](#flex---advanced-example)
     === "Result"
         [![FlexItemSizeArg]][flexitemsizearg]
 
-#### Change size via custom CSS
+#### Change size via CSS
 
 Custom CSS is often a preferred choice over using component arguments for setting sizes when you need to apply a consistent `height` and/or `width` across multiple elements, as it doesn't require repeating code. This is especially helpful for ensuring uniform sizing of all flex items.
 
