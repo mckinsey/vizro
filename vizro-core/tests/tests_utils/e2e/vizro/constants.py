@@ -19,7 +19,7 @@ AREA_GRAPH_ID = "ArEa"
 DROPDOWN_FILTER_HOMEPAGEPAGE = "drop-homepagepage"
 
 FILTERS_PAGE = "filters page (tabs + containers)"
-FILTERS_PAGE_PATH = "/filters-page-tabs-and-containers"
+FILTERS_PAGE_PATH = "/filters-page-tabs--containers"
 FILTERS_TAB_CONTAINER = "filters tab_container"
 FILTERS_COMPONENTS_CONTAINER = "filters components container"
 SCATTER_GRAPH_ID = "scatter"
