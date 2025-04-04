@@ -1,9 +1,10 @@
-from typing import Optional
+"""Scratchpad for testing."""
 
 import vizro.models as vm
 import vizro.plotly.express as px
 from vizro import Vizro
-from vizro.models.types import capture
+from vizro.figures import kpi_card
+from vizro.tables import dash_ag_grid, dash_data_table
 
 tips = px.data.tips()
 
