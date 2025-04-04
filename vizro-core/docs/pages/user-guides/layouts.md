@@ -575,8 +575,8 @@ There may be times when resizing your flex items is necessary, such as when desi
 
 You can achieve this by:
 
-- [either specifying the `width` and `height` directly on the components](#change-size-via-components-arguments)
-- [or by applying custom CSS](#change-size-via-custom-css)
+- [either specifying the `width` and `height` directly on the components](#change-size-via-arguments)
+- [or by applying custom CSS](#change-size-via-css)
 
 #### Change size via arguments
 
