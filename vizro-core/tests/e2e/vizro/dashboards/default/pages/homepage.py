@@ -43,7 +43,7 @@ homepage = vm.Page(
 
             Leads to the datepicker page on click.
             """,
-            href=cnst.DATEPICKER_PAGE_PATH,
+            href=f"/{cnst.DATEPICKER_PAGE}",
         ),
         vm.Card(
             text="""

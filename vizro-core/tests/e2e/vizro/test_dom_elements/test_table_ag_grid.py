@@ -11,9 +11,7 @@ def test_filters(dash_br):
     )
     page_select(
         dash_br,
-        page_path=cnst.TABLE_AG_GRID_PAGE_PATH,
         page_name=cnst.TABLE_AG_GRID_PAGE,
-        graph_id=cnst.BOX_AG_GRID_PAGE_ID,
     )
 
     # select 'Africa'
@@ -51,9 +49,7 @@ def test_interactions(dash_br):
     )
     page_select(
         dash_br,
-        page_path=cnst.TABLE_AG_GRID_INTERACTIONS_PAGE_PATH,
         page_name=cnst.TABLE_AG_GRID_INTERACTIONS_PAGE,
-        graph_id=cnst.LINE_AG_GRID_INTERACTIONS_ID,
     )
 
     # check if column 'country' is available
