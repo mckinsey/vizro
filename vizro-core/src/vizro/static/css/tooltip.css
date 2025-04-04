@@ -14,6 +14,10 @@
   color: var(--text-primary-inverted);
 }
 
+.tooltip-inner p {
+    margin-bottom: 0.5rem;
+}
+
 .tooltip-inner a:hover {
   color: var(--text-primaryHover-inverted);
 }
