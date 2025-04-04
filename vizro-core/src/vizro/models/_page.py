@@ -23,7 +23,7 @@ from vizro.managers._model_manager import FIGURE_MODELS, DuplicateIDError
 from vizro.models import Action, Filter, Layout, Tooltip, VizroBaseModel
 from vizro.models._action._actions_chain import ActionsChain, Trigger
 from vizro.models._layout import set_layout
-from vizro.models._models_utils import _log_call, check_captured_callable_model
+from vizro.models._models_utils import _build_inner_layout, _log_call, check_captured_callable_model
 
 from ._tooltip import coerce_str_to_tooltip
 from .types import ComponentType, ControlType
@@ -147,18 +147,12 @@ class Page(VizroBaseModel):
 
     @_log_call
     def build(self) -> _PageBuildType:
+        # Build control panel
         controls_content = [control.build() for control in self.controls]
         control_panel = html.Div(id="control-panel", children=controls_content, hidden=not controls_content)
 
-        self.layout = cast(
-            Layout,
-            self.layout,  # cannot actually be None if you check components and layout field together
-        )
-        components_container = self.layout.build()
-        for component_idx, component in enumerate(self.components):
-            components_container[f"{self.layout.id}_{component_idx}"].children = component.build()
-
-        # Page specific CSS ID and Stores
+        # Build layout with components
+        components_container = _build_inner_layout(self.layout, self.components)
         components_container.children.append(dcc.Store(id=f"{ON_PAGE_LOAD_ACTION_PREFIX}_trigger_{self.id}"))
         components_container.id = "page-components"
         return html.Div([control_panel, components_container])
