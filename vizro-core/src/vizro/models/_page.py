@@ -1,7 +1,7 @@
 from __future__ import annotations
 
 from collections.abc import Iterable
-from typing import Annotated, Optional, TypedDict, cast
+from typing import Annotated, Any, Optional, TypedDict, cast
 
 from dash import dcc, html
 from pydantic import (
@@ -84,10 +84,10 @@ class Page(VizroBaseModel):
         values.setdefault("id", values["title"])
         return values
 
-    def __init__(self, **data):
+    def model_post_init(self, context: Any) -> None:
         """Adds the model instance to the model manager."""
         try:
-            super().__init__(**data)
+            super().model_post_init(context)
         except DuplicateIDError as exc:
             raise ValueError(
                 f"Page with id={self.id} already exists. Page id is automatically set to the same "
