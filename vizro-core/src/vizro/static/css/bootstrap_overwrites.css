@@ -113,18 +113,6 @@ label[for="theme-selector"] {
   padding: 0;
 }
 
-.tooltip-inner {
-  max-width: 500px !important;
-}
-
-/* TODO NOW: fix light theme readability */
-.tooltip-inner * {
-  color: var(--text-primary-inverted);
-}
-
-.tooltip-inner a:hover {
-  color: var(--text-primaryHover-inverted);
-}
 
 /* Introduce vizro utility classes here */
 .bg-container {
