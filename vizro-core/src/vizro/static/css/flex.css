@@ -10,3 +10,8 @@ Specifications are taken from default height/width of Plotly charts. */
   height: 450px;
   width: 700px;
 }
+
+.flex-item .card {
+  height: unset;
+  width: unset;
+}
