@@ -177,11 +177,18 @@
   width: 0;
 }
 
-/* Note: This is only meant as a quick-fix to improve some of the mobile layouts. */
+/*
+Note: This is a temporary quick-fix to improve the mobile layout experience.
+In the long run, we should refactor our CSS and component structure to support proper responsive design.
 
-/* Long-term wise this should be replaced by refactoring our CSS code and components to be mobile-compatible. */
+Current logic:
+1. Applies a flex layout with column direction to:
+     - Extra-small, small, and medium screen widths (≤ 768px)
+     - Large screen widths (≤ 1028px) *only when* the collapsible left panel is open
 
-/* Applies to device size x-small and small */
+2. Applies a zoom-out effect for very small screen widths and heights (≤ 576px)
+*/
+
 @media (width <= 576px) {
   .grid-layout {
     display: flex;
@@ -223,6 +230,19 @@
     zoom: 80%;
   }
 }
+
+@media screen and (max-width: 768px) {
+  .grid-layout {
+    display: flex;
+    flex-direction: column;
+  }
+}
+
+@media screen and (max-width: 1028px) {
+  #page-main:has(#collapsable-left-side.show) .grid-layout {
+    display: flex;
+    flex-direction: column;
+  }
 
 /* Hide Loading... text on loading page */
 ._dash-loading {
