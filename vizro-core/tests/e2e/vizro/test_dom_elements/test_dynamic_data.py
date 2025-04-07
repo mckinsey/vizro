@@ -6,6 +6,7 @@ import yaml
 from e2e.asserts import assert_image_not_equal, assert_pixelmatch
 from e2e.vizro import constants as cnst
 from e2e.vizro.checkers import (
+    check_graph_is_empty,
     check_graph_is_loading,
     check_selected_categorical_component,
     check_selected_dropdown,
@@ -440,14 +441,7 @@ def test_datepicker_single_filters(dash_br):
     dash_br.wait_for_text_to_equal(f'button[id="{cnst.DATEPICKER_DYNAMIC_SINGLE_ID}"]', "March 5, 2024")
 
     # Check y axis min value is '-1' (empty chart)
-    dash_br.wait_for_text_to_equal(
-        graph_y_axis_value_path(
-            graph_id=cnst.BAR_DYNAMIC_DATEPICKER_SINGLE_FILTER_ID,
-            y_axis_value_number="1",
-            y_axis_value="−1",  # noqa: RUF001
-        ),
-        "−1",  # noqa: RUF001
-    )
+    check_graph_is_empty(dash_br, graph_id=cnst.BAR_DYNAMIC_DATEPICKER_SINGLE_FILTER_ID)
 
     # Check y axis max value is '4'
     dash_br.wait_for_text_to_equal(
@@ -511,14 +505,7 @@ def test_dynamic_data_parameter_refresh_dynamic_filters(dash_br):
     # with dynamic data is empty and that scatter graph with static data is the same
     select_slider_handler(dash_br, elem_id=cnst.SLIDER_DF_PARAMETER, value=2)
     check_graph_is_loading(dash_br, graph_id=cnst.SCATTER_DF_STATIC)
-    dash_br.wait_for_text_to_equal(
-        graph_y_axis_value_path(
-            graph_id=cnst.SCATTER_DF_PARAMETER,
-            y_axis_value_number="1",
-            y_axis_value="−1",  # noqa: RUF001
-        ),
-        "−1",  # noqa: RUF001
-    )
+    check_graph_is_empty(dash_br, graph_id=cnst.SCATTER_DF_PARAMETER)
     dash_br.wait_for_element(f"div[id='{cnst.SCATTER_DF_STATIC}'] path[style*='rgb(57, 73, 171)']:nth-of-type(1)")
 
     # Check that "setosa" and "virginica" is the only listed options
@@ -536,17 +523,10 @@ def test_dynamic_data_parameter_refresh_dynamic_filters(dash_br):
     page_select(dash_br, page_name=cnst.DYNAMIC_DATA_DF_PARAMETER_PAGE)
 
     # check that dynamic data graph is empty and static data graph stays the same
-    dash_br.wait_for_text_to_equal(
-        graph_y_axis_value_path(
-            graph_id=cnst.SCATTER_DF_PARAMETER,
-            y_axis_value_number="1",
-            y_axis_value="−1",  # noqa: RUF001
-        ),
-        "−1",  # noqa: RUF001
-    )
+    check_graph_is_empty(dash_br, graph_id=cnst.SCATTER_DF_PARAMETER)
     dash_br.wait_for_element(f"div[id='{cnst.SCATTER_DF_STATIC}'] path[style*='rgb(57, 73, 171)']:nth-of-type(1)")
 
-    # Check that "setosa" and "versicolor" is the only listed options
+    # Check that "setosa" and "virginica" is the only listed options
     check_selected_categorical_component(
         dash_br,
         component_id=cnst.RADIOITEMS_FILTER_DF_PARAMETER,
@@ -559,14 +539,7 @@ def test_dynamic_data_parameter_refresh_dynamic_filters(dash_br):
     # select 'setosa' value and check dynamic scatter graph point color and that static scatter graph is empty
     dash_br.multiple_click(categorical_components_value_path(elem_id=cnst.RADIOITEMS_FILTER_DF_PARAMETER, value=1), 1)
     dash_br.wait_for_element(f"div[id='{cnst.SCATTER_DF_PARAMETER}'] path[style*='rgb(0, 180, 255)']:nth-of-type(1)")
-    dash_br.wait_for_text_to_equal(
-        graph_y_axis_value_path(
-            graph_id=cnst.SCATTER_DF_STATIC,
-            y_axis_value_number="1",
-            y_axis_value="−1",  # noqa: RUF001
-        ),
-        "−1",  # noqa: RUF001
-    )
+    check_graph_is_empty(dash_br, graph_id=cnst.SCATTER_DF_STATIC)
 
     # Check that "setosa" and "virginica" is the only listed options
     check_selected_categorical_component(

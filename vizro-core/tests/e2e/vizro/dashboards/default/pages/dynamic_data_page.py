@@ -1,3 +1,5 @@
+import time
+
 import e2e.vizro.constants as cnst
 from flask_caching import Cache
 
@@ -11,6 +13,7 @@ def load_iris_data_sample(number_of_points=10):
 
 
 def load_iris_data_head(number_of_points=150):
+    time.sleep(0.25)  # for testing, to catch reloading of the chart
     return px.data.iris().head(number_of_points)
 
 

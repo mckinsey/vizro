@@ -2,7 +2,12 @@ import os
 import time
 
 import e2e.vizro.constants as cnst
-from e2e.vizro.paths import categorical_components_value_name_path, categorical_components_value_path, select_all_path
+from e2e.vizro.paths import (
+    categorical_components_value_name_path,
+    categorical_components_value_path,
+    graph_y_axis_value_path,
+    select_all_path,
+)
 from e2e.vizro.waiters import graph_load_waiter, graph_load_waiter_selenium
 from hamcrest import any_of, assert_that, contains_string, equal_to
 from selenium.webdriver.common.by import By
@@ -44,6 +49,17 @@ def check_graph_is_loading_selenium(driver, graph_id, timeout=cnst.SELENIUM_WAIT
         )
     )
     graph_load_waiter_selenium(driver, graph_id, timeout)
+
+
+def check_graph_is_empty(driver, graph_id):
+    driver.wait_for_text_to_equal(
+        graph_y_axis_value_path(
+            graph_id=graph_id,
+            y_axis_value_number="1",
+            y_axis_value="−1",  # noqa: RUF001
+        ),
+        "−1",  # noqa: RUF001
+    )
 
 
 def check_slider_value(driver, elem_id, expected_end_value, expected_start_value=None):
