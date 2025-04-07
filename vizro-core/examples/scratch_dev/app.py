@@ -1,42 +1,77 @@
+"""Scratchpad for testing."""
+
 import vizro.models as vm
-import vizro.plotly.express as px
 from vizro import Vizro
-from vizro.models.types import capture
-from typing import Optional
-
-df = px.data.iris()
+import random
 
 
-@capture("action")
-def custom_action_obtiene_seleccion(points_data: Optional[dict] = None):
-    """Custom action."""
-    clicked_point = points_data["points"][0]
-    x = clicked_point["x"]
-    text = f"Clicked point has sepal length {x}"
-    return text, text
+def generate_lorem_ipsum(length=None):
+    lorem_ipsum = """
+            Lorem ipsum dolor sit amet, consectetur adipiscing elit. Aliquam sed elementum ligula, in pharetra velit.
+            In ultricies est ac mauris vehicula fermentum. Curabitur faucibus elementum lectus, vitae luctus libero fermentum.
+            Name ut ipsum tortor. Praesent ut nulla risus. Praesent in dignissim nulla. In quis blandit ipsum.
+        """
+    words = lorem_ipsum.split()
+    length = random.randint(100, 500) if length is None else length
+    while len(" ".join(words)) < length:
+        words += words  # repeat the words to extend the length
+    return " ".join(words)[:length]
 
 
-page = vm.Page(
-    title="Action with clickData as input",
-    components=[
-        vm.Graph(
-            id="scatter_chart",
-            title="Title",
-            footer="Footer",
-            header="Header",
-            figure=px.scatter(df, x="sepal_length", y="petal_width", color="species", custom_data=["species"]),
-            actions=[
-                vm.Action(
-                    function=custom_action_obtiene_seleccion(),
-                    inputs=["scatter_chart.clickData"],
-                    outputs=["my_card.children", "scatter_chart_header.children"],
-                ),
-            ],
-        ),
-        vm.Card(id="my_card", text="Click on a point on the above graph."),
-    ],
+page3 = vm.Page(
+    title="Flex - default",
+    layout=vm.Flex(),
+    components=[vm.Card(text=generate_lorem_ipsum()) for i in range(6)],
 )
-dashboard = vm.Dashboard(pages=[page])
+
+
+page4 = vm.Page(
+    title="Flex - gap",
+    layout=vm.Flex(gap="40px"),
+    components=[vm.Card(text=generate_lorem_ipsum()) for i in range(6)],
+)
+
+page5 = vm.Page(
+    title="Flex - row - unequal content",
+    layout=vm.Flex(direction="row"),
+    components=[vm.Card(text=generate_lorem_ipsum()) for i in range(6)],
+)
+
+page6 = vm.Page(
+    title="Flex - row/wrap - unequal content",
+    layout=vm.Flex(direction="row", wrap=True),
+    components=[vm.Card(text=generate_lorem_ipsum()) for i in range(6)],
+)
+
+page7 = vm.Page(
+    title="Flex - row - unequal content - same width",
+    layout=vm.Flex(direction="row"),
+    components=[vm.Card(text=generate_lorem_ipsum(), extra={"style": {"width": "200px"}}) for i in range(6)],
+)
+
+page8 = vm.Page(
+    title="Flex - row/wrap - unequal content - same width",
+    layout=vm.Flex(direction="row", wrap=True),
+    components=[vm.Card(text=generate_lorem_ipsum(), extra={"style": {"width": "200px"}}) for i in range(6)],
+)
+
+page9 = vm.Page(
+    title="Flex - row - equal content - no width",
+    layout=vm.Flex(direction="row"),
+    components=[vm.Card(text=generate_lorem_ipsum(300)) for i in range(6)],
+)
+
+page10 = vm.Page(
+    title="Flex - row/wrap - equal content - same width",
+    layout=vm.Flex(direction="row", wrap=True),
+    components=[vm.Card(text=generate_lorem_ipsum(300), extra={"style": {"width": "200px"}}) for i in range(6)],
+)
+
+
+dashboard = vm.Dashboard(
+    pages=[page3, page4, page5, page6, page7, page8, page9, page10],
+    title="Test out Card inside Flex",
+)
 
 if __name__ == "__main__":
     Vizro().build(dashboard).run()

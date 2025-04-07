@@ -20,9 +20,7 @@ from e2e.vizro.paths import tab_path, theme_toggle_path
 )
 def test_themes(dash_br_driver, dashboard_id):
     """Test switching the themes and checking the graph and theme color."""
-    page_select(
-        dash_br_driver, page_path=cnst.FILTERS_PAGE_PATH, page_name=cnst.FILTERS_PAGE, graph_id=cnst.SCATTER_GRAPH_ID
-    )
+    page_select(dash_br_driver, page_path=cnst.FILTERS_PAGE_PATH, page_name=cnst.FILTERS_PAGE)
 
     if dashboard_id == cnst.DASHBOARD_DEFAULT:
         # dashboard loaded with light theme
@@ -71,9 +69,7 @@ def test_ag_grid_themes(dash_br_driver, dashboard_id):
     accordion_select(dash_br_driver, accordion_name=cnst.AG_GRID_ACCORDION.upper(), accordion_number=accordion_number)
     page_select(
         dash_br_driver,
-        page_path=cnst.TABLE_AG_GRID_PAGE_PATH,
         page_name=cnst.TABLE_AG_GRID_PAGE,
-        graph_id=cnst.BOX_AG_GRID_PAGE_ID,
     )
     if dashboard_id == cnst.DASHBOARD_DEFAULT:
         # dashboard loaded with light theme
@@ -106,7 +102,6 @@ def test_themes_page_change(dash_br_driver, dashboard_id):
         dash_br_driver,
         page_path=cnst.PARAMETERS_PAGE_PATH,
         page_name=cnst.PARAMETERS_PAGE,
-        graph_id=cnst.BAR_GRAPH_ID,
     )
 
     def _logic(style_background, graph_color, theme_color):
@@ -122,13 +117,11 @@ def test_themes_page_change(dash_br_driver, dashboard_id):
             dash_br_driver,
             page_path=cnst.FILTERS_PAGE_PATH,
             page_name=cnst.FILTERS_PAGE,
-            graph_id=cnst.SCATTER_GRAPH_ID,
         )
         page_select(
             dash_br_driver,
             page_path=cnst.PARAMETERS_PAGE_PATH,
             page_name=cnst.PARAMETERS_PAGE,
-            graph_id=cnst.BAR_GRAPH_ID,
         )
 
         # check that second tab still active
