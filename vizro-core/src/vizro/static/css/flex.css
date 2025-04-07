@@ -1,5 +1,5 @@
 /* To reset all heights coming from our parent containers otherwise there will be sizing issues */
-.flex-item, .flex-item .figure-container {
+.flex-item, .flex-item .figure-container, .flex-item .card {
   height: unset;
   width: unset;
 }
