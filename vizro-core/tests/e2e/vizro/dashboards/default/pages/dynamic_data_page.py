@@ -9,6 +9,7 @@ from vizro.managers import data_manager
 
 
 def load_iris_data_sample(number_of_points=10):
+    time.sleep(0.25)  # for testing, to catch reloading of the chart
     return px.data.iris().sample(number_of_points)
 
 
