@@ -60,6 +60,16 @@ dynamic_data_df_parameter_page = vm.Page(
                 color_discrete_map={"setosa": "#00b4ff", "versicolor": "#ff9222", "virginica": "#3949ab"},
             ),
         ),
+        vm.Graph(
+            id=cnst.SCATTER_DF_STATIC,
+            figure=px.scatter(
+                data_frame=px.data.iris().tail(50),
+                x="sepal_width",
+                y="sepal_length",
+                color="species",
+                color_discrete_map={"setosa": "#00b4ff", "versicolor": "#ff9222", "virginica": "#3949ab"},
+            ),
+        ),
     ],
     controls=[
         vm.Filter(column="species", selector=vm.RadioItems(id=cnst.RADIOITEMS_FILTER_DF_PARAMETER)),

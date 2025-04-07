@@ -489,23 +489,28 @@ def test_datepicker_single_filters(dash_br):
 
 
 def test_dynamic_data_parameter_refresh_dynamic_filters(dash_br):
-    """Test automatic refreshing of the dynamic filters and their targets when the data_frame parameter is changed."""
+    """Test automatic refreshing of the dynamic filters and their targets when the data_frame parameter is changed.
+
+    Page configuration includes dynamic data scatter chart which controls by slider parameter and static data scatter
+    which has 'virginica' data only.
+    """
     accordion_select(
         dash_br, accordion_name=cnst.DYNAMIC_DATA_ACCORDION.upper(), accordion_number=cnst.DYNAMIC_DATA_ACCORDION_NUMBER
     )
     page_select(
         dash_br,
-        page_path=cnst.DYNAMIC_DATA_DF_PARAMETER_PAGE_PATH,
         page_name=cnst.DYNAMIC_DATA_DF_PARAMETER_PAGE,
-        graph_id=cnst.SCATTER_DF_PARAMETER,
     )
 
-    # select 'versicolor' value and check scatter graph point color
-    dash_br.multiple_click(categorical_components_value_path(elem_id=cnst.RADIOITEMS_FILTER_DF_PARAMETER, value=2), 1)
-    dash_br.wait_for_element(f"div[id='{cnst.SCATTER_DF_PARAMETER}'] path[style*='rgb(255, 146, 34)']:nth-of-type(1)")
+    # select 'virginica' value and check scatter graph point color
+    dash_br.multiple_click(categorical_components_value_path(elem_id=cnst.RADIOITEMS_FILTER_DF_PARAMETER, value=3), 1)
+    dash_br.wait_for_element(f"div[id='{cnst.SCATTER_DF_PARAMETER}'] path[style*='rgb(57, 73, 171)']:nth-of-type(1)")
+    dash_br.wait_for_element(f"div[id='{cnst.SCATTER_DF_STATIC}'] path[style*='rgb(57, 73, 171)']:nth-of-type(1)")
 
-    # select '10' points for slider which is showing only 'setosa' data and check that graph is empty
+    # select '10' points for slider which is showing only 'setosa' data and check that scatter graph
+    # with dynamic data is empty and that scatter graph with static data is the same
     select_slider_handler(dash_br, elem_id=cnst.SLIDER_DF_PARAMETER, value=2)
+    check_graph_is_loading(dash_br, graph_id=cnst.SCATTER_DF_STATIC)
     dash_br.wait_for_text_to_equal(
         graph_y_axis_value_path(
             graph_id=cnst.SCATTER_DF_PARAMETER,
@@ -514,32 +519,23 @@ def test_dynamic_data_parameter_refresh_dynamic_filters(dash_br):
         ),
         "−1",  # noqa: RUF001
     )
+    dash_br.wait_for_element(f"div[id='{cnst.SCATTER_DF_STATIC}'] path[style*='rgb(57, 73, 171)']:nth-of-type(1)")
 
-    # Check that "setosa" and "versicolor" is the only listed options
+    # Check that "setosa" and "virginica" is the only listed options
     check_selected_categorical_component(
         dash_br,
         component_id=cnst.RADIOITEMS_FILTER_DF_PARAMETER,
         options_value_status=[
             {"value": 1, "selected": False, "value_name": "setosa"},
-            {"value": 2, "selected": True, "value_name": "versicolor"},
+            {"value": 2, "selected": True, "value_name": "virginica"},
         ],
     )
 
-    # simulate refreshing the page
-    page_select(
-        dash_br,
-        page_path=cnst.DYNAMIC_FILTERS_CATEGORICAL_PAGE_PATH,
-        page_name=cnst.DYNAMIC_FILTERS_CATEGORICAL_PAGE,
-        graph_id=cnst.BOX_DYNAMIC_FILTERS_ID,
-    )
-    page_select(
-        dash_br,
-        page_path=cnst.DYNAMIC_DATA_DF_PARAMETER_PAGE_PATH,
-        page_name=cnst.DYNAMIC_DATA_DF_PARAMETER_PAGE,
-        graph_id=cnst.SCATTER_DF_PARAMETER,
-    )
+    # simulate refreshing the page to check if filters and graphs stays the same
+    page_select(dash_br, page_name=cnst.DYNAMIC_FILTERS_CATEGORICAL_PAGE)
+    page_select(dash_br, page_name=cnst.DYNAMIC_DATA_DF_PARAMETER_PAGE)
 
-    # check that graph is empty
+    # check that dynamic data graph is empty and static data graph stays the same
     dash_br.wait_for_text_to_equal(
         graph_y_axis_value_path(
             graph_id=cnst.SCATTER_DF_PARAMETER,
@@ -548,6 +544,7 @@ def test_dynamic_data_parameter_refresh_dynamic_filters(dash_br):
         ),
         "−1",  # noqa: RUF001
     )
+    dash_br.wait_for_element(f"div[id='{cnst.SCATTER_DF_STATIC}'] path[style*='rgb(57, 73, 171)']:nth-of-type(1)")
 
     # Check that "setosa" and "versicolor" is the only listed options
     check_selected_categorical_component(
@@ -555,43 +552,28 @@ def test_dynamic_data_parameter_refresh_dynamic_filters(dash_br):
         component_id=cnst.RADIOITEMS_FILTER_DF_PARAMETER,
         options_value_status=[
             {"value": 1, "selected": False, "value_name": "setosa"},
-            {"value": 2, "selected": True, "value_name": "versicolor"},
+            {"value": 2, "selected": True, "value_name": "virginica"},
         ],
     )
 
-    # select 'setosa' value and check scatter graph point color
+    # select 'setosa' value and check dynamic scatter graph point color and that static scatter graph is empty
     dash_br.multiple_click(categorical_components_value_path(elem_id=cnst.RADIOITEMS_FILTER_DF_PARAMETER, value=1), 1)
     dash_br.wait_for_element(f"div[id='{cnst.SCATTER_DF_PARAMETER}'] path[style*='rgb(0, 180, 255)']:nth-of-type(1)")
+    dash_br.wait_for_text_to_equal(
+        graph_y_axis_value_path(
+            graph_id=cnst.SCATTER_DF_STATIC,
+            y_axis_value_number="1",
+            y_axis_value="−1",  # noqa: RUF001
+        ),
+        "−1",  # noqa: RUF001
+    )
 
-    # Check that "setosa" and "versicolor" is the only listed options
+    # Check that "setosa" and "virginica" is the only listed options
     check_selected_categorical_component(
         dash_br,
         component_id=cnst.RADIOITEMS_FILTER_DF_PARAMETER,
         options_value_status=[
             {"value": 1, "selected": True, "value_name": "setosa"},
-            {"value": 2, "selected": False, "value_name": "versicolor"},
-        ],
-    )
-
-    # simulate refreshing the page
-    page_select(
-        dash_br,
-        page_path=cnst.DYNAMIC_FILTERS_CATEGORICAL_PAGE_PATH,
-        page_name=cnst.DYNAMIC_FILTERS_CATEGORICAL_PAGE,
-        graph_id=cnst.BOX_DYNAMIC_FILTERS_ID,
-    )
-    page_select(
-        dash_br,
-        page_path=cnst.DYNAMIC_DATA_DF_PARAMETER_PAGE_PATH,
-        page_name=cnst.DYNAMIC_DATA_DF_PARAMETER_PAGE,
-        graph_id=cnst.SCATTER_DF_PARAMETER,
-    )
-
-    # Check that "setosa" is the only listed options
-    check_selected_categorical_component(
-        dash_br,
-        component_id=cnst.RADIOITEMS_FILTER_DF_PARAMETER,
-        options_value_status=[
-            {"value": 1, "selected": True, "value_name": "setosa"},
+            {"value": 2, "selected": False, "value_name": "virginica"},
         ],
     )
