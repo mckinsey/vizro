@@ -63,10 +63,7 @@ def test_themes(dash_br_driver, dashboard_id):
 )
 def test_ag_grid_themes(dash_br_driver, dashboard_id):
     """Test switching themes for ag_grid."""
-    accordion_number = (
-        cnst.AG_GRID_ACCORDION_NUMBER if dashboard_id == cnst.DASHBOARD_DEFAULT else cnst.AG_GRID_ACCORDION_NUMBER_YAML
-    )
-    accordion_select(dash_br_driver, accordion_name=cnst.AG_GRID_ACCORDION.upper(), accordion_number=accordion_number)
+    accordion_select(dash_br_driver, accordion_name=cnst.AG_GRID_ACCORDION)
     page_select(
         dash_br_driver,
         page_name=cnst.TABLE_AG_GRID_PAGE,

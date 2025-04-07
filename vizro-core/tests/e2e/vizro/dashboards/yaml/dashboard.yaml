@@ -20,265 +20,70 @@ pages:
     title: homepage
     id: hp
   - components:
-      - type: tabs
-        tabs:
-          - id: filters tab_container
-            type: container
-            title: filters tab_container
-            components:
-              - id: filters components container
-                type: container
-                title: filters components container
-                components:
-                  - figure:
-                      _target_: scatter
-                      color: sepal_width
-                      data_frame: iris
-                      x: sepal_length
-                      y: petal_width
-                    id: scatter
-                    type: graph
-                  - text: |
-                      ![icon-top](assets/images/icons/content/features.svg)
-
-                      Leads to the home page on click.
-                    type: card
-                    href: /
-                  - type: button
-                    text: Export data
-                    actions:
-                      - function:
-                          _target_: export_data
-                          targets: [scatter]
-                          file_format: csv
-                      - function:
-                          _target_: export_data
-                          targets: [scatter]
-                          file_format: xlsx
-                layout:
-                  grid: [[0, 1], [0, 1], [0, 2]]
       - figure:
-          _target_: box
+          _target_: scatter
           color: sepal_width
           data_frame: iris
           x: sepal_length
           y: petal_width
-        id: box graph
+        id: scatter
         type: graph
-    controls:
-      - column: species
-        targets:
-          - scatter
-          - box graph
-        type: filter
-        selector:
-          type: dropdown
-          id: drop-filters-page
-      - column: species
-        targets:
-          - scatter
-          - box graph
-        type: filter
-        selector:
-          type: radio_items
-          options: [setosa, versicolor, virginica]
-          id: radio-filters-page
-      - column: species
-        targets:
-          - scatter
-        type: filter
-        selector:
-          type: checklist
-          options: [setosa, versicolor, virginica]
-          id: check filters-page
-      - column: petal_width
-        targets:
-          - scatter
-        type: filter
-        selector:
-          type: slider
-          step: 0.5
-          id: slider-filters-page
-      - column: sepal_length
-        targets:
-          - scatter
-          - box graph
-        type: filter
-        selector:
-          type: range_slider
-          step: 1.0
-          id: range slider-filters-page
     title: filters page (tabs + containers)
     path: /filters-page-tabs--containers
   - components:
       - type: tabs
+        id: sub tab params
         tabs:
-          - id: parameters-tab_container
+          - id: parameters sub t@b container 1
             type: container
-            title: parameters-tab_container
+            title: parameters sub t@b container 1
             components:
-              - type: tabs
-                id: sub tab params
-                tabs:
-                  - id: parameters sub t@b container 1
-                    type: container
-                    title: parameters sub t@b container 1
-                    components:
-                      - figure:
-                          _target_: bar
-                          color: species
-                          data_frame: iris
-                          x: sepal_length
-                          y: petal_width
-                          color_discrete_map:
-                            setosa: black
-                            versicolor: pink
-                        id: b@R-graph
-                        type: graph
-                  - id: parameters sub t@b container 2
-                    type: container
-                    title: parameters sub t@b container 2
-                    components:
-                      - figure:
-                          _target_: histogram
-                          color: species
-                          data_frame: iris
-                          x: sepal_length
-                          y: petal_width
-                          color_discrete_map:
-                            setosa: black
-                            versicolor: pink
-                        id: -histogram-graph--
-                        type: graph
-      - id: parameters container
-        type: container
-        title: parameters container
-        components:
-          - figure:
-              _target_: bar
-              color: species
-              data_frame: iris
-              x: sepal_length
-              y: petal_width
-              color_discrete_map:
-                setosa: black
-                versicolor: pink
-            id: b@R-graph__container
-            type: graph
-    controls:
-      - targets:
-          - b@R-graph.color_discrete_map.virginica
-        type: parameter
-        selector:
-          type: dropdown
-          options: [NONE, red, blue]
-          multi: false
-          value: blue
-          id: dropdown parameters two
-      - targets:
-          - -histogram-graph--.color_discrete_map.setosa
-        type: parameter
-        selector:
-          type: dropdown
-          options: [NONE, red, blue]
-          multi: false
-          value: blue
-          id: dropdown parameters one
-      - targets:
-          - b@R-graph.title
-          - -histogram-graph--.title
-        type: parameter
-        selector:
-          type: radio_items
-          options: [red, blue]
-          value: blue
-          id: radio items parameters one
-      - targets:
-          - b@R-graph.y
-        type: parameter
-        selector:
-          type: radio_items
-          options: [petal_width, petal_length]
-          value: petal_width
-          id: radio items parameters two
-      - targets:
-          - b@R-graph.opacity
-        type: parameter
-        selector:
-          type: slider
-          min: 0
-          max: 1
-          step: 0.2
-          value: 0.2
-          title: Bubble opacity
-          id: slider parameters
-      - targets:
-          - -histogram-graph--.range_x
-        type: parameter
-        selector:
-          type: range_slider
-          min: 4
-          max: 8
-          step: 1.0
-          title: Range X Histogram
-          id: range slider parameters
+              - figure:
+                  _target_: bar
+                  color: species
+                  data_frame: iris
+                  x: sepal_length
+                  y: petal_width
+                  color_discrete_map:
+                    setosa: black
+                    versicolor: pink
+                id: b@R-graph
+                type: graph
+          - id: parameters sub t@b container 2
+            type: container
+            title: parameters sub t@b container 2
+            components:
+              - figure:
+                  _target_: histogram
+                  color: species
+                  data_frame: iris
+                  x: sepal_length
+                  y: petal_width
+                  color_discrete_map:
+                    setosa: black
+                    versicolor: pink
+                id: -histogram-graph--
+                type: graph
     title: parameters_p@ge! (tabs + containers)
     path: /parameters_page
   - components:
-      - id: table_ag_grid_container
-        type: container
-        title: table_ag_grid_container
-        layout:
-          grid: [[0, 1]]
-          col_gap: 0px
-        components:
-          - figure:
-              _target_: dash_ag_grid
-              data_frame: gapminder
-              dashGridOptions:
-                pagination: true
-            id: 123_ag_grid_table
-            title: Equal Title One
-            type: ag_grid
-          - figure:
-              _target_: box
-              data_frame: gapminder
-              x: continent
-              y: lifeExp
-              title: Equal Title One
-            id: B@x on ag grid page
-            type: graph
-    controls:
-      - column: year
-        targets: [123_ag_grid_table]
-        selector:
-          value: 2007
-          type: dropdown
-        type: filter
-      - column: continent
-        targets: [123_ag_grid_table]
-        selector:
-          options: [Europe, Africa, Americas]
-          type: radio_items
-          id: radioitems_agdrid_filter
-        type: filter
-      - column: continent
-        targets: [123_ag_grid_table]
-        selector:
-          options: [Asia, Oceania]
-          type: checklist
-          id: checklist_agdrid_filter
-        type: filter
-      - column: pop
-        targets: [123_ag_grid_table]
-        selector:
-          step: 1000000.0
-          min: 1000000
-          max: 10000000
-          type: range_slider
-          id: rangeslider_agdrid_filter
-        type: filter
-    title: table AG grid page
+      - figure:
+          _target_: dash_ag_grid
+          data_frame: gapminder
+          dashGridOptions:
+            pagination: true
+        id: 123_ag_grid_table
+        title: Equal Title One
+        type: ag_grid
+      - figure:
+          _target_: box
+          data_frame: gapminder
+          x: continent
+          y: lifeExp
+          title: Equal Title One
+        id: Box on ag grid page
+        type: graph
+    title: table-ag-grid-page
     path: /table-ag-grid-page
 navigation:
   pages:
@@ -287,4 +92,4 @@ navigation:
       - filters page (tabs + containers)
       - parameters_p@ge! (tabs + containers)
     AGgrid:
-      - table AG grid page
+      - table-ag-grid-page
