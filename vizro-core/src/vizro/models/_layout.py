@@ -1,5 +1,5 @@
 import re
-from typing import Annotated, Literal, NamedTuple, Optional
+from typing import Annotated, Any, Literal, NamedTuple, Optional
 
 import numpy as np
 from dash import html
@@ -206,8 +206,7 @@ class Layout(VizroBaseModel):
     )
     _component_grid_lines: Optional[list[ColRowGridLines]] = PrivateAttr()
 
-    def __init__(self, **data):
-        super().__init__(**data)
+    def model_post_init(self, context: Any) -> None:
         self._component_grid_lines = _get_grid_lines(self.grid)[0]
 
     @property
