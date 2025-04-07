@@ -50,9 +50,7 @@ page_1 = vm.Page(
         vm.Button(
             id="button2",
             text="Export data to Excel",
-            actions=[
-                export_data(targets=["scatter_relation_2007"], file_format="xlsx")
-            ],
+            actions=[export_data(targets=["scatter_relation_2007"], file_format="xlsx")],
             # actions=[
             #     vm.Action(
             #         function=export_data(
