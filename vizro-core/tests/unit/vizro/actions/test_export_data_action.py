@@ -1,3 +1,4 @@
+import sys
 import pytest
 from dash._callback_context import context_value
 from dash._utils import AttributeDict
@@ -175,6 +176,15 @@ def ctx_export_data_filter_and_parameter(request):
 
 
 class TestExportData:
+    def test_export_data_xlsx_without_required_libs_installed(self, monkeypatch):
+        monkeypatch.setitem(sys.modules, "openpyxl", None)
+        monkeypatch.setitem(sys.modules, "xlswriter", None)
+
+        with pytest.raises(
+            ModuleNotFoundError, match="You must install either openpyxl or xlsxwriter to export to xlsx format."
+        ):
+            export_data(file_format="xlsx").pre_build()
+
     @pytest.mark.usefixtures("managers_one_page_without_graphs_one_button")
     @pytest.mark.parametrize("ctx_export_data", [([[], None, None, None])], indirect=True)
     def test_no_graphs_no_targets(self, ctx_export_data):

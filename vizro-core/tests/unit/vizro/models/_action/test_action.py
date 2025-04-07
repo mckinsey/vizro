@@ -1,10 +1,8 @@
 """Unit tests for vizro.models.Action."""
 
-import sys
-
-import dash
-import pandas as pd
 import pytest
+import textwrap
+
 from asserts import assert_component_equal
 from dash import Output, State, html
 from pydantic import ValidationError
@@ -12,35 +10,92 @@ from pydantic import ValidationError
 import vizro.models as vm
 import vizro.plotly.express as px
 from vizro import Vizro
-from vizro.actions import export_data, filter_interaction
+from vizro.actions import filter_interaction
 from vizro.managers import model_manager
 from vizro.models._action._action import Action
 from vizro.models.types import capture
 
 
 @pytest.fixture
-def custom_action_function_mock_return(request):
+def custom_action_mock_return(request):
+    """Return an action function that returns the value of the request param."""
     @capture("action")
-    def _custom_action_function_mock_return():
+    def _custom_action_mock_return():
         return request.param
 
-    return _custom_action_function_mock_return
+    return _custom_action_mock_return
 
 
 @pytest.fixture
-def custom_action_build_expected():
-    return html.Div(id="action_test_action_model_components_div", children=[], hidden=True)
+def custom_action_with_parameters(request):
+    """Return a custom action function with the specified parameters."""
+
+    # Parameters in format: "arg_1, arg_2, arg_3"
+    parameters = ', '.join(request.param)
+
+    # Create a function with the specified number of parameters that returns their values
+    func_code = textwrap.dedent(f"""
+        from vizro.models.types import capture
+
+        @capture("action")
+        def custom_action({parameters}):
+            pass
+    """)
+
+    local_vars = {}
+    exec(func_code, {}, local_vars)
+
+    return local_vars["custom_action"]
 
 
+# TODO: This is used in the single test only. Should it be moved there?
 @pytest.fixture
-def predefined_action_build_expected():
-    return html.Div(id="__filter_action_test_filter_action_model_components_div", children=[], hidden=True)
+def _real_builtin_controls(standard_px_chart):
+    """Instantiates managers with one page that contains filter, parameter, and filter_interaction actions."""
+    vm.Page(
+        title="title",
+        components=[
+            vm.Graph(
+                id="graph_1",
+                figure=standard_px_chart,
+                actions=[filter_interaction(id="graph_filter_interaction", targets=["graph_2"])]
+            ),
+            vm.Graph(id="graph_2", figure=standard_px_chart)
+        ],
+        controls=[
+            vm.Filter(id="filter", column="continent", selector=vm.Dropdown(id="filter_selector")),
+            vm.Parameter(
+                id="parameter",
+                targets=["graph_1.x"],
+                selector=vm.Checklist(
+                    id="parameter_selector",
+                    options=["lifeExp", "gdpPercap", "pop"],
+                ),
+            ),
+        ]
+    )
+
+    Vizro._pre_build()
+
+    return {
+        "_controls": {
+            "filters": [
+                State("filter_selector", "value"),
+            ],
+            "parameters": [
+                State("parameter_selector", "value"),
+            ],
+            "filter_interaction": [
+                {"clickData": State("graph_1", "clickData"), "modelID": State("graph_1", "id")},
+            ],
+        }
+    }
 
 
 class TestActionInstantiation:
     """Tests model instantiation."""
 
-    def test_create_action_mandatory_only(self, identity_action_function):
+    def test_action_mandatory_only(self, identity_action_function):
         function = identity_action_function()
         action = Action(function=function)
 
@@ -49,47 +104,27 @@ class TestActionInstantiation:
         assert action.inputs == []
         assert action.outputs == []
 
-    def test_create_action_mandatory_and_optional(self, identity_action_function):
-        function = identity_action_function()
-        inputs = ["component_1.property_A", "component_1.property_B"]
-        outputs = ["component_2.property_A", "component_2.property_B"]
-
-        action = Action(function=function, inputs=inputs, outputs=outputs)
-
-        assert hasattr(action, "id")
-        assert action.function is function
-        assert action.inputs == inputs
-        assert action.outputs == outputs
-
-    def test_is_model_inheritable(self, identity_action_function):
-        class MyAction(vm.Action):
-            pass
-
-        function = identity_action_function()
-        my_action = MyAction(function=function)
-
-        assert hasattr(my_action, "id")
-        assert my_action.function is function
-        assert my_action.inputs == []
-        assert my_action.outputs == []
+        # TODO: Should we test private attributes?
+        assert action._legacy is False
+        assert action._transformed_inputs == {}
+        assert action._transformed_outputs == []
+        assert action._dash_components == []
+        assert action._action_name == "_identity_action_function"
 
     @pytest.mark.parametrize(
-        "inputs, outputs",
+        "inputs, _transformed_inputs",
         [
             ([], []),
-            (["component.property"], ["component.property"]),
-            (["component.property", "component.property"], ["component.property", "component.property"]),
-            (
-                ["Component_1.Property_A", "Component_2.Property_B"],
-                ["Component_1.Property_A", "Component_2.Property_B"],
-            ),
+            (["component.property"], [State("component", "property")]),
+            (["component.property", "component.property"], [State("component", "property"), State("component", "property")]),
         ],
     )
-    def test_inputs_outputs_valid(self, inputs, outputs, identity_action_function):
-        action = Action(function=identity_action_function(), inputs=inputs, outputs=outputs)
+    def test_model_field_inputs_valid(self, identity_action_function, inputs, _transformed_inputs):
+        action = Action(function=identity_action_function(), inputs=inputs)
 
+        assert action._legacy is True
         assert action.inputs == inputs
-        assert action.outputs == outputs
+        assert action._transformed_inputs == _transformed_inputs
 
     @pytest.mark.parametrize(
         "inputs",
@@ -100,10 +135,137 @@ class TestActionInstantiation:
             ["component.property.property"],
         ],
     )
-    def test_inputs_invalid(self, inputs, identity_action_function):
+    def test_model_filed_inputs_invalid(self, inputs, identity_action_function):
         with pytest.raises(ValidationError, match="String should match pattern"):
-            Action(function=identity_action_function(), inputs=inputs, outputs=[])
+            Action(function=identity_action_function(), inputs=inputs)
 
+    @pytest.mark.parametrize(
+        "inputs",
+        [
+            [None],
+            [""],
+            ["component"],
+            ["component_property"],
+            ["component.property.property"],
+        ],
+    )
+    def test_runtime_hardcoded_inputs(self, inputs, identity_action_function):
+        action = Action(function=identity_action_function(*inputs))
+
+        assert action._legacy is True
+        assert action.inputs == []
+        assert action._transformed_inputs == []
+
+    @pytest.mark.parametrize(
+        "custom_action_with_parameters, inputs, _transformed_inputs",
+        [
+            ([], [], {}),
+            (["arg_1"], ["component.property"], {"arg_1": State("component", "property")}),
+            (
+                ["arg_1", "arg_2"],
+                ["component.property", "component.property"],
+                {"arg_1": State("component", "property"), "arg_2": State("component", "property")}),
+        ],
+        indirect=["custom_action_with_parameters"],
+    )
+    def test_runtime_id_property_inputs(self, custom_action_with_parameters, inputs, _transformed_inputs):
+        action = Action(function=custom_action_with_parameters(*inputs))
+
+        assert action._legacy is False
+        assert action.inputs == []
+        assert action._transformed_inputs == _transformed_inputs
+
+    # TODO: Add more tests here and reorder the tests to be more logical.
+    # TODO: Should the "_legacy" testing be removed?
+    # TODO: Should we test both runtime arguments as list and dict?
+    @pytest.mark.parametrize(
+        "custom_action_with_parameters, runtime_inputs, model_field_inputs, expected_legacy, _transformed_inputs",
+        [
+            ([], {}, [], False, {}),
+            (["arg_1"], {}, ["component.property"], True, [State("component", "property")]),
+            (["arg_1"], {"arg_1": "test"}, [], True, []),
+            (["arg_1", "arg_2"], {"arg_1": "test"}, ["component.property"], True, [State("component", "property")]),
+            (["arg_1"], {"arg_1": "component.property"}, [], False, {"arg_1": State("component", "property")}),
+            (["arg_1", "arg_2"], {"arg_1": "component.property"}, ["component.property"], True, [State("component", "property")]),
+        ],
+        indirect=["custom_action_with_parameters"]
+    )
+    def test_mixed_runtime_and_model_field_inputs(
+        self,
+        custom_action_with_parameters,
+        runtime_inputs,
+        model_field_inputs,
+        expected_legacy,
+        _transformed_inputs,
+    ):
+        # Conditionally set model field inputs only if not empty so we don't stick with legacy actions only.
+        if model_field_inputs:
+            # Action is legacy because it has model field inputs
+            action = Action(function=custom_action_with_parameters(**runtime_inputs), inputs=model_field_inputs)
+        else:
+            # Action is not legacy if all runtime inputs are in id.property format. Otherwise it is legacy.
+            action = Action(function=custom_action_with_parameters(**runtime_inputs))
+
+        assert action._legacy is expected_legacy
+        assert action.inputs == model_field_inputs
+        assert action._transformed_inputs == _transformed_inputs
+
+    @pytest.mark.parametrize("custom_action_with_parameters", [(["arg_1, _controls"])], indirect=True)
+    def test_builtin_argument_with_empty_controls(self, custom_action_with_parameters):
+        action = Action(function=custom_action_with_parameters("component.property"))
+
+        assert action._transformed_inputs == {
+            "arg_1": State("component", "property"),
+            "_controls": {
+                "filters": [],
+                "parameters": [],
+                "filter_interaction": [],
+            }
+        }
+
+    @pytest.mark.parametrize("custom_action_with_parameters", [(["arg_1, _controls"])], indirect=True)
+    def test_builtin_argument_with_real_controls(
+        self,
+        custom_action_with_parameters,
+        _real_builtin_controls,
+    ):
+        action = Action(function=custom_action_with_parameters("component.property"))
+
+        assert action._transformed_inputs == {
+            "arg_1": State("component", "property"),
+            **_real_builtin_controls
+        }
+
+    @pytest.mark.parametrize("custom_action_with_parameters", [(["arg_1, _controls"])], indirect=True)
+    def test_builtin_argument_with_overwritten_controls(
+        self,
+        custom_action_with_parameters,
+    ):
+        action = Action(function=custom_action_with_parameters("component.property", "component.property"))
+
+        assert action._transformed_inputs == {
+            "arg_1": State("component", "property"),
+            "_controls": State("component", "property"),
+        }
+
+    # The "runtime_inputs" is added here to test outputs for both legacy and non-legacy actions
+    @pytest.mark.parametrize("runtime_inputs", [[], ["hardcoded_input"]])
+    @pytest.mark.parametrize(
+        "outputs, _transformed_outputs",
+        [
+            ([], []),
+            (["component.property"], Output("component", "property")),
+            (["component.property", "component.property"], [Output("component", "property"), Output("component", "property")]),
+        ],
+    )
+    def test_outputs_valid(self, identity_action_function, outputs, _transformed_outputs, runtime_inputs):
+        action = Action(function=identity_action_function(*runtime_inputs), outputs=outputs)
+
+        assert action.outputs == outputs
+        assert action._transformed_outputs == _transformed_outputs
+
+    # The "runtime_inputs" is added here to test outputs for both legacy and non-legacy actions
+    @pytest.mark.parametrize("runtime_inputs", [[], ["hardcoded_input"]])
     @pytest.mark.parametrize(
         "outputs",
         [
@@ -113,94 +275,26 @@ class TestActionInstantiation:
             ["component.property.property"],
         ],
     )
-    def test_outputs_invalid(self, outputs, identity_action_function):
+    def test_outputs_invalid(self, outputs, identity_action_function, runtime_inputs):
         with pytest.raises(ValidationError, match="String should match pattern"):
-            Action(function=identity_action_function(), inputs=[], outputs=outputs)
-
-    # TODO: move this
-    def test_export_data_xlsx_without_required_libs_installed(self, monkeypatch):
-        monkeypatch.setitem(sys.modules, "openpyxl", None)
-        monkeypatch.setitem(sys.modules, "xlswriter", None)
-
-        with pytest.raises(
-            ModuleNotFoundError, match="You must install either openpyxl or xlsxwriter to export to xlsx format."
-        ):
-            export_data(file_format="xlsx").pre_build()
+            Action(function=identity_action_function(*runtime_inputs), outputs=outputs)
 
 
-@pytest.fixture
-def managers_one_page_without_graphs_one_button():
-    """Instantiates a simple model_manager and data_manager with a page, and no graphs."""
-    vm.Page(
-        id="test_page",
-        title="Test page",
-        components=[vm.Graph(figure=px.scatter(data_frame=pd.DataFrame(data={"A": [1], "B": [2]}), x="A", y="B"))],
-        controls=[vm.Filter(id="test_filter", column="A")],
-    )
-    Vizro._pre_build()
-
-
-# TODO: improve these tests to check that actual callback is registered.
-# In general, we should aim to make all the tests in TestActionBuild and TestActionPrivateMethods
-# higher level and more "real" so that we're testing actual callback execution and not just private
-# helper methods.
 class TestActionBuild:
-    """Tests action build method."""
+    def test_custom_action_build(self, identity_action_function):
+        action_id = "action_test"
+        action = Action(id=action_id, function=identity_action_function())
 
-    def test_custom_action_build(self, identity_action_function, custom_action_build_expected):
-        action = Action(id="action_test", function=identity_action_function()).build()
-        assert_component_equal(action, custom_action_build_expected)
-
-    # TODO: Remove this test
-    @pytest.mark.usefixtures("managers_one_page_without_graphs_one_button")
-    def test_predefined_export_data_action_build(self, predefined_action_build_expected):
-        predefined_filter_action = model_manager["test_page"].controls[0].selector.actions[0].actions[0].build()
-        assert_component_equal(predefined_filter_action, predefined_action_build_expected)
+        assert_component_equal(
+            action.build(),
+            html.Div(id=f"{action_id}_action_model_components_div", children=[], hidden=True)
+        )
 
 
-# TODO: testing AbstractAction (class based) and vm.Action (function based) - everything tested for function has to be tested for abstract one.
-#  but some things that are tested for function based action are not relevant for abstract one.
-#
-# TODO: test _BaseAction and move most of this content to the test for _BaseAction
-# TODO: focus on inputs.outputs handling - assert and compare with transformed inputs/outputs
-# TODO: legacy detection
-# TODO:
-class TestActionPrivateMethods:
-    """Test action private methods."""
-
-    def test_get_callback_mapping_no_inputs_no_outputs(self, identity_action_function):
-        action = Action(function=identity_action_function())
-
-        assert action.inputs == []
-        assert action.outputs == []
-        assert action._dash_components == []
-
+class TestActionCallbackFunction:
+    """Test action callback function."""
     @pytest.mark.parametrize(
-        "inputs_and_outputs, expected_get_callback_mapping_inputs, expected_get_callback_mapping_outputs",
-        [
-            (["component.property"], [State("component", "property")], Output("component", "property")),
-            (
-                ["component_1.property", "component_2.property"],
-                [State("component_1", "property"), State("component_2", "property")],
-                [Output("component_1", "property"), Output("component_2", "property")],
-            ),
-        ],
-    )
-    def test_get_callback_mapping_with_inputs_and_outputs(
-        self,
-        inputs_and_outputs,
-        identity_action_function,
-        expected_get_callback_mapping_inputs,
-        expected_get_callback_mapping_outputs,
-    ):
-        action = Action(function=identity_action_function(), inputs=inputs_and_outputs, outputs=inputs_and_outputs)
-
-        assert action._transformed_inputs == expected_get_callback_mapping_inputs
-        assert action._transformed_outputs == expected_get_callback_mapping_outputs
-        assert action._dash_components == []
-
-    @pytest.mark.parametrize(
-        "custom_action_function_mock_return, callback_outputs",
+        "custom_action_mock_return, callback_outputs",
         [
             # no outputs
             (None, []),
@@ -215,7 +309,7 @@ class TestActionPrivateMethods:
             ("ab", [Output("component_1", "property"), Output("component_2", "property")]),
             (["value_1", "value_2"], [Output("component_1", "property"), Output("component_2", "property")]),
             (
-                {"component_1": "value_1", "component_2_property": "value_2"},
+                {"component_1": "value_1", "component_2": "value_2"},
                 [Output("component", "property"), Output("component_2", "property")],
             ),
             # multiple dict outputs
@@ -225,35 +319,35 @@ class TestActionPrivateMethods:
                 {"component_1": Output("component_1", "property"), "component_2": Output("component_2", "property")},
             ),
         ],
-        indirect=["custom_action_function_mock_return"],
+        indirect=["custom_action_mock_return"],
     )
-    def test_action_callback_function_return_value_valid(self, custom_action_function_mock_return, callback_outputs):
-        action = Action(function=custom_action_function_mock_return())
+    def test_action_callback_function_return_value_valid(self, custom_action_mock_return, callback_outputs):
+        action = Action(function=custom_action_mock_return())
         # If no error is raised by _action_callback_function then running it should return exactly the same
-        # as the output of the custom_action_function_mock_return.
+        # as the output of the custom_action_mock_return.
         assert (
             action._action_callback_function(inputs={}, outputs=callback_outputs)
-            == custom_action_function_mock_return()()
+            == custom_action_mock_return()()
         )
 
     @pytest.mark.parametrize("callback_outputs", [[], {}, None])
-    @pytest.mark.parametrize("custom_action_function_mock_return", [False, 0, "", [], (), {}], indirect=True)
-    def test_action_callback_function_no_outputs_return_value_not_None(
-        self, custom_action_function_mock_return, callback_outputs
+    @pytest.mark.parametrize("custom_action_mock_return", [False, 0, "", [], (), {}], indirect=True)
+    def test_action_callback_function_no_outputs_return_value_not_none(
+        self, custom_action_mock_return, callback_outputs
     ):
-        action = Action(function=custom_action_function_mock_return())
+        action = Action(function=custom_action_mock_return())
         with pytest.raises(
             ValueError, match="Action function has returned a value but the action has no defined outputs."
         ):
             action._action_callback_function(inputs={}, outputs=callback_outputs)
 
-    @pytest.mark.parametrize("custom_action_function_mock_return", [None, False, 0, 123], indirect=True)
+    @pytest.mark.parametrize("custom_action_mock_return", [None, False, 0, 123], indirect=True)
     def test_action_callback_function_outputs_list_return_value_not_collection(
-        self, custom_action_function_mock_return
+        self, custom_action_mock_return
     ):
         # Note it's not possible for _action_callback_function to be called with a single Output in a list, like
         # [Output(...)]. This would always be done as Output(...) outside a list instead.
-        action = Action(function=custom_action_function_mock_return())
+        action = Action(function=custom_action_mock_return())
         with pytest.raises(
             ValueError,
             match="Action function has not returned a list-like object but the action's defined outputs are a list.",
@@ -263,14 +357,14 @@ class TestActionPrivateMethods:
             )
 
     @pytest.mark.parametrize(
-        "custom_action_function_mock_return",
+        "custom_action_mock_return",
         [None, False, 0, 123, "", [], ()],
-        indirect=["custom_action_function_mock_return"],
+        indirect=["custom_action_mock_return"],
     )
     def test_action_callback_function_outputs_mapping_return_value_not_mapping(
-        self, custom_action_function_mock_return
+        self, custom_action_mock_return
     ):
-        action = Action(function=custom_action_function_mock_return())
+        action = Action(function=custom_action_mock_return())
         with pytest.raises(
             ValueError,
             match="Action function has not returned a dictionary-like object "
@@ -279,14 +373,14 @@ class TestActionPrivateMethods:
             action._action_callback_function(inputs={}, outputs={"output": Output("component", "property")})
 
     @pytest.mark.parametrize(
-        "custom_action_function_mock_return",
+        "custom_action_mock_return",
         ["", [], (), {}, "abc", [1, 2, 3], (1, 2, 3), {"a": 1, "b": 2, "c": 3}],
-        indirect=["custom_action_function_mock_return"],
+        indirect=["custom_action_mock_return"],
     )
     def test_action_callback_function_outputs_list_return_value_length_not_match(
-        self, custom_action_function_mock_return
+        self, custom_action_mock_return
     ):
-        action = Action(function=custom_action_function_mock_return())
+        action = Action(function=custom_action_mock_return())
         with pytest.raises(
             ValueError,
             match="Number of action's returned elements .+ does not match the number of action's defined outputs 2.",
@@ -296,238 +390,15 @@ class TestActionPrivateMethods:
             )
 
     @pytest.mark.parametrize(
-        "custom_action_function_mock_return",
+        "custom_action_mock_return",
         [{}, {"another_output": 1}, {"output": 1, "another_output": 2}],
-        indirect=["custom_action_function_mock_return"],
+        indirect=["custom_action_mock_return"],
     )
     def test_action_callback_function_outputs_mapping_return_value_keys_not_match(
-        self, custom_action_function_mock_return
+        self, custom_action_mock_return
     ):
-        action = Action(function=custom_action_function_mock_return())
+        action = Action(function=custom_action_mock_return())
         with pytest.raises(
             ValueError, match="Keys of action's returned value .+ do not match the action's defined outputs {'output'}."
         ):
             action._action_callback_function(inputs={}, outputs={"output": Output("component", "property")})
-
-
-@capture("action")
-def custom_action_example():
-    pass
-
-
-# custom action with same name as some predefined action
-def get_custom_action_with_known_name():
-    @capture("action")
-    def export_data():
-        pass
-
-    return export_data()
-
-
-@pytest.fixture
-def config_for_testing_all_components_with_actions(request, dash_data_table_with_id):
-    """Instantiates managers with one page that contains four controls, two graphs and filter interaction."""
-    # If the fixture is parametrised set the targets. Otherwise, set export_data without targets.
-    export_data_action_function = (
-        export_data(id="export_data_action", targets=request.param)
-        if hasattr(request, "param")
-        else export_data(id="export_data_action")
-    )
-    tab_1 = vm.Container(
-        title="test_container_1",
-        components=[
-            vm.Graph(
-                id="scatter_chart",
-                figure=px.scatter(px.data.gapminder(), x="lifeExp", y="gdpPercap", custom_data=["continent"]),
-                actions=[
-                    vm.Action(function=filter_interaction(id="filter_interaction_action", targets=["scatter_chart_2"]))
-                ],
-            ),
-            vm.Container(
-                title="test_nested_container_1",
-                components=[
-                    vm.Graph(
-                        id="scatter_chart_2",
-                        figure=px.scatter(px.data.gapminder(), x="lifeExp", y="gdpPercap", custom_data=["continent"]),
-                        actions=[vm.Action(id="custom_action", function=custom_action_example())],
-                    ),
-                ],
-            ),
-        ],
-    )
-
-    tab_2 = vm.Container(
-        title="test_container_2",
-        components=[
-            vm.Table(
-                id="vizro_table",
-                figure=dash_data_table_with_id,
-                actions=[
-                    vm.Action(
-                        function=filter_interaction(
-                            id="table_filter_interaction_action", targets=["scatter_chart", "scatter_chart_2"]
-                        ),
-                    )
-                ],
-            ),
-        ],
-    )
-
-    vm.Page(
-        id="test_page",
-        title="My first dashboard",
-        components=[
-            vm.Tabs(tabs=[tab_1, tab_2]),
-            vm.Button(
-                id="export_data_button",
-                actions=[
-                    vm.Action(function=export_data_action_function),
-                    vm.Action(id="export_data_custom_action", function=get_custom_action_with_known_name()),
-                ],
-            ),
-        ],
-        controls=[
-            vm.Filter(id="filter_continent", column="continent", selector=vm.Dropdown(id="filter_continent_selector")),
-            vm.Filter(id="filter_country", column="country", selector=vm.Dropdown(id="filter_country_selector")),
-            vm.Parameter(
-                id="parameter_x",
-                targets=["scatter_chart.x", "scatter_chart_2.x"],
-                selector=vm.Dropdown(
-                    id="parameter_x_selector",
-                    options=["lifeExp", "gdpPercap", "pop"],
-                    multi=False,
-                    value="gdpPercap",
-                ),
-            ),
-            vm.Parameter(
-                id="parameter_y",
-                targets=["scatter_chart.y", "scatter_chart_2.y"],
-                selector=vm.Dropdown(
-                    id="parameter_y_selector",
-                    options=["lifeExp", "gdpPercap", "pop"],
-                    multi=False,
-                    value="lifeExp",
-                ),
-            ),
-            vm.Parameter(
-                id="vizro_table_row_selectable",
-                targets=["vizro_table.row_selectable"],
-                selector=vm.Dropdown(
-                    id="parameter_table_row_selectable",
-                    options=["multi", "single"],
-                    multi=False,
-                    value="single",
-                ),
-            ),
-        ],
-    )
-    Vizro._pre_build()
-
-
-@pytest.fixture
-def action_callback_inputs_expected():
-    return {
-        "_controls": {
-            "filters": [
-                dash.State("filter_continent_selector", "value"),
-                dash.State("filter_country_selector", "value"),
-            ],
-            "parameters": [
-                dash.State("parameter_x_selector", "value"),
-                dash.State("parameter_y_selector", "value"),
-                dash.State("parameter_table_row_selectable", "value"),
-            ],
-            "filter_interaction": [
-                {"clickData": dash.State("scatter_chart", "clickData"), "modelID": dash.State("scatter_chart", "id")},
-                {
-                    "active_cell": dash.State("underlying_table_id", "active_cell"),
-                    "derived_viewport_data": dash.State("underlying_table_id", "derived_viewport_data"),
-                    "modelID": dash.State("vizro_table", "id"),
-                },
-            ],
-        }
-    }
-
-
-@pytest.fixture
-def action_callback_outputs_expected(request):
-    targets = request.param
-    return {
-        target["component_id"]: dash.Output(target["component_id"], target["component_property"]) for target in targets
-    }
-
-
-@pytest.mark.usefixtures("config_for_testing_all_components_with_actions")
-class TestActionTransformedInputsOutputs:
-    """Tests action callback mapping for predefined and custom actions."""
-
-    @pytest.mark.parametrize(
-        "action_id",
-        [
-            "__filter_action_filter_continent",
-            "filter_interaction_action",
-            "__parameter_action_parameter_x",
-            "__on_page_load_action_action_test_page",
-            "export_data_action",
-        ],
-    )
-    def test_action_transformed_inputs(self, action_id, action_callback_inputs_expected):
-        result = model_manager[action_id]._transformed_inputs
-        assert result == action_callback_inputs_expected
-
-    @pytest.mark.parametrize(
-        "action_id, action_callback_outputs_expected",
-        [
-            (
-                "__filter_action_filter_continent",
-                [
-                    {"component_id": "scatter_chart", "component_property": "figure"},
-                    {"component_id": "scatter_chart_2", "component_property": "figure"},
-                    {"component_id": "vizro_table", "component_property": "children"},
-                ],
-            ),
-            (
-                "filter_interaction_action",
-                [
-                    {"component_id": "scatter_chart_2", "component_property": "figure"},
-                ],
-            ),
-            (
-                "table_filter_interaction_action",
-                [
-                    {"component_id": "scatter_chart", "component_property": "figure"},
-                    {"component_id": "scatter_chart_2", "component_property": "figure"},
-                ],
-            ),
-            (
-                "__parameter_action_parameter_x",
-                [
-                    {"component_id": "scatter_chart", "component_property": "figure"},
-                    {"component_id": "scatter_chart_2", "component_property": "figure"},
-                ],
-            ),
-            (
-                "__parameter_action_parameter_y",
-                [
-                    {"component_id": "scatter_chart", "component_property": "figure"},
-                    {"component_id": "scatter_chart_2", "component_property": "figure"},
-                ],
-            ),
-            (
-                "__on_page_load_action_action_test_page",
-                [
-                    {"component_id": "scatter_chart", "component_property": "figure"},
-                    {"component_id": "scatter_chart_2", "component_property": "figure"},
-                    {"component_id": "vizro_table", "component_property": "children"},
-                ],
-            ),
-            (
-                "__parameter_action_vizro_table_row_selectable",
-                [{"component_id": "vizro_table", "component_property": "children"}],
-            ),
-        ],
-        indirect=["action_callback_outputs_expected"],
-    )
-    def test_action_transformed_outputs(self, action_id, action_callback_outputs_expected):
-        result = model_manager[action_id]._transformed_outputs
-        assert result == action_callback_outputs_expected
