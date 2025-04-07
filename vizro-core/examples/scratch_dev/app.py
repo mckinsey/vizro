@@ -8,6 +8,7 @@ tips = px.data.tips()
 
 page1 = vm.Page(
     title="Default",
+    layout=vm.Layout(grid=[[1, 2], [0, 0]]),
     components=[
         vm.Card(text="""# Good morning!"""),
         vm.Graph(
@@ -17,10 +18,6 @@ page1 = vm.Page(
         vm.Graph(
             title="Is the average driven by a few outliers?",
             figure=px.violin(tips, y="tip", x="day", color="day", box=True),
-        ),
-        vm.Graph(
-            title="Which group size is more profitable?",
-            figure=px.density_heatmap(tips, x="day", y="size", z="tip", histfunc="avg", text_auto="$.2f"),
         ),
     ],
     controls=[vm.Filter(column="day")],
