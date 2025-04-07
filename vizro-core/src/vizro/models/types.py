@@ -557,7 +557,9 @@ LayoutType = Annotated[
 ]
 """Discriminated union. Type of layout to place components on the page:
 [`Layout`][vizro.models.Layout] or [`Flex`][vizro.models.Flex]."""
-# TODO NOW: check API docs
+# TODO NOW: check API docs.
+# TODO NOW: updates docs and then should be done.
+# TODO NOW: think about whether we need unit or e2e example with old vm.Layout.
 
 # Extra type groups used for mypy casting
 FigureWithFilterInteractionType = Union["Graph", "Table", "AgGrid"]
