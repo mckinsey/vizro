@@ -473,7 +473,7 @@ def test_dynamic_data_parameter_refresh_dynamic_filters(dash_br):
     which has 'virginica' data only.
     """
     accordion_select(
-        dash_br, accordion_name=cnst.DYNAMIC_DATA_ACCORDION.upper(), accordion_number=cnst.DYNAMIC_DATA_ACCORDION_NUMBER
+        dash_br, accordion_name=cnst.DYNAMIC_DATA_ACCORDION.upper()
     )
     page_select(
         dash_br,
