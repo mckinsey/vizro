@@ -6,6 +6,7 @@ from __future__ import annotations
 import functools
 import importlib
 import inspect
+import warnings
 from contextlib import contextmanager
 from datetime import date
 from typing import Annotated, Any, Literal, Optional, Protocol, Union, runtime_checkable
@@ -24,8 +25,13 @@ def _get_layout_discriminator(layout: Any) -> Optional[str]:
     # YAML/dictionary configuration in which `type` is not specified. This function is needed to handle the legacy case.
     if isinstance(layout, dict):
         # If type is supplied then use that (like saying discriminator="type"). Otherwise, it's the legacy case where
-        # type is not specified, in which case we want to use vm.Layout, which has type="grid".
-        return layout.get("type", "grid")
+        # type is not specified, in which case we want to use vm.Grid, which has type="grid", but emit a warning.
+        # We don't instantiate vm.Layout in this case since that would require it being added to LayoutType.
+        try:
+            return layout["type"]
+        except KeyError:
+            warnings.warn("yada", FutureWarning, stacklevel=3)
+            return "legacy_layout"
 
     # If a model has been specified then this is equivalent to saying discriminator="type". When None is returned,
     # union_tag_not_found error is raised.
@@ -543,7 +549,7 @@ NavSelectorType = Annotated[
 
 
 LayoutType = Annotated[
-    Union[Annotated["Layout", Tag("grid")], Annotated["Flex", Tag("flex")]],
+    Union[Annotated["Grid", Tag("grid")], Annotated["Flex", Tag("flex")], Annotated["Layout", Tag("legacy_layout")]],
     Field(
         discriminator=Discriminator(_get_layout_discriminator),
         description="Type of layout to place components on the page.",
@@ -551,6 +557,7 @@ LayoutType = Annotated[
 ]
 """Discriminated union. Type of layout to place components on the page:
 [`Layout`][vizro.models.Layout] or [`Flex`][vizro.models.Flex]."""
+# TODO NOW: check API docs
 
 # Extra type groups used for mypy casting
 FigureWithFilterInteractionType = Union["Graph", "Table", "AgGrid"]

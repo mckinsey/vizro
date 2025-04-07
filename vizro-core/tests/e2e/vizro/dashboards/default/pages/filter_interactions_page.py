@@ -10,7 +10,7 @@ iris = px.data.iris()
 
 filter_interactions_page = vm.Page(
     title=cnst.FILTER_INTERACTIONS_PAGE,
-    layout=vm.Layout(grid=[[0], [2], [1]]),
+    layout=vm.Grid(grid=[[0], [2], [1]]),
     components=[
         vm.Graph(
             id=cnst.SCATTER_INTERACTIONS_ID,

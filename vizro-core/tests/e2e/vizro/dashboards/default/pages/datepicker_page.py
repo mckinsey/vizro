@@ -87,7 +87,7 @@ data_manager["datepicker_df"].timeout = 10
 datepicker_page = vm.Page(
     title=cnst.DATEPICKER_PAGE,
     id=cnst.DATEPICKER_PAGE,
-    layout=vm.Layout(grid=[[0, 1], [0, 1], [2, 3], [2, 3]]),
+    layout=vm.Grid(grid=[[0, 1], [0, 1], [2, 3], [2, 3]]),
     components=[
         vm.Graph(
             id=cnst.BAR_POP_RANGE_ID,

@@ -25,7 +25,7 @@ class TestContainerInstantiation:
             id="my-id",
             title="Title",
             components=[vm.Button(), vm.Button()],
-            layout=vm.Layout(grid=[[0, 1]]),
+            layout=vm.Grid(grid=[[0, 1]]),
             variant=variant,
         )
         assert container.id == "my-id"
@@ -50,7 +50,7 @@ class TestContainerInstantiation:
 class TestContainerBuildMethod:
     def test_container_build(self):
         result = vm.Container(
-            id="container", title="Title", components=[vm.Button()], layout=vm.Layout(id="layout_id", grid=[[0]])
+            id="container", title="Title", components=[vm.Button()], layout=vm.Grid(id="layout_id", grid=[[0]])
         ).build()
         assert_component_equal(
             result, dbc.Container(id="container", class_name="", fluid=True), keys_to_strip={"children"}

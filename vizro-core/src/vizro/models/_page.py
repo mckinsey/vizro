@@ -22,7 +22,7 @@ from vizro.managers import model_manager
 from vizro.managers._model_manager import FIGURE_MODELS, DuplicateIDError
 from vizro.models import Action, Filter, VizroBaseModel
 from vizro.models._action._actions_chain import ActionsChain, Trigger
-from vizro.models._layout import set_layout
+from vizro.models._grid import set_layout
 from vizro.models._models_utils import _build_inner_layout, _log_call, check_captured_callable_model
 
 from .types import ComponentType, ControlType, LayoutType
@@ -56,7 +56,7 @@ class Page(VizroBaseModel):
             has to be provided.
         title (str): Title to be displayed.
         description (str): Description for meta tags.
-        layout (Optional[Layout]): Layout to place components in. Defaults to `None`.
+        layout (Optional[LayoutType]): Layout to place components in. Defaults to `None`.
         controls (list[ControlType]): See [ControlType][vizro.models.types.ControlType]. Defaults to `[]`.
         path (str): Path to navigate to page. Defaults to `""`.
 

@@ -343,7 +343,7 @@ def complete_dashboard():
 
     page = vm.Page(
         title="Page 1",
-        layout=vm.Layout(grid=[[0, 1], [2, 3], [4, -1]], row_min_height="100px"),
+        layout=vm.Grid(grid=[[0, 1], [2, 3], [4, -1]], row_min_height="100px"),
         components=[
             vm.Card(text="Foo"),
             vm.Graph(figure=px.bar("iris", x="sepal_width", y="sepal_length")),
@@ -528,7 +528,7 @@ model = vm.Dashboard(
                 ),
             ],
             title="Page 1",
-            layout=vm.Layout(grid=[[0, 1], [2, 3], [4, -1]], row_min_height="100px"),
+            layout=vm.Grid(grid=[[0, 1], [2, 3], [4, -1]], row_min_height="100px"),
             controls=[
                 vm.Filter(
                     column="species",

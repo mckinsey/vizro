@@ -26,7 +26,7 @@ class TestPageInstantiation:
             id="my-id",
             title="Page 1",
             components=[vm.Button(), vm.Button()],
-            layout=vm.Layout(grid=[[0, 1]]),
+            layout=vm.Grid(grid=[[0, 1]]),
             path="my-path",
         )
         assert isinstance(page.components[0], vm.Button) and isinstance(page.components[1], vm.Button)
