@@ -25,7 +25,7 @@ Uncomment the section that is right (remove the HTML comment wrapper).
 
 ### Changed
 
-- Improved mobile responsiveness by expanding the flex layout breakpoint to ≤ 764px and enabling it for larger screens (≤ 1064px) when the left-side panel is expanded. ([#1097](https://github.com/mckinsey/vizro/pull/1097))
+- Improve mobile responsiveness: the flex layout breakpoint is now 764px (side panel collapsed) or 1064px (side panel expanded). ([#1097](https://github.com/mckinsey/vizro/pull/1097))
 
 
 
