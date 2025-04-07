@@ -10,9 +10,7 @@ def test_interactions(dash_br):
     """Test filter interactions between two graphs."""
     page_select(
         dash_br,
-        page_path=cnst.FILTER_INTERACTIONS_PAGE_PATH,
         page_name=cnst.FILTER_INTERACTIONS_PAGE,
-        graph_id=cnst.SCATTER_INTERACTIONS_ID,
     )
 
     # click on the 'setosa' data in scatter graph and check result for box graph

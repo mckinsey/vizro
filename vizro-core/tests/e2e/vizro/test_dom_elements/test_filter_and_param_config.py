@@ -8,9 +8,7 @@ def test_filter_and_parameter(dash_br):
     """Testing filter and parameter on the same page."""
     page_select(
         dash_br,
-        page_path=cnst.FILTER_AND_PARAM_PAGE_PATH,
         page_name=cnst.FILTER_AND_PARAM_PAGE,
-        graph_id=cnst.BOX_FILTER_AND_PARAM_ID,
     )
 
     # check that title of the graph is 'blue'
