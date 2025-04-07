@@ -6,8 +6,9 @@ import yaml
 from e2e.asserts import assert_image_not_equal, assert_pixelmatch
 from e2e.vizro import constants as cnst
 from e2e.vizro.checkers import (
+    check_graph_is_empty,
     check_graph_is_loading,
-    check_selected_checklist,
+    check_selected_categorical_component,
     check_selected_dropdown,
     check_slider_value,
 )
@@ -204,14 +205,13 @@ def test_checklist_filter(dash_br):
     )
 
     # Check that "versicolor" and "virginica" is the only listed options
-    check_selected_checklist(
+    check_selected_categorical_component(
         dash_br,
-        checklist_id=cnst.CHECKLIST_DYNAMIC_FILTER_ID,
-        select_all_status=False,
+        component_id=cnst.CHECKLIST_DYNAMIC_FILTER_ID,
         options_value_status=[
-            {"value": 1, "status": False, "value_name": "ALL"},
-            {"value": 2, "status": True, "value_name": "versicolor"},
-            {"value": 3, "status": False, "value_name": "virginica"},
+            {"value": 1, "selected": False, "value_name": "ALL"},
+            {"value": 2, "selected": True, "value_name": "versicolor"},
+            {"value": 3, "selected": False, "value_name": "virginica"},
         ],
     )
 
@@ -244,13 +244,12 @@ def test_radio_items_filter(dash_br):
     )
 
     # Check that "versicolor" and "virginica" is the only listed options
-    check_selected_checklist(
+    check_selected_categorical_component(
         dash_br,
-        checklist_id=cnst.RADIOITEMS_DYNAMIC_FILTER_ID,
-        select_all_status=False,
+        component_id=cnst.RADIOITEMS_DYNAMIC_FILTER_ID,
         options_value_status=[
-            {"value": 1, "status": True, "value_name": "versicolor"},
-            {"value": 2, "status": False, "value_name": "virginica"},
+            {"value": 1, "selected": True, "value_name": "versicolor"},
+            {"value": 2, "selected": False, "value_name": "virginica"},
         ],
     )
 
@@ -442,14 +441,7 @@ def test_datepicker_single_filters(dash_br):
     dash_br.wait_for_text_to_equal(f'button[id="{cnst.DATEPICKER_DYNAMIC_SINGLE_ID}"]', "March 5, 2024")
 
     # Check y axis min value is '-1' (empty chart)
-    dash_br.wait_for_text_to_equal(
-        graph_y_axis_value_path(
-            graph_id=cnst.BAR_DYNAMIC_DATEPICKER_SINGLE_FILTER_ID,
-            y_axis_value_number="1",
-            y_axis_value="−1",  # noqa: RUF001
-        ),
-        "−1",  # noqa: RUF001
-    )
+    check_graph_is_empty(dash_br, graph_id=cnst.BAR_DYNAMIC_DATEPICKER_SINGLE_FILTER_ID)
 
     # Check y axis max value is '4'
     dash_br.wait_for_text_to_equal(
@@ -488,3 +480,73 @@ def test_datepicker_single_filters(dash_br):
     dash_br.multiple_click(f'button[id="{cnst.DATEPICKER_DYNAMIC_SINGLE_ID}"]', 1)
     dash_br.wait_for_element('div[data-calendar="true"]')
     dash_br.wait_for_element('button[aria-label="5 March 2024"][data-disabled="true"]')
+
+
+def test_dynamic_data_parameter_refresh_dynamic_filters(dash_br):
+    """Test automatic refreshing of the dynamic filters and their targets when the data_frame parameter is changed.
+
+    Page configuration includes dynamic data scatter chart which controls by slider parameter and static data scatter
+    which has 'virginica' data only.
+    """
+    accordion_select(
+        dash_br, accordion_name=cnst.DYNAMIC_DATA_ACCORDION.upper(), accordion_number=cnst.DYNAMIC_DATA_ACCORDION_NUMBER
+    )
+    page_select(
+        dash_br,
+        page_name=cnst.DYNAMIC_DATA_DF_PARAMETER_PAGE,
+    )
+
+    # select 'virginica' value and check scatter graph point color
+    dash_br.multiple_click(categorical_components_value_path(elem_id=cnst.RADIOITEMS_FILTER_DF_PARAMETER, value=3), 1)
+    dash_br.wait_for_element(f"div[id='{cnst.SCATTER_DF_PARAMETER}'] path[style*='rgb(57, 73, 171)']:nth-of-type(1)")
+    dash_br.wait_for_element(f"div[id='{cnst.SCATTER_DF_STATIC}'] path[style*='rgb(57, 73, 171)']:nth-of-type(1)")
+
+    # select '10' points for slider which is showing only 'setosa' data and check that scatter graph
+    # with dynamic data is empty and that scatter graph with static data is the same
+    select_slider_handler(dash_br, elem_id=cnst.SLIDER_DF_PARAMETER, value=2)
+    check_graph_is_loading(dash_br, graph_id=cnst.SCATTER_DF_STATIC)
+    check_graph_is_empty(dash_br, graph_id=cnst.SCATTER_DF_PARAMETER)
+    dash_br.wait_for_element(f"div[id='{cnst.SCATTER_DF_STATIC}'] path[style*='rgb(57, 73, 171)']:nth-of-type(1)")
+
+    # Check that "setosa" and "virginica" is the only listed options
+    check_selected_categorical_component(
+        dash_br,
+        component_id=cnst.RADIOITEMS_FILTER_DF_PARAMETER,
+        options_value_status=[
+            {"value": 1, "selected": False, "value_name": "setosa"},
+            {"value": 2, "selected": True, "value_name": "virginica"},
+        ],
+    )
+
+    # simulate refreshing the page to check if filters and graphs stays the same
+    page_select(dash_br, page_name=cnst.DYNAMIC_FILTERS_CATEGORICAL_PAGE)
+    page_select(dash_br, page_name=cnst.DYNAMIC_DATA_DF_PARAMETER_PAGE)
+
+    # check that dynamic data graph is empty and static data graph stays the same
+    check_graph_is_empty(dash_br, graph_id=cnst.SCATTER_DF_PARAMETER)
+    dash_br.wait_for_element(f"div[id='{cnst.SCATTER_DF_STATIC}'] path[style*='rgb(57, 73, 171)']:nth-of-type(1)")
+
+    # Check that "setosa" and "virginica" is the only listed options
+    check_selected_categorical_component(
+        dash_br,
+        component_id=cnst.RADIOITEMS_FILTER_DF_PARAMETER,
+        options_value_status=[
+            {"value": 1, "selected": False, "value_name": "setosa"},
+            {"value": 2, "selected": True, "value_name": "virginica"},
+        ],
+    )
+
+    # select 'setosa' value and check dynamic scatter graph point color and that static scatter graph is empty
+    dash_br.multiple_click(categorical_components_value_path(elem_id=cnst.RADIOITEMS_FILTER_DF_PARAMETER, value=1), 1)
+    dash_br.wait_for_element(f"div[id='{cnst.SCATTER_DF_PARAMETER}'] path[style*='rgb(0, 180, 255)']:nth-of-type(1)")
+    check_graph_is_empty(dash_br, graph_id=cnst.SCATTER_DF_STATIC)
+
+    # Check that "setosa" and "virginica" is the only listed options
+    check_selected_categorical_component(
+        dash_br,
+        component_id=cnst.RADIOITEMS_FILTER_DF_PARAMETER,
+        options_value_status=[
+            {"value": 1, "selected": True, "value_name": "setosa"},
+            {"value": 2, "selected": False, "value_name": "virginica"},
+        ],
+    )

@@ -108,6 +108,12 @@ SCATTER_DYNAMIC_ID = "scatter_dynamic"
 SLIDER_DYNAMIC_DATA_CACHED_ID = "slider_dynamic_data_cached"
 SLIDER_DYNAMIC_DATA_ID = "slider_dynamic_data"
 
+DYNAMIC_DATA_DF_PARAMETER_PAGE = "dynamic-filter-update-from-dfp"
+SCATTER_DF_PARAMETER = "scatter_dynamic_data_frame_parameter"
+SCATTER_DF_STATIC = "scatter_data_frame_parameter_static"
+RADIOITEMS_FILTER_DF_PARAMETER = "radioitems filter with df parameter"
+SLIDER_DF_PARAMETER = "slider df parameter"
+
 DYNAMIC_FILTERS_CATEGORICAL_PAGE = "dynamic-filters-categorical"
 BOX_DYNAMIC_FILTERS_ID = "box dynamic"
 DROPDOWN_MULTI_DYNAMIC_FILTER_ID = "dropdown_multi_dynamic"
