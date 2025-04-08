@@ -1,3 +1,5 @@
+import time
+
 import e2e.vizro.constants as cnst
 import pandas as pd
 from flask_caching import Cache
@@ -76,6 +78,7 @@ datepicker_df = pd.DataFrame(
 
 def load_datepicker_data():
     datepicker_df["time"] = pd.to_datetime(datepicker_df["time"], format="mixed")
+    time.sleep(0.25)  # for testing, to catch reloading of the chart
     return datepicker_df
 
 
