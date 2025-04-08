@@ -231,7 +231,7 @@ pages:
         - [0]
         - [0]
         - [1]
-        - type: grid
+      type: grid
     title: Button
   - components:
       - figure:
