@@ -34,6 +34,19 @@ class TestContainerInstantiation:
         assert container.title == "Title"
         assert container.variant == variant
 
+    def test_create_container_mandatory_and_optional_legacy_layout(self):
+        with pytest.warns(FutureWarning, match="The `Layout` model has been renamed `Grid`"):
+            container = vm.Container(
+                id="my-id",
+                title="Title",
+                components=[vm.Button(), vm.Button()],
+                layout=vm.Layout(grid=[[0, 1]]),
+            )
+        assert container.id == "my-id"
+        assert isinstance(container.components[0], vm.Button) and isinstance(container.components[1], vm.Button)
+        assert container.layout.grid == [[0, 1]]
+        assert container.title == "Title"
+
     def test_mandatory_title_missing(self):
         with pytest.raises(ValidationError, match="Field required"):
             vm.Container(components=[vm.Button()])
@@ -52,6 +65,20 @@ class TestContainerBuildMethod:
         result = vm.Container(
             id="container", title="Title", components=[vm.Button()], layout=vm.Grid(id="layout_id", grid=[[0]])
         ).build()
+        assert_component_equal(
+            result, dbc.Container(id="container", class_name="", fluid=True), keys_to_strip={"children"}
+        )
+        assert_component_equal(result.children, [html.H3(), html.Div()], keys_to_strip=STRIP_ALL)
+        # We still want to test the exact H3 produced in Container.build:
+        assert_component_equal(result.children[0], html.H3("Title", className="container-title", id="container_title"))
+        # And also that a button has been inserted in the right place:
+        assert_component_equal(result["layout_id_0"].children, dbc.Button(), keys_to_strip=STRIP_ALL)
+
+    def test_container_build_legacy_layout(self):
+        with pytest.warns(FutureWarning, match="The `Layout` model has been renamed `Grid`"):
+            result = vm.Container(
+                id="container", title="Title", components=[vm.Button()], layout=vm.Layout(id="layout_id", grid=[[0]])
+            ).build()
         assert_component_equal(
             result, dbc.Container(id="container", class_name="", fluid=True), keys_to_strip={"children"}
         )

@@ -2,8 +2,8 @@
 
 import vizro.models as vm
 from vizro import Vizro
-import random
 
+# Uncomment the below to see the warnings
 layouts = [
     vm.Grid(grid=[[0]]),
     vm.Flex(),

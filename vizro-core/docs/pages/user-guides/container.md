@@ -125,7 +125,7 @@ To add a [`Container`][vizro.models.Container] to your page, do the following:
                     type: graph
                 layout:
                   grid: [[0, 1]]
-                  type: grid      
+                  type: grid
                 type: container
                 title: Container I
               - components:
