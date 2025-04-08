@@ -74,7 +74,7 @@ def test_datasets_from_catalog_with_pipeline(catalog, mocker):
         else {"pandas_excel", "pandas_parquet"}
     )
 
-    assert datasets == {dataset_name: mocker.ANY for dataset_name in expected_dataset_names}
+    assert datasets == dict.fromkeys(expected_dataset_names, mocker.ANY)
 
     if not LEGACY_KEDRO:
         # Make sure that dataset_name is bound early to the data loading function.
