@@ -25,8 +25,7 @@ def _get_layout_discriminator(layout: Any) -> Optional[str]:
     # YAML/dictionary configuration in which `type` is not specified. This function is needed to handle the legacy case.
     if isinstance(layout, dict):
         # If type is supplied then use that (like saying discriminator="type"). Otherwise, it's the legacy case where
-        # type is not specified, in which case we want to use vm.Grid, which has type="grid", but emit a warning.
-        # We don't instantiate vm.Layout in this case since that would require it being added to LayoutType.
+        # type is not specified, in which case we want to use vm.Layout, which has type="legacy_layout".
         try:
             return layout["type"]
         except KeyError:
