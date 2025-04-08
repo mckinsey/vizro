@@ -1,6 +1,7 @@
 """Scratchpad for testing."""
 
 import vizro.models as vm
+import vizro.plotly.express as px
 from vizro import Vizro
 
 # Uncomment the below to see the warnings
@@ -28,6 +29,7 @@ pages_2 = [
 
 
 dashboard = vm.Dashboard(pages=pages_1 + pages_2)
+
 
 if __name__ == "__main__":
     Vizro().build(dashboard).run()
