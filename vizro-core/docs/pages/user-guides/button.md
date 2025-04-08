@@ -67,7 +67,7 @@ The example below demonstrates how to configure a button to export the filtered 
 
         page = vm.Page(
             title="My first page",
-            layout=vm.Layout(grid=[[0], [0], [0], [0], [1]]),
+            layout=vm.Grid(grid=[[0], [0], [0], [0], [1]]),
             components=[
                 vm.Graph(
                     id="scatter_chart",

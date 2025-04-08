@@ -95,7 +95,7 @@ example_reference_cards = [
 # HOME ------------------------------------------------------------------------
 home = vm.Page(
     title="Homepage",
-    layout=vm.Layout(grid=[[0, 1], [2, 3]], row_gap="16px", col_gap="24px"),
+    layout=vm.Grid(grid=[[0, 1], [2, 3]], row_gap="16px", col_gap="24px"),
     components=[
         vm.Card(
             text="""
@@ -255,7 +255,7 @@ cards = vm.Page(
 
 figure = vm.Page(
     title="Figure",
-    layout=vm.Layout(grid=[[0, 1, 2, 3], [4, 5, 6, 7], [-1, -1, -1, -1], [-1, -1, -1, -1]]),
+    layout=vm.Grid(grid=[[0, 1, 2, 3], [4, 5, 6, 7], [-1, -1, -1, -1], [-1, -1, -1, -1]]),
     components=[vm.Figure(figure=figure) for figure in example_cards + example_reference_cards],
     controls=[vm.Filter(column="Category")],
 )
@@ -263,7 +263,7 @@ figure = vm.Page(
 
 button = vm.Page(
     title="Button",
-    layout=vm.Layout(grid=[[0], [0], [0], [0], [1]]),
+    layout=vm.Grid(grid=[[0], [0], [0], [0], [1]]),
     components=[
         vm.Graph(
             figure=px.scatter(
@@ -284,7 +284,7 @@ containers = vm.Page(
     components=[
         vm.Container(
             title="Container I",
-            layout=vm.Layout(grid=[[0, 1]]),
+            layout=vm.Grid(grid=[[0, 1]]),
             components=[
                 vm.Graph(
                     figure=px.scatter(
@@ -434,7 +434,7 @@ parameters = vm.Page(
 
 selectors = vm.Page(
     title="Selectors",
-    layout=vm.Layout(grid=[[0], [1], [1], [1], [2], [2], [2], [3], [3], [3]], row_min_height="170px", row_gap="24px"),
+    layout=vm.Grid(grid=[[0], [1], [1], [1], [2], [2], [2], [3], [3], [3]], row_min_height="170px", row_gap="24px"),
     components=[
         vm.Card(
             text="""
@@ -768,7 +768,7 @@ custom_figures = vm.Page(
 
 kpi_indicators = vm.Page(
     title="KPI Indicators",
-    layout=vm.Layout(grid=[[0, 1, 2, 3], [4, 5, 6, 7], [-1, -1, -1, -1], [-1, -1, -1, -1]]),
+    layout=vm.Grid(grid=[[0, 1, 2, 3], [4, 5, 6, 7], [-1, -1, -1, -1], [-1, -1, -1, -1]]),
     components=[vm.Figure(figure=figure) for figure in example_cards + example_reference_cards],
     controls=[vm.Filter(column="Category")],
 )

@@ -9,7 +9,7 @@ from pages.examples import sankey
 sankey_page = vm.Page(
     title="Sankey",
     path="flow/sankey",
-    layout=vm.Layout(grid=PAGE_GRID),
+    layout=vm.Grid(grid=PAGE_GRID),
     components=[
         vm.Card(
             text="""
