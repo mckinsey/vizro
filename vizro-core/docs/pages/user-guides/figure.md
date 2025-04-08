@@ -51,7 +51,7 @@ To add a `Figure` to your page:
         # Create a layout with five rows and four columns. The KPI card is positioned in the first cell, while the remaining cells are empty.
         page = vm.Page(
             title="KPI card",
-            layout=vm.Layout(grid=[[0, -1, -1, -1]] + [[-1, -1, -1, -1]] * 4),
+            layout=vm.Grid(grid=[[0, -1, -1, -1]] + [[-1, -1, -1, -1]] * 4),
             components=[
                 vm.Figure(
                     figure=kpi_card( # For more information, refer to the API reference for kpi_card
@@ -92,6 +92,7 @@ To add a `Figure` to your page:
             layout:
               grid: [[0, -1, -1, -1], [-1, -1, -1, -1], [-1, -1, -1, -1], [-1, -1, -1, -1],
                  [-1, -1, -1, -1]]
+              type: grid
             title: KPI card
         ```
 
@@ -177,7 +178,7 @@ As described in the [API reference](../API-reference/figure-callables.md) and il
         # Create a layout with four rows and columns. The KPI cards are positioned in the first nine cells, while the remaining cells are empty.
         page = vm.Page(
             title="KPI cards",
-            layout=vm.Layout(grid=[[0, 1, 2, 3], [4, 5, 6, 7], [8, -1, -1, -1], [-1, -1, -1, -1]]),
+            layout=vm.Grid(grid=[[0, 1, 2, 3], [4, 5, 6, 7], [8, -1, -1, -1], [-1, -1, -1, -1]]),
 
             components=[vm.Figure(figure=figure) for figure in example_cards + example_reference_cards],
             controls=[vm.Filter(column="Category")],
@@ -265,6 +266,7 @@ As described in the [API reference](../API-reference/figure-callables.md) and il
                 type: filter
             layout:
               grid: [[0, 1, 2, 3], [4, 5, 6, 7], [8, -1, -1, -1], [-1, -1, -1, -1]]
+              type: grid
             title: KPI cards
         ```
 

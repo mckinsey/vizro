@@ -2,7 +2,7 @@
 
 The [`Page`][vizro.models.Page] and [`Container`][vizro.models.Container] models accept a `layout` argument that enables custom arrangement of charts and components on the screen. This guide shows how to customize the `layout` with:
 
-- [a grid layout](#grid-layout) using the [`Grid`][vizro.models.Layout] model (the default if no `layout` is specified)
+- [a grid layout](#grid-layout) using the [`Grid`][vizro.models.Grid] model (the default if no `layout` is specified)
 - [a flexible box layout](#flex-layout) using the [`Flex`][vizro.models.Flex] model
 
 !!! note
@@ -10,9 +10,9 @@ The [`Page`][vizro.models.Page] and [`Container`][vizro.models.Container] models
 
 ## Layout options: Grid and Flex
 
-The `layout` argument enables you to choose between two layout models: [`Grid`][vizro.models.Layout] (default) and [`Flex`][vizro.models.Flex]. These models provide different ways to arrange components on the page.
+The `layout` argument enables you to choose between two layout models: [`Grid`][vizro.models.Grid] (default) and [`Flex`][vizro.models.Flex]. These models provide different ways to arrange components on the page.
 
-- **Grid layout**: The [`Grid`][vizro.models.Layout] layout arranges components in a structured grid where rows and columns are explicitly defined. This layout is ideal for precise control over the placement of components.
+- **Grid layout**: The [`Grid`][vizro.models.Grid] layout arranges components in a structured grid where rows and columns are explicitly defined. This layout is ideal for precise control over the placement of components.
 - **Flex layout**: The [`Flex`][vizro.models.Flex] layout arranges components using a flexible box model, where items can grow, shrink, and wrap dynamically based on available space. This layout is ideal for responsive designs where components need to adapt to different screen sizes.
 
 !!! note "The default layout"
@@ -56,7 +56,7 @@ The `layout` argument enables you to choose between two layout models: [`Grid`][
 
 ### Configure the grid
 
-To customize the grid arrangement, configure the `grid` parameter of the [`Grid`][vizro.models.Layout] model.
+To customize the grid arrangement, configure the `grid` parameter of the [`Grid`][vizro.models.Grid] model.
 
 The example below shows an example of a valid `grid`:
 
@@ -76,7 +76,7 @@ grid = [[0, 1], [0, 2]]
 
 ### Understand stacking direction
 
-As described above, when no `Layout` is specified, components are presented **vertically** as a single-column stack. If you have three components, the default `Layout.grid` will be as follows, with three equally sized rows, each containing a component spanning the entire width:
+As described above, when no `layout` is specified, components are presented **vertically** as a single-column stack using `Grid`. If you have three components, the default `Grid.grid` will be as follows, with three equally sized rows, each containing a component spanning the entire width:
 
 ```python title="Vertical stacking"
 grid = [[0], [1], [2]]
@@ -104,7 +104,7 @@ This defines a single row that occupies the entire width and height, divided int
 
         page = vm.Page(
             title="one_left_two_right",
-            layout=vm.Layout(grid=[[0, 1],
+            layout=vm.Grid(grid=[[0, 1],
                                    [0, 2]]),
             components=[vm.Card(text="""# Component 0"""),
                         vm.Card(text="""# Component 1"""),
@@ -133,6 +133,7 @@ This defines a single row that occupies the entire width and height, divided int
                 type: card
             layout:
               grid: [[0, 1], [0, 2]]
+              type: grid
             title: one_left_two_right
         ```
 
@@ -143,7 +144,7 @@ This defines a single row that occupies the entire width and height, divided int
 
 If you need to divide the grid into subgrids for finer control or want to visually distinguish your subgrids, you can use [`Containers`](container.md). See our section on [when to use `Containers` vs. `Page.layout`](container.md#when-to-use-containers) for more information.
 
-The `Layout` provides full control over the arrangement of top-level components within a page, allowing arbitrarily granular control of the grid by creating larger grids.
+The `Grid` provides full control over the arrangement of top-level components within a page, allowing arbitrarily granular control of the grid by creating larger grids.
 
 !!! example "Grid Arrangement - Advanced Example"
     === "app.py"
@@ -155,8 +156,8 @@ The `Layout` provides full control over the arrangement of top-level components 
         gapminder = px.data.gapminder()
 
         page = vm.Page(
-            title="Custom Layout - Advanced Example",
-            layout=vm.Layout(grid=[[0, 1, 3, 4],
+            title="Custom Grid - Advanced Example",
+            layout=vm.Grid(grid=[[0, 1, 3, 4],
                                     [2, 2, 3, 4]]),
             components=[
                 vm.Graph(
@@ -263,7 +264,8 @@ The `Layout` provides full control over the arrangement of top-level components 
                 type: graph
             layout:
               grid: [[0, 1, 3, 4], [2, 2, 3, 4]]
-            title: Custom Layout - Advanced Example
+              type: grid
+            title: Custom Grid - Advanced Example
         ```
 
     === "Result"
@@ -277,20 +279,20 @@ Here is a reference table of example layouts:
 
 one row with one component, second row with two components stacked horizontally
 
-| Layout needed                                                                                                                                                                                                           | Grid                                                                                                                        | Code                                                          |
+| Grid needed                                                                                                                                                                                                           | Grid                                                                                                                        | Code                                                          |
 | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------- |
-| <img src="../../../assets/user_guides/layout/one_left_color.png" alt="one component" width="400"/>                                                                                                                      | <img src="../../../assets/user_guides/layout/1l_grid.png" alt="layout=vm.Layout(grid=[[0]])" width="100"/>                  | `layout=vm.Layout(grid=[[0]])`                                |
-| <img src="../../../assets/user_guides/layout/two_left_color.png" alt="two horizontally stacked rows, each with one component" width="400"/>                                                                             | <img src="../../../assets/user_guides/layout/2l_grid.png" width="100"/>                                                     | `layout=vm.Layout(grid=[[0],[1]])`                            |
-| <img src="../../../assets/user_guides/layout/two_top_color.png" alt="one row with two components set horizontally" width="400"/>                                                                                        | <img src="../../../assets/user_guides/layout/2t_grid.png" alt="layout=vm.Layout(grid=[[0],[1]])" width="100"/>              | `layout=vm.Layout(grid=[[0,1]])`                              |
-| <img src="../../../assets/user_guides/layout/three_left_color.png" alt="three horizontally stacked rows, each with one component" width="400"/>                                                                         | <img src="../../../assets/user_guides/layout/3l_grid.png" alt="layout=vm.Layout(grid=[[0],[1],[2]]" width="100"/>           | `layout=vm.Layout(grid=[[0],[1],[2]])` or <br/> `layout=None` |
-| <img src="../../../assets/user_guides/layout/one_left_two_right_color.png" alt="one row divided into two separate columns where the left column is one component and the right is two stacked components" width="400"/> | <img src="../../../assets/user_guides/layout/1l_2r_grid.png" alt="layout=vm.Layout(grid=[[0,1],[0,2]])"  width="100"/>      | `layout=vm.Layout(grid=[[0,1],[0,2]])`                        |
-| <img src="../../../assets/user_guides/layout/one_top_two_bottom_color.png" alt="two rows with the top as a single component and the bottom divided into two components" width="400"/>                                   | <img src="../../../assets/user_guides/layout/1t_2b_grid.png" alt="layout=vm.Layout(grid=[[0,0],[1,2]])" width="100"/>       | `layout=vm.Layout(grid=[[0,0],[1,2]])`                        |
-| <img src="../../../assets/user_guides/layout/two_top_one_bottom_color.png" alt="two rows with the top divided into two columns where each holds one component, and the bottom as a single component" width="400"/>      | <img src="../../../assets/user_guides/layout/2t_1b_grid.png" alt="layout=vm.Layout(grid=[[0,1],[2,2]])" width="100"/>       | `layout=vm.Layout(grid=[[0,1],[2,2]])`                        |
-| <img src="../../../assets/user_guides/layout/one_left_three_right_color.png" alt="two columns where the left is a single component and the right is a set of three horizontally stacked components" width="400"/>       | <img src="../../../assets/user_guides/layout/1l_3r_grid.png" alt="layout=vm.Layout(grid=[[0,1],[0,2],[0,3]])" width="100"/> | `layout=vm.Layout(grid=[[0,1],[0,2],[0,3]])`                  |
-| <img src="../../../assets/user_guides/layout/two_left_two_right_color.png" alt="two rows where each row is two components" width="400"/>                                                                                | <img src="../../../assets/user_guides/layout/2t_2b_grid.png" alt="layout=vm.Layout(grid=[[0,1],[2,3]])" width="100"/>       | `layout=vm.Layout(grid=[[0,1],[2,3]])`                        |
-| <img src="../../../assets/user_guides/layout/three_left_one_right_color.png" alt="two columns where the left is a set of three horizontally stacked components and the right is a single component" width="400"/>       | <img src="../../../assets/user_guides/layout/3l_1r_grid.png" alt="layout=vm.Layout(grid=[[0,3],[1,3],[2,3]])" width="100"/> | `layout=vm.Layout(grid=[[0,3],[1,3],[2,3]])`                  |
-| <img src="../../../assets/user_guides/layout/one_top_three_bottom_color.png" alt="two rows where the top is a single component and the bottom is three separate components" width="400"/>                               | <img src="../../../assets/user_guides/layout/1t_3b_grid.png" alt="layout=vm.Layout(grid=[[0,0,0],[1,2,3]])" width="100"/>   | `layout=vm.Layout(grid=[[0,0,0],[1,2,3]])`                    |
-| <img src="../../../assets/user_guides/layout/three_top_one_bottom_color.png" alt="two rows where the top is three separate components and the bottom is a single component" width="400"/>                               | <img src="../../../assets/user_guides/layout/3t_1b_grid.png" alt="layout=vm.Layout(grid=[[0,1,2],[3,3,3]])" width="100"/>   | `layout=vm.Layout(grid=[[0,1,2],[3,3,3]])`                    |
+| <img src="../../../assets/user_guides/layout/one_left_color.png" alt="one component" width="400"/>                                                                                                                      | <img src="../../../assets/user_guides/layout/1l_grid.png" alt="layout=vm.Grid(grid=[[0]])" width="100"/>                  | `layout=vm.Grid(grid=[[0]])`                                |
+| <img src="../../../assets/user_guides/layout/two_left_color.png" alt="two horizontally stacked rows, each with one component" width="400"/>                                                                             | <img src="../../../assets/user_guides/layout/2l_grid.png" width="100"/>                                                     | `layout=vm.Grid(grid=[[0],[1]])`                            |
+| <img src="../../../assets/user_guides/layout/two_top_color.png" alt="one row with two components set horizontally" width="400"/>                                                                                        | <img src="../../../assets/user_guides/layout/2t_grid.png" alt="layout=vm.Grid(grid=[[0],[1]])" width="100"/>              | `layout=vm.Grid(grid=[[0,1]])`                              |
+| <img src="../../../assets/user_guides/layout/three_left_color.png" alt="three horizontally stacked rows, each with one component" width="400"/>                                                                         | <img src="../../../assets/user_guides/layout/3l_grid.png" alt="layout=vm.Grid(grid=[[0],[1],[2]]" width="100"/>           | `layout=vm.Grid(grid=[[0],[1],[2]])` or <br/> `layout=None` |
+| <img src="../../../assets/user_guides/layout/one_left_two_right_color.png" alt="one row divided into two separate columns where the left column is one component and the right is two stacked components" width="400"/> | <img src="../../../assets/user_guides/layout/1l_2r_grid.png" alt="layout=vm.Grid(grid=[[0,1],[0,2]])"  width="100"/>      | `layout=vm.Grid(grid=[[0,1],[0,2]])`                        |
+| <img src="../../../assets/user_guides/layout/one_top_two_bottom_color.png" alt="two rows with the top as a single component and the bottom divided into two components" width="400"/>                                   | <img src="../../../assets/user_guides/layout/1t_2b_grid.png" alt="layout=vm.Grid(grid=[[0,0],[1,2]])" width="100"/>       | `layout=vm.Grid(grid=[[0,0],[1,2]])`                        |
+| <img src="../../../assets/user_guides/layout/two_top_one_bottom_color.png" alt="two rows with the top divided into two columns where each holds one component, and the bottom as a single component" width="400"/>      | <img src="../../../assets/user_guides/layout/2t_1b_grid.png" alt="layout=vm.Grid(grid=[[0,1],[2,2]])" width="100"/>       | `layout=vm.Grid(grid=[[0,1],[2,2]])`                        |
+| <img src="../../../assets/user_guides/layout/one_left_three_right_color.png" alt="two columns where the left is a single component and the right is a set of three horizontally stacked components" width="400"/>       | <img src="../../../assets/user_guides/layout/1l_3r_grid.png" alt="layout=vm.Grid(grid=[[0,1],[0,2],[0,3]])" width="100"/> | `layout=vm.Grid(grid=[[0,1],[0,2],[0,3]])`                  |
+| <img src="../../../assets/user_guides/layout/two_left_two_right_color.png" alt="two rows where each row is two components" width="400"/>                                                                                | <img src="../../../assets/user_guides/layout/2t_2b_grid.png" alt="layout=vm.Grid(grid=[[0,1],[2,3]])" width="100"/>       | `layout=vm.Grid(grid=[[0,1],[2,3]])`                        |
+| <img src="../../../assets/user_guides/layout/three_left_one_right_color.png" alt="two columns where the left is a set of three horizontally stacked components and the right is a single component" width="400"/>       | <img src="../../../assets/user_guides/layout/3l_1r_grid.png" alt="layout=vm.Grid(grid=[[0,3],[1,3],[2,3]])" width="100"/> | `layout=vm.Grid(grid=[[0,3],[1,3],[2,3]])`                  |
+| <img src="../../../assets/user_guides/layout/one_top_three_bottom_color.png" alt="two rows where the top is a single component and the bottom is three separate components" width="400"/>                               | <img src="../../../assets/user_guides/layout/1t_3b_grid.png" alt="layout=vm.Grid(grid=[[0,0,0],[1,2,3]])" width="100"/>   | `layout=vm.Grid(grid=[[0,0,0],[1,2,3]])`                    |
+| <img src="../../../assets/user_guides/layout/three_top_one_bottom_color.png" alt="two rows where the top is three separate components and the bottom is a single component" width="400"/>                               | <img src="../../../assets/user_guides/layout/3t_1b_grid.png" alt="layout=vm.Grid(grid=[[0,1,2],[3,3,3]])" width="100"/>   | `layout=vm.Grid(grid=[[0,1,2],[3,3,3]])`                    |
 
 <!--vale on -->
 
@@ -310,7 +312,7 @@ grid = [[0, 1, -1], [0, 2, -1]]
 
         page = vm.Page(
             title="Adding empty spaces",
-            layout=vm.Layout(grid=[[0, 1, -1],
+            layout=vm.Grid(grid=[[0, 1, -1],
                                    [0, 2, -1]]),
             components=[vm.Card(text="""# Component 0"""),
                         vm.Card(text="""# Component 1"""),
@@ -339,6 +341,7 @@ grid = [[0, 1, -1], [0, 2, -1]]
                 type: card
             layout:
               grid: [[0, 1, -1], [0, 2, -1]]
+              type: grid
             title: Adding empty spaces
         ```
 
@@ -360,7 +363,7 @@ By default, the grid fits all charts/components on the screen. This can lead to 
 
         page = vm.Page(
             title="Activate scrolling",
-            layout=vm.Layout(grid=[[i] for i in range(8)],
+            layout=vm.Grid(grid=[[i] for i in range(8)],
                              row_min_height="240px"),
             components=[vm.Card(text="""# Component 0"""),
                         vm.Card(text="""# Component 1"""),
@@ -410,6 +413,7 @@ By default, the grid fits all charts/components on the screen. This can lead to 
             layout:
               grid: [[0], [1], [2], [3], [4], [5], [6], [7]]
               row_min_height: 240px
+              type: grid
             title: Activate scrolling
         ```
 
@@ -418,13 +422,13 @@ By default, the grid fits all charts/components on the screen. This can lead to 
 
 ### Further customization
 
-For further customization, such as changing the gap between row and column, refer to the documentation of the [`Layout`][vizro.models.Layout] model.
+For further customization, such as changing the gap between row and column, refer to the documentation of the [`Grid`][vizro.models.Grid] model.
 
 ## Flex Layout
 
 The [Flex][vizro.models.Flex] layout offers a dynamic and flexible way to organize components within a page. Built on the [CSS Flexbox (flexible box) concept](https://developer.mozilla.org/en-US/docs/Web/CSS/CSS_flexible_box_layout/Basic_concepts_of_flexbox), it is designed to create responsive layouts that adjust to varying screen sizes and available space.
 
-Unlike the [Grid][vizro.models.Layout] layout, which uses a predefined row-and-column structure, the `Flex` layout provides greater flexibility by enabling components to resize, align, and position themselves dynamically based on the layout configuration.
+Unlike the [Grid][vizro.models.Grid] layout, which uses a predefined row-and-column structure, the `Flex` layout provides greater flexibility by enabling components to resize, align, and position themselves dynamically based on the layout configuration.
 
 If you're new to Flexbox, we strongly recommend exploring [An Interactive Guide to Flexbox](https://www.joshwcomeau.com/css/interactive-guide-to-flexbox/).
 
@@ -731,7 +735,7 @@ For example, in the layout below, we use the `Grid` layout to arrange two charts
 
         page = vm.Page(
             title="Combine Flex and Grid",
-            layout=vm.Layout(grid=[[0, 1], [2, 2]]),
+            layout=vm.Grid(grid=[[0, 1], [2, 2]]),
             components=[
                 vm.Graph(figure=px.violin(tips, y="tip", x="day", color="day", box=True)),
                 vm.Graph(figure=px.histogram(tips, x="total_bill")),
@@ -764,7 +768,7 @@ For example, in the layout below, we use the `Grid` layout to arrange two charts
 
 ## Alternative layout approaches
 
-In general, any arbitrarily granular layout can already be achieved using either the [`Grid`][vizro.models.Layout] (default) and/or the [`Flex`][vizro.models.Flex] model and is our recommended approach if you want to arrange components on a page with consistent row and column spacing.
+In general, any arbitrarily granular layout can already be achieved using either the [`Grid`][vizro.models.Grid] (default) and/or the [`Flex`][vizro.models.Flex] model and is our recommended approach if you want to arrange components on a page with consistent row and column spacing.
 
 !!! note "Alternative layout approaches: `Tabs` and `Containers`"
     [`Tabs`][vizro.models.Tabs] and [`Containers`][vizro.models.Container] provide alternative methods for customizing your page layout. For instance, if you need more granular control, want to break the overall page grid into subgrids, or wish to visually distinguish your subgrid, refer to our [user guide on Containers](container.md).
