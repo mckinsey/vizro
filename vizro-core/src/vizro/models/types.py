@@ -30,7 +30,12 @@ def _get_layout_discriminator(layout: Any) -> Optional[str]:
         try:
             return layout["type"]
         except KeyError:
-            warnings.warn("yada", FutureWarning, stacklevel=3)
+            warnings.warn(
+                "`layout` without an explicit `type` specified will no longer work in Vizro 0.2.0. To ensure "
+                "future compatibility, specify `type: grid` for your `layout`.",
+                FutureWarning,
+                stacklevel=3,
+            )
             return "legacy_layout"
 
     # If a model has been specified then this is equivalent to saying discriminator="type". When None is returned,
@@ -556,8 +561,7 @@ LayoutType = Annotated[
     ),
 ]
 """Discriminated union. Type of layout to place components on the page:
-[`Layout`][vizro.models.Layout] or [`Flex`][vizro.models.Flex]."""
-# TODO NOW: check API docs.
+[`Grid`][vizro.models.Grid] or [`Flex`][vizro.models.Flex]."""
 # TODO NOW: updates docs and then should be done.
 # TODO NOW: think about whether we need unit or e2e example with old vm.Layout.
 

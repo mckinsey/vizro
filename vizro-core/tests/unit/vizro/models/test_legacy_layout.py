@@ -9,8 +9,8 @@ from vizro.models._grid import GAP_DEFAULT, MIN_DEFAULT, ColRowGridLines, _get_u
 from vizro.models.types import LayoutType
 
 pytestmark = [
-    pytest.mark.filterwarnings("ignore:Blah:FutureWarning"),
-    pytest.mark.filterwarnings("ignore:yada:FutureWarning"),
+    pytest.mark.filterwarnings("ignore:The `Layout` model has been renamed `Grid`:FutureWarning"),
+    pytest.mark.filterwarnings("ignore:`layout` without an explicit `type`:FutureWarning"),
 ]
 
 
@@ -18,7 +18,7 @@ class TestLayoutInstantiation:
     """Tests model instantiation and the validators run at that time."""
 
     def test_layout_deprecated(self):
-        with pytest.warns(FutureWarning, match="Blah"):
+        with pytest.warns(FutureWarning, match="The `Layout` model has been renamed `Grid`"):
             vm.Layout(grid=[[0]])
 
     def test_layout_deprecated_yaml(self):
@@ -30,7 +30,10 @@ class TestLayoutInstantiation:
         Flex = vm.Flex  # noqa: F841
         Layout = vm.Layout  # noqa: F841
 
-        with pytest.warns(FutureWarning, match="Blah"), pytest.warns(FutureWarning, match="yada"):
+        with (
+            pytest.warns(FutureWarning, match="The `Layout` model has been renamed `Grid`"),
+            pytest.warns(FutureWarning, match="`layout` without an explicit `type`"),
+        ):
             layout = TypeAdapter(LayoutType).validate_python({"grid": [[0]]})
 
         # Use type rather than isinstance to not pass if it's a subclass.

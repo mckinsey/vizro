@@ -250,6 +250,12 @@ class Grid(VizroBaseModel):
         return component_container
 
 
-@deprecated("Blah balh", category=FutureWarning)
+@deprecated(
+    "The `Layout` model has been renamed `Grid`, and `Layout` will no longer exist in Vizro 0.2.0. To ensure future "
+    "compatibility, replace your reference to `vm.Layout` with `vm.Grid`.",
+    category=FutureWarning,
+)
 class Layout(Grid):
+    """Deprecated. This model has been renamed [`Grid`][vizro.models.Grid]."""
+
     type: Literal["legacy_layout"] = "legacy_layout"  # type: ignore[assignment]

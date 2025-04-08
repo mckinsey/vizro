@@ -5,6 +5,9 @@ The [`Page`][vizro.models.Page] and [`Container`][vizro.models.Container] models
 - [a grid layout](#grid-layout) using the [`Grid`][vizro.models.Layout] model (the default if no `layout` is specified)
 - [a flexible box layout](#flex-layout) using the [`Flex`][vizro.models.Flex] model
 
+!!! note
+    The `Grid` model used to be called `Layout`, and the name `Layout` will no longer exist in Vizro 0.2.0. See our [full list of deprecations and breaking changes](../API-reference/deprecations.md).
+
 ## Layout options: Grid and Flex
 
 The `layout` argument enables you to choose between two layout models: [`Grid`][vizro.models.Layout] (default) and [`Flex`][vizro.models.Flex]. These models provide different ways to arrange components on the page.
