@@ -37,8 +37,10 @@ class TestTabsInstantiation:
         with pytest.raises(ValidationError, match="Input should be a valid dictionary or instance of Container."):
             vm.Tabs(tabs=[vm.Button()])
 
-    def test_missing_container_title(self):
-        with pytest.raises(ValidationError, match="Each `Container` in `tabs` requires a `title` provided."):
+    def test_tab_has_title(self):
+        with pytest.raises(
+            ValidationError, match="`Container` must have a `title` explicitly set when used inside `Tabs`."
+        ):
             vm.Tabs(tabs=[vm.Container(components=[vm.Button()])])
 
 

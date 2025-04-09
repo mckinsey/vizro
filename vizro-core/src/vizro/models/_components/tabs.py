@@ -1,15 +1,21 @@
 from __future__ import annotations
 
-from typing import TYPE_CHECKING, Literal
+from typing import TYPE_CHECKING, Annotated, Literal
 
 import dash_bootstrap_components as dbc
-from pydantic import conlist, field_validator
+from pydantic import AfterValidator, conlist
 
 from vizro.models import VizroBaseModel
 from vizro.models._models_utils import _log_call
 
 if TYPE_CHECKING:
     from vizro.models._components import Container
+
+
+def validate_tab_has_title(tab: Container) -> Container:
+    if not tab.title:
+        raise ValueError("`Container` must have a `title` explicitly set when used inside `Tabs`.")
+    return tab
 
 
 class Tabs(VizroBaseModel):
@@ -23,13 +29,7 @@ class Tabs(VizroBaseModel):
 
     type: Literal["tabs"] = "tabs"
     # TODO[mypy], see: https://github.com/pydantic/pydantic/issues/156 for tabs field
-    tabs: conlist(Container, min_length=1)  # type: ignore[valid-type]
-
-    @field_validator("tabs")
-    def validate_tabs_have_titles(cls, tabs: list[Container]) -> list[Container]:
-        if any(tab.title == "" for tab in tabs):
-            raise ValueError("Each `Container` in `tabs` requires a `title` provided.")
-        return tabs
+    tabs: conlist(Annotated[Container, AfterValidator(validate_tab_has_title)], min_length=1)  # type: ignore[valid-type]
 
     @_log_call
     def build(self):
