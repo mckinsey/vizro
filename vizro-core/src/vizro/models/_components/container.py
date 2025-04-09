@@ -20,7 +20,7 @@ class Container(VizroBaseModel):
         type (Literal["container"]): Defaults to `"container"`.
         components (list[ComponentType]): See [ComponentType][vizro.models.types.ComponentType]. At least one component
             has to be provided.
-        title (str): Title to be displayed.
+        title (str): Title of the `Container`. Defaults to `""`.
         layout (Optional[LayoutType]): Layout to place components in. Defaults to `None`.
         variant (Literal["plain", "filled", "outlined"]): Predefined styles to choose from. Options are `plain`,
             `filled` or `outlined`. Defaults to `plain`.
@@ -39,7 +39,7 @@ class Container(VizroBaseModel):
         Annotated[ComponentType, BeforeValidator(check_captured_callable_model)],
         min_length=1,
     )
-    title: str = Field(description="Title to be displayed.")
+    title: str = Field(default="", description="Title of the `Container`")
     layout: Annotated[Optional[LayoutType], AfterValidator(set_layout), Field(default=None, validate_default=True)]
     variant: Literal["plain", "filled", "outlined"] = Field(
         default="plain",
@@ -78,7 +78,9 @@ class Container(VizroBaseModel):
         defaults = {
             "id": self.id,
             "children": [
-                html.H3(children=self.title, className="container-title", id=f"{self.id}_title"),
+                html.H3(children=self.title, className="container-title", id=f"{self.id}_title")
+                if self.title
+                else None,
                 _build_inner_layout(self.layout, self.components),
             ],
             "fluid": True,
