@@ -177,8 +177,18 @@ class TestLegacyActionInstantiation:
         [
             ("custom_action_with_one_arg", {}, ["component.property"], [State("component", "property")]),
             ("custom_action_with_one_arg", {"arg_1": "hardcoded"}, [], []),
-            ("custom_action_with_two_args", {"arg_1": "hardcoded"}, ["component.property"], [State("component", "property")]),
-            ("custom_action_with_two_args", {"arg_1": "component.property"}, ["component.property"], [State("component", "property")]),
+            (
+                "custom_action_with_two_args",
+                {"arg_1": "hardcoded"},
+                ["component.property"],
+                [State("component", "property")],
+            ),
+            (
+                "custom_action_with_two_args",
+                {"arg_1": "component.property"},
+                ["component.property"],
+                [State("component", "property")],
+            ),
         ],
     )
     def test_mixed_runtime_and_action_inputs(
@@ -285,7 +295,9 @@ class TestActionInstantiation:
             ),
         ],
     )
-    def test_runtime_id_property_keyword_inputs(self, request, custom_action_fixture_name, runtime_inputs, _transformed_inputs):
+    def test_runtime_id_property_keyword_inputs(
+        self, request, custom_action_fixture_name, runtime_inputs, _transformed_inputs
+    ):
         custom_action = request.getfixturevalue(custom_action_fixture_name)
 
         action = Action(function=custom_action(**runtime_inputs))
@@ -307,7 +319,9 @@ class TestActionInstantiation:
             },
         }
 
-    def test_builtin_arguments_with_real_controls(self, custom_action_with_one_arg_and_controls, _real_builtin_controls):
+    def test_builtin_arguments_with_real_controls(
+        self, custom_action_with_one_arg_and_controls, _real_builtin_controls
+    ):
         action = Action(function=custom_action_with_one_arg_and_controls("component.property"))
 
         assert not action._legacy
