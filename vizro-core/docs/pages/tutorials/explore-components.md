@@ -391,7 +391,7 @@ As you explore the dashboard, you might notice that the current layout could use
 
 ### 4.4. Configure the layout
 
-By default, Vizro places each element in the order it was added to `components`, and spaces them equally. You can use the [`Layout`][vizro.models.Layout] to control the placement and size of components on the page. To learn more about how to configure layouts, check out [How to use layouts](../user-guides/layouts.md).
+By default, Vizro places each element in the order it was added to `components`, and spaces them equally. You can use the [`Grid`][vizro.models.Grid] to control the placement and size of components on the page. To learn more about how to configure layouts, check out [How to use layouts](../user-guides/layouts.md).
 
 In the following layout configuration, the layout is divided into **four columns** and **four rows**. The numbers in the grid correspond to the index of the components in the `components` list.
 
@@ -414,7 +414,7 @@ Run the code below to apply the layout to the dashboard page:
 !!! example "Code - Layout"
     === "Snippet - Layout"
         ```py
-        layout = vm.Layout(
+        layout = vm.Grid(
             grid=[[0, 1, -1, -1],
                   [2, 2, 2, 2],
                   [2, 2, 2, 2],
@@ -447,7 +447,7 @@ Run the code below to apply the layout to the dashboard page:
 
         second_page = vm.Page(
             title="Summary",
-            layout=vm.Layout(grid=[[0, 1, -1, -1], [2, 2, 2, 2], [2, 2, 2, 2], [2, 2, 2, 2]]),
+            layout=vm.Grid(grid=[[0, 1, -1, -1], [2, 2, 2, 2], [2, 2, 2, 2], [2, 2, 2, 2]]),
             components=[
                 vm.Figure(
                     figure=kpi_card(
@@ -536,7 +536,7 @@ To add a filter to the dashboard, follow these steps:
 
         second_page = vm.Page(
             title="Summary",
-            layout=vm.Layout(grid=[[0, 1, -1, -1], [2, 2, 2, 2], [2, 2, 2, 2], [2, 2, 2, 2]]),
+            layout=vm.Grid(grid=[[0, 1, -1, -1], [2, 2, 2, 2], [2, 2, 2, 2], [2, 2, 2, 2]]),
             components=[
                 vm.Figure(
                     figure=kpi_card(
@@ -663,7 +663,7 @@ This step should feel familiar. Let's add all three charts to the page.
 
         second_page = vm.Page(
             title="Summary",
-            layout=vm.Layout(grid=[[0, 1, -1, -1], [2, 2, 2, 2], [2, 2, 2, 2], [2, 2, 2, 2]]),
+            layout=vm.Grid(grid=[[0, 1, -1, -1], [2, 2, 2, 2], [2, 2, 2, 2], [2, 2, 2, 2]]),
             components=[
                 vm.Figure(
                     figure=kpi_card(
@@ -757,7 +757,7 @@ Run the code below to apply the layout to the dashboard page:
 !!! example "Code - Layout"
     === "Snippet - Layout"
         ```py
-        layout=vm.Layout(grid=[[0, 1], [2, 2]]),
+        layout=vm.Grid(grid=[[0, 1], [2, 2]]),
         ```
 
     === "Code - dashboard"
@@ -785,7 +785,7 @@ Run the code below to apply the layout to the dashboard page:
 
         second_page = vm.Page(
             title="Summary",
-            layout=vm.Layout(grid=[[0, 1, -1, -1], [2, 2, 2, 2], [2, 2, 2, 2], [2, 2, 2, 2]]),
+            layout=vm.Grid(grid=[[0, 1, -1, -1], [2, 2, 2, 2], [2, 2, 2, 2], [2, 2, 2, 2]]),
             components=[
                 vm.Figure(
                     figure=kpi_card(
@@ -827,7 +827,7 @@ Run the code below to apply the layout to the dashboard page:
 
         third_page = vm.Page(
             title="Analysis",
-            layout=vm.Layout(grid=[[0, 1], [2, 2]]),
+            layout=vm.Grid(grid=[[0, 1], [2, 2]]),
             components=[
                 vm.Graph(
                     title="Where do we get more tips?",
@@ -905,7 +905,7 @@ To add a parameter to the dashboard:
 
         second_page = vm.Page(
             title="Summary",
-            layout=vm.Layout(grid=[[0, 1, -1, -1], [2, 2, 2, 2], [2, 2, 2, 2], [2, 2, 2, 2]]),
+            layout=vm.Grid(grid=[[0, 1, -1, -1], [2, 2, 2, 2], [2, 2, 2, 2], [2, 2, 2, 2]]),
             components=[
                 vm.Figure(
                     figure=kpi_card(
@@ -947,7 +947,7 @@ To add a parameter to the dashboard:
 
         third_page = vm.Page(
             title="Analysis",
-            layout=vm.Layout(grid=[[0, 1], [2, 2]]),
+            layout=vm.Grid(grid=[[0, 1], [2, 2]]),
             components=[
                 vm.Graph(
                     id="bar",
@@ -1042,7 +1042,7 @@ This requires creating a custom chart with the following steps. For more informa
 
         second_page = vm.Page(
             title="Summary",
-            layout=vm.Layout(grid=[[0, 1, -1, -1], [2, 2, 2, 2], [2, 2, 2, 2], [2, 2, 2, 2]]),
+            layout=vm.Grid(grid=[[0, 1, -1, -1], [2, 2, 2, 2], [2, 2, 2, 2], [2, 2, 2, 2]]),
             components=[
                 vm.Figure(
                     figure=kpi_card(
@@ -1084,7 +1084,7 @@ This requires creating a custom chart with the following steps. For more informa
 
         third_page = vm.Page(
             title="Analysis",
-            layout=vm.Layout(grid=[[0, 1], [2, 2]]),
+            layout=vm.Grid(grid=[[0, 1], [2, 2]]),
             components=[
                 vm.Graph(
                     id="bar",
@@ -1186,7 +1186,7 @@ Your directory structure should look like this:
 
         second_page = vm.Page(
             title="Summary",
-            layout=vm.Layout(grid=[[0, 1, -1, -1], [2, 2, 2, 2], [2, 2, 2, 2], [2, 2, 2, 2]]),
+            layout=vm.Grid(grid=[[0, 1, -1, -1], [2, 2, 2, 2], [2, 2, 2, 2], [2, 2, 2, 2]]),
             components=[
                 vm.Figure(
                     figure=kpi_card(
@@ -1228,7 +1228,7 @@ Your directory structure should look like this:
 
         third_page = vm.Page(
             title="Analysis",
-            layout=vm.Layout(grid=[[0, 1], [2, 2]]),
+            layout=vm.Grid(grid=[[0, 1], [2, 2]]),
             components=[
                 vm.Graph(
                     id="bar",
@@ -1330,7 +1330,7 @@ To create a navigation bar, follow these steps:
 
         second_page = vm.Page(
             title="Summary",
-            layout=vm.Layout(grid=[[0, 1, -1, -1], [2, 2, 2, 2], [2, 2, 2, 2], [2, 2, 2, 2]]),
+            layout=vm.Grid(grid=[[0, 1, -1, -1], [2, 2, 2, 2], [2, 2, 2, 2], [2, 2, 2, 2]]),
             components=[
                 vm.Figure(
                     figure=kpi_card(
@@ -1372,7 +1372,7 @@ To create a navigation bar, follow these steps:
 
         third_page = vm.Page(
             title="Analysis",
-            layout=vm.Layout(grid=[[0, 1], [2, 2]]),
+            layout=vm.Grid(grid=[[0, 1], [2, 2]]),
             components=[
                 vm.Graph(
                     id="bar",

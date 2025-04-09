@@ -1,4 +1,4 @@
-"""Components that are placed according to the `Layout` of the `Page`."""
+"""Components that are placed according to the `layout` of the `Page`."""
 
 from vizro.models._components.ag_grid import AgGrid
 from vizro.models._components.button import Button

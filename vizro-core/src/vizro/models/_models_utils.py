@@ -1,6 +1,5 @@
 import logging
 from functools import wraps
-from typing import cast
 
 from dash import html
 
@@ -49,13 +48,10 @@ REPLACEMENT_STRINGS = {
 
 def _build_inner_layout(layout, components):
     """Builds inner layout and adds components to grid or flex. Used inside `Page`, `Container` and `Form`."""
-    # Below added to remove mypy error - cannot actually be None if you check components and layout field together
-    from vizro.models import Layout
-
-    layout = cast(Layout, layout)
+    from vizro.models import Grid
 
     components_container = layout.build()
-    if isinstance(layout, Layout):
+    if isinstance(layout, Grid):
         for idx, component in enumerate(components):
             components_container[f"{layout.id}_{idx}"].children = component.build()
     else:

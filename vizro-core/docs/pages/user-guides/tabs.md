@@ -9,7 +9,7 @@ They are essentially a way of putting multiple [`Containers`][vizro.models.Conta
   <figcaption>Displaying multiple containers in Tabs</figcaption>
 </figure>
 
-Both `Tabs` and `Containers` are a more advanced technique for customizing your page layout. If you want to arrange components on a page, we recommend reading our [user guide on `Layout`](layouts.md) first.
+Both `Tabs` and `Containers` are a more advanced technique for customizing your page layout. If you want to arrange components on a page, we recommend reading our [user guide on layouts](layouts.md) first.
 
 This guide shows you how to use tabs to organize your `Containers` into subsections inside the dashboard.
 
@@ -22,6 +22,7 @@ To add [`Tabs`][vizro.models.Tabs] to your page, do the following:
 
 1. Insert the [`Tabs`][vizro.models.Tabs] into the `components` argument of the [`Page`][vizro.models.Page]
 1. Insert your [`Containers`][vizro.models.Container] into the `tabs` argument of the [`Tabs`][vizro.models.Tabs]
+1. Add a `title` to the `Container`, which will be used as the `label` for the corresponding `Tab`.
 
 !!! example "Tabs"
     === "app.py"

@@ -4,27 +4,32 @@ import vizro.models as vm
 import vizro.plotly.express as px
 from vizro import Vizro
 
-tips = px.data.tips()
-
-page1 = vm.Page(
-    title="Default",
-    layout=vm.Layout(grid=[[1, 2], [0, 0]]),
-    components=[
-        vm.Card(text="""# Good morning!"""),
-        vm.Graph(
-            title="Where do we get more tips?",
-            figure=px.bar(tips, y="tip", x="day"),
-        ),
-        vm.Graph(
-            title="Is the average driven by a few outliers?",
-            figure=px.violin(tips, y="tip", x="day", color="day", box=True),
-        ),
-    ],
-    controls=[vm.Filter(column="day")],
-)
+# Uncomment the below to see the warnings
+layouts = [
+    vm.Grid(grid=[[0]]),
+    vm.Flex(),
+    # vm.Layout(grid=[[0]]),
+    {"type": "grid", "grid": [[0]]},
+    {"type": "flex"},
+    # {"grid": [[0]]},
+]
 
 
-dashboard = vm.Dashboard(pages=[page1])
+pages_1 = [
+    vm.Page(title=f"Page {i}", components=[vm.Card(text=f"`{layout!r}`")], layout=layout)
+    for i, layout in enumerate(layouts)
+]
+pages_2 = [
+    vm.Page(
+        title=f"Page {i}",
+        components=[vm.Container(title="Container", components=[vm.Card(text=f"`{layout!r}`")], layout=layout)],
+    )
+    for i, layout in enumerate(layouts, len(layouts))
+]
+
+
+dashboard = vm.Dashboard(pages=pages_1 + pages_2)
+
 
 if __name__ == "__main__":
     Vizro().build(dashboard).run()
