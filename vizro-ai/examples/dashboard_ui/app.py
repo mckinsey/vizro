@@ -15,7 +15,6 @@ from components import (
     CodeClipboard,
     CustomDashboard,
     DropdownMenu,
-    FlexContainer,
     HeaderComponent,
     Icon,
     Modal,
@@ -49,9 +48,8 @@ vm.Container.add_type("components", ToggleSwitch)
 vm.Container.add_type("components", UserPromptTextArea)
 vm.Container.add_type("components", DropdownMenu)
 vm.Page.add_type("components", HeaderComponent)
-vm.Page.add_type("components", FlexContainer)
 
-FlexContainer.add_type("components", DropdownMenu)
+vm.Container.add_type("components", DropdownMenu)
 
 
 SUPPORTED_MODELS = {
@@ -82,7 +80,9 @@ plot_page = vm.Page(
     ),
     components=[
         HeaderComponent(),
-        FlexContainer(
+        vm.Container(
+            title="",
+            layout=vm.Flex(),
             components=[
                 vm.Container(
                     id="upload-data-container",
@@ -165,9 +165,11 @@ plot_page = vm.Page(
                         col_gap="12px",
                     ),
                 ),
-            ]
+            ],
         ),
-        FlexContainer(
+        vm.Container(
+            title="",
+            layout=vm.Flex(),
             components=[
                 vm.Graph(id="graph", figure=px.scatter(pd.DataFrame())),
                 DropdownMenu(id="dropdown-menu"),
