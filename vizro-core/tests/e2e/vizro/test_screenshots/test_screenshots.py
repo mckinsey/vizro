@@ -200,6 +200,7 @@ def test_extra_parameter(dash_br):
 
     # open datepicker calendar and close it to scroll to the end of the page
     dash_br.multiple_click("button[class*='DatePickerInput']", 2)
+    dash_br.wait_for_no_elements('div[data-calendar="true"]')
 
 
 @pytest.mark.mobile_screenshots
