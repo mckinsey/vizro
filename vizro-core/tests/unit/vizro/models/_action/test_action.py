@@ -1,7 +1,5 @@
 """Unit tests for vizro.models.Action."""
 
-import textwrap
-
 import pytest
 from asserts import assert_component_equal
 from dash import Output, State, html
@@ -15,6 +13,42 @@ from vizro.models.types import capture
 
 
 @pytest.fixture
+def custom_action_with_no_args():
+    @capture("action")
+    def _custom_action():
+        pass
+
+    return _custom_action
+
+
+@pytest.fixture
+def custom_action_with_one_arg():
+    @capture("action")
+    def _custom_action(arg_1):
+        pass
+
+    return _custom_action
+
+
+@pytest.fixture
+def custom_action_with_one_arg_and_controls():
+    @capture("action")
+    def _custom_action(arg_1, _controls):
+        pass
+
+    return _custom_action
+
+
+@pytest.fixture
+def custom_action_with_two_args():
+    @capture("action")
+    def _custom_action(arg_1, arg_2):
+        pass
+
+    return _custom_action
+
+
+@pytest.fixture
 def custom_action_mock_return(request):
     """Return an action function that returns the value of the request param."""
 
@@ -25,28 +59,6 @@ def custom_action_mock_return(request):
     return _custom_action_mock_return
 
 
-@pytest.fixture
-def custom_action_with_parameters(request):
-    """Return a custom action function with the specified parameters."""
-    # Parameters in format: "arg_1, arg_2, arg_3"
-    parameters = ", ".join(request.param)
-
-    # Create a function with the specified number of parameters that returns their values
-    func_code = textwrap.dedent(f"""
-        from vizro.models.types import capture
-
-        @capture("action")
-        def custom_action({parameters}):
-            pass
-    """)
-
-    local_vars = {}
-    exec(func_code, {}, local_vars)
-
-    return local_vars["custom_action"]
-
-
-# TODO: This is used in the single test only. Should it be moved there?
 @pytest.fixture
 def _real_builtin_controls(standard_px_chart):
     """Instantiates managers with one page that contains filter, parameter, and filter_interaction actions."""
@@ -90,27 +102,30 @@ def _real_builtin_controls(standard_px_chart):
     }
 
 
-class TestActionInstantiation:
-    """Tests model instantiation."""
+class TestLegacyActionInstantiation:
+    """Tests legacy model instantiation."""
 
-    def test_action_mandatory_only(self, identity_action_function):
-        function = identity_action_function()
-        action = Action(function=function)
+    def test_action_mandatory_only(self, custom_action_with_no_args):
+        function = custom_action_with_no_args()
+
+        # inputs=[] added to force action to be legacy
+        action = Action(function=function, inputs=[])
 
         assert hasattr(action, "id")
         assert action.function is function
         assert action.inputs == []
         assert action.outputs == []
 
-        # TODO: Should we test private attributes?
-        assert action._legacy is False
-        assert action._transformed_inputs == {}
-        assert action._transformed_outputs == []
+        assert action._legacy
         assert action._dash_components == []
-        assert action._action_name == "_identity_action_function"
+        assert action._transformed_inputs == []
+        assert action._transformed_outputs == []
+        assert action._parameters == set()
+        assert action._runtime_args == {}
+        assert action._action_name == "_custom_action"
 
     @pytest.mark.parametrize(
-        "inputs, _transformed_inputs",
+        "action_inputs, _transformed_inputs",
         [
             ([], []),
             (["component.property"], [State("component", "property")]),
@@ -120,15 +135,15 @@ class TestActionInstantiation:
             ),
         ],
     )
-    def test_model_field_inputs_valid(self, identity_action_function, inputs, _transformed_inputs):
-        action = Action(function=identity_action_function(), inputs=inputs)
+    def test_action_inputs_valid(self, custom_action_with_no_args, action_inputs, _transformed_inputs):
+        action = Action(function=custom_action_with_no_args(), inputs=action_inputs)
 
-        assert action._legacy is True
-        assert action.inputs == inputs
+        assert action._legacy
+        assert action.inputs == action_inputs
         assert action._transformed_inputs == _transformed_inputs
 
     @pytest.mark.parametrize(
-        "inputs",
+        "action_inputs",
         [
             [""],
             ["component"],
@@ -136,12 +151,12 @@ class TestActionInstantiation:
             ["component.property.property"],
         ],
     )
-    def test_model_filed_inputs_invalid(self, inputs, identity_action_function):
+    def test_action_inputs_invalid(self, custom_action_with_no_args, action_inputs):
         with pytest.raises(ValidationError, match="String should match pattern"):
-            Action(function=identity_action_function(), inputs=inputs)
+            Action(function=custom_action_with_no_args(), inputs=action_inputs)
 
     @pytest.mark.parametrize(
-        "inputs",
+        "runtime_inputs",
         [
             [None],
             [""],
@@ -150,111 +165,38 @@ class TestActionInstantiation:
             ["component.property.property"],
         ],
     )
-    def test_runtime_hardcoded_inputs(self, inputs, identity_action_function):
-        action = Action(function=identity_action_function(*inputs))
+    def test_runtime_hardcoded_inputs(self, custom_action_with_one_arg, runtime_inputs):
+        action = Action(function=custom_action_with_one_arg(*runtime_inputs))
 
-        assert action._legacy is True
+        assert action._legacy
         assert action.inputs == []
         assert action._transformed_inputs == []
 
     @pytest.mark.parametrize(
-        "custom_action_with_parameters, inputs, _transformed_inputs",
+        "custom_action_fixture_name, runtime_inputs, action_inputs, _transformed_inputs",
         [
-            ([], [], {}),
-            (["arg_1"], ["component.property"], {"arg_1": State("component", "property")}),
-            (
-                ["arg_1", "arg_2"],
-                ["component.property", "component.property"],
-                {"arg_1": State("component", "property"), "arg_2": State("component", "property")},
-            ),
+            ("custom_action_with_one_arg", {}, ["component.property"], [State("component", "property")]),
+            ("custom_action_with_one_arg", {"arg_1": "hardcoded"}, [], []),
+            ("custom_action_with_two_args", {"arg_1": "hardcoded"}, ["component.property"], [State("component", "property")]),
+            ("custom_action_with_two_args", {"arg_1": "component.property"}, ["component.property"], [State("component", "property")]),
         ],
-        indirect=["custom_action_with_parameters"],
     )
-    def test_runtime_id_property_inputs(self, custom_action_with_parameters, inputs, _transformed_inputs):
-        action = Action(function=custom_action_with_parameters(*inputs))
-
-        assert action._legacy is False
-        assert action.inputs == []
-        assert action._transformed_inputs == _transformed_inputs
-
-    # TODO: Add more tests here and reorder the tests to be more logical.
-    # TODO: Should the "_legacy" testing be removed?
-    # TODO: Should we test both runtime arguments as list and dict?
-    @pytest.mark.parametrize(
-        "custom_action_with_parameters, runtime_inputs, model_field_inputs, expected_legacy, _transformed_inputs",
-        [
-            ([], {}, [], False, {}),
-            (["arg_1"], {}, ["component.property"], True, [State("component", "property")]),
-            (["arg_1"], {"arg_1": "test"}, [], True, []),
-            (["arg_1", "arg_2"], {"arg_1": "test"}, ["component.property"], True, [State("component", "property")]),
-            (["arg_1"], {"arg_1": "component.property"}, [], False, {"arg_1": State("component", "property")}),
-            (
-                ["arg_1", "arg_2"],
-                {"arg_1": "component.property"},
-                ["component.property"],
-                True,
-                [State("component", "property")],
-            ),
-        ],
-        indirect=["custom_action_with_parameters"],
-    )
-    def test_mixed_runtime_and_model_field_inputs(
+    def test_mixed_runtime_and_action_inputs(
         self,
-        custom_action_with_parameters,
+        request,
+        custom_action_fixture_name,
         runtime_inputs,
-        model_field_inputs,
-        expected_legacy,
+        action_inputs,
         _transformed_inputs,
     ):
-        # Conditionally set model field inputs only if not empty so we don't stick with legacy actions only.
-        if model_field_inputs:
-            # Action is legacy because it has model field inputs
-            action = Action(function=custom_action_with_parameters(**runtime_inputs), inputs=model_field_inputs)
-        else:
-            # Action is not legacy if all runtime inputs are in id.property format. Otherwise it is legacy.
-            action = Action(function=custom_action_with_parameters(**runtime_inputs))
+        custom_action = request.getfixturevalue(custom_action_fixture_name)
 
-        assert action._legacy is expected_legacy
-        assert action.inputs == model_field_inputs
+        action = Action(function=custom_action(**runtime_inputs), inputs=action_inputs)
+
+        assert action._legacy
+        assert action.inputs == action_inputs
         assert action._transformed_inputs == _transformed_inputs
 
-    @pytest.mark.parametrize("custom_action_with_parameters", [(["arg_1, _controls"])], indirect=True)
-    def test_builtin_argument_with_empty_controls(self, custom_action_with_parameters):
-        action = Action(function=custom_action_with_parameters("component.property"))
-
-        assert action._transformed_inputs == {
-            "arg_1": State("component", "property"),
-            "_controls": {
-                "filters": [],
-                "parameters": [],
-                "filter_interaction": [],
-            },
-        }
-
-    @pytest.mark.parametrize("custom_action_with_parameters", [(["arg_1, _controls"])], indirect=True)
-    def test_builtin_argument_with_real_controls(
-        self,
-        custom_action_with_parameters,
-        _real_builtin_controls,
-    ):
-        action = Action(function=custom_action_with_parameters("component.property"))
-
-        assert action._transformed_inputs == {"arg_1": State("component", "property"), **_real_builtin_controls}
-
-    @pytest.mark.parametrize("custom_action_with_parameters", [(["arg_1, _controls"])], indirect=True)
-    def test_builtin_argument_with_overwritten_controls(
-        self,
-        custom_action_with_parameters,
-    ):
-        action = Action(function=custom_action_with_parameters("component.property", "component.property"))
-
-        assert action._transformed_inputs == {
-            "arg_1": State("component", "property"),
-            "_controls": State("component", "property"),
-        }
-
-    # The "runtime_inputs" is added here to test outputs for both legacy and non-legacy actions
-    @pytest.mark.parametrize("runtime_inputs", [[], ["hardcoded_input"]])
     @pytest.mark.parametrize(
         "outputs, _transformed_outputs",
         [
@@ -266,14 +208,14 @@ class TestActionInstantiation:
             ),
         ],
     )
-    def test_outputs_valid(self, identity_action_function, outputs, _transformed_outputs, runtime_inputs):
-        action = Action(function=identity_action_function(*runtime_inputs), outputs=outputs)
+    def test_outputs_valid(self, custom_action_with_no_args, outputs, _transformed_outputs):
+        # inputs=[] added to force action to be legacy
+        action = Action(function=custom_action_with_no_args(), inputs=[], outputs=outputs)
 
+        assert action._legacy
         assert action.outputs == outputs
         assert action._transformed_outputs == _transformed_outputs
 
-    # The "runtime_inputs" is added here to test outputs for both legacy and non-legacy actions
-    @pytest.mark.parametrize("runtime_inputs", [[], ["hardcoded_input"]])
     @pytest.mark.parametrize(
         "outputs",
         [
@@ -283,15 +225,139 @@ class TestActionInstantiation:
             ["component.property.property"],
         ],
     )
-    def test_outputs_invalid(self, outputs, identity_action_function, runtime_inputs):
+    def test_outputs_invalid(self, custom_action_with_no_args, outputs):
         with pytest.raises(ValidationError, match="String should match pattern"):
-            Action(function=identity_action_function(*runtime_inputs), outputs=outputs)
+            # inputs=[] added to force action to be legacy
+            Action(function=custom_action_with_no_args(), inputs=[], outputs=outputs)
+
+
+class TestActionInstantiation:
+    """Tests model instantiation."""
+
+    def test_action_mandatory_only(self, custom_action_with_no_args):
+        function = custom_action_with_no_args()
+        action = Action(function=function)
+
+        assert hasattr(action, "id")
+        assert action.function is function
+        assert action.inputs == []
+        assert action.outputs == []
+
+        # TODO: All tests have _legacy assertion. Should we remove it?
+        assert not action._legacy
+        assert action._dash_components == []
+        assert action._transformed_inputs == {}
+        assert action._transformed_outputs == []
+        assert action._parameters == set()
+        assert action._runtime_args == {}
+        assert action._action_name == "_custom_action"
+
+    @pytest.mark.parametrize(
+        "custom_action_fixture_name, runtime_inputs, _transformed_inputs",
+        [
+            ("custom_action_with_no_args", [], {}),
+            ("custom_action_with_one_arg", ["component.property"], {"arg_1": State("component", "property")}),
+            (
+                "custom_action_with_two_args",
+                ["component.property", "component.property"],
+                {"arg_1": State("component", "property"), "arg_2": State("component", "property")},
+            ),
+        ],
+    )
+    def test_runtime_id_property_inputs(self, request, custom_action_fixture_name, runtime_inputs, _transformed_inputs):
+        custom_action = request.getfixturevalue(custom_action_fixture_name)
+
+        action = Action(function=custom_action(*runtime_inputs))
+
+        assert not action._legacy
+        assert action.inputs == []
+        assert action._transformed_inputs == _transformed_inputs
+
+    @pytest.mark.parametrize(
+        "custom_action_fixture_name, runtime_inputs, _transformed_inputs",
+        [
+            ("custom_action_with_no_args", {}, {}),
+            ("custom_action_with_one_arg", {"arg_1": "component.property"}, {"arg_1": State("component", "property")}),
+            (
+                "custom_action_with_two_args",
+                {"arg_1": "component.property", "arg_2": "component.property"},
+                {"arg_1": State("component", "property"), "arg_2": State("component", "property")},
+            ),
+        ],
+    )
+    def test_runtime_id_property_keyword_inputs(self, request, custom_action_fixture_name, runtime_inputs, _transformed_inputs):
+        custom_action = request.getfixturevalue(custom_action_fixture_name)
+
+        action = Action(function=custom_action(**runtime_inputs))
+
+        assert not action._legacy
+        assert action.inputs == []
+        assert action._transformed_inputs == _transformed_inputs
+
+    def test_builtin_arguments_with_empty_controls(self, custom_action_with_one_arg_and_controls):
+        action = Action(function=custom_action_with_one_arg_and_controls("component.property"))
+
+        assert not action._legacy
+        assert action._transformed_inputs == {
+            "arg_1": State("component", "property"),
+            "_controls": {
+                "filters": [],
+                "parameters": [],
+                "filter_interaction": [],
+            },
+        }
+
+    def test_builtin_arguments_with_real_controls(self, custom_action_with_one_arg_and_controls, _real_builtin_controls):
+        action = Action(function=custom_action_with_one_arg_and_controls("component.property"))
+
+        assert not action._legacy
+        assert action._transformed_inputs == {"arg_1": State("component", "property"), **_real_builtin_controls}
+
+    def test_builtin_arguments_with_overwritten_controls(self, custom_action_with_one_arg_and_controls):
+        action = Action(function=custom_action_with_one_arg_and_controls("component.property", "component.property"))
+
+        assert not action._legacy
+        assert action._transformed_inputs == {
+            "arg_1": State("component", "property"),
+            "_controls": State("component", "property"),
+        }
+
+    @pytest.mark.parametrize(
+        "outputs, _transformed_outputs",
+        [
+            ([], []),
+            (["component.property"], Output("component", "property")),
+            (
+                ["component.property", "component.property"],
+                [Output("component", "property"), Output("component", "property")],
+            ),
+        ],
+    )
+    def test_outputs_valid(self, custom_action_with_no_args, outputs, _transformed_outputs):
+        action = Action(function=custom_action_with_no_args(), outputs=outputs)
+
+        assert not action._legacy
+        assert action.outputs == outputs
+        assert action._transformed_outputs == _transformed_outputs
+
+    @pytest.mark.parametrize(
+        "outputs",
+        [
+            [""],
+            ["component"],
+            ["component_property"],
+            ["component.property.property"],
+        ],
+    )
+    def test_outputs_invalid(self, custom_action_with_no_args, outputs):
+        with pytest.raises(ValidationError, match="String should match pattern"):
+            Action(function=custom_action_with_no_args(), outputs=outputs)
 
 
 class TestActionBuild:
-    def test_custom_action_build(self, identity_action_function):
+    def test_custom_action_build(self, custom_action_with_no_args):
         action_id = "action_test"
-        action = Action(id=action_id, function=identity_action_function())
+        action = Action(id=action_id, function=custom_action_with_no_args())
 
         assert_component_equal(
             action.build(), html.Div(id=f"{action_id}_action_model_components_div", children=[], hidden=True)
