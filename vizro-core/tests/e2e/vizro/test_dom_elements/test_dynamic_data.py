@@ -65,9 +65,7 @@ def test_data_dynamic_parametrization(dash_br, cache, slider_id):
     first_screen = f"{cache}_screen_first_test_data_dynamic_parametrization.png"
     second_screen = f"{cache}_screen_second_test_data_dynamic_parametrization.png"
     third_screen = f"{cache}_screen_third_test_data_dynamic_parametrization.png"
-    accordion_select(
-        dash_br, accordion_name=cnst.DYNAMIC_DATA_ACCORDION.upper(), accordion_number=cnst.DYNAMIC_DATA_ACCORDION_NUMBER
-    )
+    accordion_select(dash_br, accordion_name=cnst.DYNAMIC_DATA_ACCORDION)
     page_select(
         dash_br,
         page_name=cnst.DYNAMIC_DATA_PAGE,
@@ -104,9 +102,7 @@ def test_data_dynamic_parametrization(dash_br, cache, slider_id):
 def test_dropdown_filter_multi(dash_br):
     """Initial selected value is 'ALL'."""
     # Select page and wait until it's loaded
-    accordion_select(
-        dash_br, accordion_name=cnst.DYNAMIC_DATA_ACCORDION.upper(), accordion_number=cnst.DYNAMIC_DATA_ACCORDION_NUMBER
-    )
+    accordion_select(dash_br, accordion_name=cnst.DYNAMIC_DATA_ACCORDION)
     page_select(
         dash_br,
         page_name=cnst.DYNAMIC_FILTERS_CATEGORICAL_PAGE,
@@ -142,9 +138,7 @@ def test_dropdown_filter_multi(dash_br):
 def test_dropdown_filter(dash_br):
     """Initial selected value is 'setosa'."""
     # Select page and wait until it's loaded
-    accordion_select(
-        dash_br, accordion_name=cnst.DYNAMIC_DATA_ACCORDION.upper(), accordion_number=cnst.DYNAMIC_DATA_ACCORDION_NUMBER
-    )
+    accordion_select(dash_br, accordion_name=cnst.DYNAMIC_DATA_ACCORDION)
     page_select(
         dash_br,
         page_name=cnst.DYNAMIC_FILTERS_CATEGORICAL_PAGE,
@@ -179,9 +173,7 @@ def test_dropdown_filter(dash_br):
 @rewrite_dynamic_filters_data_config
 def test_checklist_filter(dash_br):
     """Initial selected value is 'ALL'."""
-    accordion_select(
-        dash_br, accordion_name=cnst.DYNAMIC_DATA_ACCORDION.upper(), accordion_number=cnst.DYNAMIC_DATA_ACCORDION_NUMBER
-    )
+    accordion_select(dash_br, accordion_name=cnst.DYNAMIC_DATA_ACCORDION)
     page_select(
         dash_br,
         page_name=cnst.DYNAMIC_FILTERS_CATEGORICAL_PAGE,
@@ -219,9 +211,7 @@ def test_checklist_filter(dash_br):
 @rewrite_dynamic_filters_data_config
 def test_radio_items_filter(dash_br):
     """Initial selected value is 'setosa'."""
-    accordion_select(
-        dash_br, accordion_name=cnst.DYNAMIC_DATA_ACCORDION.upper(), accordion_number=cnst.DYNAMIC_DATA_ACCORDION_NUMBER
-    )
+    accordion_select(dash_br, accordion_name=cnst.DYNAMIC_DATA_ACCORDION)
     page_select(
         dash_br,
         page_name=cnst.DYNAMIC_FILTERS_CATEGORICAL_PAGE,
@@ -257,9 +247,7 @@ def test_radio_items_filter(dash_br):
 @rewrite_dynamic_filters_data_config
 def test_numerical_filters(dash_br):
     """Initial selected value for slider is 6. Initial selected values for range_slider are 6 and 7."""
-    accordion_select(
-        dash_br, accordion_name=cnst.DYNAMIC_DATA_ACCORDION.upper(), accordion_number=cnst.DYNAMIC_DATA_ACCORDION_NUMBER
-    )
+    accordion_select(dash_br, accordion_name=cnst.DYNAMIC_DATA_ACCORDION)
     page_select(
         dash_br,
         page_name=cnst.DYNAMIC_FILTERS_NUMERICAL_PAGE,
@@ -318,9 +306,7 @@ def test_numerical_filters(dash_br):
 @rewrite_dynamic_filters_data_config
 def test_datepicker_range_filters(dash_br):
     """Initial selected values are 5 March 2024 and 10 March 2024."""
-    accordion_select(
-        dash_br, accordion_name=cnst.DYNAMIC_DATA_ACCORDION.upper(), accordion_number=cnst.DYNAMIC_DATA_ACCORDION_NUMBER
-    )
+    accordion_select(dash_br, accordion_name=cnst.DYNAMIC_DATA_ACCORDION)
     page_select(
         dash_br,
         page_name=cnst.DYNAMIC_FILTERS_DATEPICKER_PAGE,
@@ -401,9 +387,7 @@ def test_datepicker_range_filters(dash_br):
 @rewrite_dynamic_filters_data_config
 def test_datepicker_single_filters(dash_br):
     """Initial selected value is 5 March 2024."""
-    accordion_select(
-        dash_br, accordion_name=cnst.DYNAMIC_DATA_ACCORDION.upper(), accordion_number=cnst.DYNAMIC_DATA_ACCORDION_NUMBER
-    )
+    accordion_select(dash_br, accordion_name=cnst.DYNAMIC_DATA_ACCORDION)
     page_select(
         dash_br,
         page_name=cnst.DYNAMIC_FILTERS_DATEPICKER_PAGE,
@@ -488,9 +472,7 @@ def test_dynamic_data_parameter_refresh_dynamic_filters(dash_br):
     Page configuration includes dynamic data scatter chart which controls by slider parameter and static data scatter
     which has 'virginica' data only.
     """
-    accordion_select(
-        dash_br, accordion_name=cnst.DYNAMIC_DATA_ACCORDION.upper(), accordion_number=cnst.DYNAMIC_DATA_ACCORDION_NUMBER
-    )
+    accordion_select(dash_br, accordion_name=cnst.DYNAMIC_DATA_ACCORDION.upper())
     page_select(
         dash_br,
         page_name=cnst.DYNAMIC_DATA_DF_PARAMETER_PAGE,
