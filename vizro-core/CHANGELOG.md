@@ -17,7 +17,7 @@ See the fragment files in the [changelog.d directory](https://github.com/mckinse
 
 ## Highlights ✨
 
-- Add `Flex` model support to the `layout` argument of the `Page` and `Container`. See the [user guide on the `Flex` layout](https://vizro.readthedocs.io/en/stable/pages/user-guides/layouts/#flex-layout) for more details. ([#1050](https://github.com/mckinsey/vizro/pull/1050))
+- `Flex` model support for the `layout` argument of the `Page` and `Container`. See the [user guide on the `Flex` layout](https://vizro.readthedocs.io/en/stable/pages/user-guides/layouts/#flex-layout) for more details. ([#1050](https://github.com/mckinsey/vizro/pull/1050))
 
 - Vizro models now have autocomplete functionality in IDEs when using the pydantic [plugin for VS Code](https://docs.pydantic.dev/latest/integrations/visual_studio_code/) or [for PyCharm](https://docs.pydantic.dev/latest/integrations/pycharm/). ([#1089](https://github.com/mckinsey/vizro/pull/1089))
 
