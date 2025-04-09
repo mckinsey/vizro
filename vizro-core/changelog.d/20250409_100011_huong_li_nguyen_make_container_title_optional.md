@@ -25,7 +25,7 @@ Uncomment the section that is right (remove the HTML comment wrapper).
 
 ### Changed
 
-- Make `Container.title` mandatory only when used within Tabs.([#1](https://github.com/mckinsey/vizro/pull/1))
+- Make `Container.title` mandatory only when used within Tabs.([#1103](https://github.com/mckinsey/vizro/pull/1103))
 
 
 <!--
