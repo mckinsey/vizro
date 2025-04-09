@@ -65,7 +65,9 @@ filterwarnings = [
   "ignore:HTTPResponse.getheader():DeprecationWarning",
   # Happens during dash_duo teardown in vizro_ai_ui tests. Not affecting functionality:
   "ignore:Exception in thread",
-  "ignore:CapturedCallable function is excluded from the schema"
+  "ignore:CapturedCallable function is excluded from the schema",
+  # Ignore `Layout` FutureWarning until vizro 0.2.0 released:
+  "ignore:The `Layout` model has been renamed `Grid`:FutureWarning"
 ]
 pythonpath = ["../tools/tests"]
 
