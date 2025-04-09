@@ -50,7 +50,7 @@ Currently each selector is based on an underlying Dash component as mentioned in
 
 An example would be to make the [`RadioItem`][vizro.models.RadioItems] display inline instead of stacked vertically. For this you can use `extra={"inline": True}` argument:
 
-!!! example "Radio Items with inline layout"
+!!! example "Inline Radio Items"
     === "app.py"
         ```{.python pycafe-link hl_lines="19"}
         import vizro.models as vm

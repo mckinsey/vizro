@@ -12,7 +12,6 @@ def test_export_data_no_controls(dash_br):
         dash_br,
         page_path=cnst.EXPORT_PAGE_PATH,
         page_name=cnst.EXPORT_PAGE,
-        graph_id=cnst.LINE_EXPORT_ID,
     )
 
     # download files and compare it with base ones
@@ -28,7 +27,6 @@ def test_export_filtered_data(dash_br):
         dash_br,
         page_path=cnst.FILTERS_PAGE_PATH,
         page_name=cnst.FILTERS_PAGE,
-        graph_id=cnst.SCATTER_GRAPH_ID,
     )
 
     # download files and compare it with base ones
@@ -43,9 +41,7 @@ def test_scatter_click_data_custom_action(dash_br):
     """Test custom action for changing data in card by interacting with graph."""
     page_select(
         dash_br,
-        page_path=cnst.FILTER_INTERACTIONS_PAGE_PATH,
         page_name=cnst.FILTER_INTERACTIONS_PAGE,
-        graph_id=cnst.SCATTER_INTERACTIONS_ID,
     )
 
     # click on the dot in the scatter graph and check card text values

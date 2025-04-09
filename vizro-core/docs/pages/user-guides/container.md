@@ -32,9 +32,9 @@ Here are a few cases where you might want to use a `Container` instead of `Page.
 To add a [`Container`][vizro.models.Container] to your page, do the following:
 
 1. Insert the `Container` into the `components` argument of the [`Page`][vizro.models.Page]
-1. Set a `title` for your `Container`
 1. Configure your `components`, [read the overview page for various options](components.md)
-1. (optional) Configure your `layout`, see [the guide on `Layout`](layouts.md)
+1. (optional) Set a `title` for your `Container`
+1. (optional) Configure your `layout`, see [the guide on layouts](layouts.md)
 
 !!! example "Container"
     === "app.py"
@@ -51,7 +51,7 @@ To add a [`Container`][vizro.models.Container] to your page, do the following:
             components=[  # (1)!
                 vm.Container(
                     title="Container I",
-                    layout=vm.Layout(grid=[[0, 1]]),  # (2)!
+                    layout=vm.Grid(grid=[[0, 1]]),  # (2)!
                     components=[
                         vm.Graph(
                             figure=px.scatter(
@@ -125,6 +125,7 @@ To add a [`Container`][vizro.models.Container] to your page, do the following:
                     type: graph
                 layout:
                   grid: [[0, 1]]
+                  type: grid
                 type: container
                 title: Container I
               - components:
@@ -146,7 +147,7 @@ To add a [`Container`][vizro.models.Container] to your page, do the following:
     === "Result"
         [![Container]][container]
 
-Note that an almost identical layout can also be achieved using solely the [`Page.layout`](layouts.md) by configuring the `Page.layout` as `vm.Layout(grid = [[0, 1], [2, 2]])`.
+Note that an almost identical layout can also be achieved using solely the [`Page.layout`](layouts.md) by configuring the `Page.layout` as `vm.Grid(grid = [[0, 1], [2, 2]])`.
 
 ## Nested containers
 
@@ -181,7 +182,7 @@ To make the `Container` stand out as a distinct section in your dashboard, you c
 
         page = vm.Page(
             title="Containers with different styles",
-            layout=vm.Layout(grid=[[0, 1]]),
+            layout=vm.Grid(grid=[[0, 1]]),
             components=[
                 vm.Container(
                     title="Container with background color",
@@ -208,6 +209,7 @@ To make the `Container` stand out as a distinct section in your dashboard, you c
           - title: Containers with different styles
             layout:
               grid: [[0, 1]]
+              type: grid
             components:
               - type: container
                 title: Container with background color

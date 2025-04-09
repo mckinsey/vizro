@@ -1,6 +1,8 @@
 import logging
 from functools import wraps
 
+from dash import html
+
 from vizro.models.types import CapturedCallable, _SupportsCapturedCallable
 
 logger = logging.getLogger(__name__)
@@ -42,3 +44,17 @@ REPLACEMENT_STRINGS = {
     "vizro.actions": "va.",
     "vizro.charts": "vc.",
 }
+
+
+def _build_inner_layout(layout, components):
+    """Builds inner layout and adds components to grid or flex. Used inside `Page`, `Container` and `Form`."""
+    from vizro.models import Grid
+
+    components_container = layout.build()
+    if isinstance(layout, Grid):
+        for idx, component in enumerate(components):
+            components_container[f"{layout.id}_{idx}"].children = component.build()
+    else:
+        components_container.children = [html.Div(component.build(), className="flex-item") for component in components]
+
+    return components_container

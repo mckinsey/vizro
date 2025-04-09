@@ -9,7 +9,7 @@ from pages.examples import bar, magnitude_column, paired_bar, paired_column, par
 bar_page = vm.Page(
     title="Bar",
     path="magnitude/bar",
-    layout=vm.Layout(grid=PAGE_GRID),
+    layout=vm.Grid(grid=PAGE_GRID),
     components=[
         vm.Card(
             text="""
@@ -50,7 +50,7 @@ column_page = vm.Page(
     id="magnitude-column",
     path="magnitude/column",
     title="Column",
-    layout=vm.Layout(grid=PAGE_GRID),
+    layout=vm.Grid(grid=PAGE_GRID),
     components=[
         vm.Card(
             text="""
@@ -88,7 +88,7 @@ column_page = vm.Page(
 paired_bar_page = vm.Page(
     title="Paired bar",
     path="magnitude/paired-bar",
-    layout=vm.Layout(grid=PAGE_GRID),
+    layout=vm.Grid(grid=PAGE_GRID),
     components=[
         vm.Card(
             text="""
@@ -129,7 +129,7 @@ paired_bar_page = vm.Page(
 paired_column_page = vm.Page(
     title="Paired column",
     path="magnitude/paired-column",
-    layout=vm.Layout(grid=PAGE_GRID),
+    layout=vm.Grid(grid=PAGE_GRID),
     components=[
         vm.Card(
             text="""
@@ -170,7 +170,7 @@ paired_column_page = vm.Page(
 parallel_coordinates_page = vm.Page(
     path="magnitude/parallel-coordinates ",
     title="Parallel coordinates",
-    layout=vm.Layout(grid=PAGE_GRID),
+    layout=vm.Grid(grid=PAGE_GRID),
     components=[
         vm.Card(
             text="""
@@ -209,7 +209,7 @@ parallel_coordinates_page = vm.Page(
 radar_page = vm.Page(
     path="magnitude/radar",
     title="Radar",
-    layout=vm.Layout(grid=PAGE_GRID),
+    layout=vm.Grid(grid=PAGE_GRID),
     components=[
         vm.Card(
             text="""

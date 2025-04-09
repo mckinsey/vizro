@@ -2,7 +2,7 @@
 
 Vizro has a default styling to help users with no design experience get started. There are several options if you want to customize the style:
 
-- **[Configure the `Layout`](layouts.md)**: Customize the arrangement of your components inside your Vizro dashboard.
+- **[Configure the layout](layouts.md)**: Customize the arrangement of your components inside your Vizro dashboard.
 
 - **[Apply a theme](themes.md)**: Choose between a dark or light theme.
 

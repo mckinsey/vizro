@@ -52,6 +52,7 @@ nav:
       - Table functions: pages/API-reference/table-callables.md
       - Figure functions: pages/API-reference/figure-callables.md
       - Kedro integration: pages/API-reference/kedro-integration.md
+      - Deprecations: pages/API-reference/deprecations.md
   - Explanation:
       - FAQs: pages/explanation/faq.md
       - User examples: pages/explanation/your-examples.md

@@ -26,9 +26,26 @@ class TestPageInstantiation:
             id="my-id",
             title="Page 1",
             components=[vm.Button(), vm.Button()],
-            layout=vm.Layout(grid=[[0, 1]]),
+            layout=vm.Grid(grid=[[0, 1]]),
             path="my-path",
         )
+        assert isinstance(page.components[0], vm.Button) and isinstance(page.components[1], vm.Button)
+        assert page.id == "my-id"
+        assert page.layout.grid == [[0, 1]]
+        assert page.controls == []
+        assert page.title == "Page 1"
+        assert page.path == "/my-path"
+        assert page.actions == []
+
+    def test_create_page_mandatory_and_optional_legacy_layout(self):
+        with pytest.warns(FutureWarning, match="The `Layout` model has been renamed `Grid`"):
+            page = vm.Page(
+                id="my-id",
+                title="Page 1",
+                components=[vm.Button(), vm.Button()],
+                layout=vm.Layout(grid=[[0, 1]]),
+                path="my-path",
+            )
         assert isinstance(page.components[0], vm.Button) and isinstance(page.components[1], vm.Button)
         assert page.id == "my-id"
         assert page.layout.grid == [[0, 1]]

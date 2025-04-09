@@ -74,7 +74,7 @@ For instance, to make a KPI card with the icon positioned on the right side of t
 
         page = vm.Page(
             title="Create your own KPI card",
-            layout=vm.Layout(grid=[[0, 1, -1, -1]] + [[-1, -1, -1, -1]] * 3),  # (4)!
+            layout=vm.Grid(grid=[[0, 1, -1, -1]] + [[-1, -1, -1, -1]] * 3),  # (4)!
             components=[
                 vm.Figure(
                     figure=kpi_card(  # (5)!
@@ -104,7 +104,7 @@ For instance, to make a KPI card with the icon positioned on the right side of t
         1. Here we decorate our custom figure function with the `@capture("figure")` decorator.
         1. The custom figure function needs to have a `data_frame` argument and return a `Dash` component.
         1. We adjust the return statement to include the icon on the right side of the title. This is achieved by swapping the order of the `html.H2` and `html.P` compared to the original `kpi_card`.
-        1. This creates a [`layout`](layouts.md) with four rows and columns. The KPI cards are positioned in the first two cells, while the remaining cells are empty.
+        1. This creates a [`grid`](layouts.md#grid-layout) with four rows and four columns. The KPI cards are positioned in the first two cells, while the remaining cells are empty.
         1. For more information, refer to the API reference for the [`kpi_card`](../API-reference/figure-callables.md#vizro.figures.kpi_card).
         1. Our custom figure function `custom_kpi_card` now needs to be passed on to the `vm.Figure`.
 

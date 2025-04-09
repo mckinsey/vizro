@@ -9,7 +9,7 @@ from pages.examples import donut, funnel, pie, stacked_bar, stacked_column, tree
 pie_page = vm.Page(
     title="Pie",
     path="part-to-whole/pie",
-    layout=vm.Layout(grid=PAGE_GRID),
+    layout=vm.Grid(grid=PAGE_GRID),
     components=[
         vm.Card(
             text="""
@@ -50,7 +50,7 @@ pie_page = vm.Page(
 donut_page = vm.Page(
     title="Donut",
     path="part-to-whole/donut",
-    layout=vm.Layout(grid=PAGE_GRID),
+    layout=vm.Grid(grid=PAGE_GRID),
     components=[
         vm.Card(
             text="""
@@ -87,7 +87,7 @@ donut_page = vm.Page(
 treemap_page = vm.Page(
     title="Treemap",
     path="part-to-whole/treemap",
-    layout=vm.Layout(grid=PAGE_GRID),
+    layout=vm.Grid(grid=PAGE_GRID),
     components=[
         vm.Card(
             text="""
@@ -126,7 +126,7 @@ treemap_page = vm.Page(
 stacked_bar_page = vm.Page(
     title="Stacked bar",
     path="part-to-whole/stacked-bar",
-    layout=vm.Layout(grid=PAGE_GRID),
+    layout=vm.Grid(grid=PAGE_GRID),
     components=[
         vm.Card(
             text="""
@@ -168,7 +168,7 @@ stacked_bar_page = vm.Page(
 stacked_column_page = vm.Page(
     title="Stacked column",
     path="part-to-whole/stacked-column",
-    layout=vm.Layout(grid=PAGE_GRID),
+    layout=vm.Grid(grid=PAGE_GRID),
     components=[
         vm.Card(
             text="""
@@ -210,7 +210,7 @@ stacked_column_page = vm.Page(
 funnel_page = vm.Page(
     title="Funnel",
     path="part-to-whole/funnel",
-    layout=vm.Layout(grid=PAGE_GRID),
+    layout=vm.Grid(grid=PAGE_GRID),
     components=[
         vm.Card(
             text="""
