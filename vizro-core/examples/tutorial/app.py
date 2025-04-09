@@ -36,7 +36,7 @@ first_page = vm.Page(
 
 second_page = vm.Page(
     title="Summary",
-    layout=vm.Layout(grid=[[0, 1, -1, -1], [2, 2, 2, 2], [2, 2, 2, 2], [2, 2, 2, 2]]),
+    layout=vm.Grid(grid=[[0, 1, -1, -1], [2, 2, 2, 2], [2, 2, 2, 2], [2, 2, 2, 2]]),
     components=[
         vm.Figure(
             figure=kpi_card(
@@ -74,7 +74,7 @@ second_page = vm.Page(
 
 third_page = vm.Page(
     title="Analysis",
-    layout=vm.Layout(grid=[[0, 1], [2, 2]]),
+    layout=vm.Grid(grid=[[0, 1], [2, 2]]),
     components=[
         vm.Graph(
             id="bar",

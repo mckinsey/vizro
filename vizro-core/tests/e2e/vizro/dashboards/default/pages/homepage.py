@@ -8,7 +8,7 @@ iris = px.data.iris()
 homepage = vm.Page(
     title=cnst.HOME_PAGE,
     id=cnst.HOME_PAGE_ID,
-    layout=vm.Layout(grid=[[0, 4], [1, 4], [2, 4], [3, 4]]),
+    layout=vm.Grid(grid=[[0, 4], [1, 4], [2, 4], [3, 4]]),
     components=[
         vm.Card(
             text="""
