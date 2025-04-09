@@ -50,7 +50,7 @@ def make_homepage_container(chart_group: ChartGroup) -> vm.Container:
         components=[
             Markdown(text=chart_group.intro_text, classname="intro-text"),
             vm.Container(
-                layout=vm.Flex(),
+                layout=vm.Flex(direction="row"),
                 components=[
                     make_chart_card(page)
                     for page in sorted(

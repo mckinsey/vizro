@@ -81,7 +81,7 @@ plot_page = vm.Page(
     components=[
         HeaderComponent(),
         vm.Container(
-            layout=vm.Flex(),
+            layout=vm.Flex(wrap=True, gap="12px"),
             components=[
                 vm.Container(
                     id="upload-data-container",
@@ -167,7 +167,7 @@ plot_page = vm.Page(
             ],
         ),
         vm.Container(
-            layout=vm.Flex(),
+            layout=vm.Flex(wrap=True, gap="12px"),
             components=[
                 vm.Graph(id="graph", figure=px.scatter(pd.DataFrame())),
                 DropdownMenu(id="dropdown-menu"),
