@@ -3,7 +3,7 @@ from __future__ import annotations
 from typing import TYPE_CHECKING, Literal
 
 import dash_bootstrap_components as dbc
-from pydantic import conlist
+from pydantic import conlist, field_validator
 
 from vizro.models import VizroBaseModel
 from vizro.models._models_utils import _log_call
@@ -24,6 +24,12 @@ class Tabs(VizroBaseModel):
     type: Literal["tabs"] = "tabs"
     # TODO[mypy], see: https://github.com/pydantic/pydantic/issues/156 for tabs field
     tabs: conlist(Container, min_length=1)  # type: ignore[valid-type]
+
+    @field_validator("tabs")
+    def validate_tabs_have_titles(cls, tabs: list[Container]) -> list[Container]:
+        if any(tab.title == "" for tab in tabs):
+            raise ValueError("Each `Container` in `tabs` requires a `title` provided.")
+        return tabs
 
     @_log_call
     def build(self):
