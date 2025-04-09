@@ -6,9 +6,7 @@ from e2e.vizro.paths import table_cell_value_path
 
 def test_single_date(dash_br):
     """Tests that single datepicker as filter works correctly."""
-    accordion_select(
-        dash_br, accordion_name=cnst.DATEPICKER_ACCORDION.upper(), accordion_number=cnst.DATEPICKER_ACCORDION_NUMBER
-    )
+    accordion_select(dash_br, accordion_name=cnst.DATEPICKER_ACCORDION)
     page_select(
         dash_br,
         page_name=cnst.DATEPICKER_PAGE,
@@ -36,9 +34,7 @@ def test_single_date(dash_br):
 
 def test_date_range(dash_br):
     """Tests that range datepicker as filter works correctly."""
-    accordion_select(
-        dash_br, accordion_name=cnst.DATEPICKER_ACCORDION.upper(), accordion_number=cnst.DATEPICKER_ACCORDION_NUMBER
-    )
+    accordion_select(dash_br, accordion_name=cnst.DATEPICKER_ACCORDION)
     page_select(
         dash_br,
         page_name=cnst.DATEPICKER_PAGE,
@@ -71,9 +67,7 @@ def test_date_range(dash_br):
 
 def test_single_date_param(dash_br):
     """Tests that single datepicker as parameter works correctly."""
-    accordion_select(
-        dash_br, accordion_name=cnst.DATEPICKER_ACCORDION.upper(), accordion_number=cnst.DATEPICKER_ACCORDION_NUMBER
-    )
+    accordion_select(dash_br, accordion_name=cnst.DATEPICKER_ACCORDION)
     page_select(
         dash_br,
         page_name=cnst.DATEPICKER_PARAMS_PAGE,
