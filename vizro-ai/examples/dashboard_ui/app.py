@@ -81,7 +81,6 @@ plot_page = vm.Page(
     components=[
         HeaderComponent(),
         vm.Container(
-            title="",
             layout=vm.Flex(),
             components=[
                 vm.Container(
@@ -168,7 +167,6 @@ plot_page = vm.Page(
             ],
         ),
         vm.Container(
-            title="",
             layout=vm.Flex(),
             components=[
                 vm.Graph(id="graph", figure=px.scatter(pd.DataFrame())),
