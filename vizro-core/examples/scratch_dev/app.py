@@ -1,12 +1,13 @@
 import datetime
-
+import time
 
 import vizro.models as vm
 import vizro.plotly.express as px
 from vizro import Vizro
-from vizro.actions import filter_interaction, export_data
+from vizro.actions import export_data, filter_interaction
+from vizro.managers import data_manager
 from vizro.models.types import capture
-
+from vizro.tables import dash_ag_grid
 
 df_gapminder = px.data.gapminder().query("year == 2007")
 
@@ -159,7 +160,53 @@ page_2 = vm.Page(
     controls=[vm.Filter(column="species", selector=vm.Dropdown(title="Species"))],
 )
 
-dashboard = vm.Dashboard(pages=[page_1, page_2])
+
+########### MS EXAMPLE ###########
+@capture("action")
+def click_counts_heatmap(cell_data: dict):
+    print(cell_data)
+    return f"cell_data: {cell_data}"
+
+
+def load_gapminder(continent: str):
+    df = px.data.gapminder()
+    time.sleep(2)
+    return df[df["continent"] == continent]
+
+
+df_gapminder = px.data.gapminder()
+
+data_manager["gapminder"] = load_gapminder
+
+page_3 = vm.Page(
+    title="Experiment with data loading",
+    components=[
+        vm.AgGrid(
+            id="grid",
+            figure=dash_ag_grid(data_frame=df_gapminder),
+            actions=[
+                vm.Action(function=click_counts_heatmap("grid.cellClicked"), outputs=["card_cross_filter.children"])
+            ],
+        ),
+        vm.Graph(
+            id="slow_load_chart",
+            figure=px.scatter("gapminder", x="gdpPercap", y="lifeExp", color="continent"),
+        ),
+        vm.Card(id="card_cross_filter", text="Click on a point on the above table."),
+    ],
+    controls=[
+        vm.Parameter(
+            targets=["slow_load_chart.data_frame.continent"],
+            selector=vm.RadioItems(options=["Africa", "Americas", "Asia", "Europe", "Oceania"]),
+        )
+    ],
+    layout=vm.Layout(
+        grid=[[0, 1], [0, 1], [2, 2]],
+    ),
+)
+########### MS EXAMPLE ###########
+
+dashboard = vm.Dashboard(pages=[page_1, page_2, page_3])
 
 if __name__ == "__main__":
     Vizro().build(dashboard).run()
