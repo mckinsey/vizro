@@ -92,7 +92,7 @@ The following example shows a custom action that takes the `value` of the `vm.Ra
 
         page = vm.Page(
             title="Action with value as input",
-            layout=vm.Layout(grid=[[0, 1]]),
+            layout=vm.Grid(grid=[[0, 1]]),
             components=[
                 vm.RadioItems(
                     id="my_selector",
@@ -201,7 +201,7 @@ The return value of the custom action function is propagated to the dashboard co
 
         page = vm.Page(
             title="Example of a custom action with UI inputs and outputs",
-            layout=vm.Layout(
+            layout=vm.Grid(
                 grid=[
                     [0, 0],
                     [0, 0],

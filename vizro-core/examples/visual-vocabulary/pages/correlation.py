@@ -9,7 +9,7 @@ from pages.examples import bubble, scatter, scatter_matrix
 scatter_page = vm.Page(
     title="Scatter",
     path="correlation/scatter",
-    layout=vm.Layout(grid=PAGE_GRID),
+    layout=vm.Grid(grid=PAGE_GRID),
     components=[
         vm.Card(
             text="""
@@ -49,7 +49,7 @@ connected_scatter_page = connected_scatter_factory("correlation")
 scatter_matrix_page = vm.Page(
     title="Scatter matrix",
     path="correlation/scatter-matrix",
-    layout=vm.Layout(grid=PAGE_GRID),
+    layout=vm.Grid(grid=PAGE_GRID),
     components=[
         vm.Card(
             text="""
@@ -89,7 +89,7 @@ scatter_matrix_page = vm.Page(
 bubble_page = vm.Page(
     title="Bubble",
     path="correlation/bubble",
-    layout=vm.Layout(grid=PAGE_GRID),
+    layout=vm.Grid(grid=PAGE_GRID),
     components=[
         vm.Card(
             text="""

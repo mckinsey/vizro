@@ -59,17 +59,12 @@ source_pkgs = ["vizro_ai"]
 [tool.pytest.ini_options]
 filterwarnings = [
   "error",
-  # Ignore until pandas is made compatible with Python 3.12:
-  "ignore:.*utcfromtimestamp:DeprecationWarning",
   # Ignore until pandas 3 is released:
   "ignore:(?s).*Pyarrow will become a required dependency of pandas:DeprecationWarning",
   # Ignore deprecation warning until this is solved: https://github.com/plotly/dash/issues/2590:
   "ignore:HTTPResponse.getheader():DeprecationWarning",
   # Happens during dash_duo teardown in vizro_ai_ui tests. Not affecting functionality:
   "ignore:Exception in thread",
-  # Ignore deprecation warning as it comes from the plotly default template. In our templates `vizro_dark` and
-  # `vizro_light`, we do not use mapbox anymore, see: https://github.com/mckinsey/vizro/pull/974
-  "ignore:.*scattermapbox.*is deprecated.*Use.*scattermap.*instead:DeprecationWarning",
   "ignore:CapturedCallable function is excluded from the schema"
 ]
 pythonpath = ["../tools/tests"]
