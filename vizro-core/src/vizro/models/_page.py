@@ -54,7 +54,7 @@ class Page(VizroBaseModel):
     Args:
         components (list[ComponentType]): See [ComponentType][vizro.models.types.ComponentType]. At least one component
             has to be provided.
-        title (str): Title to be displayed.
+        title (str): Title of the `Page`.
         description (str): Description for meta tags.
         layout (Optional[LayoutType]): Layout to place components in. Defaults to `None`.
         controls (list[ControlType]): See [ControlType][vizro.models.types.ControlType]. Defaults to `[]`.
@@ -64,7 +64,7 @@ class Page(VizroBaseModel):
 
     # TODO[mypy], see: https://github.com/pydantic/pydantic/issues/156 for components field
     components: conlist(Annotated[ComponentType, BeforeValidator(check_captured_callable_model)], min_length=1)  # type: ignore[valid-type]
-    title: str = Field(description="Title to be displayed.")
+    title: str = Field(description="Title of the `Page`")
     description: str = Field(default="", description="Description for meta tags.")
     layout: Annotated[Optional[LayoutType], AfterValidator(set_layout), Field(default=None, validate_default=True)]
     controls: list[ControlType] = []
