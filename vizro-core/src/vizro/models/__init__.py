@@ -1,4 +1,5 @@
 # Keep this import at the top to avoid circular imports since it's used in every model.
+
 from ._base import VizroBaseModel  # noqa: I001
 from ._action import Action
 from ._components import Card, Container, Graph, Text, Table, Tabs, Figure
@@ -22,13 +23,13 @@ from vizro.actions._on_page_load import _on_page_load
 # Since pydantic==2.11.0 we need to rebuilt more than the Dashboard model
 # The below model rebuilds are the minimal set of models that need to be rebuilt,
 # presumably because they contain types that are not fully resolved during the initial build.
-Dashboard.model_rebuild()
-Page.model_rebuild()
-Container.model_rebuild()
-NavBar.model_rebuild()
-NavLink.model_rebuild()
-Navigation.model_rebuild()
-Tabs.model_rebuild()
+# Dashboard.model_rebuild()
+# Page.model_rebuild()
+# Container.model_rebuild()
+# NavBar.model_rebuild()
+# NavLink.model_rebuild()
+# Navigation.model_rebuild()
+# Tabs.model_rebuild()
 
 
 __all__ = [
@@ -59,3 +60,13 @@ __all__ = [
     "Text",
     "VizroBaseModel",
 ]
+
+# TODO NOW: is this now needed? Why? How to do it best?
+from ._action._actions_chain import ActionsChain
+
+ActionsChain.model_rebuild()
+
+for model in __all__:
+    x = globals()[model]
+    print(f"{x=}")
+    x.model_rebuild()
