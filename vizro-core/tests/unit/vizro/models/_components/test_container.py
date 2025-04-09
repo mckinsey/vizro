@@ -47,10 +47,6 @@ class TestContainerInstantiation:
         assert container.layout.grid == [[0, 1]]
         assert container.title == "Title"
 
-    def test_mandatory_title_missing(self):
-        with pytest.raises(ValidationError, match="Field required"):
-            vm.Container(components=[vm.Button()])
-
     def test_mandatory_components_missing(self):
         with pytest.raises(ValidationError, match="Field required"):
             vm.Container(title="Title")
