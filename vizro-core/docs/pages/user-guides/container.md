@@ -32,8 +32,8 @@ Here are a few cases where you might want to use a `Container` instead of `Page.
 To add a [`Container`][vizro.models.Container] to your page, do the following:
 
 1. Insert the `Container` into the `components` argument of the [`Page`][vizro.models.Page]
-1. Set a `title` for your `Container`
 1. Configure your `components`, [read the overview page for various options](components.md)
+1. (optional) Set a `title` for your `Container`
 1. (optional) Configure your `layout`, see [the guide on layouts](layouts.md)
 
 !!! example "Container"
