@@ -11,6 +11,30 @@ See the fragment files in the [changelog.d directory](https://github.com/mckinse
 
 <!-- scriv-insert-here -->
 
+<a id='changelog-0.1.37'></a>
+
+# 0.1.37 — 2025-04-09
+
+## Highlights ✨
+
+- Add `Flex` model support to the `layout` argument of the `Page` and `Container`. See the [user guide on the `Flex` layout](https://vizro.readthedocs.io/en/stable/pages/user-guides/layouts/#flex-layout) for more details. ([#1050](https://github.com/mckinsey/vizro/pull/1050))
+
+- Vizro models now have autocomplete functionality in IDEs when using the pydantic [plugin for VS Code](https://docs.pydantic.dev/latest/integrations/visual_studio_code/) or [for PyCharm](https://docs.pydantic.dev/latest/integrations/pycharm/). ([#1089](https://github.com/mckinsey/vizro/pull/1089))
+
+## Added
+
+- Added support for additional CSS units (rem, em, %) for `row_min_height`, `row_gap`, `col_gap`, and `col_min_width` in \`Layout. ([#1050](https://github.com/mckinsey/vizro/pull/1050))
+
+## Changed
+
+- Improve mobile responsiveness: the flex layout breakpoint is now 764px (side panel collapsed) or 1064px (side panel expanded). ([#1097](https://github.com/mckinsey/vizro/pull/1097))
+
+- Make `Container.title` mandatory only when used within `Tabs`. ([#1103](https://github.com/mckinsey/vizro/pull/1103))
+
+## Deprecated
+
+- `vm.Layout` has been renamed `vm.Grid`, and `vm.Layout` will no longer exist in Vizro 0.2.0. ([#1098](https://github.com/mckinsey/vizro/pull/1098))
+
 <a id='changelog-0.1.36'></a>
 
 # 0.1.36 — 2025-03-31
