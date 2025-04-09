@@ -5,6 +5,7 @@ In cases where the available arguments for the [`dash_ag_grid`][vizro.tables.das
 The [`Table`][vizro.models.Table] and the [`AgGrid`][vizro.models.AgGrid] model accept the `figure` argument, where you can enter _any_ [`dash_ag_grid`][vizro.tables.dash_ag_grid] or [`dash_data_table`][vizro.tables.dash_data_table] chart as explained in the [user guide on tables](table.md).
 
 !!! note "More examples of AG Grid"
+
     If you would like to see more than the below examples on what can be done with AG Grid and Dash DataTables, head to the [Dash AG Grid](https://dash.plotly.com/dash-ag-grid) and [Dash DataTable](https://dash.plotly.com/datatable) documentation respectively. Almost anything you see there is possible in Vizro by modifying the examples below.
 
 One reason to customize could be that you want to create a table/grid that requires computations that can be controlled by parameters. The below example shows this for the case of AG Grid and Dash DataTable.
@@ -20,7 +21,9 @@ One reason to customize could be that you want to create a table/grid that requi
 The following examples show a possible version of a custom table. In this case the argument `chosen_columns` was added, which you can control with a parameter:
 
 ??? example "Custom Dash DataTable"
+
     === "app.py"
+
         ```{.python pycafe-link}
         from dash import dash_table
 
@@ -72,13 +75,17 @@ The following examples show a possible version of a custom table. In this case t
         ```
 
     === "app.yaml"
+
         Custom tables are currently only possible via Python configuration.
 
     === "Result"
+
         [![Table3]][table3]
 
 ??? example "Custom Dash AgGrid"
+
     === "app.py"
+
         ```{.python pycafe-link}
         import vizro.models as vm
         import vizro.plotly.express as px
@@ -136,9 +143,11 @@ The following examples show a possible version of a custom table. In this case t
         ```
 
     === "app.yaml"
+
         Custom Ag Grids are currently only possible via Python configuration.
 
     === "Result"
+
         [![GridCustom]][gridcustom]
 
 [gridcustom]: ../../assets/user_guides/table/custom_grid.png

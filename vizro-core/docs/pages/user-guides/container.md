@@ -7,6 +7,7 @@ A [Container][vizro.models.Container] complements a [Page][vizro.models.Page], a
 Unlike `Page`, the `Container` includes a `variant` argument. This enables you to choose a style for your container to visually distinguish it from the rest of the page content. Additional functionality will soon be added to the Container, including controls specific to it, which will further enhance the management of related components.
 
 !!! note "Displaying multiple containers inside Tabs"
+
     An alternative way to display multiple containers on one page is to place them inside [Tabs](tabs.md).
 
     [`Tabs`][vizro.models.Tabs] organize and separate groups of related content in a dashboard, letting users switch between different sections or views. They are a way of putting multiple containers into the same screen space, and letting the user switch between them.
@@ -37,7 +38,9 @@ To add a [`Container`][vizro.models.Container] to your page, do the following:
 1. (optional) Configure your `layout`, see [the guide on layouts](layouts.md)
 
 !!! example "Container"
+
     === "app.py"
+
         ```{.python pycafe-link}
 
         import vizro.models as vm
@@ -101,6 +104,7 @@ To add a [`Container`][vizro.models.Container] to your page, do the following:
         1. **Horizontally stack** the components side-by-side inside this `Container` in one row.
 
     === "app.yaml"
+
         ```yaml
         # Still requires a .py to add data to the data manager and parse YAML configuration
         # See from_yaml example
@@ -145,6 +149,7 @@ To add a [`Container`][vizro.models.Container] to your page, do the following:
         ```
 
     === "Result"
+
         [![Container]][container]
 
 Note that an almost identical layout can also be achieved using solely the [`Page.layout`](layouts.md) by configuring the `Page.layout` as `vm.Grid(grid = [[0, 1], [2, 2]])`.
@@ -172,7 +177,9 @@ vm.Container(
 To make the `Container` stand out as a distinct section in your dashboard, you can select from the predefined styles available in its `variant` argument.
 
 !!! example "Container with different styles"
+
     === "app.py"
+
         ```{.python pycafe-link}
         import vizro.models as vm
         import vizro.plotly.express as px
@@ -202,6 +209,7 @@ To make the `Container` stand out as a distinct section in your dashboard, you c
         ```
 
     === "app.yaml"
+
         ```yaml
         # Still requires a .py to add data to the data manager and parse YAML configuration
         # See yaml_version example
@@ -236,6 +244,7 @@ To make the `Container` stand out as a distinct section in your dashboard, you c
         ```
 
     === "Result"
+
         [![StyleContainer]][stylecontainer]
 
 If you want to style your `Container` beyond the styling options available inside `variant`, please refer to our user guide on [overwriting CSS for selected components](custom-css.md#overwrite-css-for-selected-components).
@@ -245,6 +254,7 @@ If you want to style your `Container` beyond the styling options available insid
 The `Container` is based on the underlying Dash component [`dbc.Container`](https://dash-bootstrap-components.opensource.faculty.ai/docs/components/layout/). Using the `extra` argument you can pass additional arguments to `dbc.Container` in order to alter it beyond the chosen defaults.
 
 !!! note
+
     Using `extra` is a quick and flexible way to alter a component beyond what Vizro offers. However, [it is not a part of the official Vizro schema](../explanation/schema.md#what-is-the-vizro-json-schema) and the underlying implementation details may change. If you want to guarantee that your apps keep running, we recommend that you pin your Vizro version.
 
 For examples of how to use the `extra` argument, see an example in the documentation of [`Card`](card.md#the-extra-argument).

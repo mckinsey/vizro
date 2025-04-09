@@ -55,6 +55,7 @@ trucks:
 As [shown below](#use-datasets-from-the-kedro-data-catalog), the best way to use the `catalog.yaml` is with the [Kedro configuration loader](https://docs.kedro.org/en/stable/configuration/configuration_basics.html) `OmegaConfigLoader`. For simple cases, this functions much like `yaml.safe_load`. However, the Kedro configuration loader also enables more advanced functionality.
 
 ??? "Kedro configuration loader features"
+
     Here are a few features of the Kedro configuration loader which are not possible with a `yaml.safe_load` alone. For more details, refer to Kedro's [documentation on advanced configuration](https://docs.kedro.org/en/stable/configuration/advanced_configuration.html).
 
     - [Configuration environments](https://docs.kedro.org/en/stable/configuration/configuration_basics.html#configuration-environments) to organize settings that might be different between your different [development and production environments](run-deploy.md). For example, you might have different s3 buckets for development and production data.
@@ -77,6 +78,7 @@ for dataset_name, dataset_loader in kedro_integration.datasets_from_catalog(cata
 The code above registers all data sources of type [`kedro_datasets.pandas`](https://docs.kedro.org/en/stable/kedro_datasets.html) in the Kedro `catalog` with Vizro's `data_manager` . You can now [reference the data source](data.md#reference-by-name) by name. For example, given the [above `catalog.yaml` file](#create-a-kedro-data-catalog), you could use the data source names `"cars"`, `"motorbikes"`, `"trains"`, and `"trucks"` with `px.scatter("cars", ...)`.
 
 !!! note
+
     Data sources imported from Kedro in this way are [dynamic data](data.md#dynamic-data). This means that the data can be refreshed while your dashboard is running. For example, if you run a Kedro pipeline, the latest data is shown in the Vizro dashboard without restarting it.
 
 The `catalog` variable may have been created in a number of different ways:
@@ -88,7 +90,9 @@ The `catalog` variable may have been created in a number of different ways:
 The full code for these different cases is given below.
 
 !!! example "Import a Kedro Data Catalog into the Vizro data manager"
+
     === "app.py (Data Catalog configuration file)"
+
         ```python
         from kedro.config import OmegaConfigLoader
         from kedro.io import DataCatalog  # (1)!
@@ -108,6 +112,7 @@ The full code for these different cases is given below.
         1. If you have [credentials](https://docs.kedro.org/en/stable/configuration/credentials.html) then these can be injected with `DataCatalog.from_config(conf_loader["catalog"], conf_loader["credentials"])`.
 
     === "app.py (Kedro project path)"
+
         ```python
         from vizro.integrations import kedro as kedro_integration
         from vizro.managers import data_manager
@@ -121,6 +126,7 @@ The full code for these different cases is given below.
         ```
 
     === "app.ipynb (Kedro Jupyter session)"
+
         ```python
         from vizro.managers import data_manager
 
@@ -147,7 +153,9 @@ The `pipelines` variable may have been created the following ways:
 The full code for these different cases is given below.
 
 !!! example "Import a Kedro Data Catalog with dataset factories into the Vizro data manager"
+
     === "app.py (Kedro project path)"
+
         ```python
         from vizro.integrations import kedro as kedro_integration
         from vizro.managers import data_manager
@@ -164,6 +172,7 @@ The full code for these different cases is given below.
         ```
 
     === "app.ipynb (Kedro Jupyter session)"
+
         ```python
         from vizro.managers import data_manager
 
