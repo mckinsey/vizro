@@ -84,11 +84,7 @@ repos:
           ]
         exclude: ^vizro-core/docs/pages/API-reference|^vizro-ai/docs/pages/API-reference|vizro-core/docs/pages/user-guides/custom-components.md|^vizro-core/changelog.d|^vizro-ai/changelog.d
         additional_dependencies:
-          - mdformat-mkdocs[recommended]==3.1.1
-          # fixed the mdformat_admon version to the latest working, because from v2.1.0 it doesn't support
-          # mdformat-mkdocs. Actually the docs says that it is not support mdformat-mkdocs>=4.0.0 and in our case
-          # it should be working, but it is not. You can check README here: https://github.com/KyleKing/mdformat-admon
-          - mdformat_admon==2.0.6
+          - mdformat-mkdocs[recommended]==4.1.2
 
 # Configuration for https://pre-commit.ci/.
 ci:
