@@ -18,7 +18,7 @@ page_1 = vm.Page(
         # vm.Button(
         #     text="asdf",
         #     actions=[filter_interaction(targets=["scatter_relation_2007"])],
-        #     # actions=[vm.Action(function=filter_interaction(targets=["scatter_relation_2007"]))],  # TODO NOW CHECK
+        #     # actions=[vm.Action(function=filter_interaction(targets=["scatter_relation_2007"]))],  # CHECK
         # ),
         vm.Graph(
             figure=px.box(
@@ -29,7 +29,7 @@ page_1 = vm.Page(
                 custom_data=["continent"],
             ),
             actions=[filter_interaction(targets=["scatter_relation_2007"])],
-            # actions=[vm.Action(function=filter_interaction(targets=["scatter_relation_2007"]))],  # TODO NOW CHECK
+            # actions=[vm.Action(function=filter_interaction(targets=["scatter_relation_2007"]))],  # CHECK
         ),
         vm.Graph(
             id="scatter_relation_2007",
@@ -46,7 +46,7 @@ page_1 = vm.Page(
             text="Export data to CSV",
             # actions=[export_data(targets=["scatter_relation_2007"], runtime_arg="button.n_clicks")],
             actions=[vm.Action(function=export_data(targets=["scatter_relation_2007"], runtime_arg="button.n_clicks"))],
-            # TODO NOW CHECK
+            # CHECK
         ),
         vm.Button(
             id="button2",
@@ -63,7 +63,7 @@ page_1 = vm.Page(
             #         )
             #     )
             # ],
-            # TODO NOW CHECK
+            # CHECK
         ),
     ],
     controls=[
@@ -126,7 +126,7 @@ ActionsChain.add_type("actions", f)
 #     card_1_text = card_2_text = str(datetime.datetime.now().time())
 #     return card_1_text, card_2_text
 
-# TODO NOW CHECK: current docs examples
+# CHECK: current docs examples
 df = px.data.iris()
 
 page_2 = vm.Page(
@@ -147,9 +147,9 @@ page_2 = vm.Page(
             actions=[
                 # vm.Action(
                 #     function=my_custom_action("scatter_chart.clickData"),
-                #     # TODO NOW CHECK: make sure user-specified argument continues to take precedence
+                #     # CHECK: make sure user-specified argument continues to take precedence
                 #     #     # function=my_custom_action("scatter_chart.clickData", controls="my_card_1.children"),
-                #     #     # TODO NOW CHECK: test to make sure this old way continues to work
+                #     #     # CHECK: test to make sure this old way continues to work
                 #     #     # function=my_custom_action(),
                 #     #     # function=my_custom_action(t=4),
                 #     #     # inputs=["scatter_chart.clickData"],

@@ -34,9 +34,6 @@ class export_data(_AbstractAction):
         default="csv", description="Format of downloaded files. Defaults to `csv`."
     )
 
-    # TODO NOW: CHECK: continue testing this and eventually remove.
-    runtime_arg: str
-
     @_log_call
     def pre_build(self):
         # Set targets to all figures on the page if not already set. In this case we don't need to check the targets
@@ -63,7 +60,7 @@ class export_data(_AbstractAction):
         ):
             raise ModuleNotFoundError("You must install either openpyxl or xlsxwriter to export to xlsx format.")
 
-    def function(self, runtime_arg, _controls: _Controls) -> dict[str, Any]:
+    def function(self, _controls: _Controls) -> dict[str, Any]:
         """Exports data after applying _controls."""
         # TODO-AV2 A 1: _controls is not currently used but instead taken out of the Dash context. This
         # will change in future once the structure of _controls has been worked out and we know how to pass ids through.
@@ -76,7 +73,7 @@ class export_data(_AbstractAction):
             filtered_data = _apply_filters(unfiltered_data, ctds["filters"], ctds["filter_interaction"], target)
             writer = getattr(filtered_data, writers[self.file_format])
             outputs[f"download_dataframe_{target}"] = dcc.send_data_frame(
-                writer=writer, filename=f"{runtime_arg=} {target}.{self.file_format}", index=False
+                writer=writer, filename=f"{target}.{self.file_format}", index=False
             )
 
         return outputs

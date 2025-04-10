@@ -157,8 +157,8 @@ class _BaseAction(VizroBaseModel):
     def _transformed_outputs(self) -> Union[list[Output], dict[str, Output]]:
         """Creates the actual Dash Outputs based on self.outputs.
 
-        Legacy and new versions of Action just support list[Output]. _AbstractAction subclasses support dict[str, Output]
-        and list[Output].
+        Legacy and new versions of Action just support list[Output]. _AbstractAction subclasses support
+        dict[str, Output] and list[Output].
         """
         # TODO-AV2 D 1: enable dict for Action. Also think about where all the validation in this function should go
         #  since it's only relevant for _AbstractAction because vm.Action models have pydantic validation built into the
