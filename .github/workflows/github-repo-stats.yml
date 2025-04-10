@@ -8,11 +8,10 @@ on:
   workflow_dispatch: # Allow for running this manually.
 
 jobs:
-  j1:
-    name: github-repo-stats
+  github-repo-stats:
     runs-on: ubuntu-latest
     steps:
-      - name: run-ghrs
+      - name: Run GitHub repo stats
         # Use latest release.
         uses: jgehrcke/github-repo-stats@RELEASE
         with:
