@@ -381,17 +381,10 @@ def update_user_input_and_card_from_state(state_data, n_clicks):
 
 
 # This does not work
-@capture("action")
-def update_card_and_input_from_state(state_data):
-    print("update_card_from_state", state_data)
-    return f"State data: {state_data}", str(state_data["dropdown_value"])
-
-
-# This works, and updates the card from the store
-# @callback(Output("card_via_store_model", "children"), Input("store_model", "data"))
-# def update_card_from_state(state_data):
+# @capture("action")
+# def update_card_and_input_from_state(state_data):
 #     print("update_card_from_state", state_data)
-#     return f"State data: {state_data}"
+#     return f"State data: {state_data}", str(state_data["dropdown_value"])
 
 
 # This is essentially a filter replacement, but done via parameters, so it can take advantage of caching
