@@ -74,7 +74,8 @@ class filter_interaction(_AbstractAction):
         #         raise ValueError(f"Model {triggered_model.id} does not have required attribute `{attribute}`.")
         #     if "modelID" not in triggered_model._filter_interaction_input:
         #         raise ValueError(
-        #             f"Model {triggered_model.id} does not have required State `modelID` in `_filter_interaction_input`."
+        #             f"Model {triggered_model.id} does not have required State `modelID` in "
+        #             "`_filter_interaction_input`."
         #         )
 
     def function(self, _controls: _Controls) -> dict[ModelID, Any]:

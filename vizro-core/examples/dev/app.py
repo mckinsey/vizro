@@ -133,7 +133,7 @@ home = vm.Page(
 
                 ### Actions
 
-                Standard predefined actions are made available including **export data** and **filter interactions**.
+                Built-in actions are made available including **export data** and **filter interactions**.
                 """,
             href="/export-data",
         ),

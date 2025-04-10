@@ -1,7 +1,7 @@
 # Action functions
 <!-- vale off -->
 
-API reference for all pre-defined action functions.
+API reference for all built-in action functions.
 
 ::: vizro.actions
     options:

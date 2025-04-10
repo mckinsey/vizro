@@ -55,7 +55,7 @@ vm.Button(text="Leave us a star! ⭐", href="https://github.com/mckinsey/vizro")
 
 ## Attach an action
 
-You can use the [`Button`][vizro.models.Button] to trigger predefined action functions, such as exporting data. To explore the available options for [`Actions`][vizro.models.Action], refer to our [API reference][vizro.actions]. Use the `Button.actions` argument to specify which action function executes when the button is clicked.
+You can use the [`Button`][vizro.models.Button] to trigger an action function, such as exporting data. To explore the available options for [`Actions`][vizro.models.Action], refer to our [API reference][vizro.actions]. Use the `Button.actions` argument to specify which action function executes when the button is clicked.
 
 The example below demonstrates how to configure a button to export the filtered data of a target chart using the [export_data][vizro.actions.export_data] action function.
 

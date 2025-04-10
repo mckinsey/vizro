@@ -49,7 +49,11 @@ def _get_action_discriminator(action: Any) -> Optional[str]:
     if isinstance(action, dict):
         # If type is supplied then use that (like saying discriminator="type"). Otherwise, it's the legacy case where
         # type is not specified, in which case we want to use vm.Action, which has type="action".
-        return action.get("type", "action")
+        try:
+            # TODO-AV2 C 1: Put in deprecation warning.
+            return action["type"]
+        except KeyError:
+            return "action"
 
     # If a model has been specified then this is equivalent to saying discriminator="type". When None is returned,
     # union_tag_not_found error is raised.
@@ -620,7 +624,6 @@ ActionType = Annotated[
 ]
 """Discriminated union. Type of action: [`Action`][vizro.models.Action], [`export_data`][vizro.models.export_data] or [
 `filter_interaction`][vizro.models.filter_interaction]."""
-
 
 # Extra type groups used for mypy casting
 FigureWithFilterInteractionType = Union["Graph", "Table", "AgGrid"]
