@@ -387,6 +387,12 @@ def update_user_input_and_card_from_state(state_data, n_clicks):
 #     return f"State data: {state_data}", str(state_data["dropdown_value"])
 
 
+# This also doesn't work
+@capture("action")
+def update_card_from_state(state_data):
+    return f"State data: {state_data}"
+
+
 # This is essentially a filter replacement, but done via parameters, so it can take advantage of caching
 def filter_gapminder_continent_via_text_area(continent: str):
     print("Loading gapminder filtered for continent", continent)
@@ -437,13 +443,15 @@ page_5 = vm.Page(
             id="store_model",
             data={"dropdown_value": ["Asia"]},
             # This does not work, but the callback does!
-            # actions=[
-            #     vm.Action(
-            #         function=update_card_from_state("store_model.data"), outputs=["card_via_store_model.children"]
-            #     )
-            # ],
+            actions=[
+                vm.Action(
+                    function=update_card_from_state("store_model.data"),
+                    outputs=["card_via_store_model_action.children"],
+                )
+            ],
         ),
         vm.Card(id="card_via_store_model", text="Nothing configured yet"),
+        vm.Card(id="card_via_store_model_action", text="Nothing configured yet"),
     ],
     controls=[
         vm.Dropdown(
