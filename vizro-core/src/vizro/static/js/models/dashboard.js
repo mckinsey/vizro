@@ -30,34 +30,39 @@ function update_graph_theme(figure, theme_selector_checked, vizro_themes) {
 }
 
 function collapse_nav_panel(n_clicks, is_open) {
-  // Unlike collapse_container, this needs to always run on initial page load to be responsive to screen size.
-  const collapsed_state = [
-    false,
-    {
-      transform: "rotate(180deg)",
-      transition: "transform 0.35s ease-in-out",
-      marginLeft: "8px",
-    },
-    "Show Menu",
-  ];
-  const expanded_state = [
-    true,
-    {
-      transform: "rotate(0deg)",
-      transition: "transform 0.35s ease-in-out",
-    },
-    "Hide Menu",
-  ];
-
   if (!n_clicks) {
-    /* Automatically collapses left-side if xs and s-devices are detected*/
-    if (window.innerWidth < 576 || window.innerHeight < 576) {
-      return collapsed_state;
+    /* Automatically collapses left-side if xs, s and m-devices are detected*/
+    if (window.innerWidth < 768 || window.innerHeight < 768) {
+      return [
+        false,
+        {
+          transform: "rotate(180deg)",
+          transition: "transform 0.35s ease-in-out",
+        },
+        "Show Menu",
+      ];
     }
     return dash_clientside.no_update;
   }
-
-  return is_open ? collapsed_state : expanded_state;
+  if (is_open) {
+    return [
+      false,
+      {
+        transform: "rotate(180deg)",
+        transition: "transform 0.35s ease-in-out",
+      },
+      "Show Menu",
+    ];
+  } else {
+    return [
+      true,
+      {
+        transform: "rotate(0deg)",
+        transition: "transform 0.35s ease-in-out",
+      },
+      "Hide Menu",
+    ];
+  }
 }
 
 window.dash_clientside = {

@@ -177,48 +177,44 @@
   width: 0;
 }
 
-/* Note: This is only meant as a quick-fix to improve some of the mobile layouts. */
+/*
+Note: This is a temporary quick-fix to improve the mobile layout experience.
+In the long run, we should refactor our CSS and component structure to support proper responsive design.
 
-/* Long-term wise this should be replaced by refactoring our CSS code and components to be mobile-compatible. */
+Current logic:
+1. Applies a flex layout with column direction to:
+   - Extra-small, small, and medium screen widths (≤ 768px)
+   - Large screen widths (≤ 1028px) *only when* the collapsible left panel is open
 
-/* Applies to device size x-small and small */
-@media (width <= 576px) {
+2. Applies a zoom-out effect for very small screen widths and heights (≤ 576px)
+*/
+
+/* Apply flex layout for screens smaller than 768px */
+@media screen and (width <= 768px) {
   .grid-layout {
     display: flex;
     flex: 1;
     flex-direction: column;
   }
+}
 
-  .collapse-icon-div {
-    padding-top: 20px;
-  }
-
-  #page-header {
-    zoom: 80%;
-  }
-
-  #left-side {
-    zoom: 80%;
-  }
-
-  #right-side {
-    zoom: 80%;
+/* Apply flex layout for screens up to 1028px if collapsible-left-side is shown */
+@media screen and (width <= 1028px) {
+  #page-main:has(#collapsable-left-side.show) .grid-layout {
+    display: flex;
+    flex: 1;
+    flex-direction: column;
   }
 }
 
-@media (height <= 576px) {
+/* Apply zoom-out on small screen sizes */
+@media screen and (width <= 576px), screen and (height <= 576px) {
   .collapse-icon-div {
     padding-top: 20px;
   }
 
-  #page-header {
-    zoom: 80%;
-  }
-
-  #left-side {
-    zoom: 80%;
-  }
-
+  #page-header,
+  #left-side,
   #right-side {
     zoom: 80%;
   }

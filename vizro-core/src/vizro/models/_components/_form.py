@@ -7,7 +7,7 @@ from pydantic import AfterValidator, BeforeValidator, Field, conlist
 
 from vizro.models import VizroBaseModel
 from vizro.models._components.form import Checklist, Dropdown, RadioItems, RangeSlider, Slider
-from vizro.models._layout import set_layout
+from vizro.models._grid import set_layout
 from vizro.models._models_utils import _build_inner_layout, _log_call, check_captured_callable_model
 from vizro.models.types import LayoutType, _FormComponentType
 
@@ -18,7 +18,7 @@ class Form(VizroBaseModel):
     Args:
         type (Literal["form"]): Defaults to `"form"`.
         components (list[FormComponentType]): List of components used in the form.
-        layout (Optional[Layout]): Defaults to `None`.
+        layout (Optional[LayoutType]): Defaults to `None`.
 
     """
 

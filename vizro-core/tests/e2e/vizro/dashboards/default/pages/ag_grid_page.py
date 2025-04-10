@@ -12,7 +12,7 @@ ag_grid_page = vm.Page(
         vm.Container(
             id=cnst.TABLE_AG_GRID_CONTAINER,
             title=cnst.TABLE_AG_GRID_CONTAINER,
-            layout=vm.Layout(grid=[[0, 1]], col_gap="0px"),
+            layout=vm.Grid(grid=[[0, 1]], col_gap="0px"),
             components=[
                 vm.AgGrid(
                     id=cnst.TABLE_AG_GRID_ID,

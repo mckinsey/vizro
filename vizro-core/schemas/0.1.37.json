@@ -316,7 +316,7 @@
     },
     "Container": {
       "additionalProperties": false,
-      "description": "Container to group together a set of components on a page.\n\nArgs:\n    type (Literal[\"container\"]): Defaults to `\"container\"`.\n    components (list[ComponentType]): See [ComponentType][vizro.models.types.ComponentType]. At least one component\n        has to be provided.\n    title (str): Title to be displayed.\n    layout (Optional[Layout]): Layout to place components in. Defaults to `None`.\n    variant (Literal[\"plain\", \"filled\", \"outlined\"]): Predefined styles to choose from. Options are `plain`,\n        `filled` or `outlined`. Defaults to `plain`.\n    collapsed (Optional[bool]): Boolean flag for whether container is collapsed on initial load. Defaults to `None`,\n        in which case the container is not collapsible at all.\n    extra (Optional[dict[str, Any]]): Extra keyword arguments that are passed to `dbc.Container` and overwrite any\n        defaults chosen by the Vizro team. This may have unexpected behavior.\n        Visit the [dbc documentation](https://dash-bootstrap-components.opensource.faculty.ai/docs/components/layout/)\n        to see all available arguments. [Not part of the official Vizro schema](../explanation/schema.md) and the\n        underlying component may change in the future. Defaults to `{}`.",
+      "description": "Container to group together a set of components on a page.\n\nArgs:\n    type (Literal[\"container\"]): Defaults to `\"container\"`.\n    components (list[ComponentType]): See [ComponentType][vizro.models.types.ComponentType]. At least one component\n        has to be provided.\n    title (str): Title of the `Container`. Defaults to `\"\"`.\n    layout (Optional[LayoutType]): Layout to place components in. Defaults to `None`.\n    variant (Literal[\"plain\", \"filled\", \"outlined\"]): Predefined styles to choose from. Options are `plain`,\n        `filled` or `outlined`. Defaults to `plain`.\n    extra (Optional[dict[str, Any]]): Extra keyword arguments that are passed to `dbc.Container` and overwrite any\n        defaults chosen by the Vizro team. This may have unexpected behavior.\n        Visit the [dbc documentation](https://dash-bootstrap-components.opensource.faculty.ai/docs/components/layout/)\n        to see all available arguments. [Not part of the official Vizro schema](../explanation/schema.md) and the\n        underlying component may change in the future. Defaults to `{}`.",
       "properties": {
         "id": {
           "default": "",
@@ -382,7 +382,8 @@
           "type": "array"
         },
         "title": {
-          "description": "Title to be displayed.",
+          "default": "",
+          "description": "Title of the `Container`",
           "title": "Title",
           "type": "string"
         },
@@ -392,10 +393,13 @@
               "description": "Type of layout to place components on the page.",
               "oneOf": [
                 {
-                  "$ref": "#/$defs/Layout"
+                  "$ref": "#/$defs/Grid"
                 },
                 {
                   "$ref": "#/$defs/Flex"
+                },
+                {
+                  "$ref": "#/$defs/Layout"
                 }
               ]
             },
@@ -427,7 +431,7 @@
           "title": "Collapsed"
         }
       },
-      "required": ["components", "title"],
+      "required": ["components"],
       "title": "Container",
       "type": "object"
     },
@@ -828,7 +832,7 @@
       "title": "Graph",
       "type": "object"
     },
-    "Layout": {
+    "Grid": {
       "additionalProperties": false,
       "description": "Grid specification to place chart/components on the [`Page`][vizro.models.Page].\n\nArgs:\n    type (Literal[\"grid\"]): Defaults to `\"grid\"`.\n    grid (list[list[int]]): Grid specification to arrange components on screen.\n    row_gap (str): Specifies the gap between rows. Allowed units: 'px', 'rem', 'em', or '%'. Defaults to `24px`.\n    col_gap (str): Specifies the gap between columns. Allowed units: 'px', 'rem', 'em', or '%'. Defaults to `24px`.\n    row_min_height (str): Minimum row height in px. Allowed units: 'px', 'rem', 'em', or '%'. Defaults to `0px`.\n    col_min_width (str): Minimum column width in px. Allowed unit are: 'px', 'rem', 'em', or '%'. Defaults to `0px`.",
       "properties": {
@@ -841,6 +845,67 @@
         "type": {
           "const": "grid",
           "default": "grid",
+          "title": "Type",
+          "type": "string"
+        },
+        "grid": {
+          "description": "Grid specification to arrange components on screen.",
+          "items": {
+            "items": {
+              "type": "integer"
+            },
+            "type": "array"
+          },
+          "title": "Grid",
+          "type": "array"
+        },
+        "row_gap": {
+          "default": "24px",
+          "description": "Specifies the gap between rows. Allowed units: 'px', 'rem', 'em', or '%'. Defaults to `24px`.",
+          "pattern": "^\\d+(px|rem|em|%)$",
+          "title": "Row Gap",
+          "type": "string"
+        },
+        "col_gap": {
+          "default": "24px",
+          "description": "Specifies the gap between columns. Allowed units: 'px', 'rem', 'em', or '%'. Defaults to `24px`.",
+          "pattern": "^\\d+(px|rem|em|%)$",
+          "title": "Col Gap",
+          "type": "string"
+        },
+        "row_min_height": {
+          "default": "0px",
+          "description": "Minimum row height in px. Allowed units: 'px', 'rem', 'em', or '%'. Defaults to `0px`.",
+          "pattern": "^\\d+(px|rem|em|%)$",
+          "title": "Row Min Height",
+          "type": "string"
+        },
+        "col_min_width": {
+          "default": "0px",
+          "description": "Minimum column width in px. Allowed units: 'px', 'rem', 'em', or '%'. Defaults to `0px`.",
+          "pattern": "^\\d+(px|rem|em|%)$",
+          "title": "Col Min Width",
+          "type": "string"
+        }
+      },
+      "required": ["grid"],
+      "title": "Grid",
+      "type": "object"
+    },
+    "Layout": {
+      "additionalProperties": false,
+      "deprecated": true,
+      "description": "Deprecated. This model has been renamed [`Grid`][vizro.models.Grid].",
+      "properties": {
+        "id": {
+          "default": "",
+          "description": "ID to identify model. Must be unique throughout the whole dashboard.When no ID is chosen, ID will be automatically generated.",
+          "title": "Id",
+          "type": "string"
+        },
+        "type": {
+          "const": "legacy_layout",
+          "default": "legacy_layout",
           "title": "Type",
           "type": "string"
         },
@@ -1069,7 +1134,7 @@
     },
     "Page": {
       "additionalProperties": false,
-      "description": "A page in [`Dashboard`][vizro.models.Dashboard] with its own URL path and place in the `Navigation`.\n\nArgs:\n    components (list[ComponentType]): See [ComponentType][vizro.models.types.ComponentType]. At least one component\n        has to be provided.\n    title (str): Title to be displayed.\n    description (str): Description for meta tags.\n    layout (Optional[Layout]): Layout to place components in. Defaults to `None`.\n    controls (list[ControlType]): See [ControlType][vizro.models.types.ControlType]. Defaults to `[]`.\n    path (str): Path to navigate to page. Defaults to `\"\"`.",
+      "description": "A page in [`Dashboard`][vizro.models.Dashboard] with its own URL path and place in the `Navigation`.\n\nArgs:\n    components (list[ComponentType]): See [ComponentType][vizro.models.types.ComponentType]. At least one component\n        has to be provided.\n    title (str): Title of the `Page`.\n    description (str): Description for meta tags.\n    layout (Optional[LayoutType]): Layout to place components in. Defaults to `None`.\n    controls (list[ControlType]): See [ControlType][vizro.models.types.ControlType]. Defaults to `[]`.\n    path (str): Path to navigate to page. Defaults to `\"\"`.",
       "properties": {
         "id": {
           "default": "",
@@ -1129,7 +1194,7 @@
           "type": "array"
         },
         "title": {
-          "description": "Title to be displayed.",
+          "description": "Title of the `Page`",
           "title": "Title",
           "type": "string"
         },
@@ -1145,10 +1210,13 @@
               "description": "Type of layout to place components on the page.",
               "oneOf": [
                 {
-                  "$ref": "#/$defs/Layout"
+                  "$ref": "#/$defs/Grid"
                 },
                 {
                   "$ref": "#/$defs/Flex"
+                },
+                {
+                  "$ref": "#/$defs/Layout"
                 }
               ]
             },
@@ -1701,7 +1769,7 @@
     },
     "theme": {
       "default": "vizro_dark",
-      "description": "Layout theme to be applied across dashboard. Defaults to `vizro_dark`.",
+      "description": "Theme to be applied across dashboard. Defaults to `vizro_dark`.",
       "enum": ["vizro_dark", "vizro_light"],
       "title": "Theme",
       "type": "string"

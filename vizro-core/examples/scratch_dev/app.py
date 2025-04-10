@@ -1,7 +1,4 @@
-"""Example app from the official vizro user tutorial.
-
-See: https://vizro.readthedocs.io/en/stable/pages/tutorials/explore-components/
-"""
+"""Scratchpad for testing."""
 
 import vizro.models as vm
 import vizro.plotly.express as px

@@ -12,7 +12,7 @@ butterfly_page = butterfly_factory("deviation")
 diverging_bar_page = vm.Page(
     title="Diverging bar",
     path="deviation/diverging-bar",
-    layout=vm.Layout(grid=PAGE_GRID),
+    layout=vm.Grid(grid=PAGE_GRID),
     components=[
         vm.Card(
             text="""
@@ -54,7 +54,7 @@ diverging_bar_page = vm.Page(
 diverging_stacked_bar_page = vm.Page(
     title="Diverging stacked bar",
     path="deviation/diverging-stacked-bar",
-    layout=vm.Layout(grid=PAGE_GRID),
+    layout=vm.Grid(grid=PAGE_GRID),
     components=[
         vm.Card(
             text="""

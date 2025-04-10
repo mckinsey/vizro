@@ -9,7 +9,7 @@ from pages.examples import ordered_bar, ordered_column
 ordered_bar_page = vm.Page(
     title="Ordered bar",
     path="ranking/ordered-bar",
-    layout=vm.Layout(grid=PAGE_GRID),
+    layout=vm.Grid(grid=PAGE_GRID),
     components=[
         vm.Card(
             text="""
@@ -48,7 +48,7 @@ ordered_bar_page = vm.Page(
 ordered_column_page = vm.Page(
     title="Ordered column",
     path="ranking/ordered-column",
-    layout=vm.Layout(grid=PAGE_GRID),
+    layout=vm.Grid(grid=PAGE_GRID),
     components=[
         vm.Card(
             text="""

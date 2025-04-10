@@ -1,10 +1,11 @@
 import re
-from typing import Annotated, Literal, NamedTuple, Optional
+from typing import Annotated, Any, Literal, NamedTuple, Optional
 
 import numpy as np
 from dash import html
 from numpy import ma
 from pydantic import AfterValidator, Field, PrivateAttr, ValidationInfo
+from typing_extensions import deprecated
 
 from vizro._constants import EMPTY_SPACE_CONST, GAP_DEFAULT
 from vizro.models import VizroBaseModel
@@ -30,10 +31,10 @@ def _get_unique_grid_component_ids(grid: list[list[int]]):
 
 # Validators for reuse
 def set_layout(layout, info: ValidationInfo):
-    from vizro.models import Flex, Layout
+    from vizro.models import Flex, Grid
 
     # No validation for Flex layout
-    # Possibly some of this validator should be attached directly to the grid Layout model type rather than
+    # Possibly some of this validator should be attached directly to the Grid model type rather than
     # the LayoutType Union to avoid needing this check.
     if isinstance(layout, Flex):
         return layout
@@ -46,7 +47,7 @@ def set_layout(layout, info: ValidationInfo):
 
     if layout is None:
         grid = [[i] for i in range(len(info.data["components"]))]
-        return Layout(grid=grid)
+        return Grid(grid=grid)
 
     unique_grid_idx = _get_unique_grid_component_ids(layout.grid)
     if len(unique_grid_idx) != len(info.data["components"]):
@@ -143,7 +144,7 @@ def _do_rectangles_overlap(r1: ColRowGridLines, r2: ColRowGridLines) -> bool:
 
 
 def _validate_grid_areas(grid_areas: list[ColRowGridLines]) -> None:
-    """Validates `grid_areas` spanned by screen components in `Layout`."""
+    """Validates `grid_areas` spanned by screen components in `Grid`."""
     for i, r1 in enumerate(grid_areas):
         for r2 in grid_areas[i + 1 :]:
             if _do_rectangles_overlap(r1, r2):
@@ -164,8 +165,7 @@ def _get_grid_lines(grid: list[list[int]]) -> tuple[list[ColRowGridLines], list[
     return component_grid_lines, space_grid_lines
 
 
-# TODO: Deprecate and rename to Grid
-class Layout(VizroBaseModel):
+class Grid(VizroBaseModel):
     """Grid specification to place chart/components on the [`Page`][vizro.models.Page].
 
     Args:
@@ -206,8 +206,7 @@ class Layout(VizroBaseModel):
     )
     _component_grid_lines: Optional[list[ColRowGridLines]] = PrivateAttr()
 
-    def __init__(self, **data):
-        super().__init__(**data)
+    def model_post_init(self, context: Any) -> None:
         self._component_grid_lines = _get_grid_lines(self.grid)[0]
 
     @property
@@ -218,7 +217,7 @@ class Layout(VizroBaseModel):
     # We could have _LayoutBuildType as a return type annotation, but it would need to be generated
     # dynamically which is tricky and not amenable to type checking anyway.
     # Possibly in future we would have a public method to generate this string or maybe even
-    # a new method Layout.inject or similar that handles the injection of components into the grid for us.
+    # a new method Grid.inject or similar that handles the injection of components into the grid for us.
     # Another alternative is to take [component.build() for component in components] as an argument
     # in the build method here.
     @_log_call
@@ -249,3 +248,14 @@ class Layout(VizroBaseModel):
             id=self.id,
         )
         return component_container
+
+
+@deprecated(
+    "The `Layout` model has been renamed `Grid`, and `Layout` will no longer exist in Vizro 0.2.0. To ensure future "
+    "compatibility, replace your references to `vm.Layout` with `vm.Grid`.",
+    category=FutureWarning,
+)
+class Layout(Grid):
+    """Deprecated. This model has been renamed [`Grid`][vizro.models.Grid]."""
+
+    type: Literal["legacy_layout"] = "legacy_layout"  # type: ignore[assignment]

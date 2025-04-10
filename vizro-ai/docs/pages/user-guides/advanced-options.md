@@ -55,7 +55,9 @@ If `return_elements=True`, then instead of a `fig` object, a class is returned, 
 You can obtain the code string that would produce the answer to the user query as a Vizro dashboard ready figure as follows. The name for the function will be `custom_chart`:
 
 !!! example "Vizro code"
+
     === "Code"
+
         ```py
         from vizro_ai import VizroAI
         import plotly.express as px
@@ -68,6 +70,7 @@ You can obtain the code string that would produce the answer to the user query a
         ```
 
     === "Result"
+
         ```py
         import vizro.plotly.express as px
         from vizro.models.types import capture
@@ -87,7 +90,9 @@ You can obtain the code string that would produce the answer to the user query a
 You can obtain the code string that would produce the answer to the user query as a pure `plotly.graph_objects.Figure` as follows. The name for the function will be `custom_chart`:
 
 !!! example "Plotly code"
+
     === "Code"
+
         ```py
         from vizro_ai import VizroAI
         import plotly.express as px
@@ -100,6 +105,7 @@ You can obtain the code string that would produce the answer to the user query a
         ```
 
     === "Result"
+
         ```py
         import plotly.express as px
 
@@ -121,7 +127,9 @@ You can create the `fig` object using either of the above produced code strings 
 This `fig` object is in the standard `vizro_dark` theme, and can [be inserted into a Vizro dashboard](add-generated-chart-usecase.md).
 
 !!! example "Vizro `fig` object"
+
     === "Code"
+
         ```py
         from vizro_ai import VizroAI
         import plotly.express as px
@@ -135,6 +143,7 @@ This `fig` object is in the standard `vizro_dark` theme, and can [be inserted in
         ```
 
     === "Result"
+
         [![VizroAIChartVizro]][vizroaichartvizro]
 
 #### Pure Plotly/Dash
@@ -142,7 +151,9 @@ This `fig` object is in the standard `vizro_dark` theme, and can [be inserted in
 This `fig` object is a basic plotly figure.
 
 !!! example "Plotly `fig` object"
+
     === "Code"
+
         ```py
         from vizro_ai import VizroAI
         import plotly.express as px
@@ -156,6 +167,7 @@ This `fig` object is a basic plotly figure.
         ```
 
     === "Result"
+
         [![VizroAIChartPlotly]][vizroaichartplotly]
 
 #### Using different data
@@ -167,7 +179,9 @@ You can create the `fig` object with different data while ensuring the overall s
 <!--vale on-->
 
 !!! example "Different data"
+
     === "Code"
+
         ```py
         from vizro_ai import VizroAI
         import plotly.express as px
@@ -184,6 +198,7 @@ You can create the `fig` object with different data while ensuring the overall s
         ```
 
     === "Result"
+
         [![VizroAINewData]][vizroainewdata]
 
 #### Changing the chart name
@@ -191,7 +206,9 @@ You can create the `fig` object with different data while ensuring the overall s
 This option executes the chart code with the name given under `chart_name`. This can be important when you want to avoid overwriting variables in the namespace.
 
 !!! example "Changing the `chart_name`"
+
     === "Code"
+
         ```py
         from vizro_ai import VizroAI
         import plotly.express as px
@@ -205,6 +222,7 @@ This option executes the chart code with the name given under `chart_name`. This
         ```
 
     === "Result"
+
         ```py
         <function different_name at 0x17a18df80>
         ```

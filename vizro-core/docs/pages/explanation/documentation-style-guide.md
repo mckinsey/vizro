@@ -37,20 +37,25 @@ Avoid referring to data using terms like "dataset" or "connector". Prefer to use
 Keep the amount of text, and the number and variety of callouts used, to a minimum. There is a [broad set available](https://squidfunk.github.io/mkdocs-material/reference/admonitions/#supported-types) for use in the Vizro docs, but we limit usage to notes, warnings, details and examples:
 
 !!! note "note"
+
     For notable information.
 
 !!! warning "warning"
+
     To indicate a potential gotcha.
 
 ??? details "See more details"
+
     A side note (used sparingly)
 
 !!! example "example"
+
     For example code.
 
 Callout boxes can be made collapsible: if you use them, add them to the page so they are initially collapsed.
 
 ???+ note "Limit the use of collapsible callouts to secondary information only"
+
     Don't use expanded-on-load collapsibles like this one. If the callout contains important information and needs to be shown as expanded on page load, it should simply be non-collapsible.
 
 ## Capitalization
@@ -100,6 +105,7 @@ Don't use the passive tense:
 > The configuration steps should be completed.
 
 !!! note "What is passive tense?"
+
     If you can add "by zombies" to the end of any sentence, it is passive.
 
     - For example: "The configuration steps should be completed." can also be read as: "The configuration should be completed BY ZOMBIES".
