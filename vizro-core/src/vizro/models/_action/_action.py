@@ -5,12 +5,13 @@ import logging
 import re
 from collections.abc import Collection, Iterable, Mapping
 from pprint import pformat
-from typing import TYPE_CHECKING, Annotated, Any, Callable, ClassVar, Literal, TypedDict, Union, cast
+from typing import TYPE_CHECKING, Annotated, Any, Callable, ClassVar, Literal, Union, cast
 
 from dash import Input, Output, State, callback, html
 from dash.development.base_component import Component
 from pydantic import Field, StringConstraints, TypeAdapter, ValidationError, field_validator
 from pydantic.json_schema import SkipJsonSchema
+from typing_extensions import TypedDict
 
 from vizro.managers._model_manager import model_manager
 from vizro.models import VizroBaseModel

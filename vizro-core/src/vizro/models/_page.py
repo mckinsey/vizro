@@ -1,7 +1,7 @@
 from __future__ import annotations
 
 from collections.abc import Iterable
-from typing import Annotated, Any, Optional, TypedDict, cast
+from typing import Annotated, Any, Optional, cast
 
 from dash import dcc, html
 from pydantic import (
@@ -15,6 +15,7 @@ from pydantic import (
     model_serializer,
     model_validator,
 )
+from typing_extensions import TypedDict
 
 from vizro._constants import ON_PAGE_LOAD_ACTION_PREFIX
 from vizro.actions._on_page_load import _on_page_load

@@ -9,12 +9,13 @@ import inspect
 import warnings
 from contextlib import contextmanager
 from datetime import date
-from typing import Annotated, Any, Literal, NewType, Optional, Protocol, TypeAlias, TypedDict, Union, runtime_checkable
+from typing import Annotated, Any, Literal, NewType, Optional, Protocol, Union, runtime_checkable
 
 import plotly.io as pio
 import pydantic_core as cs
 from pydantic import Discriminator, Field, StrictBool, Tag, ValidationInfo
 from pydantic.json_schema import SkipJsonSchema
+from typing_extensions import TypeAlias, TypedDict
 
 from vizro.charts._charts_utils import _DashboardReadyFigure
 
