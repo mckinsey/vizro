@@ -4,7 +4,12 @@ This guide shows you how to use containers to group your components into section
 
 A [Container][vizro.models.Container] complements a [Page][vizro.models.Page], and both models share nearly identical arguments. While `Page.layout` provides a method for structuring the overall page layout, a `Container` offers more detailed control within a particular section of the page. The `Container` is based on the underlying Dash component [`dbc.Container`](https://dash-bootstrap-components.opensource.faculty.ai/docs/components/layout/).
 
-Unlike `Page`, the `Container` includes `variant` and `collapsed` arguments. The `variant` argument enables you to choose a style for your container to visually distinguish it from the rest of the page content. The `collapsed` argument enables you to make the container collapsible, defining whether its contents is initially hidden or visible. Additional functionality will soon be added to the `Container`, including controls specific to it, which will further enhance the management of related components.
+Unlike `Page`, the `Container` model offers additional visual customization options:
+
+- **`variant`**: Allows you to select a visual style for the container, making it stand out from the rest of the page content.
+- **`collapsed`**: Enables collapsible behavior, letting you define whether the container's contents are initially shown or hidden.
+
+More functionality will be introduced to `Container` soon, including container-specific controls to support better grouping and interaction of related components.
 
 !!! note "Displaying multiple containers inside Tabs"
 
@@ -18,16 +23,19 @@ Unlike `Page`, the `Container` includes `variant` and `collapsed` arguments. The
 
 In general, any arbitrarily granular layout can already be achieved by [using `Page.layout`](layouts.md) alone, which is our recommended approach if you want to arrange components on a page with consistent row and/or column spacing.
 
-`Page.layout` has a `grid` argument that sets the overall layout of the page. `Container.layout` also has a `grid` argument. This enables you to insert a further `grid` into a component's space on the page, enabling more granular control by breaking the overall page grid into subgrids.
+Both `Page.layout` and `Container.layout` now accept either a [Grid][vizro.models.Layout] (default) or a [Flex][vizro.models.Flex] layout model, giving you full flexibility when arranging components.
+
+- `Page.layout` defines the overall layout of the page using either Grid or Flex.
+- `Container.layout` allows you to insert a nested `Grid` or `Flex` layout within the page layout, offering more granular control by breaking the page into independently arranged sublayouts.
 
 Here are a few cases where you might want to use a `Container` instead of `Page.layout`:
 
-- Split up your grid into subgrids to organize components together
-- Add a title to your subgrids
-- Different row and column spacing between subgrids
+- Split up your sections into subsections to organize components together
+- Add a title to your section
+- Different row and column spacing between sections
 - Apply a background color or borders to [visually distinguish your content](#styled-containers)
 - Make your [content collapsible](#collapsible-containers)
-- Apply controls to selected subgrids (will be supported soon)
+- Apply controls to selected sections (will be supported soon)
 
 ## Basic containers
 
@@ -252,10 +260,19 @@ If you want to style your `Container` beyond the styling options available insid
 
 ## Collapsible containers
 
-To make a `Container` collapsible, set the `collapsed` argument to `True` to start in a collapsed state or `False` to have it expanded by default. Dashboard users can then toggle the container's visibility as needed.
+To make a Container collapsible, use the `collapsed` argument:
 
-!!! example "Collapsible container"
+- Set `collapsed=True` to have the container start in a collapsed (hidden) state.
+- Set `collapsed=False` to have it expanded (visible) by default.
+
+Once defined, dashboard users can toggle the container’s visibility interactively.
+
+Collapsible containers are supported in both `Grid` and `Flex` layouts. However, we recommend using them within a `Flex` layout for optimal behavior, as `Flex` is better suited to dynamic sizing and more efficient use of space when content is shown or hidden.
+
+!!! example "Collapsible container inside Grid"
+
     === "app.py"
+
         ```{.python pycafe-link}
         import vizro.models as vm
         import vizro.plotly.express as px
@@ -285,6 +302,7 @@ To make a `Container` collapsible, set the `collapsed` argument to `True` to sta
         ```
 
     === "app.yaml"
+
         ```yaml
         # Still requires a .py to add data to the data manager and parse YAML configuration
         # See yaml_version example
@@ -318,6 +336,7 @@ To make a `Container` collapsible, set the `collapsed` argument to `True` to sta
         ```
 
     === "Result"
+
         [![CollapsibleContainer]][collapsiblecontainer]
 
 ## The `extra` argument

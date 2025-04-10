@@ -24,8 +24,9 @@ class Container(VizroBaseModel):
         layout (Optional[LayoutType]): Layout to place components in. Defaults to `None`.
         variant (Literal["plain", "filled", "outlined"]): Predefined styles to choose from. Options are `plain`,
             `filled` or `outlined`. Defaults to `plain`.
-        collapsed (Optional[bool]): Boolean flag for whether container is collapsed on initial load. Defaults to `None`,
-            in which case the container is not collapsible at all.
+        collapsed (Optional[bool]): Boolean flag that determines whether the container is collapsed on initial load.
+        Set to `True` for a collapsed state, `False` for an expanded state.
+        Defaults to `None`, meaning the container is not collapsible.
         extra (Optional[dict[str, Any]]): Extra keyword arguments that are passed to `dbc.Container` and overwrite any
             defaults chosen by the Vizro team. This may have unexpected behavior.
             Visit the [dbc documentation](https://dash-bootstrap-components.opensource.faculty.ai/docs/components/layout/)
@@ -50,8 +51,9 @@ class Container(VizroBaseModel):
     )
     collapsed: Optional[bool] = Field(
         default=None,
-        description="Boolean flag for whether container is collapsed on initial load. Defaults to `None`, "
-        "in which case the container is not collapsible at all.",
+        description="Boolean flag that determines whether the container is collapsed on initial load. "
+        "Set to `True` for a collapsed state, `False` for an expanded state. "
+        "Defaults to `None`, meaning the container is not collapsible.",
     )
     extra: SkipJsonSchema[
         Annotated[
@@ -114,7 +116,11 @@ class Container(VizroBaseModel):
         return dbc.Container(**(defaults | self.extra))
 
     def _build_container(self):
-        """Returns collapsible container."""
+        """Returns a collapsible container based on the `collapsed` state.
+
+        If `collapsed` is `None`, returns a non-collapsible container.
+        Otherwise, returns a collapsible container with visibility controlled by the `collapsed` flag.
+        """
         if self.collapsed is None:
             return _build_inner_layout(self.layout, self.components)
 
@@ -127,7 +133,7 @@ class Container(VizroBaseModel):
         )
 
     def _build_container_title(self):
-        """Returns container title."""
+        """Builds and returns the container title, including an optional icon and tooltip if collapsed."""
         title_content = [self.title]
 
         if self.collapsed is not None:
