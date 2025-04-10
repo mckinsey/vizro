@@ -369,16 +369,53 @@ page27 = vm.Page(
 )
 
 page28 = vm.Page(
-    title="Grid inside flex",
-    #  layout=vm.Flex(),
+    title="Grid inside flex / Flex inside Grid inside Flex",
+    layout=vm.Flex(),
     components=[
+        vm.Card(text="We are flex-items!"),
         vm.AgGrid(figure=dash_ag_grid(tips)),
+        vm.Graph(figure=px.histogram(tips, x="tip")),
+        vm.Container(
+            variant="outlined",
+            components=[
+                vm.Card(text="We are grid-items!"),
+                vm.AgGrid(figure=dash_ag_grid(tips)),
+                vm.Graph(figure=px.histogram(tips, x="tip")),
+                vm.Container(
+                    layout=vm.Flex(),
+                    components=[
+                        vm.Card(text="We are flex-items!"),
+                        vm.AgGrid(figure=dash_ag_grid(tips)),
+                        vm.Graph(figure=px.histogram(tips, x="tip")),
+                    ],
+                    variant="outlined",
+                ),
+            ],
+        ),
+    ],
+)
+
+page29 = vm.Page(
+    title="Flex inside Grid / Grid inside Flex inside Grid",
+    components=[
+        vm.Card(text="We are grid-items!"),
+        vm.AgGrid(figure=dash_ag_grid(tips)),
+        vm.Graph(figure=px.histogram(tips, x="tip")),
         vm.Container(
             layout=vm.Flex(),
+            variant="outlined",
             components=[
+                vm.Card(text="We are flex-items!"),
                 vm.AgGrid(figure=dash_ag_grid(tips)),
-                vm.Card(text="This is card inside first tab!"),
                 vm.Graph(figure=px.histogram(tips, x="tip")),
+                vm.Container(
+                    components=[
+                        vm.Card(text="We are grid-items!"),
+                        vm.AgGrid(figure=dash_ag_grid(tips)),
+                        vm.Graph(figure=px.histogram(tips, x="tip")),
+                    ],
+                    variant="outlined",
+                ),
             ],
         ),
     ],
@@ -414,6 +451,7 @@ dashboard = vm.Dashboard(
         page26,
         page27,
         page28,
+        page29,
     ],
     title="Test out Flex/Grid",
 )
