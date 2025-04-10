@@ -9,7 +9,9 @@ The [`Dashboard`][vizro.models.Dashboard] model accepts a `navigation` argument,
 By default, if the `navigation` argument is not specified, Vizro creates a navigation panel which lists all the pages in your dashboard into a collapsible accordion menu with title `SELECT PAGE`.
 
 !!! example "Default navigation"
+
     === "app.py"
+
         ```{.python pycafe-link}
         from vizro import Vizro
         import vizro.plotly.express as px
@@ -41,6 +43,7 @@ By default, if the `navigation` argument is not specified, Vizro creates a navig
         ```
 
     === "app.yaml"
+
         ```yaml
         # Still requires a .py to add data to the data manager and parse YAML configuration
         # See yaml_version example
@@ -70,6 +73,7 @@ By default, if the `navigation` argument is not specified, Vizro creates a navig
         ```
 
     === "Result"
+
         [![DefaultNavigation]][defaultnavigation]
 
 ## Include a subset of pages
@@ -77,7 +81,9 @@ By default, if the `navigation` argument is not specified, Vizro creates a navig
 To include only some of your dashboard pages in your navigation then list them in the `pages` argument of the `Navigation` model. To refer to a page inside the `Navigation` model, you should always use the page's `id`, which [defaults to the page `title`](pages.md#customize-the-page-url), we specify `pages = ["My first page", "My second page"]` rather than `pages=[page_1, page_2]`.
 
 !!! example "Navigation with only some pages"
+
     === "snippet.py"
+
         ```py
         # page_1, page_2, page_3 defined as in default example
         dashboard = vm.Dashboard(
@@ -87,6 +93,7 @@ To include only some of your dashboard pages in your navigation then list them i
         ```
 
     === "app.py"
+
         ```{.python pycafe-link}
         from vizro import Vizro
         import vizro.plotly.express as px
@@ -121,6 +128,7 @@ To include only some of your dashboard pages in your navigation then list them i
         ```
 
     === "app.yaml"
+
         ```yaml
         # Still requires a .py to add data to the data manager and parse YAML configuration
         # See yaml_version example
@@ -132,6 +140,7 @@ To include only some of your dashboard pages in your navigation then list them i
         ```
 
     === "Result"
+
         [![OnlySomePages]][onlysomepages]
 
 ## Group pages
@@ -139,7 +148,9 @@ To include only some of your dashboard pages in your navigation then list them i
 You can also group your pages together by specifying `pages` as a dictionary:
 
 !!! example "Grouping pages"
+
     === "snippet.py"
+
         ```py
         # page_1, page_2, page_3 defined as in default example
         dashboard = vm.Dashboard(
@@ -150,6 +161,7 @@ You can also group your pages together by specifying `pages` as a dictionary:
         ```
 
     === "app.py"
+
         ```{.python pycafe-link}
         from vizro import Vizro
         import vizro.plotly.express as px
@@ -184,6 +196,7 @@ You can also group your pages together by specifying `pages` as a dictionary:
         ```
 
     === "app.yaml"
+
         ```yaml
         # Still requires a .py to add data to the data manager and parse YAML configuration
         # See yaml_version example
@@ -198,6 +211,7 @@ You can also group your pages together by specifying `pages` as a dictionary:
         ```
 
     === "Result"
+
         [![GroupedNavigation]][groupednavigation]
 
 ## Use a navigation bar with icons
@@ -205,7 +219,9 @@ You can also group your pages together by specifying `pages` as a dictionary:
 Another way to group together pages in the navigation is to use a [`NavBar`][vizro.models.NavBar] with icons. The simplest way to use this is to change the `nav_selector` specified in [`Navigation`][vizro.models.Navigation]:
 
 !!! example "Using `NavBar`"
+
     === "snippet.py"
+
         ```py
          # page_1, page_2, page_3 defined as in default example
         dashboard = vm.Dashboard(
@@ -218,6 +234,7 @@ Another way to group together pages in the navigation is to use a [`NavBar`][viz
         ```
 
     === "app.py"
+
         ```{.python pycafe-link}
         from vizro import Vizro
         import vizro.plotly.express as px
@@ -255,6 +272,7 @@ Another way to group together pages in the navigation is to use a [`NavBar`][viz
         ```
 
     === "app.yaml"
+
         ```yaml
         # Still requires a .py to add data to the data manager and parse YAML configuration
         # See yaml_version example
@@ -271,6 +289,7 @@ Another way to group together pages in the navigation is to use a [`NavBar`][viz
         ```
 
     === "Result"
+
         [![NavBar]][navbar]
 
 Here, the first level of the navigation hierarchy ("Group A" and "Group B") is represented by an icon in a navigation bar, and the second level of the navigation (the pages) is represented by an accordion. By default, the set of icons used are the [`filter` icons from the Google Material icons library](https://fonts.google.com/icons?icon.query=filter). The icon label ("Group A" and "Group B") appears as a tooltip on hovering over the icon.
@@ -284,7 +303,9 @@ Under the hood, [`NavBar`][vizro.models.NavBar] uses [`NavLink`][vizro.models.Na
 The same configuration for [grouping pages](#group-pages) applies inside a `NavLink`:
 
 !!! example "Accordions inside a `Navlink`"
+
     === "snippet.py"
+
         ```py
          # page_1, page_2, page_3 defined as in default example
         dashboard = vm.Dashboard(
@@ -304,6 +325,7 @@ The same configuration for [grouping pages](#group-pages) applies inside a `NavL
         ```
 
     === "app.py"
+
         ```{.python pycafe-link}
         from vizro import Vizro
         import vizro.plotly.express as px
@@ -348,6 +370,7 @@ The same configuration for [grouping pages](#group-pages) applies inside a `NavL
         ```
 
     === "app.yaml"
+
         ```yaml
         # Still requires a .py to add data to the data manager and parse YAML configuration
         # See yaml_version example
@@ -366,12 +389,15 @@ The same configuration for [grouping pages](#group-pages) applies inside a `NavL
         ```
 
     === "Result"
+
         [![AccordionInsideNavBar]][accordioninsidenavbar]
 
 You can alter the icons used by specifying the name of the icon in the [Google Material icons library](https://fonts.google.com/icons):
 
 !!! example "Custom icon"
+
     === "snippet.py"
+
         ```py
          # page_1, page_2, page_3 defined as in default example
         dashboard = vm.Dashboard(
@@ -392,6 +418,7 @@ You can alter the icons used by specifying the name of the icon in the [Google M
         ```
 
     === "app.py"
+
         ```{.python pycafe-link}
         from vizro import Vizro
         import vizro.plotly.express as px
@@ -438,6 +465,7 @@ You can alter the icons used by specifying the name of the icon in the [Google M
         ```
 
     === "app.yaml"
+
         ```yaml
         # Still requires a .py to add data to the data manager and parse YAML configuration
         # See yaml_version example
@@ -458,6 +486,7 @@ You can alter the icons used by specifying the name of the icon in the [Google M
         ```
 
     === "Result"
+
         [![CustomIcons]][customicons]
 
 [accordioninsidenavbar]: ../../assets/user_guides/navigation/accordion_inside_nav_bar.png

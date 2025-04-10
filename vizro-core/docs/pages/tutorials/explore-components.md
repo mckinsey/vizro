@@ -3,6 +3,7 @@
 In this tutorial, you'll learn how to build an interactive dashboard with multiple pages, incorporating a wide range of Vizro's components. This tutorial should take **about an hour to finish**, so grab a coffee or tea and let's dive in! ☕
 
 !!! note
+
     If you're looking for a quick start to get up and running with Vizro, consider reviewing the [first dashboard tutorial](../tutorials/first-dashboard.md) before diving into this one.
 
 **By the end of this tutorial, you have learned how to:**
@@ -25,6 +26,7 @@ This tutorial uses the [tips dataset](https://plotly.com/python-api-reference/ge
 You can experiment with the code for this tutorial directly on [PyCafe](https://py.cafe/vizro-official/vizro-tips-analysis-tutorial), so there's no need to install Vizro locally. We recommend starting with a [blank Vizro project on PyCafe](https://py.cafe/snippet/vizro/v1) and copying the code snippets from this tutorial into it, to see how everything integrates. For more details, check out the [PyCafe documentation](https://py.cafe/docs/apps/vizro).
 
 ??? note "If you prefer working in a Notebook or Python script"
+
     To work in a Notebook or locally using a Python script, you need to [install Vizro](../user-guides/install.md).
 
     Paste the code from the tutorial into a Notebook cell, run the Notebook, and evaluate it.
@@ -79,7 +81,9 @@ To start, let's get an overview of the data by displaying it in a table using [A
 1. Add the newly created page to the list of `pages` in the [Dashboard][vizro.models.Dashboard].
 
 !!! example "First Page"
+
     === "Code - Dashboard"
+
         ```{.python pycafe-link}
         import vizro.models as vm
         import vizro.plotly.express as px
@@ -107,6 +111,7 @@ To start, let's get an overview of the data by displaying it in a table using [A
         ```
 
     === "Result"
+
         [![FirstPage]][firstpage]
 
 After running your code (either locally or on PyCafe), you can now view the dashboard (on `localhost:8050` if you ran it locally, or on the right part of the screen if you are using PyCafe).
@@ -133,7 +138,9 @@ Follow these steps to add a histogram to the page:
 1. Add the new page to the list of `pages` in the [`Dashboard`][vizro.models.Dashboard] by calling `vm.Dashboard(pages=[first_page, second_page])`.
 
 !!! example "Second Page"
+
     === "Snippet - Second Page"
+
         ```py
         second_page = vm.Page(
             title="Summary",
@@ -146,6 +153,7 @@ Follow these steps to add a histogram to the page:
         ```
 
     === "Code - Dashboard"
+
         ```{.python pycafe-link hl_lines="22-28 30"}
         import vizro.models as vm
         import vizro.plotly.express as px
@@ -181,6 +189,7 @@ Follow these steps to add a histogram to the page:
         ```
 
     === "Result"
+
         [![SecondPage]][secondpage]
 
 Notice that the charts are automatically stacked vertically in the order specified under `components`, each taking up equal space. This is the default behavior in Vizro, but you'll learn how to customize the layout later!
@@ -201,7 +210,9 @@ Let's add two KPI cards to the second page. Follow these steps:
 1. Repeat the above steps to add another KPI card to the page.
 
 !!! example "Add KPI Cards"
+
     === "Snippet - KPI Card I"
+
         ```py
         vm.Figure(
             figure=kpi_card(
@@ -215,6 +226,7 @@ Let's add two KPI cards to the second page. Follow these steps:
         ```
 
     === "Snippet - KPI Card II"
+
         ```py
         vm.Figure(
             figure=kpi_card(
@@ -228,6 +240,7 @@ Let's add two KPI cards to the second page. Follow these steps:
         ```
 
     === "Code - dashboard"
+
         ```{.python pycafe-link hl_lines="25-42"}
         import vizro.models as vm
         import vizro.plotly.express as px
@@ -281,6 +294,7 @@ Let's add two KPI cards to the second page. Follow these steps:
         ```
 
     === "Result"
+
         [![SecondPage2]][secondpage2]
 
 ### 4.3. Add tabs to switch views
@@ -295,7 +309,9 @@ Let's place the two histograms in separate tabs. Follow these steps:
 1. Add the `Tabs` component to the `components` of the `Page`.
 
 !!! example "Add Tabs"
+
     === "Snippet - Tabs"
+
         ```py
         vm.Tabs(
             tabs=[
@@ -316,6 +332,7 @@ Let's place the two histograms in separate tabs. Follow these steps:
         ```
 
     === "Code - dashboard"
+
         ```{.python pycafe-link hl_lines="43-59"}
         import vizro.models as vm
         import vizro.plotly.express as px
@@ -383,6 +400,7 @@ Let's place the two histograms in separate tabs. Follow these steps:
         ```
 
     === "Result"
+
         [![SecondPage3]][secondpage3]
 
 **Take a moment to switch between the tabs! 🕰️**
@@ -412,7 +430,9 @@ grid = [[0, 1,-1,-1],
 Run the code below to apply the layout to the dashboard page:
 
 !!! example "Code - Layout"
+
     === "Snippet - Layout"
+
         ```py
         layout = vm.Grid(
             grid=[[0, 1, -1, -1],
@@ -423,6 +443,7 @@ Run the code below to apply the layout to the dashboard page:
         ```
 
     === "Code - Dashboard"
+
         ```{.python pycafe-link hl_lines="24"}
         import vizro.models as vm
         import vizro.plotly.express as px
@@ -491,6 +512,7 @@ Run the code below to apply the layout to the dashboard page:
         ```
 
     === "Result"
+
         [![SecondPage4]][secondpage4]
 
 **Much better, don't you think? The layout now provides sufficient space for the charts!**
@@ -506,12 +528,15 @@ To add a filter to the dashboard, follow these steps:
 1. Change the `selector` in one of the `Filters` to a [`Checklist`][vizro.models.Checklist]. For further customization, refer to the guide on [`How to use selectors`](../user-guides/selectors.md).
 
 !!! example "Add a filter"
+
     === "Snippet - Filter"
+
         ```py
         controls = [vm.Filter(column="day"), vm.Filter(column="time", selector=vm.Checklist()), vm.Filter(column="size")]
         ```
 
     === "Code - Dashboard"
+
         ```{.python pycafe-link hl_lines="61"}
         import vizro.models as vm
         import vizro.plotly.express as px
@@ -581,6 +606,7 @@ To add a filter to the dashboard, follow these steps:
         ```
 
     === "Result"
+
         [![SecondPage5]][secondpage5]
 
 You'll see that a [`Dropdown`][vizro.models.Dropdown] is selected by default for categorical data, while a [`RangeSlider`][vizro.models.RangeSlider] is used for numerical data. Additionally, filters are applied to all components on the page.
@@ -615,7 +641,9 @@ This step should feel familiar. Let's add all three charts to the page.
 1. Add the new `Page` to the list of `pages` in the [Dashboard][vizro.models.Dashboard].
 
 !!! example "Third page"
+
     === "Snippet - third page"
+
         ```py
         third_page = vm.Page(
             title="Analysis",
@@ -639,6 +667,7 @@ This step should feel familiar. Let's add all three charts to the page.
         ```
 
     === "Code - dashboard"
+
         ```{.python pycafe-link hl_lines="64-80 82"}
         import vizro.models as vm
         import vizro.plotly.express as px
@@ -730,6 +759,7 @@ This step should feel familiar. Let's add all three charts to the page.
         ```
 
     === "Result"
+
         [![ThirdPage]][thirdpage]
 
 Depending on your screen size, you may notice that the third chart is not visible. This issue can occur with Plotly charts when there isn't enough space to display them properly. Let's customize the layout again to allocate more space to the heatmap.
@@ -755,12 +785,15 @@ grid = [[0, 1],
 Run the code below to apply the layout to the dashboard page:
 
 !!! example "Code - Layout"
+
     === "Snippet - Layout"
+
         ```py
         layout=vm.Grid(grid=[[0, 1], [2, 2]]),
         ```
 
     === "Code - dashboard"
+
         ```{.python pycafe-link hl_lines="66"}
         import vizro.models as vm
         import vizro.plotly.express as px
@@ -849,6 +882,7 @@ Run the code below to apply the layout to the dashboard page:
         ```
 
     === "Result"
+
         [![ThirdPage2]][thirdpage2]
 
 **Fantastic work! The heatmap looks great, doesn't it?**
@@ -868,7 +902,9 @@ To add a parameter to the dashboard:
 1. Provide options for the `RadioItems` selector.
 
 !!! example "Add a parameter"
+
     === "Snippet - parameter"
+
         ```py
         controls=[
             vm.Parameter(
@@ -881,6 +917,7 @@ To add a parameter to the dashboard:
         ```
 
     === "Code - dashboard"
+
         ```{.python pycafe-link hl_lines="69 74 84-91"}
         import vizro.models as vm
         import vizro.plotly.express as px
@@ -980,6 +1017,7 @@ To add a parameter to the dashboard:
         ```
 
     === "Result"
+
         [![ThirdPage3]][thirdpage3]
 
 Take a moment to interact with the parameter. Note how the x-axis of all charts updates accordingly.
@@ -998,7 +1036,9 @@ This requires creating a custom chart with the following steps. For more informa
 1. Use this custom function in the `Graph` component instead of `px.bar`.
 
 !!! example "Add custom chart"
+
     === "Snippet - custom chart"
+
         ```py
         @capture("graph")
         def bar_mean(data_frame, x, y):
@@ -1009,6 +1049,7 @@ This requires creating a custom chart with the following steps. For more informa
         ```
 
     === "Code - dashboard"
+
         ```{.python pycafe-link hl_lines="11-16 80"}
         import vizro.models as vm
         import vizro.plotly.express as px
@@ -1117,6 +1158,7 @@ This requires creating a custom chart with the following steps. For more informa
         ```
 
     === "Result"
+
         [![ThirdPage4]][thirdpage4]
 
 **Fantastic job reaching this point! You've just completed the final dashboard page and learned how to:**
@@ -1147,12 +1189,15 @@ Your directory structure should look like this:
 ```
 
 !!! example "Add a dashboard title and logo"
+
     === "Snippet - dashboard title"
+
         ```py
         dashboard = vm.Dashboard(pages=[first_page, second_page, third_page], title="Tips Analysis Dashboard")
         ```
 
     === "Code - dashboard"
+
         ```{.python pycafe-link hl_lines="103"}
         import vizro.models as vm
         import vizro.plotly.express as px
@@ -1261,6 +1306,7 @@ Your directory structure should look like this:
         ```
 
     === "Result"
+
         [![Dashboard]][dashboard]
 
 You should see the logo in the top-left corner of your dashboard header, with the title displayed next to it. If you can't see the logo, make sure the image is called `logo` and is stored in the `assets` folder. For more details on supported image formats, refer to the [How to add a logo](../user-guides/assets.md#add-a-logo-image) guide.
@@ -1284,7 +1330,9 @@ To create a navigation bar, follow these steps:
     - The `icon` sets the icon to display using the [Material Design Icons library](https://fonts.google.com/icons).
 
 !!! example "Customize navigation"
+
     === "Snippet - navigation"
+
         ```py
         navigation=vm.Navigation(
             nav_selector=vm.NavBar(
@@ -1297,6 +1345,7 @@ To create a navigation bar, follow these steps:
         ```
 
     === "Code - dashboard"
+
         ```{.python pycafe-link hl_lines="106-113"}
         import vizro.models as vm
         import vizro.plotly.express as px
@@ -1416,6 +1465,7 @@ To create a navigation bar, follow these steps:
         ```
 
     === "Result"
+
         [![DashboardFinal]][dashboardfinal]
 
 Take a moment to explore the navigation bar! Hover over the icons to view the tooltip text, and click on them to navigate between the pages.

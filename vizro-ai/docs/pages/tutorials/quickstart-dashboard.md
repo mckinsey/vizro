@@ -13,6 +13,7 @@ If you haven't already installed Vizro-AI and set up the API key for OpenAI, fol
 A good way to initially explore Vizro-AI is from inside a Jupyter Notebook.
 
 ??? "If you haven't used Jupyter before..."
+
     You may need to install the Jupyter package if you . From the terminal window:
 
     ```bash
@@ -97,7 +98,9 @@ Vizro().build(dashboard).run()
 ```
 
 !!! example "Generated dashboard"
+
     === "Code for the cell"
+
         ```py
         from vizro import Vizro
         from vizro_ai import VizroAI
@@ -120,6 +123,7 @@ Vizro().build(dashboard).run()
         ```
 
     === "Result"
+
         [![VizroAIDashboardPage1]][vizroaidashboardpage1]
 
 [vizroaidashboardpage1]: ../../assets/tutorials/dashboard/dashboard0_page1.png
