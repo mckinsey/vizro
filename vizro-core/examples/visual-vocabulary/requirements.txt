@@ -26,6 +26,7 @@ dash==2.18.1
     # via
     #   dash-ag-grid
     #   dash-bootstrap-components
+    #   dash-mantine-components
     #   vizro
 dash-ag-grid==31.2.0
     # via vizro
@@ -35,7 +36,7 @@ dash-core-components==2.0.0
     # via dash
 dash-html-components==2.0.0
     # via dash
-dash-mantine-components==0.12.1
+dash-mantine-components==0.15.3
     # via vizro
 dash-table==5.0.0
     # via dash
@@ -74,6 +75,7 @@ packaging==24.1
     #   black
     #   gunicorn
     #   plotly
+    #   vizro
 pandas==2.2.3
     # via vizro
 pathspec==0.12.1
@@ -114,7 +116,7 @@ tzdata==2024.2
     # via pandas
 urllib3==2.2.3
     # via requests
-vizro==0.1.28
+vizro==0.1.37
     # via -r requirements.in
 werkzeug==3.0.6
     # via
