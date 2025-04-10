@@ -5,7 +5,9 @@ There is no setup needed for your first dashboard, thanks to the amazing [PyCafe
 Click on the **Run and edit this code in PyCafe** link below to live-edit the dashboard.
 
 !!! example "First dashboard"
+
     === "app.py"
+
         ```{.python pycafe-link}
         import vizro.plotly.express as px
         from vizro import Vizro
@@ -29,6 +31,7 @@ Click on the **Run and edit this code in PyCafe** link below to live-edit the da
         ```
 
     === "Result"
+
         [![FirstDash]][firstdash]
 
 <!-- vale off -->

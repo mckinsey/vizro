@@ -1,0 +1,12 @@
+/* To reset all heights coming from our parent containers otherwise there will be sizing issues */
+.flex-item, .flex-item .figure-container, .flex-item .card {
+  height: unset;
+  width: unset;
+}
+
+/* A height needs to be set for the parent container of the AgGrid, otherwise it's not visible inside a flex layout.
+Specifications are taken from default height/width of Plotly charts. */
+.flex-item .table-container {
+  height: 450px;
+  width: 700px;
+}

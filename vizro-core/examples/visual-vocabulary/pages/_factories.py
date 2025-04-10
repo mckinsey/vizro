@@ -16,7 +16,7 @@ def butterfly_factory(group: str):
         id=f"{group}-butterfly",
         path=f"{group}/butterfly",
         title="Butterfly",
-        layout=vm.Layout(grid=PAGE_GRID),
+        layout=vm.Grid(grid=PAGE_GRID),
         components=[
             vm.Card(
                 text="""
@@ -59,7 +59,7 @@ def connected_scatter_factory(group: str):
         id=f"{group}-connected-scatter",
         path=f"{group}/connected-scatter",
         title="Connected scatter",
-        layout=vm.Layout(grid=PAGE_GRID),
+        layout=vm.Grid(grid=PAGE_GRID),
         components=[
             vm.Card(
                 text="""
@@ -102,7 +102,7 @@ def column_and_line_factory(group: str):
         id=f"{group}-column-and-line",
         path=f"{group}/column-and-line",
         title="Column and line",
-        layout=vm.Layout(grid=PAGE_GRID),
+        layout=vm.Grid(grid=PAGE_GRID),
         components=[
             vm.Card(
                 text="""
@@ -143,7 +143,7 @@ def waterfall_factory(group: str):
         id=f"{group}-waterfall",
         path=f"{group}/waterfall",
         title="Waterfall",
-        layout=vm.Layout(grid=PAGE_GRID),
+        layout=vm.Grid(grid=PAGE_GRID),
         components=[
             vm.Card(
                 text="""
@@ -187,7 +187,7 @@ def lollipop_factory(group: str):
         id=f"{group}-lollipop",
         path=f"{group}/lollipop",
         title="Lollipop",
-        layout=vm.Layout(grid=PAGE_GRID),
+        layout=vm.Grid(grid=PAGE_GRID),
         components=[
             vm.Card(
                 text="""

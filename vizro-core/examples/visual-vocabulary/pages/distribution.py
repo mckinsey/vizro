@@ -9,7 +9,7 @@ from pages.examples import boxplot, dumbbell, histogram, violin
 violin_page = vm.Page(
     title="Violin",
     path="distribution/violin",
-    layout=vm.Layout(grid=PAGE_GRID),
+    layout=vm.Grid(grid=PAGE_GRID),
     components=[
         vm.Card(
             text="""
@@ -45,7 +45,7 @@ violin_page = vm.Page(
 boxplot_page = vm.Page(
     title="Boxplot",
     path="distribution/boxplot",
-    layout=vm.Layout(grid=PAGE_GRID),
+    layout=vm.Grid(grid=PAGE_GRID),
     components=[
         vm.Card(
             text="""
@@ -87,7 +87,7 @@ butterfly_page = butterfly_factory("distribution")
 histogram_page = vm.Page(
     title="Histogram",
     path="distribution/histogram",
-    layout=vm.Layout(grid=PAGE_GRID),
+    layout=vm.Grid(grid=PAGE_GRID),
     components=[
         vm.Card(
             text="""
@@ -124,7 +124,7 @@ histogram_page = vm.Page(
 dumbbell_page = vm.Page(
     title="Dumbbell",
     path="distribution/dumbbell",
-    layout=vm.Layout(grid=PAGE_GRID),
+    layout=vm.Grid(grid=PAGE_GRID),
     components=[
         vm.Card(
             text="""

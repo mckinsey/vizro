@@ -5,47 +5,62 @@ from dash import html
 from pydantic import ValidationError
 
 import vizro.models as vm
-from vizro.models._layout import GAP_DEFAULT, MIN_DEFAULT, ColRowGridLines, _get_unique_grid_component_ids
+from vizro.models._grid import GAP_DEFAULT, MIN_DEFAULT, ColRowGridLines, _get_unique_grid_component_ids
 
 
-class TestLayoutInstantiation:
+class TestGridInstantiation:
     """Tests model instantiation and the validators run at that time."""
 
-    def test_create_layout_mandatory_only(self):
-        layout = vm.Layout(grid=[[0, 1], [0, 2]])
-        assert hasattr(layout, "id")
-        assert layout.grid == [[0, 1], [0, 2]]
-        assert layout.col_gap == GAP_DEFAULT
-        assert layout.row_gap == GAP_DEFAULT
-        assert layout.col_min_width == MIN_DEFAULT
-        assert layout.row_min_height == MIN_DEFAULT
-        assert layout.component_grid_lines == [
+    def test_create_grid_mandatory_only(self):
+        grid = vm.Grid(grid=[[0, 1], [0, 2]])
+        assert hasattr(grid, "id")
+        assert grid.grid == [[0, 1], [0, 2]]
+        assert grid.col_gap == GAP_DEFAULT
+        assert grid.row_gap == GAP_DEFAULT
+        assert grid.col_min_width == MIN_DEFAULT
+        assert grid.row_min_height == MIN_DEFAULT
+        assert grid.component_grid_lines == [
             ColRowGridLines(col_start=1, col_end=2, row_start=1, row_end=3),
             ColRowGridLines(col_start=2, col_end=3, row_start=1, row_end=2),
             ColRowGridLines(col_start=2, col_end=3, row_start=2, row_end=3),
         ]
 
-    @pytest.mark.parametrize("test_gap", ["0px", "4px", "8px"])
-    def test_create_layout_mandatory_and_optional(self, test_gap):
-        layout = vm.Layout(
-            grid=[[0, 1], [0, 2]], col_gap=test_gap, row_gap=test_gap, col_min_width=test_gap, row_min_height=test_gap
+    @pytest.mark.parametrize("test_unit", ["0px", "4px", "4rem", "4em", "4%"])
+    def test_create_grid_mandatory_and_optional(self, test_unit):
+        grid = vm.Grid(
+            grid=[[0, 1], [0, 2]],
+            col_gap=test_unit,
+            row_gap=test_unit,
+            col_min_width=test_unit,
+            row_min_height=test_unit,
         )
 
-        assert hasattr(layout, "id")
-        assert layout.grid == [[0, 1], [0, 2]]
-        assert layout.col_gap == test_gap
-        assert layout.row_gap == test_gap
-        assert layout.col_min_width == test_gap
-        assert layout.row_min_height == test_gap
-        assert layout.component_grid_lines == [
+        assert hasattr(grid, "id")
+        assert grid.grid == [[0, 1], [0, 2]]
+        assert grid.col_gap == test_unit
+        assert grid.row_gap == test_unit
+        assert grid.col_min_width == test_unit
+        assert grid.row_min_height == test_unit
+        assert grid.component_grid_lines == [
             ColRowGridLines(col_start=1, col_end=2, row_start=1, row_end=3),
             ColRowGridLines(col_start=2, col_end=3, row_start=1, row_end=2),
             ColRowGridLines(col_start=2, col_end=3, row_start=2, row_end=3),
         ]
+
+    @pytest.mark.parametrize("test_unit", ["0", "calc(100% - 3px)", "4ex", "4ch", "4vh", "4vw", "4vmin", "4vmax"])
+    def test_invalid_unit_size(self, test_unit):
+        with pytest.raises(ValidationError, match="4 validation errors for Grid"):
+            vm.Grid(
+                grid=[[0, 1], [0, 2]],
+                col_gap=test_unit,
+                row_gap=test_unit,
+                col_min_width=test_unit,
+                row_min_height=test_unit,
+            )
 
     def test_mandatory_grid_missing(self):
         with pytest.raises(ValidationError, match="Field required"):
-            vm.Layout()
+            vm.Grid()
 
 
 class TestMalformedGrid:
@@ -64,7 +79,7 @@ class TestMalformedGrid:
     )
     def test_invalid_input_type(self, grid):
         with pytest.raises(ValidationError, match="Input should be a valid list"):
-            vm.Layout(grid=grid)
+            vm.Grid(grid=grid)
 
     @pytest.mark.parametrize(
         "grid",
@@ -75,7 +90,7 @@ class TestMalformedGrid:
     )
     def test_invalid_input_value(self, grid):
         with pytest.raises(ValidationError, match="Input should be a valid integer"):
-            vm.Layout(grid=grid)
+            vm.Grid(grid=grid)
 
     @pytest.mark.parametrize(
         "grid",
@@ -92,7 +107,7 @@ class TestMalformedGrid:
     )
     def test_invalid_grid_area(self, grid):
         with pytest.raises(ValidationError, match="Grid areas must be rectangular and not overlap!"):
-            vm.Layout(grid=grid)
+            vm.Grid(grid=grid)
 
     @pytest.mark.parametrize(
         "grid",
@@ -104,7 +119,7 @@ class TestMalformedGrid:
     )
     def test_invalid_int_sequence(self, grid):
         with pytest.raises(ValidationError, match="Grid must contain consecutive integers starting from 0."):
-            vm.Layout(grid=grid)
+            vm.Grid(grid=grid)
 
     @pytest.mark.parametrize(
         "grid",
@@ -115,7 +130,7 @@ class TestMalformedGrid:
     )
     def test_invalid_list_length(self, grid):
         with pytest.raises(ValidationError, match="All rows must be of same length."):
-            vm.Layout(grid=grid)
+            vm.Grid(grid=grid)
 
 
 class TestWorkingGrid:
@@ -140,12 +155,12 @@ class TestWorkingGrid:
     )
     def test_working_grid(self, grid):
         try:
-            vm.Layout(grid=grid)
+            vm.Grid(grid=grid)
         except ValidationError as ve:
             assert False, f"{grid} raised a value error {ve}."
 
 
-class TestSharedLayoutHelpers:
+class TestSharedGridHelpers:
     @pytest.mark.parametrize(
         "grid",
         [
@@ -160,28 +175,28 @@ class TestSharedLayoutHelpers:
 
         np.testing.assert_array_equal(result, expected)
 
-    def test_set_layout_valid(self, model_with_layout):
-        model_with_layout(title="Title", components=[vm.Button(), vm.Button()], layout=vm.Layout(grid=[[0, 1]]))
+    def test_set_grid_valid(self, model_with_layout):
+        model_with_layout(title="Title", components=[vm.Button(), vm.Button()], layout=vm.Grid(grid=[[0, 1]]))
 
-    def test_set_layout_invalid(self, model_with_layout):
+    def test_set_grid_invalid(self, model_with_layout):
         with pytest.raises(ValidationError, match="Number of page and grid components need to be the same."):
-            model_with_layout(title="Title", components=[vm.Button()], layout=vm.Layout(grid=[[0, 1]]))
+            model_with_layout(title="Title", components=[vm.Button()], layout=vm.Grid(grid=[[0, 1]]))
 
 
-class TestLayoutBuild:
-    def test_layout_build(self):
-        result = vm.Layout(id="layout_id", grid=[[0, 1], [0, 2]]).build()
+class TestGridBuild:
+    def test_grid_build(self):
+        result = vm.Grid(id="grid_id", grid=[[0, 1], [0, 2]]).build()
         expected = html.Div(
-            id="layout_id",
+            id="grid_id",
             children=[
                 html.Div(
-                    id="layout_id_0", style={"gridColumn": "1/2", "gridRow": "1/3", "height": "100%", "width": "100%"}
+                    id="grid_id_0", style={"gridColumn": "1/2", "gridRow": "1/3", "height": "100%", "width": "100%"}
                 ),
                 html.Div(
-                    id="layout_id_1", style={"gridColumn": "2/3", "gridRow": "1/2", "height": "100%", "width": "100%"}
+                    id="grid_id_1", style={"gridColumn": "2/3", "gridRow": "1/2", "height": "100%", "width": "100%"}
                 ),
                 html.Div(
-                    id="layout_id_2", style={"gridColumn": "2/3", "gridRow": "2/3", "height": "100%", "width": "100%"}
+                    id="grid_id_2", style={"gridColumn": "2/3", "gridRow": "2/3", "height": "100%", "width": "100%"}
                 ),
             ],
             style={

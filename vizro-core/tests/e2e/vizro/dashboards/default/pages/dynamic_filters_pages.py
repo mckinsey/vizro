@@ -1,3 +1,4 @@
+import time
 from functools import partial
 
 import e2e.vizro.constants as cnst
@@ -18,6 +19,7 @@ BAR_CHART_CONF = {
 
 
 def load_from_file(filter_column=None, parametrized_species=None):
+    time.sleep(0.25)  # for testing, to catch reloading of the chart
     df = px.data.iris()
 
     if parametrized_species:

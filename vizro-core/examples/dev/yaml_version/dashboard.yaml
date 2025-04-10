@@ -46,6 +46,7 @@ pages:
       grid: [[0, 1], [2, 3]]
       col_gap: 24px
       row_gap: 16px
+      type: grid
     title: Homepage
   - components:
       - figure:
@@ -200,6 +201,7 @@ pages:
         type: filter
     layout:
       grid: [[0, 1, 2, 3], [4, 5, 6, 7], [-1, -1, -1, -1], [-1, -1, -1, -1]]
+      type: grid
     title: Figure
   - components:
       - figure:
@@ -229,6 +231,7 @@ pages:
         - [0]
         - [0]
         - [1]
+      type: grid
     title: Button
   - components:
       - figure:
@@ -382,6 +385,7 @@ pages:
             type: graph
         layout:
           grid: [[0, 1]]
+          type: grid
         type: container
         title: Container I
       - components:
@@ -529,6 +533,7 @@ pages:
     layout:
       row_min_height: 170px
       row_gap: 24px
+      type: grid
       grid:
         - [0]
         - [1]

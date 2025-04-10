@@ -110,6 +110,7 @@ label[for="theme-selector"] {
   display: flex;
   flex-direction: column;
   height: 100%;
+  overflow: auto;  /* For a scroll to be properly added per container */
   padding: 0;
 }
 
