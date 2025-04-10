@@ -39,6 +39,7 @@ This schema tells us that whenever we receive JSON data, and want to check wheth
 In practice this means that data can be identified as valid or invalid:
 
 === "valid"
+
     ```json
     {
       "A": 1,
@@ -50,6 +51,7 @@ In practice this means that data can be identified as valid or invalid:
     ```
 
 === "invalid  (`B` is not an array of strings)"
+
     ```json
     {
       "A": 1,
@@ -61,6 +63,7 @@ In practice this means that data can be identified as valid or invalid:
     ```
 
 === "also invalid (required field `B` is missing)"
+
     ```json
     {
       "A": 1,
@@ -74,6 +77,7 @@ Similar to the above example, the Vizro framework also has a JSON schema. It can
 To get a feeling of what it generally looks like, we have provided a simplified schema below. Reading through it shows us for example that every dashboards needs to have a set of pages, which in turn must have components, but optionally can have controls.
 
 ??? example "Simplified Vizro JSON schema"
+
     ```json
     {
       "$defs": {
@@ -160,6 +164,7 @@ To get a feeling of what it generally looks like, we have provided a simplified 
 You can thus configure a Vizro dashboard according to a set of constraints that are defined in the schema. The configuration language that you choose is secondary: it can be via Python, but also via JSON or YAML. This is shown in [our showcase of configuration options](../user-guides/dashboard.md#use-dashboard-configuration-options).
 
 === "This JSON..."
+
     ```json
     {
       "pages": [
@@ -198,9 +203,11 @@ You can thus configure a Vizro dashboard according to a set of constraints that 
     ```
 
 === "maps to this Dashboard"
+
     [![Dashboard]][dashboard]
 
 === "... but would fail here (Dashboard title missing)"
+
     ```json
     {
       "pages": [
@@ -238,6 +245,7 @@ You can thus configure a Vizro dashboard according to a set of constraints that 
     ```
 
 !!! note
+
     The Vizro schema is still incomplete. This means that it does not yet define everything that we consider to be core and supported functionality of Vizro. The most prominent example of an omission is the [`CapturedCallable`][vizro.models.types.CapturedCallable], which are the objects you insert into many models such as `vm.Graph`, `vm.Table` or `vm.Action`, often into the `figure` argument.
 
     This does not mean that it cannot be configured in JSON. In fact, in the configuration above, we have used the following JSON:
@@ -304,6 +312,7 @@ This is a fairly random example, but it illustrates the power of custom validati
 In the toy example, this would have the following consequences:
 
 === "Providing this JSON config..."
+
     ```json
     {
       "A": 1,
@@ -316,6 +325,7 @@ In the toy example, this would have the following consequences:
     ```
 
 === "... would get rejected (`c` doesn't start with `a` or `b`)"
+
     ```shell
     pydantic_core._pydantic_core.ValidationError: 1 validation error for Example
     B

@@ -25,7 +25,9 @@ To add [`Tabs`][vizro.models.Tabs] to your page, do the following:
 1. Add a `title` to the `Container`, which will be used as the `label` for the corresponding `Tab`.
 
 !!! example "Tabs"
+
     === "app.py"
+
         ```{.python pycafe-link}
 
         import vizro.models as vm
@@ -89,6 +91,7 @@ To add [`Tabs`][vizro.models.Tabs] to your page, do the following:
         ```
 
     === "app.yaml"
+
         ```yaml
         # Still requires a .py to add data to the data manager and parse YAML configuration
         # See from_yaml example
@@ -134,6 +137,7 @@ To add [`Tabs`][vizro.models.Tabs] to your page, do the following:
         ```
 
     === "Result"
+
         [![Tabs]][tabs]
 
 [tabs]: ../../assets/user_guides/components/tabs.png

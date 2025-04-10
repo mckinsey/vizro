@@ -8,6 +8,7 @@ If you have something you'd like us to include on the list, or spot something th
 - better still, you can [make a PR to contribute](../explanation/contributing.md) to this page.
 
 !!! note
+
     The Vizro team and QuantumBlack, AI by McKinsey, do not take responsibility for third party content. In curating the list below, we may inspect or test an example at time of inclusion, but cannot guarantee the content thereafter.
 
 ## Videos

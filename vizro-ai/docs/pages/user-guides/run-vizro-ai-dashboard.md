@@ -3,12 +3,15 @@
 This guide offers insights into different ways of running `VizroAI.dashboard` to generate a Vizro dashboards from natural language prompts.
 
 ??? note "Note: API key"
+
     Make sure you have followed the [LLM setup guide](../user-guides/install.md#set-up-access-to-a-large-language-model) and that your API key is set up in a `.env` file in the same folder as your Notebook file (`.ipynb`).
 
 ## Run Vizro-AI dashboard
 
 !!! example "Generated dashboard"
+
     === "Prompt"
+
         ```py
         import vizro.plotly.express as px
         from vizro_ai import VizroAI
@@ -34,6 +37,7 @@ This guide offers insights into different ways of running `VizroAI.dashboard` to
         ```
 
     === "Result"
+
         ![VizroAIDashboardPage1](../../assets/user_guides/dashboard/dashboard2_page1.png)
 
 This triggers the dashboard building process. Once Vizro-AI finishes the dashboard generation process, you can now launch the dashboard.
@@ -50,7 +54,9 @@ Like the `VizroAI.plot` method, in order to produce more comprehensive output we
 - If set to `True`, it returns a class (a Pydantic model) containing both the dashboard object and the code string used to generate it.
 
 !!! example "View dashboard code"
+
     === "Prompt"
+
         ```py
         import vizro.plotly.express as px
         from vizro_ai import VizroAI
@@ -77,6 +83,7 @@ Like the `VizroAI.plot` method, in order to produce more comprehensive output we
         ```
 
     === "Resulting code"
+
         ```py
         ######## Module Imports ##########
         from vizro import Vizro
