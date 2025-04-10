@@ -6,6 +6,7 @@ The [`Page`][vizro.models.Page] and [`Container`][vizro.models.Container] models
 - [a flexible box layout](#flex-layout) using the [`Flex`][vizro.models.Flex] model
 
 !!! note
+
     The `Grid` model used to be called `Layout`, and the name `Layout` will no longer exist in Vizro 0.2.0. See our [full list of deprecations and breaking changes](../API-reference/deprecations.md).
 
 ## Layout options: Grid and Flex
@@ -16,9 +17,11 @@ The `layout` argument enables you to choose between two layout models: [`Grid`][
 - **Flex layout**: The [`Flex`][vizro.models.Flex] layout arranges components using a flexible box model, where items can grow, shrink, and wrap dynamically based on available space. This layout is ideal for responsive designs where components need to adapt to different screen sizes.
 
 !!! note "The default layout"
+
     The `layout` argument of the [`Page`][vizro.models.Page] model is optional. If no layout is specified, it will default to a grid layout - all charts/components are then automatically [**stacked vertically**](layouts.md#understand-stacking-direction) on the page in one column.
 
     === "app.py"
+
         ```{.python pycafe-link}
         from vizro import Vizro
         import vizro.models as vm
@@ -35,6 +38,7 @@ The `layout` argument enables you to choose between two layout models: [`Grid`][
         ```
 
     === "app.yaml"
+
         ```yaml
         # Still requires a .py to add data to the data manager and parse YAML configuration
         # See yaml_version example
@@ -50,6 +54,7 @@ The `layout` argument enables you to choose between two layout models: [`Grid`][
         ```
 
     === "Result"
+
         [![Layout]][layout]
 
 ## Grid Layout
@@ -97,7 +102,9 @@ This defines a single row that occupies the entire width and height, divided int
 ### Grid - basic example
 
 !!! example "Grid Arrangement - Basic Example"
+
     === "app.py"
+
         ```{.python pycafe-link}
         import vizro.models as vm
         from vizro import Vizro
@@ -117,6 +124,7 @@ This defines a single row that occupies the entire width and height, divided int
         ```
 
     === "app.yaml"
+
         ```yaml
         # Still requires a .py to add data to the data manager and parse YAML configuration
         # See yaml_version example
@@ -138,6 +146,7 @@ This defines a single row that occupies the entire width and height, divided int
         ```
 
     === "Result"
+
         [![Grid]][grid]
 
 ### Grid - advanced example
@@ -147,7 +156,9 @@ If you need to divide the grid into subgrids for finer control or want to visual
 The `Grid` provides full control over the arrangement of top-level components within a page, allowing arbitrarily granular control of the grid by creating larger grids.
 
 !!! example "Grid Arrangement - Advanced Example"
+
     === "app.py"
+
         ```{.python pycafe-link}
         import vizro.models as vm
         import vizro.plotly.express as px
@@ -215,6 +226,7 @@ The `Grid` provides full control over the arrangement of top-level components wi
         ```
 
     === "app.yaml"
+
         ```yaml
         # Still requires a .py to add data to the data manager and parse YAML configuration
         # See yaml_version example
@@ -269,6 +281,7 @@ The `Grid` provides full control over the arrangement of top-level components wi
         ```
 
     === "Result"
+
         [![GridAdv]][gridadv]
 
 ### Cheatsheet - grid examples
@@ -305,7 +318,9 @@ grid = [[0, 1, -1], [0, 2, -1]]
 ```
 
 !!! example "Adding Empty Spaces"
+
     === "app.py"
+
         ```{.python pycafe-link}
         import vizro.models as vm
         from vizro import Vizro
@@ -325,6 +340,7 @@ grid = [[0, 1, -1], [0, 2, -1]]
         ```
 
     === "app.yaml"
+
         ```yaml
         # Still requires a .py to add data to the data manager and parse YAML configuration
         # See yaml_version example
@@ -346,6 +362,7 @@ grid = [[0, 1, -1], [0, 2, -1]]
         ```
 
     === "Result"
+
         [![GridEmpty]][gridempty]
 
 ### Control the scroll behavior
@@ -356,7 +373,9 @@ By default, the grid fits all charts/components on the screen. This can lead to 
 - `col_min_width`: Sets a chart/component's minimum width. Defaults to 0px.
 
 !!! example "Activate Scrolling"
+
     === "app.py"
+
         ```{.python pycafe-link}
         import vizro.models as vm
         from vizro import Vizro
@@ -381,6 +400,7 @@ By default, the grid fits all charts/components on the screen. This can lead to 
         ```
 
     === "app.yaml"
+
         ```yaml
         # Still requires a .py to add data to the data manager and parse YAML configuration
         # See yaml_version example
@@ -418,6 +438,7 @@ By default, the grid fits all charts/components on the screen. This can lead to 
         ```
 
     === "Result"
+
         [![GridScroll]][gridscroll]
 
 ### Further customization
@@ -439,7 +460,9 @@ To switch to a `Flex` layout, simply pass `vm.Flex()` to the `layout` argument o
 Open the PyCafe link below to see how the `Flex` layout behaves. Unlike the `Grid` layout, the charts retain their original height and width and won’t be squeezed to fit on one page—a scrollbar appears instead. You can clearly see the difference by removing `layout=vm.Flex()` in your example or toggling between the two result screenshots below.
 
 !!! example "Flex - basic example"
+
     === "app.py"
+
         ```{.python pycafe-link hl_lines="9"}
         import vizro.models as vm
         from vizro import Vizro
@@ -458,6 +481,7 @@ Open the PyCafe link below to see how the `Flex` layout behaves. Unlike the `Gri
         ```
 
     === "app.yaml"
+
         ```yaml
         # Still requires a .py to add data to the data manager and parse YAML configuration
         # See yaml_version example
@@ -504,9 +528,11 @@ Open the PyCafe link below to see how the `Flex` layout behaves. Unlike the `Gri
         ```
 
     === "Result - Flex"
+
         [![FlexBasic]][flexbasic]
 
     === "Result - Grid"
+
         [![FlexBasicGridComparison]][flexbasicgridcomparison]
 
 ### Flex - advanced example
@@ -520,7 +546,9 @@ If you want to customize the default behavior, the [`Flex`][vizro.models.Flex] m
 In this example, there isn’t enough space to fit all three graphs in a single row while preserving their original height and width. Since `wrap=True`, the layout automatically wraps the graphs onto a new row. If `wrap=False`, a horizontal scrollbar would appear instead. We've also set `direction="row"` and `gap="40px"`, so the items are laid out in a horizontal row with `40px` spacing between them.
 
 !!! example "Flex - advanced example"
+
     === "app.py"
+
         ```{.python pycafe-link hl_lines="9"}
         import vizro.models as vm
         from vizro import Vizro
@@ -539,6 +567,7 @@ In this example, there isn’t enough space to fit all three graphs in a single 
         ```
 
     === "app.yaml"
+
         ```yaml
         # Still requires a .py to add data to the data manager and parse YAML configuration
         # See yaml_version example
@@ -574,6 +603,7 @@ In this example, there isn’t enough space to fit all three graphs in a single 
         ```
 
     === "Result"
+
         [![FlexAdvanced]][flexadvanced]
 
 ### Change the size of flex items
@@ -597,7 +627,9 @@ The syntax for setting `width` and `height` varies between components. Refer to 
 We will reuse the example from the previous section, but this time we set `width=400` within the Plotly function to control the graph width. This changes how many graphs can fit on a single row, as reducing the width allows more graphs to fit before wrapping to the next line. To see the difference in results, compare the screenshots from this section with those in the previous one.
 
 !!! example "Change the width for Graph"
+
     === "app.py"
+
         ```{.python pycafe-link hl_lines="10"}
         import vizro.models as vm
         from vizro import Vizro
@@ -616,6 +648,7 @@ We will reuse the example from the previous section, but this time we set `width
         ```
 
     === "app.yaml"
+
         ```yaml
         # Still requires a .py to add data to the data manager and parse YAML configuration
         # See yaml_version example
@@ -670,6 +703,7 @@ We will reuse the example from the previous section, but this time we set `width
         ```
 
     === "Result"
+
         [![FlexItemSizeArg]][flexitemsizearg]
 
 #### Change size via CSS
@@ -679,7 +713,9 @@ Custom CSS is often a preferred choice over using component arguments for settin
 Each item within the `Flex` layout is wrapped in a `<div class="flex-item">`, which can be targeted with CSS. To learn how to identify the correct selectors, refer to our [user guide on custom CSS](custom-css.md).
 
 !!! example "Change the width of all flex items with CSS"
+
     === "my_css_file.css"
+
         ```css
         /* Apply styling to all flex items */
         #page-with-uniform-flex-items .flex-item {
@@ -688,6 +724,7 @@ Each item within the `Flex` layout is wrapped in a `<div class="flex-item">`, wh
         ```
 
     === "app.py"
+
         ```py
         import vizro.models as vm
         from vizro import Vizro
@@ -716,6 +753,7 @@ Each item within the `Flex` layout is wrapped in a `<div class="flex-item">`, wh
         <img src=https://py.cafe/logo.png alt="PyCafe logo" width="30"><b><a target="_blank" href="https://py.cafe/vizro-official/vizro-custom-card-styling">Run and edit this code in PyCafe</a></b>
 
     === "Result"
+
         [![FlexItemSizeCSS]][flexitemsizecss]
 
 ### Combine Flex and Grid
@@ -725,7 +763,9 @@ You can also combine the `Flex` and `Grid` layout to benefit from both. The `Gri
 For example, in the layout below, we use the `Grid` layout to arrange two charts at the top and a [`Container`][vizro.models.Container] at the bottom with multiple cards. Within the [`Container`][vizro.models.Container], we apply the `Flex` layout so that the cards automatically adjust their positioning based on the available space. If you have not worked with a `Container` before, refer to our user guide on [how to use `Container`](container.md).
 
 !!! example "Grid with Flex container"
+
     === "app.py"
+
         ```{.python pycafe-link}
         import vizro.models as vm
         import vizro.plotly.express as px
@@ -764,6 +804,7 @@ For example, in the layout below, we use the `Grid` layout to arrange two charts
         ```
 
     === "Result"
+
         [![FlexGridCombined]][flexgridcombined]
 
 ## Alternative layout approaches
@@ -771,6 +812,7 @@ For example, in the layout below, we use the `Grid` layout to arrange two charts
 In general, any arbitrarily granular layout can already be achieved using either the [`Grid`][vizro.models.Grid] (default) and/or the [`Flex`][vizro.models.Flex] model and is our recommended approach if you want to arrange components on a page with consistent row and column spacing.
 
 !!! note "Alternative layout approaches: `Tabs` and `Containers`"
+
     [`Tabs`][vizro.models.Tabs] and [`Containers`][vizro.models.Container] provide alternative methods for customizing your page layout. For instance, if you need more granular control, want to break the overall page grid into subgrids, or wish to visually distinguish your subgrid, refer to our [user guide on Containers](container.md).
 
 ![tabs](../../assets/user_guides/components/tabs-info.png){ width="500" }

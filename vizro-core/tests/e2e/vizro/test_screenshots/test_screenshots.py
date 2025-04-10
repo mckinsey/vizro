@@ -1,4 +1,5 @@
 import os
+import time
 
 import pytest
 from e2e.asserts import assert_image_equal, make_screenshot_and_paths
@@ -15,6 +16,7 @@ def image_assertion(func):
     def wrapper(dash_br, request):
         result = func(dash_br)
         callbacks_finish_waiter(dash_br)
+        time.sleep(1)  # to finish page loading
         result_image_path, expected_image_path = make_screenshot_and_paths(dash_br.driver, request.node.name)
         assert_image_equal(result_image_path, expected_image_path)
         return result

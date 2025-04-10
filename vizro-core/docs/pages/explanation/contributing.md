@@ -16,6 +16,7 @@ We aim to make the contribution process as easy as possible by having only one d
 - Local machine. If you are more experienced then you might prefer to develop on your own computer. The [Develop locally](#develop-locally) section has full instructions on how to do this.
 
 !!! note
+
     For either method, Hatch is the _only development dependency_. You do not need to manually install Python or create any virtual environments to develop Vizro; all this will be handled for you behind the scenes by Hatch. We have also configured our codespace to pre-install Hatch. If you develop on GitHub Codespaces you don't need to install anything at all!
 
 ## Develop on GitHub Codespaces
@@ -90,6 +91,7 @@ Examples are run with the following settings:
 `hatch run lint` checks and fixes code quality and formatting. This is included in CI checks. All linting and associated dependencies are controlled by [pre-commit](https://pre-commit.com/) hooks. We use the [pre-commit.ci](https://pre-commit.ci/) to automatically fix all the linting checks that we can when a PR is pushed. Other linting failures (such as `mypy`) need manual intervention from the developer.
 
 !!! note
+
     The first time you run `hatch run lint` it may take a couple of minutes, since pre-commit needs to setup linting environments. Further runs reuse these environments and are much faster.
 
 `hatch run lint` runs the pre-commit hooks on all (not only staged) files. You can run an individual hook, for example `mypy`, on all files by running `hatch run lint mypy`.
@@ -105,6 +107,7 @@ The format of our changelog is based on [Keep a Changelog](https://keepachangelo
 Run `hatch run changelog:add` to create a changelog fragment and then uncomment the relevant section(s). If you are uncertain about what to add or whether to add anything at all, refer to [Keep a Changelog](https://keepachangelog.com/en/1.0.0/). The rule of thumb is that if Vizro users would be affected in any way then the changes should be described in the changelog.
 
 !!! note
+
     Changes that do not affect source code do not need a changelog fragment. This simplifies modifications to documentation [made directly on GitHub](https://docs.github.com/en/repositories/working-with-files/managing-files/editing-files) or within the [github.dev](https://docs.github.com/en/codespaces/the-githubdev-web-based-editor), where no terminal is available to run `hatch changelog:add`. Any changes to source code require a changelog fragment to be generated. If your changes do not require a changelog entry then you still need to generate the fragment but can leave it all commented out.
 
 ### `hatch run test-unit`
@@ -144,11 +147,13 @@ Vizro's dependencies are described by the `dependencies` section in `vizro-core/
 We have [configured Hatch to use uv](https://hatch.pypa.io/1.12/how-to/environment/select-installer/) for rapid virtual environment creation, dependency resolution and installation.
 
 !!! note
+
     If you have installed unwanted dependencies in your Hatch environment then the simplest solution is to delete the environment (`hatch env remove` to remove one environment or `hatch env prune` to remove all environments). Your next `hatch run` command will recreate the environment and install all the dependencies it needs.
 
 If for some reason you do need to use `pip` then the correct way to do so is through `hatch run pip`. For example, you could run `hatch run pip show plotly`. This will use the version of uv that Hatch itself uses under the hood. If you already have uv installed globally then `uv pip show plotly` would also work.
 
 !!! warning
+
     You should not try to interact with Vizro dependencies using a global `pip`. For example, running `pip show plotly` without the `hatch run` prefix will not work correctly.
 
 ## Code of conduct
