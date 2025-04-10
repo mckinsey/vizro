@@ -195,6 +195,16 @@ def test_flex_layout_wrap_and_ag_grid(dash_br):
     dash_br.wait_for_element("div[class='ag-theme-quartz ag-theme-vizro'] div:nth-of-type(1) div[col-id='total_bill']")
 
 
+@image_assertion
+def test_extra_parameter(dash_br):
+    accordion_select(dash_br, accordion_name=cnst.LAYOUT_ACCORDION)
+    page_select(dash_br, page_name=cnst.EXTRAS_PAGE)
+
+    # open datepicker calendar and close it to scroll to the end of the page
+    dash_br.multiple_click("button[class*='DatePickerInput']", 2)
+    dash_br.wait_for_no_elements('div[data-calendar="true"]')
+
+
 @pytest.mark.mobile_screenshots
 @image_assertion
 def test_homepage_mobile(dash_br):
