@@ -45,7 +45,9 @@ Since Vizro is built using Dash, it is possible to use [Dash callbacks](https://
 Here is an example showing a Dash callback within Vizro, enabling an interaction between data points in a scatter plot and the content of a text card:
 
 !!! example "Dash callback example"
+
     === "app.py"
+
         ```{.python pycafe-link}
         from dash import callback, Input, Output
         import vizro.models as vm
