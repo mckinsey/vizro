@@ -33,7 +33,7 @@ page1 = vm.Page(
 
 page2 = vm.Page(
     title="Grid",
-    layout=vm.Layout(grid=[[0, -1], [1, 2], [3, 3]]),
+    layout=vm.Grid(grid=[[0, -1], [1, 2], [3, 3]]),
     components=[
         vm.Card(text="""# Good morning!"""),
         vm.Graph(
@@ -370,16 +370,17 @@ page27 = vm.Page(
 
 page28 = vm.Page(
     title="Grid inside flex",
-    layout=vm.Flex(),
+    #  layout=vm.Flex(),
     components=[
+        vm.AgGrid(figure=dash_ag_grid(tips)),
         vm.Container(
+            layout=vm.Flex(),
             components=[
+                vm.AgGrid(figure=dash_ag_grid(tips)),
                 vm.Card(text="This is card inside first tab!"),
                 vm.Graph(figure=px.histogram(tips, x="tip")),
-                vm.Table(figure=dash_data_table(tips)),
-                vm.AgGrid(figure=dash_ag_grid(tips)),
-            ]
-        )
+            ],
+        ),
     ],
 )
 

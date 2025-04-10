@@ -3,14 +3,30 @@
  in a grid rather than like a card in a flex. Similar selectors for .figure-container and .table-container
  are not so easy to write since they are never direct children of .flex-item.
  */
-.flex-item, .flex-item .figure-container, .flex-item > .card {
-  height: unset;
-  width: unset;
+.grid-item > .card {
+  height: calc(100% - 8px);
+  width: calc(100% - 8px);
 }
 
-/* A height needs to be set for the parent container of the AgGrid, otherwise it's not visible inside a flex layout.
-Specifications are taken from default height/width of Plotly charts. */
-.flex-item .table-container {
+.loading-container, .figure-container {
+  display: flex;
+  flex-direction: column;
+  height: inherit;
+  width: inherit;
+}
+
+.grid-item > .loading-container {
+  height: 100%;
+  width: 100%;
+}
+
+.flex-item .table-container, .grid-item .flex-item .table-container  {
   height: 450px;
   width: 700px;
+}
+
+/* stylelint-disable-next-line no-descending-specificity */
+.grid-item .table-container, .flex-item .grid-item .table-container {
+  height: 100%;
+  width: 100%;
 }
