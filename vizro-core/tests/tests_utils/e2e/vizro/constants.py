@@ -156,6 +156,8 @@ LAYOUT_FLEX_GAP_AND_TABLE = "flex-gap-and-table"
 
 LAYOUT_FLEX_WRAP_AND_AG_GRID = "flex-wrap-and-ag_grid"
 
+EXTRAS_PAGE = "extras-page"
+
 PAGE_404_PATH = "/404-page"
 
 # Accordion names
