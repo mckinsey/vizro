@@ -247,10 +247,10 @@ page_3 = vm.Page(
         ),
         vm.Card(id="card_cross_filter", text="Click on a point on the above table."),
         vm.Text(
-            text="""This example showcases how to cache a calculation that may be slow. 
+            text="""This example showcases how to cache a calculation that may be slow.
                 It was attempted with actions, but it didn't work.
                 Reason is that the updated slider does not trigger the new data loading.
-                
+
                 Beyond that, it also shows how one can do advanced filter interactions without using a filter (not always good),
                 but importantly without returning an entire chart component.
                 """
