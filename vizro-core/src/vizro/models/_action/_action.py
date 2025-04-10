@@ -32,9 +32,9 @@ class ControlsStates(TypedDict):
 
 
 class _BaseAction(VizroBaseModel):
-    # The common interface shared between Action and AbstractAction all raise NotImplementedError or are ClassVar.
+    # The common interface shared between Action and _AbstractAction all raise NotImplementedError or are ClassVar.
     # This mypy type-check this class.
-    # function and outputs are overridden as fields in Action and abstract methods in AbstractAction. Using ClassVar
+    # function and outputs are overridden as fields in Action and abstract methods in _AbstractAction. Using ClassVar
     # for these is the easiest way to appease mypy and have something that actually works at runtime.
     function: ClassVar[Callable[..., Any]]
     outputs: ClassVar[Union[list[_IdProperty], dict[str, _IdProperty]]]
@@ -65,7 +65,7 @@ class _BaseAction(VizroBaseModel):
         # TODO-AV2 D 2: in future we will expand this to also allow passing a model name without a property specified,
         #  so long as _output_component_property exists - need to handle case it doesn't with error.
         #  Possibly make a built in a type hint that we can use as field annotation for runtime arguments in
-        #  subclasses of AbstractAction instead of just using str. Possibly apply this to non-annotated arguments of
+        #  subclasses of _AbstractAction instead of just using str. Possibly apply this to non-annotated arguments of
         #  vm.Action.function and use pydantic's validate_call to apply the same validation there for function inputs.
         #  We won't be able to do all the checks at validation time though if we need to look up a model in the model
         #  manager. When this change is made the outputs property for filter, parameter and on_page_load should just
@@ -74,7 +74,7 @@ class _BaseAction(VizroBaseModel):
         #  capture("action") style of action.
         # TODO-AV D 3: try to enable properties that aren't Dash properties but are instead model fields e.g. header,
         #  title. See https://github.com/mckinsey/vizro/issues/1078.
-        #  Note this is needed for inputs in both vm.Action and AbstractAction but outputs only in AbstractAction.
+        #  Note this is needed for inputs in both vm.Action and _AbstractAction but outputs only in _AbstractAction.
         try:
             TypeAdapter(list[Annotated[str, StringConstraints(pattern="^[^.]+[.][^.]+$")]]).validate_python(
                 dependencies
@@ -121,7 +121,7 @@ class _BaseAction(VizroBaseModel):
         structure of states.
         """
         if self._legacy:
-            # Must be an Action rather than AbstractAction, so has already been validated by pydantic field annotation.
+            # Must be an Action rather than _AbstractAction, so has already been validated by pydantic field annotation.
             return [State(*input.split(".")) for input in cast(Action, self).inputs]
 
         from vizro.models import Filter, Parameter
@@ -141,14 +141,14 @@ class _BaseAction(VizroBaseModel):
 
         # Validate that the runtime arguments are in the same form as the legacy Action.inputs field, so a string
         # of the form component_id.component_property. Currently this code only runs for subclasses of
-        # AbstractAction but not vm.Action instances because a vm.Action that does not pass this check will
+        # _AbstractAction but not vm.Action instances because a vm.Action that does not pass this check will
         # have already been classified as legacy in Action._legacy. In future when vm.Action.inputs is deprecated
         # then this will be used for vm.Action instances also.
         self._validate_dash_dependencies(self._runtime_args.values(), type="input")
 
         # User specified arguments runtime_args take precedence over built in reserved arguments. No static arguments
         # ar relevant here, just Dash States. Static arguments values are stored in the state of the relevant
-        # AbstractAction instance.
+        # _AbstractAction instance.
         runtime_args = {arg_name: State(*arg_value.split(".")) for arg_name, arg_value in self._runtime_args.items()}
 
         return builtin_args | runtime_args
@@ -157,11 +157,11 @@ class _BaseAction(VizroBaseModel):
     def _transformed_outputs(self) -> Union[list[Output], dict[str, Output]]:
         """Creates the actual Dash Outputs based on self.outputs.
 
-        Legacy and new versions of Action just support list[Output]. AbstractAction subclasses support dict[str, Output]
+        Legacy and new versions of Action just support list[Output]. _AbstractAction subclasses support dict[str, Output]
         and list[Output].
         """
         # TODO-AV2 D 1: enable dict for Action. Also think about where all the validation in this function should go
-        #  since it's only relevant for AbstractAction because vm.Action models have pydantic validation built into the
+        #  since it's only relevant for _AbstractAction because vm.Action models have pydantic validation built into the
         #  field annotation.
         if isinstance(self.outputs, list):
             self._validate_dash_dependencies(self.outputs, type="output")
@@ -280,10 +280,6 @@ class _BaseAction(VizroBaseModel):
 class Action(_BaseAction):
     """Action to be inserted into `actions` of relevant component.
 
-    This class is only relevant for user-defined actions using @capture("action"). Actions that are defined by
-    subclassing AbstractAction do not use this class at all. This includes all built in actions and is also possible
-    for user-defined actions.
-
     Args:
         function (CapturedCallable): Action function.
         inputs (list[str]): Inputs in the form `<component_id>.<property>` passed to the action function.
@@ -291,6 +287,11 @@ class Action(_BaseAction):
         outputs (list[str]): Outputs in the form `<component_id>.<property>` changed by the action function.
             Defaults to `[]`.
     """
+
+    # TODO-AV2 D 5: when it's made public, add something like below to docstring:
+    # This class is only relevant for user-defined actions using @capture("action"). Actions that are defined by
+    # subclassing _AbstractAction do not use this class at all. This includes all built in actions and is also possible
+    #  for user-defined actions.
 
     type: Literal["action"] = "action"
     # export_data and filter_interaction are here just so that legacy vm.Action(function=filter_interaction(...)) and
@@ -343,8 +344,8 @@ class Action(_BaseAction):
     @property
     def _parameters(self) -> set[str]:
         # TODO-AV2 B 2: in future, if we improve wrapping of __call__ inside CapturedCallable (e.g. by using wrapt),
-        #  this could be done the same way as in AbstractAction and avoid looking at _function. Then we could remove
-        #  this _parameters property from both Action and AbstractAction. Possibly also the _action_name one.
+        #  this could be done the same way as in _AbstractAction and avoid looking at _function. Then we could remove
+        #  this _parameters property from both Action and _AbstractAction. Possibly also the _action_name one.
         #  Try and get IDE completion to work for action arguments.
         # Note order of parameters doesn't matter since we always handle things with keyword arguments.
         return set(inspect.signature(self.function._function).parameters)  # type:ignore[union-attr]

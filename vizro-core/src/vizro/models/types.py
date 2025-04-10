@@ -9,13 +9,10 @@ import inspect
 import warnings
 from contextlib import contextmanager
 from datetime import date
-from typing import Annotated, Any, Literal, Optional, Protocol, Union, runtime_checkable
 from typing import Annotated, Any, Literal, NewType, Optional, Protocol, TypeAlias, TypedDict, Union, runtime_checkable
 
 import plotly.io as pio
 import pydantic_core as cs
-from pydantic import Discriminator, Field, StrictBool, Tag, ValidationInfo
-from typing_extensions import TypedDict
 from pydantic import Discriminator, Field, StrictBool, Tag, ValidationInfo
 from pydantic.json_schema import SkipJsonSchema
 
@@ -623,8 +620,6 @@ ActionType = Annotated[
 ]
 """Discriminated union. Type of action: [`Action`][vizro.models.Action], [`export_data`][vizro.models.export_data] or [
 `filter_interaction`][vizro.models.filter_interaction]."""
-
-
 
 
 # Extra type groups used for mypy casting
