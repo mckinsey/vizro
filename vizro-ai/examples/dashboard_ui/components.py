@@ -422,3 +422,16 @@ class HeaderComponent(vm.VizroBaseModel):
         )
 
         return html.Div(children=[header, icon], className="custom_header")
+
+
+class FlexContainer(vm.Container):
+    """Custom flex `Container`."""
+
+    type: Literal["flex_container"] = "flex_container"
+    title: str = None  # Title exists in vm.Container but we don't want to use it here.
+
+    def build(self):
+        """Returns a flex container."""
+        return html.Div(
+            id=self.id, children=[component.build() for component in self.components], className="flex-container"
+        )

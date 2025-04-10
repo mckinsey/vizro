@@ -328,18 +328,26 @@ img#banner {
   width: 100%;
 }
 
-.flex-item h4 {
+.flex-container {
+  display: flex;
+  flex-flow: column wrap;
+  gap: 12px;
+  justify-content: flex-start;
+  overflow: hidden; /* check and remove comment */
+}
+
+.flex-container h4 {
   color: var(--text-secondary);
   margin: 0;
   padding-top: 12px;
   text-align: center;
 }
 
-.flex-item .code-clipboard-container {
+.flex-container .code-clipboard-container {
   height: 500px;
   width: 100%;
 }
 
-.flex-item #graph {
+.flex-container #graph {
   height: 712px;
 }
