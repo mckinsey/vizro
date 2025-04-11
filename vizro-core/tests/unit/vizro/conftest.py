@@ -42,6 +42,7 @@ def standard_px_chart(gapminder):
         color="continent",
         hover_name="country",
         size_max=60,
+        custom_data=["continent"],
     )
 
 
