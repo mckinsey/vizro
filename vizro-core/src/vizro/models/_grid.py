@@ -232,6 +232,7 @@ class Grid(VizroBaseModel):
                     "height": "100%",
                     "width": "100%",
                 },
+                className="grid-item",
             )
             for component_idx, grid_coord in enumerate(self.component_grid_lines)
         ]

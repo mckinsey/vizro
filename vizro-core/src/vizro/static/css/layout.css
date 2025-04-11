@@ -98,14 +98,6 @@
   width: 100%;
 }
 
-.loading-container,
-.figure-container {
-  display: flex;
-  flex-direction: column;
-  height: 100%;
-  width: 100%;
-}
-
 #left-sidebar {
   border-right: 1px solid var(--border-subtleAlpha01);
   display: flex;
