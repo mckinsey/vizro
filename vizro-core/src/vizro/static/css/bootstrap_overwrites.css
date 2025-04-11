@@ -7,7 +7,7 @@ All the HEX values starting with --text-code are taken from the Github code high
   --dropdown-label-bg: var(--primary-800);
   --left-side-bg: var(--surfaces-bg02);
   --right-side-bg: var(--surfaces-bg03);
-  --card-bg: var(--left-side-bg);
+  --card-bg: var(--surfaces-bg-card);
   --text-code-string: #95c2e7;
   --text-code-keyword: #f4766e;
   --text-code-meta: #c8ace1;
@@ -22,7 +22,7 @@ All the HEX values starting with --text-code are taken from the Github code high
   --left-side-bg: var(--surfaces-bg01);
   --right-side-bg: var(--surfaces-bg01);
   --right-side-bg-iterated: var(--primary-300);
-  --card-bg: var(--primary-300);
+  --card-bg: var(--primary-300); /*Update color inside vizro-bootstrap*/
   --text-code-string: #0a3069;
   --text-code-keyword: #d12d39;
   --text-code-meta: #6f42c1;
@@ -59,7 +59,7 @@ All the HEX values starting with --text-code are taken from the Github code high
 /* Move background color to BS */
 .accordion-item .nav-link:active, .accordion-item .nav-link.active,
 .accordion-item .nav-link:hover, .accordion-item .nav-link.hover {
-  background: var(--primary-300);
+  background: var(--card-bg);
 }
 
 /* Move background color to BS */
