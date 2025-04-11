@@ -2,7 +2,7 @@ import pytest
 from asserts import assert_component_equal
 
 import vizro.models as vm
-from vizro.actions._abstract_action import AbstractAction
+from vizro.actions._abstract_action import _AbstractAction
 from vizro.managers import data_manager, model_manager
 from vizro.models._action._actions_chain import ActionsChain
 from vizro.models._controls.parameter import Parameter
@@ -125,7 +125,7 @@ class TestPreBuildMethod:
         default_action = default_actions_chain.actions[0]
 
         assert isinstance(default_actions_chain, ActionsChain)
-        assert isinstance(default_action, AbstractAction)
+        assert isinstance(default_action, _AbstractAction)
         assert default_action.id == f"__parameter_action_{parameter.id}"
 
     @pytest.mark.usefixtures("managers_one_page_two_graphs_with_dynamic_data")

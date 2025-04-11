@@ -9,7 +9,7 @@ from dash import dcc
 import vizro.models as vm
 import vizro.plotly.express as px
 from vizro import Vizro
-from vizro.actions._abstract_action import AbstractAction
+from vizro.actions._abstract_action import _AbstractAction
 from vizro.managers import data_manager, model_manager
 from vizro.models._action._actions_chain import ActionsChain
 from vizro.models._controls.filter import Filter, _filter_between, _filter_isin
@@ -823,7 +823,7 @@ class TestPreBuildMethod:
         default_action = default_actions_chain.actions[0]
 
         assert isinstance(default_actions_chain, ActionsChain)
-        assert isinstance(default_action, AbstractAction)
+        assert isinstance(default_action, _AbstractAction)
         assert default_action.filter_function == filter_function
         assert default_action.id == f"__filter_action_{filter.id}"
 
@@ -860,7 +860,7 @@ class TestPreBuildMethod:
         default_action = default_actions_chain.actions[0]
 
         assert isinstance(default_actions_chain, ActionsChain)
-        assert isinstance(default_action, AbstractAction)
+        assert isinstance(default_action, _AbstractAction)
         assert default_action.filter_function == _filter_between
         assert default_action.id == f"__filter_action_{filter.id}"
 

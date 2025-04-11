@@ -14,7 +14,7 @@ from vizro.models.types import capture
 
 
 from typing import Literal
-from vizro.actions import AbstractAction
+from vizro.actions._abstract_action import _AbstractAction
 from vizro.models._action._actions_chain import ActionsChain
 
 
@@ -32,7 +32,7 @@ from vizro.models._action._actions_chain import ActionsChain
 
 @pytest.fixture
 def class_action_with_no_args():
-    class class_action_with_no_args(AbstractAction):
+    class class_action_with_no_args(_AbstractAction):
         type: Literal["class_action_with_no_args"] = "class_action_with_no_args"
 
         def function(self):
@@ -51,7 +51,7 @@ def class_action_with_no_args():
 
 @pytest.fixture
 def class_action_with_one_hardcoded_arg():
-    class class_action_with_one_hardcoded_arg(AbstractAction):
+    class class_action_with_one_hardcoded_arg(_AbstractAction):
         type: Literal["class_action_with_one_hardcoded_arg"] = "class_action_with_one_hardcoded_arg"
         arg_1: str
 
@@ -71,7 +71,7 @@ def class_action_with_one_hardcoded_arg():
 
 @pytest.fixture
 def class_action_with_one_arg():
-    class class_action_with_one_arg(AbstractAction):
+    class class_action_with_one_arg(_AbstractAction):
         type: Literal["class_action_with_one_arg"] = "class_action_with_one_arg"
         arg_1: str
 
@@ -91,7 +91,7 @@ def class_action_with_one_arg():
 
 @pytest.fixture
 def class_action_with_one_arg_and_controls():
-    class class_action_with_one_arg_and_controls(AbstractAction):
+    class class_action_with_one_arg_and_controls(_AbstractAction):
         type: Literal["class_action_with_one_arg_and_controls"] = "class_action_with_one_arg_and_controls"
         arg_1: str
 
@@ -111,7 +111,7 @@ def class_action_with_one_arg_and_controls():
 
 @pytest.fixture
 def class_action_with_two_args():
-    class class_action_with_two_args(AbstractAction):
+    class class_action_with_two_args(_AbstractAction):
         type: Literal["class_action_with_two_args"] = "class_action_with_two_args"
         arg_1: str
         arg_2: str
@@ -132,7 +132,7 @@ def class_action_with_two_args():
 
 @pytest.fixture
 def class_action_with_one_runtime_and_one_parameter():
-    class class_action_with_one_runtime_and_one_parameter(AbstractAction):
+    class class_action_with_one_runtime_and_one_parameter(_AbstractAction):
         type: Literal["class_action_with_one_runtime_and_one_parameter"] = "class_action_with_one_runtime_and_one_parameter"
         arg_1: str
         arg_2: str
@@ -153,7 +153,7 @@ def class_action_with_one_runtime_and_one_parameter():
 
 @pytest.fixture
 def class_action_with_mock_outputs(request):
-    class class_action_with_mock_outputs(AbstractAction):
+    class class_action_with_mock_outputs(_AbstractAction):
         type: Literal["class_action_with_mock_outputs"] = "class_action_with_mock_outputs"
 
         def function(self):
@@ -214,7 +214,7 @@ def _real_builtin_controls(standard_px_chart):
 
 
 class TestAbstractActionInstantiation:
-    """Tests AbstractAction instantiation."""
+    """Tests _AbstractAction instantiation."""
 
     def test_action_mandatory_only(self, class_action_with_no_args):
         action = class_action_with_no_args()
