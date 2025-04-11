@@ -125,7 +125,7 @@ class TestLegacyActionInstantiation:
         assert action._action_name == "_custom_action"
 
     @pytest.mark.parametrize(
-        "action_inputs, _transformed_inputs",
+        "action_inputs, expected_transformed_inputs",
         [
             ([], []),
             (["component.property"], [State("component", "property")]),
@@ -135,12 +135,12 @@ class TestLegacyActionInstantiation:
             ),
         ],
     )
-    def test_action_inputs_valid(self, custom_action_with_no_args, action_inputs, _transformed_inputs):
+    def test_action_inputs_valid(self, custom_action_with_no_args, action_inputs, expected_transformed_inputs):
         action = Action(function=custom_action_with_no_args(), inputs=action_inputs)
 
         assert action._legacy
         assert action.inputs == action_inputs
-        assert action._transformed_inputs == _transformed_inputs
+        assert action._transformed_inputs == expected_transformed_inputs
 
     @pytest.mark.parametrize(
         "action_inputs",
@@ -173,7 +173,7 @@ class TestLegacyActionInstantiation:
         assert action._transformed_inputs == []
 
     @pytest.mark.parametrize(
-        "custom_action_fixture_name, runtime_inputs, action_inputs, _transformed_inputs",
+        "custom_action_fixture_name, runtime_inputs, action_inputs, expected_transformed_inputs",
         [
             ("custom_action_with_one_arg", {}, ["component.property"], [State("component", "property")]),
             ("custom_action_with_one_arg", {"arg_1": "hardcoded"}, [], []),
@@ -197,7 +197,7 @@ class TestLegacyActionInstantiation:
         custom_action_fixture_name,
         runtime_inputs,
         action_inputs,
-        _transformed_inputs,
+        expected_transformed_inputs,
     ):
         custom_action = request.getfixturevalue(custom_action_fixture_name)
 
@@ -205,10 +205,10 @@ class TestLegacyActionInstantiation:
 
         assert action._legacy
         assert action.inputs == action_inputs
-        assert action._transformed_inputs == _transformed_inputs
+        assert action._transformed_inputs == expected_transformed_inputs
 
     @pytest.mark.parametrize(
-        "outputs, _transformed_outputs",
+        "outputs, expected_transformed_outputs",
         [
             ([], []),
             (["component.property"], Output("component", "property")),
@@ -218,13 +218,13 @@ class TestLegacyActionInstantiation:
             ),
         ],
     )
-    def test_outputs_valid(self, custom_action_with_no_args, outputs, _transformed_outputs):
+    def test_outputs_valid(self, custom_action_with_no_args, outputs, expected_transformed_outputs):
         # inputs=[] added to force action to be legacy
         action = Action(function=custom_action_with_no_args(), inputs=[], outputs=outputs)
 
         assert action._legacy
         assert action.outputs == outputs
-        assert action._transformed_outputs == _transformed_outputs
+        assert action._transformed_outputs == expected_transformed_outputs
 
     @pytest.mark.parametrize(
         "outputs",
@@ -263,7 +263,7 @@ class TestActionInstantiation:
         assert action._action_name == "_custom_action"
 
     @pytest.mark.parametrize(
-        "custom_action_fixture_name, runtime_inputs, _transformed_inputs",
+        "custom_action_fixture_name, runtime_inputs, expected_transformed_inputs",
         [
             ("custom_action_with_no_args", [], {}),
             ("custom_action_with_one_arg", ["component.property"], {"arg_1": State("component", "property")}),
@@ -274,17 +274,17 @@ class TestActionInstantiation:
             ),
         ],
     )
-    def test_runtime_id_property_inputs(self, request, custom_action_fixture_name, runtime_inputs, _transformed_inputs):
+    def test_runtime_id_property_inputs(self, request, custom_action_fixture_name, runtime_inputs, expected_transformed_inputs):
         custom_action = request.getfixturevalue(custom_action_fixture_name)
 
         action = Action(function=custom_action(*runtime_inputs))
 
         assert not action._legacy
         assert action.inputs == []
-        assert action._transformed_inputs == _transformed_inputs
+        assert action._transformed_inputs == expected_transformed_inputs
 
     @pytest.mark.parametrize(
-        "custom_action_fixture_name, runtime_inputs, _transformed_inputs",
+        "custom_action_fixture_name, runtime_inputs, expected_transformed_inputs",
         [
             ("custom_action_with_no_args", {}, {}),
             ("custom_action_with_one_arg", {"arg_1": "component.property"}, {"arg_1": State("component", "property")}),
@@ -296,7 +296,7 @@ class TestActionInstantiation:
         ],
     )
     def test_runtime_id_property_keyword_inputs(
-        self, request, custom_action_fixture_name, runtime_inputs, _transformed_inputs
+        self, request, custom_action_fixture_name, runtime_inputs, expected_transformed_inputs
     ):
         custom_action = request.getfixturevalue(custom_action_fixture_name)
 
@@ -304,7 +304,7 @@ class TestActionInstantiation:
 
         assert not action._legacy
         assert action.inputs == []
-        assert action._transformed_inputs == _transformed_inputs
+        assert action._transformed_inputs == expected_transformed_inputs
 
     def test_builtin_arguments_with_empty_controls(self, custom_action_with_one_arg_and_controls):
         action = Action(function=custom_action_with_one_arg_and_controls("component.property"))
@@ -337,7 +337,7 @@ class TestActionInstantiation:
         }
 
     @pytest.mark.parametrize(
-        "outputs, _transformed_outputs",
+        "outputs, expected_transformed_outputs",
         [
             ([], []),
             (["component.property"], Output("component", "property")),
@@ -347,12 +347,12 @@ class TestActionInstantiation:
             ),
         ],
     )
-    def test_outputs_valid(self, custom_action_with_no_args, outputs, _transformed_outputs):
+    def test_outputs_valid(self, custom_action_with_no_args, outputs, expected_transformed_outputs):
         action = Action(function=custom_action_with_no_args(), outputs=outputs)
 
         assert not action._legacy
         assert action.outputs == outputs
-        assert action._transformed_outputs == _transformed_outputs
+        assert action._transformed_outputs == expected_transformed_outputs
 
     @pytest.mark.parametrize(
         "outputs",
