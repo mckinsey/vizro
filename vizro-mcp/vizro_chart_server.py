@@ -1,16 +1,20 @@
 """MCP server for Vizro-AI chart creation best practices."""
 
+import base64
+import gzip
 import json
 from typing import Any, Literal, Optional, Union
+from urllib.parse import quote, urlencode
 
 import vizro.models as vm
 from mcp.server.fastmcp import FastMCP
 
 # from mcp.server.fastmcp.server import Context
 from pydantic import BaseModel, Field, ValidationError
-
-# Import Vizro for resetting state
 from vizro import Vizro
+
+# PyCafe URL for Vizro snippets
+PYCAFE_URL = "https://py.cafe"
 
 
 class SimplePage(BaseModel):
@@ -183,29 +187,75 @@ def get_overview_vizro_models() -> dict[str, list[dict[str, str]]]:
 
 
 @mcp.tool()
-def validated_config_to_python_code(model_name: str, config: dict[str, Any]) -> str:
-    """Convert a Vizro model configuration to Python code.
+def validated_config_to_python_code(model_name: str, config: dict[str, Any]) -> dict[str, Any]:
+    """Convert a Vizro model configuration to Python code and generate a PyCafe link.
 
     Args:
         model_name: Name of the Vizro model to convert to Python code
         config: Dictionary representing a Vizro model configuration
 
     Returns:
-        Python code for the Vizro model
+        Dictionary with the Python code and PyCafe URL
     """
 
     # Get the model class from the vizro.models namespace
     if not hasattr(vm, model_name):
-        return f"Error: Model '{model_name}' not found in vizro.models"
+        return {"error": f"Error: Model '{model_name}' not found in vizro.models"}
 
     model_class = getattr(vm, model_name)
 
-    Vizro._reset()
-    model_instance = model_class(**config)
-    python_code = model_instance._to_python()
+    try:
+        # Reset Vizro state before instantiation
+        Vizro._reset()
 
-    Vizro._reset()
-    return python_code
+        # Create a model instance from the configuration
+        model_instance = model_class(**config)
+
+        # Get the Python code
+        python_code = model_instance._to_python()
+
+        # Add imports and dataset definitions at the top
+        imports_and_data = """from vizro import Vizro
+import vizro.plotly.express as px
+from vizro.managers import data_manager
+
+# Load predefined datasets
+data_manager["iris"] = px.data.iris()
+data_manager["gapminder"] = px.data.gapminder()
+data_manager["tips"] = px.data.tips()
+
+"""
+        # If the code already starts with 'from vizro import Vizro', replace it
+        if python_code.startswith("from vizro import Vizro"):
+            python_code = imports_and_data + python_code[len("from vizro import Vizro\n") :]
+        else:
+            python_code = imports_and_data + python_code
+
+        # Add final run line if not present
+        if "Vizro().build(model).run()" not in python_code:
+            python_code += "\n\nVizro().build(model).run()"
+
+        # Create JSON object for py.cafe
+        json_object = {
+            "code": python_code,
+            "requirements": "vizro",
+            "files": [],
+        }
+
+        # Convert to compressed base64 URL
+        json_text = json.dumps(json_object)
+        compressed_json_text = gzip.compress(json_text.encode("utf8"))
+        base64_text = base64.b64encode(compressed_json_text).decode("utf8")
+        query = urlencode({"c": base64_text}, quote_via=quote)
+        pycafe_url = f"{PYCAFE_URL}/snippet/vizro/v1?{query}"
+
+        return {"python_code": python_code, "pycafe_url": pycafe_url}
+
+    except Exception as e:
+        return {"error": f"Error: {e!s}"}
+    finally:
+        # Always reset, regardless of success or failure
+        Vizro._reset()
 
 
 @mcp.tool()
