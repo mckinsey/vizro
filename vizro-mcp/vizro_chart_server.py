@@ -42,6 +42,22 @@ class SimpleDashboard(BaseModel):
     title: str = Field(default="", description="Dashboard title to appear on every page on top left-side.")
 
 
+class GraphPX(vm.Graph):
+    """A Graph model that uses Plotly Express to create the figure."""
+
+    figure: dict[str, Any] = Field(
+        description="""
+This is the plotly express figure to be displayed. Only use valid plotly express functions to create the figure.
+Only use the arguments that are supported by the function you are using.
+
+- Configure a dictionary as if this would be added as **kwargs to the function you are using.
+- You must use the key: "_target_: "<function_name>" to specify the function you are using.
+- you must refer to the dataframe by name, for now it is one of "gapminder", "iris", "tips".
+- do not use a title if your Graph already has a title.
+"""
+    )
+
+
 # Create an MCP server with capabilities
 # TODO: what do I need to do here, as things are already set up?
 mcp = FastMCP(
@@ -124,6 +140,8 @@ def get_model_JSON_schema(model_name: str) -> dict[str, Any]:
         return SimplePage.model_json_schema()
     elif model_name == "Dashboard":
         return SimpleDashboard.model_json_schema()
+    elif model_name == "Graph":
+        return GraphPX.model_json_schema()
     # Get the model class from the vizro.models namespace
     if not hasattr(vm, model_name):
         return {"error": f"Model '{model_name}' not found in vizro.models"}
@@ -144,7 +162,7 @@ def get_overview_vizro_models() -> dict[str, list[dict[str, str]]]:
     """
     # Define the models we want to expose, grouped by category
     model_groups: dict[str, list[type[vm.VizroBaseModel]]] = {
-        "components": [vm.Card, vm.Button, vm.Text, vm.Container, vm.Tabs],
+        "components": [vm.Card, vm.Button, vm.Text, vm.Container, vm.Tabs, vm.Graph],
         "layouts": [vm.Grid, vm.Flex],
         "controls": [vm.Filter, vm.Parameter],
         "selectors": [vm.Dropdown, vm.RadioItems, vm.Checklist, vm.DatePicker, vm.Slider, vm.RangeSlider],
