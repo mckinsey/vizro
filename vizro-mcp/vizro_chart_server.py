@@ -43,6 +43,7 @@ class SimpleDashboard(BaseModel):
 
 
 # Create an MCP server with capabilities
+# TODO: what do I need to do here, as things are already set up?
 mcp = FastMCP(
     "Vizro Chart Creator",
     # Explicitly specify server capabilities
@@ -52,27 +53,6 @@ mcp = FastMCP(
         "resources": {},  # Enable resources capability
     },
 )
-
-
-# @mcp.tool()
-# async def my_tool(x: int, ctx: Context[Any, Any]) -> str:
-#     # Log messages to the client
-#     await ctx.info(f"Processing {x}")
-#     await ctx.debug("Debug info")
-#     await ctx.warning("Warning message")
-#     await ctx.error("Error message")
-
-#     # Report progress
-#     # await ctx.report_progress(50, 100)
-
-#     # Access resources
-#     # data = ctx.read_resource("resource://data")
-
-#     # # Get request info
-#     # request_id = ctx.request_id
-#     # client_id = ctx.client_id
-
-#     return str(x)
 
 
 @mcp.tool()
@@ -109,7 +89,7 @@ def validate_model_config(model_name: str, config: Union[str, dict[str, Any]]) -
         Vizro._reset()
 
         # Attempt to instantiate a Vizro model with the configuration
-        model_instance = model_class(**model_config)
+        _ = model_class(**model_config)
 
         # Get the result before resetting
         result = {
@@ -188,7 +168,8 @@ def get_overview_vizro_models() -> dict[str, list[dict[str, str]]]:
 
 @mcp.tool()
 def validated_config_to_python_code(model_name: str, config: dict[str, Any]) -> dict[str, Any]:
-    """Convert a Vizro model configuration to Python code and generate a PyCafe link.
+    """Convert a Vizro model configuration to Python code and generate a PyCafe link where the dashboard is shown LIVE.
+    ALWAYS offer the user the chance to see the dashboard when you have finished the code.
 
     Args:
         model_name: Name of the Vizro model to convert to Python code
@@ -261,11 +242,10 @@ data_manager["tips"] = px.data.tips()
 @mcp.tool()
 def get_vizro_chart_or_dashboard_plan() -> str:
     """Call this tool first to get an overview of what to do next."""
-    return f"""
+    return """
     I'll help you create a Vizro-compatible chart or dashboard based on your data and requirements.
 
     Here's a plan for how we'll work together:
-    
         - if you want to create a chart, do not call any other tool, but use plotly express or graph_objects to create the chart
         - if you think the query is aiming to create a dashboard, follow these steps:
             - call the get_overview_vizro_models tool to get an overview of the available models
@@ -275,10 +255,10 @@ def get_vizro_chart_or_dashboard_plan() -> str:
             - validate the dashboard configuration using the validate_model_config tool use `Dashboard` as the model name
             - call the validated_config_to_python_code tool to convert the dashboard configuration to Python code
             - if you display any code artifact, you must use the above created code
-    
-    
+
+
     IMPORTANT:
-    - if you iterate over a valid produced solution, make sure to go via the validation step again to ensure the solution is valid
+    - if you iterate over a valid produced solution, make sure to go ALWAYS via the validation step again to ensure the solution is valid
     """
 
 
