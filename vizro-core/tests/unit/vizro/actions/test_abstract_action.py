@@ -1,22 +1,17 @@
 """Unit tests for vizro.models.Action."""
 
+from typing import Annotated, Literal
+
 import pytest
 from asserts import assert_component_equal
 from dash import Output, State, html
-from pydantic import ValidationError, Tag
-from typing import Annotated
+from pydantic import Tag
 
 import vizro.models as vm
 from vizro import Vizro
 from vizro.actions import filter_interaction
-from vizro.models._action._action import Action
-from vizro.models.types import capture
-
-
-from typing import Literal
 from vizro.actions._abstract_action import _AbstractAction
 from vizro.models._action._actions_chain import ActionsChain
-
 
 # TODO-QQ: Check test_builtin_arguments_with_overwritten_controls: this test fails because model fields can't be private
 #  Test is set as: @pytest.mark.xfail()
@@ -62,7 +57,9 @@ def class_action_with_one_hardcoded_arg():
         def outputs(self):
             return []
 
-    class_action_with_one_hardcoded_arg = Annotated[class_action_with_one_hardcoded_arg, Tag("class_action_with_one_hardcoded_arg")]
+    class_action_with_one_hardcoded_arg = Annotated[
+        class_action_with_one_hardcoded_arg, Tag("class_action_with_one_hardcoded_arg")
+    ]
     vm.Graph.add_type("actions", class_action_with_one_hardcoded_arg)
     ActionsChain.add_type("actions", class_action_with_one_hardcoded_arg)
 
@@ -102,7 +99,9 @@ def class_action_with_one_arg_and_controls():
         def outputs(self):
             return []
 
-    class_action_with_one_arg_and_controls = Annotated[class_action_with_one_arg_and_controls, Tag("class_action_with_one_arg_and_controls")]
+    class_action_with_one_arg_and_controls = Annotated[
+        class_action_with_one_arg_and_controls, Tag("class_action_with_one_arg_and_controls")
+    ]
     vm.Graph.add_type("actions", class_action_with_one_arg_and_controls)
     ActionsChain.add_type("actions", class_action_with_one_arg_and_controls)
 
@@ -133,7 +132,9 @@ def class_action_with_two_args():
 @pytest.fixture
 def class_action_with_one_runtime_and_one_parameter():
     class class_action_with_one_runtime_and_one_parameter(_AbstractAction):
-        type: Literal["class_action_with_one_runtime_and_one_parameter"] = "class_action_with_one_runtime_and_one_parameter"
+        type: Literal["class_action_with_one_runtime_and_one_parameter"] = (
+            "class_action_with_one_runtime_and_one_parameter"
+        )
         arg_1: str
         arg_2: str
 
@@ -144,7 +145,9 @@ def class_action_with_one_runtime_and_one_parameter():
         def outputs(self):
             return []
 
-    class_action_with_one_runtime_and_one_parameter = Annotated[class_action_with_one_runtime_and_one_parameter, Tag("class_action_with_one_runtime_and_one_parameter")]
+    class_action_with_one_runtime_and_one_parameter = Annotated[
+        class_action_with_one_runtime_and_one_parameter, Tag("class_action_with_one_runtime_and_one_parameter")
+    ]
     vm.Graph.add_type("actions", class_action_with_one_runtime_and_one_parameter)
     ActionsChain.add_type("actions", class_action_with_one_runtime_and_one_parameter)
 
@@ -243,9 +246,7 @@ class TestAbstractActionInstantiation:
             ),
         ],
     )
-    def test_runtime_inputs(
-        self, request, custom_action_fixture_name, runtime_inputs, expected_transformed_inputs
-    ):
+    def test_runtime_inputs(self, request, custom_action_fixture_name, runtime_inputs, expected_transformed_inputs):
         custom_action = request.getfixturevalue(custom_action_fixture_name)
         action = custom_action(**runtime_inputs)
 
@@ -287,7 +288,7 @@ class TestAbstractActionInstantiation:
         "custom_action_fixture_name, runtime_inputs, expected_parameters, expected_runtime_args",
         [
             ("class_action_with_no_args", {}, set(), {}),
-            ("class_action_with_one_arg", {"arg_1": "component.property"}, {"arg_1"}, {'arg_1': 'component.property'}),
+            ("class_action_with_one_arg", {"arg_1": "component.property"}, {"arg_1"}, {"arg_1": "component.property"}),
             (
                 "class_action_with_two_args",
                 {"arg_1": "component.property", "arg_2": "component.property"},
@@ -298,7 +299,9 @@ class TestAbstractActionInstantiation:
                 "class_action_with_one_arg_and_controls",
                 {"arg_1": "component.property"},
                 {"arg_1", "_controls"},
-                {"arg_1": "component.property",},
+                {
+                    "arg_1": "component.property",
+                },
             ),
             (
                 "class_action_with_one_runtime_and_one_parameter",

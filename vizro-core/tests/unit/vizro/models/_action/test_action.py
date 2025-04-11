@@ -274,7 +274,9 @@ class TestActionInstantiation:
             ),
         ],
     )
-    def test_runtime_id_property_inputs(self, request, custom_action_fixture_name, runtime_inputs, expected_transformed_inputs):
+    def test_runtime_id_property_inputs(
+        self, request, custom_action_fixture_name, runtime_inputs, expected_transformed_inputs
+    ):
         custom_action = request.getfixturevalue(custom_action_fixture_name)
 
         action = Action(function=custom_action(*runtime_inputs))
