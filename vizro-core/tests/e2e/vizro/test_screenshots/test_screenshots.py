@@ -1,4 +1,5 @@
 import os
+import time
 
 import pytest
 from e2e.asserts import assert_image_equal, make_screenshot_and_paths
@@ -15,6 +16,7 @@ def image_assertion(func):
     def wrapper(dash_br, request):
         result = func(dash_br)
         callbacks_finish_waiter(dash_br)
+        time.sleep(1)  # to finish page loading
         result_image_path, expected_image_path = make_screenshot_and_paths(dash_br.driver, request.node.name)
         assert_image_equal(result_image_path, expected_image_path)
         return result
@@ -36,9 +38,7 @@ def test_homepage(dash_br):
 
 @image_assertion
 def test_ag_grid_page(dash_br):
-    accordion_select(
-        dash_br, accordion_name=cnst.AG_GRID_ACCORDION.upper(), accordion_number=cnst.AG_GRID_ACCORDION_NUMBER
-    )
+    accordion_select(dash_br, accordion_name=cnst.AG_GRID_ACCORDION)
     page_select(
         dash_br,
         page_name=cnst.TABLE_AG_GRID_PAGE,
@@ -49,9 +49,7 @@ def test_ag_grid_page(dash_br):
 
 @image_assertion
 def test_table_page(dash_br):
-    accordion_select(
-        dash_br, accordion_name=cnst.AG_GRID_ACCORDION.upper(), accordion_number=cnst.AG_GRID_ACCORDION_NUMBER
-    )
+    accordion_select(dash_br, accordion_name=cnst.AG_GRID_ACCORDION)
     page_select(
         dash_br,
         page_name=cnst.TABLE_PAGE,
@@ -65,9 +63,7 @@ def test_table_page(dash_br):
 
 @image_assertion
 def test_table_interactions_page(dash_br):
-    accordion_select(
-        dash_br, accordion_name=cnst.AG_GRID_ACCORDION.upper(), accordion_number=cnst.AG_GRID_ACCORDION_NUMBER
-    )
+    accordion_select(dash_br, accordion_name=cnst.AG_GRID_ACCORDION)
     page_select(
         dash_br,
         page_name=cnst.TABLE_INTERACTIONS_PAGE,
@@ -126,9 +122,7 @@ def test_navbar_filters_page(dash_br_driver):
 
 @image_assertion
 def test_container_variants_light_theme(dash_br):
-    accordion_select(
-        dash_br, accordion_name=cnst.CONTAINER_ACCORDION.upper(), accordion_number=cnst.CONTAINER_ACCORDION_NUMBER
-    )
+    accordion_select(dash_br, accordion_name=cnst.CONTAINER_ACCORDION)
     page_select(
         dash_br,
         page_name=cnst.CONTAINER_VARIANTS_PAGE,
@@ -138,9 +132,7 @@ def test_container_variants_light_theme(dash_br):
 @image_assertion
 def test_container_variants_dark_theme(dash_br):
     style_background = cnst.STYLE_TRANSPARENT_FIREFOX if os.getenv("BROWSER") == "firefox" else cnst.STYLE_TRANSPARENT
-    accordion_select(
-        dash_br, accordion_name=cnst.CONTAINER_ACCORDION.upper(), accordion_number=cnst.CONTAINER_ACCORDION_NUMBER
-    )
+    accordion_select(dash_br, accordion_name=cnst.CONTAINER_ACCORDION)
     page_select(
         dash_br,
         page_name=cnst.CONTAINER_VARIANTS_PAGE,
@@ -152,9 +144,7 @@ def test_container_variants_dark_theme(dash_br):
 
 @image_assertion
 def test_flex_default_layout(dash_br):
-    accordion_select(
-        dash_br, accordion_name=cnst.LAYOUT_ACCORDION.upper(), accordion_number=cnst.LAYOUT_ACCORDION_NUMBER
-    )
+    accordion_select(dash_br, accordion_name=cnst.LAYOUT_ACCORDION)
     page_select(
         dash_br,
         page_name=cnst.LAYOUT_FLEX_DEFAULT,
@@ -164,9 +154,7 @@ def test_flex_default_layout(dash_br):
 
 @image_assertion
 def test_flex_layout_all_params(dash_br):
-    accordion_select(
-        dash_br, accordion_name=cnst.LAYOUT_ACCORDION.upper(), accordion_number=cnst.LAYOUT_ACCORDION_NUMBER
-    )
+    accordion_select(dash_br, accordion_name=cnst.LAYOUT_ACCORDION)
     page_select(
         dash_br,
         page_name=cnst.LAYOUT_FLEX_ALL_PARAMS,
@@ -176,9 +164,7 @@ def test_flex_layout_all_params(dash_br):
 
 @image_assertion
 def test_flex_layout_direction_and_graph(dash_br):
-    accordion_select(
-        dash_br, accordion_name=cnst.LAYOUT_ACCORDION.upper(), accordion_number=cnst.LAYOUT_ACCORDION_NUMBER
-    )
+    accordion_select(dash_br, accordion_name=cnst.LAYOUT_ACCORDION)
     page_select(
         dash_br,
         page_name=cnst.LAYOUT_FLEX_DIRECTION_AND_GRAPH,
@@ -187,9 +173,7 @@ def test_flex_layout_direction_and_graph(dash_br):
 
 @image_assertion
 def test_flex_layout_gap_and_table(dash_br):
-    accordion_select(
-        dash_br, accordion_name=cnst.LAYOUT_ACCORDION.upper(), accordion_number=cnst.LAYOUT_ACCORDION_NUMBER
-    )
+    accordion_select(dash_br, accordion_name=cnst.LAYOUT_ACCORDION)
     page_select(
         dash_br,
         page_name=cnst.LAYOUT_FLEX_GAP_AND_TABLE,
@@ -204,13 +188,21 @@ def test_flex_layout_gap_and_table(dash_br):
 
 @image_assertion
 def test_flex_layout_wrap_and_ag_grid(dash_br):
-    accordion_select(
-        dash_br, accordion_name=cnst.LAYOUT_ACCORDION.upper(), accordion_number=cnst.LAYOUT_ACCORDION_NUMBER
-    )
+    accordion_select(dash_br, accordion_name=cnst.LAYOUT_ACCORDION)
     page_select(dash_br, page_name=cnst.LAYOUT_FLEX_WRAP_AND_AG_GRID, graph_check=False)
 
     # check if column 'Total_bill' is available
     dash_br.wait_for_element("div[class='ag-theme-quartz ag-theme-vizro'] div:nth-of-type(1) div[col-id='total_bill']")
+
+
+@image_assertion
+def test_extra_parameter(dash_br):
+    accordion_select(dash_br, accordion_name=cnst.LAYOUT_ACCORDION)
+    page_select(dash_br, page_name=cnst.EXTRAS_PAGE)
+
+    # open datepicker calendar and close it to scroll to the end of the page
+    dash_br.multiple_click("button[class*='DatePickerInput']", 2)
+    dash_br.wait_for_no_elements('div[data-calendar="true"]')
 
 
 @pytest.mark.mobile_screenshots

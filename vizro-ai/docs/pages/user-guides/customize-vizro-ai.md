@@ -15,9 +15,11 @@ vizro_ai = VizroAI(model="<chosen model>")
 ```
 
 !!! note
+
     For the string settings to work, you must supply your API key via environment variables. The relevant variable names to be set are noted in each vendor tab.
 
 === "OpenAI"
+
     | Environment variable | Name(s)           |
     | -------------------- | ----------------- |
     | API key              | `OPENAI_API_KEY`  |
@@ -30,6 +32,7 @@ vizro_ai = VizroAI(model="<chosen model>")
     - `gpt-4o`
 
 === "Anthropic"
+
     _Currently works only for `VizroAI.plot` - we are working on making it available for `VizroAI.dashboard`_
 
     | Environment variable | Name(s)                                  |
@@ -51,6 +54,7 @@ vizro_ai = VizroAI(model="<chosen model>")
     ```
 
 === "MistralAI"
+
     _Currently works only for `VizroAI.plot` - we are working on making it available for `VizroAI.dashboard`_
 
     | Environment variable | Name(s)            |
@@ -73,6 +77,7 @@ vizro_ai = VizroAI(model="<chosen model>")
     At the time of writing, we found that even the best Mistral models struggled to produce more than the simplest charts, but these outcomes can change drastically overtime.
 
 !!! note
+
     When choosing the string representation, it sometimes can be tricky to have the correct environment variable set for the API key (and potential base URL). In case you cannot get this to work, we recommend instantiating the model directly (see below) and providing the API key via the models parameters.
 
 <!--vale off-->

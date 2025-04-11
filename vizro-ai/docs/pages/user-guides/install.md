@@ -9,6 +9,7 @@ Vizro-AI supports macOS, Linux, and Windows. It works with Python 3.9 and later.
 You should create a virtual environment for each Vizro-AI project you work on to isolate its Python dependencies from those of other projects. See the following references to learn more about [Python virtual environments](https://realpython.com/python-virtual-environments-a-primer/), [Conda virtual environments](https://docs.conda.io/projects/conda/en/latest/user-guide/getting-started.html#starting-conda) or [watch an explainer video about them](https://youtu.be/YKfAwIItO7M).
 
 ??? information "How to create a virtual environment for your Vizro-AI project"
+
     The simplest way to create a virtual environment in Python is `venv`, which is included in the Python standard library. Create a directory for your project and navigate to it. For example:
 
     ```bash
@@ -85,6 +86,7 @@ By default, `vizro-ai` automatically loads the `.env` file, by searching the cur
 If you would like to customize the `.env` file location and name, you can manually customize the search to override the default and specify the path and name of a custom `.env` file.
 
 ??? example "How to override the default location of the .`env` file:"
+
     ```python
     from dotenv import load_dotenv, find_dotenv
     from pathlib import Path
@@ -102,6 +104,7 @@ If you would like to customize the `.env` file location and name, you can manual
     Refer to [Python-dotenv documentation](https://saurabh-kumar.com/python-dotenv/reference/) for further information.
 
 !!! warning "Don't share your secret API key!"
+
     You should avoid committing the `.env` file to version control. You can do this for Git by adding `.env` to your `.gitignore` file.
 
 __Method 2: Set an environment variable for all projects__
@@ -111,6 +114,7 @@ To make the OpenAI API key available for all projects, you can set it as a syste
 The documentation gives step-by-step instructions for setting up the API key as an environment variable, on operating systems including Windows and MacOS.
 
 !!! note
+
     Sometimes setting up the `.env` file can be fiddly. If necessary, you can supply the API key directly to the instantiated model. See [our user guide](./customize-vizro-ai.md#setting-model-via-class-for-additional-configuration) for this option. Remember not to commit this API key to any public space!
 
 __Set the base URL (optional)__

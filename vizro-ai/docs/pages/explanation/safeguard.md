@@ -15,6 +15,7 @@ While we have made considerable efforts to safeguard its usage by limiting the u
 To help to mitigate these risks, we limit the execution of certain modules and functions. One approach is to use Python's built-in `sys` module to restrict access to unsafe modules or functions. By defining a whitelist of safe modules and packages and restricting certain built-in functions.
 
 !!! Warning
+
     While some measures have been put in place to help safeguard against known vulnerabilities, it is important to run such systems in an isolated environment and avoid providing malicious inputs, since such **safeguards can never be 100% effective**. Always ensure the security infrastructure when implementing and using such systems.
 
     The white lists indicate allowed packages and built-in functions.
@@ -26,6 +27,7 @@ The lists below are a reflection of the security and functionality we have imple
 <!--vale off-->
 
 ??? success "Whitelisted Packages"
+
     - `pandas`
     - `numpy`
     - `vizro`
@@ -37,6 +39,7 @@ The lists below are a reflection of the security and functionality we have imple
     - `sklearn`
 
 ??? success "Whitelisted Builtins"
+
     - abs
     - len
     - max
@@ -56,10 +59,12 @@ The lists below are a reflection of the security and functionality we have imple
     - tuple
 
 ??? failure "Redlisted Class Methods"
+
     - subclasses
     - builtins
 
 ??? failure "Redlisted Data Handling Methods and Formats"
+
     - Various data file formats (such as .csv, .tsv, .xlsx, .json, and so on)
     - Specific methods related to data input/output operations (such as .to_csv, .read_excel, .loadtxt)
 
