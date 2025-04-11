@@ -25,6 +25,19 @@ class SimplePage(BaseModel):
     controls: list[Literal["filter", "parameter"]] = Field(default=[], description="Controls to be displayed.")
 
 
+class SimpleDashboard(BaseModel):
+    """Simplified Dashboard model for reduced schema. LLM should remember to insert actual components."""
+
+    pages: list[Literal["page"]] = Field(description="List of page names to be included in the dashboard.")
+    theme: Literal["vizro_dark", "vizro_light"] = Field(
+        default="vizro_dark", description="Theme to be applied across dashboard. Defaults to `vizro_dark`."
+    )
+    # navigation: Optional[Literal["navigation"]] = Field(
+    #     default=None, description="Navigation component for the dashboard."
+    # )
+    title: str = Field(default="", description="Dashboard title to appear on every page on top left-side.")
+
+
 # Create an MCP server with capabilities
 mcp = FastMCP(
     "Vizro Chart Creator",
@@ -59,8 +72,8 @@ mcp = FastMCP(
 
 
 @mcp.tool()
-def validate_card_config(model_name: str, config: Union[str, dict[str, Any]]) -> dict[str, Any]:
-    """Validate Vizro model configuration by attempting to instantiate it.
+def validate_model_config(model_name: str, config: Union[str, dict[str, Any]]) -> dict[str, Any]:
+    """Validate Vizro model configuration by attempting to instantiate it. Run whenever you have a complete configuration.
 
     Args:
         model_name: Name of the Vizro model to validate (e.g., 'Card', 'Dashboard', 'Page')
@@ -98,7 +111,6 @@ def validate_card_config(model_name: str, config: Union[str, dict[str, Any]]) ->
         result = {
             "valid": True,
             "message": f"Configuration is valid for {model_name}!",
-            "created_object": model_instance._to_python(),
         }
 
         return result
@@ -126,6 +138,8 @@ def get_model_JSON_schema(model_name: str) -> dict[str, Any]:
     """
     if model_name == "Page":
         return SimplePage.model_json_schema()
+    elif model_name == "Dashboard":
+        return SimpleDashboard.model_json_schema()
     # Get the model class from the vizro.models namespace
     if not hasattr(vm, model_name):
         return {"error": f"Model '{model_name}' not found in vizro.models"}
@@ -207,12 +221,14 @@ def get_vizro_chart_or_dashboard_plan() -> str:
             - call the get_overview_vizro_models tool to get an overview of the available models
             - make a plan of what components you would like to use, you need to decide on a layout and components per page
             then request any necessary schema using the get_model_JSON_schema tool
-            - assemble your components into a page, which has the following simplified JSON schema:
-            ```json
-            {SimplePage.model_json_schema()}
-            ```
-            - validate the page configuration using the validate_card_config tool use `Page` as the model name
-            - call the validated_config_to_python_code tool to convert the page configuration to Python code   
+            - assemble your components into a page, then add the page or pages to a dashboard
+            - validate the dashboard configuration using the validate_model_config tool use `Dashboard` as the model name
+            - call the validated_config_to_python_code tool to convert the dashboard configuration to Python code
+            - if you display any code artifact, you must use the above created code
+    
+    
+    IMPORTANT:
+    - if you iterate over a valid produced solution, make sure to go via the validation step again to ensure the solution is valid
     """
 
 
