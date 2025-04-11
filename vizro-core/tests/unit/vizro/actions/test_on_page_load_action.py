@@ -40,39 +40,41 @@ def ctx_on_page_load(request):
     mock_ctx = {
         "args_grouping": {
             "external": {
-                "filter_interaction": [],
-                "filters": [
-                    CallbackTriggerDict(
-                        id="continent_filter",
-                        property="value",
-                        value=continent_filter,
-                        str_id="continent_filter",
-                        triggered=False,
-                    ),
-                    CallbackTriggerDict(
-                        id="pop_filter",
-                        property="value",
-                        value=pop,
-                        str_id="pop_filter",
-                        triggered=False,
-                    ),
-                ],
-                "parameters": [
-                    CallbackTriggerDict(
-                        id="y_parameter",
-                        property="value",
-                        value=y,
-                        str_id="y_parameter",
-                        triggered=False,
-                    ),
-                    CallbackTriggerDict(
-                        id="x_parameter",
-                        property="value",
-                        value=x,
-                        str_id="x_parameter",
-                        triggered=False,
-                    ),
-                ],
+                "_controls": {
+                    "filter_interaction": [],
+                    "filters": [
+                        CallbackTriggerDict(
+                            id="continent_filter",
+                            property="value",
+                            value=continent_filter,
+                            str_id="continent_filter",
+                            triggered=False,
+                        ),
+                        CallbackTriggerDict(
+                            id="pop_filter",
+                            property="value",
+                            value=pop,
+                            str_id="pop_filter",
+                            triggered=False,
+                        ),
+                    ],
+                    "parameters": [
+                        CallbackTriggerDict(
+                            id="y_parameter",
+                            property="value",
+                            value=y,
+                            str_id="y_parameter",
+                            triggered=False,
+                        ),
+                        CallbackTriggerDict(
+                            id="x_parameter",
+                            property="value",
+                            value=x,
+                            str_id="x_parameter",
+                            triggered=False,
+                        ),
+                    ],
+                }
             }
         }
     }
@@ -131,7 +133,7 @@ class TestOnPageLoad:
         x_parameter.pre_build()
 
         # Run action by picking 'on_page_load' default Page action function and executing it with ()
-        result = model_manager[f"{ON_PAGE_LOAD_ACTION_PREFIX}_action_test_page"].function()
+        result = model_manager[f"{ON_PAGE_LOAD_ACTION_PREFIX}_action_test_page"].function(_controls=None)
 
         expected = {
             "scatter_chart": target_scatter_filtered_continent_and_pop_parameter_y_and_x,
@@ -189,7 +191,7 @@ class TestOnPageLoad:
         x_parameter.pre_build()
 
         # Run action by picking 'on_page_load' default Page action function and executing it with ()
-        result = model_manager[f"{ON_PAGE_LOAD_ACTION_PREFIX}_action_test_page"].function()
+        result = model_manager[f"{ON_PAGE_LOAD_ACTION_PREFIX}_action_test_page"].function(_controls=None)
         expected = {
             "scatter_chart": target_scatter_filtered_continent_and_pop_parameter_y_and_x,
             "box_chart": target_box_filtered_continent_and_pop_parameter_y_and_x,

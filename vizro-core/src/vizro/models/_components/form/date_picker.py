@@ -8,10 +8,11 @@ from pydantic import AfterValidator, Field, PrivateAttr
 from pydantic.functional_serializers import PlainSerializer
 from pydantic.json_schema import SkipJsonSchema
 
-from vizro.models import Action, VizroBaseModel
+from vizro.models import VizroBaseModel
 from vizro.models._action._actions_chain import _action_validator_factory
 from vizro.models._components.form._form_utils import validate_date_picker_range, validate_max, validate_range_value
 from vizro.models._models_utils import _log_call
+from vizro.models.types import ActionType
 
 
 class DatePicker(VizroBaseModel):
@@ -26,13 +27,12 @@ class DatePicker(VizroBaseModel):
         value (Optional[Union[list[date], date]]): Default date/dates for date picker. Defaults to `None`.
         title (str): Title to be displayed. Defaults to `""`.
         range (bool): Boolean flag for displaying range picker. Defaults to `True`.
-        actions (list[Action]): See [`Action`][vizro.models.Action]. Defaults to `[]`.
+        actions (list[ActionType]): See [`ActionType`][vizro.models.types.ActionType]. Defaults to `[]`.
         extra (Optional[dict[str, Any]]): Extra keyword arguments that are passed to `dmc.DatePickerInput` and overwrite
             any defaults chosen by the Vizro team. This may have unexpected behavior.
             Visit the [dmc documentation](https://www.dash-mantine-components.com/components/datepicker)
             to see all available arguments. [Not part of the official Vizro schema](../explanation/schema.md) and the
             underlying component may change in the future. Defaults to `{}`.
-
     """
 
     type: Literal["date_picker"] = "date_picker"
@@ -43,7 +43,7 @@ class DatePicker(VizroBaseModel):
     value: Annotated[
         Optional[Union[list[date], date]],
         # TODO[MS]: check here and similar if the early exit clause in below validator or similar is
-        #  necessary given we don't validate on default
+        # necessary given we don't validate on default
         AfterValidator(validate_range_value),
         Field(default=None, description="Default date/dates for date picker."),
     ]
@@ -54,7 +54,7 @@ class DatePicker(VizroBaseModel):
         Field(default=True, description="Boolean flag for displaying range picker.", validate_default=True),
     ]
     actions: Annotated[
-        list[Action],
+        list[ActionType],
         AfterValidator(_action_validator_factory("value")),
         PlainSerializer(lambda x: x[0].actions),
         Field(default=[]),

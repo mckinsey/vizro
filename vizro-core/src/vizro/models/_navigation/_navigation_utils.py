@@ -2,9 +2,10 @@ from __future__ import annotations
 
 import itertools
 from collections.abc import Iterable
-from typing import TypedDict, cast
+from typing import cast
 
 import dash_bootstrap_components as dbc
+from typing_extensions import TypedDict
 
 from vizro.managers import model_manager
 from vizro.models.types import NavPagesType

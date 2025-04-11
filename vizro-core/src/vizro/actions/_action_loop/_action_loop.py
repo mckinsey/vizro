@@ -8,7 +8,7 @@ from dash import html
 from vizro.actions._action_loop._build_action_loop_callbacks import _build_action_loop_callbacks
 from vizro.actions._action_loop._get_action_loop_components import _get_action_loop_components
 from vizro.managers import model_manager
-from vizro.models import Action
+from vizro.models._action._action import _BaseAction
 
 
 class ActionLoop:
@@ -42,7 +42,7 @@ class ActionLoop:
 
         """
         return html.Div(
-            [action.build() for action in cast(Iterable[Action], model_manager._get_models(Action))],
+            [action.build() for action in cast(Iterable[_BaseAction], model_manager._get_models(_BaseAction))],
             id="app_action_models_components_div",
             hidden=True,
         )

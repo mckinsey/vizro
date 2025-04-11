@@ -119,7 +119,7 @@ Pagination is a visual alternative to using vertical scroll. It can also improve
 
 #### Numbers
 
-One of the most common tasks when working with tables is to format the columns so that displayed numbers are more readable. To do this, you can use the native functionality of [value formatters](https://dash.plotly.com/dash-ag-grid/value-formatters) or the Vizro pre-defined [custom cell data types](https://dash.plotly.com/dash-ag-grid/cell-data-types#providing-custom-cell-data-types) as shown below.
+One of the most common tasks when working with tables is to format the columns so that displayed numbers are more readable. To do this, you can use the native functionality of [value formatters](https://dash.plotly.com/dash-ag-grid/value-formatters) or the Vizro [custom cell data types](https://dash.plotly.com/dash-ag-grid/cell-data-types#providing-custom-cell-data-types) as shown below.
 
 The available custom cell types for Vizro are `dollar`, `euro`, `percent` and `numeric`.
 

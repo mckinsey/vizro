@@ -285,7 +285,7 @@ class TestDict:
 
 
 @pytest.fixture
-def page_pre_defined_actions():
+def page_builtin_actions():
     return vm.Page(
         title="Page 1",
         components=[
@@ -421,7 +421,7 @@ model = vm.Graph(figure=chart(data_frame="iris"))
 """
 
 
-expected_actions_predefined = """############ Imports ##############
+expected_builtin_actions = """############ Imports ##############
 import vizro.plotly.express as px
 import vizro.models as vm
 import vizro.actions as va
@@ -576,10 +576,11 @@ class TestPydanticPython:
         assert "def chart(data_frame, hover_data: Optional[list[str]] = None):" in result
         assert "def chart2(data_frame, hover_data: Optional[list[str]] = None):" in result
 
-    def test_to_python_pre_defined_actions(self, page_pre_defined_actions):
-        # Test if pre-defined actions are included correctly in output, ie no ActionsChain model
-        result = page_pre_defined_actions._to_python()
-        assert result == expected_actions_predefined
+    # TODO: Fix test
+    def test_to_python_builtin_actions(self, page_builtin_actions):
+        # Test if built-in actions are included correctly in output, ie no ActionsChain model
+        result = page_builtin_actions._to_python()
+        assert result == expected_builtin_actions
 
     def test_to_python_no_source_code(self, chart_dynamic, caplog):
         # Check if to_python works if the source code is not available - here chart_dynamic is undefined
@@ -596,6 +597,7 @@ class TestPydanticPython:
         result = card._to_python(extra_callable_defs={extra_callable})
         assert result == expected_code_with_extra_callable
 
+    # TODO: Fix test
     def test_to_python_complete_dashboard(self, complete_dashboard):
         # Test more complete and nested model
         result = complete_dashboard._to_python(extra_imports={"from typing import Optional"})

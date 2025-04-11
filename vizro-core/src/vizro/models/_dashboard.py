@@ -4,7 +4,7 @@ import base64
 import logging
 from functools import partial
 from pathlib import Path
-from typing import TYPE_CHECKING, Annotated, Literal, Optional, TypedDict, cast
+from typing import TYPE_CHECKING, Annotated, Literal, Optional, cast
 
 import dash
 import dash_bootstrap_components as dbc
@@ -23,6 +23,7 @@ from dash import (
 )
 from dash.development.base_component import Component
 from pydantic import AfterValidator, Field, ValidationInfo
+from typing_extensions import TypedDict
 
 import vizro
 from vizro._constants import MODULE_PAGE_404, VIZRO_ASSETS_PATH

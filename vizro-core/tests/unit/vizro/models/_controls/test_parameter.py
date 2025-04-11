@@ -2,10 +2,10 @@ import pytest
 from asserts import assert_component_equal
 
 import vizro.models as vm
+from vizro.actions._abstract_action import _AbstractAction
 from vizro.managers import data_manager, model_manager
 from vizro.models._action._actions_chain import ActionsChain
 from vizro.models._controls.parameter import Parameter
-from vizro.models.types import CapturedCallable
 
 
 @pytest.mark.usefixtures("managers_one_page_two_graphs")
@@ -120,10 +120,13 @@ class TestPreBuildMethod:
         page = model_manager["test_page"]
         page.controls = [parameter]
         parameter.pre_build()
-        default_action = parameter.selector.actions[0]
-        assert isinstance(default_action, ActionsChain)
-        assert isinstance(default_action.actions[0].function, CapturedCallable)
-        assert default_action.actions[0].id == f"parameter_action_{parameter.id}"
+
+        default_actions_chain = parameter.selector.actions[0]
+        default_action = default_actions_chain.actions[0]
+
+        assert isinstance(default_actions_chain, ActionsChain)
+        assert isinstance(default_action, _AbstractAction)
+        assert default_action.id == f"__parameter_action_{parameter.id}"
 
     @pytest.mark.usefixtures("managers_one_page_two_graphs_with_dynamic_data")
     @pytest.mark.parametrize(
@@ -156,7 +159,7 @@ class TestPreBuildMethod:
         data_frame_parameter.pre_build()
 
         default_action = data_frame_parameter.selector.actions[0].actions[0]
-        assert set(default_action.function._arguments["targets"]) == expected_parameter_targets
+        assert set(default_action.targets) == expected_parameter_targets
 
 
 @pytest.mark.usefixtures("managers_one_page_two_graphs")

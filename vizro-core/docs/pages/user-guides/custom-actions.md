@@ -1,6 +1,6 @@
 # How to create custom actions
 
-This guide demonstrates the usage of custom actions, an idea that shares similarities with, but is not identical to [callbacks](https://dash.plotly.com/basic-callbacks) in `Dash`. If you want to use the [`Action`][vizro.models.Action] model to perform functions that are not available in the [pre-defined action functions][vizro.actions], you can create your own custom action. Like other [actions](actions.md), custom actions could also be added as an element inside the [actions chain](actions.md#chain-actions), and it can be triggered with one of many dashboard components.
+This guide demonstrates the usage of custom actions, an idea that shares similarities with, but is not identical to [callbacks](https://dash.plotly.com/basic-callbacks) in `Dash`. If you want to use the [`Action`][vizro.models.Action] model to perform functions that are not available in the [built-in action functions][vizro.actions], you can create your own custom action. Like other [actions](actions.md), custom actions could also be added as an element inside the [actions chain](actions.md#chain-actions), and it can be triggered with one of many dashboard components.
 
 <!-- vale off -->
 
