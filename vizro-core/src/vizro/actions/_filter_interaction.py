@@ -4,7 +4,7 @@ from typing import Any, Literal, cast
 from dash import ctx
 from pydantic import Field
 
-from vizro.actions import AbstractAction
+from vizro.actions._abstract_action import _AbstractAction
 from vizro.actions._actions_utils import _get_modified_page_figures
 from vizro.managers._model_manager import FIGURE_MODELS, model_manager
 from vizro.models._action._actions_chain import ActionsChain
@@ -12,7 +12,7 @@ from vizro.models._models_utils import _log_call
 from vizro.models.types import FigureType, FigureWithFilterInteractionType, ModelID, _Controls
 
 
-class filter_interaction(AbstractAction):
+class filter_interaction(_AbstractAction):
     """Filters targeted charts/components on page by clicking on data points or table cells of the source chart.
 
     To set up filtering on specific columns of the target graph(s), include these columns in the 'custom_data'
@@ -35,7 +35,7 @@ class filter_interaction(AbstractAction):
         # In future we should have a better way of doing this:
         #  - maybe through the model manager
         #  - pass trigger into callback as a built-in keyword
-        #  - maybe need to be able to define inputs property for actions that subclass AbstractAction
+        #  - maybe need to be able to define inputs property for actions that subclass _AbstractAction
         for actions_chain in cast(Iterable[ActionsChain], model_manager._get_models(ActionsChain)):
             if self in actions_chain.actions:
                 return model_manager[actions_chain.trigger.component_id]
@@ -74,7 +74,8 @@ class filter_interaction(AbstractAction):
         #         raise ValueError(f"Model {triggered_model.id} does not have required attribute `{attribute}`.")
         #     if "modelID" not in triggered_model._filter_interaction_input:
         #         raise ValueError(
-        #             f"Model {triggered_model.id} does not have required State `modelID` in `_filter_interaction_input`."
+        #             f"Model {triggered_model.id} does not have required State `modelID` in "
+        #             "`_filter_interaction_input`."
         #         )
 
     def function(self, _controls: _Controls) -> dict[ModelID, Any]:

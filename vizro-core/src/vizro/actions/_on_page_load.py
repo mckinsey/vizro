@@ -3,14 +3,14 @@ from typing import Any, Literal, cast
 from dash import ctx
 from pydantic import Field
 
-from vizro.actions import AbstractAction
+from vizro.actions._abstract_action import _AbstractAction
 from vizro.actions._actions_utils import _get_modified_page_figures
 from vizro.managers._model_manager import model_manager
 from vizro.models.types import FigureType, ModelID, _Controls
 
 
 # TODO-AV2 A 3: rename _on_page_load if desired and make public. Similarly for other built-in actions.
-class _on_page_load(AbstractAction):
+class _on_page_load(_AbstractAction):
     type: Literal["_on_page_load"] = "_on_page_load"
 
     targets: list[ModelID] = Field(description="Target component IDs.")

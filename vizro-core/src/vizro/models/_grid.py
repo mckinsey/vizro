@@ -1,15 +1,16 @@
-from typing import Annotated, NamedTuple, Optional
+import re
+from typing import Annotated, Any, Literal, NamedTuple, Optional
 
 import numpy as np
 from dash import html
 from numpy import ma
 from pydantic import AfterValidator, Field, PrivateAttr, ValidationInfo
+from typing_extensions import deprecated
 
-from vizro._constants import EMPTY_SPACE_CONST
+from vizro._constants import EMPTY_SPACE_CONST, GAP_DEFAULT
 from vizro.models import VizroBaseModel
 from vizro.models._models_utils import _log_call
 
-GAP_DEFAULT = "24px"
 MIN_DEFAULT = "0px"
 
 
@@ -30,7 +31,13 @@ def _get_unique_grid_component_ids(grid: list[list[int]]):
 
 # Validators for reuse
 def set_layout(layout, info: ValidationInfo):
-    from vizro.models import Layout
+    from vizro.models import Flex, Grid
+
+    # No validation for Flex layout
+    # Possibly some of this validator should be attached directly to the Grid model type rather than
+    # the LayoutType Union to avoid needing this check.
+    if isinstance(layout, Flex):
+        return layout
 
     # This exists only to eagerly raise the error, otherwise obscure error message on eg Page()
     # Same for similar code in other places
@@ -40,7 +47,7 @@ def set_layout(layout, info: ValidationInfo):
 
     if layout is None:
         grid = [[i] for i in range(len(info.data["components"]))]
-        return Layout(grid=grid)
+        return Grid(grid=grid)
 
     unique_grid_idx = _get_unique_grid_component_ids(layout.grid)
     if len(unique_grid_idx) != len(info.data["components"]):
@@ -137,7 +144,7 @@ def _do_rectangles_overlap(r1: ColRowGridLines, r2: ColRowGridLines) -> bool:
 
 
 def _validate_grid_areas(grid_areas: list[ColRowGridLines]) -> None:
-    """Validates `grid_areas` spanned by screen components in `Layout`."""
+    """Validates `grid_areas` spanned by screen components in `Grid`."""
     for i, r1 in enumerate(grid_areas):
         for r2 in grid_areas[i + 1 :]:
             if _do_rectangles_overlap(r1, r2):
@@ -158,31 +165,48 @@ def _get_grid_lines(grid: list[list[int]]) -> tuple[list[ColRowGridLines], list[
     return component_grid_lines, space_grid_lines
 
 
-class Layout(VizroBaseModel):
+class Grid(VizroBaseModel):
     """Grid specification to place chart/components on the [`Page`][vizro.models.Page].
 
     Args:
+        type (Literal["grid"]): Defaults to `"grid"`.
         grid (list[list[int]]): Grid specification to arrange components on screen.
-        row_gap (str): Gap between rows in px. Defaults to `"12px"`.
-        col_gap (str): Gap between columns in px. Defaults to `"12px"`.
-        row_min_height (str): Minimum row height in px. Defaults to `"0px"`.
-        col_min_width (str): Minimum column width in px. Defaults to `"0px"`.
+        row_gap (str): Specifies the gap between rows. Allowed units: 'px', 'rem', 'em', or '%'. Defaults to `24px`.
+        col_gap (str): Specifies the gap between columns. Allowed units: 'px', 'rem', 'em', or '%'. Defaults to `24px`.
+        row_min_height (str): Minimum row height in px. Allowed units: 'px', 'rem', 'em', or '%'. Defaults to `0px`.
+        col_min_width (str): Minimum column width in px. Allowed unit are: 'px', 'rem', 'em', or '%'. Defaults to `0px`.
 
     """
 
+    type: Literal["grid"] = "grid"
     grid: Annotated[
         list[list[int]],
         AfterValidator(validate_grid),
         Field(description="Grid specification to arrange components on screen."),
     ]
-    row_gap: str = Field(default=GAP_DEFAULT, description="Gap between rows in px.", pattern="[0-9]+px")
-    col_gap: str = Field(default=GAP_DEFAULT, description="Gap between columns in px.", pattern="[0-9]+px")
-    row_min_height: str = Field(default=MIN_DEFAULT, description="Minimum row height in px.", pattern="[0-9]+px")
-    col_min_width: str = Field(default=MIN_DEFAULT, description="Minimum column width in px.", pattern="[0-9]+px")
+    row_gap: str = Field(
+        default=GAP_DEFAULT,
+        description="Specifies the gap between rows. Allowed units: 'px', 'rem', 'em', or '%'. Defaults to `24px`.",
+        pattern=re.compile(r"^\d+(px|rem|em|%)$"),
+    )
+    col_gap: str = Field(
+        default=GAP_DEFAULT,
+        description="Specifies the gap between columns. Allowed units: 'px', 'rem', 'em', or '%'. Defaults to `24px`.",
+        pattern=re.compile(r"^\d+(px|rem|em|%)$"),
+    )
+    row_min_height: str = Field(
+        default=MIN_DEFAULT,
+        description="Minimum row height in px. Allowed units: 'px', 'rem', 'em', or '%'. Defaults to `0px`.",
+        pattern=re.compile(r"^\d+(px|rem|em|%)$"),
+    )
+    col_min_width: str = Field(
+        default=MIN_DEFAULT,
+        description="Minimum column width in px. Allowed units: 'px', 'rem', 'em', or '%'. Defaults to `0px`.",
+        pattern=re.compile(r"^\d+(px|rem|em|%)$"),
+    )
     _component_grid_lines: Optional[list[ColRowGridLines]] = PrivateAttr()
 
-    def __init__(self, **data):
-        super().__init__(**data)
+    def model_post_init(self, context: Any) -> None:
         self._component_grid_lines = _get_grid_lines(self.grid)[0]
 
     @property
@@ -193,7 +217,7 @@ class Layout(VizroBaseModel):
     # We could have _LayoutBuildType as a return type annotation, but it would need to be generated
     # dynamically which is tricky and not amenable to type checking anyway.
     # Possibly in future we would have a public method to generate this string or maybe even
-    # a new method Layout.inject or similar that handles the injection of components into the grid for us.
+    # a new method Grid.inject or similar that handles the injection of components into the grid for us.
     # Another alternative is to take [component.build() for component in components] as an argument
     # in the build method here.
     @_log_call
@@ -224,3 +248,14 @@ class Layout(VizroBaseModel):
             id=self.id,
         )
         return component_container
+
+
+@deprecated(
+    "The `Layout` model has been renamed `Grid`, and `Layout` will no longer exist in Vizro 0.2.0. To ensure future "
+    "compatibility, replace your references to `vm.Layout` with `vm.Grid`.",
+    category=FutureWarning,
+)
+class Layout(Grid):
+    """Deprecated. This model has been renamed [`Grid`][vizro.models.Grid]."""
+
+    type: Literal["legacy_layout"] = "legacy_layout"  # type: ignore[assignment]

@@ -90,7 +90,7 @@ class AgGrid(VizroBaseModel):
     # Interaction methods
     @property
     def _filter_interaction_input(self):
-        """Required properties when using pre-defined `filter_interaction`."""
+        """Required properties when using `filter_interaction`."""
         return {
             "cellClicked": State(component_id=self._input_component_id, component_property="cellClicked"),
             "modelID": State(component_id=self.id, component_property="id"),  # required, to determine triggered model
@@ -99,7 +99,7 @@ class AgGrid(VizroBaseModel):
     def _filter_interaction(
         self, data_frame: pd.DataFrame, target: str, ctd_filter_interaction: dict[str, CallbackTriggerDict]
     ) -> pd.DataFrame:
-        """Function to be carried out for pre-defined `filter_interaction`."""
+        """Function to be carried out for `filter_interaction`."""
         # data_frame is the DF of the target, ie the data to be filtered, hence we cannot get the DF from this model
         ctd_cellClicked = ctd_filter_interaction["cellClicked"]
         if not ctd_cellClicked["value"]:

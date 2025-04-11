@@ -10,8 +10,9 @@ from vizro.models._action._action import _BaseAction
 from vizro.models.types import _IdProperty
 
 
-class AbstractAction(_BaseAction, abc.ABC):
-    """`AbstractAction` to be used in an `actions` field.
+# TODO-AV2 D 5: make public.
+class _AbstractAction(_BaseAction, abc.ABC):
+    """`_AbstractAction` to be used in an `actions` field.
 
     To use this class, you must subclass it and define `function` and `outputs` to make a concrete action class. All
     built in actions follow this pattern, and it's also possible for user-defined actions. This class is not relevant
@@ -22,8 +23,8 @@ class AbstractAction(_BaseAction, abc.ABC):
 
       * static arguments, e.g. `file_format = "csv"`, are fixed upfront and do not change depending on the state of the
       dashboard.
-      * runtime arguments are Dash State are determined at runtime depending on the state of the dashboard. These
-      correspond to Dash States, e.g. `country="dropdown.value"` becomes `State("dropdown", "value")`
+      * runtime arguments depend on the state of the running dashboard on the user's screen. These correspond to Dash
+      States, e.g. `country="dropdown.value"` becomes `State("dropdown", "value")`.
     """
 
     # Note this model itself cannot have any fields (aside from `id` that comes from `VizroBaseModel`) or that field

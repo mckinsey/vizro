@@ -5,7 +5,7 @@ from typing import Any, Literal, cast
 from dash import Output, ctx, dcc
 from pydantic import Field
 
-from vizro.actions import AbstractAction
+from vizro.actions._abstract_action import _AbstractAction
 from vizro.actions._actions_utils import _apply_filters, _get_unfiltered_data
 from vizro.managers import model_manager
 from vizro.managers._model_manager import FIGURE_MODELS
@@ -13,7 +13,7 @@ from vizro.models._models_utils import _log_call
 from vizro.models.types import FigureType, ModelID, _Controls
 
 
-class export_data(AbstractAction):
+class export_data(_AbstractAction):
     """Exports visible data of target charts/components.
 
     Args:

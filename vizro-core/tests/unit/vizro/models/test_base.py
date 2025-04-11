@@ -285,7 +285,7 @@ class TestDict:
 
 
 @pytest.fixture
-def page_pre_defined_actions():
+def page_builtin_actions():
     return vm.Page(
         title="Page 1",
         components=[
@@ -343,7 +343,7 @@ def complete_dashboard():
 
     page = vm.Page(
         title="Page 1",
-        layout=vm.Layout(grid=[[0, 1], [2, 3], [4, -1]], row_min_height="100px"),
+        layout=vm.Grid(grid=[[0, 1], [2, 3], [4, -1]], row_min_height="100px"),
         components=[
             vm.Card(text="Foo"),
             vm.Graph(figure=px.bar("iris", x="sepal_width", y="sepal_length")),
@@ -421,7 +421,7 @@ model = vm.Graph(figure=chart(data_frame="iris"))
 """
 
 
-expected_actions_predefined = """############ Imports ##############
+expected_builtin_actions = """############ Imports ##############
 import vizro.plotly.express as px
 import vizro.models as vm
 import vizro.actions as va
@@ -528,7 +528,7 @@ model = vm.Dashboard(
                 ),
             ],
             title="Page 1",
-            layout=vm.Layout(grid=[[0, 1], [2, 3], [4, -1]], row_min_height="100px"),
+            layout=vm.Grid(grid=[[0, 1], [2, 3], [4, -1]], row_min_height="100px"),
             controls=[
                 vm.Filter(
                     column="species",
@@ -576,10 +576,10 @@ class TestPydanticPython:
         assert "def chart(data_frame, hover_data: Optional[list[str]] = None):" in result
         assert "def chart2(data_frame, hover_data: Optional[list[str]] = None):" in result
 
-    def test_to_python_pre_defined_actions(self, page_pre_defined_actions):
-        # Test if pre-defined actions are included correctly in output, ie no ActionsChain model
-        result = page_pre_defined_actions._to_python()
-        assert result == expected_actions_predefined
+    def test_to_python_builtin_actions(self, page_builtin_actions):
+        # Test if built-in actions are included correctly in output, ie no ActionsChain model
+        result = page_builtin_actions._to_python()
+        assert result == expected_builtin_actions
 
     def test_to_python_no_source_code(self, chart_dynamic, caplog):
         # Check if to_python works if the source code is not available - here chart_dynamic is undefined

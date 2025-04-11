@@ -3,13 +3,13 @@ from typing import Any, Literal, cast
 from dash import ctx
 from pydantic import Field
 
-from vizro.actions import AbstractAction
+from vizro.actions._abstract_action import _AbstractAction
 from vizro.actions._actions_utils import _get_modified_page_figures
 from vizro.managers._model_manager import model_manager
 from vizro.models.types import FigureType, ModelID, _Controls
 
 
-class _parameter(AbstractAction):
+class _parameter(_AbstractAction):
     type: Literal["_parameter"] = "_parameter"
 
     targets: list[str] = Field(description="Targets in the form `<target_component>.<target_argument>`.")

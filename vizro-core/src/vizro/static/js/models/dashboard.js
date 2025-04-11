@@ -31,8 +31,8 @@ function update_graph_theme(figure, theme_selector_checked, vizro_themes) {
 
 function collapse_nav_panel(n_clicks, is_open) {
   if (!n_clicks) {
-    /* Automatically collapses left-side if xs and s-devices are detected*/
-    if (window.innerWidth < 576 || window.innerHeight < 576) {
+    /* Automatically collapses left-side if xs, s and m-devices are detected*/
+    if (window.innerWidth < 768 || window.innerHeight < 768) {
       return [
         false,
         {

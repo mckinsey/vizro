@@ -10,7 +10,6 @@ def test_sliders_state(dash_br):
         dash_br,
         page_path=cnst.PARAMETERS_PAGE_PATH,
         page_name=cnst.PARAMETERS_PAGE,
-        graph_id=cnst.BAR_GRAPH_ID,
     )
 
     # change slider value to '0.4'
@@ -21,12 +20,11 @@ def test_sliders_state(dash_br):
     check_graph_is_loading(dash_br, graph_id=cnst.HISTOGRAM_GRAPH_ID)
 
     # refresh the page
-    page_select(dash_br, page_path=cnst.FILTERS_PAGE_PATH, page_name=cnst.FILTERS_PAGE, graph_id=cnst.SCATTER_GRAPH_ID)
+    page_select(dash_br, page_path=cnst.FILTERS_PAGE_PATH, page_name=cnst.FILTERS_PAGE)
     page_select(
         dash_br,
         page_path=cnst.PARAMETERS_PAGE_PATH,
         page_name=cnst.PARAMETERS_PAGE,
-        graph_id=cnst.BAR_GRAPH_ID,
     )
 
     # check that slider value still '0.4'
@@ -41,7 +39,6 @@ def test_none_parameter(dash_br):
         dash_br,
         page_path=cnst.PARAMETERS_PAGE_PATH,
         page_name=cnst.PARAMETERS_PAGE,
-        graph_id=cnst.BAR_GRAPH_ID,
     )
 
     # check that specific bar has blue color

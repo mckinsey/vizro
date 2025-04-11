@@ -90,7 +90,7 @@ class Table(VizroBaseModel):
     # Interaction methods
     @property
     def _filter_interaction_input(self):
-        """Required properties when using pre-defined `filter_interaction`."""
+        """Required properties when using`filter_interaction`."""
         return {
             "active_cell": State(component_id=self._input_component_id, component_property="active_cell"),
             "derived_viewport_data": State(
@@ -103,7 +103,7 @@ class Table(VizroBaseModel):
     def _filter_interaction(
         self, data_frame: pd.DataFrame, target: str, ctd_filter_interaction: dict[str, CallbackTriggerDict]
     ) -> pd.DataFrame:
-        """Function to be carried out for pre-defined `filter_interaction`."""
+        """Function to be carried out for `filter_interaction`."""
         # data_frame is the DF of the target, ie the data to be filtered, hence we cannot get the DF from this model
         ctd_active_cell = ctd_filter_interaction["active_cell"]
         ctd_derived_viewport_data = ctd_filter_interaction["derived_viewport_data"]

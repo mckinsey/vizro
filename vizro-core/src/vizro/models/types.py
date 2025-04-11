@@ -6,16 +6,41 @@ from __future__ import annotations
 import functools
 import importlib
 import inspect
+import warnings
 from contextlib import contextmanager
 from datetime import date
-from typing import Annotated, Any, Literal, NewType, Optional, Protocol, TypeAlias, TypedDict, Union, runtime_checkable
+from typing import Annotated, Any, Literal, NewType, Optional, Protocol, Union, runtime_checkable
 
 import plotly.io as pio
 import pydantic_core as cs
 from pydantic import Discriminator, Field, StrictBool, Tag, ValidationInfo
 from pydantic.json_schema import SkipJsonSchema
+from typing_extensions import TypeAlias, TypedDict
 
 from vizro.charts._charts_utils import _DashboardReadyFigure
+
+
+def _get_layout_discriminator(layout: Any) -> Optional[str]:
+    """Helper function for callable discriminator used for LayoutType."""
+    # It is not immediately possible to introduce a discriminated union as a field type without it breaking existing
+    # YAML/dictionary configuration in which `type` is not specified. This function is needed to handle the legacy case.
+    if isinstance(layout, dict):
+        # If type is supplied then use that (like saying discriminator="type"). Otherwise, it's the legacy case where
+        # type is not specified, in which case we want to use vm.Layout, which has type="legacy_layout".
+        try:
+            return layout["type"]
+        except KeyError:
+            warnings.warn(
+                "`layout` without an explicit `type` specified will no longer work in Vizro 0.2.0. To ensure "
+                "future compatibility, specify `type: grid` for your `layout`.",
+                FutureWarning,
+                stacklevel=3,
+            )
+            return "legacy_layout"
+
+    # If a model has been specified then this is equivalent to saying discriminator="type". When None is returned,
+    # union_tag_not_found error is raised.
+    return getattr(layout, "type", None)
 
 
 def _get_action_discriminator(action: Any) -> Optional[str]:
@@ -25,7 +50,11 @@ def _get_action_discriminator(action: Any) -> Optional[str]:
     if isinstance(action, dict):
         # If type is supplied then use that (like saying discriminator="type"). Otherwise, it's the legacy case where
         # type is not specified, in which case we want to use vm.Action, which has type="action".
-        return action.get("type", "action")
+        try:
+            # TODO-AV2 C 1: Put in deprecation warning.
+            return action["type"]
+        except KeyError:
+            return "action"
 
     # If a model has been specified then this is equivalent to saying discriminator="type". When None is returned,
     # union_tag_not_found error is raised.
@@ -567,6 +596,16 @@ NavSelectorType = Annotated[
 """Discriminated union. Type of component for rendering navigation:
 [`Accordion`][vizro.models.Accordion] or [`NavBar`][vizro.models.NavBar]."""
 
+LayoutType = Annotated[
+    Union[Annotated["Grid", Tag("grid")], Annotated["Flex", Tag("flex")], Annotated["Layout", Tag("legacy_layout")]],
+    Field(
+        discriminator=Discriminator(_get_layout_discriminator),
+        description="Type of layout to place components on the page.",
+    ),
+]
+"""Discriminated union. Type of layout to place components on the page:
+[`Grid`][vizro.models.Grid] or [`Flex`][vizro.models.Flex]."""
+
 # JSONSchema should be skipped for private actions that are not part of the public API.
 # In addition, `_filter` doesn't have a well defined schema due the Callables,
 # so if we were to include it, the JSONSchema would need to be defined.
@@ -586,7 +625,6 @@ ActionType = Annotated[
 ]
 """Discriminated union. Type of action: [`Action`][vizro.models.Action], [`export_data`][vizro.models.export_data] or [
 `filter_interaction`][vizro.models.filter_interaction]."""
-
 
 # Extra type groups used for mypy casting
 FigureWithFilterInteractionType = Union["Graph", "Table", "AgGrid"]
