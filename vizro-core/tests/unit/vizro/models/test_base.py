@@ -576,6 +576,7 @@ class TestPydanticPython:
         assert "def chart(data_frame, hover_data: Optional[list[str]] = None):" in result
         assert "def chart2(data_frame, hover_data: Optional[list[str]] = None):" in result
 
+    # TODO: Fix test
     def test_to_python_builtin_actions(self, page_builtin_actions):
         # Test if built-in actions are included correctly in output, ie no ActionsChain model
         result = page_builtin_actions._to_python()
@@ -596,6 +597,7 @@ class TestPydanticPython:
         result = card._to_python(extra_callable_defs={extra_callable})
         assert result == expected_code_with_extra_callable
 
+    # TODO: Fix test
     def test_to_python_complete_dashboard(self, complete_dashboard):
         # Test more complete and nested model
         result = complete_dashboard._to_python(extra_imports={"from typing import Optional"})
