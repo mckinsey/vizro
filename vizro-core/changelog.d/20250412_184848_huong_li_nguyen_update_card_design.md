@@ -37,7 +37,7 @@ Uncomment the section that is right (remove the HTML comment wrapper).
 
 ### Fixed
 
-- Remove `card-text` font styles from `vizro-bootstrap.css`, allowing it to inherit the default body text styling. ([#1](https://github.com/mckinsey/vizro/pull/1))
+- Remove `card-text` font styles from `vizro-bootstrap.css`, allowing it to inherit the default body text styling. ([#1112](https://github.com/mckinsey/vizro/pull/1112))
 
 
 <!--
