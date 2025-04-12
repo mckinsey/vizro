@@ -4,10 +4,10 @@ import vizro.models as vm
 from vizro import Vizro
 
 page = vm.Page(
-        title="Button with variants",
-        layout=vm.Flex(direction="row"),
-        components=[vm.Button(variant="filled"), vm.Button(variant="outlined"), vm.Button(variant="plain")],
-    )
+    title="Button with variants",
+    layout=vm.Flex(direction="row"),
+    components=[vm.Button(variant="filled"), vm.Button(variant="outlined"), vm.Button(variant="plain")],
+)
 
 dashboard = vm.Dashboard(pages=[page])
 
