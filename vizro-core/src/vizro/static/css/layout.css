@@ -225,8 +225,3 @@ Current logic:
 ._dash-loading {
   display: none;
 }
-
-.text {
-  height: 100%;
-  overflow: auto;
-}
