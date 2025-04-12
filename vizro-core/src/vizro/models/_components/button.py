@@ -36,6 +36,11 @@ class Button(VizroBaseModel):
         PlainSerializer(lambda x: x[0].actions),
         Field(default=[]),
     ]
+    variant: Literal["plain", "filled", "outlined"] = Field(
+        default="filled",
+        description="Predefined styles to choose from. Options are `plain`, `filled` or `outlined`."
+        "Defaults to `filled`.",
+    )
     extra: SkipJsonSchema[
         Annotated[
             dict[str, Any],
@@ -52,11 +57,14 @@ class Button(VizroBaseModel):
 
     @_log_call
     def build(self):
+        variants = {"plain": "btn-tertiary", "filled": "btn-primary", "outlined": "btn-secondary"}
+
         defaults = {
             "id": self.id,
             "children": self.text,
             "href": get_relative_path(self.href) if self.href.startswith("/") else self.href,
             "target": "_top",
+            "class_name": variants[self.variant],
         }
 
         return dbc.Button(**(defaults | self.extra))

@@ -1,34 +1,15 @@
 """Scratchpad for testing."""
 
 import vizro.models as vm
-import vizro.plotly.express as px
 from vizro import Vizro
 
-# Uncomment the below to see the warnings
-layouts = [
-    vm.Grid(grid=[[0]]),
-    vm.Flex(),
-    # vm.Layout(grid=[[0]]),
-    {"type": "grid", "grid": [[0]]},
-    {"type": "flex"},
-    # {"grid": [[0]]},
-]
-
-
-pages_1 = [
-    vm.Page(title=f"Page {i}", components=[vm.Card(text=f"`{layout!r}`")], layout=layout)
-    for i, layout in enumerate(layouts)
-]
-pages_2 = [
-    vm.Page(
-        title=f"Page {i}",
-        components=[vm.Container(title="Container", components=[vm.Card(text=f"`{layout!r}`")], layout=layout)],
+page = vm.Page(
+        title="Button with variants",
+        layout=vm.Flex(direction="row"),
+        components=[vm.Button(variant="filled"), vm.Button(variant="outlined"), vm.Button(variant="plain")],
     )
-    for i, layout in enumerate(layouts, len(layouts))
-]
 
-
-dashboard = vm.Dashboard(pages=pages_1 + pages_2)
+dashboard = vm.Dashboard(pages=[page])
 
 
 if __name__ == "__main__":
