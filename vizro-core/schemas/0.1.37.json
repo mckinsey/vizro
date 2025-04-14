@@ -416,19 +416,6 @@
           "enum": ["plain", "filled", "outlined"],
           "title": "Variant",
           "type": "string"
-        },
-        "collapsed": {
-          "anyOf": [
-            {
-              "type": "boolean"
-            },
-            {
-              "type": "null"
-            }
-          ],
-          "default": null,
-          "description": "Boolean flag for whether container is collapsed on initial load. Defaults to `None`, in which case the container is not collapsible at all.",
-          "title": "Collapsed"
         }
       },
       "required": ["components"],
