@@ -403,6 +403,33 @@ pages:
         title: Container II
     title: Containers
   - components:
+      - components:
+          - figure:
+              _target_: scatter
+              data_frame: iris
+              x: sepal_width
+              y: sepal_length
+              color: species
+            type: graph
+        type: container
+        collapsed: true
+        title: Initially collapsed container
+      - components:
+          - figure:
+              _target_: box
+              data_frame: iris
+              x: species
+              y: sepal_length
+              color: species
+            type: graph
+        type: container
+        collapsed: false
+        title: Initially expanded container
+    layout:
+      type: flex
+      direction: column
+    title: Collapsible containers
+  - components:
       - tabs:
           - title: Tab I
             type: container
@@ -565,6 +592,7 @@ navigation:
             - Figure
             - Button
             - Containers
+            - Collapsible containers
             - Tabs
           Controls:
             - Filters

@@ -3,19 +3,19 @@
   align-items: center;
   display: flex;
   justify-content: space-between;
-  margin-bottom: 0;
 }
 
 /* Change cursor for the whole container title when it's a collapsible container. */
 .container-title-collapse  {
   cursor: pointer;
+  margin-bottom: 0;
 }
 
-.container-title .material-symbols-outlined {
+.container-title-collapse .material-symbols-outlined {
   color: var(--text-secondary);
 }
 
-.container-title .material-symbols-outlined:hover {
+.container-title-collapse .material-symbols-outlined:hover {
   color: var(--text-primaryHover);
 }
 
