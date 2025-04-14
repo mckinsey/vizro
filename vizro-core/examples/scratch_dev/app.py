@@ -4,13 +4,13 @@ import vizro.models as vm
 from vizro import Vizro
 
 page = vm.Page(
-    title="Button with variants",
+    title="Buttons with different styles",
     layout=vm.Flex(direction="row"),
     components=[
-        vm.Button(),
-        vm.Button(variant="filled"),
-        vm.Button(variant="outlined"),
-        vm.Button(variant="plain"),
+        vm.Button(text="default"),
+        vm.Button(text="filled", variant="filled"),
+        vm.Button(text="outlined", variant="outlined"),
+        vm.Button(text="plain", variant="plain"),
         vm.Button(extra={"color": "success"}),
         vm.Button(variant="outlined", extra={"color": "success"}),
     ],

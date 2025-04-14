@@ -19,7 +19,7 @@ Uncomment the section that is right (remove the HTML comment wrapper).
 
 ### Added
 
-- Enable styling of `vm.Button` with a new argument `variant="plain"/"filled"/"outlined"`. See the user guide on styled buttons for more details. ([#1113](https://github.com/mckinsey/vizro/pull/1113))
+- Enable styling of `vm.Button` with a new argument `variant="plain"/"filled"/"outlined"`. See the [user guide on styled buttons](https://vizro.readthedocs.io/en/stable/pages/user-guides/button/#styled-buttons) for more details. ([#1114](https://github.com/mckinsey/vizro/pull/1114))
 
 
 <!--
