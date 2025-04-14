@@ -158,6 +158,57 @@ vm.Page.add_type("controls", vm.Button)
 ...
 ```
 
+## Styled buttons
+
+There are three predefined button styles that can be customized using the `variant` argument. If no `variant` is specified, the default style applied is `variant="filled"`.
+
+!!! example "Button with different styles"
+
+    === "app.py"
+
+        ```{.python pycafe-link}
+        import vizro.models as vm
+        from vizro import Vizro
+
+        page = vm.Page(
+            title="Buttons with different styles",
+            layout=vm.Flex(direction="row"),
+            components=[
+                vm.Button(text="filled"),
+                vm.Button(text="outlined", variant="outlined"),
+                vm.Button(text="plain", variant="plain"),
+            ],
+        )
+
+        dashboard = vm.Dashboard(pages=[page])
+        Vizro().build(dashboard).run()
+        ```
+
+    === "app.yaml"
+
+        ```yaml
+        # Still requires a .py to add data to the data manager and parse YAML configuration
+        # See yaml_version example
+        pages:
+          - title: Buttons with different styles
+            layout:
+              direction: row
+              type: flex
+            components:
+              - type: button
+                text: filled
+              - type: button
+                text: outlined
+                variant: outlined
+              - type: button
+                text: plain
+                variant: plain
+        ```
+
+    === "Result"
+
+        [![ButtonVariant]][buttonvariant]
+
 ## The `extra` argument
 
 The `Button` is based on the underlying Dash component [`dbc.Button`](https://dash-bootstrap-components.opensource.faculty.ai/docs/components/button/). Using the `extra` argument you can pass additional arguments to `dbc.Button` in order to alter it beyond the chosen defaults.
@@ -205,8 +256,9 @@ An example use would be to create an outlined success button. For this, you can 
 
     === "Result"
 
-        [![ButtonStyle]][buttonstyle]
+        [![ButtonExtra]][buttonextra]
 
 [button]: ../../assets/user_guides/components/button.png
-[buttonstyle]: ../../assets/user_guides/components/buttonstyle.png
+[buttonextra]: ../../assets/user_guides/components/button_style_extra.png
 [buttontext]: ../../assets/user_guides/components/button_text.png
+[buttonvariant]: ../../assets/user_guides/components/button_style_variants.png
