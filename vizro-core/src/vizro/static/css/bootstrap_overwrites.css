@@ -99,11 +99,6 @@ label[for="theme-selector"] {
   padding-left: 0;
 }
 
-/* Remove bottom margin of last child as card comes with padding */
-.card-text > *:last-child {
-  margin-bottom: 0;
-}
-
 .container-fluid {
   display: flex;
   flex-direction: column;
