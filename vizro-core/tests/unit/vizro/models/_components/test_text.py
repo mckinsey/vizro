@@ -37,7 +37,6 @@ class TestBuildMethod:
             id="text_id",
             children="Test",
             dangerously_allow_html=False,
-            className="text",
         )
 
         assert_component_equal(text, expected)
