@@ -150,7 +150,8 @@
 }
 
 #collapse-icon.material-symbols-outlined {
-  background-color: var(--collapse-icon-bg);
+  background-color: var(--left-side-bg);
+  border: 1px solid var(--border-subtleAlpha01);
   border-radius: 50%;
   color: var(--text-disabled);
   cursor: pointer;
@@ -158,7 +159,8 @@
 }
 
 #collapse-icon.material-symbols-outlined:hover {
-  color: var(--text-primary);
+  border-color: var(--border-subtleAlpha02);
+  color: var(--text-primaryHover);
 }
 
 .collapse-icon-div {

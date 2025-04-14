@@ -8,37 +8,122 @@ iris = px.data.iris()
 
 page_home = vm.Page(
     title="Homepage",
-    layout=vm.Grid(grid=[[0, 1]]),
+    layout=vm.Grid(grid=[[0, 1], [2, 3]], row_gap="16px", col_gap="24px"),
     components=[
         vm.Card(
             text="""
-                        ### Paragraphs
-                        Commodi repudiandae consequuntur voluptatum laborum numquam blanditiis harum quisquam eius sed odit.
 
-                        Fugiat iusto fuga praesentium option, eaque rerum! Provident similique accusantium nemo autem.
+                ### Components
 
-                        Obcaecati tenetur iure eius earum ut molestias architecto voluptate aliquam nihil, eveniet aliquid.
-
-                        Culpa officia aut! Impedit sit sunt quaerat, odit, tenetur error, harum nesciunt ipsum debitis quas.
-                   """
+                Main components of Vizro include **charts**, **tables**, **cards**, **figures**, **containers**,
+                **buttons** and **tabs**.
+                """,
+            href="/page-one",
         ),
-        vm.Text(
+        vm.Card(
             text="""
-                        ### Paragraphs
-                        Commodi repudiandae consequuntur voluptatum laborum numquam blanditiis harum quisquam eius sed odit.
+                ### Controls
 
-                        Fugiat iusto fuga praesentium option, eaque rerum! Provident similique accusantium nemo autem.
+                Vizro has two different control types **Filter** and **Parameter**.
 
-                        Obcaecati tenetur iure eius earum ut molestias architecto voluptate aliquam nihil, eveniet aliquid.
+                You can use any pre-existing selector inside the **Filter** or **Parameter**:
 
-                        Culpa officia aut! Impedit sit sunt quaerat, odit, tenetur error, harum nesciunt ipsum debitis quas.
-                   """
+                * Dropdown
+                * Checklist
+                * RadioItems
+                * RangeSlider
+                * Slider
+                * DatePicker
+                """,
+            href="/page-two",
+        ),
+        vm.Card(
+            text="""
+                ### Actions
+
+                Standard predefined actions are made available including **export data** and **filter interactions**.
+                """,
+            href="/page-one",
+        ),
+        vm.Card(
+            text="""
+                ### Extensions
+
+                Vizro enables customization of **plotly express** and **graph object charts** as well as
+                creating custom components based on Dash.
+            """,
+            href="/page-two",
         ),
     ],
 )
 
+page_one = vm.Page(
+    title="Default",
+    path="page-one",
+    components=[vm.Graph(figure=px.scatter(iris, x="sepal_length", y="petal_width", color="species"))],
+    controls=[vm.Filter(column="species"), vm.Filter(column="petal_length"), vm.Filter(column="sepal_width")],
+)
 
-dashboard = vm.Dashboard(pages=[page_home])
+page_two = vm.Page(
+    title="Styled containers",
+    path="page-two",
+    layout=vm.Grid(grid=[[0, 1], [2, 3]]),
+    components=[
+        vm.Card(
+            text="""
+        ### Actions
+
+        Standard predefined actions are made available including **export data** and **filter interactions**.
+        """,
+            href="/page-one",
+        ),
+        vm.Card(
+            text="""
+        ### Actions
+
+        Standard predefined actions are made available including **export data** and **filter interactions**.
+        """,
+            href="/page-one",
+        ),
+        vm.Container(
+            title="Container - filled",
+            components=[vm.Graph(figure=px.scatter(iris, x="sepal_length", y="petal_width", color="species"))],
+            variant="filled",
+        ),
+        vm.Container(
+            title="Container - outlined",
+            components=[vm.Graph(figure=px.scatter(iris, x="sepal_length", y="petal_width", color="species"))],
+            variant="outlined",
+        ),
+    ],
+    controls=[vm.Filter(column="species"), vm.Filter(column="petal_length")],
+)
+
+page_four = vm.Page(
+    title="Card with Graph",
+    components=[
+        vm.Card(
+            text="""
+        ### Actions
+
+        Standard predefined actions are made available including **export data** and **filter interactions**.
+        """,
+            href="/page-one",
+        ),
+        vm.Card(
+            text="""
+        ### Actions
+
+        Standard predefined actions are made available including **export data** and **filter interactions**.
+        """,
+            href="/page-one",
+        ),
+        vm.Graph(figure=px.scatter(iris, x="sepal_length", y="petal_width", color="species")),
+    ],
+    controls=[vm.Filter(column="species"), vm.Filter(column="petal_length")],
+)
+
+dashboard = vm.Dashboard(pages=[page_home, page_one, page_two, page_four], title="Dashboard Title")
 
 if __name__ == "__main__":
     Vizro().build(dashboard).run()
