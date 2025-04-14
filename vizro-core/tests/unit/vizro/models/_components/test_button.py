@@ -25,7 +25,7 @@ class TestButtonInstantiation:
         "text, href, variant",
         [
             ("Test", "/page_1_reference", "plain"),
-            ("Test", "//www.google.de/", "filled"),
+            ("Test", "www.google.de/", "filled"),
             ("""# Header""", "/", "outlined"),
             ("""<p>Hello </p>""", "/", "plain"),
         ],
@@ -58,7 +58,7 @@ class TestBuildMethod:
     def test_button_build_with_extra(self):
         """Test that extra arguments correctly override defaults."""
         result = vm.Button(
-            id="button", text="Click me", extra={"color": "success", "outline": True, "href": "//www.google.com"}
+            id="button", text="Click me", extra={"color": "success", "outline": True, "href": "www.google.com"}
         ).build()
         assert_component_equal(
             result,
@@ -67,15 +67,15 @@ class TestBuildMethod:
                 id="button",
                 color="success",
                 outline=True,
-                href="//www.google.com",
+                href="www.google.com",
                 target="_top",
             ),
         )
 
     def test_button_build_with_href(self):
-        button = vm.Button(id="button_id", text="My text", href="//www.google.com").build()
+        button = vm.Button(id="button_id", text="My text", href="www.google.com").build()
         expected = dbc.Button(
-            id="button_id", children="My text", href="//www.google.com", target="_top", color="primary"
+            id="button_id", children="My text", href="www.google.com", target="_top", color="primary"
         )
         assert_component_equal(button, expected)
 
