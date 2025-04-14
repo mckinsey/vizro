@@ -46,6 +46,19 @@ All the HEX values starting with --text-code are taken from the Github code high
 
 /* CARDS */
 .card {
+  background: var(--card-bg);
+  margin: 4px;
+}
+
+/* Move to bootstrap */
+.card-nav:hover {
+  background: var(--card-bg);
+  border: 1px solid var(--border-subtleAlpha02);
+  transform: unset;
+  will-change: unset;
+}
+
+.card {
   margin: 4px;
 }
 
@@ -68,23 +81,6 @@ All the HEX values starting with --text-code are taken from the Github code high
 .accordion-item .nav-link:hover, .accordion-item .nav-link.hover {
   background: var(--card-bg);
 }
-
-/* Move background color to BS */
-.card {
-  background: var(--card-bg);
-  height: calc(100% - 8px);
-  margin: 4px;
-  width: calc(100% - 8px);
-}
-
-/* Move to bootstrap */
-.card-nav:hover {
-  background: var(--card-bg);
-  border: 1px solid var(--border-subtleAlpha02);
-  transform: unset;
-  will-change: unset;
-}
-
 
 .form-check:last-of-type {
   margin-bottom: 0;
