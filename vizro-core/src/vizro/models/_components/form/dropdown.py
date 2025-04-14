@@ -1,12 +1,11 @@
 import math
 from datetime import date
-from typing import Annotated, Any, Literal, Optional, Union, cast
+from typing import Annotated, Literal, Optional, Union, cast
 
 import dash_bootstrap_components as dbc
 from dash import dcc, html
 from pydantic import AfterValidator, Field, PrivateAttr, StrictBool, ValidationInfo, model_validator
 from pydantic.functional_serializers import PlainSerializer
-from pydantic.json_schema import SkipJsonSchema
 
 from vizro.models import Action, VizroBaseModel
 from vizro.models._action._actions_chain import _action_validator_factory
@@ -61,7 +60,8 @@ class Dropdown(VizroBaseModel):
     """Categorical single/multi-option selector `Dropdown`.
 
     Can be provided to [`Filter`][vizro.models.Filter] or
-    [`Parameter`][vizro.models.Parameter].
+    [`Parameter`][vizro.models.Parameter]. Based on the underlying
+    [`dcc.Dropdown`](https://dash.plotly.com/dash-core-components/dropdown).
 
     Args:
         type (Literal["dropdown"]): Defaults to `"dropdown"`.
@@ -72,11 +72,6 @@ class Dropdown(VizroBaseModel):
         multi (bool): Whether to allow selection of multiple values. Defaults to `True`.
         title (str): Title to be displayed. Defaults to `""`.
         actions (list[Action]): See [`Action`][vizro.models.Action]. Defaults to `[]`.
-        extra (Optional[dict[str, Any]]): Extra keyword arguments that are passed to `dcc.Dropdown` and overwrite any
-            defaults chosen by the Vizro team. This may have unexpected behavior.
-            Visit the [dcc documentation](https://dash.plotly.com/dash-core-components/dropdown)
-            to see all available arguments. [Not part of the official Vizro schema](../explanation/schema.md) and the
-            underlying component may change in the future. Defaults to `{}`.
 
     """
 
@@ -99,19 +94,6 @@ class Dropdown(VizroBaseModel):
         PlainSerializer(lambda x: x[0].actions),
         Field(default=[]),
     ]
-    extra: SkipJsonSchema[
-        Annotated[
-            dict[str, Any],
-            Field(
-                default={},
-                description="""Extra keyword arguments that are passed to `dcc.Dropdown` and overwrite any
-            defaults chosen by the Vizro team. This may have unexpected behavior.
-            Visit the [dcc documentation](https://dash.plotly.com/dash-core-components/dropdown)
-            to see all available arguments. [Not part of the official Vizro schema](../explanation/schema.md) and the
-            underlying component may change in the future. Defaults to `{}`.""",
-            ),
-        ]
-    ]
 
     # Consider making the _dynamic public later. The same property could also be used for all other components.
     # For example: vm.Graph could have a dynamic that is by default set on True.
@@ -128,21 +110,25 @@ class Dropdown(VizroBaseModel):
         option_height = _calculate_option_height(full_options)
         altered_options = _add_select_all_option(full_options=full_options) if self.multi else full_options
 
-        defaults = {
-            "id": self.id,
-            "options": altered_options,
-            "value": self.value if self.value is not None else default_value,
-            "multi": self.multi,
-            "optionHeight": option_height,
-            "persistence": True,
-            "persistence_type": "session",
-            "className": "dropdown",
-        }
-
         return html.Div(
             children=[
-                dbc.Label(self.title, html_for=self.id) if self.title else None,
-                dcc.Dropdown(**(defaults | self.extra)),
+                html.Div(
+                    [
+                        dbc.Label(self.title, html_for=self.id) if self.title else None,
+                        html.Span("sync", className="material-symbols-outlined d-none", id=f"{self.id}-loading"),
+                    ],
+                    className="control-label",
+                ),
+                dcc.Dropdown(
+                    id=self.id,
+                    options=altered_options,
+                    value=self.value if self.value is not None else default_value,
+                    multi=self.multi,
+                    optionHeight=option_height,
+                    persistence=True,
+                    persistence_type="session",
+                    className="dropdown",
+                ),
             ]
         )
 

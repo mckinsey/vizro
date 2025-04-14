@@ -2,16 +2,17 @@
   padding-left: 8px;
 }
 
-/* To uniformly apply a size to all flex-items */
-#page-flex-wrap-row .flex-item {
-  width: 260px;
+
+#control-panel .loading-container {
+  gap: 1.5rem;
 }
 
-#page-flex-wrap-row-graphs .flex-item {
-  width: 300px;
+.control-label {
+  display: flex;
+  justify-content: space-between;
 }
 
-/* Apply width to all KPI Cards */
-#page-flex-inside-flex .card-kpi {
-  width: 250px;
+.control-label .material-symbols-outlined {
+  color: var(--text-primaryHover);
+  font-size: 14px;
 }
