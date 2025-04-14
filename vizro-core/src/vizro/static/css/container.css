@@ -1,0 +1,30 @@
+.container-title,
+.container-title-collapse {
+  align-items: center;
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 0;
+}
+
+/* Change cursor for the whole container title when it's a collapsible container. */
+.container-title-collapse  {
+  cursor: pointer;
+}
+
+.container-title .material-symbols-outlined {
+  color: var(--text-secondary);
+}
+
+.container-title .material-symbols-outlined:hover {
+  color: var(--text-primaryHover);
+}
+
+.collapsible-container {
+  flex: 1;
+  overflow: auto;
+}
+
+.container-fluid:has(.collapse:not(.show)) {
+  height: 60px; /* height of title (28px) + 2 x container padding (16px) */
+  overflow: hidden;
+}

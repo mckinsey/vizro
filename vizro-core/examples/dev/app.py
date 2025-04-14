@@ -305,6 +305,7 @@ containers = vm.Page(
                     )
                 ),
             ],
+            variant="outlined",
         ),
         vm.Container(
             title="Container II",
@@ -321,6 +322,7 @@ containers = vm.Page(
                     )
                 )
             ],
+            collapsed=True,
         ),
     ],
 )

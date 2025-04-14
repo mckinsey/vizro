@@ -154,4 +154,8 @@ class Container(VizroBaseModel):
                 ]
             )
 
-        return html.H3(children=title_content, className="container-title", id=f"{self.id}_title")
+        return html.H3(
+            children=title_content,
+            className="container-title-collapse" if self.collapsed is not None else "container-title",
+            id=f"{self.id}_title",
+        )

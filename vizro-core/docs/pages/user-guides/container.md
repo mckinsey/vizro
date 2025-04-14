@@ -269,7 +269,7 @@ Once defined, dashboard users can toggle the container’s visibility interactiv
 
 Collapsible containers are supported in both `Grid` and `Flex` layouts. However, we recommend using them within a `Flex` layout for optimal behavior, as `Flex` is better suited to dynamic sizing and more efficient use of space when content is shown or hidden.
 
-!!! example "Collapsible container inside Grid"
+!!! example "Collapsible container inside Flex"
 
     === "app.py"
 
@@ -282,7 +282,7 @@ Collapsible containers are supported in both `Grid` and `Flex` layouts. However,
 
         page = vm.Page(
             title="Collapsible containers",
-            layout=vm.Layout(grid=[[0, 1]]),
+            layout=vm.Flex(direction="column"),
             components=[
                 vm.Container(
                     title="Initially collapsed container",
@@ -309,7 +309,8 @@ Collapsible containers are supported in both `Grid` and `Flex` layouts. However,
         pages:
           - title: Collapsible containers
             layout:
-              grid: [[0, 1]]
+              type: flex
+              direction: column
             components:
               - type: container
                 title: Initially collapsed container
@@ -337,7 +338,80 @@ Collapsible containers are supported in both `Grid` and `Flex` layouts. However,
 
     === "Result"
 
-        [![CollapsibleContainer]][collapsiblecontainer]
+        [![CollapsibleContainerFlex]][collapsiblecontainerflex]
+
+Collapsible containers can be used in `Grid` layout as well.
+
+!!! example "Collapsible container inside Grid"
+
+    === "app.py"
+
+        ```{.python pycafe-link}
+        import vizro.models as vm
+        import vizro.plotly.express as px
+        from vizro import Vizro
+
+        iris = px.data.iris()
+
+        page = vm.Page(
+            title="Collapsible containers",
+            layout=vm.Grid(grid=[[0, 1]]),
+            components=[
+                vm.Container(
+                    title="Initially collapsed container",
+                    components=[vm.Graph(figure=px.scatter(iris, x="sepal_width", y="sepal_length", color="species"))],
+                    collapsed=True,
+                ),
+                vm.Container(
+                    title="Initially expanded container",
+                    components=[vm.Graph(figure=px.box(iris, x="species", y="sepal_length", color="species"))],
+                    collapsed=False,
+                )
+            ],
+        )
+
+        dashboard = vm.Dashboard(pages=[page])
+        Vizro().build(dashboard).run()
+        ```
+
+    === "app.yaml"
+
+        ```yaml
+        # Still requires a .py to add data to the data manager and parse YAML configuration
+        # See yaml_version example
+        pages:
+          - title: Collapsible containers
+            layout:
+              grid: [[0, 1]]
+              type: grid
+            components:
+              - type: container
+                title: Initially collapsed container
+                components:
+                  - type: graph
+                    figure:
+                      _target_: scatter
+                      data_frame: iris
+                      x: sepal_width
+                      y: sepal_length
+                      color: species
+                collapsed: true
+              - type: container
+                title: Initially expanded container
+                components:
+                  - type: graph
+                    figure:
+                      _target_: box
+                      data_frame: iris
+                      x: species
+                      y: sepal_length
+                      color: species
+                collapsed: false
+        ```
+
+    === "Result"
+
+        [![CollapsibleContainerGrid]][collapsiblecontainergrid]
 
 ## The `extra` argument
 
@@ -349,6 +423,7 @@ The `Container` is based on the underlying Dash component [`dbc.Container`](http
 
 For examples of how to use the `extra` argument, see an example in the documentation of [`Card`](card.md#the-extra-argument).
 
-[collapsiblecontainer]: ../../assets/user_guides/components/collapsible-containers.gif
+[collapsiblecontainerflex]: ../../assets/user_guides/components/collapsible-containers-flex.gif
+[collapsiblecontainergrid]: ../../assets/user_guides/components/collapsible-containers-grid.gif
 [container]: ../../assets/user_guides/components/containers.png
 [stylecontainer]: ../../assets/user_guides/components/container-styled.png
