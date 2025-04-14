@@ -205,6 +205,12 @@ def test_extra_parameter(dash_br):
     dash_br.wait_for_no_elements('div[data-calendar="true"]')
 
 
+@image_assertion
+def test_button_styles(dash_br):
+    accordion_select(dash_br, accordion_name=cnst.LAYOUT_ACCORDION)
+    page_select(dash_br, page_name=cnst.BUTTONS_PAGE, graph_check=False)
+
+
 @pytest.mark.mobile_screenshots
 @image_assertion
 def test_homepage_mobile(dash_br):

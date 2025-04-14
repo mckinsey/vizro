@@ -66,3 +66,16 @@ layout_flex_with_wrap_param_and_ag_grid = vm.Page(
     layout=vm.Flex(wrap=True),
     components=[vm.AgGrid(figure=dash_ag_grid(tips, style={"width": 1000})) for i in range(3)],
 )
+
+buttons_page = vm.Page(
+    title=cnst.BUTTONS_PAGE,
+    layout=vm.Flex(direction="row"),
+    components=[
+        vm.Button(text="default"),
+        vm.Button(text="filled", variant="filled"),
+        vm.Button(text="outlined", variant="outlined"),
+        vm.Button(text="plain", variant="plain"),
+        vm.Button(extra={"color": "success"}),
+        vm.Button(variant="outlined", extra={"color": "success"}),
+    ],
+)
