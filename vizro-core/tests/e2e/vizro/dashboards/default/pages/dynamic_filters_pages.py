@@ -1,3 +1,4 @@
+import time
 from functools import partial
 
 import e2e.vizro.constants as cnst
@@ -18,6 +19,7 @@ BAR_CHART_CONF = {
 
 
 def load_from_file(filter_column=None, parametrized_species=None):
+    time.sleep(0.25)  # for testing, to catch reloading of the chart
     df = px.data.iris()
 
     if parametrized_species:
@@ -38,6 +40,11 @@ def load_from_file(filter_column=None, parametrized_species=None):
         )
     elif filter_column == "sepal_length":
         final_df = df[df[filter_column].between(data.get("min"), data.get("max"), inclusive="both")]
+    elif filter_column == "date_column":
+        df["date_column"] = pd.date_range(start=pd.to_datetime("2024-01-01"), periods=len(df), freq="D")
+        date_min = pd.to_datetime(data["date_min"])
+        date_max = pd.to_datetime(data["date_max"])
+        final_df = df[df["date_column"].between(date_min, date_max, inclusive="both")]
     else:
         raise ValueError("Invalid FILTER_COLUMN")
 
@@ -50,6 +57,8 @@ data_manager["load_from_file_species"] = partial(load_from_file, filter_column="
 data_manager["load_from_file_species"].timeout = -1
 data_manager["load_from_file_sepal_length"] = partial(load_from_file, filter_column="sepal_length")
 data_manager["load_from_file_sepal_length"].timeout = -1
+data_manager["load_from_file_date_column"] = partial(load_from_file, filter_column="date_column")
+data_manager["load_from_file_date_column"].timeout = -1
 
 
 dynamic_filters_categorical_page = vm.Page(
@@ -62,20 +71,17 @@ dynamic_filters_categorical_page = vm.Page(
     ],
     controls=[
         vm.Filter(
-            id=cnst.DROPDOWN_MULTI_DYNAMIC_FILTER_ID,
             column="species",
-            selector=vm.Dropdown(),
+            selector=vm.Dropdown(id=cnst.DROPDOWN_MULTI_DYNAMIC_FILTER_ID),
         ),
         vm.Filter(
-            id=cnst.DROPDOWN_DYNAMIC_FILTER_ID,
             column="species",
-            selector=vm.Dropdown(multi=False),
+            selector=vm.Dropdown(id=cnst.DROPDOWN_DYNAMIC_FILTER_ID, multi=False),
         ),
-        vm.Filter(id=cnst.CHECKLIST_DYNAMIC_FILTER_ID, column="species", selector=vm.Checklist()),
+        vm.Filter(column="species", selector=vm.Checklist(id=cnst.CHECKLIST_DYNAMIC_FILTER_ID)),
         vm.Filter(
-            id=cnst.RADIOITEMS_DYNAMIC_FILTER_ID,
             column="species",
-            selector=vm.RadioItems(),
+            selector=vm.RadioItems(id=cnst.RADIOITEMS_DYNAMIC_FILTER_ID),
         ),
     ],
 )
@@ -90,14 +96,40 @@ dynamic_filters_numerical_page = vm.Page(
     ],
     controls=[
         vm.Filter(
-            id=cnst.SLIDER_DYNAMIC_FILTER_ID,
             column="sepal_length",
-            selector=vm.Slider(step=0.5),
+            selector=vm.Slider(id=cnst.SLIDER_DYNAMIC_FILTER_ID, step=0.5),
         ),
         vm.Filter(
-            id=cnst.RANGE_SLIDER_DYNAMIC_FILTER_ID,
             column="sepal_length",
-            selector=vm.RangeSlider(step=0.5),
+            selector=vm.RangeSlider(id=cnst.RANGE_SLIDER_DYNAMIC_FILTER_ID, step=0.5),
+        ),
+    ],
+)
+
+dynamic_filters_datepicker_page = vm.Page(
+    title=cnst.DYNAMIC_FILTERS_DATEPICKER_PAGE,
+    components=[
+        vm.Graph(
+            id=cnst.BAR_DYNAMIC_DATEPICKER_SINGLE_FILTER_ID,
+            figure=px.bar(data_frame="load_from_file_date_column", **BAR_CHART_CONF),
+        ),
+        vm.Graph(
+            id=cnst.BAR_DYNAMIC_DATEPICKER_FILTER_ID,
+            figure=px.bar(data_frame="load_from_file_date_column", **BAR_CHART_CONF),
+        ),
+    ],
+    controls=[
+        # Dynamic Single
+        vm.Filter(
+            column="date_column",
+            targets=[cnst.BAR_DYNAMIC_DATEPICKER_SINGLE_FILTER_ID],
+            selector=vm.DatePicker(id=cnst.DATEPICKER_DYNAMIC_SINGLE_ID, title="Dynamic Single", range=False),
+        ),
+        # Dynamic Multi
+        vm.Filter(
+            column="date_column",
+            targets=[cnst.BAR_DYNAMIC_DATEPICKER_FILTER_ID],
+            selector=vm.DatePicker(id=cnst.DATEPICKER_DYNAMIC_RANGE_ID, title="Dynamic Multi"),
         ),
     ],
 )

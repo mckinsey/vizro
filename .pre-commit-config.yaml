@@ -38,7 +38,7 @@ repos:
         args: [--autofix]
 
   - repo: https://github.com/astral-sh/ruff-pre-commit
-    rev: v0.9.9
+    rev: v0.11.4
     hooks:
       - id: ruff
         args: [--fix]
@@ -84,7 +84,7 @@ repos:
           ]
         exclude: ^vizro-core/docs/pages/API-reference|^vizro-ai/docs/pages/API-reference|vizro-core/docs/pages/user-guides/custom-components.md|^vizro-core/changelog.d|^vizro-ai/changelog.d
         additional_dependencies:
-          - mdformat-mkdocs[recommended]==3.1.1
+          - mdformat-mkdocs[recommended]==4.1.2
 
 # Configuration for https://pre-commit.ci/.
 ci:

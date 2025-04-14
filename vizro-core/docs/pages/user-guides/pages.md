@@ -1,4 +1,4 @@
-# How to use pages
+# How to make dashboard pages
 
 This guide shows you how to add pages to your dashboard and customize the URL paths if needed. A [`Page`][vizro.models.Page] lets you place and arrange your dashboard content (for example, chart/components, tables, and text) and configure your dashboard interactions (such as filters and parameters).
 
@@ -24,7 +24,9 @@ To create and add a page to your dashboard, do the following steps:
 1. (optional) Give a `description` of your `Page` to the app's [meta tags](https://metatags.io/)
 
 !!! example "Page"
+
     === "app.py"
+
         ```{.python pycafe-link}
         import vizro.models as vm
         import vizro.plotly.express as px
@@ -52,6 +54,7 @@ To create and add a page to your dashboard, do the following steps:
         ```
 
     === "app.yaml"
+
         ```yaml
         # Still requires a .py to add data to the data manager and parse YAML configuration
         # See yaml_version example
@@ -80,6 +83,7 @@ To create and add a page to your dashboard, do the following steps:
         ```
 
     === "Result"
+
         [![Page]][page]
 
 An accordion page selector is automatically added to your dashboard in the top-left of the control container for through the different pages. It will not be added if your dashboard consists of only one page.
@@ -97,7 +101,9 @@ The first page always has the URL prefix `/` assigned. A custom URL can, therefo
 To customize the page URL, pass a valid URL name to the `path` argument of [`Page`][vizro.models.Page]:
 
 !!! example "Page"
+
     === "app.py"
+
         ```{.python pycafe-link}
         import vizro.models as vm
         import vizro.plotly.express as px
@@ -134,6 +140,7 @@ To customize the page URL, pass a valid URL name to the `path` argument of [`Pag
         ```
 
     === "app.yaml"
+
         ```yaml
         # Still requires a .py to add data to the data manager and parse YAML configuration
         # See yaml_version example

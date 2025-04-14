@@ -16,6 +16,8 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
+        with:
+          token: ${{ secrets.VIZRO_SVC_PAT }}
 
       - name: Set up Python ${{ matrix.config.python-version }}
         uses: actions/setup-python@v5
@@ -53,4 +55,4 @@ jobs:
           sudo apt-get install -y gh
           gh pr create -B main -H bot/update-static-files --title "[Bot] Update static files" --body "Automated update of static files"
         env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GITHUB_TOKEN: ${{ secrets.VIZRO_SVC_PAT }}

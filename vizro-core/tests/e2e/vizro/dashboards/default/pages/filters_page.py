@@ -18,7 +18,7 @@ filters_page = vm.Page(
                         vm.Container(
                             id=cnst.FILTERS_COMPONENTS_CONTAINER,
                             title=cnst.FILTERS_COMPONENTS_CONTAINER,
-                            layout=vm.Layout(grid=[[0, 1], [0, 1], [0, 2]]),
+                            layout=vm.Grid(grid=[[0, 1], [0, 1], [0, 2]]),
                             components=[
                                 vm.Graph(
                                     id=cnst.SCATTER_GRAPH_ID,
@@ -74,6 +74,7 @@ filters_page = vm.Page(
         vm.Filter(
             column="species",
             targets=[cnst.SCATTER_GRAPH_ID, cnst.BOX_GRAPH_ID],
+            selector=vm.Dropdown(id=cnst.DROPDOWN_FILTER_FILTERS_PAGE),
         ),
         vm.Filter(
             column="species",

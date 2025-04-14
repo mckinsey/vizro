@@ -12,7 +12,7 @@ from pages.examples import area, gantt, heatmap, line, sparkline, stepped_line, 
 line_page = vm.Page(
     title="Line",
     path="time/line",
-    layout=vm.Layout(grid=PAGE_GRID),
+    layout=vm.Grid(grid=PAGE_GRID),
     components=[
         vm.Card(
             text="""
@@ -52,7 +52,7 @@ column_page = vm.Page(
     id="time-column",
     path="time/column",
     title="Column",
-    layout=vm.Layout(grid=PAGE_GRID),
+    layout=vm.Grid(grid=PAGE_GRID),
     components=[
         vm.Card(
             text="""
@@ -90,7 +90,7 @@ column_page = vm.Page(
 area_page = vm.Page(
     title="Area",
     path="time/area",
-    layout=vm.Layout(grid=PAGE_GRID),
+    layout=vm.Grid(grid=PAGE_GRID),
     components=[
         vm.Card(
             text="""
@@ -131,7 +131,7 @@ column_and_line_page = column_and_line_factory("time")
 stepped_line_page = vm.Page(
     title="Stepped line",
     path="time/stepped-line",
-    layout=vm.Layout(grid=PAGE_GRID),
+    layout=vm.Grid(grid=PAGE_GRID),
     components=[
         vm.Card(
             text="""
@@ -168,7 +168,7 @@ stepped_line_page = vm.Page(
 heatmap_page = vm.Page(
     title="Heatmap",
     path="time/heatmap",
-    layout=vm.Layout(grid=PAGE_GRID),
+    layout=vm.Grid(grid=PAGE_GRID),
     components=[
         vm.Card(
             text="""
@@ -205,7 +205,7 @@ heatmap_page = vm.Page(
 gantt_page = vm.Page(
     title="Gantt",
     path="time/gantt",
-    layout=vm.Layout(grid=PAGE_GRID),
+    layout=vm.Grid(grid=PAGE_GRID),
     components=[
         vm.Card(
             text="""
@@ -245,7 +245,7 @@ gantt_page = vm.Page(
 sparkline_page = vm.Page(
     title="Sparkline",
     path="time/sparkline",
-    layout=vm.Layout(grid=PAGE_GRID),
+    layout=vm.Grid(grid=PAGE_GRID),
     components=[
         vm.Card(
             text="""

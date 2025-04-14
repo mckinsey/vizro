@@ -16,6 +16,7 @@ dependencies = [
   "pytest",
   "pytest-mock",
   "pytest-rerunfailures",
+  "pytest-split",
   "freezegun>=1.5.0",
   "dash[testing]",
   "chromedriver-autoinstaller>=0.6.4",
@@ -33,7 +34,7 @@ features = ["kedro"]
 installer = "uv"
 
 [envs.default.env-vars]
-PYTHONPATH = "tests/e2e/vizro/dashboards/default:tests/tests_utils:tests/e2e/vizro/custom_components"
+PYTHONPATH = "tests/e2e/vizro/dashboards/default:tests/e2e/vizro/dashboards/yaml:tests/tests_utils:tests/e2e/vizro/custom_components"
 
 [envs.default.scripts]
 download-static-files = "python tools/download_static_files.py"
@@ -65,7 +66,9 @@ test = "pytest tests --headless {args}"
 test-e2e-component-library = "pytest -vs tests/e2e/component_library/test_component_library.py --headless {args}"
 test-e2e-vizro-dom-elements = [
   "gunicorn dashboard:app -b 0.0.0.0:5002 -w 1 --timeout 90 &",
+  "gunicorn dashboard_yaml:app -b 0.0.0.0:5007 -w 1 --timeout 90 &",
   "tests/tests_utils/e2e/vizro/dashboards/wait-for-it.sh 127.0.0.1:5002 -t 30",
+  "tests/tests_utils/e2e/vizro/dashboards/wait-for-it.sh 127.0.0.1:5007 -t 30",
   "pytest -vs --reruns 1 tests/e2e/vizro/test_dom_elements --headless {args}"
 ]
 test-e2e-vizro-screenshots = [
@@ -97,7 +100,8 @@ dependencies = [
   "mkdocs-git-revision-date-localized-plugin>=1.2.5",
   "mkdocstrings[python]",
   "linkchecker",
-  "mkdocs-pycafe"
+  "mkdocs-pycafe",
+  "griffe==1.6.0"  # Required for hatch run docs:build to work.
 ]
 detached = true
 installer = "uv"

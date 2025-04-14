@@ -9,7 +9,7 @@ iris = px.data.iris()
 export_action_page = vm.Page(
     title=cnst.EXPORT_PAGE,
     path=cnst.EXPORT_PAGE_PATH,
-    layout=vm.Layout(grid=[[0], [1]]),
+    layout=vm.Grid(grid=[[0], [1]]),
     components=[
         vm.Graph(
             id=cnst.LINE_EXPORT_ID,

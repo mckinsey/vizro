@@ -22,11 +22,9 @@
   border-color: var(--surfaces-bg-card);
 }
 
-#page-components::-webkit-scrollbar-thumb {
-  border-color: var(--right-side-bg);
-}
-
-.table-container::-webkit-scrollbar-thumb {
+#page-components::-webkit-scrollbar-thumb,
+.table-container::-webkit-scrollbar-thumb,
+.container-fluid::-webkit-scrollbar-thumb {
   border-color: var(--right-side-bg);
 }
 
@@ -37,4 +35,9 @@
 
 .ag-root ::-webkit-scrollbar-thumb:hover {
   background: var(--field-enabled);
+}
+
+.text::-webkit-scrollbar-thumb,
+.hljs::-webkit-scrollbar-thumb {
+  border-color: var(--right-side-bg);
 }

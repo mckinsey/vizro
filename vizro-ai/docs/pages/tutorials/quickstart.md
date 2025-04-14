@@ -19,6 +19,7 @@ If you haven't already installed Vizro-AI and set up the API key for OpenAI, fol
 A good way to initially explore Vizro-AI is from inside a Jupyter Notebook.
 
 ??? "If you haven't used Jupyter before..."
+
     You may need to install the Jupyter package if you . From the terminal window:
 
     ```bash
@@ -80,6 +81,7 @@ vizro_ai.plot(
 ```
 
 !!! warning "Help! The LLM request was unauthorized"
+
     If you see an error similar to this, your LLM API key is not valid:
 
     `INFO:httpx:HTTP Request: POST https://api.openai.com/v1/chat/completions "HTTP/1.1 401 Unauthorized"`
@@ -93,7 +95,9 @@ vizro_ai.plot(
 And that's it! By passing the prepared data and written visualization request, Vizro-AI takes care of the processing. It generates the necessary code for data manipulation and chart creation, and returns the chart by executing the generated code.
 
 !!! example "Vizro-AI Syntax"
+
     === "Code for the cell"
+
         ```py
         import vizro.plotly.express as px
         from vizro_ai import VizroAI
@@ -110,6 +114,7 @@ And that's it! By passing the prepared data and written visualization request, V
         ```
 
     === "Result"
+
         [![LineGraph]][linegraph]
 
 The chart created is interactive: you can hover over the data for more information.
@@ -117,6 +122,7 @@ The chart created is interactive: you can hover over the data for more informati
 Passing `return_elements=True` to the `plot()` method returns an object, which includes the code along with a set of insights to explain the rendered chart in detail. You can then use the code within a Vizro dashboard as illustrated in the [Vizro documentation](https://vizro.readthedocs.io/en/stable/pages/tutorials/explore-components/#22-add-further-components). For the line graph above, the code returned may be as follows:
 
 !!! example "Returned by Vizro-AI"
+
     ```python
     from vizro.models.types import capture
     import vizro.plotly.express as px
@@ -142,7 +148,9 @@ Passing `return_elements=True` to the `plot()` method returns an object, which i
 Let's create another example to illustrate the code and insights returned when passing `return_elements=True` as a parameter to `plot()`:
 
 !!! example "Specify  `return_elements=True`"
+
     === "Code for the cell"
+
         ```py
         res = vizro_ai.plot(df, "show me the geo distribution of life expectancy", return_elements=True)
         print(res.code)
@@ -151,6 +159,7 @@ Let's create another example to illustrate the code and insights returned when p
         ```
 
     === "Result"
+
         Code
 
         ```py

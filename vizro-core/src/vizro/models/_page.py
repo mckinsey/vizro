@@ -1,7 +1,7 @@
 from __future__ import annotations
 
 from collections.abc import Iterable
-from typing import Annotated, Optional, TypedDict, cast
+from typing import Annotated, Any, Optional, TypedDict, cast
 
 from dash import dcc, html
 from pydantic import (
@@ -20,12 +20,12 @@ from vizro._constants import ON_PAGE_LOAD_ACTION_PREFIX
 from vizro.actions import _on_page_load
 from vizro.managers import model_manager
 from vizro.managers._model_manager import FIGURE_MODELS, DuplicateIDError
-from vizro.models import Action, Filter, Layout, VizroBaseModel
+from vizro.models import Action, Filter, VizroBaseModel
 from vizro.models._action._actions_chain import ActionsChain, Trigger
-from vizro.models._layout import set_layout
-from vizro.models._models_utils import _log_call, check_captured_callable_model
+from vizro.models._grid import set_layout
+from vizro.models._models_utils import _build_inner_layout, _log_call, check_captured_callable_model
 
-from .types import ComponentType, ControlType
+from .types import ComponentType, ControlType, LayoutType
 
 # This is just used for type checking. Ideally it would inherit from some dash.development.base_component.Component
 # (e.g. html.Div) as well as TypedDict, but that's not possible, and Dash does not have typing support anyway. When
@@ -54,9 +54,9 @@ class Page(VizroBaseModel):
     Args:
         components (list[ComponentType]): See [ComponentType][vizro.models.types.ComponentType]. At least one component
             has to be provided.
-        title (str): Title to be displayed.
+        title (str): Title of the `Page`.
         description (str): Description for meta tags.
-        layout (Optional[Layout]): Layout to place components in. Defaults to `None`.
+        layout (Optional[LayoutType]): Layout to place components in. Defaults to `None`.
         controls (list[ControlType]): See [ControlType][vizro.models.types.ControlType]. Defaults to `[]`.
         path (str): Path to navigate to page. Defaults to `""`.
 
@@ -64,9 +64,9 @@ class Page(VizroBaseModel):
 
     # TODO[mypy], see: https://github.com/pydantic/pydantic/issues/156 for components field
     components: conlist(Annotated[ComponentType, BeforeValidator(check_captured_callable_model)], min_length=1)  # type: ignore[valid-type]
-    title: str = Field(description="Title to be displayed.")
+    title: str = Field(description="Title of the `Page`")
     description: str = Field(default="", description="Description for meta tags.")
-    layout: Annotated[Optional[Layout], AfterValidator(set_layout), Field(default=None, validate_default=True)]
+    layout: Annotated[Optional[LayoutType], AfterValidator(set_layout), Field(default=None, validate_default=True)]
     controls: list[ControlType] = []
     path: Annotated[
         str, AfterValidator(set_path), Field(default="", description="Path to navigate to page.", validate_default=True)
@@ -84,10 +84,10 @@ class Page(VizroBaseModel):
         values.setdefault("id", values["title"])
         return values
 
-    def __init__(self, **data):
+    def model_post_init(self, context: Any) -> None:
         """Adds the model instance to the model manager."""
         try:
-            super().__init__(**data)
+            super().model_post_init(context)
         except DuplicateIDError as exc:
             raise ValueError(
                 f"Page with id={self.id} already exists. Page id is automatically set to the same "
@@ -135,18 +135,12 @@ class Page(VizroBaseModel):
 
     @_log_call
     def build(self) -> _PageBuildType:
+        # Build control panel
         controls_content = [control.build() for control in self.controls]
         control_panel = html.Div(id="control-panel", children=controls_content, hidden=not controls_content)
 
-        self.layout = cast(
-            Layout,
-            self.layout,  # cannot actually be None if you check components and layout field together
-        )
-        components_container = self.layout.build()
-        for component_idx, component in enumerate(self.components):
-            components_container[f"{self.layout.id}_{component_idx}"].children = component.build()
-
-        # Page specific CSS ID and Stores
+        # Build layout with components
+        components_container = _build_inner_layout(self.layout, self.components)
         components_container.children.append(dcc.Store(id=f"{ON_PAGE_LOAD_ACTION_PREFIX}_trigger_{self.id}"))
         components_container.id = "page-components"
         return html.Div([control_panel, components_container])
