@@ -19,6 +19,7 @@ from pages.filters_page import filters_page
 from pages.homepage import homepage
 from pages.kpi_indicators_page import kpi_indicators_page
 from pages.layout_pages import (
+    buttons_page,
     layout_flex_with_all_params_and_card,
     layout_flex_with_direction_param_and_graph,
     layout_flex_with_gap_param_and_table,
@@ -61,6 +62,7 @@ dashboard = vm.Dashboard(
         layout_flex_with_gap_param_and_table,
         layout_flex_with_wrap_param_and_ag_grid,
         extras_page,
+        buttons_page,
     ],
     navigation=vm.Navigation(
         pages={
@@ -99,6 +101,7 @@ dashboard = vm.Dashboard(
                 cnst.LAYOUT_FLEX_GAP_AND_TABLE,
                 cnst.LAYOUT_FLEX_WRAP_AND_AG_GRID,
                 cnst.EXTRAS_PAGE,
+                cnst.BUTTONS_PAGE,
             ],
         }
     ),
