@@ -11,7 +11,7 @@ iris = px.data.iris()
 
 page1 = vm.Page(
     title="Collapsible containers - grid layout",
-    layout=vm.Layout(grid=[[0, 1]]),
+    layout=vm.Grid(grid=[[0, 1]]),
     components=[
         vm.Container(
             title="Initially collapsed container",
