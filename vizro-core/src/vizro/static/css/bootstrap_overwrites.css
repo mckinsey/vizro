@@ -40,6 +40,10 @@ All the HEX values starting with --text-code are taken from the Github code high
     color: var(--text-primary) !important;
 }
 
+.card {
+  margin: 4px;
+}
+
 .card .nav-link {
   height: 100%;
 }
@@ -58,13 +62,6 @@ All the HEX values starting with --text-code are taken from the Github code high
 .accordion-item .nav-link:active, .accordion-item .nav-link.active,
 .accordion-item .nav-link:hover, .accordion-item .nav-link.hover {
   background: var(--surfaces-bg-card);
-}
-
-/* Move background color to BS */
-.card {
-  height: calc(100% - 8px);
-  margin: 4px;
-  width: calc(100% - 8px);
 }
 
 .form-check:last-of-type {
