@@ -65,7 +65,6 @@
 
 #page-components {
   overflow: auto;
-  padding-top: 0.25rem;
 }
 
 .grid-layout {
@@ -215,9 +214,4 @@ Current logic:
 /* Hide Loading... text on loading page */
 ._dash-loading {
   display: none;
-}
-
-.text {
-  height: 100%;
-  overflow: auto;
 }
