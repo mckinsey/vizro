@@ -67,6 +67,7 @@ def _format_and_lint(code_string: str) -> str:
 
 
 def _dict_to_python(object: Any) -> str:
+    import vizro.actions as va
     from vizro.models.types import CapturedCallable
 
     if isinstance(object, dict) and "__vizro_model__" in object:
@@ -82,7 +83,11 @@ def _dict_to_python(object: Any) -> str:
             # This is very similar to doing repr but includes the vm. prefix and calls _object_to_python_code
             # rather than repr recursively.
             fields = ", ".join(f"{field_name}={_dict_to_python(value)}" for field_name, value in object.items())
-            return f"vm.{__vizro_model__}({fields})"
+            # Always use built-in actions from the vizro.actions (va) namespace, not vizro.models (vm).
+            # Enforces explicit namespacing to avoid ambiguity between built-in actions.
+            namespace = "va" if __vizro_model__ in dir(va) else "vm"
+            return f"{namespace}.{__vizro_model__}({fields})"
+
     elif isinstance(object, dict):
         fields = ", ".join(f"'{field_name}': {_dict_to_python(value)}" for field_name, value in object.items())
         return "{" + fields + "}"

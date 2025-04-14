@@ -437,13 +437,7 @@ import vizro.actions as va
 model = vm.Page(
     components=[
         vm.Graph(figure=px.bar(data_frame="iris", x="sepal_width", y="sepal_length")),
-        vm.Button(
-            text="Export data",
-            actions=[
-                vm.Action(function=va.export_data()),
-                vm.Action(function=va.export_data()),
-            ],
-        ),
+        vm.Button(text="Export data", actions=[va.export_data(), va.export_data()]),
     ],
     title="Page 1",
 )
@@ -520,11 +514,7 @@ model = vm.Dashboard(
                 vm.Graph(figure=chart(data_frame="iris")),
                 vm.AgGrid(figure=vt.dash_ag_grid(data_frame="iris")),
                 vm.Button(
-                    text="Export data",
-                    actions=[
-                        vm.Action(function=va.export_data()),
-                        vm.Action(function=va.export_data()),
-                    ],
+                    text="Export data", actions=[va.export_data(), va.export_data()]
                 ),
             ],
             title="Page 1",
