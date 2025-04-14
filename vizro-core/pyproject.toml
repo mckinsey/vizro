@@ -28,7 +28,7 @@ dependencies = [
   "autoflake",
   "packaging"
 ]
-description = "Vizro is a package to facilitate visual analytics."
+description = "Vizro is a low-code framework for building high-quality data visualization apps."
 dynamic = ["version"]
 license-files = {paths = ["LICENSE.txt"]}
 name = "vizro"
@@ -37,7 +37,7 @@ requires-python = ">=3.9"
 
 [project.optional-dependencies]
 kedro = [
-  "kedro>=0.19.0",
+  "kedro>=0.19.0,<1.0",  # remove once we have tested the released Kedro 1.0
   "kedro-datasets"  # no longer a dependency of kedro for kedro>=0.19.2
 ]
 
@@ -71,21 +71,17 @@ addopts = [
 ]
 filterwarnings = [
   "error",
-  # Ignore until pandas is made compatible with Python 3.12:
-  "ignore:.*utcfromtimestamp:DeprecationWarning",
   # Ignore until pandas 3 is released:
   "ignore:(?s).*Pyarrow will become a required dependency of pandas:DeprecationWarning",
-  # Ignore until plotly fixes so the warning is no longer raised:
-  "ignore:When grouping with a length-1 list-like, you will need to pass a length-1 tuple to get_group:FutureWarning",
   # Ignore warning when using the fig.layout.title inside examples:
   "ignore:Using the `title` argument in your Plotly chart function may cause misalignment:UserWarning",
-  # Ignore warning for Pydantic v1 API and Python 3.13:
-  "ignore:Failing to pass a value to the 'type_params' parameter of 'typing.ForwardRef._evaluate' is deprecated:DeprecationWarning",
   # Ignore deprecation warning until this is solved: https://github.com/plotly/dash/issues/2590:
   "ignore:HTTPResponse.getheader():DeprecationWarning",
-  # Ignore deprecation warning as it comes from the plotly default template. In our templates `vizro_dark` and
-  # `vizro_light`, we do not use mapbox anymore, see: https://github.com/mckinsey/vizro/pull/974
-  "ignore:.*scattermapbox.*is deprecated.*Use.*scattermap.*instead:DeprecationWarning"
+  # ignore this warning for firefox screenshot tests
+  "ignore:get_logs always return None with webdrivers other than Chrome"
+]
+markers = [
+  "mobile_screenshots: marks tests for chrome mobile screenshots"
 ]
 norecursedirs = ["tests/tests_utils", "tests/js"]
 pythonpath = ["tests/tests_utils"]

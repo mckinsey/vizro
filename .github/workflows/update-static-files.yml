@@ -1,0 +1,58 @@
+name: Update static files
+
+on:
+  schedule:
+    - cron: "0 0 * * 0" # Runs at midnight every Sunday
+
+defaults:
+  run:
+    working-directory: vizro-core
+
+env:
+  PYTHON_VERSION: "3.12"
+
+jobs:
+  update-static-files:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          token: ${{ secrets.VIZRO_SVC_PAT }}
+
+      - name: Set up Python ${{ matrix.config.python-version }}
+        uses: actions/setup-python@v5
+        with:
+          python-version: ${{ matrix.config.python-version }}
+
+      - name: Install Hatch
+        run: pip install hatch
+
+      - name: Show dependency tree
+        run: hatch run pip tree
+
+      - name: Update static files
+        run: hatch run download-static-files
+
+      - name: Check for changes
+        id: changed-files
+        run: echo "static_files_changed=$(git diff --quiet || echo true)" >> $GITHUB_OUTPUT
+
+      - name: Create and push changes
+        if: steps.changed-files.outputs.static_files_changed
+        run: |
+          git config user.email "145135826+vizro-svc@users.noreply.github.com"
+          git config user.name "Vizro Team"
+          git checkout -b bot/update-static-files
+          hatch run changelog:add
+          git add -A
+          git commit -m "Update static files"
+          git push origin --delete bot/update-static-files || true
+          git push --set-upstream origin bot/update-static-files
+
+      - name: Create Pull Request
+        if: steps.changed-files.outputs.static_files_changed
+        run: |
+          sudo apt-get install -y gh
+          gh pr create -B main -H bot/update-static-files --title "[Bot] Update static files" --body "Automated update of static files"
+        env:
+          GITHUB_TOKEN: ${{ secrets.VIZRO_SVC_PAT }}

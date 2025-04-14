@@ -6,6 +6,9 @@ at the same time, Vizro is extensible, so that you can tweak any component to yo
 If you can't find a component that you would like to have in the code basis, or if you would like to alter/enhance an existing component, then you are in the right place.
 This guide shows you how to create custom components that are completely new, or enhancements of existing ones.
 
+!!! note "Can you use `extra` instead of creating a custom component?"
+    If you want to alter/enhance an existing component, you may not even need to create a custom component. Many of our models have an `extra` argument, that let's you pass arguments to the underlying Dash component directly. You can check the [API reference](../API-reference/models.md) of the model in question. An example of this would be to make the [`RadioItem`][vizro.models.RadioItems] [inline instead of stacked](./selectors.md#the-extra-argument).
+
 In general, you can create a custom component based on any dash-compatible component (for example, [dash-core-components](https://dash.plotly.com/dash-core-components),
 [dash-bootstrap-components](https://dash-bootstrap-components.opensource.faculty.ai/), [dash-html-components](https://github.com/plotly/dash/tree/dev/components/dash-html-components)).
 
@@ -15,8 +18,9 @@ or if you would like to use extra `args` or `kwargs` of those components, then t
 
 !!!note
 
-    There are always **three general steps** to consider to create a custom component:
+    There are always **four general steps** to consider to create a custom component:
 
+    0. **Check** if you can achieve your goal with a potential `extra` argument
     1. **Sub-class to create** your component
     2. **Enhance or build** the component (for example, to add/change model fields, overwrite pre-build/build method) to your desire
     3. **Check** if your component will be part of a discriminated union[^1]. If yes, then
@@ -387,16 +391,19 @@ Add the custom action `open_offcanvas` as a `function` argument inside the [`Act
 
 ### Trigger actions with a custom component
 
-As mentioned above, custom components can trigger action. To enable the custom component to trigger the action, we need to add some extra code:
+As mentioned above, custom components can trigger actions. To enable the custom component to trigger the action, add the `actions` field and specify which property triggers the actions:
 
 1. **Add the `actions` argument to your custom component**. The type of the `actions` argument is `list[Action]`.
-   ```py
-    actions: list[Action] = []
-   ```
-2. **Set the action through `_set_actions`**. In doing so, any change in the `"active_index"` property of the custom component triggers the action.
-   ```py
-    _set_actions = _action_validator_factory("active_index")
-   ```
+2. **Set the action through `_action_validator_factory`**. In doing so, any change in the `"active_index"` property of the custom component triggers the action.
+
+    ```py
+    actions: Annotated[
+        list[Action],
+        AfterValidator(_action_validator_factory("active_index")),
+        PlainSerializer(lambda x: x[0].actions),
+        Field(default=[]),
+        ]
+    ```
 
 
 ??? example "Example of triggering action with custom component"

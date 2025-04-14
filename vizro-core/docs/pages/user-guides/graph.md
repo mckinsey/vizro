@@ -2,7 +2,7 @@
 
 This guide shows you how to use graphs to visualize your data in the dashboard.
 
-The [`Graph`][vizro.models.Graph] model is the most used component in many dashboards, allowing you to visualize data in a variety of ways.
+The [`Graph`][vizro.models.Graph] model is the most used component in many dashboards, allowing you to visualize data in a variety of ways. It is based on [`dcc.Graph`](https://dash.plotly.com/dash-core-components/graph).
 
 To add a [`Graph`][vizro.models.Graph] to your page, do the following:
 
@@ -10,6 +10,7 @@ To add a [`Graph`][vizro.models.Graph] to your page, do the following:
 1. enter any of the currently available charts of the open source library [`plotly.express`](https://plotly.com/python/plotly-express/) into the `figure` argument
 
 !!! note
+
     To use the [`plotly.express`](https://plotly.com/python/plotly-express/) chart in a Vizro dashboard, you need to import it as `import vizro.plotly.express as px`. This leaves any of the [`plotly.express`](https://plotly.com/python/plotly-express/) functionality untouched yet enables _direct insertion_ into the [`Graph`][vizro.models.Graph] model _as is_.
 
     Note also that the `plotly.express` chart needs to have a `data_frame` argument. In case you require a chart without a `data_frame` argument (for example, the [`imshow` chart](https://plotly.com/python/imshow/)), refer to our [guide on custom charts](custom-charts.md).
@@ -17,7 +18,9 @@ To add a [`Graph`][vizro.models.Graph] to your page, do the following:
 ## Insert Plotly chart
 
 !!! example "Graph"
+
     === "app.py"
+
         ```{.python pycafe-link}
         import vizro.models as vm
         import vizro.plotly.express as px
@@ -42,6 +45,7 @@ To add a [`Graph`][vizro.models.Graph] to your page, do the following:
         ```
 
     === "app.yaml"
+
         ```yaml
         # Still requires a .py to add data to the data manager and parse YAML configuration
         # See yaml_version example
@@ -57,6 +61,7 @@ To add a [`Graph`][vizro.models.Graph] to your page, do the following:
         ```
 
     === "Result"
+
         [![Graph]][graph]
 
 In the Python example we directly inserted the pandas DataFrame `df` into `figure=px.scatter_matrix(df, ...)`. This is [one way to supply data to a chart](data.md#supply-directly). For the YAML version, we [refer to the data source by name](data.md#reference-by-name) as `data_frame: iris`. For a full explanation of the different methods you can use to send data to your dashboard, see [our guide to using data in Vizro](data.md).
@@ -78,11 +83,14 @@ The [`Graph`][vizro.models.Graph] accepts a `title`, `header` and `footer` argum
 - **header**: Accepts markdown text, ideal for extra descriptions, subtitles, or detailed data insights.
 - **footer**: Accepts markdown text, commonly used for citing data sources, providing information on the last update, or adding disclaimers.
 
-!!! note
+!!! note "Use `Graph.title` instead of the Plotly Express chart title"
+
     Although you can directly give a `title` to the Plotly Express chart, we recommend using `Graph.title` for proper alignment with other components on the screen.
 
 !!! example "Formatted Graph"
+
     === "app.py"
+
         ```{.python pycafe-link}
 
         import vizro.models as vm
@@ -113,6 +121,7 @@ The [`Graph`][vizro.models.Graph] accepts a `title`, `header` and `footer` argum
         ```
 
     === "app.yaml"
+
         ```yaml
         # Still requires a .py to add data to the data manager and parse YAML configuration
         # See yaml_version example
@@ -138,6 +147,7 @@ The [`Graph`][vizro.models.Graph] accepts a `title`, `header` and `footer` argum
         ```
 
     === "Result"
+
         [![FormattedGraph]][formattedgraph]
 
 [formattedgraph]: ../../assets/user_guides/components/formatted_graph.png

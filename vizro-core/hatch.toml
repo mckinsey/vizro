@@ -16,6 +16,7 @@ dependencies = [
   "pytest",
   "pytest-mock",
   "pytest-rerunfailures",
+  "pytest-split",
   "freezegun>=1.5.0",
   "dash[testing]",
   "chromedriver-autoinstaller>=0.6.4",
@@ -25,18 +26,18 @@ dependencies = [
   "jupyter",
   "pre-commit",
   "PyGithub",
-  "imutils",
-  "opencv-python",
   "pyhamcrest",
-  "gunicorn"
+  "gunicorn",
+  "pixelmatch"
 ]
 features = ["kedro"]
 installer = "uv"
 
 [envs.default.env-vars]
-PYTHONPATH = "tests/e2e/vizro/dashboards/default:tests/tests_utils"
+PYTHONPATH = "tests/e2e/vizro/dashboards/default:tests/e2e/vizro/dashboards/yaml:tests/tests_utils:tests/e2e/vizro/custom_components"
 
 [envs.default.scripts]
+download-static-files = "python tools/download_static_files.py"
 example = "hatch run examples:example {args:scratch_dev}"  # shortcut script to underlying example environment script.
 lint = "pre-commit run {args} --all-files"
 pip = '"{env:HATCH_UV}" pip {args}'
@@ -62,11 +63,26 @@ templates-check = ["python src/vizro/_themes/generate_plotly_templates.py --chec
 # fix this, but we don't actually use `hatch run test` anywhere right now.
 # See comments added in https://github.com/mckinsey/vizro/pull/444.
 test = "pytest tests --headless {args}"
-test-e2e-component-library = "pytest tests/e2e/component_library/test_component_library.py --headless {args}"
+test-e2e-component-library = "pytest -vs tests/e2e/component_library/test_component_library.py --headless {args}"
 test-e2e-vizro-dom-elements = [
   "gunicorn dashboard:app -b 0.0.0.0:5002 -w 1 --timeout 90 &",
+  "gunicorn dashboard_yaml:app -b 0.0.0.0:5007 -w 1 --timeout 90 &",
   "tests/tests_utils/e2e/vizro/dashboards/wait-for-it.sh 127.0.0.1:5002 -t 30",
+  "tests/tests_utils/e2e/vizro/dashboards/wait-for-it.sh 127.0.0.1:5007 -t 30",
   "pytest -vs --reruns 1 tests/e2e/vizro/test_dom_elements --headless {args}"
+]
+test-e2e-vizro-screenshots = [
+  "gunicorn dashboard:app -b 0.0.0.0:5002 -w 1 --timeout 90 &",
+  "gunicorn dashboard_one_page:app -b 0.0.0.0:5003 -w 1 --timeout 90 &",
+  "gunicorn dashboard_navbar_accordions:app -b 0.0.0.0:5004 -w 1 --timeout 90 &",
+  "gunicorn dashboard_navbar_pages:app -b 0.0.0.0:5005 -w 1 --timeout 90 &",
+  "gunicorn dashboard_navbar_navlink:app -b 0.0.0.0:5006 -w 1 --timeout 90 &",
+  "tests/tests_utils/e2e/vizro/dashboards/wait-for-it.sh 127.0.0.1:5002 -t 30",
+  "tests/tests_utils/e2e/vizro/dashboards/wait-for-it.sh 127.0.0.1:5003 -t 30",
+  "tests/tests_utils/e2e/vizro/dashboards/wait-for-it.sh 127.0.0.1:5004 -t 30",
+  "tests/tests_utils/e2e/vizro/dashboards/wait-for-it.sh 127.0.0.1:5005 -t 30",
+  "tests/tests_utils/e2e/vizro/dashboards/wait-for-it.sh 127.0.0.1:5006 -t 30",
+  "pytest -vs --reruns 1 tests/e2e/vizro/test_screenshots/ --headless {args}"
 ]
 test-integration = "pytest tests/integration --headless {args}"
 test-js = "./tools/run_jest.sh {args}"
@@ -76,7 +92,6 @@ test-unit-coverage = [
   "- coverage combine",
   "coverage report"
 ]
-update-icons = ["python tools/update_material_icons.py"]
 
 [envs.docs]
 dependencies = [
@@ -85,7 +100,8 @@ dependencies = [
   "mkdocs-git-revision-date-localized-plugin>=1.2.5",
   "mkdocstrings[python]",
   "linkchecker",
-  "mkdocs-pycafe"
+  "mkdocs-pycafe",
+  "griffe==1.6.0"  # Required for hatch run docs:build to work.
 ]
 detached = true
 installer = "uv"
@@ -110,7 +126,7 @@ dependencies = [
   "autoflake==2.3.1",
   "black==24.4.2",
   "isort==5.13.2",
-  "plotly==6.0.0"  # to leverage new MapLibre features in visual-vocabulary
+  "plotly==6.0.0"  # to leverage new MapLibre features in visual-vocabulary,
 ]
 installer = "uv"
 scripts = {example = "cd examples/{args:scratch_dev}; python app.py"}

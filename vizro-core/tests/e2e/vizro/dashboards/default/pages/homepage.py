@@ -8,7 +8,7 @@ iris = px.data.iris()
 homepage = vm.Page(
     title=cnst.HOME_PAGE,
     id=cnst.HOME_PAGE_ID,
-    layout=vm.Layout(grid=[[0, 4], [1, 4], [2, 4], [3, 4]]),
+    layout=vm.Grid(grid=[[0, 4], [1, 4], [2, 4], [3, 4]]),
     components=[
         vm.Card(
             text="""
@@ -43,7 +43,7 @@ homepage = vm.Page(
 
             Leads to the datepicker page on click.
             """,
-            href=cnst.DATEPICKER_PAGE_PATH,
+            href=f"/{cnst.DATEPICKER_PAGE}",
         ),
         vm.Card(
             text="""
@@ -64,6 +64,6 @@ homepage = vm.Page(
         ),
     ],
     controls=[
-        vm.Filter(column="species", targets=[cnst.AREA_GRAPH_ID]),
+        vm.Filter(column="species", selector=vm.Dropdown(id=cnst.DROPDOWN_FILTER_HOMEPAGEPAGE)),
     ],
 )

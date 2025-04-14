@@ -5,7 +5,6 @@
 authors = [
   {name = "Vizro Team"}
 ]
-description = "Vizro is a package to facilitate visual analytics."
 dynamic = ["version"]
 name = "vizro"
 

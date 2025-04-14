@@ -5,7 +5,7 @@ from typing import Union
 import dash_bootstrap_components as dbc
 import vizro.models as vm
 from chart_groups import ALL_CHART_GROUP, CHART_GROUPS, ChartGroup, IncompletePage
-from custom_components import FlexContainer, Markdown
+from custom_components import Markdown
 from dash import get_asset_url, html
 from vizro import Vizro
 
@@ -46,10 +46,11 @@ def make_homepage_container(chart_group: ChartGroup) -> vm.Container:
     # deviation-butterfly, which both have title "Butterfly", correspond to a single card.
     return vm.Container(
         title=chart_group.name,
-        layout=vm.Layout(grid=[[0, 1, 1]], col_gap="40px"),
+        layout=vm.Grid(grid=[[0, 1, 1]], col_gap="40px"),
         components=[
             Markdown(text=chart_group.intro_text, classname="intro-text"),
-            FlexContainer(
+            vm.Container(
+                layout=vm.Flex(direction="row", wrap=True),
                 components=[
                     make_chart_card(page)
                     for page in sorted(
@@ -115,10 +116,9 @@ app.dash.layout.children.append(
         ["Made with ", html.Img(src=get_asset_url("logo.svg"), id="banner", alt="Vizro logo"), "vizro"],
         href="https://github.com/mckinsey/vizro",
         target="_blank",
-        className="anchor-container",
+        class_name="anchor-container",
     )
 )
-server = app.dash.server
 
 if __name__ == "__main__":
     app.run(port=8051)

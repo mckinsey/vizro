@@ -18,6 +18,10 @@ Both approaches have similar base features, and are configurable in similar ways
 
 The Vizro [`AgGrid`][vizro.models.AgGrid] model is based on the [Dash AG Grid](https://dash.plotly.com/dash-ag-grid), which is in turn based the original [Javascript implementation](https://www.ag-grid.com/).
 
+!!! note "More examples of AG Grid"
+
+    If you would like to see more examples on what can be done with AG Grid, head to the [Dash AG Grid](https://dash.plotly.com/dash-ag-grid) documentation. Almost anything you see there is possible in Vizro by [creating a custom AG Grid callable](custom-tables.md).
+
 ### Basic usage
 
 To add a [`AgGrid`][vizro.models.AgGrid] to your page, do the following:
@@ -28,7 +32,9 @@ To add a [`AgGrid`][vizro.models.AgGrid] to your page, do the following:
 The Vizro version of this AG Grid differs in one way from the original Dash AG Grid: it requires the user to pass a pandas DataFrame as the source of data. As explained in [our guide to using data in Vizro](data.md), this must be entered under the argument `data_frame`. Most other [parameters of the Dash AG Grid](https://dash.plotly.com/dash-ag-grid/reference) can be entered as keyword arguments. Note that some defaults are set for some arguments (for example, for `columnDefs`) to help with styling and usability. Sometimes a parameter may not work because it requires a callback to function. In that case you can try [creating a custom AG Grid callable](custom-tables.md).
 
 !!! example "Basic Dash AG Grid"
+
     === "app.py"
+
         ```{.python pycafe-link}
         import vizro.models as vm
         import vizro.plotly.express as px
@@ -47,6 +53,7 @@ The Vizro version of this AG Grid differs in one way from the original Dash AG G
         ```
 
     === "app.yaml"
+
         ```yaml
         # Still requires a .py to add data to the data manager and parse YAML configuration
         # See from_yaml example
@@ -60,6 +67,7 @@ The Vizro version of this AG Grid differs in one way from the original Dash AG G
         ```
 
     === "Result"
+
         [![AGGrid]][aggrid]
 
 ### Enable pagination
@@ -67,7 +75,9 @@ The Vizro version of this AG Grid differs in one way from the original Dash AG G
 Pagination is a visual alternative to using vertical scroll. It can also improve loading time if you have many rows. You can turn it on by setting `dashGridOptions={"pagination": True}`.
 
 !!! example "Basic Dash AG Grid"
+
     === "app.py"
+
         ```{.python pycafe-link}
         import vizro.models as vm
         import vizro.plotly.express as px
@@ -86,6 +96,7 @@ Pagination is a visual alternative to using vertical scroll. It can also improve
         ```
 
     === "app.yaml"
+
         ```yaml
         # Still requires a .py to add data to the data manager and parse YAML configuration
         # See from_yaml example
@@ -101,6 +112,7 @@ Pagination is a visual alternative to using vertical scroll. It can also improve
         ```
 
     === "Result"
+
         [![AGGrid]][aggrid]
 
 ### Formatting columns
@@ -120,7 +132,9 @@ columnDefs = [{"field": "<COLUMN>", "cellDataType": "euro"}]
 In the example below we select and format some columns of the gapminder data.
 
 !!! example "AG Grid with formatted columns"
+
     === "app.py"
+
         ```{.python pycafe-link}
         import vizro.models as vm
         import vizro.plotly.express as px
@@ -151,6 +165,7 @@ In the example below we select and format some columns of the gapminder data.
         ```
 
     === "app.yaml"
+
         ```yaml
         # Still requires a .py to add data to the data manager and parse YAML configuration
         # See from_yaml example
@@ -174,6 +189,7 @@ In the example below we select and format some columns of the gapminder data.
         ```
 
     === "Result"
+
         [![AGGrid2]][aggrid2]
 
 #### Dates
@@ -189,7 +205,9 @@ No specific formatting is available for custom objects and strings, however you 
 As mentioned above, all [parameters of the Dash AG Grid](https://dash.plotly.com/dash-ag-grid/reference) can be entered as keyword arguments. Below you can find an example of a styled AG Grid where some conditional formatting is applied, and where the columns are editable, but not filterable or resizable. There are more ways to alter the grid beyond this showcase. AG Grid, like any other Vizro component, can be customized using custom CSS. You can find information in the [guide to overwriting CSS properties](custom-css.md#overwrite-css-for-selected-components).
 
 !!! example "Styled and modified Dash AG Grid"
+
     === "app.py"
+
         ```{.python pycafe-link}
         import vizro.models as vm
         import vizro.plotly.express as px
@@ -258,6 +276,7 @@ As mentioned above, all [parameters of the Dash AG Grid](https://dash.plotly.com
         ```
 
     === "app.yaml"
+
         ```yaml
         # Still requires a .py to add data to the data manager and parse YAML configuration
         # See from_yaml example
@@ -304,6 +323,7 @@ As mentioned above, all [parameters of the Dash AG Grid](https://dash.plotly.com
         ```
 
     === "Result"
+
         [![AGGrid3]][aggrid3]
 
 If the available arguments are not sufficient, there is always the option to [create a custom AG Grid callable](custom-tables.md).
@@ -315,6 +335,10 @@ Similar to AG Grid, the [Dash DataTable](https://dash.plotly.com/datatable) is a
 In general, we recommend using [AG Grid](#ag-grid) for tables unless you have a particular reason to prefer Dash DataTable.
 
 The Vizro [`Table`][vizro.models.Table] model is based on the [Dash DataTable](https://dash.plotly.com/datatable).
+
+!!! note "More examples of Dash DataTable"
+
+    If you would like to see more examples on what can be done with Dash DataTable, head to the [Dash DataTable](https://dash.plotly.com/datatable) documentation. Almost anything you see there is possible in Vizro by [creating a custom Dash DataTable callable](custom-tables.md).
 
 ### Basic usage
 
@@ -328,7 +352,9 @@ The Vizro version of this table differs in one way from the original table: it r
 All other [parameters of the Dash DataTable](https://dash.plotly.com/datatable/reference) can be entered as keyword arguments. Note that we are setting some defaults for some arguments to help with styling.
 
 !!! example "Dash DataTable"
+
     === "app.py"
+
         ```{.python pycafe-link}
         import vizro.models as vm
         import vizro.plotly.express as px
@@ -349,6 +375,7 @@ All other [parameters of the Dash DataTable](https://dash.plotly.com/datatable/r
         ```
 
     === "app.yaml"
+
         ```yaml
         # Still requires a .py to add data to the data manager and parse YAML configuration
         # See yaml_version example
@@ -363,6 +390,7 @@ All other [parameters of the Dash DataTable](https://dash.plotly.com/datatable/r
         ```
 
     === "Result"
+
         [![Table]][table]
 
 ### Styling and changing the Dash DataTable
@@ -370,7 +398,9 @@ All other [parameters of the Dash DataTable](https://dash.plotly.com/datatable/r
 As mentioned above, all [parameters of the Dash DataTable](https://dash.plotly.com/datatable/reference) can be entered as keyword arguments. Below you can find an example of a styled table where some conditional formatting is applied. There are many more ways to alter the table beyond this showcase.
 
 !!! example "Styled Dash DataTable"
+
     === "app.py"
+
         ```{.python pycafe-link}
         import vizro.models as vm
         import vizro.plotly.express as px
@@ -434,6 +464,7 @@ As mentioned above, all [parameters of the Dash DataTable](https://dash.plotly.c
         ```
 
     === "app.yaml"
+
         ```yaml
         # Still requires a .py to add data to the data manager and parse YAML configuration
         # See yaml_version example
@@ -492,6 +523,7 @@ As mentioned above, all [parameters of the Dash DataTable](https://dash.plotly.c
         ```
 
     === "Result"
+
         [![Table2]][table2]
 
 If the available arguments are not sufficient, there is always the option to create a [custom Dash DataTable](custom-tables.md).
@@ -507,7 +539,9 @@ The [`Table`][vizro.models.Table] and the [`AgGrid`][vizro.models.AgGrid] models
 ### Formatted AgGrid
 
 !!! example "Formatted AgGrid"
+
     === "app.py"
+
         ```{.python pycafe-link}
 
         import vizro.models as vm
@@ -533,6 +567,7 @@ The [`Table`][vizro.models.Table] and the [`AgGrid`][vizro.models.AgGrid] models
         ```
 
     === "app.yaml"
+
         ```yaml
         # Still requires a .py to add data to the data manager and parse YAML configuration
         # See yaml_version example
@@ -553,12 +588,15 @@ The [`Table`][vizro.models.Table] and the [`AgGrid`][vizro.models.AgGrid] models
         ```
 
     === "Result"
+
         [![FormattedGrid]][formattedgrid]
 
 ### Formatted DataTable
 
 !!! example "Formatted DataTable"
+
     === "app.py"
+
         ```{.python pycafe-link}
 
         import vizro.models as vm
@@ -584,6 +622,7 @@ The [`Table`][vizro.models.Table] and the [`AgGrid`][vizro.models.AgGrid] models
         ```
 
     === "app.yaml"
+
         ```yaml
         # Still requires a .py to add data to the data manager and parse YAML configuration
         # See yaml_version example
@@ -602,6 +641,7 @@ The [`Table`][vizro.models.Table] and the [`AgGrid`][vizro.models.AgGrid] models
         ```
 
     === "Result"
+
         [![FormattedTable]][formattedtable]
 
 [aggrid]: ../../assets/user_guides/table/aggrid.png

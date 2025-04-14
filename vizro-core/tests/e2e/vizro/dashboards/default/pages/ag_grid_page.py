@@ -12,7 +12,7 @@ ag_grid_page = vm.Page(
         vm.Container(
             id=cnst.TABLE_AG_GRID_CONTAINER,
             title=cnst.TABLE_AG_GRID_CONTAINER,
-            layout=vm.Layout(grid=[[0, 1]], col_gap="0px"),
+            layout=vm.Grid(grid=[[0, 1]], col_gap="0px"),
             components=[
                 vm.AgGrid(
                     id=cnst.TABLE_AG_GRID_ID,
@@ -35,17 +35,17 @@ ag_grid_page = vm.Page(
         vm.Filter(
             column="continent",
             targets=[cnst.TABLE_AG_GRID_ID],
-            selector=vm.RadioItems(options=["Europe", "Africa", "Americas"]),
+            selector=vm.RadioItems(id=cnst.RADIOITEMS_AGGRID_FILTER, options=["Europe", "Africa", "Americas"]),
         ),
         vm.Filter(
             column="continent",
             targets=[cnst.TABLE_AG_GRID_ID],
-            selector=vm.Checklist(options=["Asia", "Oceania"]),
+            selector=vm.Checklist(id=cnst.CHECKLIST_AGGRID_FILTER, options=["Asia", "Oceania"]),
         ),
         vm.Filter(
             column="pop",
             targets=[cnst.TABLE_AG_GRID_ID],
-            selector=vm.RangeSlider(step=1000000.0, min=1000000, max=10000000),
+            selector=vm.RangeSlider(id=cnst.RANGESLIDER_AGGRID_FILTER, step=1000000.0, min=1000000, max=10000000),
         ),
     ],
 )

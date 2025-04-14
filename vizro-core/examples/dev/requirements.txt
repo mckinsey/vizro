@@ -22,6 +22,7 @@ dash==2.18.1
     # via
     #   dash-ag-grid
     #   dash-bootstrap-components
+    #   dash-mantine-components
     #   vizro
 dash-ag-grid==31.2.0
     # via vizro
@@ -31,7 +32,7 @@ dash-core-components==2.0.0
     # via dash
 dash-html-components==2.0.0
     # via dash
-dash-mantine-components==0.12.1
+dash-mantine-components==0.15.3
     # via vizro
 dash-table==5.0.0
     # via dash
@@ -48,9 +49,7 @@ gunicorn==23.0.0
 idna==3.10
     # via requests
 importlib-metadata==8.5.0
-    # via
-    #   dash
-    #   flask
+    # via dash
 itsdangerous==2.2.0
     # via flask
 jinja2==3.1.4
@@ -72,6 +71,7 @@ packaging==24.1
     #   black
     #   gunicorn
     #   plotly
+    #   vizro
 pandas==2.2.3
     # via vizro
 pathspec==0.12.1
@@ -104,13 +104,8 @@ six==1.16.0
     #   retrying
 tenacity==9.0.0
     # via plotly
-tomli==2.1.0
-    # via
-    #   autoflake
-    #   black
 typing-extensions==4.12.2
     # via
-    #   black
     #   dash
     #   pydantic
     #   pydantic-core
@@ -118,7 +113,7 @@ tzdata==2024.2
     # via pandas
 urllib3==2.2.3
     # via requests
-vizro==0.1.28
+vizro==0.1.37
     # via -r requirements.in
 werkzeug==3.0.6
     # via

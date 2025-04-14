@@ -32,7 +32,9 @@ For instance, to make a KPI card with the icon positioned on the right side of t
 <!-- vale off -->
 
 !!! example "Custom KPI card"
+
     === "app.py"
+
         ```{.python pycafe-link}
         from typing import Optional
 
@@ -69,12 +71,12 @@ For instance, to make a KPI card with the icon positioned on the right side of t
                 ]
             )
             body = dbc.CardBody([value_format.format(value=value)])
-            return dbc.Card([header, body], className="card-kpi")
+            return dbc.Card([header, body], class_name="card-kpi")
 
 
         page = vm.Page(
             title="Create your own KPI card",
-            layout=vm.Layout(grid=[[0, 1, -1, -1]] + [[-1, -1, -1, -1]] * 3),  # (4)!
+            layout=vm.Grid(grid=[[0, 1, -1, -1]] + [[-1, -1, -1, -1]] * 3),  # (4)!
             components=[
                 vm.Figure(
                     figure=kpi_card(  # (5)!
@@ -104,14 +106,16 @@ For instance, to make a KPI card with the icon positioned on the right side of t
         1. Here we decorate our custom figure function with the `@capture("figure")` decorator.
         1. The custom figure function needs to have a `data_frame` argument and return a `Dash` component.
         1. We adjust the return statement to include the icon on the right side of the title. This is achieved by swapping the order of the `html.H2` and `html.P` compared to the original `kpi_card`.
-        1. This creates a [`layout`](layouts.md) with four rows and columns. The KPI cards are positioned in the first two cells, while the remaining cells are empty.
+        1. This creates a [`grid`](layouts.md#grid-layout) with four rows and four columns. The KPI cards are positioned in the first two cells, while the remaining cells are empty.
         1. For more information, refer to the API reference for the [`kpi_card`](../API-reference/figure-callables.md#vizro.figures.kpi_card).
         1. Our custom figure function `custom_kpi_card` now needs to be passed on to the `vm.Figure`.
 
     === "app.yaml"
+
         Custom figures are currently only possible via Python configuration.
 
     === "Result"
+
         [![CustomKPI]][customkpi]
 
 <!-- vale on -->
@@ -123,7 +127,9 @@ You can create a custom figure for any [Dash component](https://dash.plotly.com/
 <!-- vale off -->
 
 !!! example "Dynamic HTML header"
+
     === "app.py"
+
         ```{.python pycafe-link}
         import pandas as pd
         import vizro.models as vm
@@ -156,9 +162,11 @@ You can create a custom figure for any [Dash component](https://dash.plotly.com/
         1. Our custom figure function `dynamic_html_header` now needs to be passed on to the `vm.Figure`.
 
     === "app.yaml"
+
         Custom figures are currently only possible via Python configuration.
 
     === "Result"
+
         [![CustomHTML]][customhtml]
 
 <!-- vale on -->
@@ -170,7 +178,9 @@ The example below shows how to create multiple cards created from a `pandas.Data
 <!-- vale off -->
 
 !!! example "Dynamic number of cards"
+
     === "app.py"
+
         ```py
         from typing import Optional
 
@@ -235,6 +245,7 @@ The example below shows how to create multiple cards created from a `pandas.Data
         <img src=https://py.cafe/logo.png alt="PyCafe logo" width="30"><b><a target="_blank" href="https://py.cafe/vizro-official/vizro-dynamic-cards">Run and edit this code in PyCafe</a></b>
 
     === "styling.css"
+
         ```css
         .multiple-cards-container {
             display: flex;
@@ -254,9 +265,11 @@ The example below shows how to create multiple cards created from a `pandas.Data
         ```
 
     === "app.yaml"
+
         Custom figures are currently only possible via Python configuration.
 
     === "Result"
+
         [![CustomFigure]][customfigure]
 
 <!-- vale on -->
