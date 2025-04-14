@@ -16,7 +16,7 @@
 
 /* Change filled container bg inside filled container */
 .bg-container .bg-container {
-  background-color: var(--right-side-bg);
+  background-color: var(--right-side-bg-iterated);
 }
 
 /* If a filled container is detected, then the right-bg color will change to grey
