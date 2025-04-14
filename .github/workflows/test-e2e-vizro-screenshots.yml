@@ -10,7 +10,7 @@ on:
   pull_request:
     branches:
       - main
-      # TODO: delete before merge
+      # TODO: delete before merge.
       - feat/enable-variant-button
 
 env:
