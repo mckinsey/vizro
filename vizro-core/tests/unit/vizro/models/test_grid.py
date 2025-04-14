@@ -190,13 +190,19 @@ class TestGridBuild:
             id="grid_id",
             children=[
                 html.Div(
-                    id="grid_id_0", style={"gridColumn": "1/2", "gridRow": "1/3", "height": "100%", "width": "100%"}
+                    id="grid_id_0",
+                    style={"gridColumn": "1/2", "gridRow": "1/3", "height": "100%", "width": "100%"},
+                    className="grid-item",
                 ),
                 html.Div(
-                    id="grid_id_1", style={"gridColumn": "2/3", "gridRow": "1/2", "height": "100%", "width": "100%"}
+                    id="grid_id_1",
+                    style={"gridColumn": "2/3", "gridRow": "1/2", "height": "100%", "width": "100%"},
+                    className="grid-item",
                 ),
                 html.Div(
-                    id="grid_id_2", style={"gridColumn": "2/3", "gridRow": "2/3", "height": "100%", "width": "100%"}
+                    id="grid_id_2",
+                    style={"gridColumn": "2/3", "gridRow": "2/3", "height": "100%", "width": "100%"},
+                    className="grid-item",
                 ),
             ],
             style={
