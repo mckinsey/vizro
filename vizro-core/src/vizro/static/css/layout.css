@@ -65,6 +65,7 @@
 
 #page-components {
   overflow: auto;
+  padding-top: 0.25rem;
 }
 
 .grid-layout {
@@ -150,8 +151,7 @@
 }
 
 #collapse-icon.material-symbols-outlined {
-  background-color: var(--left-side-bg);
-  border: 1px solid var(--border-subtleAlpha01);
+  background-color: var(--collapse-icon-bg);
   border-radius: 50%;
   color: var(--text-disabled);
   cursor: pointer;
@@ -159,8 +159,7 @@
 }
 
 #collapse-icon.material-symbols-outlined:hover {
-  border-color: var(--border-subtleAlpha02);
-  color: var(--text-primaryHover);
+  color: var(--text-primary);
 }
 
 .collapse-icon-div {
@@ -216,4 +215,9 @@ Current logic:
 /* Hide Loading... text on loading page */
 ._dash-loading {
   display: none;
+}
+
+.text {
+  height: 100%;
+  overflow: auto;
 }
