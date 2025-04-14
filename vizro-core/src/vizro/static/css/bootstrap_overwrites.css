@@ -58,10 +58,6 @@ All the HEX values starting with --text-code are taken from the Github code high
   will-change: unset;
 }
 
-.card {
-  margin: 4px;
-}
-
 .card .nav-link {
   height: 100%;
 }
