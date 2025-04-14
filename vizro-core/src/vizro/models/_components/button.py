@@ -19,6 +19,8 @@ class Button(VizroBaseModel):
         text (str): Text to be displayed on button. Defaults to `"Click me!"`.
         href (str): URL (relative or absolute) to navigate to. Defaults to `""`.
         actions (list[Action]): See [`Action`][vizro.models.Action]. Defaults to `[]`.
+        variant (Literal["plain", "filled", "outlined"]): Predefined styles to choose from. Options are `plain`,
+            `filled` or `outlined`. Defaults to `filled`.
         extra (Optional[dict[str, Any]]): Extra keyword arguments that are passed to `dbc.Button` and overwrite any
             defaults chosen by the Vizro team. This may have unexpected behavior.
             Visit the [dbc documentation](https://dash-bootstrap-components.opensource.faculty.ai/docs/components/button/)
@@ -57,14 +59,16 @@ class Button(VizroBaseModel):
 
     @_log_call
     def build(self):
-        variants = {"plain": "btn-tertiary", "filled": "btn-primary", "outlined": "btn-secondary"}
+        variants = {"plain": "link", "filled": "primary", "outlined": "secondary"}
 
         defaults = {
             "id": self.id,
             "children": self.text,
             "href": get_relative_path(self.href) if self.href.startswith("/") else self.href,
             "target": "_top",
-            "class_name": variants[self.variant],
+            # dbc.Button includes `btn btn-primary` as a  class by default and appends any class names provided.
+            # To prevent unnecessary class chaining, the button's style variant should be specified using `color`.
+            "color": variants[self.variant],
         }
 
         return dbc.Button(**(defaults | self.extra))

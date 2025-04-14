@@ -53,9 +53,7 @@ class TestButtonInstantiation:
 class TestBuildMethod:
     def test_button_build(self):
         result = vm.Button(id="button", text="Click me").build()
-        assert_component_equal(
-            result, dbc.Button("Click me", id="button", href="", target="_top", class_name="btn-primary")
-        )
+        assert_component_equal(result, dbc.Button("Click me", id="button", href="", target="_top", color="primary"))
 
     def test_button_build_with_extra(self):
         """Test that extra arguments correctly override defaults."""
@@ -71,25 +69,24 @@ class TestBuildMethod:
                 outline=True,
                 href="//www.google.com",
                 target="_top",
-                class_name="btn-primary",
             ),
         )
 
     def test_button_build_with_href(self):
         button = vm.Button(id="button_id", text="My text", href="https://www.google.com").build()
         expected = dbc.Button(
-            id="button_id", children="My text", href="https://www.google.com", target="_top", class_name="btn-primary"
+            id="button_id", children="My text", href="https://www.google.com", target="_top", color="primary"
         )
         assert_component_equal(button, expected)
 
     @pytest.mark.parametrize(
-        "variant, expected_classname",
-        [("plain", "btn-tertiary"), ("filled", "btn-primary"), ("outlined", "btn-secondary")],
+        "variant, expected_color",
+        [("plain", "link"), ("filled", "primary"), ("outlined", "secondary")],
     )
-    def test_button_with_variant(self, variant, expected_classname):
+    def test_button_with_variant(self, variant, expected_color):
         result = vm.Button(variant=variant).build()
         assert_component_equal(
             result,
-            dbc.Button(children="Click me!", href="", target="_top", class_name=expected_classname),
+            dbc.Button(children="Click me!", href="", target="_top", color=expected_color),
             keys_to_strip={"id"},
         )
