@@ -160,7 +160,7 @@ vm.Page.add_type("controls", vm.Button)
 
 ## Styled buttons
 
-There are three predefined button styles that can be customized using the `variant` argument.
+There are three predefined button styles that can be customized using the `variant` argument. If no `variant` is specified, the default style applied is `variant="filled"`.
 
 !!! example "Button with different styles"
 
@@ -174,8 +174,7 @@ There are three predefined button styles that can be customized using the `varia
             title="Buttons with different styles",
             layout=vm.Flex(direction="row"),
             components=[
-                vm.Button(text="default"),
-                vm.Button(text="filled", variant="filled"),
+                vm.Button(text="filled"),
                 vm.Button(text="outlined", variant="outlined"),
                 vm.Button(text="plain", variant="plain"),
             ],
@@ -197,11 +196,7 @@ There are three predefined button styles that can be customized using the `varia
               type: flex
             components:
               - type: button
-                text: default
-                variant: filled
-              - type: button
                 text: filled
-                variant: filled
               - type: button
                 text: outlined
                 variant: outlined

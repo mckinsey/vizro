@@ -66,7 +66,7 @@ class Button(VizroBaseModel):
             "children": self.text,
             "href": get_relative_path(self.href) if self.href.startswith("/") else self.href,
             "target": "_top",
-            # dbc.Button includes `btn btn-primary` as a  class by default and appends any class names provided.
+            # dbc.Button includes `btn btn-primary` as a class by default and appends any class names provided.
             # To prevent unnecessary class chaining, the button's style variant should be specified using `color`.
             "color": variants[self.variant],
         }

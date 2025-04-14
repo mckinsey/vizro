@@ -7,11 +7,7 @@ pages:
       type: flex
     components:
       - type: button
-        text: default
-        variant: filled
-      - type: button
         text: filled
-        variant: filled
       - type: button
         text: outlined
         variant: outlined

@@ -25,7 +25,7 @@ class TestButtonInstantiation:
         "text, href, variant",
         [
             ("Test", "/page_1_reference", "plain"),
-            ("Test", "https://www.google.de/", "filled"),
+            ("Test", "//www.google.de/", "filled"),
             ("""# Header""", "/", "outlined"),
             ("""<p>Hello </p>""", "/", "plain"),
         ],
@@ -73,9 +73,9 @@ class TestBuildMethod:
         )
 
     def test_button_build_with_href(self):
-        button = vm.Button(id="button_id", text="My text", href="https://www.google.com").build()
+        button = vm.Button(id="button_id", text="My text", href="//www.google.com").build()
         expected = dbc.Button(
-            id="button_id", children="My text", href="https://www.google.com", target="_top", color="primary"
+            id="button_id", children="My text", href="//www.google.com", target="_top", color="primary"
         )
         assert_component_equal(button, expected)
 
