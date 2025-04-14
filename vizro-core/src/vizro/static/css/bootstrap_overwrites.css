@@ -43,6 +43,12 @@ All the HEX values starting with --text-code are taken from the Github code high
     color: var(--text-primary) !important;
 }
 
+
+/* CARDS */
+.card {
+  margin: 4px;
+}
+
 .card .nav-link {
   height: 100%;
 }
