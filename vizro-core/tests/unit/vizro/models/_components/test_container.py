@@ -66,7 +66,7 @@ class TestContainerBuildMethod:
         assert_component_equal(
             result, dbc.Container(id="container", class_name="", fluid=True), keys_to_strip={"children"}
         )
-        assert_component_equal(result.children, [None, html.Div()], keys_to_strip=STRIP_ALL)
+        assert_component_equal(result.children, [html.H3(), html.Div()], keys_to_strip=STRIP_ALL)
 
     def test_container_build_with_title(self):
         result = vm.Container(
@@ -77,7 +77,9 @@ class TestContainerBuildMethod:
         )
         assert_component_equal(result.children, [html.H3(), html.Div()], keys_to_strip=STRIP_ALL)
         # We still want to test the exact H3 produced in Container.build:
-        assert_component_equal(result.children[0], html.H3("Title", className="container-title", id="container_title"))
+        assert_component_equal(
+            result.children[0], html.H3(["Title"], className="container-title", id="container_title")
+        )
 
     def test_container_build_legacy_layout(self):
         with pytest.warns(FutureWarning, match="The `Layout` model has been renamed `Grid`"):
@@ -141,7 +143,7 @@ class TestContainerBuildMethod:
         ]
 
         assert_component_equal(
-            result.children[0], html.H3(expected_title_content, className="container-title", id="test_title")
+            result.children[0], html.H3(expected_title_content, className="container-title-collapse", id="test_title")
         )
         assert_component_equal(
             result.children[1],
