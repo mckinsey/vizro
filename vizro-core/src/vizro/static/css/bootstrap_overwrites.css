@@ -7,6 +7,7 @@ All the HEX values starting with --text-code are taken from the Github code high
   --dropdown-label-bg: var(--primary-800);
   --left-side-bg: var(--surfaces-bg02);
   --right-side-bg: var(--surfaces-bg03);
+  --right-side-bg-iterated: var(--surfaces-bg03);
   --text-code-string: #95c2e7;
   --text-code-keyword: #f4766e;
   --text-code-meta: #c8ace1;
