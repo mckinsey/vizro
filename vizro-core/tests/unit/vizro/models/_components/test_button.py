@@ -74,9 +74,7 @@ class TestBuildMethod:
 
     def test_button_build_with_href(self):
         button = vm.Button(id="button_id", text="My text", href="www.google.com").build()
-        expected = dbc.Button(
-            id="button_id", children="My text", href="www.google.com", target="_top", color="primary"
-        )
+        expected = dbc.Button(id="button_id", children="My text", href="www.google.com", target="_top", color="primary")
         assert_component_equal(button, expected)
 
     @pytest.mark.parametrize(
