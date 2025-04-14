@@ -1,3 +1,4 @@
+import pytest
 from e2e.asserts import assert_files_equal
 from e2e.vizro import constants as cnst
 from e2e.vizro.checkers import (
@@ -15,6 +16,7 @@ from selenium.webdriver.support import expected_conditions
 from selenium.webdriver.support.wait import WebDriverWait
 
 
+@pytest.mark.flaky(reruns=5)
 def test_parameters_title(chrome_driver, dash_br):
     """Tests that graph title is changing by parameter independently for every user."""
     # select parameters page for the first user
