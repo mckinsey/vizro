@@ -25,8 +25,8 @@ class Container(VizroBaseModel):
         variant (Literal["plain", "filled", "outlined"]): Predefined styles to choose from. Options are `plain`,
             `filled` or `outlined`. Defaults to `plain`.
         collapsed (Optional[bool]): Boolean flag that determines whether the container is collapsed on initial load.
-        Set to `True` for a collapsed state, `False` for an expanded state.
-        Defaults to `None`, meaning the container is not collapsible.
+            Set to `True` for a collapsed state, `False` for an expanded state. Defaults to `None`, meaning the
+            container is not collapsible.
         extra (Optional[dict[str, Any]]): Extra keyword arguments that are passed to `dbc.Container` and overwrite any
             defaults chosen by the Vizro team. This may have unexpected behavior.
             Visit the [dbc documentation](https://dash-bootstrap-components.opensource.faculty.ai/docs/components/layout/)
