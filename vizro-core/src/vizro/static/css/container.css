@@ -1,0 +1,30 @@
+/* Hides title of the first container given the title is already reflected in the tab title */
+.tab-content .container-title:first-of-type {
+  display: none;
+}
+
+.container-fluid {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  padding: 0;
+}
+
+.bg-container {
+  background: var(--left-side-bg);
+}
+
+/* Change filled container bg inside filled container */
+.bg-container .bg-container {
+  background-color: var(--right-side-bg-iterated);
+}
+
+/* If a filled container is detected, then the right-bg color will change to grey
+and all containers need to have a white background on that page */
+[data-bs-theme="light"] #right-side:has(.bg-container) {
+  background: var(--right-side-bg-iterated);
+}
+
+[data-bs-theme="light"] #right-side:has(.bg-container) .card {
+  background: var(--left-side-bg);
+}

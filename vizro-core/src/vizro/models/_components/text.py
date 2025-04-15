@@ -46,7 +46,6 @@ class Text(VizroBaseModel):
             "id": self.id,
             "children": self.text,
             "dangerously_allow_html": False,
-            "className": "text",
         }
 
         return dcc.Markdown(**(defaults | self.extra))
