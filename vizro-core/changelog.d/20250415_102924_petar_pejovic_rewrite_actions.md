@@ -22,12 +22,9 @@ Uncomment the section that is right (remove the HTML comment wrapper).
 - A bullet item for the Added category with a link to the relevant PR at the end of your entry, e.g. Enable feature XXX. ([#1](https://github.com/mckinsey/vizro/pull/1))
 
 -->
-<!--
 ### Changed
 
-- A bullet item for the Changed category with a link to the relevant PR at the end of your entry, e.g. Enable feature XXX. ([#1](https://github.com/mckinsey/vizro/pull/1))
-
--->
+- `actions` now have type `list[ActionType]` rather than `list[Action]`. ([#1054](https://github.com/mckinsey/vizro/pull/1054))
 <!--
 ### Deprecated
 
