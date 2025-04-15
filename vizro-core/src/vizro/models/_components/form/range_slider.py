@@ -2,11 +2,11 @@ from typing import Annotated, Any, Literal, Optional
 
 import dash_bootstrap_components as dbc
 from dash import ClientsideFunction, Input, Output, State, clientside_callback, dcc, html
-from pydantic import AfterValidator, Field, PrivateAttr, conlist
+from pydantic import AfterValidator, BeforeValidator, Field, PrivateAttr, conlist
 from pydantic.functional_serializers import PlainSerializer
 from pydantic.json_schema import SkipJsonSchema
 
-from vizro.models import Action, VizroBaseModel
+from vizro.models import Action, Tooltip, VizroBaseModel
 from vizro.models._action._actions_chain import _action_validator_factory
 from vizro.models._components.form._form_utils import (
     set_default_marks,
@@ -15,6 +15,7 @@ from vizro.models._components.form._form_utils import (
     validate_step,
 )
 from vizro.models._models_utils import _log_call
+from vizro.models._tooltip import coerce_str_to_tooltip
 
 
 class RangeSlider(VizroBaseModel):
@@ -31,6 +32,7 @@ class RangeSlider(VizroBaseModel):
         marks (Optional[dict[Union[float, int], str]]): Marks to be displayed on slider. Defaults to `{}`.
         value (Optional[list[float]]): Default start and end value for slider. Must be 2 items. Defaults to `None`.
         title (str): Title to be displayed. Defaults to `""`.
+        description (Optional[Tooltip]): Additional information about the selector shown in a tooltip.
         actions (list[Action]): See [`Action`][vizro.models.Action]. Defaults to `[]`.
         extra (Optional[dict[str, Any]]): Extra keyword arguments that are passed to `dcc.RangeSlider` and overwrite any
             defaults chosen by the Vizro team. This may have unexpected behavior.
@@ -63,6 +65,13 @@ class RangeSlider(VizroBaseModel):
         ]
     ] = Field(default=None)
     title: str = Field(default="", description="Title to be displayed.")
+    # TODO: ideally description would have json_schema_input_type=Union[str, Tooltip] attached to the BeforeValidator,
+    #  but this requires pydantic >= 2.9.
+    description: Annotated[
+        Optional[Tooltip],
+        BeforeValidator(coerce_str_to_tooltip),
+        Field(default=None, description="Additional information about the selector shown in a tooltip."),
+    ]
     actions: Annotated[
         list[Action],
         AfterValidator(_action_validator_factory("value")),
@@ -108,7 +117,7 @@ class RangeSlider(VizroBaseModel):
             output=output,
             inputs=inputs,
         )
-
+        description = self.description.build().children if self.description is not None else [None]
         defaults = {
             "id": self.id,
             "min": min,
@@ -126,7 +135,7 @@ class RangeSlider(VizroBaseModel):
                 dcc.Store(f"{self.id}_callback_data", data={"id": self.id, "min": min, "max": max}),
                 html.Div(
                     children=[
-                        dbc.Label(children=self.title, html_for=self.id) if self.title else None,
+                        dbc.Label(children=[self.title, *description], html_for=self.id) if self.title else None,
                         html.Div(
                             [
                                 dcc.Input(

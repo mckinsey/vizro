@@ -6,6 +6,7 @@ from asserts import assert_component_equal
 from dash import dcc, html
 from pydantic import ValidationError
 
+from vizro.models import Tooltip
 from vizro.models._action._action import Action
 from vizro.models._components.form import Dropdown
 
@@ -143,7 +144,7 @@ class TestDropdownBuild:
         dropdown = Dropdown(options=["A", "B", "C"], title="Title", id="dropdown_id").build()
         expected_dropdown = html.Div(
             [
-                dbc.Label("Title", html_for="dropdown_id"),
+                dbc.Label(["Title", None], html_for="dropdown_id"),
                 dcc.Dropdown(
                     id="dropdown_id",
                     options=[
@@ -168,7 +169,7 @@ class TestDropdownBuild:
         dropdown = Dropdown(id="dropdown_id", options=["A", "B", "C"], multi=False, title="Title").build()
         expected_dropdown = html.Div(
             [
-                dbc.Label("Title", html_for="dropdown_id"),
+                dbc.Label(["Title", None], html_for="dropdown_id"),
                 dcc.Dropdown(
                     id="dropdown_id",
                     options=["A", "B", "C"],
@@ -234,7 +235,7 @@ class TestDropdownBuild:
         ).build()
         expected_dropdown = html.Div(
             [
-                dbc.Label("Title", html_for="dropdown_id"),
+                dbc.Label(["Title", None], html_for="dropdown_id"),
                 dcc.Dropdown(
                     id="overridden_id",
                     options=[
@@ -250,6 +251,47 @@ class TestDropdownBuild:
                     className="dropdown",
                     clearable=True,
                     optionHeight=150,
+                ),
+            ]
+        )
+
+        assert_component_equal(dropdown, expected_dropdown)
+
+    def test_dropdown_with_description(self):
+        dropdown = Dropdown(
+            options=["A", "B", "C"],
+            title="Title",
+            id="dropdown_id",
+            description=Tooltip(text="Test description", icon="info", id="info"),
+        ).build()
+
+        description = [
+            html.Span("info", id="info-icon", className="material-symbols-outlined tooltip-icon"),
+            dbc.Tooltip(
+                children=dcc.Markdown("Test description", className="tooltip-text"),
+                id="info",
+                target="info-icon",
+                autohide=False,
+            ),
+        ]
+
+        expected_dropdown = html.Div(
+            [
+                dbc.Label(["Title", *description], html_for="dropdown_id"),
+                dcc.Dropdown(
+                    id="dropdown_id",
+                    options=[
+                        {"label": html.Div(["ALL"]), "value": "ALL"},
+                        {"label": "A", "value": "A"},
+                        {"label": "B", "value": "B"},
+                        {"label": "C", "value": "C"},
+                    ],
+                    optionHeight=32,
+                    value="ALL",
+                    multi=True,
+                    persistence=True,
+                    persistence_type="session",
+                    className="dropdown",
                 ),
             ]
         )

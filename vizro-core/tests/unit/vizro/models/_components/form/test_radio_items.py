@@ -3,9 +3,10 @@
 import dash_bootstrap_components as dbc
 import pytest
 from asserts import assert_component_equal
-from dash import html
+from dash import dcc, html
 from pydantic import ValidationError
 
+from vizro.models import Tooltip
 from vizro.models._action._action import Action
 from vizro.models._components.form import RadioItems
 
@@ -123,12 +124,12 @@ class TestRadioItemsBuild:
     """Tests model build method."""
 
     def test_radio_items_build(self):
-        radio_items = RadioItems(id="radio_items_id", options=["A", "B", "C"], title="Title").build()
+        radio_items = RadioItems(id="radio_items", options=["A", "B", "C"], title="Title").build()
         expected_radio_items = html.Fieldset(
             [
-                html.Legend("Title", className="form-label"),
+                dbc.Label(["Title", None], html_for="radio_items"),
                 dbc.RadioItems(
-                    id="radio_items_id",
+                    id="radio_items",
                     options=["A", "B", "C"],
                     value="A",
                     persistence=True,
@@ -142,7 +143,7 @@ class TestRadioItemsBuild:
     def test_radio_items_build_with_extra(self):
         """Test that extra arguments correctly override defaults."""
         radio_items = RadioItems(
-            id="radio_items_id",
+            id="radio_items",
             options=["A", "B", "C"],
             title="Title",
             extra={
@@ -152,7 +153,7 @@ class TestRadioItemsBuild:
         ).build()
         expected_radio_items = html.Fieldset(
             [
-                html.Legend("Title", className="form-label"),
+                dbc.Label(["Title", None], html_for="radio_items"),
                 dbc.RadioItems(
                     id="overridden_id",
                     options=["A", "B", "C"],
@@ -163,4 +164,37 @@ class TestRadioItemsBuild:
                 ),
             ]
         )
+        assert_component_equal(radio_items, expected_radio_items)
+
+    def test_radio_items_build_with_description(self):
+        radio_items = RadioItems(
+            id="radio_items",
+            options=["A", "B", "C"],
+            title="Title",
+            description=Tooltip(text="Test description", icon="info", id="info"),
+        ).build()
+
+        description = [
+            html.Span("info", id="info-icon", className="material-symbols-outlined tooltip-icon"),
+            dbc.Tooltip(
+                children=dcc.Markdown("Test description", className="tooltip-text"),
+                id="info",
+                target="info-icon",
+                autohide=False,
+            ),
+        ]
+
+        expected_radio_items = html.Fieldset(
+            [
+                dbc.Label(["Title", *description], html_for="radio_items"),
+                dbc.RadioItems(
+                    id="radio_items",
+                    options=["A", "B", "C"],
+                    value="A",
+                    persistence=True,
+                    persistence_type="session",
+                ),
+            ]
+        )
+
         assert_component_equal(radio_items, expected_radio_items)

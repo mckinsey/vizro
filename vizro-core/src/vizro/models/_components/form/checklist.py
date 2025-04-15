@@ -2,14 +2,15 @@ from typing import Annotated, Any, Literal, Optional
 
 import dash_bootstrap_components as dbc
 from dash import html
-from pydantic import AfterValidator, Field, PrivateAttr, model_validator
+from pydantic import AfterValidator, BeforeValidator, Field, PrivateAttr, model_validator
 from pydantic.functional_serializers import PlainSerializer
 from pydantic.json_schema import SkipJsonSchema
 
-from vizro.models import Action, VizroBaseModel
+from vizro.models import Action, Tooltip, VizroBaseModel
 from vizro.models._action._actions_chain import _action_validator_factory
 from vizro.models._components.form._form_utils import get_options_and_default, validate_options_dict, validate_value
 from vizro.models._models_utils import _log_call
+from vizro.models._tooltip import coerce_str_to_tooltip
 from vizro.models.types import MultiValueType, OptionsType
 
 
@@ -24,6 +25,7 @@ class Checklist(VizroBaseModel):
         options (OptionsType): See [`OptionsType`][vizro.models.types.OptionsType]. Defaults to `[]`.
         value (Optional[MultiValueType]): See [`MultiValueType`][vizro.models.types.MultiValueType]. Defaults to `None`.
         title (str): Title to be displayed. Defaults to `""`.
+        description (Optional[Tooltip]): Additional information about the selector shown in a tooltip.
         actions (list[Action]): See [`Action`][vizro.models.Action]. Defaults to `[]`.
         extra (Optional[dict[str, Any]]): Extra keyword arguments that are passed to `dbc.Checklist` and overwrite any
             defaults chosen by the Vizro team. This may have unexpected behavior.
@@ -39,6 +41,13 @@ class Checklist(VizroBaseModel):
         Optional[MultiValueType], AfterValidator(validate_value), Field(default=None, validate_default=True)
     ]
     title: str = Field(default="", description="Title to be displayed")
+    # TODO: ideally description would have json_schema_input_type=Union[str, Tooltip] attached to the BeforeValidator,
+    #  but this requires pydantic >= 2.9.
+    description: Annotated[
+        Optional[Tooltip],
+        BeforeValidator(coerce_str_to_tooltip),
+        Field(default=None, description="Additional information about the selector shown in a tooltip."),
+    ]
     actions: Annotated[
         list[Action],
         AfterValidator(_action_validator_factory("value")),
@@ -69,7 +78,7 @@ class Checklist(VizroBaseModel):
 
     def __call__(self, options):
         full_options, default_value = get_options_and_default(options=options, multi=True)
-
+        description = self.description.build().children if self.description is not None else [None]
         defaults = {
             "id": self.id,
             "options": full_options,
@@ -80,7 +89,7 @@ class Checklist(VizroBaseModel):
 
         return html.Fieldset(
             children=[
-                html.Legend(children=self.title, className="form-label") if self.title else None,
+                html.Legend(children=[self.title, *description], className="form-label") if self.title else None,
                 dbc.Checklist(**(defaults | self.extra)),
             ]
         )

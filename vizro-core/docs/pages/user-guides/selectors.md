@@ -44,6 +44,94 @@ For more information, refer to the API reference of the selector, or the documen
 
     When configuring the [`DatePicker`][vizro.models.DatePicker] make sure to provide your dates for `min`, `max` and `value` arguments in `"yyyy-mm-dd"` format or as `datetime` type (for example, `datetime.datetime(2024, 01, 01)`).
 
+## The `description` argument
+
+The `description` argument allows you to provide additional context for your selector. When `description` is defined, an icon appears to the right of the selector's title, and hovering over this icon reveals a tooltip containing the specified description text.
+
+The `description` argument accepts either a plain `str`, in which case a default info icon is used, or a custom [`Tooltip`][vizro.models.Tooltip] model. The [`Tooltip`][vizro.models.Tooltip] model enables users to define both the tooltip content and a custom icon name from [Google Material icons library](https://fonts.google.com/icons).
+
+!!! example "Selectors with `description`"
+
+    === "app.py"
+
+        ```{.python pycafe-link hl_lines="19"}
+        import vizro.models as vm
+        import vizro.plotly.express as px
+        from vizro import Vizro
+
+        iris = px.data.iris()
+
+        page = vm.Page(
+            title="Selectors with icons",
+            components=[
+                vm.Graph(
+                    figure=px.scatter(iris, x="sepal_length", y="sepal_width")
+                ),
+            ],
+            controls=[
+                vm.Filter(
+                    column="species",
+                    selector=vm.Checklist(
+                        title="Select Species",
+                        description="""
+                            Select which species of iris you like.
+                            [Click here](www.google.com) to learn more about flowers.""",
+                    )
+                ),
+                vm.Filter(
+                    column="sepal_length",
+                    selector=vm.RangeSlider(
+                        title="Select sepal length",
+                        description=vm.Tooltip(
+                            text="Select species sepal_lenght range.",
+                            icon="help",
+                        ),
+                    )
+                ),
+            ]
+        )
+
+        dashboard = vm.Dashboard(pages=[page])
+        Vizro().build(dashboard).run()
+        ```
+
+    === "app.yaml"
+
+        ```{.yaml hl_lines="16 17"}
+        pages:
+          - title: Selectors with icons
+            components:
+              - type: graph
+                figure:
+                  _target_: scatter
+                  data_frame: iris
+                  x: sepal_length
+                  y: sepal_width
+            controls:
+              - column: species
+                type: filter
+                selector:
+                  type: checklist
+                  title: Select Species
+                  description: |
+                        Select which species of iris you like.
+
+                        [Click here](www.google.com) to learn more about flowers.
+              - column: sepal_length
+                type: filter
+                selector:
+                  type: range_slider
+                  title: Select Species
+                  description:
+                    text: Select species sepal_lenght range.
+                    icon: help
+                    type: tooltip
+        ```
+
+    === "Result"
+
+        [![DescriptionSelector]][descriptionselector]
+
 ## The `extra` argument
 
 Currently each selector is based on an underlying Dash component as mentioned in the sections above. Using the `extra` argument you can pass additional arguments to the underlying object in order to alter it beyond the chosen defaults. The available arguments can be found in the documentation of each underlying component that was linked in the respective sections above.
@@ -113,4 +201,5 @@ An example would be to make the [`RadioItem`][vizro.models.RadioItems] display i
 
         [![InlineRadio]][inlineradio]
 
+[descriptionselector]: ../../assets/user_guides/selectors/description_selector.png
 [inlineradio]: ../../assets/user_guides/selectors/inlineradio.png
