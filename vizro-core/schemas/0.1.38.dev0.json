@@ -323,7 +323,7 @@
     },
     "Container": {
       "additionalProperties": false,
-      "description": "Container to group together a set of components on a page.\n\nArgs:\n    type (Literal[\"container\"]): Defaults to `\"container\"`.\n    components (list[ComponentType]): See [ComponentType][vizro.models.types.ComponentType]. At least one component\n        has to be provided.\n    title (str): Title of the `Container`. Defaults to `\"\"`.\n    layout (Optional[LayoutType]): Layout to place components in. Defaults to `None`.\n    variant (Literal[\"plain\", \"filled\", \"outlined\"]): Predefined styles to choose from. Options are `plain`,\n        `filled` or `outlined`. Defaults to `plain`.\n    collapsed (Optional[bool]): Boolean flag that determines whether the container is collapsed on initial load.\n        Set to `True` for a collapsed state, `False` for an expanded state. Defaults to `None`, meaning the\n        container is not collapsible.\n    extra (Optional[dict[str, Any]]): Extra keyword arguments that are passed to `dbc.Container` and overwrite any\n        defaults chosen by the Vizro team. This may have unexpected behavior.\n        Visit the [dbc documentation](https://dash-bootstrap-components.opensource.faculty.ai/docs/components/layout/)\n        to see all available arguments. [Not part of the official Vizro schema](../explanation/schema.md) and the\n        underlying component may change in the future. Defaults to `{}`.",
+      "description": "Container to group together a set of components on a page.\n\nArgs:\n    type (Literal[\"container\"]): Defaults to `\"container\"`.\n    components (list[ComponentType]): See [ComponentType][vizro.models.types.ComponentType]. At least one component\n        has to be provided.\n    title (str): Title of the `Container`. Defaults to `\"\"`.\n    layout (Optional[LayoutType]): Layout to place components in. Defaults to `None`.\n    collapsed (Optional[bool]): Boolean flag that determines whether the container is collapsed on initial load.\n        Set to `True` for a collapsed state, `False` for an expanded state. Defaults to `None`, meaning the\n        container is not collapsible.\n    variant (Literal[\"plain\", \"filled\", \"outlined\"]): Predefined styles to choose from. Options are `plain`,\n        `filled` or `outlined`. Defaults to `plain` (or `outlined` for collapsible container).\n    extra (Optional[dict[str, Any]]): Extra keyword arguments that are passed to `dbc.Container` and overwrite any\n        defaults chosen by the Vizro team. This may have unexpected behavior.\n        Visit the [dbc documentation](https://dash-bootstrap-components.opensource.faculty.ai/docs/components/layout/)\n        to see all available arguments. [Not part of the official Vizro schema](../explanation/schema.md) and the\n        underlying component may change in the future. Defaults to `{}`.",
       "properties": {
         "id": {
           "default": "",
@@ -417,13 +417,6 @@
           "default": null,
           "title": "Layout"
         },
-        "variant": {
-          "default": "plain",
-          "description": "Predefined styles to choose from. Options are `plain`, `filled` or `outlined`.Defaults to `plain`.",
-          "enum": ["plain", "filled", "outlined"],
-          "title": "Variant",
-          "type": "string"
-        },
         "collapsed": {
           "anyOf": [
             {
@@ -436,6 +429,12 @@
           "default": null,
           "description": "Boolean flag that determines whether the container is collapsed on initial load. Set to `True` for a collapsed state, `False` for an expanded state. Defaults to `None`, meaning the container is not collapsible.",
           "title": "Collapsed"
+        },
+        "variant": {
+          "description": "Predefined styles to choose from. Options are `plain`, `filled` or `outlined`.Defaults to `plain` (or `outlined` for collapsible container).",
+          "enum": ["plain", "filled", "outlined"],
+          "title": "Variant",
+          "type": "string"
         }
       },
       "required": ["components"],
