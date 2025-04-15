@@ -123,8 +123,10 @@ class TestContainerBuildMethod:
         [True, False],
     )
     def test_container_with_collapse(self, collapsed):
-        result = vm.Container(title="Title", components=[vm.Button()], collapsed=collapsed, id="test").build()
-        assert result.variant == "outlined"
+        container = vm.Container(title="Title", components=[vm.Button()], collapsed=collapsed, id="test")
+        assert container.variant == "outlined"
+
+        result = container.build()
         assert_component_equal(result.children, [html.H3(), dbc.Collapse()], keys_to_strip=STRIP_ALL)
 
         # We still want to test the exact H3 and dbc.Collapse inside the result
