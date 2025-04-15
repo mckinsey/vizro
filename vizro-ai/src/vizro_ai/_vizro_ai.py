@@ -11,7 +11,7 @@ from langchain_core.messages import HumanMessage
 from vizro_ai._llm_models import _get_llm_model
 from vizro_ai.dashboard._graph.dashboard_creation import _create_and_compile_graph
 from vizro_ai.dashboard._pydantic_output import _get_pydantic_model  # TODO: make general, ie remove from dashboard
-from vizro_ai.dashboard.utils import DashboardOutputs, _extract_overall_imports_and_code, _register_data, AllDfMetadata
+from vizro_ai.dashboard.utils import AllDfMetadata, DashboardOutputs, _extract_overall_imports_and_code, _register_data
 from vizro_ai.plot._response_models import BaseChartPlan, ChartPlan, ChartPlanFactory
 from vizro_ai.utils.helper import _get_df_info
 
