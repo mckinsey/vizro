@@ -85,14 +85,12 @@ def _create_filter_proxy(df_cols, df_schema, controllable_components) -> BaseMod
     )
 
 
-def _create_filter(filter_prompt, model, df_cols, df_schema, controllable_components, control_id) -> vm.Filter:
+def _create_filter(filter_prompt, model, df_cols, df_schema, controllable_components) -> vm.Filter:
     result_proxy = _create_filter_proxy(
         df_cols=df_cols, df_schema=df_schema, controllable_components=controllable_components
     )
     proxy = _get_pydantic_model(query=filter_prompt, llm_model=model, response_model=result_proxy, df_info=df_schema)
-    proxy_dict = proxy.model_dump()
-    proxy_dict["id"] = control_id
-    return vm.Filter(**proxy_dict)
+    return vm.Filter(**proxy.model_dump())
 
 
 class ControlPlan(BaseModel):
@@ -112,9 +110,6 @@ class ControlPlan(BaseModel):
         Be as detailed as possible. Keep the original relevant description AS IS. If this control is used
         to control a specific component, include the relevant component details.
         """,
-    )
-    control_id: str = Field(
-        pattern=r"^[a-z0-9]+(_[a-z0-9]+)*$", description="Small snake case description of this control."
     )
     df_name: str = Field(
         description="""
@@ -145,7 +140,6 @@ class ControlPlan(BaseModel):
                     df_cols=_df_cols,
                     df_schema=_df_schema,
                     controllable_components=controllable_components,
-                    control_id=self.control_id,
                 )
                 return res
 
