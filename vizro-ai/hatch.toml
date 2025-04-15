@@ -62,7 +62,7 @@ test-unit-coverage = [
 ]
 test-vizro-ai-ui = [
   "hatch run pip install ../vizro-core",
-  "pytest -vs tests/vizro_ai_ui/test_vizro_ai_ui.py"
+  "pytest -vs tests/vizro_ai_ui/test_vizro_ai_ui.py --headless"
 ]
 
 [envs.docs]
