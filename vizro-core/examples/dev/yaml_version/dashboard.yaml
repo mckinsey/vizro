@@ -427,7 +427,6 @@ pages:
         title: Initially expanded container
     layout:
       type: flex
-      direction: column
     title: Collapsible containers
   - components:
       - tabs:

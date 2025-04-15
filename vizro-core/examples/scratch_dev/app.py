@@ -29,7 +29,7 @@ page1 = vm.Page(
 
 page2 = vm.Page(
     title="Collapsible containers - flex layout",
-    layout=vm.Flex(direction="column"),
+    layout=vm.Flex(),
     components=[
         vm.Container(
             title="Initially collapsed container",

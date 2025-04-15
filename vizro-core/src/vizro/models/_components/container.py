@@ -4,7 +4,7 @@ from typing import Annotated, Any, Literal, Optional
 
 import dash_bootstrap_components as dbc
 from dash import ClientsideFunction, Input, Output, State, clientside_callback, html
-from pydantic import AfterValidator, BeforeValidator, Field, conlist, model_validator
+from pydantic import AfterValidator, BeforeValidator, Field, conlist
 from pydantic.json_schema import SkipJsonSchema
 
 from vizro.models import VizroBaseModel
@@ -22,11 +22,11 @@ class Container(VizroBaseModel):
             has to be provided.
         title (str): Title of the `Container`. Defaults to `""`.
         layout (Optional[LayoutType]): Layout to place components in. Defaults to `None`.
-        variant (Literal["plain", "filled", "outlined"]): Predefined styles to choose from. Options are `plain`,
-            `filled` or `outlined`. Defaults to `plain`.
         collapsed (Optional[bool]): Boolean flag that determines whether the container is collapsed on initial load.
             Set to `True` for a collapsed state, `False` for an expanded state. Defaults to `None`, meaning the
             container is not collapsible.
+        variant (Literal["plain", "filled", "outlined"]): Predefined styles to choose from. Options are `plain`,
+            `filled` or `outlined`. Defaults to `plain` (or `outlined` for collapsible container).
         extra (Optional[dict[str, Any]]): Extra keyword arguments that are passed to `dbc.Container` and overwrite any
             defaults chosen by the Vizro team. This may have unexpected behavior.
             Visit the [dbc documentation](https://dash-bootstrap-components.opensource.faculty.ai/docs/components/layout/)
@@ -44,17 +44,20 @@ class Container(VizroBaseModel):
     )
     title: str = Field(default="", description="Title of the `Container`")
     layout: Annotated[Optional[LayoutType], AfterValidator(set_layout), Field(default=None, validate_default=True)]
-    variant: Literal["plain", "filled", "outlined"] = Field(
-        default="plain",
-        description="Predefined styles to choose from. Options are `plain`, `filled` or `outlined`."
-        "Defaults to `plain`.",
-    )
     collapsed: Optional[bool] = Field(
         default=None,
         description="Boolean flag that determines whether the container is collapsed on initial load. "
         "Set to `True` for a collapsed state, `False` for an expanded state. "
         "Defaults to `None`, meaning the container is not collapsible.",
     )
+    variant: Annotated[
+        Literal["plain", "filled", "outlined"],
+        Field(
+            description="Predefined styles to choose from. Options are `plain`, `filled` or `outlined`."
+            "Defaults to `plain` (or `outlined` for collapsible container).",
+            default_factory=lambda data: "plain" if data["collapsed"] is None else "outlined",
+        ),
+    ]
     extra: SkipJsonSchema[
         Annotated[
             dict[str, Any],
@@ -68,12 +71,6 @@ class Container(VizroBaseModel):
             ),
         ]
     ]
-
-    @model_validator(mode="before")
-    def set_variant(cls, values):
-        if "variant" not in values and "collapsed" in values:
-            values.setdefault("variant", "outlined")
-        return values
 
     @_log_call
     def build(self):

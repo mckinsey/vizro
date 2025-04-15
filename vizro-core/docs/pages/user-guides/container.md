@@ -23,9 +23,9 @@ More functionality will be introduced to `Container` soon, including container-s
 
 In general, any arbitrarily granular layout can already be achieved by [using `Page.layout`](layouts.md) alone, which is our recommended approach if you want to arrange components on a page with consistent row and/or column spacing.
 
-Both `Page.layout` and `Container.layout` now accept either a [Grid][vizro.models.Layout] (default) or a [Flex][vizro.models.Flex] layout model, giving you full flexibility when arranging components.
+Both `Page.layout` and `Container.layout` now accept either a [`Grid`][vizro.models.Grid] (default) or a [`Flex`][vizro.models.Flex] layout model, giving you full flexibility when arranging components.
 
-- `Page.layout` defines the overall layout of the page using either Grid or Flex.
+- `Page.layout` defines the overall layout of the page using either `Grid` or `Flex`.
 - `Container.layout` allows you to insert a nested `Grid` or `Flex` layout within the page layout, offering more granular control by breaking the page into independently arranged sublayouts.
 
 Here are a few cases where you might want to use a `Container` instead of `Page.layout`:
@@ -269,7 +269,7 @@ Once defined, dashboard users can toggle the container’s visibility interactiv
 
 Collapsible containers are supported in both `Grid` and `Flex` layouts. However, we recommend using them within a `Flex` layout for optimal behavior, as `Flex` is better suited to dynamic sizing and more efficient use of space when content is shown or hidden.
 
-!!! example "Collapsible container inside Flex"
+!!! example "Collapsible container inside `Flex`"
 
     === "app.py"
 
@@ -282,7 +282,7 @@ Collapsible containers are supported in both `Grid` and `Flex` layouts. However,
 
         page = vm.Page(
             title="Collapsible containers",
-            layout=vm.Flex(direction="column"),
+            layout=vm.Flex(),
             components=[
                 vm.Container(
                     title="Initially collapsed container",
@@ -310,7 +310,6 @@ Collapsible containers are supported in both `Grid` and `Flex` layouts. However,
           - title: Collapsible containers
             layout:
               type: flex
-              direction: column
             components:
               - type: container
                 title: Initially collapsed container
@@ -342,7 +341,7 @@ Collapsible containers are supported in both `Grid` and `Flex` layouts. However,
 
 Collapsible containers can be used in `Grid` layout as well.
 
-!!! example "Collapsible container inside Grid"
+!!! example "Collapsible container inside `Grid`"
 
     === "app.py"
 

@@ -150,3 +150,5 @@ class TestContainerBuildMethod:
             dbc.Collapse(id="test_collapse", is_open=not collapsed, className="collapsible-container", key="test"),
             keys_to_strip={"children"},
         )
+        # We want to test if the correct style is applied: default style for collapsible containers is outlined
+        assert result.class_name == "border p-3"

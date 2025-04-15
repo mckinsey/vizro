@@ -327,7 +327,7 @@ containers = vm.Page(
 
 collapsible_container = vm.Page(
     title="Collapsible containers",
-    layout=vm.Flex(direction="column"),
+    layout=vm.Flex(),
     components=[
         vm.Container(
             title="Initially collapsed container",
