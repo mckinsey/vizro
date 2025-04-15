@@ -94,7 +94,11 @@ class _AbstractAction(_BaseAction, abc.ABC):
         # model fields that are present in the function signature. This is just the user-specified runtime arguments, as
         # static arguments are not in the function signature (they're in self) and built in runtime arguments are not
         # model fields. These will be of the form {"argument_name": "dropdown.value"}.
-        return {arg_name: getattr(self, arg_name) for arg_name in self.model_fields if arg_name in self._parameters}
+        return {
+            arg_name: getattr(self, arg_name)
+            for arg_name in self.__class__.model_fields
+            if arg_name in self._parameters
+        }
 
     @property
     def _action_name(self) -> str:
