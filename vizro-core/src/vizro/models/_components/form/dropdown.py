@@ -72,7 +72,9 @@ class Dropdown(VizroBaseModel):
             [`MultiValueType`][vizro.models.types.MultiValueType]. Defaults to `None`.
         multi (bool): Whether to allow selection of multiple values. Defaults to `True`.
         title (str): Title to be displayed. Defaults to `""`.
-        description (Optional[Tooltip]): Additional information about the selector shown in a tooltip.
+        description (Optional[Tooltip]): Additional information about the selector. When set, it adds an icon
+             next to the title. Hovering over the icon displays a tooltip with the specified description text.
+             Defaults to `None`.
         actions (list[Action]): See [`Action`][vizro.models.Action]. Defaults to `[]`.
         extra (Optional[dict[str, Any]]): Extra keyword arguments that are passed to `dcc.Dropdown` and overwrite any
             defaults chosen by the Vizro team. This may have unexpected behavior.
@@ -100,7 +102,12 @@ class Dropdown(VizroBaseModel):
     description: Annotated[
         Optional[Tooltip],
         BeforeValidator(coerce_str_to_tooltip),
-        Field(default=None, description="Additional information about the selector shown in a tooltip."),
+        Field(
+            default=None,
+            description="Additional information about the selector. When set, it adds an icon"
+            "next to the title. Hovering over the icon displays a tooltip with the specified description text."
+            "Defaults to `None`.",
+        ),
     ]
     actions: Annotated[
         list[Action],

@@ -32,7 +32,9 @@ class Slider(VizroBaseModel):
         marks (Optional[dict[Union[float, int], str]]): Marks to be displayed on slider. Defaults to `{}`.
         value (Optional[float]): Default value for slider. Defaults to `None`.
         title (str): Title to be displayed. Defaults to `""`.
-        description (Optional[Tooltip]): Additional information about the selector shown in a tooltip.
+        description (Optional[Tooltip]): Additional information about the selector. When set, it adds an icon
+             next to the title. Hovering over the icon displays a tooltip with the specified description text.
+             Defaults to `None`.
         actions (list[Action]): See [`Action`][vizro.models.Action]. Defaults to `[]`.
         extra (Optional[dict[str, Any]]): Extra keyword arguments that are passed to `dcc.Slider` and overwrite any
             defaults chosen by the Vizro team. This may have unexpected behavior.
@@ -68,7 +70,12 @@ class Slider(VizroBaseModel):
     description: Annotated[
         Optional[Tooltip],
         BeforeValidator(coerce_str_to_tooltip),
-        Field(default=None, description="Additional information about the selector shown in a tooltip."),
+        Field(
+            default=None,
+            description="Additional information about the selector. When set, it adds an icon"
+            "next to the title. Hovering over the icon displays a tooltip with the specified description text."
+            "Defaults to `None`.",
+        ),
     ]
     actions: Annotated[
         list[Action],

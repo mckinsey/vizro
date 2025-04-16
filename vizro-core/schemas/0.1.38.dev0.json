@@ -218,7 +218,7 @@
     },
     "Checklist": {
       "additionalProperties": false,
-      "description": "Categorical multi-option selector `Checklist`.\n\nCan be provided to [`Filter`][vizro.models.Filter] or\n[`Parameter`][vizro.models.Parameter].\n\nArgs:\n    type (Literal[\"checklist\"]): Defaults to `\"checklist\"`.\n    options (OptionsType): See [`OptionsType`][vizro.models.types.OptionsType]. Defaults to `[]`.\n    value (Optional[MultiValueType]): See [`MultiValueType`][vizro.models.types.MultiValueType]. Defaults to `None`.\n    title (str): Title to be displayed. Defaults to `\"\"`.\n    actions (list[Action]): See [`Action`][vizro.models.Action]. Defaults to `[]`.\n    extra (Optional[dict[str, Any]]): Extra keyword arguments that are passed to `dbc.Checklist` and overwrite any\n        defaults chosen by the Vizro team. This may have unexpected behavior.\n        Visit the [dbc documentation](https://dash-bootstrap-components.opensource.faculty.ai/docs/components/input/)\n        to see all available arguments. [Not part of the official Vizro schema](../explanation/schema.md) and the\n        underlying component may change in the future. Defaults to `{}`.",
+      "description": "Categorical multi-option selector `Checklist`.\n\nCan be provided to [`Filter`][vizro.models.Filter] or\n[`Parameter`][vizro.models.Parameter].\n\nArgs:\n    type (Literal[\"checklist\"]): Defaults to `\"checklist\"`.\n    options (OptionsType): See [`OptionsType`][vizro.models.types.OptionsType]. Defaults to `[]`.\n    value (Optional[MultiValueType]): See [`MultiValueType`][vizro.models.types.MultiValueType]. Defaults to `None`.\n    title (str): Title to be displayed. Defaults to `\"\"`.\n    description (Optional[Tooltip]): Additional information about the selector. When set, it adds an icon\n         next to the title. Hovering over the icon displays a tooltip with the specified description text.\n         Defaults to `None`.\n    actions (list[Action]): See [`Action`][vizro.models.Action]. Defaults to `[]`.\n    extra (Optional[dict[str, Any]]): Extra keyword arguments that are passed to `dbc.Checklist` and overwrite any\n        defaults chosen by the Vizro team. This may have unexpected behavior.\n        Visit the [dbc documentation](https://dash-bootstrap-components.opensource.faculty.ai/docs/components/input/)\n        to see all available arguments. [Not part of the official Vizro schema](../explanation/schema.md) and the\n        underlying component may change in the future. Defaults to `{}`.",
       "properties": {
         "id": {
           "default": "",
@@ -308,6 +308,18 @@
           "description": "Title to be displayed",
           "title": "Title",
           "type": "string"
+        },
+        "description": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/Tooltip"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "Additional information about the selector. When set, it adds an iconnext to the title. Hovering over the icon displays a tooltip with the specified description text.Defaults to `None`."
         },
         "actions": {
           "default": [],
@@ -431,7 +443,7 @@
     },
     "DatePicker": {
       "additionalProperties": false,
-      "description": "Temporal single/range option selector `DatePicker`.\n\nCan be provided to [`Filter`][vizro.models.Filter] or [`Parameter`][vizro.models.Parameter].\n\nArgs:\n    type (Literal[\"date_picker\"]): Defaults to `\"date_picker\"`.\n    min (Optional[date]): Start date for date picker. Defaults to `None`.\n    max (Optional[date]): End date for date picker. Defaults to `None`.\n    value (Optional[Union[list[date], date]]): Default date/dates for date picker. Defaults to `None`.\n    title (str): Title to be displayed. Defaults to `\"\"`.\n    range (bool): Boolean flag for displaying range picker. Defaults to `True`.\n    actions (list[Action]): See [`Action`][vizro.models.Action]. Defaults to `[]`.\n    extra (Optional[dict[str, Any]]): Extra keyword arguments that are passed to `dmc.DatePickerInput` and overwrite\n        any defaults chosen by the Vizro team. This may have unexpected behavior.\n        Visit the [dmc documentation](https://www.dash-mantine-components.com/components/datepicker)\n        to see all available arguments. [Not part of the official Vizro schema](../explanation/schema.md) and the\n        underlying component may change in the future. Defaults to `{}`.",
+      "description": "Temporal single/range option selector `DatePicker`.\n\nCan be provided to [`Filter`][vizro.models.Filter] or [`Parameter`][vizro.models.Parameter].\n\nArgs:\n    type (Literal[\"date_picker\"]): Defaults to `\"date_picker\"`.\n    min (Optional[date]): Start date for date picker. Defaults to `None`.\n    max (Optional[date]): End date for date picker. Defaults to `None`.\n    value (Optional[Union[list[date], date]]): Default date/dates for date picker. Defaults to `None`.\n    title (str): Title to be displayed. Defaults to `\"\"`.\n    range (bool): Boolean flag for displaying range picker. Defaults to `True`.\n    description (Optional[Tooltip]): Additional information about the selector. When set, it adds an icon\n         next to the title. Hovering over the icon displays a tooltip with the specified description text.\n         Defaults to `None`.\n    actions (list[Action]): See [`Action`][vizro.models.Action]. Defaults to `[]`.\n    extra (Optional[dict[str, Any]]): Extra keyword arguments that are passed to `dmc.DatePickerInput` and overwrite\n        any defaults chosen by the Vizro team. This may have unexpected behavior.\n        Visit the [dmc documentation](https://www.dash-mantine-components.com/components/datepicker)\n        to see all available arguments. [Not part of the official Vizro schema](../explanation/schema.md) and the\n        underlying component may change in the future. Defaults to `{}`.",
       "properties": {
         "id": {
           "default": "",
@@ -506,6 +518,18 @@
           "title": "Range",
           "type": "boolean"
         },
+        "description": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/Tooltip"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "Additional information about the selector. When set, it adds an iconnext to the title. Hovering over the icon displays a tooltip with the specified description text.Defaults to `None`."
+        },
         "actions": {
           "default": [],
           "items": {
@@ -520,7 +544,7 @@
     },
     "Dropdown": {
       "additionalProperties": false,
-      "description": "Categorical single/multi-option selector `Dropdown`.\n\nCan be provided to [`Filter`][vizro.models.Filter] or\n[`Parameter`][vizro.models.Parameter].\n\nArgs:\n    type (Literal[\"dropdown\"]): Defaults to `\"dropdown\"`.\n    options (OptionsType): See [`OptionsType`][vizro.models.types.OptionsType]. Defaults to `[]`.\n    value (Optional[Union[SingleValueType, MultiValueType]]): See\n        [`SingleValueType`][vizro.models.types.SingleValueType] and\n        [`MultiValueType`][vizro.models.types.MultiValueType]. Defaults to `None`.\n    multi (bool): Whether to allow selection of multiple values. Defaults to `True`.\n    title (str): Title to be displayed. Defaults to `\"\"`.\n    actions (list[Action]): See [`Action`][vizro.models.Action]. Defaults to `[]`.\n    extra (Optional[dict[str, Any]]): Extra keyword arguments that are passed to `dcc.Dropdown` and overwrite any\n        defaults chosen by the Vizro team. This may have unexpected behavior.\n        Visit the [dcc documentation](https://dash.plotly.com/dash-core-components/dropdown)\n        to see all available arguments. [Not part of the official Vizro schema](../explanation/schema.md) and the\n        underlying component may change in the future. Defaults to `{}`.",
+      "description": "Categorical single/multi-option selector `Dropdown`.\n\nCan be provided to [`Filter`][vizro.models.Filter] or\n[`Parameter`][vizro.models.Parameter].\n\nArgs:\n    type (Literal[\"dropdown\"]): Defaults to `\"dropdown\"`.\n    options (OptionsType): See [`OptionsType`][vizro.models.types.OptionsType]. Defaults to `[]`.\n    value (Optional[Union[SingleValueType, MultiValueType]]): See\n        [`SingleValueType`][vizro.models.types.SingleValueType] and\n        [`MultiValueType`][vizro.models.types.MultiValueType]. Defaults to `None`.\n    multi (bool): Whether to allow selection of multiple values. Defaults to `True`.\n    title (str): Title to be displayed. Defaults to `\"\"`.\n    description (Optional[Tooltip]): Additional information about the selector. When set, it adds an icon\n         next to the title. Hovering over the icon displays a tooltip with the specified description text.\n         Defaults to `None`.\n    actions (list[Action]): See [`Action`][vizro.models.Action]. Defaults to `[]`.\n    extra (Optional[dict[str, Any]]): Extra keyword arguments that are passed to `dcc.Dropdown` and overwrite any\n        defaults chosen by the Vizro team. This may have unexpected behavior.\n        Visit the [dcc documentation](https://dash.plotly.com/dash-core-components/dropdown)\n        to see all available arguments. [Not part of the official Vizro schema](../explanation/schema.md) and the\n        underlying component may change in the future. Defaults to `{}`.",
       "properties": {
         "id": {
           "default": "",
@@ -629,6 +653,18 @@
           "description": "Title to be displayed",
           "title": "Title",
           "type": "string"
+        },
+        "description": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/Tooltip"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "Additional information about the selector. When set, it adds an iconnext to the title. Hovering over the icon displays a tooltip with the specified description text.Defaults to `None`."
         },
         "actions": {
           "default": [],
@@ -1329,7 +1365,7 @@
     },
     "RadioItems": {
       "additionalProperties": false,
-      "description": "Categorical single-option selector `RadioItems`.\n\nCan be provided to [`Filter`][vizro.models.Filter] or\n[`Parameter`][vizro.models.Parameter].\n\nArgs:\n    type (Literal[\"radio_items\"]): Defaults to `\"radio_items\"`.\n    options (OptionsType): See [`OptionsType`][vizro.models.types.OptionsType]. Defaults to `[]`.\n    value (Optional[SingleValueType]): See [`SingleValueType`][vizro.models.types.SingleValueType].\n        Defaults to `None`.\n    title (str): Title to be displayed. Defaults to `\"\"`.\n    actions (list[Action]): See [`Action`][vizro.models.Action]. Defaults to `[]`.\n    extra (Optional[dict[str, Any]]): Extra keyword arguments that are passed to `dbc.RadioItems` and overwrite any\n        defaults chosen by the Vizro team. This may have unexpected behavior.\n        Visit the [dbc documentation](https://dash-bootstrap-components.opensource.faculty.ai/docs/components/input/)\n        to see all available arguments. [Not part of the official Vizro schema](../explanation/schema.md) and the\n        underlying component may change in the future. Defaults to `{}`.",
+      "description": "Categorical single-option selector `RadioItems`.\n\nCan be provided to [`Filter`][vizro.models.Filter] or\n[`Parameter`][vizro.models.Parameter].\n\nArgs:\n    type (Literal[\"radio_items\"]): Defaults to `\"radio_items\"`.\n    options (OptionsType): See [`OptionsType`][vizro.models.types.OptionsType]. Defaults to `[]`.\n    value (Optional[SingleValueType]): See [`SingleValueType`][vizro.models.types.SingleValueType].\n        Defaults to `None`.\n    title (str): Title to be displayed. Defaults to `\"\"`.\n    description (Optional[Tooltip]): Additional information about the selector. When set, it adds an icon\n         next to the title. Hovering over the icon displays a tooltip with the specified description text.\n         Defaults to `None`.\n    actions (list[Action]): See [`Action`][vizro.models.Action]. Defaults to `[]`.\n    extra (Optional[dict[str, Any]]): Extra keyword arguments that are passed to `dbc.RadioItems` and overwrite any\n        defaults chosen by the Vizro team. This may have unexpected behavior.\n        Visit the [dbc documentation](https://dash-bootstrap-components.opensource.faculty.ai/docs/components/input/)\n        to see all available arguments. [Not part of the official Vizro schema](../explanation/schema.md) and the\n        underlying component may change in the future. Defaults to `{}`.",
       "properties": {
         "id": {
           "default": "",
@@ -1408,6 +1444,18 @@
           "title": "Title",
           "type": "string"
         },
+        "description": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/Tooltip"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "Additional information about the selector. When set, it adds an iconnext to the title. Hovering over the icon displays a tooltip with the specified description text.Defaults to `None`."
+        },
         "actions": {
           "default": [],
           "items": {
@@ -1422,7 +1470,7 @@
     },
     "RangeSlider": {
       "additionalProperties": false,
-      "description": "Numeric multi-option selector `RangeSlider`.\n\nCan be provided to [`Filter`][vizro.models.Filter] or\n[`Parameter`][vizro.models.Parameter].\n\nArgs:\n    type (Literal[\"range_slider\"]): Defaults to `\"range_slider\"`.\n    min (Optional[float]): Start value for slider. Defaults to `None`.\n    max (Optional[float]): End value for slider. Defaults to `None`.\n    step (Optional[float]): Step-size for marks on slider. Defaults to `None`.\n    marks (Optional[dict[Union[float, int], str]]): Marks to be displayed on slider. Defaults to `{}`.\n    value (Optional[list[float]]): Default start and end value for slider. Must be 2 items. Defaults to `None`.\n    title (str): Title to be displayed. Defaults to `\"\"`.\n    actions (list[Action]): See [`Action`][vizro.models.Action]. Defaults to `[]`.\n    extra (Optional[dict[str, Any]]): Extra keyword arguments that are passed to `dcc.RangeSlider` and overwrite any\n        defaults chosen by the Vizro team. This may have unexpected behavior.\n        Visit the [dcc documentation](https://dash.plotly.com/dash-core-components/rangeslider)\n        to see all available arguments. [Not part of the official Vizro schema](../explanation/schema.md) and the\n        underlying component may change in the future. Defaults to `{}`.",
+      "description": "Numeric multi-option selector `RangeSlider`.\n\nCan be provided to [`Filter`][vizro.models.Filter] or\n[`Parameter`][vizro.models.Parameter].\n\nArgs:\n    type (Literal[\"range_slider\"]): Defaults to `\"range_slider\"`.\n    min (Optional[float]): Start value for slider. Defaults to `None`.\n    max (Optional[float]): End value for slider. Defaults to `None`.\n    step (Optional[float]): Step-size for marks on slider. Defaults to `None`.\n    marks (Optional[dict[Union[float, int], str]]): Marks to be displayed on slider. Defaults to `{}`.\n    value (Optional[list[float]]): Default start and end value for slider. Must be 2 items. Defaults to `None`.\n    title (str): Title to be displayed. Defaults to `\"\"`.\n    description (Optional[Tooltip]): Additional information about the selector. When set, it adds an icon\n         next to the title. Hovering over the icon displays a tooltip with the specified description text.\n         Defaults to `None`.\n    actions (list[Action]): See [`Action`][vizro.models.Action]. Defaults to `[]`.\n    extra (Optional[dict[str, Any]]): Extra keyword arguments that are passed to `dcc.RangeSlider` and overwrite any\n        defaults chosen by the Vizro team. This may have unexpected behavior.\n        Visit the [dcc documentation](https://dash.plotly.com/dash-core-components/rangeslider)\n        to see all available arguments. [Not part of the official Vizro schema](../explanation/schema.md) and the\n        underlying component may change in the future. Defaults to `{}`.",
       "properties": {
         "id": {
           "default": "",
@@ -1514,6 +1562,18 @@
           "title": "Title",
           "type": "string"
         },
+        "description": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/Tooltip"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "Additional information about the selector. When set, it adds an iconnext to the title. Hovering over the icon displays a tooltip with the specified description text.Defaults to `None`."
+        },
         "actions": {
           "default": [],
           "items": {
@@ -1528,7 +1588,7 @@
     },
     "Slider": {
       "additionalProperties": false,
-      "description": "Numeric single-option selector `Slider`.\n\nCan be provided to [`Filter`][vizro.models.Filter] or\n[`Parameter`][vizro.models.Parameter].\n\nArgs:\n    type (Literal[\"range_slider\"]): Defaults to `\"range_slider\"`.\n    min (Optional[float]): Start value for slider. Defaults to `None`.\n    max (Optional[float]): End value for slider. Defaults to `None`.\n    step (Optional[float]): Step-size for marks on slider. Defaults to `None`.\n    marks (Optional[dict[Union[float, int], str]]): Marks to be displayed on slider. Defaults to `{}`.\n    value (Optional[float]): Default value for slider. Defaults to `None`.\n    title (str): Title to be displayed. Defaults to `\"\"`.\n    actions (list[Action]): See [`Action`][vizro.models.Action]. Defaults to `[]`.\n    extra (Optional[dict[str, Any]]): Extra keyword arguments that are passed to `dcc.Slider` and overwrite any\n        defaults chosen by the Vizro team. This may have unexpected behavior.\n        Visit the [dcc documentation](https://dash.plotly.com/dash-core-components/slider)\n        to see all available arguments. [Not part of the official Vizro schema](../explanation/schema.md) and the\n        underlying component may change in the future. Defaults to `{}`.",
+      "description": "Numeric single-option selector `Slider`.\n\nCan be provided to [`Filter`][vizro.models.Filter] or\n[`Parameter`][vizro.models.Parameter].\n\nArgs:\n    type (Literal[\"range_slider\"]): Defaults to `\"range_slider\"`.\n    min (Optional[float]): Start value for slider. Defaults to `None`.\n    max (Optional[float]): End value for slider. Defaults to `None`.\n    step (Optional[float]): Step-size for marks on slider. Defaults to `None`.\n    marks (Optional[dict[Union[float, int], str]]): Marks to be displayed on slider. Defaults to `{}`.\n    value (Optional[float]): Default value for slider. Defaults to `None`.\n    title (str): Title to be displayed. Defaults to `\"\"`.\n    description (Optional[Tooltip]): Additional information about the selector. When set, it adds an icon\n         next to the title. Hovering over the icon displays a tooltip with the specified description text.\n         Defaults to `None`.\n    actions (list[Action]): See [`Action`][vizro.models.Action]. Defaults to `[]`.\n    extra (Optional[dict[str, Any]]): Extra keyword arguments that are passed to `dcc.Slider` and overwrite any\n        defaults chosen by the Vizro team. This may have unexpected behavior.\n        Visit the [dcc documentation](https://dash.plotly.com/dash-core-components/slider)\n        to see all available arguments. [Not part of the official Vizro schema](../explanation/schema.md) and the\n        underlying component may change in the future. Defaults to `{}`.",
       "properties": {
         "id": {
           "default": "",
@@ -1615,6 +1675,18 @@
           "description": "Title to be displayed.",
           "title": "Title",
           "type": "string"
+        },
+        "description": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/Tooltip"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "Additional information about the selector. When set, it adds an iconnext to the title. Hovering over the icon displays a tooltip with the specified description text.Defaults to `None`."
         },
         "actions": {
           "default": [],
@@ -1727,6 +1799,31 @@
       },
       "required": ["text"],
       "title": "Text",
+      "type": "object"
+    },
+    "Tooltip": {
+      "additionalProperties": false,
+      "description": "A tooltip that displays text when hovering over an icon.\n\nArgs:\n    text (str): Markdown string for text shown when hovering over the icon. Should adhere to the CommonMark Spec.\n    icon (str): Icon name from [Google Material icons library](https://fonts.google.com/icons).\n    extra (Optional[dict[str, Any]]): Extra keyword arguments that are passed to `dbc.Tooltip` and overwrite any\n        chosen by the Vizro team. This may have unexpected behavior. Visit the\n       [dbc documentation](https://dash-bootstrap-components.opensource.faculty.ai/docs/components/tooltip/)\n       to see all available arguments. [Not part of the official Vizro schema](../explanation/schema.md) and the\n       underlying component may change in the future. Defaults to `{}`.",
+      "properties": {
+        "id": {
+          "default": "",
+          "description": "ID to identify model. Must be unique throughout the whole dashboard.When no ID is chosen, ID will be automatically generated.",
+          "title": "Id",
+          "type": "string"
+        },
+        "text": {
+          "description": "Markdown string for text shown when hovering over the icon. Should adhere to the CommonMark Spec.",
+          "title": "Text",
+          "type": "string"
+        },
+        "icon": {
+          "description": "Icon name from Google Material icons library.",
+          "title": "Icon",
+          "type": "string"
+        }
+      },
+      "required": ["text", "icon"],
+      "title": "Tooltip",
       "type": "object"
     },
     "Trigger": {

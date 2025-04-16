@@ -25,7 +25,9 @@ class Checklist(VizroBaseModel):
         options (OptionsType): See [`OptionsType`][vizro.models.types.OptionsType]. Defaults to `[]`.
         value (Optional[MultiValueType]): See [`MultiValueType`][vizro.models.types.MultiValueType]. Defaults to `None`.
         title (str): Title to be displayed. Defaults to `""`.
-        description (Optional[Tooltip]): Additional information about the selector shown in a tooltip.
+        description (Optional[Tooltip]): Additional information about the selector. When set, it adds an icon
+             next to the title. Hovering over the icon displays a tooltip with the specified description text.
+             Defaults to `None`.
         actions (list[Action]): See [`Action`][vizro.models.Action]. Defaults to `[]`.
         extra (Optional[dict[str, Any]]): Extra keyword arguments that are passed to `dbc.Checklist` and overwrite any
             defaults chosen by the Vizro team. This may have unexpected behavior.
@@ -46,7 +48,12 @@ class Checklist(VizroBaseModel):
     description: Annotated[
         Optional[Tooltip],
         BeforeValidator(coerce_str_to_tooltip),
-        Field(default=None, description="Additional information about the selector shown in a tooltip."),
+        Field(
+            default=None,
+            description="Additional information about the selector. When set, it adds an icon"
+            "next to the title. Hovering over the icon displays a tooltip with the specified description text."
+            "Defaults to `None`.",
+        ),
     ]
     actions: Annotated[
         list[Action],
