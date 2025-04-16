@@ -21,6 +21,12 @@ from vizro import Vizro
 PYCAFE_URL = "https://py.cafe"
 CUSTOM_CHART_NAME = "custom_chart"
 
+# Create an MCP server with capabilities
+# TODO: what do I need to do here, as things are already set up?
+mcp = FastMCP(
+    "Vizro Chart Creator",
+)
+
 
 class SimplePage(BaseModel):
     """Simplified Page modes for reduced schema. LLM should remember to insert actual components."""
@@ -63,22 +69,10 @@ Only use the arguments that are supported by the function you are using.
     )
 
 
-# Create an MCP server with capabilities
-# TODO: what do I need to do here, as things are already set up?
-mcp = FastMCP(
-    "Vizro Chart Creator",
-    # Explicitly specify server capabilities
-    capabilities={
-        "prompts": {},  # Enable prompts capability
-        "tools": {},  # Enable tools capability
-        "resources": {},  # Enable resources capability
-    },
-)
-
-
 def get_python_code_and_preview_link(
     model_object: vm.VizroBaseModel, file_name: str, file_paths_or_urls: str
 ) -> dict[str, Any]:
+    """Get the Python code and preview link for a Vizro model object."""
     # Get the Python code
     python_code = model_object._to_python()
 
@@ -127,7 +121,7 @@ data_manager["{file_name}"] = pd.read_csv("{file_paths_or_urls}")
 
 @mcp.tool()
 def validate_model_config(
-    config: dict[str, Any], file_name: str, file_paths_or_urls: str, file_location_type: Literal["local", "remote"]
+    config: dict[str, Any], file_name: str, file_path_or_url: str, file_location_type: Literal["local", "remote"]
 ) -> dict[str, Any]:
     """Validate Vizro model configuration by attempting to instantiate it. Run whenever you have a complete DASHBOARD configuration.
 
@@ -136,8 +130,8 @@ def validate_model_config(
     Args:
         config: Either a JSON string or a dictionary representing a Vizro model configuration
         file_name: Name of the file to be loaded into the data_manager and used in the code, must be without extension
-        (e.g., 'iris', 'gapminder', 'tips')
-        file_paths_or_urls: String of file path or URL to be loaded into the data_manager
+            (e.g., 'iris', 'gapminder', 'tips')
+        file_path_or_url: String of file path or URL to be loaded into the data_manager
         file_location_type: Literal["local", "remote"]
     Returns:
         Dictionary with validation status and details
@@ -160,7 +154,7 @@ def validate_model_config(
         # Attempt to instantiate a Vizro model with the configuration
         dashboard = vm.Dashboard(**model_config)
 
-        result = get_python_code_and_preview_link(dashboard, file_name, file_paths_or_urls)
+        result = get_python_code_and_preview_link(dashboard, file_name, file_path_or_url)
 
         # Get the result before resetting
         result = {
@@ -183,10 +177,7 @@ def validate_model_config(
         Vizro._reset()
 
 
-@mcp.tool(
-    name="get_model_JSON_schema",
-    description="Get the JSON schema for the specified Vizro model. Only use if you are asked to create a DASHBOARD.",
-)
+@mcp.tool()
 def get_model_JSON_schema(model_name: str) -> dict[str, Any]:
     """Get the JSON schema for the specified Vizro model.
 
@@ -213,10 +204,7 @@ def get_model_JSON_schema(model_name: str) -> dict[str, Any]:
     return schema
 
 
-@mcp.tool(
-    name="get_overview_vizro_models",
-    description="Get an overview of the available models in the vizro.models namespace. Only use if you are asked to create a DASHBOARD.",
-)
+@mcp.tool()
 def get_overview_vizro_models() -> dict[str, list[dict[str, str]]]:
     """Get all available models in the vizro.models namespace.
 
@@ -246,26 +234,6 @@ def get_overview_vizro_models() -> dict[str, list[dict[str, str]]]:
         ]
 
     return result
-
-
-# class DataLoadingFunction(BaseModel):
-#     """A function that loads data from a file path or URL into the data_manager."""
-
-#     name: str = Field(description="The name of the function to be used in the code.")
-#     file_path_or_url: str = Field(description="The file path or URL to be loaded into the data_manager.")
-#     data_manager_key: str = Field(description="The key to be used in the data_manager to store the data.")
-#     data_manipulation_code: str = Field(description="Snippet of code that manipulates a pandas DataFrame called df")
-
-
-# @mcp.tool()
-# def get_data_loading_functions(
-#     location_type: Literal["local", "remote"], file_path_or_url: str, data_manager_key: str, data_manipulation_code: str
-# ) -> str:
-#     """Generate a function that loads data from a file path or URL into the data_manager."""
-#     if location_type == "local":
-#         return f"data_manager[{data_manager_key}] = pd.read_csv({file_path_or_url})"
-#     elif location_type == "remote":
-#         return f"data_manager[{data_manager_key}] = pd.read_csv({file_path_or_url})"
 
 
 @mcp.tool(
@@ -374,6 +342,32 @@ def load_and_analyze_csv(path_or_url: str) -> dict[str, Any]:
         return {"success": False, "error": f"Error processing file: {e!s}"}
 
 
+@mcp.prompt(
+    name="create_EDA_dashboard",
+    description="Prompt template for creating an EDA dashboard based on one CSV dataset",
+)
+def create_EDA_dashboard(
+    file_path_or_url: str,
+) -> str:
+    return [
+        {
+            "role": "user",
+            "content": f"""
+Create an EDA dashboard based on the following dataset:{file_path_or_url}. Proceed as follows:
+1. Analyze the data using the load_and_analyze_csv tool first, passing the file path or github url {file_path_or_url} to the tool.
+2. Create a dashboard with 3 pages:
+    - Page 1: Overview of the dataset with a summary using the Card component.
+    - Page 2: Visualizing the distribution of all numeric columns using the Graph component with a histogram.
+        - use a Parameter that targets the Graph component and the x argument, and you can select the column to be displayed
+        - IMPORTANT:remember that you target the chart like: <graph_id>.x and NOT <graph_id>.figure.x
+        - do not use any color schemes etc.
+    - Page 3: Visualizing the correlation between all numeric columns using the Graph component with a scatter plot.
+            """,
+        }
+    ]
+
+
+###### Chart functionality - not sure if I should include this in the MCP server
 def _strip_markdown(code_string: str) -> str:
     """Remove any code block wrappers (markdown or triple quotes)."""
     wrappers = [("```python\n", "```"), ("```py\n", "```"), ("```\n", "```"), ('"""', '"""'), ("'''", "'''")]
@@ -470,30 +464,7 @@ Then make sure to use the get_validated_chart_code tool to validate the chart co
     ]
 
 
-@mcp.prompt(
-    name="create_EDA_dashboard",
-    description="Prompt template for creating an EDA dashboard based on one CSV dataset",
-)
-def create_EDA_dashboard(
-    file_path_or_url: str,
-) -> str:
-    return [
-        {
-            "role": "user",
-            "content": f"""
-Create an EDA dashboard based on the following dataset:{file_path_or_url}. Proceed as follows:
-1. Analyze the data using the load_and_analyze_csv tool first, passing the file path or github url {file_path_or_url} to the tool.
-2. Create a dashboard with 3 pages:
-    - Page 1: Overview of the dataset with a summary using the Card component.
-    - Page 2: Visualizing the distribution of all numeric columns using the Graph component with a histogram.
-        - use a Parameter that targets the Graph component and the x argument, and you can select the column to be displayed
-        - IMPORTANT:remember that you target the chart like: <graph_id>.x and NOT <graph_id>.figure.x
-        - do not use any color schemes etc.
-    - Page 3: Visualizing the correlation between all numeric columns using the Graph component with a scatter plot.
-            """,
-        }
-    ]
-
+#################
 
 if __name__ == "__main__":
     mcp.run()
