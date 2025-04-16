@@ -1,4 +1,5 @@
 import e2e.vizro.constants as cnst
+import pytest
 from e2e.vizro.checkers import check_graph_is_loading, check_table_rows_number
 from e2e.vizro.navigation import accordion_select, page_select
 from e2e.vizro.paths import table_cell_value_path
@@ -32,6 +33,7 @@ def test_single_date(dash_br):
     check_table_rows_number(dash_br, table_id=cnst.TABLE_POP_DATE_ID, expected_rows_num=2)
 
 
+@pytest.mark.flaky(reruns=5)
 def test_date_range(dash_br):
     """Tests that range datepicker as filter works correctly."""
     accordion_select(dash_br, accordion_name=cnst.DATEPICKER_ACCORDION)

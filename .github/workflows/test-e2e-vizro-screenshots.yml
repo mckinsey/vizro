@@ -10,6 +10,8 @@ on:
   pull_request:
     branches:
       - main
+      # TODO: DELETE
+      - dev/vizro-core/implement-collapsible-containers
 
 env:
   PYTHONUNBUFFERED: 1
