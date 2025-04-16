@@ -19,7 +19,9 @@ page1 = vm.Page(
             components=[
                 vm.Graph(
                     id="graph1",
-                    figure=px.scatter(iris, x="sepal_length", y="petal_width", color="species", custom_data=["species"]),
+                    figure=px.scatter(
+                        iris, x="sepal_length", y="petal_width", color="species", custom_data=["species"]
+                    ),
                 ),
             ],
             variant="filled",
@@ -49,7 +51,9 @@ page1 = vm.Page(
         ),
     ],
     controls=[
-        vm.Filter(column="species", selector=vm.Checklist()),])
+        vm.Filter(column="species", selector=vm.Checklist()),
+    ],
+)
 
 
 page2 = vm.Page(
@@ -88,7 +92,11 @@ page2 = vm.Page(
                                 vm.Graph(
                                     id="graph4",
                                     figure=px.scatter(
-                                        iris, x="sepal_length", y="petal_width", color="species", custom_data=["species"]
+                                        iris,
+                                        x="sepal_length",
+                                        y="petal_width",
+                                        color="species",
+                                        custom_data=["species"],
                                     ),
                                 ),
                             ],
@@ -145,7 +153,11 @@ page3 = vm.Page(
                                 vm.Graph(
                                     id="graph6",
                                     figure=px.scatter(
-                                        iris, x="sepal_length", y="petal_width", color="species", custom_data=["species"]
+                                        iris,
+                                        x="sepal_length",
+                                        y="petal_width",
+                                        color="species",
+                                        custom_data=["species"],
                                     ),
                                 ),
                             ],
@@ -194,9 +206,10 @@ page4 = vm.Page(
                     column="species",
                     selector=vm.Checklist(value=["setosa"], title="Species", extra={"inline": True}),
                 ),
+            ],
+        )
     ],
 )
-        ])
 
 page5 = vm.Page(
     title="Page with dropdown",
@@ -210,7 +223,9 @@ page5 = vm.Page(
                 ),
                 vm.Graph(
                     title="Scatter chart",
-                    figure=px.scatter(iris, x="sepal_length", y="petal_width", color="species", custom_data=["species"]),
+                    figure=px.scatter(
+                        iris, x="sepal_length", y="petal_width", color="species", custom_data=["species"]
+                    ),
                 ),
             ],
             layout=vm.Layout(grid=[[0, 1]]),
@@ -234,7 +249,9 @@ page6 = vm.Page(
                 ),
                 vm.Graph(
                     title="Scatter chart",
-                    figure=px.scatter(iris, x="sepal_length", y="petal_width", color="species", custom_data=["species"]),
+                    figure=px.scatter(
+                        iris, x="sepal_length", y="petal_width", color="species", custom_data=["species"]
+                    ),
                 ),
             ],
             layout=vm.Layout(grid=[[0, 1]]),
@@ -259,7 +276,9 @@ page7 = vm.Page(
                 ),
                 vm.Graph(
                     title="Scatter chart",
-                    figure=px.scatter(iris, x="sepal_length", y="petal_width", color="species", custom_data=["species"]),
+                    figure=px.scatter(
+                        iris, x="sepal_length", y="petal_width", color="species", custom_data=["species"]
+                    ),
                 ),
             ],
             layout=vm.Layout(grid=[[0, 1]]),

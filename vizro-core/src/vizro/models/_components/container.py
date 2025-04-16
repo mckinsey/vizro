@@ -3,29 +3,15 @@ from __future__ import annotations
 from typing import Annotated, Any, Literal, Optional
 
 import dash_bootstrap_components as dbc
-
-from dash import html
-
 from dash import ClientsideFunction, Input, Output, State, clientside_callback, html
 from pydantic import AfterValidator, BeforeValidator, Field, conlist
-
 from pydantic.json_schema import SkipJsonSchema
 from pydantic_core.core_schema import ValidationInfo
 
-from vizro.models.types import ComponentType, ControlType
-
-from pydantic import (
-    AfterValidator,
-    BeforeValidator,
-    Field,
-    conlist,
-)
-
 from vizro.models import VizroBaseModel
-
 from vizro.models._grid import set_layout
 from vizro.models._models_utils import _build_inner_layout, _log_call, check_captured_callable_model
-from vizro.models.types import ComponentType, LayoutType
+from vizro.models.types import ComponentType, ControlType, LayoutType
 
 
 # TODO: this could be done with default_factory once we bump to pydantic>=2.10.0.
