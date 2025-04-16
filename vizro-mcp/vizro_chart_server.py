@@ -6,7 +6,7 @@ import io
 import json
 import re
 from pathlib import Path
-from typing import Annotated, Any, Literal, Optional
+from typing import Annotated, Any, Literal, Optional, Union
 from urllib.parse import quote, urlencode
 
 import pandas as pd
@@ -57,7 +57,7 @@ This is the plotly express figure to be displayed. Only use valid plotly express
 Only use the arguments that are supported by the function you are using.
 
 - Configure a dictionary as if this would be added as **kwargs to the function you are using.
-- You must use the key: "_target_: "<function_name>" to specify the function you are using.
+- You must use the key: "_target_: "<function_name>" to specify the function you are using. Do NOT preceed by namespace (like px.line)
 - you must refer to the dataframe by name, for now it is one of "gapminder", "iris", "tips".
 - do not use a title if your Graph already has a title.
 """
@@ -77,13 +77,65 @@ mcp = FastMCP(
 )
 
 
+def get_python_code_and_preview_link(
+    model_object: vm.VizroBaseModel, file_name: str, file_paths_or_urls: str
+) -> dict[str, Any]:
+    # Get the Python code
+    python_code = model_object._to_python()
+
+    # Add imports and dataset definitions at the top
+    imports_and_data = f"""from vizro import Vizro
+import vizro.plotly.express as px
+from vizro.managers import data_manager
+import pandas as pd
+import vizro.models as vm
+
+# Load data into the data_manager
+data_manager["{file_name}"] = pd.read_csv("{file_paths_or_urls}")
+
+"""
+    # Find the model code section and prepend imports_and_data
+    model_code_marker = "########### Model code ############"
+    if model_code_marker in python_code:
+        parts = python_code.split(model_code_marker, 1)
+        python_code = imports_and_data + model_code_marker + parts[1]
+    else:
+        # Fallback if marker not found
+        if python_code.startswith("from vizro import Vizro"):
+            python_code = imports_and_data + python_code[len("from vizro import Vizro\n") :]
+        else:
+            python_code = imports_and_data + python_code
+
+    # Add final run line if not present
+    if "Vizro().build(model).run()" not in python_code:
+        python_code += "\n\nVizro().build(model).run()"
+
+    # Create JSON object for py.cafe
+    json_object = {
+        "code": python_code,
+        "requirements": "vizro",
+        "files": [],
+    }
+
+    # Convert to compressed base64 URL
+    json_text = json.dumps(json_object)
+    compressed_json_text = gzip.compress(json_text.encode("utf8"))
+    base64_text = base64.b64encode(compressed_json_text).decode("utf8")
+    query = urlencode({"c": base64_text}, quote_via=quote)
+    pycafe_url = f"{PYCAFE_URL}/snippet/vizro/v1?{query}"
+
+    return {"python_code": python_code, "pycafe_url": pycafe_url}
+
+
 @mcp.tool()
-def validate_model_config(model_name: str, config: dict[str, Any]) -> dict[str, Any]:
-    """Validate Vizro model configuration by attempting to instantiate it. Run whenever you have a complete configuration.
+def validate_model_config(config: dict[str, Any], file_name: str, file_paths_or_urls: str) -> dict[str, Any]:
+    """Validate Vizro model configuration by attempting to instantiate it. Run whenever you have a complete DASHBOARD configuration.
 
     Args:
-        model_name: Name of the Vizro model to validate (e.g., 'Card', 'Dashboard', 'Page')
         config: Either a JSON string or a dictionary representing a Vizro model configuration
+        file_name: Name of the file to be loaded into the data_manager and used in the code, must be without extension
+        (e.g., 'iris', 'gapminder', 'tips')
+        file_paths_or_urls: String of file path or URL to be loaded into the data_manager
 
     Returns:
         Dictionary with validation status and details
@@ -101,22 +153,20 @@ def validate_model_config(model_name: str, config: dict[str, Any]) -> dict[str, 
         else:
             return {"valid": False, "error": f"Invalid input type: {type(config)}. Expected string or dictionary."}
 
-        # Get the model class from the vizro.models namespace
-        if not hasattr(vm, model_name):
-            return {"valid": False, "error": f"Model '{model_name}' not found in vizro.models"}
-
-        model_class = getattr(vm, model_name)
-
         # Reset Vizro state before instantiation
         Vizro._reset()
 
         # Attempt to instantiate a Vizro model with the configuration
-        _ = model_class(**model_config)
+        dashboard = vm.Dashboard(**model_config)
+
+        result = get_python_code_and_preview_link(dashboard, file_name, file_paths_or_urls)
 
         # Get the result before resetting
         result = {
             "valid": True,
-            "message": f"Configuration is valid for {model_name}!",
+            "message": f"Configuration is valid for Dashboard!",
+            "python_code": result["python_code"],
+            "pycafe_url": result["pycafe_url"],
         }
 
         return result
@@ -178,6 +228,7 @@ def get_overview_vizro_models() -> dict[str, list[dict[str, str]]]:
         "layouts": [vm.Grid, vm.Flex],
         "controls": [vm.Filter, vm.Parameter],
         "selectors": [vm.Dropdown, vm.RadioItems, vm.Checklist, vm.DatePicker, vm.Slider, vm.RangeSlider],
+        "navigation": [vm.Navigation, vm.NavBar, vm.NavLink],
     }
 
     # Convert the model_groups dict to a dict with just names and descriptions
@@ -196,77 +247,24 @@ def get_overview_vizro_models() -> dict[str, list[dict[str, str]]]:
     return result
 
 
-@mcp.tool()
-def validated_config_to_python_code(model_name: str, config: dict[str, Any]) -> dict[str, Any]:
-    """Convert a Vizro model configuration to Python code and generate a PyCafe link where the dashboard is shown LIVE.
-    ALWAYS offer the user the chance to see the dashboard when you have finished the code, but make it a hyperlink as the URL is long.
+# class DataLoadingFunction(BaseModel):
+#     """A function that loads data from a file path or URL into the data_manager."""
 
-    Args:
-        model_name: Name of the Vizro model to convert to Python code
-        config: Dictionary representing a Vizro model configuration
+#     name: str = Field(description="The name of the function to be used in the code.")
+#     file_path_or_url: str = Field(description="The file path or URL to be loaded into the data_manager.")
+#     data_manager_key: str = Field(description="The key to be used in the data_manager to store the data.")
+#     data_manipulation_code: str = Field(description="Snippet of code that manipulates a pandas DataFrame called df")
 
-    Returns:
-        Dictionary with the Python code and PyCafe URL
-    """
 
-    # Get the model class from the vizro.models namespace
-    if not hasattr(vm, model_name):
-        return {"error": f"Error: Model '{model_name}' not found in vizro.models"}
-
-    model_class = getattr(vm, model_name)
-
-    try:
-        # Reset Vizro state before instantiation
-        Vizro._reset()
-
-        # Create a model instance from the configuration
-        model_instance = model_class(**config)
-
-        # Get the Python code
-        python_code = model_instance._to_python()
-
-        # Add imports and dataset definitions at the top
-        imports_and_data = """from vizro import Vizro
-import vizro.plotly.express as px
-from vizro.managers import data_manager
-
-# Load predefined datasets
-data_manager["iris"] = px.data.iris()
-data_manager["gapminder"] = px.data.gapminder()
-data_manager["tips"] = px.data.tips()
-
-"""
-        # If the code already starts with 'from vizro import Vizro', replace it
-        if python_code.startswith("from vizro import Vizro"):
-            python_code = imports_and_data + python_code[len("from vizro import Vizro\n") :]
-        else:
-            python_code = imports_and_data + python_code
-
-        # Add final run line if not present
-        if "Vizro().build(model).run()" not in python_code:
-            python_code += "\n\nVizro().build(model).run()"
-
-        # Create JSON object for py.cafe
-        json_object = {
-            "code": python_code,
-            "requirements": "vizro",
-            "files": [],
-        }
-
-        # Convert to compressed base64 URL
-        json_text = json.dumps(json_object)
-        compressed_json_text = gzip.compress(json_text.encode("utf8"))
-        base64_text = base64.b64encode(compressed_json_text).decode("utf8")
-        query = urlencode({"c": base64_text}, quote_via=quote)
-        pycafe_url = f"{PYCAFE_URL}/snippet/vizro/v1?{query}"
-
-        return {"python_code": python_code, "pycafe_url": pycafe_url}
-
-    except Exception as e:
-        return {"error": f"Error: {e!s}"}
-    finally:
-        # Always reset, regardless of success or failure
-        Vizro._reset()
+# @mcp.tool()
+# def get_data_loading_functions(
+#     location_type: Literal["local", "remote"], file_path_or_url: str, data_manager_key: str, data_manipulation_code: str
+# ) -> str:
+#     """Generate a function that loads data from a file path or URL into the data_manager."""
+#     if location_type == "local":
+#         return f"data_manager[{data_manager_key}] = pd.read_csv({file_path_or_url})"
+#     elif location_type == "remote":
+#         return f"data_manager[{data_manager_key}] = pd.read_csv({file_path_or_url})"
 
 
 @mcp.tool(
@@ -302,9 +300,11 @@ Instructions for create a Vizro dashboard:
 
 
 # Function to capture DataFrame info
-def get_dataframe_info(df: pd.DataFrame) -> dict[str, Any]:
+def get_dataframe_info(df: pd.DataFrame, file_path_or_url: Union[str, Path]) -> dict[str, Any]:
     return {
         # "info": info_str,
+        "location_type": "local" if isinstance(file_path_or_url, Path) else "remote",
+        "file_path_or_url": file_path_or_url,
         "shape": df.shape,
         "columns": list(df.columns),
         "column_types": {col: str(dtype) for col, dtype in df.dtypes.items()},
@@ -349,7 +349,7 @@ def load_and_analyze_csv(path_or_url: str) -> dict[str, Any]:
                     on_bad_lines="warn",
                     low_memory=False,
                 )
-                return {"success": True, "data": get_dataframe_info(df)}
+                return {"success": True, "data": get_dataframe_info(df, raw_url)}
             else:
                 return {"success": False, "error": f"Failed to fetch file: {response.status_code}"}
 
@@ -358,7 +358,7 @@ def load_and_analyze_csv(path_or_url: str) -> dict[str, Any]:
         if path.exists():
             # Consistent options for both local and remote files
             df = pd.read_csv(path, on_bad_lines="warn", low_memory=False)
-            return {"success": True, "data": get_dataframe_info(df)}
+            return {"success": True, "data": get_dataframe_info(df, path)}
 
         else:
             return {
@@ -468,6 +468,31 @@ def create_vizro_chart(
 Create a chart using the following chart type:\n{chart_type}.
 Make sure to analyze the data using the load_and_analyze_csv tool first, passing the file path or github url {file_path_or_url} to the tool.
 Then make sure to use the get_validated_chart_code tool to validate the chart code.
+            """,
+        }
+    ]
+
+
+@mcp.prompt(
+    name="create_EDA_dashboard",
+    description="Prompt template for creating an EDA dashboard based on one CSV dataset",
+)
+def create_EDA_dashboard(
+    file_path_or_url: str,
+) -> str:
+    return [
+        {
+            "role": "user",
+            "content": f"""
+Create an EDA dashboard based on the following dataset:{file_path_or_url}. Proceed as follows:
+1. Analyze the data using the load_and_analyze_csv tool first, passing the file path or github url {file_path_or_url} to the tool.
+2. Create a dashboard with 3 pages:
+    - Page 1: Overview of the dataset with a summary using the Card component.
+    - Page 2: Visualizing the distribution of all numeric columns using the Graph component with a histogram.
+        - use a Parameter that targets the Graph component and the x argument, and you can select the column to be displayed
+        - IMPORTANT:remember that you target the chart like: <graph_id>.x and NOT <graph_id>.figure.x
+        - do not use any color schemes etc.
+    - Page 3: Visualizing the correlation between all numeric columns using the Graph component with a scatter plot.
             """,
         }
     ]
