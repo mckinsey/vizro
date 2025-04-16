@@ -32,23 +32,6 @@ page1 = vm.Page(
                 ),
             ],
         ),
-        vm.Container(
-            id="container_1",
-            title="Inline custom styling",
-            components=[
-                vm.Graph(
-                    id="graph2",
-                    figure=px.bar(iris, x="sepal_length", y="sepal_width", color="species", title="Container I - Bar"),
-                ),
-            ],
-            variant="outlined",
-            controls=[
-                vm.Filter(
-                    column="species",
-                    selector=vm.Checklist(id="checklist", title="Species", extra={"inline": True}),
-                ),
-            ],
-        ),
     ],
     controls=[
         vm.Filter(column="species", selector=vm.Checklist()),
@@ -81,7 +64,6 @@ page2 = vm.Page(
                                         x="sepal_length",
                                         y="sepal_width",
                                         color="species",
-                                        title="Container II - Bar",
                                     ),
                                 ),
                             ],
@@ -134,7 +116,6 @@ page3 = vm.Page(
                                                 x="sepal_length",
                                                 y="sepal_width",
                                                 color="species",
-                                                title="Container - Bar",
                                             ),
                                         ),
                                     ],

@@ -64,7 +64,7 @@ class ModelManager:
     def _get_models(
         self,
         model_type: Optional[Union[type[Model], tuple[type[Model], ...], type[FIGURE_MODELS]]] = None,
-        page: Optional[Page] = None,
+        page: Optional[Union[Page, VizroBaseModel]] = None,
     ) -> Generator[Model, None, None]:
         """Iterates through all models of type `model_type` (including subclasses).
 

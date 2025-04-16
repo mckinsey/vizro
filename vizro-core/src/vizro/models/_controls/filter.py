@@ -342,7 +342,7 @@ class Filter(VizroBaseModel):
             ]
 
         # Find the container that holds the control
-        page_containers = cast(Iterable[VizroBaseModel], model_manager._get_models(Container, page))
+        page_containers = cast(Iterable[Container], model_manager._get_models(Container, page))
 
         control_container = next(
             (
