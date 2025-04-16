@@ -6,7 +6,7 @@ import io
 import json
 import re
 from pathlib import Path
-from typing import Any, Literal, Optional
+from typing import Annotated, Any, Literal, Optional
 from urllib.parse import quote, urlencode
 
 import pandas as pd
@@ -15,11 +15,12 @@ import vizro.models as vm
 from mcp.server.fastmcp import FastMCP
 
 # from mcp.server.fastmcp.server import Context
-from pydantic import BaseModel, Field, ValidationError
+from pydantic import AfterValidator, BaseModel, Field, ValidationError
 from vizro import Vizro
 
 # PyCafe URL for Vizro snippets
 PYCAFE_URL = "https://py.cafe"
+CUSTOM_CHART_NAME = "custom_chart"
 
 
 class SimplePage(BaseModel):
@@ -131,7 +132,10 @@ def validate_model_config(model_name: str, config: dict[str, Any]) -> dict[str, 
         Vizro._reset()
 
 
-@mcp.tool()
+@mcp.tool(
+    name="get_model_JSON_schema",
+    description="Get the JSON schema for the specified Vizro model. Only use if you are asked to create a DASHBOARD.",
+)
 def get_model_JSON_schema(model_name: str) -> dict[str, Any]:
     """Get the JSON schema for the specified Vizro model.
 
@@ -158,7 +162,10 @@ def get_model_JSON_schema(model_name: str) -> dict[str, Any]:
     return schema
 
 
-@mcp.tool()
+@mcp.tool(
+    name="get_overview_vizro_models",
+    description="Get an overview of the available models in the vizro.models namespace. Only use if you are asked to create a DASHBOARD.",
+)
 def get_overview_vizro_models() -> dict[str, list[dict[str, str]]]:
     """Get all available models in the vizro.models namespace.
 
@@ -262,22 +269,31 @@ data_manager["tips"] = px.data.tips()
         Vizro._reset()
 
 
-@mcp.tool()
-def get_vizro_chart_or_dashboard_plan() -> str:
-    """Call this tool first to get an overview of what to do next."""
-    return """
-    I'll help you create a Vizro-compatible chart or dashboard based on your data and requirements.
-
-    Here's a plan for how we'll work together:
-        - if you want to create a chart, do not call any other tool, but use plotly express or graph_objects to create the chart
-        - if you think the query is aiming to create a dashboard, follow these steps:
-            - call the get_overview_vizro_models tool to get an overview of the available models
-            - make a plan of what components you would like to use, you need to decide on a layout and components per page
-            then request any necessary schema using the get_model_JSON_schema tool
-            - assemble your components into a page, then add the page or pages to a dashboard
-            - validate the dashboard configuration using the validate_model_config tool use `Dashboard` as the model name
-            - call the validated_config_to_python_code tool to convert the dashboard configuration to Python code
-            - if you display any code artifact, you must use the above created code
+@mcp.tool(
+    name="get_vizro_chart_or_dashboard_plan",
+    description="Call this tool first to get an overview of what to do next when asked to create a Vizro chart or dashboard.",
+)
+def get_vizro_chart_or_dashboard_plan(plan: Literal["chart", "dashboard"]) -> str:
+    if plan == "chart":
+        return """
+Instructions for create a Vizro chart:
+    - analyze the datasets needed for the chart using the load_and_analyze_csv tool - the most important information here
+        are the column names and column types
+    - always return code for a plotly express chart, pay attention to the columns you have available
+    - do NOT call any other tool after, especially do NOT create a dashboard
+            """
+    elif plan == "dashboard":
+        return """
+Instructions for create a Vizro dashboard:
+    - analyze the datasets needed for the dashboard using the load_and_analyze_csv tool - the most important information here
+        are the column names and column types
+    - call the get_overview_vizro_models tool to get an overview of the available models
+    - make a plan of what components you would like to use, you need to decide on a layout and components per page
+    then request any necessary schema using the get_model_JSON_schema tool
+    - assemble your components into a page, then add the page or pages to a dashboard
+    - validate the dashboard configuration using the validate_model_config tool use `Dashboard` as the model name
+    - call the validated_config_to_python_code tool to convert the dashboard configuration to Python code
+    - if you display any code artifact, you must use the above created code
 
 
     IMPORTANT:
@@ -298,7 +314,10 @@ def get_dataframe_info(df: pd.DataFrame) -> dict[str, Any]:
     }
 
 
-@mcp.tool()
+@mcp.tool(
+    name="load_and_analyze_csv",
+    description="Load a CSV file from a local path or GitHub URL into a pandas DataFrame and analyze its structure.",
+)
 def load_and_analyze_csv(path_or_url: str) -> dict[str, Any]:
     """
     Load a CSV file from a local path or GitHub URL into a pandas DataFrame and analyze its structure.
@@ -356,6 +375,102 @@ def load_and_analyze_csv(path_or_url: str) -> dict[str, Any]:
     except Exception as e:
         # Catch-all for other errors
         return {"success": False, "error": f"Error processing file: {str(e)}"}
+
+
+def _strip_markdown(code_string: str) -> str:
+    """Remove any code block wrappers (markdown or triple quotes)."""
+    wrappers = [("```python\n", "```"), ("```py\n", "```"), ("```\n", "```"), ('"""', '"""'), ("'''", "'''")]
+
+    for start, end in wrappers:
+        if code_string.startswith(start) and code_string.endswith(end):
+            code_string = code_string[len(start) : -len(end)]
+            break
+
+    return code_string.strip()
+
+
+def _check_chart_code(v: str) -> str:
+    v = _strip_markdown(v)
+
+    # TODO: add more checks: ends with return, has return, no second function def, only one indented line
+    func_def = f"def {CUSTOM_CHART_NAME}("
+    if func_def not in v:
+        raise ValueError(f"The chart code must be wrapped in a function named `{CUSTOM_CHART_NAME}`")
+
+    # Keep only the function definition and everything after it
+    # Sometimes models like Gemini return extra imports in chart_code field
+    v = v[v.index(func_def) :].strip()
+
+    first_line = v.split("\n")[0].strip()
+    if "data_frame" not in first_line:
+        raise ValueError(
+            """The chart code must accept a single argument `data_frame`,
+and it should be the first argument of the chart."""
+        )
+    return v
+
+
+class ChartPlan(BaseModel):
+    """Base chart plan used to generate chart code based on user visualization requirements."""
+
+    chart_type: str = Field(
+        description="""
+        Describes the chart type that best reflects the user request.
+        """,
+    )
+    imports: list[str] = Field(
+        description="""
+        List of import statements required to render the chart defined by the `chart_code` field. Ensure that every
+        import statement is a separate list/array entry: An example of valid list of import statements would be:
+
+        [`import pandas as pd`,
+        `import plotly.express as px`]
+        """,
+    )
+    chart_code: Annotated[
+        str,
+        AfterValidator(_check_chart_code),
+        Field(
+            description=f"""
+        Python code that generates a generates a plotly go.Figure object. It must fulfill the following criteria:
+        1. Must be wrapped in a function name
+        2. Must accept a single argument `data_frame` which is a pandas DataFrame
+        3. Must return a plotly go.Figure object
+        4. All data used in the chart must be derived from the data_frame argument, all data manipulations
+        must be done within the function.
+        """,
+        ),
+    ]
+
+
+@mcp.tool(name="get_validated_chart_code", description="Validates code created for a chart")
+def get_validated_chart_code(chart_plan: dict[str, Any]) -> str:
+    """Validate the chart code created by the user."""
+    try:
+        chart_plan = ChartPlan(**chart_plan)
+        return chart_plan.model_dump_json()
+    except ValidationError as e:
+        return {"error": f"Validation Error: {e!s}"}
+
+
+@mcp.prompt(
+    name="create_vizro_chart",
+    description="Prompt template for creating a Vizro chart",
+)
+def create_vizro_chart(
+    chart_type: str,
+    file_path_or_url: str,
+) -> str:
+    return [
+        {
+            "role": "Assistant",
+            "content": f"""
+Create a chart using the following chart type:\n{chart_type}.
+Make sure to analyze the data using the load_and_analyze_csv tool first, passing the file path or github url {file_path_or_url} to the tool.
+Then make sure to use the get_validated_chart_code tool to validate the chart code.
+            """,
+        }
+    ]
 
 
 if __name__ == "__main__":
