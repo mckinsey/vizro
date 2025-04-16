@@ -93,7 +93,7 @@ class Dashboard(VizroBaseModel):
 
     pages: list[Page]
     theme: Literal["vizro_dark", "vizro_light"] = Field(
-        default="vizro_dark", description="Layout theme to be applied across dashboard. Defaults to `vizro_dark`."
+        default="vizro_dark", description="Theme to be applied across dashboard. Defaults to `vizro_dark`."
     )
     navigation: Annotated[
         Optional[Navigation], AfterValidator(set_navigation_pages), Field(default=None, validate_default=True)
@@ -139,12 +139,12 @@ class Dashboard(VizroBaseModel):
             clientside_callback(
                 ClientsideFunction(namespace="dashboard", function_name="collapse_nav_panel"),
                 [
-                    Output("collapsable-left-side", "is_open"),
+                    Output("collapsible-left-side", "is_open"),
                     Output("collapse-icon", "style"),
                     Output("collapse-tooltip", "children"),
                 ],
                 Input("collapse-icon", "n_clicks"),
-                State("collapsable-left-side", "is_open"),
+                State("collapsible-left-side", "is_open"),
             )
 
         layout = html.Div(
@@ -258,11 +258,11 @@ class Dashboard(VizroBaseModel):
         else:
             page_header_divs.append(page_divs["settings"])
 
-        collapsable_icon = (
+        collapsible_icon = (
             html.Div(
                 children=[
                     html.Span(
-                        id="collapse-icon", children="keyboard_double_arrow_left", className="material-symbols-outlined"
+                        id="collapse-icon", children="keyboard_arrow_left", className="material-symbols-outlined"
                     ),
                     dbc.Tooltip(
                         id="collapse-tooltip",
@@ -281,8 +281,8 @@ class Dashboard(VizroBaseModel):
         left_main = html.Div(id="left-main", children=left_main_divs, hidden=_all_hidden(left_main_divs))
         left_side = html.Div(id="left-side", children=[left_sidebar, left_main])
 
-        collapsable_left_side = dbc.Collapse(
-            id="collapsable-left-side", children=left_side, is_open=True, dimension="width"
+        collapsible_left_side = dbc.Collapse(
+            id="collapsible-left-side", children=left_side, is_open=True, dimension="width"
         )
 
         right_header = html.Div(id="right-header", children=right_header_divs)
@@ -290,7 +290,7 @@ class Dashboard(VizroBaseModel):
         right_side = html.Div(id="right-side", children=[right_header, right_main])
 
         page_header = html.Div(id="page-header", children=page_header_divs, hidden=_all_hidden(page_header_divs))
-        page_main = html.Div(id="page-main", children=[collapsable_left_side, collapsable_icon, right_side])
+        page_main = html.Div(id="page-main", children=[collapsible_left_side, collapsible_icon, right_side])
         return html.Div(children=[page_header, page_main], className="page-container")
 
     def _make_page_layout(self, page: Page, **kwargs):

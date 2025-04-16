@@ -8,9 +8,7 @@ def test_custom_dropdown(dash_br):
     """Testing setting up and filter of the custom dropdown."""
     page_select(
         dash_br,
-        page_path=cnst.CUSTOM_COMPONENTS_PAGE_PATH,
         page_name=cnst.CUSTOM_COMPONENTS_PAGE,
-        graph_id=cnst.SCATTER_CUSTOM_COMPONENTS_ID,
     )
     # choose 'versicolor' value
     select_dropdown_value(dash_br, value=2, dropdown_id=cnst.CUSTOM_DROPDOWN_ID, multi=False)
@@ -26,9 +24,7 @@ def test_custom_range_slider(dash_br):
     """Testing setting up and filter of the custom range slider."""
     page_select(
         dash_br,
-        page_path=cnst.CUSTOM_COMPONENTS_PAGE_PATH,
         page_name=cnst.CUSTOM_COMPONENTS_PAGE,
-        graph_id=cnst.SCATTER_CUSTOM_COMPONENTS_ID,
     )
     dash_br.multiple_click(slider_value_path(elem_id=cnst.CUSTOM_RANGE_SLIDER_ID, value=4), 1)
     check_graph_is_loading(dash_br, graph_id=cnst.SCATTER_CUSTOM_COMPONENTS_ID)

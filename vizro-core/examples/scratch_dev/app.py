@@ -1,8 +1,13 @@
+"""Example app from the official vizro user tutorial.
+
+See: https://vizro.readthedocs.io/en/stable/pages/tutorials/explore-components/
+"""
+
 import vizro.models as vm
 import vizro.plotly.express as px
 from vizro import Vizro
 
-df = px.data.iris()
+iris = px.data.iris()
 
 
 page1 = vm.Page(
@@ -14,7 +19,7 @@ page1 = vm.Page(
             components=[
                 vm.Graph(
                     id="graph1",
-                    figure=px.scatter(df, x="sepal_length", y="petal_width", color="species", custom_data=["species"]),
+                    figure=px.scatter(iris, x="sepal_length", y="petal_width", color="species", custom_data=["species"]),
                 ),
             ],
             variant="filled",
@@ -31,7 +36,7 @@ page1 = vm.Page(
             components=[
                 vm.Graph(
                     id="graph2",
-                    figure=px.bar(df, x="sepal_length", y="sepal_width", color="species", title="Container I - Bar"),
+                    figure=px.bar(iris, x="sepal_length", y="sepal_width", color="species", title="Container I - Bar"),
                 ),
             ],
             variant="outlined",
@@ -44,9 +49,8 @@ page1 = vm.Page(
         ),
     ],
     controls=[
-        vm.Filter(column="species", selector=vm.Checklist()),
-    ],
-)
+        vm.Filter(column="species", selector=vm.Checklist()),])
+
 
 page2 = vm.Page(
     title="Controls above tabs",
@@ -69,7 +73,7 @@ page2 = vm.Page(
                                 vm.Graph(
                                     id="graph3",
                                     figure=px.bar(
-                                        df,
+                                        iris,
                                         x="sepal_length",
                                         y="sepal_width",
                                         color="species",
@@ -84,7 +88,7 @@ page2 = vm.Page(
                                 vm.Graph(
                                     id="graph4",
                                     figure=px.scatter(
-                                        df, x="sepal_length", y="petal_width", color="species", custom_data=["species"]
+                                        iris, x="sepal_length", y="petal_width", color="species", custom_data=["species"]
                                     ),
                                 ),
                             ],
@@ -118,7 +122,7 @@ page3 = vm.Page(
                                         vm.Graph(
                                             id="graph5",
                                             figure=px.bar(
-                                                df,
+                                                iris,
                                                 x="sepal_length",
                                                 y="sepal_width",
                                                 color="species",
@@ -141,7 +145,7 @@ page3 = vm.Page(
                                 vm.Graph(
                                     id="graph6",
                                     figure=px.scatter(
-                                        df, x="sepal_length", y="petal_width", color="species", custom_data=["species"]
+                                        iris, x="sepal_length", y="petal_width", color="species", custom_data=["species"]
                                     ),
                                 ),
                             ],
@@ -166,7 +170,7 @@ page4 = vm.Page(
                         vm.Graph(
                             id="graph9",
                             figure=px.scatter(
-                                df, x="sepal_length", y="petal_width", color="species", custom_data=["species"]
+                                iris, x="sepal_length", y="petal_width", color="species", custom_data=["species"]
                             ),
                         ),
                     ],
@@ -180,7 +184,7 @@ page4 = vm.Page(
                 ),
                 vm.Graph(
                     id="graph7",
-                    figure=px.bar(df, x="sepal_length", y="sepal_width", color="species", title="Container I - Bar"),
+                    figure=px.bar(iris, x="sepal_length", y="sepal_width", color="species", title="Container I - Bar"),
                 ),
                 vm.Graph(id="graph10", figure=px.violin(px.data.iris(), x="species", y="sepal_width", box=True)),
             ],
@@ -190,10 +194,9 @@ page4 = vm.Page(
                     column="species",
                     selector=vm.Checklist(value=["setosa"], title="Species", extra={"inline": True}),
                 ),
-            ],
-        ),
     ],
 )
+        ])
 
 page5 = vm.Page(
     title="Page with dropdown",
@@ -203,11 +206,11 @@ page5 = vm.Page(
             components=[
                 vm.Graph(
                     title="Bar chart",
-                    figure=px.bar(df, x="sepal_length", y="sepal_width", color="species"),
+                    figure=px.bar(iris, x="sepal_length", y="sepal_width", color="species"),
                 ),
                 vm.Graph(
                     title="Scatter chart",
-                    figure=px.scatter(df, x="sepal_length", y="petal_width", color="species", custom_data=["species"]),
+                    figure=px.scatter(iris, x="sepal_length", y="petal_width", color="species", custom_data=["species"]),
                 ),
             ],
             layout=vm.Layout(grid=[[0, 1]]),
@@ -227,11 +230,11 @@ page6 = vm.Page(
             components=[
                 vm.Graph(
                     title="Bar chart",
-                    figure=px.bar(df, x="sepal_length", y="sepal_width", color="species"),
+                    figure=px.bar(iris, x="sepal_length", y="sepal_width", color="species"),
                 ),
                 vm.Graph(
                     title="Scatter chart",
-                    figure=px.scatter(df, x="sepal_length", y="petal_width", color="species", custom_data=["species"]),
+                    figure=px.scatter(iris, x="sepal_length", y="petal_width", color="species", custom_data=["species"]),
                 ),
             ],
             layout=vm.Layout(grid=[[0, 1]]),
@@ -252,11 +255,11 @@ page7 = vm.Page(
             components=[
                 vm.Graph(
                     title="Bar chart",
-                    figure=px.bar(df, x="sepal_length", y="sepal_width", color="species"),
+                    figure=px.bar(iris, x="sepal_length", y="sepal_width", color="species"),
                 ),
                 vm.Graph(
                     title="Scatter chart",
-                    figure=px.scatter(df, x="sepal_length", y="petal_width", color="species", custom_data=["species"]),
+                    figure=px.scatter(iris, x="sepal_length", y="petal_width", color="species", custom_data=["species"]),
                 ),
             ],
             layout=vm.Layout(grid=[[0, 1]]),

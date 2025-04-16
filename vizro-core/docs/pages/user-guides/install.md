@@ -63,3 +63,11 @@ To change the version of Vizro installed:
 ```bash
 pip install -U vizro
 ```
+
+## Plugins
+
+!!! tip "Enable IDE autocompletion"
+
+    Vizro is heavily based on [pydantic](https://docs.pydantic.dev/latest/). In order to enable autocompletion when configuring Vizro models, you can use the pydantic [plugin for VS Code](https://docs.pydantic.dev/latest/integrations/visual_studio_code/) or [for PyCharm](https://docs.pydantic.dev/latest/integrations/pycharm/).
+
+![logo](../../assets/user_guides/install/logo_watermark_extended.svg){width="250"}

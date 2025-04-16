@@ -10,8 +10,9 @@ from ._navigation.navigation import Navigation
 from ._navigation.nav_bar import NavBar
 from ._navigation.nav_link import NavLink
 from ._dashboard import Dashboard
-from ._layout import Layout
+from ._grid import Layout, Grid
 from ._page import Page
+from ._flex import Flex
 
 
 # Since pydantic==2.11.0 we need to rebuilt more than the Dashboard model
@@ -39,7 +40,9 @@ __all__ = [
     "Dropdown",
     "Figure",
     "Filter",
+    "Flex",
     "Graph",
+    "Grid",
     "Layout",
     "NavBar",
     "NavLink",
