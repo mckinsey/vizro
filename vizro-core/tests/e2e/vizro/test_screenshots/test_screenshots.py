@@ -217,6 +217,7 @@ def test_collapsible_containers_grid(dash_br):
     page_select(dash_br, page_name=cnst.COLLAPSIBLE_CONTAINERS_GRID)
 
 
+@pytest.mark.filterwarnings("ignore::DeprecationWarning")
 @image_assertion
 def test_collapsible_containers_grid_switched(dash_br):
     accordion_select(dash_br, accordion_name=cnst.LAYOUT_ACCORDION)
