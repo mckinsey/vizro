@@ -2,7 +2,6 @@
 
 import base64
 import gzip
-import io
 import json
 import re
 from pathlib import Path
@@ -57,7 +56,7 @@ This is the plotly express figure to be displayed. Only use valid plotly express
 Only use the arguments that are supported by the function you are using.
 
 - Configure a dictionary as if this would be added as **kwargs to the function you are using.
-- You must use the key: "_target_: "<function_name>" to specify the function you are using. Do NOT preceed by namespace (like px.line)
+- You must use the key: "_target_: "<function_name>" to specify the function you are using. Do NOT precede by namespace (like px.line)
 - you must refer to the dataframe by name, for now it is one of "gapminder", "iris", "tips".
 - do not use a title if your Graph already has a title.
 """
@@ -99,12 +98,11 @@ data_manager["{file_name}"] = pd.read_csv("{file_paths_or_urls}")
     if model_code_marker in python_code:
         parts = python_code.split(model_code_marker, 1)
         python_code = imports_and_data + model_code_marker + parts[1]
+    # Fallback if marker not found
+    elif python_code.startswith("from vizro import Vizro"):
+        python_code = imports_and_data + python_code[len("from vizro import Vizro\n") :]
     else:
-        # Fallback if marker not found
-        if python_code.startswith("from vizro import Vizro"):
-            python_code = imports_and_data + python_code[len("from vizro import Vizro\n") :]
-        else:
-            python_code = imports_and_data + python_code
+        python_code = imports_and_data + python_code
 
     # Add final run line if not present
     if "Vizro().build(model).run()" not in python_code:
@@ -128,19 +126,22 @@ data_manager["{file_name}"] = pd.read_csv("{file_paths_or_urls}")
 
 
 @mcp.tool()
-def validate_model_config(config: dict[str, Any], file_name: str, file_paths_or_urls: str) -> dict[str, Any]:
+def validate_model_config(
+    config: dict[str, Any], file_name: str, file_paths_or_urls: str, file_location_type: Literal["local", "remote"]
+) -> dict[str, Any]:
     """Validate Vizro model configuration by attempting to instantiate it. Run whenever you have a complete DASHBOARD configuration.
+
+    If successful, the tool will return the python code and, if it is a remote file, the py.cafe link to the chart.
 
     Args:
         config: Either a JSON string or a dictionary representing a Vizro model configuration
         file_name: Name of the file to be loaded into the data_manager and used in the code, must be without extension
         (e.g., 'iris', 'gapminder', 'tips')
         file_paths_or_urls: String of file path or URL to be loaded into the data_manager
-
+        file_location_type: Literal["local", "remote"]
     Returns:
         Dictionary with validation status and details
     """
-
     try:
         # Handle input as either string or dictionary
         if isinstance(config, str):
@@ -164,9 +165,9 @@ def validate_model_config(config: dict[str, Any], file_name: str, file_paths_or_
         # Get the result before resetting
         result = {
             "valid": True,
-            "message": f"Configuration is valid for Dashboard!",
+            "message": "Configuration is valid for Dashboard!",
             "python_code": result["python_code"],
-            "pycafe_url": result["pycafe_url"],
+            "pycafe_url": result["pycafe_url"] if file_location_type == "remote" else None,
         }
 
         return result
@@ -319,8 +320,7 @@ def get_dataframe_info(df: pd.DataFrame, file_path_or_url: Union[str, Path]) -> 
     description="Load a CSV file from a local path or GitHub URL into a pandas DataFrame and analyze its structure.",
 )
 def load_and_analyze_csv(path_or_url: str) -> dict[str, Any]:
-    """
-    Load a CSV file from a local path or GitHub URL into a pandas DataFrame and analyze its structure.
+    """Load a CSV file from a local path or GitHub URL into a pandas DataFrame and analyze its structure.
 
     Args:
         path_or_url: Local file path or GitHub URL to a CSV file
@@ -328,7 +328,6 @@ def load_and_analyze_csv(path_or_url: str) -> dict[str, Any]:
     Returns:
         Dictionary containing DataFrame information and summary
     """
-
     try:
         # Check if input is a GitHub URL
         github_pattern = r"https?://(?:www\.)?github\.com/([^/]+)/([^/]+)/(?:blob|raw)/([^/]+)/(.+\.csv)"
@@ -339,19 +338,17 @@ def load_and_analyze_csv(path_or_url: str) -> dict[str, Any]:
             user, repo, branch, file_path = github_match.groups()
             raw_url = f"https://raw.githubusercontent.com/{user}/{repo}/{branch}/{file_path}"
 
-            # Use standard requests library with timeout and streaming
-            response = requests.get(raw_url, timeout=30, stream=True)
-            if response.status_code == 200:
-                # Use BytesIO for better performance with binary content
+            try:
+                # Directly use pandas read_csv with the URL
                 df = pd.read_csv(
-                    io.BytesIO(response.content),
+                    raw_url,
                     # Add error handling for common CSV issues
                     on_bad_lines="warn",
                     low_memory=False,
                 )
                 return {"success": True, "data": get_dataframe_info(df, raw_url)}
-            else:
-                return {"success": False, "error": f"Failed to fetch file: {response.status_code}"}
+            except requests.exceptions.RequestException as e:
+                return {"success": False, "error": f"Failed to fetch file: {e!s}"}
 
         # Check if input is a valid local file
         path = Path(path_or_url)
@@ -368,13 +365,13 @@ def load_and_analyze_csv(path_or_url: str) -> dict[str, Any]:
 
     except pd.errors.ParserError as e:
         # Handle CSV parsing errors specifically
-        return {"success": False, "error": f"Error parsing CSV file: {str(e)}"}
+        return {"success": False, "error": f"Error parsing CSV file: {e!s}"}
     except requests.exceptions.RequestException as e:
         # Handle network-related errors
-        return {"success": False, "error": f"Network error when fetching file: {str(e)}"}
+        return {"success": False, "error": f"Network error when fetching file: {e!s}"}
     except Exception as e:
         # Catch-all for other errors
-        return {"success": False, "error": f"Error processing file: {str(e)}"}
+        return {"success": False, "error": f"Error processing file: {e!s}"}
 
 
 def _strip_markdown(code_string: str) -> str:
@@ -431,7 +428,7 @@ class ChartPlan(BaseModel):
         str,
         AfterValidator(_check_chart_code),
         Field(
-            description=f"""
+            description="""
         Python code that generates a generates a plotly go.Figure object. It must fulfill the following criteria:
         1. Must be wrapped in a function name
         2. Must accept a single argument `data_frame` which is a pandas DataFrame
