@@ -227,7 +227,7 @@ def test_collapsible_containers_grid_switched(dash_br):
     click_element_by_xpath_selenium(dash_br, '//*[@class="material-symbols-outlined"][text()="keyboard_arrow_down"]')
     click_element_by_xpath_selenium(dash_br, '//*[@class="material-symbols-outlined"][text()="keyboard_arrow_up"]')
 
-    # move mouse to different location of the screen to prevent flakiness because of tooltip
+    # move mouse to different location of the screen to prevent flakiness because of tooltip.
     dash_br.click_at_coord_fractions(theme_toggle_path(), 0, 1)
     dash_br.wait_for_no_elements('span[aria-describedby*="tooltip"]')
 
@@ -248,7 +248,7 @@ def test_collapsible_containers_flex_switched(dash_br):
     click_element_by_xpath_selenium(dash_br, '//*[@class="material-symbols-outlined"][text()="keyboard_arrow_down"]')
     click_element_by_xpath_selenium(dash_br, '//*[@class="material-symbols-outlined"][text()="keyboard_arrow_up"]')
 
-    # move mouse to different location of the screen to prevent flakiness because of tooltip
+    # move mouse to different location of the screen to prevent flakiness because of tooltip.
     dash_br.click_at_coord_fractions(theme_toggle_path(), 0, 1)
     dash_br.wait_for_no_elements('span[aria-describedby*="tooltip"]')
 
