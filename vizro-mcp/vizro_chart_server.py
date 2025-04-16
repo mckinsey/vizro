@@ -72,7 +72,7 @@ mcp = FastMCP(
 
 
 @mcp.tool()
-def validate_model_config(model_name: str, config: Union[str, dict[str, Any]]) -> dict[str, Any]:
+def validate_model_config(model_name: str, config: dict[str, Any]) -> dict[str, Any]:
     """Validate Vizro model configuration by attempting to instantiate it. Run whenever you have a complete configuration.
 
     Args:
@@ -187,7 +187,7 @@ def get_overview_vizro_models() -> dict[str, list[dict[str, str]]]:
 @mcp.tool()
 def validated_config_to_python_code(model_name: str, config: dict[str, Any]) -> dict[str, Any]:
     """Convert a Vizro model configuration to Python code and generate a PyCafe link where the dashboard is shown LIVE.
-    ALWAYS offer the user the chance to see the dashboard when you have finished the code.
+    ALWAYS offer the user the chance to see the dashboard when you have finished the code, but make it a hyperlink as the URL is long.
 
     Args:
         model_name: Name of the Vizro model to convert to Python code
@@ -278,6 +278,72 @@ def get_vizro_chart_or_dashboard_plan() -> str:
     IMPORTANT:
     - if you iterate over a valid produced solution, make sure to go ALWAYS via the validation step again to ensure the solution is valid
     """
+
+
+import io
+import os
+import re
+
+import pandas as pd
+import requests
+
+
+# Function to capture DataFrame info
+def get_dataframe_info(df: pd.DataFrame) -> dict[str, Any]:
+    return {
+        # "info": info_str,
+        "shape": df.shape,
+        "columns": list(df.columns),
+        "column_types": {col: str(dtype) for col, dtype in df.dtypes.items()},
+        # "missing_values": df.isna().sum().to_dict(),
+        # "numeric_stats": df.describe().to_dict() if not df.empty else {},
+        "sample": df.sample(5).to_dict() if not df.empty else {},
+    }
+
+
+@mcp.tool()
+def load_and_analyze_csv(path_or_url: str) -> dict[str, Any]:
+    """
+    Load a CSV file from a local path or GitHub URL into a pandas DataFrame and analyze its structure.
+
+    Args:
+        path_or_url: Local file path or GitHub URL to a CSV file
+
+    Returns:
+        Dictionary containing DataFrame information and summary
+    """
+
+    try:
+        # Check if input is a GitHub URL
+        github_pattern = r"https?://(?:www\.)?github\.com/([^/]+)/([^/]+)/(?:blob|raw)/([^/]+)/(.+\.csv)"
+        github_match = re.match(github_pattern, path_or_url)
+
+        if github_match:
+            # Convert GitHub URL to raw URL
+            user, repo, branch, file_path = github_match.groups()
+            raw_url = f"https://raw.githubusercontent.com/{user}/{repo}/{branch}/{file_path}"
+
+            # Use standard requests library
+            response = requests.get(raw_url)
+            if response.status_code == 200:
+                df = pd.read_csv(io.StringIO(response.text))
+                return {"success": True, "data": get_dataframe_info(df)}
+            else:
+                return {"success": False, "error": f"Failed to fetch file: {response.status_code}"}
+
+        # Check if input is a valid local file
+        elif os.path.exists(path_or_url):
+            df = pd.read_csv(path_or_url)
+            return {"success": True, "data": get_dataframe_info(df)}
+
+        else:
+            return {
+                "success": False,
+                "error": f"Invalid input: '{path_or_url}' is neither a valid local file nor a GitHub URL",
+            }
+
+    except Exception as e:
+        return {"success": False, "error": f"Error processing file: {str(e)}"}
 
 
 if __name__ == "__main__":
