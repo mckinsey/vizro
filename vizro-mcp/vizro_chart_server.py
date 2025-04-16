@@ -2,10 +2,15 @@
 
 import base64
 import gzip
+import io
 import json
-from typing import Any, Literal, Optional, Union
+import re
+from pathlib import Path
+from typing import Any, Literal, Optional
 from urllib.parse import quote, urlencode
 
+import pandas as pd
+import requests
 import vizro.models as vm
 from mcp.server.fastmcp import FastMCP
 
@@ -280,14 +285,6 @@ def get_vizro_chart_or_dashboard_plan() -> str:
     """
 
 
-import io
-import os
-import re
-
-import pandas as pd
-import requests
-
-
 # Function to capture DataFrame info
 def get_dataframe_info(df: pd.DataFrame) -> dict[str, Any]:
     return {
@@ -323,17 +320,25 @@ def load_and_analyze_csv(path_or_url: str) -> dict[str, Any]:
             user, repo, branch, file_path = github_match.groups()
             raw_url = f"https://raw.githubusercontent.com/{user}/{repo}/{branch}/{file_path}"
 
-            # Use standard requests library
-            response = requests.get(raw_url)
+            # Use standard requests library with timeout and streaming
+            response = requests.get(raw_url, timeout=30, stream=True)
             if response.status_code == 200:
-                df = pd.read_csv(io.StringIO(response.text))
+                # Use BytesIO for better performance with binary content
+                df = pd.read_csv(
+                    io.BytesIO(response.content),
+                    # Add error handling for common CSV issues
+                    on_bad_lines="warn",
+                    low_memory=False,
+                )
                 return {"success": True, "data": get_dataframe_info(df)}
             else:
                 return {"success": False, "error": f"Failed to fetch file: {response.status_code}"}
 
         # Check if input is a valid local file
-        elif os.path.exists(path_or_url):
-            df = pd.read_csv(path_or_url)
+        path = Path(path_or_url)
+        if path.exists():
+            # Consistent options for both local and remote files
+            df = pd.read_csv(path, on_bad_lines="warn", low_memory=False)
             return {"success": True, "data": get_dataframe_info(df)}
 
         else:
@@ -342,7 +347,14 @@ def load_and_analyze_csv(path_or_url: str) -> dict[str, Any]:
                 "error": f"Invalid input: '{path_or_url}' is neither a valid local file nor a GitHub URL",
             }
 
+    except pd.errors.ParserError as e:
+        # Handle CSV parsing errors specifically
+        return {"success": False, "error": f"Error parsing CSV file: {str(e)}"}
+    except requests.exceptions.RequestException as e:
+        # Handle network-related errors
+        return {"success": False, "error": f"Network error when fetching file: {str(e)}"}
     except Exception as e:
+        # Catch-all for other errors
         return {"success": False, "error": f"Error processing file: {str(e)}"}
 
 
