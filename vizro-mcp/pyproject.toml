@@ -36,7 +36,7 @@ requires-python = ">=3.10"
 dynamic = ["version"]
 
 [project.scripts]
-"vizro-mcp" = "vizro_mcp.cli:main"
+"vizro-mcp" = "vizro_mcp:main"
 
 [tool.coverage.paths]
 vizro = ["src/vizro_mcp"]  # omit tests for clarity, although this can be useful to see what test lines DID NOT run
