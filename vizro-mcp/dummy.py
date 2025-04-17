@@ -5,54 +5,45 @@
 # ]
 # ///
 
+import os
+
 import pandas as pd
 
 
-def select_and_save_columns(csv_file_path: str, output_csv_path: str) -> None:
+def load_and_drop_column(csv_file_path: str, save_output: bool = True) -> pd.DataFrame:
     """
-    Read a CSV file, select specific columns, and save as a new CSV file.
+    Read a filtered CSV file, drop the electric vehicle column, and optionally save the result.
 
     Args:
-        csv_file_path (str): Path to the input CSV file
-        output_csv_path (str): Path where the filtered CSV file will be saved
+        csv_file_path (str): Path to the filtered CSV file
+        save_output (bool, optional): Whether to save the modified DataFrame. Defaults to True.
 
     Returns:
-        None
+        pd.DataFrame: DataFrame with the electric vehicle column dropped
     """
     try:
-        # Read the CSV file
+        # Read the filtered CSV file
         df = pd.read_csv(csv_file_path)
 
-        # Select the specified columns
-        columns_to_keep = [
-            "in.sqft",
-            "in.county_name",
-            "in.electric_vehicle",
-            "in.has_pv",
-            "in.income",
-            "in.occupants",
-            "in.state",
-            "in.tenure",
-            "in.vintage",
-            "out.bills.all_fuels.usd",
-            "out.bills.electricity.usd",
-            "out.bills.fuel_oil.usd",
-            "out.bills.natural_gas.usd",
-            "out.bills.propane.usd",
-            "out.energy_burden.percentage",
-        ]
+        # Drop the electric vehicle column
+        if "in.electric_vehicle" in df.columns:
+            df = df.drop(columns=["in.electric_vehicle"])
+            print(f"Successfully loaded {csv_file_path} and dropped 'in.electric_vehicle' column")
 
-        filtered_df = df[columns_to_keep]
+            # Save the modified DataFrame if requested
+            if save_output:
+                output_path = os.path.splitext(csv_file_path)[0] + "_no_ev.csv"
+                df.to_csv(output_path, index=False)
+                print(f"Saved modified DataFrame to {output_path}")
+        else:
+            print(f"Column 'in.electric_vehicle' not found in {csv_file_path}")
 
-        # Save as CSV
-        filtered_df.to_csv(output_csv_path, index=False)
-
-        print(f"Successfully filtered and saved {csv_file_path} to {output_csv_path}")
+        return df
     except Exception as e:
         print(f"Error processing CSV file: {str(e)}")
+        return pd.DataFrame()
 
 
-# Process the specific file
-csv_path = "/Users/Maximilian_Schulz/Documents_no_backup/Python/Vizro/vizro/vizro-mcp/playground/CA_baseline_metadata_and_annual_results.csv"
-output_path = "/Users/Maximilian_Schulz/Documents_no_backup/Python/Vizro/vizro/vizro-mcp/playground/CA_baseline_metadata_and_annual_results_filtered.csv"
-select_and_save_columns(csv_path, output_path)
+# Load the filtered CSV and drop the electric vehicle column
+csv_path = "/Users/Maximilian_Schulz/Documents_no_backup/Python/Vizro/vizro/vizro-mcp/playground/CA_baseline_metadata_and_annual_results_filtered.csv"
+df = load_and_drop_column(csv_path)

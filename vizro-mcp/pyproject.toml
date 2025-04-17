@@ -1,9 +1,24 @@
+[build-system]
+build-backend = "hatchling.build"
+requires = ["hatchling"]
+
 [project]
+authors = [
+  {name = "Vizro Team"}
+]
+classifiers = [
+  "Programming Language :: Python",
+  "Programming Language :: Python :: 3.9",
+  "Programming Language :: Python :: 3.10",
+  "Programming Language :: Python :: 3.11",
+  "Programming Language :: Python :: 3.12"
+]
 name = "vizro-mcp"
-version = "0.1.0"
-description = "Add your description here"
+version = "0.0.1"
+description = "Vizro MCP server to facilitate chart and dashboard generation"
 readme = "README.md"
-requires-python = ">=3.12"
+requires-python = ">=3.9"
+license-files = {paths = ["LICENSE.txt"]}
 dependencies = [
     "httpx>=0.28.1",
     "mcp[cli]>=1.6.0",
@@ -18,3 +33,4 @@ dev = [
     "plotly>=6.0.1",
     "pytest>=8.3.5",
 ]
+
