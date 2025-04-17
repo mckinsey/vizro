@@ -5,7 +5,7 @@ import pytest
 from e2e.asserts import assert_image_equal, make_screenshot_and_paths
 from e2e.vizro import constants as cnst
 from e2e.vizro.checkers import check_graph_color, check_theme_color
-from e2e.vizro.navigation import accordion_select, page_select
+from e2e.vizro.navigation import accordion_select, click_element_by_xpath_selenium, page_select
 from e2e.vizro.paths import kpi_card_path, nav_card_link_path, theme_toggle_path
 from e2e.vizro.waiters import callbacks_finish_waiter, graph_load_waiter
 
@@ -209,6 +209,48 @@ def test_extra_parameter(dash_br):
 def test_button_styles(dash_br):
     accordion_select(dash_br, accordion_name=cnst.LAYOUT_ACCORDION)
     page_select(dash_br, page_name=cnst.BUTTONS_PAGE, graph_check=False)
+
+
+@image_assertion
+def test_collapsible_containers_grid(dash_br):
+    accordion_select(dash_br, accordion_name=cnst.LAYOUT_ACCORDION)
+    page_select(dash_br, page_name=cnst.COLLAPSIBLE_CONTAINERS_GRID)
+
+
+@pytest.mark.filterwarnings("ignore::DeprecationWarning")
+@image_assertion
+def test_collapsible_containers_grid_switched(dash_br):
+    accordion_select(dash_br, accordion_name=cnst.LAYOUT_ACCORDION)
+    page_select(dash_br, page_name=cnst.COLLAPSIBLE_CONTAINERS_GRID)
+
+    # close one container and open another
+    click_element_by_xpath_selenium(dash_br, '//*[@class="material-symbols-outlined"][text()="keyboard_arrow_down"]')
+    click_element_by_xpath_selenium(dash_br, '//*[@class="material-symbols-outlined"][text()="keyboard_arrow_up"]')
+
+    # move mouse to different location of the screen to prevent flakiness because of tooltip.
+    dash_br.click_at_coord_fractions(theme_toggle_path(), 0, 1)
+    dash_br.wait_for_no_elements('span[aria-describedby*="tooltip"]')
+
+
+@image_assertion
+def test_collapsible_containers_flex(dash_br):
+    accordion_select(dash_br, accordion_name=cnst.LAYOUT_ACCORDION)
+    page_select(dash_br, page_name=cnst.COLLAPSIBLE_CONTAINERS_GRID)
+
+
+@pytest.mark.filterwarnings("ignore::DeprecationWarning")
+@image_assertion
+def test_collapsible_containers_flex_switched(dash_br):
+    accordion_select(dash_br, accordion_name=cnst.LAYOUT_ACCORDION)
+    page_select(dash_br, page_name=cnst.COLLAPSIBLE_CONTAINERS_FLEX)
+
+    # close one container and open another
+    click_element_by_xpath_selenium(dash_br, '//*[@class="material-symbols-outlined"][text()="keyboard_arrow_down"]')
+    click_element_by_xpath_selenium(dash_br, '//*[@class="material-symbols-outlined"][text()="keyboard_arrow_up"]')
+
+    # move mouse to different location of the screen to prevent flakiness because of tooltip.
+    dash_br.click_at_coord_fractions(theme_toggle_path(), 0, 1)
+    dash_br.wait_for_no_elements('span[aria-describedby*="tooltip"]')
 
 
 @pytest.mark.mobile_screenshots
