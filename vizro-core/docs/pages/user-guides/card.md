@@ -22,6 +22,7 @@ You can add a [`Card`][vizro.models.Card] to your dashboard by inserting the [`C
 
         page = vm.Page(
             title="Card",
+            layout=vm.Flex(),  # (1)!
             components=[
                 vm.Card(
                     text="""
@@ -33,9 +34,12 @@ You can add a [`Card`][vizro.models.Card] to your dashboard by inserting the [`C
         )
 
         dashboard = vm.Dashboard(pages=[page])
-
         Vizro().build(dashboard).run()
         ```
+        
+        1. We use a [`Flex`][vizro.models.Flex] layout to ensure the `Card` only occupies the vertical space it needs. 
+           Without this, it would default to filling the entire available space.
+
 
     === "app.yaml"
 
@@ -48,6 +52,8 @@ You can add a [`Card`][vizro.models.Card] to your dashboard by inserting the [`C
                   Commodi repudiandae consequuntur voluptatum.
                 title: Card Title
                 type: card
+            layout:
+              type: flex
             title: Card
         ```
 
@@ -75,7 +81,7 @@ The [`Card`][vizro.models.Card] uses the `dcc.Markdown` component from Dash as i
         from vizro import Vizro
 
         page = vm.Page(
-            title="Customizing Text",
+            title="Customizing Text",  # (1)!
             components=[
                 vm.Card(
                     text="""
@@ -134,9 +140,12 @@ The [`Card`][vizro.models.Card] uses the `dcc.Markdown` component from Dash as i
         )
 
         dashboard = vm.Dashboard(pages=[page])
-
         Vizro().build(dashboard).run()
         ```
+
+        1. Note that we don't explicitly define a `layout` here, so it defaults to the [`Grid`][vizro.models.Grid] layout. 
+           This layout automatically arranges all components to fit on a single page, giving each one equal space. 
+           As a result, all `Card` components are evenly sized and fill the entire screen.
 
     === "app.yaml"
 
