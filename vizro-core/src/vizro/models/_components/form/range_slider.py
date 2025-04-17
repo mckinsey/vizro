@@ -6,7 +6,8 @@ from pydantic import AfterValidator, BeforeValidator, Field, PrivateAttr, conlis
 from pydantic.functional_serializers import PlainSerializer
 from pydantic.json_schema import SkipJsonSchema
 
-from vizro.models import VizroBaseModel, Tooltip
+from vizro.models import Tooltip, VizroBaseModel
+
 from vizro.models._action._actions_chain import _action_validator_factory
 from vizro.models._components.form._form_utils import (
     set_default_marks,

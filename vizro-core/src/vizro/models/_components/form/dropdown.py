@@ -8,12 +8,12 @@ from pydantic import AfterValidator, BeforeValidator, Field, PrivateAttr, Strict
 from pydantic.functional_serializers import PlainSerializer
 from pydantic.json_schema import SkipJsonSchema
 
-from vizro.models import VizroBaseModel, Tooltip
+from vizro.models import Tooltip, VizroBaseModel
 from vizro.models._action._actions_chain import _action_validator_factory
 from vizro.models._components.form._form_utils import get_options_and_default, validate_options_dict, validate_value
 from vizro.models._models_utils import _log_call
-from vizro.models.types import ActionType, MultiValueType, OptionsDictType, OptionsType, SingleValueType
 from vizro.models._tooltip import coerce_str_to_tooltip
+from vizro.models.types import ActionType, MultiValueType, OptionsDictType, OptionsType, SingleValueType
 
 
 def _get_list_of_labels(full_options: OptionsType) -> Union[list[StrictBool], list[float], list[str], list[date]]:

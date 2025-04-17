@@ -8,7 +8,7 @@ from pydantic import AfterValidator, BeforeValidator, Field, PrivateAttr
 from pydantic.functional_serializers import PlainSerializer
 from pydantic.json_schema import SkipJsonSchema
 
-from vizro.models import VizroBaseModel, Tooltip
+from vizro.models import Tooltip, VizroBaseModel
 from vizro.models._action._actions_chain import _action_validator_factory
 from vizro.models._components.form._form_utils import validate_date_picker_range, validate_max, validate_range_value
 from vizro.models._models_utils import _log_call
