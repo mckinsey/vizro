@@ -50,18 +50,17 @@ To add a `Figure` to your page:
 
         tips = px.data.tips
 
-        # Create a layout with five rows and four columns. The KPI card is positioned in the first cell, while the remaining cells are empty.
         page = vm.Page(
             title="KPI card",
-            layout=vm.Grid(grid=[[0, -1, -1, -1]] + [[-1, -1, -1, -1]] * 4),
+            layout=vm.Flex(direction="row"), # (1)!
             components=[
                 vm.Figure(
-                    figure=kpi_card( # For more information, refer to the API reference for kpi_card
+                    figure=kpi_card( # (2)!
                         data_frame=tips,
                         value_column="tip",
                         value_format="${value:.2f}",
                         icon="shopping_cart",
-                        title="KPI card I",
+                        title="Average Price",
                     )
                 )
             ],
@@ -71,6 +70,9 @@ To add a `Figure` to your page:
         dashboard = vm.Dashboard(pages=[page])
         Vizro().build(dashboard).run()
         ```
+
+        1. We switch to a [`Flex`][vizro.models.Flex] layout so that the KPI card only takes up as much space as it needs.
+        1. For more information, refer to the API reference for [`kpi_card`][vizro.figures.kpi_card_reference]
 
     === "app.yaml"
 
@@ -85,7 +87,7 @@ To add a `Figure` to your page:
                   value_column: tip
                   value_format: ${value:.2f}
                   icon: shopping_cart
-                  title: KPI card I
+                  title: Average Price
                 type: figure
             controls:
               - column: day
@@ -93,9 +95,8 @@ To add a `Figure` to your page:
                 selector:
                   type: radio_items
             layout:
-              grid: [[0, -1, -1, -1], [-1, -1, -1, -1], [-1, -1, -1, -1], [-1, -1, -1, -1],
-                 [-1, -1, -1, -1]]
-              type: grid
+              direction: row
+              type: flex
             title: KPI card
         ```
 
