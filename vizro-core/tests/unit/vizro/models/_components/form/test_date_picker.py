@@ -24,12 +24,18 @@ class TestDatePickerInstantiation:
         assert date_picker.max is None
         assert date_picker.value is None
         assert date_picker.title == ""
+        assert date_picker.description is None
         assert date_picker.actions == []
         assert date_picker.range is True
 
     def test_create_datepicker_mandatory_and_optional(self):
         date_picker = vm.DatePicker(
-            id="date-picker-id", min="2024-01-01", max="2024-12-31", value=["2024-03-01", "2024-04-01"], title="Title"
+            id="date-picker-id",
+            min="2024-01-01",
+            max="2024-12-31",
+            value=["2024-03-01", "2024-04-01"],
+            title="Title",
+            description="Test description",
         )
 
         assert date_picker.id == "date-picker-id"
@@ -40,6 +46,7 @@ class TestDatePickerInstantiation:
         assert date_picker.title == "Title"
         assert date_picker.actions == []
         assert date_picker.range is True
+        assert isinstance(date_picker.description, vm.Tooltip)
 
     @pytest.mark.parametrize("title", ["test", """## Test header""", ""])
     def test_valid_title(self, title):

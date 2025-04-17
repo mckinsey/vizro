@@ -23,10 +23,18 @@ class TestDropdownInstantiation:
         assert dropdown.value is None
         assert dropdown.multi is True
         assert dropdown.title == ""
+        assert dropdown.description is None
         assert dropdown.actions == []
 
     def test_create_dropdown_mandatory_and_optional(self):
-        dropdown = Dropdown(id="dropdown-id", options=["A", "B", "C"], value="A", multi=False, title="Title")
+        dropdown = Dropdown(
+            id="dropdown-id",
+            options=["A", "B", "C"],
+            value="A",
+            multi=False,
+            title="Title",
+            description="Test description",
+        )
 
         assert dropdown.id == "dropdown-id"
         assert dropdown.type == "dropdown"
@@ -35,6 +43,7 @@ class TestDropdownInstantiation:
         assert dropdown.multi is False
         assert dropdown.title == "Title"
         assert dropdown.actions == []
+        assert isinstance(dropdown.description, Tooltip)
 
     @pytest.mark.parametrize(
         "test_options, expected",

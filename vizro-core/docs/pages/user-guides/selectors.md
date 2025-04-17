@@ -75,6 +75,7 @@ You can provide a string to use the default info icon, or pass a custom [`Toolti
                         title="Select Species",
                         description="""
                             Select which species of iris you like.
+
                             [Click here](https://en.wikipedia.org/wiki/Iris_flower_data_set)
                             to learn more about flowers.""",
                     )
@@ -112,7 +113,7 @@ You can provide a string to use the default info icon, or pass a custom [`Toolti
 
     === "Result"
 
-        [![DescriptionSelector]][descriptionselector]
+        [![InfoIconSelector]][infoiconselector]
 
 ## The `extra` argument
 
@@ -183,5 +184,5 @@ An example would be to make the [`RadioItem`][vizro.models.RadioItems] display i
 
         [![InlineRadio]][inlineradio]
 
-[descriptionselector]: ../../assets/user_guides/selectors/description_selector.png
+[infoiconselector]: ../../assets/user_guides/selectors/info_icon_selector.png
 [inlineradio]: ../../assets/user_guides/selectors/inlineradio.png
