@@ -1,123 +1,24 @@
 """MCP server for Vizro-AI chart creation best practices."""
 
-import base64
-import gzip
 import json
 import re
 from pathlib import Path
-from typing import Annotated, Any, Literal, Optional, Union
-from urllib.parse import quote, urlencode
+from typing import Any, Literal
 
 import pandas as pd
 import requests
 import vizro.models as vm
 from mcp.server.fastmcp import FastMCP
-
-# from mcp.server.fastmcp.server import Context
-from pydantic import AfterValidator, BaseModel, Field, ValidationError
+from pydantic import ValidationError
 from vizro import Vizro
 
-# PyCafe URL for Vizro snippets
-PYCAFE_URL = "https://py.cafe"
-CUSTOM_CHART_NAME = "custom_chart"
+from vizro_mcp.schemas.schemas import ChartPlan, GraphPX, SimpleDashboard, SimplePage
+from vizro_mcp.utils.utils import get_dataframe_info, get_python_code_and_preview_link
 
-# Create an MCP server with capabilities
 # TODO: what do I need to do here, as things are already set up?
 mcp = FastMCP(
-    "Vizro Chart Creator",
+    "MCP server for Vizro to help with chart and dashboard creation.",
 )
-
-
-class SimplePage(BaseModel):
-    """Simplified Page modes for reduced schema. LLM should remember to insert actual components."""
-
-    components: list[Literal["card", "button", "text", "container", "tabs"]] = Field(
-        description="List of component names to be displayed."
-    )
-    title: str = Field(description="Title to be displayed.")
-    description: str = Field(default="", description="Description for meta tags.")
-    layout: Optional[Literal["grid", "flex"]] = Field(default=None, description="Layout to place components in.")
-    controls: list[Literal["filter", "parameter"]] = Field(default=[], description="Controls to be displayed.")
-
-
-class SimpleDashboard(BaseModel):
-    """Simplified Dashboard model for reduced schema. LLM should remember to insert actual components."""
-
-    pages: list[Literal["page"]] = Field(description="List of page names to be included in the dashboard.")
-    theme: Literal["vizro_dark", "vizro_light"] = Field(
-        default="vizro_dark", description="Theme to be applied across dashboard. Defaults to `vizro_dark`."
-    )
-    # navigation: Optional[Literal["navigation"]] = Field(
-    #     default=None, description="Navigation component for the dashboard."
-    # )
-    title: str = Field(default="", description="Dashboard title to appear on every page on top left-side.")
-
-
-class GraphPX(vm.Graph):
-    """A Graph model that uses Plotly Express to create the figure."""
-
-    figure: dict[str, Any] = Field(
-        description="""
-This is the plotly express figure to be displayed. Only use valid plotly express functions to create the figure.
-Only use the arguments that are supported by the function you are using.
-
-- Configure a dictionary as if this would be added as **kwargs to the function you are using.
-- You must use the key: "_target_: "<function_name>" to specify the function you are using. Do NOT precede by
-    namespace (like px.line)
-- you must refer to the dataframe by name, for now it is one of "gapminder", "iris", "tips".
-- do not use a title if your Graph already has a title.
-"""
-    )
-
-
-def get_python_code_and_preview_link(
-    model_object: vm.VizroBaseModel, file_name: str, file_paths_or_urls: str
-) -> dict[str, Any]:
-    """Get the Python code and preview link for a Vizro model object."""
-    # Get the Python code
-    python_code = model_object._to_python()
-
-    # Add imports and dataset definitions at the top
-    imports_and_data = f"""from vizro import Vizro
-import vizro.plotly.express as px
-from vizro.managers import data_manager
-import pandas as pd
-import vizro.models as vm
-
-# Load data into the data_manager
-data_manager["{file_name}"] = pd.read_csv("{file_paths_or_urls}")
-
-"""
-    # Find the model code section and prepend imports_and_data
-    model_code_marker = "########### Model code ############"
-    if model_code_marker in python_code:
-        parts = python_code.split(model_code_marker, 1)
-        python_code = imports_and_data + model_code_marker + parts[1]
-    # Fallback if marker not found
-    elif python_code.startswith("from vizro import Vizro"):
-        python_code = imports_and_data + python_code[len("from vizro import Vizro\n") :]
-    else:
-        python_code = imports_and_data + python_code
-
-    # Add final run line if not present
-    if "Vizro().build(model).run()" not in python_code:
-        python_code += "\n\nVizro().build(model).run()"
-
-    # Create JSON object for py.cafe
-    json_object = {
-        "code": python_code,
-        "requirements": "vizro",
-        "files": [],
-    }
-
-    # Convert to compressed base64 URL
-    json_text = json.dumps(json_object)
-    compressed_json_text = gzip.compress(json_text.encode("utf8"))
-    base64_text = base64.b64encode(compressed_json_text).decode("utf8")
-    query = urlencode({"c": base64_text}, quote_via=quote)
-    pycafe_url = f"{PYCAFE_URL}/snippet/vizro/v1?{query}"
-
-    return {"python_code": python_code, "pycafe_url": pycafe_url}
 
 
 @mcp.tool()
@@ -269,21 +170,6 @@ Instructions for create a Vizro dashboard:
     """
 
 
-# Function to capture DataFrame info
-def _get_dataframe_info(df: pd.DataFrame, file_path_or_url: Union[str, Path]) -> dict[str, Any]:
-    return {
-        # "info": info_str,
-        "location_type": "local" if isinstance(file_path_or_url, Path) else "remote",
-        "file_path_or_url": file_path_or_url,
-        "shape": df.shape,
-        "columns": list(df.columns),
-        "column_types": {col: str(dtype) for col, dtype in df.dtypes.items()},
-        # "missing_values": df.isna().sum().to_dict(),
-        # "numeric_stats": df.describe().to_dict() if not df.empty else {},
-        "sample": df.sample(5).to_dict() if not df.empty else {},
-    }
-
-
 @mcp.tool(
     name="load_and_analyze_csv",
     description="Load a CSV file from a local path or GitHub URL into a pandas DataFrame and analyze its structure.",
@@ -315,7 +201,7 @@ def load_and_analyze_csv(path_or_url: str) -> dict[str, Any]:
                     on_bad_lines="warn",
                     low_memory=False,
                 )
-                return {"success": True, "data": _get_dataframe_info(df, raw_url)}
+                return {"success": True, "data": get_dataframe_info(df, raw_url)}
             except requests.exceptions.RequestException as e:
                 return {"success": False, "error": f"Failed to fetch file: {e!s}"}
 
@@ -324,7 +210,7 @@ def load_and_analyze_csv(path_or_url: str) -> dict[str, Any]:
         if path.exists():
             # Consistent options for both local and remote files
             df = pd.read_csv(path, on_bad_lines="warn", low_memory=False)
-            return {"success": True, "data": _get_dataframe_info(df, path)}
+            return {"success": True, "data": get_dataframe_info(df, path)}
 
         else:
             return {
@@ -348,10 +234,7 @@ def create_EDA_dashboard(
     file_path_or_url: str,
 ) -> str:
     """Prompt template for creating an EDA dashboard based on one CSV dataset."""
-    return [
-        {
-            "role": "user",
-            "content": f"""
+    content = f"""
 Create an EDA dashboard based on the following dataset:{file_path_or_url}. Proceed as follows:
 1. Analyze the data using the load_and_analyze_csv tool first, passing the file path or github url {file_path_or_url}
     to the tool.
@@ -363,86 +246,21 @@ Create an EDA dashboard based on the following dataset:{file_path_or_url}. Proce
         - IMPORTANT:remember that you target the chart like: <graph_id>.x and NOT <graph_id>.figure.x
         - do not use any color schemes etc.
     - Page 3: Visualizing the correlation between all numeric columns using the Graph component with a scatter plot.
-            """,
-        }
-    ]
+            """
+    return content
 
 
-###### Chart functionality - not sure if I should include this in the MCP server
-def _strip_markdown(code_string: str) -> str:
-    """Remove any code block wrappers (markdown or triple quotes)."""
-    wrappers = [("```python\n", "```"), ("```py\n", "```"), ("```\n", "```"), ('"""', '"""'), ("'''", "'''")]
-
-    for start, end in wrappers:
-        if code_string.startswith(start) and code_string.endswith(end):
-            code_string = code_string[len(start) : -len(end)]
-            break
-
-    return code_string.strip()
-
-
-def _check_chart_code(v: str) -> str:
-    v = _strip_markdown(v)
-
-    # TODO: add more checks: ends with return, has return, no second function def, only one indented line
-    func_def = f"def {CUSTOM_CHART_NAME}("
-    if func_def not in v:
-        raise ValueError(f"The chart code must be wrapped in a function named `{CUSTOM_CHART_NAME}`")
-
-    # Keep only the function definition and everything after it
-    # Sometimes models like Gemini return extra imports in chart_code field
-    v = v[v.index(func_def) :].strip()
-
-    first_line = v.split("\n")[0].strip()
-    if "data_frame" not in first_line:
-        raise ValueError(
-            """The chart code must accept a single argument `data_frame`,
-and it should be the first argument of the chart."""
-        )
-    return v
-
-
-class ChartPlan(BaseModel):
-    """Base chart plan used to generate chart code based on user visualization requirements."""
-
-    chart_type: str = Field(
-        description="""
-        Describes the chart type that best reflects the user request.
-        """,
-    )
-    imports: list[str] = Field(
-        description="""
-        List of import statements required to render the chart defined by the `chart_code` field. Ensure that every
-        import statement is a separate list/array entry: An example of valid list of import statements would be:
-
-        [`import pandas as pd`,
-        `import plotly.express as px`]
-        """,
-    )
-    chart_code: Annotated[
-        str,
-        AfterValidator(_check_chart_code),
-        Field(
-            description="""
-        Python code that generates a generates a plotly go.Figure object. It must fulfill the following criteria:
-        1. Must be wrapped in a function name
-        2. Must accept a single argument `data_frame` which is a pandas DataFrame
-        3. Must return a plotly go.Figure object
-        4. All data used in the chart must be derived from the data_frame argument, all data manipulations
-        must be done within the function.
-        """,
-        ),
-    ]
+################# Chart functionality - not sure if I should include this in the MCP server
 
 
 @mcp.tool(name="get_validated_chart_code", description="Validates code created for a chart")
 def get_validated_chart_code(chart_plan: dict[str, Any]) -> str:
     """Validate the chart code created by the user."""
     try:
-        chart_plan = ChartPlan(**chart_plan)
-        return chart_plan.model_dump_json()
+        chart_plan_obj = ChartPlan(**chart_plan)
+        return chart_plan_obj.model_dump_json()
     except ValidationError as e:
-        return {"error": f"Validation Error: {e!s}"}
+        return json.dumps({"error": f"Validation Error: {e!s}"})
 
 
 @mcp.prompt(
@@ -454,19 +272,16 @@ def create_vizro_chart(
     file_path_or_url: str,
 ) -> str:
     """Prompt template for creating a Vizro chart."""
-    return [
-        {
-            "role": "Assistant",
-            "content": f"""
-Create a chart using the following chart type:\n{chart_type}.
+    content = f"""
+Create a chart using the following chart type:
+{chart_type}.
 Make sure to analyze the data using the load_and_analyze_csv tool first, passing the file path or github url
 {file_path_or_url} to the tool. Then make sure to use the get_validated_chart_code tool to validate the chart code.
-            """,
-        }
-    ]
+            """
+    return content
 
 
-#################
+###########################
 
 if __name__ == "__main__":
     mcp.run()
