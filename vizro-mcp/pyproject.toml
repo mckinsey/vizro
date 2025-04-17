@@ -20,7 +20,7 @@ classifiers = [
   "Programming Language :: Python :: 3.10",
   "Programming Language :: Python :: 3.11",
   "Programming Language :: Python :: 3.12",
-  "Programming Language :: Python :: 3.13",
+  "Programming Language :: Python :: 3.13"
 ]
 dependencies = [
   "httpx>=0.28.1",
@@ -29,11 +29,11 @@ dependencies = [
   "click>=8.1.7"
 ]
 description = "Vizro MCP server to facilitate chart and dashboard generation"
+dynamic = ["version"]
 license-files = {paths = ["LICENSE.txt"]}
 name = "vizro-mcp"
 readme = "README.md"
 requires-python = ">=3.10"
-dynamic = ["version"]
 
 [project.scripts]
 "vizro-mcp" = "vizro_mcp:main"
@@ -62,7 +62,7 @@ addopts = [
   "--import-mode=importlib"
 ]
 filterwarnings = [
-  "error",
+  "error"
 ]
 norecursedirs = ["tests/tests_utils", "tests/js"]
 pythonpath = ["src"]

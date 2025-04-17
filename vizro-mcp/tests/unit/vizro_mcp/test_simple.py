@@ -14,7 +14,6 @@ def test_package_importable():
 
 def test_version():
     """Test that the package has a version."""
-
     assert hasattr(vizro_mcp, "__version__")
     assert isinstance(vizro_mcp.__version__, str)
     assert vizro_mcp.__version__ != ""
@@ -22,6 +21,5 @@ def test_version():
 
 def test_main_function_exists():
     """Test that the main function exists."""
-
     assert hasattr(vizro_mcp, "main")
     assert callable(vizro_mcp.main)
