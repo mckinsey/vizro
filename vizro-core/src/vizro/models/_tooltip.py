@@ -59,7 +59,7 @@ class Tooltip(VizroBaseModel):
     @_log_call
     def build(self):
         defaults = {
-            "children": dcc.Markdown(self.text, className="tooltip-text"),
+            "children": dcc.Markdown(self.text, className="card-text"),
             "id": self.id,
             "target": f"{self.id}-icon",
             "autohide": False,

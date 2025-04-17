@@ -72,9 +72,8 @@ class Dropdown(VizroBaseModel):
             [`MultiValueType`][vizro.models.types.MultiValueType]. Defaults to `None`.
         multi (bool): Whether to allow selection of multiple values. Defaults to `True`.
         title (str): Title to be displayed. Defaults to `""`.
-        description (Optional[Tooltip]): Additional information about the selector. When set, it adds an icon
-             next to the title. Hovering over the icon displays a tooltip with the specified description text.
-             Defaults to `None`.
+        description (Optional[Tooltip]): Optional markdown string that adds an icon next to the title.
+            Hovering over the icon shows a tooltip with the provided description. Defaults to `None`.
         actions (list[Action]): See [`Action`][vizro.models.Action]. Defaults to `[]`.
         extra (Optional[dict[str, Any]]): Extra keyword arguments that are passed to `dcc.Dropdown` and overwrite any
             defaults chosen by the Vizro team. This may have unexpected behavior.
@@ -104,9 +103,8 @@ class Dropdown(VizroBaseModel):
         BeforeValidator(coerce_str_to_tooltip),
         Field(
             default=None,
-            description="Additional information about the selector. When set, it adds an icon"
-            "next to the title. Hovering over the icon displays a tooltip with the specified description text."
-            "Defaults to `None`.",
+            description="""Optional markdown string that adds an icon next to the title.
+            Hovering over the icon shows a tooltip with the provided description. Defaults to `None`.""",
         ),
     ]
     actions: Annotated[
@@ -143,7 +141,7 @@ class Dropdown(VizroBaseModel):
         full_options, default_value = get_options_and_default(options=options, multi=self.multi)
         option_height = _calculate_option_height(full_options)
         altered_options = _add_select_all_option(full_options=full_options) if self.multi else full_options
-        description = self.description.build().children if self.description is not None else [None]
+        description = self.description.build().children if self.description else [None]
 
         defaults = {
             "id": self.id,

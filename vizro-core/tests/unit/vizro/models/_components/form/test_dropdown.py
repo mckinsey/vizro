@@ -268,7 +268,7 @@ class TestDropdownBuild:
         description = [
             html.Span("info", id="info-icon", className="material-symbols-outlined tooltip-icon"),
             dbc.Tooltip(
-                children=dcc.Markdown("Test description", className="tooltip-text"),
+                children=dcc.Markdown("Test description", className="card-text"),
                 id="info",
                 target="info-icon",
                 autohide=False,

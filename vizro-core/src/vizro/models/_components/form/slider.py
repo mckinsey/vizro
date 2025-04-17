@@ -32,9 +32,8 @@ class Slider(VizroBaseModel):
         marks (Optional[dict[Union[float, int], str]]): Marks to be displayed on slider. Defaults to `{}`.
         value (Optional[float]): Default value for slider. Defaults to `None`.
         title (str): Title to be displayed. Defaults to `""`.
-        description (Optional[Tooltip]): Additional information about the selector. When set, it adds an icon
-             next to the title. Hovering over the icon displays a tooltip with the specified description text.
-             Defaults to `None`.
+        description (Optional[Tooltip]): Optional markdown string that adds an icon next to the title.
+            Hovering over the icon shows a tooltip with the provided description. Defaults to `None`.
         actions (list[Action]): See [`Action`][vizro.models.Action]. Defaults to `[]`.
         extra (Optional[dict[str, Any]]): Extra keyword arguments that are passed to `dcc.Slider` and overwrite any
             defaults chosen by the Vizro team. This may have unexpected behavior.
@@ -72,9 +71,8 @@ class Slider(VizroBaseModel):
         BeforeValidator(coerce_str_to_tooltip),
         Field(
             default=None,
-            description="Additional information about the selector. When set, it adds an icon"
-            "next to the title. Hovering over the icon displays a tooltip with the specified description text."
-            "Defaults to `None`.",
+            description="""Optional markdown string that adds an icon next to the title.
+            Hovering over the icon shows a tooltip with the provided description. Defaults to `None`.""",
         ),
     ]
     actions: Annotated[
@@ -120,7 +118,7 @@ class Slider(VizroBaseModel):
             output=output,
             inputs=inputs,
         )
-        description = self.description.build().children if self.description is not None else [None]
+        description = self.description.build().children if self.description else [None]
         defaults = {
             "id": self.id,
             "min": min,

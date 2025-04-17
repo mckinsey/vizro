@@ -102,7 +102,3 @@ label[for="theme-selector"] {
   margin-right: 0;
   padding-left: 0;
 }
-
-.card-text > *:last-child, .tooltip-text > *:last-child {
-  margin-bottom: 0;
-}
