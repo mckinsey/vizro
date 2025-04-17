@@ -5,7 +5,12 @@ import pytest
 from e2e.asserts import assert_image_equal, make_screenshot_and_paths
 from e2e.vizro import constants as cnst
 from e2e.vizro.checkers import check_graph_color, check_theme_color
-from e2e.vizro.navigation import accordion_select, click_element_by_xpath_selenium, page_select
+from e2e.vizro.navigation import (
+    accordion_select,
+    click_element_by_xpath_selenium,
+    hover_over_element_by_xpath_selenium,
+    page_select,
+)
 from e2e.vizro.paths import kpi_card_path, nav_card_link_path, theme_toggle_path
 from e2e.vizro.waiters import callbacks_finish_waiter, graph_load_waiter
 
@@ -215,7 +220,7 @@ def test_controls_tooltip_and_icon_light_theme(dash_br):
     dash_br.wait_for_no_elements('div[data-calendar="true"]')
 
     # hover over dropdown icon and wait for the tooltip appear
-    click_element_by_xpath_selenium(
+    hover_over_element_by_xpath_selenium(
         dash_br, f"//*[@class='material-symbols-outlined tooltip-icon'][text()='{cnst.DROPDOWN_TOOLTIP_ICON}']"
     )
     dash_br.wait_for_text_to_equal(".tooltip-inner p", cnst.DROPDOWN_TOOLTIP_TEXT)
@@ -234,7 +239,7 @@ def test_controls_tooltip_and_icon_dark_theme(dash_br):
     dash_br.wait_for_no_elements('div[data-calendar="true"]')
 
     # hover over dropdown icon and wait for the tooltip appear
-    click_element_by_xpath_selenium(
+    hover_over_element_by_xpath_selenium(
         dash_br, f"//*[@class='material-symbols-outlined tooltip-icon'][text()='{cnst.CHECKLIST_TOOLTIP_ICON}']"
     )
     dash_br.wait_for_text_to_equal(".tooltip-inner p", cnst.CHECKLIST_TOOLTIP_TEXT)
