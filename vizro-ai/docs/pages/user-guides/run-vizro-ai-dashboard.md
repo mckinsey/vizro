@@ -117,7 +117,7 @@ Like the `VizroAI.plot` method, in order to produce more comprehensive output we
                        ),
                    ],
                    title="Tips Data Visualization",
-                   layout=vm.Layout(grid=[[0, 1, 1, 1]]),
+                   layout=vm.Grid(grid=[[0, 1, 1, 1]]),
                    controls=[],
                )
            ],
