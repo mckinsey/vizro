@@ -20,7 +20,6 @@ We are working on getting [VS Code](https://code.visualstudio.com/) with Copilot
 
 In principle, the Vizro MCP server works with _any_ MCP enabled client, the Claude Desktop and Cursor are just some of the most popular.
 
-
 ## Usage
 
 Add this to your `claude_desktop_config.json` (Claude - found via Developer Settings) or `mcp.json` (Cursor - found via the Cursor Settings):
@@ -53,8 +52,8 @@ For developer or if running from source, you need to clone the Vizro repo, and t
   }
 }
 ```
-Replace `<PATH TO VIZRO>` with the actual path to your Vizro repository.
 
+Replace `<PATH TO VIZRO>` with the actual path to your Vizro repository.
 
 ## Available Tools (if client allows)
 
