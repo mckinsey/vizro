@@ -58,7 +58,7 @@ class AgGridSchema(vm.AgGrid):
     figure: dict[str, Any] = Field(
         description="""
         This is the ag-grid figure to be displayed. Only use arguments from the [`dash-ag-grid` function](https://dash.plotly.com/dash-ag-grid/reference).
-        
+
         The only difference to the dash version is that:
             - you must use the key: "_target_: "dash_ag_grid"
             - you must refer to data via "data_frame": <data_frame_name> and NOT via columnDefs and rowData (do NOT set)
