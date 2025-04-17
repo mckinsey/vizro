@@ -12,7 +12,6 @@ def main():
     logging.basicConfig(level=logging.WARNING, stream=sys.stderr)
 
     # Run the MCP server
-    print("Starting Vizro MCP server...")
     mcp.run()
 
 
