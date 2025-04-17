@@ -17,9 +17,7 @@ def click_element_by_xpath_selenium(driver, xpath):
 def accordion_select(driver, accordion_name):
     """Selecting accordion and checking if it is active."""
     accordion_name = accordion_name.upper()
-    WebDriverWait(driver.driver, timeout=cnst.SELENIUM_WAITERS_TIMEOUT).until(
-        expected_conditions.element_to_be_clickable((By.XPATH, f"//button[text()='{accordion_name}']"))
-    ).click()
+    click_element_by_xpath_selenium(driver, f"//button[text()='{accordion_name}']")
     check_accordion_active(driver, accordion_name)
     # to let accordion open
     time.sleep(1)

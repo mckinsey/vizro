@@ -44,13 +44,13 @@ For more information, refer to the API reference of the selector, or the documen
 
     When configuring the [`DatePicker`][vizro.models.DatePicker] make sure to provide your dates for `min`, `max` and `value` arguments in `"yyyy-mm-dd"` format or as `datetime` type (for example, `datetime.datetime(2024, 01, 01)`).
 
-## The `description` argument
+## Add an info-icon
 
-The `description` argument allows you to provide additional context for your selector. When `description` is defined, an icon appears to the right of the selector's title, and hovering over this icon reveals a tooltip containing the specified description text.
+The `description` argument enables you to add helpful context to your selector by displaying an info icon next to its title. Hovering over the icon shows a tooltip with your provided text.
 
-The `description` argument accepts either a plain `str`, in which case a default info icon is used, or a custom [`Tooltip`][vizro.models.Tooltip] model. The [`Tooltip`][vizro.models.Tooltip] model enables users to define both the tooltip content and a custom icon name from [Google Material icons library](https://fonts.google.com/icons).
+You can provide a string to use the default info icon, or pass a custom [`Tooltip`][vizro.models.Tooltip] model to define both a custom icon from the [Google Material Icons library](https://fonts.google.com/icons) and the description text.
 
-!!! example "Selectors with `description`"
+!!! example "Selectors with info-icon"
 
     === "app.py"
 
@@ -75,17 +75,9 @@ The `description` argument accepts either a plain `str`, in which case a default
                         title="Select Species",
                         description="""
                             Select which species of iris you like.
-                            [Click here](www.google.com) to learn more about flowers.""",
-                    )
-                ),
-                vm.Filter(
-                    column="sepal_length",
-                    selector=vm.RangeSlider(
-                        title="Select sepal length",
-                        description=vm.Tooltip(
-                            text="Select species sepal_lenght range.",
-                            icon="help",
-                        ),
+
+                            [Click here](https://en.wikipedia.org/wiki/Iris_flower_data_set)
+                            to learn more about flowers.""",
                     )
                 ),
             ]
@@ -116,21 +108,12 @@ The `description` argument accepts either a plain `str`, in which case a default
                   description: |
                         Select which species of iris you like.
 
-                        [Click here](www.google.com) to learn more about flowers.
-              - column: sepal_length
-                type: filter
-                selector:
-                  type: range_slider
-                  title: Select Species
-                  description:
-                    text: Select species sepal_lenght range.
-                    icon: help
-                    type: tooltip
+                        [Click here](https://en.wikipedia.org/wiki/Iris_flower_data_set) to learn more about flowers.
         ```
 
     === "Result"
 
-        [![DescriptionSelector]][descriptionselector]
+        [![InfoIconSelector]][infoiconselector]
 
 ## The `extra` argument
 
@@ -201,5 +184,5 @@ An example would be to make the [`RadioItem`][vizro.models.RadioItems] display i
 
         [![InlineRadio]][inlineradio]
 
-[descriptionselector]: ../../assets/user_guides/selectors/description_selector.png
+[infoiconselector]: ../../assets/user_guides/selectors/info_icon_selector.png
 [inlineradio]: ../../assets/user_guides/selectors/inlineradio.png

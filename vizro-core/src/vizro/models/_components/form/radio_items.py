@@ -26,9 +26,8 @@ class RadioItems(VizroBaseModel):
         value (Optional[SingleValueType]): See [`SingleValueType`][vizro.models.types.SingleValueType].
             Defaults to `None`.
         title (str): Title to be displayed. Defaults to `""`.
-        description (Optional[Tooltip]): Additional information about the selector. When set, it adds an icon
-             next to the title. Hovering over the icon displays a tooltip with the specified description text.
-             Defaults to `None`.
+        description (Optional[Tooltip]): Optional markdown string that adds an icon next to the title.
+            Hovering over the icon shows a tooltip with the provided description. Defaults to `None`.
         actions (list[Action]): See [`Action`][vizro.models.Action]. Defaults to `[]`.
         extra (Optional[dict[str, Any]]): Extra keyword arguments that are passed to `dbc.RadioItems` and overwrite any
             defaults chosen by the Vizro team. This may have unexpected behavior.
@@ -51,9 +50,8 @@ class RadioItems(VizroBaseModel):
         BeforeValidator(coerce_str_to_tooltip),
         Field(
             default=None,
-            description="Additional information about the selector. When set, it adds an icon"
-            "next to the title. Hovering over the icon displays a tooltip with the specified description text."
-            "Defaults to `None`.",
+            description="""Optional markdown string that adds an icon next to the title.
+            Hovering over the icon shows a tooltip with the provided description. Defaults to `None`.""",
         ),
     ]
     actions: Annotated[
@@ -86,7 +84,7 @@ class RadioItems(VizroBaseModel):
 
     def __call__(self, options):
         full_options, default_value = get_options_and_default(options=options, multi=False)
-        description = self.description.build().children if self.description is not None else [None]
+        description = self.description.build().children if self.description else [None]
 
         defaults = {
             "id": self.id,
@@ -98,7 +96,7 @@ class RadioItems(VizroBaseModel):
 
         return html.Fieldset(
             children=[
-                dbc.Label([self.title, *description], html_for=self.id) if self.title else None,
+                html.Legend(children=[self.title, *description], className="form-label") if self.title else None,
                 dbc.RadioItems(**(defaults | self.extra)),
             ]
         )

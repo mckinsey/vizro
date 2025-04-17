@@ -177,6 +177,10 @@ RANGESLIDER_TOOLTIP_ICON = "rebase"
 DATEPICKER_TOOLTIP_TEXT = "Datepicker, show me your tooltip, please!"
 DATEPICKER_TOOLTIP_ICON = "deployed_code"
 
+COLLAPSIBLE_CONTAINERS_GRID = "collapsible-containers-grid-layout"
+
+COLLAPSIBLE_CONTAINERS_FLEX = "collapsible-containers-flex-layout"
+
 PAGE_404_PATH = "/404-page"
 
 # Accordion names

@@ -22,10 +22,13 @@ class TestRadioItemsInstantiation:
         assert radio_items.options == []
         assert radio_items.value is None
         assert radio_items.title == ""
+        assert radio_items.description is None
         assert radio_items.actions == []
 
     def test_create_radio_items_mandatory_and_optional(self):
-        radio_items = RadioItems(id="radio_items_id", options=["A", "B", "C"], value="A", title="Title")
+        radio_items = RadioItems(
+            id="radio_items_id", options=["A", "B", "C"], value="A", title="Title", description="Test description"
+        )
 
         assert radio_items.id == "radio_items_id"
         assert radio_items.type == "radio_items"
@@ -33,6 +36,7 @@ class TestRadioItemsInstantiation:
         assert radio_items.value == "A"
         assert radio_items.title == "Title"
         assert radio_items.actions == []
+        assert isinstance(radio_items.description, Tooltip)
 
     @pytest.mark.parametrize(
         "test_options, expected",
@@ -127,7 +131,7 @@ class TestRadioItemsBuild:
         radio_items = RadioItems(id="radio_items", options=["A", "B", "C"], title="Title").build()
         expected_radio_items = html.Fieldset(
             [
-                dbc.Label(["Title", None], html_for="radio_items"),
+                html.Legend(["Title", None], className="form-label"),
                 dbc.RadioItems(
                     id="radio_items",
                     options=["A", "B", "C"],
@@ -153,7 +157,7 @@ class TestRadioItemsBuild:
         ).build()
         expected_radio_items = html.Fieldset(
             [
-                dbc.Label(["Title", None], html_for="radio_items"),
+                html.Legend(["Title", None], className="form-label"),
                 dbc.RadioItems(
                     id="overridden_id",
                     options=["A", "B", "C"],
@@ -177,7 +181,7 @@ class TestRadioItemsBuild:
         description = [
             html.Span("info", id="info-icon", className="material-symbols-outlined tooltip-icon"),
             dbc.Tooltip(
-                children=dcc.Markdown("Test description", className="tooltip-text"),
+                children=dcc.Markdown("Test description", className="card-text"),
                 id="info",
                 target="info-icon",
                 autohide=False,
@@ -186,7 +190,7 @@ class TestRadioItemsBuild:
 
         expected_radio_items = html.Fieldset(
             [
-                dbc.Label(["Title", *description], html_for="radio_items"),
+                html.Legend(["Title", *description], className="form-label"),
                 dbc.RadioItems(
                     id="radio_items",
                     options=["A", "B", "C"],

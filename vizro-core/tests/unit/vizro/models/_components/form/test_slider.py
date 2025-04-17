@@ -105,7 +105,7 @@ def expected_slider_with_description():
     description = [
         html.Span("info", id="info-icon", className="material-symbols-outlined tooltip-icon"),
         dbc.Tooltip(
-            children=dcc.Markdown("Test description", className="tooltip-text"),
+            children=dcc.Markdown("Test description", className="card-text"),
             id="info",
             target="info-icon",
             autohide=False,
@@ -168,6 +168,7 @@ class TestSliderInstantiation:
         assert slider.marks is None
         assert slider.value is None
         assert slider.title == ""
+        assert slider.description is None
         assert slider.actions == []
 
     @pytest.mark.parametrize("min, max", [(0, None), (None, 10), (0, 10)])

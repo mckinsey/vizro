@@ -22,10 +22,13 @@ class TestChecklistInstantiation:
         assert checklist.options == []
         assert checklist.value is None
         assert checklist.title == ""
+        assert checklist.description is None
         assert checklist.actions == []
 
     def test_create_checklist_mandatory_and_optional(self):
-        checklist = Checklist(id="checklist-id", options=["A", "B", "C"], value=["A"], title="Title")
+        checklist = Checklist(
+            id="checklist-id", options=["A", "B", "C"], value=["A"], title="Title", description="Test description"
+        )
 
         assert checklist.id == "checklist-id"
         assert checklist.type == "checklist"
@@ -33,6 +36,7 @@ class TestChecklistInstantiation:
         assert checklist.value == ["A"]
         assert checklist.title == "Title"
         assert checklist.actions == []
+        assert isinstance(checklist.description, Tooltip)
 
     @pytest.mark.parametrize(
         "test_options, expected",
@@ -181,7 +185,7 @@ class TestChecklistBuild:
         description = [
             html.Span("info", id="info-icon", className="material-symbols-outlined tooltip-icon"),
             dbc.Tooltip(
-                children=dcc.Markdown("Test description", className="tooltip-text"),
+                children=dcc.Markdown("Test description", className="card-text"),
                 id="info",
                 target="info-icon",
                 autohide=False,

@@ -27,9 +27,8 @@ class DatePicker(VizroBaseModel):
         value (Optional[Union[list[date], date]]): Default date/dates for date picker. Defaults to `None`.
         title (str): Title to be displayed. Defaults to `""`.
         range (bool): Boolean flag for displaying range picker. Defaults to `True`.
-        description (Optional[Tooltip]): Additional information about the selector. When set, it adds an icon
-             next to the title. Hovering over the icon displays a tooltip with the specified description text.
-             Defaults to `None`.
+        description (Optional[Tooltip]): Optional markdown string that adds an icon next to the title.
+            Hovering over the icon shows a tooltip with the provided description. Defaults to `None`.
         actions (list[Action]): See [`Action`][vizro.models.Action]. Defaults to `[]`.
         extra (Optional[dict[str, Any]]): Extra keyword arguments that are passed to `dmc.DatePickerInput` and overwrite
             any defaults chosen by the Vizro team. This may have unexpected behavior.
@@ -64,9 +63,8 @@ class DatePicker(VizroBaseModel):
         BeforeValidator(coerce_str_to_tooltip),
         Field(
             default=None,
-            description="Additional information about the selector. When set, it adds an icon"
-            "next to the title. Hovering over the icon displays a tooltip with the specified description text."
-            "Defaults to `None`.",
+            description="""Optional markdown string that adds an icon next to the title.
+            Hovering over the icon shows a tooltip with the provided description. Defaults to `None`.""",
         ),
     ]
     actions: Annotated[
@@ -112,7 +110,7 @@ class DatePicker(VizroBaseModel):
             # Required for styling to remove gaps between cells
             "withCellSpacing": False,
         }
-        description = self.description.build().children if self.description is not None else [None]
+        description = self.description.build().children if self.description else [None]
         return html.Div(
             children=[
                 dbc.Label(children=[self.title, *description], html_for=self.id) if self.title else None,
