@@ -218,7 +218,7 @@ def test_controls_tooltip_and_icon_light_theme(dash_br):
     click_element_by_xpath_selenium(
         dash_br, f"//*[@class='material-symbols-outlined tooltip-icon'][text()='{cnst.DROPDOWN_TOOLTIP_ICON}']"
     )
-    dash_br.wait_for_text_to_equal(".tooltip-text p", cnst.DROPDOWN_TOOLTIP_TEXT)
+    dash_br.wait_for_text_to_equal(".tooltip-inner p", cnst.DROPDOWN_TOOLTIP_TEXT)
 
 
 @image_assertion
@@ -237,7 +237,7 @@ def test_controls_tooltip_and_icon_dark_theme(dash_br):
     click_element_by_xpath_selenium(
         dash_br, f"//*[@class='material-symbols-outlined tooltip-icon'][text()='{cnst.CHECKLIST_TOOLTIP_ICON}']"
     )
-    dash_br.wait_for_text_to_equal(".tooltip-text p", cnst.CHECKLIST_TOOLTIP_TEXT)
+    dash_br.wait_for_text_to_equal(".tooltip-inner p", cnst.CHECKLIST_TOOLTIP_TEXT)
 
 
 @image_assertion

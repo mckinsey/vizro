@@ -25,4 +25,4 @@ def test_controls_tooltip_and_icon(dash_br, icon, tooltip_text):
 
     # hover over dropdown icon and wait for the tooltip appear
     click_element_by_xpath_selenium(dash_br, f"//*[@class='material-symbols-outlined tooltip-icon'][text()='{icon}']")
-    dash_br.wait_for_text_to_equal(".tooltip-text p", tooltip_text)
+    dash_br.wait_for_text_to_equal(".tooltip-inner p", tooltip_text)
