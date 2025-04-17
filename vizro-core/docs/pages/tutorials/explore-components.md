@@ -61,7 +61,7 @@ For each [`Page`][vizro.models.Page], you can additionally configure the followi
 - **Components**: Add charts, tables, input/output interfaces, and more.
 - **Controls**: Include filters and parameters.
 - **Layouts**: Customize the placement of components within a page.
-- **Actions/Interactions**: Create interactions between components and use predefined or custom actions.
+- **Actions**: Create interactions between components using actions.
 
 ## 3. Create a first page
 

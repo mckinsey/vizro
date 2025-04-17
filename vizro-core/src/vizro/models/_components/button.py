@@ -6,9 +6,10 @@ from pydantic import AfterValidator, Field
 from pydantic.functional_serializers import PlainSerializer
 from pydantic.json_schema import SkipJsonSchema
 
-from vizro.models import Action, VizroBaseModel
+from vizro.models import VizroBaseModel
 from vizro.models._action._actions_chain import _action_validator_factory
 from vizro.models._models_utils import _log_call
+from vizro.models.types import ActionType
 
 
 class Button(VizroBaseModel):
@@ -18,7 +19,7 @@ class Button(VizroBaseModel):
         type (Literal["button"]): Defaults to `"button"`.
         text (str): Text to be displayed on button. Defaults to `"Click me!"`.
         href (str): URL (relative or absolute) to navigate to. Defaults to `""`.
-        actions (list[Action]): See [`Action`][vizro.models.Action]. Defaults to `[]`.
+        actions (list[ActionType]): See [`ActionType`][vizro.models.types.ActionType]. Defaults to `[]`.
         variant (Literal["plain", "filled", "outlined"]): Predefined styles to choose from. Options are `plain`,
             `filled` or `outlined`. Defaults to `filled`.
         extra (Optional[dict[str, Any]]): Extra keyword arguments that are passed to `dbc.Button` and overwrite any
@@ -33,7 +34,7 @@ class Button(VizroBaseModel):
     text: str = Field(default="Click me!", description="Text to be displayed on button.")
     href: str = Field(default="", description="URL (relative or absolute) to navigate to.")
     actions: Annotated[
-        list[Action],
+        list[ActionType],
         AfterValidator(_action_validator_factory("n_clicks")),
         PlainSerializer(lambda x: x[0].actions),
         Field(default=[]),

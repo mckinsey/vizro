@@ -1,6 +1,7 @@
 import e2e.vizro.constants as cnst
 from pages.ag_grid_interactions_page import ag_grid_interactions_page
 from pages.ag_grid_page import ag_grid_page
+from pages.collapsible_containers_pages import collapsible_containers_flex, collapsible_containers_grid
 from pages.container_pages import container_variants_page
 from pages.custom_components_page import custom_components_page
 from pages.datepicker_page import datepicker_page
@@ -63,6 +64,8 @@ dashboard = vm.Dashboard(
         layout_flex_with_wrap_param_and_ag_grid,
         extras_page,
         buttons_page,
+        collapsible_containers_grid,
+        collapsible_containers_flex,
     ],
     navigation=vm.Navigation(
         pages={
@@ -102,6 +105,8 @@ dashboard = vm.Dashboard(
                 cnst.LAYOUT_FLEX_WRAP_AND_AG_GRID,
                 cnst.EXTRAS_PAGE,
                 cnst.BUTTONS_PAGE,
+                cnst.COLLAPSIBLE_CONTAINERS_GRID,
+                cnst.COLLAPSIBLE_CONTAINERS_FLEX,
             ],
         }
     ),

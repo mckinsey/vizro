@@ -34,17 +34,19 @@ def ctx_filter_continent(request):
     mock_ctx = {
         "args_grouping": {
             "external": {
-                "filter_interaction": [],
-                "filters": [
-                    CallbackTriggerDict(
-                        id="continent_filter",
-                        property="value",
-                        value=continent,
-                        str_id="continent_filter",
-                        triggered=False,
-                    )
-                ],
-                "parameters": [],
+                "_controls": {
+                    "filter_interaction": [],
+                    "filters": [
+                        CallbackTriggerDict(
+                            id="continent_filter",
+                            property="value",
+                            value=continent,
+                            str_id="continent_filter",
+                            triggered=False,
+                        )
+                    ],
+                    "parameters": [],
+                }
             }
         }
     }
@@ -59,24 +61,26 @@ def ctx_filter_continent_and_pop(request):
     mock_ctx = {
         "args_grouping": {
             "external": {
-                "filter_interaction": [],
-                "filters": [
-                    CallbackTriggerDict(
-                        id="continent_filter",
-                        property="value",
-                        value=continent,
-                        str_id="continent_filter",
-                        triggered=False,
-                    ),
-                    CallbackTriggerDict(
-                        id="pop_filter",
-                        property="value",
-                        value=pop,
-                        str_id="pop_filter",
-                        triggered=False,
-                    ),
-                ],
-                "parameters": [],
+                "_controls": {
+                    "filter_interaction": [],
+                    "filters": [
+                        CallbackTriggerDict(
+                            id="continent_filter",
+                            property="value",
+                            value=continent,
+                            str_id="continent_filter",
+                            triggered=False,
+                        ),
+                        CallbackTriggerDict(
+                            id="pop_filter",
+                            property="value",
+                            value=pop,
+                            str_id="pop_filter",
+                            triggered=False,
+                        ),
+                    ],
+                    "parameters": [],
+                }
             }
         }
     }
@@ -102,7 +106,7 @@ class TestFilter:
         continent_filter.pre_build()
 
         # Run action by picking the above added action function and executing it with ()
-        result = model_manager[f"{FILTER_ACTION_PREFIX}_test_filter"].function()
+        result = model_manager[f"{FILTER_ACTION_PREFIX}_test_filter"].function(_controls=None)
         expected = {"scatter_chart": target_scatter_filtered_continent, "box_chart": target_box_filtered_continent}
 
         assert result == expected
@@ -123,7 +127,7 @@ class TestFilter:
         continent_filter.pre_build()
 
         # Run action by picking the above added action function and executing it with ()
-        result = model_manager[f"{FILTER_ACTION_PREFIX}_test_filter"].function()
+        result = model_manager[f"{FILTER_ACTION_PREFIX}_test_filter"].function(_controls=None)
         expected = {"scatter_chart": target_scatter_filtered_continent}
 
         assert result == expected
@@ -149,7 +153,7 @@ class TestFilter:
         continent_filter.pre_build()
 
         # Run action by picking the above added action function and executing it with ()
-        result = model_manager[f"{FILTER_ACTION_PREFIX}_test_filter"].function()
+        result = model_manager[f"{FILTER_ACTION_PREFIX}_test_filter"].function(_controls=None)
         expected = {"scatter_chart": target_scatter_filtered_continent, "box_chart": target_box_filtered_continent}
 
         assert result == expected
@@ -184,7 +188,7 @@ class TestFilter:
         pop_filter.pre_build()
 
         # Run action by picking the above added action function and executing it with ()
-        result = model_manager[f"{FILTER_ACTION_PREFIX}_test_filter_continent"].function()
+        result = model_manager[f"{FILTER_ACTION_PREFIX}_test_filter_continent"].function(_controls=None)
         expected = {
             "scatter_chart": target_scatter_filtered_continent_and_pop,
             "box_chart": target_box_filtered_continent_and_pop,
@@ -216,7 +220,7 @@ class TestFilter:
         pop_filter.pre_build()
 
         # Run action by picking the above added action function and executing it with ()
-        result = model_manager[f"{FILTER_ACTION_PREFIX}_test_filter_continent"].function()
+        result = model_manager[f"{FILTER_ACTION_PREFIX}_test_filter_continent"].function(_controls=None)
         expected = {"scatter_chart": target_scatter_filtered_continent_and_pop}
 
         assert result == expected
@@ -259,7 +263,7 @@ class TestFilter:
         pop_filter.pre_build()
 
         # Run action by picking the above added action function and executing it with ()
-        result = model_manager[f"{FILTER_ACTION_PREFIX}_test_filter_continent"].function()
+        result = model_manager[f"{FILTER_ACTION_PREFIX}_test_filter_continent"].function(_controls=None)
         expected = {
             "scatter_chart": target_scatter_filtered_continent_and_pop,
             "box_chart": target_box_filtered_continent_and_pop,

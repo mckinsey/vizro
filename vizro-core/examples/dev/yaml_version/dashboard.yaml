@@ -30,7 +30,7 @@ pages:
 
           ### Actions
 
-          Standard predefined actions are made available including **export data** and **filter interactions**.
+          Built-in actions are made available including **export data** and **filter interactions**.
         href: /export-data
         type: card
       - text: |
@@ -403,6 +403,32 @@ pages:
         title: Container II
     title: Containers
   - components:
+      - components:
+          - figure:
+              _target_: scatter
+              data_frame: iris
+              x: sepal_width
+              y: sepal_length
+              color: species
+            type: graph
+        type: container
+        collapsed: true
+        title: Initially collapsed container
+      - components:
+          - figure:
+              _target_: box
+              data_frame: iris
+              x: species
+              y: sepal_length
+              color: species
+            type: graph
+        type: container
+        collapsed: false
+        title: Initially expanded container
+    layout:
+      type: flex
+    title: Collapsible containers
+  - components:
       - tabs:
           - title: Tab I
             type: container
@@ -565,6 +591,7 @@ navigation:
             - Figure
             - Button
             - Containers
+            - Collapsible containers
             - Tabs
           Controls:
             - Filters

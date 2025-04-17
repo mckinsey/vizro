@@ -160,6 +160,10 @@ BUTTONS_PAGE = "buttons-with-different-styles"
 
 EXTRAS_PAGE = "extras-page"
 
+COLLAPSIBLE_CONTAINERS_GRID = "collapsible-containers-grid-layout"
+
+COLLAPSIBLE_CONTAINERS_FLEX = "collapsible-containers-flex-layout"
+
 PAGE_404_PATH = "/404-page"
 
 # Accordion names

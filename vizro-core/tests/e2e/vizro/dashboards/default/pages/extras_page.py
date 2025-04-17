@@ -37,7 +37,6 @@ extras_page = vm.Page(
                     actions=[
                         vm.Action(
                             function=export_data(
-                                targets=[cnst.SCATTER_GRAPH_ID],
                                 file_format="csv",
                             )
                         ),
