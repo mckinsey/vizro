@@ -5,7 +5,7 @@ from typing import Union
 import dash_bootstrap_components as dbc
 import vizro.models as vm
 from chart_groups import ALL_CHART_GROUP, CHART_GROUPS, ChartGroup, IncompletePage
-from custom_components import FlexContainer, Markdown
+from custom_components import Markdown
 from dash import get_asset_url, html
 from vizro import Vizro
 
@@ -49,7 +49,8 @@ def make_homepage_container(chart_group: ChartGroup) -> vm.Container:
         layout=vm.Grid(grid=[[0, 1, 1]], col_gap="40px"),
         components=[
             Markdown(text=chart_group.intro_text, classname="intro-text"),
-            FlexContainer(
+            vm.Container(
+                layout=vm.Flex(direction="row", wrap=True),
                 components=[
                     make_chart_card(page)
                     for page in sorted(

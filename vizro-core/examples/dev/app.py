@@ -133,7 +133,7 @@ home = vm.Page(
 
                 ### Actions
 
-                Standard predefined actions are made available including **export data** and **filter interactions**.
+                Built-in actions are made available including **export data** and **filter interactions**.
                 """,
             href="/export-data",
         ),
@@ -321,6 +321,23 @@ containers = vm.Page(
                     )
                 )
             ],
+        ),
+    ],
+)
+
+collapsible_container = vm.Page(
+    title="Collapsible containers",
+    layout=vm.Flex(),
+    components=[
+        vm.Container(
+            title="Initially collapsed container",
+            components=[vm.Graph(figure=px.scatter(iris, x="sepal_width", y="sepal_length", color="species"))],
+            collapsed=True,
+        ),
+        vm.Container(
+            title="Initially expanded container",
+            components=[vm.Graph(figure=px.box(iris, x="species", y="sepal_length", color="species"))],
+            collapsed=False,
         ),
     ],
 )
@@ -775,7 +792,7 @@ kpi_indicators = vm.Page(
 
 
 # DASHBOARD -------------------------------------------------------------------
-components = [graphs, ag_grid, table, cards, figure, button, containers, tabs]
+components = [graphs, ag_grid, table, cards, figure, button, containers, collapsible_container, tabs]
 controls = [filters, parameters, selectors]
 actions = [export_data_action, chart_interaction]
 extensions = [custom_charts, custom_tables, custom_actions, custom_figures, custom_components]
@@ -798,6 +815,7 @@ dashboard = vm.Dashboard(
                             "Figure",
                             "Button",
                             "Containers",
+                            "Collapsible containers",
                             "Tabs",
                         ],
                         "Controls": ["Filters", "Parameters", "Selectors"],

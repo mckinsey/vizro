@@ -7,13 +7,14 @@ from pydantic import AfterValidator, Field, PrivateAttr, field_validator
 from pydantic.functional_serializers import PlainSerializer
 from pydantic.json_schema import SkipJsonSchema
 
+from vizro.actions import filter_interaction
 from vizro.actions._actions_utils import CallbackTriggerDict, _get_component_actions, _get_parent_model
 from vizro.managers import data_manager
-from vizro.models import Action, VizroBaseModel
+from vizro.models import VizroBaseModel
 from vizro.models._action._actions_chain import _action_validator_factory
 from vizro.models._components._components_utils import _process_callable_data_frame
 from vizro.models._models_utils import _log_call
-from vizro.models.types import CapturedCallable, validate_captured_callable
+from vizro.models.types import ActionType, CapturedCallable, validate_captured_callable
 
 logger = logging.getLogger(__name__)
 
@@ -30,7 +31,7 @@ class Table(VizroBaseModel):
             Defaults to `""`.
         footer (str): Markdown text positioned below the `Table`. Follows the CommonMark specification.
             Ideal for providing further details such as sources, disclaimers, or additional notes. Defaults to `""`.
-        actions (list[Action]): See [`Action`][vizro.models.Action]. Defaults to `[]`.
+        actions (list[ActionType]): See [`ActionType`][vizro.models.types.ActionType]. Defaults to `[]`.
 
     """
 
@@ -55,7 +56,7 @@ class Table(VizroBaseModel):
         "providing further details such as sources, disclaimers, or additional notes.",
     )
     actions: Annotated[
-        list[Action],
+        list[ActionType],
         AfterValidator(_action_validator_factory("active_cell")),
         PlainSerializer(lambda x: x[0].actions),
         Field(default=[]),
@@ -89,7 +90,7 @@ class Table(VizroBaseModel):
     # Interaction methods
     @property
     def _filter_interaction_input(self):
-        """Required properties when using pre-defined `filter_interaction`."""
+        """Required properties when using`filter_interaction`."""
         return {
             "active_cell": State(component_id=self._input_component_id, component_property="active_cell"),
             "derived_viewport_data": State(
@@ -102,7 +103,7 @@ class Table(VizroBaseModel):
     def _filter_interaction(
         self, data_frame: pd.DataFrame, target: str, ctd_filter_interaction: dict[str, CallbackTriggerDict]
     ) -> pd.DataFrame:
-        """Function to be carried out for pre-defined `filter_interaction`."""
+        """Function to be carried out for `filter_interaction`."""
         # data_frame is the DF of the target, ie the data to be filtered, hence we cannot get the DF from this model
         ctd_active_cell = ctd_filter_interaction["active_cell"]
         ctd_derived_viewport_data = ctd_filter_interaction["derived_viewport_data"]
@@ -113,7 +114,12 @@ class Table(VizroBaseModel):
         source_table_actions = _get_component_actions(_get_parent_model(ctd_active_cell["id"]))
 
         for action in source_table_actions:
-            if action.function._function.__name__ != "filter_interaction" or target not in action.function["targets"]:
+            # TODO-AV2 A 1: simplify this as in
+            #  https://github.com/mckinsey/vizro/pull/1054/commits/f4c8c5b153f3a71b93c018e9f8c6f1b918ca52f6
+            #  Potentially this function would move to the filter_interaction action. That will be deprecated so
+            #  no need to worry too much if it doesn't work well, but we'll need to do something similar for the
+            #  new interaction functionality anyway.
+            if not isinstance(action, filter_interaction) or target not in action.targets:
                 continue
             column = ctd_active_cell["value"]["column_id"]
             derived_viewport_data_row = ctd_active_cell["value"]["row"]

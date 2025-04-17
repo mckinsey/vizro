@@ -1,17 +1,3 @@
 #page-header {
   padding-left: 8px;
 }
-
-/* To uniformly apply a size to all flex-items */
-#page-flex-wrap-row .flex-item {
-  width: 260px;
-}
-
-#page-flex-wrap-row-graphs .flex-item {
-  width: 300px;
-}
-
-/* Apply width to all KPI Cards */
-#page-flex-inside-flex .card-kpi {
-  width: 250px;
-}

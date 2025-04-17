@@ -9,21 +9,24 @@ There are already a few action functions you can reuse:
 - [`export_data`][vizro.actions.export_data]
 - [`filter_interaction`][vizro.actions.filter_interaction]
 
-## Pre-defined actions
+## Built-in actions
 
-To attach an action to a component, you must enter the [`Action`][vizro.models.Action] model into the component's `action` argument. You can then add a desired pre-defined action function into the `function` argument of the [`Action`][vizro.models.Action].
+To attach an action to a component, you must enter the [`Action`][vizro.models.Action] model into the component's `action` argument. You can then add a desired action function into the `function` argument of the [`Action`][vizro.models.Action].
 
 ??? note "Note on `Trigger`"
+
     Currently each component has one pre-defined trigger property. A trigger property is an attribute of the component that triggers a configured action (for example, for the `Button` it is `n_click`).
 
-The below sections are guides on how to use pre-defined action functions.
+The below sections are guides on how to use action functions.
 
 ### Export data
 
 To enable downloading data, you can add the [`export_data`][vizro.actions.export_data] action function to the [`Button`][vizro.models.Button] component. Hence, as a result, when a dashboard user now clicks the button, all data on the page will be downloaded.
 
 !!! example "`export_data`"
+
     === "app.py"
+
         ```{.python pycafe-link}
         import vizro.models as vm
         import vizro.plotly.express as px
@@ -58,6 +61,7 @@ To enable downloading data, you can add the [`export_data`][vizro.actions.export
         ```
 
     === "app.yaml"
+
         ```yaml
         # Still requires a .py to add data to the data manager and parse YAML configuration
         # See yaml_version example
@@ -86,9 +90,11 @@ To enable downloading data, you can add the [`export_data`][vizro.actions.export
         ```
 
     === "Result"
+
         [![Graph]][graph]
 
 !!! note
+
     Note that exported data only reflects the original dataset and any native data modifications defined with [`vm.Filter`](filters.md), [`vm.Parameter`](data.md/#parametrize-data-loading) or [`filter_interaction`](actions.md/#filter-data-by-clicking-on-chart) action. Filters from the chart itself, such as ag-grid filters, are not included, and neither are other chart modifications, nor any data transformations in custom charts.
 
 ### Filter data by clicking on chart
@@ -112,13 +118,16 @@ Graph(figure=px.scatter(..., custom_data=["continent"]))
 Selecting a data point with a corresponding value of "Africa" in the continent column will result in filtering the data of target charts to show only entries with "Africa" in the continent column. The same applies when providing multiple columns in `custom_data`.
 
 !!! note
+
     - You can reset your chart interaction filters by refreshing the page
     - You can create a "self-interaction" by providing the source chart id as its own `target`
 
 Here is an example of how to configure a chart interaction when the source is a [`Graph`][vizro.models.Graph] component.
 
 !!! example "Graph `filter_interaction`"
+
     === "app.py"
+
         ```{.python pycafe-link}
         import vizro.models as vm
         import vizro.plotly.express as px
@@ -162,6 +171,7 @@ Here is an example of how to configure a chart interaction when the source is a 
         ```
 
     === "app.yaml"
+
         ```yaml
         # Still requires a .py to add data to the data manager and parse YAML configuration
         # See yaml_version example
@@ -197,9 +207,11 @@ Here is an example of how to configure a chart interaction when the source is a 
         ```
 
     === "Result"
+
         [![Graph2]][graph2]
 
 !!! note "`filter_interaction` with custom charts"
+
     If `filter_interaction` is assigned to a [custom chart](custom-charts.md), ensure that `custom_data` is an argument of the custom chart function, and that this argument is then passed to the underlying plotly function. When then adding the custom chart in `vm.Graph`, ensure that `custom_data` is passed.
 
     ```py
@@ -216,7 +228,9 @@ Here is an example of how to configure a chart interaction when the source is a 
 Here is an example of how to configure a chart interaction when the source is an [`AgGrid`][vizro.models.AgGrid] component.
 
 !!! example "AgGrid `filter_interaction`"
+
     === "app.py"
+
         ```{.python pycafe-link}
         import vizro.models as vm
         import vizro.plotly.express as px
@@ -257,6 +271,7 @@ Here is an example of how to configure a chart interaction when the source is an
         ```
 
     === "app.yaml"
+
         ```yaml
         # Still requires a .py to add data to the data manager and parse YAML configuration
         # See yaml_version example
@@ -287,11 +302,12 @@ Here is an example of how to configure a chart interaction when the source is an
         ```
 
     === "Result"
+
         [![Table]][table]
 
-### Customize pre-defined actions
+### Customize actions
 
-Many pre-defined actions are customizable which helps to achieve a more specific goal. Refer to the [API reference][vizro.actions] for the options available.
+Many actions are customizable which helps to achieve a more specific goal. Refer to the [API reference][vizro.actions] for the options available.
 
 ## Custom actions
 
@@ -302,7 +318,9 @@ If you require an action that isn't available as a pre-defined option, you can c
 The `actions` parameter for the different screen components accepts a `list` of [`Action`][vizro.models.Action] models. This means that it's possible to chain together a list of actions that are executed by triggering only one component. The order of action execution is guaranteed, and the next action in the list will start executing only when the previous one is completed.
 
 !!! example "Actions chaining"
+
     === "app.py"
+
         ```{.python pycafe-link extra-requirements="openpyxl"}
         import vizro.models as vm
         import vizro.plotly.express as px
@@ -350,6 +368,7 @@ The `actions` parameter for the different screen components accepts a `list` of 
         ```
 
     === "app.yaml"
+
         ```yaml
         pages:
           - components:
@@ -388,6 +407,7 @@ The `actions` parameter for the different screen components accepts a `list` of 
         ```
 
     === "Result"
+
         [![Graph3]][graph3]
 
 [graph]: ../../assets/user_guides/actions/actions_export.png

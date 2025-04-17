@@ -27,7 +27,21 @@ class TestTabsInstantiation:
 
     def test_mandatory_tabs_missing(self):
         with pytest.raises(ValidationError, match="Field required"):
-            vm.Tabs(id="tabs-id")
+            vm.Tabs()
+
+    def test_minimum_tabs_length(self):
+        with pytest.raises(ValidationError, match="List should have at least 1 item after validation."):
+            vm.Tabs(tabs=[])
+
+    def test_incorrect_tabs_type(self):
+        with pytest.raises(ValidationError, match="Input should be a valid dictionary or instance of Container."):
+            vm.Tabs(tabs=[vm.Button()])
+
+    def test_tab_has_title(self):
+        with pytest.raises(
+            ValidationError, match="`Container` must have a `title` explicitly set when used inside `Tabs`."
+        ):
+            vm.Tabs(tabs=[vm.Container(components=[vm.Button()])])
 
 
 class TestTabsBuildMethod:

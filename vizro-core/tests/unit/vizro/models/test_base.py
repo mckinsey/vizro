@@ -285,7 +285,7 @@ class TestDict:
 
 
 @pytest.fixture
-def page_pre_defined_actions():
+def page_builtin_actions():
     return vm.Page(
         title="Page 1",
         components=[
@@ -421,7 +421,7 @@ model = vm.Graph(figure=chart(data_frame="iris"))
 """
 
 
-expected_actions_predefined = """############ Imports ##############
+expected_builtin_actions = """############ Imports ##############
 import vizro.plotly.express as px
 import vizro.models as vm
 import vizro.actions as va
@@ -437,13 +437,7 @@ import vizro.actions as va
 model = vm.Page(
     components=[
         vm.Graph(figure=px.bar(data_frame="iris", x="sepal_width", y="sepal_length")),
-        vm.Button(
-            text="Export data",
-            actions=[
-                vm.Action(function=va.export_data()),
-                vm.Action(function=va.export_data()),
-            ],
-        ),
+        vm.Button(text="Export data", actions=[va.export_data(), va.export_data()]),
     ],
     title="Page 1",
 )
@@ -520,11 +514,7 @@ model = vm.Dashboard(
                 vm.Graph(figure=chart(data_frame="iris")),
                 vm.AgGrid(figure=vt.dash_ag_grid(data_frame="iris")),
                 vm.Button(
-                    text="Export data",
-                    actions=[
-                        vm.Action(function=va.export_data()),
-                        vm.Action(function=va.export_data()),
-                    ],
+                    text="Export data", actions=[va.export_data(), va.export_data()]
                 ),
             ],
             title="Page 1",
@@ -576,10 +566,10 @@ class TestPydanticPython:
         assert "def chart(data_frame, hover_data: Optional[list[str]] = None):" in result
         assert "def chart2(data_frame, hover_data: Optional[list[str]] = None):" in result
 
-    def test_to_python_pre_defined_actions(self, page_pre_defined_actions):
-        # Test if pre-defined actions are included correctly in output, ie no ActionsChain model
-        result = page_pre_defined_actions._to_python()
-        assert result == expected_actions_predefined
+    def test_to_python_builtin_actions(self, page_builtin_actions):
+        # Test if built-in actions are included correctly in output, ie no ActionsChain model
+        result = page_builtin_actions._to_python()
+        assert result == expected_builtin_actions
 
     def test_to_python_no_source_code(self, chart_dynamic, caplog):
         # Check if to_python works if the source code is not available - here chart_dynamic is undefined

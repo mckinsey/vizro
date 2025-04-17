@@ -1,34 +1,54 @@
-"""Pre-defined action function "_parameter" to be reused in `action` parameter of VizroBaseModels."""
-
-from typing import Any
+from typing import Any, Literal, cast
 
 from dash import ctx
+from pydantic import Field
 
+from vizro.actions._abstract_action import _AbstractAction
 from vizro.actions._actions_utils import _get_modified_page_figures
-from vizro.managers._model_manager import ModelID
-from vizro.models.types import capture
+from vizro.managers._model_manager import model_manager
+from vizro.models.types import FigureType, ModelID, _Controls
 
 
-@capture("action")
-def _parameter(targets: list[str], **inputs: dict[str, Any]) -> dict[ModelID, Any]:
-    """Modifies parameters of targeted charts/components on page.
+class _parameter(_AbstractAction):
+    type: Literal["_parameter"] = "_parameter"
 
-    Args:
-        targets: List of target component ids to change parameters of.
-        inputs: Dict mapping action function names with their inputs e.g.
-            inputs = {'filters': [], 'parameters': ['gdpPercap'], 'filter_interaction': []}
+    targets: list[str] = Field(description="Targets in the form `<target_component>.<target_argument>`.")
 
-    Returns:
-        Dict mapping target component ids to modified charts/components e.g. {'my_scatter': Figure({})}
+    @property
+    def _target_ids(self) -> list[ModelID]:
+        # This cannot be implemented as PrivateAttr(default_factory=lambda data: ...) because, unlike Field,
+        # PrivateAttr does not yet support an argument to the default_factory function. See:
+        # https://github.com/pydantic/pydantic/issues/10992
+        # Targets without "." are implicitly added by the `Parameter._set_actions` method
+        # to handle cases where a dynamic data parameter affects a filter or its targets.
+        return [target.partition(".")[0] if "." in target else target for target in self.targets]
 
-    """
-    # Targets without "." are implicitly added by the `Parameter._set_actions` method
-    # to handle cases where a dynamic data parameter affects a filter or its targets.
-    target_ids: list[ModelID] = [target.split(".")[0] if "." in target else target for target in targets]  # type: ignore[misc]
+    def function(self, _controls: _Controls) -> dict[ModelID, Any]:
+        """Applies _controls to charts on page once the page is opened (or refreshed).
 
-    return _get_modified_page_figures(
-        ctds_filter=ctx.args_grouping["external"]["filters"],
-        ctds_filter_interaction=ctx.args_grouping["external"]["filter_interaction"],
-        ctds_parameter=ctx.args_grouping["external"]["parameters"],
-        targets=target_ids,
-    )
+        Returns:
+            Dict mapping target chart ids to modified figures e.g. {"my_scatter": Figure(...)}.
+
+        """
+        # This is identical to _on_page_load but with self._target_ids rather than self.targets.
+        # TODO-AV2 A 1: _controls is not currently used but instead taken out of the Dash context. This
+        # will change in future once the structure of _controls has been worked out and we know how to pass ids through.
+        # See https://github.com/mckinsey/vizro/pull/880
+        return _get_modified_page_figures(
+            ctds_filter=ctx.args_grouping["external"]["_controls"]["filters"],
+            ctds_parameter=ctx.args_grouping["external"]["_controls"]["parameters"],
+            ctds_filter_interaction=ctx.args_grouping["external"]["_controls"]["filter_interaction"],
+            targets=self._target_ids,
+        )
+
+    @property
+    def outputs(self):
+        # This is identical to _on_page_load but with self._target_ids rather than self.targets.
+        outputs = {}
+
+        for target in self._target_ids:
+            component_id = target
+            component_property = cast(FigureType, model_manager[target])._output_component_property
+            outputs[target] = f"{component_id}.{component_property}"
+
+        return outputs
