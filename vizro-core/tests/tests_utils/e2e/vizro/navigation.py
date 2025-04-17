@@ -8,6 +8,12 @@ from selenium.webdriver.support import expected_conditions
 from selenium.webdriver.support.wait import WebDriverWait
 
 
+def click_element_by_xpath_selenium(driver, xpath):
+    WebDriverWait(driver.driver, timeout=cnst.SELENIUM_WAITERS_TIMEOUT).until(
+        expected_conditions.element_to_be_clickable((By.XPATH, xpath))
+    ).click()
+
+
 def accordion_select(driver, accordion_name):
     """Selecting accordion and checking if it is active."""
     accordion_name = accordion_name.upper()
