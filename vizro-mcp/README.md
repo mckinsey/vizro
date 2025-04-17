@@ -33,4 +33,3 @@ Add the following to your Developer settings in Claude desktop
 - `get_model_JSON_schema` - Get the JSON schema for any Vizro model
 - `validate_model_config` - Validate configurations by instantiating models
 - `validated_config_to_python_code` - Convert configurations to Python code and generate PyCafe links
-

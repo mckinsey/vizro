@@ -1,6 +1,6 @@
 ---
 description: Stop cursor changing stuff
-globs: 
+globs:
 alwaysApply: false
 ---
 DO NOT CHANGE ANY CODE, just explain etc.

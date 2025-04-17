@@ -1,1 +1,56 @@
- 
+[envs.all]
+
+[[envs.all.matrix]]
+python = ["3.9", "3.10", "3.11", "3.12", "3.13"]
+
+[envs.changelog]
+dependencies = ["scriv"]
+detached = true
+installer = "uv"
+scripts = {add = "scriv create --add", collect = ["scriv collect --add", "- pre-commit run --files=CHANGELOG.md > /dev/null"]}
+
+[envs.default]
+dependencies = [
+  "coverage[toml]>=6.5",
+  "pytest",
+  "pytest-mock",
+  "pytest-rerunfailures",
+  "pytest-split",
+  "jupyter"
+]
+installer = "uv"
+
+[envs.default.scripts]
+download-static-files = "python tools/download_static_files.py"
+example = "hatch run examples:example {args:scratch_dev}"  # shortcut script to underlying example environment script.
+lint = "pre-commit run {args} --all-files"
+pip = '"{env:HATCH_UV}" pip {args}'
+prep-release = [
+  "hatch version release",
+  "hatch run changelog:collect",
+  "hatch run changelog:add",
+  "rm -rf schemas/*json",
+  "schema",
+  "git add schemas",
+  'echo "Now raise a PR to merge into main with title: [Release] Release of vizro $(hatch version)"'
+]
+pypath = "python -c 'import sys; print(sys.executable)'"
+test = "pytest tests --headless {args}"
+test-unit = "pytest tests/unit {args}"
+
+[envs.lower-bounds]
+extra-dependencies = [
+  "pydantic==2.7.0",
+  "dash==2.18.0",
+  "plotly==5.24.0",
+  "pandas==2.0.0",
+  "numpy==1.23.0",  # Need numpy<2 to work with pandas==2.0.0. See https://stackoverflow.com/questions/78634235/.
+  "kedro==0.19.0"  # Includes kedro-datasets as a dependency.
+]
+python = "3.9"
+
+[publish.index]
+disable = true
+
+[version]
+path = "src/vizro-mcp/__init__.py"

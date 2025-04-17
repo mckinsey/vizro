@@ -11,8 +11,7 @@ import pandas as pd
 
 
 def load_and_drop_column(csv_file_path: str, save_output: bool = True) -> pd.DataFrame:
-    """
-    Read a filtered CSV file, drop the electric vehicle column, and optionally save the result.
+    """Read a filtered CSV file, drop the electric vehicle column, and optionally save the result.
 
     Args:
         csv_file_path (str): Path to the filtered CSV file
@@ -40,7 +39,7 @@ def load_and_drop_column(csv_file_path: str, save_output: bool = True) -> pd.Dat
 
         return df
     except Exception as e:
-        print(f"Error processing CSV file: {str(e)}")
+        print(f"Error processing CSV file: {e!s}")
         return pd.DataFrame()
 
 

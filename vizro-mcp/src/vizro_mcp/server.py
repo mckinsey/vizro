@@ -133,6 +133,7 @@ def validate_model_config(
             (e.g., 'iris', 'gapminder', 'tips')
         file_path_or_url: String of file path or URL to be loaded into the data_manager
         file_location_type: Literal["local", "remote"]
+
     Returns:
         Dictionary with validation status and details
     """
@@ -248,56 +249,38 @@ Instructions for create a Vizro chart:
         are the column names and column types
     - always return code for a plotly express chart, pay attention to the columns you have available
     - do NOT call any other tool after, especially do NOT create a dashboard
-"""
-    else:  # dashboard
+            """
+    elif plan == "dashboard":
         return """
 Instructions for create a Vizro dashboard:
     - analyze the datasets needed for the dashboard using the load_and_analyze_csv tool - the most important information here
         are the column names and column types
-    - call get_model_JSON_schema tool to get the schema for the components you need
-    - always use validate_model_config tool to validate your dashboard configuration before returning it
-    - remember that a dashboard is made up of pages, and pages are made up of components
-    - most important components are: Graph, Card, Button, Text, Container, Tabs
-    - controls are: Filter, Parameter
-    - selectors are: Dropdown, RadioItems, Checklist, DatePicker, Slider, RangeSlider
-    - navigation is: Navigation, NavBar, NavLink
-
-Here are notes on using Graph PX component:
-    - to create a plotly express figure, you need to specify the plotly express function to use in the "_target_" key
-    - the figure is a dictionary with the plotly express function name and the arguments to pass to it
-    - example:
-```python
-vm.Graph(
-    id="scatter_plot",
-    figure={
-        "_target_": "scatter",  # This refers to px.scatter
-        "data_frame": "gapminder",
-        "x": "gdpPercap",
-        "y": "lifeExp",
-        "color": "continent",
-        "size": "pop",
-        "hover_name": "country",
-        "log_x": True,
-    },
-    title="GDP vs Life Expectancy",
-)
-```
-"""
+    - call the get_overview_vizro_models tool to get an overview of the available models
+    - make a plan of what components you would like to use, you need to decide on a layout and components per page
+    then request any necessary schema using the get_model_JSON_schema tool
+    - assemble your components into a page, then add the page or pages to a dashboard
+    - validate the dashboard configuration using the validate_model_config tool use `Dashboard` as the model name
+    - call the validated_config_to_python_code tool to convert the dashboard configuration to Python code
+    - if you display any code artifact, you must use the above created code
 
 
+    IMPORTANT:
+    - if you iterate over a valid produced solution, make sure to go ALWAYS via the validation step again to ensure the solution is valid
+    """
+
+
+# Function to capture DataFrame info
 def get_dataframe_info(df: pd.DataFrame, file_path_or_url: Union[str, Path]) -> dict[str, Any]:
-    """Get basic information about a pandas DataFrame."""
-    column_types = {}
-    for col_name, dtype in df.dtypes.items():
-        column_types[col_name] = str(dtype)
-
     return {
-        "file_path_or_url": str(file_path_or_url),
-        "num_rows": len(df),
-        "num_columns": len(df.columns),
+        # "info": info_str,
+        "location_type": "local" if isinstance(file_path_or_url, Path) else "remote",
+        "file_path_or_url": file_path_or_url,
+        "shape": df.shape,
         "columns": list(df.columns),
-        "column_types": column_types,
-        "sample": df.head(5).to_dict(orient="records"),
+        "column_types": {col: str(dtype) for col, dtype in df.dtypes.items()},
+        # "missing_values": df.isna().sum().to_dict(),
+        # "numeric_stats": df.describe().to_dict() if not df.empty else {},
+        "sample": df.sample(5).to_dict() if not df.empty else {},
     }
 
 
@@ -309,54 +292,55 @@ def load_and_analyze_csv(path_or_url: str) -> dict[str, Any]:
     """Load a CSV file from a local path or GitHub URL into a pandas DataFrame and analyze its structure.
 
     Args:
-        path_or_url: Either a local file path or a GitHub URL to a CSV file
+        path_or_url: Local file path or GitHub URL to a CSV file
 
     Returns:
-        Dictionary with information about the DataFrame
+        Dictionary containing DataFrame information and summary
     """
     try:
-        # Determine if input is a URL or a local file path
-        if path_or_url.startswith(("http://", "https://")):
-            # Handle GitHub raw content URLs
-            if "github.com" in path_or_url and not path_or_url.startswith("https://raw.githubusercontent.com"):
-                # Convert GitHub URL to raw content URL
-                if "/blob/" in path_or_url:
-                    path_or_url = path_or_url.replace("github.com", "raw.githubusercontent.com").replace("/blob/", "/")
-                else:
-                    return {"error": "Invalid GitHub URL format. URL should point to a specific file (blob)."}
+        # Check if input is a GitHub URL
+        github_pattern = r"https?://(?:www\.)?github\.com/([^/]+)/([^/]+)/(?:blob|raw)/([^/]+)/(.+\.csv)"
+        github_match = re.match(github_pattern, path_or_url)
 
-            # Download content from URL
-            response = requests.get(path_or_url, timeout=10)
-            response.raise_for_status()  # Raise an exception for HTTP errors
+        if github_match:
+            # Convert GitHub URL to raw URL
+            user, repo, branch, file_path = github_match.groups()
+            raw_url = f"https://raw.githubusercontent.com/{user}/{repo}/{branch}/{file_path}"
 
-            # Create a temporary file to save the content
-            temp_file = Path("temp_file.csv")
-            temp_file.write_bytes(response.content)
+            try:
+                # Directly use pandas read_csv with the URL
+                df = pd.read_csv(
+                    raw_url,
+                    # Add error handling for common CSV issues
+                    on_bad_lines="warn",
+                    low_memory=False,
+                )
+                return {"success": True, "data": get_dataframe_info(df, raw_url)}
+            except requests.exceptions.RequestException as e:
+                return {"success": False, "error": f"Failed to fetch file: {e!s}"}
 
-            # Read CSV file
-            df = pd.read_csv(temp_file)
+        # Check if input is a valid local file
+        path = Path(path_or_url)
+        if path.exists():
+            # Consistent options for both local and remote files
+            df = pd.read_csv(path, on_bad_lines="warn", low_memory=False)
+            return {"success": True, "data": get_dataframe_info(df, path)}
 
-            # Get DataFrame info
-            result = get_dataframe_info(df, path_or_url)
-
-            # Remove the temporary file
-            temp_file.unlink()
-
-            return result
         else:
-            # Handle local file path
-            file_path = Path(path_or_url)
-            if not file_path.exists():
-                return {"error": f"File not found: {path_or_url}"}
+            return {
+                "success": False,
+                "error": f"Invalid input: '{path_or_url}' is neither a valid local file nor a GitHub URL",
+            }
 
-            # Read CSV file
-            df = pd.read_csv(file_path)
-
-            # Get DataFrame info
-            return get_dataframe_info(df, path_or_url)
-
+    except pd.errors.ParserError as e:
+        # Handle CSV parsing errors specifically
+        return {"success": False, "error": f"Error parsing CSV file: {e!s}"}
+    except requests.exceptions.RequestException as e:
+        # Handle network-related errors
+        return {"success": False, "error": f"Network error when fetching file: {e!s}"}
     except Exception as e:
-        return {"error": f"Error loading or analyzing CSV: {e!s}"}
+        # Catch-all for other errors
+        return {"success": False, "error": f"Error processing file: {e!s}"}
 
 
 @mcp.prompt(
@@ -366,70 +350,56 @@ def load_and_analyze_csv(path_or_url: str) -> dict[str, Any]:
 def create_EDA_dashboard(
     file_path_or_url: str,
 ) -> str:
-    """Create a template for an EDA dashboard based on a CSV dataset.
+    return [
+        {
+            "role": "user",
+            "content": f"""
+Create an EDA dashboard based on the following dataset:{file_path_or_url}. Proceed as follows:
+1. Analyze the data using the load_and_analyze_csv tool first, passing the file path or github url {file_path_or_url} to the tool.
+2. Create a dashboard with 3 pages:
+    - Page 1: Overview of the dataset with a summary using the Card component.
+    - Page 2: Visualizing the distribution of all numeric columns using the Graph component with a histogram.
+        - use a Parameter that targets the Graph component and the x argument, and you can select the column to be displayed
+        - IMPORTANT:remember that you target the chart like: <graph_id>.x and NOT <graph_id>.figure.x
+        - do not use any color schemes etc.
+    - Page 3: Visualizing the correlation between all numeric columns using the Graph component with a scatter plot.
+            """,
+        }
+    ]
 
-    Args:
-        file_path_or_url: Either a local file path or a GitHub URL to a CSV file
 
-    Returns:
-        A prompt template to create an EDA dashboard
-    """
-    return f"""You are an expert in creating data visualization dashboards with Vizro.
-Your task is to create an exploratory data analysis (EDA) dashboard for the dataset at {file_path_or_url}.
-
-Load and analyze the dataset, then plan a comprehensive EDA dashboard that will help users understand the data.
-Include visualizations for distributions, correlations, and other relevant analyses based on the dataset structure.
-
-Be creative and thoughtful about the design and layout of the dashboard.
-"""
-
-
+###### Chart functionality - not sure if I should include this in the MCP server
 def _strip_markdown(code_string: str) -> str:
-    """Strip markdown code blocks from a code string."""
-    if code_string.startswith("```python"):
-        code_string = code_string.split("```python", 1)[1]
-    if code_string.startswith("```"):
-        code_string = code_string.split("```", 1)[1]
-    if code_string.endswith("```"):
-        code_string = code_string.rsplit("```", 1)[0]
+    """Remove any code block wrappers (markdown or triple quotes)."""
+    wrappers = [("```python\n", "```"), ("```py\n", "```"), ("```\n", "```"), ('"""', '"""'), ("'''", "'''")]
+
+    for start, end in wrappers:
+        if code_string.startswith(start) and code_string.endswith(end):
+            code_string = code_string[len(start) : -len(end)]
+            break
+
     return code_string.strip()
 
 
 def _check_chart_code(v: str) -> str:
-    """Check if the chart code is valid and return a clean version."""
-    # Strip markdown code blocks
-    clean_code = _strip_markdown(v)
+    v = _strip_markdown(v)
 
-    # Check if the code contains px or plotly express
-    if "import plotly.express as px" not in clean_code and "plotly.express" not in clean_code:
-        raise ValueError("Chart code must import plotly.express.")
+    # TODO: add more checks: ends with return, has return, no second function def, only one indented line
+    func_def = f"def {CUSTOM_CHART_NAME}("
+    if func_def not in v:
+        raise ValueError(f"The chart code must be wrapped in a function named `{CUSTOM_CHART_NAME}`")
 
-    # Check that code contains a plot type that is a method of px
-    plot_types = [
-        "scatter",
-        "line",
-        "bar",
-        "histogram",
-        "box",
-        "violin",
-        "pie",
-        "sunburst",
-        "treemap",
-        "scatter_3d",
-        "line_3d",
-        "scatter_geo",
-        "scatter_polar",
-        "timeline",
-    ]
-    px_found = False
-    for plot_type in plot_types:
-        if f"px.{plot_type}" in clean_code:
-            px_found = True
-            break
-    if not px_found:
-        raise ValueError("Chart code must include a plotly express plot.")
+    # Keep only the function definition and everything after it
+    # Sometimes models like Gemini return extra imports in chart_code field
+    v = v[v.index(func_def) :].strip()
 
-    return clean_code
+    first_line = v.split("\n")[0].strip()
+    if "data_frame" not in first_line:
+        raise ValueError(
+            """The chart code must accept a single argument `data_frame`,
+and it should be the first argument of the chart."""
+        )
+    return v
 
 
 class ChartPlan(BaseModel):
@@ -452,21 +422,27 @@ class ChartPlan(BaseModel):
     chart_code: Annotated[
         str,
         AfterValidator(_check_chart_code),
-    ] = Field(
-        description="""
-        A Python function that implements the full chart using plotly express. This should be a standalone chart,
-        not integrated into a dashboard. The function should be well-commented and handle all necessary data preprocessing.
-        It should include proper axis labels, title, and other plot customizations to make the chart informative and complete.
+        Field(
+            description="""
+        Python code that generates a generates a plotly go.Figure object. It must fulfill the following criteria:
+        1. Must be wrapped in a function name
+        2. Must accept a single argument `data_frame` which is a pandas DataFrame
+        3. Must return a plotly go.Figure object
+        4. All data used in the chart must be derived from the data_frame argument, all data manipulations
+        must be done within the function.
         """,
-    )
+        ),
+    ]
 
 
 @mcp.tool(name="get_validated_chart_code", description="Validates code created for a chart")
 def get_validated_chart_code(chart_plan: dict[str, Any]) -> str:
-    """Validates the chart plan and returns clean usable code."""
-    valid_plan = ChartPlan(**chart_plan)
-    imports = "\n".join(valid_plan.imports)
-    return f"{imports}\n\n{valid_plan.chart_code}\n"
+    """Validate the chart code created by the user."""
+    try:
+        chart_plan = ChartPlan(**chart_plan)
+        return chart_plan.model_dump_json()
+    except ValidationError as e:
+        return {"error": f"Validation Error: {e!s}"}
 
 
 @mcp.prompt(
@@ -477,26 +453,19 @@ def create_vizro_chart(
     chart_type: str,
     file_path_or_url: str,
 ) -> str:
-    """Create a template for a Vizro chart based on a CSV dataset.
+    return [
+        {
+            "role": "Assistant",
+            "content": f"""
+Create a chart using the following chart type:\n{chart_type}.
+Make sure to analyze the data using the load_and_analyze_csv tool first, passing the file path or github url {file_path_or_url} to the tool.
+Then make sure to use the get_validated_chart_code tool to validate the chart code.
+            """,
+        }
+    ]
 
-    Args:
-        chart_type: The type of chart to create (e.g., scatter, line, bar)
-        file_path_or_url: Either a local file path or a GitHub URL to a CSV file
 
-    Returns:
-        A prompt template to create a Vizro chart
-    """
-    return f"""You are an expert in creating data visualizations with Plotly Express.
-Your task is to create a {chart_type} chart using the dataset at {file_path_or_url}.
+#################
 
-First, load and analyze the dataset to understand its structure.
-Then, create a {chart_type} chart that best represents the data.
-
-Please return a detailed implementation with:
-1. Proper import statements
-2. Clear code with comments explaining key steps
-3. Appropriate customization (colors, labels, hover information, etc.)
-4. Any necessary data preprocessing
-
-Focus on making the visualization both informative and visually appealing.
-"""
+if __name__ == "__main__":
+    mcp.run()
