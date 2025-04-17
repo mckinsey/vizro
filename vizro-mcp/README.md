@@ -1,6 +1,6 @@
 # Vizro MCP Server
 
-A Model Context Protocol (MCP) server that helps create Vizro dashboards and charts interactively.
+A Model Context Protocol (MCP) server that helps create Vizro dashboards and charts interactively. For mode information on MCP - we recommend the [these resources and the links within](https://modelcontextprotocol.io/introduction).
 
 ## Features
 
