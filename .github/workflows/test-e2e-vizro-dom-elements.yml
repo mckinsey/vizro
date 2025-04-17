@@ -10,8 +10,6 @@ on:
   pull_request:
     branches:
       - main
-      # TODO: Delete before merge
-      - dev/vizro-core/add-info-icon-form-components
 
 env:
   PYTHONUNBUFFERED: 1
