@@ -53,4 +53,4 @@ python = "3.9"
 disable = true
 
 [version]
-path = "src/vizro-mcp/__init__.py"
+path = "src/vizro_mcp/__init__.py"

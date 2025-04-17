@@ -32,4 +32,21 @@ license-files = {paths = ["LICENSE.txt"]}
 name = "vizro-mcp"
 readme = "README.md"
 requires-python = ">=3.9"
-version = "0.0.1"
+
+[tool.coverage.paths]
+vizro = ["src/vizro_mcp"]  # omit tests for clarity, although this can be useful to see what test lines DID NOT run
+
+[tool.coverage.report]
+exclude_lines = [
+  "no cov",
+  "if __name__ == .__main__.:",
+  "if TYPE_CHECKING:"
+]
+fail_under = 0
+show_missing = true
+skip_covered = true
+
+[tool.coverage.run]
+branch = true
+parallel = true
+source_pkgs = ["vizro_mcp"]
