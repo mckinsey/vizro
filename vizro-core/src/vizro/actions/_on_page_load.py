@@ -1,6 +1,5 @@
-from typing import Any, Callable, Literal, cast
+from typing import Any, Literal, cast
 
-import pandas as pd
 from dash import ctx
 from pydantic import Field
 
@@ -10,22 +9,19 @@ from vizro.managers._model_manager import model_manager
 from vizro.models.types import FigureType, ModelID, _Controls
 
 
-class _filter(_AbstractAction):
-    type: Literal["_filter"] = "_filter"
+# TODO-AV2 A 3: rename _on_page_load if desired and make public. Similarly for other built-in actions.
+class _on_page_load(_AbstractAction):
+    type: Literal["_on_page_load"] = "_on_page_load"
 
-    column: str = Field(description="Column to filter on.")
-    filter_function: Callable[[pd.Series, Any], pd.Series] = Field(
-        description="Function to apply to column to perform filtering"
-    )
     targets: list[ModelID] = Field(description="Target component IDs.")
 
     def function(self, _controls: _Controls) -> dict[ModelID, Any]:
-        """Applies _controls to charts on page once filter is applied.
+        """Applies controls to charts on page once the page is opened (or refreshed).
 
         Returns:
             Dict mapping target chart ids to modified figures e.g. {"my_scatter": Figure(...)}.
+
         """
-        # This is identical to _on_page_load.
         # TODO-AV2 A 1: _controls is not currently used but instead taken out of the Dash context. This
         # will change in future once the structure of _controls has been worked out and we know how to pass ids through.
         # See https://github.com/mckinsey/vizro/pull/880
@@ -38,7 +34,6 @@ class _filter(_AbstractAction):
 
     @property
     def outputs(self):
-        # This is identical to _on_page_load.
         outputs = {}
 
         for target in self.targets:

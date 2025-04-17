@@ -1,16 +1,26 @@
-# Still requires a .py to register data connector in Data Manager and parse yaml configuration
+# Still requires a .py to add data to the data manager and parse YAML configuration
 # See yaml_version example
 pages:
-  - title: Buttons with different styles
-    layout:
-      direction: row
-      type: flex
-    components:
+  - components:
+      - type: graph
+        figure:
+          _target_: scatter
+          data_frame: iris
+          color: sepal_width
+          x: petal_length
+          y: sepal_length
+      - type: graph
+        figure:
+          _target_: histogram
+          data_frame: iris
+          color: species
+          x: petal_length
+        id: histogram
       - type: button
-        text: filled
-      - type: button
-        text: outlined
-        variant: outlined
-      - type: button
-        text: plain
-        variant: plain
+        text: Export data
+        id: export_data_button
+        actions:
+          - function:
+              _target_: export_data
+              targets: [histogram]
+    title: Exporting
