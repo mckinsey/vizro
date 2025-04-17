@@ -7,7 +7,9 @@ This page explains how to use Vizro-AI to create charts with advanced visualizat
 We'll create an animated map chart illustrating the GDP per capita of each continent over time. Run the code below and look at the result.
 
 !!! example "Vizro-AI animated chart"
+
     === "Code"
+
         ```py
         from vizro_ai import VizroAI
         import vizro.plotly.express as px
@@ -20,12 +22,15 @@ We'll create an animated map chart illustrating the GDP per capita of each conti
         ```
 
     === "Result"
+
         [![AnimatedChart1]][animatedchart1]
 
 Having unveiled our animated map chart showcasing GDP per capita development per country, it's clear that the map area is small, and it is difficult to differentiate countries. Next, we will try to tweak our prompt to improve the overall layout.
 
 !!! example "Vizro-AI animated chart"
+
     === "Code"
+
         ```py
         from vizro_ai import VizroAI
         import vizro.plotly.express as px
@@ -40,6 +45,7 @@ Having unveiled our animated map chart showcasing GDP per capita development per
         ```
 
     === "Result"
+
         [![AnimatedChart2]][animatedchart2]
 
 By incorporating the directive `Increase the width and height of the figure.` and `Show countries on the map.` we've successfully refined our animation.
@@ -47,7 +53,9 @@ By incorporating the directive `Increase the width and height of the figure.` an
 Upon closer inspection, the title is too long and the color palette used does not match our needs. We can fix those issues with better and more specific prompting. Let's run the code below to visually improve the chart.
 
 !!! example "Vizro-AI animated chart"
+
     === "Code"
+
         ```py
         from vizro_ai import VizroAI
         import vizro.plotly.express as px
@@ -63,6 +71,7 @@ Upon closer inspection, the title is too long and the color palette used does no
         ```
 
     === "Result"
+
         [![AnimatedChart3]][animatedchart3]
 
 Congratulations! You've now gained insights into harnessing the power of a LLM and Vizro-AI for crafting advanced charts and improving formatting. Don't forget, enabling `return_elements=True` in `.plot()` and check `chart_insights` and `code_explanation` is a good way of learning more about how a chart can be further improved and formatted.

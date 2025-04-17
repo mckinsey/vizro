@@ -7,6 +7,7 @@ All the HEX values starting with --text-code are taken from the Github code high
   --dropdown-label-bg: var(--primary-800);
   --left-side-bg: var(--surfaces-bg02);
   --right-side-bg: var(--surfaces-bg03);
+  --right-side-bg-iterated: var(--surfaces-bg03);
   --text-code-string: #95c2e7;
   --text-code-keyword: #f4766e;
   --text-code-meta: #c8ace1;
@@ -18,8 +19,9 @@ All the HEX values starting with --text-code are taken from the Github code high
 
 [data-bs-theme="light"] {
   --dropdown-label-bg: var(--primary-300);
+  --left-side-bg: var(--surfaces-bg01);
   --right-side-bg: var(--surfaces-bg01);
-  --left-side-bg: var(--surfaces-bg02);
+  --right-side-bg-iterated: var(--primary-300);
   --text-code-string: #0a3069;
   --text-code-keyword: #d12d39;
   --text-code-meta: #6f42c1;
@@ -42,17 +44,11 @@ All the HEX values starting with --text-code are taken from the Github code high
 
 /* CARDS */
 .card {
-  height: calc(100% - 8px);
   margin: 4px;
-  width: calc(100% - 8px);
 }
 
 .card .nav-link {
   height: 100%;
-}
-
-.form-check:last-of-type {
-  margin-bottom: 0;
 }
 
 /* ACCORDION */
@@ -62,6 +58,17 @@ All the HEX values starting with --text-code are taken from the Github code high
 
 .accordion-item .nav-link.active {
   border-left: 2px solid var(--border-enabled);
+}
+
+
+/* Move background color to BS */
+.accordion-item .nav-link:active, .accordion-item .nav-link.active,
+.accordion-item .nav-link:hover, .accordion-item .nav-link.hover {
+  background: var(--surfaces-bg-card);
+}
+
+.form-check:last-of-type {
+  margin-bottom: 0;
 }
 
 /* TABS */
@@ -80,11 +87,6 @@ To ensure the dynamic height adjustment and prevent scrolling, the height must b
   height: 100%;
 }
 
-/* Hides title of the first container given the title is already reflected in the tab title */
-.tab-content .container-title:first-of-type {
-  display: none;
-}
-
 /* Remove label that automatically gets added when calling `dbc.Switch` to remove gap. */
 label[for="theme-selector"] {
   display: none;
@@ -99,27 +101,4 @@ label[for="theme-selector"] {
 .form-switch .form-check-input {
   margin-right: 0;
   padding-left: 0;
-}
-
-/* Remove bottom margin of last child as card comes with padding */
-.card-text > *:last-child {
-  margin-bottom: 0;
-}
-
-.container-fluid {
-  display: flex;
-  flex-direction: column;
-  height: 100%;
-  overflow: auto;  /* For a scroll to be properly added per container */
-  padding: 0;
-}
-
-/* Introduce vizro utility classes here */
-.bg-container {
-  background: var(--left-side-bg);
-}
-
-/* Change filled container bg inside filled container */
-.bg-container .bg-container {
-  background-color: var(--right-side-bg);
 }

@@ -6,9 +6,7 @@ from e2e.vizro.paths import categorical_components_value_path, slider_value_path
 
 def test_filters(dash_br):
     """Test ag_grid filtering."""
-    accordion_select(
-        dash_br, accordion_name=cnst.AG_GRID_ACCORDION.upper(), accordion_number=cnst.AG_GRID_ACCORDION_NUMBER
-    )
+    accordion_select(dash_br, accordion_name=cnst.AG_GRID_ACCORDION)
     page_select(
         dash_br,
         page_name=cnst.TABLE_AG_GRID_PAGE,
@@ -44,9 +42,7 @@ def test_filters(dash_br):
 
 def test_interactions(dash_br):
     """Test filter interaction between ag_grid and line graph."""
-    accordion_select(
-        dash_br, accordion_name=cnst.AG_GRID_ACCORDION.upper(), accordion_number=cnst.AG_GRID_ACCORDION_NUMBER
-    )
+    accordion_select(dash_br, accordion_name=cnst.AG_GRID_ACCORDION)
     page_select(
         dash_br,
         page_name=cnst.TABLE_AG_GRID_INTERACTIONS_PAGE,

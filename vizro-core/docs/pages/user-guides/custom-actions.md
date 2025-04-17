@@ -1,6 +1,6 @@
 # How to create custom actions
 
-This guide demonstrates the usage of custom actions, an idea that shares similarities with, but is not identical to [callbacks](https://dash.plotly.com/basic-callbacks) in `Dash`. If you want to use the [`Action`][vizro.models.Action] model to perform functions that are not available in the [pre-defined action functions][vizro.actions], you can create your own custom action. Like other [actions](actions.md), custom actions could also be added as an element inside the [actions chain](actions.md#chain-actions), and it can be triggered with one of many dashboard components.
+This guide demonstrates the usage of custom actions, an idea that shares similarities with, but is not identical to [callbacks](https://dash.plotly.com/basic-callbacks) in `Dash`. If you want to use the [`Action`][vizro.models.Action] model to perform functions that are not available in the [built-in action functions][vizro.actions], you can create your own custom action. Like other [actions](actions.md), custom actions could also be added as an element inside the [actions chain](actions.md#chain-actions), and it can be triggered with one of many dashboard components.
 
 <!-- vale off -->
 
@@ -15,7 +15,9 @@ Custom actions enable you to implement your own action function. Simply do the f
 The following example shows how to create a custom action that postpones execution of the next action in the chain for `t` seconds.
 
 !!! example "Simple custom action"
+
     === "app.py"
+
         ```{.python pycafe-link extra-requirements="openpyxl"}
         import vizro.models as vm
         import vizro.plotly.express as px
@@ -59,6 +61,7 @@ The following example shows how to create a custom action that postpones executi
         ```
 
     === "app.yaml"
+
         Custom actions are currently only possible via Python configuration.
 
 <!-- vale on -->
@@ -75,7 +78,9 @@ When a custom action needs to interact with the dashboard, it is possible to def
 The following example shows a custom action that takes the `value` of the `vm.RadioItem` and returns it inside a [`Card`][vizro.models.Card] component.
 
 !!! example "Display `value` in Card"
+
     === "app.py"
+
         ```{.python pycafe-link}
         import vizro.models as vm
         import vizro.plotly.express as px
@@ -111,9 +116,11 @@ The following example shows a custom action that takes the `value` of the `vm.Ra
         ```
 
     === "app.yaml"
+
         Custom actions are currently only possible via Python configuration.
 
     === "Result"
+
         [![ValueAction]][valueaction]
 
 ### Example of `clickData` as input
@@ -121,7 +128,9 @@ The following example shows a custom action that takes the `value` of the `vm.Ra
 The following example shows how to create a custom action that shows the `clickData` of a chart in a [`Card`][vizro.models.Card] component. For further information on the structure and content of the `clickData` property, refer to the Dash documentation on [interactive visualizations](https://dash.plotly.com/interactive-graphing).
 
 !!! example "Display `clickData` in Card"
+
     === "app.py"
+
         ```{.python pycafe-link}
         import vizro.models as vm
         import vizro.plotly.express as px
@@ -168,9 +177,11 @@ The following example shows how to create a custom action that shows the `clickD
         1. The content of `inputs` will "fill in the gaps" by setting values for the remaining unbound arguments in `my_custom_action`. Here there is one such argument, named `points_data`. Values for these are bound _dynamically at runtime_ to reflect the live state of your dashboard.
 
     === "app.yaml"
+
         Custom actions are currently only possible via Python configuration.
 
     === "Result"
+
         [![CustomAction]][customaction]
 
 ## Multiple return values
@@ -178,7 +189,9 @@ The following example shows how to create a custom action that shows the `clickD
 The return value of the custom action function is propagated to the dashboard components that are defined in the `outputs` argument of the [`Action`][vizro.models.Action] model. If there is a single `output` defined then the function return value is directly assigned to the component property. If there are multiple `outputs` defined then the return value is iterated through and each part is assigned to each component property given in `outputs` in turn. This behavior is identical to Python's flexibility in managing multiple return values.
 
 !!! example "Multiple return values"
+
     === "app.py"
+
         ```{.python pycafe-link}
         import vizro.models as vm
         import vizro.plotly.express as px
@@ -237,12 +250,15 @@ The return value of the custom action function is propagated to the dashboard co
         1. These values are assigned to the `outputs` in the same order.
 
     === "app.yaml"
+
         Custom actions are currently only possible via Python configuration.
 
     === "Result"
+
         [![CustomAction2]][customaction2]
 
 !!! warning
+
     Note that users of this package are responsible for the content of any custom action function that they write. Take care to avoid leaking any sensitive information or exposing to any security threat during implementation. You should always [treat the content of user input as untrusted](https://community.plotly.com/t/writing-secure-dash-apps-community-thread/54619).
 
 [customaction]: ../../assets/user_guides/custom_actions/clickdata_as_input.png

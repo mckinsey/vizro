@@ -104,7 +104,9 @@ dashboard = vizro_ai.dashboard([df1, df2], user_question)
 The call to `dashboard()` triggers the dashboard building process. Once Vizro-AI finishes this process, you can launch the dashboard with `build()`.
 
 !!! example "Generated dashboard"
+
     === "Code"
+
         ```py
         import vizro_ai
         from vizro_ai import VizroAI
@@ -175,9 +177,11 @@ The call to `dashboard()` triggers the dashboard building process. Once Vizro-AI
         ```
 
     === "Page1"
+
         [![VizroAIDashboardPage1]][vizroaidashboardpage1]
 
     === "Page2"
+
         [![VizroAIDashboardPage2]][vizroaidashboardpage2]
 
 [vizroaidashboardpage1]: ../../assets/user_guides/dashboard/dashboard1_page1.png

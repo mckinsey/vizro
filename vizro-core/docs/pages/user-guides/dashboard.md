@@ -14,7 +14,9 @@ To create a dashboard:
 ## Use dashboard configuration options
 
 !!! example "Dashboard Configuration Syntaxes"
+
     === "app.py - pydantic models"
+
         ```{.python pycafe-link}
         import vizro.plotly.express as px
         from vizro import Vizro
@@ -38,6 +40,7 @@ To create a dashboard:
         ```
 
     === "app.py - Python dict"
+
         ```py
         import vizro.plotly.express as px
         from vizro import Vizro
@@ -79,6 +82,7 @@ To create a dashboard:
         ```
 
     === "dashboard.yaml"
+
         ```yaml
         # Still requires a .py to add data to the data manager and parse YAML configuration
         # See yaml_version example
@@ -104,6 +108,7 @@ To create a dashboard:
         ```
 
     === "dashboard.json"
+
         ```json
         {
           "pages": [
@@ -142,12 +147,15 @@ To create a dashboard:
         ```
 
     === "Result"
+
         [![Dashboard]][dashboard]
 
 !!! note "Extra `.py` files for `yaml` and `json` required"
+
     Note that in the `yaml` and `json` example an extra `.py` is required to register the data and parse the yaml/json configuration.
 
     === "app.py for yaml"
+
         ```py
         from pathlib import Path
 
@@ -166,6 +174,7 @@ To create a dashboard:
         ```
 
     === "app.py for json"
+
         ```py
         import json
         from pathlib import Path

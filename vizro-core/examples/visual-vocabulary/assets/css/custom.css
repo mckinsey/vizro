@@ -42,32 +42,25 @@ img[src*="#chart-icon"] {
   border-color: var(--surfaces-bg-card);
 }
 
-.flex-container {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 24px;
-  justify-content: flex-start;
-}
-
-.flex-container h4 {
+.flex-item h4 {
   color: var(--text-secondary);
   margin: 0;
   padding-top: 12px;
   text-align: center;
 }
 
-.flex-container .card {
+.flex-item .card {
   height: 232px;
   margin: 0 0 auto;
   opacity: 0.3;
   width: 176px;
 }
 
-.flex-container .card-nav {
+.flex-item .card-nav {
   opacity: 1;
 }
 
-.flex-container .card img {
+.flex-item .card img {
   width: 100%;
 }
 

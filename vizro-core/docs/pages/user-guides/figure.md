@@ -39,7 +39,9 @@ To add a `Figure` to your page:
 1. Use an existing figure function from [`vizro.figures`](../API-reference/figure-callables.md) and pass it to the `figure` argument of the `Figure` model.
 
 !!! example "Use existing figure functions"
+
     === "app.py"
+
         ```{.python pycafe-link}
         import vizro.models as vm
         import vizro.plotly.express as px
@@ -71,6 +73,7 @@ To add a `Figure` to your page:
         ```
 
     === "app.yaml"
+
         ```yaml
         # Still requires a .py to add data to the data manager and parse YAML configuration
         # See from_yaml example
@@ -97,11 +100,12 @@ To add a `Figure` to your page:
         ```
 
     === "Result"
+
         [![Figure]][figure]
 
 ### Key Performance Indicator (KPI) cards
 
-A KPI card is a dynamic card that can display a single value, but optionally, can also include a title, icon, and reference value. It is a common visual component to display key metrics in a dashboard. Vizro supports two pre-defined KPI card functions:
+A KPI card is a dynamic card that can display a single value, but optionally, can also include a title, icon, and reference value. It is a common visual component to display key metrics in a dashboard. Vizro comes with two built-in KPI card functions:
 
 - [`kpi_card`](../API-reference/figure-callables.md#vizro.figures.kpi_card): A KPI card that shows a single value found by performing an aggregation function (by default, `sum`) over a specified column. Required arguments are `data_frame` and `value_column`.
 
@@ -110,7 +114,9 @@ A KPI card is a dynamic card that can display a single value, but optionally, ca
 As described in the [API reference](../API-reference/figure-callables.md) and illustrated in the below example, these functions have several arguments to customize your KPI cards. If you require a level of customization that cannot be done with the built-in functions then you can create a [custom figure](custom-figures.md).
 
 !!! example "KPI card variations"
+
     === "app.py"
+
         ```{.python pycafe-link}
         import pandas as pd
         import vizro.models as vm
@@ -189,6 +195,7 @@ As described in the [API reference](../API-reference/figure-callables.md) and il
         ```
 
     === "app.yaml"
+
         ```yaml
         # Still requires a .py to add data to the data manager and parse YAML configuration
         # See from_yaml example
@@ -271,6 +278,7 @@ As described in the [API reference](../API-reference/figure-callables.md) and il
         ```
 
     === "Result"
+
         [![KPICards]][kpicards]
 
 [figure]: ../../assets/user_guides/figure/figure.png

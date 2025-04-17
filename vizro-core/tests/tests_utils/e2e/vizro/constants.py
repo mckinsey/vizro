@@ -156,22 +156,25 @@ LAYOUT_FLEX_GAP_AND_TABLE = "flex-gap-and-table"
 
 LAYOUT_FLEX_WRAP_AND_AG_GRID = "flex-wrap-and-ag_grid"
 
+BUTTONS_PAGE = "buttons-with-different-styles"
+
+EXTRAS_PAGE = "extras-page"
+
+COLLAPSIBLE_CONTAINERS_GRID = "collapsible-containers-grid-layout"
+
+COLLAPSIBLE_CONTAINERS_FLEX = "collapsible-containers-flex-layout"
+
 PAGE_404_PATH = "/404-page"
 
 # Accordion names
 
 GENERAL_ACCORDION = "generAl"
 DATEPICKER_ACCORDION = "DATEpicker"
-DATEPICKER_ACCORDION_NUMBER = 2
 AG_GRID_ACCORDION = "AGgrid"
-AG_GRID_ACCORDION_NUMBER = 3
 DYNAMIC_DATA_ACCORDION = "DYNAMIC data"
-DYNAMIC_DATA_ACCORDION_NUMBER = 4
 KPI_ACCORDION = "KPI"
 CONTAINER_ACCORDION = "Containers"
-CONTAINER_ACCORDION_NUMBER = 5
 LAYOUT_ACCORDION = "Layouts"
-LAYOUT_ACCORDION_NUMBER = 6
 
 # Ports
 
@@ -180,10 +183,12 @@ ONE_PAGE_PORT = 5003
 NAVBAR_ACCORDIONS_PORT = 5004
 NAVBAR_PAGES_PORT = 5005
 NAVBAR_NAVLINK_PORT = 5006
+YAML_PORT = 5007
 
 # Dashboards
 
 DASHBOARD_DEFAULT = "dashboard_default_gunicorn"
+DASHBOARD_YAML = "dashboard_yaml_gunicorn"
 
 # Themes
 
