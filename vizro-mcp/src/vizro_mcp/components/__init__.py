@@ -1,1 +1,0 @@
-"""Components for vizro-mcp."""
