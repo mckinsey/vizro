@@ -21,8 +21,6 @@ dependencies = [
 installer = "uv"
 
 [envs.default.scripts]
-download-static-files = "python tools/download_static_files.py"
-example = "hatch run examples:example {args:scratch_dev}"  # shortcut script to underlying example environment script.
 lint = "pre-commit run {args} --all-files"
 pip = '"{env:HATCH_UV}" pip {args}'
 prep-release = [
@@ -38,16 +36,6 @@ pypath = "python -c 'import sys; print(sys.executable)'"
 test = "pytest tests --headless {args}"
 test-unit = "pytest tests/unit {args}"
 
-[envs.lower-bounds]
-extra-dependencies = [
-  "pydantic==2.7.0",
-  "dash==2.18.0",
-  "plotly==5.24.0",
-  "pandas==2.0.0",
-  "numpy==1.23.0",  # Need numpy<2 to work with pandas==2.0.0. See https://stackoverflow.com/questions/78634235/.
-  "kedro==0.19.0"  # Includes kedro-datasets as a dependency.
-]
-python = "3.9"
 
 [publish.index]
 disable = true
