@@ -36,7 +36,6 @@ pypath = "python -c 'import sys; print(sys.executable)'"
 test = "pytest tests --headless {args}"
 test-unit = "pytest tests/unit {args}"
 
-
 [publish.index]
 disable = true
 
