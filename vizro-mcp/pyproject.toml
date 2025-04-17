@@ -17,21 +17,26 @@ authors = [
 ]
 classifiers = [
   "Programming Language :: Python",
-  "Programming Language :: Python :: 3.9",
   "Programming Language :: Python :: 3.10",
   "Programming Language :: Python :: 3.11",
-  "Programming Language :: Python :: 3.12"
+  "Programming Language :: Python :: 3.12",
+  "Programming Language :: Python :: 3.13",
 ]
 dependencies = [
   "httpx>=0.28.1",
   "mcp[cli]>=1.6.0",
-  "vizro>=0.1.37"
+  "vizro>=0.1.37",
+  "click>=8.1.7"
 ]
 description = "Vizro MCP server to facilitate chart and dashboard generation"
 license-files = {paths = ["LICENSE.txt"]}
 name = "vizro-mcp"
 readme = "README.md"
-requires-python = ">=3.9"
+requires-python = ">=3.10"
+dynamic = ["version"]
+
+[project.scripts]
+"vizro-mcp" = "vizro_mcp.cli:main"
 
 [tool.coverage.paths]
 vizro = ["src/vizro_mcp"]  # omit tests for clarity, although this can be useful to see what test lines DID NOT run
