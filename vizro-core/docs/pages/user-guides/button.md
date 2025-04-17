@@ -73,7 +73,7 @@ The example below demonstrates how to configure a button to export the filtered 
 
         page = vm.Page(
             title="My first page",
-            layout=vm.Grid(grid=[[0], [0], [0], [0], [1]]),
+            layout=vm.Flex(),  # (1)!
             components=[
                 vm.Graph(
                     id="scatter_chart",
@@ -89,14 +89,14 @@ The example below demonstrates how to configure a button to export the filtered 
                     text="Export data",
                     actions=[vm.Action(function=export_data(targets=["scatter_chart"]))],
                 ),
-            ],
-            controls=[vm.Filter(column="species")],
+            ]
         )
 
         dashboard = vm.Dashboard(pages=[page])
-
         Vizro().build(dashboard).run()
         ```
+        
+        1. We use a [`Flex`][vizro.models.Flex] layout to make sure the `Graph` and `Button` only occupy as much space as they need, rather than being distributed evenly.
 
     === "app.yaml"
 
@@ -122,19 +122,8 @@ The example below demonstrates how to configure a button to export the filtered 
                       _target_: export_data
                       targets:
                         - scatter_chart
-            controls:
-              - column: species
-                selector:
-                  title: Species
-                  type: dropdown
-                type: filter
             layout:
-              grid:
-                - [0]
-                - [0]
-                - [0]
-                - [0]
-                - [1]
+              type: flex
             title: My first page
         ```
 
