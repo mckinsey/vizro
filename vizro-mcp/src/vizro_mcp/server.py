@@ -62,7 +62,8 @@ This is the plotly express figure to be displayed. Only use valid plotly express
 Only use the arguments that are supported by the function you are using.
 
 - Configure a dictionary as if this would be added as **kwargs to the function you are using.
-- You must use the key: "_target_: "<function_name>" to specify the function you are using. Do NOT precede by namespace (like px.line)
+- You must use the key: "_target_: "<function_name>" to specify the function you are using. Do NOT precede by
+    namespace (like px.line)
 - you must refer to the dataframe by name, for now it is one of "gapminder", "iris", "tips".
 - do not use a title if your Graph already has a title.
 """
@@ -123,7 +124,7 @@ data_manager["{file_name}"] = pd.read_csv("{file_paths_or_urls}")
 def validate_model_config(
     config: dict[str, Any], file_name: str, file_path_or_url: str, file_location_type: Literal["local", "remote"]
 ) -> dict[str, Any]:
-    """Validate Vizro model configuration by attempting to instantiate it. Run whenever you have a complete DASHBOARD configuration.
+    """Validate Vizro model configuration. Run WHENEVER you have a complete DASHBOARD configuration.
 
     If successful, the tool will return the python code and, if it is a remote file, the py.cafe link to the chart.
 
@@ -237,24 +238,22 @@ def get_overview_vizro_models() -> dict[str, list[dict[str, str]]]:
     return result
 
 
-@mcp.tool(
-    name="get_vizro_chart_or_dashboard_plan",
-    description="Call this tool first to get an overview of what to do next when asked to create a Vizro chart or dashboard.",
-)
+@mcp.tool()
 def get_vizro_chart_or_dashboard_plan(plan: Literal["chart", "dashboard"]) -> str:
+    """Get instructions for creating a Vizro chart or dashboard. Call FIRST when asked to create Vizro things."""
     if plan == "chart":
         return """
 Instructions for create a Vizro chart:
-    - analyze the datasets needed for the chart using the load_and_analyze_csv tool - the most important information here
-        are the column names and column types
+    - analyze the datasets needed for the chart using the load_and_analyze_csv tool - the most important
+        information here are the column names and column types
     - always return code for a plotly express chart, pay attention to the columns you have available
     - do NOT call any other tool after, especially do NOT create a dashboard
             """
     elif plan == "dashboard":
         return """
 Instructions for create a Vizro dashboard:
-    - analyze the datasets needed for the dashboard using the load_and_analyze_csv tool - the most important information here
-        are the column names and column types
+    - analyze the datasets needed for the dashboard using the load_and_analyze_csv tool - the most
+        important information here are the column names and column types
     - call the get_overview_vizro_models tool to get an overview of the available models
     - make a plan of what components you would like to use, you need to decide on a layout and components per page
     then request any necessary schema using the get_model_JSON_schema tool
@@ -265,12 +264,13 @@ Instructions for create a Vizro dashboard:
 
 
     IMPORTANT:
-    - if you iterate over a valid produced solution, make sure to go ALWAYS via the validation step again to ensure the solution is valid
+    - if you iterate over a valid produced solution, make sure to go ALWAYS via the validation step again to
+        ensure the solution is valid
     """
 
 
 # Function to capture DataFrame info
-def get_dataframe_info(df: pd.DataFrame, file_path_or_url: Union[str, Path]) -> dict[str, Any]:
+def _get_dataframe_info(df: pd.DataFrame, file_path_or_url: Union[str, Path]) -> dict[str, Any]:
     return {
         # "info": info_str,
         "location_type": "local" if isinstance(file_path_or_url, Path) else "remote",
@@ -315,7 +315,7 @@ def load_and_analyze_csv(path_or_url: str) -> dict[str, Any]:
                     on_bad_lines="warn",
                     low_memory=False,
                 )
-                return {"success": True, "data": get_dataframe_info(df, raw_url)}
+                return {"success": True, "data": _get_dataframe_info(df, raw_url)}
             except requests.exceptions.RequestException as e:
                 return {"success": False, "error": f"Failed to fetch file: {e!s}"}
 
@@ -324,7 +324,7 @@ def load_and_analyze_csv(path_or_url: str) -> dict[str, Any]:
         if path.exists():
             # Consistent options for both local and remote files
             df = pd.read_csv(path, on_bad_lines="warn", low_memory=False)
-            return {"success": True, "data": get_dataframe_info(df, path)}
+            return {"success": True, "data": _get_dataframe_info(df, path)}
 
         else:
             return {
@@ -338,9 +338,6 @@ def load_and_analyze_csv(path_or_url: str) -> dict[str, Any]:
     except requests.exceptions.RequestException as e:
         # Handle network-related errors
         return {"success": False, "error": f"Network error when fetching file: {e!s}"}
-    except Exception as e:
-        # Catch-all for other errors
-        return {"success": False, "error": f"Error processing file: {e!s}"}
 
 
 @mcp.prompt(
@@ -350,16 +347,19 @@ def load_and_analyze_csv(path_or_url: str) -> dict[str, Any]:
 def create_EDA_dashboard(
     file_path_or_url: str,
 ) -> str:
+    """Prompt template for creating an EDA dashboard based on one CSV dataset."""
     return [
         {
             "role": "user",
             "content": f"""
 Create an EDA dashboard based on the following dataset:{file_path_or_url}. Proceed as follows:
-1. Analyze the data using the load_and_analyze_csv tool first, passing the file path or github url {file_path_or_url} to the tool.
+1. Analyze the data using the load_and_analyze_csv tool first, passing the file path or github url {file_path_or_url}
+    to the tool.
 2. Create a dashboard with 3 pages:
     - Page 1: Overview of the dataset with a summary using the Card component.
     - Page 2: Visualizing the distribution of all numeric columns using the Graph component with a histogram.
-        - use a Parameter that targets the Graph component and the x argument, and you can select the column to be displayed
+        - use a Parameter that targets the Graph component and the x argument, and you can select the column to
+            be displayed
         - IMPORTANT:remember that you target the chart like: <graph_id>.x and NOT <graph_id>.figure.x
         - do not use any color schemes etc.
     - Page 3: Visualizing the correlation between all numeric columns using the Graph component with a scatter plot.
@@ -453,13 +453,14 @@ def create_vizro_chart(
     chart_type: str,
     file_path_or_url: str,
 ) -> str:
+    """Prompt template for creating a Vizro chart."""
     return [
         {
             "role": "Assistant",
             "content": f"""
 Create a chart using the following chart type:\n{chart_type}.
-Make sure to analyze the data using the load_and_analyze_csv tool first, passing the file path or github url {file_path_or_url} to the tool.
-Then make sure to use the get_validated_chart_code tool to validate the chart code.
+Make sure to analyze the data using the load_and_analyze_csv tool first, passing the file path or github url
+{file_path_or_url} to the tool. Then make sure to use the get_validated_chart_code tool to validate the chart code.
             """,
         }
     ]
