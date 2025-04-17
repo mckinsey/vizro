@@ -18,14 +18,11 @@ PYCAFE_URL = "https://py.cafe"
 def get_dataframe_info(df: pd.DataFrame, file_path_or_url: Union[str, Path]) -> dict[str, Any]:
     """Get the info of a DataFrame."""
     return {
-        # "info": info_str,
         "location_type": "local" if isinstance(file_path_or_url, Path) else "remote",
         "file_path_or_url": file_path_or_url,
         "shape": df.shape,
         "columns": list(df.columns),
         "column_types": {col: str(dtype) for col, dtype in df.dtypes.items()},
-        # "missing_values": df.isna().sum().to_dict(),
-        # "numeric_stats": df.describe().to_dict() if not df.empty else {},
         "sample": df.sample(5).to_dict() if not df.empty else {},
     }
 
@@ -43,6 +40,7 @@ import vizro.plotly.express as px
 from vizro.managers import data_manager
 import pandas as pd
 import vizro.models as vm
+import vizro.tables as vt
 
 # Load data into the data_manager
 data_manager["{file_name}"] = pd.read_csv("{file_paths_or_urls}")

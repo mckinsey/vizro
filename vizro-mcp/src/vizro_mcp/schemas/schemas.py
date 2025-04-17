@@ -18,7 +18,7 @@ class SimplePage(BaseModel):
     title: str = Field(description="Title to be displayed.")
     description: str = Field(default="", description="Description for meta tags.")
     layout: Optional[Literal["grid", "flex"]] = Field(default=None, description="Layout to place components in.")
-    controls: list[Literal["filter", "parameter"]] = Field(default=list(), description="Controls to be displayed.")
+    controls: list[Literal["filter", "parameter"]] = Field(default=[], description="Controls to be displayed.")
 
 
 class SimpleDashboard(BaseModel):
@@ -40,14 +40,29 @@ class GraphPX(vm.Graph):
     figure: dict[str, Any] = Field(
         description="""
 This is the plotly express figure to be displayed. Only use valid plotly express functions to create the figure.
-Only use the arguments that are supported by the function you are using.
+Only use the arguments that are supported by the function you are using and where no extra modules such as statsmodels
+are needed (e.g. trendline).
 
 - Configure a dictionary as if this would be added as **kwargs to the function you are using.
 - You must use the key: "_target_: "<function_name>" to specify the function you are using. Do NOT precede by
     namespace (like px.line)
 - you must refer to the dataframe by name, for now it is one of "gapminder", "iris", "tips".
-- do not use a title if your Graph already has a title.
+- do not use a title if your Graph model already has a title.
 """
+    )
+
+
+class AgGridSchema(vm.AgGrid):
+    """A AgGrid model that uses dash-ag-grid to create the figure."""
+
+    figure: dict[str, Any] = Field(
+        description="""
+        This is the ag-grid figure to be displayed. Only use arguments from the [`dash-ag-grid` function](https://dash.plotly.com/dash-ag-grid/reference).
+        
+        The only difference to the dash version is that:
+            - you must use the key: "_target_: "dash_ag_grid"
+            - you must refer to data via "data_frame": <data_frame_name> and NOT via columnDefs and rowData (do NOT set)
+        """
     )
 
 
@@ -72,8 +87,6 @@ def _check_chart_code(v: str) -> str:
     if func_def not in v:
         raise ValueError(f"The chart code must be wrapped in a function named `{CUSTOM_CHART_NAME}`")
 
-    # Keep only the function definition and everything after it
-    # Sometimes models like Gemini return extra imports in chart_code field
     v = v[v.index(func_def) :].strip()
 
     first_line = v.split("\n")[0].strip()

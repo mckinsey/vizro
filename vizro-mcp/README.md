@@ -68,3 +68,5 @@ Replace `<PATH TO VIZRO>` with the actual path to your Vizro repository.
 
 - `create_EDA_dashboard` - Use this prompt template to create an EDA dashboard based on a local or remote CSV dataset
 - `create_vizro_chart` - Use this prompt template to create a Vizro styled plotly chart based on a local or remote CSV dataset
+
+As quick way to get sample remote CSVs can be found [at the plotly repository](https://github.com/plotly/datasets/tree/master).

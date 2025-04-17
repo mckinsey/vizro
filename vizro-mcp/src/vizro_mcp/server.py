@@ -12,7 +12,13 @@ from mcp.server.fastmcp import FastMCP
 from pydantic import ValidationError
 from vizro import Vizro
 
-from vizro_mcp.schemas.schemas import ChartPlan, GraphPX, SimpleDashboard, SimplePage
+from vizro_mcp.schemas.schemas import (
+    AgGridSchema,
+    ChartPlan,
+    GraphPX,
+    SimpleDashboard,
+    SimplePage,
+)
 from vizro_mcp.utils.utils import get_dataframe_info, get_python_code_and_preview_link
 
 # TODO: what do I need to do here, as things are already set up?
@@ -28,6 +34,7 @@ def validate_model_config(
     """Validate Vizro model configuration. Run WHENEVER you have a complete DASHBOARD configuration.
 
     If successful, the tool will return the python code and, if it is a remote file, the py.cafe link to the chart.
+    ALWAYS offer the py.cafe link to the user as a preview of the chart, but as a hyperlink as the link is long.
 
     Args:
         config: Either a JSON string or a dictionary representing a Vizro model configuration
@@ -96,6 +103,8 @@ def get_model_JSON_schema(model_name: str) -> dict[str, Any]:
         return SimpleDashboard.model_json_schema()
     elif model_name == "Graph":
         return GraphPX.model_json_schema()
+    elif model_name == "AgGrid":
+        return AgGridSchema.model_json_schema()
     # Get the model class from the vizro.models namespace
     if not hasattr(vm, model_name):
         return {"error": f"Model '{model_name}' not found in vizro.models"}
@@ -116,7 +125,7 @@ def get_overview_vizro_models() -> dict[str, list[dict[str, str]]]:
     """
     # Define the models we want to expose, grouped by category
     model_groups: dict[str, list[type[vm.VizroBaseModel]]] = {
-        "components": [vm.Card, vm.Button, vm.Text, vm.Container, vm.Tabs, vm.Graph],
+        "components": [vm.Card, vm.Button, vm.Text, vm.Container, vm.Tabs, vm.Graph, vm.AgGrid],
         "layouts": [vm.Grid, vm.Flex],
         "controls": [vm.Filter, vm.Parameter],
         "selectors": [vm.Dropdown, vm.RadioItems, vm.Checklist, vm.DatePicker, vm.Slider, vm.RangeSlider],
@@ -239,13 +248,16 @@ Create an EDA dashboard based on the following dataset:{file_path_or_url}. Proce
 1. Analyze the data using the load_and_analyze_csv tool first, passing the file path or github url {file_path_or_url}
     to the tool.
 2. Create a dashboard with 3 pages:
-    - Page 1: Overview of the dataset with a summary using the Card component.
+    - Page 1: Summary of the dataset using the Card component and the dataset itself using the plain AgGrid component.
     - Page 2: Visualizing the distribution of all numeric columns using the Graph component with a histogram.
         - use a Parameter that targets the Graph component and the x argument, and you can select the column to
             be displayed
         - IMPORTANT:remember that you target the chart like: <graph_id>.x and NOT <graph_id>.figure.x
         - do not use any color schemes etc.
+        - add filters for all categorical columns
     - Page 3: Visualizing the correlation between all numeric columns using the Graph component with a scatter plot.
+    - Page 4: Two interesting charts side by side, use the Graph component for this. Make sure they look goog
+        but do not try something beyond the scope of plotly express
             """
     return content
 
