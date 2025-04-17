@@ -55,3 +55,14 @@ skip_covered = true
 branch = true
 parallel = true
 source_pkgs = ["vizro_mcp"]
+
+[tool.pytest.ini_options]
+addopts = [
+  # Allow test files to have the same name in different directories.
+  "--import-mode=importlib"
+]
+filterwarnings = [
+  "error",
+]
+norecursedirs = ["tests/tests_utils", "tests/js"]
+pythonpath = ["src"]
