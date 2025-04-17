@@ -54,6 +54,12 @@ jobs:
       - name: Run e2e vizro-dom-elements tests
         run: hatch run test-e2e-vizro-dom-elements --splits 3 --group ${{ matrix.group }}
 
+      - name: Publish Test Report
+        uses: ctrf-io/github-test-reporter@v1
+        with:
+          report-path: './ctrf/*.json'
+        if: always()
+
       - name: Create artifacts and slack notifications
         if: failure()
         uses: ./.github/actions/failed-artifacts-and-slack-notifications
