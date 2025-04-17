@@ -36,30 +36,30 @@ You can add a [`Card`][vizro.models.Card] to your dashboard by inserting the [`C
         dashboard = vm.Dashboard(pages=[page])
         Vizro().build(dashboard).run()
         ```
-        
-        1. We use a [`Flex`][vizro.models.Flex] layout to ensure the `Card` only occupies the vertical space it needs. 
-           Without this, it would default to filling the entire available space.
 
+        1. We use a [`Flex`][vizro.models.Flex] layout to ensure the `Card` only occupies the vertical space it needs. Without this, it would default to filling the entire available space.
 
-    === "app.yaml"
+````
+=== "app.yaml"
 
-        ```yaml
-        # Still requires a .py to add data to the data manager and parse YAML configuration
-        # See from_yaml example
-        pages:
-          - components:
-              - text: |
-                  Commodi repudiandae consequuntur voluptatum.
-                title: Card Title
-                type: card
-            layout:
-              type: flex
-            title: Card
-        ```
+    ```yaml
+    # Still requires a .py to add data to the data manager and parse YAML configuration
+    # See from_yaml example
+    pages:
+      - components:
+          - text: |
+              Commodi repudiandae consequuntur voluptatum.
+            title: Card Title
+            type: card
+        layout:
+          type: flex
+        title: Card
+    ```
 
-    === "Result"
+=== "Result"
 
-        [![Card]][card]
+    [![Card]][card]
+````
 
 ## Customize card text
 
@@ -143,9 +143,7 @@ The [`Card`][vizro.models.Card] uses the `dcc.Markdown` component from Dash as i
         Vizro().build(dashboard).run()
         ```
 
-        1. Note that we don't explicitly define a `layout` here, so it defaults to the [`Grid`][vizro.models.Grid] layout. 
-           This layout automatically arranges all components to fit on a single page, giving each one equal space. 
-           As a result, all `Card` components are evenly sized and fill the entire screen.
+        1. Note that we don't explicitly define a `layout` here, so it defaults to the [`Grid`][vizro.models.Grid] layout. This layout automatically arranges all components to fit on a single page, giving each one equal space. As a result, all `Card` components are evenly sized and fill the entire screen.
 
     === "app.yaml"
 
@@ -223,23 +221,23 @@ An image ALT text offers a description to your image and serves as a text placeh
         from vizro import Vizro
 
         page = vm.Page(
-                title="Placing Images",
-                components=[
-                    vm.Card(
-                        text="""
-                        ### My card with image!
+             title="Placing Images",
+             components=[
+                 vm.Card(
+                     text="""
+                     ### My card with image!
 
-                        ![continent](assets/images/continents/africa.svg)
+                     ![continent](assets/images/continents/africa.svg)
 
-                         Commodi repudiandae consequuntur voluptatum laborum numquam blanditiis harum quisquam eius sed odit.
+                      Commodi repudiandae consequuntur voluptatum laborum numquam blanditiis harum quisquam eius sed odit.
 
-                         Fugiat iusto fuga praesentium option, eaque rerum! Provident similique accusantium nemo autem.
+                      Fugiat iusto fuga praesentium option, eaque rerum! Provident similique accusantium nemo autem.
 
-                         Obcaecati tenetur iure eius earum ut molestias architecto voluptate aliquam nihil, eveniet aliquid.
-                    """,
-                    ),
-                ],
-            )
+                      Obcaecati tenetur iure eius earum ut molestias architecto voluptate aliquam nihil, eveniet aliquid.
+                 """,
+                 ),
+             ],
+         )
 
         dashboard = vm.Dashboard(pages=[page])
         Vizro().build(dashboard).run()
@@ -303,26 +301,26 @@ Note the added URL hash `#my-image`. Now create a CSS file placed in your `asset
         from vizro import Vizro
 
         page = vm.Page(
-                title="Styling Images",
-                components=[
-                    vm.Card(
-                        text="""
-                        ### My card with image!
+            title="Styling Images",
+            layout=vm.Flex(),
+            components=[
+               vm.Card(
+                     text="""
+                     ### My card with image!
 
-                        ![](assets/images/continents/europe.svg#my-image)
+                     ![](assets/images/continents/europe.svg#my-image)
 
-                         Commodi repudiandae consequuntur voluptatum laborum numquam blanditiis harum quisquam eius sed odit.
+                      Commodi repudiandae consequuntur voluptatum laborum numquam blanditiis harum quisquam eius sed odit.
 
-                         Fugiat iusto fuga praesentium option, eaque rerum! Provident similique accusantium nemo autem.
+                      Fugiat iusto fuga praesentium option, eaque rerum! Provident similique accusantium nemo autem.
 
-                         Obcaecati tenetur iure eius earum ut molestias architecto voluptate aliquam nihil, eveniet aliquid.
-                    """,
-                    ),
-                ],
-            )
+                      Obcaecati tenetur iure eius earum ut molestias architecto voluptate aliquam nihil, eveniet aliquid.
+                 """
+               ),
+            ]
+        )
 
         dashboard = vm.Dashboard(pages=[page])
-
         Vizro().build(dashboard).run()
         ```
 
@@ -345,6 +343,8 @@ Note the added URL hash `#my-image`. Now create a CSS file placed in your `asset
                   Obcaecati tenetur iure eius earum ut molestias architecto voluptate aliquam nihil, eveniet aliquid.
                 title: My card with image!
                 type: card
+            layout:
+              type: flex
             title: Styling Images
         ```
 
@@ -615,7 +615,6 @@ An example use would be to limit the `Card` height to only take as much space as
 
         [![CardStyle]][cardstyle]
 
-[card]: ../../assets/user_guides/components/card.png
 [cardimagedefault]: ../../assets/user_guides/components/card_image_default.png
 [cardimagefloating]: ../../assets/user_guides/components/card_image_floating.png
 [cardimagestyled]: ../../assets/user_guides/components/card_image_styled.png
