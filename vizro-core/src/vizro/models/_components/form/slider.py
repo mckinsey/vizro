@@ -6,7 +6,7 @@ from pydantic import AfterValidator, BeforeValidator, Field, PrivateAttr
 from pydantic.functional_serializers import PlainSerializer
 from pydantic.json_schema import SkipJsonSchema
 
-from vizro.models import Action, Tooltip, VizroBaseModel
+from vizro.models import VizroBaseModel, Tooltip
 from vizro.models._action._actions_chain import _action_validator_factory
 from vizro.models._components.form._form_utils import (
     set_default_marks,
@@ -16,6 +16,7 @@ from vizro.models._components.form._form_utils import (
 )
 from vizro.models._models_utils import _log_call
 from vizro.models._tooltip import coerce_str_to_tooltip
+from vizro.models.types import ActionType
 
 
 class Slider(VizroBaseModel):
@@ -34,13 +35,12 @@ class Slider(VizroBaseModel):
         title (str): Title to be displayed. Defaults to `""`.
         description (Optional[Tooltip]): Optional markdown string that adds an icon next to the title.
             Hovering over the icon shows a tooltip with the provided description. Defaults to `None`.
-        actions (list[Action]): See [`Action`][vizro.models.Action]. Defaults to `[]`.
+        actions (list[ActionType]): See [`ActionType`][vizro.models.types.ActionType]. Defaults to `[]`.
         extra (Optional[dict[str, Any]]): Extra keyword arguments that are passed to `dcc.Slider` and overwrite any
             defaults chosen by the Vizro team. This may have unexpected behavior.
             Visit the [dcc documentation](https://dash.plotly.com/dash-core-components/slider)
             to see all available arguments. [Not part of the official Vizro schema](../explanation/schema.md) and the
             underlying component may change in the future. Defaults to `{}`.
-
     """
 
     type: Literal["slider"] = "slider"
@@ -76,7 +76,7 @@ class Slider(VizroBaseModel):
         ),
     ]
     actions: Annotated[
-        list[Action],
+        list[ActionType],
         AfterValidator(_action_validator_factory("value")),
         PlainSerializer(lambda x: x[0].actions),
         Field(default=[]),

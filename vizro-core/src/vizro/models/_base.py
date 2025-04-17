@@ -18,6 +18,7 @@ from pydantic.fields import FieldInfo
 
 from vizro.managers import model_manager
 from vizro.models._models_utils import REPLACEMENT_STRINGS, _log_call
+from vizro.models.types import ModelID
 
 ACTIONS_CHAIN = "ActionsChain"
 ACTION = "actions"
@@ -66,6 +67,7 @@ def _format_and_lint(code_string: str) -> str:
 
 
 def _dict_to_python(object: Any) -> str:
+    import vizro.actions as va
     from vizro.models.types import CapturedCallable
 
     if isinstance(object, dict) and "__vizro_model__" in object:
@@ -81,7 +83,11 @@ def _dict_to_python(object: Any) -> str:
             # This is very similar to doing repr but includes the vm. prefix and calls _object_to_python_code
             # rather than repr recursively.
             fields = ", ".join(f"{field_name}={_dict_to_python(value)}" for field_name, value in object.items())
-            return f"vm.{__vizro_model__}({fields})"
+            # Always use built-in actions from the vizro.actions (va) namespace, not vizro.models (vm).
+            # Enforces explicit namespacing to avoid ambiguity between built-in actions.
+            namespace = "va" if __vizro_model__ in dir(va) else "vm"
+            return f"{namespace}.{__vizro_model__}({fields})"
+
     elif isinstance(object, dict):
         fields = ", ".join(f"'{field_name}': {_dict_to_python(value)}" for field_name, value in object.items())
         return "{" + fields + "}"
@@ -197,7 +203,7 @@ def _add_type_to_annotated_union_if_found(
         )
 
 
-def set_id(id: str) -> str:
+def set_id(id: ModelID) -> ModelID:
     return id or model_manager._generate_id()
 
 
@@ -205,13 +211,13 @@ class VizroBaseModel(BaseModel):
     """All models that are registered to the model manager should inherit from this class.
 
     Args:
-        id (str): ID to identify model. Must be unique throughout the whole dashboard. Defaults to `""`.
+        id (ModelID): ID to identify model. Must be unique throughout the whole dashboard. Defaults to `""`.
             When no ID is chosen, ID will be automatically generated.
 
     """
 
     id: Annotated[
-        str,
+        ModelID,
         AfterValidator(set_id),
         Field(
             default="",
