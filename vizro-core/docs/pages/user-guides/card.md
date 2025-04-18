@@ -39,27 +39,27 @@ You can add a [`Card`][vizro.models.Card] to your dashboard by inserting the [`C
 
         1. We use a [`Flex`][vizro.models.Flex] layout to ensure the `Card` only occupies the vertical space it needs. Without this, it would default to filling the entire available space.
 
-````
-=== "app.yaml"
 
-    ```yaml
-    # Still requires a .py to add data to the data manager and parse YAML configuration
-    # See yaml_version example
-    pages:
-      - components:
-          - text: |
-              Commodi repudiandae consequuntur voluptatum.
-            title: Card Title
-            type: card
-        layout:
-          type: flex
-        title: Card
-    ```
+    === "app.yaml"
+   
+        ```yaml
+        # Still requires a .py to add data to the data manager and parse YAML configuration
+        # See yaml_version example
+        pages:
+          - components:
+              - text: |
+                  Commodi repudiandae consequuntur voluptatum.
+                title: Card Title
+                type: card
+            layout:
+              type: flex
+            title: Card
+        ```
 
-=== "Result"
+    === "Result"
 
-    [![Card]][card]
-````
+        [![Card]][card]
+
 
 ## Customize card text
 
@@ -275,7 +275,7 @@ An image ALT text offers a description to your image and serves as a text placeh
 
 You might notice that the image is quite large. You'll find out how to style images in terms of their position and size in the next section.
 
-## Style a card image
+## Change image dimensions
 
 To change the size or position of the image, add a URL hash to your image like this:
 
@@ -326,39 +326,39 @@ Note the added URL hash `#my-image`. Now create a CSS file placed in your `asset
 
         1. We use a [`Flex`][vizro.models.Flex] layout to ensure the `Card` only occupies the vertical space it needs. Without this, it would default to filling the entire available space.
 
-````
-    <img src=https://py.cafe/logo.png alt="PyCafe logo" width="30"><b><a target="_blank" href="https://py.cafe/vizro-official/vizro-styling-images">Run and edit this code in PyCafe</a></b>
 
-=== "app.yaml"
+        <img src=https://py.cafe/logo.png alt="PyCafe logo" width="30"><b><a target="_blank" href="https://py.cafe/vizro-official/vizro-styling-images">Run and edit this code in PyCafe</a></b>
 
-    ```yaml
-    # Still requires a .py to add data to the data manager and parse YAML configuration
-    # See yaml_version example
-    pages:
-      - components:
-          - text: |
-              ![](assets/images/continents/europe.svg#my-image)
+    === "app.yaml"
+   
+        ```yaml
+        # Still requires a .py to add data to the data manager and parse YAML configuration
+        # See yaml_version example
+        pages:
+          - components:
+              - text: |
+                  ![](assets/images/continents/europe.svg#my-image)
+    
+                  Commodi repudiandae consequuntur voluptatum laborum numquam blanditiis harum quisquam eius sed odit.
+    
+                  Fugiat iusto fuga praesentium option, eaque rerum! Provident similique accusantium nemo autem.
+   
+                  Obcaecati tenetur iure eius earum ut molestias architecto voluptate aliquam nihil, eveniet aliquid.
+                title: My card with image!
+                type: card
+            layout:
+              type: flex
+            title: Styling Images
+        ```
+   
+    === "Result"
+   
+        [![CardImageStyled]][cardimagestyled]
 
-              Commodi repudiandae consequuntur voluptatum laborum numquam blanditiis harum quisquam eius sed odit.
-
-              Fugiat iusto fuga praesentium option, eaque rerum! Provident similique accusantium nemo autem.
-
-              Obcaecati tenetur iure eius earum ut molestias architecto voluptate aliquam nihil, eveniet aliquid.
-            title: My card with image!
-            type: card
-        layout:
-          type: flex
-        title: Styling Images
-    ```
-
-=== "Result"
-
-    [![CardImageStyled]][cardimagestyled]
-````
 
 Use the following pre-defined URL hashes in your image path to apply Vizro's default styling.
 
-### Float an image next to the text
+## Float an image inside the card
 
 To float an image for example to the right of the text, use the `src` attribute as a CSS selector. Follow these steps:
 
@@ -393,15 +393,15 @@ To float an image for example to the right of the text, use the `src` attribute 
 
                      ![](assets/images/continents/europe.svg#my-image)
 
-                      Commodi repudiandae consequuntur voluptatum laborum numquam blanditiis harum quisquam eius sed odit.
+                     Commodi repudiandae consequuntur voluptatum laborum numquam blanditiis harum quisquam eius sed odit.
 
-                      Fugiat iusto fuga praesentium option, eaque rerum! Provident similique accusantium nemo autem.
+                     Fugiat iusto fuga praesentium option, eaque rerum! Provident similique accusantium nemo autem.
 
-                      Obcaecati tenetur iure eius earum ut molestias architecto voluptate aliquam nihil, eveniet aliquid.
+                     Obcaecati tenetur iure eius earum ut molestias architecto voluptate aliquam nihil, eveniet aliquid.
 
-                      Culpa officia aut! Impedit sit sunt quaerat, odit, tenetur error, harum nesciunt ipsum debitis quas.
+                     Culpa officia aut! Impedit sit sunt quaerat, odit, tenetur error, harum nesciunt ipsum debitis quas.
 
-                      Obcaecati tenetur iure eius earum ut molestias architecto voluptate aliquam nihil, eveniet aliquid.
+                     Obcaecati tenetur iure eius earum ut molestias architecto voluptate aliquam nihil, eveniet aliquid.
 
                      Culpa officia aut! Impedit sit sunt quaerat, odit, tenetur error, harum nesciunt ipsum debitis quas.
                  """,
@@ -414,42 +414,41 @@ To float an image for example to the right of the text, use the `src` attribute 
         ```
 
         1. We use a [`Flex`][vizro.models.Flex] layout to ensure the `Card` only occupies the vertical space it needs. Without this, it would default to filling the entire available space.
+        
+        <img src=https://py.cafe/logo.png alt="PyCafe logo" width="30"><b><a target="_blank" href="https://py.cafe/vizro-official/vizro-floating-images-explorer">Run and edit this code in PyCafe</a></b>
 
-````
-    <img src=https://py.cafe/logo.png alt="PyCafe logo" width="30"><b><a target="_blank" href="https://py.cafe/vizro-official/vizro-floating-images-explorer">Run and edit this code in PyCafe</a></b>
 
-=== "app.yaml"
-
-    ```yaml
-    # Still requires a .py to add data to the data manager and parse YAML configuration
-    # See yaml_version example
-    pages:
-      - components:
-          - text: |
-              ![](assets/images/continents/europe.svg#my-image)
-
-              Commodi repudiandae consequuntur voluptatum laborum numquam blanditiis harum quisquam eius sed odit.
-
-              Fugiat iusto fuga praesentium option, eaque rerum! Provident similique accusantium nemo autem.
-
-              Obcaecati tenetur iure eius earum ut molestias architecto voluptate aliquam nihil, eveniet aliquid.
-
-              Culpa officia aut! Impedit sit sunt quaerat, odit, tenetur error, harum nesciunt ipsum debitis quas.
-
-              Obcaecati tenetur iure eius earum ut molestias architecto voluptate aliquam nihil, eveniet aliquid.
-
-              Culpa officia aut! Impedit sit sunt quaerat, odit, tenetur error, harum nesciunt ipsum debitis quas.
-            title: My card with floating image!
-            type: card
-        layout:
-            type: flex
-        title: Floating Images
-    ```
-
-=== "Result"
-
-    [![CardImageFloating]][cardimagefloating]
-````
+    === "app.yaml"
+   
+        ```yaml
+        # Still requires a .py to add data to the data manager and parse YAML configuration
+        # See yaml_version example
+        pages:
+          - components:
+              - text: |
+                  ![](assets/images/continents/europe.svg#my-image)
+    
+                  Commodi repudiandae consequuntur voluptatum laborum numquam blanditiis harum quisquam eius sed odit.
+    
+                  Fugiat iusto fuga praesentium option, eaque rerum! Provident similique accusantium nemo autem.
+    
+                  Obcaecati tenetur iure eius earum ut molestias architecto voluptate aliquam nihil, eveniet aliquid.
+    
+                  Culpa officia aut! Impedit sit sunt quaerat, odit, tenetur error, harum nesciunt ipsum debitis quas.
+    
+                  Obcaecati tenetur iure eius earum ut molestias architecto voluptate aliquam nihil, eveniet aliquid.
+    
+                  Culpa officia aut! Impedit sit sunt quaerat, odit, tenetur error, harum nesciunt ipsum debitis quas.
+                title: My card with floating image!
+                type: card
+            layout:
+                type: flex
+            title: Floating Images
+        ```
+   
+    === "Result"
+    
+        [![CardImageFloating]][cardimagefloating]
 
 ## Make an icon responsive to theme switch
 
@@ -522,7 +521,6 @@ To create a navigation card:
         )
 
         dashboard = vm.Dashboard(pages=[page_1, page_2])
-
         Vizro().build(dashboard).run()
         ```
 
@@ -630,3 +628,6 @@ An example use would be to specify a fixed `Card` height and width. For this, yo
 [cardstyle]: ../../assets/user_guides/components/cardstyle.png
 [cardtext]: ../../assets/user_guides/components/card_text.png
 [navcard]: ../../assets/user_guides/components/nav_card.png
+[card]: ../../assets/user_guides/components/card.png
+[cardimagestyled]: ../../assets/user_guides/components/card_image_styled.png
+[cardimagefloating]: ../../assets/user_guides/components/card_image_floating.png
