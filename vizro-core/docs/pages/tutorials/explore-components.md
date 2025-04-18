@@ -121,7 +121,6 @@ Take a moment to explore the data in the table. You can sort, filter, and search
 
 You'll notice a toggle in the top-right corner of the dashboard, enabling you to switch between dark and light themes. Try it out!
 
-
 ### 3.2. Add an `export data` button
 
 Next, you'll add a button that lets users export the data currently shown in your dashboard.
@@ -176,23 +175,19 @@ Follow these steps to add an export data button:
 
         [![FirstPageButton]][firstpagebutton]
 
-
 **Click on the Button and see what happens! 📂**
 
 ### 3.3. Configure the layout
 
 Right now, you might notice extra blank space below the button. In this step, you’ll learn how to improve the layout by arranging components more efficiently.
 
-Vizro supports two layout models: [`Grid`][vizro.models.Grid] and [`Flex`][vizro.models.Flex].  
-To understand the differences between them, check out our [guide on layouts](../user-guides/layouts.md#layout-options-grid-and-flex).
+Vizro supports two layout models: [`Grid`][vizro.models.Grid] and [`Flex`][vizro.models.Flex]. To understand the differences between them, check out our [guide on layouts](../user-guides/layouts.md#layout-options-grid-and-flex).
 
-By default, Vizro uses the `Grid` layout, which arranges components in the order they appear inside `components` and gives them equal space. 
-However, in our case, we want the `Button` and `Table` to only take up the space they need — not equal space.
+By default, Vizro uses the `Grid` layout, which arranges components in the order they appear inside `components` and gives them equal space. However, in our case, we want the `Button` and `Table` to only take up the space they need — not equal space.
 
 To achieve this, we'll switch to the `Flex` layout:
 
 1. In the `layout` argument of the `Page`, use the [`Flex`][vizro.models.Flex] layout model via `layout = vm.Flex()`
-
 
 !!! example "Use flex layout"
 
@@ -235,7 +230,7 @@ To achieve this, we'll switch to the `Flex` layout:
 
     === "Result"
 
-        [![FirstPageLayout]][firstpagelayout]
+        \[![FirstPageLayout]\][firstpagelayout]
 
 **Looks much better already! Great job - you've successfully created a first dashboard page!**
 
@@ -532,7 +527,7 @@ As you explore the dashboard, you might notice that the current layout could use
 
 ### 4.4. Configure the layout
 
-In this section, you'll customize the [`Grid`][vizro.models.Grid] to control the placement and size of components on the page. 
+In this section, you'll customize the [`Grid`][vizro.models.Grid] to control the placement and size of components on the page.
 
 In the following layout configuration, the layout is divided into **four columns** and **four rows**. The numbers in the grid correspond to the index of the components in the `components` list.
 
