@@ -1,5 +1,6 @@
-# Keep this import at the top to avoid circular imports since it's used in every model.
+# Keep these imports at the top to avoid circular imports since they're used in other models.
 from ._base import VizroBaseModel  # noqa: I001
+from ._tooltip import Tooltip
 from ._action import Action
 from ._components import Card, Container, Graph, Text, Table, Tabs, Figure
 from ._components import AgGrid
@@ -42,6 +43,7 @@ __all__ = [
     "Table",
     "Tabs",
     "Text",
+    "Tooltip",
     "VizroBaseModel",
 ]
 

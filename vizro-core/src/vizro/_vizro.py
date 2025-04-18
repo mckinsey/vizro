@@ -115,7 +115,7 @@ class Vizro:
         bootstrap_theme = dashboard.theme.removeprefix("vizro_")
         self.dash.index_string = self.dash.index_string.replace("<html>", f"<html data-bs-theme='{bootstrap_theme}'>")
 
-        # Note Dash.index uses self.dash.title instead of self.dash.app.config.title.
+        # Note Dash.index uses self.dash.title instead of self.dash.config.title for backwards compatibility.
         if dashboard.title:
             self.dash.title = dashboard.title
         return self
