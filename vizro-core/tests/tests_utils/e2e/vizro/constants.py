@@ -159,6 +159,23 @@ LAYOUT_FLEX_WRAP_AND_AG_GRID = "flex-wrap-and-ag_grid"
 BUTTONS_PAGE = "buttons-with-different-styles"
 
 EXTRAS_PAGE = "extras-page"
+DROPDOWN_TOOLTIP_TEXT = "Dropdown tooltip with extra parameters if you like!"
+DROPDOWN_TOOLTIP_ICON = "progress_activity"
+RADIOITEMS_TOOLTIP_TEXT = "Simple description tooltip for RadioItems, is it ok?"
+RADIOITEMS_TOOLTIP_ICON = "info"
+CHECKLIST_TOOLTIP_TEXT = (
+    "Checklist tooltip without extra parameters multiple times. "
+    "Checklist tooltip without extra parameters multiple times. "
+    "Checklist tooltip without extra parameters multiple times. "
+    "Checklist tooltip without extra parameters multiple times."
+)
+CHECKLIST_TOOLTIP_ICON = "stat_0"
+SLIDER_TOOLTIP_TEXT = "Tooltip again, this time for slider"
+SLIDER_TOOLTIP_ICON = "sync_arrow_down"
+RANGESLIDER_TOOLTIP_TEXT = "Range Slider deserves proper text here, in future, and proper icon"
+RANGESLIDER_TOOLTIP_ICON = "rebase"
+DATEPICKER_TOOLTIP_TEXT = "Datepicker, show me your tooltip, please!"
+DATEPICKER_TOOLTIP_ICON = "deployed_code"
 
 COLLAPSIBLE_CONTAINERS_GRID = "collapsible-containers-grid-layout"
 
