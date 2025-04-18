@@ -56,7 +56,6 @@ To enable downloading data, you can add the [`export_data`][vizro.actions.export
         )
 
         dashboard = vm.Dashboard(pages=[page])
-
         Vizro().build(dashboard).run()
         ```
 
@@ -363,7 +362,6 @@ The `actions` parameter for the different screen components accepts a `list` of 
         )
 
         dashboard = vm.Dashboard(pages=[page])
-
         Vizro().build(dashboard).run()
         ```
 

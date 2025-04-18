@@ -43,13 +43,12 @@ To create and add a page to your dashboard, do the following steps:
                 )
             ],
             controls=[
-                vm.Filter(column="continent", targets=["sunburst"]),
+                vm.Filter(column="continent"),
                 vm.Parameter(targets=["sunburst.color"], selector=vm.RadioItems(options=["lifeExp", "pop"], title="Color")),
             ],
         )
 
         dashboard = vm.Dashboard(pages=[page])
-
         Vizro().build(dashboard).run()
         ```
 
@@ -70,7 +69,6 @@ To create and add a page to your dashboard, do the following steps:
                 type: graph
             controls:
               - column: continent
-                targets: [sunburst]
                 type: filter
               - selector:
                   options: [lifeExp, pop]
@@ -129,13 +127,12 @@ To customize the page URL, pass a valid URL name to the `path` argument of [`Pag
                 )
             ],
             controls=[
-                vm.Filter(column="continent", targets=["sunburst"]),
+                vm.Filter(column="continent"),
                 vm.Parameter(targets=["sunburst.color"], selector=vm.RadioItems(options=["lifeExp", "pop"], title="Color")),
             ],
         )
 
         dashboard = vm.Dashboard(pages=[page1, page2])
-
         Vizro().build(dashboard).run()
         ```
 
@@ -161,7 +158,6 @@ To customize the page URL, pass a valid URL name to the `path` argument of [`Pag
                 type: graph
             controls:
               - column: continent
-                targets: [sunburst]
                 type: filter
               - selector:
                   options: [lifeExp, pop]

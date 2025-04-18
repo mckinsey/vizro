@@ -37,7 +37,6 @@ You can also set `targets` to specify which components on the page the filter sh
         )
 
         dashboard = vm.Dashboard(pages=[page])
-
         Vizro().build(dashboard).run()
         ```
 
@@ -108,7 +107,6 @@ The following example demonstrates these default selector types.
         )
 
         dashboard = vm.Dashboard(pages=[page])
-
         Vizro().build(dashboard).run()
         ```
 
@@ -166,7 +164,6 @@ If you want to have a different selector for your filter, you can give the `sele
         )
 
         dashboard = vm.Dashboard(pages=[page])
-
         Vizro().build(dashboard).run()
         ```
 
@@ -227,7 +224,6 @@ Below is an advanced example where we only target one page component, and where 
         )
 
         dashboard = vm.Dashboard(pages=[page])
-
         Vizro().build(dashboard).run()
         ```
 

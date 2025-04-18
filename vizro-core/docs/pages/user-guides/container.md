@@ -105,7 +105,6 @@ To add a [`Container`][vizro.models.Container] to your page, do the following:
         )
 
         dashboard = vm.Dashboard(pages=[page])
-
         Vizro().build(dashboard).run()
         ```
 

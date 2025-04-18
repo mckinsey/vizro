@@ -76,7 +76,6 @@ The example below demonstrates how to configure a button to export the filtered 
             layout=vm.Flex(),  # (1)!
             components=[
                 vm.Graph(
-                    id="scatter_chart",
                     figure=px.scatter(
                         df,
                         x="sepal_width",
@@ -87,7 +86,7 @@ The example below demonstrates how to configure a button to export the filtered 
                 ),
                 vm.Button(
                     text="Export data",
-                    actions=[vm.Action(function=export_data(targets=["scatter_chart"]))],
+                    actions=[vm.Action(function=export_data())],
                 ),
             ]
         )
@@ -112,7 +111,6 @@ The example below demonstrates how to configure a button to export the filtered 
                   color: species
                   size: petal_length
                   data_frame: iris
-                id: scatter_chart
                 type: graph
               - type: button
                 text: Export data
@@ -120,8 +118,6 @@ The example below demonstrates how to configure a button to export the filtered 
                 actions:
                   - function:
                       _target_: export_data
-                      targets:
-                        - scatter_chart
             layout:
               type: flex
             title: My first page

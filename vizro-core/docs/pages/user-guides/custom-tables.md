@@ -69,8 +69,8 @@ The following examples show a possible version of a custom table. In this case t
                 )
             ],
         )
-        dashboard = vm.Dashboard(pages=[page])
 
+        dashboard = vm.Dashboard(pages=[page])
         Vizro().build(dashboard).run()
         ```
 
@@ -137,8 +137,8 @@ The following examples show a possible version of a custom table. In this case t
                 )
             ],
         )
-        dashboard = vm.Dashboard(pages=[page])
 
+        dashboard = vm.Dashboard(pages=[page])
         Vizro().build(dashboard).run()
         ```
 

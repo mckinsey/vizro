@@ -128,7 +128,6 @@ vm.Parameter.add_type("selector", TooltipNonCrossRangeSlider)
         )
 
         dashboard = vm.Dashboard(pages=[page])
-
         Vizro().build(dashboard).run()
         ```
 
@@ -246,7 +245,6 @@ vm.Page.add_type("components", Jumbotron)
         )
 
         dashboard = vm.Dashboard(pages=[page])
-
         Vizro().build(dashboard).run()
 
         ```
@@ -374,7 +372,6 @@ Add the custom action `open_offcanvas` as a `function` argument inside the [`Act
         )
 
         dashboard = vm.Dashboard(pages=[page])
-
         Vizro().build(dashboard).run()
 
         ```
@@ -475,7 +472,6 @@ As mentioned above, custom components can trigger actions. To enable the custom 
         )
 
         dashboard = vm.Dashboard(pages=[page])
-
         Vizro().build(dashboard).run()
         ```
         <img src=https://py.cafe/logo.png alt="PyCafe logo" width="30"><b><a target="_blank" href="https://py.cafe/vizro-official/vizro-custom-carousel-component">Run and edit this code in PyCafe</a></b>

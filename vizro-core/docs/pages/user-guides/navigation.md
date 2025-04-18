@@ -123,7 +123,6 @@ To include only some of your dashboard pages in your navigation then list them i
         dashboard = vm.Dashboard(
             pages=[page_1, page_2, page_3], navigation=vm.Navigation(pages=["My first page", "My second page"])
         )
-
         Vizro().build(dashboard).run()
         ```
 

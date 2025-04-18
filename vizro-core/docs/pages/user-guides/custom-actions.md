@@ -56,7 +56,6 @@ The following example shows how to create a custom action that postpones executi
         )
 
         dashboard = vm.Dashboard(pages=[page])
-
         Vizro().build(dashboard).run()
         ```
 
@@ -168,6 +167,7 @@ The following example shows how to create a custom action that shows the `clickD
                 vm.Card(id="my_card", text="Click on a point on the above graph."),
             ],
         )
+
         dashboard = vm.Dashboard(pages=[page])
         Vizro().build(dashboard).run()
         ```
@@ -242,7 +242,6 @@ The return value of the custom action function is propagated to the dashboard co
         )
 
         dashboard = vm.Dashboard(pages=[page])
-
         Vizro().build(dashboard).run()
         ```
 

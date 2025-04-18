@@ -30,7 +30,6 @@ You can add a [`Text`][vizro.models.Text] component to your dashboard by inserti
         )
 
         dashboard = vm.Dashboard(pages=[page])
-
         Vizro().build(dashboard).run()
         ```
 
@@ -116,7 +115,6 @@ The [`Text`][vizro.models.Text] uses the `dcc.Markdown` component from Dash as i
         )
 
         dashboard = vm.Dashboard(pages=[page])
-
         Vizro().build(dashboard).run()
         ```
 
@@ -208,7 +206,6 @@ An example use would be to set `mathjax=True` (defaults to `False`) to display m
         )
 
         dashboard = vm.Dashboard(pages=[page])
-
         Vizro().build(dashboard).run()
         ```
 

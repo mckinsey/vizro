@@ -81,8 +81,8 @@ The below examples shows a case where we enhance an existing `plotly.express` ch
                 ),
             ],
         )
-        dashboard = vm.Dashboard(pages=[page_0])
 
+        dashboard = vm.Dashboard(pages=[page_0])
         Vizro().build(dashboard).run()
         ```
 
@@ -156,8 +156,8 @@ The below examples shows a more involved use-case. We create and style a waterfa
                 vm.Filter(column="x", selector=vm.Dropdown(title="Financial categories", multi=True)),
             ],
         )
-        dashboard = vm.Dashboard(pages=[page_0])
 
+        dashboard = vm.Dashboard(pages=[page_0])
         Vizro().build(dashboard).run()
         ```
 

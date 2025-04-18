@@ -29,7 +29,6 @@ The [`Dashboard`][vizro.models.Dashboard] model accepts an optional `theme` argu
         )
 
         dashboard = vm.Dashboard(pages=[page], theme="vizro_light")
-
         Vizro().build(dashboard).run()
         ```
 
