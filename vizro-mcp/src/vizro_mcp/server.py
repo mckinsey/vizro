@@ -1,0 +1,299 @@
+"""MCP server for Vizro-AI chart creation best practices."""
+
+import json
+import re
+from pathlib import Path
+from typing import Any, Literal
+
+import pandas as pd
+import requests
+import vizro.models as vm
+from mcp.server.fastmcp import FastMCP
+from pydantic import ValidationError
+from vizro import Vizro
+
+from vizro_mcp.schemas.schemas import (
+    AgGridSchema,
+    ChartPlan,
+    GraphPX,
+    SimpleDashboard,
+    SimplePage,
+)
+from vizro_mcp.utils.utils import get_dataframe_info, get_python_code_and_preview_link
+
+# TODO: what do I need to do here, as things are already set up?
+mcp = FastMCP(
+    "MCP server for Vizro to help with chart and dashboard creation.",
+)
+
+
+@mcp.tool()
+def validate_model_config(
+    config: dict[str, Any], file_name: str, file_path_or_url: str, file_location_type: Literal["local", "remote"]
+) -> dict[str, Any]:
+    """Validate Vizro model configuration. Run WHENEVER you have a complete DASHBOARD configuration.
+
+    If successful, the tool will return the python code and, if it is a remote file, the py.cafe link to the chart.
+    ALWAYS offer the py.cafe link to the user as a preview of the chart, but as a hyperlink as the link is long.
+
+    Args:
+        config: Either a JSON string or a dictionary representing a Vizro model configuration
+        file_name: Name of the file to be loaded into the data_manager and used in the code, must be without extension
+            (e.g., 'iris', 'gapminder', 'tips')
+        file_path_or_url: String of file path or URL to be loaded into the data_manager
+        file_location_type: Literal["local", "remote"]
+
+    Returns:
+        Dictionary with validation status and details
+    """
+    try:
+        # Handle input as either string or dictionary
+        if isinstance(config, str):
+            try:
+                model_config = json.loads(config)
+            except json.JSONDecodeError as e:
+                return {"valid": False, "error": f"Invalid JSON: {e!s}"}
+        elif hasattr(config, "items"):  # Check if it's dict-like
+            model_config = config
+        else:
+            return {"valid": False, "error": f"Invalid input type: {type(config)}. Expected string or dictionary."}
+
+        # Reset Vizro state before instantiation
+        Vizro._reset()
+
+        # Attempt to instantiate a Vizro model with the configuration
+        dashboard = vm.Dashboard(**model_config)
+
+        result = get_python_code_and_preview_link(dashboard, file_name, file_path_or_url)
+
+        # Get the result before resetting
+        result = {
+            "valid": True,
+            "message": "Configuration is valid for Dashboard!",
+            "python_code": result["python_code"],
+            "pycafe_url": result["pycafe_url"] if file_location_type == "remote" else None,
+        }
+
+        return result
+
+    except ValidationError as e:
+        # Handle Pydantic validation errors
+        return {"valid": False, "error": f"Validation Error: {e!s}"}
+    except Exception as e:
+        # Handle other exceptions
+        return {"valid": False, "error": f"Error: {e!s}"}
+    finally:
+        # Always reset, regardless of success or failure
+        Vizro._reset()
+
+
+@mcp.tool()
+def get_model_JSON_schema(model_name: str) -> dict[str, Any]:
+    """Get the JSON schema for the specified Vizro model.
+
+    Args:
+        model_name: Name of the Vizro model to get schema for (e.g., 'Card', 'Dashboard', 'Page')
+
+    Returns:
+        JSON schema of the requested Vizro model
+    """
+    if model_name == "Page":
+        return SimplePage.model_json_schema()
+    elif model_name == "Dashboard":
+        return SimpleDashboard.model_json_schema()
+    elif model_name == "Graph":
+        return GraphPX.model_json_schema()
+    elif model_name == "AgGrid":
+        return AgGridSchema.model_json_schema()
+    # Get the model class from the vizro.models namespace
+    if not hasattr(vm, model_name):
+        return {"error": f"Model '{model_name}' not found in vizro.models"}
+
+    model_class = getattr(vm, model_name)
+
+    # Get the JSON schema from the model
+    schema = model_class.model_json_schema()
+    return schema
+
+
+@mcp.tool()
+def get_overview_vizro_models() -> dict[str, list[dict[str, str]]]:
+    """Get all available models in the vizro.models namespace.
+
+    Returns:
+        Dictionary with categories of models and their descriptions
+    """
+    # Define the models we want to expose, grouped by category
+    model_groups: dict[str, list[type[vm.VizroBaseModel]]] = {
+        "components": [vm.Card, vm.Button, vm.Text, vm.Container, vm.Tabs, vm.Graph, vm.AgGrid],
+        "layouts": [vm.Grid, vm.Flex],
+        "controls": [vm.Filter, vm.Parameter],
+        "selectors": [vm.Dropdown, vm.RadioItems, vm.Checklist, vm.DatePicker, vm.Slider, vm.RangeSlider],
+        "navigation": [vm.Navigation, vm.NavBar, vm.NavLink],
+    }
+
+    # Convert the model_groups dict to a dict with just names and descriptions
+    result = {}
+    for category, models_list in model_groups.items():
+        result[category] = [
+            {
+                "name": model_class.__name__,
+                "description": (model_class.__doc__ or "No description available").split("\n")[0]
+                if model_class.__doc__
+                else "No description",
+            }
+            for model_class in models_list
+        ]
+
+    return result
+
+
+@mcp.tool()
+def get_vizro_chart_or_dashboard_plan(plan: Literal["chart", "dashboard"]) -> str:
+    """Get instructions for creating a Vizro chart or dashboard. Call FIRST when asked to create Vizro things."""
+    if plan == "chart":
+        return """
+Instructions for create a Vizro chart:
+    - analyze the datasets needed for the chart using the load_and_analyze_csv tool - the most important
+        information here are the column names and column types
+    - always return code for a plotly express chart, pay attention to the columns you have available
+    - do NOT call any other tool after, especially do NOT create a dashboard
+            """
+    elif plan == "dashboard":
+        return """
+Instructions for create a Vizro dashboard:
+    - analyze the datasets needed for the dashboard using the load_and_analyze_csv tool - the most
+        important information here are the column names and column types
+    - call the get_overview_vizro_models tool to get an overview of the available models
+    - make a plan of what components you would like to use, you need to decide on a layout and components per page
+    then request any necessary schema using the get_model_JSON_schema tool
+    - assemble your components into a page, then add the page or pages to a dashboard
+    - validate the dashboard configuration using the validate_model_config tool use `Dashboard` as the model name
+    - call the validated_config_to_python_code tool to convert the dashboard configuration to Python code
+    - if you display any code artifact, you must use the above created code
+
+
+    IMPORTANT:
+    - if you iterate over a valid produced solution, make sure to go ALWAYS via the validation step again to
+        ensure the solution is valid
+    """
+
+
+@mcp.tool(
+    name="load_and_analyze_csv",
+    description="Load a CSV file from a local path or GitHub URL into a pandas DataFrame and analyze its structure.",
+)
+def load_and_analyze_csv(path_or_url: str) -> dict[str, Any]:
+    """Load a CSV file from a local path or GitHub URL into a pandas DataFrame and analyze its structure.
+
+    Args:
+        path_or_url: Local file path or GitHub URL to a CSV file
+
+    Returns:
+        Dictionary containing DataFrame information and summary
+    """
+    try:
+        # Check if input is a GitHub URL
+        github_pattern = r"https?://(?:www\.)?github\.com/([^/]+)/([^/]+)/(?:blob|raw)/([^/]+)/(.+\.csv)"
+        github_match = re.match(github_pattern, path_or_url)
+
+        if github_match:
+            # Convert GitHub URL to raw URL
+            user, repo, branch, file_path = github_match.groups()
+            raw_url = f"https://raw.githubusercontent.com/{user}/{repo}/{branch}/{file_path}"
+
+            try:
+                # Directly use pandas read_csv with the URL
+                df = pd.read_csv(
+                    raw_url,
+                    # Add error handling for common CSV issues
+                    on_bad_lines="warn",
+                    low_memory=False,
+                )
+                return {"success": True, "data": get_dataframe_info(df, raw_url)}
+            except requests.exceptions.RequestException as e:
+                return {"success": False, "error": f"Failed to fetch file: {e!s}"}
+
+        # Check if input is a valid local file
+        path = Path(path_or_url)
+        if path.exists():
+            # Consistent options for both local and remote files
+            df = pd.read_csv(path, on_bad_lines="warn", low_memory=False)
+            return {"success": True, "data": get_dataframe_info(df, path)}
+
+        else:
+            return {
+                "success": False,
+                "error": f"Invalid input: '{path_or_url}' is neither a valid local file nor a GitHub URL",
+            }
+
+    except pd.errors.ParserError as e:
+        # Handle CSV parsing errors specifically
+        return {"success": False, "error": f"Error parsing CSV file: {e!s}"}
+    except requests.exceptions.RequestException as e:
+        # Handle network-related errors
+        return {"success": False, "error": f"Network error when fetching file: {e!s}"}
+
+
+@mcp.prompt(
+    name="create_EDA_dashboard",
+    description="Prompt template for creating an EDA dashboard based on one CSV dataset",
+)
+def create_EDA_dashboard(
+    file_path_or_url: str,
+) -> str:
+    """Prompt template for creating an EDA dashboard based on one CSV dataset."""
+    content = f"""
+Create an EDA dashboard based on the following dataset:{file_path_or_url}. Proceed as follows:
+1. Analyze the data using the load_and_analyze_csv tool first, passing the file path or github url {file_path_or_url}
+    to the tool.
+2. Create a dashboard with 3 pages:
+    - Page 1: Summary of the dataset using the Card component and the dataset itself using the plain AgGrid component.
+    - Page 2: Visualizing the distribution of all numeric columns using the Graph component with a histogram.
+        - use a Parameter that targets the Graph component and the x argument, and you can select the column to
+            be displayed
+        - IMPORTANT:remember that you target the chart like: <graph_id>.x and NOT <graph_id>.figure.x
+        - do not use any color schemes etc.
+        - add filters for all categorical columns
+    - Page 3: Visualizing the correlation between all numeric columns using the Graph component with a scatter plot.
+    - Page 4: Two interesting charts side by side, use the Graph component for this. Make sure they look goog
+        but do not try something beyond the scope of plotly express
+            """
+    return content
+
+
+################# Chart functionality - not sure if I should include this in the MCP server
+
+
+@mcp.tool(name="get_validated_chart_code", description="Validates code created for a chart")
+def get_validated_chart_code(chart_plan: dict[str, Any]) -> str:
+    """Validate the chart code created by the user."""
+    try:
+        chart_plan_obj = ChartPlan(**chart_plan)
+        return chart_plan_obj.model_dump_json()
+    except ValidationError as e:
+        return json.dumps({"error": f"Validation Error: {e!s}"})
+
+
+@mcp.prompt(
+    name="create_vizro_chart",
+    description="Prompt template for creating a Vizro chart",
+)
+def create_vizro_chart(
+    chart_type: str,
+    file_path_or_url: str,
+) -> str:
+    """Prompt template for creating a Vizro chart."""
+    content = f"""
+Create a chart using the following chart type:
+{chart_type}.
+Make sure to analyze the data using the load_and_analyze_csv tool first, passing the file path or github url
+{file_path_or_url} to the tool. Then make sure to use the get_validated_chart_code tool to validate the chart code.
+            """
+    return content
+
+
+###########################
+
+if __name__ == "__main__":
+    mcp.run()
