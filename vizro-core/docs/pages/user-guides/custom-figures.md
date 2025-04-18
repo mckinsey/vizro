@@ -66,7 +66,7 @@ For instance, to make a KPI card with the icon positioned on the right side of t
 
             header = dbc.CardHeader(
                     [
-                        
+
                         html.H4(title, className="card-kpi-title"),
                         html.P(icon, className="material-symbols-outlined") if icon else None,  # (3)!
                     ]
