@@ -750,7 +750,7 @@ Each item within the `Flex` layout is wrapped in a `<div class="flex-item">`, wh
         dashboard = vm.Dashboard(pages=[page])
         ```
 
-        <img src=https://py.cafe/logo.png alt="PyCafe logo" width="30"><b><a target="_blank" href="https://py.cafe/vizro-official/vizro-custom-card-styling">Run and edit this code in PyCafe</a></b>
+        <img src=https://py.cafe/logo.png alt="PyCafe logo" width="30"><b><a target="_blank" href="https://py.cafe/vizro-official/flex-items-cards-width">Run and edit this code in PyCafe</a></b>
 
     === "Result"
 

@@ -54,7 +54,7 @@ You can provide a string to use the default info icon, or pass a custom [`Toolti
 
     === "app.py"
 
-        ```{.python pycafe-link hl_lines="19"}
+        ```{.python pycafe-link hl_lines="19-24"}
         import vizro.models as vm
         import vizro.plotly.express as px
         from vizro import Vizro

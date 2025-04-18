@@ -37,7 +37,6 @@ You can also set `targets` to specify which components on the page the filter sh
         )
 
         dashboard = vm.Dashboard(pages=[page])
-
         Vizro().build(dashboard).run()
         ```
 
@@ -108,7 +107,6 @@ The following example demonstrates these default selector types.
         )
 
         dashboard = vm.Dashboard(pages=[page])
-
         Vizro().build(dashboard).run()
         ```
 
@@ -138,7 +136,7 @@ The following example demonstrates these default selector types.
 
     === "Result"
 
-        [![Filter]][filter]
+        [![FilterDefault]][filterdefault]
 
 ## Change selector
 
@@ -166,7 +164,6 @@ If you want to have a different selector for your filter, you can give the `sele
         )
 
         dashboard = vm.Dashboard(pages=[page])
-
         Vizro().build(dashboard).run()
         ```
 
@@ -227,7 +224,6 @@ Below is an advanced example where we only target one page component, and where 
         )
 
         dashboard = vm.Dashboard(pages=[page])
-
         Vizro().build(dashboard).run()
         ```
 
@@ -272,4 +268,5 @@ To further customize selectors, see our [how-to-guide on creating custom compone
 
 [advanced]: ../../assets/user_guides/control/control3.png
 [filter]: ../../assets/user_guides/control/control1.png
+[filterdefault]: ../../assets/user_guides/control/controls_defaults.png
 [selector]: ../../assets/user_guides/control/control2.png

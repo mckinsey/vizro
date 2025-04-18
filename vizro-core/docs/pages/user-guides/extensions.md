@@ -74,7 +74,6 @@ Here is an example showing a Dash callback within Vizro, enabling an interaction
         )
 
         dashboard = vm.Dashboard(pages=[page])
-
         Vizro().build(dashboard).run()
         ```
 
