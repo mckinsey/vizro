@@ -437,13 +437,7 @@ import vizro.actions as va
 model = vm.Page(
     components=[
         vm.Graph(figure=px.bar(data_frame="iris", x="sepal_width", y="sepal_length")),
-        vm.Button(
-            text="Export data",
-            actions=[
-                vm.Action(function=va.export_data()),
-                vm.Action(function=va.export_data()),
-            ],
-        ),
+        vm.Button(text="Export data", actions=[va.export_data(), va.export_data()]),
     ],
     title="Page 1",
 )
@@ -520,11 +514,7 @@ model = vm.Dashboard(
                 vm.Graph(figure=chart(data_frame="iris")),
                 vm.AgGrid(figure=vt.dash_ag_grid(data_frame="iris")),
                 vm.Button(
-                    text="Export data",
-                    actions=[
-                        vm.Action(function=va.export_data()),
-                        vm.Action(function=va.export_data()),
-                    ],
+                    text="Export data", actions=[va.export_data(), va.export_data()]
                 ),
             ],
             title="Page 1",
@@ -576,7 +566,6 @@ class TestPydanticPython:
         assert "def chart(data_frame, hover_data: Optional[list[str]] = None):" in result
         assert "def chart2(data_frame, hover_data: Optional[list[str]] = None):" in result
 
-    # TODO: Fix test
     def test_to_python_builtin_actions(self, page_builtin_actions):
         # Test if built-in actions are included correctly in output, ie no ActionsChain model
         result = page_builtin_actions._to_python()
@@ -597,7 +586,6 @@ class TestPydanticPython:
         result = card._to_python(extra_callable_defs={extra_callable})
         assert result == expected_code_with_extra_callable
 
-    # TODO: Fix test
     def test_to_python_complete_dashboard(self, complete_dashboard):
         # Test more complete and nested model
         result = complete_dashboard._to_python(extra_imports={"from typing import Optional"})

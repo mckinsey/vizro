@@ -156,6 +156,14 @@ LAYOUT_FLEX_GAP_AND_TABLE = "flex-gap-and-table"
 
 LAYOUT_FLEX_WRAP_AND_AG_GRID = "flex-wrap-and-ag_grid"
 
+BUTTONS_PAGE = "buttons-with-different-styles"
+
+EXTRAS_PAGE = "extras-page"
+
+COLLAPSIBLE_CONTAINERS_GRID = "collapsible-containers-grid-layout"
+
+COLLAPSIBLE_CONTAINERS_FLEX = "collapsible-containers-flex-layout"
+
 PAGE_404_PATH = "/404-page"
 
 # Accordion names

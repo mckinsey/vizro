@@ -319,7 +319,6 @@ Add the custom action `open_offcanvas` as a `function` argument inside the [`Act
         from dash import html
         from vizro import Vizro
 
-        from vizro.models import Action
         from vizro.models.types import capture
 
 
@@ -393,12 +392,12 @@ Add the custom action `open_offcanvas` as a `function` argument inside the [`Act
 
 As mentioned above, custom components can trigger actions. To enable the custom component to trigger the action, add the `actions` field and specify which property triggers the actions:
 
-1. **Add the `actions` argument to your custom component**. The type of the `actions` argument is `list[Action]`.
+1. **Add the `actions` argument to your custom component**. The type of the `actions` argument is `list[ActionType]`.
 2. **Set the action through `_action_validator_factory`**. In doing so, any change in the `"active_index"` property of the custom component triggers the action.
 
     ```py
     actions: Annotated[
-        list[Action],
+        list[ActionType],
         AfterValidator(_action_validator_factory("active_index")),
         PlainSerializer(lambda x: x[0].actions),
         Field(default=[]),
@@ -416,7 +415,7 @@ As mentioned above, custom components can trigger actions. To enable the custom 
         import vizro.models as vm
         from pydantic import AfterValidator, Field, PlainSerializer
         from vizro import Vizro
-        from vizro.models import Action
+        from vizro.models.types import ActionType
         from vizro.models._action._actions_chain import _action_validator_factory
         from vizro.models.types import capture
 
@@ -426,7 +425,7 @@ As mentioned above, custom components can trigger actions. To enable the custom 
             type: Literal["carousel"] = "carousel"
             items: list
             actions: Annotated[
-                list[Action],
+                list[ActionType],
                 # Here we set the action so a change in the active_index property of the custom component triggers the action
                 AfterValidator(_action_validator_factory("active_index")),
                 # Here we tell the serializer to only serialize the actions field

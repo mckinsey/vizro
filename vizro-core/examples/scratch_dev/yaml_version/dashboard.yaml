@@ -23,5 +23,4 @@ pages:
           - function:
               _target_: export_data
               targets: [histogram]
-              runtime_arg: export_data_button.n_clicks
     title: Exporting

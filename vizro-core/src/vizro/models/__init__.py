@@ -54,6 +54,8 @@ from vizro.actions._on_page_load import _on_page_load
 from vizro.actions._parameter_action import _parameter
 
 from ._action._actions_chain import ActionsChain
+from ._components.form._text_area import TextArea
+from ._components.form._user_input import UserInput
 
-for model in [*__all__, "ActionsChain"]:
+for model in [*__all__, "ActionsChain", "TextArea", "UserInput"]:
     globals()[model].model_rebuild()

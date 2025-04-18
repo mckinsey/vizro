@@ -25,7 +25,7 @@ df_gapminder = px.data.gapminder().query("year == 2007")
 
 page_1 = vm.Page(
     title="Built in actions",
-    layout=dict(grid=[[0, 1], [2, 3]]),
+    layout=vm.Grid(grid=[[0, 1], [2, 3]]),
     components=[
         # vm.Button(
         #     text="asdf",
@@ -144,7 +144,7 @@ df = px.data.iris()
 
 page_2 = vm.Page(
     title="Example of a custom action with UI inputs and outputs",
-    layout=vm.Layout(
+    layout=vm.Grid(
         grid=[
             [0, 0],
             [0, 0],
@@ -262,7 +262,7 @@ page_3 = vm.Page(
             selector=vm.Slider(id="slider_continent", min=0, max=df_gapminder.shape[0] - 1, step=1),
         )
     ],
-    layout=vm.Layout(
+    layout=vm.Grid(
         grid=[[0, 1], [0, 1], [2, 2], [3, 3]],
     ),
 )
