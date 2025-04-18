@@ -82,11 +82,9 @@ To add [`Tabs`][vizro.models.Tabs] to your page, do the following:
                     ],
                 ),
             ],
-            controls=[vm.Filter(column="continent")],
         )
 
         dashboard = vm.Dashboard(pages=[page])
-
         Vizro().build(dashboard).run()
         ```
 
@@ -130,9 +128,6 @@ To add [`Tabs`][vizro.models.Tabs] to your page, do the following:
                         y: lifeExp
                         size: pop
                         color: continent
-          controls:
-            - type: filter
-              column: continent
           title: Tabs
         ```
 
