@@ -65,7 +65,7 @@ To enable downloading data, you can add the [`export_data`][vizro.actions.export
 
         ```yaml
         # Still requires a .py to add data to the data manager and parse YAML configuration
-        # See from_yaml example
+        # See yaml_version example
         pages:
           - components:
               - figure:

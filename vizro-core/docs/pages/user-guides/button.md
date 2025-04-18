@@ -31,7 +31,7 @@ You can configure the `text` argument to alter the display text of the [`Button`
 
         ```yaml
         # Still requires a .py to add data to the data manager and parse YAML configuration
-        # See from_yaml example
+        # See yaml_version example
         pages:
           - components:
               - type: button
@@ -101,7 +101,7 @@ The example below demonstrates how to configure a button to export the filtered 
 
         ```yaml
         # Still requires a .py to add data to the data manager and parse YAML configuration
-        # See from_yaml example
+        # See yaml_version example
         pages:
           - components:
               - figure:

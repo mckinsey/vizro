@@ -78,7 +78,7 @@ To add a `Figure` to your page:
 
         ```yaml
         # Still requires a .py to add data to the data manager and parse YAML configuration
-        # See from_yaml example
+        # See yaml_version example
         pages:
           - components:
               - figure:
@@ -210,7 +210,7 @@ As described in the [API reference](../API-reference/figure-callables.md) and il
 
         ```yaml
         # Still requires a .py to add data to the data manager and parse YAML configuration
-        # See from_yaml example
+        # See yaml_version example
         pages:
           - components:
               - figure:

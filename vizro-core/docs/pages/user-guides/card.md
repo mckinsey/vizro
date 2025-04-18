@@ -44,7 +44,7 @@ You can add a [`Card`][vizro.models.Card] to your dashboard by inserting the [`C
 
     ```yaml
     # Still requires a .py to add data to the data manager and parse YAML configuration
-    # See from_yaml example
+    # See yaml_version example
     pages:
       - components:
           - text: |
@@ -149,7 +149,7 @@ The [`Card`][vizro.models.Card] uses the `dcc.Markdown` component from Dash as i
 
         ```yaml
         # Still requires a .py to add data to the data manager and parse YAML configuration
-        # See from_yaml example
+        # See yaml_version example
         pages:
           - components:
               - text: |
@@ -249,7 +249,7 @@ An image ALT text offers a description to your image and serves as a text placeh
 
         ```yaml
         # Still requires a .py to add data to the data manager and parse YAML configuration
-        # See from_yaml example
+        # See yaml_version example
         pages:
           - components:
               - text: |
@@ -333,7 +333,7 @@ Note the added URL hash `#my-image`. Now create a CSS file placed in your `asset
 
     ```yaml
     # Still requires a .py to add data to the data manager and parse YAML configuration
-    # See from_yaml example
+    # See yaml_version example
     pages:
       - components:
           - text: |
@@ -422,7 +422,7 @@ To float an image for example to the right of the text, use the `src` attribute 
 
     ```yaml
     # Still requires a .py to add data to the data manager and parse YAML configuration
-    # See from_yaml example
+    # See yaml_version example
     pages:
       - components:
           - text: |
@@ -530,7 +530,7 @@ To create a navigation card:
 
         ```yaml
         # Still requires a .py to add data to the data manager and parse YAML configuration
-        # See from_yaml example
+        # See yaml_version example
         pages:
           - components:
               - text: |

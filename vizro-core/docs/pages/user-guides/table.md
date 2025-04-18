@@ -56,7 +56,7 @@ The Vizro version of this AG Grid differs in one way from the original Dash AG G
 
         ```yaml
         # Still requires a .py to add data to the data manager and parse YAML configuration
-        # See from_yaml example
+        # See yaml_version example
         pages:
           - components:
               - figure:
@@ -99,7 +99,7 @@ Pagination is a visual alternative to using vertical scroll. It can also improve
 
         ```yaml
         # Still requires a .py to add data to the data manager and parse YAML configuration
-        # See from_yaml example
+        # See yaml_version example
         pages:
           - components:
               - figure:
@@ -167,7 +167,7 @@ In the example below we select and format some columns of the gapminder data.
 
         ```yaml
         # Still requires a .py to add data to the data manager and parse YAML configuration
-        # See from_yaml example
+        # See yaml_version example
         pages:
           - components:
               - figure:
@@ -277,7 +277,7 @@ As mentioned above, all [parameters of the Dash AG Grid](https://dash.plotly.com
 
         ```yaml
         # Still requires a .py to add data to the data manager and parse YAML configuration
-        # See from_yaml example
+        # See yaml_version example
         pages:
           - components:
               - figure:
