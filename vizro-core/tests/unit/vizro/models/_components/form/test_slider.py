@@ -16,7 +16,7 @@ def expected_slider():
             dcc.Store(id="slider_id_callback_data", data={"id": "slider_id", "min": 0.0, "max": 10.0}),
             html.Div(
                 [
-                    dbc.Label("Test title", html_for="slider_id"),
+                    dbc.Label(["Test title", None], html_for="slider_id"),
                     html.Div(
                         [
                             dcc.Input(
@@ -61,7 +61,7 @@ def expected_slider_extra():
             dcc.Store(id="slider_id_callback_data", data={"id": "slider_id", "min": 0.0, "max": 10.0}),
             html.Div(
                 [
-                    dbc.Label("Test title", html_for="slider_id"),
+                    dbc.Label(["Test title", None], html_for="slider_id"),
                     html.Div(
                         [
                             dcc.Input(
@@ -100,6 +100,60 @@ def expected_slider_extra():
     )
 
 
+@pytest.fixture()
+def expected_slider_with_description():
+    description = [
+        html.Span("info", id="info-icon", className="material-symbols-outlined tooltip-icon"),
+        dbc.Tooltip(
+            children=dcc.Markdown("Test description", className="card-text"),
+            id="info",
+            target="info-icon",
+            autohide=False,
+        ),
+    ]
+    return html.Div(
+        [
+            dcc.Store(id="slider_id_callback_data", data={"id": "slider_id", "min": 0.0, "max": 10.0}),
+            html.Div(
+                [
+                    dbc.Label(["Test title", *description], html_for="slider_id"),
+                    html.Div(
+                        [
+                            dcc.Input(
+                                id="slider_id_end_value",
+                                type="number",
+                                placeholder="max",
+                                min=0.0,
+                                max=10.0,
+                                step=1.0,
+                                value=5.0,
+                                persistence=True,
+                                persistence_type="session",
+                                className="slider-text-input-field",
+                            ),
+                            dcc.Store(id="slider_id_input_store", storage_type="session"),
+                        ],
+                        className="slider-text-input-container",
+                    ),
+                ],
+                className="slider-label-input",
+            ),
+            dcc.Slider(
+                id="slider_id",
+                min=0.0,
+                max=10.0,
+                step=1.0,
+                marks={},
+                value=5.0,
+                included=False,
+                persistence=True,
+                persistence_type="session",
+                className="slider-track-with-marks",
+            ),
+        ]
+    )
+
+
 class TestSliderInstantiation:
     """Tests model instantiation."""
 
@@ -114,6 +168,7 @@ class TestSliderInstantiation:
         assert slider.marks is None
         assert slider.value is None
         assert slider.title == ""
+        assert slider.description is None
         assert slider.actions == []
 
     @pytest.mark.parametrize("min, max", [(0, None), (None, 10), (0, 10)])
@@ -238,3 +293,16 @@ class TestBuildMethod:
         ).build()
 
         assert_component_equal(slider, expected_slider_extra)
+
+    def test_slider_build_with_description(self, expected_slider_with_description):
+        slider = vm.Slider(
+            id="slider_id",
+            min=0,
+            max=10,
+            step=1,
+            value=5,
+            title="Test title",
+            description=vm.Tooltip(text="Test description", icon="info", id="info"),
+        ).build()
+
+        assert_component_equal(slider, expected_slider_with_description)

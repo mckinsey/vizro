@@ -4,15 +4,16 @@ from typing import Annotated, Any, Literal, Optional, Union, cast
 
 import dash_bootstrap_components as dbc
 from dash import dcc, html
-from pydantic import AfterValidator, Field, PrivateAttr, StrictBool, ValidationInfo, model_validator
+from pydantic import AfterValidator, BeforeValidator, Field, PrivateAttr, StrictBool, ValidationInfo, model_validator
 from pydantic.functional_serializers import PlainSerializer
 from pydantic.json_schema import SkipJsonSchema
 
-from vizro.models import Action, VizroBaseModel
+from vizro.models import Tooltip, VizroBaseModel
 from vizro.models._action._actions_chain import _action_validator_factory
 from vizro.models._components.form._form_utils import get_options_and_default, validate_options_dict, validate_value
 from vizro.models._models_utils import _log_call
-from vizro.models.types import MultiValueType, OptionsDictType, OptionsType, SingleValueType
+from vizro.models._tooltip import coerce_str_to_tooltip
+from vizro.models.types import ActionType, MultiValueType, OptionsDictType, OptionsType, SingleValueType
 
 
 def _get_list_of_labels(full_options: OptionsType) -> Union[list[StrictBool], list[float], list[str], list[date]]:
@@ -71,13 +72,14 @@ class Dropdown(VizroBaseModel):
             [`MultiValueType`][vizro.models.types.MultiValueType]. Defaults to `None`.
         multi (bool): Whether to allow selection of multiple values. Defaults to `True`.
         title (str): Title to be displayed. Defaults to `""`.
-        actions (list[Action]): See [`Action`][vizro.models.Action]. Defaults to `[]`.
+        description (Optional[Tooltip]): Optional markdown string that adds an icon next to the title.
+            Hovering over the icon shows a tooltip with the provided description. Defaults to `None`.
+        actions (list[ActionType]): See [`ActionType`][vizro.models.types.ActionType]. Defaults to `[]`.
         extra (Optional[dict[str, Any]]): Extra keyword arguments that are passed to `dcc.Dropdown` and overwrite any
             defaults chosen by the Vizro team. This may have unexpected behavior.
             Visit the [dcc documentation](https://dash.plotly.com/dash-core-components/dropdown)
             to see all available arguments. [Not part of the official Vizro schema](../explanation/schema.md) and the
             underlying component may change in the future. Defaults to `{}`.
-
     """
 
     type: Literal["dropdown"] = "dropdown"
@@ -93,8 +95,19 @@ class Dropdown(VizroBaseModel):
         Field(default=True, description="Whether to allow selection of multiple values", validate_default=True),
     ]
     title: str = Field(default="", description="Title to be displayed")
+    # TODO: ideally description would have json_schema_input_type=Union[str, Tooltip] attached to the BeforeValidator,
+    #  but this requires pydantic >= 2.9.
+    description: Annotated[
+        Optional[Tooltip],
+        BeforeValidator(coerce_str_to_tooltip),
+        Field(
+            default=None,
+            description="""Optional markdown string that adds an icon next to the title.
+            Hovering over the icon shows a tooltip with the provided description. Defaults to `None`.""",
+        ),
+    ]
     actions: Annotated[
-        list[Action],
+        list[ActionType],
         AfterValidator(_action_validator_factory("value")),
         PlainSerializer(lambda x: x[0].actions),
         Field(default=[]),
@@ -127,6 +140,7 @@ class Dropdown(VizroBaseModel):
         full_options, default_value = get_options_and_default(options=options, multi=self.multi)
         option_height = _calculate_option_height(full_options)
         altered_options = _add_select_all_option(full_options=full_options) if self.multi else full_options
+        description = self.description.build().children if self.description else [None]
 
         defaults = {
             "id": self.id,
@@ -141,7 +155,7 @@ class Dropdown(VizroBaseModel):
 
         return html.Div(
             children=[
-                dbc.Label(self.title, html_for=self.id) if self.title else None,
+                dbc.Label([self.title, *description], html_for=self.id) if self.title else None,
                 dcc.Dropdown(**(defaults | self.extra)),
             ]
         )

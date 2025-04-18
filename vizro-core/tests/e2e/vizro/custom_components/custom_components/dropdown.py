@@ -4,9 +4,9 @@ from dash import dcc, html
 from pydantic import AfterValidator, Field, PlainSerializer, PrivateAttr
 
 import vizro.models as vm
-from vizro.models import Action
 from vizro.models._action._actions_chain import _action_validator_factory
 from vizro.models._base import VizroBaseModel, _log_call
+from vizro.models.types import ActionType
 
 # Entirely new component (actually exists, but for ease of explanation chosen)
 SingleOptionType = Union[bool, float, str]
@@ -23,7 +23,7 @@ class CustomDropdown(VizroBaseModel):
     )
     multi: bool = Field(default=True, description="Whether to allow selection of multiple values")
     actions: Annotated[
-        list[Action],
+        list[ActionType],
         AfterValidator(_action_validator_factory("value")),
         PlainSerializer(lambda x: x[0].actions),
         Field(default=[]),

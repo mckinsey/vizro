@@ -4,14 +4,13 @@ from typing import Annotated, Literal, cast
 from pydantic import AfterValidator, Field
 
 from vizro._constants import PARAMETER_ACTION_PREFIX
-from vizro.actions import _parameter
+from vizro.actions._parameter_action import _parameter
 from vizro.managers import model_manager
-from vizro.managers._model_manager import ModelID
-from vizro.models import Action, VizroBaseModel
+from vizro.models import VizroBaseModel
 from vizro.models._components.form import Checklist, DatePicker, Dropdown, RadioItems, RangeSlider, Slider
 from vizro.models._controls._controls_utils import check_targets_present_on_page
 from vizro.models._models_utils import _log_call
-from vizro.models.types import SelectorType
+from vizro.models.types import ModelID, SelectorType
 
 
 def check_dot_notation(target):
@@ -120,16 +119,12 @@ class Parameter(VizroBaseModel):
                 if figure_arg.startswith("data_frame"):
                     for filter in page_dynamic_filters:
                         if figure_id in filter.targets:
-                            filter_targets.add(cast(ModelID, filter.id))
+                            filter_targets.add(filter.id)
                             filter_targets |= set(filter.targets)
 
             # Extending `self.targets` with `filter_targets` instead of redefining it to avoid triggering the
             # pydantic validator like `check_dot_notation` on the `self.targets` again.
+            # We do the update to ensure that `self.targets` is consistent with the targets passed to `_parameter`.
             self.targets.extend(list(filter_targets))
 
-            # Ensure `Action.function["targets"]` remains consistent with `self.targets` by passing the updated
-            # `self.targets` directly to `_parameter`. This maintains synchronization between `self.targets` and
-            # `Action.function["targets"]`, preventing potential inconsistencies and confusion.
-            self.selector.actions = [
-                Action(id=f"{PARAMETER_ACTION_PREFIX}_{self.id}", function=_parameter(targets=self.targets))
-            ]
+            self.selector.actions = [_parameter(id=f"{PARAMETER_ACTION_PREFIX}_{self.id}", targets=self.targets)]

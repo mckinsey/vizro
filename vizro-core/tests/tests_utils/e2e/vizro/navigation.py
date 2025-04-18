@@ -3,17 +3,26 @@ import time
 from e2e.vizro import constants as cnst
 from e2e.vizro.checkers import check_accordion_active
 from e2e.vizro.paths import page_title_path, slider_handler_path, slider_value_path
+from selenium.webdriver import ActionChains
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support import expected_conditions
 from selenium.webdriver.support.wait import WebDriverWait
 
 
+def click_element_by_xpath_selenium(driver, xpath):
+    WebDriverWait(driver.driver, timeout=cnst.SELENIUM_WAITERS_TIMEOUT).until(
+        expected_conditions.element_to_be_clickable((By.XPATH, xpath))
+    ).click()
+
+
+def hover_over_element_by_xpath_selenium(driver, xpath):
+    ActionChains(driver.driver).move_to_element(driver.driver.find_element(By.XPATH, xpath)).perform()
+
+
 def accordion_select(driver, accordion_name):
     """Selecting accordion and checking if it is active."""
     accordion_name = accordion_name.upper()
-    WebDriverWait(driver.driver, timeout=cnst.SELENIUM_WAITERS_TIMEOUT).until(
-        expected_conditions.element_to_be_clickable((By.XPATH, f"//button[text()='{accordion_name}']"))
-    ).click()
+    click_element_by_xpath_selenium(driver, f"//button[text()='{accordion_name}']")
     check_accordion_active(driver, accordion_name)
     # to let accordion open
     time.sleep(1)

@@ -1,129 +1,66 @@
-"""Test app"""
+# Vizro is an open-source toolkit for creating modular data visualization applications.
+# check out https://github.com/mckinsey/vizro for more info about Vizro
+# and checkout https://vizro.readthedocs.io/en/stable/ for documentation.
 
 import vizro.plotly.express as px
 from vizro import Vizro
 import vizro.models as vm
 
-iris = px.data.iris()
+df = px.data.iris()
 
-page_home = vm.Page(
-    title="Homepage",
-    layout=vm.Grid(grid=[[0, 1], [2, 3]], row_gap="16px", col_gap="24px"),
+page = vm.Page(
+    title="Page with lots of extra information",
     components=[
-        vm.Card(
-            text="""
+        vm.Graph(id="scatter_chart", figure=px.scatter(df, x="sepal_length", y="petal_width", color="species")),
+    ],
+    controls=[
+        vm.Filter(
+            column="species",
+            selector=vm.Dropdown(
+                description="""
+                    Select which species of iris you like.
 
-                ### Components
-
-                Main components of Vizro include **charts**, **tables**, **cards**, **figures**, **containers**,
-                **buttons** and **tabs**.
-                """,
-            href="/page-one",
+                    [Click here](www.google.com) to learn more about flowers.""",
+                # You could also do this with vm.Tooltip(text=...)
+            ),
         ),
-        vm.Card(
-            text="""
-                ### Controls
+        vm.Filter(
+            column="species",
+            selector=vm.RadioItems(
+                description="""
+                    Select which species of iris you like.
 
-                Vizro has two different control types **Filter** and **Parameter**.
-
-                You can use any pre-existing selector inside the **Filter** or **Parameter**:
-
-                * Dropdown
-                * Checklist
-                * RadioItems
-                * RangeSlider
-                * Slider
-                * DatePicker
-                """,
-            href="/page-two",
+                    [Click here](www.google.com) to learn more about flowers.""",
+                # You could also do this with vm.Tooltip(text=...)
+            ),
         ),
-        vm.Card(
-            text="""
-                ### Actions
+        vm.Filter(
+            column="sepal_length",
+            selector=vm.RangeSlider(
+                description="""
+                    Select which species of iris you like.
 
-                Standard predefined actions are made available including **export data** and **filter interactions**.
-                """,
-            href="/page-one",
+                    [Click here](www.google.com) to learn more about flowers.""",
+                # You could also do this with vm.Tooltip(text=...)
+            ),
         ),
-        vm.Card(
-            text="""
-                ### Extensions
+        vm.Filter(
+            column="species",
+            selector=vm.Checklist(
+                description="""
+                    Select which species of iris you like.
 
-                Vizro enables customization of **plotly express** and **graph object charts** as well as
-                creating custom components based on Dash.
-            """,
-            href="/page-two",
+                    [Click here](www.google.com) to learn more about flowers.""",
+                # You could also do this with vm.Tooltip(text=...)
+            ),
         ),
     ],
 )
 
-page_one = vm.Page(
-    title="Default",
-    path="page-one",
-    components=[vm.Graph(figure=px.scatter(iris, x="sepal_length", y="petal_width", color="species"))],
-    controls=[vm.Filter(column="species"), vm.Filter(column="petal_length"), vm.Filter(column="sepal_width")],
+dashboard = vm.Dashboard(
+    pages=[page],
+    title="blah blah blah",
 )
-
-page_two = vm.Page(
-    title="Styled containers",
-    path="page-two",
-    layout=vm.Grid(grid=[[0, 1], [2, 3]]),
-    components=[
-        vm.Card(
-            text="""
-        ### Actions
-
-        Standard predefined actions are made available including **export data** and **filter interactions**.
-        """,
-            href="/page-one",
-        ),
-        vm.Card(
-            text="""
-        ### Actions
-
-        Standard predefined actions are made available including **export data** and **filter interactions**.
-        """,
-            href="/page-one",
-        ),
-        vm.Container(
-            title="Container - filled",
-            components=[vm.Graph(figure=px.scatter(iris, x="sepal_length", y="petal_width", color="species"))],
-            variant="filled",
-        ),
-        vm.Container(
-            title="Container - outlined",
-            components=[vm.Graph(figure=px.scatter(iris, x="sepal_length", y="petal_width", color="species"))],
-            variant="outlined",
-        ),
-    ],
-    controls=[vm.Filter(column="species"), vm.Filter(column="petal_length")],
-)
-
-page_four = vm.Page(
-    title="Card with Graph",
-    components=[
-        vm.Card(
-            text="""
-        ### Actions
-
-        Standard predefined actions are made available including **export data** and **filter interactions**.
-        """,
-            href="/page-one",
-        ),
-        vm.Card(
-            text="""
-        ### Actions
-
-        Standard predefined actions are made available including **export data** and **filter interactions**.
-        """,
-            href="/page-one",
-        ),
-        vm.Graph(figure=px.scatter(iris, x="sepal_length", y="petal_width", color="species")),
-    ],
-    controls=[vm.Filter(column="species"), vm.Filter(column="petal_length")],
-)
-
-dashboard = vm.Dashboard(pages=[page_home, page_one, page_two, page_four], title="Dashboard Title")
 
 if __name__ == "__main__":
     Vizro().build(dashboard).run()
