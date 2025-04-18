@@ -171,31 +171,32 @@ There are three predefined button styles that can be customized using the `varia
 
         1. We use a [`Flex`][vizro.models.Flex] layout with `direction="row"` to ensure the `Button` components are placed side by side and only take up as much space as needed.
 
+````
+=== "app.yaml"
 
-    === "app.yaml"
+    ```yaml
+    # Still requires a .py to add data to the data manager and parse YAML configuration
+    # See yaml_version example
+    pages:
+      - title: Buttons with different styles
+        layout:
+          direction: row
+          type: flex
+        components:
+          - type: button
+            text: filled
+          - type: button
+            text: outlined
+            variant: outlined
+          - type: button
+            text: plain
+            variant: plain
+    ```
 
-        ```yaml
-        # Still requires a .py to add data to the data manager and parse YAML configuration
-        # See yaml_version example
-        pages:
-          - title: Buttons with different styles
-            layout:
-              direction: row
-              type: flex
-            components:
-              - type: button
-                text: filled
-              - type: button
-                text: outlined
-                variant: outlined
-              - type: button
-                text: plain
-                variant: plain
-        ```
+=== "Result"
 
-    === "Result"
-
-        [![ButtonVariant]][buttonvariant]
+    [![ButtonVariant]][buttonvariant]
+````
 
 ## The `extra` argument
 
@@ -249,4 +250,3 @@ An example use would be to create an outlined success button. For this, you can 
 [button]: ../../assets/user_guides/components/button.png
 [buttonextra]: ../../assets/user_guides/components/button_style_extra.png
 [buttontext]: ../../assets/user_guides/components/button_text.png
-[buttonvariant]: ../../assets/user_guides/components/button_style_variants.png
