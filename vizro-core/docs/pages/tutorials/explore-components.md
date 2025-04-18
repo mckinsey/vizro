@@ -91,6 +91,7 @@ To start, let's get an overview of the data by displaying it in a table using [A
         from vizro.tables import dash_ag_grid
         from vizro.models.types import capture
         from vizro.figures import kpi_card
+        from vizro.actions import export_data
 
         tips = px.data.tips()
 
@@ -120,7 +121,123 @@ Take a moment to explore the data in the table. You can sort, filter, and search
 
 You'll notice a toggle in the top-right corner of the dashboard, enabling you to switch between dark and light themes. Try it out!
 
-**Great job! You've successfully created a first dashboard page!**
+
+### 3.2. Add an `export data` button
+
+Next, you'll add a button that lets users export the data currently shown in your dashboard.
+
+Vizro provides several built-in actions you can reuse. You can explore the full list in our [guide on built-in actions](../user-guides/actions.md#built-in-actions).
+
+Follow these steps to add an export data button:
+
+1. Add a [`Button`][vizro.models.Button] to the `components` list and set `text="Export Data"`.
+1. Use the `actions` argument of the `Button` to define an [`Action`][vizro.models.Button].
+1. Inside the [`Action`][vizro.models.Action], specify the built-in [`export_data`][vizro.actions.export_data] function.
+
+!!! example "Export Data Button"
+
+    === "Snippet - Button"
+
+        ```py
+        vm.Button(text="Export Data", actions=[vm.Action(function=export_data())])
+        ```
+
+    === "Code - Dashboard"
+
+        ```{.python pycafe-link hl_lines="20"}
+        import vizro.models as vm
+        import vizro.plotly.express as px
+        from vizro import Vizro
+        from vizro.tables import dash_ag_grid
+        from vizro.models.types import capture
+        from vizro.figures import kpi_card
+        from vizro.actions import export_data
+
+        tips = px.data.tips()
+
+        first_page = vm.Page(
+            title="Data",
+            components=[
+                vm.AgGrid(
+                    figure=dash_ag_grid(tips),
+                    footer="""**Data Source:** Bryant, P. G. and Smith, M. (1995).
+                    Practical Data Analysis: Case Studies in Business Statistics.
+                    Homewood, IL: Richard D. Irwin Publishing.""",
+                ),
+                vm.Button(text="Export Data", actions=[vm.Action(function=export_data())]),
+            ],
+        )
+
+        dashboard = vm.Dashboard(pages=[first_page])
+        Vizro().build(dashboard).run()
+        ```
+
+    === "Result"
+
+        [![FirstPageButton]][firstpagebutton]
+
+
+**Click on the Button and see what happens! 📂**
+
+### 3.3. Configure the layout
+
+Right now, you might notice extra blank space below the button. In this step, you’ll learn how to improve the layout by arranging components more efficiently.
+
+Vizro supports two layout models: [`Grid`][vizro.models.Grid] and [`Flex`][vizro.models.Flex].  
+To understand the differences between them, check out our [guide on layouts](../user-guides/layouts.md#layout-options-grid-and-flex).
+
+By default, Vizro uses the `Grid` layout, which arranges components in the order they appear inside `components` and gives them equal space. 
+However, in our case, we want the `Button` and `Table` to only take up the space they need — not equal space.
+
+To achieve this, we'll switch to the `Flex` layout:
+
+1. In the `layout` argument of the `Page`, use the [`Flex`][vizro.models.Flex] layout model via `layout = vm.Flex()`
+
+
+!!! example "Use flex layout"
+
+    === "Snippet - flex layout"
+
+        ```py
+        layout = vm.Flex()
+        ```
+
+    === "Code - Dashboard"
+
+        ```{.python pycafe-link hl_lines="13"}
+        import vizro.models as vm
+        import vizro.plotly.express as px
+        from vizro import Vizro
+        from vizro.tables import dash_ag_grid
+        from vizro.models.types import capture
+        from vizro.figures import kpi_card
+        from vizro.actions import export_data
+
+        tips = px.data.tips()
+
+        first_page = vm.Page(
+            title="Data",
+            layout=vm.Flex(),
+            components=[
+                vm.AgGrid(
+                    figure=dash_ag_grid(tips),
+                    footer="""**Data Source:** Bryant, P. G. and Smith, M. (1995).
+                    Practical Data Analysis: Case Studies in Business Statistics.
+                    Homewood, IL: Richard D. Irwin Publishing.""",
+                ),
+                vm.Button(text="Export Data", actions=[vm.Action(function=export_data())]),
+            ],
+        )
+
+        dashboard = vm.Dashboard(pages=[first_page])
+        Vizro().build(dashboard).run()
+        ```
+
+    === "Result"
+
+        [![FirstPageLayout]][firstpagelayout]
+
+**Looks much better already! Great job - you've successfully created a first dashboard page!**
 
 ## 4. Create a second page
 
@@ -161,6 +278,7 @@ Follow these steps to add a histogram to the page:
         from vizro.tables import dash_ag_grid
         from vizro.models.types import capture
         from vizro.figures import kpi_card
+        from vizro.actions import export_data
 
         tips = px.data.tips()
 
@@ -173,6 +291,7 @@ Follow these steps to add a histogram to the page:
                     Practical Data Analysis: Case Studies in Business Statistics.
                     Homewood, IL: Richard D. Irwin Publishing.""",
                 ),
+                vm.Button(text="Export Data", actions=[vm.Action(function=export_data())]),
             ],
         )
 
@@ -248,6 +367,7 @@ Let's add two KPI cards to the second page. Follow these steps:
         from vizro.tables import dash_ag_grid
         from vizro.models.types import capture
         from vizro.figures import kpi_card
+        from vizro.actions import export_data
 
         tips = px.data.tips()
 
@@ -260,6 +380,7 @@ Let's add two KPI cards to the second page. Follow these steps:
                     Practical Data Analysis: Case Studies in Business Statistics.
                     Homewood, IL: Richard D. Irwin Publishing.""",
                 ),
+                vm.Button(text="Export Data", actions=[vm.Action(function=export_data())]),
             ],
         )
 
@@ -340,6 +461,7 @@ Let's place the two histograms in separate tabs. Follow these steps:
         from vizro.tables import dash_ag_grid
         from vizro.models.types import capture
         from vizro.figures import kpi_card
+        from vizro.actions import export_data
 
         tips = px.data.tips()
 
@@ -352,6 +474,7 @@ Let's place the two histograms in separate tabs. Follow these steps:
                     Practical Data Analysis: Case Studies in Business Statistics.
                     Homewood, IL: Richard D. Irwin Publishing.""",
                 ),
+                vm.Button(text="Export Data", actions=[vm.Action(function=export_data())]),
             ],
         )
 
@@ -408,7 +531,7 @@ Let's place the two histograms in separate tabs. Follow these steps:
 As you explore the dashboard, you might notice that the current layout could use some adjustments. The histograms appear cramped, while the KPI cards have too much space. In the next section, you'll learn how to configure the layout and better arrange the components.
 
 ### 4.4. Configure the layout
-
+TODO
 By default, Vizro places each element in the order it was added to `components`, and spaces them equally. You can use the [`Grid`][vizro.models.Grid] to control the placement and size of components on the page. To learn more about how to configure layouts, check out [How to use layouts](../user-guides/layouts.md).
 
 In the following layout configuration, the layout is divided into **four columns** and **four rows**. The numbers in the grid correspond to the index of the components in the `components` list.
@@ -451,6 +574,7 @@ Run the code below to apply the layout to the dashboard page:
         from vizro.tables import dash_ag_grid
         from vizro.models.types import capture
         from vizro.figures import kpi_card
+        from vizro.actions import export_data
 
         tips = px.data.tips()
 
@@ -463,6 +587,7 @@ Run the code below to apply the layout to the dashboard page:
                     Practical Data Analysis: Case Studies in Business Statistics.
                     Homewood, IL: Richard D. Irwin Publishing.""",
                 ),
+                vm.Button(text="Export Data", actions=[vm.Action(function=export_data())]),
             ],
         )
 
@@ -544,6 +669,7 @@ To add a filter to the dashboard, follow these steps:
         from vizro.tables import dash_ag_grid
         from vizro.models.types import capture
         from vizro.figures import kpi_card
+        from vizro.actions import export_data
 
         tips = px.data.tips()
 
@@ -556,6 +682,7 @@ To add a filter to the dashboard, follow these steps:
                     Practical Data Analysis: Case Studies in Business Statistics.
                     Homewood, IL: Richard D. Irwin Publishing.""",
                 ),
+                vm.Button(text="Export Data", actions=[vm.Action(function=export_data())]),
             ],
         )
 
@@ -675,6 +802,7 @@ This step should feel familiar. Let's add all three charts to the page.
         from vizro.tables import dash_ag_grid
         from vizro.models.types import capture
         from vizro.figures import kpi_card
+        from vizro.actions import export_data
 
         tips = px.data.tips()
 
@@ -687,6 +815,7 @@ This step should feel familiar. Let's add all three charts to the page.
                     Practical Data Analysis: Case Studies in Business Statistics.
                     Homewood, IL: Richard D. Irwin Publishing.""",
                 ),
+                vm.Button(text="Export Data", actions=[vm.Action(function=export_data())]),
             ],
         )
 
@@ -801,6 +930,7 @@ Run the code below to apply the layout to the dashboard page:
         from vizro.tables import dash_ag_grid
         from vizro.models.types import capture
         from vizro.figures import kpi_card
+        from vizro.actions import export_data
 
         tips = px.data.tips()
 
@@ -813,6 +943,7 @@ Run the code below to apply the layout to the dashboard page:
                     Practical Data Analysis: Case Studies in Business Statistics.
                     Homewood, IL: Richard D. Irwin Publishing.""",
                 ),
+                vm.Button(text="Export Data", actions=[vm.Action(function=export_data())]),
             ],
         )
 
@@ -925,6 +1056,7 @@ To add a parameter to the dashboard:
         from vizro.tables import dash_ag_grid
         from vizro.models.types import capture
         from vizro.figures import kpi_card
+        from vizro.actions import export_data
 
         tips = px.data.tips()
 
@@ -937,6 +1069,7 @@ To add a parameter to the dashboard:
                     Practical Data Analysis: Case Studies in Business Statistics.
                     Homewood, IL: Richard D. Irwin Publishing.""",
                 ),
+                vm.Button(text="Export Data", actions=[vm.Action(function=export_data())]),
             ],
         )
 
@@ -1057,6 +1190,7 @@ This requires creating a custom chart with the following steps. For more informa
         from vizro.tables import dash_ag_grid
         from vizro.models.types import capture
         from vizro.figures import kpi_card
+        from vizro.actions import export_data
 
         tips = px.data.tips()
 
@@ -1078,6 +1212,7 @@ This requires creating a custom chart with the following steps. For more informa
                     Practical Data Analysis: Case Studies in Business Statistics.
                     Homewood, IL: Richard D. Irwin Publishing.""",
                 ),
+                vm.Button(text="Export Data", actions=[vm.Action(function=export_data())]),
             ],
         )
 
@@ -1205,6 +1340,7 @@ Your directory structure should look like this:
         from vizro.tables import dash_ag_grid
         from vizro.models.types import capture
         from vizro.figures import kpi_card
+        from vizro.actions import export_data
 
         tips = px.data.tips()
 
@@ -1226,6 +1362,7 @@ Your directory structure should look like this:
                     Practical Data Analysis: Case Studies in Business Statistics.
                     Homewood, IL: Richard D. Irwin Publishing.""",
                 ),
+                vm.Button(text="Export Data", actions=[vm.Action(function=export_data())]),
             ],
         )
 
@@ -1353,6 +1490,7 @@ To create a navigation bar, follow these steps:
         from vizro.tables import dash_ag_grid
         from vizro.models.types import capture
         from vizro.figures import kpi_card
+        from vizro.actions import export_data
 
         tips = px.data.tips()
 
@@ -1374,6 +1512,7 @@ To create a navigation bar, follow these steps:
                     Practical Data Analysis: Case Studies in Business Statistics.
                     Homewood, IL: Richard D. Irwin Publishing.""",
                 ),
+                vm.Button(text="Export Data", actions=[vm.Action(function=export_data())]),
             ],
         )
 
@@ -1500,6 +1639,7 @@ Vizro doesn't end here; we've only covered the key features, but there's still m
 [dashboard]: ../../assets/tutorials/dashboard/11-dashboard-title-logo.png
 [dashboardfinal]: ../../assets/tutorials/dashboard/12-dashboard-navigation.png
 [firstpage]: ../../assets/tutorials/dashboard/01-first-page.png
+[firstpagebutton]: ../../assets/tutorials/dashboard/01-first-page-button.png
 [secondpage]: ../../assets/tutorials/dashboard/02-second-page.png
 [secondpage2]: ../../assets/tutorials/dashboard/03-second-page-kpi.png
 [secondpage3]: ../../assets/tutorials/dashboard/04-second-page-tabs.png
