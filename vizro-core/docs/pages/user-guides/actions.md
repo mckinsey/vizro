@@ -97,8 +97,7 @@ To enable downloading data, you can add the [`export_data`][vizro.actions.export
 
 ### Cross-filtering
 
-Cross-filtering enables you to click on data in one chart or table to filter other components in the dashboard.
-This is enabled using the [`filter_interaction`][vizro.actions.filter_interaction] action. It can be applied to [`Graph`][vizro.models.Graph], [`Table`][vizro.models.Table], and [`AgGrid`][vizro.models.AgGrid], and is currently triggered by click.
+Cross-filtering enables you to click on data in one chart or table to filter other components in the dashboard. This is enabled using the [`filter_interaction`][vizro.actions.filter_interaction] action. It can be applied to [`Graph`][vizro.models.Graph], [`Table`][vizro.models.Table], and [`AgGrid`][vizro.models.AgGrid], and is currently triggered by click.
 
 To configure cross-filtering using `filter_interaction`, follow these steps:
 
@@ -159,7 +158,7 @@ Here is an example of how to configure a chart interaction when the source is a 
                 ),
             ]
         )
-        
+
         dashboard = vm.Dashboard(pages=[page])
         Vizro().build(dashboard).run()
         ```
@@ -389,7 +388,7 @@ The `actions` parameter for the different screen components accepts a `list` of 
 
         [![ActionsChain]][actionschain]
 
+[actionschain]: ../../assets/user_guides/actions/actions_chaining.png
 [exportdata]: ../../assets/user_guides/actions/actions_export.png
 [graphinteraction]: ../../assets/user_guides/actions/actions_filter_interaction.png
-[actionschain]: ../../assets/user_guides/actions/actions_chaining.png
 [tableinteraction]: ../../assets/user_guides/actions/actions_table_filter_interaction.png
