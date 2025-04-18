@@ -1,8 +1,4 @@
-import sys
-
-import dash
 import pytest
-from asserts import assert_component_equal
 from dash._callback_context import context_value
 from dash._utils import AttributeDict
 
@@ -178,133 +174,12 @@ def ctx_export_data_filter_and_parameter(request):
     return context_value
 
 
-@pytest.fixture
-def config_for_testing_all_components_with_actions(request, standard_px_chart, ag_grid_with_id):
-    """Instantiates managers with one page that contains four controls, two graphs and filter interaction."""
-    # If the fixture is parametrised set the targets. Otherwise, set export_data without targets.
-    export_data_action_function = (
-        export_data(id="export_data_action", targets=request.param)
-        if hasattr(request, "param") and request.param is not None
-        else export_data(id="export_data_action")
-    )
-
-    vm.Page(
-        title="title",
-        components=[
-            vm.Graph(
-                id="scatter_chart",
-                figure=standard_px_chart,
-                actions=[filter_interaction(id="graph_filter_interaction", targets=["ag_grid"])],
-            ),
-            vm.AgGrid(id="ag_grid", figure=ag_grid_with_id),
-            vm.Button(
-                id="export_data_button",
-                actions=[
-                    vm.Action(function=export_data_action_function),
-                ],
-            ),
-        ],
-    )
-
-    Vizro._pre_build()
-
-
-@pytest.fixture
-def expected_transformed_outputs(request):
-    return {
-        f"download_dataframe_{target}": dash.Output(
-            {"action_id": "export_data_action", "target_id": target, "type": "download_dataframe"}, "data"
-        )
-        for target in request.param
-    }
-
-
-@pytest.fixture
-def expected_dash_components(request):
-    return [
-        dash.dcc.Download(id={"type": "download_dataframe", "action_id": "export_data_action", "target_id": target})
-        for target in request.param
-    ]
-
-
-@pytest.mark.usefixtures("config_for_testing_all_components_with_actions")
-class TestExportDataInstantiation:
-    """Tests export data outputs and dash_components."""
-
-    @pytest.mark.parametrize(
-        "config_for_testing_all_components_with_actions, expected_transformed_outputs",
-        [
-            # targets are not defined
-            (None, ["scatter_chart", "ag_grid"]),
-            # targets are defined
-            ([], ["scatter_chart", "ag_grid"]),
-            (["scatter_chart"], ["scatter_chart"]),
-            (["scatter_chart", "ag_grid"], ["scatter_chart", "ag_grid"]),
-        ],
-        indirect=True,
-    )
-    def test_export_data_outputs(self, config_for_testing_all_components_with_actions, expected_transformed_outputs):
-        result = model_manager["export_data_action"]._transformed_outputs
-        assert result == expected_transformed_outputs
-
-    @pytest.mark.parametrize(
-        "config_for_testing_all_components_with_actions, expected_dash_components",
-        [
-            # targets are not defined
-            (None, ["scatter_chart", "ag_grid"]),
-            # targets are defined
-            ([], ["scatter_chart", "ag_grid"]),
-            (["scatter_chart"], ["scatter_chart"]),
-            (["scatter_chart", "ag_grid"], ["scatter_chart", "ag_grid"]),
-        ],
-        indirect=True,
-    )
-    def test_export_data_dash_components(
-        self, config_for_testing_all_components_with_actions, expected_dash_components
-    ):
-        result_components = model_manager["export_data_action"]._dash_components
-        assert_component_equal(result_components, expected_dash_components)
-
-
-@pytest.mark.usefixtures("managers_one_page_two_graphs_one_button")
-class TestExportDataPreBuild:
-    """Tests export data pre_build method."""
-
-    def test_pre_build_no_targets(self):
-        # Add action to relevant component
-        model_manager["button"].actions = [export_data(id="test_action")]
-        action = model_manager["test_action"]
-
-        # Run pre_build method
-        action.pre_build()
-
-        # Check that targets are set to all figures on the page
-        assert set(action.targets) == {"scatter_chart", "box_chart"}
-
-    def test_pre_build_invalid_target(self):
-        # Add action to relevant component
-        model_manager["button"].actions = [export_data(id="test_action", targets=["invalid_target_id"])]
-        action = model_manager["test_action"]
-
-        with pytest.raises(ValueError, match="targets {'invalid_target_id'} are not valid figures on the page."):
-            action.pre_build()
-
-    def test_export_data_xlsx_without_required_libs_installed(self, monkeypatch):
-        monkeypatch.setitem(sys.modules, "openpyxl", None)
-        monkeypatch.setitem(sys.modules, "xlswriter", None)
-
-        with pytest.raises(
-            ModuleNotFoundError, match="You must install either openpyxl or xlsxwriter to export to xlsx format."
-        ):
-            export_data(file_format="xlsx").pre_build()
-
-
-class TestExportDataFunction:
+class TestExportData:
     @pytest.mark.usefixtures("managers_one_page_without_graphs_one_button")
     @pytest.mark.parametrize("ctx_export_data", [([[], None, None, None])], indirect=True)
     def test_no_graphs_no_targets(self, ctx_export_data):
         # Add action to relevant component
-        model_manager["button"].actions = [export_data(id="test_action")]
+        model_manager["button"].actions = [vm.Action(function=export_data(id="test_action"))]
 
         # Run action by picking the above added action function and executing it with ()
         result = model_manager["test_action"].function(_controls=None)
@@ -316,7 +191,38 @@ class TestExportDataFunction:
     @pytest.mark.parametrize("ctx_export_data", [([["scatter_chart", "box_chart"], None, None, None])], indirect=True)
     def test_graphs_no_targets(self, ctx_export_data, gapminder_2007):
         # Add action to relevant component
-        model_manager["button"].actions = [export_data(id="test_action")]
+        model_manager["button"].actions = [vm.Action(function=export_data(id="test_action"))]
+        action = model_manager["test_action"]
+        action.pre_build()
+
+        # Run action by picking the above added action function and executing it with ()
+        result = action.function(_controls=None)
+        expected = {
+            "download_dataframe_scatter_chart": {
+                "filename": "scatter_chart.csv",
+                "content": gapminder_2007.to_csv(index=False),
+                "type": None,
+                "base64": False,
+            },
+            "download_dataframe_box_chart": {
+                "filename": "box_chart.csv",
+                "content": gapminder_2007.to_csv(index=False),
+                "type": None,
+                "base64": False,
+            },
+        }
+
+        assert result == expected
+
+    @pytest.mark.usefixtures("managers_one_page_two_graphs_one_button")
+    @pytest.mark.parametrize(
+        "ctx_export_data",
+        [(["scatter_chart", "box_chart"], None, None, None)],
+        indirect=True,
+    )
+    def test_graphs_false_targets(self, ctx_export_data, gapminder_2007):
+        # Add action to relevant component
+        model_manager["button"].actions = [vm.Action(function=export_data(id="test_action"))]
         action = model_manager["test_action"]
         action.pre_build()
 
@@ -343,7 +249,7 @@ class TestExportDataFunction:
     @pytest.mark.parametrize("ctx_export_data", [(["scatter_chart"], None, None, None)], indirect=True)
     def test_one_target(self, ctx_export_data, gapminder_2007):
         # Add action to relevant component
-        model_manager["button"].actions = [export_data(id="test_action", targets=["scatter_chart"])]
+        model_manager["button"].actions = [vm.Action(function=export_data(id="test_action", targets=["scatter_chart"]))]
         action = model_manager["test_action"]
         action.pre_build()
 
@@ -364,7 +270,9 @@ class TestExportDataFunction:
     @pytest.mark.parametrize("ctx_export_data", [(["scatter_chart", "box_chart"], None, None, None)], indirect=True)
     def test_multiple_targets(self, ctx_export_data, gapminder_2007):
         # Add action to relevant component
-        model_manager["button"].actions = [export_data(id="test_action", targets=["scatter_chart", "box_chart"])]
+        model_manager["button"].actions = [
+            vm.Action(function=export_data(id="test_action", targets=["scatter_chart", "box_chart"]))
+        ]
 
         # Run action by picking the above added action function and executing it with ()
         result = model_manager["test_action"].function(_controls=None)
@@ -384,6 +292,18 @@ class TestExportDataFunction:
         }
 
         assert result == expected
+
+    @pytest.mark.usefixtures("managers_one_page_two_graphs_one_button")
+    @pytest.mark.parametrize("ctx_export_data", [(["invalid_target_id"], None, None, None)], indirect=True)
+    def test_invalid_target(self, ctx_export_data):
+        # Add action to relevant component
+        model_manager["button"].actions = [
+            vm.Action(function=export_data(id="test_action", targets=["invalid_target_id"]))
+        ]
+        action = model_manager["test_action"]
+
+        with pytest.raises(ValueError, match="targets {'invalid_target_id'} are not valid figures on the page."):
+            action.pre_build()
 
     @pytest.mark.usefixtures("managers_one_page_two_graphs_one_button")
     @pytest.mark.parametrize(
@@ -413,10 +333,14 @@ class TestExportDataFunction:
         pop_filter.pre_build()
 
         # Add filter_interaction Action to scatter_chart component
-        model_manager["box_chart"].actions = [filter_interaction(id="filter_interaction", targets=["scatter_chart"])]
+        model_manager["box_chart"].actions = [
+            vm.Action(function=filter_interaction(id="filter_interaction", targets=["scatter_chart"]))
+        ]
 
         # Add export_data action to relevant component
-        model_manager["button"].actions = [export_data(id="test_action", targets=["scatter_chart", "box_chart"])]
+        model_manager["button"].actions = [
+            vm.Action(function=export_data(id="test_action", targets=["scatter_chart", "box_chart"]))
+        ]
 
         # Run action by picking the above added export_data action function and executing it with ()
         result = model_manager["test_action"].function(_controls=None)
@@ -465,14 +389,18 @@ class TestExportDataFunction:
         pop_filter.pre_build()
 
         # Add filter_interaction Action to scatter_chart component
-        model_manager["box_chart"].actions = [filter_interaction(id="filter_interaction", targets=["scatter_chart"])]
+        model_manager["box_chart"].actions = [
+            vm.Action(function=filter_interaction(id="filter_interaction", targets=["scatter_chart"]))
+        ]
 
         # Add table filter_interaction Action to scatter_chart component
-        model_manager["vizro_table"].actions = [filter_interaction(targets=["scatter_chart"])]
+        model_manager["vizro_table"].actions = [vm.Action(function=filter_interaction(targets=["scatter_chart"]))]
         model_manager["vizro_table"].pre_build()
 
         # Add export_data action to relevant component
-        model_manager["button"].actions = [export_data(id="test_action", targets=["scatter_chart", "box_chart"])]
+        model_manager["button"].actions = [
+            vm.Action(function=export_data(id="test_action", targets=["scatter_chart", "box_chart"]))
+        ]
 
         # Run action by picking the above added export_data action function and executing it with ()
         result = model_manager["test_action"].function(_controls=None)
@@ -536,7 +464,9 @@ class TestExportDataFunction:
         first_n_parameter.pre_build()
 
         # Add export_data action to relevant component
-        model_manager["button"].actions = [export_data(id="test_action", targets=["scatter_chart", "box_chart"])]
+        model_manager["button"].actions = [
+            vm.Action(function=export_data(id="test_action", targets=["scatter_chart", "box_chart"]))
+        ]
 
         # Run action by picking the above added export_data action function and executing it with ()
         result = model_manager["test_action"].function(_controls=None)
