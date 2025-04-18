@@ -39,27 +39,25 @@ You can add a [`Card`][vizro.models.Card] to your dashboard by inserting the [`C
 
         1. We use a [`Flex`][vizro.models.Flex] layout to ensure the `Card` only occupies the vertical space it needs. Without this, it would default to filling the entire available space.
 
-````
-=== "app.yaml"
+    === "app.yaml"
 
-    ```yaml
-    # Still requires a .py to add data to the data manager and parse YAML configuration
-    # See yaml_version example
-    pages:
-      - components:
-          - text: |
-              Commodi repudiandae consequuntur voluptatum.
-            title: Card Title
-            type: card
-        layout:
-          type: flex
-        title: Card
-    ```
+        ```yaml
+        # Still requires a .py to add data to the data manager and parse YAML configuration
+        # See yaml_version example
+        pages:
+          - components:
+              - text: |
+                  Commodi repudiandae consequuntur voluptatum.
+                title: Card Title
+                type: card
+            layout:
+              type: flex
+            title: Card
+        ```
 
-=== "Result"
+    === "Result"
 
-    [![Card]][card]
-````
+        [![Card]][card]
 
 ## Customize card text
 
@@ -621,6 +619,7 @@ An example use would be to specify a fixed `Card` height and width. For this, yo
 
         [![CardStyle]][cardstyle]
 
+[card]: ../../assets/user_guides/components/card.png
 [cardimagedefault]: ../../assets/user_guides/components/card_image_default.png
 [cardimagefloating]: ../../assets/user_guides/components/card_image_floating.png
 [cardimagestyled]: ../../assets/user_guides/components/card_image_styled.png
