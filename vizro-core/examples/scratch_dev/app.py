@@ -1,51 +1,66 @@
-"""Example app from the official vizro user tutorial.
+# Vizro is an open-source toolkit for creating modular data visualization applications.
+# check out https://github.com/mckinsey/vizro for more info about Vizro
+# and checkout https://vizro.readthedocs.io/en/stable/ for documentation.
 
-See: https://vizro.readthedocs.io/en/stable/pages/tutorials/explore-components/
-"""
-
-import vizro.models as vm
 import vizro.plotly.express as px
 from vizro import Vizro
+import vizro.models as vm
 
-iris = px.data.iris()
+df = px.data.iris()
 
-page1 = vm.Page(
-    title="Collapsible containers - grid layout",
-    layout=vm.Grid(grid=[[0, 1]]),
+page = vm.Page(
+    title="Page with lots of extra information",
     components=[
-        vm.Container(
-            title="Initially collapsed container",
-            components=[vm.Graph(figure=px.scatter(iris, x="sepal_width", y="sepal_length", color="species"))],
-            collapsed=True,
-            variant="filled",
+        vm.Graph(id="scatter_chart", figure=px.scatter(df, x="sepal_length", y="petal_width", color="species")),
+    ],
+    controls=[
+        vm.Filter(
+            column="species",
+            selector=vm.Dropdown(
+                description="""
+                    Select which species of iris you like.
+
+                    [Click here](www.google.com) to learn more about flowers.""",
+                # You could also do this with vm.Tooltip(text=...)
+            ),
         ),
-        vm.Container(
-            title="Initially expanded container",
-            components=[vm.Graph(figure=px.box(iris, x="species", y="sepal_length", color="species"))],
-            collapsed=False,
+        vm.Filter(
+            column="species",
+            selector=vm.RadioItems(
+                description="""
+                    Select which species of iris you like.
+
+                    [Click here](www.google.com) to learn more about flowers.""",
+                # You could also do this with vm.Tooltip(text=...)
+            ),
+        ),
+        vm.Filter(
+            column="sepal_length",
+            selector=vm.RangeSlider(
+                description="""
+                    Select which species of iris you like.
+
+                    [Click here](www.google.com) to learn more about flowers.""",
+                # You could also do this with vm.Tooltip(text=...)
+            ),
+        ),
+        vm.Filter(
+            column="species",
+            selector=vm.Checklist(
+                description="""
+                    Select which species of iris you like.
+
+                    [Click here](www.google.com) to learn more about flowers.""",
+                # You could also do this with vm.Tooltip(text=...)
+            ),
         ),
     ],
 )
 
-page2 = vm.Page(
-    title="Collapsible containers - flex layout",
-    layout=vm.Flex(),
-    components=[
-        vm.Container(
-            title="Initially collapsed container",
-            components=[vm.Graph(figure=px.scatter(iris, x="sepal_width", y="sepal_length", color="species"))],
-            collapsed=True,
-            variant="filled",
-        ),
-        vm.Container(
-            title="Initially expanded container",
-            components=[vm.Graph(figure=px.box(iris, x="species", y="sepal_length", color="species"))],
-            collapsed=False,
-        ),
-    ],
+dashboard = vm.Dashboard(
+    pages=[page],
+    title="blah blah blah",
 )
-
-dashboard = vm.Dashboard(pages=[page1, page2])
 
 if __name__ == "__main__":
     Vizro().build(dashboard).run()

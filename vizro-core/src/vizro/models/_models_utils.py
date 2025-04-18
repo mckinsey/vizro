@@ -58,3 +58,7 @@ def _build_inner_layout(layout, components):
         components_container.children = [html.Div(component.build(), className="flex-item") for component in components]
 
     return components_container
+
+
+def validate_icon(icon) -> str:
+    return icon.strip().lower().replace(" ", "_")

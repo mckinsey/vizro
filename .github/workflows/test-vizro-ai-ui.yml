@@ -45,6 +45,9 @@ jobs:
       - name: Install Hatch
         run: pip install hatch
 
+      - name: Install local Vizro
+        run: hatch run pip install ../vizro-core
+
       - name: Show dependency tree
         run: hatch run pip tree
 
