@@ -136,7 +136,7 @@ The following example demonstrates these default selector types.
 
     === "Result"
 
-        [![Filter]][filter]
+        [![FilterDefault]][filterdefault]
 
 ## Change selector
 
@@ -268,4 +268,5 @@ To further customize selectors, see our [how-to-guide on creating custom compone
 
 [advanced]: ../../assets/user_guides/control/control3.png
 [filter]: ../../assets/user_guides/control/control1.png
+[filterdefault]: ../../assets/user_guides/control/controls_defaults.png
 [selector]: ../../assets/user_guides/control/control2.png
