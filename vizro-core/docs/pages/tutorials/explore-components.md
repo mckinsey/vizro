@@ -271,7 +271,7 @@ Follow these steps to add a histogram to the page:
 
     === "Code - Dashboard"
 
-        ```{.python pycafe-link hl_lines="22-28 30"}
+        ```{.python pycafe-link hl_lines="24-30 32"}
         import vizro.models as vm
         import vizro.plotly.express as px
         from vizro import Vizro
@@ -360,7 +360,7 @@ Let's add two KPI cards to the second page. Follow these steps:
 
     === "Code - dashboard"
 
-        ```{.python pycafe-link hl_lines="25-42"}
+        ```{.python pycafe-link hl_lines="27-44"}
         import vizro.models as vm
         import vizro.plotly.express as px
         from vizro import Vizro
@@ -454,7 +454,7 @@ Let's place the two histograms in separate tabs. Follow these steps:
 
     === "Code - dashboard"
 
-        ```{.python pycafe-link hl_lines="43-59"}
+        ```{.python pycafe-link hl_lines="45-60"}
         import vizro.models as vm
         import vizro.plotly.express as px
         from vizro import Vizro
@@ -531,8 +531,8 @@ Let's place the two histograms in separate tabs. Follow these steps:
 As you explore the dashboard, you might notice that the current layout could use some adjustments. The histograms appear cramped, while the KPI cards have too much space. In the next section, you'll learn how to configure the layout and better arrange the components.
 
 ### 4.4. Configure the layout
-TODO
-By default, Vizro places each element in the order it was added to `components`, and spaces them equally. You can use the [`Grid`][vizro.models.Grid] to control the placement and size of components on the page. To learn more about how to configure layouts, check out [How to use layouts](../user-guides/layouts.md).
+
+In this section, you'll customize the [`Grid`][vizro.models.Grid] to control the placement and size of components on the page. 
 
 In the following layout configuration, the layout is divided into **four columns** and **four rows**. The numbers in the grid correspond to the index of the components in the `components` list.
 
@@ -567,7 +567,7 @@ Run the code below to apply the layout to the dashboard page:
 
     === "Code - Dashboard"
 
-        ```{.python pycafe-link hl_lines="24"}
+        ```{.python pycafe-link hl_lines="26"}
         import vizro.models as vm
         import vizro.plotly.express as px
         from vizro import Vizro
@@ -662,7 +662,7 @@ To add a filter to the dashboard, follow these steps:
 
     === "Code - Dashboard"
 
-        ```{.python pycafe-link hl_lines="61"}
+        ```{.python pycafe-link hl_lines="63"}
         import vizro.models as vm
         import vizro.plotly.express as px
         from vizro import Vizro
@@ -795,7 +795,7 @@ This step should feel familiar. Let's add all three charts to the page.
 
     === "Code - dashboard"
 
-        ```{.python pycafe-link hl_lines="64-80 82"}
+        ```{.python pycafe-link hl_lines="70-86 88"}
         import vizro.models as vm
         import vizro.plotly.express as px
         from vizro import Vizro
@@ -923,7 +923,7 @@ Run the code below to apply the layout to the dashboard page:
 
     === "Code - dashboard"
 
-        ```{.python pycafe-link hl_lines="66"}
+        ```{.python pycafe-link hl_lines="68"}
         import vizro.models as vm
         import vizro.plotly.express as px
         from vizro import Vizro
@@ -1049,7 +1049,7 @@ To add a parameter to the dashboard:
 
     === "Code - dashboard"
 
-        ```{.python pycafe-link hl_lines="69 74 84-91"}
+        ```{.python pycafe-link hl_lines="71 76 86-93"}
         import vizro.models as vm
         import vizro.plotly.express as px
         from vizro import Vizro
@@ -1183,7 +1183,7 @@ This requires creating a custom chart with the following steps. For more informa
 
     === "Code - dashboard"
 
-        ```{.python pycafe-link hl_lines="11-16 80"}
+        ```{.python pycafe-link hl_lines="12-17 82"}
         import vizro.models as vm
         import vizro.plotly.express as px
         from vizro import Vizro
@@ -1333,7 +1333,7 @@ Your directory structure should look like this:
 
     === "Code - dashboard"
 
-        ```{.python pycafe-link hl_lines="103"}
+        ```{.python pycafe-link hl_lines="105"}
         import vizro.models as vm
         import vizro.plotly.express as px
         from vizro import Vizro
@@ -1483,7 +1483,7 @@ To create a navigation bar, follow these steps:
 
     === "Code - dashboard"
 
-        ```{.python pycafe-link hl_lines="106-113"}
+        ```{.python pycafe-link hl_lines="108-115"}
         import vizro.models as vm
         import vizro.plotly.express as px
         from vizro import Vizro
@@ -1623,7 +1623,7 @@ If you'd like to understand more about different ways to configure the navigatio
 
 Vizro doesn't end here; we've only covered the key features, but there's still much more to explore! You can learn:
 
-- How to use [actions](../user-guides/actions.md) for example, for chart interaction or custom controls.
+- How to use other built-in [actions](../user-guides/actions.md) such as cross-filters
 - How to [extend and customize Vizro dashboards](../user-guides/extensions.md) by creating your own:
     - [custom components](../user-guides/custom-components.md).
     - [custom actions](../user-guides/custom-actions.md).
