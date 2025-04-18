@@ -193,7 +193,7 @@ As described in the [API reference](../API-reference/figure-callables.md) and il
 
         page = vm.Page(
             title="KPI cards",
-            layout=vm.Flex(direction="row", wrap=True),
+            layout=vm.Flex(direction="row", wrap=True),  # (2)!
             components=[vm.Figure(figure=figure) for figure in example_cards + example_reference_cards],
         )
 

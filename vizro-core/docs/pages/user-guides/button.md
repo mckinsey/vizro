@@ -157,7 +157,7 @@ There are three predefined button styles that can be customized using the `varia
 
         page = vm.Page(
             title="Buttons with different styles",
-            layout=vm.Flex(direction="row"),
+            layout=vm.Flex(direction="row"),  # (1)!
             components=[
                 vm.Button(text="filled"),
                 vm.Button(text="outlined", variant="outlined"),
@@ -168,6 +168,9 @@ There are three predefined button styles that can be customized using the `varia
         dashboard = vm.Dashboard(pages=[page])
         Vizro().build(dashboard).run()
         ```
+
+        1. We use a [`Flex`][vizro.models.Flex] layout with `direction="row"` to ensure the `Button` components are placed side by side and only take up as much space as needed.
+
 
     === "app.yaml"
 

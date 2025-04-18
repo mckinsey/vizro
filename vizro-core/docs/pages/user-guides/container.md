@@ -281,7 +281,7 @@ Collapsible containers are supported in both `Grid` and `Flex` layouts. However,
 
         page = vm.Page(
             title="Collapsible containers",
-            layout=vm.Flex(),
+            layout=vm.Flex(),  # (1)!
             components=[
                 vm.Container(
                     title="Initially collapsed container",
@@ -299,6 +299,8 @@ Collapsible containers are supported in both `Grid` and `Flex` layouts. However,
         dashboard = vm.Dashboard(pages=[page])
         Vizro().build(dashboard).run()
         ```
+
+        1. We use a [`Flex`][vizro.models.Flex] layout to make sure the `Container` only occupy as much space as they need, regardless of their collapsed state.
 
     === "app.yaml"
 
