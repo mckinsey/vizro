@@ -8,27 +8,23 @@ from dash import Output, State, html
 from pydantic import Tag
 
 import vizro.models as vm
-from vizro import Vizro
-from vizro.actions import filter_interaction
 from vizro.actions._abstract_action import _AbstractAction
 from vizro.models._action._actions_chain import ActionsChain
 
-# TODO-QQ: Check test_builtin_arguments_with_overwritten_controls: this test fails because model fields can't be private
-#  Test is set as: @pytest.mark.xfail()
-#  This doesn't allow users to overwrite any private parameter like: _controls
-#  If _controls: str set as a model field, I get:
-# E       pydantic_core._pydantic_core.ValidationError: 1 validation error for class_action_with_one_arg_and_controls
-# E       _controls
-# E         Extra inputs are not permitted [type=extra_forbidden, input_value='component.property', input_type=str]
 
-# TODO: Optimise fixtures
-# TODO: Find suffice naming for fixtures and hardcoded vs runtime vs model_files vs arg vs param.
+def annotate_action_type(cls):
+    annotated_cls = Annotated[cls, Tag(cls.__name__)]
+    vm.Graph.add_type("actions", annotated_cls)
+    ActionsChain.add_type("actions", annotated_cls)
+
+    return annotated_cls
 
 
 @pytest.fixture
 def class_action_with_no_args():
-    class class_action_with_no_args(_AbstractAction):
-        type: Literal["class_action_with_no_args"] = "class_action_with_no_args"
+    @annotate_action_type
+    class class_action(_AbstractAction):
+        type: Literal["class_action"] = "class_action"
 
         def function(self):
             pass
@@ -37,17 +33,14 @@ def class_action_with_no_args():
         def outputs(self):
             return []
 
-    class_action_with_no_args = Annotated[class_action_with_no_args, Tag("class_action_with_no_args")]
-    vm.Graph.add_type("actions", class_action_with_no_args)
-    ActionsChain.add_type("actions", class_action_with_no_args)
-
-    return class_action_with_no_args
+    return class_action
 
 
 @pytest.fixture
 def class_action_with_one_hardcoded_arg():
-    class class_action_with_one_hardcoded_arg(_AbstractAction):
-        type: Literal["class_action_with_one_hardcoded_arg"] = "class_action_with_one_hardcoded_arg"
+    @annotate_action_type
+    class class_action(_AbstractAction):
+        type: Literal["class_action"] = "class_action"
         arg_1: str
 
         def function(self):
@@ -57,19 +50,14 @@ def class_action_with_one_hardcoded_arg():
         def outputs(self):
             return []
 
-    class_action_with_one_hardcoded_arg = Annotated[
-        class_action_with_one_hardcoded_arg, Tag("class_action_with_one_hardcoded_arg")
-    ]
-    vm.Graph.add_type("actions", class_action_with_one_hardcoded_arg)
-    ActionsChain.add_type("actions", class_action_with_one_hardcoded_arg)
-
-    return class_action_with_one_hardcoded_arg
+    return class_action
 
 
 @pytest.fixture
-def class_action_with_one_arg():
-    class class_action_with_one_arg(_AbstractAction):
-        type: Literal["class_action_with_one_arg"] = "class_action_with_one_arg"
+def class_action_with_one_runtime_arg():
+    @annotate_action_type
+    class class_action(_AbstractAction):
+        type: Literal["class_action"] = "class_action"
         arg_1: str
 
         def function(self, arg_1):
@@ -79,17 +67,14 @@ def class_action_with_one_arg():
         def outputs(self):
             return []
 
-    class_action_with_one_arg = Annotated[class_action_with_one_arg, Tag("class_action_with_one_arg")]
-    vm.Graph.add_type("actions", class_action_with_one_arg)
-    ActionsChain.add_type("actions", class_action_with_one_arg)
-
-    return class_action_with_one_arg
+    return class_action
 
 
 @pytest.fixture
-def class_action_with_one_arg_and_controls():
-    class class_action_with_one_arg_and_controls(_AbstractAction):
-        type: Literal["class_action_with_one_arg_and_controls"] = "class_action_with_one_arg_and_controls"
+def class_action_with_one_runtime_arg_and_controls():
+    @annotate_action_type
+    class class_action(_AbstractAction):
+        type: Literal["class_action"] = "class_action"
         arg_1: str
 
         def function(self, arg_1: str, _controls: dict):
@@ -99,19 +84,14 @@ def class_action_with_one_arg_and_controls():
         def outputs(self):
             return []
 
-    class_action_with_one_arg_and_controls = Annotated[
-        class_action_with_one_arg_and_controls, Tag("class_action_with_one_arg_and_controls")
-    ]
-    vm.Graph.add_type("actions", class_action_with_one_arg_and_controls)
-    ActionsChain.add_type("actions", class_action_with_one_arg_and_controls)
-
-    return class_action_with_one_arg_and_controls
+    return class_action
 
 
 @pytest.fixture
-def class_action_with_two_args():
-    class class_action_with_two_args(_AbstractAction):
-        type: Literal["class_action_with_two_args"] = "class_action_with_two_args"
+def class_action_with_two_runtime_args():
+    @annotate_action_type
+    class class_action(_AbstractAction):
+        type: Literal["class_action"] = "class_action"
         arg_1: str
         arg_2: str
 
@@ -122,42 +102,32 @@ def class_action_with_two_args():
         def outputs(self):
             return []
 
-    class_action_with_two_args = Annotated[class_action_with_two_args, Tag("class_action_with_two_args")]
-    vm.Graph.add_type("actions", class_action_with_two_args)
-    ActionsChain.add_type("actions", class_action_with_two_args)
-
-    return class_action_with_two_args
+    return class_action
 
 
 @pytest.fixture
-def class_action_with_one_runtime_and_one_parameter():
-    class class_action_with_one_runtime_and_one_parameter(_AbstractAction):
-        type: Literal["class_action_with_one_runtime_and_one_parameter"] = (
-            "class_action_with_one_runtime_and_one_parameter"
-        )
+def class_action_with_one_runtime_and_one_hardcoded():
+    @annotate_action_type
+    class class_action(_AbstractAction):
+        type: Literal["class_action"] = "class_action"
         arg_1: str
         arg_2: str
 
-        def function(self, arg_1: str, _controls: dict):
+        def function(self, arg_1: str):
             pass
 
         @property
         def outputs(self):
             return []
 
-    class_action_with_one_runtime_and_one_parameter = Annotated[
-        class_action_with_one_runtime_and_one_parameter, Tag("class_action_with_one_runtime_and_one_parameter")
-    ]
-    vm.Graph.add_type("actions", class_action_with_one_runtime_and_one_parameter)
-    ActionsChain.add_type("actions", class_action_with_one_runtime_and_one_parameter)
-
-    return class_action_with_one_runtime_and_one_parameter
+    return class_action
 
 
 @pytest.fixture
 def class_action_with_mock_outputs(request):
-    class class_action_with_mock_outputs(_AbstractAction):
-        type: Literal["class_action_with_mock_outputs"] = "class_action_with_mock_outputs"
+    @annotate_action_type
+    class class_action(_AbstractAction):
+        type: Literal["class_action"] = "class_action"
 
         def function(self):
             pass
@@ -166,54 +136,7 @@ def class_action_with_mock_outputs(request):
         def outputs(self):
             return request.param
 
-    class_action_with_mock_outputs = Annotated[class_action_with_mock_outputs, Tag("class_action_with_mock_outputs")]
-    vm.Graph.add_type("actions", class_action_with_mock_outputs)
-    ActionsChain.add_type("actions", class_action_with_mock_outputs)
-
-    return class_action_with_mock_outputs
-
-
-@pytest.fixture
-def _real_builtin_controls(standard_px_chart):
-    """Instantiates managers with one page that contains filter, parameter, and filter_interaction actions."""
-    vm.Page(
-        title="title",
-        components=[
-            vm.Graph(
-                id="graph_1",
-                figure=standard_px_chart,
-                actions=[filter_interaction(id="graph_filter_interaction", targets=["graph_2"])],
-            ),
-            vm.Graph(id="graph_2", figure=standard_px_chart),
-        ],
-        controls=[
-            vm.Filter(id="filter", column="continent", selector=vm.Dropdown(id="filter_selector")),
-            vm.Parameter(
-                id="parameter",
-                targets=["graph_1.x"],
-                selector=vm.Checklist(
-                    id="parameter_selector",
-                    options=["lifeExp", "gdpPercap", "pop"],
-                ),
-            ),
-        ],
-    )
-
-    Vizro._pre_build()
-
-    return {
-        "_controls": {
-            "filters": [
-                State("filter_selector", "value"),
-            ],
-            "parameters": [
-                State("parameter_selector", "value"),
-            ],
-            "filter_interaction": [
-                {"clickData": State("graph_1", "clickData"), "modelID": State("graph_1", "id")},
-            ],
-        }
-    }
+    return class_action
 
 
 class TestAbstractActionInstantiation:
@@ -232,27 +155,33 @@ class TestAbstractActionInstantiation:
         assert action._dash_components == []
         assert action._parameters == set()
         assert action._runtime_args == {}
-        assert action._action_name == "class_action_with_no_args"
+        assert action._action_name == "class_action"
 
     @pytest.mark.parametrize(
         "custom_action_fixture_name, runtime_inputs, expected_transformed_inputs",
         [
             ("class_action_with_no_args", {}, {}),
-            ("class_action_with_one_arg", {"arg_1": "component.property"}, {"arg_1": State("component", "property")}),
             (
-                "class_action_with_two_args",
+                "class_action_with_one_runtime_arg",
+                {"arg_1": "component.property"},
+                {"arg_1": State("component", "property")},
+            ),
+            (
+                "class_action_with_two_runtime_args",
                 {"arg_1": "component.property", "arg_2": "component.property"},
                 {"arg_1": State("component", "property"), "arg_2": State("component", "property")},
             ),
         ],
     )
-    def test_runtime_inputs(self, request, custom_action_fixture_name, runtime_inputs, expected_transformed_inputs):
+    def test_runtime_inputs_valid(
+        self, request, custom_action_fixture_name, runtime_inputs, expected_transformed_inputs
+    ):
         custom_action = request.getfixturevalue(custom_action_fixture_name)
         action = custom_action(**runtime_inputs)
 
         assert action._transformed_inputs == expected_transformed_inputs
 
-    # It's valid because arg_1 is hardcoded input in the used class - it's not used as the runtime input.
+    # It's valid because arg_1 is a `hardcoded` parameter in the used class. So, it's not used as the runtime argument.
     @pytest.mark.parametrize(
         "hardcoded_input",
         [
@@ -267,7 +196,7 @@ class TestAbstractActionInstantiation:
 
         assert action._transformed_inputs == {}
 
-    # It's invalid because arg_1 is runtime input in the used class
+    # It's invalid because arg_1 is a `runtime` argument in the used class.
     @pytest.mark.parametrize(
         "hardcoded_input",
         [
@@ -277,36 +206,71 @@ class TestAbstractActionInstantiation:
             "component.property.property",
         ],
     )
-    def test_hardcoded_inputs_invalid(self, class_action_with_one_arg, hardcoded_input):
+    def test_hardcoded_inputs_invalid(self, class_action_with_one_runtime_arg, hardcoded_input):
         with pytest.raises(
             ValueError, match="Action inputs .* must be a string of the form <component_name>.<component_property>."
         ):
-            # Error is raised when _transformed_outputs is accessed which is okay as the output is the class method.
-            class_action_with_one_arg(arg_1=hardcoded_input)._transformed_inputs()
+            # An error is raised when accessing _transformed_inputs which is fine because validation is then performed.
+            class_action_with_one_runtime_arg(arg_1=hardcoded_input)._transformed_inputs()
+
+    def test_builtin_arguments_with_empty_controls(self, class_action_with_one_runtime_arg_and_controls):
+        action = class_action_with_one_runtime_arg_and_controls(arg_1="component.property")
+
+        assert action._transformed_inputs == {
+            "arg_1": State("component", "property"),
+            "_controls": {
+                "filters": [],
+                "parameters": [],
+                "filter_interaction": [],
+            },
+        }
+
+    def test_builtin_arguments_with_real_controls(
+        self, class_action_with_one_runtime_arg_and_controls, page_actions_builtin_controls
+    ):
+        action = class_action_with_one_runtime_arg_and_controls(arg_1="component.property")
+
+        assert action._transformed_inputs == {"arg_1": State("component", "property"), **page_actions_builtin_controls}
+
+    # TODO: Adjust this test when _controls becomes a public field
+    @pytest.mark.xfail(reason="Private fields can't be overwritten")
+    def test_builtin_arguments_with_overwritten_controls(self, class_action_with_one_runtime_arg_and_controls):
+        action = class_action_with_one_runtime_arg_and_controls(
+            arg_1="component.property", _controls="component.property"
+        )
+
+        assert action._transformed_inputs == {
+            "arg_1": State("component", "property"),
+            "_controls": State("component", "property"),
+        }
 
     @pytest.mark.parametrize(
         "custom_action_fixture_name, runtime_inputs, expected_parameters, expected_runtime_args",
         [
             ("class_action_with_no_args", {}, set(), {}),
-            ("class_action_with_one_arg", {"arg_1": "component.property"}, {"arg_1"}, {"arg_1": "component.property"}),
+            ("class_action_with_one_hardcoded_arg", {"arg_1": "component.property"}, set(), {}),
             (
-                "class_action_with_two_args",
+                "class_action_with_one_runtime_arg",
+                {"arg_1": "component.property"},
+                {"arg_1"},
+                {"arg_1": "component.property"},
+            ),
+            (
+                "class_action_with_two_runtime_args",
                 {"arg_1": "component.property", "arg_2": "component.property"},
                 {"arg_1", "arg_2"},
                 {"arg_1": "component.property", "arg_2": "component.property"},
             ),
             (
-                "class_action_with_one_arg_and_controls",
+                "class_action_with_one_runtime_arg_and_controls",
                 {"arg_1": "component.property"},
                 {"arg_1", "_controls"},
-                {
-                    "arg_1": "component.property",
-                },
+                {"arg_1": "component.property"},
             ),
             (
-                "class_action_with_one_runtime_and_one_parameter",
+                "class_action_with_one_runtime_and_one_hardcoded",
                 {"arg_1": "component.property", "arg_2": "component.property"},
-                {"arg_1", "_controls"},
+                {"arg_1"},
                 {"arg_1": "component.property"},
             ),
         ],
@@ -320,41 +284,18 @@ class TestAbstractActionInstantiation:
         assert action._parameters == expected_parameters
         assert action._runtime_args == expected_runtime_args
 
-    def test_builtin_arguments_with_empty_controls(self, class_action_with_one_arg_and_controls):
-        action = class_action_with_one_arg_and_controls(arg_1="component.property")
-
-        assert action._transformed_inputs == {
-            "arg_1": State("component", "property"),
-            "_controls": {
-                "filters": [],
-                "parameters": [],
-                "filter_interaction": [],
-            },
-        }
-
-    def test_builtin_arguments_with_real_controls(self, class_action_with_one_arg_and_controls, _real_builtin_controls):
-        action = class_action_with_one_arg_and_controls(arg_1="component.property")
-
-        assert action._transformed_inputs == {"arg_1": State("component", "property"), **_real_builtin_controls}
-
-    @pytest.mark.xfail()
-    def test_builtin_arguments_with_overwritten_controls(self, class_action_with_one_arg_and_controls):
-        action = class_action_with_one_arg_and_controls(arg_1="component.property", _controls="component.property")
-
-        assert action._transformed_inputs == {
-            "arg_1": State("component", "property"),
-            "_controls": State("component", "property"),
-        }
-
     @pytest.mark.parametrize(
         "class_action_with_mock_outputs, expected_transformed_outputs",
         [
+            # List outputs
             ([], []),
             (["component.property"], Output("component", "property")),
             (
                 ["component.property", "component.property"],
                 [Output("component", "property"), Output("component", "property")],
             ),
+            # Dict outputs
+            ({}, {}),
             (
                 {"output_1": "component.property"},
                 {"output_1": Output("component", "property")},
@@ -387,7 +328,7 @@ class TestAbstractActionInstantiation:
         with pytest.raises(
             ValueError, match="Action outputs .* must be a string of the form <component_name>.<component_property>."
         ):
-            # Error is raised when _transformed_outputs is accessed which is okay as the output is the class method.
+            # An error is raised when accessing _transformed_outputs which is fine because validation is then performed.
             class_action_with_mock_outputs()._transformed_outputs()
 
 

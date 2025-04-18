@@ -3,10 +3,12 @@
 import pandas as pd
 import plotly.graph_objects as go
 import pytest
+from dash import State
 
 import vizro.models as vm
 import vizro.plotly.express as px
 from vizro import Vizro
+from vizro.actions import filter_interaction
 from vizro.figures import kpi_card
 from vizro.tables import dash_ag_grid, dash_data_table
 
@@ -129,6 +131,49 @@ def managers_one_page_two_graphs_with_dynamic_data(box_chart_dynamic_data_frame,
         ],
     )
     Vizro._pre_build()
+
+
+@pytest.fixture
+def page_actions_builtin_controls(standard_px_chart):
+    """Instantiates managers with one page that contains filter, parameter, and filter_interaction actions."""
+    vm.Page(
+        title="title",
+        components=[
+            vm.Graph(
+                id="graph_1",
+                figure=standard_px_chart,
+                actions=[filter_interaction(id="graph_filter_interaction", targets=["graph_2"])],
+            ),
+            vm.Graph(id="graph_2", figure=standard_px_chart),
+        ],
+        controls=[
+            vm.Filter(id="filter", column="continent", selector=vm.Dropdown(id="filter_selector")),
+            vm.Parameter(
+                id="parameter",
+                targets=["graph_1.x"],
+                selector=vm.Checklist(
+                    id="parameter_selector",
+                    options=["lifeExp", "gdpPercap", "pop"],
+                ),
+            ),
+        ],
+    )
+
+    Vizro._pre_build()
+
+    return {
+        "_controls": {
+            "filters": [
+                State("filter_selector", "value"),
+            ],
+            "parameters": [
+                State("parameter_selector", "value"),
+            ],
+            "filter_interaction": [
+                {"clickData": State("graph_1", "clickData"), "modelID": State("graph_1", "id")},
+            ],
+        }
+    }
 
 
 @pytest.fixture()
