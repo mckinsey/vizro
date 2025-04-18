@@ -94,7 +94,7 @@ The example below demonstrates how to configure a button to export the filtered 
         dashboard = vm.Dashboard(pages=[page])
         Vizro().build(dashboard).run()
         ```
-        
+
         1. We use a [`Flex`][vizro.models.Flex] layout to make sure the `Graph` and `Button` only occupy as much space as they need, rather than being distributed evenly.
 
     === "app.yaml"
