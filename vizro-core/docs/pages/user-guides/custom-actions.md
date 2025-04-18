@@ -51,8 +51,7 @@ The following example shows how to create a custom action that postpones executi
                         vm.Action(function=export_data(file_format="xlsx")),
                     ]
                 )
-            ],
-            controls=[vm.Filter(column="species", selector=vm.Dropdown(title="Species"))],
+            ]
         )
 
         dashboard = vm.Dashboard(pages=[page])

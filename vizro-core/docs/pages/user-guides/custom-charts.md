@@ -59,7 +59,7 @@ The below examples shows a case where we enhance an existing `plotly.express` ch
             return fig
 
 
-        page_0 = vm.Page(
+        page = vm.Page(
             title="Custom chart",
             components=[
                 vm.Graph(
@@ -82,7 +82,7 @@ The below examples shows a case where we enhance an existing `plotly.express` ch
             ],
         )
 
-        dashboard = vm.Dashboard(pages=[page_0])
+        dashboard = vm.Dashboard(pages=[page])
         Vizro().build(dashboard).run()
         ```
 
@@ -144,7 +144,7 @@ The below examples shows a more involved use-case. We create and style a waterfa
             return fig
 
 
-        page_0 = vm.Page(
+        page = vm.Page(
             title="Custom chart",
             components=[
                 vm.Graph(
@@ -153,11 +153,11 @@ The below examples shows a more involved use-case. We create and style a waterfa
             ],
             # Apply a filter to the custom chart
             controls=[
-                vm.Filter(column="x", selector=vm.Dropdown(title="Financial categories", multi=True)),
+                vm.Filter(column="x", selector=vm.Dropdown(title="Financial categories")),
             ],
         )
 
-        dashboard = vm.Dashboard(pages=[page_0])
+        dashboard = vm.Dashboard(pages=[page])
         Vizro().build(dashboard).run()
         ```
 

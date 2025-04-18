@@ -93,7 +93,7 @@ To enable downloading data, you can add the [`export_data`][vizro.actions.export
 
 !!! note
 
-    Note that exported data only reflects the original dataset and any native data modifications defined with [`vm.Filter`](filters.md), [`vm.Parameter`](data.md/#parametrize-data-loading) or [`filter_interaction`](actions.md/#filter-data-by-clicking-on-chart) action. Filters from the chart itself, such as ag-grid filters, are not included, and neither are other chart modifications, nor any data transformations in custom charts.
+    Note that exported data only reflects the original dataset and any native data modifications defined with [`vm.Filter`](filters.md), [`vm.Parameter`](data.md/#parametrize-data-loading) or [`filter_interaction`](actions.md/#cross-filtering) action. Filters from the chart itself, such as ag-grid filters, are not included, and neither are other chart modifications, nor any data transformations in custom charts.
 
 ### Cross-filtering
 

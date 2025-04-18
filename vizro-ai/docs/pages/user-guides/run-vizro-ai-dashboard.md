@@ -167,7 +167,7 @@ The following list is a table of the Vizro components currently supported by Viz
 | **Dashboard header** | [Dashboard title](https://vizro.readthedocs.io/en/stable/pages/user-guides/dashboard/)                                                   | ✔            |
 |                      | [Logo](https://vizro.readthedocs.io/en/stable/pages/user-guides/dashboard/)                                                              | ✖            |
 | **Actions**          | [Pre-defined actions](https://vizro.readthedocs.io/en/stable/pages/user-guides/actions/#pre-defined-actions/)                            | ✖            |
-|                      | [Filter interaction between charts](https://vizro.readthedocs.io/en/stable/pages/user-guides/actions/#filter-data-by-clicking-on-chart/) | ✖            |
+|                      | [Filter interaction between charts](https://vizro.readthedocs.io/en/stable/pages/user-guides/actions/#cross-filtering/) | ✖            |
 |                      | [Custom actions](https://vizro.readthedocs.io/en/stable/pages/user-guides/actions/#custom-actions/)                                      | ✖            |
 
 If a feature you need for your dashboard isn't currently supported by Vizro-AI you can retrieve the dashboard code and add it by hand before running the dashboard.

@@ -104,26 +104,19 @@ vm.Parameter.add_type("selector", TooltipNonCrossRangeSlider)
 
         # 2. Add new components to expected type - here the selector of the parent components
         vm.Filter.add_type("selector", TooltipNonCrossRangeSlider)  # (6)!
-        vm.Parameter.add_type("selector", TooltipNonCrossRangeSlider)  # (7)!
 
         page = vm.Page(
             title="Custom Component",
             components=[
                 vm.Graph(
-                    id="for_custom_chart",
-                    figure=px.scatter(iris, title="Iris Dataset", x="sepal_length", y="petal_width", color="sepal_width"),
+                    figure=px.scatter(iris, x="sepal_length", y="petal_width", color="sepal_width"),
                 ),
             ],
             controls=[
                 vm.Filter(
                     column="sepal_length",
-                    targets=["for_custom_chart"],
                     selector=TooltipNonCrossRangeSlider(),
-                ),
-                vm.Parameter(
-                    targets=["for_custom_chart.range_x"],
-                    selector=TooltipNonCrossRangeSlider(title="Select x-axis range", min=0, max=10),  # (8)!
-                ),
+                )
             ],
         )
 
