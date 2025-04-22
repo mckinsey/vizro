@@ -1,4 +1,4 @@
-"""MCP server for Vizro-AI chart creation best practices."""
+"""Schema defining pydantic models for usage in the MCP server."""
 
 from typing import Annotated, Any, Literal, Optional
 

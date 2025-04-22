@@ -1,4 +1,4 @@
-"""MCP server for Vizro-AI chart creation best practices."""
+"""MCP server for Vizro-AI chart and dashboard creation."""
 
 import json
 import re
@@ -19,11 +19,16 @@ from vizro_mcp.schemas.schemas import (
     SimpleDashboard,
     SimplePage,
 )
-from vizro_mcp.utils.utils import get_dataframe_info, get_python_code_and_preview_link
+from vizro_mcp.utils.utils import (
+    convert_github_url_to_raw,
+    get_dataframe_info,
+    get_python_code_and_preview_link,
+    path_or_url_check,
+)
 
 # TODO: what do I need to do here, as things are already set up?
 mcp = FastMCP(
-    "MCP server for Vizro to help with chart and dashboard creation.",
+    "MCP server to help create Vizro dashboards and charts.",
 )
 
 
@@ -31,10 +36,9 @@ mcp = FastMCP(
 def validate_model_config(
     config: dict[str, Any], file_name: str, file_path_or_url: str, file_location_type: Literal["local", "remote"]
 ) -> dict[str, Any]:
-    """Validate Vizro model configuration. Run WHENEVER you have a complete DASHBOARD configuration.
+    """Validate Vizro model configuration. Run whenever you have a complete dashboard configuration.
 
     If successful, the tool will return the python code and, if it is a remote file, the py.cafe link to the chart.
-    ALWAYS offer the py.cafe link to the user as a preview of the chart, but as a hyperlink as the link is long.
 
     Args:
         config: Either a JSON string or a dictionary representing a Vizro model configuration
@@ -46,24 +50,18 @@ def validate_model_config(
     Returns:
         Dictionary with validation status and details
     """
+    # Reset Vizro state before instantiation
+    Vizro._reset()
+
     try:
-        # Handle input as either string or dictionary
-        if isinstance(config, str):
-            try:
-                model_config = json.loads(config)
-            except json.JSONDecodeError as e:
-                return {"valid": False, "error": f"Invalid JSON: {e!s}"}
-        elif hasattr(config, "items"):  # Check if it's dict-like
-            model_config = config
-        else:
-            return {"valid": False, "error": f"Invalid input type: {type(config)}. Expected string or dictionary."}
-
-        # Reset Vizro state before instantiation
-        Vizro._reset()
-
         # Attempt to instantiate a Vizro model with the configuration
-        dashboard = vm.Dashboard(**model_config)
+        dashboard = vm.Dashboard.model_validate(config)
 
+    except ValidationError as e:
+        # Handle Pydantic validation errors
+        return {"valid": False, "error": f"Validation Error: {e!s}"}
+
+    else:
         result = get_python_code_and_preview_link(dashboard, file_name, file_path_or_url)
 
         # Get the result before resetting
@@ -76,12 +74,6 @@ def validate_model_config(
 
         return result
 
-    except ValidationError as e:
-        # Handle Pydantic validation errors
-        return {"valid": False, "error": f"Validation Error: {e!s}"}
-    except Exception as e:
-        # Handle other exceptions
-        return {"valid": False, "error": f"Error: {e!s}"}
     finally:
         # Always reset, regardless of success or failure
         Vizro._reset()
@@ -138,9 +130,7 @@ def get_overview_vizro_models() -> dict[str, list[dict[str, str]]]:
         result[category] = [
             {
                 "name": model_class.__name__,
-                "description": (model_class.__doc__ or "No description available").split("\n")[0]
-                if model_class.__doc__
-                else "No description",
+                "description": (model_class.__doc__ or "No description available").split("\n")[0],
             }
             for model_class in models_list
         ]
@@ -179,10 +169,7 @@ Instructions for create a Vizro dashboard:
     """
 
 
-@mcp.tool(
-    name="load_and_analyze_csv",
-    description="Load a CSV file from a local path or GitHub URL into a pandas DataFrame and analyze its structure.",
-)
+@mcp.tool()
 def load_and_analyze_csv(path_or_url: str) -> dict[str, Any]:
     """Load a CSV file from a local path or GitHub URL into a pandas DataFrame and analyze its structure.
 
@@ -192,47 +179,30 @@ def load_and_analyze_csv(path_or_url: str) -> dict[str, Any]:
     Returns:
         Dictionary containing DataFrame information and summary
     """
+    path_or_url_type = path_or_url_check(path_or_url)
+    if path_or_url_type == "remote":
+        path_or_url = convert_github_url_to_raw(path_or_url)
+
+    elif path_or_url_type == "local":
+        path_or_url = Path(path_or_url)
+    else:
+        return {"success": False, "error": "Invalid path or URL"}
+
     try:
-        # Check if input is a GitHub URL
-        github_pattern = r"https?://(?:www\.)?github\.com/([^/]+)/([^/]+)/(?:blob|raw)/([^/]+)/(.+\.csv)"
-        github_match = re.match(github_pattern, path_or_url)
-
-        if github_match:
-            # Convert GitHub URL to raw URL
-            user, repo, branch, file_path = github_match.groups()
-            raw_url = f"https://raw.githubusercontent.com/{user}/{repo}/{branch}/{file_path}"
-
-            try:
-                # Directly use pandas read_csv with the URL
-                df = pd.read_csv(
-                    raw_url,
-                    # Add error handling for common CSV issues
-                    on_bad_lines="warn",
-                    low_memory=False,
-                )
-                return {"success": True, "data": get_dataframe_info(df, raw_url)}
-            except requests.exceptions.RequestException as e:
-                return {"success": False, "error": f"Failed to fetch file: {e!s}"}
-
-        # Check if input is a valid local file
-        path = Path(path_or_url)
-        if path.exists():
-            # Consistent options for both local and remote files
-            df = pd.read_csv(path, on_bad_lines="warn", low_memory=False)
-            return {"success": True, "data": get_dataframe_info(df, path)}
-
-        else:
-            return {
-                "success": False,
-                "error": f"Invalid input: '{path_or_url}' is neither a valid local file nor a GitHub URL",
-            }
-
-    except pd.errors.ParserError as e:
-        # Handle CSV parsing errors specifically
-        return {"success": False, "error": f"Error parsing CSV file: {e!s}"}
+        df = pd.read_csv(
+            path_or_url,
+            # Add error handling for common CSV issues
+            on_bad_lines="warn",
+            low_memory=False,
+        )
     except requests.exceptions.RequestException as e:
-        # Handle network-related errors
-        return {"success": False, "error": f"Network error when fetching file: {e!s}"}
+        return {"success": False, "error": f"Failed to fetch file: {e!s}"}
+    return {
+        "success": True,
+        "info": get_dataframe_info(df),
+        "location_type": path_or_url_type,
+        "file_path_or_url": str(path_or_url),
+    }
 
 
 @mcp.prompt(
@@ -294,6 +264,3 @@ Make sure to analyze the data using the load_and_analyze_csv tool first, passing
 
 
 ###########################
-
-if __name__ == "__main__":
-    mcp.run()

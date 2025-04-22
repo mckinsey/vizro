@@ -2,7 +2,9 @@
 
 import base64
 import gzip
+import io
 import json
+import re
 from pathlib import Path
 from typing import Any, Union
 from urllib.parse import quote, urlencode
@@ -14,15 +16,38 @@ import vizro.models as vm
 PYCAFE_URL = "https://py.cafe"
 
 
-# Function to capture DataFrame info
-def get_dataframe_info(df: pd.DataFrame, file_path_or_url: Union[str, Path]) -> dict[str, Any]:
+def convert_github_url_to_raw(path_or_url: str) -> str:
+    """Convert a GitHub URL to a raw URL if it's a GitHub URL, otherwise return the original path or URL."""
+
+    github_pattern = r"https?://(?:www\.)?github\.com/([^/]+)/([^/]+)/(?:blob|raw)/([^/]+)/(.+\.csv)"
+    github_match = re.match(github_pattern, path_or_url)
+
+    if github_match:
+        user, repo, branch, file_path = github_match.groups()
+        return f"https://raw.githubusercontent.com/{user}/{repo}/{branch}/{file_path}"
+
+    return path_or_url
+
+
+def path_or_url_check(string: str) -> str:
+    """Check if a string is a link or a file path."""
+    if string.startswith(("http://", "https://", "www.")):
+        return "remote"
+
+    if Path(string).is_file():
+        return "local"
+
+    return "invalid"
+
+
+def get_dataframe_info(df: pd.DataFrame) -> dict[str, Any]:
     """Get the info of a DataFrame."""
+
+    buffer = io.StringIO()
+    df.info(buf=buffer)
+    info_string = buffer.getvalue()
     return {
-        "location_type": "local" if isinstance(file_path_or_url, Path) else "remote",
-        "file_path_or_url": file_path_or_url,
-        "shape": df.shape,
-        "columns": list(df.columns),
-        "column_types": {col: str(dtype) for col, dtype in df.dtypes.items()},
+        "general_info": info_string,
         "sample": df.sample(5).to_dict() if not df.empty else {},
     }
 
