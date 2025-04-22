@@ -104,23 +104,31 @@ vm.Parameter.add_type("selector", TooltipNonCrossRangeSlider)
 
         # 2. Add new components to expected type - here the selector of the parent components
         vm.Filter.add_type("selector", TooltipNonCrossRangeSlider)  # (6)!
+        vm.Parameter.add_type("selector", TooltipNonCrossRangeSlider)  # (7)!
 
         page = vm.Page(
             title="Custom Component",
             components=[
                 vm.Graph(
-                    figure=px.scatter(iris, x="sepal_length", y="petal_width", color="sepal_width"),
+                    id="for_custom_chart",
+                    figure=px.scatter(iris, title="Iris Dataset", x="sepal_length", y="petal_width", color="sepal_width"),
                 ),
             ],
             controls=[
                 vm.Filter(
                     column="sepal_length",
+                    targets=["for_custom_chart"],
                     selector=TooltipNonCrossRangeSlider(),
-                )
+                ),
+                vm.Parameter(
+                    targets=["for_custom_chart.range_x"],
+                    selector=TooltipNonCrossRangeSlider(title="Select x-axis range", min=0, max=10),  # (8)!
+                ),
             ],
         )
 
         dashboard = vm.Dashboard(pages=[page])
+
         Vizro().build(dashboard).run()
         ```
 
@@ -238,6 +246,7 @@ vm.Page.add_type("components", Jumbotron)
         )
 
         dashboard = vm.Dashboard(pages=[page])
+
         Vizro().build(dashboard).run()
 
         ```
@@ -365,6 +374,7 @@ Add the custom action `open_offcanvas` as a `function` argument inside the [`Act
         )
 
         dashboard = vm.Dashboard(pages=[page])
+
         Vizro().build(dashboard).run()
 
         ```
@@ -465,6 +475,7 @@ As mentioned above, custom components can trigger actions. To enable the custom 
         )
 
         dashboard = vm.Dashboard(pages=[page])
+
         Vizro().build(dashboard).run()
         ```
         <img src=https://py.cafe/logo.png alt="PyCafe logo" width="30"><b><a target="_blank" href="https://py.cafe/vizro-official/vizro-custom-carousel-component">Run and edit this code in PyCafe</a></b>
