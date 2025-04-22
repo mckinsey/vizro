@@ -1,7 +1,6 @@
 """MCP server for Vizro-AI chart and dashboard creation."""
 
 import json
-import re
 from pathlib import Path
 from typing import Any, Literal
 
