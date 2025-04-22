@@ -163,17 +163,18 @@ Instructions for create a Vizro dashboard:
     - analyze the datasets needed for the dashboard using the load_and_analyze_csv tool - the most
         important information here are the column names and column types
     - call the get_overview_vizro_models tool to get an overview of the available models
-    - make a plan of what components you would like to use, you need to decide on a layout and components per page
-    then request any necessary schema using the get_model_JSON_schema tool
+    - make a plan of what components you would like to use, then request all necessary schemas
+    using the get_model_JSON_schema tool
     - assemble your components into a page, then add the page or pages to a dashboard
-    - validate the dashboard configuration using the validate_model_config tool use `Dashboard` as the model name
-    - call the validated_config_to_python_code tool to convert the dashboard configuration to Python code
-    - if you display any code artifact, you must use the above created code
+    - validate the dashboard configuration using the validate_model_config tool
+    - if you display any code artifact, you must use the above created code, do not add new config to it
 
 
     IMPORTANT:
     - if you iterate over a valid produced solution, make sure to go ALWAYS via the validation step again to
         ensure the solution is valid
+    - try not to output any config or code to the user until you have validated the solution
+    - if you find yourself repeatedly getting something wrong, try enquiring the schema of the component in question
     """
 
 
