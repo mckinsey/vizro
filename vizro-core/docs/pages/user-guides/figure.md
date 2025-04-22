@@ -52,10 +52,10 @@ To add a `Figure` to your page:
 
         page = vm.Page(
             title="KPI card",
-            layout=vm.Flex(direction="row"), # (2)!
+            layout=vm.Flex(direction="row"),  # (2)!
             components=[
                 vm.Figure(
-                    figure=kpi_card( # (2)!
+                    figure=kpi_card(
                         data_frame=tips,
                         value_column="tip",
                         value_format="${value:.2f}",
@@ -71,7 +71,7 @@ To add a `Figure` to your page:
         Vizro().build(dashboard).run()
         ```
 
-        1. For more information, refer to the API reference for [`kpi_card`][vizro.figures.kpi_card]
+        1. For more information, refer to the API reference for [`kpi_card`][vizro.figures.kpi_card].
         1. We switch to a [`Flex`][vizro.models.Flex] layout so that the KPI card only takes up as much space as it needs.
 
     === "app.yaml"
@@ -201,7 +201,7 @@ As described in the [API reference](../API-reference/figure-callables.md) and il
         Vizro().build(dashboard).run()
         ```
 
-        1. For more information, refer to the API reference for [`kpi_card`][vizro.figures.kpi_card] and [`kpi_card_reference`][vizro.figures.kpi_card_reference]
+        1. For more information, refer to the API reference for [`kpi_card`][vizro.figures.kpi_card] and [`kpi_card_reference`][vizro.figures.kpi_card_reference].
         1. We use a [`Flex`][vizro.models.Flex] layout with `direction=row` and `wrap=True` to allow KPI cards to wrap to the next line when needed.
 
         <img src=https://py.cafe/logo.png alt="PyCafe logo" width="30"><b><a target="_blank" href="https://py.cafe/vizro-official/vizro-kpi-cards">Run and edit this code in PyCafe</a></b>

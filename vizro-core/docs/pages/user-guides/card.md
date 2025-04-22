@@ -608,7 +608,7 @@ An example use would be to specify a fixed `Card` height and width. For this, yo
           - title: Card with fixed dimensions
             components:
               - type: card
-                text: This card height is limited to 200px.
+                text: This card has fixed dimensions 200x100.
                 extra:
                   style:
                     height: 100px
