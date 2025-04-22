@@ -18,6 +18,11 @@ def check_dot_notation(target):
         raise ValueError(
             f"Invalid target {target}. Targets must be supplied in the form <target_component>.<target_argument>"
         )
+    elif ".figure." in target:
+        raise ValueError(
+            f"Invalid target {target}. Targets must be supplied in the form <target_component>.<target_argument>. "
+            "Arguments of the CapturedCallable function can be targeted directly, and not via <.figure.>."
+        )
     return target
 
 
