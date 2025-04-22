@@ -1,1 +1,1 @@
-from .schemas import ChartPlan, GraphPX, SimpleDashboard, SimplePage
+from .schemas import ChartPlan, DashboardSimplified, GraphEnhanced, PageSimplified

@@ -9,7 +9,9 @@ from pydantic import AfterValidator, BaseModel, Field
 CUSTOM_CHART_NAME = "custom_chart"
 
 
-class SimplePage(BaseModel):
+# These simplified page and dashboard models are used to return a flatter schema to the LLM in order to reduce the
+# context size. Especially the dashboard model schema is huge as it contains all other models.
+class PageSimplified(BaseModel):
     """Simplified Page modes for reduced schema. LLM should remember to insert actual components."""
 
     components: list[Literal["card", "button", "text", "container", "tabs"]] = Field(
@@ -21,20 +23,22 @@ class SimplePage(BaseModel):
     controls: list[Literal["filter", "parameter"]] = Field(default=[], description="Controls to be displayed.")
 
 
-class SimpleDashboard(BaseModel):
+class DashboardSimplified(BaseModel):
     """Simplified Dashboard model for reduced schema. LLM should remember to insert actual components."""
 
     pages: list[Literal["page"]] = Field(description="List of page names to be included in the dashboard.")
     theme: Literal["vizro_dark", "vizro_light"] = Field(
         default="vizro_dark", description="Theme to be applied across dashboard. Defaults to `vizro_dark`."
     )
-    # navigation: Optional[Literal["navigation"]] = Field(
-    #     default=None, description="Navigation component for the dashboard."
-    # )
+    navigation: Optional[Literal["navigation"]] = Field(
+        default=None, description="Navigation component for the dashboard."
+    )
     title: str = Field(default="", description="Dashboard title to appear on every page on top left-side.")
 
 
-class GraphPX(vm.Graph):
+# These enhanced models are used to return a more complete schema to the LLM. Although we do not have actual schemas for
+# the figure fields, we can prompt the model via the description to produce something likely correct.
+class GraphEnhanced(vm.Graph):
     """A Graph model that uses Plotly Express to create the figure."""
 
     figure: dict[str, Any] = Field(
@@ -52,16 +56,16 @@ are needed (e.g. trendline).
     )
 
 
-class AgGridSchema(vm.AgGrid):
+class AgGridEnhanced(vm.AgGrid):
     """A AgGrid model that uses dash-ag-grid to create the figure."""
 
     figure: dict[str, Any] = Field(
         description="""
-        This is the ag-grid figure to be displayed. Only use arguments from the [`dash-ag-grid` function](https://dash.plotly.com/dash-ag-grid/reference).
+This is the ag-grid figure to be displayed. Only use arguments from the [`dash-ag-grid` function](https://dash.plotly.com/dash-ag-grid/reference).
 
-        The only difference to the dash version is that:
-            - you must use the key: "_target_: "dash_ag_grid"
-            - you must refer to data via "data_frame": <data_frame_name> and NOT via columnDefs and rowData (do NOT set)
+The only difference to the dash version is that:
+    - you must use the key: "_target_: "dash_ag_grid"
+    - you must refer to data via "data_frame": <data_frame_name> and NOT via columnDefs and rowData (do NOT set)
         """
     )
 

@@ -13,11 +13,11 @@ from pydantic import ValidationError
 from vizro import Vizro
 
 from vizro_mcp.schemas.schemas import (
-    AgGridSchema,
+    AgGridEnhanced,
     ChartPlan,
-    GraphPX,
-    SimpleDashboard,
-    SimplePage,
+    DashboardSimplified,
+    GraphEnhanced,
+    PageSimplified,
 )
 from vizro_mcp.utils.utils import (
     convert_github_url_to_raw,
@@ -90,13 +90,13 @@ def get_model_JSON_schema(model_name: str) -> dict[str, Any]:
         JSON schema of the requested Vizro model
     """
     if model_name == "Page":
-        return SimplePage.model_json_schema()
+        return PageSimplified.model_json_schema()
     elif model_name == "Dashboard":
-        return SimpleDashboard.model_json_schema()
+        return DashboardSimplified.model_json_schema()
     elif model_name == "Graph":
-        return GraphPX.model_json_schema()
+        return GraphEnhanced.model_json_schema()
     elif model_name == "AgGrid":
-        return AgGridSchema.model_json_schema()
+        return AgGridEnhanced.model_json_schema()
     # Get the model class from the vizro.models namespace
     if not hasattr(vm, model_name):
         return {"error": f"Model '{model_name}' not found in vizro.models"}
@@ -116,11 +116,20 @@ def get_overview_vizro_models() -> dict[str, list[dict[str, str]]]:
         Dictionary with categories of models and their descriptions
     """
     # Define the models we want to expose, grouped by category
+    # TODO: do Container and Tabs need to be simplified like page, or is Page fine as original model?
     model_groups: dict[str, list[type[vm.VizroBaseModel]]] = {
-        "components": [vm.Card, vm.Button, vm.Text, vm.Container, vm.Tabs, vm.Graph, vm.AgGrid],
+        "components": [vm.Card, vm.Button, vm.Text, vm.Container, vm.Tabs, vm.Graph, vm.AgGrid],  #'Figure', 'Table'
         "layouts": [vm.Grid, vm.Flex],
         "controls": [vm.Filter, vm.Parameter],
-        "selectors": [vm.Dropdown, vm.RadioItems, vm.Checklist, vm.DatePicker, vm.Slider, vm.RangeSlider],
+        "selectors": [
+            vm.Dropdown,
+            vm.RadioItems,
+            vm.Checklist,
+            vm.DatePicker,
+            vm.Slider,
+            vm.RangeSlider,
+            vm.DatePicker,
+        ],
         "navigation": [vm.Navigation, vm.NavBar, vm.NavLink],
     }
 
