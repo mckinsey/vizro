@@ -80,9 +80,8 @@ data_manager["{file_name}"] = pd.read_csv("{file_paths_or_urls}")
     else:
         python_code = imports_and_data + python_code
 
-    # Add final run line if not present
-    if "Vizro().build(model).run()" not in python_code:
-        python_code += "\n\nVizro().build(model).run()"
+    # Add final run line
+    python_code += "\n\nVizro().build(model).run()"
 
     # Create JSON object for py.cafe
     json_object = {
