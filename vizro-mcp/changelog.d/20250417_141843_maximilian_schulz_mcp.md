@@ -3,7 +3,8 @@ A new scriv changelog fragment.
 
 Uncomment the section that is right (remove the HTML comment wrapper).
 -->
-<!-- 
+
+<!--
 ### Highlights ✨
 
 - Initial release of the Vizro MCP server. Highly experimental, please use with caution. ([#1125](https://github.com/mckinsey/vizro/pull/1125)) -->
@@ -15,12 +16,9 @@ Uncomment the section that is right (remove the HTML comment wrapper).
 
 -->
 
-
 ### Added
 
 - Initial release of the Vizro MCP server. Highly experimental, please use with caution. ([#1125](https://github.com/mckinsey/vizro/pull/1125))
-
-
 
 <!--
 ### Changed
