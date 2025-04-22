@@ -1,7 +1,7 @@
 [envs.all]
 
 [[envs.all.matrix]]
-python = ["3.9", "3.10", "3.11", "3.12", "3.13"]
+python = ["3.10", "3.11", "3.12", "3.13"]
 
 [envs.changelog]
 dependencies = ["scriv"]
@@ -27,10 +27,7 @@ prep-release = [
   "hatch version release",
   "hatch run changelog:collect",
   "hatch run changelog:add",
-  "rm -rf schemas/*json",
-  "schema",
-  "git add schemas",
-  'echo "Now raise a PR to merge into main with title: [Release] Release of vizro $(hatch version)"'
+  'echo "Now raise a PR to merge into main with title: [Release] Release of vizro-mcp $(hatch version)"'
 ]
 pypath = "python -c 'import sys; print(sys.executable)'"
 test = "pytest tests --headless {args}"

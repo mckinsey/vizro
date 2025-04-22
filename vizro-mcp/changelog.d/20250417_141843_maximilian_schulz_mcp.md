@@ -3,10 +3,10 @@ A new scriv changelog fragment.
 
 Uncomment the section that is right (remove the HTML comment wrapper).
 -->
-
+<!-- 
 ### Highlights ✨
 
-- Initial release of the Vizro MCP server. Highly experimental, please use with caution. ([#1125](https://github.com/mckinsey/vizro/pull/1125))
+- Initial release of the Vizro MCP server. Highly experimental, please use with caution. ([#1125](https://github.com/mckinsey/vizro/pull/1125)) -->
 
 <!--
 ### Removed
@@ -15,12 +15,12 @@ Uncomment the section that is right (remove the HTML comment wrapper).
 
 -->
 
-<!--
+
 ### Added
 
-- A bullet item for the Added category with a link to the relevant PR at the end of your entry, e.g. Enable feature XXX. ([#1](https://github.com/mckinsey/vizro/pull/1))
+- Initial release of the Vizro MCP server. Highly experimental, please use with caution. ([#1125](https://github.com/mckinsey/vizro/pull/1125))
 
--->
+
 
 <!--
 ### Changed
