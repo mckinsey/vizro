@@ -11,14 +11,14 @@ from mcp.server.fastmcp import FastMCP
 from pydantic import ValidationError
 from vizro import Vizro
 
-from vizro_mcp.schemas.schemas import (
+from vizro_mcp.schemas import (
     AgGridEnhanced,
     ChartPlan,
     DashboardSimplified,
     GraphEnhanced,
     PageSimplified,
 )
-from vizro_mcp.utils.utils import (
+from vizro_mcp.utils import (
     convert_github_url_to_raw,
     get_dataframe_info,
     get_python_code_and_preview_link,
