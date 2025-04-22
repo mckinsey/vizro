@@ -6,7 +6,7 @@ import io
 import json
 import re
 from pathlib import Path
-from typing import Any, Union
+from typing import Any
 from urllib.parse import quote, urlencode
 
 import pandas as pd
@@ -18,7 +18,6 @@ PYCAFE_URL = "https://py.cafe"
 
 def convert_github_url_to_raw(path_or_url: str) -> str:
     """Convert a GitHub URL to a raw URL if it's a GitHub URL, otherwise return the original path or URL."""
-
     github_pattern = r"https?://(?:www\.)?github\.com/([^/]+)/([^/]+)/(?:blob|raw)/([^/]+)/(.+\.csv)"
     github_match = re.match(github_pattern, path_or_url)
 
@@ -42,7 +41,6 @@ def path_or_url_check(string: str) -> str:
 
 def get_dataframe_info(df: pd.DataFrame) -> dict[str, Any]:
     """Get the info of a DataFrame."""
-
     buffer = io.StringIO()
     df.info(buf=buffer)
     info_string = buffer.getvalue()
