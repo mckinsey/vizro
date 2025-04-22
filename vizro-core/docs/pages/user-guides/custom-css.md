@@ -278,7 +278,6 @@ It's essential to understand the relationship between the targeted CSS class or 
         )
 
         dashboard = vm.Dashboard(pages=[page])
-
         Vizro().build(dashboard).run()
         ```
 

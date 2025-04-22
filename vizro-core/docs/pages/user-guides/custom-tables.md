@@ -65,12 +65,12 @@ The following examples show a possible version of a custom table. In this case t
             controls=[
                 vm.Parameter(
                     targets=["custom_table.chosen_columns"],
-                    selector=vm.Dropdown(title="Choose columns", options=df.columns.to_list(), multi=True),
+                    selector=vm.Dropdown(title="Choose columns", options=df.columns.to_list()),
                 )
             ],
         )
-        dashboard = vm.Dashboard(pages=[page])
 
+        dashboard = vm.Dashboard(pages=[page])
         Vizro().build(dashboard).run()
         ```
 
@@ -133,12 +133,12 @@ The following examples show a possible version of a custom table. In this case t
             controls=[
                 vm.Parameter(
                     targets=["custom_ag_grid.chosen_columns"],
-                    selector=vm.Dropdown(title="Choose columns", options=df.columns.to_list(), multi=True),
+                    selector=vm.Dropdown(title="Choose columns", options=df.columns.to_list()),
                 )
             ],
         )
-        dashboard = vm.Dashboard(pages=[page])
 
+        dashboard = vm.Dashboard(pages=[page])
         Vizro().build(dashboard).run()
         ```
 

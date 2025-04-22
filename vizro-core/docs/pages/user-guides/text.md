@@ -30,7 +30,6 @@ You can add a [`Text`][vizro.models.Text] component to your dashboard by inserti
         )
 
         dashboard = vm.Dashboard(pages=[page])
-
         Vizro().build(dashboard).run()
         ```
 
@@ -38,7 +37,7 @@ You can add a [`Text`][vizro.models.Text] component to your dashboard by inserti
 
         ```yaml
         # Still requires a .py to add data to the data manager and parse YAML configuration
-        # See from_yaml example
+        # See yaml_version example
         pages:
           - components:
               - text: Commodi repudiandae consequuntur voluptatum.
@@ -116,7 +115,6 @@ The [`Text`][vizro.models.Text] uses the `dcc.Markdown` component from Dash as i
         )
 
         dashboard = vm.Dashboard(pages=[page])
-
         Vizro().build(dashboard).run()
         ```
 
@@ -124,7 +122,7 @@ The [`Text`][vizro.models.Text] uses the `dcc.Markdown` component from Dash as i
 
         ```yaml
         # Still requires a .py to add data to the data manager and parse YAML configuration
-        # See from_yaml example
+        # See yaml_version example
         pages:
           - components:
               - title: Customizing Text
@@ -208,7 +206,6 @@ An example use would be to set `mathjax=True` (defaults to `False`) to display m
         )
 
         dashboard = vm.Dashboard(pages=[page])
-
         Vizro().build(dashboard).run()
         ```
 
@@ -216,7 +213,7 @@ An example use would be to set `mathjax=True` (defaults to `False`) to display m
 
         ```yaml
         # Still requires a .py to add data to the data manager and parse YAML configuration
-        # See from_yaml example
+        # See yaml_version example
         pages:
           - components:
               - text: |

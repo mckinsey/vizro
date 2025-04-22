@@ -47,7 +47,6 @@ Unlike for the [`Filter`][vizro.models.Filter] model, you also have to configure
         )
 
         dashboard = vm.Dashboard(pages=[page])
-
         Vizro().build(dashboard).run()
         ```
 
@@ -136,7 +135,6 @@ If you want to change nested parameters, you can specify the `targets` argument 
         )
 
         dashboard = vm.Dashboard(pages=[page])
-
         Vizro().build(dashboard).run()
         ```
 
