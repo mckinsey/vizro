@@ -53,6 +53,24 @@ def class_action_with_one_static_arg():
 
 
 @pytest.fixture
+def class_action_with_two_static_args():
+    @annotate_action_type
+    class class_action(_AbstractAction):
+        type: Literal["class_action"] = "class_action"
+        arg_1: str
+        arg_2: str
+
+        def function(self):
+            pass
+
+        @property
+        def outputs(self):
+            return []
+
+    return class_action
+
+
+@pytest.fixture
 def class_action_with_one_runtime_arg():
     @annotate_action_type
     class class_action(_AbstractAction):
@@ -70,7 +88,7 @@ def class_action_with_one_runtime_arg():
 
 
 @pytest.fixture
-def class_action_with_builtin_runtime():
+def class_action_with_builtin_runtime_arg():
     @annotate_action_type
     class class_action(_AbstractAction):
         type: Literal["class_action"] = "class_action"
@@ -85,7 +103,6 @@ def class_action_with_builtin_runtime():
     return class_action
 
 
-# TODO AM: why needed? Or why not do two static args too?
 @pytest.fixture
 def class_action_with_two_runtime_args():
     @annotate_action_type
@@ -109,10 +126,10 @@ def class_action_with_one_runtime_and_one_static():
     @annotate_action_type
     class class_action(_AbstractAction):
         type: Literal["class_action"] = "class_action"
-        arg_1: str
-        arg_2: str
+        runtime_arg: str
+        static_arg: str
 
-        def function(self, arg_1: str):
+        def function(self, runtime_arg: str):
             pass
 
         @property
@@ -138,9 +155,6 @@ def class_action_with_mock_outputs(request):
     return class_action
 
 
-# TODO AM: check user _controls takes precedence
-
-
 class TestAbstractActionInstantiation:
     """Tests _AbstractAction instantiation."""
 
@@ -162,9 +176,19 @@ class TestAbstractActionInstantiation:
 
 class TestAbstractActionInputs:
     @pytest.mark.parametrize(
-        "custom_action_fixture_name, runtime_inputs, expected_transformed_inputs",
+        "custom_action_fixture_name, inputs, expected_transformed_inputs",
         [
             ("class_action_with_no_args", {}, {}),
+            (
+                "class_action_with_one_static_arg",
+                {"arg_1": "anything"},
+                {},
+            ),
+            (
+                "class_action_with_two_static_args",
+                {"arg_1": "anything", "arg_2": "anything"},
+                {},
+            ),
             (
                 "class_action_with_one_runtime_arg",
                 {"arg_1": "component.property"},
@@ -175,19 +199,21 @@ class TestAbstractActionInputs:
                 {"arg_1": "component_1.property_1", "arg_2": "component_2.property_2"},
                 {"arg_1": State("component_1", "property_1"), "arg_2": State("component_2", "property_2")},
             ),
+            (
+                "class_action_with_one_runtime_and_one_static",
+                {"runtime_arg": "component_1.property_1", "static_arg": "anything"},
+                {"runtime_arg": State("component_1", "property_1")},
+            ),
         ],
     )
-    def test_runtime_inputs_valid(
-        self, request, custom_action_fixture_name, runtime_inputs, expected_transformed_inputs
-    ):
+    def test_inputs_valid(self, request, custom_action_fixture_name, inputs, expected_transformed_inputs):
         custom_action = request.getfixturevalue(custom_action_fixture_name)
-        action = custom_action(**runtime_inputs)
+        action = custom_action(**inputs)
 
         assert action._transformed_inputs == expected_transformed_inputs
 
-    # It's valid because arg_1 is a `static` parameter in the used class. So, it's not used as the runtime argument.
     @pytest.mark.parametrize(
-        "static_input",
+        "input",
         [
             "",
             "component",
@@ -195,30 +221,15 @@ class TestAbstractActionInputs:
             "component.property.property",
         ],
     )
-    def test_static_inputs_valid(self, class_action_with_one_static_arg, static_input):
-        action = class_action_with_one_static_arg(arg_1=static_input)
-
-        assert action._transformed_inputs == {}
-
-    # It's invalid because arg_1 is a `runtime` argument in the used class.
-    @pytest.mark.parametrize(
-        "static_input",
-        [
-            "",
-            "component",
-            "component_property",
-            "component.property.property",
-        ],
-    )
-    def test_static_inputs_invalid(self, class_action_with_one_runtime_arg, static_input):
+    def test_runtime_inputs_invalid(self, class_action_with_one_runtime_arg, input):
         with pytest.raises(
             ValueError, match="Action inputs .* must be a string of the form <component_name>.<component_property>."
         ):
             # An error is raised when accessing _transformed_inputs which is fine because validation is then performed.
-            class_action_with_one_runtime_arg(arg_1=static_input)._transformed_inputs
+            class_action_with_one_runtime_arg(arg_1=input)._transformed_inputs
 
-    def test_builtin_runtime_with_empty_controls(self, class_action_with_builtin_runtime):
-        action = class_action_with_builtin_runtime()
+    def test_builtin_runtime_arg_with_empty_controls(self, class_action_with_builtin_runtime_arg):
+        action = class_action_with_builtin_runtime_arg()
 
         assert action._transformed_inputs == {
             "_controls": {
@@ -228,28 +239,33 @@ class TestAbstractActionInputs:
             },
         }
 
-    def test_builtin_runtime_with_real_controls(self, class_action_with_builtin_runtime, page_actions_builtin_controls):
-        action = class_action_with_builtin_runtime()
+    def test_builtin_runtime_arg_with_real_controls(
+        self, class_action_with_builtin_runtime_arg, page_actions_builtin_controls
+    ):
+        action = class_action_with_builtin_runtime_arg()
 
         assert action._transformed_inputs == page_actions_builtin_controls
 
     # TODO: Adjust this test when _controls becomes a public field
     @pytest.mark.xfail(reason="Private fields can't be overwritten")
-    def test_builtin_runtime_with_overwritten_controls(self, class_action_with_builtin_runtime):
-        action = class_action_with_builtin_runtime()
+    def test_builtin_runtime_arg_with_overwritten_controls(self, class_action_with_builtin_runtime_arg):
+        action = class_action_with_builtin_runtime_arg()
 
-        assert action._transformed_inputs == {
-            "_controls": State("component", "property"),
-        }
+        assert action._transformed_inputs == {"_controls": State("component", "property")}
 
 
 class TestAbstractActionParametersRuntimeArgs:
-    # TODO AM: label which is runtime argument rather than just arg_1, arg_2
-    @pytest.mark.parametrize(
-        "custom_action_fixture_name, runtime_inputs, expected_parameters, expected_runtime_args",
+        @pytest.mark.parametrize(
+        "custom_action_fixture_name, inputs, expected_parameters, expected_runtime_args",
         [
             ("class_action_with_no_args", {}, set(), {}),
             ("class_action_with_one_static_arg", {"arg_1": "component.property"}, set(), {}),
+            (
+                "class_action_with_two_static_args",
+                {"arg_1": "component_1.property_1", "arg_2": "component_2.property_2"},
+                set(),
+                {},
+            ),
             (
                 "class_action_with_one_runtime_arg",
                 {"arg_1": "component.property"},
@@ -263,29 +279,30 @@ class TestAbstractActionParametersRuntimeArgs:
                 {"arg_1": "component_1.property_1", "arg_2": "component_2.property_2"},
             ),
             (
-                "class_action_with_builtin_runtime",
+                "class_action_with_builtin_runtime_arg",
                 {},
                 {"_controls"},
                 {},
             ),
             (
                 "class_action_with_one_runtime_and_one_static",
-                {"arg_1": "component_1.property_1", "arg_2": "component_2.property_2"},
-                {"arg_1"},
-                {"arg_1": "component_1.property_1"},
+                {"runtime_arg": "component_1.property_1", "static_arg": "anything"},
+                {"runtime_arg"},
+                {"runtime_arg": "component_1.property_1"},
             ),
         ],
     )
     def test_parameters_and_runtime_args(
-        self, request, custom_action_fixture_name, runtime_inputs, expected_parameters, expected_runtime_args
+        self, request, custom_action_fixture_name, inputs, expected_parameters, expected_runtime_args
     ):
         custom_action = request.getfixturevalue(custom_action_fixture_name)
-        action = custom_action(**runtime_inputs)
+        action = custom_action(**inputs)
 
         assert action._parameters == expected_parameters
         assert action._runtime_args == expected_runtime_args
 
 
+# TODO AM HERE: rewrite/combine above getfixturevalue tests
 class TestAbstractActionOutputs:
     @pytest.mark.parametrize(
         "class_action_with_mock_outputs, expected_transformed_outputs",
