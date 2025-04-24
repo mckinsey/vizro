@@ -85,7 +85,6 @@ The below example uses the Iris data saved to a file `iris.csv` in the same dire
         )
 
         dashboard = vm.Dashboard(pages=[page])
-
         Vizro().build(dashboard).run()
         ```
 
@@ -185,7 +184,6 @@ The example below shows how data is fetched dynamically every time the page is r
         )
 
         dashboard = vm.Dashboard(pages=[page])
-
         Vizro().build(dashboard).run()
         ```
 
@@ -236,7 +234,6 @@ In a development environment the easiest way to enable caching is to use a [simp
     )
 
     dashboard = vm.Dashboard(pages=[page])
-
     Vizro().build(dashboard).run()
     ```
 
@@ -341,7 +338,6 @@ For example, let us extend the [dynamic data example](#dynamic-data) above into 
         )
 
         dashboard = vm.Dashboard(pages=[page])
-
         Vizro().build(dashboard).run()
         ```
 
@@ -413,7 +409,6 @@ For example, let us extend the [parametrized dynamic data example](#parametrize-
         )
 
         dashboard = vm.Dashboard(pages=[page])
-
         Vizro().build(dashboard).run()
         ```
 

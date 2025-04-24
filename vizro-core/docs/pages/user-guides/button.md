@@ -31,7 +31,7 @@ You can configure the `text` argument to alter the display text of the [`Button`
 
         ```yaml
         # Still requires a .py to add data to the data manager and parse YAML configuration
-        # See from_yaml example
+        # See yaml_version example
         pages:
           - components:
               - type: button
@@ -73,10 +73,9 @@ The example below demonstrates how to configure a button to export the filtered 
 
         page = vm.Page(
             title="My first page",
-            layout=vm.Grid(grid=[[0], [0], [0], [0], [1]]),
+            layout=vm.Flex(),  # (1)!
             components=[
                 vm.Graph(
-                    id="scatter_chart",
                     figure=px.scatter(
                         df,
                         x="sepal_width",
@@ -87,22 +86,22 @@ The example below demonstrates how to configure a button to export the filtered 
                 ),
                 vm.Button(
                     text="Export data",
-                    actions=[vm.Action(function=export_data(targets=["scatter_chart"]))],
+                    actions=[vm.Action(function=export_data())],
                 ),
-            ],
-            controls=[vm.Filter(column="species")],
+            ]
         )
 
         dashboard = vm.Dashboard(pages=[page])
-
         Vizro().build(dashboard).run()
         ```
+
+        1. We use a [`Flex`][vizro.models.Flex] layout to make sure the `Graph` and `Button` only occupy as much space as they need, rather than being distributed evenly.
 
     === "app.yaml"
 
         ```yaml
         # Still requires a .py to add data to the data manager and parse YAML configuration
-        # See from_yaml example
+        # See yaml_version example
         pages:
           - components:
               - figure:
@@ -112,7 +111,6 @@ The example below demonstrates how to configure a button to export the filtered 
                   color: species
                   size: petal_length
                   data_frame: iris
-                id: scatter_chart
                 type: graph
               - type: button
                 text: Export data
@@ -120,21 +118,8 @@ The example below demonstrates how to configure a button to export the filtered 
                 actions:
                   - function:
                       _target_: export_data
-                      targets:
-                        - scatter_chart
-            controls:
-              - column: species
-                selector:
-                  title: Species
-                  type: dropdown
-                type: filter
             layout:
-              grid:
-                - [0]
-                - [0]
-                - [0]
-                - [0]
-                - [1]
+              type: flex
             title: My first page
         ```
 
@@ -172,7 +157,7 @@ There are three predefined button styles that can be customized using the `varia
 
         page = vm.Page(
             title="Buttons with different styles",
-            layout=vm.Flex(direction="row"),
+            layout=vm.Flex(direction="row"),  # (1)!
             components=[
                 vm.Button(text="filled"),
                 vm.Button(text="outlined", variant="outlined"),
@@ -183,6 +168,8 @@ There are three predefined button styles that can be customized using the `varia
         dashboard = vm.Dashboard(pages=[page])
         Vizro().build(dashboard).run()
         ```
+
+        1. We use a [`Flex`][vizro.models.Flex] layout with `direction="row"` to ensure the `Button` components are placed side by side and only take up as much space as needed.
 
     === "app.yaml"
 
@@ -203,6 +190,7 @@ There are three predefined button styles that can be customized using the `varia
               - type: button
                 text: plain
                 variant: plain
+
         ```
 
     === "Result"

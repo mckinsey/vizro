@@ -22,6 +22,7 @@ You can add a [`Card`][vizro.models.Card] to your dashboard by inserting the [`C
 
         page = vm.Page(
             title="Card",
+            layout=vm.Flex(),  # (1)!
             components=[
                 vm.Card(
                     text="""
@@ -33,21 +34,24 @@ You can add a [`Card`][vizro.models.Card] to your dashboard by inserting the [`C
         )
 
         dashboard = vm.Dashboard(pages=[page])
-
         Vizro().build(dashboard).run()
         ```
+
+        1. We use a [`Flex`][vizro.models.Flex] layout to ensure the `Card` only occupies the vertical space it needs. Without this, it would default to filling the entire available space.
 
     === "app.yaml"
 
         ```yaml
         # Still requires a .py to add data to the data manager and parse YAML configuration
-        # See from_yaml example
+        # See yaml_version example
         pages:
           - components:
               - text: |
                   Commodi repudiandae consequuntur voluptatum.
                 title: Card Title
                 type: card
+            layout:
+              type: flex
             title: Card
         ```
 
@@ -75,7 +79,7 @@ The [`Card`][vizro.models.Card] uses the `dcc.Markdown` component from Dash as i
         from vizro import Vizro
 
         page = vm.Page(
-            title="Customizing Text",
+            title="Customizing Text",  # (1)!
             components=[
                 vm.Card(
                     text="""
@@ -134,15 +138,16 @@ The [`Card`][vizro.models.Card] uses the `dcc.Markdown` component from Dash as i
         )
 
         dashboard = vm.Dashboard(pages=[page])
-
         Vizro().build(dashboard).run()
         ```
+
+        1. Note that we don't explicitly define a `layout` here, so it defaults to the [`Grid`][vizro.models.Grid] layout. This layout automatically arranges all components to fit on a single page, giving each one equal space. As a result, all `Card` components are evenly sized and fill the entire screen.
 
     === "app.yaml"
 
         ```yaml
         # Still requires a .py to add data to the data manager and parse YAML configuration
-        # See from_yaml example
+        # See yaml_version example
         pages:
           - components:
               - text: |
@@ -214,23 +219,23 @@ An image ALT text offers a description to your image and serves as a text placeh
         from vizro import Vizro
 
         page = vm.Page(
-                title="Placing Images",
-                components=[
-                    vm.Card(
-                        text="""
-                        ### My card with image!
+             title="Placing Images",
+             components=[
+                 vm.Card(
+                     text="""
+                     ### My card with image!
 
-                        ![continent](assets/images/continents/africa.svg)
+                     ![continent](assets/images/continents/africa.svg)
 
-                         Commodi repudiandae consequuntur voluptatum laborum numquam blanditiis harum quisquam eius sed odit.
+                      Commodi repudiandae consequuntur voluptatum laborum numquam blanditiis harum quisquam eius sed odit.
 
-                         Fugiat iusto fuga praesentium option, eaque rerum! Provident similique accusantium nemo autem.
+                      Fugiat iusto fuga praesentium option, eaque rerum! Provident similique accusantium nemo autem.
 
-                         Obcaecati tenetur iure eius earum ut molestias architecto voluptate aliquam nihil, eveniet aliquid.
-                    """,
-                    ),
-                ],
-            )
+                      Obcaecati tenetur iure eius earum ut molestias architecto voluptate aliquam nihil, eveniet aliquid.
+                 """,
+                 ),
+             ],
+         )
 
         dashboard = vm.Dashboard(pages=[page])
         Vizro().build(dashboard).run()
@@ -242,7 +247,7 @@ An image ALT text offers a description to your image and serves as a text placeh
 
         ```yaml
         # Still requires a .py to add data to the data manager and parse YAML configuration
-        # See from_yaml example
+        # See yaml_version example
         pages:
           - components:
               - text: |
@@ -268,7 +273,7 @@ An image ALT text offers a description to your image and serves as a text placeh
 
 You might notice that the image is quite large. You'll find out how to style images in terms of their position and size in the next section.
 
-## Style a card image
+## Change image dimensions
 
 To change the size or position of the image, add a URL hash to your image like this:
 
@@ -294,28 +299,30 @@ Note the added URL hash `#my-image`. Now create a CSS file placed in your `asset
         from vizro import Vizro
 
         page = vm.Page(
-                title="Styling Images",
-                components=[
-                    vm.Card(
-                        text="""
-                        ### My card with image!
+            title="Styling Images",
+            layout=vm.Flex(),  # (1)!
+            components=[
+               vm.Card(
+                     text="""
+                     ### My card with image!
 
-                        ![](assets/images/continents/europe.svg#my-image)
+                     ![](assets/images/continents/europe.svg#my-image)
 
-                         Commodi repudiandae consequuntur voluptatum laborum numquam blanditiis harum quisquam eius sed odit.
+                      Commodi repudiandae consequuntur voluptatum laborum numquam blanditiis harum quisquam eius sed odit.
 
-                         Fugiat iusto fuga praesentium option, eaque rerum! Provident similique accusantium nemo autem.
+                      Fugiat iusto fuga praesentium option, eaque rerum! Provident similique accusantium nemo autem.
 
-                         Obcaecati tenetur iure eius earum ut molestias architecto voluptate aliquam nihil, eveniet aliquid.
-                    """,
-                    ),
-                ],
-            )
+                      Obcaecati tenetur iure eius earum ut molestias architecto voluptate aliquam nihil, eveniet aliquid.
+                 """
+               ),
+            ]
+        )
 
         dashboard = vm.Dashboard(pages=[page])
-
         Vizro().build(dashboard).run()
         ```
+
+        1. We use a [`Flex`][vizro.models.Flex] layout to ensure the `Card` only occupies the vertical space it needs. Without this, it would default to filling the entire available space.
 
         <img src=https://py.cafe/logo.png alt="PyCafe logo" width="30"><b><a target="_blank" href="https://py.cafe/vizro-official/vizro-styling-images">Run and edit this code in PyCafe</a></b>
 
@@ -323,7 +330,7 @@ Note the added URL hash `#my-image`. Now create a CSS file placed in your `asset
 
         ```yaml
         # Still requires a .py to add data to the data manager and parse YAML configuration
-        # See from_yaml example
+        # See yaml_version example
         pages:
           - components:
               - text: |
@@ -336,6 +343,8 @@ Note the added URL hash `#my-image`. Now create a CSS file placed in your `asset
                   Obcaecati tenetur iure eius earum ut molestias architecto voluptate aliquam nihil, eveniet aliquid.
                 title: My card with image!
                 type: card
+            layout:
+              type: flex
             title: Styling Images
         ```
 
@@ -345,7 +354,7 @@ Note the added URL hash `#my-image`. Now create a CSS file placed in your `asset
 
 Use the following pre-defined URL hashes in your image path to apply Vizro's default styling.
 
-### Float an image next to the text
+## Float an image inside the card
 
 To float an image for example to the right of the text, use the `src` attribute as a CSS selector. Follow these steps:
 
@@ -371,34 +380,36 @@ To float an image for example to the right of the text, use the `src` attribute 
         from vizro import Vizro
 
         page = vm.Page(
-                title="Floating Images",
-                components=[
-                    vm.Card(
-                        text="""
-                        ### My card with floating image!
+             title="Floating Images",
+             layout=vm.Flex(),  # (1)!
+             components=[
+                 vm.Card(
+                     text="""
+                     ### My card with floating image!
 
-                        ![](assets/images/continents/europe.svg#my-image)
+                     ![](assets/images/continents/europe.svg#my-image)
 
-                         Commodi repudiandae consequuntur voluptatum laborum numquam blanditiis harum quisquam eius sed odit.
+                     Commodi repudiandae consequuntur voluptatum laborum numquam blanditiis harum quisquam eius sed odit.
 
-                         Fugiat iusto fuga praesentium option, eaque rerum! Provident similique accusantium nemo autem.
+                     Fugiat iusto fuga praesentium option, eaque rerum! Provident similique accusantium nemo autem.
 
-                         Obcaecati tenetur iure eius earum ut molestias architecto voluptate aliquam nihil, eveniet aliquid.
+                     Obcaecati tenetur iure eius earum ut molestias architecto voluptate aliquam nihil, eveniet aliquid.
 
-                         Culpa officia aut! Impedit sit sunt quaerat, odit, tenetur error, harum nesciunt ipsum debitis quas.
+                     Culpa officia aut! Impedit sit sunt quaerat, odit, tenetur error, harum nesciunt ipsum debitis quas.
 
-                         Obcaecati tenetur iure eius earum ut molestias architecto voluptate aliquam nihil, eveniet aliquid.
+                     Obcaecati tenetur iure eius earum ut molestias architecto voluptate aliquam nihil, eveniet aliquid.
 
-                        Culpa officia aut! Impedit sit sunt quaerat, odit, tenetur error, harum nesciunt ipsum debitis quas.
-                    """,
-                    ),
-                ],
-            )
+                     Culpa officia aut! Impedit sit sunt quaerat, odit, tenetur error, harum nesciunt ipsum debitis quas.
+                 """,
+                 ),
+             ],
+        )
 
         dashboard = vm.Dashboard(pages=[page])
-
         Vizro().build(dashboard).run()
         ```
+
+        1. We use a [`Flex`][vizro.models.Flex] layout to ensure the `Card` only occupies the vertical space it needs. Without this, it would default to filling the entire available space.
 
         <img src=https://py.cafe/logo.png alt="PyCafe logo" width="30"><b><a target="_blank" href="https://py.cafe/vizro-official/vizro-floating-images-explorer">Run and edit this code in PyCafe</a></b>
 
@@ -406,7 +417,7 @@ To float an image for example to the right of the text, use the `src` attribute 
 
         ```yaml
         # Still requires a .py to add data to the data manager and parse YAML configuration
-        # See from_yaml example
+        # See yaml_version example
         pages:
           - components:
               - text: |
@@ -425,6 +436,8 @@ To float an image for example to the right of the text, use the `src` attribute 
                   Culpa officia aut! Impedit sit sunt quaerat, odit, tenetur error, harum nesciunt ipsum debitis quas.
                 title: My card with floating image!
                 type: card
+            layout:
+              type: flex
             title: Floating Images
         ```
 
@@ -503,7 +516,6 @@ To create a navigation card:
         )
 
         dashboard = vm.Dashboard(pages=[page_1, page_2])
-
         Vizro().build(dashboard).run()
         ```
 
@@ -511,7 +523,7 @@ To create a navigation card:
 
         ```yaml
         # Still requires a .py to add data to the data manager and parse YAML configuration
-        # See from_yaml example
+        # See yaml_version example
         pages:
           - components:
               - text: |
@@ -565,7 +577,7 @@ The `Card` is based on the underlying Dash component [`dbc.Card`](https://dash-b
 
     Using `extra` is a quick and flexible way to alter a component beyond what Vizro offers. However, [it is not a part of the official Vizro schema](../explanation/schema.md#what-is-the-vizro-json-schema) and the underlying implementation details may change. If you want to guarantee that your apps keep running, we recommend that you pin your Vizro version.
 
-An example use would be to limit the `Card` height to only take as much space as the content, and not to take up all the available height (default). For this, you can use `extra={"style": {"height": "unset"}}`. This would be a shortcut to using custom CSS in the assets folder as explained in [our guide on CSS](../user-guides/custom-css.md).
+An example use would be to specify a fixed `Card` height and width. For this, you can use `extra={"style": {"height": "100px", "width": "200px"}}`. This would be a shortcut to using custom CSS in the assets folder as explained in [our guide on CSS](../user-guides/custom-css.md).
 
 !!! example "Card with limited height"
 
@@ -576,13 +588,13 @@ An example use would be to limit the `Card` height to only take as much space as
         from vizro import Vizro
 
         page = vm.Page(
-            title="Card with limited height",
-            components=[
-                vm.Card(
-                    text="This card height is limited to the content.",
-                    extra={"style": {"height": "unset"}},
-                ),
-            ],
+             title="Card with fixed dimensions",
+             components=[
+                 vm.Card(
+                     text="This card has fixed dimensions 200x100.",
+                     extra={"style": {"height": "100px", "width": "200px"}},
+                 ),
+             ],
         )
 
         dashboard = vm.Dashboard(pages=[page])
@@ -591,15 +603,16 @@ An example use would be to limit the `Card` height to only take as much space as
 
     === "app.yaml"
 
-        ```{.yaml hl_lines="6-8"}
+        ```{.yaml hl_lines="6-9"}
         pages:
-          - title: Card with limited height
+          - title: Card with fixed dimensions
             components:
               - type: card
-                text: This card height is limited to the content.
+                text: This card has fixed dimensions 200x100.
                 extra:
                   style:
-                    height: unset
+                    height: 100px
+                    width: 200px
         ```
 
     === "Result"
