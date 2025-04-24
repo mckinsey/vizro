@@ -12,11 +12,11 @@ from vizro.models._action._actions_chain import ActionsChain
 
 # TODO AM: check this
 def annotate_action_type(cls):
-    annotated_cls = Annotated[cls, Tag(cls.__name__)]
-    vm.Graph.add_type("actions", annotated_cls)
-    ActionsChain.add_type("actions", annotated_cls)
+    # annotated_cls = Annotated[cls, Tag(cls.__name__)]
+    # vm.Graph.add_type("actions", annotated_cls)
+    # ActionsChain.add_type("actions", annotated_cls)
 
-    return annotated_cls
+    return cls
 
 
 @pytest.fixture
@@ -88,22 +88,6 @@ def class_action_with_one_runtime_arg():
 
 
 @pytest.fixture
-def class_action_with_builtin_runtime_arg():
-    @annotate_action_type
-    class class_action(_AbstractAction):
-        type: Literal["class_action"] = "class_action"
-
-        def function(self, _controls: dict):
-            pass
-
-        @property
-        def outputs(self):
-            return []
-
-    return class_action
-
-
-@pytest.fixture
 def class_action_with_two_runtime_args():
     @annotate_action_type
     class class_action(_AbstractAction):
@@ -130,6 +114,22 @@ def class_action_with_one_runtime_and_one_static():
         static_arg: str
 
         def function(self, runtime_arg: str):
+            pass
+
+        @property
+        def outputs(self):
+            return []
+
+    return class_action
+
+
+@pytest.fixture
+def class_action_with_builtin_runtime_arg():
+    @annotate_action_type
+    class class_action(_AbstractAction):
+        type: Literal["class_action"] = "class_action"
+
+        def function(self, _controls: dict):
             pass
 
         @property
@@ -204,6 +204,17 @@ class TestAbstractActionInputs:
                 {"runtime_arg": "component_1.property_1", "static_arg": "anything"},
                 {"runtime_arg": State("component_1", "property_1")},
             ),
+            (
+                "class_action_with_builtin_runtime_arg",
+                {},
+                {
+                    "_controls": {
+                        "filters": [],
+                        "parameters": [],
+                        "filter_interaction": [],
+                    }
+                },
+            ),
         ],
     )
     def test_inputs_valid(self, request, custom_action_fixture_name, inputs, expected_transformed_inputs):
@@ -228,25 +239,8 @@ class TestAbstractActionInputs:
             # An error is raised when accessing _transformed_inputs which is fine because validation is then performed.
             class_action_with_one_runtime_arg(arg_1=input)._transformed_inputs
 
-    def test_builtin_runtime_arg_with_empty_controls(self, class_action_with_builtin_runtime_arg):
-        action = class_action_with_builtin_runtime_arg()
-
-        assert action._transformed_inputs == {
-            "_controls": {
-                "filters": [],
-                "parameters": [],
-                "filter_interaction": [],
-            },
-        }
-
-    def test_builtin_runtime_arg_with_real_controls(
-        self, class_action_with_builtin_runtime_arg, page_actions_builtin_controls
-    ):
-        action = class_action_with_builtin_runtime_arg()
-
-        assert action._transformed_inputs == page_actions_builtin_controls
-
-    # TODO: Adjust this test when _controls becomes a public field
+    # TODO: Adjust this test when _controls becomes a public field. Should demonstrate that a runtime arg called
+    # controls overrides the inbuilt behaviour. This could be done as a new test case in TestAbstractActionInputs.
     @pytest.mark.xfail(reason="Private fields can't be overwritten")
     def test_builtin_runtime_arg_with_overwritten_controls(self, class_action_with_builtin_runtime_arg):
         action = class_action_with_builtin_runtime_arg()
@@ -254,55 +248,15 @@ class TestAbstractActionInputs:
         assert action._transformed_inputs == {"_controls": State("component", "property")}
 
 
-class TestAbstractActionParametersRuntimeArgs:
-        @pytest.mark.parametrize(
-        "custom_action_fixture_name, inputs, expected_parameters, expected_runtime_args",
-        [
-            ("class_action_with_no_args", {}, set(), {}),
-            ("class_action_with_one_static_arg", {"arg_1": "component.property"}, set(), {}),
-            (
-                "class_action_with_two_static_args",
-                {"arg_1": "component_1.property_1", "arg_2": "component_2.property_2"},
-                set(),
-                {},
-            ),
-            (
-                "class_action_with_one_runtime_arg",
-                {"arg_1": "component.property"},
-                {"arg_1"},
-                {"arg_1": "component.property"},
-            ),
-            (
-                "class_action_with_two_runtime_args",
-                {"arg_1": "component_1.property_1", "arg_2": "component_2.property_2"},
-                {"arg_1", "arg_2"},
-                {"arg_1": "component_1.property_1", "arg_2": "component_2.property_2"},
-            ),
-            (
-                "class_action_with_builtin_runtime_arg",
-                {},
-                {"_controls"},
-                {},
-            ),
-            (
-                "class_action_with_one_runtime_and_one_static",
-                {"runtime_arg": "component_1.property_1", "static_arg": "anything"},
-                {"runtime_arg"},
-                {"runtime_arg": "component_1.property_1"},
-            ),
-        ],
-    )
-    def test_parameters_and_runtime_args(
-        self, request, custom_action_fixture_name, inputs, expected_parameters, expected_runtime_args
-    ):
-        custom_action = request.getfixturevalue(custom_action_fixture_name)
-        action = custom_action(**inputs)
+class TestBuiltinRuntimeArgs:
+    """Test the actual values of the runtime args are correct in a real scenario."""
 
-        assert action._parameters == expected_parameters
-        assert action._runtime_args == expected_runtime_args
+    def test_builtin_runtime_arg_controls(self, class_action_with_builtin_runtime_arg, page_actions_builtin_controls):
+        action = class_action_with_builtin_runtime_arg()
+
+        assert action._transformed_inputs == page_actions_builtin_controls
 
 
-# TODO AM HERE: rewrite/combine above getfixturevalue tests
 class TestAbstractActionOutputs:
     @pytest.mark.parametrize(
         "class_action_with_mock_outputs, expected_transformed_outputs",
@@ -311,8 +265,8 @@ class TestAbstractActionOutputs:
             ([], []),
             (["component.property"], Output("component", "property")),
             (
-                ["component.property", "component.property"],
-                [Output("component", "property"), Output("component", "property")],
+                ["component_1.property_1", "component_2.property_2"],
+                [Output("component_1", "property_1"), Output("component_2", "property_2")],
             ),
             # Dict outputs
             ({}, {}),
@@ -321,8 +275,8 @@ class TestAbstractActionOutputs:
                 {"output_1": Output("component", "property")},
             ),
             (
-                {"output_1": "component.property", "output_2": "component.property"},
-                {"output_1": Output("component", "property"), "output_2": Output("component", "property")},
+                {"output_1": "component_1.property_1", "output_2": "component_2.property_2"},
+                {"output_1": Output("component_1", "property_1"), "output_2": Output("component_2", "property_2")},
             ),
         ],
         indirect=["class_action_with_mock_outputs"],
@@ -353,10 +307,9 @@ class TestAbstractActionOutputs:
 
 
 class TestAbstractActionBuild:
-    def test_custom_action_build(self, class_action_with_no_args):
-        action_id = "action_test"
-        action = class_action_with_no_args(id=action_id)
+    def test_abstract_action_build(self, class_action_with_no_args):
+        action = class_action_with_no_args(id="action_test")
 
         assert_component_equal(
-            action.build(), html.Div(id=f"{action_id}_action_model_components_div", children=[], hidden=True)
+            action.build(), html.Div(id="action_test_action_model_components_div", children=[], hidden=True)
         )
