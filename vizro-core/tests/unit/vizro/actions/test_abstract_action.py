@@ -1,13 +1,8 @@
-from typing import Annotated, Literal
-
 import pytest
 from asserts import assert_component_equal
 from dash import Output, State, html
-from pydantic import Tag
 
-import vizro.models as vm
 from vizro.actions._abstract_action import _AbstractAction
-from vizro.models._action._actions_chain import ActionsChain
 
 
 class action_with_no_args(_AbstractAction):
