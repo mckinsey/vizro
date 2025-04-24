@@ -70,13 +70,12 @@ def class_action_with_one_runtime_arg():
 
 
 @pytest.fixture
-def class_action_with_one_runtime_arg_and_controls():
+def class_action_with_builtin_runtime():
     @annotate_action_type
     class class_action(_AbstractAction):
         type: Literal["class_action"] = "class_action"
-        arg_1: str
 
-        def function(self, arg_1: str, _controls: dict):
+        def function(self, _controls: dict):
             pass
 
         @property
@@ -160,6 +159,8 @@ class TestAbstractActionInstantiation:
         assert action._runtime_args == {}
         assert action._action_name == "class_action"
 
+
+class TestAbstractActionInputs:
     @pytest.mark.parametrize(
         "custom_action_fixture_name, runtime_inputs, expected_transformed_inputs",
         [
@@ -216,11 +217,10 @@ class TestAbstractActionInstantiation:
             # An error is raised when accessing _transformed_inputs which is fine because validation is then performed.
             class_action_with_one_runtime_arg(arg_1=static_input)._transformed_inputs
 
-    def test_builtin_arguments_with_empty_controls(self, class_action_with_one_runtime_arg_and_controls):
-        action = class_action_with_one_runtime_arg_and_controls(arg_1="component.property")
+    def test_builtin_runtime_with_empty_controls(self, class_action_with_builtin_runtime):
+        action = class_action_with_builtin_runtime()
 
         assert action._transformed_inputs == {
-            "arg_1": State("component", "property"),
             "_controls": {
                 "filters": [],
                 "parameters": [],
@@ -228,25 +228,22 @@ class TestAbstractActionInstantiation:
             },
         }
 
-    def test_builtin_arguments_with_real_controls(
-        self, class_action_with_one_runtime_arg_and_controls, page_actions_builtin_controls
-    ):
-        action = class_action_with_one_runtime_arg_and_controls(arg_1="component.property")
+    def test_builtin_runtime_with_real_controls(self, class_action_with_builtin_runtime, page_actions_builtin_controls):
+        action = class_action_with_builtin_runtime()
 
-        assert action._transformed_inputs == {"arg_1": State("component", "property"), **page_actions_builtin_controls}
+        assert action._transformed_inputs == page_actions_builtin_controls
 
     # TODO: Adjust this test when _controls becomes a public field
     @pytest.mark.xfail(reason="Private fields can't be overwritten")
-    def test_builtin_arguments_with_overwritten_controls(self, class_action_with_one_runtime_arg_and_controls):
-        action = class_action_with_one_runtime_arg_and_controls(
-            arg_1="component.property", _controls="component.property"
-        )
+    def test_builtin_runtime_with_overwritten_controls(self, class_action_with_builtin_runtime):
+        action = class_action_with_builtin_runtime()
 
         assert action._transformed_inputs == {
-            "arg_1": State("component", "property"),
             "_controls": State("component", "property"),
         }
 
+
+class TestAbstractActionParametersRuntimeArgs:
     # TODO AM: label which is runtime argument rather than just arg_1, arg_2
     @pytest.mark.parametrize(
         "custom_action_fixture_name, runtime_inputs, expected_parameters, expected_runtime_args",
@@ -266,10 +263,10 @@ class TestAbstractActionInstantiation:
                 {"arg_1": "component_1.property_1", "arg_2": "component_2.property_2"},
             ),
             (
-                "class_action_with_one_runtime_arg_and_controls",
-                {"arg_1": "component_1.property_1"},
-                {"arg_1", "_controls"},
-                {"arg_1": "component_1.property_1"},
+                "class_action_with_builtin_runtime",
+                {},
+                {"_controls"},
+                {},
             ),
             (
                 "class_action_with_one_runtime_and_one_static",
@@ -288,6 +285,8 @@ class TestAbstractActionInstantiation:
         assert action._parameters == expected_parameters
         assert action._runtime_args == expected_runtime_args
 
+
+class TestAbstractActionOutputs:
     @pytest.mark.parametrize(
         "class_action_with_mock_outputs, expected_transformed_outputs",
         [
