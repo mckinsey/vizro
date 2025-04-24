@@ -11,6 +11,34 @@ See the fragment files in the [changelog.d directory](https://github.com/mckinse
 
 <!-- scriv-insert-here -->
 
+<a id='changelog-0.1.38'></a>
+
+# 0.1.38 — 2025-04-24
+
+## Added
+
+- Add `collapsed` argument to `vm.Container` to enable collapsible containers. ([#1079](https://github.com/mckinsey/vizro/pull/1079))
+
+- Enable styling of `vm.Button` with a new argument `variant="plain"/"filled"/"outlined"`. See the [user guide on styled buttons](https://vizro.readthedocs.io/en/stable/pages/user-guides/button/#styled-buttons) for more details. ([#1114](https://github.com/mckinsey/vizro/pull/1114))
+
+- Added `description` argument from `Checklist`, `Dropdown`, `RadioItems`, `Slider`, `RangeSlider` and `DatePicker` enabling info-icons in selector titles. ([#1124](https://github.com/mckinsey/vizro/pull/1124))
+
+## Changed
+
+- Updated the light theme for better consistency and contrast. Right-side and card backgrounds now adapt when a `Container` with `variant="filled"` is used. ([#1048](https://github.com/mckinsey/vizro/pull/1048))
+
+- Redesigned the collapse button to match the left-side panel's background and added a border for improved alignment. ([#1048](https://github.com/mckinsey/vizro/pull/1048))
+
+- Unified hover and active states for accordion items with a consistent background color. ([#1048](https://github.com/mckinsey/vizro/pull/1048))
+
+- `actions` now have type `list[ActionType]` rather than `list[Action]`. ([#1054](https://github.com/mckinsey/vizro/pull/1054))
+
+## Fixed
+
+- Adjust the width and height of flex-items and grid-items dynamically based on the dimensions of their ancestor.([#1108](https://github.com/mckinsey/vizro/pull/1108))
+
+- Update styling (font style, bg-color and hover effect) of `Card`. ([#1112](https://github.com/mckinsey/vizro/pull/1112))
+
 <a id='changelog-0.1.37'></a>
 
 # 0.1.37 — 2025-04-09
