@@ -1,5 +1,3 @@
-"""Unit tests for vizro.models.Action."""
-
 from typing import Annotated, Literal
 
 import pytest
@@ -12,6 +10,7 @@ from vizro.actions._abstract_action import _AbstractAction
 from vizro.models._action._actions_chain import ActionsChain
 
 
+# TODO AM: check this
 def annotate_action_type(cls):
     annotated_cls = Annotated[cls, Tag(cls.__name__)]
     vm.Graph.add_type("actions", annotated_cls)
@@ -37,7 +36,7 @@ def class_action_with_no_args():
 
 
 @pytest.fixture
-def class_action_with_one_hardcoded_arg():
+def class_action_with_one_static_arg():
     @annotate_action_type
     class class_action(_AbstractAction):
         type: Literal["class_action"] = "class_action"
@@ -87,6 +86,7 @@ def class_action_with_one_runtime_arg_and_controls():
     return class_action
 
 
+# TODO AM: why needed? Or why not do two static args too?
 @pytest.fixture
 def class_action_with_two_runtime_args():
     @annotate_action_type
@@ -106,7 +106,7 @@ def class_action_with_two_runtime_args():
 
 
 @pytest.fixture
-def class_action_with_one_runtime_and_one_hardcoded():
+def class_action_with_one_runtime_and_one_static():
     @annotate_action_type
     class class_action(_AbstractAction):
         type: Literal["class_action"] = "class_action"
@@ -139,6 +139,9 @@ def class_action_with_mock_outputs(request):
     return class_action
 
 
+# TODO AM: check user _controls takes precedence
+
+
 class TestAbstractActionInstantiation:
     """Tests _AbstractAction instantiation."""
 
@@ -168,8 +171,8 @@ class TestAbstractActionInstantiation:
             ),
             (
                 "class_action_with_two_runtime_args",
-                {"arg_1": "component.property", "arg_2": "component.property"},
-                {"arg_1": State("component", "property"), "arg_2": State("component", "property")},
+                {"arg_1": "component_1.property_1", "arg_2": "component_2.property_2"},
+                {"arg_1": State("component_1", "property_1"), "arg_2": State("component_2", "property_2")},
             ),
         ],
     )
@@ -181,9 +184,9 @@ class TestAbstractActionInstantiation:
 
         assert action._transformed_inputs == expected_transformed_inputs
 
-    # It's valid because arg_1 is a `hardcoded` parameter in the used class. So, it's not used as the runtime argument.
+    # It's valid because arg_1 is a `static` parameter in the used class. So, it's not used as the runtime argument.
     @pytest.mark.parametrize(
-        "hardcoded_input",
+        "static_input",
         [
             "",
             "component",
@@ -191,14 +194,14 @@ class TestAbstractActionInstantiation:
             "component.property.property",
         ],
     )
-    def test_hardcoded_inputs_valid(self, class_action_with_one_hardcoded_arg, hardcoded_input):
-        action = class_action_with_one_hardcoded_arg(arg_1=hardcoded_input)
+    def test_static_inputs_valid(self, class_action_with_one_static_arg, static_input):
+        action = class_action_with_one_static_arg(arg_1=static_input)
 
         assert action._transformed_inputs == {}
 
     # It's invalid because arg_1 is a `runtime` argument in the used class.
     @pytest.mark.parametrize(
-        "hardcoded_input",
+        "static_input",
         [
             "",
             "component",
@@ -206,12 +209,12 @@ class TestAbstractActionInstantiation:
             "component.property.property",
         ],
     )
-    def test_hardcoded_inputs_invalid(self, class_action_with_one_runtime_arg, hardcoded_input):
+    def test_static_inputs_invalid(self, class_action_with_one_runtime_arg, static_input):
         with pytest.raises(
             ValueError, match="Action inputs .* must be a string of the form <component_name>.<component_property>."
         ):
             # An error is raised when accessing _transformed_inputs which is fine because validation is then performed.
-            class_action_with_one_runtime_arg(arg_1=hardcoded_input)._transformed_inputs()
+            class_action_with_one_runtime_arg(arg_1=static_input)._transformed_inputs
 
     def test_builtin_arguments_with_empty_controls(self, class_action_with_one_runtime_arg_and_controls):
         action = class_action_with_one_runtime_arg_and_controls(arg_1="component.property")
@@ -244,11 +247,12 @@ class TestAbstractActionInstantiation:
             "_controls": State("component", "property"),
         }
 
+    # TODO AM: label which is runtime argument rather than just arg_1, arg_2
     @pytest.mark.parametrize(
         "custom_action_fixture_name, runtime_inputs, expected_parameters, expected_runtime_args",
         [
             ("class_action_with_no_args", {}, set(), {}),
-            ("class_action_with_one_hardcoded_arg", {"arg_1": "component.property"}, set(), {}),
+            ("class_action_with_one_static_arg", {"arg_1": "component.property"}, set(), {}),
             (
                 "class_action_with_one_runtime_arg",
                 {"arg_1": "component.property"},
@@ -257,21 +261,21 @@ class TestAbstractActionInstantiation:
             ),
             (
                 "class_action_with_two_runtime_args",
-                {"arg_1": "component.property", "arg_2": "component.property"},
+                {"arg_1": "component_1.property_1", "arg_2": "component_2.property_2"},
                 {"arg_1", "arg_2"},
-                {"arg_1": "component.property", "arg_2": "component.property"},
+                {"arg_1": "component_1.property_1", "arg_2": "component_2.property_2"},
             ),
             (
                 "class_action_with_one_runtime_arg_and_controls",
-                {"arg_1": "component.property"},
+                {"arg_1": "component_1.property_1"},
                 {"arg_1", "_controls"},
-                {"arg_1": "component.property"},
+                {"arg_1": "component_1.property_1"},
             ),
             (
-                "class_action_with_one_runtime_and_one_hardcoded",
-                {"arg_1": "component.property", "arg_2": "component.property"},
+                "class_action_with_one_runtime_and_one_static",
+                {"arg_1": "component_1.property_1", "arg_2": "component_2.property_2"},
                 {"arg_1"},
-                {"arg_1": "component.property"},
+                {"arg_1": "component_1.property_1"},
             ),
         ],
     )
@@ -329,7 +333,7 @@ class TestAbstractActionInstantiation:
             ValueError, match="Action outputs .* must be a string of the form <component_name>.<component_property>."
         ):
             # An error is raised when accessing _transformed_outputs which is fine because validation is then performed.
-            class_action_with_mock_outputs()._transformed_outputs()
+            class_action_with_mock_outputs()._transformed_outputs
 
 
 class TestAbstractActionBuild:
