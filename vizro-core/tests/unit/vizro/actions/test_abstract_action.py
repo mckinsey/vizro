@@ -177,7 +177,7 @@ class TestAbstractActionInputs:
             action_with_one_runtime_arg(arg_1=input)._transformed_inputs
 
     # TODO: Adjust this test when _controls becomes a public field. Should demonstrate that a runtime arg called
-    # controls overrides the inbuilt behaviour. This could be done as a new test case in TestAbstractActionInputs
+    # controls overrides the inbuilt behavior. This could be done as a new test case in TestAbstractActionInputs
     # like in test_action.TestActionInputs works.
     @pytest.mark.xfail(reason="Private fields can't be overwritten")
     def test_builtin_runtime_arg_with_overwritten_controls(self):
