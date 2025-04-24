@@ -17,19 +17,15 @@ See the fragment files in the [changelog.d directory](https://github.com/mckinse
 
 ## Added
 
-- Add `collapsed` argument to `vm.Container` to enable collapsible containers. ([#1079](https://github.com/mckinsey/vizro/pull/1079))
+- Add `collapsed` argument to `vm.Container` to enable collapsible containers. See the [user guide on collapsible container](https://vizro.readthedocs.io/en/stable/pages/user-guides/container/#collapsible-containers) for more details. ([#1079](https://github.com/mckinsey/vizro/pull/1079))
 
 - Enable styling of `vm.Button` with a new argument `variant="plain"/"filled"/"outlined"`. See the [user guide on styled buttons](https://vizro.readthedocs.io/en/stable/pages/user-guides/button/#styled-buttons) for more details. ([#1114](https://github.com/mckinsey/vizro/pull/1114))
 
-- Added `description` argument from `Checklist`, `Dropdown`, `RadioItems`, `Slider`, `RangeSlider` and `DatePicker` enabling info-icons in selector titles. ([#1124](https://github.com/mckinsey/vizro/pull/1124))
+- Add `description` argument to `Checklist`, `Dropdown`, `RadioItems`, `Slider`, `RangeSlider` and `DatePicker` to enable info-icons in selector titles. See the [user guide on info-icons](https://vizro.readthedocs.io/en/stable/pages/user-guides/selectors/#add-an-info-icon) for more details. ([#1124](https://github.com/mckinsey/vizro/pull/1124))
 
 ## Changed
 
-- Updated the light theme for better consistency and contrast. Right-side and card backgrounds now adapt when a `Container` with `variant="filled"` is used. ([#1048](https://github.com/mckinsey/vizro/pull/1048))
-
-- Redesigned the collapse button to match the left-side panel's background and added a border for improved alignment. ([#1048](https://github.com/mckinsey/vizro/pull/1048))
-
-- Unified hover and active states for accordion items with a consistent background color. ([#1048](https://github.com/mckinsey/vizro/pull/1048))
+- Update the light theme for better consistency and contrast. Right-side and card backgrounds now adapt when a `Container` with `variant="filled"` is used. ([#1048](https://github.com/mckinsey/vizro/pull/1048))
 
 - `actions` now have type `list[ActionType]` rather than `list[Action]`. ([#1054](https://github.com/mckinsey/vizro/pull/1054))
 
