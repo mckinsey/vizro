@@ -1,0 +1,249 @@
+import pytest
+from asserts import assert_component_equal
+from dash import Output, State, html
+
+from vizro.actions._abstract_action import _AbstractAction
+
+
+class action_with_no_args(_AbstractAction):
+    def function(self):
+        pass
+
+    @property
+    def outputs(self):
+        return []
+
+
+class action_with_one_static_arg(_AbstractAction):
+    arg_1: str
+
+    def function(self):
+        pass
+
+    @property
+    def outputs(self):
+        return []
+
+
+class action_with_two_static_args(_AbstractAction):
+    arg_1: str
+    arg_2: str
+
+    def function(self):
+        pass
+
+    @property
+    def outputs(self):
+        return []
+
+
+class action_with_one_runtime_arg(_AbstractAction):
+    arg_1: str
+
+    def function(self, arg_1):
+        pass
+
+    @property
+    def outputs(self):
+        return []
+
+
+class action_with_two_runtime_args(_AbstractAction):
+    arg_1: str
+    arg_2: str
+
+    def function(self, arg_1: str, arg_2: str):
+        pass
+
+    @property
+    def outputs(self):
+        return []
+
+
+class action_with_one_runtime_and_one_static(_AbstractAction):
+    runtime_arg: str
+    static_arg: str
+
+    def function(self, runtime_arg: str):
+        pass
+
+    @property
+    def outputs(self):
+        return []
+
+
+class action_with_builtin_runtime_arg(_AbstractAction):
+    def function(self, _controls: dict):
+        pass
+
+    @property
+    def outputs(self):
+        return []
+
+
+@pytest.fixture
+def action_with_mock_outputs(request):
+    class _action_with_mock_outputs(_AbstractAction):
+        def function(self):
+            pass
+
+        @property
+        def outputs(self):
+            return request.param
+
+    return _action_with_mock_outputs
+
+
+class TestAbstractActionInstantiation:
+    """Tests _AbstractAction instantiation."""
+
+    def test_action_mandatory_only(self):
+        action = action_with_no_args()
+
+        assert hasattr(action, "id")
+        assert hasattr(action, "function")
+        assert action.outputs == []
+
+        assert not action._legacy
+        assert action._transformed_inputs == {}
+        assert action._transformed_outputs == []
+        assert action._dash_components == []
+        assert action._parameters == set()
+        assert action._runtime_args == {}
+        assert action._action_name == "action_with_no_args"
+
+
+class TestAbstractActionInputs:
+    @pytest.mark.parametrize(
+        "action_class, inputs, expected_transformed_inputs",
+        [
+            (action_with_no_args, {}, {}),
+            (
+                action_with_one_static_arg,
+                {"arg_1": "anything"},
+                {},
+            ),
+            (
+                action_with_two_static_args,
+                {"arg_1": "anything", "arg_2": "anything"},
+                {},
+            ),
+            (
+                action_with_one_runtime_arg,
+                {"arg_1": "component.property"},
+                {"arg_1": State("component", "property")},
+            ),
+            (
+                action_with_two_runtime_args,
+                {"arg_1": "component_1.property_1", "arg_2": "component_2.property_2"},
+                {"arg_1": State("component_1", "property_1"), "arg_2": State("component_2", "property_2")},
+            ),
+            (
+                action_with_one_runtime_and_one_static,
+                {"runtime_arg": "component_1.property_1", "static_arg": "anything"},
+                {"runtime_arg": State("component_1", "property_1")},
+            ),
+            (
+                action_with_builtin_runtime_arg,
+                {},
+                {
+                    "_controls": {
+                        "filters": [],
+                        "parameters": [],
+                        "filter_interaction": [],
+                    }
+                },
+            ),
+        ],
+    )
+    def test_inputs_valid(self, action_class, inputs, expected_transformed_inputs):
+        action = action_class(**inputs)
+        assert action._transformed_inputs == expected_transformed_inputs
+
+    @pytest.mark.parametrize(
+        "input",
+        [
+            "",
+            "component",
+            "component_property",
+            "component.property.property",
+        ],
+    )
+    def test_runtime_inputs_invalid(self, input):
+        with pytest.raises(
+            ValueError, match="Action inputs .* must be a string of the form <component_name>.<component_property>."
+        ):
+            # An error is raised when accessing _transformed_inputs which is fine because validation is then performed.
+            action_with_one_runtime_arg(arg_1=input)._transformed_inputs
+
+    # TODO: Adjust this test when _controls becomes a public field. Should demonstrate that a runtime arg called
+    # controls overrides the inbuilt behavior. This could be done as a new test case in TestAbstractActionInputs
+    # like in test_action.TestActionInputs works.
+    @pytest.mark.xfail(reason="Private fields can't be overwritten")
+    def test_builtin_runtime_arg_with_overwritten_controls(self):
+        action = action_with_builtin_runtime_arg()
+        assert action._transformed_inputs == {"_controls": State("component", "property")}
+
+
+class TestBuiltinRuntimeArgs:
+    """Test the actual values of the runtime args are correct in a real scenario."""
+
+    def test_builtin_runtime_arg_controls(self, page_actions_builtin_controls):
+        action = action_with_builtin_runtime_arg()
+        assert action._transformed_inputs == page_actions_builtin_controls
+
+
+class TestAbstractActionOutputs:
+    @pytest.mark.parametrize(
+        "action_with_mock_outputs, expected_transformed_outputs",
+        [
+            # List outputs
+            ([], []),
+            (["component.property"], Output("component", "property")),
+            (
+                ["component_1.property_1", "component_2.property_2"],
+                [Output("component_1", "property_1"), Output("component_2", "property_2")],
+            ),
+            # Dict outputs
+            ({}, {}),
+            (
+                {"output_1": "component.property"},
+                {"output_1": Output("component", "property")},
+            ),
+            (
+                {"output_1": "component_1.property_1", "output_2": "component_2.property_2"},
+                {"output_1": Output("component_1", "property_1"), "output_2": Output("component_2", "property_2")},
+            ),
+        ],
+        indirect=["action_with_mock_outputs"],
+    )
+    def test_outputs_valid(self, action_with_mock_outputs, expected_transformed_outputs):
+        action = action_with_mock_outputs()
+        assert action._transformed_outputs == expected_transformed_outputs
+
+    @pytest.mark.parametrize(
+        "action_with_mock_outputs",
+        [
+            [""],
+            ["component"],
+            ["component_property"],
+            ["component.property.property"],
+            {"output_1": ""},
+            {"output_1": "component.property", "output_2": ""},
+        ],
+        indirect=["action_with_mock_outputs"],
+    )
+    def test_outputs_invalid(self, action_with_mock_outputs):
+        with pytest.raises(
+            ValueError, match="Action outputs .* must be a string of the form <component_name>.<component_property>."
+        ):
+            # An error is raised when accessing _transformed_outputs which is fine because validation is then performed.
+            action_with_mock_outputs()._transformed_outputs
+
+
+class TestAbstractActionBuild:
+    def test_abstract_action_build(self):
+        action = action_with_no_args(id="action_test")
+        assert_component_equal(
+            action.build(), html.Div(id="action_test_action_model_components_div", children=[], hidden=True)
+        )
