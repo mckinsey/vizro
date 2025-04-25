@@ -54,7 +54,6 @@ page = vm.Page(
 )
 
 dashboard = vm.Dashboard(pages=[page])
-
 Vizro().build(dashboard).run()
 ```
 
@@ -87,7 +86,6 @@ page = vm.Page(
 )
 
 dashboard = vm.Dashboard(pages=[page])
-
 Vizro().build(dashboard).run()
 ```
 

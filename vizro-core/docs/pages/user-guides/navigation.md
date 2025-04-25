@@ -22,7 +22,7 @@ By default, if the `navigation` argument is not specified, Vizro creates a navig
         page_1 = vm.Page(
             title="My first page",
             components=[
-                vm.Graph(figure=px.scatter(iris, x="sepal_length", y="petal_width", color="species")),
+                vm.Card(text="My text here"),
             ],
         )
         page_2 = vm.Page(
@@ -34,7 +34,7 @@ By default, if the `navigation` argument is not specified, Vizro creates a navig
         page_3 = vm.Page(
             title="My third page",
             components=[
-                vm.Graph(figure=px.scatter(iris, x="sepal_length", y="sepal_width", color="species")),
+                vm.Card(text="My text here"),
             ],
         )
 
@@ -49,26 +49,16 @@ By default, if the `navigation` argument is not specified, Vizro creates a navig
         # See yaml_version example
         pages:
           - components:
-              - figure:
-                  _target_: scatter
-                  data_frame: iris
-                  x: sepal_length
-                  y: petal_width
-                  color: species
-                type: graph
+              - text: My text here
+                type: card
             title: My first page
           - components:
               - text: My text here
                 type: card
             title: My second page
           - components:
-              - figure:
-                  _target_: scatter
-                  data_frame: iris
-                  x: sepal_length
-                  y: sepal_width
-                  color: species
-                type: graph
+              - text: My text here
+                type: card
             title: My third page
         ```
 
@@ -104,7 +94,7 @@ To include only some of your dashboard pages in your navigation then list them i
         page_1 = vm.Page(
             title="My first page",
             components=[
-                vm.Graph(figure=px.scatter(iris, x="sepal_length", y="petal_width", color="species")),
+                vm.Card(text="My text here"),
             ],
         )
         page_2 = vm.Page(
@@ -116,14 +106,13 @@ To include only some of your dashboard pages in your navigation then list them i
         page_3 = vm.Page(
             title="My third page",
             components=[
-                vm.Graph(figure=px.scatter(iris, x="sepal_length", y="sepal_width", color="species")),
+                vm.Card(text="My text here"),
             ],
         )
 
         dashboard = vm.Dashboard(
             pages=[page_1, page_2, page_3], navigation=vm.Navigation(pages=["My first page", "My second page"])
         )
-
         Vizro().build(dashboard).run()
         ```
 
@@ -172,7 +161,7 @@ You can also group your pages together by specifying `pages` as a dictionary:
         page_1 = vm.Page(
             title="My first page",
             components=[
-                vm.Graph(figure=px.scatter(iris, x="sepal_length", y="petal_width", color="species")),
+                vm.Card(text="My text here"),
             ],
         )
         page_2 = vm.Page(
@@ -184,7 +173,7 @@ You can also group your pages together by specifying `pages` as a dictionary:
         page_3 = vm.Page(
             title="My third page",
             components=[
-                vm.Graph(figure=px.scatter(iris, x="sepal_length", y="sepal_width", color="species")),
+                vm.Card(text="My text here"),
             ],
         )
 
@@ -245,7 +234,7 @@ Another way to group together pages in the navigation is to use a [`NavBar`][viz
         page_1 = vm.Page(
             title="My first page",
             components=[
-                vm.Graph(figure=px.scatter(iris, x="sepal_length", y="petal_width", color="species")),
+                vm.Card(text="My text here"),
             ],
         )
         page_2 = vm.Page(
@@ -257,7 +246,7 @@ Another way to group together pages in the navigation is to use a [`NavBar`][viz
         page_3 = vm.Page(
             title="My third page",
             components=[
-                vm.Graph(figure=px.scatter(iris, x="sepal_length", y="sepal_width", color="species")),
+                vm.Card(text="My text here"),
             ],
         )
 
@@ -429,7 +418,7 @@ You can alter the icons used by specifying the name of the icon in the [Google M
         page_1 = vm.Page(
             title="My first page",
             components=[
-                vm.Graph(figure=px.scatter(iris, x="sepal_length", y="petal_width", color="species")),
+                vm.Card(text="My text here"),
             ],
         )
         page_2 = vm.Page(
@@ -441,7 +430,7 @@ You can alter the icons used by specifying the name of the icon in the [Google M
         page_3 = vm.Page(
             title="My third page",
             components=[
-                vm.Graph(figure=px.scatter(iris, x="sepal_length", y="sepal_width", color="species")),
+                vm.Card(text="My text here"),
             ],
         )
 
