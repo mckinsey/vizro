@@ -76,7 +76,7 @@ Choosing a heading is sometimes the hardest part of the writing process. Take yo
 
 Aim to avoid use of gerunds (verb+ing) where you can. So your page should be "Get started" rather than "Getting started" and "Customize a layout" rather than "Customizing a layout". Keep the title short and descriptive, ideally think about a reader who may be using a search engine to find an answer -- structure your title to give them the best chance of understanding what the page tells them.
 
-In Vizro, when you are working on a how-to guide, there are a few additional guidelines to follow for consistency:
+In Vizro, when you are working on a how-to guide, there are a few more guidelines to follow for consistency:
 
 - Don't use "how to" in the file name: keep that as short as possible.
 - The title (H1 header) should start with "How to".

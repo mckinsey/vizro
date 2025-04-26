@@ -47,7 +47,7 @@ See the fragment files in the [changelog.d directory](https://github.com/mckinse
 
 ## Added
 
-- Add support for additional CSS units (rem, em, %) for `row_min_height`, `row_gap`, `col_gap`, and `col_min_width` in `Layout`. ([#1050](https://github.com/mckinsey/vizro/pull/1050))
+- Add support for more CSS units (rem, em, %) for `row_min_height`, `row_gap`, `col_gap`, and `col_min_width` in `Layout`. ([#1050](https://github.com/mckinsey/vizro/pull/1050))
 
 ## Changed
 
