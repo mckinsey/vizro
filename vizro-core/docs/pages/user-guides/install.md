@@ -117,7 +117,7 @@ python3 -m venv .venv
 .venv\Scripts\activate
 ```
 
-Alternatively, you can use [`conda` as your virtual environment manager](https://docs.conda.io/projects/conda/en/latest/user-guide/install/). 
+Alternatively, you can use [`conda` as your virtual environment manager](https://docs.conda.io/projects/conda/en/latest/user-guide/install/).
 
 ```bash
 conda create --name vizro-environment
