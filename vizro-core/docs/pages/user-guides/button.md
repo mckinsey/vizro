@@ -199,7 +199,7 @@ There are three predefined button styles that can be customized using the `varia
 
 ## The `extra` argument
 
-The `Button` is based on the underlying Dash component [`dbc.Button`](https://dash-bootstrap-components.opensource.faculty.ai/docs/components/button/). Using the `extra` argument you can pass additional arguments to `dbc.Button` in order to alter it beyond the chosen defaults.
+The `Button` is based on the underlying Dash component [`dbc.Button`](https://dash-bootstrap-components.opensource.faculty.ai/docs/components/button/). Using the `extra` argument you can pass more arguments to `dbc.Button` in order to alter it beyond the chosen defaults.
 
 !!! warning
 
