@@ -415,7 +415,7 @@ Collapsible containers can be used in `Grid` layout as well.
 
 ## The `extra` argument
 
-The `Container` is based on the underlying Dash component [`dbc.Container`](https://dash-bootstrap-components.opensource.faculty.ai/docs/components/layout/). Using the `extra` argument you can pass additional arguments to `dbc.Container` in order to alter it beyond the chosen defaults.
+The `Container` is based on the underlying Dash component [`dbc.Container`](https://dash-bootstrap-components.opensource.faculty.ai/docs/components/layout/). Using the `extra` argument you can pass extra arguments to `dbc.Container` in order to alter it beyond the chosen defaults.
 
 !!! note
 
