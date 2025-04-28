@@ -12,17 +12,17 @@ from pydantic import ValidationError
 from vizro import Vizro
 
 from vizro_mcp.schemas import (
-    AgGridEnhanced,
-    ChartPlan,
-    DashboardSimplified,
-    GraphEnhanced,
-    PageSimplified,
+    _AgGridEnhanced,
+    _ChartPlan,
+    _DashboardSimplified,
+    _GraphEnhanced,
+    _PageSimplified,
 )
 from vizro_mcp.utils import (
-    convert_github_url_to_raw,
-    get_dataframe_info,
-    get_python_code_and_preview_link,
-    path_or_url_check,
+    _convert_github_url_to_raw,
+    _get_dataframe_info,
+    _get_python_code_and_preview_link,
+    _path_or_url_check,
 )
 
 # TODO: what do I need to do here, as things are already set up?
@@ -61,7 +61,7 @@ def validate_model_config(
         return {"valid": False, "error": f"Validation Error: {e!s}"}
 
     else:
-        result = get_python_code_and_preview_link(dashboard, file_name, file_path_or_url)
+        result = _get_python_code_and_preview_link(dashboard, file_name, file_path_or_url)
 
         # Get the result before resetting
         result = {
@@ -89,13 +89,13 @@ def get_model_JSON_schema(model_name: str) -> dict[str, Any]:
         JSON schema of the requested Vizro model
     """
     if model_name == "Page":
-        return PageSimplified.model_json_schema()
+        return _PageSimplified.model_json_schema()
     elif model_name == "Dashboard":
-        return DashboardSimplified.model_json_schema()
+        return _DashboardSimplified.model_json_schema()
     elif model_name == "Graph":
-        return GraphEnhanced.model_json_schema()
+        return _GraphEnhanced.model_json_schema()
     elif model_name == "AgGrid":
-        return AgGridEnhanced.model_json_schema()
+        return _AgGridEnhanced.model_json_schema()
     # Get the model class from the vizro.models namespace
     if not hasattr(vm, model_name):
         return {"error": f"Model '{model_name}' not found in vizro.models"}
@@ -188,9 +188,9 @@ def load_and_analyze_csv(path_or_url: str) -> dict[str, Any]:
     Returns:
         Dictionary containing DataFrame information and summary
     """
-    path_or_url_type = path_or_url_check(path_or_url)
+    path_or_url_type = _path_or_url_check(path_or_url)
     if path_or_url_type == "remote":
-        path_or_url = convert_github_url_to_raw(path_or_url)
+        path_or_url = _convert_github_url_to_raw(path_or_url)
 
     elif path_or_url_type == "local":
         path_or_url = Path(path_or_url)
@@ -208,16 +208,13 @@ def load_and_analyze_csv(path_or_url: str) -> dict[str, Any]:
         return {"success": False, "error": f"Failed to fetch file: {e!s}"}
     return {
         "success": True,
-        "info": get_dataframe_info(df),
+        "info": _get_dataframe_info(df),
         "location_type": path_or_url_type,
         "file_path_or_url": str(path_or_url),
     }
 
 
-@mcp.prompt(
-    name="create_EDA_dashboard",
-    description="Prompt template for creating an EDA dashboard based on one CSV dataset",
-)
+@mcp.prompt()
 def create_EDA_dashboard(
     file_path_or_url: str,
 ) -> str:
@@ -244,20 +241,17 @@ Create an EDA dashboard based on the following dataset:{file_path_or_url}. Proce
 ################# Chart functionality - not sure if I should include this in the MCP server
 
 
-@mcp.tool(name="get_validated_chart_code", description="Validates code created for a chart")
+@mcp.tool()
 def get_validated_chart_code(chart_plan: dict[str, Any]) -> str:
     """Validate the chart code created by the user."""
     try:
-        chart_plan_obj = ChartPlan(**chart_plan)
+        chart_plan_obj = _ChartPlan(**chart_plan)
         return chart_plan_obj.model_dump_json()
     except ValidationError as e:
         return json.dumps({"error": f"Validation Error: {e!s}"})
 
 
-@mcp.prompt(
-    name="create_vizro_chart",
-    description="Prompt template for creating a Vizro chart",
-)
+@mcp.prompt()
 def create_vizro_chart(
     chart_type: str,
     file_path_or_url: str,

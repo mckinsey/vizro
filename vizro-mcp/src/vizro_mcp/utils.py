@@ -16,7 +16,7 @@ import vizro.models as vm
 PYCAFE_URL = "https://py.cafe"
 
 
-def convert_github_url_to_raw(path_or_url: str) -> str:
+def _convert_github_url_to_raw(path_or_url: str) -> str:
     """Convert a GitHub URL to a raw URL if it's a GitHub URL, otherwise return the original path or URL."""
     github_pattern = r"https?://(?:www\.)?github\.com/([^/]+)/([^/]+)/(?:blob|raw)/([^/]+)/(.+\.csv)"
     github_match = re.match(github_pattern, path_or_url)
@@ -28,7 +28,7 @@ def convert_github_url_to_raw(path_or_url: str) -> str:
     return path_or_url
 
 
-def path_or_url_check(string: str) -> str:
+def _path_or_url_check(string: str) -> str:
     """Check if a string is a link or a file path."""
     if string.startswith(("http://", "https://", "www.")):
         return "remote"
@@ -39,7 +39,7 @@ def path_or_url_check(string: str) -> str:
     return "invalid"
 
 
-def get_dataframe_info(df: pd.DataFrame) -> dict[str, Any]:
+def _get_dataframe_info(df: pd.DataFrame) -> dict[str, Any]:
     """Get the info of a DataFrame."""
     buffer = io.StringIO()
     df.info(buf=buffer)
@@ -50,7 +50,7 @@ def get_dataframe_info(df: pd.DataFrame) -> dict[str, Any]:
     }
 
 
-def get_python_code_and_preview_link(
+def _get_python_code_and_preview_link(
     model_object: vm.VizroBaseModel, file_name: str, file_paths_or_urls: str
 ) -> dict[str, Any]:
     """Get the Python code and preview link for a Vizro model object."""
