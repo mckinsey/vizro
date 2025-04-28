@@ -16,9 +16,6 @@ body:
         - label: I've reviewed the [release notes](https://github.com/mckinsey/vizro/releases) for relevant migration steps
         - label: I've searched through [existing issues](https://github.com/mckinsey/vizro/issues) for similar reports
         - label: I've already searched online (e.g. Dash documentation) but couldn't find anything relevant
-        - label: I haven’t checked any of the above yet
-    validations:
-      required: true
 
   - type: dropdown
     attributes:

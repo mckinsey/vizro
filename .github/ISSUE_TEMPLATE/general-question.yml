@@ -14,11 +14,8 @@ body:
       description: Since our triage capacity is limited, we’d really appreciate it if you could take a moment to check whether your question has already been answered or documented.
       options:
         - label: I've reviewed the [Vizro documentation](https://vizro.readthedocs.io/en/stable) for any relevant information
-        - label: I’ve searched through [existing issues](https://github.com/mckinsey/vizro/issues) for similar questions
-        - label: I’ve already searched online (e.g., Dash documentation) but couldn’t find anything helpful
-        - label: I haven’t checked any of the above yet
-    validations:
-      required: true
+        - label: I've searched through [existing issues](https://github.com/mckinsey/vizro/issues) for similar questions
+        - label: I've already searched online (e.g., Dash documentation) but couldn’t find anything helpful
 
   - type: textarea
     attributes:

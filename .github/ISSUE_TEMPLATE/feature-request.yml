@@ -16,9 +16,6 @@ body:
         - label: I've reviewed the [Vizro documentation](https://vizro.readthedocs.io/en/stable) to see if this feature is already supported, including through [Vizro extensions](https://vizro.readthedocs.io/en/stable/pages/user-guides/extensions/)
         - label: I've searched through [existing issues](https://github.com/mckinsey/vizro/issues) for similar requests
         - label: I've already searched online (e.g. Dash documentation) but couldn't find anything relevant
-        - label: I haven’t checked any of the above yet
-    validations:
-      required: true
 
   - type: dropdown
     attributes:
