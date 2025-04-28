@@ -6,7 +6,7 @@ import dash_bootstrap_components as dbc
 import dash_mantine_components as dmc
 import pytest
 from asserts import assert_component_equal
-from dash import html
+from dash import dcc, html
 from pydantic import ValidationError
 
 import vizro.models as vm
@@ -24,12 +24,18 @@ class TestDatePickerInstantiation:
         assert date_picker.max is None
         assert date_picker.value is None
         assert date_picker.title == ""
+        assert date_picker.description is None
         assert date_picker.actions == []
         assert date_picker.range is True
 
     def test_create_datepicker_mandatory_and_optional(self):
         date_picker = vm.DatePicker(
-            id="date-picker-id", min="2024-01-01", max="2024-12-31", value=["2024-03-01", "2024-04-01"], title="Title"
+            id="date-picker-id",
+            min="2024-01-01",
+            max="2024-12-31",
+            value=["2024-03-01", "2024-04-01"],
+            title="Title",
+            description="Test description",
         )
 
         assert date_picker.id == "date-picker-id"
@@ -40,6 +46,7 @@ class TestDatePickerInstantiation:
         assert date_picker.title == "Title"
         assert date_picker.actions == []
         assert date_picker.range is True
+        assert isinstance(date_picker.description, vm.Tooltip)
 
     @pytest.mark.parametrize("title", ["test", """## Test header""", ""])
     def test_valid_title(self, title):
@@ -115,7 +122,7 @@ class TestBuildMethod:
 
         expected_datepicker = html.Div(
             [
-                dbc.Label("Test title", html_for="datepicker_id"),
+                dbc.Label(["Test title", None], html_for="datepicker_id"),
                 dmc.DatePickerInput(
                     id="datepicker_id",
                     minDate="2023-01-01",
@@ -145,7 +152,7 @@ class TestBuildMethod:
 
         expected_datepicker = html.Div(
             [
-                dbc.Label("Test title", html_for="datepicker_id"),
+                dbc.Label(["Test title", None], html_for="datepicker_id"),
                 dmc.DatePickerInput(
                     id="datepicker_id",
                     minDate="2023-01-01",
@@ -158,6 +165,44 @@ class TestBuildMethod:
                     withCellSpacing=False,
                     clearable=True,
                     placeholder="Select a date",
+                ),
+            ],
+        )
+        assert_component_equal(date_picker, expected_datepicker)
+
+    def test_datepicker_build_with_description(self):
+        """Test that extra arguments correctly override defaults."""
+        date_picker = vm.DatePicker(
+            id="datepicker_id",
+            min="2023-01-01",
+            max="2023-07-01",
+            value="2023-01-05",
+            range=False,
+            title="Test title",
+            description=vm.Tooltip(text="Test description", icon="info", id="info"),
+        ).build()
+        description = [
+            html.Span("info", id="info-icon", className="material-symbols-outlined tooltip-icon"),
+            dbc.Tooltip(
+                children=dcc.Markdown("Test description", className="card-text"),
+                id="info",
+                target="info-icon",
+                autohide=False,
+            ),
+        ]
+        expected_datepicker = html.Div(
+            [
+                dbc.Label(["Test title", *description], html_for="datepicker_id"),
+                dmc.DatePickerInput(
+                    id="datepicker_id",
+                    minDate="2023-01-01",
+                    value="2023-01-05",
+                    maxDate="2023-07-01",
+                    persistence=True,
+                    persistence_type="session",
+                    type="default",
+                    allowSingleDateInRange=True,
+                    withCellSpacing=False,
                 ),
             ],
         )

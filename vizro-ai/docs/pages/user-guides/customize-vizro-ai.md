@@ -113,7 +113,7 @@ llm = AzureChatOpenAI(
 vizro_ai = VizroAI(model=llm)
 ```
 
-Passing an instantiated model to `VizroAI` lets you customize it, and additionally, it enables you to use a model or vendor that is not included in the above list of [string model names](#setting-model-via-string-for-ease-of-use).
+Passing an instantiated model to `VizroAI` lets you customize it, and also, it enables you to use a model or vendor that is not included in the above list of [string model names](#setting-model-via-string-for-ease-of-use).
 
 ## What model to choose?
 

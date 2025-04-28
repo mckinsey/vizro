@@ -49,26 +49,51 @@ extras_page = vm.Page(
         vm.Filter(
             column="species",
             selector=vm.Dropdown(
-                extra={"clearable": True, "placeholder": "Select an option...", "style": {"width": "150px"}}
+                description=vm.Tooltip(
+                    text=cnst.DROPDOWN_TOOLTIP_TEXT,
+                    icon=cnst.DROPDOWN_TOOLTIP_ICON,
+                    extra={"style": {"width": "150px"}},
+                ),
+                extra={"clearable": True, "placeholder": "Select an option...", "style": {"width": "150px"}},
             ),
         ),
         vm.Filter(
             column="species",
-            selector=vm.RadioItems(options=["setosa", "versicolor", "virginica"], extra={"inline": True}),
+            selector=vm.RadioItems(
+                description=cnst.RADIOITEMS_TOOLTIP_TEXT,
+                options=["setosa", "versicolor", "virginica"],
+                extra={"inline": True},
+            ),
         ),
         vm.Filter(
             column="species",
             selector=vm.Checklist(
-                options=["setosa", "versicolor", "virginica"], extra={"switch": True, "inline": True}
+                description=vm.Tooltip(
+                    text=cnst.CHECKLIST_TOOLTIP_TEXT,
+                    icon=cnst.CHECKLIST_TOOLTIP_ICON,
+                ),
+                options=["setosa", "versicolor", "virginica"],
+                extra={"switch": True, "inline": True},
             ),
         ),
         vm.Filter(
             column="petal_width",
-            selector=vm.Slider(step=0.5, extra={"tooltip": {"placement": "bottom", "always_visible": True}}),
+            selector=vm.Slider(
+                description=vm.Tooltip(
+                    text=cnst.SLIDER_TOOLTIP_TEXT,
+                    icon=cnst.SLIDER_TOOLTIP_ICON,
+                ),
+                step=0.5,
+                extra={"tooltip": {"placement": "bottom", "always_visible": True}},
+            ),
         ),
         vm.Filter(
             column="sepal_length",
             selector=vm.RangeSlider(
+                description=vm.Tooltip(
+                    text=cnst.RANGESLIDER_TOOLTIP_TEXT,
+                    icon=cnst.RANGESLIDER_TOOLTIP_ICON,
+                ),
                 step=1.0,
                 extra={
                     "tooltip": {"placement": "bottom", "always_visible": True},
@@ -79,6 +104,10 @@ extras_page = vm.Page(
         vm.Filter(
             column="date_column",
             selector=vm.DatePicker(
+                description=vm.Tooltip(
+                    text=cnst.DATEPICKER_TOOLTIP_TEXT,
+                    icon=cnst.DATEPICKER_TOOLTIP_ICON,
+                ),
                 title="Custom styled date picker",
                 range=False,
                 extra={
