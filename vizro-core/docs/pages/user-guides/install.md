@@ -1,50 +1,140 @@
-# How to install Vizro
+# Installation Guide for Vizro
 
-Thanks to [PyCafe](https://py.cafe/) you can create Vizro dashboards without installing Vizro locally, as you can see from the [first dashboard tutorial](../tutorials/first-dashboard.md) (you can find out more about [working with PyCafe and Vizro](https://py.cafe/docs/apps/vizro) from the PyCafe documentation).
+## Overview
 
-If you prefer to work locally, this guide shows you how to install Vizro, how to verify the installation succeeded and find the version of Vizro, and how to update Vizro.
+This guide provides a comprehensive overview of how to install Vizro, a tool for creating interactive dashboards. You can use Vizro without local installation via [PyCafe](https://py.cafe/), as demonstrated in the [first dashboard tutorial](../tutorials/first-dashboard.md). For further details on integrating PyCafe with Vizro, refer to the [PyCafe documentation](https://py.cafe/docs/apps/vizro).
 
-We recommend that you create a virtual environment for each Vizro project you work on to isolate its Python dependencies from other projects. If you already have a virtual environment you can skip the next section and [install Vizro](#install-vizro). Otherwise, read on!
+If you prefer a local setup, this document outlines the installation process, verification of the installation, checking the installed version, and updating Vizro.
 
-## Prerequisites to working locally
+### Prerequisites
 
-- **Python**: Vizro supports macOS, Linux, and Windows. It works with Python 3.9 and later.
-- **Virtual environment**: You specify the version of Python to use with Vizro when you set up the virtual environment. See the following references to learn more about [Python virtual environments](https://realpython.com/python-virtual-environments-a-primer/), [Conda virtual environments](https://docs.conda.io/projects/conda/en/latest/user-guide/getting-started.html#starting-conda) or [watch an explainer video about them](https://youtu.be/YKfAwIItO7M).
+Before proceeding with the installation, ensure that you have the following prerequisites:
 
-### How to create a virtual environment for your Vizro project
+- **Python**: Vizro is compatible with macOS, Linux, and Windows, requiring Python version 3.9 or later.
+- **Virtual Environment**: It is recommended to use a virtual environment to manage dependencies. For more information, consult the following resources:
 
-The simplest way to create a virtual environment in Python is `venv`, which is included in the Python standard library. Create a directory for your project and navigate to it. For example:
+  - [Python Virtual Environments](https://realpython.com/python-virtual-environments-a-primer/)
+  - [Conda Virtual Environments](https://docs.conda.io/projects/conda/en/latest/user-guide/getting-started.html#starting-conda)
+  - [Explainer Video on Virtual Environments](https://youtu.be/YKfAwIItO7M)
+
+<details>
+
+<summary>To install Python using the terminal on a macOS machine, follow these steps;<summary>
+
+##### Step 1: Open Terminal
+
+You can open Terminal by searching for it in Spotlight (press Cmd + Space and type "Terminal") or by navigating to Applications > Utilities > Terminal.
+
+##### Step 2: Check Existing Python Installation.
+
+Before installing a new version of Python, check if you already have Python installed:
+
+```bash
+python3 --version
+```
+If Python is installed, you will see the version number. If not, proceed to the next steps.
+
+##### Step 3: Install Homebrew (if not already installed)
+
+Homebrew is a package manager for macOS that makes it easy to install software from the terminal. If you don't have Homebrew installed, you can install it by running:
+
+```bash
+/bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
+```
+Follow the on-screen instructions to complete the installation of Homebrew.
+
+##### Step 4: Install Python
+
+Now that Homebrew is installed, you can use it to install Python. Run the following command:
+
+```bash
+brew install python
+```
+
+This command will install the latest version of Python. Homebrew will handle the installation process and any dependencies required.
+
+##### Step 5: Verify the Installation
+
+Once the installation is complete, verify that Python has been installed successfully by checking the version again:
+
+```bash
+python3 --version
+```
+
+You should see the version number of the installed Python.
+
+##### Step 6: (Optional) Set Up a Virtual Environment
+
+It is a good practice to use a virtual environment for your Python projects. Here's how to create and activate one:
+
+1) Navigate to your project directory:
+
+```bash
+cd /path/to/your/project
+```
+
+2) Ceate a virtual environment:
+
+```bash
+python3 -m venv venv
+```
+
+3) Activate the virtual environment:
+
+```bash
+source venv/bin/activate
+```
+
+4) Deactivate the virtual environment (when done):
+
+```bash
+deactivate
+```
+
+</details>
+
+## Creating a Virtual Environment
+
+Creating a virtual environment is essential for isolating your Python dependencies. Follow these steps to set up a virtual environment using `venv`, which is included in Python's standard library:
+
+**Create and Navigate to Project Directory:**
 
 ```bash
 mkdir vizro-project
 cd vizro-project
 ```
 
-Next, create and activate a new virtual environment in this directory with `venv`:
+**Create and Activate a Virtual Environment:**
 
+For macOS/Linux
 ```bash
 python3 -m venv .venv
 source .venv/bin/activate
 ```
+For Windows
+```bash
+python3 -m venv .venv
+.venv\Scripts\activate
+```
 
-You might like to use [`conda` as your virtual environment manager](https://docs.conda.io/projects/conda/en/latest/user-guide/install/). Once installed, you can create and activate a virtual environment from the terminal as follows:
+Alternatively, you can use [`conda` as your virtual environment manager](https://docs.conda.io/projects/conda/en/latest/user-guide/install/). 
 
 ```bash
 conda create --name vizro-environment
 conda activate vizro-environment
 ```
 
-## Install Vizro
+## Installing Vizro
 
-To install Vizro, use [`pip`](https://pip.pypa.io/en/stable/) in your terminal window:
+To install Vizro, utilize the Python package manager,, use [`pip`](https://pip.pypa.io/en/stable/). Execute the following command in your terminal::
 
 ```bash
 pip install vizro
 ```
 
-## Confirm a successful installation
+## Verifying the Installation
 
-To confirm the installation was successful and verify the version of Vizro installed, call the following. You can do this from within a Jupyter Notebook cell, or run the following as a Python script:
+To confirm that Vizro has been installed successfully and to check the installed version, run the following code. You can execute this within a Jupyter Notebook cell or as a standalone Python script:
 
 ```py
 import vizro
