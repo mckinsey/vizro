@@ -263,9 +263,9 @@ Create an EDA dashboard based on the following dataset:{file_path_or_url}. Proce
         - do not use any color schemes etc.
         - add filters for all categorical columns
     - Page 3: Visualizing the correlation between all numeric columns using the Graph component with a scatter plot.
-    - Page 4: Two interesting charts side by side, use the Graph component for this. Make sure they look goog
+    - Page 4: Two interesting charts side by side, use the Graph component for this. Make sure they look good
         but do not try something beyond the scope of plotly express
-            """
+"""
     return content
 
 
@@ -297,16 +297,16 @@ Make sure to analyze the data using the load_and_analyze_data tool first, passin
     return content
 
 
-########################### Trial Ressources
+########################### Trial Resources
 
 
 @mcp.resource("config://app")
 def get_config() -> str:
-    """Static configuration data"""
+    """Static configuration data."""
     return "App configuration here"
 
 
 @mcp.resource("echo://{message}")
 def echo_resource(message: str) -> str:
-    """Echo a message as a resource"""
+    """Echo a message as a resource."""
     return f"Resource echo: {message}"
