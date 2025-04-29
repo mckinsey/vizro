@@ -11,7 +11,7 @@ CUSTOM_CHART_NAME = "custom_chart"
 
 # These simplified page and dashboard models are used to return a flatter schema to the LLM in order to reduce the
 # context size. Especially the dashboard model schema is huge as it contains all other models.
-class _PageSimplified(BaseModel):
+class PageSimplified(BaseModel):
     """Simplified Page modes for reduced schema. LLM should remember to insert actual components."""
 
     components: list[Literal["Card", "Button", "Text", "Container", "Tabs", "Graph", "AgGrid"]] = Field(
@@ -25,7 +25,7 @@ class _PageSimplified(BaseModel):
     controls: list[Literal["Filter", "Parameter"]] = Field(default=[], description="Controls to be displayed.")
 
 
-class _DashboardSimplified(BaseModel):
+class DashboardSimplified(BaseModel):
     """Simplified Dashboard model for reduced schema. LLM should remember to insert actual components."""
 
     pages: list[Literal["Page"]] = Field(description="List of page names to be included in the dashboard.")
@@ -40,7 +40,7 @@ class _DashboardSimplified(BaseModel):
 
 # These enhanced models are used to return a more complete schema to the LLM. Although we do not have actual schemas for
 # the figure fields, we can prompt the model via the description to produce something likely correct.
-class _GraphEnhanced(vm.Graph):
+class GraphEnhanced(vm.Graph):
     """A Graph model that uses Plotly Express to create the figure."""
 
     figure: dict[str, Any] = Field(
@@ -58,7 +58,7 @@ are needed (e.g. trendline).
     )
 
 
-class _AgGridEnhanced(vm.AgGrid):
+class AgGridEnhanced(vm.AgGrid):
     """AgGrid model that uses dash-ag-grid to create the figure."""
 
     figure: dict[str, Any] = Field(
@@ -104,7 +104,7 @@ and it should be the first argument of the chart."""
     return v
 
 
-class _ChartPlan(BaseModel):
+class ChartPlan(BaseModel):
     """Base chart plan used to generate chart code based on user visualization requirements."""
 
     chart_type: str = Field(

@@ -10,24 +10,24 @@ from mcp.server.fastmcp import FastMCP
 from pydantic import ValidationError
 from vizro import Vizro
 
-from vizro_mcp.schemas import (
-    _AgGridEnhanced,
-    _ChartPlan,
-    _DashboardSimplified,
-    _GraphEnhanced,
-    _PageSimplified,
+from vizro_mcp._schemas import (
+    AgGridEnhanced,
+    ChartPlan,
+    DashboardSimplified,
+    GraphEnhanced,
+    PageSimplified,
 )
-from vizro_mcp.utils import (
+from vizro_mcp._utils import (
     GAPMINDER,
     IRIS,
     STOCKS,
     TIPS,
-    _convert_github_url_to_raw,
-    _data_info,
-    _get_dataframe_info,
-    _get_python_code_and_preview_link,
-    _load_dataframe_by_format,
-    _path_or_url_check,
+    convert_github_url_to_raw,
+    data_info,
+    get_dataframe_info,
+    get_python_code_and_preview_link,
+    load_dataframe_by_format,
+    path_or_url_check,
 )
 
 # TODO: what do I need to do here, as things are already set up?
@@ -37,7 +37,7 @@ mcp = FastMCP(
 
 
 @mcp.tool()
-def get_sample_data_info(data_name: Literal["iris", "tips", "stocks", "gapminder"]) -> _data_info:
+def get_sample_data_info(data_name: Literal["iris", "tips", "stocks", "gapminder"]) -> data_info:
     """If user provides no data, use this tool to get sample data information.
 
     Use the following data for the below purposes:
@@ -63,7 +63,7 @@ def get_sample_data_info(data_name: Literal["iris", "tips", "stocks", "gapminder
 
 
 @mcp.tool()
-def validate_model_config(config: dict[str, Any], data_infos: list[_data_info]) -> dict[str, Any]:
+def validate_model_config(config: dict[str, Any], data_infos: list[data_info]) -> dict[str, Any]:
     """Validate Vizro model configuration. Run whenever you have a complete dashboard configuration.
 
     If successful, the tool will return the python code and, if it is a remote file, the py.cafe link to the chart.
@@ -83,7 +83,7 @@ def validate_model_config(config: dict[str, Any], data_infos: list[_data_info]) 
         return {"valid": False, "error": f"Validation Error: {e!s}"}
 
     else:
-        result = _get_python_code_and_preview_link(dashboard, data_infos)
+        result = get_python_code_and_preview_link(dashboard, data_infos)
 
         result = {
             "valid": True,
@@ -111,13 +111,13 @@ def get_model_json_schema(model_name: str) -> dict[str, Any]:
         JSON schema of the requested Vizro model
     """
     if model_name == "Page":
-        return _PageSimplified.model_json_schema()
+        return PageSimplified.model_json_schema()
     elif model_name == "Dashboard":
-        return _DashboardSimplified.model_json_schema()
+        return DashboardSimplified.model_json_schema()
     elif model_name == "Graph":
-        return _GraphEnhanced.model_json_schema()
+        return GraphEnhanced.model_json_schema()
     elif model_name == "AgGrid":
-        return _AgGridEnhanced.model_json_schema()
+        return AgGridEnhanced.model_json_schema()
     # Get the model class from the vizro.models namespace
     if not hasattr(vm, model_name):
         return {"error": f"Model '{model_name}' not found in vizro.models"}
@@ -188,7 +188,8 @@ Instructions for creating a Vizro dashboard:
     - make a plan of what components you would like to use, then request all necessary schemas
         using the get_model_json_schema tool
     - assemble your components into a page, then add the page or pages to a dashboard
-    - ALWAYS validate the dashboard configuration using the validate_model_config tool before showing any code or config
+    - ALWAYS validate the dashboard configuration using the validate_model_config tool
+    - DO NOT show any code or config to the user until you have validated the solution
     - if you display any code artifact, you must use the above created code, do not add new config to it
 
 
@@ -219,24 +220,24 @@ def load_and_analyze_data(path_or_url: str) -> dict[str, Any]:
         Dictionary containing DataFrame information and summary
     """
     # Handle files and URLs
-    path_or_url_type = _path_or_url_check(path_or_url)
+    path_or_url_type = path_or_url_check(path_or_url)
     mime_type, _ = mimetypes.guess_type(str(path_or_url))
     if path_or_url_type == "remote":
-        path_or_url = _convert_github_url_to_raw(path_or_url)
+        path_or_url = convert_github_url_to_raw(path_or_url)
     elif path_or_url_type == "local":
         path_or_url = Path(path_or_url)
     else:
         return {"success": False, "error": "Invalid path or URL"}
 
     try:
-        df, read_fn = _load_dataframe_by_format(path_or_url, mime_type)
+        df, read_fn = load_dataframe_by_format(path_or_url, mime_type)
 
     except Exception as e:
         return {"success": False, "error": f"Failed to load data: {e!s}"}
 
     return {
         "success": True,
-        "info": _get_dataframe_info(df),
+        "info": get_dataframe_info(df),
         "location_type": path_or_url_type,
         "file_path_or_url": str(path_or_url),
         "detected_format": mime_type,
@@ -275,7 +276,7 @@ Create an EDA dashboard based on the following dataset:{file_path_or_url}. Proce
 def get_validated_chart_code(chart_plan: dict[str, Any]) -> str:
     """Validate the chart code created by the user."""
     try:
-        chart_plan_obj = _ChartPlan.model_validate(chart_plan)
+        chart_plan_obj = ChartPlan.model_validate(chart_plan)
         return chart_plan_obj.model_dump_json()
     except ValidationError as e:
         return json.dumps({"error": f"Validation Error: {e.errors()}"})
@@ -296,4 +297,16 @@ Make sure to analyze the data using the load_and_analyze_data tool first, passin
     return content
 
 
-###########################
+########################### Trial Ressources
+
+
+@mcp.resource("config://app")
+def get_config() -> str:
+    """Static configuration data"""
+    return "App configuration here"
+
+
+@mcp.resource("echo://{message}")
+def echo_resource(message: str) -> str:
+    """Echo a message as a resource"""
+    return f"Resource echo: {message}"

@@ -18,7 +18,7 @@ PYCAFE_URL = "https://py.cafe"
 
 
 @dataclass
-class _data_info:
+class data_info:
     file_name: str
     file_path_or_url: str
     file_location_type: Literal["local", "remote"]
@@ -26,7 +26,7 @@ class _data_info:
     column_names_types: Optional[dict[str, str]] = None
 
 
-IRIS = _data_info(
+IRIS = data_info(
     file_name="iris_data",
     file_path_or_url="https://raw.githubusercontent.com/plotly/datasets/master/iris-id.csv",
     file_location_type="remote",
@@ -40,7 +40,7 @@ IRIS = _data_info(
     },
 )
 
-TIPS = _data_info(
+TIPS = data_info(
     file_name="tips_data",
     file_path_or_url="https://raw.githubusercontent.com/plotly/datasets/master/tips.csv",
     file_location_type="remote",
@@ -56,7 +56,7 @@ TIPS = _data_info(
     },
 )
 
-STOCKS = _data_info(
+STOCKS = data_info(
     file_name="stocks_data",
     file_path_or_url="https://raw.githubusercontent.com/plotly/datasets/master/stockdata.csv",
     file_location_type="remote",
@@ -71,7 +71,7 @@ STOCKS = _data_info(
     },
 )
 
-GAPMINDER = _data_info(
+GAPMINDER = data_info(
     file_name="gapminder_data",
     file_path_or_url="https://raw.githubusercontent.com/plotly/datasets/master/gapminder_unfiltered.csv",
     file_location_type="remote",
@@ -87,7 +87,7 @@ GAPMINDER = _data_info(
 )
 
 
-def _convert_github_url_to_raw(path_or_url: str) -> str:
+def convert_github_url_to_raw(path_or_url: str) -> str:
     """Convert a GitHub URL to a raw URL if it's a GitHub URL, otherwise return the original path or URL."""
     github_pattern = r"https?://(?:www\.)?github\.com/([^/]+)/([^/]+)/(?:blob|raw)/([^/]+)/(.+)"
     github_match = re.match(github_pattern, path_or_url)
@@ -99,7 +99,7 @@ def _convert_github_url_to_raw(path_or_url: str) -> str:
     return path_or_url
 
 
-def _load_dataframe_by_format(
+def load_dataframe_by_format(
     path_or_url: Union[str, Path], mime_type: Optional[str] = None
 ) -> tuple[pd.DataFrame, str]:
     """Load a dataframe based on file format determined by MIME type or file extension."""
@@ -144,7 +144,7 @@ def _load_dataframe_by_format(
     return df, read_fn
 
 
-def _path_or_url_check(string: str) -> str:
+def path_or_url_check(string: str) -> str:
     """Check if a string is a link or a file path."""
     if string.startswith(("http://", "https://", "www.")):
         return "remote"
@@ -155,7 +155,7 @@ def _path_or_url_check(string: str) -> str:
     return "invalid"
 
 
-def _get_dataframe_info(df: pd.DataFrame) -> dict[str, Any]:
+def get_dataframe_info(df: pd.DataFrame) -> dict[str, Any]:
     """Get the info of a DataFrame."""
     buffer = io.StringIO()
     df.info(buf=buffer)
@@ -170,7 +170,7 @@ def _get_dataframe_info(df: pd.DataFrame) -> dict[str, Any]:
     }
 
 
-def _get_python_code_and_preview_link(model_object: vm.VizroBaseModel, data_infos: list[_data_info]) -> dict[str, Any]:
+def get_python_code_and_preview_link(model_object: vm.VizroBaseModel, data_infos: list[data_info]) -> dict[str, Any]:
     """Get the Python code and preview link for a Vizro model object."""
     # Get the Python code
     python_code = model_object._to_python()
@@ -223,8 +223,3 @@ def _get_python_code_and_preview_link(model_object: vm.VizroBaseModel, data_info
     pycafe_url = f"{PYCAFE_URL}/snippet/vizro/v1?{query}"
 
     return {"python_code": python_code, "pycafe_url": pycafe_url}
-
-
-if __name__ == "__main__":
-    df, _ = _load_dataframe_by_format("https://raw.githubusercontent.com/plotly/datasets/master/2015_flights.parquet")
-    print(df.head())
