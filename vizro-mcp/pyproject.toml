@@ -17,7 +17,11 @@ dependencies = [
   "httpx>=0.28.1",
   "mcp[cli]>=1.6.0",
   "vizro>=0.1.37",
-  "click>=8.1.7"
+  "click>=8.1.7",
+  "pyarrow",
+  "fastparquet",
+  "openpyxl",
+  "lxml",
 ]
 description = "MCP server to help create Vizro dashboards and charts"
 dynamic = ["version"]

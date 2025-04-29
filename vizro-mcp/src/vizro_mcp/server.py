@@ -1,11 +1,10 @@
 """MCP server for Vizro-AI chart and dashboard creation."""
 
 import json
+import mimetypes
 from pathlib import Path
 from typing import Any, Literal
 
-import pandas as pd
-import requests
 import vizro.models as vm
 from mcp.server.fastmcp import FastMCP
 from pydantic import ValidationError
@@ -22,6 +21,7 @@ from vizro_mcp.utils import (
     _convert_github_url_to_raw,
     _get_dataframe_info,
     _get_python_code_and_preview_link,
+    _load_dataframe_by_format,
     _path_or_url_check,
 )
 
@@ -49,21 +49,16 @@ def validate_model_config(
     Returns:
         Dictionary with validation status and details
     """
-    # Reset Vizro state before instantiation
     Vizro._reset()
 
     try:
-        # Attempt to instantiate a Vizro model with the configuration
         dashboard = vm.Dashboard.model_validate(config)
-
     except ValidationError as e:
-        # Handle Pydantic validation errors
         return {"valid": False, "error": f"Validation Error: {e!s}"}
 
     else:
         result = _get_python_code_and_preview_link(dashboard, file_name, file_path_or_url)
 
-        # Get the result before resetting
         result = {
             "valid": True,
             "message": "Configuration is valid for Dashboard!",
@@ -74,12 +69,11 @@ def validate_model_config(
         return result
 
     finally:
-        # Always reset, regardless of success or failure
         Vizro._reset()
 
 
 @mcp.tool()
-def get_model_JSON_schema(model_name: str) -> dict[str, Any]:
+def get_model_json_schema(model_name: str) -> dict[str, Any]:
     """Get the JSON schema for the specified Vizro model.
 
     Args:
@@ -151,26 +145,25 @@ def get_vizro_chart_or_dashboard_plan(plan: Literal["chart", "dashboard"]) -> st
     """Get instructions for creating a Vizro chart or dashboard. Call FIRST when asked to create Vizro things."""
     if plan == "chart":
         return """
-Instructions for create a Vizro chart:
-    - analyze the datasets needed for the chart using the load_and_analyze_csv tool - the most important
+Instructions for creating a Vizro chart:
+    - analyze the datasets needed for the chart using the load_and_analyze_data tool - the most important
         information here are the column names and column types
-    - always return code for a plotly express chart, pay attention to the columns you have available
     - do NOT call any other tool after, especially do NOT create a dashboard
             """
     elif plan == "dashboard":
         return """
-Instructions for create a Vizro dashboard:
-    - analyze the datasets needed for the dashboard using the load_and_analyze_csv tool - the most
+Instructions for creating a Vizro dashboard:
+    - analyze the datasets needed for the dashboard using the load_and_analyze_data tool - the most
         important information here are the column names and column types
     - call the get_overview_vizro_models tool to get an overview of the available models
     - make a plan of what components you would like to use, then request all necessary schemas
-    using the get_model_JSON_schema tool
+        using the get_model_json_schema tool
     - assemble your components into a page, then add the page or pages to a dashboard
     - validate the dashboard configuration using the validate_model_config tool
     - if you display any code artifact, you must use the above created code, do not add new config to it
 
 
-    IMPORTANT:
+IMPORTANT:
     - if you iterate over a valid produced solution, make sure to go ALWAYS via the validation step again to
         ensure the solution is valid
     - try not to output any config or code to the user until you have validated the solution
@@ -179,51 +172,59 @@ Instructions for create a Vizro dashboard:
 
 
 @mcp.tool()
-def load_and_analyze_csv(path_or_url: str) -> dict[str, Any]:
-    """Load a CSV file from a local path or GitHub URL into a pandas DataFrame and analyze its structure.
+def load_and_analyze_data(path_or_url: str) -> dict[str, Any]:
+    """Load data from various file formats into a pandas DataFrame and analyze its structure.
+
+    Supported formats:
+    - CSV (.csv)
+    - JSON (.json)
+    - HTML (.html, .htm)
+    - Excel (.xls, .xlsx)
+    - OpenDocument Spreadsheet (.ods)
+    - Parquet (.parquet)
 
     Args:
-        path_or_url: Local file path or GitHub URL to a CSV file
+        path_or_url: Local file path or URL to a data file
 
     Returns:
         Dictionary containing DataFrame information and summary
     """
+    # Handle files and URLs
     path_or_url_type = _path_or_url_check(path_or_url)
+    mime_type, _ = mimetypes.guess_type(str(path_or_url))
     if path_or_url_type == "remote":
         path_or_url = _convert_github_url_to_raw(path_or_url)
-
     elif path_or_url_type == "local":
         path_or_url = Path(path_or_url)
     else:
         return {"success": False, "error": "Invalid path or URL"}
 
     try:
-        df = pd.read_csv(
-            path_or_url,
-            # Add error handling for common CSV issues
-            on_bad_lines="warn",
-            low_memory=False,
-        )
-    except requests.exceptions.RequestException as e:
-        return {"success": False, "error": f"Failed to fetch file: {e!s}"}
+        df, read_fn = _load_dataframe_by_format(path_or_url, mime_type)
+
+    except Exception as e:
+        return {"success": False, "error": f"Failed to load data: {e!s}"}
+
     return {
         "success": True,
         "info": _get_dataframe_info(df),
         "location_type": path_or_url_type,
         "file_path_or_url": str(path_or_url),
+        "detected_format": mime_type,
+        "read_function_string": read_fn,
     }
 
 
 @mcp.prompt()
-def create_EDA_dashboard(
+def create_eda_dashboard(
     file_path_or_url: str,
 ) -> str:
-    """Prompt template for creating an EDA dashboard based on one CSV dataset."""
+    """Prompt template for creating an EDA dashboard based on one dataset."""
     content = f"""
 Create an EDA dashboard based on the following dataset:{file_path_or_url}. Proceed as follows:
-1. Analyze the data using the load_and_analyze_csv tool first, passing the file path or github url {file_path_or_url}
+1. Analyze the data using the load_and_analyze_data tool first, passing the file path or github url {file_path_or_url}
     to the tool.
-2. Create a dashboard with 3 pages:
+2. Create a dashboard with 4 pages:
     - Page 1: Summary of the dataset using the Card component and the dataset itself using the plain AgGrid component.
     - Page 2: Visualizing the distribution of all numeric columns using the Graph component with a histogram.
         - use a Parameter that targets the Graph component and the x argument, and you can select the column to
@@ -245,10 +246,10 @@ Create an EDA dashboard based on the following dataset:{file_path_or_url}. Proce
 def get_validated_chart_code(chart_plan: dict[str, Any]) -> str:
     """Validate the chart code created by the user."""
     try:
-        chart_plan_obj = _ChartPlan(**chart_plan)
+        chart_plan_obj = _ChartPlan.model_validate(chart_plan)
         return chart_plan_obj.model_dump_json()
     except ValidationError as e:
-        return json.dumps({"error": f"Validation Error: {e!s}"})
+        return json.dumps({"error": f"Validation Error: {e.errors()}"})
 
 
 @mcp.prompt()
@@ -260,7 +261,7 @@ def create_vizro_chart(
     content = f"""
 Create a chart using the following chart type:
 {chart_type}.
-Make sure to analyze the data using the load_and_analyze_csv tool first, passing the file path or github url
+Make sure to analyze the data using the load_and_analyze_data tool first, passing the file path or github url
 {file_path_or_url} to the tool. Then make sure to use the get_validated_chart_code tool to validate the chart code.
             """
     return content
