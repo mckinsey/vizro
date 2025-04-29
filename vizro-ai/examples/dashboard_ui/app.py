@@ -74,7 +74,7 @@ SUPPORTED_MODELS = {
 plot_page = vm.Page(
     id="vizro_ai_plot_page",
     title="Vizro-AI - create interactive charts with Plotly and Vizro",
-    layout=vm.Layout(
+    layout=vm.Grid(
         grid=[
             *[[0, 0, 0, 0]] * 1,
             *[[1, 1, 2, 2]] * 11,
@@ -87,7 +87,7 @@ plot_page = vm.Page(
                 vm.Container(
                     id="upload-data-container",
                     title="Turn your data into visuals — just upload, describe, and see your chart in action",
-                    layout=vm.Layout(
+                    layout=vm.Grid(
                         grid=[[0], [1]],
                         row_gap="0px",
                     ),
@@ -117,7 +117,7 @@ plot_page = vm.Page(
                 ),
                 vm.Container(
                     title="",
-                    layout=vm.Layout(
+                    layout=vm.Grid(
                         grid=[
                             *[[0, 0, 0, 0, 0, 0, 0, 0, 0]] * 3,
                             [3, -1, -1, -1, -1, 1, 1, 2, 2],
@@ -159,7 +159,7 @@ plot_page = vm.Page(
                 vm.Container(
                     title="",
                     components=[CodeClipboard(id="plot"), ToggleSwitch()],
-                    layout=vm.Layout(
+                    layout=vm.Grid(
                         grid=[*[[0]] * 7, [1]],
                         row_gap="12px",
                         col_gap="12px",
