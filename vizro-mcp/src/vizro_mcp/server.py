@@ -64,7 +64,7 @@ def get_sample_data_info(data_name: Literal["iris", "tips", "stocks", "gapminder
 
 @mcp.tool()
 def validate_model_config(config: dict[str, Any], data_infos: list[data_info]) -> dict[str, Any]:
-    """Validate Vizro model configuration. Run whenever you have a complete dashboard configuration.
+    """Validate Vizro model configuration. Run ALWAYS when you have a complete dashboard configuration.
 
     If successful, the tool will return the python code and, if it is a remote file, the py.cafe link to the chart.
 
