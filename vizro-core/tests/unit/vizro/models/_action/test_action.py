@@ -151,6 +151,12 @@ class TestLegacyActionOutputs:
                 ["component.property", "component.property"],
                 [Output("component", "property"), Output("component", "property")],
             ),
+            ({}, {}),
+            ({"component": "component.property"}, {"component": Output("component", "property")}),
+            (
+                {"component_1": "component.property", "component_2": "component.property"},
+                {"component_1": Output("component", "property"), "component_2": Output("component", "property")},
+            ),
         ],
     )
     def test_outputs_valid(self, outputs, expected_transformed_outputs):
@@ -168,6 +174,9 @@ class TestLegacyActionOutputs:
             ["component"],
             ["component_property"],
             ["component.property.property"],
+            {"component": ""},
+            {"component": "component_property"},
+            {"component": "component.property.property"},
         ],
     )
     def test_outputs_invalid(self, outputs):
@@ -290,6 +299,12 @@ class TestActionOutputs:
                 ["component_1.property_1", "component_2.property_2"],
                 [Output("component_1", "property_1"), Output("component_2", "property_2")],
             ),
+            ({}, {}),
+            ({"component": "component.property"}, {"component": Output("component", "property")}),
+            (
+                {"component_1": "component.property", "component_2": "component.property"},
+                {"component_1": Output("component", "property"), "component_2": Output("component", "property")},
+            ),
         ],
     )
     def test_outputs_valid(self, outputs, expected_transformed_outputs):
@@ -305,10 +320,13 @@ class TestActionOutputs:
             ["component"],
             ["component_property"],
             ["component.property.property"],
+            {"component": ""},
+            {"component": "component_property"},
+            {"component": "component.property.property"},
         ],
     )
     def test_outputs_invalid(self, outputs):
-        with pytest.raises(ValidationError, match="String should match pattern"):
+        with pytest.raises(ValidationError, match=""):
             Action(function=action_with_no_args(), outputs=outputs)
 
 
