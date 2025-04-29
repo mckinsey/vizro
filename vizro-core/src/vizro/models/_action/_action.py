@@ -278,6 +278,8 @@ class _BaseAction(VizroBaseModel):
         return html.Div(id=f"{self.id}_action_model_components_div", children=self._dash_components, hidden=True)
 
 
+PatternStr = Annotated[str, StringConstraints(pattern="^[^.]+[.][^.]+$")]
+
 class Action(_BaseAction):
     """Action to be inserted into `actions` of relevant component.
 
@@ -308,12 +310,12 @@ class Action(_BaseAction):
     ]
     # inputs is a legacy field and will be deprecated. It must only be used when _legacy = True.
     # TODO-AV2 C 1: Put in deprecation warning.
-    inputs: list[Annotated[str, StringConstraints(pattern="^[^.]+[.][^.]+$")]] = Field(
-        [],
+    inputs: list[PatternStr] = Field(
+        default_factory=list,
         description="Inputs in the form `<component_id>.<property>` passed to the action function.",
     )
-    outputs: list[Annotated[str, StringConstraints(pattern="^[^.]+[.][^.]+$")]] = Field(  # type: ignore
-        [],
+    outputs: Union[list[PatternStr], dict[str, PatternStr]] = Field(
+        default_factory=list,
         description="Outputs in the form `<component_id>.<property>` changed by the action function.",
     )
 
