@@ -20,6 +20,14 @@ def action_function_output_dict(button_number_of_clicks, _controls):
         "card-id-1": f"Button clicked {button_number_of_clicks} times.",
     }
 
+@capture("action")
+def legacy_action_function_output_dict(button_number_of_clicks):
+    return {
+        "card-id-2": f"Button clicked {button_number_of_clicks} times.",
+        "card-id-1": f"Button clicked {button_number_of_clicks} times.",
+    }
+
+
 
 # TODO: Enable all three cases
 action_output_list = vm.Action(
@@ -34,7 +42,7 @@ action_output_dict = vm.Action(
     },
 )
 action_output_dict_legacy = vm.Action(
-    function=action_function_output_dict(),
+    function=legacy_action_function_output_dict(),
     inputs=["button-id.n_clicks"],
     outputs={
         "card-id-1": "card-id-1.children",
