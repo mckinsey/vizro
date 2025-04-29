@@ -21,7 +21,7 @@ dependencies = [
   "pyarrow",
   "fastparquet",
   "openpyxl",
-  "lxml",
+  "lxml"
 ]
 description = "MCP server to help create Vizro dashboards and charts"
 dynamic = ["version"]
