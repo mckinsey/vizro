@@ -14,25 +14,25 @@ CUSTOM_CHART_NAME = "custom_chart"
 class _PageSimplified(BaseModel):
     """Simplified Page modes for reduced schema. LLM should remember to insert actual components."""
 
-    components: list[Literal["card", "button", "text", "container", "tabs"]] = Field(
+    components: list[Literal["Card", "Button", "Text", "Container", "Tabs", "Graph", "AgGrid"]] = Field(
         description="List of component names to be displayed."
     )
     title: str = Field(description="Title to be displayed.")
     description: str = Field(default="", description="Description for meta tags.")
-    layout: Optional[Literal["grid", "flex"]] = Field(
+    layout: Optional[Literal["Grid", "Flex"]] = Field(
         default=None, description="Layout to place components in. Only provide if asked for!"
     )
-    controls: list[Literal["filter", "parameter"]] = Field(default=[], description="Controls to be displayed.")
+    controls: list[Literal["Filter", "Parameter"]] = Field(default=[], description="Controls to be displayed.")
 
 
 class _DashboardSimplified(BaseModel):
     """Simplified Dashboard model for reduced schema. LLM should remember to insert actual components."""
 
-    pages: list[Literal["page"]] = Field(description="List of page names to be included in the dashboard.")
+    pages: list[Literal["Page"]] = Field(description="List of page names to be included in the dashboard.")
     theme: Literal["vizro_dark", "vizro_light"] = Field(
         default="vizro_dark", description="Theme to be applied across dashboard. Defaults to `vizro_dark`."
     )
-    navigation: Optional[Literal["navigation"]] = Field(
+    navigation: Optional[Literal["Navigation"]] = Field(
         default=None, description="Navigation component for the dashboard."
     )
     title: str = Field(default="", description="Dashboard title to appear on every page on top left-side.")

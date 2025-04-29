@@ -23,6 +23,68 @@ class _data_info:
     file_path_or_url: str
     file_location_type: Literal["local", "remote"]
     read_function_string: Literal["pd.read_csv", "pd.read_json", "pd.read_html", "pd.read_parquet", "pd.read_excel"]
+    column_names_types: Optional[dict[str, str]] = None
+
+
+IRIS = _data_info(
+    file_name="iris_data",
+    file_path_or_url="https://raw.githubusercontent.com/plotly/datasets/master/iris-id.csv",
+    file_location_type="remote",
+    read_function_string="pd.read_csv",
+    column_names_types={
+        "sepal_length": "float",
+        "sepal_width": "float",
+        "petal_length": "float",
+        "petal_width": "float",
+        "species": "str",
+    },
+)
+
+TIPS = _data_info(
+    file_name="tips_data",
+    file_path_or_url="https://raw.githubusercontent.com/plotly/datasets/master/tips.csv",
+    file_location_type="remote",
+    read_function_string="pd.read_csv",
+    column_names_types={
+        "total_bill": "float",
+        "tip": "float",
+        "sex": "str",
+        "smoker": "str",
+        "day": "str",
+        "time": "str",
+        "size": "int",
+    },
+)
+
+STOCKS = _data_info(
+    file_name="stocks_data",
+    file_path_or_url="https://raw.githubusercontent.com/plotly/datasets/master/stockdata.csv",
+    file_location_type="remote",
+    read_function_string="pd.read_csv",
+    column_names_types={
+        "Date": "str",
+        "IBM": "float",
+        "MSFT": "float",
+        "SBUX": "float",
+        "AAPL": "float",
+        "GSPC": "float",
+    },
+)
+
+GAPMINDER = _data_info(
+    file_name="gapminder_data",
+    file_path_or_url="https://raw.githubusercontent.com/plotly/datasets/master/gapminder_unfiltered.csv",
+    file_location_type="remote",
+    read_function_string="pd.read_csv",
+    column_names_types={
+        "country": "str",
+        "continent": "str",
+        "year": "int",
+        "lifeExp": "float",
+        "pop": "int",
+        "gdpPercap": "float",
+    },
+)
 
 
 def _convert_github_url_to_raw(path_or_url: str) -> str:

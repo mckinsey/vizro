@@ -18,6 +18,10 @@ from vizro_mcp.schemas import (
     _PageSimplified,
 )
 from vizro_mcp.utils import (
+    GAPMINDER,
+    IRIS,
+    STOCKS,
+    TIPS,
     _convert_github_url_to_raw,
     _data_info,
     _get_dataframe_info,
@@ -30,6 +34,32 @@ from vizro_mcp.utils import (
 mcp = FastMCP(
     "MCP server to help create Vizro dashboards and charts.",
 )
+
+
+@mcp.tool()
+def get_sample_data_info(data_name: Literal["iris", "tips", "stocks", "gapminder"]) -> _data_info:
+    """If user provides no data, use this tool to get sample data information.
+
+    Use the following data for the below purposes:
+        - iris: mostly numerical with one categorical column, good for scatter, histogram, boxplot, etc.
+        - tips: contains mix of numerical and categorical columns, good for bar, pie, etc.
+        - stocks: stock prices, good for line, scatter, generally things that change over time
+        - gapminder: demographic data, good for line, scatter, generally things with maps or many categories
+
+    Args:
+        data_name: Name of the dataset to get sample data for
+
+    Returns:
+        Data info object containing information about the dataset
+    """
+    if data_name == "iris":
+        return IRIS
+    elif data_name == "tips":
+        return TIPS
+    elif data_name == "stocks":
+        return STOCKS
+    elif data_name == "gapminder":
+        return GAPMINDER
 
 
 @mcp.tool()
@@ -153,11 +183,12 @@ Instructions for creating a Vizro chart:
 Instructions for creating a Vizro dashboard:
     - analyze the datasets needed for the dashboard using the load_and_analyze_data tool - the most
         important information here are the column names and column types
+    - if the user provides no data, use the get_sample_data_info tool to get sample data information
     - call the get_overview_vizro_models tool to get an overview of the available models
     - make a plan of what components you would like to use, then request all necessary schemas
         using the get_model_json_schema tool
     - assemble your components into a page, then add the page or pages to a dashboard
-    - validate the dashboard configuration using the validate_model_config tool
+    - ALWAYS validate the dashboard configuration using the validate_model_config tool before showing any code or config
     - if you display any code artifact, you must use the above created code, do not add new config to it
 
 
