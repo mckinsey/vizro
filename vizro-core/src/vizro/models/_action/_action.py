@@ -280,6 +280,7 @@ class _BaseAction(VizroBaseModel):
 
 PatternStr = Annotated[str, StringConstraints(pattern="^[^.]+[.][^.]+$")]
 
+
 class Action(_BaseAction):
     """Action to be inserted into `actions` of relevant component.
 
