@@ -5,8 +5,9 @@ import gzip
 import io
 import json
 import re
+from dataclasses import dataclass
 from pathlib import Path
-from typing import Any, Optional, Union
+from typing import Any, Literal, Optional, Union
 from urllib.parse import quote, urlencode
 
 import pandas as pd
@@ -14,6 +15,14 @@ import vizro.models as vm
 
 # PyCafe URL for Vizro snippets
 PYCAFE_URL = "https://py.cafe"
+
+
+@dataclass
+class _data_info:
+    file_name: str
+    file_path_or_url: str
+    file_location_type: Literal["local", "remote"]
+    read_function_string: Literal["pd.read_csv", "pd.read_json", "pd.read_html", "pd.read_parquet", "pd.read_excel"]
 
 
 def _convert_github_url_to_raw(path_or_url: str) -> str:
@@ -99,35 +108,40 @@ def _get_dataframe_info(df: pd.DataFrame) -> dict[str, Any]:
     }
 
 
-def _get_python_code_and_preview_link(
-    model_object: vm.VizroBaseModel, file_name: str, file_paths_or_urls: str
-) -> dict[str, Any]:
+def _get_python_code_and_preview_link(model_object: vm.VizroBaseModel, data_infos: list[_data_info]) -> dict[str, Any]:
     """Get the Python code and preview link for a Vizro model object."""
     # Get the Python code
     python_code = model_object._to_python()
 
-    # Add imports and dataset definitions at the top
-    imports_and_data = f"""from vizro import Vizro
-import vizro.plotly.express as px
-from vizro.managers import data_manager
-import pandas as pd
-import vizro.models as vm
-import vizro.tables as vt
+    # Add imports after the first empty line
+    lines = python_code.splitlines()
+    for i, line in enumerate(lines):
+        if not line.strip():
+            # Found first empty line, insert imports here
+            imports_to_add = [
+                "from vizro import Vizro",
+                "import pandas as pd",
+                "from vizro.managers import data_manager",
+            ]
+            lines[i:i] = imports_to_add
+            break
 
-# Load data into the data_manager
-data_manager["{file_name}"] = pd.read_csv("{file_paths_or_urls}")
+    python_code = "\n".join(lines)
 
-"""
-    # Find the model code section and prepend imports_and_data
-    model_code_marker = "########### Model code ############"
-    if model_code_marker in python_code:
-        parts = python_code.split(model_code_marker, 1)
-        python_code = imports_and_data + model_code_marker + parts[1]
-    # Fallback if marker not found
-    elif python_code.startswith("from vizro import Vizro"):
-        python_code = imports_and_data + python_code[len("from vizro import Vizro\n") :]
-    else:
-        python_code = imports_and_data + python_code
+    # Prepare data loading code
+    data_loading_code = "\n".join(
+        f'data_manager["{info.file_name}"] = {info.read_function_string}("{info.file_path_or_url}")'
+        for info in data_infos
+    )
+
+    # Patterns to identify the data manager section
+    data_manager_start_marker = "####### Data Manager Settings #####"
+    data_manager_end_marker = "########### Model code ############"
+
+    # Replace everything between the markers with our data loading code
+    pattern = re.compile(f"{data_manager_start_marker}.*?{data_manager_end_marker}", re.DOTALL)
+    replacement = f"{data_manager_start_marker}\n{data_loading_code}\n\n{data_manager_end_marker}"
+    python_code = pattern.sub(replacement, python_code)
 
     # Add final run line
     python_code += "\n\nVizro().build(model).run()"

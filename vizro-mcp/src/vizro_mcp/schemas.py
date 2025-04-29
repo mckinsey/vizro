@@ -19,7 +19,9 @@ class _PageSimplified(BaseModel):
     )
     title: str = Field(description="Title to be displayed.")
     description: str = Field(default="", description="Description for meta tags.")
-    layout: Optional[Literal["grid", "flex"]] = Field(default=None, description="Layout to place components in.")
+    layout: Optional[Literal["grid", "flex"]] = Field(
+        default=None, description="Layout to place components in. Only provide if asked for!"
+    )
     controls: list[Literal["filter", "parameter"]] = Field(default=[], description="Controls to be displayed.")
 
 

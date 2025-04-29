@@ -19,6 +19,7 @@ from vizro_mcp.schemas import (
 )
 from vizro_mcp.utils import (
     _convert_github_url_to_raw,
+    _data_info,
     _get_dataframe_info,
     _get_python_code_and_preview_link,
     _load_dataframe_by_format,
@@ -32,19 +33,14 @@ mcp = FastMCP(
 
 
 @mcp.tool()
-def validate_model_config(
-    config: dict[str, Any], file_name: str, file_path_or_url: str, file_location_type: Literal["local", "remote"]
-) -> dict[str, Any]:
+def validate_model_config(config: dict[str, Any], data_infos: list[_data_info]) -> dict[str, Any]:
     """Validate Vizro model configuration. Run whenever you have a complete dashboard configuration.
 
     If successful, the tool will return the python code and, if it is a remote file, the py.cafe link to the chart.
 
     Args:
         config: Either a JSON string or a dictionary representing a Vizro model configuration
-        file_name: Name of the file to be loaded into the data_manager and used in the code, must be without extension
-            (e.g., 'iris', 'gapminder', 'tips')
-        file_path_or_url: String of file path or URL to be loaded into the data_manager
-        file_location_type: Literal["local", "remote"]
+        data_infos: List of data_info objects containing information about the data files
 
     Returns:
         Dictionary with validation status and details
@@ -57,13 +53,15 @@ def validate_model_config(
         return {"valid": False, "error": f"Validation Error: {e!s}"}
 
     else:
-        result = _get_python_code_and_preview_link(dashboard, file_name, file_path_or_url)
+        result = _get_python_code_and_preview_link(dashboard, data_infos)
 
         result = {
             "valid": True,
             "message": "Configuration is valid for Dashboard!",
             "python_code": result["python_code"],
-            "pycafe_url": result["pycafe_url"] if file_location_type == "remote" else None,
+            "pycafe_url": result["pycafe_url"]
+            if all(info.file_location_type == "remote" for info in data_infos)
+            else None,
         }
 
         return result
