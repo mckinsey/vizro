@@ -308,7 +308,7 @@ class Action(_BaseAction):
         description="""List of inputs provided to the action function, each specified as `<component_id>.<property>`.
             Defaults to `[]`.""",
     )
-    outputs: Union[list[DotSeparatedStr], dict[str, DotSeparatedStr]] = Field(
+    outputs: Union[list[DotSeparatedStr], dict[str, DotSeparatedStr]] = Field(  # type: ignore
         default=[],
         description="""List or dictionary of outputs modified by the action function, where each output needs to be
             specified as `<component_id>.<property>`. Defaults to `[]`.""",
