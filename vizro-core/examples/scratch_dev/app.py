@@ -20,13 +20,13 @@ def action_function_output_dict(button_number_of_clicks, _controls):
         "card-id-1": f"Button clicked {button_number_of_clicks} times.",
     }
 
+
 @capture("action")
 def legacy_action_function_output_dict(button_number_of_clicks):
     return {
         "card-id-2": f"Button clicked {button_number_of_clicks} times.",
         "card-id-1": f"Button clicked {button_number_of_clicks} times.",
     }
-
 
 
 # TODO: Enable all three cases
