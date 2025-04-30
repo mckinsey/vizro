@@ -1,6 +1,6 @@
 # How to create custom actions
 
-This guide demonstrates the usage of custom actions, an idea that shares similarities with, but is not identical to [callbacks](https://dash.plotly.com/basic-callbacks) in `Dash`. If you want to use the [`Action`][vizro.models.Action] model to perform functions that are not available in the [pre-defined action functions][vizro.actions], you can create your own custom action. Like other [actions](actions.md), custom actions could also be added as an element inside the [actions chain](actions.md#chain-actions), and it can be triggered with one of many dashboard components.
+This guide demonstrates the usage of custom actions, an idea that shares similarities with, but is not identical to [callbacks](https://dash.plotly.com/basic-callbacks) in `Dash`. If you want to use the [`Action`][vizro.models.Action] model to perform functions that are not available in the [built-in action functions][vizro.actions], you can create your own custom action. Like other [actions](actions.md), custom actions could also be added as an element inside the [actions chain](actions.md#chain-actions), and it can be triggered with one of many dashboard components.
 
 <!-- vale off -->
 
@@ -51,12 +51,10 @@ The following example shows how to create a custom action that postpones executi
                         vm.Action(function=export_data(file_format="xlsx")),
                     ]
                 )
-            ],
-            controls=[vm.Filter(column="species", selector=vm.Dropdown(title="Species"))],
+            ]
         )
 
         dashboard = vm.Dashboard(pages=[page])
-
         Vizro().build(dashboard).run()
         ```
 
@@ -168,6 +166,7 @@ The following example shows how to create a custom action that shows the `clickD
                 vm.Card(id="my_card", text="Click on a point on the above graph."),
             ],
         )
+
         dashboard = vm.Dashboard(pages=[page])
         Vizro().build(dashboard).run()
         ```
@@ -214,15 +213,7 @@ The return value of the custom action function is propagated to the dashboard co
 
         page = vm.Page(
             title="Example of a custom action with UI inputs and outputs",
-            layout=vm.Grid(
-                grid=[
-                    [0, 0],
-                    [0, 0],
-                    [0, 0],
-                    [1, 2],
-                ],
-                row_gap="25px",
-            ),
+            layout=vm.Flex(),  # (2)!
             components=[
                 vm.Graph(
                     id="scatter_chart",
@@ -231,22 +222,21 @@ The return value of the custom action function is propagated to the dashboard co
                         vm.Action(
                             function=my_custom_action(),
                             inputs=["scatter_chart.clickData"],
-                            outputs=["my_card_1.children", "my_card_2.children"], # (2)!
+                            outputs=["my_card_1.children", "my_card_2.children"], # (3)!
                         ),
                     ],
                 ),
                 vm.Card(id="my_card_1", text="Click on a point on the above graph."),
                 vm.Card(id="my_card_2", text="Click on a point on the above graph."),
-            ],
-            controls=[vm.Filter(column="species", selector=vm.Dropdown(title="Species"))],
+            ]
         )
 
         dashboard = vm.Dashboard(pages=[page])
-
         Vizro().build(dashboard).run()
         ```
 
         1. `my_custom_action` returns two values (which will be in Python tuple).
+        1. We use a [`Flex`][vizro.models.Flex] layout to make sure the `Graph` and the `Cards` only occupy as much space as they need, rather than being distributed evenly.
         1. These values are assigned to the `outputs` in the same order.
 
     === "app.yaml"

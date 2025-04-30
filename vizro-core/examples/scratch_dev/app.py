@@ -1,14 +1,13 @@
-"""Example app from the official vizro user tutorial.
+# Vizro is an open-source toolkit for creating modular data visualization applications.
+# check out https://github.com/mckinsey/vizro for more info about Vizro
+# and checkout https://vizro.readthedocs.io/en/stable/ for documentation.
 
-See: https://vizro.readthedocs.io/en/stable/pages/tutorials/explore-components/
-"""
-
-import vizro.models as vm
 import vizro.plotly.express as px
 from vizro import Vizro
+import vizro.models as vm
+from vizro.models.types import capture
 
 iris = px.data.iris()
-
 
 page1 = vm.Page(
     title="Page with custom container",
@@ -89,7 +88,6 @@ page2 = vm.Page(
         )
     ],
 )
-
 page3 = vm.Page(
     title="Controls in the tabs",
     components=[

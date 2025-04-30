@@ -159,7 +159,6 @@
 }
 
 #collapse-icon.material-symbols-outlined:hover {
-  border-color: var(--border-subtleAlpha02);
   color: var(--text-primaryHover);
 }
 

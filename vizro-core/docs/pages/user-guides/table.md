@@ -47,8 +47,8 @@ The Vizro version of this AG Grid differs in one way from the original Dash AG G
             title="Default Dash AG Grid",
             components=[vm.AgGrid(figure=dash_ag_grid(data_frame=df))]
         )
-        dashboard = vm.Dashboard(pages=[page])
 
+        dashboard = vm.Dashboard(pages=[page])
         Vizro().build(dashboard).run()
         ```
 
@@ -56,7 +56,7 @@ The Vizro version of this AG Grid differs in one way from the original Dash AG G
 
         ```yaml
         # Still requires a .py to add data to the data manager and parse YAML configuration
-        # See from_yaml example
+        # See yaml_version example
         pages:
           - components:
               - figure:
@@ -90,8 +90,8 @@ Pagination is a visual alternative to using vertical scroll. It can also improve
             title="Dash AG Grid with pagination",
             components=[vm.AgGrid(figure=dash_ag_grid(data_frame=df, dashGridOptions={"pagination": True}))]
         )
-        dashboard = vm.Dashboard(pages=[page])
 
+        dashboard = vm.Dashboard(pages=[page])
         Vizro().build(dashboard).run()
         ```
 
@@ -99,7 +99,7 @@ Pagination is a visual alternative to using vertical scroll. It can also improve
 
         ```yaml
         # Still requires a .py to add data to the data manager and parse YAML configuration
-        # See from_yaml example
+        # See yaml_version example
         pages:
           - components:
               - figure:
@@ -119,7 +119,7 @@ Pagination is a visual alternative to using vertical scroll. It can also improve
 
 #### Numbers
 
-One of the most common tasks when working with tables is to format the columns so that displayed numbers are more readable. To do this, you can use the native functionality of [value formatters](https://dash.plotly.com/dash-ag-grid/value-formatters) or the Vizro pre-defined [custom cell data types](https://dash.plotly.com/dash-ag-grid/cell-data-types#providing-custom-cell-data-types) as shown below.
+One of the most common tasks when working with tables is to format the columns so that displayed numbers are more readable. To do this, you can use the native functionality of [value formatters](https://dash.plotly.com/dash-ag-grid/value-formatters) or the Vizro [custom cell data types](https://dash.plotly.com/dash-ag-grid/cell-data-types#providing-custom-cell-data-types) as shown below.
 
 The available custom cell types for Vizro are `dollar`, `euro`, `percent` and `numeric`.
 
@@ -160,7 +160,6 @@ In the example below we select and format some columns of the gapminder data.
         )
 
         dashboard = vm.Dashboard(pages=[page])
-
         Vizro().build(dashboard).run()
         ```
 
@@ -168,7 +167,7 @@ In the example below we select and format some columns of the gapminder data.
 
         ```yaml
         # Still requires a .py to add data to the data manager and parse YAML configuration
-        # See from_yaml example
+        # See yaml_version example
         pages:
           - components:
               - figure:
@@ -271,7 +270,6 @@ As mentioned above, all [parameters of the Dash AG Grid](https://dash.plotly.com
         )
 
         dashboard = vm.Dashboard(pages=[page])
-
         Vizro().build(dashboard).run()
         ```
 
@@ -279,7 +277,7 @@ As mentioned above, all [parameters of the Dash AG Grid](https://dash.plotly.com
 
         ```yaml
         # Still requires a .py to add data to the data manager and parse YAML configuration
-        # See from_yaml example
+        # See yaml_version example
         pages:
           - components:
               - figure:
@@ -369,8 +367,8 @@ All other [parameters of the Dash DataTable](https://dash.plotly.com/datatable/r
                 vm.Table(title="Dash DataTable", figure=dash_data_table(data_frame=df)),
             ],
         )
-        dashboard = vm.Dashboard(pages=[page])
 
+        dashboard = vm.Dashboard(pages=[page])
         Vizro().build(dashboard).run()
         ```
 
@@ -458,8 +456,8 @@ As mentioned above, all [parameters of the Dash DataTable](https://dash.plotly.c
                 ),
             ],
         )
-        dashboard = vm.Dashboard(pages=[page])
 
+        dashboard = vm.Dashboard(pages=[page])
         Vizro().build(dashboard).run()
         ```
 
@@ -562,6 +560,7 @@ The [`Table`][vizro.models.Table] and the [`AgGrid`][vizro.models.AgGrid] models
                 )
             ],
         )
+
         dashboard = vm.Dashboard(pages=[page])
         Vizro().build(dashboard).run()
         ```
@@ -617,6 +616,7 @@ The [`Table`][vizro.models.Table] and the [`AgGrid`][vizro.models.AgGrid] models
                 )
             ],
         )
+
         dashboard = vm.Dashboard(pages=[page])
         Vizro().build(dashboard).run()
         ```

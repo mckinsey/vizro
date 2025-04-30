@@ -44,9 +44,80 @@ For more information, refer to the API reference of the selector, or the documen
 
     When configuring the [`DatePicker`][vizro.models.DatePicker] make sure to provide your dates for `min`, `max` and `value` arguments in `"yyyy-mm-dd"` format or as `datetime` type (for example, `datetime.datetime(2024, 01, 01)`).
 
+## Add an info-icon
+
+The `description` argument enables you to add helpful context to your selector by displaying an info icon next to its title. Hovering over the icon shows a tooltip with your provided text.
+
+You can provide a string to use the default info icon, or pass a custom [`Tooltip`][vizro.models.Tooltip] model to define both a custom icon from the [Google Material Icons library](https://fonts.google.com/icons) and the description text.
+
+!!! example "Selectors with info-icon"
+
+    === "app.py"
+
+        ```{.python pycafe-link hl_lines="19-24"}
+        import vizro.models as vm
+        import vizro.plotly.express as px
+        from vizro import Vizro
+
+        iris = px.data.iris()
+
+        page = vm.Page(
+            title="Selectors with icons",
+            components=[
+                vm.Graph(
+                    figure=px.scatter(iris, x="sepal_length", y="sepal_width")
+                ),
+            ],
+            controls=[
+                vm.Filter(
+                    column="species",
+                    selector=vm.Checklist(
+                        title="Select Species",
+                        description="""
+                            Select which species of iris you like.
+
+                            [Click here](https://en.wikipedia.org/wiki/Iris_flower_data_set)
+                            to learn more about flowers.""",
+                    )
+                ),
+            ]
+        )
+
+        dashboard = vm.Dashboard(pages=[page])
+        Vizro().build(dashboard).run()
+        ```
+
+    === "app.yaml"
+
+        ```{.yaml hl_lines="16 17"}
+        pages:
+          - title: Selectors with icons
+            components:
+              - type: graph
+                figure:
+                  _target_: scatter
+                  data_frame: iris
+                  x: sepal_length
+                  y: sepal_width
+            controls:
+              - column: species
+                type: filter
+                selector:
+                  type: checklist
+                  title: Select Species
+                  description: |
+                        Select which species of iris you like.
+
+                        [Click here](https://en.wikipedia.org/wiki/Iris_flower_data_set) to learn more about flowers.
+        ```
+
+    === "Result"
+
+        [![InfoIconSelector]][infoiconselector]
+
 ## The `extra` argument
 
-Currently each selector is based on an underlying Dash component as mentioned in the sections above. Using the `extra` argument you can pass additional arguments to the underlying object in order to alter it beyond the chosen defaults. The available arguments can be found in the documentation of each underlying component that was linked in the respective sections above.
+Currently each selector is based on an underlying Dash component as mentioned in the sections above. Using the `extra` argument you can pass extra arguments to the underlying object in order to alter it beyond the chosen defaults. The available arguments can be found in the documentation of each underlying component that was linked in the respective sections above.
 
 !!! note
 
@@ -113,4 +184,5 @@ An example would be to make the [`RadioItem`][vizro.models.RadioItems] display i
 
         [![InlineRadio]][inlineradio]
 
+[infoiconselector]: ../../assets/user_guides/selectors/info_icon_selector.png
 [inlineradio]: ../../assets/user_guides/selectors/inlineradio.png

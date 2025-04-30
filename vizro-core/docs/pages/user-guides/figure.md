@@ -46,22 +46,21 @@ To add a `Figure` to your page:
         import vizro.models as vm
         import vizro.plotly.express as px
         from vizro import Vizro
-        from vizro.figures import kpi_card
+        from vizro.figures import kpi_card  # (1)!
 
         tips = px.data.tips
 
-        # Create a layout with five rows and four columns. The KPI card is positioned in the first cell, while the remaining cells are empty.
         page = vm.Page(
             title="KPI card",
-            layout=vm.Grid(grid=[[0, -1, -1, -1]] + [[-1, -1, -1, -1]] * 4),
+            layout=vm.Flex(direction="row"),  # (2)!
             components=[
                 vm.Figure(
-                    figure=kpi_card( # For more information, refer to the API reference for kpi_card
+                    figure=kpi_card(
                         data_frame=tips,
                         value_column="tip",
                         value_format="${value:.2f}",
                         icon="shopping_cart",
-                        title="KPI card I",
+                        title="Average Price",
                     )
                 )
             ],
@@ -72,11 +71,14 @@ To add a `Figure` to your page:
         Vizro().build(dashboard).run()
         ```
 
+        1. For more information, refer to the API reference for [`kpi_card`][vizro.figures.kpi_card].
+        1. We switch to a [`Flex`][vizro.models.Flex] layout so that the KPI card only takes up as much space as it needs.
+
     === "app.yaml"
 
         ```yaml
         # Still requires a .py to add data to the data manager and parse YAML configuration
-        # See from_yaml example
+        # See yaml_version example
         pages:
           - components:
               - figure:
@@ -85,7 +87,7 @@ To add a `Figure` to your page:
                   value_column: tip
                   value_format: ${value:.2f}
                   icon: shopping_cart
-                  title: KPI card I
+                  title: Average Price
                 type: figure
             controls:
               - column: day
@@ -93,9 +95,8 @@ To add a `Figure` to your page:
                 selector:
                   type: radio_items
             layout:
-              grid: [[0, -1, -1, -1], [-1, -1, -1, -1], [-1, -1, -1, -1], [-1, -1, -1, -1],
-                 [-1, -1, -1, -1]]
-              type: grid
+              direction: row
+              type: flex
             title: KPI card
         ```
 
@@ -105,7 +106,7 @@ To add a `Figure` to your page:
 
 ### Key Performance Indicator (KPI) cards
 
-A KPI card is a dynamic card that can display a single value, but optionally, can also include a title, icon, and reference value. It is a common visual component to display key metrics in a dashboard. Vizro supports two pre-defined KPI card functions:
+A KPI card is a dynamic card that can display a single value, but optionally, can also include a title, icon, and reference value. It is a common visual component to display key metrics in a dashboard. Vizro comes with two built-in KPI card functions:
 
 - [`kpi_card`](../API-reference/figure-callables.md#vizro.figures.kpi_card): A KPI card that shows a single value found by performing an aggregation function (by default, `sum`) over a specified column. Required arguments are `data_frame` and `value_column`.
 
@@ -115,14 +116,23 @@ As described in the [API reference](../API-reference/figure-callables.md) and il
 
 !!! example "KPI card variations"
 
+    === "my_css_file.css"
+
+        ```css
+        /* We define a fixed height and width to ensure uniform styling for all KPI cards. */
+        .flex-item .card-kpi {
+            width: 300px;
+            height: 150px;
+        }
+        ```
+
     === "app.py"
 
-        ```{.python pycafe-link}
+        ```py
         import pandas as pd
         import vizro.models as vm
         from vizro import Vizro
-        # For more information, refer to the API reference for kpi_card and kpi_card_reference
-        from vizro.figures import kpi_card, kpi_card_reference
+        from vizro.figures import kpi_card, kpi_card_reference  # (1)!
 
         df_kpi = pd.DataFrame({"Actual": [100, 200, 700], "Reference": [100, 300, 500], "Category": ["A", "B", "C"]})
 
@@ -177,28 +187,30 @@ As described in the [API reference](../API-reference/figure-callables.md) and il
                 value_column="Actual",
                 reference_column="Reference",
                 title="KPI reference (reverse color)",
-                reverse_color=True
+                reverse_color=True,
             ),
         ]
 
-        # Create a layout with four rows and columns. The KPI cards are positioned in the first nine cells, while the remaining cells are empty.
         page = vm.Page(
             title="KPI cards",
-            layout=vm.Grid(grid=[[0, 1, 2, 3], [4, 5, 6, 7], [8, -1, -1, -1], [-1, -1, -1, -1]]),
-
+            layout=vm.Flex(direction="row", wrap=True),  # (2)!
             components=[vm.Figure(figure=figure) for figure in example_cards + example_reference_cards],
-            controls=[vm.Filter(column="Category")],
         )
 
         dashboard = vm.Dashboard(pages=[page])
         Vizro().build(dashboard).run()
         ```
 
+        1. For more information, refer to the API reference for [`kpi_card`][vizro.figures.kpi_card] and [`kpi_card_reference`][vizro.figures.kpi_card_reference].
+        1. We use a [`Flex`][vizro.models.Flex] layout with `direction=row` and `wrap=True` to allow KPI cards to wrap to the next line when needed.
+
+        <img src=https://py.cafe/logo.png alt="PyCafe logo" width="30"><b><a target="_blank" href="https://py.cafe/vizro-official/vizro-kpi-cards">Run and edit this code in PyCafe</a></b>
+
     === "app.yaml"
 
         ```yaml
         # Still requires a .py to add data to the data manager and parse YAML configuration
-        # See from_yaml example
+        # See yaml_version example
         pages:
           - components:
               - figure:
@@ -268,12 +280,10 @@ As described in the [API reference](../API-reference/figure-callables.md) and il
                   title: KPI reference (reverse color)
                   reverse_color: true
                 type: figure
-            controls:
-              - column: Category
-                type: filter
             layout:
-              grid: [[0, 1, 2, 3], [4, 5, 6, 7], [8, -1, -1, -1], [-1, -1, -1, -1]]
-              type: grid
+              direction: row
+              wrap: true
+              type: flex
             title: KPI cards
         ```
 

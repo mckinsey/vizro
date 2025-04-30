@@ -10,11 +10,11 @@ from pandas.api.types import is_datetime64_any_dtype, is_numeric_dtype
 from pydantic import Field, PrivateAttr
 
 from vizro._constants import ALL_OPTION, FILTER_ACTION_PREFIX
-from vizro.actions import _filter
+from vizro.actions._filter_action import _filter
 from vizro.managers import data_manager, model_manager
 from vizro.managers._data_manager import DataSourceName, _DynamicData
-from vizro.managers._model_manager import FIGURE_MODELS, ModelID
-from vizro.models import Action, Container, VizroBaseModel
+from vizro.managers._model_manager import FIGURE_MODELS
+from vizro.models import Container, VizroBaseModel
 from vizro.models._components.form import (
     Checklist,
     DatePicker,
@@ -25,7 +25,7 @@ from vizro.models._components.form import (
 )
 from vizro.models._controls._controls_utils import check_targets_present_on_page
 from vizro.models._models_utils import _log_call
-from vizro.models.types import FigureType, MultiValueType, SelectorType, SingleValueType
+from vizro.models.types import FigureType, ModelID, MultiValueType, SelectorType, SingleValueType
 
 # Ideally we might define these as NumericalSelectorType = Union[RangeSlider, Slider] etc., but that will not work
 # with isinstance checks.
@@ -133,7 +133,6 @@ class Filter(VizroBaseModel):
         # want to raise an error if the column is not found in a figure's data_frame, it will just be ignored.
         # This is the case when bool(self.targets) is False.
         # Possibly in future this will change (which would be breaking change).
-
         page = model_manager._get_model_page(self)
         proposed_targets = self._get_proposed_targets(page=page)
 
@@ -205,12 +204,14 @@ class Filter(VizroBaseModel):
             else:
                 filter_function = _filter_isin
 
-            self.selector.actions = [
-                Action(
-                    id=f"{FILTER_ACTION_PREFIX}_{self.id}",
-                    function=_filter(filter_column=self.column, targets=self.targets, filter_function=filter_function),
-                )
-            ]
+        self.selector.actions = [
+            _filter(
+                id=f"{FILTER_ACTION_PREFIX}_{self.id}",
+                column=self.column,
+                filter_function=filter_function,
+                targets=self.targets,
+            ),
+        ]
 
     @_log_call
     def build(self):
