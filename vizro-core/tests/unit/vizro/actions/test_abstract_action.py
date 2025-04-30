@@ -165,6 +165,9 @@ class TestAbstractActionInputs:
         [
             "",
             "component",
+            "component.",
+            ".property",
+            "component..property",
             "component_property",
             "component.property.property",
         ],
@@ -197,14 +200,12 @@ class TestAbstractActionOutputs:
     @pytest.mark.parametrize(
         "action_with_mock_outputs, expected_transformed_outputs",
         [
-            # List outputs
             ([], []),
             (["component.property"], Output("component", "property")),
             (
                 ["component_1.property_1", "component_2.property_2"],
                 [Output("component_1", "property_1"), Output("component_2", "property_2")],
             ),
-            # Dict outputs
             ({}, {}),
             (
                 {"output_1": "component.property"},
@@ -226,9 +227,18 @@ class TestAbstractActionOutputs:
         [
             [""],
             ["component"],
+            ["component."],
+            [".property"],
+            ["component..property"],
             ["component_property"],
             ["component.property.property"],
             {"output_1": ""},
+            {"output_1": "component"},
+            {"output_1": "component."},
+            {"output_1": ".property"},
+            {"output_1": "component..property"},
+            {"output_1": "component_property"},
+            {"output_1": "component.property.property"},
             {"output_1": "component.property", "output_2": ""},
         ],
         indirect=["action_with_mock_outputs"],
