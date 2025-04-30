@@ -70,3 +70,13 @@ Replace `<PATH TO VIZRO>` with the actual path to your Vizro repository.
 - `create_vizro_chart` - Use this prompt template to create a Vizro styled plotly chart based on a local or remote CSV dataset
 
 A quick way to get sample remote CSVs can be found [at the plotly repository](https://github.com/plotly/datasets/tree/master).
+
+## Other Cool MCP Servers
+
+Here are some other awesome MCP servers you might want to check out:
+
+- [Context7](https://github.com/upstash/context7) - Provides up-to-date code documentation for any library directly in your prompts. Great for getting the latest API references and examples without relying on outdated training data.
+
+- [Everything MCP](https://github.com/modelcontextprotocol/servers/tree/main/src/everything) - A development-focused MCP server that combines multiple capabilities including web search, code search, and more. Useful for testing and prototyping MCP features. Part of the official MCP servers collection.
+
+You can find more MCP servers in the [official MCP servers repository](https://github.com/modelcontextprotocol/servers/tree/main).
