@@ -20,7 +20,7 @@ Vizro-MCP provides the tools and templates to create a functioning Vizro chart o
 
 ✅ One consistent framework for charts and dashboards with one common design language
 
-✅ Validated config that is readable and easy to alter or maintain 
+✅ Validated config that is readable and easy to alter or maintain
 
 ✅ Live preview of the dashboard to iterate the design until the dashboard is perfect
 
@@ -37,7 +37,7 @@ If you are a **developer** and need instructions for running Vizro-MCP from sour
 
 In principle, the Vizro MCP server works with _any_ MCP enabled client but we recommend Claude Desktop or Cursor as popular choices.
 
-> 🐛 ** Note:** There are currently some known issues with [VS Code](https://code.visualstudio.com/) but we are working on this and hope to have Copilot working soon.
+> 🐛 \*\* Note:\*\* There are currently some known issues with [VS Code](https://code.visualstudio.com/) but we are working on this and hope to have Copilot working soon.
 
 > ⚠️ **Warning:** In some hosts (like Claude Desktop) the free plan might be less performant, which may cause issues when the request is too complex. In cases where the request causes the UI to crash, opt for using a paid plan, or reduce your request's complexity.
 
