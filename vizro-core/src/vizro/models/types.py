@@ -13,7 +13,7 @@ from typing import Annotated, Any, Literal, NewType, Optional, Protocol, Union, 
 
 import plotly.io as pio
 import pydantic_core as cs
-from pydantic import Discriminator, Field, StrictBool, Tag, ValidationInfo
+from pydantic import Discriminator, Field, StrictBool, StringConstraints, Tag, ValidationInfo
 from pydantic.json_schema import SkipJsonSchema
 from typing_extensions import TypeAlias, TypedDict
 
@@ -629,6 +629,10 @@ ActionType = Annotated[
 # Extra type groups used for mypy casting
 FigureWithFilterInteractionType = Union["Graph", "Table", "AgGrid"]
 FigureType = Union["Graph", "Table", "AgGrid", "Figure"]
+
+DotSeparatedStr = Annotated[str, StringConstraints(pattern="^[^.]+[.][^.]+$")]
+"""A string that must contain exactly one dot ('.'), with at least one character on both sides.
+For example: 'model-id.children'."""
 
 
 # TODO-AV2 A 1: improve this structure. See https://github.com/mckinsey/vizro/pull/880.

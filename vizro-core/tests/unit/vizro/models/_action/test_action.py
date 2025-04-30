@@ -84,6 +84,9 @@ class TestLegacyActionInputs:
         [
             [""],
             ["component"],
+            ["component."],
+            [".property"],
+            ["component..property"],
             ["component_property"],
             ["component.property.property"],
         ],
@@ -97,6 +100,9 @@ class TestLegacyActionInputs:
         [
             "",
             "component",
+            "component.",
+            ".property",
+            "component..property",
             "component_property",
             "component.property.property",
         ],
@@ -148,8 +154,17 @@ class TestLegacyActionOutputs:
             ([], []),
             (["component.property"], Output("component", "property")),
             (
-                ["component.property", "component.property"],
-                [Output("component", "property"), Output("component", "property")],
+                ["component_1.property_1", "component_2.property_2"],
+                [Output("component_1", "property_1"), Output("component_2", "property_2")],
+            ),
+            ({}, {}),
+            (
+                {"output_1": "component.property"},
+                {"output_1": Output("component", "property")},
+            ),
+            (
+                {"output_1": "component_1.property_1", "output_2": "component_2.property_2"},
+                {"output_1": Output("component_1", "property_1"), "output_2": Output("component_2", "property_2")},
             ),
         ],
     )
@@ -166,8 +181,19 @@ class TestLegacyActionOutputs:
         [
             [""],
             ["component"],
+            ["component."],
+            [".property"],
+            ["component..property"],
             ["component_property"],
             ["component.property.property"],
+            {"output_1": ""},
+            {"output_1": "component"},
+            {"output_1": "component."},
+            {"output_1": ".property"},
+            {"output_1": "component..property"},
+            {"output_1": "component_property"},
+            {"output_1": "component.property.property"},
+            {"output_1": "component.property", "output_2": ""},
         ],
     )
     def test_outputs_invalid(self, outputs):
@@ -290,6 +316,15 @@ class TestActionOutputs:
                 ["component_1.property_1", "component_2.property_2"],
                 [Output("component_1", "property_1"), Output("component_2", "property_2")],
             ),
+            ({}, {}),
+            (
+                {"output_1": "component.property"},
+                {"output_1": Output("component", "property")},
+            ),
+            (
+                {"output_1": "component_1.property_1", "output_2": "component_2.property_2"},
+                {"output_1": Output("component_1", "property_1"), "output_2": Output("component_2", "property_2")},
+            ),
         ],
     )
     def test_outputs_valid(self, outputs, expected_transformed_outputs):
@@ -303,8 +338,19 @@ class TestActionOutputs:
         [
             [""],
             ["component"],
+            ["component."],
+            [".property"],
+            ["component..property"],
             ["component_property"],
             ["component.property.property"],
+            {"output_1": ""},
+            {"output_1": "component"},
+            {"output_1": "component."},
+            {"output_1": ".property"},
+            {"output_1": "component..property"},
+            {"output_1": "component_property"},
+            {"output_1": "component.property.property"},
+            {"output_1": "component.property", "output_2": ""},
         ],
     )
     def test_outputs_invalid(self, outputs):
