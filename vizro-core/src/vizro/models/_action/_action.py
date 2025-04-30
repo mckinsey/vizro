@@ -154,9 +154,15 @@ class _BaseAction(VizroBaseModel):
 
     @property
     def _transformed_outputs(self) -> Union[list[Output], dict[str, Output]]:
-        """Creates the actual Dash Outputs based on self.outputs.
+        """Creates Dash Output objects from string specifications in self.outputs.
 
-        _AbstractAction, legacy and new versions of Action all support list[Output] and dict[str, Output].
+        Takes either a list of strings or a dictionary of strings, where each string is in the format
+        '<component_id>.<property>', and converts them into actual Dash Output objects.
+        For example, ['my_graph.figure'] becomes [Output('my_graph', 'figure', allow_duplicate=True)].
+
+        Returns:
+            Union[list[Output], dict[str, Output]]: A list of Output objects if inputs were a list of strings,
+            or a dictionary mapping keys to Output objects if inputs were a dictionary of strings.
         """
         if isinstance(self.outputs, list):
             self._validate_dash_dependencies(self.outputs, type="output")
