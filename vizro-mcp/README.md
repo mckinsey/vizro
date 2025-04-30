@@ -4,7 +4,7 @@ This page explains how to use a [Model Context Protocol (MCP)](https://modelcont
 
 ## Features
 
-Use natural language prompts to create Vizro dashboard code using LLM applications, such as IDEs and Claude Desktop, that host MCP server connections. 
+Use natural language prompts to create Vizro dashboard code using LLM applications, such as IDEs and Claude Desktop, that host MCP server connections.
 
 With Vizro MCP you can:
 
