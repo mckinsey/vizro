@@ -70,7 +70,6 @@ or when using Cursor, you would see a green light in the MCP menu:
 
 <img src="assets/cursor_working.png" alt="Claude Desktop MCP Server Icon" width="400"/>
 
-
 > ⚠️ **Warning:** In some cases you may need to provide the full path to your `uv` executable, so instead of `uv` would use something like `/Users/<your-username>/.local/bin/uv`.
 
 ## 💻 Usage
@@ -115,7 +114,6 @@ MCP servers are a relatively new concept, and this it is important to be transpa
 In general the most critical part of the process is the `load_and_analyze_data` tool. This tool, running on your machine, will load local or remote data into a pandas DataFrame and provide a detailed analysis of its structure and content. It only uses `pd.read_xxx` - so in general there is no need to worry about privacy or data security.
 
 The second most critical part is the `validate_model_config` tool. This tool will attempt to instantiate the Vizro model configuration and return the Python code and visualization link for valid configurations. If the configuration is valid, it will also return a link to a live preview of the dashboard, which will take you to the servers of [PyCafe](https://py.cafe). This of course only happens if you click the link, so you can always opt out.
-
 
 ### Available Tools (if client allows)
 
