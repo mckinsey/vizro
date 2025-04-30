@@ -1,10 +1,10 @@
 # Installation Guide for Vizro
 
 ## Overview
-This guide explains how to install Vizro, a tool for building interactive dashboards.
-You can use [PyCafe](https://py.cafe/) to work with Vizro without installing it, as the [first dashboard tutorial](../tutorials/first-dashboard.md) shows. Refer to the [PyCafe documentation](https://py.cafe/docs/apps/vizro) to find out more.
 
-To install Vizro on your local machine, follow the steps below. This page also covers how to verify the installation, check the installed version, and update Vizro when needed.
+You can use [PyCafe](https://py.cafe/) to work with Vizro without installing it, as demonstrated in the [first dashboard tutorial](../tutorials/first-dashboard.md). For more information, see the [PyCafe documentation](https://py.cafe/docs/apps/vizro).
+
+To install Vizro locally, follow the instructions below.
 
 ## Prerequisites
 
@@ -15,7 +15,7 @@ To install Vizro on your local machine, follow the steps below. This page also c
 **For Python installation and virtual environment setup, refer to:**
 
 - [Official Python Installation Guide](https://www.python.org/downloads/)
-- [Python Packaging Guide - How to install packages](https://packaging.python.org/en/latest/tutorials/installing-packages/#requirements-for-installing-packages)
+- [Python Packaging Guide](https://packaging.python.org/en/latest/tutorials/installing-packages/#requirements-for-installing-packages)
 - [Anaconda](https://docs.conda.io/en/latest/) - For Python installation and virtual environment management
 - [uv](https://github.com/astral-sh/uv) - A fast Python package installer and resolver
 
@@ -39,11 +39,10 @@ uv pip install vizro
 
 ## Verifying the Installation
 
-To confirm the installation was successful and verify the version of Vizro installed, call the following:
+To verify your installation and check the installed version:
 
 ```python
 import vizro
-
 print(vizro.__version__)
 ```
 
@@ -56,15 +55,12 @@ pip install -U vizro
 ```
 
 !!! note "Check Release Notes"
-
     Before upgrading, check the [release notes](https://github.com/mckinsey/vizro/blob/main/vizro-core/CHANGELOG.md) for any breaking changes.
 
 ## IDE Support
 
 !!! tip "Enable IDE Autocompletion"
-
     Vizro uses [pydantic](https://docs.pydantic.dev/latest/) for configuration. Enable autocompletion by installing:
-
     - [VS Code plugin](https://docs.pydantic.dev/latest/integrations/visual_studio_code/)
     - [PyCharm plugin](https://docs.pydantic.dev/latest/integrations/pycharm/)
 
