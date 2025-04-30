@@ -8,7 +8,16 @@ from pydantic import AfterValidator, BaseModel, Field, conlist
 # Constants used in chart validation
 CUSTOM_CHART_NAME = "custom_chart"
 
+# These types are used to simplify the schema for the LLM.
+SimplifiedComponentType = Literal["Card", "Button", "Text", "Container", "Tabs", "Graph", "AgGrid"]
+SimplifiedSelectorType = Literal[
+    "Dropdown", "RadioItems", "Checklist", "DatePicker", "Slider", "RangeSlider", "DatePicker"
+]
+SimplifiedControlType = Literal["Filter", "Parameter"]
+SimplifiedLayoutType = Literal["Grid", "Flex"]
 
+# This dict is used to give the model and overview of what is available in the vizro.models namespace.
+# It helps it to narrow down the choices when asking for a model.
 MODEL_GROUPS: dict[str, list[type[vm.VizroBaseModel]]] = {
     "main": [vm.Dashboard, vm.Page],
     "components": [vm.Card, vm.Button, vm.Text, vm.Container, vm.Tabs, vm.Graph, vm.AgGrid],  #'Figure', 'Table'
@@ -29,13 +38,27 @@ MODEL_GROUPS: dict[str, list[type[vm.VizroBaseModel]]] = {
 
 # These simplified page, container, tabs and dashboard models are used to return a flatter schema to the LLM in order to
 # reduce the context size. Especially the dashboard model schema is huge as it contains all other models.
+
+
+class FilterSimplified(vm.Filter):
+    """Simplified Filter model for reduced schema. LLM should remember to insert actual components."""
+
+    selector: Optional[SimplifiedSelectorType] = Field(
+        default=None, description="Selector to be displayed. Only provide if asked for!"
+    )
+
+
+class ParameterSimplified(vm.Parameter):
+    """Simplified Parameter model for reduced schema. LLM should remember to insert actual components."""
+
+    selector: SimplifiedSelectorType = Field(description="Selector to be displayed.")
+
+
 class ContainerSimplified(vm.Container):
     """Simplified Container model for reduced schema. LLM should remember to insert actual components."""
 
-    components: list[Literal["Card", "Button", "Text", "Container", "Tabs", "Graph", "AgGrid"]] = Field(
-        description="List of component names to be displayed."
-    )
-    layout: Optional[Literal["Grid", "Flex"]] = Field(
+    components: list[SimplifiedComponentType] = Field(description="List of component names to be displayed.")
+    layout: Optional[SimplifiedLayoutType] = Field(
         default=None, description="Layout to place components in. Only provide if asked for!"
     )
 
@@ -49,15 +72,13 @@ class TabsSimplified(vm.Tabs):
 class PageSimplified(BaseModel):
     """Simplified Page modes for reduced schema. LLM should remember to insert actual components."""
 
-    components: list[Literal["Card", "Button", "Text", "Container", "Tabs", "Graph", "AgGrid"]] = Field(
-        description="List of component names to be displayed."
-    )
+    components: list[SimplifiedComponentType] = Field(description="List of component names to be displayed.")
     title: str = Field(description="Title to be displayed.")
     description: str = Field(default="", description="Description for meta tags.")
-    layout: Optional[Literal["Grid", "Flex"]] = Field(
+    layout: Optional[SimplifiedLayoutType] = Field(
         default=None, description="Layout to place components in. Only provide if asked for!"
     )
-    controls: list[Literal["Filter", "Parameter"]] = Field(default=[], description="Controls to be displayed.")
+    controls: list[SimplifiedControlType] = Field(default=[], description="Controls to be displayed.")
 
 
 class DashboardSimplified(BaseModel):

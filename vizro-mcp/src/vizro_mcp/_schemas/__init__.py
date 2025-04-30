@@ -4,8 +4,10 @@ from .schemas import (
     ChartPlan,
     ContainerSimplified,
     DashboardSimplified,
+    FilterSimplified,
     GraphEnhanced,
     PageSimplified,
+    ParameterSimplified,
     TabsSimplified,
 )
 
@@ -15,7 +17,9 @@ __all__ = [
     "ChartPlan",
     "ContainerSimplified",
     "DashboardSimplified",
+    "FilterSimplified",
     "GraphEnhanced",
     "PageSimplified",
+    "ParameterSimplified",
     "TabsSimplified",
 ]
