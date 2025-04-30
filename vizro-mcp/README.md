@@ -12,11 +12,11 @@ LLMs choose any framework to create dashboards, and do so without any guidance, 
 
 ❌ No way to easily preview the dashboard
 
-❌ No easy way to integrate local or remote datasets
+❌ No easy way to connect to real data
 
 ##  With Vizro-MCP
 
-Vizro-MCP provides the tools and templates to create a functioning Vizro dashboard step by step.
+Vizro-MCP provides the tools and templates to create a functioning Vizro chart ordashboard step by step.
 
 ✅ One consistent framework for charts and dashboards with one common design language
 
@@ -24,7 +24,7 @@ Vizro-MCP provides the tools and templates to create a functioning Vizro dashboa
 
 ✅ Live preview of the dashboard to iterate the design until the dashboard is perfect
 
-✅ Use local or remote datasets
+✅ Use local or remote datasets simply by providing a path or URL
 
 ## 🛠️  Getting started
 
@@ -66,6 +66,9 @@ or when using Cursor, you would see a green light in the MCP menu:
 
 <img src="assets/cursor_working.png" alt="Claude Desktop MCP Server Icon" width="400"/>
 
+
+> ⚠️ **Warning:** In some cases you may need to provide the full path to your `uv` executable, so instead of `uv` would use something like `/Users/<your-username>/.local/bin/uv`.
+
 ## 💻 Usage
 
 ### Ask to create a Vizro dashboard based on local or remote data
@@ -104,16 +107,11 @@ TBD
 
 ## 🔍 Transparency and trust
 
-MCP servers are a relatively new concept, and this it is important to be transparent about what the tools are capable of doing, and if you would be ok with that as a user.
+MCP servers are a relatively new concept, and this it is important to be transparent about what the tools are capable of doing, and if you would be ok with that as a user. Overall, the Vizro MCP server only reads data, and never writes, deletes or modifies any data on you machine.
 
 In general the most critical part of the process is the `load_and_analyze_data` tool. This tool, running on your machine, will load local or remote data into a pandas DataFrame and provide a detailed analysis of its structure and content. It only uses `pd.read_xxx` - so in general there is no need to worry about privacy or data security.
 
 The second most critical part is the `validate_model_config` tool. This tool will attempt to instantiate the Vizro model configuration and return the Python code and visualization link for valid configurations. If the configuration is valid, it will also return a link to a live preview of the dashboard, which will take you to the servers of [PyCafe](https://py.cafe). This of course only happens if you click the link, so you can always opt out.
-
-The third most critical part is the `get_validated_chart_code` tool. This tool will attempt to validate the code created for a chart and return feedback on its correctness.
-
-
-
 
 
 ### Available Tools (if client allows)
