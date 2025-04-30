@@ -1,15 +1,18 @@
-# Vizro MCP Server
+# Vizro MCP server
 
-A [Model Context Protocol (MCP) server](https://modelcontextprotocol.io/) to help create Vizro dashboards and charts.
+This page explains how to use a [Model Context Protocol (MCP)](https://modelcontextprotocol.io/) server with a LLM to create Vizro dashboards and charts.
 
 ## Features
 
-- Use prompts to create Vizro dashboards from LLM Applications (hosts) that support MCP server connections, such as IDEs and Claude Desktop
-- Iterate the design until the dashboard is perfect
-- Use local or remote datasets
-- Take advantage of specialized prompt templates to guide dashboard creation (Claude Desktop only)
+Use natural language prompts to create Vizro dashboard code using LLM applications, such as IDEs and Claude Desktop, that host MCP server connections. 
 
-... and best of all, your result is Vizro config, so well structured, readable, (almost) guaranteed to run and no Vibe coded mess!
+With Vizro MCP you can:
+
+- Use local or remote datasets.
+- Reuse the prompt templates provide for guided dashboard creation (Claude Desktop only).
+- Iterate the dashboard until it is perfect.
+
+The resulting code is accompanied by a matching Vizro JSON configuration file. What you get is well-structured, readable, (almost) guaranteed to run ... and not a vibe-coded mess!
 
 ## Prerequisites
 
