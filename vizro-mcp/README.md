@@ -2,7 +2,7 @@
 
 This page explains how to use a [Model Context Protocol (MCP)](https://modelcontextprotocol.io/) server with a LLM to create Vizro dashboards and charts.
 
-##  Without Vizro-MCP
+## Without Vizro-MCP
 
 LLMs choose any framework to create dashboards, and do so without any guidance, design principles or consistency.
 
@@ -14,7 +14,7 @@ LLMs choose any framework to create dashboards, and do so without any guidance, 
 
 ❌ No easy way to integrate local or remote datasets
 
-##  With Vizro-MCP
+## With Vizro-MCP
 
 Vizro-MCP provides the tools and templates to create a functioning Vizro dashboard step by step.
 
@@ -26,7 +26,7 @@ Vizro-MCP provides the tools and templates to create a functioning Vizro dashboa
 
 ✅ Use local or remote datasets
 
-## 🛠️  Getting started
+## 🛠️ Getting started
 
 See at the very bottom for the **developer** instructions.
 
@@ -105,7 +105,6 @@ You can also also the model to give you the link, but it will attempt to regener
 
 TBD
 
-
 ## 🔍 Transparency and trust
 
 MCP servers are a relatively new concept, and this it is important to be transparent about what the tools are capable of doing, and if you would be ok with that as a user.
@@ -115,10 +114,6 @@ In general the most critical part of the process is the `load_and_analyze_data` 
 The second most critical part is the `validate_model_config` tool. This tool will attempt to instantiate the Vizro model configuration and return the Python code and visualization link for valid configurations. If the configuration is valid, it will also return a link to a live preview of the dashboard, which will take you to the servers of [PyCafe](https://py.cafe). This of course only happens if you click the link, so you can always opt out.
 
 The third most critical part is the `get_validated_chart_code` tool. This tool will attempt to validate the code created for a chart and return feedback on its correctness.
-
-
-
-
 
 ### Available Tools (if client allows)
 
