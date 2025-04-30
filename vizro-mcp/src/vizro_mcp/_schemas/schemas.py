@@ -158,7 +158,7 @@ class ChartPlan(BaseModel):
     )
     chart_code: Annotated[
         str,
-        AfterValidator(_check_chart_code),
+        # AfterValidator(_check_chart_code),
         Field(
             description="""
         Python code that generates a generates a plotly go.Figure object. It must fulfill the following criteria:

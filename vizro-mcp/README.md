@@ -2,16 +2,35 @@
 
 A [Model Context Protocol (MCP) server](https://modelcontextprotocol.io/) to help create Vizro dashboards and charts.
 
-## Features
+##  Without Vizro-MCP
 
-- Use prompts to create Vizro dashboards from LLM Applications (hosts) that support MCP server connections, such as IDEs and Claude Desktop
-- Iterate the design until the dashboard is perfect
-- Use local or remote datasets
-- Take advantage of specialized prompt templates to guide dashboard creation (Claude Desktop only)
+LLMs choose any framework to create dashboards, and do so without any guidance, design principles or consistency.
 
-... and best of all, your result is Vizro config, so well structured, readable, (almost) guaranteed to run and no Vibe coded mess!
+❌ Random choice of frontend frameworks or charting libraries without any design principles or consistency
 
-## Prerequisites
+❌ Vibe coded mess that may or may not run, but certainly is not very maintainable
+
+❌ No way to easily preview the dashboard
+
+❌ No easy way to integrate local or remote datasets
+
+##  With Vizro-MCP
+
+Vizro-MCP provides the tools and templates to create a functioning Vizro dashboard step by step.
+
+✅ One consistent framework for charts and dashboards with one common design language
+
+✅ Validated config that is readable and easy to alter or maintain by a human
+
+✅ Live preview of the dashboard to iterate the design until the dashboard is perfect
+
+✅ Use local or remote datasets
+
+## 🛠️  Getting started
+
+See at the very bottom for the **developer** instructions.
+
+### Prerequisites
 
 - [Claude Desktop](https://claude.ai/download) or [Cursor](https://www.cursor.com/downloads)
 - [uv](https://docs.astral.sh/uv/getting-started/installation/)
@@ -22,7 +41,7 @@ In principle, the Vizro MCP server works with _any_ MCP enabled client, the Clau
 
 > ⚠️ **Warning:** In some hosts (like Claude Desktop) the Free Tier might be less performant. In Claude Desktop this results in the UI crashing when the request is too complex. In that case, opt for the Paid tier or reduce request complexity.
 
-## Installation
+### Installation
 
 Add this to your `claude_desktop_config.json` [Claude - found via Developer Settings](https://modelcontextprotocol.io/quickstart/user#2-add-the-filesystem-mcp-server) or `mcp.json` [Cursor - found via the Cursor Settings](https://docs.cursor.com/context/model-context-protocol#configuration-locations):
 
@@ -47,7 +66,7 @@ or when using Cursor, you would see a green light in the MCP menu:
 
 <img src="assets/cursor_working.png" alt="Claude Desktop MCP Server Icon" width="400"/>
 
-## Usage
+## 💻 Usage
 
 ### Ask to create a Vizro dashboard based on local or remote data
 
@@ -83,7 +102,24 @@ You can also also the model to give you the link, but it will attempt to regener
 
 TBD
 
-## Available Tools (if client allows)
+
+## 🔍 Transparency and trust
+
+MCP servers are a relatively new concept, and this it is important to be transparent about what the tools are capable of doing, and if you would be ok with that as a user.
+
+In general the most critical part of the process is the `load_and_analyze_data` tool. This tool, running on your machine, will load local or remote data into a pandas DataFrame and provide a detailed analysis of its structure and content. It only uses `pd.read_xxx` - so in general there is no need to worry about privacy or data security.
+
+The second most critical part is the `validate_model_config` tool. This tool will attempt to instantiate the Vizro model configuration and return the Python code and visualization link for valid configurations. If the configuration is valid, it will also return a link to a live preview of the dashboard, which will take you to the servers of [PyCafe](https://py.cafe). This of course only happens if you click the link, so you can always opt out.
+
+The third most critical part is the `get_validated_chart_code` tool. This tool will attempt to validate the code created for a chart and return feedback on its correctness.
+
+
+
+
+
+### Available Tools (if client allows)
+
+The Vizro MCP server provides the following tools. In general you should not need to use them directly, but in special cases you could ask to call them directly to help the LLM find it's way.
 
 - `get_vizro_chart_or_dashboard_plan` - Call this tool first to get a structured step-by-step plan for creating either a chart or dashboard. Provides guidance on the entire creation process.
 - `get_overview_vizro_models` - Returns a comprehensive overview of all available models in the `vizro.models` namespace, organized by category.
@@ -91,6 +127,7 @@ TBD
 - `validate_model_config` - Tests Vizro model configurations by attempting to instantiate them. Returns Python code and visualization links for valid configurations.
 - `load_and_analyze_csv` - Loads a CSV file from a local path or URL into a pandas DataFrame and provides detailed analysis of its structure and content.
 - `get_validated_chart_code` - Validates the code created for a chart and returns feedback on its correctness.
+- `get_sample_data_info` - Provides information about sample datasets that can be used for testing and development.
 
 ## Available Prompts (if client allows)
 
@@ -99,7 +136,7 @@ TBD
 
 A quick way to get sample remote CSVs can be found [at the plotly repository](https://github.com/plotly/datasets/tree/master).
 
-## Development or running from source
+## 🔧 Development or running from source
 
 For developer or if running from source, you need to clone the Vizro repo, and then add the following to your `claude_desktop_config.json` (Claude - found via Developer Settings) or `mcp.json` (Cursor - found via the Cursor Settings).
 
