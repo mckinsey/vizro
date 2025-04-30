@@ -56,13 +56,13 @@ or when using Cursor, you would see a green light in the MCP menu:
 
 You can ask things like:
 
-> _Please create a Vizro dashboard with one page, a scatter chart, and a filter based on `<insert absolute file path or public URL>` data._
+> _Create a Vizro dashboard with one page, a scatter chart, and a filter based on `<insert absolute file path or public URL>` data._
 
-> _Please create simple two page Vizro dashboard, with first page being a correlation analysis of `<insert absolute file path or public URL>` data, and the second page being a map plot of `<insert absolute file path or public URL>` data_
+> _Create simple two page Vizro dashboard, with first page being a correlation analysis of `<insert absolute file path or public URL>` data, and the second page being a map plot of `<insert absolute file path or public URL>` data_
 
 You can even ask for a dashboard without providing data:
 
-> _Please create a Vizro dashboard with one page, a scatter chart, and a filter._
+> _Create a Vizro dashboard with one page, a scatter chart, and a filter._
 
 In general it helps to specify `Vizro` and to keep it as precise (and simple) as possible.
 
@@ -72,6 +72,14 @@ Currently we offer only one template to create an exploratory data analysis (EDA
 
 <img src="assets/claud_hammer.png" alt="Claude Desktop MCP Server Icon" width="150"/>
 <img src="assets/claude_prompt_template.png" alt="Claude Desktop MCP Server Icon" width="300"/>
+
+### Get a live preview of your dashboard
+
+When the LLM chooses to use the tool `validate_model_config`, and the tool executes successfully, the LLM will return a link to a live preview of the dashboard if only public data accessed via URL is used. In Claude Desktop, you can see the output of the tool by opening the tool collapsible and scrolling down to the very bottom.
+
+<img src="assets/claude_validate.png" width="300"/>
+
+You can also also the model to give you the link, but it will attempt to regenerate it, which is very error prone and slow.
 
 ### Create Vizro charts
 

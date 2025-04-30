@@ -3,7 +3,7 @@
 import json
 import mimetypes
 from pathlib import Path
-from typing import Any, Literal
+from typing import Any, Literal, Optional
 
 import vizro.models as vm
 from mcp.server.fastmcp import FastMCP
@@ -11,6 +11,7 @@ from pydantic import ValidationError
 from vizro import Vizro
 
 from vizro_mcp._schemas import (
+    MODEL_GROUPS,
     AgGridEnhanced,
     ChartPlan,
     DashboardSimplified,
@@ -63,7 +64,7 @@ def get_sample_data_info(data_name: Literal["iris", "tips", "stocks", "gapminder
 
 
 @mcp.tool()
-def validate_model_config(config: dict[str, Any], data_infos: list[data_info]) -> dict[str, Any]:
+def validate_model_config(config: dict[str, Any], data_infos: Optional[list[data_info]] = None) -> dict[str, Any]:
     """Validate Vizro model configuration. Run ALWAYS when you have a complete dashboard configuration.
 
     If successful, the tool will return the python code and, if it is a remote file, the py.cafe link to the chart.
@@ -75,6 +76,9 @@ def validate_model_config(config: dict[str, Any], data_infos: list[data_info]) -
     Returns:
         Dictionary with validation status and details
     """
+    if data_infos is None:
+        data_infos = []
+
     Vizro._reset()
 
     try:
@@ -136,27 +140,9 @@ def get_overview_vizro_models() -> dict[str, list[dict[str, str]]]:
     Returns:
         Dictionary with categories of models and their descriptions
     """
-    # Define the models we want to expose, grouped by category
-    # TODO: do Container and Tabs need to be simplified like page, or is Page fine as original model?
-    model_groups: dict[str, list[type[vm.VizroBaseModel]]] = {
-        "components": [vm.Card, vm.Button, vm.Text, vm.Container, vm.Tabs, vm.Graph, vm.AgGrid],  #'Figure', 'Table'
-        "layouts": [vm.Grid, vm.Flex],
-        "controls": [vm.Filter, vm.Parameter],
-        "selectors": [
-            vm.Dropdown,
-            vm.RadioItems,
-            vm.Checklist,
-            vm.DatePicker,
-            vm.Slider,
-            vm.RangeSlider,
-            vm.DatePicker,
-        ],
-        "navigation": [vm.Navigation, vm.NavBar, vm.NavLink],
-    }
-
     # Convert the model_groups dict to a dict with just names and descriptions
     result = {}
-    for category, models_list in model_groups.items():
+    for category, models_list in MODEL_GROUPS.items():
         result[category] = [
             {
                 "name": model_class.__name__,
@@ -180,24 +166,27 @@ Instructions for creating a Vizro chart:
             """
     elif plan == "dashboard":
         return """
-Instructions for creating a Vizro dashboard:
-    - analyze the datasets needed for the dashboard using the load_and_analyze_data tool - the most
-        important information here are the column names and column types
-    - if the user provides no data, use the get_sample_data_info tool to get sample data information
-    - call the get_overview_vizro_models tool to get an overview of the available models
-    - make a plan of what components you would like to use, then request all necessary schemas
-        using the get_model_json_schema tool
-    - assemble your components into a page, then add the page or pages to a dashboard
-    - ALWAYS validate the dashboard configuration using the validate_model_config tool
-    - DO NOT show any code or config to the user until you have validated the solution
-    - if you display any code artifact, you must use the above created code, do not add new config to it
-
-
 IMPORTANT:
     - if you iterate over a valid produced solution, make sure to go ALWAYS via the validation step again to
         ensure the solution is valid
-    - try not to output any config or code to the user until you have validated the solution
+    - DO NOT show any code or config to the user until you have validated the solution, do not say you are preparing
+        a solution, just do it and validate it
     - if you find yourself repeatedly getting something wrong, try enquiring the schema of the component in question
+
+Instructions for creating a Vizro dashboard:
+    - analyze the datasets needed for the dashboard using the load_and_analyze_data tool - the most
+        important information here are the column names and column types
+    - if the user provides no data, but you need to display a chart or table, use the get_sample_data_info
+        tool to get sample data information
+    - call the get_overview_vizro_models tool to get an overview of the available models
+    - make a plan of what components you would like to use, then request all necessary schemas
+        using the get_model_json_schema tool
+    - assemble your components into a page, then add the page or pages to a dashboard, DO NOT show config or code
+        to the user until you have validated the solution
+    - ALWAYS validate the dashboard configuration using the validate_model_config tool
+    - if you display any code artifact, you must use the above created code, do not add new config to it
+
+
     """
 
 

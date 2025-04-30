@@ -1,4 +1,5 @@
 from .schemas import (
+    MODEL_GROUPS,
     AgGridEnhanced,
     ChartPlan,
     DashboardSimplified,
@@ -7,6 +8,7 @@ from .schemas import (
 )
 
 __all__ = [
+    "MODEL_GROUPS",
     "AgGridEnhanced",
     "ChartPlan",
     "DashboardSimplified",
