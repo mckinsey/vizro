@@ -126,7 +126,8 @@ conda activate vizro-environment
 
 ## Installing Vizro
 
-To install Vizro, utilize the Python package manager,, use [`pip`](https://pip.pypa.io/en/stable/). Execute the following command in your terminal::
+To install Vizro, use [`pip`](https://pip.pypa.io/en/stable/) (Python's package manager).
+Run the command below in your terminal:
 
 ```bash
 pip install vizro
@@ -134,7 +135,7 @@ pip install vizro
 
 ## Verifying the Installation
 
-To confirm that Vizro has been installed successfully and to check the installed version, run the following code. You can execute this within a Jupyter Notebook cell or as a standalone Python script:
+To confirm the installation was successful and verify the version of Vizro installed, call the following. You can do this from within a Jupyter Notebook cell, or run the following as a Python script:
 
 ```py
 import vizro
