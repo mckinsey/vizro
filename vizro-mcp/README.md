@@ -20,26 +20,23 @@ We are working on getting [VS Code](https://code.visualstudio.com/) with Copilot
 
 In principle, the Vizro MCP server works with _any_ MCP enabled client, the Claude Desktop and Cursor are just some of the most popular.
 
-
-
 > ⚠️ **Warning:** In some hosts (like Claude Desktop) the Free Tier might be less performant. In Claude Desktop this results in the UI crashing when the request is too complex. In that case, opt for the Paid tier or reduce request complexity.
-
-
 
 ## Installation
 
-Add this to your `claude_desktop_config.json` [Claude - found via Developer Settings](https://modelcontextprotocol.io/quickstart/user#2-add-the-filesystem-mcp-server) or `mcp.json` [Cursor - found via the Cursor Settings](https://docs.cursor.com/context/model-context-protocol#configuration-locations):  
-
+Add this to your `claude_desktop_config.json` [Claude - found via Developer Settings](https://modelcontextprotocol.io/quickstart/user#2-add-the-filesystem-mcp-server) or `mcp.json` [Cursor - found via the Cursor Settings](https://docs.cursor.com/context/model-context-protocol#configuration-locations):
 
 ```json
-{  
-  "mcpServers": {  
-    "git": {  
-      "command": "uvx",  
-      "args": ["vizro-mcp"]  
-    }  
-  }  
-} 
+{
+  "mcpServers": {
+    "git": {
+      "command": "uvx",
+      "args": [
+        "vizro-mcp"
+      ]
+    }
+  }
+}
 ```
 
 If successful, in Claude Desktop you should see a little hammer icon below the chat field:
@@ -93,8 +90,6 @@ TBD
 
 A quick way to get sample remote CSVs can be found [at the plotly repository](https://github.com/plotly/datasets/tree/master).
 
-
-
 ## Development or running from source
 
 For developer or if running from source, you need to clone the Vizro repo, and then add the following to your `claude_desktop_config.json` (Claude - found via Developer Settings) or `mcp.json` (Cursor - found via the Cursor Settings).
@@ -116,5 +111,3 @@ For developer or if running from source, you need to clone the Vizro repo, and t
 ```
 
 Replace `<PATH TO VIZRO>` with the actual path to your Vizro repository.
-
-
