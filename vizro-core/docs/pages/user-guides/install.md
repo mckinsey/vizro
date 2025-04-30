@@ -11,7 +11,6 @@ To install Vizro locally, follow the instructions below.
 - Python 3.9 or later
 - A virtual environment (recommended)
 
-
 **For Python installation and virtual environment setup, refer to:**
 
 - [Official Python Installation Guide](https://www.python.org/downloads/)
@@ -43,6 +42,7 @@ To verify your installation and check the installed version:
 
 ```python
 import vizro
+
 print(vizro.__version__)
 ```
 
@@ -55,12 +55,15 @@ pip install -U vizro
 ```
 
 !!! note "Check Release Notes"
+
     Before upgrading, check the [release notes](https://github.com/mckinsey/vizro/blob/main/vizro-core/CHANGELOG.md) for any breaking changes.
 
 ## IDE Support
 
 !!! tip "Enable IDE Autocompletion"
+
     Vizro uses [pydantic](https://docs.pydantic.dev/latest/) for configuration. Enable autocompletion by installing:
+
     - [VS Code plugin](https://docs.pydantic.dev/latest/integrations/visual_studio_code/)
     - [PyCharm plugin](https://docs.pydantic.dev/latest/integrations/pycharm/)
 
