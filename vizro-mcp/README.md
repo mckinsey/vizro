@@ -16,18 +16,22 @@ The resulting code is accompanied by a matching Vizro JSON configuration file. W
 
 ## Prerequisites
 
-- [Claude Desktop](https://claude.ai/download) or [Cursor](https://www.cursor.com/downloads)
 - [uv](https://docs.astral.sh/uv/getting-started/installation/)
+- [Claude Desktop](https://claude.ai/download) or [Cursor](https://www.cursor.com/downloads)
 
-We are working on getting [VS Code](https://code.visualstudio.com/) with Copilot working soon. There are some known issues.
+In principle, the Vizro MCP server works with _any_ MCP enabled client but we recommend Claude Desktop or Cursor as popular choices.
 
-In principle, the Vizro MCP server works with _any_ MCP enabled client, the Claude Desktop and Cursor are just some of the most popular.
+> 🐛 There are current some known issues with [VS Code](https://code.visualstudio.com/) but we are working on this and hope to have Copilot working soon.
 
-> ⚠️ **Warning:** In some hosts (like Claude Desktop) the Free Tier might be less performant. In Claude Desktop this results in the UI crashing when the request is too complex. In that case, opt for the Paid tier or reduce request complexity.
+> ⚠️ **Warning:** In some hosts (like Claude Desktop) the free plan might be less performant, which may cause issues when the request is too complex. In cases where the request causes the UI to crash, opt for using a paid plan, or reduce your request's complexity.
 
 ## Installation
 
-Add this to your `claude_desktop_config.json` [Claude - found via Developer Settings](https://modelcontextprotocol.io/quickstart/user#2-add-the-filesystem-mcp-server) or `mcp.json` [Cursor - found via the Cursor Settings](https://docs.cursor.com/context/model-context-protocol#configuration-locations):
+Once you have installed the MCP host application, you need to configure the Vizro MCP server details.
+
+**For Claud**: Add the following to your `claude_desktop_config.json` [found via Developer Settings](https://modelcontextprotocol.io/quickstart/user#2-add-the-filesystem-mcp-server).
+
+**For Cursor**: Add the following to `mcp.json` [found via the Cursor Settings](https://docs.cursor.com/context/model-context-protocol#configuration-locations):
 
 ```json
 {
