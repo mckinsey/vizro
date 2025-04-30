@@ -36,7 +36,6 @@ To create a dashboard:
         )
 
         dashboard = vm.Dashboard(pages=[page])
-
         Vizro().build(dashboard).run()
         ```
 
@@ -78,7 +77,6 @@ To create a dashboard:
         }
 
         dashboard = {"pages": [page]}
-
         Vizro().build(dashboard).run()
         ```
 

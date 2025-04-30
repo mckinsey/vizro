@@ -105,7 +105,6 @@ To add a [`Container`][vizro.models.Container] to your page, do the following:
         )
 
         dashboard = vm.Dashboard(pages=[page])
-
         Vizro().build(dashboard).run()
         ```
 
@@ -116,7 +115,7 @@ To add a [`Container`][vizro.models.Container] to your page, do the following:
 
         ```yaml
         # Still requires a .py to add data to the data manager and parse YAML configuration
-        # See from_yaml example
+        # See yaml_version example
         pages:
           - components:
               - components:
@@ -282,7 +281,7 @@ Collapsible containers are supported in both `Grid` and `Flex` layouts. However,
 
         page = vm.Page(
             title="Collapsible containers",
-            layout=vm.Flex(),
+            layout=vm.Flex(),  # (1)!
             components=[
                 vm.Container(
                     title="Initially collapsed container",
@@ -300,6 +299,8 @@ Collapsible containers are supported in both `Grid` and `Flex` layouts. However,
         dashboard = vm.Dashboard(pages=[page])
         Vizro().build(dashboard).run()
         ```
+
+        1. We use a [`Flex`][vizro.models.Flex] layout to make sure the `Container` only occupy as much space as they need, regardless of their collapsed state.
 
     === "app.yaml"
 
@@ -498,7 +499,7 @@ You can provide a string to use the default info icon, or pass a custom [`Toolti
 
 ## The `extra` argument
 
-The `Container` is based on the underlying Dash component [`dbc.Container`](https://dash-bootstrap-components.opensource.faculty.ai/docs/components/layout/). Using the `extra` argument you can pass additional arguments to `dbc.Container` in order to alter it beyond the chosen defaults.
+The `Container` is based on the underlying Dash component [`dbc.Container`](https://dash-bootstrap-components.opensource.faculty.ai/docs/components/layout/). Using the `extra` argument you can pass extra arguments to `dbc.Container` in order to alter it beyond the chosen defaults.
 
 !!! note
 

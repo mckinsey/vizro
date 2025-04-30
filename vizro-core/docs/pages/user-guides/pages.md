@@ -43,13 +43,12 @@ To create and add a page to your dashboard, do the following steps:
                 )
             ],
             controls=[
-                vm.Filter(column="continent", targets=["sunburst"]),
+                vm.Filter(column="continent"),
                 vm.Parameter(targets=["sunburst.color"], selector=vm.RadioItems(options=["lifeExp", "pop"], title="Color")),
             ],
         )
 
         dashboard = vm.Dashboard(pages=[page])
-
         Vizro().build(dashboard).run()
         ```
 
@@ -70,7 +69,6 @@ To create and add a page to your dashboard, do the following steps:
                 type: graph
             controls:
               - column: continent
-                targets: [sunburst]
                 type: filter
               - selector:
                   options: [lifeExp, pop]
@@ -88,7 +86,7 @@ To create and add a page to your dashboard, do the following steps:
 
 An accordion page selector is automatically added to your dashboard in the top-left of the control container for through the different pages. It will not be added if your dashboard consists of only one page.
 
-You can additionally navigate through the different pages by going directly to the relevant page URL (more details in next section).
+You can also navigate through the different pages by going directly to the relevant page URL (more details in next section).
 
 ## Customize the page URL
 
@@ -129,13 +127,12 @@ To customize the page URL, pass a valid URL name to the `path` argument of [`Pag
                 )
             ],
             controls=[
-                vm.Filter(column="continent", targets=["sunburst"]),
+                vm.Filter(column="continent"),
                 vm.Parameter(targets=["sunburst.color"], selector=vm.RadioItems(options=["lifeExp", "pop"], title="Color")),
             ],
         )
 
         dashboard = vm.Dashboard(pages=[page1, page2])
-
         Vizro().build(dashboard).run()
         ```
 
@@ -161,7 +158,6 @@ To customize the page URL, pass a valid URL name to the `path` argument of [`Pag
                 type: graph
             controls:
               - column: continent
-                targets: [sunburst]
                 type: filter
               - selector:
                   options: [lifeExp, pop]

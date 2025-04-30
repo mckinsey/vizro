@@ -54,7 +54,7 @@ You can provide a string to use the default info icon, or pass a custom [`Toolti
 
     === "app.py"
 
-        ```{.python pycafe-link hl_lines="19"}
+        ```{.python pycafe-link hl_lines="19-24"}
         import vizro.models as vm
         import vizro.plotly.express as px
         from vizro import Vizro
@@ -117,7 +117,7 @@ You can provide a string to use the default info icon, or pass a custom [`Toolti
 
 ## The `extra` argument
 
-Currently each selector is based on an underlying Dash component as mentioned in the sections above. Using the `extra` argument you can pass additional arguments to the underlying object in order to alter it beyond the chosen defaults. The available arguments can be found in the documentation of each underlying component that was linked in the respective sections above.
+Currently each selector is based on an underlying Dash component as mentioned in the sections above. Using the `extra` argument you can pass extra arguments to the underlying object in order to alter it beyond the chosen defaults. The available arguments can be found in the documentation of each underlying component that was linked in the respective sections above.
 
 !!! note
 

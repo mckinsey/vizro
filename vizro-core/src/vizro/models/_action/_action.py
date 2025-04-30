@@ -116,7 +116,7 @@ class _BaseAction(VizroBaseModel):
     def _transformed_inputs(self) -> Union[list[State], dict[str, Union[State, ControlsStates]]]:
         """Creates the actual Dash States given the user-specified runtime arguments and built in ones.
 
-        Return type is list only for legacy actions. Otherwise it will always be a dictionary (unlike
+        Return type is list only for legacy actions. Otherwise, it will always be a dictionary (unlike
         for _transformed_outputs, where new behavior can still give a list). Keys are the parameter names. For
         user-specified inputs, values are Dash States. For built-in inputs, values can be more complicated nested
         structure of states.
@@ -141,7 +141,7 @@ class _BaseAction(VizroBaseModel):
         }
 
         # Validate that the runtime arguments are in the same form as the legacy Action.inputs field, so a string
-        # of the form component_id.component_property. Currently this code only runs for subclasses of
+        # of the form component_id.component_property. Currently, this code only runs for subclasses of
         # _AbstractAction but not vm.Action instances because a vm.Action that does not pass this check will
         # have already been classified as legacy in Action._legacy. In future when vm.Action.inputs is deprecated
         # then this will be used for vm.Action instances also.
@@ -357,7 +357,7 @@ class Action(_BaseAction):
         # CapturedCallable.
         # Note this is a dictionary even if arguments were originally provided as positional ones, since they are
         # bound in CapturedCallable.
-        # Currently this does not use default values of function parameters. To do so, we would need to
+        # Currently, this does not use default values of function parameters. To do so, we would need to
         # use inspect.BoundArguments.apply_defaults.
         return self.function._arguments  # type:ignore[union-attr]
 
