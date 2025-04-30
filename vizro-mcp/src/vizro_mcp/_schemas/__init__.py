@@ -8,10 +8,10 @@ from .schemas import (
 )
 
 __all__ = [
+    "MODEL_GROUPS",
     "AgGridEnhanced",
     "ChartPlan",
     "DashboardSimplified",
     "GraphEnhanced",
-    "MODEL_GROUPS",
     "PageSimplified",
 ]
