@@ -9,6 +9,7 @@ To create a dashboard:
 1. (optional) Choose a `theme`, see our [guide on Themes](themes.md)
 1. (optional) Customize your `navigation`, see our [guide on Navigation](navigation.md)
 1. (optional) Set a `title` for your dashboard
+1. (optional) Add info-icon next to your dashboard title by setting `description` argument
 1. Add your `dashboard` to the `build` call of Vizro
 
 ## Use dashboard configuration options
@@ -202,6 +203,14 @@ If supplied, the `title` of the [`Dashboard`][vizro.models.Dashboard] displays a
 Vizro will [automatically incorporate the dashboard logo](assets.md/#add-a-logo-image) in the top-left corner of each page if an image named `logo.<extension>` is present within the assets folder.
 
 ![Dashboard with logo](../../assets/user_guides/dashboard/dashboard_with_logo.png)
+
+## Add a dashboard info-icon
+
+The `description` argument enables you to add helpful context to your dashboard by displaying an info icon next to the dashboard title. Hovering over the icon shows a tooltip with your provided text.
+
+You can provide a string to use the default info icon, or pass a custom [`Tooltip`][vizro.models.Tooltip] model to define both a custom icon from the [Google Material Icons library](https://fonts.google.com/icons) and the description text.
+
+![Dashboard with info-icon](../../assets/user_guides/dashboard/dashboard_with_info_icon.png)
 
 ## Browser title
 

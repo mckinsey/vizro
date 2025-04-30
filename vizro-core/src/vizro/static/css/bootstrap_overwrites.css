@@ -102,3 +102,8 @@ label[for="theme-selector"] {
   margin-right: 0;
   padding-left: 0;
 }
+
+/* Remove bottom margin of last child as card comes with padding */
+.card-text > *:last-child {
+  margin-bottom: 0;
+}

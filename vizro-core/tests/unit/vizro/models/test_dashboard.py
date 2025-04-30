@@ -75,7 +75,7 @@ class TestDashboardPreBuild:
         mock_register_page.assert_any_call(
             module=page_1.id,
             name="Page 1",
-            description="",
+            description=None,
             image=None,
             title="Page 1",
             path="/",
@@ -85,7 +85,7 @@ class TestDashboardPreBuild:
         mock_register_page.assert_any_call(
             module=page_2.id,
             name="Page 2",
-            description="",
+            description=None,
             image=None,
             title="Page 2",
             path="/page-2",
@@ -102,7 +102,7 @@ class TestDashboardPreBuild:
         mock_register_page.assert_any_call(
             module=page_1.id,
             name="Page 1",
-            description="",
+            description=None,
             image=None,
             title="My dashboard: Page 1",
             path="/",
@@ -141,7 +141,7 @@ class TestDashboardPreBuild:
         mock_register_page.assert_any_call(
             module=page_1.id,
             name="Page 1",
-            description="",
+            description=None,
             image=image_path,
             title="Page 1",
             path="/",
@@ -184,7 +184,7 @@ class TestDashboardPreBuild:
         mock_register_page.assert_any_call(
             module=page_1.id,
             name="Page 1",
-            description="",
+            description=None,
             image="app.svg",
             title="Page 1",
             path="/",

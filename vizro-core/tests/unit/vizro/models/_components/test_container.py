@@ -3,7 +3,7 @@
 import dash_bootstrap_components as dbc
 import pytest
 from asserts import STRIP_ALL, assert_component_equal
-from dash import html
+from dash import dcc, html
 from pydantic import ValidationError
 
 import vizro.models as vm
@@ -78,7 +78,12 @@ class TestContainerBuildMethod:
         assert_component_equal(result.children, [html.H3(), html.Div()], keys_to_strip=STRIP_ALL)
         # We still want to test the exact H3 produced in Container.build:
         assert_component_equal(
-            result.children[0], html.H3(["Title"], className="container-title", id="container_title")
+            result.children[0],
+            html.H3(
+                [html.Div(["Title", None], className="inner-container-title")],
+                className="container-title",
+                id="container_title",
+            ),
         )
 
     def test_container_build_legacy_layout(self):
@@ -92,7 +97,12 @@ class TestContainerBuildMethod:
         assert_component_equal(result.children, [html.H3(), html.Div()], keys_to_strip=STRIP_ALL)
         # We still want to test the exact H3 produced in Container.build:
         assert_component_equal(
-            result.children[0], html.H3(["Title"], className="container-title", id="container_title")
+            result.children[0],
+            html.H3(
+                [html.Div(["Title", None], className="inner-container-title")],
+                className="container-title",
+                id="container_title",
+            ),
         )
         # And also that a button has been inserted in the right place:
         assert_component_equal(result["layout_id_0"].children, dbc.Button(), keys_to_strip=STRIP_ALL)
@@ -131,7 +141,7 @@ class TestContainerBuildMethod:
 
         # We still want to test the exact H3 and dbc.Collapse inside the result
         expected_title_content = [
-            "Title",
+            html.Div(["Title", None], className="inner-container-title"),
             html.Span(
                 "keyboard_arrow_down" if collapsed else "keyboard_arrow_up",
                 className="material-symbols-outlined",
@@ -154,3 +164,34 @@ class TestContainerBuildMethod:
         )
         # We want to test if the correct style is applied: default style for collapsible containers is outlined
         assert result.class_name == "border p-3"
+
+    def test_container_build_with_description(self):
+        result = vm.Container(
+            id="container",
+            title="Title",
+            components=[vm.Button()],
+            layout=vm.Grid(id="layout_id", grid=[[0]]),
+            description=vm.Tooltip(text="Tooltip test", icon="info", id="info"),
+        ).build()
+        description = [
+            html.Span("info", id="info-icon", className="material-symbols-outlined tooltip-icon"),
+            dbc.Tooltip(
+                children=dcc.Markdown("Tooltip test", className="card-text"),
+                id="info",
+                target="info-icon",
+                autohide=False,
+            ),
+        ]
+        assert_component_equal(
+            result, dbc.Container(id="container", class_name="", fluid=True), keys_to_strip={"children"}
+        )
+        assert_component_equal(result.children, [html.H3(), html.Div()], keys_to_strip=STRIP_ALL)
+        # We still want to test the exact H3 produced in Container.build:
+        assert_component_equal(
+            result.children[0],
+            html.H3(
+                [html.Div(["Title", *description], className="inner-container-title")],
+                className="container-title",
+                id="container_title",
+            ),
+        )

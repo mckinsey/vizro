@@ -8,7 +8,10 @@
 .figure-title,
 .figure-header,
 .figure-footer {
+  align-items: center;
+  display: flex;
   flex: 0 1 auto;
+  gap: 8px;
 }
 
 .figure-footer {

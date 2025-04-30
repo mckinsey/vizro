@@ -412,6 +412,90 @@ Collapsible containers can be used in `Grid` layout as well.
 
         [![CollapsibleContainerGrid]][collapsiblecontainergrid]
 
+## Add an info-icon
+
+The `description` argument enables you to add helpful context to your container by displaying an info icon next to its title. Hovering over the icon shows a tooltip with your provided text.
+
+You can provide a string to use the default info icon, or pass a custom [`Tooltip`][vizro.models.Tooltip] model to define both a custom icon from the [Google Material Icons library](https://fonts.google.com/icons) and the description text.
+
+!!! example "Container with info-icon"
+
+    === "app.py"
+
+        ```{.python pycafe-link}
+        import vizro.models as vm
+        import vizro.plotly.express as px
+        from vizro import Vizro
+
+        iris = px.data.iris()
+
+        page = vm.Page(
+            title="Container with info-icon",
+            layout=vm.Grid(grid=[[0, 1]]),
+            components=[
+                vm.Container(
+                    title="Container with info-icon",
+                    components=[vm.Graph(figure=px.scatter(iris, x="sepal_width", y="sepal_length", color="species"))],
+                    description="""
+                        The Iris dataset includes measurements of 150 iris flowers across three types: Setosa, Versicolor, and Virginica.
+
+                        While all samples are labeled by type, they can appear similar when looking at just some features—making it a useful dataset for exploring patterns and challenges in classification.
+                    """,
+                ),
+                vm.Container(
+                    title="Container title",
+                    components=[vm.Graph(figure=px.box(iris, x="species", y="sepal_length", color="species"))],
+                )
+            ],
+        )
+
+        dashboard = vm.Dashboard(pages=[page])
+        Vizro().build(dashboard).run()
+        ```
+
+    === "app.yaml"
+
+        ```yaml
+        # Still requires a .py to add data to the data manager and parse YAML configuration
+        # See yaml_version example
+        pages:
+          - title: Container with info-icon
+            layout:
+              grid: [[0, 1]]
+              type: grid
+            components:
+              - type: container
+                title: Container with info-icon
+                components:
+                  - type: graph
+                    figure:
+                      _target_: scatter
+                      data_frame: iris
+                      x: sepal_width
+                      y: sepal_length
+                      color: species
+                collapsed: true
+                description: |
+                  The Iris dataset includes measurements of 150 iris flowers across three types: Setosa, Versicolor, and Virginica.
+
+                  While all samples are labeled by type, they can appear similar when looking at just some features—making it a useful dataset for exploring patterns and challenges in classification.
+              - type: container
+                title: Container title
+                components:
+                  - type: graph
+                    figure:
+                      _target_: box
+                      data_frame: iris
+                      x: species
+                      y: sepal_length
+                      color: species
+                collapsed: false
+        ```
+
+    === "Result"
+
+        [![ContainerInfoIcon]][containerinfoicon]
+
 ## The `extra` argument
 
 The `Container` is based on the underlying Dash component [`dbc.Container`](https://dash-bootstrap-components.opensource.faculty.ai/docs/components/layout/). Using the `extra` argument you can pass additional arguments to `dbc.Container` in order to alter it beyond the chosen defaults.
@@ -425,4 +509,5 @@ For examples of how to use the `extra` argument, see an example in the documenta
 [collapsiblecontainerflex]: ../../assets/user_guides/components/collapsible-containers-flex.gif
 [collapsiblecontainergrid]: ../../assets/user_guides/components/collapsible-containers-grid.gif
 [container]: ../../assets/user_guides/components/containers.png
+[containerinfoicon]: ../../assets/user_guides/components/container-info-icon.png
 [stylecontainer]: ../../assets/user_guides/components/container-styled.png

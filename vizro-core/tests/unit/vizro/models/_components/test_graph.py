@@ -2,6 +2,7 @@
 
 import re
 
+import dash_bootstrap_components as dbc
 import plotly.graph_objects as go
 import pytest
 from asserts import assert_component_equal
@@ -203,7 +204,7 @@ class TestBuildGraph:
         expected_graph = dcc.Loading(
             html.Div(
                 [
-                    html.H3("Title", className="figure-title"),
+                    html.H3(["Title", None], className="figure-title"),
                     dcc.Markdown("""#### Subtitle""", className="figure-header"),
                     dcc.Graph(
                         figure=go.Figure(
@@ -222,6 +223,52 @@ class TestBuildGraph:
                         },
                     ),
                     dcc.Markdown("""SOURCE: **DATA**""", className="figure-footer"),
+                ],
+                className="figure-container",
+            ),
+            color="grey",
+            parent_className="loading-container",
+            overlay_style={"visibility": "visible", "opacity": 0.3},
+        )
+        assert_component_equal(graph, expected_graph, keys_to_strip={"id"})
+
+    def test_graph_build_title_description(self, standard_px_chart):
+        graph = vm.Graph(
+            figure=standard_px_chart,
+            title="Title",
+            description=vm.Tooltip(text="Tooltip test", icon="info", id="info"),
+        ).build()
+        description = [
+            html.Span("info", id="info-icon", className="material-symbols-outlined tooltip-icon"),
+            dbc.Tooltip(
+                children=dcc.Markdown("Tooltip test", className="card-text"),
+                id="info",
+                target="info-icon",
+                autohide=False,
+            ),
+        ]
+        expected_graph = dcc.Loading(
+            html.Div(
+                [
+                    html.H3(["Title", *description], className="figure-title"),
+                    None,
+                    dcc.Graph(
+                        figure=go.Figure(
+                            layout={
+                                "paper_bgcolor": "rgba(0,0,0,0)",
+                                "plot_bgcolor": "rgba(0,0,0,0)",
+                                "xaxis": {"visible": False},
+                                "yaxis": {"visible": False},
+                            }
+                        ),
+                        config={
+                            "autosizable": True,
+                            "frameMargins": 0,
+                            "responsive": True,
+                            "modeBarButtonsToRemove": ["toImage"],
+                        },
+                    ),
+                    None,
                 ],
                 className="figure-container",
             ),

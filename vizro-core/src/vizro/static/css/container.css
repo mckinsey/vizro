@@ -59,3 +59,10 @@ and all containers need to have a white background on that page */
 [data-bs-theme="light"] #right-side:has(.bg-container) .card {
   background: var(--left-side-bg);
 }
+
+.inner-container-title {
+  align-items: center;
+  display: flex;
+  gap: 8px;
+  margin-bottom: 0;
+}
