@@ -3,12 +3,12 @@
 from typing import Annotated, Any, Literal, Optional
 
 import vizro.models as vm
-from pydantic import BaseModel, Field, conlist
+from pydantic import AfterValidator, BaseModel, Field, conlist
 
 # Constants used in chart validation
 CUSTOM_CHART_NAME = "custom_chart"
 
-# TODO: do Container and Tabs need to be simplified like page, or is Page fine as original model?
+
 MODEL_GROUPS: dict[str, list[type[vm.VizroBaseModel]]] = {
     "main": [vm.Dashboard, vm.Page],
     "components": [vm.Card, vm.Button, vm.Text, vm.Container, vm.Tabs, vm.Graph, vm.AgGrid],  #'Figure', 'Table'
@@ -27,22 +27,8 @@ MODEL_GROUPS: dict[str, list[type[vm.VizroBaseModel]]] = {
 }
 
 
-# These simplified page and dashboard models are used to return a flatter schema to the LLM in order to reduce the
-# context size. Especially the dashboard model schema is huge as it contains all other models.
-class PageSimplified(BaseModel):
-    """Simplified Page modes for reduced schema. LLM should remember to insert actual components."""
-
-    components: list[Literal["Card", "Button", "Text", "Container", "Tabs", "Graph", "AgGrid"]] = Field(
-        description="List of component names to be displayed."
-    )
-    title: str = Field(description="Title to be displayed.")
-    description: str = Field(default="", description="Description for meta tags.")
-    layout: Optional[Literal["Grid", "Flex"]] = Field(
-        default=None, description="Layout to place components in. Only provide if asked for!"
-    )
-    controls: list[Literal["Filter", "Parameter"]] = Field(default=[], description="Controls to be displayed.")
-
-
+# These simplified page, container, tabs and dashboard models are used to return a flatter schema to the LLM in order to
+# reduce the context size. Especially the dashboard model schema is huge as it contains all other models.
 class ContainerSimplified(vm.Container):
     """Simplified Container model for reduced schema. LLM should remember to insert actual components."""
 
@@ -58,6 +44,20 @@ class TabsSimplified(vm.Tabs):
     """Simplified Tabs model for reduced schema. LLM should remember to insert actual components."""
 
     tabs: conlist(ContainerSimplified, min_length=1)
+
+
+class PageSimplified(BaseModel):
+    """Simplified Page modes for reduced schema. LLM should remember to insert actual components."""
+
+    components: list[Literal["Card", "Button", "Text", "Container", "Tabs", "Graph", "AgGrid"]] = Field(
+        description="List of component names to be displayed."
+    )
+    title: str = Field(description="Title to be displayed.")
+    description: str = Field(default="", description="Description for meta tags.")
+    layout: Optional[Literal["Grid", "Flex"]] = Field(
+        default=None, description="Layout to place components in. Only provide if asked for!"
+    )
+    controls: list[Literal["Filter", "Parameter"]] = Field(default=[], description="Controls to be displayed.")
 
 
 class DashboardSimplified(BaseModel):
@@ -158,7 +158,7 @@ class ChartPlan(BaseModel):
     )
     chart_code: Annotated[
         str,
-        # AfterValidator(_check_chart_code),
+        AfterValidator(_check_chart_code),
         Field(
             description="""
         Python code that generates a generates a plotly go.Figure object. It must fulfill the following criteria:
