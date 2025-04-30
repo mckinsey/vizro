@@ -17,9 +17,9 @@ __all__ = [
     "ChartPlan",
     "ContainerSimplified",
     "DashboardSimplified",
+    "FilterSimplified",
     "GraphEnhanced",
     "PageSimplified",
-    "TabsSimplified",
-    "FilterSimplified",
     "ParameterSimplified",
+    "TabsSimplified",
 ]
