@@ -162,6 +162,8 @@ def get_vizro_chart_or_dashboard_plan(plan: Literal["chart", "dashboard"]) -> st
 Instructions for creating a Vizro chart:
     - analyze the datasets needed for the chart using the load_and_analyze_data tool - the most important
         information here are the column names and column types
+    - if the user provides no data, but you need to display a chart or table, use the get_sample_data_info
+        tool to get sample data information
     - do NOT call any other tool after, especially do NOT create a dashboard
             """
     elif plan == "dashboard":
