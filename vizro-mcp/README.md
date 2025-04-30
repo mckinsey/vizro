@@ -72,8 +72,7 @@ Currently we offer only one template to create an exploratory data analysis (EDA
 
 ### Get a live preview of your dashboard
 
-When the LLM chooses to use the tool `validate_model_config`, and the tool executes successfully, the LLM will return a link to a live preview of the dashboard if only public data accessed via URL is used. In Claude Desktop, you can see the output of the tool by opening the
-tool collapsible and scrolling down to the very bottom.
+When the LLM chooses to use the tool `validate_model_config`, and the tool executes successfully, the LLM will return a link to a live preview of the dashboard if only public data accessed via URL is used. In Claude Desktop, you can see the output of the tool by opening the tool collapsible and scrolling down to the very bottom.
 
 <img src="assets/claude_validate.png" width="300"/>
 
