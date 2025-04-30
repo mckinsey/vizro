@@ -16,8 +16,10 @@ from vizro_mcp._schemas import (
     ChartPlan,
     ContainerSimplified,
     DashboardSimplified,
+    FilterSimplified,
     GraphEnhanced,
     PageSimplified,
+    ParameterSimplified,
     TabsSimplified,
 )
 from vizro_mcp._utils import (
@@ -128,6 +130,10 @@ def get_model_json_schema(model_name: str) -> dict[str, Any]:
         return TabsSimplified.model_json_schema()
     elif model_name == "Container":
         return ContainerSimplified.model_json_schema()
+    elif model_name == "Filter":
+        return FilterSimplified.model_json_schema()
+    elif model_name == "Parameter":
+        return ParameterSimplified.model_json_schema()
     # Get the model class from the vizro.models namespace
     if not hasattr(vm, model_name):
         return {"error": f"Model '{model_name}' not found in vizro.models"}
