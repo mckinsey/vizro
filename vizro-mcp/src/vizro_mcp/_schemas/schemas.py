@@ -3,7 +3,7 @@
 from typing import Annotated, Any, Literal, Optional
 
 import vizro.models as vm
-from pydantic import AfterValidator, BaseModel, Field, conlist
+from pydantic import BaseModel, Field, conlist
 
 # Constants used in chart validation
 CUSTOM_CHART_NAME = "custom_chart"
