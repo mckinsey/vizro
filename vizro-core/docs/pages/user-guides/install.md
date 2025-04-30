@@ -4,7 +4,7 @@
 
 This guide provides a comprehensive overview of how to install Vizro, a tool for creating interactive dashboards. You can use Vizro without local installation via [PyCafe](https://py.cafe/), as demonstrated in the [first dashboard tutorial](../tutorials/first-dashboard.md). For further details on integrating PyCafe with Vizro, refer to the [PyCafe documentation](https://py.cafe/docs/apps/vizro).
 
-If you prefer a local setup, this document outlines the installation process, verification of the installation, checking the installed version, and updating Vizro.
+If you prefer install Vizro, the rest of this page explains how to do get set up, verify the instsallation, check the version of Vizro you have installed, and update the version if you later want to do so.
 
 ### Prerequisites
 
