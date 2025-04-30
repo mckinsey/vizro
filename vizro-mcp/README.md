@@ -26,7 +26,7 @@ Vizro-MCP provides the tools and templates to create a functioning Vizro chart o
 
 ✅ Use local or remote datasets simply by providing a path or URL
 
-## 🛠️ Getting started
+## 🛠️ Get started
 
 See at the very bottom for the **developer** instructions.
 
