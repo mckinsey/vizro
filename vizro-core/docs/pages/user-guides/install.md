@@ -17,9 +17,8 @@ Before proceeding with the installation, ensure that you have the following prer
   - [Conda Virtual Environments](https://docs.conda.io/projects/conda/en/latest/user-guide/getting-started.html#starting-conda)
   - [Explainer Video on Virtual Environments](https://youtu.be/YKfAwIItO7M)
 
-<details>
 
-<summary>To install Python using the terminal on a macOS machine, follow these steps;<summary>
+To install Python using the terminal on a macOS machine, follow these steps:
 
 ##### Step 1: Open Terminal
 
@@ -73,7 +72,7 @@ It is a good practice to use a virtual environment for your Python projects. Her
 cd /path/to/your/project
 ```
 
-2) Ceate a virtual environment:
+2) Create a virtual environment:
 
 ```bash
 python3 -m venv venv
@@ -91,7 +90,6 @@ source venv/bin/activate
 deactivate
 ```
 
-</details>
 
 ## Creating a Virtual Environment
 
