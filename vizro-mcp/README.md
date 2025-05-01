@@ -52,7 +52,6 @@ Once you have installed the MCP host application, you need to configure the Vizr
 
 > ⚠️ **Warning:** In some cases you may need to provide the full path to your `uv` executable, so instead of `uv` would use something like `/Users/<your-username>/.local/bin/uv`. To discover the path of `uv` on your machine, in your terminal app, type `which uv`.
 
-
 If you are using Claude Desktop, restart it, and after a few moments, you should see a hammer icon below the chat field:
 
 <img src="assets/claud_hammer.png" alt="Claude Desktop MCP Server Icon" width="150"/>
