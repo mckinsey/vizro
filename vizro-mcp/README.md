@@ -25,7 +25,7 @@ If you are a **developer** and need instructions for running Vizro-MCP from sour
 
 In principle, the Vizro MCP server works with _any_ MCP enabled client but we recommend Claude Desktop or Cursor as popular choices.
 
-> 🐛 \*\* Note:\*\* There are currently some known issues with [VS Code](https://code.visualstudio.com/) but we are working on this and hope to have Copilot working soon.
+> 🐛 **Note:** There are currently some known issues with [VS Code](https://code.visualstudio.com/) but we are working on this and hope to have Copilot working soon.
 
 > ⚠️ **Warning:** In some hosts (like Claude Desktop) the free plan might be less performant, which may cause issues when the request is too complex. In cases where the request causes the UI to crash, opt for using a paid plan, or reduce your request's complexity.
 
@@ -50,6 +50,9 @@ Once you have installed the MCP host application, you need to configure the Vizr
 }
 ```
 
+> ⚠️ **Warning:** In some cases you may need to provide the full path to your `uv` executable, so instead of `uv` would use something like `/Users/<your-username>/.local/bin/uv`. To discover the path of `uv` on your machine, in your terminal app, type `which uv`.
+
+
 If you are using Claude Desktop, restart it, and after a few moments, you should see a hammer icon below the chat field:
 
 <img src="assets/claud_hammer.png" alt="Claude Desktop MCP Server Icon" width="150"/>
@@ -57,8 +60,6 @@ If you are using Claude Desktop, restart it, and after a few moments, you should
 Similarly, when using Cursor, after a short pause, you should see a green light in the MCP menu:
 
 <img src="assets/cursor_working.png" alt="Claude Desktop MCP Server Icon" width="400"/>
-
-> ⚠️ **Warning:** In some cases you may need to provide the full path to your `uv` executable, so instead of `uv` would use something like `/Users/<your-username>/.local/bin/uv`. To discover the path of `uv` on your machine, in your terminal app, type `which uv`.
 
 ## 💻 Usage
 
