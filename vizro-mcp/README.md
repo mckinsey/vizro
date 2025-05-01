@@ -1,30 +1,25 @@
 # Vizro MCP server
 
-This page explains how to use a [Model Context Protocol (MCP)](https://modelcontextprotocol.io/) server with a LLM to create Vizro dashboards and charts.
+Vizro-MCP is a [Model Context Protocol (MCP)](https://modelcontextprotocol.io/) server, which works alongside a LLM to help you create Vizro dashboards and charts.
 
-## Without Vizro-MCP
+## Features of Vizro-MCP 
 
-LLMs choose any framework to create dashboards, and do so without any guidance, design principles or consistency.
+Vizro-MCP provides tools and templates to create a functioning Vizro chart or dashboard step by step. Benefits include:
 
-❌ Random choice of frontend frameworks or charting libraries without any design principles or consistency
+✅ One consistent framework for charts and dashboards with one common design language.    
+✅ Validated config output that is readable and easy to alter or maintain.   
+✅ Live preview of the dashboard to iterate the design until the dashboard is perfect.    
+✅ Use of local or remote datasets simply by providing a path or URL.    
 
-❌ Vibe-coded mess that may or may not run, but certainly is not very maintainable
+### Without Vizro-MCP
 
-❌ No way to easily preview the dashboard
+Without Vizro-MCP, if you try to make a dashboard using an LLM, it could choose any framework, and use it without specific guidance, design principles, or consistency. The results are:
 
-❌ No easy way to connect to real data
+❌ A random choice of frontend framework or charting library.    
+❌ A vibe-coded mess that may or may not run, but certainly is not very maintainable.    
+❌ No way to easily preview the dashboard.    
+❌ No easy way to connect to real data.    
 
-## With Vizro-MCP
-
-Vizro-MCP provides the tools and templates to create a functioning Vizro chart or dashboard step by step.
-
-✅ One consistent framework for charts and dashboards with one common design language
-
-✅ Validated config that is readable and easy to alter or maintain
-
-✅ Live preview of the dashboard to iterate the design until the dashboard is perfect
-
-✅ Use local or remote datasets simply by providing a path or URL
 
 ## 🛠️ Get started
 
