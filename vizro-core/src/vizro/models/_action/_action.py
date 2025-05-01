@@ -82,17 +82,19 @@ class _BaseAction(VizroBaseModel):
             # Validate as dot-separated strings
             TypeAdapter(list[DotSeparatedStr]).validate_python(dependencies)
         except ValidationError as exc:
+            # If validation fails, check if any invalid dependencies are just model IDs.
             invalid_dependencies = {
                 error["input"] for error in exc.errors() if error["type"] == "string_pattern_mismatch"
             }
 
-            # If validation fails, check if any invalid dependencies are just model IDs.
+            # For each invalid dependency, try to look it up as a model ID
             for dep in invalid_dependencies:
                 try:
                     model = model_manager[dep]
-                    if not hasattr(model, "_output_component_property"):
+                    property_name = "_input_component_property" if type == "input" else "_output_component_property"
+                    if not hasattr(model, property_name):
                         raise ValueError(
-                            f"Model {dep} does not have a default input/output property defined. "
+                            f"Model {dep} does not have a default {type} property defined. "
                             f"Please specify the property explicitly as '{dep}.<property>'."
                         )
                 except KeyError:
@@ -135,7 +137,17 @@ class _BaseAction(VizroBaseModel):
         """
         if self._legacy:
             # Must be an Action rather than _AbstractAction, so has already been validated by pydantic field annotation.
-            return [State(*input.split(".")) for input in cast(Action, self).inputs]
+            # Validate inputs before trying to access properties
+            self._validate_dash_dependencies(cast(Action, self).inputs, type="input")
+            states = []
+            for input_value in cast(Action, self).inputs:
+                if "." in input_value:
+                    component_id, component_property = input_value.split(".")
+                else:
+                    component_id = input_value
+                    component_property = model_manager[component_id]._input_component_property
+                states.append(State(component_id=component_id, component_property=component_property))
+            return states
 
         from vizro.models import Filter, Parameter
 
@@ -162,7 +174,14 @@ class _BaseAction(VizroBaseModel):
         # User specified arguments runtime_args take precedence over built in reserved arguments. No static arguments
         # ar relevant here, just Dash States. Static arguments values are stored in the state of the relevant
         # _AbstractAction instance.
-        runtime_args = {arg_name: State(*arg_value.split(".")) for arg_name, arg_value in self._runtime_args.items()}
+        runtime_args = {}
+        for arg_name, arg_value in self._runtime_args.items():
+            if "." in arg_value:
+                component_id, component_property = arg_value.split(".")
+            else:
+                component_id = arg_value
+                component_property = model_manager[component_id]._input_component_property
+            runtime_args[arg_name] = State(component_id=component_id, component_property=component_property)
 
         return builtin_args | runtime_args
 
@@ -185,10 +204,9 @@ class _BaseAction(VizroBaseModel):
                 if "." in output:
                     component_id, component_property = output.split(".")
                 else:
-                    # If no property specified, use the model's default output property
                     component_id = output
                     component_property = model_manager[component_id]._output_component_property
-                callback_outputs.append(Output(component_id, component_property, allow_duplicate=True))
+                callback_outputs.append(Output(component_id=component_id, component_property=component_property, allow_duplicate=True))
 
             # Need to use a single Output in the @callback decorator rather than a single element list for the case
             # of a single output. This means the action function can return a single value (e.g. "text") rather than a
@@ -203,10 +221,9 @@ class _BaseAction(VizroBaseModel):
             if "." in output:
                 component_id, component_property = output.split(".")
             else:
-                # If no property specified, use the model's default output property
                 component_id = output
                 component_property = model_manager[component_id]._output_component_property
-            callback_outputs[output_name] = Output(component_id, component_property, allow_duplicate=True)
+            callback_outputs[output_name] = Output(component_id=component_id, component_property=component_property, allow_duplicate=True)
 
         return callback_outputs
 

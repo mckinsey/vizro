@@ -2,7 +2,7 @@ from typing import Annotated, Any, Literal
 
 import dash_bootstrap_components as dbc
 from dash import get_relative_path
-from pydantic import AfterValidator, Field
+from pydantic import AfterValidator, Field, PrivateAttr
 from pydantic.functional_serializers import PlainSerializer
 from pydantic.json_schema import SkipJsonSchema
 
@@ -57,6 +57,10 @@ class Button(VizroBaseModel):
             ),
         ]
     ]
+
+    # Default component property for actions
+    _output_component_property: str = PrivateAttr("children")
+    _input_component_property: str = PrivateAttr("n_clicks")
 
     @_log_call
     def build(self):

@@ -29,15 +29,16 @@ page_smoke_test = vm.Page(
     title="Page Smoke Title",
     components=[
         vm.Button(
-            id="trigger-button-smoke-id",
+            id="trigger-button",
             text="Click me",
             actions=[
                 vm.Action(
                     function=action_function(num_of_outputs=1),
-                    inputs=["trigger-button-smoke-id.n_clicks"],
                     # This is how we had to define it before:
+                    # inputs=["trigger-button-smoke-id.n_clicks"],
                     # outputs=["card-id.children"],
                     # Now we can just do this:
+                    inputs=["trigger-button"],
                     outputs=["card-id"],
                 )
             ],
