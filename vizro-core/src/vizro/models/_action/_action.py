@@ -61,31 +61,45 @@ class _BaseAction(VizroBaseModel):
         raise NotImplementedError
 
     def _validate_dash_dependencies(self, /, dependencies, *, type: Literal["output", "input"]):
-        # Validate that dependencies are in the form component_id.component_property. This uses the same annotation as
-        # Action.inputs/outputs.
-        # TODO-AV2 D 2: in future we will expand this to also allow passing a model name without a property specified,
-        #  so long as _output_component_property exists - need to handle case it doesn't with error.
-        #  Possibly make a built in a type hint that we can use as field annotation for runtime arguments in
-        #  subclasses of _AbstractAction instead of just using str. Possibly apply this to non-annotated arguments of
-        #  vm.Action.function and use pydantic's validate_call to apply the same validation there for function inputs.
-        #  We won't be able to do all the checks at validation time though if we need to look up a model in the model
-        #  manager. When this change is made the outputs property for filter, parameter and on_page_load should just
-        #  become `return self.targets` or similar. Consider again whether to do this translation automatically if
-        #  targets is defined as a field, but sounds like bad idea since it doesn't carry over into the
-        #  capture("action") style of action.
+        """Validate that dependencies are in the form `component_id.component_property` or just `component_id`.
+
+        This method validates that each dependency is either:
+        1. A dot-separated string in the format `<component_id>.<property>` (e.g., "graph-id.figure")
+        2. A valid model ID that has a default output/input property defined (e.g., "graph-id")
+
+        Args:
+            dependencies: List of dependencies to validate
+            type: Either "input" or "output" to indicate the type of dependency being validated
+
+        Raises:
+            ValueError: If any dependency is neither a valid dot-separated string nor a valid model ID with
+                a default property defined.
+        """
         # TODO-AV D 3: try to enable properties that aren't Dash properties but are instead model fields e.g. header,
         #  title. See https://github.com/mckinsey/vizro/issues/1078.
         #  Note this is needed for inputs in both vm.Action and _AbstractAction but outputs only in _AbstractAction.
         try:
+            # Validate as dot-separated strings
             TypeAdapter(list[DotSeparatedStr]).validate_python(dependencies)
         except ValidationError as exc:
             invalid_dependencies = {
                 error["input"] for error in exc.errors() if error["type"] == "string_pattern_mismatch"
             }
-            raise ValueError(
-                f"Action {type}s {invalid_dependencies} of {self._action_name} must be a string of the form "
-                "<component_name>.<component_property>."
-            ) from exc
+
+            # If validation fails, check if any invalid dependencies are just model IDs.
+            for dep in invalid_dependencies:
+                try:
+                    model = model_manager[dep]
+                    if not hasattr(model, "_output_component_property"):
+                        raise ValueError(
+                            f"Model {dep} does not have a default input/output property defined. "
+                            f"Please specify the property explicitly as '{dep}.<property>'."
+                        )
+                except KeyError:
+                    raise ValueError(
+                        f"Action {type}s {invalid_dependencies} of {self._action_name} must be a string of the form "
+                        "<component_name>.<component_property> or a valid model ID."
+                    ) from exc
 
     def _get_control_states(self, control_type: ControlType) -> list[State]:
         """Gets list of `States` for selected `control_type` that appear on page where this Action is defined."""
@@ -166,7 +180,15 @@ class _BaseAction(VizroBaseModel):
         """
         if isinstance(self.outputs, list):
             self._validate_dash_dependencies(self.outputs, type="output")
-            callback_outputs = [Output(*output.split("."), allow_duplicate=True) for output in self.outputs]
+            callback_outputs = []
+            for output in self.outputs:
+                if "." in output:
+                    component_id, component_property = output.split(".")
+                else:
+                    # If no property specified, use the model's default output property
+                    component_id = output
+                    component_property = model_manager[component_id]._output_component_property
+                callback_outputs.append(Output(component_id, component_property, allow_duplicate=True))
 
             # Need to use a single Output in the @callback decorator rather than a single element list for the case
             # of a single output. This means the action function can return a single value (e.g. "text") rather than a
@@ -176,10 +198,15 @@ class _BaseAction(VizroBaseModel):
             return callback_outputs
 
         self._validate_dash_dependencies(self.outputs.values(), type="output")
-        callback_outputs = {  # type: ignore[assignment]
-            output_name: Output(*output.split("."), allow_duplicate=True)
-            for output_name, output in self.outputs.items()
-        }
+        callback_outputs = {}  # type: ignore[assignment]
+        for output_name, output in self.outputs.items():
+            if "." in output:
+                component_id, component_property = output.split(".")
+            else:
+                # If no property specified, use the model's default output property
+                component_id = output
+                component_property = model_manager[component_id]._output_component_property
+            callback_outputs[output_name] = Output(component_id, component_property, allow_duplicate=True)
 
         return callback_outputs
 
@@ -283,11 +310,12 @@ class Action(_BaseAction):
 
     Args:
         function (CapturedCallable): Action function.
-        inputs (list[DotSeparatedStr]): List of inputs provided to the action function, each specified as
-            `<component_id>.<property>`. Defaults to `[]`.
-        outputs (Union[list[DotSeparatedStr], dict[str, DotSeparatedStr]]): List or dictionary of outputs modified by
-            the action function, where each output needs to be specified as `<component_id>.<property>`.
-            Defaults to `[]`.
+        inputs (list[str]): List of inputs provided to the action function. Each input can be
+            specified as either `<component_id>.<property>` or just `<component_id>` if the model has a default
+            input property defined. Defaults to `[]`.
+        outputs (Union[list[str], dict[str, str]]): List or dictionary of
+            outputs modified by the action function. Each output can be specified as either `<component_id>.<property>`
+            or just `<component_id>` if the model has a default output property defined. Defaults to `[]`.
     """
 
     # TODO-AV2 D 5: when it's made public, add something like below to docstring:
@@ -309,15 +337,17 @@ class Action(_BaseAction):
     ]
     # inputs is a legacy field and will be deprecated. It must only be used when _legacy = True.
     # TODO-AV2 C 1: Put in deprecation warning.
-    inputs: list[DotSeparatedStr] = Field(
+    inputs: list[str] = Field(
         default=[],
-        description="""List of inputs provided to the action function, each specified as `<component_id>.<property>`.
+        description="""List of inputs provided to the action function. Each input can be specified as either
+            `<component_id>.<property>` or just `<component_id>` if the model has a default input property defined.
             Defaults to `[]`.""",
     )
-    outputs: Union[list[DotSeparatedStr], dict[str, DotSeparatedStr]] = Field(  # type: ignore
+    outputs: Union[list[str], dict[str, str]] = Field(  # type: ignore
         default=[],
-        description="""List or dictionary of outputs modified by the action function, where each output needs to be
-            specified as `<component_id>.<property>`. Defaults to `[]`.""",
+        description="""List or dictionary of outputs modified by the action function. Each output can be specified as either
+            `<component_id>.<property>` or just `<component_id>` if the model has a default output property defined.
+            Defaults to `[]`.""",
     )
 
     @property

@@ -2,7 +2,7 @@ from typing import Annotated, Any, Literal
 
 import dash_bootstrap_components as dbc
 from dash import dcc, get_relative_path
-from pydantic import Field
+from pydantic import Field, PrivateAttr
 from pydantic.json_schema import SkipJsonSchema
 
 from vizro.models import VizroBaseModel
@@ -46,6 +46,9 @@ class Card(VizroBaseModel):
             ),
         ]
     ]
+
+    # Default component property for actions
+    _output_component_property: str = PrivateAttr("children")
 
     @_log_call
     def build(self):
