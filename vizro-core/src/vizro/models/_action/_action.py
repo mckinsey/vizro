@@ -40,6 +40,26 @@ class _BaseAction(VizroBaseModel):
     function: ClassVar[Callable[..., Any]]
     outputs: ClassVar[Union[list[_IdProperty], dict[str, _IdProperty]]]
 
+    def _get_component_id_and_property(self, reference: str, *, type: Literal["input", "output"]) -> tuple[str, str]:
+        """Get the component ID and property from a reference.
+
+        Takes either a dot-separated string (e.g., "graph-id.figure") or just a component ID (e.g., "graph-id")
+        and returns the component ID and its property. If only the ID is provided, uses the model's default
+        input/output property.
+
+        Args:
+            reference: Either a dot-separated string or just a component ID
+            type: Either "input" or "output" to determine which default property to use
+
+        Returns:
+            Tuple of (component_id, component_property)
+        """
+        if "." in reference:
+            return reference.split(".")
+        component_id = reference
+        property_name = "_input_component_property" if type == "input" else "_output_component_property"
+        return component_id, getattr(model_manager[component_id], property_name)
+
     @property
     def _dash_components(self) -> list[Component]:
         raise NotImplementedError
@@ -141,11 +161,7 @@ class _BaseAction(VizroBaseModel):
             self._validate_dash_dependencies(cast(Action, self).inputs, type="input")
             states = []
             for input_value in cast(Action, self).inputs:
-                if "." in input_value:
-                    component_id, component_property = input_value.split(".")
-                else:
-                    component_id = input_value
-                    component_property = model_manager[component_id]._input_component_property
+                component_id, component_property = self._get_component_id_and_property(input_value, type="input")
                 states.append(State(component_id=component_id, component_property=component_property))
             return states
 
@@ -176,11 +192,7 @@ class _BaseAction(VizroBaseModel):
         # _AbstractAction instance.
         runtime_args = {}
         for arg_name, arg_value in self._runtime_args.items():
-            if "." in arg_value:
-                component_id, component_property = arg_value.split(".")
-            else:
-                component_id = arg_value
-                component_property = model_manager[component_id]._input_component_property
+            component_id, component_property = self._get_component_id_and_property(arg_value, type="input")
             runtime_args[arg_name] = State(component_id=component_id, component_property=component_property)
 
         return builtin_args | runtime_args
@@ -201,11 +213,7 @@ class _BaseAction(VizroBaseModel):
             self._validate_dash_dependencies(self.outputs, type="output")
             callback_outputs = []
             for output in self.outputs:
-                if "." in output:
-                    component_id, component_property = output.split(".")
-                else:
-                    component_id = output
-                    component_property = model_manager[component_id]._output_component_property
+                component_id, component_property = self._get_component_id_and_property(output, type="output")
                 callback_outputs.append(Output(component_id=component_id, component_property=component_property, allow_duplicate=True))
 
             # Need to use a single Output in the @callback decorator rather than a single element list for the case
@@ -218,11 +226,7 @@ class _BaseAction(VizroBaseModel):
         self._validate_dash_dependencies(self.outputs.values(), type="output")
         callback_outputs = {}  # type: ignore[assignment]
         for output_name, output in self.outputs.items():
-            if "." in output:
-                component_id, component_property = output.split(".")
-            else:
-                component_id = output
-                component_property = model_manager[component_id]._output_component_property
+            component_id, component_property = self._get_component_id_and_property(output, type="output")
             callback_outputs[output_name] = Output(component_id=component_id, component_property=component_property, allow_duplicate=True)
 
         return callback_outputs
