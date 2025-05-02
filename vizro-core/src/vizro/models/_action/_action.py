@@ -85,8 +85,13 @@ class _BaseAction(VizroBaseModel):
         """Validate that dependencies are in the form `component_id.component_property` or just `component_id`.
 
         This method validates that each dependency is either:
-        1. A dot-separated string in the format `<component_id>.<property>` (e.g., "graph-id.figure")
-        2. A valid model ID that has a default output/input property defined (e.g., "graph-id")
+        1. A dot-separated string in the format `<component_id>.<property>` (e.g., "graph-1.figure")
+        2. A valid model ID that has a default input/output property defined  `<component_id>`
+
+        The validation process:
+        1. First attempts to validate all dependencies as dot-separated strings
+        2. For invalid dependencies, tries to look them up as model IDs
+        3. If a model ID exists, checks if it has the required default property
 
         Args:
             dependencies: List of dependencies to validate
@@ -100,29 +105,26 @@ class _BaseAction(VizroBaseModel):
         #  title. See https://github.com/mckinsey/vizro/issues/1078.
         #  Note this is needed for inputs in both vm.Action and _AbstractAction but outputs only in _AbstractAction.
         try:
-            # Validate as dot-separated strings
             TypeAdapter(list[DotSeparatedStr]).validate_python(dependencies)
         except ValidationError as exc:
-            # If validation fails, check if any invalid dependencies are just model IDs.
             invalid_dependencies = {
                 error["input"] for error in exc.errors() if error["type"] == "string_pattern_mismatch"
             }
 
-            # For each invalid dependency, try to look it up as a model ID
             for model_id in invalid_dependencies:
                 try:
                     model = model_manager[model_id]
                     property_name = "_input_component_property" if type == "input" else "_output_component_property"
                     if not hasattr(model, property_name):
                         raise ValueError(
-                            f"Model {model_id} does not have a default {type} property defined. "
+                            f"Model '{model_id}' does not have a default {type} property defined. "
                             f"Please specify the property explicitly as '{model_id}.<property>'."
                         )
                 except KeyError:
                     raise ValueError(
                         f"Action {type}s {invalid_dependencies} of {self._action_name} must be a string of the form "
-                        "<component_name>.<component_property> or a valid model ID."
-                    ) from exc
+                        "<component_name>.<component_property> or a valid model ID with a default {type} property."
+                    ) from exc  # noqa: PERF203
 
     def _get_control_states(self, control_type: ControlType) -> list[State]:
         """Gets list of `States` for selected `control_type` that appear on page where this Action is defined."""
