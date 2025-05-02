@@ -70,7 +70,6 @@ Prompt templates are not available in all MCP hosts, but when they are, you can 
 
 The **easiest** way to get started with Vizro dashboards is to choose the template `get_started_with_vizro` and just send the prompt. This will create a super simple dashboard with one page, one chart, and one filter. Take it from there!
 
-
 ### Create a Vizro dashboard based on local or remote data
 
 You can also ask the LLM to create specific dashboards based on local or remote data if you already have an idea of what you want. Example prompts could be:
@@ -84,8 +83,6 @@ You can even ask for a dashboard without providing data:
 > _Create a Vizro dashboard with one page, a scatter chart, and a filter._
 
 In general, it helps to specify Vizro in the prompt and to keep it as precise (and simple) as possible.
-
-
 
 ### Get a live preview of your dashboard
 
