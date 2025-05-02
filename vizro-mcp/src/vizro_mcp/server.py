@@ -304,7 +304,7 @@ Create a super simple Vizro dashboard with one page and one chart and one filter
 - THEN show the python code after validation, but do not show the PyCafe link
 - Be concise, do not explain anything else, just create the dashboard
 - Finally ask the user what they would like to do next, then you can call other tools to get more information,
-    start with the get_chart_or_dashboard_plan tool
+    you should then start with the get_chart_or_dashboard_plan tool
 
 {SAMPLE_DASHBOARD_CONFIG}
 """
@@ -361,18 +361,3 @@ Make sure to analyze the data using the load_and_analyze_data tool first, passin
 {file_path_or_url} to the tool. Then make sure to use the get_validated_chart_code tool to validate the chart code.
             """
     return content
-
-
-########################### Trial Resources
-
-
-@mcp.resource("config://app")
-def get_config() -> str:
-    """Static configuration data."""
-    return "App configuration here"
-
-
-@mcp.resource("echo://{message}")
-def echo_resource(message: str) -> str:
-    """Echo a message as a resource."""
-    return f"Resource echo: {message}"
