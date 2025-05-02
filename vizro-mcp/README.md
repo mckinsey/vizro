@@ -40,7 +40,7 @@ Once you have installed the MCP host application, you need to configure the Vizr
 ```json
 {
   "mcpServers": {
-    "git": {
+    "vizro-mcp": {
       "command": "uvx",
       "args": [
         "vizro-mcp"
@@ -52,9 +52,9 @@ Once you have installed the MCP host application, you need to configure the Vizr
 
 > ⚠️ **Warning:** In some cases you may need to provide the full path to your `uv` executable, so instead of `uv` would use something like `/Users/<your-username>/.local/bin/uv`. To discover the path of `uv` on your machine, in your terminal app, type `which uv`.
 
-If you are using Claude Desktop, restart it, and after a few moments, you should see a hammer icon below the chat field:
+If you are using Claude Desktop, restart it, and after a few moments, you should see the vizro-mcp menu when opening the settings/context menu:
 
-<img src="assets/claud_hammer.png" alt="Claude Desktop MCP Server Icon" width="150"/>
+<img src="assets/claude_working.png" alt="Claude Desktop MCP Server Icon" width="150"/>
 
 Similarly, when using Cursor, after a short pause, you should see a green light in the MCP menu:
 
@@ -62,9 +62,18 @@ Similarly, when using Cursor, after a short pause, you should see a green light 
 
 ## 💻 Usage
 
+### Use prompt templates to get specific dashboards quickly
+
+Prompt templates are not available in all MCP hosts, but when they are, you can use them to get specific dashboards quickly. To access them (e.g. in Claude Desktop), click on the plus icon below the chat, and choose _`Add from vizro-mcp`_.
+
+<img src="assets/claude_prompt.png" alt="Claude Desktop MCP Server Icon" width="300"/>
+
+The **easiest** way to get started with Vizro dashboards is to choose the template `get_started_with_vizro` and just send the prompt. This will create a super simple dashboard with one page, one chart, and one filter. Take it from there!
+
+
 ### Create a Vizro dashboard based on local or remote data
 
-Example prompts:
+You can also ask the LLM to create specific dashboards based on local or remote data if you already have an idea of what you want. Example prompts could be:
 
 > _Create a Vizro dashboard with one page, a scatter chart, and a filter based on `<insert absolute file path or public URL>` data._
 
@@ -76,16 +85,11 @@ You can even ask for a dashboard without providing data:
 
 In general, it helps to specify Vizro in the prompt and to keep it as precise (and simple) as possible.
 
-### Use a prompt template to get specific dashboards quickly
 
-We currently offer one template to create an exploratory data analysis (EDA) dashboard. This prompt template is only available in Claude Desktop. To use it, click on the plug symbol next to the hammer, and select the template.
-
-<img src="assets/claud_hammer.png" alt="Claude Desktop MCP Server Icon" width="150"/>
-<img src="assets/claude_prompt_template.png" alt="Claude Desktop MCP Server Icon" width="300"/>
 
 ### Get a live preview of your dashboard
 
-When the LLM chooses to use the tool `validate_model_config`, and the tool executes successfully, the LLM will return a link to a live preview of the dashboard if only public data accessed via URL is used. In Claude Desktop, you can see the output of the tool by opening the tool collapsible and scrolling down to the very bottom.
+When the LLM chooses to use the tool `validate_model_config`, and the tool executes successfully, the LLM will return a link to a live preview of the dashboard if only public data accessed via URL is used. By default, the LLM will even open the link in your browser for you unless you tell it not to. In Claude Desktop, you can see the output of the tool by opening the tool collapsible and scrolling down to the very bottom.
 
 <img src="assets/claude_validate.png" width="300"/>
 
@@ -101,7 +105,7 @@ MCP servers are a relatively new concept, and it is important to be transparent 
 
 In general the most critical part of the process is the `load_and_analyze_data` tool. This tool, running on your machine, will load local or remote data into a pandas DataFrame and provide a detailed analysis of its structure and content. It only uses `pd.read_xxx`, so in general there is no need to worry about privacy or data security.
 
-The second most critical part is the `validate_model_config` tool. This tool will attempt to instantiate the Vizro model configuration and return the Python code and visualization link for valid configurations. If the configuration is valid, it will also return a link to a live preview of the dashboard, which will take you to [PyCafe](https://py.cafe). This of course only happens if you click the link, so you can always opt out.
+The second most critical part is the `validate_model_config` tool. This tool will attempt to instantiate the Vizro model configuration and return the Python code and visualization link for valid configurations. If the configuration is valid, it will also return and attempt to open a link to a live preview of the dashboard, which will take you to [PyCafe](https://py.cafe). If you don't want to open the link, you can tell the LLM to not do so.
 
 ## Available Tools (if client allows)
 
@@ -117,6 +121,7 @@ The Vizro MCP server provides the following tools. In general you should not nee
 
 ## Available Prompts (if client allows)
 
+- `get_started_with_vizro` - Use this prompt template to get started with Vizro dashboards.
 - `create_EDA_dashboard` - Use this prompt template to create an Exploratory Data Anlysis (EDA) dashboard based on a local or remote CSV dataset
 - `create_vizro_chart` - Use this prompt template to create a Vizro styled plotly chart based on a local or remote CSV dataset
 
@@ -128,7 +133,7 @@ You can find a set of sample CSVs to try out in the [Plotly repository](https://
 
 If you are a developer, or if you are running Vizro-MCP from source, you need to clone the Vizro repo. To configure the Vizro MCP server details:
 
-**For Claud**: Add the following to your `claude_desktop_config.json` [found via Developer Settings](https://modelcontextprotocol.io/quickstart/user#2-add-the-filesystem-mcp-server):
+**For Claude**: Add the following to your `claude_desktop_config.json` [found via Developer Settings](https://modelcontextprotocol.io/quickstart/user#2-add-the-filesystem-mcp-server):
 
 **For Cursor**: Add the following to `mcp.json` [found via the Cursor Settings](https://docs.cursor.com/context/model-context-protocol#configuration-locations):
 
@@ -150,7 +155,7 @@ If you are a developer, or if you are running Vizro-MCP from source, you need to
 
 Replace `<PATH TO VIZRO>` with the actual path to your Vizro repository. You may also need to provide the full path to your `uv` executable, so instead of `"uv"` you would use something like `"/Users/<your-username>/.local/bin/uv"`. To discover the path of `uv` on your machine, in your terminal app, type `which uv`.
 
-## Other Cool MCP Servers
+## Other cool MCP Servers
 
 Here are some other awesome MCP servers you might want to check out:
 
