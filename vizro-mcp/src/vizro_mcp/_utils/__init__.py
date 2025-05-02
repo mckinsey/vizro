@@ -17,6 +17,7 @@ from .utils import (
 __all__ = [
     "GAPMINDER",
     "IRIS",
+    "SAMPLE_DASHBOARD_CONFIG",
     "STOCKS",
     "TIPS",
     "DFInfo",
@@ -27,5 +28,4 @@ __all__ = [
     "get_python_code_and_preview_link",
     "load_dataframe_by_format",
     "path_or_url_check",
-    "SAMPLE_DASHBOARD_CONFIG",
 ]
