@@ -40,26 +40,6 @@ class _BaseAction(VizroBaseModel):
     function: ClassVar[Callable[..., Any]]
     outputs: ClassVar[Union[list[_IdProperty], dict[str, _IdProperty]]]
 
-    def _get_component_id_and_property(self, reference: str, *, type: Literal["input", "output"]) -> tuple[str, str]:
-        """Get the component ID and property from a reference.
-
-        Takes either a dot-separated string (e.g., "graph-id.figure") or just a component ID (e.g., "graph-id")
-        and returns the component ID and its property. If only the ID is provided, uses the model's default
-        input/output property.
-
-        Args:
-            reference: Either a dot-separated string or just a component ID
-            type: Either "input" or "output" to determine which default property to use
-
-        Returns:
-            Tuple of (component_id, component_property)
-        """
-        if "." in reference:
-            return reference.split(".")
-        component_id = reference
-        property_name = "_input_component_property" if type == "input" else "_output_component_property"
-        return component_id, getattr(model_manager[component_id], property_name)
-
     @property
     def _dash_components(self) -> list[Component]:
         raise NotImplementedError
@@ -79,6 +59,27 @@ class _BaseAction(VizroBaseModel):
     @property
     def _action_name(self) -> str:
         raise NotImplementedError
+
+    def _get_component_id_and_property(self, reference: str, *, type: Literal["input", "output"]) -> tuple[str, str]:
+        """Get the component ID and property from a reference.
+
+        Takes either a dot-separated string (e.g., "graph-id.figure") or just a component ID (e.g., "graph-id")
+        and returns the component ID and its property. If only the ID is provided, uses the model's default
+        input/output property.
+
+        Args:
+            reference: Either a dot-separated string or just a component ID (e.g., "graph-id.figure" or "graph-id")
+            type: Either "input" or "output" to determine which default property to use
+
+        Returns:
+            Tuple of (component_id, component_property)
+        """
+        if "." in reference:
+            component_id, component_property = reference.split(".")
+            return component_id, component_property
+        component_id = reference
+        property_name = "_input_component_property" if type == "input" else "_output_component_property"
+        return component_id, getattr(model_manager[component_id], property_name)
 
     def _validate_dash_dependencies(self, /, dependencies, *, type: Literal["output", "input"]):
         """Validate that dependencies are in the form `component_id.component_property` or just `component_id`.
@@ -108,14 +109,14 @@ class _BaseAction(VizroBaseModel):
             }
 
             # For each invalid dependency, try to look it up as a model ID
-            for dep in invalid_dependencies:
+            for model_id in invalid_dependencies:
                 try:
-                    model = model_manager[dep]
+                    model = model_manager[model_id]
                     property_name = "_input_component_property" if type == "input" else "_output_component_property"
                     if not hasattr(model, property_name):
                         raise ValueError(
-                            f"Model {dep} does not have a default {type} property defined. "
-                            f"Please specify the property explicitly as '{dep}.<property>'."
+                            f"Model {model_id} does not have a default {type} property defined. "
+                            f"Please specify the property explicitly as '{model_id}.<property>'."
                         )
                 except KeyError:
                     raise ValueError(
@@ -211,10 +212,10 @@ class _BaseAction(VizroBaseModel):
         """
         if isinstance(self.outputs, list):
             self._validate_dash_dependencies(self.outputs, type="output")
-            callback_outputs = []
+            callback_outputs: Union[list[Output], Output] = []
             for output in self.outputs:
                 component_id, component_property = self._get_component_id_and_property(output, type="output")
-                callback_outputs.append(Output(component_id=component_id, component_property=component_property, allow_duplicate=True))
+                callback_outputs.append(Output(component_id, component_property, allow_duplicate=True))
 
             # Need to use a single Output in the @callback decorator rather than a single element list for the case
             # of a single output. This means the action function can return a single value (e.g. "text") rather than a
@@ -224,12 +225,12 @@ class _BaseAction(VizroBaseModel):
             return callback_outputs
 
         self._validate_dash_dependencies(self.outputs.values(), type="output")
-        callback_outputs = {}  # type: ignore[assignment]
+        callback_outputs_dict: dict[str, Output] = {}
         for output_name, output in self.outputs.items():
             component_id, component_property = self._get_component_id_and_property(output, type="output")
-            callback_outputs[output_name] = Output(component_id=component_id, component_property=component_property, allow_duplicate=True)
+            callback_outputs_dict[output_name] = Output(component_id, component_property, allow_duplicate=True)
 
-        return callback_outputs
+        return callback_outputs_dict
 
     def _action_callback_function(
         self,
@@ -332,11 +333,11 @@ class Action(_BaseAction):
     Args:
         function (CapturedCallable): Action function.
         inputs (list[str]): List of inputs provided to the action function. Each input can be
-            specified as either `<component_id>.<property>` or just `<component_id>` if the model has a default
-            input property defined. Defaults to `[]`.
-        outputs (Union[list[str], dict[str, str]]): List or dictionary of
-            outputs modified by the action function. Each output can be specified as either `<component_id>.<property>`
-            or just `<component_id>` if the model has a default output property defined. Defaults to `[]`.
+            specified as either `<component_id>.<property>` or just `<component_id>` if the model
+            has a default input property defined. Defaults to `[]`.
+        outputs (Union[list[str], dict[str, str]]): List or dictionary of outputs modified by the
+            action function. Each output can be specified as either `<component_id>.<property>` or
+            just `<component_id>` if the model has a default output property defined. Defaults to `[]`.
     """
 
     # TODO-AV2 D 5: when it's made public, add something like below to docstring:
@@ -366,9 +367,9 @@ class Action(_BaseAction):
     )
     outputs: Union[list[str], dict[str, str]] = Field(  # type: ignore
         default=[],
-        description="""List or dictionary of outputs modified by the action function. Each output can be specified as either
-            `<component_id>.<property>` or just `<component_id>` if the model has a default output property defined.
-            Defaults to `[]`.""",
+        description="""List or dictionary of outputs modified by the action function. Each output can be specified as
+            either `<component_id>.<property>` or just `<component_id>` if the model has a default output property
+            defined. Defaults to `[]`.""",
     )
 
     @property
