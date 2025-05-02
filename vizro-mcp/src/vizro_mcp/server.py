@@ -2,6 +2,8 @@
 
 import json
 import mimetypes
+import webbrowser
+from dataclasses import dataclass
 from pathlib import Path
 from typing import Any, Literal, Optional
 
@@ -27,13 +29,32 @@ from vizro_mcp._utils import (
     IRIS,
     STOCKS,
     TIPS,
+    DFInfo,
+    DFMetaData,
     convert_github_url_to_raw,
-    data_info,
     get_dataframe_info,
     get_python_code_and_preview_link,
     load_dataframe_by_format,
     path_or_url_check,
 )
+
+
+@dataclass
+class ValidationResults:
+    valid: bool
+    message: str
+    python_code: str
+    pycafe_url: Optional[str]
+    browser_opened: bool
+
+
+@dataclass
+class DataAnalysisResults:
+    valid: bool
+    message: str
+    df_info: Optional[DFInfo]
+    df_metadata: Optional[DFMetaData]
+
 
 # TODO: what do I need to do here, as things are already set up?
 mcp = FastMCP(
@@ -42,7 +63,7 @@ mcp = FastMCP(
 
 
 @mcp.tool()
-def get_sample_data_info(data_name: Literal["iris", "tips", "stocks", "gapminder"]) -> data_info:
+def get_sample_data_info(data_name: Literal["iris", "tips", "stocks", "gapminder"]) -> DFMetaData:
     """If user provides no data, use this tool to get sample data information.
 
     Use the following data for the below purposes:
@@ -68,17 +89,21 @@ def get_sample_data_info(data_name: Literal["iris", "tips", "stocks", "gapminder
 
 
 @mcp.tool()
-def validate_model_config(config: dict[str, Any], data_infos: Optional[list[data_info]] = None) -> dict[str, Any]:
+def validate_model_config(
+    config: dict[str, Any], data_infos: Optional[list[DFMetaData]] = None, auto_open: bool = True
+) -> ValidationResults:
     """Validate Vizro model configuration. Run ALWAYS when you have a complete dashboard configuration.
 
     If successful, the tool will return the python code and, if it is a remote file, the py.cafe link to the chart.
+    The PyCafe link will be automatically opened in your default browser if auto_open is True.
 
     Args:
         config: Either a JSON string or a dictionary representing a Vizro model configuration
-        data_infos: List of data_info objects containing information about the data files
+        data_infos: List of DFMetaData objects containing information about the data files
+        auto_open: Whether to automatically open the PyCafe link in a browser
 
     Returns:
-        Dictionary with validation status and details
+        ValidationResults object with status and dashboard details
     """
     if data_infos is None:
         data_infos = []
@@ -88,21 +113,33 @@ def validate_model_config(config: dict[str, Any], data_infos: Optional[list[data
     try:
         dashboard = vm.Dashboard.model_validate(config)
     except ValidationError as e:
-        return {"valid": False, "error": f"Validation Error: {e!s}"}
+        return ValidationResults(
+            valid=False,
+            message=f"Validation Error: {e!s}",
+            python_code="",
+            pycafe_url=None,
+            browser_opened=False,
+        )
 
     else:
         result = get_python_code_and_preview_link(dashboard, data_infos)
 
-        result = {
-            "valid": True,
-            "message": "Configuration is valid for Dashboard!",
-            "python_code": result["python_code"],
-            "pycafe_url": result["pycafe_url"]
-            if all(info.file_location_type == "remote" for info in data_infos)
-            else None,
-        }
+        pycafe_url = result.pycafe_url if all(info.file_location_type == "remote" for info in data_infos) else None
+        browser_opened = False
 
-        return result
+        if pycafe_url and auto_open:
+            try:
+                browser_opened = webbrowser.open(pycafe_url)
+            except Exception:
+                browser_opened = False
+
+        return ValidationResults(
+            valid=True,
+            message="Configuration is valid for Dashboard!",
+            python_code=result.python_code,
+            pycafe_url=pycafe_url,
+            browser_opened=browser_opened,
+        )
 
     finally:
         Vizro._reset()
@@ -134,13 +171,10 @@ def get_model_json_schema(model_name: str) -> dict[str, Any]:
         return FilterSimplified.model_json_schema()
     elif model_name == "Parameter":
         return ParameterSimplified.model_json_schema()
-    # Get the model class from the vizro.models namespace
-    if not hasattr(vm, model_name):
+    elif not hasattr(vm, model_name):
         return {"error": f"Model '{model_name}' not found in vizro.models"}
 
     model_class = getattr(vm, model_name)
-
-    # Get the JSON schema from the model
     schema = model_class.model_json_schema()
     return schema
 
@@ -153,7 +187,7 @@ def get_overview_vizro_models() -> dict[str, list[dict[str, str]]]:
         Dictionary with categories of models and their descriptions
     """
     # Convert the model_groups dict to a dict with just names and descriptions
-    result = {}
+    result: dict[str, list[dict[str, str]]] = {}
     for category, models_list in MODEL_GROUPS.items():
         result[category] = [
             {
@@ -167,9 +201,9 @@ def get_overview_vizro_models() -> dict[str, list[dict[str, str]]]:
 
 
 @mcp.tool()
-def get_vizro_chart_or_dashboard_plan(plan: Literal["chart", "dashboard"]) -> str:
+def get_vizro_chart_or_dashboard_plan(user_plan: Literal["chart", "dashboard"]) -> str:
     """Get instructions for creating a Vizro chart or dashboard. Call FIRST when asked to create Vizro things."""
-    if plan == "chart":
+    if user_plan == "chart":
         return """
 Instructions for creating a Vizro chart:
     - analyze the datasets needed for the chart using the load_and_analyze_data tool - the most important
@@ -178,7 +212,7 @@ Instructions for creating a Vizro chart:
         tool to get sample data information
     - do NOT call any other tool after, especially do NOT create a dashboard
             """
-    elif plan == "dashboard":
+    elif user_plan == "dashboard":
         return """
 IMPORTANT:
     - if you iterate over a valid produced solution, make sure to go ALWAYS via the validation step again to
@@ -186,6 +220,8 @@ IMPORTANT:
     - DO NOT show any code or config to the user until you have validated the solution, do not say you are preparing
         a solution, just do it and validate it
     - if you find yourself repeatedly getting something wrong, try enquiring the schema of the component in question
+    - if the plan you receive is not clear, ask the user to clarify it, ALWAYS only do what is asked in a minimal
+        and simple fashion, then validate it, then ask for feedback
 
 Instructions for creating a Vizro dashboard:
     - analyze the datasets needed for the dashboard using the load_and_analyze_data tool - the most
@@ -199,13 +235,11 @@ Instructions for creating a Vizro dashboard:
         to the user until you have validated the solution
     - ALWAYS validate the dashboard configuration using the validate_model_config tool
     - if you display any code artifact, you must use the above created code, do not add new config to it
-
-
     """
 
 
 @mcp.tool()
-def load_and_analyze_data(path_or_url: str) -> dict[str, Any]:
+def load_and_analyze_data(path_or_url: str) -> DataAnalysisResults:
     """Load data from various file formats into a pandas DataFrame and analyze its structure.
 
     Supported formats:
@@ -220,32 +254,106 @@ def load_and_analyze_data(path_or_url: str) -> dict[str, Any]:
         path_or_url: Local file path or URL to a data file
 
     Returns:
-        Dictionary containing DataFrame information and summary
+        DataAnalysisResults object containing DataFrame information and metadata
     """
     # Handle files and URLs
     path_or_url_type = path_or_url_check(path_or_url)
     mime_type, _ = mimetypes.guess_type(str(path_or_url))
+    processed_path_or_url = path_or_url
+
     if path_or_url_type == "remote":
-        path_or_url = convert_github_url_to_raw(path_or_url)
+        processed_path_or_url = convert_github_url_to_raw(path_or_url)
     elif path_or_url_type == "local":
-        path_or_url = Path(path_or_url)
+        processed_path_or_url = Path(path_or_url)
     else:
-        return {"success": False, "error": "Invalid path or URL"}
+        return DataAnalysisResults(valid=False, message="Invalid path or URL", df_info=None, df_metadata=None)
 
     try:
-        df, read_fn = load_dataframe_by_format(path_or_url, mime_type)
+        df, read_fn = load_dataframe_by_format(processed_path_or_url, mime_type)
 
     except Exception as e:
-        return {"success": False, "error": f"Failed to load data: {e!s}"}
+        return DataAnalysisResults(valid=False, message=f"Failed to load data: {e!s}", df_info=None, df_metadata=None)
 
-    return {
-        "success": True,
-        "info": get_dataframe_info(df),
-        "location_type": path_or_url_type,
-        "file_path_or_url": str(path_or_url),
-        "detected_format": mime_type,
-        "read_function_string": read_fn,
+    df_info = get_dataframe_info(df)
+    df_metadata = DFMetaData(
+        file_name=Path(path_or_url).stem if isinstance(processed_path_or_url, Path) else Path(path_or_url).name,
+        file_path_or_url=str(processed_path_or_url),
+        file_location_type=path_or_url_type,
+        read_function_string=read_fn,
+    )
+
+    return DataAnalysisResults(valid=True, message="Data loaded successfully", df_info=df_info, df_metadata=df_metadata)
+
+
+@mcp.prompt()
+def get_started_with_vizro():
+    """Prompt template for getting started with Vizro."""
+    content = """
+Create a super simple Vizro dashboard with one page and one chart and one filter:
+- No need to call any tools except for validate_model_config
+- Call this tool with the precise config as shown below
+- The PyCafe link will be automatically opened in your default browser
+- THEN show the python code after validation, but do not show the PyCafe link
+- Be concise, do not explain anything else, just create the dashboard
+- Finally ask the user what they would like to do next, then you can call other tools to get more information,
+    start with the get_chart_or_dashboard_plan tool
+
+
+{
+  `config`: {
+    `pages`: [
+      {
+        `title`: `Iris Data Analysis`,
+        `controls`: [
+          {
+            `id`: `species_filter`,
+            `type`: `filter`,
+            `column`: `species`,
+            `targets`: [
+              `scatter_plot`
+            ],
+            `selector`: {
+              `type`: `dropdown`,
+              `multi`: true
+            }
+          }
+        ],
+        `components`: [
+          {
+            `id`: `scatter_plot`,
+            `type`: `graph`,
+            `title`: `Sepal Dimensions by Species`,
+            `figure`: {
+              `x`: `sepal_length`,
+              `y`: `sepal_width`,
+              `color`: `species`,
+              `_target_`: `scatter`,
+              `data_frame`: `iris_data`,
+              `hover_data`: [
+                `petal_length`,
+                `petal_width`
+              ]
+            }
+          }
+        ]
+      }
+    ],
+    `theme`: `vizro_dark`,
+    `title`: `Iris Dashboard`
+  },
+  `data_infos`: `
+[
+    {
+        \"file_name\": \"iris_data\",
+        \"file_path_or_url\": \"https://raw.githubusercontent.com/plotly/datasets/master/iris-id.csv\",
+        \"file_location_type\": \"remote\",
+        \"read_function_string\": \"pd.read_csv\",
     }
+]
+`
+}
+"""
+    return content
 
 
 @mcp.prompt()

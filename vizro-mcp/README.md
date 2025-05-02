@@ -4,8 +4,6 @@ This page explains how to use a [Model Context Protocol (MCP)](https://modelcont
 
 ## Without Vizro-MCP
 
-LLMs choose any framework to create dashboards, and do so without any guidance, design principles or consistency.
-
 ❌ Random choice of frontend frameworks or charting libraries without any design principles or consistency
 
 ❌ Vibe coded mess that may or may not run, but certainly is not very maintainable
@@ -15,8 +13,6 @@ LLMs choose any framework to create dashboards, and do so without any guidance, 
 ❌ No easy way to connect to real data
 
 ## With Vizro-MCP
-
-Vizro-MCP provides the tools and templates to create a functioning Vizro chart ordashboard step by step.
 
 ✅ One consistent framework for charts and dashboards with one common design language
 
@@ -45,7 +41,7 @@ In principle, the Vizro MCP server works with _any_ MCP enabled client but we re
 
 Once you have installed the MCP host application, you need to configure the Vizro MCP server details.
 
-**For Claud**: Add the following to your `claude_desktop_config.json` [found via Developer Settings](https://modelcontextprotocol.io/quickstart/user#2-add-the-filesystem-mcp-server).
+**For Claude**: Add the following to your `claude_desktop_config.json` [found via Developer Settings](https://modelcontextprotocol.io/quickstart/user#2-add-the-filesystem-mcp-server).
 
 **For Cursor**: Add the following to `mcp.json` [found via the Cursor Settings](https://docs.cursor.com/context/model-context-protocol#configuration-locations):
 

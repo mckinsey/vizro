@@ -18,7 +18,13 @@ PYCAFE_URL = "https://py.cafe"
 
 
 @dataclass
-class data_info:
+class VizroCodeAndPreviewLink:
+    python_code: str
+    pycafe_url: str
+
+
+@dataclass
+class DFMetaData:
     file_name: str
     file_path_or_url: str
     file_location_type: Literal["local", "remote"]
@@ -26,7 +32,13 @@ class data_info:
     column_names_types: Optional[dict[str, str]] = None
 
 
-IRIS = data_info(
+@dataclass
+class DFInfo:
+    general_info: str
+    sample: dict[str, Any]
+
+
+IRIS = DFMetaData(
     file_name="iris_data",
     file_path_or_url="https://raw.githubusercontent.com/plotly/datasets/master/iris-id.csv",
     file_location_type="remote",
@@ -40,7 +52,7 @@ IRIS = data_info(
     },
 )
 
-TIPS = data_info(
+TIPS = DFMetaData(
     file_name="tips_data",
     file_path_or_url="https://raw.githubusercontent.com/plotly/datasets/master/tips.csv",
     file_location_type="remote",
@@ -56,7 +68,7 @@ TIPS = data_info(
     },
 )
 
-STOCKS = data_info(
+STOCKS = DFMetaData(
     file_name="stocks_data",
     file_path_or_url="https://raw.githubusercontent.com/plotly/datasets/master/stockdata.csv",
     file_location_type="remote",
@@ -71,7 +83,7 @@ STOCKS = data_info(
     },
 )
 
-GAPMINDER = data_info(
+GAPMINDER = DFMetaData(
     file_name="gapminder_data",
     file_path_or_url="https://raw.githubusercontent.com/plotly/datasets/master/gapminder_unfiltered.csv",
     file_location_type="remote",
@@ -101,7 +113,7 @@ def convert_github_url_to_raw(path_or_url: str) -> str:
 
 def load_dataframe_by_format(
     path_or_url: Union[str, Path], mime_type: Optional[str] = None
-) -> tuple[pd.DataFrame, str]:
+) -> tuple[pd.DataFrame, Literal["pd.read_csv", "pd.read_json", "pd.read_html", "pd.read_excel", "pd.read_parquet"]]:
     """Load a dataframe based on file format determined by MIME type or file extension."""
     file_path_str_lower = str(path_or_url).lower()
 
@@ -155,7 +167,7 @@ def path_or_url_check(string: str) -> str:
     return "invalid"
 
 
-def get_dataframe_info(df: pd.DataFrame) -> dict[str, Any]:
+def get_dataframe_info(df: pd.DataFrame) -> DFInfo:
     """Get the info of a DataFrame."""
     buffer = io.StringIO()
     df.info(buf=buffer)
@@ -164,13 +176,12 @@ def get_dataframe_info(df: pd.DataFrame) -> dict[str, Any]:
     # Sample only as many rows as exist in the dataframe, up to 5
     sample_size = min(5, len(df)) if not df.empty else 0
 
-    return {
-        "general_info": info_string,
-        "sample": df.sample(sample_size).to_dict() if sample_size > 0 else {},
-    }
+    return DFInfo(general_info=info_string, sample=df.sample(sample_size).to_dict() if sample_size > 0 else {})
 
 
-def get_python_code_and_preview_link(model_object: vm.VizroBaseModel, data_infos: list[data_info]) -> dict[str, Any]:
+def get_python_code_and_preview_link(
+    model_object: vm.VizroBaseModel, data_infos: list[DFMetaData]
+) -> VizroCodeAndPreviewLink:
     """Get the Python code and preview link for a Vizro model object."""
     # Get the Python code
     python_code = model_object._to_python()
@@ -222,4 +233,4 @@ def get_python_code_and_preview_link(model_object: vm.VizroBaseModel, data_infos
     query = urlencode({"c": base64_text}, quote_via=quote)
     pycafe_url = f"{PYCAFE_URL}/snippet/vizro/v1?{query}"
 
-    return {"python_code": python_code, "pycafe_url": pycafe_url}
+    return VizroCodeAndPreviewLink(python_code=python_code, pycafe_url=pycafe_url)
