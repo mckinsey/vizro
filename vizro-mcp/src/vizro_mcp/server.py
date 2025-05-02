@@ -27,6 +27,7 @@ from vizro_mcp._schemas import (
 from vizro_mcp._utils import (
     GAPMINDER,
     IRIS,
+    SAMPLE_DASHBOARD_CONFIG,
     STOCKS,
     TIPS,
     DFInfo,
@@ -220,10 +221,11 @@ IMPORTANT:
     - DO NOT show any code or config to the user until you have validated the solution, do not say you are preparing
         a solution, just do it and validate it
     - if you find yourself repeatedly getting something wrong, try enquiring the schema of the component in question
-    - if the plan you receive is not clear, ask the user to clarify it, ALWAYS only do what is asked in a minimal
-        and simple fashion, then validate it, then ask for feedback
+    - KEEP IT SIMPLE: rather than iterating yourself, ask the user for more instructions
 
 Instructions for creating a Vizro dashboard:
+    - if the user has no plan (ie no components or pages), use the get_sample_or_fallback_dashboard_config tool
+        otherwise continue with the following instructions
     - analyze the datasets needed for the dashboard using the load_and_analyze_data tool - the most
         important information here are the column names and column types
     - if the user provides no data, but you need to display a chart or table, use the get_sample_data_info
@@ -285,10 +287,16 @@ def load_and_analyze_data(path_or_url: str) -> DataAnalysisResults:
     return DataAnalysisResults(valid=True, message="Data loaded successfully", df_info=df_info, df_metadata=df_metadata)
 
 
+@mcp.tool()
+def get_sample_or_fallback_dashboard_config() -> str:
+    """Get a sample dashboard configuration. Call this when asked to create a dashboard but no plan is provided."""
+    return SAMPLE_DASHBOARD_CONFIG
+
+
 @mcp.prompt()
 def get_started_with_vizro():
     """Prompt template for getting started with Vizro."""
-    content = """
+    content = f"""
 Create a super simple Vizro dashboard with one page and one chart and one filter:
 - No need to call any tools except for validate_model_config
 - Call this tool with the precise config as shown below
@@ -298,60 +306,7 @@ Create a super simple Vizro dashboard with one page and one chart and one filter
 - Finally ask the user what they would like to do next, then you can call other tools to get more information,
     start with the get_chart_or_dashboard_plan tool
 
-
-{
-  `config`: {
-    `pages`: [
-      {
-        `title`: `Iris Data Analysis`,
-        `controls`: [
-          {
-            `id`: `species_filter`,
-            `type`: `filter`,
-            `column`: `species`,
-            `targets`: [
-              `scatter_plot`
-            ],
-            `selector`: {
-              `type`: `dropdown`,
-              `multi`: true
-            }
-          }
-        ],
-        `components`: [
-          {
-            `id`: `scatter_plot`,
-            `type`: `graph`,
-            `title`: `Sepal Dimensions by Species`,
-            `figure`: {
-              `x`: `sepal_length`,
-              `y`: `sepal_width`,
-              `color`: `species`,
-              `_target_`: `scatter`,
-              `data_frame`: `iris_data`,
-              `hover_data`: [
-                `petal_length`,
-                `petal_width`
-              ]
-            }
-          }
-        ]
-      }
-    ],
-    `theme`: `vizro_dark`,
-    `title`: `Iris Dashboard`
-  },
-  `data_infos`: `
-[
-    {
-        \"file_name\": \"iris_data\",
-        \"file_path_or_url\": \"https://raw.githubusercontent.com/plotly/datasets/master/iris-id.csv\",
-        \"file_location_type\": \"remote\",
-        \"read_function_string\": \"pd.read_csv\",
-    }
-]
-`
-}
+{SAMPLE_DASHBOARD_CONFIG}
 """
     return content
 

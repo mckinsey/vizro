@@ -98,6 +98,63 @@ GAPMINDER = DFMetaData(
     },
 )
 
+SAMPLE_DASHBOARD_CONFIG = """
+{
+  `config`: {
+    `pages`: [
+      {
+        `title`: `Iris Data Analysis`,
+        `controls`: [
+          {
+            `id`: `species_filter`,
+            `type`: `filter`,
+            `column`: `species`,
+            `targets`: [
+              `scatter_plot`
+            ],
+            `selector`: {
+              `type`: `dropdown`,
+              `multi`: true
+            }
+          }
+        ],
+        `components`: [
+          {
+            `id`: `scatter_plot`,
+            `type`: `graph`,
+            `title`: `Sepal Dimensions by Species`,
+            `figure`: {
+              `x`: `sepal_length`,
+              `y`: `sepal_width`,
+              `color`: `species`,
+              `_target_`: `scatter`,
+              `data_frame`: `iris_data`,
+              `hover_data`: [
+                `petal_length`,
+                `petal_width`
+              ]
+            }
+          }
+        ]
+      }
+    ],
+    `theme`: `vizro_dark`,
+    `title`: `Iris Dashboard`
+  },
+  `data_infos`: `
+[
+    {
+        \"file_name\": \"iris_data\",
+        \"file_path_or_url\": \"https://raw.githubusercontent.com/plotly/datasets/master/iris-id.csv\",
+        \"file_location_type\": \"remote\",
+        \"read_function_string\": \"pd.read_csv\",
+    }
+]
+`
+}
+
+"""
+
 
 def convert_github_url_to_raw(path_or_url: str) -> str:
     """Convert a GitHub URL to a raw URL if it's a GitHub URL, otherwise return the original path or URL."""
