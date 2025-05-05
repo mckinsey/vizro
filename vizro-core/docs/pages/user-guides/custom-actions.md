@@ -67,44 +67,47 @@ The following example shows how to create a custom action that postpones executi
 ## Interact with inputs and outputs
 
 When a custom action needs to interact with the dashboard, you can define `inputs` and `outputs` for the custom action. These map directly to Dash callbacks, where:
+
 - `inputs` are the trigger points that cause your action to run (like a button click or value change)
 - `outputs` are the target components that your action can modify
 
-**Inputs**
-`inputs` define what triggers your action function. When any of these component properties change, your action will run. You can specify them in two ways:
+**Inputs** `inputs` define what triggers your action function. When any of these component properties change, your action will run. You can specify them in two ways:
+
 1. **Simple format**: Just use the component ID (e.g. `"my_selector"`) - this uses the component's default input property
-2. **Explicit format**: Use the full dot notation (e.g. `"my_selector.value"`) to specify a particular property
+1. **Explicit format**: Use the full dot notation (e.g. `"my_selector.value"`) to specify a particular property
 
 For example, if you specify `"my_button"` as an input, your action will run whenever the button is clicked (using the default `n_clicks` property).
 
-**Outputs**
-`outputs` define which components your action can modify. Your action function's return value will be used to update these components. Like inputs, you can specify them in two ways:
+**Outputs** `outputs` define which components your action can modify. Your action function's return value will be used to update these components. Like inputs, you can specify them in two ways:
+
 1. **Simple format**: Just use the component ID (e.g. `"my_card"`) - this uses the component's default output property
-2. **Explicit format**: Use the full dot notation (e.g. `"my_card.children"`) to specify a particular property
+1. **Explicit format**: Use the full dot notation (e.g. `"my_card.children"`) to specify a particular property
 
 For example, if you specify `"my_graph"` as an output, your action's return value will update the graph's figure (using the default `figure` property).
 
 ### Default Properties
+
 Each Vizro component has predefined default properties for inputs and outputs. Here are some common examples:
 
-| Component | Default Input Property | Default Output Property |
-|-----------|----------------------|----------------------|
-| AgGrid | `selectedRows` | `children` |
-| Table | `selected_rows` | `children` |
-| Graph | `clickData` | `figure` |
-| Card | `children` | `children` |
-| Button | `n_clicks` | `children` |
-| Dropdown | `value` | `value` |
-| RadioItems | `value` | `value` |
-| Checklist | `value` | `value` |
+| Component  | Default Input Property | Default Output Property |
+| ---------- | ---------------------- | ----------------------- |
+| AgGrid     | `selectedRows`         | `children`              |
+| Table      | `selected_rows`        | `children`              |
+| Graph      | `clickData`            | `figure`                |
+| Card       | `children`             | `children`              |
+| Button     | `n_clicks`             | `children`              |
+| Dropdown   | `value`                | `value`                 |
+| RadioItems | `value`                | `value`                 |
+| Checklist  | `value`                | `value`                 |
 
 If you need to use a different property than the default, you must use the explicit format with the full dot notation.
 
 ### Simple format with `value` as input
 
 The following example shows using the simple format with default properties. We'll create an action that:
+
 1. Takes input from a `RadioItems` component (using its default input property `value`)
-2. Updates a `Card` component (using its default output property `children`)
+1. Updates a `Card` component (using its default output property `children`)
 
 Since both components have appropriate default properties defined, we can use the simple format by just specifying their IDs.
 
@@ -158,8 +161,9 @@ Since both components have appropriate default properties defined, we can use th
 ### Simple format with `clickData` as input
 
 This example shows how to use the simple format with a Graph's default input property `clickData`. We'll create an action that:
+
 1. Takes input from a `Graph` component (using its default input property `clickData`)
-2. Updates a `Card` component (using its default output property `children`)
+1. Updates a `Card` component (using its default output property `children`)
 
 Since both components have appropriate default properties defined, we can use the simple format by just specifying their IDs.
 
@@ -289,10 +293,9 @@ The return value of the custom action function is propagated to the dashboard co
 
     Note that users of this package are responsible for the content of any custom action function that they write. Take care to avoid leaking any sensitive information or exposing to any security threat during implementation. You should always [treat the content of user input as untrusted](https://community.plotly.com/t/writing-secure-dash-apps-community-thread/54619).
 
-### Explicit format 
+### Explicit format
 
 The explicit format is used when you need to specify a property that differs from the component's default. This is done using the full dot notation: `"component_id.property"`.
-
 
 TODO: Think of a good code example where this is required now
 
