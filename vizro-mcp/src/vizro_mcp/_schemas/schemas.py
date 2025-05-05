@@ -3,10 +3,19 @@
 from typing import Annotated, Any, Literal, Optional
 
 import vizro.models as vm
-from pydantic import AfterValidator, BaseModel, Field, conlist
+from pydantic import AfterValidator, BaseModel, Field, PrivateAttr, conlist
+
+from vizro_mcp._utils import DFMetaData
 
 # Constants used in chart validation
 CUSTOM_CHART_NAME = "custom_chart"
+ADDITIONAL_IMPORTS = [
+    "import vizro.plotly.express as px",
+    "import plotly.graph_objects as go",
+    "import pandas as pd",
+    "import numpy as np",
+    "from vizro.models.types import capture",
+]
 
 # These types are used to simplify the schema for the LLM.
 SimplifiedComponentType = Literal["Card", "Button", "Text", "Container", "Tabs", "Graph", "AgGrid"]
@@ -191,3 +200,75 @@ class ChartPlan(BaseModel):
         """,
         ),
     ]
+
+    _additional_vizro_imports: list[str] = PrivateAttr(ADDITIONAL_IMPORTS)
+
+    def get_imports(self, vizro: bool = False):
+        imports = list(dict.fromkeys(self.imports + self._additional_vizro_imports))  # remove duplicates
+        if vizro:  # TODO: improve code of below
+            imports = [imp for imp in imports if "import plotly.express as px" not in imp]
+        else:
+            imports = [imp for imp in imports if "vizro" not in imp]
+        return "\n".join(imports) + "\n"
+
+    def get_chart_code(self, chart_name: Optional[str] = None, vizro: bool = False):
+        chart_code = self.chart_code
+        if vizro:
+            chart_code = chart_code.replace(f"def {CUSTOM_CHART_NAME}", f"@capture('graph')\ndef {CUSTOM_CHART_NAME}")
+        if chart_name is not None:
+            chart_code = chart_code.replace(f"def {CUSTOM_CHART_NAME}", f"def {chart_name}")
+        return chart_code
+
+    def get_dashboard_template(self, data_info: DFMetaData) -> str:
+        """Create a simple dashboard template for displaying the chart.
+
+        Args:
+            data_info: The metadata of the dataset to use.
+
+        Returns:
+            Complete Python code for a Vizro dashboard displaying the chart.
+        """
+        chart_code = self.get_chart_code(vizro=True)
+        imports = self.get_imports(vizro=True)
+
+        # Add the Vizro-specific imports if not present
+        additional_imports = [
+            "import vizro.models as vm",
+            "from vizro import Vizro",
+            "from vizro.managers import data_manager",
+        ]
+
+        # Combine imports without duplicates
+        all_imports = list(dict.fromkeys(additional_imports + imports.split("\n")))
+
+        dashboard_template = f"""
+{chr(10).join(imp for imp in all_imports if imp)}
+
+# Load the data
+data_manager["{data_info.file_name}"] = {data_info.read_function_string}("{data_info.file_path_or_url}")
+
+
+# Custom chart code
+{chart_code}
+
+# Create a dashboard to display the chart
+dashboard = vm.Dashboard(
+    pages=[
+        vm.Page(
+            title="{self.chart_type.capitalize()} Chart",
+            components=[
+                vm.Graph(
+                    id="{self.chart_type}_graph",
+                    figure={CUSTOM_CHART_NAME}("{data_info.file_name}"),
+                )
+            ],
+        )
+    ],
+    title="{self.chart_type.capitalize()} Dashboard",
+)
+
+# Run the dashboard
+Vizro().build(dashboard).run()
+"""
+
+        return dashboard_template

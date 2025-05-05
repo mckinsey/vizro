@@ -8,6 +8,7 @@ from .utils import (
     DFMetaData,
     VizroCodeAndPreviewLink,
     convert_github_url_to_raw,
+    create_pycafe_url,
     get_dataframe_info,
     get_python_code_and_preview_link,
     load_dataframe_by_format,
@@ -28,4 +29,5 @@ __all__ = [
     "get_python_code_and_preview_link",
     "load_dataframe_by_format",
     "path_or_url_check",
+    "create_pycafe_url",
 ]

@@ -236,6 +236,25 @@ def get_dataframe_info(df: pd.DataFrame) -> DFInfo:
     return DFInfo(general_info=info_string, sample=df.sample(sample_size).to_dict() if sample_size > 0 else {})
 
 
+def create_pycafe_url(python_code: str) -> str:
+    """Create a PyCafe URL for a given Python code."""
+    # Create JSON object for py.cafe
+    json_object = {
+        "code": python_code,
+        "requirements": "vizro",
+        "files": [],
+    }
+
+    # Convert to compressed base64 URL
+    json_text = json.dumps(json_object)
+    compressed_json_text = gzip.compress(json_text.encode("utf8"))
+    base64_text = base64.b64encode(compressed_json_text).decode("utf8")
+    query = urlencode({"c": base64_text}, quote_via=quote)
+    pycafe_url = f"{PYCAFE_URL}/snippet/vizro/v1?{query}"
+
+    return pycafe_url
+
+
 def get_python_code_and_preview_link(
     model_object: vm.VizroBaseModel, data_infos: list[DFMetaData]
 ) -> VizroCodeAndPreviewLink:
@@ -276,18 +295,6 @@ def get_python_code_and_preview_link(
     # Add final run line
     python_code += "\n\nVizro().build(model).run()"
 
-    # Create JSON object for py.cafe
-    json_object = {
-        "code": python_code,
-        "requirements": "vizro",
-        "files": [],
-    }
-
-    # Convert to compressed base64 URL
-    json_text = json.dumps(json_object)
-    compressed_json_text = gzip.compress(json_text.encode("utf8"))
-    base64_text = base64.b64encode(compressed_json_text).decode("utf8")
-    query = urlencode({"c": base64_text}, quote_via=quote)
-    pycafe_url = f"{PYCAFE_URL}/snippet/vizro/v1?{query}"
+    pycafe_url = create_pycafe_url(python_code)
 
     return VizroCodeAndPreviewLink(python_code=python_code, pycafe_url=pycafe_url)

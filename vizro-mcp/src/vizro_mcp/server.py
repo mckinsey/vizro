@@ -1,6 +1,5 @@
 """MCP server for Vizro-AI chart and dashboard creation."""
 
-import json
 import mimetypes
 import webbrowser
 from dataclasses import dataclass
@@ -33,11 +32,15 @@ from vizro_mcp._utils import (
     DFInfo,
     DFMetaData,
     convert_github_url_to_raw,
+    create_pycafe_url,
     get_dataframe_info,
     get_python_code_and_preview_link,
     load_dataframe_by_format,
     path_or_url_check,
 )
+
+# PyCafe URL for Vizro snippets
+PYCAFE_URL = "https://py.cafe"
 
 
 @dataclass
@@ -77,7 +80,7 @@ def get_sample_data_info(data_name: Literal["iris", "tips", "stocks", "gapminder
         data_name: Name of the dataset to get sample data for
 
     Returns:
-        Data info object containing information about the dataset
+        Data info object containing information about the dataset.
     """
     if data_name == "iris":
         return IRIS
@@ -205,18 +208,26 @@ def get_vizro_chart_or_dashboard_plan(user_plan: Literal["chart", "dashboard"]) 
     """Get instructions for creating a Vizro chart or dashboard. Call FIRST when asked to create Vizro things."""
     if user_plan == "chart":
         return """
+IMPORTANT:
+    - KEEP IT SIMPLE: rather than iterating yourself, ask the user for more instructions
+    - ALWAYS VALIDATE:if you iterate over a valid produced solution, make sure to ALWAYS call the
+        validate_chart_code tool to validate the chart code, display the figure code to the user
+    - DO NOT modify the background (with plot_bgcolor) or color sequences unless explicitly asked for
+
 Instructions for creating a Vizro chart:
     - analyze the datasets needed for the chart using the load_and_analyze_data tool - the most important
         information here are the column names and column types
     - if the user provides no data, but you need to display a chart or table, use the get_sample_data_info
         tool to get sample data information
+    - create a chart using plotly express and/or plotly graph objects, and call the function `custom_chart`
+    - call the validate_chart_code tool to validate the chart code, display the figure code to the user (as artifact)
     - do NOT call any other tool after, especially do NOT create a dashboard
             """
     elif user_plan == "dashboard":
         return """
 IMPORTANT:
     - KEEP IT SIMPLE: rather than iterating yourself, ask the user for more instructions
-    - ALWAYS VALIDATE:if you iterate over a valid produced solution, make sure to go ALWAYS call the
+    - ALWAYS VALIDATE:if you iterate over a valid produced solution, make sure to ALWAYS call the
         validate_model_config tool again to ensure the solution is still valid
     - DO NOT show any code or config to the user until you have validated the solution, do not say you are preparing
         a solution, just do it and validate it
@@ -335,29 +346,72 @@ Create an EDA dashboard based on the following dataset:{file_path_or_url}. Proce
     return content
 
 
-################# Chart functionality - not sure if I should include this in the MCP server
-
-
 @mcp.tool()
-def get_validated_chart_code(chart_plan: dict[str, Any]) -> str:
-    """Validate the chart code created by the user."""
+def validate_chart_code(
+    config: ChartPlan,
+    data_info: DFMetaData,
+    auto_open: bool = True,
+) -> ValidationResults:
+    """Validate the chart code created by the user and optionally open the PyCafe link in a browser.
+
+    Args:
+        config: A ChartPlan object with the chart configuration
+        data_info: Metadata for the dataset to be used in the chart
+        auto_open: Whether to automatically open the PyCafe link in a browser
+
+    Returns:
+        ValidationResults object with status and dashboard details
+    """
+    Vizro._reset()
+
     try:
-        chart_plan_obj = ChartPlan.model_validate(chart_plan)
-        return chart_plan_obj.model_dump_json()
+        chart_plan_obj = ChartPlan.model_validate(config)
     except ValidationError as e:
-        return json.dumps({"error": f"Validation Error: {e.errors()}"})
+        return ValidationResults(
+            valid=False,
+            message=f"Validation Error: {e!s}",
+            python_code="",
+            pycafe_url=None,
+            browser_opened=False,
+        )
+    else:
+        dashboard_code = chart_plan_obj.get_dashboard_template(data_info=data_info)
+
+        # Create the data loading code
+
+        # Generate PyCafe URL if all data is remote
+        pycafe_url = create_pycafe_url(dashboard_code) if data_info.file_location_type == "remote" else None
+        browser_opened = False
+
+        if auto_open and pycafe_url:
+            try:
+                browser_opened = webbrowser.open(pycafe_url)
+            except Exception:
+                browser_opened = False
+
+        return ValidationResults(
+            valid=True,
+            message="Chart only dashboard created successfully!",
+            python_code=dashboard_code,
+            pycafe_url=chart_plan_obj.get_chart_code(vizro=True),
+            browser_opened=browser_opened,
+        )
+
+    finally:
+        Vizro._reset()
 
 
 @mcp.prompt()
 def create_vizro_chart(
     chart_type: str,
-    file_path_or_url: str,
+    file_path_or_url: Optional[str] = None,
 ) -> str:
     """Prompt template for creating a Vizro chart."""
     content = f"""
-Create a chart using the following chart type:
-{chart_type}.
-Make sure to analyze the data using the load_and_analyze_data tool first, passing the file path or github url
-{file_path_or_url} to the tool. Then make sure to use the get_validated_chart_code tool to validate the chart code.
+ - Create a chart using the following chart type: {chart_type}.
+ - You MUST name the function containing the fig `custom_chart`
+ - Make sure to analyze the data using the load_and_analyze_data tool first, passing the file path or github url
+ {file_path_or_url} OR choose the most appropriate sample data using the get_sample_data_info tool.
+ Then you MUST use the validate_chart_code tool to validate the chart code.
             """
     return content

@@ -94,7 +94,15 @@ You can also ask the model to give you the link, but it will attempt to regenera
 
 ### Create Vizro charts
 
-TBD
+The **easiest** way to get started with Vizro charts is to choose the template `create_vizro_chart` and just send the prompt. This will create a simple chart that you can alter. Take it from there!
+
+Alternatively, you can just ask in the chat things like:
+
+> _Create a scatter based on the iris dataset._
+
+> _Create a bar chart based on `<insert absolute file path or public URL>` data._
+
+
 
 ## 🔍 Transparency and trust
 
@@ -113,7 +121,7 @@ The Vizro MCP server provides the following tools. In general you should not nee
 - `get_model_JSON_schema` - Retrieves the complete JSON schema for any specified Vizro model, useful for understanding required and optional parameters.
 - `validate_model_config` - Tests Vizro model configurations by attempting to instantiate them. Returns Python code and visualization links for valid configurations.
 - `load_and_analyze_csv` - Loads a CSV file from a local path or URL into a pandas DataFrame and provides detailed analysis of its structure and content.
-- `get_validated_chart_code` - Validates the code created for a chart and returns feedback on its correctness.
+- `validate_chart_code` - Validates the code created for a chart and returns feedback on its correctness.
 - `get_sample_data_info` - Provides information about sample datasets that can be used for testing and development.
 
 ## Available Prompts (if client allows)
