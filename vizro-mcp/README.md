@@ -125,7 +125,7 @@ The Vizro MCP server provides the following tools. In general you should not nee
 ## Available Prompts (if client allows)
 
 - `get_started_with_vizro` - Use this prompt template to get started with Vizro dashboards.
-- `create_EDA_dashboard` - Use this prompt template to create an Exploratory Data Anlysis (EDA) dashboard based on a local or remote CSV dataset
+- `create_EDA_dashboard` - Use this prompt template to create an Exploratory Data Analysis (EDA) dashboard based on a local or remote CSV dataset
 - `create_vizro_chart` - Use this prompt template to create a Vizro styled plotly chart based on a local or remote CSV dataset
 
 ## Sample data

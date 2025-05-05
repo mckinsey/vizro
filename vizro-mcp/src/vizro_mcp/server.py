@@ -45,6 +45,8 @@ PYCAFE_URL = "https://py.cafe"
 
 @dataclass
 class ValidationResults:
+    """Results of the validation tool."""
+
     valid: bool
     message: str
     python_code: str
@@ -54,6 +56,8 @@ class ValidationResults:
 
 @dataclass
 class DataAnalysisResults:
+    """Results of the data analysis tool."""
+
     valid: bool
     message: str
     df_info: Optional[DFInfo]
@@ -158,28 +162,30 @@ def get_model_json_schema(model_name: str) -> dict[str, Any]:
     Returns:
         JSON schema of the requested Vizro model
     """
-    if model_name == "Page":
-        return PageSimplified.model_json_schema()
-    elif model_name == "Dashboard":
-        return DashboardSimplified.model_json_schema()
-    elif model_name == "Graph":
-        return GraphEnhanced.model_json_schema()
-    elif model_name == "AgGrid" or model_name == "Table":
-        return AgGridEnhanced.model_json_schema()
-    elif model_name == "Tabs":
-        return TabsSimplified.model_json_schema()
-    elif model_name == "Container":
-        return ContainerSimplified.model_json_schema()
-    elif model_name == "Filter":
-        return FilterSimplified.model_json_schema()
-    elif model_name == "Parameter":
-        return ParameterSimplified.model_json_schema()
-    elif not hasattr(vm, model_name):
+    # Dictionary mapping model names to their simplified versions
+    modified_models = {
+        "Page": PageSimplified,
+        "Dashboard": DashboardSimplified,
+        "Graph": GraphEnhanced,
+        "AgGrid": AgGridEnhanced,
+        "Table": AgGridEnhanced,
+        "Tabs": TabsSimplified,
+        "Container": ContainerSimplified,
+        "Filter": FilterSimplified,
+        "Parameter": ParameterSimplified,
+    }
+
+    # Check if model_name is in the simplified models dictionary
+    if model_name in modified_models:
+        return modified_models[model_name].model_json_schema()
+
+    # Check if model exists in vizro.models
+    if not hasattr(vm, model_name):
         return {"error": f"Model '{model_name}' not found in vizro.models"}
 
+    # Get schema for standard model
     model_class = getattr(vm, model_name)
-    schema = model_class.model_json_schema()
-    return schema
+    return model_class.model_json_schema()
 
 
 @mcp.tool()
