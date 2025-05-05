@@ -161,7 +161,7 @@ def get_model_json_schema(model_name: str) -> dict[str, Any]:
         return DashboardSimplified.model_json_schema()
     elif model_name == "Graph":
         return GraphEnhanced.model_json_schema()
-    elif model_name == "AgGrid":
+    elif model_name == "AgGrid" or model_name == "Table":
         return AgGridEnhanced.model_json_schema()
     elif model_name == "Tabs":
         return TabsSimplified.model_json_schema()
@@ -215,16 +215,17 @@ Instructions for creating a Vizro chart:
     elif user_plan == "dashboard":
         return """
 IMPORTANT:
-    - if you iterate over a valid produced solution, make sure to go ALWAYS via the validation step again to
-        ensure the solution is valid
+    - KEEP IT SIMPLE: rather than iterating yourself, ask the user for more instructions
+    - ALWAYS VALIDATE:if you iterate over a valid produced solution, make sure to go ALWAYS call the
+        validate_model_config tool again to ensure the solution is still valid
     - DO NOT show any code or config to the user until you have validated the solution, do not say you are preparing
         a solution, just do it and validate it
-    - if you find yourself repeatedly getting something wrong, try enquiring the schema of the component in question
-    - KEEP IT SIMPLE: rather than iterating yourself, ask the user for more instructions
+    - IF STUCK: try enquiring the schema of the component in question
+
 
 Instructions for creating a Vizro dashboard:
-    - if the user has no plan (ie no components or pages), use the get_sample_or_fallback_dashboard_config tool
-        otherwise continue with the following instructions
+    - IF the user has no plan (ie no components or pages), use the get_sample_or_fallback_dashboard_config tool
+        and validate that solution without any additions, OTHERWISE:
     - analyze the datasets needed for the dashboard using the load_and_analyze_data tool - the most
         important information here are the column names and column types
     - if the user provides no data, but you need to display a chart or table, use the get_sample_data_info
@@ -287,8 +288,8 @@ def load_and_analyze_data(path_or_url: str) -> DataAnalysisResults:
 
 
 @mcp.tool()
-def get_sample_or_fallback_dashboard_config() -> str:
-    """Get a sample dashboard configuration. Call this when asked to create a dashboard but no plan is provided."""
+def get_simple_dashboard_config() -> str:
+    """Very simple Vizro dashboard configuration. Use this config as a starter when no other config is provided."""
     return SAMPLE_DASHBOARD_CONFIG
 
 
