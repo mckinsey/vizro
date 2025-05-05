@@ -241,7 +241,7 @@ IMPORTANT:
 
 
 Instructions for creating a Vizro dashboard:
-    - IF the user has no plan (ie no components or pages), use the get_sample_or_fallback_dashboard_config tool
+    - IF the user has no plan (ie no components or pages), use the get_simple_dashboard_config tool
         and validate that solution without any additions, OTHERWISE:
     - analyze the datasets needed for the dashboard using the load_and_analyze_data tool - the most
         important information here are the column names and column types
