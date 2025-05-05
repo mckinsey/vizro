@@ -24,8 +24,6 @@ class TestChecklistInstantiation:
         assert checklist.title == ""
         assert checklist.description is None
         assert checklist.actions == []
-        assert checklist._input_default_property == "value"
-        assert checklist._output_default_property == "value"
 
     def test_create_checklist_mandatory_and_optional(self):
         checklist = Checklist(
@@ -39,8 +37,6 @@ class TestChecklistInstantiation:
         assert checklist.title == "Title"
         assert checklist.actions == []
         assert isinstance(checklist.description, Tooltip)
-        assert checklist._input_default_property == "value"
-        assert checklist._output_default_property == "value"
 
     @pytest.mark.parametrize(
         "test_options, expected",

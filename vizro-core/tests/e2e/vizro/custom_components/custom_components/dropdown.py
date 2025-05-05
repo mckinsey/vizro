@@ -30,8 +30,8 @@ class CustomDropdown(VizroBaseModel):
     ]
     title: Optional[str] = Field(None, description="Title to be displayed")
 
-    # Default component property for actions
-    _input_default_property: str = PrivateAttr("value")
+    # Component properties for actions and interactions
+    _input_property: str = PrivateAttr("value")
 
     @_log_call
     def build(self):

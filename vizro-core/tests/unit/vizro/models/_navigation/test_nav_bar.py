@@ -22,8 +22,6 @@ class TestNavBarInstantiation:
         assert hasattr(nav_bar, "id")
         assert nav_bar.pages == {}
         assert nav_bar.items == []
-        assert nav_bar._input_default_property == "children"
-        assert nav_bar._output_default_property == "children"
 
     def test_nav_bar_mandatory_and_optional(self, pages_as_dict):
         nav_link = vm.NavLink(label="Label")
@@ -32,8 +30,6 @@ class TestNavBarInstantiation:
         assert nav_bar.id == "nav-bar"
         assert nav_bar.pages == pages_as_dict
         assert nav_bar.items == [nav_link]
-        assert nav_bar._input_default_property == "children"
-        assert nav_bar._output_default_property == "children"
 
     def test_valid_pages_as_list(self, pages_as_list):
         nav_bar = vm.NavBar(pages=pages_as_list)

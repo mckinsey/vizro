@@ -27,8 +27,6 @@ class TestDashboardInstantiation:
         assert dashboard.title == ""
         assert isinstance(dashboard.navigation, vm.Navigation)
         assert dashboard.navigation.pages == ["Page 1", "Page 2"]
-        assert dashboard._input_default_property == "children"
-        assert dashboard._output_default_property == "children"
 
     def test_create_dashboard_mandatory_and_optional(self, page_1, page_2):
         dashboard = vm.Dashboard(pages=[page_1, page_2], theme="vizro_light", title="Vizro")
@@ -38,8 +36,6 @@ class TestDashboardInstantiation:
         assert dashboard.title == "Vizro"
         assert isinstance(dashboard.navigation, vm.Navigation)
         assert dashboard.navigation.pages == ["Page 1", "Page 2"]
-        assert dashboard._input_default_property == "children"
-        assert dashboard._output_default_property == "children"
 
     def test_navigation_pages_automatically_populated(self, page_1, page_2):
         dashboard = vm.Dashboard(pages=[page_1, page_2])

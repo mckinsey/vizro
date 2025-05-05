@@ -24,8 +24,6 @@ class TestRadioItemsInstantiation:
         assert radio_items.title == ""
         assert radio_items.description is None
         assert radio_items.actions == []
-        assert radio_items._input_default_property == "value"
-        assert radio_items._output_default_property == "value"
 
     def test_create_radio_items_mandatory_and_optional(self):
         radio_items = RadioItems(
@@ -39,8 +37,6 @@ class TestRadioItemsInstantiation:
         assert radio_items.title == "Title"
         assert radio_items.actions == []
         assert isinstance(radio_items.description, Tooltip)
-        assert radio_items._input_default_property == "value"
-        assert radio_items._output_default_property == "value"
 
     @pytest.mark.parametrize(
         "test_options, expected",

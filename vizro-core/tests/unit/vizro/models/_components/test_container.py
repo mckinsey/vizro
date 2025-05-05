@@ -18,9 +18,6 @@ class TestContainerInstantiation:
         assert container.layout.grid == [[0], [1]]
         assert container.title == ""
         assert container.variant == "plain"
-        assert container.collapsed is False
-        assert container._input_default_property == "children"
-        assert container._output_default_property == "children"
 
     @pytest.mark.parametrize("variant", ["plain", "filled", "outlined"])
     def test_create_container_mandatory_and_optional(self, variant):
@@ -38,8 +35,6 @@ class TestContainerInstantiation:
         assert container.title == "Title"
         assert container.variant == variant
         assert container.collapsed is True
-        assert container._input_default_property == "children"
-        assert container._output_default_property == "children"
 
     def test_create_container_mandatory_and_optional_legacy_layout(self):
         with pytest.warns(FutureWarning, match="The `Layout` model has been renamed `Grid`"):

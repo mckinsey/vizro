@@ -18,8 +18,6 @@ class TestUserInputInstantiation:
         assert user_input.title == ""
         assert user_input.placeholder == ""
         assert user_input.actions == []
-        assert user_input._input_default_property == "value"
-        assert user_input._output_default_property == "value"
 
     def test_create_user_input_mandatory_and_optional(self):
         user_input = UserInput(id="user-input-id", title="Title", placeholder="Placeholder")
@@ -29,8 +27,6 @@ class TestUserInputInstantiation:
         assert user_input.title == "Title"
         assert user_input.placeholder == "Placeholder"
         assert user_input.actions == []
-        assert user_input._input_default_property == "value"
-        assert user_input._output_default_property == "value"
 
 
 class TestUserInputBuild:

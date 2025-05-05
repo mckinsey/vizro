@@ -66,52 +66,16 @@ The following example shows how to create a custom action that postpones executi
 
 ## Interact with inputs and outputs
 
-### Simple and explicit format
+When a custom action needs to interact with the dashboard, it is possible to define `inputs` and `outputs` for the custom action.
 
-When a custom action needs to interact with the dashboard, you can define `inputs` and `outputs` for the custom action. These map directly to Dash callbacks:
+- `inputs` represents dashboard component properties whose values are passed to the custom action function as arguments. It is a list of strings in the format `"<component_id>.<property>"` (for example, `"my_selector.value`").
+- `outputs` represents dashboard component properties corresponding to the custom action function return value(s). Similar to `inputs`, it is a list of strings in the format `"<component_id>.<property>"` (for example, `"my_card.children"`).
 
-- `inputs` are the trigger points that cause your action to run (like a button click or value change)
-- `outputs` are the target components that your action can modify
+### Example of `value` as input
 
-You can specify both `inputs` and `outputs` in two ways:
+The following example shows a custom action that takes the `value` of the `vm.RadioItem` and returns it inside a [`Card`][vizro.models.Card] component.
 
-1. **Simple format**: Just use the component ID (e.g. `"my_button"`) - this uses the component's default input/output property
-1. **Explicit format**: Use the full dot notation (e.g. `"my_button.n_clicks"`) to specify a particular input/ouput property
-
-For example:
-
-- Using `"my_button"` as an input is equivalent to `"my_button.n_clicks"` - the action runs when the button is clicked
-- Using `"my_graph"` as an output is equivalent to `"my_graph.figure"` - the action's return value updates the graph's figure
-
-### Default input/output properties
-
-Each Vizro component has predefined default properties for inputs and outputs. Here are some common examples:
-
-| Component  | Default Input Property | Default Output Property |
-| ---------- | ---------------------- | ----------------------- |
-| AgGrid     | `selectedRows`         | `children`              |
-| Table      | `selected_rows`        | `children`              |
-| Graph      | `clickData`            | `figure`                |
-| Card       | `children`             | `children`              |
-| Button     | `n_clicks`             | `children`              |
-| Dropdown   | `value`                | `value`                 |
-| RadioItems | `value`                | `value`                 |
-| Checklist  | `value`                | `value`                 |
-
-If you need to use a different property than the default, you must use the explicit format with the full dot notation (e.g., `"my_button.disabled"`).
-
-### Simple format examples
-
-#### Example 1: `value` as input
-
-The following example shows using the simple format with default properties. We'll create an action that:
-
-1. Takes input from a `RadioItems` component (using its default input property `value`)
-1. Updates a `Card` component (using its default output property `children`)
-
-Since both components have appropriate default properties defined, we can use the simple format by just specifying their IDs.
-
-!!! example "`value` as input"
+!!! example "Display `value` in Card"
 
     === "app.py"
 
@@ -138,8 +102,7 @@ Since both components have appropriate default properties defined, we can use th
                     title="Select a species:",
                     options=df["species"].unique().tolist(),
                     actions=[
-                        # Using simple format: just component IDs since we're using default properties
-                        vm.Action(function=update_card_text(), inputs=["my_selector"], outputs=["my_card"])  # (1)!
+                        vm.Action(function=update_card_text(), inputs=["my_selector.value"], outputs=["my_card.children"])
                     ],
                 ),
                 vm.Card(text="Placeholder text", id="my_card"),
@@ -150,8 +113,6 @@ Since both components have appropriate default properties defined, we can use th
         Vizro().build(dashboard).run()
         ```
 
-        1. This is equivalent to `inputs=["my_selector.value"], outputs=["my_card.children"]`.
-
     === "app.yaml"
 
         Custom actions are currently only possible via Python configuration.
@@ -160,16 +121,11 @@ Since both components have appropriate default properties defined, we can use th
 
         [![ValueAction]][valueaction]
 
-#### Example 2: `clickData` as input
+### Example of `clickData` as input
 
-This example shows how to use the simple format with a Graph's default input property `clickData`. We'll create an action that:
+The following example shows how to create a custom action that shows the `clickData` of a chart in a [`Card`][vizro.models.Card] component. For further information on the structure and content of the `clickData` property, refer to the Dash documentation on [interactive visualizations](https://dash.plotly.com/interactive-graphing).
 
-1. Takes input from a `Graph` component (using its default input property `clickData`)
-1. Updates a `Card` component (using its default output property `children`)
-
-Since both components have appropriate default properties defined, we can use the simple format by just specifying their IDs.
-
-!!! example "`clickData` as input"
+!!! example "Display `clickData` in Card"
 
     === "app.py"
 
@@ -202,8 +158,8 @@ Since both components have appropriate default properties defined, we can use th
                     actions=[
                         vm.Action(
                             function=my_custom_action(show_species=True), # (2)!
-                            inputs=["scatter_chart"], # (3)!
-                            outputs=["my_card"],  # (4)!
+                            inputs=["scatter_chart.clickData"], # (3)!
+                            outputs=["my_card.children"],
                         ),
                     ],
                 ),
@@ -217,8 +173,7 @@ Since both components have appropriate default properties defined, we can use th
 
         1. Just as for any Python function, the names of the arguments `show_species` and `points_data` are arbitrary and do not need to match on to the names of `inputs` in any particular way.
         1. We _bind_ (set) the argument `show_species` to the value `True` in the initial specification of the `function` field. These are static values that are fixed when the dashboard is _built_.
-        1. This is equivalent to `outputs=["scatter_chart.clickData"]`. The content of `inputs` will "fill in the gaps" by setting values for the remaining unbound arguments in `my_custom_action`. Here there is one such argument, named `points_data`. Values for these are bound _dynamically at runtime_ to reflect the live state of your dashboard.
-        1. This is equivalent to `outputs=["my_card.children"]`.
+        1. The content of `inputs` will "fill in the gaps" by setting values for the remaining unbound arguments in `my_custom_action`. Here there is one such argument, named `points_data`. Values for these are bound _dynamically at runtime_ to reflect the live state of your dashboard.
 
     === "app.yaml"
 
@@ -228,7 +183,7 @@ Since both components have appropriate default properties defined, we can use th
 
         [![CustomAction]][customaction]
 
-#### Example 3: Multiple return values
+## Multiple return values
 
 The return value of the custom action function is propagated to the dashboard components that are defined in the `outputs` argument of the [`Action`][vizro.models.Action] model. If there is a single `output` defined then the function return value is directly assigned to the component property. If there are multiple `outputs` defined then the return value is iterated through and each part is assigned to each component property given in `outputs` in turn. This behavior is identical to Python's flexibility in managing multiple return values.
 
@@ -266,8 +221,8 @@ The return value of the custom action function is propagated to the dashboard co
                     actions=[
                         vm.Action(
                             function=my_custom_action(),
-                            inputs=["scatter_chart"], # (3)!
-                            outputs=["my_card_1", "my_card_2"], # (4)!
+                            inputs=["scatter_chart.clickData"],
+                            outputs=["my_card_1.children", "my_card_2.children"], # (3)!
                         ),
                     ],
                 ),
@@ -282,8 +237,7 @@ The return value of the custom action function is propagated to the dashboard co
 
         1. `my_custom_action` returns two values (which will be in Python tuple).
         1. We use a [`Flex`][vizro.models.Flex] layout to make sure the `Graph` and the `Cards` only occupy as much space as they need, rather than being distributed evenly.
-        1. This is equivalent to `inputs=["scatter_chart.clickData"]`.
-        1. This is equivalent to `outputs=["my_card_1.children", "my_card_2.children"]`.
+        1. These values are assigned to the `outputs` in the same order.
 
     === "app.yaml"
 
@@ -296,12 +250,6 @@ The return value of the custom action function is propagated to the dashboard co
 !!! warning
 
     Note that users of this package are responsible for the content of any custom action function that they write. Take care to avoid leaking any sensitive information or exposing to any security threat during implementation. You should always [treat the content of user input as untrusted](https://community.plotly.com/t/writing-secure-dash-apps-community-thread/54619).
-
-### Explicit format examples
-
-The explicit format is used when you need to specify a property that differs from the component's default. This is done using the full dot notation: `"component_id.property"`.
-
-TODO: Think of a good code example where this is required now
 
 [customaction]: ../../assets/user_guides/custom_actions/clickdata_as_input.png
 [customaction2]: ../../assets/user_guides/custom_actions/custom_action_multiple_return_values.png

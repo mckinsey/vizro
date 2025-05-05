@@ -19,8 +19,6 @@ class TestCardInstantiation:
         assert card.type == "card"
         assert card.text == "Text to test card"
         assert card.href == ""
-        assert card._input_default_property == "children"
-        assert card._output_default_property == "children"
 
     @pytest.mark.parametrize("id, href", [("id_1", "/page_1_reference"), ("id_2", "https://www.google.de/")])
     def test_create_card_mandatory_and_optional(self, id, href):
@@ -30,8 +28,6 @@ class TestCardInstantiation:
         assert card.type == "card"
         assert card.text == "Text to test card"
         assert card.href == href
-        assert card._input_default_property == "children"
-        assert card._output_default_property == "children"
 
     def test_mandatory_text_missing(self):
         with pytest.raises(ValidationError, match="Field required"):

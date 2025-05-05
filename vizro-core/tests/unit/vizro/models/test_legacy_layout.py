@@ -52,8 +52,6 @@ class TestLayoutInstantiation:
             ColRowGridLines(col_start=2, col_end=3, row_start=1, row_end=2),
             ColRowGridLines(col_start=2, col_end=3, row_start=2, row_end=3),
         ]
-        assert layout._input_default_property == "children"
-        assert layout._output_default_property == "className"
 
     @pytest.mark.parametrize("test_unit", ["0px", "4px", "4rem", "4em", "4%"])
     def test_create_layout_mandatory_and_optional(self, test_unit):
@@ -76,8 +74,6 @@ class TestLayoutInstantiation:
             ColRowGridLines(col_start=2, col_end=3, row_start=1, row_end=2),
             ColRowGridLines(col_start=2, col_end=3, row_start=2, row_end=3),
         ]
-        assert layout._input_default_property == "children"
-        assert layout._output_default_property == "className"
 
     @pytest.mark.parametrize("test_unit", ["0", "calc(100% - 3px)", "4ex", "4ch", "4vh", "4vw", "4vmin", "4vmax"])
     def test_invalid_unit_size(self, test_unit):

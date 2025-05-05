@@ -37,8 +37,6 @@ class TestAgGridInstantiation:
         assert ag_grid.type == "ag_grid"
         assert ag_grid.figure == standard_ag_grid
         assert ag_grid.actions == []
-        assert ag_grid._input_default_property == "selectedRows"
-        assert ag_grid._output_default_property == "children"
 
     @pytest.mark.parametrize("id", ["id_1", "id_2"])
     def test_create_ag_grid_mandatory_and_optional(self, standard_ag_grid, id):
@@ -47,9 +45,6 @@ class TestAgGridInstantiation:
         assert ag_grid.id == id
         assert ag_grid.type == "ag_grid"
         assert ag_grid.figure == standard_ag_grid
-        assert ag_grid.actions == []
-        assert ag_grid._input_default_property == "selectedRows"
-        assert ag_grid._output_default_property == "children"
 
     def test_mandatory_figure_missing(self):
         with pytest.raises(ValidationError, match="Field required"):
@@ -90,16 +85,6 @@ class TestAgGridInstantiation:
         ag_grid = vm.AgGrid(figure=standard_ag_grid, actions=[Action(function=identity_action_function())])
         actions_chain = ag_grid.actions[0]
         assert actions_chain.trigger.component_property == "cellClicked"
-
-    def test_create_ag_grid_mandatory_only(self, standard_ag_grid):
-        ag_grid = vm.AgGrid(figure=standard_ag_grid)
-
-        assert hasattr(ag_grid, "id")
-        assert ag_grid.type == "ag_grid"
-        assert ag_grid.figure == standard_ag_grid._captured_callable
-        assert ag_grid.actions == []
-        assert ag_grid._input_default_property == "selectedRows"
-        assert ag_grid._output_default_property == "children"
 
 
 class TestDunderMethodsAgGrid:

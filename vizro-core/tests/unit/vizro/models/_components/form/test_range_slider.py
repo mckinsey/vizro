@@ -264,8 +264,6 @@ class TestRangeSliderInstantiation:
         assert range_slider.title == ""
         assert range_slider.description is None
         assert range_slider.actions == []
-        assert range_slider._input_default_property == "value"
-        assert range_slider._output_default_property == "value"
 
     def test_create_range_slider_mandatory_and_optional(self):
         range_slider = vm.RangeSlider(
@@ -289,8 +287,6 @@ class TestRangeSliderInstantiation:
         assert range_slider.title == "Test title"
         assert range_slider.actions == []
         assert isinstance(range_slider.description, vm.Tooltip)
-        assert range_slider._input_default_property == "value"
-        assert range_slider._output_default_property == "value"
 
     @pytest.mark.parametrize(
         "min, max, expected_min, expected_max",

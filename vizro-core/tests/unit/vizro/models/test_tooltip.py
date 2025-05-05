@@ -18,8 +18,6 @@ class TestTooltipInstantiation:
         assert hasattr(tooltip, "id")
         assert tooltip.text == "Tooltip text"
         assert tooltip.icon == "info"
-        assert tooltip._input_default_property == "is_open"
-        assert tooltip._output_default_property == "is_open"
 
     def test_validate_tooltip_invalid(self):
         with pytest.raises(ValidationError):

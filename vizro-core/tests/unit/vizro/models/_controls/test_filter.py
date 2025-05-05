@@ -434,16 +434,12 @@ class TestFilterInstantiation:
         assert filter.type == "filter"
         assert filter.column == "foo"
         assert filter.targets == []
-        assert filter._input_default_property == "value"
-        assert filter._output_default_property == "value"
 
     def test_create_filter_mandatory_and_optional(self):
         filter = Filter(column="foo", targets=["scatter_chart", "bar_chart"], selector=vm.RadioItems())
         assert filter.type == "filter"
         assert filter.column == "foo"
         assert filter.targets == ["scatter_chart", "bar_chart"]
-        assert filter._input_default_property == "value"
-        assert filter._output_default_property == "value"
         assert isinstance(filter.selector, vm.RadioItems)
 
     def test_check_target_present_valid(self):

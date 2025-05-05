@@ -20,8 +20,6 @@ class TestButtonInstantiation:
         assert button.href == ""
         assert button.actions == []
         assert button.variant == "filled"
-        assert button._input_default_property == "n_clicks"
-        assert button._output_default_property == "children"
 
     @pytest.mark.parametrize(
         "text, href, variant",
@@ -41,8 +39,6 @@ class TestButtonInstantiation:
         assert button.href == href
         assert button.actions == []
         assert button.variant == variant
-        assert button._input_default_property == "n_clicks"
-        assert button._output_default_property == "children"
 
     def test_set_action_via_validator(self):
         button = vm.Button(actions=[vm.Action(function=export_data())])
