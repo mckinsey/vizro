@@ -91,7 +91,9 @@ def get_sample_data_info(data_name: Literal["iris", "tips", "stocks", "gapminder
 
 @mcp.tool()
 def validate_model_config(
-    config: dict[str, Any], data_infos: Optional[list[DFMetaData]] = None, auto_open: bool = True
+    config: dict[str, Any],
+    data_infos: list[DFMetaData],  # Should be Optional[..]=None, but Cursor complains..
+    auto_open: bool = True,
 ) -> ValidationResults:
     """Validate Vizro model configuration. Run ALWAYS when you have a complete dashboard configuration.
 
@@ -106,9 +108,6 @@ def validate_model_config(
     Returns:
         ValidationResults object with status and dashboard details
     """
-    if data_infos is None:
-        data_infos = []
-
     Vizro._reset()
 
     try:
