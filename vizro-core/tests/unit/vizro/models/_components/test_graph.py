@@ -141,6 +141,7 @@ class TestAttributesGraph:
         assert hasattr(graph, "_filter_interaction_input")
         assert "modelID" in graph._filter_interaction_input
 
+
 class TestProcessGraphDataFrame:
     def test_process_figure_data_frame_str_df(self, standard_px_chart_with_str_dataframe, gapminder):
         data_manager["gapminder"] = gapminder
