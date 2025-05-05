@@ -23,7 +23,7 @@ If you are a **developer** and need instructions for running Vizro-MCP from sour
 - [uv](https://docs.astral.sh/uv/getting-started/installation/)
 - [Claude Desktop](https://claude.ai/download) or [Cursor](https://www.cursor.com/downloads)
 
-In principle, the Vizro MCP server works with _any_ MCP enabled client but we recommend Claude Desktop or Cursor as popular choices.
+In principle, the Vizro MCP server works with _any_ MCP enabled LLM applications but we recommend Claude Desktop or Cursor as popular choices.
 
 > 🐛 **Note:** There are currently some known issues with [VS Code](https://code.visualstudio.com/) but we are working on this and hope to have Copilot working soon.
 
