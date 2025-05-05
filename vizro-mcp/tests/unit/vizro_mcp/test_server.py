@@ -281,7 +281,6 @@ class TestValidateChartCode:
         chart_plan_validation_result: ValidationResults,
     ) -> None:
         """Test validation error for an invalid chart plan."""
-
         result = validate_chart_code(config=invalid_chart_plan, data_info=iris_metadata, auto_open=False)
 
         assert result == ValidationResults(
