@@ -206,6 +206,11 @@ class Grid(VizroBaseModel):
     )
     _component_grid_lines: Optional[list[ColRowGridLines]] = PrivateAttr()
 
+    # Default component property for actions
+    _output_default_property: str = PrivateAttr("className")
+    # LQ: Rarely used as input - shall we keep or just remove?
+    _input_default_property: str = PrivateAttr("children")
+
     def model_post_init(self, context: Any) -> None:
         self._component_grid_lines = _get_grid_lines(self.grid)[0]
 

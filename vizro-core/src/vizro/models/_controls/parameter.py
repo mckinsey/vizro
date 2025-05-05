@@ -1,7 +1,7 @@
 from collections.abc import Iterable
 from typing import Annotated, Literal, cast
 
-from pydantic import AfterValidator, Field
+from pydantic import AfterValidator, Field, PrivateAttr
 
 from vizro._constants import PARAMETER_ACTION_PREFIX
 from vizro.actions._parameter_action import _parameter
@@ -69,6 +69,11 @@ class Parameter(VizroBaseModel):
         AfterValidator(check_duplicate_parameter_target),
     ]
     selector: SelectorType
+
+    # Default component property for actions
+    # LQ: Rarely used as input and output - shall we keep or just remove?
+    _output_default_property: str = PrivateAttr("children")
+    _input_default_property: str = PrivateAttr("children")
 
     @_log_call
     def pre_build(self):

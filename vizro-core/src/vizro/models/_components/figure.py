@@ -30,8 +30,10 @@ class Figure(VizroBaseModel):
         ),
     ]
 
-    # Component properties for actions and interactions
-    _output_component_property: str = PrivateAttr("children")
+    # Default component property for actions
+    # LQ: Rarely used as input and output - shall we keep or just remove?
+    _output_default_property: str = PrivateAttr("children")
+    _input_default_property: str = PrivateAttr("children")
 
     _validate_figure = field_validator("figure", mode="before")(validate_captured_callable)
 

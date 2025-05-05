@@ -43,7 +43,7 @@ class _filter(_AbstractAction):
 
         for target in self.targets:
             component_id = target
-            component_property = cast(FigureType, model_manager[target])._output_component_property
+            component_property = cast(FigureType, model_manager[target])._output_default_property
             outputs[target] = f"{component_id}.{component_property}"
 
         return outputs

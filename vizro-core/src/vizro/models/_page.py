@@ -9,6 +9,7 @@ from pydantic import (
     BeforeValidator,
     Field,
     FieldSerializationInfo,
+    PrivateAttr,
     SerializerFunctionWrapHandler,
     ValidationInfo,
     conlist,
@@ -74,6 +75,11 @@ class Page(VizroBaseModel):
     ]
     actions: list[ActionsChain] = []
 
+    # Default component property for actions
+    # LQ: Rarely used as input and output - shall we keep or just remove?
+    _output_default_property: str = PrivateAttr("children")
+    _input_default_property: str = PrivateAttr("children")
+
     @model_validator(mode="before")
     @classmethod
     def set_id(cls, values):
@@ -111,7 +117,7 @@ class Page(VizroBaseModel):
         #  Probably it's better where it is now since it avoid navigating up the model hierarchy
         #  (action -> page -> figures) and instead just looks down (page -> figures).
         #  Should there be validation inside _on_page_load to check that targets exist and are
-        #  on the page and target-able components (i.e. are dynamic and hence have _output_component_property)?
+        #  on the page and target-able components (i.e. are dynamic and hence have _output_default_property)?
         #  It's not needed urgently since we always calculate the targets ourselves so we know they are valid.
         #  Similar comments apply to filter and parameter. Note that export_data has this logic built into the action
         #  itself since the user specifies the target. In future we'll probably have a helper function like

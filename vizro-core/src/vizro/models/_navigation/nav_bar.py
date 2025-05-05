@@ -5,7 +5,7 @@ from typing import Annotated, Literal, Union
 
 import dash_bootstrap_components as dbc
 from dash import html
-from pydantic import AfterValidator, BeforeValidator, Field
+from pydantic import AfterValidator, BeforeValidator, Field, PrivateAttr
 
 from vizro.models import VizroBaseModel
 from vizro.models._models_utils import _log_call
@@ -38,6 +38,11 @@ class NavBar(VizroBaseModel):
         Field(default={}, description="Mapping from name of a pages group to a list of page IDs."),
     ]
     items: list[NavLink] = []
+
+    # Default component property for actions
+    # LQ: Rarely used as input and output - shall we keep or just remove?
+    _output_default_property: str = PrivateAttr("children")
+    _input_default_property: str = PrivateAttr("children")
 
     @_log_call
     def pre_build(self):

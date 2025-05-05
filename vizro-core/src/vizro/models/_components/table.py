@@ -64,8 +64,10 @@ class Table(VizroBaseModel):
 
     _input_component_id: str = PrivateAttr()
 
-    # Component properties for actions and interactions
-    _output_component_property: str = PrivateAttr("children")
+    # Default component property for actions
+    _output_default_property: str = PrivateAttr("children")
+    # LQ: What should we choose? data, selected_rows, derived_virtual_data, active_cell
+    _input_default_property: str = PrivateAttr("active_cell")
 
     _validate_figure = field_validator("figure", mode="before")(validate_captured_callable)
 

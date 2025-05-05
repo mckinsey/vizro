@@ -1,7 +1,7 @@
 from typing import Annotated, Any, Literal
 
 from dash import dcc
-from pydantic import Field
+from pydantic import Field, PrivateAttr
 from pydantic.json_schema import SkipJsonSchema
 
 from vizro.models import VizroBaseModel
@@ -39,6 +39,11 @@ class Text(VizroBaseModel):
             ),
         ]
     ]
+
+    # Default component property for actions
+    _output_default_property: str = PrivateAttr("children")
+    # LQ: Rarely used as input - shall we keep or just remove?
+    _input_default_property: str = PrivateAttr("children")
 
     @_log_call
     def build(self):

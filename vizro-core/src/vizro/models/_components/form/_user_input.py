@@ -36,8 +36,9 @@ class UserInput(VizroBaseModel):
         Field(default=[]),
     ]
 
-    # Component properties for actions and interactions
-    _input_property: str = PrivateAttr("value")
+    # Default component property for actions
+    _output_default_property: str = PrivateAttr("value")
+    _input_default_property: str = PrivateAttr("value")
 
     @_log_call
     def build(self):

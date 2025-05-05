@@ -48,7 +48,7 @@ class _parameter(_AbstractAction):
 
         for target in self._target_ids:
             component_id = target
-            component_property = cast(FigureType, model_manager[target])._output_component_property
+            component_property = cast(FigureType, model_manager[target])._output_default_property
             outputs[target] = f"{component_id}.{component_property}"
 
         return outputs

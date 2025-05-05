@@ -100,8 +100,9 @@ class RangeSlider(VizroBaseModel):
 
     _dynamic: bool = PrivateAttr(False)
 
-    # Component properties for actions and interactions
-    _input_property: str = PrivateAttr("value")
+    # Default component property for actions
+    _output_default_property: str = PrivateAttr("value")
+    _input_default_property: str = PrivateAttr("value")
 
     def __call__(self, min, max, current_value):
         output = [

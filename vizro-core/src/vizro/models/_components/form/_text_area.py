@@ -29,8 +29,9 @@ class TextArea(VizroBaseModel):
     placeholder: str = Field(default="", description="Default text to display in input field")
     actions: list[ActionType] = []
 
-    # Component properties for actions and interactions
-    _input_property: str = PrivateAttr("value")
+    # Default component property for actions
+    _output_default_property: str = PrivateAttr("value")
+    _input_default_property: str = PrivateAttr("value")
 
     # Reused validators
     # TODO: Before making public, consider how actions should be triggered and what the default property should be

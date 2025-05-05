@@ -3,7 +3,7 @@ from __future__ import annotations
 from typing import TYPE_CHECKING, Annotated, Literal
 
 import dash_bootstrap_components as dbc
-from pydantic import AfterValidator, conlist
+from pydantic import AfterValidator, PrivateAttr, conlist
 
 from vizro.models import VizroBaseModel
 from vizro.models._models_utils import _log_call
@@ -30,6 +30,11 @@ class Tabs(VizroBaseModel):
     type: Literal["tabs"] = "tabs"
     # TODO[mypy], see: https://github.com/pydantic/pydantic/issues/156 for tabs field
     tabs: conlist(Annotated[Container, AfterValidator(validate_tab_has_title)], min_length=1)  # type: ignore[valid-type]
+
+    # Default component property for actions
+    # LQ: Rarely used as input and output - shall we keep or just remove?
+    _output_default_property: str = PrivateAttr("children")
+    _input_default_property: str = PrivateAttr("active_tab")
 
     @_log_call
     def build(self):

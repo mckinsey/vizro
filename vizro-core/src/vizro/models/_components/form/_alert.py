@@ -2,7 +2,7 @@ from typing import Literal, Optional
 
 import dash_bootstrap_components as dbc
 from dash import html
-from pydantic import Field
+from pydantic import Field, PrivateAttr
 
 from vizro.models import VizroBaseModel
 from vizro.models._models_utils import _log_call
@@ -26,6 +26,10 @@ class Alert(VizroBaseModel):
     is_open: bool = Field(True, description="Flag indicating whether alert should be open by default.")
     duration: Optional[int] = Field(default=None, description="Duration in milliseconds for the alert to appear.", ge=0)
     actions: list[ActionType] = []
+
+    # Default component property for actions
+    _output_default_property: str = PrivateAttr("children")
+    _input_default_property: str = PrivateAttr("is_open")
 
     @_log_call
     def build(self):

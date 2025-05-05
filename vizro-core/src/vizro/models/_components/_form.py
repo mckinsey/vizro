@@ -3,7 +3,7 @@ from __future__ import annotations
 from typing import Annotated, Literal, Optional
 
 from dash import html
-from pydantic import AfterValidator, BeforeValidator, Field, conlist
+from pydantic import AfterValidator, BeforeValidator, Field, PrivateAttr, conlist
 
 from vizro.models import VizroBaseModel
 from vizro.models._components.form import Checklist, Dropdown, RadioItems, RangeSlider, Slider
@@ -26,6 +26,11 @@ class Form(VizroBaseModel):
     # TODO[mypy], see: https://github.com/pydantic/pydantic/issues/156 for components field
     components: conlist(Annotated[_FormComponentType, BeforeValidator(check_captured_callable_model)], min_length=1)  # type: ignore[valid-type]
     layout: Annotated[Optional[LayoutType], AfterValidator(set_layout), Field(default=None, validate_default=True)]
+
+    # Default component property for actions
+    _output_default_property: str = PrivateAttr("children")
+    # LQ: Rarely used as input - shall we keep or just remove?
+    _input_default_property: str = PrivateAttr("children")
 
     @_log_call
     def pre_build(self):

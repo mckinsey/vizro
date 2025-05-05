@@ -78,7 +78,7 @@ class _BaseAction(VizroBaseModel):
             component_id, component_property = reference.split(".")
             return component_id, component_property
         component_id = reference
-        property_name = "_input_component_property" if type == "input" else "_output_component_property"
+        property_name = "_input_default_property" if type == "input" else "_output_default_property"
         return component_id, getattr(model_manager[component_id], property_name)
 
     def _validate_dash_dependencies(self, /, dependencies, *, type: Literal["output", "input"]):
@@ -114,7 +114,7 @@ class _BaseAction(VizroBaseModel):
             for model_id in invalid_dependencies:
                 try:
                     model = model_manager[model_id]
-                    property_name = "_input_component_property" if type == "input" else "_output_component_property"
+                    property_name = "_input_default_property" if type == "input" else "_output_default_property"
                     if not hasattr(model, property_name):
                         raise ValueError(
                             f"Model '{model_id}' does not have a default {type} property defined. "
@@ -124,7 +124,7 @@ class _BaseAction(VizroBaseModel):
                     raise ValueError(
                         f"Action {type}s {invalid_dependencies} of {self._action_name} must be a string of the form "
                         "<component_name>.<component_property> or a valid model ID with a default {type} property."
-                    ) from exc  # noqa: PERF203
+                    ) from exc
 
     def _get_control_states(self, control_type: ControlType) -> list[State]:
         """Gets list of `States` for selected `control_type` that appear on page where this Action is defined."""
@@ -135,7 +135,7 @@ class _BaseAction(VizroBaseModel):
         # See also notes in filter_interaction._get_triggered_model.
         page = model_manager._get_model_page(self)
         return [
-            State(component_id=control.selector.id, component_property=control.selector._input_property)
+            State(component_id=control.selector.id, component_property=control.selector._input_default_property)
             for control in cast(Iterable[ControlType], model_manager._get_models(control_type, page))
         ]
 

@@ -4,10 +4,7 @@ from typing import Annotated, Any
 
 import dash_bootstrap_components as dbc
 from dash import dcc, html
-from pydantic import (
-    AfterValidator,
-    Field,
-)
+from pydantic import AfterValidator, Field, PrivateAttr
 from pydantic.json_schema import SkipJsonSchema
 
 from vizro.models import VizroBaseModel
@@ -55,6 +52,11 @@ class Tooltip(VizroBaseModel):
             ),
         ]
     ]
+
+    # Default component property for actions
+    _output_default_property: str = PrivateAttr("is_open")
+    # LQ: Rarely used as input - shall we keep or just remove?
+    _input_default_property: str = PrivateAttr("is_open")
 
     @_log_call
     def build(self):

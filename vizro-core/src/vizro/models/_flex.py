@@ -2,7 +2,7 @@ import re
 from typing import Literal
 
 from dash import html
-from pydantic import Field
+from pydantic import Field, PrivateAttr
 
 from vizro._constants import GAP_DEFAULT
 from vizro.models import VizroBaseModel
@@ -41,6 +41,11 @@ class Flex(VizroBaseModel):
         description="Determines whether flex items are forced onto a single line or can wrap onto multiple lines. If "
         "`False`, all items will be on one line. If `True`, items will wrap onto multiple lines. Defaults to `False`.",
     )
+
+    # Default component property for actions
+    _output_default_property: str = PrivateAttr("className")
+    # LQ: Rarely used as input - shall we keep or just remove?
+    _input_default_property: str = PrivateAttr("children")
 
     @_log_call
     def build(self):

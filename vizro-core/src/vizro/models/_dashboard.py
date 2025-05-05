@@ -22,7 +22,7 @@ from dash import (
     html,
 )
 from dash.development.base_component import Component
-from pydantic import AfterValidator, Field, ValidationInfo
+from pydantic import AfterValidator, Field, PrivateAttr, ValidationInfo
 from typing_extensions import TypedDict
 
 import vizro
@@ -100,6 +100,11 @@ class Dashboard(VizroBaseModel):
         Optional[Navigation], AfterValidator(set_navigation_pages), Field(default=None, validate_default=True)
     ]
     title: str = Field(default="", description="Dashboard title to appear on every page on top left-side.")
+
+    # Default component property for actions
+    # LQ: Rarely used as input and output - shall we keep or just remove?
+    _output_default_property: str = PrivateAttr("children")
+    _input_default_property: str = PrivateAttr("children")
 
     @_log_call
     def pre_build(self):

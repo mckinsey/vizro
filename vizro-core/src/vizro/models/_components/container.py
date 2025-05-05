@@ -4,7 +4,7 @@ from typing import Annotated, Any, Literal, Optional
 
 import dash_bootstrap_components as dbc
 from dash import ClientsideFunction, Input, Output, State, clientside_callback, html
-from pydantic import AfterValidator, BeforeValidator, Field, conlist
+from pydantic import AfterValidator, BeforeValidator, Field, PrivateAttr, conlist
 from pydantic.json_schema import SkipJsonSchema
 from pydantic_core.core_schema import ValidationInfo
 
@@ -81,6 +81,11 @@ class Container(VizroBaseModel):
             ),
         ]
     ]
+
+    # Default component property for actions
+    _output_default_property: str = PrivateAttr("children")
+    # LQ: Rarely used as input - shall we keep or just remove?
+    _input_default_property: str = PrivateAttr("children")
 
     @_log_call
     def build(self):

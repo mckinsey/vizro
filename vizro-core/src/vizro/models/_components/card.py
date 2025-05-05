@@ -48,7 +48,9 @@ class Card(VizroBaseModel):
     ]
 
     # Default component property for actions
-    _output_component_property: str = PrivateAttr("children")
+    _output_default_property: str = PrivateAttr("children")
+    # LQ: Rarely used as input - shall we keep or just remove?
+    _input_default_property: str = PrivateAttr("children")
 
     @_log_call
     def build(self):

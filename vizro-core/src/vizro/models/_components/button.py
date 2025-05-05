@@ -59,8 +59,8 @@ class Button(VizroBaseModel):
     ]
 
     # Default component property for actions
-    _output_component_property: str = PrivateAttr("children")
-    _input_component_property: str = PrivateAttr("n_clicks")
+    _output_default_property: str = PrivateAttr("children")
+    _input_default_property: str = PrivateAttr("n_clicks")
 
     @_log_call
     def build(self):

@@ -34,6 +34,11 @@ class NavLink(VizroBaseModel):
     ]
     _nav_selector: Accordion = PrivateAttr()
 
+    # Default component property for actions
+    # LQ: Rarely used as input and output - shall we keep or just remove?
+    _output_default_property: str = PrivateAttr("children")
+    _input_default_property: str = PrivateAttr("active")
+
     @_log_call
     def pre_build(self):
         from vizro.models._navigation.accordion import Accordion

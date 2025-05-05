@@ -4,7 +4,7 @@ from typing import Annotated, Literal, cast
 
 import dash_bootstrap_components as dbc
 from dash import get_relative_path
-from pydantic import AfterValidator, BeforeValidator, Field
+from pydantic import AfterValidator, BeforeValidator, Field, PrivateAttr
 
 from vizro._constants import ACCORDION_DEFAULT_TITLE
 from vizro.managers._model_manager import model_manager
@@ -39,6 +39,11 @@ class Accordion(VizroBaseModel):
         BeforeValidator(coerce_pages_type),
         Field(default={}, description="Mapping from name of a pages group to a list of page IDs."),
     ]
+
+    # Default component property for actions
+    # LQ: Rarely used as input and output - shall we keep or just remove?
+    _output_default_property: str = PrivateAttr("children")
+    _input_default_property: str = PrivateAttr("active_item")
 
     @_log_call
     def build(self, *, active_page_id=None):

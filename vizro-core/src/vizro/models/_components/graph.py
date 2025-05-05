@@ -67,8 +67,9 @@ class Graph(VizroBaseModel):
         Field(default=[]),
     ]
 
-    # Component properties for actions and interactions
-    _output_component_property: str = PrivateAttr("figure")
+    # Default component property for actions
+    _output_default_property: str = PrivateAttr("figure")
+    _input_default_property: str = PrivateAttr("clickData")
 
     _validate_figure = field_validator("figure", mode="before")(validate_captured_callable)
 
