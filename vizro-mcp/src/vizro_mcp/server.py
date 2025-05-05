@@ -12,7 +12,6 @@ from pydantic import ValidationError
 from vizro import Vizro
 
 from vizro_mcp._schemas import (
-    MODEL_GROUPS,
     AgGridEnhanced,
     ChartPlan,
     ContainerSimplified,
