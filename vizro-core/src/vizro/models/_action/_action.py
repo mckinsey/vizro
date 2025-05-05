@@ -124,7 +124,7 @@ class _BaseAction(VizroBaseModel):
                     raise ValueError(
                         f"Action {type}s {invalid_dependencies} of {self._action_name} must be a string of the form "
                         "<component_name>.<component_property> or a valid model ID with a default {type} property."
-                    ) from exc  # noqa: PERF203
+                    ) from exc
 
     def _get_control_states(self, control_type: ControlType) -> list[State]:
         """Gets list of `States` for selected `control_type` that appear on page where this Action is defined."""
