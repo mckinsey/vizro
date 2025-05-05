@@ -41,7 +41,7 @@ class Accordion(VizroBaseModel):
     ]
 
     # Default component property for actions
-    # LQ: Rarely used as input and output - shall we keep or just remove?
+    # LQ: Rarely used as output - shall we keep or just remove?
     _output_default_property: str = PrivateAttr("children")
     _input_default_property: str = PrivateAttr("active_item")
 

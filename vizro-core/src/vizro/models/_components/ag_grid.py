@@ -67,7 +67,7 @@ class AgGrid(VizroBaseModel):
     # Default component property for actions
     _output_default_property: str = PrivateAttr("children")
     # LQ: What should we choose? rowData, selectedRows, cellValueChanged?
-    _input_default_property: str = PrivateAttr("rowData")
+    _input_default_property: str = PrivateAttr("selectedRows")
 
     _validate_figure = field_validator("figure", mode="before")(validate_captured_callable)
 

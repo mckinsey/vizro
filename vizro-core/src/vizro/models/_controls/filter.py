@@ -94,8 +94,8 @@ class Filter(VizroBaseModel):
     _dynamic: bool = PrivateAttr(False)
 
     # Default component property for actions
-    # LQ: Rarely used as input and output - shall we keep or just remove?
     _output_default_property: str = PrivateAttr("children")
+    # LQ: Rarely used as input - shall we keep or just remove?
     _input_default_property: str = PrivateAttr("children")
 
     _column_type: Literal["numerical", "categorical", "temporal"] = PrivateAttr()
