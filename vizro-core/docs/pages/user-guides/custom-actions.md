@@ -76,7 +76,7 @@ When a custom action needs to interact with the dashboard, you can define `input
 You can specify both `inputs` and `outputs` in two ways:
 
 1. **Simple format**: Just use the component ID (e.g. `"my_button"`) - this uses the component's default input/output property
-2. **Explicit format**: Use the full dot notation (e.g. `"my_button.n_clicks"`) to specify a particular input/ouput property
+1. **Explicit format**: Use the full dot notation (e.g. `"my_button.n_clicks"`) to specify a particular input/ouput property
 
 For example:
 
@@ -151,6 +151,7 @@ Since both components have appropriate default properties defined, we can use th
         ```
 
         1. This is equivalent to `inputs=["my_selector.value"], outputs=["my_card.children"]`.
+
     === "app.yaml"
 
         Custom actions are currently only possible via Python configuration.
@@ -158,7 +159,6 @@ Since both components have appropriate default properties defined, we can use th
     === "Result"
 
         [![ValueAction]][valueaction]
-
 
 #### Example 2: `clickData` as input
 
@@ -218,7 +218,7 @@ Since both components have appropriate default properties defined, we can use th
         1. Just as for any Python function, the names of the arguments `show_species` and `points_data` are arbitrary and do not need to match on to the names of `inputs` in any particular way.
         1. We _bind_ (set) the argument `show_species` to the value `True` in the initial specification of the `function` field. These are static values that are fixed when the dashboard is _built_.
         1. This is equivalent to `outputs=["scatter_chart.clickData"]`. The content of `inputs` will "fill in the gaps" by setting values for the remaining unbound arguments in `my_custom_action`. Here there is one such argument, named `points_data`. Values for these are bound _dynamically at runtime_ to reflect the live state of your dashboard.
-        1. This is equivalent to `outputs=["my_card.children"]`. 
+        1. This is equivalent to `outputs=["my_card.children"]`.
 
     === "app.yaml"
 
@@ -227,7 +227,6 @@ Since both components have appropriate default properties defined, we can use th
     === "Result"
 
         [![CustomAction]][customaction]
-
 
 #### Example 3: Multiple return values
 
@@ -283,7 +282,7 @@ The return value of the custom action function is propagated to the dashboard co
 
         1. `my_custom_action` returns two values (which will be in Python tuple).
         1. We use a [`Flex`][vizro.models.Flex] layout to make sure the `Graph` and the `Cards` only occupy as much space as they need, rather than being distributed evenly.
-        1. This is equivalent to `inputs=["scatter_chart.clickData"]`.        
+        1. This is equivalent to `inputs=["scatter_chart.clickData"]`.
         1. This is equivalent to `outputs=["my_card_1.children", "my_card_2.children"]`.
 
     === "app.yaml"
