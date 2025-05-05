@@ -6,7 +6,7 @@ This guide shows you how to display text in your dashboard with the [`Text` comp
 
     The [`Card` component](card.md) and `Text` component both enable you to add text to your page using [Markdown syntax](https://markdown-guide.readthedocs.io/en/latest/) through the underlying Dash component [`dcc.Markdown`](https://dash.plotly.com/dash-core-components/markdown/).
 
-    You should use `Text` to display plain Markdown text without any additional styling like borders or background, for example to add an introductory paragraph to your page.
+    You should use `Text` to display plain Markdown text without any extra styling like borders or background, for example to add an introductory paragraph to your page.
 
     You should use `Card` to display Markdown text that needs attention drawn to it. Generally, this would be relatively short portions of text. Unlike `Text`, a `Card` can also be [used for navigation](card.md#create-a-navigation-card).
 
@@ -30,7 +30,6 @@ You can add a [`Text`][vizro.models.Text] component to your dashboard by inserti
         )
 
         dashboard = vm.Dashboard(pages=[page])
-
         Vizro().build(dashboard).run()
         ```
 
@@ -38,7 +37,7 @@ You can add a [`Text`][vizro.models.Text] component to your dashboard by inserti
 
         ```yaml
         # Still requires a .py to add data to the data manager and parse YAML configuration
-        # See from_yaml example
+        # See yaml_version example
         pages:
           - components:
               - text: Commodi repudiandae consequuntur voluptatum.
@@ -116,7 +115,6 @@ The [`Text`][vizro.models.Text] uses the `dcc.Markdown` component from Dash as i
         )
 
         dashboard = vm.Dashboard(pages=[page])
-
         Vizro().build(dashboard).run()
         ```
 
@@ -124,7 +122,7 @@ The [`Text`][vizro.models.Text] uses the `dcc.Markdown` component from Dash as i
 
         ```yaml
         # Still requires a .py to add data to the data manager and parse YAML configuration
-        # See from_yaml example
+        # See yaml_version example
         pages:
           - components:
               - title: Customizing Text
@@ -173,7 +171,7 @@ The [`Text`][vizro.models.Text] uses the `dcc.Markdown` component from Dash as i
 
 ## The `extra` argument
 
-The `Text` is based on the underlying Dash component [`dcc.Markdown`](https://dash.plotly.com/dash-core-components/markdown/). Using the `extra` argument you can pass additional arguments to `dcc.Markdown` in order to alter it beyond the chosen defaults.
+The `Text` is based on the underlying Dash component [`dcc.Markdown`](https://dash.plotly.com/dash-core-components/markdown/). Using the `extra` argument you can pass extra arguments to `dcc.Markdown` in order to alter it beyond the chosen defaults.
 
 !!! note
 
@@ -208,7 +206,6 @@ An example use would be to set `mathjax=True` (defaults to `False`) to display m
         )
 
         dashboard = vm.Dashboard(pages=[page])
-
         Vizro().build(dashboard).run()
         ```
 
@@ -216,7 +213,7 @@ An example use would be to set `mathjax=True` (defaults to `False`) to display m
 
         ```yaml
         # Still requires a .py to add data to the data manager and parse YAML configuration
-        # See from_yaml example
+        # See yaml_version example
         pages:
           - components:
               - text: |

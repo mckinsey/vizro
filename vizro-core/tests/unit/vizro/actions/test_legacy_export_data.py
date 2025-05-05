@@ -1,5 +1,3 @@
-import sys
-
 import pytest
 from dash._callback_context import context_value
 from dash._utils import AttributeDict
@@ -177,15 +175,6 @@ def ctx_export_data_filter_and_parameter(request):
 
 
 class TestExportData:
-    def test_export_data_xlsx_without_required_libs_installed(self, monkeypatch):
-        monkeypatch.setitem(sys.modules, "openpyxl", None)
-        monkeypatch.setitem(sys.modules, "xlswriter", None)
-
-        with pytest.raises(
-            ModuleNotFoundError, match="You must install either openpyxl or xlsxwriter to export to xlsx format."
-        ):
-            export_data(file_format="xlsx").pre_build()
-
     @pytest.mark.usefixtures("managers_one_page_without_graphs_one_button")
     @pytest.mark.parametrize("ctx_export_data", [([[], None, None, None])], indirect=True)
     def test_no_graphs_no_targets(self, ctx_export_data):
@@ -202,7 +191,7 @@ class TestExportData:
     @pytest.mark.parametrize("ctx_export_data", [([["scatter_chart", "box_chart"], None, None, None])], indirect=True)
     def test_graphs_no_targets(self, ctx_export_data, gapminder_2007):
         # Add action to relevant component
-        model_manager["button"].actions = [export_data(id="test_action")]
+        model_manager["button"].actions = [vm.Action(function=export_data(id="test_action"))]
         action = model_manager["test_action"]
         action.pre_build()
 
@@ -233,7 +222,7 @@ class TestExportData:
     )
     def test_graphs_false_targets(self, ctx_export_data, gapminder_2007):
         # Add action to relevant component
-        model_manager["button"].actions = [export_data(id="test_action")]
+        model_manager["button"].actions = [vm.Action(function=export_data(id="test_action"))]
         action = model_manager["test_action"]
         action.pre_build()
 
@@ -261,9 +250,11 @@ class TestExportData:
     def test_one_target(self, ctx_export_data, gapminder_2007):
         # Add action to relevant component
         model_manager["button"].actions = [vm.Action(function=export_data(id="test_action", targets=["scatter_chart"]))]
+        action = model_manager["test_action"]
+        action.pre_build()
 
         # Run action by picking the above added action function and executing it with ()
-        result = model_manager["test_action"].function(_controls=None)
+        result = action.function(_controls=None)
         expected = {
             "download_dataframe_scatter_chart": {
                 "filename": "scatter_chart.csv",
@@ -305,7 +296,10 @@ class TestExportData:
     @pytest.mark.usefixtures("managers_one_page_two_graphs_one_button")
     @pytest.mark.parametrize("ctx_export_data", [(["invalid_target_id"], None, None, None)], indirect=True)
     def test_invalid_target(self, ctx_export_data):
-        model_manager["button"].actions = [export_data(id="test_action", targets=["invalid_target_id"])]
+        # Add action to relevant component
+        model_manager["button"].actions = [
+            vm.Action(function=export_data(id="test_action", targets=["invalid_target_id"]))
+        ]
         action = model_manager["test_action"]
 
         with pytest.raises(ValueError, match="targets {'invalid_target_id'} are not valid figures on the page."):

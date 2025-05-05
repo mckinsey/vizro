@@ -11,6 +11,30 @@ See the fragment files in the [changelog.d directory](https://github.com/mckinse
 
 <!-- scriv-insert-here -->
 
+<a id='changelog-0.1.38'></a>
+
+# 0.1.38 — 2025-04-24
+
+## Added
+
+- Add `collapsed` argument to `vm.Container` to enable collapsible containers. See the [user guide on collapsible container](https://vizro.readthedocs.io/en/stable/pages/user-guides/container/#collapsible-containers) for more details. ([#1079](https://github.com/mckinsey/vizro/pull/1079))
+
+- Enable styling of `vm.Button` with a new argument `variant="plain"/"filled"/"outlined"`. See the [user guide on styled buttons](https://vizro.readthedocs.io/en/stable/pages/user-guides/button/#styled-buttons) for more details. ([#1114](https://github.com/mckinsey/vizro/pull/1114))
+
+- Add `description` argument to `Checklist`, `Dropdown`, `RadioItems`, `Slider`, `RangeSlider` and `DatePicker` to enable info-icons in selector titles. See the [user guide on info-icons](https://vizro.readthedocs.io/en/stable/pages/user-guides/selectors/#add-an-info-icon) for more details. ([#1124](https://github.com/mckinsey/vizro/pull/1124))
+
+## Changed
+
+- Update the light theme for better consistency and contrast. Right-side and card backgrounds now adapt when a `Container` with `variant="filled"` is used. ([#1048](https://github.com/mckinsey/vizro/pull/1048))
+
+- `actions` now have type `list[ActionType]` rather than `list[Action]`. ([#1054](https://github.com/mckinsey/vizro/pull/1054))
+
+## Fixed
+
+- Adjust the width and height of flex-items and grid-items dynamically based on the dimensions of their ancestor.([#1108](https://github.com/mckinsey/vizro/pull/1108))
+
+- Update styling (font style, bg-color and hover effect) of `Card`. ([#1112](https://github.com/mckinsey/vizro/pull/1112))
+
 <a id='changelog-0.1.37'></a>
 
 # 0.1.37 — 2025-04-09
@@ -23,7 +47,7 @@ See the fragment files in the [changelog.d directory](https://github.com/mckinse
 
 ## Added
 
-- Add support for additional CSS units (rem, em, %) for `row_min_height`, `row_gap`, `col_gap`, and `col_min_width` in `Layout`. ([#1050](https://github.com/mckinsey/vizro/pull/1050))
+- Add support for more CSS units (rem, em, %) for `row_min_height`, `row_gap`, `col_gap`, and `col_min_width` in `Layout`. ([#1050](https://github.com/mckinsey/vizro/pull/1050))
 
 ## Changed
 

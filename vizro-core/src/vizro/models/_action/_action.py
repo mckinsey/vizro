@@ -9,14 +9,14 @@ from typing import TYPE_CHECKING, Annotated, Any, Callable, ClassVar, Literal, U
 
 from dash import Input, Output, State, callback, html
 from dash.development.base_component import Component
-from pydantic import Field, StringConstraints, TypeAdapter, ValidationError, field_validator
+from pydantic import Field, TypeAdapter, ValidationError, field_validator
 from pydantic.json_schema import SkipJsonSchema
 from typing_extensions import TypedDict
 
 from vizro.managers._model_manager import model_manager
 from vizro.models import VizroBaseModel
 from vizro.models._models_utils import _log_call
-from vizro.models.types import CapturedCallable, ControlType, _IdProperty, validate_captured_callable
+from vizro.models.types import CapturedCallable, ControlType, DotSeparatedStr, _IdProperty, validate_captured_callable
 
 logger = logging.getLogger(__name__)
 
@@ -77,9 +77,7 @@ class _BaseAction(VizroBaseModel):
         #  title. See https://github.com/mckinsey/vizro/issues/1078.
         #  Note this is needed for inputs in both vm.Action and _AbstractAction but outputs only in _AbstractAction.
         try:
-            TypeAdapter(list[Annotated[str, StringConstraints(pattern="^[^.]+[.][^.]+$")]]).validate_python(
-                dependencies
-            )
+            TypeAdapter(list[DotSeparatedStr]).validate_python(dependencies)
         except ValidationError as exc:
             invalid_dependencies = {
                 error["input"] for error in exc.errors() if error["type"] == "string_pattern_mismatch"
@@ -116,7 +114,7 @@ class _BaseAction(VizroBaseModel):
     def _transformed_inputs(self) -> Union[list[State], dict[str, Union[State, ControlsStates]]]:
         """Creates the actual Dash States given the user-specified runtime arguments and built in ones.
 
-        Return type is list only for legacy actions. Otherwise it will always be a dictionary (unlike
+        Return type is list only for legacy actions. Otherwise, it will always be a dictionary (unlike
         for _transformed_outputs, where new behavior can still give a list). Keys are the parameter names. For
         user-specified inputs, values are Dash States. For built-in inputs, values can be more complicated nested
         structure of states.
@@ -141,7 +139,7 @@ class _BaseAction(VizroBaseModel):
         }
 
         # Validate that the runtime arguments are in the same form as the legacy Action.inputs field, so a string
-        # of the form component_id.component_property. Currently this code only runs for subclasses of
+        # of the form component_id.component_property. Currently, this code only runs for subclasses of
         # _AbstractAction but not vm.Action instances because a vm.Action that does not pass this check will
         # have already been classified as legacy in Action._legacy. In future when vm.Action.inputs is deprecated
         # then this will be used for vm.Action instances also.
@@ -156,14 +154,16 @@ class _BaseAction(VizroBaseModel):
 
     @property
     def _transformed_outputs(self) -> Union[list[Output], dict[str, Output]]:
-        """Creates the actual Dash Outputs based on self.outputs.
+        """Creates Dash Output objects from string specifications in self.outputs.
 
-        Legacy and new versions of Action just support list[Output]. _AbstractAction subclasses support
-        dict[str, Output] and list[Output].
+        Takes either a list of strings or a dictionary of strings, where each string is in the format
+        '<component_id>.<property>', and converts them into actual Dash Output objects.
+        For example, ['my_graph.figure'] becomes [Output('my_graph', 'figure', allow_duplicate=True)].
+
+        Returns:
+            Union[list[Output], dict[str, Output]]: A list of Output objects if inputs were a list of strings,
+            or a dictionary mapping keys to Output objects if inputs were a dictionary of strings.
         """
-        # TODO-AV2 D 1: enable dict for Action. Also think about where all the validation in this function should go
-        #  since it's only relevant for _AbstractAction because vm.Action models have pydantic validation built into the
-        #  field annotation.
         if isinstance(self.outputs, list):
             self._validate_dash_dependencies(self.outputs, type="output")
             callback_outputs = [Output(*output.split("."), allow_duplicate=True) for output in self.outputs]
@@ -283,9 +283,10 @@ class Action(_BaseAction):
 
     Args:
         function (CapturedCallable): Action function.
-        inputs (list[str]): Inputs in the form `<component_id>.<property>` passed to the action function.
-            Defaults to `[]`.
-        outputs (list[str]): Outputs in the form `<component_id>.<property>` changed by the action function.
+        inputs (list[DotSeparatedStr]): List of inputs provided to the action function, each specified as
+            `<component_id>.<property>`. Defaults to `[]`.
+        outputs (Union[list[DotSeparatedStr], dict[str, DotSeparatedStr]]): List or dictionary of outputs modified by
+            the action function, where each output needs to be specified as `<component_id>.<property>`.
             Defaults to `[]`.
     """
 
@@ -308,13 +309,15 @@ class Action(_BaseAction):
     ]
     # inputs is a legacy field and will be deprecated. It must only be used when _legacy = True.
     # TODO-AV2 C 1: Put in deprecation warning.
-    inputs: list[Annotated[str, StringConstraints(pattern="^[^.]+[.][^.]+$")]] = Field(
-        [],
-        description="Inputs in the form `<component_id>.<property>` passed to the action function.",
+    inputs: list[DotSeparatedStr] = Field(
+        default=[],
+        description="""List of inputs provided to the action function, each specified as `<component_id>.<property>`.
+            Defaults to `[]`.""",
     )
-    outputs: list[Annotated[str, StringConstraints(pattern="^[^.]+[.][^.]+$")]] = Field(  # type: ignore
-        [],
-        description="Outputs in the form `<component_id>.<property>` changed by the action function.",
+    outputs: Union[list[DotSeparatedStr], dict[str, DotSeparatedStr]] = Field(  # type: ignore
+        default=[],
+        description="""List or dictionary of outputs modified by the action function, where each output needs to be
+            specified as `<component_id>.<property>`. Defaults to `[]`.""",
     )
 
     @property
@@ -357,7 +360,7 @@ class Action(_BaseAction):
         # CapturedCallable.
         # Note this is a dictionary even if arguments were originally provided as positional ones, since they are
         # bound in CapturedCallable.
-        # Currently this does not use default values of function parameters. To do so, we would need to
+        # Currently, this does not use default values of function parameters. To do so, we would need to
         # use inspect.BoundArguments.apply_defaults.
         return self.function._arguments  # type:ignore[union-attr]
 

@@ -40,7 +40,6 @@ To add a [`Graph`][vizro.models.Graph] to your page, do the following:
         )
 
         dashboard = vm.Dashboard(pages=[page])
-
         Vizro().build(dashboard).run()
         ```
 
