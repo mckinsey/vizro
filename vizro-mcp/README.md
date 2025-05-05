@@ -102,8 +102,6 @@ Alternatively, you can just ask in the chat things like:
 
 > _Create a bar chart based on `<insert absolute file path or public URL>` data._
 
-
-
 ## 🔍 Transparency and trust
 
 MCP servers are a relatively new concept, and it is important to be transparent about what the tools are capable of so you can make an informed choice as a user. Overall, the Vizro MCP server only reads data, and never writes, deletes or modifies any data on your machine.
