@@ -170,6 +170,8 @@ class TestSliderInstantiation:
         assert slider.title == ""
         assert slider.description is None
         assert slider.actions == []
+        assert slider._input_default_property == "value"
+        assert slider._output_default_property == "value"
 
     @pytest.mark.parametrize("min, max", [(0, None), (None, 10), (0, 10)])
     def test_valid_min_max(self, min, max):

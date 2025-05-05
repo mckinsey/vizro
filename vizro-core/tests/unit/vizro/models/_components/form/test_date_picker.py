@@ -27,6 +27,8 @@ class TestDatePickerInstantiation:
         assert date_picker.description is None
         assert date_picker.actions == []
         assert date_picker.range is True
+        assert date_picker._input_default_property == "value"
+        assert date_picker._output_default_property == "value"
 
     def test_create_datepicker_mandatory_and_optional(self):
         date_picker = vm.DatePicker(
@@ -47,6 +49,8 @@ class TestDatePickerInstantiation:
         assert date_picker.actions == []
         assert date_picker.range is True
         assert isinstance(date_picker.description, vm.Tooltip)
+        assert date_picker._input_default_property == "value"
+        assert date_picker._output_default_property == "value"
 
     @pytest.mark.parametrize("title", ["test", """## Test header""", ""])
     def test_valid_title(self, title):

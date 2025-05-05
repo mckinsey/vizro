@@ -24,6 +24,8 @@ class TestTabsInstantiation:
         assert all(isinstance(tab, vm.Container) for tab in tabs.tabs) and len(tabs.tabs) == 2
         assert tabs.id == "tabs-id"
         assert tabs.type == "tabs"
+        assert tabs._input_default_property == "active_tab"
+        assert tabs._output_default_property == "children"
 
     def test_mandatory_tabs_missing(self):
         with pytest.raises(ValidationError, match="Field required"):
@@ -42,6 +44,11 @@ class TestTabsInstantiation:
             ValidationError, match="`Container` must have a `title` explicitly set when used inside `Tabs`."
         ):
             vm.Tabs(tabs=[vm.Container(components=[vm.Button()])])
+
+    def test_default_input_output_properties(self, dash_data_table_with_id):
+        table = vm.Table(figure=dash_data_table_with_id, title="Gapminder")
+        assert table._input_default_property == "selected_rows"
+        assert table._output_default_property == "children"
 
 
 class TestTabsBuildMethod:
