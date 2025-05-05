@@ -13,8 +13,40 @@ from vizro.models.types import capture
 from vizro.tables import dash_ag_grid, dash_data_table
 from vizro.figures import kpi_card
 
+from typing import Literal
+
+import dash_bootstrap_components as dbc
+import vizro.models as vm
+import vizro.plotly.express as px
+from dash import html
+from vizro import Vizro
+
+from vizro.models.types import capture
+
 
 df = px.data.iris()
+
+
+# 1. Create new custom component
+class OffCanvas(vm.VizroBaseModel):
+    type: Literal["offcanvas"] = "offcanvas"
+    title: str
+    content: str
+
+    def build(self):
+        return html.Div(
+            [
+                dbc.Offcanvas(
+                    children=html.P(self.content),
+                    id=self.id,
+                    title=self.title,
+                    is_open=False,
+                ),
+            ]
+        )
+
+
+vm.Page.add_type("components", OffCanvas)
 
 
 @capture("action")
@@ -24,9 +56,14 @@ def action_function(button_number_of_clicks):
     return title, is_open
 
 
-# ======= Page Smoke Test =======
+@capture("action")
+def open_offcanvas(n_clicks, is_open):
+    if n_clicks:
+        return not is_open
+    return is_open
 
-page_smoke_test = vm.Page(
+
+page_one = vm.Page(
     title="Page Smoke Title",
     components=[
         vm.Button(
@@ -60,7 +97,30 @@ page_smoke_test = vm.Page(
     ],
 )
 
-dashboard = vm.Dashboard(pages=[page_smoke_test])
+page_two = vm.Page(
+    title="Custom Component",
+    components=[
+        vm.Button(
+            text="Open Offcanvas",
+            id="open_button",
+            actions=[
+                vm.Action(
+                    function=open_offcanvas(),
+                    inputs=["open_button", "offcanvas.is_open"],
+                    outputs=["offcanvas.is_open"],
+                )
+            ],
+        ),
+        OffCanvas(
+            id="offcanvas",
+            content="OffCanvas content",
+            title="Offcanvas Title",
+        ),
+    ],
+)
+
+
+dashboard = vm.Dashboard(pages=[page_one, page_two])
 
 if __name__ == "__main__":
     Vizro().build(dashboard).run()
