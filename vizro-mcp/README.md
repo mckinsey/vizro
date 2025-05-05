@@ -35,7 +35,9 @@ Once you have installed the MCP host application, you need to configure the Vizr
 
 **For Claude**: Add the following to your `claude_desktop_config.json` [found via Developer Settings](https://modelcontextprotocol.io/quickstart/user#2-add-the-filesystem-mcp-server).
 
-**For Cursor**: Add the following to `mcp.json` [found via the Cursor Settings](https://docs.cursor.com/context/model-context-protocol#configuration-locations):
+**For Cursor**: Add the following to `mcp.json` [found via the Cursor Settings](https://docs.cursor.com/context/model-context-protocol#configuration-locations).
+
+Different AI tools may use different setup methods or connection settings. Check each tool's docs for details.
 
 ```json
 {
