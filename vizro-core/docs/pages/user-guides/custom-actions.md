@@ -251,6 +251,78 @@ The return value of the custom action function is propagated to the dashboard co
 
     Note that users of this package are responsible for the content of any custom action function that they write. Take care to avoid leaking any sensitive information or exposing to any security threat during implementation. You should always [treat the content of user input as untrusted](https://community.plotly.com/t/writing-secure-dash-apps-community-thread/54619).
 
+### Explicit format examples
+
+The explicit format is required in two cases:
+
+1. When you need to use a property that differs from the component's default (see the list of default input and output properties above)
+1. When using a custom component that hasn't defined default properties
+
+This is done using the full dot notation: `"component_id.property"`.
+
+In the example below, we want to toggle the Dropdown's disabled state when the button is clicked. Since the Dropdown's default output property is `value` (as shown in the [default properties table](#default-inputoutput-properties)), but we want to modify its `disabled` property instead, we must use the explicit format: `"dropdown.disabled"`.
+
+!!! example "Using explicit format with `disabled` property"
+
+    === "app.py"
+
+        ```{.python pycafe-link}
+        import vizro.models as vm
+        import vizro.plotly.express as px
+        from vizro import Vizro
+        from vizro.models.types import capture
+
+        vm.Page.add_type("components", vm.Dropdown)
+
+        df = px.data.iris()
+
+        @capture("action")
+        def toggle_dropdown(is_disabled: bool):
+            """Toggle dropdown's disabled state."""
+            return not is_disabled
+
+        page = vm.Page(
+            title="Explicit format example",
+            components=[
+                vm.Button(
+                    id="toggle_button",
+                    text="Toggle Dropdown",
+                    actions=[
+                        vm.Action(
+                            function=toggle_dropdown(),
+                            # We need to use explicit format here because we want to read the disabled state
+                            inputs=["dropdown.disabled"],
+                            outputs=["dropdown.disabled"],
+                        )
+                    ],
+                ),
+                vm.Dropdown(
+                    id="dropdown",
+                    title="Select a species:",
+                    options=df["species"].unique().tolist(),
+                    disabled=True,  # Start disabled
+                ),
+            ],
+        )
+
+        dashboard = vm.Dashboard(pages=[page])
+        Vizro().build(dashboard).run()
+        ```
+
+        1. We use explicit format `dropdown.disabled` because we need to read and write to the `disabled` property, which is not the default input/output property for Dropdown (its default is `value`).
+
+    === "app.yaml"
+
+        ```yaml
+        null
+        ...
+        ```
+
+    === "Result"
+
+        [![ExplicitFormat]][explicitformat]
+
 [customaction]: ../../assets/user_guides/custom_actions/clickdata_as_input.png
 [customaction2]: ../../assets/user_guides/custom_actions/custom_action_multiple_return_values.png
+[explicitformat]: ../../assets/user_guides/custom_actions/explicit_format.png
 [valueaction]: ../../assets/user_guides/custom_actions/value_as_input.png

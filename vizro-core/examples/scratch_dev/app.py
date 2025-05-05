@@ -1,17 +1,6 @@
-# Vizro is an open-source toolkit for creating modular data visualization applications.
-# check out https://github.com/mckinsey/vizro for more info about Vizro
-# and checkout https://vizro.readthedocs.io/en/stable/ for documentation.
-
 """Dev app to try things out."""
 
-import time
-
-import vizro.plotly.express as px
-from vizro import Vizro
-import vizro.models as vm
-from vizro.models.types import capture
-from vizro.tables import dash_ag_grid, dash_data_table
-from vizro.figures import kpi_card
+from vizro.tables import dash_ag_grid
 
 from typing import Literal
 
@@ -47,6 +36,7 @@ class OffCanvas(vm.VizroBaseModel):
 
 
 vm.Page.add_type("components", OffCanvas)
+vm.Page.add_type("components", vm.Dropdown)
 
 
 @capture("action")
@@ -61,6 +51,12 @@ def open_offcanvas(n_clicks, is_open):
     if n_clicks:
         return not is_open
     return is_open
+
+
+@capture("action")
+def toggle_dropdown(is_disabled: bool):
+    """Toggle dropdown's disabled state."""
+    return not is_disabled
 
 
 page_one = vm.Page(
@@ -120,7 +116,31 @@ page_two = vm.Page(
 )
 
 
-dashboard = vm.Dashboard(pages=[page_one, page_two])
+page_three = vm.Page(
+    title="Explicit format example",
+    components=[
+        vm.Button(
+            id="toggle_button",
+            text="Toggle Dropdown",
+            actions=[
+                vm.Action(
+                    function=toggle_dropdown(),
+                    # We need to use explicit format here because we want to read the disabled state
+                    inputs=["dropdown.disabled"],
+                    outputs=["dropdown.disabled"],
+                )
+            ],
+        ),
+        vm.Dropdown(
+            id="dropdown",
+            title="Select a species:",
+            options=df["species"].unique().tolist(),
+        ),
+    ],
+)
+
+
+dashboard = vm.Dashboard(pages=[page_one, page_two, page_three])
 
 if __name__ == "__main__":
     Vizro().build(dashboard).run()
