@@ -3,6 +3,17 @@
 from typing import Any
 
 import pytest
+import vizro.models as vm
+from vizro_mcp._schemas import (
+    AgGridEnhanced,
+    ContainerSimplified,
+    DashboardSimplified,
+    FilterSimplified,
+    GraphEnhanced,
+    PageSimplified,
+    ParameterSimplified,
+    TabsSimplified,
+)
 from vizro_mcp._utils import IRIS
 from vizro_mcp.server import (
     DFMetaData,
@@ -298,23 +309,33 @@ chart_code
 class TestGetModelJsonSchema:
     """Tests for the get_model_json_schema tool."""
 
-    def test_get_standard_model_schema(self) -> None:
-        """Test getting schema for a standard model."""
-        schema = get_model_json_schema("Card")
+    @pytest.mark.parametrize(
+        "model_name, model_class",
+        [
+            # Standard models from vizro.models
+            ("Card", vm.Card),
+            # Simplified models from vizro_mcp._schemas
+            ("Dashboard", DashboardSimplified),
+            ("Page", PageSimplified),
+            ("Container", ContainerSimplified),
+            ("Tabs", TabsSimplified),
+            ("Filter", FilterSimplified),
+            ("Parameter", ParameterSimplified),
+            # Enhanced models from vizro_mcp._schemas
+            ("Graph", GraphEnhanced),
+            ("AgGrid", AgGridEnhanced),
+            ("Table", AgGridEnhanced),
+        ],
+    )
+    def test_model_json_schema(self, model_name: str, model_class: type) -> None:
+        """Test getting JSON schema for various models."""
+        schema = get_model_json_schema(model_name=model_name)
 
-        assert isinstance(schema, dict)
-        assert "$defs" in schema or "properties" in schema
-        assert "text" in schema["properties"]
-        assert schema["properties"]["text"]["type"] == "string"
+        # Get the schema directly from the model class
+        expected_schema = model_class.model_json_schema()
 
-    def test_get_simplified_model_schema(self) -> None:
-        """Test getting schema for a simplified model."""
-        schema = get_model_json_schema("Dashboard")
-
-        assert isinstance(schema, dict)
-        assert "properties" in schema
-        assert "title" in schema["properties"]
-        assert "pages" in schema["properties"]
+        # Compare the schemas
+        assert schema == expected_schema
 
     def test_nonexistent_model(self) -> None:
         """Test getting schema for a nonexistent model."""
