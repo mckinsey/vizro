@@ -1,73 +1,76 @@
-# How to install Vizro
+# Installation Guide for Vizro
 
-Thanks to [PyCafe](https://py.cafe/) you can create Vizro dashboards without installing Vizro locally, as you can see from the [first dashboard tutorial](../tutorials/first-dashboard.md) (you can find out more about [working with PyCafe and Vizro](https://py.cafe/docs/apps/vizro) from the PyCafe documentation).
+## Overview
 
-If you prefer to work locally, this guide shows you how to install Vizro, how to verify the installation succeeded and find the version of Vizro, and how to update Vizro.
+Welcome to Vizro! 👋 This guide will help you get started with installing and setting up Vizro for building interactive dashboards.
 
-We recommend that you create a virtual environment for each Vizro project you work on to isolate its Python dependencies from other projects. If you already have a virtual environment you can skip the next section and [install Vizro](#install-vizro). Otherwise, read on!
+You can use [PyCafe](https://py.cafe/) to work with Vizro without installing it, as demonstrated in the [first dashboard tutorial](../tutorials/first-dashboard.md). Using PyCafe is a great way to try out Vizro quickly. For more information, see the [PyCafe documentation](https://py.cafe/docs/apps/vizro).
 
-## Prerequisites to working locally
+If you prefer to work locally, this guide will walk you through installing Vizro onto your machine. We'll also cover how to verify your installation and keep Vizro up to date.
 
-- **Python**: Vizro supports macOS, Linux, and Windows. It works with Python 3.9 and later.
-- **Virtual environment**: You specify the version of Python to use with Vizro when you set up the virtual environment. See the following references to learn more about [Python virtual environments](https://realpython.com/python-virtual-environments-a-primer/), [Conda virtual environments](https://docs.conda.io/projects/conda/en/latest/user-guide/getting-started.html#starting-conda) or [watch an explainer video about them](https://youtu.be/YKfAwIItO7M).
+## Prerequisites
 
-### How to create a virtual environment for your Vizro project
+Before installing Vizro, you'll need:
 
-The simplest way to create a virtual environment in Python is `venv`, which is included in the Python standard library. Create a directory for your project and navigate to it. For example:
+- Python 3.9 or later
+- A virtual environment (recommended)
 
-```bash
-mkdir vizro-project
-cd vizro-project
-```
+**For Python installation and virtual environment setup, refer to:**
 
-Next, create and activate a new virtual environment in this directory with `venv`:
+- [Official Python Installation Guide](https://www.python.org/downloads/) - The best place to start if you're new to Python.
+- [Python Packaging Guide](https://packaging.python.org/en/latest/tutorials/installing-packages/#requirements-for-installing-packages) - Comprehensive guide on Python package management.
+- [Anaconda](https://docs.conda.io/en/latest/) - A popular choice for Python installation and virtual environment management.
+- [uv](https://github.com/astral-sh/uv) - A modern, fast Python package installer and resolver.
 
-```bash
-python3 -m venv .venv
-source .venv/bin/activate
-```
+!!! warning "Use a virtual environment"
 
-You might like to use [`conda` as your virtual environment manager](https://docs.conda.io/projects/conda/en/latest/user-guide/install/). Once installed, you can create and activate a virtual environment from the terminal as follows:
+    We strongly recommend using a virtual environment when working with Python packages to avoid dependency conflicts and keep your system Python clean. See the [Python Packaging Guide for more information about creating virtual environments](https://packaging.python.org/en/latest/tutorials/installing-packages/#creating-and-using-virtual-environments).
 
-```bash
-conda create --name vizro-environment
-conda activate vizro-environment
-```
+## Installing Vizro
 
-## Install Vizro
-
-To install Vizro, use [`pip`](https://pip.pypa.io/en/stable/) in your terminal window:
+### Using pip
 
 ```bash
 pip install vizro
 ```
 
-## Confirm a successful installation
+### Using uv
 
-To confirm the installation was successful and verify the version of Vizro installed, call the following. You can do this from within a Jupyter Notebook cell, or run the following as a Python script:
+```bash
+uv pip install vizro
+```
 
-```py
+## Verifying the Installation
+
+To make sure everything is working correctly, you can verify your installation and check the installed version:
+
+```python
 import vizro
 
 print(vizro.__version__)
 ```
 
-You should see a return output of the form `x.y.z`.
+You should see the version number displayed (e.g., `0.1.0`).
 
-## Upgrade
+## Upgrading
 
-Check the [release notes](https://github.com/mckinsey/vizro/blob/main/vizro-core/CHANGELOG.md) for any notable breaking changes before migrating an existing project.
-
-To change the version of Vizro installed:
+When new versions of Vizro are released, you can upgrade to use them with:
 
 ```bash
 pip install -U vizro
 ```
 
-## Plugins
+!!! note "Check Release Notes"
+
+    Before upgrading, we recommend checking the [release notes](https://github.com/mckinsey/vizro/blob/main/vizro-core/CHANGELOG.md) for any breaking changes that might affect your existing dashboards.
+
+## IDE Support
 
 !!! tip "Enable IDE autocompletion"
 
-    Vizro is heavily based on [pydantic](https://docs.pydantic.dev/latest/). In order to enable autocompletion when configuring Vizro models, you can use the pydantic [plugin for VS Code](https://docs.pydantic.dev/latest/integrations/visual_studio_code/) or [for PyCharm](https://docs.pydantic.dev/latest/integrations/pycharm/).
+    Vizro uses [pydantic](https://docs.pydantic.dev/latest/) for configuration, which means you can get IDE support. To enable autocompletion and type hints, install:
+
+    - [VS Code plugin](https://docs.pydantic.dev/latest/integrations/visual_studio_code/)
+    - [PyCharm plugin](https://docs.pydantic.dev/latest/integrations/pycharm/)
 
 ![logo](../../assets/user_guides/install/logo_watermark_extended.svg){width="250"}
