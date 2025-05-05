@@ -29,38 +29,53 @@ In principle, the Vizro MCP server works with _any_ MCP enabled LLM applications
 
 > ⚠️ **Warning:** In some hosts (like Claude Desktop) the free plan might be less performant, which may cause issues when the request is too complex. In cases where the request causes the UI to crash, opt for using a paid plan, or reduce your request's complexity.
 
-### Installation
+<!-- Tabs for Claude and Cursor setup instructions -->
 
-Once you have installed the MCP host application, you need to configure the Vizro MCP server details.
+=== "Claude"
 
-**For Claude**: Add the following to your `claude_desktop_config.json` [found via Developer Settings](https://modelcontextprotocol.io/quickstart/user#2-add-the-filesystem-mcp-server).
+    **For Claude**: Add the following to your `claude_desktop_config.json` [found via Developer Settings](https://modelcontextprotocol.io/quickstart/user#2-add-the-filesystem-mcp-server).
 
-**For Cursor**: Add the following to `mcp.json` [found via the Cursor Settings](https://docs.cursor.com/context/model-context-protocol#configuration-locations).
-
-Different AI tools may use different setup methods or connection settings. Check each tool's docs for details.
-
-```json
-{
-  "mcpServers": {
-    "vizro-mcp": {
-      "command": "uvx",
-      "args": [
-        "vizro-mcp"
-      ]
+    ```json
+    {
+      "mcpServers": {
+        "vizro-mcp": {
+          "command": "uvx",
+          "args": [
+            "vizro-mcp"
+          ]
+        }
+      }
     }
-  }
-}
-```
+    ```
 
-> ⚠️ **Warning:** In some cases you may need to provide the full path to your `uv` executable, so instead of `uv` would use something like `/Users/<your-username>/.local/bin/uv`. To discover the path of `uv` on your machine, in your terminal app, type `which uv`.
+    > ⚠️ **Warning:** In some cases you may need to provide the full path to your `uv` executable, so instead of `uv` would use something like `/Users/<your-username>/.local/bin/uv`. To discover the path of `uv` on your machine, in your terminal app, type `which uv`.
 
-If you are using Claude Desktop, restart it, and after a few moments, you should see the vizro-mcp menu when opening the settings/context menu:
+    If you are using Claude Desktop, restart it, and after a few moments, you should see the vizro-mcp menu when opening the settings/context menu:
 
-<img src="assets/claude_working.png" alt="Claude Desktop MCP Server Icon" width="150"/>
+    <img src="assets/claude_working.png" alt="Claude Desktop MCP Server Icon" width="150"/>
 
-Similarly, when using Cursor, after a short pause, you should see a green light in the MCP menu:
+=== "Cursor"
 
-<img src="assets/cursor_working.png" alt="Claude Desktop MCP Server Icon" width="400"/>
+    **For Cursor**: Add the following to `mcp.json` [found via the Cursor Settings](https://docs.cursor.com/context/model-context-protocol#configuration-locations).
+
+    ```json
+    {
+      "mcpServers": {
+        "vizro-mcp": {
+          "command": "uvx",
+          "args": [
+            "vizro-mcp"
+          ]
+        }
+      }
+    }
+    ```
+
+    > ⚠️ **Warning:** In some cases you may need to provide the full path to your `uv` executable, so instead of `uv` would use something like `/Users/<your-username>/.local/bin/uv`. To discover the path of `uv` on your machine, in your terminal app, type `which uv`.
+
+    Similarly, when using Cursor, after a short pause, you should see a green light in the MCP menu:
+
+    <img src="assets/cursor_working.png" alt="Cursor MCP Server Icon" width="400"/>
 
 ## 💻 Usage
 
