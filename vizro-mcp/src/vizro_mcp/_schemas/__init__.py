@@ -9,6 +9,8 @@ from .schemas import (
     PageSimplified,
     ParameterSimplified,
     TabsSimplified,
+    get_overview_vizro_models,
+    get_simple_dashboard_config,
 )
 
 __all__ = [
@@ -22,4 +24,6 @@ __all__ = [
     "PageSimplified",
     "ParameterSimplified",
     "TabsSimplified",
+    "get_overview_vizro_models",
+    "get_simple_dashboard_config",
 ]

@@ -22,6 +22,8 @@ from vizro_mcp._schemas import (
     PageSimplified,
     ParameterSimplified,
     TabsSimplified,
+    get_overview_vizro_models,
+    get_simple_dashboard_config,
 )
 from vizro_mcp._utils import (
     GAPMINDER,
@@ -189,27 +191,6 @@ def get_model_json_schema(model_name: str) -> dict[str, Any]:
 
 
 @mcp.tool()
-def get_overview_vizro_models() -> dict[str, list[dict[str, str]]]:
-    """Get all available models in the vizro.models namespace.
-
-    Returns:
-        Dictionary with categories of models and their descriptions
-    """
-    # Convert the model_groups dict to a dict with just names and descriptions
-    result: dict[str, list[dict[str, str]]] = {}
-    for category, models_list in MODEL_GROUPS.items():
-        result[category] = [
-            {
-                "name": model_class.__name__,
-                "description": (model_class.__doc__ or "No description available").split("\n")[0],
-            }
-            for model_class in models_list
-        ]
-
-    return result
-
-
-@mcp.tool()
 def get_vizro_chart_or_dashboard_plan(user_plan: Literal["chart", "dashboard"]) -> str:
     """Get instructions for creating a Vizro chart or dashboard. Call FIRST when asked to create Vizro things."""
     if user_plan == "chart":
@@ -230,7 +211,7 @@ Instructions for creating a Vizro chart:
     - do NOT call any other tool after, especially do NOT create a dashboard
             """
     elif user_plan == "dashboard":
-        return """
+        return f"""
 IMPORTANT:
     - KEEP IT SIMPLE: rather than iterating yourself, ask the user for more instructions
     - ALWAYS VALIDATE:if you iterate over a valid produced solution, make sure to ALWAYS call the
@@ -241,19 +222,24 @@ IMPORTANT:
 
 
 Instructions for creating a Vizro dashboard:
-    - IF the user has no plan (ie no components or pages), use the get_simple_dashboard_config tool
+    - IF the user has no plan (ie no components or pages), use the config at the bottom of this prompt
         and validate that solution without any additions, OTHERWISE:
     - analyze the datasets needed for the dashboard using the load_and_analyze_data tool - the most
         important information here are the column names and column types
     - if the user provides no data, but you need to display a chart or table, use the get_sample_data_info
         tool to get sample data information
-    - call the get_overview_vizro_models tool to get an overview of the available models
     - make a plan of what components you would like to use, then request all necessary schemas
         using the get_model_json_schema tool
     - assemble your components into a page, then add the page or pages to a dashboard, DO NOT show config or code
         to the user until you have validated the solution
     - ALWAYS validate the dashboard configuration using the validate_model_config tool
     - if you display any code artifact, you must use the above created code, do not add new config to it
+
+Models you can use:
+{get_overview_vizro_models()}
+
+Very simple dashboard config:
+{get_simple_dashboard_config()}
     """
 
 
@@ -302,12 +288,6 @@ def load_and_analyze_data(path_or_url: str) -> DataAnalysisResults:
     )
 
     return DataAnalysisResults(valid=True, message="Data loaded successfully", df_info=df_info, df_metadata=df_metadata)
-
-
-@mcp.tool()
-def get_simple_dashboard_config() -> str:
-    """Very simple Vizro dashboard configuration. Use this config as a starter when no other config is provided."""
-    return SAMPLE_DASHBOARD_CONFIG
 
 
 @mcp.prompt()

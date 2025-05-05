@@ -5,7 +5,7 @@ from typing import Annotated, Any, Literal, Optional
 import vizro.models as vm
 from pydantic import AfterValidator, BaseModel, Field, PrivateAttr, conlist
 
-from vizro_mcp._utils import DFMetaData
+from vizro_mcp._utils import SAMPLE_DASHBOARD_CONFIG, DFMetaData
 
 # Constants used in chart validation
 CUSTOM_CHART_NAME = "custom_chart"
@@ -272,3 +272,26 @@ Vizro().build(dashboard).run()
 """
 
         return dashboard_template
+
+
+def get_overview_vizro_models() -> dict[str, list[dict[str, str]]]:
+    """Get all available models in the vizro.models namespace.
+
+    Returns:
+        Dictionary with categories of models and their descriptions
+    """
+    result: dict[str, list[dict[str, str]]] = {}
+    for category, models_list in MODEL_GROUPS.items():
+        result[category] = [
+            {
+                "name": model_class.__name__,
+                "description": (model_class.__doc__ or "No description available").split("\n")[0],
+            }
+            for model_class in models_list
+        ]
+    return result
+
+
+def get_simple_dashboard_config() -> str:
+    """Very simple Vizro dashboard configuration. Use this config as a starter when no other config is provided."""
+    return SAMPLE_DASHBOARD_CONFIG
