@@ -241,7 +241,7 @@ def create_pycafe_url(python_code: str) -> str:
     # Create JSON object for py.cafe
     json_object = {
         "code": python_code,
-        "requirements": "vizro>=0.1.38",
+        "requirements": "vizro==0.1.38",
         "files": [],
     }
 
