@@ -383,7 +383,6 @@ def validate_chart_code(
     else:
         dashboard_code = chart_plan_obj.get_dashboard_template(data_info=data_info)
 
-
         # Generate PyCafe URL if all data is remote
         pycafe_url = create_pycafe_url(dashboard_code) if data_info.file_location_type == "remote" else None
         browser_opened = False
