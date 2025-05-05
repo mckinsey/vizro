@@ -41,6 +41,8 @@ class TestGraphInstantiation:
         assert graph.type == "graph"
         assert graph.figure == standard_px_chart._captured_callable
         assert graph.actions == []
+        assert graph._input_default_property == "clickData"
+        assert graph._output_default_property == "figure"
 
     @pytest.mark.parametrize("id", ["id_1", "id_2"])
     def test_create_graph_mandatory_and_optional(self, standard_px_chart, id):
@@ -49,6 +51,9 @@ class TestGraphInstantiation:
         assert graph.id == id
         assert graph.type == "graph"
         assert graph.figure == standard_px_chart._captured_callable
+        assert graph.actions == []
+        assert graph._input_default_property == "clickData"
+        assert graph._output_default_property == "figure"
 
     def test_mandatory_figure_missing(self):
         with pytest.raises(ValidationError, match="Field required"):
@@ -135,7 +140,6 @@ class TestAttributesGraph:
         graph = vm.Graph(figure=standard_px_chart)
         assert hasattr(graph, "_filter_interaction_input")
         assert "modelID" in graph._filter_interaction_input
-
 
 class TestProcessGraphDataFrame:
     def test_process_figure_data_frame_str_df(self, standard_px_chart_with_str_dataframe, gapminder):

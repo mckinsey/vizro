@@ -21,11 +21,15 @@ class TestAccordionInstantiation:
 
         assert hasattr(accordion, "id")
         assert accordion.pages == {}
+        assert accordion._input_default_property == "active_item"
+        assert accordion._output_default_property == "children"
 
     def test_mandatory_and_optional(self, pages_as_dict):
         accordion = vm.Accordion(id="accordion", pages=pages_as_dict)
         assert hasattr(accordion, "id")
         assert accordion.pages == pages_as_dict
+        assert accordion._input_default_property == "active_item"
+        assert accordion._output_default_property == "children"
 
     def test_valid_pages_as_list(self, pages_as_list):
         accordion = vm.Accordion(pages=pages_as_list)

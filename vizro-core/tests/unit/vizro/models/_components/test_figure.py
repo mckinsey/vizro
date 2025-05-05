@@ -29,6 +29,8 @@ class TestFigureInstantiation:
         assert hasattr(figure, "id")
         assert figure.type == "figure"
         assert figure.figure == standard_kpi_card
+        assert figure._input_default_property == "children"
+        assert figure._output_default_property == "children"
 
     def test_captured_callable_invalid(self, standard_go_chart):
         with pytest.raises(

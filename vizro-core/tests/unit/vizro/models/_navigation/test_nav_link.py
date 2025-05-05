@@ -23,6 +23,8 @@ class TestNavLinkInstantiation:
         assert nav_link.label == "Label"
         assert nav_link.icon == ""
         assert nav_link.pages == []
+        assert nav_link._input_default_property == "active"
+        assert nav_link._output_default_property == "children"
 
     def test_nav_link_mandatory_and_optional(self, pages_as_list):
         nav_link = vm.NavLink(id="nav_link", icon="home", label="Homepage", pages=pages_as_list)
@@ -31,6 +33,8 @@ class TestNavLinkInstantiation:
         assert nav_link.label == "Homepage"
         assert nav_link.icon == "home"
         assert nav_link.pages == pages_as_list
+        assert nav_link._input_default_property == "active"
+        assert nav_link._output_default_property == "children"
 
     @pytest.mark.parametrize("icon", ["Bar Chart", "bar chart", "bar_chart", "Bar_Chart", " bar_chart "])
     def test_validate_icon(self, icon):
