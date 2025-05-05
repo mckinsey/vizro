@@ -34,7 +34,7 @@ In principle, the Vizro MCP server works with _any_ MCP enabled LLM applications
 <details>
 <summary><strong>Claude</strong></summary>
 
-**For Claude**: Add the following to your `claude_desktop_config.json` [found via Developer Settings](https://modelcontextprotocol.io/quickstart/user#2-add-the-filesystem-mcp-server).
+Add the following to your `claude_desktop_config.json` [found via Developer Settings](https://modelcontextprotocol.io/quickstart/user#2-add-the-filesystem-mcp-server).
 
 ```json
 {
@@ -60,7 +60,7 @@ If you are using Claude Desktop, restart it, and after a few moments, you should
 <details>
 <summary><strong>Cursor</strong></summary>
 
-**For Cursor**: Add the following to `mcp.json` [found via the Cursor Settings](https://docs.cursor.com/context/model-context-protocol#configuration-locations).
+Add the following to `mcp.json` [found via the Cursor Settings](https://docs.cursor.com/context/model-context-protocol#configuration-locations).
 
 ```json
 {
@@ -82,6 +82,8 @@ Similarly, when using Cursor, after a short pause, you should see a green light 
 <img src="assets/cursor_working.png" alt="Cursor MCP Server Icon" width="400"/>
 
 </details>
+
+In principle, the Vizro MCP server works with _any_ MCP enabled LLM applications but we recommend Claude Desktop or Cursor as popular choices. Different AI tools may use different setup methods or connection settings. Check each tool's docs for details.
 
 ## 💻 Usage
 
