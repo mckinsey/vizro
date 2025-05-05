@@ -14,13 +14,14 @@ from vizro.tables import dash_ag_grid, dash_data_table
 from vizro.figures import kpi_card
 
 
-df = px.data.iris().head(3)
+df = px.data.iris()
 
 
 @capture("action")
-def action_function(button_number_of_clicks, num_of_outputs):
+def action_function(button_number_of_clicks):
     title = f"Button clicked {button_number_of_clicks} times."
-    return [title] * num_of_outputs
+    is_open = True if button_number_of_clicks % 2 == 0 else False
+    return title, is_open
 
 
 # ======= Page Smoke Test =======
@@ -33,13 +34,13 @@ page_smoke_test = vm.Page(
             text="Click me",
             actions=[
                 vm.Action(
-                    function=action_function(num_of_outputs=1),
+                    function=action_function(),
                     # This is how we had to define it before:
                     # inputs=["trigger-button-smoke-id.n_clicks"],
                     # outputs=["card-id.children"],
                     # Now we can just do this:
                     inputs=["trigger-button"],
-                    outputs=["card-id"],
+                    outputs=["card-id", "tooltip-id"],
                 )
             ],
         ),
@@ -47,6 +48,15 @@ page_smoke_test = vm.Page(
             id="card-id",
             text="Click the button to update me",
         ),
+        vm.AgGrid(figure=dash_ag_grid(df)),
+    ],
+    controls=[
+        vm.Filter(
+            column="species",
+            selector=vm.Dropdown(
+                title="Species", description=vm.Tooltip(text="This is a tooltip", icon="info", id="tooltip-id")
+            ),
+        )
     ],
 )
 

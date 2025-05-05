@@ -120,7 +120,7 @@ class _BaseAction(VizroBaseModel):
                             f"Model '{model_id}' does not have a default {type} property defined. "
                             f"Please specify the property explicitly as '{model_id}.<property>'."
                         )
-                except KeyError:
+                except KeyError:  # noqa: PERF203
                     raise ValueError(
                         f"Action {type}s {invalid_dependencies} of {self._action_name} must be a string of the form "
                         "<component_name>.<component_property> or a valid model ID with a default {type} property."
