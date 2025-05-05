@@ -311,7 +311,7 @@ def get_simple_dashboard_config() -> str:
 
 
 @mcp.prompt()
-def get_started_with_vizro():
+def create_starter_dashboard():
     """Prompt template for getting started with Vizro."""
     content = f"""
 Create a super simple Vizro dashboard with one page and one chart and one filter:
@@ -398,8 +398,8 @@ def validate_chart_code(
         return ValidationResults(
             valid=True,
             message="Chart only dashboard created successfully!",
-            python_code=dashboard_code,
-            pycafe_url=chart_plan_obj.get_chart_code(vizro=True),
+            python_code=chart_plan_obj.get_chart_code(vizro=True),
+            pycafe_url=pycafe_url,
             browser_opened=browser_opened,
         )
 

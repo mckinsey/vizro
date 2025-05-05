@@ -70,7 +70,7 @@ Prompt templates are not available in all MCP hosts, but when they are, you can 
 
 <img src="assets/claude_prompt.png" alt="Claude Desktop MCP Server Icon" width="300"/>
 
-The **easiest** way to get started with Vizro dashboards is to choose the template `get_started_with_vizro` and just send the prompt. This will create a super simple dashboard with one page, one chart, and one filter. Take it from there!
+The **easiest** way to get started with Vizro dashboards is to choose the template `create_starter_dashboard` and just send the prompt. This will create a super simple dashboard with one page, one chart, and one filter. Take it from there!
 
 ### Create a Vizro dashboard based on local or remote data
 
@@ -126,7 +126,7 @@ The Vizro MCP server provides the following tools. In general you should not nee
 
 ## Available Prompts (if client allows)
 
-- `get_started_with_vizro` - Use this prompt template to get started with Vizro dashboards.
+- `create_starter_dashboard` - Use this prompt template to get started with Vizro dashboards.
 - `create_EDA_dashboard` - Use this prompt template to create an Exploratory Data Analysis (EDA) dashboard based on a local or remote CSV dataset
 - `create_vizro_chart` - Use this prompt template to create a Vizro styled plotly chart based on a local or remote CSV dataset
 
