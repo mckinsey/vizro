@@ -19,6 +19,8 @@ class TestNavigationInstantiation:
         assert hasattr(navigation, "id")
         assert navigation.pages == []
         assert navigation.nav_selector is None
+        assert navigation._input_default_property == "children"
+        assert navigation._output_default_property == "children"
 
     def test_navigation_mandatory_and_optional(self):
         accordion = vm.Accordion()
@@ -27,6 +29,8 @@ class TestNavigationInstantiation:
         assert navigation.id == "navigation"
         assert navigation.pages == ["Page 1", "Page 2"]
         assert navigation.nav_selector == accordion
+        assert navigation._input_default_property == "children"
+        assert navigation._output_default_property == "children"
 
     @pytest.mark.parametrize("pages", [{"Group": []}, []])
     def test_invalid_field_pages_no_ids_provided(self, pages):

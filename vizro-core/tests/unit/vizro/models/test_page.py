@@ -20,6 +20,8 @@ class TestPageInstantiation:
         assert page.id == "Page 1"
         assert page.path == "/page-1"
         assert page.actions == []
+        assert page._input_default_property == "children"
+        assert page._output_default_property == "children"
 
     def test_create_page_mandatory_and_optional(self):
         page = vm.Page(
@@ -36,6 +38,8 @@ class TestPageInstantiation:
         assert page.title == "Page 1"
         assert page.path == "/my-path"
         assert page.actions == []
+        assert page._input_default_property == "children"
+        assert page._output_default_property == "children"
 
     def test_create_page_mandatory_and_optional_legacy_layout(self):
         with pytest.warns(FutureWarning, match="The `Layout` model has been renamed `Grid`"):

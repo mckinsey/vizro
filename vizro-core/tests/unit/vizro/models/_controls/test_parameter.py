@@ -20,6 +20,8 @@ class TestParameterInstantiation:
         assert parameter.type == "parameter"
         assert parameter.targets == ["scatter_chart.x"]
         assert parameter.selector.type == "dropdown"
+        assert parameter._input_default_property == "value"
+        assert parameter._output_default_property == "value"
 
     def test_check_dot_notation_failed(self):
         with pytest.raises(

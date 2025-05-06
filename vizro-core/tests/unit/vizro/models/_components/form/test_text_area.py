@@ -18,6 +18,8 @@ class TestTextAreaInstantiation:
         assert text_area.title == ""
         assert text_area.placeholder == ""
         assert text_area.actions == []
+        assert text_area._input_default_property == "value"
+        assert text_area._output_default_property == "value"
 
     def test_create_text_area_mandatory_and_optional(self):
         text_area = TextArea(id="text-area-id", title="Title", placeholder="Placeholder")
@@ -27,6 +29,8 @@ class TestTextAreaInstantiation:
         assert text_area.title == "Title"
         assert text_area.placeholder == "Placeholder"
         assert text_area.actions == []
+        assert text_area._input_default_property == "value"
+        assert text_area._output_default_property == "value"
 
 
 class TestUserInputBuild:

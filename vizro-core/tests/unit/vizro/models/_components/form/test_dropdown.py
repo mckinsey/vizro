@@ -25,6 +25,8 @@ class TestDropdownInstantiation:
         assert dropdown.title == ""
         assert dropdown.description is None
         assert dropdown.actions == []
+        assert dropdown._input_default_property == "value"
+        assert dropdown._output_default_property == "value"
 
     def test_create_dropdown_mandatory_and_optional(self):
         dropdown = Dropdown(
@@ -44,6 +46,8 @@ class TestDropdownInstantiation:
         assert dropdown.title == "Title"
         assert dropdown.actions == []
         assert isinstance(dropdown.description, Tooltip)
+        assert dropdown._input_default_property == "value"
+        assert dropdown._output_default_property == "value"
 
     @pytest.mark.parametrize(
         "test_options, expected",

@@ -16,6 +16,8 @@ class TestTextInstantiation:
         assert hasattr(text, "id")
         assert text.type == "text"
         assert text.text == "Text to test"
+        assert text._input_default_property == "children"
+        assert text._output_default_property == "children"
 
     @pytest.mark.parametrize("id, text_content", [("id_1", "Text to test"), ("id_2", "Test")])
     def test_create_card_mandatory_and_optional(self, id, text_content):
@@ -24,6 +26,8 @@ class TestTextInstantiation:
         assert text.id == id
         assert text.type == "text"
         assert text.text == text_content
+        assert text._input_default_property == "children"
+        assert text._output_default_property == "children"
 
 
 class TestBuildMethod:

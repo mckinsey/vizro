@@ -32,6 +32,8 @@ class TestTableInstantiation:
         assert table.type == "table"
         assert table.figure == standard_dash_table
         assert table.actions == []
+        assert table._input_default_property == "selected_rows"
+        assert table._output_default_property == "children"
 
     @pytest.mark.parametrize("id", ["id_1", "id_2"])
     def test_create_table_mandatory_and_optional(self, standard_dash_table, id):
@@ -40,6 +42,9 @@ class TestTableInstantiation:
         assert table.id == id
         assert table.type == "table"
         assert table.figure == standard_dash_table
+        assert table.actions == []
+        assert table._input_default_property == "selected_rows"
+        assert table._output_default_property == "children"
 
     def test_mandatory_figure_missing(self):
         with pytest.raises(ValidationError, match="Field required"):
