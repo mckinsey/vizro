@@ -6,13 +6,25 @@ Vizro-MCP is a [Model Context Protocol (MCP)](https://modelcontextprotocol.io/) 
 
 Vizro-MCP provides tools and templates to create a functioning Vizro chart or dashboard step by step. Benefits include:
 
-✅ One consistent framework for charts and dashboards with one common design language. ✅ Validated config output that is readable and easy to alter or maintain. ✅ Live preview of the dashboard to iterate the design until the dashboard is perfect. ✅ Use of local or remote datasets simply by providing a path or URL.
+✅ One consistent framework for charts and dashboards with one common design language. 
+
+✅ Validated config output that is readable and easy to alter or maintain. 
+
+✅ Live preview of the dashboard to iterate the design until the dashboard is perfect. 
+
+✅ Use of local or remote datasets simply by providing a path or URL.
 
 ### Without Vizro-MCP
 
 Without Vizro-MCP, if you try to make a dashboard using an LLM, it could choose any framework, and use it without specific guidance, design principles, or consistency. The results are:
 
-❌ A random choice of frontend framework or charting library. ❌ A vibe-coded mess that may or may not run, but certainly is not very maintainable. ❌ No way to easily preview the dashboard. ❌ No easy way to connect to real data.
+❌ A random choice of frontend framework or charting library. 
+
+❌ A vibe-coded mess that may or may not run, but certainly is not very maintainable. 
+
+❌ No way to easily preview the dashboard. 
+
+❌ No easy way to connect to real data.
 
 ## 🛠️ Get started
 
@@ -103,6 +115,8 @@ You can also ask the LLM to create specific dashboards based on local or remote 
 
 > _Create a simple two page Vizro dashboard, with first page being a correlation analysis of `<insert absolute file path or public URL>` data, and the second page being a map plot of `<insert absolute file path or public URL>` data_
 
+You can find a set of sample CSVs to try out in the [Plotly repository](https://github.com/plotly/datasets/tree/master).
+
 You can even ask for a dashboard without providing data:
 
 > _Create a Vizro dashboard with one page, a scatter chart, and a filter._
@@ -119,9 +133,11 @@ You can also ask the model to give you the link, but it will attempt to regenera
 
 ### Create Vizro charts
 
-The **easiest** way to get started with Vizro charts is to choose the template `create_vizro_chart` and just send the prompt. This will create a simple chart that you can alter. Take it from there!
+If you don't want to create an entire Vizro dashboard, you can still use Vizro-MCP to create the code for a single chart. If you're not sure what kind of chart you want, check out the [Vizro Visual Vocabulary](https://huggingface.co/spaces/vizro/demo-visual-vocabulary) for ideas.
 
-Alternatively, you can just ask in the chat things like:
+The **easiest** way to create a Vizro chart is to choose the template `create_vizro_chart` and just send the prompt. This will create a simple chart that you can alter. Take it from there!
+
+Alternatively, you can just ask in the chat, for example:
 
 > _Create a scatter based on the iris dataset._
 
@@ -149,12 +165,8 @@ The Vizro MCP server provides the following tools. In general you should not nee
 ## Available Prompts (if client allows)
 
 - `create_starter_dashboard` - Use this prompt template to get started with Vizro dashboards.
-- `create_EDA_dashboard` - Use this prompt template to create an Exploratory Data Analysis (EDA) dashboard based on a local or remote CSV dataset
-- `create_vizro_chart` - Use this prompt template to create a Vizro styled plotly chart based on a local or remote CSV dataset
-
-## Sample data
-
-You can find a set of sample CSVs to try out in the [Plotly repository](https://github.com/plotly/datasets/tree/master).
+- `create_EDA_dashboard` - Use this prompt template to create an Exploratory Data Analysis (EDA) dashboard based on a local or remote CSV dataset.
+- `create_vizro_chart` - Use this prompt template to create a Vizro styled plotly chart based on a local or remote CSV dataset.
 
 ## Development or running from source
 
