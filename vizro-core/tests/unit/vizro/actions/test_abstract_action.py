@@ -247,7 +247,9 @@ class TestAbstractActionOutputs:
     )
     def test_outputs_invalid(self, action_with_mock_outputs):
         with pytest.raises(
-            ValueError, match="Action outputs .* must be a string of the form <component_name>.<component_property>."
+                KeyError,
+                match="Component with ID .* not found. Please provide a valid component ID or use the explicit "
+                      "format '<component-id>.<property>'.",
         ):
             # An error is raised when accessing _transformed_outputs which is fine because validation is then performed.
             action_with_mock_outputs()._transformed_outputs
