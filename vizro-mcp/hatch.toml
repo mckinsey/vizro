@@ -32,6 +32,11 @@ prep-release = [
 pypath = "python -c 'import sys; print(sys.executable)'"
 test = "pytest tests --headless {args}"
 test-unit = "pytest tests/unit {args}"
+test-unit-coverage = [
+  "coverage run -m pytest tests/unit {args}",
+  "- coverage combine",
+  "coverage report"
+]
 
 [publish.index]
 disable = true
