@@ -238,6 +238,7 @@ class TestBuildGraph:
             title="Title",
             description=vm.Tooltip(text="Tooltip test", icon="info", id="info"),
         ).build()
+
         expected_description = [
             html.Span("info", id="info-icon", className="material-symbols-outlined tooltip-icon"),
             dbc.Tooltip(
@@ -247,6 +248,7 @@ class TestBuildGraph:
                 autohide=False,
             ),
         ]
+
         expected_graph = dcc.Loading(
             html.Div(
                 [

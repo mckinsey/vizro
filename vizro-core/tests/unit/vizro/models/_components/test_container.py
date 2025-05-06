@@ -183,6 +183,7 @@ class TestContainerBuildMethod:
                 autohide=False,
             ),
         ]
+
         assert_component_equal(
             result, dbc.Container(id="container", class_name="", fluid=True), keys_to_strip={"children"}
         )

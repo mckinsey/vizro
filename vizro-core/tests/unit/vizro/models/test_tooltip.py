@@ -29,6 +29,7 @@ class TestTooltipBuild:
 
     def test_tooltip_build(self):
         tooltip = Tooltip(text="Tooltip text", icon="help", id="tooltip").build()
+
         expected_tooltip = html.Div(
             [
                 html.Span("help", id="tooltip-icon", className="material-symbols-outlined tooltip-icon"),
@@ -40,10 +41,12 @@ class TestTooltipBuild:
                 ),
             ]
         )
+
         assert_component_equal(tooltip, expected_tooltip)
 
     def test_tooltip_build_with_extra(self):
         tooltip = Tooltip(text="Tooltip text", icon="help", id="tooltip", extra={"flip": False}).build()
+
         expected_tooltip = html.Div(
             [
                 html.Span("help", id="tooltip-icon", className="material-symbols-outlined tooltip-icon"),
@@ -56,4 +59,5 @@ class TestTooltipBuild:
                 ),
             ]
         )
+
         assert_component_equal(tooltip, expected_tooltip)

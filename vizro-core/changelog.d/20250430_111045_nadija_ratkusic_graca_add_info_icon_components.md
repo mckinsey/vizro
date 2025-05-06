@@ -19,7 +19,7 @@ Uncomment the section that is right (remove the HTML comment wrapper).
 
 ### Added
 
-- Add `description` argument to `Container`, `Graph`, `Table`, `AgGrid`, `Page` and `Title` to enable info-icons in selector titles. See the [user guide on info-icons for the Page as an example](XXX). ([#1144](https://github.com/mckinsey/vizro/pull/1144))
+- Add `description` argument to `Dashboard`, `Page`, `Container`, `Graph`, `AgGrid` and `Table` to enable info-icons in titles. See the [user guide on info-icons for Container as an example](https://vizro.readthedocs.io/en/stable/pages/user-guides/container/#add-an-info-icon). ([#1144](https://github.com/mckinsey/vizro/pull/1144))
 
 <!--
 ### Changed

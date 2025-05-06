@@ -233,7 +233,8 @@ class TestBuildTable:
         )
         table.pre_build()
         table = table.build()
-        description = [
+
+        expected_description = [
             html.Span("info", id="info-icon", className="material-symbols-outlined tooltip-icon"),
             dbc.Tooltip(
                 children=dcc.Markdown("Tooltip test", className="card-text"),
@@ -245,7 +246,7 @@ class TestBuildTable:
         expected_table = dcc.Loading(
             html.Div(
                 children=[
-                    html.H3(["Title", *description], className="figure-title"),
+                    html.H3(["Title", *expected_description], className="figure-title"),
                     None,
                     html.Div(
                         children=[html.Div()],

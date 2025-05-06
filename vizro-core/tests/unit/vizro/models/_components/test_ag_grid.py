@@ -200,6 +200,7 @@ class TestBuildAgGrid:
             parent_className="loading-container",
             overlay_style={"visibility": "visible", "opacity": 0.3},
         )
+
         assert_component_equal(ag_grid, expected_ag_grid)
 
     def test_aggrid_build_title_header_footer(self, standard_ag_grid):
@@ -208,6 +209,7 @@ class TestBuildAgGrid:
         )
         ag_grid.pre_build()
         ag_grid = ag_grid.build()
+
         expected_ag_grid = dcc.Loading(
             html.Div(
                 children=[
@@ -225,6 +227,7 @@ class TestBuildAgGrid:
             parent_className="loading-container",
             overlay_style={"visibility": "visible", "opacity": 0.3},
         )
+
         assert_component_equal(ag_grid, expected_ag_grid, keys_to_strip={"id"})
 
     def test_aggrid_build_with_description(self, standard_ag_grid):
@@ -262,4 +265,5 @@ class TestBuildAgGrid:
             parent_className="loading-container",
             overlay_style={"visibility": "visible", "opacity": 0.3},
         )
+
         assert_component_equal(ag_grid, expected_ag_grid, keys_to_strip={"id"})
