@@ -68,6 +68,12 @@ def action_function(button_number_of_clicks):
 
 
 @capture("action")
+def action_function_dict(button_number_of_clicks):
+    title = f"Button clicked {button_number_of_clicks} times."
+    return {"anything": title}
+
+
+@capture("action")
 def action_function_multiple(button_number_of_clicks):
     title = f"Button clicked {button_number_of_clicks} times."
     is_open = True if button_number_of_clicks % 2 == 0 else False
@@ -227,38 +233,32 @@ page_four = vm.Page(
             id="button-id",
             actions=[
                 vm.Action(
-                    function=action_function(),
-                    # This is how we had to define it before:
-                    # inputs=["trigger-button-smoke-id.n_clicks"],
-                    # outputs=["card-id.children"],
-                    # Now we can just do this:
+                    function=action_function(),  # or function=action_function_dict(),
                     inputs=["button-id"],
-                    # Case A: Model-ID doesn't exist
+                    # Case A: Model-ID doesn't exist, syntax correct (only model-id)
                     # Throws KeyError before dashboard creation: "Component with ID 'wrong-id' not found.
                     # Please provide a valid component ID or use the explicit format '<component-id>.<property>'."
                     # outputs=["wrong-id"]
-                    # Case B: Model-ID doesn't exist and property doesn't exist
-                    # Throws A Nonexisting object was used as an Output to a Dash callback AFTER dashboard
-                    # creation. LQ: I guess this worked like this before as well? Since we don't check for existing
-                    # properties or not. But anyway, should this be rather caught by Case A?
-                    # outputs=["wrong-id.prop"],
-                    # Case C: Model-ID doesn't exist but property does
-                    # Throws A Nonexisting object was used as an Output to a Dash callback AFTER dashboard
-                    # creation. LQ: I guess this worked like this before as well? Since we don't check for existing
-                    # properties or not. But anyway, should this be rather caught by Case A?
+                    # outputs={"anything": "wrong-id"}
+                    # Case B: Model-ID doesn't exist, syntax correct (dot notation), property can be anything
+                    # Throws KeyError before dashboard creation: "Component with ID 'wrong-id' not found.
+                    # Please provide a valid component ID or use the explicit format '<component-id>.<property>'."
+                    # outputs=["wrong-id.prop"]
                     # outputs=["wrong-id.children"]
-                    # Case D: Model-ID exists but property doesn't exist
-                    # Currently not captured at all - bad.
+                    # outputs={"anything": "wrong-id.prop"}
+                    # outputs={"anything": "wrong-id.children"}
+                    # Case C: Model-ID exists but property doesn't exist
+                    # Currently not captured at all - bad. Check how this worked before.
                     # outputs=["card-id-validation.prop"]
-                    # Case E: Syntax is wrong (no dot notation or single model id) - doesn't matter if id/property
-                    # exist or not
+                    # outputs={"anything": "card-id-validation.prop"}
+                    # Case D: Syntax - doesn't matter if model id/property exist or not
                     # Throws KeyError before dashboard creation: "Component with ID
                     # 'card-id-validation.children.children' not found. Please
                     # provide a valid component ID or use the explicit format '<component-id>.<property>'."
                     # outputs=["card-id-validation.children.children"]
                     # outputs=["card-id-validation..children.children"]
                     # outputs=["card-id..childre"]
-                    # Case X: Then all of the dict cases
+                    # outputs={"anything": "card-id-validation..children"}
                 )
             ],
         ),

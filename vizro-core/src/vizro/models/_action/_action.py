@@ -104,27 +104,38 @@ class _BaseAction(VizroBaseModel):
         # TODO-AV D 3: try to enable properties that aren't Dash properties but are instead model fields e.g. header,
         #  title. See https://github.com/mckinsey/vizro/issues/1078.
         #  Note this is needed for inputs in both vm.Action and _AbstractAction but outputs only in _AbstractAction.
+
+        def _validate_component_exists(component_id: str) -> None:
+            """Validate that a component ID exists in the model manager."""
+            if component_id not in model_manager:
+                raise KeyError(
+                    f"Component with ID '{component_id}' not found. Please provide a valid component ID or use "
+                    f"the explicit format '<component-id>.<property>'."
+                )
+
+        def _validate_default_property(component_id: str) -> None:
+            """Validate that a model has the required default property."""
+            property_name = "_input_default_property" if type == "input" else "_output_default_property"
+            if not hasattr(model_manager[component_id], property_name):
+                raise ValueError(
+                    f"Component with ID '{component_id}' does not have a default {type} property defined. "
+                    f"Please specify the property explicitly as '{component_id}.<property>'."
+                )
+
         try:
             TypeAdapter(list[DotSeparatedStr]).validate_python(dependencies)
+            for dependency in dependencies:
+                _validate_component_exists(dependency.split(".")[0])
         except ValidationError as exc:
             invalid_dependencies = {
                 error["input"] for error in exc.errors() if error["type"] == "string_pattern_mismatch"
             }
-
-            for model_id in invalid_dependencies:
+            for component_id in invalid_dependencies:
                 try:
-                    model = model_manager[model_id]
-                    property_name = "_input_default_property" if type == "input" else "_output_default_property"
-                    if not hasattr(model, property_name):
-                        raise ValueError(
-                            f"Model '{model_id}' does not have a default {type} property defined. "
-                            f"Please specify the property explicitly as '{model_id}.<property>'."
-                        ) from exc
-                except KeyError:  # noqa: PERF203
-                    raise KeyError(
-                        f"Component with ID '{model_id}' not found. Please provide a valid component ID or use "
-                        f"the explicit format '<component-id>.<property>'."
-                    ) from exc
+                    _validate_component_exists(component_id)
+                    _validate_default_property(component_id)
+                except KeyError as key_error:  # noqa: PERF203
+                    raise key_error from exc
 
     def _get_control_states(self, control_type: ControlType) -> list[State]:
         """Gets list of `States` for selected `control_type` that appear on page where this Action is defined."""
