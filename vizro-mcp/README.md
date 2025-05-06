@@ -6,11 +6,11 @@ Vizro-MCP is a [Model Context Protocol (MCP)](https://modelcontextprotocol.io/) 
 
 Vizro-MCP provides tools and templates to create a functioning Vizro chart or dashboard step by step. Benefits include:
 
-✅ One consistent framework for charts and dashboards with one common design language. 
+✅ One consistent framework for charts and dashboards with one common design language.
 
-✅ Validated config output that is readable and easy to alter or maintain. 
+✅ Validated config output that is readable and easy to alter or maintain.
 
-✅ Live preview of the dashboard to iterate the design until the dashboard is perfect. 
+✅ Live preview of the dashboard to iterate the design until the dashboard is perfect.
 
 ✅ Use of local or remote datasets simply by providing a path or URL.
 
@@ -18,11 +18,11 @@ Vizro-MCP provides tools and templates to create a functioning Vizro chart or da
 
 Without Vizro-MCP, if you try to make a dashboard using an LLM, it could choose any framework, and use it without specific guidance, design principles, or consistency. The results are:
 
-❌ A random choice of frontend framework or charting library. 
+❌ A random choice of frontend framework or charting library.
 
-❌ A vibe-coded mess that may or may not run, but certainly is not very maintainable. 
+❌ A vibe-coded mess that may or may not run, but certainly is not very maintainable.
 
-❌ No way to easily preview the dashboard. 
+❌ No way to easily preview the dashboard.
 
 ❌ No easy way to connect to real data.
 
