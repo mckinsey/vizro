@@ -3,7 +3,6 @@
 import pytest
 from asserts import assert_component_equal
 from dash import Output, State, html
-from pydantic import ValidationError
 
 from vizro.models._action._action import Action
 from vizro.models.types import capture
@@ -159,6 +158,7 @@ class TestLegacyActionOutputs:
         assert action._legacy
         assert action.outputs == outputs
         assert action._transformed_outputs == expected_transformed_outputs
+
 
 class TestIsActionLegacy:
     """Tests action._legacy property."""
@@ -416,8 +416,8 @@ class TestBaseActionValidateDependencies:
     )
     def test_action_inputs_invalid(self, runtime_inputs):
         with pytest.raises(KeyError, match="Please provide a valid component ID or use the explicit format"):
-           action = Action(function=action_with_one_arg(), inputs=runtime_inputs)
-           action._validate_dash_dependencies(runtime_inputs, type="inputs")
+            action = Action(function=action_with_one_arg(), inputs=runtime_inputs)
+            action._validate_dash_dependencies(runtime_inputs, type="inputs")
 
     @pytest.mark.parametrize(
         "outputs",
