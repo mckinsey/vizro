@@ -49,7 +49,7 @@ Add the following to your `claude_desktop_config.json` [found via Developer Sett
 }
 ```
 
-> ⚠️ **Warning:** In some cases you may need to provide the full path to your `uv` executable, so instead of `uv` would use something like `/Users/<your-username>/.local/bin/uv`. To discover the path of `uv` on your machine, in your terminal app, type `which uv`.
+> ⚠️ **Warning:** In some cases you may need to provide the full path to your `uvx` executable, so instead of `uvx` would use something like `/Users/<your-username>/.local/bin/uvx`. To discover the path of `uvx` on your machine, in your terminal app, type `which uvx`.
 
 If you are using Claude Desktop, restart it, and after a few moments, you should see the vizro-mcp menu when opening the settings/context menu:
 
@@ -75,7 +75,7 @@ Add the following to `mcp.json` [found via the Cursor Settings](https://docs.cur
 }
 ```
 
-> ⚠️ **Warning:** In some cases you may need to provide the full path to your `uv` executable, so instead of `uv` would use something like `/Users/<your-username>/.local/bin/uv`. To discover the path of `uv` on your machine, in your terminal app, type `which uv`.
+> ⚠️ **Warning:** In some cases you may need to provide the full path to your `uvx` executable, so instead of `uvx` would use something like `/Users/<your-username>/.local/bin/uvx`. To discover the path of `uvx` on your machine, in your terminal app, type `which uvx`.
 
 Similarly, when using Cursor, after a short pause, you should see a green light in the MCP menu:
 
