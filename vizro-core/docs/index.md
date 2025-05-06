@@ -2,6 +2,10 @@
 
 Vizro is a toolkit for creating modular data visualization applications.
 
+!!! tip Vizro-MCP
+    Vizro now has an MCP server that helps you with building charts and dashboards.
+    Check it out at [vizro-mcp](https://github.com/mckinsey/vizro/blob/main/vizro-mcp/README.md).
+
 <div class="grid cards" markdown>
 
 - :fontawesome-solid-forward-fast:{ .lg .middle } __New to Vizro?__
