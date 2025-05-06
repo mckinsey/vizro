@@ -4,6 +4,7 @@ import abc
 import inspect
 from typing import Union
 
+from dash import Output
 from dash.development.base_component import Component
 
 from vizro.models._action._action import _BaseAction
@@ -71,6 +72,13 @@ class _AbstractAction(_BaseAction, abc.ABC):
         # TODO-AV D 4: build in a vizro_download component. At some point after that consider changing export_data to
         #  use it, but that's not urgent. See  https://github.com/mckinsey/vizro/pull/1054#discussion_r1989405177.
         pass
+
+    @property
+    def _transformed_outputs(self) -> Union[list[Output], dict[str, Output]]:
+        # Action.outputs is validated by pydantic, but for _AbstractAction.outputs we need to do the validation
+        # manually.
+        self._validate_dash_dependencies(self.outputs, type="output")
+        return super()._transformed_outputs
 
     @property
     def _dash_components(self) -> list[Component]:

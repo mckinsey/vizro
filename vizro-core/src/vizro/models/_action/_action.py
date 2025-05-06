@@ -76,8 +76,9 @@ class _BaseAction(VizroBaseModel):
         # TODO-AV D 3: try to enable properties that aren't Dash properties but are instead model fields e.g. header,
         #  title. See https://github.com/mckinsey/vizro/issues/1078.
         #  Note this is needed for inputs in both vm.Action and _AbstractAction but outputs only in _AbstractAction.
+        # TODO NOW: new test cases
         try:
-            TypeAdapter(list[DotSeparatedStr]).validate_python(dependencies)
+            TypeAdapter(Union[list[DotSeparatedStr], dict[str, DotSeparatedStr]]).validate_python(dependencies)
         except ValidationError as exc:
             invalid_dependencies = {
                 error["input"] for error in exc.errors() if error["type"] == "string_pattern_mismatch"
@@ -112,7 +113,7 @@ class _BaseAction(VizroBaseModel):
 
     @property
     def _transformed_inputs(self) -> Union[list[State], dict[str, Union[State, ControlsStates]]]:
-        """Creates the actual Dash States given the user-specified runtime arguments and built in ones.
+        """Creates Dash States given the user-specified runtime arguments and built in ones.
 
         Return type is list only for legacy actions. Otherwise, it will always be a dictionary (unlike
         for _transformed_outputs, where new behavior can still give a list). Keys are the parameter names. For
@@ -156,16 +157,17 @@ class _BaseAction(VizroBaseModel):
     def _transformed_outputs(self) -> Union[list[Output], dict[str, Output]]:
         """Creates Dash Output objects from string specifications in self.outputs.
 
-        Takes either a list of strings or a dictionary of strings, where each string is in the format
-        '<component_id>.<property>', and converts them into actual Dash Output objects.
+        Converts self.outputs (list of strings or dictionary of strings where each string is in the format
+        '<component_id>.<property>') and converts into actual Dash Output objects.
         For example, ['my_graph.figure'] becomes [Output('my_graph', 'figure', allow_duplicate=True)].
 
         Returns:
-            Union[list[Output], dict[str, Output]]: A list of Output objects if inputs were a list of strings,
-            or a dictionary mapping keys to Output objects if inputs were a dictionary of strings.
+            Union[list[Output], dict[str, Output]]: A list of Output objects if self.outputs is a list of strings,
+            or a dictionary mapping keys to Output objects if self.outputs is a dictionary of strings.
         """
+        # TODO NOW: transform_output function
+
         if isinstance(self.outputs, list):
-            self._validate_dash_dependencies(self.outputs, type="output")
             callback_outputs = [Output(*output.split("."), allow_duplicate=True) for output in self.outputs]
 
             # Need to use a single Output in the @callback decorator rather than a single element list for the case
@@ -175,7 +177,6 @@ class _BaseAction(VizroBaseModel):
                 callback_outputs = callback_outputs[0]
             return callback_outputs
 
-        self._validate_dash_dependencies(self.outputs.values(), type="output")
         callback_outputs = {  # type: ignore[assignment]
             output_name: Output(*output.split("."), allow_duplicate=True)
             for output_name, output in self.outputs.items()
