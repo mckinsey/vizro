@@ -23,8 +23,7 @@ def kpi_card(
     """Creates a styled KPI (Key Performance Indicator) card displaying a value.
 
     **Warning:** Note that the format string provided to `value_format` is being evaluated, so ensure that only trusted
-    user input is provided to prevent
-    [potential security risks](https://security.stackexchange.com/questions/238338/are-there-any-security-concerns-to-using-python-f-strings-with-user-input).
+    user input is provided to prevent potential security risks.
 
     Args:
         data_frame: DataFrame containing the data.
@@ -88,8 +87,7 @@ def kpi_card_reference(  # noqa: PLR0913
     """Creates a styled KPI (Key Performance Indicator) card displaying a value in comparison to a reference value.
 
     **Warning:** Note that the format string provided to `value_format` and `reference_format` is being evaluated,
-    so ensure that only trusted user input is provided to prevent
-    [potential security risks](https://security.stackexchange.com/questions/238338/are-there-any-security-concerns-to-using-python-f-strings-with-user-input).
+    so ensure that only trusted user input is provided to prevent potential security risks.
 
     Args:
         data_frame: DataFrame containing the data.
