@@ -1,0 +1,73 @@
+name: Unit tests for Vizro
+
+defaults:
+  run:
+    working-directory: vizro-mcp
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches:
+      - main
+
+env:
+  PYTHONUNBUFFERED: 1
+  FORCE_COLOR: 1
+
+jobs:
+  test-unit-vizro-core:
+    name: test-unit-vizro-mcp on Py${{ matrix.config.python-version }} ${{ matrix.config.label }}
+
+    runs-on: ${{ matrix.config.os }}
+    strategy:
+      fail-fast: false
+      matrix:
+        # This is not a nice way to define the matrix, but it's the only way that's possible so that we only run
+        # the job on Windows on merge to main rather than in every PR. See:
+        # https://stackoverflow.com/questions/66025220/paired-values-in-github-actions-matrix
+        # https://github.com/orgs/community/discussions/26253
+        # https://github.com/actions/runner/issues/1985
+        config:
+          - python-version: "3.10"
+            hatch-env: all.py3.10
+            os: ubuntu-latest
+          - python-version: "3.11"
+            hatch-env: all.py3.11
+            os: ubuntu-latest
+          - python-version: "3.12"
+            hatch-env: all.py3.12
+            os: ubuntu-latest
+          - python-version: "3.13"
+            hatch-env: all.py3.13
+            os: ubuntu-latest
+          - python-version: "3.12"
+            hatch-env: all.py3.12
+            os: windows-latest
+            label: Windows
+        is_non_release_pr:
+          - ${{ github.event_name == 'pull_request' && !startsWith(github.head_ref, 'release')}}
+        exclude:
+          - is_non_release_pr: true
+            config:
+              python-version: "3.12"
+              hatch-env: all.py3.12
+              os: windows-latest
+              label: Windows
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up Python ${{ matrix.config.python-version }}
+        uses: actions/setup-python@v5
+        with:
+          python-version: ${{ matrix.config.python-version }}
+
+      - name: Install Hatch
+        run: pip install hatch
+
+      - name: Show dependency tree
+        run: hatch run ${{ matrix.config.hatch-env }}:pip tree
+
+      - name: Run unit tests
+        run: hatch run ${{ matrix.config.hatch-env }}:test-unit-coverage
