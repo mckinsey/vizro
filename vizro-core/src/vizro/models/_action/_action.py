@@ -119,11 +119,11 @@ class _BaseAction(VizroBaseModel):
                         raise ValueError(
                             f"Model '{model_id}' does not have a default {type} property defined. "
                             f"Please specify the property explicitly as '{model_id}.<property>'."
-                        )
+                        ) from exc
                 except KeyError:  # noqa: PERF203
-                    raise ValueError(
-                        f"Action {type}s {invalid_dependencies} of {self._action_name} must be a string of the form "
-                        "<component_name>.<component_property> or a valid model ID with a default {type} property."
+                    raise KeyError(
+                        f"Component with ID '{model_id}' not found. Please provide a valid component ID or use "
+                        f"the explicit format '<component-id>.<property>'."
                     ) from exc
 
     def _get_control_states(self, control_type: ControlType) -> list[State]:

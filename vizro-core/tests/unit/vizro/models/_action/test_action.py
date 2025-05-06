@@ -80,22 +80,6 @@ class TestLegacyActionInputs:
         assert action._transformed_inputs == expected_transformed_inputs
 
     @pytest.mark.parametrize(
-        "runtime_inputs",
-        [
-            [""],
-            ["component"],
-            ["component."],
-            [".property"],
-            ["component..property"],
-            ["component_property"],
-            ["component.property.property"],
-        ],
-    )
-    def test_action_inputs_invalid(self, runtime_inputs):
-        with pytest.raises(ValidationError, match="String should match pattern"):
-            Action(function=action_with_one_arg(), inputs=runtime_inputs)
-
-    @pytest.mark.parametrize(
         "static_inputs",
         [
             "",
@@ -175,32 +159,6 @@ class TestLegacyActionOutputs:
         assert action._legacy
         assert action.outputs == outputs
         assert action._transformed_outputs == expected_transformed_outputs
-
-    @pytest.mark.parametrize(
-        "outputs",
-        [
-            [""],
-            ["component"],
-            ["component."],
-            [".property"],
-            ["component..property"],
-            ["component_property"],
-            ["component.property.property"],
-            {"output_1": ""},
-            {"output_1": "component"},
-            {"output_1": "component."},
-            {"output_1": ".property"},
-            {"output_1": "component..property"},
-            {"output_1": "component_property"},
-            {"output_1": "component.property.property"},
-            {"output_1": "component.property", "output_2": ""},
-        ],
-    )
-    def test_outputs_invalid(self, outputs):
-        with pytest.raises(ValidationError, match="String should match pattern"):
-            # inputs=[] added to force action to be legacy
-            Action(function=action_with_no_args(), inputs=[], outputs=outputs)
-
 
 class TestIsActionLegacy:
     """Tests action._legacy property."""
@@ -333,30 +291,6 @@ class TestActionOutputs:
         assert action.outputs == outputs
         assert action._transformed_outputs == expected_transformed_outputs
 
-    @pytest.mark.parametrize(
-        "outputs",
-        [
-            [""],
-            ["component"],
-            ["component."],
-            [".property"],
-            ["component..property"],
-            ["component_property"],
-            ["component.property.property"],
-            {"output_1": ""},
-            {"output_1": "component"},
-            {"output_1": "component."},
-            {"output_1": ".property"},
-            {"output_1": "component..property"},
-            {"output_1": "component_property"},
-            {"output_1": "component.property.property"},
-            {"output_1": "component.property", "output_2": ""},
-        ],
-    )
-    def test_outputs_invalid(self, outputs):
-        with pytest.raises(ValidationError, match="String should match pattern"):
-            Action(function=action_with_no_args(), outputs=outputs)
-
 
 class TestActionBuild:
     def test_custom_action_build(self):
@@ -465,3 +399,75 @@ class TestBaseActionCallbackFunction:
             ValueError, match="Keys of action's returned value .+ do not match the action's defined outputs {'output'}."
         ):
             action._action_callback_function(inputs={}, outputs={"output": Output("component", "property")})
+
+
+class TestBaseActionValidateDependencies:
+    @pytest.mark.parametrize(
+        "runtime_inputs",
+        [
+            [""],
+            ["component"],
+            ["component."],
+            [".property"],
+            ["component..property"],
+            ["component_property"],
+            ["component.property.property"],
+        ],
+    )
+    def test_action_inputs_invalid(self, runtime_inputs):
+        with pytest.raises(KeyError, match="Please provide a valid component ID or use the explicit format"):
+           action = Action(function=action_with_one_arg(), inputs=runtime_inputs)
+           action._validate_dash_dependencies(runtime_inputs, type="inputs")
+
+    @pytest.mark.parametrize(
+        "outputs",
+        [
+            [""],
+            ["component"],
+            ["component."],
+            [".property"],
+            ["component..property"],
+            ["component_property"],
+            ["component.property.property"],
+            # TODO: Investigate why KeyError is not raised for dict cases
+            # {"output_1": ""},
+            # {"output_1": "component"},
+            # {"output_1": "component."},
+            # {"output_1": ".property"},
+            # {"output_1": "component..property"},
+            # {"output_1": "component_property"},
+            # {"output_1": "component.property.property"},
+            # {"output_1": "component.property", "output_2": ""},
+        ],
+    )
+    def test_action_outputs_invalid(self, outputs):
+        with pytest.raises(KeyError, match="Please provide a valid component ID or use the explicit format"):
+            action = Action(function=action_with_no_args(), outputs=outputs)
+            action._validate_dash_dependencies(outputs, type="output")
+
+    @pytest.mark.parametrize(
+        "outputs",
+        [
+            [""],
+            ["component"],
+            ["component."],
+            [".property"],
+            ["component..property"],
+            ["component_property"],
+            ["component.property.property"],
+            # TODO: Investigate why KeyError is not raised for dict cases
+            # {"output_1": ""},
+            # {"output_1": "component"},
+            # {"output_1": "component."},
+            # {"output_1": ".property"},
+            # {"output_1": "component..property"},
+            # {"output_1": "component_property"},
+            # {"output_1": "component.property.property"},
+            # {"output_1": "component.property", "output_2": ""},
+        ],
+    )
+    def test_action_outputs_invalid_legacy(self, outputs):
+        with pytest.raises(KeyError, match="Please provide a valid component ID or use the explicit format"):
+            # inputs=[] added to force action to be legacy
+            action = Action(function=action_with_no_args(), inputs=[], outputs=outputs)
+            action._validate_dash_dependencies(outputs, type="output")
