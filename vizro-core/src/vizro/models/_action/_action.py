@@ -77,16 +77,7 @@ class _BaseAction(VizroBaseModel):
         #  title. See https://github.com/mckinsey/vizro/issues/1078.
         #  Note this is needed for inputs in both vm.Action and _AbstractAction but outputs only in _AbstractAction.
         # TODO NOW: new test cases
-        try:
-            TypeAdapter(Union[list[DotSeparatedStr], dict[str, DotSeparatedStr]]).validate_python(dependencies)
-        except ValidationError as exc:
-            invalid_dependencies = {
-                error["input"] for error in exc.errors() if error["type"] == "string_pattern_mismatch"
-            }
-            raise ValueError(
-                f"Action {type}s {invalid_dependencies} of {self._action_name} must be a string of the form "
-                "<component_name>.<component_property>."
-            ) from exc
+        pass
 
     def _get_control_states(self, control_type: ControlType) -> list[State]:
         """Gets list of `States` for selected `control_type` that appear on page where this Action is defined."""
@@ -144,7 +135,7 @@ class _BaseAction(VizroBaseModel):
         # _AbstractAction but not vm.Action instances because a vm.Action that does not pass this check will
         # have already been classified as legacy in Action._legacy. In future when vm.Action.inputs is deprecated
         # then this will be used for vm.Action instances also.
-        self._validate_dash_dependencies(self._runtime_args.values(), type="input")
+        TypeAdapter(dict[str, DotSeparatedStr]).validate_python(self._runtime_args)
 
         # User specified arguments runtime_args take precedence over built in reserved arguments. No static arguments
         # ar relevant here, just Dash States. Static arguments values are stored in the state of the relevant
@@ -165,10 +156,12 @@ class _BaseAction(VizroBaseModel):
             Union[list[Output], dict[str, Output]]: A list of Output objects if self.outputs is a list of strings,
             or a dictionary mapping keys to Output objects if self.outputs is a dictionary of strings.
         """
-        # TODO NOW: transform_output function
+
+        def _transform_output(output):
+            return Output(*output.split("."), allow_duplicate=True)
 
         if isinstance(self.outputs, list):
-            callback_outputs = [Output(*output.split("."), allow_duplicate=True) for output in self.outputs]
+            callback_outputs = [_transform_output(output) for output in self.outputs]
 
             # Need to use a single Output in the @callback decorator rather than a single element list for the case
             # of a single output. This means the action function can return a single value (e.g. "text") rather than a
@@ -177,12 +170,7 @@ class _BaseAction(VizroBaseModel):
                 callback_outputs = callback_outputs[0]
             return callback_outputs
 
-        callback_outputs = {  # type: ignore[assignment]
-            output_name: Output(*output.split("."), allow_duplicate=True)
-            for output_name, output in self.outputs.items()
-        }
-
-        return callback_outputs
+        return {output_name: _transform_output(output) for output_name, output in self.outputs.items()}
 
     def _action_callback_function(
         self,
