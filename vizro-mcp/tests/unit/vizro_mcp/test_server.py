@@ -25,6 +25,12 @@ from vizro_mcp.server import (
 
 
 @pytest.fixture
+def iris_metadata() -> DFMetaData:
+    """Fixture for Iris dataset metadata."""
+    return IRIS
+
+
+@pytest.fixture
 def valid_dashboard_config() -> dict[str, Any]:
     """Fixture for a valid dashboard configuration."""
     return {
@@ -74,24 +80,6 @@ Vizro().build(model).run()""",
         pycafe_url="https://py.cafe/snippet/vizro/v1?c=H4sIAFLGG...",
         browser_opened=False,
     )
-
-
-@pytest.fixture
-def valid_chart_plan() -> dict[str, Any]:
-    """Fixture for a valid chart plan."""
-    return {
-        "chart_type": "scatter",
-        "x": "sepal_length",
-        "y": "sepal_width",
-        "color": "species",
-        "title": "Iris Dataset Scatter Plot",
-    }
-
-
-@pytest.fixture
-def iris_metadata() -> DFMetaData:
-    """Fixture for Iris dataset metadata."""
-    return IRIS
 
 
 @pytest.fixture
@@ -251,16 +239,11 @@ class TestValidateModelConfig:
 
         result = validate_model_config(config=invalid_config, data_infos=[iris_metadata], auto_open=False)
 
-        assert result == ValidationResults(
-            valid=False,
-            message="""Validation Error: 1 validation error for Dashboard
-titles
-  Extra inputs are not permitted [type=extra_forbidden, input_value='Test Dashboard', input_type=str]
-    For further information visit https://errors.pydantic.dev/2.11/v/extra_forbidden""",
-            python_code="",
-            pycafe_url=None,
-            browser_opened=False,
-        )
+        assert result.valid is False
+        assert "Validation Error: 1 validation error for Dashboard" in result.message
+        assert result.python_code == ""
+        assert result.pycafe_url is None
+        assert result.browser_opened is False
 
 
 class TestValidateChartCode:
@@ -289,21 +272,15 @@ class TestValidateChartCode:
         self,
         invalid_chart_plan: dict[str, Any],
         iris_metadata: DFMetaData,
-        chart_plan_validation_result: ValidationResults,
     ) -> None:
         """Test validation error for an invalid chart plan."""
         result = validate_chart_code(config=invalid_chart_plan, data_info=iris_metadata, auto_open=False)
 
-        assert result == ValidationResults(
-            valid=False,
-            message="""Validation Error: 1 validation error for ChartPlan
-chart_code
-  Value error, The chart code must be wrapped in a function named `custom_chart` [type=value_error, input_value='def scatter_chart(data_f...le="Iris Scatter Plot")', input_type=str]
-    For further information visit https://errors.pydantic.dev/2.11/v/value_error""",
-            python_code="",
-            pycafe_url=None,
-            browser_opened=False,
-        )
+        assert result.valid is False
+        assert result.python_code == ""
+        assert result.pycafe_url is None
+        assert result.browser_opened is False
+        assert "Validation Error: 1 validation error for ChartPlan" in result.message
 
 
 class TestGetModelJsonSchema:

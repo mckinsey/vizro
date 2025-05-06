@@ -1399,7 +1399,7 @@ requires-dist = [
     { name = "httpx", specifier = ">=0.28.1" },
     { name = "mcp", extras = ["cli"], specifier = ">=1.6.0" },
     { name = "pandas", extras = ["excel", "html", "parquet"] },
-    { name = "vizro", specifier = ">=0.1.38" },
+    { name = "vizro", specifier = "==0.1.38" },
 ]
 
 [[package]]
