@@ -1,19 +1,11 @@
-# Vizro is an open-source toolkit for creating modular data visualization applications.
-# check out https://github.com/mckinsey/vizro for more info about Vizro
-# and checkout https://vizro.readthedocs.io/en/stable/ for documentation.
-
 """Dev app to try things out."""
 
-import time
+from vizro.tables import dash_ag_grid
+from pydantic import AfterValidator, Field, PlainSerializer
+from vizro.models.types import ActionType
+from vizro.models._action._actions_chain import _action_validator_factory
 
-import vizro.plotly.express as px
-from vizro import Vizro
-import vizro.models as vm
-from vizro.models.types import capture
-from vizro.tables import dash_ag_grid, dash_data_table
-from vizro.figures import kpi_card
-
-from typing import Literal
+from typing import Literal, Annotated
 
 import dash_bootstrap_components as dbc
 import vizro.models as vm
@@ -46,14 +38,47 @@ class OffCanvas(vm.VizroBaseModel):
         )
 
 
+class Carousel(vm.VizroBaseModel):
+    type: Literal["carousel"] = "carousel"
+    items: list
+    actions: Annotated[
+        list[ActionType],
+        # Here we set the action so a change in the active_index property of the custom component triggers the action
+        AfterValidator(_action_validator_factory("active_index")),
+        # Here we tell the serializer to only serialize the actions field
+        PlainSerializer(lambda x: x[0].actions),
+        Field(default=[]),
+    ]
+
+    def build(self):
+        return dbc.Carousel(
+            id=self.id,
+            items=self.items,
+        )
+
+
 vm.Page.add_type("components", OffCanvas)
+vm.Page.add_type("components", Carousel)
 
 
 @capture("action")
 def action_function(button_number_of_clicks):
     title = f"Button clicked {button_number_of_clicks} times."
+    return title
+
+
+@capture("action")
+def action_function_multiple(button_number_of_clicks):
+    title = f"Button clicked {button_number_of_clicks} times."
     is_open = True if button_number_of_clicks % 2 == 0 else False
     return title, is_open
+
+
+@capture("action")
+def action_function_multiple_dict(button_number_of_clicks):
+    title = f"Button clicked {button_number_of_clicks} times."
+    is_open = True if button_number_of_clicks % 2 == 0 else False
+    return {"anything": title, "anything_two": is_open}
 
 
 @capture("action")
@@ -63,6 +88,15 @@ def open_offcanvas(n_clicks, is_open):
     return is_open
 
 
+@capture("action")
+def slide_next_card(active_index):
+    if active_index:
+        return "Second slide"
+
+    return "First slide"
+
+
+# Examples with list output  ----------
 page_one = vm.Page(
     title="Page Smoke Title",
     components=[
@@ -71,7 +105,7 @@ page_one = vm.Page(
             text="Click me",
             actions=[
                 vm.Action(
-                    function=action_function(),
+                    function=action_function_multiple(),
                     # This is how we had to define it before:
                     # inputs=["trigger-button-smoke-id.n_clicks"],
                     # outputs=["card-id.children"],
@@ -97,8 +131,44 @@ page_one = vm.Page(
     ],
 )
 
+# Examples with dict output  ----------
+page_one_b = vm.Page(
+    title="Page Smoke Title B",
+    components=[
+        vm.Button(
+            id="trigger-button-2",
+            text="Click me",
+            actions=[
+                vm.Action(
+                    function=action_function_multiple_dict(),
+                    # This is how we had to define it before:
+                    # inputs=["trigger-button-smoke-id.n_clicks"],
+                    # outputs={"anything": "card-id.children", "anything_2": "tooltip-id.is_open"},
+                    # Now we can just do this:
+                    inputs=["trigger-button-2"],
+                    outputs={"anything": "card-id-2", "anything_two": "tooltip-id-2"},
+                )
+            ],
+        ),
+        vm.Card(
+            id="card-id-2",
+            text="Click the button to update me",
+        ),
+        vm.AgGrid(figure=dash_ag_grid(df)),
+    ],
+    controls=[
+        vm.Filter(
+            column="species",
+            selector=vm.Dropdown(
+                title="Species", description=vm.Tooltip(text="This is a tooltip", icon="info", id="tooltip-id-2")
+            ),
+        )
+    ],
+)
+
+# Examples in docs that should still work ----------
 page_two = vm.Page(
-    title="Custom Component",
+    title="Custom Component A",
     components=[
         vm.Button(
             text="Open Offcanvas",
@@ -106,6 +176,9 @@ page_two = vm.Page(
             actions=[
                 vm.Action(
                     function=open_offcanvas(),
+                    # Previously
+                    # inputs=["open_button.n_clicks", "offcanvas.is_open"],
+                    # Now:
                     inputs=["open_button", "offcanvas.is_open"],
                     outputs=["offcanvas.is_open"],
                 )
@@ -120,7 +193,83 @@ page_two = vm.Page(
 )
 
 
-dashboard = vm.Dashboard(pages=[page_one, page_two])
+page_three = vm.Page(
+    title="Custom Component B",
+    components=[
+        vm.Card(text="First slide", id="carousel-card"),
+        Carousel(
+            id="carousel",
+            items=[
+                {"key": "1", "src": "assets/placeholder.jpg"},
+                {"key": "2", "src": "assets/placeholder.jpg"},
+            ],
+            actions=[
+                vm.Action(
+                    function=slide_next_card(),
+                    # Custom components only work with model-id only if
+                    # _input_default_property / output_default_property is defined
+                    inputs=["carousel.active_index"],
+                    # Previously:
+                    # outputs=["carousel-card.children"],
+                    # Now:
+                    outputs=["carousel-card"],
+                )
+            ],
+        ),
+    ],
+)
+
+
+page_four = vm.Page(
+    title="Check Validations",
+    components=[
+        vm.Button(
+            id="button-id",
+            actions=[
+                vm.Action(
+                    function=action_function(),
+                    # This is how we had to define it before:
+                    # inputs=["trigger-button-smoke-id.n_clicks"],
+                    # outputs=["card-id.children"],
+                    # Now we can just do this:
+                    inputs=["button-id"],
+                    # Case A: Model-ID doesn't exist
+                    # Throws KeyError before dashboard creation: "Component with ID 'wrong-id' not found.
+                    # Please provide a valid component ID or use the explicit format '<component-id>.<property>'."
+                    # outputs=["wrong-id"]
+                    # Case B: Model-ID doesn't exist and property doesn't exist
+                    # Throws A Nonexisting object was used as an Output to a Dash callback AFTER dashboard
+                    # creation. LQ: I guess this worked like this before as well? Since we don't check for existing
+                    # properties or not. But anyway, should this be rather caught by Case A?
+                    # outputs=["wrong-id.prop"],
+                    # Case C: Model-ID doesn't exist but property does
+                    # Throws A Nonexisting object was used as an Output to a Dash callback AFTER dashboard
+                    # creation. LQ: I guess this worked like this before as well? Since we don't check for existing
+                    # properties or not. But anyway, should this be rather caught by Case A?
+                    # outputs=["wrong-id.children"]
+                    # Case D: Model-ID exists but property doesn't exist
+                    # Currently not captured at all - bad.
+                    # outputs=["card-id-validation.prop"]
+                    # Case E: Syntax is wrong (no dot notation or single model id) - doesn't matter if id/property
+                    # exist or not
+                    # Throws KeyError before dashboard creation: "Component with ID
+                    # 'card-id-validation.children.children' not found. Please
+                    # provide a valid component ID or use the explicit format '<component-id>.<property>'."
+                    # outputs=["card-id-validation.children.children"]
+                    # outputs=["card-id-validation..children.children"]
+                    # outputs=["card-id..childre"]
+                    # Case X: Then all of the dict cases
+                )
+            ],
+        ),
+        vm.Card(
+            id="card-id-validation",
+            text="Click the button to update me",
+        ),
+    ],
+)
+
+dashboard = vm.Dashboard(pages=[page_one, page_two, page_three, page_four])
 
 if __name__ == "__main__":
     Vizro().build(dashboard).run()
