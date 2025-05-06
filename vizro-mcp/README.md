@@ -6,13 +6,25 @@ Vizro-MCP is a [Model Context Protocol (MCP)](https://modelcontextprotocol.io/) 
 
 Vizro-MCP provides tools and templates to create a functioning Vizro chart or dashboard step by step. Benefits include:
 
-✅ One consistent framework for charts and dashboards with one common design language. ✅ Validated config output that is readable and easy to alter or maintain. ✅ Live preview of the dashboard to iterate the design until the dashboard is perfect. ✅ Use of local or remote datasets simply by providing a path or URL.
+✅ One consistent framework for charts and dashboards with one common design language.
+
+✅ Validated config output that is readable and easy to alter or maintain.
+
+✅ Live preview of the dashboard to iterate the design until the dashboard is perfect.
+
+✅ Use of local or remote datasets simply by providing a path or URL.
 
 ### Without Vizro-MCP
 
 Without Vizro-MCP, if you try to make a dashboard using an LLM, it could choose any framework, and use it without specific guidance, design principles, or consistency. The results are:
 
-❌ A random choice of frontend framework or charting library. ❌ A vibe-coded mess that may or may not run, but certainly is not very maintainable. ❌ No way to easily preview the dashboard. ❌ No easy way to connect to real data.
+❌ A random choice of frontend framework or charting library.
+
+❌ A vibe-coded mess that may or may not run, but certainly is not very maintainable.
+
+❌ No way to easily preview the dashboard.
+
+❌ No easy way to connect to real data.
 
 ## 🛠️ Get started
 
@@ -49,7 +61,7 @@ Add the following to your `claude_desktop_config.json` [found via Developer Sett
 }
 ```
 
-> ⚠️ **Warning:** In some cases you may need to provide the full path to your `uv` executable, so instead of `uv` would use something like `/Users/<your-username>/.local/bin/uv`. To discover the path of `uv` on your machine, in your terminal app, type `which uv`.
+> ⚠️ **Warning:** In some cases you may need to provide the full path to your `uvx` executable, so instead of `uvx` would use something like `/Users/<your-username>/.local/bin/uvx`. To discover the path of `uvx` on your machine, in your terminal app, type `which uvx`.
 
 If you are using Claude Desktop, restart it, and after a few moments, you should see the vizro-mcp menu when opening the settings/context menu:
 
@@ -75,7 +87,7 @@ Add the following to `mcp.json` [found via the Cursor Settings](https://docs.cur
 }
 ```
 
-> ⚠️ **Warning:** In some cases you may need to provide the full path to your `uv` executable, so instead of `uv` would use something like `/Users/<your-username>/.local/bin/uv`. To discover the path of `uv` on your machine, in your terminal app, type `which uv`.
+> ⚠️ **Warning:** In some cases you may need to provide the full path to your `uvx` executable, so instead of `uvx` would use something like `/Users/<your-username>/.local/bin/uvx`. To discover the path of `uvx` on your machine, in your terminal app, type `which uvx`.
 
 Similarly, when using Cursor, after a short pause, you should see a green light in the MCP menu:
 
@@ -103,6 +115,8 @@ You can also ask the LLM to create specific dashboards based on local or remote 
 
 > _Create a simple two page Vizro dashboard, with first page being a correlation analysis of `<insert absolute file path or public URL>` data, and the second page being a map plot of `<insert absolute file path or public URL>` data_
 
+You can find a set of sample CSVs to try out in the [Plotly repository](https://github.com/plotly/datasets/tree/master).
+
 You can even ask for a dashboard without providing data:
 
 > _Create a Vizro dashboard with one page, a scatter chart, and a filter._
@@ -119,9 +133,11 @@ You can also ask the model to give you the link, but it will attempt to regenera
 
 ### Create Vizro charts
 
-The **easiest** way to get started with Vizro charts is to choose the template `create_vizro_chart` and just send the prompt. This will create a simple chart that you can alter. Take it from there!
+If you don't want to create an entire Vizro dashboard, you can still use Vizro-MCP to create the code for a single chart. If you're not sure what kind of chart you want, check out the [Vizro Visual Vocabulary](https://huggingface.co/spaces/vizro/demo-visual-vocabulary) for ideas.
 
-Alternatively, you can just ask in the chat things like:
+The **easiest** way to create a Vizro chart is to choose the template `create_vizro_chart` and just send the prompt. This will create a simple chart that you can alter. Take it from there!
+
+Alternatively, you can just ask in the chat, for example:
 
 > _Create a scatter based on the iris dataset._
 
@@ -149,12 +165,8 @@ The Vizro MCP server provides the following tools. In general you should not nee
 ## Available Prompts (if client allows)
 
 - `create_starter_dashboard` - Use this prompt template to get started with Vizro dashboards.
-- `create_EDA_dashboard` - Use this prompt template to create an Exploratory Data Analysis (EDA) dashboard based on a local or remote CSV dataset
-- `create_vizro_chart` - Use this prompt template to create a Vizro styled plotly chart based on a local or remote CSV dataset
-
-## Sample data
-
-You can find a set of sample CSVs to try out in the [Plotly repository](https://github.com/plotly/datasets/tree/master).
+- `create_EDA_dashboard` - Use this prompt template to create an Exploratory Data Analysis (EDA) dashboard based on a local or remote CSV dataset.
+- `create_vizro_chart` - Use this prompt template to create a Vizro styled plotly chart based on a local or remote CSV dataset.
 
 ## Development or running from source
 
@@ -182,12 +194,67 @@ If you are a developer, or if you are running Vizro-MCP from source, you need to
 
 Replace `<PATH TO VIZRO>` with the actual path to your Vizro repository. You may also need to provide the full path to your `uv` executable, so instead of `"uv"` you would use something like `"/Users/<your-username>/.local/bin/uv"`. To discover the path of `uv` on your machine, in your terminal app, type `which uv`.
 
-## Other cool MCP Servers
+## Disclaimers
 
-Here are some other awesome MCP servers you might want to check out:
+<details>
+<summary><strong>Third party API</strong></summary>
 
-- [Context7](https://github.com/upstash/context7) - Provides up-to-date code documentation for any library directly in your prompts. Great for getting the latest API references and examples without relying on outdated training data.
+Users are responsible for anything done via their host LLM application.
 
-- [Everything MCP](https://github.com/modelcontextprotocol/servers/tree/main/src/everything) - A development-focused MCP server that combines multiple capabilities including web search, code search, and more. Useful for testing and prototyping MCP features. Part of the official MCP servers collection.
+Users are responsible for procuring any and all rights necessary to access any third-party generative AI tools and for complying with any applicable terms or conditions thereof.
 
-You can find more MCP servers in the [official MCP servers repository](https://github.com/modelcontextprotocol/servers/tree/main).
+Users are wholly responsible for the use and security of the third-party generative AI tools and of Vizro.
+
+</details>
+
+<details>
+<summary><strong>User acknowledgments</strong></summary>
+
+Users acknowledge and agree that:
+
+Any results, options, data, recommendations, analyses, code, or other information (“Outputs”) generated by any third-party generative AI tools (“GenAI Tools”) may contain some inaccuracies, biases, illegitimate, potentially infringing, or otherwise inappropriate content that may be mistaken, discriminatory, or misleading.
+
+McKinsey & Company:
+
+(i) expressly disclaims the accuracy, adequacy, timeliness, reliability, merchantability, fitness for a particular purpose, non-infringement, safety or completeness of any Outputs,
+
+(ii) shall not be liable for any errors, omissions, or other defects in, delays or interruptions in such Outputs, or for any actions taken in reliance thereon, and
+
+(iii) shall not be liable for any alleged violation or infringement of any right of any third party resulting from the users’ use of the GenAI Tools and the Outputs.
+
+The Outputs shall be verified and validated by the users and shall not be used without human oversight and as a sole basis for making decisions impacting individuals.
+
+Users remain solely responsible for the use of the Output, in particular, the users will need to determine the level of human oversight needed to be given the context and use case, as well as for informing the users’ personnel and other affected users about the nature of the GenAI Output. Users are also fully responsible for their decisions, actions, use of Vizro and Vizro-MCP and compliance with applicable laws, rules, and regulations, including but not limited to confirming that the Outputs do not infringe any third-party rights.
+
+</details>
+
+<details>
+<summary><strong>Warning and safety usage for generative AI models</strong></summary>
+
+Vizro-MCP is used by generative AI models because large language models (LLMs) represent significant advancements in the AI field. However, as with any powerful tool, there are potential risks associated with connecting to a generative AI model.
+
+We recommend users research and understand the selected model before using Vizro-MCP.
+
+Users are encouraged to treat AI-generated content as supplementary, always apply human judgment, approach with caution, review the relevant disclaimer page, and consider the following:
+
+<ol>
+<li>Hallucination and misrepresentation</li>
+Generative models can potentially generate information while appearing factual, being entirely fictitious or misleading.
+
+The vendor models might lack real-time knowledge or events beyond its last updates. Vizro-MCP output may vary and you should always verify critical information. It is the user's responsibility to discern the accuracy, consistent, and reliability of the generated content.
+
+<li>Unintended and sensitive output</li>
+The outputs from these models can be unexpected, inappropriate, or even harmful. Users as human in the loop is an essential part. Users must check and interpret the final output. It is necessary to approach the generated content with caution, especially when shared or applied in various contexts.
+
+<li>Data privacy</li>
+Your data is sent to model vendors if you connect to LLMs via their APIs. For example, if you connect to the model from OpenAI, your data will be sent to OpenAI via their API. Users should be cautious about sharing or inputting any personal or sensitive information.
+
+<li>Bias and fairness</li>
+Generative AI can exhibit biases present in their training data. Users need to be aware of and navigate potential biases in generated outputs and be cautious when interpreting the generated content.
+
+<li>Malicious use</li>
+These models can be exploited for various malicious activities. Users should be cautious about how and where they deploy and access such models.
+</ol>
+It's crucial for users to remain informed, cautious, and ethical in their applications.
+
+</details>
