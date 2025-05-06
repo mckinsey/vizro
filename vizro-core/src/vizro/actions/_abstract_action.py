@@ -6,10 +6,10 @@ from typing import Union
 
 from dash import Output
 from dash.development.base_component import Component
-from pydantic import TypeAdapter, ValidationError
+from pydantic import TypeAdapter
 
 from vizro.models._action._action import _BaseAction
-from vizro.models.types import _IdProperty, DotSeparatedStr
+from vizro.models.types import _DotSeparatedStr, _IdProperty
 
 
 # TODO-AV2 D 5: make public.
@@ -78,7 +78,7 @@ class _AbstractAction(_BaseAction, abc.ABC):
     def _transformed_outputs(self) -> Union[list[Output], dict[str, Output]]:
         # Action.outputs is validated by pydantic, but for _AbstractAction.outputs we need to do the validation
         # manually.
-        TypeAdapter(Union[list[DotSeparatedStr], dict[str, DotSeparatedStr]]).validate_python(self.outputs)
+        TypeAdapter(Union[list[_DotSeparatedStr], dict[str, _DotSeparatedStr]]).validate_python(self.outputs)
         return super()._transformed_outputs
 
     @property

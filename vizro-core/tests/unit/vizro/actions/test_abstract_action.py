@@ -1,8 +1,7 @@
 import pytest
-from pydantic import ValidationError
-
 from asserts import assert_component_equal
 from dash import Output, State, html
+from pydantic import ValidationError
 
 from vizro.actions._abstract_action import _AbstractAction
 

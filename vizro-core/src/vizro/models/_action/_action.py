@@ -9,14 +9,14 @@ from typing import TYPE_CHECKING, Annotated, Any, Callable, ClassVar, Literal, U
 
 from dash import Input, Output, State, callback, html
 from dash.development.base_component import Component
-from pydantic import Field, TypeAdapter, ValidationError, field_validator
+from pydantic import Field, TypeAdapter, field_validator
 from pydantic.json_schema import SkipJsonSchema
 from typing_extensions import TypedDict
 
 from vizro.managers._model_manager import model_manager
 from vizro.models import VizroBaseModel
 from vizro.models._models_utils import _log_call
-from vizro.models.types import CapturedCallable, ControlType, DotSeparatedStr, _IdProperty, validate_captured_callable
+from vizro.models.types import CapturedCallable, ControlType, _DotSeparatedStr, _IdProperty, validate_captured_callable
 
 logger = logging.getLogger(__name__)
 
@@ -76,7 +76,6 @@ class _BaseAction(VizroBaseModel):
         # TODO-AV D 3: try to enable properties that aren't Dash properties but are instead model fields e.g. header,
         #  title. See https://github.com/mckinsey/vizro/issues/1078.
         #  Note this is needed for inputs in both vm.Action and _AbstractAction but outputs only in _AbstractAction.
-        # TODO NOW: new test cases
         pass
 
     def _get_control_states(self, control_type: ControlType) -> list[State]:
@@ -135,7 +134,7 @@ class _BaseAction(VizroBaseModel):
         # _AbstractAction but not vm.Action instances because a vm.Action that does not pass this check will
         # have already been classified as legacy in Action._legacy. In future when vm.Action.inputs is deprecated
         # then this will be used for vm.Action instances also.
-        TypeAdapter(dict[str, DotSeparatedStr]).validate_python(self._runtime_args)
+        TypeAdapter(dict[str, _DotSeparatedStr]).validate_python(self._runtime_args)
 
         # User specified arguments runtime_args take precedence over built in reserved arguments. No static arguments
         # ar relevant here, just Dash States. Static arguments values are stored in the state of the relevant
@@ -272,9 +271,9 @@ class Action(_BaseAction):
 
     Args:
         function (CapturedCallable): Action function.
-        inputs (list[DotSeparatedStr]): List of inputs provided to the action function, each specified as
+        inputs (list[_DotSeparatedStr]): List of inputs provided to the action function, each specified as
             `<component_id>.<property>`. Defaults to `[]`.
-        outputs (Union[list[DotSeparatedStr], dict[str, DotSeparatedStr]]): List or dictionary of outputs modified by
+        outputs (Union[list[_DotSeparatedStr], dict[str, _DotSeparatedStr]]): List or dictionary of outputs modified by
             the action function, where each output needs to be specified as `<component_id>.<property>`.
             Defaults to `[]`.
     """
@@ -298,12 +297,12 @@ class Action(_BaseAction):
     ]
     # inputs is a legacy field and will be deprecated. It must only be used when _legacy = True.
     # TODO-AV2 C 1: Put in deprecation warning.
-    inputs: list[DotSeparatedStr] = Field(
+    inputs: list[_DotSeparatedStr] = Field(
         default=[],
         description="""List of inputs provided to the action function, each specified as `<component_id>.<property>`.
             Defaults to `[]`.""",
     )
-    outputs: Union[list[DotSeparatedStr], dict[str, DotSeparatedStr]] = Field(  # type: ignore
+    outputs: Union[list[_DotSeparatedStr], dict[str, _DotSeparatedStr]] = Field(  # type: ignore
         default=[],
         description="""List or dictionary of outputs modified by the action function, where each output needs to be
             specified as `<component_id>.<property>`. Defaults to `[]`.""",

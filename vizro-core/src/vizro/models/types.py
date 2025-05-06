@@ -630,7 +630,11 @@ ActionType = Annotated[
 FigureWithFilterInteractionType = Union["Graph", "Table", "AgGrid"]
 FigureType = Union["Graph", "Table", "AgGrid", "Figure"]
 
-DotSeparatedStr = Annotated[str, StringConstraints(pattern="^[^.]+[.][^.]+$")]
+# TODO-AV2 D 3: think about how to make this public and use in our inbuilt actions. Compare to _IdProperty.
+# Consider how it works if you just specify model name and not a dot separated string. Do we need a new composite type
+# for Union[list[_DotSeparatedStr], dict[str, _DotSeparatedStr]] too? Consider parameter target form too and whether
+# it should work similarly.
+_DotSeparatedStr = Annotated[str, StringConstraints(pattern="^[^.]+[.][^.]+$")]
 """A string that must contain exactly one dot ('.'), with at least one character on both sides.
 For example: 'model-id.children'."""
 
