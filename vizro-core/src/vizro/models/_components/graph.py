@@ -70,6 +70,9 @@ class Graph(VizroBaseModel):
     # Component properties for actions and interactions
     _output_component_property: str = PrivateAttr("figure")
 
+    # will probably need to do with a property ultimately to use self.id
+    _outputs = {"__default__": f"{self.id}.figure", "header": f"{self.id}_header.children"}
+
     _validate_figure = field_validator("figure", mode="before")(validate_captured_callable)
 
     # Convenience wrapper/syntactic sugar.

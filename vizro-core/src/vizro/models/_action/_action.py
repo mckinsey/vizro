@@ -73,7 +73,7 @@ class _BaseAction(VizroBaseModel):
         #  become `return self.targets` or similar. Consider again whether to do this translation automatically if
         #  targets is defined as a field, but sounds like bad idea since it doesn't carry over into the
         #  capture("action") style of action.
-        # TODO-AV D 3: try to enable properties that aren't Dash properties but are instead model fields e.g. header,
+        # TODO-AV2 D 3: try to enable properties that aren't Dash properties but are instead model fields e.g. header,
         #  title. See https://github.com/mckinsey/vizro/issues/1078.
         #  Note this is needed for inputs in both vm.Action and _AbstractAction but outputs only in _AbstractAction.
         pass
@@ -135,13 +135,39 @@ class _BaseAction(VizroBaseModel):
         # have already been classified as legacy in Action._legacy. In future when vm.Action.inputs is deprecated
         # then this will be used for vm.Action instances also.
         TypeAdapter(dict[str, _DotSeparatedStr]).validate_python(self._runtime_args)
-
+        # Do exactly same lookup but we only have "__default__" defined in inputs dictionary so will only ever use that
+        # case
         # User specified arguments runtime_args take precedence over built in reserved arguments. No static arguments
         # ar relevant here, just Dash States. Static arguments values are stored in the state of the relevant
         # _AbstractAction instance.
-        runtime_args = {arg_name: State(*arg_value.split(".")) for arg_name, arg_value in self._runtime_args.items()}
+        runtime_args = {
+            arg_name: State(*self._transform(arg_value).split("."))
+            for arg_name, arg_value in self._runtime_args.items()
+        }
 
         return builtin_args | runtime_args
+
+    @staticmethod
+    def _transform(output):
+        # need to make this work with outputs or inputs
+        # Need to also handle case that _outputs isn't defined
+        if "." in output:
+            component_id, component_property = output.split(".")
+            if component_id in model_manager and component_property in model_manager[component_id]._outputs:
+                return model_manager[component_id]._outputs[component_property]
+
+            # not a problem if either case of and is False, just leave output unchanged
+            return output
+
+        component_id, component_property = output, "__default__"
+        if component_id not in model_manager:
+            # this is a problem
+            raise
+        elif component_property not in model_manager[component_id]._outputs:
+            # this is a problem
+            raise
+
+        return model_manager[component_id]._outputs["__default__"]
 
     @property
     def _transformed_outputs(self) -> Union[list[Output], dict[str, Output]]:
@@ -157,7 +183,7 @@ class _BaseAction(VizroBaseModel):
         """
 
         def _transform_output(output):
-            return Output(*output.split("."), allow_duplicate=True)
+            return Output(*self._transform(output).split("."), allow_duplicate=True)
 
         if isinstance(self.outputs, list):
             callback_outputs = [_transform_output(output) for output in self.outputs]
