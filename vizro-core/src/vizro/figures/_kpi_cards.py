@@ -24,7 +24,7 @@ def kpi_card(
 
     **Warning:** Note that the format string provided to `value_format` is being evaluated, so ensure that only trusted
     user input is provided to prevent
-    [potential security risks](https://stackoverflow.com/questions/76783239/is-it-safe-to-use-python-str-format-method-with-user-submitted-templates-in-serv).
+    [potential security risks](https://security.stackexchange.com/questions/238338/are-there-any-security-concerns-to-using-python-f-strings-with-user-input).
 
     Args:
         data_frame: DataFrame containing the data.
@@ -89,7 +89,7 @@ def kpi_card_reference(  # noqa: PLR0913
 
     **Warning:** Note that the format string provided to `value_format` and `reference_format` is being evaluated,
     so ensure that only trusted user input is provided to prevent
-    [potential security risks](https://stackoverflow.com/questions/76783239/is-it-safe-to-use-python-str-format-method-with-user-submitted-templates-in-serv).
+    [potential security risks](https://security.stackexchange.com/questions/238338/are-there-any-security-concerns-to-using-python-f-strings-with-user-input).
 
     Args:
         data_frame: DataFrame containing the data.
