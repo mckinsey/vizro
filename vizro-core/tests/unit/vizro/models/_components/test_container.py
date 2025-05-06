@@ -173,7 +173,8 @@ class TestContainerBuildMethod:
             layout=vm.Grid(id="layout_id", grid=[[0]]),
             description=vm.Tooltip(text="Tooltip test", icon="info", id="info"),
         ).build()
-        description = [
+
+        expected_description = [
             html.Span("info", id="info-icon", className="material-symbols-outlined tooltip-icon"),
             dbc.Tooltip(
                 children=dcc.Markdown("Tooltip test", className="card-text"),
@@ -190,7 +191,7 @@ class TestContainerBuildMethod:
         assert_component_equal(
             result.children[0],
             html.H3(
-                [html.Div(["Title", *description], className="inner-container-title")],
+                [html.Div(["Title", *expected_description], className="inner-container-title")],
                 className="container-title",
                 id="container_title",
             ),

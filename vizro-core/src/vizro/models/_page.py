@@ -57,8 +57,7 @@ class Page(VizroBaseModel):
         components (list[ComponentType]): See [ComponentType][vizro.models.types.ComponentType]. At least one component
             has to be provided.
         title (str): Title of the `Page`.
-        description (Optional[Tooltip]): Additional information about the page shown in a tooltip and used for
-            description meta tag.
+        description (Optional[Tooltip]): Optional markdown string that adds an icon next to the title.
         layout (Optional[LayoutType]): Layout to place components in. Defaults to `None`.
         controls (list[ControlType]): See [ControlType][vizro.models.types.ControlType]. Defaults to `[]`.
         path (str): Path to navigate to page. Defaults to `""`.
@@ -76,7 +75,7 @@ class Page(VizroBaseModel):
         BeforeValidator(coerce_str_to_tooltip),
         Field(
             default=None,
-            description="Additional information about the page shown in a tooltip and used for description meta tag.",
+            description="Optional markdown string that adds an icon next to the title.",
         ),
     ]
     controls: list[ControlType] = []

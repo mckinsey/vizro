@@ -64,5 +64,4 @@ and all containers need to have a white background on that page */
   align-items: center;
   display: flex;
   gap: 8px;
-  margin-bottom: 0;
 }

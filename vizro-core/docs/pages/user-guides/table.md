@@ -558,13 +558,13 @@ The [`Table`][vizro.models.Table] and the [`AgGrid`][vizro.models.AgGrid] models
                     title="Gapminder Data Insights",
                     header="""#### An Interactive Exploration of Global Health, Wealth, and Population""",
                     footer="""SOURCE: **Plotly gapminder data set, 2024**""",
+                    description="""
+                        The Gapminder dataset tracks the development of countries over time using indicators like life expectancy, income per person, and population size.
+
+                        It helps reveal broad global trends, such as how health and wealth have improved in many regions, although progress hasn’t been even across all countries.
+                    """,
                 )
             ],
-            description="""
-                The Gapminder dataset tracks the development of countries over time using indicators like life expectancy, income per person, and population size.
-
-                It helps reveal broad global trends, such as how health and wealth have improved in many regions—though progress hasn’t been even across all countries.
-            """,
         )
 
         dashboard = vm.Dashboard(pages=[page])
@@ -591,7 +591,7 @@ The [`Table`][vizro.models.Table] and the [`AgGrid`][vizro.models.AgGrid] models
                 description: |
                   The Gapminder dataset tracks the development of countries over time using indicators like life expectancy, income per person, and population size.
 
-                  It helps reveal broad global trends, such as how health and wealth have improved in many regions—though progress hasn’t been even across all countries.
+                  It helps reveal broad global trends, such as how health and wealth have improved in many regions, although progress hasn’t been even across all countries.
                 type: ag_grid
             title: Formatted AgGrid
         ```
@@ -623,13 +623,13 @@ The [`Table`][vizro.models.Table] and the [`AgGrid`][vizro.models.AgGrid] models
                     title="Gapminder Data Insights",
                     header="""#### An Interactive Exploration of Global Health, Wealth, and Population""",
                     footer="""SOURCE: **Plotly gapminder data set, 2024**""",
+                    description="""
+                        The Gapminder dataset tracks the development of countries over time using indicators like life expectancy, income per person, and population size.
+
+                        It helps reveal broad global trends, such as how health and wealth have improved in many regions, although progress hasn’t been even across all countries.
+                    """,
                 )
             ],
-            description="""
-                The Gapminder dataset tracks the development of countries over time using indicators like life expectancy, income per person, and population size.
-
-                It helps reveal broad global trends, such as how health and wealth have improved in many regions—though progress hasn’t been even across all countries.
-            """,
         )
 
         dashboard = vm.Dashboard(pages=[page])
@@ -654,7 +654,7 @@ The [`Table`][vizro.models.Table] and the [`AgGrid`][vizro.models.AgGrid] models
                 description: |
                   The Gapminder dataset tracks the development of countries over time using indicators like life expectancy, income per person, and population size.
 
-                  It helps reveal broad global trends, such as how health and wealth have improved in many regions—though progress hasn’t been even across all countries.
+                  It helps reveal broad global trends, such as how health and wealth have improved in many regions, although progress hasn’t been even across all countries.
                 type: table
             title: Formatted DataTable
         ```

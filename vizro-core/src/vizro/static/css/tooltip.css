@@ -1,5 +1,7 @@
 .tooltip-icon {
-    cursor: pointer;
+  color: var(--text-secondary);
+  cursor: pointer;
+  font-size: 20px;
 }
 
 .tooltip-icon:hover {
@@ -7,7 +9,7 @@
 }
 
 .tooltip-inner  {
-    max-width: 400px;
+  max-width: 400px;
 }
 
 .tooltip-inner * {
@@ -15,23 +17,23 @@
 }
 
 .tooltip-inner p {
-    margin-bottom: 0.5rem;
+  margin-bottom: 0.5rem;
 }
 
 .tooltip-inner a:hover {
   color: var(--text-primaryHover-inverted);
 }
 
-/* We differentiate between 3 different icon sizes: 16px, 24px, 32px. 24px is our default.
-Use 16px for all text. Use 24px for all headings. */
+/* We differentiate between 3 different icon sizes: 16px, 20px and 24px. 20px is our default.
+Use 16px for all text. Use 20px for all headings. */
 .form-label .tooltip-icon {
-    font-size: 16px;
+  font-size: 16px;
 }
 
 .form-label {
-    align-items: center;
-    display: flex;
-    gap: 8px;
+  align-items: center;
+  display: flex;
+  gap: 8px;
 }
 
 #dashboard-title, #page-title, .form-label {
@@ -40,25 +42,6 @@ Use 16px for all text. Use 24px for all headings. */
   gap: 8px;
 }
 
-.container-title-collapse .tooltip-icon {
-  align-items: center;
-  display: flex;
-  font-size: 20px;
-  gap: 8px;
-}
-
-.container-title .tooltip-icon {
-  align-items: center;
-  display: flex;
-  font-size: 20px;
-  gap: 8px;
-}
-
-.figure-title .tooltip-icon {
-  color: var(--text-secondary);
-  font-size: 20px
-}
-
-.figure-title .tooltip-icon:hover {
-  color: var(--text-primaryHover);
+#dashboard-title .tooltip-icon {
+  font-size: 24px;
 }

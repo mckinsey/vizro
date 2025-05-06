@@ -206,7 +206,7 @@ class Dashboard(VizroBaseModel):
 
     def _get_page_divs(self, page: Page) -> _PageDivsType:
         # Identical across pages
-        dashboard_description = self.description.build().children if self.description is not None else [None]
+        dashboard_description = self.description.build().children if self.description else [None]
         dashboard_title = (
             html.H2(id="dashboard-title", children=[self.title, *dashboard_description])
             if self.title
@@ -236,7 +236,7 @@ class Dashboard(VizroBaseModel):
 
         # Shared across pages but slightly differ in content. These could possibly be done by a clientside
         # callback instead.
-        page_description = page.description.build().children if page.description is not None else [None]
+        page_description = page.description.build().children if page.description else [None]
         page_title = html.H2(id="page-title", children=[page.title, *page_description])
         # cannot actually be None if you check pages and layout field together
         navigation: _NavBuildType = cast(Navigation, self.navigation).build(active_page_id=page.id)

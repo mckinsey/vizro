@@ -232,13 +232,13 @@ class TestBuildGraph:
         )
         assert_component_equal(graph, expected_graph, keys_to_strip={"id"})
 
-    def test_graph_build_title_description(self, standard_px_chart):
+    def test_graph_build_with_description(self, standard_px_chart):
         graph = vm.Graph(
             figure=standard_px_chart,
             title="Title",
             description=vm.Tooltip(text="Tooltip test", icon="info", id="info"),
         ).build()
-        description = [
+        expected_description = [
             html.Span("info", id="info-icon", className="material-symbols-outlined tooltip-icon"),
             dbc.Tooltip(
                 children=dcc.Markdown("Tooltip test", className="card-text"),
@@ -250,7 +250,7 @@ class TestBuildGraph:
         expected_graph = dcc.Loading(
             html.Div(
                 [
-                    html.H3(["Title", *description], className="figure-title"),
+                    html.H3(["Title", *expected_description], className="figure-title"),
                     None,
                     dcc.Graph(
                         figure=go.Figure(

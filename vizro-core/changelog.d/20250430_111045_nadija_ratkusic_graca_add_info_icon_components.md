@@ -16,12 +16,11 @@ Uncomment the section that is right (remove the HTML comment wrapper).
 - A bullet item for the Removed category with a link to the relevant PR at the end of your entry, e.g. Enable feature XXX. ([#1](https://github.com/mckinsey/vizro/pull/1))
 
 -->
-<!--
+
 ### Added
 
-- A bullet item for the Added category with a link to the relevant PR at the end of your entry, e.g. Enable feature XXX. ([#1](https://github.com/mckinsey/vizro/pull/1))
+- Add `description` argument to `Container`, `Graph`, `Table`, `AgGrid`, `Page` and `Title` to enable info-icons in selector titles. See the [user guide on info-icons for the Page as an example](XXX). ([#1144](https://github.com/mckinsey/vizro/pull/1144))
 
--->
 <!--
 ### Changed
 

@@ -415,9 +415,13 @@ Collapsible containers can be used in `Grid` layout as well.
 
 ## Add an info-icon
 
-The `description` argument enables you to add helpful context to your container by displaying an info icon next to its title. Hovering over the icon shows a tooltip with your provided text.
+The `description` argument enables you to add helpful context to your container by displaying an info icon next to its title. Hovering over the icon shows a tooltip with your chosen text.
 
-You can provide a string to use the default info icon, or pass a custom [`Tooltip`][vizro.models.Tooltip] model to define both a custom icon from the [Google Material Icons library](https://fonts.google.com/icons) and the description text.
+To use the default info icon, just provide a string of description text. To use a custom icon, pass a custom [`Tooltip`][vizro.models.Tooltip] model to use an icon from the [Google Material Icons library](https://fonts.google.com/icons) alongside your description text.
+
+```python
+description = Tooltip(text="More information about this container.", icon="help")
+```
 
 !!! example "Container with info-icon"
 

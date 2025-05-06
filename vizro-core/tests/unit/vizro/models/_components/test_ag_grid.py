@@ -227,7 +227,7 @@ class TestBuildAgGrid:
         )
         assert_component_equal(ag_grid, expected_ag_grid, keys_to_strip={"id"})
 
-    def test_aggrid_build_title_tooltip(self, standard_ag_grid):
+    def test_aggrid_build_with_description(self, standard_ag_grid):
         ag_grid = vm.AgGrid(
             figure=standard_ag_grid,
             title="Title",
@@ -235,7 +235,8 @@ class TestBuildAgGrid:
         )
         ag_grid.pre_build()
         ag_grid = ag_grid.build()
-        description = [
+
+        expected_description = [
             html.Span("info", id="info-icon", className="material-symbols-outlined tooltip-icon"),
             dbc.Tooltip(
                 children=dcc.Markdown("Tooltip test", className="card-text"),
@@ -247,7 +248,7 @@ class TestBuildAgGrid:
         expected_ag_grid = dcc.Loading(
             html.Div(
                 children=[
-                    html.H3(["Title", *description], className="figure-title"),
+                    html.H3(["Title", *expected_description], className="figure-title"),
                     None,
                     html.Div(
                         children=[html.Div()],
