@@ -3,7 +3,6 @@
 import pytest
 from asserts import assert_component_equal
 from dash import Output, State, html
-from pydantic import ValidationError
 
 from vizro.models._action._action import Action
 from vizro.models.types import capture
@@ -159,6 +158,7 @@ class TestLegacyActionOutputs:
         assert action._legacy
         assert action.outputs == outputs
         assert action._transformed_outputs == expected_transformed_outputs
+
 
 class TestIsActionLegacy:
     """Tests action._legacy property."""
@@ -415,9 +415,13 @@ class TestBaseActionValidateDependencies:
         ],
     )
     def test_action_inputs_invalid(self, runtime_inputs):
-        with pytest.raises(KeyError, match="Please provide a valid component ID or use the explicit format"):
-           action = Action(function=action_with_one_arg(), inputs=runtime_inputs)
-           action._validate_dash_dependencies(runtime_inputs, type="inputs")
+        with pytest.raises(
+            KeyError,
+            match="Component with ID .* not found. Please provide a valid component ID or use the explicit "
+            "format '<component-id>.<property>'.",
+        ):
+            action = Action(function=action_with_one_arg(), inputs=runtime_inputs)
+            action._validate_dash_dependencies(runtime_inputs, type="inputs")
 
     @pytest.mark.parametrize(
         "outputs",
@@ -441,7 +445,11 @@ class TestBaseActionValidateDependencies:
         ],
     )
     def test_action_outputs_invalid(self, outputs):
-        with pytest.raises(KeyError, match="Please provide a valid component ID or use the explicit format"):
+        with pytest.raises(
+            KeyError,
+            match="Component with ID .* not found. Please provide a valid component ID or use the explicit "
+            "format '<component-id>.<property>'.",
+        ):
             action = Action(function=action_with_no_args(), outputs=outputs)
             action._validate_dash_dependencies(outputs, type="output")
 
@@ -467,7 +475,11 @@ class TestBaseActionValidateDependencies:
         ],
     )
     def test_action_outputs_invalid_legacy(self, outputs):
-        with pytest.raises(KeyError, match="Please provide a valid component ID or use the explicit format"):
+        with pytest.raises(
+            KeyError,
+            match="Component with ID .* not found. Please provide a valid component ID or use the explicit "
+            "format '<component-id>.<property>'.",
+        ):
             # inputs=[] added to force action to be legacy
             action = Action(function=action_with_no_args(), inputs=[], outputs=outputs)
             action._validate_dash_dependencies(outputs, type="output")

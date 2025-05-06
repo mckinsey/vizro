@@ -174,7 +174,9 @@ class TestAbstractActionInputs:
     )
     def test_runtime_inputs_invalid(self, input):
         with pytest.raises(
-            ValueError, match="Action inputs .* must be a string of the form <component_name>.<component_property>."
+            KeyError,
+            match="Component with ID .* not found. Please provide a valid component ID or use the explicit "
+            "format '<component-id>.<property>'.",
         ):
             # An error is raised when accessing _transformed_inputs which is fine because validation is then performed.
             action_with_one_runtime_arg(arg_1=input)._transformed_inputs
