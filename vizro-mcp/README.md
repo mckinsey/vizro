@@ -194,7 +194,6 @@ If you are a developer, or if you are running Vizro-MCP from source, you need to
 
 Replace `<PATH TO VIZRO>` with the actual path to your Vizro repository. You may also need to provide the full path to your `uv` executable, so instead of `"uv"` you would use something like `"/Users/<your-username>/.local/bin/uv"`. To discover the path of `uv` on your machine, in your terminal app, type `which uv`.
 
-
 ## Disclaimers
 
 <details>
@@ -207,8 +206,6 @@ Users are responsible for procuring any and all rights necessary to access any t
 Users are wholly responsible for the use and security of the third-party generative AI tools and of Vizro.
 
 </details>
-
-
 
 <details>
 <summary><strong>User acknowledgments</strong></summary>
@@ -240,23 +237,24 @@ We recommend users research and understand the selected model before using Vizro
 
 Users are encouraged to treat AI-generated content as supplementary, always apply human judgment, approach with caution, review the relevant disclaimer page, and consider the following:
 
-1. Hallucination and misrepresentation
+<ol>
+<li>1. Hallucination and misrepresentation</li>
 Generative models can potentially generate information while appearing factual, being entirely fictitious or misleading.
 
 The vendor models might lack real-time knowledge or events beyond its last updates. Vizro-MCP output may vary and you should always verify critical information. It is the user's responsibility to discern the accuracy, consistent, and reliability of the generated content.
 
-2. Unintended and sensitive output
+<li>2. Unintended and sensitive output</li>
 The outputs from these models can be unexpected, inappropriate, or even harmful. Users as human in the loop is an essential part. Users must check and interpret the final output. It is necessary to approach the generated content with caution, especially when shared or applied in various contexts.
 
-3. Data privacy
+<li>3. Data privacy</li>
 Your data is sent to model vendors if you connect to LLMs via their APIs. For example, if you connect to the model from OpenAI, your data will be sent to OpenAI via their API. Users should be cautious about sharing or inputting any personal or sensitive information.
 
-4. Bias and fairness
+<li>4. Bias and fairness</li>
 Generative AI can exhibit biases present in their training data. Users need to be aware of and navigate potential biases in generated outputs and be cautious when interpreting the generated content.
 
-5. Malicious use
+<li>5. Malicious use</li>
 These models can be exploited for various malicious activities. Users should be cautious about how and where they deploy and access such models.
-
+</ol>
 It's crucial for users to remain informed, cautious, and ethical in their applications.
 
 </details>
