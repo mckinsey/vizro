@@ -121,7 +121,7 @@ class Page(VizroBaseModel):
 
     @_log_call
     def pre_build(self):
-        # TODO-AV D 2: work out the best place to put this logic. It could feasibly go in _on_page_load instead.
+        # TODO-AV2 D 2.5: work out the best place to put this logic. It could feasibly go in _on_page_load instead.
         #  Probably it's better where it is now since it avoid navigating up the model hierarchy
         #  (action -> page -> figures) and instead just looks down (page -> figures).
         #  Should there be validation inside _on_page_load to check that targets exist and are
