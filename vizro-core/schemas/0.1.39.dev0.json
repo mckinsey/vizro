@@ -69,7 +69,7 @@
         },
         "inputs": {
           "default": [],
-          "description": "List of inputs provided to the action function. Each input can be specified as either \n                `<component_id>.<property>` or just `<component_id>` if the model has a default input property defined. \n                Defaults to `[]`",
+          "description": "List of inputs provided to the action function. Each input can be specified as either\n                `<component_id>.<property>` or just `<component_id>` if the model has a default input property defined.\n                Defaults to `[]`",
           "items": {
             "type": "string"
           },
