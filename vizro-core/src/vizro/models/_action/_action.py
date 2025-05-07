@@ -44,10 +44,6 @@ class ControlsStates(TypedDict):
 # Note this is needed for inputs in both vm.Action and _AbstractAction but outputs only in _AbstractAction.
 
 
-# Keep TypeAdapter validation in AbstractAction as in Antony PoC, do validation of "." in string inside
-# _transform.
-
-
 class _BaseAction(VizroBaseModel):
     # The common interface shared between Action and _AbstractAction all raise NotImplementedError or are ClassVar.
     # This mypy type-check this class.
@@ -109,8 +105,8 @@ class _BaseAction(VizroBaseModel):
         structure of states.
         """
         if self._legacy:
-            # Must be an Action rather than _AbstractAction, so has already been validated by pydantic field annotation.
-            return [State(*input.split(".")) for input in cast(Action, self).inputs]
+            # Must be an Action rather than _AbstractAction, so has already been validated by pydantic field annotation.            
+            return [State(*self._transform(input, type="input").split(".")) for input in cast(Action, self).inputs]
 
         from vizro.models import Filter, Parameter
 
@@ -140,7 +136,7 @@ class _BaseAction(VizroBaseModel):
         # _AbstractAction instance.
         # Qn: should this work for legacy actions too? Think about docs.
         runtime_args = {
-            arg_name: State(*self._transform(arg_value).split("."))
+            arg_name: State(*self._transform(arg_value, type="input").split("."))
             for arg_name, arg_value in self._runtime_args.items()
         }
 
@@ -203,7 +199,7 @@ class _BaseAction(VizroBaseModel):
         """
 
         def _transform_output(output):
-            return Output(*self._transform(output).split("."), allow_duplicate=True)
+            return Output(*self._transform(output, type="output").split("."), allow_duplicate=True)
 
         if isinstance(self.outputs, list):
             callback_outputs = [_transform_output(output) for output in self.outputs]

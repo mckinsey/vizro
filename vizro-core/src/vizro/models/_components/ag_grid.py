@@ -65,7 +65,7 @@ class AgGrid(VizroBaseModel):
     _input_component_id: str = PrivateAttr()
 
     # Component properties for actions and interactions
-    _output_component_property: str = PrivateAttr("children")
+    _output_component_property: str = PrivateAttr("children") 
 
     _validate_figure = field_validator("figure", mode="before")(validate_captured_callable)
 

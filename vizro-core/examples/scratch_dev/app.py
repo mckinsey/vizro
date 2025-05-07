@@ -112,11 +112,10 @@ page_one = vm.Page(
             actions=[
                 vm.Action(
                     function=action_function_multiple(),
+                    inputs=["trigger-button.n_clicks"],
                     # This is how we had to define it before:
-                    # inputs=["trigger-button-smoke-id.n_clicks"],
                     # outputs=["card-id.children"],
                     # Now we can just do this:
-                    inputs=["trigger-button"],
                     outputs=["card-id", "tooltip-id"],
                 )
             ],
@@ -147,11 +146,7 @@ page_one_b = vm.Page(
             actions=[
                 vm.Action(
                     function=action_function_multiple_dict(),
-                    # This is how we had to define it before:
-                    # inputs=["trigger-button-smoke-id.n_clicks"],
-                    # outputs={"anything": "card-id.children", "anything_2": "tooltip-id.is_open"},
-                    # Now we can just do this:
-                    inputs=["trigger-button-2"],
+                    inputs=["trigger-button-2.n_clicks"],
                     outputs={"anything": "card-id-2", "anything_two": "tooltip-id-2"},
                 )
             ],
@@ -182,10 +177,7 @@ page_two = vm.Page(
             actions=[
                 vm.Action(
                     function=open_offcanvas(),
-                    # Previously
-                    # inputs=["open_button.n_clicks", "offcanvas.is_open"],
-                    # Now:
-                    inputs=["open_button", "offcanvas.is_open"],
+                    inputs=["open_button.n_clicks", "offcanvas.is_open"],
                     outputs=["offcanvas.is_open"],
                 )
             ],
