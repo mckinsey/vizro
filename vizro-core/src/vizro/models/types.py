@@ -9,11 +9,18 @@ import inspect
 import warnings
 from contextlib import contextmanager
 from datetime import date
-from typing import Annotated, Any, Literal, NewType, Optional, Protocol, Union, runtime_checkable, Callable, TypeAlias
+from typing import Annotated, Any, Literal, NewType, Optional, Protocol, TypeAlias, Union, runtime_checkable
 
 import plotly.io as pio
 import pydantic_core as cs
-from pydantic import Discriminator, Field, StrictBool, StringConstraints, Tag, ValidationInfo, AfterValidator, BeforeValidator, PlainSerializer
+from pydantic import (
+    Discriminator,
+    Field,
+    StrictBool,
+    StringConstraints,
+    Tag,
+    ValidationInfo,
+)
 from pydantic.json_schema import SkipJsonSchema
 from typing_extensions import TypedDict
 
@@ -538,6 +545,7 @@ _IdProperty = NewType("_IdProperty", str)
 ModelID: TypeAlias = str
 """Represents a Vizro model ID."""
 
+# LQ: mypy complains if we use NewType here, as the type needs to be subclassable and the current Union does not work
 _IdOrIdProperty: TypeAlias = Union[ModelID, _IdProperty]
 """Represents either a component ID or a string in the format 'component-id.component-property'."""
 

@@ -21,6 +21,7 @@ from vizro.models.types import (
     ControlType,
     _DotSeparatedStr,
     _IdOrIdProperty,
+    _IdProperty,
     validate_captured_callable,
 )
 
@@ -69,7 +70,7 @@ class _BaseAction(VizroBaseModel):
         raise NotImplementedError
 
     @property
-    def _runtime_args(self) -> dict[str, _IdOrIdProperty]:
+    def _runtime_args(self) -> dict[str, _IdProperty]:
         raise NotImplementedError
 
     @property
@@ -392,7 +393,7 @@ class Action(_BaseAction):
         return set(inspect.signature(self.function._function).parameters)  # type:ignore[union-attr]
 
     @property
-    def _runtime_args(self) -> dict[str, _IdOrIdProperty]:
+    def _runtime_args(self) -> dict[str, _IdProperty]:
         # Since function is a CapturedCallable, input arguments have already been bound and should be found from the
         # CapturedCallable.
         # Note this is a dictionary even if arguments were originally provided as positional ones, since they are
