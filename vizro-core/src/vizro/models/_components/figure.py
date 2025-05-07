@@ -52,6 +52,13 @@ class Figure(VizroBaseModel):
                 return self.type
             return self.figure[arg_name]
 
+    @property
+    def _model_field_to_dash_dependency(self):
+        """X"""
+        return {
+            "figure": (self._input_component_id, "children"),
+        }
+
     @_log_call
     def build(self):
         return dcc.Loading(

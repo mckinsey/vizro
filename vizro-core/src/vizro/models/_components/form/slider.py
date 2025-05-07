@@ -58,6 +58,7 @@ class Slider(VizroBaseModel):
         AfterValidator(set_default_marks),
         Field(default={}, description="Marks to be displayed on slider.", validate_default=True),
     ]
+    # TODO-AV D 3: Check if "value" is changed, whether dcc.Input values are changed accordingly. Same for other fields.
     value: Annotated[
         Optional[float],
         AfterValidator(validate_range_value),
@@ -137,7 +138,10 @@ class Slider(VizroBaseModel):
                 dcc.Store(f"{self.id}_callback_data", data={"id": self.id, "min": min, "max": max}),
                 html.Div(
                     children=[
-                        dbc.Label(children=[self.title, *description], html_for=self.id) if self.title else None,
+                        html.Legend(children=[
+                            html.Div(self.title, id=f"{self.id}_title"),
+                            *description
+                        ], className="form-label") if self.title else None,
                         html.Div(
                             [
                                 dcc.Input(
@@ -162,6 +166,14 @@ class Slider(VizroBaseModel):
                 dcc.Slider(**(defaults | self.extra)),
             ]
         )
+
+    @property
+    def _model_field_to_dash_dependency(self):
+        """X"""
+        return {
+            "title": (f"{self.id}_title", "children"),
+            "description": (self.description.id, "children"),
+        }
 
     def _build_dynamic_placeholder(self, current_value):
         return self.__call__(self.min, self.max, current_value)

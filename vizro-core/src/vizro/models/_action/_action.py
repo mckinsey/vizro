@@ -87,6 +87,18 @@ class _BaseAction(VizroBaseModel):
                 "<component_name>.<component_property>."
             ) from exc
 
+    @staticmethod
+    def _apply_shortcut(dash_dependency: DotSeparatedStr):
+        model_id, model_property = dash_dependency.split(".")
+
+        shortcut_output = None
+
+        if model_id in model_manager:
+            model = model_manager[model_id]
+            shortcut_output = getattr(model, "_model_field_to_dash_dependency", {}).get(model_property)
+
+        return shortcut_output or dash_dependency.split(".")
+
     def _get_control_states(self, control_type: ControlType) -> list[State]:
         """Gets list of `States` for selected `control_type` that appear on page where this Action is defined."""
         # Possibly the code that specifies the state associated with a control will move to an inputs property
@@ -121,7 +133,8 @@ class _BaseAction(VizroBaseModel):
         """
         if self._legacy:
             # Must be an Action rather than _AbstractAction, so has already been validated by pydantic field annotation.
-            return [State(*input.split(".")) for input in cast(Action, self).inputs]
+            # TODO-AV D 3: Should we support "card.title" for legacy inputs too?
+            return [State(*self._apply_shortcut(dash_dependency=input)) for input in cast(Action, self).inputs]
 
         from vizro.models import Filter, Parameter
 
@@ -148,7 +161,10 @@ class _BaseAction(VizroBaseModel):
         # User specified arguments runtime_args take precedence over built in reserved arguments. No static arguments
         # ar relevant here, just Dash States. Static arguments values are stored in the state of the relevant
         # _AbstractAction instance.
-        runtime_args = {arg_name: State(*arg_value.split(".")) for arg_name, arg_value in self._runtime_args.items()}
+        runtime_args = {
+            arg_name: State(*self._apply_shortcut(dash_dependency=arg_value))
+            for arg_name, arg_value in self._runtime_args.items()
+        }
 
         return builtin_args | runtime_args
 
@@ -166,7 +182,10 @@ class _BaseAction(VizroBaseModel):
         """
         if isinstance(self.outputs, list):
             self._validate_dash_dependencies(self.outputs, type="output")
-            callback_outputs = [Output(*output.split("."), allow_duplicate=True) for output in self.outputs]
+            callback_outputs = [
+                Output(*self._apply_shortcut(dash_dependency=output), allow_duplicate=True)
+                for output in self.outputs
+            ]
 
             # Need to use a single Output in the @callback decorator rather than a single element list for the case
             # of a single output. This means the action function can return a single value (e.g. "text") rather than a
@@ -177,7 +196,7 @@ class _BaseAction(VizroBaseModel):
 
         self._validate_dash_dependencies(self.outputs.values(), type="output")
         callback_outputs = {  # type: ignore[assignment]
-            output_name: Output(*output.split("."), allow_duplicate=True)
+            output_name: Output(*self._apply_shortcut(dash_dependency=output), allow_duplicate=True)
             for output_name, output in self.outputs.items()
         }
 

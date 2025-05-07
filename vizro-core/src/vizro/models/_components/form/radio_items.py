@@ -95,10 +95,21 @@ class RadioItems(VizroBaseModel):
 
         return html.Fieldset(
             children=[
-                html.Legend(children=[self.title, *description], className="form-label") if self.title else None,
+                html.Legend(children=[
+                    html.Div(self.title, id=f"{self.id}_title"),
+                    *description
+                ], className="form-label") if self.title else None,
                 dbc.RadioItems(**(defaults | self.extra)),
             ]
         )
+
+    @property
+    def _model_field_to_dash_dependency(self):
+        """X"""
+        return {
+            "title": (f"{self.id}_title", "children"),
+            "description": (self.description.id, "children"),
+        }
 
     def _build_dynamic_placeholder(self):
         if self.value is None:

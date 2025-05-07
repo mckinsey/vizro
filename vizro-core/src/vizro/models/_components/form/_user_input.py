@@ -39,11 +39,18 @@ class UserInput(VizroBaseModel):
     # Component properties for actions and interactions
     _input_property: str = PrivateAttr("value")
 
+    @property
+    def _model_field_to_dash_dependency(self):
+        """X"""
+        return {
+            "title": (f"{self.id}_title", "children"),
+        }
+
     @_log_call
     def build(self):
         return html.Div(
             children=[
-                dbc.Label(children=self.title, html_for=self.id) if self.title else None,
+                dbc.Label(children=self.title, id=f"{self.id}_title", html_for=self.id) if self.title else None,
                 dbc.Input(
                     id=self.id,
                     placeholder=self.placeholder,

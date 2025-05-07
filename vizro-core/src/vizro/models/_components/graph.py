@@ -101,6 +101,19 @@ class Graph(VizroBaseModel):
             return self.type
         return self.figure[arg_name]
 
+    @property
+    def _model_field_to_dash_dependency(self):
+        """X"""
+        # TODO-AV2 D 3: Should we document this in the schema?
+        return {
+            # TODO-AV2 D 2-3: Should we solve "TODO-AV2 D 2" as a special case (like "_default" key) of D3?
+            # "_default": (f"{self.id}", "figure"),
+            # TODO-AV2 D 3: We don't have to add `{"figure": (self.id, "figure")}` as it's already implicitly supported.
+            "title": (f"{self.id}_title", "children"),
+            "header": (f"{self.id}_header", "children"),
+            "footer": (f"{self.id}_footer", "children"),
+        }
+
     # Interaction methods
     @property
     def _filter_interaction_input(self):

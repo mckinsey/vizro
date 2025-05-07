@@ -82,6 +82,14 @@ class Container(VizroBaseModel):
         ]
     ]
 
+    @property
+    def _model_field_to_dash_dependency(self):
+        """X"""
+        return {
+            "title": (f"{self.id}_title", "children"),
+            "collapsed": (f"{self.id}_collapse", "is_open"),
+        }
+
     @_log_call
     def build(self):
         # TODO: TBD on how to encode 'elevated', as box-shadows are not visible on a dark theme
