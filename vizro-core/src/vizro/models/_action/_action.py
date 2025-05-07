@@ -16,7 +16,13 @@ from typing_extensions import TypedDict
 from vizro.managers._model_manager import model_manager
 from vizro.models import VizroBaseModel
 from vizro.models._models_utils import _log_call
-from vizro.models.types import CapturedCallable, ControlType, _DotSeparatedStr, _IdOrIdProperty, validate_captured_callable
+from vizro.models.types import (
+    CapturedCallable,
+    ControlType,
+    _DotSeparatedStr,
+    _IdOrIdProperty,
+    validate_captured_callable,
+)
 
 logger = logging.getLogger(__name__)
 
@@ -40,6 +46,7 @@ class ControlsStates(TypedDict):
 
 # Keep TypeAdapter validation in AbstractAction as in Antony PoC, do validation of "." in string inside
 # _transform.
+
 
 class _BaseAction(VizroBaseModel):
     # The common interface shared between Action and _AbstractAction all raise NotImplementedError or are ClassVar.
@@ -140,26 +147,47 @@ class _BaseAction(VizroBaseModel):
         return builtin_args | runtime_args
 
     @staticmethod
-    def _transform(output):
-        # need to make this work with outputs or inputs
-        # Need to also handle case that _outputs isn't defined
-        if "." in output:
-            component_id, component_property = output.split(".")
-            if component_id in model_manager and component_property in model_manager[component_id]._outputs:
-                return model_manager[component_id]._outputs[component_property]
+    def _transform(reference: str, type: Literal["output", "input"]) -> str:
+        """Transform a component reference into its mapped property value.
 
-            # not a problem if either case of and is False, just leave output unchanged
-            return output
+        Handles two formats:
+        - "component-id.component-property" (e.g. "graph-1.figure"): Returns mapped value if exists, else original
+        - "component-id" (e.g. "graph-1"): Returns default mapping from _outputs/_inputs, raises if no default
 
-        component_id, component_property = output, "__default__"
+        Args:
+            reference: Component ID or "component-id.component-property" string
+            type: "input" or "output" to check _inputs or _outputs
+
+        Returns:
+            Mapped property value or original reference for explicit format
+
+        Raises:
+            KeyError: If component not found or no default mapping exists
+        """
+        property_name = "_outputs" if type == "output" else "_inputs"
+
+        if "." in reference:
+            component_id, component_property = reference.split(".")
+            if component_id in model_manager and component_property in getattr(
+                model_manager[component_id], property_name
+            ):
+                return getattr(model_manager[component_id], property_name)[component_property]
+            return reference
+
+        component_id, component_property = reference, "__default__"
         if component_id not in model_manager:
-            # this is a problem
-            raise
-        elif component_property not in model_manager[component_id]._outputs:
-            # this is a problem
-            raise
+            raise KeyError(
+                f"Component with ID '{component_id}' not found. Please provide a valid component ID or use "
+                f"the explicit format '<component-id>.<property>'."
+            )
 
-        return model_manager[component_id]._outputs[component_property]
+        elif not hasattr(model_manager[component_id], property_name):
+            raise KeyError(
+                f"Component with ID '{component_id}' does not have {type} properties defined. "
+                f"Please specify the {type} explicitly as '{component_id}.<property>'."
+            )
+
+        return getattr(model_manager[component_id], property_name)[component_property]
 
     @property
     def _transformed_outputs(self) -> Union[list[Output], dict[str, Output]]:
@@ -318,8 +346,8 @@ class Action(_BaseAction):
     # TODO-AV2 C 1: Put in deprecation warning.
     inputs: list[str] = Field(
         default=[],
-        description="""List of inputs provided to the action function. Each input can be specified as either 
-                `<component_id>.<property>` or just `<component_id>` if the model has a default input property defined. 
+        description="""List of inputs provided to the action function. Each input can be specified as either
+                `<component_id>.<property>` or just `<component_id>` if the model has a default input property defined.
                 Defaults to `[]`""",
     )
     outputs: Union[list[str], dict[str, str]] = Field(  # type: ignore
