@@ -63,19 +63,9 @@ class _BaseAction(VizroBaseModel):
     def _validate_dash_dependencies(self, /, dependencies, *, type: Literal["output", "input"]):
         # Validate that dependencies are in the form component_id.component_property. This uses the same annotation as
         # Action.inputs/outputs.
-        # TODO-AV2 D 2: in future we will expand this to also allow passing a model name without a property specified,
-        #  so long as _output_component_property exists - need to handle case it doesn't with error.
-        #  Possibly make a built in a type hint that we can use as field annotation for runtime arguments in
-        #  subclasses of _AbstractAction instead of just using str. Possibly apply this to non-annotated arguments of
-        #  vm.Action.function and use pydantic's validate_call to apply the same validation there for function inputs.
-        #  We won't be able to do all the checks at validation time though if we need to look up a model in the model
-        #  manager. When this change is made the outputs property for filter, parameter and on_page_load should just
-        #  become `return self.targets` or similar. Consider again whether to do this translation automatically if
-        #  targets is defined as a field, but sounds like bad idea since it doesn't carry over into the
-        #  capture("action") style of action.
         # TODO-AV2 D 3: try to enable properties that aren't Dash properties but are instead model fields e.g. header,
         #  title. See https://github.com/mckinsey/vizro/issues/1078.
-        # Implement _outputs and _inputs (probably as properties) as in Antony PoC with fields as defined in that table.
+
         # Remove DotSeparatedString, change public type hints back to str, update _IdProperty to use just Id also (
         # wherever suitable - remains private).
         # Keep TypeAdapter validation in AbstractAction as in Antony PoC, do validation of "." in string inside
@@ -304,11 +294,12 @@ class Action(_BaseAction):
 
     Args:
         function (CapturedCallable): Action function.
-        inputs (list[_DotSeparatedStr]): List of inputs provided to the action function, each specified as
-            `<component_id>.<property>`. Defaults to `[]`.
-        outputs (Union[list[_DotSeparatedStr], dict[str, _DotSeparatedStr]]): List or dictionary of outputs modified by
-            the action function, where each output needs to be specified as `<component_id>.<property>`.
-            Defaults to `[]`.
+        inputs (list[str]): List of inputs provided to the action function. Each input can be
+            specified as either `<component_id>.<property>` or just `<component_id>` if the model
+            has a default input property defined. Defaults to `[]`.
+        outputs (Union[list[str], dict[str, str]]): List or dictionary of outputs modified by the
+            action function. Each output can be specified as either `<component_id>.<property>` or
+            just `<component_id>` if the model has a default output property defined. Defaults to `[]`.
     """
 
     # TODO-AV2 D 5: when it's made public, add something like below to docstring:
@@ -330,15 +321,17 @@ class Action(_BaseAction):
     ]
     # inputs is a legacy field and will be deprecated. It must only be used when _legacy = True.
     # TODO-AV2 C 1: Put in deprecation warning.
-    inputs: list[_DotSeparatedStr] = Field(
+    inputs: list[str] = Field(
         default=[],
-        description="""List of inputs provided to the action function, each specified as `<component_id>.<property>`.
-            Defaults to `[]`.""",
+        description="""List of inputs provided to the action function. Each input can be specified as either 
+                `<component_id>.<property>` or just `<component_id>` if the model has a default input property defined. 
+                Defaults to `[]`""",
     )
-    outputs: Union[list[_DotSeparatedStr], dict[str, _DotSeparatedStr]] = Field(  # type: ignore
+    outputs: Union[list[str], dict[str, str]] = Field(  # type: ignore
         default=[],
-        description="""List or dictionary of outputs modified by the action function, where each output needs to be
-            specified as `<component_id>.<property>`. Defaults to `[]`.""",
+        description="""List or dictionary of outputs modified by the action function. Each output can be specified as
+            either `<component_id>.<property>` or just `<component_id>` if the model has a default output property
+            defined. Defaults to `[]`.""",
     )
 
     @property
