@@ -95,7 +95,7 @@ class TestDashboardPreBuild:
         mock_register_page.assert_any_call(module="not_found_404", layout=mock_make_page_404_layout())
         assert mock_register_page.call_count == 3
 
-    def test_page_registry_with_title(self, vizro_app, page_1, mocker):
+    def test_page_registry_with_dashboard_title(self, vizro_app, page_1, mocker):
         mock_register_page = mocker.patch("dash.register_page", autospec=True)
         vm.Dashboard(pages=[page_1], title="My dashboard").pre_build()
 
@@ -110,16 +110,49 @@ class TestDashboardPreBuild:
             layout=mocker.ANY,  # partial call is tricky to mock out so we ignore it.
         )
 
-    def test_page_registry_with_description(self, vizro_app, mocker):
+    def test_page_registry_with_dashboard_description(self, vizro_app, page_1, mocker):
+        mock_register_page = mocker.patch("dash.register_page", autospec=True)
+        vm.Dashboard(pages=[page_1], description="Dashboard description").pre_build()
+
+        mock_register_page.assert_any_call(
+            module=page_1.id,
+            name="Page 1",
+            description="Dashboard description",
+            image=None,
+            title="Page 1",
+            path="/",
+            order=0,
+            layout=mocker.ANY,  # partial call is tricky to mock out so we ignore it.
+        )
+
+    def test_page_registry_with_page_description(self, vizro_app, mocker):
         mock_register_page = mocker.patch("dash.register_page", autospec=True)
         vm.Dashboard(
-            pages=[vm.Page(title="Page 1", components=[vm.Button()], description="My description")]
+            pages=[vm.Page(title="Page 1", components=[vm.Button()], description="Page description")]
         ).pre_build()
 
         mock_register_page.assert_any_call(
             module="Page 1",
             name="Page 1",
-            description="My description",
+            description="Page description",
+            image=None,
+            title="Page 1",
+            path="/",
+            order=0,
+            layout=mocker.ANY,  # partial call is tricky to mock out so we ignore it.
+        )
+
+    def test_page_registry_with_dashboard_and_page_description(self, vizro_app, mocker):
+        mock_register_page = mocker.patch("dash.register_page", autospec=True)
+        vm.Dashboard(
+            description="Dashboard description",
+            pages=[vm.Page(title="Page 1", components=[vm.Button()], description="Page description")],
+        ).pre_build()
+
+        mock_register_page.assert_any_call(
+            module="Page 1",
+            name="Page 1",
+            description="Page description",
             image=None,
             title="Page 1",
             path="/",

@@ -103,6 +103,8 @@ class Dashboard(VizroBaseModel):
         Optional[Navigation], AfterValidator(set_navigation_pages), Field(default=None, validate_default=True)
     ]
     title: str = Field(default="", description="Dashboard title to appear on every page on top left-side.")
+    # TODO: ideally description would have json_schema_input_type=Union[str, Tooltip] attached to the BeforeValidator,
+    #  but this requires pydantic >= 2.9.
     description: Annotated[
         Optional[Tooltip],
         BeforeValidator(coerce_str_to_tooltip),
@@ -127,10 +129,12 @@ class Dashboard(VizroBaseModel):
             # Dash also uses the dashboard-level description passed into Dash() as the default for page-level
             # descriptions, but this would involve extracting dashboard.description and inserting it into the Dash app
             # config in Vizro.build. What we do here is simpler but has the same effect.
+            dashboard_description = self.description.text if self.description else None
+
             dash.register_page(
                 module=page.id,
                 name=page.title,
-                description=page.description.text if page.description else None,
+                description=page.description.text if page.description else dashboard_description,
                 image=meta_img,
                 title=f"{self.title}: {page.title}" if self.title else page.title,
                 path=page.path,
