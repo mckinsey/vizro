@@ -69,6 +69,8 @@ jobs:
             echo 'PYPI_TOKEN=${{ secrets.VIZRO_PYPI_TOKEN }}' >> $GITHUB_ENV
           elif [ "${{ needs.check-version.outputs.package_name }}" == "vizro-ai" ]; then
             echo 'PYPI_TOKEN=${{ secrets.VIZRO_AI_PYPI_TOKEN }}' >> $GITHUB_ENV
+          elif [ "${{ needs.check-version.outputs.package_name }}" == "vizro-mcp" ]; then
+            echo 'PYPI_TOKEN=${{ secrets.VIZRO_MCP_PYPI_TOKEN }}' >> $GITHUB_ENV
           fi
       - name: Publish distribution 📦 to PyPI
         uses: pypa/gh-action-pypi-publish@release/v1
