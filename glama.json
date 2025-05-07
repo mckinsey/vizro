@@ -1,7 +1,4 @@
 {
-    "$schema": "https://glama.ai/mcp/schemas/server.json",
-    "maintainers": [
-      "maxschulz-COL",
-      "lingyielia"
-    ]
-  }
+  "$schema": "https://glama.ai/mcp/schemas/server.json",
+  "maintainers": ["maxschulz-COL", "lingyielia"]
+}
