@@ -79,7 +79,6 @@ class TestLegacyActionInputs:
         assert action.inputs == runtime_inputs
         assert action._transformed_inputs == expected_transformed_inputs
 
-
     @pytest.mark.parametrize(
         "static_inputs",
         [
@@ -312,7 +311,6 @@ class TestActionOutputs:
 
         assert action.outputs == outputs
         assert action._transformed_outputs == expected_transformed_outputs
-
 
 
 class TestActionBuild:
