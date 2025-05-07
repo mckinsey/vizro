@@ -93,10 +93,11 @@ class Checklist(VizroBaseModel):
 
         return html.Fieldset(
             children=[
-                html.Legend(children=[
-                    html.Div(self.title, id=f"{self.id}_title"),
-                    *description
-                ], className="form-label") if self.title else None,
+                html.Legend(
+                    children=[html.Div(self.title, id=f"{self.id}_title"), *description], className="form-label"
+                )
+                if self.title
+                else None,
                 dbc.Checklist(**(defaults | self.extra)),
             ]
         )

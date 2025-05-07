@@ -2,7 +2,6 @@ import math
 from datetime import date
 from typing import Annotated, Any, Literal, Optional, Union, cast
 
-import dash_bootstrap_components as dbc
 from dash import dcc, html
 from pydantic import AfterValidator, BeforeValidator, Field, PrivateAttr, StrictBool, ValidationInfo, model_validator
 from pydantic.functional_serializers import PlainSerializer
@@ -156,10 +155,11 @@ class Dropdown(VizroBaseModel):
         return html.Div(
             children=[
                 # TODO: Double-check dbc.Label -> html.Legend change.
-                html.Legend(children=[
-                    html.Div(self.title, id=f"{self.id}_title"),
-                    *description
-                ], className="form-label") if self.title else None,
+                html.Legend(
+                    children=[html.Div(self.title, id=f"{self.id}_title"), *description], className="form-label"
+                )
+                if self.title
+                else None,
                 dcc.Dropdown(**(defaults | self.extra)),
             ]
         )

@@ -1,4 +1,5 @@
 """Dev app to try things out."""
+
 from dash import ctx
 import time
 
@@ -54,7 +55,7 @@ page_smoke_test = vm.Page(
                 )
             ],
         )
-    ]
+    ],
 )
 
 # ======= Page Figures =======
@@ -75,7 +76,7 @@ page_figures = vm.Page(
             title="Click button to update me",
             header="Click button to update me",
             footer="Click button to update me",
-            figure=dash_ag_grid(df)
+            figure=dash_ag_grid(df),
         ),
         vm.Table(
             id="table-id",
@@ -113,7 +114,7 @@ page_figures = vm.Page(
                         # "figure-id.title",
                         # "figure-id.header",
                         # "figure-id.footer",
-                    ]
+                    ],
                 )
             ],
         ),
@@ -143,10 +144,10 @@ page_other_components = vm.Page(
                         vm.Text(
                             id="text-id",
                             text="Click button to update me",
-                        )
+                        ),
                     ],
                 )
-            ]
+            ],
         )
     ],
     controls=[
@@ -166,11 +167,11 @@ page_other_components = vm.Page(
                         "button-id.text",
                         "card-id.text",
                         "text-id.text",
-                    ]
+                    ],
                 )
             ],
         ),
-    ]
+    ],
 )
 
 
@@ -262,19 +263,21 @@ page_form_components = vm.Page(
                         # DatePicker
                         "date-picker-id.title",
                         "date-picker-id.description",
-                    ]
+                    ],
                 )
             ],
         ),
-    ]
+    ],
 )
 
-dashboard = vm.Dashboard(pages=[
-    page_smoke_test,
-    page_figures,
-    page_other_components,
-    page_form_components,
-])
+dashboard = vm.Dashboard(
+    pages=[
+        page_smoke_test,
+        page_figures,
+        page_other_components,
+        page_form_components,
+    ]
+)
 
 if __name__ == "__main__":
     Vizro().build(dashboard).run()

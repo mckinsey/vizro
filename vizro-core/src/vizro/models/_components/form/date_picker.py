@@ -1,7 +1,6 @@
 from datetime import date
 from typing import Annotated, Any, Literal, Optional, Union
 
-import dash_bootstrap_components as dbc
 import dash_mantine_components as dmc
 from dash import html
 from pydantic import AfterValidator, BeforeValidator, Field, PrivateAttr
@@ -113,10 +112,11 @@ class DatePicker(VizroBaseModel):
         description = self.description.build().children if self.description else [None]
         return html.Div(
             children=[
-                html.Legend(children=[
-                    html.Div(self.title, id=f"{self.id}_title"),
-                    *description
-                ], className="form-label") if self.title else None,
+                html.Legend(
+                    children=[html.Div(self.title, id=f"{self.id}_title"), *description], className="form-label"
+                )
+                if self.title
+                else None,
                 dmc.DatePickerInput(**(defaults | self.extra)),
             ],
         )

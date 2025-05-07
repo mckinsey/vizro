@@ -183,8 +183,7 @@ class _BaseAction(VizroBaseModel):
         if isinstance(self.outputs, list):
             self._validate_dash_dependencies(self.outputs, type="output")
             callback_outputs = [
-                Output(*self._apply_shortcut(dash_dependency=output), allow_duplicate=True)
-                for output in self.outputs
+                Output(*self._apply_shortcut(dash_dependency=output), allow_duplicate=True) for output in self.outputs
             ]
 
             # Need to use a single Output in the @callback decorator rather than a single element list for the case
