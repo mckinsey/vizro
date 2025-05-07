@@ -2,7 +2,6 @@ import math
 from datetime import date
 from typing import Annotated, Any, Literal, Optional, Union, cast
 
-import dash_bootstrap_components as dbc
 from dash import dcc, html
 from pydantic import AfterValidator, BeforeValidator, Field, PrivateAttr, StrictBool, ValidationInfo, model_validator
 from pydantic.functional_serializers import PlainSerializer
@@ -155,10 +154,23 @@ class Dropdown(VizroBaseModel):
 
         return html.Div(
             children=[
-                dbc.Label([self.title, *description], html_for=self.id) if self.title else None,
+                # TODO: Double-check dbc.Label -> html.Legend change.
+                html.Legend(
+                    children=[html.Div(self.title, id=f"{self.id}_title"), *description], className="form-label"
+                )
+                if self.title
+                else None,
                 dcc.Dropdown(**(defaults | self.extra)),
             ]
         )
+
+    @property
+    def _model_field_to_dash_dependency(self):
+        """X"""
+        return {
+            "title": (f"{self.id}_title", "children"),
+            "description": (self.description.id, "children"),
+        }
 
     def _build_dynamic_placeholder(self):
         # Setting self.value is kind of Dropdown pre_build method. It sets self.value only the first time if it's None.

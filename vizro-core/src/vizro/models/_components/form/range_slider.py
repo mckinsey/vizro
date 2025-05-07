@@ -1,6 +1,5 @@
 from typing import Annotated, Any, Literal, Optional
 
-import dash_bootstrap_components as dbc
 from dash import ClientsideFunction, Input, Output, State, clientside_callback, dcc, html
 from pydantic import AfterValidator, BeforeValidator, Field, PrivateAttr, conlist
 from pydantic.functional_serializers import PlainSerializer
@@ -141,7 +140,11 @@ class RangeSlider(VizroBaseModel):
                 dcc.Store(f"{self.id}_callback_data", data={"id": self.id, "min": min, "max": max}),
                 html.Div(
                     children=[
-                        dbc.Label(children=[self.title, *description], html_for=self.id) if self.title else None,
+                        html.Legend(
+                            children=[html.Div(self.title, id=f"{self.id}_title"), *description], className="form-label"
+                        )
+                        if self.title
+                        else None,
                         html.Div(
                             [
                                 dcc.Input(
@@ -179,6 +182,14 @@ class RangeSlider(VizroBaseModel):
                 dcc.RangeSlider(**(defaults | self.extra)),
             ]
         )
+
+    @property
+    def _model_field_to_dash_dependency(self):
+        """X"""
+        return {
+            "title": (f"{self.id}_title", "children"),
+            "description": (self.description.id, "children"),
+        }
 
     def _build_dynamic_placeholder(self, current_value):
         return self.__call__(self.min, self.max, current_value)

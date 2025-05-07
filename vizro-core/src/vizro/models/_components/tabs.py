@@ -31,6 +31,13 @@ class Tabs(VizroBaseModel):
     # TODO[mypy], see: https://github.com/pydantic/pydantic/issues/156 for tabs field
     tabs: conlist(Annotated[Container, AfterValidator(validate_tab_has_title)], min_length=1)  # type: ignore[valid-type]
 
+    @property
+    def _model_field_to_dash_dependency(self):
+        """X"""
+        return {
+            "tabs": (self.id, "children"),
+        }
+
     @_log_call
     def build(self):
         return dbc.Tabs(

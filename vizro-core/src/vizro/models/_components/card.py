@@ -47,6 +47,13 @@ class Card(VizroBaseModel):
         ]
     ]
 
+    @property
+    def _model_field_to_dash_dependency(self):
+        """X"""
+        return {
+            "text": (self.id, "children"),
+        }
+
     @_log_call
     def build(self):
         text = dcc.Markdown(id=self.id, children=self.text, dangerously_allow_html=False, className="card-text")

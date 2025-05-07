@@ -144,6 +144,17 @@ class Page(VizroBaseModel):
                     ],
                 )
             ]
+        # else is here to stop executing a random custom action on the page if the on-page-load is not added.
+        else:
+            self.actions = [
+                ActionsChain(
+                    id=f"{ON_PAGE_LOAD_ACTION_PREFIX}_{self.id}",
+                    trigger=Trigger(
+                        component_id=f"{ON_PAGE_LOAD_ACTION_PREFIX}_trigger_{self.id}", component_property="data"
+                    ),
+                    actions=[],
+                )
+            ]
 
     @_log_call
     def build(self) -> _PageBuildType:

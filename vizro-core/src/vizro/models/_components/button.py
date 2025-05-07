@@ -58,6 +58,13 @@ class Button(VizroBaseModel):
         ]
     ]
 
+    @property
+    def _model_field_to_dash_dependency(self):
+        """X"""
+        return {
+            "text": (self.id, "children"),
+        }
+
     @_log_call
     def build(self):
         variants = {"plain": "link", "filled": "primary", "outlined": "secondary"}
