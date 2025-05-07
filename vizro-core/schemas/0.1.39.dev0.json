@@ -34,7 +34,7 @@
     },
     "Action": {
       "additionalProperties": false,
-      "description": "Action to be inserted into `actions` of relevant component.\n\nArgs:\n    function (CapturedCallable): Action function.\n    inputs (list[DotSeparatedStr]): List of inputs provided to the action function, each specified as\n        `<component_id>.<property>`. Defaults to `[]`.\n    outputs (Union[list[DotSeparatedStr], dict[str, DotSeparatedStr]]): List or dictionary of outputs modified by\n        the action function, where each output needs to be specified as `<component_id>.<property>`.\n        Defaults to `[]`.",
+      "description": "Action to be inserted into `actions` of relevant component.\n\nArgs:\n    function (CapturedCallable): Action function.\n    inputs (list[_DotSeparatedStr]): List of inputs provided to the action function, each specified as\n        `<component_id>.<property>`. Defaults to `[]`.\n    outputs (Union[list[_DotSeparatedStr], dict[str, _DotSeparatedStr]]): List or dictionary of outputs modified by\n        the action function, where each output needs to be specified as `<component_id>.<property>`.\n        Defaults to `[]`.",
       "properties": {
         "id": {
           "default": "",
