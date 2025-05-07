@@ -79,21 +79,6 @@ class TestLegacyActionInputs:
         assert action.inputs == runtime_inputs
         assert action._transformed_inputs == expected_transformed_inputs
 
-    @pytest.mark.parametrize(
-        "runtime_inputs",
-        [
-            [""],
-            ["component"],
-            ["component."],
-            [".property"],
-            ["component..property"],
-            ["component_property"],
-            ["component.property.property"],
-        ],
-    )
-    def test_action_inputs_invalid(self, runtime_inputs):
-        with pytest.raises(ValidationError, match="String should match pattern"):
-            Action(function=action_with_one_arg(), inputs=runtime_inputs)
 
     @pytest.mark.parametrize(
         "static_inputs",
@@ -175,31 +160,6 @@ class TestLegacyActionOutputs:
         assert action._legacy
         assert action.outputs == outputs
         assert action._transformed_outputs == expected_transformed_outputs
-
-    @pytest.mark.parametrize(
-        "outputs",
-        [
-            [""],
-            ["component"],
-            ["component."],
-            [".property"],
-            ["component..property"],
-            ["component_property"],
-            ["component.property.property"],
-            {"output_1": ""},
-            {"output_1": "component"},
-            {"output_1": "component."},
-            {"output_1": ".property"},
-            {"output_1": "component..property"},
-            {"output_1": "component_property"},
-            {"output_1": "component.property.property"},
-            {"output_1": "component.property", "output_2": ""},
-        ],
-    )
-    def test_outputs_invalid(self, outputs):
-        with pytest.raises(ValidationError, match="String should match pattern"):
-            # inputs=[] added to force action to be legacy
-            Action(function=action_with_no_args(), inputs=[], outputs=outputs)
 
 
 class TestIsActionLegacy:
@@ -353,33 +313,6 @@ class TestActionOutputs:
         assert action.outputs == outputs
         assert action._transformed_outputs == expected_transformed_outputs
 
-    @pytest.mark.parametrize(
-        "outputs",
-        [
-            "component.property",
-            1,
-            None,
-            [""],
-            ["component"],
-            ["component."],
-            [".property"],
-            ["component..property"],
-            ["component_property"],
-            ["component.property.property"],
-            {"output_1": ""},
-            {"output_1": "component"},
-            {"output_1": "component."},
-            {"output_1": ".property"},
-            {"output_1": "component..property"},
-            {"output_1": "component_property"},
-            {"output_1": "component.property.property"},
-            {"output_1": "component.property", "output_2": ""},
-            {1: "component.property"},
-        ],
-    )
-    def test_outputs_invalid(self, outputs):
-        with pytest.raises(ValidationError):
-            Action(function=action_with_no_args(), outputs=outputs)
 
 
 class TestActionBuild:
@@ -489,3 +422,85 @@ class TestBaseActionCallbackFunction:
             ValueError, match="Keys of action's returned value .+ do not match the action's defined outputs {'output'}."
         ):
             action._action_callback_function(inputs={}, outputs={"output": Output("component", "property")})
+
+
+class TestBaseActionTransform:
+    @pytest.mark.parametrize(
+        "runtime_inputs",
+        [
+            [""],
+            ["component"],
+            ["component."],
+            [".property"],
+            ["component..property"],
+            ["component_property"],
+            ["component.property.property"],
+        ],
+    )
+    def test_action_inputs_invalid(self, runtime_inputs):
+        with pytest.raises(
+            KeyError,
+            match="Component with ID .* not found. Please provide a valid component ID or use the explicit "
+            "format '<component-id>.<property>'.",
+        ):
+            action = Action(function=action_with_one_arg(), inputs=runtime_inputs)
+            action._transform(runtime_inputs, type="inputs")
+
+    @pytest.mark.parametrize(
+        "outputs",
+        [
+            [""],
+            ["component"],
+            ["component."],
+            [".property"],
+            ["component..property"],
+            ["component_property"],
+            ["component.property.property"],
+            {"output_1": ""},
+            {"output_1": "component"},
+            {"output_1": "component."},
+            {"output_1": ".property"},
+            {"output_1": "component..property"},
+            {"output_1": "component_property"},
+            {"output_1": "component.property.property"},
+            {"output_1": "component.property", "output_2": ""},
+        ],
+    )
+    def test_action_outputs_invalid(self, outputs):
+        with pytest.raises(
+            KeyError,
+            match="Component with ID .* not found. Please provide a valid component ID or use the explicit "
+            "format '<component-id>.<property>'.",
+        ):
+            action = Action(function=action_with_no_args(), outputs=outputs)
+            action._transform(outputs, type="output")
+
+    @pytest.mark.parametrize(
+        "outputs",
+        [
+            [""],
+            ["component"],
+            ["component."],
+            [".property"],
+            ["component..property"],
+            ["component_property"],
+            ["component.property.property"],
+            {"output_1": ""},
+            {"output_1": "component"},
+            {"output_1": "component."},
+            {"output_1": ".property"},
+            {"output_1": "component..property"},
+            {"output_1": "component_property"},
+            {"output_1": "component.property.property"},
+            {"output_1": "component.property", "output_2": ""},
+        ],
+    )
+    def test_action_outputs_invalid_legacy(self, outputs):
+        with pytest.raises(
+            KeyError,
+            match="Component with ID .* not found. Please provide a valid component ID or use the explicit "
+            "format '<component-id>.<property>'.",
+        ):
+            # inputs=[] added to force action to be legacy
+            action = Action(function=action_with_no_args(), inputs=[], outputs=outputs)
+            action._transform(outputs, type="output")
