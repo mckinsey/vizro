@@ -114,9 +114,9 @@ page_one = vm.Page(
                     function=action_function_multiple(),
                     inputs=["trigger-button.n_clicks"],
                     # This is how we had to define it before:
-                    # outputs=["card-id.children"],
+                    # outputs=["card-id.children", "tooltip-id.is_open"],
                     # Now we can just do this:
-                    outputs=["card-id", "tooltip-id"],
+                    outputs=["card-id", "tooltip-id.is_open"],
                 )
             ],
         ),
@@ -147,7 +147,7 @@ page_one_b = vm.Page(
                 vm.Action(
                     function=action_function_multiple_dict(),
                     inputs=["trigger-button-2.n_clicks"],
-                    outputs={"anything": "card-id-2", "anything_two": "tooltip-id-2"},
+                    outputs={"anything": "card-id-2", "anything_two": "tooltip-id-2.is_open"},
                 )
             ],
         ),
@@ -226,27 +226,26 @@ page_four = vm.Page(
             actions=[
                 vm.Action(
                     function=action_function(),  # or function=action_function_dict(),
-                    inputs=["button-id"],
+                    inputs=["button-id.n_clicks"],
+                    outputs=["card-id-validation"],
                     # Case A: Model-ID doesn't exist, syntax correct (only model-id)
-                    # Throws KeyError before dashboard creation: "Component with ID 'wrong-id' not found.
-                    # Please provide a valid component ID or use the explicit format '<component-id>.<property>'."
+                    # Vizro: Component with ID 'wrong-id' not found. Please provide a valid component ID or use the explicit format '<component-id>.<property>'."
                     # outputs=["wrong-id"]
                     # outputs={"anything": "wrong-id"}
                     # Case B: Model-ID doesn't exist, syntax correct (dot notation), property can be anything
-                    # Throws KeyError before dashboard creation: "Component with ID 'wrong-id' not found.
-                    # Please provide a valid component ID or use the explicit format '<component-id>.<property>'."
+                    # Dash: A nonexistent object was used in an `Output` of a Dash callback. The id of this object is `wrong-id` and the property is `prop`.
                     # outputs=["wrong-id.prop"]
                     # outputs=["wrong-id.children"]
                     # outputs={"anything": "wrong-id.prop"}
                     # outputs={"anything": "wrong-id.children"}
                     # Case C: Model-ID exists but property doesn't exist
-                    # Currently not captured at all - bad. Check how this worked before.
-                    # outputs=["card-id-validation.prop"]
+                    # Currently not captured at all - bad. A and P say this should be captured by Dash.
+                    # Need to check if this behaves on Dash likes this as well.
+                    # outputs=["card-id-validation.propsffd"]
                     # outputs={"anything": "card-id-validation.prop"}
                     # Case D: Syntax - doesn't matter if model id/property exist or not
-                    # Throws KeyError before dashboard creation: "Component with ID
-                    # 'card-id-validation.children.children' not found. Please
-                    # provide a valid component ID or use the explicit format '<component-id>.<property>'."
+                    # pydantic_core._pydantic_core.ValidationError: 1 validation error for constrained-str
+                    # String should match pattern '^[^.]+[.][^.]+$' [type=string_pattern_mismatch, input_value='card-id-validation.children.children', input_type=str]
                     # outputs=["card-id-validation.children.children"]
                     # outputs=["card-id-validation..children.children"]
                     # outputs=["card-id..childre"]
@@ -265,4 +264,3 @@ dashboard = vm.Dashboard(pages=[page_one, page_two, page_three, page_four])
 
 if __name__ == "__main__":
     Vizro().build(dashboard).run()
-

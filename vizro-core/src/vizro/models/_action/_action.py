@@ -105,7 +105,7 @@ class _BaseAction(VizroBaseModel):
         structure of states.
         """
         if self._legacy:
-            # Must be an Action rather than _AbstractAction, so has already been validated by pydantic field annotation.            
+            # Must be an Action rather than _AbstractAction, so has already been validated by pydantic field annotation.
             return [State(*self._transform(input, type="input").split(".")) for input in cast(Action, self).inputs]
 
         from vizro.models import Filter, Parameter
@@ -159,15 +159,16 @@ class _BaseAction(VizroBaseModel):
 
         Raises:
             KeyError: If component not found or no default mapping exists
+            ValueError: If reference format is invalid e.g. "model-id.prop.prop"
         """
         property_name = "_outputs" if type == "output" else "_inputs"
 
         if "." in reference:
+            TypeAdapter(_DotSeparatedStr).validate_python(reference)
             component_id, component_property = reference.split(".")
-            if component_id in model_manager and component_property in getattr(
-                model_manager[component_id], property_name
-            ):
-                return getattr(model_manager[component_id], property_name)[component_property]
+            if component_id in model_manager and hasattr(model_manager[component_id], property_name):
+                if component_property in getattr(model_manager[component_id], property_name):
+                    return getattr(model_manager[component_id], property_name)[component_property]
             return reference
 
         component_id, component_property = reference, "__default__"
@@ -179,7 +180,7 @@ class _BaseAction(VizroBaseModel):
 
         elif not hasattr(model_manager[component_id], property_name):
             raise KeyError(
-                f"Component with ID '{component_id}' does not have {type} properties defined. "
+                f"Component with ID '{component_id}' does not have implicit {type} properties defined. "
                 f"Please specify the {type} explicitly as '{component_id}.<property>'."
             )
 
