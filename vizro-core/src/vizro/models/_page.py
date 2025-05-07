@@ -58,6 +58,8 @@ class Page(VizroBaseModel):
             has to be provided.
         title (str): Title of the `Page`.
         description (Optional[Tooltip]): Optional markdown string that adds an icon next to the title.
+            Hovering over the icon shows a tooltip with the provided description. This also sets the page's meta
+            tags. Defaults to `None`.
         layout (Optional[LayoutType]): Layout to place components in. Defaults to `None`.
         controls (list[ControlType]): See [ControlType][vizro.models.types.ControlType]. Defaults to `[]`.
         path (str): Path to navigate to page. Defaults to `""`.
@@ -75,7 +77,9 @@ class Page(VizroBaseModel):
         BeforeValidator(coerce_str_to_tooltip),
         Field(
             default=None,
-            description="Optional markdown string that adds an icon next to the title.",
+            description="""Optional markdown string that adds an icon next to the title.
+            Hovering over the icon shows a tooltip with the provided description. This also sets the page's meta
+            tags. Defaults to `None`.""",
         ),
     ]
     controls: list[ControlType] = []

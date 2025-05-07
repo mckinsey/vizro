@@ -91,7 +91,8 @@ class Dashboard(VizroBaseModel):
         navigation (Navigation): See [`Navigation`][vizro.models.Navigation]. Defaults to `None`.
         title (str): Dashboard title to appear on every page on top left-side. Defaults to `""`.
         description (Optional[Tooltip]): Optional markdown string that adds an icon next to the title.
-            Hovering over the icon shows a tooltip with the provided description. Defaults to `None`.
+            Hovering over the icon shows a tooltip with the provided description. This also sets the page's meta
+            tags. Defaults to `None`.
 
     """
 
@@ -111,7 +112,8 @@ class Dashboard(VizroBaseModel):
         Field(
             default=None,
             description="""Optional markdown string that adds an icon next to the title.
-            Hovering over the icon shows a tooltip with the provided description. Defaults to `None`.""",
+            Hovering over the icon shows a tooltip with the provided description. This also sets the page's meta
+            tags. Defaults to `None`.""",
         ),
     ]
 
