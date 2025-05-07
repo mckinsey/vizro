@@ -32,6 +32,15 @@ class ControlsStates(TypedDict):
     filter_interaction: list[dict[str, State]]
 
 
+# TODO-AV2 D 3: try to enable properties that aren't Dash properties but are instead model fields e.g. header,
+# title. See https://github.com/mckinsey/vizro/issues/1078.
+# Try to fix AgGrid problem with underlying input component id.
+# Note this is needed for inputs in both vm.Action and _AbstractAction but outputs only in _AbstractAction.
+
+
+# Keep TypeAdapter validation in AbstractAction as in Antony PoC, do validation of "." in string inside
+# _transform.
+
 class _BaseAction(VizroBaseModel):
     # The common interface shared between Action and _AbstractAction all raise NotImplementedError or are ClassVar.
     # This mypy type-check this class.
@@ -59,19 +68,6 @@ class _BaseAction(VizroBaseModel):
     @property
     def _action_name(self) -> str:
         raise NotImplementedError
-
-    def _validate_dash_dependencies(self, /, dependencies, *, type: Literal["output", "input"]):
-        # Validate that dependencies are in the form component_id.component_property. This uses the same annotation as
-        # Action.inputs/outputs.
-        # TODO-AV2 D 3: try to enable properties that aren't Dash properties but are instead model fields e.g. header,
-        #  title. See https://github.com/mckinsey/vizro/issues/1078.
-        # Try to fix AgGrid problem with underlying input component id.
-        #  Note this is needed for inputs in both vm.Action and _AbstractAction but outputs only in _AbstractAction.
-
-
-        # Keep TypeAdapter validation in AbstractAction as in Antony PoC, do validation of "." in string inside
-        # _transform.
-        pass
 
     def _get_control_states(self, control_type: ControlType) -> list[State]:
         """Gets list of `States` for selected `control_type` that appear on page where this Action is defined."""
