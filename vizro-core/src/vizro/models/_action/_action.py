@@ -16,7 +16,7 @@ from typing_extensions import TypedDict
 from vizro.managers._model_manager import model_manager
 from vizro.models import VizroBaseModel
 from vizro.models._models_utils import _log_call
-from vizro.models.types import CapturedCallable, ControlType, _DotSeparatedStr, _IdProperty, validate_captured_callable
+from vizro.models.types import CapturedCallable, ControlType, _DotSeparatedStr, _IdOrIdProperty, validate_captured_callable
 
 logger = logging.getLogger(__name__)
 
@@ -38,7 +38,7 @@ class _BaseAction(VizroBaseModel):
     # function and outputs are overridden as fields in Action and abstract methods in _AbstractAction. Using ClassVar
     # for these is the easiest way to appease mypy and have something that actually works at runtime.
     function: ClassVar[Callable[..., Any]]
-    outputs: ClassVar[Union[list[_IdProperty], dict[str, _IdProperty]]]
+    outputs: ClassVar[Union[list[_IdOrIdProperty], dict[str, _IdOrIdProperty]]]
 
     @property
     def _dash_components(self) -> list[Component]:
@@ -53,7 +53,7 @@ class _BaseAction(VizroBaseModel):
         raise NotImplementedError
 
     @property
-    def _runtime_args(self) -> dict[str, _IdProperty]:
+    def _runtime_args(self) -> dict[str, _IdOrIdProperty]:
         raise NotImplementedError
 
     @property
@@ -65,13 +65,12 @@ class _BaseAction(VizroBaseModel):
         # Action.inputs/outputs.
         # TODO-AV2 D 3: try to enable properties that aren't Dash properties but are instead model fields e.g. header,
         #  title. See https://github.com/mckinsey/vizro/issues/1078.
-
-        # Remove DotSeparatedString, change public type hints back to str, update _IdProperty to use just Id also (
-        # wherever suitable - remains private).
-        # Keep TypeAdapter validation in AbstractAction as in Antony PoC, do validation of "." in string inside
-        # _transform.
         # Try to fix AgGrid problem with underlying input component id.
         #  Note this is needed for inputs in both vm.Action and _AbstractAction but outputs only in _AbstractAction.
+
+
+        # Keep TypeAdapter validation in AbstractAction as in Antony PoC, do validation of "." in string inside
+        # _transform.
         pass
 
     def _get_control_states(self, control_type: ControlType) -> list[State]:
@@ -369,7 +368,7 @@ class Action(_BaseAction):
         return set(inspect.signature(self.function._function).parameters)  # type:ignore[union-attr]
 
     @property
-    def _runtime_args(self) -> dict[str, _IdProperty]:
+    def _runtime_args(self) -> dict[str, _IdOrIdProperty]:
         # Since function is a CapturedCallable, input arguments have already been bound and should be found from the
         # CapturedCallable.
         # Note this is a dictionary even if arguments were originally provided as positional ones, since they are

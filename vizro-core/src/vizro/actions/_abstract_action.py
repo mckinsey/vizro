@@ -9,7 +9,7 @@ from dash.development.base_component import Component
 from pydantic import TypeAdapter
 
 from vizro.models._action._action import _BaseAction
-from vizro.models.types import _DotSeparatedStr, _IdProperty
+from vizro.models.types import _DotSeparatedStr, _IdOrIdProperty, _IdProperty
 
 
 # TODO-AV2 D 5: make public.
@@ -54,7 +54,7 @@ class _AbstractAction(_BaseAction, abc.ABC):
 
     @property
     @abc.abstractmethod
-    def outputs(self) -> Union[list[_IdProperty], dict[str, _IdProperty]]:  # type: ignore[override]
+    def outputs(self) -> Union[list[_IdOrIdProperty], dict[str, _IdOrIdProperty]]:  # type: ignore[override]
         """Must be defined by concrete action, even if there's no output.
 
         This should return a dictionary of the form `{"key": "dropdown.value"}`, where the key corresponds to the key
