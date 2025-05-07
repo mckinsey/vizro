@@ -198,7 +198,7 @@ If supplied, the `title` of the [`Dashboard`][vizro.models.Dashboard] displays a
 
 ## Add a dashboard logo
 
-Vizro [automatically incorporate the dashboard logo](assets.md/#add-a-logo-images) in the top-left corner of each page if an image named `logo.<extension>` is present within the assets folder.
+Vizro [automatically incorporate the dashboard logo](assets.md/#add-a-logo-image) in the top-left corner of each page if an image named `logo.<extension>` is present within the assets folder.
 
 ![Dashboard with logo](../../assets/user_guides/dashboard/dashboard_with_logo.png)
 
