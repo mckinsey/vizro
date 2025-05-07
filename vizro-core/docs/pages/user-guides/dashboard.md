@@ -216,13 +216,12 @@ Vizro automatically adds [meta tags](https://metatags.io/) to display a preview 
 
 The preview includes:
 
-* the dashboard `title` and the [Page `title`][vizro.models.Page] 
-* an image if a [suitable assets file exists](assets.md/#include-a-meta-tags-image)
-* the dashboard `description` or the [Page `description`][vizro.models.Page]
+- the dashboard `title` and the [Page `title`][vizro.models.Page]
+- an image if a [suitable assets file exists](assets.md/#include-a-meta-tags-image)
+- the dashboard `description` or the [Page `description`][vizro.models.Page]
 
 ## Browser title
 
 The [website icon](assets.md/#change-the-favicon), Dashboard `title` (if supplied) and [Page `title`][vizro.models.Page] are displayed in the browser's title bar. For example, if your Dashboard `title` is "Vizro Demo" and the Page `title` is "Homepage", then the title in the browser tab will be "Vizro Demo: Homepage".
-
 
 [dashboard]: ../../assets/user_guides/dashboard/dashboard.png
