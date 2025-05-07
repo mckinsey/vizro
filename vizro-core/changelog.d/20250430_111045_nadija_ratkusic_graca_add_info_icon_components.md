@@ -19,7 +19,7 @@ Uncomment the section that is right (remove the HTML comment wrapper).
 
 ### Added
 
-- Add `description` argument to `Dashboard`, `Page`, `Container`, `Graph`, `AgGrid` and `Table` to enable info-icons in titles. See the [user guide on info-icons for Container as an example](https://vizro.readthedocs.io/en/stable/pages/user-guides/container/#add-an-info-icon). ([#1144](https://github.com/mckinsey/vizro/pull/1144))
+- Add `description` argument to `Dashboard`, `Page`, `Container`, `Graph`, `AgGrid` and `Table` to enable tooltips in titles. See the [user guide on tooltips for `Container` for an example](https://vizro.readthedocs.io/en/stable/pages/user-guides/container/#add-a-tooltip). ([#1144](https://github.com/mckinsey/vizro/pull/1144))
 
 <!--
 ### Changed
