@@ -80,6 +80,14 @@ class Checklist(VizroBaseModel):
     # Reused validators
     _validate_options = model_validator(mode="before")(validate_options_dict)
 
+    @property
+    def _outputs(self) -> dict[str, str]:
+        return {"__default__": f"{self.id}.value"}
+
+    @property
+    def _inputs(self) -> dict[str, str]:
+        return {"__default__": f"{self.id}.value"}
+
     def __call__(self, options):
         full_options, default_value = get_options_and_default(options=options, multi=True)
         description = self.description.build().children if self.description else [None]

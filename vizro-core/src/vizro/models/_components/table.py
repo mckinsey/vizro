@@ -69,6 +69,10 @@ class Table(VizroBaseModel):
 
     _validate_figure = field_validator("figure", mode="before")(validate_captured_callable)
 
+    @property
+    def _outputs(self) -> dict[str, str]:
+        return {"__default__": f"{self.id}.children"}
+
     # Convenience wrapper/syntactic sugar.
     def __call__(self, **kwargs):
         # This default value is not actually used anywhere at the moment since __call__ is always used with data_frame

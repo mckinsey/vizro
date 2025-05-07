@@ -47,6 +47,10 @@ class Card(VizroBaseModel):
         ]
     ]
 
+    @property
+    def _outputs(self) -> dict[str, str]:
+        return {"__default__": f"{self.id}.children"}
+
     @_log_call
     def build(self):
         text = dcc.Markdown(id=self.id, children=self.text, dangerously_allow_html=False, className="card-text")

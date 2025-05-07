@@ -40,6 +40,10 @@ class Text(VizroBaseModel):
         ]
     ]
 
+    @property
+    def _outputs(self) -> dict[str, str]:
+        return {"__default__": f"{self.id}.children"}
+
     @_log_call
     def build(self):
         defaults = {

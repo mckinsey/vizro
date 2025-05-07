@@ -37,6 +37,14 @@ class TextArea(VizroBaseModel):
     # See comment thread: https://github.com/mckinsey/vizro/pull/298#discussion_r1478137654
     _set_actions = _action_validator_factory("value")
 
+    @property
+    def _outputs(self) -> dict[str, str]:
+        return {"__default__": f"{self.id}.value"}
+
+    @property
+    def _inputs(self) -> dict[str, str]:
+        return {"__default__": f"{self.id}.value"}
+
     @_log_call
     def build(self):
         return html.Div(

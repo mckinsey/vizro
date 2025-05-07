@@ -39,6 +39,14 @@ class UserInput(VizroBaseModel):
     # Component properties for actions and interactions
     _input_property: str = PrivateAttr("value")
 
+    @property
+    def _outputs(self) -> dict[str, str]:
+        return {"__default__": f"{self.id}.value"}
+
+    @property
+    def _inputs(self) -> dict[str, str]:
+        return {"__default__": f"{self.id}.value"}
+
     @_log_call
     def build(self):
         return html.Div(

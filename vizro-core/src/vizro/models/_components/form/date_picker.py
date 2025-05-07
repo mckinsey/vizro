@@ -91,6 +91,14 @@ class DatePicker(VizroBaseModel):
 
     _input_property: str = PrivateAttr("value")
 
+    @property
+    def _outputs(self) -> dict[str, str]:
+        return {"__default__": f"{self.id}.value"}
+
+    @property
+    def _inputs(self) -> dict[str, str]:
+        return {"__default__": f"{self.id}.value"}
+
     def __call__(self, min, max, current_value=None):
         # TODO: Refactor value calculation logic after the Dash persistence bug is fixed and "Select All" PR is merged.
         #  The underlying component's value calculation will need to account for:
