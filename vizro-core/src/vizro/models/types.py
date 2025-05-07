@@ -6,10 +6,16 @@ from __future__ import annotations
 import functools
 import importlib
 import inspect
+import sys
 import warnings
 from contextlib import contextmanager
 from datetime import date
-from typing import Annotated, Any, Literal, NewType, Optional, Protocol, TypeAlias, Union, runtime_checkable
+from typing import Annotated, Any, Literal, NewType, Optional, Protocol, Union, runtime_checkable
+
+if sys.version_info >= (3, 10):
+    from typing import TypeAlias
+else:
+    from typing_extensions import TypeAlias
 
 import plotly.io as pio
 import pydantic_core as cs
