@@ -78,7 +78,8 @@ class _BaseAction(VizroBaseModel):
         # Implement _outputs and _inputs (probably as properties) as in Antony PoC with fields as defined in that table.
         # Remove DotSeparatedString, change public type hints back to str, update _IdProperty to use just Id also (
         # wherever suitable - remains private).
-        # Keep TypeAdapter validation in AbstractAction as in Antony PoC, do validation of "." in string inside _transform
+        # Keep TypeAdapter validation in AbstractAction as in Antony PoC, do validation of "." in string inside
+        # _transform.
         # Try to fix AgGrid problem with underlying input component id.
         #  Note this is needed for inputs in both vm.Action and _AbstractAction but outputs only in _AbstractAction.
         pass
