@@ -140,6 +140,7 @@ class _BaseAction(VizroBaseModel):
         # User specified arguments runtime_args take precedence over built in reserved arguments. No static arguments
         # ar relevant here, just Dash States. Static arguments values are stored in the state of the relevant
         # _AbstractAction instance.
+        # Qn: should this work for legacy actions too? Think about docs.
         runtime_args = {
             arg_name: State(*self._transform(arg_value).split("."))
             for arg_name, arg_value in self._runtime_args.items()
@@ -167,7 +168,7 @@ class _BaseAction(VizroBaseModel):
             # this is a problem
             raise
 
-        return model_manager[component_id]._outputs["__default__"]
+        return model_manager[component_id]._outputs[component_property]
 
     @property
     def _transformed_outputs(self) -> Union[list[Output], dict[str, Output]]:
