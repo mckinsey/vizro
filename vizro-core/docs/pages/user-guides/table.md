@@ -526,14 +526,14 @@ As mentioned above, all [parameters of the Dash DataTable](https://dash.plotly.c
 
 If the available arguments are not sufficient, there is always the option to create a [custom Dash DataTable](custom-tables.md).
 
-## Add title, header, footer and info-icon
+## Add additional text
 
-The [`Table`][vizro.models.Table] and the [`AgGrid`][vizro.models.AgGrid] models accept a `title`, `header`, `footer` and `description` argument. This is useful for providing context to the data being displayed, or for adding a description of the data.
+The [`Table`][vizro.models.Table] and the [`AgGrid`][vizro.models.AgGrid] models accept `title`, `header`, `footer` and `description` arguments. These are useful for providing additional context on the table.
 
 - **title**: Displayed as an [H3 header](https://dash.plotly.com/dash-html-components/h3), useful for summarizing the main topic or insight of the component.
 - **header**: Accepts markdown text, ideal for extra descriptions, subtitles, or detailed data insights.
 - **footer**: Accepts markdown text, commonly used for citing data sources, providing information on the last update, or adding disclaimers.
-- **description**: Accepts either markdown text or [`Tooltip`][vizro.models.Tooltip] model, ideal for showing extra descriptions in a tooltip on hover.
+- **description**: Displayed as an icon that opens a tooltip containing markdown text when hovered over. You can provide a string to use the default info icon or a [`Tooltip`][vizro.models.Tooltip] model to use any icon from the [Google Material Icons library](https://fonts.google.com/icons).
 
 ### Formatted AgGrid
 

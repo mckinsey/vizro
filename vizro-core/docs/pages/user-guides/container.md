@@ -413,21 +413,17 @@ Collapsible containers can be used in `Grid` layout as well.
 
         [![CollapsibleContainerGrid]][collapsiblecontainergrid]
 
-## Add an info-icon
+## Add a tooltip
 
 The `description` argument enables you to add helpful context to your container by displaying an info icon next to its title. Hovering over the icon shows a tooltip with your chosen text.
 
-To use the default info icon, just provide a string of description text. To use a custom icon, pass a custom [`Tooltip`][vizro.models.Tooltip] model to use an icon from the [Google Material Icons library](https://fonts.google.com/icons) alongside your description text.
+You can provide markdown text as a string to use the default info icon or a [`Tooltip`][vizro.models.Tooltip] model to use any icon from the [Google Material Icons library](https://fonts.google.com/icons).
 
-```python
-description = Tooltip(text="More information about this container.", icon="help")
-```
-
-!!! example "Container with info-icon"
+!!! example "Container with tooltip"
 
     === "app.py"
 
-        ```{.python pycafe-link}
+        ```{.python pycafe-link hl_lines="14-18"}
         import vizro.models as vm
         import vizro.plotly.express as px
         from vizro import Vizro
@@ -435,11 +431,11 @@ description = Tooltip(text="More information about this container.", icon="help"
         iris = px.data.iris()
 
         page = vm.Page(
-            title="Container with info-icon",
+            title="Container with tooltip",
             layout=vm.Grid(grid=[[0, 1]]),
             components=[
                 vm.Container(
-                    title="Container with info-icon",
+                    title="Container with tooltip",
                     components=[vm.Graph(figure=px.scatter(iris, x="sepal_width", y="sepal_length", color="species"))],
                     description="""
                         The Iris dataset includes measurements of 150 iris flowers across three types: Setosa, Versicolor, and Virginica.
@@ -460,17 +456,17 @@ description = Tooltip(text="More information about this container.", icon="help"
 
     === "app.yaml"
 
-        ```yaml
+        ```{.yaml hl_lines="20-23"}
         # Still requires a .py to add data to the data manager and parse YAML configuration
         # See yaml_version example
         pages:
-          - title: Container with info-icon
+          - title: Container with tooltip
             layout:
               grid: [[0, 1]]
               type: grid
             components:
               - type: container
-                title: Container with info-icon
+                title: Container with tooltip
                 components:
                   - type: graph
                     figure:

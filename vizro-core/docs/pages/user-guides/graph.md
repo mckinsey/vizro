@@ -74,14 +74,14 @@ You will need to create a custom chart if you want to customize the Plotly chart
 
 For more details, refer to our [user guide on custom chart](custom-charts.md) and the [Plotly documentation on updating figures](https://plotly.com/python/creating-and-updating-figures/).
 
-## Add title, header, footer, and info-icon
+## Add additional text
 
-The [`Graph`][vizro.models.Graph] accepts a `title`, `header`, `footer`, and `description` argument. This is useful for context on the data being displayed, or for adding a description of the data.
+The [`Graph`][vizro.models.Graph] model accepts `title`, `header`, `footer` and `description` arguments. These are useful for providing additional context on the chart.
 
 - **title**: Displayed as an [H3 header](https://dash.plotly.com/dash-html-components/h3), useful for summarizing the main topic or insight of the component.
 - **header**: Accepts markdown text, ideal for extra descriptions, subtitles, or detailed data insights.
 - **footer**: Accepts markdown text, commonly used for citing data sources, providing information on the last update, or adding disclaimers.
-- **description**: Accepts either markdown text or [`Tooltip`][vizro.models.Tooltip] model, ideal for showing extra descriptions in a tooltip on hover.
+- **description**: Displayed as an icon that opens a tooltip containing markdown text when hovered over. You can provide a string to use the default info icon or a [`Tooltip`][vizro.models.Tooltip] model to use any icon from the [Google Material Icons library](https://fonts.google.com/icons).
 
 !!! note "Use `Graph.title` instead of the Plotly Express chart title"
 

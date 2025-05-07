@@ -124,17 +124,16 @@ class Dashboard(VizroBaseModel):
         # Note redirect_from=["/"] doesn't work and so the / route must be defined separately.
         self.pages[0].path = "/"
         meta_img = self._infer_image("app") or self._infer_image("logo") or self._infer_image("logo_dark")
+        dashboard_description_text = self.description.text if self.description else None
 
         for order, page in enumerate(self.pages):
             # Dash also uses the dashboard-level description passed into Dash() as the default for page-level
             # descriptions, but this would involve extracting dashboard.description and inserting it into the Dash app
             # config in Vizro.build. What we do here is simpler but has the same effect.
-            dashboard_description = self.description.text if self.description else None
-
             dash.register_page(
                 module=page.id,
                 name=page.title,
-                description=page.description.text if page.description else dashboard_description,
+                description=page.description.text if page.description else dashboard_description_text,
                 image=meta_img,
                 title=f"{self.title}: {page.title}" if self.title else page.title,
                 path=page.path,
