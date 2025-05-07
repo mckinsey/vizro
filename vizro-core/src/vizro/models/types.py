@@ -9,11 +9,18 @@ import inspect
 import warnings
 from contextlib import contextmanager
 from datetime import date
-from typing import Annotated, Any, Literal, NewType, Optional, Protocol, Union, runtime_checkable, Callable, TypeAlias
+from typing import Annotated, Any, Literal, NewType, Optional, Protocol, TypeAlias, Union, runtime_checkable
 
 import plotly.io as pio
 import pydantic_core as cs
-from pydantic import Discriminator, Field, StrictBool, StringConstraints, Tag, ValidationInfo, AfterValidator, BeforeValidator, PlainSerializer
+from pydantic import (
+    Discriminator,
+    Field,
+    StrictBool,
+    StringConstraints,
+    Tag,
+    ValidationInfo,
+)
 from pydantic.json_schema import SkipJsonSchema
 from typing_extensions import TypedDict
 

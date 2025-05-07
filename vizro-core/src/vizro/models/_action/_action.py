@@ -16,7 +16,13 @@ from typing_extensions import TypedDict
 from vizro.managers._model_manager import model_manager
 from vizro.models import VizroBaseModel
 from vizro.models._models_utils import _log_call
-from vizro.models.types import CapturedCallable, ControlType, _DotSeparatedStr, _IdOrIdProperty, validate_captured_callable
+from vizro.models.types import (
+    CapturedCallable,
+    ControlType,
+    _DotSeparatedStr,
+    _IdOrIdProperty,
+    validate_captured_callable,
+)
 
 logger = logging.getLogger(__name__)
 
@@ -67,7 +73,6 @@ class _BaseAction(VizroBaseModel):
         #  title. See https://github.com/mckinsey/vizro/issues/1078.
         # Try to fix AgGrid problem with underlying input component id.
         #  Note this is needed for inputs in both vm.Action and _AbstractAction but outputs only in _AbstractAction.
-
 
         # Keep TypeAdapter validation in AbstractAction as in Antony PoC, do validation of "." in string inside
         # _transform.
@@ -322,8 +327,8 @@ class Action(_BaseAction):
     # TODO-AV2 C 1: Put in deprecation warning.
     inputs: list[str] = Field(
         default=[],
-        description="""List of inputs provided to the action function. Each input can be specified as either 
-                `<component_id>.<property>` or just `<component_id>` if the model has a default input property defined. 
+        description="""List of inputs provided to the action function. Each input can be specified as either
+                `<component_id>.<property>` or just `<component_id>` if the model has a default input property defined.
                 Defaults to `[]`""",
     )
     outputs: Union[list[str], dict[str, str]] = Field(  # type: ignore
