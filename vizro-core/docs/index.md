@@ -4,13 +4,15 @@ Vizro is an open-source Python-based toolkit. You can use it to build data visua
 
 <div class="grid cards" markdown>
 
-- :fontawesome-solid-forward-fast:{ .lg .middle } __New to Vizro?__
+- :fontawesome-solid-microscope:{ .lg .middle } __New to Vizro?__
 
     ---
 
     [:octicons-arrow-right-24: Quickstart tutorial](pages/tutorials/first-dashboard.md)
-
-    [:octicons-arrow-right-24: Install Vizro](pages/user-guides/install.md)
+    
+    [:octicons-arrow-right-24: Explore Vizro tutorial](pages/tutorials/explore-components.md)
+    
+    [:octicons-arrow-right-24: FAQs](pages/explanation/faq.md)
 
 - :fontawesome-solid-keyboard:{ .lg .middle } __Vizro features__
 
@@ -20,21 +22,10 @@ Vizro is an open-source Python-based toolkit. You can use it to build data visua
 
     [:octicons-arrow-right-24: Components overview](pages/user-guides/components.md)
 
-- :fontawesome-solid-microscope:{ .lg .middle } __Hands-on code__
+    [:octicons-arrow-right-24: Visual formatting](pages/user-guides/visual-formatting.md)
 
     ---
 
-    [:octicons-arrow-right-24: Tutorials](pages/tutorials/explore-components.md)
-
-    [:octicons-arrow-right-24: Examples](https://vizro.mckinsey.com)
-
-- :material-scale-balance:{ .lg .middle } __FAQs__
-
-    ---
-
-    [:octicons-arrow-right-24: How is Vizro different to Streamlit?](pages/explanation/faq.md/#how-does-vizro-differ-from-dash-or-streamlit)
-
-    [:octicons-arrow-right-24: Other FAQs](pages/explanation/faq.md)
 
 - :fontawesome-solid-hands-holding-circle:{ .lg .middle } __Get involved__
 

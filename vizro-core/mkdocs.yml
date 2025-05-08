@@ -45,7 +45,7 @@ nav:
           - Custom components: pages/user-guides/custom-components.md
           - Custom actions: pages/user-guides/custom-actions.md
           - Custom figures: pages/user-guides/custom-figures.md
-  - API Reference:
+  - Reference:
       - Vizro: pages/API-reference/vizro.md
       - Models: pages/API-reference/models.md
       - Action functions: pages/API-reference/action-callables.md
@@ -60,7 +60,7 @@ nav:
       - Documentation style: pages/explanation/documentation-style-guide.md
       - Vizro Schema: pages/explanation/schema.md
       - Authors: pages/explanation/authors.md
-  - Examples:
+  - Examples gallery:
       - Gallery: https://vizro.mckinsey.com/
   - Vizro-AI:
       - Vizro-AI: https://vizro.readthedocs.io/projects/vizro-ai/
