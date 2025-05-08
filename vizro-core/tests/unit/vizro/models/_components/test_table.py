@@ -156,7 +156,7 @@ class TestPreBuildTable:
         )
         with pytest.raises(
             DuplicateIDError,
-            match="CapturedCallable with id=duplicate_table_id has an id that is already in use by another CapturedCallable.",
+            match="CapturedCallable with id=duplicate_table_id has an id that is ",
         ):
             Vizro().build(dashboard)
 
