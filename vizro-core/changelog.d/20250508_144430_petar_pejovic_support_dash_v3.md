@@ -24,7 +24,7 @@ Uncomment the section that is right (remove the HTML comment wrapper).
 -->
 ### Changed
 
-- Bumped `dash_mantine_components>=1.0.0`, `dash>=2.0.0`, `dash-bootstrap-components>=1.0.0`, `dash-core-components>=2.0.0`, `dash-ag-grid>=31.3.1` to remove the `dash<3.0.0` upper-bound. 
+- Bumped `dash_mantine_components>=1.0.0`, `dash>=2.0.0`, `dash-bootstrap-components>=1.0.0`, `dash-core-components>=2.0.0`, `dash-ag-grid>=31.3.1` to remove the `dash<3.0.0` upper-bound.
 
 <!--
 ### Deprecated

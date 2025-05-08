@@ -18,7 +18,6 @@ from vizro._constants import VIZRO_ASSETS_PATH
 from vizro.managers import data_manager, model_manager
 from vizro.models import Dashboard, Filter
 
-
 logger = logging.getLogger(__name__)
 
 if TYPE_CHECKING:

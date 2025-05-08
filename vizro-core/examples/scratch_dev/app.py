@@ -14,7 +14,7 @@ page_1 = vm.Page(
     ],
     controls=[
         vm.Filter(column="species"),
-    ]
+    ],
 )
 
 page_2 = vm.Page(
@@ -24,7 +24,7 @@ page_2 = vm.Page(
     ],
     controls=[
         vm.Filter(column="sepal_length"),
-    ]
+    ],
 )
 
 dashboard = vm.Dashboard(
