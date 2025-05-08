@@ -7,11 +7,10 @@ from pydantic import AfterValidator, BeforeValidator, Field, PrivateAttr, field_
 from pydantic.functional_serializers import PlainSerializer
 from pydantic.json_schema import SkipJsonSchema
 
-import vizro.models as vm
 from vizro.actions import filter_interaction
 from vizro.actions._actions_utils import CallbackTriggerDict, _get_component_actions, _get_parent_model
 from vizro.managers import data_manager
-from vizro.models import VizroBaseModel
+from vizro.models import AgGrid, Tooltip, VizroBaseModel
 from vizro.models._action._actions_chain import _action_validator_factory
 from vizro.models._components._components_utils import _process_callable_data_frame
 from vizro.models._models_utils import _log_call
@@ -143,7 +142,7 @@ class AgGrid(VizroBaseModel):
         # Check if any other AgGrid figure function has the same input component ID
         existing_models = [
             model
-            for model in model_manager._get_models(vm.AgGrid)
+            for model in model_manager._get_models(AgGrid)
             if hasattr(model, "_input_component_id")
             and model.id != self.id
             and model._input_component_id == self._input_component_id
