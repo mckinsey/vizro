@@ -9,7 +9,8 @@ from pydantic.json_schema import SkipJsonSchema
 
 from vizro.actions import filter_interaction
 from vizro.actions._actions_utils import CallbackTriggerDict, _get_component_actions, _get_parent_model
-from vizro.managers import data_manager
+from vizro.managers import data_manager, model_manager
+from vizro.managers._model_manager import DuplicateIDError
 from vizro.models import Tooltip, VizroBaseModel
 from vizro.models._action._actions_chain import _action_validator_factory
 from vizro.models._components._components_utils import _process_callable_data_frame
