@@ -116,8 +116,6 @@ Similarly, when using Cursor, after a short pause, you should see a green light 
 
 </details>
 
-
-
 ## 💻 Usage
 
 ### Use prompt templates to get specific dashboards quickly
