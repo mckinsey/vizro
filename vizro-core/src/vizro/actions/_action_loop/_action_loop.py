@@ -5,8 +5,6 @@ from typing import cast
 
 from dash import html
 
-from vizro.actions._action_loop._build_action_loop_callbacks import _build_action_loop_callbacks
-from vizro.actions._action_loop._get_action_loop_components import _get_action_loop_components
 from vizro.managers import model_manager
 from vizro.models._action._action import _BaseAction
 

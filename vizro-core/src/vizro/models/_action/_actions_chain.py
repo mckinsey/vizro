@@ -1,7 +1,6 @@
 from functools import partial
 from typing import NamedTuple
 
-from dash import Input
 from pydantic import ValidationInfo
 
 from vizro.managers import model_manager
