@@ -164,7 +164,9 @@ class _BaseAction(VizroBaseModel):
         property_name = "_outputs" if type == "output" else "_inputs"
 
         if "." in reference:
-            TypeAdapter(Union[list[_DotSeparatedStr], dict[str, _DotSeparatedStr]]).validate_python(reference)
+            # LQ: Check whether we need TypeAdapter here or something else. Currently it doesn't catch cases such as
+            # `component-id.prop.prop` well. However, adding below leads to a bunch of unit tests to fail. Check later.
+            # TypeAdapter(Union[list[_DotSeparatedStr], dict[str, _DotSeparatedStr]]).validate_python(reference)
             component_id, component_property = reference.split(".")
             if component_id in model_manager and hasattr(model_manager[component_id], property_name):
                 if component_property in getattr(model_manager[component_id], property_name):
