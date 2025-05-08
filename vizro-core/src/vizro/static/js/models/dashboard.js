@@ -43,7 +43,7 @@ function collapse_nav_panel(n_clicks, is_open) {
         "Show Menu",
       ];
     }
-    return dash_clientside.no_update;
+    return [dash_clientside.no_update, dash_clientside.no_update, dash_clientside.no_update];
   }
   if (is_open) {
     return [

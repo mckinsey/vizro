@@ -24,7 +24,7 @@ function update_range_slider_values(
     trigger_id === `${self_data["id"]}_end_value`
   ) {
     if (isNaN(start) || isNaN(end)) {
-      return dash_clientside.no_update;
+      return [dash_clientside.no_update, dash_clientside.no_update, dash_clientside.no_update, dash_clientside.no_update];
     }
     return [start, end, [start, end], [start, end]];
 

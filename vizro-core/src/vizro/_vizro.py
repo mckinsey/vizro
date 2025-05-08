@@ -18,8 +18,6 @@ from vizro._constants import VIZRO_ASSETS_PATH
 from vizro.managers import data_manager, model_manager
 from vizro.models import Dashboard, Filter
 
-# this can be removed when Dash uses React 18 as a default (likely V3.0 https://github.com/plotly/dash/pull/3093)
-dash._dash_renderer._set_react_version("18.2.0")
 
 logger = logging.getLogger(__name__)
 

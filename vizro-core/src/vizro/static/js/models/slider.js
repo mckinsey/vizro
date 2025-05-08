@@ -10,7 +10,7 @@ function update_slider_values(start, slider, input_store, self_data) {
   // text form component is the trigger
   if (trigger_id === `${self_data["id"]}_end_value`) {
     if (isNaN(start)) {
-      return dash_clientside.no_update;
+      return [dash_clientside.no_update, dash_clientside.no_update, dash_clientside.no_update];
     }
     return [start, start, start];
 
