@@ -8,10 +8,12 @@ from pydantic import AfterValidator, BeforeValidator, Field, conlist
 from pydantic.json_schema import SkipJsonSchema
 from pydantic_core.core_schema import ValidationInfo
 
-from vizro.models import VizroBaseModel
+from vizro.models import Tooltip, VizroBaseModel
 from vizro.models._grid import set_layout
 from vizro.models._models_utils import _build_inner_layout, _log_call, check_captured_callable_model
 from vizro.models.types import ComponentType, ControlType, LayoutType
+from vizro.models._tooltip import coerce_str_to_tooltip
+
 
 
 # TODO: this could be done with default_factory once we bump to pydantic>=2.10.0.
@@ -35,6 +37,8 @@ class Container(VizroBaseModel):
             container is not collapsible.
         variant (Optional[Literal["plain", "filled", "outlined"]]): Predefined styles to choose from. Options are
             `plain`, `filled` or `outlined`. Defaults to `plain` (or `outlined` for collapsible container).
+        description (Optional[Tooltip]): Optional markdown string that adds an icon next to the title.
+            Hovering over the icon shows a tooltip with the provided description. Defaults to `None`.
         extra (Optional[dict[str, Any]]): Extra keyword arguments that are passed to `dbc.Container` and overwrite any
             defaults chosen by the Vizro team. This may have unexpected behavior.
             Visit the [dbc documentation](https://dash-bootstrap-components.opensource.faculty.ai/docs/components/layout/)
@@ -68,6 +72,18 @@ class Container(VizroBaseModel):
             validate_default=True,
         ),
     ]
+    # TODO: ideally description would have json_schema_input_type=Union[str, Tooltip] attached to the BeforeValidator,
+    #  but this requires pydantic >= 2.9.
+    description: Annotated[
+        Optional[Tooltip],
+        BeforeValidator(coerce_str_to_tooltip),
+        Field(
+            default=None,
+            description="""Optional markdown string that adds an icon next to the title.
+            Hovering over the icon shows a tooltip with the provided description. Defaults to `None`.""",
+        ),
+    ]
+
     extra: SkipJsonSchema[
         Annotated[
             dict[str, Any],
@@ -142,8 +158,9 @@ class Container(VizroBaseModel):
 
     def _build_container_title(self):
         """Builds and returns the container title, including an optional icon and tooltip if collapsed."""
-        title_content = [self.title]
+        description = self.description.build().children if self.description else [None]
 
+        title_content = [html.Div([self.title, *description], className="inner-container-title")]
         if self.collapsed is not None:
             # collapse_container is not run when page is initially loaded, so we set the content correctly conditional
             # on self.collapsed upfront. This prevents the up/down arrow rotating on in initial load.

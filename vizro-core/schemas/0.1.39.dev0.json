@@ -34,7 +34,7 @@
     },
     "Action": {
       "additionalProperties": false,
-      "description": "Action to be inserted into `actions` of relevant component.\n\nArgs:\n    function (CapturedCallable): Action function.\n    inputs (list[DotSeparatedStr]): List of inputs provided to the action function, each specified as\n        `<component_id>.<property>`. Defaults to `[]`.\n    outputs (Union[list[DotSeparatedStr], dict[str, DotSeparatedStr]]): List or dictionary of outputs modified by\n        the action function, where each output needs to be specified as `<component_id>.<property>`.\n        Defaults to `[]`.",
+      "description": "Action to be inserted into `actions` of relevant component.\n\nArgs:\n    function (CapturedCallable): Action function.\n    inputs (list[_DotSeparatedStr]): List of inputs provided to the action function, each specified as\n        `<component_id>.<property>`. Defaults to `[]`.\n    outputs (Union[list[_DotSeparatedStr], dict[str, _DotSeparatedStr]]): List or dictionary of outputs modified by\n        the action function, where each output needs to be specified as `<component_id>.<property>`.\n        Defaults to `[]`.",
       "properties": {
         "id": {
           "default": "",
@@ -121,7 +121,7 @@
     },
     "AgGrid": {
       "additionalProperties": false,
-      "description": "Wrapper for `dash-ag-grid.AgGrid` to visualize grids in dashboard.\n\nArgs:\n    type (Literal[\"ag_grid\"]): Defaults to `\"ag_grid\"`.\n    figure (CapturedCallable): Function that returns a Dash AgGrid. See [`vizro.tables`][vizro.tables].\n    title (str): Title of the `AgGrid`. Defaults to `\"\"`.\n    header (str): Markdown text positioned below the `AgGrid.title`. Follows the CommonMark specification.\n        Ideal for adding supplementary information such as subtitles, descriptions, or additional context.\n        Defaults to `\"\"`.\n    footer (str): Markdown text positioned below the `AgGrid`. Follows the CommonMark specification.\n        Ideal for providing further details such as sources, disclaimers, or additional notes. Defaults to `\"\"`.\n    actions (list[ActionType]): See [`ActionType`][vizro.models.types.ActionType]. Defaults to `[]`.",
+      "description": "Wrapper for `dash-ag-grid.AgGrid` to visualize grids in dashboard.\n\nArgs:\n    type (Literal[\"ag_grid\"]): Defaults to `\"ag_grid\"`.\n    figure (CapturedCallable): Function that returns a Dash AgGrid. See [`vizro.tables`][vizro.tables].\n    title (str): Title of the `AgGrid`. Defaults to `\"\"`.\n    header (str): Markdown text positioned below the `AgGrid.title`. Follows the CommonMark specification.\n        Ideal for adding supplementary information such as subtitles, descriptions, or additional context.\n        Defaults to `\"\"`.\n    footer (str): Markdown text positioned below the `AgGrid`. Follows the CommonMark specification.\n        Ideal for providing further details such as sources, disclaimers, or additional notes. Defaults to `\"\"`.\n    description (Optional[Tooltip]): Optional markdown string that adds an icon next to the title.\n        Hovering over the icon shows a tooltip with the provided description. Defaults to `None`.\n    actions (list[ActionType]): See [`ActionType`][vizro.models.types.ActionType]. Defaults to `[]`.",
       "properties": {
         "id": {
           "default": "",
@@ -152,6 +152,18 @@
           "description": "Markdown text positioned below the `AgGrid`. Follows the CommonMark specification. Ideal for providing further details such as sources, disclaimers, or additional notes.",
           "title": "Footer",
           "type": "string"
+        },
+        "description": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/Tooltip"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "Optional markdown string that adds an icon next to the title.\n            Hovering over the icon shows a tooltip with the provided description. Defaults to `None`."
         },
         "actions": {
           "default": [],
@@ -396,7 +408,7 @@
     },
     "Container": {
       "additionalProperties": false,
-      "description": "Container to group together a set of components on a page.\n\nArgs:\n    type (Literal[\"container\"]): Defaults to `\"container\"`.\n    components (list[ComponentType]): See [ComponentType][vizro.models.types.ComponentType]. At least one component\n        has to be provided.\n    title (str): Title of the `Container`. Defaults to `\"\"`.\n    layout (Optional[LayoutType]): Layout to place components in. Defaults to `None`.\n    collapsed (Optional[bool]): Boolean flag that determines whether the container is collapsed on initial load.\n        Set to `True` for a collapsed state, `False` for an expanded state. Defaults to `None`, meaning the\n        container is not collapsible.\n    variant (Optional[Literal[\"plain\", \"filled\", \"outlined\"]]): Predefined styles to choose from. Options are\n        `plain`, `filled` or `outlined`. Defaults to `plain` (or `outlined` for collapsible container).\n    extra (Optional[dict[str, Any]]): Extra keyword arguments that are passed to `dbc.Container` and overwrite any\n        defaults chosen by the Vizro team. This may have unexpected behavior.\n        Visit the [dbc documentation](https://dash-bootstrap-components.opensource.faculty.ai/docs/components/layout/)\n        to see all available arguments. [Not part of the official Vizro schema](../explanation/schema.md) and the\n        underlying component may change in the future. Defaults to `{}`.",
+      "description": "Container to group together a set of components on a page.\n\nArgs:\n    type (Literal[\"container\"]): Defaults to `\"container\"`.\n    components (list[ComponentType]): See [ComponentType][vizro.models.types.ComponentType]. At least one component\n        has to be provided.\n    title (str): Title of the `Container`. Defaults to `\"\"`.\n    layout (Optional[LayoutType]): Layout to place components in. Defaults to `None`.\n    collapsed (Optional[bool]): Boolean flag that determines whether the container is collapsed on initial load.\n        Set to `True` for a collapsed state, `False` for an expanded state. Defaults to `None`, meaning the\n        container is not collapsible.\n    variant (Optional[Literal[\"plain\", \"filled\", \"outlined\"]]): Predefined styles to choose from. Options are\n        `plain`, `filled` or `outlined`. Defaults to `plain` (or `outlined` for collapsible container).\n    description (Optional[Tooltip]): Optional markdown string that adds an icon next to the title.\n        Hovering over the icon shows a tooltip with the provided description. Defaults to `None`.\n    extra (Optional[dict[str, Any]]): Extra keyword arguments that are passed to `dbc.Container` and overwrite any\n        defaults chosen by the Vizro team. This may have unexpected behavior.\n        Visit the [dbc documentation](https://dash-bootstrap-components.opensource.faculty.ai/docs/components/layout/)\n        to see all available arguments. [Not part of the official Vizro schema](../explanation/schema.md) and the\n        underlying component may change in the future. Defaults to `{}`.",
       "properties": {
         "id": {
           "default": "",
@@ -516,6 +528,18 @@
           "default": null,
           "description": "Predefined styles to choose from. Options are `plain`, `filled` or `outlined`.Defaults to `plain` (or `outlined` for collapsible container).",
           "title": "Variant"
+        },
+        "description": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/Tooltip"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "Optional markdown string that adds an icon next to the title.\n            Hovering over the icon shows a tooltip with the provided description. Defaults to `None`."
         }
       },
       "required": ["components"],
@@ -921,7 +945,7 @@
     },
     "Graph": {
       "additionalProperties": false,
-      "description": "Wrapper for `dcc.Graph` to visualize charts in dashboard.\n\nArgs:\n    type (Literal[\"graph\"]): Defaults to `\"graph\"`.\n    figure (CapturedCallable): Function that returns a graph.\n        See `CapturedCallable`][vizro.models.types.CapturedCallable].\n    title (str): Title of the `Graph`. Defaults to `\"\"`.\n    header (str): Markdown text positioned below the `Graph.title`. Follows the CommonMark specification.\n        Ideal for adding supplementary information such as subtitles, descriptions, or additional context.\n        Defaults to `\"\"`.\n    footer (str): Markdown text positioned below the `Graph`. Follows the CommonMark specification.\n        Ideal for providing further details such as sources, disclaimers, or additional notes. Defaults to `\"\"`.\n    actions (list[ActionType]): See [`ActionType`][vizro.models.types.ActionType]. Defaults to `[]`.",
+      "description": "Wrapper for `dcc.Graph` to visualize charts in dashboard.\n\nArgs:\n    type (Literal[\"graph\"]): Defaults to `\"graph\"`.\n    figure (CapturedCallable): Function that returns a graph.\n        See `CapturedCallable`][vizro.models.types.CapturedCallable].\n    title (str): Title of the `Graph`. Defaults to `\"\"`.\n    header (str): Markdown text positioned below the `Graph.title`. Follows the CommonMark specification.\n        Ideal for adding supplementary information such as subtitles, descriptions, or additional context.\n        Defaults to `\"\"`.\n    footer (str): Markdown text positioned below the `Graph`. Follows the CommonMark specification.\n        Ideal for providing further details such as sources, disclaimers, or additional notes. Defaults to `\"\"`.\n    description (Optional[Tooltip]): Optional markdown string that adds an icon next to the title.\n        Hovering over the icon shows a tooltip with the provided description. Defaults to `None`.\n    actions (list[ActionType]): See [`ActionType`][vizro.models.types.ActionType]. Defaults to `[]`.",
       "properties": {
         "id": {
           "default": "",
@@ -952,6 +976,18 @@
           "description": "Markdown text positioned below the `Graph`. Follows the CommonMark specification. Ideal for providing further details such as sources, disclaimers, or additional notes.",
           "title": "Footer",
           "type": "string"
+        },
+        "description": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/Tooltip"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "Optional markdown string that adds an icon next to the title.\n            Hovering over the icon shows a tooltip with the provided description. Defaults to `None`."
         },
         "actions": {
           "default": [],
@@ -1278,7 +1314,7 @@
     },
     "Page": {
       "additionalProperties": false,
-      "description": "A page in [`Dashboard`][vizro.models.Dashboard] with its own URL path and place in the `Navigation`.\n\nArgs:\n    components (list[ComponentType]): See [ComponentType][vizro.models.types.ComponentType]. At least one component\n        has to be provided.\n    title (str): Title of the `Page`.\n    description (str): Description for meta tags.\n    layout (Optional[LayoutType]): Layout to place components in. Defaults to `None`.\n    controls (list[ControlType]): See [ControlType][vizro.models.types.ControlType]. Defaults to `[]`.\n    path (str): Path to navigate to page. Defaults to `\"\"`.",
+      "description": "A page in [`Dashboard`][vizro.models.Dashboard] with its own URL path and place in the `Navigation`.\n\nArgs:\n    components (list[ComponentType]): See [ComponentType][vizro.models.types.ComponentType]. At least one component\n        has to be provided.\n    title (str): Title of the `Page`.\n    description (Optional[Tooltip]): Optional markdown string that adds an icon next to the title.\n        Hovering over the icon shows a tooltip with the provided description. This also sets the page's meta\n        tags. Defaults to `None`.\n    layout (Optional[LayoutType]): Layout to place components in. Defaults to `None`.\n    controls (list[ControlType]): See [ControlType][vizro.models.types.ControlType]. Defaults to `[]`.\n    path (str): Path to navigate to page. Defaults to `\"\"`.",
       "properties": {
         "id": {
           "default": "",
@@ -1342,12 +1378,6 @@
           "title": "Title",
           "type": "string"
         },
-        "description": {
-          "default": "",
-          "description": "Description for meta tags.",
-          "title": "Description",
-          "type": "string"
-        },
         "layout": {
           "anyOf": [
             {
@@ -1370,6 +1400,18 @@
           ],
           "default": null,
           "title": "Layout"
+        },
+        "description": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/Tooltip"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "Optional markdown string that adds an icon next to the title.\n            Hovering over the icon shows a tooltip with the provided description. This also sets the page's meta\n            tags. Defaults to `None`."
         },
         "controls": {
           "default": [],
@@ -1849,7 +1891,7 @@
     },
     "Table": {
       "additionalProperties": false,
-      "description": "Wrapper for `dash_table.DataTable` to visualize tables in dashboard.\n\nArgs:\n    type (Literal[\"table\"]): Defaults to `\"table\"`.\n    figure (CapturedCallable): Function that returns a Dash DataTable. See [`vizro.tables`][vizro.tables].\n    title (str): Title of the `Table`. Defaults to `\"\"`.\n    header (str): Markdown text positioned below the `Table.title`. Follows the CommonMark specification.\n        Ideal for adding supplementary information such as subtitles, descriptions, or additional context.\n        Defaults to `\"\"`.\n    footer (str): Markdown text positioned below the `Table`. Follows the CommonMark specification.\n        Ideal for providing further details such as sources, disclaimers, or additional notes. Defaults to `\"\"`.\n    actions (list[ActionType]): See [`ActionType`][vizro.models.types.ActionType]. Defaults to `[]`.",
+      "description": "Wrapper for `dash_table.DataTable` to visualize tables in dashboard.\n\nArgs:\n    type (Literal[\"table\"]): Defaults to `\"table\"`.\n    figure (CapturedCallable): Function that returns a Dash DataTable. See [`vizro.tables`][vizro.tables].\n    title (str): Title of the `Table`. Defaults to `\"\"`.\n    header (str): Markdown text positioned below the `Table.title`. Follows the CommonMark specification.\n        Ideal for adding supplementary information such as subtitles, descriptions, or additional context.\n        Defaults to `\"\"`.\n    footer (str): Markdown text positioned below the `Table`. Follows the CommonMark specification.\n        Ideal for providing further details such as sources, disclaimers, or additional notes. Defaults to `\"\"`.\n    description (Optional[Tooltip]): Optional markdown string that adds an icon next to the title.\n        Hovering over the icon shows a tooltip with the provided description. Defaults to `None`.\n    actions (list[ActionType]): See [`ActionType`][vizro.models.types.ActionType]. Defaults to `[]`.",
       "properties": {
         "id": {
           "default": "",
@@ -1880,6 +1922,18 @@
           "description": "Markdown text positioned below the `Table`. Follows the CommonMark specification. Ideal for providing further details such as sources, disclaimers, or additional notes.",
           "title": "Footer",
           "type": "string"
+        },
+        "description": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/Tooltip"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "Optional markdown string that adds an icon next to the title.\n            Hovering over the icon shows a tooltip with the provided description. Defaults to `None`."
         },
         "actions": {
           "default": [],
@@ -2066,7 +2120,7 @@
     }
   },
   "additionalProperties": false,
-  "description": "Vizro Dashboard to be used within [`Vizro`][vizro._vizro.Vizro.build].\n\nArgs:\n    pages (list[Page]): See [`Page`][vizro.models.Page].\n    theme (Literal[\"vizro_dark\", \"vizro_light\"]): Layout theme to be applied across dashboard.\n        Defaults to `vizro_dark`.\n    navigation (Navigation): See [`Navigation`][vizro.models.Navigation]. Defaults to `None`.\n    title (str): Dashboard title to appear on every page on top left-side. Defaults to `\"\"`.",
+  "description": "Vizro Dashboard to be used within [`Vizro`][vizro._vizro.Vizro.build].\n\nArgs:\n    pages (list[Page]): See [`Page`][vizro.models.Page].\n    theme (Literal[\"vizro_dark\", \"vizro_light\"]): Layout theme to be applied across dashboard.\n        Defaults to `vizro_dark`.\n    navigation (Navigation): See [`Navigation`][vizro.models.Navigation]. Defaults to `None`.\n    title (str): Dashboard title to appear on every page on top left-side. Defaults to `\"\"`.\n    description (Optional[Tooltip]): Optional markdown string that adds an icon next to the title.\n        Hovering over the icon shows a tooltip with the provided description. This also sets the page's meta\n        tags. Defaults to `None`.",
   "properties": {
     "id": {
       "default": "",
@@ -2104,6 +2158,18 @@
       "description": "Dashboard title to appear on every page on top left-side.",
       "title": "Title",
       "type": "string"
+    },
+    "description": {
+      "anyOf": [
+        {
+          "$ref": "#/$defs/Tooltip"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "description": "Optional markdown string that adds an icon next to the title.\n            Hovering over the icon shows a tooltip with the provided description. This also sets the page's meta\n            tags. Defaults to `None`."
     }
   },
   "required": ["pages"],

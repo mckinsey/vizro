@@ -1,11 +1,10 @@
-# Vizro is an open-source toolkit for creating modular data visualization applications.
-# check out https://github.com/mckinsey/vizro for more info about Vizro
-# and checkout https://vizro.readthedocs.io/en/stable/ for documentation.
+# # Vizro is an open-source toolkit for creating modular data visualization applications.
+# # check out https://github.com/mckinsey/vizro for more info about Vizro
+# # and checkout https://vizro.readthedocs.io/en/stable/ for documentation.
 
 import vizro.plotly.express as px
 from vizro import Vizro
 import vizro.models as vm
-from vizro.models.types import capture
 
 iris = px.data.iris()
 
