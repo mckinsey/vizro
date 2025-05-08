@@ -465,6 +465,7 @@ class TestBaseActionTransform:
         ],
     )
     def test_action_outputs_invalid(self, outputs):
+        # LQ: Check why some of these don't throw ValidationErrors instead of KeyError
         with pytest.raises(
             KeyError,
             match="Component with ID .* not found. Please provide a valid component ID or use the explicit "

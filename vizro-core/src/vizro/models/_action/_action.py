@@ -164,7 +164,7 @@ class _BaseAction(VizroBaseModel):
         property_name = "_outputs" if type == "output" else "_inputs"
 
         if "." in reference:
-            TypeAdapter(_DotSeparatedStr).validate_python(reference)
+            TypeAdapter(Union[list[_DotSeparatedStr], dict[str, _DotSeparatedStr]]).validate_python(reference)
             component_id, component_property = reference.split(".")
             if component_id in model_manager and hasattr(model_manager[component_id], property_name):
                 if component_property in getattr(model_manager[component_id], property_name):
@@ -347,6 +347,9 @@ class Action(_BaseAction):
                 `<component_id>.<property>` or just `<component_id>` if the model has a default input property defined.
                 Defaults to `[]`""",
     )
+    # str - less informative than many other places where we use ModelID
+    # Union[ModelID, str] - where str means "dot separated string" a bit more informative but doesn't really make sense
+    # Union[ModelID, IdProperty] - means making IdProperty public, which is ok but maybe overkill
     outputs: Union[list[str], dict[str, str]] = Field(  # type: ignore
         default=[],
         description="""List or dictionary of outputs modified by the action function. Each output can be specified as
