@@ -20,7 +20,8 @@ as it may result in unexpected layouts.
   width: calc(100% - 8px);
 }
 
-.loading-container, .figure-container {
+.loading-container,
+.figure-container {
   display: flex;
   flex-direction: column;
   height: inherit;
@@ -32,15 +33,10 @@ as it may result in unexpected layouts.
   width: 100%;
 }
 
-/* Apply dimensions to .table-container based on its closest ancestor (up to 3 levels) */
 /* stylelint-disable-next-line no-descending-specificity */
-.flex-item .table-container, .grid-item .flex-item .table-container, .flex-item .grid-item .flex-item .table-container {
-  height: 450px;
-  width: 700px;
-}
-
-/* stylelint-disable-next-line no-descending-specificity */
-.grid-item .table-container, .flex-item .grid-item .table-container, .grid-item .flex-item .grid-item .table-container {
+.grid-item .table-container,
+.flex-item .grid-item .table-container,
+.grid-item .flex-item .grid-item .table-container {
   height: 100%;
   width: 100%;
 }
