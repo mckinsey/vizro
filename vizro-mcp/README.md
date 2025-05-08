@@ -45,10 +45,27 @@ In principle, the Vizro MCP server works with _any_ MCP enabled LLM applications
 
 > ⚠️ **Warning:** In some hosts (like Claude Desktop) the free plan might be less performant, which may cause issues when the request is too complex. In cases where the request causes the UI to crash, opt for using a paid plan, or reduce your request's complexity.
 
-## Setup Instructions
+### Setup Instructions
+
+The general server config is mostly the same for all hosts:
+
+```json
+{
+  "mcpServers": {
+    "vizro-mcp": {
+      "command": "uvx",
+      "args": [
+        "vizro-mcp"
+      ]
+    }
+  }
+}
+```
+
+In principle, the Vizro MCP server works with _any_ MCP enabled LLM applications but we recommend Claude Desktop or Cursor as popular choices (see more detailed instructions below). Different AI tools may use different setup methods or connection settings. Check each tool's docs for details.
 
 <details>
-<summary><strong>Claude</strong></summary>
+<summary><strong>Claude Desktop</strong></summary>
 
 Add the following to your `claude_desktop_config.json` [found via Developer Settings](https://modelcontextprotocol.io/quickstart/user#2-add-the-filesystem-mcp-server).
 
@@ -99,7 +116,7 @@ Similarly, when using Cursor, after a short pause, you should see a green light 
 
 </details>
 
-In principle, the Vizro MCP server works with _any_ MCP enabled LLM applications but we recommend Claude Desktop or Cursor as popular choices. Different AI tools may use different setup methods or connection settings. Check each tool's docs for details.
+
 
 ## 💻 Usage
 
