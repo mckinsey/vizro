@@ -109,23 +109,12 @@ class Container(VizroBaseModel):
             )
 
         variants = {"plain": "", "filled": "bg-container p-3", "outlined": "border p-3"}
-        controls_content = [control.build() for control in self.controls] if self.controls else []
-        control_panel = (
-            html.Div(
-                id=f"{self.id}-control-panel",
-                children=controls_content,
-                hidden=not controls_content,
-                className="container-controls-panel",
-            )
-            if self.controls
-            else html.Div(hidden=True)
-        )
 
         defaults = {
             "id": self.id,
             "children": [
                 self._build_container_title(),
-                control_panel,
+                self._build_control_panel(),
                 self._build_container(),
             ],
             "fluid": True,
@@ -177,4 +166,17 @@ class Container(VizroBaseModel):
             children=title_content,
             className="container-title-collapse" if self.collapsed is not None else "container-title",
             id=f"{self.id}_title",
+        )
+
+    def _build_control_panel(self):
+        controls_content = [control.build() for control in self.controls] if self.controls else []
+        return (
+            html.Div(
+                id=f"{self.id}-control-panel",
+                children=controls_content,
+                hidden=not controls_content,
+                className="container-controls-panel",
+            )
+            if self.controls
+            else html.Div(hidden=True)
         )

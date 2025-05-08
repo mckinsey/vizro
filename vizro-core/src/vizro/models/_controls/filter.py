@@ -213,6 +213,13 @@ class Filter(VizroBaseModel):
             ),
         ]
 
+        # set inline True for container selectors
+        _is_page_control = self._is_page_control(page=page)
+
+        if not _is_page_control and isinstance(self.selector, (Checklist, RadioItems)):
+            self.selector.extra = self.selector.extra or {}
+            self.selector.extra.setdefault("inline", True)
+
     @_log_call
     def build(self):
         # Cast is justified as the selector is set in pre_build and is not None.
@@ -358,3 +365,11 @@ class Filter(VizroBaseModel):
                 cast(ModelID, model.id)
                 for model in cast(Iterable[VizroBaseModel], model_manager._get_models(FIGURE_MODELS, control_container))
             ]
+
+    def _is_page_control(self, page):
+        is_page_control = any(control.id == self.id for control in page.controls)
+
+        if is_page_control:
+            return True
+
+        return False

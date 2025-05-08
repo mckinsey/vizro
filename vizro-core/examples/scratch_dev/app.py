@@ -27,7 +27,7 @@ page1 = vm.Page(
             controls=[
                 vm.Filter(
                     column="species",
-                    selector=vm.Checklist(value=["setosa"], title="Species", extra={"inline": True}),
+                    selector=vm.Checklist(value=["setosa"], title="Species"),
                 ),
             ],
         ),
@@ -244,7 +244,7 @@ page6 = vm.Page(
 )
 
 page7 = vm.Page(
-    title="Normal (not inline) controls at top of container ",
+    title="Normal (not inline) controls at the top of container",
     components=[
         vm.Container(
             title="Controls - Multiple",
@@ -262,7 +262,7 @@ page7 = vm.Page(
             ],
             layout=vm.Layout(grid=[[0, 1]]),
             controls=[
-                vm.Filter(column="species", selector=vm.Checklist(value=["setosa"], title="Species")),
+                vm.Filter(column="species", selector=vm.Checklist(value=["setosa"], title="Species", extra={"inline": False})),
             ],
         )
     ],
