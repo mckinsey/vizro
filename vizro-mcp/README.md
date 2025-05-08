@@ -2,6 +2,11 @@
 
 Vizro-MCP is a [Model Context Protocol (MCP)](https://modelcontextprotocol.io/) server, which works alongside a LLM to help you create Vizro dashboards and charts.
 
+<a href="https://glama.ai/mcp/servers/@mckinsey/vizro">
+  <img width="380" height="200" src="https://glama.ai/mcp/servers/@mckinsey/vizro/badge" />
+</a>
+
+
 ## Features of Vizro-MCP
 
 Vizro-MCP provides tools and templates to create a functioning Vizro chart or dashboard step by step. Benefits include:
