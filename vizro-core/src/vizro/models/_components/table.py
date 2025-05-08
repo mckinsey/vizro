@@ -11,7 +11,7 @@ from vizro.actions import filter_interaction
 from vizro.actions._actions_utils import CallbackTriggerDict, _get_component_actions, _get_parent_model
 from vizro.managers import data_manager, model_manager
 from vizro.managers._model_manager import DuplicateIDError
-from vizro.models import Table, Tooltip, VizroBaseModel
+from vizro.models import Tooltip, VizroBaseModel
 from vizro.models._action._actions_chain import _action_validator_factory
 from vizro.models._components._components_utils import _process_callable_data_frame
 from vizro.models._models_utils import _log_call
@@ -149,7 +149,7 @@ class Table(VizroBaseModel):
         # Check if any other Table figure function has the same input component ID
         existing_models = [
             model
-            for model in model_manager._get_models(Table)
+            for model in model_manager._get_models(self.__class__)
             if hasattr(model, "_input_component_id")
             and model.id != self.id
             and model._input_component_id == self._input_component_id
