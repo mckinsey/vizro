@@ -23,10 +23,21 @@ page2 = vm.Page(
     title="LAYOUT_FLEX_GAP_AND_TABLE",
     layout=vm.Flex(gap="40px"),
     # components=[vm.Table(figure=dash_data_table(tips, style_table={"width": "1000px"})) for i in range(3)],
-    components=[vm.Table(figure=dash_data_table(tips, id="qwert", style_table={"width": "1000px"})) for i in range(3)],
+    components=[
+        vm.Table(figure=dash_data_table(tips, id=f"qwert_{i}", style_table={"width": "1000px"})) for i in range(3)
+    ],
 )
 
-dashboard = vm.Dashboard(pages=[page1, page2])
+page3 = vm.Page(
+    title="cross_id",
+    layout=vm.Flex(gap="40px"),
+    components=[
+        vm.Table(figure=dash_data_table(tips, id="qwert", style_table={"width": "1000px"})),
+        vm.AgGrid(figure=dash_ag_grid(tips, id="qwert", style={"width": 1000})),
+    ],
+)
+
+dashboard = vm.Dashboard(pages=[page1, page2, page3])
 
 
 if __name__ == "__main__":
