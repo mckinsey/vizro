@@ -1,6 +1,6 @@
 # Vizro
 
-Vizro is a toolkit for creating modular data visualization applications.
+Vizro is an open-source Python-based toolkit. You can use it to build data visualization apps quickly and easily, without needing advanced engineering or design expertise.
 
 !!! tip Vizro-MCP
 
@@ -23,10 +23,6 @@ Vizro is a toolkit for creating modular data visualization applications.
     [:octicons-arrow-right-24: Fundamentals](pages/user-guides/dashboard.md)
 
     [:octicons-arrow-right-24: Components overview](pages/user-guides/components.md)
-
-    [:octicons-arrow-right-24: Filters, parameters and selectors](pages/user-guides/filters.md)
-
-    [:octicons-arrow-right-24: Visual formatting](pages/user-guides/visual-formatting.md)
 
 - :fontawesome-solid-microscope:{ .lg .middle } __Hands-on code__
 
