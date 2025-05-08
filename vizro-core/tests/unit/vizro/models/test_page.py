@@ -28,8 +28,10 @@ class TestPageInstantiation:
             components=[vm.Button(), vm.Button()],
             layout=vm.Grid(grid=[[0, 1]]),
             path="my-path",
+            description="Test",
         )
         assert isinstance(page.components[0], vm.Button) and isinstance(page.components[1], vm.Button)
+        assert isinstance(page.description, vm.Tooltip)
         assert page.id == "my-id"
         assert page.layout.grid == [[0, 1]]
         assert page.controls == []

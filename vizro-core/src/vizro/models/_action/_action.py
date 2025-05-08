@@ -73,7 +73,7 @@ class _BaseAction(VizroBaseModel):
         #  become `return self.targets` or similar. Consider again whether to do this translation automatically if
         #  targets is defined as a field, but sounds like bad idea since it doesn't carry over into the
         #  capture("action") style of action.
-        # TODO-AV D 3: try to enable properties that aren't Dash properties but are instead model fields e.g. header,
+        # TODO-AV2 D 3: try to enable properties that aren't Dash properties but are instead model fields e.g. header,
         #  title. See https://github.com/mckinsey/vizro/issues/1078.
         # Implement _outputs and _inputs (probably as properties) as in Antony PoC with fields as defined in that table.
         # Remove DotSeparatedString, change public type hints back to str, update _IdProperty to use just Id also (

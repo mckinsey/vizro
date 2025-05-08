@@ -70,7 +70,7 @@ class _AbstractAction(_BaseAction, abc.ABC):
         # arguments since this would only work well for class-based actions and not @capture("action") ones. Instead
         # the code that does make_outputs_from_targets would be put into a reusable function.
         #
-        # TODO-AV D 4: build in a vizro_download component. At some point after that consider changing export_data to
+        # TODO-AV2 D 4: build in a vizro_download component. At some point after that consider changing export_data to
         #  use it, but that's not urgent. See  https://github.com/mckinsey/vizro/pull/1054#discussion_r1989405177.
         pass
 

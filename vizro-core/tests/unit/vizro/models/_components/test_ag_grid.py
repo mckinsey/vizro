@@ -2,6 +2,7 @@
 
 import re
 
+import dash_bootstrap_components as dbc
 import pytest
 from asserts import assert_component_equal
 from dash import dcc, html
@@ -199,6 +200,7 @@ class TestBuildAgGrid:
             parent_className="loading-container",
             overlay_style={"visibility": "visible", "opacity": 0.3},
         )
+
         assert_component_equal(ag_grid, expected_ag_grid)
 
     def test_aggrid_build_title_header_footer(self, standard_ag_grid):
@@ -207,10 +209,11 @@ class TestBuildAgGrid:
         )
         ag_grid.pre_build()
         ag_grid = ag_grid.build()
+
         expected_ag_grid = dcc.Loading(
             html.Div(
                 children=[
-                    html.H3("Title", className="figure-title"),
+                    html.H3(["Title", None], className="figure-title"),
                     dcc.Markdown("""#### Subtitle""", className="figure-header"),
                     html.Div(
                         children=[html.Div()],
@@ -224,4 +227,43 @@ class TestBuildAgGrid:
             parent_className="loading-container",
             overlay_style={"visibility": "visible", "opacity": 0.3},
         )
+
+        assert_component_equal(ag_grid, expected_ag_grid, keys_to_strip={"id"})
+
+    def test_aggrid_build_with_description(self, standard_ag_grid):
+        ag_grid = vm.AgGrid(
+            figure=standard_ag_grid,
+            title="Title",
+            description=vm.Tooltip(text="Tooltip test", icon="info", id="info"),
+        )
+        ag_grid.pre_build()
+        ag_grid = ag_grid.build()
+
+        expected_description = [
+            html.Span("info", id="info-icon", className="material-symbols-outlined tooltip-icon"),
+            dbc.Tooltip(
+                children=dcc.Markdown("Tooltip test", className="card-text"),
+                id="info",
+                target="info-icon",
+                autohide=False,
+            ),
+        ]
+        expected_ag_grid = dcc.Loading(
+            html.Div(
+                children=[
+                    html.H3(["Title", *expected_description], className="figure-title"),
+                    None,
+                    html.Div(
+                        children=[html.Div()],
+                        className="table-container",
+                    ),
+                    None,
+                ],
+                className="figure-container",
+            ),
+            color="grey",
+            parent_className="loading-container",
+            overlay_style={"visibility": "visible", "opacity": 0.3},
+        )
+
         assert_component_equal(ag_grid, expected_ag_grid, keys_to_strip={"id"})
