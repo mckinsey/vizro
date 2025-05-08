@@ -30,8 +30,9 @@ class ActionLoop:
             List of required components for the action loop e.g. list[dcc.Store, html.Div].
 
         """
-        _build_action_loop_callbacks()
-        return _get_action_loop_components()
+        # _build_action_loop_callbacks()
+
+        return None  # _get_action_loop_components()
 
     @staticmethod
     def _build_actions_models():

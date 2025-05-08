@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 from collections.abc import Iterable
+import time
 from typing import Annotated, Any, Optional, cast
 
 from dash import dcc, html
@@ -14,6 +15,7 @@ from pydantic import (
     conlist,
     model_serializer,
     model_validator,
+    PlainSerializer,
 )
 from typing_extensions import TypedDict
 
@@ -22,12 +24,12 @@ from vizro.actions._on_page_load import _on_page_load
 from vizro.managers import model_manager
 from vizro.managers._model_manager import FIGURE_MODELS, DuplicateIDError
 from vizro.models import Filter, Tooltip, VizroBaseModel
-from vizro.models._action._actions_chain import ActionsChain, Trigger
+from vizro.models._action._actions_chain import ActionsChain, Trigger, _action_validator_factory
 from vizro.models._grid import set_layout
 from vizro.models._models_utils import _build_inner_layout, _log_call, check_captured_callable_model
 
 from ._tooltip import coerce_str_to_tooltip
-from .types import ComponentType, ControlType, FigureType, LayoutType
+from .types import ComponentType, ControlType, FigureType, LayoutType, ActionType
 
 # This is just used for type checking. Ideally it would inherit from some dash.development.base_component.Component
 # (e.g. html.Div) as well as TypedDict, but that's not possible, and Dash does not have typing support anyway. When
@@ -86,7 +88,12 @@ class Page(VizroBaseModel):
     path: Annotated[
         str, AfterValidator(set_path), Field(default="", description="Path to navigate to page.", validate_default=True)
     ]
-    actions: list[ActionsChain] = []
+    actions: Annotated[
+        list[ActionType],
+        AfterValidator(_action_validator_factory("anything")),
+        PlainSerializer(lambda x: x[0].actions),
+        Field(default=[]),
+    ]
 
     @model_validator(mode="before")
     @classmethod
@@ -144,20 +151,14 @@ class Page(VizroBaseModel):
         if targets:
             # TODO-AV2 A 3: can we simplify this to not use ActionsChain, just like we do for filters and parameters?
             # See https://github.com/mckinsey/vizro/pull/363#discussion_r2021020062.
-            self.actions = [
-                ActionsChain(
-                    id=f"{ON_PAGE_LOAD_ACTION_PREFIX}_{self.id}",
-                    trigger=Trigger(
-                        component_id=f"{ON_PAGE_LOAD_ACTION_PREFIX}_trigger_{self.id}", component_property="data"
-                    ),
-                    actions=[
-                        _on_page_load(
-                            id=f"{ON_PAGE_LOAD_ACTION_PREFIX}_action_{self.id}",
-                            targets=targets,
-                        )
-                    ],
-                )
-            ]
+            action = _on_page_load(
+                id=f"{ON_PAGE_LOAD_ACTION_PREFIX}_action_{self.id}",
+                targets=targets,
+            )
+            # TODO NOW: temporary hack together with set_actions validator
+            action.trigger = f"{ON_PAGE_LOAD_ACTION_PREFIX}_trigger_{self.id}.data"
+
+            self.actions = [action]
 
     @_log_call
     def build(self) -> _PageBuildType:
@@ -167,6 +168,8 @@ class Page(VizroBaseModel):
 
         # Build layout with components
         components_container = _build_inner_layout(self.layout, self.components)
-        components_container.children.append(dcc.Store(id=f"{ON_PAGE_LOAD_ACTION_PREFIX}_trigger_{self.id}"))
+        components_container.children.append(
+            dcc.Store(id=f"{ON_PAGE_LOAD_ACTION_PREFIX}_trigger_{self.id}", data=time.time())
+        )
         components_container.id = "page-components"
         return html.Div([control_panel, components_container])

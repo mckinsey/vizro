@@ -1,6 +1,7 @@
 from functools import partial
 from typing import NamedTuple
 
+from dash import Input
 from pydantic import ValidationInfo
 
 from vizro.managers import model_manager
@@ -35,12 +36,22 @@ def _set_actions(actions: list[ActionType], info: ValidationInfo, trigger_proper
         else:
             converted_actions.append(action)
 
-    return [
-        ActionsChain(
-            trigger=Trigger(component_id=info.data["id"], component_property=trigger_property),
-            actions=converted_actions,
-        )
-    ]
+    for i, action in enumerate(converted_actions):
+        if i == 0:
+            trigger_component, trigger_property = info.data["id"], trigger_property
+        else:
+            trigger_component, trigger_property = f"{converted_actions[i - 1].id}_finished", "data"
+
+        if not action.trigger:  # Already set manually for opl
+            action.trigger = f"{trigger_component}.{trigger_property}"
+
+    return converted_actions
+    # return [
+    #     ActionsChain(
+    #         trigger=Trigger(component_id=info.data["id"], component_property=trigger_property),
+    #         actions=converted_actions,
+    #     )
+    # ]
 
 
 def _action_validator_factory(trigger_property: str):

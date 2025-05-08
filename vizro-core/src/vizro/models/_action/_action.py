@@ -3,11 +3,12 @@ from __future__ import annotations
 import inspect
 import logging
 import re
+import time
 from collections.abc import Collection, Iterable, Mapping
 from pprint import pformat
 from typing import TYPE_CHECKING, Annotated, Any, Callable, ClassVar, Literal, Union, cast
 
-from dash import Input, Output, State, callback, html
+from dash import Input, Output, State, callback, html, dcc
 from dash.development.base_component import Component
 from pydantic import Field, TypeAdapter, field_validator
 from pydantic.json_schema import SkipJsonSchema
@@ -39,6 +40,8 @@ class _BaseAction(VizroBaseModel):
     # for these is the easiest way to appease mypy and have something that actually works at runtime.
     function: ClassVar[Callable[..., Any]]
     outputs: ClassVar[Union[list[_IdProperty], dict[str, _IdProperty]]]
+    # TODO NOW: think about this more. Is it trigger property or IdProperty?
+    trigger: str = ""
 
     @property
     def _dash_components(self) -> list[Component]:
@@ -234,15 +237,17 @@ class _BaseAction(VizroBaseModel):
         """
         # TODO: after sorting out model manager and pre-build order, lots of this should probably move to happen
         #  some time before the build phase.
+        # TODO NOW: check how done in Dash extensions
         external_callback_inputs = self._transformed_inputs
         external_callback_outputs = self._transformed_outputs
 
+        print(f"{self.trigger=}")
         callback_inputs = {
             "external": external_callback_inputs,
-            "internal": {"trigger": Input({"type": "action_trigger", "action_name": self.id}, "data")},
+            "internal": {"trigger": Input(*self.trigger.split("."))},
         }
         callback_outputs: dict[str, Union[list[Output], dict[str, Output]]] = {
-            "internal": {"action_finished": Output("action_finished", "data", allow_duplicate=True)},
+            "internal": {"action_finished": Output(f"{self.id}_finished", "data")},
         }
 
         # If there are no outputs then we don't want the external part of callback_outputs to exist at all.
@@ -262,14 +267,22 @@ class _BaseAction(VizroBaseModel):
             logger.debug("Callback inputs:\n%s", pformat(callback_inputs["external"], width=200))
             logger.debug("Callback outputs:\n%s", pformat(callback_outputs.get("external"), width=200))
 
+        # TODO NOW: need to make sure these aren't triggered on page load.
+        # Could put finished_store in page rather than global.
+        # How would you handle cross-page actions then? Maybe put all finished_stores on every page? Or use new
+        # optional Input feature?
         @callback(output=callback_outputs, inputs=callback_inputs, prevent_initial_call=True)
         def callback_wrapper(external: Union[list[Any], dict[str, Any]], internal: dict[str, Any]) -> dict[str, Any]:
             return_value = self._action_callback_function(inputs=external, outputs=callback_outputs.get("external"))
             if "external" in callback_outputs:
-                return {"internal": {"action_finished": None}, "external": return_value}
-            return {"internal": {"action_finished": None}}
+                return {"internal": {"action_finished": time.time()}, "external": return_value}
+            return {"internal": {"action_finished": time.time()}}
 
-        return html.Div(id=f"{self.id}_action_model_components_div", children=self._dash_components, hidden=True)
+        finished_store = dcc.Store(id=f"{self.id}_finished")
+
+        return html.Div(
+            id=f"{self.id}_action_model_components_div", children=[*self._dash_components, finished_store], hidden=True
+        )
 
 
 class Action(_BaseAction):
