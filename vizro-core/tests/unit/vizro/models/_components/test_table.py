@@ -2,6 +2,7 @@
 
 import re
 
+import dash_bootstrap_components as dbc
 import pytest
 from asserts import assert_component_equal
 from dash import dcc, html
@@ -227,13 +228,51 @@ class TestBuildTable:
         expected_table = dcc.Loading(
             html.Div(
                 children=[
-                    html.H3("Title", className="figure-title"),
+                    html.H3(["Title", None], className="figure-title"),
                     dcc.Markdown("""#### Subtitle""", className="figure-header"),
                     html.Div(
                         children=[html.Div()],
                         className="table-container",
                     ),
                     dcc.Markdown("""SOURCE: **DATA**""", className="figure-footer"),
+                ],
+                className="figure-container",
+            ),
+            color="grey",
+            parent_className="loading-container",
+            overlay_style={"visibility": "visible", "opacity": 0.3},
+        )
+
+        assert_component_equal(table, expected_table, keys_to_strip={"id"})
+
+    def test_table_build_title_info_icon(self, standard_dash_table):
+        table = vm.Table(
+            figure=standard_dash_table,
+            title="Title",
+            description=vm.Tooltip(text="Tooltip test", icon="info", id="info"),
+        )
+        table.pre_build()
+        table = table.build()
+
+        expected_description = [
+            html.Span("info", id="info-icon", className="material-symbols-outlined tooltip-icon"),
+            dbc.Tooltip(
+                children=dcc.Markdown("Tooltip test", className="card-text"),
+                id="info",
+                target="info-icon",
+                autohide=False,
+            ),
+        ]
+        expected_table = dcc.Loading(
+            html.Div(
+                children=[
+                    html.H3(["Title", *expected_description], className="figure-title"),
+                    None,
+                    html.Div(
+                        children=[html.Div()],
+                        className="table-container",
+                    ),
+                    None,
                 ],
                 className="figure-container",
             ),
