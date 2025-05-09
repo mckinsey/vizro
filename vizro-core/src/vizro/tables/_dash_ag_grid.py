@@ -80,6 +80,7 @@ def dash_ag_grid(data_frame: pd.DataFrame, **kwargs: Any) -> dag.AgGrid:
             "resizable": True,
             "sortable": True,
             "filter": True,
+            "flex": 1,
             "filterParams": {
                 "buttons": ["apply", "reset"],
                 "closeOnApply": True,
@@ -89,7 +90,6 @@ def dash_ag_grid(data_frame: pd.DataFrame, **kwargs: Any) -> dag.AgGrid:
             "dataTypeDefinitions": _DATA_TYPE_DEFINITIONS,
             "animateRows": False,
         },
-        "style": {"height": "100%"},
     }
     kwargs = _set_defaults_nested(kwargs, defaults)
     return dag.AgGrid(**kwargs)
