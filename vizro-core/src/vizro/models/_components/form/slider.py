@@ -1,4 +1,4 @@
-from typing import Annotated, Any, Literal, Optional
+from typing import Annotated, Any, Literal, Optional, cast
 
 import dash_bootstrap_components as dbc
 from dash import ClientsideFunction, Input, Output, State, clientside_callback, dcc, html
@@ -16,7 +16,7 @@ from vizro.models._components.form._form_utils import (
 )
 from vizro.models._models_utils import _log_call
 from vizro.models._tooltip import coerce_str_to_tooltip
-from vizro.models.types import ActionType
+from vizro.models.types import ActionType, _IdProperty
 
 
 class Slider(VizroBaseModel):
@@ -99,6 +99,14 @@ class Slider(VizroBaseModel):
 
     # Component properties for actions and interactions
     _input_property: str = PrivateAttr("value")
+
+    @property
+    def _action_outputs(self) -> dict[str, _IdProperty]:
+        return {"__default__": cast(_IdProperty, f"{self.id}.value")}
+
+    @property
+    def _action_inputs(self) -> dict[str, _IdProperty]:
+        return {"__default__": cast(_IdProperty, f"{self.id}.value")}
 
     def __call__(self, min, max, current_value):
         output = [

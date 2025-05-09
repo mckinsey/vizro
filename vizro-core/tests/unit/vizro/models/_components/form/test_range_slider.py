@@ -264,6 +264,8 @@ class TestRangeSliderInstantiation:
         assert range_slider.title == ""
         assert range_slider.description is None
         assert range_slider.actions == []
+        assert range_slider._action_outputs == {"__default__": f"{range_slider.id}.value"}
+        assert range_slider._action_inputs == {"__default__": f"{range_slider.id}.value"}
 
     def test_create_range_slider_mandatory_and_optional(self):
         range_slider = vm.RangeSlider(

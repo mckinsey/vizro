@@ -40,6 +40,7 @@ class TestAgGridInstantiation:
         assert ag_grid.type == "ag_grid"
         assert ag_grid.figure == standard_ag_grid
         assert ag_grid.actions == []
+        assert ag_grid._action_outputs == {"__default__": f"{ag_grid.id}.children"}
 
     @pytest.mark.parametrize("id", ["id_1", "id_2"])
     def test_create_ag_grid_mandatory_and_optional(self, standard_ag_grid, id):

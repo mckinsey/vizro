@@ -1,4 +1,4 @@
-from typing import Annotated, Literal
+from typing import Annotated, Literal, cast
 
 import dash_bootstrap_components as dbc
 from dash import html
@@ -7,7 +7,7 @@ from pydantic import AfterValidator, Field, PlainSerializer, PrivateAttr
 from vizro.models import VizroBaseModel
 from vizro.models._action._actions_chain import _action_validator_factory
 from vizro.models._models_utils import _log_call
-from vizro.models.types import ActionType
+from vizro.models.types import ActionType, _IdProperty
 
 
 class UserInput(VizroBaseModel):
@@ -38,6 +38,14 @@ class UserInput(VizroBaseModel):
 
     # Component properties for actions and interactions
     _input_property: str = PrivateAttr("value")
+
+    @property
+    def _action_outputs(self) -> dict[str, _IdProperty]:
+        return {"__default__": cast(_IdProperty, f"{self.id}.value")}
+
+    @property
+    def _action_inputs(self) -> dict[str, _IdProperty]:
+        return {"__default__": cast(_IdProperty, f"{self.id}.value")}
 
     @_log_call
     def build(self):

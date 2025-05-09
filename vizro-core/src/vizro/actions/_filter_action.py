@@ -38,12 +38,6 @@ class _filter(_AbstractAction):
 
     @property
     def outputs(self):
-        # This is identical to _on_page_load.
-        outputs = {}
-
-        for target in self.targets:
-            component_id = target
-            component_property = cast(FigureType, model_manager[target])._output_component_property
-            outputs[target] = f"{component_id}.{component_property}"
-
-        return outputs
+        return {
+            target: cast(FigureType, model_manager[target])._action_outputs["__default__"] for target in self.targets
+        }

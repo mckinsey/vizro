@@ -5,6 +5,8 @@ from asserts import assert_component_equal
 from dash import Output, State, html
 from pydantic import ValidationError
 
+import vizro.models as vm
+from vizro import Vizro
 from vizro.models._action._action import Action
 from vizro.models.types import capture
 
@@ -82,18 +84,37 @@ class TestLegacyActionInputs:
     @pytest.mark.parametrize(
         "runtime_inputs",
         [
-            [""],
             ["component"],
+            ["component_property"],
+        ],
+    )
+    def test_inputs_invalid_model_id(self, runtime_inputs):
+        with pytest.raises(
+            KeyError,
+            match="Component with ID .* not found. Please provide a valid component ID.",
+        ):
+            action = Action(function=action_with_one_arg(), inputs=runtime_inputs)
+            # An error is raised when accessing _transformed_inputs which is fine because validation is then performed.
+            action._transformed_inputs
+
+    @pytest.mark.parametrize(
+        "runtime_inputs",
+        [
+            [""],
             ["component."],
             [".property"],
             ["component..property"],
-            ["component_property"],
             ["component.property.property"],
         ],
     )
-    def test_action_inputs_invalid(self, runtime_inputs):
-        with pytest.raises(ValidationError, match="String should match pattern"):
-            Action(function=action_with_one_arg(), inputs=runtime_inputs)
+    def test_inputs_invalid_dot_syntax(self, runtime_inputs):
+        with pytest.raises(
+            ValueError,
+            match="Invalid input format .*. Expected format is '<component-id>.<property>' or '<component-id>'.",
+        ):
+            action = Action(function=action_with_one_arg(), inputs=runtime_inputs)
+            # An error is raised when accessing _transformed_inputs which is fine because validation is then performed.
+            action._transformed_inputs
 
     @pytest.mark.parametrize(
         "static_inputs",
@@ -179,27 +200,62 @@ class TestLegacyActionOutputs:
     @pytest.mark.parametrize(
         "outputs",
         [
-            [""],
             ["component"],
+            ["component_property"],
+            {"output_1": "component"},
+            {"output_1": "component_property"},
+        ],
+    )
+    def test_outputs_invalid_model_id(self, outputs):
+        with pytest.raises(
+            KeyError,
+            match="Component with ID .* not found. Please provide a valid component ID.",
+        ):
+            # inputs=[] added to force action to be legacy
+            action = Action(function=action_with_no_args(), inputs=[], outputs=outputs)
+            # An error is raised when accessing _transformed_outputs which is fine because validation is then performed.
+            action._transformed_outputs
+
+    @pytest.mark.parametrize(
+        "outputs",
+        [
+            [""],
             ["component."],
             [".property"],
             ["component..property"],
-            ["component_property"],
             ["component.property.property"],
             {"output_1": ""},
-            {"output_1": "component"},
             {"output_1": "component."},
             {"output_1": ".property"},
             {"output_1": "component..property"},
-            {"output_1": "component_property"},
             {"output_1": "component.property.property"},
             {"output_1": "component.property", "output_2": ""},
         ],
     )
-    def test_outputs_invalid(self, outputs):
-        with pytest.raises(ValidationError, match="String should match pattern"):
+    def test_outputs_invalid_dot_syntax(self, outputs):
+        with pytest.raises(
+            ValueError,
+            match="Invalid output format .*. Expected format is '<component-id>.<property>' or '<component-id>'.",
+        ):
             # inputs=[] added to force action to be legacy
-            Action(function=action_with_no_args(), inputs=[], outputs=outputs)
+            action = Action(function=action_with_no_args(), inputs=[], outputs=outputs)
+            # An error is raised when accessing _transformed_outputs which is fine because validation is then performed.
+            action._transformed_outputs
+
+    def test_outputs_invalid_missing_action_attribute(self):
+        # The Button currently doesn't have _action_outputs defined)
+        button = vm.Button(id="test_button")
+        vm.Page(title="Page Title", components=[button])
+        Vizro._pre_build()
+
+        with pytest.raises(
+            AttributeError,
+            match="Component with ID 'test_button' does not have implicit output properties defined. "
+            "Please specify the output explicitly as 'test_button.<property>'.",
+        ):
+            # inputs=[] added to force action to be legacy
+            action = Action(function=action_with_no_args(), inputs=[], outputs=["test_button"])
+            action._transformed_outputs
 
 
 class TestIsActionLegacy:
@@ -356,30 +412,59 @@ class TestActionOutputs:
     @pytest.mark.parametrize(
         "outputs",
         [
-            "component.property",
-            1,
-            None,
-            [""],
             ["component"],
+            ["component_property"],
+            {"output_1": "component"},
+            {"output_1": "component_property"},
+        ],
+    )
+    def test_outputs_invalid_model_id(self, outputs):
+        with pytest.raises(
+            KeyError,
+            match="Component with ID .* not found. Please provide a valid component ID.",
+        ):
+            action = Action(function=action_with_no_args(), outputs=outputs)
+            # An error is raised when accessing _transformed_outputs which is fine because validation is then performed.
+            action._transformed_outputs
+
+    @pytest.mark.parametrize(
+        "outputs",
+        [
+            [""],
             ["component."],
             [".property"],
             ["component..property"],
-            ["component_property"],
             ["component.property.property"],
             {"output_1": ""},
-            {"output_1": "component"},
             {"output_1": "component."},
             {"output_1": ".property"},
             {"output_1": "component..property"},
-            {"output_1": "component_property"},
             {"output_1": "component.property.property"},
             {"output_1": "component.property", "output_2": ""},
-            {1: "component.property"},
         ],
     )
-    def test_outputs_invalid(self, outputs):
-        with pytest.raises(ValidationError):
-            Action(function=action_with_no_args(), outputs=outputs)
+    def test_outputs_invalid_dot_syntax(self, outputs):
+        with pytest.raises(
+            ValueError,
+            match="Invalid output format .*. Expected format is '<component-id>.<property>' or '<component-id>'.",
+        ):
+            action = Action(function=action_with_no_args(), outputs=outputs)
+            # An error is raised when accessing _transformed_outputs which is fine because validation is then performed.
+            action._transformed_outputs
+
+    def test_outputs_invalid_missing_action_attribute(self):
+        # The Button currently doesn't have _action_outputs defined)
+        button = vm.Button(id="test_button")
+        vm.Page(title="Page Title", components=[button])
+        Vizro._pre_build()
+
+        with pytest.raises(
+            AttributeError,
+            match="Component with ID 'test_button' does not have implicit output properties defined. "
+            "Please specify the output explicitly as 'test_button.<property>'.",
+        ):
+            action = Action(function=action_with_no_args(), outputs=["test_button"])
+            action._transformed_outputs
 
 
 class TestActionBuild:
