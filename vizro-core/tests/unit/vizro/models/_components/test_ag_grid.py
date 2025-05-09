@@ -146,7 +146,7 @@ class TestPreBuildAgGrid:
         ag_grid.pre_build()
         assert ag_grid._input_component_id == "underlying_ag_grid_id"
 
-    def test_pre_build_duplicate_ag_grid_id(self):
+    def test_pre_build_duplicate_input_ag_grid_id(self):
         dashboard = vm.Dashboard(
             pages=[
                 vm.Page(
@@ -154,6 +154,24 @@ class TestPreBuildAgGrid:
                     components=[
                         vm.AgGrid(figure=dash_ag_grid(id="duplicate_ag_grid_id", data_frame=px.data.gapminder())),
                         vm.AgGrid(figure=dash_ag_grid(id="duplicate_ag_grid_id", data_frame=px.data.gapminder())),
+                    ],
+                )
+            ]
+        )
+        with pytest.raises(
+            DuplicateIDError,
+            match="CapturedCallable with id=duplicate_ag_grid_id has an id that is",
+        ):
+            Vizro().build(dashboard)
+
+    def test_pre_build_duplicate_input_ag_grid_id_and_button_id(self):
+        dashboard = vm.Dashboard(
+            pages=[
+                vm.Page(
+                    title="Test Page",
+                    components=[
+                        vm.AgGrid(figure=dash_ag_grid(id="duplicate_ag_grid_id", data_frame=px.data.gapminder())),
+                        vm.Button(id="duplicate_ag_grid_id"),
                     ],
                 )
             ]
