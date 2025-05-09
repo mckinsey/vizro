@@ -23,7 +23,6 @@ from pydantic import (
     Discriminator,
     Field,
     StrictBool,
-    StringConstraints,
     Tag,
     ValidationInfo,
 )
