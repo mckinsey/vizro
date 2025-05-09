@@ -187,7 +187,7 @@ class _BaseAction(VizroBaseModel):
                 # 1. component_id is not in model_manager
                 # 2. component doesn't have _action_outputs/_action_inputs defined
                 # 3. component_property is not in the _action_outputs/inputs dictionary
-                return dependency
+                return cast(_IdProperty, dependency)
 
         component_id, component_property = dependency, "__default__"
 
