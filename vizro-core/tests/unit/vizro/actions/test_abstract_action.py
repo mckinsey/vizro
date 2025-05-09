@@ -204,6 +204,7 @@ class TestAbstractActionOutputs:
         action = action_with_mock_outputs()
         assert action._transformed_outputs == expected_transformed_outputs
 
+
 class TestAbstractActionTransformDependency:
     @pytest.mark.parametrize(
         "input",
