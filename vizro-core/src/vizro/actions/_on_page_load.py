@@ -34,9 +34,6 @@ class _on_page_load(_AbstractAction):
 
     @property
     def outputs(self):
-        outputs = {}
-
-        for target in self.targets:
-            outputs[target] = cast(FigureType, model_manager[target])._action_outputs["__default__"]
-
-        return outputs
+        return {
+            target: cast(FigureType, model_manager[target])._action_outputs["__default__"] for target in self.targets
+        }

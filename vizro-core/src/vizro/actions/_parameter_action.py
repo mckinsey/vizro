@@ -43,10 +43,7 @@ class _parameter(_AbstractAction):
 
     @property
     def outputs(self):
-        # This is identical to _on_page_load but with self._target_ids rather than self.targets.
-        outputs = {}
-
-        for target in self._target_ids:
-            outputs[target] = cast(FigureType, model_manager[target])._action_outputs["__default__"]
-
-        return outputs
+        return {
+            target: cast(FigureType, model_manager[target])._action_outputs["__default__"]
+            for target in self._target_ids
+        }
