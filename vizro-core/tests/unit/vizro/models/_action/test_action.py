@@ -6,9 +6,10 @@ from dash import Output, State, html
 from pydantic import ValidationError
 
 import vizro.models as vm
+from vizro import Vizro
 from vizro.models._action._action import Action
 from vizro.models.types import capture
-from vizro import Vizro
+
 
 @capture("action")
 def action_with_no_args():

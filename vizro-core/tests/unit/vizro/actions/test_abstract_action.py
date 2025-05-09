@@ -3,9 +3,10 @@ from asserts import assert_component_equal
 from dash import Output, State, html
 from pydantic import ValidationError
 
-from vizro.actions._abstract_action import _AbstractAction
 import vizro.models as vm
 from vizro import Vizro
+from vizro.actions._abstract_action import _AbstractAction
+
 
 class action_with_no_args(_AbstractAction):
     def function(self):
@@ -306,7 +307,6 @@ class TestAbstractActionOutputs:
         ):
             # An error is raised when accessing _transformed_outputs which is fine because validation is then performed.
             action_with_mock_outputs()._transformed_outputs
-
 
     def test_outputs_invalid_missing_action_attribute(self, action_with_mock_outputs):
         # The Button currently doesn't have _action_outputs defined)
