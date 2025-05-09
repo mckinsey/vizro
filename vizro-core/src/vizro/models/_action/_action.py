@@ -168,25 +168,29 @@ class _BaseAction(VizroBaseModel):
             # LQ: Check whether we need TypeAdapter here or something else. Currently it doesn't catch cases such as
             # `component-id.prop.prop` well. However, adding below leads to a bunch of unit tests to fail. Check later.
             component_id, component_property = dependency.split(".")
-            if component_id in model_manager and hasattr(model_manager[component_id], property_name):
-                if component_property in getattr(model_manager[component_id], property_name):
-                    return getattr(model_manager[component_id], property_name)[component_property]
-            return dependency
+
+            try:
+                return getattr(model_manager[component_id], property_name)[component_property]
+            except (KeyError, AttributeError):
+                # Captures these cases and returns dependency unchanged.
+                # 1. component_id is not in model_manager
+                # 2. component doesn't have _action_outputs/_action_inputs defined
+                # 3. component_property is not in the _action_outputs/inputs dictionary
+                return dependency
 
         component_id, component_property = dependency, "__default__"
-        if component_id not in model_manager:
-            raise KeyError(
-                f"Component with ID '{component_id}' not found. Please provide a valid component ID or use "
-                f"the explicit format '<component-id>.<property>'."
-            )
 
-        elif not hasattr(model_manager[component_id], property_name):
+        try:
+            return getattr(model_manager[component_id], property_name)[component_property]
+        except KeyError:
             raise KeyError(
+                f"Component with ID '{component_id}' not found. Please provide a valid component ID."
+            )
+        except AttributeError:
+            raise AttributeError(
                 f"Component with ID '{component_id}' does not have implicit {type} properties defined. "
                 f"Please specify the {type} explicitly as '{component_id}.<property>'."
             )
-
-        return getattr(model_manager[component_id], property_name)[component_property]
 
     @property
     def _transformed_outputs(self) -> Union[list[Output], dict[str, Output]]:
