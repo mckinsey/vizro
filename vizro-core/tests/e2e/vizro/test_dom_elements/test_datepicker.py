@@ -2,7 +2,7 @@ from time import sleep
 
 import e2e.vizro.constants as cnst
 import pytest
-from e2e.vizro.checkers import check_graph_is_loading, check_table_rows_number
+from e2e.vizro.checkers import check_table_rows_number
 from e2e.vizro.navigation import accordion_select, page_select
 from e2e.vizro.paths import table_cell_value_path
 
