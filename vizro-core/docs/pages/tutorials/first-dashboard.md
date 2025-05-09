@@ -55,9 +55,11 @@ If you need inspiration or a starting point, we make all our examples available 
 ## Where next?
 
 ### Create dashboards manually
+
 You are now ready to explore Vizro further, by working through the ["Explore Vizro" tutorial](explore-components.md) or by consulting the [how-to guides](../user-guides/dashboard.md).
 
 ### Create dashboards with AI
+
 Vizro also offers a [MCP server](https://github.com/mckinsey/vizro/tree/main/vizro-mcpl) that allows:
 
 - **creation of Vizro apps** from any MCP compatible host (Claude Desktop, Cursor, etc.)
