@@ -161,6 +161,50 @@ class TestAbstractActionInputs:
         action = action_class(**inputs)
         assert action._transformed_inputs == expected_transformed_inputs
 
+    @pytest.mark.parametrize(
+        "input",
+        [
+            # These raise validation error on instantiation of action_with_one_runtime_arg due to annotation arg_1: str
+            ["component.property"],
+            1,
+            None,
+        ],
+    )
+    def test_inputs_invalid_type(self, input):
+        with pytest.raises(ValidationError):
+            action_with_one_runtime_arg(arg_1=input)._transformed_inputs
+
+    @pytest.mark.parametrize(
+        "input",
+        [
+            "component",
+            "component_property",
+        ],
+    )
+    def test_inputs_invalid_model_id(self, input):
+        with pytest.raises(
+            KeyError,
+            match="Component with ID .* not found. Please provide a valid component ID.",
+        ):
+            action_with_one_runtime_arg(arg_1=input)._transformed_inputs
+
+    @pytest.mark.parametrize(
+        "input",
+        [
+            "",
+            "component.",
+            ".property",
+            "component..property",
+            "component.property.property",
+        ],
+    )
+    def test_inputs_invalid_dot_syntax(self, input):
+        with pytest.raises(
+            ValueError,
+            match="Invalid input format .*. Expected format is '<component-id>.<property>' or '<component-id>'.",
+        ):
+            action_with_one_runtime_arg(arg_1=input)._transformed_inputs
+
     # TODO: Adjust this test when _controls becomes a public field. Should demonstrate that a runtime arg called
     # controls overrides the inbuilt behavior. This could be done as a new test case in TestAbstractActionInputs
     # like in test_action.TestActionInputs works.
@@ -203,52 +247,6 @@ class TestAbstractActionOutputs:
     def test_outputs_valid(self, action_with_mock_outputs, expected_transformed_outputs):
         action = action_with_mock_outputs()
         assert action._transformed_outputs == expected_transformed_outputs
-
-
-class TestAbstractActionTransformDependency:
-    @pytest.mark.parametrize(
-        "input",
-        [
-            # These raise validation error on instantiation of action_with_one_runtime_arg due to annotation arg_1: str
-            ["component.property"],
-            1,
-            None,
-        ],
-    )
-    def test_runtime_inputs_invalid_type(self, input):
-        with pytest.raises(ValidationError):
-            action_with_one_runtime_arg(arg_1=input)._transformed_inputs
-
-    @pytest.mark.parametrize(
-        "input",
-        [
-            "component",
-            "component_property",
-        ],
-    )
-    def test_runtime_inputs_invalid_model_id(self, input):
-        with pytest.raises(
-            KeyError,
-            match="Component with ID .* not found. Please provide a valid component ID.",
-        ):
-            action_with_one_runtime_arg(arg_1=input)._transformed_inputs
-
-    @pytest.mark.parametrize(
-        "input",
-        [
-            "",
-            "component.",
-            ".property",
-            "component..property",
-            "component.property.property",
-        ],
-    )
-    def test_runtime_inputs_invalid_dot_syntax(self, input):
-        with pytest.raises(
-            ValueError,
-            match="Invalid input format .*. Expected format is '<component-id>.<property>' or '<component-id>'.",
-        ):
-            action_with_one_runtime_arg(arg_1=input)._transformed_inputs
 
     @pytest.mark.parametrize(
         "action_with_mock_outputs",

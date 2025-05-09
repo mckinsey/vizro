@@ -160,6 +160,51 @@ class TestLegacyActionOutputs:
         assert action.outputs == outputs
         assert action._transformed_outputs == expected_transformed_outputs
 
+    @pytest.mark.parametrize(
+        "outputs",
+        [
+            ["component"],
+            ["component_property"],
+            {"output_1": "component"},
+            {"output_1": "component_property"},
+        ],
+    )
+    def test_outputs_invalid_model_id(self, outputs):
+        with pytest.raises(
+            KeyError,
+            match="Component with ID .* not found. Please provide a valid component ID.",
+        ):
+            # inputs=[] added to force action to be legacy
+            action = Action(function=action_with_no_args(), inputs=[], outputs=outputs)
+            # An error is raised when accessing _transformed_outputs which is fine because validation is then performed.
+            action._transformed_outputs
+
+    @pytest.mark.parametrize(
+        "outputs",
+        [
+            [""],
+            ["component."],
+            [".property"],
+            ["component..property"],
+            ["component.property.property"],
+            {"output_1": ""},
+            {"output_1": "component."},
+            {"output_1": ".property"},
+            {"output_1": "component..property"},
+            {"output_1": "component.property.property"},
+            {"output_1": "component.property", "output_2": ""},
+        ],
+    )
+    def test_outputs_invalid_dot_syntax(self, outputs):
+        with pytest.raises(
+            ValueError,
+            match="Invalid output format .*. Expected format is '<component-id>.<property>' or '<component-id>'.",
+        ):
+            # inputs=[] added to force action to be legacy
+            action = Action(function=action_with_no_args(), inputs=[], outputs=outputs)
+            # An error is raised when accessing _transformed_outputs which is fine because validation is then performed.
+            action._transformed_outputs
+
 
 class TestIsActionLegacy:
     """Tests action._legacy property."""
@@ -257,6 +302,41 @@ class TestActionInputs:
         assert action._transformed_inputs == expected_transformed_inputs
 
     @pytest.mark.parametrize(
+        "runtime_inputs",
+        [
+            ["component"],
+            ["component_property"],
+        ],
+    )
+    def test_inputs_invalid_model_id(self, runtime_inputs):
+        with pytest.raises(
+            KeyError,
+            match="Component with ID .* not found. Please provide a valid component ID.",
+        ):
+            action = Action(function=action_with_one_arg(), inputs=runtime_inputs)
+            # An error is raised when accessing _transformed_inputs which is fine because validation is then performed.
+            action._transformed_inputs
+
+    @pytest.mark.parametrize(
+        "runtime_inputs",
+        [
+            [""],
+            ["component."],
+            [".property"],
+            ["component..property"],
+            ["component.property.property"],
+        ],
+    )
+    def test_inputs_invalid_dot_syntax(self, runtime_inputs):
+        with pytest.raises(
+            ValueError,
+            match="Invalid input format .*. Expected format is '<component-id>.<property>' or '<component-id>'.",
+        ):
+            action = Action(function=action_with_one_arg(), inputs=runtime_inputs)
+            # An error is raised when accessing _transformed_inputs which is fine because validation is then performed.
+            action._transformed_inputs
+
+    @pytest.mark.parametrize(
         "input",
         [
             ["component.property"],
@@ -311,6 +391,49 @@ class TestActionOutputs:
 
         assert action.outputs == outputs
         assert action._transformed_outputs == expected_transformed_outputs
+
+    @pytest.mark.parametrize(
+        "outputs",
+        [
+            ["component"],
+            ["component_property"],
+            {"output_1": "component"},
+            {"output_1": "component_property"},
+        ],
+    )
+    def test_outputs_invalid_model_id(self, outputs):
+        with pytest.raises(
+            KeyError,
+            match="Component with ID .* not found. Please provide a valid component ID.",
+        ):
+            action = Action(function=action_with_no_args(), outputs=outputs)
+            # An error is raised when accessing _transformed_outputs which is fine because validation is then performed.
+            action._transformed_outputs
+
+    @pytest.mark.parametrize(
+        "outputs",
+        [
+            [""],
+            ["component."],
+            [".property"],
+            ["component..property"],
+            ["component.property.property"],
+            {"output_1": ""},
+            {"output_1": "component."},
+            {"output_1": ".property"},
+            {"output_1": "component..property"},
+            {"output_1": "component.property.property"},
+            {"output_1": "component.property", "output_2": ""},
+        ],
+    )
+    def test_outputs_invalid_dot_syntax(self, outputs):
+        with pytest.raises(
+            ValueError,
+            match="Invalid output format .*. Expected format is '<component-id>.<property>' or '<component-id>'.",
+        ):
+            action = Action(function=action_with_no_args(), outputs=outputs)
+            # An error is raised when accessing _transformed_outputs which is fine because validation is then performed.
+            action._transformed_outputs
 
 
 class TestActionBuild:
@@ -420,128 +543,3 @@ class TestBaseActionCallbackFunction:
             ValueError, match="Keys of action's returned value .+ do not match the action's defined outputs {'output'}."
         ):
             action._action_callback_function(inputs={}, outputs={"output": Output("component", "property")})
-
-
-class TestBaseActionTransformDependency:
-    @pytest.mark.parametrize(
-        "runtime_inputs",
-        [
-            ["component"],
-            ["component_property"],
-        ],
-    )
-    def test_action_inputs_invalid_model_id(self, runtime_inputs):
-        with pytest.raises(
-            KeyError,
-            match="Component with ID .* not found. Please provide a valid component ID.",
-        ):
-            action = Action(function=action_with_one_arg(), inputs=runtime_inputs)
-            # An error is raised when accessing _transformed_inputs which is fine because validation is then performed.
-            action._transformed_inputs
-
-    @pytest.mark.parametrize(
-        "runtime_inputs",
-        [
-            [""],
-            ["component."],
-            [".property"],
-            ["component..property"],
-            ["component.property.property"],
-        ],
-    )
-    def test_action_inputs_invalid_dot_syntax(self, runtime_inputs):
-        with pytest.raises(
-            ValueError,
-            match="Invalid input format .*. Expected format is '<component-id>.<property>' or '<component-id>'.",
-        ):
-            action = Action(function=action_with_one_arg(), inputs=runtime_inputs)
-            # An error is raised when accessing _transformed_inputs which is fine because validation is then performed.
-            action._transformed_inputs
-
-    @pytest.mark.parametrize(
-        "outputs",
-        [
-            ["component"],
-            ["component_property"],
-            {"output_1": "component"},
-            {"output_1": "component_property"},
-        ],
-    )
-    def test_action_outputs_invalid_model_id(self, outputs):
-        with pytest.raises(
-            KeyError,
-            match="Component with ID .* not found. Please provide a valid component ID.",
-        ):
-            action = Action(function=action_with_no_args(), outputs=outputs)
-            # An error is raised when accessing _transformed_outputs which is fine because validation is then performed.
-            action._transformed_outputs
-
-    @pytest.mark.parametrize(
-        "outputs",
-        [
-            [""],
-            ["component."],
-            [".property"],
-            ["component..property"],
-            ["component.property.property"],
-            {"output_1": ""},
-            {"output_1": "component."},
-            {"output_1": ".property"},
-            {"output_1": "component..property"},
-            {"output_1": "component.property.property"},
-            {"output_1": "component.property", "output_2": ""},
-        ],
-    )
-    def test_action_outputs_invalid_dot_syntax(self, outputs):
-        with pytest.raises(
-            ValueError,
-            match="Invalid output format .*. Expected format is '<component-id>.<property>' or '<component-id>'.",
-        ):
-            action = Action(function=action_with_no_args(), outputs=outputs)
-            # An error is raised when accessing _transformed_outputs which is fine because validation is then performed.
-            action._transformed_outputs
-
-    @pytest.mark.parametrize(
-        "outputs",
-        [
-            ["component"],
-            ["component_property"],
-            {"output_1": "component"},
-            {"output_1": "component_property"},
-        ],
-    )
-    def test_action_outputs_legacy_invalid_model_id(self, outputs):
-        with pytest.raises(
-            KeyError,
-            match="Component with ID .* not found. Please provide a valid component ID.",
-        ):
-            # inputs=[] added to force action to be legacy
-            action = Action(function=action_with_no_args(), inputs=[], outputs=outputs)
-            # An error is raised when accessing _transformed_outputs which is fine because validation is then performed.
-            action._transformed_outputs
-
-    @pytest.mark.parametrize(
-        "outputs",
-        [
-            [""],
-            ["component."],
-            [".property"],
-            ["component..property"],
-            ["component.property.property"],
-            {"output_1": ""},
-            {"output_1": "component."},
-            {"output_1": ".property"},
-            {"output_1": "component..property"},
-            {"output_1": "component.property.property"},
-            {"output_1": "component.property", "output_2": ""},
-        ],
-    )
-    def test_action_outputs_legacy_invalid_dot_syntax(self, outputs):
-        with pytest.raises(
-            ValueError,
-            match="Invalid output format .*. Expected format is '<component-id>.<property>' or '<component-id>'.",
-        ):
-            # inputs=[] added to force action to be legacy
-            action = Action(function=action_with_no_args(), inputs=[], outputs=outputs)
-            # An error is raised when accessing _transformed_outputs which is fine because validation is then performed.
-            action._transformed_outputs
