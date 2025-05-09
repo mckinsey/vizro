@@ -164,7 +164,7 @@ class _BaseAction(VizroBaseModel):
             KeyError: If component not found or no default mapping exists
             ValueError: If dependency format is invalid e.g. "model-id.prop.prop"
         """
-        property_name = "_outputs" if type == "output" else "_inputs"
+        property_name = "_action_outputs" if type == "output" else "_action_inputs"
 
         if "." in dependency:
             # LQ: Check whether we need TypeAdapter here or something else. Currently it doesn't catch cases such as

@@ -42,7 +42,7 @@ class Text(VizroBaseModel):
     ]
 
     @property
-    def _outputs(self) -> dict[str, _IdProperty]:
+    def _action_outputs(self) -> dict[str, _IdProperty]:
         return {"__default__": cast(_IdProperty, f"{self.id}.children")}
 
     @_log_call

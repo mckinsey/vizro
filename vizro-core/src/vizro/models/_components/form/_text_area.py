@@ -38,11 +38,11 @@ class TextArea(VizroBaseModel):
     _set_actions = _action_validator_factory("value")
 
     @property
-    def _outputs(self) -> dict[str, _IdProperty]:
+    def _action_outputs(self) -> dict[str, _IdProperty]:
         return {"__default__": cast(_IdProperty, f"{self.id}.value")}
 
     @property
-    def _inputs(self) -> dict[str, _IdProperty]:
+    def _action_inputs(self) -> dict[str, _IdProperty]:
         return {"__default__": cast(_IdProperty, f"{self.id}.value")}
 
     @_log_call

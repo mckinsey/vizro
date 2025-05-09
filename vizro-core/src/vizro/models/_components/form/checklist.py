@@ -81,11 +81,11 @@ class Checklist(VizroBaseModel):
     _validate_options = model_validator(mode="before")(validate_options_dict)
 
     @property
-    def _outputs(self) -> dict[str, _IdProperty]:
+    def _action_outputs(self) -> dict[str, _IdProperty]:
         return {"__default__": cast(_IdProperty, f"{self.id}.value")}
 
     @property
-    def _inputs(self) -> dict[str, _IdProperty]:
+    def _action_inputs(self) -> dict[str, _IdProperty]:
         return {"__default__": cast(_IdProperty, f"{self.id}.value")}
 
     def __call__(self, options):

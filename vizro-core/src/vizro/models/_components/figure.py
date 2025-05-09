@@ -36,7 +36,7 @@ class Figure(VizroBaseModel):
     _validate_figure = field_validator("figure", mode="before")(validate_captured_callable)
 
     @property
-    def _outputs(self) -> dict[str, _IdProperty]:
+    def _action_outputs(self) -> dict[str, _IdProperty]:
         return {"__default__": cast(_IdProperty, f"{self.id}.children")}
 
     def __call__(self, **kwargs):
