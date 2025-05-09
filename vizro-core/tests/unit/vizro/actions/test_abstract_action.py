@@ -4,7 +4,8 @@ from dash import Output, State, html
 from pydantic import ValidationError
 
 from vizro.actions._abstract_action import _AbstractAction
-
+import vizro.models as vm
+from vizro import Vizro
 
 class action_with_no_args(_AbstractAction):
     def function(self):
@@ -304,6 +305,21 @@ class TestAbstractActionOutputs:
             match="Invalid output format .*. Expected format is '<component-id>.<property>' or '<component-id>'.",
         ):
             # An error is raised when accessing _transformed_outputs which is fine because validation is then performed.
+            action_with_mock_outputs()._transformed_outputs
+
+
+    def test_outputs_invalid_missing_action_attribute(self, action_with_mock_outputs):
+        # The Button currently doesn't have _action_outputs defined)
+        button = vm.Button(id="test_button")
+        vm.Page(title="Page Title", components=[button])
+        Vizro._pre_build()
+
+        with pytest.raises(
+            AttributeError,
+            match="Component with ID 'test_button' does not have implicit output properties defined. "
+            "Please specify the output explicitly as 'test_button.<property>'.",
+        ):
+            action_with_mock_outputs.outputs = ["test_button"]
             action_with_mock_outputs()._transformed_outputs
 
 

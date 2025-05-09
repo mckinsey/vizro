@@ -5,9 +5,10 @@ from asserts import assert_component_equal
 from dash import Output, State, html
 from pydantic import ValidationError
 
+import vizro.models as vm
 from vizro.models._action._action import Action
 from vizro.models.types import capture
-
+from vizro import Vizro
 
 @capture("action")
 def action_with_no_args():
@@ -203,6 +204,21 @@ class TestLegacyActionOutputs:
             # inputs=[] added to force action to be legacy
             action = Action(function=action_with_no_args(), inputs=[], outputs=outputs)
             # An error is raised when accessing _transformed_outputs which is fine because validation is then performed.
+            action._transformed_outputs
+
+    def test_outputs_invalid_missing_action_attribute(self):
+        # The Button currently doesn't have _action_outputs defined)
+        button = vm.Button(id="test_button")
+        vm.Page(title="Page Title", components=[button])
+        Vizro._pre_build()
+
+        with pytest.raises(
+            AttributeError,
+            match="Component with ID 'test_button' does not have implicit output properties defined. "
+            "Please specify the output explicitly as 'test_button.<property>'.",
+        ):
+            # inputs=[] added to force action to be legacy
+            action = Action(function=action_with_no_args(), inputs=[], outputs=["test_button"])
             action._transformed_outputs
 
 
@@ -433,6 +449,20 @@ class TestActionOutputs:
         ):
             action = Action(function=action_with_no_args(), outputs=outputs)
             # An error is raised when accessing _transformed_outputs which is fine because validation is then performed.
+            action._transformed_outputs
+
+    def test_outputs_invalid_missing_action_attribute(self):
+        # The Button currently doesn't have _action_outputs defined)
+        button = vm.Button(id="test_button")
+        vm.Page(title="Page Title", components=[button])
+        Vizro._pre_build()
+
+        with pytest.raises(
+            AttributeError,
+            match="Component with ID 'test_button' does not have implicit output properties defined. "
+            "Please specify the output explicitly as 'test_button.<property>'.",
+        ):
+            action = Action(function=action_with_no_args(), outputs=["test_button"])
             action._transformed_outputs
 
 
