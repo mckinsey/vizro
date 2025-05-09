@@ -60,7 +60,7 @@ You are now ready to explore Vizro further, by working through the ["Explore Viz
 
 ### Create dashboards with AI
 
-Vizro also offers a [MCP server](https://github.com/mckinsey/vizro/tree/main/vizro-mcpl) that allows:
+Vizro also offers a [MCP server](https://github.com/mckinsey/vizro/tree/main/vizro-mcp) that allows:
 
 - **creation of Vizro apps** from any MCP compatible host (Claude Desktop, Cursor, etc.)
 - **creation of charts** that adhere to the Vizro design template, and take care of data wrangling for you
