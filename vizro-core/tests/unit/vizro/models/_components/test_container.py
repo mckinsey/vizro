@@ -66,7 +66,7 @@ class TestContainerBuildMethod:
         assert_component_equal(
             result, dbc.Container(id="container", class_name="", fluid=True), keys_to_strip={"children"}
         )
-        assert_component_equal(result.children, [html.H3(), html.Div()], keys_to_strip=STRIP_ALL)
+        assert_component_equal(result.children, [html.H3(), html.Div(), html.Div()], keys_to_strip=STRIP_ALL)
 
     def test_container_build_with_title(self):
         result = vm.Container(
@@ -75,7 +75,7 @@ class TestContainerBuildMethod:
         assert_component_equal(
             result, dbc.Container(id="container", class_name="", fluid=True), keys_to_strip={"children"}
         )
-        assert_component_equal(result.children, [html.H3(), html.Div()], keys_to_strip=STRIP_ALL)
+        assert_component_equal(result.children, [html.H3(), html.Div(), html.Div()], keys_to_strip=STRIP_ALL)
         # We still want to test the exact H3 produced in Container.build:
         assert_component_equal(
             result.children[0],
@@ -94,7 +94,7 @@ class TestContainerBuildMethod:
         assert_component_equal(
             result, dbc.Container(id="container", class_name="", fluid=True), keys_to_strip={"children"}
         )
-        assert_component_equal(result.children, [html.H3(), html.Div()], keys_to_strip=STRIP_ALL)
+        assert_component_equal(result.children, [html.H3(), html.Div(), html.Div()], keys_to_strip=STRIP_ALL)
         # We still want to test the exact H3 produced in Container.build:
         assert_component_equal(
             result.children[0],
@@ -137,7 +137,7 @@ class TestContainerBuildMethod:
         assert container.variant == "outlined"
 
         result = container.build()
-        assert_component_equal(result.children, [html.H3(), dbc.Collapse()], keys_to_strip=STRIP_ALL)
+        assert_component_equal(result.children, [html.H3(), html.Div(), dbc.Collapse()], keys_to_strip=STRIP_ALL)
 
         # We still want to test the exact H3 and dbc.Collapse inside the result
         expected_title_content = [
@@ -158,11 +158,11 @@ class TestContainerBuildMethod:
             result.children[0], html.H3(expected_title_content, className="container-title-collapse", id="test_title")
         )
         assert_component_equal(
-            result.children[1],
+            result.children[2],
             dbc.Collapse(id="test_collapse", is_open=not collapsed, className="collapsible-container", key="test"),
             keys_to_strip={"children"},
         )
-        # We want to test if the correct style is applied: default style for collapsible containers is outlined
+        # # We want to test if the correct style is applied: default style for collapsible containers is outlined
         assert result.class_name == "border p-3"
 
     def test_container_build_with_description(self):
@@ -187,7 +187,7 @@ class TestContainerBuildMethod:
         assert_component_equal(
             result, dbc.Container(id="container", class_name="", fluid=True), keys_to_strip={"children"}
         )
-        assert_component_equal(result.children, [html.H3(), html.Div()], keys_to_strip=STRIP_ALL)
+        assert_component_equal(result.children, [html.H3(), html.Div(), html.Div()], keys_to_strip=STRIP_ALL)
         # We still want to test the exact H3 produced in Container.build:
         assert_component_equal(
             result.children[0],
@@ -196,4 +196,24 @@ class TestContainerBuildMethod:
                 className="container-title",
                 id="container_title",
             ),
+        )
+
+    def test_container_build_with_controls(self):
+        result = vm.Container(
+            id="container", components=[vm.Button()], controls=[vm.Filter(column="species", selector=vm.Dropdown())]
+        ).build()
+        assert_component_equal(
+            result, dbc.Container(id="container", class_name="", fluid=True), keys_to_strip={"children"}
+        )
+        assert_component_equal(result.children, [html.H3(), html.Div(), html.Div()], keys_to_strip=STRIP_ALL)
+        # # We still want to test the exact Div produced in Container.build:
+        assert_component_equal(
+            result.children[1],
+            html.Div(
+                id="container-control-panel",
+                children=[],
+                hidden=False,
+                className="container-controls-panel",
+            ),
+            keys_to_strip={"children"},
         )

@@ -213,7 +213,7 @@ class Filter(VizroBaseModel):
             ),
         ]
 
-        # set inline True for container selectors
+        # set default inline=True for container selectors
         _is_page_control = self._is_page_control(page=page)
 
         if not _is_page_control and isinstance(self.selector, (Checklist, RadioItems)):
@@ -367,9 +367,4 @@ class Filter(VizroBaseModel):
             ]
 
     def _is_page_control(self, page):
-        is_page_control = any(control.id == self.id for control in page.controls)
-
-        if is_page_control:
-            return True
-
-        return False
+        return any(control.id == self.id for control in page.controls)

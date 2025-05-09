@@ -16,9 +16,13 @@ page1 = vm.Page(
             title="Inline default styling",
             components=[
                 vm.Graph(
-                    id="graph1",
+                    id="scatter_chart",
                     figure=px.scatter(
-                        iris, x="sepal_length", y="petal_width", color="species", custom_data=["species"]
+                        iris,
+                        x="sepal_length",
+                        y="petal_width",
+                        color="species",
+                        custom_data=["species"],
                     ),
                 ),
             ],
@@ -27,6 +31,12 @@ page1 = vm.Page(
                 vm.Filter(
                     column="species",
                     selector=vm.Checklist(value=["setosa"], title="Species"),
+                ),
+                vm.Parameter(
+                    targets=["scatter_chart.title"],
+                    selector=vm.RadioItems(
+                        options=["My scatter chart", "A better title!", "Another title..."], title="Parameter title"
+                    ),
                 ),
             ],
         ),
@@ -235,7 +245,9 @@ page6 = vm.Page(
             layout=vm.Layout(grid=[[0, 1]]),
             controls=[
                 vm.Filter(column="species", selector=vm.Dropdown()),
+                vm.Filter(column="species", selector=vm.Checklist()),
                 vm.Filter(column="sepal_length", selector=vm.RangeSlider()),
+                vm.Filter(column="species", selector=vm.RadioItems()),
             ],
             variant="filled",
         )
@@ -261,14 +273,91 @@ page7 = vm.Page(
             ],
             layout=vm.Layout(grid=[[0, 1]]),
             controls=[
-                vm.Filter(column="species", selector=vm.Checklist(value=["setosa"], title="Species", extra={"inline": False})),
+                vm.Filter(
+                    column="species", selector=vm.Checklist(value=["setosa"], title="Species", extra={"inline": False})
+                ),
             ],
         )
     ],
 )
 
+page8 = vm.Page(
+    title="Controls with targets outside of the container",
+    components=[
+        vm.Container(
+            title="Container with control",
+            components=[
+                vm.Graph(
+                    id="bar_chart11",
+                    title="Bar chart",
+                    figure=px.bar(iris, x="sepal_length", y="sepal_width", color="species"),
+                ),
+            ],
+            controls=[
+                vm.Filter(
+                    column="species",
+                    selector=vm.Checklist(value=["setosa"], title="Species"),
+                    targets=["bar_chart11", "scatter_chart11"],
+                ),
+            ],
+        ),
+        vm.Container(
+            title="Container with target",
+            components=[
+                vm.Graph(
+                    title="Scatter chart",
+                    id="scatter_chart11",
+                    figure=px.scatter(
+                        iris, x="sepal_length", y="petal_width", color="species", custom_data=["species"]
+                    ),
+                ),
+            ],
+        ),
+    ],
+)
 
-dashboard = vm.Dashboard(pages=[page1, page2, page3, page4, page5, page6, page7])
+page9 = vm.Page(
+    title="Page with multiple controls in containers",
+    layout=vm.Grid(grid=[[0, 1]]),
+    components=[
+        vm.Container(
+            title="Container with wrapped controls",
+            components=[
+                vm.Graph(
+                    title="Scatter chart",
+                    figure=px.scatter(
+                        iris, x="sepal_length", y="petal_width", color="species", custom_data=["species"]
+                    ),
+                ),
+            ],
+            controls=[
+                vm.Filter(
+                    column="species",
+                    selector=vm.Checklist(value=["setosa"], title="Species"),
+                ),
+                vm.Filter(
+                    column="petal_width",
+                    selector=vm.RangeSlider(),
+                ),
+                vm.Filter(
+                    column="sepal_length",
+                    selector=vm.RangeSlider(),
+                ),
+            ],
+        ),
+        vm.Container(
+            title="Container title",
+            components=[
+                vm.Graph(
+                    title="Bar chart",
+                    figure=px.bar(iris, x="sepal_length", y="sepal_width", color="species"),
+                ),
+            ],
+        ),
+    ],
+)
+
+dashboard = vm.Dashboard(pages=[page1, page2, page3, page4, page5, page6, page7, page8, page9])
 
 if __name__ == "__main__":
     Vizro().build(dashboard).run()

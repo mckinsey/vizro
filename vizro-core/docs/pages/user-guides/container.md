@@ -7,9 +7,7 @@ A [Container][vizro.models.Container] complements a [Page][vizro.models.Page], a
 Unlike `Page`, the `Container` model offers additional visual customization options:
 
 - **`variant`**: Allows you to select a visual style for the container, making it stand out from the rest of the page content.
-- **`collapsed`**: Enables collapsible behavior, letting you define whether the container's contents are initially shown or hidden.
-
-More functionality will be introduced to `Container` soon, including container-specific controls to support better grouping and interaction of related components.
+- **`collapsed`**: Enables collapsible behavior, letting you define whether the container's contents are initially shown or hidden
 
 !!! note "Displaying multiple containers inside Tabs"
 
@@ -491,6 +489,91 @@ You can provide markdown text as a string to use the default info icon or a [`To
                       y: sepal_length
                       color: species
                 collapsed: false
+        ```
+
+    === "Result"
+
+        [![ContainerInfoIcon]][containerinfoicon]
+
+## Add controls to container
+
+The `Container` now accept `controls` argument, where you can define container-specific controls for better grouping and interaction of related components.
+
+By default, a control affects only components within its container when no targets are specified. To affect the components outside the container, use the `targets` argument of [Filter][vizro.models.Filter] or [Parameter][vizro.models.Parameter] to explicitly define them.
+
+!!! example "Container with controls"
+
+    === "app.py"
+
+        ```{.python pycafe-link hl_lines="14-18"}
+        import vizro.models as vm
+        import vizro.plotly.express as px
+        from vizro import Vizro
+
+        iris = px.data.iris()
+
+        page = vm.Page(
+            title="Containers with controls",
+            layout=vm.Grid(grid=[[0, 1]]),
+            components=[
+                vm.Container(
+                    title="Container with checklist",
+                    components=[vm.Graph(figure=px.scatter(iris, x="sepal_width", y="sepal_length", color="species"))],
+                    controls=[vm.Filter(column="species", selector=vm.Checklist())]
+                ),
+                vm.Container(
+                    title="Container with radioitems",
+                    components=[vm.Graph(figure=px.box(iris, x="species", y="sepal_length", color="species"))],
+                    controls=[vm.Filter(column="species", selector=vm.RadioItems())]
+                )
+            ],
+        )
+
+        dashboard = vm.Dashboard(pages=[page])
+        Vizro().build(dashboard).run()
+        ```
+
+    === "app.yaml"
+
+        ```{.yaml hl_lines="20-23"}
+        # Still requires a .py to add data to the data manager and parse YAML configuration
+        # See yaml_version example
+        pages:
+          - title: Containers with controls
+            layout:
+              grid: [[0, 1]]
+              type: grid
+            components:
+              - type: container
+                title: Container with checklist
+                components:
+                  - type: graph
+                    figure:
+                      _target_: scatter
+                      data_frame: iris
+                      x: sepal_width
+                      y: sepal_length
+                      color: species
+                controls:
+                  - column: species
+                    selector:
+                      type: checklist
+                    type: filter
+              - type: container
+                title: Container with radioitems
+                components:
+                  - type: graph
+                    figure:
+                      _target_: box
+                      data_frame: iris
+                      x: species
+                      y: sepal_length
+                      color: species
+                controls:
+                  - column: species
+                    selector:
+                      type: radioitems
+                    type: filter
         ```
 
     === "Result"
