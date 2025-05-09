@@ -25,7 +25,7 @@ from vizro.models._components.form import (
 )
 from vizro.models._controls._controls_utils import check_targets_present_on_page
 from vizro.models._models_utils import _log_call
-from vizro.models.types import FigureType, ModelID, MultiValueType, SelectorType, SingleValueType
+from vizro.models.types import FigureType, ModelID, MultiValueType, SelectorType, SingleValueType, _IdProperty
 
 # Ideally we might define these as NumericalSelectorType = Union[RangeSlider, Slider] etc., but that will not work
 # with isinstance checks.
@@ -92,11 +92,11 @@ class Filter(VizroBaseModel):
     selector: Optional[SelectorType] = None
 
     _dynamic: bool = PrivateAttr(False)
-
-    # Component properties for actions and interactions
-    _output_component_property: str = PrivateAttr("children")
-
     _column_type: Literal["numerical", "categorical", "temporal"] = PrivateAttr()
+
+    @property
+    def _action_outputs(self) -> dict[str, _IdProperty]:
+        return {"__default__": cast(_IdProperty, f"{self.id}.children")}
 
     def __call__(self, target_to_data_frame: dict[ModelID, pd.DataFrame], current_value: Any):
         # Only relevant for a dynamic filter.

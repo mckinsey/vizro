@@ -7,7 +7,7 @@ import pandas as pd
 from dash import ClientsideFunction, Input, Output, State, clientside_callback, dcc, html, set_props
 from dash.exceptions import MissingCallbackContextException
 from plotly import graph_objects as go
-from pydantic import AfterValidator, BeforeValidator, Field, PrivateAttr, field_validator
+from pydantic import AfterValidator, BeforeValidator, Field, field_validator
 from pydantic.functional_serializers import PlainSerializer
 from pydantic.json_schema import SkipJsonSchema
 
@@ -81,8 +81,7 @@ class Graph(VizroBaseModel):
         Field(default=[]),
     ]
 
-    # Component properties for actions and interactions
-    _output_component_property: str = PrivateAttr("figure")
+    _validate_figure = field_validator("figure", mode="before")(validate_captured_callable)
 
     @property
     def _action_outputs(self) -> dict[str, _IdProperty]:
@@ -91,8 +90,6 @@ class Graph(VizroBaseModel):
     @property
     def _action_inputs(self) -> dict[str, _IdProperty]:
         return {"__default__": cast(_IdProperty, f"{self.id}.figure")}
-
-    _validate_figure = field_validator("figure", mode="before")(validate_captured_callable)
 
     # Convenience wrapper/syntactic sugar.
     def __call__(self, **kwargs):

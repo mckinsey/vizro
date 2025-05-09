@@ -1,7 +1,7 @@
 from typing import Annotated, Literal, cast
 
 from dash import dcc, html
-from pydantic import AfterValidator, Field, PrivateAttr, field_validator
+from pydantic import AfterValidator, Field, field_validator
 from pydantic.json_schema import SkipJsonSchema
 
 from vizro.managers import data_manager
@@ -31,8 +31,6 @@ class Figure(VizroBaseModel):
     ]
 
     # Component properties for actions and interactions
-    _output_component_property: str = PrivateAttr("children")
-
     _validate_figure = field_validator("figure", mode="before")(validate_captured_callable)
 
     @property
