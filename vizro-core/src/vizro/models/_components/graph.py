@@ -87,10 +87,6 @@ class Graph(VizroBaseModel):
     def _action_outputs(self) -> dict[str, _IdProperty]:
         return {"__default__": cast(_IdProperty, f"{self.id}.figure")}
 
-    @property
-    def _action_inputs(self) -> dict[str, _IdProperty]:
-        return {"__default__": cast(_IdProperty, f"{self.id}.figure")}
-
     # Convenience wrapper/syntactic sugar.
     def __call__(self, **kwargs):
         # This default value is not actually used anywhere at the moment since __call__ is always used with data_frame
