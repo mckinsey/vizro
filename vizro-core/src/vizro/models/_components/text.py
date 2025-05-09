@@ -1,4 +1,4 @@
-from typing import Annotated, Any, Literal
+from typing import Annotated, Any, Literal, cast
 
 from dash import dcc
 from pydantic import Field
@@ -6,6 +6,7 @@ from pydantic.json_schema import SkipJsonSchema
 
 from vizro.models import VizroBaseModel
 from vizro.models._models_utils import _log_call
+from vizro.models.types import _IdProperty
 
 
 class Text(VizroBaseModel):
@@ -41,8 +42,8 @@ class Text(VizroBaseModel):
     ]
 
     @property
-    def _outputs(self) -> dict[str, str]:
-        return {"__default__": f"{self.id}.children"}
+    def _outputs(self) -> dict[str, _IdProperty]:
+        return {"__default__": cast(_IdProperty, f"{self.id}.children")}
 
     @_log_call
     def build(self):

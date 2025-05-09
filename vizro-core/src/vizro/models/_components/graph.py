@@ -19,7 +19,7 @@ from vizro.models._action._actions_chain import _action_validator_factory
 from vizro.models._components._components_utils import _process_callable_data_frame
 from vizro.models._models_utils import _log_call
 from vizro.models._tooltip import coerce_str_to_tooltip
-from vizro.models.types import ActionType, CapturedCallable, ModelID, validate_captured_callable
+from vizro.models.types import ActionType, CapturedCallable, ModelID, _IdProperty, validate_captured_callable
 
 logger = logging.getLogger(__name__)
 
@@ -85,12 +85,12 @@ class Graph(VizroBaseModel):
     _output_component_property: str = PrivateAttr("figure")
 
     @property
-    def _outputs(self) -> dict[str, str]:
-        return {"__default__": f"{self.id}.figure"}
+    def _outputs(self) -> dict[str, _IdProperty]:
+        return {"__default__": cast(_IdProperty, f"{self.id}.figure")}
 
     @property
-    def _inputs(self) -> dict[str, str]:
-        return {"__default__": f"{self.id}.figure"}
+    def _inputs(self) -> dict[str, _IdProperty]:
+        return {"__default__": cast(_IdProperty, f"{self.id}.figure")}
 
     _validate_figure = field_validator("figure", mode="before")(validate_captured_callable)
 

@@ -1,5 +1,5 @@
 import logging
-from typing import Annotated, Literal, Optional
+from typing import Annotated, Literal, Optional, cast
 
 import pandas as pd
 from dash import ClientsideFunction, Input, Output, State, clientside_callback, dcc, html
@@ -15,7 +15,7 @@ from vizro.models._action._actions_chain import _action_validator_factory
 from vizro.models._components._components_utils import _process_callable_data_frame
 from vizro.models._models_utils import _log_call
 from vizro.models._tooltip import coerce_str_to_tooltip
-from vizro.models.types import ActionType, CapturedCallable, validate_captured_callable
+from vizro.models.types import ActionType, CapturedCallable, _IdProperty, validate_captured_callable
 
 logger = logging.getLogger(__name__)
 
@@ -84,8 +84,8 @@ class AgGrid(VizroBaseModel):
     _validate_figure = field_validator("figure", mode="before")(validate_captured_callable)
 
     @property
-    def _outputs(self) -> dict[str, str]:
-        return {"__default__": f"{self.id}.children"}
+    def _outputs(self) -> dict[str, _IdProperty]:
+        return {"__default__": cast(_IdProperty, f"{self.id}.children")}
 
     # Convenience wrapper/syntactic sugar.
     def __call__(self, **kwargs):

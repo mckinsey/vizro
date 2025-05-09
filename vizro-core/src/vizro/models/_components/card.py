@@ -1,4 +1,4 @@
-from typing import Annotated, Any, Literal
+from typing import Annotated, Any, Literal, cast
 
 import dash_bootstrap_components as dbc
 from dash import dcc, get_relative_path
@@ -7,6 +7,7 @@ from pydantic.json_schema import SkipJsonSchema
 
 from vizro.models import VizroBaseModel
 from vizro.models._models_utils import _log_call
+from vizro.models.types import _IdProperty
 
 
 class Card(VizroBaseModel):
@@ -48,8 +49,8 @@ class Card(VizroBaseModel):
     ]
 
     @property
-    def _outputs(self) -> dict[str, str]:
-        return {"__default__": f"{self.id}.children"}
+    def _outputs(self) -> dict[str, _IdProperty]:
+        return {"__default__": cast(_IdProperty, f"{self.id}.children")}
 
     @_log_call
     def build(self):

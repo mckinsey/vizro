@@ -1,4 +1,4 @@
-from typing import Literal
+from typing import Literal, cast
 
 import dash_bootstrap_components as dbc
 from dash import html
@@ -7,7 +7,7 @@ from pydantic import Field, PrivateAttr
 from vizro.models import VizroBaseModel
 from vizro.models._action._actions_chain import _action_validator_factory
 from vizro.models._models_utils import _log_call
-from vizro.models.types import ActionType
+from vizro.models.types import ActionType, _IdProperty
 
 
 class TextArea(VizroBaseModel):
@@ -38,12 +38,12 @@ class TextArea(VizroBaseModel):
     _set_actions = _action_validator_factory("value")
 
     @property
-    def _outputs(self) -> dict[str, str]:
-        return {"__default__": f"{self.id}.value"}
+    def _outputs(self) -> dict[str, _IdProperty]:
+        return {"__default__": cast(_IdProperty, f"{self.id}.value")}
 
     @property
-    def _inputs(self) -> dict[str, str]:
-        return {"__default__": f"{self.id}.value"}
+    def _inputs(self) -> dict[str, _IdProperty]:
+        return {"__default__": cast(_IdProperty, f"{self.id}.value")}
 
     @_log_call
     def build(self):
