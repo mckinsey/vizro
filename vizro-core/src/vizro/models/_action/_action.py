@@ -21,6 +21,7 @@ from vizro.models.types import (
     ControlType,
     _DotSeparatedStr,
     _IdOrIdProperty,
+    _IdProperty,
     validate_captured_callable,
 )
 
@@ -41,7 +42,6 @@ class ControlsStates(TypedDict):
 # TODO-AV2 D 3: try to enable properties that aren't Dash properties but are instead model fields e.g. header,
 # title. See https://github.com/mckinsey/vizro/issues/1078.
 # Try to fix AgGrid problem with underlying input component id.
-# Note this is needed for inputs in both vm.Action and _AbstractAction but outputs only in _AbstractAction.
 
 
 class _BaseAction(VizroBaseModel):
@@ -106,7 +106,10 @@ class _BaseAction(VizroBaseModel):
         """
         if self._legacy:
             # Must be an Action rather than _AbstractAction, so has already been validated by pydantic field annotation.
-            return [State(*self._transform(input, type="input").split(".")) for input in cast(Action, self).inputs]
+            return [
+                State(*self._transform_dependency(input, type="input").split("."))
+                for input in cast(Action, self).inputs
+            ]
 
         from vizro.models import Filter, Parameter
 
@@ -136,44 +139,44 @@ class _BaseAction(VizroBaseModel):
         # _AbstractAction instance.
         # Qn: should this work for legacy actions too? Think about docs.
         runtime_args = {
-            arg_name: State(*self._transform(arg_value, type="input").split("."))
+            arg_name: State(*self._transform_dependency(arg_value, type="input").split("."))
             for arg_name, arg_value in self._runtime_args.items()
         }
 
         return builtin_args | runtime_args
 
     @staticmethod
-    def _transform(reference: str, type: Literal["output", "input"]) -> str:
-        """Transform a component reference into its mapped property value.
+    def _transform_dependency(dependency: _IdOrIdProperty, type: Literal["output", "input"]) -> _IdProperty:
+        """Transform a component dependency into its mapped property value.
 
         Handles two formats:
         - "component-id.component-property" (e.g. "graph-1.figure"): Returns mapped value if exists, else original
         - "component-id" (e.g. "graph-1"): Returns default mapping from _outputs/_inputs, raises if no default
 
         Args:
-            reference: Component ID or "component-id.component-property" string
+            dependency: Component ID or "component-id.component-property" string
             type: "input" or "output" to check _inputs or _outputs
 
         Returns:
-            Mapped property value or original reference for explicit format
+            Mapped property value or original dependency for explicit format
 
         Raises:
             KeyError: If component not found or no default mapping exists
-            ValueError: If reference format is invalid e.g. "model-id.prop.prop"
+            ValueError: If dependency format is invalid e.g. "model-id.prop.prop"
         """
         property_name = "_outputs" if type == "output" else "_inputs"
 
-        if "." in reference:
+        if "." in dependency:
             # LQ: Check whether we need TypeAdapter here or something else. Currently it doesn't catch cases such as
             # `component-id.prop.prop` well. However, adding below leads to a bunch of unit tests to fail. Check later.
-            # TypeAdapter(Union[list[_DotSeparatedStr], dict[str, _DotSeparatedStr]]).validate_python(reference)
-            component_id, component_property = reference.split(".")
+            # TypeAdapter(Union[list[_DotSeparatedStr], dict[str, _DotSeparatedStr]]).validate_python(dependency)
+            component_id, component_property = dependency.split(".")
             if component_id in model_manager and hasattr(model_manager[component_id], property_name):
                 if component_property in getattr(model_manager[component_id], property_name):
                     return getattr(model_manager[component_id], property_name)[component_property]
-            return reference
+            return dependency
 
-        component_id, component_property = reference, "__default__"
+        component_id, component_property = dependency, "__default__"
         if component_id not in model_manager:
             raise KeyError(
                 f"Component with ID '{component_id}' not found. Please provide a valid component ID or use "
@@ -202,7 +205,7 @@ class _BaseAction(VizroBaseModel):
         """
 
         def _transform_output(output):
-            return Output(*self._transform(output, type="output").split("."), allow_duplicate=True)
+            return Output(*self._transform_dependency(output, type="output").split("."), allow_duplicate=True)
 
         if isinstance(self.outputs, list):
             callback_outputs = [_transform_output(output) for output in self.outputs]
