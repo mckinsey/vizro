@@ -6,8 +6,8 @@ A [Container][vizro.models.Container] complements a [Page][vizro.models.Page], a
 
 Unlike `Page`, the `Container` model offers additional visual customization options:
 
-- **`variant`**: Allows you to select a visual style for the container, making it stand out from the rest of the page content.
-- **`collapsed`**: Enables collapsible behavior, letting you define whether the container's contents are initially shown or hidden
+- **`variant`**: Enables you to select a visual style for the container, making it stand out from the rest of the page content.
+- **`collapsed`**: Enables collapsible behavior. You can define whether the container's contents are initially shown or hidden.
 
 !!! note "Displaying multiple containers inside Tabs"
 
@@ -497,9 +497,9 @@ You can provide markdown text as a string to use the default info icon or a [`To
 
 ## Add controls to container
 
-The `Container` now accept `controls` argument, where you can define container-specific controls for better grouping and interaction of related components.
+The `Container` now accepts a `controls` argument, where you can define container-specific controls to group related components for better interaction.
 
-By default, a control affects only components within its container when no targets are specified. To affect the components outside the container, use the `targets` argument of [Filter][vizro.models.Filter] or [Parameter][vizro.models.Parameter] to explicitly define them.
+By default, a control affects only components within its container when no targets are specified. To affect components outside the container, use the `targets` argument of [Filter][vizro.models.Filter] or [Parameter][vizro.models.Parameter] to explicitly define them.
 
 !!! example "Container with controls"
 
