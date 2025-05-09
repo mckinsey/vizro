@@ -553,7 +553,7 @@ ModelID: TypeAlias = str
 
 # LQ: mypy complains if we use NewType here, as the type needs to be subclassable and the current Union does not work
 _IdOrIdProperty: TypeAlias = Union[ModelID, _IdProperty]
-"""Represents either a component ID or a string in the format 'component-id.component-property'."""
+"""Represents either a model ID or a string in the format 'component-id.component-property'."""
 
 # Types used for selector values and options. Note the docstrings here are rendered on the API reference.
 SingleValueType = Union[StrictBool, float, str, date]
