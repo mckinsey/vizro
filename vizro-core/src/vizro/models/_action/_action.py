@@ -125,10 +125,10 @@ class _BaseAction(VizroBaseModel):
             arg_name: arg_value for arg_name, arg_value in builtin_args.items() if arg_name in self._parameters
         }
 
-        # Validate that the runtime arguments are in the same form as the legacy Action.inputs field, so a simple str.
-        # Currently, this code only runs for subclasses of _AbstractAction but not vm.Action instances because a vm.Action
-        # that does not pass this check will have already been classified as legacy in Action._legacy. In future when
-        # vm.Action.inputs is deprecated then this will be used for vm.Action instances also.
+        # Validate that the runtime arguments are in the same form as the legacy Action.inputs field (str).
+        # Currently, this code only runs for subclasses of _AbstractAction but not vm.Action instances because a
+        # vm.Action that does not pass this check will have already been classified as legacy in Action._legacy.
+        # In future when vm.Action.inputs is deprecated then this will be used for vm.Action instances also.
         TypeAdapter(dict[str, str]).validate_python(self._runtime_args)
         # Do exactly same lookup but we only have "__default__" defined in inputs dictionary so will only ever use that
         # case
@@ -147,24 +147,30 @@ class _BaseAction(VizroBaseModel):
     def _transform_dependency(dependency: _IdOrIdProperty, type: Literal["output", "input"]) -> _IdProperty:
         """Transform a component dependency into its mapped property value.
 
-        Handles two formats:
-        - "component-id.component-property" (e.g. "graph-1.figure"): Returns mapped value if exists, else original
-        - "component-id" (e.g. "graph-1"): Returns default mapping from _outputs/_inputs, raises if no default
+        This method handles two formats of component dependencies:
+        1. Explicit format: "component-id.component-property" (e.g. "graph-1.figure")
+           - Returns the mapped value if it exists in the component's _action_outputs/_action_inputs
+           - Returns the original dependency otherwise
+        2. Implicit format: "component-id" (e.g. "card-id")
+           - Returns the value of "__default__" key from the component's _action_outputs/_action_inputs
+           - Raises an error if the component doesn't exist or doesn't have the required property
 
         Args:
-            dependency: Component ID or "component-id.component-property" string
-            type: "input" or "output" to check _inputs or _outputs
+            dependency: A string in either "component-id.component-property" or "component-id" format
+            type: Either "input" or "output" to determine which property (_action_inputs or _action_outputs) to check
 
         Returns:
-            Mapped property value or original dependency for explicit format
+            The mapped property value for implicit format, or the original dependency for explicit format
 
         Raises:
-            KeyError: If component not found or no default mapping exists
-            ValueError: If dependency format is invalid e.g. "model-id.prop.prop"
+            KeyError: If component does not exist in model_manager
+            KeyError: If component exists but has no "__default__" key in its _action_outputs/_action_inputs
+            AttributeError: If component exists but has no _action_outputs/_action_inputs property defined
+            ValueError: If dependency format is invalid (e.g. "id.prop.prop" or "id..prop")
         """
         property_name = "_action_outputs" if type == "output" else "_action_inputs"
 
-        # Validate that the dependency is in one of two valid formats: id.property (e.g. "graph-1.figure") or id (e.g. "card-id")
+        # Validate that the dependency is in one of two valid formats: id.property ("graph-1.figure") or id ("card-id")
         if not re.match(r"^[^.]+$|^[^.]+[.][^.]+$", dependency):
             raise ValueError(
                 f"Invalid {type} format '{dependency}'. Expected format is '<component-id>.<property>' "
@@ -191,8 +197,9 @@ class _BaseAction(VizroBaseModel):
             if isinstance(e, KeyError):
                 if str(e) == f"'{component_property}'":
                     raise KeyError(
-                        f"Component with ID `{component_id}` has no `{component_property}` key inside its `{property_name}` property. "
-                        f"Please specify the {type} explicitly as `{component_id}.<property>`."
+                        f"Component with ID `{component_id}` has no `{component_property}` key inside its "
+                        f"`{property_name}` property. Please specify the {type} explicitly as "
+                        f"`{component_id}.<property>`."
                     ) from e
                 raise KeyError(
                     f"Component with ID `{component_id}` not found. Please provide a valid component ID."
@@ -216,6 +223,8 @@ class _BaseAction(VizroBaseModel):
         """
 
         def _transform_output(output):
+            # Action.outputs is already validated by pydantic as list[str] or dict[str, str]
+            # _AbstractAction._transformed_outputs does the same validation manually with TypeAdapter.
             return Output(*self._transform_dependency(output, type="output").split("."), allow_duplicate=True)
 
         if isinstance(self.outputs, list):

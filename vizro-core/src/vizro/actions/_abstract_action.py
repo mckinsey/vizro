@@ -76,8 +76,8 @@ class _AbstractAction(_BaseAction, abc.ABC):
 
     @property
     def _transformed_outputs(self) -> Union[list[Output], dict[str, Output]]:
-        # Action.outputs is validated by pydantic, but for _AbstractAction.outputs we need to do the validation
-        # manually.
+        # Action.outputs is already validated by pydantic as list[str] or dict[str, str], but for
+        # _AbstractAction.outputs we need to do the validation manually with TypeAdapter.
         TypeAdapter(Union[list[str], dict[str, str]]).validate_python(self.outputs)
         return super()._transformed_outputs
 
