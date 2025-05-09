@@ -10,7 +10,9 @@ from pydantic import ValidationError
 
 import vizro.models as vm
 import vizro.plotly.express as px
+from vizro import Vizro
 from vizro.managers import data_manager
+from vizro.managers._model_manager import DuplicateIDError
 from vizro.models._action._action import Action
 from vizro.tables import dash_ag_grid
 
@@ -143,6 +145,24 @@ class TestPreBuildAgGrid:
         ag_grid = vm.AgGrid(id="text_ag_grid", figure=ag_grid_with_id)
         ag_grid.pre_build()
         assert ag_grid._input_component_id == "underlying_ag_grid_id"
+
+    def test_pre_build_duplicate_ag_grid_id(self):
+        dashboard = vm.Dashboard(
+            pages=[
+                vm.Page(
+                    title="Test Page",
+                    components=[
+                        vm.AgGrid(figure=dash_ag_grid(id="duplicate_ag_grid_id", data_frame=px.data.gapminder())),
+                        vm.AgGrid(figure=dash_ag_grid(id="duplicate_ag_grid_id", data_frame=px.data.gapminder())),
+                    ],
+                )
+            ]
+        )
+        with pytest.raises(
+            DuplicateIDError,
+            match="CapturedCallable with id=duplicate_ag_grid_id has an id that is",
+        ):
+            Vizro().build(dashboard)
 
 
 class TestBuildAgGrid:

@@ -2,9 +2,10 @@
 # # check out https://github.com/mckinsey/vizro for more info about Vizro
 # # and checkout https://vizro.readthedocs.io/en/stable/ for documentation.
 
+import vizro.models as vm
 import vizro.plotly.express as px
 from vizro import Vizro
-import vizro.models as vm
+
 
 iris = px.data.iris()
 
