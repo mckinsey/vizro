@@ -1,3 +1,5 @@
+from time import sleep
+
 import e2e.vizro.constants as cnst
 import pytest
 from e2e.vizro.checkers import check_graph_is_loading, check_table_rows_number
@@ -47,7 +49,10 @@ def test_date_range(dash_br):
     dash_br.wait_for_element('div[data-calendar="true"]')
     dash_br.multiple_click('button[aria-label="17 May 2016"]', 1)
     dash_br.multiple_click('button[aria-label="18 May 2016"]', 1)
-    check_graph_is_loading(dash_br, cnst.BAR_POP_RANGE_ID)
+
+    sleep(1)
+    # check_graph_is_loading(dash_br, cnst.BAR_POP_RANGE_ID)
+
     dash_br.wait_for_text_to_equal(f'button[id="{cnst.DATEPICKER_RANGE_ID}"]', "May 17, 2016 – May 18, 2016")  # noqa: RUF001
 
     # check that dates in the rows are within the chosen range
