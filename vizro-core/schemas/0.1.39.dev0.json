@@ -540,6 +540,29 @@
           ],
           "default": null,
           "description": "Optional markdown string that adds an icon next to the title.\n            Hovering over the icon shows a tooltip with the provided description. Defaults to `None`."
+        },
+        "controls": {
+          "default": [],
+          "items": {
+            "description": "Control that affects components on the page.",
+            "discriminator": {
+              "mapping": {
+                "filter": "#/$defs/Filter",
+                "parameter": "#/$defs/Parameter"
+              },
+              "propertyName": "type"
+            },
+            "oneOf": [
+              {
+                "$ref": "#/$defs/Filter"
+              },
+              {
+                "$ref": "#/$defs/Parameter"
+              }
+            ]
+          },
+          "title": "Controls",
+          "type": "array"
         }
       },
       "required": ["components"],

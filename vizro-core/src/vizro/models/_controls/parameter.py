@@ -82,6 +82,7 @@ class Parameter(VizroBaseModel):
         self._check_categorical_selectors_options()
         self._set_selector_title()
         self._set_actions()
+        self._set_container_control_default()
 
     @_log_call
     def build(self):
@@ -133,3 +134,11 @@ class Parameter(VizroBaseModel):
             self.targets.extend(list(filter_targets))
 
             self.selector.actions = [_parameter(id=f"{PARAMETER_ACTION_PREFIX}_{self.id}", targets=self.targets)]
+
+    def _set_container_control_default(self):
+        page = model_manager._get_model_page(self)
+        is_page_control = any(control.id == self.id for control in page.controls)
+
+        if not is_page_control and isinstance(self.selector, (Checklist, RadioItems)):
+            self.selector.extra = self.selector.extra or {}
+            self.selector.extra.setdefault("inline", True)

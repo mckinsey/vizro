@@ -96,7 +96,6 @@ input.dash-input:invalid {
   display: flex;
   flex-direction: row;
   justify-content: space-between;
-  line-height: 1rem;
 }
 
 .slider-label-input label {
