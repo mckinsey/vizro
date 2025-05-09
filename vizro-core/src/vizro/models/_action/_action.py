@@ -168,7 +168,7 @@ class _BaseAction(VizroBaseModel):
             AttributeError: If component exists but has no _action_outputs/_action_inputs property defined
             ValueError: If dependency format is invalid (e.g. "id.prop.prop" or "id..prop")
         """
-        property_name = "_action_outputs" if type == "output" else "_action_inputs"
+        attribute_type = "_action_outputs" if type == "output" else "_action_inputs"
 
         # Validate that the dependency is in one of two valid formats: id.property ("graph-1.figure") or id ("card-id")
         if not re.match(r"^[^.]+$|^[^.]+[.][^.]+$", dependency):
@@ -180,7 +180,7 @@ class _BaseAction(VizroBaseModel):
         if "." in dependency:
             component_id, component_property = dependency.split(".")
             try:
-                return getattr(model_manager[component_id], property_name)[component_property]
+                return getattr(model_manager[component_id], attribute_type)[component_property]
             except (KeyError, AttributeError):
                 # Captures these cases and returns dependency unchanged, as we want to allow the user to target
                 # Dash components, that are not registered in the model_manager (e.g. theme-selector).
@@ -192,13 +192,13 @@ class _BaseAction(VizroBaseModel):
         component_id, component_property = dependency, "__default__"
 
         try:
-            return getattr(model_manager[component_id], property_name)[component_property]
+            return getattr(model_manager[component_id], attribute_type)[component_property]
         except (KeyError, AttributeError) as e:
             if isinstance(e, KeyError):
                 if str(e) == f"'{component_property}'":
                     raise KeyError(
                         f"Component with ID `{component_id}` has no `{component_property}` key inside its "
-                        f"`{property_name}` property. Please specify the {type} explicitly as "
+                        f"`{attribute_type}` property. Please specify the {type} explicitly as "
                         f"`{component_id}.<property>`."
                     ) from e
                 raise KeyError(
