@@ -19,7 +19,6 @@ from vizro.models._models_utils import _log_call
 from vizro.models.types import (
     CapturedCallable,
     ControlType,
-    _DotSeparatedStr,
     _IdOrIdProperty,
     _IdProperty,
     validate_captured_callable,
@@ -126,12 +125,11 @@ class _BaseAction(VizroBaseModel):
             arg_name: arg_value for arg_name, arg_value in builtin_args.items() if arg_name in self._parameters
         }
 
-        # Validate that the runtime arguments are in the same form as the legacy Action.inputs field, so a string
-        # of the form component_id.component_property. Currently, this code only runs for subclasses of
-        # _AbstractAction but not vm.Action instances because a vm.Action that does not pass this check will
-        # have already been classified as legacy in Action._legacy. In future when vm.Action.inputs is deprecated
-        # then this will be used for vm.Action instances also.
-        TypeAdapter(dict[str, _DotSeparatedStr]).validate_python(self._runtime_args)
+        # Validate that the runtime arguments are in the same form as the legacy Action.inputs field, so a simple str.
+        # Currently, this code only runs for subclasses of _AbstractAction but not vm.Action instances because a vm.Action
+        # that does not pass this check will have already been classified as legacy in Action._legacy. In future when
+        # vm.Action.inputs is deprecated then this will be used for vm.Action instances also.
+        TypeAdapter(dict[str, str]).validate_python(self._runtime_args)
         # Do exactly same lookup but we only have "__default__" defined in inputs dictionary so will only ever use that
         # case
         # User specified arguments runtime_args take precedence over built in reserved arguments. No static arguments
@@ -169,7 +167,6 @@ class _BaseAction(VizroBaseModel):
         if "." in dependency:
             # LQ: Check whether we need TypeAdapter here or something else. Currently it doesn't catch cases such as
             # `component-id.prop.prop` well. However, adding below leads to a bunch of unit tests to fail. Check later.
-            # TypeAdapter(Union[list[_DotSeparatedStr], dict[str, _DotSeparatedStr]]).validate_python(dependency)
             component_id, component_property = dependency.split(".")
             if component_id in model_manager and hasattr(model_manager[component_id], property_name):
                 if component_property in getattr(model_manager[component_id], property_name):
