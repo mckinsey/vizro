@@ -9,7 +9,8 @@ from pydantic.json_schema import SkipJsonSchema
 
 from vizro.actions import filter_interaction
 from vizro.actions._actions_utils import CallbackTriggerDict, _get_component_actions, _get_parent_model
-from vizro.managers import data_manager
+from vizro.managers import data_manager, model_manager
+from vizro.managers._model_manager import DuplicateIDError
 from vizro.models import Tooltip, VizroBaseModel
 from vizro.models._action._actions_chain import _action_validator_factory
 from vizro.models._components._components_utils import _process_callable_data_frame
@@ -147,6 +148,21 @@ class Table(VizroBaseModel):
     @_log_call
     def pre_build(self):
         self._input_component_id = self.figure._arguments.get("id", f"__input_{self.id}")
+        # Check if any other Table figure function has the same input component ID
+        existing_models = [
+            model
+            for model in model_manager._get_models(self.__class__)
+            if hasattr(model, "_input_component_id")
+            and model.id != self.id
+            and model._input_component_id == self._input_component_id
+        ]
+
+        if existing_models:
+            raise DuplicateIDError(
+                f"CapturedCallable with id={self._input_component_id} has an id that is "
+                f"already in use by another CapturedCallable. CapturedCallables must have unique ids "
+                f"across the whole dashboard."
+            )
 
     def build(self):
         description = self.description.build().children if self.description else [None]
