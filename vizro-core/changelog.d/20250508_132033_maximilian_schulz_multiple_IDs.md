@@ -37,7 +37,7 @@ Uncomment the section that is right (remove the HTML comment wrapper).
 
 ### Fixed
 
-- Fixes bug where `dash_data_table` and `dash_ag_grid` callables with the same `id` would not raise an error but break the dashboard. ([#1159](https://github.com/mckinsey/vizro/pull/1159))
+- Fix bug where `dash_data_table` and `dash_ag_grid` callables with the same `id` would not raise an error but break the dashboard. ([#1159](https://github.com/mckinsey/vizro/pull/1159))
 
 
 <!--
