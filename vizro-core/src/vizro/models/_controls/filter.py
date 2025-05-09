@@ -345,8 +345,7 @@ class Filter(VizroBaseModel):
 
         if is_page_control:
             return [
-                cast(ModelID, model.id)
-                for model in cast(Iterable[VizroBaseModel], model_manager._get_models(FIGURE_MODELS, page))
+                model.id for model in cast(Iterable[VizroBaseModel], model_manager._get_models(FIGURE_MODELS, page))
             ]
 
         # Find the container that holds the control
@@ -362,7 +361,7 @@ class Filter(VizroBaseModel):
         )
         if control_container:
             return [
-                cast(ModelID, model.id)
+                model.id
                 for model in cast(Iterable[VizroBaseModel], model_manager._get_models(FIGURE_MODELS, control_container))
             ]
 
