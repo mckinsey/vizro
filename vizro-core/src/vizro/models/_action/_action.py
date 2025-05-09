@@ -168,29 +168,33 @@ class _BaseAction(VizroBaseModel):
             # LQ: Check whether we need TypeAdapter here or something else. Currently it doesn't catch cases such as
             # `component-id.prop.prop` well. However, adding below leads to a bunch of unit tests to fail. Check later.
             component_id, component_property = dependency.split(".")
-
             try:
                 return getattr(model_manager[component_id], property_name)[component_property]
             except (KeyError, AttributeError):
-                # Captures these cases and returns dependency unchanged.
+                # Captures these cases and returns dependency unchanged, as we want to allow the user to target
+                # Dash components, that are not registered in the model_manager (e.g. theme-selector).
                 # 1. component_id is not in model_manager
                 # 2. component doesn't have _action_outputs/_action_inputs defined
                 # 3. component_property is not in the _action_outputs/inputs dictionary
                 return dependency
 
         component_id, component_property = dependency, "__default__"
-
         try:
             return getattr(model_manager[component_id], property_name)[component_property]
-        except KeyError:
-            raise KeyError(
-                f"Component with ID '{component_id}' not found. Please provide a valid component ID."
-            )
-        except AttributeError:
+        except (KeyError, AttributeError) as e:
+            if isinstance(e, KeyError):
+                if str(e) == f"'{component_property}'":
+                    raise KeyError(
+                        f"Component with ID `{component_id}` has no `{component_property}` key inside its `{property_name}` property. "
+                        f"Please specify the {type} explicitly as `{component_id}.<property>`."
+                    ) from e
+                raise KeyError(
+                    f"Component with ID `{component_id}` not found. Please provide a valid component ID."
+                ) from e
             raise AttributeError(
                 f"Component with ID '{component_id}' does not have implicit {type} properties defined. "
                 f"Please specify the {type} explicitly as '{component_id}.<property>'."
-            )
+            ) from e
 
     @property
     def _transformed_outputs(self) -> Union[list[Output], dict[str, Output]]:

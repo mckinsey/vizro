@@ -227,20 +227,17 @@ page_four = vm.Page(
                 vm.Action(
                     function=action_function(),  # or function=action_function_dict(),
                     inputs=["button-id.n_clicks"],
-                    outputs=["card-id-validation"],
+                    # outputs=["card-id-validation"],
                     # Case A: Model-ID doesn't exist, syntax correct (only model-id)
-                    # Vizro: Component with ID 'wrong-id' not found. Please provide a valid component ID or use the explicit format '<component-id>.<property>'."
+                    # Vizro: Component with ID 'wrong-id' not found. Please provide a valid component ID."
                     # outputs=["wrong-id"]
                     # outputs={"anything": "wrong-id"}
-                    # Case B: Model-ID doesn't exist, syntax correct (dot notation), property can be anything
-                    # Dash: A nonexistent object was used in an `Output` of a Dash callback. The id of this object is `wrong-id` and the property is `prop`.
+                    # Case B: Model-ID doesn't exist, property can be anything -> captured by Dash
                     # outputs=["wrong-id.prop"]
                     # outputs=["wrong-id.children"]
                     # outputs={"anything": "wrong-id.prop"}
                     # outputs={"anything": "wrong-id.children"}
-                    # Case C: Model-ID exists but property doesn't exist
-                    # Currently not captured at all - bad. A and P say this should be captured by Dash.
-                    # Need to check if this behaves on Dash likes this as well.
+                    # Case C: Model-ID exists but property doesn't exist -> captured by Dash
                     # outputs=["card-id-validation.propsffd"]
                     # outputs={"anything": "card-id-validation.prop"}
                     # Case D: Syntax - doesn't matter if model id/property exist or not
