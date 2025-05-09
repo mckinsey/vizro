@@ -25,7 +25,7 @@ function gateway(
   ) {
     // If there's no more actions to execute, stop the loop perform.
     if (remaining_actions.length == 0) {
-        throw dash_clientside.PreventUpdate;
+      throw dash_clientside.PreventUpdate;
     }
   }
   // Actions chain is triggered from the UI, find the list of actions that should be executed.
