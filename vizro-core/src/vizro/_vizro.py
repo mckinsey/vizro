@@ -48,7 +48,7 @@ class Vizro:
         self.dash = dash.Dash(
             **kwargs,
             pages_folder="",
-            # TODO: Remove the call to suppress_callback_exceptions once vm.Table is deprecated and we've confirmed 
+            # TODO: Remove the call to suppress_callback_exceptions once vm.Table is deprecated and we've confirmed
             # that all initialized pages not included in the Dashboard no longer trigger console errors.
             suppress_callback_exceptions=True,
             title="Vizro",
