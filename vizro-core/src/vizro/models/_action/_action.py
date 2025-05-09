@@ -164,9 +164,14 @@ class _BaseAction(VizroBaseModel):
         """
         property_name = "_action_outputs" if type == "output" else "_action_inputs"
 
+        # Validate that the dependency is in one of two valid formats: id.property (e.g. "graph-1.figure") or id (e.g. "card-id")
+        if not re.match(r"^[^.]+$|^[^.]+[.][^.]+$", dependency):
+            raise ValueError(
+                f"Invalid {type} format '{dependency}'. Expected format is '<component-id>.<property>' "
+                f"or '<component-id>'."
+            )
+
         if "." in dependency:
-            # LQ: Check whether we need TypeAdapter here or something else. Currently it doesn't catch cases such as
-            # `component-id.prop.prop` well. However, adding below leads to a bunch of unit tests to fail. Check later.
             component_id, component_property = dependency.split(".")
             try:
                 return getattr(model_manager[component_id], property_name)[component_property]
@@ -179,6 +184,7 @@ class _BaseAction(VizroBaseModel):
                 return dependency
 
         component_id, component_property = dependency, "__default__"
+
         try:
             return getattr(model_manager[component_id], property_name)[component_property]
         except (KeyError, AttributeError) as e:
