@@ -48,7 +48,7 @@ class Vizro:
         self.dash = dash.Dash(
             **kwargs,
             pages_folder="",
-            suppress_callback_exceptions=True,
+            # suppress_callback_exceptions=True,
             title="Vizro",
             use_pages=True,
         )
