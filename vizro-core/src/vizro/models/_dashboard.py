@@ -4,7 +4,7 @@ import base64
 import logging
 from functools import partial
 from pathlib import Path
-from typing import TYPE_CHECKING, Annotated, Literal, Optional, cast
+from typing import TYPE_CHECKING, Annotated, Literal, Optional, cast, Iterable
 
 import dash
 import dash_bootstrap_components as dbc
@@ -29,7 +29,9 @@ import vizro
 from vizro._constants import MODULE_PAGE_404, VIZRO_ASSETS_PATH
 from vizro._themes.template_dashboard_overrides import dashboard_overrides
 from vizro.actions._action_loop._action_loop import ActionLoop
+from vizro.managers import model_manager
 from vizro.models import Navigation, Tooltip, VizroBaseModel
+from vizro.models._action._action import _BaseAction
 from vizro.models._models_utils import _log_call
 from vizro.models._navigation._navigation_utils import _NavBuildType
 from vizro.models._tooltip import coerce_str_to_tooltip
@@ -168,6 +170,11 @@ class Dashboard(VizroBaseModel):
                 State("collapsible-left-side", "is_open"),
             )
 
+        # define callbacks but not output_finished stores of dash_components, which are globally available but
+        # recreated on every page
+        for action in cast(Iterable[_BaseAction], model_manager._get_models(_BaseAction)):
+            action.build()
+
         layout = html.Div(
             id="dashboard-container",
             children=[
@@ -179,7 +186,8 @@ class Dashboard(VizroBaseModel):
                         "vizro_light": pio.templates.merge_templates("vizro_light", dashboard_overrides),
                     },
                 ),
-                ActionLoop._create_app_callbacks(),
+                dcc.Store("output_needed_to_trigger_on_page_load"),
+                # ActionLoop._create_app_callbacks(),
                 dash.page_container,
             ],
         )
@@ -322,6 +330,16 @@ class Dashboard(VizroBaseModel):
         page_divs = self._get_page_divs(page=page)
         page_layout = self._arrange_page_divs(page_divs=page_divs)
         page_layout.id = page.id
+
+        # do finished stores for all components, not just the ones on this page. Not sure if that's needed or can
+        # just do ones on the same page - think about cross-page action chains.
+        action_components = []
+
+        for action in cast(Iterable[_BaseAction], model_manager._get_models(_BaseAction)):
+            action_components.append(dcc.Store(id=f"{action.id}_finished"))
+            action_components.extend(action._dash_components)  # hopefully not needed in future
+
+        page_layout.children.extend(action_components)
         return page_layout
 
     def _make_page_404_layout(self):

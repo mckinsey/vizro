@@ -25,12 +25,14 @@ class _on_page_load(_AbstractAction):
         # TODO-AV2 A 1: _controls is not currently used but instead taken out of the Dash context. This
         # will change in future once the structure of _controls has been worked out and we know how to pass ids through.
         # See https://github.com/mckinsey/vizro/pull/880
-        return _get_modified_page_figures(
+        x = _get_modified_page_figures(
             ctds_filter=ctx.args_grouping["external"]["_controls"]["filters"],
             ctds_parameter=ctx.args_grouping["external"]["_controls"]["parameters"],
             ctds_filter_interaction=ctx.args_grouping["external"]["_controls"]["filter_interaction"],
             targets=self.targets,
         )
+        x["output_needed_to_trigger_on_page_load"] = None
+        return x
 
     @property
     def outputs(self):
@@ -41,4 +43,7 @@ class _on_page_load(_AbstractAction):
             component_property = cast(FigureType, model_manager[target])._output_component_property
             outputs[target] = f"{component_id}.{component_property}"
 
+        # TODO NOW: maybe move this hackery into action.build callback function itself dependent on whether action is
+        #  an on_page_load one.
+        outputs["output_needed_to_trigger_on_page_load"] = "output_needed_to_trigger_on_page_load.data"
         return outputs
