@@ -2,6 +2,7 @@
 
 import re
 
+import dash_bootstrap_components as dbc
 import pytest
 from asserts import assert_component_equal
 from dash import dcc, html
@@ -9,7 +10,9 @@ from pydantic import ValidationError
 
 import vizro.models as vm
 import vizro.plotly.express as px
+from vizro import Vizro
 from vizro.managers import data_manager
+from vizro.managers._model_manager import DuplicateIDError
 from vizro.models._action._action import Action
 from vizro.tables import dash_ag_grid
 
@@ -143,6 +146,24 @@ class TestPreBuildAgGrid:
         ag_grid.pre_build()
         assert ag_grid._input_component_id == "underlying_ag_grid_id"
 
+    def test_pre_build_duplicate_ag_grid_id(self):
+        dashboard = vm.Dashboard(
+            pages=[
+                vm.Page(
+                    title="Test Page",
+                    components=[
+                        vm.AgGrid(figure=dash_ag_grid(id="duplicate_ag_grid_id", data_frame=px.data.gapminder())),
+                        vm.AgGrid(figure=dash_ag_grid(id="duplicate_ag_grid_id", data_frame=px.data.gapminder())),
+                    ],
+                )
+            ]
+        )
+        with pytest.raises(
+            DuplicateIDError,
+            match="CapturedCallable with id=duplicate_ag_grid_id has an id that is",
+        ):
+            Vizro().build(dashboard)
+
 
 class TestBuildAgGrid:
     def test_ag_grid_build_mandatory_only(self, standard_ag_grid, gapminder):
@@ -199,6 +220,7 @@ class TestBuildAgGrid:
             parent_className="loading-container",
             overlay_style={"visibility": "visible", "opacity": 0.3},
         )
+
         assert_component_equal(ag_grid, expected_ag_grid)
 
     def test_aggrid_build_title_header_footer(self, standard_ag_grid):
@@ -207,10 +229,11 @@ class TestBuildAgGrid:
         )
         ag_grid.pre_build()
         ag_grid = ag_grid.build()
+
         expected_ag_grid = dcc.Loading(
             html.Div(
                 children=[
-                    html.H3("Title", className="figure-title"),
+                    html.H3(["Title", None], className="figure-title"),
                     dcc.Markdown("""#### Subtitle""", className="figure-header"),
                     html.Div(
                         children=[html.Div()],
@@ -224,4 +247,43 @@ class TestBuildAgGrid:
             parent_className="loading-container",
             overlay_style={"visibility": "visible", "opacity": 0.3},
         )
+
+        assert_component_equal(ag_grid, expected_ag_grid, keys_to_strip={"id"})
+
+    def test_aggrid_build_with_description(self, standard_ag_grid):
+        ag_grid = vm.AgGrid(
+            figure=standard_ag_grid,
+            title="Title",
+            description=vm.Tooltip(text="Tooltip test", icon="info", id="info"),
+        )
+        ag_grid.pre_build()
+        ag_grid = ag_grid.build()
+
+        expected_description = [
+            html.Span("info", id="info-icon", className="material-symbols-outlined tooltip-icon"),
+            dbc.Tooltip(
+                children=dcc.Markdown("Tooltip test", className="card-text"),
+                id="info",
+                target="info-icon",
+                autohide=False,
+            ),
+        ]
+        expected_ag_grid = dcc.Loading(
+            html.Div(
+                children=[
+                    html.H3(["Title", *expected_description], className="figure-title"),
+                    None,
+                    html.Div(
+                        children=[html.Div()],
+                        className="table-container",
+                    ),
+                    None,
+                ],
+                className="figure-container",
+            ),
+            color="grey",
+            parent_className="loading-container",
+            overlay_style={"visibility": "visible", "opacity": 0.3},
+        )
+
         assert_component_equal(ag_grid, expected_ag_grid, keys_to_strip={"id"})
