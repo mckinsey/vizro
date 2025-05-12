@@ -62,9 +62,9 @@ vizro_ai = VizroAI(model="<chosen model>")
     | API key              | `MISTRAL_API_KEY`  |
     | Base API URL         | `MISTRAL_BASE_URL` |
 
-    To use Mistral with Vizro-AI, you can either use their API, which comes with an associated cost, or you could use their models for free under the Apache 2.0 license. In the latter case you need to set up the model API yourself. [Check for available Mistral models and pricing on their website](https://docs.mistral.ai/getting-started/models/models_overview). 
+    To use Mistral with Vizro-AI, you can either use their API, which comes with an associated cost, or you could use their models for free under the Apache 2.0 license. In the latter case you need to set up the model API yourself. [Check for available Mistral models and pricing on their website](https://docs.mistral.ai/getting-started/models/models_overview).
 
-    The documentation also explains the values to use for the following strings. 
+    The documentation also explains the values to use for the following strings.
 
     - `mistral-large-latest`
     - `open-mistral-nemo`
