@@ -28,8 +28,6 @@ class export_data(_AbstractAction):
         description="List of target component ids to download data from. If none are given then download"
         "from all components on the page.",
     )
-    # TODO-AV2 D 2.5: is targets the right name for this given it's handled differently from _filter.targets etc.
-    # If it's not handled in a special way but the user manually writes outputs then does it matter?
     file_format: Literal["csv", "xlsx"] = Field(
         default="csv", description="Format of downloaded files. Defaults to `csv`."
     )
@@ -38,7 +36,7 @@ class export_data(_AbstractAction):
     def pre_build(self):
         # Set targets to all figures on the page if not already set. In this case we don't need to check the targets
         # are valid.
-        # TODO-AV2 D 2.5: work out where this duplicated get_all_targets_on_page logic should live. Do we even want to
+        # TODO-AV2 A 4: work out where this duplicated get_all_targets_on_page logic should live. Do we even want to
         #  keep behavior that not specifying targets downloads everything on the page? We'd still want the validation
         #  using the model_manager though.
         figure_ids_on_page = [
