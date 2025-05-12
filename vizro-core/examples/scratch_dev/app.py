@@ -257,7 +257,51 @@ page_four = vm.Page(
     ],
 )
 
-dashboard = vm.Dashboard(pages=[page_one, page_two, page_three, page_four])
+
+class CustomDropdown(vm.Dropdown):
+    """Custom Dropdown that has multi=False as default."""
+
+    type: Literal["custom-dropdown"] = "custom-dropdown"
+    multi: bool = False
+    def build(self):
+        dropdown_obj = super().build()
+        return dropdown_obj
+
+
+# Important: Add new components to expected type - here the selector of the parent components
+vm.Filter.add_type("selector", CustomDropdown)
+
+page_five = vm.Page(
+    title="e2e test",
+    components=[
+        vm.Graph(
+            figure=px.scatter(
+                df,
+                x="sepal_length",
+                y="petal_width",
+                color="sepal_width",
+            ),
+        ),
+        vm.Graph(
+            figure=px.scatter(
+                df,
+                x="sepal_length",
+                y="petal_width",
+                color="sepal_width",
+            ),
+        ),
+    ],
+    controls=[
+        vm.Filter(
+            column="species",
+            selector=CustomDropdown(
+                options=["setosa", "versicolor", "virginica"],
+            ),
+        ),
+    ],
+)
+
+dashboard = vm.Dashboard(pages=[page_one, page_two, page_three, page_four, page_five])
 
 if __name__ == "__main__":
     Vizro().build(dashboard).run()
