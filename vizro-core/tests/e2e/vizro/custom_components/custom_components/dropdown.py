@@ -1,12 +1,6 @@
-from typing import Annotated, Literal, Optional, Union
-
-from dash import dcc, html
-from pydantic import AfterValidator, Field, PlainSerializer
+from typing import Literal, Union
 
 import vizro.models as vm
-from vizro.models._action._actions_chain import _action_validator_factory
-from vizro.models._base import VizroBaseModel, _log_call
-from vizro.models.types import ActionType
 
 # Entirely new component (actually exists, but for ease of explanation chosen)
 SingleOptionType = Union[bool, float, str]
@@ -20,7 +14,7 @@ class CustomDropdown(vm.Dropdown):
 
     def build(self):
         dropdown_obj = super().build()
-        dropdown_obj[self.id].multi=False
+        dropdown_obj[self.id].multi = False
         return dropdown_obj
 
 
