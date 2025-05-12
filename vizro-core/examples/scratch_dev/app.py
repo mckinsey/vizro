@@ -263,6 +263,7 @@ class CustomDropdown(vm.Dropdown):
 
     type: Literal["custom-dropdown"] = "custom-dropdown"
     multi: bool = False
+
     def build(self):
         dropdown_obj = super().build()
         return dropdown_obj
