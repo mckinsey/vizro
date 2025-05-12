@@ -269,7 +269,7 @@ vm.Page.add_type("components", Jumbotron)
 
 ## Using custom components with custom actions
 
-Custom components can be used as `inputs` to or `outputs` of custom actions. In the examples below we will explore both options.
+Custom components can be used as `inputs` to, `outputs` of, or as a `trigger` of custom actions. In the examples below we will explore both options.
 
 ### Custom components as inputs/outputs of custom actions
 
@@ -356,11 +356,11 @@ Add the custom action `open_offcanvas` as a `function` argument inside the [`Act
             components=[
                 vm.Button(
                     text="Open Offcanvas",
-                    id="button-id",
+                    id="open_button",
                     actions=[
                         vm.Action(
                             function=open_offcanvas(),
-                            inputs=["button-id", "offcanvas.is_open"],  # (1)!
+                            inputs=["open_button.n_clicks", "offcanvas.is_open"],
                             outputs=["offcanvas.is_open"],
                         )
                     ],
@@ -378,8 +378,6 @@ Add the custom action `open_offcanvas` as a `function` argument inside the [`Act
         Vizro().build(dashboard).run()
 
         ```
-
-        1.  In this action, we use `button-id` as an input. Since it's a Vizro component, it automatically uses its default input property `n_clicks`. This is equivalent to writing `button-id.n_clicks` explicitly.
     === "yaml"
         ```yaml
         # Custom components are currently only possible via Python configuration
@@ -458,7 +456,7 @@ As mentioned above, custom components can trigger actions. To enable the custom 
         page = vm.Page(
             title="Custom Component",
             components=[
-                vm.Card(text="First slide", id="card-id"),
+                vm.Card(text="First slide", id="carousel-card"),
                 Carousel(
                     id="carousel",
                     items=[
@@ -469,7 +467,7 @@ As mentioned above, custom components can trigger actions. To enable the custom 
                         vm.Action(
                             function=slide_next_card(),
                             inputs=["carousel.active_index"],
-                            outputs=["card-id"],  # (1)!
+                            outputs=["carousel-card.children"],
                         )
                     ],
                 ),
@@ -480,9 +478,6 @@ As mentioned above, custom components can trigger actions. To enable the custom 
 
         Vizro().build(dashboard).run()
         ```
-
-        1.  In this action, we use `card-id` as an output. Since it's a Vizro component, it automatically uses its default output property `children`. This is equivalent to writing `card-id.children` explicitly.
-
         <img src=https://py.cafe/logo.png alt="PyCafe logo" width="30"><b><a target="_blank" href="https://py.cafe/vizro-official/vizro-custom-carousel-component">Run and edit this code in PyCafe</a></b>
     === "yaml"
         ```yaml
