@@ -21,14 +21,13 @@ This tutorial uses the [tips dataset](https://plotly.com/python-api-reference/ge
 
 [Here is a preview of the dashboard you'll build](https://py.cafe/app/vizro-official/vizro-tips-analysis-tutorial).
 
-![](../../assets/tutorials/dashboard/vizro-tutorial.gif) 
+![](../../assets/tutorials/dashboard/vizro-tutorial.gif)
 
 ## 1. Install Vizro or run on PyCafe
 
-There's no need to install Vizro locally because you can experiment with the complete code for the tutorial directly on [PyCafe](https://py.cafe/vizro-official/vizro-tips-analysis-tutorial) in your browser. We recommend starting with a [blank Vizro project on PyCafe](https://py.cafe/snippet/vizro/v1) and copying the code snippets from this tutorial into it, to build it up from scratch and see how it fits together. 
+There's no need to install Vizro locally because you can experiment with the complete code for the tutorial directly on [PyCafe](https://py.cafe/vizro-official/vizro-tips-analysis-tutorial) in your browser. We recommend starting with a [blank Vizro project on PyCafe](https://py.cafe/snippet/vizro/v1) and copying the code snippets from this tutorial into it, to build it up from scratch and see how it fits together.
 
 For more information about working with Vizro on PyCafe, check out the [PyCafe documentation](https://py.cafe/docs/apps/vizro).
-
 
 ??? note "If you prefer working in a Notebook or Python script"
 
@@ -50,7 +49,6 @@ For more information about working with Vizro on PyCafe, check out the [PyCafe d
     Once the script is running, open your web browser and navigate to `localhost:8050` to view the dashboard. To enable debug mode for hot reloading, add `debug=True` inside the run() method at the end of your `app.py` file:
 
     `Vizro().build(dashboard).run(debug=True)`
-
 
 ## 2. Understand the basics
 
@@ -633,9 +631,9 @@ Now that you've learned how to create pages, add components, and configure layou
 
 This page takes inspiration from the [Vizro visual vocabulary](https://vizro-demo-visual-vocabulary.hf.space/). It will feature:
 
-* a [bar chart](https://vizro-demo-visual-vocabulary.hf.space/magnitude/bar)
-* a [violin chart](https://vizro-demo-visual-vocabulary.hf.space/distribution/violin)
-* a [heatmap](https://vizro-demo-visual-vocabulary.hf.space/time/heatmap)
+- a [bar chart](https://vizro-demo-visual-vocabulary.hf.space/magnitude/bar)
+- a [violin chart](https://vizro-demo-visual-vocabulary.hf.space/distribution/violin)
+- a [heatmap](https://vizro-demo-visual-vocabulary.hf.space/time/heatmap)
 
 ### 5.1. Add multiple charts
 
@@ -1169,7 +1167,7 @@ For more information on when to create a custom chart, check out [How to create 
 
         [![ThirdPage4]][thirdpage4]
 
-**Fantastic job reaching this point!** 
+**Fantastic job reaching this point!**
 
 You've just completed the final dashboard page and learned how to:
 
@@ -1505,7 +1503,7 @@ Vizro doesn't end here; we've only covered the key features, but there's still m
 - How to [customize your data connection](../user-guides/data.md)
 - How to create dashboards from `yaml`, `dict` or `json` following the [dashboard guide](../user-guides/dashboard.md).
 - How to [deploy your dashboard](../user-guides/run-deploy.md)
-- How to use gen AI to assist in chart and dashboard creation. 
+- How to use gen AI to assist in chart and dashboard creation.
     - [Vizro-MCP](https://github.com/mckinsey/vizro/blob/main/vizro-mcp/README.md) helps you build charts and dashboards that adhere to the Vizro design template. It is the easiest way to use a generative AI application to help you work with Vizro.
     - [Vizro-AI](https://vizro.readthedocs.io/projects/vizro-ai/) is also available as a means of building Vizro charts and dashboards with gen AI. You will need some technical knowledge, and an API key to use with a large language model (LLM).
 
