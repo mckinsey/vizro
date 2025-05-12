@@ -94,54 +94,6 @@ class _BaseAction(VizroBaseModel):
             for action in model_manager._get_models(filter_interaction, page=page)
         ]
 
-    @property
-    def _transformed_inputs(self) -> Union[list[State], dict[str, Union[State, ControlsStates]]]:
-        """Creates Dash States given the user-specified runtime arguments and built in ones.
-
-        Return type is list only for legacy actions. Otherwise, it will always be a dictionary (unlike
-        for _transformed_outputs, where new behavior can still give a list). Keys are the parameter names. For
-        user-specified inputs, values are Dash States. For built-in inputs, values can be more complicated nested
-        structure of states.
-        """
-        if self._legacy:
-            # Must be an Action rather than _AbstractAction, so has already been validated by pydantic field annotation.
-            return [
-                State(*self._transform_dependency(input, type="input").split("."))
-                for input in cast(Action, self).inputs
-            ]
-
-        from vizro.models import Filter, Parameter
-
-        builtin_args = {
-            "_controls": {
-                "filters": self._get_control_states(control_type=Filter),
-                "parameters": self._get_control_states(control_type=Parameter),
-                "filter_interaction": self._get_filter_interaction_states(),
-            }
-        }
-
-        # Work out which built in arguments are actually required for this function.
-        builtin_args = {
-            arg_name: arg_value for arg_name, arg_value in builtin_args.items() if arg_name in self._parameters
-        }
-
-        # Validate that the runtime arguments are in the same form as the legacy Action.inputs field (str).
-        # Currently, this code only runs for subclasses of _AbstractAction but not vm.Action instances because a
-        # vm.Action that does not pass this check will have already been classified as legacy in Action._legacy.
-        # In future when vm.Action.inputs is deprecated then this will be used for vm.Action instances also.
-        TypeAdapter(dict[str, str]).validate_python(self._runtime_args)
-        # Do exactly same lookup but we only have "__default__" defined in inputs dictionary so will only ever use that
-        # case
-        # User specified arguments runtime_args take precedence over built in reserved arguments. No static arguments
-        # ar relevant here, just Dash States. Static arguments values are stored in the state of the relevant
-        # _AbstractAction instance.
-        # Qn: should this work for legacy actions too? Think about docs.
-        runtime_args = {
-            arg_name: State(*self._transform_dependency(arg_value, type="input").split("."))
-            for arg_name, arg_value in self._runtime_args.items()
-        }
-
-        return builtin_args | runtime_args
 
     @staticmethod
     def _transform_dependency(dependency: _IdOrIdProperty, type: Literal["output", "input"]) -> _IdProperty:
@@ -208,6 +160,55 @@ class _BaseAction(VizroBaseModel):
                 f"Component with ID '{component_id}' does not have implicit {type} properties defined. "
                 f"Please specify the {type} explicitly as '{component_id}.<property>'."
             ) from e
+    
+    @property
+    def _transformed_inputs(self) -> Union[list[State], dict[str, Union[State, ControlsStates]]]:
+        """Creates Dash States given the user-specified runtime arguments and built in ones.
+
+        Return type is list only for legacy actions. Otherwise, it will always be a dictionary (unlike
+        for _transformed_outputs, where new behavior can still give a list). Keys are the parameter names. For
+        user-specified inputs, values are Dash States. For built-in inputs, values can be more complicated nested
+        structure of states.
+        """
+        if self._legacy:
+            # Must be an Action rather than _AbstractAction, so has already been validated by pydantic field annotation.
+            return [
+                State(*self._transform_dependency(input, type="input").split("."))
+                for input in cast(Action, self).inputs
+            ]
+
+        from vizro.models import Filter, Parameter
+
+        builtin_args = {
+            "_controls": {
+                "filters": self._get_control_states(control_type=Filter),
+                "parameters": self._get_control_states(control_type=Parameter),
+                "filter_interaction": self._get_filter_interaction_states(),
+            }
+        }
+
+        # Work out which built in arguments are actually required for this function.
+        builtin_args = {
+            arg_name: arg_value for arg_name, arg_value in builtin_args.items() if arg_name in self._parameters
+        }
+
+        # Validate that the runtime arguments are in the same form as the legacy Action.inputs field (str).
+        # Currently, this code only runs for subclasses of _AbstractAction but not vm.Action instances because a
+        # vm.Action that does not pass this check will have already been classified as legacy in Action._legacy.
+        # In future when vm.Action.inputs is deprecated then this will be used for vm.Action instances also.
+        TypeAdapter(dict[str, str]).validate_python(self._runtime_args)
+        # Do exactly same lookup but we only have "__default__" defined in inputs dictionary so will only ever use that
+        # case
+        # User specified arguments runtime_args take precedence over built in reserved arguments. No static arguments
+        # ar relevant here, just Dash States. Static arguments values are stored in the state of the relevant
+        # _AbstractAction instance.
+        # Qn: should this work for legacy actions too? Think about docs.
+        runtime_args = {
+            arg_name: State(*self._transform_dependency(arg_value, type="input").split("."))
+            for arg_name, arg_value in self._runtime_args.items()
+        }
+
+        return builtin_args | runtime_args
 
     @property
     def _transformed_outputs(self) -> Union[list[Output], dict[str, Output]]:
