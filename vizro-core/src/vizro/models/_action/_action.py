@@ -49,7 +49,7 @@ class _BaseAction(VizroBaseModel):
     # function and outputs are overridden as fields in Action and abstract methods in _AbstractAction. Using ClassVar
     # for these is the easiest way to appease mypy and have something that actually works at runtime.
     function: ClassVar[Callable[..., Any]]
-    outputs: ClassVar[Union[list[_IdOrIdProperty], dict[str, _IdOrIdProperty]]]
+    outputs: ClassVar[Union[list[str], dict[str, str]]]
 
     @property
     def _dash_components(self) -> list[Component]:
@@ -93,7 +93,6 @@ class _BaseAction(VizroBaseModel):
             action._get_triggered_model()._filter_interaction_input
             for action in model_manager._get_models(filter_interaction, page=page)
         ]
-
 
     @staticmethod
     def _transform_dependency(dependency: _IdOrIdProperty, type: Literal["output", "input"]) -> _IdProperty:
@@ -149,18 +148,16 @@ class _BaseAction(VizroBaseModel):
             if isinstance(e, KeyError):
                 if str(e) == f"'{component_property}'":
                     raise KeyError(
-                        f"Component with ID `{component_id}` has no `{component_property}` key inside its "
+                        f"Model with ID `{component_id}` has no `{component_property}` key inside its "
                         f"`{attribute_type}` property. Please specify the {type} explicitly as "
                         f"`{component_id}.<property>`."
                     ) from e
-                raise KeyError(
-                    f"Component with ID `{component_id}` not found. Please provide a valid component ID."
-                ) from e
+                raise KeyError(f"Model with ID `{component_id}` not found. Please provide a valid component ID.") from e
             raise AttributeError(
-                f"Component with ID '{component_id}' does not have implicit {type} properties defined. "
+                f"Model with ID '{component_id}' does not have implicit {type} properties defined. "
                 f"Please specify the {type} explicitly as '{component_id}.<property>'."
             ) from e
-    
+
     @property
     def _transformed_inputs(self) -> Union[list[State], dict[str, Union[State, ControlsStates]]]:
         """Creates Dash States given the user-specified runtime arguments and built in ones.
@@ -215,7 +212,7 @@ class _BaseAction(VizroBaseModel):
         """Creates Dash Output objects from string specifications in self.outputs.
 
         Converts self.outputs (list of strings or dictionary of strings where each string is in the format
-        '<component_id>.<property>') and converts into actual Dash Output objects.
+        '<component_id>.<property>' or '<component_id>') and converts into Dash Output objects.
         For example, ['my_graph.figure'] becomes [Output('my_graph', 'figure', allow_duplicate=True)].
 
         Returns:

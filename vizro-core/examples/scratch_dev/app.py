@@ -229,7 +229,7 @@ page_four = vm.Page(
                     inputs=["button-id.n_clicks"],
                     # outputs=["card-id-validation"],
                     # Case A: Model-ID doesn't exist, syntax correct (only model-id)
-                    # Vizro: Component with ID 'wrong-id' not found. Please provide a valid component ID."
+                    # Vizro: Model with ID 'wrong-id' not found. Please provide a valid component ID."
                     # outputs=["wrong-id"]
                     # outputs={"anything": "wrong-id"}
                     # Case B: Model-ID doesn't exist, property can be anything -> captured by Dash

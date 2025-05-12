@@ -91,7 +91,7 @@ class TestLegacyActionInputs:
     def test_inputs_invalid_model_id(self, runtime_inputs):
         with pytest.raises(
             KeyError,
-            match="Component with ID .* not found. Please provide a valid component ID.",
+            match="Model with ID .* not found. Please provide a valid component ID.",
         ):
             action = Action(function=action_with_one_arg(), inputs=runtime_inputs)
             # An error is raised when accessing _transformed_inputs which is fine because validation is then performed.
@@ -209,7 +209,7 @@ class TestLegacyActionOutputs:
     def test_outputs_invalid_model_id(self, outputs):
         with pytest.raises(
             KeyError,
-            match="Component with ID .* not found. Please provide a valid component ID.",
+            match="Model with ID .* not found. Please provide a valid component ID.",
         ):
             # inputs=[] added to force action to be legacy
             action = Action(function=action_with_no_args(), inputs=[], outputs=outputs)
@@ -250,7 +250,7 @@ class TestLegacyActionOutputs:
 
         with pytest.raises(
             AttributeError,
-            match="Component with ID 'test_button' does not have implicit output properties defined. "
+            match="Model with ID 'test_button' does not have implicit output properties defined. "
             "Please specify the output explicitly as 'test_button.<property>'.",
         ):
             # inputs=[] added to force action to be legacy
@@ -421,7 +421,7 @@ class TestActionOutputs:
     def test_outputs_invalid_model_id(self, outputs):
         with pytest.raises(
             KeyError,
-            match="Component with ID .* not found. Please provide a valid component ID.",
+            match="Model with ID .* not found. Please provide a valid component ID.",
         ):
             action = Action(function=action_with_no_args(), outputs=outputs)
             # An error is raised when accessing _transformed_outputs which is fine because validation is then performed.
@@ -460,7 +460,7 @@ class TestActionOutputs:
 
         with pytest.raises(
             AttributeError,
-            match="Component with ID 'test_button' does not have implicit output properties defined. "
+            match="Model with ID 'test_button' does not have implicit output properties defined. "
             "Please specify the output explicitly as 'test_button.<property>'.",
         ):
             action = Action(function=action_with_no_args(), outputs=["test_button"])

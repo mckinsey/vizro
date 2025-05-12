@@ -186,7 +186,7 @@ class TestAbstractActionInputs:
     def test_inputs_invalid_model_id(self, input):
         with pytest.raises(
             KeyError,
-            match="Component with ID .* not found. Please provide a valid component ID.",
+            match="Model with ID .* not found. Please provide a valid component ID.",
         ):
             action_with_one_runtime_arg(arg_1=input)._transformed_inputs
 
@@ -278,7 +278,7 @@ class TestAbstractActionOutputs:
     def test_outputs_invalid_model_id(self, action_with_mock_outputs):
         with pytest.raises(
             KeyError,
-            match="Component with ID .* not found. Please provide a valid component ID.",
+            match="Model with ID .* not found. Please provide a valid component ID.",
         ):
             # An error is raised when accessing _transformed_outputs which is fine because validation is then performed.
             action_with_mock_outputs()._transformed_outputs
@@ -316,7 +316,7 @@ class TestAbstractActionOutputs:
 
         with pytest.raises(
             AttributeError,
-            match="Component with ID 'test_button' does not have implicit output properties defined. "
+            match="Model with ID 'test_button' does not have implicit output properties defined. "
             "Please specify the output explicitly as 'test_button.<property>'.",
         ):
             action_with_mock_outputs.outputs = ["test_button"]
