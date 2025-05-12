@@ -102,7 +102,7 @@ def expected_slider_extra():
 
 @pytest.fixture()
 def expected_slider_with_description():
-    description = [
+    expected_description = [
         html.Span("info", id="info-icon", className="material-symbols-outlined tooltip-icon"),
         dbc.Tooltip(
             children=dcc.Markdown("Test description", className="card-text"),
@@ -116,7 +116,7 @@ def expected_slider_with_description():
             dcc.Store(id="slider_id_callback_data", data={"id": "slider_id", "min": 0.0, "max": 10.0}),
             html.Div(
                 [
-                    dbc.Label(["Test title", *description], html_for="slider_id"),
+                    dbc.Label(["Test title", *expected_description], html_for="slider_id"),
                     html.Div(
                         [
                             dcc.Input(

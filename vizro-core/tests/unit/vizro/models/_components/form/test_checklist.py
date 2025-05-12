@@ -182,7 +182,7 @@ class TestChecklistBuild:
             description=Tooltip(text="Test description", icon="info", id="info"),
         ).build()
 
-        description = [
+        expected_description = [
             html.Span("info", id="info-icon", className="material-symbols-outlined tooltip-icon"),
             dbc.Tooltip(
                 children=dcc.Markdown("Test description", className="card-text"),
@@ -193,7 +193,7 @@ class TestChecklistBuild:
         ]
         expected_checklist = html.Fieldset(
             [
-                html.Legend(["Test title", *description], className="form-label"),
+                html.Legend(["Test title", *expected_description], className="form-label"),
                 dbc.Checklist(
                     options=["ALL", "A", "B", "C"],
                     value=["A"],

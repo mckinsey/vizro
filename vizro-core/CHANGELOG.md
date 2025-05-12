@@ -21,7 +21,7 @@ See the fragment files in the [changelog.d directory](https://github.com/mckinse
 
 - Enable styling of `vm.Button` with a new argument `variant="plain"/"filled"/"outlined"`. See the [user guide on styled buttons](https://vizro.readthedocs.io/en/stable/pages/user-guides/button/#styled-buttons) for more details. ([#1114](https://github.com/mckinsey/vizro/pull/1114))
 
-- Add `description` argument to `Checklist`, `Dropdown`, `RadioItems`, `Slider`, `RangeSlider` and `DatePicker` to enable info-icons in selector titles. See the [user guide on info-icons](https://vizro.readthedocs.io/en/stable/pages/user-guides/selectors/#add-an-info-icon) for more details. ([#1124](https://github.com/mckinsey/vizro/pull/1124))
+- Add `description` argument to `Checklist`, `Dropdown`, `RadioItems`, `Slider`, `RangeSlider` and `DatePicker` to enable tooltips in selector titles. See the [user guide on tooltips](https://vizro.readthedocs.io/en/stable/pages/user-guides/selectors/#add-a-tooltip) for more details. ([#1124](https://github.com/mckinsey/vizro/pull/1124))
 
 ## Changed
 
