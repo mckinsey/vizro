@@ -13,40 +13,15 @@ SingleOptionType = Union[bool, float, str]
 MultiOptionType = Union[list[bool], list[float], list[str]]
 
 
-class CustomDropdown(VizroBaseModel):
-    """Categorical single/multi-selector `Dropdown` to be provided to `Filter`."""
+class CustomDropdown(vm.Dropdown):
+    """Custom Dropdown that has multi=False as default."""
 
     type: Literal["custom-dropdown"] = "custom-dropdown"
-    options: Optional[MultiOptionType] = Field(default=None, description="Possible options the user can select from")
-    value: Optional[Union[SingleOptionType, MultiOptionType]] = Field(
-        default=None, description="Options that are selected by default"
-    )
-    multi: bool = Field(default=True, description="Whether to allow selection of multiple values")
-    actions: Annotated[
-        list[ActionType],
-        AfterValidator(_action_validator_factory("value")),
-        PlainSerializer(lambda x: x[0].actions),
-        Field(default=[]),
-    ]
-    title: Optional[str] = Field(None, description="Title to be displayed")
 
-    @_log_call
     def build(self):
-        full_options = self.options
-
-        return html.Div(
-            [
-                html.P(self.title) if self.title else None,
-                dcc.Dropdown(
-                    id=self.id,
-                    options=full_options,
-                    value=self.value or full_options[0],
-                    multi=self.multi,
-                    persistence=True,
-                    clearable=False,
-                ),
-            ],
-        )
+        dropdown_obj = super().build()
+        dropdown_obj[self.id].multi=False
+        return dropdown_obj
 
 
 # Important: Add new components to expected type - here the selector of the parent components
