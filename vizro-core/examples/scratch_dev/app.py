@@ -30,7 +30,7 @@ page = vm.Page(
 )
 
 dashboard = vm.Dashboard(pages=[page])
-Vizro().build(dashboard).run(debug=True)
+
 # import vizro.plotly.express as px
 # from vizro import Vizro
 # import vizro.models as vm
@@ -49,4 +49,6 @@ Vizro().build(dashboard).run(debug=True)
 # )
 #
 # dashboard = vm.Dashboard(pages=[page])
-# Vizro().build(dashboard).run(debug=True)
+
+if __name__ == "__main__":
+    Vizro().build(dashboard).run()

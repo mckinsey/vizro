@@ -10,7 +10,9 @@ from pydantic import ValidationError
 
 import vizro.models as vm
 import vizro.plotly.express as px
+from vizro import Vizro
 from vizro.managers import data_manager
+from vizro.managers._model_manager import DuplicateIDError
 from vizro.models._action._action import Action
 from vizro.tables import dash_data_table
 
@@ -139,6 +141,24 @@ class TestPreBuildTable:
         table.pre_build()
 
         assert table._input_component_id == "underlying_table_id"
+
+    def test_pre_build_duplicate_table_id(self):
+        dashboard = vm.Dashboard(
+            pages=[
+                vm.Page(
+                    title="Test Page",
+                    components=[
+                        vm.Table(figure=dash_data_table(id="duplicate_table_id", data_frame=px.data.gapminder())),
+                        vm.Table(figure=dash_data_table(id="duplicate_table_id", data_frame=px.data.gapminder())),
+                    ],
+                )
+            ]
+        )
+        with pytest.raises(
+            DuplicateIDError,
+            match="CapturedCallable with id=duplicate_table_id has an id that is ",
+        ):
+            Vizro().build(dashboard)
 
 
 class TestBuildTable:
