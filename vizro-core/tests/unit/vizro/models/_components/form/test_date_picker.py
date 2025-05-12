@@ -181,7 +181,7 @@ class TestBuildMethod:
             title="Test title",
             description=vm.Tooltip(text="Test description", icon="info", id="info"),
         ).build()
-        description = [
+        expected_description = [
             html.Span("info", id="info-icon", className="material-symbols-outlined tooltip-icon"),
             dbc.Tooltip(
                 children=dcc.Markdown("Test description", className="card-text"),
@@ -192,7 +192,7 @@ class TestBuildMethod:
         ]
         expected_datepicker = html.Div(
             [
-                dbc.Label(["Test title", *description], html_for="datepicker_id"),
+                dbc.Label(["Test title", *expected_description], html_for="datepicker_id"),
                 dmc.DatePickerInput(
                     id="datepicker_id",
                     minDate="2023-01-01",

@@ -56,7 +56,7 @@ At the top level, you'll be creating a [`Dashboard`][vizro.models.Dashboard]. He
 - **Navigation**: You can customize navigation between those different pages.
 - **Title/Logo**: You can add your own titles and logos.
 
-For each [`Page`][vizro.models.Page], you can additionally configure the following:
+For each [`Page`][vizro.models.Page], you can also configure the following:
 
 - **Components**: Add charts, tables, input/output interfaces, and more.
 - **Controls**: Include filters and parameters.
@@ -194,7 +194,7 @@ Follow these steps to add a histogram to the page:
 
 Notice that the charts are automatically stacked vertically in the order specified under `components`, each taking up equal space. This is the default behavior in Vizro, but you'll learn how to customize the layout later!
 
-Additionally, a page navigation menu has been added to the left side of the dashboard, enabling you to switch between the two pages we’ve created.
+Also, a page navigation menu has been added to the left side of the dashboard, enabling you to switch between the two pages we’ve created.
 
 You'll also notice that the left-side menu can be collapsed to provide more space for the dashboard content. **Give it a try!**
 
@@ -609,7 +609,7 @@ To add a filter to the dashboard, follow these steps:
 
         [![SecondPage5]][secondpage5]
 
-You'll see that a [`Dropdown`][vizro.models.Dropdown] is selected by default for categorical data, while a [`RangeSlider`][vizro.models.RangeSlider] is used for numerical data. Additionally, filters are applied to all components on the page.
+You'll see that a [`Dropdown`][vizro.models.Dropdown] is selected by default for categorical data, while a [`RangeSlider`][vizro.models.RangeSlider] is used for numerical data. Also, filters are applied to all components on the page.
 
 If you want to apply a filter to specific components only, check out [How to use filters](../user-guides/filters.md).
 

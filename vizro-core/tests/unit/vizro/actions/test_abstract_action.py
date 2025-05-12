@@ -1,6 +1,7 @@
 import pytest
 from asserts import assert_component_equal
 from dash import Output, State, html
+from pydantic import ValidationError
 
 from vizro.actions._abstract_action import _AbstractAction
 
@@ -163,17 +164,23 @@ class TestAbstractActionInputs:
     @pytest.mark.parametrize(
         "input",
         [
+            # These raise validation error on instantiation of action_with_one_runtime_arg due to annotation arg_1: str
+            ["component.property"],
+            1,
+            None,
+            # These raise validation error in _transformed_inputs itself but could raise it on instantiation
+            # if we alter the type hint of action_with_one_runtime_arg to use DotSeparateString.
             "",
             "component",
+            "component.",
+            ".property",
+            "component..property",
             "component_property",
             "component.property.property",
         ],
     )
     def test_runtime_inputs_invalid(self, input):
-        with pytest.raises(
-            ValueError, match="Action inputs .* must be a string of the form <component_name>.<component_property>."
-        ):
-            # An error is raised when accessing _transformed_inputs which is fine because validation is then performed.
+        with pytest.raises(ValidationError):
             action_with_one_runtime_arg(arg_1=input)._transformed_inputs
 
     # TODO: Adjust this test when _controls becomes a public field. Should demonstrate that a runtime arg called
@@ -197,14 +204,12 @@ class TestAbstractActionOutputs:
     @pytest.mark.parametrize(
         "action_with_mock_outputs, expected_transformed_outputs",
         [
-            # List outputs
             ([], []),
             (["component.property"], Output("component", "property")),
             (
                 ["component_1.property_1", "component_2.property_2"],
                 [Output("component_1", "property_1"), Output("component_2", "property_2")],
             ),
-            # Dict outputs
             ({}, {}),
             (
                 {"output_1": "component.property"},
@@ -224,19 +229,30 @@ class TestAbstractActionOutputs:
     @pytest.mark.parametrize(
         "action_with_mock_outputs",
         [
+            "component.property",
+            1,
+            None,
             [""],
             ["component"],
+            ["component."],
+            [".property"],
+            ["component..property"],
             ["component_property"],
             ["component.property.property"],
             {"output_1": ""},
+            {"output_1": "component"},
+            {"output_1": "component."},
+            {"output_1": ".property"},
+            {"output_1": "component..property"},
+            {"output_1": "component_property"},
+            {"output_1": "component.property.property"},
             {"output_1": "component.property", "output_2": ""},
+            {1: "component.property"},
         ],
         indirect=["action_with_mock_outputs"],
     )
     def test_outputs_invalid(self, action_with_mock_outputs):
-        with pytest.raises(
-            ValueError, match="Action outputs .* must be a string of the form <component_name>.<component_property>."
-        ):
+        with pytest.raises(ValidationError):
             # An error is raised when accessing _transformed_outputs which is fine because validation is then performed.
             action_with_mock_outputs()._transformed_outputs
 

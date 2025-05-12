@@ -78,4 +78,4 @@ To learn more, refer to the section that describes how to [safeguard execution o
 
 To ensure responsible use, review their data privacy and security policies. See [LangFuse Data Security & Privacy ](https://langfuse.com/docs/data-security-privacy) and [LangSmith Privacy Policy](https://www.langchain.com/privacy-policy) site for more details.
 
-Additionally, both support self-hosting options, which may be critical for security oriented users.See [LangSmith](https://docs.smith.langchain.com/self_hosting) and [LangFuse](https://langfuse.com/docs/deployment/self-host) self-hosting guides for more details. LangFuse offers a self-hosting service under the MIT License.
+Also, both support self-hosting options, which may be critical for security oriented users.See [LangSmith](https://docs.smith.langchain.com/self_hosting) and [LangFuse](https://langfuse.com/docs/deployment/self-host) self-hosting guides for more details. LangFuse offers a self-hosting service under the MIT License.

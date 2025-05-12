@@ -21,7 +21,7 @@ See the fragment files in the [changelog.d directory](https://github.com/mckinse
 
 - Enable styling of `vm.Button` with a new argument `variant="plain"/"filled"/"outlined"`. See the [user guide on styled buttons](https://vizro.readthedocs.io/en/stable/pages/user-guides/button/#styled-buttons) for more details. ([#1114](https://github.com/mckinsey/vizro/pull/1114))
 
-- Add `description` argument to `Checklist`, `Dropdown`, `RadioItems`, `Slider`, `RangeSlider` and `DatePicker` to enable info-icons in selector titles. See the [user guide on info-icons](https://vizro.readthedocs.io/en/stable/pages/user-guides/selectors/#add-an-info-icon) for more details. ([#1124](https://github.com/mckinsey/vizro/pull/1124))
+- Add `description` argument to `Checklist`, `Dropdown`, `RadioItems`, `Slider`, `RangeSlider` and `DatePicker` to enable tooltips in selector titles. See the [user guide on tooltips](https://vizro.readthedocs.io/en/stable/pages/user-guides/selectors/#add-a-tooltip) for more details. ([#1124](https://github.com/mckinsey/vizro/pull/1124))
 
 ## Changed
 
@@ -47,7 +47,7 @@ See the fragment files in the [changelog.d directory](https://github.com/mckinse
 
 ## Added
 
-- Add support for additional CSS units (rem, em, %) for `row_min_height`, `row_gap`, `col_gap`, and `col_min_width` in `Layout`. ([#1050](https://github.com/mckinsey/vizro/pull/1050))
+- Add support for more CSS units (rem, em, %) for `row_min_height`, `row_gap`, `col_gap`, and `col_min_width` in `Layout`. ([#1050](https://github.com/mckinsey/vizro/pull/1050))
 
 ## Changed
 

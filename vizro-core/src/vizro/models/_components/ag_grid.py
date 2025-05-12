@@ -1,19 +1,21 @@
 import logging
-from typing import Annotated, Literal
+from typing import Annotated, Literal, Optional
 
 import pandas as pd
 from dash import ClientsideFunction, Input, Output, State, clientside_callback, dcc, html
-from pydantic import AfterValidator, Field, PrivateAttr, field_validator
+from pydantic import AfterValidator, BeforeValidator, Field, PrivateAttr, field_validator
 from pydantic.functional_serializers import PlainSerializer
 from pydantic.json_schema import SkipJsonSchema
 
 from vizro.actions import filter_interaction
 from vizro.actions._actions_utils import CallbackTriggerDict, _get_component_actions, _get_parent_model
-from vizro.managers import data_manager
-from vizro.models import VizroBaseModel
+from vizro.managers import data_manager, model_manager
+from vizro.managers._model_manager import DuplicateIDError
+from vizro.models import Tooltip, VizroBaseModel
 from vizro.models._action._actions_chain import _action_validator_factory
 from vizro.models._components._components_utils import _process_callable_data_frame
 from vizro.models._models_utils import _log_call
+from vizro.models._tooltip import coerce_str_to_tooltip
 from vizro.models.types import ActionType, CapturedCallable, validate_captured_callable
 
 logger = logging.getLogger(__name__)
@@ -31,6 +33,8 @@ class AgGrid(VizroBaseModel):
             Defaults to `""`.
         footer (str): Markdown text positioned below the `AgGrid`. Follows the CommonMark specification.
             Ideal for providing further details such as sources, disclaimers, or additional notes. Defaults to `""`.
+        description (Optional[Tooltip]): Optional markdown string that adds an icon next to the title.
+            Hovering over the icon shows a tooltip with the provided description. Defaults to `None`.
         actions (list[ActionType]): See [`ActionType`][vizro.models.types.ActionType]. Defaults to `[]`.
 
     """
@@ -55,6 +59,17 @@ class AgGrid(VizroBaseModel):
         description="Markdown text positioned below the `AgGrid`. Follows the CommonMark specification. Ideal for "
         "providing further details such as sources, disclaimers, or additional notes.",
     )
+    # TODO: ideally description would have json_schema_input_type=Union[str, Tooltip] attached to the BeforeValidator,
+    #  but this requires pydantic >= 2.9.
+    description: Annotated[
+        Optional[Tooltip],
+        BeforeValidator(coerce_str_to_tooltip),
+        Field(
+            default=None,
+            description="""Optional markdown string that adds an icon next to the title.
+            Hovering over the icon shows a tooltip with the provided description. Defaults to `None`.""",
+        ),
+    ]
     actions: Annotated[
         list[ActionType],
         AfterValidator(_action_validator_factory("cellClicked")),
@@ -125,6 +140,21 @@ class AgGrid(VizroBaseModel):
     @_log_call
     def pre_build(self):
         self._input_component_id = self.figure._arguments.get("id", f"__input_{self.id}")
+        # Check if any other AgGrid figure function has the same input component ID
+        existing_models = [
+            model
+            for model in model_manager._get_models(self.__class__)
+            if hasattr(model, "_input_component_id")
+            and model.id != self.id
+            and model._input_component_id == self._input_component_id
+        ]
+
+        if existing_models:
+            raise DuplicateIDError(
+                f"CapturedCallable with id={self._input_component_id} has an id that is "
+                f"already in use by another CapturedCallable. CapturedCallables must have unique ids "
+                f"across the whole dashboard."
+            )
 
     def build(self):
         # Most of the theming in AgGrid is controlled through CSS in `aggrid.css`. However, this callback is necessary
@@ -134,11 +164,13 @@ class AgGrid(VizroBaseModel):
             Output(self._input_component_id, "className"),
             Input("theme-selector", "value"),
         )
-
+        description = self.description.build().children if self.description else [None]
         return dcc.Loading(
             children=html.Div(
                 children=[
-                    html.H3(self.title, className="figure-title", id=f"{self.id}_title") if self.title else None,
+                    html.H3([self.title, *description], className="figure-title", id=f"{self.id}_title")
+                    if self.title
+                    else None,
                     dcc.Markdown(self.header, className="figure-header", id=f"{self.id}_header")
                     if self.header
                     else None,
