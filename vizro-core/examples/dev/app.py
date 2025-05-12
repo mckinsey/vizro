@@ -18,6 +18,7 @@ from vizro.tables import dash_ag_grid, dash_data_table
 iris = px.data.iris()
 tips = px.data.tips()
 stocks = px.data.stocks(datetimes=True)
+gapminder = px.data.gapminder()
 gapminder_2007 = px.data.gapminder().query("year == 2007")
 waterfall_df = pd.DataFrame(
     {
@@ -513,6 +514,79 @@ selectors = vm.Page(
     ],
 )
 
+# LAYOUT ------------------------------------------------------------------
+
+grid_layout = vm.Page(
+    title="Grid layout",
+    layout=vm.Grid(grid=[[0, 1], [2, 2]]),
+    components=[
+        vm.Graph(
+            figure=px.line(
+                gapminder_2007,
+                title="Graph 1",
+                x="year",
+                y="lifeExp",
+                color="continent",
+            ),
+        ),
+        vm.Graph(
+            figure=px.scatter(
+                gapminder_2007,
+                title="Graph 2",
+                x="gdpPercap",
+                y="lifeExp",
+                size="pop",
+                color="continent",
+            ),
+        ),
+        vm.Graph(
+            figure=px.box(
+                gapminder_2007,
+                title="Graph 3",
+                x="continent",
+                y="lifeExp",
+                color="continent",
+            ),
+        ),
+    ],
+)
+
+flex_layout = vm.Page(
+    title="Flex layout",
+    layout=vm.Flex(direction="column", wrap=True),
+    components=[
+        vm.Graph(
+            figure=px.line(
+                gapminder,
+                title="Graph 1",
+                x="year",
+                y="lifeExp",
+                color="continent",
+            ),
+        ),
+        vm.Graph(
+            figure=px.scatter(
+                gapminder_2007,
+                title="Graph 2",
+                x="gdpPercap",
+                y="lifeExp",
+                size="pop",
+                color="continent",
+            ),
+        ),
+        vm.Graph(
+            figure=px.box(
+                gapminder_2007,
+                title="Graph 3",
+                x="continent",
+                y="lifeExp",
+                color="continent",
+            ),
+        ),
+    ],
+)
+
+
 # ACTIONS ---------------------------------------------------------------------
 export_data_action = vm.Page(
     title="Export data",
@@ -795,11 +869,12 @@ kpi_indicators = vm.Page(
 components = [graphs, ag_grid, table, cards, figure, button, containers, collapsible_container, tabs]
 controls = [filters, parameters, selectors]
 actions = [export_data_action, chart_interaction]
+layout = [grid_layout, flex_layout]
 extensions = [custom_charts, custom_tables, custom_actions, custom_figures, custom_components]
 
 dashboard = vm.Dashboard(
     title="Vizro Features",
-    pages=[home, *components, *controls, *actions, *extensions],
+    pages=[home, *components, *controls, *actions, *layout, *extensions],
     navigation=vm.Navigation(
         nav_selector=vm.NavBar(
             items=[
@@ -820,6 +895,7 @@ dashboard = vm.Dashboard(
                         ],
                         "Controls": ["Filters", "Parameters", "Selectors"],
                         "Actions": ["Export data", "Chart interaction"],
+                        "Layout": ["Grid layout", "Flex layout"],
                         "Extensions": [
                             "Custom Charts",
                             "Custom Tables",
