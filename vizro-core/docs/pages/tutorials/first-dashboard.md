@@ -54,7 +54,7 @@ We make all our examples available. Throughout our documentation, follow the "**
 
 You can also generative AI to help you create dashboards:
 
-- [Vizro-MCP](https://github.com/mckinsey/vizro/blob/main/vizro-mcp/README.md) helps you build charts and dashboards that adhere to the Vizro design template. Vizro-MCP is the easiest way to use a generative AI application to help you work with Vizro. 
+- [Vizro-MCP](https://github.com/mckinsey/vizro/blob/main/vizro-mcp/README.md) helps you build charts and dashboards that adhere to the Vizro design template. Vizro-MCP is the easiest way to use a generative AI application to help you work with Vizro.
 
 ![vizro-mcp](../../assets/tutorials/dashboard/vizro-mcp.gif)
 
