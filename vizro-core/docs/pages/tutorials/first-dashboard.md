@@ -54,22 +54,14 @@ We make all our examples available. Throughout our documentation, follow the "**
 
 You can also generative AI to help you create dashboards:
 
-- [Vizro-MCP](https://github.com/mckinsey/vizro/blob/main/vizro-mcp/README.md) is a model context protocol (MCP) server that helps you build charts and dashboards. We recommend this as the easiest way to get assistance from generative AI when working with Vizro.
-- [Vizro-AI](https://vizro.readthedocs.io/projects/vizro-ai/) is also available if you have some technical knowledge and an API key to use with an large language model (LLM).
+- [Vizro-MCP](https://github.com/mckinsey/vizro/blob/main/vizro-mcp/README.md) helps you build charts and dashboards that adhere to the Vizro design template. Vizro-MCP is the easiest way to use a generative AI application to help you work with Vizro. 
+
+![vizro-mcp](../../assets/tutorials/dashboard/vizro-mcp.gif)
+
+- [Vizro-AI](https://vizro.readthedocs.io/projects/vizro-ai/) is also available as a means of building Vizro charts and dashboards with gen AI. You will need some technical knowledge, and an API key to use with an large language model (LLM).
 
 ## Where next?
 
 You are now ready to explore Vizro further by working through the ["Explore Vizro" tutorial](explore-components.md) or by consulting the [how-to guides](../user-guides/dashboard.md).
-
-### Create dashboards with AI
-
-Vizro also offers a [MCP server](https://github.com/mckinsey/vizro/tree/main/vizro-mcp) that allows:
-
-- **creation of Vizro apps** from any MCP compatible host (Claude Desktop, Cursor, etc.)
-- **creation of charts** that adhere to the Vizro design template, and take care of data wrangling for you
-
-Check it out at [vizro-mcp](https://github.com/mckinsey/vizro/blob/main/vizro-mcp/README.md) to learn more.
-
-![vizro-mcp](../../assets/tutorials/dashboard/vizro-mcp.gif)
 
 [firstdash]: ../../assets/tutorials/dashboard/first-dashboard.png
