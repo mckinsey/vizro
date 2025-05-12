@@ -52,10 +52,10 @@ You can use PyCafe to experiment with your own Vizro dashboards by dropping code
 
 We make all our examples available. Throughout our documentation, follow the "**Run and edit this code in Py.Cafe**" link below a code snippet to open and interact with it.
 
-You can also generative AI to help you create dashboards: 
+You can also generative AI to help you create dashboards:
 
-* [Vizro-MCP](https://github.com/mckinsey/vizro/blob/main/vizro-mcp/README.md) is a model context protocol (MCP) server that helps you build charts and dashboards. We recommend this as the easiest way to get assistance from generative AI when working with Vizro.
-* [Vizro-AI](https://vizro.readthedocs.io/projects/vizro-ai/) is also available if you have some technical knowledge and an API key to use with an large language model (LLM). 
+- [Vizro-MCP](https://github.com/mckinsey/vizro/blob/main/vizro-mcp/README.md) is a model context protocol (MCP) server that helps you build charts and dashboards. We recommend this as the easiest way to get assistance from generative AI when working with Vizro.
+- [Vizro-AI](https://vizro.readthedocs.io/projects/vizro-ai/) is also available if you have some technical knowledge and an API key to use with an large language model (LLM).
 
 ## Where next?
 

@@ -9,9 +9,9 @@ Vizro is an open-source Python-based toolkit. You can use it to build data visua
     ---
 
     [:octicons-arrow-right-24: Quickstart tutorial](pages/tutorials/first-dashboard.md)
-    
+
     [:octicons-arrow-right-24: Explore Vizro tutorial](pages/tutorials/explore-components.md)
-    
+
     [:octicons-arrow-right-24: FAQs](pages/explanation/faq.md)
 
 - :fontawesome-solid-keyboard:{ .lg .middle } __Vizro features__
@@ -26,7 +26,6 @@ Vizro is an open-source Python-based toolkit. You can use it to build data visua
 
     ---
 
-
 - :fontawesome-solid-hands-holding-circle:{ .lg .middle } __Get involved__
 
     ---
@@ -40,8 +39,7 @@ Vizro is an open-source Python-based toolkit. You can use it to build data visua
     ---
 
     [:octicons-arrow-right-24: Vizro-AI](https://vizro.readthedocs.io/projects/vizro-ai/)
-    
+
     [:octicons-arrow-right-24: Vizro-MCP](https://github.com/mckinsey/vizro/blob/main/vizro-mcp/README.md)
-    
 
 </div>
