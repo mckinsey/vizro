@@ -8,9 +8,8 @@ from collections.abc import Collection, Iterable, Mapping
 from pprint import pformat
 from typing import TYPE_CHECKING, Annotated, Any, Callable, ClassVar, Literal, Union, cast
 
-from dash import Input, Output, State, callback, dcc, html
+from dash import Input, Output, State, callback, html
 from dash.development.base_component import Component
-from dash.exceptions import PreventUpdate
 from pydantic import Field, TypeAdapter, field_validator
 from pydantic.json_schema import SkipJsonSchema
 from typing_extensions import TypedDict
