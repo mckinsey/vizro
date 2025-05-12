@@ -43,7 +43,4 @@ class _parameter(_AbstractAction):
 
     @property
     def outputs(self):
-        return {
-            target: cast(FigureType, model_manager[target])._action_outputs["__default__"]
-            for target in self._target_ids
-        }
+        return {target: target for target in self._target_ids}
