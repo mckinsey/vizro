@@ -36,7 +36,7 @@ class filter_interaction(_AbstractAction):
         #  - pass trigger into callback as a built-in keyword
         #  - maybe need to be able to define inputs property for actions that subclass _AbstractAction
         # TODO NOW: this needs checking
-        return self.trigger.split(".")[0]
+        return model_manager[self.trigger.split(".")[0]]
         # for actions_chain in cast(Iterable[ActionsChain], model_manager._get_models(ActionsChain)):
         #     if self in actions_chain.actions:
         #         return model_manager[actions_chain.trigger.component_id]
