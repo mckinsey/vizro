@@ -227,7 +227,7 @@ page_four = vm.Page(
                 vm.Action(
                     function=action_function(),  # or function=action_function_dict(),
                     inputs=["button-id.n_clicks"],
-                    # outputs=["card-id-validation"],
+                    outputs=["card-id-validation"],
                     # Case A: Model-ID doesn't exist, syntax correct (only model-id)
                     # Vizro: Model with ID 'wrong-id' not found. Please provide a valid component ID."
                     # outputs=["wrong-id"]

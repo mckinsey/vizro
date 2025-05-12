@@ -1,7 +1,7 @@
 from typing import Annotated, Literal, Optional, Union
 
 from dash import dcc, html
-from pydantic import AfterValidator, Field, PlainSerializer, PrivateAttr
+from pydantic import AfterValidator, Field, PlainSerializer
 
 import vizro.models as vm
 from vizro.models._action._actions_chain import _action_validator_factory
@@ -29,9 +29,6 @@ class CustomDropdown(VizroBaseModel):
         Field(default=[]),
     ]
     title: Optional[str] = Field(None, description="Title to be displayed")
-
-    # Component properties for actions and interactions
-    _input_property: str = PrivateAttr("value")
 
     @_log_call
     def build(self):

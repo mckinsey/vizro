@@ -75,9 +75,6 @@ class RadioItems(VizroBaseModel):
 
     _dynamic: bool = PrivateAttr(False)
 
-    # Component properties for actions and interactions
-    _input_property: str = PrivateAttr("value")
-
     # Reused validators
     _validate_options = model_validator(mode="before")(validate_options_dict)
 

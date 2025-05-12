@@ -80,7 +80,7 @@ class _BaseAction(VizroBaseModel):
         # See also notes in filter_interaction._get_triggered_model.
         page = model_manager._get_model_page(self)
         return [
-            State(component_id=control.selector.id, component_property=control.selector._input_property)
+            State(*control.selector._action_inputs["__default__"].split("."))
             for control in cast(Iterable[ControlType], model_manager._get_models(control_type, page))
         ]
 

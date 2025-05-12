@@ -2,7 +2,7 @@ from typing import Literal, cast
 
 import dash_bootstrap_components as dbc
 from dash import html
-from pydantic import Field, PrivateAttr
+from pydantic import Field
 
 from vizro.models import VizroBaseModel
 from vizro.models._action._actions_chain import _action_validator_factory
@@ -28,9 +28,6 @@ class TextArea(VizroBaseModel):
     title: str = Field(default="", description="Title to be displayed")
     placeholder: str = Field(default="", description="Default text to display in input field")
     actions: list[ActionType] = []
-
-    # Component properties for actions and interactions
-    _input_property: str = PrivateAttr("value")
 
     # Reused validators
     # TODO: Before making public, consider how actions should be triggered and what the default property should be
