@@ -1,6 +1,7 @@
 .tabs-container {
   height: 100%;
   width: 100%;
+
   --tabs-title-height: 0rem;
 }
 

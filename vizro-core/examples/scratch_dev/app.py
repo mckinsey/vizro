@@ -60,7 +60,9 @@ page_one = vm.Page(title="Tabs - Title", components=[tabs("Tab - Single", "Tab T
 
 page_two = vm.Page(
     title="Tabs inside Container",
-    components=[vm.Container(title="Container Title", components=[tabs("Tab Container", "Tab Title")], variant="filled")],
+    components=[
+        vm.Container(title="Container Title", components=[tabs("Tab Container", "Tab Title")], variant="filled")
+    ],
 )
 
 page_three = vm.Page(
@@ -75,7 +77,7 @@ page_three = vm.Page(
     ],
 )
 
-dashboard = vm.Dashboard(pages=[page_zero,page_one, page_two, page_three])
+dashboard = vm.Dashboard(pages=[page_zero, page_one, page_two, page_three])
 
 
 if __name__ == "__main__":
