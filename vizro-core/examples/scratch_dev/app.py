@@ -9,9 +9,9 @@ from vizro import Vizro
 gapminder_2007 = px.data.gapminder().query("year == 2007")
 
 
-def tabs(title: str):
+def tabs(title: str, tab_title: str = ""):
     return vm.Tabs(
-        title="Tab Title",
+        title=tab_title,
         tabs=[
             vm.Container(
                 title=f"{title} I",
@@ -55,11 +55,12 @@ def tabs(title: str):
     )
 
 
-page_one = vm.Page(title="Tabs - Standalone", components=[tabs("Tab - Single")])
+page_zero = vm.Page(title="Tabs - Default", components=[tabs("Tab - Single")])
+page_one = vm.Page(title="Tabs - Title", components=[tabs("Tab - Single", "Tab Title")])
 
 page_two = vm.Page(
     title="Tabs inside Container",
-    components=[vm.Container(title="Container Title", components=[tabs("Tab Container")], variant="filled")],
+    components=[vm.Container(title="Container Title", components=[tabs("Tab Container", "Tab Title")], variant="filled")],
 )
 
 page_three = vm.Page(
@@ -74,7 +75,7 @@ page_three = vm.Page(
     ],
 )
 
-dashboard = vm.Dashboard(pages=[page_one, page_two, page_three])
+dashboard = vm.Dashboard(pages=[page_zero,page_one, page_two, page_three])
 
 
 if __name__ == "__main__":
