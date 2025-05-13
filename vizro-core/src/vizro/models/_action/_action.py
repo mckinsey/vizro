@@ -274,7 +274,8 @@ class _BaseAction(VizroBaseModel):
             # and cancel it.
             # Default assumption is nothing should run when page is built, and opl is exception to that so uses
             # global output.
-            # Note prevent_initial_call=False doesn't work here due to duplicate outputs.
+            # Note prevent_initial_call=False doesn't work here due to duplicate outputs. Could maybe change Dash behaviour
+            # so it works with duplicated outputs and a single output with preven_initia_call=False and all others true.
             # if internal["trigger"] is None:
             #     # Doesn't work to stop opl triggering every callback
             #     print(f"Cancelled {self._action_name}")
