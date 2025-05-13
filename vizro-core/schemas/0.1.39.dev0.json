@@ -1957,7 +1957,7 @@
     },
     "Tabs": {
       "additionalProperties": false,
-      "description": "Tabs to group together a set of containers on a page.\n\nArgs:\n    type (Literal[\"tabs\"]): Defaults to `\"tabs\"`.\n    tabs (list[Container]): See [`Container`][vizro.models.Container].",
+      "description": "Tabs to group together a set of containers on a page.\n\nArgs:\n    type (Literal[\"tabs\"]): Defaults to `\"tabs\"`.\n    tabs (list[Container]): See [`Container`][vizro.models.Container].\n    title (str): Title displayed above Tabs. Defaults to `\"\"`.",
       "properties": {
         "id": {
           "default": "",
@@ -1978,6 +1978,12 @@
           "minItems": 1,
           "title": "Tabs",
           "type": "array"
+        },
+        "title": {
+          "default": "",
+          "description": "Title displayed above Tabs.",
+          "title": "Title",
+          "type": "string"
         }
       },
       "required": ["tabs"],
