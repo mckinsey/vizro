@@ -3,7 +3,8 @@ from __future__ import annotations
 from typing import TYPE_CHECKING, Annotated, Literal
 
 import dash_bootstrap_components as dbc
-from pydantic import AfterValidator, conlist
+from dash import html
+from pydantic import AfterValidator, Field, conlist
 
 from vizro.models import VizroBaseModel
 from vizro.models._models_utils import _log_call
@@ -24,18 +25,23 @@ class Tabs(VizroBaseModel):
     Args:
         type (Literal["tabs"]): Defaults to `"tabs"`.
         tabs (list[Container]): See [`Container`][vizro.models.Container].
+        title (str): Title displayed above Tabs. Defaults to `""`.
 
     """
 
     type: Literal["tabs"] = "tabs"
     # TODO[mypy], see: https://github.com/pydantic/pydantic/issues/156 for tabs field
     tabs: conlist(Annotated[Container, AfterValidator(validate_tab_has_title)], min_length=1)  # type: ignore[valid-type]
+    title: str = Field(default="", description="Title displayed above Tabs.")
 
     @_log_call
-    def build(self):
-        return dbc.Tabs(
+    def build(self) -> dbc.Tabs:
+        title = html.H3(self.title, id=f"{self.id}_title") if self.title else None
+        tabs = dbc.Tabs(
             id=self.id,
             children=[dbc.Tab(tab.build(), label=tab.title) for tab in self.tabs],
             persistence=True,
             persistence_type="session",
         )
+
+        return html.Div(children=[title, tabs])

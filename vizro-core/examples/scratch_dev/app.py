@@ -5,42 +5,70 @@
 import vizro.models as vm
 import vizro.plotly.express as px
 from vizro import Vizro
-from vizro.tables import dash_ag_grid, dash_data_table
 
-tips = px.data.tips()
+gapminder_2007 = px.data.gapminder().query("year == 2007")
 
-page1 = vm.Page(
-    title="LAYOUT_FLEX_WRAP_AND_AG_GRID",
-    layout=vm.Flex(wrap=True),
-    components=[
-        vm.AgGrid(id=f"outer_id_{i}", figure=dash_ag_grid(tips, id=f"inner_id_{i}", style={"width": 1000}))
-        # vm.AgGrid(id=f"outer_id_{i}", figure=dash_ag_grid(tips, id=f"qwer", style={"width": 1000}))
-        for i in range(3)
-    ],
+
+def tabs(title: str):
+    return vm.Tabs(
+        title="Tab Title",
+        tabs=[
+            vm.Container(
+                title=f"{title} I",
+                components=[
+                    vm.Graph(
+                        figure=px.bar(
+                            gapminder_2007,
+                            title="Graph 1",
+                            x="continent",
+                            y="lifeExp",
+                            color="continent",
+                        ),
+                    ),
+                    vm.Graph(
+                        figure=px.box(
+                            gapminder_2007,
+                            title="Graph 2",
+                            x="continent",
+                            y="lifeExp",
+                            color="continent",
+                        ),
+                    ),
+                ],
+            ),
+            vm.Container(
+                title=f"{title} II",
+                components=[
+                    vm.Graph(
+                        figure=px.scatter(
+                            gapminder_2007,
+                            title="Graph 3",
+                            x="gdpPercap",
+                            y="lifeExp",
+                            size="pop",
+                            color="continent",
+                        ),
+                    ),
+                ],
+            ),
+        ],
+    )
+
+
+page_one = vm.Page(title="Tabs - Standalone", components=[tabs("Tab - Single")])
+
+page_two = vm.Page(
+    title="Tabs inside Container",
+    components=[vm.Container(title="Container Title", components=[tabs("Tab Container")], variant="filled")],
 )
 
-page2 = vm.Page(
-    title="LAYOUT_FLEX_GAP_AND_TABLE",
-    layout=vm.Flex(gap="40px"),
-    # components=[vm.Table(figure=dash_data_table(tips, style_table={"width": "1000px"})) for i in range(3)],
-    components=[
-        vm.Table(figure=dash_data_table(tips, id=f"qwert_{i}", style_table={"width": "1000px"})) for i in range(3)
-    ],
+page_three = vm.Page(
+    title="Tabs inside Container - Collapsed",
+    components=[vm.Container(title="Container Title Collpased", components=[tabs("Tab Container Collapsed")], variant="filled", collapsed=True)],
 )
 
-page3 = vm.Page(
-    title="cross_id",
-    layout=vm.Flex(gap="40px"),
-    components=[
-        vm.Table(figure=dash_data_table(tips, id="qwert", style_table={"width": "1000px"})),
-        vm.AgGrid(figure=dash_ag_grid(tips, id="qwert", style={"width": 1000})),
-    ],
-)
-
-dashboard = vm.Dashboard(pages=[page1, page2, page3])
+dashboard = vm.Dashboard(pages=[page_one, page_two, page_three])
 
 
 if __name__ == "__main__":
     Vizro().build(dashboard).run()
-
-## TO CHECK: also for figure and/or Graph?
