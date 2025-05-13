@@ -52,7 +52,10 @@ class TestTabsBuildMethod:
         # We want to test the component itself but not all its children
         assert_component_equal(
             result,
-            html.Div(children=[None, dbc.Tabs(id="tabs-id", persistence=True, persistence_type="session")]),
+            html.Div(
+                children=[None, dbc.Tabs(id="tabs-id", persistence=True, persistence_type="session")],
+                className="tabs-container",
+            ),
             keys_to_strip={"children"},
         )
         # We want to test the children created in the Tabs.build but not e.g. the
@@ -81,7 +84,8 @@ class TestTabsBuildMethod:
                 children=[
                     html.H3(id="tabs-id_title"),
                     dbc.Tabs(id="tabs-id", persistence=True, persistence_type="session"),
-                ]
+                ],
+                className="tabs-container",
             ),
             keys_to_strip={"children"},
         )

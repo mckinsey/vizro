@@ -44,3 +44,8 @@ as it may result in unexpected layouts.
   height: 100%;
   width: 100%;
 }
+
+.tabs-container {
+  height: 100%;
+  width: 100%;
+}

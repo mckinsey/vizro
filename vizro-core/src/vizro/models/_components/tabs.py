@@ -44,4 +44,4 @@ class Tabs(VizroBaseModel):
             persistence_type="session",
         )
 
-        return html.Div(children=[title, tabs])
+        return html.Div(children=[title, tabs], className="tabs-container")
