@@ -143,7 +143,7 @@ class TestPreBuildTable:
 
         assert table._input_component_id == "underlying_table_id"
 
-    def test_pre_build_duplicate_table_id(self):
+    def test_pre_build_duplicate_input_table_id(self):
         dashboard = vm.Dashboard(
             pages=[
                 vm.Page(
@@ -151,6 +151,24 @@ class TestPreBuildTable:
                     components=[
                         vm.Table(figure=dash_data_table(id="duplicate_table_id", data_frame=px.data.gapminder())),
                         vm.Table(figure=dash_data_table(id="duplicate_table_id", data_frame=px.data.gapminder())),
+                    ],
+                )
+            ]
+        )
+        with pytest.raises(
+            DuplicateIDError,
+            match="CapturedCallable with id=duplicate_table_id has an id that is ",
+        ):
+            Vizro().build(dashboard)
+
+    def test_pre_build_duplicate_input_table_id_and_button_id(self):
+        dashboard = vm.Dashboard(
+            pages=[
+                vm.Page(
+                    title="Test Page",
+                    components=[
+                        vm.Table(figure=dash_data_table(id="duplicate_table_id", data_frame=px.data.gapminder())),
+                        vm.Button(id="duplicate_table_id"),
                     ],
                 )
             ]
