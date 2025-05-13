@@ -16,12 +16,12 @@ Uncomment the section that is right (remove the HTML comment wrapper).
 - A bullet item for the Removed category with a link to the relevant PR at the end of your entry, e.g. Enable feature XXX. ([#1](https://github.com/mckinsey/vizro/pull/1))
 
 -->
-
+<!--
 ### Added
 
-- Support for simplified input/output references in actions using just model IDs (e.g. "graph-1") when the model has a default property defined. The existing dot-notation format (e.g. "graph-1.figure") remains supported. ([#1153](https://github.com/mckinsey/vizro/pull/1153))
+- A bullet item for the Added category with a link to the relevant PR at the end of your entry, e.g. Enable feature XXX. ([#1](https://github.com/mckinsey/vizro/pull/1))
 
-
+-->
 <!--
 ### Changed
 

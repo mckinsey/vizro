@@ -121,7 +121,8 @@ class _BaseAction(VizroBaseModel):
         """
         attribute_type = "_action_outputs" if type == "output" else "_action_inputs"
 
-        # Validate that the dependency is in one of two valid formats: id.property ("graph-1.figure") or id ("card-id")
+        # Validate that the dependency is in one of two valid formats: id.property ("graph-1.figure") or id ("card-id").
+        # By this point we have already validation dependency is a str.
         if not re.match(r"^[^.]+$|^[^.]+[.][^.]+$", dependency):
             raise ValueError(
                 f"Invalid {type} format '{dependency}'. Expected format is '<component-id>.<property>' "
@@ -144,19 +145,21 @@ class _BaseAction(VizroBaseModel):
 
         try:
             return getattr(model_manager[component_id], attribute_type)[component_property]
-        except (KeyError, AttributeError) as e:
-            if isinstance(e, KeyError):
-                if str(e) == f"'{component_property}'":
+        except (KeyError, AttributeError) as exc:
+            if isinstance(exc, KeyError):
+                if component_property in str(exc):
                     raise KeyError(
                         f"Model with ID `{component_id}` has no `{component_property}` key inside its "
                         f"`{attribute_type}` property. Please specify the {type} explicitly as "
                         f"`{component_id}.<property>`."
-                    ) from e
-                raise KeyError(f"Model with ID `{component_id}` not found. Please provide a valid component ID.") from e
+                    ) from exc
+                raise KeyError(
+                    f"Model with ID `{component_id}` not found. Please provide a valid component ID."
+                ) from exc
             raise AttributeError(
                 f"Model with ID '{component_id}' does not have implicit {type} properties defined. "
                 f"Please specify the {type} explicitly as '{component_id}.<property>'."
-            ) from e
+            ) from exc
 
     @property
     def _transformed_inputs(self) -> Union[list[State], dict[str, Union[State, ControlsStates]]]:
@@ -194,12 +197,9 @@ class _BaseAction(VizroBaseModel):
         # vm.Action that does not pass this check will have already been classified as legacy in Action._legacy.
         # In future when vm.Action.inputs is deprecated then this will be used for vm.Action instances also.
         TypeAdapter(dict[str, str]).validate_python(self._runtime_args)
-        # Do exactly same lookup but we only have "__default__" defined in inputs dictionary so will only ever use that
-        # case
         # User specified arguments runtime_args take precedence over built in reserved arguments. No static arguments
         # ar relevant here, just Dash States. Static arguments values are stored in the state of the relevant
         # _AbstractAction instance.
-        # Qn: should this work for legacy actions too? Think about docs.
         runtime_args = {
             arg_name: State(*self._transform_dependency(arg_value, type="input").split("."))
             for arg_name, arg_value in self._runtime_args.items()
@@ -337,12 +337,11 @@ class Action(_BaseAction):
 
     Args:
         function (CapturedCallable): Action function.
-        inputs (list[str]): List of inputs provided to the action function. Each input can be
-            specified as either `<component_id>.<property>` or just `<component_id>` if the model
-            has a default input property defined. Defaults to `[]`.
-        outputs (Union[list[str], dict[str, str]]): List or dictionary of outputs modified by the
-            action function. Each output can be specified as either `<component_id>.<property>` or
-            just `<component_id>` if the model has a default output property defined. Defaults to `[]`.
+        inputs (list[str]): List of inputs provided to the action function. Each input can be specified as `<model_id>`
+            or `<model_id>.<argument_name>` or `<component_id>.<property>`. Defaults to `[]`.
+        outputs (Union[list[str], dict[str, str]]): List or dictionary of outputs modified by the action function. Each
+            output can be specified as `<model_id>` or `<model_id>.<argument_name>` or `<component_id>.<property>`.
+            Defaults to `[]`.
     """
 
     # TODO-AV2 D 5: when it's made public, add something like below to docstring:
@@ -364,20 +363,20 @@ class Action(_BaseAction):
     ]
     # inputs is a legacy field and will be deprecated. It must only be used when _legacy = True.
     # TODO-AV2 C 1: Put in deprecation warning.
+    # The type hint str here really means _IdOrIdProperty. We might change it in future for clearer API docs, but the
+    # validation to check string format (presence of 0 or 1 . characters) does not need to be included in the
+    # annotation. Options for good public API might be:
+    # Union[ModelID, str] - where str refers to IdProperty, but ModelID is also str so this doesn't fully  make sense
+    # Union[ModelID, IdProperty] - means making IdProperty public, which is ok but maybe overkill
     inputs: list[str] = Field(
         default=[],
-        description="""List of inputs provided to the action function. Each input can be specified as either
-                `<component_id>.<property>` or just `<component_id>` if the model has a default input property defined.
-                Defaults to `[]`""",
+        description="""List of inputs provided to the action function. Each input can be specified as `<model_id>` or
+        `<model_id>.<argument_name>` or `<component_id>.<property>`. Defaults to `[]`.""",
     )
-    # str - less informative than many other places where we use ModelID
-    # Union[ModelID, str] - where str means "dot separated string" a bit more informative but doesn't really make sense
-    # Union[ModelID, IdProperty] - means making IdProperty public, which is ok but maybe overkill
     outputs: Union[list[str], dict[str, str]] = Field(  # type: ignore
         default=[],
         description="""List or dictionary of outputs modified by the action function. Each output can be specified as
-            either `<component_id>.<property>` or just `<component_id>` if the model has a default output property
-            defined. Defaults to `[]`.""",
+            `<model_id>` or `<model_id>.<argument_name>` or `<component_id>.<property>`. Defaults to `[]`.""",
     )
 
     @property
