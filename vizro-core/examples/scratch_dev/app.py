@@ -64,7 +64,14 @@ page_two = vm.Page(
 
 page_three = vm.Page(
     title="Tabs inside Container - Collapsed",
-    components=[vm.Container(title="Container Title Collpased", components=[tabs("Tab Container Collapsed")], variant="filled", collapsed=True)],
+    components=[
+        vm.Container(
+            title="Container Title Collapsed",
+            components=[tabs("Tab Container Collapsed")],
+            variant="filled",
+            collapsed=True,
+        )
+    ],
 )
 
 dashboard = vm.Dashboard(pages=[page_one, page_two, page_three])
