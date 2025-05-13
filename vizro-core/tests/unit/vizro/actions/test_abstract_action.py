@@ -3,8 +3,6 @@ from asserts import assert_component_equal
 from dash import Output, State, html
 from pydantic import ValidationError
 
-import vizro.models as vm
-from vizro import Vizro
 from vizro.actions._abstract_action import _AbstractAction
 
 
@@ -319,18 +317,15 @@ class TestAbstractActionOutputs:
             # An error is raised when accessing _transformed_outputs which is fine because validation is then performed.
             action_with_mock_outputs()._transformed_outputs
 
-    def test_outputs_invalid_missing_action_attribute(self, action_with_mock_outputs):
-        # The Button currently doesn't have _action_outputs defined)
-        button = vm.Button(id="test_button")
-        vm.Page(title="Page Title", components=[button])
-        Vizro._pre_build()
-
+    def test_outputs_invalid_missing_action_attribute(
+        self, managers_using_model_with_default_output_input, action_with_mock_outputs
+    ):
         with pytest.raises(
             AttributeError,
-            match="Model with ID 'test_button' does not have implicit output properties defined. "
-            "Please specify the output explicitly as 'test_button.<property>'.",
+            match="Model with ID 'model-with-no-output-props' does not have implicit output properties defined. "
+            "Please specify the output explicitly as 'model-with-no-output-props.<property>'.",
         ):
-            action_with_mock_outputs.outputs = ["test_button"]
+            action_with_mock_outputs.outputs = ["model-with-no-output-props"]
             action_with_mock_outputs()._transformed_outputs
 
 

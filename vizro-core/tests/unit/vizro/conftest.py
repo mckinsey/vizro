@@ -194,7 +194,7 @@ def managers_using_model_with_default_output_input(standard_px_chart):
     vm.Page(
         id="test_page",
         title="My first dashboard",
-        components=[vm.Graph(figure=standard_px_chart)],
+        components=[vm.Graph(figure=standard_px_chart), vm.Button(id="model-with-no-output-props")],
         controls=[vm.Filter(column="continent", selector=vm.Dropdown(id="known-model-id"))],
     )
     Vizro._pre_build()
