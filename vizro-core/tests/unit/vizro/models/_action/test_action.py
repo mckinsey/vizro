@@ -67,7 +67,7 @@ class TestLegacyActionInputs:
         [
             (action_with_no_args, [], []),
             (action_with_one_arg, ["component.property"], [State("component", "property")]),
-            (action_with_one_arg, ["custom-model-id"], [State("custom-model-id", "children")]),
+            (action_with_one_arg, ["known-model-id"], [State("known-model-id", "value")]),
             (
                 action_with_two_args,
                 ["component_1.property_1", "component_2.property_2"],
@@ -80,7 +80,7 @@ class TestLegacyActionInputs:
         action_function,
         runtime_inputs,
         expected_transformed_inputs,
-        managers_custom_model_with_default_output_input,
+        managers_using_model_with_default_output_input,
     ):
         action = Action(function=action_function(), inputs=runtime_inputs)
 
@@ -178,7 +178,7 @@ class TestLegacyActionOutputs:
                 ["component_1.property_1", "component_2.property_2"],
                 [Output("component_1", "property_1"), Output("component_2", "property_2")],
             ),
-            (["custom-model-id"], Output("custom-model-id", "children")),
+            (["known-model-id"], Output("known-model-id", "value")),
             ({}, {}),
             (
                 {"output_1": "component.property"},
@@ -189,14 +189,12 @@ class TestLegacyActionOutputs:
                 {"output_1": Output("component_1", "property_1"), "output_2": Output("component_2", "property_2")},
             ),
             (
-                {"output_1": "custom-model-id"},
-                {"output_1": Output("custom-model-id", "children")},
+                {"output_1": "known-model-id"},
+                {"output_1": Output("known-model-id", "value")},
             ),
         ],
     )
-    def test_outputs_valid(
-        self, outputs, expected_transformed_outputs, managers_custom_model_with_default_output_input
-    ):
+    def test_outputs_valid(self, outputs, expected_transformed_outputs, managers_using_model_with_default_output_input):
         # inputs=[] added to force action to be legacy
         action = Action(function=action_with_no_args(), inputs=[], outputs=outputs)
 
@@ -326,7 +324,7 @@ class TestActionInputs:
             (action_with_no_args, {}, {}),
             (action_with_one_arg, {"arg_1": "component.property"}, {"arg_1": State("component", "property")}),
             # LQ: Check why this doesn't pass?
-            # (action_with_one_arg, {"arg_1": "custom-model-id"}, {"arg_1": State("custom-model-id", "children")}),
+            # (action_with_one_arg, {"arg_1": "known-model-id"}, {"arg_1": State("known-model-id", "value")}),
             (
                 action_with_two_args,
                 {"arg_1": "component.property", "arg_2": "component.property"},
@@ -337,7 +335,7 @@ class TestActionInputs:
                 {},
                 {
                     "_controls": {
-                        "filters": [],
+                        "filters": [State("known-model-id", "value")],
                         "parameters": [],
                         "filter_interaction": [],
                     }
@@ -352,7 +350,7 @@ class TestActionInputs:
         ],
     )
     def test_inputs_valid(
-        self, action_function, inputs, expected_transformed_inputs, managers_custom_model_with_default_output_input
+        self, action_function, inputs, expected_transformed_inputs, managers_using_model_with_default_output_input
     ):
         action = Action(function=action_function(**inputs))
         assert action._transformed_inputs == expected_transformed_inputs
@@ -395,7 +393,7 @@ class TestActionOutputs:
                 ["component_1.property_1", "component_2.property_2"],
                 [Output("component_1", "property_1"), Output("component_2", "property_2")],
             ),
-            (["custom-model-id"], Output("custom-model-id", "children")),
+            (["known-model-id"], Output("known-model-id", "value")),
             ({}, {}),
             (
                 {"output_1": "component.property"},
@@ -406,14 +404,12 @@ class TestActionOutputs:
                 {"output_1": Output("component_1", "property_1"), "output_2": Output("component_2", "property_2")},
             ),
             (
-                {"output_1": "custom-model-id"},
-                {"output_1": Output("custom-model-id", "children")},
+                {"output_1": "known-model-id"},
+                {"output_1": Output("known-model-id", "value")},
             ),
         ],
     )
-    def test_outputs_valid(
-        self, outputs, expected_transformed_outputs, managers_custom_model_with_default_output_input
-    ):
+    def test_outputs_valid(self, outputs, expected_transformed_outputs, managers_using_model_with_default_output_input):
         action = Action(function=action_with_no_args(), outputs=outputs)
 
         assert action.outputs == outputs

@@ -96,6 +96,9 @@ class Filter(VizroBaseModel):
 
     @property
     def _action_outputs(self) -> dict[str, _IdProperty]:
+        # TODO-AV2 D 3: Implement direct mapping for filter selectors using {"value": f"{self.selector.id}.value"}.
+        # This will allow direct interaction with a filter's selector via its ID, essential for the upcoming
+        # 'interact' action.
         return {"__default__": f"{self.id}.children"}
 
     def __call__(self, target_to_data_frame: dict[ModelID, pd.DataFrame], current_value: Any):

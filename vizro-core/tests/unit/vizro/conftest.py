@@ -1,18 +1,15 @@
 """Fixtures to be shared across several tests."""
 
-from typing import Literal
-
 import pandas as pd
 import plotly.graph_objects as go
 import pytest
-from dash import State, html
+from dash import State
 
 import vizro.models as vm
 import vizro.plotly.express as px
 from vizro import Vizro
 from vizro.actions import filter_interaction
 from vizro.figures import kpi_card
-from vizro.models.types import _IdProperty
 from vizro.tables import dash_ag_grid, dash_data_table
 
 
@@ -190,28 +187,14 @@ def vizro_app():
 
 
 @pytest.fixture
-def managers_custom_model_with_default_output_input():
-    """Instantiates a simple model_manager and a page with a custom model with default input/output properties."""
-
-    class CustomModel(vm.VizroBaseModel):
-        type: Literal["custom_model"] = "custom_model"
-
-        @property
-        def _action_outputs(self) -> dict[str, _IdProperty]:
-            return {"__default__": f"{self.id}.children"}
-
-        @property
-        def _action_inputs(self) -> dict[str, _IdProperty]:
-            return {"__default__": f"{self.id}.children"}
-
-        def build(self):
-            return html.Div("Hello World.")
-
-    vm.Page.add_type("components", CustomModel)
-
+def managers_using_model_with_default_output_input(standard_px_chart):
+    """Instantiates the model_manager using a Dropdown (has default input and output properties)."""
+    # We have to use one of the selectors as the known-model as currently only the selectors have both
+    # input and output properties defined. Therefore the configuration currently requires components and controls.
     vm.Page(
         id="test_page",
         title="My first dashboard",
-        components=[CustomModel(id="custom-model-id")],
+        components=[vm.Graph(figure=standard_px_chart)],
+        controls=[vm.Filter(column="continent", selector=vm.Dropdown(id="known-model-id"))],
     )
     Vizro._pre_build()

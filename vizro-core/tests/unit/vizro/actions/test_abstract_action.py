@@ -138,8 +138,8 @@ class TestAbstractActionInputs:
             ),
             (
                 action_with_one_runtime_arg,
-                {"arg_1": "custom-model-id"},
-                {"arg_1": State("custom-model-id", "children")},
+                {"arg_1": "known-model-id"},
+                {"arg_1": State("known-model-id", "value")},
             ),
             (
                 action_with_two_runtime_args,
@@ -156,7 +156,7 @@ class TestAbstractActionInputs:
                 {},
                 {
                     "_controls": {
-                        "filters": [],
+                        "filters": [State("known-model-id", "value")],
                         "parameters": [],
                         "filter_interaction": [],
                     }
@@ -165,7 +165,7 @@ class TestAbstractActionInputs:
         ],
     )
     def test_inputs_valid(
-        self, action_class, inputs, expected_transformed_inputs, managers_custom_model_with_default_output_input
+        self, action_class, inputs, expected_transformed_inputs, managers_using_model_with_default_output_input
     ):
         action = action_class(**inputs)
         assert action._transformed_inputs == expected_transformed_inputs
@@ -240,7 +240,7 @@ class TestAbstractActionOutputs:
                 ["component_1.property_1", "component_2.property_2"],
                 [Output("component_1", "property_1"), Output("component_2", "property_2")],
             ),
-            (["custom-model-id"], Output("custom-model-id", "children")),
+            (["known-model-id"], Output("known-model-id", "value")),
             ({}, {}),
             (
                 {"output_1": "component.property"},
@@ -251,14 +251,14 @@ class TestAbstractActionOutputs:
                 {"output_1": Output("component_1", "property_1"), "output_2": Output("component_2", "property_2")},
             ),
             (
-                {"output_1": "custom-model-id"},
-                {"output_1": Output("custom-model-id", "children")},
+                {"output_1": "known-model-id"},
+                {"output_1": Output("known-model-id", "value")},
             ),
         ],
         indirect=["action_with_mock_outputs"],
     )
     def test_outputs_valid(
-        self, action_with_mock_outputs, expected_transformed_outputs, managers_custom_model_with_default_output_input
+        self, action_with_mock_outputs, expected_transformed_outputs, managers_using_model_with_default_output_input
     ):
         action = action_with_mock_outputs()
         assert action._transformed_outputs == expected_transformed_outputs
