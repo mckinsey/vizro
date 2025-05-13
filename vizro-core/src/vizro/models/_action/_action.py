@@ -172,7 +172,10 @@ class _BaseAction(VizroBaseModel):
         """
         if self._legacy:
             # Must be an Action rather than _AbstractAction, so has already been validated by pydantic field annotation.
-            return [State(*input.split(".")) for input in cast(Action, self).inputs]
+            return [
+                State(*self._transform_dependency(input, type="input").split("."))
+                for input in cast(Action, self).inputs
+            ]
 
         from vizro.models import Filter, Parameter
 

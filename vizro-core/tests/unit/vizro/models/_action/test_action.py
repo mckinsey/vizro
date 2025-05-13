@@ -67,22 +67,55 @@ class TestLegacyActionInputs:
         [
             (action_with_no_args, [], []),
             (action_with_one_arg, ["component.property"], [State("component", "property")]),
+            (action_with_one_arg, ["custom-model-id"], [State("custom-model-id", "children")]),
             (
                 action_with_two_args,
                 ["component_1.property_1", "component_2.property_2"],
                 [State("component_1", "property_1"), State("component_2", "property_2")],
             ),
-            # Model-ID only is not supported for legacy action inputs
         ],
     )
-    def test_action_inputs_valid(self, action_function, runtime_inputs, expected_transformed_inputs):
+    def test_action_inputs_valid(
+        self,
+        action_function,
+        runtime_inputs,
+        expected_transformed_inputs,
+        managers_custom_model_with_default_output_input,
+    ):
         action = Action(function=action_function(), inputs=runtime_inputs)
 
         assert action._legacy
         assert action.inputs == runtime_inputs
         assert action._transformed_inputs == expected_transformed_inputs
 
-    # TODO : Write tests for invalid inputs
+    @pytest.mark.parametrize(
+        "runtime_inputs",
+        [
+            ["unknown_model_id"],
+        ],
+    )
+    def test_action_inputs_invalid_model_id(self, runtime_inputs):
+        with pytest.raises(KeyError, match="Model with ID .* not found. Please provide a valid component ID."):
+            action = Action(function=action_with_one_arg(), inputs=runtime_inputs)
+            action._transformed_inputs
+
+    @pytest.mark.parametrize(
+        "runtime_inputs",
+        [
+            [""],
+            ["component."],
+            [".property"],
+            ["component..property"],
+            ["component.property.property"],
+        ],
+    )
+    def test_action_inputs_invalid_dot_syntax(self, runtime_inputs):
+        with pytest.raises(
+            ValueError,
+            match="Invalid input format .*. Expected format is '<model_id>' or '<model_id>.<argument_name>'.",
+        ):
+            action = Action(function=action_with_one_arg(), inputs=runtime_inputs)
+            action._transformed_inputs
 
     @pytest.mark.parametrize(
         "static_inputs",
