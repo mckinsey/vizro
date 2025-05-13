@@ -179,8 +179,7 @@ class TestAbstractActionInputs:
     @pytest.mark.parametrize(
         "input",
         [
-            "component",
-            "component_property",
+            "unknown_model_id",
         ],
     )
     def test_inputs_invalid_model_id(self, input):
@@ -203,7 +202,7 @@ class TestAbstractActionInputs:
     def test_inputs_invalid_dot_syntax(self, input):
         with pytest.raises(
             ValueError,
-            match="Invalid input format .*. Expected format is '<component-id>.<property>' or '<component-id>'.",
+            match="Invalid input format .*. Expected format is '<model_id>' or '<model_id>.<argument_name>'.",
         ):
             action_with_one_runtime_arg(arg_1=input)._transformed_inputs
 
@@ -268,10 +267,8 @@ class TestAbstractActionOutputs:
     @pytest.mark.parametrize(
         "action_with_mock_outputs",
         [
-            ["component"],
-            ["component_property"],
-            {"output_1": "component"},
-            {"output_1": "component_property"},
+            ["unknown_model_id"],
+            {"output_1": "unknown_model_id"},
         ],
         indirect=["action_with_mock_outputs"],
     )
@@ -303,7 +300,7 @@ class TestAbstractActionOutputs:
     def test_outputs_invalid_dot_syntax(self, action_with_mock_outputs):
         with pytest.raises(
             ValueError,
-            match="Invalid output format .*. Expected format is '<component-id>.<property>' or '<component-id>'.",
+            match="Invalid output format .*. Expected format is '<model_id>' or '<model_id>.<argument_name>'.",
         ):
             # An error is raised when accessing _transformed_outputs which is fine because validation is then performed.
             action_with_mock_outputs()._transformed_outputs
