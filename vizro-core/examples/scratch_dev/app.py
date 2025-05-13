@@ -41,7 +41,7 @@ page_4_ag_grid_error = vm.Page(
         vm.AgGrid(
             id="duplicate-ag-grid-id",
             figure=dash_ag_grid(df, id="unique-ag-grid-id"),
-            # TODO: See how configurations below raise an exception.
+            # TODO: See how configurations below raise an exception
             # figure=dash_ag_grid(df, id="duplicate-ag-grid-id"),
             # figure=dash_ag_grid(df, id="duplicate-table-id")
         )
