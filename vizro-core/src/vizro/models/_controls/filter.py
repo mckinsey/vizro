@@ -96,7 +96,7 @@ class Filter(VizroBaseModel):
 
     @property
     def _action_outputs(self) -> dict[str, _IdProperty]:
-        return {"__default__": cast(_IdProperty, f"{self.id}.children")}
+        return {"__default__": f"{self.id}.children"}
 
     def __call__(self, target_to_data_frame: dict[ModelID, pd.DataFrame], current_value: Any):
         # Only relevant for a dynamic filter.

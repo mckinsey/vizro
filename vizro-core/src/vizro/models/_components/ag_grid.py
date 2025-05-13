@@ -82,7 +82,7 @@ class AgGrid(VizroBaseModel):
 
     @property
     def _action_outputs(self) -> dict[str, _IdProperty]:
-        return {"__default__": cast(_IdProperty, f"{self.id}.children")}
+        return {"__default__": f"{self.id}.children"}
 
     # Convenience wrapper/syntactic sugar.
     def __call__(self, **kwargs):

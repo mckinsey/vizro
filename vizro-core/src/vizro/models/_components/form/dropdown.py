@@ -135,11 +135,11 @@ class Dropdown(VizroBaseModel):
 
     @property
     def _action_outputs(self) -> dict[str, _IdProperty]:
-        return {"__default__": cast(_IdProperty, f"{self.id}.value")}
+        return {"__default__": f"{self.id}.value"}
 
     @property
     def _action_inputs(self) -> dict[str, _IdProperty]:
-        return {"__default__": cast(_IdProperty, f"{self.id}.value")}
+        return {"__default__": f"{self.id}.value"}
 
     def __call__(self, options):
         full_options, default_value = get_options_and_default(options=options, multi=self.multi)

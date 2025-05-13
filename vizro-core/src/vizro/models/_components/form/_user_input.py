@@ -38,11 +38,11 @@ class UserInput(VizroBaseModel):
 
     @property
     def _action_outputs(self) -> dict[str, _IdProperty]:
-        return {"__default__": cast(_IdProperty, f"{self.id}.value")}
+        return {"__default__": f"{self.id}.value"}
 
     @property
     def _action_inputs(self) -> dict[str, _IdProperty]:
-        return {"__default__": cast(_IdProperty, f"{self.id}.value")}
+        return {"__default__": f"{self.id}.value"}
 
     @_log_call
     def build(self):

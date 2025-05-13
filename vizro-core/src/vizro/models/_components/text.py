@@ -43,7 +43,7 @@ class Text(VizroBaseModel):
 
     @property
     def _action_outputs(self) -> dict[str, _IdProperty]:
-        return {"__default__": cast(_IdProperty, f"{self.id}.children")}
+        return {"__default__": f"{self.id}.children"}
 
     @_log_call
     def build(self):

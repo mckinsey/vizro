@@ -542,7 +542,7 @@ class capture:
 
 
 # For "component_id.component_property", e.g. "dropdown_id.value".
-_IdProperty = NewType("_IdProperty", str)
+_IdProperty: TypeAlias = str
 """A string that must be in the format 'component-id.component-property'."""
 
 # Really this should be NewType and used for models like VizroBaseModel.id, but that clutters the code with casts and
@@ -550,7 +550,6 @@ _IdProperty = NewType("_IdProperty", str)
 ModelID: TypeAlias = str
 """Represents a Vizro model ID."""
 
-# LQ: mypy complains if we use NewType here, as the type needs to be subclassable and the current Union does not work
 _IdOrIdProperty: TypeAlias = Union[ModelID, _IdProperty]
 """Represents either a model ID or a string in the format 'component-id.component-property'."""
 
