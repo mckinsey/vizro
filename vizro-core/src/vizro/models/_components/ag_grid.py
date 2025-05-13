@@ -142,13 +142,13 @@ class AgGrid(VizroBaseModel):
         self._input_component_id = self.figure._arguments.get("id", f"__input_{self.id}")
         # Check if any other Vizro model or CapturedCallable has the same input component ID
 
-        all_input_component_ids = [  # type: ignore[var-annotated]
+        all_input_component_ids = {  # type: ignore[var-annotated]
             model._input_component_id
             for model in model_manager._get_models()
             if hasattr(model, "_input_component_id") and model.id != self.id
-        ]
+        }
 
-        if self._input_component_id in list(model_manager) + all_input_component_ids:
+        if self._input_component_id in set(model_manager) | all_input_component_ids:
             raise DuplicateIDError(
                 f"CapturedCallable with id={self._input_component_id} has an id that is "
                 "already in use by another Vizro model or CapturedCallable. "
