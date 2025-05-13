@@ -783,13 +783,6 @@ custom_figures = vm.Page(
     ],
 )
 
-kpi_indicators = vm.Page(
-    title="KPI Indicators",
-    layout=vm.Grid(grid=[[0, 1, 2, 3], [4, 5, 6, 7], [-1, -1, -1, -1], [-1, -1, -1, -1]]),
-    components=[vm.Figure(figure=figure) for figure in example_cards + example_reference_cards],
-    controls=[vm.Filter(column="Category")],
-)
-
 
 # DASHBOARD -------------------------------------------------------------------
 components = [graphs, ag_grid, table, cards, figure, button, containers, collapsible_container, tabs]

@@ -172,6 +172,7 @@ class Dashboard(VizroBaseModel):
 
         # define callbacks but not output_finished stores of dash_components, which are globally available but
         # recreated on every page
+        # TODO NOW: problem when build actions that are in MM but not used. Just ignore so long as Dash.suppress_exception=True?
         for action in cast(Iterable[_BaseAction], model_manager._get_models(_BaseAction)):
             action.build()
 
