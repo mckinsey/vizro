@@ -48,58 +48,28 @@ class TestTabsInstantiation:
 
 class TestTabsBuildMethod:
     def test_tabs_build(self, containers):
-        result = vm.Tabs(id="tabs-id", tabs=containers).build()
-        # We want to test the component itself but not all its children
+        result = vm.Tabs(id="tabs-id", title="Tabs Title", tabs=containers).build()
+
+        # Test the outermost part first and then go down into deeper levels
+        assert_component_equal(result, html.Div(className="tabs-container"), keys_to_strip={"children"})
         assert_component_equal(
-            result,
-            html.Div(
-                children=[None, dbc.Tabs(id="tabs-id", persistence=True, persistence_type="session")],
-                className="tabs-container",
-            ),
-            keys_to_strip={"children"},
-        )
-        # We want to test the children created in the Tabs.build but not e.g. the
-        # vm.Container.build() as it's tested elsewhere already
-        assert_component_equal(
-            result.children[1].children,
-            [dbc.Tab(label="Title-1"), dbc.Tab(label="Title-2")],
-            keys_to_strip={"children"},
-        )
-        # We still check that the html.Div for the Containers are created, but we don't need to check its content
-        assert_component_equal(
-            [tab.children for tab in result.children[1].children],
+            result.children,
             [
-                dbc.Container(id="container-1", class_name="", fluid=True),
-                dbc.Container(id="container-2", class_name="", fluid=True),
+                html.H3(id="tabs-id_title"),
+                dbc.Tabs(id="tabs-id", persistence=True, persistence_type="session"),
             ],
             keys_to_strip={"children"},
         )
+        assert_component_equal(result["tabs-id_title"].children, "Tabs Title")
 
-    def test_tabs_build_with_title(self, containers):
-        result = vm.Tabs(id="tabs-id", title="Tabs Title", tabs=containers).build()
-        # We want to test the component itself but not all its children
+        # We want to test the children created in the Tabs.build but not e.g. the
+        # vm.Container.build() as it's tested elsewhere already
         assert_component_equal(
-            result,
-            html.Div(
-                children=[
-                    html.H3(id="tabs-id_title"),
-                    dbc.Tabs(id="tabs-id", persistence=True, persistence_type="session"),
-                ],
-                className="tabs-container",
-            ),
-            keys_to_strip={"children"},
-        )
-        # We want to test the children created in the Tabs.build and Title but not e.g. the vm.Container.build() as
-        # it's tested elsewhere already
-        assert_component_equal(result.children[0].children, "Tabs Title")
-        assert_component_equal(
-            result.children[1].children,
-            [dbc.Tab(label="Title-1"), dbc.Tab(label="Title-2")],
-            keys_to_strip={"children"},
+            result["tabs-id"].children, [dbc.Tab(label="Title-1"), dbc.Tab(label="Title-2")], keys_to_strip={"children"}
         )
         # We still check that the html.Div for the Containers are created, but we don't need to check its content
         assert_component_equal(
-            [tab.children for tab in result.children[1].children],
+            [tab.children for tab in result["tabs-id"].children],
             [
                 dbc.Container(id="container-1", class_name="", fluid=True),
                 dbc.Container(id="container-2", class_name="", fluid=True),
