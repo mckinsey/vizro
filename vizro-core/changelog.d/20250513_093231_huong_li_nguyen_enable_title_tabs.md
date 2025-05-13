@@ -19,7 +19,7 @@ Uncomment the section that is right (remove the HTML comment wrapper).
 
 ### Added
 
-- Enable `title` inside `Tabs`. ([#1](https://github.com/mckinsey/vizro/pull/1))
+- Enable `title` inside `Tabs`. ([#1169](https://github.com/mckinsey/vizro/pull/1169))
 
 
 <!--
