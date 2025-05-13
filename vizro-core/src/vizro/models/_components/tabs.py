@@ -35,7 +35,7 @@ class Tabs(VizroBaseModel):
     title: str = Field(default="", description="Title displayed above Tabs.")
 
     @_log_call
-    def build(self) -> dbc.Tabs:
+    def build(self):
         title = html.H3(self.title, id=f"{self.id}_title") if self.title else None
         tabs = dbc.Tabs(
             id=self.id,
