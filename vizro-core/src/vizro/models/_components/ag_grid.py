@@ -1,5 +1,5 @@
 import logging
-from typing import Annotated, Literal, Optional, cast
+from typing import Annotated, Literal, Optional
 
 import pandas as pd
 from dash import ClientsideFunction, Input, Output, State, clientside_callback, dcc, html

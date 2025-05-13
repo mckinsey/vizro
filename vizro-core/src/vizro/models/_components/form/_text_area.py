@@ -1,4 +1,4 @@
-from typing import Literal, cast
+from typing import Literal
 
 import dash_bootstrap_components as dbc
 from dash import html

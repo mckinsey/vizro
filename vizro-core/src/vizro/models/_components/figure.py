@@ -1,4 +1,4 @@
-from typing import Annotated, Literal, cast
+from typing import Annotated, Literal
 
 from dash import dcc, html
 from pydantic import AfterValidator, Field, field_validator

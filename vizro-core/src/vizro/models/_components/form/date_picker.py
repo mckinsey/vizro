@@ -1,5 +1,5 @@
 from datetime import date
-from typing import Annotated, Any, Literal, Optional, Union, cast
+from typing import Annotated, Any, Literal, Optional, Union
 
 import dash_bootstrap_components as dbc
 import dash_mantine_components as dmc

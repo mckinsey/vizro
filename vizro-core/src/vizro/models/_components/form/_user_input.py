@@ -1,4 +1,4 @@
-from typing import Annotated, Literal, cast
+from typing import Annotated, Literal
 
 import dash_bootstrap_components as dbc
 from dash import html

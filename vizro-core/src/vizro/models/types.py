@@ -10,7 +10,7 @@ import sys
 import warnings
 from contextlib import contextmanager
 from datetime import date
-from typing import Annotated, Any, Literal, NewType, Optional, Protocol, Union, runtime_checkable
+from typing import Annotated, Any, Literal, Optional, Protocol, Union, runtime_checkable
 
 if sys.version_info >= (3, 10):
     from typing import TypeAlias

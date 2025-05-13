@@ -1,4 +1,4 @@
-from typing import Annotated, Any, Literal, cast
+from typing import Annotated, Any, Literal
 
 from dash import dcc
 from pydantic import Field

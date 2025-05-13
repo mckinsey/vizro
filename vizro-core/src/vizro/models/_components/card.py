@@ -1,4 +1,4 @@
-from typing import Annotated, Any, Literal, cast
+from typing import Annotated, Any, Literal
 
 import dash_bootstrap_components as dbc
 from dash import dcc, get_relative_path
