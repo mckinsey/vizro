@@ -16,7 +16,7 @@ from e2e.vizro.navigation import accordion_select, page_select, select_dropdown_
 from e2e.vizro.paths import (
     categorical_components_value_path,
     dropdown_arrow_path,
-    graph_y_axis_value_path,
+    graph_axis_value_path,
     slider_value_path,
 )
 from e2e.vizro.waiters import callbacks_finish_waiter
@@ -314,17 +314,13 @@ def test_datepicker_range_filters(dash_br):
 
     # Check y axis min value is '0'
     dash_br.wait_for_text_to_equal(
-        graph_y_axis_value_path(
-            graph_id=cnst.BAR_DYNAMIC_DATEPICKER_FILTER_ID, y_axis_value_number="1", y_axis_value="0"
-        ),
+        graph_axis_value_path(graph_id=cnst.BAR_DYNAMIC_DATEPICKER_FILTER_ID, axis_value_number="1", axis_value="0"),
         "0",
     )
 
     # Check y axis max value is '6'
     dash_br.wait_for_text_to_equal(
-        graph_y_axis_value_path(
-            graph_id=cnst.BAR_DYNAMIC_DATEPICKER_FILTER_ID, y_axis_value_number="4", y_axis_value="6"
-        ),
+        graph_axis_value_path(graph_id=cnst.BAR_DYNAMIC_DATEPICKER_FILTER_ID, axis_value_number="4", axis_value="6"),
         "6",
     )
 
@@ -345,9 +341,7 @@ def test_datepicker_range_filters(dash_br):
 
     # Check y axis max value is '5'
     dash_br.wait_for_text_to_equal(
-        graph_y_axis_value_path(
-            graph_id=cnst.BAR_DYNAMIC_DATEPICKER_FILTER_ID, y_axis_value_number="6", y_axis_value="5"
-        ),
+        graph_axis_value_path(graph_id=cnst.BAR_DYNAMIC_DATEPICKER_FILTER_ID, axis_value_number="6", axis_value="5"),
         "5",
     )
 
@@ -360,9 +354,7 @@ def test_datepicker_range_filters(dash_br):
 
     # Check y axis max value is '4'
     dash_br.wait_for_text_to_equal(
-        graph_y_axis_value_path(
-            graph_id=cnst.BAR_DYNAMIC_DATEPICKER_FILTER_ID, y_axis_value_number="5", y_axis_value="4"
-        ),
+        graph_axis_value_path(graph_id=cnst.BAR_DYNAMIC_DATEPICKER_FILTER_ID, axis_value_number="5", axis_value="4"),
         "4",
     )
 
@@ -398,16 +390,16 @@ def test_datepicker_single_filters(dash_br):
 
     # Check y axis min value is '0'
     dash_br.wait_for_text_to_equal(
-        graph_y_axis_value_path(
-            graph_id=cnst.BAR_DYNAMIC_DATEPICKER_SINGLE_FILTER_ID, y_axis_value_number="1", y_axis_value="0"
+        graph_axis_value_path(
+            graph_id=cnst.BAR_DYNAMIC_DATEPICKER_SINGLE_FILTER_ID, axis_value_number="1", axis_value="0"
         ),
         "0",
     )
 
     # Check y axis max value is '1'
     dash_br.wait_for_text_to_equal(
-        graph_y_axis_value_path(
-            graph_id=cnst.BAR_DYNAMIC_DATEPICKER_SINGLE_FILTER_ID, y_axis_value_number="6", y_axis_value="1"
+        graph_axis_value_path(
+            graph_id=cnst.BAR_DYNAMIC_DATEPICKER_SINGLE_FILTER_ID, axis_value_number="6", axis_value="1"
         ),
         "1",
     )
@@ -429,8 +421,8 @@ def test_datepicker_single_filters(dash_br):
 
     # Check y axis max value is '4'
     dash_br.wait_for_text_to_equal(
-        graph_y_axis_value_path(
-            graph_id=cnst.BAR_DYNAMIC_DATEPICKER_SINGLE_FILTER_ID, y_axis_value_number="6", y_axis_value="4"
+        graph_axis_value_path(
+            graph_id=cnst.BAR_DYNAMIC_DATEPICKER_SINGLE_FILTER_ID, axis_value_number="6", axis_value="4"
         ),
         "4",
     )
@@ -443,8 +435,8 @@ def test_datepicker_single_filters(dash_br):
 
     # Check y axis max value is '1'
     dash_br.wait_for_text_to_equal(
-        graph_y_axis_value_path(
-            graph_id=cnst.BAR_DYNAMIC_DATEPICKER_SINGLE_FILTER_ID, y_axis_value_number="6", y_axis_value="1"
+        graph_axis_value_path(
+            graph_id=cnst.BAR_DYNAMIC_DATEPICKER_SINGLE_FILTER_ID, axis_value_number="6", axis_value="1"
         ),
         "1",
     )
