@@ -137,6 +137,11 @@ class TestAbstractActionInputs:
                 {"arg_1": State("component", "property")},
             ),
             (
+                action_with_one_runtime_arg,
+                {"arg_1": "custom-model-id"},
+                {"arg_1": State("custom-model-id", "children")},
+            ),
+            (
                 action_with_two_runtime_args,
                 {"arg_1": "component_1.property_1", "arg_2": "component_2.property_2"},
                 {"arg_1": State("component_1", "property_1"), "arg_2": State("component_2", "property_2")},
@@ -159,7 +164,9 @@ class TestAbstractActionInputs:
             ),
         ],
     )
-    def test_inputs_valid(self, action_class, inputs, expected_transformed_inputs):
+    def test_inputs_valid(
+        self, action_class, inputs, expected_transformed_inputs, managers_custom_model_with_default_output_input
+    ):
         action = action_class(**inputs)
         assert action._transformed_inputs == expected_transformed_inputs
 
@@ -233,6 +240,7 @@ class TestAbstractActionOutputs:
                 ["component_1.property_1", "component_2.property_2"],
                 [Output("component_1", "property_1"), Output("component_2", "property_2")],
             ),
+            (["custom-model-id"], Output("custom-model-id", "children")),
             ({}, {}),
             (
                 {"output_1": "component.property"},
@@ -242,10 +250,16 @@ class TestAbstractActionOutputs:
                 {"output_1": "component_1.property_1", "output_2": "component_2.property_2"},
                 {"output_1": Output("component_1", "property_1"), "output_2": Output("component_2", "property_2")},
             ),
+            (
+                {"output_1": "custom-model-id"},
+                {"output_1": Output("custom-model-id", "children")},
+            ),
         ],
         indirect=["action_with_mock_outputs"],
     )
-    def test_outputs_valid(self, action_with_mock_outputs, expected_transformed_outputs):
+    def test_outputs_valid(
+        self, action_with_mock_outputs, expected_transformed_outputs, managers_custom_model_with_default_output_input
+    ):
         action = action_with_mock_outputs()
         assert action._transformed_outputs == expected_transformed_outputs
 
