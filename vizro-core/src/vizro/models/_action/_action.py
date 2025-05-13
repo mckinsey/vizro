@@ -391,10 +391,10 @@ class Action(_BaseAction):
         if "inputs" in self.model_fields_set:
             legacy = True
         else:
-            # If all supplied arguments look like states `<component_id>.<property>` then assume it's a new type of
-            # action. For the case that there's no arguments and no inputs, this gives legacy=False.
+            # If all supplied arguments look like states `<component_id>.<property>` or are model IDs then assume it's
+            # a new type of action. For the case that there's no arguments and no inputs, this gives legacy=False.
             try:
-                legacy = not all(re.fullmatch("[^.]+[.][^.]+", arg_val) for arg_val in self._runtime_args.values())
+                legacy = not all(re.fullmatch("[^.]+[.][^.]+", arg_val) or arg_val in model_manager for arg_val in self._runtime_args.values())
             except TypeError:
                 # arg_val isn't a string so it must be treated as a legacy action.
                 legacy = True

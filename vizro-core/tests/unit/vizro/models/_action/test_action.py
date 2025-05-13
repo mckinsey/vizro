@@ -316,8 +316,7 @@ class TestActionInputs:
         [
             (action_with_no_args, {}, {}),
             (action_with_one_arg, {"arg_1": "component.property"}, {"arg_1": State("component", "property")}),
-            # LQ: Check why this doesn't pass?
-            # (action_with_one_arg, {"arg_1": "known-model-id"}, {"arg_1": State("known-model-id", "value")}),
+            (action_with_one_arg, {"arg_1": "known-model-id"}, {"arg_1": State("known-model-id", "value")}),
             (
                 action_with_two_args,
                 {"arg_1": "component.property", "arg_2": "component.property"},
