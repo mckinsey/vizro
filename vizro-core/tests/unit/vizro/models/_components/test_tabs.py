@@ -3,6 +3,7 @@
 import dash_bootstrap_components as dbc
 import pytest
 from asserts import assert_component_equal
+from dash import html
 from pydantic import ValidationError
 
 import vizro.models as vm
@@ -24,6 +25,7 @@ class TestTabsInstantiation:
         assert all(isinstance(tab, vm.Container) for tab in tabs.tabs) and len(tabs.tabs) == 2
         assert tabs.id == "tabs-id"
         assert tabs.type == "tabs"
+        assert tabs.title == ""
 
     def test_mandatory_tabs_missing(self):
         with pytest.raises(ValidationError, match="Field required"):
@@ -46,21 +48,28 @@ class TestTabsInstantiation:
 
 class TestTabsBuildMethod:
     def test_tabs_build(self, containers):
-        result = vm.Tabs(id="tabs-id", tabs=containers).build()
-        # We want to test the component itself but not all its children
+        result = vm.Tabs(id="tabs-id", title="Tabs Title", tabs=containers).build()
+
+        # Test the outermost part first and then go down into deeper levels
+        assert_component_equal(result, html.Div(className="tabs-container"), keys_to_strip={"children"})
         assert_component_equal(
-            result,
-            dbc.Tabs(id="tabs-id", persistence=True, persistence_type="session"),
+            result.children,
+            [
+                html.H3(id="tabs-id_title"),
+                dbc.Tabs(id="tabs-id", persistence=True, persistence_type="session"),
+            ],
             keys_to_strip={"children"},
         )
+        assert_component_equal(result["tabs-id_title"].children, "Tabs Title")
+
         # We want to test the children created in the Tabs.build but not e.g. the
         # vm.Container.build() as it's tested elsewhere already
         assert_component_equal(
-            result.children, [dbc.Tab(label="Title-1"), dbc.Tab(label="Title-2")], keys_to_strip={"children"}
+            result["tabs-id"].children, [dbc.Tab(label="Title-1"), dbc.Tab(label="Title-2")], keys_to_strip={"children"}
         )
         # We still check that the html.Div for the Containers are created, but we don't need to check its content
         assert_component_equal(
-            [tab.children for tab in result.children],
+            [tab.children for tab in result["tabs-id"].children],
             [
                 dbc.Container(id="container-1", class_name="", fluid=True),
                 dbc.Container(id="container-2", class_name="", fluid=True),

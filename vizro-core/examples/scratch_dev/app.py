@@ -7,40 +7,64 @@ import vizro.plotly.express as px
 from vizro import Vizro
 from vizro.tables import dash_ag_grid, dash_data_table
 
-tips = px.data.tips()
+df = px.data.iris()
 
 page1 = vm.Page(
     title="LAYOUT_FLEX_WRAP_AND_AG_GRID",
-    layout=vm.Flex(wrap=True),
     components=[
-        vm.AgGrid(id=f"outer_id_{i}", figure=dash_ag_grid(tips, id=f"inner_id_{i}", style={"width": 1000}))
-        # vm.AgGrid(id=f"outer_id_{i}", figure=dash_ag_grid(tips, id=f"qwer", style={"width": 1000}))
-        for i in range(3)
+        vm.AgGrid(id=f"ag_grid_outer_id_{i}", figure=dash_ag_grid(df, id=f"ag_grid_inner_id_{i}")) for i in range(3)
     ],
+    controls=[vm.Filter(column="species")],
 )
 
 page2 = vm.Page(
     title="LAYOUT_FLEX_GAP_AND_TABLE",
-    layout=vm.Flex(gap="40px"),
-    # components=[vm.Table(figure=dash_data_table(tips, style_table={"width": "1000px"})) for i in range(3)],
     components=[
-        vm.Table(figure=dash_data_table(tips, id=f"qwert_{i}", style_table={"width": "1000px"})) for i in range(3)
+        vm.Table(id=f"table_outer_id_{i}", figure=dash_data_table(df, id=f"table_inner_id_{i}")) for i in range(3)
     ],
+    controls=[vm.Filter(column="species")],
 )
 
 page3 = vm.Page(
     title="cross_id",
-    layout=vm.Flex(gap="40px"),
     components=[
-        vm.Table(figure=dash_data_table(tips, id="qwert", style_table={"width": "1000px"})),
-        vm.AgGrid(figure=dash_ag_grid(tips, id="qwert", style={"width": 1000})),
+        vm.Table(figure=dash_data_table(df, id="qwert")),
+        # TODO: See how configuration below raises an exception.
+        # vm.AgGrid(figure=dash_ag_grid(df, id="qwert")),
     ],
+    controls=[vm.Filter(column="species")],
 )
 
-dashboard = vm.Dashboard(pages=[page1, page2, page3])
+page_4_ag_grid_error = vm.Page(
+    title="AG_GRID_ERROR",
+    components=[
+        vm.AgGrid(
+            id="duplicate-ag-grid-id",
+            figure=dash_ag_grid(df, id="unique-ag-grid-id"),
+            # TODO: See how configurations below raise an exception
+            # figure=dash_ag_grid(df, id="duplicate-ag-grid-id"),
+            # figure=dash_ag_grid(df, id="duplicate-table-id")
+        )
+    ],
+    controls=[vm.Filter(column="species")],
+)
+
+page_5_table_error = vm.Page(
+    title="TABLE_ERROR",
+    components=[
+        vm.Table(
+            id="duplicate-table-id",
+            figure=dash_data_table(df, id="unique-table-id"),
+            # TODO: See how configurations below raise an exception.
+            # figure=dash_data_table(df, id="duplicate-table-id")
+            # figure=dash_data_table(df, id="duplicate-ag-grid-id"),
+        )
+    ],
+    controls=[vm.Filter(column="species")],
+)
+
+dashboard = vm.Dashboard(pages=[page1, page2, page3, page_4_ag_grid_error, page_5_table_error])
 
 
 if __name__ == "__main__":
     Vizro().build(dashboard).run()
-
-## TO CHECK: also for figure and/or Graph?
