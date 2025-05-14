@@ -351,7 +351,7 @@ def custom_table(data_frame):
                     ),
                 ],
                 size="xl",
-                modal_class_name="modal-class",
+                className="modal-class",
             ),
         ],
         id="table-modal-div",
