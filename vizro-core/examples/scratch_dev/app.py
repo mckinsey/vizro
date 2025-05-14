@@ -87,6 +87,12 @@ page10 = vm.Page(
     components=[vm.AgGrid(figure=dash_ag_grid(tips, style={"width": 1000})) for i in range(3)],
 )
 
+page11 = vm.Page(
+    title="Flex - row - button",
+    layout=vm.Flex(direction="row"),
+    components=[vm.Button() for i in range(5)],
+)
+
 
 dashboard = vm.Dashboard(
     pages=[
@@ -100,9 +106,10 @@ dashboard = vm.Dashboard(
         page8,
         page9,
         page10,
+        page11
     ],
     title="Test out Flex/Grid",
 )
 
-
-Vizro().build(dashboard).run()
+if __name__ == "__main__":
+    Vizro().build(dashboard).run()
