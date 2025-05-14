@@ -211,7 +211,6 @@ class TestAbstractActionInputs:
         ):
             action_with_one_runtime_arg(arg_1=input)._transformed_inputs
 
-
     def test_inputs_invalid_missing_action_attribute(self, manager_for_testing_default_output_input_prop):
         with pytest.raises(
             AttributeError,

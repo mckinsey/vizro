@@ -115,7 +115,6 @@ class TestLegacyActionInputs:
             action = Action(function=action_with_one_arg(), inputs=runtime_inputs)
             action._transformed_inputs
 
-
     def test_inputs_invalid_missing_action_attribute(self, manager_for_testing_default_output_input_prop):
         with pytest.raises(
             AttributeError,
@@ -293,7 +292,7 @@ class TestIsActionLegacy:
         static_inputs,
         runtime_inputs,
         expected_legacy,
-        manager_for_testing_default_output_input_prop
+        manager_for_testing_default_output_input_prop,
     ):
         function = action_function(**static_inputs) if runtime_as_kwargs else action_function(*static_inputs.values())
 
@@ -378,7 +377,7 @@ class TestActionInputs:
     def test_runtime_inputs_invalid(self, input):
         with pytest.raises(ValidationError):
             Action(function=action_with_one_arg(input))._transformed_inputs
-    
+
     def test_inputs_invalid_missing_action_attribute(self, manager_for_testing_default_output_input_prop):
         with pytest.raises(
             AttributeError,
