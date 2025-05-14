@@ -420,16 +420,13 @@ As mentioned above, custom components can trigger actions. To enable the custom 
         from vizro.models.types import capture
 
 
-        # 1. Create new custom component
-        class Carousel(vm.VizroBaseModel):
+        class Carousel(vm.VizroBaseModel):  # (1)!
             type: Literal["carousel"] = "carousel"
             items: list
             actions: Annotated[
                 list[ActionType],
-                # Here we set the action so a change in the active_index property of the custom component triggers the action
-                AfterValidator(_action_validator_factory("active_index")),
-                # Here we tell the serializer to only serialize the actions field
-                PlainSerializer(lambda x: x[0].actions),
+                AfterValidator(_action_validator_factory("active_index")),  # (2)!
+                PlainSerializer(lambda x: x[0].actions),  # (3)!
                 Field(default=[]),
             ]
 
@@ -439,13 +436,9 @@ As mentioned above, custom components can trigger actions. To enable the custom 
                     items=self.items,
                 )
 
+        vm.Page.add_type("components", Carousel)  # (4)!
 
-        # 2. Add new components to expected type - here the selector of the parent components
-        vm.Page.add_type("components", Carousel)
-
-
-        # 3. Create custom action
-        @capture("action")
+        @capture("action")  # (5)!
         def slide_next_card(active_index):
             if active_index:
                 return "Second slide"
@@ -457,14 +450,14 @@ As mentioned above, custom components can trigger actions. To enable the custom 
             title="Custom Component",
             components=[
                 vm.Card(text="First slide", id="carousel-card"),
-                Carousel(
+                Carousel(  # (6)!
                     id="carousel",
                     items=[
                         {"key": "1", "src": "assets/slide_1.jpg"},
                         {"key": "2", "src": "assets/slide_2.jpg"},
                     ],
                     actions=[
-                        vm.Action(
+                        vm.Action(  # (7)!
                             function=slide_next_card(),
                             inputs=["carousel.active_index"],
                             outputs=["carousel-card.children"],
@@ -475,10 +468,19 @@ As mentioned above, custom components can trigger actions. To enable the custom 
         )
 
         dashboard = vm.Dashboard(pages=[page])
-
         Vizro().build(dashboard).run()
         ```
+
+        1. Here we subclass `VizroBaseModel` to create a new `Carousel` component.
+        1. We set the action so a change in the `active_index` property of the custom component triggers the action. `_action_validator_factory("active_index")` ensures that an `Action` model is correctly created and validated.
+        1. We tell the serializer to only serialize the `actions` field. This is important for when the dashboard configuration is exported (e.g., to YAML or JSON).
+        1. **Remember!** If part of a discriminated union, you must add the new component to the parent model where it will be inserted. In this case the new `Carousel` will be inserted into the `components` argument of the `Page` model, and thus must be added as an allowed type.
+        1. We define a custom action `slide_next_card` using the `@capture("action")` decorator. This action will change the text of a `Card` component based on the active slide in the `Carousel`.
+        1. We add the `Carousel` component to the page, providing items for the carousel.
+        1. We link the `slide_next_card` action to the `Carousel`. The action is triggered by changes in `carousel.active_index` and updates the `children` property of `carousel-card`.
+
         <img src=https://py.cafe/logo.png alt="PyCafe logo" width="30"><b><a target="_blank" href="https://py.cafe/vizro-official/vizro-custom-carousel-component">Run and edit this code in PyCafe</a></b>
+
     === "yaml"
         ```yaml
         # Custom components are currently only possible via Python configuration
