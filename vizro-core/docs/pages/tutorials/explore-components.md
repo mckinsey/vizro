@@ -127,7 +127,7 @@ Next, you'll add a button that lets users export the data currently shown in you
 
 Vizro provides several built-in actions you can reuse. You can explore the full list in our [guide on built-in actions](../user-guides/actions.md#built-in-actions).
 
-Follow these steps to add an export data button:
+These steps add an export data button:
 
 1. Add a [`Button`][vizro.models.Button] to the `components` list and set `text="Export Data"`.
 1. Use the `actions` argument of the `Button` to define an [`Action`][vizro.models.Button].
