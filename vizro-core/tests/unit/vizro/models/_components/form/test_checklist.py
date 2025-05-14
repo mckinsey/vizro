@@ -24,6 +24,8 @@ class TestChecklistInstantiation:
         assert checklist.title == ""
         assert checklist.description is None
         assert checklist.actions == []
+        assert checklist._action_outputs == {"__default__": f"{checklist.id}.value"}
+        assert checklist._action_inputs == {"__default__": f"{checklist.id}.value"}
 
     def test_create_checklist_mandatory_and_optional(self):
         checklist = Checklist(
