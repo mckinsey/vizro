@@ -27,6 +27,8 @@ class TestDatePickerInstantiation:
         assert date_picker.description is None
         assert date_picker.actions == []
         assert date_picker.range is True
+        assert date_picker._action_outputs == {"__default__": f"{date_picker.id}.value"}
+        assert date_picker._action_inputs == {"__default__": f"{date_picker.id}.value"}
 
     def test_create_datepicker_mandatory_and_optional(self):
         date_picker = vm.DatePicker(

@@ -1,8 +1,7 @@
 import e2e.vizro.constants as cnst
-import pytest
-from e2e.vizro.checkers import check_graph_is_loading, check_table_rows_number
+from e2e.vizro.checkers import check_table_rows_number
 from e2e.vizro.navigation import accordion_select, page_select
-from e2e.vizro.paths import table_cell_value_path
+from e2e.vizro.paths import graph_axis_value_path, table_cell_value_path
 
 
 def test_single_date(dash_br):
@@ -33,7 +32,6 @@ def test_single_date(dash_br):
     check_table_rows_number(dash_br, table_id=cnst.TABLE_POP_DATE_ID, expected_rows_num=2)
 
 
-@pytest.mark.flaky(reruns=5)
 def test_date_range(dash_br):
     """Tests that range datepicker as filter works correctly."""
     accordion_select(dash_br, accordion_name=cnst.DATEPICKER_ACCORDION)
@@ -47,7 +45,13 @@ def test_date_range(dash_br):
     dash_br.wait_for_element('div[data-calendar="true"]')
     dash_br.multiple_click('button[aria-label="17 May 2016"]', 1)
     dash_br.multiple_click('button[aria-label="18 May 2016"]', 1)
-    check_graph_is_loading(dash_br, cnst.BAR_POP_RANGE_ID)
+
+    # Check x axis max value is '12:00'
+    dash_br.wait_for_text_to_equal(
+        graph_axis_value_path(graph_id=cnst.BAR_POP_RANGE_ID, axis_value_number="5", axis_value="12:00"),
+        "12:00",
+    )
+
     dash_br.wait_for_text_to_equal(f'button[id="{cnst.DATEPICKER_RANGE_ID}"]', "May 17, 2016 – May 18, 2016")  # noqa: RUF001
 
     # check that dates in the rows are within the chosen range
