@@ -188,7 +188,7 @@ By default, Vizro uses the `Grid` layout, which arranges components in the order
 To achieve this, we'll switch to the `Flex` layout and set a `height` for the `AgGrid`, as the default is `400px` otherwise.
 
 1. In the `layout` argument of the `Page`, use the [`Flex`][vizro.models.Flex] layout model via `layout = vm.Flex()`
-2. Specify `style= {"height": "600px"}` inside the `dash_ag_grid`, as it would otherwise default to `400px`.
+1. Specify `style= {"height": "600px"}` inside the `dash_ag_grid`, as it would otherwise default to `400px`.
 
 !!! example "Use flex layout"
 
@@ -1636,6 +1636,7 @@ Vizro doesn't end here; we've only covered the key features, but there's still m
 [dashboardfinal]: ../../assets/tutorials/dashboard/12-dashboard-navigation.png
 [firstpage]: ../../assets/tutorials/dashboard/01-first-page.png
 [firstpagebutton]: ../../assets/tutorials/dashboard/01-first-page-button.png
+[firstpagelayout]: ../../assets/tutorials/dashboard/01-first-page-layout.png
 [secondpage]: ../../assets/tutorials/dashboard/02-second-page.png
 [secondpage2]: ../../assets/tutorials/dashboard/03-second-page-kpi.png
 [secondpage3]: ../../assets/tutorials/dashboard/04-second-page-tabs.png
@@ -1645,4 +1646,3 @@ Vizro doesn't end here; we've only covered the key features, but there's still m
 [thirdpage2]: ../../assets/tutorials/dashboard/08-third-page-layout.png
 [thirdpage3]: ../../assets/tutorials/dashboard/09-third-page-parameter.png
 [thirdpage4]: ../../assets/tutorials/dashboard/10-third-page-custom-chart.png
-[firstpagelayout]: ../../assets/tutorials/dashboard/01-first-page-layout.png
