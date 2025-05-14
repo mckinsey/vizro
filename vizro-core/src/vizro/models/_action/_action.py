@@ -40,7 +40,7 @@ class _BaseAction(VizroBaseModel):
     # for these is the easiest way to appease mypy and have something that actually works at runtime.
     function: ClassVar[Callable[..., Any]]
     outputs: ClassVar[Union[list[_IdProperty], dict[str, _IdProperty]]]
-    # TODO NOW: think about this more. Is it trigger property or IdProperty?
+    # TODO NOW: think about this more. Is it trigger property or IdProperty? Private for now?
     trigger: str = ""
 
     _parent_model_id: str

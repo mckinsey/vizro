@@ -146,6 +146,9 @@ class Table(VizroBaseModel):
     @_log_call
     def pre_build(self):
         self._input_component_id = self.figure._arguments.get("id", f"__input_{self.id}")
+        # TODO NOW: seems like best solution for now but add comment.
+        self.actions[0].trigger = self.actions[0].trigger.replace(f"{self.id}.", f"{self._input_component_id}.")
+
         # Check if any other Table figure function has the same input component ID
         existing_models = [
             model
