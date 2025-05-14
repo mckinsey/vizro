@@ -27,9 +27,8 @@ The following example shows how to create a custom action that postpones executi
         from time import sleep
 
 
-        @capture("action")
+        @capture("action")  # (1)!
         def my_custom_action(t: int):
-            """Custom action."""
             sleep(t)
 
 
@@ -57,6 +56,8 @@ The following example shows how to create a custom action that postpones executi
         dashboard = vm.Dashboard(pages=[page])
         Vizro().build(dashboard).run()
         ```
+
+        1. We define a custom action `my_custom_action` using the `@capture("action")` decorator. This action takes an integer `t` and pauses execution for `t` seconds. It's used here to delay the subsequent `export_data` action in the chain.
 
     === "app.yaml"
 
@@ -88,9 +89,8 @@ The following example shows a custom action that takes the `value` of the `vm.Ra
         df = px.data.iris()
         vm.Page.add_type("components", vm.RadioItems)
 
-        @capture("action")
+        @capture("action")  # (1)!
         def update_card_text(species):
-            """Returns the input value."""
             return f"You selected species **{species}**"
 
         page = vm.Page(
@@ -112,6 +112,8 @@ The following example shows a custom action that takes the `value` of the `vm.Ra
         dashboard = vm.Dashboard(pages=[page])
         Vizro().build(dashboard).run()
         ```
+
+        1. We define a custom action `update_card_text` using the `@capture("action")` decorator. This action takes the selected `species` as input and returns a formatted string to be displayed in a Card.
 
     === "app.yaml"
 
@@ -137,9 +139,8 @@ The following example shows how to create a custom action that shows the `clickD
 
         df = px.data.iris()
 
-        @capture("action")
-        def my_custom_action(show_species: bool, points_data: dict): # (1)!
-            """Custom action."""
+        @capture("action")  # (1)!
+        def my_custom_action(show_species: bool, points_data: dict):  # (2)!
             clicked_point = points_data["points"][0]
             x, y = clicked_point["x"], clicked_point["y"]
             text = f"Clicked point has sepal length {x}, petal width {y}"
@@ -157,8 +158,8 @@ The following example shows how to create a custom action that shows the `clickD
                     figure=px.scatter(df, x="sepal_length", y="petal_width", color="species", custom_data=["species"]),
                     actions=[
                         vm.Action(
-                            function=my_custom_action(show_species=True), # (2)!
-                            inputs=["scatter_chart.clickData"], # (3)!
+                            function=my_custom_action(show_species=True), # (3)!
+                            inputs=["scatter_chart.clickData"], # (4)!
                             outputs=["my_card.children"],
                         ),
                     ],
@@ -171,9 +172,10 @@ The following example shows how to create a custom action that shows the `clickD
         Vizro().build(dashboard).run()
         ```
 
-        1. Just as for any Python function, the names of the arguments `show_species` and `points_data` are arbitrary and do not need to match on to the names of `inputs` in any particular way.
-        1. We _bind_ (set) the argument `show_species` to the value `True` in the initial specification of the `function` field. These are static values that are fixed when the dashboard is _built_.
-        1. The content of `inputs` will "fill in the gaps" by setting values for the remaining unbound arguments in `my_custom_action`. Here there is one such argument, named `points_data`. Values for these are bound _dynamically at runtime_ to reflect the live state of your dashboard.
+        1. We define a custom action `my_custom_action` using the `@capture("action")` decorator.
+        1. This action takes a boolean `show_species` and a dictionary `points_data`. It uses these to construct a descriptive string about a clicked point on a chart. The names `show_species` and `points_data` are arbitrary and do not need to match on to the names of `inputs` in any particular way.
+        1. When the `Action` is defined within the `Graph.actions`, the `show_species` argument of `my_custom_action` is statically bound to `True`.
+        1. The `points_data` argument of `my_custom_action` receives its value dynamically at runtime. This happens because the `inputs` parameter of `vm.Action` is set to `["scatter_chart.clickData"]`. When a user clicks on the `scatter_chart`, the chart's `clickData` property (which contains details about the click event) is automatically passed as the `points_data` argument to `my_custom_action`.
 
     === "app.yaml"
 
@@ -198,15 +200,14 @@ The return value of the custom action function is propagated to the dashboard co
         from vizro.models.types import capture
 
 
-        @capture("action")
+        @capture("action")  # (1)!
         def my_custom_action(points_data: dict):
-            """Custom action."""
             clicked_point = points_data["points"][0]
             x, y = clicked_point["x"], clicked_point["y"]
             species = clicked_point["customdata"][0]
             card_1_text = f"Clicked point has sepal length {x}, petal width {y}"
             card_2_text = f"Clicked point has species {species}"
-            return card_1_text, card_2_text # (1)!
+            return card_1_text, card_2_text
 
 
         df = px.data.iris()
@@ -235,9 +236,9 @@ The return value of the custom action function is propagated to the dashboard co
         Vizro().build(dashboard).run()
         ```
 
-        1. `my_custom_action` returns two values (which will be in Python tuple).
-        1. We use a [`Flex`][vizro.models.Flex] layout to make sure the `Graph` and the `Cards` only occupy as much space as they need, rather than being distributed evenly.
-        1. These values are assigned to the `outputs` in the same order.
+        1. We define a custom action `my_custom_action` using the `@capture("action")` decorator. This action takes `points_data` (dynamically populated from `scatter_chart.clickData`) as input, extracts details about the clicked point, and returns two strings, `card_1_text` and `card_2_text`.
+        1. A [`Flex`][vizro.models.Flex] layout is used for the page to ensure the `Graph` and `Card` components are sized appropriately based on their content rather than being distributed evenly.
+        1. The two strings returned by `my_custom_action` are assigned in the same order here.
 
     === "app.yaml"
 

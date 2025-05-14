@@ -35,6 +35,7 @@ class TestTableInstantiation:
         assert table.type == "table"
         assert table.figure == standard_dash_table
         assert table.actions == []
+        assert table._action_outputs == {"__default__": f"{table.id}.children"}
 
     @pytest.mark.parametrize("id", ["id_1", "id_2"])
     def test_create_table_mandatory_and_optional(self, standard_dash_table, id):

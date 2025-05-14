@@ -1,14 +1,14 @@
 from typing import Annotated, Literal
 
 from dash import dcc, html
-from pydantic import AfterValidator, Field, PrivateAttr, field_validator
+from pydantic import AfterValidator, Field, field_validator
 from pydantic.json_schema import SkipJsonSchema
 
 from vizro.managers import data_manager
 from vizro.models import VizroBaseModel
 from vizro.models._components._components_utils import _process_callable_data_frame
 from vizro.models._models_utils import _log_call
-from vizro.models.types import CapturedCallable, validate_captured_callable
+from vizro.models.types import CapturedCallable, _IdProperty, validate_captured_callable
 
 
 class Figure(VizroBaseModel):
@@ -31,9 +31,11 @@ class Figure(VizroBaseModel):
     ]
 
     # Component properties for actions and interactions
-    _output_component_property: str = PrivateAttr("children")
-
     _validate_figure = field_validator("figure", mode="before")(validate_captured_callable)
+
+    @property
+    def _action_outputs(self) -> dict[str, _IdProperty]:
+        return {"__default__": f"{self.id}.children"}
 
     def __call__(self, **kwargs):
         # This default value is not actually used anywhere at the moment since __call__ is always used with data_frame

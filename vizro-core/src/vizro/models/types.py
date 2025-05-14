@@ -6,16 +6,28 @@ from __future__ import annotations
 import functools
 import importlib
 import inspect
+import sys
 import warnings
 from contextlib import contextmanager
 from datetime import date
-from typing import Annotated, Any, Literal, NewType, Optional, Protocol, Union, runtime_checkable
+from typing import Annotated, Any, Literal, Optional, Protocol, Union, runtime_checkable
+
+if sys.version_info >= (3, 10):
+    from typing import TypeAlias
+else:
+    from typing_extensions import TypeAlias
 
 import plotly.io as pio
 import pydantic_core as cs
-from pydantic import Discriminator, Field, StrictBool, StringConstraints, Tag, ValidationInfo
+from pydantic import (
+    Discriminator,
+    Field,
+    StrictBool,
+    Tag,
+    ValidationInfo,
+)
 from pydantic.json_schema import SkipJsonSchema
-from typing_extensions import TypeAlias, TypedDict
+from typing_extensions import TypedDict
 
 from vizro.charts._charts_utils import _DashboardReadyFigure
 
@@ -530,13 +542,16 @@ class capture:
 
 
 # For "component_id.component_property", e.g. "dropdown_id.value".
-_IdProperty = NewType("_IdProperty", str)
+_IdProperty: TypeAlias = str
+"""A string that must be in the format 'component-id.component-property'."""
 
 # Really this should be NewType and used for models like VizroBaseModel.id, but that clutters the code with casts and
 # means that to get user code to type-check successfully they would need to cast to ModelID.
 ModelID: TypeAlias = str
 """Represents a Vizro model ID."""
 
+_IdOrIdProperty: TypeAlias = Union[ModelID, _IdProperty]
+"""Represents either a model ID or a string in the format 'component-id.component-property'."""
 
 # Types used for selector values and options. Note the docstrings here are rendered on the API reference.
 SingleValueType = Union[StrictBool, float, str, date]
@@ -629,14 +644,6 @@ ActionType = Annotated[
 # Extra type groups used for mypy casting
 FigureWithFilterInteractionType = Union["Graph", "Table", "AgGrid"]
 FigureType = Union["Graph", "Table", "AgGrid", "Figure"]
-
-# TODO-AV2 D 3: think about how to make this public and use in our inbuilt actions. Compare to _IdProperty.
-# Consider how it works if you just specify model name and not a dot separated string. Do we need a new composite type
-# for Union[list[_DotSeparatedStr], dict[str, _DotSeparatedStr]] too? Consider parameter target form too and whether
-# it should work similarly.
-_DotSeparatedStr = Annotated[str, StringConstraints(pattern="^[^.]+[.][^.]+$")]
-"""A string that must contain exactly one dot ('.'), with at least one character on both sides.
-For example: 'model-id.children'."""
 
 
 # TODO-AV2 A 1: improve this structure. See https://github.com/mckinsey/vizro/pull/880.
