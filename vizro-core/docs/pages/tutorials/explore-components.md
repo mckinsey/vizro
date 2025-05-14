@@ -179,7 +179,7 @@ Follow these steps to add an export data button:
 
 ### 3.3. Configure the layout
 
-Right now, you might notice extra blank space below the button. In this step, you’ll learn how to improve the layout by arranging components more efficiently.
+Notice there is extra blank space below the button. In this step, you’ll learn how to improve the layout by arranging components more efficiently.
 
 Vizro supports two layout models: [`Grid`][vizro.models.Grid] and [`Flex`][vizro.models.Flex]. To understand the differences between them, check out our [guide on layouts](../user-guides/layouts.md#layout-options-grid-and-flex).
 
