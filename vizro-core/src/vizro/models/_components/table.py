@@ -16,7 +16,7 @@ from vizro.models._action._actions_chain import _action_validator_factory
 from vizro.models._components._components_utils import _process_callable_data_frame
 from vizro.models._models_utils import _log_call
 from vizro.models._tooltip import coerce_str_to_tooltip
-from vizro.models.types import ActionType, CapturedCallable, validate_captured_callable
+from vizro.models.types import ActionType, CapturedCallable, _IdProperty, validate_captured_callable
 
 logger = logging.getLogger(__name__)
 
@@ -80,9 +80,11 @@ class Table(VizroBaseModel):
     _input_component_id: str = PrivateAttr()
 
     # Component properties for actions and interactions
-    _output_component_property: str = PrivateAttr("children")
-
     _validate_figure = field_validator("figure", mode="before")(validate_captured_callable)
+
+    @property
+    def _action_outputs(self) -> dict[str, _IdProperty]:
+        return {"__default__": f"{self.id}.children"}
 
     # Convenience wrapper/syntactic sugar.
     def __call__(self, **kwargs):
@@ -149,20 +151,18 @@ class Table(VizroBaseModel):
         # TODO NOW: seems like best solution for now but add comment.
         self.actions[0].trigger = self.actions[0].trigger.replace(f"{self.id}.", f"{self._input_component_id}.")
 
-        # Check if any other Table figure function has the same input component ID
-        existing_models = [
-            model
-            for model in model_manager._get_models(self.__class__)
-            if hasattr(model, "_input_component_id")
-            and model.id != self.id
-            and model._input_component_id == self._input_component_id
-        ]
+        # Check if any other Vizro model or CapturedCallable has the same input component ID
+        all_input_component_ids = {  # type: ignore[var-annotated]
+            model._input_component_id
+            for model in model_manager._get_models()
+            if hasattr(model, "_input_component_id") and model.id != self.id
+        }
 
-        if existing_models:
+        if self._input_component_id in set(model_manager) | all_input_component_ids:
             raise DuplicateIDError(
                 f"CapturedCallable with id={self._input_component_id} has an id that is "
-                f"already in use by another CapturedCallable. CapturedCallables must have unique ids "
-                f"across the whole dashboard."
+                "already in use by another Vizro model or CapturedCallable. "
+                "CapturedCallables must have unique ids across the whole dashboard."
             )
 
     def build(self):

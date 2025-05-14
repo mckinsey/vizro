@@ -132,7 +132,7 @@ class Page(VizroBaseModel):
         #  Probably it's better where it is now since it avoid navigating up the model hierarchy
         #  (action -> page -> figures) and instead just looks down (page -> figures).
         #  Should there be validation inside _on_page_load to check that targets exist and are
-        #  on the page and target-able components (i.e. are dynamic and hence have _output_component_property)?
+        #  on the page and target-able components (i.e. are dynamic and hence have _action_outputs)?
         #  It's not needed urgently since we always calculate the targets ourselves so we know they are valid.
         #  Similar comments apply to filter and parameter. Note that export_data has this logic built into the action
         #  itself since the user specifies the target. In future we'll probably have a helper function like

@@ -1,12 +1,11 @@
-from typing import Any, Literal, cast
+from typing import Any, Literal
 
 from dash import ctx
 from pydantic import Field
 
 from vizro.actions._abstract_action import _AbstractAction
 from vizro.actions._actions_utils import _get_modified_page_figures
-from vizro.managers._model_manager import model_manager
-from vizro.models.types import FigureType, ModelID, _Controls
+from vizro.models.types import ModelID, _Controls
 
 
 # TODO-AV2 A 3: rename _on_page_load if desired and make public. Similarly for other built-in actions.
@@ -25,7 +24,7 @@ class _on_page_load(_AbstractAction):
         # TODO-AV2 A 1: _controls is not currently used but instead taken out of the Dash context. This
         # will change in future once the structure of _controls has been worked out and we know how to pass ids through.
         # See https://github.com/mckinsey/vizro/pull/880
-        x = _get_modified_page_figures(
+        return _get_modified_page_figures(
             ctds_filter=ctx.args_grouping["external"]["_controls"]["filters"],
             ctds_parameter=ctx.args_grouping["external"]["_controls"]["parameters"],
             ctds_filter_interaction=ctx.args_grouping["external"]["_controls"]["filter_interaction"],
@@ -36,14 +35,8 @@ class _on_page_load(_AbstractAction):
 
     @property
     def outputs(self):
-        outputs = {}
-
-        for target in self.targets:
-            component_id = target
-            component_property = cast(FigureType, model_manager[target])._output_component_property
-            outputs[target] = f"{component_id}.{component_property}"
-
+        x = {target: target for target in self.targets}
         # TODO NOW: maybe move this hackery into action.build callback function itself dependent on whether action is
         #  an on_page_load one.
-        outputs["output_needed_to_trigger_on_page_load"] = "output_needed_to_trigger_on_page_load.data"
-        return outputs
+        x["output_needed_to_trigger_on_page_load"] = "output_needed_to_trigger_on_page_load.data"
+        return x

@@ -1,12 +1,11 @@
-from typing import Any, Literal, cast
+from typing import Any, Literal
 
 from dash import ctx
 from pydantic import Field
 
 from vizro.actions._abstract_action import _AbstractAction
 from vizro.actions._actions_utils import _get_modified_page_figures
-from vizro.managers._model_manager import model_manager
-from vizro.models.types import FigureType, ModelID, _Controls
+from vizro.models.types import ModelID, _Controls
 
 
 class _parameter(_AbstractAction):
@@ -43,12 +42,4 @@ class _parameter(_AbstractAction):
 
     @property
     def outputs(self):
-        # This is identical to _on_page_load but with self._target_ids rather than self.targets.
-        outputs = {}
-
-        for target in self._target_ids:
-            component_id = target
-            component_property = cast(FigureType, model_manager[target])._output_component_property
-            outputs[target] = f"{component_id}.{component_property}"
-
-        return outputs
+        return {target: target for target in self._target_ids}

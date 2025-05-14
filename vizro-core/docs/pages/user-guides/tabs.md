@@ -23,6 +23,7 @@ To add [`Tabs`][vizro.models.Tabs] to your page, do the following:
 1. Insert the [`Tabs`][vizro.models.Tabs] into the `components` argument of the [`Page`][vizro.models.Page]
 1. Insert your [`Containers`][vizro.models.Container] into the `tabs` argument of the [`Tabs`][vizro.models.Tabs]
 1. Add a `title` to the `Container`, which will be used as the `label` for the corresponding `Tab`.
+1. (optional) Add a `title` to the `Tabs` to display a heading above your `Tabs` component.
 
 !!! example "Tabs"
 
@@ -40,6 +41,7 @@ To add [`Tabs`][vizro.models.Tabs] to your page, do the following:
             title="Tabs",
             components=[
                 vm.Tabs(
+                    title="Tabs Title",
                     tabs=[
                         vm.Container(
                             title="Tab I",
@@ -96,6 +98,7 @@ To add [`Tabs`][vizro.models.Tabs] to your page, do the following:
         pages:
           components:
             - type: tabs
+              title: Tabs Title
               tabs:
                 - title: Tab I
                   type: container

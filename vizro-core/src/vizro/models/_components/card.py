@@ -7,6 +7,7 @@ from pydantic.json_schema import SkipJsonSchema
 
 from vizro.models import VizroBaseModel
 from vizro.models._models_utils import _log_call
+from vizro.models.types import _IdProperty
 
 
 class Card(VizroBaseModel):
@@ -46,6 +47,10 @@ class Card(VizroBaseModel):
             ),
         ]
     ]
+
+    @property
+    def _action_outputs(self) -> dict[str, _IdProperty]:
+        return {"__default__": f"{self.id}.children"}
 
     @_log_call
     def build(self):
