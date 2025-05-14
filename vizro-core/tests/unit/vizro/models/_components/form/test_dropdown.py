@@ -25,6 +25,8 @@ class TestDropdownInstantiation:
         assert dropdown.title == ""
         assert dropdown.description is None
         assert dropdown.actions == []
+        assert dropdown._action_outputs == {"__default__": f"{dropdown.id}.value"}
+        assert dropdown._action_inputs == {"__default__": f"{dropdown.id}.value"}
 
     def test_create_dropdown_mandatory_and_optional(self):
         dropdown = Dropdown(
@@ -274,7 +276,7 @@ class TestDropdownBuild:
             description=Tooltip(text="Test description", icon="info", id="info"),
         ).build()
 
-        description = [
+        expected_description = [
             html.Span("info", id="info-icon", className="material-symbols-outlined tooltip-icon"),
             dbc.Tooltip(
                 children=dcc.Markdown("Test description", className="card-text"),
@@ -286,7 +288,7 @@ class TestDropdownBuild:
 
         expected_dropdown = html.Div(
             [
-                dbc.Label(["Title", *description], html_for="dropdown_id"),
+                dbc.Label(["Title", *expected_description], html_for="dropdown_id"),
                 dcc.Dropdown(
                     id="dropdown_id",
                     options=[

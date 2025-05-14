@@ -6,16 +6,28 @@ from __future__ import annotations
 import functools
 import importlib
 import inspect
+import sys
 import warnings
 from contextlib import contextmanager
 from datetime import date
-from typing import Annotated, Any, Literal, NewType, Optional, Protocol, Union, runtime_checkable
+from typing import Annotated, Any, Literal, Optional, Protocol, Union, runtime_checkable
+
+if sys.version_info >= (3, 10):
+    from typing import TypeAlias
+else:
+    from typing_extensions import TypeAlias
 
 import plotly.io as pio
 import pydantic_core as cs
-from pydantic import Discriminator, Field, StrictBool, Tag, ValidationInfo
+from pydantic import (
+    Discriminator,
+    Field,
+    StrictBool,
+    Tag,
+    ValidationInfo,
+)
 from pydantic.json_schema import SkipJsonSchema
-from typing_extensions import TypeAlias, TypedDict
+from typing_extensions import TypedDict
 
 from vizro.charts._charts_utils import _DashboardReadyFigure
 
@@ -530,13 +542,16 @@ class capture:
 
 
 # For "component_id.component_property", e.g. "dropdown_id.value".
-_IdProperty = NewType("_IdProperty", str)
+_IdProperty: TypeAlias = str
+"""A string that must be in the format 'component-id.component-property'."""
 
 # Really this should be NewType and used for models like VizroBaseModel.id, but that clutters the code with casts and
 # means that to get user code to type-check successfully they would need to cast to ModelID.
 ModelID: TypeAlias = str
 """Represents a Vizro model ID."""
 
+_IdOrIdProperty: TypeAlias = Union[ModelID, _IdProperty]
+"""Represents either a model ID or a string in the format 'component-id.component-property'."""
 
 # Types used for selector values and options. Note the docstrings here are rendered on the API reference.
 SingleValueType = Union[StrictBool, float, str, date]

@@ -6,7 +6,7 @@ This guide shows you how to use cards in your dashboard.
 
     The `Card` component and [`Text`](text.md) component both enable you to add text to your page using [Markdown syntax](https://markdown-guide.readthedocs.io/en/latest/) through the underlying Dash component [`dcc.Markdown`](https://dash.plotly.com/dash-core-components/markdown/).
 
-    You should use `Text` to display plain Markdown text without any additional styling like borders or background, for example to add an introductory paragraph to your page.
+    You should use `Text` to display plain Markdown text without any extra styling like borders or background, for example to add an introductory paragraph to your page.
 
     You should use `Card` to display Markdown text that needs attention drawn to it. Generally, this would be relatively short portions of text. Unlike `Text`, a `Card` can also be [used for navigation](#create-a-navigation-card).
 
@@ -571,7 +571,7 @@ For detailed examples on how to create a KPI card, refer to the [figure user gui
 
 ## The `extra` argument
 
-The `Card` is based on the underlying Dash component [`dbc.Card`](https://dash-bootstrap-components.opensource.faculty.ai/docs/components/card/). Using the `extra` argument you can pass additional arguments to `dbc.Card` in order to alter it beyond the chosen defaults.
+The `Card` is based on the underlying Dash component [`dbc.Card`](https://dash-bootstrap-components.opensource.faculty.ai/docs/components/card/). Using the `extra` argument you can pass extra arguments to `dbc.Card` in order to alter it beyond the chosen defaults.
 
 !!! note
 

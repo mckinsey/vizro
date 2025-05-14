@@ -16,12 +16,12 @@ Uncomment the section that is right (remove the HTML comment wrapper).
 - A bullet item for the Removed category with a link to the relevant PR at the end of your entry, e.g. Enable feature XXX. ([#1](https://github.com/mckinsey/vizro/pull/1))
 
 -->
-
+<!--
 ### Added
 
-- Enable styling of `vm.Button` with a new argument `variant="plain"/"filled"/"outlined"`. See the [user guide on styled buttons](https://vizro.readthedocs.io/en/stable/pages/user-guides/button/#styled-buttons) for more details. ([#1114](https://github.com/mckinsey/vizro/pull/1114))
+- A bullet item for the Added category with a link to the relevant PR at the end of your entry, e.g. Enable feature XXX. ([#1](https://github.com/mckinsey/vizro/pull/1))
 
-
+-->
 <!--
 ### Changed
 

@@ -4,10 +4,12 @@ import abc
 import inspect
 from typing import Union
 
+from dash import Output
 from dash.development.base_component import Component
+from pydantic import TypeAdapter
 
 from vizro.models._action._action import _BaseAction
-from vizro.models.types import _IdProperty
+from vizro.models.types import _IdOrIdProperty
 
 
 # TODO-AV2 D 5: make public.
@@ -52,7 +54,7 @@ class _AbstractAction(_BaseAction, abc.ABC):
 
     @property
     @abc.abstractmethod
-    def outputs(self) -> Union[list[_IdProperty], dict[str, _IdProperty]]:  # type: ignore[override]
+    def outputs(self) -> Union[list[_IdOrIdProperty], dict[str, _IdOrIdProperty]]:  # type: ignore[override]
         """Must be defined by concrete action, even if there's no output.
 
         This should return a dictionary of the form `{"key": "dropdown.value"}`, where the key corresponds to the key
@@ -68,9 +70,16 @@ class _AbstractAction(_BaseAction, abc.ABC):
         # arguments since this would only work well for class-based actions and not @capture("action") ones. Instead
         # the code that does make_outputs_from_targets would be put into a reusable function.
         #
-        # TODO-AV D 4: build in a vizro_download component. At some point after that consider changing export_data to
+        # TODO-AV2 D 4: build in a vizro_download component. At some point after that consider changing export_data to
         #  use it, but that's not urgent. See  https://github.com/mckinsey/vizro/pull/1054#discussion_r1989405177.
         pass
+
+    @property
+    def _transformed_outputs(self) -> Union[list[Output], dict[str, Output]]:
+        # Action.outputs is already validated by pydantic as list[str] or dict[str, str], but for
+        # _AbstractAction.outputs we need to do the validation manually with TypeAdapter.
+        TypeAdapter(Union[list[str], dict[str, str]]).validate_python(self.outputs)
+        return super()._transformed_outputs
 
     @property
     def _dash_components(self) -> list[Component]:
@@ -89,7 +98,7 @@ class _AbstractAction(_BaseAction, abc.ABC):
         return set(inspect.signature(self.function).parameters)
 
     @property
-    def _runtime_args(self) -> dict[str, _IdProperty]:
+    def _runtime_args(self) -> dict[str, _IdOrIdProperty]:
         # Since function is not a CapturedCallable, input arguments have not yet been bound. They correspond to the
         # model fields that are present in the function signature. This is just the user-specified runtime arguments, as
         # static arguments are not in the function signature (they're in self) and built in runtime arguments are not

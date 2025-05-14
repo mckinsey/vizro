@@ -27,6 +27,8 @@ class TestDatePickerInstantiation:
         assert date_picker.description is None
         assert date_picker.actions == []
         assert date_picker.range is True
+        assert date_picker._action_outputs == {"__default__": f"{date_picker.id}.value"}
+        assert date_picker._action_inputs == {"__default__": f"{date_picker.id}.value"}
 
     def test_create_datepicker_mandatory_and_optional(self):
         date_picker = vm.DatePicker(
@@ -181,7 +183,7 @@ class TestBuildMethod:
             title="Test title",
             description=vm.Tooltip(text="Test description", icon="info", id="info"),
         ).build()
-        description = [
+        expected_description = [
             html.Span("info", id="info-icon", className="material-symbols-outlined tooltip-icon"),
             dbc.Tooltip(
                 children=dcc.Markdown("Test description", className="card-text"),
@@ -192,7 +194,7 @@ class TestBuildMethod:
         ]
         expected_datepicker = html.Div(
             [
-                dbc.Label(["Test title", *description], html_for="datepicker_id"),
+                dbc.Label(["Test title", *expected_description], html_for="datepicker_id"),
                 dmc.DatePickerInput(
                     id="datepicker_id",
                     minDate="2023-01-01",

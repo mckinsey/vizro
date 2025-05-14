@@ -3,9 +3,6 @@
 
 blank_issues_enabled: false
 contact_links:
-  - name: "Blank issue (maintainers only)"
-    url: https://github.com/mckinsey/vizro/issues/new
-    about: For maintainers only.
-  - name: Documentation
+  - name: 📝 Documentation
     url: https://vizro.readthedocs.io
     about: To learn more about how Vizro works

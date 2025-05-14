@@ -25,7 +25,6 @@
 /* Change cursor for the whole container title when it's a collapsible container. */
 .container-title-collapse  {
   cursor: pointer;
-  margin-bottom: 0;
 }
 
 .container-title-collapse .material-symbols-outlined {
@@ -58,4 +57,10 @@ and all containers need to have a white background on that page */
 
 [data-bs-theme="light"] #right-side:has(.bg-container) .card {
   background: var(--left-side-bg);
+}
+
+.inner-container-title {
+  align-items: center;
+  display: flex;
+  gap: 8px;
 }

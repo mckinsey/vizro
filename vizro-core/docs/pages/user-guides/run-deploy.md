@@ -19,7 +19,7 @@ Vizro is built on top of [Dash](https://dash.plotly.com/), which itself uses [Fl
     - If there are multiple people involved with development then you will need some way to coordinate code changes, such as a [GitHub repository](https://github.com/) or [Hugging Face Space](https://huggingface.co/spaces).
     - You might want to use _authentication_ to restrict access to your app.
     - You might want to update your dashboard after it has been put into production. There is then a cycle of repeated development and deployment.
-    - There might be additional stages or _environments_ for Quality Assurance (QA) to test that the app works correctly before it is deployed.
+    - There might be more stages or _environments_ for Quality Assurance (QA) to test that the app works correctly before it is deployed.
 
 ## Development
 

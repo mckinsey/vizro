@@ -11,7 +11,7 @@ from vizro.models._action._actions_chain import _action_validator_factory
 from vizro.models._components.form._form_utils import get_options_and_default, validate_options_dict, validate_value
 from vizro.models._models_utils import _log_call
 from vizro.models._tooltip import coerce_str_to_tooltip
-from vizro.models.types import ActionType, OptionsType, SingleValueType
+from vizro.models.types import ActionType, OptionsType, SingleValueType, _IdProperty
 
 
 class RadioItems(VizroBaseModel):
@@ -75,11 +75,16 @@ class RadioItems(VizroBaseModel):
 
     _dynamic: bool = PrivateAttr(False)
 
-    # Component properties for actions and interactions
-    _input_property: str = PrivateAttr("value")
-
     # Reused validators
     _validate_options = model_validator(mode="before")(validate_options_dict)
+
+    @property
+    def _action_outputs(self) -> dict[str, _IdProperty]:
+        return {"__default__": f"{self.id}.value"}
+
+    @property
+    def _action_inputs(self) -> dict[str, _IdProperty]:
+        return {"__default__": f"{self.id}.value"}
 
     def __call__(self, options):
         full_options, default_value = get_options_and_default(options=options, multi=False)

@@ -16,17 +16,16 @@ Uncomment the section that is right (remove the HTML comment wrapper).
 - A bullet item for the Removed category with a link to the relevant PR at the end of your entry, e.g. Enable feature XXX. ([#1](https://github.com/mckinsey/vizro/pull/1))
 
 -->
-
+<!--
 ### Added
 
-- Add `collapsed` argument to `vm.Container` to enable collapsible containers. ([#1079](https://github.com/mckinsey/vizro/pull/1079))
-
-<!--
-### Changed
-
-- A bullet item for the Changed category with a link to the relevant PR at the end of your entry, e.g. Enable feature XXX. ([#1](https://github.com/mckinsey/vizro/pull/1))
+- A bullet item for the Added category with a link to the relevant PR at the end of your entry, e.g. Enable feature XXX. ([#1](https://github.com/mckinsey/vizro/pull/1))
 
 -->
+### Changed
+
+- Bump `dash>=3.0.0`, `dash-bootstrap-components>=2.0.0`, `dash-ag-grid>=31.3.1` and `dash-mantine-components>=1.0.0`.
+
 <!--
 ### Deprecated
 
