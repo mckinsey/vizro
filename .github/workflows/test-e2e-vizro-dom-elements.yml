@@ -5,6 +5,7 @@ defaults:
     working-directory: vizro-core
 
 on:
+  workflow_dispatch:
   push:
     branches: [main]
   pull_request:

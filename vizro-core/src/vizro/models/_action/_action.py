@@ -26,7 +26,7 @@ if TYPE_CHECKING:
 
 
 # TODO-AV2 A 1: improve this structure. See https://github.com/mckinsey/vizro/pull/880.
-# Remember filter_interaction_ won't be here in future.
+# Remember filter_interaction won't be here in future.
 class ControlsStates(TypedDict):
     filters: list[State]
     parameters: list[State]
