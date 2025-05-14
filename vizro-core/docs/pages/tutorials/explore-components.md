@@ -190,7 +190,7 @@ To achieve this, we'll switch to the `Flex` layout and set a `height` for the `A
 1. In the `layout` argument of the `Page`, use the [`Flex`][vizro.models.Flex] layout model via `layout = vm.Flex()`
 1. Specify `style= {"height": "600px"}` inside the `dash_ag_grid`, as it would otherwise default to `400px`.
 
-!!! example "Use flex layout"
+!!! example "Use Flex layout"
 
     === "Snippet - flex layout"
 
