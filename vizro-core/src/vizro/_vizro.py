@@ -49,7 +49,7 @@ class Vizro:
             # we've confirmed that all initialized pages not included in the Dashboard no longer trigger console errors.
             # See above note for why we might want to keep it though.
             # TODO NOW: tidy above comment
-            # suppress_callback_exceptions=True,
+            suppress_callback_exceptions=True,
             title="Vizro",
             use_pages=True,
         )
