@@ -183,11 +183,12 @@ Right now, you might notice extra blank space below the button. In this step, yo
 
 Vizro supports two layout models: [`Grid`][vizro.models.Grid] and [`Flex`][vizro.models.Flex]. To understand the differences between them, check out our [guide on layouts](../user-guides/layouts.md#layout-options-grid-and-flex).
 
-By default, Vizro uses the `Grid` layout, which arranges components in the order they appear inside `components` and gives them equal space. However, in our case, we want the `Button` and `Table` to only take up the space they need — not equal space.
+By default, Vizro uses the `Grid` layout, which arranges components in the order they appear inside `components` and gives them equal space. However, in our case, we want the `Button` and `AgGrid` to only take up the space they need — not equal space.
 
-To achieve this, we'll switch to the `Flex` layout:
+To achieve this, we'll switch to the `Flex` layout and set a `height` for the `AgGrid`, as the default is `400px` otherwise.
 
 1. In the `layout` argument of the `Page`, use the [`Flex`][vizro.models.Flex] layout model via `layout = vm.Flex()`
+2. Specify `style= {"height": "600px"}` inside the `dash_ag_grid`, as it would otherwise default to `400px`.
 
 !!! example "Use flex layout"
 
@@ -215,7 +216,7 @@ To achieve this, we'll switch to the `Flex` layout:
             layout=vm.Flex(),
             components=[
                 vm.AgGrid(
-                    figure=dash_ag_grid(tips),
+                    figure=dash_ag_grid(tips, style= {"height": "600px"}),
                     footer="""**Data Source:** Bryant, P. G. and Smith, M. (1995).
                     Practical Data Analysis: Case Studies in Business Statistics.
                     Homewood, IL: Richard D. Irwin Publishing.""",
@@ -230,9 +231,9 @@ To achieve this, we'll switch to the `Flex` layout:
 
     === "Result"
 
-        \[![FirstPageLayout]\][firstpagelayout]
+        [![FirstPageLayout]][firstpagelayout]
 
-**Looks much better already! Great job - you've successfully created a first dashboard page!**
+**Looks much better already! Great job - you've successfully created your first dashboard page!**
 
 ## 4. Create a second page
 
@@ -1644,3 +1645,4 @@ Vizro doesn't end here; we've only covered the key features, but there's still m
 [thirdpage2]: ../../assets/tutorials/dashboard/08-third-page-layout.png
 [thirdpage3]: ../../assets/tutorials/dashboard/09-third-page-parameter.png
 [thirdpage4]: ../../assets/tutorials/dashboard/10-third-page-custom-chart.png
+[firstpagelayout]: ../../assets/tutorials/dashboard/01-first-page-layout.png
