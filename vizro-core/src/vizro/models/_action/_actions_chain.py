@@ -35,7 +35,7 @@ def _set_actions(actions: list[ActionType], info: ValidationInfo, trigger_proper
         else:
             converted_actions.append(action)
 
-    # TODO NOW: comment and tidy
+    # TODO NOW: comment and tidy. Should we remove ActionsChain model completely? Not sure. Remember to_python.
     for i, action in enumerate(converted_actions):
         if i == 0:
             trigger_component, trigger_property = info.data["id"], trigger_property
