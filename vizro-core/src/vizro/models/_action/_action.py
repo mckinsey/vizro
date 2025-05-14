@@ -43,6 +43,8 @@ class _BaseAction(VizroBaseModel):
     # TODO NOW: think about this more. Is it trigger property or IdProperty?
     trigger: str = ""
 
+    _parent_model_id: str
+
     @property
     def _dash_components(self) -> list[Component]:
         raise NotImplementedError
@@ -93,7 +95,14 @@ class _BaseAction(VizroBaseModel):
         # of the filter and parameter models in future. This property could match outputs and return just a dotted
         # string that is then transformed to State inside _transformed_inputs. This would prevent us from using
         # pattern-matching callback here though.
-        # See also notes in filter_interaction._get_triggered_model.
+        # Notes from old function filter_interaction._get_triggered_model that may also be relevant:
+        # def _get_triggered_model(self) -> FigureWithFilterInteractionType:  # type: ignore[return]
+        #     """Gets the model that triggers the action with "action_id"."""
+        #     # In future we should have a better way of doing this:
+        #     #  - maybe through the model manager
+        #     #  - pass trigger into callback as a built-in keyword
+        #     #  - maybe need to be able to define inputs property for actions that subclass _AbstractAction
+        # Maybe want to revisit this as part of TODO-AV2 A 1.
         page = model_manager._get_model_page(self)
         return [
             State(component_id=control.selector.id, component_property=control.selector._input_property)
@@ -103,17 +112,16 @@ class _BaseAction(VizroBaseModel):
     def _get_filter_interaction_states(self) -> list[dict[str, State]]:
         """Gets list of `States` for selected chart interaction `filter_interaction`."""
         from vizro.actions import filter_interaction
-        from vizro.actions._actions_utils import _get_parent_model
 
         page = model_manager._get_model_page(self)
 
-        r = []
-
-        for action in model_manager._get_models(filter_interaction, page=page):
-            input_component_id = action.trigger.split(".")[0]
-            r.append(_get_parent_model(input_component_id)._filter_interaction_input)
-
-        return r
+        # States are stored in the parent model (e.g. AgGrid) whose actions contains the filter_interaction rather than
+        # the filter_interaction model itself, hence needing to lookup action._parent_model_id.
+        # Maybe want to revisit this as part of TODO-AV2 A 1.
+        return [
+            model_manager[action._parent_model_id]._filter_interaction_input
+            for action in cast(Iterable[filter_interaction], model_manager._get_models(filter_interaction, page=page))
+        ]
 
     @property
     def _transformed_inputs(self) -> Union[list[State], dict[str, Union[State, ControlsStates]]]:

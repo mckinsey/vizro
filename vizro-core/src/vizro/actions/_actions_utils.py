@@ -88,11 +88,13 @@ def _apply_filter_controls(
     return data_frame
 
 
-def _get_parent_model(input_component_id: str) -> VizroBaseModel:
+def _get_triggered_model(input_component_id: str) -> VizroBaseModel:
+    # Used to go directly from input_component_id to the model (like AgGrid). This doesn't go through the intermediate
+    # filter_interaction model using the _parent_model_id.
     for model in model_manager._get_models(FIGURE_MODELS):
         if hasattr(model, "_input_component_id") and model._input_component_id == input_component_id:
             return model
-    raise KeyError(f"No parent Vizro model found for underlying callable object with id: {input_component_id}.")
+    raise KeyError(f"No triggered Vizro model found for {input_component_id=}.")
 
 
 def _apply_filter_interaction(
@@ -110,6 +112,11 @@ def _apply_filter_interaction(
     Returns: filtered DataFrame.
     """
     for ctd_filter_interaction in ctds_filter_interaction:
+        # The filter_interaction model actually contains the id we require in its _parent_model_id field.
+        # We could if we had the action_id available here. Alternatively we could explicitly pass the input_component_id
+        # as a state and then use _get_triggered_model to look up the parent model. Both these methods would mean we
+        # can remove modelID from the states, but given that filter_interaction will be removed it's not worth
+        # rewriting now.
         triggered_model = model_manager[ctd_filter_interaction["modelID"]["id"]]
         data_frame = cast(FigureWithFilterInteractionType, triggered_model)._filter_interaction(
             data_frame=data_frame,
