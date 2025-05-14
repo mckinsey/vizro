@@ -24,6 +24,8 @@ class TestRadioItemsInstantiation:
         assert radio_items.title == ""
         assert radio_items.description is None
         assert radio_items.actions == []
+        assert radio_items._action_outputs == {"__default__": f"{radio_items.id}.value"}
+        assert radio_items._action_inputs == {"__default__": f"{radio_items.id}.value"}
 
     def test_create_radio_items_mandatory_and_optional(self):
         radio_items = RadioItems(

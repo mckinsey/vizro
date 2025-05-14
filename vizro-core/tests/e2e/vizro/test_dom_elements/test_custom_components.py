@@ -11,7 +11,7 @@ def test_custom_dropdown(dash_br):
         page_name=cnst.CUSTOM_COMPONENTS_PAGE,
     )
     # choose 'versicolor' value
-    select_dropdown_value(dash_br, value=2, dropdown_id=cnst.CUSTOM_DROPDOWN_ID, multi=False)
+    select_dropdown_value(dash_br, value=2, dropdown_id=cnst.CUSTOM_DROPDOWN_ID)
     check_graph_is_loading(dash_br, cnst.SCATTER_CUSTOM_COMPONENTS_ID)
     check_selected_dropdown(
         dash_br,

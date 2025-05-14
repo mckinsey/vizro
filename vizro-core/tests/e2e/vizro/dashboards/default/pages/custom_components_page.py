@@ -35,7 +35,6 @@ custom_components_page = vm.Page(
             selector=CustomDropdown(
                 id=cnst.CUSTOM_DROPDOWN_ID,
                 options=["setosa", "versicolor", "virginica"],
-                multi=False,
             ),
         ),
         vm.Filter(
