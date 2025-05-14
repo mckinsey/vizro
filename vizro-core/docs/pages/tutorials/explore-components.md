@@ -200,7 +200,7 @@ To achieve this, we'll switch to the `Flex` layout and set a `height` for the `A
 
     === "Code - Dashboard"
 
-        ```{.python pycafe-link hl_lines="13"}
+        ```{.python pycafe-link hl_lines="13 16"}
         import vizro.models as vm
         import vizro.plotly.express as px
         from vizro import Vizro
