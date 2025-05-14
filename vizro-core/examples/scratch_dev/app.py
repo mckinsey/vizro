@@ -95,19 +95,7 @@ page11 = vm.Page(
 
 
 dashboard = vm.Dashboard(
-    pages=[
-        page1,
-        page2,
-        page3,
-        page4,
-        page5,
-        page6,
-        page7,
-        page8,
-        page9,
-        page10,
-        page11
-    ],
+    pages=[page1, page2, page3, page4, page5, page6, page7, page8, page9, page10, page11],
     title="Test out Flex/Grid",
 )
 
