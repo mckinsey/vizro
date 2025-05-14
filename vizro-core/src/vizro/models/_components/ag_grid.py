@@ -140,6 +140,9 @@ class AgGrid(VizroBaseModel):
     @_log_call
     def pre_build(self):
         self._input_component_id = self.figure._arguments.get("id", f"__input_{self.id}")
+        # TODO NOW: make this less hacky
+        self.actions[0].trigger = f"{self._input_component_id}.cellClicked"
+
         # Check if any other AgGrid figure function has the same input component ID
         existing_models = [
             model

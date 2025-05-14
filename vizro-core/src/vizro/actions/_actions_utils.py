@@ -11,6 +11,7 @@ import pandas as pd
 from vizro._constants import ALL_OPTION, NONE_OPTION
 from vizro.managers import data_manager, model_manager
 from vizro.managers._data_manager import DataSourceName
+from vizro.managers._model_manager import FIGURE_MODELS
 from vizro.models.types import (
     FigureType,
     FigureWithFilterInteractionType,
@@ -87,15 +88,11 @@ def _apply_filter_controls(
     return data_frame
 
 
-def _get_parent_model(_underlying_callable_object_id: str) -> VizroBaseModel:
-    from vizro.models import VizroBaseModel
-
-    for model in cast(Iterable[VizroBaseModel], model_manager._get_models()):
-        if hasattr(model, "_input_component_id") and model._input_component_id == _underlying_callable_object_id:
+def _get_parent_model(input_component_id: str) -> VizroBaseModel:
+    for model in model_manager._get_models(FIGURE_MODELS):
+        if hasattr(model, "_input_component_id") and model._input_component_id == input_component_id:
             return model
-    raise KeyError(
-        f"No parent Vizro model found for underlying callable object with id: {_underlying_callable_object_id}."
-    )
+    raise KeyError(f"No parent Vizro model found for underlying callable object with id: {input_component_id}.")
 
 
 def _apply_filter_interaction(

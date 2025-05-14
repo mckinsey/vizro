@@ -103,12 +103,17 @@ class _BaseAction(VizroBaseModel):
     def _get_filter_interaction_states(self) -> list[dict[str, State]]:
         """Gets list of `States` for selected chart interaction `filter_interaction`."""
         from vizro.actions import filter_interaction
+        from vizro.actions._actions_utils import _get_parent_model
 
         page = model_manager._get_model_page(self)
-        return [
-            action._get_triggered_model()._filter_interaction_input
-            for action in model_manager._get_models(filter_interaction, page=page)
-        ]
+
+        r = []
+
+        for action in model_manager._get_models(filter_interaction, page=page):
+            input_component_id = action.trigger.split(".")[0]
+            r.append(_get_parent_model(input_component_id)._filter_interaction_input)
+
+        return r
 
     @property
     def _transformed_inputs(self) -> Union[list[State], dict[str, Union[State, ControlsStates]]]:
@@ -241,7 +246,6 @@ class _BaseAction(VizroBaseModel):
         external_callback_inputs = self._transformed_inputs
         external_callback_outputs = self._transformed_outputs
 
-        print(f"{self.trigger=}")
         callback_inputs = {
             "external": external_callback_inputs,
             "internal": {"trigger": Input(*self.trigger.split("."))},
