@@ -115,6 +115,16 @@ class TestLegacyActionInputs:
             action = Action(function=action_with_one_arg(), inputs=runtime_inputs)
             action._transformed_inputs
 
+
+    def test_inputs_invalid_missing_action_attribute(self, manager_for_testing_default_output_input_prop):
+        with pytest.raises(
+            AttributeError,
+            match="Model with ID 'model-with-no-default-props' does not have implicit input properties defined. "
+            "Please specify the input explicitly as 'model-with-no-default-props.<property>'.",
+        ):
+            action = Action(function=action_with_one_arg(), inputs=["model-with-no-default-props"])
+            action._transformed_inputs
+
     @pytest.mark.parametrize(
         "static_inputs",
         [
@@ -267,6 +277,8 @@ class TestIsActionLegacy:
             (action_with_one_arg, {}, ["component.property"], True),
             (action_with_one_arg, {"arg_1": "hardcoded"}, [], True),
             (action_with_one_arg, {"arg_1": "component.property"}, [], False),
+            (action_with_one_arg, {}, ["known-model-id"], True),
+            (action_with_one_arg, {"arg_1": "known-model-id"}, [], False),
             # Two args
             (action_with_two_args, {}, ["component.property", "component.property"], True),
             (action_with_two_args, {"arg_1": "component.property"}, ["component.property"], True),
@@ -281,6 +293,7 @@ class TestIsActionLegacy:
         static_inputs,
         runtime_inputs,
         expected_legacy,
+        manager_for_testing_default_output_input_prop
     ):
         function = action_function(**static_inputs) if runtime_as_kwargs else action_function(*static_inputs.values())
 
@@ -365,6 +378,15 @@ class TestActionInputs:
     def test_runtime_inputs_invalid(self, input):
         with pytest.raises(ValidationError):
             Action(function=action_with_one_arg(input))._transformed_inputs
+    
+    def test_inputs_invalid_missing_action_attribute(self, manager_for_testing_default_output_input_prop):
+        with pytest.raises(
+            AttributeError,
+            match="Model with ID 'model-with-no-default-props' does not have implicit input properties defined. "
+            "Please specify the input explicitly as 'model-with-no-default-props.<property>'.",
+        ):
+            action = Action(function=action_with_one_arg("model-with-no-default-props"))
+            action._transformed_inputs
 
 
 class TestBuiltinRuntimeArgs:

@@ -211,6 +211,16 @@ class TestAbstractActionInputs:
         ):
             action_with_one_runtime_arg(arg_1=input)._transformed_inputs
 
+
+    def test_inputs_invalid_missing_action_attribute(self, manager_for_testing_default_output_input_prop):
+        with pytest.raises(
+            AttributeError,
+            match="Model with ID 'model-with-no-default-props' does not have implicit input properties defined. "
+            "Please specify the input explicitly as 'model-with-no-default-props.<property>'.",
+        ):
+            action = action_with_one_runtime_arg(arg_1="model-with-no-default-props")._transformed_inputs
+            action._transformed_inputs
+
     # TODO: Adjust this test when _controls becomes a public field. Should demonstrate that a runtime arg called
     # controls overrides the inbuilt behavior. This could be done as a new test case in TestAbstractActionInputs
     # like in test_action.TestActionInputs works.
