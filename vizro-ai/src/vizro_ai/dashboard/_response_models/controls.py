@@ -82,7 +82,6 @@ def _create_filter_proxy(df_cols, df_schema, controllable_components) -> BaseMod
             "validator3": field_validator("targets", mode="before")(validate_targets_not_empty),
             "validator4": validate_date_picker_column,
         },
-        __base__=vm.Filter,
     )
 
 
@@ -91,7 +90,7 @@ def _create_filter(filter_prompt, model, df_cols, df_schema, controllable_compon
         df_cols=df_cols, df_schema=df_schema, controllable_components=controllable_components
     )
     proxy = _get_pydantic_model(query=filter_prompt, llm_model=model, response_model=result_proxy, df_info=df_schema)
-    return vm.Filter(**proxy.model_dump(exclude_unset=True))
+    return vm.Filter(**proxy.model_dump())
 
 
 class ControlPlan(BaseModel):

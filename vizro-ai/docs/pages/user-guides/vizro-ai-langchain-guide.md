@@ -198,7 +198,7 @@ Now you can use the chain to generate charts or dashboards based on natural lang
                         )
                     ],
                     title="GDP vs Life Expectancy Correlation",
-                    layout=vm.Layout(grid=[[0]]),
+                    layout=vm.Grid(grid=[[0]]),
                     controls=[],
                 )
             ],
