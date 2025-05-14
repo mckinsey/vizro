@@ -38,6 +38,7 @@ class Container(VizroBaseModel):
             `plain`, `filled` or `outlined`. Defaults to `plain` (or `outlined` for collapsible container).
         description (Optional[Tooltip]): Optional markdown string that adds an icon next to the title.
             Hovering over the icon shows a tooltip with the provided description. Defaults to `None`.
+        controls (list[ControlType]): See [ControlType][vizro.models.types.ControlType]. Defaults to `[]`.
         extra (Optional[dict[str, Any]]): Extra keyword arguments that are passed to `dbc.Container` and overwrite any
             defaults chosen by the Vizro team. This may have unexpected behavior.
             Visit the [dbc documentation](https://dash-bootstrap-components.opensource.faculty.ai/docs/components/layout/)
@@ -82,7 +83,7 @@ class Container(VizroBaseModel):
             Hovering over the icon shows a tooltip with the provided description. Defaults to `None`.""",
         ),
     ]
-
+    controls: list[ControlType] = []
     extra: SkipJsonSchema[
         Annotated[
             dict[str, Any],
@@ -96,7 +97,6 @@ class Container(VizroBaseModel):
             ),
         ]
     ]
-    controls: list[ControlType] = []
 
     @_log_call
     def build(self):

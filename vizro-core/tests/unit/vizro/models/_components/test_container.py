@@ -28,6 +28,7 @@ class TestContainerInstantiation:
             layout=vm.Grid(grid=[[0, 1]]),
             variant=variant,
             collapsed=True,
+            controls=[vm.Filter(column="test")],
         )
         assert container.id == "my-id"
         assert isinstance(container.components[0], vm.Button) and isinstance(container.components[1], vm.Button)
@@ -35,6 +36,7 @@ class TestContainerInstantiation:
         assert container.title == "Title"
         assert container.variant == variant
         assert container.collapsed is True
+        assert isinstance(container.controls[0], vm.Filter)
 
     def test_create_container_mandatory_and_optional_legacy_layout(self):
         with pytest.warns(FutureWarning, match="The `Layout` model has been renamed `Grid`"):
@@ -162,7 +164,7 @@ class TestContainerBuildMethod:
             dbc.Collapse(id="test_collapse", is_open=not collapsed, className="collapsible-container", key="test"),
             keys_to_strip={"children"},
         )
-        # # We want to test if the correct style is applied: default style for collapsible containers is outlined
+        # We want to test if the correct style is applied: default style for collapsible containers is outlined
         assert result.class_name == "border p-3"
 
     def test_container_build_with_description(self):
@@ -206,7 +208,7 @@ class TestContainerBuildMethod:
             result, dbc.Container(id="container", class_name="", fluid=True), keys_to_strip={"children"}
         )
         assert_component_equal(result.children, [html.H3(), html.Div(), html.Div()], keys_to_strip=STRIP_ALL)
-        # # We still want to test the exact Div produced in Container.build:
+        # Test the exact Div produced in Container.build:
         assert_component_equal(
             result.children[1],
             html.Div(
@@ -217,3 +219,5 @@ class TestContainerBuildMethod:
             ),
             keys_to_strip={"children"},
         )
+        # Test if correct selector is added
+        assert isinstance(result.children[1].children[0].children[1], dcc.Dropdown)

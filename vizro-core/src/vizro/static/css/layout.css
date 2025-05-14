@@ -217,11 +217,6 @@ Current logic:
   display: none;
 }
 
-.text {
-  height: 100%;
-  overflow: auto;
-}
-
 .container-controls-panel {
   border-bottom: 1px solid var(--border-subtleAlpha01);
   display: flex;

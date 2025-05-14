@@ -499,7 +499,7 @@ You can provide markdown text as a string to use the default info icon or a [`To
 
 The `Container` now accepts a `controls` argument, where you can define container-specific controls to group related components for better interaction.
 
-By default, a control affects only components within its container when no targets are specified. To affect components outside the container, use the `targets` argument of [Filter][vizro.models.Filter] or [Parameter][vizro.models.Parameter] to explicitly define them.
+By default, controls only affect components inside their own container.
 
 !!! example "Container with controls"
 

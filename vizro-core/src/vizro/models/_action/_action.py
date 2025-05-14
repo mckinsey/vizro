@@ -104,7 +104,7 @@ class _BaseAction(VizroBaseModel):
         page = model_manager._get_model_page(self)
         return [
             action._get_triggered_model()._filter_interaction_input
-            for action in model_manager._get_models(filter_interaction, page=page)
+            for action in model_manager._get_models(filter_interaction, root_model=page)
         ]
 
     @property

@@ -8,7 +8,7 @@ from vizro.actions._parameter_action import _parameter
 from vizro.managers import model_manager
 from vizro.models import VizroBaseModel
 from vizro.models._components.form import Checklist, DatePicker, Dropdown, RadioItems, RangeSlider, Slider
-from vizro.models._controls._controls_utils import check_targets_present_on_page
+from vizro.models._controls._controls_utils import check_targets_present_on_page, set_container_control_default
 from vizro.models._models_utils import _log_call
 from vizro.models.types import ModelID, SelectorType
 
@@ -78,11 +78,11 @@ class Parameter(VizroBaseModel):
     @_log_call
     def pre_build(self):
         check_targets_present_on_page(control=self)
+        set_container_control_default(control=self, control_id=self.id, selector=self.selector)
         self._check_numerical_and_temporal_selectors_values()
         self._check_categorical_selectors_options()
         self._set_selector_title()
         self._set_actions()
-        self._set_container_control_default()
 
     @_log_call
     def build(self):
@@ -110,7 +110,7 @@ class Parameter(VizroBaseModel):
             page_dynamic_filters = [
                 filter
                 for filter in cast(
-                    Iterable[Filter], model_manager._get_models(Filter, page=model_manager._get_model_page(self))
+                    Iterable[Filter], model_manager._get_models(Filter, root_model=model_manager._get_model_page(self))
                 )
                 if filter._dynamic
             ]
@@ -134,11 +134,3 @@ class Parameter(VizroBaseModel):
             self.targets.extend(list(filter_targets))
 
             self.selector.actions = [_parameter(id=f"{PARAMETER_ACTION_PREFIX}_{self.id}", targets=self.targets)]
-
-    def _set_container_control_default(self):
-        page = model_manager._get_model_page(self)
-        is_page_control = any(control.id == self.id for control in page.controls)
-
-        if not is_page_control and isinstance(self.selector, (Checklist, RadioItems)):
-            self.selector.extra = self.selector.extra or {}
-            self.selector.extra.setdefault("inline", True)

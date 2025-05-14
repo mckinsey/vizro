@@ -19,7 +19,7 @@ Uncomment the section that is right (remove the HTML comment wrapper).
 
 ### Added
 
-- Added `controls` argument for a [Container][vizro.models.Container] model. ([#1094](https://github.com/mckinsey/vizro/pull/1094))
+- Enable `controls` inside [Container][vizro.models.Container]. See the [user guide on container](XXX) for more details.([#1094](https://github.com/mckinsey/vizro/pull/1094))
 
 <!--
 ### Changed

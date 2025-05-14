@@ -161,6 +161,18 @@ class TestPreBuildMethod:
         default_action = data_frame_parameter.selector.actions[0].actions[0]
         assert set(default_action.targets) == expected_parameter_targets
 
+    @pytest.mark.usefixtures("managers_one_page_container_controls")
+    def test_set_container_parameter_default(self):
+        parameter = Parameter(
+            targets=["scatter_chart.x"],
+            selector=vm.Checklist(options=["lifeExp", "gdpPercap", "pop"], value=["lifeExp"]),
+        )
+        page = model_manager["test_container"]
+        page.components[0].controls = [parameter]
+        parameter.pre_build()
+
+        assert parameter.selector.extra == {"inline": True}
+
 
 @pytest.mark.usefixtures("managers_one_page_two_graphs")
 class TestParameterBuild:

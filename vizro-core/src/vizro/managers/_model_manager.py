@@ -69,17 +69,18 @@ class ModelManager:
     def _get_models(
         self,
         model_type: Optional[Union[type[Model], tuple[type[Model], ...], type[FIGURE_MODELS]]] = None,
-        page: Optional[Union[Page, VizroBaseModel]] = None,
+        root_model: Optional[VizroBaseModel] = None,
     ) -> Generator[Model, None, None]:
         """Iterates through all models of type `model_type` (including subclasses).
 
-        If `model_type` not given then look at all models. If `page` specified then only give models from that page.
+        If `model_type` not given then look at all models.
+        If `root_model` specified then only give models from that container.
         """
         import vizro.models as vm
 
         if model_type is FIGURE_MODELS:
             model_type = (vm.Graph, vm.AgGrid, vm.Table, vm.Figure)  # type: ignore[assignment]
-        models = self.__get_model_children(page) if page is not None else self.__models.values()
+        models = self.__get_model_children(root_model) if root_model is not None else self.__models.values()
 
         # Convert to list to avoid changing size when looping through at runtime.
         for model in list(models):

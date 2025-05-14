@@ -23,7 +23,7 @@ from vizro.models._components.form import (
     RangeSlider,
     Slider,
 )
-from vizro.models._controls._controls_utils import check_targets_present_on_page
+from vizro.models._controls._controls_utils import check_targets_present_on_page, set_container_control_default
 from vizro.models._models_utils import _log_call
 from vizro.models.types import FigureType, ModelID, MultiValueType, SelectorType, SingleValueType
 
@@ -159,6 +159,9 @@ class Filter(VizroBaseModel):
         self.selector = self.selector or SELECTORS[self._column_type][0]()
         self.selector.title = self.selector.title or self.column.title()
 
+        # set default inline=True for container selectors
+        set_container_control_default(control=self, control_id=self.id, selector=self.selector)
+
         if isinstance(self.selector, DISALLOWED_SELECTORS.get(self._column_type, ())):
             raise ValueError(
                 f"Chosen selector {type(self.selector).__name__} is not compatible with {self._column_type} column "
@@ -212,13 +215,6 @@ class Filter(VizroBaseModel):
                 targets=self.targets,
             ),
         ]
-
-        # set default inline=True for container selectors
-        _is_page_control = self._is_page_control(page=page)
-
-        if not _is_page_control and isinstance(self.selector, (Checklist, RadioItems)):
-            self.selector.extra = self.selector.extra or {}
-            self.selector.extra.setdefault("inline", True)
 
     @_log_call
     def build(self):
@@ -338,20 +334,22 @@ class Filter(VizroBaseModel):
         return sorted(set(targeted_data) - {ALL_OPTION})
 
     def _get_proposed_targets(self, page):
+        """Get all valid figure model targets for this control based on its location in the page hierarchy."""
         if self.targets:
             return self.targets
 
-        is_page_control = any(control.id == self.id for control in page.controls)
+        parent_container = self._find_parent_container(page)
+        target_scope = parent_container if parent_container else page
 
-        if is_page_control:
-            return [
-                model.id for model in cast(Iterable[VizroBaseModel], model_manager._get_models(FIGURE_MODELS, page))
-            ]
+        return [
+            model.id for model in cast(Iterable[VizroBaseModel], model_manager._get_models(FIGURE_MODELS, target_scope))
+        ]
 
-        # Find the container that holds the control
+    def _find_parent_container(self, page):
+        """Find the container that contains this control, if any."""
         page_containers = cast(Iterable[Container], model_manager._get_models(Container, page))
 
-        control_container = next(
+        return next(
             (
                 container
                 for container in page_containers
@@ -359,11 +357,3 @@ class Filter(VizroBaseModel):
             ),
             None,
         )
-        if control_container:
-            return [
-                model.id
-                for model in cast(Iterable[VizroBaseModel], model_manager._get_models(FIGURE_MODELS, control_container))
-            ]
-
-    def _is_page_control(self, page):
-        return any(control.id == self.id for control in page.controls)

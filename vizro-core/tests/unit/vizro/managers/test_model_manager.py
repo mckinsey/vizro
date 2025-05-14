@@ -66,7 +66,7 @@ class TestGetModels:
 
     def test_model_type_none_page_not_none(self, page_1):
         """model_type is None | page is page_1 -> return all elements from the page_1."""
-        result = [model.id for model in model_manager._get_models(page=page_1)]
+        result = [model.id for model in model_manager._get_models(root_model=page_1)]
 
         expected = {"page_1_id", "page_1_button_id", "page_1_graph_id"}
         excluded = {"page_2_id", "page_2_button_id", "page_2_figure_id"}
@@ -76,7 +76,7 @@ class TestGetModels:
 
     def test_model_type_not_none_page_not_none(self, page_1):
         """model_type is vm.Button | page is page_1 -> return all vm.Button from the page_1."""
-        result = [model.id for model in model_manager._get_models(model_type=vm.Button, page=page_1)]
+        result = [model.id for model in model_manager._get_models(model_type=vm.Button, root_model=page_1)]
 
         expected = {"page_1_button_id"}
         excluded = {"page_1_id", "page_1_graph_id", "page_2_id", "page_2_button_id", "page_2_figure_id"}
@@ -94,7 +94,7 @@ class TestGetModels:
     def test_model_type_no_match_page_not_none(self, page_1):
         """model_type matches no type | page is page_1 -> return empty list."""
         # There is no AgGrid in the page_1
-        result = [model.id for model in model_manager._get_models(model_type=vm.AgGrid, page=page_1)]
+        result = [model.id for model in model_manager._get_models(model_type=vm.AgGrid, root_model=page_1)]
 
         assert result == []
 
@@ -169,7 +169,7 @@ class TestGetModels:
             ControlGroup(controls=make_nested_control(vm.Filter(id="page_1_control_1", column="year")))
         )
 
-        result = [model.id for model in model_manager._get_models(model_type=vm.Filter, page=page_1)]
+        result = [model.id for model in model_manager._get_models(model_type=vm.Filter, root_model=page_1)]
 
         assert "page_1_control_1" in result
 
@@ -181,7 +181,7 @@ class TestGetModels:
 
         page_1.controls.append(ControlGroup(unknown_field=vm.Filter(id="page_1_control_1", column="year")))
 
-        result = [model.id for model in model_manager._get_models(model_type=vm.Filter, page=page_1)]
+        result = [model.id for model in model_manager._get_models(model_type=vm.Filter, root_model=page_1)]
 
         assert "page_1_control_1" not in result
 
