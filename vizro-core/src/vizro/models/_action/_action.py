@@ -3,6 +3,7 @@ from __future__ import annotations
 import inspect
 import logging
 import re
+import time
 from collections.abc import Collection, Iterable, Mapping
 from pprint import pformat
 from typing import TYPE_CHECKING, Annotated, Any, Callable, ClassVar, Literal, Union, cast
@@ -50,6 +51,10 @@ class _BaseAction(VizroBaseModel):
     # for these is the easiest way to appease mypy and have something that actually works at runtime.
     function: ClassVar[Callable[..., Any]]
     outputs: ClassVar[Union[list[str], dict[str, str]]]
+    # TODO NOW: think about this more. Is it trigger property or IdProperty? Private for now?
+    trigger: str = ""
+
+    _parent_model_id: str
 
     @property
     def _dash_components(self) -> list[Component]:
@@ -77,7 +82,14 @@ class _BaseAction(VizroBaseModel):
         # of the filter and parameter models in future. This property could match outputs and return just a dotted
         # string that is then transformed to State inside _transformed_inputs. This would prevent us from using
         # pattern-matching callback here though.
-        # See also notes in filter_interaction._get_triggered_model.
+        # Notes from old function filter_interaction._get_triggered_model that may also be relevant:
+        # def _get_triggered_model(self) -> FigureWithFilterInteractionType:  # type: ignore[return]
+        #     """Gets the model that triggers the action with "action_id"."""
+        #     # In future we should have a better way of doing this:
+        #     #  - maybe through the model manager
+        #     #  - pass trigger into callback as a built-in keyword
+        #     #  - maybe need to be able to define inputs property for actions that subclass _AbstractAction
+        # Maybe want to revisit this as part of TODO-AV2 A 1.
         page = model_manager._get_model_page(self)
         return [
             State(*control.selector._action_inputs["__default__"].split("."))
@@ -89,9 +101,13 @@ class _BaseAction(VizroBaseModel):
         from vizro.actions import filter_interaction
 
         page = model_manager._get_model_page(self)
+
+        # States are stored in the parent model (e.g. AgGrid) whose actions contains the filter_interaction rather than
+        # the filter_interaction model itself, hence needing to lookup action._parent_model_id.
+        # Maybe want to revisit this as part of TODO-AV2 A 1.
         return [
-            action._get_triggered_model()._filter_interaction_input
-            for action in model_manager._get_models(filter_interaction, page=page)
+            model_manager[action._parent_model_id]._filter_interaction_input
+            for action in cast(Iterable[filter_interaction], model_manager._get_models(filter_interaction, page=page))
         ]
 
     @staticmethod
@@ -294,15 +310,16 @@ class _BaseAction(VizroBaseModel):
         """
         # TODO: after sorting out model manager and pre-build order, lots of this should probably move to happen
         #  some time before the build phase.
+        # TODO NOW: check how done in Dash extensions
         external_callback_inputs = self._transformed_inputs
         external_callback_outputs = self._transformed_outputs
 
         callback_inputs = {
             "external": external_callback_inputs,
-            "internal": {"trigger": Input({"type": "action_trigger", "action_name": self.id}, "data")},
+            "internal": {"trigger": Input(*self.trigger.split("."))},
         }
         callback_outputs: dict[str, Union[list[Output], dict[str, Output]]] = {
-            "internal": {"action_finished": Output("action_finished", "data", allow_duplicate=True)},
+            "internal": {"action_finished": Output(f"{self.id}_finished", "data")},
         }
 
         # If there are no outputs then we don't want the external part of callback_outputs to exist at all.
@@ -324,12 +341,21 @@ class _BaseAction(VizroBaseModel):
 
         @callback(output=callback_outputs, inputs=callback_inputs, prevent_initial_call=True)
         def callback_wrapper(external: Union[list[Any], dict[str, Any]], internal: dict[str, Any]) -> dict[str, Any]:
+            # This is not needed if all components Outputs and Inputs are produced in page_container.
+            # That is better solution since it means callback doesn't execute at all rather than needing to start it
+            # and cancel it.
+            # Default assumption is nothing should run when page is built, and opl is exception to that so uses
+            # global output.
+            # Note prevent_initial_call=False doesn't work here due to duplicate outputs. Could maybe change Dash behaviour
+            # so it works with duplicated outputs and a single output with preven_initia_call=False and all others true.
+            # if internal["trigger"] is None:
+            #     # Doesn't work to stop opl triggering every callback
+            #     print(f"Cancelled {self._action_name}")
+            #     raise PreventUpdate
             return_value = self._action_callback_function(inputs=external, outputs=callback_outputs.get("external"))
             if "external" in callback_outputs:
-                return {"internal": {"action_finished": None}, "external": return_value}
-            return {"internal": {"action_finished": None}}
-
-        return html.Div(id=f"{self.id}_action_model_components_div", children=self._dash_components, hidden=True)
+                return {"internal": {"action_finished": time.time()}, "external": return_value}
+            return {"internal": {"action_finished": time.time()}}
 
 
 class Action(_BaseAction):

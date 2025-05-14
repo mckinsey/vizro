@@ -8,7 +8,7 @@ from pydantic.functional_serializers import PlainSerializer
 from pydantic.json_schema import SkipJsonSchema
 
 from vizro.actions import filter_interaction
-from vizro.actions._actions_utils import CallbackTriggerDict, _get_component_actions, _get_parent_model
+from vizro.actions._actions_utils import CallbackTriggerDict, _get_component_actions, _get_triggered_model
 from vizro.managers import data_manager, model_manager
 from vizro.managers._model_manager import DuplicateIDError
 from vizro.models import Tooltip, VizroBaseModel
@@ -121,7 +121,7 @@ class AgGrid(VizroBaseModel):
             return data_frame
 
         # ctd_active_cell["id"] represents the underlying table id, so we need to fetch its parent Vizro Table actions.
-        source_table_actions = _get_component_actions(_get_parent_model(ctd_cellClicked["id"]))
+        source_table_actions = _get_component_actions(_get_triggered_model(ctd_cellClicked["id"]))
 
         for action in source_table_actions:
             # TODO-AV2 A 1: simplify this as in
@@ -140,8 +140,11 @@ class AgGrid(VizroBaseModel):
     @_log_call
     def pre_build(self):
         self._input_component_id = self.figure._arguments.get("id", f"__input_{self.id}")
-        # Check if any other Vizro model or CapturedCallable has the same input component ID
+        # TODO NOW: seems like best solution for now but add comment.
+        if self.actions:
+            self.actions[0].trigger = self.actions[0].trigger.replace(f"{self.id}.", f"{self._input_component_id}.")
 
+        # Check if any other Vizro model or CapturedCallable has the same input component ID
         all_input_component_ids = {  # type: ignore[var-annotated]
             model._input_component_id
             for model in model_manager._get_models()

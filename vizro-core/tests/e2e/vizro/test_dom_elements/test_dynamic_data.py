@@ -219,7 +219,8 @@ def test_radio_items_filter(dash_br):
 
     # Choose "versicolor" value and check that graph is reloaded
     dash_br.multiple_click(categorical_components_value_path(elem_id=cnst.RADIOITEMS_DYNAMIC_FILTER_ID, value=2), 1)
-    check_graph_is_loading(dash_br, cnst.BOX_DYNAMIC_FILTERS_ID)
+    # Check y axis min value is '-1' (empty chart)
+    check_graph_is_empty(dash_br, graph_id=cnst.BOX_DYNAMIC_FILTERS_ID)
 
     # Remove "setosa" and "versicolor" from the dynamic data and simulate refreshing the page
     page_select(

@@ -1,103 +1,125 @@
-# Vizro is an open-source toolkit for creating modular data visualization applications.
-# check out https://github.com/mckinsey/vizro for more info about Vizro
-# and checkout https://vizro.readthedocs.io/en/stable/ for documentation.
-
-"""Example app from the official vizro user tutorial.
-
-See: https://vizro.readthedocs.io/en/stable/pages/tutorials/explore-components/
-"""
+# # Vizro is an open-source toolkit for creating modular data visualization applications.
+# # check out https://github.com/mckinsey/vizro for more info about Vizro
+# # and checkout https://vizro.readthedocs.io/en/stable/ for documentation.
 
 import vizro.models as vm
 import vizro.plotly.express as px
 from vizro import Vizro
-from vizro.figures import kpi_card
 from vizro.tables import dash_ag_grid, dash_data_table
 
 tips = px.data.tips()
 
+import vizro.models as vm
+import vizro.plotly.express as px
+from vizro import Vizro
+from vizro.actions import export_data
+from vizro.models.types import capture
+from time import sleep
 
-page1 = vm.Page(
-    title="Grid - layout - aggrid",
-    layout=vm.Grid(grid=[[0, 1]]),
+from vizro.tables import dash_ag_grid
+
+
+@capture("action")
+def my_custom_action(t: int):
+    """Custom action."""
+    sleep(t)
+
+
+df = px.data.iris()
+
+page = vm.Page(
+    title="Simple custom action",
     components=[
-        vm.AgGrid(figure=dash_ag_grid(tips)),
-        vm.Graph(
-            figure=px.violin(tips, y="tip", x="day", color="day", box=True),
+        vm.Graph(figure=px.scatter(df, x="sepal_length", y="petal_width", color="species")),
+        vm.Button(
+            text="Export data",
+            actions=[
+                vm.Action(function=export_data()),
+                vm.Action(function=my_custom_action(t=2)),
+                vm.Action(function=export_data(file_format="xlsx")),
+            ],
         ),
     ],
 )
+
+# dashboard = vm.Dashboard(pages=[page])
+
+import vizro.plotly.express as px
+from vizro import Vizro
+import vizro.models as vm
+
+df = px.data.iris()
 
 page2 = vm.Page(
-    title="Grid - default - aggrid",
+    title="My first dashboard",
     components=[
-        vm.AgGrid(figure=dash_ag_grid(tips)),
+        vm.Graph(figure=px.scatter(df, x="sepal_length", y="petal_width", color="species")),
+        vm.Graph(figure=px.histogram(df, x="sepal_width", color="species")),
+    ],
+    controls=[
+        vm.Filter(column="species"),
+    ],
+)
+import vizro.models as vm
+import vizro.plotly.express as px
+from vizro import Vizro
+from vizro.actions import filter_interaction
+
+df_gapminder = px.data.gapminder().query("year == 2007")
+page3 = vm.Page(
+    title="Filter interaction graph",
+    components=[
         vm.Graph(
-            figure=px.violin(tips, y="tip", x="day", color="day", box=True),
+            figure=px.box(
+                df_gapminder,
+                x="continent",
+                y="lifeExp",
+                color="continent",
+                custom_data=["continent"],
+            ),
+            actions=[vm.Action(function=filter_interaction(targets=["scatter_relation_2007"]))],
+        ),
+        vm.Graph(
+            id="scatter_relation_2007",
+            figure=px.scatter(
+                df_gapminder,
+                x="gdpPercap",
+                y="lifeExp",
+                size="pop",
+                color="continent",
+            ),
+        ),
+    ],
+)
+import vizro.models as vm
+import vizro.plotly.express as px
+from vizro import Vizro
+from vizro.actions import filter_interaction
+
+df_gapminder = px.data.gapminder().query("year == 2007")
+page4 = vm.Page(
+    title="Filter interaction grid",
+    components=[
+        vm.AgGrid(
+            id="grid",
+            figure=dash_ag_grid(data_frame=df_gapminder),
+            actions=[vm.Action(function=filter_interaction(targets=["scatter_relation_2007b"]))],
+        ),
+        vm.Graph(
+            id="scatter_relation_2007b",
+            figure=px.scatter(
+                df_gapminder,
+                x="gdpPercap",
+                y="lifeExp",
+                size="pop",
+                color="continent",
+            ),
         ),
     ],
 )
 
-page3 = vm.Page(
-    title="Flex - default - aggrid",
-    layout=vm.Flex(),
-    components=[vm.AgGrid(figure=dash_ag_grid(tips)) for i in range(3)],
-)
 
-
-page4 = vm.Page(
-    title="Flex - gap - aggrid",
-    layout=vm.Flex(gap="40px"),
-    components=[vm.AgGrid(figure=dash_ag_grid(tips)) for i in range(3)],
-)
-
-page5 = vm.Page(
-    title="Flex - row - aggrid",
-    layout=vm.Flex(direction="row"),
-    components=[vm.AgGrid(figure=dash_ag_grid(tips)) for i in range(3)],
-)
-
-page6 = vm.Page(
-    title="Flex - default - table",
-    layout=vm.Flex(),
-    components=[vm.Table(figure=dash_data_table(tips)) for i in range(3)],
-)
-
-
-page7 = vm.Page(
-    title="Flex - gap - table",
-    layout=vm.Flex(gap="40px"),
-    components=[vm.Table(figure=dash_data_table(tips)) for i in range(3)],
-)
-
-page8 = vm.Page(
-    title="Flex - row - table",
-    layout=vm.Flex(direction="row"),
-    components=[vm.Table(figure=dash_data_table(tips)) for i in range(3)],
-)
-
-page9 = vm.Page(
-    title="FlexItem - dimension - table",
-    layout=vm.Flex(direction="row", wrap=True),
-    components=[vm.Table(figure=dash_data_table(tips, style_table={"width": "1000px"})) for i in range(3)],
-)
-
-page10 = vm.Page(
-    title="FlexItem - dimension - aggrid",
-    layout=vm.Flex(direction="row", wrap=True),
-    components=[vm.AgGrid(figure=dash_ag_grid(tips, style={"width": 1000})) for i in range(3)],
-)
-
-page11 = vm.Page(
-    title="Flex - row - button",
-    layout=vm.Flex(direction="row"),
-    components=[vm.Button() for i in range(5)],
-)
-
-
-dashboard = vm.Dashboard(
-    pages=[page1, page2, page3, page4, page5, page6, page7, page8, page9, page10, page11],
-    title="Test out Flex/Grid",
-)
+dashboard = vm.Dashboard(pages=[page, page2, page3, page4])
 
 if __name__ == "__main__":
     Vizro().build(dashboard).run()
