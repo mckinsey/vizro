@@ -10,11 +10,25 @@ iris["date_column"] = pd.date_range(start=pd.to_datetime("2024-01-01"), periods=
 
 extras_page = vm.Page(
     title=cnst.EXTRAS_PAGE,
+    description=vm.Tooltip(
+        text=cnst.PAGE_TOOLTIP_TEXT,
+        icon=cnst.PAGE_TOOLTIP_ICON,
+    ),
     components=[
         vm.Container(
+            title="container",
+            description=vm.Tooltip(
+                text=cnst.CONTAINER_TOOLTIP_TEXT,
+                icon=cnst.CONTAINER_TOOLTIP_ICON,
+            ),
             extra={"class_name": "bg-container", "fluid": False, "style": {"height": "900px"}},
             components=[
                 vm.Graph(
+                    title="graph title",
+                    description=vm.Tooltip(
+                        text=cnst.GRAPH_TOOLTIP_TEXT,
+                        icon=cnst.GRAPH_TOOLTIP_ICON,
+                    ),
                     figure=px.line(
                         iris,
                         x="sepal_length",
