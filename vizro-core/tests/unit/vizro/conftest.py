@@ -187,14 +187,14 @@ def vizro_app():
 
 
 @pytest.fixture
-def managers_using_model_with_default_output_input(standard_px_chart):
+def manager_for_testing_default_output_input_prop(standard_px_chart):
     """Instantiates the model_manager using a Dropdown (has default input and output properties)."""
     # We have to use one of the selectors as the known-model as currently only the selectors have both
     # input and output properties defined. Therefore the configuration currently requires components and controls.
     vm.Page(
         id="test_page",
         title="My first dashboard",
-        components=[vm.Graph(figure=standard_px_chart), vm.Button(id="model-with-no-output-props")],
+        components=[vm.Graph(figure=standard_px_chart), vm.Button(id="model-with-no-default-props")],
         controls=[vm.Filter(column="continent", selector=vm.Dropdown(id="known-model-id"))],
     )
     Vizro._pre_build()

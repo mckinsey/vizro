@@ -163,7 +163,7 @@ class TestAbstractActionInputs:
         ],
     )
     def test_inputs_valid(
-        self, action_class, inputs, expected_transformed_inputs, managers_using_model_with_default_output_input
+        self, action_class, inputs, expected_transformed_inputs, manager_for_testing_default_output_input_prop
     ):
         action = action_class(**inputs)
         assert action._transformed_inputs == expected_transformed_inputs
@@ -256,7 +256,7 @@ class TestAbstractActionOutputs:
         indirect=["action_with_mock_outputs"],
     )
     def test_outputs_valid(
-        self, action_with_mock_outputs, expected_transformed_outputs, managers_using_model_with_default_output_input
+        self, action_with_mock_outputs, expected_transformed_outputs, manager_for_testing_default_output_input_prop
     ):
         action = action_with_mock_outputs()
         assert action._transformed_outputs == expected_transformed_outputs
@@ -318,14 +318,14 @@ class TestAbstractActionOutputs:
             action_with_mock_outputs()._transformed_outputs
 
     def test_outputs_invalid_missing_action_attribute(
-        self, managers_using_model_with_default_output_input, action_with_mock_outputs
+        self, manager_for_testing_default_output_input_prop, action_with_mock_outputs
     ):
         with pytest.raises(
             AttributeError,
-            match="Model with ID 'model-with-no-output-props' does not have implicit output properties defined. "
-            "Please specify the output explicitly as 'model-with-no-output-props.<property>'.",
+            match="Model with ID 'model-with-no-default-props' does not have implicit output properties defined. "
+            "Please specify the output explicitly as 'model-with-no-default-props.<property>'.",
         ):
-            action_with_mock_outputs.outputs = ["model-with-no-output-props"]
+            action_with_mock_outputs.outputs = ["model-with-no-default-props"]
             action_with_mock_outputs()._transformed_outputs
 
 

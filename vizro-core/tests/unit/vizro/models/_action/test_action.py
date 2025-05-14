@@ -78,7 +78,7 @@ class TestLegacyActionInputs:
         action_function,
         runtime_inputs,
         expected_transformed_inputs,
-        managers_using_model_with_default_output_input,
+        manager_for_testing_default_output_input_prop,
     ):
         action = Action(function=action_function(), inputs=runtime_inputs)
 
@@ -192,7 +192,7 @@ class TestLegacyActionOutputs:
             ),
         ],
     )
-    def test_outputs_valid(self, outputs, expected_transformed_outputs, managers_using_model_with_default_output_input):
+    def test_outputs_valid(self, outputs, expected_transformed_outputs, manager_for_testing_default_output_input_prop):
         # inputs=[] added to force action to be legacy
         action = Action(function=action_with_no_args(), inputs=[], outputs=outputs)
 
@@ -243,14 +243,14 @@ class TestLegacyActionOutputs:
             # An error is raised when accessing _transformed_outputs which is fine because validation is then performed.
             action._transformed_outputs
 
-    def test_outputs_invalid_missing_action_attribute(self, managers_using_model_with_default_output_input):
+    def test_outputs_invalid_missing_action_attribute(self, manager_for_testing_default_output_input_prop):
         with pytest.raises(
             AttributeError,
-            match="Model with ID 'model-with-no-output-props' does not have implicit output properties defined. "
-            "Please specify the output explicitly as 'model-with-no-output-props.<property>'.",
+            match="Model with ID 'model-with-no-default-props' does not have implicit output properties defined. "
+            "Please specify the output explicitly as 'model-with-no-default-props.<property>'.",
         ):
             # inputs=[] added to force action to be legacy
-            action = Action(function=action_with_no_args(), inputs=[], outputs=["model-with-no-output-props"])
+            action = Action(function=action_with_no_args(), inputs=[], outputs=["model-with-no-default-props"])
             action._transformed_outputs
 
 
@@ -342,7 +342,7 @@ class TestActionInputs:
         ],
     )
     def test_inputs_valid(
-        self, action_function, inputs, expected_transformed_inputs, managers_using_model_with_default_output_input
+        self, action_function, inputs, expected_transformed_inputs, manager_for_testing_default_output_input_prop
     ):
         action = Action(function=action_function(**inputs))
         assert action._transformed_inputs == expected_transformed_inputs
@@ -401,7 +401,7 @@ class TestActionOutputs:
             ),
         ],
     )
-    def test_outputs_valid(self, outputs, expected_transformed_outputs, managers_using_model_with_default_output_input):
+    def test_outputs_valid(self, outputs, expected_transformed_outputs, manager_for_testing_default_output_input_prop):
         action = Action(function=action_with_no_args(), outputs=outputs)
 
         assert action.outputs == outputs
@@ -448,13 +448,13 @@ class TestActionOutputs:
             # An error is raised when accessing _transformed_outputs which is fine because validation is then performed.
             action._transformed_outputs
 
-    def test_outputs_invalid_missing_action_attribute(self, managers_using_model_with_default_output_input):
+    def test_outputs_invalid_missing_action_attribute(self, manager_for_testing_default_output_input_prop):
         with pytest.raises(
             AttributeError,
-            match="Model with ID 'model-with-no-output-props' does not have implicit output properties defined. "
-            "Please specify the output explicitly as 'model-with-no-output-props.<property>'.",
+            match="Model with ID 'model-with-no-default-props' does not have implicit output properties defined. "
+            "Please specify the output explicitly as 'model-with-no-default-props.<property>'.",
         ):
-            action = Action(function=action_with_no_args(), outputs=["model-with-no-output-props"])
+            action = Action(function=action_with_no_args(), outputs=["model-with-no-default-props"])
             action._transformed_outputs
 
 
