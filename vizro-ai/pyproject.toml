@@ -18,7 +18,7 @@ dependencies = [
   "tabulate",
   "openai>=1.0.0",
   "langchain>=0.3.0",
-  "langgraph>=0.1.2, <0.4.4", #temporary pin fix this issue is fixed https://github.com/langchain-ai/langgraph/issues/4706
+  "langgraph>=0.1.2, <0.4.4", #temporary pin before this issue is fixed https://github.com/langchain-ai/langgraph/issues/4706
   "python-dotenv>=1.0.0",  # TODO decide env var management to see if we need this
   "vizro>=0.1.32",
   # Temporary fix due to deprecations, can be removed after upgrading to latest vizro version where it is fixed.
