@@ -36,7 +36,7 @@ Vizro is an open-source Python-based toolkit. You can use it to build data visua
 
     [:octicons-arrow-right-24: Contribute to our docs](pages/explanation/documentation-style-guide.md)
 
-- :fontawesome-solid-chart-column:{ .lg .middle } __Gen AI assistance__
+- :fontawesome-solid-chart-column:{ .lg .middle } __Vizro with Gen AI__
 
     ---
 
