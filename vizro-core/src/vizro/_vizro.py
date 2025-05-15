@@ -18,9 +18,6 @@ from vizro._constants import VIZRO_ASSETS_PATH
 from vizro.managers import data_manager, model_manager
 from vizro.models import Dashboard, Filter
 
-# this can be removed when Dash uses React 18 as a default (likely V3.0 https://github.com/plotly/dash/pull/3093)
-dash._dash_renderer._set_react_version("18.2.0")
-
 logger = logging.getLogger(__name__)
 
 if TYPE_CHECKING:
@@ -48,6 +45,9 @@ class Vizro:
         self.dash = dash.Dash(
             **kwargs,
             pages_folder="",
+            # TODO: Considering removing the call to suppress_callback_exceptions once vm.Table is deprecated and
+            # we've confirmed that all initialized pages not included in the Dashboard no longer trigger console errors.
+            # See above note for why we might want to keep it though.
             suppress_callback_exceptions=True,
             title="Vizro",
             use_pages=True,

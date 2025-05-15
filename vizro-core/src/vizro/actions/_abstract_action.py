@@ -9,7 +9,7 @@ from dash.development.base_component import Component
 from pydantic import TypeAdapter
 
 from vizro.models._action._action import _BaseAction
-from vizro.models.types import _DotSeparatedStr, _IdProperty
+from vizro.models.types import _IdOrIdProperty
 
 
 # TODO-AV2 D 5: make public.
@@ -54,7 +54,7 @@ class _AbstractAction(_BaseAction, abc.ABC):
 
     @property
     @abc.abstractmethod
-    def outputs(self) -> Union[list[_IdProperty], dict[str, _IdProperty]]:  # type: ignore[override]
+    def outputs(self) -> Union[list[_IdOrIdProperty], dict[str, _IdOrIdProperty]]:  # type: ignore[override]
         """Must be defined by concrete action, even if there's no output.
 
         This should return a dictionary of the form `{"key": "dropdown.value"}`, where the key corresponds to the key
@@ -76,9 +76,9 @@ class _AbstractAction(_BaseAction, abc.ABC):
 
     @property
     def _transformed_outputs(self) -> Union[list[Output], dict[str, Output]]:
-        # Action.outputs is validated by pydantic, but for _AbstractAction.outputs we need to do the validation
-        # manually.
-        TypeAdapter(Union[list[_DotSeparatedStr], dict[str, _DotSeparatedStr]]).validate_python(self.outputs)
+        # Action.outputs is already validated by pydantic as list[str] or dict[str, str], but for
+        # _AbstractAction.outputs we need to do the validation manually with TypeAdapter.
+        TypeAdapter(Union[list[str], dict[str, str]]).validate_python(self.outputs)
         return super()._transformed_outputs
 
     @property
@@ -98,7 +98,7 @@ class _AbstractAction(_BaseAction, abc.ABC):
         return set(inspect.signature(self.function).parameters)
 
     @property
-    def _runtime_args(self) -> dict[str, _IdProperty]:
+    def _runtime_args(self) -> dict[str, _IdOrIdProperty]:
         # Since function is not a CapturedCallable, input arguments have not yet been bound. They correspond to the
         # model fields that are present in the function signature. This is just the user-specified runtime arguments, as
         # static arguments are not in the function signature (they're in self) and built in runtime arguments are not

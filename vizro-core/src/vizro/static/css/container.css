@@ -25,7 +25,6 @@
 /* Change cursor for the whole container title when it's a collapsible container. */
 .container-title-collapse  {
   cursor: pointer;
-  margin-bottom: 0;
 }
 
 .container-title-collapse .material-symbols-outlined {

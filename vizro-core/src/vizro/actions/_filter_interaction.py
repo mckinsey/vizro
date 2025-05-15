@@ -97,11 +97,4 @@ class filter_interaction(_AbstractAction):
 
     @property
     def outputs(self):
-        outputs = {}
-
-        for target in self.targets:
-            component_id = target
-            component_property = cast(FigureType, model_manager[target])._output_component_property
-            outputs[target] = f"{component_id}.{component_property}"
-
-        return outputs
+        return {target: target for target in self.targets}

@@ -135,6 +135,11 @@ class TestAbstractActionInputs:
                 {"arg_1": State("component", "property")},
             ),
             (
+                action_with_one_runtime_arg,
+                {"arg_1": "known-model-id"},
+                {"arg_1": State("known-model-id", "value")},
+            ),
+            (
                 action_with_two_runtime_args,
                 {"arg_1": "component_1.property_1", "arg_2": "component_2.property_2"},
                 {"arg_1": State("component_1", "property_1"), "arg_2": State("component_2", "property_2")},
@@ -149,7 +154,7 @@ class TestAbstractActionInputs:
                 {},
                 {
                     "_controls": {
-                        "filters": [],
+                        "filters": [State("known-model-id", "value")],
                         "parameters": [],
                         "filter_interaction": [],
                     }
@@ -157,7 +162,9 @@ class TestAbstractActionInputs:
             ),
         ],
     )
-    def test_inputs_valid(self, action_class, inputs, expected_transformed_inputs):
+    def test_inputs_valid(
+        self, action_class, inputs, expected_transformed_inputs, manager_for_testing_default_output_input_prop
+    ):
         action = action_class(**inputs)
         assert action._transformed_inputs == expected_transformed_inputs
 
@@ -168,20 +175,50 @@ class TestAbstractActionInputs:
             ["component.property"],
             1,
             None,
-            # These raise validation error in _transformed_inputs itself but could raise it on instantiation
-            # if we alter the type hint of action_with_one_runtime_arg to use DotSeparateString.
+        ],
+    )
+    def test_inputs_invalid_type(self, input):
+        with pytest.raises(ValidationError):
+            action_with_one_runtime_arg(arg_1=input)._transformed_inputs
+
+    @pytest.mark.parametrize(
+        "input",
+        [
+            "unknown_model_id",
+        ],
+    )
+    def test_inputs_invalid_model_id(self, input):
+        with pytest.raises(
+            KeyError,
+            match="Model with ID .* not found. Please provide a valid component ID.",
+        ):
+            action_with_one_runtime_arg(arg_1=input)._transformed_inputs
+
+    @pytest.mark.parametrize(
+        "input",
+        [
             "",
-            "component",
             "component.",
             ".property",
             "component..property",
-            "component_property",
             "component.property.property",
         ],
     )
-    def test_runtime_inputs_invalid(self, input):
-        with pytest.raises(ValidationError):
+    def test_inputs_invalid_dot_syntax(self, input):
+        with pytest.raises(
+            ValueError,
+            match="Invalid input format .*. Expected format is '<model_id>' or '<model_id>.<argument_name>'.",
+        ):
             action_with_one_runtime_arg(arg_1=input)._transformed_inputs
+
+    def test_inputs_invalid_missing_action_attribute(self, manager_for_testing_default_output_input_prop):
+        with pytest.raises(
+            AttributeError,
+            match="Model with ID 'model-with-no-default-props' does not have implicit input properties defined. "
+            "Please specify the input explicitly as 'model-with-no-default-props.<property>'.",
+        ):
+            action = action_with_one_runtime_arg(arg_1="model-with-no-default-props")._transformed_inputs
+            action._transformed_inputs
 
     # TODO: Adjust this test when _controls becomes a public field. Should demonstrate that a runtime arg called
     # controls overrides the inbuilt behavior. This could be done as a new test case in TestAbstractActionInputs
@@ -210,6 +247,7 @@ class TestAbstractActionOutputs:
                 ["component_1.property_1", "component_2.property_2"],
                 [Output("component_1", "property_1"), Output("component_2", "property_2")],
             ),
+            (["known-model-id"], Output("known-model-id", "value")),
             ({}, {}),
             (
                 {"output_1": "component.property"},
@@ -219,10 +257,16 @@ class TestAbstractActionOutputs:
                 {"output_1": "component_1.property_1", "output_2": "component_2.property_2"},
                 {"output_1": Output("component_1", "property_1"), "output_2": Output("component_2", "property_2")},
             ),
+            (
+                {"output_1": "known-model-id"},
+                {"output_1": Output("known-model-id", "value")},
+            ),
         ],
         indirect=["action_with_mock_outputs"],
     )
-    def test_outputs_valid(self, action_with_mock_outputs, expected_transformed_outputs):
+    def test_outputs_valid(
+        self, action_with_mock_outputs, expected_transformed_outputs, manager_for_testing_default_output_input_prop
+    ):
         action = action_with_mock_outputs()
         assert action._transformed_outputs == expected_transformed_outputs
 
@@ -232,28 +276,65 @@ class TestAbstractActionOutputs:
             "component.property",
             1,
             None,
-            [""],
-            ["component"],
-            ["component."],
-            [".property"],
-            ["component..property"],
-            ["component_property"],
-            ["component.property.property"],
-            {"output_1": ""},
-            {"output_1": "component"},
-            {"output_1": "component."},
-            {"output_1": ".property"},
-            {"output_1": "component..property"},
-            {"output_1": "component_property"},
-            {"output_1": "component.property.property"},
-            {"output_1": "component.property", "output_2": ""},
             {1: "component.property"},
         ],
         indirect=["action_with_mock_outputs"],
     )
-    def test_outputs_invalid(self, action_with_mock_outputs):
+    def test_outputs_invalid_type(self, action_with_mock_outputs):
         with pytest.raises(ValidationError):
             # An error is raised when accessing _transformed_outputs which is fine because validation is then performed.
+            action_with_mock_outputs()._transformed_outputs
+
+    @pytest.mark.parametrize(
+        "action_with_mock_outputs",
+        [
+            ["unknown_model_id"],
+            {"output_1": "unknown_model_id"},
+        ],
+        indirect=["action_with_mock_outputs"],
+    )
+    def test_outputs_invalid_model_id(self, action_with_mock_outputs):
+        with pytest.raises(
+            KeyError,
+            match="Model with ID .* not found. Please provide a valid component ID.",
+        ):
+            # An error is raised when accessing _transformed_outputs which is fine because validation is then performed.
+            action_with_mock_outputs()._transformed_outputs
+
+    @pytest.mark.parametrize(
+        "action_with_mock_outputs",
+        [
+            [""],
+            ["component."],
+            [".property"],
+            ["component..property"],
+            ["component.property.property"],
+            {"output_1": ""},
+            {"output_1": "component."},
+            {"output_1": ".property"},
+            {"output_1": "component..property"},
+            {"output_1": "component.property.property"},
+            {"output_1": "component.property", "output_2": ""},
+        ],
+        indirect=["action_with_mock_outputs"],
+    )
+    def test_outputs_invalid_dot_syntax(self, action_with_mock_outputs):
+        with pytest.raises(
+            ValueError,
+            match="Invalid output format .*. Expected format is '<model_id>' or '<model_id>.<argument_name>'.",
+        ):
+            # An error is raised when accessing _transformed_outputs which is fine because validation is then performed.
+            action_with_mock_outputs()._transformed_outputs
+
+    def test_outputs_invalid_missing_action_attribute(
+        self, manager_for_testing_default_output_input_prop, action_with_mock_outputs
+    ):
+        with pytest.raises(
+            AttributeError,
+            match="Model with ID 'model-with-no-default-props' does not have implicit output properties defined. "
+            "Please specify the output explicitly as 'model-with-no-default-props.<property>'.",
+        ):
+            action_with_mock_outputs.outputs = ["model-with-no-default-props"]
             action_with_mock_outputs()._transformed_outputs
 
 

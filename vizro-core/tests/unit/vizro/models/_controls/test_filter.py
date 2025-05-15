@@ -434,6 +434,8 @@ class TestFilterInstantiation:
         assert filter.type == "filter"
         assert filter.column == "foo"
         assert filter.targets == []
+        assert filter.selector is None
+        assert filter._action_outputs == {"__default__": f"{filter.id}.children"}
 
     def test_create_filter_mandatory_and_optional(self):
         filter = Filter(column="foo", targets=["scatter_chart", "bar_chart"], selector=vm.RadioItems())
