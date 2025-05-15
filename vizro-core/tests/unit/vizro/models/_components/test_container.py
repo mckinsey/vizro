@@ -68,7 +68,7 @@ class TestContainerBuildMethod:
         assert_component_equal(
             result, dbc.Container(id="container", class_name="", fluid=True), keys_to_strip={"children"}
         )
-        assert_component_equal(result.children, [html.H3(), html.Div(), html.Div()], keys_to_strip=STRIP_ALL)
+        assert_component_equal(result.children, [html.H3(), None, html.Div()], keys_to_strip=STRIP_ALL)
 
     def test_container_build_with_title(self):
         result = vm.Container(
@@ -77,7 +77,7 @@ class TestContainerBuildMethod:
         assert_component_equal(
             result, dbc.Container(id="container", class_name="", fluid=True), keys_to_strip={"children"}
         )
-        assert_component_equal(result.children, [html.H3(), html.Div(), html.Div()], keys_to_strip=STRIP_ALL)
+        assert_component_equal(result.children, [html.H3(), None, html.Div()], keys_to_strip=STRIP_ALL)
         # We still want to test the exact H3 produced in Container.build:
         assert_component_equal(
             result.children[0],
@@ -96,7 +96,7 @@ class TestContainerBuildMethod:
         assert_component_equal(
             result, dbc.Container(id="container", class_name="", fluid=True), keys_to_strip={"children"}
         )
-        assert_component_equal(result.children, [html.H3(), html.Div(), html.Div()], keys_to_strip=STRIP_ALL)
+        assert_component_equal(result.children, [html.H3(), None, html.Div()], keys_to_strip=STRIP_ALL)
         # We still want to test the exact H3 produced in Container.build:
         assert_component_equal(
             result.children[0],
@@ -139,7 +139,7 @@ class TestContainerBuildMethod:
         assert container.variant == "outlined"
 
         result = container.build()
-        assert_component_equal(result.children, [html.H3(), html.Div(), dbc.Collapse()], keys_to_strip=STRIP_ALL)
+        assert_component_equal(result.children, [html.H3(), None, dbc.Collapse()], keys_to_strip=STRIP_ALL)
 
         # We still want to test the exact H3 and dbc.Collapse inside the result
         expected_title_content = [
@@ -189,7 +189,7 @@ class TestContainerBuildMethod:
         assert_component_equal(
             result, dbc.Container(id="container", class_name="", fluid=True), keys_to_strip={"children"}
         )
-        assert_component_equal(result.children, [html.H3(), html.Div(), html.Div()], keys_to_strip=STRIP_ALL)
+        assert_component_equal(result.children, [html.H3(), None, html.Div()], keys_to_strip=STRIP_ALL)
         # We still want to test the exact H3 produced in Container.build:
         assert_component_equal(
             result.children[0],
