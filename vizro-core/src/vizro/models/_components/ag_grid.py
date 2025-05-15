@@ -82,6 +82,8 @@ class AgGrid(VizroBaseModel):
 
     @property
     def _action_outputs(self) -> dict[str, _IdProperty]:
+        # TODO-AV2 E: Implement _action_trigger where makes sense.
+        #  For the AgGrid the mapping could look like: {"__default__": f"{self._input_component_id}.cellClicked"}
         return {
             "__default__": f"{self.id}.children",
             "figure": f"{self.id}.children",
