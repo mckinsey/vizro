@@ -1330,8 +1330,6 @@ The following steps create a navigation bar:
 1. Set the `navigation` attribute of the [Dashboard][vizro.models.Dashboard] to a [Navigation][vizro.models.Navigation] object.
 1. Assign a [NavBar][vizro.models.NavBar] object to the `nav_selector` attribute of the `Navigation`.
 1. Populate the `items` of the [NavBar][vizro.models.NavBar] object with a list of [NavLink][vizro.models.NavLink] objects.
-1. Assign a [NavBar][vizro.models.NavBar] object to the `nav_selector` attribute of the `Navigation`.
-1. Populate the `items` of the [NavBar][vizro.models.NavBar] object with a list of [NavLink][vizro.models.NavLink] objects.
 1. Customize each [NavLink][vizro.models.NavLink] object by setting its `label`, `pages`, and `icon` attributes.
     - The `label` controls the text displayed in the tooltip when hovering over the navigation icon.
     - The `pages` controls the pages included in the accordion navigation for that icon.
@@ -1504,7 +1502,7 @@ Vizro doesn't end here; we've only covered the key features, but there's still m
 - How to create dashboards from `yaml`, `dict` or `json` following the [dashboard guide](../user-guides/dashboard.md).
 - How to [deploy your dashboard](../user-guides/run-deploy.md)
 - How to use gen AI to assist in chart and dashboard creation.
-    - [Vizro-MCP](https://github.com/mckinsey/vizro/blob/main/vizro-mcp/README.md) helps you build charts and dashboards that adhere to the Vizro design template. It is the easiest way to use a generative AI application to help you work with Vizro.
+    - [Vizro-MCP](https://github.com/mckinsey/vizro/blob/main/vizro-mcp/README.md) helps you build charts and dashboards that adhere to the Vizro design template. It is the easiest way to use a generative AI (gen AI) application to help you work with Vizro.
     - [Vizro-AI](https://vizro.readthedocs.io/projects/vizro-ai/) is also available as a means of building Vizro charts and dashboards with gen AI. You will need some technical knowledge, and an API key to use with a large language model (LLM).
 
 [dashboard]: ../../assets/tutorials/dashboard/11-dashboard-title-logo.png

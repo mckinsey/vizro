@@ -45,7 +45,7 @@ nav:
           - Custom components: pages/user-guides/custom-components.md
           - Custom actions: pages/user-guides/custom-actions.md
           - Custom figures: pages/user-guides/custom-figures.md
-  - Reference:
+  - API reference:
       - Vizro: pages/API-reference/vizro.md
       - Models: pages/API-reference/models.md
       - Action functions: pages/API-reference/action-callables.md
@@ -53,7 +53,7 @@ nav:
       - Figure functions: pages/API-reference/figure-callables.md
       - Kedro integration: pages/API-reference/kedro-integration.md
       - Deprecations: pages/API-reference/deprecations.md
-  - Explanation:
+  - Find out more:
       - FAQs: pages/explanation/faq.md
       - User examples: pages/explanation/your-examples.md
       - Contribute to Vizro: pages/explanation/contributing.md
