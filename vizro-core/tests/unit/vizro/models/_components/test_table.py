@@ -35,6 +35,7 @@ class TestTableInstantiation:
         assert table.type == "table"
         assert table.figure == standard_dash_table
         assert table.actions == []
+        assert table._action_outputs == {"__default__": f"{table.id}.children"}
 
     @pytest.mark.parametrize("id", ["id_1", "id_2"])
     def test_create_table_mandatory_and_optional(self, standard_dash_table, id):
@@ -142,7 +143,7 @@ class TestPreBuildTable:
 
         assert table._input_component_id == "underlying_table_id"
 
-    def test_pre_build_duplicate_table_id(self):
+    def test_pre_build_duplicate_input_table_id(self):
         dashboard = vm.Dashboard(
             pages=[
                 vm.Page(
@@ -150,6 +151,24 @@ class TestPreBuildTable:
                     components=[
                         vm.Table(figure=dash_data_table(id="duplicate_table_id", data_frame=px.data.gapminder())),
                         vm.Table(figure=dash_data_table(id="duplicate_table_id", data_frame=px.data.gapminder())),
+                    ],
+                )
+            ]
+        )
+        with pytest.raises(
+            DuplicateIDError,
+            match="CapturedCallable with id=duplicate_table_id has an id that is ",
+        ):
+            Vizro().build(dashboard)
+
+    def test_pre_build_duplicate_input_table_id_and_button_id(self):
+        dashboard = vm.Dashboard(
+            pages=[
+                vm.Page(
+                    title="Test Page",
+                    components=[
+                        vm.Table(figure=dash_data_table(id="duplicate_table_id", data_frame=px.data.gapminder())),
+                        vm.Button(id="duplicate_table_id"),
                     ],
                 )
             ]

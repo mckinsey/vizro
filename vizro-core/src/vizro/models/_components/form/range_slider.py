@@ -16,7 +16,7 @@ from vizro.models._components.form._form_utils import (
 )
 from vizro.models._models_utils import _log_call
 from vizro.models._tooltip import coerce_str_to_tooltip
-from vizro.models.types import ActionType
+from vizro.models.types import ActionType, _IdProperty
 
 
 class RangeSlider(VizroBaseModel):
@@ -100,8 +100,13 @@ class RangeSlider(VizroBaseModel):
 
     _dynamic: bool = PrivateAttr(False)
 
-    # Component properties for actions and interactions
-    _input_property: str = PrivateAttr("value")
+    @property
+    def _action_outputs(self) -> dict[str, _IdProperty]:
+        return {"__default__": f"{self.id}.value"}
+
+    @property
+    def _action_inputs(self) -> dict[str, _IdProperty]:
+        return {"__default__": f"{self.id}.value"}
 
     def __call__(self, min, max, current_value):
         output = [

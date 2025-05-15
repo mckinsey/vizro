@@ -95,6 +95,7 @@ To start, let's get an overview of the data by displaying it in a table using [`
         from vizro.tables import dash_ag_grid
         from vizro.models.types import capture
         from vizro.figures import kpi_card
+        from vizro.actions import export_data
 
         tips = px.data.tips()
 
@@ -124,7 +125,119 @@ Take a moment to explore the data in the table. You can sort, filter, and search
 
 In the top-right corner of the dashboard, you'll notice a toggle to switch between dark and light themes. Try it out!
 
-**Great job! You've successfully created a first dashboard page!**
+### 3.2. Add an `export data` button
+
+Next, you'll add a button that lets users export the data currently shown in your dashboard.
+
+Vizro provides several built-in actions you can reuse. You can explore the full list in our [guide on built-in actions](../user-guides/actions.md#built-in-actions).
+
+These steps add an export data button:
+
+1. Add a [`Button`][vizro.models.Button] to the `components` list and set `text="Export Data"`.
+1. Use the `actions` argument of the `Button` to define an [`Action`][vizro.models.Button].
+1. Inside the [`Action`][vizro.models.Action], specify the built-in [`export_data`][vizro.actions.export_data] function.
+
+!!! example "Export Data Button"
+
+    === "Snippet - Button"
+
+        ```py
+        vm.Button(text="Export Data", actions=[vm.Action(function=export_data())])
+        ```
+
+    === "Code - Dashboard"
+
+        ```{.python pycafe-link hl_lines="20"}
+        import vizro.models as vm
+        import vizro.plotly.express as px
+        from vizro import Vizro
+        from vizro.tables import dash_ag_grid
+        from vizro.models.types import capture
+        from vizro.figures import kpi_card
+        from vizro.actions import export_data
+
+        tips = px.data.tips()
+
+        first_page = vm.Page(
+            title="Data",
+            components=[
+                vm.AgGrid(
+                    figure=dash_ag_grid(tips),
+                    footer="""**Data Source:** Bryant, P. G. and Smith, M. (1995).
+                    Practical Data Analysis: Case Studies in Business Statistics.
+                    Homewood, IL: Richard D. Irwin Publishing.""",
+                ),
+                vm.Button(text="Export Data", actions=[vm.Action(function=export_data())]),
+            ],
+        )
+
+        dashboard = vm.Dashboard(pages=[first_page])
+        Vizro().build(dashboard).run()
+        ```
+
+    === "Result"
+
+        [![FirstPageButton]][firstpagebutton]
+
+**Click on the Button and see what happens! 📂**
+
+### 3.3. Configure the layout
+
+Notice there is extra blank space below the button. In this step, you’ll learn how to improve the layout by arranging components more efficiently.
+
+Vizro supports two layout models: [`Grid`][vizro.models.Grid] and [`Flex`][vizro.models.Flex]. To understand the differences between them, check out our [guide on layouts](../user-guides/layouts.md#layout-options-grid-and-flex).
+
+By default, Vizro uses the `Grid` layout, which arranges components in the order they appear inside `components` and gives them equal space. However, in our case, we want the `Button` and `AgGrid` to only take up the space they need — not equal space.
+
+To achieve this, we'll switch to the `Flex` layout and set a `height` for the `AgGrid`, as the default is `400px` otherwise.
+
+1. In the `layout` argument of the `Page`, use the [`Flex`][vizro.models.Flex] layout model via `layout = vm.Flex()`
+1. Specify `style= {"height": "600px"}` inside the `dash_ag_grid`, as it would otherwise default to `400px`.
+
+!!! example "Use Flex layout"
+
+    === "Snippet - flex layout"
+
+        ```py
+        layout = vm.Flex()
+        ```
+
+    === "Code - Dashboard"
+
+        ```{.python pycafe-link hl_lines="13 16"}
+        import vizro.models as vm
+        import vizro.plotly.express as px
+        from vizro import Vizro
+        from vizro.tables import dash_ag_grid
+        from vizro.models.types import capture
+        from vizro.figures import kpi_card
+        from vizro.actions import export_data
+
+        tips = px.data.tips()
+
+        first_page = vm.Page(
+            title="Data",
+            layout=vm.Flex(),
+            components=[
+                vm.AgGrid(
+                    figure=dash_ag_grid(tips, style= {"height": "600px"}),
+                    footer="""**Data Source:** Bryant, P. G. and Smith, M. (1995).
+                    Practical Data Analysis: Case Studies in Business Statistics.
+                    Homewood, IL: Richard D. Irwin Publishing.""",
+                ),
+                vm.Button(text="Export Data", actions=[vm.Action(function=export_data())]),
+            ],
+        )
+
+        dashboard = vm.Dashboard(pages=[first_page])
+        Vizro().build(dashboard).run()
+        ```
+
+    === "Result"
+
+        [![FirstPageLayout]][firstpagelayout]
+
+**Looks much better already! Great job - you've successfully created your first dashboard page!**
 
 ## 4. Create a second page
 
@@ -158,13 +271,14 @@ These steps add a histogram to the page:
 
     === "Code - Dashboard"
 
-        ```{.python pycafe-link hl_lines="22-28 30"}
+        ```{.python pycafe-link hl_lines="24-30 32"}
         import vizro.models as vm
         import vizro.plotly.express as px
         from vizro import Vizro
         from vizro.tables import dash_ag_grid
         from vizro.models.types import capture
         from vizro.figures import kpi_card
+        from vizro.actions import export_data
 
         tips = px.data.tips()
 
@@ -177,6 +291,7 @@ These steps add a histogram to the page:
                     Practical Data Analysis: Case Studies in Business Statistics.
                     Homewood, IL: Richard D. Irwin Publishing.""",
                 ),
+                vm.Button(text="Export Data", actions=[vm.Action(function=export_data())]),
             ],
         )
 
@@ -245,13 +360,14 @@ These steps add two KPI cards to the second page:
 
     === "Code - dashboard"
 
-        ```{.python pycafe-link hl_lines="25-42"}
+        ```{.python pycafe-link hl_lines="27-44"}
         import vizro.models as vm
         import vizro.plotly.express as px
         from vizro import Vizro
         from vizro.tables import dash_ag_grid
         from vizro.models.types import capture
         from vizro.figures import kpi_card
+        from vizro.actions import export_data
 
         tips = px.data.tips()
 
@@ -264,6 +380,7 @@ These steps add two KPI cards to the second page:
                     Practical Data Analysis: Case Studies in Business Statistics.
                     Homewood, IL: Richard D. Irwin Publishing.""",
                 ),
+                vm.Button(text="Export Data", actions=[vm.Action(function=export_data())]),
             ],
         )
 
@@ -337,13 +454,14 @@ These steps place the two histograms in separate tabs:
 
     === "Code - dashboard"
 
-        ```{.python pycafe-link hl_lines="43-59"}
+        ```{.python pycafe-link hl_lines="45-60"}
         import vizro.models as vm
         import vizro.plotly.express as px
         from vizro import Vizro
         from vizro.tables import dash_ag_grid
         from vizro.models.types import capture
         from vizro.figures import kpi_card
+        from vizro.actions import export_data
 
         tips = px.data.tips()
 
@@ -356,6 +474,7 @@ These steps place the two histograms in separate tabs:
                     Practical Data Analysis: Case Studies in Business Statistics.
                     Homewood, IL: Richard D. Irwin Publishing.""",
                 ),
+                vm.Button(text="Export Data", actions=[vm.Action(function=export_data())]),
             ],
         )
 
@@ -413,7 +532,7 @@ As you explore the dashboard, you might notice that the current layout could use
 
 ### 4.4. Configure the layout
 
-By default, Vizro places each element in the order it was added to `components`, and spaces them equally. You can use the [`Grid`][vizro.models.Grid] to customize the placement and size of components on the page. To learn more about how to configure layouts, check out [How to use layouts](../user-guides/layouts.md).
+In this section, you'll customize the [`Grid`][vizro.models.Grid] to control the placement and size of components on the page.
 
 The following layout configuration is divided into **four columns** and **four rows**. The numbers in the grid correspond to the index of the components in the `components` list.
 
@@ -448,13 +567,14 @@ Run the code below to apply the layout to the dashboard page:
 
     === "Code - Dashboard"
 
-        ```{.python pycafe-link hl_lines="24"}
+        ```{.python pycafe-link hl_lines="26"}
         import vizro.models as vm
         import vizro.plotly.express as px
         from vizro import Vizro
         from vizro.tables import dash_ag_grid
         from vizro.models.types import capture
         from vizro.figures import kpi_card
+        from vizro.actions import export_data
 
         tips = px.data.tips()
 
@@ -467,6 +587,7 @@ Run the code below to apply the layout to the dashboard page:
                     Practical Data Analysis: Case Studies in Business Statistics.
                     Homewood, IL: Richard D. Irwin Publishing.""",
                 ),
+                vm.Button(text="Export Data", actions=[vm.Action(function=export_data())]),
             ],
         )
 
@@ -541,13 +662,14 @@ These steps add a filter to the dashboard:
 
     === "Code - Dashboard"
 
-        ```{.python pycafe-link hl_lines="61"}
+        ```{.python pycafe-link hl_lines="63"}
         import vizro.models as vm
         import vizro.plotly.express as px
         from vizro import Vizro
         from vizro.tables import dash_ag_grid
         from vizro.models.types import capture
         from vizro.figures import kpi_card
+        from vizro.actions import export_data
 
         tips = px.data.tips()
 
@@ -560,6 +682,7 @@ These steps add a filter to the dashboard:
                     Practical Data Analysis: Case Studies in Business Statistics.
                     Homewood, IL: Richard D. Irwin Publishing.""",
                 ),
+                vm.Button(text="Export Data", actions=[vm.Action(function=export_data())]),
             ],
         )
 
@@ -676,13 +799,14 @@ These steps should feel familiar, as they add three charts to the new page.
 
     === "Code - dashboard"
 
-        ```{.python pycafe-link hl_lines="64-80 82"}
+        ```{.python pycafe-link hl_lines="70-86 88"}
         import vizro.models as vm
         import vizro.plotly.express as px
         from vizro import Vizro
         from vizro.tables import dash_ag_grid
         from vizro.models.types import capture
         from vizro.figures import kpi_card
+        from vizro.actions import export_data
 
         tips = px.data.tips()
 
@@ -695,6 +819,7 @@ These steps should feel familiar, as they add three charts to the new page.
                     Practical Data Analysis: Case Studies in Business Statistics.
                     Homewood, IL: Richard D. Irwin Publishing.""",
                 ),
+                vm.Button(text="Export Data", actions=[vm.Action(function=export_data())]),
             ],
         )
 
@@ -800,13 +925,14 @@ Run the code below to apply the layout to the dashboard page:
 
     === "Code - dashboard"
 
-        ```{.python pycafe-link hl_lines="66"}
+        ```{.python pycafe-link hl_lines="68"}
         import vizro.models as vm
         import vizro.plotly.express as px
         from vizro import Vizro
         from vizro.tables import dash_ag_grid
         from vizro.models.types import capture
         from vizro.figures import kpi_card
+        from vizro.actions import export_data
 
         tips = px.data.tips()
 
@@ -819,6 +945,7 @@ Run the code below to apply the layout to the dashboard page:
                     Practical Data Analysis: Case Studies in Business Statistics.
                     Homewood, IL: Richard D. Irwin Publishing.""",
                 ),
+                vm.Button(text="Export Data", actions=[vm.Action(function=export_data())]),
             ],
         )
 
@@ -924,13 +1051,14 @@ These steps add a parameter to the dashboard:
 
     === "Code - dashboard"
 
-        ```{.python pycafe-link hl_lines="69 74 84-91"}
+        ```{.python pycafe-link hl_lines="71 76 86-93"}
         import vizro.models as vm
         import vizro.plotly.express as px
         from vizro import Vizro
         from vizro.tables import dash_ag_grid
         from vizro.models.types import capture
         from vizro.figures import kpi_card
+        from vizro.actions import export_data
 
         tips = px.data.tips()
 
@@ -943,6 +1071,7 @@ These steps add a parameter to the dashboard:
                     Practical Data Analysis: Case Studies in Business Statistics.
                     Homewood, IL: Richard D. Irwin Publishing.""",
                 ),
+                vm.Button(text="Export Data", actions=[vm.Action(function=export_data())]),
             ],
         )
 
@@ -1056,13 +1185,14 @@ For more information on when to create a custom chart, check out [How to create 
 
     === "Code - dashboard"
 
-        ```{.python pycafe-link hl_lines="11-16 80"}
+        ```{.python pycafe-link hl_lines="12-17 82"}
         import vizro.models as vm
         import vizro.plotly.express as px
         from vizro import Vizro
         from vizro.tables import dash_ag_grid
         from vizro.models.types import capture
         from vizro.figures import kpi_card
+        from vizro.actions import export_data
 
         tips = px.data.tips()
 
@@ -1084,6 +1214,7 @@ For more information on when to create a custom chart, check out [How to create 
                     Practical Data Analysis: Case Studies in Business Statistics.
                     Homewood, IL: Richard D. Irwin Publishing.""",
                 ),
+                vm.Button(text="Export Data", actions=[vm.Action(function=export_data())]),
             ],
         )
 
@@ -1206,13 +1337,14 @@ Your directory structure should look like this:
 
     === "Code - dashboard"
 
-        ```{.python pycafe-link hl_lines="103"}
+        ```{.python pycafe-link hl_lines="105"}
         import vizro.models as vm
         import vizro.plotly.express as px
         from vizro import Vizro
         from vizro.tables import dash_ag_grid
         from vizro.models.types import capture
         from vizro.figures import kpi_card
+        from vizro.actions import export_data
 
         tips = px.data.tips()
 
@@ -1234,6 +1366,7 @@ Your directory structure should look like this:
                     Practical Data Analysis: Case Studies in Business Statistics.
                     Homewood, IL: Richard D. Irwin Publishing.""",
                 ),
+                vm.Button(text="Export Data", actions=[vm.Action(function=export_data())]),
             ],
         )
 
@@ -1352,13 +1485,14 @@ The following steps create a navigation bar:
 
     === "Code - dashboard"
 
-        ```{.python pycafe-link hl_lines="106-113"}
+        ```{.python pycafe-link hl_lines="108-115"}
         import vizro.models as vm
         import vizro.plotly.express as px
         from vizro import Vizro
         from vizro.tables import dash_ag_grid
         from vizro.models.types import capture
         from vizro.figures import kpi_card
+        from vizro.actions import export_data
 
         tips = px.data.tips()
 
@@ -1380,6 +1514,7 @@ The following steps create a navigation bar:
                     Practical Data Analysis: Case Studies in Business Statistics.
                     Homewood, IL: Richard D. Irwin Publishing.""",
                 ),
+                vm.Button(text="Export Data", actions=[vm.Action(function=export_data())]),
             ],
         )
 
@@ -1490,7 +1625,7 @@ If you'd like to understand more about different ways to configure the navigatio
 
 Vizro doesn't end here; we've only covered the key features, but there's still much more to explore! You can learn:
 
-- How to use [actions](../user-guides/actions.md), for example, for chart interaction or custom controls.
+- How to use other built-in [actions](../user-guides/actions.md) such as cross-filters
 - How to [extend and customize Vizro dashboards](../user-guides/extensions.md) by creating your own:
     - [custom components](../user-guides/custom-components.md).
     - [custom actions](../user-guides/custom-actions.md).
@@ -1508,6 +1643,8 @@ Vizro doesn't end here; we've only covered the key features, but there's still m
 [dashboard]: ../../assets/tutorials/dashboard/11-dashboard-title-logo.png
 [dashboardfinal]: ../../assets/tutorials/dashboard/12-dashboard-navigation.png
 [firstpage]: ../../assets/tutorials/dashboard/01-first-page.png
+[firstpagebutton]: ../../assets/tutorials/dashboard/01-first-page-button.png
+[firstpagelayout]: ../../assets/tutorials/dashboard/01-first-page-layout.png
 [secondpage]: ../../assets/tutorials/dashboard/02-second-page.png
 [secondpage2]: ../../assets/tutorials/dashboard/03-second-page-kpi.png
 [secondpage3]: ../../assets/tutorials/dashboard/04-second-page-tabs.png
