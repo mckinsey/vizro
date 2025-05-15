@@ -156,7 +156,7 @@ class Container(VizroBaseModel):
 
     def _build_container_title(self):
         """Builds and returns the container title, including an optional icon and tooltip if collapsed."""
-        description = self.description.build().children if self.description else [None]
+        description = self.description.build().children if self.description is not None and self.title else [None]
 
         title_content = [html.Div([self.title, *description], className="inner-container-title")]
         if self.collapsed is not None:
