@@ -39,7 +39,7 @@ If you are a **developer** and need instructions for running Vizro-MCP from sour
 ### Prerequisites
 
 - [uv](https://docs.astral.sh/uv/getting-started/installation/)
-- Any MCP enabled LLM applications. [Claude Desktop](https://claude.ai/download) and [Cursor](https://www.cursor.com/downloads) are popular choices.
+- Any LLM application that supports MCP. [Claude Desktop](https://claude.ai/download) and [Cursor](https://www.cursor.com/downloads) are popular choices.
 
 > 🐛 **Note:** There are currently some known issues with [VS Code](https://code.visualstudio.com/) but we are working on this and hope to have Copilot working soon.
 
