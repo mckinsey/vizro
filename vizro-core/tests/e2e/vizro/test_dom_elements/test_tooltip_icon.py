@@ -84,7 +84,7 @@ def test_components_tooltip_and_icon_tables(dash_br, accordion_name, page_name, 
     indirect=["dash_br_driver"],
 )
 def test_dashboard_tooltip_and_icon(dash_br_driver):
-    # hover over dropdown icon and wait for the tooltip appear.
+    # hover over dropdown icon and wait for the tooltip appear
     hover_over_element_by_xpath_selenium(
         dash_br_driver, "//*[@class='material-symbols-outlined tooltip-icon'][text()='info']"
     )
