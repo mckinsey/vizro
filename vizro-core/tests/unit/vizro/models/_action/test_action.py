@@ -186,6 +186,7 @@ class TestLegacyActionOutputs:
                 [Output("component_1", "property_1"), Output("component_2", "property_2")],
             ),
             (["known-model-id"], Output("known-model-id", "value")),
+            (["known-model-id.title"], Output("known-model-id_title", "children")),
             ({}, {}),
             (
                 {"output_1": "component.property"},
@@ -198,6 +199,10 @@ class TestLegacyActionOutputs:
             (
                 {"output_1": "known-model-id"},
                 {"output_1": Output("known-model-id", "value")},
+            ),
+            (
+                {"output_1": "known-model-id.title"},
+                {"output_1": Output("known-model-id_title", "children")},
             ),
         ],
     )
@@ -407,6 +412,7 @@ class TestActionOutputs:
                 [Output("component_1", "property_1"), Output("component_2", "property_2")],
             ),
             (["known-model-id"], Output("known-model-id", "value")),
+            (["known-model-id.title"], Output("known-model-id_title", "children")),
             ({}, {}),
             (
                 {"output_1": "component.property"},
@@ -419,6 +425,10 @@ class TestActionOutputs:
             (
                 {"output_1": "known-model-id"},
                 {"output_1": Output("known-model-id", "value")},
+            ),
+            (
+                {"output_1": "known-model-id.title"},
+                {"output_1": Output("known-model-id_title", "children")},
             ),
         ],
     )

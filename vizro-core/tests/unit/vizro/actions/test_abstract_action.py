@@ -248,6 +248,7 @@ class TestAbstractActionOutputs:
                 [Output("component_1", "property_1"), Output("component_2", "property_2")],
             ),
             (["known-model-id"], Output("known-model-id", "value")),
+            (["known-model-id.title"], Output("known-model-id_title", "children")),
             ({}, {}),
             (
                 {"output_1": "component.property"},
@@ -260,6 +261,10 @@ class TestAbstractActionOutputs:
             (
                 {"output_1": "known-model-id"},
                 {"output_1": Output("known-model-id", "value")},
+            ),
+            (
+                {"output_1": "known-model-id.title"},
+                {"output_1": Output("known-model-id_title", "children")},
             ),
         ],
         indirect=["action_with_mock_outputs"],

@@ -1,4 +1,5 @@
 """Dev app to try things out."""
+
 import pandas as pd
 
 from dash import ctx
@@ -50,40 +51,65 @@ page_table_of_contents = vm.Page(
         vm.AgGrid(
             figure=dash_ag_grid(
                 columnSize="sizeToFit",
-                data_frame=pd.DataFrame({
-                    'Component': [
-                        "Form", "Container", "Figure", "AgGrid", "Table", "Graph", "Button",
-                        "Card", "Text", "Alert", "TextArea", "UserInput", "Checklist",
-                        "DatePicker", "Dropdown", "RadioItems", "RangeSlider", "Slider",
-                        "Tabs", "Filter", "Parameter", "Dashboard", "Flex", "Grid",
-                        "Accordion", "NavBar", "NavLink", "Navigation", "Page", "Tooltip"
+                data_frame=pd.DataFrame(
+                    columns=[
+                        "Component",
+                        "Default Input Property",
+                        "Default Output Property",
+                        "Additional output properties to support",
+                        "Comment",
                     ],
-                    'Default Input Property': [
-                        "", "", "", "", "", "figure", "", "", "", "", "value", "value", "value",
-                        "value", "value", "value", "value", "value", "", "maybe in future",
-                        "maybe in future", "", "", "", "", "", "", "", "", ""
+                    data=[
+                        ["Form", "", "", "", ""],
+                        ["Container", "", "", "", ""],
+                        ["Figure", "", "children", "figure", ""],
+                        ["AgGrid", "", "children", "title, header, footer, figure", ""],
+                        ["Table", "", "children", "title, header, footer, figure", ""],
+                        [
+                            "Graph",
+                            "",
+                            "figure",
+                            "title, header, footer",
+                            "figure - works even without explicit mapping",
+                        ],
+                        ["Button", "", "Not sure so don't do for now", "", ""],
+                        ["Card", "", "children", "text", ""],
+                        ["Text", "", "children", "text", ""],
+                        ["Alert", "", "", "", ""],
+                        [
+                            "TextArea",
+                            "value",
+                            "value",
+                            "title, * - description",
+                            "* - description is not the model field",
+                        ],
+                        [
+                            "UserInput",
+                            "value",
+                            "value",
+                            "title, * - description",
+                            "* - description is not the model field",
+                        ],
+                        ["Checklist", "value", "value", "title, description", ""],
+                        ["DatePicker", "value", "value", "title, description", ""],
+                        ["Dropdown", "value", "value", "title, description", ""],
+                        ["RadioItems", "value", "value", "title, description", ""],
+                        ["RangeSlider", "value", "value", "title, description", ""],
+                        ["Slider", "value", "value", "title, description", ""],
+                        ["Tabs", "", "", "", ""],
+                        ["Filter", "maybe in future", "children", "", ""],
+                        ["Parameter", "maybe in future", "", "", ""],
+                        ["Dashboard", "", "", "", ""],
+                        ["Flex", "", "", "", ""],
+                        ["Grid", "", "", "", ""],
+                        ["Accordion", "", "", "", ""],
+                        ["NavBar", "", "", "", ""],
+                        ["NavLink", "", "", "", ""],
+                        ["Navigation", "", "", "", ""],
+                        ["Page", "", "", "", ""],
+                        ["Tooltip", "", "", "", ""],
                     ],
-                    'Default Output Property': [
-                        "", "", "children", "children", "children", "figure", "Not sure so don't do for now",
-                        "children", "children", "", "value", "value", "value",
-                        "value", "value", "value", "value", "value", "", "children",
-                        "maybe in future", "", "", "", "", "", "", "", "", ""
-                    ],
-                    'Additional output properties to support': [
-                        "", "", "figure", "title, header, footer, figure", "title, header, footer, figure",
-                        "title, header, footer, figure", "", "text", "text", "",
-                        "title, * - description",
-                        "title, * - description",
-                        "title, description", "title, description", "title, description",
-                        "title, description", "title, description", "title, description",
-                        "", "", "", "", "", "", "", "", "", "", "", ""
-                    ],
-                    'Comment': [
-                        "", "", "", "", "", "", "", "", "", "",
-                        "* - description is not the model field", "* - description is not the model field", "", "", "", "", "", "", "", "",
-                        "", "", "", "", "", "", "", "", "", "",
-                    ]
-                })
+                ),
             )
         ),
     ],
@@ -170,7 +196,7 @@ page_figures_figures = vm.Page(
         vm.Figure(
             id="figure-2-id",
             figure=kpi_card(df, value_column="sepal_length"),
-        )
+        ),
     ],
     controls=[
         vm.Button(

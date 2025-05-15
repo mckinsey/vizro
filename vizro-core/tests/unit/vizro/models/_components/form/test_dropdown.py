@@ -25,7 +25,10 @@ class TestDropdownInstantiation:
         assert dropdown.title == ""
         assert dropdown.description is None
         assert dropdown.actions == []
-        assert dropdown._action_outputs == {"__default__": f"{dropdown.id}.value"}
+        assert dropdown._action_outputs == {
+            "__default__": f"{dropdown.id}.value",
+            "title": f"{dropdown.id}_title.children",
+        }
         assert dropdown._action_inputs == {"__default__": f"{dropdown.id}.value"}
 
     def test_create_dropdown_mandatory_and_optional(self):
@@ -46,6 +49,12 @@ class TestDropdownInstantiation:
         assert dropdown.title == "Title"
         assert dropdown.actions == []
         assert isinstance(dropdown.description, Tooltip)
+        assert dropdown._action_outputs == {
+            "__default__": f"{dropdown.id}.value",
+            "title": f"{dropdown.id}_title.children",
+            "description": f"{dropdown.description.id}.children",
+        }
+        assert dropdown._action_inputs == {"__default__": f"{dropdown.id}.value"}
 
     @pytest.mark.parametrize(
         "test_options, expected",
@@ -155,7 +164,7 @@ class TestDropdownBuild:
         dropdown = Dropdown(options=["A", "B", "C"], title="Title", id="dropdown_id").build()
         expected_dropdown = html.Div(
             [
-                dbc.Label(["Title", None], html_for="dropdown_id"),
+                dbc.Label([html.Div("Title", id="dropdown_id_title"), None], html_for="dropdown_id"),
                 dcc.Dropdown(
                     id="dropdown_id",
                     options=[
@@ -180,7 +189,7 @@ class TestDropdownBuild:
         dropdown = Dropdown(id="dropdown_id", options=["A", "B", "C"], multi=False, title="Title").build()
         expected_dropdown = html.Div(
             [
-                dbc.Label(["Title", None], html_for="dropdown_id"),
+                dbc.Label([html.Div("Title", id="dropdown_id_title"), None], html_for="dropdown_id"),
                 dcc.Dropdown(
                     id="dropdown_id",
                     options=["A", "B", "C"],
@@ -246,7 +255,7 @@ class TestDropdownBuild:
         ).build()
         expected_dropdown = html.Div(
             [
-                dbc.Label(["Title", None], html_for="dropdown_id"),
+                dbc.Label([html.Div("Title", id="dropdown_id_title"), None], html_for="dropdown_id"),
                 dcc.Dropdown(
                     id="overridden_id",
                     options=[
@@ -288,7 +297,10 @@ class TestDropdownBuild:
 
         expected_dropdown = html.Div(
             [
-                dbc.Label(["Title", *expected_description], html_for="dropdown_id"),
+                dbc.Label(
+                    [html.Div("Title", id="dropdown_id_title"), *expected_description],
+                    html_for="dropdown_id",
+                ),
                 dcc.Dropdown(
                     id="dropdown_id",
                     options=[

@@ -83,7 +83,7 @@ class RadioItems(VizroBaseModel):
         return {
             "__default__": f"{self.id}.value",
             "title": f"{self.id}_title.children",
-            "description": f"{self.description.id}.children",
+            **({"description": f"{self.description.id}.children"} if self.description else {}),
         }
 
     @property
@@ -107,7 +107,9 @@ class RadioItems(VizroBaseModel):
                 html.Legend(
                     children=[html.Div(id=f"{self.id}_title", children=self.title), *description],
                     className="form-label",
-                ) if self.title else None,
+                )
+                if self.title
+                else None,
                 dbc.RadioItems(**(defaults | self.extra)),
             ]
         )
