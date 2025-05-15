@@ -2,7 +2,7 @@ from collections.abc import Generator
 
 from vizro.managers import model_manager
 from vizro.managers._model_manager import FIGURE_MODELS
-from vizro.models import VizroBaseModel
+from vizro.models import Checklist, RadioItems, VizroBaseModel
 from vizro.models.types import ControlType
 
 
@@ -19,3 +19,11 @@ def check_targets_present_on_page(control: ControlType) -> None:
         target_id = target.split(".")[0] if "." in target else target
         if target_id not in page_figure_ids:
             raise ValueError(f"Target {target_id} not found within the page {control_page.id}.")
+
+
+def set_container_control_default(control, control_id, selector):
+    page = model_manager._get_model_page(control)
+    is_page_control = any(control.id == control_id for control in page.controls)
+
+    if not is_page_control and isinstance(selector, (Checklist, RadioItems)):
+        return selector.extra.setdefault("inline", True)

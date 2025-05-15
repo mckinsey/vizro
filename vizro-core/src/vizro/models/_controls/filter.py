@@ -14,7 +14,7 @@ from vizro.actions._filter_action import _filter
 from vizro.managers import data_manager, model_manager
 from vizro.managers._data_manager import DataSourceName, _DynamicData
 from vizro.managers._model_manager import FIGURE_MODELS
-from vizro.models import VizroBaseModel
+from vizro.models import Container, VizroBaseModel
 from vizro.models._components.form import (
     Checklist,
     DatePicker,
@@ -23,7 +23,7 @@ from vizro.models._components.form import (
     RangeSlider,
     Slider,
 )
-from vizro.models._controls._controls_utils import check_targets_present_on_page
+from vizro.models._controls._controls_utils import check_targets_present_on_page, set_container_control_default
 from vizro.models._models_utils import _log_call
 from vizro.models.types import FigureType, ModelID, MultiValueType, SelectorType, SingleValueType, _IdProperty
 
@@ -136,12 +136,9 @@ class Filter(VizroBaseModel):
         # want to raise an error if the column is not found in a figure's data_frame, it will just be ignored.
         # This is the case when bool(self.targets) is False.
         # Possibly in future this will change (which would be breaking change).
-        proposed_targets = self.targets or [
-            model.id
-            for model in cast(
-                Iterable[FigureType], model_manager._get_models(FIGURE_MODELS, model_manager._get_model_page(self))
-            )
-        ]
+        page = model_manager._get_model_page(self)
+        proposed_targets = self._get_proposed_targets(page=page)
+
         # TODO: Currently dynamic data functions require a default value for every argument. Even when there is a
         #  dataframe parameter, the default value is used when pre-build the filter e.g. to find the targets,
         #  column type (and hence selector) and initial values. There are three ways to handle this:
@@ -164,6 +161,9 @@ class Filter(VizroBaseModel):
         self._column_type = self._validate_column_type(targeted_data)
         self.selector = self.selector or SELECTORS[self._column_type][0]()
         self.selector.title = self.selector.title or self.column.title()
+
+        # set default inline=True for container selectors
+        set_container_control_default(control=self, control_id=self.id, selector=self.selector)
 
         if isinstance(self.selector, DISALLOWED_SELECTORS.get(self._column_type, ())):
             raise ValueError(
@@ -335,3 +335,28 @@ class Filter(VizroBaseModel):
         # changes. See https://pandas.pydata.org/docs/whatsnew/v2.1.0.html#whatsnew-210-enhancements-new-stack.
         targeted_data = pd.concat([targeted_data, pd.Series(current_value)]).stack().dropna()  # noqa: PD013
         return sorted(set(targeted_data) - {ALL_OPTION})
+
+    def _get_proposed_targets(self, page):
+        """Get all valid figure model targets for this control based on its location in the page hierarchy."""
+        if self.targets:
+            return self.targets
+
+        parent_container = self._find_parent_container(page)
+        target_scope = parent_container if parent_container else page
+
+        return [
+            model.id for model in cast(Iterable[VizroBaseModel], model_manager._get_models(FIGURE_MODELS, target_scope))
+        ]
+
+    def _find_parent_container(self, page):
+        """Find the container that contains this control, if any."""
+        page_containers = cast(Iterable[Container], model_manager._get_models(Container, page))
+
+        return next(
+            (
+                container
+                for container in page_containers
+                if any(control.id == self.id for control in container.controls)
+            ),
+            None,
+        )
