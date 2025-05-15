@@ -118,6 +118,7 @@ page_table_of_contents = vm.Page(
 
 # ======= Page Figures Title/Header/Footer =======
 
+
 page_figures_title_header_footer = vm.Page(
     title="Graph/AgGrid/Table - title/header/footer",
     layout=vm.Grid(grid=[[0, 1, 2]]),
