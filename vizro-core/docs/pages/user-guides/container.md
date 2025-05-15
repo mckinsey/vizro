@@ -33,7 +33,7 @@ Here are a few cases where you might want to use a `Container` instead of `Page.
 - Different row and column spacing between sections
 - Apply a background color or borders to [visually distinguish your content](#styled-containers)
 - Make your [content collapsible](#collapsible-containers)
-- Apply controls to selected sections (will be supported soon)
+- Apply controls to selected sections
 
 ## Basic containers
 
@@ -43,6 +43,7 @@ To add a [`Container`][vizro.models.Container] to your page, do the following:
 1. Configure your `components`, [read the overview page for various options](components.md)
 1. (optional) Set a `title` for your `Container`
 1. (optional) Configure your `layout`, see [the guide on layouts](layouts.md)
+1. (optional) Configure container specific [`controls`](#add-controls-to-container)
 
 !!! example "Container"
 
@@ -511,20 +512,21 @@ By default, controls only affect components inside their own container.
         from vizro import Vizro
 
         iris = px.data.iris()
+        gapminder = px.data.gapminder()
 
         page = vm.Page(
             title="Containers with controls",
             layout=vm.Grid(grid=[[0, 1]]),
             components=[
                 vm.Container(
-                    title="Container with checklist",
-                    components=[vm.Graph(figure=px.scatter(iris, x="sepal_width", y="sepal_length", color="species"))],
-                    controls=[vm.Filter(column="species", selector=vm.Checklist())]
+                    title="Country GDP Per Capita",
+                    components=[vm.Graph(id="bar_chart", figure=px.bar(gapminder, x="country", y="gdpPercap"))],
+                    controls=[vm.Filter(column="continent", selector=vm.RadioItems())]
                 ),
                 vm.Container(
-                    title="Container with radioitems",
+                    title="Sepal Length Distribution",
                     components=[vm.Graph(figure=px.box(iris, x="species", y="sepal_length", color="species"))],
-                    controls=[vm.Filter(column="species", selector=vm.RadioItems())]
+                    controls=[vm.Filter(column="species", selector=vm.Checklist())]
                 )
             ],
         )
@@ -539,7 +541,7 @@ By default, controls only affect components inside their own container.
         # Still requires a .py to add data to the data manager and parse YAML configuration
         # See yaml_version example
         pages:
-          - title: Containers with controls
+          - title: Country GDP Per Capita
             layout:
               grid: [[0, 1]]
               type: grid
@@ -549,18 +551,17 @@ By default, controls only affect components inside their own container.
                 components:
                   - type: graph
                     figure:
-                      _target_: scatter
-                      data_frame: iris
-                      x: sepal_width
-                      y: sepal_length
-                      color: species
+                      _target_: bar
+                      data_frame: gapminder
+                      x: country
+                      y: gdpPercap
                 controls:
-                  - column: species
+                  - column: continent
                     selector:
-                      type: checklist
+                      type: radioitems
                     type: filter
               - type: container
-                title: Container with radioitems
+                title: Sepal Length Distribution
                 components:
                   - type: graph
                     figure:
@@ -572,13 +573,13 @@ By default, controls only affect components inside their own container.
                 controls:
                   - column: species
                     selector:
-                      type: radioitems
+                      type: checklist
                     type: filter
         ```
 
     === "Result"
 
-        [![ContainerInfoIcon]][containerinfoicon]
+        [![ContainerWithControls]][containerwithcontrols]
 
 ## The `extra` argument
 
@@ -594,4 +595,5 @@ For examples of how to use the `extra` argument, see an example in the documenta
 [collapsiblecontainergrid]: ../../assets/user_guides/components/collapsible-containers-grid.gif
 [container]: ../../assets/user_guides/components/containers.png
 [containerinfoicon]: ../../assets/user_guides/components/container-info-icon.png
+[containerwithcontrols]: ../../assets/user_guides/components/container-with-controls.png
 [stylecontainer]: ../../assets/user_guides/components/container-styled.png

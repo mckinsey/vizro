@@ -129,7 +129,7 @@ class Container(VizroBaseModel):
             "id": self.id,
             "children": [
                 self._build_container_title(),
-                self._build_control_panel(),
+                self._build_control_panel() if self.controls else None,
                 self._build_container(),
             ],
             "fluid": True,
@@ -186,13 +186,9 @@ class Container(VizroBaseModel):
 
     def _build_control_panel(self):
         controls_content = [control.build() for control in self.controls] if self.controls else []
-        return (
-            html.Div(
-                id=f"{self.id}-control-panel",
-                children=controls_content,
-                hidden=not controls_content,
-                className="container-controls-panel",
-            )
-            if self.controls
-            else html.Div(hidden=True)
+        return html.Div(
+            id=f"{self.id}-control-panel",
+            children=controls_content,
+            hidden=not controls_content,
+            className="container-controls-panel",
         )

@@ -17,6 +17,19 @@ def page_1(standard_px_chart):
     )
 
 
+@pytest.fixture
+def container_1(standard_px_chart):
+    return vm.Container(
+        id="container_1_id",
+        title="Container 1",
+        components=[
+            vm.Button(id="container_1_button_id"),
+            vm.Graph(id="container_1_graph_id", figure=standard_px_chart),
+        ],
+        controls=[],
+    )
+
+
 @pytest.fixture(autouse=True)
 def managers_dashboard_two_pages(vizro_app, page_1, standard_kpi_card):
     return vm.Dashboard(
@@ -37,7 +50,7 @@ def managers_dashboard_two_pages(vizro_app, page_1, standard_kpi_card):
 class TestGetModels:
     """Test _get_models method."""
 
-    def test_model_type_none_page_none(self):
+    def test_model_type_none_root_model_none(self):
         """model_type is None | page is None -> return all elements."""
         result = [model.id for model in model_manager._get_models()]
 
@@ -54,8 +67,8 @@ class TestGetModels:
         # models. That's the reason why we assert with the 'issubset' instead of 'equal'.
         assert expected.issubset(result)
 
-    def test_model_type_page_none(self):
-        """model_type is vm.Button | page is None -> return all vm.Button from the dashboard."""
+    def test_model_type_root_model_none(self):
+        """model_type is vm.Button | root_model is None -> return all vm.Button from the dashboard."""
         result = [model.id for model in model_manager._get_models(model_type=vm.Button)]
 
         expected = {"page_1_button_id", "page_2_button_id"}
@@ -64,8 +77,8 @@ class TestGetModels:
         assert expected.issubset(result)
         assert excluded.isdisjoint(result)
 
-    def test_model_type_none_page_not_none(self, page_1):
-        """model_type is None | page is page_1 -> return all elements from the page_1."""
+    def test_model_type_none_root_model_not_none(self, page_1):
+        """model_type is None | root_model is page_1 -> return all elements from the page_1."""
         result = [model.id for model in model_manager._get_models(root_model=page_1)]
 
         expected = {"page_1_id", "page_1_button_id", "page_1_graph_id"}
@@ -84,15 +97,15 @@ class TestGetModels:
         assert expected.issubset(result)
         assert excluded.isdisjoint(result)
 
-    def test_model_type_no_match_page_none(self):
-        """model_type matches no type | page is None -> return empty list."""
+    def test_model_type_no_match_root_model_none(self):
+        """model_type matches no type | root_model is None -> return empty list."""
         # There is no AgGrid in the dashboard
         result = [model.id for model in model_manager._get_models(model_type=vm.AgGrid)]
 
         assert result == []
 
-    def test_model_type_no_match_page_not_none(self, page_1):
-        """model_type matches no type | page is page_1 -> return empty list."""
+    def test_model_type_no_match_root_model_not_none(self, page_1):
+        """model_type matches no type | root_model is page_1 -> return empty list."""
         # There is no AgGrid in the page_1
         result = [model.id for model in model_manager._get_models(model_type=vm.AgGrid, root_model=page_1)]
 
@@ -109,7 +122,7 @@ class TestGetModels:
         assert excluded.isdisjoint(result)
 
     def test_model_type_figure_models(self):
-        """model_type is FIGURE_MODELS | page is None -> return all figure elements from the dashboard."""
+        """model_type is FIGURE_MODELS | root_model is None -> return all figure elements from the dashboard."""
         result = [model.id for model in model_manager._get_models(model_type=FIGURE_MODELS)]
 
         expected = {"page_1_graph_id", "page_2_figure_id"}
@@ -184,6 +197,16 @@ class TestGetModels:
         result = [model.id for model in model_manager._get_models(model_type=vm.Filter, root_model=page_1)]
 
         assert "page_1_control_1" not in result
+
+    def test_root_model_container(self, container_1):
+        """model_type is None | root_model is container_1 -> return all elements from the container_1."""
+        result = [model.id for model in model_manager._get_models(root_model=container_1)]
+
+        expected = {"container_1_id", "container_1_button_id", "container_1_graph_id"}
+        excluded = {"page_2_id", "page_2_button_id", "page_2_figure_id"}
+
+        assert expected.issubset(result)
+        assert excluded.isdisjoint(result)
 
 
 class TestGetModelPage:
