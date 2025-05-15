@@ -105,7 +105,9 @@ class Checklist(VizroBaseModel):
                 html.Legend(
                     children=[html.Div(id=f"{self.id}_title", children=self.title), *description],
                     className="form-label",
-                ) if self.title else None,
+                )
+                if self.title
+                else None,
                 dbc.Checklist(**(defaults | self.extra)),
             ]
         )

@@ -124,9 +124,10 @@ class DatePicker(VizroBaseModel):
         return html.Div(
             children=[
                 dbc.Label(
-                    children=[html.Div(id=f"{self.id}_title", children=self.title), *description],
-                    html_for=self.id
-                ) if self.title else None,
+                    children=[html.Div(id=f"{self.id}_title", children=self.title), *description], html_for=self.id
+                )
+                if self.title
+                else None,
                 dmc.DatePickerInput(**(defaults | self.extra)),
             ],
         )

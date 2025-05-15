@@ -152,8 +152,10 @@ class RangeSlider(VizroBaseModel):
                     children=[
                         dbc.Label(
                             children=[html.Div(id=f"{self.id}_title", children=self.title), *description],
-                            html_for=self.id
-                        ) if self.title else None,
+                            html_for=self.id,
+                        )
+                        if self.title
+                        else None,
                         html.Div(
                             [
                                 dcc.Input(
