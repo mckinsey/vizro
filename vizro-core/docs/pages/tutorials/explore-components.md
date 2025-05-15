@@ -19,7 +19,7 @@ In this tutorial, you'll learn how to build an interactive dashboard with multip
 
 This tutorial uses the [tips dataset](https://plotly.com/python-api-reference/generated/plotly.express.data.html#plotly.express.data.tips), which was collected by a waiter who recorded information about each tip he received over several months at a restaurant.
 
-[Here is a preview of the dashboard you'll build](https://py.cafe/app/vizro-official/vizro-tips-analysis-tutorial).
+[Here is a preview of the dashboard you'll build](https://py.cafe/app/vizro-official/vizro-tips-analysis-tutorial):
 
 ![](../../assets/tutorials/dashboard/vizro-tutorial.gif)
 
