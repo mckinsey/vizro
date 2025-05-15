@@ -30,7 +30,7 @@ def action_return_figures(button_number_of_clicks):
     # Sleep to see what part of the output component is updating
     time.sleep(0.5)
 
-    dff = px.data.iris().head(button_number_of_clicks % 3)
+    dff = px.data.iris().head(button_number_of_clicks % 4)
 
     return [
         px.scatter(dff, x="sepal_width", y="sepal_length", color="species"),
@@ -50,7 +50,8 @@ page_table_of_contents = vm.Page(
     components=[
         vm.AgGrid(
             figure=dash_ag_grid(
-                columnSize="sizeToFit",
+                # columnSize="sizeToFit",
+                columnSize="autoSize",
                 data_frame=pd.DataFrame(
                     columns=[
                         "Component",
@@ -63,7 +64,7 @@ page_table_of_contents = vm.Page(
                         ["Form", "", "", "", ""],
                         ["Container", "", "", "", ""],
                         ["Figure", "", "children", "figure", ""],
-                        ["AgGrid", "", "children", "title, header, footer, figure", ""],
+                        ["AgGrid", "", "children", "title, header, footer, figure", "All 'outer-ID.property' are mapped to 'inner-ID.property'"],
                         ["Table", "", "children", "title, header, footer, figure", ""],
                         [
                             "Graph",
@@ -148,7 +149,6 @@ page_figures_title_header_footer = vm.Page(
     controls=[
         vm.Button(
             id="trigger-figures-title-header-footer-button-id",
-            text="Click me",
             actions=[
                 vm.Action(
                     function=action_return_text("trigger-figures-title-header-footer-button-id.n_clicks"),
@@ -202,7 +202,6 @@ page_figures_figures = vm.Page(
     controls=[
         vm.Button(
             id="trigger-figures-figures-button-id",
-            text="Click me",
             actions=[
                 vm.Action(
                     function=action_return_figures("trigger-figures-figures-button-id.n_clicks"),
@@ -226,6 +225,58 @@ page_figures_figures = vm.Page(
 )
 
 
+@capture("action")
+def action_select_ag_grid_rows(button_number_of_clicks):
+    # Sleep to see what part of the output component is updating
+    time.sleep(0.5)
+
+    num_rows = button_number_of_clicks % 4
+    selected_rows = df.iloc[:num_rows].to_dict('records') if num_rows > 0 else []
+
+    return selected_rows
+
+
+# ======= Page underlying ID shortcuts =======
+
+page_ag_grid_underlying_id_shortcuts = vm.Page(
+    title="AgGrid - underlying ID shortcuts",
+    components=[
+        vm.AgGrid(
+            id="aggrid-3-id",
+            title="Click button to update the figure",
+            figure=dash_ag_grid(df, dashGridOptions={"rowSelection": 'multiple'}),
+            actions=[
+                # TODO-REVIEWER-CHECK: Before this PR, users had to assign the underlying-id to the dash_ag_grid
+                #  and then to input it like "underlying_ag_grid_id.cellClicked"
+                vm.Action(
+                    function=capture("action")(lambda x: str(x))("aggrid-3-id.cellClicked"),
+                    outputs=["card-3-id"]
+                )
+            ]
+        ),
+        vm.Card(
+            id="card-3-id",
+            text="Click ag-grid cell to update me",
+        )
+    ],
+    controls=[
+        vm.Button(
+            id="trigger-aggrid-3-id-button-id",
+            actions=[
+                vm.Action(
+                    function=action_select_ag_grid_rows("trigger-aggrid-3-id-button-id.n_clicks"),
+                    outputs=[
+                        # TODO-REVIEWER-CHECK: Before this PR, users had to assign the underlying-id to the dash_ag_grid
+                        #  and then to output it like "underlying_ag_grid_id.selectedRows"
+                        "aggrid-3-id.selectedRows",
+                    ],
+                )
+            ],
+        ),
+    ]
+)
+
+
 # ======= Card/Text Components =======
 
 page_card_text_components = vm.Page(
@@ -243,7 +294,6 @@ page_card_text_components = vm.Page(
     controls=[
         vm.Button(
             id="trigger-card-text-button-id",
-            text="Click me",
             actions=[
                 vm.Action(
                     function=action_return_text("trigger-card-text-button-id.n_clicks"),
@@ -283,7 +333,6 @@ page_text_area_user_input_components = vm.Page(
     controls=[
         vm.Button(
             id="trigger-text-area-user-input-button-id",
-            text="Click me",
             actions=[
                 vm.Action(
                     function=action_return_text("trigger-text-area-user-input-button-id.n_clicks"),
@@ -355,7 +404,6 @@ page_form_components = vm.Page(
     controls=[
         vm.Button(
             id="trigger-form-components-title-description-button-id",
-            text="Click me",
             actions=[
                 vm.Action(
                     function=action_return_text("trigger-form-components-title-description-button-id.n_clicks"),
@@ -391,6 +439,7 @@ dashboard = vm.Dashboard(
         page_table_of_contents,
         page_figures_title_header_footer,
         page_figures_figures,
+        page_ag_grid_underlying_id_shortcuts,
         page_card_text_components,
         page_text_area_user_input_components,
         page_form_components,

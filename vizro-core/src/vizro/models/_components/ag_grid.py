@@ -1,3 +1,6 @@
+import dash_ag_grid as dag
+from dash import html
+
 import logging
 from typing import Annotated, Literal, Optional
 
@@ -90,6 +93,20 @@ class AgGrid(VizroBaseModel):
             "title": f"{self.id}_title.children",
             "header": f"{self.id}_header.children",
             "footer": f"{self.id}_footer.children",
+            **{
+                dag_ag_grid_prop: f"{self._input_component_id}.{dag_ag_grid_prop}"
+                for dag_ag_grid_prop in set(dag.AgGrid().available_properties) - set(html.Div().available_properties)
+            },
+        }
+
+    @property
+    def _action_inputs(self) -> dict[str, _IdProperty]:
+        return {
+            "__default__": f"{self.id}.children",
+            **{
+                dag_ag_grid_prop: f"{self._input_component_id}.{dag_ag_grid_prop}"
+                for dag_ag_grid_prop in set(dag.AgGrid().available_properties) - set(html.Div().available_properties)
+            },
         }
 
     # Convenience wrapper/syntactic sugar.
