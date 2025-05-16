@@ -136,8 +136,13 @@ class TestAbstractActionInputs:
             ),
             (
                 action_with_one_runtime_arg,
-                {"arg_1": "known-model-id"},
-                {"arg_1": State("known-model-id", "value")},
+                {"arg_1": "known_ag_grid_id"},
+                {"arg_1": State("known_ag_grid_id", "children")},
+            ),
+            (
+                action_with_one_runtime_arg,
+                {"arg_1": "known_ag_grid_id.cellClicked"},
+                {"arg_1": State("underlying_ag_grid_id", "cellClicked")},
             ),
             (
                 action_with_two_runtime_args,
@@ -154,7 +159,7 @@ class TestAbstractActionInputs:
                 {},
                 {
                     "_controls": {
-                        "filters": [State("known-model-id", "value")],
+                        "filters": [State("known_filter_id", "value")],
                         "parameters": [],
                         "filter_interaction": [],
                     }
@@ -163,7 +168,7 @@ class TestAbstractActionInputs:
         ],
     )
     def test_inputs_valid(
-        self, action_class, inputs, expected_transformed_inputs, manager_for_testing_default_output_input_prop
+        self, action_class, inputs, expected_transformed_inputs, manager_for_testing_actions_output_input_prop
     ):
         action = action_class(**inputs)
         assert action._transformed_inputs == expected_transformed_inputs
@@ -211,13 +216,13 @@ class TestAbstractActionInputs:
         ):
             action_with_one_runtime_arg(arg_1=input)._transformed_inputs
 
-    def test_inputs_invalid_missing_action_attribute(self, manager_for_testing_default_output_input_prop):
+    def test_inputs_invalid_missing_action_attribute(self, manager_for_testing_actions_output_input_prop):
         with pytest.raises(
             AttributeError,
-            match="Model with ID 'model-with-no-default-props' does not have implicit input properties defined. "
-            "Please specify the input explicitly as 'model-with-no-default-props.<property>'.",
+            match="Model with ID 'known_model_with_no_default_props' does not have implicit input properties defined. "
+            "Please specify the input explicitly as 'known_model_with_no_default_props.<property>'.",
         ):
-            action = action_with_one_runtime_arg(arg_1="model-with-no-default-props")._transformed_inputs
+            action = action_with_one_runtime_arg(arg_1="known_model_with_no_default_props")._transformed_inputs
             action._transformed_inputs
 
     # TODO: Adjust this test when _controls becomes a public field. Should demonstrate that a runtime arg called
@@ -247,8 +252,8 @@ class TestAbstractActionOutputs:
                 ["component_1.property_1", "component_2.property_2"],
                 [Output("component_1", "property_1"), Output("component_2", "property_2")],
             ),
-            (["known-model-id"], Output("known-model-id", "value")),
-            (["known-model-id.title"], Output("known-model-id_title", "children")),
+            (["known_ag_grid_id"], Output("known_ag_grid_id", "children")),
+            (["known_ag_grid_id.cellClicked"], Output("underlying_ag_grid_id", "cellClicked")),
             ({}, {}),
             (
                 {"output_1": "component.property"},
@@ -259,18 +264,18 @@ class TestAbstractActionOutputs:
                 {"output_1": Output("component_1", "property_1"), "output_2": Output("component_2", "property_2")},
             ),
             (
-                {"output_1": "known-model-id"},
-                {"output_1": Output("known-model-id", "value")},
+                {"output_1": "known_ag_grid_id"},
+                {"output_1": Output("known_ag_grid_id", "children")},
             ),
             (
-                {"output_1": "known-model-id.title"},
-                {"output_1": Output("known-model-id_title", "children")},
+                {"output_1": "known_ag_grid_id.cellClicked"},
+                {"output_1": Output("underlying_ag_grid_id", "cellClicked")},
             ),
         ],
         indirect=["action_with_mock_outputs"],
     )
     def test_outputs_valid(
-        self, action_with_mock_outputs, expected_transformed_outputs, manager_for_testing_default_output_input_prop
+        self, action_with_mock_outputs, expected_transformed_outputs, manager_for_testing_actions_output_input_prop
     ):
         action = action_with_mock_outputs()
         assert action._transformed_outputs == expected_transformed_outputs
@@ -332,14 +337,14 @@ class TestAbstractActionOutputs:
             action_with_mock_outputs()._transformed_outputs
 
     def test_outputs_invalid_missing_action_attribute(
-        self, manager_for_testing_default_output_input_prop, action_with_mock_outputs
+        self, manager_for_testing_actions_output_input_prop, action_with_mock_outputs
     ):
         with pytest.raises(
             AttributeError,
-            match="Model with ID 'model-with-no-default-props' does not have implicit output properties defined. "
-            "Please specify the output explicitly as 'model-with-no-default-props.<property>'.",
+            match="Model with ID 'known_model_with_no_default_props' does not have implicit output properties defined. "
+            "Please specify the output explicitly as 'known_model_with_no_default_props.<property>'.",
         ):
-            action_with_mock_outputs.outputs = ["model-with-no-default-props"]
+            action_with_mock_outputs.outputs = ["known_model_with_no_default_props"]
             action_with_mock_outputs()._transformed_outputs
 
 
