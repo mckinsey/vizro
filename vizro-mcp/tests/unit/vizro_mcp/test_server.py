@@ -200,7 +200,7 @@ class TestValidateModelConfig:
         self, valid_dashboard_config: dict[str, Any], dashboard_config_validation_result: ValidationResults
     ) -> None:
         """Test successful validation of a dashboard configuration."""
-        result = validate_model_config(config=valid_dashboard_config, data_infos=[], auto_open=False)
+        result = validate_model_config(dashboard_config=valid_dashboard_config, data_infos=[], auto_open=False)
 
         # Compare everything but the pycafe_url
         assert result.valid == dashboard_config_validation_result.valid
@@ -219,7 +219,9 @@ class TestValidateModelConfig:
         iris_metadata: DFMetaData,
     ) -> None:
         """Test validation of a dashboard with a scatter graph component."""
-        result = validate_model_config(config=graph_dashboard_config, data_infos=[iris_metadata], auto_open=False)
+        result = validate_model_config(
+            dashboard_config=graph_dashboard_config, data_infos=[iris_metadata], auto_open=False
+        )
 
         # Compare everything but the pycafe_url
         assert result.valid == graph_dashboard_validation_result.valid
@@ -237,7 +239,7 @@ class TestValidateModelConfig:
         invalid_config = valid_dashboard_config.copy()
         invalid_config["titles"] = invalid_config.pop("title")
 
-        result = validate_model_config(config=invalid_config, data_infos=[iris_metadata], auto_open=False)
+        result = validate_model_config(dashboard_config=invalid_config, data_infos=[iris_metadata], auto_open=False)
 
         assert result.valid is False
         assert "Validation Error: 1 validation error for Dashboard" in result.message
@@ -256,7 +258,7 @@ class TestValidateChartCode:
         chart_plan_validation_result: ValidationResults,
     ) -> None:
         """Test successful validation of chart code."""
-        result = validate_chart_code(config=valid_chart_plan, data_info=iris_metadata, auto_open=False)
+        result = validate_chart_code(chart_config=valid_chart_plan, data_info=iris_metadata, auto_open=False)
 
         # Compare everything but the pycafe_url
         assert result.valid == chart_plan_validation_result.valid
@@ -274,7 +276,7 @@ class TestValidateChartCode:
         iris_metadata: DFMetaData,
     ) -> None:
         """Test validation error for an invalid chart plan."""
-        result = validate_chart_code(config=invalid_chart_plan, data_info=iris_metadata, auto_open=False)
+        result = validate_chart_code(chart_config=invalid_chart_plan, data_info=iris_metadata, auto_open=False)
 
         assert result.valid is False
         assert result.python_code == ""
