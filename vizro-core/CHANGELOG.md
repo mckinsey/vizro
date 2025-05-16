@@ -23,7 +23,7 @@ See the fragment files in the [changelog.d directory](https://github.com/mckinse
 
 ## Changed
 
-- Bump `dash>=3.0.0`, `dash-bootstrap-components>=2.0.0`, `dash-ag-grid>=31.3.1` and `dash-mantine-components>=1.0.0`.
+- Bump `dash>=3.0.0`, `dash-bootstrap-components>=2.0.0`, `dash-ag-grid>=31.3.1` and `dash-mantine-components>=1.0.0`. ([#1160](https://github.com/mckinsey/vizro/pull/1160))
 
 ## Fixed
 
