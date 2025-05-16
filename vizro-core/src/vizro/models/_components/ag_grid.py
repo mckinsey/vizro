@@ -21,6 +21,11 @@ from vizro.models.types import ActionType, CapturedCallable, _IdProperty, valida
 
 logger = logging.getLogger(__name__)
 
+# A set of properties unique to dag.AgGrid (inner build object) that are not present in html.Div (outer build wrapper).
+# Creates _action_outputs and _action_inputs for accessing inner dag.AgGrid properties via the outer vm.AgGrid ID.
+# Example: "outer-ag-grid-id.cellClicked" is transformed to "inner-ag-grid-id.cellClicked".
+DAG_AG_GRID_PROPERTIES = set(dag.AgGrid().available_properties) - set(html.Div().available_properties)
+
 
 class AgGrid(VizroBaseModel):
     """Wrapper for `dash-ag-grid.AgGrid` to visualize grids in dashboard.
@@ -91,20 +96,14 @@ class AgGrid(VizroBaseModel):
             "title": f"{self.id}_title.children",
             "header": f"{self.id}_header.children",
             "footer": f"{self.id}_footer.children",
-            **{
-                dag_ag_grid_prop: f"{self._input_component_id}.{dag_ag_grid_prop}"
-                for dag_ag_grid_prop in set(dag.AgGrid().available_properties) - set(html.Div().available_properties)
-            },
+            **{ag_grid_prop: f"{self._input_component_id}.{ag_grid_prop}" for ag_grid_prop in DAG_AG_GRID_PROPERTIES},
         }
 
     @property
     def _action_inputs(self) -> dict[str, _IdProperty]:
         return {
             "__default__": f"{self.id}.children",
-            **{
-                dag_ag_grid_prop: f"{self._input_component_id}.{dag_ag_grid_prop}"
-                for dag_ag_grid_prop in set(dag.AgGrid().available_properties) - set(html.Div().available_properties)
-            },
+            **{ag_grid_prop: f"{self._input_component_id}.{ag_grid_prop}" for ag_grid_prop in DAG_AG_GRID_PROPERTIES},
         }
 
     # Convenience wrapper/syntactic sugar.

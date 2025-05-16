@@ -14,6 +14,7 @@ from vizro import Vizro
 from vizro.managers import data_manager
 from vizro.managers._model_manager import DuplicateIDError
 from vizro.models._action._action import Action
+from vizro.models._components.ag_grid import DAG_AG_GRID_PROPERTIES
 from vizro.tables import dash_ag_grid
 
 
@@ -46,6 +47,7 @@ class TestAgGridInstantiation:
             "title": f"{ag_grid.id}_title.children",
             "header": f"{ag_grid.id}_header.children",
             "footer": f"{ag_grid.id}_footer.children",
+            **{ag_grid_prop: f"{self._input_component_id}.{ag_grid_prop}" for ag_grid_prop in DAG_AG_GRID_PROPERTIES},
         }
 
     @pytest.mark.parametrize("id", ["id_1", "id_2"])

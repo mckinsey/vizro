@@ -248,20 +248,20 @@ page_ag_grid_underlying_id_shortcuts = vm.Page(
     title="AgGrid - underlying ID shortcuts",
     components=[
         vm.AgGrid(
-            id="aggrid-3-id",
+            id="outer-aggrid-3-id",
             title="Click button to update the figure",
             figure=dash_ag_grid(df, dashGridOptions={"rowSelection": "multiple"}),
             actions=[
                 # TODO-REVIEWER-CHECK: Before this PR, users had to assign the underlying-id to the dash_ag_grid
                 #  and then to input it like "underlying_ag_grid_id.cellClicked"
                 vm.Action(
-                    function=capture("action")(lambda x: str(x))("aggrid-3-id.cellClicked"), outputs=["card-3-id"]
+                    function=capture("action")(lambda x: str(x))("outer-aggrid-3-id.cellClicked"), outputs=["card-3-id"]
                 )
             ],
         ),
         vm.Card(
             id="card-3-id",
-            text="Click ag-grid cell to update me",
+            text="## Click ag-grid cell to update me",
         ),
     ],
     controls=[
@@ -273,7 +273,7 @@ page_ag_grid_underlying_id_shortcuts = vm.Page(
                     outputs=[
                         # TODO-REVIEWER-CHECK: Before this PR, users had to assign the underlying-id to the dash_ag_grid
                         #  and then to output it like "underlying_ag_grid_id.selectedRows"
-                        "aggrid-3-id.selectedRows",
+                        "outer-aggrid-3-id.selectedRows",
                     ],
                 )
             ],
