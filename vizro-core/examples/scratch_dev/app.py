@@ -64,7 +64,13 @@ page_table_of_contents = vm.Page(
                         ["Form", "", "", "", ""],
                         ["Container", "", "", "", ""],
                         ["Figure", "", "children", "figure", ""],
-                        ["AgGrid", "", "children", "title, header, footer, figure", "All 'outer-ID.property' are mapped to 'inner-ID.property'"],
+                        [
+                            "AgGrid",
+                            "",
+                            "children",
+                            "title, header, footer, figure",
+                            "All 'outer-ID.property' are mapped to 'inner-ID.property'",
+                        ],
                         ["Table", "", "children", "title, header, footer, figure", ""],
                         [
                             "Graph",
@@ -231,7 +237,7 @@ def action_select_ag_grid_rows(button_number_of_clicks):
     time.sleep(0.5)
 
     num_rows = button_number_of_clicks % 4
-    selected_rows = df.iloc[:num_rows].to_dict('records') if num_rows > 0 else []
+    selected_rows = df.iloc[:num_rows].to_dict("records") if num_rows > 0 else []
 
     return selected_rows
 
@@ -244,20 +250,19 @@ page_ag_grid_underlying_id_shortcuts = vm.Page(
         vm.AgGrid(
             id="aggrid-3-id",
             title="Click button to update the figure",
-            figure=dash_ag_grid(df, dashGridOptions={"rowSelection": 'multiple'}),
+            figure=dash_ag_grid(df, dashGridOptions={"rowSelection": "multiple"}),
             actions=[
                 # TODO-REVIEWER-CHECK: Before this PR, users had to assign the underlying-id to the dash_ag_grid
                 #  and then to input it like "underlying_ag_grid_id.cellClicked"
                 vm.Action(
-                    function=capture("action")(lambda x: str(x))("aggrid-3-id.cellClicked"),
-                    outputs=["card-3-id"]
+                    function=capture("action")(lambda x: str(x))("aggrid-3-id.cellClicked"), outputs=["card-3-id"]
                 )
-            ]
+            ],
         ),
         vm.Card(
             id="card-3-id",
             text="Click ag-grid cell to update me",
-        )
+        ),
     ],
     controls=[
         vm.Button(
@@ -273,7 +278,7 @@ page_ag_grid_underlying_id_shortcuts = vm.Page(
                 )
             ],
         ),
-    ]
+    ],
 )
 
 
