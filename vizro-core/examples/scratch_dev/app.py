@@ -8,7 +8,6 @@ iris = px.data.iris()
 
 first_page = vm.Page(
     title="Data",
-    layout=vm.Flex(direction="row"),
     components=[
         vm.Container(
             title="Container with info-icon visible",
@@ -25,6 +24,7 @@ first_page = vm.Page(
             ],
             description="test description",
             variant="outlined",
+            collapsed=True,
         ),
         vm.Container(
             components=[
