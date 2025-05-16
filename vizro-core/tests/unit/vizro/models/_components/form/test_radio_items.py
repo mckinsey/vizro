@@ -24,6 +24,8 @@ class TestRadioItemsInstantiation:
         assert radio_items.title == ""
         assert radio_items.description is None
         assert radio_items.actions == []
+        assert radio_items._action_outputs == {"__default__": f"{radio_items.id}.value"}
+        assert radio_items._action_inputs == {"__default__": f"{radio_items.id}.value"}
 
     def test_create_radio_items_mandatory_and_optional(self):
         radio_items = RadioItems(
@@ -178,7 +180,7 @@ class TestRadioItemsBuild:
             description=Tooltip(text="Test description", icon="info", id="info"),
         ).build()
 
-        description = [
+        expected_description = [
             html.Span("info", id="info-icon", className="material-symbols-outlined tooltip-icon"),
             dbc.Tooltip(
                 children=dcc.Markdown("Test description", className="card-text"),
@@ -190,7 +192,7 @@ class TestRadioItemsBuild:
 
         expected_radio_items = html.Fieldset(
             [
-                html.Legend(["Title", *description], className="form-label"),
+                html.Legend(["Title", *expected_description], className="form-label"),
                 dbc.RadioItems(
                     id="radio_items",
                     options=["A", "B", "C"],

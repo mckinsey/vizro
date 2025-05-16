@@ -1,4 +1,4 @@
-name: Bug report
+name: 🐛 Bug report
 description: Something is not working correctly
 labels: "Needs triage :mag:, Bug Report :bug:"
 
@@ -7,8 +7,15 @@ body:
     attributes:
       value: >-
         Hi there! Thank you so much for taking the time to fill in this bug report.
-        As we have limited triage capacity, we'd appreciate it if you could search on Vizro's
-        existing issues prior to submission to avoid any duplicates. Thanks!
+
+  - type: checkboxes
+    attributes:
+      label: Have you already looked into this bug?
+      description: Since our triage resources are limited, we’d really appreciate it if you could take a moment to check whether this bug has already been reported or documented.
+      options:
+        - label: I've reviewed the [release notes](https://github.com/mckinsey/vizro/releases) for relevant migration steps
+        - label: I've searched through [existing issues](https://github.com/mckinsey/vizro/issues) for similar reports
+        - label: I've already searched online (e.g. Dash documentation) but couldn't find anything relevant
 
   - type: dropdown
     attributes:

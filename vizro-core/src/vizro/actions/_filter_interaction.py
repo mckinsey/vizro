@@ -44,7 +44,7 @@ class filter_interaction(_AbstractAction):
     def pre_build(self):
         # Set targets to all figures on the page if not already set. In this case we don't need to check the targets
         # are valid.
-        # TODO-AV D 2: work out where this duplicated get_all_targets_on_page logic should live. Not important for
+        # TODO-AV2 A 4: work out where this duplicated get_all_targets_on_page logic should live. Not important for
         #  filter_interaction given that will disappear but possibly relevant to other actions. Do we even want to
         #  keep behavior that not specifying targets downloads everything on the page? We'd still want the validation
         #  using the model_manager though.
@@ -96,11 +96,4 @@ class filter_interaction(_AbstractAction):
 
     @property
     def outputs(self):
-        outputs = {}
-
-        for target in self.targets:
-            component_id = target
-            component_property = cast(FigureType, model_manager[target])._output_component_property
-            outputs[target] = f"{component_id}.{component_property}"
-
-        return outputs
+        return {target: target for target in self.targets}

@@ -1,66 +1,30 @@
-# Vizro is an open-source toolkit for creating modular data visualization applications.
-# check out https://github.com/mckinsey/vizro for more info about Vizro
-# and checkout https://vizro.readthedocs.io/en/stable/ for documentation.
+"""Dev App."""
 
+import vizro.models as vm
 import vizro.plotly.express as px
 from vizro import Vizro
-import vizro.models as vm
+from vizro.tables import dash_ag_grid
+from vizro.models.types import capture
+from vizro.figures import kpi_card
+from vizro.actions import export_data
 
-df = px.data.iris()
+tips = px.data.tips()
 
-page = vm.Page(
-    title="Page with lots of extra information",
+first_page = vm.Page(
+    title="Data",
+    layout=vm.Flex(),
     components=[
-        vm.Graph(id="scatter_chart", figure=px.scatter(df, x="sepal_length", y="petal_width", color="species")),
-    ],
-    controls=[
-        vm.Filter(
-            column="species",
-            selector=vm.Dropdown(
-                description="""
-                    Select which species of iris you like.
-
-                    [Click here](www.google.com) to learn more about flowers.""",
-                # You could also do this with vm.Tooltip(text=...)
-            ),
+        vm.AgGrid(
+            figure=dash_ag_grid(tips, style={"height": "600px"}),
+            footer="""**Data Source:** Bryant, P. G. and Smith, M. (1995).
+            Practical Data Analysis: Case Studies in Business Statistics.
+            Homewood, IL: Richard D. Irwin Publishing.""",
         ),
-        vm.Filter(
-            column="species",
-            selector=vm.RadioItems(
-                description="""
-                    Select which species of iris you like.
-
-                    [Click here](www.google.com) to learn more about flowers.""",
-                # You could also do this with vm.Tooltip(text=...)
-            ),
-        ),
-        vm.Filter(
-            column="sepal_length",
-            selector=vm.RangeSlider(
-                description="""
-                    Select which species of iris you like.
-
-                    [Click here](www.google.com) to learn more about flowers.""",
-                # You could also do this with vm.Tooltip(text=...)
-            ),
-        ),
-        vm.Filter(
-            column="species",
-            selector=vm.Checklist(
-                description="""
-                    Select which species of iris you like.
-
-                    [Click here](www.google.com) to learn more about flowers.""",
-                # You could also do this with vm.Tooltip(text=...)
-            ),
-        ),
+        vm.Button(text="Export Data", actions=[vm.Action(function=export_data())]),
     ],
 )
 
-dashboard = vm.Dashboard(
-    pages=[page],
-    title="blah blah blah",
-)
+dashboard = vm.Dashboard(pages=[first_page])
 
 if __name__ == "__main__":
     Vizro().build(dashboard).run()

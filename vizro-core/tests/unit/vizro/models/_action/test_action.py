@@ -65,6 +65,7 @@ class TestLegacyActionInputs:
         [
             (action_with_no_args, [], []),
             (action_with_one_arg, ["component.property"], [State("component", "property")]),
+            (action_with_one_arg, ["known-model-id"], [State("known-model-id", "value")]),
             (
                 action_with_two_args,
                 ["component_1.property_1", "component_2.property_2"],
@@ -72,7 +73,13 @@ class TestLegacyActionInputs:
             ),
         ],
     )
-    def test_action_inputs_valid(self, action_function, runtime_inputs, expected_transformed_inputs):
+    def test_action_inputs_valid(
+        self,
+        action_function,
+        runtime_inputs,
+        expected_transformed_inputs,
+        manager_for_testing_default_output_input_prop,
+    ):
         action = Action(function=action_function(), inputs=runtime_inputs)
 
         assert action._legacy
@@ -82,22 +89,49 @@ class TestLegacyActionInputs:
     @pytest.mark.parametrize(
         "runtime_inputs",
         [
+            ["unknown_model_id"],
+        ],
+    )
+    def test_action_inputs_invalid_model_id(self, runtime_inputs):
+        with pytest.raises(KeyError, match="Model with ID .* not found. Please provide a valid component ID."):
+            action = Action(function=action_with_one_arg(), inputs=runtime_inputs)
+            action._transformed_inputs
+
+    @pytest.mark.parametrize(
+        "runtime_inputs",
+        [
             [""],
-            ["component"],
-            ["component_property"],
+            ["component."],
+            [".property"],
+            ["component..property"],
             ["component.property.property"],
         ],
     )
-    def test_action_inputs_invalid(self, runtime_inputs):
-        with pytest.raises(ValidationError, match="String should match pattern"):
-            Action(function=action_with_one_arg(), inputs=runtime_inputs)
+    def test_action_inputs_invalid_dot_syntax(self, runtime_inputs):
+        with pytest.raises(
+            ValueError,
+            match="Invalid input format .*. Expected format is '<model_id>' or '<model_id>.<argument_name>'.",
+        ):
+            action = Action(function=action_with_one_arg(), inputs=runtime_inputs)
+            action._transformed_inputs
+
+    def test_inputs_invalid_missing_action_attribute(self, manager_for_testing_default_output_input_prop):
+        with pytest.raises(
+            AttributeError,
+            match="Model with ID 'model-with-no-default-props' does not have implicit input properties defined. "
+            "Please specify the input explicitly as 'model-with-no-default-props.<property>'.",
+        ):
+            action = Action(function=action_with_one_arg(), inputs=["model-with-no-default-props"])
+            action._transformed_inputs
 
     @pytest.mark.parametrize(
         "static_inputs",
         [
             "",
             "component",
-            "component_property",
+            "component.",
+            ".property",
+            "component..property",
             "component.property.property",
         ],
     )
@@ -148,12 +182,26 @@ class TestLegacyActionOutputs:
             ([], []),
             (["component.property"], Output("component", "property")),
             (
-                ["component.property", "component.property"],
-                [Output("component", "property"), Output("component", "property")],
+                ["component_1.property_1", "component_2.property_2"],
+                [Output("component_1", "property_1"), Output("component_2", "property_2")],
+            ),
+            (["known-model-id"], Output("known-model-id", "value")),
+            ({}, {}),
+            (
+                {"output_1": "component.property"},
+                {"output_1": Output("component", "property")},
+            ),
+            (
+                {"output_1": "component_1.property_1", "output_2": "component_2.property_2"},
+                {"output_1": Output("component_1", "property_1"), "output_2": Output("component_2", "property_2")},
+            ),
+            (
+                {"output_1": "known-model-id"},
+                {"output_1": Output("known-model-id", "value")},
             ),
         ],
     )
-    def test_outputs_valid(self, outputs, expected_transformed_outputs):
+    def test_outputs_valid(self, outputs, expected_transformed_outputs, manager_for_testing_default_output_input_prop):
         # inputs=[] added to force action to be legacy
         action = Action(function=action_with_no_args(), inputs=[], outputs=outputs)
 
@@ -164,16 +212,55 @@ class TestLegacyActionOutputs:
     @pytest.mark.parametrize(
         "outputs",
         [
-            [""],
-            ["component"],
-            ["component_property"],
-            ["component.property.property"],
+            ["unknown_model_id"],
+            {"output_1": "unknown_model_id"},
         ],
     )
-    def test_outputs_invalid(self, outputs):
-        with pytest.raises(ValidationError, match="String should match pattern"):
+    def test_outputs_invalid_model_id(self, outputs):
+        with pytest.raises(
+            KeyError,
+            match="Model with ID .* not found. Please provide a valid component ID.",
+        ):
             # inputs=[] added to force action to be legacy
-            Action(function=action_with_no_args(), inputs=[], outputs=outputs)
+            action = Action(function=action_with_no_args(), inputs=[], outputs=outputs)
+            # An error is raised when accessing _transformed_outputs which is fine because validation is then performed.
+            action._transformed_outputs
+
+    @pytest.mark.parametrize(
+        "outputs",
+        [
+            [""],
+            ["component."],
+            [".property"],
+            ["component..property"],
+            ["component.property.property"],
+            {"output_1": ""},
+            {"output_1": "component."},
+            {"output_1": ".property"},
+            {"output_1": "component..property"},
+            {"output_1": "component.property.property"},
+            {"output_1": "component.property", "output_2": ""},
+        ],
+    )
+    def test_outputs_invalid_dot_syntax(self, outputs):
+        with pytest.raises(
+            ValueError,
+            match="Invalid output format .*. Expected format is '<model_id>' or '<model_id>.<argument_name>'.",
+        ):
+            # inputs=[] added to force action to be legacy
+            action = Action(function=action_with_no_args(), inputs=[], outputs=outputs)
+            # An error is raised when accessing _transformed_outputs which is fine because validation is then performed.
+            action._transformed_outputs
+
+    def test_outputs_invalid_missing_action_attribute(self, manager_for_testing_default_output_input_prop):
+        with pytest.raises(
+            AttributeError,
+            match="Model with ID 'model-with-no-default-props' does not have implicit output properties defined. "
+            "Please specify the output explicitly as 'model-with-no-default-props.<property>'.",
+        ):
+            # inputs=[] added to force action to be legacy
+            action = Action(function=action_with_no_args(), inputs=[], outputs=["model-with-no-default-props"])
+            action._transformed_outputs
 
 
 class TestIsActionLegacy:
@@ -189,6 +276,8 @@ class TestIsActionLegacy:
             (action_with_one_arg, {}, ["component.property"], True),
             (action_with_one_arg, {"arg_1": "hardcoded"}, [], True),
             (action_with_one_arg, {"arg_1": "component.property"}, [], False),
+            (action_with_one_arg, {}, ["known-model-id"], True),
+            (action_with_one_arg, {"arg_1": "known-model-id"}, [], False),
             # Two args
             (action_with_two_args, {}, ["component.property", "component.property"], True),
             (action_with_two_args, {"arg_1": "component.property"}, ["component.property"], True),
@@ -203,6 +292,7 @@ class TestIsActionLegacy:
         static_inputs,
         runtime_inputs,
         expected_legacy,
+        manager_for_testing_default_output_input_prop,
     ):
         function = action_function(**static_inputs) if runtime_as_kwargs else action_function(*static_inputs.values())
 
@@ -238,6 +328,7 @@ class TestActionInputs:
         [
             (action_with_no_args, {}, {}),
             (action_with_one_arg, {"arg_1": "component.property"}, {"arg_1": State("component", "property")}),
+            (action_with_one_arg, {"arg_1": "known-model-id"}, {"arg_1": State("known-model-id", "value")}),
             (
                 action_with_two_args,
                 {"arg_1": "component.property", "arg_2": "component.property"},
@@ -248,7 +339,7 @@ class TestActionInputs:
                 {},
                 {
                     "_controls": {
-                        "filters": [],
+                        "filters": [State("known-model-id", "value")],
                         "parameters": [],
                         "filter_interaction": [],
                     }
@@ -263,13 +354,38 @@ class TestActionInputs:
         ],
     )
     def test_inputs_valid(
-        self,
-        action_function,
-        inputs,
-        expected_transformed_inputs,
+        self, action_function, inputs, expected_transformed_inputs, manager_for_testing_default_output_input_prop
     ):
         action = Action(function=action_function(**inputs))
         assert action._transformed_inputs == expected_transformed_inputs
+
+    @pytest.mark.parametrize(
+        "input",
+        [
+            ["component.property"],
+            1,
+            None,
+            "",
+            "component",
+            "component.",
+            ".property",
+            "component..property",
+            "component.property.property",
+        ],
+    )
+    @pytest.mark.xfail(reason="Validation will only be performed once legacy actions are removed")
+    def test_runtime_inputs_invalid(self, input):
+        with pytest.raises(ValidationError):
+            Action(function=action_with_one_arg(input))._transformed_inputs
+
+    def test_inputs_invalid_missing_action_attribute(self, manager_for_testing_default_output_input_prop):
+        with pytest.raises(
+            AttributeError,
+            match="Model with ID 'model-with-no-default-props' does not have implicit input properties defined. "
+            "Please specify the input explicitly as 'model-with-no-default-props.<property>'.",
+        ):
+            action = Action(function=action_with_one_arg("model-with-no-default-props"))
+            action._transformed_inputs
 
 
 class TestBuiltinRuntimeArgs:
@@ -290,9 +406,23 @@ class TestActionOutputs:
                 ["component_1.property_1", "component_2.property_2"],
                 [Output("component_1", "property_1"), Output("component_2", "property_2")],
             ),
+            (["known-model-id"], Output("known-model-id", "value")),
+            ({}, {}),
+            (
+                {"output_1": "component.property"},
+                {"output_1": Output("component", "property")},
+            ),
+            (
+                {"output_1": "component_1.property_1", "output_2": "component_2.property_2"},
+                {"output_1": Output("component_1", "property_1"), "output_2": Output("component_2", "property_2")},
+            ),
+            (
+                {"output_1": "known-model-id"},
+                {"output_1": Output("known-model-id", "value")},
+            ),
         ],
     )
-    def test_outputs_valid(self, outputs, expected_transformed_outputs):
+    def test_outputs_valid(self, outputs, expected_transformed_outputs, manager_for_testing_default_output_input_prop):
         action = Action(function=action_with_no_args(), outputs=outputs)
 
         assert action.outputs == outputs
@@ -301,15 +431,52 @@ class TestActionOutputs:
     @pytest.mark.parametrize(
         "outputs",
         [
-            [""],
-            ["component"],
-            ["component_property"],
-            ["component.property.property"],
+            ["unknown_model_id"],
+            {"output_1": "unknown_model_id"},
         ],
     )
-    def test_outputs_invalid(self, outputs):
-        with pytest.raises(ValidationError, match="String should match pattern"):
-            Action(function=action_with_no_args(), outputs=outputs)
+    def test_outputs_invalid_model_id(self, outputs):
+        with pytest.raises(
+            KeyError,
+            match="Model with ID .* not found. Please provide a valid component ID.",
+        ):
+            action = Action(function=action_with_no_args(), outputs=outputs)
+            # An error is raised when accessing _transformed_outputs which is fine because validation is then performed.
+            action._transformed_outputs
+
+    @pytest.mark.parametrize(
+        "outputs",
+        [
+            [""],
+            ["component."],
+            [".property"],
+            ["component..property"],
+            ["component.property.property"],
+            {"output_1": ""},
+            {"output_1": "component."},
+            {"output_1": ".property"},
+            {"output_1": "component..property"},
+            {"output_1": "component.property.property"},
+            {"output_1": "component.property", "output_2": ""},
+        ],
+    )
+    def test_outputs_invalid_dot_syntax(self, outputs):
+        with pytest.raises(
+            ValueError,
+            match="Invalid output format .*. Expected format is '<model_id>' or '<model_id>.<argument_name>'.",
+        ):
+            action = Action(function=action_with_no_args(), outputs=outputs)
+            # An error is raised when accessing _transformed_outputs which is fine because validation is then performed.
+            action._transformed_outputs
+
+    def test_outputs_invalid_missing_action_attribute(self, manager_for_testing_default_output_input_prop):
+        with pytest.raises(
+            AttributeError,
+            match="Model with ID 'model-with-no-default-props' does not have implicit output properties defined. "
+            "Please specify the output explicitly as 'model-with-no-default-props.<property>'.",
+        ):
+            action = Action(function=action_with_no_args(), outputs=["model-with-no-default-props"])
+            action._transformed_outputs
 
 
 class TestActionBuild:

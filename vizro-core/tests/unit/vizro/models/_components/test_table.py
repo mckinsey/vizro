@@ -2,6 +2,7 @@
 
 import re
 
+import dash_bootstrap_components as dbc
 import pytest
 from asserts import assert_component_equal
 from dash import dcc, html
@@ -9,7 +10,9 @@ from pydantic import ValidationError
 
 import vizro.models as vm
 import vizro.plotly.express as px
+from vizro import Vizro
 from vizro.managers import data_manager
+from vizro.managers._model_manager import DuplicateIDError
 from vizro.models._action._action import Action
 from vizro.tables import dash_data_table
 
@@ -32,6 +35,7 @@ class TestTableInstantiation:
         assert table.type == "table"
         assert table.figure == standard_dash_table
         assert table.actions == []
+        assert table._action_outputs == {"__default__": f"{table.id}.children"}
 
     @pytest.mark.parametrize("id", ["id_1", "id_2"])
     def test_create_table_mandatory_and_optional(self, standard_dash_table, id):
@@ -139,6 +143,42 @@ class TestPreBuildTable:
 
         assert table._input_component_id == "underlying_table_id"
 
+    def test_pre_build_duplicate_input_table_id(self):
+        dashboard = vm.Dashboard(
+            pages=[
+                vm.Page(
+                    title="Test Page",
+                    components=[
+                        vm.Table(figure=dash_data_table(id="duplicate_table_id", data_frame=px.data.gapminder())),
+                        vm.Table(figure=dash_data_table(id="duplicate_table_id", data_frame=px.data.gapminder())),
+                    ],
+                )
+            ]
+        )
+        with pytest.raises(
+            DuplicateIDError,
+            match="CapturedCallable with id=duplicate_table_id has an id that is ",
+        ):
+            Vizro().build(dashboard)
+
+    def test_pre_build_duplicate_input_table_id_and_button_id(self):
+        dashboard = vm.Dashboard(
+            pages=[
+                vm.Page(
+                    title="Test Page",
+                    components=[
+                        vm.Table(figure=dash_data_table(id="duplicate_table_id", data_frame=px.data.gapminder())),
+                        vm.Button(id="duplicate_table_id"),
+                    ],
+                )
+            ]
+        )
+        with pytest.raises(
+            DuplicateIDError,
+            match="CapturedCallable with id=duplicate_table_id has an id that is ",
+        ):
+            Vizro().build(dashboard)
+
 
 class TestBuildTable:
     def test_table_build_mandatory_only(self, standard_dash_table, gapminder):
@@ -207,13 +247,51 @@ class TestBuildTable:
         expected_table = dcc.Loading(
             html.Div(
                 children=[
-                    html.H3("Title", className="figure-title"),
+                    html.H3(["Title", None], className="figure-title"),
                     dcc.Markdown("""#### Subtitle""", className="figure-header"),
                     html.Div(
                         children=[html.Div()],
                         className="table-container",
                     ),
                     dcc.Markdown("""SOURCE: **DATA**""", className="figure-footer"),
+                ],
+                className="figure-container",
+            ),
+            color="grey",
+            parent_className="loading-container",
+            overlay_style={"visibility": "visible", "opacity": 0.3},
+        )
+
+        assert_component_equal(table, expected_table, keys_to_strip={"id"})
+
+    def test_table_build_title_info_icon(self, standard_dash_table):
+        table = vm.Table(
+            figure=standard_dash_table,
+            title="Title",
+            description=vm.Tooltip(text="Tooltip test", icon="info", id="info"),
+        )
+        table.pre_build()
+        table = table.build()
+
+        expected_description = [
+            html.Span("info", id="info-icon", className="material-symbols-outlined tooltip-icon"),
+            dbc.Tooltip(
+                children=dcc.Markdown("Tooltip test", className="card-text"),
+                id="info",
+                target="info-icon",
+                autohide=False,
+            ),
+        ]
+        expected_table = dcc.Loading(
+            html.Div(
+                children=[
+                    html.H3(["Title", *expected_description], className="figure-title"),
+                    None,
+                    html.Div(
+                        children=[html.Div()],
+                        className="table-container",
+                    ),
+                    None,
                 ],
                 className="figure-container",
             ),
