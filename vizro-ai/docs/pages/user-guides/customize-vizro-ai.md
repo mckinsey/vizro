@@ -33,7 +33,7 @@ vizro_ai = VizroAI(model="<chosen model>")
 
 === "Anthropic"
 
-    _Currently works only for `VizroAI.plot` - we are working on making it available for `VizroAI.dashboard`_
+    This currently works only for `VizroAI.plot` - we are working on making it available for `VizroAI.dashboard`.
 
     | Environment variable | Name(s)                                  |
     | -------------------- | ---------------------------------------- |
@@ -55,18 +55,22 @@ vizro_ai = VizroAI(model="<chosen model>")
 
 === "MistralAI"
 
-    _Currently works only for `VizroAI.plot` - we are working on making it available for `VizroAI.dashboard`_
+    This currently works only for `VizroAI.plot` - we are working on making it available for `VizroAI.dashboard`.
 
     | Environment variable | Name(s)            |
     | -------------------- | ------------------ |
     | API key              | `MISTRAL_API_KEY`  |
     | Base API URL         | `MISTRAL_BASE_URL` |
 
-    To use Mistral with Vizro-AI, you can either use their API, which comes with an associated cost, or you could use their models for free under the Apache 2.0 license. In that case you need to setup the model API yourself. You can check [all available Mistral models including pricing on their website](https://docs.mistral.ai/getting-started/models/models_overview). This will also explain which version the below string acronyms currently point to. Before usage, please review Mistral guidelines on risk mitigation to understand potential model limitations and best practices. [See the Mistral site for more details on responsible usage](https://help.mistral.ai/en/).
+    To use Mistral with Vizro-AI, you can either use their API, which comes with an associated cost, or you could use their models for free under the Apache 2.0 license. In the latter case you need to set up the model API yourself. [Check for available Mistral models and pricing on their website](https://docs.mistral.ai/getting-started/models/models_overview).
+
+    The documentation also explains the values to use for the following strings.
 
     - `mistral-large-latest`
     - `open-mistral-nemo`
     - `codestral-latest`
+
+    Before using Mistral, review the guidelines on risk mitigation to understand potential model limitations and best practices. [See the Mistral site for more details on responsible usage](https://help.mistral.ai/en/).
 
     Install `vizro_ai` with optional `langchain_mistralai`:
 
