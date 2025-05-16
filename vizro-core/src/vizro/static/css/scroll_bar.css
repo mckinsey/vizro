@@ -12,6 +12,11 @@
   background: var(--fill-secondary);
 }
 
+/* Removes the white square in the corner when an element has both vertical and horizontal scrollbars */
+::-webkit-scrollbar-corner {
+  background: transparent;
+}
+
 #left-main::-webkit-scrollbar-thumb {
   border-color: var(--surfaces-bg02);
 }
