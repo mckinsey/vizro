@@ -13,6 +13,7 @@ table_page = vm.Page(
             title=cnst.TABLE_CONTAINER,
             components=[
                 vm.Table(
+                    description=cnst.TABLE_TOOLTIP_TEXT,
                     id=cnst.TABLE_ID,
                     title="Table Country",
                     figure=dash_data_table(

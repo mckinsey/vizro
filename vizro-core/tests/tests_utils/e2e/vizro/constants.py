@@ -86,6 +86,8 @@ TABLE_AG_GRID_CONTAINER = "table_ag_grid_container"
 RADIOITEMS_AGGRID_FILTER = "radioitems_agdrid_filter"
 CHECKLIST_AGGRID_FILTER = "checklist_agdrid_filter"
 RANGESLIDER_AGGRID_FILTER = "rangeslider_agdrid_filter"
+AG_GRID_TOOLTIP_TEXT = "AgGrid tooltip"
+AG_GRID_TOOLTIP_ICON = "info"
 
 TABLE_AG_GRID_INTERACTIONS_PAGE = "table-ag-grid-inter-page"
 TABLE_AG_GRID_INTERACTIONS_ID = "ag grid inter id"
@@ -97,6 +99,8 @@ TABLE_CONTAINER = "table container"
 RADIOITEMS_TABLE_FILTER = "radioitems_table_filter"
 CHECKLIST_TABLE_FILTER = "checklist_table_filter"
 RANGESLIDER_TABLE_FILTER = "rangeslider_table_filter"
+TABLE_TOOLTIP_TEXT = "Table tooltip"
+TABLE_TOOLTIP_ICON = "info"
 
 TABLE_INTERACTIONS_PAGE = "table-inter-page"
 TABLE_INTERACTIONS_ID = "interactions-123_table"
@@ -176,6 +180,13 @@ RANGESLIDER_TOOLTIP_TEXT = "Range Slider deserves proper text here, in future, a
 RANGESLIDER_TOOLTIP_ICON = "rebase"
 DATEPICKER_TOOLTIP_TEXT = "Datepicker, show me your tooltip, please!"
 DATEPICKER_TOOLTIP_ICON = "deployed_code"
+PAGE_TOOLTIP_TEXT = "Page tooltip"
+PAGE_TOOLTIP_ICON = "view_timeline"
+CONTAINER_TOOLTIP_TEXT = "Container tooltip"
+CONTAINER_TOOLTIP_ICON = "width_normal"
+GRAPH_TOOLTIP_TEXT = "Graph tooltip"
+GRAPH_TOOLTIP_ICON = "resize"
+
 
 COLLAPSIBLE_CONTAINERS_GRID = "collapsible-containers-grid-layout"
 
