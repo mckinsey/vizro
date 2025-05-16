@@ -61,6 +61,8 @@ jobs:
           summary-report: true
           flaky-rate-report: true
           previous-results-max: 100
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         if: always()
 
       - name: Create artifacts and slack notifications
