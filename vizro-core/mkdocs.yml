@@ -120,7 +120,7 @@ markdown_extensions:
             kwds:
               type: vizro
               requirements: |
-                vizro==0.1.38
+                vizro==0.1.39
   - pymdownx.tabbed:
       alternate_style: true
   - pymdownx.mark
