@@ -85,7 +85,12 @@ class Graph(VizroBaseModel):
 
     @property
     def _action_outputs(self) -> dict[str, _IdProperty]:
-        return {"__default__": f"{self.id}.figure"}
+        return {
+            "__default__": f"{self.id}.figure",
+            "title": f"{self.id}_title.children",
+            "header": f"{self.id}_header.children",
+            "footer": f"{self.id}_footer.children",
+        }
 
     # Convenience wrapper/syntactic sugar.
     def __call__(self, **kwargs):

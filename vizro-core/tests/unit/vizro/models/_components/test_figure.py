@@ -29,7 +29,10 @@ class TestFigureInstantiation:
         assert hasattr(figure, "id")
         assert figure.type == "figure"
         assert figure.figure == standard_kpi_card
-        assert figure._action_outputs == {"__default__": f"{figure.id}.children"}
+        assert figure._action_outputs == {
+            "__default__": f"{figure.id}.children",
+            "figure": f"{figure.id}.children",
+        }
 
     def test_captured_callable_invalid(self, standard_go_chart):
         with pytest.raises(

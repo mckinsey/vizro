@@ -1,6 +1,7 @@
 import logging
 from typing import Annotated, Literal, Optional
 
+import dash_ag_grid as dag
 import pandas as pd
 from dash import ClientsideFunction, Input, Output, State, clientside_callback, dcc, html
 from pydantic import AfterValidator, BeforeValidator, Field, PrivateAttr, field_validator
@@ -19,6 +20,11 @@ from vizro.models._tooltip import coerce_str_to_tooltip
 from vizro.models.types import ActionType, CapturedCallable, _IdProperty, validate_captured_callable
 
 logger = logging.getLogger(__name__)
+
+# A set of properties unique to dag.AgGrid (inner build object) that are not present in html.Div (outer build wrapper).
+# Creates _action_outputs and _action_inputs for accessing inner dag.AgGrid properties via the outer vm.AgGrid ID.
+# Example: "outer-ag-grid-id.cellClicked" is transformed to "inner-ag-grid-id.cellClicked".
+DAG_AG_GRID_PROPERTIES = set(dag.AgGrid().available_properties) - set(html.Div().available_properties)
 
 
 class AgGrid(VizroBaseModel):
@@ -82,7 +88,23 @@ class AgGrid(VizroBaseModel):
 
     @property
     def _action_outputs(self) -> dict[str, _IdProperty]:
-        return {"__default__": f"{self.id}.children"}
+        # TODO-AV2 E: Implement _action_trigger where makes sense.
+        #  For the AgGrid the mapping could look like: {"__default__": f"{self._input_component_id}.cellClicked"}
+        return {
+            "__default__": f"{self.id}.children",
+            "figure": f"{self.id}.children",
+            "title": f"{self.id}_title.children",
+            "header": f"{self.id}_header.children",
+            "footer": f"{self.id}_footer.children",
+            **{ag_grid_prop: f"{self._input_component_id}.{ag_grid_prop}" for ag_grid_prop in DAG_AG_GRID_PROPERTIES},
+        }
+
+    @property
+    def _action_inputs(self) -> dict[str, _IdProperty]:
+        return {
+            "__default__": f"{self.id}.children",
+            **{ag_grid_prop: f"{self._input_component_id}.{ag_grid_prop}" for ag_grid_prop in DAG_AG_GRID_PROPERTIES},
+        }
 
     # Convenience wrapper/syntactic sugar.
     def __call__(self, **kwargs):

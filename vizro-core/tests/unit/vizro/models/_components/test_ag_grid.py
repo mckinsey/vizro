@@ -14,6 +14,7 @@ from vizro import Vizro
 from vizro.managers import data_manager
 from vizro.managers._model_manager import DuplicateIDError
 from vizro.models._action._action import Action
+from vizro.models._components.ag_grid import DAG_AG_GRID_PROPERTIES
 from vizro.tables import dash_ag_grid
 
 
@@ -36,11 +37,12 @@ class TestAgGridInstantiation:
     def test_create_graph_mandatory_only(self, standard_ag_grid):
         ag_grid = vm.AgGrid(figure=standard_ag_grid)
 
+        # Properties ag_grid._action_outputs and ag_grid._action_inputs are tested in the TestAttributesAgGrid class
+        # as they output depends on the self._input_component_id that's created in the pre_build.
         assert hasattr(ag_grid, "id")
         assert ag_grid.type == "ag_grid"
         assert ag_grid.figure == standard_ag_grid
         assert ag_grid.actions == []
-        assert ag_grid._action_outputs == {"__default__": f"{ag_grid.id}.children"}
 
     @pytest.mark.parametrize("id", ["id_1", "id_2"])
     def test_create_ag_grid_mandatory_and_optional(self, standard_ag_grid, id):
@@ -122,6 +124,28 @@ class TestAttributesAgGrid:
         ag_grid.pre_build()
         assert hasattr(ag_grid, "_filter_interaction_input")
         assert "modelID" in ag_grid._filter_interaction_input
+
+    def test_ag_grid_action_outputs(self, ag_grid_with_id):
+        ag_grid = vm.AgGrid(id="ag_grid_id", figure=ag_grid_with_id, title="Gapminder")
+        ag_grid.pre_build()
+
+        assert ag_grid._action_outputs == {
+            "__default__": "ag_grid_id.children",
+            "figure": "ag_grid_id.children",
+            "title": "ag_grid_id_title.children",
+            "header": "ag_grid_id_header.children",
+            "footer": "ag_grid_id_footer.children",
+            **{ag_grid_prop: f"underlying_ag_grid_id.{ag_grid_prop}" for ag_grid_prop in DAG_AG_GRID_PROPERTIES},
+        }
+
+    def test_ag_grid_action_inputs(self, ag_grid_with_id):
+        ag_grid = vm.AgGrid(id="ag_grid_id", figure=ag_grid_with_id, title="Gapminder")
+        ag_grid.pre_build()
+
+        assert ag_grid._action_inputs == {
+            "__default__": "ag_grid_id.children",
+            **{ag_grid_prop: f"underlying_ag_grid_id.{ag_grid_prop}" for ag_grid_prop in DAG_AG_GRID_PROPERTIES},
+        }
 
 
 class TestProcessAgGridDataFrame:

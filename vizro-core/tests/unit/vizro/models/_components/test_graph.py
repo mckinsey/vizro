@@ -42,7 +42,12 @@ class TestGraphInstantiation:
         assert graph.type == "graph"
         assert graph.figure == standard_px_chart._captured_callable
         assert graph.actions == []
-        assert graph._action_outputs == {"__default__": f"{graph.id}.figure"}
+        assert graph._action_outputs == {
+            "__default__": f"{graph.id}.figure",
+            "title": f"{graph.id}_title.children",
+            "header": f"{graph.id}_header.children",
+            "footer": f"{graph.id}_footer.children",
+        }
 
     @pytest.mark.parametrize("id", ["id_1", "id_2"])
     def test_create_graph_mandatory_and_optional(self, standard_px_chart, id):

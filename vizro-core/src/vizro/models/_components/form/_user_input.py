@@ -38,7 +38,10 @@ class UserInput(VizroBaseModel):
 
     @property
     def _action_outputs(self) -> dict[str, _IdProperty]:
-        return {"__default__": f"{self.id}.value"}
+        return {
+            "__default__": f"{self.id}.value",
+            "title": f"{self.id}_title.children",
+        }
 
     @property
     def _action_inputs(self) -> dict[str, _IdProperty]:
@@ -48,7 +51,7 @@ class UserInput(VizroBaseModel):
     def build(self):
         return html.Div(
             children=[
-                dbc.Label(children=self.title, html_for=self.id) if self.title else None,
+                dbc.Label(id=f"{self.id}_title", children=self.title, html_for=self.id) if self.title else None,
                 dbc.Input(
                     id=self.id,
                     placeholder=self.placeholder,

@@ -50,7 +50,10 @@ class Card(VizroBaseModel):
 
     @property
     def _action_outputs(self) -> dict[str, _IdProperty]:
-        return {"__default__": f"{self.id}.children"}
+        return {
+            "__default__": f"{self.id}.children",
+            "text": f"{self.id}.children",
+        }
 
     @_log_call
     def build(self):

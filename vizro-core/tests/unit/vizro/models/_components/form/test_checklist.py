@@ -24,7 +24,10 @@ class TestChecklistInstantiation:
         assert checklist.title == ""
         assert checklist.description is None
         assert checklist.actions == []
-        assert checklist._action_outputs == {"__default__": f"{checklist.id}.value"}
+        assert checklist._action_outputs == {
+            "__default__": f"{checklist.id}.value",
+            "title": f"{checklist.id}_title.children",
+        }
         assert checklist._action_inputs == {"__default__": f"{checklist.id}.value"}
 
     def test_create_checklist_mandatory_and_optional(self):
@@ -39,6 +42,12 @@ class TestChecklistInstantiation:
         assert checklist.title == "Title"
         assert checklist.actions == []
         assert isinstance(checklist.description, Tooltip)
+        assert checklist._action_outputs == {
+            "__default__": f"{checklist.id}.value",
+            "title": f"{checklist.id}_title.children",
+            "description": f"{checklist.description.id}.children",
+        }
+        assert checklist._action_inputs == {"__default__": f"{checklist.id}.value"}
 
     @pytest.mark.parametrize(
         "test_options, expected",
@@ -133,7 +142,7 @@ class TestChecklistBuild:
         checklist = Checklist(id="checklist_id", options=["A", "B", "C"], title="Title").build()
         expected_checklist = html.Fieldset(
             [
-                html.Legend(["Title", None], className="form-label"),
+                html.Legend([html.Div("Title", id="checklist_id_title"), None], className="form-label"),
                 dbc.Checklist(
                     id="checklist_id",
                     options=["ALL", "A", "B", "C"],
@@ -151,7 +160,7 @@ class TestChecklistBuild:
             id="checklist_id",
             options=["A", "B", "C"],
             value=["A"],
-            title="Test title",
+            title="Title",
             extra={
                 "switch": True,
                 "inline": True,
@@ -161,7 +170,7 @@ class TestChecklistBuild:
 
         expected_checklist = html.Fieldset(
             [
-                html.Legend(["Test title", None], className="form-label"),
+                html.Legend([html.Div("Title", id="checklist_id_title"), None], className="form-label"),
                 dbc.Checklist(
                     id="overridden_id",
                     options=["ALL", "A", "B", "C"],
@@ -180,7 +189,7 @@ class TestChecklistBuild:
         checklist = Checklist(
             options=["A", "B", "C"],
             value=["A"],
-            title="Test title",
+            title="Title",
             description=Tooltip(text="Test description", icon="info", id="info"),
         ).build()
 
@@ -195,7 +204,9 @@ class TestChecklistBuild:
         ]
         expected_checklist = html.Fieldset(
             [
-                html.Legend(["Test title", *expected_description], className="form-label"),
+                html.Legend(
+                    [html.Div("Title", id="checklist_id_title"), *expected_description], className="form-label"
+                ),
                 dbc.Checklist(
                     options=["ALL", "A", "B", "C"],
                     value=["A"],
