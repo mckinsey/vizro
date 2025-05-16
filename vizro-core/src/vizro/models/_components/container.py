@@ -12,7 +12,7 @@ from vizro.models import Tooltip, VizroBaseModel
 from vizro.models._grid import set_layout
 from vizro.models._models_utils import _build_inner_layout, _log_call, check_captured_callable_model
 from vizro.models._tooltip import coerce_str_to_tooltip
-from vizro.models.types import ComponentType, LayoutType
+from vizro.models.types import ComponentType, LayoutType, _IdProperty
 
 
 # TODO: this could be done with default_factory once we bump to pydantic>=2.10.0.
@@ -97,6 +97,14 @@ class Container(VizroBaseModel):
         ]
     ]
 
+    @property
+    def _action_outputs(self) -> dict[str, _IdProperty]:
+        return {
+            "__default__": f"{self.id}.value",
+            "title": f"{self.id}_title.children",
+            **({"description": f"{self.description.id}.children"} if self.description else {}),
+        }
+
     @_log_call
     def build(self):
         # TODO: TBD on how to encode 'elevated', as box-shadows are not visible on a dark theme
@@ -119,7 +127,7 @@ class Container(VizroBaseModel):
                     Output(f"{self.id}_icon", "style"),
                     Output(f"{self.id}_tooltip", "children"),
                 ],
-                inputs=[Input(f"{self.id}_title", "n_clicks"), State(f"{self.id}_collapse", "is_open")],
+                inputs=[Input(f"{self.id}_title_content", "n_clicks"), State(f"{self.id}_collapse", "is_open")],
                 prevent_initial_call=True,
             )
 
@@ -158,7 +166,12 @@ class Container(VizroBaseModel):
         """Builds and returns the container title, including an optional icon and tooltip if collapsed."""
         description = self.description.build().children if self.description else [None]
 
-        title_content = [html.Div([self.title, *description], className="inner-container-title")]
+        title_content = [
+            html.Div(
+                [html.Div(id=f"{self.id}_title", children=self.title), *description], className="inner-container-title"
+            )
+        ]
+
         if self.collapsed is not None:
             # collapse_container is not run when page is initially loaded, so we set the content correctly conditional
             # on self.collapsed upfront. This prevents the up/down arrow rotating on in initial load.
@@ -180,5 +193,5 @@ class Container(VizroBaseModel):
         return html.H3(
             children=title_content,
             className="container-title-collapse" if self.collapsed is not None else "container-title",
-            id=f"{self.id}_title",
+            id=f"{self.id}_title_content",
         )

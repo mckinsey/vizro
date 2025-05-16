@@ -62,7 +62,7 @@ page_table_of_contents = vm.Page(
                     ],
                     data=[
                         ["Form", "", "", "", ""],
-                        ["Container", "", "", "", ""],
+                        ["Container", "", "", "title, description", ""],
                         ["Figure", "", "children", "figure", ""],
                         [
                             "AgGrid",
@@ -282,6 +282,35 @@ page_ag_grid_underlying_id_shortcuts = vm.Page(
 )
 
 
+# ======= Container title/description =======
+page_container_title_description = vm.Page(
+    title="Container title/description",
+    components=[
+        vm.Container(
+            id="container-id",
+            title="Click button to update me",
+            description="Click button to update me",
+            components=[
+                vm.Text(text="Text component within the container. Blah blah..."),
+            ],
+        )
+    ],
+    controls=[
+        vm.Button(
+            id="trigger-container-title-description-button-id",
+            actions=[
+                vm.Action(
+                    function=action_return_text("trigger-container-title-description-button-id.n_clicks"),
+                    outputs=[
+                        "container-id.title",
+                        "container-id.description",
+                    ],
+                )
+            ],
+        ),
+    ],
+)
+
 # ======= Card/Text Components =======
 
 page_card_text_components = vm.Page(
@@ -445,6 +474,7 @@ dashboard = vm.Dashboard(
         page_figures_title_header_footer,
         page_figures_figures,
         page_ag_grid_underlying_id_shortcuts,
+        page_container_title_description,
         page_card_text_components,
         page_text_area_user_input_components,
         page_form_components,
