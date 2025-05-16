@@ -72,5 +72,3 @@ pip install -U vizro
 
     - [VS Code plugin](https://docs.pydantic.dev/latest/integrations/visual_studio_code/)
     - [PyCharm plugin](https://docs.pydantic.dev/latest/integrations/pycharm/)
-
-![logo](../../assets/user_guides/install/logo_watermark_extended.svg){width="250"}
