@@ -59,8 +59,12 @@ jobs:
         with:
           report-path: "./.ctrf/*.json"
           summary-report: true
+          test-report: true
+          failed-report: true
           flaky-rate-report: true
           previous-results-max: 100
+          previous-results-report: true
+          upload-artifact: true
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         if: always()
