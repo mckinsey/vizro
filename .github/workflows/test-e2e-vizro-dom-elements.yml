@@ -58,6 +58,9 @@ jobs:
         uses: ctrf-io/github-test-reporter@v1
         with:
           report-path: "./.ctrf/*.json"
+          summary-report: true
+          flaky-rate-report: true
+          previous-results-max: 100
         if: always()
 
       - name: Create artifacts and slack notifications
