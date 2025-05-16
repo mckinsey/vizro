@@ -17,7 +17,7 @@ See the fragment files in the [changelog.d directory](https://github.com/mckinse
 
 ## Added
 
-- Add `description` argument to `Dashboard`, `Page`, `Container`, `Graph`, `AgGrid` and `Table` to enable tooltips in titles. See the [user guide on tooltips for `Container` for an example](https://vizro.readthedocs.io/en/stable/pages/user-guides/container/#add-a-tooltip). ([#1144](https://github.com/mckinsey/vizro/pull/1144))
+- Add `description` argument to `Dashboard`, `Page`, `Container`, `Graph`, `AgGrid` and `Table` to enable tooltips in titles. See this [user guide](https://vizro.readthedocs.io/en/stable/pages/user-guides/container/#add-a-tooltip) for an example. ([#1144](https://github.com/mckinsey/vizro/pull/1144))
 
 - Enable `title` inside `Tabs`. ([#1169](https://github.com/mckinsey/vizro/pull/1169))
 
