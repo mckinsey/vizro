@@ -35,9 +35,9 @@
   display: flex;
   flex-direction: column;
   gap: 1.25rem;
+  overflow: auto;
   padding: 24px;
   width: 100%;
-  overflow: auto;
 }
 
 #right-header {
