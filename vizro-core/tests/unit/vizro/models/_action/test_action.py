@@ -66,10 +66,7 @@ class TestLegacyActionInputs:
             (action_with_no_args, [], []),
             (action_with_one_arg, ["component.property"], [State("component", "property")]),
             (action_with_one_arg, ["known_ag_grid_id"], [State("known_ag_grid_id", "children")]),
-            (
-                action_with_one_arg, 
-                ["known_ag_grid_id.cellClicked"], 
-                [State("underlying_ag_grid_id", "cellClicked")]),
+            (action_with_one_arg, ["known_ag_grid_id.cellClicked"], [State("underlying_ag_grid_id", "cellClicked")]),
             (
                 action_with_two_args,
                 ["component_1.property_1", "component_2.property_2"],
@@ -337,15 +334,11 @@ class TestActionInputs:
         [
             (action_with_no_args, {}, {}),
             (action_with_one_arg, {"arg_1": "component.property"}, {"arg_1": State("component", "property")}),
-            (
-                action_with_one_arg,
-                {"arg_1": "known_ag_grid_id"},
-                {"arg_1": State("known_ag_grid_id", "children")}
-            ),
+            (action_with_one_arg, {"arg_1": "known_ag_grid_id"}, {"arg_1": State("known_ag_grid_id", "children")}),
             (
                 action_with_one_arg,
                 {"arg_1": "known_ag_grid_id.cellClicked"},
-                {"arg_1": State("underlying_ag_grid_id", "cellClicked")}
+                {"arg_1": State("underlying_ag_grid_id", "cellClicked")},
             ),
             (
                 action_with_two_args,
