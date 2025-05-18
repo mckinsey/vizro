@@ -37,20 +37,69 @@ class TestAgGridInstantiation:
     def test_create_graph_mandatory_only(self, standard_ag_grid):
         ag_grid = vm.AgGrid(figure=standard_ag_grid)
 
-        # Properties ag_grid._action_outputs and ag_grid._action_inputs are tested in the TestAttributesAgGrid class
-        # as they output depends on the self._input_component_id that's created in the pre_build.
         assert hasattr(ag_grid, "id")
         assert ag_grid.type == "ag_grid"
         assert ag_grid.figure == standard_ag_grid
         assert ag_grid.actions == []
+        assert ag_grid.title == ""
+        assert ag_grid.header == ""
+        assert ag_grid.footer == ""
+        assert ag_grid.description is None
+        assert hasattr(ag_grid, "_input_component_id")
+        assert ag_grid._action_outputs == {
+            "__default__": f"{ag_grid.id}.children",
+            "figure": f"{ag_grid.id}.children",
+            "title": f"{ag_grid.id}_title.children",
+            "header": f"{ag_grid.id}_header.children",
+            "footer": f"{ag_grid.id}_footer.children",
+            **{
+                ag_grid_prop: f"{ag_grid._input_component_id}.{ag_grid_prop}" for ag_grid_prop in DAG_AG_GRID_PROPERTIES
+            },
+        }
+        assert ag_grid._action_inputs == {
+            "__default__": f"{ag_grid.id}.children",
+            **{
+                ag_grid_prop: f"{ag_grid._input_component_id}.{ag_grid_prop}" for ag_grid_prop in DAG_AG_GRID_PROPERTIES
+            },
+        }
 
-    @pytest.mark.parametrize("id", ["id_1", "id_2"])
-    def test_create_ag_grid_mandatory_and_optional(self, standard_ag_grid, id):
-        ag_grid = vm.AgGrid(figure=standard_ag_grid, id=id)
+    def test_create_ag_grid_mandatory_and_optional(self, ag_grid_with_id):
+        ag_grid = vm.AgGrid(
+            id="ag-grid-id",
+            figure=ag_grid_with_id,
+            title="Title",
+            description="Test description",
+            header="Header",
+            footer="Footer",
+        )
 
-        assert ag_grid.id == id
+        assert ag_grid.id == "ag-grid-id"
         assert ag_grid.type == "ag_grid"
-        assert ag_grid.figure == standard_ag_grid
+        assert ag_grid.figure == ag_grid_with_id
+        assert ag_grid.actions == []
+        assert ag_grid.title == "Title"
+        assert ag_grid.header == "Header"
+        assert ag_grid.footer == "Footer"
+        assert isinstance(ag_grid.description, vm.Tooltip)
+        assert ag_grid._input_component_id == "underlying_ag_grid_id"
+        assert ag_grid._action_outputs == {
+            "__default__": "ag-grid-id.children",
+            "figure": "ag-grid-id.children",
+            "title": "ag-grid-id_title.children",
+            "header": "ag-grid-id_header.children",
+            "footer": "ag-grid-id_footer.children",
+            "description": f"{ag_grid.description.id}.children",
+            **{ag_grid_prop: f"underlying_ag_grid_id.{ag_grid_prop}" for ag_grid_prop in DAG_AG_GRID_PROPERTIES},
+        }
+        assert ag_grid._action_inputs == {
+            "__default__": "ag-grid-id.children",
+            **{ag_grid_prop: f"underlying_ag_grid_id.{ag_grid_prop}" for ag_grid_prop in DAG_AG_GRID_PROPERTIES},
+        }
+
+    def test_ag_grid_filter_interaction_attributes(self, ag_grid_with_id):
+        ag_grid = vm.AgGrid(figure=ag_grid_with_id, title="Gapminder")
+        assert hasattr(ag_grid, "_filter_interaction_input")
+        assert "modelID" in ag_grid._filter_interaction_input
 
     def test_mandatory_figure_missing(self):
         with pytest.raises(ValidationError, match="Field required"):
@@ -115,37 +164,6 @@ class TestDunderMethodsAgGrid:
         ag_grid.pre_build()
         # ag_grid() is the same as ag_grid.__call__()
         assert ag_grid().id == "underlying_table_id"
-
-
-class TestAttributesAgGrid:
-    # Testing at this low implementation level as mocking callback contexts skips checking for creation of these objects
-    def test_ag_grid_filter_interaction_attributes(self, ag_grid_with_id):
-        ag_grid = vm.AgGrid(figure=ag_grid_with_id, title="Gapminder")
-        ag_grid.pre_build()
-        assert hasattr(ag_grid, "_filter_interaction_input")
-        assert "modelID" in ag_grid._filter_interaction_input
-
-    def test_ag_grid_action_outputs(self, ag_grid_with_id):
-        ag_grid = vm.AgGrid(id="ag_grid_id", figure=ag_grid_with_id, title="Gapminder")
-        ag_grid.pre_build()
-
-        assert ag_grid._action_outputs == {
-            "__default__": "ag_grid_id.children",
-            "figure": "ag_grid_id.children",
-            "title": "ag_grid_id_title.children",
-            "header": "ag_grid_id_header.children",
-            "footer": "ag_grid_id_footer.children",
-            **{ag_grid_prop: f"underlying_ag_grid_id.{ag_grid_prop}" for ag_grid_prop in DAG_AG_GRID_PROPERTIES},
-        }
-
-    def test_ag_grid_action_inputs(self, ag_grid_with_id):
-        ag_grid = vm.AgGrid(id="ag_grid_id", figure=ag_grid_with_id, title="Gapminder")
-        ag_grid.pre_build()
-
-        assert ag_grid._action_inputs == {
-            "__default__": "ag_grid_id.children",
-            **{ag_grid_prop: f"underlying_ag_grid_id.{ag_grid_prop}" for ag_grid_prop in DAG_AG_GRID_PROPERTIES},
-        }
 
 
 class TestProcessAgGridDataFrame:

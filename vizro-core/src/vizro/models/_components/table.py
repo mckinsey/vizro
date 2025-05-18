@@ -82,6 +82,10 @@ class Table(VizroBaseModel):
     # Component properties for actions and interactions
     _validate_figure = field_validator("figure", mode="before")(validate_captured_callable)
 
+    def model_post_init(self, context) -> None:
+        super().model_post_init(context)
+        self._input_component_id = self.figure._arguments.get("id", f"__input_{self.id}")
+
     @property
     def _action_outputs(self) -> dict[str, _IdProperty]:
         return {
@@ -154,9 +158,7 @@ class Table(VizroBaseModel):
 
     @_log_call
     def pre_build(self):
-        self._input_component_id = self.figure._arguments.get("id", f"__input_{self.id}")
         # Check if any other Vizro model or CapturedCallable has the same input component ID
-
         all_input_component_ids = {  # type: ignore[var-annotated]
             model._input_component_id
             for model in model_manager._get_models()
