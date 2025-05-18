@@ -25,6 +25,7 @@ from vizro.models import Filter, Tooltip, VizroBaseModel
 from vizro.models._action._actions_chain import ActionsChain, Trigger
 from vizro.models._grid import set_layout
 from vizro.models._models_utils import _build_inner_layout, _log_call, check_captured_callable_model
+from vizro.models.types import _IdProperty
 
 from ._tooltip import coerce_str_to_tooltip
 from .types import ComponentType, ControlType, FigureType, LayoutType
@@ -118,6 +119,14 @@ class Page(VizroBaseModel):
             result.pop("id", None)
             return result
         return result
+
+    @property
+    def _action_outputs(self) -> dict[str, _IdProperty]:
+        return {
+            "__default__": f"{self.id}.value",
+            "title": f"{self.id}_title.children",
+            **({"description": f"{self.description.id}.children"} if self.description else {}),
+        }
 
     @_log_call
     def pre_build(self):

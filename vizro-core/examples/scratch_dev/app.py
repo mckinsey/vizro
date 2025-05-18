@@ -68,42 +68,30 @@ page_table_of_contents = vm.Page(
                             "AgGrid",
                             "",
                             "children",
-                            "title, header, footer, figure",
+                            "title, description, header, footer, figure",
                             "All 'outer-ID.property' are mapped to 'inner-ID.property'",
                         ],
-                        ["Table", "", "children", "title, header, footer, figure", ""],
+                        ["Table", "", "children", "title, description, header, footer, figure", ""],
                         [
                             "Graph",
                             "",
                             "figure",
-                            "title, header, footer",
+                            "title, description, header, footer",
                             "figure - works even without explicit mapping",
                         ],
                         ["Button", "", "Not sure so don't do for now", "", ""],
                         ["Card", "", "children", "text", ""],
                         ["Text", "", "children", "text", ""],
                         ["Alert", "", "", "", ""],
-                        [
-                            "TextArea",
-                            "value",
-                            "value",
-                            "title, * - description",
-                            "* - description is not the model field",
-                        ],
-                        [
-                            "UserInput",
-                            "value",
-                            "value",
-                            "title, * - description",
-                            "* - description is not the model field",
-                        ],
+                        ["TextArea", "value", "value", "title, description", ""],
+                        ["UserInput", "value", "value", "title, description", ""],
                         ["Checklist", "value", "value", "title, description", ""],
                         ["DatePicker", "value", "value", "title, description", ""],
                         ["Dropdown", "value", "value", "title, description", ""],
                         ["RadioItems", "value", "value", "title, description", ""],
                         ["RangeSlider", "value", "value", "title, description", ""],
                         ["Slider", "value", "value", "title, description", ""],
-                        ["Tabs", "", "", "", ""],
+                        ["Tabs", "", "", "title, description", ""],
                         ["Filter", "maybe in future", "children", "", ""],
                         ["Parameter", "maybe in future", "", "", ""],
                         ["Dashboard", "", "", "", ""],
@@ -113,7 +101,7 @@ page_table_of_contents = vm.Page(
                         ["NavBar", "", "", "", ""],
                         ["NavLink", "", "", "", ""],
                         ["Navigation", "", "", "", ""],
-                        ["Page", "", "", "", ""],
+                        ["Page", "", "", "title, description", ""],
                         ["Tooltip", "", "", "", ""],
                     ],
                 ),
@@ -127,12 +115,13 @@ page_table_of_contents = vm.Page(
 
 
 page_figures_title_header_footer = vm.Page(
-    title="Graph/AgGrid/Table - title/header/footer",
+    title="Graph/AgGrid/Table - title/description/header/footer",
     layout=vm.Grid(grid=[[0, 1, 2]]),
     components=[
         vm.Graph(
             id="graph-id",
             title="Click button to update me",
+            description="Click button to update me",
             header="Click button to update me",
             footer="Click button to update me",
             figure=px.scatter(df, x="sepal_width", y="sepal_length", color="species"),
@@ -140,6 +129,7 @@ page_figures_title_header_footer = vm.Page(
         vm.AgGrid(
             id="aggrid-id",
             title="Click button to update me",
+            description="Click button to update me",
             header="Click button to update me",
             footer="Click button to update me",
             figure=dash_ag_grid(df),
@@ -147,6 +137,7 @@ page_figures_title_header_footer = vm.Page(
         vm.Table(
             id="table-id",
             title="Click button to update me",
+            description="Click button to update me",
             header="Click button to update me",
             footer="Click button to update me",
             figure=dash_data_table(df),
@@ -161,14 +152,17 @@ page_figures_title_header_footer = vm.Page(
                     outputs=[
                         # Graph
                         "graph-id.title",
+                        "graph-id.description",
                         "graph-id.header",
                         "graph-id.footer",
                         # AgGrid
                         "aggrid-id.title",
+                        "aggrid-id.description",
                         "aggrid-id.header",
                         "aggrid-id.footer",
                         # Table
                         "table-id.title",
+                        "table-id.description",
                         "table-id.header",
                         "table-id.footer",
                     ],
@@ -284,16 +278,30 @@ page_ag_grid_underlying_id_shortcuts = vm.Page(
 
 # ======= Container title/description =======
 page_container_title_description = vm.Page(
-    title="Container title/description",
+    title="Page Container Tabs title/description",
+    description="Click button to update me",
     components=[
         vm.Container(
             id="container-id",
             title="Click button to update me",
             description="Click button to update me",
-            components=[
-                vm.Text(text="Text component within the container. Blah blah..."),
+            components=[vm.Text(text="Text component within the container. Blah blah...")],
+        ),
+        vm.Tabs(
+            id="tabs-id",
+            title="Click button to update me",
+            description="Click button to update me",
+            tabs=[
+                vm.Container(
+                    title="Container 1",
+                    components=[vm.Text(text="Text component within the container. Blah blah...")],
+                ),
+                vm.Container(
+                    title="Container 2",
+                    components=[vm.Text(text="Text component within the container. Blah blah...")],
+                ),
             ],
-        )
+        ),
     ],
     controls=[
         vm.Button(
@@ -302,8 +310,12 @@ page_container_title_description = vm.Page(
                 vm.Action(
                     function=action_return_text("trigger-container-title-description-button-id.n_clicks"),
                     outputs=[
+                        "Page Container Tabs title/description.title",
+                        "Page Container Tabs title/description.description",
                         "container-id.title",
                         "container-id.description",
+                        "tabs-id.title",
+                        "tabs-id.description",
                     ],
                 )
             ],
@@ -353,15 +365,17 @@ vm.Page.add_type("components", vm.TextArea)
 vm.Page.add_type("components", vm.UserInput)
 
 page_text_area_user_input_components = vm.Page(
-    title="TextArea/UserInput title",
+    title="TextArea/UserInput title/description",
     components=[
         vm.TextArea(
             id="text-area-id",
             title="Click button to update me",
+            description="Click button to update me",
         ),
         vm.UserInput(
             id="user-input-id",
             title="Click button to update me",
+            description="Click button to update me",
         ),
     ],
     controls=[
@@ -372,7 +386,9 @@ page_text_area_user_input_components = vm.Page(
                     function=action_return_text("trigger-text-area-user-input-button-id.n_clicks"),
                     outputs=[
                         "text-area-id.title",
+                        "text-area-id.description",
                         "user-input-id.title",
+                        "user-input-id.description",
                     ],
                 )
             ],

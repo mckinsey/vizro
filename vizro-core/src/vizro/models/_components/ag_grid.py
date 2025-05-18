@@ -96,6 +96,7 @@ class AgGrid(VizroBaseModel):
             "title": f"{self.id}_title.children",
             "header": f"{self.id}_header.children",
             "footer": f"{self.id}_footer.children",
+            **({"description": f"{self.description.id}.children"} if self.description else {}),
             **{ag_grid_prop: f"{self._input_component_id}.{ag_grid_prop}" for ag_grid_prop in DAG_AG_GRID_PROPERTIES},
         }
 
@@ -189,7 +190,7 @@ class AgGrid(VizroBaseModel):
         return dcc.Loading(
             children=html.Div(
                 children=[
-                    html.H3([self.title, *description], className="figure-title", id=f"{self.id}_title")
+                    html.H3([html.Div(self.title, id=f"{self.id}_title"), *description], className="figure-title")
                     if self.title
                     else None,
                     dcc.Markdown(self.header, className="figure-header", id=f"{self.id}_header")

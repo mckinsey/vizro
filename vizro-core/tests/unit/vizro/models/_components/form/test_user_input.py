@@ -2,8 +2,9 @@
 
 import dash_bootstrap_components as dbc
 from asserts import assert_component_equal
-from dash import html
+from dash import dcc, html
 
+import vizro.models as vm
 from vizro.models._components.form._user_input import UserInput
 
 
@@ -41,7 +42,43 @@ class TestUserInputBuild:
         user_input = UserInput(id="user-input-id", title="Title", placeholder="Placeholder").build()
         expected_user_input = html.Div(
             [
-                dbc.Label("Title", id="user-input-id_title", html_for="user-input-id"),
+                dbc.Label([html.Div("Title", id="user-input-id_title"), None], html_for="user-input-id"),
+                dbc.Input(
+                    id="user-input-id",
+                    placeholder="Placeholder",
+                    type="text",
+                    persistence=True,
+                    persistence_type="session",
+                    debounce=True,
+                ),
+            ]
+        )
+        assert_component_equal(user_input, expected_user_input)
+
+    def test_user_input_build_with_description(self):
+        user_input = UserInput(
+            id="user-input-id",
+            title="Title",
+            description=vm.Tooltip(text="Tooltip test", icon="info", id="info"),
+            placeholder="Placeholder",
+        ).build()
+
+        expected_description = [
+            html.Span("info", id="info-icon", className="material-symbols-outlined tooltip-icon"),
+            dbc.Tooltip(
+                children=dcc.Markdown("Tooltip test", className="card-text"),
+                id="info",
+                target="info-icon",
+                autohide=False,
+            ),
+        ]
+
+        expected_user_input = html.Div(
+            [
+                dbc.Label(
+                    [html.Div("Title", id="user-input-id_title"), *expected_description],
+                    html_for="user-input-id",
+                ),
                 dbc.Input(
                     id="user-input-id",
                     placeholder="Placeholder",
