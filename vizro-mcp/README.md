@@ -116,6 +116,42 @@ Similarly, when using Cursor, after a short pause, you should see a green light 
 
 </details>
 
+### 🐳 Running with Docker
+
+You can run Vizro-MCP inside a Docker container for easy setup and isolation.
+
+#### Build the Docker image
+
+In the root of the `vizro-mcp` directory, build the Docker image with:
+
+```bash
+docker build -t vizro-mcp .
+```
+
+#### Example `mcp.json` configuration
+
+To use the Dockerized Vizro-MCP with an MCP-enabled client (like Cursor or Claude Desktop), add the following to your `mcp.json` (or equivalent config file):
+
+```json
+{
+  "mcpServers": {
+    "vizro-mcp": {
+      "command": "docker",
+      "args": [
+        "run",
+        "-i",
+        "--rm",
+        "--mount",
+        "type=bind,src=<ABSOLUTE/HOST/PATH/TO/YOUR/DATA>,dst=<ABSOLUTE/CONTAINER/PATH>",
+        "vizro-mcp"
+      ]
+    }
+  }
+}
+```
+
+To use local data with Vizro-MCP, mount your data directory into the container. Replace `<ABSOLUTE/HOST/PATH/TO/YOUR/DATA>` with the absolute path to your data on your machine, and `<ABSOLUTE/CONTAINER/PATH>` with the path you want it to appear inside the container (usually the same path for convenience).
+
 ## 💻 Usage
 
 ### Use prompt templates to get specific dashboards quickly
