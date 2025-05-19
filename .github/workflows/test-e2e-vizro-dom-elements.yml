@@ -68,11 +68,6 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         if: always()
 
-      - name: List files
-        run: |
-          cd /home/runner/work/vizro/vizro/
-          ls -laR
-
       - name: Upload ctrf-report
         uses: actions/upload-artifact@v4
         with:
