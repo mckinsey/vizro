@@ -69,7 +69,9 @@ jobs:
         if: always()
 
       - name: List files
-        run: ls -R
+        run: |
+          cd /home/runner/work/vizro/vizro/
+          ls -R
 
       - name: Upload ctrf-report
         uses: actions/upload-artifact@v4
