@@ -221,6 +221,12 @@ page5 = vm.Page(
             variant="filled",
         )
     ],
+    controls=[
+        vm.Filter(column="species", selector=vm.Dropdown()),
+        vm.Filter(column="sepal_length", selector=vm.RangeSlider()),
+        # vm.Filter(column="petal_width", selector=vm.Slider()),
+        vm.Filter(column="species", selector=vm.Checklist()),
+    ],
 )
 
 page6 = vm.Page(
@@ -243,9 +249,10 @@ page6 = vm.Page(
             layout=vm.Layout(grid=[[0, 1]]),
             controls=[
                 vm.Filter(column="species", selector=vm.Dropdown()),
-                vm.Filter(column="species", selector=vm.Checklist()),
-                vm.Filter(column="sepal_length", selector=vm.RangeSlider()),
                 vm.Filter(column="species", selector=vm.RadioItems()),
+                vm.Filter(column="sepal_length", selector=vm.RangeSlider()),
+                vm.Filter(column="petal_width", selector=vm.Slider()),
+                vm.Filter(column="species", selector=vm.Checklist()),
             ],
             variant="filled",
         )

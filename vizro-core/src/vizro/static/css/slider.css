@@ -92,7 +92,7 @@ input.dash-input:invalid {
 
 /* Slider Label + Input Container ---------------------- */
 .slider-label-input {
-  align-items: center;
+  align-items: flex-start;
   display: flex;
   flex-direction: row;
   justify-content: space-between;
@@ -107,6 +107,7 @@ input.dash-input:invalid {
   display: flex;
   flex-direction: row;
   gap: 0.25rem;
+  line-height: 1rem;
   margin-bottom: 0.75rem;
 }
 
