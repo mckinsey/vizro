@@ -7,7 +7,7 @@ from vizro import Vizro
 iris = px.data.iris()
 
 first_page = vm.Page(
-    title="Data",
+    title="First Page",
     components=[
         vm.Container(
             title="Container with info-icon visible",
@@ -26,6 +26,14 @@ first_page = vm.Page(
             variant="outlined",
             collapsed=True,
         ),
+    ],
+    controls=[vm.Filter(column="species")]
+)
+
+
+second_page = vm.Page(
+    title="Second Page",
+    components=[
         vm.Container(
             components=[
                 vm.Graph(
@@ -43,8 +51,7 @@ first_page = vm.Page(
         ),
     ],
 )
-
-dashboard = vm.Dashboard(pages=[first_page])
+dashboard = vm.Dashboard(pages=[first_page, second_page], navigation=vm.Navigation(nav_selector=vm.NavBar()))
 
 if __name__ == "__main__":
     Vizro().build(dashboard).run()
