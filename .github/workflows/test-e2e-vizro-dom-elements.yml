@@ -74,9 +74,9 @@ jobs:
           ls -laR
 
       - name: Debug files
-      run: |
-        echo "Showing JSON files:"
-        find output -name '*.json'
+        run: |
+          echo "Showing JSON files:"
+          find output -name '*.json'
 
       - name: Upload ctrf-report
         uses: actions/upload-artifact@v4
