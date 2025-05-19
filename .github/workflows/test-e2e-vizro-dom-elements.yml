@@ -76,7 +76,7 @@ jobs:
       - name: Debug files
         run: |
           echo "Showing JSON files:"
-          find output -name '*.json'
+          find . -name '*.json'
 
       - name: Upload ctrf-report
         uses: actions/upload-artifact@v4
