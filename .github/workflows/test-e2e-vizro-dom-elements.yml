@@ -71,7 +71,7 @@ jobs:
       - name: Upload ctrf-report
         uses: actions/upload-artifact@v4
         with:
-          name: ctrf-report-${{ matrix.label }}-${{ matrix.python-version }}-${{ matrix.group }}
+          name: ctrf-report ${{ matrix.label }}-${{ matrix.python-version }}-${{ matrix.group }}
           path: /home/runner/work/vizro/vizro/.ctrf/ctrf-report.json
         if: always()
 
