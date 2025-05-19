@@ -78,7 +78,7 @@ theme:
     - scheme: default
   font:
     text: Google sans
-    code: Inter Regular
+    code: Source Code Pro
   icon:
     repo: fontawesome/brands/github
   features:
