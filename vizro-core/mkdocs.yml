@@ -77,8 +77,8 @@ theme:
   palette:
     - scheme: default
   font:
-    text: Inter
-    code: Inter Regular
+    text: Google sans
+    code: Source Code Pro
   icon:
     repo: fontawesome/brands/github
   features:
