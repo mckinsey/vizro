@@ -4,7 +4,7 @@ Vizro is an open-source Python-based toolkit. You can use it to build data visua
 
 <div class="grid cards" markdown>
 
-- :fontawesome-solid-microscope:{ .lg .middle } __New to Vizro?__
+- :fontawesome-regular-map:{ .lg .middle } __New to Vizro?__
 
     ---
 
@@ -16,7 +16,7 @@ Vizro is an open-source Python-based toolkit. You can use it to build data visua
 
     [:octicons-arrow-right-24: Develop with PyCafe](pages/user-guides/run-deploy.md#develop-in-pycafe)
 
-- :fontawesome-solid-keyboard:{ .lg .middle } __Vizro features__
+- :fontawesome-solid-chart-column:{ .lg .middle } __Vizro features__
 
     ---
 
@@ -36,12 +36,12 @@ Vizro is an open-source Python-based toolkit. You can use it to build data visua
 
     [:octicons-arrow-right-24: Contribute to our docs](pages/explanation/documentation-style-guide.md)
 
-- :fontawesome-solid-chart-column:{ .lg .middle } __Vizro with Gen AI__
+- :fontawesome-solid-wand-magic-sparkles:{ .lg .middle } __Gen AI assistance__
 
     ---
 
     [:octicons-arrow-right-24: Vizro-AI](https://vizro.readthedocs.io/projects/vizro-ai/)
 
-    [:octicons-arrow-right-24: Vizro-MCP](https://github.com/mckinsey/vizro/blob/main/vizro-mcp/README.md)
+    [:new: Vizro-MCP](https://github.com/mckinsey/vizro/blob/main/vizro-mcp/README.md)
 
 </div>
