@@ -58,13 +58,14 @@ class TestTabsBuildMethod:
         assert_component_equal(
             result.children,
             [
-                html.H3(id="tabs-id_title"),
-                None,
+                html.H3(className="inner-tabs-title"),
                 dbc.Tabs(id="tabs-id", persistence=True, persistence_type="session"),
             ],
             keys_to_strip={"children"},
         )
-        assert_component_equal(result["tabs-id_title"].children, "Tabs Title")
+
+        # Test title and description
+        assert_component_equal(result.children[0].children, [html.Div("Tabs Title", id="tabs-id_title"), None])
 
         # We want to test the children created in the Tabs.build but not e.g. the
         # vm.Container.build() as it's tested elsewhere already
@@ -90,27 +91,30 @@ class TestTabsBuildMethod:
         ).build()
 
         # Test the outermost part first and then go down into deeper levels
+        assert_component_equal(result, html.Div(className="tabs-container"), keys_to_strip={"children"})
+        assert_component_equal(
+            result.children,
+            [
+                html.H3(className="inner-tabs-title"),
+                dbc.Tabs(id="tabs-id", persistence=True, persistence_type="session"),
+            ],
+            keys_to_strip={"children"},
+        )
+
+        # Test title and description
         expected_description = [
             html.Span("info", id="info-icon", className="material-symbols-outlined tooltip-icon"),
             dbc.Tooltip(
-                children=dcc.Markdown("Test Description", className="card-text"),
+                children=dcc.Markdown("Tooltip test", className="card-text"),
                 id="info",
                 target="info-icon",
                 autohide=False,
             ),
         ]
 
-        assert_component_equal(result, html.Div(className="tabs-container"), keys_to_strip={"children"})
         assert_component_equal(
-            result.children,
-            [
-                html.H3(id="tabs-id_title"),
-                *expected_description,
-                dbc.Tabs(id="tabs-id", persistence=True, persistence_type="session"),
-            ],
-            keys_to_strip={"children"},
+            result.children[0].children, [html.Div("Tabs Title", id="tabs-id_title"), *expected_description]
         )
-        assert_component_equal(result["tabs-id_title"].children, "Tabs Title")
 
         # We want to test the children created in the Tabs.build but not e.g. the
         # vm.Container.build() as it's tested elsewhere already

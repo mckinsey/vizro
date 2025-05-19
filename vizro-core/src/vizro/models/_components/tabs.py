@@ -56,8 +56,13 @@ class Tabs(VizroBaseModel):
 
     @_log_call
     def build(self):
-        title = html.H3(self.title, id=f"{self.id}_title") if self.title else None
         description = self.description.build().children if self.description else [None]
+
+        title_content = (
+            html.H3([html.Div(self.title, id=f"{self.id}_title"), *description], className="inner-tabs-title")
+            if self.title
+            else None
+        )
 
         tabs = dbc.Tabs(
             id=self.id,
@@ -66,4 +71,4 @@ class Tabs(VizroBaseModel):
             persistence_type="session",
         )
 
-        return html.Div(children=[title, *description, tabs], className="tabs-container")
+        return html.Div(children=[title_content, tabs], className="tabs-container")

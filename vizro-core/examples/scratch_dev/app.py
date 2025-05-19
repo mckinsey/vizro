@@ -3,6 +3,7 @@
 import pandas as pd
 
 from dash import ctx
+from dash.exceptions import PreventUpdate
 import time
 
 import vizro.plotly.express as px
@@ -18,6 +19,10 @@ df = px.data.iris().head(3)
 
 @capture("action")
 def action_return_text(button_number_of_clicks):
+    # Added to handle the bug when a page custom action is triggered if on-page-load is not defined
+    if not button_number_of_clicks:
+        raise PreventUpdate
+
     # Sleep to see what part of the output component is updating
     time.sleep(0.5)
 
@@ -40,13 +45,24 @@ def action_return_figures(button_number_of_clicks):
     ]
 
 
+@capture("action")
+def action_select_ag_grid_rows(button_number_of_clicks):
+    # Sleep to see what part of the output component is updating
+    time.sleep(0.5)
+
+    num_rows = button_number_of_clicks % 4
+    selected_rows = df.iloc[:num_rows].to_dict("records") if num_rows > 0 else []
+
+    return selected_rows
+
+
 vm.Page.add_type("controls", vm.Button)
 
 
 # ======= Page Table of Contents =======
 
 page_table_of_contents = vm.Page(
-    title="Page Table of Contents Title",
+    title="Table of Contents",
     components=[
         vm.AgGrid(
             figure=dash_ag_grid(
@@ -113,7 +129,6 @@ page_table_of_contents = vm.Page(
 
 # ======= Page Figures Title/Header/Footer =======
 
-
 page_figures_title_header_footer = vm.Page(
     title="Graph/AgGrid/Table - title/description/header/footer",
     layout=vm.Grid(grid=[[0, 1, 2]]),
@@ -176,7 +191,7 @@ page_figures_title_header_footer = vm.Page(
 # ======= Page Figure figure =======
 
 page_figures_figures = vm.Page(
-    title="Figures - figures",
+    title="Figures - figure output",
     layout=vm.Grid(grid=[[0, 1], [2, 3]]),
     components=[
         vm.Graph(
@@ -225,17 +240,6 @@ page_figures_figures = vm.Page(
 )
 
 
-@capture("action")
-def action_select_ag_grid_rows(button_number_of_clicks):
-    # Sleep to see what part of the output component is updating
-    time.sleep(0.5)
-
-    num_rows = button_number_of_clicks % 4
-    selected_rows = df.iloc[:num_rows].to_dict("records") if num_rows > 0 else []
-
-    return selected_rows
-
-
 # ======= Page underlying ID shortcuts =======
 
 page_ag_grid_underlying_id_shortcuts = vm.Page(
@@ -255,7 +259,7 @@ page_ag_grid_underlying_id_shortcuts = vm.Page(
         ),
         vm.Card(
             id="card-3-id",
-            text="## Click ag-grid cell to update me",
+            text="## TODO-REVIEWER-CHECK: Click ag-grid cell to update me",
         ),
     ],
     controls=[
@@ -277,8 +281,9 @@ page_ag_grid_underlying_id_shortcuts = vm.Page(
 
 
 # ======= Container title/description =======
+
 page_container_title_description = vm.Page(
-    title="Page Container Tabs title/description",
+    title="Page/Container/Tabs - title/description",
     description="Click button to update me",
     components=[
         vm.Container(
@@ -310,8 +315,8 @@ page_container_title_description = vm.Page(
                 vm.Action(
                     function=action_return_text("trigger-container-title-description-button-id.n_clicks"),
                     outputs=[
-                        "Page Container Tabs title/description.title",
-                        "Page Container Tabs title/description.description",
+                        "Page/Container/Tabs - title/description.title",
+                        "Page/Container/Tabs - title/description.description",
                         "container-id.title",
                         "container-id.description",
                         "tabs-id.title",
@@ -323,10 +328,11 @@ page_container_title_description = vm.Page(
     ],
 )
 
+
 # ======= Card/Text Components =======
 
 page_card_text_components = vm.Page(
-    title="Card/Text text",
+    title="Card/Text - text",
     components=[
         vm.Card(
             id="card-id",
@@ -365,7 +371,7 @@ vm.Page.add_type("components", vm.TextArea)
 vm.Page.add_type("components", vm.UserInput)
 
 page_text_area_user_input_components = vm.Page(
-    title="TextArea/UserInput title/description",
+    title="TextArea/UserInput - title/description",
     components=[
         vm.TextArea(
             id="text-area-id",
@@ -407,7 +413,7 @@ vm.Page.add_type("components", vm.RangeSlider)
 vm.Page.add_type("components", vm.DatePicker)
 
 page_form_components = vm.Page(
-    title="Form Components Title/Description",
+    title="Form Components - title/description",
     components=[
         vm.Checklist(
             id="checklist-id",
@@ -494,7 +500,23 @@ dashboard = vm.Dashboard(
         page_card_text_components,
         page_text_area_user_input_components,
         page_form_components,
-    ]
+    ],
+    navigation=vm.Navigation(
+        pages={
+            "Table": ["Table of Contents"],
+            "Figures": [
+                "Graph/AgGrid/Table - title/description/header/footer",
+                "Figures - figure output",
+                "AgGrid - underlying ID shortcuts",
+            ],
+            "Components": [
+                "Page/Container/Tabs - title/description",
+                "Card/Text - text",
+                "TextArea/UserInput - title/description",
+                "Form Components - title/description",
+            ],
+        }
+    ),
 )
 
 if __name__ == "__main__":
