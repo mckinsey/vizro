@@ -93,3 +93,5 @@ navigation:
       - parameters_p@ge! (tabs + containers)
     AGgrid:
       - table-ag-grid-page
+title: yaml dashboard
+description: dashboard tooltip
