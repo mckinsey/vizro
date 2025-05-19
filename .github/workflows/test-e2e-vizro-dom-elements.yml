@@ -71,7 +71,7 @@ jobs:
       - name: List files
         run: |
           cd /home/runner/work/vizro/vizro/
-          ls -R
+          ls -laR
 
       - name: Upload ctrf-report
         uses: actions/upload-artifact@v4
