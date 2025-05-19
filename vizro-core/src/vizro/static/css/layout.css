@@ -20,11 +20,11 @@
   overflow: auto;
   padding: 24px 24px 0;
   width: 324px;
+  border-right: 1px solid var(--bs-border-color);
 }
 
 #left-side {
   background-color: var(--left-side-bg);
-  border-right: 1px solid var(--bs-border-color);
   display: flex;
   flex-direction: row;
   height: 100%;
@@ -98,7 +98,7 @@
 }
 
 #left-sidebar {
-  border-right: 1px solid var(--border-subtleAlpha01);
+  border-right: 1px solid var(--bs-border-color);
   display: flex;
   flex-direction: column;
   gap: 40px;
