@@ -73,12 +73,6 @@ jobs:
           cd /home/runner/work/vizro/vizro/
           ls -laR
 
-      - name: Debug files
-        run: |
-          cd /home/runner/work/vizro/vizro/
-          echo "Showing JSON files:"
-          find . -name '*.json'
-
       - name: Upload ctrf-report
         uses: actions/upload-artifact@v4
         with:
