@@ -72,7 +72,7 @@ jobs:
         run: |
           cd /home/runner/work/vizro/vizro/
           ls -laR
-          
+
       - name: Debug files
       run: |
         echo "Showing JSON files:"
