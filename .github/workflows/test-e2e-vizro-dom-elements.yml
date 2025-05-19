@@ -83,7 +83,7 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: ctrf-report-${{ matrix.label }}-${{ matrix.python-version }}
-          path: "./.ctrf/*.json"
+          path: /home/runner/work/vizro/vizro/.ctrf/ctrf-report.json
         if: always()
 
       - name: Create artifacts and slack notifications
