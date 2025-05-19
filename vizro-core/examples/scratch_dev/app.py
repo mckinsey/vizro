@@ -27,7 +27,7 @@ first_page = vm.Page(
             collapsed=True,
         ),
     ],
-    controls=[vm.Filter(column="species")]
+    controls=[vm.Filter(column="species")],
 )
 
 
