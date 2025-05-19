@@ -68,6 +68,9 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         if: always()
 
+      - name: List files
+        run: ls -R
+
       - name: Upload ctrf-report
         uses: actions/upload-artifact@v4
         with:
