@@ -63,7 +63,6 @@ jobs:
           failed-report: true
           flaky-rate-report: true
           previous-results-max: 100
-          previous-results-report: true
           artifact-name: ctrf-report-${{ matrix.label }}-${{ matrix.python-version }}-${{ matrix.group }}
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
