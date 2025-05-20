@@ -38,7 +38,7 @@ class TestTableInstantiation:
         assert table.title == ""
         assert table.header == ""
         assert table.footer == ""
-        assert hasattr(table, "_input_component_id")
+        assert hasattr(table, "_inner_component_id")
         assert table._action_outputs == {
             "__default__": f"{table.id}.children",
             "figure": f"{table.id}.children",
@@ -65,7 +65,7 @@ class TestTableInstantiation:
         assert table.header == "Header"
         assert table.footer == "Footer"
         assert isinstance(table.description, vm.Tooltip)
-        assert table._input_component_id == "underlying_table_id"
+        assert table._inner_component_id == "underlying_table_id"
         assert table._action_outputs == {
             "__default__": f"{table.id}.children",
             "figure": f"{table.id}.children",
@@ -162,13 +162,13 @@ class TestPreBuildTable:
         table = vm.Table(id="text_table", figure=standard_dash_table)
         table.pre_build()
 
-        assert table._input_component_id == "__input_text_table"
+        assert table._inner_component_id == "__input_text_table"
 
     def test_pre_build_underlying_table_id(self, dash_data_table_with_id, filter_interaction_action):
         table = vm.Table(id="text_table", figure=dash_data_table_with_id)
         table.pre_build()
 
-        assert table._input_component_id == "underlying_table_id"
+        assert table._inner_component_id == "underlying_table_id"
 
     def test_pre_build_duplicate_input_table_id(self):
         dashboard = vm.Dashboard(

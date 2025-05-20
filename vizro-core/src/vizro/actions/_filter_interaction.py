@@ -61,7 +61,7 @@ class filter_interaction(_AbstractAction):
             raise ValueError(f"targets {invalid_targets} are not valid figures on the page.")
 
         # TODO: This check is temporarily disabled to avoid requiring a prior call to ag_grid or table pre_build.
-        #  Otherwise, their self._input_component_id may not be set, leading to an error when checking "modelID" in
+        #  Otherwise, their self._inner_component_id may not be set, leading to an error when checking "modelID" in
         #  triggered_model._filter_interaction_input. We should revisit this when reworking filter interaction
         #  to find a better way to reintegrate it.
         # # Check that the triggered model has the required attributes (e.g. Graph does but Button doesn't).

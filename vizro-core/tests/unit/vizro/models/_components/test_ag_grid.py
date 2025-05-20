@@ -45,7 +45,7 @@ class TestAgGridInstantiation:
         assert ag_grid.header == ""
         assert ag_grid.footer == ""
         assert ag_grid.description is None
-        assert hasattr(ag_grid, "_input_component_id")
+        assert hasattr(ag_grid, "_inner_component_id")
         assert ag_grid._action_outputs == {
             "__default__": f"{ag_grid.id}.children",
             "figure": f"{ag_grid.id}.children",
@@ -53,13 +53,13 @@ class TestAgGridInstantiation:
             "header": f"{ag_grid.id}_header.children",
             "footer": f"{ag_grid.id}_footer.children",
             **{
-                ag_grid_prop: f"{ag_grid._input_component_id}.{ag_grid_prop}" for ag_grid_prop in DAG_AG_GRID_PROPERTIES
+                ag_grid_prop: f"{ag_grid._inner_component_id}.{ag_grid_prop}" for ag_grid_prop in DAG_AG_GRID_PROPERTIES
             },
         }
         assert ag_grid._action_inputs == {
             "__default__": f"{ag_grid.id}.children",
             **{
-                ag_grid_prop: f"{ag_grid._input_component_id}.{ag_grid_prop}" for ag_grid_prop in DAG_AG_GRID_PROPERTIES
+                ag_grid_prop: f"{ag_grid._inner_component_id}.{ag_grid_prop}" for ag_grid_prop in DAG_AG_GRID_PROPERTIES
             },
         }
 
@@ -81,7 +81,7 @@ class TestAgGridInstantiation:
         assert ag_grid.header == "Header"
         assert ag_grid.footer == "Footer"
         assert isinstance(ag_grid.description, vm.Tooltip)
-        assert ag_grid._input_component_id == "underlying_ag_grid_id"
+        assert ag_grid._inner_component_id == "underlying_ag_grid_id"
         assert ag_grid._action_outputs == {
             "__default__": "ag-grid-id.children",
             "figure": "ag-grid-id.children",
@@ -182,12 +182,12 @@ class TestPreBuildAgGrid:
         ag_grid = vm.AgGrid(id="text_ag_grid", figure=standard_ag_grid)
         ag_grid.pre_build()
 
-        assert ag_grid._input_component_id == "__input_text_ag_grid"
+        assert ag_grid._inner_component_id == "__input_text_ag_grid"
 
     def test_pre_build_underlying_ag_grid_id(self, ag_grid_with_id):
         ag_grid = vm.AgGrid(id="text_ag_grid", figure=ag_grid_with_id)
         ag_grid.pre_build()
-        assert ag_grid._input_component_id == "underlying_ag_grid_id"
+        assert ag_grid._inner_component_id == "underlying_ag_grid_id"
 
     def test_pre_build_duplicate_input_ag_grid_id(self):
         dashboard = vm.Dashboard(
