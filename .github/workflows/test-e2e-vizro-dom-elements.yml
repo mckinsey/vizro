@@ -58,9 +58,7 @@ jobs:
         uses: ctrf-io/github-test-reporter@v1
         with:
           report-path: "./.ctrf/*.json"
-          summary-report: true
-          test-report: true
-          failed-report: true
+          failed-folded-report: true
           flaky-rate-report: true
           previous-results-max: 100
           artifact-name: ctrf-report-${{ matrix.label }}-${{ matrix.python-version }}-${{ matrix.group }}
