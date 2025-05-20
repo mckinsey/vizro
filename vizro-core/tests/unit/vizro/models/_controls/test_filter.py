@@ -868,18 +868,14 @@ class TestPreBuildMethod:
 
     @pytest.mark.usefixtures("managers_one_page_container_controls")
     def test_container_filter_defaults(self):
-        filter = vm.Filter(column="continent", selector=vm.Checklist(value=["Europe"]))
-        page = model_manager["test_container"]
-        page.components[0].controls = [filter]
+        filter = model_manager["container_filter"]
         filter.pre_build()
 
         assert filter.selector.extra == {"inline": True}
 
     @pytest.mark.usefixtures("managers_one_page_container_controls")
     def test_container_filter_default_targets(self):
-        filter = vm.Filter(column="continent", selector=vm.Checklist(value=["Europe"]))
-        page = model_manager["test_container"]
-        page.components[0].controls = [filter]
+        filter = model_manager["container_filter"]
         filter.pre_build()
 
         assert filter.targets == ["scatter_chart"]

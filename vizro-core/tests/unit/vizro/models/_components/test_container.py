@@ -220,7 +220,6 @@ class TestContainerBuildMethod:
             html.Div(
                 id="container-control-panel",
                 children=[],
-                hidden=False,
                 className="container-controls-panel",
             ),
             keys_to_strip={"children"},

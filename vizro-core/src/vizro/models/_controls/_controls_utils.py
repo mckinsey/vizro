@@ -21,9 +21,9 @@ def check_targets_present_on_page(control: ControlType) -> None:
             raise ValueError(f"Target {target_id} not found within the page {control_page.id}.")
 
 
-def set_container_control_default(control, control_id, selector):
+def set_container_control_default(control: ControlType) -> None:
     page = model_manager._get_model_page(control)
-    is_page_control = any(control.id == control_id for control in page.controls)
+    control_is_on_page = any(pg_control.id == control.id for pg_control in page.controls)
 
-    if not is_page_control and isinstance(selector, (Checklist, RadioItems)):
-        return selector.extra.setdefault("inline", True)
+    if not control_is_on_page and isinstance(control.selector, (Checklist, RadioItems)):
+        control.selector.extra.setdefault("inline", True)

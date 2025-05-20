@@ -78,7 +78,7 @@ class Parameter(VizroBaseModel):
     @_log_call
     def pre_build(self):
         check_targets_present_on_page(control=self)
-        set_container_control_default(control=self, control_id=self.id, selector=self.selector)
+        set_container_control_default(control=self)
         self._check_numerical_and_temporal_selectors_values()
         self._check_categorical_selectors_options()
         self._set_selector_title()

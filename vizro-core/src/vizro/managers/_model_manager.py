@@ -73,8 +73,8 @@ class ModelManager:
     ) -> Generator[Model, None, None]:
         """Iterates through all models of type `model_type` (including subclasses).
 
-        If `model_type` not given then look at all models.
-        If `root_model` specified then only give models from that container.
+        If `model_type` is specified, return only models matching that type. Otherwise, include all types.
+        If `root_model` is specified, only return models that are descendants of the given `root_model`.
         """
         import vizro.models as vm
 

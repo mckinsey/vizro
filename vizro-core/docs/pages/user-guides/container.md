@@ -498,9 +498,13 @@ You can provide markdown text as a string to use the default info icon or a [`To
 
 ## Add controls to container
 
-The `Container` now accepts a `controls` argument, where you can define container-specific controls to group related components for better interaction.
+The `Container` now accepts a `controls` argument, where you can define container-specific controls to group related components for better interaction. By default, controls only affect components inside their own container.
 
-By default, controls only affect components inside their own container.
+Here are a few cases where you might want to use `controls` within `Container`:
+
+- displaying multiple datasets on the same page
+- isolating container-specific data without affecting the rest of the page
+- providing detailed views that don't influence page-level data
 
 !!! example "Container with controls"
 
@@ -519,12 +523,12 @@ By default, controls only affect components inside their own container.
             layout=vm.Grid(grid=[[0, 1]]),
             components=[
                 vm.Container(
-                    title="Country GDP Per Capita",
+                    title="Container with gapminder data",
                     components=[vm.Graph(id="bar_chart", figure=px.bar(gapminder, x="country", y="gdpPercap"))],
                     controls=[vm.Filter(column="continent", selector=vm.RadioItems())]
                 ),
                 vm.Container(
-                    title="Sepal Length Distribution",
+                    title="Container with iris data",
                     components=[vm.Graph(figure=px.box(iris, x="species", y="sepal_length", color="species"))],
                     controls=[vm.Filter(column="species", selector=vm.Checklist())]
                 )
@@ -541,13 +545,13 @@ By default, controls only affect components inside their own container.
         # Still requires a .py to add data to the data manager and parse YAML configuration
         # See yaml_version example
         pages:
-          - title: Country GDP Per Capita
+          - title: Containers with controls
             layout:
               grid: [[0, 1]]
               type: grid
             components:
               - type: container
-                title: Container with checklist
+                title: Container with gapminder data
                 components:
                   - type: graph
                     figure:
@@ -561,7 +565,7 @@ By default, controls only affect components inside their own container.
                       type: radioitems
                     type: filter
               - type: container
-                title: Sepal Length Distribution
+                title: Container with iris data
                 components:
                   - type: graph
                     figure:

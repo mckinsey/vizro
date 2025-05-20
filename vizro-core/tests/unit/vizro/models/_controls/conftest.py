@@ -31,8 +31,16 @@ def managers_one_page_container_controls(gapminder):
                 components=[
                     vm.Graph(id="scatter_chart", figure=px.scatter(gapminder, x="lifeExp", y="gdpPercap")),
                 ],
+                controls=[
+                    vm.Filter(id="container_filter", column="continent", selector=vm.Checklist(value=["Europe"])),
+                    vm.Parameter(
+                        id="container_parameter",
+                        targets=["scatter_chart.x"],
+                        selector=vm.Checklist(options=["lifeExp", "gdpPercap", "pop"], value=["lifeExp"]),
+                    ),
+                ],
             ),
             vm.Graph(id="bar_chart", figure=px.bar(gapminder, x="country", y="gdpPercap")),
         ],
     )
-    Vizro._pre_build()
+    # Vizro._pre_build()

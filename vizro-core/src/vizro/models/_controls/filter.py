@@ -135,9 +135,9 @@ class Filter(VizroBaseModel):
         # If targets aren't explicitly provided then try to target all figures on the page. In this case we don't
         # want to raise an error if the column is not found in a figure's data_frame, it will just be ignored.
         # This is the case when bool(self.targets) is False.
-        # Possibly in future this will change (which would be breaking change).
-        page = model_manager._get_model_page(self)
-        proposed_targets = self._get_proposed_targets(page=page)
+        # If filter used within container and if targets aren't explicitly provided it will target all figures within
+        # that container. Possibly in future this will change (which would be breaking change).
+        proposed_targets = self._get_proposed_targets()
 
         # TODO: Currently dynamic data functions require a default value for every argument. Even when there is a
         #  dataframe parameter, the default value is used when pre-build the filter e.g. to find the targets,
@@ -163,7 +163,7 @@ class Filter(VizroBaseModel):
         self.selector.title = self.selector.title or self.column.title()
 
         # set default inline=True for container selectors
-        set_container_control_default(control=self, control_id=self.id, selector=self.selector)
+        set_container_control_default(control=self)
 
         if isinstance(self.selector, DISALLOWED_SELECTORS.get(self._column_type, ())):
             raise ValueError(
@@ -336,27 +336,24 @@ class Filter(VizroBaseModel):
         targeted_data = pd.concat([targeted_data, pd.Series(current_value)]).stack().dropna()  # noqa: PD013
         return sorted(set(targeted_data) - {ALL_OPTION})
 
-    def _get_proposed_targets(self, page):
+    def _get_proposed_targets(self):
         """Get all valid figure model targets for this control based on its location in the page hierarchy."""
         if self.targets:
             return self.targets
 
-        parent_container = self._find_parent_container(page)
-        target_scope = parent_container if parent_container else page
+        page = model_manager._get_model_page(self)
+        page_containers = model_manager._get_models(model_type=Container, root_model=page)
 
-        return [
-            model.id for model in cast(Iterable[VizroBaseModel], model_manager._get_models(FIGURE_MODELS, target_scope))
-        ]
-
-    def _find_parent_container(self, page):
-        """Find the container that contains this control, if any."""
-        page_containers = cast(Iterable[Container], model_manager._get_models(Container, page))
-
-        return next(
+        # Find the control's parent model. Set it as the control's parent container it exists.
+        # Otherwise set it as the control's page.
+        root_model = next(
             (
                 container
                 for container in page_containers
                 if any(control.id == self.id for control in container.controls)
             ),
-            None,
+            page,
         )
+        return [
+            model.id for model in cast(Iterable[VizroBaseModel], model_manager._get_models(FIGURE_MODELS, root_model))
+        ]
