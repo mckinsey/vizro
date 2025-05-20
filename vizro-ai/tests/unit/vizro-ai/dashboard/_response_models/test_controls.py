@@ -34,7 +34,9 @@ class TestFilterProxyCreate:
         filter_proxy = _create_filter_proxy(df_cols, df_schema, controllable_components)
         result = filter_proxy(targets=["bar_chart"], column="a")
 
-        assert result.model_dump(exclude={"id": True}) == expected_filter.model_dump(exclude={"id": True})
+        assert result.model_dump(exclude={"id": True}) == expected_filter.model_dump(
+            exclude={"id": True, "selector": True, "type": True}
+        )
 
 
 class TestControlCreate:
@@ -45,13 +47,14 @@ class TestControlCreate:
             control_type="Filter",
             control_description="Create a parameter that targets the data based on the column 'a'.",
             df_name="bar_chart",
+            control_id="filter_a",
         )
         result = control_plan.create(
             model=fake_llm_filter, controllable_components=controllable_components, all_df_metadata=df_metadata
         )
-        assert result.model_dump(exclude={"id": True}) == vm.Filter(targets=["bar_chart"], column="a").model_dump(
-            exclude={"id": True}
-        )
+        assert result.model_dump(exclude={"id": True}) == vm.Filter(
+            targets=["bar_chart"], column="a", type="filter", selector=None
+        ).model_dump(exclude={"id": True})
 
     def test_control_create_invalid_df_name(
         self, fake_llm_filter, df_metadata, caplog
@@ -61,6 +64,7 @@ class TestControlCreate:
                 control_type="Filter",
                 control_description="Create a parameter that targets the data based on the column 'a'.",
                 df_name="line_chart",
+                control_id="filter_a",
             )
             result = control_plan.create(
                 model=fake_llm_filter, controllable_components=["bar_chart"], all_df_metadata=df_metadata
