@@ -4,7 +4,7 @@ from typing import Annotated, Any, Literal, Optional
 
 import dash_bootstrap_components as dbc
 from dash import ClientsideFunction, Input, Output, State, clientside_callback, html
-from pydantic import AfterValidator, BeforeValidator, Field, conlist
+from pydantic import AfterValidator, BeforeValidator, Field, conlist, model_validator
 from pydantic.json_schema import SkipJsonSchema
 from pydantic_core.core_schema import ValidationInfo
 
@@ -97,6 +97,12 @@ class Container(VizroBaseModel):
         ]
     ]
 
+    @model_validator(mode="after")
+    def _validate_title_if_collapsed(self):
+        if self.collapsed is not None and not self.title:
+            raise ValueError("`Container` must have a `title` explicitly set when `collapsed` is not None.")
+        return self
+
     @property
     def _action_outputs(self) -> dict[str, _IdProperty]:
         return {
@@ -136,7 +142,7 @@ class Container(VizroBaseModel):
         defaults = {
             "id": self.id,
             "children": [
-                self._build_container_title(),
+                self._build_container_title() if self.title else None,
                 self._build_container(),
             ],
             "fluid": True,
@@ -164,7 +170,7 @@ class Container(VizroBaseModel):
 
     def _build_container_title(self):
         """Builds and returns the container title, including an optional icon and tooltip if collapsed."""
-        description = self.description.build().children if self.description else [None]
+        description = self.description.build().children if self.description is not None else [None]
 
         title_content = [
             html.Div(

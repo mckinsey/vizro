@@ -13,6 +13,7 @@
 
 #left-main {
   align-items: flex-start;
+  border-right: 1px solid var(--bs-border-color);
   display: flex;
   flex: 0 0 auto;
   flex-direction: column;
@@ -24,7 +25,6 @@
 
 #left-side {
   background-color: var(--left-side-bg);
-  border-right: 1px solid var(--bs-border-color);
   display: flex;
   flex-direction: row;
   height: 100%;
@@ -98,7 +98,7 @@
 }
 
 #left-sidebar {
-  border-right: 1px solid var(--border-subtleAlpha01);
+  border-right: 1px solid var(--bs-border-color);
   display: flex;
   flex-direction: column;
   gap: 40px;

@@ -67,6 +67,12 @@ class TestContainerInstantiation:
         with pytest.raises(ValidationError, match="Input should be 'plain', 'filled' or 'outlined'."):
             vm.Container(title="Title", components=[vm.Button()], variant="test")
 
+    def test_invalid_collapsed(self):
+        with pytest.raises(
+            ValidationError, match="`Container` must have a `title` explicitly set when `collapsed` is not None."
+        ):
+            vm.Container(components=[vm.Button()], collapsed=True)
+
 
 class TestContainerBuildMethod:
     def test_container_build_without_title(self):
@@ -76,7 +82,7 @@ class TestContainerBuildMethod:
         assert_component_equal(
             result, dbc.Container(id="container", class_name="", fluid=True), keys_to_strip={"children"}
         )
-        assert_component_equal(result.children, [html.H3(), html.Div()], keys_to_strip=STRIP_ALL)
+        assert_component_equal(result.children, [None, html.Div()], keys_to_strip=STRIP_ALL)
 
     def test_container_build_with_title(self):
         result = vm.Container(
