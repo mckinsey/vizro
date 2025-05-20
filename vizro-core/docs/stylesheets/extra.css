@@ -64,6 +64,6 @@ td:not([class]):not(:last-child) {
 }
 
 
-.md-sidebar .md-sidebar--primary {
-  width: 20%;
+.md-sidebar--primary {
+  width: 13rem;
 }
