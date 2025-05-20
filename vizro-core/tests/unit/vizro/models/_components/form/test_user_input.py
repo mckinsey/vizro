@@ -44,7 +44,7 @@ class TestUserInputBuild:
         user_input = UserInput(id="user-input-id", title="Title", placeholder="Placeholder").build()
         expected_user_input = html.Div(
             [
-                dbc.Label([html.Div("Title", id="user-input-id_title"), None], html_for="user-input-id"),
+                dbc.Label([html.Span("Title", id="user-input-id_title"), None], html_for="user-input-id"),
                 dbc.Input(
                     id="user-input-id",
                     placeholder="Placeholder",
@@ -78,7 +78,7 @@ class TestUserInputBuild:
         expected_user_input = html.Div(
             [
                 dbc.Label(
-                    [html.Div("Title", id="user-input-id_title"), *expected_description],
+                    [html.Span("Title", id="user-input-id_title"), *expected_description],
                     html_for="user-input-id",
                 ),
                 dbc.Input(

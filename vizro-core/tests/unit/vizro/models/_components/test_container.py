@@ -92,7 +92,7 @@ class TestContainerBuildMethod:
         assert_component_equal(
             result.children[0],
             html.H3(
-                [html.Div([html.Div("Title", id="container_title"), None], className="inner-container-title")],
+                [html.Div([html.Span("Title", id="container_title"), None], className="inner-container-title")],
                 className="container-title",
                 id="container_title_content",
             ),
@@ -111,7 +111,7 @@ class TestContainerBuildMethod:
         assert_component_equal(
             result.children[0],
             html.H3(
-                [html.Div([html.Div("Title", id="container_title"), None], className="inner-container-title")],
+                [html.Div([html.Span("Title", id="container_title"), None], className="inner-container-title")],
                 className="container-title",
                 id="container_title_content",
             ),
@@ -153,7 +153,7 @@ class TestContainerBuildMethod:
 
         # We still want to test the exact H3 and dbc.Collapse inside the result
         expected_title_content = [
-            html.Div([html.Div("Title", id="container_title"), None], className="inner-container-title"),
+            html.Div([html.Span("Title", id="container_title"), None], className="inner-container-title"),
             html.Span(
                 "keyboard_arrow_down" if collapsed else "keyboard_arrow_up",
                 className="material-symbols-outlined",
@@ -209,7 +209,7 @@ class TestContainerBuildMethod:
             html.H3(
                 [
                     html.Div(
-                        [html.Div("Title", id="container_title"), *expected_description],
+                        [html.Span("Title", id="container_title"), *expected_description],
                         className="inner-container-title",
                     )
                 ],

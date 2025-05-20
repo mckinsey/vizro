@@ -16,7 +16,7 @@ def expected_slider():
             dcc.Store(id="slider_id_callback_data", data={"id": "slider_id", "min": 0.0, "max": 10.0}),
             html.Div(
                 [
-                    dbc.Label([html.Div("Title", id="slider_id_title"), None], html_for="slider_id"),
+                    dbc.Label([html.Span("Title", id="slider_id_title"), None], html_for="slider_id"),
                     html.Div(
                         [
                             dcc.Input(
@@ -61,7 +61,7 @@ def expected_slider_extra():
             dcc.Store(id="slider_id_callback_data", data={"id": "slider_id", "min": 0.0, "max": 10.0}),
             html.Div(
                 [
-                    dbc.Label([html.Div("Title", id="slider_id_title"), None], html_for="slider_id"),
+                    dbc.Label([html.Span("Title", id="slider_id_title"), None], html_for="slider_id"),
                     html.Div(
                         [
                             dcc.Input(
@@ -117,7 +117,7 @@ def expected_slider_with_description():
             html.Div(
                 [
                     dbc.Label(
-                        [html.Div("Title", id="slider_id_title"), *expected_description],
+                        [html.Span("Title", id="slider_id_title"), *expected_description],
                         html_for="slider_id",
                     ),
                     html.Div(

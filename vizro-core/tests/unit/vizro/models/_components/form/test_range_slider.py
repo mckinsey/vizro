@@ -73,7 +73,7 @@ def expected_range_slider_with_optional():
             dcc.Store(id="range_slider_callback_data", data={"id": "range_slider", "min": 0.0, "max": 10.0}),
             html.Div(
                 [
-                    dbc.Label([html.Div("Title", id="range_slider_title"), None], html_for="range_slider"),
+                    dbc.Label([html.Span("Title", id="range_slider_title"), None], html_for="range_slider"),
                     html.Div(
                         [
                             dcc.Input(
@@ -130,7 +130,7 @@ def expected_range_slider_with_extra():
             dcc.Store(id="range_slider_callback_data", data={"id": "range_slider", "min": 0.0, "max": 10.0}),
             html.Div(
                 [
-                    dbc.Label([html.Div("Title", id="range_slider_title"), None], html_for="range_slider"),
+                    dbc.Label([html.Span("Title", id="range_slider_title"), None], html_for="range_slider"),
                     html.Div(
                         [
                             dcc.Input(
@@ -199,7 +199,7 @@ def expected_range_slider_with_description():
             html.Div(
                 [
                     dbc.Label(
-                        [html.Div("Title", id="range_slider_title"), *expected_description],
+                        [html.Span("Title", id="range_slider_title"), *expected_description],
                         html_for="range_slider",
                     ),
                     html.Div(

@@ -130,7 +130,7 @@ class TestBuildMethod:
 
         expected_datepicker = html.Div(
             [
-                dbc.Label([html.Div("Title", id="datepicker_id_title"), None], html_for="datepicker_id"),
+                dbc.Label([html.Span("Title", id="datepicker_id_title"), None], html_for="datepicker_id"),
                 dmc.DatePickerInput(
                     id="datepicker_id",
                     minDate="2023-01-01",
@@ -160,7 +160,7 @@ class TestBuildMethod:
 
         expected_datepicker = html.Div(
             [
-                dbc.Label([html.Div("Title", id="datepicker_id_title"), None], html_for="datepicker_id"),
+                dbc.Label([html.Span("Title", id="datepicker_id_title"), None], html_for="datepicker_id"),
                 dmc.DatePickerInput(
                     id="datepicker_id",
                     minDate="2023-01-01",
@@ -201,7 +201,7 @@ class TestBuildMethod:
         expected_datepicker = html.Div(
             [
                 dbc.Label(
-                    [html.Div("Title", id="datepicker_id_title"), *expected_description],
+                    [html.Span("Title", id="datepicker_id_title"), *expected_description],
                     html_for="datepicker_id",
                 ),
                 dmc.DatePickerInput(

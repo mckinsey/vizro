@@ -44,7 +44,7 @@ class TestTextAreaBuild:
         text_area = TextArea(id="text-area-id", title="Title", placeholder="Placeholder").build()
         expected_text_area = html.Div(
             [
-                dbc.Label([html.Div("Title", id="text-area-id_title"), None], html_for="text-area-id"),
+                dbc.Label([html.Span("Title", id="text-area-id_title"), None], html_for="text-area-id"),
                 dbc.Textarea(
                     id="text-area-id",
                     placeholder="Placeholder",
@@ -77,7 +77,7 @@ class TestTextAreaBuild:
         expected_text_area = html.Div(
             [
                 dbc.Label(
-                    [html.Div("Title", id="text-area-id_title"), *expected_description],
+                    [html.Span("Title", id="text-area-id_title"), *expected_description],
                     html_for="text-area-id",
                 ),
                 dbc.Textarea(

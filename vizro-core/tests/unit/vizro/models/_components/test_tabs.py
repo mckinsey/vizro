@@ -76,7 +76,7 @@ class TestTabsBuildMethod:
         )
 
         # Test title and description
-        assert_component_equal(result.children[0].children, [html.Div("Tabs Title", id="tabs-id_title"), None])
+        assert_component_equal(result.children[0].children, [html.Span("Tabs Title", id="tabs-id_title"), None])
 
         # We want to test the children created in the Tabs.build but not e.g. the
         # vm.Container.build() as it's tested elsewhere already
@@ -124,7 +124,7 @@ class TestTabsBuildMethod:
         ]
 
         assert_component_equal(
-            result.children[0].children, [html.Div("Tabs Title", id="tabs-id_title"), *expected_description]
+            result.children[0].children, [html.Span("Tabs Title", id="tabs-id_title"), *expected_description]
         )
 
         # We want to test the children created in the Tabs.build but not e.g. the

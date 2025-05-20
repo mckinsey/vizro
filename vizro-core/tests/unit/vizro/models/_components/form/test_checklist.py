@@ -139,7 +139,7 @@ class TestChecklistBuild:
         checklist = Checklist(id="checklist_id", options=["A", "B", "C"], title="Title").build()
         expected_checklist = html.Fieldset(
             [
-                html.Legend([html.Div("Title", id="checklist_id_title"), None], className="form-label"),
+                html.Legend([html.Span("Title", id="checklist_id_title"), None], className="form-label"),
                 dbc.Checklist(
                     id="checklist_id",
                     options=["ALL", "A", "B", "C"],
@@ -167,7 +167,7 @@ class TestChecklistBuild:
 
         expected_checklist = html.Fieldset(
             [
-                html.Legend([html.Div("Title", id="checklist_id_title"), None], className="form-label"),
+                html.Legend([html.Span("Title", id="checklist_id_title"), None], className="form-label"),
                 dbc.Checklist(
                     id="overridden_id",
                     options=["ALL", "A", "B", "C"],
@@ -202,7 +202,7 @@ class TestChecklistBuild:
         expected_checklist = html.Fieldset(
             [
                 html.Legend(
-                    [html.Div("Title", id="checklist_id_title"), *expected_description], className="form-label"
+                    [html.Span("Title", id="checklist_id_title"), *expected_description], className="form-label"
                 ),
                 dbc.Checklist(
                     options=["ALL", "A", "B", "C"],

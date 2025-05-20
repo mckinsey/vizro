@@ -139,7 +139,7 @@ class TestRadioItemsBuild:
         radio_items = RadioItems(id="radio_items", options=["A", "B", "C"], title="Title").build()
         expected_radio_items = html.Fieldset(
             [
-                html.Legend([html.Div("Title", id="radio_items_title"), None], className="form-label"),
+                html.Legend([html.Span("Title", id="radio_items_title"), None], className="form-label"),
                 dbc.RadioItems(
                     id="radio_items",
                     options=["A", "B", "C"],
@@ -165,7 +165,7 @@ class TestRadioItemsBuild:
         ).build()
         expected_radio_items = html.Fieldset(
             [
-                html.Legend([html.Div("Title", id="radio_items_title"), None], className="form-label"),
+                html.Legend([html.Span("Title", id="radio_items_title"), None], className="form-label"),
                 dbc.RadioItems(
                     id="overridden_id",
                     options=["A", "B", "C"],
@@ -199,7 +199,7 @@ class TestRadioItemsBuild:
         expected_radio_items = html.Fieldset(
             [
                 html.Legend(
-                    [html.Div("Title", id="radio_items_title"), *expected_description],
+                    [html.Span("Title", id="radio_items_title"), *expected_description],
                     className="form-label",
                 ),
                 dbc.RadioItems(

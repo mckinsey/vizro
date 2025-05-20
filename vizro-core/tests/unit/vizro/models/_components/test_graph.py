@@ -227,7 +227,7 @@ class TestBuildGraph:
         expected_graph = dcc.Loading(
             html.Div(
                 [
-                    html.H3([html.Div("Title"), None], className="figure-title"),
+                    html.H3([html.Span("Title"), None], className="figure-title"),
                     dcc.Markdown("""#### Subtitle""", className="figure-header"),
                     dcc.Graph(
                         figure=go.Figure(
@@ -275,7 +275,7 @@ class TestBuildGraph:
         expected_graph = dcc.Loading(
             html.Div(
                 [
-                    html.H3([html.Div("Title"), *expected_description], className="figure-title"),
+                    html.H3([html.Span("Title"), *expected_description], className="figure-title"),
                     None,
                     dcc.Graph(
                         figure=go.Figure(

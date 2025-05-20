@@ -271,7 +271,7 @@ class TestBuildTable:
         expected_table = dcc.Loading(
             html.Div(
                 children=[
-                    html.H3([html.Div("Title"), None], className="figure-title"),
+                    html.H3([html.Span("Title"), None], className="figure-title"),
                     dcc.Markdown("""#### Subtitle""", className="figure-header"),
                     html.Div(
                         children=[html.Div()],
@@ -309,7 +309,7 @@ class TestBuildTable:
         expected_table = dcc.Loading(
             html.Div(
                 children=[
-                    html.H3([html.Div("Title"), *expected_description], className="figure-title"),
+                    html.H3([html.Span("Title"), *expected_description], className="figure-title"),
                     None,
                     html.Div(
                         children=[html.Div()],
