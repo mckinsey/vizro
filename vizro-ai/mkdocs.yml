@@ -16,10 +16,10 @@ nav:
           - Advanced options: pages/user-guides/advanced-options.md
           - Advanced charts: pages/user-guides/create-advanced-charts.md
           - Add Vizro-AI charts to a Vizro dashboard: pages/user-guides/add-generated-chart-usecase.md
+          - Use Vizro-AI methods as Langchain tools: pages/user-guides/vizro-ai-langchain-guide.md
       - DASHBOARDS:
           - Run vizro_ai.dashboard: pages/user-guides/run-vizro-ai-dashboard.md
           - Advanced dashboards: pages/user-guides/create-complex-dashboard.md
-          - Use Vizro-AI methods as Langchain tools: pages/user-guides/vizro-ai-langchain-guide.md
   - API Reference:
       - VizroAI: pages/API-reference/vizro-ai.md
   - Explanation:
