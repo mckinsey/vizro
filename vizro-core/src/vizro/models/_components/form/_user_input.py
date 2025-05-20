@@ -66,7 +66,7 @@ class UserInput(VizroBaseModel):
 
         return html.Div(
             children=[
-                dbc.Label(children=[html.Div(self.title, id=f"{self.id}_title"), *description], html_for=self.id)
+                dbc.Label(children=[html.Span(self.title, id=f"{self.id}_title"), *description], html_for=self.id)
                 if self.title
                 else None,
                 dbc.Input(

@@ -59,7 +59,7 @@ class Tabs(VizroBaseModel):
         description = self.description.build().children if self.description else [None]
 
         title_content = (
-            html.H3([html.Div(self.title, id=f"{self.id}_title"), *description], className="inner-tabs-title")
+            html.H3([html.Span(self.title, id=f"{self.id}_title"), *description], className="inner-tabs-title")
             if self.title
             else None
         )

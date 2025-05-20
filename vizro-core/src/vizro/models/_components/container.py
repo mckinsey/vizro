@@ -173,7 +173,7 @@ class Container(VizroBaseModel):
 
         title_content = [
             html.Div(
-                [html.Div(id=f"{self.id}_title", children=self.title), *description], className="inner-container-title"
+                [html.Span(id=f"{self.id}_title", children=self.title), *description], className="inner-container-title"
             )
         ]
 

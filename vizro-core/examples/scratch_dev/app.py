@@ -491,6 +491,7 @@ page_form_components = vm.Page(
 
 
 dashboard = vm.Dashboard(
+    title="Dashboard for testing",
     pages=[
         page_table_of_contents,
         page_figures_title_header_footer,

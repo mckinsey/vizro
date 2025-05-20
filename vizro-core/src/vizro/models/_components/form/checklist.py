@@ -103,7 +103,7 @@ class Checklist(VizroBaseModel):
         return html.Fieldset(
             children=[
                 html.Legend(
-                    children=[html.Div(id=f"{self.id}_title", children=self.title), *description],
+                    children=[html.Span(id=f"{self.id}_title", children=self.title), *description],
                     className="form-label",
                 )
                 if self.title
