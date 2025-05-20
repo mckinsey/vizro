@@ -7,4 +7,4 @@ RUN uv sync --frozen --no-install-project --no-dev --no-editable
 
 COPY . /app
 
-ENTRYPOINT ["uv", "run", "python", "-m", "vizro_mcp"]
+ENTRYPOINT ["uv", "run", "vizro-mcp"]
