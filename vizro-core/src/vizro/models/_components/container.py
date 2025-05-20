@@ -106,8 +106,7 @@ class Container(VizroBaseModel):
     @property
     def _action_outputs(self) -> dict[str, _IdProperty]:
         return {
-            "__default__": f"{self.id}.value",
-            "title": f"{self.id}_title.children",
+            **({"title": f"{self.id}_title.children"} if self.title else {}),
             **({"description": f"{self.description.id}.children"} if self.description else {}),
         }
 

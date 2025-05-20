@@ -18,10 +18,7 @@ class TestContainerInstantiation:
         assert container.layout.grid == [[0], [1]]
         assert container.title == ""
         assert container.variant == "plain"
-        assert container._action_outputs == {
-            "__default__": f"{container.id}.value",
-            "title": f"{container.id}_title.children",
-        }
+        assert container._action_outputs == {}
 
     @pytest.mark.parametrize("variant", ["plain", "filled", "outlined"])
     def test_create_container_mandatory_and_optional(self, variant):
@@ -41,7 +38,6 @@ class TestContainerInstantiation:
         assert container.variant == variant
         assert container.collapsed is True
         assert container._action_outputs == {
-            "__default__": f"{container.id}.value",
             "title": f"{container.id}_title.children",
             "description": f"{container.description.id}.children",
         }

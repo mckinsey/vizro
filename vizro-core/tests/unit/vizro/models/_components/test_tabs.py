@@ -26,8 +26,19 @@ class TestTabsInstantiation:
         assert tabs.id == "tabs-id"
         assert tabs.type == "tabs"
         assert tabs.title == ""
+        assert tabs._action_outputs == {}
+
+    def test_create_tabs_mandatory_and_optionsl(self, containers):
+        tabs = vm.Tabs(id="tabs-id", title="Title", description="Test description", tabs=containers)
+
+        assert all(isinstance(tab, vm.Container) for tab in tabs.tabs) and len(tabs.tabs) == 2
+        assert tabs.id == "tabs-id"
+        assert tabs.type == "tabs"
+        assert tabs.title == "Title"
+        assert isinstance(tabs.description, vm.Tooltip)
         assert tabs._action_outputs == {
             "title": f"{tabs.id}_title.children",
+            "description": f"{tabs.description.id}.children",
         }
 
     def test_mandatory_tabs_missing(self):

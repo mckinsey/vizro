@@ -173,10 +173,7 @@ class TestSliderInstantiation:
         assert slider.title == ""
         assert slider.description is None
         assert slider.actions == []
-        assert slider._action_outputs == {
-            "__default__": f"{slider.id}.value",
-            "title": f"{slider.id}_title.children",
-        }
+        assert slider._action_outputs == {"__default__": f"{slider.id}.value"}
         assert slider._action_inputs == {"__default__": f"{slider.id}.value"}
 
     def test_create_slider_mandatory_and_optional(self):

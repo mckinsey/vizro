@@ -19,10 +19,7 @@ class TestUserInputInstantiation:
         assert user_input.title == ""
         assert user_input.placeholder == ""
         assert user_input.actions == []
-        assert user_input._action_outputs == {
-            "__default__": f"{user_input.id}.value",
-            "title": f"{user_input.id}_title.children",
-        }
+        assert user_input._action_outputs == {"__default__": f"{user_input.id}.value"}
         assert user_input._action_inputs == {"__default__": f"{user_input.id}.value"}
 
     def test_create_user_input_mandatory_and_optional(self):
@@ -33,6 +30,11 @@ class TestUserInputInstantiation:
         assert user_input.title == "Title"
         assert user_input.placeholder == "Placeholder"
         assert user_input.actions == []
+        assert user_input._action_outputs == {
+            "__default__": f"{user_input.id}.value",
+            "title": f"{user_input.id}_title.children",
+        }
+        assert user_input._action_inputs == {"__default__": f"{user_input.id}.value"}
 
 
 class TestUserInputBuild:

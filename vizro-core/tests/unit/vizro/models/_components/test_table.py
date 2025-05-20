@@ -42,9 +42,6 @@ class TestTableInstantiation:
         assert table._action_outputs == {
             "__default__": f"{table.id}.children",
             "figure": f"{table.id}.children",
-            "title": f"{table.id}_title.children",
-            "header": f"{table.id}_header.children",
-            "footer": f"{table.id}_footer.children",
         }
 
     def test_create_table_mandatory_and_optional(self, dash_data_table_with_id):

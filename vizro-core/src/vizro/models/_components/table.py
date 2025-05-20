@@ -91,9 +91,9 @@ class Table(VizroBaseModel):
         return {
             "__default__": f"{self.id}.children",
             "figure": f"{self.id}.children",
-            "title": f"{self.id}_title.children",
-            "header": f"{self.id}_header.children",
-            "footer": f"{self.id}_footer.children",
+            **({"title": f"{self.id}_title.children"} if self.title else {}),
+            **({"header": f"{self.id}_header.children"} if self.header else {}),
+            **({"footer": f"{self.id}_footer.children"} if self.footer else {}),
             **({"description": f"{self.description.id}.children"} if self.description else {}),
         }
 

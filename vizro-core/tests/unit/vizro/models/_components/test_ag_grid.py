@@ -49,9 +49,6 @@ class TestAgGridInstantiation:
         assert ag_grid._action_outputs == {
             "__default__": f"{ag_grid.id}.children",
             "figure": f"{ag_grid.id}.children",
-            "title": f"{ag_grid.id}_title.children",
-            "header": f"{ag_grid.id}_header.children",
-            "footer": f"{ag_grid.id}_footer.children",
             **{
                 ag_grid_prop: f"{ag_grid._inner_component_id}.{ag_grid_prop}" for ag_grid_prop in DAG_AG_GRID_PROPERTIES
             },

@@ -46,12 +46,7 @@ class TestGraphInstantiation:
         assert graph.header == ""
         assert graph.footer == ""
         assert graph.description is None
-        assert graph._action_outputs == {
-            "__default__": f"{graph.id}.figure",
-            "title": f"{graph.id}_title.children",
-            "header": f"{graph.id}_header.children",
-            "footer": f"{graph.id}_footer.children",
-        }
+        assert graph._action_outputs == {"__default__": f"{graph.id}.figure"}
 
     def test_create_graph_mandatory_and_optional(self, standard_px_chart):
         graph = vm.Graph(
