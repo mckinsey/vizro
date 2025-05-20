@@ -249,7 +249,7 @@ Add the following to your config file:
 }
 ```
 
-To use local data with Vizro-MCP, mount your data directory into the container. Replace `</absolute/path/to/allowed/dir>` or `</absolute/path/to/data.csv>` with the absolute paths to your data on your machine. It's recommended that the path of `dst` matches the path of `src` for consistency.
+To use local data with Vizro-MCP, mount your data directory into the container. Replace `</absolute/path/to/allowed/dir>` or `</absolute/path/to/data.csv>` with the absolute path to your data on your machine. For consistency, it is recommended that the `dst` path matches the `src` path.
 
 ## Disclaimers
 
