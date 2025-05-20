@@ -54,6 +54,25 @@ jobs:
           export BROWSER=${{ matrix.config.browser }}
           hatch run test-e2e-vizro-screenshots ${{ matrix.config.command }}
 
+      - name: Publish Test Report
+        uses: ctrf-io/github-test-reporter@v1
+        with:
+          report-path: "./.ctrf/*.json"
+          failed-folded-report: true
+          flaky-rate-report: true
+          previous-results-max: 100
+          artifact-name: ctrf-report-${{ matrix.config.browser }}
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        if: always()
+
+      - name: Upload ctrf-report
+        uses: actions/upload-artifact@v4
+        with:
+          name: ctrf-report-${{ matrix.config.browser }}
+          path: /home/runner/work/vizro/vizro/.ctrf/ctrf-report.json
+        if: always()
+
       - name: Create artifacts and slack notifications
         if: failure()
         uses: ./.github/actions/failed-artifacts-and-slack-notifications
