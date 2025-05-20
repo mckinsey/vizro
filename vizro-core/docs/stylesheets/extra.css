@@ -62,3 +62,8 @@ td:not([class]):not(:last-child) {
   background-color: rgb(3, 3, 3);
   mask-image: var(--md-admonition-icon--details);
 }
+
+
+.md-sidebar .md-sidebar--primary {
+  width: 20%;
+}
