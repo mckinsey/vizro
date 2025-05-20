@@ -2,8 +2,8 @@
 
 !!! info "Vizro-AI has been replaced by Vizro-MCP"
 
-    Vizro-AI has mostly been superceded by [Vizro-MCP](https://github.com/mckinsey/vizro/blob/main/vizro-mcp/README.md), which offers a unified experience within familiar LLM apps, such as Claude Desktop. 
-    
+    Vizro-AI has mostly been superceded by [Vizro-MCP](https://github.com/mckinsey/vizro/blob/main/vizro-mcp/README.md), which offers a unified experience within familiar LLM apps, such as Claude Desktop.
+
     **We suggest you review [Vizro-MCP](https://github.com/mckinsey/vizro/blob/main/vizro-mcp/README.md) before you try Vizro-AI as it is more straightforward and does not require an API key.**
 
 Vizro-AI uses generative AI to extend [Vizro](https://vizro.readthedocs.io) so you can use instructions in English, or other languages, to effortlessly create interactive charts and dashboards.
