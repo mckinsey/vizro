@@ -15,14 +15,13 @@ Even if you are an experienced data practitioner, Vizro-AI optimizes how you cre
     ---
 
     [:octicons-arrow-right-24: Quickstart chart generation](pages/tutorials/quickstart.md)
-    
+
     [:octicons-arrow-right-24: How to run Vizro-AI](pages/user-guides/run-vizro-ai.md)
 
 - :fontawesome-solid-keyboard:{ .lg .middle } __Get hands-on__
 
     ---
 
-    
     [:octicons-arrow-right-24: Create advanced charts](pages/user-guides/create-advanced-charts.md)
 
     [:octicons-arrow-right-24: Add charts to a dashboard](pages/user-guides/add-generated-chart-usecase.md)
