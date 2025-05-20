@@ -38,7 +38,7 @@ If you are a **developer** and need instructions for running Vizro-MCP from sour
 
 ### Prerequisites
 
-- [uv](https://docs.astral.sh/uv/getting-started/installation/)
+- [uv](https://docs.astral.sh/uv/getting-started/installation/) package manager (or [Docker](https://www.docker.com/) for containerized setup)
 - Any LLM application that supports MCP. [Claude Desktop](https://claude.ai/download) and [Cursor](https://www.cursor.com/downloads) are popular choices.
 
 > 🐛 **Note:** There are currently some known issues with [VS Code](https://code.visualstudio.com/) but we are working on this and hope to have Copilot working soon.
@@ -46,6 +46,10 @@ If you are a **developer** and need instructions for running Vizro-MCP from sour
 > ⚠️ **Warning:** In some hosts (like Claude Desktop) the free plan might be less performant, which may cause issues when the request is too complex. In cases where the request causes the UI to crash, opt for using a paid plan, or reduce your request's complexity.
 
 ### Setup Instructions
+
+Vizro MCP supports two configuration options: `uvx` and `docker`.
+
+#### Configuration with `uvx`
 
 The general server config is mostly the same for all hosts:
 
@@ -116,11 +120,9 @@ Similarly, when using Cursor, after a short pause, you should see a green light 
 
 </details>
 
-### 🐳 Running with Docker
+#### Configuration with `docker`
 
-You can run Vizro-MCP inside a Docker container for easy setup and isolation.
-
-#### Build the Docker image
+You can run Vizro MCP inside a Docker container for a controlled runtime environment.
 
 In the root of the `vizro-mcp` directory, build the Docker image with:
 
@@ -128,9 +130,7 @@ In the root of the `vizro-mcp` directory, build the Docker image with:
 docker build -t vizro-mcp .
 ```
 
-#### Example `mcp.json` configuration
-
-To use the Dockerized Vizro-MCP with an MCP-enabled client (like Cursor or Claude Desktop), add the following to your `mcp.json` (or equivalent config file):
+Add the following to your config file:
 
 ```json
 {
