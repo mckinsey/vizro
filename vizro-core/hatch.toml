@@ -67,9 +67,9 @@ test = "pytest tests --headless {args}"
 test-e2e-component-library = "pytest -vs tests/e2e/component_library/test_component_library.py --headless {args}"
 test-e2e-vizro-dom-elements = [
   "gunicorn dashboard:app -b 0.0.0.0:5002 -w 1 --timeout 90 &",
-#  "gunicorn dashboard_yaml:app -b 0.0.0.0:5007 -w 1 --timeout 90 &",
+  # "gunicorn dashboard_yaml:app -b 0.0.0.0:5007 -w 1 --timeout 90 &",
   "tests/tests_utils/e2e/vizro/dashboards/wait-for-it.sh 127.0.0.1:5002 -t 30",
-#  "tests/tests_utils/e2e/vizro/dashboards/wait-for-it.sh 127.0.0.1:5007 -t 30",
+  # "tests/tests_utils/e2e/vizro/dashboards/wait-for-it.sh 127.0.0.1:5007 -t 30",
   "pytest -vs --reruns 1 --ctrf ../.ctrf/ctrf-report.json tests/e2e/vizro/test_dom_elements --headless {args}"
 ]
 test-e2e-vizro-screenshots = [
