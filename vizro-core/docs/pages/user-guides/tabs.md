@@ -138,4 +138,133 @@ To add [`Tabs`][vizro.models.Tabs] to your page, do the following:
 
         [![Tabs]][tabs]
 
+## Add a tooltip
+
+The `description` argument enables you to add helpful context to your tabs by displaying an info icon next to its title. Hovering over the icon shows a tooltip with your chosen text.
+
+You can provide markdown text as a string to use the default info icon or a [`Tooltip`][vizro.models.Tooltip] model to use any icon from the [Google Material Icons library](https://fonts.google.com/icons).
+
+!!! example "Tabs with tooltip"
+
+    === "app.py"
+
+        ```{.python pycafe-link hl_lines="9-13"}
+
+        import vizro.models as vm
+        import vizro.plotly.express as px
+        from vizro import Vizro
+
+        gapminder_2007 = px.data.gapminder().query("year == 2007")
+
+        page = vm.Page(
+            title="Tabs",
+            description="""
+                The Iris dataset includes measurements of 150 iris flowers across three types: Setosa, Versicolor, and Virginica.
+
+                While all samples are labeled by type, they can appear similar when looking at just some features—making it a useful dataset for exploring patterns and challenges in classification.
+            """,
+            components=[
+                vm.Tabs(
+                    title="Tabs Title",
+                    tabs=[
+                        vm.Container(
+                            title="Tab I",
+                            components=[
+                                vm.Graph(
+                                    figure=px.bar(
+                                        gapminder_2007,
+                                        title="Graph 1",
+                                        x="continent",
+                                        y="lifeExp",
+                                        color="continent",
+                                    ),
+                                ),
+                                vm.Graph(
+                                    figure=px.box(
+                                        gapminder_2007,
+                                        title="Graph 2",
+                                        x="continent",
+                                        y="lifeExp",
+                                        color="continent",
+                                    ),
+                                ),
+                            ],
+                        ),
+                        vm.Container(
+                            title="Tab II",
+                            components=[
+                                vm.Graph(
+                                    figure=px.scatter(
+                                        gapminder_2007,
+                                        title="Graph 3",
+                                        x="gdpPercap",
+                                        y="lifeExp",
+                                        size="pop",
+                                        color="continent",
+                                    ),
+                                ),
+                            ],
+                        ),
+                    ],
+                ),
+            ],
+        )
+
+        dashboard = vm.Dashboard(pages=[page])
+        Vizro().build(dashboard).run()
+        ```
+
+    === "app.yaml"
+
+        ```{.yaml hl_lines="9-12"}
+        # Still requires a .py to add data to the data manager and parse YAML configuration
+        # See yaml_version example
+        pages:
+          components:
+            - type: tabs
+              title: Tabs Title
+              tabs:
+                - title: Tab I
+                  description: |
+                    The Iris dataset includes measurements of 150 iris flowers across three types: Setosa, Versicolor, and Virginica.
+
+                    While all samples are labeled by type, they can appear similar when looking at just some features—making it a useful dataset for exploring patterns and challenges in classification.
+                  type: container
+                  components:
+                    - type: graph
+                      figure:
+                        _target_: bar
+                        data_frame: gapminder_2007
+                        title: Graph 1
+                        x: continent
+                        y: lifeExp
+                        color: continent
+                    - type: graph
+                      figure:
+                        _target_: box
+                        data_frame: gapminder_2007
+                        title: Graph 2
+                        x: continent
+                        y: lifeExp
+                        color: continent
+                - title: Tab II
+                  type: container
+                  components:
+                    - type: graph
+                      figure:
+                        _target_: scatter
+                        data_frame: gapminder_2007
+                        title: Graph 3
+                        x: gdpPercap
+                        y: lifeExp
+                        size: pop
+                        color: continent
+          title: Tabs
+        ```
+
+    === "Result"
+
+        [![TabsInfoIcon]][tabsinfoicon]
+
 [tabs]: ../../assets/user_guides/components/tabs.png
+[tabsinfoicon]: ../../assets/user_guides/components/tabs-info-icon.png
