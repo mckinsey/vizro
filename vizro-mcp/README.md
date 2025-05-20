@@ -192,6 +192,7 @@ The Vizro MCP server provides the following tools. In general you should not nee
 If you are a developer, or if you are running Vizro-MCP from source, you need to clone the Vizro repo. Vizro-MCP supports two configuration options: `uv` and `docker`.
 
 #### Configuration with `uv`
+
 To configure the Vizro-MCP server details:
 
 **For Claude**: Add the following to your `claude_desktop_config.json` [found via Developer Settings](https://modelcontextprotocol.io/quickstart/user#2-add-the-filesystem-mcp-server):
