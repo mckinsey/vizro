@@ -20,20 +20,19 @@ nav:
           - Run vizro_ai.dashboard: pages/user-guides/run-vizro-ai-dashboard.md
           - Advanced dashboards: pages/user-guides/create-complex-dashboard.md
           - Use Vizro-AI methods as Langchain tools: pages/user-guides/vizro-ai-langchain-guide.md
-  - API Reference:
-      - VizroAI: pages/API-reference/vizro-ai.md
+  - API reference: pages/API-reference/vizro-ai.md
   - Explanation:
       - FAQs: pages/explanation/faq.md
       - Disclaimer: pages/explanation/disclaimer.md
       - Safeguard code execution: pages/explanation/safeguard.md
       - Safety in Vizro-AI: pages/explanation/safety-in-vizro-ai.md
       - Why use Vizro-AI: pages/explanation/why-use-vizro-ai.md
-  - Examples:
-      - Gallery: https://vizro.mckinsey.com
+  - Examples gallery: https://vizro.mckinsey.com
   #- Contribute:
   #      - Contributing: pages/contribute/contributing.md
-  - Vizro:
-      - Vizro: https://vizro.readthedocs.io
+  - Vizro: https://vizro.readthedocs.io
+
+  - Vizro-MCP: https://github.com/mckinsey/vizro/blob/main/vizro-mcp/README.md    
 
 #  This infers the version number of the latest release of whole repo, so we're hiding it for sub-packed in extra.css
 repo_url: https://github.com/mckinsey/vizro/tree/main/vizro-ai
