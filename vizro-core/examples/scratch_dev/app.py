@@ -3,28 +3,55 @@
 import vizro.models as vm
 import vizro.plotly.express as px
 from vizro import Vizro
-from vizro.tables import dash_ag_grid
-from vizro.models.types import capture
-from vizro.figures import kpi_card
-from vizro.actions import export_data
 
-tips = px.data.tips()
+iris = px.data.iris()
 
 first_page = vm.Page(
-    title="Data",
-    layout=vm.Flex(),
+    title="First Page",
     components=[
-        vm.AgGrid(
-            figure=dash_ag_grid(tips, style={"height": "600px"}),
-            footer="""**Data Source:** Bryant, P. G. and Smith, M. (1995).
-            Practical Data Analysis: Case Studies in Business Statistics.
-            Homewood, IL: Richard D. Irwin Publishing.""",
+        vm.Container(
+            title="Container with info-icon visible",
+            components=[
+                vm.Graph(
+                    figure=px.scatter(
+                        iris,
+                        x="sepal_length",
+                        y="petal_width",
+                        color="species",
+                        custom_data=["species"],
+                    ),
+                ),
+            ],
+            description="test description",
+            variant="outlined",
+            collapsed=True,
         ),
-        vm.Button(text="Export Data", actions=[vm.Action(function=export_data())]),
     ],
+    controls=[vm.Filter(column="species")],
 )
 
-dashboard = vm.Dashboard(pages=[first_page])
+
+second_page = vm.Page(
+    title="Second Page",
+    components=[
+        vm.Container(
+            components=[
+                vm.Graph(
+                    figure=px.scatter(
+                        iris,
+                        x="sepal_length",
+                        y="petal_width",
+                        color="species",
+                        custom_data=["species"],
+                    ),
+                ),
+            ],
+            description="test description",
+            variant="outlined",
+        ),
+    ],
+)
+dashboard = vm.Dashboard(pages=[first_page, second_page], navigation=vm.Navigation(nav_selector=vm.NavBar()))
 
 if __name__ == "__main__":
     Vizro().build(dashboard).run()
