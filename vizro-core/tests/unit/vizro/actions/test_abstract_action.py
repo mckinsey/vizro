@@ -340,9 +340,10 @@ class TestAbstractActionOutputs:
         self, manager_for_testing_actions_output_input_prop, action_with_mock_outputs
     ):
         with pytest.raises(
-            AttributeError,
-            match="Model with ID 'known_model_with_no_default_props' does not have implicit output properties defined. "
-            "Please specify the output explicitly as 'known_model_with_no_default_props.<property>'.",
+            KeyError,
+            match="Model with ID `known_model_with_no_default_props` has no `__default__` key inside its"
+            " `_action_outputs` property. Please specify the output explicitly as"
+            " `known_model_with_no_default_props.<property>`."
         ):
             action_with_mock_outputs.outputs = ["known_model_with_no_default_props"]
             action_with_mock_outputs()._transformed_outputs

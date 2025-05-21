@@ -260,9 +260,10 @@ class TestLegacyActionOutputs:
 
     def test_outputs_invalid_missing_action_attribute(self, manager_for_testing_actions_output_input_prop):
         with pytest.raises(
-            AttributeError,
-            match="Model with ID 'known_model_with_no_default_props' does not have implicit output properties defined. "
-            "Please specify the output explicitly as 'known_model_with_no_default_props.<property>'.",
+            KeyError,
+            match="Model with ID `known_model_with_no_default_props` has no `__default__` key inside its"
+            " `_action_outputs` property. Please specify the output explicitly as"
+            " `known_model_with_no_default_props.<property>`."
         ):
             # inputs=[] added to force action to be legacy
             action = Action(function=action_with_no_args(), inputs=[], outputs=["known_model_with_no_default_props"])
@@ -491,9 +492,10 @@ class TestActionOutputs:
 
     def test_outputs_invalid_missing_action_attribute(self, manager_for_testing_actions_output_input_prop):
         with pytest.raises(
-            AttributeError,
-            match="Model with ID 'known_model_with_no_default_props' does not have implicit output properties defined. "
-            "Please specify the output explicitly as 'known_model_with_no_default_props.<property>'.",
+            KeyError,
+            match="Model with ID `known_model_with_no_default_props` has no `__default__` key inside its"
+            " `_action_outputs` property. Please specify the output explicitly as"
+            " `known_model_with_no_default_props.<property>`."
         ):
             action = Action(function=action_with_no_args(), outputs=["known_model_with_no_default_props"])
             action._transformed_outputs

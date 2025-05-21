@@ -63,7 +63,8 @@ class filter_interaction(_AbstractAction):
         # TODO: This check is temporarily disabled to avoid requiring a prior call to ag_grid or table pre_build.
         #  Otherwise, their self._inner_component_id may not be set, leading to an error when checking "modelID" in
         #  triggered_model._filter_interaction_input. We should revisit this when reworking filter interaction
-        #  to find a better way to reintegrate it.
+        #  to find a better way to reintegrate it. Possibly now that self._inner_component_id is now set in
+        #  model_post_init rather than pre_build there's an easier solution here.
         # # Check that the triggered model has the required attributes (e.g. Graph does but Button doesn't).
         # # This could potentially be done with isinstance and FigureWithFilterInteractionType but filter_interaction
         # # will be removed in future anyway.

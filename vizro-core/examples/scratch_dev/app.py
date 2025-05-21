@@ -95,7 +95,7 @@ page_table_of_contents = vm.Page(
                             "title, description, header, footer",
                             "figure - works even without explicit mapping",
                         ],
-                        ["Button", "", "Not sure so don't do for now", "", ""],
+                        ["Button", "", "", "text", ""],
                         ["Card", "", "children", "text", ""],
                         ["Text", "", "children", "text", ""],
                         ["Alert", "", "", "", ""],
@@ -331,9 +331,15 @@ page_container_title_description = vm.Page(
 
 # ======= Card/Text Components =======
 
+vm.Page.add_type("components", vm.Button)
+
 page_card_text_components = vm.Page(
-    title="Card/Text - text",
+    title="Button/Card/Text - text",
     components=[
+        vm.Button(
+            id="button-id",
+            text="Click button to update me",
+        ),
         vm.Card(
             id="card-id",
             text="Click button to update me",
@@ -352,11 +358,13 @@ page_card_text_components = vm.Page(
                     outputs=[
                         "card-id.text",
                         "text-id.text",
+                        "button-id.text",
                     ],
                     # TODO-REVIEWER-CHECK: This is also a valid output
                     # outputs=[
                     #   "card-id",
                     #   "text-id",
+                    #   "button-id.text",
                     # ],
                 )
             ],
@@ -512,7 +520,7 @@ dashboard = vm.Dashboard(
             ],
             "Components": [
                 "Page/Container/Tabs - title/description",
-                "Card/Text - text",
+                "Button/Card/Text - text",
                 "TextArea/UserInput - title/description",
                 "Form Components - title/description",
             ],
