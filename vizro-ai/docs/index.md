@@ -1,8 +1,14 @@
 # Vizro-AI
 
+!!! warning "Vizro-AI has been replaced by Vizro-MCP"
+
+    Vizro-AI has largely been replaced by [Vizro-MCP](https://github.com/mckinsey/vizro/blob/main/vizro-mcp/README.md) and only supports chart generation from version 0.4.0.
+
+    **For chart and dashboard generation, we recommend using [Vizro-MCP](https://github.com/mckinsey/vizro/blob/main/vizro-mcp/README.md). It doesn’t require an API key and works with familiar LLM applications like Claude Desktop, making it simpler to use.**
+
 Vizro-AI uses generative AI to extend [Vizro](https://vizro.readthedocs.io) so you can use instructions in English, or other languages, to effortlessly create interactive charts and dashboards.
 
-By using Vizro's themes, you can incorporate design best practices by default. If you're new to coding, Vizro-AI simplifies both the creation of charts with [Plotly](https://plotly.com/python/) and their layout upon an interactive and easily-distributed dashboard.
+If you're new to coding, Vizro-AI simplifies both the creation of charts with [Plotly](https://plotly.com/python/) and their layout upon an interactive and easily-distributed dashboard.
 
 Even if you are an experienced data practitioner, Vizro-AI optimizes how you create visually appealing layouts to present detailed insights about your data.
 
