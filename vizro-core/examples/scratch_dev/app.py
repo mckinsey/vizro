@@ -306,20 +306,10 @@ page8 = vm.Page(
                 ),
             ],
         ),
-        vm.Container(
-            title="Container with target",
-            components=[
-                vm.Graph(
-                    title="Scatter chart",
-                    id="scatter_chart11",
-                    figure=px.scatter(
-                        iris, x="sepal_length", y="petal_width", color="species", custom_data=["species"]
-                    ),
-                ),
-            ],
-        ),
     ],
+    controls=[vm.Filter(column="species")],
 )
+
 
 page9 = vm.Page(
     title="Page with multiple controls in containers",

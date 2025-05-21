@@ -79,7 +79,7 @@ label[for="theme-selector"] {
 /* This is currently required as the usage of dbc.NavBar automatically adds classNames such as `navbar-light` and
 `bg-light`, which come with an important tag from bootstrap. So we need below to overwrite these properties again. */
 .navbar {
-  background: var(--surfaces-bg02) !important;
+  background: var(--left-side-bg) !important;
 }
 
 .form-switch .form-check-input {
