@@ -57,7 +57,7 @@ jobs:
       - name: Publish Test Report
         uses: ctrf-io/github-test-reporter@v1
         with:
-          report-path: "./.ctrf/*.json"
+          report-path: "./.ctrf/ctrf-report.json"
           failed-folded-report: true
           flaky-rate-report: true
           previous-results-max: 100
