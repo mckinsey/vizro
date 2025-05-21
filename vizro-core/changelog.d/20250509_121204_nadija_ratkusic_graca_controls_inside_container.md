@@ -19,7 +19,7 @@ Uncomment the section that is right (remove the HTML comment wrapper).
 
 ### Added
 
-- Enable `controls` inside [Container][vizro.models.Container]. See the [user guide on container](XXX) for more details.([#1094](https://github.com/mckinsey/vizro/pull/1094))
+- Enable `controls` inside [Container][vizro.models.Container]. See the [user guide on container](https://vizro.readthedocs.io/en/stable/pages/user-guides/container/#add-controls-to-container) for more details.([#1094](https://github.com/mckinsey/vizro/pull/1094))
 
 <!--
 ### Changed
