@@ -142,7 +142,7 @@ To add [`Tabs`][vizro.models.Tabs] to your page, do the following:
 
 The `description` argument enables you to add helpful context to your tabs by displaying an info icon next to its title. Hovering over the icon shows a tooltip with your chosen text.
 
-You can provide markdown text as a string to use the default info icon or a [`Tooltip`][vizro.models.Tooltip] model to use any icon from the [Google Material Icons library](https://fonts.google.com/icons).
+You can provide [Markdown text](https://markdown-guide.readthedocs.io/) as a string to use the default info icon or a [`Tooltip`][vizro.models.Tooltip] model to use any icon from the [Google Material Icons library](https://fonts.google.com/icons).
 
 !!! example "Tabs with tooltip"
 

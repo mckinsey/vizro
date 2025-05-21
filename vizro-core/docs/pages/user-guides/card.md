@@ -61,7 +61,7 @@ You can add a [`Card`][vizro.models.Card] to your dashboard by inserting the [`C
 
 ## Customize card text
 
-The [`Card`][vizro.models.Card] uses the `dcc.Markdown` component from Dash as its underlying text component. For more details on customizing the markdown text, refer to the [`dcc.Markdown` component documentation](https://dash.plotly.com/dash-core-components/markdown). Based on examples from Dash, the [`Card`][vizro.models.Card] model supports the following:
+The [`Card`][vizro.models.Card] uses the `dcc.Markdown` component from Dash as its underlying text component. For more details on customizing the [Markdown text](https://markdown-guide.readthedocs.io/), refer to the [`dcc.Markdown` component documentation](https://dash.plotly.com/dash-core-components/markdown). Based on examples from Dash, the [`Card`][vizro.models.Card] model supports the following:
 
 - Headers
 - Emphasis
@@ -472,7 +472,7 @@ For a button-style link navigation component, see the [separate guide on creatin
 To create a navigation card:
 
 1. Insert the [`Card`][vizro.models.Card] into the `components` argument of the [`Page`][vizro.models.Page].
-1. Pass your markdown text to the `Card.text`.
+1. Pass your [Markdown text](https://markdown-guide.readthedocs.io/) to the `Card.text`.
 1. Pass a relative or absolute URL to the `Card.href`.
 
 !!! example "Navigation Card"
