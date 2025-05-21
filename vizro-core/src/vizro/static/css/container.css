@@ -69,7 +69,7 @@ and all containers need to have a white background on that page */
   border-bottom: 1px solid var(--border-subtleAlpha01);
   display: flex;
   flex-wrap: wrap;
-  gap: 12px;
+  gap: 24px;
   justify-content: start;
   margin-bottom: 0.5rem;
   padding-bottom: 0.5rem;

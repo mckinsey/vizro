@@ -327,6 +327,7 @@ page9 = vm.Page(
     components=[
         vm.Container(
             title="Container with wrapped controls",
+            variant="outlined",
             components=[
                 vm.Graph(
                     title="Scatter chart",
@@ -344,10 +345,10 @@ page9 = vm.Page(
                     column="petal_width",
                     selector=vm.RangeSlider(),
                 ),
-                vm.Filter(
-                    column="sepal_length",
-                    selector=vm.Slider(),
-                ),
+                # vm.Filter(
+                #     column="sepal_length",
+                #     selector=vm.Slider(),
+                # ),
             ],
         ),
         vm.Container(

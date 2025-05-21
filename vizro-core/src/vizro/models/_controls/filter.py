@@ -137,7 +137,7 @@ class Filter(VizroBaseModel):
         # This is the case when bool(self.targets) is False.
         # If filter used within container and if targets aren't explicitly provided it will target all figures within
         # that container. Possibly in future this will change (which would be breaking change).
-        proposed_targets = self._get_proposed_targets()
+        proposed_targets = self.targets or self._get_proposed_targets()
 
         # TODO: Currently dynamic data functions require a default value for every argument. Even when there is a
         #  dataframe parameter, the default value is used when pre-build the filter e.g. to find the targets,
@@ -338,9 +338,6 @@ class Filter(VizroBaseModel):
 
     def _get_proposed_targets(self):
         """Get all valid figure model targets for this control based on its location in the page hierarchy."""
-        if self.targets:
-            return self.targets
-
         page = model_manager._get_model_page(self)
         page_containers = model_manager._get_models(model_type=Container, root_model=page)
 

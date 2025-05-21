@@ -75,8 +75,8 @@
 .slider-track-without-marks {
   display: flex;
   margin: 0;
-  width: 100%;
   min-width: 160px;
+  width: 100%;
 }
 
 .slider-track-without-marks {

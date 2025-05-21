@@ -498,9 +498,9 @@ You can provide markdown text as a string to use the default info icon or a [`To
 
 ## Add controls to container
 
-The `Container` now accepts a `controls` argument, where you can define container-specific controls to group related components for better interaction. By default, controls only affect components inside their own container.
+The `Container` has a `controls` argument, where you can define container-specific controls to group related components for better interaction. By default, controls only affect components inside their own container.
 
-Here are a few cases where you might want to use `controls` within `Container`:
+Here are a few cases where you might want to use `controls` within a `Container`:
 
 - displaying multiple datasets on the same page
 - isolating container-specific data without affecting the rest of the page
