@@ -307,7 +307,17 @@ page8 = vm.Page(
             ],
         ),
     ],
-    controls=[vm.Filter(column="species")],
+    controls=[
+        vm.Filter(column="species", selector=vm.RadioItems()),
+        vm.Filter(
+            column="petal_width",
+            selector=vm.RangeSlider(),
+        ),
+        vm.Filter(
+            column="sepal_length",
+            selector=vm.Slider(),
+        ),
+    ],
 )
 
 
@@ -336,7 +346,7 @@ page9 = vm.Page(
                 ),
                 vm.Filter(
                     column="sepal_length",
-                    selector=vm.RangeSlider(),
+                    selector=vm.Slider(),
                 ),
             ],
         ),

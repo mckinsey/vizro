@@ -64,3 +64,18 @@ and all containers need to have a white background on that page */
   display: flex;
   gap: 8px;
 }
+
+.container-controls-panel {
+  border-bottom: 1px solid var(--border-subtleAlpha01);
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+  justify-content: start;
+  margin-bottom: 0.5rem;
+  padding-bottom: 0.5rem;
+}
+
+.tab-content .container-controls-panel {
+  border-bottom: none;
+  padding-bottom: 0;
+}

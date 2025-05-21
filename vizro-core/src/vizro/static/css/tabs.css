@@ -20,3 +20,7 @@ To ensure the dynamic height adjustment and prevent scrolling, the height must b
 .tab-pane > div:first-child {
   height: 100%;
 }
+
+.tab-content .form-label {
+  margin-top: 12px;
+}
