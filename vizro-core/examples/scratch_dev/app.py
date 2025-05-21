@@ -118,7 +118,7 @@ page_table_of_contents = vm.Page(
                         ["NavLink", "", "", "", ""],
                         ["Navigation", "", "", "", ""],
                         ["Page", "", "", "title, description", ""],
-                        ["Tooltip", "", "", "text, icon", ""],
+                        ["Tooltip", "", "text", "text, icon", ""],
                     ],
                 ),
             )
@@ -498,6 +498,49 @@ page_form_components = vm.Page(
 )
 
 
+# ======= Tooltip text and icon =======
+
+page_tooltip_text_icon = vm.Page(
+    title="Tooltip - text and icon",
+    components=[
+        vm.TextArea(
+            id="text-area-tooltip-id",
+            title="Click button to update the tooltip --> ",
+            description=vm.Tooltip(
+                id="tooltip-id",
+                text="Click button to update me",
+                icon="info",
+            ),
+        )
+    ],
+    controls=[
+        vm.Button(
+            id="trigger-tooltip-text-icon-button-id",
+            actions=[
+                vm.Action(
+                    function=action_return_text("trigger-tooltip-text-icon-button-id.n_clicks"),
+                    outputs=[
+                        "tooltip-id.text",
+                    ],
+                    # TODO-REVIEWER-CHECK: This is also a valid output
+                    # outputs=[
+                    #     "text-area-tooltip-id.description"
+                    # ]
+                ),
+                vm.Action(
+                    function=capture("action")(lambda x: "help" if x % 2 else "info")(
+                        "trigger-tooltip-text-icon-button-id.n_clicks"
+                    ),
+                    outputs=[
+                        "tooltip-id.icon",
+                    ],
+                ),
+            ],
+        ),
+    ],
+)
+
+
 dashboard = vm.Dashboard(
     title="Dashboard for testing",
     pages=[
@@ -509,6 +552,7 @@ dashboard = vm.Dashboard(
         page_card_text_components,
         page_text_area_user_input_components,
         page_form_components,
+        page_tooltip_text_icon,
     ],
     navigation=vm.Navigation(
         pages={
@@ -523,6 +567,7 @@ dashboard = vm.Dashboard(
                 "Button/Card/Text - text",
                 "TextArea/UserInput - title/description",
                 "Form Components - title/description",
+                "Tooltip - text and icon",
             ],
         }
     ),

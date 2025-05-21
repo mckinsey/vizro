@@ -20,8 +20,8 @@ class TestCardInstantiation:
         assert card.text == "Text to test card"
         assert card.href == ""
         assert card._action_outputs == {
-            "__default__": f"{card.id}.children",
-            "text": f"{card.id}.children",
+            "__default__": f"{card.id}-text.children",
+            "text": f"{card.id}-text.children",
         }
 
     @pytest.mark.parametrize("id, href", [("id_1", "/page_1_reference"), ("id_2", "https://www.google.de/")])
@@ -51,7 +51,10 @@ class TestBuildMethod:
         assert_component_equal(
             card,
             dbc.Card(
-                dcc.Markdown(id="card_id", children="Hello", dangerously_allow_html=False, className="card-text"),
+                id="card_id",
+                children=dcc.Markdown(
+                    id="card_id-text", children="Hello", dangerously_allow_html=False, className="card-text"
+                ),
                 class_name="bg-primary p-1 mt-2 text-center h2",
             ),
         )
@@ -61,8 +64,9 @@ class TestBuildMethod:
         card = card.build()
 
         expected_card = dbc.Card(
-            dbc.NavLink(
-                dcc.Markdown(id="card_id", children="Hello", dangerously_allow_html=False, className="card-text"),
+            id="card_id",
+            children=dbc.NavLink(
+                dcc.Markdown(id="card_id-text", children="Hello", dangerously_allow_html=False, className="card-text"),
                 href="https://www.google.com",
                 target="_top",
             ),
@@ -77,7 +81,10 @@ class TestBuildMethod:
         assert_component_equal(
             card,
             dbc.Card(
-                dcc.Markdown(id="card_id", children="Hello", dangerously_allow_html=False, className="card-text"),
+                id="card_id",
+                children=dcc.Markdown(
+                    id="card_id-text", children="Hello", dangerously_allow_html=False, className="card-text"
+                ),
                 class_name="",
             ),
         )
@@ -102,7 +109,7 @@ class TestBuildMethod:
     def test_markdown_setting(self, test_text, expected):
         card = vm.Card(id="id_valid", text=test_text)
         card = card.build()
-        card_markdown = card["id_valid"]
+        card_markdown = card["id_valid-text"]
 
         assert isinstance(card_markdown, dcc.Markdown)
         assert card_markdown.dangerously_allow_html is False
@@ -119,7 +126,7 @@ class TestBuildMethod:
     def test_markdown_build_invalid(self, test_text, expected):
         card = vm.Card(id="test_id", text=test_text)
         card = card.build()
-        card_markdown = card["test_id"]
+        card_markdown = card["test_id-text"]
 
         assert isinstance(card_markdown, dcc.Markdown)
         assert card_markdown.dangerously_allow_html is False
