@@ -65,7 +65,7 @@ class TestLegacyActionInputs:
         [
             (action_with_no_args, [], []),
             (action_with_one_arg, ["component.property"], [State("component", "property")]),
-            (action_with_one_arg, ["known_ag_grid_id"], [State("known_ag_grid_id", "children")]),
+            (action_with_one_arg, ["known_dropdown_filter_id"], [State("known_dropdown_filter_id", "value")]),
             (action_with_one_arg, ["known_ag_grid_id.cellClicked"], [State("underlying_ag_grid_id", "cellClicked")]),
             (
                 action_with_two_args,
@@ -334,7 +334,11 @@ class TestActionInputs:
         [
             (action_with_no_args, {}, {}),
             (action_with_one_arg, {"arg_1": "component.property"}, {"arg_1": State("component", "property")}),
-            (action_with_one_arg, {"arg_1": "known_ag_grid_id"}, {"arg_1": State("known_ag_grid_id", "children")}),
+            (
+                action_with_one_arg,
+                {"arg_1": "known_dropdown_filter_id"},
+                {"arg_1": State("known_dropdown_filter_id", "value")},
+            ),
             (
                 action_with_one_arg,
                 {"arg_1": "known_ag_grid_id.cellClicked"},
@@ -350,7 +354,7 @@ class TestActionInputs:
                 {},
                 {
                     "_controls": {
-                        "filters": [State("known_filter_id", "value")],
+                        "filters": [State("known_dropdown_filter_id", "value")],
                         "parameters": [],
                         "filter_interaction": [],
                     }

@@ -21,7 +21,6 @@ class TestPageInstantiation:
         assert page.path == "/page-1"
         assert page.actions == []
         assert page._action_outputs == {
-            "__default__": f"{page.id}.value",
             "title": f"{page.id}_title.children",
         }
 
@@ -43,7 +42,6 @@ class TestPageInstantiation:
         assert page.path == "/my-path"
         assert page.actions == []
         assert page._action_outputs == {
-            "__default__": f"{page.id}.value",
             "title": f"{page.id}_title.children",
             "description": f"{page.description.id}.children",
         }

@@ -198,6 +198,6 @@ def manager_for_testing_actions_output_input_prop(ag_grid_with_id):
             vm.Button(id="known_model_with_no_default_props"),
             vm.AgGrid(id="known_ag_grid_id", figure=ag_grid_with_id),
         ],
-        controls=[vm.Filter(column="continent", selector=vm.Dropdown(id="known_filter_id"))],
+        controls=[vm.Filter(column="continent", selector=vm.Dropdown(id="known_dropdown_filter_id"))],
     )
     Vizro._pre_build()

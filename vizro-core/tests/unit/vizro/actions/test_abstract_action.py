@@ -136,8 +136,8 @@ class TestAbstractActionInputs:
             ),
             (
                 action_with_one_runtime_arg,
-                {"arg_1": "known_ag_grid_id"},
-                {"arg_1": State("known_ag_grid_id", "children")},
+                {"arg_1": "known_dropdown_filter_id"},
+                {"arg_1": State("known_dropdown_filter_id", "value")},
             ),
             (
                 action_with_one_runtime_arg,
@@ -159,7 +159,7 @@ class TestAbstractActionInputs:
                 {},
                 {
                     "_controls": {
-                        "filters": [State("known_filter_id", "value")],
+                        "filters": [State("known_dropdown_filter_id", "value")],
                         "parameters": [],
                         "filter_interaction": [],
                     }

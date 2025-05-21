@@ -54,7 +54,6 @@ class TestAgGridInstantiation:
             },
         }
         assert ag_grid._action_inputs == {
-            "__default__": f"{ag_grid.id}.children",
             **{
                 ag_grid_prop: f"{ag_grid._inner_component_id}.{ag_grid_prop}" for ag_grid_prop in DAG_AG_GRID_PROPERTIES
             },
@@ -89,7 +88,6 @@ class TestAgGridInstantiation:
             **{ag_grid_prop: f"underlying_ag_grid_id.{ag_grid_prop}" for ag_grid_prop in DAG_AG_GRID_PROPERTIES},
         }
         assert ag_grid._action_inputs == {
-            "__default__": "ag-grid-id.children",
             **{ag_grid_prop: f"underlying_ag_grid_id.{ag_grid_prop}" for ag_grid_prop in DAG_AG_GRID_PROPERTIES},
         }
 

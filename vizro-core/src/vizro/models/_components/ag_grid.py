@@ -107,7 +107,6 @@ class AgGrid(VizroBaseModel):
     @property
     def _action_inputs(self) -> dict[str, _IdProperty]:
         return {
-            "__default__": f"{self.id}.children",
             **{ag_grid_prop: f"{self._inner_component_id}.{ag_grid_prop}" for ag_grid_prop in DAG_AG_GRID_PROPERTIES},
         }
 
