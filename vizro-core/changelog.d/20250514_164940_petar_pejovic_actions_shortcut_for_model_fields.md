@@ -18,7 +18,7 @@ Uncomment the section that is right (remove the HTML comment wrapper).
 -->
 ### Added
 
-- Add `description` argument to `Tabs` to enable tooltips in the title. See this [user guide](https://vizro.readthedocs.io/en/stable/pages/user-guides/container/#add-a-tooltip) for an example. ([#1178](https://github.com/mckinsey/vizro/pull/1178))
+- Add `description` argument to `Tabs` to enable tooltips in the title. See the [user guide on tabs](https://vizro.readthedocs.io/en/stable/pages/user-guides/container/#add-a-tooltip) for an example. ([#1178](https://github.com/mckinsey/vizro/pull/1178))
 
 <!--
 ### Changed
