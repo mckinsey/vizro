@@ -55,7 +55,8 @@ jobs:
         run: hatch run test-e2e-vizro-dom-elements --splits 3 --group ${{ matrix.group }}
 
       - name: Publish Test Report
-        uses: ctrf-io/github-test-reporter@v1
+        # used pinned commit hash for security reasons
+        uses: ctrf-io/github-test-reporter@27b97adba93f02142c573c8a710045cac0d874ae # v1.0.14
         with:
           report-path: "./.ctrf/ctrf-report.json"
           failed-folded-report: true
