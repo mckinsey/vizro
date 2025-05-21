@@ -302,7 +302,7 @@ page8 = vm.Page(
                 vm.Filter(
                     column="species",
                     selector=vm.Checklist(value=["setosa"], title="Species"),
-                    targets=["bar_chart11", "scatter_chart11"],
+                    targets=["bar_chart11"],
                 ),
             ],
         ),
