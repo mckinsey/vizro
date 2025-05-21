@@ -25,14 +25,14 @@ jobs:
       fail-fast: false
       matrix:
         group: [1, 2, 3]
-        label: [upper-bounds, lower-bounds]
+        label: [upper bounds, lower bounds]
         include:
           - python-version: "3.12"
             hatch-env: all.py3.12
-            label: upper-bounds
+            label: upper bounds
           - python-version: "3.9"
             hatch-env: lower-bounds
-            label: lower-bounds
+            label: lower bounds
 
     steps:
       - uses: actions/checkout@v4
