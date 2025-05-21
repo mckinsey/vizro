@@ -34,7 +34,7 @@ Without Vizro-MCP, if you try to make a dashboard using an LLM, it could choose 
 
 ## 🛠️ Get started
 
-If you are a **developer** and need instructions for running Vizro-MCP from source, skip to the end of this page to [Development or running from source](#development-or-running-from-source).
+If you are a **developer** and need instructions for running Vizro-MCP from source or running the server from a Docker container, skip to the end of this page to [Development or running from source](#development-or-running-from-source).
 
 ### Prerequisites
 
@@ -189,7 +189,11 @@ The Vizro MCP server provides the following tools. In general you should not nee
 
 ## Development or running from source
 
-If you are a developer, or if you are running Vizro-MCP from source, you need to clone the Vizro repo. To configure the Vizro MCP server details:
+If you are a developer, or if you are running Vizro-MCP from source, you need to clone the Vizro repo. Vizro-MCP supports two configuration options: `uv` and `docker`.
+
+### Configuration with `uv`
+
+To configure the Vizro-MCP server details:
 
 **For Claude**: Add the following to your `claude_desktop_config.json` [found via Developer Settings](https://modelcontextprotocol.io/quickstart/user#2-add-the-filesystem-mcp-server):
 
@@ -212,6 +216,40 @@ If you are a developer, or if you are running Vizro-MCP from source, you need to
 ```
 
 Replace `<PATH TO VIZRO>` with the actual path to your Vizro repository. You may also need to provide the full path to your `uv` executable, so instead of `"uv"` you would use something like `"/Users/<your-username>/.local/bin/uv"`. To discover the path of `uv` on your machine, in your terminal app, type `which uv`.
+
+### Configuration with `docker`
+
+You can run Vizro-MCP inside a Docker container for a controlled runtime environment.
+
+In the root of the `vizro-mcp` directory, build the Docker image with:
+
+```bash
+docker build -t vizro-mcp .
+```
+
+Add the following to your config file:
+
+```json
+{
+  "mcpServers": {
+    "vizro-mcp": {
+      "command": "docker",
+      "args": [
+        "run",
+        "-i",
+        "--rm",
+        "--mount",
+        "type=bind,src=</absolute/path/to/allowed/dir>,dst=</absolute/path/to/allowed/dir>",
+        "--mount",
+        "type=bind,src=</absolute/path/to/data.csv>,dst=</absolute/path/to/data.csv>",
+        "vizro-mcp"
+      ]
+    }
+  }
+}
+```
+
+To use local data with Vizro-MCP, mount your data directory into the container. Replace `</absolute/path/to/allowed/dir>` or `</absolute/path/to/data.csv>` with the absolute path to your data on your machine. For consistency, it is recommended that the `dst` path matches the `src` path.
 
 ## Disclaimers
 
