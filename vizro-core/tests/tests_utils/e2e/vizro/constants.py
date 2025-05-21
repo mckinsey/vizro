@@ -53,7 +53,7 @@ RANGE_SLIDER_PARAMETERS = "range slider parameters"
 FILTER_INTERACTIONS_PAGE = "filter-interactions-page"
 SCATTER_INTERACTIONS_ID = "scatter_inter"
 BOX_INTERACTIONS_ID = "box_inter"
-CARD_INTERACTIONS_ID = "card_inter"
+CARD_INTERACTIONS_ID = "card_inter-text"
 DROPDOWN_INTER_FILTER = "dropdown_inter_filter"
 RADIOITEM_INTER_PARAM = "radio_inter_param"
 
