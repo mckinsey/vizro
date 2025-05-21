@@ -34,7 +34,7 @@ class TestTooltipBuild:
             [
                 html.Span("help", id="tooltip-icon", className="material-symbols-outlined tooltip-icon"),
                 dbc.Tooltip(
-                    children=dcc.Markdown("Tooltip text", className="card-text"),
+                    children=dcc.Markdown("Tooltip text", id="tooltip-text", className="card-text"),
                     id="tooltip",
                     target="tooltip-icon",
                     autohide=False,
@@ -51,7 +51,7 @@ class TestTooltipBuild:
             [
                 html.Span("help", id="tooltip-icon", className="material-symbols-outlined tooltip-icon"),
                 dbc.Tooltip(
-                    children=dcc.Markdown("Tooltip text", className="card-text"),
+                    children=dcc.Markdown("Tooltip text", id="tooltip-text", className="card-text"),
                     id="tooltip",
                     target="tooltip-icon",
                     autohide=False,

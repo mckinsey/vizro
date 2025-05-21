@@ -49,7 +49,7 @@ class TestDropdownInstantiation:
         assert dropdown._action_outputs == {
             "__default__": f"{dropdown.id}.value",
             "title": f"{dropdown.id}_title.children",
-            "description": f"{dropdown.description.id}.children",
+            "description": f"{dropdown.description.id}-text.children",
         }
         assert dropdown._action_inputs == {"__default__": f"{dropdown.id}.value"}
 
@@ -285,7 +285,7 @@ class TestDropdownBuild:
         expected_description = [
             html.Span("info", id="info-icon", className="material-symbols-outlined tooltip-icon"),
             dbc.Tooltip(
-                children=dcc.Markdown("Test description", className="card-text"),
+                children=dcc.Markdown("Test description", id="info-text", className="card-text"),
                 id="info",
                 target="info-icon",
                 autohide=False,

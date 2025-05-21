@@ -124,7 +124,7 @@ class Page(VizroBaseModel):
     def _action_outputs(self) -> dict[str, _IdProperty]:
         return {
             "title": f"{self.id}_title.children",
-            **({"description": f"{self.description.id}.children"} if self.description else {}),
+            **({"description": f"{self.description.id}-text.children"} if self.description else {}),
         }
 
     @_log_call

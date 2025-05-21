@@ -71,7 +71,7 @@ class TestGraphInstantiation:
             "title": f"{graph.id}_title.children",
             "header": f"{graph.id}_header.children",
             "footer": f"{graph.id}_footer.children",
-            "description": f"{graph.description.id}.children",
+            "description": f"{graph.description.id}-text.children",
         }
 
     def test_mandatory_figure_missing(self):

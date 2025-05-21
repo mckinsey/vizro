@@ -94,7 +94,7 @@ class DatePicker(VizroBaseModel):
         return {
             "__default__": f"{self.id}.value",
             **({"title": f"{self.id}_title.children"} if self.title else {}),
-            **({"description": f"{self.description.id}.children"} if self.description else {}),
+            **({"description": f"{self.description.id}-text.children"} if self.description else {}),
         }
 
     @property

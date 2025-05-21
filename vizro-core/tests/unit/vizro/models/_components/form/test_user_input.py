@@ -23,7 +23,12 @@ class TestUserInputInstantiation:
         assert user_input._action_inputs == {"__default__": f"{user_input.id}.value"}
 
     def test_create_user_input_mandatory_and_optional(self):
-        user_input = UserInput(id="user-input-id", title="Title", placeholder="Placeholder")
+        user_input = UserInput(
+            id="user-input-id",
+            title="Title",
+            placeholder="Placeholder",
+            description="Test description",
+        )
 
         assert user_input.id == "user-input-id"
         assert user_input.type == "user_input"
@@ -33,6 +38,7 @@ class TestUserInputInstantiation:
         assert user_input._action_outputs == {
             "__default__": f"{user_input.id}.value",
             "title": f"{user_input.id}_title.children",
+            "description": f"{user_input.description.id}-text.children",
         }
         assert user_input._action_inputs == {"__default__": f"{user_input.id}.value"}
 
@@ -68,7 +74,7 @@ class TestUserInputBuild:
         expected_description = [
             html.Span("info", id="info-icon", className="material-symbols-outlined tooltip-icon"),
             dbc.Tooltip(
-                children=dcc.Markdown("Tooltip test", className="card-text"),
+                children=dcc.Markdown("Tooltip test", id="info-text", className="card-text"),
                 id="info",
                 target="info-icon",
                 autohide=False,

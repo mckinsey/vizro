@@ -42,7 +42,7 @@ class TestChecklistInstantiation:
         assert checklist._action_outputs == {
             "__default__": f"{checklist.id}.value",
             "title": f"{checklist.id}_title.children",
-            "description": f"{checklist.description.id}.children",
+            "description": f"{checklist.description.id}-text.children",
         }
         assert checklist._action_inputs == {"__default__": f"{checklist.id}.value"}
 
@@ -193,7 +193,7 @@ class TestChecklistBuild:
         expected_description = [
             html.Span("info", id="info-icon", className="material-symbols-outlined tooltip-icon"),
             dbc.Tooltip(
-                children=dcc.Markdown("Test description", className="card-text"),
+                children=dcc.Markdown("Test description", id="info-text", className="card-text"),
                 id="info",
                 target="info-icon",
                 autohide=False,

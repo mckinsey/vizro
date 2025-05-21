@@ -84,7 +84,7 @@ class TestAgGridInstantiation:
             "title": "ag-grid-id_title.children",
             "header": "ag-grid-id_header.children",
             "footer": "ag-grid-id_footer.children",
-            "description": f"{ag_grid.description.id}.children",
+            "description": f"{ag_grid.description.id}-text.children",
             **{ag_grid_prop: f"underlying_ag_grid_id.{ag_grid_prop}" for ag_grid_prop in DAG_AG_GRID_PROPERTIES},
         }
         assert ag_grid._action_inputs == {

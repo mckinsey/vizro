@@ -94,7 +94,7 @@ class Table(VizroBaseModel):
             **({"title": f"{self.id}_title.children"} if self.title else {}),
             **({"header": f"{self.id}_header.children"} if self.header else {}),
             **({"footer": f"{self.id}_footer.children"} if self.footer else {}),
-            **({"description": f"{self.description.id}.children"} if self.description else {}),
+            **({"description": f"{self.description.id}-text.children"} if self.description else {}),
         }
 
     # Convenience wrapper/syntactic sugar.

@@ -105,7 +105,7 @@ def expected_slider_with_description():
     expected_description = [
         html.Span("info", id="info-icon", className="material-symbols-outlined tooltip-icon"),
         dbc.Tooltip(
-            children=dcc.Markdown("Test description", className="card-text"),
+            children=dcc.Markdown("Test description", id="info-text", className="card-text"),
             id="info",
             target="info-icon",
             autohide=False,
@@ -200,7 +200,7 @@ class TestSliderInstantiation:
         assert slider._action_outputs == {
             "__default__": f"{slider.id}.value",
             "title": f"{slider.id}_title.children",
-            "description": f"{slider.description.id}.children",
+            "description": f"{slider.description.id}-text.children",
         }
         assert slider._action_inputs == {"__default__": f"{slider.id}.value"}
 

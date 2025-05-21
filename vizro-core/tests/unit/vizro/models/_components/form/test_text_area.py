@@ -23,7 +23,12 @@ class TestTextAreaInstantiation:
         assert text_area._action_inputs == {"__default__": f"{text_area.id}.value"}
 
     def test_create_text_area_mandatory_and_optional(self):
-        text_area = TextArea(id="text-area-id", title="Title", placeholder="Placeholder")
+        text_area = TextArea(
+            id="text-area-id",
+            title="Title",
+            placeholder="Placeholder",
+            description="Test description",
+        )
 
         assert text_area.id == "text-area-id"
         assert text_area.type == "text_area"
@@ -33,6 +38,7 @@ class TestTextAreaInstantiation:
         assert text_area._action_outputs == {
             "__default__": f"{text_area.id}.value",
             "title": f"{text_area.id}_title.children",
+            "description": f"{text_area.description.id}-text.children",
         }
         assert text_area._action_inputs == {"__default__": f"{text_area.id}.value"}
 
@@ -67,7 +73,7 @@ class TestTextAreaBuild:
         expected_description = [
             html.Span("info", id="info-icon", className="material-symbols-outlined tooltip-icon"),
             dbc.Tooltip(
-                children=dcc.Markdown("Tooltip test", className="card-text"),
+                children=dcc.Markdown("Tooltip test", id="info-text", className="card-text"),
                 id="info",
                 target="info-icon",
                 autohide=False,

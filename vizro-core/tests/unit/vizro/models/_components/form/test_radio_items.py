@@ -42,7 +42,7 @@ class TestRadioItemsInstantiation:
         assert radio_items._action_outputs == {
             "__default__": f"{radio_items.id}.value",
             "title": f"{radio_items.id}_title.children",
-            "description": f"{radio_items.description.id}.children",
+            "description": f"{radio_items.description.id}-text.children",
         }
         assert radio_items._action_inputs == {"__default__": f"{radio_items.id}.value"}
 
@@ -189,7 +189,7 @@ class TestRadioItemsBuild:
         expected_description = [
             html.Span("info", id="info-icon", className="material-symbols-outlined tooltip-icon"),
             dbc.Tooltip(
-                children=dcc.Markdown("Test description", className="card-text"),
+                children=dcc.Markdown("Test description", id="info-text", className="card-text"),
                 id="info",
                 target="info-icon",
                 autohide=False,

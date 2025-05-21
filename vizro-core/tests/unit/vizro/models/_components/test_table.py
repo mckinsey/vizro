@@ -69,7 +69,7 @@ class TestTableInstantiation:
             "title": f"{table.id}_title.children",
             "header": f"{table.id}_header.children",
             "footer": f"{table.id}_footer.children",
-            "description": f"{table.description.id}.children",
+            "description": f"{table.description.id}-text.children",
         }
 
     def test_table_filter_interaction_attributes(self, dash_data_table_with_id):

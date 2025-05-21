@@ -38,7 +38,7 @@ class TestTabsInstantiation:
         assert isinstance(tabs.description, vm.Tooltip)
         assert tabs._action_outputs == {
             "title": f"{tabs.id}_title.children",
-            "description": f"{tabs.description.id}.children",
+            "description": f"{tabs.description.id}-text.children",
         }
 
     def test_mandatory_tabs_missing(self):
@@ -116,7 +116,7 @@ class TestTabsBuildMethod:
         expected_description = [
             html.Span("info", id="info-icon", className="material-symbols-outlined tooltip-icon"),
             dbc.Tooltip(
-                children=dcc.Markdown("Tooltip test", className="card-text"),
+                children=dcc.Markdown("Tooltip test", id="info-text", className="card-text"),
                 id="info",
                 target="info-icon",
                 autohide=False,

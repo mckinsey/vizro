@@ -52,7 +52,7 @@ class TestDatePickerInstantiation:
         assert date_picker._action_outputs == {
             "__default__": f"{date_picker.id}.value",
             "title": f"{date_picker.id}_title.children",
-            "description": f"{date_picker.description.id}.children",
+            "description": f"{date_picker.description.id}-text.children",
         }
         assert date_picker._action_inputs == {"__default__": f"{date_picker.id}.value"}
 
@@ -192,7 +192,7 @@ class TestBuildMethod:
         expected_description = [
             html.Span("info", id="info-icon", className="material-symbols-outlined tooltip-icon"),
             dbc.Tooltip(
-                children=dcc.Markdown("Test description", className="card-text"),
+                children=dcc.Markdown("Test description", id="info-text", className="card-text"),
                 id="info",
                 target="info-icon",
                 autohide=False,

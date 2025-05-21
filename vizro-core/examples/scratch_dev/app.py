@@ -118,7 +118,7 @@ page_table_of_contents = vm.Page(
                         ["NavLink", "", "", "", ""],
                         ["Navigation", "", "", "", ""],
                         ["Page", "", "", "title, description", ""],
-                        ["Tooltip", "", "", "", ""],
+                        ["Tooltip", "", "", "text, icon", ""],
                     ],
                 ),
             )

@@ -39,7 +39,7 @@ class TestContainerInstantiation:
         assert container.collapsed is True
         assert container._action_outputs == {
             "title": f"{container.id}_title.children",
-            "description": f"{container.description.id}.children",
+            "description": f"{container.description.id}-text.children",
         }
 
     def test_create_container_mandatory_and_optional_legacy_layout(self):
@@ -192,7 +192,7 @@ class TestContainerBuildMethod:
         expected_description = [
             html.Span("info", id="info-icon", className="material-symbols-outlined tooltip-icon"),
             dbc.Tooltip(
-                children=dcc.Markdown("Tooltip test", className="card-text"),
+                children=dcc.Markdown("Tooltip test", id="info-text", className="card-text"),
                 id="info",
                 target="info-icon",
                 autohide=False,

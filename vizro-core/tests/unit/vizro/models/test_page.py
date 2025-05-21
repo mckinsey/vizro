@@ -43,7 +43,7 @@ class TestPageInstantiation:
         assert page.actions == []
         assert page._action_outputs == {
             "title": f"{page.id}_title.children",
-            "description": f"{page.description.id}.children",
+            "description": f"{page.description.id}-text.children",
         }
 
     def test_create_page_mandatory_and_optional_legacy_layout(self):
