@@ -1957,7 +1957,7 @@
     },
     "Tabs": {
       "additionalProperties": false,
-      "description": "Tabs to group together a set of containers on a page.\n\nArgs:\n    type (Literal[\"tabs\"]): Defaults to `\"tabs\"`.\n    tabs (list[Container]): See [`Container`][vizro.models.Container].\n    title (str): Title displayed above Tabs. Defaults to `\"\"`.",
+      "description": "Tabs to group together a set of containers on a page.\n\nArgs:\n    type (Literal[\"tabs\"]): Defaults to `\"tabs\"`.\n    tabs (list[Container]): See [`Container`][vizro.models.Container].\n    title (str): Title displayed above Tabs. Defaults to `\"\"`.\n    description (Optional[Tooltip]): Optional markdown string that adds an icon next to the title.\n        Hovering over the icon shows a tooltip with the provided description. Defaults to `None`.",
       "properties": {
         "id": {
           "default": "",
@@ -1984,6 +1984,18 @@
           "description": "Title displayed above Tabs.",
           "title": "Title",
           "type": "string"
+        },
+        "description": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/Tooltip"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "Optional markdown string that adds an icon next to the title.\n            Hovering over the icon shows a tooltip with the provided description. Defaults to `None`."
         }
       },
       "required": ["tabs"],

@@ -85,7 +85,13 @@ class Graph(VizroBaseModel):
 
     @property
     def _action_outputs(self) -> dict[str, _IdProperty]:
-        return {"__default__": f"{self.id}.figure"}
+        return {
+            "__default__": f"{self.id}.figure",
+            **({"title": f"{self.id}_title.children"} if self.title else {}),
+            **({"header": f"{self.id}_header.children"} if self.header else {}),
+            **({"footer": f"{self.id}_footer.children"} if self.footer else {}),
+            **({"description": f"{self.description.id}-text.children"} if self.description else {}),
+        }
 
     # Convenience wrapper/syntactic sugar.
     def __call__(self, **kwargs):
@@ -220,7 +226,7 @@ class Graph(VizroBaseModel):
         return dcc.Loading(
             children=html.Div(
                 children=[
-                    html.H3([self.title, *description], className="figure-title", id=f"{self.id}_title")
+                    html.H3([html.Span(self.title, id=f"{self.id}_title"), *description], className="figure-title")
                     if self.title
                     else None,
                     dcc.Markdown(self.header, className="figure-header", id=f"{self.id}_header")
