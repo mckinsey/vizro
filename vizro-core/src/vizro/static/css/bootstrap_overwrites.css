@@ -90,3 +90,8 @@ label[for="theme-selector"] {
 .dropdown {
   min-width: 160px;
 }
+
+.container-controls-panel .form-check-inline {
+  align-content: center;
+  height: 32px;
+}

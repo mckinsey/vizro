@@ -43,4 +43,3 @@ def managers_one_page_container_controls(gapminder):
             vm.Graph(id="bar_chart", figure=px.bar(gapminder, x="country", y="gdpPercap")),
         ],
     )
-    # Vizro._pre_build()
