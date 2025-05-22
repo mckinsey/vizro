@@ -54,25 +54,12 @@ jobs:
       - name: Run e2e vizro-dom-elements tests
         run: hatch run test-e2e-vizro-dom-elements --splits 3 --group ${{ matrix.group }}
 
-      - name: Publish Test Report
-        # used pinned commit hash for security reasons
-        uses: ctrf-io/github-test-reporter@27b97adba93f02142c573c8a710045cac0d874ae # v1.0.14
-        with:
-          report-path: "./.ctrf/ctrf-report.json"
-          failed-folded-report: true
-          flaky-rate-report: true
-          previous-results-max: 100
-          artifact-name: ctrf-report-${{ matrix.label }}-${{ matrix.python-version }}-${{ matrix.group }}
+      - name: Create ctrf reports for tests
+        if: always()
+        uses: ./.github/actions/ctrf-report
         env:
+          ARTIFACT_NAME_POSTFIX: ${{ matrix.label }}-${{ matrix.python-version }}-${{ matrix.group }}
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        if: always()
-
-      - name: Upload ctrf-report
-        uses: actions/upload-artifact@v4
-        with:
-          name: ctrf-report-${{ matrix.label }}-${{ matrix.python-version }}-${{ matrix.group }}
-          path: /home/runner/work/vizro/vizro/.ctrf/ctrf-report.json
-        if: always()
 
       - name: Create artifacts and slack notifications
         if: failure()
