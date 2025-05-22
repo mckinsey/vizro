@@ -40,6 +40,7 @@ For a gallery of examples showing Vizro in action, take a look at [vizro.mckinse
 We also maintain a separate, curated page of [videos, blog posts, and examples of Vizro usage from our community](your-examples.md).
 
 ## How does Vizro work under the hood?
+
 This documentation set is designed mostly for users of Vizro, but if you're interested in how it works, we recommend heading over to the [DeepWiki pages](https://deepwiki.com/mckinsey/vizro) for insight into Vizro's architecture, dashboard model, page model, and more.
 
 ## Why should I use Vizro?
