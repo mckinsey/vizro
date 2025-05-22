@@ -83,5 +83,5 @@ jobs:
         if: always()
         uses: ./.github/actions/ctrf-report
         env:
-          ARTIFACT_NAME_POSTFIX: ${{ matrix.python-version }}-${{ matrix.os }}-${{ matrix.label }}
+          ARTIFACT_NAME_POSTFIX: ${{ matrix.config.python-version }}-${{ matrix.config.os }}-${{ matrix.config.label }}
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
