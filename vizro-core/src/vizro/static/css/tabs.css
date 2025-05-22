@@ -20,3 +20,9 @@ To ensure the dynamic height adjustment and prevent scrolling, the height must b
 .tab-pane > div:first-child {
   height: 100%;
 }
+
+.inner-tabs-title {
+  align-items: center;
+  display: flex;
+  gap: 8px;
+}

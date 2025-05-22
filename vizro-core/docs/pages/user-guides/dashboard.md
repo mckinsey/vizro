@@ -206,7 +206,7 @@ Vizro [automatically incorporate the dashboard logo](assets.md/#add-a-logo-image
 
 The `description` argument enables you to add helpful context to your dashboard by displaying an info icon next to its title. Hovering over the icon shows a tooltip with your provided text.
 
-You can provide markdown text as a string to use the default info icon or a [`Tooltip`][vizro.models.Tooltip] model to use any icon from the [Google Material Icons library](https://fonts.google.com/icons).
+You can provide [Markdown text](https://markdown-guide.readthedocs.io/) as a string to use the default info icon or a [`Tooltip`][vizro.models.Tooltip] model to use any icon from the [Google Material Icons library](https://fonts.google.com/icons).
 
 ![Dashboard with tooltip](../../assets/user_guides/dashboard/dashboard_with_info_icon.png)
 
