@@ -12,6 +12,7 @@ Here are some answers to frequently asked questions:
 - [Which browsers does Vizro support?](#which-browsers-does-vizro-support)
 - [What is the Vizro versioning policy?](#what-is-the-vizro-versioning-policy)
 - [Where can I find example dashboards?](#where-can-i-find-example-dashboards)
+- [How does Vizro work under the hood?](#how-does-vizro-work-under-the-hood)
 - [Why should I use Vizro?](#why-should-i-use-vizro)
 - [How does Vizro differ from Dash or Streamlit?](#how-does-vizro-differ-from-dash-or-streamlit)
 - [How does Vizro compare with Python packages and business intelligence (BI) tools?](#how-does-vizro-compare-with-python-packages-and-business-intelligence-bi-tools)
@@ -37,6 +38,9 @@ This project adheres to [semantic versioning](https://semver.org/spec/v2.0.0.htm
 For a gallery of examples showing Vizro in action, take a look at [vizro.mckinsey.com](https://vizro.mckinsey.com). The gallery links to the [Vizro HuggingFace collection](https://huggingface.co/vizro), which includes complete code accessed for each example by selecting "Files" in the top right menu.
 
 We also maintain a separate, curated page of [videos, blog posts, and examples of Vizro usage from our community](your-examples.md).
+
+## How does Vizro work under the hood?
+This documentation set is designed mostly for users of Vizro, but if you're interested in how it works, we recommend heading over to the [DeepWiki pages](https://deepwiki.com/mckinsey/vizro) for insight into Vizro's architecture, dashboard model, page model, and more.
 
 ## Why should I use Vizro?
 
