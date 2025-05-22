@@ -86,3 +86,12 @@ label[for="theme-selector"] {
   margin-right: 0;
   padding-left: 0;
 }
+
+.dropdown {
+  min-width: 160px;
+}
+
+.container-controls-panel .form-check-inline {
+  align-content: center;
+  height: 32px;
+}

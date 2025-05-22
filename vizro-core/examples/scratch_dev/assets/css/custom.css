@@ -2,8 +2,7 @@
   padding-left: 8px;
 }
 
-/* To uniformly apply a size to all flex-items */
-.card-kpi {
-  height: 150px;
-  width: 300px;
+#side-controls {
+  display: flex;
+  flex-direction: column;
 }

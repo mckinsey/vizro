@@ -866,6 +866,20 @@ class TestPreBuildMethod:
         assert default_action.filter_function == _filter_between
         assert default_action.id == f"__filter_action_{filter.id}"
 
+    @pytest.mark.usefixtures("managers_one_page_container_controls")
+    def test_container_filter_defaults(self):
+        filter = model_manager["container_filter"]
+        filter.pre_build()
+
+        assert filter.selector.extra == {"inline": True}
+
+    @pytest.mark.usefixtures("managers_one_page_container_controls")
+    def test_container_filter_default_targets(self):
+        filter = model_manager["container_filter"]
+        filter.pre_build()
+
+        assert filter.targets == ["scatter_chart"]
+
 
 class TestFilterBuild:
     """Tests filter build method."""
