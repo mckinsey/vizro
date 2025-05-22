@@ -1,10 +1,12 @@
 from __future__ import annotations
 
 import base64
+import json
 import logging
 from functools import partial
 from pathlib import Path
 from typing import TYPE_CHECKING, Annotated, Literal, Optional, cast
+from urllib.parse import urlencode
 
 import dash
 import dash_bootstrap_components as dbc
@@ -20,6 +22,7 @@ from dash import (
     get_asset_url,
     get_relative_path,
     html,
+    callback,
 )
 from dash.development.base_component import Component
 from pydantic import AfterValidator, BeforeValidator, Field, ValidationInfo
@@ -29,10 +32,12 @@ import vizro
 from vizro._constants import MODULE_PAGE_404, VIZRO_ASSETS_PATH
 from vizro._themes.template_dashboard_overrides import dashboard_overrides
 from vizro.actions._action_loop._action_loop import ActionLoop
+from vizro.managers import model_manager
 from vizro.models import Navigation, Tooltip, VizroBaseModel
 from vizro.models._models_utils import _log_call
 from vizro.models._navigation._navigation_utils import _NavBuildType
 from vizro.models._tooltip import coerce_str_to_tooltip
+from vizro.models.types import ControlType
 
 if TYPE_CHECKING:
     from vizro.models import Page
@@ -70,6 +75,22 @@ _PageDivsType = TypedDict(
         "page-components": html.Div,
     },
 )
+
+
+# TODO NOW: put this somewhere sensible
+def encode_value_to_b64url(value):
+    # checked, seems good
+    json_bytes = json.dumps(value, separators=(",", ":")).encode("utf-8")
+    b64_bytes = base64.urlsafe_b64encode(json_bytes)
+    return b64_bytes.decode("utf-8").rstrip("=")
+
+
+def decode_value_from_b64url(b64url_str):
+    # checked, seems good
+    padding = "=" * (-len(b64url_str) % 4)
+    b64url_str += padding
+    json_bytes = base64.urlsafe_b64decode(b64url_str)
+    return json.loads(json_bytes.decode("utf-8"))
 
 
 def set_navigation_pages(navigation: Optional[Navigation], info: ValidationInfo) -> Optional[Navigation]:
@@ -149,6 +170,22 @@ class Dashboard(VizroBaseModel):
         for page in self.pages:
             page.build()  # TODO: ideally remove, but necessary to register slider callbacks
 
+        # TODO NOW: convert to clientside
+        # TODO NOW: use optional inputs so works across all pages
+        inputs = {
+            control.selector.id: Input(control.selector.id, "value")
+            for control in model_manager._get_models(ControlType)
+        }
+
+        # TODO NOW: name better
+        @callback(Output("no_refresh", "search"), inputs)
+        def f(inputs):
+            # TODO NOW: need to check for if they're None? Probably doesn't occur in practice but maybe best to add it here anyway.
+            # TODO NOW: urlencode not really necessary here - check this.
+            # TODO NOW: need to not obliterate other things in url so needs to take in State still.
+            # Is it still good idea to re-encode all of controls? Probably yes but maybe not.
+            return "?" + urlencode({"controls": inputs})
+
         clientside_callback(
             ClientsideFunction(namespace="dashboard", function_name="update_dashboard_theme"),
             # This currently doesn't do anything, but we need to define an Output such that the callback is triggered.
@@ -181,6 +218,7 @@ class Dashboard(VizroBaseModel):
                 ),
                 ActionLoop._create_app_callbacks(),
                 dash.page_container,
+                dcc.Location(id="vizro_url"),
             ],
         )
 
@@ -209,7 +247,7 @@ class Dashboard(VizroBaseModel):
                 "Both `logo_dark` and `logo_light` must be provided together. Please provide either both or neither."
             )
 
-    def _get_page_divs(self, page: Page) -> _PageDivsType:
+    def _get_page_divs(self, page: Page, controls_from_url=None) -> _PageDivsType:
         # Identical across pages
         dashboard_description = self.description.build().children if self.description else [None]
         dashboard_title = (
@@ -249,7 +287,7 @@ class Dashboard(VizroBaseModel):
         nav_panel = navigation["nav-panel"]
 
         # Different across pages
-        page_content: _PageBuildType = page.build()
+        page_content: _PageBuildType = page.build(controls_from_url=controls_from_url)
         control_panel = page_content["control-panel"]
         page_components = page_content["page-components"]
 
@@ -319,7 +357,13 @@ class Dashboard(VizroBaseModel):
     def _make_page_layout(self, page: Page, **kwargs):
         # **kwargs are not used but ensure that unexpected query parameters do not raise errors. See
         # https://github.com/AnnMarieW/dash-multi-page-app-demos/#5-preventing-query-string-errors
-        page_divs = self._get_page_divs(page=page)
+        if (controls_encoded := kwargs.get("controls")) is not None:
+            controls_from_url = decode_value_from_b64url(controls_encoded)
+        else:
+            controls_from_url = None
+
+        # TODO NOW COMMENT: controls not actually optional argument, always provided by us
+        page_divs = self._get_page_divs(page=page, controls_from_url=controls_from_url)
         page_layout = self._arrange_page_divs(page_divs=page_divs)
         page_layout.id = page.id
         return page_layout

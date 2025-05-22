@@ -1,6 +1,8 @@
 # # Vizro is an open-source toolkit for creating modular data visualization applications.
 # # check out https://github.com/mckinsey/vizro for more info about Vizro
 # # and checkout https://vizro.readthedocs.io/en/stable/ for documentation.
+from dash import callback, Input, Output, set_props, clientside_callback
+
 
 import vizro.models as vm
 import vizro.plotly.express as px
@@ -12,9 +14,9 @@ df = px.data.iris()
 page1 = vm.Page(
     title="LAYOUT_FLEX_WRAP_AND_AG_GRID",
     components=[
-        vm.AgGrid(id=f"ag_grid_outer_id_{i}", figure=dash_ag_grid(df, id=f"ag_grid_inner_id_{i}")) for i in range(3)
+        vm.Button(),
     ],
-    controls=[vm.Filter(column="species")],
+    # controls=[vm.Filter(column="species")],
 )
 
 page2 = vm.Page(
@@ -22,7 +24,7 @@ page2 = vm.Page(
     components=[
         vm.Table(id=f"table_outer_id_{i}", figure=dash_data_table(df, id=f"table_inner_id_{i}")) for i in range(3)
     ],
-    controls=[vm.Filter(column="species")],
+    controls=[vm.Filter(column="species", selector=vm.RadioItems(id="r"))],
 )
 
 page3 = vm.Page(
@@ -58,12 +60,29 @@ page_5_table_error = vm.Page(
             # TODO: See how configurations below raise an exception.
             # figure=dash_data_table(df, id="duplicate-table-id")
             # figure=dash_data_table(df, id="duplicate-ag-grid-id"),
-        )
+        ),
     ],
     controls=[vm.Filter(column="species")],
 )
 
-dashboard = vm.Dashboard(pages=[page1, page2, page3, page_4_ag_grid_error, page_5_table_error])
+dashboard = vm.Dashboard(pages=[page1, page2])
+#
+#
+# clientside_callback(
+#     """
+#     function f(v)
+#     {
+#         const url = new URL(window.location.href);
+#         url.searchParams.set('key', v);
+#         window.history.pushState(null, '', url.toString());
+#     }
+#     """,
+#     # Output("vizro_url", "search"),
+#     Input("r", "value"),
+# )
+# # def f(v):
+#     set_props("vizro_url", {"search": f"?r={v}"})
+# return
 
 
 if __name__ == "__main__":

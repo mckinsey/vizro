@@ -9,6 +9,7 @@ from typing import TYPE_CHECKING, Annotated, Any, Callable, ClassVar, Literal, U
 
 from dash import Input, Output, State, callback, html
 from dash.development.base_component import Component
+from dash_auth import public_callback, protected_callback
 from pydantic import Field, TypeAdapter, field_validator
 from pydantic.json_schema import SkipJsonSchema
 from typing_extensions import TypedDict
@@ -262,7 +263,17 @@ class _BaseAction(VizroBaseModel):
             logger.debug("Callback inputs:\n%s", pformat(callback_inputs["external"], width=200))
             logger.debug("Callback outputs:\n%s", pformat(callback_outputs.get("external"), width=200))
 
-        @callback(output=callback_outputs, inputs=callback_inputs, prevent_initial_call=True)
+        # User could define something here properly
+        # def f():
+        #     return 1
+
+        @callback(
+            # missing_permissions_output=f,
+            # groups=["a"],
+            output=callback_outputs,
+            inputs=callback_inputs,
+            prevent_initial_call=True,
+        )
         def callback_wrapper(external: Union[list[Any], dict[str, Any]], internal: dict[str, Any]) -> dict[str, Any]:
             return_value = self._action_callback_function(inputs=external, outputs=callback_outputs.get("external"))
             if "external" in callback_outputs:

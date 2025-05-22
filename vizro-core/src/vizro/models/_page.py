@@ -160,13 +160,13 @@ class Page(VizroBaseModel):
             ]
 
     @_log_call
-    def build(self) -> _PageBuildType:
+    def build(self, *, controls_from_url=None) -> _PageBuildType:
         # Build control panel
-        controls_content = [control.build() for control in self.controls]
+        controls_content = [control.build(controls_from_url=controls_from_url) for control in self.controls]
         control_panel = html.Div(id="control-panel", children=controls_content, hidden=not controls_content)
 
         # Build layout with components
-        components_container = _build_inner_layout(self.layout, self.components)
+        components_container = _build_inner_layout(self.layout, self.components, controls_from_url=controls_from_url)
         components_container.children.append(dcc.Store(id=f"{ON_PAGE_LOAD_ACTION_PREFIX}_trigger_{self.id}"))
         components_container.id = "page-components"
         return html.Div([control_panel, components_container])

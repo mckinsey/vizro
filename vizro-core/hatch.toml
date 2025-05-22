@@ -37,6 +37,7 @@ installer = "uv"
 PYTHONPATH = "tests/e2e/vizro/dashboards/default:tests/e2e/vizro/dashboards/yaml:tests/tests_utils:tests/e2e/vizro/custom_components"
 
 [envs.default.scripts]
+a = ["echo 'b' | grep 'a'", "echo 'hi'"]
 download-static-files = "python tools/download_static_files.py"
 example = "hatch run examples:example {args:scratch_dev}"  # shortcut script to underlying example environment script.
 lint = "pre-commit run {args} --all-files"
@@ -111,6 +112,7 @@ build = "mkdocs build --strict"
 # Disable warnings on the linkcheck so that HTTP redirects are accepted. We could ignore only that warning and specify
 # more advanced settings using a linkcheckerrc config file.
 link-check = "linkchecker site --check-extern --no-warnings --ignore=404.html --ignore-url=127.0.0.1 --ignore-url=https://vizro.readthedocs.io/ --ignore-url=https://platform.ploomber.io/register --ignore-url=https://huggingface.co/join"
+logo-check = "cat install.html or install.md | grep logo.png"
 pip = '"{env:HATCH_UV}" pip {args}'
 serve = "mkdocs serve --open"
 
@@ -119,6 +121,7 @@ serve = "mkdocs serve --open"
 # examples should just run in the default environment like they used to so that there's only one Python interpreter
 # used while debugging. Remember to update devcontainer hatch run command to not use examples environment then.
 dependencies = [
+  "dash_auth",
   "pyyaml",
   "openpyxl",
   # black, autoflake and isort required to run the example visual-vocabulary. This is completely independent of the
@@ -142,7 +145,7 @@ extra-dependencies = [
   "dash==3.0.0",
   "dash-bootstrap-components==2.0.0",
   "dash-ag-grid==31.3.1",
-  "dash-mantine-components==1.0.0",
+  "dash-tch-components==1.0.0",
   "plotly==5.24.0",
   "pydantic==2.7.0",
   "pandas==2.0.0",

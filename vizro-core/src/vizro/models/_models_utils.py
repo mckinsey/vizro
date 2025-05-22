@@ -46,7 +46,7 @@ REPLACEMENT_STRINGS = {
 }
 
 
-def _build_inner_layout(layout, components):
+def _build_inner_layout(layout, components, controls_from_url=None):
     """Builds inner layout and adds components to grid or flex. Used inside `Page`, `Container` and `Form`."""
     from vizro.models import Grid
 
@@ -55,7 +55,11 @@ def _build_inner_layout(layout, components):
         for idx, component in enumerate(components):
             components_container[f"{layout.id}_{idx}"].children = component.build()
     else:
-        components_container.children = [html.Div(component.build(), className="flex-item") for component in components]
+        # TODO NOW: think about how to handle the fact that we only want to pass it through to certain Containers, not all possible
+        # page components.
+        components_container.children = [
+            html.Div(component.build(controls_from_url=None), className="flex-item") for component in components
+        ]
 
     return components_container
 

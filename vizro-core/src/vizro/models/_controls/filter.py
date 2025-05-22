@@ -90,6 +90,7 @@ class Filter(VizroBaseModel):
         "If none are given then target all components on the page that use `column`.",
     )
     selector: Optional[SelectorType] = None
+    include_in_url: bool = False
 
     _dynamic: bool = PrivateAttr(False)
 

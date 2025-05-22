@@ -6,7 +6,7 @@ from pydantic import AfterValidator, Field
 from pydantic.functional_serializers import PlainSerializer
 from pydantic.json_schema import SkipJsonSchema
 
-from vizro.models import VizroBaseModel
+from vizro.models import VizroBaseModel, Tooltip
 from vizro.models._action._actions_chain import _action_validator_factory
 from vizro.models._models_utils import _log_call
 from vizro.models.types import ActionType
@@ -64,7 +64,7 @@ class Button(VizroBaseModel):
 
         defaults = {
             "id": self.id,
-            "children": self.text,
+            "children": [self.text, Tooltip(icon="info", text="Blah blah blah").build()],
             "href": get_relative_path(self.href) if self.href.startswith("/") else self.href,
             "target": "_top",
             # dbc.Button includes `btn btn-primary` as a class by default and appends any class names provided.
