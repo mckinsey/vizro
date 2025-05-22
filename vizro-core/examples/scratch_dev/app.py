@@ -1,8 +1,8 @@
-"""Dev App."""
+"""Dev app to try things out."""
 
-import vizro.models as vm
 import vizro.plotly.express as px
 from vizro import Vizro
+import vizro.models as vm
 
 iris = px.data.iris()
 
@@ -345,10 +345,6 @@ page9 = vm.Page(
                     column="petal_width",
                     selector=vm.RangeSlider(),
                 ),
-                # vm.Filter(
-                #     column="sepal_length",
-                #     selector=vm.Slider(),
-                # ),
             ],
         ),
         vm.Container(
@@ -357,13 +353,14 @@ page9 = vm.Page(
                 vm.Graph(
                     title="Bar chart",
                     figure=px.bar(iris, x="sepal_length", y="sepal_width", color="species"),
-                ),
+                )
             ],
         ),
     ],
 )
 
 dashboard = vm.Dashboard(pages=[page1, page2, page3, page4, page5, page6, page7, page8, page9])
+
 
 if __name__ == "__main__":
     Vizro().build(dashboard).run()

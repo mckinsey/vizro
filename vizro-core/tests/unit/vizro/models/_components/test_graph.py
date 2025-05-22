@@ -42,15 +42,37 @@ class TestGraphInstantiation:
         assert graph.type == "graph"
         assert graph.figure == standard_px_chart._captured_callable
         assert graph.actions == []
+        assert graph.title == ""
+        assert graph.header == ""
+        assert graph.footer == ""
+        assert graph.description is None
         assert graph._action_outputs == {"__default__": f"{graph.id}.figure"}
 
-    @pytest.mark.parametrize("id", ["id_1", "id_2"])
-    def test_create_graph_mandatory_and_optional(self, standard_px_chart, id):
-        graph = vm.Graph(id=id, figure=standard_px_chart, actions=[])
+    def test_create_graph_mandatory_and_optional(self, standard_px_chart):
+        graph = vm.Graph(
+            id="graph-id",
+            figure=standard_px_chart,
+            title="Title",
+            description="Test description",
+            header="Header",
+            footer="Footer",
+        )
 
-        assert graph.id == id
+        assert graph.id == "graph-id"
         assert graph.type == "graph"
         assert graph.figure == standard_px_chart._captured_callable
+        assert graph.actions == []
+        assert graph.title == "Title"
+        assert graph.header == "Header"
+        assert graph.footer == "Footer"
+        assert isinstance(graph.description, vm.Tooltip)
+        assert graph._action_outputs == {
+            "__default__": f"{graph.id}.figure",
+            "title": f"{graph.id}_title.children",
+            "header": f"{graph.id}_header.children",
+            "footer": f"{graph.id}_footer.children",
+            "description": f"{graph.description.id}-text.children",
+        }
 
     def test_mandatory_figure_missing(self):
         with pytest.raises(ValidationError, match="Field required"):
@@ -205,7 +227,7 @@ class TestBuildGraph:
         expected_graph = dcc.Loading(
             html.Div(
                 [
-                    html.H3(["Title", None], className="figure-title"),
+                    html.H3([html.Span("Title"), None], className="figure-title"),
                     dcc.Markdown("""#### Subtitle""", className="figure-header"),
                     dcc.Graph(
                         figure=go.Figure(
@@ -253,7 +275,7 @@ class TestBuildGraph:
         expected_graph = dcc.Loading(
             html.Div(
                 [
-                    html.H3(["Title", *expected_description], className="figure-title"),
+                    html.H3([html.Span("Title"), *expected_description], className="figure-title"),
                     None,
                     dcc.Graph(
                         figure=go.Figure(

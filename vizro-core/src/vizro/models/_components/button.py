@@ -9,7 +9,7 @@ from pydantic.json_schema import SkipJsonSchema
 from vizro.models import VizroBaseModel
 from vizro.models._action._actions_chain import _action_validator_factory
 from vizro.models._models_utils import _log_call
-from vizro.models.types import ActionType
+from vizro.models.types import ActionType, _IdProperty
 
 
 class Button(VizroBaseModel):
@@ -57,6 +57,12 @@ class Button(VizroBaseModel):
             ),
         ]
     ]
+
+    @property
+    def _action_outputs(self) -> dict[str, _IdProperty]:
+        return {
+            "text": f"{self.id}.children",
+        }
 
     @_log_call
     def build(self):
