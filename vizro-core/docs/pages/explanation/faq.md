@@ -41,7 +41,7 @@ We also maintain a separate, curated page of [videos, blog posts, and examples o
 
 ## How does Vizro work under the hood?
 
-This documentation set is designed mostly for users of Vizro, but if you're interested in how it works, we recommend heading over to the [DeepWiki pages](https://deepwiki.com/mckinsey/vizro) for insight into Vizro's architecture, dashboard model, page model, and more.
+This documentation is designed mostly for users of Vizro, but if you're interested in how Vizro works, we recommend heading over to the [DeepWiki pages](https://deepwiki.com/mckinsey/vizro) for insight into Vizro's architecture, dashboard model, page model, and more.
 
 ## Why should I use Vizro?
 
