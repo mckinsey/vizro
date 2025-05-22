@@ -85,7 +85,7 @@ test-e2e-vizro-screenshots = [
   "tests/tests_utils/e2e/vizro/dashboards/wait-for-it.sh 127.0.0.1:5006 -t 30",
   "pytest -vs --reruns 1 --ctrf ../.ctrf/ctrf-report.json tests/e2e/vizro/test_screenshots/ --headless {args}"
 ]
-test-integration = "pytest tests/integration --headless {args}"
+test-integration = "pytest --ctrf ../.ctrf/ctrf-report.json tests/integration --headless {args}"
 test-js = "./tools/run_jest.sh {args}"
 test-unit = "pytest tests/unit {args}"
 test-unit-coverage = [
