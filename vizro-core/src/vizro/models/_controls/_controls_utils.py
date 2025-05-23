@@ -23,7 +23,5 @@ def check_targets_present_on_page(control: ControlType) -> None:
 
 def set_container_control_default(control: ControlType) -> None:
     page = model_manager._get_model_page(control)
-    control_is_on_page = any(pg_control.id == control.id for pg_control in page.controls)
-
-    if not control_is_on_page and isinstance(control.selector, (Checklist, RadioItems)):
+    if control not in page.controls and isinstance(control.selector, (Checklist, RadioItems)):
         control.selector.extra.setdefault("inline", True)

@@ -344,13 +344,7 @@ class Filter(VizroBaseModel):
         # Find the control's parent model. Set it as the control's parent container it exists.
         # Otherwise set it as the control's page.
         root_model = next(
-            (
-                container
-                for container in page_containers
-                if any(control.id == self.id for control in container.controls)
-            ),
+            (container for container in page_containers if self in container.controls),
             page,
         )
-        return [
-            model.id for model in cast(Iterable[VizroBaseModel], model_manager._get_models(FIGURE_MODELS, root_model))
-        ]
+        return [model.id for model in cast(Iterable[FigureType], model_manager._get_models(FIGURE_MODELS, root_model))]

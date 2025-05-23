@@ -6,7 +6,7 @@ Uncomment the section that is right (remove the HTML comment wrapper).
 
 ### Highlights ✨
 
-- Enable controls inside containers. See the [user guide on container](https://vizro.readthedocs.io/en/stable/pages/user-guides/container/#add-controls-to-container) for more details.([#1094](https://github.com/mckinsey/vizro/pull/1094))
+- Enable controls inside containers. See the [user guide on container](https://vizro.readthedocs.io/en/stable/pages/user-guides/container/#add-controls-to-container) for more details. ([#1094](https://github.com/mckinsey/vizro/pull/1094))
 
 
 <!--

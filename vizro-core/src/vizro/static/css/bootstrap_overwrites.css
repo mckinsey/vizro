@@ -87,7 +87,8 @@ label[for="theme-selector"] {
   padding-left: 0;
 }
 
-.dropdown {
+.container-controls-panel .dropdown {
+  max-width: 240px;
   min-width: 160px;
 }
 
