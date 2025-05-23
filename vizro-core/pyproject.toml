@@ -78,7 +78,9 @@ filterwarnings = [
   # Ignore deprecation warning until this is solved: https://github.com/plotly/dash/issues/2590:
   "ignore:HTTPResponse.getheader():DeprecationWarning",
   # ignore this warning for firefox screenshot tests
-  "ignore:get_logs always return None with webdrivers other than Chrome"
+  "ignore:get_logs always return None with webdrivers other than Chrome",
+  # ignore deprecation warning for kedro>=0.19.13 && kedro<1.0.0
+  "ignore:experimental feature and will replace the existing `DataCatalog` in Kedro 1.0.0",
 ]
 markers = [
   "mobile_screenshots: marks tests for chrome mobile screenshots"
