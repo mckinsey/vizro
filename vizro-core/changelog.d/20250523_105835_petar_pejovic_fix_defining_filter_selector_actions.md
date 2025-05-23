@@ -36,7 +36,7 @@ Uncomment the section that is right (remove the HTML comment wrapper).
 -->
 ### Fixed
 
-- Fix a bug where assigning a custom action to `Filter.selector.actions` raised an error. ([#1196](https://github.com/mckinsey/vizro/pull/1196))
+- Fix a bug where assigning a custom action to `Filter.selector.actions` raised an error. ([#1197](https://github.com/mckinsey/vizro/pull/1197))
 
 <!--
 ### Security
