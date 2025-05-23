@@ -10,7 +10,7 @@ from packaging.version import parse
 
 from vizro.integrations.kedro import datasets_from_catalog
 
-LEGACY_KEDRO = parse(version("kedro")) < parse("1.0.0")
+LEGACY_KEDRO = parse(version("kedro")) < parse("0.19.99")
 
 if not LEGACY_KEDRO:
     # KedroDataCatalog only exists and hence can only be tested against in kedro>=0.19.9.
