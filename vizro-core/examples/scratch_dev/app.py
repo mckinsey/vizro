@@ -1,577 +1,410 @@
-"""Dev app to try things out."""
+# Vizro is an open-source toolkit for creating modular data visualization applications.
+# check out https://github.com/mckinsey/vizro for more info about Vizro
+# and checkout https://vizro.readthedocs.io/en/stable/ for documentation.
 
-import pandas as pd
+"""Example app from the official vizro user tutorial.
 
-from dash import ctx
-from dash.exceptions import PreventUpdate
-import time
+See: https://vizro.readthedocs.io/en/stable/pages/tutorials/explore-components/
+"""
 
+import vizro.models as vm
 import vizro.plotly.express as px
 from vizro import Vizro
-import vizro.models as vm
-from vizro.models.types import capture
-from vizro.tables import dash_ag_grid, dash_data_table
 from vizro.figures import kpi_card
+from vizro.tables import dash_ag_grid, dash_data_table
 
+tips = px.data.tips()
 
-df = px.data.iris().head(3)
-
-
-@capture("action")
-def action_return_text(button_number_of_clicks):
-    # Added to handle the bug when a page custom action is triggered if on-page-load is not defined
-    if not button_number_of_clicks:
-        raise PreventUpdate
-
-    # Sleep to see what part of the output component is updating
-    time.sleep(0.5)
-
-    title = f"Button clicked {button_number_of_clicks} times."
-    return [title] * (len(ctx.outputs_list) - 1)
-
-
-@capture("action")
-def action_return_figures(button_number_of_clicks):
-    # Sleep to see what part of the output component is updating
-    time.sleep(0.5)
-
-    dff = px.data.iris().head(button_number_of_clicks % 4)
-
-    return [
-        px.scatter(dff, x="sepal_width", y="sepal_length", color="species"),
-        dash_ag_grid(dff)(),
-        dash_data_table(dff)(),
-        kpi_card(dff, value_column="sepal_length")(),
-    ]
-
-
-@capture("action")
-def action_select_ag_grid_rows(button_number_of_clicks):
-    # Sleep to see what part of the output component is updating
-    time.sleep(0.5)
-
-    num_rows = button_number_of_clicks % 4
-    selected_rows = df.iloc[:num_rows].to_dict("records") if num_rows > 0 else []
-
-    return selected_rows
-
-
-vm.Page.add_type("controls", vm.Button)
-
-
-# ======= Page Table of Contents =======
-
-page_table_of_contents = vm.Page(
-    title="Table of Contents",
+page1 = vm.Page(
+    title="Default",
     components=[
-        vm.AgGrid(
-            figure=dash_ag_grid(
-                # columnSize="sizeToFit",
-                columnSize="autoSize",
-                data_frame=pd.DataFrame(
-                    columns=[
-                        "Component",
-                        "Default Input Property",
-                        "Default Output Property",
-                        "Additional output properties to support",
-                        "Comment",
-                    ],
-                    data=[
-                        ["Form", "", "", "", ""],
-                        ["Container", "", "", "title, description", ""],
-                        ["Figure", "", "children", "figure", ""],
-                        [
-                            "AgGrid",
-                            "",
-                            "children",
-                            "title, description, header, footer, figure",
-                            "All 'outer-ID.property' are mapped to 'inner-ID.property'",
-                        ],
-                        ["Table", "", "children", "title, description, header, footer, figure", ""],
-                        [
-                            "Graph",
-                            "",
-                            "figure",
-                            "title, description, header, footer",
-                            "figure - works even without explicit mapping",
-                        ],
-                        ["Button", "", "", "text", ""],
-                        ["Card", "", "children", "text", ""],
-                        ["Text", "", "children", "text", ""],
-                        ["Alert", "", "", "", ""],
-                        ["TextArea", "value", "value", "title, description", ""],
-                        ["UserInput", "value", "value", "title, description", ""],
-                        ["Checklist", "value", "value", "title, description", ""],
-                        ["DatePicker", "value", "value", "title, description", ""],
-                        ["Dropdown", "value", "value", "title, description", ""],
-                        ["RadioItems", "value", "value", "title, description", ""],
-                        ["RangeSlider", "value", "value", "title, description", ""],
-                        ["Slider", "value", "value", "title, description", ""],
-                        ["Tabs", "", "", "title, description", ""],
-                        ["Filter", "maybe in future", "children", "", ""],
-                        ["Parameter", "maybe in future", "", "", ""],
-                        ["Dashboard", "", "", "", ""],
-                        ["Flex", "", "", "", ""],
-                        ["Grid", "", "", "", ""],
-                        ["Accordion", "", "", "", ""],
-                        ["NavBar", "", "", "", ""],
-                        ["NavLink", "", "", "", ""],
-                        ["Navigation", "", "", "", ""],
-                        ["Page", "", "", "title, description", ""],
-                        ["Tooltip", "", "text", "text, icon", ""],
-                    ],
-                ),
-            )
-        ),
-    ],
-)
-
-
-# ======= Page Figures Title/Header/Footer =======
-
-page_figures_title_header_footer = vm.Page(
-    title="Graph/AgGrid/Table - title/description/header/footer",
-    layout=vm.Grid(grid=[[0, 1, 2]]),
-    components=[
+        vm.Card(text="""# Good morning!"""),
         vm.Graph(
-            id="graph-id",
-            title="Click button to update me",
-            description="Click button to update me",
-            header="Click button to update me",
-            footer="Click button to update me",
-            figure=px.scatter(df, x="sepal_width", y="sepal_length", color="species"),
+            title="Where do we get more tips?",
+            figure=px.bar(tips, y="tip", x="day"),
         ),
-        vm.AgGrid(
-            id="aggrid-id",
-            title="Click button to update me",
-            description="Click button to update me",
-            header="Click button to update me",
-            footer="Click button to update me",
-            figure=dash_ag_grid(df),
-        ),
-        vm.Table(
-            id="table-id",
-            title="Click button to update me",
-            description="Click button to update me",
-            header="Click button to update me",
-            footer="Click button to update me",
-            figure=dash_data_table(df),
-        ),
-    ],
-    controls=[
-        vm.Button(
-            id="trigger-figures-title-header-footer-button-id",
-            actions=[
-                vm.Action(
-                    function=action_return_text("trigger-figures-title-header-footer-button-id.n_clicks"),
-                    outputs=[
-                        # Graph
-                        "graph-id.title",
-                        "graph-id.description",
-                        "graph-id.header",
-                        "graph-id.footer",
-                        # AgGrid
-                        "aggrid-id.title",
-                        "aggrid-id.description",
-                        "aggrid-id.header",
-                        "aggrid-id.footer",
-                        # Table
-                        "table-id.title",
-                        "table-id.description",
-                        "table-id.header",
-                        "table-id.footer",
-                    ],
-                )
-            ],
-        ),
-    ],
-)
-
-
-# ======= Page Figure figure =======
-
-page_figures_figures = vm.Page(
-    title="Figures - figure output",
-    layout=vm.Grid(grid=[[0, 1], [2, 3]]),
-    components=[
         vm.Graph(
-            id="graph-2-id",
-            title="Click button to update the figure",
-            figure=px.scatter(df, x="sepal_width", y="sepal_length", color="species"),
+            title="Is the average driven by a few outliers?",
+            figure=px.violin(tips, y="tip", x="day", color="day", box=True),
         ),
-        vm.AgGrid(
-            id="aggrid-2-id",
-            title="Click button to update the figure",
-            figure=dash_ag_grid(df),
-        ),
-        vm.Table(
-            id="table-2-id",
-            title="Click button to update the figure",
-            figure=dash_data_table(df),
-        ),
-        vm.Figure(
-            id="figure-2-id",
-            figure=kpi_card(df, value_column="sepal_length"),
+        vm.Graph(
+            title="Which group size is more profitable?",
+            figure=px.density_heatmap(tips, x="day", y="size", z="tip", histfunc="avg", text_auto="$.2f"),
         ),
     ],
-    controls=[
-        vm.Button(
-            id="trigger-figures-figures-button-id",
-            actions=[
-                vm.Action(
-                    function=action_return_figures("trigger-figures-figures-button-id.n_clicks"),
-                    outputs=[
-                        "graph-2-id.figure",
-                        "aggrid-2-id.figure",
-                        "table-2-id.figure",
-                        "figure-2-id.figure",
-                    ],
-                    # TODO-REVIEWER-CHECK: This is also a valid output
-                    # outputs=[
-                    #     "graph-2-id",
-                    #     "aggrid-2-id",
-                    #     "table-2-id",
-                    #     "figure-2-id",
-                    # ],
-                )
-            ],
+    controls=[vm.Filter(column="day")],
+)
+
+page2 = vm.Page(
+    title="Grid",
+    layout=vm.Layout(grid=[[0, -1], [1, 2], [3, 3]]),
+    components=[
+        vm.Card(text="""# Good morning!"""),
+        vm.Graph(
+            title="Where do we get more tips?",
+            figure=px.bar(tips, y="tip", x="day"),
+        ),
+        vm.Graph(
+            title="Is the average driven by a few outliers?",
+            figure=px.violin(tips, y="tip", x="day", color="day", box=True),
+        ),
+        vm.Graph(
+            title="Which group size is more profitable?",
+            figure=px.density_heatmap(tips, x="day", y="size", z="tip", histfunc="avg", text_auto="$.2f"),
         ),
     ],
+    controls=[vm.Filter(column="day")],
 )
 
 
-# ======= Page underlying ID shortcuts =======
-
-page_ag_grid_underlying_id_shortcuts = vm.Page(
-    title="AgGrid - underlying ID shortcuts",
+page3 = vm.Page(
+    title="Flex - default",
+    layout=vm.Flex(),
     components=[
-        vm.AgGrid(
-            id="outer-aggrid-3-id",
-            title="Click button to update the figure",
-            figure=dash_ag_grid(df, dashGridOptions={"rowSelection": "multiple"}),
-            actions=[
-                # TODO-REVIEWER-CHECK: Before this PR, users had to assign the underlying-id to the dash_ag_grid
-                #  and then to input it like "underlying_ag_grid_id.cellClicked"
-                vm.Action(
-                    function=capture("action")(lambda x: str(x))("outer-aggrid-3-id.cellClicked"), outputs=["card-3-id"]
-                )
-            ],
-        ),
         vm.Card(
-            id="card-3-id",
-            text="## TODO-REVIEWER-CHECK: Click ag-grid cell to update me",
-        ),
-    ],
-    controls=[
-        vm.Button(
-            id="trigger-aggrid-3-id-button-id",
-            actions=[
-                vm.Action(
-                    function=action_select_ag_grid_rows("trigger-aggrid-3-id-button-id.n_clicks"),
-                    outputs=[
-                        # TODO-REVIEWER-CHECK: Before this PR, users had to assign the underlying-id to the dash_ag_grid
-                        #  and then to output it like "underlying_ag_grid_id.selectedRows"
-                        "outer-aggrid-3-id.selectedRows",
-                    ],
-                )
-            ],
-        ),
+            text="""
+               # Lorem Ipsum
+
+               Lorem ipsum dolor sit amet, consectetur adipiscing elit. Aliquam sed elementum ligula, in pharetra velit.
+               In ultricies est ac mauris vehicula fermentum. Curabitur faucibus elementum lectus, vitae luctus libero fermentum.
+               Name ut ipsum tortor. Praesent ut nulla risus. Praesent in dignissim nulla. In quis blandit ipsum.
+           """
+        )
+        for i in range(6)
     ],
 )
 
 
-# ======= Container title/description =======
+page4 = vm.Page(
+    title="Flex - gap",
+    layout=vm.Flex(gap="40px"),
+    components=[
+        vm.Card(
+            text="""
+            # Lorem Ipsum
 
-page_container_title_description = vm.Page(
-    title="Page/Container/Tabs - title/description",
-    description="Click button to update me",
+            Lorem ipsum dolor sit amet, consectetur adipiscing elit. Aliquam sed elementum ligula, in pharetra velit.
+            In ultricies est ac mauris vehicula fermentum. Curabitur faucibus elementum lectus, vitae luctus libero fermentum.
+            Name ut ipsum tortor. Praesent ut nulla risus. Praesent in dignissim nulla. In quis blandit ipsum.
+        """
+        )
+        for i in range(6)
+    ],
+)
+
+page5 = vm.Page(
+    title="Flex - row",
+    layout=vm.Flex(direction="row"),
+    components=[
+        vm.Card(
+            text="""
+            # Lorem Ipsum
+
+            Lorem ipsum dolor sit amet, consectetur adipiscing elit. Aliquam sed elementum ligula, in pharetra velit.
+            In ultricies est ac mauris vehicula fermentum. Curabitur faucibus elementum lectus, vitae luctus libero fermentum.
+            Name ut ipsum tortor. Praesent ut nulla risus. Praesent in dignissim nulla. In quis blandit ipsum.
+        """
+        )
+        for i in range(6)
+    ],
+)
+
+page6 = vm.Page(
+    id="page-flex-wrap-row",
+    title="Flex - row/wrap",
+    layout=vm.Flex(direction="row", wrap=True),
+    components=[
+        vm.Card(
+            text="""
+            # Lorem Ipsum
+
+            Lorem ipsum dolor sit amet, consectetur adipiscing elit. Aliquam sed elementum ligula, in pharetra velit.
+            In ultricies est ac mauris vehicula fermentum. Curabitur faucibus elementum lectus, vitae luctus libero fermentum.
+            Name ut ipsum tortor. Praesent ut nulla risus. Praesent in dignissim nulla. In quis blandit ipsum.
+        """
+        )
+        for i in range(6)
+    ],
+)
+
+page7 = vm.Page(
+    title="Flex - default - graphs",
+    layout=vm.Flex(),
+    components=[vm.Graph(figure=px.violin(tips, y="tip", x="day", color="day", box=True)) for i in range(6)],
+)
+
+
+page8 = vm.Page(
+    title="Flex - gap - graphs",
+    layout=vm.Flex(gap="40px"),
+    components=[vm.Graph(figure=px.violin(tips, y="tip", x="day", color="day", box=True)) for i in range(6)],
+)
+
+page9 = vm.Page(
+    title="Flex - row - graphs",
+    layout=vm.Flex(direction="row"),
+    components=[vm.Graph(figure=px.violin(tips, y="tip", x="day", color="day", box=True)) for i in range(6)],
+)
+
+page10 = vm.Page(
+    id="page-flex-wrap-row-graphs",
+    title="Flex - row/wrap - graphs",
+    layout=vm.Flex(direction="row", wrap=True),
+    components=[vm.Graph(figure=px.violin(tips, y="tip", x="day", color="day", box=True)) for i in range(6)],
+)
+
+page11 = vm.Page(
+    title="Flex - default - aggrid",
+    layout=vm.Flex(),
+    components=[vm.AgGrid(figure=dash_ag_grid(tips)) for i in range(3)],
+)
+
+
+page12 = vm.Page(
+    title="Flex - gap - aggrid",
+    layout=vm.Flex(gap="40px"),
+    components=[vm.AgGrid(figure=dash_ag_grid(tips)) for i in range(3)],
+)
+
+page13 = vm.Page(
+    title="Flex - row - aggrid",
+    layout=vm.Flex(direction="row"),
+    components=[vm.AgGrid(figure=dash_ag_grid(tips)) for i in range(3)],
+)
+
+page14 = vm.Page(
+    title="Flex - default - table",
+    layout=vm.Flex(),
+    components=[vm.Table(figure=dash_data_table(tips)) for i in range(3)],
+)
+
+
+page15 = vm.Page(
+    title="Flex - gap - table",
+    layout=vm.Flex(gap="40px"),
+    components=[vm.Table(figure=dash_data_table(tips)) for i in range(3)],
+)
+
+page16 = vm.Page(
+    title="Flex - row - table",
+    layout=vm.Flex(direction="row"),
+    components=[vm.Table(figure=dash_data_table(tips)) for i in range(3)],
+)
+
+page17 = vm.Page(
+    title="Flex - default - button",
+    layout=vm.Flex(),
+    components=[vm.Button() for i in range(9)],
+)
+
+
+page18 = vm.Page(
+    title="Flex - gap - button",
+    layout=vm.Flex(gap="40px"),
+    components=[vm.Button() for i in range(9)],
+)
+
+page19 = vm.Page(
+    title="Flex - row - button",
+    layout=vm.Flex(direction="row"),
+    components=[vm.Button() for i in range(9)],
+)
+
+
+page20 = vm.Page(
+    title="Flex - Graphs with Card",
+    layout=vm.Flex(),
+    components=[
+        vm.Card(text="""# Good morning!"""),
+        vm.Graph(
+            title="Where do we get more tips?",
+            figure=px.bar(tips, y="tip", x="day"),
+        ),
+        vm.Graph(
+            title="Is the average driven by a few outliers?",
+            figure=px.violin(tips, y="tip", x="day", color="day", box=True),
+        ),
+        vm.Graph(
+            title="Which group size is more profitable?",
+            figure=px.density_heatmap(tips, x="day", y="size", z="tip", histfunc="avg", text_auto="$.2f"),
+        ),
+    ],
+    controls=[vm.Filter(column="day")],
+)
+
+page21 = vm.Page(
+    title="Flex - Container",
     components=[
         vm.Container(
-            id="container-id",
-            title="Click button to update me",
-            description="Click button to update me",
-            components=[vm.Text(text="Text component within the container. Blah blah...")],
-        ),
-        vm.Tabs(
-            id="tabs-id",
-            title="Click button to update me",
-            description="Click button to update me",
-            tabs=[
-                vm.Container(
-                    title="Container 1",
-                    components=[vm.Text(text="Text component within the container. Blah blah...")],
+            title="Container inside grid with Flex",
+            layout=vm.Flex(),
+            components=[
+                vm.Graph(
+                    title="Where do we get more tips?",
+                    figure=px.bar(tips, y="tip", x="day"),
                 ),
-                vm.Container(
-                    title="Container 2",
-                    components=[vm.Text(text="Text component within the container. Blah blah...")],
+                vm.Graph(
+                    title="Is the average driven by a few outliers?",
+                    figure=px.violin(tips, y="tip", x="day", color="day", box=True),
+                ),
+                vm.Graph(
+                    title="Which group size is more profitable?",
+                    figure=px.density_heatmap(tips, x="day", y="size", z="tip", histfunc="avg", text_auto="$.2f"),
                 ),
             ],
-        ),
-    ],
-    controls=[
-        vm.Button(
-            id="trigger-container-title-description-button-id",
-            actions=[
-                vm.Action(
-                    function=action_return_text("trigger-container-title-description-button-id.n_clicks"),
-                    outputs=[
-                        "Page/Container/Tabs - title/description.title",
-                        "Page/Container/Tabs - title/description.description",
-                        "container-id.title",
-                        "container-id.description",
-                        "tabs-id.title",
-                        "tabs-id.description",
-                    ],
-                )
-            ],
-        ),
-    ],
-)
-
-
-# ======= Card/Text Components =======
-
-vm.Page.add_type("components", vm.Button)
-
-page_card_text_components = vm.Page(
-    title="Button/Card/Text - text",
-    components=[
-        vm.Button(
-            id="button-id",
-            text="Click button to update me",
-        ),
-        vm.Card(
-            id="card-id",
-            text="Click button to update me",
-        ),
-        vm.Text(
-            id="text-id",
-            text="Click button to update me",
-        ),
-    ],
-    controls=[
-        vm.Button(
-            id="trigger-card-text-button-id",
-            actions=[
-                vm.Action(
-                    function=action_return_text("trigger-card-text-button-id.n_clicks"),
-                    outputs=[
-                        "card-id.text",
-                        "text-id.text",
-                        "button-id.text",
-                    ],
-                    # TODO-REVIEWER-CHECK: This is also a valid output
-                    # outputs=[
-                    #   "card-id",
-                    #   "text-id",
-                    #   "button-id.text",
-                    # ],
-                )
-            ],
-        ),
-    ],
-)
-
-
-# # ======= TextArea/UserInput Components =======
-
-vm.Page.add_type("components", vm.TextArea)
-vm.Page.add_type("components", vm.UserInput)
-
-page_text_area_user_input_components = vm.Page(
-    title="TextArea/UserInput - title/description",
-    components=[
-        vm.TextArea(
-            id="text-area-id",
-            title="Click button to update me",
-            description="Click button to update me",
-        ),
-        vm.UserInput(
-            id="user-input-id",
-            title="Click button to update me",
-            description="Click button to update me",
-        ),
-    ],
-    controls=[
-        vm.Button(
-            id="trigger-text-area-user-input-button-id",
-            actions=[
-                vm.Action(
-                    function=action_return_text("trigger-text-area-user-input-button-id.n_clicks"),
-                    outputs=[
-                        "text-area-id.title",
-                        "text-area-id.description",
-                        "user-input-id.title",
-                        "user-input-id.description",
-                    ],
-                )
-            ],
-        ),
-    ],
-)
-
-
-# ======= Form Components =======
-
-vm.Page.add_type("components", vm.Dropdown)
-vm.Page.add_type("components", vm.Checklist)
-vm.Page.add_type("components", vm.RadioItems)
-vm.Page.add_type("components", vm.Slider)
-vm.Page.add_type("components", vm.RangeSlider)
-vm.Page.add_type("components", vm.DatePicker)
-
-page_form_components = vm.Page(
-    title="Form Components - title/description",
-    components=[
-        vm.Checklist(
-            id="checklist-id",
-            title="Click button to update me",
-            description="Click button to update me",
-            options=["Option 1", "Option 2", "Option 3"],
-        ),
-        vm.Dropdown(
-            id="dropdown-id",
-            title="Click button to update me",
-            description="Click button to update me",
-            options=["Option 1", "Option 2", "Option 3"],
-        ),
-        vm.RadioItems(
-            id="radio-id",
-            title="Click button to update me",
-            description="Click button to update me",
-            options=["Option 1", "Option 2", "Option 3"],
-        ),
-        vm.Slider(
-            id="slider-id",
-            title="Click button to update me",
-            description="Click button to update me",
-            min=0,
-            max=100,
-            step=1,
-        ),
-        vm.RangeSlider(
-            id="range-slider-id",
-            title="Click button to update me",
-            description="Click button to update me",
-            min=0,
-            max=100,
-            step=1,
-        ),
-        vm.DatePicker(
-            id="date-picker-id",
-            title="Click button to update me",
-            description="Click button to update me",
-            min="2023-01-01",
-            max="2023-12-31",
-        ),
-    ],
-    controls=[
-        vm.Button(
-            id="trigger-form-components-title-description-button-id",
-            actions=[
-                vm.Action(
-                    function=action_return_text("trigger-form-components-title-description-button-id.n_clicks"),
-                    outputs=[
-                        # Checklist
-                        "checklist-id.title",
-                        "checklist-id.description",
-                        # Dropdown
-                        "dropdown-id.title",
-                        "dropdown-id.description",
-                        # RadioItems
-                        "radio-id.title",
-                        "radio-id.description",
-                        # Slider
-                        "slider-id.title",
-                        "slider-id.description",
-                        # RangeSlider
-                        "range-slider-id.title",
-                        "range-slider-id.description",
-                        # DatePicker
-                        "date-picker-id.title",
-                        "date-picker-id.description",
-                    ],
-                )
-            ],
-        ),
-    ],
-)
-
-
-# ======= Tooltip text and icon =======
-
-page_tooltip_text_icon = vm.Page(
-    title="Tooltip - text and icon",
-    components=[
-        vm.TextArea(
-            id="text-area-tooltip-id",
-            title="Click button to update the tooltip --> ",
-            description=vm.Tooltip(
-                id="tooltip-id",
-                text="Click button to update me",
-                icon="info",
-            ),
         )
     ],
-    controls=[
-        vm.Button(
-            id="trigger-tooltip-text-icon-button-id",
-            actions=[
-                vm.Action(
-                    function=action_return_text("trigger-tooltip-text-icon-button-id.n_clicks"),
-                    outputs=[
-                        "tooltip-id.text",
-                    ],
-                    # TODO-REVIEWER-CHECK: This is also a valid output
-                    # outputs=[
-                    #     "text-area-tooltip-id.description"
-                    # ]
+    controls=[vm.Filter(column="day")],
+)
+
+page22 = vm.Page(
+    title="Flex - Container with card",
+    components=[
+        vm.Container(
+            title="Container inside grid with Flex with card",
+            layout=vm.Flex(),
+            components=[
+                vm.Card(text="""# Good morning!"""),
+                vm.Graph(
+                    title="Where do we get more tips?",
+                    figure=px.bar(tips, y="tip", x="day"),
                 ),
-                vm.Action(
-                    function=capture("action")(lambda x: "help" if x % 2 else "info")(
-                        "trigger-tooltip-text-icon-button-id.n_clicks"
-                    ),
-                    outputs=[
-                        "tooltip-id.icon",
+                vm.Graph(
+                    title="Is the average driven by a few outliers?",
+                    figure=px.violin(tips, y="tip", x="day", color="day", box=True),
+                ),
+                vm.Graph(
+                    title="Which group size is more profitable?",
+                    figure=px.density_heatmap(tips, x="day", y="size", z="tip", histfunc="avg", text_auto="$.2f"),
+                ),
+            ],
+        )
+    ],
+    controls=[vm.Filter(column="day")],
+)
+
+page23 = vm.Page(
+    id="page-flex-inside-flex",
+    title="Flex inside flex",
+    layout=vm.Flex(),
+    components=[
+        vm.Container(
+            title="KPI Banner",
+            layout=vm.Flex(direction="row"),
+            components=[
+                vm.Figure(
+                    figure=kpi_card(
+                        data_frame=tips,
+                        value_column="total_bill",
+                        agg_func="mean",
+                        value_format="${value:.2f}",
+                        title="Average Bill",
+                    )
+                )
+                for i in range(4)
+            ],
+        ),
+        vm.Tabs(
+            tabs=[
+                vm.Container(
+                    title="Total Bill ($)",
+                    components=[
+                        vm.Graph(figure=px.histogram(tips, x="total_bill")),
+                    ],
+                ),
+                vm.Container(
+                    title="Total Tips ($)",
+                    components=[
+                        vm.Graph(figure=px.histogram(tips, x="tip")),
                     ],
                 ),
             ],
         ),
     ],
+    controls=[vm.Filter(column="day"), vm.Filter(column="time", selector=vm.Checklist()), vm.Filter(column="size")],
+)
+
+
+page24 = vm.Page(
+    title="Page with tabs and content- grid",
+    components=[
+        vm.Tabs(
+            tabs=[
+                vm.Container(
+                    title="tab1",
+                    layout=vm.Flex(direction="row"),
+                    components=[
+                        vm.Card(text="This is card inside first tab!"),
+                        vm.Graph(figure=px.histogram(tips, x="tip")),
+                    ],
+                ),
+                vm.Container(
+                    title="tab2",
+                    layout=vm.Flex(direction="row"),
+                    components=[
+                        vm.Card(text="This is card inside second tab!"),
+                        vm.Graph(figure=px.bar(tips, y="tip", x="day")),
+                    ],
+                ),
+            ]
+        ),
+        vm.Card(text="This is card below the tabs!"),
+        vm.Graph(figure=px.violin(tips, y="tip", x="day", color="day", box=True)),
+    ],
+)
+
+
+page25 = vm.Page(
+    title="FlexItem - dimension - graphs",
+    layout=vm.Flex(direction="row", wrap=True),
+    components=[vm.Graph(figure=px.violin(tips, y="tip", x="day", color="day", box=True, width=300)) for i in range(6)],
+)
+
+page26 = vm.Page(
+    title="FlexItem - dimension - tables",
+    layout=vm.Flex(direction="row", wrap=True),
+    components=[vm.Table(figure=dash_data_table(tips, style_table={"width": "1000px"})) for i in range(3)],
+)
+
+page27 = vm.Page(
+    title="FlexItem - dimension - aggrid",
+    layout=vm.Flex(direction="row", wrap=True),
+    components=[vm.AgGrid(figure=dash_ag_grid(tips, style={"width": 1000})) for i in range(3)],
 )
 
 
 dashboard = vm.Dashboard(
-    title="Dashboard for testing",
     pages=[
-        page_table_of_contents,
-        page_figures_title_header_footer,
-        page_figures_figures,
-        page_ag_grid_underlying_id_shortcuts,
-        page_container_title_description,
-        page_card_text_components,
-        page_text_area_user_input_components,
-        page_form_components,
-        page_tooltip_text_icon,
+        page1,
+        page2,
+        page3,
+        page4,
+        page5,
+        page6,
+        page7,
+        page8,
+        page9,
+        page10,
+        page11,
+        page12,
+        page13,
+        page14,
+        page15,
+        page16,
+        page17,
+        page18,
+        page19,
+        page20,
+        page21,
+        page22,
+        page23,
+        page24,
+        page25,
+        page26,
+        page27,
     ],
-    navigation=vm.Navigation(
-        pages={
-            "Table": ["Table of Contents"],
-            "Figures": [
-                "Graph/AgGrid/Table - title/description/header/footer",
-                "Figures - figure output",
-                "AgGrid - underlying ID shortcuts",
-            ],
-            "Components": [
-                "Page/Container/Tabs - title/description",
-                "Button/Card/Text - text",
-                "TextArea/UserInput - title/description",
-                "Form Components - title/description",
-                "Tooltip - text and icon",
-            ],
-        }
-    ),
+    title="Test out Flex/Grid",
 )
 
-if __name__ == "__main__":
-    Vizro().build(dashboard).run()
+
+Vizro().build(dashboard).run()
