@@ -124,12 +124,21 @@ Vizro-AI is a separate package (called `vizro_ai`) that extends Vizro to incorpo
 Visit the [Vizro-AI documentation](https://vizro.readthedocs.io/projects/vizro-ai/) for more details.
 
 <picture>
-  <source srcset="https://raw.githubusercontent.com/mckinsey/vizro/main/.github/images/toolkit_vizro_ai.gif">
+  <source src="https://raw.githubusercontent.com/mckinsey/vizro/main/.github/images/toolkit_vizro_ai.gif">
   <img alt="Gif to demonstrate Vizro-AI" src="https://raw.githubusercontent.com/mckinsey/vizro/main/.github/images/toolkit_vizro_ai_fallback.png" width="600">
 </picture>
 
 ## Installation and first steps
 
+### Installing via Smithery
+
+To install Vizro for Claude Desktop automatically via [Smithery](https://smithery.ai/server/@mckinsey/vizro):
+
+```bash
+npx -y @smithery/cli install @mckinsey/vizro --client claude
+```
+
+### Manual Installation
 ```console
 pip install vizro
 ```
