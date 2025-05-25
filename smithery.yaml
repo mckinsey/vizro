@@ -1,0 +1,15 @@
+# Smithery configuration file: https://smithery.ai/docs/build/project-config
+
+build:
+  dockerBuildPath: vizro-mcp
+startCommand:
+  type: stdio
+  commandFunction:
+    # A JS function that produces the CLI command based on the given config to start the MCP on stdio.
+    |-
+    (config) => ({ command: 'uv', args: ['run', 'vizro-mcp'] })
+  configSchema:
+    # JSON Schema defining the configuration options for the MCP.
+    type: object
+    description: No configuration required
+  exampleConfig: {}
