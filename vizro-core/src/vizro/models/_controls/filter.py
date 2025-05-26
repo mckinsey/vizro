@@ -210,14 +210,14 @@ class Filter(VizroBaseModel):
             else:
                 filter_function = _filter_isin
 
-        self.selector.actions = [
-            _filter(
-                id=f"{FILTER_ACTION_PREFIX}_{self.id}",
-                column=self.column,
-                filter_function=filter_function,
-                targets=self.targets,
-            ),
-        ]
+            self.selector.actions = [
+                _filter(
+                    id=f"{FILTER_ACTION_PREFIX}_{self.id}",
+                    column=self.column,
+                    filter_function=filter_function,
+                    targets=self.targets,
+                ),
+            ]
 
     @_log_call
     def build(self):
