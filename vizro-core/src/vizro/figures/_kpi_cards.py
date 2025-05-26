@@ -44,9 +44,10 @@ def kpi_card(
         agg_func (str): String function name to be used for aggregating the data. Common options include
             "sum", "mean" or "median". Default is "sum". For more information on possible functions, see
             https://stackoverflow.com/questions/65877567/passing-function-names-as-strings-to-pandas-groupby-aggregrate.
-        title (Optional[str]): KPI title displayed on top of the card. If not provided, it defaults to the capitalized `value_column`.
-        icon (Optional[str]): Name of the icon from the [Google Material Icon Library](https://fonts.google.com/icons) to be displayed
-            on the left side of the KPI title. If not provided, no icon is displayed.
+        title (Optional[str]): KPI title displayed on top of the card. If not provided, it defaults to the capitalized
+            `value_column`.
+        icon (Optional[str]): Name of the icon from the [Google Material Icon Library](https://fonts.google.com/icons)
+            to be displayed on the left side of the KPI title. If not provided, no icon is displayed.
 
     Returns:
          A Dash Bootstrap Components card (`dbc.Card`) containing the formatted KPI value.
@@ -109,14 +110,15 @@ def kpi_card_reference(  # noqa: PLR0913
              - "{value:.0%}": Formats the value as a percentage without decimal places.
              - "{value:,}": Formats the value with comma as a thousands separator.
 
-        reference_format (str): Format string to be applied to the reference. For more details on possible placeholders, see
-            docstring on `value_format`. Defaults to "{delta_relative:+.1%} vs. reference ({reference})".
+        reference_format (str): Format string to be applied to the reference. For more details on possible placeholders,
+            see docstring on `value_format`. Defaults to "{delta_relative:+.1%} vs. reference ({reference})".
         agg_func (str): String function name to be used for aggregating the data. Common options include
             "sum", "mean" or "median". Default is "sum". For more information on possible functions, see
             https://stackoverflow.com/questions/65877567/passing-function-names-as-strings-to-pandas-groupby-aggregrate.
-        title (Optional[str]): KPI title displayed on top of the card. If not provided, it defaults to the capitalized `value_column`.
-        icon (Optional[str]): Name of the icon from the [Google Material Icon Library](https://fonts.google.com/icons) to be displayed
-            on the left side of the KPI title. If not provided, no icon is displayed.
+        title (Optional[str]): KPI title displayed on top of the card. If not provided, it defaults to the capitalized
+            `value_column`.
+        icon (Optional[str]): Name of the icon from the [Google Material Icon Library](https://fonts.google.com/icons)
+            to be displayed on the left side of the KPI title. If not provided, no icon is displayed.
         reverse_color (bool): If `False`, a positive delta will be colored positively (e.g., blue) and a negative delta
             negatively (e.g., red). If `True`, the colors will be inverted: a positive delta will be colored
             negatively (e.g., red) and a negative delta positively (e.g., blue). Defaults to `False`.
