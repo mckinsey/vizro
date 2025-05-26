@@ -1,0 +1,11 @@
+url_path,views_total,views_unique
+/mckinsey/vizro,825,340
+/mckinsey/vizro/pulls,404,21
+/mckinsey/vizro/tree/main/vizro-mcp,262,156
+/mckinsey/vizro/issues,170,25
+/mckinsey/vizro/pull/1094,161,59
+/mckinsey/vizro/pull/1178,133,37
+/mckinsey/vizro/pull/1153,83,20
+/mckinsey/vizro/pull/1166,65,14
+/mckinsey/vizro/actions/workflows/test-e2e-vizro-dom-elements.yml,63,2
+/mckinsey/vizro/pull/1183,56,20
