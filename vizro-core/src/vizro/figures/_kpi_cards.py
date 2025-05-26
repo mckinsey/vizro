@@ -90,10 +90,10 @@ def kpi_card_reference(  # noqa: PLR0913
     so ensure that only trusted user input is provided to prevent potential security risks.
 
     Args:
-        data_frame: DataFrame containing the data.
-        value_column: Column name of the value to be shown.
-        reference_column: Column name of the reference value for comparison.
-        value_format: Format string to be applied to the value. It must be a
+        data_frame (pd.DataFrame): DataFrame containing the data.
+        value_column (str): Column name of the value to be shown.
+        reference_column (str): Column name of the reference value for comparison.
+        value_format (str): Format string to be applied to the value. It must be a
             [valid Python format](https://docs.python.org/3/library/string.html#format-specification-mini-language)
             string where any of the below placeholders can be used. Defaults to "{value}".
 
@@ -109,15 +109,15 @@ def kpi_card_reference(  # noqa: PLR0913
              - "{value:.0%}": Formats the value as a percentage without decimal places.
              - "{value:,}": Formats the value with comma as a thousands separator.
 
-        reference_format: Format string to be applied to the reference. For more details on possible placeholders, see
+        reference_format (str): Format string to be applied to the reference. For more details on possible placeholders, see
             docstring on `value_format`. Defaults to "{delta_relative:+.1%} vs. reference ({reference})".
-        agg_func: String function name to be used for aggregating the data. Common options include
+        agg_func (str): String function name to be used for aggregating the data. Common options include
             "sum", "mean" or "median". Default is "sum". For more information on possible functions, see
             https://stackoverflow.com/questions/65877567/passing-function-names-as-strings-to-pandas-groupby-aggregrate.
-        title: KPI title displayed on top of the card. If not provided, it defaults to the capitalized `value_column`.
-        icon: Name of the icon from the [Google Material Icon Library](https://fonts.google.com/icons) to be displayed
+        title (str): KPI title displayed on top of the card. If not provided, it defaults to the capitalized `value_column`.
+        icon (str): Name of the icon from the [Google Material Icon Library](https://fonts.google.com/icons) to be displayed
             on the left side of the KPI title. If not provided, no icon is displayed.
-        reverse_color: If `False`, a positive delta will be colored positively (e.g., blue) and a negative delta
+        reverse_color (bool): If `False`, a positive delta will be colored positively (e.g., blue) and a negative delta
             negatively (e.g., red). If `True`, the colors will be inverted: a positive delta will be colored
             negatively (e.g., red) and a negative delta positively (e.g., blue). Defaults to `False`.
 
