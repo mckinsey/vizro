@@ -101,7 +101,6 @@ dependencies = [
   "mkdocstrings[python]",
   "linkchecker",
   "mkdocs-pycafe",
-  "griffe==1.6.0"  # Required for hatch run docs:build to work.
 ]
 detached = true
 installer = "uv"
