@@ -1,0 +1,47 @@
+.tooltip-icon {
+  color: var(--text-secondary);
+  cursor: pointer;
+  font-size: 20px;
+}
+
+.tooltip-icon:hover {
+  color: var(--text-primaryHover);
+}
+
+.tooltip-inner  {
+  max-width: 400px;
+}
+
+.tooltip-inner * {
+  color: var(--text-primary-inverted);
+}
+
+.tooltip-inner p {
+  margin-bottom: 0.5rem;
+}
+
+.tooltip-inner a:hover {
+  color: var(--text-primaryHover-inverted);
+}
+
+/* We differentiate between 3 different icon sizes: 16px, 20px and 24px. 20px is our default.
+Use 16px for all text. Use 20px for all headings. */
+.form-label .tooltip-icon {
+  font-size: 16px;
+}
+
+.form-label {
+  align-items: center;
+  display: flex;
+  gap: 8px;
+}
+
+#dashboard-title, #page-title, .form-label {
+  align-items: center;
+  display: flex;
+  gap: 8px;
+}
+
+#dashboard-title .tooltip-icon {
+  font-size: 24px;
+}

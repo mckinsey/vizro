@@ -16,7 +16,7 @@ def expected_slider():
             dcc.Store(id="slider_id_callback_data", data={"id": "slider_id", "min": 0.0, "max": 10.0}),
             html.Div(
                 [
-                    dbc.Label("Test title", html_for="slider_id"),
+                    dbc.Label([html.Span("Title", id="slider_id_title"), None], html_for="slider_id"),
                     html.Div(
                         [
                             dcc.Input(
@@ -61,7 +61,7 @@ def expected_slider_extra():
             dcc.Store(id="slider_id_callback_data", data={"id": "slider_id", "min": 0.0, "max": 10.0}),
             html.Div(
                 [
-                    dbc.Label("Test title", html_for="slider_id"),
+                    dbc.Label([html.Span("Title", id="slider_id_title"), None], html_for="slider_id"),
                     html.Div(
                         [
                             dcc.Input(
@@ -100,10 +100,67 @@ def expected_slider_extra():
     )
 
 
+@pytest.fixture()
+def expected_slider_with_description():
+    expected_description = [
+        html.Span("info", id="info-icon", className="material-symbols-outlined tooltip-icon"),
+        dbc.Tooltip(
+            children=dcc.Markdown("Test description", id="info-text", className="card-text"),
+            id="info",
+            target="info-icon",
+            autohide=False,
+        ),
+    ]
+    return html.Div(
+        [
+            dcc.Store(id="slider_id_callback_data", data={"id": "slider_id", "min": 0.0, "max": 10.0}),
+            html.Div(
+                [
+                    dbc.Label(
+                        [html.Span("Title", id="slider_id_title"), *expected_description],
+                        html_for="slider_id",
+                    ),
+                    html.Div(
+                        [
+                            dcc.Input(
+                                id="slider_id_end_value",
+                                type="number",
+                                placeholder="max",
+                                min=0.0,
+                                max=10.0,
+                                step=1.0,
+                                value=5.0,
+                                persistence=True,
+                                persistence_type="session",
+                                className="slider-text-input-field",
+                            ),
+                            dcc.Store(id="slider_id_input_store", storage_type="session"),
+                        ],
+                        className="slider-text-input-container",
+                    ),
+                ],
+                className="slider-label-input",
+            ),
+            dcc.Slider(
+                id="slider_id",
+                min=0.0,
+                max=10.0,
+                step=1.0,
+                marks={},
+                value=5.0,
+                included=False,
+                persistence=True,
+                persistence_type="session",
+                className="slider-track-with-marks",
+            ),
+        ]
+    )
+
+
 class TestSliderInstantiation:
     """Tests model instantiation."""
 
-    def test_create_slider_mandatory(self):
+    def test_create_slider_mandatory_only(self):
         slider = vm.Slider()
 
         assert hasattr(slider, "id")
@@ -114,7 +171,38 @@ class TestSliderInstantiation:
         assert slider.marks is None
         assert slider.value is None
         assert slider.title == ""
+        assert slider.description is None
         assert slider.actions == []
+        assert slider._action_outputs == {"__default__": f"{slider.id}.value"}
+        assert slider._action_inputs == {"__default__": f"{slider.id}.value"}
+
+    def test_create_slider_mandatory_and_optional(self):
+        slider = vm.Slider(
+            id="slider_id",
+            min=0,
+            max=10,
+            step=1,
+            marks={1: "1", 5: "5", 10: "10"},
+            value=1,
+            title="Title",
+            description="Test description",
+        )
+        assert slider.id == "slider_id"
+        assert slider.type == "slider"
+        assert slider.min == 0
+        assert slider.max == 10
+        assert slider.value == 1
+        assert slider.step == 1
+        assert slider.marks == {1: "1", 5: "5", 10: "10"}
+        assert slider.title == "Title"
+        assert slider.actions == []
+        assert isinstance(slider.description, vm.Tooltip)
+        assert slider._action_outputs == {
+            "__default__": f"{slider.id}.value",
+            "title": f"{slider.id}_title.children",
+            "description": f"{slider.description.id}-text.children",
+        }
+        assert slider._action_inputs == {"__default__": f"{slider.id}.value"}
 
     @pytest.mark.parametrize("min, max", [(0, None), (None, 10), (0, 10)])
     def test_valid_min_max(self, min, max):
@@ -218,7 +306,7 @@ class TestSliderInstantiation:
 
 class TestBuildMethod:
     def test_slider_build(self, expected_slider):
-        slider = vm.Slider(id="slider_id", min=0, max=10, step=1, value=5, title="Test title").build()
+        slider = vm.Slider(id="slider_id", min=0, max=10, step=1, value=5, title="Title").build()
 
         assert_component_equal(slider, expected_slider)
 
@@ -230,7 +318,7 @@ class TestBuildMethod:
             max=10,
             step=1,
             value=5,
-            title="Test title",
+            title="Title",
             extra={
                 "tooltip": {"placement": "bottom", "always_visible": True},
                 "id": "overridden_id",
@@ -238,3 +326,16 @@ class TestBuildMethod:
         ).build()
 
         assert_component_equal(slider, expected_slider_extra)
+
+    def test_slider_build_with_description(self, expected_slider_with_description):
+        slider = vm.Slider(
+            id="slider_id",
+            min=0,
+            max=10,
+            step=1,
+            value=5,
+            title="Title",
+            description=vm.Tooltip(text="Test description", icon="info", id="info"),
+        ).build()
+
+        assert_component_equal(slider, expected_slider_with_description)

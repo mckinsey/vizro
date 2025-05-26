@@ -11,7 +11,9 @@ To add a [`Button`][vizro.models.Button], insert it into the `components` argume
 You can configure the `text` argument to alter the display text of the [`Button`][vizro.models.Button].
 
 !!! example "Customize text"
+
     === "app.py"
+
         ```{.python pycafe-link}
         import vizro.models as vm
         from vizro import Vizro
@@ -26,9 +28,10 @@ You can configure the `text` argument to alter the display text of the [`Button`
         ```
 
     === "app.yaml"
+
         ```yaml
         # Still requires a .py to add data to the data manager and parse YAML configuration
-        # See from_yaml example
+        # See yaml_version example
         pages:
           - components:
               - type: button
@@ -37,6 +40,7 @@ You can configure the `text` argument to alter the display text of the [`Button`
         ```
 
     === "Result"
+
         [![ButtonText]][buttontext]
 
 ## Create a link button
@@ -51,12 +55,14 @@ vm.Button(text="Leave us a star! ⭐", href="https://github.com/mckinsey/vizro")
 
 ## Attach an action
 
-You can use the [`Button`][vizro.models.Button] to trigger predefined action functions, such as exporting data. To explore the available options for [`Actions`][vizro.models.Action], refer to our [API reference][vizro.actions]. Use the `Button.actions` argument to specify which action function executes when the button is clicked.
+You can use the [`Button`][vizro.models.Button] to trigger an action function, such as exporting data. To explore the available options for [`Actions`][vizro.models.Action], refer to our [API reference][vizro.actions]. Use the `Button.actions` argument to specify which action function executes when the button is clicked.
 
 The example below demonstrates how to configure a button to export the filtered data of a target chart using the [export_data][vizro.actions.export_data] action function.
 
 !!! example "Button with action"
+
     === "app.py"
+
         ```{.python pycafe-link}
         import vizro.models as vm
         import vizro.plotly.express as px
@@ -67,10 +73,9 @@ The example below demonstrates how to configure a button to export the filtered 
 
         page = vm.Page(
             title="My first page",
-            layout=vm.Layout(grid=[[0], [0], [0], [0], [1]]),
+            layout=vm.Flex(),  # (1)!
             components=[
                 vm.Graph(
-                    id="scatter_chart",
                     figure=px.scatter(
                         df,
                         x="sepal_width",
@@ -81,21 +86,22 @@ The example below demonstrates how to configure a button to export the filtered 
                 ),
                 vm.Button(
                     text="Export data",
-                    actions=[vm.Action(function=export_data(targets=["scatter_chart"]))],
+                    actions=[vm.Action(function=export_data())],
                 ),
-            ],
-            controls=[vm.Filter(column="species")],
+            ]
         )
 
         dashboard = vm.Dashboard(pages=[page])
-
         Vizro().build(dashboard).run()
         ```
 
+        1. We use a [`Flex`][vizro.models.Flex] layout to make sure the `Graph` and `Button` only occupy as much space as they need, rather than being distributed evenly.
+
     === "app.yaml"
+
         ```yaml
         # Still requires a .py to add data to the data manager and parse YAML configuration
-        # See from_yaml example
+        # See yaml_version example
         pages:
           - components:
               - figure:
@@ -105,7 +111,6 @@ The example below demonstrates how to configure a button to export the filtered 
                   color: species
                   size: petal_length
                   data_frame: iris
-                id: scatter_chart
                 type: graph
               - type: button
                 text: Export data
@@ -113,25 +118,13 @@ The example below demonstrates how to configure a button to export the filtered 
                 actions:
                   - function:
                       _target_: export_data
-                      targets:
-                        - scatter_chart
-            controls:
-              - column: species
-                selector:
-                  title: Species
-                  type: dropdown
-                type: filter
             layout:
-              grid:
-                - [0]
-                - [0]
-                - [0]
-                - [0]
-                - [1]
+              type: flex
             title: My first page
         ```
 
     === "Result"
+
         [![Button]][button]
 
 ## Use as a control
@@ -150,17 +143,74 @@ vm.Page.add_type("controls", vm.Button)
 ...
 ```
 
+## Styled buttons
+
+There are three predefined button styles that can be customized using the `variant` argument. If no `variant` is specified, the default style applied is `variant="filled"`.
+
+!!! example "Button with different styles"
+
+    === "app.py"
+
+        ```{.python pycafe-link}
+        import vizro.models as vm
+        from vizro import Vizro
+
+        page = vm.Page(
+            title="Buttons with different styles",
+            layout=vm.Flex(direction="row"),  # (1)!
+            components=[
+                vm.Button(text="filled"),
+                vm.Button(text="outlined", variant="outlined"),
+                vm.Button(text="plain", variant="plain"),
+            ],
+        )
+
+        dashboard = vm.Dashboard(pages=[page])
+        Vizro().build(dashboard).run()
+        ```
+
+        1. We use a [`Flex`][vizro.models.Flex] layout with `direction="row"` to ensure the `Button` components are placed side by side and only take up as much space as needed.
+
+    === "app.yaml"
+
+        ```yaml
+        # Still requires a .py to add data to the data manager and parse YAML configuration
+        # See yaml_version example
+        pages:
+          - title: Buttons with different styles
+            layout:
+              direction: row
+              type: flex
+            components:
+              - type: button
+                text: filled
+              - type: button
+                text: outlined
+                variant: outlined
+              - type: button
+                text: plain
+                variant: plain
+
+        ```
+
+    === "Result"
+
+        [![ButtonVariant]][buttonvariant]
+
 ## The `extra` argument
 
-The `Button` is based on the underlying Dash component [`dbc.Button`](https://dash-bootstrap-components.opensource.faculty.ai/docs/components/button/). Using the `extra` argument you can pass additional arguments to `dbc.Button` in order to alter it beyond the chosen defaults.
+The `Button` is based on the underlying Dash component [`dbc.Button`](https://dash-bootstrap-components.opensource.faculty.ai/docs/components/button/). Using the `extra` argument you can pass more arguments to `dbc.Button` in order to alter it beyond the chosen defaults.
 
 !!! warning
+
     Using `extra` is a quick and flexible way to alter a component beyond what Vizro offers. However, [it is not a part of the official Vizro schema](../explanation/schema.md#what-is-the-vizro-json-schema) and the underlying implementation details may change. If you want to guarantee that your apps keep running, we recommend that you pin your Vizro version.
 
 An example use would be to create an outlined success button. For this, you can use `extra={"color": "success", "outline": True}`. This would be a shortcut to using custom CSS in the assets folder as explained in [our guide on CSS](../user-guides/custom-css.md).
 
 !!! example "Button with custom style"
+
     === "app.py"
+
         ```{.python pycafe-link hl_lines="9"}
         import vizro.models as vm
         from vizro import Vizro
@@ -180,6 +230,7 @@ An example use would be to create an outlined success button. For this, you can 
         ```
 
     === "app.yaml"
+
         ```{.yaml hl_lines="6-8"}
         pages:
           - title: Button with custom style
@@ -192,8 +243,10 @@ An example use would be to create an outlined success button. For this, you can 
         ```
 
     === "Result"
-        [![ButtonStyle]][buttonstyle]
+
+        [![ButtonExtra]][buttonextra]
 
 [button]: ../../assets/user_guides/components/button.png
-[buttonstyle]: ../../assets/user_guides/components/buttonstyle.png
+[buttonextra]: ../../assets/user_guides/components/button_style_extra.png
 [buttontext]: ../../assets/user_guides/components/button_text.png
+[buttonvariant]: ../../assets/user_guides/components/button_style_variants.png

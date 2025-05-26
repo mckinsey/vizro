@@ -1,24 +1,25 @@
 import logging
 import warnings
 from contextlib import suppress
-from typing import Annotated, Literal, cast
+from typing import Annotated, Literal, Optional, cast
 
 import pandas as pd
 from dash import ClientsideFunction, Input, Output, State, clientside_callback, dcc, html, set_props
 from dash.exceptions import MissingCallbackContextException
 from plotly import graph_objects as go
-from pydantic import AfterValidator, Field, PrivateAttr, field_validator
+from pydantic import AfterValidator, BeforeValidator, Field, field_validator
 from pydantic.functional_serializers import PlainSerializer
 from pydantic.json_schema import SkipJsonSchema
 
+from vizro.actions import filter_interaction
 from vizro.actions._actions_utils import CallbackTriggerDict, _get_component_actions
 from vizro.managers import data_manager, model_manager
-from vizro.managers._model_manager import ModelID
-from vizro.models import Action, VizroBaseModel
+from vizro.models import Tooltip, VizroBaseModel
 from vizro.models._action._actions_chain import _action_validator_factory
 from vizro.models._components._components_utils import _process_callable_data_frame
 from vizro.models._models_utils import _log_call
-from vizro.models.types import CapturedCallable, validate_captured_callable
+from vizro.models._tooltip import coerce_str_to_tooltip
+from vizro.models.types import ActionType, CapturedCallable, ModelID, _IdProperty, validate_captured_callable
 
 logger = logging.getLogger(__name__)
 
@@ -36,7 +37,9 @@ class Graph(VizroBaseModel):
             Defaults to `""`.
         footer (str): Markdown text positioned below the `Graph`. Follows the CommonMark specification.
             Ideal for providing further details such as sources, disclaimers, or additional notes. Defaults to `""`.
-        actions (list[Action]): See [`Action`][vizro.models.Action]. Defaults to `[]`.
+        description (Optional[Tooltip]): Optional markdown string that adds an icon next to the title.
+            Hovering over the icon shows a tooltip with the provided description. Defaults to `None`.
+        actions (list[ActionType]): See [`ActionType`][vizro.models.types.ActionType]. Defaults to `[]`.
 
     """
 
@@ -60,17 +63,35 @@ class Graph(VizroBaseModel):
         description="Markdown text positioned below the `Graph`. Follows the CommonMark specification. Ideal for "
         "providing further details such as sources, disclaimers, or additional notes.",
     )
+    # TODO: ideally description would have json_schema_input_type=Union[str, Tooltip] attached to the BeforeValidator,
+    #  but this requires pydantic >= 2.9.
+    description: Annotated[
+        Optional[Tooltip],
+        BeforeValidator(coerce_str_to_tooltip),
+        Field(
+            default=None,
+            description="""Optional markdown string that adds an icon next to the title.
+            Hovering over the icon shows a tooltip with the provided description. Defaults to `None`.""",
+        ),
+    ]
     actions: Annotated[
-        list[Action],
+        list[ActionType],
         AfterValidator(_action_validator_factory("clickData")),
         PlainSerializer(lambda x: x[0].actions),
         Field(default=[]),
     ]
 
-    # Component properties for actions and interactions
-    _output_component_property: str = PrivateAttr("figure")
-
     _validate_figure = field_validator("figure", mode="before")(validate_captured_callable)
+
+    @property
+    def _action_outputs(self) -> dict[str, _IdProperty]:
+        return {
+            "__default__": f"{self.id}.figure",
+            **({"title": f"{self.id}_title.children"} if self.title else {}),
+            **({"header": f"{self.id}_header.children"} if self.header else {}),
+            **({"footer": f"{self.id}_footer.children"} if self.footer else {}),
+            **({"description": f"{self.description.id}-text.children"} if self.description else {}),
+        }
 
     # Convenience wrapper/syntactic sugar.
     def __call__(self, **kwargs):
@@ -104,7 +125,7 @@ class Graph(VizroBaseModel):
     # Interaction methods
     @property
     def _filter_interaction_input(self):
-        """Required properties when using pre-defined `filter_interaction`."""
+        """Required properties when using `filter_interaction`."""
         return {
             "clickData": State(component_id=self.id, component_property="clickData"),
             "modelID": State(component_id=self.id, component_property="id"),  # required, to determine triggered model
@@ -113,7 +134,7 @@ class Graph(VizroBaseModel):
     def _filter_interaction(
         self, data_frame: pd.DataFrame, target: str, ctd_filter_interaction: dict[str, CallbackTriggerDict]
     ) -> pd.DataFrame:
-        """Function to be carried out for pre-defined `filter_interaction`."""
+        """Function to be carried out for `filter_interaction`."""
         # data_frame is the DF of the target, ie the data to be filtered, hence we cannot get the DF from this model
         ctd_click_data = ctd_filter_interaction["clickData"]
         if not ctd_click_data["value"]:
@@ -135,7 +156,12 @@ class Graph(VizroBaseModel):
         customdata = ctd_click_data["value"]["points"][0]["customdata"]
 
         for action in source_graph_actions:
-            if action.function._function.__name__ != "filter_interaction" or target not in action.function["targets"]:
+            # TODO-AV2 A 1: simplify this as in
+            #  https://github.com/mckinsey/vizro/pull/1054/commits/f4c8c5b153f3a71b93c018e9f8c6f1b918ca52f6
+            #  Potentially this function would move to the filter_interaction action. That will be deprecated so
+            #  no need to worry too much if it doesn't work well, but we'll need to do something similar for the
+            #  new interaction functionality anyway.
+            if not isinstance(action, filter_interaction) or target not in action.targets:
                 continue
             for custom_data_idx, column in enumerate(custom_data_columns):
                 data_frame = data_frame[data_frame[column].isin([customdata[custom_data_idx]])]
@@ -196,10 +222,13 @@ class Graph(VizroBaseModel):
         # etc. are applied. It only appears on the screen for a brief instant, but we need to make sure it's
         # transparent and has no axes so it doesn't draw anything on the screen which would flicker away when the
         # graph callback is executed to make the dcc.Loading icon appear.
+        description = self.description.build().children if self.description else [None]
         return dcc.Loading(
             children=html.Div(
                 children=[
-                    html.H3(self.title, className="figure-title", id=f"{self.id}_title") if self.title else None,
+                    html.H3([html.Span(self.title, id=f"{self.id}_title"), *description], className="figure-title")
+                    if self.title
+                    else None,
                     dcc.Markdown(self.header, className="figure-header", id=f"{self.id}_header")
                     if self.header
                     else None,

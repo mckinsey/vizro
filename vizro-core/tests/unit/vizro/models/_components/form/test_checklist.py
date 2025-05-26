@@ -3,9 +3,10 @@
 import dash_bootstrap_components as dbc
 import pytest
 from asserts import assert_component_equal
-from dash import html
+from dash import dcc, html
 from pydantic import ValidationError
 
+from vizro.models import Tooltip
 from vizro.models._action._action import Action
 from vizro.models._components.form import Checklist
 
@@ -21,10 +22,15 @@ class TestChecklistInstantiation:
         assert checklist.options == []
         assert checklist.value is None
         assert checklist.title == ""
+        assert checklist.description is None
         assert checklist.actions == []
+        assert checklist._action_outputs == {"__default__": f"{checklist.id}.value"}
+        assert checklist._action_inputs == {"__default__": f"{checklist.id}.value"}
 
     def test_create_checklist_mandatory_and_optional(self):
-        checklist = Checklist(id="checklist-id", options=["A", "B", "C"], value=["A"], title="Title")
+        checklist = Checklist(
+            id="checklist-id", options=["A", "B", "C"], value=["A"], title="Title", description="Test description"
+        )
 
         assert checklist.id == "checklist-id"
         assert checklist.type == "checklist"
@@ -32,6 +38,13 @@ class TestChecklistInstantiation:
         assert checklist.value == ["A"]
         assert checklist.title == "Title"
         assert checklist.actions == []
+        assert isinstance(checklist.description, Tooltip)
+        assert checklist._action_outputs == {
+            "__default__": f"{checklist.id}.value",
+            "title": f"{checklist.id}_title.children",
+            "description": f"{checklist.description.id}-text.children",
+        }
+        assert checklist._action_inputs == {"__default__": f"{checklist.id}.value"}
 
     @pytest.mark.parametrize(
         "test_options, expected",
@@ -126,7 +139,7 @@ class TestChecklistBuild:
         checklist = Checklist(id="checklist_id", options=["A", "B", "C"], title="Title").build()
         expected_checklist = html.Fieldset(
             [
-                html.Legend("Title", className="form-label"),
+                html.Legend([html.Span("Title", id="checklist_id_title"), None], className="form-label"),
                 dbc.Checklist(
                     id="checklist_id",
                     options=["ALL", "A", "B", "C"],
@@ -144,7 +157,7 @@ class TestChecklistBuild:
             id="checklist_id",
             options=["A", "B", "C"],
             value=["A"],
-            title="Test title",
+            title="Title",
             extra={
                 "switch": True,
                 "inline": True,
@@ -154,7 +167,7 @@ class TestChecklistBuild:
 
         expected_checklist = html.Fieldset(
             [
-                html.Legend("Test title", className="form-label"),
+                html.Legend([html.Span("Title", id="checklist_id_title"), None], className="form-label"),
                 dbc.Checklist(
                     id="overridden_id",
                     options=["ALL", "A", "B", "C"],
@@ -167,3 +180,36 @@ class TestChecklistBuild:
             ],
         )
         assert_component_equal(checklist, expected_checklist)
+
+    def test_checklist_build_with_description(self):
+        """Test that description arguments correctly builds icon and tooltip."""
+        checklist = Checklist(
+            options=["A", "B", "C"],
+            value=["A"],
+            title="Title",
+            description=Tooltip(text="Test description", icon="info", id="info"),
+        ).build()
+
+        expected_description = [
+            html.Span("info", id="info-icon", className="material-symbols-outlined tooltip-icon"),
+            dbc.Tooltip(
+                children=dcc.Markdown("Test description", id="info-text", className="card-text"),
+                id="info",
+                target="info-icon",
+                autohide=False,
+            ),
+        ]
+        expected_checklist = html.Fieldset(
+            [
+                html.Legend(
+                    [html.Span("Title", id="checklist_id_title"), *expected_description], className="form-label"
+                ),
+                dbc.Checklist(
+                    options=["ALL", "A", "B", "C"],
+                    value=["A"],
+                    persistence=True,
+                    persistence_type="session",
+                ),
+            ],
+        )
+        assert_component_equal(checklist, expected_checklist, keys_to_strip={"id"})

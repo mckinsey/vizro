@@ -49,7 +49,7 @@ class TestActionsChainInstantiation:
 
 
 def test_set_actions(test_action, validation_info):
-    result = _set_actions(value=[test_action], info=validation_info, trigger_property="value")
+    result = _set_actions(actions=[test_action], info=validation_info, trigger_property="value")
     actions_chain = result[0]
     action = actions_chain.actions[0]
 

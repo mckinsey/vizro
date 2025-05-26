@@ -21,10 +21,12 @@ To create and add a page to your dashboard, do the following steps:
 1. Configure your `components`, see our guide on the [various options](components.md)
 1. (optional) Configure your `controls` , see our guides on [Filters](filters.md) and [Parameters](parameters.md)
 1. (optional) Configure your `layout` , see our guide on [Layouts](layouts.md)
-1. (optional) Give a `description` of your `Page` to the app's [meta tags](https://metatags.io/)
+1. (optional) Set a `description` for your page to add a tooltip and [set meta tags](dashboard.md#meta-tags-for-social-media)
 
 !!! example "Page"
+
     === "app.py"
+
         ```{.python pycafe-link}
         import vizro.models as vm
         import vizro.plotly.express as px
@@ -41,17 +43,17 @@ To create and add a page to your dashboard, do the following steps:
                 )
             ],
             controls=[
-                vm.Filter(column="continent", targets=["sunburst"]),
+                vm.Filter(column="continent"),
                 vm.Parameter(targets=["sunburst.color"], selector=vm.RadioItems(options=["lifeExp", "pop"], title="Color")),
             ],
         )
 
         dashboard = vm.Dashboard(pages=[page])
-
         Vizro().build(dashboard).run()
         ```
 
     === "app.yaml"
+
         ```yaml
         # Still requires a .py to add data to the data manager and parse YAML configuration
         # See yaml_version example
@@ -67,7 +69,6 @@ To create and add a page to your dashboard, do the following steps:
                 type: graph
             controls:
               - column: continent
-                targets: [sunburst]
                 type: filter
               - selector:
                   options: [lifeExp, pop]
@@ -80,11 +81,12 @@ To create and add a page to your dashboard, do the following steps:
         ```
 
     === "Result"
+
         [![Page]][page]
 
 An accordion page selector is automatically added to your dashboard in the top-left of the control container for through the different pages. It will not be added if your dashboard consists of only one page.
 
-You can additionally navigate through the different pages by going directly to the relevant page URL (more details in next section).
+You can also navigate through the different pages by going directly to the relevant page URL (more details in next section).
 
 ## Customize the page URL
 
@@ -97,7 +99,9 @@ The first page always has the URL prefix `/` assigned. A custom URL can, therefo
 To customize the page URL, pass a valid URL name to the `path` argument of [`Page`][vizro.models.Page]:
 
 !!! example "Page"
+
     === "app.py"
+
         ```{.python pycafe-link}
         import vizro.models as vm
         import vizro.plotly.express as px
@@ -123,17 +127,17 @@ To customize the page URL, pass a valid URL name to the `path` argument of [`Pag
                 )
             ],
             controls=[
-                vm.Filter(column="continent", targets=["sunburst"]),
+                vm.Filter(column="continent"),
                 vm.Parameter(targets=["sunburst.color"], selector=vm.RadioItems(options=["lifeExp", "pop"], title="Color")),
             ],
         )
 
         dashboard = vm.Dashboard(pages=[page1, page2])
-
         Vizro().build(dashboard).run()
         ```
 
     === "app.yaml"
+
         ```yaml
         # Still requires a .py to add data to the data manager and parse YAML configuration
         # See yaml_version example
@@ -154,7 +158,6 @@ To customize the page URL, pass a valid URL name to the `path` argument of [`Pag
                 type: graph
             controls:
               - column: continent
-                targets: [sunburst]
                 type: filter
               - selector:
                   options: [lifeExp, pop]

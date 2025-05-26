@@ -11,6 +11,7 @@ from vizro.models import VizroBaseModel
 from vizro.models._models_utils import _log_call
 from vizro.models._navigation._navigation_utils import _NavBuildType, _validate_pages
 from vizro.models._navigation.nav_link import NavLink
+from vizro.models.types import ModelID
 
 
 def coerce_pages_type(pages: Union[list[str], dict[str, list[str]]]) -> dict[str, list[str]]:
@@ -24,14 +25,14 @@ class NavBar(VizroBaseModel):
 
     Args:
         type (Literal["nav_bar"]): Defaults to `"nav_bar"`.
-        pages (dict[str, list[str]]): Mapping from name of a pages group to a list of page IDs. Defaults to `{}`.
+        pages (dict[str, list[ModelID]]): Mapping from name of a pages group to a list of page IDs. Defaults to `{}`.
         items (list[NavLink]): See [`NavLink`][vizro.models.NavLink]. Defaults to `[]`.
 
     """
 
     type: Literal["nav_bar"] = "nav_bar"
     pages: Annotated[
-        dict[str, list[str]],
+        dict[str, list[ModelID]],
         AfterValidator(_validate_pages),
         BeforeValidator(coerce_pages_type),
         Field(default={}, description="Mapping from name of a pages group to a list of page IDs."),

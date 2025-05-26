@@ -9,6 +9,7 @@ To make customizations, you need to:
 1. **Change the relevant CSS properties** in your CSS file.
 
 !!! note "For quick visual fixes, you may shortcut by using the `extra` argument"
+
     If you want to alter the visual appearance of a single component quickly, or if you are not yet comfortable with creating a CSS file, you could opt for an alternative approach. Many of our models have an `extra` argument, that let's you pass arguments to the underlying Dash component directly. Often these components have a `style` or `className` argument that let's you alter the style directly. You can check the [API reference](../API-reference/models.md) of the model in question. An example of this would be to make the [`Button`][vizro.models.Button] [outlined and green](../user-guides/button.md).
 
 ## Introduction to Vizro CSS
@@ -86,7 +87,9 @@ Use Chrome DevTools or a similar tool (Web Inspector, Web Developer Tools, etc.)
 To overwrite any global CSS property, you need to target the element selector and place your CSS file with the overwrites in the `assets` folder.
 
 !!! example "Overwrite CSS globally"
+
     === "my_css_file.css"
+
         ```css
         h1,
         h2 {
@@ -95,6 +98,7 @@ To overwrite any global CSS property, you need to target the element selector an
         ```
 
     === "app.py"
+
         ```py
         import os
         import vizro.models as vm
@@ -122,6 +126,7 @@ To overwrite any global CSS property, you need to target the element selector an
         <img src=https://py.cafe/logo.png alt="PyCafe logo" width="30"><b><a target="_blank" href="https://py.cafe/vizro-official/vizro-custom-header-colors">Run and edit this code in PyCafe</a></b>
 
     === "app.yaml"
+
         ```yaml
         # Still requires a .py to add data to the data manager and parse YAML configuration
         # See yaml_version example
@@ -138,6 +143,7 @@ To overwrite any global CSS property, you need to target the element selector an
         ```
 
     === "Result"
+
         [![AssetsCSS]][assetscss]
 
 ### Overwrite CSS for selected pages
@@ -154,7 +160,9 @@ Suppose you want to hide the page title on one page only. Here's how you can ach
 1. Add your custom css file to the `assets` folder.
 
 !!! example "Hide page title on selected pages"
+
     === "my_css_file.css"
+
         ```css
         #page-with-hidden-title #right-header {
             display: none;
@@ -162,6 +170,7 @@ Suppose you want to hide the page title on one page only. Here's how you can ach
         ```
 
     === "app.py"
+
         ```py
         import vizro.models as vm
         from vizro import Vizro
@@ -184,6 +193,7 @@ Suppose you want to hide the page title on one page only. Here's how you can ach
         <img src=https://py.cafe/logo.png alt="PyCafe logo" width="30"><b><a target="_blank" href="https://py.cafe/vizro-official/vizro-multi-page-example">Run and edit this code in PyCafe</a></b>
 
     === "app.yaml"
+
         ```yaml
         # Still requires a .py to add data to the data manager and parse YAML configuration
         # See yaml_version example
@@ -202,6 +212,7 @@ Suppose you want to hide the page title on one page only. Here's how you can ach
         ```
 
     === "Result"
+
         [![PageTitle]][pagetitle]
 
 ### Overwrite CSS for selected components
@@ -237,7 +248,9 @@ It's essential to understand the relationship between the targeted CSS class or 
 - **Child element:** The card text is wrapped inside a `<p>` that is a child of the `<div>` with our `id`. This is the element we need to target to change the font color.
 
 !!! example "Customizing CSS properties in selective components"
+
     === "my_css_file.css"
+
         ```css
         /* Apply styling to parent */
         .card:has(#custom-card) {
@@ -251,6 +264,7 @@ It's essential to understand the relationship between the targeted CSS class or 
         ```
 
     === "app.py"
+
         ```py
         import vizro.models as vm
         from vizro import Vizro
@@ -264,13 +278,13 @@ It's essential to understand the relationship between the targeted CSS class or 
         )
 
         dashboard = vm.Dashboard(pages=[page])
-
         Vizro().build(dashboard).run()
         ```
 
         <img src=https://py.cafe/logo.png alt="PyCafe logo" width="30"><b><a target="_blank" href="https://py.cafe/vizro-official/vizro-custom-card-styling">Run and edit this code in PyCafe</a></b>
 
     === "app.yaml"
+
         ```yaml
         # Still requires a .py to add data to the data manager and parse YAML configuration
         # See yaml_version example
@@ -287,9 +301,11 @@ It's essential to understand the relationship between the targeted CSS class or 
         ```
 
     === "Result"
+
         [![CardCSS]][cardcss]
 
 !!! note "Relationship between model ID and CSS ID"
+
     Some Vizro components produce a single HTML element with an ID that matches the model ID, allowing you to target it directly using the CSS #id selector. Other components generate multiple HTML elements. Within these, the "core" element will have an ID matching the model ID, while non-core elements may have IDs that are variations of it, such as `{model-id}-title`.
 
     In all instances, you can determine the correct selector by using Chrome DevTools or a similar tool after setting the appropriate model ID.

@@ -1,19 +1,15 @@
 import e2e.vizro.constants as cnst
-from e2e.vizro.checkers import check_graph_is_loading, check_table_rows_number
+from e2e.vizro.checkers import check_table_rows_number
 from e2e.vizro.navigation import accordion_select, page_select
-from e2e.vizro.paths import table_cell_value_path
+from e2e.vizro.paths import graph_axis_value_path, table_cell_value_path
 
 
 def test_single_date(dash_br):
     """Tests that single datepicker as filter works correctly."""
-    accordion_select(
-        dash_br, accordion_name=cnst.DATEPICKER_ACCORDION.upper(), accordion_number=cnst.DATEPICKER_ACCORDION_NUMBER
-    )
+    accordion_select(dash_br, accordion_name=cnst.DATEPICKER_ACCORDION)
     page_select(
         dash_br,
-        page_path=cnst.DATEPICKER_PAGE_PATH,
         page_name=cnst.DATEPICKER_PAGE,
-        graph_id=cnst.BAR_POP_DATE_ID,
     )
 
     # open datepicker calendar and choose date 17 May 2016
@@ -38,14 +34,10 @@ def test_single_date(dash_br):
 
 def test_date_range(dash_br):
     """Tests that range datepicker as filter works correctly."""
-    accordion_select(
-        dash_br, accordion_name=cnst.DATEPICKER_ACCORDION.upper(), accordion_number=cnst.DATEPICKER_ACCORDION_NUMBER
-    )
+    accordion_select(dash_br, accordion_name=cnst.DATEPICKER_ACCORDION)
     page_select(
         dash_br,
-        page_path=cnst.DATEPICKER_PAGE_PATH,
         page_name=cnst.DATEPICKER_PAGE,
-        graph_id=cnst.BAR_POP_DATE_ID,
     )
 
     # open datepicker calendar and choose dates from 17 to 18 May 2016
@@ -53,7 +45,13 @@ def test_date_range(dash_br):
     dash_br.wait_for_element('div[data-calendar="true"]')
     dash_br.multiple_click('button[aria-label="17 May 2016"]', 1)
     dash_br.multiple_click('button[aria-label="18 May 2016"]', 1)
-    check_graph_is_loading(dash_br, cnst.BAR_POP_RANGE_ID)
+
+    # Check x axis max value is '12:00'
+    dash_br.wait_for_text_to_equal(
+        graph_axis_value_path(graph_id=cnst.BAR_POP_RANGE_ID, axis_value_number="5", axis_value="12:00"),
+        "12:00",
+    )
+
     dash_br.wait_for_text_to_equal(f'button[id="{cnst.DATEPICKER_RANGE_ID}"]', "May 17, 2016 – May 18, 2016")  # noqa: RUF001
 
     # check that dates in the rows are within the chosen range
@@ -75,14 +73,10 @@ def test_date_range(dash_br):
 
 def test_single_date_param(dash_br):
     """Tests that single datepicker as parameter works correctly."""
-    accordion_select(
-        dash_br, accordion_name=cnst.DATEPICKER_ACCORDION.upper(), accordion_number=cnst.DATEPICKER_ACCORDION_NUMBER
-    )
+    accordion_select(dash_br, accordion_name=cnst.DATEPICKER_ACCORDION)
     page_select(
         dash_br,
-        page_path=cnst.DATEPICKER_PARAMS_PAGE_PATH,
         page_name=cnst.DATEPICKER_PARAMS_PAGE,
-        graph_id=cnst.BAR_CUSTOM_ID,
     )
     # check that specific bar has blue color
     dash_br.wait_for_element(f"div[id='{cnst.BAR_CUSTOM_ID}'] g:nth-of-type(14) path[style*='(0, 0, 255)'")

@@ -1,3 +1,4 @@
+import pytest
 from e2e.asserts import assert_files_equal
 from e2e.vizro import constants as cnst
 from e2e.vizro.checkers import (
@@ -15,6 +16,7 @@ from selenium.webdriver.support import expected_conditions
 from selenium.webdriver.support.wait import WebDriverWait
 
 
+@pytest.mark.flaky(reruns=5)
 def test_parameters_title(chrome_driver, dash_br):
     """Tests that graph title is changing by parameter independently for every user."""
     # select parameters page for the first user
@@ -22,7 +24,6 @@ def test_parameters_title(chrome_driver, dash_br):
         chrome_driver,
         page_path=cnst.PARAMETERS_PAGE_PATH,
         page_name=cnst.PARAMETERS_PAGE,
-        graph_id=cnst.BAR_GRAPH_ID,
     )
 
     # select parameters page for the second user
@@ -30,7 +31,6 @@ def test_parameters_title(chrome_driver, dash_br):
         dash_br,
         page_path=cnst.PARAMETERS_PAGE_PATH,
         page_name=cnst.PARAMETERS_PAGE,
-        graph_id=cnst.BAR_GRAPH_ID,
     )
 
     # set bar graph title for the first user as 'red'
@@ -57,7 +57,6 @@ def test_theme_color(chrome_driver, dash_br):
         chrome_driver,
         page_path=cnst.PARAMETERS_PAGE_PATH,
         page_name=cnst.PARAMETERS_PAGE,
-        graph_id=cnst.BAR_GRAPH_ID,
     )
 
     # select parameters page for the second user
@@ -65,7 +64,6 @@ def test_theme_color(chrome_driver, dash_br):
         dash_br,
         page_path=cnst.PARAMETERS_PAGE_PATH,
         page_name=cnst.PARAMETERS_PAGE,
-        graph_id=cnst.BAR_GRAPH_ID,
     )
 
     # change theme to dark for the first user
@@ -91,7 +89,6 @@ def test_export_action(chrome_driver, dash_br):
         chrome_driver,
         page_path=cnst.FILTERS_PAGE_PATH,
         page_name=cnst.FILTERS_PAGE,
-        graph_id=cnst.SCATTER_GRAPH_ID,
     )
 
     # select filters page for the second user
@@ -99,7 +96,6 @@ def test_export_action(chrome_driver, dash_br):
         dash_br,
         page_path=cnst.FILTERS_PAGE_PATH,
         page_name=cnst.FILTERS_PAGE,
-        graph_id=cnst.SCATTER_GRAPH_ID,
     )
 
     # change slider values for scatter graph for the first user

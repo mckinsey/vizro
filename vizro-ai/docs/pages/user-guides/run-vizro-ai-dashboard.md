@@ -1,14 +1,21 @@
 # How to run Vizro-AI dashboard
 
+!!! warning "Vizro-AI has been replaced by Vizro-MCP"
+
+    Vizro-AI has largely been replaced by [Vizro-MCP](https://github.com/mckinsey/vizro/blob/main/vizro-mcp/README.md) and only supports chart generation from version 0.4.0.
+
 This guide offers insights into different ways of running `VizroAI.dashboard` to generate a Vizro dashboards from natural language prompts.
 
 ??? note "Note: API key"
+
     Make sure you have followed the [LLM setup guide](../user-guides/install.md#set-up-access-to-a-large-language-model) and that your API key is set up in a `.env` file in the same folder as your Notebook file (`.ipynb`).
 
 ## Run Vizro-AI dashboard
 
 !!! example "Generated dashboard"
+
     === "Prompt"
+
         ```py
         import vizro.plotly.express as px
         from vizro_ai import VizroAI
@@ -34,6 +41,7 @@ This guide offers insights into different ways of running `VizroAI.dashboard` to
         ```
 
     === "Result"
+
         ![VizroAIDashboardPage1](../../assets/user_guides/dashboard/dashboard2_page1.png)
 
 This triggers the dashboard building process. Once Vizro-AI finishes the dashboard generation process, you can now launch the dashboard.
@@ -50,7 +58,9 @@ Like the `VizroAI.plot` method, in order to produce more comprehensive output we
 - If set to `True`, it returns a class (a Pydantic model) containing both the dashboard object and the code string used to generate it.
 
 !!! example "View dashboard code"
+
     === "Prompt"
+
         ```py
         import vizro.plotly.express as px
         from vizro_ai import VizroAI
@@ -77,6 +87,7 @@ Like the `VizroAI.plot` method, in order to produce more comprehensive output we
         ```
 
     === "Resulting code"
+
         ```py
         ######## Module Imports ##########
         from vizro import Vizro
@@ -144,23 +155,23 @@ Detailed guidance is provided in [dashboard generation tutorial](https://vizro.r
 
 The following list is a table of the Vizro components currently supported by Vizro-AI. This list is not exhaustive, and we are actively working on adding more features to Vizro-AI.
 
-| Feature type         | Feature                                                                                                                                  | Availability |
-| -------------------- | ---------------------------------------------------------------------------------------------------------------------------------------- | ------------ |
-| **Components**       | [Graph](https://vizro.readthedocs.io/en/stable/pages/user-guides/graph/)                                                                 | ✔            |
-|                      | [AG Grid](https://vizro.readthedocs.io/en/stable/pages/user-guides/table/#ag-grid)                                                       | ✔            |
-|                      | [Card](https://vizro.readthedocs.io/en/stable/pages/user-guides/card-button/)                                                            | ✔            |
-|                      | [Button](https://vizro.readthedocs.io/en/stable/pages/user-guides/card-button/)                                                          | ✖            |
-|                      | [Tabs](https://vizro.readthedocs.io/en/stable/pages/user-guides/tabs/)                                                                   | ✖            |
-|                      | [Containers](https://vizro.readthedocs.io/en/stable/pages/user-guides/container/)                                                        | ✖            |
-| **Controls**         | [Filter](https://vizro.readthedocs.io/en/stable/pages/user-guides/filters/)                                                              | ✔            |
-|                      | [Parameter](https://vizro.readthedocs.io/en/stable/pages/user-guides/parameters/)                                                        | ✖            |
-| **Navigation**       | [Default navigation](https://vizro.readthedocs.io/en/stable/pages/user-guides/navigation/#use-the-default-navigation)                    | ✔            |
-|                      | [Custom navigation](https://vizro.readthedocs.io/en/stable/pages/user-guides/navigation/#customize-the-navigation-bar)                   | ✖            |
-| **Layout**           | [Layout](https://vizro.readthedocs.io/en/stable/pages/user-guides/layouts/)                                                              | ✔            |
-| **Dashboard header** | [Dashboard title](https://vizro.readthedocs.io/en/stable/pages/user-guides/dashboard/)                                                   | ✔            |
-|                      | [Logo](https://vizro.readthedocs.io/en/stable/pages/user-guides/dashboard/)                                                              | ✖            |
-| **Actions**          | [Pre-defined actions](https://vizro.readthedocs.io/en/stable/pages/user-guides/actions/#pre-defined-actions/)                            | ✖            |
-|                      | [Filter interaction between charts](https://vizro.readthedocs.io/en/stable/pages/user-guides/actions/#filter-data-by-clicking-on-chart/) | ✖            |
-|                      | [Custom actions](https://vizro.readthedocs.io/en/stable/pages/user-guides/actions/#custom-actions/)                                      | ✖            |
+| Feature type         | Feature                                                                                                                 | Availability |
+| -------------------- | ----------------------------------------------------------------------------------------------------------------------- | ------------ |
+| **Components**       | [Graph](https://vizro.readthedocs.io/en/stable/pages/user-guides/graph/)                                                | ✔            |
+|                      | [AG Grid](https://vizro.readthedocs.io/en/stable/pages/user-guides/table/#ag-grid)                                      | ✔            |
+|                      | [Card](https://vizro.readthedocs.io/en/stable/pages/user-guides/card-button/)                                           | ✔            |
+|                      | [Button](https://vizro.readthedocs.io/en/stable/pages/user-guides/card-button/)                                         | ✖            |
+|                      | [Tabs](https://vizro.readthedocs.io/en/stable/pages/user-guides/tabs/)                                                  | ✖            |
+|                      | [Containers](https://vizro.readthedocs.io/en/stable/pages/user-guides/container/)                                       | ✖            |
+| **Controls**         | [Filter](https://vizro.readthedocs.io/en/stable/pages/user-guides/filters/)                                             | ✔            |
+|                      | [Parameter](https://vizro.readthedocs.io/en/stable/pages/user-guides/parameters/)                                       | ✖            |
+| **Navigation**       | [Default navigation](https://vizro.readthedocs.io/en/stable/pages/user-guides/navigation/#use-the-default-navigation)   | ✔            |
+|                      | [Custom navigation](https://vizro.readthedocs.io/en/stable/pages/user-guides/navigation/#customize-the-navigation-bar)  | ✖            |
+| **Layout**           | [Layout](https://vizro.readthedocs.io/en/stable/pages/user-guides/layouts/)                                             | ✔            |
+| **Dashboard header** | [Dashboard title](https://vizro.readthedocs.io/en/stable/pages/user-guides/dashboard/)                                  | ✔            |
+|                      | [Logo](https://vizro.readthedocs.io/en/stable/pages/user-guides/dashboard/)                                             | ✖            |
+| **Actions**          | [Pre-defined actions](https://vizro.readthedocs.io/en/stable/pages/user-guides/actions/#pre-defined-actions/)           | ✖            |
+|                      | [Filter interaction between charts](https://vizro.readthedocs.io/en/stable/pages/user-guides/actions/#cross-filtering/) | ✖            |
+|                      | [Custom actions](https://vizro.readthedocs.io/en/stable/pages/user-guides/actions/#custom-actions/)                     | ✖            |
 
 If a feature you need for your dashboard isn't currently supported by Vizro-AI you can retrieve the dashboard code and add it by hand before running the dashboard.

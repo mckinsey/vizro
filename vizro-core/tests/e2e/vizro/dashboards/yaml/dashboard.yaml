@@ -1,0 +1,97 @@
+pages:
+  - components:
+      - text: |
+          # This is an <h1> tag
+          ## This is an <h2> tag
+          ###### This is an <h6> tag
+
+          >
+          > Block quotes are used to highlight text.
+          >
+
+          * Item 1
+          * Item 2
+
+           *This text will be italic*
+          _This will also be italic_
+          **This text will be bold**
+          _You **can** combine them_
+        type: card
+    title: homepage
+    id: hp
+  - components:
+      - figure:
+          _target_: scatter
+          color: sepal_width
+          data_frame: iris
+          x: sepal_length
+          y: petal_width
+        id: scatter
+        type: graph
+    title: filters page (tabs + containers)
+    path: /filters-page-tabs--containers
+  - components:
+      - type: tabs
+        id: sub tab params
+        tabs:
+          - id: parameters sub t@b container 1
+            type: container
+            title: parameters sub t@b container 1
+            components:
+              - figure:
+                  _target_: bar
+                  color: species
+                  data_frame: iris
+                  x: sepal_length
+                  y: petal_width
+                  color_discrete_map:
+                    setosa: black
+                    versicolor: pink
+                id: b@R-graph
+                type: graph
+          - id: parameters sub t@b container 2
+            type: container
+            title: parameters sub t@b container 2
+            components:
+              - figure:
+                  _target_: histogram
+                  color: species
+                  data_frame: iris
+                  x: sepal_length
+                  y: petal_width
+                  color_discrete_map:
+                    setosa: black
+                    versicolor: pink
+                id: -histogram-graph--
+                type: graph
+    title: parameters_p@ge! (tabs + containers)
+    path: /parameters_page
+  - components:
+      - figure:
+          _target_: dash_ag_grid
+          data_frame: gapminder
+          dashGridOptions:
+            pagination: true
+        id: 123_ag_grid_table
+        title: Equal Title One
+        type: ag_grid
+      - figure:
+          _target_: box
+          data_frame: gapminder
+          x: continent
+          y: lifeExp
+          title: Equal Title One
+        id: Box on ag grid page
+        type: graph
+    title: table-ag-grid-page
+    path: /table-ag-grid-page
+navigation:
+  pages:
+    generAl:
+      - hp
+      - filters page (tabs + containers)
+      - parameters_p@ge! (tabs + containers)
+    AGgrid:
+      - table-ag-grid-page
+title: yaml dashboard
+description: dashboard tooltip

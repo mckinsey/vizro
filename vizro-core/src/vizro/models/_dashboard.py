@@ -4,7 +4,7 @@ import base64
 import logging
 from functools import partial
 from pathlib import Path
-from typing import TYPE_CHECKING, Annotated, Literal, Optional, TypedDict, cast
+from typing import TYPE_CHECKING, Annotated, Literal, Optional, cast
 
 import dash
 import dash_bootstrap_components as dbc
@@ -22,15 +22,17 @@ from dash import (
     html,
 )
 from dash.development.base_component import Component
-from pydantic import AfterValidator, Field, ValidationInfo
+from pydantic import AfterValidator, BeforeValidator, Field, ValidationInfo
+from typing_extensions import TypedDict
 
 import vizro
 from vizro._constants import MODULE_PAGE_404, VIZRO_ASSETS_PATH
 from vizro._themes.template_dashboard_overrides import dashboard_overrides
 from vizro.actions._action_loop._action_loop import ActionLoop
-from vizro.models import Navigation, VizroBaseModel
+from vizro.models import Navigation, Tooltip, VizroBaseModel
 from vizro.models._models_utils import _log_call
 from vizro.models._navigation._navigation_utils import _NavBuildType
+from vizro.models._tooltip import coerce_str_to_tooltip
 
 if TYPE_CHECKING:
     from vizro.models import Page
@@ -88,17 +90,32 @@ class Dashboard(VizroBaseModel):
             Defaults to `vizro_dark`.
         navigation (Navigation): See [`Navigation`][vizro.models.Navigation]. Defaults to `None`.
         title (str): Dashboard title to appear on every page on top left-side. Defaults to `""`.
+        description (Optional[Tooltip]): Optional markdown string that adds an icon next to the title.
+            Hovering over the icon shows a tooltip with the provided description. This also sets the page's meta
+            tags. Defaults to `None`.
 
     """
 
     pages: list[Page]
     theme: Literal["vizro_dark", "vizro_light"] = Field(
-        default="vizro_dark", description="Layout theme to be applied across dashboard. Defaults to `vizro_dark`."
+        default="vizro_dark", description="Theme to be applied across dashboard. Defaults to `vizro_dark`."
     )
     navigation: Annotated[
         Optional[Navigation], AfterValidator(set_navigation_pages), Field(default=None, validate_default=True)
     ]
     title: str = Field(default="", description="Dashboard title to appear on every page on top left-side.")
+    # TODO: ideally description would have json_schema_input_type=Union[str, Tooltip] attached to the BeforeValidator,
+    #  but this requires pydantic >= 2.9.
+    description: Annotated[
+        Optional[Tooltip],
+        BeforeValidator(coerce_str_to_tooltip),
+        Field(
+            default=None,
+            description="""Optional markdown string that adds an icon next to the title.
+            Hovering over the icon shows a tooltip with the provided description. This also sets the page's meta
+            tags. Defaults to `None`.""",
+        ),
+    ]
 
     @_log_call
     def pre_build(self):
@@ -109,12 +126,16 @@ class Dashboard(VizroBaseModel):
         # Note redirect_from=["/"] doesn't work and so the / route must be defined separately.
         self.pages[0].path = "/"
         meta_img = self._infer_image("app") or self._infer_image("logo") or self._infer_image("logo_dark")
+        dashboard_description_text = self.description.text if self.description else None
 
         for order, page in enumerate(self.pages):
+            # Dash also uses the dashboard-level description passed into Dash() as the default for page-level
+            # descriptions, but this would involve extracting dashboard.description and inserting it into the Dash app
+            # config in Vizro.build. What we do here is simpler but has the same effect.
             dash.register_page(
                 module=page.id,
                 name=page.title,
-                description=page.description,
+                description=page.description.text if page.description else dashboard_description_text,
                 image=meta_img,
                 title=f"{self.title}: {page.title}" if self.title else page.title,
                 path=page.path,
@@ -139,12 +160,12 @@ class Dashboard(VizroBaseModel):
             clientside_callback(
                 ClientsideFunction(namespace="dashboard", function_name="collapse_nav_panel"),
                 [
-                    Output("collapsable-left-side", "is_open"),
+                    Output("collapsible-left-side", "is_open"),
                     Output("collapse-icon", "style"),
                     Output("collapse-tooltip", "children"),
                 ],
                 Input("collapse-icon", "n_clicks"),
-                State("collapsable-left-side", "is_open"),
+                State("collapsible-left-side", "is_open"),
             )
 
         layout = html.Div(
@@ -190,8 +211,9 @@ class Dashboard(VizroBaseModel):
 
     def _get_page_divs(self, page: Page) -> _PageDivsType:
         # Identical across pages
+        dashboard_description = self.description.build().children if self.description else [None]
         dashboard_title = (
-            html.H2(id="dashboard-title", children=self.title)
+            html.H2(id="dashboard-title", children=[self.title, *dashboard_description])
             if self.title
             else html.H2(id="dashboard-title", hidden=True)
         )
@@ -219,7 +241,10 @@ class Dashboard(VizroBaseModel):
 
         # Shared across pages but slightly differ in content. These could possibly be done by a clientside
         # callback instead.
-        page_title = html.H2(id="page-title", children=page.title)
+        page_description = page.description.build().children if page.description else [None]
+        page_title = html.H2(
+            id="page-title", children=[html.Span(page.title, id=f"{page.id}_title"), *page_description]
+        )
         # cannot actually be None if you check pages and layout field together
         navigation: _NavBuildType = cast(Navigation, self.navigation).build(active_page_id=page.id)
         nav_bar = navigation["nav-bar"]
@@ -258,11 +283,11 @@ class Dashboard(VizroBaseModel):
         else:
             page_header_divs.append(page_divs["settings"])
 
-        collapsable_icon = (
+        collapsible_icon = (
             html.Div(
                 children=[
                     html.Span(
-                        id="collapse-icon", children="keyboard_double_arrow_left", className="material-symbols-outlined"
+                        id="collapse-icon", children="keyboard_arrow_left", className="material-symbols-outlined"
                     ),
                     dbc.Tooltip(
                         id="collapse-tooltip",
@@ -281,8 +306,8 @@ class Dashboard(VizroBaseModel):
         left_main = html.Div(id="left-main", children=left_main_divs, hidden=_all_hidden(left_main_divs))
         left_side = html.Div(id="left-side", children=[left_sidebar, left_main])
 
-        collapsable_left_side = dbc.Collapse(
-            id="collapsable-left-side", children=left_side, is_open=True, dimension="width"
+        collapsible_left_side = dbc.Collapse(
+            id="collapsible-left-side", children=left_side, is_open=True, dimension="width"
         )
 
         right_header = html.Div(id="right-header", children=right_header_divs)
@@ -290,7 +315,7 @@ class Dashboard(VizroBaseModel):
         right_side = html.Div(id="right-side", children=[right_header, right_main])
 
         page_header = html.Div(id="page-header", children=page_header_divs, hidden=_all_hidden(page_header_divs))
-        page_main = html.Div(id="page-main", children=[collapsable_left_side, collapsable_icon, right_side])
+        page_main = html.Div(id="page-main", children=[collapsible_left_side, collapsible_icon, right_side])
         return html.Div(children=[page_header, page_main], className="page-container")
 
     def _make_page_layout(self, page: Page, **kwargs):

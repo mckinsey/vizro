@@ -9,10 +9,10 @@ from dash import dcc
 import vizro.models as vm
 import vizro.plotly.express as px
 from vizro import Vizro
+from vizro.actions._abstract_action import _AbstractAction
 from vizro.managers import data_manager, model_manager
 from vizro.models._action._actions_chain import ActionsChain
 from vizro.models._controls.filter import Filter, _filter_between, _filter_isin
-from vizro.models.types import CapturedCallable
 
 
 @pytest.fixture
@@ -434,6 +434,8 @@ class TestFilterInstantiation:
         assert filter.type == "filter"
         assert filter.column == "foo"
         assert filter.targets == []
+        assert filter.selector is None
+        assert filter._action_outputs == {"__default__": f"{filter.id}.children"}
 
     def test_create_filter_mandatory_and_optional(self):
         filter = Filter(column="foo", targets=["scatter_chart", "bar_chart"], selector=vm.RadioItems())
@@ -818,11 +820,14 @@ class TestPreBuildMethod:
         filter = vm.Filter(column=filtered_column, selector=selector)
         model_manager["test_page"].controls = [filter]
         filter.pre_build()
-        default_action = filter.selector.actions[0]
-        assert isinstance(default_action, ActionsChain)
-        assert isinstance(default_action.actions[0].function, CapturedCallable)
-        assert default_action.actions[0].function["filter_function"] == filter_function
-        assert default_action.actions[0].id == f"filter_action_{filter.id}"
+
+        default_actions_chain = filter.selector.actions[0]
+        default_action = default_actions_chain.actions[0]
+
+        assert isinstance(default_actions_chain, ActionsChain)
+        assert isinstance(default_action, _AbstractAction)
+        assert default_action.filter_function == filter_function
+        assert default_action.id == f"__filter_action_{filter.id}"
 
     # TODO: Add tests for custom temporal and categorical selectors too. Probably inside the conftest file and reused in
     #       all other tests. Also add tests for the custom selector that is an entirely new component and adjust docs.
@@ -853,11 +858,27 @@ class TestPreBuildMethod:
         assert filter.selector.min == gapminder.lifeExp.min()
         assert filter.selector.max == gapminder.lifeExp.max()
 
-        default_action = filter.selector.actions[0]
-        assert isinstance(default_action, ActionsChain)
-        assert isinstance(default_action.actions[0].function, CapturedCallable)
-        assert default_action.actions[0].function["filter_function"] == _filter_between
-        assert default_action.actions[0].id == f"filter_action_{filter.id}"
+        default_actions_chain = filter.selector.actions[0]
+        default_action = default_actions_chain.actions[0]
+
+        assert isinstance(default_actions_chain, ActionsChain)
+        assert isinstance(default_action, _AbstractAction)
+        assert default_action.filter_function == _filter_between
+        assert default_action.id == f"__filter_action_{filter.id}"
+
+    @pytest.mark.usefixtures("managers_one_page_container_controls")
+    def test_container_filter_defaults(self):
+        filter = model_manager["container_filter"]
+        filter.pre_build()
+
+        assert filter.selector.extra == {"inline": True}
+
+    @pytest.mark.usefixtures("managers_one_page_container_controls")
+    def test_container_filter_default_targets(self):
+        filter = model_manager["container_filter"]
+        filter.pre_build()
+
+        assert filter.targets == ["scatter_chart"]
 
 
 class TestFilterBuild:

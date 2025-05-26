@@ -1,3 +1,5 @@
+import time
+
 import e2e.vizro.constants as cnst
 import pandas as pd
 from flask_caching import Cache
@@ -76,6 +78,7 @@ datepicker_df = pd.DataFrame(
 
 def load_datepicker_data():
     datepicker_df["time"] = pd.to_datetime(datepicker_df["time"], format="mixed")
+    time.sleep(0.25)  # for testing, to catch reloading of the chart
     return datepicker_df
 
 
@@ -87,7 +90,7 @@ data_manager["datepicker_df"].timeout = 10
 datepicker_page = vm.Page(
     title=cnst.DATEPICKER_PAGE,
     id=cnst.DATEPICKER_PAGE,
-    layout=vm.Layout(grid=[[0, 1], [0, 1], [2, 3], [2, 3]]),
+    layout=vm.Grid(grid=[[0, 1], [0, 1], [2, 3], [2, 3]]),
     components=[
         vm.Graph(
             id=cnst.BAR_POP_RANGE_ID,

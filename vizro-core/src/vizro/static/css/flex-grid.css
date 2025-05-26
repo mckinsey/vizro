@@ -1,0 +1,51 @@
+/*
+For grid-items, we set a height and width of 100%. In contrast, for flex-items, these dimensions must be unset to
+avoid overflow issues.
+
+We specifically target .card as a direct child of .grid-item to ensure that a card inside a grid
+(even when nested within a flex-item) behaves like a card in a grid, not like a card in a flex layout.
+
+For .loading-container, we set height and width to 100% when they are direct children of .grid-item.
+Nested .loading-container and .figure-container elements inherit these dimensions, ensuring consistent sizing for
+all such elements inside grid-items, regardless of whether they are nested inside flex-items.
+For flex-items, no dimensions are explicitly set, and no dimensions are therefore inherited either.
+
+The .table-container is more complex because it requires specific dimensions depending on whether it is inside a
+grid-item or a flex-item. The solution below handles nesting up to 3 levels deep. Deeper nesting is not recommended,
+as it may result in unexpected layouts.
+*/
+
+.grid-item > .card {
+  height: calc(100% - 8px);
+  width: calc(100% - 8px);
+}
+
+.loading-container,
+.figure-container {
+  display: flex;
+  flex-direction: column;
+  height: inherit;
+  width: inherit;
+}
+
+.grid-item > .loading-container {
+  height: 100%;
+  width: 100%;
+}
+
+/* stylelint-disable-next-line no-descending-specificity */
+.grid-item .table-container,
+.flex-item .grid-item .table-container,
+.grid-item .flex-item .grid-item .table-container {
+  height: 100%;
+  width: 100%;
+}
+
+.flex-row .flex-item {
+  flex: 1;
+}
+
+.grid-item .table-container .ag-theme-vizro {
+  /* Use important to overrider inline style  */
+  height: 100% !important;
+}

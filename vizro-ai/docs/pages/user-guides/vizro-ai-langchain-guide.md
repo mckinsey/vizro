@@ -116,7 +116,9 @@ chain = llm_with_tools | inject_df | tool_router.map()
 Now you can use the chain to generate charts or dashboards based on natural language queries. The chain will generate code that you can use to create visualizations.
 
 !!! example "Generate chart code"
+
     === "Code"
+
         ```python
         # Load sample data
         df = px.data.gapminder()
@@ -126,6 +128,7 @@ Now you can use the chain to generate charts or dashboards based on natural lang
         ```
 
     === "Vizro-AI Generated Code"
+
         ```python
         import plotly.graph_objects as go
         from vizro.models.types import capture
@@ -144,7 +147,9 @@ Now you can use the chain to generate charts or dashboards based on natural lang
         ```
 
 !!! example "Generate dashboard code"
+
     === "Code"
+
         ```python
         dfs = [px.data.gapminder()]
 
@@ -155,6 +160,7 @@ Now you can use the chain to generate charts or dashboards based on natural lang
         ```
 
     === "Vizro-AI Generated Code"
+
         ```python
         ############ Imports ##############
         import vizro.models as vm

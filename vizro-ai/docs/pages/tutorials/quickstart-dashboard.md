@@ -1,5 +1,9 @@
 # Dashboard generation
 
+!!! warning "Vizro-AI has been replaced by Vizro-MCP"
+
+    Vizro-AI has largely been replaced by [Vizro-MCP](https://github.com/mckinsey/vizro/blob/main/vizro-mcp/README.md) and only supports chart generation from version 0.4.0.
+
 In the previous tutorial, we explained how to use Vizro-AI to generate individual charts from text. Vizro-AI also supports text-to-dashboard functionality, enabling you to generate a complete [Vizro](https://vizro.readthedocs.io/en/stable/) dashboard containing multiple charts and pages.
 
 You may also want to review the [Vizro dashboard tutorial](https://vizro.readthedocs.io/en/stable/pages/tutorials/first-dashboard/), which creates a dashboard from scratch rather than by generation with Vizro-AI.
@@ -13,6 +17,7 @@ If you haven't already installed Vizro-AI and set up the API key for OpenAI, fol
 A good way to initially explore Vizro-AI is from inside a Jupyter Notebook.
 
 ??? "If you haven't used Jupyter before..."
+
     You may need to install the Jupyter package if you . From the terminal window:
 
     ```bash
@@ -97,7 +102,9 @@ Vizro().build(dashboard).run()
 ```
 
 !!! example "Generated dashboard"
+
     === "Code for the cell"
+
         ```py
         from vizro import Vizro
         from vizro_ai import VizroAI
@@ -120,6 +127,7 @@ Vizro().build(dashboard).run()
         ```
 
     === "Result"
+
         [![VizroAIDashboardPage1]][vizroaidashboardpage1]
 
 [vizroaidashboardpage1]: ../../assets/tutorials/dashboard/dashboard0_page1.png

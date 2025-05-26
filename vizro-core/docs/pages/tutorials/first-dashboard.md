@@ -2,10 +2,12 @@
 
 There is no setup needed for your first dashboard, thanks to the amazing [PyCafe](https://py.cafe/).
 
-Click on the **Run and edit this code in PyCafe** link below to live-edit the dashboard.
+Click on the **Run and edit this code in Py.Cafe** link below to live-edit the dashboard.
 
 !!! example "First dashboard"
+
     === "app.py"
+
         ```{.python pycafe-link}
         import vizro.plotly.express as px
         from vizro import Vizro
@@ -29,6 +31,7 @@ Click on the **Run and edit this code in PyCafe** link below to live-edit the da
         ```
 
     === "Result"
+
         [![FirstDash]][firstdash]
 
 <!-- vale off -->
@@ -37,7 +40,7 @@ Click on the **Run and edit this code in PyCafe** link below to live-edit the da
 
 <!-- vale on -->
 
-When you click the link to "Edit live on PyCafe" the dashboard is running inside your browser. Any changes you make are local and you don't need to worry about breaking the code for others. Nobody else sees the changes you make unless you save a copy of the project as your own Vizro PyCafe project.
+When you click the link to "**Run and edit this code in Py.Cafe**" the dashboard starts running inside your browser. Any changes you make are local and you don't need to worry about breaking the code for others. Nobody else sees the changes you make unless you publish your copy of the project as your own Vizro PyCafe project.
 
 <!-- vale off -->
 
@@ -47,10 +50,18 @@ When you click the link to "Edit live on PyCafe" the dashboard is running inside
 
 You can use PyCafe to experiment with your own Vizro dashboards by dropping code onto a new project. Check out the [PyCafe documentation](https://py.cafe/docs/apps/vizro) for more information.
 
-If you need inspiration or a starting point, we make all our examples available for you to try out on PyCafe. Throughout our documentation, follow the "**Run and edit this code in PyCafe**" link below the code snippets to open them in PyCafe.
+We make all our examples available. Throughout our documentation, follow the "**Run and edit this code in Py.Cafe**" link below a code snippet to open and interact with it.
+
+You can also generative AI (gen AI) to help you create dashboards:
+
+- [Vizro-MCP](https://github.com/mckinsey/vizro/blob/main/vizro-mcp/README.md) helps you build charts and dashboards that adhere to the Vizro design template. Vizro-MCP is the easiest way to use a gen AI application to help you work with Vizro.
+
+![vizro-mcp](../../assets/tutorials/dashboard/vizro-mcp.gif)
+
+- [Vizro-AI](https://vizro.readthedocs.io/projects/vizro-ai/) is also available as a means of building Vizro charts and dashboards with gen AI. You will need some technical knowledge, and an API key to use with an large language model (LLM).
 
 ## Where next?
 
-You are now ready to explore Vizro further, by working through the ["Explore Vizro" tutorial](explore-components.md) or by consulting the [how-to guides](../user-guides/dashboard.md).
+You are now ready to explore Vizro further by working through the ["Explore Vizro" tutorial](explore-components.md) or by consulting the [how-to guides](../user-guides/dashboard.md).
 
 [firstdash]: ../../assets/tutorials/dashboard/first-dashboard.png

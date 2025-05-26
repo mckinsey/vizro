@@ -7,6 +7,7 @@ from pydantic.json_schema import SkipJsonSchema
 
 from vizro.models import VizroBaseModel
 from vizro.models._models_utils import _log_call
+from vizro.models.types import _IdProperty
 
 
 class Card(VizroBaseModel):
@@ -47,9 +48,19 @@ class Card(VizroBaseModel):
         ]
     ]
 
+    @property
+    def _action_outputs(self) -> dict[str, _IdProperty]:
+        return {
+            "__default__": f"{self.id}-text.children",
+            "text": f"{self.id}-text.children",
+        }
+
     @_log_call
     def build(self):
-        text = dcc.Markdown(id=self.id, children=self.text, dangerously_allow_html=False, className="card-text")
+        text = dcc.Markdown(
+            id=f"{self.id}-text", children=self.text, dangerously_allow_html=False, className="card-text"
+        )
+
         card_content = (
             dbc.NavLink(
                 children=text,
@@ -61,6 +72,7 @@ class Card(VizroBaseModel):
         )
 
         defaults = {
+            "id": self.id,
             "children": card_content,
             "class_name": "card-nav" if self.href else "",
         }

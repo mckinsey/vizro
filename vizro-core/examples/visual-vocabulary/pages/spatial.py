@@ -8,7 +8,7 @@ from pages.examples import bubble_map, choropleth, dot_map
 choropleth_page = vm.Page(
     title="Choropleth",
     path="spatial/choropleth",
-    layout=vm.Layout(grid=PAGE_GRID),
+    layout=vm.Grid(grid=PAGE_GRID),
     components=[
         vm.Card(
             text="""
@@ -49,7 +49,7 @@ choropleth_page = vm.Page(
 dot_map_page = vm.Page(
     title="Dot map",
     path="spatial/dot-map",
-    layout=vm.Layout(grid=PAGE_GRID),
+    layout=vm.Grid(grid=PAGE_GRID),
     components=[
         vm.Card(
             text="""
@@ -89,7 +89,7 @@ dot_map_page = vm.Page(
 bubble_map_page = vm.Page(
     title="Bubble map",
     path="spatial/bubble-map",
-    layout=vm.Layout(grid=PAGE_GRID),
+    layout=vm.Grid(grid=PAGE_GRID),
     components=[
         vm.Card(
             text="""

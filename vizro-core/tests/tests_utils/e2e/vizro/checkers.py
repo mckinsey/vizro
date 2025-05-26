@@ -2,7 +2,12 @@ import os
 import time
 
 import e2e.vizro.constants as cnst
-from e2e.vizro.paths import categorical_components_value_name_path, categorical_components_value_path, select_all_path
+from e2e.vizro.paths import (
+    categorical_components_value_name_path,
+    categorical_components_value_path,
+    graph_axis_value_path,
+    select_all_path,
+)
 from e2e.vizro.waiters import graph_load_waiter, graph_load_waiter_selenium
 from hamcrest import any_of, assert_that, contains_string, equal_to
 from selenium.webdriver.common.by import By
@@ -44,6 +49,17 @@ def check_graph_is_loading_selenium(driver, graph_id, timeout=cnst.SELENIUM_WAIT
         )
     )
     graph_load_waiter_selenium(driver, graph_id, timeout)
+
+
+def check_graph_is_empty(driver, graph_id):
+    driver.wait_for_text_to_equal(
+        graph_axis_value_path(
+            graph_id=graph_id,
+            axis_value_number="1",
+            axis_value="−1",  # noqa: RUF001
+        ),
+        "−1",  # noqa: RUF001
+    )
 
 
 def check_slider_value(driver, elem_id, expected_end_value, expected_start_value=None):
@@ -98,16 +114,27 @@ def check_graph_color_selenium(driver, style_background, color, timeout=cnst.SEL
     )
 
 
-def check_selected_checklist(driver, checklist_id, select_all_status, options_value_status):
-    # select_all = driver.find_element(select_all_path(elem_id=checklist_id))
-    # assert_that(select_all.is_selected(), equal_to(select_all_status))
+def check_selected_categorical_component(driver, component_id, options_value_status):
+    """Checks what selected and what is not for checklist and radio items.
+
+    Args:
+        driver: dash_br fixture
+        component_id: id of checklist or radio items
+        options_value_status: list of dicts with the next syntax
+            [{
+                "value": int, number of the value inside dom structure,
+                "selected": bool, checks if value selected or not,
+                "value_name": str, component value name,
+            }]
+    """
+    values = driver.find_elements(f"div[id='{component_id}'] div")
+    assert_that(len(values), equal_to(len(options_value_status)))
     for option in options_value_status:
-        status = driver.find_element(categorical_components_value_path(elem_id=checklist_id, value=option["value"]))
-        value_name = driver.find_element(
-            categorical_components_value_name_path(elem_id=checklist_id, value=option["value"])
+        driver.wait_for_text_to_equal(
+            categorical_components_value_name_path(elem_id=component_id, value=option["value"]), option["value_name"]
         )
-        assert_that(status.is_selected(), equal_to(option["status"]))
-        assert_that(value_name.text, equal_to(option["value_name"]))
+        status = driver.find_element(categorical_components_value_path(elem_id=component_id, value=option["value"]))
+        assert_that(status.is_selected(), equal_to(option["selected"]))
 
 
 def check_selected_dropdown(

@@ -1,0 +1,10 @@
+assets
+changelog.d
+tests
+.venv
+.pytest_cache
+__pycache__
+*.pyc
+*.pkl
+*.ipynb
+*.log

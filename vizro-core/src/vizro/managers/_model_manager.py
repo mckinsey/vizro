@@ -5,19 +5,19 @@ from __future__ import annotations
 import random
 import uuid
 from collections.abc import Collection, Generator, Iterable, Mapping
-from typing import TYPE_CHECKING, NewType, Optional, TypeVar, Union, cast
+from typing import TYPE_CHECKING, Optional, TypeVar, Union, cast
 
 from vizro.managers._managers_utils import _state_modifier
 
 if TYPE_CHECKING:
     from vizro.models import Page, VizroBaseModel
+    from vizro.models.types import ModelID
 
 
 # As done for Dash components in dash.development.base_component, fixing the random seed is required to make sure that
 # the randomly generated model ID for the same model matches up across workers when running gunicorn without --preload.
 rd = random.Random(0)
 
-ModelID = NewType("ModelID", str)
 Model = TypeVar("Model", bound="VizroBaseModel")
 
 
@@ -48,6 +48,11 @@ class ModelManager:
             )
         self.__models[model_id] = model
 
+    @_state_modifier
+    def __delitem__(self, model_id: ModelID):
+        # Only required to handle legacy actions and could be removed when those are no longer needed.
+        del self.__models[model_id]
+
     def __getitem__(self, model_id: ModelID) -> VizroBaseModel:
         # Do we need to return deepcopy(self.__models[model_id]) to avoid adjusting element by accident?
         return self.__models[model_id]
@@ -64,17 +69,18 @@ class ModelManager:
     def _get_models(
         self,
         model_type: Optional[Union[type[Model], tuple[type[Model], ...], type[FIGURE_MODELS]]] = None,
-        page: Optional[Page] = None,
+        root_model: Optional[VizroBaseModel] = None,
     ) -> Generator[Model, None, None]:
         """Iterates through all models of type `model_type` (including subclasses).
 
-        If `model_type` not given then look at all models. If `page` specified then only give models from that page.
+        If `model_type` is specified, return only models matching that type. Otherwise, include all types.
+        If `root_model` is specified, only return models that are descendants of the given `root_model`.
         """
         import vizro.models as vm
 
         if model_type is FIGURE_MODELS:
             model_type = (vm.Graph, vm.AgGrid, vm.Table, vm.Figure)  # type: ignore[assignment]
-        models = self.__get_model_children(page) if page is not None else self.__models.values()
+        models = self.__get_model_children(root_model) if root_model is not None else self.__models.values()
 
         # Convert to list to avoid changing size when looping through at runtime.
         for model in list(models):
@@ -125,7 +131,7 @@ class ModelManager:
 
     @staticmethod
     def _generate_id() -> ModelID:
-        return ModelID(str(uuid.UUID(int=rd.getrandbits(128))))
+        return str(uuid.UUID(int=rd.getrandbits(128)))
 
     def _clear(self):
         self.__init__()  # type: ignore[misc]

@@ -3,9 +3,10 @@
 import dash_bootstrap_components as dbc
 import pytest
 from asserts import assert_component_equal
-from dash import html
+from dash import dcc, html
 from pydantic import ValidationError
 
+from vizro.models import Tooltip
 from vizro.models._action._action import Action
 from vizro.models._components.form import RadioItems
 
@@ -21,10 +22,15 @@ class TestRadioItemsInstantiation:
         assert radio_items.options == []
         assert radio_items.value is None
         assert radio_items.title == ""
+        assert radio_items.description is None
         assert radio_items.actions == []
+        assert radio_items._action_outputs == {"__default__": f"{radio_items.id}.value"}
+        assert radio_items._action_inputs == {"__default__": f"{radio_items.id}.value"}
 
     def test_create_radio_items_mandatory_and_optional(self):
-        radio_items = RadioItems(id="radio_items_id", options=["A", "B", "C"], value="A", title="Title")
+        radio_items = RadioItems(
+            id="radio_items_id", options=["A", "B", "C"], value="A", title="Title", description="Test description"
+        )
 
         assert radio_items.id == "radio_items_id"
         assert radio_items.type == "radio_items"
@@ -32,6 +38,13 @@ class TestRadioItemsInstantiation:
         assert radio_items.value == "A"
         assert radio_items.title == "Title"
         assert radio_items.actions == []
+        assert isinstance(radio_items.description, Tooltip)
+        assert radio_items._action_outputs == {
+            "__default__": f"{radio_items.id}.value",
+            "title": f"{radio_items.id}_title.children",
+            "description": f"{radio_items.description.id}-text.children",
+        }
+        assert radio_items._action_inputs == {"__default__": f"{radio_items.id}.value"}
 
     @pytest.mark.parametrize(
         "test_options, expected",
@@ -123,12 +136,12 @@ class TestRadioItemsBuild:
     """Tests model build method."""
 
     def test_radio_items_build(self):
-        radio_items = RadioItems(id="radio_items_id", options=["A", "B", "C"], title="Title").build()
+        radio_items = RadioItems(id="radio_items", options=["A", "B", "C"], title="Title").build()
         expected_radio_items = html.Fieldset(
             [
-                html.Legend("Title", className="form-label"),
+                html.Legend([html.Span("Title", id="radio_items_title"), None], className="form-label"),
                 dbc.RadioItems(
-                    id="radio_items_id",
+                    id="radio_items",
                     options=["A", "B", "C"],
                     value="A",
                     persistence=True,
@@ -142,7 +155,7 @@ class TestRadioItemsBuild:
     def test_radio_items_build_with_extra(self):
         """Test that extra arguments correctly override defaults."""
         radio_items = RadioItems(
-            id="radio_items_id",
+            id="radio_items",
             options=["A", "B", "C"],
             title="Title",
             extra={
@@ -152,7 +165,7 @@ class TestRadioItemsBuild:
         ).build()
         expected_radio_items = html.Fieldset(
             [
-                html.Legend("Title", className="form-label"),
+                html.Legend([html.Span("Title", id="radio_items_title"), None], className="form-label"),
                 dbc.RadioItems(
                     id="overridden_id",
                     options=["A", "B", "C"],
@@ -163,4 +176,40 @@ class TestRadioItemsBuild:
                 ),
             ]
         )
+        assert_component_equal(radio_items, expected_radio_items)
+
+    def test_radio_items_build_with_description(self):
+        radio_items = RadioItems(
+            id="radio_items",
+            options=["A", "B", "C"],
+            title="Title",
+            description=Tooltip(text="Test description", icon="info", id="info"),
+        ).build()
+
+        expected_description = [
+            html.Span("info", id="info-icon", className="material-symbols-outlined tooltip-icon"),
+            dbc.Tooltip(
+                children=dcc.Markdown("Test description", id="info-text", className="card-text"),
+                id="info",
+                target="info-icon",
+                autohide=False,
+            ),
+        ]
+
+        expected_radio_items = html.Fieldset(
+            [
+                html.Legend(
+                    [html.Span("Title", id="radio_items_title"), *expected_description],
+                    className="form-label",
+                ),
+                dbc.RadioItems(
+                    id="radio_items",
+                    options=["A", "B", "C"],
+                    value="A",
+                    persistence=True,
+                    persistence_type="session",
+                ),
+            ]
+        )
+
         assert_component_equal(radio_items, expected_radio_items)
