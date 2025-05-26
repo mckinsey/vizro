@@ -5,9 +5,11 @@ from vizro import Vizro
 import vizro.models as vm
 
 iris = px.data.iris()
+gapminder = px.data.gapminder()
+gapminder_spain = gapminder[gapminder["country"] == "Spain"]
 
 page1 = vm.Page(
-    title="Page with custom container",
+    title="Page with Inline default styling",
     components=[
         vm.Container(
             id="container_0",
@@ -156,7 +158,7 @@ page3 = vm.Page(
 )
 
 page4 = vm.Page(
-    title="Container within container",
+    title="Nested containers",
     components=[
         vm.Container(
             title="Outer container",
@@ -286,42 +288,8 @@ page7 = vm.Page(
     ],
 )
 
+
 page8 = vm.Page(
-    title="Controls with targets outside of the container",
-    components=[
-        vm.Container(
-            title="Container with control",
-            components=[
-                vm.Graph(
-                    id="bar_chart11",
-                    title="Bar chart",
-                    figure=px.bar(iris, x="sepal_length", y="sepal_width", color="species"),
-                ),
-            ],
-            controls=[
-                vm.Filter(
-                    column="species",
-                    selector=vm.Checklist(value=["setosa"], title="Species"),
-                    targets=["bar_chart11"],
-                ),
-            ],
-        ),
-    ],
-    controls=[
-        vm.Filter(column="species", selector=vm.RadioItems()),
-        vm.Filter(
-            column="petal_width",
-            selector=vm.RangeSlider(),
-        ),
-        vm.Filter(
-            column="sepal_length",
-            selector=vm.Slider(),
-        ),
-    ],
-)
-
-
-page9 = vm.Page(
     title="Page with multiple controls in containers",
     layout=vm.Grid(grid=[[0, 1]]),
     components=[
@@ -351,6 +319,7 @@ page9 = vm.Page(
             title="Container title",
             components=[
                 vm.Graph(
+                    id="test_id",
                     title="Bar chart",
                     figure=px.bar(iris, x="sepal_length", y="sepal_width", color="species"),
                 )
@@ -359,7 +328,93 @@ page9 = vm.Page(
     ],
 )
 
-dashboard = vm.Dashboard(pages=[page1, page2, page3, page4, page5, page6, page7, page8, page9])
+page9 = vm.Page(
+    title="Page with multiple datasets in one container",
+    layout=vm.Grid(grid=[[0, 1]]),
+    components=[
+        vm.Container(
+            title="Container with wrapped controls",
+            variant="outlined",
+            components=[
+                vm.Graph(
+                    title="Scatter chart",
+                    figure=px.scatter(
+                        iris, x="sepal_length", y="petal_width", color="species", custom_data=["species"]
+                    ),
+                ),
+                vm.Graph(
+                    title="GDP per Capita Over Years in Spain",
+                    figure=px.line(gapminder_spain, x="year", y="gdpPercap"),
+                ),
+            ],
+            controls=[
+                vm.Filter(
+                    column="species",
+                    selector=vm.Checklist(value=["setosa"], title="Species"),
+                ),
+            ],
+        ),
+        vm.Container(
+            title="Container title",
+            components=[
+                vm.Graph(
+                    title="Bar chart",
+                    figure=px.bar(iris, x="sepal_length", y="sepal_width", color="species"),
+                )
+            ],
+        ),
+    ],
+)
+
+page10 = vm.Page(
+    title="Page with parameter",
+    components=[
+        vm.Container(
+            title="Container with parameter",
+            components=[
+                vm.Graph(
+                    id="scatter_chart_1",
+                    figure=px.scatter(
+                        iris,
+                        x="sepal_length",
+                        y="petal_width",
+                        color="species",
+                        custom_data=["species"],
+                    ),
+                ),
+            ],
+            variant="filled",
+            controls=[
+                vm.Parameter(
+                    targets=["scatter_chart_1.title"],  # setting targets=['scatter_chart_2.title'] should cause error
+                    selector=vm.RadioItems(
+                        options=["My scatter chart", "A better title!", "Another title..."], title="Parameter title"
+                    ),
+                ),
+            ],
+        ),
+        vm.Container(
+            title="Container with target",
+            components=[
+                vm.Graph(
+                    id="scatter_chart_2",
+                    figure=px.scatter(
+                        iris,
+                        x="sepal_length",
+                        y="petal_width",
+                        color="species",
+                    ),
+                ),
+            ],
+            variant="filled",
+        ),
+    ],
+    controls=[
+        vm.Filter(column="species", selector=vm.Checklist()),
+    ],
+)
+
+dashboard = vm.Dashboard(pages=[page1, page2, page3, page4, page5, page6, page7, page8, page9, page10])
 
 
 if __name__ == "__main__":
