@@ -1,8 +1,10 @@
 """Dev app to try things out."""
 
+import pandas as pd
 import vizro.plotly.express as px
 from vizro import Vizro
 import vizro.models as vm
+from vizro.managers import data_manager
 
 iris = px.data.iris()
 gapminder = px.data.gapminder()
@@ -414,7 +416,26 @@ page10 = vm.Page(
     ],
 )
 
-dashboard = vm.Dashboard(pages=[page1, page2, page3, page4, page5, page6, page7, page8, page9, page10])
+
+def load_iris_data():
+    iris = px.data.iris()
+    return iris.sample(50)
+
+
+data_manager["iris"] = load_iris_data
+
+page11 = vm.Page(
+    title="Container with dynamic filters",
+    components=[
+        vm.Container(
+            title="",
+            components=[vm.Graph(figure=px.box("iris", x="species", y="petal_width", color="species"))],
+            controls=[vm.Filter(column="species", selector=vm.RadioItems())],
+        )
+    ],
+)
+
+dashboard = vm.Dashboard(pages=[page1, page2, page3, page4, page5, page6, page7, page8, page9, page10, page11])
 
 
 if __name__ == "__main__":

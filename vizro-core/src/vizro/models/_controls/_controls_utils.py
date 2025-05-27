@@ -12,7 +12,7 @@ def _validate_targets(targets: list[str], root_model: VizroBaseModel) -> None:
     for target in targets:
         target_id = target.split(".")[0]
         if target_id not in component_figure_ids:
-            raise ValueError(f"Target {target_id} not found within {root_model.id}.")
+            raise ValueError(f"Target {target_id} not found within the {root_model.id}.")
 
 
 def check_targets_present_on_page(control: ControlType) -> None:
@@ -25,7 +25,6 @@ def check_targets_present_on_page(control: ControlType) -> None:
         page_containers = model_manager._get_models(model_type=Container, root_model=page)
         root_model = next(
             (container for container in page_containers if control in container.controls),
-            page_containers,
         )
 
         _validate_targets(control.targets, root_model)
