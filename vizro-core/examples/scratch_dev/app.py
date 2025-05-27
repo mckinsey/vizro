@@ -61,7 +61,7 @@ dash.register_page("another-page", layout=another_page)
 app.layout = html.Div([
     dcc.Store("global_store"),
     dash.page_container,
-    dcc.RadioItems(id="radio_items_id", options=[], style={"display": "none"})
+    # dcc.RadioItems(id="radio_items_id", options=[], style={"display": "none"})
 ])
 
 if __name__ == "__main__":
