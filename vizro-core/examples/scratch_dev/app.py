@@ -1,6 +1,5 @@
-"""Dev app to try things out."""
+"""Custom filter action."""
 
-import pandas as pd
 import vizro.plotly.express as px
 from vizro import Vizro
 import vizro.models as vm
@@ -9,6 +8,15 @@ from vizro.managers import data_manager
 iris = px.data.iris()
 gapminder = px.data.gapminder()
 gapminder_spain = gapminder[gapminder["country"] == "Spain"]
+
+
+def load_iris_data():
+    iris = px.data.iris()
+    return iris.sample(50)
+
+
+data_manager["iris"] = load_iris_data
+
 
 page1 = vm.Page(
     title="Page with Inline default styling",
@@ -330,6 +338,7 @@ page8 = vm.Page(
     ],
 )
 
+
 page9 = vm.Page(
     title="Page with multiple datasets in one container",
     layout=vm.Grid(grid=[[0, 1]]),
@@ -415,14 +424,6 @@ page10 = vm.Page(
         vm.Filter(column="species", selector=vm.Checklist()),
     ],
 )
-
-
-def load_iris_data():
-    iris = px.data.iris()
-    return iris.sample(50)
-
-
-data_manager["iris"] = load_iris_data
 
 page11 = vm.Page(
     title="Container with dynamic filters",
