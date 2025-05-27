@@ -207,7 +207,7 @@ class TestContainerBuildMethod:
         assert_component_equal(result.children, [html.H3(), None, html.Div()], keys_to_strip=STRIP_ALL)
         # We still want to test the exact H3 produced in Container.build:
         assert_component_equal(
-            result.children[0],
+            result["container_title_content"],
             html.H3(
                 [
                     html.Div(
@@ -222,21 +222,19 @@ class TestContainerBuildMethod:
 
     def test_container_build_with_controls(self):
         result = vm.Container(
-            id="container", components=[vm.Button()], controls=[vm.Filter(column="species", selector=vm.Dropdown())]
+            id="container",
+            components=[vm.Button()],
+            controls=[vm.Filter(column="species", selector=vm.Dropdown(id="dropdown-id"))],
         ).build()
         assert_component_equal(
             result, dbc.Container(id="container", class_name="", fluid=True), keys_to_strip={"children"}
         )
-        assert_component_equal(result.children, [None, html.Div(), html.Div()], keys_to_strip=STRIP_ALL)
-        # Test the exact Div produced in Container.build:
         assert_component_equal(
-            result.children[1],
+            result["container-control-panel"],
             html.Div(
                 id="container-control-panel",
-                children=[],
                 className="container-controls-panel",
             ),
             keys_to_strip={"children"},
         )
-        # Test if correct selector is added
-        assert isinstance(result.children[1].children[0].children[1], dcc.Dropdown)
+        assert_component_equal(result["dropdown-id"], dcc.Dropdown(), keys_to_strip=STRIP_ALL)
