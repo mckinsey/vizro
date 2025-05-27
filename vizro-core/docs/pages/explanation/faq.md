@@ -17,7 +17,9 @@ Here are some answers to frequently asked questions:
 - [How does Vizro differ from Dash or Streamlit?](#how-does-vizro-differ-from-dash-or-streamlit)
 - [How does Vizro compare with Python packages and business intelligence (BI) tools?](#how-does-vizro-compare-with-python-packages-and-business-intelligence-bi-tools)
 - [When would an alternative to Vizro be more suitable?](#when-would-an-alternative-to-vizro-be-more-suitable)
+- [What license is Vizro open sourced under?](#what-license-is-vizro-open-sourced-under)
 - [How can I report a bug?](#how-can-i-report-a-bug)
+- [Where can I find the roadmap for Vizro?](#where-can-i-find-the-roadmap-for-vizro)
 - [How can I request a feature?](#how-can-i-request-a-feature)
 - [I still have a question. Where can I ask it?](#i-still-have-a-question-where-can-i-ask-it)
 
@@ -143,9 +145,17 @@ There are a number of cases where alternatives to Vizro may be more suitable, in
 
 - where Python developers are already very comfortable leveraging other Python packages
 
+## What license is Vizro open sourced under?
+
+Vizro is open sourced under the [Apache License, Version 2.0](https://www.apache.org/licenses/LICENSE-2.0). We have a page of documentation if you want to [contribute to Vizro](./contributing.md).
+
 ## How can I report a bug?
 
 Head over to our [GitHub issues](https://github.com/mckinsey/vizro/issues) and [create a new bug report](https://github.com/mckinsey/vizro/issues/new/choose). We will try to reproduce the bug you've reported and follow up with the next steps.
+
+## Where can I find the roadmap for Vizro?
+
+We keep the [roadmap for Vizro on our GitHub repository](https://github.com/mckinsey/vizro/issues/1206).
 
 ## How can I request a feature?
 
