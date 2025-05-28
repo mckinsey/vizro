@@ -98,7 +98,7 @@ third_page = vm.Page(
     ],
     controls=[
         vm.Parameter(
-            show_in_url=True,
+            # show_in_url=True,
             targets=["violin.x", "violin.color", "heatmap.x", "bar.x"],
             selector=vm.RadioItems(
                 options=["day", "time", "sex", "smoker", "size"], value="day", title="Change x-axis inside charts:"

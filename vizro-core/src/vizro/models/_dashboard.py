@@ -170,13 +170,11 @@ class Dashboard(VizroBaseModel):
         for page in self.pages:
             page.build()  # TODO: ideally remove, but necessary to register slider callbacks
             # TODO NOW: HERE
-            # Was not expecting this code to work but it seems to?! Was expecting to need to do one of two possible
-            # approaches for it to work and have url app-wide URL state. Might want to do these anyway for app-wide
-            # state:
+            # Was expecting to need to do one of two possible approaches for it to work and have url app-wide URL state.
+            # Might want to do these anyway for app-wide state:
             # 1. modify links in clienstide callback
             # 2. don't modify links but put state in dcc.Store and then put in url
 
-            # TODO NOW: convert to clientside
             # TODO NOW: use optional inputs so single callback works across all pages? Not released yet.
             # TODO NOW COMMENT: doing as single callback per control rather than one per-page one doesn't work well
             # due to multiple callbacks executing simultaneously. Not sure what would happen if they're done clientside.
@@ -192,17 +190,56 @@ class Dashboard(VizroBaseModel):
                 ids = [State(control.id, "id") for control in controls]  # Not control.selector.id!
                 values = [Input(control.selector.id, "value") for control in controls]
 
-                @callback(
+                # Dash clientside callback doesn't support flexible signatures so need to flatten and then split into
+                # by 2.
+                clientside_callback(
+                    r"""
+                function(...args) {
+  if (!args.length || args.every(x => x === undefined || x === null)) {
+    // Nothing to update
+    return window.location.search;
+  }
+
+  const count = args.length / 2;
+  const values = args.slice(0, count);
+  const ids = args.slice(count);
+
+  const entries = ids.map((id, i) => [
+    id,
+    btoa(String.fromCharCode(...new TextEncoder().encode(JSON.stringify(values[i]))))
+      .replace(/\+/g, '-')
+      .replace(/\//g, '_')
+      .replace(/=+$/, '')
+  ]);
+
+  const currentParams = new URLSearchParams(window.location.search); // Could come from Dash State
+  for (const [k, v] of entries) {
+    currentParams.set(k, v);  // Merge new/updated value
+  }
+
+  const new_query_string = '?' + currentParams.toString();
+
+  const links = document.querySelectorAll("a[href^='/']");
+  links.forEach(link => {
+    const href = link.getAttribute("href");
+    const base = href.split('?')[0];
+    link.setAttribute("href", base + new_query_string);
+  });
+
+  return new_query_string;
+}
+                """,
                     Output("vizro_url_no_refresh", "search", allow_duplicate=True),
-                    inputs=dict(ids=ids, values=values),
+                    values + ids,
                     prevent_initial_call=True,
                 )
-                def f(ids, values):
-                    # TODO NOW: need to check for if they're None? Probably doesn't occur in practice but maybe best to add it here anyway.
-                    # TODO NOW: need to not obliterate other things in url so needs to take in State still. Can just update relevant
-                    # key rather than re-encoding everything.
-                    # TODO NOW: actually go for human readable key names, not just all in controls
-                    return "?" + urlencode({key: encode_value_to_b64url(value) for key, value in zip(ids, values)})
+
+        # if !(entries) { return window.dash_clientside.no_update };
+        # TODO NOW: need to check for if they're None? Probably doesn't occur in practice but maybe best to add it here anyway.
+        # TODO NOW: need to not obliterate other things in url so needs to take in State still. Can just update relevant
+        # key rather than re-encoding everything.
+        # TODO NOW: just replace Inputs that changed rather than rewriting whole thing? Then would need to
+        # take in existing url query params as state.
 
         clientside_callback(
             ClientsideFunction(namespace="dashboard", function_name="update_dashboard_theme"),
