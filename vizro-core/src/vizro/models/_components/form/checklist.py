@@ -93,10 +93,16 @@ class Checklist(VizroBaseModel):
     def __call__(self, options):
         full_options, default_value = get_options_and_default(options=options, multi=True)
         description = self.description.build().children if self.description else [None]
+
+        if g and (url_params_value := g.url_params.get(self.id)) is not None:
+            value = url_params_value
+        else:
+            value = self.value if self.value is not None else [default_value]
+
         defaults = {
             "id": self.id,
             "options": full_options,
-            "value": self.value if self.value is not None else [default_value],
+            "value": value,
             "persistence": True,
             "persistence_type": "session",
         }
@@ -122,8 +128,4 @@ class Checklist(VizroBaseModel):
 
     @_log_call
     def build(self):
-        # TODO NOW: setting self.value here is a temporary hack just to demonstrate how it might work
-        if g and (url_params_value := g.url_params.get(self.id)) is not None:
-            self.value = url_params_value
-
         return self._build_dynamic_placeholder() if self._dynamic else self.__call__(self.options)

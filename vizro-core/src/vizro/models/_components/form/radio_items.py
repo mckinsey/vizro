@@ -2,6 +2,7 @@ from typing import Annotated, Any, Literal, Optional
 
 import dash_bootstrap_components as dbc
 from dash import html
+from flask import g
 from pydantic import AfterValidator, BeforeValidator, Field, PrivateAttr, model_validator
 from pydantic.functional_serializers import PlainSerializer
 from pydantic.json_schema import SkipJsonSchema
@@ -94,10 +95,15 @@ class RadioItems(VizroBaseModel):
         full_options, default_value = get_options_and_default(options=options, multi=False)
         description = self.description.build().children if self.description else [None]
 
+        if g and (url_params_value := g.url_params.get(self.id)) is not None:
+            value = url_params_value
+        else:
+            value = self.value if self.value is not None else [default_value]
+
         defaults = {
             "id": self.id,
             "options": full_options,
-            "value": self.value if self.value is not None else default_value,
+            "value": value,
             "persistence": True,
             "persistence_type": "session",
         }
@@ -117,7 +123,6 @@ class RadioItems(VizroBaseModel):
     def _build_dynamic_placeholder(self):
         if self.value is None:
             _, default_value = get_options_and_default(self.options, multi=False)
-            self.value = default_value
 
         return self.__call__(self.options)
 
