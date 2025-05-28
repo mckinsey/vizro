@@ -6,6 +6,7 @@ import vizro.plotly.express as px
 
 iris = px.data.iris()
 iris["date_column"] = pd.date_range(start=pd.to_datetime("2024-01-01"), periods=len(iris), freq="D")
+gapminder = px.data.gapminder()
 
 filters_inside_containers_page = vm.Page(
     title=cnst.FILTERS_INSIDE_CONTAINERS_PAGE,
@@ -16,15 +17,30 @@ filters_inside_containers_page = vm.Page(
                     title="container",
                     variant="filled",
                     components=[
-                        vm.Graph(
-                            id=cnst.SCATTER_INSIDE_CONTAINER,
-                            figure=px.scatter(
-                                iris,
-                                x="sepal_length",
-                                y="petal_width",
-                                color="sepal_width",
-                            ),
-                        ),
+                        vm.Container(
+                            layout=vm.Grid(grid=[[0, 1]]),
+                            title="container",
+                            variant="filled",
+                            components=[
+                                vm.Graph(
+                                    id=cnst.SCATTER_INSIDE_CONTAINER,
+                                    figure=px.scatter(
+                                        iris,
+                                        x="sepal_length",
+                                        y="petal_width",
+                                        color="sepal_width",
+                                    ),
+                                ),
+                                vm.Graph(
+                                    id="scatter2",
+                                    figure=px.scatter(
+                                        gapminder,
+                                        x="year",
+                                        y="gdpPercap",
+                                    ),
+                                ),
+                            ],
+                        )
                     ],
                     controls=[
                         vm.Filter(
