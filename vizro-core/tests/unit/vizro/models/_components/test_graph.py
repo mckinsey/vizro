@@ -302,3 +302,42 @@ class TestBuildGraph:
             overlay_style={"visibility": "visible", "opacity": 0.3},
         )
         assert_component_equal(graph, expected_graph, keys_to_strip={"id"})
+
+    def test_graph_build_with_extra(self, standard_px_chart):
+        graph = vm.Graph(
+            figure=standard_px_chart,
+            title="Title",
+            extra={"className": "test"},
+        ).build()
+
+        expected_graph = dcc.Loading(
+            html.Div(
+                [
+                    html.H3([html.Span("Title"), None], className="figure-title"),
+                    None,
+                    dcc.Graph(
+                        figure=go.Figure(
+                            layout={
+                                "paper_bgcolor": "rgba(0,0,0,0)",
+                                "plot_bgcolor": "rgba(0,0,0,0)",
+                                "xaxis": {"visible": False},
+                                "yaxis": {"visible": False},
+                            }
+                        ),
+                        config={
+                            "autosizable": True,
+                            "frameMargins": 0,
+                            "responsive": True,
+                            "modeBarButtonsToRemove": ["toImage"],
+                        },
+                        className="test",
+                    ),
+                    None,
+                ],
+                className="figure-container",
+            ),
+            color="grey",
+            parent_className="loading-container",
+            overlay_style={"visibility": "visible", "opacity": 0.3},
+        )
+        assert_component_equal(graph, expected_graph, keys_to_strip={"id"})

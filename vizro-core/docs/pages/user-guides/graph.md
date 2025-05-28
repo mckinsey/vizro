@@ -159,5 +159,67 @@ The [`Graph`][vizro.models.Graph] model accepts `title`, `header`, `footer` and 
 
         [![FormattedGraph]][formattedgraph]
 
+## The `extra` argument
+
+The `Graph` is based on the underlying Dash component [`dcc.Graph`](https://dash.plotly.com/dash-core-components/graph/). Using the `extra` argument you can pass extra arguments to `dcc.Graph` in order to alter it beyond the chosen defaults.
+
+!!! note
+
+    Using `extra` is a quick and flexible way to alter a component beyond what Vizro offers. However, [it is not a part of the official Vizro schema](../explanation/schema.md#what-is-the-vizro-json-schema) and the underlying implementation details may change. If you want to guarantee that your apps keep running, we recommend that you pin your Vizro version.
+
+An example use would be to remove mode bar from plotly chart. For this, you can use `extra={"config": {"displayModeBar": False}}`.
+
+!!! example "Graph with extra"
+
+    === "app.py"
+
+        ```{.python pycafe-link}
+
+        import vizro.models as vm
+        import vizro.plotly.express as px
+        from vizro import Vizro
+
+        iris = px.data.iris()
+
+        page = vm.Page(
+            title="Graph without ModeBar",
+            components=[
+                vm.Graph(
+                    figure=px.scatter(iris, x="sepal_width", y="sepal_length", color="species"),
+                    title="Relationships between Sepal Width and Sepal Length",
+                    extra={"config": {"displayModeBar": False}},
+                ),
+            ],
+        )
+        dashboard = vm.Dashboard(pages=[page])
+        Vizro().build(dashboard).run()
+        ```
+
+    === "app.yaml"
+
+        ```yaml
+        # Still requires a .py to add data to the data manager and parse YAML configuration
+        # See yaml_version example
+        pages:
+          - components:
+              - figure:
+                  _target_: scatter
+                  x: sepal_width
+                  y: sepal_length
+                  color: species
+                  data_frame: iris
+                title: Relationships between Sepal Width and Sepal Length
+                extra:
+                  config:
+                    displayModeBar: false
+                type: graph
+            title: Graph without ModeBar
+        ```
+
+    === "Result"
+
+        [![GraphWithExtra]][graphwithextra]
+
 [formattedgraph]: ../../assets/user_guides/components/formatted_graph.png
 [graph]: ../../assets/user_guides/components/graph.png
+[graphwithextra]: ../../assets/user_guides/components/graph_with_extra.png
