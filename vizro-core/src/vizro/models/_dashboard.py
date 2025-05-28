@@ -6,7 +6,6 @@ import logging
 from functools import partial
 from pathlib import Path
 from typing import TYPE_CHECKING, Annotated, Literal, Optional, cast
-from urllib.parse import urlencode
 
 import dash
 import dash_bootstrap_components as dbc
@@ -17,7 +16,6 @@ from dash import (
     Input,
     Output,
     State,
-    callback,
     clientside_callback,
     dcc,
     get_asset_url,
