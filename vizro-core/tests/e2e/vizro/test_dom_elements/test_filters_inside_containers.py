@@ -2,7 +2,7 @@ import e2e.vizro.constants as cnst
 import pytest
 from e2e.vizro.checkers import check_graph_is_loading, check_slider_value
 from e2e.vizro.navigation import page_select, select_dropdown_value
-from e2e.vizro.paths import categorical_components_value_path, slider_value_path
+from e2e.vizro.paths import categorical_components_value_path, graph_axis_value_path, slider_value_path
 
 
 def test_dropdown(dash_br):
@@ -71,5 +71,10 @@ def test_range_datepicker(dash_br):
     dash_br.wait_for_element('div[data-calendar="true"]')
     dash_br.multiple_click('button[aria-label="10 January 2024"]', 1)
     dash_br.multiple_click('button[aria-label="26 January 2024"]', 1)
-    check_graph_is_loading(dash_br, cnst.SCATTER_INSIDE_CONTAINER)
     dash_br.wait_for_text_to_equal(f'button[id="{cnst.RANGE_DATEPICKER_INSIDE_CONTAINERS}"]', "2024/01/10 – 2024/01/26")  # noqa: RUF001
+
+    # Check x axis min value is '4.4'
+    dash_br.wait_for_text_to_equal(
+        graph_axis_value_path(graph_id=cnst.SCATTER_INSIDE_CONTAINER, axis_value_number="7", axis_value="4.4"),
+        "4.4",
+    )
