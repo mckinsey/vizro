@@ -1,14 +1,11 @@
 from __future__ import annotations
 
-import base64
-import json
 from collections.abc import Iterable
 from contextlib import suppress
 from typing import Any, Literal, Optional, Union, cast
-from urllib.parse import urlencode, parse_qs
 
 import pandas as pd
-from dash import dcc, State, callback, Output, Input
+from dash import dcc
 from flask import g
 from pandas.api.types import is_datetime64_any_dtype, is_numeric_dtype
 from pydantic import Field, PrivateAttr

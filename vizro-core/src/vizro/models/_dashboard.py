@@ -17,12 +17,12 @@ from dash import (
     Input,
     Output,
     State,
+    callback,
     clientside_callback,
     dcc,
     get_asset_url,
     get_relative_path,
     html,
-    callback,
 )
 from dash.development.base_component import Component
 from flask import g
@@ -34,11 +34,10 @@ from vizro._constants import MODULE_PAGE_404, VIZRO_ASSETS_PATH
 from vizro._themes.template_dashboard_overrides import dashboard_overrides
 from vizro.actions._action_loop._action_loop import ActionLoop
 from vizro.managers import model_manager
-from vizro.models import Navigation, Tooltip, VizroBaseModel, Parameter, Filter
+from vizro.models import Filter, Navigation, Parameter, Tooltip, VizroBaseModel
 from vizro.models._models_utils import _log_call
 from vizro.models._navigation._navigation_utils import _NavBuildType
 from vizro.models._tooltip import coerce_str_to_tooltip
-from vizro.models.types import ControlType
 
 if TYPE_CHECKING:
     from vizro.models import Page
