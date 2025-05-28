@@ -74,6 +74,7 @@ class Parameter(VizroBaseModel):
         AfterValidator(check_duplicate_parameter_target),
     ]
     selector: SelectorType
+    show_in_url: bool = False
 
     @_log_call
     def pre_build(self):

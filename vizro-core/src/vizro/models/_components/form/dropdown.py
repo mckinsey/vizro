@@ -4,6 +4,7 @@ from typing import Annotated, Any, Literal, Optional, Union, cast
 
 import dash_bootstrap_components as dbc
 from dash import dcc, html
+from flask import g
 from pydantic import AfterValidator, BeforeValidator, Field, PrivateAttr, StrictBool, ValidationInfo, model_validator
 from pydantic.functional_serializers import PlainSerializer
 from pydantic.json_schema import SkipJsonSchema
@@ -186,4 +187,8 @@ class Dropdown(VizroBaseModel):
 
     @_log_call
     def build(self):
+        # TODO NOW: setting self.value here is a temporary hack just to demonstrate how it might work
+        if g and (url_params_value := g.url_params.get(self.id)) is not None:
+            self.value = url_params_value
+
         return self._build_dynamic_placeholder() if self._dynamic else self.__call__(self.options)

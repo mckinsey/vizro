@@ -1,11 +1,15 @@
 from __future__ import annotations
 
+import base64
+import json
 from collections.abc import Iterable
 from contextlib import suppress
 from typing import Any, Literal, Optional, Union, cast
+from urllib.parse import urlencode, parse_qs
 
 import pandas as pd
-from dash import dcc
+from dash import dcc, State, callback, Output, Input
+from flask import g
 from pandas.api.types import is_datetime64_any_dtype, is_numeric_dtype
 from pydantic import Field, PrivateAttr
 
@@ -90,6 +94,7 @@ class Filter(VizroBaseModel):
         "If none are given then target all components on the page that use `column`.",
     )
     selector: Optional[SelectorType] = None
+    show_in_url: bool = False
 
     _dynamic: bool = PrivateAttr(False)
     _column_type: Literal["numerical", "categorical", "temporal"] = PrivateAttr()
@@ -223,12 +228,18 @@ class Filter(VizroBaseModel):
     def build(self):
         # Cast is justified as the selector is set in pre_build and is not None.
         selector = cast(SelectorType, self.selector)
+
+        if self.show_in_url and g:
+            # TODO NOW: think about what to do if get returns None - is this right already?
+            g.url_params[self.selector.id] = g.url_params.get(self.id)
+
         selector_build_obj = selector.build()
         # TODO: Align the (dynamic) object's return structure with the figure's components when the Dash bug is fixed.
         #  This means returning an empty "html.Div(id=self.id, className=...)" as a placeholder from Filter.build().
         #  Also, make selector.title visible when the filter is reloading.
-        if not self._dynamic:
-            return selector_build_obj
+        # if not self._dynamic:
+        #     return selector_build_obj
+        # TODO NOW COMMENT: needed self.id to exist even for non-dynamic - like in above comment about align.
 
         # Temporarily hide the selector and numeric dcc.Input components during the filter reloading process.
         # Other components, such as the title, remain visible because of the configuration:
@@ -236,11 +247,12 @@ class Filter(VizroBaseModel):
         # Note: dcc.Slider and dcc.RangeSlider do not support the "style" property directly,
         # so the "className" attribute is used to apply custom CSS for visibility control.
         # Reference for Dash class names: https://dashcheatsheet.pythonanywhere.com/
-        selector_build_obj[selector.id].className = "invisible"
-        if f"{selector.id}_start_value" in selector_build_obj:
-            selector_build_obj[f"{selector.id}_start_value"].className = "d-none"
-        if f"{selector.id}_end_value" in selector_build_obj:
-            selector_build_obj[f"{selector.id}_end_value"].className = "d-none"
+        if self._dynamic:
+            selector_build_obj[selector.id].className = "invisible"
+            if f"{selector.id}_start_value" in selector_build_obj:
+                selector_build_obj[f"{selector.id}_start_value"].className = "d-none"
+            if f"{selector.id}_end_value" in selector_build_obj:
+                selector_build_obj[f"{selector.id}_end_value"].className = "d-none"
 
         return dcc.Loading(
             id=self.id,

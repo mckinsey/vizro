@@ -1,10 +1,12 @@
 from __future__ import annotations
 
 import base64
+import json
 import logging
 from functools import partial
 from pathlib import Path
 from typing import TYPE_CHECKING, Annotated, Literal, Optional, cast
+from urllib.parse import urlencode
 
 import dash
 import dash_bootstrap_components as dbc
@@ -20,8 +22,10 @@ from dash import (
     get_asset_url,
     get_relative_path,
     html,
+    callback,
 )
 from dash.development.base_component import Component
+from flask import g
 from pydantic import AfterValidator, BeforeValidator, Field, ValidationInfo
 from typing_extensions import TypedDict
 
@@ -29,10 +33,12 @@ import vizro
 from vizro._constants import MODULE_PAGE_404, VIZRO_ASSETS_PATH
 from vizro._themes.template_dashboard_overrides import dashboard_overrides
 from vizro.actions._action_loop._action_loop import ActionLoop
-from vizro.models import Navigation, Tooltip, VizroBaseModel
+from vizro.managers import model_manager
+from vizro.models import Navigation, Tooltip, VizroBaseModel, Parameter, Filter
 from vizro.models._models_utils import _log_call
 from vizro.models._navigation._navigation_utils import _NavBuildType
 from vizro.models._tooltip import coerce_str_to_tooltip
+from vizro.models.types import ControlType
 
 if TYPE_CHECKING:
     from vizro.models import Page
@@ -70,6 +76,22 @@ _PageDivsType = TypedDict(
         "page-components": html.Div,
     },
 )
+
+
+# TODO NOW: put this somewhere sensible
+def encode_value_to_b64url(value):
+    # checked, seems good
+    json_bytes = json.dumps(value, separators=(",", ":")).encode("utf-8")
+    b64_bytes = base64.urlsafe_b64encode(json_bytes)
+    return b64_bytes.decode("utf-8").rstrip("=")
+
+
+def decode_value_from_b64url(b64url_str):
+    # checked, seems good
+    padding = "=" * (-len(b64url_str) % 4)
+    b64url_str += padding
+    json_bytes = base64.urlsafe_b64decode(b64url_str)
+    return json.loads(json_bytes.decode("utf-8"))
 
 
 def set_navigation_pages(navigation: Optional[Navigation], info: ValidationInfo) -> Optional[Navigation]:
@@ -148,6 +170,40 @@ class Dashboard(VizroBaseModel):
     def build(self):
         for page in self.pages:
             page.build()  # TODO: ideally remove, but necessary to register slider callbacks
+            # TODO NOW: HERE
+            # Was not expecting this code to work but it seems to?! Was expecting to need to do one of two possible
+            # approaches for it to work and have url app-wide URL state. Might want to do these anyway for app-wide
+            # state:
+            # 1. modify links in clienstide callback
+            # 2. don't modify links but put state in dcc.Store and then put in url
+
+            # TODO NOW: convert to clientside
+            # TODO NOW: use optional inputs so single callback works across all pages? Not released yet.
+            # TODO NOW COMMENT: doing as single callback per control rather than one per-page one doesn't work well
+            # due to multiple callbacks executing simultaneously. Not sure what would happen if they're done clientside.
+            controls = [
+                control
+                for control in [*model_manager._get_models(Parameter, page), *model_manager._get_models(Filter, page)]
+                if control.show_in_url
+            ]
+
+            if controls:
+                # Can't do as control.id: Input(control.selector.id, "value") since control.id isn't always valid Python
+                # variable name. So do in two list instead and zip together.
+                ids = [State(control.id, "id") for control in controls]  # Not control.selector.id!
+                values = [Input(control.selector.id, "value") for control in controls]
+
+                @callback(
+                    Output("vizro_url_no_refresh", "search", allow_duplicate=True),
+                    inputs=dict(ids=ids, values=values),
+                    prevent_initial_call=True,
+                )
+                def f(ids, values):
+                    # TODO NOW: need to check for if they're None? Probably doesn't occur in practice but maybe best to add it here anyway.
+                    # TODO NOW: need to not obliterate other things in url so needs to take in State still. Can just update relevant
+                    # key rather than re-encoding everything.
+                    # TODO NOW: actually go for human readable key names, not just all in controls
+                    return "?" + urlencode({key: encode_value_to_b64url(value) for key, value in zip(ids, values)})
 
         clientside_callback(
             ClientsideFunction(namespace="dashboard", function_name="update_dashboard_theme"),
@@ -181,6 +237,7 @@ class Dashboard(VizroBaseModel):
                 ),
                 ActionLoop._create_app_callbacks(),
                 dash.page_container,
+                dcc.Location(id="vizro_url_no_refresh", refresh=False),
             ],
         )
 
@@ -321,6 +378,11 @@ class Dashboard(VizroBaseModel):
     def _make_page_layout(self, page: Page, **kwargs):
         # **kwargs are not used but ensure that unexpected query parameters do not raise errors. See
         # https://github.com/AnnMarieW/dash-multi-page-app-demos/#5-preventing-query-string-errors
+        # TODO NOW COMMENT: Take from from kwargs rather than parse request.args since need to look at
+        #  flask.request.referer not just request.args and Dash has already done some of the work for us.
+        # TODO NOW: check what Dash pages has already done and handle e.g. list case.
+        g.url_params = {key: decode_value_from_b64url(value) for key, value in kwargs.items()}
+
         page_divs = self._get_page_divs(page=page)
         page_layout = self._arrange_page_divs(page_divs=page_divs)
         page_layout.id = page.id
