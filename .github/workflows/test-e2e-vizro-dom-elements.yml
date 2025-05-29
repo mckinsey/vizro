@@ -11,6 +11,7 @@ on:
   pull_request:
     branches:
       - main
+      - poc/controls-inside-container
 
 env:
   PYTHONUNBUFFERED: 1

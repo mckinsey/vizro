@@ -6,11 +6,11 @@ defaults:
 
 on:
   push:
-    branches:
-      - main
+    branches: [main]
   pull_request:
     branches:
       - main
+      - poc/controls-inside-container
 
 env:
   PYTHONUNBUFFERED: 1
