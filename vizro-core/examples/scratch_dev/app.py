@@ -172,7 +172,7 @@ page4 = vm.Page(
     components=[
         vm.Container(
             title="Outer container",
-            layout=vm.Layout(grid=[[0, 0], [1, 2]]),
+            layout=vm.Grid(grid=[[0, 0], [1, 2]]),
             components=[
                 vm.Container(
                     title="Inner container",
@@ -226,7 +226,7 @@ page5 = vm.Page(
                     ),
                 ),
             ],
-            layout=vm.Layout(grid=[[0, 1]]),
+            layout=vm.Grid(grid=[[0, 1]]),
             controls=[
                 vm.Filter(column="species", selector=vm.Dropdown(title="Species")),
             ],
@@ -258,7 +258,7 @@ page6 = vm.Page(
                     ),
                 ),
             ],
-            layout=vm.Layout(grid=[[0, 1]]),
+            layout=vm.Grid(grid=[[0, 1]]),
             controls=[
                 vm.Filter(column="species", selector=vm.Dropdown()),
                 vm.Filter(column="species", selector=vm.RadioItems()),
@@ -288,7 +288,7 @@ page7 = vm.Page(
                     ),
                 ),
             ],
-            layout=vm.Layout(grid=[[0, 1]]),
+            layout=vm.Grid(grid=[[0, 1]]),
             controls=[
                 vm.Filter(
                     column="species", selector=vm.Checklist(value=["setosa"], title="Species", extra={"inline": False})
