@@ -55,6 +55,13 @@ jobs:
       - name: Run e2e vizro-dom-elements tests
         run: hatch run test-e2e-vizro-dom-elements --splits 3 --group ${{ matrix.group }}
 
+      - name: Create CTRF reports for tests
+        if: always()
+        uses: ./.github/actions/ctrf-report
+        env:
+          ARTIFACT_NAME_POSTFIX: ${{ matrix.label }}-${{ matrix.python-version }}-${{ matrix.group }}
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
       - name: Create artifacts and slack notifications
         if: failure()
         uses: ./.github/actions/failed-artifacts-and-slack-notifications
@@ -62,4 +69,4 @@ jobs:
           TESTS_NAME: Vizro e2e vizro dom elements tests ${{ matrix.label }}-${{ matrix.python-version }}
           SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
           PROJECT_PATH: /home/runner/work/vizro/vizro/vizro-core/
-          FAILED_SCREENSHOTS_ARCHIVE_POSTFIX: ${{ matrix.label }}-${{ matrix.python-version }}
+          FAILED_SCREENSHOTS_ARCHIVE_POSTFIX: ${{ matrix.label }}-${{ matrix.python-version }}-${{ matrix.group }}
