@@ -74,7 +74,7 @@ class ModelManager:
         """Iterates through all models of type `model_type` (including subclasses).
 
         If `model_type` is specified, return only models matching that type. Otherwise, include all types.
-        If `root_model` is specified, only return models that are descendants of the given `root_model`.
+        If `root_model` is specified, return only models that are descendants of the given `root_model`.
         """
         import vizro.models as vm
 

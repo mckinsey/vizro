@@ -23,7 +23,7 @@ from vizro.models._components.form import (
     RangeSlider,
     Slider,
 )
-from vizro.models._controls._controls_utils import check_targets_present_on_page, set_container_control_default
+from vizro.models._controls._controls_utils import check_control_targets, set_container_control_default
 from vizro.models._models_utils import _log_call
 from vizro.models.types import FigureType, ModelID, MultiValueType, SelectorType, SingleValueType, _IdProperty
 
@@ -128,9 +128,10 @@ class Filter(VizroBaseModel):
 
     @_log_call
     def pre_build(self):
-        # Validate that targets present on the page where the filter is defined.
+        # If page filter validate that targets present on the page where the filter is defined.
+        # If container filter validate that targets present in the container where the filter is defined.
         # Validation has to be triggered in pre_build because all targets are not initialized until then.
-        check_targets_present_on_page(control=self)
+        check_control_targets(control=self)
 
         # If targets aren't explicitly provided then try to target all figures on the page. In this case we don't
         # want to raise an error if the column is not found in a figure's data_frame, it will just be ignored.
