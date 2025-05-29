@@ -128,6 +128,24 @@ class TestPreBuildMethod:
         assert isinstance(default_action, _AbstractAction)
         assert default_action.id == f"__parameter_action_{parameter.id}"
 
+    def test_set_custom_action(self, managers_one_page_two_graphs, identity_action_function):
+        action_function = identity_action_function()
+        parameter = vm.Parameter(
+            targets=["scatter_chart.x"],
+            selector=vm.RadioItems(
+                options=["lifeExp", "gdpPercap", "pop"],
+                actions=[vm.Action(function=action_function)],
+            ),
+        )
+        model_manager["test_page"].controls = [parameter]
+        parameter.pre_build()
+
+        default_actions_chain = parameter.selector.actions[0]
+        default_action = default_actions_chain.actions[0]
+
+        assert isinstance(default_actions_chain, ActionsChain)
+        assert default_action.function is action_function
+
     @pytest.mark.usefixtures("managers_one_page_two_graphs_with_dynamic_data")
     @pytest.mark.parametrize(
         "filter_targets, expected_parameter_targets",
