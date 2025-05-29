@@ -307,7 +307,7 @@ class TestBuildGraph:
         graph = vm.Graph(
             figure=standard_px_chart,
             title="Title",
-            extra={"className": "test"},
+            extra={"className": "test", "config": {"displayModeBar": False}},
         ).build()
 
         expected_graph = dcc.Loading(
@@ -329,6 +329,7 @@ class TestBuildGraph:
                             "frameMargins": 0,
                             "responsive": True,
                             "modeBarButtonsToRemove": ["toImage"],
+                            "displayModeBar": False,
                         },
                         className="test",
                     ),
