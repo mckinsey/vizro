@@ -866,6 +866,24 @@ class TestPreBuildMethod:
         assert default_action.filter_function == _filter_between
         assert default_action.id == f"__filter_action_{filter.id}"
 
+    def test_set_custom_action(self, managers_one_page_two_graphs, identity_action_function):
+        action_function = identity_action_function()
+
+        filter = vm.Filter(
+            column="country",
+            selector=vm.RadioItems(
+                actions=[vm.Action(function=action_function)],
+            ),
+        )
+        model_manager["test_page"].controls = [filter]
+        filter.pre_build()
+
+        default_actions_chain = filter.selector.actions[0]
+        default_action = default_actions_chain.actions[0]
+
+        assert isinstance(default_actions_chain, ActionsChain)
+        assert default_action.function is action_function
+
 
 class TestFilterBuild:
     """Tests filter build method."""
