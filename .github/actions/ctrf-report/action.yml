@@ -1,10 +1,10 @@
-name: "Create ctrf reports for tests"
-description: "Creates ctrf reports for tests"
+name: "Create CTRF reports for tests"
+description: "Creates CTRF reports for tests"
 
 runs:
   using: "composite"
   steps:
-    - name: Publish Test Report
+    - name: Publish test report
       # used pinned commit hash for security reasons
       uses: ctrf-io/github-test-reporter@27b97adba93f02142c573c8a710045cac0d874ae # v1.0.14
       with:
@@ -16,7 +16,7 @@ runs:
       env:
         GITHUB_TOKEN: ${{ env.GITHUB_TOKEN }}
 
-    - name: Upload ctrf-report
+    - name: Upload CTRF report
       uses: actions/upload-artifact@v4
       with:
         name: ctrf-report-${{ env.ARTIFACT_NAME_POSTFIX }}

@@ -54,7 +54,7 @@ jobs:
           export BROWSER=${{ matrix.config.browser }}
           hatch run test-e2e-vizro-screenshots ${{ matrix.config.command }}
 
-      - name: Create ctrf reports for tests
+      - name: Create CTRF reports for tests
         if: always()
         uses: ./.github/actions/ctrf-report
         env:

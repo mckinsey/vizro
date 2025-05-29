@@ -54,7 +54,7 @@ jobs:
       - name: Run e2e vizro-dom-elements tests
         run: hatch run test-e2e-vizro-dom-elements --splits 3 --group ${{ matrix.group }}
 
-      - name: Create ctrf reports for tests
+      - name: Create CTRF reports for tests
         if: always()
         uses: ./.github/actions/ctrf-report
         env:

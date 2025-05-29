@@ -79,7 +79,7 @@ jobs:
       - name: Run integration tests
         run: hatch run ${{ matrix.config.hatch-env }}:test-integration
 
-      - name: Create ctrf reports for tests
+      - name: Create CTRF reports for tests
         if: always()
         uses: ./.github/actions/ctrf-report
         env:
