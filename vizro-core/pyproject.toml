@@ -79,7 +79,7 @@ filterwarnings = [
   "ignore:HTTPResponse.getheader():DeprecationWarning",
   # ignore this warning for firefox screenshot tests
   "ignore:get_logs always return None with webdrivers other than Chrome",
-  # ignone kedro deprecation warning
+  # ignore kedro deprecation warning
   "ignore:`KedroDataCatalog` is currently an experimental feature:kedro.KedroDeprecationWarning"
 ]
 markers = [
