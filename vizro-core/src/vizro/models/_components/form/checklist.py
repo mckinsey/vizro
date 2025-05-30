@@ -94,15 +94,17 @@ class Checklist(VizroBaseModel):
         full_options, default_value = get_options_and_default(options=options, multi=True)
         description = self.description.build().children if self.description else [None]
 
-        if g and (url_params_value := g.url_params.get(self.id)) is not None:
-            value = url_params_value
-        else:
-            value = self.value if self.value is not None else [default_value]
+        # TODO: Removing this makes that persistence work when page is refreshed or is navigated to.
+        #  However, it doesn't work when URL is set in the new tab (which is actually a feature that has to be added).
+        # if g and (url_params_value := g.url_params.get(self.id)) is not None:
+        #     value = url_params_value
+        # else:
+        #     value = self.value if self.value is not None else [default_value]
 
         defaults = {
             "id": self.id,
             "options": full_options,
-            "value": value,
+            "value": self.value if self.value is not None else [default_value],
             "persistence": True,
             "persistence_type": "session",
         }
