@@ -1,10 +1,11 @@
 from __future__ import annotations
 
 import base64
+import json
 import logging
 from functools import partial
 from pathlib import Path
-from typing import TYPE_CHECKING, Annotated, Literal, Optional, cast
+from typing import TYPE_CHECKING, Annotated, Any, Literal, Optional, cast
 
 import dash
 import dash_bootstrap_components as dbc
@@ -22,6 +23,7 @@ from dash import (
     html,
 )
 from dash.development.base_component import Component
+from flask import g
 from pydantic import AfterValidator, BeforeValidator, Field, ValidationInfo
 from typing_extensions import TypedDict
 
@@ -29,7 +31,8 @@ import vizro
 from vizro._constants import MODULE_PAGE_404, VIZRO_ASSETS_PATH
 from vizro._themes.template_dashboard_overrides import dashboard_overrides
 from vizro.actions._action_loop._action_loop import ActionLoop
-from vizro.models import Navigation, Tooltip, VizroBaseModel
+from vizro.managers import model_manager
+from vizro.models import Filter, Navigation, Parameter, Tooltip, VizroBaseModel
 from vizro.models._models_utils import _log_call
 from vizro.models._navigation._navigation_utils import _NavBuildType
 from vizro.models._tooltip import coerce_str_to_tooltip
@@ -70,6 +73,15 @@ _PageDivsType = TypedDict(
         "page-components": html.Div,
     },
 )
+
+
+# COMMENT FOR PP: this isn't used anywhere any more since it's done in clientside callback instead.
+# We should delete if it's not needed.
+# Ideally we should have some tests that check: input X -> JS encoding -> Python decoding -> same input X
+def encode_to_base64(value):
+    json_bytes = json.dumps(value, separators=(",", ":")).encode("utf-8")
+    b64_bytes = base64.urlsafe_b64encode(json_bytes)
+    return b64_bytes.decode("utf-8").rstrip("=")
 
 
 def set_navigation_pages(navigation: Optional[Navigation], info: ValidationInfo) -> Optional[Navigation]:
@@ -148,6 +160,98 @@ class Dashboard(VizroBaseModel):
     def build(self):
         for page in self.pages:
             page.build()  # TODO: ideally remove, but necessary to register slider callbacks
+            # COMMENT FOR PP:
+            # There are maybe two good approaches to enable carrying `show_in_url` controls from *multiple* pages to be
+            # in URL. Hopefully this also means the Dash persistence bug does not affect us because the control value
+            # for these is always supplied in the URL rather than needing Dash persistence at all.
+            # Two approaches:
+            # 1. in encode_to_base64 clientside callback, also update all the links on the page to include the new
+            # URL parameters. This way the URL should always be correct and not lose information. This is what I do
+            # here. The disadvantage is you need to dynamically rewrite URLs but I think that should be easy enough.
+            # 2. don't modify links dynamically. Instead keep links between pages without any query parameters, store
+            # the `show_in_url` controls in a `dcc.Store` and then restore them to the URL after you change page. This
+            # way the URL sometimes temporarily loses information every time you change page but then it's restored
+            # again.
+            # Overall approach 1 sounds best to me if we can get it working. I didn't try approach 2 at all but if
+            # sounds better to you then I'm happy to go for it if you prefer it.
+
+            # COMMENT FOR PP:
+            # There's maybe three options here. It's important that whatever solution we have can handle multiple
+            # controls being simultaneously updated.
+            # 1. a single Dashboard-level callback using allow_optional=True Inputs - not released yet though so I
+            # didn't try it.
+            # 2. one callback per Page - what I do now
+            # 3. one callback per control (so define in Parameter.build, Filter.build). This feels cleanest to me but
+            # for multiple controls simultaneously changing didn't work with serverside callbacks, maybe it would with
+            # clientside though.
+            # Slight preference for approach 3 since it feels cleanest, but I'm happy to go for whichever approach
+            # works best and is easy, so the current one is fine also.
+            url_controls = [
+                control
+                for control in [*model_manager._get_models(Parameter, page), *model_manager._get_models(Filter, page)]
+                if control.show_in_url
+            ]
+
+            if url_controls:
+                # Note the id is the control's id rather than the underlying selector's. This means a user doesn't
+                # need to specify vm.Filter(selector=vm.Dropdown(id=...)) when they set show_in_url = True. It is
+                # mapped back on to the selector's id in vm.Filter and vm.Parameter.
+                selector_values = [Input(control.selector.id, "value") for control in url_controls]
+                control_ids = [State(control.id, "id") for control in url_controls]
+
+                # TODO NOW: this was written by ChatGPT with minor changes made by me so definitely needs
+                #  checking
+                #  and tidying and commenting! What it should do is basically this:
+                #    query_params = {id: encode_to_base64(value) for id, value in zip(ids, values)}
+                #    new_url_query = "?" + urlencode(query_params)
+                #    <go through all document.querySelectorAll("a[href^='/']") and update query to new_url_query>
+                #    return new_url_query
+                # Note ids are urlencoded but not base64.
+                # Ideally, but might not work like this here:
+                #   - any URL query parameters from outside Vizro should not be destroyed, we just add to the query
+                #   parameters. This is crucial to allow Vizro control parameters from other pages to be preserved
+                #   anyway. It means taking in the existing URL params as a Dash state or just taking from
+                #   window.location.
+                #   - we don't need to re-encode every single Input, just those that have actually changed
+                #   - do we need to check for how to handle None values? I think probably not because this doesn't
+                #     happen for controls, but maybe check and add handling for it anyway if easy to do so.
+                clientside_callback(
+                    r"""
+                function(...values_ids) {
+  const count = values_ids.length / 2;
+  const values = values_ids.slice(0, count);
+  const ids = values_ids.slice(count);
+
+  const entries = ids.map((id, i) => [
+    id,
+    btoa(String.fromCharCode(...new TextEncoder().encode(JSON.stringify(values[i]))))
+      .replace(/\+/g, '-')
+      .replace(/\//g, '_')
+      .replace(/=+$/, '')
+  ]);
+
+  const currentParams = new URLSearchParams(window.location.search); // Could come from Dash State
+  for (const [k, v] of entries) {
+    currentParams.set(k, v);  // Merge new/updated value
+  }
+
+  const new_query_string = '?' + currentParams.toString();
+
+  const links = document.querySelectorAll("a[href^='/']");
+  links.forEach(link => {
+    const href = link.getAttribute("href");
+    const base = href.split('?')[0];
+    link.setAttribute("href", base + new_query_string);
+  });
+
+  return new_query_string;
+}
+                """,
+                    Output("vizro_url_no_refresh", "search", allow_duplicate=True),
+                    selector_values + control_ids,
+                    # Dash clientside callback doesn't support flexible signatures so need to supply this as a single
+                    # variable and then split it up inside the callback.
+                )
 
         clientside_callback(
             ClientsideFunction(namespace="dashboard", function_name="update_dashboard_theme"),
@@ -181,6 +285,7 @@ class Dashboard(VizroBaseModel):
                 ),
                 ActionLoop._create_app_callbacks(),
                 dash.page_container,
+                dcc.Location(id="vizro_url_no_refresh", refresh=False),
             ],
         )
 
@@ -319,8 +424,19 @@ class Dashboard(VizroBaseModel):
         return html.Div(children=[page_header, page_main], className="page-container")
 
     def _make_page_layout(self, page: Page, **kwargs):
-        # **kwargs are not used but ensure that unexpected query parameters do not raise errors. See
-        # https://github.com/AnnMarieW/dash-multi-page-app-demos/#5-preventing-query-string-errors
+        # kwargs contains the URL query parameters that have already been processed by Dash Pages. This is better than
+        # using parse request.args since need we would actually need to use flask.request.referer, and Dash Pages has
+        # already done some of the parsing for us.
+        # We store the URL query parameters in flask.g to avoid passing them through many build methods,
+        # which clutters things up badly and also potentially breaks existing code by introducing a new unexpected
+        # argument.
+        # TODO NOW: check what parsing Dash pages has already done and make sure what we do here works correctly with
+        #  it. e.g. we might need to handle the case of ?filter_1=a&filter_1=b, where value will be a list from Dash
+        #  Pages (should never occur in a vizro app, only if someone has entered the URL manually, so just take
+        #  one element from the list or also fine if it doesn't work at all).
+        # TODO NOW: this would be better if it looked through only the keys from url_controls in the build method.
+        # Otherwrise we're potentially trying to decode parameters outside vizro that shouldn't be decoded.
+        g.url_query_params = {key: self._decode_from_base64(value) for key, value in kwargs.items()}
         page_divs = self._get_page_divs(page=page)
         page_layout = self._arrange_page_divs(page_divs=page_divs)
         page_layout.id = page.id
@@ -357,3 +473,11 @@ class Dashboard(VizroBaseModel):
                 if path.suffix in valid_extensions:
                     # Return path as posix so image source comes out correctly on Windows.
                     return path.relative_to(assets_folder).as_posix()
+
+    @staticmethod
+    def _decode_from_base64(base64: str) -> Any:
+        # Add padding that was stripped out in encode_to_base64 clientside callback, decode and then load the JSON
+        # string.
+        padding = "=" * (-len(base64) % 4)
+        base64 += padding
+        return json.loads(base64.urlsafe_b64decode(base64).decode("utf-8"))

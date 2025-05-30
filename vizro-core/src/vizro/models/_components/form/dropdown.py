@@ -4,6 +4,7 @@ from typing import Annotated, Any, Literal, Optional, Union, cast
 
 import dash_bootstrap_components as dbc
 from dash import dcc, html
+from flask import g
 from pydantic import AfterValidator, BeforeValidator, Field, PrivateAttr, StrictBool, ValidationInfo, model_validator
 from pydantic.functional_serializers import PlainSerializer
 from pydantic.json_schema import SkipJsonSchema
@@ -151,10 +152,15 @@ class Dropdown(VizroBaseModel):
         altered_options = _add_select_all_option(full_options=full_options) if self.multi else full_options
         description = self.description.build().children if self.description else [None]
 
+        if g and (url_params_value := g.url_query_params.get(self.id)) is not None:
+            value = url_params_value
+        else:
+            value = self.value if self.value is not None else [default_value]
+
         defaults = {
             "id": self.id,
             "options": altered_options,
-            "value": self.value if self.value is not None else default_value,
+            "value": value,
             "multi": self.multi,
             "optionHeight": option_height,
             "persistence": True,
