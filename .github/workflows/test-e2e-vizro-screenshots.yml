@@ -54,6 +54,13 @@ jobs:
           export BROWSER=${{ matrix.config.browser }}
           hatch run test-e2e-vizro-screenshots ${{ matrix.config.command }}
 
+      - name: Create CTRF reports for tests
+        if: always()
+        uses: ./.github/actions/ctrf-report
+        env:
+          ARTIFACT_NAME_POSTFIX: ${{ matrix.config.browser }}
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
       - name: Create artifacts and slack notifications
         if: failure()
         uses: ./.github/actions/failed-artifacts-and-slack-notifications
