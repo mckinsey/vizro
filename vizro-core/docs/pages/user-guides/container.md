@@ -201,12 +201,12 @@ To make the `Container` stand out as a distinct section in your dashboard, you c
                 vm.Container(
                     title="Container with background color",
                     components=[vm.Graph(figure=px.scatter(iris, x="sepal_width", y="sepal_length", color="species"))],
-                    variant="filled"
+                    variant="filled",
                 ),
                 vm.Container(
                     title="Container with borders",
                     components=[vm.Graph(figure=px.box(iris, x="species", y="sepal_length", color="species"))],
-                    variant="outlined"
+                    variant="outlined",
                 )
             ],
         )
@@ -525,12 +525,12 @@ Here are a few cases where you might want to use `controls` within a `Container`
                 vm.Container(
                     title="Container with gapminder data",
                     components=[vm.Graph(id="bar_chart", figure=px.bar(gapminder, x="country", y="gdpPercap"))],
-                    controls=[vm.Filter(column="continent", selector=vm.RadioItems())]
+                    controls=[vm.Filter(column="continent", selector=vm.RadioItems())],
                 ),
                 vm.Container(
                     title="Container with iris data",
                     components=[vm.Graph(figure=px.box(iris, x="species", y="sepal_length", color="species"))],
-                    controls=[vm.Filter(column="species", selector=vm.Checklist())]
+                    controls=[vm.Filter(column="species", selector=vm.Checklist())],
                 )
             ],
         )
