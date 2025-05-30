@@ -1,6 +1,6 @@
 import pytest
 
-from vizro.tables._utils import _set_defaults_nested
+from vizro._vizro_utils import _set_defaults_nested
 
 
 @pytest.fixture
