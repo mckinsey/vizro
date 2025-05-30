@@ -11,6 +11,7 @@ from pydantic import AfterValidator, BeforeValidator, Field, field_validator
 from pydantic.functional_serializers import PlainSerializer
 from pydantic.json_schema import SkipJsonSchema
 
+from vizro._vizro_utils import _set_defaults_nested
 from vizro.actions import filter_interaction
 from vizro.actions._actions_utils import CallbackTriggerDict, _get_component_actions
 from vizro.managers import data_manager, model_manager
@@ -20,7 +21,6 @@ from vizro.models._components._components_utils import _process_callable_data_fr
 from vizro.models._models_utils import _log_call
 from vizro.models._tooltip import coerce_str_to_tooltip
 from vizro.models.types import ActionType, CapturedCallable, ModelID, _IdProperty, validate_captured_callable
-from vizro.tables._utils import _set_defaults_nested
 
 logger = logging.getLogger(__name__)
 
@@ -261,6 +261,8 @@ class Graph(VizroBaseModel):
                 "modeBarButtonsToRemove": ["toImage"],
             },
         }
+        # While most components fully override defaults with values from `extra`,
+        # for graph component we apply a merge to preserve our default values unless explicitly overridden.
         graph_defaults = _set_defaults_nested(self.extra, defaults)
 
         return dcc.Loading(

@@ -167,7 +167,7 @@ The `Graph` is based on the underlying Dash component [`dcc.Graph`](https://dash
 
     Using `extra` is a quick and flexible way to alter a component beyond what Vizro offers. However, [it is not a part of the official Vizro schema](../explanation/schema.md#what-is-the-vizro-json-schema) and the underlying implementation details may change. If you want to guarantee that your apps keep running, we recommend that you pin your Vizro version.
 
-An example use would be to remove mode bar from plotly chart. For this, you can use `extra={"config": {"displayModeBar": False}}`.
+An example use would be to [remove the plotly mode bar](https://plotly.com/python/configuration-options/#preventing-the-modebar-from-appearing). For this, you can use `extra={"config": {"displayModeBar": False}}`.
 
 !!! example "Graph with extra"
 

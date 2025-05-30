@@ -19,7 +19,7 @@ Uncomment the section that is right (remove the HTML comment wrapper).
 
 ### Added
 
-- Enabled `extra` argument for `vm.Graph`. ([#1210](https://github.com/mckinsey/vizro/pull/1210))
+Enable `extra` argument for `vm.Graph`, which allows passing arguments directly to the underlying `dcc.Graph`. ([#1210](https://github.com/mckinsey/vizro/pull/1210))
 
 <!--
 ### Changed
