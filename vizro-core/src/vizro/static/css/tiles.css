@@ -12,7 +12,7 @@
      This min-height ensures the graph is displayed even when the parent lacks an explicit height.
      TODO: Consider increasing min-height if graphs are not sufficiently visible.
   */
-  min-height: 100px;
+  min-height: 250px;
 }
 
 .figure-title,
