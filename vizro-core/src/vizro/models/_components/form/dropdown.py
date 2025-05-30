@@ -152,7 +152,7 @@ class Dropdown(VizroBaseModel):
         altered_options = _add_select_all_option(full_options=full_options) if self.multi else full_options
         description = self.description.build().children if self.description else [None]
 
-        if g and (url_params_value := g.url_params.get(self.id)) is not None:
+        if g and (url_params_value := g.url_query_params.get(self.id)) is not None:
             value = url_params_value
         else:
             value = self.value if self.value is not None else [default_value]

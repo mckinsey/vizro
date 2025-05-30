@@ -74,6 +74,7 @@ class Parameter(VizroBaseModel):
         AfterValidator(check_duplicate_parameter_target),
     ]
     selector: SelectorType
+    # TODO NOW: implement this similarly to vm.Filter.
     show_in_url: bool = False
 
     @_log_call

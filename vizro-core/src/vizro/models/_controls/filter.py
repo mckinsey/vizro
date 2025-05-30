@@ -91,6 +91,7 @@ class Filter(VizroBaseModel):
         "If none are given then target all components on the page that use `column`.",
     )
     selector: Optional[SelectorType] = None
+    # TODO NOW: add description, docstring, etc.
     show_in_url: bool = False
 
     _dynamic: bool = PrivateAttr(False)
@@ -226,19 +227,29 @@ class Filter(VizroBaseModel):
         # Cast is justified as the selector is set in pre_build and is not None.
         selector = cast(SelectorType, self.selector)
 
+        # TODO NOW: replace g with has_request_context or whatever it is from flask to be clearer.
         if self.show_in_url and g:
-            # TODO NOW: think about what to do if get returns None - is this right already?
-            g.url_params[self.selector.id] = g.url_params.get(self.id)
+            # Note the key in url_query_params is the control's id rather than the underlying selector's. This means a
+            # user doesn't need to specify vm.Filter(selector=vm.Dropdown(id=...)) when they set show_in_url = True.
+            # We map back to the selector id here.
+            # TODO NOW: think about what to do if get returns None - is this right already? Can this ever actually
+            #  occur in practice? Probably only if a user shares a URL where they've deliberately removed a query string
+            #  parameter. It would be nice if that didn't crash the app though.
+            g.url_query_params[self.selector.id] = g.url_query_params.get(self.id)
 
         selector_build_obj = selector.build()
         # TODO: Align the (dynamic) object's return structure with the figure's components when the Dash bug is fixed.
         #  This means returning an empty "html.Div(id=self.id, className=...)" as a placeholder from Filter.build().
         #  Also, make selector.title visible when the filter is reloading.
+        # COMMENT: I commented this out because we now need self.id to exist even for non-dynamic filters so the
+        # encode_to_base64 clientside callback works. Fine by me if we have the unnecessary dcc.Loading for these
+        # non-dynamic filters so long as it doesn't break anything. Given the above comment about aligning things, maybe
+        # this is the right thing to do anyway?
+
         # if not self._dynamic:
         #     return selector_build_obj
-        # TODO NOW COMMENT: needed self.id to exist even for non-dynamic - like in above comment about align.
 
-        # Temporarily hide the selector and numeric dcc.Input components during the filter reloading process.
+        # For dynamic filters, hide the selector and numeric dcc.Input components during the filter reloading process.
         # Other components, such as the title, remain visible because of the configuration:
         # overlay_style={"visibility": "visible"} in dcc.Loading.
         # Note: dcc.Slider and dcc.RangeSlider do not support the "style" property directly,

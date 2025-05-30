@@ -95,7 +95,9 @@ class RadioItems(VizroBaseModel):
         full_options, default_value = get_options_and_default(options=options, multi=False)
         description = self.description.build().children if self.description else [None]
 
-        if g and (url_params_value := g.url_params.get(self.id)) is not None:
+        # TODO NOW: implement these changes across all selectors consistently.
+        # TODO NOW: replace g with has_request_context or whatever it is in flask.
+        if g and (url_params_value := g.url_query_params.get(self.id)) is not None:
             value = url_params_value
         else:
             value = self.value if self.value is not None else [default_value]
