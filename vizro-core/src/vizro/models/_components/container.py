@@ -12,7 +12,7 @@ from vizro.models import Tooltip, VizroBaseModel
 from vizro.models._grid import set_layout
 from vizro.models._models_utils import _build_inner_layout, _log_call, check_captured_callable_model
 from vizro.models._tooltip import coerce_str_to_tooltip
-from vizro.models.types import ComponentType, LayoutType, _IdProperty
+from vizro.models.types import ComponentType, ControlType, LayoutType, _IdProperty
 
 
 # TODO: this could be done with default_factory once we bump to pydantic>=2.10.0.
@@ -38,6 +38,7 @@ class Container(VizroBaseModel):
             `plain`, `filled` or `outlined`. Defaults to `plain` (or `outlined` for collapsible container).
         description (Optional[Tooltip]): Optional markdown string that adds an icon next to the title.
             Hovering over the icon shows a tooltip with the provided description. Defaults to `None`.
+        controls (list[ControlType]): See [ControlType][vizro.models.types.ControlType]. Defaults to `[]`.
         extra (Optional[dict[str, Any]]): Extra keyword arguments that are passed to `dbc.Container` and overwrite any
             defaults chosen by the Vizro team. This may have unexpected behavior.
             Visit the [dbc documentation](https://dash-bootstrap-components.opensource.faculty.ai/docs/components/layout/)
@@ -82,7 +83,7 @@ class Container(VizroBaseModel):
             Hovering over the icon shows a tooltip with the provided description. Defaults to `None`.""",
         ),
     ]
-
+    controls: list[ControlType] = []
     extra: SkipJsonSchema[
         Annotated[
             dict[str, Any],
@@ -123,7 +124,6 @@ class Container(VizroBaseModel):
         # 2) Logic inside Tabs.build that sets hidden=True for the heading or uses del to remove the heading via
         # providing an ID to the heading and accessing it in the component tree
         # 3) New field in Container like short_title to allow tab label to be set independently
-
         if self.collapsed is not None:
             clientside_callback(
                 ClientsideFunction(namespace="container", function_name="collapse_container"),
@@ -142,6 +142,7 @@ class Container(VizroBaseModel):
             "id": self.id,
             "children": [
                 self._build_container_title() if self.title else None,
+                self._build_control_panel() if self.controls else None,
                 self._build_container(),
             ],
             "fluid": True,
@@ -199,4 +200,11 @@ class Container(VizroBaseModel):
             children=title_content,
             className="container-title-collapse" if self.collapsed is not None else "container-title",
             id=f"{self.id}_title_content",
+        )
+
+    def _build_control_panel(self):
+        return html.Div(
+            id=f"{self.id}-control-panel",
+            children=[control.build() for control in self.controls],
+            className="container-controls-panel",
         )
