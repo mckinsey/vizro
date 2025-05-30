@@ -4,6 +4,18 @@ import dash_bootstrap_components as dbc
 from dash import html, dcc, callback, Input, Output, Dash
 
 
+# TODO-FOR-REVIEWER:
+#  Reproduce bug A:
+#    A.1. Go to http://127.0.0.1:8050/another-page?radio_items_id_value=3
+#    A.2. Click "Homepage"
+#    A.3. Click “Another page” -> value is set to 1 but should be 3
+#  Reproduce bug B:
+#    B.1. Go to http://127.0.0.1:8050/another-page?radio_items_id_value=3
+#    B.2. Change value to 2
+#    B.3. Click "Homepage"
+#    B.4. Click “Another page” -> value is set to 1 but should be 2
+
+
 common = [
     html.H1(children="Dashboard"),
     html.Div(dcc.Link("Homepage", href="/")),
