@@ -81,7 +81,7 @@ class TestPreBuildMethod:
     def test_targets_present_invalid(self):
         parameter = Parameter(targets=["scatter_chart_invalid.x"], selector=vm.Dropdown(options=["lifeExp", "pop"]))
         model_manager["test_page"].controls = [parameter]
-        with pytest.raises(ValueError, match="Target scatter_chart_invalid not found within the page test_page."):
+        with pytest.raises(ValueError, match="Target scatter_chart_invalid not found within the test_page."):
             parameter.pre_build()
 
     @pytest.mark.usefixtures("managers_one_page_two_graphs")
@@ -178,6 +178,13 @@ class TestPreBuildMethod:
 
         default_action = data_frame_parameter.selector.actions[0].actions[0]
         assert set(default_action.targets) == expected_parameter_targets
+
+    @pytest.mark.usefixtures("managers_one_page_container_controls")
+    def test_set_container_parameter_default(self):
+        parameter = model_manager["container_parameter"]
+        parameter.pre_build()
+
+        assert parameter.selector.extra == {"inline": True}
 
 
 @pytest.mark.usefixtures("managers_one_page_two_graphs")
