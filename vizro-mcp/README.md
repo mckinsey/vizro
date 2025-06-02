@@ -52,7 +52,7 @@ If you are a **developer** and need instructions for running Vizro-MCP from sour
 
 The general server config is mostly the same for all hosts:
 
-### 1. Prepare the Configuration
+#### 1. Prepare the Configuration
 
 **Using `uvx`**
 
@@ -93,7 +93,7 @@ The general server config is mostly the same for all hosts:
 
 > To use local data with Vizro-MCP, mount your data directory into the container. Replace `</absolute/path/to/allowed/dir>` or `</absolute/path/to/data.csv>` with the absolute path to your data on your machine. For consistency, it is recommended that the `dst` path matches the `src` path.
 
-### 2. Add the Configuration to MCP enabled LLM applications
+#### 2. Add the Configuration to MCP enabled LLM applications
 
 In principle, the Vizro MCP server works with _any_ MCP enabled LLM applications but we recommend Claude Desktop or Cursor as popular choices (see more detailed instructions below). Different AI tools may use different setup methods or connection settings. Check each tool's docs for details.
 
@@ -123,9 +123,9 @@ In principle, the Vizro MCP server works with _any_ MCP enabled LLM applications
 
 <details>
 <summary><strong>Other MCP Clients</strong></summary>
-#### <a id="other-mcp-clients"></a>Other MCP Clients
 
 - Add the configuration as per your client's documentation.
+
 - Check your client's documentation for where to place the config and how to verify the server is running.
 
 > 🐛 **Note:** There are currently some known issues with [VS Code](https://code.visualstudio.com/), but we are working on this and hope to have Copilot working soon.
