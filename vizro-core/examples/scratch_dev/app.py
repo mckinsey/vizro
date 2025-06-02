@@ -3,17 +3,18 @@
 import vizro.models as vm
 import vizro.plotly.express as px
 from vizro import Vizro
+from vizro.tables import dash_ag_grid
 
 
 df = px.data.iris()
 
-
 page = vm.Page(
-    title="Chart without ModeBar",
+    title="Page",
+    layout=vm.Flex(),
     components=[
-        vm.Graph(
-            figure=px.scatter(df, x="sepal_width", y="sepal_length", color="species"),
-            extra={"config": {"displayModeBar": False}},
+        vm.Card(text="""BLABLA"""),
+        vm.Container(
+            variant="outlined", title="Container with AgGrid", components=[vm.AgGrid(figure=dash_ag_grid(df))]
         ),
     ],
 )
