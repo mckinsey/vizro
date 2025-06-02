@@ -25,6 +25,7 @@ from vizro.models import Filter, Tooltip, VizroBaseModel
 from vizro.models._action._actions_chain import ActionsChain, Trigger
 from vizro.models._grid import set_layout
 from vizro.models._models_utils import _build_inner_layout, _log_call, check_captured_callable_model
+from vizro.models.types import _IdProperty
 
 from ._tooltip import coerce_str_to_tooltip
 from .types import ComponentType, ControlType, FigureType, LayoutType
@@ -119,6 +120,13 @@ class Page(VizroBaseModel):
             return result
         return result
 
+    @property
+    def _action_outputs(self) -> dict[str, _IdProperty]:
+        return {
+            "title": f"{self.id}_title.children",
+            **({"description": f"{self.description.id}-text.children"} if self.description else {}),
+        }
+
     @_log_call
     def pre_build(self):
         # TODO-AV2 A 4: work out the best place to put this logic. It could feasibly go in _on_page_load instead.
@@ -132,11 +140,11 @@ class Page(VizroBaseModel):
         #  get_all_targets_on_page() that's used in many actions. So maybe it makes sense to put it in the action for
         #  on_page_load/filter/parameter too.
         figure_targets = [
-            model.id for model in cast(Iterable[FigureType], model_manager._get_models(FIGURE_MODELS, page=self))
+            model.id for model in cast(Iterable[FigureType], model_manager._get_models(FIGURE_MODELS, root_model=self))
         ]
         filter_targets = [
             filter.id
-            for filter in cast(Iterable[Filter], model_manager._get_models(Filter, page=self))
+            for filter in cast(Iterable[Filter], model_manager._get_models(Filter, root_model=self))
             if filter._dynamic
         ]
         targets = figure_targets + filter_targets

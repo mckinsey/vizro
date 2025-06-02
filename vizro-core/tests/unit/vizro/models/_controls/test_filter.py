@@ -562,7 +562,7 @@ class TestPreBuildMethod:
         filter = vm.Filter(column="column_numerical", targets=["invalid_target"])
         model_manager["test_page"].controls = [filter]
 
-        with pytest.raises(ValueError, match="Target invalid_target not found within the page test_page."):
+        with pytest.raises(ValueError, match="Target invalid_target not found within the test_page."):
             filter.pre_build()
 
     def test_targets_default_invalid(self, managers_column_only_exists_in_some):
@@ -865,6 +865,47 @@ class TestPreBuildMethod:
         assert isinstance(default_action, _AbstractAction)
         assert default_action.filter_function == _filter_between
         assert default_action.id == f"__filter_action_{filter.id}"
+
+    @pytest.mark.usefixtures("managers_one_page_container_controls")
+    def test_container_filter_defaults(self):
+        filter = model_manager["container_filter"]
+        filter.pre_build()
+
+        assert filter.selector.extra == {"inline": True}
+
+    @pytest.mark.usefixtures("managers_one_page_container_controls")
+    def test_container_filter_default_targets(self):
+        filter = model_manager["container_filter"]
+        filter.pre_build()
+
+        assert filter.targets == ["scatter_chart"]
+
+    @pytest.mark.usefixtures("managers_one_page_container_controls_invalid")
+    def test_container_filter_targets_specific_invalid(self):
+        filter = model_manager["container_filter_2"]
+        with pytest.raises(
+            ValueError,
+            match="Target bar_chart not found within the container_1",
+        ):
+            filter.pre_build()
+
+    def test_set_custom_action(self, managers_one_page_two_graphs, identity_action_function):
+        action_function = identity_action_function()
+
+        filter = vm.Filter(
+            column="country",
+            selector=vm.RadioItems(
+                actions=[vm.Action(function=action_function)],
+            ),
+        )
+        model_manager["test_page"].controls = [filter]
+        filter.pre_build()
+
+        default_actions_chain = filter.selector.actions[0]
+        default_action = default_actions_chain.actions[0]
+
+        assert isinstance(default_actions_chain, ActionsChain)
+        assert default_action.function is action_function
 
 
 class TestFilterBuild:

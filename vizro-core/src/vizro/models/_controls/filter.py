@@ -14,7 +14,7 @@ from vizro.actions._filter_action import _filter
 from vizro.managers import data_manager, model_manager
 from vizro.managers._data_manager import DataSourceName, _DynamicData
 from vizro.managers._model_manager import FIGURE_MODELS
-from vizro.models import VizroBaseModel
+from vizro.models import Container, VizroBaseModel
 from vizro.models._components.form import (
     Checklist,
     DatePicker,
@@ -23,7 +23,7 @@ from vizro.models._components.form import (
     RangeSlider,
     Slider,
 )
-from vizro.models._controls._controls_utils import check_targets_present_on_page
+from vizro.models._controls._controls_utils import check_control_targets, set_container_control_default
 from vizro.models._models_utils import _log_call
 from vizro.models.types import FigureType, ModelID, MultiValueType, SelectorType, SingleValueType, _IdProperty
 
@@ -128,20 +128,18 @@ class Filter(VizroBaseModel):
 
     @_log_call
     def pre_build(self):
-        # Validate that targets present on the page where the filter is defined.
+        # If page filter validate that targets present on the page where the filter is defined.
+        # If container filter validate that targets present in the container where the filter is defined.
         # Validation has to be triggered in pre_build because all targets are not initialized until then.
-        check_targets_present_on_page(control=self)
+        check_control_targets(control=self)
 
         # If targets aren't explicitly provided then try to target all figures on the page. In this case we don't
         # want to raise an error if the column is not found in a figure's data_frame, it will just be ignored.
         # This is the case when bool(self.targets) is False.
-        # Possibly in future this will change (which would be breaking change).
-        proposed_targets = self.targets or [
-            model.id
-            for model in cast(
-                Iterable[FigureType], model_manager._get_models(FIGURE_MODELS, model_manager._get_model_page(self))
-            )
-        ]
+        # If filter used within container and if targets aren't explicitly provided it will target all figures within
+        # that container. Possibly in future this will change (which would be breaking change).
+        proposed_targets = self.targets or self._get_proposed_targets()
+
         # TODO: Currently dynamic data functions require a default value for every argument. Even when there is a
         #  dataframe parameter, the default value is used when pre-build the filter e.g. to find the targets,
         #  column type (and hence selector) and initial values. There are three ways to handle this:
@@ -164,6 +162,9 @@ class Filter(VizroBaseModel):
         self._column_type = self._validate_column_type(targeted_data)
         self.selector = self.selector or SELECTORS[self._column_type][0]()
         self.selector.title = self.selector.title or self.column.title()
+
+        # set default inline=True for container selectors
+        set_container_control_default(control=self)
 
         if isinstance(self.selector, DISALLOWED_SELECTORS.get(self._column_type, ())):
             raise ValueError(
@@ -210,14 +211,14 @@ class Filter(VizroBaseModel):
             else:
                 filter_function = _filter_isin
 
-        self.selector.actions = [
-            _filter(
-                id=f"{FILTER_ACTION_PREFIX}_{self.id}",
-                column=self.column,
-                filter_function=filter_function,
-                targets=self.targets,
-            ),
-        ]
+            self.selector.actions = [
+                _filter(
+                    id=f"{FILTER_ACTION_PREFIX}_{self.id}",
+                    column=self.column,
+                    filter_function=filter_function,
+                    targets=self.targets,
+                ),
+            ]
 
     @_log_call
     def build(self):
@@ -335,3 +336,16 @@ class Filter(VizroBaseModel):
         # changes. See https://pandas.pydata.org/docs/whatsnew/v2.1.0.html#whatsnew-210-enhancements-new-stack.
         targeted_data = pd.concat([targeted_data, pd.Series(current_value)]).stack().dropna()  # noqa: PD013
         return sorted(set(targeted_data) - {ALL_OPTION})
+
+    def _get_proposed_targets(self):
+        """Get all valid figure model targets for this control based on its location in the page hierarchy."""
+        page = model_manager._get_model_page(self)
+        page_containers = model_manager._get_models(model_type=Container, root_model=page)
+
+        # Find the control's parent model. Set it as the control's parent container it exists.
+        # Otherwise set it as the control's page.
+        root_model = next(
+            (container for container in page_containers if self in container.controls),
+            page,
+        )
+        return [model.id for model in cast(Iterable[FigureType], model_manager._get_models(FIGURE_MODELS, root_model))]

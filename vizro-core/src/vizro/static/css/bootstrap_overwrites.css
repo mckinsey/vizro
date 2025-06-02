@@ -79,10 +79,20 @@ label[for="theme-selector"] {
 /* This is currently required as the usage of dbc.NavBar automatically adds classNames such as `navbar-light` and
 `bg-light`, which come with an important tag from bootstrap. So we need below to overwrite these properties again. */
 .navbar {
-  background: var(--surfaces-bg02) !important;
+  background: var(--left-side-bg) !important;
 }
 
 .form-switch .form-check-input {
   margin-right: 0;
   padding-left: 0;
+}
+
+.container-controls-panel .dropdown {
+  max-width: 240px;
+  min-width: 160px;
+}
+
+.container-controls-panel .form-check-inline {
+  align-content: center;
+  height: 32px;
 }

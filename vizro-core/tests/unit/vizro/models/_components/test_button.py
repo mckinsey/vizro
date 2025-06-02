@@ -20,6 +20,7 @@ class TestButtonInstantiation:
         assert button.href == ""
         assert button.actions == []
         assert button.variant == "filled"
+        assert button._action_outputs == {"text": f"{button.id}.children"}
 
     @pytest.mark.parametrize(
         "text, href, variant",

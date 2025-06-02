@@ -18,6 +18,11 @@ class TestTooltipInstantiation:
         assert hasattr(tooltip, "id")
         assert tooltip.text == "Tooltip text"
         assert tooltip.icon == "info"
+        assert tooltip._action_outputs == {
+            "__default__": f"{tooltip.id}-text.children",
+            "text": f"{tooltip.id}-text.children",
+            "icon": f"{tooltip.id}-icon.children",
+        }
 
     def test_validate_tooltip_invalid(self):
         with pytest.raises(ValidationError):
@@ -34,7 +39,7 @@ class TestTooltipBuild:
             [
                 html.Span("help", id="tooltip-icon", className="material-symbols-outlined tooltip-icon"),
                 dbc.Tooltip(
-                    children=dcc.Markdown("Tooltip text", className="card-text"),
+                    children=dcc.Markdown("Tooltip text", id="tooltip-text", className="card-text"),
                     id="tooltip",
                     target="tooltip-icon",
                     autohide=False,
@@ -51,7 +56,7 @@ class TestTooltipBuild:
             [
                 html.Span("help", id="tooltip-icon", className="material-symbols-outlined tooltip-icon"),
                 dbc.Tooltip(
-                    children=dcc.Markdown("Tooltip text", className="card-text"),
+                    children=dcc.Markdown("Tooltip text", id="tooltip-text", className="card-text"),
                     id="tooltip",
                     target="tooltip-icon",
                     autohide=False,

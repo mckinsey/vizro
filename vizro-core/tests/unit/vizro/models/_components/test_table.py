@@ -35,15 +35,47 @@ class TestTableInstantiation:
         assert table.type == "table"
         assert table.figure == standard_dash_table
         assert table.actions == []
-        assert table._action_outputs == {"__default__": f"{table.id}.children"}
+        assert table.title == ""
+        assert table.header == ""
+        assert table.footer == ""
+        assert hasattr(table, "_inner_component_id")
+        assert table._action_outputs == {
+            "__default__": f"{table.id}.children",
+            "figure": f"{table.id}.children",
+        }
 
-    @pytest.mark.parametrize("id", ["id_1", "id_2"])
-    def test_create_table_mandatory_and_optional(self, standard_dash_table, id):
-        table = vm.Table(id=id, figure=standard_dash_table)
+    def test_create_table_mandatory_and_optional(self, dash_data_table_with_id):
+        table = vm.Table(
+            id="table-id",
+            figure=dash_data_table_with_id,
+            title="Title",
+            description="Test description",
+            header="Header",
+            footer="Footer",
+        )
 
-        assert table.id == id
+        assert table.id == "table-id"
         assert table.type == "table"
-        assert table.figure == standard_dash_table
+        assert table.figure == dash_data_table_with_id
+        assert table.actions == []
+        assert table.title == "Title"
+        assert table.header == "Header"
+        assert table.footer == "Footer"
+        assert isinstance(table.description, vm.Tooltip)
+        assert table._inner_component_id == "underlying_table_id"
+        assert table._action_outputs == {
+            "__default__": f"{table.id}.children",
+            "figure": f"{table.id}.children",
+            "title": f"{table.id}_title.children",
+            "header": f"{table.id}_header.children",
+            "footer": f"{table.id}_footer.children",
+            "description": f"{table.description.id}-text.children",
+        }
+
+    def test_table_filter_interaction_attributes(self, dash_data_table_with_id):
+        table = vm.Table(figure=dash_data_table_with_id, title="Gapminder")
+        assert hasattr(table, "_filter_interaction_input")
+        assert "modelID" in table._filter_interaction_input
 
     def test_mandatory_figure_missing(self):
         with pytest.raises(ValidationError, match="Field required"):
@@ -110,14 +142,6 @@ class TestDunderMethodsTable:
         assert table().id == "underlying_table_id"
 
 
-class TestAttributesTable:
-    def test_table_filter_interaction_attributes(self, dash_data_table_with_id):
-        table = vm.Table(figure=dash_data_table_with_id, title="Gapminder")
-        table.pre_build()
-        assert hasattr(table, "_filter_interaction_input")
-        assert "modelID" in table._filter_interaction_input
-
-
 class TestProcessTableDataFrame:
     # Testing at this low implementation level as mocking callback contexts skips checking for creation of these objects
     def test_process_figure_data_frame_str_df(self, dash_table_with_str_dataframe, gapminder):
@@ -135,13 +159,13 @@ class TestPreBuildTable:
         table = vm.Table(id="text_table", figure=standard_dash_table)
         table.pre_build()
 
-        assert table._input_component_id == "__input_text_table"
+        assert table._inner_component_id == "__input_text_table"
 
     def test_pre_build_underlying_table_id(self, dash_data_table_with_id, filter_interaction_action):
         table = vm.Table(id="text_table", figure=dash_data_table_with_id)
         table.pre_build()
 
-        assert table._input_component_id == "underlying_table_id"
+        assert table._inner_component_id == "underlying_table_id"
 
     def test_pre_build_duplicate_input_table_id(self):
         dashboard = vm.Dashboard(
@@ -247,7 +271,7 @@ class TestBuildTable:
         expected_table = dcc.Loading(
             html.Div(
                 children=[
-                    html.H3(["Title", None], className="figure-title"),
+                    html.H3([html.Span("Title"), None], className="figure-title"),
                     dcc.Markdown("""#### Subtitle""", className="figure-header"),
                     html.Div(
                         children=[html.Div()],
@@ -285,7 +309,7 @@ class TestBuildTable:
         expected_table = dcc.Loading(
             html.Div(
                 children=[
-                    html.H3(["Title", *expected_description], className="figure-title"),
+                    html.H3([html.Span("Title"), *expected_description], className="figure-title"),
                     None,
                     html.Div(
                         children=[html.Div()],

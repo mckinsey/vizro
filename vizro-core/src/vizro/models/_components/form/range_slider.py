@@ -102,7 +102,11 @@ class RangeSlider(VizroBaseModel):
 
     @property
     def _action_outputs(self) -> dict[str, _IdProperty]:
-        return {"__default__": f"{self.id}.value"}
+        return {
+            "__default__": f"{self.id}.value",
+            **({"title": f"{self.id}_title.children"} if self.title else {}),
+            **({"description": f"{self.description.id}-text.children"} if self.description else {}),
+        }
 
     @property
     def _action_inputs(self) -> dict[str, _IdProperty]:
@@ -146,7 +150,12 @@ class RangeSlider(VizroBaseModel):
                 dcc.Store(f"{self.id}_callback_data", data={"id": self.id, "min": min, "max": max}),
                 html.Div(
                     children=[
-                        dbc.Label(children=[self.title, *description], html_for=self.id) if self.title else None,
+                        dbc.Label(
+                            children=[html.Span(id=f"{self.id}_title", children=self.title), *description],
+                            html_for=self.id,
+                        )
+                        if self.title
+                        else None,
                         html.Div(
                             [
                                 dcc.Input(

@@ -45,7 +45,7 @@ nav:
           - Custom components: pages/user-guides/custom-components.md
           - Custom actions: pages/user-guides/custom-actions.md
           - Custom figures: pages/user-guides/custom-figures.md
-  - API Reference:
+  - API reference:
       - Vizro: pages/API-reference/vizro.md
       - Models: pages/API-reference/models.md
       - Action functions: pages/API-reference/action-callables.md
@@ -53,15 +53,17 @@ nav:
       - Figure functions: pages/API-reference/figure-callables.md
       - Kedro integration: pages/API-reference/kedro-integration.md
       - Deprecations: pages/API-reference/deprecations.md
-  - Explanation:
+  - Find out more:
       - FAQs: pages/explanation/faq.md
       - User examples: pages/explanation/your-examples.md
       - Contribute to Vizro: pages/explanation/contributing.md
       - Documentation style: pages/explanation/documentation-style-guide.md
-      - Vizro Schema: pages/explanation/schema.md
+      - Vizro schema: pages/explanation/schema.md
       - Authors: pages/explanation/authors.md
-  - Examples:
+  - Examples gallery:
       - Gallery: https://vizro.mckinsey.com/
+  - Vizro-AI:
+      - Vizro-AI: https://vizro.readthedocs.io/projects/vizro-ai/
   - Vizro-MCP:
       - Vizro-MCP: https://github.com/mckinsey/vizro/blob/main/vizro-mcp/README.md
 
@@ -75,8 +77,8 @@ theme:
   palette:
     - scheme: default
   font:
-    text: Inter
-    code: Inter Regular
+    text: Google sans
+    code: Source Code Pro
   icon:
     repo: fontawesome/brands/github
   features:
@@ -118,7 +120,7 @@ markdown_extensions:
             kwds:
               type: vizro
               requirements: |
-                vizro==0.1.38
+                vizro==0.1.39
   - pymdownx.tabbed:
       alternate_style: true
   - pymdownx.mark

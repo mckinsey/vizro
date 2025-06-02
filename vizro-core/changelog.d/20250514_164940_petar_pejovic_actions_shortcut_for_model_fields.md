@@ -16,11 +16,9 @@ Uncomment the section that is right (remove the HTML comment wrapper).
 - A bullet item for the Removed category with a link to the relevant PR at the end of your entry, e.g. Enable feature XXX. ([#1](https://github.com/mckinsey/vizro/pull/1))
 
 -->
-
 ### Added
 
-- Enable `title` inside `Tabs`. ([#1169](https://github.com/mckinsey/vizro/pull/1169))
-
+- Add `description` argument to `Tabs` to enable tooltips in the title. See the [user guide on tabs](https://vizro.readthedocs.io/en/stable/pages/user-guides/container/#add-a-tooltip) for an example. ([#1178](https://github.com/mckinsey/vizro/pull/1178))
 
 <!--
 ### Changed

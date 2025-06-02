@@ -34,14 +34,12 @@ Without Vizro-MCP, if you try to make a dashboard using an LLM, it could choose 
 
 ## 🛠️ Get started
 
-If you are a **developer** and need instructions for running Vizro-MCP from source, skip to the end of this page to [Development or running from source](#development-or-running-from-source).
+If you are a **developer** and need instructions for running Vizro-MCP from source or running the server from a Docker container, skip to the end of this page to [Development or running from source](#development-or-running-from-source).
 
 ### Prerequisites
 
 - [uv](https://docs.astral.sh/uv/getting-started/installation/)
-- [Claude Desktop](https://claude.ai/download) or [Cursor](https://www.cursor.com/downloads)
-
-In principle, the Vizro MCP server works with _any_ MCP enabled LLM applications but we recommend Claude Desktop or Cursor as popular choices.
+- Any LLM application that supports MCP. [Claude Desktop](https://claude.ai/download) and [Cursor](https://www.cursor.com/downloads) are popular choices.
 
 > 🐛 **Note:** There are currently some known issues with [VS Code](https://code.visualstudio.com/) but we are working on this and hope to have Copilot working soon.
 
@@ -168,7 +166,7 @@ Alternatively, you can just ask in the chat, for example:
 
 MCP servers are a relatively new concept, and it is important to be transparent about what the tools are capable of so you can make an informed choice as a user. Overall, the Vizro MCP server only reads data, and never writes, deletes or modifies any data on your machine.
 
-In general the most critical part of the process is the `load_and_analyze_data` tool. This tool, running on your machine, will load local or remote data into a pandas DataFrame and provide a detailed analysis of its structure and content. It only uses `pd.read_xxx`, so in general there is no need to worry about privacy or data security.
+In general the most critical part of the process is the `load_and_analyze_data` tool. This tool, running on your machine, will load local or remote data into a pandas DataFrame and provide a detailed analysis of its structure and content. It only uses `pd.read_xxx`, so in general there is no need to worry about privacy or data security. However, you should only run Vizro-MCP locally, not as a hosted server, because there is currently no authentication to manage access.
 
 The second most critical part is the `validate_model_config` tool. This tool will attempt to instantiate the Vizro model configuration and return the Python code and visualization link for valid configurations. If the configuration is valid, it will also return and attempt to open a link to a live preview of the dashboard, which will take you to [PyCafe](https://py.cafe). If you don't want to open the link, you can tell the LLM to not do so.
 
@@ -191,7 +189,11 @@ The Vizro MCP server provides the following tools. In general you should not nee
 
 ## Development or running from source
 
-If you are a developer, or if you are running Vizro-MCP from source, you need to clone the Vizro repo. To configure the Vizro MCP server details:
+If you are a developer, or if you are running Vizro-MCP from source, you need to clone the Vizro repo. Vizro-MCP supports two configuration options: `uv` and `docker`.
+
+### Configuration with `uv`
+
+To configure the Vizro-MCP server details:
 
 **For Claude**: Add the following to your `claude_desktop_config.json` [found via Developer Settings](https://modelcontextprotocol.io/quickstart/user#2-add-the-filesystem-mcp-server):
 
@@ -214,6 +216,40 @@ If you are a developer, or if you are running Vizro-MCP from source, you need to
 ```
 
 Replace `<PATH TO VIZRO>` with the actual path to your Vizro repository. You may also need to provide the full path to your `uv` executable, so instead of `"uv"` you would use something like `"/Users/<your-username>/.local/bin/uv"`. To discover the path of `uv` on your machine, in your terminal app, type `which uv`.
+
+### Configuration with `docker`
+
+You can run Vizro-MCP inside a Docker container for a controlled runtime environment.
+
+In the root of the `vizro-mcp` directory, build the Docker image with:
+
+```bash
+docker build -t vizro-mcp .
+```
+
+Add the following to your config file:
+
+```json
+{
+  "mcpServers": {
+    "vizro-mcp": {
+      "command": "docker",
+      "args": [
+        "run",
+        "-i",
+        "--rm",
+        "--mount",
+        "type=bind,src=</absolute/path/to/allowed/dir>,dst=</absolute/path/to/allowed/dir>",
+        "--mount",
+        "type=bind,src=</absolute/path/to/data.csv>,dst=</absolute/path/to/data.csv>",
+        "vizro-mcp"
+      ]
+    }
+  }
+}
+```
+
+To use local data with Vizro-MCP, mount your data directory into the container. Replace `</absolute/path/to/allowed/dir>` or `</absolute/path/to/data.csv>` with the absolute path to your data on your machine. For consistency, it is recommended that the `dst` path matches the `src` path.
 
 ## Disclaimers
 

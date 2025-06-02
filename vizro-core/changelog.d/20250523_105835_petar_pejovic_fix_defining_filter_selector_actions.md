@@ -22,22 +22,22 @@ Uncomment the section that is right (remove the HTML comment wrapper).
 - A bullet item for the Added category with a link to the relevant PR at the end of your entry, e.g. Enable feature XXX. ([#1](https://github.com/mckinsey/vizro/pull/1))
 
 -->
+<!--
 ### Changed
 
-- Bump `dash>=3.0.0`, `dash-bootstrap-components>=2.0.0`, `dash-ag-grid>=31.3.1` and `dash-mantine-components>=1.0.0`.
+- A bullet item for the Changed category with a link to the relevant PR at the end of your entry, e.g. Enable feature XXX. ([#1](https://github.com/mckinsey/vizro/pull/1))
 
+-->
 <!--
 ### Deprecated
 
 - A bullet item for the Deprecated category with a link to the relevant PR at the end of your entry, e.g. Enable feature XXX. ([#1](https://github.com/mckinsey/vizro/pull/1))
 
 -->
-<!--
 ### Fixed
 
-- A bullet item for the Fixed category with a link to the relevant PR at the end of your entry, e.g. Enable feature XXX. ([#1](https://github.com/mckinsey/vizro/pull/1))
+- Fix a bug where assigning a custom action to `Filter.selector.actions` raised an error. ([#1197](https://github.com/mckinsey/vizro/pull/1197))
 
--->
 <!--
 ### Security
 

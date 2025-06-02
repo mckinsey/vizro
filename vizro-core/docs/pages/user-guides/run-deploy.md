@@ -99,7 +99,7 @@ The code runs Vizro using a Flask development server and shows the resulting das
 
 The easiest way to run a dashboard is to work on the code live on [PyCafe](https://py.cafe/).
 
-Most of the Vizro documentation examples have a link below the code that reads [Run and edit this code in PyCafe](https://py.cafe/vizro-official/vizro-iris-analysis). Follow the link to open the code in PyCafe within an editor, such as the one below, which displays the dashboard and the code side by side.
+Most of the Vizro documentation examples have a link below the code that reads [**Run and edit this code in Py.Cafe**](https://py.cafe/vizro-official/vizro-iris-analysis). Follow the link to open the code in PyCafe within an editor, such as the one below, which displays the dashboard and the code side by side.
 
 <figure markdown="span">
   ![PyCafe editor](../../assets/user_guides/run_deploy/pycafe_editor.png)

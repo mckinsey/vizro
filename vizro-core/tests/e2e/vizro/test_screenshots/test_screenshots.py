@@ -93,6 +93,13 @@ def test_nested_tabs_filters_page(dash_br):
     page_select(dash_br, page_path=cnst.FILTERS_PAGE_PATH, page_name=cnst.FILTERS_PAGE)
 
 
+@image_assertion
+def test_filters_inside_containers_page(dash_br):
+    page_select(
+        dash_br, page_path=cnst.FILTERS_INSIDE_CONTAINERS_PAGE_PATH, page_name=cnst.FILTERS_INSIDE_CONTAINERS_PAGE
+    )
+
+
 @pytest.mark.parametrize(
     "dash_br_driver", [({"port": cnst.ONE_PAGE_PORT})], ids=["one_page"], indirect=["dash_br_driver"]
 )

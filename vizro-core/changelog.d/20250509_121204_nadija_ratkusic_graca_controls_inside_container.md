@@ -4,12 +4,11 @@ A new scriv changelog fragment.
 Uncomment the section that is right (remove the HTML comment wrapper).
 -->
 
-<!--
 ### Highlights ✨
 
-- A bullet item for the Highlights ✨ category with a link to the relevant PR at the end of your entry, e.g. Enable feature XXX. ([#1](https://github.com/mckinsey/vizro/pull/1))
+- Enable controls inside containers. See the [user guide on container](https://vizro.readthedocs.io/en/stable/pages/user-guides/container/#add-controls-to-container) for more details. ([#1094](https://github.com/mckinsey/vizro/pull/1094))
 
--->
+
 <!--
 ### Removed
 

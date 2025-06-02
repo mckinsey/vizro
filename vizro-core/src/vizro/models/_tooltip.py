@@ -12,6 +12,7 @@ from pydantic.json_schema import SkipJsonSchema
 
 from vizro.models import VizroBaseModel
 from vizro.models._models_utils import _log_call, validate_icon
+from vizro.models.types import _IdProperty
 
 
 def coerce_str_to_tooltip(text: Any) -> Any:
@@ -56,11 +57,19 @@ class Tooltip(VizroBaseModel):
         ]
     ]
 
+    @property
+    def _action_outputs(self) -> dict[str, _IdProperty]:
+        return {
+            "__default__": f"{self.id}-text.children",
+            "text": f"{self.id}-text.children",
+            "icon": f"{self.id}-icon.children",
+        }
+
     @_log_call
     def build(self):
         defaults = {
-            "children": dcc.Markdown(self.text, className="card-text"),
             "id": self.id,
+            "children": dcc.Markdown(id=f"{self.id}-text", children=self.text, className="card-text"),
             "target": f"{self.id}-icon",
             "autohide": False,
         }
