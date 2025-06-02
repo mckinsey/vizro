@@ -16,6 +16,7 @@ from pages.export_action_page import export_action_page
 from pages.extras_page import extras_page
 from pages.filter_and_param_page import filter_and_param_page
 from pages.filter_interactions_page import filter_interactions_page
+from pages.filters_inside_containters_page import filters_inside_containers_page
 from pages.filters_page import filters_page
 from pages.homepage import homepage
 from pages.kpi_indicators_page import kpi_indicators_page
@@ -39,6 +40,7 @@ dashboard = vm.Dashboard(
     pages=[
         homepage,
         filters_page,
+        filters_inside_containers_page,
         parameters_page,
         filter_interactions_page,
         kpi_indicators_page,
@@ -72,6 +74,7 @@ dashboard = vm.Dashboard(
             cnst.GENERAL_ACCORDION: [
                 cnst.HOME_PAGE_ID,
                 cnst.FILTERS_PAGE,
+                cnst.FILTERS_INSIDE_CONTAINERS_PAGE,
                 cnst.PARAMETERS_PAGE,
                 cnst.FILTER_INTERACTIONS_PAGE,
                 cnst.KPI_INDICATORS_PAGE,

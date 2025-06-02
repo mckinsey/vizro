@@ -58,7 +58,7 @@ nav:
       - User examples: pages/explanation/your-examples.md
       - Contribute to Vizro: pages/explanation/contributing.md
       - Documentation style: pages/explanation/documentation-style-guide.md
-      - Vizro Schema: pages/explanation/schema.md
+      - Vizro schema: pages/explanation/schema.md
       - Authors: pages/explanation/authors.md
   - Examples gallery:
       - Gallery: https://vizro.mckinsey.com/

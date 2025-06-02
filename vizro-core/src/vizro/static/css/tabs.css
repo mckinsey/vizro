@@ -14,7 +14,6 @@
   padding-top: 0.5rem;
 }
 
-
 /* The dbc component adds an additional div element to which we cannot assign a className.
 To ensure the dynamic height adjustment and prevent scrolling, the height must be specified for that div as below. */
 .tab-pane,
@@ -22,8 +21,17 @@ To ensure the dynamic height adjustment and prevent scrolling, the height must b
   height: 100%;
 }
 
+.tab-pane > div > .container-fluid .flex-row,
+.tab-pane > div > .container-fluid .flex-row .loading-container {
+  height: 100%;
+}
+
 .inner-tabs-title {
   align-items: center;
   display: flex;
   gap: 8px;
+}
+
+.tab-content .form-label {
+  margin-top: 12px;
 }
