@@ -34,40 +34,21 @@ Without Vizro-MCP, if you try to make a dashboard using an LLM, it could choose 
 
 ## 🛠️ Get started
 
-If you are a **developer** and need instructions for running Vizro-MCP from source or running the server from a Docker container, skip to the end of this page to [Development or running from source](#development-or-running-from-source).
+Vizro-MCP can be run in two ways: using `uvx` or using `Docker`. It works with any MCP-enabled LLM client, such as Cursor or Claude Desktop.
 
 ### Prerequisites
 
-- [uv](https://docs.astral.sh/uv/getting-started/installation/)
-- Any LLM application that supports MCP. [Claude Desktop](https://claude.ai/download) and [Cursor](https://www.cursor.com/downloads) are popular choices.
+- [uv](https://docs.astral.sh/uv/getting-started/installation/) **or** [Docker](https://www.docker.com/get-started/)
+- Any LLM application that supports MCP, such as [Claude Desktop](https://claude.ai/download) or [Cursor](https://www.cursor.com/downloads)
 
-> 🐛 **Note:** There are currently some known issues with [VS Code](https://code.visualstudio.com/) but we are working on this and hope to have Copilot working soon.
-
-> ⚠️ **Warning:** In some hosts (like Claude Desktop) the free plan might be less performant, which may cause issues when the request is too complex. In cases where the request causes the UI to crash, opt for using a paid plan, or reduce your request's complexity.
 
 ### Setup Instructions
 
 The general server config is mostly the same for all hosts:
 
-```json
-{
-  "mcpServers": {
-    "vizro-mcp": {
-      "command": "uvx",
-      "args": [
-        "vizro-mcp"
-      ]
-    }
-  }
-}
-```
+### 1. Prepare the Configuration
 
-In principle, the Vizro MCP server works with _any_ MCP enabled LLM applications but we recommend Claude Desktop or Cursor as popular choices (see more detailed instructions below). Different AI tools may use different setup methods or connection settings. Check each tool's docs for details.
-
-<details>
-<summary><strong>Claude Desktop</strong></summary>
-
-Add the following to your `claude_desktop_config.json` [found via Developer Settings](https://modelcontextprotocol.io/quickstart/user#2-add-the-filesystem-mcp-server).
+**Using `uvx`**
 
 ```json
 {
@@ -82,39 +63,56 @@ Add the following to your `claude_desktop_config.json` [found via Developer Sett
 }
 ```
 
-> ⚠️ **Warning:** In some cases you may need to provide the full path to your `uvx` executable, so instead of `uvx` would use something like `/Users/<your-username>/.local/bin/uvx`. To discover the path of `uvx` on your machine, in your terminal app, type `which uvx`.
-
-If you are using Claude Desktop, restart it, and after a few moments, you should see the vizro-mcp menu when opening the settings/context menu:
-
-<img src="assets/claude_working.png" alt="Claude Desktop MCP Server Icon" width="150"/>
-
-</details>
-
-<details>
-<summary><strong>Cursor</strong></summary>
-
-Add the following to `mcp.json` [found via the Cursor Settings](https://docs.cursor.com/context/model-context-protocol#configuration-locations).
+**Using `Docker`**
 
 ```json
 {
   "mcpServers": {
     "vizro-mcp": {
-      "command": "uvx",
+      "command": "docker",
       "args": [
-        "vizro-mcp"
+        "run",
+        "-i",
+        "--rm",
+        "--mount",
+        "type=bind,src=</absolute/path/to/allowed/dir>,dst=</absolute/path/to/allowed/dir>",
+        "--mount",
+        "type=bind,src=</absolute/path/to/data.csv>,dst=</absolute/path/to/data.csv>",
+        "mcp/vizro"
       ]
     }
   }
 }
 ```
+> To use local data with Vizro-MCP, mount your data directory into the container. Replace `</absolute/path/to/allowed/dir>` or `</absolute/path/to/data.csv>` with the absolute path to your data on your machine. For consistency, it is recommended that the `dst` path matches the `src` path.
 
-> ⚠️ **Warning:** In some cases you may need to provide the full path to your `uvx` executable, so instead of `uvx` would use something like `/Users/<your-username>/.local/bin/uvx`. To discover the path of `uvx` on your machine, in your terminal app, type `which uvx`.
 
-Similarly, when using Cursor, after a short pause, you should see a green light in the MCP menu:
+### 2. Add the Configuration to MCP enabled LLM applications
 
-<img src="assets/cursor_working.png" alt="Cursor MCP Server Icon" width="400"/>
+#### <a id="cursor-using-uvx"></a>Cursor (using `uvx` or Docker)
 
-</details>
+- Add the above configuration to your `mcp.json` ([see Cursor Settings](https://docs.cursor.com/context/model-context-protocol#configuration-locations)).
+- After a short pause, you should see a green light in the MCP menu:
+
+  ![Cursor MCP Server Icon](assets/cursor_working.png)
+
+> ⚠️ **Warning:** In some hosts (like Claude Desktop) the free plan might be less performant, which may cause issues when the request is too complex. In cases where the request causes the UI to crash, opt for using a paid plan, or reduce your request's complexity.
+
+
+#### <a id="claude-desktop-using-uvx"></a>Claude Desktop (using `uvx` or Docker)
+
+- Add the configuration to your `claude_desktop_config.json` ([found via Developer Settings](https://modelcontextprotocol.io/quickstart/user#2-add-the-filesystem-mcp-server)).
+- Restart Claude Desktop. After a few moments, you should see the vizro-mcp menu in the settings/context menu:
+
+  ![Claude Desktop MCP Server Icon](assets/claude_working.png)
+
+#### <a id="other-mcp-clients"></a>Other MCP Clients
+
+- Add the configuration as per your client's documentation.
+- Check your client's documentation for where to place the config and how to verify the server is running.
+
+> 🐛 **Note:** There are currently some known issues with [VS Code](https://code.visualstudio.com/), but we are working on this and hope to have Copilot working soon.
+
 
 ## 💻 Usage
 
@@ -189,11 +187,7 @@ The Vizro MCP server provides the following tools. In general you should not nee
 
 ## Development or running from source
 
-If you are a developer, or if you are running Vizro-MCP from source, you need to clone the Vizro repo. Vizro-MCP supports two configuration options: `uv` and `docker`.
-
-### Configuration with `uv`
-
-To configure the Vizro-MCP server details:
+If you are a developer, or if you are running Vizro-MCP from source, you need to clone the Vizro repo. To configure the Vizro-MCP server details:
 
 **For Claude**: Add the following to your `claude_desktop_config.json` [found via Developer Settings](https://modelcontextprotocol.io/quickstart/user#2-add-the-filesystem-mcp-server):
 
@@ -217,39 +211,7 @@ To configure the Vizro-MCP server details:
 
 Replace `<PATH TO VIZRO>` with the actual path to your Vizro repository. You may also need to provide the full path to your `uv` executable, so instead of `"uv"` you would use something like `"/Users/<your-username>/.local/bin/uv"`. To discover the path of `uv` on your machine, in your terminal app, type `which uv`.
 
-### Configuration with `docker`
 
-You can run Vizro-MCP inside a Docker container for a controlled runtime environment.
-
-In the root of the `vizro-mcp` directory, build the Docker image with:
-
-```bash
-docker build -t vizro-mcp .
-```
-
-Add the following to your config file:
-
-```json
-{
-  "mcpServers": {
-    "vizro-mcp": {
-      "command": "docker",
-      "args": [
-        "run",
-        "-i",
-        "--rm",
-        "--mount",
-        "type=bind,src=</absolute/path/to/allowed/dir>,dst=</absolute/path/to/allowed/dir>",
-        "--mount",
-        "type=bind,src=</absolute/path/to/data.csv>,dst=</absolute/path/to/data.csv>",
-        "vizro-mcp"
-      ]
-    }
-  }
-}
-```
-
-To use local data with Vizro-MCP, mount your data directory into the container. Replace `</absolute/path/to/allowed/dir>` or `</absolute/path/to/data.csv>` with the absolute path to your data on your machine. For consistency, it is recommended that the `dst` path matches the `src` path.
 
 ## Disclaimers
 
@@ -277,11 +239,11 @@ McKinsey & Company:
 
 (ii) shall not be liable for any errors, omissions, or other defects in, delays or interruptions in such Outputs, or for any actions taken in reliance thereon, and
 
-(iii) shall not be liable for any alleged violation or infringement of any right of any third party resulting from the users’ use of the GenAI Tools and the Outputs.
+(iii) shall not be liable for any alleged violation or infringement of any right of any third party resulting from the users' use of the GenAI Tools and the Outputs.
 
 The Outputs shall be verified and validated by the users and shall not be used without human oversight and as a sole basis for making decisions impacting individuals.
 
-Users remain solely responsible for the use of the Output, in particular, the users will need to determine the level of human oversight needed to be given the context and use case, as well as for informing the users’ personnel and other affected users about the nature of the GenAI Output. Users are also fully responsible for their decisions, actions, use of Vizro and Vizro-MCP and compliance with applicable laws, rules, and regulations, including but not limited to confirming that the Outputs do not infringe any third-party rights.
+Users remain solely responsible for the use of the Output, in particular, the users will need to determine the level of human oversight needed to be given the context and use case, as well as for informing the users' personnel and other affected users about the nature of the GenAI Output. Users are also fully responsible for their decisions, actions, use of Vizro and Vizro-MCP and compliance with applicable laws, rules, and regulations, including but not limited to confirming that the Outputs do not infringe any third-party rights.
 
 </details>
 
