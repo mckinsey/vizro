@@ -36,6 +36,13 @@ Without Vizro-MCP, if you try to make a dashboard using an LLM, it could choose 
 
 Vizro-MCP can be run in two ways: using `uvx` or using `Docker`. It works with any MCP-enabled LLM client, such as Cursor or Claude Desktop.
 
+<details>
+<summary><strong>For Developers</strong></summary>
+
+If you are a **developer** and need instructions for running Vizro-MCP from source, skip to the end of this page to [Development or running from source](#development-or-running-from-source).
+
+</details>
+
 ### Prerequisites
 
 - [uv](https://docs.astral.sh/uv/getting-started/installation/) **or** [Docker](https://www.docker.com/get-started/)
@@ -88,17 +95,10 @@ The general server config is mostly the same for all hosts:
 
 ### 2. Add the Configuration to MCP enabled LLM applications
 
-#### <a id="cursor-using-uvx"></a>Cursor (using `uvx` or Docker)
+In principle, the Vizro MCP server works with _any_ MCP enabled LLM applications but we recommend Claude Desktop or Cursor as popular choices (see more detailed instructions below). Different AI tools may use different setup methods or connection settings. Check each tool's docs for details.
 
-- Add the above configuration to your `mcp.json` ([see Cursor Settings](https://docs.cursor.com/context/model-context-protocol#configuration-locations)).
-
-- After a short pause, you should see a green light in the MCP menu:
-
-    ![Cursor MCP Server Icon](assets/cursor_working.png)
-
-> ⚠️ **Warning:** In some hosts (like Claude Desktop) the free plan might be less performant, which may cause issues when the request is too complex. In cases where the request causes the UI to crash, opt for using a paid plan, or reduce your request's complexity.
-
-#### <a id="claude-desktop-using-uvx"></a>Claude Desktop (using `uvx` or Docker)
+<details>
+<summary><strong>Claude Desktop</strong></summary>
 
 - Add the configuration to your `claude_desktop_config.json` ([found via Developer Settings](https://modelcontextprotocol.io/quickstart/user#2-add-the-filesystem-mcp-server)).
 
@@ -106,12 +106,31 @@ The general server config is mostly the same for all hosts:
 
     ![Claude Desktop MCP Server Icon](assets/claude_working.png)
 
+> ⚠️ **Warning:** In some hosts (like Claude Desktop) the free plan might be less performant, which may cause issues when the request is too complex. In cases where the request causes the UI to crash, opt for using a paid plan, or reduce your request's complexity.
+
+</details>
+
+<details>
+<summary><strong>Cursor</strong></summary>
+
+- Add the above configuration to your `mcp.json` ([see Cursor Settings](https://docs.cursor.com/context/model-context-protocol#configuration-locations)).
+
+- After a short pause, you should see a green light in the MCP menu:
+
+    ![Cursor MCP Server Icon](assets/cursor_working.png)
+
+</details>
+
+<details>
+<summary><strong>Other MCP Clients</strong></summary>
 #### <a id="other-mcp-clients"></a>Other MCP Clients
 
 - Add the configuration as per your client's documentation.
 - Check your client's documentation for where to place the config and how to verify the server is running.
 
 > 🐛 **Note:** There are currently some known issues with [VS Code](https://code.visualstudio.com/), but we are working on this and hope to have Copilot working soon.
+
+</details>
 
 ## 💻 Usage
 
@@ -236,11 +255,11 @@ McKinsey & Company:
 
 (ii) shall not be liable for any errors, omissions, or other defects in, delays or interruptions in such Outputs, or for any actions taken in reliance thereon, and
 
-(iii) shall not be liable for any alleged violation or infringement of any right of any third party resulting from the users' use of the GenAI Tools and the Outputs.
+(iii) shall not be liable for any alleged violation or infringement of any right of any third party resulting from the users’ use of the GenAI Tools and the Outputs.
 
 The Outputs shall be verified and validated by the users and shall not be used without human oversight and as a sole basis for making decisions impacting individuals.
 
-Users remain solely responsible for the use of the Output, in particular, the users will need to determine the level of human oversight needed to be given the context and use case, as well as for informing the users' personnel and other affected users about the nature of the GenAI Output. Users are also fully responsible for their decisions, actions, use of Vizro and Vizro-MCP and compliance with applicable laws, rules, and regulations, including but not limited to confirming that the Outputs do not infringe any third-party rights.
+Users remain solely responsible for the use of the Output, in particular, the users will need to determine the level of human oversight needed to be given the context and use case, as well as for informing the users’ personnel and other affected users about the nature of the GenAI Output. Users are also fully responsible for their decisions, actions, use of Vizro and Vizro-MCP and compliance with applicable laws, rules, and regulations, including but not limited to confirming that the Outputs do not infringe any third-party rights.
 
 </details>
 
