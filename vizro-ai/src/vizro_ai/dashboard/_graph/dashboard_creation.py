@@ -2,7 +2,7 @@
 
 import logging
 import operator
-from typing import Annotated, Any, Optional
+from typing import Annotated, Optional
 
 import pandas as pd
 import vizro.models as vm
@@ -65,7 +65,7 @@ class GraphState(BaseModel):
     all_df_metadata: AllDfMetadata
     dashboard_plan: Optional[DashboardPlan] = None
     pages: Annotated[list, operator.add]
-    dashboard: Optional[Any] = None
+    dashboard: Optional[type(vm.Dashboard)] = None
     custom_charts_code: Annotated[list, operator.add]
     custom_charts_imports: Annotated[list, operator.add]
 
