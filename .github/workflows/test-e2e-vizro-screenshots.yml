@@ -11,6 +11,7 @@ on:
   pull_request:
     branches:
       - main
+      - bugfix/collapsible_containers_in_flex_layout
 
 env:
   PYTHONUNBUFFERED: 1
