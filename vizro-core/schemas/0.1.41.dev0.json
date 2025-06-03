@@ -1,0 +1,2216 @@
+{
+  "$defs": {
+    "Accordion": {
+      "additionalProperties": false,
+      "description": "Accordion to be used as nav_selector in [`Navigation`][vizro.models.Navigation].\n\nArgs:\n    type (Literal[\"accordion\"]): Defaults to `\"accordion\"`.\n    pages (dict[str, list[ModelID]]): Mapping from name of a pages group to a list of page IDs. Defaults to `{}`.",
+      "properties": {
+        "id": {
+          "default": "",
+          "description": "ID to identify model. Must be unique throughout the whole dashboard.When no ID is chosen, ID will be automatically generated.",
+          "title": "Id",
+          "type": "string"
+        },
+        "type": {
+          "const": "accordion",
+          "default": "accordion",
+          "title": "Type",
+          "type": "string"
+        },
+        "pages": {
+          "additionalProperties": {
+            "items": {
+              "type": "string"
+            },
+            "type": "array"
+          },
+          "default": {},
+          "description": "Mapping from name of a pages group to a list of page IDs.",
+          "title": "Pages",
+          "type": "object"
+        }
+      },
+      "title": "Accordion",
+      "type": "object"
+    },
+    "Action": {
+      "additionalProperties": false,
+      "description": "Action to be inserted into `actions` of relevant component.\n\nArgs:\n    function (CapturedCallable): Action function.\n    inputs (list[str]): List of inputs provided to the action function. Each input can be specified as `<model_id>`\n        or `<model_id>.<argument_name>` or `<component_id>.<property>`. Defaults to `[]`.\n    outputs (Union[list[str], dict[str, str]]): List or dictionary of outputs modified by the action function. Each\n        output can be specified as `<model_id>` or `<model_id>.<argument_name>` or `<component_id>.<property>`.\n        Defaults to `[]`.",
+      "properties": {
+        "id": {
+          "default": "",
+          "description": "ID to identify model. Must be unique throughout the whole dashboard.When no ID is chosen, ID will be automatically generated.",
+          "title": "Id",
+          "type": "string"
+        },
+        "outputs": {
+          "anyOf": [
+            {
+              "items": {
+                "type": "string"
+              },
+              "type": "array"
+            },
+            {
+              "additionalProperties": {
+                "type": "string"
+              },
+              "type": "object"
+            }
+          ],
+          "default": [],
+          "description": "List or dictionary of outputs modified by the action function. Each output can be specified as\n            `<model_id>` or `<model_id>.<argument_name>` or `<component_id>.<property>`. Defaults to `[]`.",
+          "title": "Outputs"
+        },
+        "type": {
+          "const": "action",
+          "default": "action",
+          "title": "Type",
+          "type": "string"
+        },
+        "inputs": {
+          "default": [],
+          "description": "List of inputs provided to the action function. Each input can be specified as `<model_id>` or\n        `<model_id>.<argument_name>` or `<component_id>.<property>`. Defaults to `[]`.",
+          "items": {
+            "type": "string"
+          },
+          "title": "Inputs",
+          "type": "array"
+        }
+      },
+      "title": "Action",
+      "type": "object"
+    },
+    "ActionsChain": {
+      "additionalProperties": false,
+      "properties": {
+        "id": {
+          "default": "",
+          "description": "ID to identify model. Must be unique throughout the whole dashboard.When no ID is chosen, ID will be automatically generated.",
+          "title": "Id",
+          "type": "string"
+        },
+        "trigger": {
+          "$ref": "#/$defs/Trigger"
+        },
+        "actions": {
+          "default": [],
+          "items": {
+            "description": "Action.",
+            "oneOf": [
+              {
+                "$ref": "#/$defs/Action"
+              },
+              {
+                "$ref": "#/$defs/export_data"
+              },
+              {
+                "$ref": "#/$defs/filter_interaction"
+              }
+            ]
+          },
+          "title": "Actions",
+          "type": "array"
+        }
+      },
+      "required": ["trigger"],
+      "title": "ActionsChain",
+      "type": "object"
+    },
+    "AgGrid": {
+      "additionalProperties": false,
+      "description": "Wrapper for `dash-ag-grid.AgGrid` to visualize grids in dashboard.\n\nArgs:\n    type (Literal[\"ag_grid\"]): Defaults to `\"ag_grid\"`.\n    figure (CapturedCallable): Function that returns a Dash AgGrid. See [`vizro.tables`][vizro.tables].\n    title (str): Title of the `AgGrid`. Defaults to `\"\"`.\n    header (str): Markdown text positioned below the `AgGrid.title`. Follows the CommonMark specification.\n        Ideal for adding supplementary information such as subtitles, descriptions, or additional context.\n        Defaults to `\"\"`.\n    footer (str): Markdown text positioned below the `AgGrid`. Follows the CommonMark specification.\n        Ideal for providing further details such as sources, disclaimers, or additional notes. Defaults to `\"\"`.\n    description (Optional[Tooltip]): Optional markdown string that adds an icon next to the title.\n        Hovering over the icon shows a tooltip with the provided description. Defaults to `None`.\n    actions (list[ActionType]): See [`ActionType`][vizro.models.types.ActionType]. Defaults to `[]`.",
+      "properties": {
+        "id": {
+          "default": "",
+          "description": "ID to identify model. Must be unique throughout the whole dashboard.When no ID is chosen, ID will be automatically generated.",
+          "title": "Id",
+          "type": "string"
+        },
+        "type": {
+          "const": "ag_grid",
+          "default": "ag_grid",
+          "title": "Type",
+          "type": "string"
+        },
+        "title": {
+          "default": "",
+          "description": "Title of the `AgGrid`.",
+          "title": "Title",
+          "type": "string"
+        },
+        "header": {
+          "default": "",
+          "description": "Markdown text positioned below the `AgGrid.title`. Follows the CommonMark specification. Ideal for adding supplementary information such as subtitles, descriptions, or additional context.",
+          "title": "Header",
+          "type": "string"
+        },
+        "footer": {
+          "default": "",
+          "description": "Markdown text positioned below the `AgGrid`. Follows the CommonMark specification. Ideal for providing further details such as sources, disclaimers, or additional notes.",
+          "title": "Footer",
+          "type": "string"
+        },
+        "description": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/Tooltip"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "Optional markdown string that adds an icon next to the title.\n            Hovering over the icon shows a tooltip with the provided description. Defaults to `None`."
+        },
+        "actions": {
+          "default": [],
+          "items": {
+            "description": "Action.",
+            "oneOf": [
+              {
+                "$ref": "#/$defs/Action"
+              },
+              {
+                "$ref": "#/$defs/export_data"
+              },
+              {
+                "$ref": "#/$defs/filter_interaction"
+              }
+            ]
+          },
+          "title": "Actions",
+          "type": "array"
+        }
+      },
+      "title": "AgGrid",
+      "type": "object"
+    },
+    "Button": {
+      "additionalProperties": false,
+      "description": "Component provided to `Page` to trigger any defined `action` in `Page`.\n\nArgs:\n    type (Literal[\"button\"]): Defaults to `\"button\"`.\n    text (str): Text to be displayed on button. Defaults to `\"Click me!\"`.\n    href (str): URL (relative or absolute) to navigate to. Defaults to `\"\"`.\n    actions (list[ActionType]): See [`ActionType`][vizro.models.types.ActionType]. Defaults to `[]`.\n    variant (Literal[\"plain\", \"filled\", \"outlined\"]): Predefined styles to choose from. Options are `plain`,\n        `filled` or `outlined`. Defaults to `filled`.\n    extra (Optional[dict[str, Any]]): Extra keyword arguments that are passed to `dbc.Button` and overwrite any\n        defaults chosen by the Vizro team. This may have unexpected behavior.\n        Visit the [dbc documentation](https://dash-bootstrap-components.opensource.faculty.ai/docs/components/button/)\n        to see all available arguments. [Not part of the official Vizro schema](../explanation/schema.md) and the\n        underlying component may change in the future. Defaults to `{}`.",
+      "properties": {
+        "id": {
+          "default": "",
+          "description": "ID to identify model. Must be unique throughout the whole dashboard.When no ID is chosen, ID will be automatically generated.",
+          "title": "Id",
+          "type": "string"
+        },
+        "type": {
+          "const": "button",
+          "default": "button",
+          "title": "Type",
+          "type": "string"
+        },
+        "text": {
+          "default": "Click me!",
+          "description": "Text to be displayed on button.",
+          "title": "Text",
+          "type": "string"
+        },
+        "href": {
+          "default": "",
+          "description": "URL (relative or absolute) to navigate to.",
+          "title": "Href",
+          "type": "string"
+        },
+        "actions": {
+          "default": [],
+          "items": {
+            "description": "Action.",
+            "oneOf": [
+              {
+                "$ref": "#/$defs/Action"
+              },
+              {
+                "$ref": "#/$defs/export_data"
+              },
+              {
+                "$ref": "#/$defs/filter_interaction"
+              }
+            ]
+          },
+          "title": "Actions",
+          "type": "array"
+        },
+        "variant": {
+          "default": "filled",
+          "description": "Predefined styles to choose from. Options are `plain`, `filled` or `outlined`.Defaults to `filled`.",
+          "enum": ["plain", "filled", "outlined"],
+          "title": "Variant",
+          "type": "string"
+        }
+      },
+      "title": "Button",
+      "type": "object"
+    },
+    "Card": {
+      "additionalProperties": false,
+      "description": "Creates a card based on Markdown syntax.\n\nArgs:\n    type (Literal[\"card\"]): Defaults to `\"card\"`.\n    text (str): Markdown string to create card title/text that should adhere to the CommonMark Spec.\n    href (str): URL (relative or absolute) to navigate to. If not provided the Card serves as a text card\n        only. Defaults to `\"\"`.\n    extra (Optional[dict[str, Any]]): Extra keyword arguments that are passed to `dbc.Card` and overwrite any\n        defaults chosen by the Vizro team. This may have unexpected behavior.\n        Visit the [dbc documentation](https://dash-bootstrap-components.opensource.faculty.ai/docs/components/card/)\n        to see all available arguments. [Not part of the official Vizro schema](../explanation/schema.md) and the\n        underlying component may change in the future. Defaults to `{}`.",
+      "properties": {
+        "id": {
+          "default": "",
+          "description": "ID to identify model. Must be unique throughout the whole dashboard.When no ID is chosen, ID will be automatically generated.",
+          "title": "Id",
+          "type": "string"
+        },
+        "type": {
+          "const": "card",
+          "default": "card",
+          "title": "Type",
+          "type": "string"
+        },
+        "text": {
+          "description": "Markdown string to create card title/text that should adhere to the CommonMark Spec.",
+          "title": "Text",
+          "type": "string"
+        },
+        "href": {
+          "default": "",
+          "description": "URL (relative or absolute) to navigate to. If not provided the Card serves as a text card only.",
+          "title": "Href",
+          "type": "string"
+        }
+      },
+      "required": ["text"],
+      "title": "Card",
+      "type": "object"
+    },
+    "Checklist": {
+      "additionalProperties": false,
+      "description": "Categorical multi-option selector `Checklist`.\n\nCan be provided to [`Filter`][vizro.models.Filter] or\n[`Parameter`][vizro.models.Parameter].\n\nArgs:\n    type (Literal[\"checklist\"]): Defaults to `\"checklist\"`.\n    options (OptionsType): See [`OptionsType`][vizro.models.types.OptionsType]. Defaults to `[]`.\n    value (Optional[MultiValueType]): See [`MultiValueType`][vizro.models.types.MultiValueType]. Defaults to `None`.\n    title (str): Title to be displayed. Defaults to `\"\"`.\n    description (Optional[Tooltip]): Optional markdown string that adds an icon next to the title.\n        Hovering over the icon shows a tooltip with the provided description. Defaults to `None`.\n    actions (list[ActionType]): See [`ActionType`][vizro.models.types.ActionType]. Defaults to `[]`.\n    extra (Optional[dict[str, Any]]): Extra keyword arguments that are passed to `dbc.Checklist` and overwrite any\n        defaults chosen by the Vizro team. This may have unexpected behavior.\n        Visit the [dbc documentation](https://dash-bootstrap-components.opensource.faculty.ai/docs/components/input/)\n        to see all available arguments. [Not part of the official Vizro schema](../explanation/schema.md) and the\n        underlying component may change in the future. Defaults to `{}`.",
+      "properties": {
+        "id": {
+          "default": "",
+          "description": "ID to identify model. Must be unique throughout the whole dashboard.When no ID is chosen, ID will be automatically generated.",
+          "title": "Id",
+          "type": "string"
+        },
+        "type": {
+          "const": "checklist",
+          "default": "checklist",
+          "title": "Type",
+          "type": "string"
+        },
+        "options": {
+          "anyOf": [
+            {
+              "items": {
+                "type": "boolean"
+              },
+              "type": "array"
+            },
+            {
+              "items": {
+                "type": "number"
+              },
+              "type": "array"
+            },
+            {
+              "items": {
+                "type": "string"
+              },
+              "type": "array"
+            },
+            {
+              "items": {
+                "format": "date",
+                "type": "string"
+              },
+              "type": "array"
+            },
+            {
+              "items": {
+                "$ref": "#/$defs/OptionsDictType"
+              },
+              "type": "array"
+            }
+          ],
+          "default": [],
+          "title": "Options"
+        },
+        "value": {
+          "anyOf": [
+            {
+              "items": {
+                "type": "boolean"
+              },
+              "type": "array"
+            },
+            {
+              "items": {
+                "type": "number"
+              },
+              "type": "array"
+            },
+            {
+              "items": {
+                "type": "string"
+              },
+              "type": "array"
+            },
+            {
+              "items": {
+                "format": "date",
+                "type": "string"
+              },
+              "type": "array"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Value"
+        },
+        "title": {
+          "default": "",
+          "description": "Title to be displayed",
+          "title": "Title",
+          "type": "string"
+        },
+        "description": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/Tooltip"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "Optional markdown string that adds an icon next to the title.\n            Hovering over the icon shows a tooltip with the provided description. Defaults to `None`."
+        },
+        "actions": {
+          "default": [],
+          "items": {
+            "description": "Action.",
+            "oneOf": [
+              {
+                "$ref": "#/$defs/Action"
+              },
+              {
+                "$ref": "#/$defs/export_data"
+              },
+              {
+                "$ref": "#/$defs/filter_interaction"
+              }
+            ]
+          },
+          "title": "Actions",
+          "type": "array"
+        }
+      },
+      "title": "Checklist",
+      "type": "object"
+    },
+    "Container": {
+      "additionalProperties": false,
+      "description": "Container to group together a set of components on a page.\n\nArgs:\n    type (Literal[\"container\"]): Defaults to `\"container\"`.\n    components (list[ComponentType]): See [ComponentType][vizro.models.types.ComponentType]. At least one component\n        has to be provided.\n    title (str): Title of the `Container`. Defaults to `\"\"`.\n    layout (Optional[LayoutType]): Layout to place components in. Defaults to `None`.\n    collapsed (Optional[bool]): Boolean flag that determines whether the container is collapsed on initial load.\n        Set to `True` for a collapsed state, `False` for an expanded state. Defaults to `None`, meaning the\n        container is not collapsible.\n    variant (Optional[Literal[\"plain\", \"filled\", \"outlined\"]]): Predefined styles to choose from. Options are\n        `plain`, `filled` or `outlined`. Defaults to `plain` (or `outlined` for collapsible container).\n    description (Optional[Tooltip]): Optional markdown string that adds an icon next to the title.\n        Hovering over the icon shows a tooltip with the provided description. Defaults to `None`.\n    controls (list[ControlType]): See [ControlType][vizro.models.types.ControlType]. Defaults to `[]`.\n    extra (Optional[dict[str, Any]]): Extra keyword arguments that are passed to `dbc.Container` and overwrite any\n        defaults chosen by the Vizro team. This may have unexpected behavior.\n        Visit the [dbc documentation](https://dash-bootstrap-components.opensource.faculty.ai/docs/components/layout/)\n        to see all available arguments. [Not part of the official Vizro schema](../explanation/schema.md) and the\n        underlying component may change in the future. Defaults to `{}`.",
+      "properties": {
+        "id": {
+          "default": "",
+          "description": "ID to identify model. Must be unique throughout the whole dashboard.When no ID is chosen, ID will be automatically generated.",
+          "title": "Id",
+          "type": "string"
+        },
+        "type": {
+          "const": "container",
+          "default": "container",
+          "title": "Type",
+          "type": "string"
+        },
+        "components": {
+          "items": {
+            "description": "Component that makes up part of the layout on the page.",
+            "discriminator": {
+              "mapping": {
+                "ag_grid": "#/$defs/AgGrid",
+                "button": "#/$defs/Button",
+                "card": "#/$defs/Card",
+                "container": "#/$defs/Container",
+                "figure": "#/$defs/Figure",
+                "graph": "#/$defs/Graph",
+                "table": "#/$defs/Table",
+                "tabs": "#/$defs/Tabs",
+                "text": "#/$defs/Text"
+              },
+              "propertyName": "type"
+            },
+            "oneOf": [
+              {
+                "$ref": "#/$defs/AgGrid"
+              },
+              {
+                "$ref": "#/$defs/Button"
+              },
+              {
+                "$ref": "#/$defs/Card"
+              },
+              {
+                "$ref": "#/$defs/Container"
+              },
+              {
+                "$ref": "#/$defs/Figure"
+              },
+              {
+                "$ref": "#/$defs/Graph"
+              },
+              {
+                "$ref": "#/$defs/Text"
+              },
+              {
+                "$ref": "#/$defs/Table"
+              },
+              {
+                "$ref": "#/$defs/Tabs"
+              }
+            ]
+          },
+          "minItems": 1,
+          "title": "Components",
+          "type": "array"
+        },
+        "title": {
+          "default": "",
+          "description": "Title of the `Container`",
+          "title": "Title",
+          "type": "string"
+        },
+        "layout": {
+          "anyOf": [
+            {
+              "description": "Type of layout to place components on the page.",
+              "oneOf": [
+                {
+                  "$ref": "#/$defs/Grid"
+                },
+                {
+                  "$ref": "#/$defs/Flex"
+                },
+                {
+                  "$ref": "#/$defs/Layout"
+                }
+              ]
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Layout"
+        },
+        "collapsed": {
+          "anyOf": [
+            {
+              "type": "boolean"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "Boolean flag that determines whether the container is collapsed on initial load. Set to `True` for a collapsed state, `False` for an expanded state. Defaults to `None`, meaning the container is not collapsible.",
+          "title": "Collapsed"
+        },
+        "variant": {
+          "anyOf": [
+            {
+              "enum": ["plain", "filled", "outlined"],
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "Predefined styles to choose from. Options are `plain`, `filled` or `outlined`.Defaults to `plain` (or `outlined` for collapsible container).",
+          "title": "Variant"
+        },
+        "description": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/Tooltip"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "Optional markdown string that adds an icon next to the title.\n            Hovering over the icon shows a tooltip with the provided description. Defaults to `None`."
+        },
+        "controls": {
+          "default": [],
+          "items": {
+            "description": "Control that affects components on the page.",
+            "discriminator": {
+              "mapping": {
+                "filter": "#/$defs/Filter",
+                "parameter": "#/$defs/Parameter"
+              },
+              "propertyName": "type"
+            },
+            "oneOf": [
+              {
+                "$ref": "#/$defs/Filter"
+              },
+              {
+                "$ref": "#/$defs/Parameter"
+              }
+            ]
+          },
+          "title": "Controls",
+          "type": "array"
+        }
+      },
+      "required": ["components"],
+      "title": "Container",
+      "type": "object"
+    },
+    "DatePicker": {
+      "additionalProperties": false,
+      "description": "Temporal single/range option selector `DatePicker`.\n\nCan be provided to [`Filter`][vizro.models.Filter] or [`Parameter`][vizro.models.Parameter].\n\nArgs:\n    type (Literal[\"date_picker\"]): Defaults to `\"date_picker\"`.\n    min (Optional[date]): Start date for date picker. Defaults to `None`.\n    max (Optional[date]): End date for date picker. Defaults to `None`.\n    value (Optional[Union[list[date], date]]): Default date/dates for date picker. Defaults to `None`.\n    title (str): Title to be displayed. Defaults to `\"\"`.\n    range (bool): Boolean flag for displaying range picker. Defaults to `True`.\n    description (Optional[Tooltip]): Optional markdown string that adds an icon next to the title.\n        Hovering over the icon shows a tooltip with the provided description. Defaults to `None`.\n    actions (list[ActionType]): See [`ActionType`][vizro.models.types.ActionType]. Defaults to `[]`.\n    extra (Optional[dict[str, Any]]): Extra keyword arguments that are passed to `dmc.DatePickerInput` and overwrite\n        any defaults chosen by the Vizro team. This may have unexpected behavior.\n        Visit the [dmc documentation](https://www.dash-mantine-components.com/components/datepicker)\n        to see all available arguments. [Not part of the official Vizro schema](../explanation/schema.md) and the\n        underlying component may change in the future. Defaults to `{}`.",
+      "properties": {
+        "id": {
+          "default": "",
+          "description": "ID to identify model. Must be unique throughout the whole dashboard.When no ID is chosen, ID will be automatically generated.",
+          "title": "Id",
+          "type": "string"
+        },
+        "type": {
+          "const": "date_picker",
+          "default": "date_picker",
+          "title": "Type",
+          "type": "string"
+        },
+        "min": {
+          "anyOf": [
+            {
+              "format": "date",
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "Start date for date picker.",
+          "title": "Min"
+        },
+        "max": {
+          "anyOf": [
+            {
+              "format": "date",
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "End date for date picker.",
+          "title": "Max"
+        },
+        "value": {
+          "anyOf": [
+            {
+              "items": {
+                "format": "date",
+                "type": "string"
+              },
+              "type": "array"
+            },
+            {
+              "format": "date",
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "Default date/dates for date picker.",
+          "title": "Value"
+        },
+        "title": {
+          "default": "",
+          "description": "Title to be displayed.",
+          "title": "Title",
+          "type": "string"
+        },
+        "range": {
+          "default": true,
+          "description": "Boolean flag for displaying range picker.",
+          "title": "Range",
+          "type": "boolean"
+        },
+        "description": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/Tooltip"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "Optional markdown string that adds an icon next to the title.\n            Hovering over the icon shows a tooltip with the provided description. Defaults to `None`."
+        },
+        "actions": {
+          "default": [],
+          "items": {
+            "description": "Action.",
+            "oneOf": [
+              {
+                "$ref": "#/$defs/Action"
+              },
+              {
+                "$ref": "#/$defs/export_data"
+              },
+              {
+                "$ref": "#/$defs/filter_interaction"
+              }
+            ]
+          },
+          "title": "Actions",
+          "type": "array"
+        }
+      },
+      "title": "DatePicker",
+      "type": "object"
+    },
+    "Dropdown": {
+      "additionalProperties": false,
+      "description": "Categorical single/multi-option selector `Dropdown`.\n\nCan be provided to [`Filter`][vizro.models.Filter] or\n[`Parameter`][vizro.models.Parameter].\n\nArgs:\n    type (Literal[\"dropdown\"]): Defaults to `\"dropdown\"`.\n    options (OptionsType): See [`OptionsType`][vizro.models.types.OptionsType]. Defaults to `[]`.\n    value (Optional[Union[SingleValueType, MultiValueType]]): See\n        [`SingleValueType`][vizro.models.types.SingleValueType] and\n        [`MultiValueType`][vizro.models.types.MultiValueType]. Defaults to `None`.\n    multi (bool): Whether to allow selection of multiple values. Defaults to `True`.\n    title (str): Title to be displayed. Defaults to `\"\"`.\n    description (Optional[Tooltip]): Optional markdown string that adds an icon next to the title.\n        Hovering over the icon shows a tooltip with the provided description. Defaults to `None`.\n    actions (list[ActionType]): See [`ActionType`][vizro.models.types.ActionType]. Defaults to `[]`.\n    extra (Optional[dict[str, Any]]): Extra keyword arguments that are passed to `dcc.Dropdown` and overwrite any\n        defaults chosen by the Vizro team. This may have unexpected behavior.\n        Visit the [dcc documentation](https://dash.plotly.com/dash-core-components/dropdown)\n        to see all available arguments. [Not part of the official Vizro schema](../explanation/schema.md) and the\n        underlying component may change in the future. Defaults to `{}`.",
+      "properties": {
+        "id": {
+          "default": "",
+          "description": "ID to identify model. Must be unique throughout the whole dashboard.When no ID is chosen, ID will be automatically generated.",
+          "title": "Id",
+          "type": "string"
+        },
+        "type": {
+          "const": "dropdown",
+          "default": "dropdown",
+          "title": "Type",
+          "type": "string"
+        },
+        "options": {
+          "anyOf": [
+            {
+              "items": {
+                "type": "boolean"
+              },
+              "type": "array"
+            },
+            {
+              "items": {
+                "type": "number"
+              },
+              "type": "array"
+            },
+            {
+              "items": {
+                "type": "string"
+              },
+              "type": "array"
+            },
+            {
+              "items": {
+                "format": "date",
+                "type": "string"
+              },
+              "type": "array"
+            },
+            {
+              "items": {
+                "$ref": "#/$defs/OptionsDictType"
+              },
+              "type": "array"
+            }
+          ],
+          "default": [],
+          "title": "Options"
+        },
+        "value": {
+          "anyOf": [
+            {
+              "type": "boolean"
+            },
+            {
+              "type": "number"
+            },
+            {
+              "type": "string"
+            },
+            {
+              "format": "date",
+              "type": "string"
+            },
+            {
+              "items": {
+                "type": "boolean"
+              },
+              "type": "array"
+            },
+            {
+              "items": {
+                "type": "number"
+              },
+              "type": "array"
+            },
+            {
+              "items": {
+                "type": "string"
+              },
+              "type": "array"
+            },
+            {
+              "items": {
+                "format": "date",
+                "type": "string"
+              },
+              "type": "array"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Value"
+        },
+        "multi": {
+          "default": true,
+          "description": "Whether to allow selection of multiple values",
+          "title": "Multi",
+          "type": "boolean"
+        },
+        "title": {
+          "default": "",
+          "description": "Title to be displayed",
+          "title": "Title",
+          "type": "string"
+        },
+        "description": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/Tooltip"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "Optional markdown string that adds an icon next to the title.\n            Hovering over the icon shows a tooltip with the provided description. Defaults to `None`."
+        },
+        "actions": {
+          "default": [],
+          "items": {
+            "description": "Action.",
+            "oneOf": [
+              {
+                "$ref": "#/$defs/Action"
+              },
+              {
+                "$ref": "#/$defs/export_data"
+              },
+              {
+                "$ref": "#/$defs/filter_interaction"
+              }
+            ]
+          },
+          "title": "Actions",
+          "type": "array"
+        }
+      },
+      "title": "Dropdown",
+      "type": "object"
+    },
+    "Figure": {
+      "additionalProperties": false,
+      "description": "Creates a figure-like object that can be displayed in the dashboard and is reactive to controls.\n\nArgs:\n    type (Literal[\"figure\"]): Defaults to `\"figure\"`.\n    figure (CapturedCallable): Function that returns a figure-like object. See [`vizro.figures`][vizro.figures].",
+      "properties": {
+        "id": {
+          "default": "",
+          "description": "ID to identify model. Must be unique throughout the whole dashboard.When no ID is chosen, ID will be automatically generated.",
+          "title": "Id",
+          "type": "string"
+        },
+        "type": {
+          "const": "figure",
+          "default": "figure",
+          "title": "Type",
+          "type": "string"
+        }
+      },
+      "title": "Figure",
+      "type": "object"
+    },
+    "Filter": {
+      "additionalProperties": false,
+      "description": "Filter the data supplied to `targets` on the [`Page`][vizro.models.Page].\n\nExamples:\n    >>> print(repr(Filter(column=\"species\")))\n\nArgs:\n    type (Literal[\"filter\"]): Defaults to `\"filter\"`.\n    column (str): Column of `DataFrame` to filter.\n    targets (list[ModelID]): Target component to be affected by filter. If none are given then target all components\n        on the page that use `column`. Defaults to `[]`.\n    selector (Optional[SelectorType]): See [SelectorType][vizro.models.types.SelectorType]. Defaults to `None`.",
+      "properties": {
+        "id": {
+          "default": "",
+          "description": "ID to identify model. Must be unique throughout the whole dashboard.When no ID is chosen, ID will be automatically generated.",
+          "title": "Id",
+          "type": "string"
+        },
+        "type": {
+          "const": "filter",
+          "default": "filter",
+          "title": "Type",
+          "type": "string"
+        },
+        "column": {
+          "description": "Column of DataFrame to filter.",
+          "title": "Column",
+          "type": "string"
+        },
+        "targets": {
+          "default": [],
+          "description": "Target component to be affected by filter. If none are given then target all components on the page that use `column`.",
+          "items": {
+            "type": "string"
+          },
+          "title": "Targets",
+          "type": "array"
+        },
+        "selector": {
+          "anyOf": [
+            {
+              "description": "Selectors to be used inside a control.",
+              "discriminator": {
+                "mapping": {
+                  "checklist": "#/$defs/Checklist",
+                  "date_picker": "#/$defs/DatePicker",
+                  "dropdown": "#/$defs/Dropdown",
+                  "radio_items": "#/$defs/RadioItems",
+                  "range_slider": "#/$defs/RangeSlider",
+                  "slider": "#/$defs/Slider"
+                },
+                "propertyName": "type"
+              },
+              "oneOf": [
+                {
+                  "$ref": "#/$defs/Checklist"
+                },
+                {
+                  "$ref": "#/$defs/DatePicker"
+                },
+                {
+                  "$ref": "#/$defs/Dropdown"
+                },
+                {
+                  "$ref": "#/$defs/RadioItems"
+                },
+                {
+                  "$ref": "#/$defs/RangeSlider"
+                },
+                {
+                  "$ref": "#/$defs/Slider"
+                }
+              ]
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Selector"
+        }
+      },
+      "required": ["column"],
+      "title": "Filter",
+      "type": "object"
+    },
+    "Flex": {
+      "additionalProperties": false,
+      "description": "Flex Container to place chart/components on the [`Page`][vizro.models.Page].\n\nArgs:\n    type (Literal[\"flex\"]): Defaults to `\"flex\"`.\n    direction (Literal[\"row\", \"column\"]): Sets the direction of the flex items inside the container. Options are\n        `row` or `column`. Defaults to `column`.\n    gap (str): Specifies the gap between rows and columns. Allowed units: 'px', 'rem', 'em', or '%'.\n        Defaults to `24px`.\n    wrap (bool): Determines whether flex items are forced onto a single line or can wrap onto multiple lines.\n        If `False`, all items will be on one line. If `True`, items will wrap onto multiple lines.\n        Defaults to `False`.",
+      "properties": {
+        "id": {
+          "default": "",
+          "description": "ID to identify model. Must be unique throughout the whole dashboard.When no ID is chosen, ID will be automatically generated.",
+          "title": "Id",
+          "type": "string"
+        },
+        "type": {
+          "const": "flex",
+          "default": "flex",
+          "title": "Type",
+          "type": "string"
+        },
+        "direction": {
+          "default": "column",
+          "description": "Sets the direction of the flex items inside the container. Options are `row` or `column`.Defaults to `column`.",
+          "enum": ["row", "column"],
+          "title": "Direction",
+          "type": "string"
+        },
+        "gap": {
+          "default": "24px",
+          "description": "Specifies the gap between rows and columns. Allowed units: 'px', 'rem', 'em', or '%'. Defaults to `24px`.",
+          "pattern": "^\\d+(px|rem|em|%)$",
+          "title": "Gap",
+          "type": "string"
+        },
+        "wrap": {
+          "default": false,
+          "description": "Determines whether flex items are forced onto a single line or can wrap onto multiple lines. If `False`, all items will be on one line. If `True`, items will wrap onto multiple lines. Defaults to `False`.",
+          "title": "Wrap",
+          "type": "boolean"
+        }
+      },
+      "title": "Flex",
+      "type": "object"
+    },
+    "Graph": {
+      "additionalProperties": false,
+      "description": "Wrapper for `dcc.Graph` to visualize charts in dashboard.\n\nArgs:\n    type (Literal[\"graph\"]): Defaults to `\"graph\"`.\n    figure (CapturedCallable): Function that returns a graph.\n        See `CapturedCallable`][vizro.models.types.CapturedCallable].\n    title (str): Title of the `Graph`. Defaults to `\"\"`.\n    header (str): Markdown text positioned below the `Graph.title`. Follows the CommonMark specification.\n        Ideal for adding supplementary information such as subtitles, descriptions, or additional context.\n        Defaults to `\"\"`.\n    footer (str): Markdown text positioned below the `Graph`. Follows the CommonMark specification.\n        Ideal for providing further details such as sources, disclaimers, or additional notes. Defaults to `\"\"`.\n    description (Optional[Tooltip]): Optional markdown string that adds an icon next to the title.\n        Hovering over the icon shows a tooltip with the provided description. Defaults to `None`.\n    actions (list[ActionType]): See [`ActionType`][vizro.models.types.ActionType]. Defaults to `[]`.\n    extra (Optional[dict[str, Any]]): Extra keyword arguments that are passed to `dcc.Graph` and overwrite any\n        defaults chosen by the Vizro team. This may have unexpected behavior.\n        Visit the [dcc documentation](https://dash.plotly.com/dash-core-components/graph#graph-properties)\n        to see all available arguments. [Not part of the official Vizro schema](../explanation/schema.md) and the\n        underlying component may change in the future. Defaults to `{}`.",
+      "properties": {
+        "id": {
+          "default": "",
+          "description": "ID to identify model. Must be unique throughout the whole dashboard.When no ID is chosen, ID will be automatically generated.",
+          "title": "Id",
+          "type": "string"
+        },
+        "type": {
+          "const": "graph",
+          "default": "graph",
+          "title": "Type",
+          "type": "string"
+        },
+        "title": {
+          "default": "",
+          "description": "Title of the `Graph`",
+          "title": "Title",
+          "type": "string"
+        },
+        "header": {
+          "default": "",
+          "description": "Markdown text positioned below the `Graph.title`. Follows the CommonMark specification. Ideal for adding supplementary information such as subtitles, descriptions, or additional context.",
+          "title": "Header",
+          "type": "string"
+        },
+        "footer": {
+          "default": "",
+          "description": "Markdown text positioned below the `Graph`. Follows the CommonMark specification. Ideal for providing further details such as sources, disclaimers, or additional notes.",
+          "title": "Footer",
+          "type": "string"
+        },
+        "description": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/Tooltip"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "Optional markdown string that adds an icon next to the title.\n            Hovering over the icon shows a tooltip with the provided description. Defaults to `None`."
+        },
+        "actions": {
+          "default": [],
+          "items": {
+            "description": "Action.",
+            "oneOf": [
+              {
+                "$ref": "#/$defs/Action"
+              },
+              {
+                "$ref": "#/$defs/export_data"
+              },
+              {
+                "$ref": "#/$defs/filter_interaction"
+              }
+            ]
+          },
+          "title": "Actions",
+          "type": "array"
+        }
+      },
+      "title": "Graph",
+      "type": "object"
+    },
+    "Grid": {
+      "additionalProperties": false,
+      "description": "Grid specification to place chart/components on the [`Page`][vizro.models.Page].\n\nArgs:\n    type (Literal[\"grid\"]): Defaults to `\"grid\"`.\n    grid (list[list[int]]): Grid specification to arrange components on screen.\n    row_gap (str): Specifies the gap between rows. Allowed units: 'px', 'rem', 'em', or '%'. Defaults to `24px`.\n    col_gap (str): Specifies the gap between columns. Allowed units: 'px', 'rem', 'em', or '%'. Defaults to `24px`.\n    row_min_height (str): Minimum row height in px. Allowed units: 'px', 'rem', 'em', or '%'. Defaults to `0px`.\n    col_min_width (str): Minimum column width in px. Allowed unit are: 'px', 'rem', 'em', or '%'. Defaults to `0px`.",
+      "properties": {
+        "id": {
+          "default": "",
+          "description": "ID to identify model. Must be unique throughout the whole dashboard.When no ID is chosen, ID will be automatically generated.",
+          "title": "Id",
+          "type": "string"
+        },
+        "type": {
+          "const": "grid",
+          "default": "grid",
+          "title": "Type",
+          "type": "string"
+        },
+        "grid": {
+          "description": "Grid specification to arrange components on screen.",
+          "items": {
+            "items": {
+              "type": "integer"
+            },
+            "type": "array"
+          },
+          "title": "Grid",
+          "type": "array"
+        },
+        "row_gap": {
+          "default": "24px",
+          "description": "Specifies the gap between rows. Allowed units: 'px', 'rem', 'em', or '%'. Defaults to `24px`.",
+          "pattern": "^\\d+(px|rem|em|%)$",
+          "title": "Row Gap",
+          "type": "string"
+        },
+        "col_gap": {
+          "default": "24px",
+          "description": "Specifies the gap between columns. Allowed units: 'px', 'rem', 'em', or '%'. Defaults to `24px`.",
+          "pattern": "^\\d+(px|rem|em|%)$",
+          "title": "Col Gap",
+          "type": "string"
+        },
+        "row_min_height": {
+          "default": "0px",
+          "description": "Minimum row height in px. Allowed units: 'px', 'rem', 'em', or '%'. Defaults to `0px`.",
+          "pattern": "^\\d+(px|rem|em|%)$",
+          "title": "Row Min Height",
+          "type": "string"
+        },
+        "col_min_width": {
+          "default": "0px",
+          "description": "Minimum column width in px. Allowed units: 'px', 'rem', 'em', or '%'. Defaults to `0px`.",
+          "pattern": "^\\d+(px|rem|em|%)$",
+          "title": "Col Min Width",
+          "type": "string"
+        }
+      },
+      "required": ["grid"],
+      "title": "Grid",
+      "type": "object"
+    },
+    "Layout": {
+      "additionalProperties": false,
+      "deprecated": true,
+      "description": "Deprecated. This model has been renamed [`Grid`][vizro.models.Grid].",
+      "properties": {
+        "id": {
+          "default": "",
+          "description": "ID to identify model. Must be unique throughout the whole dashboard.When no ID is chosen, ID will be automatically generated.",
+          "title": "Id",
+          "type": "string"
+        },
+        "type": {
+          "const": "legacy_layout",
+          "default": "legacy_layout",
+          "title": "Type",
+          "type": "string"
+        },
+        "grid": {
+          "description": "Grid specification to arrange components on screen.",
+          "items": {
+            "items": {
+              "type": "integer"
+            },
+            "type": "array"
+          },
+          "title": "Grid",
+          "type": "array"
+        },
+        "row_gap": {
+          "default": "24px",
+          "description": "Specifies the gap between rows. Allowed units: 'px', 'rem', 'em', or '%'. Defaults to `24px`.",
+          "pattern": "^\\d+(px|rem|em|%)$",
+          "title": "Row Gap",
+          "type": "string"
+        },
+        "col_gap": {
+          "default": "24px",
+          "description": "Specifies the gap between columns. Allowed units: 'px', 'rem', 'em', or '%'. Defaults to `24px`.",
+          "pattern": "^\\d+(px|rem|em|%)$",
+          "title": "Col Gap",
+          "type": "string"
+        },
+        "row_min_height": {
+          "default": "0px",
+          "description": "Minimum row height in px. Allowed units: 'px', 'rem', 'em', or '%'. Defaults to `0px`.",
+          "pattern": "^\\d+(px|rem|em|%)$",
+          "title": "Row Min Height",
+          "type": "string"
+        },
+        "col_min_width": {
+          "default": "0px",
+          "description": "Minimum column width in px. Allowed units: 'px', 'rem', 'em', or '%'. Defaults to `0px`.",
+          "pattern": "^\\d+(px|rem|em|%)$",
+          "title": "Col Min Width",
+          "type": "string"
+        }
+      },
+      "required": ["grid"],
+      "title": "Layout",
+      "type": "object"
+    },
+    "NavBar": {
+      "additionalProperties": false,
+      "description": "Navigation bar to be used as a nav_selector for `Navigation`.\n\nArgs:\n    type (Literal[\"nav_bar\"]): Defaults to `\"nav_bar\"`.\n    pages (dict[str, list[ModelID]]): Mapping from name of a pages group to a list of page IDs. Defaults to `{}`.\n    items (list[NavLink]): See [`NavLink`][vizro.models.NavLink]. Defaults to `[]`.",
+      "properties": {
+        "id": {
+          "default": "",
+          "description": "ID to identify model. Must be unique throughout the whole dashboard.When no ID is chosen, ID will be automatically generated.",
+          "title": "Id",
+          "type": "string"
+        },
+        "type": {
+          "const": "nav_bar",
+          "default": "nav_bar",
+          "title": "Type",
+          "type": "string"
+        },
+        "pages": {
+          "additionalProperties": {
+            "items": {
+              "type": "string"
+            },
+            "type": "array"
+          },
+          "default": {},
+          "description": "Mapping from name of a pages group to a list of page IDs.",
+          "title": "Pages",
+          "type": "object"
+        },
+        "items": {
+          "default": [],
+          "items": {
+            "$ref": "#/$defs/NavLink"
+          },
+          "title": "Items",
+          "type": "array"
+        }
+      },
+      "title": "NavBar",
+      "type": "object"
+    },
+    "NavLink": {
+      "additionalProperties": false,
+      "description": "Icon that serves as a navigation link to be used in navigation bar of Dashboard.\n\nArgs:\n    pages (NavPagesType): See [`NavPagesType`][vizro.models.types.NavPagesType]. Defaults to `[]`.\n    label (str): Text description of the icon for use in tooltip.\n    icon (str): Icon name from [Google Material icons library](https://fonts.google.com/icons). Defaults to `\"\"`.",
+      "properties": {
+        "id": {
+          "default": "",
+          "description": "ID to identify model. Must be unique throughout the whole dashboard.When no ID is chosen, ID will be automatically generated.",
+          "title": "Id",
+          "type": "string"
+        },
+        "pages": {
+          "anyOf": [
+            {
+              "items": {
+                "type": "string"
+              },
+              "type": "array"
+            },
+            {
+              "additionalProperties": {
+                "items": {
+                  "type": "string"
+                },
+                "type": "array"
+              },
+              "type": "object"
+            }
+          ],
+          "default": [],
+          "title": "Pages"
+        },
+        "label": {
+          "description": "Text description of the icon for use in tooltip.",
+          "title": "Label",
+          "type": "string"
+        },
+        "icon": {
+          "default": "",
+          "description": "Icon name from Google Material icons library.",
+          "title": "Icon",
+          "type": "string"
+        }
+      },
+      "required": ["label"],
+      "title": "NavLink",
+      "type": "object"
+    },
+    "Navigation": {
+      "additionalProperties": false,
+      "description": "Navigation in [`Dashboard`][vizro.models.Dashboard] to structure [`Pages`][vizro.models.Page].\n\nArgs:\n    pages (NavPagesType): See [`NavPagesType`][vizro.models.types.NavPagesType]. Defaults to `[]`.\n    nav_selector (Optional[NavSelectorType]): See [`NavSelectorType`][vizro.models.types.NavSelectorType].\n        Defaults to `None`.",
+      "properties": {
+        "id": {
+          "default": "",
+          "description": "ID to identify model. Must be unique throughout the whole dashboard.When no ID is chosen, ID will be automatically generated.",
+          "title": "Id",
+          "type": "string"
+        },
+        "pages": {
+          "anyOf": [
+            {
+              "items": {
+                "type": "string"
+              },
+              "type": "array"
+            },
+            {
+              "additionalProperties": {
+                "items": {
+                  "type": "string"
+                },
+                "type": "array"
+              },
+              "type": "object"
+            }
+          ],
+          "default": [],
+          "title": "Pages"
+        },
+        "nav_selector": {
+          "anyOf": [
+            {
+              "description": "Component for rendering navigation.",
+              "discriminator": {
+                "mapping": {
+                  "accordion": "#/$defs/Accordion",
+                  "nav_bar": "#/$defs/NavBar"
+                },
+                "propertyName": "type"
+              },
+              "oneOf": [
+                {
+                  "$ref": "#/$defs/Accordion"
+                },
+                {
+                  "$ref": "#/$defs/NavBar"
+                }
+              ]
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Nav Selector"
+        }
+      },
+      "title": "Navigation",
+      "type": "object"
+    },
+    "OptionsDictType": {
+      "description": "Permissible sub-type for OptionsType. Needs to be in the format of {\"label\": XXX, \"value\": XXX}.",
+      "properties": {
+        "label": {
+          "title": "Label",
+          "type": "string"
+        },
+        "value": {
+          "anyOf": [
+            {
+              "type": "boolean"
+            },
+            {
+              "type": "number"
+            },
+            {
+              "type": "string"
+            },
+            {
+              "format": "date",
+              "type": "string"
+            }
+          ],
+          "title": "Value"
+        }
+      },
+      "required": ["label", "value"],
+      "title": "OptionsDictType",
+      "type": "object"
+    },
+    "Page": {
+      "additionalProperties": false,
+      "description": "A page in [`Dashboard`][vizro.models.Dashboard] with its own URL path and place in the `Navigation`.\n\nArgs:\n    components (list[ComponentType]): See [ComponentType][vizro.models.types.ComponentType]. At least one component\n        has to be provided.\n    title (str): Title of the `Page`.\n    description (Optional[Tooltip]): Optional markdown string that adds an icon next to the title.\n        Hovering over the icon shows a tooltip with the provided description. This also sets the page's meta\n        tags. Defaults to `None`.\n    layout (Optional[LayoutType]): Layout to place components in. Defaults to `None`.\n    controls (list[ControlType]): See [ControlType][vizro.models.types.ControlType]. Defaults to `[]`.\n    path (str): Path to navigate to page. Defaults to `\"\"`.",
+      "properties": {
+        "id": {
+          "default": "",
+          "description": "ID to identify model. Must be unique throughout the whole dashboard.When no ID is chosen, ID will be automatically generated.",
+          "title": "Id",
+          "type": "string"
+        },
+        "components": {
+          "items": {
+            "description": "Component that makes up part of the layout on the page.",
+            "discriminator": {
+              "mapping": {
+                "ag_grid": "#/$defs/AgGrid",
+                "button": "#/$defs/Button",
+                "card": "#/$defs/Card",
+                "container": "#/$defs/Container",
+                "figure": "#/$defs/Figure",
+                "graph": "#/$defs/Graph",
+                "table": "#/$defs/Table",
+                "tabs": "#/$defs/Tabs",
+                "text": "#/$defs/Text"
+              },
+              "propertyName": "type"
+            },
+            "oneOf": [
+              {
+                "$ref": "#/$defs/AgGrid"
+              },
+              {
+                "$ref": "#/$defs/Button"
+              },
+              {
+                "$ref": "#/$defs/Card"
+              },
+              {
+                "$ref": "#/$defs/Container"
+              },
+              {
+                "$ref": "#/$defs/Figure"
+              },
+              {
+                "$ref": "#/$defs/Graph"
+              },
+              {
+                "$ref": "#/$defs/Text"
+              },
+              {
+                "$ref": "#/$defs/Table"
+              },
+              {
+                "$ref": "#/$defs/Tabs"
+              }
+            ]
+          },
+          "minItems": 1,
+          "title": "Components",
+          "type": "array"
+        },
+        "title": {
+          "description": "Title of the `Page`",
+          "title": "Title",
+          "type": "string"
+        },
+        "layout": {
+          "anyOf": [
+            {
+              "description": "Type of layout to place components on the page.",
+              "oneOf": [
+                {
+                  "$ref": "#/$defs/Grid"
+                },
+                {
+                  "$ref": "#/$defs/Flex"
+                },
+                {
+                  "$ref": "#/$defs/Layout"
+                }
+              ]
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Layout"
+        },
+        "description": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/Tooltip"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "Optional markdown string that adds an icon next to the title.\n            Hovering over the icon shows a tooltip with the provided description. This also sets the page's meta\n            tags. Defaults to `None`."
+        },
+        "controls": {
+          "default": [],
+          "items": {
+            "description": "Control that affects components on the page.",
+            "discriminator": {
+              "mapping": {
+                "filter": "#/$defs/Filter",
+                "parameter": "#/$defs/Parameter"
+              },
+              "propertyName": "type"
+            },
+            "oneOf": [
+              {
+                "$ref": "#/$defs/Filter"
+              },
+              {
+                "$ref": "#/$defs/Parameter"
+              }
+            ]
+          },
+          "title": "Controls",
+          "type": "array"
+        },
+        "path": {
+          "default": "",
+          "description": "Path to navigate to page.",
+          "title": "Path",
+          "type": "string"
+        },
+        "actions": {
+          "default": [],
+          "items": {
+            "$ref": "#/$defs/ActionsChain"
+          },
+          "title": "Actions",
+          "type": "array"
+        }
+      },
+      "required": ["components", "title"],
+      "title": "Page",
+      "type": "object"
+    },
+    "Parameter": {
+      "additionalProperties": false,
+      "description": "Alter the arguments supplied to any `targets` on the [`Page`][vizro.models.Page].\n\nExamples:\n    >>> Parameter(targets=[\"scatter.x\"], selector=Slider(min=0, max=1, default=0.8, title=\"Bubble opacity\"))\n\nArgs:\n    type (Literal[\"parameter\"]): Defaults to `\"parameter\"`.\n    targets (list[str]): Targets in the form of `<target_component>.<target_argument>`.\n    selector (SelectorType): See [SelectorType][vizro.models.types.SelectorType]. Converts selector value\n        `\"NONE\"` into `None` to allow optional parameters.",
+      "properties": {
+        "id": {
+          "default": "",
+          "description": "ID to identify model. Must be unique throughout the whole dashboard.When no ID is chosen, ID will be automatically generated.",
+          "title": "Id",
+          "type": "string"
+        },
+        "type": {
+          "const": "parameter",
+          "default": "parameter",
+          "title": "Type",
+          "type": "string"
+        },
+        "targets": {
+          "items": {
+            "description": "Targets in the form of `<target_component>.<target_argument>`.",
+            "type": "string"
+          },
+          "title": "Targets",
+          "type": "array"
+        },
+        "selector": {
+          "description": "Selectors to be used inside a control.",
+          "discriminator": {
+            "mapping": {
+              "checklist": "#/$defs/Checklist",
+              "date_picker": "#/$defs/DatePicker",
+              "dropdown": "#/$defs/Dropdown",
+              "radio_items": "#/$defs/RadioItems",
+              "range_slider": "#/$defs/RangeSlider",
+              "slider": "#/$defs/Slider"
+            },
+            "propertyName": "type"
+          },
+          "oneOf": [
+            {
+              "$ref": "#/$defs/Checklist"
+            },
+            {
+              "$ref": "#/$defs/DatePicker"
+            },
+            {
+              "$ref": "#/$defs/Dropdown"
+            },
+            {
+              "$ref": "#/$defs/RadioItems"
+            },
+            {
+              "$ref": "#/$defs/RangeSlider"
+            },
+            {
+              "$ref": "#/$defs/Slider"
+            }
+          ],
+          "title": "Selector"
+        }
+      },
+      "required": ["targets", "selector"],
+      "title": "Parameter",
+      "type": "object"
+    },
+    "RadioItems": {
+      "additionalProperties": false,
+      "description": "Categorical single-option selector `RadioItems`.\n\nCan be provided to [`Filter`][vizro.models.Filter] or\n[`Parameter`][vizro.models.Parameter].\n\nArgs:\n    type (Literal[\"radio_items\"]): Defaults to `\"radio_items\"`.\n    options (OptionsType): See [`OptionsType`][vizro.models.types.OptionsType]. Defaults to `[]`.\n    value (Optional[SingleValueType]): See [`SingleValueType`][vizro.models.types.SingleValueType].\n        Defaults to `None`.\n    title (str): Title to be displayed. Defaults to `\"\"`.\n    description (Optional[Tooltip]): Optional markdown string that adds an icon next to the title.\n        Hovering over the icon shows a tooltip with the provided description. Defaults to `None`.\n    actions (list[ActionType]): See [`ActionType`][vizro.models.types.ActionType]. Defaults to `[]`.\n    extra (Optional[dict[str, Any]]): Extra keyword arguments that are passed to `dbc.RadioItems` and overwrite any\n        defaults chosen by the Vizro team. This may have unexpected behavior.\n        Visit the [dbc documentation](https://dash-bootstrap-components.opensource.faculty.ai/docs/components/input/)\n        to see all available arguments. [Not part of the official Vizro schema](../explanation/schema.md) and the\n        underlying component may change in the future. Defaults to `{}`.",
+      "properties": {
+        "id": {
+          "default": "",
+          "description": "ID to identify model. Must be unique throughout the whole dashboard.When no ID is chosen, ID will be automatically generated.",
+          "title": "Id",
+          "type": "string"
+        },
+        "type": {
+          "const": "radio_items",
+          "default": "radio_items",
+          "title": "Type",
+          "type": "string"
+        },
+        "options": {
+          "anyOf": [
+            {
+              "items": {
+                "type": "boolean"
+              },
+              "type": "array"
+            },
+            {
+              "items": {
+                "type": "number"
+              },
+              "type": "array"
+            },
+            {
+              "items": {
+                "type": "string"
+              },
+              "type": "array"
+            },
+            {
+              "items": {
+                "format": "date",
+                "type": "string"
+              },
+              "type": "array"
+            },
+            {
+              "items": {
+                "$ref": "#/$defs/OptionsDictType"
+              },
+              "type": "array"
+            }
+          ],
+          "default": [],
+          "title": "Options"
+        },
+        "value": {
+          "anyOf": [
+            {
+              "type": "boolean"
+            },
+            {
+              "type": "number"
+            },
+            {
+              "type": "string"
+            },
+            {
+              "format": "date",
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Value"
+        },
+        "title": {
+          "default": "",
+          "description": "Title to be displayed",
+          "title": "Title",
+          "type": "string"
+        },
+        "description": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/Tooltip"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "Optional markdown string that adds an icon next to the title.\n            Hovering over the icon shows a tooltip with the provided description. Defaults to `None`."
+        },
+        "actions": {
+          "default": [],
+          "items": {
+            "description": "Action.",
+            "oneOf": [
+              {
+                "$ref": "#/$defs/Action"
+              },
+              {
+                "$ref": "#/$defs/export_data"
+              },
+              {
+                "$ref": "#/$defs/filter_interaction"
+              }
+            ]
+          },
+          "title": "Actions",
+          "type": "array"
+        }
+      },
+      "title": "RadioItems",
+      "type": "object"
+    },
+    "RangeSlider": {
+      "additionalProperties": false,
+      "description": "Numeric multi-option selector `RangeSlider`.\n\nCan be provided to [`Filter`][vizro.models.Filter] or\n[`Parameter`][vizro.models.Parameter].\n\nArgs:\n    type (Literal[\"range_slider\"]): Defaults to `\"range_slider\"`.\n    min (Optional[float]): Start value for slider. Defaults to `None`.\n    max (Optional[float]): End value for slider. Defaults to `None`.\n    step (Optional[float]): Step-size for marks on slider. Defaults to `None`.\n    marks (Optional[dict[Union[float, int], str]]): Marks to be displayed on slider. Defaults to `{}`.\n    value (Optional[list[float]]): Default start and end value for slider. Must be 2 items. Defaults to `None`.\n    title (str): Title to be displayed. Defaults to `\"\"`.\n    description (Optional[Tooltip]): Optional markdown string that adds an icon next to the title.\n        Hovering over the icon shows a tooltip with the provided description. Defaults to `None`.\n    actions (list[ActionType]): See [`ActionType`][vizro.models.types.ActionType]. Defaults to `[]`.\n    extra (Optional[dict[str, Any]]): Extra keyword arguments that are passed to `dcc.RangeSlider` and overwrite any\n        defaults chosen by the Vizro team. This may have unexpected behavior.\n        Visit the [dcc documentation](https://dash.plotly.com/dash-core-components/rangeslider)\n        to see all available arguments. [Not part of the official Vizro schema](../explanation/schema.md) and the\n        underlying component may change in the future. Defaults to `{}`.",
+      "properties": {
+        "id": {
+          "default": "",
+          "description": "ID to identify model. Must be unique throughout the whole dashboard.When no ID is chosen, ID will be automatically generated.",
+          "title": "Id",
+          "type": "string"
+        },
+        "type": {
+          "const": "range_slider",
+          "default": "range_slider",
+          "title": "Type",
+          "type": "string"
+        },
+        "min": {
+          "anyOf": [
+            {
+              "type": "number"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "Start value for slider.",
+          "title": "Min"
+        },
+        "max": {
+          "anyOf": [
+            {
+              "type": "number"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "End value for slider.",
+          "title": "Max"
+        },
+        "step": {
+          "anyOf": [
+            {
+              "type": "number"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "Step-size for marks on slider.",
+          "title": "Step"
+        },
+        "marks": {
+          "anyOf": [
+            {
+              "additionalProperties": {
+                "type": "string"
+              },
+              "type": "object"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": {},
+          "description": "Marks to be displayed on slider.",
+          "title": "Marks"
+        },
+        "value": {
+          "anyOf": [
+            {
+              "items": {
+                "type": "number"
+              },
+              "maxItems": 2,
+              "minItems": 2,
+              "type": "array"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Value"
+        },
+        "title": {
+          "default": "",
+          "description": "Title to be displayed.",
+          "title": "Title",
+          "type": "string"
+        },
+        "description": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/Tooltip"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "Optional markdown string that adds an icon next to the title.\n            Hovering over the icon shows a tooltip with the provided description. Defaults to `None`."
+        },
+        "actions": {
+          "default": [],
+          "items": {
+            "description": "Action.",
+            "oneOf": [
+              {
+                "$ref": "#/$defs/Action"
+              },
+              {
+                "$ref": "#/$defs/export_data"
+              },
+              {
+                "$ref": "#/$defs/filter_interaction"
+              }
+            ]
+          },
+          "title": "Actions",
+          "type": "array"
+        }
+      },
+      "title": "RangeSlider",
+      "type": "object"
+    },
+    "Slider": {
+      "additionalProperties": false,
+      "description": "Numeric single-option selector `Slider`.\n\nCan be provided to [`Filter`][vizro.models.Filter] or\n[`Parameter`][vizro.models.Parameter].\n\nArgs:\n    type (Literal[\"range_slider\"]): Defaults to `\"range_slider\"`.\n    min (Optional[float]): Start value for slider. Defaults to `None`.\n    max (Optional[float]): End value for slider. Defaults to `None`.\n    step (Optional[float]): Step-size for marks on slider. Defaults to `None`.\n    marks (Optional[dict[Union[float, int], str]]): Marks to be displayed on slider. Defaults to `{}`.\n    value (Optional[float]): Default value for slider. Defaults to `None`.\n    title (str): Title to be displayed. Defaults to `\"\"`.\n    description (Optional[Tooltip]): Optional markdown string that adds an icon next to the title.\n        Hovering over the icon shows a tooltip with the provided description. Defaults to `None`.\n    actions (list[ActionType]): See [`ActionType`][vizro.models.types.ActionType]. Defaults to `[]`.\n    extra (Optional[dict[str, Any]]): Extra keyword arguments that are passed to `dcc.Slider` and overwrite any\n        defaults chosen by the Vizro team. This may have unexpected behavior.\n        Visit the [dcc documentation](https://dash.plotly.com/dash-core-components/slider)\n        to see all available arguments. [Not part of the official Vizro schema](../explanation/schema.md) and the\n        underlying component may change in the future. Defaults to `{}`.",
+      "properties": {
+        "id": {
+          "default": "",
+          "description": "ID to identify model. Must be unique throughout the whole dashboard.When no ID is chosen, ID will be automatically generated.",
+          "title": "Id",
+          "type": "string"
+        },
+        "type": {
+          "const": "slider",
+          "default": "slider",
+          "title": "Type",
+          "type": "string"
+        },
+        "min": {
+          "anyOf": [
+            {
+              "type": "number"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "Start value for slider.",
+          "title": "Min"
+        },
+        "max": {
+          "anyOf": [
+            {
+              "type": "number"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "End value for slider.",
+          "title": "Max"
+        },
+        "step": {
+          "anyOf": [
+            {
+              "type": "number"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "Step-size for marks on slider.",
+          "title": "Step"
+        },
+        "marks": {
+          "anyOf": [
+            {
+              "additionalProperties": {
+                "type": "string"
+              },
+              "type": "object"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": {},
+          "description": "Marks to be displayed on slider.",
+          "title": "Marks"
+        },
+        "value": {
+          "anyOf": [
+            {
+              "type": "number"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "Default value for slider.",
+          "title": "Value"
+        },
+        "title": {
+          "default": "",
+          "description": "Title to be displayed.",
+          "title": "Title",
+          "type": "string"
+        },
+        "description": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/Tooltip"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "Optional markdown string that adds an icon next to the title.\n            Hovering over the icon shows a tooltip with the provided description. Defaults to `None`."
+        },
+        "actions": {
+          "default": [],
+          "items": {
+            "description": "Action.",
+            "oneOf": [
+              {
+                "$ref": "#/$defs/Action"
+              },
+              {
+                "$ref": "#/$defs/export_data"
+              },
+              {
+                "$ref": "#/$defs/filter_interaction"
+              }
+            ]
+          },
+          "title": "Actions",
+          "type": "array"
+        }
+      },
+      "title": "Slider",
+      "type": "object"
+    },
+    "Table": {
+      "additionalProperties": false,
+      "description": "Wrapper for `dash_table.DataTable` to visualize tables in dashboard.\n\nArgs:\n    type (Literal[\"table\"]): Defaults to `\"table\"`.\n    figure (CapturedCallable): Function that returns a Dash DataTable. See [`vizro.tables`][vizro.tables].\n    title (str): Title of the `Table`. Defaults to `\"\"`.\n    header (str): Markdown text positioned below the `Table.title`. Follows the CommonMark specification.\n        Ideal for adding supplementary information such as subtitles, descriptions, or additional context.\n        Defaults to `\"\"`.\n    footer (str): Markdown text positioned below the `Table`. Follows the CommonMark specification.\n        Ideal for providing further details such as sources, disclaimers, or additional notes. Defaults to `\"\"`.\n    description (Optional[Tooltip]): Optional markdown string that adds an icon next to the title.\n        Hovering over the icon shows a tooltip with the provided description. Defaults to `None`.\n    actions (list[ActionType]): See [`ActionType`][vizro.models.types.ActionType]. Defaults to `[]`.",
+      "properties": {
+        "id": {
+          "default": "",
+          "description": "ID to identify model. Must be unique throughout the whole dashboard.When no ID is chosen, ID will be automatically generated.",
+          "title": "Id",
+          "type": "string"
+        },
+        "type": {
+          "const": "table",
+          "default": "table",
+          "title": "Type",
+          "type": "string"
+        },
+        "title": {
+          "default": "",
+          "description": "Title of the `Table`",
+          "title": "Title",
+          "type": "string"
+        },
+        "header": {
+          "default": "",
+          "description": "Markdown text positioned below the `Table.title`. Follows the CommonMark specification. Ideal for adding supplementary information such as subtitles, descriptions, or additional context.",
+          "title": "Header",
+          "type": "string"
+        },
+        "footer": {
+          "default": "",
+          "description": "Markdown text positioned below the `Table`. Follows the CommonMark specification. Ideal for providing further details such as sources, disclaimers, or additional notes.",
+          "title": "Footer",
+          "type": "string"
+        },
+        "description": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/Tooltip"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "Optional markdown string that adds an icon next to the title.\n            Hovering over the icon shows a tooltip with the provided description. Defaults to `None`."
+        },
+        "actions": {
+          "default": [],
+          "items": {
+            "description": "Action.",
+            "oneOf": [
+              {
+                "$ref": "#/$defs/Action"
+              },
+              {
+                "$ref": "#/$defs/export_data"
+              },
+              {
+                "$ref": "#/$defs/filter_interaction"
+              }
+            ]
+          },
+          "title": "Actions",
+          "type": "array"
+        }
+      },
+      "title": "Table",
+      "type": "object"
+    },
+    "Tabs": {
+      "additionalProperties": false,
+      "description": "Tabs to group together a set of containers on a page.\n\nArgs:\n    type (Literal[\"tabs\"]): Defaults to `\"tabs\"`.\n    tabs (list[Container]): See [`Container`][vizro.models.Container].\n    title (str): Title displayed above Tabs. Defaults to `\"\"`.\n    description (Optional[Tooltip]): Optional markdown string that adds an icon next to the title.\n        Hovering over the icon shows a tooltip with the provided description. Defaults to `None`.",
+      "properties": {
+        "id": {
+          "default": "",
+          "description": "ID to identify model. Must be unique throughout the whole dashboard.When no ID is chosen, ID will be automatically generated.",
+          "title": "Id",
+          "type": "string"
+        },
+        "type": {
+          "const": "tabs",
+          "default": "tabs",
+          "title": "Type",
+          "type": "string"
+        },
+        "tabs": {
+          "items": {
+            "$ref": "#/$defs/Container"
+          },
+          "minItems": 1,
+          "title": "Tabs",
+          "type": "array"
+        },
+        "title": {
+          "default": "",
+          "description": "Title displayed above Tabs.",
+          "title": "Title",
+          "type": "string"
+        },
+        "description": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/Tooltip"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "Optional markdown string that adds an icon next to the title.\n            Hovering over the icon shows a tooltip with the provided description. Defaults to `None`."
+        }
+      },
+      "required": ["tabs"],
+      "title": "Tabs",
+      "type": "object"
+    },
+    "Text": {
+      "additionalProperties": false,
+      "description": "Creates a text component based on Markdown syntax.\n\nArgs:\n    type (Literal[\"text\"]): Defaults to `\"text\"`.\n    text (str): Markdown string to create text that should adhere to the CommonMark Spec.\n    extra (Optional[dict[str, Any]]): Extra keyword arguments that are passed to `dcc.Markdown` and overwrite any\n        defaults chosen by the Vizro team. This may have unexpected behavior.\n        Visit the [dcc documentation](https://dash.plotly.com/dash-core-components/markdown/)\n        to see all available arguments. [Not part of the official Vizro schema](../explanation/schema.md) and the\n        underlying component may change in the future. Defaults to `{}`.",
+      "properties": {
+        "id": {
+          "default": "",
+          "description": "ID to identify model. Must be unique throughout the whole dashboard.When no ID is chosen, ID will be automatically generated.",
+          "title": "Id",
+          "type": "string"
+        },
+        "type": {
+          "const": "text",
+          "default": "text",
+          "title": "Type",
+          "type": "string"
+        },
+        "text": {
+          "description": "Markdown string to create text that should adhere to the CommonMark Spec.",
+          "title": "Text",
+          "type": "string"
+        }
+      },
+      "required": ["text"],
+      "title": "Text",
+      "type": "object"
+    },
+    "Tooltip": {
+      "additionalProperties": false,
+      "description": "A tooltip that displays text when hovering over an icon.\n\nArgs:\n    text (str): Markdown string for text shown when hovering over the icon. Should adhere to the CommonMark Spec.\n    icon (str): Icon name from [Google Material icons library](https://fonts.google.com/icons).\n    extra (Optional[dict[str, Any]]): Extra keyword arguments that are passed to `dbc.Tooltip` and overwrite any\n        chosen by the Vizro team. This may have unexpected behavior. Visit the\n        [dbc documentation](https://dash-bootstrap-components.opensource.faculty.ai/docs/components/tooltip/)\n        to see all available arguments. [Not part of the official Vizro schema](../explanation/schema.md) and the\n        underlying component may change in the future. Defaults to `{}`.",
+      "properties": {
+        "id": {
+          "default": "",
+          "description": "ID to identify model. Must be unique throughout the whole dashboard.When no ID is chosen, ID will be automatically generated.",
+          "title": "Id",
+          "type": "string"
+        },
+        "text": {
+          "description": "Markdown string for text shown when hovering over the icon. Should adhere to the CommonMark Spec.",
+          "title": "Text",
+          "type": "string"
+        },
+        "icon": {
+          "description": "Icon name from Google Material icons library.",
+          "title": "Icon",
+          "type": "string"
+        }
+      },
+      "required": ["text", "icon"],
+      "title": "Tooltip",
+      "type": "object"
+    },
+    "Trigger": {
+      "maxItems": 2,
+      "minItems": 2,
+      "prefixItems": [
+        {
+          "title": "Component Id",
+          "type": "string"
+        },
+        {
+          "title": "Component Property",
+          "type": "string"
+        }
+      ],
+      "type": "array"
+    },
+    "export_data": {
+      "additionalProperties": false,
+      "description": "Exports visible data of target charts/components.\n\nArgs:\n    targets (list[ModelID]): List of target component ids to download data from. If none are given then download\n         from all components on the page.\n    file_format (Literal[\"csv\", \"xlsx\"]): Format of downloaded files. Defaults to `csv`.",
+      "properties": {
+        "id": {
+          "default": "",
+          "description": "ID to identify model. Must be unique throughout the whole dashboard.When no ID is chosen, ID will be automatically generated.",
+          "title": "Id",
+          "type": "string"
+        },
+        "type": {
+          "const": "export_data",
+          "default": "export_data",
+          "title": "Type",
+          "type": "string"
+        },
+        "targets": {
+          "default": [],
+          "description": "List of target component ids to download data from. If none are given then downloadfrom all components on the page.",
+          "items": {
+            "type": "string"
+          },
+          "title": "Targets",
+          "type": "array"
+        },
+        "file_format": {
+          "default": "csv",
+          "description": "Format of downloaded files. Defaults to `csv`.",
+          "enum": ["csv", "xlsx"],
+          "title": "File Format",
+          "type": "string"
+        }
+      },
+      "title": "export_data",
+      "type": "object"
+    },
+    "filter_interaction": {
+      "additionalProperties": false,
+      "description": "Filters targeted charts/components on page by clicking on data points or table cells of the source chart.\n\nTo set up filtering on specific columns of the target graph(s), include these columns in the 'custom_data'\nparameter of the source graph e.g. `px.bar(..., custom_data=[\"species\", \"sepal_length\"])`.\nIf the filter interaction source is a table e.g. `vm.Table(..., actions=[filter_interaction])`,\nthen the table doesn't need to have a 'custom_data' parameter set up.\n\nArgs:\n    targets (list[ModelID]): Target component to be affected by filter. If none are given then target all\n        valid components on the page.",
+      "properties": {
+        "id": {
+          "default": "",
+          "description": "ID to identify model. Must be unique throughout the whole dashboard.When no ID is chosen, ID will be automatically generated.",
+          "title": "Id",
+          "type": "string"
+        },
+        "type": {
+          "const": "filter_interaction",
+          "default": "filter_interaction",
+          "title": "Type",
+          "type": "string"
+        },
+        "targets": {
+          "default": [],
+          "description": "Target component IDs.",
+          "items": {
+            "type": "string"
+          },
+          "title": "Targets",
+          "type": "array"
+        }
+      },
+      "title": "filter_interaction",
+      "type": "object"
+    }
+  },
+  "additionalProperties": false,
+  "description": "Vizro Dashboard to be used within [`Vizro`][vizro._vizro.Vizro.build].\n\nArgs:\n    pages (list[Page]): See [`Page`][vizro.models.Page].\n    theme (Literal[\"vizro_dark\", \"vizro_light\"]): Layout theme to be applied across dashboard.\n        Defaults to `vizro_dark`.\n    navigation (Navigation): See [`Navigation`][vizro.models.Navigation]. Defaults to `None`.\n    title (str): Dashboard title to appear on every page on top left-side. Defaults to `\"\"`.\n    description (Optional[Tooltip]): Optional markdown string that adds an icon next to the title.\n        Hovering over the icon shows a tooltip with the provided description. This also sets the page's meta\n        tags. Defaults to `None`.",
+  "properties": {
+    "id": {
+      "default": "",
+      "description": "ID to identify model. Must be unique throughout the whole dashboard.When no ID is chosen, ID will be automatically generated.",
+      "title": "Id",
+      "type": "string"
+    },
+    "pages": {
+      "items": {
+        "$ref": "#/$defs/Page"
+      },
+      "title": "Pages",
+      "type": "array"
+    },
+    "theme": {
+      "default": "vizro_dark",
+      "description": "Theme to be applied across dashboard. Defaults to `vizro_dark`.",
+      "enum": ["vizro_dark", "vizro_light"],
+      "title": "Theme",
+      "type": "string"
+    },
+    "navigation": {
+      "anyOf": [
+        {
+          "$ref": "#/$defs/Navigation"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null
+    },
+    "title": {
+      "default": "",
+      "description": "Dashboard title to appear on every page on top left-side.",
+      "title": "Title",
+      "type": "string"
+    },
+    "description": {
+      "anyOf": [
+        {
+          "$ref": "#/$defs/Tooltip"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "description": "Optional markdown string that adds an icon next to the title.\n            Hovering over the icon shows a tooltip with the provided description. This also sets the page's meta\n            tags. Defaults to `None`."
+    }
+  },
+  "required": ["pages"],
+  "title": "Dashboard",
+  "type": "object"
+}
