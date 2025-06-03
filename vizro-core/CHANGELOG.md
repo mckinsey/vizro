@@ -11,6 +11,24 @@ See the fragment files in the [changelog.d directory](https://github.com/mckinse
 
 <!-- scriv-insert-here -->
 
+<a id='changelog-0.1.40'></a>
+
+# 0.1.40 — 2025-06-03
+
+## Highlights ✨
+
+- Enable controls inside containers. See the [user guide on container](https://vizro.readthedocs.io/en/stable/pages/user-guides/container/#add-controls-to-container) for more details. ([#1094](https://github.com/mckinsey/vizro/pull/1094))
+
+## Added
+
+- Add `description` argument to `Tabs` to enable tooltips in the title. See the [user guide on tabs](https://vizro.readthedocs.io/en/stable/pages/user-guides/container/#add-a-tooltip) for an example. ([#1178](https://github.com/mckinsey/vizro/pull/1178))
+
+- Enable `extra` argument for `vm.Graph`, which allows passing arguments directly to the underlying `dcc.Graph`. ([#1210](https://github.com/mckinsey/vizro/pull/1210))
+
+## Fixed
+
+- Fix a bug where assigning a custom action to `Filter.selector.actions` raised an error. ([#1197](https://github.com/mckinsey/vizro/pull/1197))
+
 <a id='changelog-0.1.39'></a>
 
 # 0.1.39 — 2025-05-16
