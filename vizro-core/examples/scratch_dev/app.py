@@ -71,7 +71,7 @@ page_2 = vm.Page(
                 vm.Container(
                     title="Tab3",
                     layout=vm.Flex(),
-                    components=[vm.Card(text="First card"), vm.Card(text="Second card"), vm.Card(text="Third card")],
+                    components=[vm.Card(text="First card!"), vm.Card(text="Second card!"), vm.Card(text="Third card!")],
                 ),
             ]
         )
