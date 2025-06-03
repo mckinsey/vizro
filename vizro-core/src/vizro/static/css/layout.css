@@ -224,10 +224,10 @@ Current logic:
   }
 
   #left-side {
-    position: absolute;
-    z-index: 5;
-    width: 100vw;
     height: calc(100vh - 48px);
+    position: absolute;
+    width: 100vw;
+    z-index: 5;
     zoom: 100%;
   }
 
