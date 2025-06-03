@@ -6,3 +6,13 @@
   display: flex;
   flex-direction: column;
 }
+
+/*
+*/
+#page_1_hidden_global_parameter_1 {
+    display: none;
+}
+
+#page_2_hidden_global_parameter_1 {
+    display: none;
+}
