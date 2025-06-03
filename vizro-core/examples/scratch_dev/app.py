@@ -80,4 +80,6 @@ page_2 = vm.Page(
 
 dashboard = vm.Dashboard(title="Test dashboard", pages=[page_1, page_2])
 
-Vizro().build(dashboard).run()
+if __name__ == "__main__":
+    app = Vizro().build(dashboard)
+    app.run()
