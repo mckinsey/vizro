@@ -34,14 +34,9 @@ Without Vizro-MCP, if you try to make a dashboard using an LLM, it could choose 
 
 ## 🛠️ Get started
 
-Vizro-MCP can be run in two ways: using `uvx` or using `Docker`. It works with any MCP-enabled LLM client, such as Cursor or Claude Desktop.
+Vizro-MCP can be run in two ways: using [`uvx`](https://docs.astral.sh/uv/guides/tools/) or using [`Docker`](https://www.docker.com/get-started/). It works with any MCP-enabled LLM client such as Cursor or Claude Desktop.
 
-<details>
-<summary><strong>For Developers</strong></summary>
-
-If you are a **developer** and need instructions for running Vizro-MCP from source, skip to the end of this page to [Development or running from source](#development-or-running-from-source).
-
-</details>
+If you want to run Vizro-MCP directly from source, skip to the end of this page to [Development or running from source](#development-or-running-from-source).
 
 ### Prerequisites
 
@@ -52,7 +47,7 @@ If you are a **developer** and need instructions for running Vizro-MCP from sour
 
 The general server config is mostly the same for all hosts:
 
-#### 1. Prepare the Configuration
+#### 1. Set up configuration
 
 **Using `uvx`**
 
@@ -91,7 +86,7 @@ The general server config is mostly the same for all hosts:
 }
 ```
 
-> To use local data with Vizro-MCP, mount your data directory into the container. Replace `</absolute/path/to/allowed/dir>` or `</absolute/path/to/data.csv>` with the absolute path to your data on your machine. For consistency, it is recommended that the `dst` path matches the `src` path.
+> To use local data with Vizro-MCP, mount your data directory or directories into the container. Replace `</absolute/path/to/allowed/dir>` (syntax for folders) or `</absolute/path/to/data.csv>` (syntax for files) with the absolute path to your data on your machine. For consistency, it is recommended that the `dst` path matches the `src` path.
 
 #### 2. Add the Configuration to MCP enabled LLM applications
 
@@ -127,8 +122,6 @@ In principle, the Vizro MCP server works with _any_ MCP enabled LLM applications
 - Add the configuration as per your client's documentation.
 
 - Check your client's documentation for where to place the config and how to verify the server is running.
-
-> 🐛 **Note:** There are currently some known issues with [VS Code](https://code.visualstudio.com/), but we are working on this and hope to have Copilot working soon.
 
 </details>
 
@@ -207,9 +200,7 @@ The Vizro MCP server provides the following tools. In general you should not nee
 
 If you are a developer, or if you are running Vizro-MCP from source, you need to clone the Vizro repo. To configure the Vizro-MCP server details:
 
-**For Claude**: Add the following to your `claude_desktop_config.json` [found via Developer Settings](https://modelcontextprotocol.io/quickstart/user#2-add-the-filesystem-mcp-server):
-
-**For Cursor**: Add the following to `mcp.json` [found via the Cursor Settings](https://docs.cursor.com/context/model-context-protocol#configuration-locations):
+Add the following to your MCP configuration:
 
 ```json
 {
