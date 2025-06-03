@@ -37,7 +37,7 @@
 
 .collapsible-container {
   flex: 1;
-  overflow: auto;
+  overflow: inherit;
 }
 
 .bg-container {
