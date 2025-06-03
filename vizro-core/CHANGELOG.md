@@ -21,7 +21,7 @@ See the fragment files in the [changelog.d directory](https://github.com/mckinse
 
 ## Added
 
-- Add `description` argument to `Tabs` to enable tooltips in the title. See the [user guide on tabs](https://vizro.readthedocs.io/en/stable/pages/user-guides/container/#add-a-tooltip) for an example. ([#1178](https://github.com/mckinsey/vizro/pull/1178))
+- Add `description` argument to `Tabs` to enable tooltips in the title. See the [user guide on container](https://vizro.readthedocs.io/en/stable/pages/user-guides/container/#add-a-tooltip) for an example. ([#1178](https://github.com/mckinsey/vizro/pull/1178))
 
 - Enable `extra` argument for `vm.Graph`, which allows passing arguments directly to the underlying `dcc.Graph`. ([#1210](https://github.com/mckinsey/vizro/pull/1210))
 
