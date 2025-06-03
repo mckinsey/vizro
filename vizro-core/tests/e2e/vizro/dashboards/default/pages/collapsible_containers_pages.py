@@ -35,11 +35,14 @@ collapsible_containers_flex = vm.Page(
         ),
         vm.Container(
             title="Initially expanded container",
-            components=[vm.Container(
-                title="Initially expanded subcontainer",
-                id="flex_subcontainer",
-                components=[vm.Graph(figure=px.box(iris, x="species", y="sepal_length", color="species"))],
-                collapsed=False)],
+            components=[
+                vm.Container(
+                    title="Initially expanded subcontainer",
+                    id="flex_subcontainer",
+                    components=[vm.Graph(figure=px.box(iris, x="species", y="sepal_length", color="species"))],
+                    collapsed=False,
+                )
+            ],
             collapsed=False,
         ),
     ],
