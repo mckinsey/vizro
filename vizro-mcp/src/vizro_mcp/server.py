@@ -189,9 +189,75 @@ def get_model_json_schema(model_name: str) -> dict[str, Any]:
     return model_class.model_json_schema()
 
 
+STANDARD_INSTRUCTIONS = """
+- IF the user has no plan (ie no components or pages), use the config at the bottom of this prompt
+    and validate that solution without any additions, OTHERWISE:
+- make a plan of what components you would like to use, then request all necessary schemas
+    using the get_model_json_schema tool
+- assemble your components into a page, then add the page or pages to a dashboard, DO NOT show config or code
+    to the user until you have validated the solution
+- ALWAYS validate the dashboard configuration using the validate_model_config tool
+"""
+
+IDE_INSTRUCTIONS = """
+- after validation, add the python code to `app.py` with the following code:
+    ```python
+    app = Vizro().build(dashboard)
+    if __name__ == "__main__":
+        app.run(debug=True, port=8050)
+"""
+
+GENERIC_HOST_INSTRUCTIONS = """
+- you should call the validate_model_config tool to validate the solution, and unless
+    otherwise specified, open the dashboard in the browser
+- if you cannot open the dashboard in the browser, communicate this to the user, provide them with the python code
+    instead and explain how to run it
+"""
+
+
+def get_instructions(advanced_mode: bool = False, user_host: Literal["generic_host", "ide"] = "generic_host") -> str:
+    """Get instructions for creating a Vizro dashboard in an IDE/editor."""
+    if not advanced_mode:
+        return f"""
+    {STANDARD_INSTRUCTIONS} 
+    {IDE_INSTRUCTIONS if user_host == "ide" else GENERIC_HOST_INSTRUCTIONS}
+    
+    Models you can use:
+    {get_overview_vizro_models()}
+
+    Very simple dashboard config:
+    {get_simple_dashboard_config()}
+"""
+    else:
+        return """
+    Instructions for going beyond the basic dashboard::
+    - communicate to the user that you are going to use Python code to create the dashboard, and that
+        they will have to run the code themselves
+    - search the web for more information about the components you are using, if you cannot search the web
+        communicate this to the user, and tell them that this is a current limitation of the tool
+    - if stuck, return to a JSON based config, and call the `validate_model_config` tool to validate the solution
+"""
+
+
 @mcp.tool()
-def get_vizro_chart_or_dashboard_plan(user_plan: Literal["chart", "dashboard"]) -> str:
-    """Get instructions for creating a Vizro chart or dashboard. Call FIRST when asked to create Vizro things."""
+def get_vizro_chart_or_dashboard_plan(
+    user_plan: Literal["chart", "dashboard"],
+    user_host: Literal["generic_host", "ide"],
+    advanced_mode: bool = False,
+) -> str:
+    """Get instructions for creating a Vizro chart or dashboard. Call FIRST when asked to create Vizro things.
+
+    Must be called FIRST with advanced_mode=False, then call again with advanced_mode=True if the JSON config does not
+    suffice anymore.
+
+    Args:
+        user_plan: The type of Vizro thing the user wants to create
+        user_host: The host the user is using, if "ide" you can use the IDE/editor to run python code
+        advanced_mode: If True, you can use custom components, CSS, charts, etc.
+
+    Returns:
+        Instructions for creating a Vizro chart or dashboard
+    """
     if user_plan == "chart":
         return """
 IMPORTANT:
@@ -219,32 +285,13 @@ IMPORTANT:
         a solution, just do it and validate it
     - IF STUCK: try enquiring the schema of the component in question
 
-
-Instructions for creating a Vizro dashboard:
-    - IF the user has no plan (ie no components or pages), use the config at the bottom of this prompt
-        and validate that solution without any additions, OTHERWISE:
-    - analyze the datasets needed for the dashboard using the load_and_analyze_data tool - the most
-        important information here are the column names and column types
-    - if the user provides no data, but you need to display a chart or table, use the get_sample_data_info
-        tool to get sample data information
-    - make a plan of what components you would like to use, then request all necessary schemas
-        using the get_model_json_schema tool
-    - assemble your components into a page, then add the page or pages to a dashboard, DO NOT show config or code
-        to the user until you have validated the solution
-    - ALWAYS validate the dashboard configuration using the validate_model_config tool
-    - if you display any code artifact, you must use the above created code, do not add new config to it
-
-Models you can use:
-{get_overview_vizro_models()}
-
-Very simple dashboard config:
-{get_simple_dashboard_config()}
+{get_instructions(advanced_mode, user_host)}
     """
 
 
 @mcp.tool()
 def load_and_analyze_data(path_or_url: str) -> DataAnalysisResults:
-    """Load data from various file formats into a pandas DataFrame and analyze its structure.
+    """Use to understand local or remote data files. Must be called with absolute paths or URLs.
 
     Supported formats:
     - CSV (.csv)
@@ -255,7 +302,7 @@ def load_and_analyze_data(path_or_url: str) -> DataAnalysisResults:
     - Parquet (.parquet)
 
     Args:
-        path_or_url: Local file path or URL to a data file
+        path_or_url: Absolute (important!) local file path or URL to a data file
 
     Returns:
         DataAnalysisResults object containing DataFrame information and metadata
