@@ -1,14 +1,15 @@
-from typing import Annotated, Any, Literal
+from typing import Annotated, Any, Literal, Optional
 
 import dash_bootstrap_components as dbc
-from dash import get_relative_path
-from pydantic import AfterValidator, Field
+from dash import get_relative_path, html
+from pydantic import AfterValidator, BeforeValidator, Field
 from pydantic.functional_serializers import PlainSerializer
 from pydantic.json_schema import SkipJsonSchema
 
-from vizro.models import VizroBaseModel
+from vizro.models import Tooltip, VizroBaseModel
 from vizro.models._action._actions_chain import _action_validator_factory
 from vizro.models._models_utils import _log_call
+from vizro.models._tooltip import coerce_str_to_tooltip
 from vizro.models.types import ActionType, _IdProperty
 
 
@@ -22,6 +23,8 @@ class Button(VizroBaseModel):
         actions (list[ActionType]): See [`ActionType`][vizro.models.types.ActionType]. Defaults to `[]`.
         variant (Literal["plain", "filled", "outlined"]): Predefined styles to choose from. Options are `plain`,
             `filled` or `outlined`. Defaults to `filled`.
+        description (Optional[Tooltip]): Optional markdown string that adds an icon next to the title.
+            Hovering over the icon shows a tooltip with the provided description. Defaults to `None`.
         extra (Optional[dict[str, Any]]): Extra keyword arguments that are passed to `dbc.Button` and overwrite any
             defaults chosen by the Vizro team. This may have unexpected behavior.
             Visit the [dbc documentation](https://dash-bootstrap-components.opensource.faculty.ai/docs/components/button/)
@@ -44,6 +47,15 @@ class Button(VizroBaseModel):
         description="Predefined styles to choose from. Options are `plain`, `filled` or `outlined`."
         "Defaults to `filled`.",
     )
+    description: Annotated[
+        Optional[Tooltip],
+        BeforeValidator(coerce_str_to_tooltip),
+        Field(
+            default=None,
+            description="""Optional markdown string that adds an icon next to the title.
+            Hovering over the icon shows a tooltip with the provided description. Defaults to `None`.""",
+        ),
+    ]
     extra: SkipJsonSchema[
         Annotated[
             dict[str, Any],
@@ -62,15 +74,18 @@ class Button(VizroBaseModel):
     def _action_outputs(self) -> dict[str, _IdProperty]:
         return {
             "text": f"{self.id}.children",
+            **({"description": f"{self.description.id}-text.children"} if self.description else {}),
         }
 
     @_log_call
     def build(self):
         variants = {"plain": "link", "filled": "primary", "outlined": "secondary"}
+        description = self.description.build().children if self.description else [None]
+        text = html.Div([self.text, *description], className="button-label")
 
         defaults = {
             "id": self.id,
-            "children": self.text,
+            "children": text,
             "href": get_relative_path(self.href) if self.href.startswith("/") else self.href,
             "target": "_top",
             # dbc.Button includes `btn btn-primary` as a class by default and appends any class names provided.

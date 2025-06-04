@@ -36,6 +36,25 @@ Use 16px for all text. Use 20px for all headings. */
   gap: 8px;
 }
 
+.btn-primary .button-label .tooltip-icon {
+  color: var(--primary-inverted);
+  font-size: 16px;
+}
+
+.btn-secondary .button-label .tooltip-icon {
+  font-size: 16px;
+}
+
+.btn-link .button-label .tooltip-icon {
+  font-size: 16px;
+  margin-left: 8px;
+  vertical-align: middle;
+}
+
+.btn-primary .button-label .tooltip-icon:hover {
+  color: var(--text-primaryHover-inverted);
+}
+
 #dashboard-title, #page-title, .form-label {
   align-items: center;
   display: flex;
