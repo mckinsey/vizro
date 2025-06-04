@@ -206,9 +206,32 @@ Current logic:
   }
 
   #page-header,
-  #left-side,
-  #right-side {
+  #right-side,
+  #left-side {
     zoom: 80%;
+  }
+}
+
+@media screen and (width <= 576px) and (orientation: portrait) {
+  body:has(#collapsible-left-side.show) {
+    overflow: hidden;
+  }
+
+  #collapsible-left-side.show ~ .collapse-icon-div #collapse-icon {
+    right: -10px;
+    z-index: 10;
+  }
+
+  #left-side {
+    height: calc(100vh - 48px);
+    position: absolute;
+    width: 100vw;
+    z-index: 5;
+    zoom: 100%;
+  }
+
+  #left-main {
+    width: 100%;
   }
 }
 
