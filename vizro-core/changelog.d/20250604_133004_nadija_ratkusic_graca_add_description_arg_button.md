@@ -19,7 +19,7 @@ Uncomment the section that is right (remove the HTML comment wrapper).
 
 ### Added
 
-- Add `description` argument to `Button` to enable tooltip next to button text. ([#1](https://github.com/mckinsey/vizro/pull/1))
+- Add `description` argument to `Button` to enable tooltip next to button text. See the [user guide on button](https://vizro.readthedocs.io/en/stable/pages/user-guides/buttons/#add-a-tooltip) for an example. ([#1225](https://github.com/mckinsey/vizro/pull/1225))
 
 
 <!--

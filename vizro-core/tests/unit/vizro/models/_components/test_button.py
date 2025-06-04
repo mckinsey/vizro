@@ -22,6 +22,7 @@ class TestButtonInstantiation:
         assert button.actions == []
         assert button.variant == "filled"
         assert button._action_outputs == {"text": f"{button.id}.children"}
+        assert button.description is None
 
     @pytest.mark.parametrize(
         "text, href, variant",
@@ -63,7 +64,7 @@ class TestBuildMethod:
         assert_component_equal(
             result,
             dbc.Button(
-                html.Span(["Click me!", None], className="button-label"),
+                html.Span(["Click me!", None], className="button-text"),
                 id="button",
                 href="",
                 target="_top",
@@ -79,7 +80,7 @@ class TestBuildMethod:
         assert_component_equal(
             result,
             dbc.Button(
-                html.Span(["Click me!", None], className="button-label"),
+                html.Span(["Click me!", None], className="button-text"),
                 id="button",
                 color="success",
                 outline=True,
@@ -92,7 +93,7 @@ class TestBuildMethod:
         button = vm.Button(id="button_id", text="My text!", href="www.google.com").build()
         expected = dbc.Button(
             id="button_id",
-            children=html.Span(["My text!", None], className="button-label"),
+            children=html.Span(["My text!", None], className="button-text"),
             href="www.google.com",
             target="_top",
             color="primary",
@@ -108,7 +109,7 @@ class TestBuildMethod:
         assert_component_equal(
             result,
             dbc.Button(
-                children=html.Span(["Click me!", None], className="button-label"),
+                children=html.Span(["Click me!", None], className="button-text"),
                 href="",
                 target="_top",
                 color=expected_color,
@@ -116,7 +117,7 @@ class TestBuildMethod:
             keys_to_strip={"id"},
         )
 
-    def test_button_build_tooltip(self):
+    def test_button_build_with_description(self):
         """Test that description argument correctly builds icon and tooltip."""
         result = vm.Button(
             id="button",
@@ -137,7 +138,7 @@ class TestBuildMethod:
         assert_component_equal(
             result,
             dbc.Button(
-                html.Span(["Click me", *expected_description], className="button-label"),
+                html.Span(["Click me", *expected_description], className="button-text"),
                 id="button",
                 href="",
                 target="_top",

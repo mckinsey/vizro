@@ -23,7 +23,7 @@ class Button(VizroBaseModel):
         actions (list[ActionType]): See [`ActionType`][vizro.models.types.ActionType]. Defaults to `[]`.
         variant (Literal["plain", "filled", "outlined"]): Predefined styles to choose from. Options are `plain`,
             `filled` or `outlined`. Defaults to `filled`.
-        description (Optional[Tooltip]): Optional markdown string that adds an icon next to the title.
+        description (Optional[Tooltip]): Optional markdown string that adds an icon next to the button text.
             Hovering over the icon shows a tooltip with the provided description. Defaults to `None`.
         extra (Optional[dict[str, Any]]): Extra keyword arguments that are passed to `dbc.Button` and overwrite any
             defaults chosen by the Vizro team. This may have unexpected behavior.
@@ -52,7 +52,7 @@ class Button(VizroBaseModel):
         BeforeValidator(coerce_str_to_tooltip),
         Field(
             default=None,
-            description="""Optional markdown string that adds an icon next to the title.
+            description="""Optional markdown string that adds an icon next to the button text.
             Hovering over the icon shows a tooltip with the provided description. Defaults to `None`.""",
         ),
     ]
@@ -84,7 +84,7 @@ class Button(VizroBaseModel):
 
         defaults = {
             "id": self.id,
-            "children": html.Span([self.text, *description], className="button-label"),
+            "children": html.Span([self.text, *description], className="button-text"),
             "href": get_relative_path(self.href) if self.href.startswith("/") else self.href,
             "target": "_top",
             # dbc.Button includes `btn btn-primary` as a class by default and appends any class names provided.

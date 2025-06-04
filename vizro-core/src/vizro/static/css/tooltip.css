@@ -24,37 +24,36 @@
   color: var(--text-primaryHover-inverted);
 }
 
-.form-label, .button-label {
+.form-label, .button-text {
   align-items: center;
   display: flex;
-  gap: 8px;
+  gap: 0.5rem;
 }
 
 /* We differentiate between 3 different icon sizes: 16px, 20px and 24px. 20px is our default.
 Use 16px for all text. Use 20px for all headings. */
-.form-label .tooltip-icon, .button-label .tooltip-icon {
-  font-size: 16px;
+.form-label .tooltip-icon, .button-text .tooltip-icon {
+  font-size: 1rem;
 }
 
-.button-label .tooltip-icon {
+.button-text .tooltip-icon {
   color: inherit;
-  font-size: 16px;
 }
 
-.btn-link .button-label:last-child {
+.btn-link .button-text:last-child {
   display: inline;
   text-decoration: none;
 }
 
-.btn-link .button-label .tooltip-icon {
-  margin-left: 8px;
+.btn-link .button-text .tooltip-icon {
+  margin-left:0.5rem;
   vertical-align: text-bottom;
 }
 
 #dashboard-title, #page-title, .form-label {
   align-items: center;
   display: flex;
-  gap: 8px;
+  gap: 0.5rem;
 }
 
 #dashboard-title .tooltip-icon {
