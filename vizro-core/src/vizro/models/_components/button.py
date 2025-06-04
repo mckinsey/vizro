@@ -81,7 +81,7 @@ class Button(VizroBaseModel):
     def build(self):
         variants = {"plain": "link", "filled": "primary", "outlined": "secondary"}
         description = self.description.build().children if self.description else [None]
-        text = html.Div([self.text, *description], className="button-label")
+        text = html.Span([self.text, *description], className="button-label")
 
         defaults = {
             "id": self.id,

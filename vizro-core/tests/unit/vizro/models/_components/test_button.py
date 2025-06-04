@@ -3,6 +3,7 @@
 import dash_bootstrap_components as dbc
 import pytest
 from asserts import assert_component_equal
+from dash import dcc, html
 from pydantic import ValidationError
 
 import vizro.models as vm
@@ -32,7 +33,7 @@ class TestButtonInstantiation:
         ],
     )
     def test_create_button_mandatory_and_optional(self, text, href, variant):
-        button = vm.Button(id="button-id", text=text, href=href, variant=variant)
+        button = vm.Button(id="button-id", text=text, href=href, variant=variant, description="This is description")
 
         assert button.id == "button-id"
         assert button.type == "button"
@@ -40,6 +41,11 @@ class TestButtonInstantiation:
         assert button.href == href
         assert button.actions == []
         assert button.variant == variant
+        assert isinstance(button.description, vm.Tooltip)
+        assert button._action_outputs == {
+            "text": f"{button.id}.children",
+            "description": f"{button.description.id}-text.children",
+        }
 
     def test_set_action_via_validator(self):
         button = vm.Button(actions=[vm.Action(function=export_data())])
@@ -53,18 +59,27 @@ class TestButtonInstantiation:
 
 class TestBuildMethod:
     def test_button_build(self):
-        result = vm.Button(id="button", text="Click me").build()
-        assert_component_equal(result, dbc.Button("Click me", id="button", href="", target="_top", color="primary"))
+        result = vm.Button(id="button", text="Click me!").build()
+        assert_component_equal(
+            result,
+            dbc.Button(
+                html.Span(["Click me!", None], className="button-label"),
+                id="button",
+                href="",
+                target="_top",
+                color="primary",
+            ),
+        )
 
     def test_button_build_with_extra(self):
         """Test that extra arguments correctly override defaults."""
         result = vm.Button(
-            id="button", text="Click me", extra={"color": "success", "outline": True, "href": "www.google.com"}
+            id="button", text="Click me!", extra={"color": "success", "outline": True, "href": "www.google.com"}
         ).build()
         assert_component_equal(
             result,
             dbc.Button(
-                "Click me",
+                html.Span(["Click me!", None], className="button-label"),
                 id="button",
                 color="success",
                 outline=True,
@@ -74,8 +89,14 @@ class TestBuildMethod:
         )
 
     def test_button_build_with_href(self):
-        button = vm.Button(id="button_id", text="My text", href="www.google.com").build()
-        expected = dbc.Button(id="button_id", children="My text", href="www.google.com", target="_top", color="primary")
+        button = vm.Button(id="button_id", text="My text!", href="www.google.com").build()
+        expected = dbc.Button(
+            id="button_id",
+            children=html.Span(["My text!", None], className="button-label"),
+            href="www.google.com",
+            target="_top",
+            color="primary",
+        )
         assert_component_equal(button, expected)
 
     @pytest.mark.parametrize(
@@ -86,6 +107,40 @@ class TestBuildMethod:
         result = vm.Button(variant=variant).build()
         assert_component_equal(
             result,
-            dbc.Button(children="Click me!", href="", target="_top", color=expected_color),
+            dbc.Button(
+                children=html.Span(["Click me!", None], className="button-label"),
+                href="",
+                target="_top",
+                color=expected_color,
+            ),
             keys_to_strip={"id"},
+        )
+
+    def test_button_build_tooltip(self):
+        """Test that description argument correctly builds icon and tooltip."""
+        result = vm.Button(
+            id="button",
+            text="Click me",
+            description=vm.Tooltip(text="Test description", icon="info", id="info"),
+        ).build()
+
+        expected_description = [
+            html.Span("info", id="info-icon", className="material-symbols-outlined tooltip-icon"),
+            dbc.Tooltip(
+                children=dcc.Markdown("Test description", id="info-text", className="card-text"),
+                id="info",
+                target="info-icon",
+                autohide=False,
+            ),
+        ]
+
+        assert_component_equal(
+            result,
+            dbc.Button(
+                html.Span(["Click me", *expected_description], className="button-label"),
+                id="button",
+                href="",
+                target="_top",
+                color="primary",
+            ),
         )
