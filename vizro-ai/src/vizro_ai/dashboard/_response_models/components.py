@@ -95,24 +95,3 @@ Relevant prompt: {self.component_description}
             return ComponentResult(
                 component=vm.Card(id=self.component_id, text=f"Failed to build component: {self.component_id}")
             )
-
-
-if __name__ == "__main__":
-    from dotenv import load_dotenv
-
-    from vizro_ai._llm_models import _get_llm_model
-    from vizro_ai.dashboard.utils import AllDfMetadata
-
-    load_dotenv()
-
-    model = _get_llm_model()
-
-    all_df_metadata = AllDfMetadata({})
-    component_plan = ComponentPlan(
-        component_type="Card",
-        component_description="Create a card says 'this is worldwide GDP'.",
-        component_id="gdp_card",
-        df_name="N/A",
-    )
-    component = component_plan.create(model, all_df_metadata)
-    print(component.__repr__())  # noqa: T201

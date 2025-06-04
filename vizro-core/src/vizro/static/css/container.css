@@ -5,7 +5,7 @@
   padding: 0;
 }
 
-.container-fluid:has(.collapse:not(.show)) {
+.container-fluid:has(> .collapse:not(.show)) {
   height: 60px; /* height of title (28px) + 2 x container padding (16px) */
   overflow: hidden;
 }
@@ -37,7 +37,7 @@
 
 .collapsible-container {
   flex: 1;
-  overflow: auto;
+  overflow: inherit;
 }
 
 .bg-container {

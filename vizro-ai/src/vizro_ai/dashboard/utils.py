@@ -1,27 +1,30 @@
 """Helper Functions For Vizro AI dashboard."""
 
-from dataclasses import dataclass, field
+from dataclasses import dataclass
 from typing import Any, Optional, Union
 
 import pandas as pd
 import tqdm.std as tsd
 import vizro.models as vm
+from pydantic import BaseModel, ConfigDict
 
 
-@dataclass
-class DfMetadata:
-    """Dataclass containing metadata content for a dataframe."""
+class DfMetadata(BaseModel):
+    """Pydantic model containing metadata content for a dataframe."""
 
     df_schema: dict[str, str]
     df: pd.DataFrame
     df_sample: pd.DataFrame
 
+    model_config = ConfigDict(arbitrary_types_allowed=True)
 
-@dataclass
-class AllDfMetadata:
-    """Dataclass containing metadata for all dataframes."""
 
-    all_df_metadata: dict[str, DfMetadata] = field(default_factory=dict)
+class AllDfMetadata(BaseModel):
+    """Pydantic model containing metadata for all dataframes."""
+
+    all_df_metadata: dict[str, DfMetadata] = {}
+
+    model_config = ConfigDict(arbitrary_types_allowed=True)
 
     def get_schemas_and_samples(self) -> dict[str, dict[str, str]]:
         """Retrieve only the df_schema and df_sample for all datasets."""

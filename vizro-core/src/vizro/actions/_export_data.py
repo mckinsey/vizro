@@ -93,7 +93,7 @@ class export_data(_AbstractAction):
     # This must be defined even though it's not used anywhere (since we define transformed_outputs) since it's an
     # abstractmethod.
     @property
-    def outputs(self):
+    def outputs(self):  # type: ignore[override]
         pass
 
     @property
