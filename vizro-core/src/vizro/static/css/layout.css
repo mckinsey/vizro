@@ -218,8 +218,7 @@ Current logic:
   }
 
   #collapsible-left-side.show ~ .collapse-icon-div #collapse-icon {
-    right: 2px;
-    top: 70px;
+    right: -10px;
     z-index: 10;
   }
 
