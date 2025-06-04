@@ -81,11 +81,10 @@ class Button(VizroBaseModel):
     def build(self):
         variants = {"plain": "link", "filled": "primary", "outlined": "secondary"}
         description = self.description.build().children if self.description else [None]
-        text = html.Span([self.text, *description], className="button-label")
 
         defaults = {
             "id": self.id,
-            "children": text,
+            "children": html.Span([self.text, *description], className="button-label"),
             "href": get_relative_path(self.href) if self.href.startswith("/") else self.href,
             "target": "_top",
             # dbc.Button includes `btn btn-primary` as a class by default and appends any class names provided.
