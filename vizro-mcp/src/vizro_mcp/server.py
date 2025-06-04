@@ -9,18 +9,13 @@ from typing import Any, Literal, Optional
 import vizro.models as vm
 from mcp.server.fastmcp import FastMCP
 from pydantic import ValidationError
+from pydantic.json_schema import GenerateJsonSchema
 from vizro import Vizro
 
 from vizro_mcp._schemas import (
     AgGridEnhanced,
     ChartPlan,
-    ContainerSimplified,
-    DashboardSimplified,
-    FilterSimplified,
     GraphEnhanced,
-    PageSimplified,
-    ParameterSimplified,
-    TabsSimplified,
     get_overview_vizro_models,
     get_simple_dashboard_config,
 )
@@ -153,8 +148,28 @@ def validate_model_config(
         Vizro._reset()
 
 
+class NoDefsGenerateJsonSchema(GenerateJsonSchema):
+    """Custom schema generator that removes $defs section."""
+
+    def generate(self, schema, mode="validation"):
+        """Generate schema and remove $defs."""
+        json_schema = super().generate(schema, mode=mode)
+        # Simply remove the $defs section
+        json_schema.pop("$defs", {})
+        return json_schema
+
+
+@dataclass
+class ModelJsonSchemaResults:
+    """Results of the get_model_json_schema tool."""
+
+    model_name: str
+    json_schema: dict[str, Any]
+    additional_info: str
+
+
 @mcp.tool()
-def get_model_json_schema(model_name: str) -> dict[str, Any]:
+def get_model_json_schema(model_name: str) -> ModelJsonSchemaResults:
     """Get the JSON schema for the specified Vizro model.
 
     Args:
@@ -163,40 +178,44 @@ def get_model_json_schema(model_name: str) -> dict[str, Any]:
     Returns:
         JSON schema of the requested Vizro model
     """
-    # Dictionary mapping model names to their simplified versions
     modified_models = {
-        "Page": PageSimplified,
-        "Dashboard": DashboardSimplified,
         "Graph": GraphEnhanced,
         "AgGrid": AgGridEnhanced,
         "Table": AgGridEnhanced,
-        "Tabs": TabsSimplified,
-        "Container": ContainerSimplified,
-        "Filter": FilterSimplified,
-        "Parameter": ParameterSimplified,
     }
 
-    # Check if model_name is in the simplified models dictionary
     if model_name in modified_models:
-        return modified_models[model_name].model_json_schema()
+        return ModelJsonSchemaResults(
+            model_name=model_name,
+            json_schema=modified_models[model_name].model_json_schema(schema_generator=NoDefsGenerateJsonSchema),
+            additional_info="""LLM must remember to replace `$ref` with the actual config. Request the schema of
+that model if necessary. Do NOT forget to call `validate_model_config` after each iteration.""",
+        )
 
-    # Check if model exists in vizro.models
     if not hasattr(vm, model_name):
-        return {"error": f"Model '{model_name}' not found in vizro.models"}
+        return ModelJsonSchemaResults(
+            model_name=model_name,
+            json_schema={},
+            additional_info=f"Model '{model_name}' not found in vizro.models",
+        )
 
-    # Get schema for standard model
     model_class = getattr(vm, model_name)
-    return model_class.model_json_schema()
+    return ModelJsonSchemaResults(
+        model_name=model_name,
+        json_schema=model_class.model_json_schema(schema_generator=NoDefsGenerateJsonSchema),
+        additional_info="""LLM must remember to replace `$ref` with the actual config. Request the schema of
+that model if necessary. Do NOT forget to call `validate_model_config` after each iteration.""",
+    )
 
 
 STANDARD_INSTRUCTIONS = """
 - IF the user has no plan (ie no components or pages), use the config at the bottom of this prompt
     and validate that solution without any additions, OTHERWISE:
 - make a plan of what components you would like to use, then request all necessary schemas
-    using the get_model_json_schema tool
+    using the `get_model_json_schema` tool
 - assemble your components into a page, then add the page or pages to a dashboard, DO NOT show config or code
     to the user until you have validated the solution
-- ALWAYS validate the dashboard configuration using the validate_model_config tool
+- ALWAYS validate the dashboard configuration using the `validate_model_config` tool
 """
 
 IDE_INSTRUCTIONS = """
@@ -208,7 +227,7 @@ IDE_INSTRUCTIONS = """
 """
 
 GENERIC_HOST_INSTRUCTIONS = """
-- you should call the validate_model_config tool to validate the solution, and unless
+- you should call the `validate_model_config` tool to validate the solution, and unless
     otherwise specified, open the dashboard in the browser
 - if you cannot open the dashboard in the browser, communicate this to the user, provide them with the python code
     instead and explain how to run it
@@ -280,7 +299,7 @@ Instructions for creating a Vizro chart:
 IMPORTANT:
     - KEEP IT SIMPLE: rather than iterating yourself, ask the user for more instructions
     - ALWAYS VALIDATE:if you iterate over a valid produced solution, make sure to ALWAYS call the
-        validate_model_config tool again to ensure the solution is still valid
+        `validate_model_config` tool again to ensure the solution is still valid
     - DO NOT show any code or config to the user until you have validated the solution, do not say you are preparing
         a solution, just do it and validate it
     - IF STUCK: try enquiring the schema of the component in question
@@ -341,7 +360,7 @@ def create_starter_dashboard():
     """Prompt template for getting started with Vizro."""
     content = f"""
 Create a super simple Vizro dashboard with one page and one chart and one filter:
-- No need to call any tools except for validate_model_config
+- No need to call any tools except for `validate_model_config`
 - Call this tool with the precise config as shown below
 - The PyCafe link will be automatically opened in your default browser
 - THEN show the python code after validation, but do not show the PyCafe link
@@ -440,8 +459,8 @@ def create_vizro_chart(
     content = f"""
  - Create a chart using the following chart type: {chart_type}.
  - You MUST name the function containing the fig `custom_chart`
- - Make sure to analyze the data using the load_and_analyze_data tool first, passing the file path or github url
+ - Make sure to analyze the data using the `load_and_analyze_data` tool first, passing the file path or github url
  {file_path_or_url} OR choose the most appropriate sample data using the get_sample_data_info tool.
- Then you MUST use the validate_chart_code tool to validate the chart code.
+ Then you MUST use the `validate_chart_code` tool to validate the chart code.
             """
     return content
