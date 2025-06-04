@@ -33,10 +33,27 @@ Then customize and deploy your app to production at scale.
 
 <div align="center">
 <img src="https://raw.githubusercontent.com/mckinsey/vizro/main/.github/images/code_dashboard.png" width="100%"/>
+<p style="font-size:smaller;">
 Use a few lines of simple low-code configuration, with in-built visual design best practices, to assemble high-quality
 multi-page prototypes.
+</p>
 </div>
 <br>
+Every Vizro app is defined by a simple configuration, using these high-level categories:
+
+  - **[Components](https://vizro.readthedocs.io/en/stable/pages/user-guides/components/):** charts, tables, cards, KPI indicators, forms and more.
+  - **[Controls](https://vizro.readthedocs.io/en/stable/pages/user-guides/controls/):** filters and parameters, using a range of selectors such as drop-down menus and sliders.
+  - **[Actions](https://vizro.readthedocs.io/en/stable/pages/user-guides/actions/):** interactions between components, drill-throughs, export functionality and more.
+  - **[Layouts](https://vizro.readthedocs.io/en/stable/pages/user-guides/layouts/):** grid layouts or flexible containers, with a range of pre-set styles.
+  - **[Navigation](https://vizro.readthedocs.io/en/stable/pages/user-guides/navigation/):** a range of app layout and navigation settings, including nested page hierarchies.
+
+Configuration can be written in multiple formats including **Pydantic models**, **JSON**, **YAML** or **Python dictionaries** for added flexibility of implementation.
+
+Optional high-code extensions enable almost infinite customization in a modular way, combining the best of low-code and high-code - including bespoke [**visual formatting**](https://vizro.readthedocs.io/en/stable/pages/user-guides/visual-formatting/) and [**custom components**](https://vizro.readthedocs.io/en/stable/pages/user-guides/extensions/).
+
+Visit our ["How-to guides"](https://vizro.readthedocs.io/en/stable/pages/user-guides/install/) for a more detailed explanation of Vizro features.
+
+## Why use Vizro?
 
 The benefits of the Vizro toolkit include:
 
@@ -44,10 +61,6 @@ The benefits of the Vizro toolkit include:
 <img src="https://raw.githubusercontent.com/mckinsey/vizro/main/.github/images/infographic.svg" width="800"/>
 </div>
 <br>
-
-Visit our ["How-to guides"](https://vizro.readthedocs.io/en/stable/pages/user-guides/install/) for a more detailed explanation of Vizro features.
-
-## Why use Vizro?
 
 Vizro helps you to build data visualization apps that are:
 
