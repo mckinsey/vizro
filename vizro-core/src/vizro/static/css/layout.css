@@ -239,16 +239,3 @@ Current logic:
 ._dash-loading {
   display: none;
 }
-
-.button-label {
-  align-items: center;
-  display: flex;
-  flex-direction: row;
-  gap: 8px;
-
-}
-
-.btn-link .button-label:last-child {
-  display: inline;
-  text-decoration: none;
-}
