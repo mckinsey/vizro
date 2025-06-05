@@ -144,17 +144,18 @@ class Graph(vm.Graph):
 For simpler charts and without need for data manipulation, use this field:
 This is the plotly express figure to be displayed. Only use valid plotly express functions to create the figure.
 Only use the arguments that are supported by the function you are using and where no extra modules such as statsmodels
-are needed (e.g. trendline).
-
+are needed (e.g. trendline):
 - Configure a dictionary as if this would be added as **kwargs to the function you are using.
 - You must use the key: "_target_: "<function_name>" to specify the function you are using. Do NOT precede by
     namespace (like px.line)
 - you must refer to the dataframe by name, for now it is one of "gapminder", "iris", "tips".
 - do not use a title if your Graph model already has a title.
+
 For more complex charts and those that require data manipulation, use the `custom_charts` field:
 - create the suitable number of custom charts and add them to the `custom_charts` field
 - refer here to the function signature you created
 - you must use the key: "_target_: "<custom_chart_name>"
+- DO NOT modify the background (with plot_bgcolor) or color sequences unless explicitly asked for
 """,
         ),
     ]

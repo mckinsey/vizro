@@ -125,7 +125,8 @@ def validate_model_config(
     except ValidationError as e:
         return ValidationResults(
             valid=False,
-            message=f"Validation Error: {e!s}",
+            message=f"""Validation Error: {e!s}. Fix the error and call this tool again.
+Calling `get_model_json_schema` may help.""",
             python_code="",
             pycafe_url=None,
             browser_opened=False,
@@ -145,7 +146,9 @@ def validate_model_config(
 
         return ValidationResults(
             valid=True,
-            message="Configuration is valid for Dashboard!",
+            message="""Configuration is valid for Dashboard! Do not forget to call this tool again after each iteration.
+If you are creating an `app.py` file, you MUST use the code from the validation tool, do not modify it, watch out for
+differences to previous `app.py`""",
             python_code=result.python_code,
             pycafe_url=pycafe_url,
             browser_opened=browser_opened,
@@ -216,13 +219,13 @@ that model if necessary. Do NOT forget to call `validate_model_config` after eac
 
 
 STANDARD_INSTRUCTIONS = """
-- IF the user has no plan (ie no components or pages), use the config at the bottom of this prompt
-    and validate that solution without any additions, OTHERWISE:
+- IF the user has no plan (ie no components or pages), use the config at the bottom of this prompt, OTHERWISE:
 - make a plan of what components you would like to use, then request all necessary schemas
-    using the `get_model_json_schema` tool
+    using the `get_model_json_schema` tool (start with `Dashboard`, and don't forget `Graph`)
 - assemble your components into a page, then add the page or pages to a dashboard, DO NOT show config or code
     to the user until you have validated the solution
 - ALWAYS validate the dashboard configuration using the `validate_model_config` tool
+- using `custom_chart` is encouraged for advanced visualizations, no need to call the planner tool in advanced mode
 """
 
 IDE_INSTRUCTIONS = """
@@ -231,6 +234,8 @@ IDE_INSTRUCTIONS = """
     app = Vizro().build(dashboard)
     if __name__ == "__main__":
         app.run(debug=True, port=8050)
+- you MUST use the code from the validation tool, do not modify it, watch out for differences to previous
+    `app.py`
 """
 
 GENERIC_HOST_INSTRUCTIONS = """
@@ -245,7 +250,8 @@ def get_instructions(advanced_mode: bool = False, user_host: Literal["generic_ho
     """Get instructions for creating a Vizro dashboard in an IDE/editor."""
     if not advanced_mode:
         return f"""
-    {STANDARD_INSTRUCTIONS} 
+    {STANDARD_INSTRUCTIONS}
+
     {IDE_INSTRUCTIONS if user_host == "ide" else GENERIC_HOST_INSTRUCTIONS}
     
     Models you can use:
@@ -256,7 +262,8 @@ def get_instructions(advanced_mode: bool = False, user_host: Literal["generic_ho
 """
     else:
         return """
-    Instructions for going beyond the basic dashboard::
+    Instructions for going beyond the basic dashboard:
+    - ensure that you have called the `get_vizro_chart_or_dashboard_plan` tool with advanced_mode=False first
     - communicate to the user that you are going to use Python code to create the dashboard, and that
         they will have to run the code themselves
     - search the web for more information about the components you are using, if you cannot search the web
@@ -273,13 +280,14 @@ def get_vizro_chart_or_dashboard_plan(
 ) -> str:
     """Get instructions for creating a Vizro chart or dashboard. Call FIRST when asked to create Vizro things.
 
-    Must be called FIRST with advanced_mode=False, then call again with advanced_mode=True if the JSON config does not
-    suffice anymore.
+    Must be ALWAYS called FIRST with advanced_mode=False, then call again with advanced_mode=True if the JSON config does
+    not suffice anymore.
 
     Args:
         user_plan: The type of Vizro thing the user wants to create
         user_host: The host the user is using, if "ide" you can use the IDE/editor to run python code
-        advanced_mode: If True, you can use custom components, CSS, charts, etc.
+        advanced_mode: Only call if you need to use custom CSS, custom components or custom actions.
+            No need to call this with advanced_mode=True if you need advanced charts, use `custom_chart` instead.
 
     Returns:
         Instructions for creating a Vizro chart or dashboard
@@ -287,7 +295,6 @@ def get_vizro_chart_or_dashboard_plan(
     if user_plan == "chart":
         return """
 IMPORTANT:
-    - KEEP IT SIMPLE: rather than iterating yourself, ask the user for more instructions
     - ALWAYS VALIDATE:if you iterate over a valid produced solution, make sure to ALWAYS call the
         validate_chart_code tool to validate the chart code, display the figure code to the user
     - DO NOT modify the background (with plot_bgcolor) or color sequences unless explicitly asked for
@@ -304,12 +311,12 @@ Instructions for creating a Vizro chart:
     elif user_plan == "dashboard":
         return f"""
 IMPORTANT:
-    - KEEP IT SIMPLE: rather than iterating yourself, ask the user for more instructions
-    - ALWAYS VALIDATE:if you iterate over a valid produced solution, make sure to ALWAYS call the
+    - ALWAYS VALIDATE: if you iterate over a valid produced solution, make sure to ALWAYS call the
         `validate_model_config` tool again to ensure the solution is still valid
     - DO NOT show any code or config to the user until you have validated the solution, do not say you are preparing
         a solution, just do it and validate it
-    - IF STUCK: try enquiring the schema of the component in question
+    - ALWAYS CHECK SCHEMA: to start with, or when stuck, try enquiring the schema of the component in question
+with the `get_model_json_schema` tool (available models see below)
 
 {get_instructions(advanced_mode, user_host)}
     """
@@ -474,78 +481,211 @@ def create_vizro_chart(
 
 
 if __name__ == "__main__":
+    ####### Currently BUG, as the new Graph inside Containers inside Tabs is not working!!
     dashboard_config = {
         "pages": [
             {
-                "title": "Iris Data Analysis",
+                "title": "Supermarket Sales Dashboard",
                 "controls": [
                     {
-                        "id": "species_filter",
+                        "id": "city_filter",
                         "type": "filter",
-                        "column": "species",
-                        "targets": ["scatter_plot"],
+                        "column": "City",
+                        "targets": ["sales_by_product_line", "sales_overview"],
                         "selector": {"type": "dropdown", "multi": True},
-                    }
+                    },
+                    {
+                        "id": "customer_type_filter",
+                        "type": "filter",
+                        "column": "Customer type",
+                        "targets": ["sales_by_product_line", "sales_overview"],
+                        "selector": {"type": "dropdown", "multi": True},
+                    },
                 ],
                 "components": [
                     {
-                        "id": "scatter_plot",
+                        "id": "sales_by_product_line",
                         "type": "graph",
-                        "title": "Sepal Dimensions by Species",
+                        "title": "Total Sales by Product Line",
                         "figure": {
-                            "x": "sepal_length",
-                            "y": "sepal_width",
-                            "color": "species",
-                            "_target_": "scatter",
-                            "data_frame": "iris_data",
-                            "hover_data": ["petal_length", "petal_width"],
+                            "x": "Product line",
+                            "y": "Total",
+                            "color": "Branch",
+                            "title": "",
+                            "labels": {"Total": "Total Sales ($)", "Product line": "Product Category"},
+                            "_target_": "bar",
+                            "data_frame": "supermarket_sales",
                         },
                     },
                     {
-                        "id": "custom_scatter_plot",
+                        "id": "sales_overview",
                         "type": "graph",
-                        "title": "Custom Scatter Plot",
-                        "figure": {"_target_": "custom_scatter", "data_frame": "iris_data"},
+                        "title": "Sales Distribution by Payment Method",
+                        "figure": {
+                            "names": "Payment",
+                            "title": "",
+                            "values": "Total",
+                            "_target_": "pie",
+                            "data_frame": "supermarket_sales",
+                        },
                     },
                 ],
-            }
+            },
+            {
+                "title": "Advanced Analytics",
+                "controls": [
+                    {
+                        "id": "branch_filter",
+                        "type": "filter",
+                        "column": "Branch",
+                        "targets": ["sales_heatmap", "customer_insights_3d"],
+                        "selector": {"type": "dropdown", "multi": True},
+                    },
+                    {
+                        "id": "product_filter",
+                        "type": "filter",
+                        "column": "Product line",
+                        "targets": ["sales_heatmap", "customer_insights_3d"],
+                        "selector": {"type": "dropdown", "multi": True},
+                    },
+                ],
+                "components": [
+                    {
+                        "tabs": [
+                            {
+                                "label": "Temporal Analysis",
+                                "components": [
+                                    {
+                                        "id": "sales_heatmap",
+                                        "type": "graph",
+                                        "title": "Sales Pattern Analysis",
+                                        "figure": {"_target_": "sales_heatmap", "data_frame": "supermarket_sales"},
+                                        "header": "Interactive heatmap showing sales patterns across days of the week and hours of the day",
+                                    }
+                                ],
+                            },
+                            {
+                                "label": "Customer Insights",
+                                "components": [
+                                    {
+                                        "id": "customer_insights_3d",
+                                        "type": "graph",
+                                        "title": "3D Customer Analysis",
+                                        "figure": {
+                                            "_target_": "customer_insights_3d",
+                                            "data_frame": "supermarket_sales",
+                                        },
+                                        "header": "Explore relationships between price, quantity, customer ratings, and total sales",
+                                    }
+                                ],
+                            },
+                        ],
+                        "type": "tabs",
+                    }
+                ],
+            },
         ],
         "theme": "vizro_dark",
-        "title": "Iris Dashboard",
+        "title": "Supermarket Analytics",
     }
 
     data_infos = [
         DFMetaData(
-            file_name="iris_data",
-            file_path_or_url="https://raw.githubusercontent.com/plotly/datasets/master/iris-id.csv",
+            file_name="supermarket_sales",
+            file_path_or_url="https://raw.githubusercontent.com/plotly/datasets/master/supermarket_Sales.csv",
             file_location_type="remote",
             read_function_string="pd.read_csv",
-            column_names_types={
-                "sepal_length": "float",
-                "sepal_width": "float",
-                "petal_length": "float",
-                "petal_width": "float",
-                "species": "str",
-            },
         )
     ]
 
     custom_charts = [
         ChartPlan(
-            chart_type="scatter",
-            chart_name="custom_scatter",
-            imports=["import pandas as pd", "import plotly.express as px", "import plotly.graph_objects as go"],
-            chart_code="""
-def custom_scatter(data_frame):
-    fig = go.Figure()
-    fig.add_trace(go.Scatter(
-        x=data_frame["sepal_length"],
-        y=data_frame["sepal_width"],
-        mode="markers"
+            chart_type="time_series_heatmap",
+            chart_name="sales_heatmap",
+            imports=["import plotly.graph_objects as go", "import pandas as pd", "import numpy as np"],
+            chart_code="""def sales_heatmap(data_frame):
+    # Convert Date to datetime and extract month and day of week
+    df = data_frame.copy()
+    df['Date'] = pd.to_datetime(df['Date'])
+    df['DayOfWeek'] = df['Date'].dt.day_name()
+    df['Hour'] = pd.to_datetime(df['Time']).dt.hour
+    
+    # Create pivot table for heatmap
+    heatmap_data = df.pivot_table(values='Total', index='DayOfWeek', columns='Hour', aggfunc='sum', fill_value=0)
+    
+    # Reorder days of week
+    day_order = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday']
+    heatmap_data = heatmap_data.reindex(day_order)
+    
+    fig = go.Figure(data=go.Heatmap(
+        z=heatmap_data.values,
+        x=heatmap_data.columns,
+        y=heatmap_data.index,
+        colorscale='Viridis',
+        hoverongaps=False,
+        hovertemplate='<b>%{y}</b><br>Hour: %{x}<br>Total Sales: $%{z:.2f}<extra></extra>'
     ))
-    return fig
-        """,
-        )
+    
+    fig.update_layout(
+        title=dict(text='Sales Heatmap by Day and Hour', x=0.5),
+        xaxis_title='Hour of Day',
+        yaxis_title='Day of Week',
+        font=dict(size=12),
+        height=500
+    )
+    
+    return fig""",
+        ),
+        ChartPlan(
+            chart_type="advanced_scatter_3d",
+            chart_name="customer_insights_3d",
+            imports=["import plotly.graph_objects as go", "import pandas as pd"],
+            chart_code="""def customer_insights_3d(data_frame):
+    # Create 3D scatter plot with customer insights
+    df = data_frame.copy()
+    
+    # Create size based on quantity
+    sizes = df['Quantity'] * 3
+    
+    fig = go.Figure(data=[go.Scatter3d(
+        x=df['Unit price'],
+        y=df['Quantity'],
+        z=df['Customer stratification rating'],
+        mode='markers',
+        marker=dict(
+            size=sizes,
+            color=df['Total'],
+            colorscale='Plasma',
+            opacity=0.7,
+            colorbar=dict(title='Total Sales ($)'),
+            line=dict(width=0.5, color='DarkSlateGrey')
+        ),
+        text=df['Product line'],
+        hovertemplate=
+            '<b>%{text}</b><br>' +
+            'Unit Price: $%{x:.2f}<br>' +
+            'Quantity: %{y}<br>' +
+            'Customer Rating: %{z}<br>' +
+            'Total Sales: $%{marker.color:.2f}' +
+            '<extra></extra>'
+    )])
+    
+    fig.update_layout(
+        title=dict(text='3D Customer Insights: Price vs Quantity vs Rating', x=0.5),
+        scene=dict(
+            xaxis_title='Unit Price ($)',
+            yaxis_title='Quantity',
+            zaxis_title='Customer Rating',
+            camera=dict(
+                eye=dict(x=1.5, y=1.5, z=1.5)
+            )
+        ),
+        height=600,
+        font=dict(size=12)
+    )
+    
+    return fig""",
+        ),
     ]
 
     response = validate_model_config(dashboard_config, data_infos, custom_charts)
@@ -554,3 +694,78 @@ def custom_scatter(data_frame):
     print(response.python_code)
 
     # TODO: check if validation for non-existent custom charts can be improved!
+
+##### BELOW IS A WORKING CONFIG ####
+#     dashboard_config = {
+#         "pages": [
+#             {
+#                 "title": "Iris Data Analysis",
+#                 "controls": [
+#                     {
+#                         "id": "species_filter",
+#                         "type": "filter",
+#                         "column": "species",
+#                         "targets": ["scatter_plot"],
+#                         "selector": {"type": "dropdown", "multi": True},
+#                     }
+#                 ],
+#                 "components": [
+#                     {
+#                         "id": "scatter_plot",
+#                         "type": "graph",
+#                         "title": "Sepal Dimensions by Species",
+#                         "figure": {
+#                             "x": "sepal_length",
+#                             "y": "sepal_width",
+#                             "color": "species",
+#                             "_target_": "scatter",
+#                             "data_frame": "iris_data",
+#                             "hover_data": ["petal_length", "petal_width"],
+#                         },
+#                     },
+#                     {
+#                         "id": "custom_scatter_plot",
+#                         "type": "graph",
+#                         "title": "Custom Scatter Plot",
+#                         "figure": {"_target_": "custom_scatter", "data_frame": "iris_data"},
+#                     },
+#                 ],
+#             }
+#         ],
+#         "theme": "vizro_dark",
+#         "title": "Iris Dashboard",
+#     }
+
+#     data_infos = [
+#         DFMetaData(
+#             file_name="iris_data",
+#             file_path_or_url="https://raw.githubusercontent.com/plotly/datasets/master/iris-id.csv",
+#             file_location_type="remote",
+#             read_function_string="pd.read_csv",
+#             column_names_types={
+#                 "sepal_length": "float",
+#                 "sepal_width": "float",
+#                 "petal_length": "float",
+#                 "petal_width": "float",
+#                 "species": "str",
+#             },
+#         )
+#     ]
+
+#     custom_charts = [
+#         ChartPlan(
+#             chart_type="scatter",
+#             chart_name="custom_scatter",
+#             imports=["import pandas as pd", "import plotly.express as px", "import plotly.graph_objects as go"],
+#             chart_code="""
+# def custom_scatter(data_frame):
+#     fig = go.Figure()
+#     fig.add_trace(go.Scatter(
+#         x=data_frame["sepal_length"],
+#         y=data_frame["sepal_width"],
+#         mode="markers"
+#     ))
+#     return fig
+#         """,
+#         )
+#     ]
