@@ -1,14 +1,18 @@
 """Schema defining pydantic models for usage in the MCP server."""
 
-from typing import Annotated, Any, Literal, Optional
+import importlib
+from typing import Annotated, Any, Literal, Optional, Union, cast
 
 import vizro.models as vm
-from pydantic import AfterValidator, BaseModel, Field, PrivateAttr, conlist
+from pydantic import AfterValidator, BaseModel, Field, PrivateAttr, ValidationInfo, field_validator
+from vizro.models.types import (
+    CapturedCallable,
+    JsonSchemaExtraType,
+)
 
 from vizro_mcp._utils import SAMPLE_DASHBOARD_CONFIG, DFMetaData
 
 # Constants used in chart validation
-CUSTOM_CHART_NAME = "custom_chart"
 ADDITIONAL_IMPORTS = [
     "import vizro.plotly.express as px",
     "import plotly.graph_objects as go",
@@ -79,6 +83,94 @@ The only difference to the dash version is that:
     )
 
 
+def validate_captured_callable(cls, value, info: ValidationInfo):
+    """Reusable validator for the `figure` argument of Figure like models."""
+    # Bypass validation so that legacy vm.Action(function=filter_interaction(...)) and
+    # vm.Action(function=export_data(...)) work.
+    from vizro.actions import export_data, filter_interaction
+
+    if isinstance(value, (export_data, filter_interaction)):
+        return value
+
+    json_schema_extra: JsonSchemaExtraType = cls.model_fields[info.field_name].json_schema_extra
+    import_path = json_schema_extra["import_path"]
+    context = cast(dict[str, Any], info.context) if isinstance(info.context, dict) else {}  # type: ignore[assignment]
+    # Try to import function given in _target_ from the import_path property of the pydantic field.
+    try:
+        function_name = value["_target_"]
+    except KeyError as exc:
+        raise ValueError(
+            "CapturedCallable object must contain the key '_target_' that gives the target function."
+        ) from exc
+
+    try:
+        _ = getattr(importlib.import_module(import_path), function_name)
+    except (AttributeError, ModuleNotFoundError):
+        pass
+    else:
+        if function_name in context.get("callable_defs", {}):
+            raise ValueError(
+                f"""_target_={function_name} is defined as a `custom_chart` and can be imported from {import_path}.
+                Do not use names for custom charts that are already in the px namespace.
+                """
+            )
+        return CapturedCallable._validate_captured_callable(
+            captured_callable_config=value, json_schema_extra=json_schema_extra
+        )
+
+    if function_name in context.get("callable_defs", {}):
+        items_str = ", ".join(f"{k}={v!r}" for k, v in value.items() if k != "_target_")  # type: ignore
+        return f"{value['_target_']}({items_str})"
+
+    raise ValueError(
+        f"""_target_={function_name} cannot be imported from {import_path} nor is it defined as a `custom_chart`
+        with the correct name."""
+    )
+
+
+# def process_callable_data_frame(value):
+#     if isinstance(value, str):
+#         return value
+#     return _process_callable_data_frame(value)
+
+
+class Graph(vm.Graph):
+    figure: Annotated[
+        Union[CapturedCallable, str],
+        # AfterValidator(process_callable_data_frame), #pretty sure this is not needed for this task
+        Field(
+            json_schema_extra={"mode": "graph", "import_path": "vizro.plotly.express"},
+            description="""
+For simpler charts and without need for data manipulation, use this field:
+This is the plotly express figure to be displayed. Only use valid plotly express functions to create the figure.
+Only use the arguments that are supported by the function you are using and where no extra modules such as statsmodels
+are needed (e.g. trendline).
+
+- Configure a dictionary as if this would be added as **kwargs to the function you are using.
+- You must use the key: "_target_: "<function_name>" to specify the function you are using. Do NOT precede by
+    namespace (like px.line)
+- you must refer to the dataframe by name, for now it is one of "gapminder", "iris", "tips".
+- do not use a title if your Graph model already has a title.
+For more complex charts and those that require data manipulation, use the `custom_charts` field:
+- create the suitable number of custom charts and add them to the `custom_charts` field
+- refer here to the function signature you created
+- you must use the key: "_target_: "<custom_chart_name>"
+""",
+        ),
+    ]
+    _validate_figure = field_validator("figure", mode="before")(validate_captured_callable)
+
+
+# TODO: can this be done cleaner?
+vm.Container.add_type(field_name="components", new_type=Graph)
+vm.Page.add_type(field_name="components", new_type=Graph)
+vm.Page.add_type(field_name="components", new_type=vm.Container)
+
+
+class Dashboard(vm.Dashboard):
+    pages: list[vm.Page]
+
+
 ###### Chart functionality - not sure if I should include this in the MCP server
 def _strip_markdown(code_string: str) -> str:
     """Remove any code block wrappers (markdown or triple quotes)."""
@@ -92,22 +184,19 @@ def _strip_markdown(code_string: str) -> str:
     return code_string.strip()
 
 
-def _check_chart_code(v: str) -> str:
+def _check_chart_code(v: str, info: ValidationInfo) -> str:
     v = _strip_markdown(v)
 
     # TODO: add more checks: ends with return, has return, no second function def, only one indented line
-    func_def = f"def {CUSTOM_CHART_NAME}("
+    func_def = f"def {info.data['chart_name']}("
     if func_def not in v:
-        raise ValueError(f"The chart code must be wrapped in a function named `{CUSTOM_CHART_NAME}`")
+        raise ValueError(f"The chart code must be wrapped in a function named `{info.data['chart_name']}`")
 
     v = v[v.index(func_def) :].strip()
 
     first_line = v.split("\n")[0].strip()
-    if "data_frame" not in first_line:
-        raise ValueError(
-            """The chart code must accept a single argument `data_frame`,
-and it should be the first argument of the chart."""
-        )
+    if "(data_frame" not in first_line:
+        raise ValueError("""The chart code must accept as first argument `data_frame` which is a pandas DataFrame.""")
     return v
 
 
@@ -118,6 +207,12 @@ class ChartPlan(BaseModel):
         description="""
         Describes the chart type that best reflects the user request.
         """,
+    )
+    chart_name: str = Field(
+        description="""
+        The name of the chart function. Should be unique, concise and in snake_case.
+        """,
+        pattern=r"^[a-z][a-z0-9_]*$",
     )
     imports: list[str] = Field(
         description="""
@@ -134,8 +229,8 @@ class ChartPlan(BaseModel):
         Field(
             description="""
         Python code that generates a generates a plotly go.Figure object. It must fulfill the following criteria:
-        1. Must be wrapped in a function name
-        2. Must accept a single argument `data_frame` which is a pandas DataFrame
+        1. Must be wrapped in a function that is named `chart_name`
+        2. Must accept as first argument argument `data_frame` which is a pandas DataFrame
         3. Must return a plotly go.Figure object
         4. All data used in the chart must be derived from the data_frame argument, all data manipulations
         must be done within the function.
@@ -156,9 +251,9 @@ class ChartPlan(BaseModel):
     def get_chart_code(self, chart_name: Optional[str] = None, vizro: bool = False):
         chart_code = self.chart_code
         if vizro:
-            chart_code = chart_code.replace(f"def {CUSTOM_CHART_NAME}", f"@capture('graph')\ndef {CUSTOM_CHART_NAME}")
+            chart_code = chart_code.replace(f"def {self.chart_name}", f"@capture('graph')\ndef {self.chart_name}")
         if chart_name is not None:
-            chart_code = chart_code.replace(f"def {CUSTOM_CHART_NAME}", f"def {chart_name}")
+            chart_code = chart_code.replace(f"def {self.chart_name}", f"def {chart_name}")
         return chart_code
 
     def get_dashboard_template(self, data_info: DFMetaData) -> str:
@@ -201,7 +296,7 @@ dashboard = vm.Dashboard(
             components=[
                 vm.Graph(
                     id="{self.chart_type}_graph",
-                    figure={CUSTOM_CHART_NAME}("{data_info.file_name}"),
+                    figure={self.chart_name}("{data_info.file_name}"),
                 )
             ],
         )
@@ -237,3 +332,17 @@ def get_overview_vizro_models() -> dict[str, list[dict[str, str]]]:
 def get_simple_dashboard_config() -> str:
     """Very simple Vizro dashboard configuration. Use this config as a starter when no other config is provided."""
     return SAMPLE_DASHBOARD_CONFIG
+
+
+if __name__ == "__main__":
+    plan = ChartPlan(
+        chart_type="scatter",
+        chart_name="scatter",
+        imports=["import pandas as pd", "import plotly.express as px"],
+        chart_code="""
+def scatter(data_frame):
+    return px.scatter(data_frame, x="sepal_length", y="sepal_width")
+        """,
+    )
+
+    print(plan.get_chart_code(chart_name="poo", vizro=True))

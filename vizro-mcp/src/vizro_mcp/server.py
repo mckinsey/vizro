@@ -15,6 +15,7 @@ from vizro import Vizro
 from vizro_mcp._schemas import (
     AgGridEnhanced,
     ChartPlan,
+    Dashboard,
     GraphEnhanced,
     get_overview_vizro_models,
     get_simple_dashboard_config,
@@ -96,6 +97,7 @@ def get_sample_data_info(data_name: Literal["iris", "tips", "stocks", "gapminder
 def validate_model_config(
     dashboard_config: dict[str, Any],
     data_infos: list[DFMetaData],  # Should be Optional[..]=None, but Cursor complains..
+    custom_charts: list[ChartPlan],
     auto_open: bool = True,
 ) -> ValidationResults:
     """Validate Vizro model configuration. Run ALWAYS when you have a complete dashboard configuration.
@@ -106,15 +108,20 @@ def validate_model_config(
     Args:
         dashboard_config: Either a JSON string or a dictionary representing a Vizro dashboard model configuration
         data_infos: List of DFMetaData objects containing information about the data files
+        custom_charts: List of ChartPlan objects containing information about the custom charts in the dashboard
         auto_open: Whether to automatically open the PyCafe link in a browser
 
     Returns:
         ValidationResults object with status and dashboard details
     """
+
     Vizro._reset()
 
     try:
-        dashboard = vm.Dashboard.model_validate(dashboard_config)
+        dashboard = Dashboard.model_validate(
+            dashboard_config,
+            context={"callable_defs": [custom_chart.chart_name for custom_chart in custom_charts]},
+        )
     except ValidationError as e:
         return ValidationResults(
             valid=False,
@@ -125,7 +132,7 @@ def validate_model_config(
         )
 
     else:
-        result = get_python_code_and_preview_link(dashboard, data_infos)
+        result = get_python_code_and_preview_link(dashboard, data_infos, custom_charts)
 
         pycafe_url = result.pycafe_url if all(info.file_location_type == "remote" for info in data_infos) else None
         browser_opened = False
@@ -464,3 +471,86 @@ def create_vizro_chart(
  Then you MUST use the `validate_chart_code` tool to validate the chart code.
             """
     return content
+
+
+if __name__ == "__main__":
+    dashboard_config = {
+        "pages": [
+            {
+                "title": "Iris Data Analysis",
+                "controls": [
+                    {
+                        "id": "species_filter",
+                        "type": "filter",
+                        "column": "species",
+                        "targets": ["scatter_plot"],
+                        "selector": {"type": "dropdown", "multi": True},
+                    }
+                ],
+                "components": [
+                    {
+                        "id": "scatter_plot",
+                        "type": "graph",
+                        "title": "Sepal Dimensions by Species",
+                        "figure": {
+                            "x": "sepal_length",
+                            "y": "sepal_width",
+                            "color": "species",
+                            "_target_": "scatter",
+                            "data_frame": "iris_data",
+                            "hover_data": ["petal_length", "petal_width"],
+                        },
+                    },
+                    {
+                        "id": "custom_scatter_plot",
+                        "type": "graph",
+                        "title": "Custom Scatter Plot",
+                        "figure": {"_target_": "custom_scatter", "data_frame": "iris_data"},
+                    },
+                ],
+            }
+        ],
+        "theme": "vizro_dark",
+        "title": "Iris Dashboard",
+    }
+
+    data_infos = [
+        DFMetaData(
+            file_name="iris_data",
+            file_path_or_url="https://raw.githubusercontent.com/plotly/datasets/master/iris-id.csv",
+            file_location_type="remote",
+            read_function_string="pd.read_csv",
+            column_names_types={
+                "sepal_length": "float",
+                "sepal_width": "float",
+                "petal_length": "float",
+                "petal_width": "float",
+                "species": "str",
+            },
+        )
+    ]
+
+    custom_charts = [
+        ChartPlan(
+            chart_type="scatter",
+            chart_name="custom_scatter",
+            imports=["import pandas as pd", "import plotly.express as px", "import plotly.graph_objects as go"],
+            chart_code="""
+def custom_scatter(data_frame):
+    fig = go.Figure()
+    fig.add_trace(go.Scatter(
+        x=data_frame["sepal_length"],
+        y=data_frame["sepal_width"],
+        mode="markers"
+    ))
+    return fig
+        """,
+        )
+    ]
+
+    response = validate_model_config(dashboard_config, data_infos, custom_charts)
+    print(response.valid)
+    print(response.message)
+    print(response.python_code)
+
+    # TODO: check if validation for non-existent custom charts can be improved!

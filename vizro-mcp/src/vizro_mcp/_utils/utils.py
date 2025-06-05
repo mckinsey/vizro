@@ -12,6 +12,7 @@ from urllib.parse import quote, urlencode
 
 import pandas as pd
 import vizro.models as vm
+from vizro.models._base import _format_and_lint
 
 # PyCafe URL for Vizro snippets
 PYCAFE_URL = "https://py.cafe"
@@ -255,26 +256,37 @@ def create_pycafe_url(python_code: str) -> str:
     return pycafe_url
 
 
+def remove_figure_quotes(code_string):
+    """Remove quotes around all figure argument values."""
+    return _format_and_lint(re.sub(r'figure="([^"]*)"', r"figure=\1", code_string))
+
+
 def get_python_code_and_preview_link(
-    model_object: vm.VizroBaseModel, data_infos: list[DFMetaData]
+    model_object: vm.VizroBaseModel,
+    data_infos: list[DFMetaData],
+    custom_charts,  # TODO: do not forget to type
 ) -> VizroCodeAndPreviewLink:
     """Get the Python code and preview link for a Vizro model object."""
     # Get the Python code
-    python_code = model_object._to_python()
+    python_code = model_object._to_python(
+        extra_callable_defs={custom_chart.get_chart_code(vizro=True) for custom_chart in custom_charts}
+    )
 
-    # Add imports after the first empty line
+    # Gather all imports (static + custom), deduplicate, and insert at the first empty line
+    static_imports = [
+        "from vizro import Vizro",
+        "import pandas as pd",
+        "from vizro.managers import data_manager",
+    ]
+    custom_imports = [
+        imp for custom_chart in custom_charts for imp in custom_chart.get_imports(vizro=True).split("\n") if imp.strip()
+    ]
+    all_imports = list(dict.fromkeys(static_imports + custom_imports))
     lines = python_code.splitlines()
     for i, line in enumerate(lines):
         if not line.strip():
-            # Found first empty line, insert imports here
-            imports_to_add = [
-                "from vizro import Vizro",
-                "import pandas as pd",
-                "from vizro.managers import data_manager",
-            ]
-            lines[i:i] = imports_to_add
+            lines[i:i] = all_imports
             break
-
     python_code = "\n".join(lines)
 
     # Prepare data loading code
@@ -294,6 +306,8 @@ def get_python_code_and_preview_link(
 
     # Add final run line
     python_code += "\n\nVizro().build(model).run()"
+
+    python_code = remove_figure_quotes(python_code)
 
     pycafe_url = create_pycafe_url(python_code)
 
