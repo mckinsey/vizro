@@ -179,3 +179,7 @@
   color: var(--text-primary-inverted);
   text-decoration-line: underline;
 }
+
+.ag-root-wrapper-body.ag-layout-normal {
+  height: auto !important;
+}
