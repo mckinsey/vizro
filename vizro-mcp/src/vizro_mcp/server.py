@@ -114,7 +114,6 @@ def validate_model_config(
     Returns:
         ValidationResults object with status and dashboard details
     """
-
     Vizro._reset()
 
     try:
@@ -253,7 +252,7 @@ def get_instructions(advanced_mode: bool = False, user_host: Literal["generic_ho
     {STANDARD_INSTRUCTIONS}
 
     {IDE_INSTRUCTIONS if user_host == "ide" else GENERIC_HOST_INSTRUCTIONS}
-    
+
     Models you can use:
     {get_overview_vizro_models()}
 
@@ -609,14 +608,14 @@ if __name__ == "__main__":
     df['Date'] = pd.to_datetime(df['Date'])
     df['DayOfWeek'] = df['Date'].dt.day_name()
     df['Hour'] = pd.to_datetime(df['Time']).dt.hour
-    
+
     # Create pivot table for heatmap
     heatmap_data = df.pivot_table(values='Total', index='DayOfWeek', columns='Hour', aggfunc='sum', fill_value=0)
-    
+
     # Reorder days of week
     day_order = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday']
     heatmap_data = heatmap_data.reindex(day_order)
-    
+
     fig = go.Figure(data=go.Heatmap(
         z=heatmap_data.values,
         x=heatmap_data.columns,
@@ -625,7 +624,7 @@ if __name__ == "__main__":
         hoverongaps=False,
         hovertemplate='<b>%{y}</b><br>Hour: %{x}<br>Total Sales: $%{z:.2f}<extra></extra>'
     ))
-    
+
     fig.update_layout(
         title=dict(text='Sales Heatmap by Day and Hour', x=0.5),
         xaxis_title='Hour of Day',
@@ -633,7 +632,7 @@ if __name__ == "__main__":
         font=dict(size=12),
         height=500
     )
-    
+
     return fig""",
         ),
         ChartPlan(
@@ -643,10 +642,10 @@ if __name__ == "__main__":
             chart_code="""def customer_insights_3d(data_frame):
     # Create 3D scatter plot with customer insights
     df = data_frame.copy()
-    
+
     # Create size based on quantity
     sizes = df['Quantity'] * 3
-    
+
     fig = go.Figure(data=[go.Scatter3d(
         x=df['Unit price'],
         y=df['Quantity'],
@@ -669,7 +668,7 @@ if __name__ == "__main__":
             'Total Sales: $%{marker.color:.2f}' +
             '<extra></extra>'
     )])
-    
+
     fig.update_layout(
         title=dict(text='3D Customer Insights: Price vs Quantity vs Rating', x=0.5),
         scene=dict(
@@ -683,7 +682,7 @@ if __name__ == "__main__":
         height=600,
         font=dict(size=12)
     )
-    
+
     return fig""",
         ),
     ]
