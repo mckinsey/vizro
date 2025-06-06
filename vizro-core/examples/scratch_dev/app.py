@@ -6,17 +6,19 @@ import vizro.models as vm
 import vizro.plotly.express as px
 from vizro import Vizro
 from vizro.tables import dash_ag_grid, dash_data_table
-
-tips = px.data.tips()
-
-import vizro.models as vm
-import vizro.plotly.express as px
-from vizro import Vizro
-from vizro.actions import export_data
+from vizro.actions import filter_interaction, export_data
 from vizro.models.types import capture
 from time import sleep
+from vizro.managers import data_manager
 
-from vizro.tables import dash_ag_grid
+df_gapminder = px.data.gapminder().query("year == 2007")
+
+
+def load_dynamic_gapminder_data(continent: str = "Europe"):
+    return df_gapminder[df_gapminder["continent"] == continent]
+
+
+data_manager["dynamic_df_gapminder"] = load_dynamic_gapminder_data
 
 
 @capture("action")
@@ -25,12 +27,21 @@ def my_custom_action(t: int):
     sleep(t)
 
 
-df = px.data.iris()
+page_1 = vm.Page(
+    title="My first dashboard",
+    components=[
+        vm.Graph(figure=px.scatter(df_gapminder, x="gdpPercap", y="lifeExp", size="pop", color="continent")),
+        vm.Graph(figure=px.histogram(df_gapminder, x="lifeExp", color="continent", barmode="group")),
+    ],
+    controls=[
+        vm.Filter(column="continent"),
+    ],
+)
 
-page = vm.Page(
+page_2 = vm.Page(
     title="Simple custom action",
     components=[
-        vm.Graph(figure=px.scatter(df, x="sepal_length", y="petal_width", color="species")),
+        vm.Graph(figure=px.scatter(df_gapminder, x="gdpPercap", y="lifeExp", size="pop", color="continent")),
         vm.Button(
             text="Export data",
             actions=[
@@ -40,33 +51,12 @@ page = vm.Page(
             ],
         ),
     ],
-)
-
-# dashboard = vm.Dashboard(pages=[page])
-
-import vizro.plotly.express as px
-from vizro import Vizro
-import vizro.models as vm
-
-df = px.data.iris()
-
-page2 = vm.Page(
-    title="My first dashboard",
-    components=[
-        vm.Graph(figure=px.scatter(df, x="sepal_length", y="petal_width", color="species")),
-        vm.Graph(figure=px.histogram(df, x="sepal_width", color="species")),
-    ],
     controls=[
-        vm.Filter(column="species"),
+        vm.Filter(column="continent"),
     ],
 )
-import vizro.models as vm
-import vizro.plotly.express as px
-from vizro import Vizro
-from vizro.actions import filter_interaction
 
-df_gapminder = px.data.gapminder().query("year == 2007")
-page3 = vm.Page(
+page_3 = vm.Page(
     title="Filter interaction graph",
     components=[
         vm.Graph(
@@ -90,14 +80,12 @@ page3 = vm.Page(
             ),
         ),
     ],
+    controls=[
+        vm.Filter(column="continent"),
+    ],
 )
-import vizro.models as vm
-import vizro.plotly.express as px
-from vizro import Vizro
-from vizro.actions import filter_interaction
 
-df_gapminder = px.data.gapminder().query("year == 2007")
-page4 = vm.Page(
+page_4 = vm.Page(
     title="Filter interaction grid",
     components=[
         vm.AgGrid(
@@ -116,10 +104,38 @@ page4 = vm.Page(
             ),
         ),
     ],
+    controls=[
+        vm.Filter(column="continent"),
+    ],
 )
 
+page_5 = vm.Page(
+    title="Dynamic filter",
+    components=[
+        vm.Graph(
+            figure=px.scatter("dynamic_df_gapminder", x="gdpPercap", y="lifeExp", size="pop", color="continent"),
+        ),
+    ],
+    controls=[
+        vm.Filter(column="continent"),
+    ],
+)
 
-dashboard = vm.Dashboard(pages=[page, page2, page3, page4])
+page_6 = vm.Page(
+    title="DataFrame Parameter",
+    components=[
+        vm.Graph(id="page_6_graph", figure=px.box("dynamic_df_gapminder", x="continent", y="lifeExp", color="continent")),
+    ],
+    controls=[
+        vm.Filter(column="continent"),
+        vm.Parameter(
+            targets=["page_6_graph.data_frame.continent"],
+            selector=vm.RadioItems(options=list(set(df_gapminder["continent"])), value="Europe"),
+        )
+    ],
+)
+
+dashboard = vm.Dashboard(pages=[page_1, page_2, page_3, page_4, page_5, page_6])
 
 if __name__ == "__main__":
     Vizro().build(dashboard).run()
