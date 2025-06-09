@@ -39,7 +39,6 @@ multi-page prototypes, that are production-ready.
 </p>
 </div>
 <br>
-
 Every Vizro app is defined by a simple configuration, using these high-level categories:
 
 - **[Components](https://vizro.readthedocs.io/en/stable/pages/user-guides/components/):** charts, tables, cards, KPI indicators, forms and more.
