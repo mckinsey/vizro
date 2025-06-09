@@ -62,10 +62,10 @@ The plot this code returns looks as follows. Hovering over each point gave the d
 
         @capture("graph")
         def custom_chart(data_frame):
-        fig = go.Figure()
-        fig.add_trace(go.Scatter(x=data_frame["Date Read"], y=[1] * len(data_frame), mode="markers"))
-        fig.update_layout(title="Sequence of reading", xaxis_title="Date Read", yaxis_title="Y=1")
-        return fig
+           fig = go.Figure()
+           fig.add_trace(go.Scatter(x=data_frame["Date Read"], y=[1] * len(data_frame), mode="markers"))
+           fig.update_layout(title="Sequence of reading", xaxis_title="Date Read", yaxis_title="Y=1")
+           return fig
         ```
 
 ### Chart 2: Reading velocity
