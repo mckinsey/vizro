@@ -65,7 +65,7 @@ class GraphState(BaseModel):
     all_df_metadata: AllDfMetadata
     dashboard_plan: Optional[DashboardPlan] = None
     pages: Annotated[list, operator.add]
-    dashboard: Optional[vm.Dashboard] = None
+    dashboard: Optional[type(vm.Dashboard)] = None
     custom_charts_code: Annotated[list, operator.add]
     custom_charts_imports: Annotated[list, operator.add]
 

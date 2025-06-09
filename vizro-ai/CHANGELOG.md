@@ -11,6 +11,14 @@ See the fragment files in the [changelog.d directory](https://github.com/mckinse
 
 <!-- scriv-insert-here -->
 
+<a id='changelog-0.3.7'></a>
+
+# 0.3.7 — 2025-06-03
+
+## Fixed
+
+- Fixed bugs in `vizro-ai.dashboard`. ([#1220](https://github.com/mckinsey/vizro/pull/1220))
+
 <a id='changelog-0.3.6'></a>
 
 # 0.3.6 — 2025-02-26
