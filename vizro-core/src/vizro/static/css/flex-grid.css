@@ -45,7 +45,7 @@ as it may result in unexpected layouts.
   flex: 1;
 }
 
-.grid-item .table-container .ag-theme-vizro {
+.grid-item .table-container .ag-theme-vizro:not(.ag-popup) {
   /* Use important to overrider inline style  */
   height: 100% !important;
 }
