@@ -25,10 +25,7 @@ An example of a JSON schema would be:
       "type": "array"
     }
   },
-  "required": [
-    "A",
-    "B"
-  ],
+  "required": ["A", "B"],
   "title": "Example",
   "type": "object"
 }
@@ -50,7 +47,7 @@ In practice this means that data can be identified as valid or invalid:
     }
     ```
 
-=== "invalid  (`B` is not an array of strings)"
+=== "invalid (`B` is not an array of strings)"
 
     ```json
     {
@@ -66,7 +63,7 @@ In practice this means that data can be identified as valid or invalid:
 
     ```json
     {
-      "A": 1,
+      "A": 1
     }
     ```
 
