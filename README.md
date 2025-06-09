@@ -41,11 +41,11 @@ multi-page prototypes.
 <br>
 Every Vizro app is defined by a simple configuration, using these high-level categories:
 
-  - **[Components](https://vizro.readthedocs.io/en/stable/pages/user-guides/components/):** charts, tables, cards, KPI indicators, forms and more.
-  - **[Controls](https://vizro.readthedocs.io/en/stable/pages/user-guides/controls/):** filters and parameters, using a range of selectors such as drop-down menus and sliders.
-  - **[Actions](https://vizro.readthedocs.io/en/stable/pages/user-guides/actions/):** interactions between components, drill-throughs, export functionality and more.
-  - **[Layouts](https://vizro.readthedocs.io/en/stable/pages/user-guides/layouts/):** grid layouts or flexible containers, with a range of pre-set styles.
-  - **[Navigation](https://vizro.readthedocs.io/en/stable/pages/user-guides/navigation/):** a range of app layout and navigation settings, including nested page hierarchies.
+- **[Components](https://vizro.readthedocs.io/en/stable/pages/user-guides/components/):** charts, tables, cards, KPI indicators, forms and more.
+- **[Controls](https://vizro.readthedocs.io/en/stable/pages/user-guides/controls/):** filters and parameters, using a range of selectors such as drop-down menus and sliders.
+- **[Actions](https://vizro.readthedocs.io/en/stable/pages/user-guides/actions/):** interactions between components, drill-throughs, export functionality and more.
+- **[Layouts](https://vizro.readthedocs.io/en/stable/pages/user-guides/layouts/):** grid layouts or flexible containers, with a range of pre-set styles.
+- **[Navigation](https://vizro.readthedocs.io/en/stable/pages/user-guides/navigation/):** a range of app layout and navigation settings, including nested page hierarchies.
 
 Configuration can be written in multiple formats including **Pydantic models**, **JSON**, **YAML** or **Python dictionaries** for added flexibility of implementation.
 
