@@ -33,8 +33,7 @@ Then customize and deploy your app to production at scale.
 
 <div align="center">
 <img src="https://raw.githubusercontent.com/mckinsey/vizro/main/.github/images/code_dashboard.png" width="100%"/>
-Use a few lines of simple low-code configuration, with in-built visual design best practices, to quickly assemble high-quality,
-multi-page prototypes, that are production-ready.
+Use a few lines of simple low-code configuration, with in-built visual design best practices, to assemble high-quality multi-page prototypes.
 </div>
 <br>
 
