@@ -49,7 +49,10 @@ Every Vizro app is defined by a simple configuration, using these high-level cat
 Configuration can be written in multiple formats including **Pydantic models**, **JSON**, **YAML** or **Python dictionaries** for added flexibility of implementation.
 
 Optional high-code extensions enable almost infinite customization in a modular way, combining the best of low-code and high-code - including bespoke [**visual formatting**](https://vizro.readthedocs.io/en/stable/pages/user-guides/visual-formatting/) and [**custom components**](https://vizro.readthedocs.io/en/stable/pages/user-guides/extensions/).
+
 Visit our ["How-to guides"](https://vizro.readthedocs.io/en/stable/pages/user-guides/install/) for a more detailed explanation of Vizro features.
+
+## Why use Vizro?
 
 The benefits of the Vizro toolkit include:
 
@@ -57,10 +60,6 @@ The benefits of the Vizro toolkit include:
 <img src="https://raw.githubusercontent.com/mckinsey/vizro/main/.github/images/infographic.svg" width="800"/>
 </div>
 <br>
-
-Visit our ["How-to guides"](https://vizro.readthedocs.io/en/stable/pages/user-guides/install/) for a more detailed explanation of Vizro features.
-
-## Why use Vizro?
 
 Vizro helps you to build data visualization apps that are:
 
