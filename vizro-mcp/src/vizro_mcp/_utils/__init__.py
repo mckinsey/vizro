@@ -8,6 +8,8 @@ from .configs import (
 from .prompts import (
     CHART_INSTRUCTIONS,
     get_dashboard_instructions,
+    get_dashboard_prompt,
+    get_starter_dashboard_prompt,
 )
 from .utils import (
     DFInfo,
@@ -40,6 +42,8 @@ __all__ = [
     "create_pycafe_url",
     "get_dataframe_info",
     "get_dashboard_instructions",
+    "get_starter_dashboard_prompt",
+    "get_dashboard_prompt",
     "get_python_code_and_preview_link",
     "load_dataframe_by_format",
     "path_or_url_check",

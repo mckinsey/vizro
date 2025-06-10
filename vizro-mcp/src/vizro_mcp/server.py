@@ -21,7 +21,6 @@ from vizro_mcp._utils import (
     CHART_INSTRUCTIONS,
     GAPMINDER,
     IRIS,
-    SAMPLE_DASHBOARD_CONFIG,
     STOCKS,
     TIPS,
     DFInfo,
@@ -30,8 +29,10 @@ from vizro_mcp._utils import (
     convert_github_url_to_raw,
     create_pycafe_url,
     get_dashboard_instructions,
+    get_dashboard_prompt,
     get_dataframe_info,
     get_python_code_and_preview_link,
+    get_starter_dashboard_prompt,
     load_dataframe_by_format,
     path_or_url_check,
 )
@@ -280,19 +281,7 @@ differences to previous `app.py`""",
 @mcp.prompt()
 def create_starter_dashboard():
     """Prompt template for getting started with Vizro."""
-    content = f"""
-Create a super simple Vizro dashboard with one page and one chart and one filter:
-- No need to call any tools except for `validate_dashboard_config`
-- Call this tool with the precise config as shown below
-- The PyCafe link will be automatically opened in your default browser
-- THEN show the python code after validation, but do not show the PyCafe link
-- Be concise, do not explain anything else, just create the dashboard
-- Finally ask the user what they would like to do next, then you can call other tools to get more information,
-    you should then start with the get_chart_or_dashboard_plan tool
-
-{SAMPLE_DASHBOARD_CONFIG}
-"""
-    return content
+    return get_starter_dashboard_prompt()
 
 
 @mcp.prompt()
@@ -301,28 +290,7 @@ def create_dashboard(
     context: Optional[str] = None,
 ) -> str:
     """Prompt template for creating an EDA dashboard based on one dataset."""
-    content = f"""
-Create a dashboard based on the following dataset:{file_path_or_url}. Proceed as follows:
-1. Analyze the data using the load_and_analyze_data tool first, passing the file path or github url {file_path_or_url}
-    to the tool.
-2. Get some knowledge about the Vizro dashboard process by calling the `get_vizro_chart_or_dashboard_plan` tool.
-3. Create a Vizro dashboard that follows the user context: {context} OR does the below instructions if
-    no context is provided:
-    - Make a homepage that uses teh Card component to create navigation to the other pages.
-    - Overview page: Summary of the dataset using the Text component and the dataset itself using the plain AgGrid component.
-    - Distribution page: Visualizing the distribution of all numeric columns using the Graph component with a histogram.
-        - use a Parameter that targets the Graph component and the x argument, and you can select the column to
-            be displayed
-        - IMPORTANT:remember that you target the chart like: <graph_id>.x and NOT <graph_id>.figure.x
-        - do not use any color schemes etc.
-        - add filters for all categorical columns
-    - Advanced analysis page: Use the `custom_charts` feature of the `validate_dashboard_config` tool to create 4
-        interesting charts. Put them in a 2x2 Layout, and ensure they look good. Do not use any color schemes,
-        but ensure that if you use hover, that it works on light and dark mode. Use the `Graph` model `title`,
-        but do NOT give the charts a title, that would be redundant.
-    - Finally, ensure that the Navigation is with a Navbar, and that you select nice icons for the Navbar.
-"""
-    return content
+    return get_dashboard_prompt(file_path_or_url, context)
 
 
 @mcp.tool()
@@ -380,12 +348,12 @@ def validate_chart_code(
 
 @mcp.prompt()
 def create_vizro_chart(
-    chart_type: str,
+    description: str,
     file_path_or_url: Optional[str] = None,
 ) -> str:
     """Prompt template for creating a Vizro chart."""
     content = f"""
- - Create a chart using the following chart type: {chart_type}.
+ - Create a chart using the following description: {description}.
  - Make sure to analyze the data using the `load_and_analyze_data` tool first, passing the file path or github url
  {file_path_or_url} OR choose the most appropriate sample data using the `get_sample_data_info` tool.
  Then you MUST use the `validate_chart_code` tool to validate the chart code.

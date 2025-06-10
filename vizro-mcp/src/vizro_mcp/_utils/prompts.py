@@ -1,8 +1,10 @@
 """Prompts for the Vizro MCP."""
 
-from typing import Literal
+from typing import Literal, Optional
 
 import vizro.models as vm
+
+from .configs import SAMPLE_DASHBOARD_CONFIG
 
 CHART_INSTRUCTIONS = """
 IMPORTANT:
@@ -108,7 +110,7 @@ def get_dashboard_instructions(
     {get_overview_vizro_models()}
 
     Very simple dashboard config:
-    {get_simple_dashboard_config()}
+    {SAMPLE_DASHBOARD_CONFIG}
 """
     else:
         return """
@@ -119,4 +121,47 @@ def get_dashboard_instructions(
     - search the web for more information about the components you are using, if you cannot search the web
         communicate this to the user, and tell them that this is a current limitation of the tool
     - if stuck, return to a JSON based config, and call the `validate_dashboard_config` tool to validate the solution
+"""
+
+
+def get_starter_dashboard_prompt() -> str:
+    """Get a prompt for creating a super simple Vizro dashboard."""
+    return f"""
+Create a super simple Vizro dashboard with one page and one chart and one filter:
+- No need to call any tools except for `validate_dashboard_config`
+- Call this tool with the precise config as shown below
+- The PyCafe link will be automatically opened in your default browser
+- THEN show the python code after validation, but do not show the PyCafe link
+- Be concise, do not explain anything else, just create the dashboard
+- Finally ask the user what they would like to do next, then you can call other tools to get more information,
+    you should then start with the get_chart_or_dashboard_plan tool
+
+{SAMPLE_DASHBOARD_CONFIG}
+"""
+
+
+def get_dashboard_prompt(file_path_or_url: str, user_context: Optional[str] = None) -> str:
+    """Get a prompt for creating a Vizro dashboard."""
+    return f"""
+Create a dashboard based on the following dataset:{file_path_or_url}. Proceed as follows:
+1. Analyze the data using the load_and_analyze_data tool first, passing the file path or github url {file_path_or_url}
+    to the tool.
+2. Get some knowledge about the Vizro dashboard process by calling the `get_vizro_chart_or_dashboard_plan` tool
+    AND the `get_model_json_schema` (start with `Graph`, `AgGrid`, `Card`, `Navigation`) tool.
+3. Create a Vizro dashboard that follows the user context: You MUST follow {user_context}, ONLY if no context is
+    provided, follow the below instructions:
+    - Make a homepage that uses the Card component to create navigation to the other pages.
+    - Overview page: Summary of the dataset using the Text component and the dataset itself using the plain AgGrid
+        component.
+    - Distribution page: Visualizing the distribution of all numeric columns using the Graph component with a histogram.
+        - use a Parameter that targets the Graph component and the x argument, and you can select the column to
+            be displayed
+        - IMPORTANT:remember that you target the chart like: <graph_id>.x and NOT <graph_id>.figure.x
+        - do not use any color schemes etc.
+        - add filters for all categorical columns
+    - Advanced analysis page: Use the `custom_charts` feature of the `validate_dashboard_config` tool to create 4
+        interesting charts. Put them in a 2x2 Layout, and ensure they look good. Do not use any color schemes,
+        but ensure that if you use hover, that it works on light and dark mode. Use the `Graph` model `title`,
+        but do NOT give the charts a title, that would be redundant.
+    - Finally, ensure that the Navigation is with a Navbar, and that you select nice icons for the Navbar.
 """

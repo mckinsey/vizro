@@ -13,7 +13,7 @@ from vizro.models.types import (
 from vizro_mcp._utils import DFMetaData
 
 # Constants used in chart validation, TODO: check if actually needed
-ADDITIONAL_IMPORTS = [
+BASE_IMPORTS = [
     "import vizro.plotly.express as px",
     "import plotly.graph_objects as go",
     "import pandas as pd",
@@ -145,7 +145,7 @@ class Dashboard(vm.Dashboard):
     pages: list[vm.Page]
 
 
-###### Chart functionality - not sure if I should include this in the MCP server
+###### Chart functionality ######
 def _strip_markdown(code_string: str) -> str:
     """Remove any code block wrappers (markdown or triple quotes)."""
     wrappers = [("```python\n", "```"), ("```py\n", "```"), ("```\n", "```"), ('"""', '"""'), ("'''", "'''")]
@@ -212,10 +212,10 @@ class ChartPlan(BaseModel):
         ),
     ]
 
-    _additional_vizro_imports: list[str] = PrivateAttr(ADDITIONAL_IMPORTS)
+    _base_chart_imports: list[str] = PrivateAttr(BASE_IMPORTS)
 
     def get_imports(self, vizro: bool = False):
-        imports = list(dict.fromkeys(self.imports + self._additional_vizro_imports))  # remove duplicates
+        imports = list(dict.fromkeys(self.imports + self._base_chart_imports))  # remove duplicates
         if vizro:  # TODO: improve code of below
             imports = [imp for imp in imports if "import plotly.express as px" not in imp]
         else:
@@ -243,14 +243,14 @@ class ChartPlan(BaseModel):
         imports = self.get_imports(vizro=True)
 
         # Add the Vizro-specific imports if not present
-        additional_imports = [
+        additional_dashboard_imports = [
             "import vizro.models as vm",
             "from vizro import Vizro",
             "from vizro.managers import data_manager",
         ]
 
         # Combine imports without duplicates
-        all_imports = list(dict.fromkeys(additional_imports + imports.split("\n")))
+        all_imports = list(dict.fromkeys(additional_dashboard_imports + imports.split("\n")))
 
         dashboard_template = f"""
 {chr(10).join(imp for imp in all_imports if imp)}
