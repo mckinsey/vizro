@@ -18,15 +18,27 @@ from vizro.models import VizroBaseModel
 from vizro.models._models_utils import _log_call
 from vizro_chat_component.processors import ChatProcessor, EchoProcessor
 
-CHAT_CONTAINER_STYLE = {
+
+WRAPPER = {
     "width": "100%",
-    "position": "relative",
+    "height": "100%",
+    "display": "flex",
+    "flexDirection": "column",
 }
 
-CHAT_HISTORY_STYLE = {
-    "width": "50%",
-    "paddingBottom": "100px",
-    "paddingLeft": "5px",
+CHAT_CONTAINER_STYLE = {
+    "display": "flex",
+    "flexDirection": "column",
+    "flex": "1",
+    "width": "100%",
+    "height": "100%",
+}
+
+CHAT_INPUT_WRAPPER_STYLE = {
+    "display": "flex",
+    "justifyContent": "center",
+    "width": "100%",
+    "marginTop": "auto",
 }
 
 CHAT_INPUT_CONTAINER_STYLE = {
@@ -34,10 +46,24 @@ CHAT_INPUT_CONTAINER_STYLE = {
     "height": "80px",
     "backgroundColor": "var(--surfaces-bg-card)",
     "zIndex": "1",
-    "position": "fixed",
-    "bottom": "20px",
-    "width": "50%",
+    "width": "100%",
     "maxWidth": "760px",
+}
+
+CHAT_HISTORY_WRAPPER_STYLE = {
+    "display": "flex",
+    "justifyContent": "center",
+    "width": "100%",
+    "flex": "1",
+    "overflow": "hidden",
+}
+
+CHAT_HISTORY_STYLE = {
+    "width": "100%",
+    "paddingBottom": "20px",
+    "paddingLeft": "5px",
+    "maxWidth": "760px",
+    "overflow": "auto",
 }
 
 SETTINGS_ICON_STYLE = {
@@ -465,7 +491,7 @@ class VizroChatComponent(VizroBaseModel):
         
         return html.Div(
             components,
-            style=CHAT_CONTAINER_STYLE,
+            style=WRAPPER,
         )
 
     def _build_data_stores(self):
@@ -566,11 +592,7 @@ class VizroChatComponent(VizroBaseModel):
                         id=f"{self.id}-history",
                         style=CHAT_HISTORY_STYLE,
                     ),
-                    style={
-                        "display": "flex",
-                        "justifyContent": "center",
-                        "width": "100%",
-                    },
+                    style=CHAT_HISTORY_WRAPPER_STYLE,
                 ),
                 # Hidden div for streaming content
                 html.Div(id=f"{self.id}-streaming-content", style={"display": "none"}),
@@ -602,11 +624,7 @@ class VizroChatComponent(VizroBaseModel):
                         ],
                         style=CHAT_INPUT_CONTAINER_STYLE,
                     ),
-                    style={
-                        "display": "flex",
-                        "justifyContent": "center",
-                        "width": "100%",
-                    },
+                    style=CHAT_INPUT_WRAPPER_STYLE,
                 ),
             ],
             style=CHAT_CONTAINER_STYLE,
