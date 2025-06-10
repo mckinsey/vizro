@@ -82,8 +82,8 @@ def get_vizro_chart_or_dashboard_plan(
 ) -> str:
     """Get instructions for creating a Vizro chart or dashboard. Call FIRST when asked to create Vizro things.
 
-    Must be ALWAYS called FIRST with advanced_mode=False, then call again with advanced_mode=True if the JSON config does
-    not suffice anymore.
+    Must be ALWAYS called FIRST with advanced_mode=False, then call again with advanced_mode=True
+    if the JSON config does not suffice anymore.
 
     Args:
         user_plan: The type of Vizro thing the user wants to create
@@ -441,7 +441,7 @@ if __name__ == "__main__":
                                         "type": "graph",
                                         "title": "Sales Pattern Analysis",
                                         "figure": {"_target_": "sales_heatmap", "data_frame": "supermarket_sales"},
-                                        "header": "Interactive heatmap showing sales patterns across days of the week and hours of the day",
+                                        "header": "Interactive heatmap showing sales patterns across days and hours",
                                     }
                                 ],
                             },
@@ -456,7 +456,7 @@ if __name__ == "__main__":
                                             "_target_": "customer_insights_3d",
                                             "data_frame": "supermarket_sales",
                                         },
-                                        "header": "Explore relationships between price, quantity, customer ratings, and total sales",
+                                        "header": "Explore relationships between price, quantity, ratings, and sales",
                                     }
                                 ],
                             },
@@ -570,9 +570,9 @@ if __name__ == "__main__":
     ]
 
     response = validate_dashboard_config(config, data, chart)
-    print(response.valid)
-    print(response.message)
-    print(response.python_code)
+    # print(response.valid)
+    # print(response.message)
+    # print(response.python_code)
 
     # TODO: check if validation for non-existent custom charts can be improved!
 

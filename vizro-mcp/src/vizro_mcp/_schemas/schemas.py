@@ -108,12 +108,6 @@ def validate_captured_callable(cls, value, info: ValidationInfo):
     )
 
 
-# def process_callable_data_frame(value):
-#     if isinstance(value, str):
-#         return value
-#     return _process_callable_data_frame(value)
-
-
 class Graph(vm.Graph):
     figure: Annotated[
         Union[CapturedCallable, str],
@@ -289,4 +283,4 @@ def scatter(data_frame):
         """,
     )
 
-    print(plan.get_chart_code(chart_name="poo", vizro=True))
+    # print(plan.get_chart_code(chart_name="poo", vizro=True))

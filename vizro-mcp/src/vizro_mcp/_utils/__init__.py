@@ -24,7 +24,7 @@ from .utils import (
     path_or_url_check,
 )
 
-__all__ = [
+__all__ = [  # noqa: RUF022
     # Classes
     "DFInfo",
     "DFMetaData",
@@ -42,9 +42,9 @@ __all__ = [
     "create_pycafe_url",
     "get_dataframe_info",
     "get_dashboard_instructions",
-    "get_starter_dashboard_prompt",
     "get_dashboard_prompt",
     "get_python_code_and_preview_link",
+    "get_starter_dashboard_prompt",
     "load_dataframe_by_format",
     "path_or_url_check",
 ]
