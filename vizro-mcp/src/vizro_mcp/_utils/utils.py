@@ -11,6 +11,7 @@ from typing import Any, Literal, Optional, Union
 from urllib.parse import quote, urlencode
 
 import pandas as pd
+import vizro
 import vizro.models as vm
 from vizro.models._base import _format_and_lint
 
@@ -242,7 +243,7 @@ def create_pycafe_url(python_code: str) -> str:
     # Create JSON object for py.cafe
     json_object = {
         "code": python_code,
-        "requirements": "vizro==0.1.38",
+        "requirements": f"vizro=={vizro.__version__}",
         "files": [],
     }
 
