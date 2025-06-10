@@ -43,8 +43,8 @@ For more complex charts and those that require data manipulation, use the `custo
 - create the suitable number of custom charts and add them to the `custom_charts` field
 - refer here to the function signature you created
 - you must use the key: "_target_: "<custom_chart_name>"
-- DO NOT modify the background (with plot_bgcolor) or color sequences unless explicitly asked for
-- when creating hover templates, ensure that it works on light and dark mode
+- in general, DO NOT modify the background (with plot_bgcolor) or color sequences unless explicitly asked for
+- when creating hover templates, EXPLICITLY style them to work on light and dark mode
 """
     )
 
