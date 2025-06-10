@@ -62,10 +62,10 @@ The plot this code returns looks as follows. Hovering over each point gave the d
 
         @capture("graph")
         def custom_chart(data_frame):
-        fig = go.Figure()
-        fig.add_trace(go.Scatter(x=data_frame["Date Read"], y=[1] * len(data_frame), mode="markers"))
-        fig.update_layout(title="Sequence of reading", xaxis_title="Date Read", yaxis_title="Y=1")
-        return fig
+            fig = go.Figure()
+            fig.add_trace(go.Scatter(x=data_frame["Date Read"], y=[1] * len(data_frame), mode="markers"))
+            fig.update_layout(title="Sequence of reading", xaxis_title="Date Read", yaxis_title="Y=1")
+            return fig
         ```
 
 ### Chart 2: Reading velocity
@@ -296,8 +296,8 @@ There are three changes to the Notebook code needed for it to run on PyCafe:
 1. Add `from vizro import Vizro` to the imports list
 1. Add `Vizro().build(model).run()` at the end of the code block
 1. Uncomment the data manager code and replace it with code needed to access the dataset:
-    - either download the dataset from the [Vizro GitHub repository](https://raw.githubusercontent.com/mckinsey/vizro/834c8d9c198420e8b315c0dc045b7aa12534719d/vizro-ai/examples/goodreads_tutorial/filtered_books.csv) and upload it to the PyCafe project.
-    - or use the code added to the snippet below to read the dataset directly from online storage.
+   - either download the dataset from the [Vizro GitHub repository](https://raw.githubusercontent.com/mckinsey/vizro/834c8d9c198420e8b315c0dc045b7aa12534719d/vizro-ai/examples/goodreads_tutorial/filtered_books.csv) and upload it to the PyCafe project.
+   - or use the code added to the snippet below to read the dataset directly from online storage.
 
 Follow the link at the bottom of the code snippet titled **☕️ Run and edit this code in PyCafe** to use and edit the dashboard.
 
