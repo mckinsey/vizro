@@ -48,7 +48,7 @@ def test_components_tooltip_and_icon(dash_br, icon, tooltip_text):
     accordion_select(dash_br, accordion_name=cnst.LAYOUT_ACCORDION)
     page_select(dash_br, page_name=cnst.EXTRAS_PAGE)
 
-    # hover over dropdown icon and wait for the tooltip appear.
+    # hover over dropdown icon and wait for the tooltip appear
     hover_over_element_by_xpath_selenium(
         dash_br, f"//*[@class='material-symbols-outlined tooltip-icon'][text()='{icon}']"
     )
