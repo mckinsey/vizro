@@ -158,12 +158,25 @@ differences to previous `app.py`""",
 
 
 class NoDefsGenerateJsonSchema(GenerateJsonSchema):
-    """Custom schema generator that removes $defs section."""
+    """Custom schema generator that handles reference cases appropriately."""
 
     def generate(self, schema, mode="validation"):
-        """Generate schema and remove $defs."""
+        """Generate schema and resolve references if needed."""
         json_schema = super().generate(schema, mode=mode)
-        # Simply remove the $defs section
+
+        # If schema is a reference (has $ref but no properties)
+        if "$ref" in json_schema and "properties" not in json_schema:
+            # Extract the reference path - typically like "#/$defs/ModelName"
+            ref_path = json_schema["$ref"]
+            if ref_path.startswith("#/$defs/"):
+                model_name = ref_path.split("/")[-1]
+                # Get the referenced definition from $defs
+                # Simply copy the referenced definition content to the top level
+                json_schema.update(json_schema["$defs"][model_name])
+                # Remove the $ref since we've resolved it
+                json_schema.pop("$ref")
+
+        # Remove the $defs section now that we've used what we needed
         json_schema.pop("$defs", {})
         return json_schema
 
@@ -286,7 +299,8 @@ def get_vizro_chart_or_dashboard_plan(
         user_plan: The type of Vizro thing the user wants to create
         user_host: The host the user is using, if "ide" you can use the IDE/editor to run python code
         advanced_mode: Only call if you need to use custom CSS, custom components or custom actions.
-            No need to call this with advanced_mode=True if you need advanced charts, use `custom_chart` instead.
+            No need to call this with advanced_mode=True if you need advanced charts, use `custom_charts` in
+            the `validate_model_config` tool instead.
 
     Returns:
         Instructions for creating a Vizro chart or dashboard
