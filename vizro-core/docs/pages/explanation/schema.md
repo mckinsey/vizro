@@ -25,10 +25,7 @@ An example of a JSON schema would be:
       "type": "array"
     }
   },
-  "required": [
-    "A",
-    "B"
-  ],
+  "required": ["A", "B"],
   "title": "Example",
   "type": "object"
 }
@@ -238,7 +235,7 @@ You can thus configure a Vizro dashboard according to a set of constraints that 
               "column": "species",
               "type": "filter"
             }
-          ],
+          ]
         }
       ]
     }
