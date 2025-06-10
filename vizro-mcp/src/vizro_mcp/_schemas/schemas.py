@@ -29,15 +29,22 @@ class GraphEnhanced(vm.Graph):
 
     figure: dict[str, Any] = Field(
         description="""
+For simpler charts and without need for data manipulation, use this field:
 This is the plotly express figure to be displayed. Only use valid plotly express functions to create the figure.
 Only use the arguments that are supported by the function you are using and where no extra modules such as statsmodels
-are needed (e.g. trendline).
-
+are needed (e.g. trendline):
 - Configure a dictionary as if this would be added as **kwargs to the function you are using.
 - You must use the key: "_target_: "<function_name>" to specify the function you are using. Do NOT precede by
     namespace (like px.line)
 - you must refer to the dataframe by name, for now it is one of "gapminder", "iris", "tips".
 - do not use a title if your Graph model already has a title.
+
+For more complex charts and those that require data manipulation, use the `custom_charts` field:
+- create the suitable number of custom charts and add them to the `custom_charts` field
+- refer here to the function signature you created
+- you must use the key: "_target_: "<custom_chart_name>"
+- DO NOT modify the background (with plot_bgcolor) or color sequences unless explicitly asked for
+- when creating hover templates, ensure that it works on light and dark mode
 """
     )
 
@@ -113,23 +120,7 @@ class Graph(vm.Graph):
         # AfterValidator(process_callable_data_frame), #pretty sure this is not needed for this task
         Field(
             json_schema_extra={"mode": "graph", "import_path": "vizro.plotly.express"},
-            description="""
-For simpler charts and without need for data manipulation, use this field:
-This is the plotly express figure to be displayed. Only use valid plotly express functions to create the figure.
-Only use the arguments that are supported by the function you are using and where no extra modules such as statsmodels
-are needed (e.g. trendline):
-- Configure a dictionary as if this would be added as **kwargs to the function you are using.
-- You must use the key: "_target_: "<function_name>" to specify the function you are using. Do NOT precede by
-    namespace (like px.line)
-- you must refer to the dataframe by name, for now it is one of "gapminder", "iris", "tips".
-- do not use a title if your Graph model already has a title.
-
-For more complex charts and those that require data manipulation, use the `custom_charts` field:
-- create the suitable number of custom charts and add them to the `custom_charts` field
-- refer here to the function signature you created
-- you must use the key: "_target_: "<custom_chart_name>"
-- DO NOT modify the background (with plot_bgcolor) or color sequences unless explicitly asked for
-""",
+            description=""""Function that returns a plotly `go.Figure`""",
         ),
     ]
     _validate_figure = field_validator("figure", mode="before")(validate_captured_callable)
@@ -208,6 +199,8 @@ class ChartPlan(BaseModel):
         3. Must return a plotly go.Figure object
         4. All data used in the chart must be derived from the data_frame argument, all data manipulations
         must be done within the function.
+        5. DO NOT modify the background (with plot_bgcolor) or color sequences unless explicitly asked for
+        6. When creating hover templates, ensure that it works on light and dark mode
         """,
         ),
     ]
