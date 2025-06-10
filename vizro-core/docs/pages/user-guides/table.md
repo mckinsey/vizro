@@ -526,13 +526,14 @@ As mentioned above, all [parameters of the Dash DataTable](https://dash.plotly.c
 
 If the available arguments are not sufficient, there is always the option to create a [custom Dash DataTable](custom-tables.md).
 
-## Add title, header, and footer
+## Add additional text
 
-The [`Table`][vizro.models.Table] and the [`AgGrid`][vizro.models.AgGrid] models accept a `title`, `header` and `footer` argument. This is useful for providing context to the data being displayed, or for adding a description of the data.
+The [`Table`][vizro.models.Table] and the [`AgGrid`][vizro.models.AgGrid] models accept `title`, `header`, `footer` and `description` arguments. These are useful for providing additional context on the table.
 
 - **title**: Displayed as an [H3 header](https://dash.plotly.com/dash-html-components/h3), useful for summarizing the main topic or insight of the component.
-- **header**: Accepts markdown text, ideal for extra descriptions, subtitles, or detailed data insights.
-- **footer**: Accepts markdown text, commonly used for citing data sources, providing information on the last update, or adding disclaimers.
+- **header**: Accepts [Markdown text](https://markdown-guide.readthedocs.io/), ideal for extra descriptions, subtitles, or detailed data insights.
+- **footer**: Accepts [Markdown text](https://markdown-guide.readthedocs.io/), commonly used for citing data sources, providing information on the last update, or adding disclaimers.
+- **description**: Displayed as an icon that opens a tooltip containing [Markdown text](https://markdown-guide.readthedocs.io/) when hovered over. You can provide a string to use the default info icon or a [`Tooltip`][vizro.models.Tooltip] model to use any icon from the [Google Material Icons library](https://fonts.google.com/icons).
 
 ### Formatted AgGrid
 
@@ -557,6 +558,11 @@ The [`Table`][vizro.models.Table] and the [`AgGrid`][vizro.models.AgGrid] models
                     title="Gapminder Data Insights",
                     header="""#### An Interactive Exploration of Global Health, Wealth, and Population""",
                     footer="""SOURCE: **Plotly gapminder data set, 2024**""",
+                    description="""
+                        The Gapminder dataset tracks the development of countries over time using indicators like life expectancy, income per person, and population size.
+
+                        It helps reveal broad global trends, such as how health and wealth have improved in many regions, although progress hasn’t been even across all countries.
+                    """,
                 )
             ],
         )
@@ -582,6 +588,10 @@ The [`Table`][vizro.models.Table] and the [`AgGrid`][vizro.models.AgGrid] models
                   #### An Interactive Exploration of Global Health, Wealth, and Population
                 footer: |
                   SOURCE: **Plotly gapminder data set, 2024**
+                description: |
+                  The Gapminder dataset tracks the development of countries over time using indicators like life expectancy, income per person, and population size.
+
+                  It helps reveal broad global trends, such as how health and wealth have improved in many regions, although progress hasn’t been even across all countries.
                 type: ag_grid
             title: Formatted AgGrid
         ```
@@ -613,6 +623,11 @@ The [`Table`][vizro.models.Table] and the [`AgGrid`][vizro.models.AgGrid] models
                     title="Gapminder Data Insights",
                     header="""#### An Interactive Exploration of Global Health, Wealth, and Population""",
                     footer="""SOURCE: **Plotly gapminder data set, 2024**""",
+                    description="""
+                        The Gapminder dataset tracks the development of countries over time using indicators like life expectancy, income per person, and population size.
+
+                        It helps reveal broad global trends, such as how health and wealth have improved in many regions, although progress hasn’t been even across all countries.
+                    """,
                 )
             ],
         )
@@ -636,6 +651,10 @@ The [`Table`][vizro.models.Table] and the [`AgGrid`][vizro.models.AgGrid] models
                   #### An Interactive Exploration of Global Health, Wealth, and Population
                 footer: |
                   SOURCE: **Plotly gapminder data set, 2024**
+                description: |
+                  The Gapminder dataset tracks the development of countries over time using indicators like life expectancy, income per person, and population size.
+
+                  It helps reveal broad global trends, such as how health and wealth have improved in many regions, although progress hasn’t been even across all countries.
                 type: table
             title: Formatted DataTable
         ```

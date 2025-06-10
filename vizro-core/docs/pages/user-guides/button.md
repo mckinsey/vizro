@@ -197,6 +197,49 @@ There are three predefined button styles that can be customized using the `varia
 
         [![ButtonVariant]][buttonvariant]
 
+## Add a tooltip
+
+The `description` argument enables you to add helpful context to your button by displaying an info icon next to its text. Hovering over the icon shows a tooltip with your chosen text.
+
+You can provide [Markdown text](https://markdown-guide.readthedocs.io/) as a string to use the default info icon or a [`Tooltip`][vizro.models.Tooltip] model to use any icon from the [Google Material Icons library](https://fonts.google.com/icons).
+
+!!! example "Button with a tooltip"
+
+    === "app.py"
+
+        ```{.python pycafe-link hl_lines="9"}
+        import vizro.models as vm
+        from vizro import Vizro
+
+        page = vm.Page(
+            title="Buttons with tooltip",
+            components=[
+                vm.Button(
+                    text="Click me!",
+                    description="Once you click this button, the process will start.",
+                ),
+            ],
+        )
+
+        dashboard = vm.Dashboard(pages=[page])
+        Vizro().build(dashboard).run()
+        ```
+
+    === "app.yaml"
+
+        ```{.yaml hl_lines="6-8"}
+        pages:
+          - title: Buttons with tooltip
+            components:
+              - type: button
+                text: Click me!
+                description: Once you click this button, the process will start.
+        ```
+
+    === "Result"
+
+        [![ButtonTooltip]][buttontooltip]
+
 ## The `extra` argument
 
 The `Button` is based on the underlying Dash component [`dbc.Button`](https://dash-bootstrap-components.opensource.faculty.ai/docs/components/button/). Using the `extra` argument you can pass more arguments to `dbc.Button` in order to alter it beyond the chosen defaults.
@@ -249,4 +292,5 @@ An example use would be to create an outlined success button. For this, you can 
 [button]: ../../assets/user_guides/components/button.png
 [buttonextra]: ../../assets/user_guides/components/button_style_extra.png
 [buttontext]: ../../assets/user_guides/components/button_text.png
+[buttontooltip]: ../../assets/user_guides/components/button_tooltip.png
 [buttonvariant]: ../../assets/user_guides/components/button_style_variants.png

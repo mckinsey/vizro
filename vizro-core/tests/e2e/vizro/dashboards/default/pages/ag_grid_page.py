@@ -15,6 +15,7 @@ ag_grid_page = vm.Page(
             layout=vm.Grid(grid=[[0, 1]], col_gap="0px"),
             components=[
                 vm.AgGrid(
+                    description=cnst.AG_GRID_TOOLTIP_TEXT,
                     id=cnst.TABLE_AG_GRID_ID,
                     title="Equal Title One",
                     figure=dash_ag_grid(data_frame=gapminder, dashGridOptions={"pagination": True}),

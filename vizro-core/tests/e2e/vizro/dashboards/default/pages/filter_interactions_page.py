@@ -26,7 +26,7 @@ filter_interactions_page = vm.Page(
                 vm.Action(
                     function=scatter_click_data_custom_action(),
                     inputs=[f"{cnst.SCATTER_INTERACTIONS_ID}.clickData"],
-                    outputs=[f"{cnst.CARD_INTERACTIONS_ID}.children"],
+                    outputs=[f"{cnst.CARD_INTERACTIONS_ID}"],
                 ),
             ],
         ),

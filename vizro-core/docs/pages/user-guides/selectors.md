@@ -44,17 +44,17 @@ For more information, refer to the API reference of the selector, or the documen
 
     When configuring the [`DatePicker`][vizro.models.DatePicker] make sure to provide your dates for `min`, `max` and `value` arguments in `"yyyy-mm-dd"` format or as `datetime` type (for example, `datetime.datetime(2024, 01, 01)`).
 
-## Add an info-icon
+## Add a tooltip
 
 The `description` argument enables you to add helpful context to your selector by displaying an info icon next to its title. Hovering over the icon shows a tooltip with your provided text.
 
-You can provide a string to use the default info icon, or pass a custom [`Tooltip`][vizro.models.Tooltip] model to define both a custom icon from the [Google Material Icons library](https://fonts.google.com/icons) and the description text.
+You can provide [Markdown text](https://markdown-guide.readthedocs.io/) as a string to use the default info icon or a [`Tooltip`][vizro.models.Tooltip] model to use any icon from the [Google Material Icons library](https://fonts.google.com/icons).
 
-!!! example "Selectors with info-icon"
+!!! example "Selectors with tooltip"
 
     === "app.py"
 
-        ```{.python pycafe-link hl_lines="19-24"}
+        ```{.python pycafe-link hl_lines="19-23"}
         import vizro.models as vm
         import vizro.plotly.express as px
         from vizro import Vizro
@@ -89,7 +89,7 @@ You can provide a string to use the default info icon, or pass a custom [`Toolti
 
     === "app.yaml"
 
-        ```{.yaml hl_lines="16 17"}
+        ```{.yaml hl_lines="16-19"}
         pages:
           - title: Selectors with icons
             components:

@@ -1,0 +1,37 @@
+.tabs-container {
+  height: 100%;
+  width: 100%;
+
+  --tabs-title-height: 0rem;
+}
+
+.tabs-container:has(> h3) {
+  --tabs-title-height: 1.25rem;
+}
+
+.tab-content {
+  height: calc(100% - 3.75rem - var(--tabs-title-height));
+  padding-top: 0.5rem;
+}
+
+/* The dbc component adds an additional div element to which we cannot assign a className.
+To ensure the dynamic height adjustment and prevent scrolling, the height must be specified for that div as below. */
+.tab-pane,
+.tab-pane > div:first-child {
+  height: 100%;
+}
+
+.tab-pane > div > .container-fluid .flex-row,
+.tab-pane > div > .container-fluid .flex-row .loading-container {
+  height: 100%;
+}
+
+.inner-tabs-title {
+  align-items: center;
+  display: flex;
+  gap: 8px;
+}
+
+.tab-content .form-label {
+  margin-top: 12px;
+}

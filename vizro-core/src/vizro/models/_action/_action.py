@@ -9,14 +9,20 @@ from typing import TYPE_CHECKING, Annotated, Any, Callable, ClassVar, Literal, U
 
 from dash import Input, Output, State, callback, html
 from dash.development.base_component import Component
-from pydantic import Field, StringConstraints, TypeAdapter, ValidationError, field_validator
+from pydantic import Field, TypeAdapter, field_validator
 from pydantic.json_schema import SkipJsonSchema
 from typing_extensions import TypedDict
 
 from vizro.managers._model_manager import model_manager
 from vizro.models import VizroBaseModel
 from vizro.models._models_utils import _log_call
-from vizro.models.types import CapturedCallable, ControlType, _IdProperty, validate_captured_callable
+from vizro.models.types import (
+    CapturedCallable,
+    ControlType,
+    _IdOrIdProperty,
+    _IdProperty,
+    validate_captured_callable,
+)
 
 logger = logging.getLogger(__name__)
 
@@ -32,13 +38,18 @@ class ControlsStates(TypedDict):
     filter_interaction: list[dict[str, State]]
 
 
+# TODO-AV2 D 3: try to enable properties that aren't Dash properties but are instead model fields e.g. header,
+# title. See https://github.com/mckinsey/vizro/issues/1078.
+# Try to fix AgGrid problem with underlying input component id.
+
+
 class _BaseAction(VizroBaseModel):
     # The common interface shared between Action and _AbstractAction all raise NotImplementedError or are ClassVar.
     # This mypy type-check this class.
     # function and outputs are overridden as fields in Action and abstract methods in _AbstractAction. Using ClassVar
     # for these is the easiest way to appease mypy and have something that actually works at runtime.
     function: ClassVar[Callable[..., Any]]
-    outputs: ClassVar[Union[list[_IdProperty], dict[str, _IdProperty]]]
+    outputs: ClassVar[Union[list[str], dict[str, str]]]
 
     @property
     def _dash_components(self) -> list[Component]:
@@ -53,41 +64,12 @@ class _BaseAction(VizroBaseModel):
         raise NotImplementedError
 
     @property
-    def _runtime_args(self) -> dict[str, _IdProperty]:
+    def _runtime_args(self) -> dict[str, _IdOrIdProperty]:
         raise NotImplementedError
 
     @property
     def _action_name(self) -> str:
         raise NotImplementedError
-
-    def _validate_dash_dependencies(self, /, dependencies, *, type: Literal["output", "input"]):
-        # Validate that dependencies are in the form component_id.component_property. This uses the same annotation as
-        # Action.inputs/outputs.
-        # TODO-AV2 D 2: in future we will expand this to also allow passing a model name without a property specified,
-        #  so long as _output_component_property exists - need to handle case it doesn't with error.
-        #  Possibly make a built in a type hint that we can use as field annotation for runtime arguments in
-        #  subclasses of _AbstractAction instead of just using str. Possibly apply this to non-annotated arguments of
-        #  vm.Action.function and use pydantic's validate_call to apply the same validation there for function inputs.
-        #  We won't be able to do all the checks at validation time though if we need to look up a model in the model
-        #  manager. When this change is made the outputs property for filter, parameter and on_page_load should just
-        #  become `return self.targets` or similar. Consider again whether to do this translation automatically if
-        #  targets is defined as a field, but sounds like bad idea since it doesn't carry over into the
-        #  capture("action") style of action.
-        # TODO-AV D 3: try to enable properties that aren't Dash properties but are instead model fields e.g. header,
-        #  title. See https://github.com/mckinsey/vizro/issues/1078.
-        #  Note this is needed for inputs in both vm.Action and _AbstractAction but outputs only in _AbstractAction.
-        try:
-            TypeAdapter(list[Annotated[str, StringConstraints(pattern="^[^.]+[.][^.]+$")]]).validate_python(
-                dependencies
-            )
-        except ValidationError as exc:
-            invalid_dependencies = {
-                error["input"] for error in exc.errors() if error["type"] == "string_pattern_mismatch"
-            }
-            raise ValueError(
-                f"Action {type}s {invalid_dependencies} of {self._action_name} must be a string of the form "
-                "<component_name>.<component_property>."
-            ) from exc
 
     def _get_control_states(self, control_type: ControlType) -> list[State]:
         """Gets list of `States` for selected `control_type` that appear on page where this Action is defined."""
@@ -98,7 +80,7 @@ class _BaseAction(VizroBaseModel):
         # See also notes in filter_interaction._get_triggered_model.
         page = model_manager._get_model_page(self)
         return [
-            State(component_id=control.selector.id, component_property=control.selector._input_property)
+            State(*control.selector._action_inputs["__default__"].split("."))
             for control in cast(Iterable[ControlType], model_manager._get_models(control_type, page))
         ]
 
@@ -109,12 +91,79 @@ class _BaseAction(VizroBaseModel):
         page = model_manager._get_model_page(self)
         return [
             action._get_triggered_model()._filter_interaction_input
-            for action in model_manager._get_models(filter_interaction, page=page)
+            for action in model_manager._get_models(filter_interaction, root_model=page)
         ]
+
+    @staticmethod
+    def _transform_dependency(dependency: _IdOrIdProperty, type: Literal["output", "input"]) -> _IdProperty:
+        """Transform a component dependency into its mapped property value.
+
+        This method handles two formats of component dependencies:
+        1. Explicit format: "component-id.component-property" (e.g. "graph-1.figure")
+           - Returns the mapped value if it exists in the component's _action_outputs/_action_inputs
+           - Returns the original dependency otherwise
+        2. Implicit format: "component-id" (e.g. "card-id")
+           - Returns the value of "__default__" key from the component's _action_outputs/_action_inputs
+           - Raises an error if the component doesn't exist or doesn't have the required property
+
+        Args:
+            dependency: A string in either "component-id.component-property" or "component-id" format
+            type: Either "input" or "output" to determine which property (_action_inputs or _action_outputs) to check
+
+        Returns:
+            The mapped property value for implicit format, or the original dependency for explicit format
+
+        Raises:
+            KeyError: If component does not exist in model_manager
+            KeyError: If component exists but has no "__default__" key in its _action_outputs/_action_inputs
+            AttributeError: If component exists but has no _action_outputs/_action_inputs property defined
+            ValueError: If dependency format is invalid (e.g. "id.prop.prop" or "id..prop")
+        """
+        attribute_type = "_action_outputs" if type == "output" else "_action_inputs"
+
+        # Validate that the dependency is in one of two valid formats: id.property ("graph-1.figure") or id ("card-id").
+        # By this point we have already validation dependency is a str.
+        if not re.match(r"^[^.]+$|^[^.]+[.][^.]+$", dependency):
+            raise ValueError(
+                f"Invalid {type} format '{dependency}'. Expected format is '<model_id>' or "
+                f"'<model_id>.<argument_name>'."
+            )
+
+        if "." in dependency:
+            component_id, component_property = dependency.split(".")
+            try:
+                return getattr(model_manager[component_id], attribute_type)[component_property]
+            except (KeyError, AttributeError):
+                # Captures these cases and returns dependency unchanged, as we want to allow the user to target
+                # Dash components, that are not registered in the model_manager (e.g. theme-selector).
+                # 1. component_id is not in model_manager
+                # 2. component doesn't have _action_outputs/_action_inputs defined
+                # 3. component_property is not in the _action_outputs/inputs dictionary
+                return dependency
+
+        component_id, component_property = dependency, "__default__"
+
+        try:
+            return getattr(model_manager[component_id], attribute_type)[component_property]
+        except (KeyError, AttributeError) as exc:
+            if isinstance(exc, KeyError):
+                if component_property in str(exc):
+                    raise KeyError(
+                        f"Model with ID `{component_id}` has no `{component_property}` key inside its "
+                        f"`{attribute_type}` property. Please specify the {type} explicitly as "
+                        f"`{component_id}.<property>`."
+                    ) from exc
+                raise KeyError(
+                    f"Model with ID `{component_id}` not found. Please provide a valid component ID."
+                ) from exc
+            raise AttributeError(
+                f"Model with ID '{component_id}' does not have implicit {type} properties defined. "
+                f"Please specify the {type} explicitly as '{component_id}.<property>'."
+            ) from exc
 
     @property
     def _transformed_inputs(self) -> Union[list[State], dict[str, Union[State, ControlsStates]]]:
-        """Creates the actual Dash States given the user-specified runtime arguments and built in ones.
+        """Creates Dash States given the user-specified runtime arguments and built in ones.
 
         Return type is list only for legacy actions. Otherwise, it will always be a dictionary (unlike
         for _transformed_outputs, where new behavior can still give a list). Keys are the parameter names. For
@@ -123,7 +172,10 @@ class _BaseAction(VizroBaseModel):
         """
         if self._legacy:
             # Must be an Action rather than _AbstractAction, so has already been validated by pydantic field annotation.
-            return [State(*input.split(".")) for input in cast(Action, self).inputs]
+            return [
+                State(*self._transform_dependency(input, type="input").split("."))
+                for input in cast(Action, self).inputs
+            ]
 
         from vizro.models import Filter, Parameter
 
@@ -140,33 +192,41 @@ class _BaseAction(VizroBaseModel):
             arg_name: arg_value for arg_name, arg_value in builtin_args.items() if arg_name in self._parameters
         }
 
-        # Validate that the runtime arguments are in the same form as the legacy Action.inputs field, so a string
-        # of the form component_id.component_property. Currently, this code only runs for subclasses of
-        # _AbstractAction but not vm.Action instances because a vm.Action that does not pass this check will
-        # have already been classified as legacy in Action._legacy. In future when vm.Action.inputs is deprecated
-        # then this will be used for vm.Action instances also.
-        self._validate_dash_dependencies(self._runtime_args.values(), type="input")
-
+        # Validate that the runtime arguments are in the same form as the legacy Action.inputs field (str).
+        # Currently, this code only runs for subclasses of _AbstractAction but not vm.Action instances because a
+        # vm.Action that does not pass this check will have already been classified as legacy in Action._legacy.
+        # In future when vm.Action.inputs is deprecated then this will be used for vm.Action instances also.
+        TypeAdapter(dict[str, str]).validate_python(self._runtime_args)
         # User specified arguments runtime_args take precedence over built in reserved arguments. No static arguments
         # ar relevant here, just Dash States. Static arguments values are stored in the state of the relevant
         # _AbstractAction instance.
-        runtime_args = {arg_name: State(*arg_value.split(".")) for arg_name, arg_value in self._runtime_args.items()}
+        runtime_args = {
+            arg_name: State(*self._transform_dependency(arg_value, type="input").split("."))
+            for arg_name, arg_value in self._runtime_args.items()
+        }
 
         return builtin_args | runtime_args
 
     @property
     def _transformed_outputs(self) -> Union[list[Output], dict[str, Output]]:
-        """Creates the actual Dash Outputs based on self.outputs.
+        """Creates Dash Output objects from string specifications in self.outputs.
 
-        Legacy and new versions of Action just support list[Output]. _AbstractAction subclasses support
-        dict[str, Output] and list[Output].
+        Converts self.outputs (list of strings or dictionary of strings where each string is in the format
+        '<component_id>.<property>' or '<component_id>') and converts into Dash Output objects.
+        For example, ['my_graph.figure'] becomes [Output('my_graph', 'figure', allow_duplicate=True)].
+
+        Returns:
+            Union[list[Output], dict[str, Output]]: A list of Output objects if self.outputs is a list of strings,
+            or a dictionary mapping keys to Output objects if self.outputs is a dictionary of strings.
         """
-        # TODO-AV2 D 1: enable dict for Action. Also think about where all the validation in this function should go
-        #  since it's only relevant for _AbstractAction because vm.Action models have pydantic validation built into the
-        #  field annotation.
+
+        def _transform_output(output):
+            # Action.outputs is already validated by pydantic as list[str] or dict[str, str]
+            # _AbstractAction._transformed_outputs does the same validation manually with TypeAdapter.
+            return Output(*self._transform_dependency(output, type="output").split("."), allow_duplicate=True)
+
         if isinstance(self.outputs, list):
-            self._validate_dash_dependencies(self.outputs, type="output")
-            callback_outputs = [Output(*output.split("."), allow_duplicate=True) for output in self.outputs]
+            callback_outputs = [_transform_output(output) for output in self.outputs]
 
             # Need to use a single Output in the @callback decorator rather than a single element list for the case
             # of a single output. This means the action function can return a single value (e.g. "text") rather than a
@@ -175,13 +235,7 @@ class _BaseAction(VizroBaseModel):
                 callback_outputs = callback_outputs[0]
             return callback_outputs
 
-        self._validate_dash_dependencies(self.outputs.values(), type="output")
-        callback_outputs = {  # type: ignore[assignment]
-            output_name: Output(*output.split("."), allow_duplicate=True)
-            for output_name, output in self.outputs.items()
-        }
-
-        return callback_outputs
+        return {output_name: _transform_output(output) for output_name, output in self.outputs.items()}
 
     def _action_callback_function(
         self,
@@ -283,9 +337,10 @@ class Action(_BaseAction):
 
     Args:
         function (CapturedCallable): Action function.
-        inputs (list[str]): Inputs in the form `<component_id>.<property>` passed to the action function.
-            Defaults to `[]`.
-        outputs (list[str]): Outputs in the form `<component_id>.<property>` changed by the action function.
+        inputs (list[str]): List of inputs provided to the action function. Each input can be specified as `<model_id>`
+            or `<model_id>.<argument_name>` or `<component_id>.<property>`. Defaults to `[]`.
+        outputs (Union[list[str], dict[str, str]]): List or dictionary of outputs modified by the action function. Each
+            output can be specified as `<model_id>` or `<model_id>.<argument_name>` or `<component_id>.<property>`.
             Defaults to `[]`.
     """
 
@@ -308,13 +363,20 @@ class Action(_BaseAction):
     ]
     # inputs is a legacy field and will be deprecated. It must only be used when _legacy = True.
     # TODO-AV2 C 1: Put in deprecation warning.
-    inputs: list[Annotated[str, StringConstraints(pattern="^[^.]+[.][^.]+$")]] = Field(
-        [],
-        description="Inputs in the form `<component_id>.<property>` passed to the action function.",
+    # The type hint str here really means _IdOrIdProperty. We might change it in future for clearer API docs, but the
+    # validation to check string format (presence of 0 or 1 . characters) does not need to be included in the
+    # annotation. Options for good public API might be:
+    # Union[ModelID, str] - where str refers to IdProperty, but ModelID is also str so this doesn't fully  make sense
+    # Union[ModelID, IdProperty] - means making IdProperty public, which is ok but maybe overkill
+    inputs: list[str] = Field(
+        default=[],
+        description="""List of inputs provided to the action function. Each input can be specified as `<model_id>` or
+        `<model_id>.<argument_name>` or `<component_id>.<property>`. Defaults to `[]`.""",
     )
-    outputs: list[Annotated[str, StringConstraints(pattern="^[^.]+[.][^.]+$")]] = Field(  # type: ignore
-        [],
-        description="Outputs in the form `<component_id>.<property>` changed by the action function.",
+    outputs: Union[list[str], dict[str, str]] = Field(  # type: ignore
+        default=[],
+        description="""List or dictionary of outputs modified by the action function. Each output can be specified as
+            `<model_id>` or `<model_id>.<argument_name>` or `<component_id>.<property>`. Defaults to `[]`.""",
     )
 
     @property
@@ -329,10 +391,13 @@ class Action(_BaseAction):
         if "inputs" in self.model_fields_set:
             legacy = True
         else:
-            # If all supplied arguments look like states `<component_id>.<property>` then assume it's a new type of
-            # action. For the case that there's no arguments and no inputs, this gives legacy=False.
+            # If all supplied arguments look like states `<component_id>.<property>` or are model IDs then assume it's
+            # a new type of action. For the case that there's no arguments and no inputs, this gives legacy=False.
             try:
-                legacy = not all(re.fullmatch("[^.]+[.][^.]+", arg_val) for arg_val in self._runtime_args.values())
+                legacy = not all(
+                    re.fullmatch("[^.]+[.][^.]+", arg_val) or arg_val in model_manager
+                    for arg_val in self._runtime_args.values()
+                )
             except TypeError:
                 # arg_val isn't a string so it must be treated as a legacy action.
                 legacy = True
@@ -352,7 +417,7 @@ class Action(_BaseAction):
         return set(inspect.signature(self.function._function).parameters)  # type:ignore[union-attr]
 
     @property
-    def _runtime_args(self) -> dict[str, _IdProperty]:
+    def _runtime_args(self) -> dict[str, _IdOrIdProperty]:
         # Since function is a CapturedCallable, input arguments have already been bound and should be found from the
         # CapturedCallable.
         # Note this is a dictionary even if arguments were originally provided as positional ones, since they are

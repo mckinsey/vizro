@@ -40,7 +40,7 @@ def df_schema():
 
 @pytest.fixture
 def df_metadata(df, df_schema, df_sample):
-    df_metadata = AllDfMetadata({})
+    df_metadata = AllDfMetadata()
     df_metadata.all_df_metadata["bar_chart"] = DfMetadata(
         df_schema=df_schema,
         df=df,

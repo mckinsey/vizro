@@ -93,6 +93,13 @@ def test_nested_tabs_filters_page(dash_br):
     page_select(dash_br, page_path=cnst.FILTERS_PAGE_PATH, page_name=cnst.FILTERS_PAGE)
 
 
+@image_assertion
+def test_filters_inside_containers_page(dash_br):
+    page_select(
+        dash_br, page_path=cnst.FILTERS_INSIDE_CONTAINERS_PAGE_PATH, page_name=cnst.FILTERS_INSIDE_CONTAINERS_PAGE
+    )
+
+
 @pytest.mark.parametrize(
     "dash_br_driver", [({"port": cnst.ONE_PAGE_PORT})], ids=["one_page"], indirect=["dash_br_driver"]
 )
@@ -275,7 +282,7 @@ def test_collapsible_containers_grid_switched(dash_br):
 @image_assertion
 def test_collapsible_containers_flex(dash_br):
     accordion_select(dash_br, accordion_name=cnst.LAYOUT_ACCORDION)
-    page_select(dash_br, page_name=cnst.COLLAPSIBLE_CONTAINERS_GRID)
+    page_select(dash_br, page_name=cnst.COLLAPSIBLE_CONTAINERS_FLEX)
 
 
 @pytest.mark.filterwarnings("ignore::DeprecationWarning")
@@ -287,6 +294,21 @@ def test_collapsible_containers_flex_switched(dash_br):
     # close one container and open another
     click_element_by_xpath_selenium(dash_br, '//*[@class="material-symbols-outlined"][text()="keyboard_arrow_down"]')
     click_element_by_xpath_selenium(dash_br, '//*[@class="material-symbols-outlined"][text()="keyboard_arrow_up"]')
+
+    # move mouse to different location of the screen to prevent flakiness because of tooltip.
+    dash_br.click_at_coord_fractions(theme_toggle_path(), 0, 1)
+    dash_br.wait_for_no_elements('span[aria-describedby*="tooltip"]')
+
+
+@pytest.mark.filterwarnings("ignore::DeprecationWarning")
+@image_assertion
+def test_collapsible_subcontainers_flex(dash_br):
+    """Test that after closing subcontainer the parent container is still open."""
+    accordion_select(dash_br, accordion_name=cnst.LAYOUT_ACCORDION)
+    page_select(dash_br, page_name=cnst.COLLAPSIBLE_CONTAINERS_FLEX)
+
+    # close subcontainer
+    dash_br.multiple_click("#flex_subcontainer_icon", 1)
 
     # move mouse to different location of the screen to prevent flakiness because of tooltip.
     dash_br.click_at_coord_fractions(theme_toggle_path(), 0, 1)

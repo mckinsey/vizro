@@ -13,7 +13,7 @@ from vizro.models._action._actions_chain import _action_validator_factory
 from vizro.models._components.form._form_utils import get_options_and_default, validate_options_dict, validate_value
 from vizro.models._models_utils import _log_call
 from vizro.models._tooltip import coerce_str_to_tooltip
-from vizro.models.types import ActionType, MultiValueType, OptionsDictType, OptionsType, SingleValueType
+from vizro.models.types import ActionType, MultiValueType, OptionsDictType, OptionsType, SingleValueType, _IdProperty
 
 
 def _get_list_of_labels(full_options: OptionsType) -> Union[list[StrictBool], list[float], list[str], list[date]]:
@@ -130,11 +130,20 @@ class Dropdown(VizroBaseModel):
     # For example: vm.Graph could have a dynamic that is by default set on True.
     _dynamic: bool = PrivateAttr(False)
 
-    # Component properties for actions and interactions
-    _input_property: str = PrivateAttr("value")
-
     # Reused validators
     _validate_options = model_validator(mode="before")(validate_options_dict)
+
+    @property
+    def _action_outputs(self) -> dict[str, _IdProperty]:
+        return {
+            "__default__": f"{self.id}.value",
+            **({"title": f"{self.id}_title.children"} if self.title else {}),
+            **({"description": f"{self.description.id}-text.children"} if self.description else {}),
+        }
+
+    @property
+    def _action_inputs(self) -> dict[str, _IdProperty]:
+        return {"__default__": f"{self.id}.value"}
 
     def __call__(self, options):
         full_options, default_value = get_options_and_default(options=options, multi=self.multi)
@@ -155,7 +164,11 @@ class Dropdown(VizroBaseModel):
 
         return html.Div(
             children=[
-                dbc.Label([self.title, *description], html_for=self.id) if self.title else None,
+                dbc.Label(
+                    children=[html.Span(id=f"{self.id}_title", children=self.title), *description], html_for=self.id
+                )
+                if self.title
+                else None,
                 dcc.Dropdown(**(defaults | self.extra)),
             ]
         )

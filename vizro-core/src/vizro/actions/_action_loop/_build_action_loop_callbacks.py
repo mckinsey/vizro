@@ -28,8 +28,8 @@ def _build_action_loop_callbacks() -> None:
         try:
             actions_chain_trigger_component = model_manager[actions_chain_trigger_component_id]
             # Use underlying callable object as a trigger component.
-            if hasattr(actions_chain_trigger_component, "_input_component_id"):
-                actions_chain_trigger_component_id = actions_chain_trigger_component._input_component_id
+            if hasattr(actions_chain_trigger_component, "_inner_component_id"):
+                actions_chain_trigger_component_id = actions_chain_trigger_component._inner_component_id
         # Not all action_chain_trigger_components are included in model_manager e.g. on_page_load_action_trigger
         except KeyError:
             pass

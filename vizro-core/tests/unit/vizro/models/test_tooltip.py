@@ -18,6 +18,11 @@ class TestTooltipInstantiation:
         assert hasattr(tooltip, "id")
         assert tooltip.text == "Tooltip text"
         assert tooltip.icon == "info"
+        assert tooltip._action_outputs == {
+            "__default__": f"{tooltip.id}-text.children",
+            "text": f"{tooltip.id}-text.children",
+            "icon": f"{tooltip.id}-icon.children",
+        }
 
     def test_validate_tooltip_invalid(self):
         with pytest.raises(ValidationError):
@@ -29,26 +34,29 @@ class TestTooltipBuild:
 
     def test_tooltip_build(self):
         tooltip = Tooltip(text="Tooltip text", icon="help", id="tooltip").build()
+
         expected_tooltip = html.Div(
             [
                 html.Span("help", id="tooltip-icon", className="material-symbols-outlined tooltip-icon"),
                 dbc.Tooltip(
-                    children=dcc.Markdown("Tooltip text", className="card-text"),
+                    children=dcc.Markdown("Tooltip text", id="tooltip-text", className="card-text"),
                     id="tooltip",
                     target="tooltip-icon",
                     autohide=False,
                 ),
             ]
         )
+
         assert_component_equal(tooltip, expected_tooltip)
 
     def test_tooltip_build_with_extra(self):
         tooltip = Tooltip(text="Tooltip text", icon="help", id="tooltip", extra={"flip": False}).build()
+
         expected_tooltip = html.Div(
             [
                 html.Span("help", id="tooltip-icon", className="material-symbols-outlined tooltip-icon"),
                 dbc.Tooltip(
-                    children=dcc.Markdown("Tooltip text", className="card-text"),
+                    children=dcc.Markdown("Tooltip text", id="tooltip-text", className="card-text"),
                     id="tooltip",
                     target="tooltip-icon",
                     autohide=False,
@@ -56,4 +64,5 @@ class TestTooltipBuild:
                 ),
             ]
         )
+
         assert_component_equal(tooltip, expected_tooltip)

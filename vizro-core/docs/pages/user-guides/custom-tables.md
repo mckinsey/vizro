@@ -37,7 +37,6 @@ The following examples show a possible version of a custom table. In this case t
 
         @capture("table")
         def my_custom_table(chosen_columns: list[str], data_frame=None):
-            """Custom table."""
             columns = [{"name": i, "id": i} for i in chosen_columns]
             defaults = {
                 "style_as_list_view": True,
@@ -98,7 +97,6 @@ The following examples show a possible version of a custom table. In this case t
 
         @capture("ag_grid")
         def my_custom_aggrid(chosen_columns: list[str], data_frame=None):
-            """Custom ag_grid."""
             defaults = {
                 "className": "ag-theme-quartz-dark ag-theme-vizro",
                 "defaultColDef": {

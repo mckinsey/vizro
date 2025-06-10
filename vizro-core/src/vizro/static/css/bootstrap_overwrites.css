@@ -71,22 +71,6 @@ All the HEX values starting with --text-code are taken from the Github code high
   margin-bottom: 0;
 }
 
-/* TABS */
-.nav-tabs {
-  margin-bottom: 1.25rem;
-}
-
-.tab-content {
-  height: calc(100% - 3.25rem); /* 3.25rem: nav-tabs margin + height */
-}
-
-/* The dbc component adds an additional div element to which we cannot assign a className.
-To ensure the dynamic height adjustment and prevent scrolling, the height must be specified for that div as below. */
-.tab-pane,
-.tab-pane > div:first-child {
-  height: 100%;
-}
-
 /* Remove label that automatically gets added when calling `dbc.Switch` to remove gap. */
 label[for="theme-selector"] {
   display: none;
@@ -95,10 +79,20 @@ label[for="theme-selector"] {
 /* This is currently required as the usage of dbc.NavBar automatically adds classNames such as `navbar-light` and
 `bg-light`, which come with an important tag from bootstrap. So we need below to overwrite these properties again. */
 .navbar {
-  background: var(--surfaces-bg02) !important;
+  background: var(--left-side-bg) !important;
 }
 
 .form-switch .form-check-input {
   margin-right: 0;
   padding-left: 0;
+}
+
+.container-controls-panel .dropdown {
+  max-width: 240px;
+  min-width: 160px;
+}
+
+.container-controls-panel .form-check-inline {
+  align-content: center;
+  height: 32px;
 }

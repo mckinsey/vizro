@@ -27,6 +27,8 @@ class TestDatePickerInstantiation:
         assert date_picker.description is None
         assert date_picker.actions == []
         assert date_picker.range is True
+        assert date_picker._action_outputs == {"__default__": f"{date_picker.id}.value"}
+        assert date_picker._action_inputs == {"__default__": f"{date_picker.id}.value"}
 
     def test_create_datepicker_mandatory_and_optional(self):
         date_picker = vm.DatePicker(
@@ -47,6 +49,12 @@ class TestDatePickerInstantiation:
         assert date_picker.actions == []
         assert date_picker.range is True
         assert isinstance(date_picker.description, vm.Tooltip)
+        assert date_picker._action_outputs == {
+            "__default__": f"{date_picker.id}.value",
+            "title": f"{date_picker.id}_title.children",
+            "description": f"{date_picker.description.id}-text.children",
+        }
+        assert date_picker._action_inputs == {"__default__": f"{date_picker.id}.value"}
 
     @pytest.mark.parametrize("title", ["test", """## Test header""", ""])
     def test_valid_title(self, title):
@@ -117,12 +125,12 @@ class TestBuildMethod:
     @pytest.mark.parametrize("range, value", [(False, "2023-01-05"), (True, ["2023-01-05", "2023-01-07"])])
     def test_datepicker_build(self, range, value):
         date_picker = vm.DatePicker(
-            min="2023-01-01", max="2023-07-01", range=range, value=value, id="datepicker_id", title="Test title"
+            min="2023-01-01", max="2023-07-01", range=range, value=value, id="datepicker_id", title="Title"
         ).build()
 
         expected_datepicker = html.Div(
             [
-                dbc.Label(["Test title", None], html_for="datepicker_id"),
+                dbc.Label([html.Span("Title", id="datepicker_id_title"), None], html_for="datepicker_id"),
                 dmc.DatePickerInput(
                     id="datepicker_id",
                     minDate="2023-01-01",
@@ -146,13 +154,13 @@ class TestBuildMethod:
             max="2023-07-01",
             value="2023-01-05",
             range=False,
-            title="Test title",
+            title="Title",
             extra={"clearable": True, "placeholder": "Select a date"},
         ).build()
 
         expected_datepicker = html.Div(
             [
-                dbc.Label(["Test title", None], html_for="datepicker_id"),
+                dbc.Label([html.Span("Title", id="datepicker_id_title"), None], html_for="datepicker_id"),
                 dmc.DatePickerInput(
                     id="datepicker_id",
                     minDate="2023-01-01",
@@ -178,13 +186,13 @@ class TestBuildMethod:
             max="2023-07-01",
             value="2023-01-05",
             range=False,
-            title="Test title",
+            title="Title",
             description=vm.Tooltip(text="Test description", icon="info", id="info"),
         ).build()
-        description = [
+        expected_description = [
             html.Span("info", id="info-icon", className="material-symbols-outlined tooltip-icon"),
             dbc.Tooltip(
-                children=dcc.Markdown("Test description", className="card-text"),
+                children=dcc.Markdown("Test description", id="info-text", className="card-text"),
                 id="info",
                 target="info-icon",
                 autohide=False,
@@ -192,7 +200,10 @@ class TestBuildMethod:
         ]
         expected_datepicker = html.Div(
             [
-                dbc.Label(["Test title", *description], html_for="datepicker_id"),
+                dbc.Label(
+                    [html.Span("Title", id="datepicker_id_title"), *expected_description],
+                    html_for="datepicker_id",
+                ),
                 dmc.DatePickerInput(
                     id="datepicker_id",
                     minDate="2023-01-01",

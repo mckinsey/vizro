@@ -21,11 +21,13 @@ from vizro._constants import ON_PAGE_LOAD_ACTION_PREFIX
 from vizro.actions._on_page_load import _on_page_load
 from vizro.managers import model_manager
 from vizro.managers._model_manager import FIGURE_MODELS, DuplicateIDError
-from vizro.models import Filter, VizroBaseModel
+from vizro.models import Filter, Tooltip, VizroBaseModel
 from vizro.models._action._actions_chain import ActionsChain, Trigger
 from vizro.models._grid import set_layout
 from vizro.models._models_utils import _build_inner_layout, _log_call, check_captured_callable_model
+from vizro.models.types import _IdProperty
 
+from ._tooltip import coerce_str_to_tooltip
 from .types import ComponentType, ControlType, FigureType, LayoutType
 
 # This is just used for type checking. Ideally it would inherit from some dash.development.base_component.Component
@@ -56,7 +58,9 @@ class Page(VizroBaseModel):
         components (list[ComponentType]): See [ComponentType][vizro.models.types.ComponentType]. At least one component
             has to be provided.
         title (str): Title of the `Page`.
-        description (str): Description for meta tags.
+        description (Optional[Tooltip]): Optional markdown string that adds an icon next to the title.
+            Hovering over the icon shows a tooltip with the provided description. This also sets the page's meta
+            tags. Defaults to `None`.
         layout (Optional[LayoutType]): Layout to place components in. Defaults to `None`.
         controls (list[ControlType]): See [ControlType][vizro.models.types.ControlType]. Defaults to `[]`.
         path (str): Path to navigate to page. Defaults to `""`.
@@ -66,8 +70,19 @@ class Page(VizroBaseModel):
     # TODO[mypy], see: https://github.com/pydantic/pydantic/issues/156 for components field
     components: conlist(Annotated[ComponentType, BeforeValidator(check_captured_callable_model)], min_length=1)  # type: ignore[valid-type]
     title: str = Field(description="Title of the `Page`")
-    description: str = Field(default="", description="Description for meta tags.")
     layout: Annotated[Optional[LayoutType], AfterValidator(set_layout), Field(default=None, validate_default=True)]
+    # TODO: ideally description would have json_schema_input_type=Union[str, Tooltip] attached to the BeforeValidator,
+    #  but this requires pydantic >= 2.9.
+    description: Annotated[
+        Optional[Tooltip],
+        BeforeValidator(coerce_str_to_tooltip),
+        Field(
+            default=None,
+            description="""Optional markdown string that adds an icon next to the title.
+            Hovering over the icon shows a tooltip with the provided description. This also sets the page's meta
+            tags. Defaults to `None`.""",
+        ),
+    ]
     controls: list[ControlType] = []
     path: Annotated[
         str, AfterValidator(set_path), Field(default="", description="Path to navigate to page.", validate_default=True)
@@ -105,24 +120,31 @@ class Page(VizroBaseModel):
             return result
         return result
 
+    @property
+    def _action_outputs(self) -> dict[str, _IdProperty]:
+        return {
+            "title": f"{self.id}_title.children",
+            **({"description": f"{self.description.id}-text.children"} if self.description else {}),
+        }
+
     @_log_call
     def pre_build(self):
-        # TODO-AV D 2: work out the best place to put this logic. It could feasibly go in _on_page_load instead.
+        # TODO-AV2 A 4: work out the best place to put this logic. It could feasibly go in _on_page_load instead.
         #  Probably it's better where it is now since it avoid navigating up the model hierarchy
         #  (action -> page -> figures) and instead just looks down (page -> figures).
         #  Should there be validation inside _on_page_load to check that targets exist and are
-        #  on the page and target-able components (i.e. are dynamic and hence have _output_component_property)?
+        #  on the page and target-able components (i.e. are dynamic and hence have _action_outputs)?
         #  It's not needed urgently since we always calculate the targets ourselves so we know they are valid.
         #  Similar comments apply to filter and parameter. Note that export_data has this logic built into the action
         #  itself since the user specifies the target. In future we'll probably have a helper function like
         #  get_all_targets_on_page() that's used in many actions. So maybe it makes sense to put it in the action for
         #  on_page_load/filter/parameter too.
         figure_targets = [
-            model.id for model in cast(Iterable[FigureType], model_manager._get_models(FIGURE_MODELS, page=self))
+            model.id for model in cast(Iterable[FigureType], model_manager._get_models(FIGURE_MODELS, root_model=self))
         ]
         filter_targets = [
             filter.id
-            for filter in cast(Iterable[Filter], model_manager._get_models(Filter, page=self))
+            for filter in cast(Iterable[Filter], model_manager._get_models(Filter, root_model=self))
             if filter._dynamic
         ]
         targets = figure_targets + filter_targets

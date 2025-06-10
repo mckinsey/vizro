@@ -5,7 +5,7 @@
   padding: 0;
 }
 
-.container-fluid:has(.collapse:not(.show)) {
+.container-fluid:has(> .collapse:not(.show)) {
   height: 60px; /* height of title (28px) + 2 x container padding (16px) */
   overflow: hidden;
 }
@@ -25,7 +25,6 @@
 /* Change cursor for the whole container title when it's a collapsible container. */
 .container-title-collapse  {
   cursor: pointer;
-  margin-bottom: 0;
 }
 
 .container-title-collapse .material-symbols-outlined {
@@ -38,7 +37,7 @@
 
 .collapsible-container {
   flex: 1;
-  overflow: auto;
+  overflow: inherit;
 }
 
 .bg-container {
@@ -58,4 +57,25 @@ and all containers need to have a white background on that page */
 
 [data-bs-theme="light"] #right-side:has(.bg-container) .card {
   background: var(--left-side-bg);
+}
+
+.inner-container-title {
+  align-items: center;
+  display: flex;
+  gap: 8px;
+}
+
+.container-controls-panel {
+  border-bottom: 1px solid var(--border-subtleAlpha01);
+  display: flex;
+  flex-wrap: wrap;
+  gap: 24px;
+  justify-content: start;
+  margin-bottom: 0.5rem;
+  padding-bottom: 0.5rem;
+}
+
+.tab-content .container-controls-panel {
+  border-bottom: none;
+  padding-bottom: 0;
 }

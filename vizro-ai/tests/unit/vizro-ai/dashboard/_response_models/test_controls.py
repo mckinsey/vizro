@@ -34,7 +34,9 @@ class TestFilterProxyCreate:
         filter_proxy = _create_filter_proxy(df_cols, df_schema, controllable_components)
         result = filter_proxy(targets=["bar_chart"], column="a")
 
-        assert result.model_dump(exclude={"id": True}) == expected_filter.model_dump(exclude={"id": True})
+        assert result.model_dump(exclude={"id": True}) == expected_filter.model_dump(
+            exclude={"id": True, "selector": True, "type": True}
+        )
 
 
 class TestControlCreate:

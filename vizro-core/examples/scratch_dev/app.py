@@ -1,66 +1,75 @@
-# Vizro is an open-source toolkit for creating modular data visualization applications.
-# check out https://github.com/mckinsey/vizro for more info about Vizro
-# and checkout https://vizro.readthedocs.io/en/stable/ for documentation.
-
-import vizro.plotly.express as px
 from vizro import Vizro
+import vizro.plotly.express as px
 import vizro.models as vm
 
-df = px.data.iris()
+gapminder_2007 = px.data.gapminder().query("year == 2007")
 
-page = vm.Page(
-    title="Page with lots of extra information",
+page_1 = vm.Page(
+    title="Page with button",
+    layout=vm.Grid(grid=[[0, 1, 2, 3, 4], [5, 5, 5, 5, 5], [5, 5, 5, 5, 5]]),
     components=[
-        vm.Graph(id="scatter_chart", figure=px.scatter(df, x="sepal_length", y="petal_width", color="species")),
-    ],
-    controls=[
-        vm.Filter(
-            column="species",
-            selector=vm.Dropdown(
-                description="""
-                    Select which species of iris you like.
-
-                    [Click here](www.google.com) to learn more about flowers.""",
-                # You could also do this with vm.Tooltip(text=...)
-            ),
+        vm.Container(
+            title="Plain button",
+            components=[
+                vm.Button(text="Click me!", description=vm.Tooltip(text="Button tooltip", icon="info"), variant="plain")
+            ],
+            variant="outlined",
         ),
-        vm.Filter(
-            column="species",
-            selector=vm.RadioItems(
-                description="""
-                    Select which species of iris you like.
-
-                    [Click here](www.google.com) to learn more about flowers.""",
-                # You could also do this with vm.Tooltip(text=...)
-            ),
+        vm.Container(
+            title="Filled button",
+            components=[vm.Button(text="Click me!", description=vm.Tooltip(text="Button tooltip", icon="info"))],
+            variant="outlined",
         ),
-        vm.Filter(
-            column="sepal_length",
-            selector=vm.RangeSlider(
-                description="""
-                    Select which species of iris you like.
-
-                    [Click here](www.google.com) to learn more about flowers.""",
-                # You could also do this with vm.Tooltip(text=...)
-            ),
+        vm.Container(
+            title="Outlined button",
+            components=[
+                vm.Button(
+                    text="Click me!", description=vm.Tooltip(text="Button tooltip", icon="info"), variant="outlined"
+                )
+            ],
+            variant="outlined",
         ),
-        vm.Filter(
-            column="species",
-            selector=vm.Checklist(
-                description="""
-                    Select which species of iris you like.
-
-                    [Click here](www.google.com) to learn more about flowers.""",
-                # You could also do this with vm.Tooltip(text=...)
-            ),
+        vm.Container(
+            title="Button with extra success",
+            components=[
+                vm.Button(
+                    text="Click me!",
+                    description=vm.Tooltip(text="Button tooltip", icon="info"),
+                    extra={"color": "success", "outline": True},
+                )
+            ],
+            variant="outlined",
+        ),
+        vm.Container(
+            title="Button with extra danger",
+            components=[
+                vm.Button(
+                    text="Click me!",
+                    description=vm.Tooltip(text="Button tooltip", icon="info"),
+                    extra={"color": "danger", "outline": True},
+                )
+            ],
+            variant="outlined",
+        ),
+        vm.Container(
+            title="Graph",
+            components=[
+                vm.Graph(
+                    title="Graph 1",
+                    figure=px.bar(
+                        gapminder_2007,
+                        x="continent",
+                        y="lifeExp",
+                        color="continent",
+                    ),
+                ),
+            ],
         ),
     ],
 )
 
-dashboard = vm.Dashboard(
-    pages=[page],
-    title="blah blah blah",
-)
+dashboard = vm.Dashboard(title="Test dashboard", pages=[page_1])
 
 if __name__ == "__main__":
-    Vizro().build(dashboard).run()
+    app = Vizro().build(dashboard)
+    app.run()

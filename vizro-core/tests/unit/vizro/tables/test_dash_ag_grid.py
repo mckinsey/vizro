@@ -30,8 +30,8 @@ default_col_defs = {
     "filterParams": {"buttons": ["apply", "reset"], "closeOnApply": True},
     "resizable": True,
     "sortable": True,
+    "flex": 1,
 }
-style = {"height": "100%"}
 
 
 class TestDashAgGrid:
@@ -43,7 +43,6 @@ class TestDashAgGrid:
                 columnDefs=column_defs,
                 rowData=row_data_date_converted,
                 defaultColDef=default_col_defs,
-                style=style,
             ),
             keys_to_strip={"className", "dashGridOptions"},
         )

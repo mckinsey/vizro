@@ -81,7 +81,7 @@ class TestPreBuildMethod:
     def test_targets_present_invalid(self):
         parameter = Parameter(targets=["scatter_chart_invalid.x"], selector=vm.Dropdown(options=["lifeExp", "pop"]))
         model_manager["test_page"].controls = [parameter]
-        with pytest.raises(ValueError, match="Target scatter_chart_invalid not found within the page test_page."):
+        with pytest.raises(ValueError, match="Target scatter_chart_invalid not found within the test_page."):
             parameter.pre_build()
 
     @pytest.mark.usefixtures("managers_one_page_two_graphs")
@@ -128,6 +128,24 @@ class TestPreBuildMethod:
         assert isinstance(default_action, _AbstractAction)
         assert default_action.id == f"__parameter_action_{parameter.id}"
 
+    def test_set_custom_action(self, managers_one_page_two_graphs, identity_action_function):
+        action_function = identity_action_function()
+        parameter = vm.Parameter(
+            targets=["scatter_chart.x"],
+            selector=vm.RadioItems(
+                options=["lifeExp", "gdpPercap", "pop"],
+                actions=[vm.Action(function=action_function)],
+            ),
+        )
+        model_manager["test_page"].controls = [parameter]
+        parameter.pre_build()
+
+        default_actions_chain = parameter.selector.actions[0]
+        default_action = default_actions_chain.actions[0]
+
+        assert isinstance(default_actions_chain, ActionsChain)
+        assert default_action.function is action_function
+
     @pytest.mark.usefixtures("managers_one_page_two_graphs_with_dynamic_data")
     @pytest.mark.parametrize(
         "filter_targets, expected_parameter_targets",
@@ -160,6 +178,13 @@ class TestPreBuildMethod:
 
         default_action = data_frame_parameter.selector.actions[0].actions[0]
         assert set(default_action.targets) == expected_parameter_targets
+
+    @pytest.mark.usefixtures("managers_one_page_container_controls")
+    def test_set_container_parameter_default(self):
+        parameter = model_manager["container_parameter"]
+        parameter.pre_build()
+
+        assert parameter.selector.extra == {"inline": True}
 
 
 @pytest.mark.usefixtures("managers_one_page_two_graphs")

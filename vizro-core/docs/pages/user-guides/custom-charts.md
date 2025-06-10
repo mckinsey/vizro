@@ -151,7 +151,6 @@ The below examples shows a more involved use-case. We create and style a waterfa
                     figure=waterfall(data_frame=waterfall_data(), measure="measure", x="x", y="y", text="text"),
                 ),
             ],
-            # Apply a filter to the custom chart
             controls=[
                 vm.Filter(column="x", selector=vm.Dropdown(title="Financial categories")),
             ],

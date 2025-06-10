@@ -1,20 +1,22 @@
 import logging
-from typing import Annotated, Literal
+from typing import Annotated, Literal, Optional
 
 import pandas as pd
 from dash import State, dcc, html
-from pydantic import AfterValidator, Field, PrivateAttr, field_validator
+from pydantic import AfterValidator, BeforeValidator, Field, PrivateAttr, field_validator
 from pydantic.functional_serializers import PlainSerializer
 from pydantic.json_schema import SkipJsonSchema
 
 from vizro.actions import filter_interaction
 from vizro.actions._actions_utils import CallbackTriggerDict, _get_component_actions, _get_parent_model
-from vizro.managers import data_manager
-from vizro.models import VizroBaseModel
+from vizro.managers import data_manager, model_manager
+from vizro.managers._model_manager import DuplicateIDError
+from vizro.models import Tooltip, VizroBaseModel
 from vizro.models._action._actions_chain import _action_validator_factory
 from vizro.models._components._components_utils import _process_callable_data_frame
 from vizro.models._models_utils import _log_call
-from vizro.models.types import ActionType, CapturedCallable, validate_captured_callable
+from vizro.models._tooltip import coerce_str_to_tooltip
+from vizro.models.types import ActionType, CapturedCallable, _IdProperty, validate_captured_callable
 
 logger = logging.getLogger(__name__)
 
@@ -31,6 +33,8 @@ class Table(VizroBaseModel):
             Defaults to `""`.
         footer (str): Markdown text positioned below the `Table`. Follows the CommonMark specification.
             Ideal for providing further details such as sources, disclaimers, or additional notes. Defaults to `""`.
+        description (Optional[Tooltip]): Optional markdown string that adds an icon next to the title.
+            Hovering over the icon shows a tooltip with the provided description. Defaults to `None`.
         actions (list[ActionType]): See [`ActionType`][vizro.models.types.ActionType]. Defaults to `[]`.
 
     """
@@ -55,6 +59,17 @@ class Table(VizroBaseModel):
         description="Markdown text positioned below the `Table`. Follows the CommonMark specification. Ideal for "
         "providing further details such as sources, disclaimers, or additional notes.",
     )
+    # TODO: ideally description would have json_schema_input_type=Union[str, Tooltip] attached to the BeforeValidator,
+    #  but this requires pydantic >= 2.9.
+    description: Annotated[
+        Optional[Tooltip],
+        BeforeValidator(coerce_str_to_tooltip),
+        Field(
+            default=None,
+            description="""Optional markdown string that adds an icon next to the title.
+            Hovering over the icon shows a tooltip with the provided description. Defaults to `None`.""",
+        ),
+    ]
     actions: Annotated[
         list[ActionType],
         AfterValidator(_action_validator_factory("active_cell")),
@@ -62,12 +77,25 @@ class Table(VizroBaseModel):
         Field(default=[]),
     ]
 
-    _input_component_id: str = PrivateAttr()
+    _inner_component_id: str = PrivateAttr()
 
     # Component properties for actions and interactions
-    _output_component_property: str = PrivateAttr("children")
-
     _validate_figure = field_validator("figure", mode="before")(validate_captured_callable)
+
+    def model_post_init(self, context) -> None:
+        super().model_post_init(context)
+        self._inner_component_id = self.figure._arguments.get("id", f"__input_{self.id}")
+
+    @property
+    def _action_outputs(self) -> dict[str, _IdProperty]:
+        return {
+            "__default__": f"{self.id}.children",
+            "figure": f"{self.id}.children",
+            **({"title": f"{self.id}_title.children"} if self.title else {}),
+            **({"header": f"{self.id}_header.children"} if self.header else {}),
+            **({"footer": f"{self.id}_footer.children"} if self.footer else {}),
+            **({"description": f"{self.description.id}-text.children"} if self.description else {}),
+        }
 
     # Convenience wrapper/syntactic sugar.
     def __call__(self, **kwargs):
@@ -77,7 +105,7 @@ class Table(VizroBaseModel):
         if "data_frame" not in kwargs:
             kwargs["data_frame"] = data_manager[self["data_frame"]].load()
         figure = self.figure(**kwargs)
-        figure.id = self._input_component_id
+        figure.id = self._inner_component_id
         return figure
 
     # Convenience wrapper/syntactic sugar.
@@ -92,9 +120,9 @@ class Table(VizroBaseModel):
     def _filter_interaction_input(self):
         """Required properties when using`filter_interaction`."""
         return {
-            "active_cell": State(component_id=self._input_component_id, component_property="active_cell"),
+            "active_cell": State(component_id=self._inner_component_id, component_property="active_cell"),
             "derived_viewport_data": State(
-                component_id=self._input_component_id,
+                component_id=self._inner_component_id,
                 component_property="derived_viewport_data",
             ),
             "modelID": State(component_id=self.id, component_property="id"),  # required, to determine triggered model
@@ -130,22 +158,37 @@ class Table(VizroBaseModel):
 
     @_log_call
     def pre_build(self):
-        self._input_component_id = self.figure._arguments.get("id", f"__input_{self.id}")
+        # Check if any other Vizro model or CapturedCallable has the same input component ID
+        all_inner_component_ids = {  # type: ignore[var-annotated]
+            model._inner_component_id
+            for model in model_manager._get_models()
+            if hasattr(model, "_inner_component_id") and model.id != self.id
+        }
+
+        if self._inner_component_id in set(model_manager) | all_inner_component_ids:
+            raise DuplicateIDError(
+                f"CapturedCallable with id={self._inner_component_id} has an id that is "
+                "already in use by another Vizro model or CapturedCallable. "
+                "CapturedCallables must have unique ids across the whole dashboard."
+            )
 
     def build(self):
+        description = self.description.build().children if self.description else [None]
         return dcc.Loading(
             children=html.Div(
                 children=[
-                    html.H3(self.title, className="figure-title", id=f"{self.id}_title") if self.title else None,
+                    html.H3([html.Span(self.title, id=f"{self.id}_title"), *description], className="figure-title")
+                    if self.title
+                    else None,
                     dcc.Markdown(self.header, className="figure-header", id=f"{self.id}_header")
                     if self.header
                     else None,
                     # Refer to the vm.AgGrid build method for details on why we return the
-                    # html.Div(id=self._input_component_id) instead of actual figure object
+                    # html.Div(id=self._inner_component_id) instead of actual figure object
                     # with the original data_frame.
                     html.Div(
                         id=self.id,
-                        children=[html.Div(id=self._input_component_id)],
+                        children=[html.Div(id=self._inner_component_id)],
                         className="table-container",
                     ),
                     dcc.Markdown(self.footer, className="figure-footer", id=f"{self.id}_footer")

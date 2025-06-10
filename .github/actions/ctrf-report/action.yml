@@ -1,0 +1,23 @@
+name: "Create CTRF reports for tests"
+description: "Creates CTRF reports for tests"
+
+runs:
+  using: "composite"
+  steps:
+    - name: Publish test report
+      # used pinned commit hash for security reasons
+      uses: ctrf-io/github-test-reporter@27b97adba93f02142c573c8a710045cac0d874ae # v1.0.14
+      with:
+        report-path: "./.ctrf/ctrf-report.json"
+        failed-folded-report: true
+        flaky-rate-report: true
+        previous-results-max: 100
+        artifact-name: ctrf-report-${{ env.ARTIFACT_NAME_POSTFIX }}
+      env:
+        GITHUB_TOKEN: ${{ env.GITHUB_TOKEN }}
+
+    - name: Upload CTRF report
+      uses: actions/upload-artifact@v4
+      with:
+        name: ctrf-report-${{ env.ARTIFACT_NAME_POSTFIX }}
+        path: /home/runner/work/vizro/vizro/.ctrf/ctrf-report.json
