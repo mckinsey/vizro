@@ -51,7 +51,9 @@ gunicorn==23.0.0
 idna==3.10
     # via requests
 importlib-metadata==8.5.0
-    # via dash
+    # via
+    #   dash
+    #   flask
 isort==5.13.2
     # via -r requirements.in
 itsdangerous==2.2.0
@@ -97,18 +99,21 @@ python-dateutil==2.9.0.post0
     # via pandas
 pytz==2024.2
     # via pandas
-requests==2.32.3
+requests==2.32.4
     # via dash
 retrying==1.3.4
-    # via dash
-setuptools==75.3.0
     # via dash
 six==1.16.0
     # via
     #   python-dateutil
     #   retrying
+tomli==2.2.1
+    # via
+    #   autoflake
+    #   black
 typing-extensions==4.12.2
     # via
+    #   black
     #   dash
     #   pydantic
     #   pydantic-core
