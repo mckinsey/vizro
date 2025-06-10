@@ -9,7 +9,6 @@ from typing import Any, Literal, Optional
 import vizro.models as vm
 from mcp.server.fastmcp import FastMCP
 from pydantic import ValidationError
-from pydantic.json_schema import GenerateJsonSchema
 from vizro import Vizro
 
 from vizro_mcp._schemas import (
@@ -17,10 +16,9 @@ from vizro_mcp._schemas import (
     ChartPlan,
     Dashboard,
     GraphEnhanced,
-    get_overview_vizro_models,
-    get_simple_dashboard_config,
 )
 from vizro_mcp._utils import (
+    CHART_INSTRUCTIONS,
     GAPMINDER,
     IRIS,
     SAMPLE_DASHBOARD_CONFIG,
@@ -28,21 +26,20 @@ from vizro_mcp._utils import (
     TIPS,
     DFInfo,
     DFMetaData,
+    NoDefsGenerateJsonSchema,
     convert_github_url_to_raw,
     create_pycafe_url,
+    get_dashboard_instructions,
     get_dataframe_info,
     get_python_code_and_preview_link,
     load_dataframe_by_format,
     path_or_url_check,
 )
 
-# PyCafe URL for Vizro snippets
-PYCAFE_URL = "https://py.cafe"
-
 
 @dataclass
-class ValidationResults:
-    """Results of the validation tool."""
+class ValidateResults:
+    """Results of validation tools."""
 
     valid: bool
     message: str
@@ -61,10 +58,86 @@ class DataAnalysisResults:
     df_metadata: Optional[DFMetaData]
 
 
+@dataclass
+class ModelJsonSchemaResults:
+    """Results of the get_model_json_schema tool."""
+
+    model_name: str
+    json_schema: dict[str, Any]
+    additional_info: str
+
+
 # TODO: what do I need to do here, as things are already set up?
 mcp = FastMCP(
     "MCP server to help create Vizro dashboards and charts.",
 )
+
+
+@mcp.tool()
+def get_vizro_chart_or_dashboard_plan(
+    user_plan: Literal["chart", "dashboard"],
+    user_host: Literal["generic_host", "ide"],
+    advanced_mode: bool = False,
+) -> str:
+    """Get instructions for creating a Vizro chart or dashboard. Call FIRST when asked to create Vizro things.
+
+    Must be ALWAYS called FIRST with advanced_mode=False, then call again with advanced_mode=True if the JSON config does
+    not suffice anymore.
+
+    Args:
+        user_plan: The type of Vizro thing the user wants to create
+        user_host: The host the user is using, if "ide" you can use the IDE/editor to run python code
+        advanced_mode: Only call if you need to use custom CSS, custom components or custom actions.
+            No need to call this with advanced_mode=True if you need advanced charts, use `custom_charts` in
+            the `validate_dashboard_config` tool instead.
+
+    Returns:
+        Instructions for creating a Vizro chart or dashboard
+    """
+    if user_plan == "chart":
+        return CHART_INSTRUCTIONS
+    elif user_plan == "dashboard":
+        return f"{get_dashboard_instructions(advanced_mode, user_host)}"
+
+
+@mcp.tool()
+def get_model_json_schema(model_name: str) -> ModelJsonSchemaResults:
+    """Get the JSON schema for the specified Vizro model.
+
+    Args:
+        model_name: Name of the Vizro model to get schema for (e.g., 'Card', 'Dashboard', 'Page')
+
+    Returns:
+        JSON schema of the requested Vizro model
+    """
+    modified_models = {
+        "Graph": GraphEnhanced,
+        "AgGrid": AgGridEnhanced,
+        "Table": AgGridEnhanced,
+    }
+
+    if model_name in modified_models:
+        return ModelJsonSchemaResults(
+            model_name=model_name,
+            json_schema=modified_models[model_name].model_json_schema(schema_generator=NoDefsGenerateJsonSchema),
+            additional_info="""LLM must remember to replace `$ref` with the actual config. Request the schema of
+that model if necessary. Do NOT forget to call `validate_dashboard_config` after each iteration.""",
+        )
+
+    if not hasattr(vm, model_name):
+        return ModelJsonSchemaResults(
+            model_name=model_name,
+            json_schema={},
+            additional_info=f"Model '{model_name}' not found in vizro.models",
+        )
+
+    model_class = getattr(vm, model_name)
+    return ModelJsonSchemaResults(
+        model_name=model_name,
+        json_schema=model_class.model_json_schema(schema_generator=NoDefsGenerateJsonSchema),
+        additional_info="""LLM must remember to replace `$ref` with the actual config. Request the schema of
+that model if necessary. Do NOT forget to call `validate_dashboard_config` after each iteration.""",
+    )
 
 
 @mcp.tool()
@@ -91,248 +164,6 @@ def get_sample_data_info(data_name: Literal["iris", "tips", "stocks", "gapminder
         return STOCKS
     elif data_name == "gapminder":
         return GAPMINDER
-
-
-@mcp.tool()
-def validate_model_config(
-    dashboard_config: dict[str, Any],
-    data_infos: list[DFMetaData],  # Should be Optional[..]=None, but Cursor complains..
-    custom_charts: list[ChartPlan],
-    auto_open: bool = True,
-) -> ValidationResults:
-    """Validate Vizro model configuration. Run ALWAYS when you have a complete dashboard configuration.
-
-    If successful, the tool will return the python code and, if it is a remote file, the py.cafe link to the chart.
-    The PyCafe link will be automatically opened in your default browser if auto_open is True.
-
-    Args:
-        dashboard_config: Either a JSON string or a dictionary representing a Vizro dashboard model configuration
-        data_infos: List of DFMetaData objects containing information about the data files
-        custom_charts: List of ChartPlan objects containing information about the custom charts in the dashboard
-        auto_open: Whether to automatically open the PyCafe link in a browser
-
-    Returns:
-        ValidationResults object with status and dashboard details
-    """
-    Vizro._reset()
-
-    try:
-        dashboard = Dashboard.model_validate(
-            dashboard_config,
-            context={"callable_defs": [custom_chart.chart_name for custom_chart in custom_charts]},
-        )
-    except ValidationError as e:
-        return ValidationResults(
-            valid=False,
-            message=f"""Validation Error: {e!s}. Fix the error and call this tool again.
-Calling `get_model_json_schema` may help.""",
-            python_code="",
-            pycafe_url=None,
-            browser_opened=False,
-        )
-
-    else:
-        result = get_python_code_and_preview_link(dashboard, data_infos, custom_charts)
-
-        pycafe_url = result.pycafe_url if all(info.file_location_type == "remote" for info in data_infos) else None
-        browser_opened = False
-
-        if pycafe_url and auto_open:
-            try:
-                browser_opened = webbrowser.open(pycafe_url)
-            except Exception:
-                browser_opened = False
-
-        return ValidationResults(
-            valid=True,
-            message="""Configuration is valid for Dashboard! Do not forget to call this tool again after each iteration.
-If you are creating an `app.py` file, you MUST use the code from the validation tool, do not modify it, watch out for
-differences to previous `app.py`""",
-            python_code=result.python_code,
-            pycafe_url=pycafe_url,
-            browser_opened=browser_opened,
-        )
-
-    finally:
-        Vizro._reset()
-
-
-class NoDefsGenerateJsonSchema(GenerateJsonSchema):
-    """Custom schema generator that handles reference cases appropriately."""
-
-    def generate(self, schema, mode="validation"):
-        """Generate schema and resolve references if needed."""
-        json_schema = super().generate(schema, mode=mode)
-
-        # If schema is a reference (has $ref but no properties)
-        if "$ref" in json_schema and "properties" not in json_schema:
-            # Extract the reference path - typically like "#/$defs/ModelName"
-            ref_path = json_schema["$ref"]
-            if ref_path.startswith("#/$defs/"):
-                model_name = ref_path.split("/")[-1]
-                # Get the referenced definition from $defs
-                # Simply copy the referenced definition content to the top level
-                json_schema.update(json_schema["$defs"][model_name])
-                # Remove the $ref since we've resolved it
-                json_schema.pop("$ref")
-
-        # Remove the $defs section now that we've used what we needed
-        json_schema.pop("$defs", {})
-        return json_schema
-
-
-@dataclass
-class ModelJsonSchemaResults:
-    """Results of the get_model_json_schema tool."""
-
-    model_name: str
-    json_schema: dict[str, Any]
-    additional_info: str
-
-
-@mcp.tool()
-def get_model_json_schema(model_name: str) -> ModelJsonSchemaResults:
-    """Get the JSON schema for the specified Vizro model.
-
-    Args:
-        model_name: Name of the Vizro model to get schema for (e.g., 'Card', 'Dashboard', 'Page')
-
-    Returns:
-        JSON schema of the requested Vizro model
-    """
-    modified_models = {
-        "Graph": GraphEnhanced,
-        "AgGrid": AgGridEnhanced,
-        "Table": AgGridEnhanced,
-    }
-
-    if model_name in modified_models:
-        return ModelJsonSchemaResults(
-            model_name=model_name,
-            json_schema=modified_models[model_name].model_json_schema(schema_generator=NoDefsGenerateJsonSchema),
-            additional_info="""LLM must remember to replace `$ref` with the actual config. Request the schema of
-that model if necessary. Do NOT forget to call `validate_model_config` after each iteration.""",
-        )
-
-    if not hasattr(vm, model_name):
-        return ModelJsonSchemaResults(
-            model_name=model_name,
-            json_schema={},
-            additional_info=f"Model '{model_name}' not found in vizro.models",
-        )
-
-    model_class = getattr(vm, model_name)
-    return ModelJsonSchemaResults(
-        model_name=model_name,
-        json_schema=model_class.model_json_schema(schema_generator=NoDefsGenerateJsonSchema),
-        additional_info="""LLM must remember to replace `$ref` with the actual config. Request the schema of
-that model if necessary. Do NOT forget to call `validate_model_config` after each iteration.""",
-    )
-
-
-STANDARD_INSTRUCTIONS = """
-- IF the user has no plan (ie no components or pages), use the config at the bottom of this prompt, OTHERWISE:
-- make a plan of what components you would like to use, then request all necessary schemas
-    using the `get_model_json_schema` tool (start with `Dashboard`, and don't forget `Graph`)
-- assemble your components into a page, then add the page or pages to a dashboard, DO NOT show config or code
-    to the user until you have validated the solution
-- ALWAYS validate the dashboard configuration using the `validate_model_config` tool
-- using `custom_chart` is encouraged for advanced visualizations, no need to call the planner tool in advanced mode
-"""
-
-IDE_INSTRUCTIONS = """
-- after validation, add the python code to `app.py` with the following code:
-    ```python
-    app = Vizro().build(dashboard)
-    if __name__ == "__main__":
-        app.run(debug=True, port=8050)
-- you MUST use the code from the validation tool, do not modify it, watch out for differences to previous
-    `app.py`
-"""
-
-GENERIC_HOST_INSTRUCTIONS = """
-- you should call the `validate_model_config` tool to validate the solution, and unless
-    otherwise specified, open the dashboard in the browser
-- if you cannot open the dashboard in the browser, communicate this to the user, provide them with the python code
-    instead and explain how to run it
-"""
-
-
-def get_instructions(advanced_mode: bool = False, user_host: Literal["generic_host", "ide"] = "generic_host") -> str:
-    """Get instructions for creating a Vizro dashboard in an IDE/editor."""
-    if not advanced_mode:
-        return f"""
-    {STANDARD_INSTRUCTIONS}
-
-    {IDE_INSTRUCTIONS if user_host == "ide" else GENERIC_HOST_INSTRUCTIONS}
-
-    Models you can use:
-    {get_overview_vizro_models()}
-
-    Very simple dashboard config:
-    {get_simple_dashboard_config()}
-"""
-    else:
-        return """
-    Instructions for going beyond the basic dashboard:
-    - ensure that you have called the `get_vizro_chart_or_dashboard_plan` tool with advanced_mode=False first
-    - communicate to the user that you are going to use Python code to create the dashboard, and that
-        they will have to run the code themselves
-    - search the web for more information about the components you are using, if you cannot search the web
-        communicate this to the user, and tell them that this is a current limitation of the tool
-    - if stuck, return to a JSON based config, and call the `validate_model_config` tool to validate the solution
-"""
-
-
-@mcp.tool()
-def get_vizro_chart_or_dashboard_plan(
-    user_plan: Literal["chart", "dashboard"],
-    user_host: Literal["generic_host", "ide"],
-    advanced_mode: bool = False,
-) -> str:
-    """Get instructions for creating a Vizro chart or dashboard. Call FIRST when asked to create Vizro things.
-
-    Must be ALWAYS called FIRST with advanced_mode=False, then call again with advanced_mode=True if the JSON config does
-    not suffice anymore.
-
-    Args:
-        user_plan: The type of Vizro thing the user wants to create
-        user_host: The host the user is using, if "ide" you can use the IDE/editor to run python code
-        advanced_mode: Only call if you need to use custom CSS, custom components or custom actions.
-            No need to call this with advanced_mode=True if you need advanced charts, use `custom_charts` in
-            the `validate_model_config` tool instead.
-
-    Returns:
-        Instructions for creating a Vizro chart or dashboard
-    """
-    if user_plan == "chart":
-        return """
-IMPORTANT:
-    - ALWAYS VALIDATE:if you iterate over a valid produced solution, make sure to ALWAYS call the
-        validate_chart_code tool to validate the chart code, display the figure code to the user
-    - DO NOT modify the background (with plot_bgcolor) or color sequences unless explicitly asked for
-
-Instructions for creating a Vizro chart:
-    - analyze the datasets needed for the chart using the load_and_analyze_data tool - the most important
-        information here are the column names and column types
-    - if the user provides no data, but you need to display a chart or table, use the get_sample_data_info
-        tool to get sample data information
-    - create a chart using plotly express and/or plotly graph objects, and call the function `custom_chart`
-    - call the validate_chart_code tool to validate the chart code, display the figure code to the user (as artifact)
-    - do NOT call any other tool after, especially do NOT create a dashboard
-            """
-    elif user_plan == "dashboard":
-        return f"""
-IMPORTANT:
-    - ALWAYS VALIDATE: if you iterate over a valid produced solution, make sure to ALWAYS call the
-        `validate_model_config` tool again to ensure the solution is still valid
-    - DO NOT show any code or config to the user until you have validated the solution, do not say you are preparing
-        a solution, just do it and validate it
-    - ALWAYS CHECK SCHEMA: to start with, or when stuck, try enquiring the schema of the component in question
-with the `get_model_json_schema` tool (available models see below)
-
-{get_instructions(advanced_mode, user_host)}
-    """
 
 
 @mcp.tool()
@@ -382,12 +213,76 @@ def load_and_analyze_data(path_or_url: str) -> DataAnalysisResults:
     return DataAnalysisResults(valid=True, message="Data loaded successfully", df_info=df_info, df_metadata=df_metadata)
 
 
+@mcp.tool()
+def validate_dashboard_config(
+    dashboard_config: dict[str, Any],
+    data_infos: list[DFMetaData],
+    custom_charts: list[ChartPlan],
+    auto_open: bool = True,
+) -> ValidateResults:
+    """Validate Vizro model configuration. Run ALWAYS when you have a complete dashboard configuration.
+
+    If successful, the tool will return the python code and, if it is a remote file, the py.cafe link to the chart.
+    The PyCafe link will be automatically opened in your default browser if auto_open is True.
+
+    Args:
+        dashboard_config: Either a JSON string or a dictionary representing a Vizro dashboard model configuration
+        data_infos: List of DFMetaData objects containing information about the data files
+        custom_charts: List of ChartPlan objects containing information about the custom charts in the dashboard
+        auto_open: Whether to automatically open the PyCafe link in a browser
+
+    Returns:
+        ValidationResults object with status and dashboard details
+    """
+    Vizro._reset()
+
+    try:
+        dashboard = Dashboard.model_validate(
+            dashboard_config,
+            context={"custom_chart_defs": [custom_chart.chart_name for custom_chart in custom_charts]},
+        )
+    except ValidationError as e:
+        return ValidateResults(
+            valid=False,
+            message=f"""Validation Error: {e!s}. Fix the error and call this tool again.
+Calling `get_model_json_schema` may help.""",
+            python_code="",
+            pycafe_url=None,
+            browser_opened=False,
+        )
+
+    else:
+        code_link = get_python_code_and_preview_link(dashboard, data_infos, custom_charts)
+
+        pycafe_url = code_link.pycafe_url if all(info.file_location_type == "remote" for info in data_infos) else None
+        browser_opened = False
+
+        if pycafe_url and auto_open:
+            try:
+                browser_opened = webbrowser.open(pycafe_url)
+            except Exception:
+                browser_opened = False
+
+        return ValidateResults(
+            valid=True,
+            message="""Configuration is valid for Dashboard! Do not forget to call this tool again after each iteration.
+If you are creating an `app.py` file, you MUST use the code from the validation tool, do not modify it, watch out for
+differences to previous `app.py`""",
+            python_code=code_link.python_code,
+            pycafe_url=pycafe_url,
+            browser_opened=browser_opened,
+        )
+
+    finally:
+        Vizro._reset()
+
+
 @mcp.prompt()
 def create_starter_dashboard():
     """Prompt template for getting started with Vizro."""
     content = f"""
 Create a super simple Vizro dashboard with one page and one chart and one filter:
-- No need to call any tools except for `validate_model_config`
+- No need to call any tools except for `validate_dashboard_config`
 - Call this tool with the precise config as shown below
 - The PyCafe link will be automatically opened in your default browser
 - THEN show the python code after validation, but do not show the PyCafe link
@@ -401,25 +296,31 @@ Create a super simple Vizro dashboard with one page and one chart and one filter
 
 
 @mcp.prompt()
-def create_eda_dashboard(
+def create_dashboard(
     file_path_or_url: str,
+    context: Optional[str] = None,
 ) -> str:
     """Prompt template for creating an EDA dashboard based on one dataset."""
     content = f"""
-Create an EDA dashboard based on the following dataset:{file_path_or_url}. Proceed as follows:
+Create a dashboard based on the following dataset:{file_path_or_url}. Proceed as follows:
 1. Analyze the data using the load_and_analyze_data tool first, passing the file path or github url {file_path_or_url}
     to the tool.
-2. Create a dashboard with 4 pages:
-    - Page 1: Summary of the dataset using the Card component and the dataset itself using the plain AgGrid component.
-    - Page 2: Visualizing the distribution of all numeric columns using the Graph component with a histogram.
+2. Get some knowledge about the Vizro dashboard process by calling the `get_vizro_chart_or_dashboard_plan` tool.
+3. Create a Vizro dashboard that follows the user context: {context} OR does the below instructions if
+    no context is provided:
+    - Make a homepage that uses teh Card component to create navigation to the other pages.
+    - Overview page: Summary of the dataset using the Text component and the dataset itself using the plain AgGrid component.
+    - Distribution page: Visualizing the distribution of all numeric columns using the Graph component with a histogram.
         - use a Parameter that targets the Graph component and the x argument, and you can select the column to
             be displayed
         - IMPORTANT:remember that you target the chart like: <graph_id>.x and NOT <graph_id>.figure.x
         - do not use any color schemes etc.
         - add filters for all categorical columns
-    - Page 3: Visualizing the correlation between all numeric columns using the Graph component with a scatter plot.
-    - Page 4: Two interesting charts side by side, use the Graph component for this. Make sure they look good
-        but do not try something beyond the scope of plotly express
+    - Advanced analysis page: Use the `custom_charts` feature of the `validate_dashboard_config` tool to create 4
+        interesting charts. Put them in a 2x2 Layout, and ensure they look good. Do not use any color schemes,
+        but ensure that if you use hover, that it works on light and dark mode. Use the `Graph` model `title`,
+        but do NOT give the charts a title, that would be redundant.
+    - Finally, ensure that the Navigation is with a Navbar, and that you select nice icons for the Navbar.
 """
     return content
 
@@ -429,7 +330,7 @@ def validate_chart_code(
     chart_config: ChartPlan,
     data_info: DFMetaData,
     auto_open: bool = True,
-) -> ValidationResults:
+) -> ValidateResults:
     """Validate the chart code created by the user and optionally open the PyCafe link in a browser.
 
     Args:
@@ -445,7 +346,7 @@ def validate_chart_code(
     try:
         chart_plan_obj = ChartPlan.model_validate(chart_config)
     except ValidationError as e:
-        return ValidationResults(
+        return ValidateResults(
             valid=False,
             message=f"Validation Error: {e!s}",
             python_code="",
@@ -465,7 +366,7 @@ def validate_chart_code(
             except Exception:
                 browser_opened = False
 
-        return ValidationResults(
+        return ValidateResults(
             valid=True,
             message="Chart only dashboard created successfully!",
             python_code=chart_plan_obj.get_chart_code(vizro=True),
@@ -485,9 +386,8 @@ def create_vizro_chart(
     """Prompt template for creating a Vizro chart."""
     content = f"""
  - Create a chart using the following chart type: {chart_type}.
- - You MUST name the function containing the fig `custom_chart`
  - Make sure to analyze the data using the `load_and_analyze_data` tool first, passing the file path or github url
- {file_path_or_url} OR choose the most appropriate sample data using the get_sample_data_info tool.
+ {file_path_or_url} OR choose the most appropriate sample data using the `get_sample_data_info` tool.
  Then you MUST use the `validate_chart_code` tool to validate the chart code.
             """
     return content
@@ -495,7 +395,7 @@ def create_vizro_chart(
 
 if __name__ == "__main__":
     ####### Currently BUG, as the new Graph inside Containers inside Tabs is not working!!
-    dashboard_config = {
+    config = {
         "pages": [
             {
                 "title": "Supermarket Sales Dashboard",
@@ -602,7 +502,7 @@ if __name__ == "__main__":
         "title": "Supermarket Analytics",
     }
 
-    data_infos = [
+    data = [
         DFMetaData(
             file_name="supermarket_sales",
             file_path_or_url="https://raw.githubusercontent.com/plotly/datasets/master/supermarket_Sales.csv",
@@ -611,7 +511,7 @@ if __name__ == "__main__":
         )
     ]
 
-    custom_charts = [
+    chart = [
         ChartPlan(
             chart_type="time_series_heatmap",
             chart_name="sales_heatmap",
@@ -701,7 +601,7 @@ if __name__ == "__main__":
         ),
     ]
 
-    response = validate_model_config(dashboard_config, data_infos, custom_charts)
+    response = validate_dashboard_config(config, data, chart)
     print(response.valid)
     print(response.message)
     print(response.python_code)

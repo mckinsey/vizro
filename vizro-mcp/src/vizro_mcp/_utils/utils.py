@@ -7,13 +7,16 @@ import json
 import re
 from dataclasses import dataclass
 from pathlib import Path
-from typing import Any, Literal, Optional, Union
+from typing import Literal, Optional, Union
 from urllib.parse import quote, urlencode
 
 import pandas as pd
 import vizro
 import vizro.models as vm
+from pydantic.json_schema import GenerateJsonSchema
 from vizro.models._base import _format_and_lint
+
+from .configs import DFInfo, DFMetaData
 
 # PyCafe URL for Vizro snippets
 PYCAFE_URL = "https://py.cafe"
@@ -23,139 +26,6 @@ PYCAFE_URL = "https://py.cafe"
 class VizroCodeAndPreviewLink:
     python_code: str
     pycafe_url: str
-
-
-@dataclass
-class DFMetaData:
-    file_name: str
-    file_path_or_url: str
-    file_location_type: Literal["local", "remote"]
-    read_function_string: Literal["pd.read_csv", "pd.read_json", "pd.read_html", "pd.read_parquet", "pd.read_excel"]
-    column_names_types: Optional[dict[str, str]] = None
-
-
-@dataclass
-class DFInfo:
-    general_info: str
-    sample: dict[str, Any]
-
-
-IRIS = DFMetaData(
-    file_name="iris_data",
-    file_path_or_url="https://raw.githubusercontent.com/plotly/datasets/master/iris-id.csv",
-    file_location_type="remote",
-    read_function_string="pd.read_csv",
-    column_names_types={
-        "sepal_length": "float",
-        "sepal_width": "float",
-        "petal_length": "float",
-        "petal_width": "float",
-        "species": "str",
-    },
-)
-
-TIPS = DFMetaData(
-    file_name="tips_data",
-    file_path_or_url="https://raw.githubusercontent.com/plotly/datasets/master/tips.csv",
-    file_location_type="remote",
-    read_function_string="pd.read_csv",
-    column_names_types={
-        "total_bill": "float",
-        "tip": "float",
-        "sex": "str",
-        "smoker": "str",
-        "day": "str",
-        "time": "str",
-        "size": "int",
-    },
-)
-
-STOCKS = DFMetaData(
-    file_name="stocks_data",
-    file_path_or_url="https://raw.githubusercontent.com/plotly/datasets/master/stockdata.csv",
-    file_location_type="remote",
-    read_function_string="pd.read_csv",
-    column_names_types={
-        "Date": "str",
-        "IBM": "float",
-        "MSFT": "float",
-        "SBUX": "float",
-        "AAPL": "float",
-        "GSPC": "float",
-    },
-)
-
-GAPMINDER = DFMetaData(
-    file_name="gapminder_data",
-    file_path_or_url="https://raw.githubusercontent.com/plotly/datasets/master/gapminder_unfiltered.csv",
-    file_location_type="remote",
-    read_function_string="pd.read_csv",
-    column_names_types={
-        "country": "str",
-        "continent": "str",
-        "year": "int",
-        "lifeExp": "float",
-        "pop": "int",
-        "gdpPercap": "float",
-    },
-)
-
-SAMPLE_DASHBOARD_CONFIG = """
-{
-  `config`: {
-    `pages`: [
-      {
-        `title`: `Iris Data Analysis`,
-        `controls`: [
-          {
-            `id`: `species_filter`,
-            `type`: `filter`,
-            `column`: `species`,
-            `targets`: [
-              `scatter_plot`
-            ],
-            `selector`: {
-              `type`: `dropdown`,
-              `multi`: true
-            }
-          }
-        ],
-        `components`: [
-          {
-            `id`: `scatter_plot`,
-            `type`: `graph`,
-            `title`: `Sepal Dimensions by Species`,
-            `figure`: {
-              `x`: `sepal_length`,
-              `y`: `sepal_width`,
-              `color`: `species`,
-              `_target_`: `scatter`,
-              `data_frame`: `iris_data`,
-              `hover_data`: [
-                `petal_length`,
-                `petal_width`
-              ]
-            }
-          }
-        ]
-      }
-    ],
-    `theme`: `vizro_dark`,
-    `title`: `Iris Dashboard`
-  },
-  `data_infos`: `
-[
-    {
-        \"file_name\": \"iris_data\",
-        \"file_path_or_url\": \"https://raw.githubusercontent.com/plotly/datasets/master/iris-id.csv\",
-        \"file_location_type\": \"remote\",
-        \"read_function_string\": \"pd.read_csv\",
-    }
-]
-`
-}
-
-"""
 
 
 def convert_github_url_to_raw(path_or_url: str) -> str:
@@ -313,3 +183,27 @@ def get_python_code_and_preview_link(
     pycafe_url = create_pycafe_url(python_code)
 
     return VizroCodeAndPreviewLink(python_code=python_code, pycafe_url=pycafe_url)
+
+
+class NoDefsGenerateJsonSchema(GenerateJsonSchema):
+    """Custom schema generator that handles reference cases appropriately."""
+
+    def generate(self, schema, mode="validation"):
+        """Generate schema and resolve references if needed."""
+        json_schema = super().generate(schema, mode=mode)
+
+        # If schema is a reference (has $ref but no properties)
+        if "$ref" in json_schema and "properties" not in json_schema:
+            # Extract the reference path - typically like "#/$defs/ModelName"
+            ref_path = json_schema["$ref"]
+            if ref_path.startswith("#/$defs/"):
+                model_name = ref_path.split("/")[-1]
+                # Get the referenced definition from $defs
+                # Simply copy the referenced definition content to the top level
+                json_schema.update(json_schema["$defs"][model_name])
+                # Remove the $ref since we've resolved it
+                json_schema.pop("$ref")
+
+        # Remove the $defs section now that we've used what we needed
+        json_schema.pop("$defs", {})
+        return json_schema

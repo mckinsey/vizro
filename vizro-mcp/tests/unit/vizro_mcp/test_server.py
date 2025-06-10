@@ -17,10 +17,10 @@ from vizro_mcp._schemas import (
 from vizro_mcp._utils import IRIS
 from vizro_mcp.server import (
     DFMetaData,
-    ValidationResults,
+    ValidateResults,
     get_model_json_schema,
     validate_chart_code,
-    validate_model_config,
+    validate_dashboard_config,
 )
 
 
@@ -52,9 +52,9 @@ def valid_dashboard_config() -> dict[str, Any]:
 
 
 @pytest.fixture
-def dashboard_config_validation_result() -> ValidationResults:
+def dashboard_config_validation_result() -> ValidateResults:
     """Fixture for a dashboard configuration validation result."""
-    return ValidationResults(
+    return ValidateResults(
         valid=True,
         message="Configuration is valid for Dashboard!",
         python_code="""############ Imports ##############
@@ -111,9 +111,9 @@ def graph_dashboard_config() -> dict[str, Any]:
 
 
 @pytest.fixture
-def graph_dashboard_validation_result() -> ValidationResults:
+def graph_dashboard_validation_result() -> ValidateResults:
     """Fixture for a dashboard configuration with graph validation result."""
-    return ValidationResults(
+    return ValidateResults(
         valid=True,
         message="Configuration is valid for Dashboard!",
         python_code="""############ Imports ##############
@@ -180,9 +180,9 @@ def invalid_chart_plan() -> dict[str, Any]:
 
 
 @pytest.fixture
-def chart_plan_validation_result() -> ValidationResults:
+def chart_plan_validation_result() -> ValidateResults:
     """Fixture for a chart plan validation result."""
-    return ValidationResults(
+    return ValidateResults(
         valid=True,
         message="Chart only dashboard created successfully!",
         python_code="""@capture('graph')
@@ -194,13 +194,13 @@ def custom_chart(data_frame):
 
 
 class TestValidateModelConfig:
-    """Tests for the validate_model_config tool."""
+    """Tests for the validate_dashboard_config tool."""
 
     def test_successful_validation(
-        self, valid_dashboard_config: dict[str, Any], dashboard_config_validation_result: ValidationResults
+        self, valid_dashboard_config: dict[str, Any], dashboard_config_validation_result: ValidateResults
     ) -> None:
         """Test successful validation of a dashboard configuration."""
-        result = validate_model_config(dashboard_config=valid_dashboard_config, data_infos=[], auto_open=False)
+        result = validate_dashboard_config(dashboard_config=valid_dashboard_config, data_infos=[], auto_open=False)
 
         # Compare everything but the pycafe_url
         assert result.valid == dashboard_config_validation_result.valid
@@ -215,11 +215,11 @@ class TestValidateModelConfig:
     def test_graph_dashboard_validation(
         self,
         graph_dashboard_config: dict[str, Any],
-        graph_dashboard_validation_result: ValidationResults,
+        graph_dashboard_validation_result: ValidateResults,
         iris_metadata: DFMetaData,
     ) -> None:
         """Test validation of a dashboard with a scatter graph component."""
-        result = validate_model_config(
+        result = validate_dashboard_config(
             dashboard_config=graph_dashboard_config, data_infos=[iris_metadata], auto_open=False
         )
 
@@ -239,7 +239,7 @@ class TestValidateModelConfig:
         invalid_config = valid_dashboard_config.copy()
         invalid_config["titles"] = invalid_config.pop("title")
 
-        result = validate_model_config(dashboard_config=invalid_config, data_infos=[iris_metadata], auto_open=False)
+        result = validate_dashboard_config(dashboard_config=invalid_config, data_infos=[iris_metadata], auto_open=False)
 
         assert result.valid is False
         assert "Validation Error: 1 validation error for Dashboard" in result.message
@@ -255,7 +255,7 @@ class TestValidateChartCode:
         self,
         valid_chart_plan: dict[str, Any],
         iris_metadata: DFMetaData,
-        chart_plan_validation_result: ValidationResults,
+        chart_plan_validation_result: ValidateResults,
     ) -> None:
         """Test successful validation of chart code."""
         result = validate_chart_code(chart_config=valid_chart_plan, data_info=iris_metadata, auto_open=False)

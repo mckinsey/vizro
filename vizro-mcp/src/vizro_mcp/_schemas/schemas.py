@@ -1,7 +1,7 @@
 """Schema defining pydantic models for usage in the MCP server."""
 
 import importlib
-from typing import Annotated, Any, Literal, Optional, Union, cast
+from typing import Annotated, Any, Optional, Union, cast
 
 import vizro.models as vm
 from pydantic import AfterValidator, BaseModel, Field, PrivateAttr, ValidationInfo, field_validator
@@ -10,9 +10,9 @@ from vizro.models.types import (
     JsonSchemaExtraType,
 )
 
-from vizro_mcp._utils import SAMPLE_DASHBOARD_CONFIG, DFMetaData
+from vizro_mcp._utils import DFMetaData
 
-# Constants used in chart validation
+# Constants used in chart validation, TODO: check if actually needed
 ADDITIONAL_IMPORTS = [
     "import vizro.plotly.express as px",
     "import plotly.graph_objects as go",
@@ -20,33 +20,6 @@ ADDITIONAL_IMPORTS = [
     "import numpy as np",
     "from vizro.models.types import capture",
 ]
-
-# These types are used to simplify the schema for the LLM.
-SimplifiedComponentType = Literal["Card", "Button", "Text", "Container", "Tabs", "Graph", "AgGrid"]
-SimplifiedSelectorType = Literal[
-    "Dropdown", "RadioItems", "Checklist", "DatePicker", "Slider", "RangeSlider", "DatePicker"
-]
-SimplifiedControlType = Literal["Filter", "Parameter"]
-SimplifiedLayoutType = Literal["Grid", "Flex"]
-
-# This dict is used to give the model and overview of what is available in the vizro.models namespace.
-# It helps it to narrow down the choices when asking for a model.
-MODEL_GROUPS: dict[str, list[type[vm.VizroBaseModel]]] = {
-    "main": [vm.Dashboard, vm.Page],
-    "components": [vm.Card, vm.Button, vm.Text, vm.Container, vm.Tabs, vm.Graph, vm.AgGrid],  #'Figure', 'Table'
-    "layouts": [vm.Grid, vm.Flex],
-    "controls": [vm.Filter, vm.Parameter],
-    "selectors": [
-        vm.Dropdown,
-        vm.RadioItems,
-        vm.Checklist,
-        vm.DatePicker,
-        vm.Slider,
-        vm.RangeSlider,
-        vm.DatePicker,
-    ],
-    "navigation": [vm.Navigation, vm.NavBar, vm.NavLink],
-}
 
 
 # These enhanced models are used to return a more complete schema to the LLM. Although we do not have actual schemas for
@@ -108,7 +81,7 @@ def validate_captured_callable(cls, value, info: ValidationInfo):
     except (AttributeError, ModuleNotFoundError):
         pass
     else:
-        if function_name in context.get("callable_defs", {}):
+        if function_name in context.get("custom_chart_defs", {}):
             raise ValueError(
                 f"""_target_={function_name} is defined as a `custom_chart` and can be imported from {import_path}.
                 Do not use names for custom charts that are already in the px namespace.
@@ -118,7 +91,7 @@ def validate_captured_callable(cls, value, info: ValidationInfo):
             captured_callable_config=value, json_schema_extra=json_schema_extra
         )
 
-    if function_name in context.get("callable_defs", {}):
+    if function_name in context.get("custom_chart_defs", {}):
         items_str = ", ".join(f"{k}={v!r}" for k, v in value.items() if k != "_target_")  # type: ignore
         return f"{value['_target_']}({items_str})"
 
@@ -310,29 +283,6 @@ Vizro().build(dashboard).run()
 """
 
         return dashboard_template
-
-
-def get_overview_vizro_models() -> dict[str, list[dict[str, str]]]:
-    """Get all available models in the vizro.models namespace.
-
-    Returns:
-        Dictionary with categories of models and their descriptions
-    """
-    result: dict[str, list[dict[str, str]]] = {}
-    for category, models_list in MODEL_GROUPS.items():
-        result[category] = [
-            {
-                "name": model_class.__name__,
-                "description": (model_class.__doc__ or "No description available").split("\n")[0],
-            }
-            for model_class in models_list
-        ]
-    return result
-
-
-def get_simple_dashboard_config() -> str:
-    """Very simple Vizro dashboard configuration. Use this config as a starter when no other config is provided."""
-    return SAMPLE_DASHBOARD_CONFIG
 
 
 if __name__ == "__main__":
