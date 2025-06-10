@@ -170,7 +170,9 @@ If you want to change nested parameters, you can specify the `targets` argument 
                   value: #3949ab
                   multi: false
                   type: dropdown
-                targets: [scatter_chart.color_discrete_map.virginica, bar_chart.color_discrete_map.virginica]
+                targets:
+                  - scatter_chart.color_discrete_map.virginica
+                  - bar_chart.color_discrete_map.virginica
                 type: parameter
             title: My first page
         ```
