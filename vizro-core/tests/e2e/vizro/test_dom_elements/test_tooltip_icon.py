@@ -40,8 +40,9 @@ def test_controls_tooltip_and_icon(dash_br, icon, tooltip_text):
         (cnst.PAGE_TOOLTIP_ICON, cnst.PAGE_TOOLTIP_TEXT),
         (cnst.CONTAINER_TOOLTIP_ICON, cnst.CONTAINER_TOOLTIP_TEXT),
         (cnst.GRAPH_TOOLTIP_ICON, cnst.GRAPH_TOOLTIP_TEXT),
+        (cnst.BUTTON_TOOLTIP_ICON, cnst.BUTTON_TOOLTIP_TEXT),
     ],
-    ids=["Page", "Container", "Graph"],
+    ids=["Page", "Container", "Graph", "Button"],
 )
 def test_components_tooltip_and_icon(dash_br, icon, tooltip_text):
     accordion_select(dash_br, accordion_name=cnst.LAYOUT_ACCORDION)
