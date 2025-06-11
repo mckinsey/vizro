@@ -68,6 +68,7 @@ filters_page = vm.Page(
                 y="petal_width",
                 color="sepal_width",
             ),
+            extra={"config": {"displayModeBar": False}},
         ),
     ],
     controls=[

@@ -1,4 +1,4 @@
-"""Contains utilities for the implementation of table callables."""
+"""Contains utilities for the implementation of vizro components."""
 
 from collections import defaultdict
 from collections.abc import Mapping
