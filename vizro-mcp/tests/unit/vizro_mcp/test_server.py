@@ -4,7 +4,6 @@ from typing import Any
 
 import pytest
 import vizro.models as vm
-from pydantic import ValidationError
 from vizro_mcp._schemas import (
     AgGridEnhanced,
     ChartPlan,
