@@ -1,7 +1,7 @@
 from vizro import Vizro
 import vizro.plotly.express as px
 import vizro.models as vm
-from dash import html, dcc
+from dash import html, dcc, callback, Input, Output, State
 import dash_bootstrap_components as dbc
 from typing import Literal
 
@@ -23,11 +23,10 @@ class CustomDashboard(vm.Dashboard):
                         dbc.ModalBody(
                             # TODO - DB: options need to be replaced with database table
                             [
-                                vm.Dropdown(options=df["Client"].unique(), title="Client *", multi=False).build(),
-                                vm.Dropdown(options=df["Pillar"].unique(), title="Pillar *", multi=False).build(),
-                                TextArea(title="Opportunity Name").build(),
-                                vm.Dropdown(options=df["Region"].unique(), title="Region *", multi=False).build(),
-                                vm.Dropdown(options=df["Status"].unique(), title="Status *", multi=False).build(),
+                                vm.Dropdown(options=["A", "B", "C"], title="Customer *", multi=False).build(),
+                                vm.Dropdown(options=["A", "B", "C"], title="Category *", multi=False).build(),
+                                vm.Dropdown(options=["A", "B", "C"], title="Region *", multi=False).build(),
+                                vm.Dropdown(options=["A", "B", "C"], title="Status *", multi=False).build(),
                             ],
                         ),
                         dbc.ModalFooter(
@@ -55,7 +54,6 @@ class CustomDashboard(vm.Dashboard):
 
 page_1 = vm.Page(
     title="Page with button",
-    layout=vm.Grid(grid=[[0, 1, 2, 3, 4], [5, 5, 5, 5, 5], [5, 5, 5, 5, 5]]),
     components=[
         vm.Graph(
             title="Graph 1",
@@ -72,6 +70,17 @@ page_1 = vm.Page(
 dashboard = CustomDashboard(
     pages=[page_1],
 )
+
+
+@callback(
+    Output("modal", "is_open"),
+    [Input("open", "n_clicks"), Input("close", "n_clicks")],
+    [State("modal", "is_open")],
+)
+def toggle_modal(n1, n2, is_open):
+    if n1 or n2:
+        return not is_open
+    return is_open
 
 if __name__ == "__main__":
     app = Vizro().build(dashboard)
