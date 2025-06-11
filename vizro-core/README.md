@@ -31,8 +31,7 @@ Use it to build beautiful and powerful data visualization apps quickly and easil
 
 Then customize and deploy your app to production at scale.
 
-In just a few lines of simple low-code configuration, with in-built visual design best practices, you can quickly assemble high-quality,
-multi-page prototypes, that are production-ready.
+In just a few lines of simple low-code configuration, with in-built visual design best practices, you can quickly assemble high-quality, multi-page prototypes, that are production-ready.
 
 <div align="center">
 <img src="https://raw.githubusercontent.com/mckinsey/vizro/main/.github/images/code_dashboard.png" width="100%"/>
