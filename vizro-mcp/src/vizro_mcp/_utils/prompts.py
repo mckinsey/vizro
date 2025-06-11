@@ -2,6 +2,7 @@
 
 from typing import Literal, Optional
 
+import vizro
 import vizro.models as vm
 
 from vizro_mcp._utils.configs import SAMPLE_DASHBOARD_CONFIG
@@ -113,14 +114,18 @@ def get_dashboard_instructions(
     {SAMPLE_DASHBOARD_CONFIG}
 """
     else:
-        return """
+        return f"""
     Instructions for going beyond the basic dashboard:
     - ensure that you have called the `get_vizro_chart_or_dashboard_plan` tool with advanced_mode=False first
     - communicate to the user that you are going to use Python code to create the dashboard, and that
         they will have to run the code themselves
     - search the web for more information about the components you are using, if you cannot search the web
         communicate this to the user, and tell them that this is a current limitation of the tool
-    - if stuck, return to a JSON based config, and call the `validate_dashboard_config` tool to validate the solution
+    - good websites for searching are:
+        - general overview on how to extend Vizro: https://vizro.readthedocs.io/en/{vizro.__version__}/pages/user-guides/extensions/
+        - custom (Dash) components: https://vizro.readthedocs.io/en/{vizro.__version__}/pages/user-guides/custom-components/
+        - custom CSS (for enhanced styling): https://vizro.readthedocs.io/en/{vizro.__version__}/pages/user-guides/custom-css/
+    - if stuck, return to a JSON based config, and call the `validate_dashboard_config` tool to validate the solution!!
 """
 
 

@@ -36,13 +36,14 @@ are needed (e.g. trendline):
 - Configure a dictionary as if this would be added as **kwargs to the function you are using.
 - You must use the key: "_target_: "<function_name>" to specify the function you are using. Do NOT precede by
     namespace (like px.line)
-- you must refer to the dataframe by name, for now it is one of "gapminder", "iris", "tips".
+- you must refer to the dataframe by name, check file_name in the data_infos field ("data_frame": "<file_name>")
 - do not use a title if your Graph model already has a title.
 
 For more complex charts and those that require data manipulation, use the `custom_charts` field:
 - create the suitable number of custom charts and add them to the `custom_charts` field
 - refer here to the function signature you created
 - you must use the key: "_target_: "<custom_chart_name>"
+- you must refer to the dataframe by name, check file_name in the data_infos field ("data_frame": "<file_name>")
 - in general, DO NOT modify the background (with plot_bgcolor) or color sequences unless explicitly asked for
 - when creating hover templates, EXPLICITLY style them to work on light and dark mode
 """
