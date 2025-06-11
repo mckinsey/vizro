@@ -12,7 +12,6 @@ from vizro.models.types import (
 
 from vizro_mcp._utils import DFMetaData
 
-# Constants used in chart validation, TODO: check if actually needed
 BASE_IMPORTS = [
     "import vizro.plotly.express as px",
     "import plotly.graph_objects as go",
@@ -212,7 +211,7 @@ class ChartPlan(BaseModel):
 
     def get_imports(self, vizro: bool = False):
         imports = list(dict.fromkeys(self.imports + self._base_chart_imports))  # remove duplicates
-        if vizro:  # TODO: improve code of below
+        if vizro:
             imports = [imp for imp in imports if "import plotly.express as px" not in imp]
         else:
             imports = [imp for imp in imports if "vizro" not in imp]

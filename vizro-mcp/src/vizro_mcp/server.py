@@ -68,7 +68,7 @@ class ModelJsonSchemaResults:
     additional_info: str
 
 
-# TODO: what do I need to do here, as things are already set up?
+# TODO: check on https://github.com/modelcontextprotocol/python-sdk what new things are possible to do here
 mcp = FastMCP(
     "MCP server to help create Vizro dashboards and charts.",
 )
@@ -214,7 +214,7 @@ def load_and_analyze_data(path_or_url: str) -> DataAnalysisResults:
     return DataAnalysisResults(valid=True, message="Data loaded successfully", df_info=df_info, df_metadata=df_metadata)
 
 
-# Additional things we could validate:
+# TODO: Additional things we could validate:
 # - data_infos: check we are referring to the correct dataframe, or at least A DF
 @mcp.tool()
 def validate_dashboard_config(

@@ -7,7 +7,7 @@ import json
 import re
 from dataclasses import dataclass
 from pathlib import Path
-from typing import Literal, Optional, Union
+from typing import TYPE_CHECKING, Literal, Optional, Union
 from urllib.parse import quote, urlencode
 
 import pandas as pd
@@ -17,6 +17,9 @@ from pydantic.json_schema import GenerateJsonSchema
 from vizro.models._base import _format_and_lint
 
 from vizro_mcp._utils.configs import DFInfo, DFMetaData
+
+if TYPE_CHECKING:
+    from vizro_mcp._schemas.schemas import ChartPlan
 
 # PyCafe URL for Vizro snippets
 PYCAFE_URL = "https://py.cafe"
@@ -127,7 +130,7 @@ def create_pycafe_url(python_code: str) -> str:
     return pycafe_url
 
 
-def remove_figure_quotes(code_string):
+def remove_figure_quotes(code_string: str) -> str:
     """Remove quotes around all figure argument values."""
     return _format_and_lint(re.sub(r'figure="([^"]*)"', r"figure=\1", code_string))
 
@@ -135,7 +138,7 @@ def remove_figure_quotes(code_string):
 def get_python_code_and_preview_link(
     model_object: vm.VizroBaseModel,
     data_infos: list[DFMetaData],
-    custom_charts,  # TODO: do not forget to type
+    custom_charts: list["ChartPlan"],
 ) -> VizroCodeAndPreviewLink:
     """Get the Python code and preview link for a Vizro model object."""
     # Get the Python code
@@ -202,10 +205,10 @@ class NoDefsGenerateJsonSchema(GenerateJsonSchema):
                 # Simply copy the referenced definition content to the top level
                 json_schema.update(json_schema["$defs"][model_name])
                 # Remove the $ref since we've resolved it
-                json_schema.pop("$ref")
+                del json_schema["$ref"]
 
         # Remove the $defs section now that we've used what we needed
-        json_schema.pop("$defs", {})
+        del json_schema["$defs"]
         return json_schema
 
 
