@@ -128,9 +128,15 @@ Visit the [dashboard examples gallery](https://vizro.mckinsey.com/) to see the d
 <img src="https://raw.githubusercontent.com/mckinsey/vizro/main/.github/images/toolkit_dashboard_examples.png" width="600">
 </a>
 
+## [Vizro-MCP](https://github.com/mckinsey/vizro/tree/main/vizro-mcp)
+Vizro-MCP is a [Model Context Protocol (MCP)](https://modelcontextprotocol.io/) server, which works alongside a LLM to help you create Vizro dashboards and charts. It provides tools and templates to create a functioning Vizro chart or dashboard step by step. It works in any MCP-enabled LLM client such as Cursor or Claude Desktop.
+
+<img src="https://raw.githubusercontent.com/mckinsey/vizro/main/vizro-mcp/assets/vizro-mcp.gif" alt="Vizro MCP Demo" width="600">
+
+
 ## [Vizro-AI](https://vizro.readthedocs.io/projects/vizro-ai/)
 
-**Use LLMs to generate charts and dashboards.**
+**Note that Vizro-AI is no longer actively developed and is superseded by Vizro-MCP.**
 
 Vizro-AI is a separate package (called `vizro_ai`) that extends Vizro to incorporate LLMs. Use it to build interactive Vizro charts and dashboards, by simply describing what you need in plain English or other languages.
 
