@@ -1,9 +1,8 @@
 # Explore Vizro
 
-In this tutorial, you'll learn how to build an interactive dashboard with multiple pages, incorporating a wide range of Vizro's components. You can follow along using the written guide below or join in with the accompanying video tutorial. 
+In this tutorial, you'll learn how to build an interactive dashboard with multiple pages, incorporating a wide range of Vizro's components. You can follow along using the written guide below or join in with the accompanying video tutorial.
 
 This tutorial should take **about half an hour to finish**, so grab a coffee or tea and let's dive in!
-
 
 <div style="text-align: center;">
 <iframe width="560" height="315" src="https://www.youtube.com/embed/ZNpP9VDmcPo?si=FbqSR6biB43d7_kj" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
