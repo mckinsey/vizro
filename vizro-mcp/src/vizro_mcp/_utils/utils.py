@@ -209,5 +209,5 @@ class NoDefsGenerateJsonSchema(GenerateJsonSchema):
         return json_schema
 
 
-if __name__ == "__main__":
-    print(vm.Dashboard.model_json_schema(schema_generator=NoDefsGenerateJsonSchema).keys())
+# if __name__ == "__main__":
+# print(vm.Dashboard.model_json_schema(schema_generator=NoDefsGenerateJsonSchema).keys())
