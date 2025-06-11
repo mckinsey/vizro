@@ -194,7 +194,7 @@ class ChartPlan(BaseModel):
         4. All data used in the chart must be derived from the data_frame argument, all data manipulations
         must be done within the function.
         5. DO NOT modify the background (with plot_bgcolor) or color sequences unless explicitly asked for
-        6. When creating hover templates, ensure that it works on light and dark mode
+        6. When creating hover templates, explicitly ensure that it works on light and dark mode
         """,
         ),
     ]
