@@ -196,6 +196,8 @@ CONTAINER_TOOLTIP_TEXT = "Container tooltip"
 CONTAINER_TOOLTIP_ICON = "width_normal"
 GRAPH_TOOLTIP_TEXT = "Graph tooltip"
 GRAPH_TOOLTIP_ICON = "resize"
+BUTTON_TOOLTIP_TEXT = "Button tooltip for exporting data"
+BUTTON_TOOLTIP_ICON = "abc"
 
 
 COLLAPSIBLE_CONTAINERS_GRID = "collapsible-containers-grid-layout"
