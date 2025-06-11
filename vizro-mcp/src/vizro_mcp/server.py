@@ -214,6 +214,8 @@ def load_and_analyze_data(path_or_url: str) -> DataAnalysisResults:
     return DataAnalysisResults(valid=True, message="Data loaded successfully", df_info=df_info, df_metadata=df_metadata)
 
 
+# Additional things we could validate:
+# - data_infos: check we are referring to the correct dataframe, or at least A DF
 @mcp.tool()
 def validate_dashboard_config(
     dashboard_config: dict[str, Any],
