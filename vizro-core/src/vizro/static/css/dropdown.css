@@ -49,32 +49,18 @@
 }
 
 .Select-input > input {
+  height: 100%;
   padding: 0 !important; /* Required so tags don't jump caused by adding table */
 }
 
-.Select-input > input {
-  height: 100%;
-  padding: 0;
-}
-
 /* Border on focus */
-#dashboard-container .is-focused:not(.is-open) > .Select-control {
+.is-focused:not(.is-open) > .Select-control {
   box-shadow: 0 0 0 2px var(--focus) inset;
 }
 
 /* Single-select dropdown only ------------------- */
-#dashboard-container .Select--single .Select-value {
+.Select--single .Select-value {
   padding-left: 0.5rem;
-}
-
-.has-value.Select--single > .Select-control .Select-value .Select-value-label,
-.has-value.is-pseudo-focused.Select--single
-  > .Select-control
-  .Select-value
-  .Select-value-label {
-  color: var(
-    --text-primary
-  ) !important; /* Required so text color don't change caused by adding table */
 }
 
 /* Tags --------------------------- */
@@ -120,6 +106,17 @@
   padding-right: 8px;
   width: 16px;
 }
+
+.has-value.Select--single > .Select-control .Select-value .Select-value-label,
+.has-value.is-pseudo-focused.Select--single
+  > .Select-control
+  .Select-value
+  .Select-value-label {
+  color: var(
+    --text-primary
+  ) !important; /* Required so text color don't change caused by adding table */
+}
+
 
 /* Page Selector Dropdown */
 .dash-dropdown
