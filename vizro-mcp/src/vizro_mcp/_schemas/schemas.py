@@ -63,10 +63,13 @@ The only difference to the dash version is that:
     )
 
 
+# The below validation function is an enhanced version of the one in vizro.models.types.CapturedCallable.
+# It allows the use of custom charts AND plotly express functions in the same dashboard.
+# Essentially it checks whether _target_ is a custom chart or a plotly express function and validates accordingly.
+# If the target is a custom chart, it checks if the function is defined, and returns a string call of it.
+# Thus no code is executed.
 def validate_captured_callable(cls, value, info: ValidationInfo):
     """Reusable validator for the `figure` argument of Figure like models."""
-    # Bypass validation so that legacy vm.Action(function=filter_interaction(...)) and
-    # vm.Action(function=export_data(...)) work.
     from vizro.actions import export_data, filter_interaction
 
     if isinstance(value, (export_data, filter_interaction)):
@@ -120,7 +123,9 @@ class Graph(vm.Graph):
     _validate_figure = field_validator("figure", mode="before")(validate_captured_callable)
 
 
-# TODO: can this be done cleaner?
+####### This needs improvement #######
+# TODO: can this be done cleaner? This currently fails for Graphs in Containers in Tabs!!
+# One known but very cumbersome solution is to redefine all parent models of Graph...
 vm.Container.add_type(field_name="components", new_type=Graph)
 vm.Page.add_type(field_name="components", new_type=Graph)
 vm.Page.add_type(field_name="components", new_type=vm.Container)
@@ -128,6 +133,9 @@ vm.Page.add_type(field_name="components", new_type=vm.Container)
 
 class Dashboard(vm.Dashboard):
     pages: list[vm.Page]
+
+
+######################################
 
 
 ###### Chart functionality ######
