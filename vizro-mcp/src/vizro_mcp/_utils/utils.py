@@ -16,7 +16,7 @@ import vizro.models as vm
 from pydantic.json_schema import GenerateJsonSchema
 from vizro.models._base import _format_and_lint
 
-from .configs import DFInfo, DFMetaData
+from vizro_mcp._utils.configs import DFInfo, DFMetaData
 
 # PyCafe URL for Vizro snippets
 PYCAFE_URL = "https://py.cafe"
@@ -207,3 +207,7 @@ class NoDefsGenerateJsonSchema(GenerateJsonSchema):
         # Remove the $defs section now that we've used what we needed
         json_schema.pop("$defs", {})
         return json_schema
+
+
+if __name__ == "__main__":
+    print(vm.Dashboard.model_json_schema(schema_generator=NoDefsGenerateJsonSchema).keys())

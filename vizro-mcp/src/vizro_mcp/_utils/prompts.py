@@ -4,7 +4,7 @@ from typing import Literal, Optional
 
 import vizro.models as vm
 
-from .configs import SAMPLE_DASHBOARD_CONFIG
+from vizro_mcp._utils.configs import SAMPLE_DASHBOARD_CONFIG
 
 CHART_INSTRUCTIONS = """
 IMPORTANT:
@@ -74,7 +74,7 @@ MODEL_GROUPS: dict[str, list[type[vm.VizroBaseModel]]] = {
         vm.DatePicker,
     ],
     "navigation": [vm.Navigation, vm.NavBar, vm.NavLink],
-    # vm.Tooltip
+    "additional_info": [vm.Tooltip],
 }
 
 
