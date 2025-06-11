@@ -71,5 +71,4 @@ page_1 = vm.Page(
 dashboard = vm.Dashboard(title="Test dashboard", pages=[page_1])
 
 if __name__ == "__main__":
-    app = Vizro().build(dashboard)
-    app.run()
+    Vizro().build(dashboard).run()
