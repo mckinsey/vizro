@@ -47,6 +47,7 @@ extras_page = vm.Page(
                 ),
                 vm.Button(
                     text="Export data",
+                    description=vm.Tooltip(text=cnst.BUTTON_TOOLTIP_TEXT, icon=cnst.BUTTON_TOOLTIP_ICON),
                     extra={"color": "success", "outline": True},
                     actions=[
                         vm.Action(
