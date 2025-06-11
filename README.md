@@ -31,8 +31,7 @@ Use it to build beautiful and powerful data visualization apps quickly and easil
 
 Then customize and deploy your app to production at scale.
 
-In just a few lines of simple low-code configuration, with in-built visual design best practices, you can quickly assemble high-quality,
-multi-page prototypes, that are production-ready.
+In just a few lines of simple low-code configuration, with in-built visual design best practices, you can quickly assemble high-quality, multi-page prototypes, that are production-ready.
 
 <div align="center">
 <img src="https://raw.githubusercontent.com/mckinsey/vizro/main/.github/images/code_dashboard.png" width="100%"/>
@@ -131,7 +130,7 @@ Visit the [dashboard examples gallery](https://vizro.mckinsey.com/) to see the d
 
 **A [Model Context Protocol (MCP)](https://modelcontextprotocol.io/) server for Vizro.**
 
-Vizro-MCP works alongside an LLM to help you create Vizro dashboards and charts. It provides tools and templates to create a functioning Vizro chart or dashboard step-by-step. 
+Vizro-MCP works alongside an LLM to help you create Vizro dashboards and charts. It provides tools and templates to create a functioning Vizro chart or dashboard step-by-step.
 
 Compatible with MCP-enabled LLM clients such as Cursor or Claude Desktop.
 
