@@ -205,10 +205,10 @@ class NoDefsGenerateJsonSchema(GenerateJsonSchema):
                 # Simply copy the referenced definition content to the top level
                 json_schema.update(json_schema["$defs"][model_name])
                 # Remove the $ref since we've resolved it
-                del json_schema["$ref"]
+                json_schema.pop("$ref", None)
 
-        # Remove the $defs section now that we've used what we needed
-        del json_schema["$defs"]
+        # Remove the $defs section if it exists
+        json_schema.pop("$defs", None)
         return json_schema
 
 
