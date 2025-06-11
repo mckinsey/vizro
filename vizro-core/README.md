@@ -31,14 +31,13 @@ Use it to build beautiful and powerful data visualization apps quickly and easil
 
 Then customize and deploy your app to production at scale.
 
+In just a few lines of simple low-code configuration, with in-built visual design best practices, you can quickly assemble high-quality,
+multi-page prototypes, that are production-ready.
+
 <div align="center">
 <img src="https://raw.githubusercontent.com/mckinsey/vizro/main/.github/images/code_dashboard.png" width="100%"/>
-<p style="font-size:smaller;">
-Use a few lines of simple low-code configuration, with in-built visual design best practices, to quickly assemble high-quality,
-multi-page prototypes, that are production-ready.
-</p>
 </div>
-<br>
+
 Every Vizro app is defined by a simple configuration, using these high-level categories:
 
 - **[Components](https://vizro.readthedocs.io/en/stable/pages/user-guides/components/):** charts, tables, cards, KPI indicators, forms and more.
@@ -51,7 +50,7 @@ Configuration can be written in multiple formats including **Pydantic models**, 
 
 Optional high-code extensions enable almost infinite customization in a modular way, combining the best of low-code and high-code - including bespoke [**visual formatting**](https://vizro.readthedocs.io/en/stable/pages/user-guides/visual-formatting/) and [**custom components**](https://vizro.readthedocs.io/en/stable/pages/user-guides/extensions/).
 
-Visit our ["How-to guides"](https://vizro.readthedocs.io/en/stable/pages/user-guides/install/) for a more detailed explanation of Vizro features.
+Visit the ["How-to guides"](https://vizro.readthedocs.io/en/stable/pages/user-guides/install/) for a more detailed explanation of Vizro features.
 
 ## Why use Vizro?
 
