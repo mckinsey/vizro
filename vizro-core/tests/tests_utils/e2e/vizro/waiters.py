@@ -7,7 +7,8 @@ from selenium.webdriver.support.wait import WebDriverWait
 
 def graph_load_waiter(driver, graph_id):
     """Waiting for graph's x-axis to appear."""
-    driver.wait_for_element(f"div[id='{graph_id}'] path[class='xtick ticks crisp']")
+    # driver.wait_for_element(f"div[id='{graph_id}'] path[class='xtick ticks crisp']")
+    driver.wait_for_no_elements('div[data-dash-is-loading="true"]')
 
 
 def graph_load_waiter_selenium(driver, graph_id, timeout=cnst.SELENIUM_WAITERS_TIMEOUT):
