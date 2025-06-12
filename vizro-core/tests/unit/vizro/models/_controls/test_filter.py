@@ -874,6 +874,13 @@ class TestPreBuildMethod:
         assert filter.selector.extra == {"inline": True}
 
     @pytest.mark.usefixtures("managers_one_page_container_controls")
+    def test_filter_dropdown_height(self):
+        filter = model_manager["container_dropdown"]
+        filter.pre_build()
+
+        assert filter.selector.extra == {"optionHeight": 56}
+
+    @pytest.mark.usefixtures("managers_one_page_container_controls")
     def test_container_filter_default_targets(self):
         filter = model_manager["container_filter"]
         filter.pre_build()

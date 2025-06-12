@@ -200,7 +200,6 @@ class Filter(VizroBaseModel):
             self.selector = cast(CategoricalSelectorType, self.selector)
             self.selector.options = self.selector.options or self._get_options(targeted_data)
 
-        # set defaults for container selectors
         set_container_control_default(control=self)
 
         if not self.selector.actions:

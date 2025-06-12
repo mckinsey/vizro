@@ -45,10 +45,11 @@ def check_control_targets(control: ControlType) -> None:
 
 def set_container_control_default(control: ControlType) -> None:
     page = model_manager._get_model_page(control)
-    if control not in page.controls and isinstance(control.selector, (Checklist, RadioItems)):
+    if control in page.controls:
+        return None
+    if isinstance(control.selector, (Checklist, RadioItems)):
         control.selector.extra.setdefault("inline", True)
 
-    if control not in page.controls and isinstance(control.selector, Dropdown):
-        # 15 characters is roughly the number of "A" characters you can fit comfortably in the container dropdown line.
-        option_height = _calculate_option_height(full_options=control.selector.options, no_characters=15)
+    elif isinstance(control.selector, Dropdown):
+        option_height = _calculate_option_height(full_options=control.selector.options, char_count=15)
         control.selector.extra.setdefault("optionHeight", option_height)

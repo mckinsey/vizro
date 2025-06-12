@@ -37,7 +37,7 @@ Uncomment the section that is right (remove the HTML comment wrapper).
 
 ### Fixed
 
-- Fixed dropdown height calculation in container controls. ([#1238](https://github.com/mckinsey/vizro/pull/1238))
+- Fix dynamically calculated row height for `Dropdown` when it's used within a container. ([#1238](https://github.com/mckinsey/vizro/pull/1238))
 
 
 <!--
