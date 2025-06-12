@@ -102,7 +102,7 @@ div.Select--multi .Select-value-icon:hover {
 }
 
 /* Tag: Arrow */
-div.Select-arrow-zone {
+span.Select-arrow-zone {
   padding-right: 8px;
   width: 16px;
 }
