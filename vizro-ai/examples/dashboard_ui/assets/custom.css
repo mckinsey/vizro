@@ -56,7 +56,7 @@
   border-color: var(--surfaces-bg-card);
 }
 
-.dash-dropdown {
+div.dash-dropdown {
   background-color: inherit;
 }
 
