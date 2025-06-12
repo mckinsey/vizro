@@ -152,7 +152,7 @@ Create a dashboard based on the following dataset: `{file_path_or_url}`. Proceed
 1. Analyze the data using the load_and_analyze_data tool first, passing the file path or github url `{file_path_or_url}` to the tool.
 2. Get some knowledge about the Vizro dashboard process by calling the `get_vizro_chart_or_dashboard_plan` tool
     AND the `get_model_json_schema` (start with `Graph`, `AgGrid`, `Card`, `Navigation`) tool.
-3. Create a Vizro dashboard that follows the user context: 
+3. Create a Vizro dashboard that follows the user context:
 `{user_context}`
 You MUST follow the user context. ONLY if no context is
     provided, follow the below instructions:
