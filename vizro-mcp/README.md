@@ -1,12 +1,23 @@
-<a href="https://glama.ai/mcp/servers/@mckinsey/vizro">
+<!-- <a href="https://glama.ai/mcp/servers/@mckinsey/vizro">
   <img width="380" height="200" src="https://glama.ai/mcp/servers/@mckinsey/vizro/badge" />
-</a>
+</a> -->
+
 
 # Vizro MCP server
 
 Vizro-MCP is a [Model Context Protocol (MCP)](https://modelcontextprotocol.io/) server, which works alongside a LLM to help you create Vizro dashboards and charts.
 
 <img src="assets/vizro-mcp.gif" width="600" alt="Vizro MCP Demo">
+
+### Quick install
+
+| Host | Prerequisite | Link |
+|-------------------|---------|---------|
+| [Cursor](https://www.cursor.com/) | [uv](https://docs.astral.sh/uv/getting-started/installation/) | [![Install with UVX in Cursor](https://img.shields.io/badge/Cursor-Install-0098FF?style=flat-square&logo=visualstudiocode&logoColor=white)](https://cursor.com/install-mcp?name=vizro-mcp&config=eyJjb21tYW5kIjoidXZ4IHZpenJvLW1jcCJ9) |
+| [VS Code](https://code.visualstudio.com/) | [uv](https://docs.astral.sh/uv/guides/tools/) | [![Install with UVX in VS Code](https://img.shields.io/badge/VS_Code-Install-0098FF?style=flat-square&logo=visualstudiocode&logoColor=white)](https://insiders.vscode.dev/redirect/mcp/install?name=vizro-mcp&config=%7B%22command%22%3A%22uvx%22%2C%22args%22%3A%5B%22vizro-mcp%22%5D%7D) |
+
+
+
 
 ## Features of Vizro-MCP
 
@@ -99,7 +110,7 @@ In principle, the Vizro MCP server works with _any_ MCP enabled LLM applications
 
 - Restart Claude Desktop. After a few moments, you should see the vizro-mcp menu in the settings/context menu:
 
-    ![Claude Desktop MCP Server Icon](assets/claude_working.png)
+    <img src="assets/claude_working.png" alt="Claude Desktop MCP Server Icon" width="300"/>
 
 > ⚠️ **Warning:** In some hosts (like Claude Desktop) the free plan might be less performant, which may cause issues when the request is too complex. In cases where the request causes the UI to crash, opt for using a paid plan, or reduce your request's complexity.
 
@@ -107,8 +118,11 @@ In principle, the Vizro MCP server works with _any_ MCP enabled LLM applications
 
 <details>
 <summary><strong>Cursor</strong></summary>
+<br >
 
-- Add the above configuration to your `mcp.json` ([see Cursor Settings](https://docs.cursor.com/context/model-context-protocol#configuration-locations)).
+[![Install with UVX in Cursor](https://img.shields.io/badge/Cursor-Install-0098FF?style=flat-square&logo=visualstudiocode&logoColor=white)](https://cursor.com/install-mcp?name=vizro-mcp&config=eyJjb21tYW5kIjoidXZ4IHZpenJvLW1jcCJ9)
+
+- Add the above configuration to your `mcp.json` ([see Cursor Settings](https://docs.cursor.com/context/model-context-protocol#configuration-locations)) or click the button above.
 
 - After a short pause, you should see a green light in the MCP menu:
 
@@ -119,6 +133,10 @@ In principle, the Vizro MCP server works with _any_ MCP enabled LLM applications
 <details>
 <summary><strong>Other MCP Clients</strong></summary>
 
+<br />
+
+[![Install with UVX in VS Code](https://img.shields.io/badge/VS_Code-Install_all-0098FF?style=flat-square&logo=visualstudiocode&logoColor=white)](https://insiders.vscode.dev/redirect/mcp/install?name=vizro-mcp&config=%7B%22command%22%3A%22uvx%22%2C%22args%22%3A%5B%22vizro-mcp%22%5D%7D)
+
 - Add the configuration as per your client's documentation.
 
 - Check your client's documentation for where to place the config and how to verify the server is running.
@@ -126,6 +144,9 @@ In principle, the Vizro MCP server works with _any_ MCP enabled LLM applications
 </details>
 
 ## 💻 Usage
+
+The MCP server is designed to get you started on Vizro dashboards and charts by creating beautiful working dashboards based on the core Vizro features. It is not designed to replace a human developer when going beyond the core features, e.g.
+when building an application that requires custom CSS or bespoke Dash components.
 
 ### Use prompt templates to get specific dashboards quickly
 

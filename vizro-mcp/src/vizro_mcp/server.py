@@ -8,7 +8,7 @@ from typing import Any, Literal, Optional
 
 import vizro.models as vm
 from mcp.server.fastmcp import FastMCP
-from pydantic import ValidationError
+from pydantic import Field, ValidationError
 from vizro import Vizro
 
 from vizro_mcp._schemas import (
@@ -288,7 +288,7 @@ def create_starter_dashboard():
 
 @mcp.prompt()
 def create_dashboard(
-    file_path_or_url: str,
+    file_path_or_url: str = Field(description="The absolute path or URL to the data file you want to use."),
     context: Optional[str] = Field(default=None, description="Describe the dashboard you want to create."),
 ) -> str:
     """Prompt template for creating an EDA dashboard based on one dataset."""
@@ -350,12 +350,12 @@ def validate_chart_code(
 
 @mcp.prompt()
 def create_vizro_chart(
-    description: str,
-    file_path_or_url: Optional[str] = None,
+    file_path_or_url: str = Field(description="The absolute path or URL to the data file you want to use."),
+    context: str = Field(description="Describe the chart you want to create."),
 ) -> str:
     """Prompt template for creating a Vizro chart."""
     content = f"""
- - Create a chart using the following description: {description}.
+ - Create a chart using the following description: {context}.
  - Make sure to analyze the data using the `load_and_analyze_data` tool first, passing the file path or github url
  {file_path_or_url} OR choose the most appropriate sample data using the `get_sample_data_info` tool.
  Then you MUST use the `validate_chart_code` tool to validate the chart code.
