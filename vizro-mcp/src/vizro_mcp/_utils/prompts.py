@@ -152,7 +152,7 @@ def get_dashboard_prompt(file_path_or_url: str, user_context: Optional[str] = No
 `{user_context}`
 You MUST follow the user context. If you diverge or add, then communicate this to the user.
 """
-    FALLBACK_INSTRUCTIONS = f"""
+    FALLBACK_INSTRUCTIONS = """
 3. Create a Vizro dashboard that follows the below specifications:
     - Make a homepage that uses the Card component to create navigation to the other pages.
     - Overview page: Summary of the dataset using the Text component and the dataset itself using the plain AgGrid
