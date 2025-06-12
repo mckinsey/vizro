@@ -148,7 +148,7 @@ Create a super simple Vizro dashboard with one page and one chart and one filter
 def get_dashboard_prompt(file_path_or_url: str, user_context: Optional[str] = None) -> str:
     """Get a prompt for creating a Vizro dashboard."""
     return f"""
-Create a dashboard based on the following dataset:{file_path_or_url}. Proceed as follows:
+Create a dashboard based on the following dataset: `{file_path_or_url}`. Proceed as follows:
 1. Analyze the data using the load_and_analyze_data tool first, passing the file path or github url {file_path_or_url}
     to the tool.
 2. Get some knowledge about the Vizro dashboard process by calling the `get_vizro_chart_or_dashboard_plan` tool
