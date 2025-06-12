@@ -6,6 +6,7 @@ from typing import Literal
 from vizro.managers import data_manager
 from vizro.models._controls._controls_utils import set_container_control_default
 
+
 # TODO-Comment: Consider using parametrised data loading function so that only the needed data is loaded into the app.
 # TODO-Docs: https://vizro.readthedocs.io/en/stable/pages/user-guides/data/#parametrize-data-loading
 def load_data_function(number_of_data_points: int = 50):
@@ -25,6 +26,7 @@ data_manager["data_key"] = load_data_function
 gapminder_2007 = px.data.gapminder().query("year == 2007")
 tips = px.data.tips()
 df = px.data.iris()
+
 
 class CustomParameter(vm.Parameter):
     """Custom Parameter used to overcome Vizro exception when targeting figures outside its vm.Container."""
@@ -55,12 +57,12 @@ page1 = vm.Page(
                 CustomParameter(
                     targets=[
                         "page_1_graph_1.data_frame.number_of_data_points",
-                        "page_2_graph_1.data_frame.number_of_data_points"
+                        "page_2_graph_1.data_frame.number_of_data_points",
                     ],
-                    selector=vm.Slider(min=1, max=150, value=50)
+                    selector=vm.Slider(min=1, max=150, value=50),
                 ),
             ],
-            controls=[]
+            controls=[],
         ),
         vm.Tabs(
             tabs=[
@@ -78,13 +80,15 @@ page1 = vm.Page(
                     components=[
                         vm.Graph(
                             id="page_2_graph_1",
-                            figure=px.scatter("data_key", x="sepal_length", y="petal_width", color="species", height=600),
+                            figure=px.scatter(
+                                "data_key", x="sepal_length", y="petal_width", color="species", height=600
+                            ),
                         ),
                     ],
-                )
+                ),
             ]
-        )
-    ]
+        ),
+    ],
 )
 
 
@@ -140,9 +144,7 @@ page3 = vm.Page(
 )
 
 
-
-
-dashboard = vm.Dashboard(title="Test dashboard", pages=[page1, page2, page3]) 
+dashboard = vm.Dashboard(title="Test dashboard", pages=[page1, page2, page3])
 
 if __name__ == "__main__":
     app = Vizro().build(dashboard)
