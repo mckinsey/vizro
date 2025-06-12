@@ -2,7 +2,7 @@
 
 !!! warning "Vizro-AI has been replaced by Vizro-MCP"
 
-    Vizro-AI has largely been replaced by [Vizro-MCP](https://github.com/mckinsey/vizro/blob/main/vizro-mcp/README.md) and only supports chart generation from version 0.4.0.
+    Vizro-AI dashboard generation is no longer actively developed and is superseded by [Vizro-MCP](https://github.com/mckinsey/vizro/tree/main/vizro-mcp). Vizro-AI supports only chart generation from version 0.4.0.
 
     **For chart and dashboard generation, we recommend using [Vizro-MCP](https://github.com/mckinsey/vizro/blob/main/vizro-mcp/README.md). It doesn’t require an API key and works with familiar LLM applications like Claude Desktop, making it simpler to use.**
 
