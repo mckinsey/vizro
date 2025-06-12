@@ -2,7 +2,6 @@
   <img width="380" height="200" src="https://glama.ai/mcp/servers/@mckinsey/vizro/badge" />
 </a> -->
 
-
 # Vizro MCP server
 
 Vizro-MCP is a [Model Context Protocol (MCP)](https://modelcontextprotocol.io/) server, which works alongside a LLM to help you create Vizro dashboards and charts.
@@ -11,13 +10,10 @@ Vizro-MCP is a [Model Context Protocol (MCP)](https://modelcontextprotocol.io/) 
 
 ### Quick install
 
-| Host | Prerequisite | Link |
-|-------------------|---------|---------|
-| [Cursor](https://www.cursor.com/) | [uv](https://docs.astral.sh/uv/getting-started/installation/) | [![Install with UVX in Cursor](https://img.shields.io/badge/Cursor-Install-0098FF?style=flat-square&logo=visualstudiocode&logoColor=white)](https://cursor.com/install-mcp?name=vizro-mcp&config=eyJjb21tYW5kIjoidXZ4IHZpenJvLW1jcCJ9) |
-| [VS Code](https://code.visualstudio.com/) | [uv](https://docs.astral.sh/uv/guides/tools/) | [![Install with UVX in VS Code](https://img.shields.io/badge/VS_Code-Install-0098FF?style=flat-square&logo=visualstudiocode&logoColor=white)](https://insiders.vscode.dev/redirect/mcp/install?name=vizro-mcp&config=%7B%22command%22%3A%22uvx%22%2C%22args%22%3A%5B%22vizro-mcp%22%5D%7D) |
-
-
-
+| Host                                      | Prerequisite                                                  | Link                                                                                                                                                                                                                                                                                       |
+| ----------------------------------------- | ------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| [Cursor](https://www.cursor.com/)         | [uv](https://docs.astral.sh/uv/getting-started/installation/) | [![Install with UVX in Cursor](https://img.shields.io/badge/Cursor-Install-0098FF?style=flat-square&logo=visualstudiocode&logoColor=white)](https://cursor.com/install-mcp?name=vizro-mcp&config=eyJjb21tYW5kIjoidXZ4IHZpenJvLW1jcCJ9)                                                     |
+| [VS Code](https://code.visualstudio.com/) | [uv](https://docs.astral.sh/uv/guides/tools/)                 | [![Install with UVX in VS Code](https://img.shields.io/badge/VS_Code-Install-0098FF?style=flat-square&logo=visualstudiocode&logoColor=white)](https://insiders.vscode.dev/redirect/mcp/install?name=vizro-mcp&config=%7B%22command%22%3A%22uvx%22%2C%22args%22%3A%5B%22vizro-mcp%22%5D%7D) |
 
 ## Features of Vizro-MCP
 
@@ -145,8 +141,7 @@ In principle, the Vizro MCP server works with _any_ MCP enabled LLM applications
 
 ## 💻 Usage
 
-The MCP server is designed to get you started on Vizro dashboards and charts by creating beautiful working dashboards based on the core Vizro features. It is not designed to replace a human developer when going beyond the core features, e.g.
-when building an application that requires custom CSS or bespoke Dash components.
+The MCP server is designed to get you started on Vizro dashboards and charts by creating beautiful working dashboards based on the core Vizro features. It is not designed to replace a human developer when going beyond the core features, e.g. when building an application that requires custom CSS or bespoke Dash components.
 
 ### Use prompt templates to get specific dashboards quickly
 
