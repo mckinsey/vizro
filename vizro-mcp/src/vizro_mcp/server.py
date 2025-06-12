@@ -202,7 +202,14 @@ def load_and_analyze_data(path_or_url: str) -> DataAnalysisResults:
         df, read_fn = load_dataframe_by_format(processed_path_or_url, mime_type)
 
     except Exception as e:
-        return DataAnalysisResults(valid=False, message=f"Failed to load data: {e!s}", df_info=None, df_metadata=None)
+        return DataAnalysisResults(
+            valid=False,
+            message=f"""Failed to load data: {e!s}. Remember to use the ABSOLUTE path or URL!
+Alternatively, you can use any data analysis means available to you. Most important information are the column names and
+column types for passing along to the `validate_dashboard_config` or `validate_chart_code` tools.""",
+            df_info=None,
+            df_metadata=None,
+        )
 
     df_info = get_dataframe_info(df)
     df_metadata = DFMetaData(
