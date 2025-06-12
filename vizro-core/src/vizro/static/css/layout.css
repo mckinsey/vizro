@@ -66,6 +66,7 @@
 
 #page-components {
   overflow: auto;
+  flex: 1;
 }
 
 .grid-layout {

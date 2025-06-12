@@ -18,7 +18,7 @@
 To ensure the dynamic height adjustment and prevent scrolling, the height must be specified for that div as below. */
 .tab-pane,
 .tab-pane > div:first-child {
-  height: 100%;
+  min-height: 100%;
 }
 
 .tab-pane > div > .container-fluid .flex-row,
