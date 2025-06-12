@@ -289,7 +289,7 @@ def create_starter_dashboard():
 @mcp.prompt()
 def create_dashboard(
     file_path_or_url: str,
-    context: Optional[str] = None,
+    context: Optional[str] = Field(default=None, description="Describe the dashboard you want to create."),
 ) -> str:
     """Prompt template for creating an EDA dashboard based on one dataset."""
     return get_dashboard_prompt(file_path_or_url, context)
