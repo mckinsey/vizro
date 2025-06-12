@@ -56,6 +56,10 @@
   border-color: var(--surfaces-bg-card);
 }
 
+div.dash-dropdown {
+  background-color: inherit;
+}
+
 #model-dropdown .Select--single .Select-value {
   background-color: inherit;
   font-size: 12px;
@@ -70,7 +74,7 @@
   font-size: 12px;
 }
 
-#model-dropdow .dash-dropdown {
+#model-dropdown .dash-dropdown {
   background-color: inherit;
   font-size: 12px;
 }
@@ -79,9 +83,7 @@
   width: 100%;
 }
 
-#dashboard-container .dash-dropdown {
-  background-color: inherit;
-}
+
 
 #model-dropdown .Select-clear {
   display: none;
