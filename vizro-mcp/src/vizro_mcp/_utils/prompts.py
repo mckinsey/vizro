@@ -139,7 +139,7 @@ Create a super simple Vizro dashboard with one page and one chart and one filter
 - THEN show the python code after validation, but do not show the PyCafe link
 - Be concise, do not explain anything else, just create the dashboard
 - Finally ask the user what they would like to do next, then you can call other tools to get more information,
-    you should then start with the get_chart_or_dashboard_plan tool
+    you should then start with the `get_chart_or_dashboard_plan` tool
 
 {SAMPLE_DASHBOARD_CONFIG}
 """
