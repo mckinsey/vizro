@@ -35,7 +35,6 @@ def page_select(driver, page_name, graph_check=True, page_path=None):
 
     driver.wait_for_contains_text(page_title_path(), page_name)
     if graph_check:
-        # driver.wait_for_element("div[class='dash-graph'] path[class='xtick ticks crisp']")
         driver.wait_for_no_elements('div[data-dash-is-loading="true"]')
 
 

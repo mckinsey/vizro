@@ -57,7 +57,7 @@ def test_range_slider(dash_br):
 
 def test_dropdown_homepage(dash_br):
     """Test dropdown filter for the homepage."""
-    graph_load_waiter(dash_br, graph_id=cnst.AREA_GRAPH_ID)
+    graph_load_waiter(dash_br)
 
     # select 'setosa'
     select_dropdown_value(dash_br, value=2, dropdown_id=cnst.DROPDOWN_FILTER_HOMEPAGEPAGE)

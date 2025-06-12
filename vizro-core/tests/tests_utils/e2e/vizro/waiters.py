@@ -5,9 +5,8 @@ from selenium.webdriver.support import expected_conditions
 from selenium.webdriver.support.wait import WebDriverWait
 
 
-def graph_load_waiter(driver, graph_id):
+def graph_load_waiter(driver):
     """Waiting for graph's x-axis to appear."""
-    # driver.wait_for_element(f"div[id='{graph_id}'] path[class='xtick ticks crisp']")
     driver.wait_for_no_elements('div[data-dash-is-loading="true"]')
 
 
