@@ -1,70 +1,48 @@
 from vizro import Vizro
 import vizro.plotly.express as px
 import vizro.models as vm
+import pandas as pd
+from vizro.tables import dash_ag_grid
 
 gapminder_2007 = px.data.gapminder().query("year == 2007")
 
+# Create a list of fake long words
+long_words = [
+    "Client Discussion",
+    "Client Discussion Engagement",
+    "Completed Engagement",
+    "Confirmed Engagement in Progress",
+    "Inactive/on hold",
+]
+
+# Create the DataFrame
+df = pd.DataFrame({"id": range(1, 6), "category": ["A", "B", "A", "C", "B"], "long_words": long_words})
+
+
 page_1 = vm.Page(
-    title="Page with button",
-    layout=vm.Grid(grid=[[0, 1, 2, 3, 4], [5, 5, 5, 5, 5], [5, 5, 5, 5, 5]]),
+    title="Test page",
     components=[
         vm.Container(
-            title="Plain button",
-            components=[
-                vm.Button(text="Click me!", description=vm.Tooltip(text="Button tooltip", icon="info"), variant="plain")
-            ],
+            components=[vm.AgGrid(figure=dash_ag_grid(df))],
             variant="outlined",
-        ),
-        vm.Container(
-            title="Filled button",
-            components=[vm.Button(text="Click me!", description=vm.Tooltip(text="Button tooltip", icon="info"))],
-            variant="outlined",
-        ),
-        vm.Container(
-            title="Outlined button",
-            components=[
-                vm.Button(
-                    text="Click me!", description=vm.Tooltip(text="Button tooltip", icon="info"), variant="outlined"
-                )
-            ],
-            variant="outlined",
-        ),
-        vm.Container(
-            title="Button with extra success",
-            components=[
-                vm.Button(
-                    text="Click me!",
-                    description=vm.Tooltip(text="Button tooltip", icon="info"),
-                    extra={"color": "success", "outline": True},
-                )
-            ],
-            variant="outlined",
-        ),
-        vm.Container(
-            title="Button with extra danger",
-            components=[
-                vm.Button(
-                    text="Click me!",
-                    description=vm.Tooltip(text="Button tooltip", icon="info"),
-                    extra={"color": "danger", "outline": True},
-                )
-            ],
-            variant="outlined",
-        ),
-        vm.Container(
-            title="Graph",
-            components=[
-                vm.Graph(
-                    title="Graph 1",
-                    figure=px.bar(
-                        gapminder_2007,
-                        x="continent",
-                        y="lifeExp",
-                        color="continent",
+            controls=[
+                vm.Filter(column="long_words"),
+                vm.Filter(
+                    column="category",
+                    selector=vm.Dropdown(
+                        options=[
+                            {"label": "a", "value": "A"},
+                            {"label": "b", "value": "B"},
+                            {"label": "c", "value": "C"},
+                        ]
                     ),
                 ),
+                vm.Filter(column="id"),
             ],
         ),
+    ],
+    controls=[
+        vm.Filter(column="long_words"),
     ],
 )
 
