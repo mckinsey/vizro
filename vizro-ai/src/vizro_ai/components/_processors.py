@@ -107,6 +107,8 @@ class OpenAIProcessor(ChatProcessor):
         self._api_base = api_base
         self.client = None
         self.initialize_client(api_key, api_base)
+        if not self.client:
+            raise ValueError("OpenAIProcessor: API key is required and was not provided or is invalid.")
 
     def initialize_client(self, api_key: Optional[str] = None, api_base: Optional[str] = None) -> None:
         """Initialize or reinitialize the OpenAI client with new credentials."""
@@ -124,10 +126,6 @@ class OpenAIProcessor(ChatProcessor):
 
     def get_response(self, messages: List[dict], prompt: str) -> Generator[str, None, None]:
         """Get a streaming response from OpenAI as structured JSON."""
-        if not self.client:
-            yield json.dumps({"type": "error", "content": "Please set up your OpenAI API key in the settings panel (key icon) to use this feature."})
-            return
-
         try:
             formatted_messages = [
                 {"role": msg["role"], "content": msg["content"]}

@@ -66,33 +66,6 @@ CHAT_HISTORY_STYLE = {
     "overflow": "auto",
 }
 
-SETTINGS_ICON_STYLE = {
-    "cursor": "pointer",
-    "position": "absolute",
-    "bottom": "20px",
-    "left": "20px",
-    "zIndex": 1000,
-    "color": "var(--text-secondary)",
-}
-
-SETTINGS_FEEDBACK_STYLE = {
-    "marginLeft": "10px",
-    "color": "var(--text-primary)",
-}
-
-SETTINGS_BUTTON_CONTAINER_STYLE = {
-    "display": "flex",
-    "alignItems": "center",
-    "marginTop": "1rem",
-}
-
-TOGGLE_CONTAINER_STYLE = {
-    "display": "flex",
-    "alignItems": "center",
-    "paddingLeft": "10px",
-    "minWidth": "50px",
-}
-
 MESSAGE_STYLE = {
     "color": "var(--text-primary)",
     "padding": "10px 15px",
@@ -192,7 +165,6 @@ class VizroChatComponent(VizroBaseModel):
         button_text (str): Text displayed on the send button. Defaults to `"Send"`.
         initial_message (str): Initial message displayed in the chat. Defaults to `"Hello! How can I help you today?"`.
         processor (ChatProcessor): Chat processor for generating responses. Defaults to `EchoProcessor()`.
-        show_settings (bool): Whether to show the settings panel. Defaults to `True`.
     """
 
     model_config = ConfigDict(arbitrary_types_allowed=True)
@@ -204,7 +176,6 @@ class VizroChatComponent(VizroBaseModel):
     button_text: str = Field(default="Send", description="Text displayed on the send button")
     initial_message: str = Field(default="Hello! How can I help you today!", description="Initial message displayed in the chat")
     processor: ChatProcessor = Field(default_factory=EchoProcessor, description="Chat processor for generating responses")
-    show_settings: bool = Field(default=True, description="Whether to show the settings panel")
 
     @property
     def _action_outputs(self) -> dict[str, _IdProperty]:
@@ -232,7 +203,6 @@ class VizroChatComponent(VizroBaseModel):
     def pre_build(self):
         """Register routes and callbacks before building the component."""
         self._register_streaming_route()
-        self._register_settings_callbacks()
         self._register_streaming_callback()
 
     def _register_streaming_route(self):
@@ -270,70 +240,6 @@ class VizroChatComponent(VizroBaseModel):
                 return Response(response_stream(), mimetype="text/event-stream")
             except Exception as e:
                 return Response(f"Error: {e!s}", status=500)
-
-    def _register_settings_callbacks(self):
-        """Register callbacks for managing API settings."""
-
-        @callback(
-            Output(f"{self.id}-settings", "is_open"),
-            Input(f"{self.id}-settings-icon", "n_clicks"),
-            [State(f"{self.id}-settings", "is_open")],
-        )
-        def toggle_settings(n_clicks, is_open):
-            """Callback for opening and closing offcanvas settings component."""
-            return not is_open if n_clicks else is_open
-
-        @callback(
-            Output(f"{self.id}-api-key", "type"),
-            Input(f"{self.id}-api-key-toggle", "value"),
-        )
-        def show_api_key(value):
-            """Callback to show or hide API key."""
-            return "text" if value else "password"
-
-        @callback(
-            Output(f"{self.id}-api-base", "type"),
-            Input(f"{self.id}-api-base-toggle", "value"),
-        )
-        def show_api_base(value):
-            """Callback to show or hide API base URL."""
-            return "text" if value else "password"
-
-        @callback(
-            [
-                Output(f"{self.id}-api-settings", "data"),
-                Output(f"{self.id}-settings-feedback", "children"),
-            ],
-            Input(f"{self.id}-save-settings", "n_clicks"),
-            [
-                State(f"{self.id}-api-key", "value"),
-                State(f"{self.id}-api-base", "value"),
-            ],
-        )
-        def save_settings(n_clicks, api_key, api_base):
-            """Save API settings and provide user feedback."""
-            if n_clicks is None:
-                return dash.no_update, dash.no_update
-
-            # Check if API key is provided
-            if not api_key or not api_key.strip():
-                return {"api_key": "", "api_base": api_base}, "No API Key provided."
-
-            return {"api_key": api_key, "api_base": api_base}, "API Key added."
-
-        @callback(
-            [
-                Output(f"{self.id}-api-key", "value"),
-                Output(f"{self.id}-api-base", "value"),
-            ],
-            Input(f"{self.id}-settings", "is_open"),
-            State(f"{self.id}-api-settings", "data"),
-        )
-        def load_settings(is_open, saved_settings):
-            """Load saved settings into inputs when OffCanvas is opened."""
-            if not is_open or not saved_settings:
-                return "", ""
-            return saved_settings.get("api_key", ""), saved_settings.get("api_base", "")
 
     def _register_streaming_callback(self):
         """Register callbacks for chat functionality."""
@@ -375,11 +281,10 @@ class VizroChatComponent(VizroBaseModel):
             Input(f"{self.id}-input", "n_submit"),
             State(f"{self.id}-input", "value"),
             State(f"{self.id}-messages", "data"),
-            State(f"{self.id}-api-settings", "data"),
             State(f"{self.id}-history", "children"),
             prevent_initial_call=True,
         )
-        def start_streaming(n_clicks, n_submit, value, messages, api_settings, current_history):
+        def start_streaming(n_clicks, n_submit, value, messages, current_history):
             if (not n_clicks and not n_submit) or not value or not value.strip():
                 return dash.no_update, dash.no_update, dash.no_update, dash.no_update
 
@@ -407,7 +312,7 @@ class VizroChatComponent(VizroBaseModel):
                 }
             )
 
-            # Update history with both divs
+            # Update history with both divs (append to existing history)
             new_history = current_history or []
             new_history = new_history + [user_div, assistant_div]
 
@@ -417,7 +322,6 @@ class VizroChatComponent(VizroBaseModel):
                     json.dumps({
                         "prompt": value.strip(),
                         "chat_history": json.dumps(messages_array),
-                        "api_settings": api_settings
                     }),
                     headers={"Content-Type": "application/json"},
                     method="POST"
@@ -508,9 +412,6 @@ class VizroChatComponent(VizroBaseModel):
         """Build the chat component layout."""
         components = []
         components.extend(self._build_data_stores())
-        if self.show_settings:
-            components.append(self._build_settings_icon())
-            components.append(self._build_settings_offcanvas())
         components.append(self._build_chat_interface())
         components.append(SSE(id=f"{self.id}-sse", concat=True, animate_chunk=5, animate_delay=10))
         
@@ -522,88 +423,8 @@ class VizroChatComponent(VizroBaseModel):
     def _build_data_stores(self):
         """Build the data store components for the chat."""
         return [
-            dcc.Store(id=f"{self.id}-api-settings", storage_type="session"),
             dcc.Store(id=f"{self.id}-messages", storage_type="session"),
         ]
-
-    def _build_settings_icon(self):
-        """Build the settings icon component."""
-        return html.Div(
-            children=[
-                html.Span(
-                    "vpn_key",
-                    className="material-symbols-outlined",
-                    id=f"{self.id}-settings-icon",
-                    style=SETTINGS_ICON_STYLE,
-                ),
-            ],
-        )
-
-    def _build_settings_offcanvas(self):
-        """Build the settings offcanvas component."""
-        return dbc.Offcanvas(
-            id=f"{self.id}-settings",
-            title="Chat Settings",
-            children=[
-                dbc.InputGroup(
-                    [
-                        dbc.InputGroupText("API Key"),
-                        dbc.Input(
-                            placeholder="API key",
-                            type="password",
-                            id=f"{self.id}-api-key",
-                        ),
-                        html.Div(
-                            dbc.Checklist(
-                                id=f"{self.id}-api-key-toggle",
-                                options=[{"label": "", "value": 1}],
-                                value=[],
-                                switch=True,
-                                inline=True,
-                            ),
-                            style=TOGGLE_CONTAINER_STYLE,
-                        ),
-                    ],
-                    className="mb-3",
-                ),
-                dbc.InputGroup(
-                    [
-                        dbc.InputGroupText("API base"),
-                        dbc.Input(
-                            placeholder="(optional) API Base",
-                            type="password",
-                            id=f"{self.id}-api-base",
-                        ),
-                        html.Div(
-                            dbc.Checklist(
-                                id=f"{self.id}-api-base-toggle",
-                                options=[{"label": "", "value": 1}],
-                                value=[],
-                                switch=True,
-                                inline=True,
-                            ),
-                            style=TOGGLE_CONTAINER_STYLE,
-                        ),
-                    ],
-                    className="mb-3",
-                ),
-                html.Div(
-                    [
-                        dbc.Button(
-                            "Save Settings",
-                            id=f"{self.id}-save-settings",
-                            color="primary",
-                        ),
-                        html.Div(
-                            id=f"{self.id}-settings-feedback",
-                            style=SETTINGS_FEEDBACK_STYLE,
-                        ),
-                    ],
-                    style=SETTINGS_BUTTON_CONTAINER_STYLE,
-                ),
-            ],
-            is_open=False,
-        )
 
     def _build_chat_interface(self):
         """Build the main chat interface."""

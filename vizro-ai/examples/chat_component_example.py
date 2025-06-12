@@ -4,8 +4,10 @@ import os
 import vizro.models as vm
 from vizro import Vizro
 
-# Import the component from vizro-ai as requested
 import vizro_ai.components as vcc
+
+from dotenv import load_dotenv
+load_dotenv()
 
 # Create the chat component using the refactored version
 chat_component = vcc.VizroChatComponent(
@@ -13,13 +15,12 @@ chat_component = vcc.VizroChatComponent(
     input_placeholder="Ask me a question...",
     initial_message="Hello! I'm your AI assistant. How can I help you today?",
     # You can use either EchoProcessor or OpenAIProcessor
-    processor=vcc.EchoProcessor(),  # Default processor
+    # processor=vcc.EchoProcessor(),  # Default processor
     # For OpenAI, uncomment the following:
-    # processor=vcc.OpenAIProcessor(
-    #     api_key=os.getenv("OPENAI_API_KEY"),
-    #     api_base=os.getenv("OPENAI_BASE_URL"),
-    # ),
-    show_settings=True,  # Enable settings panel for API configuration
+    processor=vcc.OpenAIProcessor(
+        api_key=os.getenv("OPENAI_API_KEY"),
+        api_base=os.getenv("OPENAI_BASE_URL"),
+    ),
 )
 
 # Register the component type with Vizro
