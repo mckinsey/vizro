@@ -78,7 +78,7 @@ def _get_list_of_labels(full_options: OptionsType) -> Union[list[StrictBool], li
 
 def _calculate_option_height(full_options: OptionsType, no_characters: int = 30) -> int:
     """Calculates the height of the dropdown options based on the longest option."""
-    # 30 characters is roughly the number of "A" characters you can fit comfortably on a line in the dropdown.
+    # 30 characters is roughly the number of "A" characters you can fit comfortably on a line in the page dropdown.
     # "A" is representative of a slightly wider than average character:
     # https://stackoverflow.com/questions/3949422/which-letter-of-the-english-alphabet-takes-up-most-pixels
     # We look at the longest option to find number_of_lines it requires. Option height is the same for all options

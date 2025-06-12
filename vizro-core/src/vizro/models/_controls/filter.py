@@ -200,6 +200,9 @@ class Filter(VizroBaseModel):
             self.selector = cast(CategoricalSelectorType, self.selector)
             self.selector.options = self.selector.options or self._get_options(targeted_data)
 
+        # set defaults for container selectors
+        set_container_control_default(control=self)
+
         if not self.selector.actions:
             if isinstance(self.selector, RangeSlider) or (
                 isinstance(self.selector, DatePicker) and self.selector.range
@@ -216,9 +219,6 @@ class Filter(VizroBaseModel):
                     targets=self.targets,
                 ),
             ]
-
-        # set default inline=True for container selectors
-        set_container_control_default(control=self)
 
     @_log_call
     def build(self):
