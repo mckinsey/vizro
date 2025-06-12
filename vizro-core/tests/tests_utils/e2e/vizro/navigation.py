@@ -3,6 +3,7 @@ import time
 from e2e.vizro import constants as cnst
 from e2e.vizro.checkers import check_accordion_active
 from e2e.vizro.paths import page_title_path, slider_handler_path, slider_value_path
+from e2e.vizro.waiters import graph_load_waiter
 from selenium.webdriver import ActionChains
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support import expected_conditions
@@ -35,7 +36,7 @@ def page_select(driver, page_name, graph_check=True, page_path=None):
 
     driver.wait_for_contains_text(page_title_path(), page_name)
     if graph_check:
-        driver.wait_for_no_elements('div[data-dash-is-loading="true"]')
+        graph_load_waiter(driver)
 
 
 def page_select_selenium(driver, page_path, page_name, timeout=cnst.SELENIUM_WAITERS_TIMEOUT, graph_check=True):
