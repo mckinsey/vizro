@@ -14,9 +14,9 @@ IMPORTANT:
     - DO NOT modify the background (with plot_bgcolor) or color sequences unless explicitly asked for
 
 Instructions for creating a Vizro chart:
-    - analyze the datasets needed for the chart using the load_and_analyze_data tool - the most important
-        information here are the column names and column types
-    - if the user provides no data, but you need to display a chart or table, use the get_sample_data_info
+    - analyze the datasets needed for the chart using the `load_and_analyze_data` tool OR by any other data analysis
+        means available to you; the most important information here are the column names and column types
+    - if the user provides no data, but you need to display a chart or table, use the `get_sample_data_info`
         tool to get sample data information
     - create a chart using plotly express and/or plotly graph objects, and call the function `custom_chart`
     - call the validate_chart_code tool to validate the chart code, display the figure code to the user (as artifact)
@@ -147,15 +147,13 @@ Create a super simple Vizro dashboard with one page and one chart and one filter
 
 def get_dashboard_prompt(file_path_or_url: str, user_context: Optional[str] = None) -> str:
     """Get a prompt for creating a Vizro dashboard."""
-    return f"""
-Create a dashboard based on the following dataset: `{file_path_or_url}`. Proceed as follows:
-1. Analyze the data using the load_and_analyze_data tool first, passing the file path or github url `{file_path_or_url}` to the tool.
-2. Get some knowledge about the Vizro dashboard process by calling the `get_vizro_chart_or_dashboard_plan` tool
-    AND the `get_model_json_schema` (start with `Graph`, `AgGrid`, `Card`, `Navigation`) tool.
+    USER_INSTRUCTIONS = f"""
 3. Create a Vizro dashboard that follows the user context:
 `{user_context}`
-You MUST follow the user context. ONLY if no context is
-    provided, follow the below instructions:
+You MUST follow the user context. If you diverge or add, then communicate this to the user.
+"""
+    FALLBACK_INSTRUCTIONS = f"""
+3. Create a Vizro dashboard that follows the below specifications:
     - Make a homepage that uses the Card component to create navigation to the other pages.
     - Overview page: Summary of the dataset using the Text component and the dataset itself using the plain AgGrid
         component.
@@ -170,4 +168,28 @@ You MUST follow the user context. ONLY if no context is
         but ensure that if you use hover, that it works on light and dark mode. Use the `Graph` model `title`,
         but do NOT give the charts a title, that would be redundant.
     - Finally, ensure that the Navigation is with a Navbar, and that you select nice icons for the Navbar.
+"""
+    return f"""
+Create a dashboard based on the following dataset: `{file_path_or_url}`. Proceed as follows:
+1. Analyze the data using the `load_and_analyze_data` tool first, passing the file path or github url
+    `{file_path_or_url}` to the tool OR by any other data analysis means available to you.
+2. Get some knowledge about the Vizro dashboard process by calling the `get_vizro_chart_or_dashboard_plan` tool
+    AND the `get_model_json_schema` (start with `Graph`, `AgGrid`, `Card`, `Navigation`) tool.
+{USER_INSTRUCTIONS if user_context else FALLBACK_INSTRUCTIONS}
+"""
+
+
+def get_chart_prompt(file_path_or_url: str, user_context: Optional[str] = None) -> str:
+    """Get a prompt for creating a Vizro chart."""
+    FALLBACK_INSTRUCTIONS = """
+- Think what chart could reflect this data-set best, ideally the chart shows some insights about the data-set
+- come up with a few options, but only write code for the best one, communicate the others as options to the user
+"""
+    return f"""
+Create a Vizro chart using the following instructins:
+- Make sure to analyze the data using the `load_and_analyze_data` tool using the file path or github url
+`{file_path_or_url}` OR by any other data analysis means available to you.
+- Create a chart using the following description:
+{user_context if user_context else FALLBACK_INSTRUCTIONS}
+- Then you MUST use the `validate_chart_code` tool to validate the chart code.
 """

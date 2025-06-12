@@ -7,6 +7,7 @@ from .configs import (
 )
 from .prompts import (
     CHART_INSTRUCTIONS,
+    get_chart_prompt,
     get_dashboard_instructions,
     get_dashboard_prompt,
     get_starter_dashboard_prompt,
@@ -43,6 +44,7 @@ __all__ = [  # noqa: RUF022
     "get_dataframe_info",
     "get_dashboard_instructions",
     "get_dashboard_prompt",
+    "get_chart_prompt",
     "get_python_code_and_preview_link",
     "get_starter_dashboard_prompt",
     "load_dataframe_by_format",
