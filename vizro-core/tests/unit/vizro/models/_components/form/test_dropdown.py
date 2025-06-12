@@ -203,6 +203,94 @@ class TestDropdownBuild:
 
         assert_component_equal(dropdown, expected_dropdown)
 
+    @pytest.mark.parametrize(
+        "options, option_height",
+        [
+            (["A", "B", "C"], 32),
+            ([10, 20, 30], 32),
+            (["A" * 30, "B", "C"], 32),
+            (["A" * 31, "B", "C"], 56),
+            (["A" * 60, "B", "C"], 56),
+            (["A" * 61, "B", "C"], 80),
+            ([{"label": "A" * 30, "value": "A"}, {"label": "B", "value": "B"}, {"label": "C", "value": "C"}], 32),
+            ([{"label": "A" * 31, "value": "A"}, {"label": "B", "value": "B"}, {"label": "C", "value": "C"}], 56),
+            ([{"label": "A" * 60, "value": "A"}, {"label": "B", "value": "B"}, {"label": "C", "value": "C"}], 56),
+            ([{"label": "A" * 61, "value": "A"}, {"label": "B", "value": "B"}, {"label": "C", "value": "C"}], 80),
+        ],
+    )
+    def test_page_dropdown_dynamic_option_height(self, options, option_height):
+        default_value = options[0]["value"] if all(isinstance(option, dict) for option in options) else options[0]  # type: ignore[index]
+        dropdown = Dropdown(id="dropdown_id", multi=False, options=options).build()
+        expected_dropdown = html.Div(
+            [
+                None,
+                dcc.Dropdown(
+                    id="dropdown_id",
+                    options=options,
+                    optionHeight=option_height,
+                    multi=False,
+                    value=default_value,
+                    persistence=True,
+                    persistence_type="session",
+                    className="dropdown",
+                ),
+            ]
+        )
+
+        assert_component_equal(dropdown, expected_dropdown)
+
+    @pytest.mark.usefixtures("managers_page_container_controls")
+    @pytest.mark.parametrize(
+        "options,  container_dropdown_height",
+        [
+            (["A", "B", "C"], 32),
+            ([10, 20, 30], 32),
+            (["A" * 15, "B", "C"], 32),
+            (["A" * 30, "B", "C"], 56),
+            (["A" * 31, "B", "C"], 80),
+            (["A" * 60, "B", "C"], 104),
+            (["A" * 61, "B", "C"], 128),
+            ([{"label": "A" * 30, "value": "A"}, {"label": "B", "value": "B"}, {"label": "C", "value": "C"}], 56),
+            ([{"label": "A" * 31, "value": "A"}, {"label": "B", "value": "B"}, {"label": "C", "value": "C"}], 80),
+            ([{"label": "A" * 60, "value": "A"}, {"label": "B", "value": "B"}, {"label": "C", "value": "C"}], 104),
+            ([{"label": "A" * 61, "value": "A"}, {"label": "B", "value": "B"}, {"label": "C", "value": "C"}], 128),
+        ],
+    )
+    def test_container_dropdown_dynamic_option_height(self, options, container_dropdown_height):
+        """Test dropdown dynamic option height calculation for page and container dropdowns."""
+        # Common dropdown configuration
+        default_value = options[0]["value"] if all(isinstance(option, dict) for option in options) else options[0]  # type: ignore[index]
+
+        # Build actual dropdowns
+        model_manager["container_filter_dropdown"].selector = Dropdown(
+            options=options, multi=False, id="container_dropdown_id"
+        )
+        container_dropdown_manager = model_manager["container_filter_dropdown"]
+        container_dropdown_manager.pre_build()
+        container_dropdown = container_dropdown_manager.selector.build()
+
+        # Expected components
+        expected_container_dropdown = html.Div(
+            [
+                dbc.Label(
+                    children=[html.Span(id="container_dropdown_id_title", children="Country"), None],
+                    html_for="container_dropdown_id",
+                ),
+                dcc.Dropdown(
+                    id="container_dropdown_id",
+                    optionHeight=container_dropdown_height,
+                    options=options,
+                    multi=False,
+                    value=default_value,
+                    persistence=True,
+                    persistence_type="session",
+                    className="dropdown",
+                ),
+            ]
+        )
+
+        assert_component_equal(container_dropdown, expected_container_dropdown)
+
     def test_dropdown_build_with_extra(self):
         """Test that extra arguments correctly override defaults."""
         dropdown = Dropdown(
@@ -282,73 +370,3 @@ class TestDropdownBuild:
         )
 
         assert_component_equal(dropdown, expected_dropdown)
-
-    @pytest.mark.usefixtures("managers_page_container_controls")
-    @pytest.mark.parametrize(
-        "options, page_dropdown_height, container_dropdown_height",
-        [
-            (["A", "B", "C"], 32, 32),
-            ([10, 20, 30], 32, 32),
-            (["A" * 15, "B", "C"], 32, 32),
-            (["A" * 30, "B", "C"], 32, 56),
-            (["A" * 31, "B", "C"], 56, 80),
-            (["A" * 60, "B", "C"], 56, 104),
-            (["A" * 61, "B", "C"], 80, 128),
-            ([{"label": "A" * 30, "value": "A"}, {"label": "B", "value": "B"}, {"label": "C", "value": "C"}], 32, 56),
-            ([{"label": "A" * 31, "value": "A"}, {"label": "B", "value": "B"}, {"label": "C", "value": "C"}], 56, 80),
-            ([{"label": "A" * 60, "value": "A"}, {"label": "B", "value": "B"}, {"label": "C", "value": "C"}], 56, 104),
-            ([{"label": "A" * 61, "value": "A"}, {"label": "B", "value": "B"}, {"label": "C", "value": "C"}], 80, 128),
-        ],
-    )
-    def test_dropdown_dynamic_option_height(self, options, page_dropdown_height, container_dropdown_height):
-        """Test dropdown dynamic option height calculation for page and container dropdowns."""
-        # Common dropdown configuration
-        default_value = options[0]["value"] if all(isinstance(option, dict) for option in options) else options[0]  # type: ignore[index]
-        common_dropdown_config = {
-            "options": options,
-            "multi": False,
-            "value": default_value,
-            "persistence": True,
-            "persistence_type": "session",
-            "className": "dropdown",
-        }
-
-        # Build actual dropdowns
-        model_manager["page_dropdown"].selector = Dropdown(options=options, multi=False)
-        page_dropdown = model_manager["page_dropdown"].selector.build()
-
-        model_manager["container_filter_dropdown"].selector = Dropdown(
-            options=options, multi=False, id="container_dropdown_id"
-        )
-        container_dropdown_manager = model_manager["container_filter_dropdown"]
-        container_dropdown_manager.pre_build()
-        container_dropdown = container_dropdown_manager.selector.build()
-
-        # Expected components
-        expected_page_dropdown = html.Div(
-            [
-                None,
-                dcc.Dropdown(
-                    id="page_dropdown_id",
-                    optionHeight=page_dropdown_height,
-                    **common_dropdown_config,
-                ),
-            ]
-        )
-
-        expected_container_dropdown = html.Div(
-            [
-                dbc.Label(
-                    children=[html.Span(id="container_dropdown_id_title", children="Country"), None],
-                    html_for="container_dropdown_id",
-                ),
-                dcc.Dropdown(
-                    id="container_dropdown_id",
-                    optionHeight=container_dropdown_height,
-                    **common_dropdown_config,
-                ),
-            ]
-        )
-
-        assert_component_equal(page_dropdown, expected_page_dropdown, keys_to_strip={"id"})
-        assert_component_equal(container_dropdown, expected_container_dropdown, keys_to_strip={"id"})

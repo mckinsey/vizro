@@ -32,12 +32,5 @@ def managers_page_container_controls(gapminder):
                     ),
                 ],
             ),
-            vm.Graph(id="bar_chart", figure=px.bar(gapminder, x="country", y="gdpPercap")),
-        ],
-        controls=[
-            vm.Filter(
-                id="page_dropdown",
-                column="country",
-            ),
         ],
     )
