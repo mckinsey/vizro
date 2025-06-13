@@ -91,6 +91,88 @@ TEXTAREA_STYLE = {
     "border": "1px solid var(--border-subtleAlpha01)",
 }
 
+# Code block styling for markdown with Claude-style clipboard buttons
+CODE_BLOCK_STYLE = """
+/* Force code block styling with maximum specificity */
+pre,
+div pre,
+.dash-graph pre,
+.markdown-container pre,
+div.markdown-container pre,
+[class*="markdown"] pre {
+    background: #1e1e1e !important;
+    background-color: #1e1e1e !important;
+    padding: 10px !important;
+    margin: 0 !important;
+    border-radius: 6px !important;
+    border: 1px solid #333 !important;
+    overflow-x: auto !important;
+    position: relative !important;
+    color: #e5e5e5 !important;
+}
+
+.markdown-container code,
+div.markdown-container code {
+    background: var(--surfaces-bg-card) !important;
+    padding: 2px 4px !important;
+    border-radius: 3px !important;
+    font-family: 'Monaco', 'SF Mono', 'Consolas', monospace !important;
+}
+
+.markdown-container pre code,
+div.markdown-container pre code {
+    background: transparent !important;
+    padding: 0 !important;
+}
+
+/* Claude-style clipboard button with higher specificity */
+.code-clipboard-btn,
+div .code-clipboard-btn {
+    position: absolute !important;
+    top: 5px !important;
+    right: 5px !important;
+    background: rgba(255, 255, 255, 0.1) !important;
+    border: none !important;
+    border-radius: 4px !important;
+    padding: 4px 6px !important;
+    cursor: pointer !important;
+    font-size: 14px !important;
+    color: var(--text-secondary, #888) !important;
+    opacity: 0 !important;
+    transition: all 0.15s ease !important;
+    user-select: none !important;
+    z-index: 1001 !important;
+    width: auto !important;
+    height: auto !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+}
+
+.markdown-container pre:hover .code-clipboard-btn,
+div.markdown-container pre:hover .code-clipboard-btn {
+    opacity: 1 !important;
+}
+
+.code-clipboard-btn:hover,
+div .code-clipboard-btn:hover {
+    background: rgba(255, 255, 255, 0.2) !important;
+    color: var(--text-primary, #fff) !important;
+}
+
+.code-clipboard-btn:active,
+div .code-clipboard-btn:active {
+    transform: scale(0.9) !important;
+}
+
+.code-clipboard-btn.copied,
+div .code-clipboard-btn.copied {
+    color: #10b981 !important;
+    opacity: 1 !important;
+    background: rgba(16, 185, 129, 0.1) !important;
+}
+"""
+
 
 def split_json_objects(s):
     """Helper to split concatenated JSON objects and return complete objects and incomplete tail."""
@@ -108,46 +190,60 @@ def split_json_objects(s):
     return complete, incomplete
 
 
-def render_message(message, idx):
-    """Render a message block with typing animation."""
-    msg_type = message.get("type")
-    content = message.get("content", "")
-    block_id = idx
-    interval = 20  # ms per tick, adjust for speed
-    chars_per_tick = 2
-    max_intervals = len(content) // chars_per_tick + 2
-    key = f"block-{block_id}-{hash(content)}"  # Unique and stable for each block/content
+def safe_parse_markdown(content):
+    """Safely parse markdown, handling incomplete code blocks."""
+    # Count code block fences to detect incomplete blocks
+    fence_count = content.count('```')
+    
+    # If we have an odd number of fences, we have an incomplete code block
+    if fence_count % 2 != 0:
+        # Find the last complete fence pair
+        lines = content.split('\n')
+        fence_indices = []
+        for i, line in enumerate(lines):
+            if line.strip().startswith('```'):
+                fence_indices.append(i)
+        
+        # If we have at least one complete pair, render up to the last complete pair
+        if len(fence_indices) >= 2 and len(fence_indices) % 2 != 0:
+            # Remove the incomplete code block
+            safe_cutoff = fence_indices[-1]
+            safe_content = '\n'.join(lines[:safe_cutoff])
+            return safe_content
+    
+    return content
 
-    if msg_type == "code":
-        # Use Markdown for code blocks
-        code_content = f"```{content}\n```"
-        code_container_id = f"block-visible-{block_id}"
-        return html.Div([
-            dcc.Store(id=f"block-full-{block_id}", data=code_content),
-            dcc.Interval(id=f"block-interval-{block_id}", interval=interval, n_intervals=0, max_intervals=max_intervals),
-            html.Div([
-                dcc.Markdown(id=code_container_id, style={"background": "var(--surfaces-bg-card)", "padding": "10px", "margin": 0}),
-                dcc.Clipboard(
-                    target_id=code_container_id,
-                    title="Copy code",
-                    style={
-                        "position": "absolute",
-                        "top": 5,
-                        "right": 5,
-                        "fontSize": 18,
-                        "padding": "2px 4px"
-                    },
-                ),
-            ], style={"position": "relative"}),
-            html.Br()
-        ], key=key)
-    else:
-        # Default: use Markdown for everything else
-        return html.Div([
-            dcc.Store(id=f"block-full-{block_id}", data=content),
-            dcc.Interval(id=f"block-interval-{block_id}", interval=interval, n_intervals=0, max_intervals=max_intervals),
-            dcc.Markdown(id=f"block-visible-{block_id}")
-        ], key=key)
+
+def render_streaming_message(component_id):
+    """Create a streaming message container with smooth rendering."""
+    markdown_id = f"{component_id}-streaming-markdown"
+    return html.Div([
+        # Stores for managing the streaming state
+        dcc.Store(id=f"{component_id}-stream-buffer", data=""),
+        dcc.Store(id=f"{component_id}-render-buffer", data=""),
+        dcc.Store(id=f"{component_id}-render-position", data=0),
+        
+        # Timer for smooth rendering
+        dcc.Interval(
+            id=f"{component_id}-render-timer", 
+            interval=33,  # ~30fps for smooth animation
+            n_intervals=0,
+            disabled=True
+        ),
+        
+        # The content container with code block styling
+        dcc.Markdown(
+            id=markdown_id,
+            children="",
+            className="markdown-container",
+            style={
+                "minHeight": "20px",
+                "margin": 0,
+            },
+            # Enable code highlighting and custom styling
+            highlight_config={"theme": "dark"},
+        ),
+    ])
 
 
 class VizroChatComponent(VizroBaseModel):
@@ -277,6 +373,8 @@ class VizroChatComponent(VizroBaseModel):
             Output(f"{self.id}-sse", "options"),
             Output(f"{self.id}-history", "children"),
             Output(f"{self.id}-messages", "data", allow_duplicate=True),
+            Output(f"{self.id}-stream-buffer", "data", allow_duplicate=True),
+            Output(f"{self.id}-render-position", "data", allow_duplicate=True),
             Input(f"{self.id}-submit", "n_clicks"),
             Input(f"{self.id}-input", "n_submit"),
             State(f"{self.id}-input", "value"),
@@ -286,7 +384,7 @@ class VizroChatComponent(VizroBaseModel):
         )
         def start_streaming(n_clicks, n_submit, value, messages, current_history):
             if (not n_clicks and not n_submit) or not value or not value.strip():
-                return dash.no_update, dash.no_update, dash.no_update, dash.no_update
+                return dash.no_update, dash.no_update, dash.no_update, dash.no_update, dash.no_update, dash.no_update
 
             messages_array = json.loads(messages)
             user_message = {"role": "user", "content": value.strip()}
@@ -304,7 +402,8 @@ class VizroChatComponent(VizroBaseModel):
 
             # Create assistant div for streaming
             assistant_div = html.Div(
-                [],  # Empty initially, will be filled by streaming content
+                id=f"{self.id}-streaming-content",
+                children=render_streaming_message(self.id),  # Streaming container
                 style={
                     **MESSAGE_STYLE,
                     "backgroundColor": "var(--right-side-bg)",
@@ -327,34 +426,194 @@ class VizroChatComponent(VizroBaseModel):
                     method="POST"
                 ),
                 new_history,
-                json.dumps(messages_array)
+                json.dumps(messages_array),
+                "",  # Reset stream buffer
+                0,   # Reset render position
             )
 
-        # Register clientside callbacks for up to 50 blocks using string IDs
-        for i in range(50):
-            clientside_callback(
-                """
-                function(n_intervals, full_content) {
-                    if (!full_content) return '';
-                    var charsPerTick = 2;
-                    var charsToShow = Math.min(full_content.length, n_intervals * charsPerTick);
-                    return full_content.slice(0, charsToShow);
+                # Client-side callback for smooth streaming rendering
+        clientside_callback(
+            """
+            function(n_intervals, stream_buffer, render_position, timer_disabled) {
+                // Stop processing if timer is disabled
+                if (timer_disabled || !stream_buffer || stream_buffer.length === 0) {
+                    return [window.dash_clientside.no_update, window.dash_clientside.no_update];
                 }
-                """,
-                Output(f'block-visible-{i}', 'children'),
-                Input(f'block-interval-{i}', 'n_intervals'),
-                State(f'block-full-{i}', 'data')
-            )
+                
+                // Safe markdown parsing - handle incomplete code blocks
+                function safeParseMarkdown(content) {
+                    const fenceCount = (content.match(/```/g) || []).length;
+                    if (fenceCount % 2 !== 0) {
+                        // Find last complete fence pair
+                        const lines = content.split('\\n');
+                        let fenceIndices = [];
+                        for (let i = 0; i < lines.length; i++) {
+                            if (lines[i].trim().startsWith('```')) {
+                                fenceIndices.push(i);
+                            }
+                        }
+                        if (fenceIndices.length >= 2 && fenceIndices.length % 2 !== 0) {
+                            const safeCutoff = fenceIndices[fenceIndices.length - 1];
+                            return lines.slice(0, safeCutoff).join('\\n');
+                        }
+                    }
+                    return content;
+                }
+                
+                const safeContent = safeParseMarkdown(stream_buffer);
+                const targetLength = safeContent.length;
+                
+                if (render_position < targetLength) {
+                    // Add 2-4 characters per frame for smooth streaming
+                    const charsToAdd = Math.min(Math.max(2, Math.floor(targetLength / 100)), 4);
+                    const newPosition = Math.min(render_position + charsToAdd, targetLength);
+                    const displayContent = safeContent.slice(0, newPosition);
+                    
+                    return [newPosition, displayContent];
+                }
+                
+                // Animation complete - return no update to stop triggering
+                return [window.dash_clientside.no_update, window.dash_clientside.no_update];
+            }
+            """,
+            [Output(f"{self.id}-render-position", "data"),
+             Output(f"{self.id}-streaming-markdown", "children")],
+            Input(f"{self.id}-render-timer", "n_intervals"),
+            [State(f"{self.id}-stream-buffer", "data"),
+             State(f"{self.id}-render-position", "data"),
+             State(f"{self.id}-render-timer", "disabled")]
+        )
 
+        # Callback to disable timer when rendering is complete
         @callback(
-            Output(f"{self.id}-streaming-content", "children"),
-            Output(f"{self.id}-history", "children", allow_duplicate=True),
-            Input(f"{self.id}-sse", "animation"),
-            State(f"{self.id}-history", "children"),
-            State(f"{self.id}-streaming-content", "children"),
+            Output(f"{self.id}-render-timer", "disabled", allow_duplicate=True),
+            Input(f"{self.id}-render-position", "data"),
+            State(f"{self.id}-stream-buffer", "data"),
             prevent_initial_call=True,
         )
-        def update_streaming_content(animation, current_history, prev_content):
+        def disable_timer_when_complete(render_position, stream_buffer):
+            if not stream_buffer:
+                return True
+            
+            # If we've rendered all the content, disable the timer
+            if render_position >= len(stream_buffer):
+                return True
+            
+            return dash.no_update
+
+        # Add clientside callback to handle clipboard functionality for code blocks
+        clientside_callback(
+            """
+            function(children) {
+                setTimeout(function() {
+                    // Remove existing clipboard buttons
+                    const existingButtons = document.querySelectorAll('.code-clipboard-btn');
+                    existingButtons.forEach(btn => btn.remove());
+                    
+                    // Find all code blocks with multiple selectors
+                    const codeBlocks = document.querySelectorAll('pre, .markdown-container pre, [class*="markdown"] pre');
+                    
+                    // Debug: log what we found
+                    console.log('Found code blocks:', codeBlocks.length);
+                    
+                    codeBlocks.forEach(function(pre, index) {
+                        // Debug: log the element
+                        console.log('Processing code block:', pre);
+                        
+                        // Force styling directly on the element
+                        pre.style.background = '#1e1e1e';
+                        pre.style.backgroundColor = '#1e1e1e';
+                        pre.style.padding = '10px';
+                        pre.style.margin = '0';
+                        pre.style.borderRadius = '6px';
+                        pre.style.border = '1px solid #333';
+                        pre.style.position = 'relative';
+                        pre.style.color = '#e5e5e5';
+                        // Skip if button already exists
+                        if (pre.querySelector('.code-clipboard-btn')) return;
+                        
+                        // Create clipboard button with SVG icon (Claude-style)
+                        const clipboardBtn = document.createElement('button');
+                        clipboardBtn.className = 'code-clipboard-btn';
+                        clipboardBtn.title = 'Copy code';
+                        
+                        // Clean clipboard SVG icon
+                        clipboardBtn.innerHTML = `
+                            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+                                <rect x="8" y="2" width="8" height="4" rx="1" ry="1"></rect>
+                                <path d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2"></path>
+                            </svg>
+                        `.replace(/\s+/g, ' ').trim();
+                        
+                        // Ensure proper positioning 
+                        clipboardBtn.style.position = 'absolute';
+                        clipboardBtn.style.top = '5px';
+                        clipboardBtn.style.right = '5px';
+                        clipboardBtn.style.zIndex = '1001';
+                        
+                        // Add click handler
+                        clipboardBtn.onclick = function(e) {
+                            e.stopPropagation();
+                            const code = pre.querySelector('code');
+                            if (code) {
+                                const codeText = code.textContent || code.innerText;
+                                navigator.clipboard.writeText(codeText).then(function() {
+                                    // Visual feedback - checkmark icon
+                                    clipboardBtn.innerHTML = `
+                                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                            <polyline points="20,6 9,17 4,12"></polyline>
+                                        </svg>
+                                    `.replace(/\s+/g, ' ').trim();
+                                    clipboardBtn.classList.add('copied');
+                                    
+                                    setTimeout(function() {
+                                        clipboardBtn.innerHTML = `
+                                            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+                                                <rect x="8" y="2" width="8" height="4" rx="1" ry="1"></rect>
+                                                <path d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2"></path>
+                                            </svg>
+                                        `.replace(/\s+/g, ' ').trim();
+                                        clipboardBtn.classList.remove('copied');
+                                    }, 1500);
+                                }).catch(function(err) {
+                                    console.error('Failed to copy: ', err);
+                                    clipboardBtn.innerHTML = `
+                                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                            <circle cx="12" cy="12" r="10"></circle>
+                                            <line x1="15" y1="9" x2="9" y2="15"></line>
+                                            <line x1="9" y1="9" x2="15" y2="15"></line>
+                                        </svg>
+                                    `.replace(/\s+/g, ' ').trim();
+                                    setTimeout(function() {
+                                        clipboardBtn.innerHTML = `
+                                            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+                                                <rect x="8" y="2" width="8" height="4" rx="1" ry="1"></rect>
+                                                <path d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2h2"></path>
+                                            </svg>
+                                        `.replace(/\s+/g, ' ').trim();
+                                    }, 1500);
+                                });
+                            }
+                        };
+                        
+                        // Append button to code block
+                        pre.appendChild(clipboardBtn);
+                    });
+                }, 100);
+                return window.dash_clientside.no_update;
+            }
+            """,
+            Output(f"{self.id}-streaming-markdown", "style"),
+            Input(f"{self.id}-streaming-markdown", "children")
+        )
+
+        @callback(
+            Output(f"{self.id}-stream-buffer", "data"),
+            Output(f"{self.id}-render-timer", "disabled"),
+            Input(f"{self.id}-sse", "animation"),
+            prevent_initial_call=True,
+        )
+        def update_streaming_buffer(animation):
             if not animation:
                 return dash.no_update, dash.no_update
 
@@ -368,49 +627,51 @@ class VizroChatComponent(VizroBaseModel):
                 else:
                     messages = [json.loads(animation)]
             except Exception as e:
-                content = prev_content if prev_content is not None else html.Div(animation)
-                if current_history and len(current_history) > 0:
-                    current_history[-1]["props"]["children"] = content
-                    return content, current_history
-                return content, dash.no_update
+                return "", True
 
-            # Get the already rendered blocks (if any)
-            already_rendered = []
-            if current_history and len(current_history) > 0:
-                already_rendered = current_history[-1]["props"].get("children", [])
-                if not isinstance(already_rendered, list):
-                    already_rendered = [already_rendered]
-
-            # Only render new blocks
-            new_blocks = [render_message(msg, idx) for idx, msg in enumerate(messages[len(already_rendered):], start=len(already_rendered))]
-            content = already_rendered + new_blocks
-
-            if current_history and len(current_history) > 0:
-                current_history[-1]["props"]["children"] = content
-                return content, current_history
-            return content, dash.no_update
+            # Build content from scratch each time (no accumulation to avoid duplication)
+            aggregated_content = ""
+            for msg in messages:
+                msg_type = msg.get("type")
+                msg_content = msg.get("content", "")
+                
+                if msg_type == "code":
+                    aggregated_content += f"```{msg_content}```\n\n"
+                else:
+                    aggregated_content += msg_content
+            
+            return aggregated_content, False
 
         # Add callback to update messages store after streaming completes
         @callback(
             Output(f"{self.id}-messages", "data", allow_duplicate=True),
+            Output(f"{self.id}-render-timer", "disabled", allow_duplicate=True),
+            Output(f"{self.id}-render-position", "data", allow_duplicate=True),
             Input(f"{self.id}-sse", "completed"),
-            State(f"{self.id}-streaming-content", "children"),
+            State(f"{self.id}-stream-buffer", "data"),
             State(f"{self.id}-messages", "data"),
             prevent_initial_call="initial_duplicate",
         )
         def update_messages_store(completed, content, messages):
             if not completed or not content:
-                return dash.no_update
+                return dash.no_update, dash.no_update, dash.no_update
 
             messages_array = json.loads(messages)
             assistant_message = {"role": "assistant", "content": content}
             messages_array.append(assistant_message)
-            return json.dumps(messages_array)
+            return json.dumps(messages_array), True, 0
 
     @_log_call
     def build(self):
         """Build the chat component layout."""
         components = []
+        
+        # Add CSS styling for code blocks
+        components.append(dcc.Markdown(
+            f"<style>{CODE_BLOCK_STYLE}</style>",
+            dangerously_allow_html=True
+        ))
+        
         components.extend(self._build_data_stores())
         components.append(self._build_chat_interface())
         components.append(SSE(id=f"{self.id}-sse", concat=True, animate_chunk=5, animate_delay=10))
@@ -424,6 +685,14 @@ class VizroChatComponent(VizroBaseModel):
         """Build the data store components for the chat."""
         return [
             dcc.Store(id=f"{self.id}-messages", storage_type="session"),
+            dcc.Store(id=f"{self.id}-stream-buffer", data=""),
+            dcc.Store(id=f"{self.id}-render-position", data=0),
+            dcc.Interval(
+                id=f"{self.id}-render-timer", 
+                interval=33,  # ~30fps
+                n_intervals=0,
+                disabled=True
+            ),
         ]
 
     def _build_chat_interface(self):
@@ -437,8 +706,6 @@ class VizroChatComponent(VizroBaseModel):
                     ),
                     style=CHAT_HISTORY_WRAPPER_STYLE,
                 ),
-                # Hidden div for streaming content
-                html.Div(id=f"{self.id}-streaming-content", style={"display": "none"}),
                 html.Div(
                     dbc.InputGroup(
                         [
