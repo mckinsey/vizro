@@ -23,6 +23,7 @@ def load_data_function(number_of_data_points: int = 50):
 
 data_manager["data_key"] = load_data_function
 
+
 gapminder_2007 = px.data.gapminder().query("year == 2007")
 tips = px.data.tips()
 df = px.data.iris()
@@ -87,7 +88,11 @@ page1 = vm.Page(
                     ],
                 ),
             ]
+
         ),
+    ],
+    controls=[
+        vm.Filter(column="long_words"),
     ],
 )
 
