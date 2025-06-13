@@ -23,16 +23,22 @@ def managers_one_page_two_graphs(gapminder):
 def managers_one_page_container_controls(gapminder):
     """Instantiates a simple model_manager and data_manager with a page, and two graph models and gapminder data."""
     vm.Page(
-        id="test_container",
+        id="test_container_page",
         title="My first dashboard",
         components=[
             vm.Container(
+                id="test_container",
                 title="",
                 components=[
                     vm.Graph(id="scatter_chart", figure=px.scatter(gapminder, x="lifeExp", y="gdpPercap")),
                 ],
                 controls=[
                     vm.Filter(id="container_filter", column="continent", selector=vm.Checklist(value=["Europe"])),
+                    vm.Filter(
+                        id="container_dropdown",
+                        column="country",
+                        selector=vm.Dropdown(options=["Bosnia and Herzegovina", "Ireland", "Slovenia", "Spain"]),
+                    ),
                     vm.Parameter(
                         id="container_parameter",
                         targets=["scatter_chart.x"],
