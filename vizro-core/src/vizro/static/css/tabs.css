@@ -19,6 +19,7 @@ To ensure the dynamic height adjustment and prevent scrolling, the height must b
 .tab-pane {
   height: 100%;
 }
+
 .tab-pane > div:first-child {
   min-height: 100%;
 }

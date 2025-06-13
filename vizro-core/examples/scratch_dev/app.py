@@ -88,7 +88,6 @@ page1 = vm.Page(
                     ],
                 ),
             ]
-
         ),
     ],
     controls=[
@@ -161,13 +160,7 @@ page4 = vm.Page(
                     components=[
                         vm.Graph(
                             title="Graph 1",
-                            figure=px.bar(
-                                gapminder_2007,
-                                x="continent",
-                                y="lifeExp",
-                                color="continent",
-                                height=400
-                            ),
+                            figure=px.bar(gapminder_2007, x="continent", y="lifeExp", color="continent", height=400),
                         ),
                         vm.Card(text="Card 1"),
                     ],
@@ -193,10 +186,8 @@ page4 = vm.Page(
 )
 
 
-
 dashboard = vm.Dashboard(title="Test dashboard", pages=[page1, page2, page3, page4])
 
 if __name__ == "__main__":
     app = Vizro().build(dashboard)
     app.run()
-
