@@ -1,4 +1,4 @@
-"""Vizro-AI chat component following vizro-core patterns."""
+"""Vizro-AI chat model following vizro-core patterns."""
 
 import json
 from typing import Literal, Optional
@@ -14,7 +14,7 @@ from pydantic import ConfigDict, Field
 from vizro.models import VizroBaseModel
 from vizro.models._models_utils import _log_call
 from vizro.models.types import _IdProperty
-from vizro_ai.components._processors import ChatMessage, ChatProcessor, EchoProcessor
+from vizro_ai.models._processors import ChatMessage, ChatProcessor, EchoProcessor
 
 # Styling constants
 WRAPPER = {
@@ -223,7 +223,7 @@ def render_streaming_message(component_id):
     ])
 
 
-class VizroChatComponent(VizroBaseModel):
+class Chat(VizroBaseModel):
     """A chat component for Vizro dashboards that implements the plugin interface.
 
     This component provides interactive chat functionality that can be
@@ -234,7 +234,7 @@ class VizroChatComponent(VizroBaseModel):
     register its streaming routes.
 
     Args:
-        type (Literal["vizro_chat_component"]): Defaults to `"vizro_chat_component"`.
+        type (Literal["chat"]): Defaults to `"chat"`.
         id (str): Unique identifier for the component.
         input_placeholder (str): Placeholder text for the input field. Defaults to `"Ask me a question..."`.
         input_height (str): Height of the input field. Defaults to `"80px"`.
@@ -246,13 +246,13 @@ class VizroChatComponent(VizroBaseModel):
         ```python
         import vizro.models as vm
         from vizro import Vizro
-        import vizro_ai.components as vcc
+        import vizro_ai.models as vam
         
         # Create component
-        chat_component = vcc.VizroChatComponent(id="my_chat")
+        chat_component = vam.Chat(id="my_chat")
         
         # Register component type
-        vm.Page.add_type("components", vcc.VizroChatComponent)
+        vm.Page.add_type("components", vam.Chat)
         
         # Create dashboard
         dashboard = vm.Dashboard(pages=[vm.Page(components=[chat_component])])
@@ -264,7 +264,7 @@ class VizroChatComponent(VizroBaseModel):
 
     model_config = ConfigDict(arbitrary_types_allowed=True)
 
-    type: Literal["vizro_chat_component"] = "vizro_chat_component"
+    type: Literal["chat"] = "chat"
     id: str
     input_placeholder: str = Field(default="Ask me a question...", description="Placeholder text for the input field")
     input_height: str = Field(default="80px", description="Height of the input field")

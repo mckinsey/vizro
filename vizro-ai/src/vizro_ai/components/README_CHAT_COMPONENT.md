@@ -1,8 +1,8 @@
-# VizroChatComponent Architecture Documentation
+# Chat Component Architecture Documentation
 
 ## Overview
 
-VizroChatComponent is a chat interface built for Vizro dashboards that provides smooth streaming responses with rich markdown support. It features a plugin-based architecture that separates data processing from UI rendering, enabling easy integration with different AI services.
+The Chat component (formerly VizroChatComponent) is a chat interface built for Vizro dashboards that provides smooth streaming responses with rich markdown support. It features a plugin-based architecture that separates data processing from UI rendering, enabling easy integration with different AI services.
 
 **🚨 Important**: This component **must be passed as a plugin to Vizro** to properly register its streaming routes. See the [Dash Plugin Pattern](#-dash-plugin-pattern) section for details.
 
@@ -12,7 +12,7 @@ VizroChatComponent is a chat interface built for Vizro dashboards that provides 
 
 ```
 ┌─────────────────┐    ┌──────────────────┐    ┌───────────────────┐
-│   Data Source   │ -> │   ChatProcessor  │ -> │ VizroChatComponent│
+│   Data Source   │ -> │   ChatProcessor  │ -> │      Chat        │
 │  (LLM/AI API)   │    │   (Plugin API)   │    │   (UI Component)  │
 └─────────────────┘    └──────────────────┘    └───────────────────┘
 ```
@@ -23,7 +23,7 @@ VizroChatComponent is a chat interface built for Vizro dashboards that provides 
 - **Output**: Stream of typed `ChatMessage` objects
 - **Flexibility**: Easy to implement custom processors for different AI services
 
-### 2. **VizroChatComponent Layer** (UI & Experience)
+### 2. **Chat Component Layer** (UI & Experience)
 - **Responsibility**: Handle all UI concerns, animations, user interactions
 - **Features**: Smooth streaming, markdown rendering, clipboard functionality
 - **Performance**: Client-side buffering and animation for optimal UX
@@ -37,10 +37,10 @@ VizroChatComponent is a chat interface built for Vizro dashboards that provides 
 
 ### Why We Use the Plugin Pattern
 
-VizroChatComponent implements Dash's plugin interface to safely register streaming routes. This approach solves critical production deployment issues:
+The Chat component implements Dash's plugin interface to safely register streaming routes. This approach solves critical production deployment issues:
 
 ```python
-class VizroChatComponent(VizroBaseModel):
+class Chat(VizroBaseModel):
     def plug(self, app):
         """Called by Dash during app initialization to register routes."""
         @app.server.route(f"/streaming-{self.id}", methods=["POST"])
@@ -63,7 +63,7 @@ class VizroChatComponent(VizroBaseModel):
 **Before (problematic)**:
 ```python
 # ❌ Routes registered in pre_build() - UNSAFE for production
-class VizroChatComponent:
+class Chat:
     def pre_build(self):
         @dash.get_app().server.route(f"/streaming-{self.id}")
         def streaming_chat():
@@ -80,7 +80,7 @@ class VizroChatComponent:
 **Now (safe and robust)**:
 ```python
 # ✅ Plugin pattern - SAFE for production
-class VizroChatComponent:
+class Chat:
     def plug(self, app):
         @app.server.route(f"/streaming-{self.id}")
         def streaming_chat():
@@ -132,7 +132,7 @@ sequenceDiagram
         ↓
 [SSE Stream]
         ↓
-[VizroChatComponent Callbacks]
+[Chat Component Callbacks]
         ↓
 [Client-side Buffer]
         ↓
@@ -333,8 +333,8 @@ class CustomProcessor(ChatProcessor):
             metadata={"language": "python"}
         )
 
-# Use with VizroChatComponent
-chat = VizroChatComponent(
+# Use with Chat component
+chat = Chat(
     id="my-chat",
     processor=CustomProcessor()
 )
@@ -383,7 +383,7 @@ class ChatMessage(BaseModel):
 ### Component Configuration
 
 ```python
-VizroChatComponent(
+Chat(
     id="chat-component",
     input_placeholder="Ask me anything...",
     input_height="80px",
@@ -416,10 +416,10 @@ const maxIntervals = content_length / charsPerFrame;
 ```python
 import vizro.models as vm
 from vizro import Vizro
-from vizro_ai.components import VizroChatComponent, OpenAIProcessor
+from vizro_ai.models import Chat, OpenAIProcessor
 
 # Create the chat component
-chat = VizroChatComponent(
+chat = Chat(
     id="ai-chat",
     processor=OpenAIProcessor(
         model="gpt-4o-mini",
@@ -428,7 +428,7 @@ chat = VizroChatComponent(
 )
 
 # Register the component type with Vizro
-vm.Page.add_type("components", VizroChatComponent)
+vm.Page.add_type("components", Chat)
 
 # Create page with the chat component
 page = vm.Page(
@@ -467,7 +467,7 @@ app.build(dashboard).run()
 ```python
 import vizro.models as vm
 from vizro import Vizro
-from vizro_ai.components import VizroChatComponent, ChatProcessor, ChatMessage, MessageType
+from vizro_ai.models import Chat, ChatProcessor, ChatMessage, MessageType
 
 # Custom processor with agent framework
 class AgentProcessor(ChatProcessor):
@@ -490,13 +490,13 @@ class AgentProcessor(ChatProcessor):
                 )
 
 # Create component with custom processor
-chat = VizroChatComponent(
+chat = Chat(
     id="agent-chat",
     processor=AgentProcessor(agent_config)
 )
 
 # Register and use with Vizro
-vm.Page.add_type("components", VizroChatComponent)
+vm.Page.add_type("components", Chat)
 page = vm.Page(title="Agent Chat", components=[chat])
 dashboard = vm.Dashboard(pages=[page])
 
@@ -511,8 +511,8 @@ For multiple chat components on different pages:
 
 ```python
 # Create multiple chat components
-chat1 = VizroChatComponent(id="general-chat", processor=OpenAIProcessor())
-chat2 = VizroChatComponent(id="agent-chat", processor=AgentProcessor())
+chat1 = Chat(id="general-chat", processor=OpenAIProcessor())
+chat2 = Chat(id="agent-chat", processor=AgentProcessor())
 
 # Pass all components as plugins
 app = Vizro(plugins=[chat1, chat2])
@@ -592,7 +592,7 @@ app = Vizro(plugins=[chat_component])
 page = vm.Page(components=[chat_component])  # Will fail!
 
 # ✅ Correct approach
-vm.Page.add_type("components", VizroChatComponent)
+vm.Page.add_type("components", Chat)
 page = vm.Page(components=[chat_component])
 ```
 
@@ -602,10 +602,10 @@ page = vm.Page(components=[chat_component])
 
 ```python
 # 1. Create component
-chat = VizroChatComponent(id="my-chat", processor=YourProcessor())
+chat = Chat(id="my-chat", processor=YourProcessor())
 
 # 2. Register component type  
-vm.Page.add_type("components", VizroChatComponent)
+vm.Page.add_type("components", Chat)
 
 # 3. Create dashboard
 dashboard = vm.Dashboard(pages=[vm.Page(components=[chat])])

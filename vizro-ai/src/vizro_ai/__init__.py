@@ -6,8 +6,9 @@ from dotenv import load_dotenv
 load_dotenv()
 
 from ._vizro_ai import VizroAI
+from . import models
 
-__all__ = ["VizroAI"]
+__all__ = ["VizroAI", "models"]
 
 __version__ = "0.3.8.dev0"
 

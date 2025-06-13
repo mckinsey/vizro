@@ -1,22 +1,22 @@
-"""Test script to verify the plugin pattern works correctly with VizroChatComponent."""
+"""Test script to verify the plugin pattern works correctly with Chat component."""
 
 import vizro.models as vm
 from vizro import Vizro
-import vizro_ai.components as vcc
+import vizro_ai.models as vam
 
 def test_plugin_pattern():
     """Test that the plugin pattern correctly registers routes."""
     
     # Create a chat component with EchoProcessor (no API key needed)
-    chat_component = vcc.VizroChatComponent(
+    chat_component = vam.Chat(
         id="test_chat",
         input_placeholder="Test message...",
         initial_message="Test chat initialized!",
-        processor=vcc.EchoProcessor(),  # Simple processor for testing
+        processor=vam.EchoProcessor(),  # Simple processor for testing
     )
     
     # Register the component type with Vizro
-    vm.Page.add_type("components", vcc.VizroChatComponent)
+    vm.Page.add_type("components", vam.Chat)
     
     # Create a simple page
     page = vm.Page(

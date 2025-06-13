@@ -1,6 +1,8 @@
-"""Vizro-AI components module."""
+"""Vizro-AI components module.
 
-from vizro_ai.components._chat_component import VizroChatComponent
-from vizro_ai.components._processors import ChatProcessor, EchoProcessor, OpenAIProcessor
+This module contains reusable processors for chat components.
+"""
 
-__all__ = ["VizroChatComponent", "ChatProcessor", "EchoProcessor", "OpenAIProcessor"] 
+from vizro_ai.models._processors import ChatProcessor, EchoProcessor, OpenAIProcessor
+
+__all__ = ["ChatProcessor", "EchoProcessor", "OpenAIProcessor"] 

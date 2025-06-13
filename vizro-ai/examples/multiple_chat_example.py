@@ -1,9 +1,9 @@
-"""Complete example of using multiple VizroChatComponents in a dashboard."""
+"""Complete example of using multiple Chat components in a dashboard."""
 
 import os
 import vizro.models as vm
 from vizro import Vizro
-import vizro_ai.components as vcc
+import vizro_ai.models as vam
 from dotenv import load_dotenv
 
 load_dotenv()
@@ -12,41 +12,41 @@ def create_multi_chat_dashboard():
     """Create a dashboard with multiple specialized chat components."""
     
     # 1. Create multiple chat components with different purposes
-    general_chat = vcc.VizroChatComponent(
+    general_chat = vam.Chat(
         id="general_chat",
         input_placeholder="Ask me anything...",
         initial_message="👋 Hi! I'm your general AI assistant. How can I help you today?",
-        processor=vcc.OpenAIProcessor(
+        processor=vam.OpenAIProcessor(
             model="gpt-4o-mini",
             api_key=os.getenv("OPENAI_API_KEY"),
             system_message="You are a helpful general-purpose AI assistant."
-        ) if os.getenv("OPENAI_API_KEY") else vcc.EchoProcessor(),
+        ) if os.getenv("OPENAI_API_KEY") else vam.EchoProcessor(),
     )
     
-    data_analyst_chat = vcc.VizroChatComponent(
+    data_analyst_chat = vam.Chat(
         id="data_analyst_chat",
         input_placeholder="Ask about data analysis, statistics, or visualization...",
         initial_message="📊 Hello! I specialize in data analysis and visualization. What data questions do you have?",
-        processor=vcc.OpenAIProcessor(
+        processor=vam.OpenAIProcessor(
             model="gpt-4o-mini", 
             api_key=os.getenv("OPENAI_API_KEY"),
             system_message="You are a specialized data analyst AI. Focus on statistics, data analysis, visualization recommendations, and data science best practices."
-        ) if os.getenv("OPENAI_API_KEY") else vcc.EchoProcessor(),
+        ) if os.getenv("OPENAI_API_KEY") else vam.EchoProcessor(),
     )
     
-    code_assistant_chat = vcc.VizroChatComponent(
+    code_assistant_chat = vam.Chat(
         id="code_assistant_chat",
         input_placeholder="Ask about programming, debugging, or code review...",
         initial_message="💻 Hi! I'm your coding assistant. I can help with programming, debugging, and code review.",
-        processor=vcc.OpenAIProcessor(
+        processor=vam.OpenAIProcessor(
             model="gpt-4o-mini",
             api_key=os.getenv("OPENAI_API_KEY"), 
             system_message="You are a senior software engineer AI. Help with coding questions, debugging, code review, and programming best practices. Provide code examples when helpful."
-        ) if os.getenv("OPENAI_API_KEY") else vcc.EchoProcessor(),
+        ) if os.getenv("OPENAI_API_KEY") else vam.EchoProcessor(),
     )
     
     # 2. Register the component type with Vizro
-    vm.Page.add_type("components", vcc.VizroChatComponent)
+    vm.Page.add_type("components", vam.Chat)
     
     # 3. Create specialized pages for different use cases
     general_page = vm.Page(
@@ -69,17 +69,17 @@ def create_multi_chat_dashboard():
         title="🔄 Chat Comparison",
         components=[
             # You can have multiple chat components on the same page
-            vcc.VizroChatComponent(
+            vam.Chat(
                 id="quick_chat_a",
                 input_placeholder="Quick question A...",
                 initial_message="Quick Chat A - Ready!",
-                processor=vcc.EchoProcessor(),
+                processor=vam.EchoProcessor(),
             ),
-            vcc.VizroChatComponent(
+            vam.Chat(
                 id="quick_chat_b", 
                 input_placeholder="Quick question B...",
                 initial_message="Quick Chat B - Ready!",
-                processor=vcc.EchoProcessor(),
+                processor=vam.EchoProcessor(),
             ),
         ],
     )
