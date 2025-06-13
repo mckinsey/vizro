@@ -224,11 +224,14 @@ def render_streaming_message(component_id):
 
 
 class VizroChatComponent(VizroBaseModel):
-    """A chat component for Vizro dashboards.
+    """A chat component for Vizro dashboards that implements the plugin interface.
 
     This component provides interactive chat functionality that can be
     integrated into Vizro dashboards. It supports different processors
     for handling chat responses, including simple echoing and OpenAI integration.
+
+    To use this component, it must be passed as a plugin to Vizro to properly
+    register its streaming routes.
 
     Args:
         type (Literal["vizro_chat_component"]): Defaults to `"vizro_chat_component"`.
@@ -238,6 +241,25 @@ class VizroChatComponent(VizroBaseModel):
         button_text (str): Text displayed on the send button. Defaults to `"Send"`.
         initial_message (str): Initial message displayed in the chat. Defaults to `"Hello! How can I help you today?"`.
         processor (ChatProcessor): Chat processor for generating responses. Defaults to `EchoProcessor()`.
+        
+    Example:
+        ```python
+        import vizro.models as vm
+        from vizro import Vizro
+        import vizro_ai.components as vcc
+        
+        # Create component
+        chat_component = vcc.VizroChatComponent(id="my_chat")
+        
+        # Register component type
+        vm.Page.add_type("components", vcc.VizroChatComponent)
+        
+        # Create dashboard
+        dashboard = vm.Dashboard(pages=[vm.Page(components=[chat_component])])
+        
+        # Pass component as plugin to Vizro
+        Vizro(plugins=[chat_component]).build(dashboard).run()
+        ```
     """
 
     model_config = ConfigDict(arbitrary_types_allowed=True)
@@ -260,16 +282,17 @@ class VizroChatComponent(VizroBaseModel):
         """Define action inputs for the chat component."""
         return {"input": f"{self.id}-input.value"}
 
-    @_log_call
-    def pre_build(self):
-        """Register routes and callbacks before building the component."""
-        self._register_streaming_route()
-        self._register_streaming_callback()
-
-    def _register_streaming_route(self):
-        """Register the streaming endpoint for the chat component."""
-
-        @dash.get_app().server.route(f"/streaming-{self.id}", methods=["POST"], endpoint=f"streaming_chat_{self.id}")
+    def plug(self, app):
+        """Plugin method called by Dash to register routes and other app-level configurations.
+        
+        This method is called automatically when the component is passed as a plugin
+        to Dash (via Vizro). It registers the streaming endpoint needed for the chat
+        functionality.
+        
+        Args:
+            app: The Dash application instance.
+        """
+        @app.server.route(f"/streaming-{self.id}", methods=["POST"], endpoint=f"streaming_chat_{self.id}")
         def streaming_chat():
             try:
                 data = request.json or {}
@@ -299,6 +322,11 @@ class VizroChatComponent(VizroBaseModel):
                 return Response(response_stream(), mimetype="text/event-stream")
             except Exception as e:
                 return Response(f"Error: {e!s}", status=500)
+
+    @_log_call
+    def pre_build(self):
+        """Register callbacks before building the component."""
+        self._register_streaming_callback()
 
     def _register_streaming_callback(self):
         """Register callbacks for chat functionality."""
@@ -506,7 +534,7 @@ class VizroChatComponent(VizroBaseModel):
                                 <rect x="8" y="2" width="8" height="4" rx="1" ry="1"></rect>
                                 <path d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2"></path>
                             </svg>
-                        `.replace(/\s+/g, ' ').trim();
+                        `.replace(/\\s+/g, ' ').trim();
                         
                         // Ensure proper positioning 
                         clipboardBtn.style.position = 'absolute';
@@ -526,7 +554,7 @@ class VizroChatComponent(VizroBaseModel):
                                         <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                                             <polyline points="20,6 9,17 4,12"></polyline>
                                         </svg>
-                                    `.replace(/\s+/g, ' ').trim();
+                                    `.replace(/\\s+/g, ' ').trim();
                                     clipboardBtn.classList.add('copied');
                                     
                                     setTimeout(function() {
@@ -535,7 +563,7 @@ class VizroChatComponent(VizroBaseModel):
                                                 <rect x="8" y="2" width="8" height="4" rx="1" ry="1"></rect>
                                                 <path d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2"></path>
                                             </svg>
-                                        `.replace(/\s+/g, ' ').trim();
+                                        `.replace(/\\s+/g, ' ').trim();
                                         clipboardBtn.classList.remove('copied');
                                     }, 1500);
                                 }).catch(function(err) {
@@ -546,14 +574,14 @@ class VizroChatComponent(VizroBaseModel):
                                             <line x1="15" y1="9" x2="9" y2="15"></line>
                                             <line x1="9" y1="9" x2="15" y2="15"></line>
                                         </svg>
-                                    `.replace(/\s+/g, ' ').trim();
+                                    `.replace(/\\s+/g, ' ').trim();
                                     setTimeout(function() {
                                         clipboardBtn.innerHTML = `
                                             <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
                                                 <rect x="8" y="2" width="8" height="4" rx="1" ry="1"></rect>
-                                                <path d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2h2"></path>
+                                                <path d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2"></path>
                                             </svg>
-                                        `.replace(/\s+/g, ' ').trim();
+                                        `.replace(/\\s+/g, ' ').trim();
                                     }, 1500);
                                 });
                             }

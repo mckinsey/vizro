@@ -4,6 +4,8 @@
 
 VizroChatComponent is a chat interface built for Vizro dashboards that provides smooth streaming responses with rich markdown support. It features a plugin-based architecture that separates data processing from UI rendering, enabling easy integration with different AI services.
 
+**🚨 Important**: This component **must be passed as a plugin to Vizro** to properly register its streaming routes. See the [Dash Plugin Pattern](#-dash-plugin-pattern) section for details.
+
 ## 🏗️ Architecture Design
 
 ### Core Components
@@ -30,6 +32,90 @@ VizroChatComponent is a chat interface built for Vizro dashboards that provides 
 - **Technology**: Server-Sent Events (SSE) for real-time streaming
 - **Format**: JSON-serialized `ChatMessage` objects
 - **Benefits**: Low latency, automatic reconnection, browser-native support
+
+## 🔌 Dash Plugin Pattern
+
+### Why We Use the Plugin Pattern
+
+VizroChatComponent implements Dash's plugin interface to safely register streaming routes. This approach solves critical production deployment issues:
+
+```python
+class VizroChatComponent(VizroBaseModel):
+    def plug(self, app):
+        """Called by Dash during app initialization to register routes."""
+        @app.server.route(f"/streaming-{self.id}", methods=["POST"])
+        def streaming_chat():
+            # Direct access to self - no registry needed!
+            return self.handle_streaming_request()
+```
+
+### Route Registration Approaches Comparison
+
+| Approach | When Routes Register | Worker Safety | Component Access | Production Ready |
+|----------|---------------------|---------------|------------------|------------------|
+| **Plugin Pattern** ✅ | During Dash init | ✅ Before worker fork | ✅ Direct `self` access | ✅ Yes |
+| `add_startup_route` | During Dash init | ✅ Before worker fork | ⚠️ Needs registry | ✅ Yes |
+| `pre_build` registration | During component build | ❌ After worker fork | ✅ Direct `self` access | ❌ No |
+| Route hooks | At import time | ✅ Before worker fork | ❌ Global state needed | ⚠️ Complex |
+
+### Problems with Previous Approach
+
+**Before (problematic)**:
+```python
+# ❌ Routes registered in pre_build() - UNSAFE for production
+class VizroChatComponent:
+    def pre_build(self):
+        @dash.get_app().server.route(f"/streaming-{self.id}")
+        def streaming_chat():
+            return self.handle_request()
+```
+
+**Issues**:
+- 🚨 **Worker Safety**: Routes registered after app forks to workers
+- 🚨 **Timing Issues**: Registration happens during component building, not app initialization
+- 🚨 **Production Failures**: Breaks with gunicorn, uvicorn, and other WSGI servers
+
+### Plugin Pattern Benefits
+
+**Now (safe and robust)**:
+```python
+# ✅ Plugin pattern - SAFE for production
+class VizroChatComponent:
+    def plug(self, app):
+        @app.server.route(f"/streaming-{self.id}")
+        def streaming_chat():
+            return self.handle_request()  # Direct access to self!
+
+# Usage
+app = Vizro(plugins=[chat_component])  # Routes registered here
+```
+
+**Benefits**:
+- ✅ **Production Safe**: Routes registered before worker processes fork
+- ✅ **Clean Architecture**: No global state or component registries needed  
+- ✅ **Direct Access**: Route handlers have direct access to component instance
+- ✅ **Dash Convention**: Uses Dash's official plugin system
+- ✅ **Easy Testing**: Each component can be tested in isolation
+
+### Plugin Lifecycle
+
+```mermaid
+sequenceDiagram
+    participant User
+    participant Vizro  
+    participant Dash
+    participant ChatComponent
+    participant Flask
+    
+    User->>Vizro: Vizro(plugins=[chat_component])
+    Vizro->>Dash: dash.Dash(plugins=[chat_component])
+    Note over Dash: Early in initialization
+    Dash->>ChatComponent: chat_component.plug(dash_app)
+    ChatComponent->>Flask: app.server.route("/streaming-{id}")
+    Note over Flask: Route registered safely
+    Dash->>Dash: Continue app initialization
+    Note over Dash: Ready for production deployment
+```
 
 ## 📊 Data Flow Architecture
 
@@ -219,7 +305,9 @@ codeBlocks.forEach(pre => {
 - **Visual feedback**: Icon changes to checkmark on successful copy
 - **Claude-style UX**: Hidden until hover, smooth transitions
 
-## 🔌 Plugin Architecture
+## 🔌 ChatProcessor Plugin Architecture
+
+> **Note**: This section covers the ChatProcessor plugin system for AI integrations. For the Dash plugin pattern used for route registration, see [Dash Plugin Pattern](#-dash-plugin-pattern) above.
 
 ### Creating Custom Processors
 
@@ -326,9 +414,11 @@ const maxIntervals = content_length / charsPerFrame;
 ### Basic Usage
 
 ```python
+import vizro.models as vm
+from vizro import Vizro
 from vizro_ai.components import VizroChatComponent, OpenAIProcessor
 
-# Create with OpenAI processor
+# Create the chat component
 chat = VizroChatComponent(
     id="ai-chat",
     processor=OpenAIProcessor(
@@ -337,16 +427,48 @@ chat = VizroChatComponent(
     )
 )
 
-# Add to your Vizro page
+# Register the component type with Vizro
+vm.Page.add_type("components", VizroChatComponent)
+
+# Create page with the chat component
 page = vm.Page(
     title="AI Chat",
     components=[chat]
 )
+
+# Create dashboard
+dashboard = vm.Dashboard(pages=[page])
+
+# 🚨 IMPORTANT: Pass component as plugin to Vizro
+app = Vizro(plugins=[chat])
+app.build(dashboard).run()
+```
+
+### Migration from Previous Versions
+
+If you're upgrading from a previous version, update your code:
+
+**Before (old way)**:
+```python
+# ❌ This approach had production safety issues
+app = Vizro()
+app.build(dashboard).run()
+```
+
+**After (new plugin way)**:
+```python
+# ✅ Safe for production deployments
+app = Vizro(plugins=[chat_component])
+app.build(dashboard).run()
 ```
 
 ### Advanced Usage
 
 ```python
+import vizro.models as vm
+from vizro import Vizro
+from vizro_ai.components import VizroChatComponent, ChatProcessor, ChatMessage, MessageType
+
 # Custom processor with agent framework
 class AgentProcessor(ChatProcessor):
     def __init__(self, agent_config):
@@ -367,11 +489,34 @@ class AgentProcessor(ChatProcessor):
                     metadata={"language": step.language}
                 )
 
-# Use with custom processor
+# Create component with custom processor
 chat = VizroChatComponent(
     id="agent-chat",
     processor=AgentProcessor(agent_config)
 )
+
+# Register and use with Vizro
+vm.Page.add_type("components", VizroChatComponent)
+page = vm.Page(title="Agent Chat", components=[chat])
+dashboard = vm.Dashboard(pages=[page])
+
+# Use plugin pattern for production safety
+app = Vizro(plugins=[chat])
+app.build(dashboard).run()
+```
+
+### Multiple Chat Components
+
+For multiple chat components on different pages:
+
+```python
+# Create multiple chat components
+chat1 = VizroChatComponent(id="general-chat", processor=OpenAIProcessor())
+chat2 = VizroChatComponent(id="agent-chat", processor=AgentProcessor())
+
+# Pass all components as plugins
+app = Vizro(plugins=[chat1, chat2])
+app.build(dashboard).run()
 ```
 
 ## 🔍 Debugging & Development
@@ -389,11 +534,92 @@ console.log('Animation position:', render_position);
 console.log('Buffer length:', stream_buffer.length);
 ```
 
+### Route Registration Verification
+
+To verify routes are properly registered:
+
+```python
+def verify_routes(app):
+    """Debug helper to check registered routes."""
+    routes = [rule.rule for rule in app.dash.server.url_map.iter_rules()]
+    print("Registered routes:")
+    for route in routes:
+        print(f"  {route}")
+    
+    # Check for chat component routes
+    chat_routes = [r for r in routes if r.startswith("/streaming-")]
+    print(f"Found {len(chat_routes)} chat component routes")
+    return chat_routes
+
+# Usage
+app = Vizro(plugins=[chat_component])
+app.build(dashboard)
+verify_routes(app)  # Check before running
+```
+
 ### Common Issues
 
-1. **No streaming animation**: Check that timer is enabled and `supports_streaming=True`
-2. **Clipboard not working**: Ensure HTTPS or localhost for clipboard API
-3. **Markdown not rendering**: Verify CSS classes and selectors
-4. **Memory leaks**: Check that timers are properly disabled
+1. **Route not found errors**: 
+   - ❌ **Cause**: Component not passed as plugin to Vizro
+   - ✅ **Fix**: Add `plugins=[chat_component]` to `Vizro()` constructor
 
-This architecture provides a robust, extensible foundation for building AI-powered chat interfaces in Vizro applications. 
+2. **Routes not working in production**:
+   - ❌ **Cause**: Using old `pre_build()` route registration 
+   - ✅ **Fix**: Upgrade to plugin pattern
+
+3. **Multiple workers not working**:
+   - ❌ **Cause**: Routes registered after worker fork
+   - ✅ **Fix**: Use plugin pattern for early route registration
+
+4. **No streaming animation**: Check that timer is enabled and `supports_streaming=True`
+
+5. **Clipboard not working**: Ensure HTTPS or localhost for clipboard API
+
+6. **Markdown not rendering**: Verify CSS classes and selectors
+
+7. **Memory leaks**: Check that timers are properly disabled
+
+### Plugin Pattern Troubleshooting
+
+```python
+# ❌ Common mistake - forgetting plugin registration
+app = Vizro()  # Component routes won't work!
+
+# ✅ Correct approach 
+app = Vizro(plugins=[chat_component])
+
+# ❌ Another mistake - not registering component type
+page = vm.Page(components=[chat_component])  # Will fail!
+
+# ✅ Correct approach
+vm.Page.add_type("components", VizroChatComponent)
+page = vm.Page(components=[chat_component])
+```
+
+## 📋 Quick Reference
+
+### Essential Plugin Pattern Usage
+
+```python
+# 1. Create component
+chat = VizroChatComponent(id="my-chat", processor=YourProcessor())
+
+# 2. Register component type  
+vm.Page.add_type("components", VizroChatComponent)
+
+# 3. Create dashboard
+dashboard = vm.Dashboard(pages=[vm.Page(components=[chat])])
+
+# 4. 🚨 CRITICAL: Pass as plugin for route registration
+app = Vizro(plugins=[chat])
+app.build(dashboard).run()
+```
+
+### Key Benefits of Plugin Pattern
+
+- ✅ **Production Safe**: Routes registered before worker processes fork
+- ✅ **Multi-Worker Compatible**: Works with gunicorn, uvicorn, etc.  
+- ✅ **Clean Architecture**: Direct component access, no registries
+- ✅ **Dash Standard**: Uses official Dash plugin system
+
+This architecture provides a robust, extensible foundation for building AI-powered chat interfaces in Vizro applications.

@@ -1,4 +1,4 @@
-"""Example of how to use the VizroChatComponent from vizro-ai."""
+"""Example of how to use the VizroChatComponent from vizro-ai with the plugin pattern."""
 
 import os
 import vizro.models as vm
@@ -9,7 +9,7 @@ import vizro_ai.components as vcc
 from dotenv import load_dotenv
 load_dotenv()
 
-# Create the chat component using the refactored version
+# Create the chat component
 chat_component = vcc.VizroChatComponent(
     id="my_chat",
     input_placeholder="Ask me a question...",
@@ -32,6 +32,10 @@ page = vm.Page(
     components=[chat_component],
 )
 
-# Create and run the dashboard
+# Create the dashboard
 dashboard = vm.Dashboard(pages=[page])
-Vizro().build(dashboard).run() 
+
+# IMPORTANT: Pass the chat component as a plugin to Vizro
+# This ensures the streaming routes are properly registered during app initialization
+app = Vizro(plugins=[chat_component])
+app.build(dashboard).run() 
