@@ -38,7 +38,7 @@ def test_kpi_indicators_page(dash_br):
 
 @image_assertion
 def test_homepage(dash_br):
-    graph_load_waiter(dash_br, graph_id=cnst.AREA_GRAPH_ID)
+    graph_load_waiter(dash_br)
 
 
 @image_assertion
@@ -105,7 +105,7 @@ def test_filters_inside_containers_page(dash_br):
 )
 @image_assertion
 def test_export_action_page(dash_br_driver):
-    graph_load_waiter(dash_br_driver, graph_id=cnst.LINE_EXPORT_ID)
+    graph_load_waiter(dash_br_driver)
 
 
 @pytest.mark.parametrize(
@@ -318,7 +318,7 @@ def test_collapsible_subcontainers_flex(dash_br):
 @pytest.mark.mobile_screenshots
 @image_assertion
 def test_homepage_mobile(dash_br):
-    graph_load_waiter(dash_br, graph_id=cnst.AREA_GRAPH_ID)
+    graph_load_waiter(dash_br)
 
 
 @pytest.mark.mobile_screenshots
@@ -327,7 +327,7 @@ def test_homepage_mobile(dash_br):
 )
 @image_assertion
 def test_filter_interactions_page(dash_br_driver):
-    graph_load_waiter(dash_br_driver, graph_id=cnst.BOX_INTERACTIONS_ID)
+    graph_load_waiter(dash_br_driver)
 
 
 @pytest.mark.mobile_screenshots
@@ -336,7 +336,7 @@ def test_filter_interactions_page(dash_br_driver):
 )
 @image_assertion
 def test_filter_interactions_dark_theme_page(dash_br_driver):
-    graph_load_waiter(dash_br_driver, graph_id=cnst.BOX_INTERACTIONS_ID)
+    graph_load_waiter(dash_br_driver)
     dash_br_driver.multiple_click(theme_toggle_path(), 1)
     check_graph_color(dash_br_driver, style_background=cnst.STYLE_TRANSPARENT, color=cnst.RGBA_TRANSPARENT)
     check_theme_color(dash_br_driver, color=cnst.THEME_DARK)

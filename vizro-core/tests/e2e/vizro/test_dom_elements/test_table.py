@@ -1,5 +1,5 @@
 from e2e.vizro import constants as cnst
-from e2e.vizro.checkers import check_graph_is_loading, check_table_rows_number
+from e2e.vizro.checkers import check_graph_is_loaded, check_table_rows_number
 from e2e.vizro.navigation import accordion_select, page_select
 from e2e.vizro.paths import categorical_components_value_path, slider_value_path, table_cell_value_path
 
@@ -60,5 +60,5 @@ def test_interactions(dash_br):
     dash_br.multiple_click(
         f"div[id='{cnst.TABLE_INTERACTIONS_ID}'] tr:nth-of-type(5) div[class='unfocused selectable dash-cell-value']", 1
     )
-    check_graph_is_loading(dash_br, cnst.LINE_INTERACTIONS_ID)
+    check_graph_is_loaded(dash_br, cnst.LINE_INTERACTIONS_ID)
     check_table_rows_number(dash_br, table_id=cnst.TABLE_INTERACTIONS_ID, expected_rows_num=31)
