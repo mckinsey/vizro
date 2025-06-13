@@ -65,6 +65,7 @@
 }
 
 #page-components {
+  flex: 1;
   overflow: auto;
 }
 
