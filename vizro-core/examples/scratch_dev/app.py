@@ -144,8 +144,54 @@ page3 = vm.Page(
 )
 
 
-dashboard = vm.Dashboard(title="Test dashboard", pages=[page1, page2, page3])
+page4 = vm.Page(
+    title="Tabs v3",
+    # layout=vm.Flex(),
+    components=[
+        vm.Tabs(
+            tabs=[
+                vm.Container(
+                    title="Tab1",
+                    layout=vm.Flex(direction="row"),
+                    components=[
+                        vm.Graph(
+                            title="Graph 1",
+                            figure=px.bar(
+                                gapminder_2007,
+                                x="continent",
+                                y="lifeExp",
+                                color="continent",
+                                height=400
+                            ),
+                        ),
+                        vm.Card(text="Card 1"),
+                    ],
+                ),
+                vm.Container(
+                    title="Tab2",
+                    components=[
+                        vm.Graph(
+                            title="Graph 2",
+                            figure=px.scatter(
+                                gapminder_2007,
+                                x="gdpPercap",
+                                y="lifeExp",
+                                size="pop",
+                                color="continent",
+                            ),
+                        ),
+                    ],
+                ),
+            ]
+        )
+    ],
+)
+
+
+
+dashboard = vm.Dashboard(title="Test dashboard", pages=[page1, page2, page3, page4])
 
 if __name__ == "__main__":
     app = Vizro().build(dashboard)
     app.run()
+
