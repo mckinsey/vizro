@@ -3,8 +3,11 @@
 import json
 import re
 from abc import ABC, abstractmethod
+from enum import Enum
 from time import sleep
-from typing import Generator, List, Optional
+from typing import Any, Dict, Generator, List, Optional
+
+from pydantic import BaseModel, Field
 
 # Try to import OpenAI, but make it optional
 try:
@@ -13,74 +16,127 @@ except ImportError:
     OpenAI = None
 
 
+class MessageType(str, Enum):
+    """Supported message types for chat responses."""
+    TEXT = "text"
+    CODE = "code"
+    ERROR = "error"
+
+
+class ChatMessage(BaseModel):
+    """Standardized chat message schema."""
+    type: MessageType = Field(default=MessageType.TEXT, description="Type of the message content")
+    content: str = Field(description="The actual message content")
+    metadata: Dict[str, Any] = Field(default_factory=dict, description="Optional metadata for the message")
+    
+    def to_json(self) -> str:
+        """Convert message to JSON string for streaming."""
+        return self.model_dump_json()
+
+
 class ChatProcessor(ABC):
     """Abstract base class for chat processors."""
 
     @abstractmethod
-    def get_response(self, messages: List[dict], prompt: str) -> Generator[str, None, None]:
-        """Get a response from the chat processor."""
+    def get_response(self, messages: List[dict], prompt: str) -> Generator[ChatMessage, None, None]:
+        """Get a response from the chat processor.
+        
+        Args:
+            messages: Previous conversation messages
+            prompt: Current user prompt
+            
+        Yields:
+            ChatMessage: Structured messages to be rendered
+        """
         pass
+    
+    @property
+    def supports_streaming(self) -> bool:
+        """Whether this processor supports streaming responses."""
+        return True
 
 
-def stream_structured_markdown(token_stream):
-    """Stream structured markdown content from token stream."""
+def parse_markdown_stream(token_stream: Generator[str, None, None]) -> Generator[ChatMessage, None, None]:
+    """Parse a stream of tokens and yield structured messages based on markdown patterns.
+    
+    Args:
+        token_stream: Generator of string tokens from an LLM
+        
+    Yields:
+        ChatMessage: Structured messages for text and code blocks
+    """
     buffer = ""
     in_code_block = False
-    code_block_lang = ""
-    code_block_delim = "```"
-
+    code_language = ""
+    
     for token in token_stream:
         buffer += token
-
-        # Handle code blocks
-        while code_block_delim in buffer:
-            before, after = buffer.split(code_block_delim, 1)
+        
+        # Check for complete code block delimiters
+        while "```" in buffer:
+            before, delimiter, after = buffer.partition("```")
+            
             if in_code_block:
-                # End of code block
-                yield json.dumps({
-                    "type": "code",
-                    "content": before,
-                    "language": code_block_lang
-                })
+                # End of code block - yield the code content
+                yield ChatMessage(
+                    type=MessageType.CODE,
+                    content=before,
+                    metadata={"language": code_language}
+                )
                 in_code_block = False
-                code_block_lang = ""
+                code_language = ""
+                buffer = after
             else:
-                # Start of code block, check for language
-                lines = after.splitlines()
-                if lines and re.match(r"^\w+$", lines[0]):
-                    code_block_lang = lines[0]
-                    after = "\n".join(lines[1:])
+                # Start of code block
+                if before.strip():
+                    # Yield any text before the code block
+                    yield ChatMessage(type=MessageType.TEXT, content=before)
+                
+                # Extract language from the next line
+                lines = after.split('\n', 1)
+                if lines and re.match(r"^\w+$", lines[0].strip()):
+                    code_language = lines[0].strip()
+                    buffer = lines[1] if len(lines) > 1 else ""
                 else:
-                    code_block_lang = ""
-                if before:
-                    yield json.dumps({"type": "text", "content": before})
+                    code_language = ""
+                    buffer = after
+                
                 in_code_block = True
-            buffer = after
-
-        # Only yield full buffer at the end, do not split or strip
-
-    # Yield any remaining buffer at the end
-    if buffer:
+    
+    # Handle remaining buffer
+    if buffer.strip():
         if in_code_block:
-            yield json.dumps({"type": "code", "content": f"```{buffer}```\n\n", "language": code_block_lang})
+            yield ChatMessage(
+                type=MessageType.CODE,
+                content=buffer,
+                metadata={"language": code_language}
+            )
         else:
-            yield json.dumps({"type": "text", "content": f"{buffer}\n\n"})
+            yield ChatMessage(type=MessageType.TEXT, content=buffer)
 
 
 class EchoProcessor(ChatProcessor):
-    """Simple echo processor that repeats the user's message."""
+    """Simple echo processor for testing purposes."""
 
-    def get_response(self, messages: List[dict], prompt: str) -> Generator[str, None, None]:
-        """Echo the user's message back 10 times as structured JSON."""
+    def get_response(self, messages: List[dict], prompt: str) -> Generator[ChatMessage, None, None]:
+        """Echo the user's message back with simulated streaming."""
         try:
-            if messages is None or prompt is None:
-                raise ValueError("Messages and prompt cannot be None")
+            if not prompt:
+                raise ValueError("Prompt cannot be empty")
 
-            for i in range(10):
-                sleep(1)
-                yield json.dumps({"type": "text", "content": f"Echo {i + 1}: {prompt}"})
+            # Simulate streaming by yielding the prompt character by character
+            for i, char in enumerate(prompt):
+                sleep(0.05)  # Simulate network delay
+                yield ChatMessage(type=MessageType.TEXT, content=char)
+                
+            # Add a final newline
+            yield ChatMessage(type=MessageType.TEXT, content="\n")
+            
         except Exception as e:
-            yield json.dumps({"type": "error", "content": f"Error in EchoProcessor: {e!s}"})
+            yield ChatMessage(
+                type=MessageType.ERROR,
+                content=f"Error in EchoProcessor: {e!s}"
+            )
 
 
 class OpenAIProcessor(ChatProcessor):
@@ -107,8 +163,9 @@ class OpenAIProcessor(ChatProcessor):
         self._api_base = api_base
         self.client = None
         self.initialize_client(api_key, api_base)
+        
         if not self.client:
-            raise ValueError("OpenAIProcessor: API key is required and was not provided or is invalid.")
+            raise ValueError("OpenAI API key is required and was not provided or is invalid.")
 
     def initialize_client(self, api_key: Optional[str] = None, api_base: Optional[str] = None) -> None:
         """Initialize or reinitialize the OpenAI client with new credentials."""
@@ -117,16 +174,16 @@ class OpenAIProcessor(ChatProcessor):
         if api_base:
             self._api_base = api_base
 
-        # Only create client if we have an API key
         if self._api_key:
             kwargs = {"api_key": self._api_key}
             if self._api_base:
                 kwargs["base_url"] = self._api_base
             self.client = OpenAI(**kwargs)
 
-    def get_response(self, messages: List[dict], prompt: str) -> Generator[str, None, None]:
-        """Get a streaming response from OpenAI as structured JSON."""
+    def get_response(self, messages: List[dict], prompt: str) -> Generator[ChatMessage, None, None]:
+        """Get a streaming response from OpenAI."""
         try:
+            # Format messages for OpenAI API
             formatted_messages = [
                 {"role": msg["role"], "content": msg["content"]}
                 for msg in messages
@@ -134,6 +191,7 @@ class OpenAIProcessor(ChatProcessor):
             ]
             formatted_messages.append({"role": "user", "content": prompt})
 
+            # Get streaming response
             stream = self.client.chat.completions.create(
                 model=self.model,
                 messages=formatted_messages,
@@ -141,11 +199,49 @@ class OpenAIProcessor(ChatProcessor):
                 stream=True,
             )
 
-            # Use the structured markdown streamer
-            yield from stream_structured_markdown(
-                (chunk.choices[0].delta.content for chunk in stream if chunk.choices[0].delta.content)
+            # Convert token stream to ChatMessage stream
+            token_generator = (
+                chunk.choices[0].delta.content 
+                for chunk in stream 
+                if chunk.choices[0].delta.content
             )
+            
+            yield from parse_markdown_stream(token_generator)
 
         except Exception as e:
-            error_message = str(e)
-            yield json.dumps({"type": "error", "content": error_message}) 
+            yield ChatMessage(
+                type=MessageType.ERROR,
+                content=f"OpenAI API Error: {e!s}"
+            )
+
+
+class NonStreamingProcessor(ChatProcessor):
+    """Base class for processors that don't support streaming but want to simulate it."""
+    
+    @property
+    def supports_streaming(self) -> bool:
+        """Non-streaming processors return False."""
+        return False
+    
+    @abstractmethod
+    def get_complete_response(self, messages: List[dict], prompt: str) -> str:
+        """Get the complete response as a single string."""
+        pass
+    
+    def get_response(self, messages: List[dict], prompt: str) -> Generator[ChatMessage, None, None]:
+        """Simulate streaming by yielding the complete response in chunks."""
+        try:
+            complete_response = self.get_complete_response(messages, prompt)
+            
+            # Simulate streaming by yielding chunks
+            chunk_size = 5  # Characters per chunk
+            for i in range(0, len(complete_response), chunk_size):
+                chunk = complete_response[i:i + chunk_size]
+                yield ChatMessage(type=MessageType.TEXT, content=chunk)
+                sleep(0.02)  # Small delay to simulate streaming
+                
+        except Exception as e:
+            yield ChatMessage(
+                type=MessageType.ERROR,
+                content=f"Error: {e!s}"
+            ) 

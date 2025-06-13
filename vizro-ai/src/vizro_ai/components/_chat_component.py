@@ -1,8 +1,6 @@
 """Vizro-AI chat component following vizro-core patterns."""
 
 import json
-import pathlib
-import time
 from typing import Literal, Optional
 
 import dash
@@ -16,7 +14,7 @@ from pydantic import ConfigDict, Field
 from vizro.models import VizroBaseModel
 from vizro.models._models_utils import _log_call
 from vizro.models.types import _IdProperty
-from vizro_ai.components._processors import ChatProcessor, EchoProcessor
+from vizro_ai.components._processors import ChatMessage, ChatProcessor, EchoProcessor
 
 # Styling constants
 WRAPPER = {
@@ -174,44 +172,23 @@ div .code-clipboard-btn.copied {
 """
 
 
-def split_json_objects(s):
-    """Helper to split concatenated JSON objects and return complete objects and incomplete tail."""
-    s = s.replace('}{', '}\n{')
-    lines = [line for line in s.splitlines() if line.strip()]
-    complete = []
-    incomplete = ""
-    for line in lines:
-        try:
-            obj = json.loads(line)
-            complete.append(obj)
-        except Exception:
-            incomplete = line  # Save the last incomplete line
-            break
-    return complete, incomplete
-
-
-def safe_parse_markdown(content):
-    """Safely parse markdown, handling incomplete code blocks."""
-    # Count code block fences to detect incomplete blocks
-    fence_count = content.count('```')
+def parse_sse_chunks(animation_data):
+    """Parse SSE animation data and return complete JSON objects."""
+    if not animation_data:
+        return []
     
-    # If we have an odd number of fences, we have an incomplete code block
-    if fence_count % 2 != 0:
-        # Find the last complete fence pair
-        lines = content.split('\n')
-        fence_indices = []
-        for i, line in enumerate(lines):
-            if line.strip().startswith('```'):
-                fence_indices.append(i)
-        
-        # If we have at least one complete pair, render up to the last complete pair
-        if len(fence_indices) >= 2 and len(fence_indices) % 2 != 0:
-            # Remove the incomplete code block
-            safe_cutoff = fence_indices[-1]
-            safe_content = '\n'.join(lines[:safe_cutoff])
-            return safe_content
-    
-    return content
+    try:
+        if isinstance(animation_data, list):
+            return [json.loads(msg) for msg in animation_data]
+        elif isinstance(animation_data, str):
+            # Handle concatenated JSON objects
+            chunks = animation_data.replace('}{', '}\n{')
+            lines = [line.strip() for line in chunks.splitlines() if line.strip()]
+            return [json.loads(line) for line in lines if line]
+        else:
+            return [json.loads(animation_data)]
+    except (json.JSONDecodeError, TypeError):
+        return []
 
 
 def render_streaming_message(component_id):
@@ -273,27 +250,15 @@ class VizroChatComponent(VizroBaseModel):
     initial_message: str = Field(default="Hello! How can I help you today!", description="Initial message displayed in the chat")
     processor: ChatProcessor = Field(default_factory=EchoProcessor, description="Chat processor for generating responses")
 
-    @property
+    @property 
     def _action_outputs(self) -> dict[str, _IdProperty]:
         """Define action outputs for the chat component."""
-        return {
-            "__default__": f"{self.id}-history.children",
-            "messages": f"{self.id}-messages.data",
-            "input": f"{self.id}-input.value",
-        }
+        return {"__default__": f"{self.id}-history.children"}
 
     @property
     def _action_inputs(self) -> dict[str, _IdProperty]:
         """Define action inputs for the chat component."""
-        return {
-            "messages": f"{self.id}-messages.data",
-            "input": f"{self.id}-input.value",
-        }
-
-    @property
-    def messages(self) -> list[dict[str, str]]:
-        """Get initial messages list."""
-        return []
+        return {"input": f"{self.id}-input.value"}
 
     @_log_call
     def pre_build(self):
@@ -307,31 +272,29 @@ class VizroChatComponent(VizroBaseModel):
         @dash.get_app().server.route(f"/streaming-{self.id}", methods=["POST"], endpoint=f"streaming_chat_{self.id}")
         def streaming_chat():
             try:
-                data = request.json
-                if not data:
-                    raise ValueError("No data received")
-
+                data = request.json or {}
                 user_prompt = data.get("prompt", "").strip()
+                messages = json.loads(data.get("chat_history", "[]"))
+
                 if not user_prompt:
                     raise ValueError("Empty prompt")
 
-                messages = json.loads(data.get("chat_history", "[]"))
-
-                # Get API settings if available
-                api_settings = data.get("api_settings") or {}
+                # Initialize processor with API settings if available
+                api_settings = data.get("api_settings", {})
                 if api_settings and hasattr(self.processor, "initialize_client"):
                     api_key = api_settings.get("api_key")
                     api_base = api_settings.get("api_base")
-                    if api_key:  # Only initialize if we have an API key
+                    if api_key:
                         self.processor.initialize_client(api_key=api_key, api_base=api_base)
 
                 def response_stream():
                     try:
-                        for chunk in self.processor.get_response(messages, user_prompt):
-                            yield sse_message(chunk)
+                        for chat_message in self.processor.get_response(messages, user_prompt):
+                            yield sse_message(chat_message.to_json())
                         yield sse_message()  # Final empty message to signal completion
                     except Exception as e:
-                        yield sse_message(f"Error: {e!s}")
+                        error_msg = ChatMessage(type="error", content=f"Error: {e!s}")
+                        yield sse_message(error_msg.to_json())
 
                 return Response(response_stream(), mimetype="text/event-stream")
             except Exception as e:
@@ -617,22 +580,14 @@ class VizroChatComponent(VizroBaseModel):
             if not animation:
                 return dash.no_update, dash.no_update
 
-            messages = []
-            try:
-                if isinstance(animation, list):
-                    messages = [json.loads(msg) for msg in animation]
-                elif isinstance(animation, str):
-                    complete, _ = split_json_objects(animation)
-                    messages = complete
-                else:
-                    messages = [json.loads(animation)]
-            except Exception as e:
+            messages = parse_sse_chunks(animation)
+            if not messages:
                 return "", True
 
             # Build content from scratch each time (no accumulation to avoid duplication)
             aggregated_content = ""
             for msg in messages:
-                msg_type = msg.get("type")
+                msg_type = msg.get("type", "text")
                 msg_content = msg.get("content", "")
                 
                 if msg_type == "code":
