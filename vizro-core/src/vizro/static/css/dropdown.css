@@ -107,7 +107,10 @@ span.Select-arrow-zone {
   width: 16px;
 }
 
-div.has-value.Select--single > .Select-control .Select-value .Select-value-label,
+div.has-value.Select--single
+  > .Select-control
+  .Select-value
+  .Select-value-label,
 div.has-value.is-pseudo-focused.Select--single
   > .Select-control
   .Select-value
@@ -117,18 +120,12 @@ div.has-value.is-pseudo-focused.Select--single
   ) !important; /* Required so text color don't change caused by adding table */
 }
 
-
 /* Page Selector Dropdown */
-div.Select-menu-outer
-  .VirtualizedSelectSelectedOption
-  > a {
+div.Select-menu-outer .VirtualizedSelectSelectedOption > a {
   pointer-events: none;
 }
 
-div.dash-dropdown
-  .Select-menu-outer
-  .VirtualizedSelectOption
-  > a {
+div.dash-dropdown .Select-menu-outer .VirtualizedSelectOption > a {
   height: 100%;
   width: 100%;
 }
@@ -151,4 +148,8 @@ div.dropdown .VirtualizedSelectOption:nth-child(1):has(> div) {
   border-bottom: 1px solid var(--border-subtleAlpha01);
   padding: 0;
   padding-left: 0.5rem;
+}
+
+.dash-dropdown .Select.is-focused:not(.is-open) > .Select-control {
+  background: inherit !important;
 }
