@@ -47,7 +47,7 @@ page_4 = vm.Page(
 )
 
 page_5 = vm.Page(
-    title="Page",
+    title="Container - AgGrid",
     layout=vm.Flex(),
     components=[
         vm.Card(text="""BLABLA"""),
@@ -59,7 +59,21 @@ page_5 = vm.Page(
     ],
 )
 
-dashboard = vm.Dashboard(title="Test dashboard", pages=[page_1, page_2, page_3, page_4, page_5])
+
+page_6 = vm.Page(
+    title="Container - Table",
+    layout=vm.Flex(),
+    components=[
+        vm.Card(text="""BLABLA"""),
+        vm.Container(
+            variant="outlined",
+            title="Container with AgGrid",
+            components=[vm.Table(figure=dash_data_table(gapminder_2007))],
+        ),
+    ],
+)
+
+dashboard = vm.Dashboard(title="Test dashboard", pages=[page_1, page_2, page_3, page_4, page_5, page_6])
 
 if __name__ == "__main__":
     Vizro().build(dashboard).run()
