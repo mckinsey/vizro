@@ -122,7 +122,7 @@ div.has-value.is-pseudo-focused.Select--single
 
 /* Page Selector Dropdown */
 div.dash-dropdown .Select-menu-outer {
-  margin-top: 0px;
+  margin-top: 0;
 }
 
 div.Select-menu-outer .VirtualizedSelectSelectedOption > a {
