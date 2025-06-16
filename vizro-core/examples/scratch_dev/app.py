@@ -91,7 +91,7 @@ page1 = vm.Page(
         ),
     ],
     controls=[
-        vm.Filter(column="long_words"),
+        vm.Filter(column="species"),
     ],
 )
 
