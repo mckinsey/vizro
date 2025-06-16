@@ -1,3 +1,4 @@
+from dash import dcc
 from collections.abc import Iterable
 from typing import Annotated, Literal, cast
 
@@ -86,7 +87,13 @@ class Parameter(VizroBaseModel):
 
     @_log_call
     def build(self):
-        return self.selector.build()
+        # TODO NOW COMMENT: needed self.id to exist even for non-dynamic - like in above comment about align.
+        return dcc.Loading(
+            id=self.id,
+            children=self.selector.build(),
+            color="grey",
+            overlay_style={"visibility": "visible"},
+        )
 
     def _check_numerical_and_temporal_selectors_values(self):
         if isinstance(self.selector, (Slider, RangeSlider, DatePicker)):

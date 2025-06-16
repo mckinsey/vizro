@@ -226,10 +226,6 @@ class Filter(VizroBaseModel):
         # Cast is justified as the selector is set in pre_build and is not None.
         selector = cast(SelectorType, self.selector)
 
-        if self.show_in_url and g:
-            # TODO NOW: think about what to do if get returns None - is this right already?
-            g.url_params[self.selector.id] = g.url_params.get(self.id)
-
         selector_build_obj = selector.build()
         # TODO: Align the (dynamic) object's return structure with the figure's components when the Dash bug is fixed.
         #  This means returning an empty "html.Div(id=self.id, className=...)" as a placeholder from Filter.build().

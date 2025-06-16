@@ -28,7 +28,7 @@ from pydantic import AfterValidator, BeforeValidator, Field, ValidationInfo
 from typing_extensions import TypedDict
 
 import vizro
-from vizro._constants import MODULE_PAGE_404, VIZRO_ASSETS_PATH
+from vizro._constants import MODULE_PAGE_404, VIZRO_ASSETS_PATH, ON_PAGE_LOAD_ACTION_PREFIX
 from vizro._themes.template_dashboard_overrides import dashboard_overrides
 from vizro.actions._action_loop._action_loop import ActionLoop
 from vizro.managers import model_manager
@@ -176,60 +176,36 @@ class Dashboard(VizroBaseModel):
             # TODO NOW: use optional inputs so single callback works across all pages? Not released yet.
             # TODO NOW COMMENT: doing as single callback per control rather than one per-page one doesn't work well
             # due to multiple callbacks executing simultaneously. Not sure what would happen if they're done clientside.
-            controls = [
+            url_controls = [
                 control
                 for control in [*model_manager._get_models(Parameter, page), *model_manager._get_models(Filter, page)]
                 if control.show_in_url
             ]
 
-            if controls:
-                # Can't do as control.id: Input(control.selector.id, "value") since control.id isn't always valid Python
-                # variable name. So do in two list instead and zip together.
-                ids = [State(control.id, "id") for control in controls]  # Not control.selector.id!
-                values = [Input(control.selector.id, "value") for control in controls]
+            if url_controls:
+                selector_values_outputs = [Output(control.selector.id, "value") for control in url_controls]
+                selector_values_inputs = [Input(control.selector.id, "value") for control in url_controls]
+                # Note the id is the control's id rather than the underlying selector's. This means a user doesn't
+                # need to specify vm.Filter(selector=vm.Dropdown(id=...)) when they set show_in_url = True. It is
+                # mapped back on to the selector's id in vm.Filter and vm.Parameter.
+                control_ids_states = [State(control.id, "id") for control in url_controls]
 
-                # Dash clientside callback doesn't support flexible signatures so need to flatten and then split into
-                # by 2.
+                # TODO:
+                #  4. Think better approach of propagating IDs by taking the next to-do into account.
+                #  5. DONE: Make mapping so it works per key (so that rules are applied per control).
+                #  5.1. TEST AGAIN!
+                #  6. Test None selection.
+                #  6. Investigate browser history back/forward issue.
+                #  7. Finish TODOs from JS code
+                #  8. Consider pycafe integration.
+
                 clientside_callback(
-                    r"""
-                function(...args) {
-  if (!args.length || args.every(x => x === undefined || x === null)) {
-    // Nothing to update
-    return window.location.search;
-  }
-
-  const count = args.length / 2;
-  const values = args.slice(0, count);
-  const ids = args.slice(count);
-
-  const entries = ids.map((id, i) => [
-    id,
-    btoa(String.fromCharCode(...new TextEncoder().encode(JSON.stringify(values[i]))))
-      .replace(/\+/g, '-')
-      .replace(/\//g, '_')
-      .replace(/=+$/, '')
-  ]);
-
-  const currentParams = new URLSearchParams(window.location.search); // Could come from Dash State
-  for (const [k, v] of entries) {
-    currentParams.set(k, v);  // Merge new/updated value
-  }
-
-  const new_query_string = '?' + currentParams.toString();
-
-  const links = document.querySelectorAll("a[href^='/']");
-  links.forEach(link => {
-    const href = link.getAttribute("href");
-    const base = href.split('?')[0];
-    link.setAttribute("href", base + new_query_string);
-  });
-
-  return new_query_string;
-}
-                """,
-                    Output("vizro_url_no_refresh", "search", allow_duplicate=True),
-                    values + ids,
-                    prevent_initial_call=True,
+                    ClientsideFunction(namespace="dashboard", function_name="testtest"),
+                    Output(f"{ON_PAGE_LOAD_ACTION_PREFIX}_trigger_{page.id}", "data"),
+                    Output(f"{page.id}_url_no_refresh", "search"),
+                    *selector_values_outputs,
+                    *selector_values_inputs,
+                    *control_ids_states,
                 )
 
         # if !(entries) { return window.dash_clientside.no_update };
@@ -271,7 +247,8 @@ class Dashboard(VizroBaseModel):
                 ),
                 ActionLoop._create_app_callbacks(),
                 dash.page_container,
-                dcc.Location(id="vizro_url_no_refresh", refresh=False),
+                # dcc.Location(id="vizro_url_no_refresh", refresh=False),
+                dcc.Location(id="vizro_url_callback_nav", refresh="callback-nav"),
             ],
         )
 
