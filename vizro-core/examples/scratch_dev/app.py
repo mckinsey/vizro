@@ -10,7 +10,7 @@ page_1 = vm.Page(
     title="Grid AgGird",
     layout=vm.Grid(grid=[[0, 1]]),
     components=[
-        vm.AgGrid(figure=dash_ag_grid(gapminder_2007)),
+        vm.AgGrid(figure=dash_ag_grid(gapminder_2007, dashGridOptions={"pagination": True})),
         vm.Graph(figure=px.scatter(gapminder_2007, x="continent", y="lifeExp")),
     ],
     controls=[vm.Filter(column="country")],
@@ -30,7 +30,7 @@ page_3 = vm.Page(
     title="Flex AgGird",
     layout=vm.Flex(direction="row"),
     components=[
-        vm.AgGrid(figure=dash_ag_grid(gapminder_2007)),
+        vm.AgGrid(figure=dash_ag_grid(gapminder_2007, dashGridOptions={"pagination": True})),
         vm.Graph(figure=px.scatter(gapminder_2007, x="continent", y="lifeExp")),
     ],
     controls=[vm.Filter(column="country")],
@@ -54,7 +54,7 @@ page_5 = vm.Page(
         vm.Container(
             variant="outlined",
             title="Container with AgGrid",
-            components=[vm.AgGrid(figure=dash_ag_grid(gapminder_2007))],
+            components=[vm.AgGrid(figure=dash_ag_grid(gapminder_2007, dashGridOptions={"pagination": True}))],
         ),
     ],
 )
