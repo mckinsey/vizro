@@ -4,7 +4,7 @@
 """
 Test cases:
 1. When page is opened without the URL parameter:
-    1.1. The control should default to their persisted values or initial values.
+    1.1. The control should default to their persisted values (if persist in the storage) or initial server values.
     1.2. If the control is show_in_url=True it should overwrite the URL.
 2. When control is changed:
     2.1. The URL should be updated with the new control values.
@@ -74,12 +74,25 @@ TODO-FOR-REVIEWER: Manual testing steps for sync URL-controls:
         - ✅ Confirm: Values are still from URL: ["versicolor"], [3, 4.4], and DFP is "versicolor"
             - 🔒(expected) It only works with the latest and unreleased Dash version.
     
-    5.3. Apply filter interaction from AgGrid:
+    5.3. Apply filter interaction from AgGrid (by selecting some value from the "Sepal_length" column):
         - ✅ Confirm: Graph updates
     
     5.4 Copy and paste URL into a new tab:
         - ✅ Confirm: Filters/parameters are applied from URL
         - ⚠️ Note: Grid interaction is **not** currently reflected in the URL, New "interact" action will solve that. 
+        
+    5.5 Test order of URL parameters (Open each link in the new tab + Navigate to Page-1 and back to Page-4):
+        Test cases:
+        (URL in the same order as control outputs)
+        - http://localhost:8050/page_4?page_4_filter_species=WyJ2ZXJzaWNvbG9yIl0&page_4_filter_sepal_width=WzMsNC40XQ&page_4_dfp=InZlcnNpY29sb3Ii
+            - ✅Results: ["versicolor"], [3, 4.4], "versicolor"
+        (different order)
+        - http://localhost:8050/page_4?page_4_filter_sepal_width=WzMsNC40XQ&page_4_filter_species=WyJ2ZXJzaWNvbG9yIl0&page_4_dfp=InZlcnNpY29sb3Ii
+            - ✅Results: ["versicolor"], [3, 4.4], "versicolor"
+        (missing species filter)
+        - http://localhost:8050/page_4?page_4_filter_sepal_width=WzMsNC40XQ&page_4_dfp=InZlcnNpY29sb3Ii
+            - ✅Results: ["ALL"], [3, 4.4], "versicolor"
+            - ✅Confirm that the `page_4_filter_species=WyJBTEwiXQ` is added to the URL.
 """
 
 
@@ -178,17 +191,21 @@ page_3 = vm.Page(
 data_manager["dy_df"] = lambda species="setosa": df[df["species"] == species]
 
 page_4 = vm.Page(
-    id="Page_4",
-    title="TEST: Dynamic Filter / DF Parameter / AgGrid filter interaction",
+    title="Page_4",
     components=[
-        vm.AgGrid(
-            id="page_4_aggrid",
-            figure=dash_ag_grid(data_frame="dy_df"),
-            actions=[filter_interaction(targets=["page_4_graph"])]
-        ),
-        vm.Graph(
-            id="page_4_graph",
-            figure=px.scatter("dy_df", x="petal_length", y="petal_width", color="species", color_discrete_map=SPECIES_COLORS),
+        vm.Container(
+            title="TEST: Dynamic Filter / DF Parameter / AgGrid filter interaction",
+            components=[
+                vm.AgGrid(
+                    id="page_4_aggrid",
+                    figure=dash_ag_grid(data_frame="dy_df"),
+                    actions=[filter_interaction(targets=["page_4_graph"])]
+                ),
+                vm.Graph(
+                    id="page_4_graph",
+                    figure=px.scatter("dy_df", x="petal_length", y="petal_width", color="species", color_discrete_map=SPECIES_COLORS),
+                )
+            ]
         )
     ],
     controls=[
@@ -220,4 +237,4 @@ page_4 = vm.Page(
 dashboard = vm.Dashboard(pages=[page_1, page_2, page_3, page_4])
 
 if __name__ == "__main__":
-    Vizro().build(dashboard).run(debug=True)
+    Vizro().build(dashboard).run(debug=True, use_reloader=False)

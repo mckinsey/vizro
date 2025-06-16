@@ -191,16 +191,13 @@ class Dashboard(VizroBaseModel):
                 control_ids_states = [State(control.id, "id") for control in url_controls]
 
                 # TODO:
-                #  4. Think better approach of propagating IDs by taking the next to-do into account.
-                #  5. DONE: Make mapping so it works per key (so that rules are applied per control).
-                #  5.1. TEST AGAIN!
-                #  6. Test None selection.
                 #  6. Investigate browser history back/forward issue.
                 #  7. Finish TODOs from JS code
                 #  8. Consider pycafe integration.
 
                 clientside_callback(
-                    ClientsideFunction(namespace="dashboard", function_name="testtest"),
+                    # ClientsideFunction(namespace="dashboard", function_name="testtest"),
+                    ClientsideFunction(namespace="dashboard", function_name="sync_url_query_params_and_controls"),
                     Output(f"{ON_PAGE_LOAD_ACTION_PREFIX}_trigger_{page.id}", "data"),
                     Output(f"{page.id}_url_no_refresh", "search"),
                     *selector_values_outputs,

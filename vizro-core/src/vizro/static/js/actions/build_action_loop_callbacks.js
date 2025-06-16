@@ -65,7 +65,7 @@ function gateway(
 
   next_action = remaining_actions[0];
 
-  console.log(next_action);
+  console.log("ACTIONS LOOP:", next_action);
 
   // Return dash.no_update for all outputs except for the next action
   trigger_next = [];
