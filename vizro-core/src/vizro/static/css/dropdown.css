@@ -121,6 +121,10 @@ div.has-value.is-pseudo-focused.Select--single
 }
 
 /* Page Selector Dropdown */
+div.dash-dropdown .Select-menu-outer {
+  margin-top: 0px;
+}
+
 div.Select-menu-outer .VirtualizedSelectSelectedOption > a {
   pointer-events: none;
 }
@@ -151,5 +155,5 @@ div.dropdown .VirtualizedSelectOption:nth-child(1):has(> div) {
 }
 
 .dash-dropdown .Select.is-focused:not(.is-open) > .Select-control {
-  background: inherit !important;
+  background: inherit;
 }
