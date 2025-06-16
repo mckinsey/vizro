@@ -74,6 +74,7 @@ class RadioItems(VizroBaseModel):
     ]
 
     _dynamic: bool = PrivateAttr(False)
+    _in_container: bool = PrivateAttr(False)
 
     # Reused validators
     _validate_options = model_validator(mode="before")(validate_options_dict)
@@ -98,6 +99,7 @@ class RadioItems(VizroBaseModel):
             "id": self.id,
             "options": full_options,
             "value": self.value if self.value is not None else default_value,
+            "inline": self._in_container,
             "persistence": True,
             "persistence_type": "session",
         }
