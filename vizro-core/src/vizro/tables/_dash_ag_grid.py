@@ -89,7 +89,7 @@ def dash_ag_grid(data_frame: pd.DataFrame, **kwargs: Any) -> dag.AgGrid:
         "dashGridOptions": {
             "dataTypeDefinitions": _DATA_TYPE_DEFINITIONS,
             "animateRows": False,
-            "domLayout": "autoHeight"
+            "domLayout": "autoHeight",
         },
     }
     kwargs = _set_defaults_nested(kwargs, defaults)
