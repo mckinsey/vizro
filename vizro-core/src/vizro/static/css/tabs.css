@@ -30,12 +30,12 @@ To ensure the dynamic height adjustment and prevent scrolling, the height must b
 
 .flex-item > .tabs-container > .tab-content > .tab-pane > div:first-child {
   height: auto;
+  max-height: 100%;
 }
 
 .tab-pane > div > .container-fluid .flex-row,
 .tab-pane > div > .container-fluid .flex-row .loading-container {
   height: 100%;
-  max-height: 100%;
 }
 
 .inner-tabs-title {
