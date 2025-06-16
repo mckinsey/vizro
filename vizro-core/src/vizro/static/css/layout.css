@@ -218,7 +218,7 @@ Current logic:
   }
 
   #collapsible-left-side.show ~ .collapse-icon-div #collapse-icon {
-    right: -10px;
+    right: -7px;
     z-index: 10;
   }
 
@@ -231,7 +231,7 @@ Current logic:
   }
 
   #left-main {
-    width: 100%;
+    flex: 1;
   }
 }
 
