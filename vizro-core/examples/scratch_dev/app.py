@@ -1,5 +1,3 @@
-from vizro import Vizro
-import vizro.plotly.express as px
 import vizro.models as vm
 from vizro.tables import dash_ag_grid
 from typing import Literal
@@ -189,5 +187,4 @@ page4 = vm.Page(
 dashboard = vm.Dashboard(title="Test dashboard", pages=[page1, page2, page3, page4])
 
 if __name__ == "__main__":
-    app = Vizro().build(dashboard)
-    app.run()
+    Vizro().build(dashboard).run()
