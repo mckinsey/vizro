@@ -167,6 +167,12 @@ graphs = vm.Page(
                 width and length.
                 """,
             footer="""SOURCE: **Plotly iris data set, 2024**""",
+            description="""
+                **The Iris dataset** includes measurements of 150 iris flowers across three types: Setosa, Versicolor,
+                and Virginica.
+                While all samples are labeled by type, they can appear similar when looking at just some features -
+                 making it a useful dataset for exploring patterns and challenges in classification.
+            """,
         ),
     ],
 )
@@ -179,6 +185,12 @@ ag_grid = vm.Page(
             title="Gapminder Data Insights",
             header="""#### An Interactive Exploration of Global Health, Wealth, and Population""",
             footer="""SOURCE: **Plotly gapminder data set, 2024**""",
+            description="""
+                **The Gapminder dataset** tracks the development of countries over time using indicators like
+                life expectancy, income per person, and population size.
+                It helps reveal broad global trends, such as how health and wealth have improved in many regions—though
+                progress hasn't been even across all countries.
+            """,
         )
     ],
 )
@@ -275,17 +287,41 @@ button = vm.Page(
                 size="petal_length",
             ),
         ),
-        vm.Button(text="Export data", actions=[vm.Action(function=export_data())]),
+        vm.Button(
+            text="Export data",
+            actions=[vm.Action(function=export_data())],
+            description="""
+                Use this button to export the filtered data from the Iris dataset.
+            """,
+        ),
     ],
     controls=[vm.Filter(column="species", selector=vm.Dropdown(title="Species"))],
 )
 
 containers = vm.Page(
     title="Containers",
+    layout=vm.Grid(grid=[[0, 1]]),
     components=[
         vm.Container(
             title="Container I",
-            layout=vm.Grid(grid=[[0, 1]]),
+            components=[
+                vm.Graph(
+                    figure=px.scatter(
+                        iris,
+                        x="sepal_width",
+                        y="sepal_length",
+                        color="species",
+                        marginal_y="violin",
+                        marginal_x="box",
+                        title="Container II - Scatter",
+                    )
+                )
+            ],
+            variant="outlined",
+            controls=[vm.Filter(column="species", selector=vm.Checklist()), vm.Filter(column="sepal_length")],
+        ),
+        vm.Container(
+            title="Container II",
             components=[
                 vm.Graph(
                     figure=px.scatter(
@@ -306,22 +342,7 @@ containers = vm.Page(
                     )
                 ),
             ],
-        ),
-        vm.Container(
-            title="Container II",
-            components=[
-                vm.Graph(
-                    figure=px.scatter(
-                        iris,
-                        x="sepal_width",
-                        y="sepal_length",
-                        color="species",
-                        marginal_y="violin",
-                        marginal_x="box",
-                        title="Container II - Scatter",
-                    )
-                )
-            ],
+            variant="outlined",
         ),
     ],
 )
@@ -408,11 +429,20 @@ filters = vm.Page(
         ),
     ],
     controls=[
-        vm.Filter(column="species"),
+        vm.Filter(
+            column="species",
+            selector=vm.Dropdown(
+                description="""Select one or more species to explore patterns
+                specific to Setosa, Versicolor, or Virginica."""
+            ),
+        ),
         vm.Filter(
             column="petal_length",
             targets=["scatter_chart2"],
-            selector=vm.RangeSlider(),
+            selector=vm.RangeSlider(
+                description="""Use the slider to filter flowers by petal length.
+                Only samples within the selected range will be shown."""
+            ),
         ),
     ],
 )
@@ -909,6 +939,10 @@ dashboard = vm.Dashboard(
             ]
         )
     ),
+    description="""
+        This dashboard provides an overview of all available components and features in Vizro. Use it to explore,
+         test, and understand how everything works together.
+    """,
 )
 
 
