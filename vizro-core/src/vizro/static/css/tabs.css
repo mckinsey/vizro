@@ -17,18 +17,12 @@
 /* The dbc component adds an additional div element to which we cannot assign a className.
 To ensure the dynamic height adjustment and prevent scrolling, the height must be specified for that div as below. */
 
-/* .tab-pane,
-.tab-pane > div:first-child, */
 .tab-pane,
 .tab-pane > div:first-child {
   height: 100%;
 }
 
-.flex-item > .tabs-container > .tab-content > .tab-pane {
-  height: 100%;
-}
-
-.flex-item > .tabs-container > .tab-content > .tab-pane > div:first-child {
+.flex-item .tab-pane > div:first-child {
   height: auto;
   max-height: 100%;
 }
