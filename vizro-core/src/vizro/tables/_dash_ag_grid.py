@@ -90,6 +90,8 @@ def dash_ag_grid(data_frame: pd.DataFrame, **kwargs: Any) -> dag.AgGrid:
             "dataTypeDefinitions": _DATA_TYPE_DEFINITIONS,
             "animateRows": False,
             "domLayout": "autoHeight",
+            "pagination": True,
+            "paginationPageSize": 20,
         },
     }
     kwargs = _set_defaults_nested(kwargs, defaults)
