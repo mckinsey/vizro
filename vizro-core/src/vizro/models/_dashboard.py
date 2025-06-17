@@ -167,15 +167,9 @@ class Dashboard(VizroBaseModel):
     def build(self):
         for page in self.pages:
             page.build()  # TODO: ideally remove, but necessary to register slider callbacks
-            # TODO NOW: HERE
-            # Was expecting to need to do one of two possible approaches for it to work and have url app-wide URL state.
-            # Might want to do these anyway for app-wide state:
-            # 1. modify links in clienstide callback
-            # 2. don't modify links but put state in dcc.Store and then put in url
 
-            # TODO NOW: use optional inputs so single callback works across all pages? Not released yet.
-            # TODO NOW COMMENT: doing as single callback per control rather than one per-page one doesn't work well
-            # due to multiple callbacks executing simultaneously. Not sure what would happen if they're done clientside.
+            # TODO-NOW: Ponder on moving this URL specific code to the "_page.py".
+            # Define a clientside callback that syncs the URL query parameters with controls that have show_in_url=True.
             url_controls = [
                 control
                 for control in [*model_manager._get_models(Parameter, page), *model_manager._get_models(Filter, page)]
@@ -190,27 +184,13 @@ class Dashboard(VizroBaseModel):
                 # mapped back on to the selector's id in vm.Filter and vm.Parameter.
                 control_ids_states = [State(control.id, "id") for control in url_controls]
 
-                # TODO:
-                #  6. Investigate browser history back/forward issue.
-                #  7. Finish TODOs from JS code
-                #  8. Consider pycafe integration.
-
                 clientside_callback(
-                    # ClientsideFunction(namespace="dashboard", function_name="testtest"),
                     ClientsideFunction(namespace="dashboard", function_name="sync_url_query_params_and_controls"),
                     Output(f"{ON_PAGE_LOAD_ACTION_PREFIX}_trigger_{page.id}", "data"),
-                    Output(f"{page.id}_url_no_refresh", "search"),
                     *selector_values_outputs,
                     *selector_values_inputs,
                     *control_ids_states,
                 )
-
-        # if !(entries) { return window.dash_clientside.no_update };
-        # TODO NOW: need to check for if they're None? Probably doesn't occur in practice but maybe best to add it here anyway.
-        # TODO NOW: need to not obliterate other things in url so needs to take in State still. Can just update relevant
-        # key rather than re-encoding everything.
-        # TODO NOW: just replace Inputs that changed rather than rewriting whole thing? Then would need to
-        # take in existing url query params as state.
 
         clientside_callback(
             ClientsideFunction(namespace="dashboard", function_name="update_dashboard_theme"),
@@ -244,7 +224,6 @@ class Dashboard(VizroBaseModel):
                 ),
                 ActionLoop._create_app_callbacks(),
                 dash.page_container,
-                # dcc.Location(id="vizro_url_no_refresh", refresh=False),
                 dcc.Location(id="vizro_url_callback_nav", refresh="callback-nav"),
             ],
         )
@@ -386,11 +365,6 @@ class Dashboard(VizroBaseModel):
     def _make_page_layout(self, page: Page, **kwargs):
         # **kwargs are not used but ensure that unexpected query parameters do not raise errors. See
         # https://github.com/AnnMarieW/dash-multi-page-app-demos/#5-preventing-query-string-errors
-        # TODO NOW COMMENT: Take from from kwargs rather than parse request.args since need to look at
-        #  flask.request.referer not just request.args and Dash has already done some of the work for us.
-        # TODO NOW: check what Dash pages has already done and handle e.g. list case.
-        g.url_params = {key: decode_value_from_b64url(value) for key, value in kwargs.items()}
-
         page_divs = self._get_page_divs(page=page)
         page_layout = self._arrange_page_divs(page_divs=page_divs)
         page_layout.id = page.id

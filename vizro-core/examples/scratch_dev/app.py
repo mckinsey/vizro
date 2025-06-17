@@ -81,7 +81,7 @@ TODO-FOR-REVIEWER: Manual testing steps for sync URL-controls:
         - ✅ Confirm: Filters/parameters are applied from URL
         - ⚠️ Note: Grid interaction is **not** currently reflected in the URL, New "interact" action will solve that. 
         
-    5.5 Test order of URL parameters (Open each link in the new tab + Navigate to Page-1 and back to Page-4):
+    5.5 Test order of URL parameters (Open each link in the new browser tab + Navigate to Page-1 and back to Page-4):
         Test cases:
         (URL in the same order as control outputs)
         - http://localhost:8050/page_4?page_4_filter_species=WyJ2ZXJzaWNvbG9yIl0&page_4_filter_sepal_width=WzMsNC40XQ&page_4_dfp=InZlcnNpY29sb3Ii
@@ -93,9 +93,17 @@ TODO-FOR-REVIEWER: Manual testing steps for sync URL-controls:
         - http://localhost:8050/page_4?page_4_filter_sepal_width=WzMsNC40XQ&page_4_dfp=InZlcnNpY29sb3Ii
             - ✅Results: ["ALL"], [3, 4.4], "versicolor"
             - ✅Confirm that the `page_4_filter_species=WyJBTEwiXQ` is added to the URL.
+        (unknown query parameter ID)
+        - http://localhost:8050/page_4?UNKNOWN=InZlcnNpY29sb3Ii
+            - ✅Results: ["ALL"], [2.3, 4.4], "setosa"
+            - ✅Confirm that the `UNKNOWN` still exists in the URL.
+            - ✅Confirm that the URL contains all other controls.
+            - ✅Confirm that the changing the control neither page refresh does not remove UNKNOWN from the URL.
+            - ❗the UNKNOWN parameter is not removed from the URL when navigating to Page-1 and back to Page-4.
+        (unknown query parameter ID with value that is not base64 encoded)
+        - http://localhost:8050/page_4?UNKNOWN=asd
+            - ✅Confirm that the bug is not raised and that the page can be opened.
 """
-
-
 import json
 import base64
 
@@ -153,13 +161,13 @@ page_2 = vm.Page(
     ],
     controls=[
         vm.Filter(
-            id="page_2_filter_species",
+            # id="page_2_filter_species",
             column="species",
             show_in_url=True,
             selector=vm.Dropdown(id="page_2_filter_selector_species"),
         ),
         vm.Filter(
-            id="page_2_filter_sepal_width",
+            id="page_2_filter_sepal width",
             column="sepal_width",
             show_in_url=True,
             selector=vm.RangeSlider(id="page_2_filter_selector_sepal_width"),
