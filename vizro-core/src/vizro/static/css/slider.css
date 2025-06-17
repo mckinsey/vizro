@@ -98,6 +98,7 @@ input.dash-input:invalid {
   align-items: flex-start;
   display: flex;
   flex-direction: row;
+  gap: 0.5rem;
   justify-content: space-between;
 }
 
