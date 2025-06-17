@@ -837,7 +837,7 @@ dashboard = vm.Dashboard(
 
 
 if __name__ == "__main__":
-    app = Vizro().build(dashboard)
+    app = Vizro(external_stylesheets=[dbc.themes.BOOTSTRAP]).build(dashboard)
 
     banner = dbc.NavLink(
         ["Made with ", html.Img(src=get_asset_url("logo.svg"), id="banner", alt="Vizro logo"), "vizro"],
