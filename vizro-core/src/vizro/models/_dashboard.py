@@ -23,7 +23,6 @@ from dash import (
     html,
 )
 from dash.development.base_component import Component
-from flask import g
 from pydantic import AfterValidator, BeforeValidator, Field, ValidationInfo
 from typing_extensions import TypedDict
 
@@ -73,22 +72,6 @@ _PageDivsType = TypedDict(
         "page-components": html.Div,
     },
 )
-
-
-# TODO NOW: put this somewhere sensible
-def encode_value_to_b64url(value):
-    # checked, seems good
-    json_bytes = json.dumps(value, separators=(",", ":")).encode("utf-8")
-    b64_bytes = base64.urlsafe_b64encode(json_bytes)
-    return b64_bytes.decode("utf-8").rstrip("=")
-
-
-def decode_value_from_b64url(b64url_str):
-    # checked, seems good
-    padding = "=" * (-len(b64url_str) % 4)
-    b64url_str += padding
-    json_bytes = base64.urlsafe_b64decode(b64url_str)
-    return json.loads(json_bytes.decode("utf-8"))
 
 
 def set_navigation_pages(navigation: Optional[Navigation], info: ValidationInfo) -> Optional[Navigation]:
