@@ -67,19 +67,18 @@ class Vizro:
         with suppress(ValueError):
             ComponentRegistry.registry.discard("vizro")
 
-        # vizro-bootstrap.min.css must be first so that it can be overridden, e.g. by bootstrap_overrides.css.
-        # After that, all other items are sorted alphabetically.
+        # Only inject vizro-bootstrap.min.css if external_stylesheets is not provided.
+        external_stylesheets = kwargs.get("external_stylesheets")
         for path in sorted(
             VIZRO_ASSETS_PATH.rglob("*.*"), key=lambda file: (file.name != "vizro-bootstrap.min.css", file)
         ):
+            if external_stylesheets and path.suffix == ".css" and path.name == "vizro-bootstrap.min.css":
+                continue  # skip vizro-bootstrap.min.css if user provided external_stylesheets
             if path.suffix == ".css":
                 self.dash.css.append_css(_make_resource_spec(path))
             elif path.suffix == ".js":
                 self.dash.scripts.append_script(_make_resource_spec(path))
             else:
-                # map files and fonts and images. These are treated like scripts since this is how Dash handles them.
-                # This adds paths to self.dash.registered_paths so that they can be accessed without throwing an
-                # error in dash._validate.validate_js_path.
                 self.dash.scripts.append_script(_make_resource_spec(path))
 
         data_manager.cache.init_app(self.dash.server)

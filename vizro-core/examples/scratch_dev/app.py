@@ -7,6 +7,7 @@ from typing import Literal
 from vizro.tables import dash_ag_grid, dash_data_table
 from vizro.figures import kpi_card_reference, kpi_card
 import pandas as pd
+import dash_bootstrap_components as dbc
 
 
 gapminder_2007 = px.data.gapminder().query("year == 2007")
@@ -208,4 +209,4 @@ dashboard = CustomDashboard(
 )
 
 if __name__ == "__main__":
-    Vizro().build(dashboard).run()
+    Vizro(external_stylesheets=[dbc.themes.BOOTSTRAP]).build(dashboard).run()
