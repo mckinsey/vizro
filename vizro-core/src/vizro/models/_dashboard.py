@@ -1,8 +1,8 @@
 from __future__ import annotations
 
 import base64
-import json
 import logging
+from collections.abc import Iterable
 from functools import partial
 from pathlib import Path
 from typing import TYPE_CHECKING, Annotated, Literal, Optional, cast
@@ -27,7 +27,7 @@ from pydantic import AfterValidator, BeforeValidator, Field, ValidationInfo
 from typing_extensions import TypedDict
 
 import vizro
-from vizro._constants import MODULE_PAGE_404, VIZRO_ASSETS_PATH, ON_PAGE_LOAD_ACTION_PREFIX
+from vizro._constants import MODULE_PAGE_404, ON_PAGE_LOAD_ACTION_PREFIX, VIZRO_ASSETS_PATH
 from vizro._themes.template_dashboard_overrides import dashboard_overrides
 from vizro.actions._action_loop._action_loop import ActionLoop
 from vizro.managers import model_manager
@@ -35,6 +35,7 @@ from vizro.models import Filter, Navigation, Parameter, Tooltip, VizroBaseModel
 from vizro.models._models_utils import _log_call
 from vizro.models._navigation._navigation_utils import _NavBuildType
 from vizro.models._tooltip import coerce_str_to_tooltip
+from vizro.models.types import ControlType
 
 if TYPE_CHECKING:
     from vizro.models import Page
@@ -155,7 +156,12 @@ class Dashboard(VizroBaseModel):
             # Define a clientside callback that syncs the URL query parameters with controls that have show_in_url=True.
             url_controls = [
                 control
-                for control in [*model_manager._get_models(Parameter, page), *model_manager._get_models(Filter, page)]
+                # for control in [*model_manager._get_models(Parameter, page), *model_manager._get_models(Filter, page)]
+                # if control.show_in_url
+                for control in cast(
+                    Iterable[ControlType],
+                    [*model_manager._get_models(Parameter, page), *model_manager._get_models(Filter, page)],
+                )
                 if control.show_in_url
             ]
 

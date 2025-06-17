@@ -1,7 +1,7 @@
-from dash import dcc
 from collections.abc import Iterable
 from typing import Annotated, Literal, cast
 
+from dash import dcc
 from pydantic import AfterValidator, Field
 
 from vizro._constants import PARAMETER_ACTION_PREFIX
