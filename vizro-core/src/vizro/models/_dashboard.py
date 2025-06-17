@@ -2,7 +2,6 @@ from __future__ import annotations
 
 import base64
 import logging
-from collections.abc import Iterable
 from functools import partial
 from pathlib import Path
 from typing import TYPE_CHECKING, Annotated, Literal, Optional, cast
@@ -27,15 +26,13 @@ from pydantic import AfterValidator, BeforeValidator, Field, ValidationInfo
 from typing_extensions import TypedDict
 
 import vizro
-from vizro._constants import MODULE_PAGE_404, ON_PAGE_LOAD_ACTION_PREFIX, VIZRO_ASSETS_PATH
+from vizro._constants import MODULE_PAGE_404, VIZRO_ASSETS_PATH
 from vizro._themes.template_dashboard_overrides import dashboard_overrides
 from vizro.actions._action_loop._action_loop import ActionLoop
-from vizro.managers import model_manager
-from vizro.models import Filter, Navigation, Parameter, Tooltip, VizroBaseModel
+from vizro.models import Navigation, Tooltip, VizroBaseModel
 from vizro.models._models_utils import _log_call
 from vizro.models._navigation._navigation_utils import _NavBuildType
 from vizro.models._tooltip import coerce_str_to_tooltip
-from vizro.models.types import ControlType
 
 if TYPE_CHECKING:
     from vizro.models import Page
@@ -152,35 +149,6 @@ class Dashboard(VizroBaseModel):
         for page in self.pages:
             page.build()  # TODO: ideally remove, but necessary to register slider callbacks
 
-            # TODO-NOW: Ponder on moving this URL specific code to the "_page.py".
-            # Define a clientside callback that syncs the URL query parameters with controls that have show_in_url=True.
-            url_controls = [
-                control
-                # for control in [*model_manager._get_models(Parameter, page), *model_manager._get_models(Filter, page)]
-                # if control.show_in_url
-                for control in cast(
-                    Iterable[ControlType],
-                    [*model_manager._get_models(Parameter, page), *model_manager._get_models(Filter, page)],
-                )
-                if control.show_in_url
-            ]
-
-            if url_controls:
-                selector_values_outputs = [Output(control.selector.id, "value") for control in url_controls]
-                selector_values_inputs = [Input(control.selector.id, "value") for control in url_controls]
-                # Note the id is the control's id rather than the underlying selector's. This means a user doesn't
-                # need to specify vm.Filter(selector=vm.Dropdown(id=...)) when they set show_in_url = True. It is
-                # mapped back on to the selector's id in vm.Filter and vm.Parameter.
-                control_ids_states = [State(control.id, "id") for control in url_controls]
-
-                clientside_callback(
-                    ClientsideFunction(namespace="dashboard", function_name="sync_url_query_params_and_controls"),
-                    Output(f"{ON_PAGE_LOAD_ACTION_PREFIX}_trigger_{page.id}", "data"),
-                    *selector_values_outputs,
-                    *selector_values_inputs,
-                    *control_ids_states,
-                )
-
         clientside_callback(
             ClientsideFunction(namespace="dashboard", function_name="update_dashboard_theme"),
             # This currently doesn't do anything, but we need to define an Output such that the callback is triggered.
@@ -213,7 +181,6 @@ class Dashboard(VizroBaseModel):
                 ),
                 ActionLoop._create_app_callbacks(),
                 dash.page_container,
-                dcc.Location(id="vizro_url_callback_nav", refresh="callback-nav"),
             ],
         )
 

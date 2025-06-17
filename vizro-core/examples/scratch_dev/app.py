@@ -103,6 +103,7 @@ TODO-FOR-REVIEWER: Manual testing steps for sync URL-controls:
         - http://localhost:8050/page_4?UNKNOWN=asd
             - ✅Confirm that the bug is not raised and that the page can be opened.
 """
+from dash import dcc
 import json
 import base64
 
@@ -261,4 +262,9 @@ page_4 = vm.Page(
 dashboard = vm.Dashboard(pages=[page_1, page_2, page_3, page_4])
 
 if __name__ == "__main__":
-    Vizro().build(dashboard).run(debug=True, use_reloader=False)
+    app = Vizro().build(dashboard)
+
+    # To enable custom drill-through actio)
+    app.dash.layout.children.append(dcc.Location(id="vizro_url_callback_nav", refresh="callback-nav"))
+
+    app.run(debug=True, use_reloader=False)

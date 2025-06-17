@@ -6,7 +6,7 @@ Uncomment the section that is right (remove the HTML comment wrapper).
 
 ### Highlights ✨
 
-- Synchronize URL query parameters with the `Filter` and `Parameter`. See the [user guide on filters](https://vizro.readthedocs.io/en/stable/pages/user-guides/filters/#show-in-url) for more information. ([#1243](https://github.com/mckinsey/vizro/pull/1243))
+- Enable `show_in_url` inside `Filter` and `Parameter`. Set it to `True` to show the control's value as the URL query parameter. See the [user guide on filters](https://vizro.readthedocs.io/en/stable/pages/user-guides/filters/#show-in-url) for more information. ([#1243](https://github.com/mckinsey/vizro/pull/1243))
 
 <!--
 ### Removed

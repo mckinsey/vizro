@@ -92,7 +92,6 @@ class Checklist(VizroBaseModel):
     def __call__(self, options):
         full_options, default_value = get_options_and_default(options=options, multi=True)
         description = self.description.build().children if self.description else [None]
-
         defaults = {
             "id": self.id,
             "options": full_options,
