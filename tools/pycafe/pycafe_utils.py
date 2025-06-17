@@ -13,6 +13,7 @@ import requests
 from github import Auth, Github
 from github.Commit import Commit
 from github.Repository import Repository
+from playwright.sync_api import sync_playwright
 
 
 # Function to extract version string from file content using regex
@@ -226,3 +227,32 @@ def get_example_directories() -> dict[str, Optional[list[str]]]:
             "https://py.cafe/files/maartenbreddels/tokenizers-demo/tokenizers-0.20.2.dev0-cp312-cp312-pyodide_2024_0_wasm32.whl",
         ],
     }
+
+
+def test_pycafe_link(url: str, wait_for_text: [str, bool], wait_for_locator: [str, bool]):
+    """Test if a PyCafe link loads and renders correctly."""
+    with sync_playwright() as p:
+        browser = p.chromium.launch(headless=True)
+        page = browser.new_page()
+
+        try:
+            # Navigate to the page
+            page.goto(url, timeout=60000)
+
+            # Get the app frame and wait for title or element
+            frame = page.frame_locator("#app")
+            if wait_for_text:
+                frame.get_by_text(wait_for_text).wait_for(timeout=90000)
+            if wait_for_locator:
+                frame.locator(wait_for_locator).wait_for(timeout=90000)
+
+            print(f"✅ Successfully verified PyCafe link: {url}")  # noqa
+            return True
+
+        except Exception as e:
+            print("❌ Failed to verify PyCafe link")  # noqa
+            print(f"Error: {str(e)}")  # noqa
+            return False
+
+        finally:
+            browser.close()

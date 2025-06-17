@@ -61,7 +61,7 @@ jobs:
       #     echo "Pull Request Number: ${{ github.event.workflow_run.pull_requests[0].number }}"
       # - name: Test PyCafe links
       #   run: |
-      #     hatch run python ../tools/pycafe/test_pycafe_links.py --github-token ${{ github.token }} --repo-name ${{ github.repository }} --run-id ${{ github.run_id }} --commit-sha ${{ github.sha }}
+      #     hatch run python ../tools/pycafe/test_pycafe_generated_links.py --github-token ${{ github.token }} --repo-name ${{ github.repository }} --run-id ${{ github.run_id }} --commit-sha ${{ github.sha }}
       # - name: Create PyCafe links
       #   run: |
       #     PR_NUMBER=${{ github.event.workflow_run.pull_requests[0].number || '' }}

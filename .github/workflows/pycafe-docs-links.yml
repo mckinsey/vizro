@@ -1,0 +1,40 @@
+name: PyCafe Docs Links
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches:
+      - main
+
+defaults:
+  run:
+    working-directory: vizro-core
+
+env:
+  PYTHON_VERSION: "3.12"
+
+jobs:
+  create-status:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: ${{ env.PYTHON_VERSION }}
+      - name: Install Hatch
+        run: pip install hatch
+      - name: Install Playwright and browser
+        run: |
+          hatch run pip install playwright
+          hatch run playwright install --with-deps chromium
+      - name: Check PyCafe docs links
+        run: |
+          hatch run python ../tools/pycafe/test_pycafe_predefined_links.py \
+          $(grep -hoEr 'https://py\.cafe[^])"]*' \
+          ../vizro-ai/docs/* docs/* |\
+          sort -u |\
+          grep -vE '^https://py\.cafe/?$' |\
+          grep -vE '^https://py\.cafe/docs/apps/vizro/?$' |\
+          grep -vE '^https://py\.cafe/logo\.png')
