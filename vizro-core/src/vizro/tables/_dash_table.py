@@ -5,8 +5,8 @@ from typing import Any
 import pandas as pd
 from dash import dash_table
 
+from vizro._vizro_utils import _set_defaults_nested
 from vizro.models.types import capture
-from vizro.tables._utils import _set_defaults_nested
 
 
 @capture("table")
@@ -34,7 +34,7 @@ def dash_data_table(data_frame: pd.DataFrame, **kwargs: Any) -> dash_table.DataT
         "style_data": {"border_bottom": "1px solid var(--border-subtleAlpha01)", "height": "40px"},
         "style_header": {
             "border_bottom": "1px solid var(--stateOverlays-selectedHover)",
-            "border_top": "1px solid var(--right-side-bg)",
+            "border_top": "None",
             "height": "32px",
         },
         "style_data_conditional": [

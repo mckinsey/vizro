@@ -7,7 +7,9 @@ This guide shows you how to use themes. Themes are pre-designed collections of s
 The [`Dashboard`][vizro.models.Dashboard] model accepts an optional `theme` argument, where you can choose between a `vizro_dark` and a `vizro_light` theme. If not specified then `theme` defaults to `vizro_dark`. The theme is applied to the entire dashboard and its charts/components when a user first loads your dashboard. Regardless of the theme applied on first load, users can always switch between light and dark themes via the toggle button in the upper-right corner of the dashboard.
 
 !!! example "Change theme"
+
     === "app.py"
+
         ```{.python pycafe-link hl_lines="18"}
         import vizro.models as vm
         import vizro.plotly.express as px
@@ -27,11 +29,11 @@ The [`Dashboard`][vizro.models.Dashboard] model accepts an optional `theme` argu
         )
 
         dashboard = vm.Dashboard(pages=[page], theme="vizro_light")
-
         Vizro().build(dashboard).run()
         ```
 
     === "app.yaml"
+
         ```yaml hl_lines="12"
         # Still requires a .py to add data to the data manager and parse YAML configuration
         # See yaml_version example
@@ -48,9 +50,11 @@ The [`Dashboard`][vizro.models.Dashboard] model accepts an optional `theme` argu
         ```
 
     === "Result - vizro_light"
+
         [![Light]][light]
 
     === "Result - vizro_dark"
+
         [![Dark]][dark]
 
 ## Vizro themes in plotly charts
@@ -61,6 +65,7 @@ You can also use our templates for plotly charts outside the dashboard. This is 
 - Rapid development of charts for eventual use in a Vizro dashboard, for example in a Jupyter Notebook.
 
 !!! note
+
     Using `import vizro.plotly.express as px` is equal to using `import plotly.express as px`, but with the added benefit of being able to integrate the resulting chart code into a Vizro dashboard. Vizro offers a minimal layer on top of Plotly's existing charting library, allowing you to seamlessly use all the existing charts and functionalities provided by plotly.express without any modifications.
 
 Our `vizro_dark` and `vizro_light` themes are automatically registered to `plotly.io.templates` when importing Vizro. Consult the plotly documentation for [more details on how templates work in plotly](https://plotly.com/python/templates/#theming-and-templates).
@@ -115,6 +120,7 @@ app = Dash(external_stylesheets=[vizro.bootstrap])
 Vizro uses some extra CSS in addition to the Bootstrap stylesheet to style some Dash components that are used in Vizro but are not part of Bootstrap (for example, [`DatePicker`][vizro.models.DatePicker] is based on [Dash Mantine Components](https://www.dash-mantine-components.com/)). If you would like your pure Dash app to look as close to Vizro as possible then you will also need [this extra CSS](https://github.com/mckinsey/vizro/tree/main/vizro-core/src/vizro/static/css).
 
 ??? note "Apply Vizro Bootstrap theme to charts and other components"
+
     To apply the Vizro theme to plotly charts, refer to the above section [Vizro themes in plotly charts](#vizro-themes-in-plotly-charts). This is possible with or without Vizro Bootstrap.
 
     If you want to style your entire Dash app with Vizro Bootstrap and have your plotly figures automatically match then we recommend [`dash-bootstrap-templates`](https://github.com/AnnMarieW/dash-bootstrap-templates). You can find examples of how to do this in their [documentation on styling plotly figures with a Bootstrap theme](https://hellodash.pythonanywhere.com/adding-themes/figure-templates).

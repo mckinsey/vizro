@@ -1,5 +1,9 @@
 # Generate a complex dashboard
 
+!!! warning "Vizro-AI has been replaced by Vizro-MCP"
+
+    Vizro-AI has largely been replaced by [Vizro-MCP](https://github.com/mckinsey/vizro/blob/main/vizro-mcp/README.md) and only supports chart generation from version 0.4.0.
+
 This guide shows you how to instruct Vizro-AI to create a complex dashboard.
 
 In general, Vizro-AI can follow user requirements well and generate high-quality dashboards, but the nature of LLMs means that the output generated at first is not always an exact match for your expectations. When the text length of user requirements increases, the LLMs can start to miss part of the user requirements or make mistakes. Apart from choosing more advanced models for harder tasks, improving the user prompt can help too.
@@ -104,7 +108,9 @@ dashboard = vizro_ai.dashboard([df1, df2], user_question)
 The call to `dashboard()` triggers the dashboard building process. Once Vizro-AI finishes this process, you can launch the dashboard with `build()`.
 
 !!! example "Generated dashboard"
+
     === "Code"
+
         ```py
         import vizro_ai
         from vizro_ai import VizroAI
@@ -175,9 +181,11 @@ The call to `dashboard()` triggers the dashboard building process. Once Vizro-AI
         ```
 
     === "Page1"
+
         [![VizroAIDashboardPage1]][vizroaidashboardpage1]
 
     === "Page2"
+
         [![VizroAIDashboardPage2]][vizroaidashboardpage2]
 
 [vizroaidashboardpage1]: ../../assets/user_guides/dashboard/dashboard1_page1.png

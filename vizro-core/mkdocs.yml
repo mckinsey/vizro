@@ -8,27 +8,29 @@ nav:
   - How-to guides:
       - FUNDAMENTALS:
           - Install Vizro: pages/user-guides/install.md
-          - Dashboards: pages/user-guides/dashboard.md
-          - Pages: pages/user-guides/pages.md
+          - Dashboard: pages/user-guides/dashboard.md
+          - Page: pages/user-guides/pages.md
           - Run or deploy dashboards: pages/user-guides/run-deploy.md
       - COMPONENTS:
           - Overview: pages/user-guides/components.md
-          - Graphs: pages/user-guides/graph.md
-          - Tables: pages/user-guides/table.md
-          - Figures: pages/user-guides/figure.md
-          - Cards & buttons: pages/user-guides/card-button.md
-          - Containers: pages/user-guides/container.md
-          - Tabs: pages/user-guides/tabs.md
+          - Graph: pages/user-guides/graph.md
+          - Table: pages/user-guides/table.md
+          - Figure: pages/user-guides/figure.md
+          - Card: pages/user-guides/card.md
+          - Text: pages/user-guides/text.md
+          - Button: pages/user-guides/button.md
+          - Container: pages/user-guides/container.md
+          - Tab: pages/user-guides/tabs.md
       - CONTROLS:
-          - Filters: pages/user-guides/filters.md
-          - Parameters: pages/user-guides/parameters.md
-          - Selectors: pages/user-guides/selectors.md
+          - Filter: pages/user-guides/filters.md
+          - Parameter: pages/user-guides/parameters.md
+          - Selector: pages/user-guides/selectors.md
       - NAVIGATION:
           - Navigation: pages/user-guides/navigation.md
       - VISUAL FORMATTING:
           - Overview: pages/user-guides/visual-formatting.md
-          - Layouts: pages/user-guides/layouts.md
-          - Themes: pages/user-guides/themes.md
+          - Layout: pages/user-guides/layouts.md
+          - Theme: pages/user-guides/themes.md
           - Assets: pages/user-guides/assets.md
           - Custom CSS: pages/user-guides/custom-css.md
       - ACTIONS:
@@ -43,23 +45,27 @@ nav:
           - Custom components: pages/user-guides/custom-components.md
           - Custom actions: pages/user-guides/custom-actions.md
           - Custom figures: pages/user-guides/custom-figures.md
-  - API Reference:
+  - API reference:
       - Vizro: pages/API-reference/vizro.md
       - Models: pages/API-reference/models.md
       - Action functions: pages/API-reference/action-callables.md
       - Table functions: pages/API-reference/table-callables.md
       - Figure functions: pages/API-reference/figure-callables.md
       - Kedro integration: pages/API-reference/kedro-integration.md
-  - Explanation:
+      - Deprecations: pages/API-reference/deprecations.md
+  - Find out more:
       - FAQs: pages/explanation/faq.md
       - User examples: pages/explanation/your-examples.md
       - Contribute to Vizro: pages/explanation/contributing.md
       - Documentation style: pages/explanation/documentation-style-guide.md
+      - Vizro schema: pages/explanation/schema.md
       - Authors: pages/explanation/authors.md
-  - Examples:
+  - Examples gallery:
       - Gallery: https://vizro.mckinsey.com/
   - Vizro-AI:
       - Vizro-AI: https://vizro.readthedocs.io/projects/vizro-ai/
+  - Vizro-MCP:
+      - Vizro-MCP: https://github.com/mckinsey/vizro/blob/main/vizro-mcp/README.md
 
 repo_url: https://github.com/mckinsey/vizro
 repo_name: mckinsey/vizro
@@ -71,8 +77,8 @@ theme:
   palette:
     - scheme: default
   font:
-    text: Inter
-    code: Inter Regular
+    text: Google sans
+    code: Source Code Pro
   icon:
     repo: fontawesome/brands/github
   features:
@@ -114,7 +120,7 @@ markdown_extensions:
             kwds:
               type: vizro
               requirements: |
-                vizro==0.1.34
+                vizro==0.1.40
   - pymdownx.tabbed:
       alternate_style: true
   - pymdownx.mark

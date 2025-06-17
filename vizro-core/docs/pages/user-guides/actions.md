@@ -9,93 +9,97 @@ There are already a few action functions you can reuse:
 - [`export_data`][vizro.actions.export_data]
 - [`filter_interaction`][vizro.actions.filter_interaction]
 
-## Pre-defined actions
+## Built-in actions
 
-To attach an action to a component, you must enter the [`Action`][vizro.models.Action] model into the component's `action` argument. You can then add a desired pre-defined action function into the `function` argument of the [`Action`][vizro.models.Action].
+To attach an action to a component, you must enter the [`Action`][vizro.models.Action] model into the component's `action` argument. You can then add a desired action function into the `function` argument of the [`Action`][vizro.models.Action].
 
 ??? note "Note on `Trigger`"
+
     Currently each component has one pre-defined trigger property. A trigger property is an attribute of the component that triggers a configured action (for example, for the `Button` it is `n_click`).
 
-The below sections are guides on how to use pre-defined action functions.
+The below sections are guides on how to use action functions.
 
 ### Export data
 
 To enable downloading data, you can add the [`export_data`][vizro.actions.export_data] action function to the [`Button`][vizro.models.Button] component. Hence, as a result, when a dashboard user now clicks the button, all data on the page will be downloaded.
 
 !!! example "`export_data`"
+
     === "app.py"
+
         ```{.python pycafe-link}
         import vizro.models as vm
         import vizro.plotly.express as px
         from vizro import Vizro
         from vizro.actions import export_data
 
-        iris = px.data.iris()
+        df = px.data.iris()
 
         page = vm.Page(
-            title="Using actions",
+            title="My first page",
+            layout=vm.Flex(),  # (1)!
             components=[
                 vm.Graph(
-                    figure=px.scatter(iris, x="petal_length", y="sepal_length", color="sepal_width"),
-                ),
-                vm.Graph(
-                    figure=px.histogram(iris, x="petal_length", color="species"),
+                    figure=px.scatter(
+                        df,
+                        x="sepal_width",
+                        y="sepal_length",
+                        color="species",
+                        size="petal_length",
+                    ),
                 ),
                 vm.Button(
                     text="Export data",
-                    actions=[
-                        vm.Action(
-                            function=export_data()
-                        ),
-                    ],
+                    actions=[vm.Action(function=export_data())],
                 ),
-            ],
+            ]
         )
 
         dashboard = vm.Dashboard(pages=[page])
-
         Vizro().build(dashboard).run()
         ```
 
+        1. We use a [`Flex`][vizro.models.Flex] layout to make sure the `Graph` and `Button` only occupy as much space as they need, rather than being distributed evenly.
+
     === "app.yaml"
+
         ```yaml
         # Still requires a .py to add data to the data manager and parse YAML configuration
         # See yaml_version example
         pages:
           - components:
-              - type: graph
-                figure:
+              - figure:
                   _target_: scatter
-                  data_frame: iris
-                  color: sepal_width
-                  x: petal_length
+                  x: sepal_width
                   y: sepal_length
-              - type: graph
-                figure:
-                  _target_: histogram
-                  data_frame: iris
                   color: species
-                  x: petal_length
+                  size: petal_length
+                  data_frame: iris
+                type: graph
               - type: button
                 text: Export data
-                id: export_data_button
+                id: export_data
                 actions:
                   - function:
                       _target_: export_data
-            title: Exporting
+            layout:
+              type: flex
+            title: My first page
         ```
 
     === "Result"
-        [![Graph]][graph]
+
+        [![ExportData]][exportdata]
 
 !!! note
-    Note that exported data only reflects the original dataset and any native data modifications defined with [`vm.Filter`](filters.md), [`vm.Parameter`](data.md/#parametrize-data-loading) or [`filter_interaction`](actions.md/#filter-data-by-clicking-on-chart) action. Filters from the chart itself, such as ag-grid filters, are not included, and neither are other chart modifications, nor any data transformations in custom charts.
 
-### Filter data by clicking on chart
+    Note that exported data only reflects the original dataset and any native data modifications defined with [`vm.Filter`](filters.md), [`vm.Parameter`](data.md/#parametrize-data-loading) or [`filter_interaction`](actions.md/#cross-filtering) action. Filters from the chart itself, such as ag-grid filters, are not included, and neither are other chart modifications, nor any data transformations in custom charts.
 
-To enable filtering when clicking on data in a source chart, you can add the [`filter_interaction`][vizro.actions.filter_interaction] action function to the [`Graph`][vizro.models.Graph], [`Table`][vizro.models.Table] or [`AgGrid`][vizro.models.AgGrid] components. The [`filter_interaction`][vizro.actions.filter_interaction] is currently configured to be triggered on click only.
+### Cross-filtering
 
-To configure this chart interaction follow the steps below:
+Cross-filtering enables you to click on data in one chart or table to filter other components in the dashboard. This is enabled using the [`filter_interaction`][vizro.actions.filter_interaction] action. It can be applied to [`Graph`][vizro.models.Graph], [`Table`][vizro.models.Table], and [`AgGrid`][vizro.models.AgGrid], and is currently triggered by click.
+
+To configure cross-filtering using `filter_interaction`, follow these steps:
 
 1. Add the action function to the source [`Graph`][vizro.models.Graph], [`Table`][vizro.models.Table] or [`AgGrid`][vizro.models.AgGrid] component and a list of IDs of the target charts into `targets`.
 
@@ -112,13 +116,16 @@ Graph(figure=px.scatter(..., custom_data=["continent"]))
 Selecting a data point with a corresponding value of "Africa" in the continent column will result in filtering the data of target charts to show only entries with "Africa" in the continent column. The same applies when providing multiple columns in `custom_data`.
 
 !!! note
+
     - You can reset your chart interaction filters by refreshing the page
     - You can create a "self-interaction" by providing the source chart id as its own `target`
 
 Here is an example of how to configure a chart interaction when the source is a [`Graph`][vizro.models.Graph] component.
 
 !!! example "Graph `filter_interaction`"
+
     === "app.py"
+
         ```{.python pycafe-link}
         import vizro.models as vm
         import vizro.plotly.express as px
@@ -126,42 +133,38 @@ Here is an example of how to configure a chart interaction when the source is a 
         from vizro.actions import filter_interaction
 
         df_gapminder = px.data.gapminder().query("year == 2007")
-
-        dashboard = vm.Dashboard(
-            pages=[
-                vm.Page(
-                    title="Filter interaction",
-                    components=[
-                        vm.Graph(
-                            figure=px.box(
-                                df_gapminder,
-                                x="continent",
-                                y="lifeExp",
-                                color="continent",
-                                custom_data=["continent"],
-                            ),
-                            actions=[vm.Action(function=filter_interaction(targets=["scatter_relation_2007"]))],
-                        ),
-                        vm.Graph(
-                            id="scatter_relation_2007",
-                            figure=px.scatter(
-                                df_gapminder,
-                                x="gdpPercap",
-                                y="lifeExp",
-                                size="pop",
-                                color="continent",
-                            ),
-                        ),
-                    ],
-                    controls=[vm.Filter(column='continent')]
+        page = vm.Page(
+            title="Filter interaction",
+            components=[
+                vm.Graph(
+                    figure=px.box(
+                        df_gapminder,
+                        x="continent",
+                        y="lifeExp",
+                        color="continent",
+                        custom_data=["continent"],
+                    ),
+                    actions=[vm.Action(function=filter_interaction(targets=["scatter_relation_2007"]))],
+                ),
+                vm.Graph(
+                    id="scatter_relation_2007",
+                    figure=px.scatter(
+                        df_gapminder,
+                        x="gdpPercap",
+                        y="lifeExp",
+                        size="pop",
+                        color="continent",
+                    ),
                 ),
             ]
         )
 
+        dashboard = vm.Dashboard(pages=[page])
         Vizro().build(dashboard).run()
         ```
 
     === "app.yaml"
+
         ```yaml
         # Still requires a .py to add data to the data manager and parse YAML configuration
         # See yaml_version example
@@ -190,16 +193,15 @@ Here is an example of how to configure a chart interaction when the source is a 
                   x: gdpPercap
                   y: lifeExp
                   size: pop
-            controls:
-              - column: continent
-                type: filter
             title: Filter interaction
         ```
 
     === "Result"
-        [![Graph2]][graph2]
+
+        [![GraphInteraction]][graphinteraction]
 
 !!! note "`filter_interaction` with custom charts"
+
     If `filter_interaction` is assigned to a [custom chart](custom-charts.md), ensure that `custom_data` is an argument of the custom chart function, and that this argument is then passed to the underlying plotly function. When then adding the custom chart in `vm.Graph`, ensure that `custom_data` is passed.
 
     ```py
@@ -216,7 +218,9 @@ Here is an example of how to configure a chart interaction when the source is a 
 Here is an example of how to configure a chart interaction when the source is an [`AgGrid`][vizro.models.AgGrid] component.
 
 !!! example "AgGrid `filter_interaction`"
+
     === "app.py"
+
         ```{.python pycafe-link}
         import vizro.models as vm
         import vizro.plotly.express as px
@@ -226,37 +230,34 @@ Here is an example of how to configure a chart interaction when the source is an
 
         df_gapminder = px.data.gapminder().query("year == 2007")
 
-        dashboard = vm.Dashboard(
-            pages=[
-                vm.Page(
-                    title="Filter interaction",
-                    components=[
-                        vm.AgGrid(
-                            figure=dash_ag_grid(data_frame=df_gapminder),
-                            actions=[
-                                vm.Action(function=filter_interaction(targets=["scatter_relation_2007"]))
-                            ],
-                        ),
-                        vm.Graph(
-                            id="scatter_relation_2007",
-                            figure=px.scatter(
-                                df_gapminder,
-                                x="gdpPercap",
-                                y="lifeExp",
-                                size="pop",
-                                color="continent",
-                            ),
-                        ),
+        page = vm.Page(
+            title="Filter interaction",
+            components=[
+                vm.AgGrid(
+                    figure=dash_ag_grid(data_frame=df_gapminder),
+                    actions=[
+                        vm.Action(function=filter_interaction(targets=["scatter_relation_2007"]))
                     ],
-                    controls=[vm.Filter(column='continent')]
+                ),
+                vm.Graph(
+                    id="scatter_relation_2007",
+                    figure=px.scatter(
+                        df_gapminder,
+                        x="gdpPercap",
+                        y="lifeExp",
+                        size="pop",
+                        color="continent",
+                    ),
                 ),
             ]
         )
 
+        dashboard = vm.Dashboard(pages=[page])
         Vizro().build(dashboard).run()
         ```
 
     === "app.yaml"
+
         ```yaml
         # Still requires a .py to add data to the data manager and parse YAML configuration
         # See yaml_version example
@@ -280,18 +281,12 @@ Here is an example of how to configure a chart interaction when the source is an
                   x: gdpPercap
                   y: lifeExp
                   size: pop
-            controls:
-              - column: continent
-                type: filter
             title: Filter interaction
         ```
 
     === "Result"
-        [![Table]][table]
 
-### Customize pre-defined actions
-
-Many pre-defined actions are customizable which helps to achieve a more specific goal. Refer to the [API reference][vizro.actions] for the options available.
+        [![TableInteraction]][tableinteraction]
 
 ## Custom actions
 
@@ -302,7 +297,9 @@ If you require an action that isn't available as a pre-defined option, you can c
 The `actions` parameter for the different screen components accepts a `list` of [`Action`][vizro.models.Action] models. This means that it's possible to chain together a list of actions that are executed by triggering only one component. The order of action execution is guaranteed, and the next action in the list will start executing only when the previous one is completed.
 
 !!! example "Actions chaining"
+
     === "app.py"
+
         ```{.python pycafe-link extra-requirements="openpyxl"}
         import vizro.models as vm
         import vizro.plotly.express as px
@@ -345,11 +342,11 @@ The `actions` parameter for the different screen components accepts a `list` of 
         )
 
         dashboard = vm.Dashboard(pages=[page])
-
         Vizro().build(dashboard).run()
         ```
 
     === "app.yaml"
+
         ```yaml
         pages:
           - components:
@@ -388,9 +385,10 @@ The `actions` parameter for the different screen components accepts a `list` of 
         ```
 
     === "Result"
-        [![Graph3]][graph3]
 
-[graph]: ../../assets/user_guides/actions/actions_export.png
-[graph2]: ../../assets/user_guides/actions/actions_filter_interaction.png
-[graph3]: ../../assets/user_guides/actions/actions_chaining.png
-[table]: ../../assets/user_guides/actions/actions_table_filter_interaction.png
+        [![ActionsChain]][actionschain]
+
+[actionschain]: ../../assets/user_guides/actions/actions_chaining.png
+[exportdata]: ../../assets/user_guides/actions/actions_export.png
+[graphinteraction]: ../../assets/user_guides/actions/actions_filter_interaction.png
+[tableinteraction]: ../../assets/user_guides/actions/actions_table_filter_interaction.png

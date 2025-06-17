@@ -1,77 +1,26 @@
-# Still requires a .py to register data connector in Data Manager and parse yaml configuration
+# Still requires a .py to add data to the data manager and parse YAML configuration
 # See yaml_version example
 pages:
   - components:
-      - figure:
-          _target_: kpi_card
-          data_frame: df_kpi
-          value_column: Actual
-          title: KPI with value
-        type: figure
-      - figure:
-          _target_: kpi_card
-          data_frame: df_kpi
-          value_column: Actual
-          title: KPI with aggregation
-          agg_func: median
-        type: figure
-      - figure:
-          _target_: kpi_card
-          data_frame: df_kpi
-          value_column: Actual
-          title: KPI with formatting
-          value_format: ${value:.2f}
-        type: figure
-      - figure:
-          _target_: kpi_card
-          data_frame: df_kpi
-          value_column: Actual
-          title: KPI with icon
-          icon: shopping_cart
-        type: figure
-      - figure:
-          _target_: kpi_card_reference
-          data_frame: df_kpi
-          value_column: Actual
-          reference_column: Reference
-          title: KPI reference (pos)
-        type: figure
-      - figure:
-          _target_: kpi_card_reference
-          data_frame: df_kpi
-          value_column: Actual
-          reference_column: Reference
-          agg_func: median
-          title: KPI reference (neg)
-        type: figure
-      - figure:
-          _target_: kpi_card_reference
-          data_frame: df_kpi
-          value_column: Actual
-          reference_column: Reference
-          title: KPI reference with formatting
-          value_format: "{value:.2f}€"
-          reference_format: "{delta:+.2f}€ vs. last year ({reference:.2f}€)"
-        type: figure
-      - figure:
-          _target_: kpi_card_reference
-          data_frame: df_kpi
-          value_column: Actual
-          reference_column: Reference
-          title: KPI reference with icon
-          icon: shopping_cart
-        type: figure
-      - figure:
-          _target_: kpi_card_reference
-          data_frame: df_kpi
-          value_column: Actual
-          reference_column: Reference
-          title: KPI reference (reverse color)
-          reverse_color: true
-        type: figure
-    controls:
-      - column: Category
-        type: filter
-    layout:
-      grid: [[0, 1, 2, 3], [4, 5, 6, 7], [8, -1, -1, -1], [-1, -1, -1, -1]]
-    title: KPI cards
+      - type: graph
+        figure:
+          _target_: scatter
+          data_frame: iris
+          color: sepal_width
+          x: petal_length
+          y: sepal_length
+      - type: graph
+        figure:
+          _target_: histogram
+          data_frame: iris
+          color: species
+          x: petal_length
+        id: histogram
+      - type: button
+        text: Export data
+        id: export_data_button
+        actions:
+          - function:
+              _target_: export_data
+              targets: [histogram]
+    title: Exporting

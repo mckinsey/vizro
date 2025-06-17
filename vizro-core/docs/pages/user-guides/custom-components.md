@@ -6,6 +6,9 @@ at the same time, Vizro is extensible, so that you can tweak any component to yo
 If you can't find a component that you would like to have in the code basis, or if you would like to alter/enhance an existing component, then you are in the right place.
 This guide shows you how to create custom components that are completely new, or enhancements of existing ones.
 
+!!! note "Can you use `extra` instead of creating a custom component?"
+    If you want to alter/enhance an existing component, you may not even need to create a custom component. Many of our models have an `extra` argument, that let's you pass arguments to the underlying Dash component directly. You can check the [API reference](../API-reference/models.md) of the model in question. An example of this would be to make the [`RadioItem`][vizro.models.RadioItems] [inline instead of stacked](./selectors.md#the-extra-argument).
+
 In general, you can create a custom component based on any dash-compatible component (for example, [dash-core-components](https://dash.plotly.com/dash-core-components),
 [dash-bootstrap-components](https://dash-bootstrap-components.opensource.faculty.ai/), [dash-html-components](https://github.com/plotly/dash/tree/dev/components/dash-html-components)).
 
@@ -15,8 +18,9 @@ or if you would like to use extra `args` or `kwargs` of those components, then t
 
 !!!note
 
-    There are always **three general steps** to consider to create a custom component:
+    There are always **four general steps** to consider to create a custom component:
 
+    0. **Check** if you can achieve your goal with a potential `extra` argument
     1. **Sub-class to create** your component
     2. **Enhance or build** the component (for example, to add/change model fields, overwrite pre-build/build method) to your desire
     3. **Check** if your component will be part of a discriminated union[^1]. If yes, then
@@ -75,7 +79,7 @@ vm.Parameter.add_type("selector", TooltipNonCrossRangeSlider)
 ??? example "Example based on existing component"
 
     === "app.py"
-        ```{.python pycafe-link linenums="1" hl_lines="18 19"}
+        ```{.python pycafe-link linenums="1" hl_lines="17 18"}
         from typing_extensions import Literal
 
         import vizro.models as vm
@@ -85,7 +89,6 @@ vm.Parameter.add_type("selector", TooltipNonCrossRangeSlider)
         iris = px.data.iris()
 
 
-        # 1. Create custom component - here based on the existing RangeSlider
         class TooltipNonCrossRangeSlider(vm.RangeSlider):
             """Custom numeric multi-selector `TooltipNonCrossRangeSlider`."""
 
@@ -98,7 +101,6 @@ vm.Parameter.add_type("selector", TooltipNonCrossRangeSlider)
                 return range_slider_build_obj
 
 
-        # 2. Add new components to expected type - here the selector of the parent components
         vm.Filter.add_type("selector", TooltipNonCrossRangeSlider)  # (6)!
         vm.Parameter.add_type("selector", TooltipNonCrossRangeSlider)  # (7)!
 
@@ -208,7 +210,6 @@ vm.Page.add_type("components", Jumbotron)
         from vizro import Vizro
 
 
-        # 1. Create new custom component
         class Jumbotron(vm.VizroBaseModel):  # (1)!
             """New custom component `Jumbotron`."""
 
@@ -227,7 +228,6 @@ vm.Page.add_type("components", Jumbotron)
                 )
 
 
-        # 2. Add new components to expected type - here the selector of the parent components
         vm.Page.add_type("components", Jumbotron)  # (5)!
 
         page = vm.Page(
@@ -315,17 +315,15 @@ Add the custom action `open_offcanvas` as a `function` argument inside the [`Act
         from dash import html
         from vizro import Vizro
 
-        from vizro.models import Action
         from vizro.models.types import capture
 
 
-        # 1. Create new custom component
-        class OffCanvas(vm.VizroBaseModel):
-            type: Literal["offcanvas"] = "offcanvas"
+        class OffCanvas(vm.VizroBaseModel):  # (1)!
+            type: Literal["offcanvas"] = "offcanvas"  # (2)!
             title: str
             content: str
 
-            def build(self):
+            def build(self):  # (3)!
                 return html.Div(
                     [
                         dbc.Offcanvas(
@@ -338,11 +336,9 @@ Add the custom action `open_offcanvas` as a `function` argument inside the [`Act
                 )
 
 
-        # 2. Add new components to expected type - here the selector of the parent components
-        vm.Page.add_type("components", OffCanvas)
+        vm.Page.add_type("components", OffCanvas)  # (4)!
 
-        # 3. Create custom action
-        @capture("action")
+        @capture("action")  # (5)!
         def open_offcanvas(n_clicks, is_open):
             if n_clicks:
                 return not is_open
@@ -355,14 +351,14 @@ Add the custom action `open_offcanvas` as a `function` argument inside the [`Act
                     text="Open Offcanvas",
                     id="open_button",
                     actions=[
-                        vm.Action(
+                        vm.Action(  # (6)!
                             function=open_offcanvas(),
                             inputs=["open_button.n_clicks", "offcanvas.is_open"],
                             outputs=["offcanvas.is_open"],
                         )
                     ],
                 ),
-                OffCanvas(
+                OffCanvas(  # (7)!
                     id="offcanvas",
                     content="OffCanvas content",
                     title="Offcanvas Title",
@@ -371,10 +367,17 @@ Add the custom action `open_offcanvas` as a `function` argument inside the [`Act
         )
 
         dashboard = vm.Dashboard(pages=[page])
-
         Vizro().build(dashboard).run()
 
         ```
+
+        1. Here we sub-class `VizroBaseModel` to create a new `OffCanvas` component.
+        1. We define a new type for the component, so it can be distinguished in the discriminated union.
+        1. We define the `build` method, which will be called to render the component on the page. This uses `dbc.Offcanvas` from `dash-bootstrap-components`.
+        1. **Remember!** If part of a discriminated union, you must add the new component to the parent model where it will be inserted. In this case the new `OffCanvas` component will be inserted into the `components` argument of the `Page` model, and thus must be added as an allowed type.
+        1. We define a custom action `open_offcanvas` using the `@capture("action")` decorator. This action will toggle the `is_open` state of the `OffCanvas` component.
+        1. We add the `open_offcanvas` action to a `Button`. The action takes `n_clicks` from the button and the current `is_open` state of the `OffCanvas` as inputs, and outputs the new `is_open` state to the `OffCanvas`.
+        1. We add the `OffCanvas` component to the page.
     === "yaml"
         ```yaml
         # Custom components are currently only possible via Python configuration
@@ -389,12 +392,12 @@ Add the custom action `open_offcanvas` as a `function` argument inside the [`Act
 
 As mentioned above, custom components can trigger actions. To enable the custom component to trigger the action, add the `actions` field and specify which property triggers the actions:
 
-1. **Add the `actions` argument to your custom component**. The type of the `actions` argument is `list[Action]`.
+1. **Add the `actions` argument to your custom component**. The type of the `actions` argument is `list[ActionType]`.
 2. **Set the action through `_action_validator_factory`**. In doing so, any change in the `"active_index"` property of the custom component triggers the action.
 
     ```py
     actions: Annotated[
-        list[Action],
+        list[ActionType],
         AfterValidator(_action_validator_factory("active_index")),
         PlainSerializer(lambda x: x[0].actions),
         Field(default=[]),
@@ -412,21 +415,18 @@ As mentioned above, custom components can trigger actions. To enable the custom 
         import vizro.models as vm
         from pydantic import AfterValidator, Field, PlainSerializer
         from vizro import Vizro
-        from vizro.models import Action
+        from vizro.models.types import ActionType
         from vizro.models._action._actions_chain import _action_validator_factory
         from vizro.models.types import capture
 
 
-        # 1. Create new custom component
-        class Carousel(vm.VizroBaseModel):
+        class Carousel(vm.VizroBaseModel):  # (1)!
             type: Literal["carousel"] = "carousel"
             items: list
             actions: Annotated[
-                list[Action],
-                # Here we set the action so a change in the active_index property of the custom component triggers the action
-                AfterValidator(_action_validator_factory("active_index")),
-                # Here we tell the serializer to only serialize the actions field
-                PlainSerializer(lambda x: x[0].actions),
+                list[ActionType],
+                AfterValidator(_action_validator_factory("active_index")),  # (2)!
+                PlainSerializer(lambda x: x[0].actions),  # (3)!
                 Field(default=[]),
             ]
 
@@ -436,13 +436,9 @@ As mentioned above, custom components can trigger actions. To enable the custom 
                     items=self.items,
                 )
 
+        vm.Page.add_type("components", Carousel)  # (4)!
 
-        # 2. Add new components to expected type - here the selector of the parent components
-        vm.Page.add_type("components", Carousel)
-
-
-        # 3. Create custom action
-        @capture("action")
+        @capture("action")  # (5)!
         def slide_next_card(active_index):
             if active_index:
                 return "Second slide"
@@ -454,14 +450,14 @@ As mentioned above, custom components can trigger actions. To enable the custom 
             title="Custom Component",
             components=[
                 vm.Card(text="First slide", id="carousel-card"),
-                Carousel(
+                Carousel(  # (6)!
                     id="carousel",
                     items=[
                         {"key": "1", "src": "assets/slide_1.jpg"},
                         {"key": "2", "src": "assets/slide_2.jpg"},
                     ],
                     actions=[
-                        vm.Action(
+                        vm.Action(  # (7)!
                             function=slide_next_card(),
                             inputs=["carousel.active_index"],
                             outputs=["carousel-card.children"],
@@ -472,10 +468,19 @@ As mentioned above, custom components can trigger actions. To enable the custom 
         )
 
         dashboard = vm.Dashboard(pages=[page])
-
         Vizro().build(dashboard).run()
         ```
+
+        1. Here we subclass `VizroBaseModel` to create a new `Carousel` component.
+        1. We set the action so a change in the `active_index` property of the custom component triggers the action. `_action_validator_factory("active_index")` ensures that an `Action` model is correctly created and validated.
+        1. We tell the serializer to only serialize the `actions` field. This is important for when the dashboard configuration is exported (e.g., to YAML or JSON).
+        1. **Remember!** If part of a discriminated union, you must add the new component to the parent model where it will be inserted. In this case the new `Carousel` will be inserted into the `components` argument of the `Page` model, and thus must be added as an allowed type.
+        1. We define a custom action `slide_next_card` using the `@capture("action")` decorator. This action will change the text of a `Card` component based on the active slide in the `Carousel`.
+        1. We add the `Carousel` component to the page, providing items for the carousel.
+        1. We link the `slide_next_card` action to the `Carousel`. The action is triggered by changes in `carousel.active_index` and updates the `children` property of `carousel-card`.
+
         <img src=https://py.cafe/logo.png alt="PyCafe logo" width="30"><b><a target="_blank" href="https://py.cafe/vizro-official/vizro-custom-carousel-component">Run and edit this code in PyCafe</a></b>
+
     === "yaml"
         ```yaml
         # Custom components are currently only possible via Python configuration

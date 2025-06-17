@@ -12,13 +12,14 @@ If your data sources in development and production are different (for example, y
 Vizro is built on top of [Dash](https://dash.plotly.com/), which itself uses [Flask](https://flask.palletsprojects.com/). Most of our guidance on how to run a Vizro app in development or production is very similar to guidance on Dash and Flask.
 
 !!! note
+
     There are many possible workflows depending on your requirements. We are considering a simple workflow that applies to many people but is not suitable for everyone. For example:
 
     - If you are the only user of your app then the process is often simpler since you might never want to deploy to production.
     - If there are multiple people involved with development then you will need some way to coordinate code changes, such as a [GitHub repository](https://github.com/) or [Hugging Face Space](https://huggingface.co/spaces).
     - You might want to use _authentication_ to restrict access to your app.
     - You might want to update your dashboard after it has been put into production. There is then a cycle of repeated development and deployment.
-    - There might be additional stages or _environments_ for Quality Assurance (QA) to test that the app works correctly before it is deployed.
+    - There might be more stages or _environments_ for Quality Assurance (QA) to test that the app works correctly before it is deployed.
 
 ## Development
 
@@ -53,7 +54,6 @@ page = vm.Page(
 )
 
 dashboard = vm.Dashboard(pages=[page])
-
 Vizro().build(dashboard).run()
 ```
 
@@ -64,6 +64,7 @@ The `run` method wraps [Dash's run method](https://dash.plotly.com/reference#app
 - `jupyter_mode`. This is described more below in the [section on Jupyter](#develop-in-a-notebook).
 
 !!! warning "Use only for local development"
+
     The Flask development server is [intended for local development only](https://flask.palletsprojects.com/en/3.0.x/deploying/) and should not be used when deploying a Vizro dashboard to production. See our [section on deployment](#production) for information on how to deploy.
 
 ### Develop in a Notebook
@@ -85,20 +86,20 @@ page = vm.Page(
 )
 
 dashboard = vm.Dashboard(pages=[page])
-
 Vizro().build(dashboard).run()
 ```
 
 The code runs Vizro using a Flask development server and shows the resulting dashboard inline in your Notebook. You can change where the dashboard appears with the [`jupyter_mode` argument](https://dash.plotly.com/dash-in-jupyter). For example, `run(jupyter_mode="external")` provides a link to open the dashboard in a new window.
 
 !!! note "Reloading and debugging"
+
     Code reloading and hot reloading do not work in Jupyter. See the [section on reloading for alternatives when using Jupyter](#automatic-reloading-and-debugging).
 
 ### Develop in PyCafe
 
 The easiest way to run a dashboard is to work on the code live on [PyCafe](https://py.cafe/).
 
-Most of the Vizro documentation examples have a link below the code that reads [Run and edit this code in PyCafe](https://py.cafe/vizro-official/vizro-iris-analysis). Follow the link to open the code in PyCafe within an editor, such as the one below, which displays the dashboard and the code side by side.
+Most of the Vizro documentation examples have a link below the code that reads [**Run and edit this code in Py.Cafe**](https://py.cafe/vizro-official/vizro-iris-analysis). Follow the link to open the code in PyCafe within an editor, such as the one below, which displays the dashboard and the code side by side.
 
 <figure markdown="span">
   ![PyCafe editor](../../assets/user_guides/run_deploy/pycafe_editor.png)
@@ -108,6 +109,7 @@ Most of the Vizro documentation examples have a link below the code that reads [
 You can use [PyCafe](https://py.cafe/snippet/vizro/v1) snippet mode to experiment with your own Vizro dashboards by dropping code into a new project.
 
 !!! note
+
     Note that when you save your code as a project, the dashboard and the code will be visible to the public. PyCafe is planning to implement a paid tier that allows private dashboards.
 
     As long as you remain in [snippet mode](https://py.cafe/snippet/vizro/v1) - not having clicked "Push" - your code is only local to your machine and is not visible to others.
@@ -167,6 +169,7 @@ if __name__ == "__main__":  # (2)!
 That's it! Your app is now suitable for deployment to production.
 
 !!! warning "Extra step if you use dynamic data cache"
+
     If your dashboard uses [dynamic data](data.md#dynamic-data) that can be refreshed while the dashboard is running then you should [configure your data manager cache](data.md#configure-cache) to use a backend that supports multiple processes.
 
 Now that your `app.py` file is ready, you need to choose a _hosting provider_. There are many services out there with different offerings, but for most users we recommend two in particular: [Hugging Face](https://huggingface.co/) and [Ploomber Cloud](https://docs.cloud.ploomber.io/). These both have a free tier with the possibility of paying more for extras, and they are both quick and easy to get started with. We give step-by-step instructions on how to use each:
@@ -194,6 +197,7 @@ To turn the example app into your own, you will need to edit the code in the `ap
 You can now copy and paste your app code into the editor. When you've finished editing, click "Commit changes to `main`". This immediately triggers a rebuild of your Space. As with the initial build this takes around 10 seconds, and when complete you should be able to view your own app deployed on Hugging Face!
 
 !!! note
+
     Remember that a deployed `app.py` file must contain a line that [exposes the Vizro `app` object](#overview) as `app = Vizro().build(dashboard)`.
 
 Under the hood, your Space is a Git repository. Instead of editing files through your browser, you can use [`git` from the command line and the Hugging Face CLI](https://huggingface.co/docs/hub/en/repositories-getting-started). Every time you make a commit to your repository, your app is automatically rebuilt and restarted.
@@ -206,6 +210,7 @@ In addition to `app.py`, your Space contains a few other files:
 - `requirements.txt` gives your Python package dependencies. See our [section on dependencies](#dependencies) for more information.
 
 !!! tip
+
     If you'd like to show your Vizro app off to the community then you can add it to our [Vizro dashboard community gallery](https://huggingface.co/collections/vizro/vizro-official-gallery-66697d414646eeac61eae6de). Notify us on GitHub in case you are interested.
 
 ### Deploy to Ploomber Cloud

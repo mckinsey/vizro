@@ -1,6 +1,6 @@
 # How to create custom actions
 
-This guide demonstrates the usage of custom actions, an idea that shares similarities with, but is not identical to [callbacks](https://dash.plotly.com/basic-callbacks) in `Dash`. If you want to use the [`Action`][vizro.models.Action] model to perform functions that are not available in the [pre-defined action functions][vizro.actions], you can create your own custom action. Like other [actions](actions.md), custom actions could also be added as an element inside the [actions chain](actions.md#chain-actions), and it can be triggered with one of many dashboard components.
+This guide demonstrates the usage of custom actions, an idea that shares similarities with, but is not identical to [callbacks](https://dash.plotly.com/basic-callbacks) in `Dash`. If you want to use the [`Action`][vizro.models.Action] model to perform functions that are not available in the [built-in action functions][vizro.actions], you can create your own custom action. Like other [actions](actions.md), custom actions could also be added as an element inside the [actions chain](actions.md#chain-actions), and it can be triggered with one of many dashboard components.
 
 <!-- vale off -->
 
@@ -15,7 +15,9 @@ Custom actions enable you to implement your own action function. Simply do the f
 The following example shows how to create a custom action that postpones execution of the next action in the chain for `t` seconds.
 
 !!! example "Simple custom action"
+
     === "app.py"
+
         ```{.python pycafe-link extra-requirements="openpyxl"}
         import vizro.models as vm
         import vizro.plotly.express as px
@@ -25,9 +27,8 @@ The following example shows how to create a custom action that postpones executi
         from time import sleep
 
 
-        @capture("action")
+        @capture("action")  # (1)!
         def my_custom_action(t: int):
-            """Custom action."""
             sleep(t)
 
 
@@ -49,16 +50,17 @@ The following example shows how to create a custom action that postpones executi
                         vm.Action(function=export_data(file_format="xlsx")),
                     ]
                 )
-            ],
-            controls=[vm.Filter(column="species", selector=vm.Dropdown(title="Species"))],
+            ]
         )
 
         dashboard = vm.Dashboard(pages=[page])
-
         Vizro().build(dashboard).run()
         ```
 
+        1. We define a custom action `my_custom_action` using the `@capture("action")` decorator. This action takes an integer `t` and pauses execution for `t` seconds. It's used here to delay the subsequent `export_data` action in the chain.
+
     === "app.yaml"
+
         Custom actions are currently only possible via Python configuration.
 
 <!-- vale on -->
@@ -75,7 +77,9 @@ When a custom action needs to interact with the dashboard, it is possible to def
 The following example shows a custom action that takes the `value` of the `vm.RadioItem` and returns it inside a [`Card`][vizro.models.Card] component.
 
 !!! example "Display `value` in Card"
+
     === "app.py"
+
         ```{.python pycafe-link}
         import vizro.models as vm
         import vizro.plotly.express as px
@@ -85,14 +89,13 @@ The following example shows a custom action that takes the `value` of the `vm.Ra
         df = px.data.iris()
         vm.Page.add_type("components", vm.RadioItems)
 
-        @capture("action")
+        @capture("action")  # (1)!
         def update_card_text(species):
-            """Returns the input value."""
             return f"You selected species **{species}**"
 
         page = vm.Page(
             title="Action with value as input",
-            layout=vm.Layout(grid=[[0, 1]]),
+            layout=vm.Grid(grid=[[0, 1]]),
             components=[
                 vm.RadioItems(
                     id="my_selector",
@@ -110,10 +113,14 @@ The following example shows a custom action that takes the `value` of the `vm.Ra
         Vizro().build(dashboard).run()
         ```
 
+        1. We define a custom action `update_card_text` using the `@capture("action")` decorator. This action takes the selected `species` as input and returns a formatted string to be displayed in a Card.
+
     === "app.yaml"
+
         Custom actions are currently only possible via Python configuration.
 
     === "Result"
+
         [![ValueAction]][valueaction]
 
 ### Example of `clickData` as input
@@ -121,7 +128,9 @@ The following example shows a custom action that takes the `value` of the `vm.Ra
 The following example shows how to create a custom action that shows the `clickData` of a chart in a [`Card`][vizro.models.Card] component. For further information on the structure and content of the `clickData` property, refer to the Dash documentation on [interactive visualizations](https://dash.plotly.com/interactive-graphing).
 
 !!! example "Display `clickData` in Card"
+
     === "app.py"
+
         ```{.python pycafe-link}
         import vizro.models as vm
         import vizro.plotly.express as px
@@ -130,9 +139,8 @@ The following example shows how to create a custom action that shows the `clickD
 
         df = px.data.iris()
 
-        @capture("action")
-        def my_custom_action(show_species: bool, points_data: dict): # (1)!
-            """Custom action."""
+        @capture("action")  # (1)!
+        def my_custom_action(show_species: bool, points_data: dict):  # (2)!
             clicked_point = points_data["points"][0]
             x, y = clicked_point["x"], clicked_point["y"]
             text = f"Clicked point has sepal length {x}, petal width {y}"
@@ -150,8 +158,8 @@ The following example shows how to create a custom action that shows the `clickD
                     figure=px.scatter(df, x="sepal_length", y="petal_width", color="species", custom_data=["species"]),
                     actions=[
                         vm.Action(
-                            function=my_custom_action(show_species=True), # (2)!
-                            inputs=["scatter_chart.clickData"], # (3)!
+                            function=my_custom_action(show_species=True), # (3)!
+                            inputs=["scatter_chart.clickData"], # (4)!
                             outputs=["my_card.children"],
                         ),
                     ],
@@ -159,18 +167,22 @@ The following example shows how to create a custom action that shows the `clickD
                 vm.Card(id="my_card", text="Click on a point on the above graph."),
             ],
         )
+
         dashboard = vm.Dashboard(pages=[page])
         Vizro().build(dashboard).run()
         ```
 
-        1. Just as for any Python function, the names of the arguments `show_species` and `points_data` are arbitrary and do not need to match on to the names of `inputs` in any particular way.
-        1. We _bind_ (set) the argument `show_species` to the value `True` in the initial specification of the `function` field. These are static values that are fixed when the dashboard is _built_.
-        1. The content of `inputs` will "fill in the gaps" by setting values for the remaining unbound arguments in `my_custom_action`. Here there is one such argument, named `points_data`. Values for these are bound _dynamically at runtime_ to reflect the live state of your dashboard.
+        1. We define a custom action `my_custom_action` using the `@capture("action")` decorator.
+        1. This action takes a boolean `show_species` and a dictionary `points_data`. It uses these to construct a descriptive string about a clicked point on a chart. The names `show_species` and `points_data` are arbitrary and do not need to match on to the names of `inputs` in any particular way.
+        1. When the `Action` is defined within the `Graph.actions`, the `show_species` argument of `my_custom_action` is statically bound to `True`.
+        1. The `points_data` argument of `my_custom_action` receives its value dynamically at runtime. This happens because the `inputs` parameter of `vm.Action` is set to `["scatter_chart.clickData"]`. When a user clicks on the `scatter_chart`, the chart's `clickData` property (which contains details about the click event) is automatically passed as the `points_data` argument to `my_custom_action`.
 
     === "app.yaml"
+
         Custom actions are currently only possible via Python configuration.
 
     === "Result"
+
         [![CustomAction]][customaction]
 
 ## Multiple return values
@@ -178,7 +190,9 @@ The following example shows how to create a custom action that shows the `clickD
 The return value of the custom action function is propagated to the dashboard components that are defined in the `outputs` argument of the [`Action`][vizro.models.Action] model. If there is a single `output` defined then the function return value is directly assigned to the component property. If there are multiple `outputs` defined then the return value is iterated through and each part is assigned to each component property given in `outputs` in turn. This behavior is identical to Python's flexibility in managing multiple return values.
 
 !!! example "Multiple return values"
+
     === "app.py"
+
         ```{.python pycafe-link}
         import vizro.models as vm
         import vizro.plotly.express as px
@@ -186,30 +200,21 @@ The return value of the custom action function is propagated to the dashboard co
         from vizro.models.types import capture
 
 
-        @capture("action")
+        @capture("action")  # (1)!
         def my_custom_action(points_data: dict):
-            """Custom action."""
             clicked_point = points_data["points"][0]
             x, y = clicked_point["x"], clicked_point["y"]
             species = clicked_point["customdata"][0]
             card_1_text = f"Clicked point has sepal length {x}, petal width {y}"
             card_2_text = f"Clicked point has species {species}"
-            return card_1_text, card_2_text # (1)!
+            return card_1_text, card_2_text
 
 
         df = px.data.iris()
 
         page = vm.Page(
             title="Example of a custom action with UI inputs and outputs",
-            layout=vm.Layout(
-                grid=[
-                    [0, 0],
-                    [0, 0],
-                    [0, 0],
-                    [1, 2],
-                ],
-                row_gap="25px",
-            ),
+            layout=vm.Flex(),  # (2)!
             components=[
                 vm.Graph(
                     id="scatter_chart",
@@ -218,31 +223,33 @@ The return value of the custom action function is propagated to the dashboard co
                         vm.Action(
                             function=my_custom_action(),
                             inputs=["scatter_chart.clickData"],
-                            outputs=["my_card_1.children", "my_card_2.children"], # (2)!
+                            outputs=["my_card_1.children", "my_card_2.children"], # (3)!
                         ),
                     ],
                 ),
                 vm.Card(id="my_card_1", text="Click on a point on the above graph."),
                 vm.Card(id="my_card_2", text="Click on a point on the above graph."),
-            ],
-            controls=[vm.Filter(column="species", selector=vm.Dropdown(title="Species"))],
+            ]
         )
 
         dashboard = vm.Dashboard(pages=[page])
-
         Vizro().build(dashboard).run()
         ```
 
-        1. `my_custom_action` returns two values (which will be in Python tuple).
-        1. These values are assigned to the `outputs` in the same order.
+        1. We define a custom action `my_custom_action` using the `@capture("action")` decorator. This action takes `points_data` (dynamically populated from `scatter_chart.clickData`) as input, extracts details about the clicked point, and returns two strings, `card_1_text` and `card_2_text`.
+        1. A [`Flex`][vizro.models.Flex] layout is used for the page to ensure the `Graph` and `Card` components are sized appropriately based on their content rather than being distributed evenly.
+        1. The two strings returned by `my_custom_action` are assigned in the same order here.
 
     === "app.yaml"
+
         Custom actions are currently only possible via Python configuration.
 
     === "Result"
+
         [![CustomAction2]][customaction2]
 
 !!! warning
+
     Note that users of this package are responsible for the content of any custom action function that they write. Take care to avoid leaking any sensitive information or exposing to any security threat during implementation. You should always [treat the content of user input as untrusted](https://community.plotly.com/t/writing-secure-dash-apps-community-thread/54619).
 
 [customaction]: ../../assets/user_guides/custom_actions/clickdata_as_input.png

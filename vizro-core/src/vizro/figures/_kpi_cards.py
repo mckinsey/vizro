@@ -23,8 +23,7 @@ def kpi_card(
     """Creates a styled KPI (Key Performance Indicator) card displaying a value.
 
     **Warning:** Note that the format string provided to `value_format` is being evaluated, so ensure that only trusted
-    user input is provided to prevent
-    [potential security risks](https://stackoverflow.com/questions/76783239/is-it-safe-to-use-python-str-format-method-with-user-submitted-templates-in-serv).
+    user input is provided to prevent potential security risks.
 
     Args:
         data_frame: DataFrame containing the data.
@@ -69,7 +68,7 @@ def kpi_card(
         ]
     )
     body = dbc.CardBody(value_format.format(value=value))
-    return dbc.Card([header, body], className="card-kpi")
+    return dbc.Card([header, body], class_name="card-kpi")
 
 
 @capture("figure")
@@ -88,8 +87,7 @@ def kpi_card_reference(  # noqa: PLR0913
     """Creates a styled KPI (Key Performance Indicator) card displaying a value in comparison to a reference value.
 
     **Warning:** Note that the format string provided to `value_format` and `reference_format` is being evaluated,
-    so ensure that only trusted user input is provided to prevent
-    [potential security risks](https://stackoverflow.com/questions/76783239/is-it-safe-to-use-python-str-format-method-with-user-submitted-templates-in-serv).
+    so ensure that only trusted user input is provided to prevent potential security risks.
 
     Args:
         data_frame: DataFrame containing the data.
@@ -161,6 +159,6 @@ def kpi_card_reference(  # noqa: PLR0913
                 reference_format.format(value=value, reference=reference, delta=delta, delta_relative=delta_relative)
             ),
         ],
-        className=footer_class,
+        class_name=footer_class,
     )
-    return dbc.Card([header, body, footer], className="card-kpi")
+    return dbc.Card([header, body, footer], class_name="card-kpi")

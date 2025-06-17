@@ -18,9 +18,6 @@ from vizro._constants import VIZRO_ASSETS_PATH
 from vizro.managers import data_manager, model_manager
 from vizro.models import Dashboard, Filter
 
-# this can be removed when Dash uses React 18 as a default (likely V3.0 https://github.com/plotly/dash/pull/3093)
-dash._dash_renderer._set_react_version("18.2.0")
-
 logger = logging.getLogger(__name__)
 
 if TYPE_CHECKING:
@@ -48,6 +45,9 @@ class Vizro:
         self.dash = dash.Dash(
             **kwargs,
             pages_folder="",
+            # TODO: Considering removing the call to suppress_callback_exceptions once vm.Table is deprecated and
+            # we've confirmed that all initialized pages not included in the Dashboard no longer trigger console errors.
+            # See above note for why we might want to keep it though.
             suppress_callback_exceptions=True,
             title="Vizro",
             use_pages=True,
@@ -115,7 +115,7 @@ class Vizro:
         bootstrap_theme = dashboard.theme.removeprefix("vizro_")
         self.dash.index_string = self.dash.index_string.replace("<html>", f"<html data-bs-theme='{bootstrap_theme}'>")
 
-        # Note Dash.index uses self.dash.title instead of self.dash.app.config.title.
+        # Note Dash.index uses self.dash.title instead of self.dash.config.title for backwards compatibility.
         if dashboard.title:
             self.dash.title = dashboard.title
         return self
@@ -153,7 +153,8 @@ class Vizro:
             # Run pre_build on all filters first, then on all other models. This handles dependency between Filter
             # and Page pre_build and ensures that filters are pre-built before the Page objects that use them.
             # This is important because the Page pre_build method checks whether filters are dynamic or not, which is
-            # defined in the filter's pre_build method.
+            # defined in the filter's pre_build method. Also, the calculation of the data_frame Parameter targets
+            # depends on the filter targets, so they should be pre-built after the filters as well.
             filter.pre_build()
         for model_id in set(model_manager):
             model = model_manager[model_id]

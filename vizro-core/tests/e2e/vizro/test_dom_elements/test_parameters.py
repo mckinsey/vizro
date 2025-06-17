@@ -1,63 +1,56 @@
-import e2e.vizro.constants as cnst
-from e2e.vizro.checkers import check_selected_checklist, check_selected_dropdown
-from e2e.vizro.navigation import page_select
-from e2e.vizro.paths import categorical_components_value_path, dropdown_arrow_path, select_all_path
+from e2e.vizro import constants as cnst
+from e2e.vizro.checkers import check_graph_is_loaded, check_slider_value
+from e2e.vizro.navigation import page_select, select_dropdown_value
+from e2e.vizro.paths import slider_value_path
 
 
-def test_checklist_select_all_value(dash_br):
-    """Checks parametrizing with multiple params by selecting columns for the table."""
-    page_select(dash_br, page_path=cnst.PARAMETERS_MULTI_PAGE_PATH, page_name=cnst.PARAMETERS_MULTI_PAGE)
-    # unselect 'Select All'
-    dash_br.multiple_click(select_all_path(elem_id=cnst.CHECKLIST_PARAM), 1)
-    # select 'country' parameter
-    dash_br.multiple_click(categorical_components_value_path(elem_id=cnst.CHECKLIST_PARAM, value=1), 1)
-    # select 'year' parameter
-    dash_br.multiple_click(categorical_components_value_path(elem_id=cnst.CHECKLIST_PARAM, value=3), 1)
-    # check if table column 'country' is available
-    dash_br.wait_for_element(f"#{cnst.TABLE_CHECKLIST} th[data-dash-column='country']")
-    # check if table column 'year' is available and no other column appears on the right
-    dash_br.wait_for_element(
-        f"#{cnst.TABLE_CHECKLIST} th[data-dash-column='year'][class='dash-header column-1 cell--right-last ']"
-    )
-    check_selected_checklist(
+def test_sliders_state(dash_br):
+    """Verify that sliders values stays the same after page reload."""
+    page_select(
         dash_br,
-        checklist_id=cnst.CHECKLIST_PARAM,
-        select_all_status=False,
-        options_value_status=[
-            {"value": 1, "status": True},
-            {"value": 2, "status": False},
-            {"value": 3, "status": True},
-            {"value": 4, "status": False},
-            {"value": 5, "status": False},
-            {"value": 6, "status": False},
-            {"value": 7, "status": False},
-            {"value": 8, "status": False},
-        ],
+        page_path=cnst.PARAMETERS_PAGE_PATH,
+        page_name=cnst.PARAMETERS_PAGE,
     )
 
+    # change slider value to '0.4'
+    dash_br.multiple_click(slider_value_path(elem_id=cnst.SLIDER_PARAMETERS, value=3), 1)
+    check_graph_is_loaded(dash_br, graph_id=cnst.BAR_GRAPH_ID)
+    # change range slider max value to '7'
+    dash_br.multiple_click(slider_value_path(elem_id=cnst.RANGE_SLIDER_PARAMETERS, value=4), 1)
+    check_graph_is_loaded(dash_br, graph_id=cnst.HISTOGRAM_GRAPH_ID)
 
-def test_dropdown_select_all_value(dash_br):
-    """Checks parametrizing with multiple params by selecting columns for the table."""
-    page_select(dash_br, page_path=cnst.PARAMETERS_MULTI_PAGE_PATH, page_name=cnst.PARAMETERS_MULTI_PAGE)
-    dash_br.multiple_click(dropdown_arrow_path(), 1)
-    # unselect 'Select All'
-    dash_br.multiple_click(select_all_path(elem_id=cnst.DROPDOWN_PARAM_MULTI), 1)
-    dash_br.multiple_click(dropdown_arrow_path(), 1)
-    # select 'pop' parameter
-    dash_br.select_dcc_dropdown(f"#{cnst.DROPDOWN_PARAM_MULTI}", "pop")
-    # select 'gdpPercap' parameter
-    dash_br.select_dcc_dropdown(f"#{cnst.DROPDOWN_PARAM_MULTI}", "gdpPercap")
-    # check if table column 'pop' is available
-    dash_br.wait_for_element(f"#{cnst.TABLE_DROPDOWN} th[data-dash-column='pop']")
-    # check if table column 'gdpPercap' is available and no other column appears on the right
-    dash_br.wait_for_element(
-        f"#{cnst.TABLE_DROPDOWN} th[data-dash-column='gdpPercap'][class='dash-header column-1 cell--right-last ']"
-    )
-    dash_br.multiple_click(dropdown_arrow_path(), 1)
-    check_selected_dropdown(
+    # refresh the page
+    page_select(dash_br, page_path=cnst.FILTERS_PAGE_PATH, page_name=cnst.FILTERS_PAGE)
+    page_select(
         dash_br,
-        dropdown_id=cnst.DROPDOWN_PARAM_MULTI,
-        all_value=False,
-        expected_selected_options=["pop", "gdpPercap"],
-        expected_unselected_options=["country", "continent", "year", "lifeExp", "iso_alpha", "iso_num"],
+        page_path=cnst.PARAMETERS_PAGE_PATH,
+        page_name=cnst.PARAMETERS_PAGE,
+    )
+
+    # check that slider value still '0.4'
+    check_slider_value(dash_br, expected_end_value="0.4", elem_id=cnst.SLIDER_PARAMETERS)
+    # check that range slider max value still '7'
+    check_slider_value(dash_br, elem_id=cnst.RANGE_SLIDER_PARAMETERS, expected_start_value="4", expected_end_value="7")
+
+
+def test_none_parameter(dash_br):
+    """Test if one of the parameter values is NONE."""
+    page_select(
+        dash_br,
+        page_path=cnst.PARAMETERS_PAGE_PATH,
+        page_name=cnst.PARAMETERS_PAGE,
+    )
+
+    # check that specific bar has blue color
+    dash_br.wait_for_element(
+        f"div[id='{cnst.BAR_GRAPH_ID}'] g:nth-of-type(3) g:nth-of-type(45) path[style*='(0, 0, 255)'"
+    )
+
+    # choose NONE parameter
+    select_dropdown_value(dash_br, value=1, dropdown_id=cnst.DROPDOWN_PARAMETERS_TWO)
+    check_graph_is_loaded(dash_br, graph_id=cnst.BAR_GRAPH_ID)
+
+    # check that specific bar has cerulean blue color
+    dash_br.wait_for_element(
+        f"div[id='{cnst.BAR_GRAPH_ID}'] g:nth-of-type(3) g:nth-of-type(45) path[style*='(57, 73, 171)'"
     )

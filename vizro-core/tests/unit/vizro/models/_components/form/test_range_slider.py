@@ -73,7 +73,135 @@ def expected_range_slider_with_optional():
             dcc.Store(id="range_slider_callback_data", data={"id": "range_slider", "min": 0.0, "max": 10.0}),
             html.Div(
                 [
-                    dbc.Label("Title", html_for="range_slider"),
+                    dbc.Label([html.Span("Title", id="range_slider_title"), None], html_for="range_slider"),
+                    html.Div(
+                        [
+                            dcc.Input(
+                                id="range_slider_start_value",
+                                type="number",
+                                placeholder="min",
+                                min=0.0,
+                                max=10.0,
+                                step=2.0,
+                                value=[0, 10][0],
+                                persistence=True,
+                                persistence_type="session",
+                                className="slider-text-input-field",
+                            ),
+                            html.Span("-", className="slider-text-input-range-separator"),
+                            dcc.Input(
+                                id="range_slider_end_value",
+                                type="number",
+                                placeholder="max",
+                                min=0.0,
+                                max=10.0,
+                                step=2.0,
+                                value=[0, 10][1],
+                                persistence=True,
+                                persistence_type="session",
+                                className="slider-text-input-field",
+                            ),
+                            dcc.Store(id="range_slider_input_store", storage_type="session"),
+                        ],
+                        className="slider-text-input-container",
+                    ),
+                ],
+                className="slider-label-input",
+            ),
+            dcc.RangeSlider(
+                id="range_slider",
+                min=0.0,
+                max=10.0,
+                step=2.0,
+                marks={1: "1", 5: "5", 10: "10"},
+                value=[0, 10],
+                persistence=True,
+                persistence_type="session",
+                className="slider-track-with-marks",
+            ),
+        ]
+    )
+
+
+@pytest.fixture()
+def expected_range_slider_with_extra():
+    return html.Div(
+        [
+            dcc.Store(id="range_slider_callback_data", data={"id": "range_slider", "min": 0.0, "max": 10.0}),
+            html.Div(
+                [
+                    dbc.Label([html.Span("Title", id="range_slider_title"), None], html_for="range_slider"),
+                    html.Div(
+                        [
+                            dcc.Input(
+                                id="range_slider_start_value",
+                                type="number",
+                                placeholder="min",
+                                min=0.0,
+                                max=10.0,
+                                step=2.0,
+                                value=[0, 10][0],
+                                persistence=True,
+                                persistence_type="session",
+                                className="slider-text-input-field",
+                            ),
+                            html.Span("-", className="slider-text-input-range-separator"),
+                            dcc.Input(
+                                id="range_slider_end_value",
+                                type="number",
+                                placeholder="max",
+                                min=0.0,
+                                max=10.0,
+                                step=2.0,
+                                value=[0, 10][1],
+                                persistence=True,
+                                persistence_type="session",
+                                className="slider-text-input-field",
+                            ),
+                            dcc.Store(id="range_slider_input_store", storage_type="session"),
+                        ],
+                        className="slider-text-input-container",
+                    ),
+                ],
+                className="slider-label-input",
+            ),
+            dcc.RangeSlider(
+                id="overridden_id",
+                min=0.0,
+                max=10.0,
+                step=2.0,
+                marks={1: "1", 5: "5", 10: "10"},
+                value=[0, 10],
+                persistence=True,
+                persistence_type="session",
+                className="slider-track-with-marks",
+                tooltip={"placement": "bottom", "always_visible": True},
+                pushable=20,
+            ),
+        ]
+    )
+
+
+@pytest.fixture()
+def expected_range_slider_with_description():
+    expected_description = [
+        html.Span("info", id="info-icon", className="material-symbols-outlined tooltip-icon"),
+        dbc.Tooltip(
+            children=dcc.Markdown("Test description", id="info-text", className="card-text"),
+            id="info",
+            target="info-icon",
+            autohide=False,
+        ),
+    ]
+    return html.Div(
+        [
+            dcc.Store(id="range_slider_callback_data", data={"id": "range_slider", "min": 0.0, "max": 10.0}),
+            html.Div(
+                [
+                    dbc.Label(
+                        [html.Span("Title", id="range_slider_title"), *expected_description],
+                        html_for="range_slider",
+                    ),
                     html.Div(
                         [
                             dcc.Input(
@@ -137,7 +265,10 @@ class TestRangeSliderInstantiation:
         assert range_slider.marks is None
         assert range_slider.value is None
         assert range_slider.title == ""
+        assert range_slider.description is None
         assert range_slider.actions == []
+        assert range_slider._action_outputs == {"__default__": f"{range_slider.id}.value"}
+        assert range_slider._action_inputs == {"__default__": f"{range_slider.id}.value"}
 
     def test_create_range_slider_mandatory_and_optional(self):
         range_slider = vm.RangeSlider(
@@ -148,6 +279,7 @@ class TestRangeSliderInstantiation:
             marks={1: "1", 5: "5", 10: "10"},
             value=[1, 9],
             title="Test title",
+            description="Test description",
         )
 
         assert range_slider.id == "range_slider_id"
@@ -159,6 +291,13 @@ class TestRangeSliderInstantiation:
         assert range_slider.value == [1, 9]
         assert range_slider.title == "Test title"
         assert range_slider.actions == []
+        assert isinstance(range_slider.description, vm.Tooltip)
+        assert range_slider._action_outputs == {
+            "__default__": f"{range_slider.id}.value",
+            "title": f"{range_slider.id}_title.children",
+            "description": f"{range_slider.description.id}-text.children",
+        }
+        assert range_slider._action_inputs == {"__default__": f"{range_slider.id}.value"}
 
     @pytest.mark.parametrize(
         "min, max, expected_min, expected_max",
@@ -284,7 +423,6 @@ class TestRangeSliderBuild:
 
     def test_range_slider_build_default(self, expected_range_slider_default):
         range_slider = vm.RangeSlider(id="range_slider").build()
-
         assert_component_equal(range_slider, expected_range_slider_default)
 
     def test_range_slider_build_with_optional(self, expected_range_slider_with_optional):
@@ -297,5 +435,38 @@ class TestRangeSliderBuild:
             value=[0, 10],
             title="Title",
         ).build()
-
         assert_component_equal(range_slider, expected_range_slider_with_optional)
+
+    def test_range_slider_build_with_extra(self, expected_range_slider_with_extra):
+        """Test that extra arguments correctly override defaults."""
+        range_slider = vm.RangeSlider(
+            id="range_slider",
+            min=0.0,
+            max=10.0,
+            step=2,
+            marks={1: "1", 5: "5", 10: "10"},
+            value=[0, 10],
+            title="Title",
+            extra={
+                "tooltip": {"placement": "bottom", "always_visible": True},
+                "pushable": 20,
+                "id": "overridden_id",
+            },
+        ).build()
+
+        assert_component_equal(range_slider, expected_range_slider_with_extra)
+
+    def test_range_slider_build_with_description(self, expected_range_slider_with_description):
+        """Test that description arguments correctly builds icon and tooltip."""
+        range_slider = vm.RangeSlider(
+            id="range_slider",
+            min=0.0,
+            max=10.0,
+            step=2,
+            marks={1: "1", 5: "5", 10: "10"},
+            value=[0, 10],
+            title="Title",
+            description=vm.Tooltip(text="Test description", icon="info", id="info"),
+        ).build()
+
+        assert_component_equal(range_slider, expected_range_slider_with_description)

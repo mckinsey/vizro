@@ -11,19 +11,25 @@ import pandas as pd
 from vizro._constants import NONE_OPTION
 from vizro.managers import data_manager, model_manager
 from vizro.managers._data_manager import DataSourceName
-from vizro.managers._model_manager import ModelID
 from vizro.models.types import (
     FigureType,
     FigureWithFilterInteractionType,
+    ModelID,
     MultiValueType,
     SelectorType,
     SingleValueType,
 )
 
 if TYPE_CHECKING:
-    from vizro.models import Action, VizroBaseModel
+    from vizro.models import VizroBaseModel
+    from vizro.models.types import ActionType
 
 ValidatedNoneValueType = Union[SingleValueType, MultiValueType, None, list[None], list[SingleValueType]]
+
+
+# TODO-AV2 A 2: go through and finish tidying bits that weren't already. Potentially there won't be much code left here
+#  at all. Think about where it should live so it might become public in future. Is it just apply_controls and helper
+#  functions for that? Do we want public vizro.actions.utils/helpers?
 
 
 class CallbackTriggerDict(TypedDict):
@@ -46,7 +52,7 @@ class CallbackTriggerDict(TypedDict):
 
 
 # Utility functions for helper functions used in pre-defined actions ----
-def _get_component_actions(component) -> list[Action]:
+def _get_component_actions(component) -> list[ActionType]:
     return (
         [action for actions_chain in component.actions for action in actions_chain.actions]
         if hasattr(component, "actions")
@@ -66,19 +72,21 @@ def _apply_filter_controls(
 
     Returns: filtered DataFrame.
     """
+    from vizro.actions._filter_action import _filter
+
     for ctd in ctds_filter:
         selector_value = ctd["value"]
         selector_value = selector_value if isinstance(selector_value, list) else [selector_value]
         selector_actions = _get_component_actions(model_manager[ctd["id"]])
 
         for action in selector_actions:
-            if action.function._function.__name__ != "_filter" or target not in action.function["targets"]:
+            # TODO-AV2 A 1: simplify this as in
+            #  https://github.com/mckinsey/vizro/pull/1054/commits/f4c8c5b153f3a71b93c018e9f8c6f1b918ca52f6
+            if not isinstance(action, _filter) or target not in action.targets:
                 continue
 
-            _filter_function = action.function["filter_function"]
-            _filter_column = action.function["filter_column"]
-            _filter_value = selector_value
-            data_frame = data_frame[_filter_function(data_frame[_filter_column], _filter_value)]
+            mask = action.filter_function(data_frame[action.column], selector_value)
+            data_frame = data_frame[mask]
 
     return data_frame
 
@@ -87,7 +95,7 @@ def _get_parent_model(_underlying_callable_object_id: str) -> VizroBaseModel:
     from vizro.models import VizroBaseModel
 
     for model in cast(Iterable[VizroBaseModel], model_manager._get_models()):
-        if hasattr(model, "_input_component_id") and model._input_component_id == _underlying_callable_object_id:
+        if hasattr(model, "_inner_component_id") and model._inner_component_id == _underlying_callable_object_id:
             return model
     raise KeyError(
         f"No parent Vizro model found for underlying callable object with id: {_underlying_callable_object_id}."
@@ -176,6 +184,8 @@ def _get_parametrized_config(
     Returns: keyword-argument dictionary.
 
     """
+    from vizro.actions._parameter_action import _parameter
+
     if data_frame:
         # This entry is inserted (but will always be empty) even for static data so that the load/_multi_load calls
         # look identical for dynamic data with no arguments and static data. Note it's not possible to address nested
@@ -196,12 +206,15 @@ def _get_parametrized_config(
         parameter_value = _validate_selector_value_none(parameter_value)  # type: ignore[arg-type]
 
         for action in _get_component_actions(selector):
-            if action.function._function.__name__ != "_parameter":
+            # TODO-AV2 A 1: simplify this as in
+            #  https://github.com/mckinsey/vizro/pull/1054/commits/f4c8c5b153f3a71b93c018e9f8c6f1b918ca52f6
+            #  Potentially this function would move to the filter_interaction action. That will be deprecated so
+            #  no need to worry too much if it doesn't work well, but we'll need to do something similar for the
+            #  new interaction functionality anyway.
+            if not isinstance(action, _parameter):
                 continue
 
-            for dot_separated_string in _get_target_dot_separated_strings(
-                action.function["targets"], target, data_frame
-            ):
+            for dot_separated_string in _get_target_dot_separated_strings(action.targets, target, data_frame):
                 config = _update_nested_figure_properties(
                     figure_config=config, dot_separated_string=dot_separated_string, value=parameter_value
                 )
@@ -245,6 +258,9 @@ def _get_unfiltered_data(
     return dict(zip(targets, data_manager._multi_load(multi_data_source_name_load_kwargs)))
 
 
+# TODO-AV2 A 2: rename this, make sure it could become public in future but don't make public yet. Probably take in
+#  controls + filter_interaction only once have worked out structure of filters/parameters. Then make public once
+#  have removed filter_interaction.
 def _get_modified_page_figures(
     ctds_filter: list[CallbackTriggerDict],
     ctds_filter_interaction: list[dict[str, CallbackTriggerDict]],
@@ -263,10 +279,6 @@ def _get_modified_page_figures(
         else:
             figure_targets.append(target)
 
-    # TODO-NEXT: Add fetching unfiltered data for the Filter.targets as well, once dynamic filters become "targetable"
-    #  from other actions too. For example, in future, if Parameter is targeting only a single Filter.
-    #  Currently, it only works for the on_page_load because Filter.targets are indeed the part of the actions' targets.
-    #  More about the limitation: https://github.com/mckinsey/vizro/pull/879/files#r1863535516
     target_to_data_frame = _get_unfiltered_data(ctds_parameter=ctds_parameter, targets=figure_targets)
 
     # TODO: the structure here would be nicer if we could get just the ctds for a single target at one time,

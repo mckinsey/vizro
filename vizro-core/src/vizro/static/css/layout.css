@@ -13,6 +13,7 @@
 
 #left-main {
   align-items: flex-start;
+  border-right: 1px solid var(--bs-border-color);
   display: flex;
   flex: 0 0 auto;
   flex-direction: column;
@@ -23,7 +24,7 @@
 }
 
 #left-side {
-  background-color: var(--surfaces-bg02);
+  background-color: var(--left-side-bg);
   display: flex;
   flex-direction: row;
   height: 100%;
@@ -34,6 +35,7 @@
   display: flex;
   flex-direction: column;
   gap: 1.25rem;
+  overflow: auto;
   padding: 24px;
   width: 100%;
 }
@@ -48,7 +50,7 @@
 
 #page-header {
   align-items: center;
-  background-color: var(--surfaces-bg02);
+  background-color: var(--left-side-bg);
   display: flex;
   flex-direction: row;
   height: 60px;
@@ -64,7 +66,6 @@
 
 #page-components {
   overflow: auto;
-  padding-top: 0.25rem;
 }
 
 .grid-layout {
@@ -97,16 +98,8 @@
   width: 100%;
 }
 
-.loading-container,
-.figure-container {
-  display: flex;
-  flex-direction: column;
-  height: 100%;
-  width: 100%;
-}
-
 #left-sidebar {
-  border-right: 1px solid var(--border-subtleAlpha01);
+  border-right: 1px solid var(--bs-border-color);
   display: flex;
   flex-direction: column;
   gap: 40px;
@@ -122,7 +115,6 @@
   flex: 1 1 0;
   flex-direction: row;
   height: calc(100vh - 64px);
-  overflow: auto;
 }
 
 #dashboard-title,
@@ -158,7 +150,8 @@
 }
 
 #collapse-icon.material-symbols-outlined {
-  background-color: var(--collapse-icon-bg);
+  background-color: var(--left-side-bg);
+  border: 1px solid var(--border-subtleAlpha01);
   border-radius: 50%;
   color: var(--text-disabled);
   cursor: pointer;
@@ -166,7 +159,7 @@
 }
 
 #collapse-icon.material-symbols-outlined:hover {
-  color: var(--text-primary);
+  color: var(--text-primaryHover);
 }
 
 .collapse-icon-div {
@@ -176,56 +169,69 @@
   width: 0;
 }
 
-.page-component-container {
-  display: flex;
-  flex-direction: column;
-  height: 100%;
-}
+/*
+Note: This is a temporary quick-fix to improve the mobile layout experience.
+In the long run, we should refactor our CSS and component structure to support proper responsive design.
 
-/* Note: This is only meant as a quick-fix to improve some of the mobile layouts. */
+Current logic:
+1. Applies a flex layout with column direction to:
+   - Extra-small, small, and medium screen widths (≤ 768px)
+   - Large screen widths (≤ 1028px) *only when* the collapsible left panel is open
 
-/* Long-term wise this should be replaced by refactoring our CSS code and components to be mobile-compatible. */
+2. Applies a zoom-out effect for very small screen widths and heights (≤ 576px)
+*/
 
-/* Applies to device size x-small and small */
-@media (width <= 576px) {
+/* Apply flex layout for screens smaller than 768px */
+@media screen and (width <= 768px) {
   .grid-layout {
     display: flex;
     flex: 1;
     flex-direction: column;
   }
+}
 
+/* Apply flex layout for screens up to 1028px if collapsible-left-side is shown */
+@media screen and (width <= 1028px) {
+  #page-main:has(#collapsable-left-side.show) .grid-layout {
+    display: flex;
+    flex: 1;
+    flex-direction: column;
+  }
+}
+
+/* Apply zoom-out on small screen sizes */
+@media screen and (width <= 576px), screen and (height <= 576px) {
   .collapse-icon-div {
     padding-top: 20px;
   }
 
-  #page-header {
-    zoom: 80%;
-  }
-
+  #page-header,
+  #right-side,
   #left-side {
-    zoom: 80%;
-  }
-
-  #right-side {
     zoom: 80%;
   }
 }
 
-@media (height <= 576px) {
-  .collapse-icon-div {
-    padding-top: 20px;
+@media screen and (width <= 576px) and (orientation: portrait) {
+  body:has(#collapsible-left-side.show) {
+    overflow: hidden;
   }
 
-  #page-header {
-    zoom: 80%;
+  #collapsible-left-side.show ~ .collapse-icon-div #collapse-icon {
+    right: -10px;
+    z-index: 10;
   }
 
   #left-side {
-    zoom: 80%;
+    height: calc(100vh - 48px);
+    position: absolute;
+    width: 100vw;
+    z-index: 5;
+    zoom: 100%;
   }
 
-  #right-side {
-    zoom: 80%;
+  #left-main {
+    width: 100%;
   }
 }
 

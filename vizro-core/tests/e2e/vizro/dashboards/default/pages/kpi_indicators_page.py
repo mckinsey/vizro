@@ -11,7 +11,7 @@ kpi_df = pd.DataFrame(
 
 kpi_indicators_page = vm.Page(
     title=cnst.KPI_INDICATORS_PAGE,
-    layout=vm.Layout(grid=[[0, 1, 2], [3, 4, 5], [6, 7, 8], [9, 10, -1]]),
+    layout=vm.Grid(grid=[[0, 1, 2], [3, 4, 5], [6, 7, 8], [9, 10, -1]]),
     components=[
         # Style 1: Value Only
         vm.Figure(
@@ -118,5 +118,5 @@ kpi_indicators_page = vm.Page(
             ),
         ),
     ],
-    controls=[vm.Filter(column="Category", selector=vm.Dropdown(id=cnst.DROPDOWN_FILTER_KPI_PAGE, multi=False))],
+    controls=[vm.Filter(column="Category", selector=vm.Dropdown(id=cnst.DROPDOWN_FILTER_KPI_PAGE))],
 )

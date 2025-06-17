@@ -17,7 +17,9 @@ In the `targets` argument, you can specify the component and function argument t
 Unlike for the [`Filter`][vizro.models.Filter] model, you also have to configure the `selector` argument, by providing it with an appropriate model and the desired options/numeric ranges.
 
 !!! example "Basic Parameter"
+
     === "app.py"
+
         ```{.python pycafe-link}
         from vizro import Vizro
         import vizro.plotly.express as px
@@ -45,11 +47,11 @@ Unlike for the [`Filter`][vizro.models.Filter] model, you also have to configure
         )
 
         dashboard = vm.Dashboard(pages=[page])
-
         Vizro().build(dashboard).run()
         ```
 
     === "app.yaml"
+
         ```yaml
         # Still requires a .py to add data to the data manager and parse YAML configuration
         # See yaml_version example
@@ -75,6 +77,7 @@ Unlike for the [`Filter`][vizro.models.Filter] model, you also have to configure
         ```
 
     === "Result"
+
         [![Parameter]][parameter]
 
 If you would like to pass `None` as a parameter and make a parameter optional, you can specify the string `"NONE"` in the `options` or `value` field.
@@ -84,7 +87,9 @@ If you would like to pass `None` as a parameter and make a parameter optional, y
 If you want to change nested parameters, you can specify the `targets` argument with a dot separated string like `<target_component_id>.<target_argument>.<first_hierarchy>`.
 
 !!! example "Nested Parameters for multiple targets"
+
     === "app.py"
+
         ```{.python pycafe-link}
         from vizro import Vizro
         import vizro.plotly.express as px
@@ -130,11 +135,11 @@ If you want to change nested parameters, you can specify the `targets` argument 
         )
 
         dashboard = vm.Dashboard(pages=[page])
-
         Vizro().build(dashboard).run()
         ```
 
     === "app.yaml"
+
         ```yaml
         # Still requires a .py to add data to the data manager and parse YAML configuration
         # See yaml_version example
@@ -165,12 +170,15 @@ If you want to change nested parameters, you can specify the `targets` argument 
                   value: #3949ab
                   multi: false
                   type: dropdown
-                targets: [scatter_chart.color_discrete_map.virginica, bar_chart.color_discrete_map.virginica]
+                targets:
+                  - scatter_chart.color_discrete_map.virginica
+                  - bar_chart.color_discrete_map.virginica
                 type: parameter
             title: My first page
         ```
 
     === "Result"
+
         [![Nested]][nested]
 
 In the above example, the object passed to the function argument `color_discrete_map` is a dictionary which maps the different flower species to fixed colors (for example, `{"virginica":"blue"}`). In this case, only the value `blue` should be changed instead of the entire dictionary. This can be achieved by specifying a target as `scatter.color_discrete_map.virginica`.

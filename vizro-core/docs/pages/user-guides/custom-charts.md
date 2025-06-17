@@ -34,6 +34,7 @@ Building on the above, there are several routes one can take. The following exam
 To alter the data in the `data_frame` argument, consider using a [Filter](filters.md) or [parametrized data loading](data.md/#parametrize-data-loading) and [dynamic data](data.md/#dynamic-data). The `data_frame` argument input to a custom chart contains the data **after** filters and parameters have been applied.
 
 !!! note
+
     Custom charts can be targeted by [Filters](filters.md) or [Parameters](parameters.md) without any extra configuration. We will showcase both possibilities in the following examples.
 
 ## Enhanced `plotly.express` chart with reference line
@@ -41,7 +42,9 @@ To alter the data in the `data_frame` argument, consider using a [Filter](filter
 The below examples shows a case where we enhance an existing `plotly.express` chart. We add a new argument (`hline`), that is used to draw a grey reference line at the height determined by the value of `hline`. The important thing to note is that we then add a `Parameter` that enables the dashboard user to interact with the argument, and hence move the line in this case. See the `Result` tab for an animation.
 
 !!! example "Custom `plotly.express` scatter chart with a `Parameter`"
+
     === "app.py"
+
         ```{.python pycafe-link}
         import vizro.models as vm
         import vizro.plotly.express as px
@@ -56,7 +59,7 @@ The below examples shows a case where we enhance an existing `plotly.express` ch
             return fig
 
 
-        page_0 = vm.Page(
+        page = vm.Page(
             title="Custom chart",
             components=[
                 vm.Graph(
@@ -78,8 +81,8 @@ The below examples shows a case where we enhance an existing `plotly.express` ch
                 ),
             ],
         )
-        dashboard = vm.Dashboard(pages=[page_0])
 
+        dashboard = vm.Dashboard(pages=[page])
         Vizro().build(dashboard).run()
         ```
 
@@ -87,9 +90,11 @@ The below examples shows a case where we enhance an existing `plotly.express` ch
         1. Here we parametrize the `hline` argument, but any other argument can be parametrized as well. Since there is complete flexibility regarding what can be derived from such arguments, the dashboard user has a wide range of customization options.
 
     === "app.yaml"
+
         Custom charts are currently only possible via Python configuration.
 
     === "Result"
+
         [![Graph2]][graph2]
 
 ## New Waterfall chart based on `go.Figure()`
@@ -97,7 +102,9 @@ The below examples shows a case where we enhance an existing `plotly.express` ch
 The below examples shows a more involved use-case. We create and style a waterfall chart, and add it alongside a filter to the dashboard. The example is based on [a plotly waterfall chart tutorial](https://plotly.com/python/waterfall-charts/).
 
 !!! example "Custom `go.Figure()` waterfall chart with a `Parameter`"
+
     === "app.py"
+
         ```{.python pycafe-link}
         import pandas as pd
         import plotly.graph_objects as go
@@ -137,27 +144,28 @@ The below examples shows a more involved use-case. We create and style a waterfa
             return fig
 
 
-        page_0 = vm.Page(
+        page = vm.Page(
             title="Custom chart",
             components=[
                 vm.Graph(
                     figure=waterfall(data_frame=waterfall_data(), measure="measure", x="x", y="y", text="text"),
                 ),
             ],
-            # Apply a filter to the custom chart
             controls=[
-                vm.Filter(column="x", selector=vm.Dropdown(title="Financial categories", multi=True)),
+                vm.Filter(column="x", selector=vm.Dropdown(title="Financial categories")),
             ],
         )
-        dashboard = vm.Dashboard(pages=[page_0])
 
+        dashboard = vm.Dashboard(pages=[page])
         Vizro().build(dashboard).run()
         ```
 
     === "app.yaml"
+
         Custom charts are currently only possible via Python configuration.
 
     === "Result"
+
         [![Graph3]][graph3]
 
 [graph2]: ../../assets/user_guides/custom_charts/custom_chart_showcase_parameter.gif

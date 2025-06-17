@@ -6,7 +6,8 @@ defaults:
 
 on:
   push:
-    branches: [main]
+    branches:
+      - main
   pull_request:
     branches:
       - main
@@ -18,15 +19,18 @@ env:
 
 jobs:
   test-e2e-vizro-dom-elements:
-    name: test-e2e-vizro-dom-elements on Py${{ matrix.config.python-version }} ${{ matrix.config.label }}
+    name: test-e2e-vizro-dom-elements on Py${{ matrix.python-version }} ${{ matrix.label }}-${{ matrix.group }}
     runs-on: ubuntu-latest
 
     strategy:
       fail-fast: false
       matrix:
-        config:
+        group: [1, 2, 3]
+        label: [upper bounds, lower bounds]
+        include:
           - python-version: "3.12"
             hatch-env: all.py3.12
+            label: upper bounds
           - python-version: "3.9"
             hatch-env: lower-bounds
             label: lower bounds
@@ -34,24 +38,35 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
-      - name: Set up Python ${{ env.PYTHON_VERSION }}
+      - name: Set up Python ${{ matrix.python-version }}
         uses: actions/setup-python@v5
         with:
-          python-version: ${{ env.PYTHON_VERSION }}
+          python-version: ${{ matrix.python-version }}
 
       - name: Install Hatch
         run: pip install hatch
+
+      - name: Install pixelmatch
+        run: sudo npm install pixelmatch -g
 
       - name: Show dependency tree
         run: hatch run pip tree
 
       - name: Run e2e vizro-dom-elements tests
-        run: hatch run test-e2e-vizro-dom-elements
+        run: hatch run test-e2e-vizro-dom-elements --splits 3 --group ${{ matrix.group }}
+
+      - name: Create CTRF reports for tests
+        if: always()
+        uses: ./.github/actions/ctrf-report
+        env:
+          ARTIFACT_NAME_POSTFIX: ${{ matrix.label }}-${{ matrix.python-version }}-${{ matrix.group }}
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Create artifacts and slack notifications
         if: failure()
         uses: ./.github/actions/failed-artifacts-and-slack-notifications
         env:
-          TESTS_NAME: Vizro e2e vizro dom elements tests
+          TESTS_NAME: Vizro e2e vizro dom elements tests ${{ matrix.label }}-${{ matrix.python-version }}
           SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
           PROJECT_PATH: /home/runner/work/vizro/vizro/vizro-core/
+          FAILED_SCREENSHOTS_ARCHIVE_POSTFIX: ${{ matrix.label }}-${{ matrix.python-version }}-${{ matrix.group }}

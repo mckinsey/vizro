@@ -1,0 +1,45 @@
+[envs.all]
+
+[[envs.all.matrix]]
+python = ["3.10", "3.11", "3.12", "3.13"]
+
+[envs.changelog]
+dependencies = ["scriv"]
+detached = true
+installer = "uv"
+scripts = {add = "scriv create --add", collect = ["scriv collect --add", "- pre-commit run --files=CHANGELOG.md > /dev/null"]}
+
+[envs.default]
+dependencies = [
+  "coverage[toml]>=6.5",
+  "pytest",
+  "pytest-mock",
+  "pytest-rerunfailures",
+  "pytest-split",
+  "jupyter"
+]
+installer = "uv"
+
+[envs.default.scripts]
+lint = "pre-commit run {args} --all-files"
+pip = '"{env:HATCH_UV}" pip {args}'
+prep-release = [
+  "hatch version release",
+  "hatch run changelog:collect",
+  "hatch run changelog:add",
+  'echo "Now raise a PR to merge into main with title: [Release] Release of vizro-mcp $(hatch version)"'
+]
+pypath = "python -c 'import sys; print(sys.executable)'"
+test = "pytest tests --headless {args}"
+test-unit = "pytest tests/unit {args}"
+test-unit-coverage = [
+  "coverage run -m pytest tests/unit {args}",
+  "- coverage combine",
+  "coverage report"
+]
+
+[publish.index]
+disable = true
+
+[version]
+path = "src/vizro_mcp/__init__.py"

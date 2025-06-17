@@ -11,6 +11,134 @@ See the fragment files in the [changelog.d directory](https://github.com/mckinse
 
 <!-- scriv-insert-here -->
 
+<a id='changelog-0.1.40'></a>
+
+# 0.1.40 — 2025-06-03
+
+## Highlights ✨
+
+- Enable controls inside containers. See the [user guide on container](https://vizro.readthedocs.io/en/stable/pages/user-guides/container/#add-controls-to-container) for more details. ([#1094](https://github.com/mckinsey/vizro/pull/1094))
+
+## Added
+
+- Add `description` argument to `Tabs` to enable tooltips in the title. See the [user guide on container](https://vizro.readthedocs.io/en/stable/pages/user-guides/container/#add-a-tooltip) for an example. ([#1178](https://github.com/mckinsey/vizro/pull/1178))
+
+- Enable `extra` argument for `vm.Graph`, which allows passing arguments directly to the underlying `dcc.Graph`. ([#1210](https://github.com/mckinsey/vizro/pull/1210))
+
+## Fixed
+
+- Fix a bug where assigning a custom action to `Filter.selector.actions` raised an error. ([#1197](https://github.com/mckinsey/vizro/pull/1197))
+
+<a id='changelog-0.1.39'></a>
+
+# 0.1.39 — 2025-05-16
+
+## Added
+
+- Add `description` argument to `Dashboard`, `Page`, `Container`, `Graph`, `AgGrid` and `Table` to enable tooltips in titles. See this [user guide](https://vizro.readthedocs.io/en/stable/pages/user-guides/container/#add-a-tooltip) for an example. ([#1144](https://github.com/mckinsey/vizro/pull/1144))
+
+- Enable `title` inside `Tabs`. ([#1169](https://github.com/mckinsey/vizro/pull/1169))
+
+## Changed
+
+- Bump `dash>=3.0.0`, `dash-bootstrap-components>=2.0.0`, `dash-ag-grid>=31.3.1` and `dash-mantine-components>=1.0.0`. ([#1160](https://github.com/mckinsey/vizro/pull/1160))
+
+## Fixed
+
+- Fix bug where `dash_data_table` and `dash_ag_grid` callables with the same `id` would not raise an error but break the dashboard. ([#1159](https://github.com/mckinsey/vizro/pull/1159))
+
+<a id='changelog-0.1.38'></a>
+
+# 0.1.38 — 2025-04-24
+
+## Added
+
+- Add `collapsed` argument to `vm.Container` to enable collapsible containers. See the [user guide on collapsible container](https://vizro.readthedocs.io/en/stable/pages/user-guides/container/#collapsible-containers) for more details. ([#1079](https://github.com/mckinsey/vizro/pull/1079))
+
+- Enable styling of `vm.Button` with a new argument `variant="plain"/"filled"/"outlined"`. See the [user guide on styled buttons](https://vizro.readthedocs.io/en/stable/pages/user-guides/button/#styled-buttons) for more details. ([#1114](https://github.com/mckinsey/vizro/pull/1114))
+
+- Add `description` argument to `Checklist`, `Dropdown`, `RadioItems`, `Slider`, `RangeSlider` and `DatePicker` to enable tooltips in selector titles. See the [user guide on tooltips](https://vizro.readthedocs.io/en/stable/pages/user-guides/selectors/#add-a-tooltip) for more details. ([#1124](https://github.com/mckinsey/vizro/pull/1124))
+
+## Changed
+
+- Update the light theme for better consistency and contrast. Right-side and card backgrounds now adapt when a `Container` with `variant="filled"` is used. ([#1048](https://github.com/mckinsey/vizro/pull/1048))
+
+- `actions` now have type `list[ActionType]` rather than `list[Action]`. ([#1054](https://github.com/mckinsey/vizro/pull/1054))
+
+## Fixed
+
+- Adjust the width and height of flex-items and grid-items dynamically based on the dimensions of their ancestor.([#1108](https://github.com/mckinsey/vizro/pull/1108))
+
+- Update styling (font style, bg-color and hover effect) of `Card`. ([#1112](https://github.com/mckinsey/vizro/pull/1112))
+
+<a id='changelog-0.1.37'></a>
+
+# 0.1.37 — 2025-04-09
+
+## Highlights ✨
+
+- `Flex` model support for the `layout` argument of the `Page` and `Container`. See the [user guide on the `Flex` layout](https://vizro.readthedocs.io/en/stable/pages/user-guides/layouts/#flex-layout) for more details. ([#1050](https://github.com/mckinsey/vizro/pull/1050))
+
+- Vizro models now have autocomplete functionality in IDEs when using the pydantic [plugin for VS Code](https://docs.pydantic.dev/latest/integrations/visual_studio_code/) or [for PyCharm](https://docs.pydantic.dev/latest/integrations/pycharm/). ([#1089](https://github.com/mckinsey/vizro/pull/1089))
+
+## Added
+
+- Add support for more CSS units (rem, em, %) for `row_min_height`, `row_gap`, `col_gap`, and `col_min_width` in `Layout`. ([#1050](https://github.com/mckinsey/vizro/pull/1050))
+
+## Changed
+
+- Improve mobile responsiveness: the flex layout breakpoint is now 764px (side panel collapsed) or 1064px (side panel expanded). ([#1097](https://github.com/mckinsey/vizro/pull/1097))
+
+- Make `Container.title` mandatory only when used within `Tabs`. ([#1103](https://github.com/mckinsey/vizro/pull/1103))
+
+## Deprecated
+
+- `vm.Layout` has been renamed `vm.Grid`, and `vm.Layout` will no longer exist in Vizro 0.2.0. ([#1098](https://github.com/mckinsey/vizro/pull/1098))
+
+<a id='changelog-0.1.36'></a>
+
+# 0.1.36 — 2025-03-31
+
+## Changed
+
+- Add an `id` to the header and footer HTML elements of `Graph`, `Table`, and `AgGrid` to enable targeting through actions/callbacks. ([#1080](https://github.com/mckinsey/vizro/pull/1080))
+
+## Fixed
+
+- Fix `model_rebuild` errors originating from recent changes in pydantic 2.11. ([#1086](https://github.com/mckinsey/vizro/pull/1086))
+
+<a id='changelog-0.1.35'></a>
+
+# 0.1.35 — 2025-03-18
+
+## Highlights ✨
+
+- Add `vm.Text` component to easily add arbitrary text to your dashboard. See the user guide on the [`vm.Text` component](https://vizro.readthedocs.io/en/stable/pages/user-guides/text/) for more details. ([#1061](https://github.com/mckinsey/vizro/pull/1061))
+
+## Added
+
+- Enable styling of `vm.Container` with a new argument `variant="plain"/"filled"/"outlined"`. See the user guide on [styled containers](https://vizro.readthedocs.io/en/stable/pages/user-guides/container/#styled-containers) for more details. ([#1002](https://github.com/mckinsey/vizro/pull/1002))
+
+- `DatePicker` filters update automatically when underlying dynamic data changes. See the user guide on [dynamic filters](https://vizro.readthedocs.io/en/stable/pages/user-guides/data/#filters) for more information. ([#1039](https://github.com/mckinsey/vizro/pull/1039))
+
+- Add `extra` argument to selected models to enable passing arguments directly to the underlying Dash component. ([#1032](https://github.com/mckinsey/vizro/pull/1032))
+
+- Dynamic data parameters automatically refresh the relevant dynamic filters. ([#1051](https://github.com/mckinsey/vizro/pull/1051))
+
+## Changed
+
+- Turn `AgGrid` background transparent. ([#1047](https://github.com/mckinsey/vizro/pull/1047))
+
+## Fixed
+
+- Fix a bug where an empty parameter selection incorrectly sent `[None]` to its target. ([#1026](https://github.com/mckinsey/vizro/pull/1026))
+
+- Fix `datasets_from_catalog` for `kedro>=0.19.9`. ([#1063](https://github.com/mckinsey/vizro/pull/1063))
+
+- `datasets_from_catalog` now loads the latest version of versioned datasets. ([#1063](https://github.com/mckinsey/vizro/pull/1063))
+
+- `Filter` and `Parameter` can now be initialized before their targeted components. ([#1065](https://github.com/mckinsey/vizro/pull/1065))
+
 <a id='changelog-0.1.34'></a>
 
 # 0.1.34 — 2025-02-13

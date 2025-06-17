@@ -28,7 +28,7 @@ class CodeClipboard(vm.VizroBaseModel):
             ],
             href=f"https://py.cafe/snippet/vizro/v1#code={quote(self.code)}",
             target="_blank",
-            className="pycafe-link",
+            class_name="pycafe-link",
         )
 
         return html.Div(
@@ -57,19 +57,5 @@ class Markdown(vm.VizroBaseModel):
         )
 
 
-class FlexContainer(vm.Container):
-    """Custom flex `Container`."""
-
-    type: Literal["flex_container"] = "flex_container"
-    title: str = None  # Title exists in vm.Container but we don't want to use it here.
-
-    def build(self):
-        """Returns a flex container."""
-        return html.Div(
-            id=self.id, children=[component.build() for component in self.components], className="flex-container"
-        )
-
-
-vm.Container.add_type("components", FlexContainer)
 vm.Container.add_type("components", Markdown)
 vm.Container.add_type("components", CodeClipboard)

@@ -18,7 +18,7 @@ filters_page = vm.Page(
                         vm.Container(
                             id=cnst.FILTERS_COMPONENTS_CONTAINER,
                             title=cnst.FILTERS_COMPONENTS_CONTAINER,
-                            layout=vm.Layout(grid=[[0, 1], [0, 1], [0, 2]]),
+                            layout=vm.Grid(grid=[[0, 1], [0, 1], [0, 2]]),
                             components=[
                                 vm.Graph(
                                     id=cnst.SCATTER_GRAPH_ID,
@@ -68,6 +68,7 @@ filters_page = vm.Page(
                 y="petal_width",
                 color="sepal_width",
             ),
+            extra={"config": {"displayModeBar": False}},
         ),
     ],
     controls=[

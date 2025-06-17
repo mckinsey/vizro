@@ -5,7 +5,9 @@ for a pure Dash app.
 All the HEX values starting with --text-code are taken from the Github code highlighting style. */
 [data-bs-theme="dark"] {
   --dropdown-label-bg: var(--primary-800);
+  --left-side-bg: var(--surfaces-bg02);
   --right-side-bg: var(--surfaces-bg03);
+  --right-side-bg-iterated: var(--surfaces-bg03);
   --text-code-string: #95c2e7;
   --text-code-keyword: #f4766e;
   --text-code-meta: #c8ace1;
@@ -17,7 +19,9 @@ All the HEX values starting with --text-code are taken from the Github code high
 
 [data-bs-theme="light"] {
   --dropdown-label-bg: var(--primary-300);
+  --left-side-bg: var(--surfaces-bg01);
   --right-side-bg: var(--surfaces-bg01);
+  --right-side-bg-iterated: var(--primary-300);
   --text-code-string: #0a3069;
   --text-code-keyword: #d12d39;
   --text-code-meta: #6f42c1;
@@ -40,8 +44,7 @@ All the HEX values starting with --text-code are taken from the Github code high
 
 /* CARDS */
 .card {
-  height: 100%;
-  width: 100%;
+  margin: 4px;
 }
 
 .card .nav-link {
@@ -65,25 +68,11 @@ All the HEX values starting with --text-code are taken from the Github code high
   border-left: 2px solid var(--border-enabled);
 }
 
-/* TABS */
-.nav-tabs {
-  margin-bottom: 1.25rem;
-}
 
-.tab-content {
-  height: calc(100% - 3.25rem); /* 3.25rem: nav-tabs margin + height */
-}
-
-/* The dbc component adds an additional div element to which we cannot assign a className.
-To ensure the dynamic height adjustment and prevent scrolling, the height must be specified for that div as below. */
-.tab-pane,
-.tab-pane > div:first-child {
-  height: 100%;
-}
-
-/* Hides title of the first container given the title is already reflected in the tab title */
-.tab-content .container-title:first-of-type {
-  display: none;
+/* Move background color to BS */
+.accordion-item .nav-link:active, .accordion-item .nav-link.active,
+.accordion-item .nav-link:hover, .accordion-item .nav-link.hover {
+  background: var(--surfaces-bg-card);
 }
 
 /* Remove label that automatically gets added when calling `dbc.Switch` to remove gap. */
@@ -94,7 +83,7 @@ label[for="theme-selector"] {
 /* This is currently required as the usage of dbc.NavBar automatically adds classNames such as `navbar-light` and
 `bg-light`, which come with an important tag from bootstrap. So we need below to overwrite these properties again. */
 .navbar {
-  background: var(--surfaces-bg02) !important;
+  background: var(--left-side-bg) !important;
 }
 
 .form-switch .form-check-input {
@@ -102,7 +91,12 @@ label[for="theme-selector"] {
   padding-left: 0;
 }
 
-/* Remove bottom margin of last child as card comes with padding */
-.card-text > *:last-child {
-  margin-bottom: 0;
+.container-controls-panel .dropdown {
+  max-width: 240px;
+  min-width: 160px;
+}
+
+.container-controls-panel .form-check-inline {
+  align-content: center;
+  height: 32px;
 }

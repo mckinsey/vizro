@@ -1,0 +1,81 @@
+.container-fluid {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  padding: 0;
+}
+
+.container-fluid:has(> .collapse:not(.show)) {
+  height: 60px; /* height of title (28px) + 2 x container padding (16px) */
+  overflow: hidden;
+}
+
+.container-title,
+.container-title-collapse {
+  align-items: center;
+  display: flex;
+  justify-content: space-between;
+}
+
+/* Hides title of the first container given the title is already reflected in the tab title */
+.tab-content .container-title:first-of-type {
+  display: none;
+}
+
+/* Change cursor for the whole container title when it's a collapsible container. */
+.container-title-collapse  {
+  cursor: pointer;
+}
+
+.container-title-collapse .material-symbols-outlined {
+  color: var(--text-secondary);
+}
+
+.container-title-collapse .material-symbols-outlined:hover {
+  color: var(--text-primaryHover);
+}
+
+.collapsible-container {
+  flex: 1;
+  overflow: inherit;
+}
+
+.bg-container {
+  background: var(--left-side-bg);
+}
+
+/* Change filled container bg inside filled container */
+.bg-container .bg-container {
+  background-color: var(--right-side-bg-iterated);
+}
+
+/* If a filled container is detected, then the right-bg color will change to grey
+and all containers need to have a white background on that page */
+[data-bs-theme="light"] #right-side:has(.bg-container) {
+  background: var(--right-side-bg-iterated);
+}
+
+[data-bs-theme="light"] #right-side:has(.bg-container) .card {
+  background: var(--left-side-bg);
+}
+
+.inner-container-title {
+  align-items: center;
+  display: flex;
+  gap: 8px;
+}
+
+.container-controls-panel {
+  border-bottom: 1px solid var(--border-subtleAlpha01);
+  display: flex;
+  flex-wrap: wrap;
+  gap: 24px;
+  justify-content: start;
+  margin-bottom: 0.5rem;
+  padding-bottom: 0.5rem;
+}
+
+.tab-content .container-controls-panel {
+  border-bottom: none;
+  padding-bottom: 0;
+}

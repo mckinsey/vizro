@@ -16,7 +16,9 @@ To add a filter to your page, do the following:
 You can also set `targets` to specify which components on the page the filter should apply to. If this is not explicitly set then `targets` defaults to all components on the page whose data source includes `column`.
 
 !!! example "Basic Filter"
+
     === "app.py"
+
         ```{.python pycafe-link}
         from vizro import Vizro
         import vizro.plotly.express as px
@@ -35,11 +37,11 @@ You can also set `targets` to specify which components on the page the filter sh
         )
 
         dashboard = vm.Dashboard(pages=[page])
-
         Vizro().build(dashboard).run()
         ```
 
     === "app.yaml"
+
         ```yaml
         # Still requires a .py to add data to the data manager and parse YAML configuration
         # See yaml_version example
@@ -59,6 +61,7 @@ You can also set `targets` to specify which components on the page the filter sh
         ```
 
     === "Result"
+
         [![Filter]][filter]
 
 The selector is configured automatically based on the target column type data as follows:
@@ -70,7 +73,9 @@ The selector is configured automatically based on the target column type data as
 The following example demonstrates these default selector types.
 
 !!! example "Default Filter selectors"
+
     === "app.py"
+
         ```{.python pycafe-link}
         import pandas as pd
         from vizro import Vizro
@@ -102,11 +107,11 @@ The following example demonstrates these default selector types.
         )
 
         dashboard = vm.Dashboard(pages=[page])
-
         Vizro().build(dashboard).run()
         ```
 
     === "app.yaml"
+
         ```yaml
         # Still requires a .py to add data to the data manager and parse YAML configuration
         # See yaml_version example
@@ -130,14 +135,17 @@ The following example demonstrates these default selector types.
         ```
 
     === "Result"
-        [![Filter]][filter]
+
+        [![FilterDefault]][filterdefault]
 
 ## Change selector
 
 If you want to have a different selector for your filter, you can give the `selector` argument of the [`Filter`][vizro.models.Filter] a different selector model. Currently available selectors are [`Checklist`][vizro.models.Checklist], [`Dropdown`][vizro.models.Dropdown], [`RadioItems`][vizro.models.RadioItems], [`RangeSlider`][vizro.models.RangeSlider], [`Slider`][vizro.models.Slider], and [`DatePicker`][vizro.models.DatePicker].
 
 !!! example "Filter with different selector"
+
     === "app.py"
+
         ```{.python pycafe-link}
         from vizro import Vizro
         import vizro.plotly.express as px
@@ -156,11 +164,11 @@ If you want to have a different selector for your filter, you can give the `sele
         )
 
         dashboard = vm.Dashboard(pages=[page])
-
         Vizro().build(dashboard).run()
         ```
 
     === "app.yaml"
+
         ```yaml
         # Still requires a .py to add data to the data manager and parse YAML configuration
         # See yaml_version example
@@ -181,6 +189,7 @@ If you want to have a different selector for your filter, you can give the `sele
         ```
 
     === "Result"
+
         [![Selector]][selector]
 
 ## Further customization
@@ -193,7 +202,9 @@ For further customizations, you can always refer to the [`Filter` model][vizro.m
 Below is an advanced example where we only target one page component, and where we further customize the chosen `selector`.
 
 !!! example "Advanced Filter"
+
     === "app.py"
+
         ```{.python pycafe-link}
         from vizro import Vizro
         import vizro.plotly.express as px
@@ -213,11 +224,11 @@ Below is an advanced example where we only target one page component, and where 
         )
 
         dashboard = vm.Dashboard(pages=[page])
-
         Vizro().build(dashboard).run()
         ```
 
     === "app.yaml"
+
         ```yaml
         # Still requires a .py to add data to the data manager and parse YAML configuration
         # See yaml_version example
@@ -250,10 +261,12 @@ Below is an advanced example where we only target one page component, and where 
         ```
 
     === "Result"
+
         [![Advanced]][advanced]
 
 To further customize selectors, see our [how-to-guide on creating custom components](custom-components.md).
 
 [advanced]: ../../assets/user_guides/control/control3.png
 [filter]: ../../assets/user_guides/control/control1.png
+[filterdefault]: ../../assets/user_guides/control/controls_defaults.png
 [selector]: ../../assets/user_guides/control/control2.png

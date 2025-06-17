@@ -31,18 +31,19 @@ function update_graph_theme(figure, theme_selector_checked, vizro_themes) {
 
 function collapse_nav_panel(n_clicks, is_open) {
   if (!n_clicks) {
-    /* Automatically collapses left-side if xs and s-devices are detected*/
-    if (window.innerWidth < 576 || window.innerHeight < 576) {
+    /* Automatically collapses left-side if xs, s and m-devices are detected*/
+    if (window.innerWidth < 768 || window.innerHeight < 768) {
       return [
         false,
         {
           transform: "rotate(180deg)",
           transition: "transform 0.35s ease-in-out",
+          marginLeft: "8px",
         },
         "Show Menu",
       ];
     }
-    return dash_clientside.no_update;
+    throw dash_clientside.PreventUpdate;
   }
   if (is_open) {
     return [
@@ -50,6 +51,7 @@ function collapse_nav_panel(n_clicks, is_open) {
       {
         transform: "rotate(180deg)",
         transition: "transform 0.35s ease-in-out",
+        marginLeft: "8px",
       },
       "Show Menu",
     ];

@@ -1,32 +1,21 @@
-import math
-from typing import Annotated, Literal, Optional, Union
+from typing import Annotated, Any, Literal, Optional, Union
 
 import dash_bootstrap_components as dbc
 from dash import ClientsideFunction, Input, Output, State, clientside_callback, dcc, html
-from pydantic import AfterValidator, Field, PrivateAttr, ValidationInfo, model_validator
+from pydantic import AfterValidator, BeforeValidator, Field, PrivateAttr, ValidationInfo, model_validator
 from pydantic.functional_serializers import PlainSerializer
+from pydantic.json_schema import SkipJsonSchema
 
-from vizro.models import Action, VizroBaseModel
+from vizro.models import Tooltip, VizroBaseModel
 from vizro.models._action._actions_chain import _action_validator_factory
 from vizro.models._components.form._form_utils import (
     get_dict_options_and_default,
     validate_options_dict,
     validate_value,
 )
-from vizro.models._models_utils import _log_call
-from vizro.models.types import MultiValueType, OptionsDictType, OptionsType, SingleValueType
-
-
-def _calculate_option_height(options: list[OptionsDictType]) -> int:
-    """Calculates the height of the dropdown options based on the longest option."""
-    # 30 characters is roughly the number of "A" characters you can fit comfortably on a line in the dropdown.
-    # "A" is representative of a slightly wider than average character:
-    # https://stackoverflow.com/questions/3949422/which-letter-of-the-english-alphabet-takes-up-most-pixels
-    # We look at the longest option to find number_of_lines it requires. Option height is the same for all options
-    # and needs 24px for each line + 8px padding.
-    max_length = max(len(option["label"]) for option in options)
-    number_of_lines = math.ceil(max_length / 30)
-    return 8 + 24 * number_of_lines
+from vizro.models._models_utils import _calculate_option_height, _log_call
+from vizro.models._tooltip import coerce_str_to_tooltip
+from vizro.models.types import ActionType, MultiValueType, OptionsType, SingleValueType, _IdProperty
 
 
 def validate_multi(multi, info: ValidationInfo):
@@ -42,8 +31,7 @@ class Dropdown(VizroBaseModel):
     """Categorical single/multi-option selector `Dropdown`.
 
     Can be provided to [`Filter`][vizro.models.Filter] or
-    [`Parameter`][vizro.models.Parameter]. Based on the underlying
-    [`dcc.Dropdown`](https://dash.plotly.com/dash-core-components/dropdown).
+    [`Parameter`][vizro.models.Parameter].
 
     Args:
         type (Literal["dropdown"]): Defaults to `"dropdown"`.
@@ -53,8 +41,14 @@ class Dropdown(VizroBaseModel):
             [`MultiValueType`][vizro.models.types.MultiValueType]. Defaults to `None`.
         multi (bool): Whether to allow selection of multiple values. Defaults to `True`.
         title (str): Title to be displayed. Defaults to `""`.
-        actions (list[Action]): See [`Action`][vizro.models.Action]. Defaults to `[]`.
-
+        description (Optional[Tooltip]): Optional markdown string that adds an icon next to the title.
+            Hovering over the icon shows a tooltip with the provided description. Defaults to `None`.
+        actions (list[ActionType]): See [`ActionType`][vizro.models.types.ActionType]. Defaults to `[]`.
+        extra (Optional[dict[str, Any]]): Extra keyword arguments that are passed to `dcc.Dropdown` and overwrite any
+            defaults chosen by the Vizro team. This may have unexpected behavior.
+            Visit the [dcc documentation](https://dash.plotly.com/dash-core-components/dropdown)
+            to see all available arguments. [Not part of the official Vizro schema](../explanation/schema.md) and the
+            underlying component may change in the future. Defaults to `{}`.
     """
 
     type: Literal["dropdown"] = "dropdown"
@@ -70,22 +64,55 @@ class Dropdown(VizroBaseModel):
         Field(default=True, description="Whether to allow selection of multiple values", validate_default=True),
     ]
     title: str = Field(default="", description="Title to be displayed")
+    # TODO: ideally description would have json_schema_input_type=Union[str, Tooltip] attached to the BeforeValidator,
+    #  but this requires pydantic >= 2.9.
+    description: Annotated[
+        Optional[Tooltip],
+        BeforeValidator(coerce_str_to_tooltip),
+        Field(
+            default=None,
+            description="""Optional markdown string that adds an icon next to the title.
+            Hovering over the icon shows a tooltip with the provided description. Defaults to `None`.""",
+        ),
+    ]
     actions: Annotated[
-        list[Action],
+        list[ActionType],
         AfterValidator(_action_validator_factory("value")),
         PlainSerializer(lambda x: x[0].actions),
         Field(default=[]),
+    ]
+    extra: SkipJsonSchema[
+        Annotated[
+            dict[str, Any],
+            Field(
+                default={},
+                description="""Extra keyword arguments that are passed to `dcc.Dropdown` and overwrite any
+            defaults chosen by the Vizro team. This may have unexpected behavior.
+            Visit the [dcc documentation](https://dash.plotly.com/dash-core-components/dropdown)
+            to see all available arguments. [Not part of the official Vizro schema](../explanation/schema.md) and the
+            underlying component may change in the future. Defaults to `{}`.""",
+            ),
+        ]
     ]
 
     # Consider making the _dynamic public later. The same property could also be used for all other components.
     # For example: vm.Graph could have a dynamic that is by default set on True.
     _dynamic: bool = PrivateAttr(False)
 
-    # Component properties for actions and interactions
-    _input_property: str = PrivateAttr("value")
-
     # Reused validators
     _validate_options = model_validator(mode="before")(validate_options_dict)
+
+    @property
+    def _action_outputs(self) -> dict[str, _IdProperty]:
+        return {
+            "__default__": f"{self.id}.value",
+            **({"title": f"{self.id}_title.children"} if self.title else {}),
+            **({"description": f"{self.description.id}-text.children"} if self.description else {}),
+        }
+
+    @property
+    def _action_inputs(self) -> dict[str, _IdProperty]:
+        return {"__default__": f"{self.id}.value"}
 
     def __call__(self, options):
         dict_options, default_value = get_dict_options_and_default(options=options, multi=self.multi)
@@ -125,21 +152,29 @@ class Dropdown(VizroBaseModel):
                 prevent_initial_call=True,
             )
 
+        description = self.description.build().children if self.description else [None]
+
+        defaults = {
+            "id": self.id,
+            "options": dict_options,
+            "value": value,
+            "multi": self.multi,
+            "optionHeight": option_height,
+            "persistence": True,
+            "persistence_type": "session",
+            "placeholder": "Select option",
+            "className": "dropdown",
+            "clearable": self.multi,  # Set clearable=False only for single-select dropdowns
+        }
+
         return html.Div(
             children=[
-                dbc.Label(self.title, html_for=self.id) if self.title else None,
-                dcc.Dropdown(
-                    id=self.id,
-                    options=dict_options,
-                    value=value,
-                    multi=self.multi,
-                    optionHeight=option_height,
-                    clearable=self.multi,  # Set clearable=False only for single-select dropdowns
-                    placeholder="Select option",
-                    persistence=True,
-                    persistence_type="session",
-                    className="dropdown",
-                ),
+                dbc.Label(
+                    children=[html.Span(id=f"{self.id}_title", children=self.title), *description], html_for=self.id
+                )
+                if self.title
+                else None,
+                dcc.Dropdown(**(defaults | self.extra)),
             ]
         )
 
