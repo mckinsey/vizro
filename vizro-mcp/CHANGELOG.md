@@ -1,3 +1,11 @@
+<a id='changelog-0.1.1'></a>
+
+# 0.1.1 — 2025-05-15
+
+### Fixed
+
+- Fix name conflict with `langchain` by avoiding use of conflicting parameter names in tools. ([#1177](https://github.com/mckinsey/vizro/pull/1177))
+
 <a id='changelog-0.1.0'></a>
 
 # 0.1.0 — 2025-05-06

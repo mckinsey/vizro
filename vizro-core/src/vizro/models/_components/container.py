@@ -4,7 +4,7 @@ from typing import Annotated, Any, Literal, Optional
 
 import dash_bootstrap_components as dbc
 from dash import ClientsideFunction, Input, Output, State, clientside_callback, html
-from pydantic import AfterValidator, BeforeValidator, Field, conlist
+from pydantic import AfterValidator, BeforeValidator, Field, conlist, model_validator
 from pydantic.json_schema import SkipJsonSchema
 from pydantic_core.core_schema import ValidationInfo
 
@@ -12,7 +12,7 @@ from vizro.models import Tooltip, VizroBaseModel
 from vizro.models._grid import set_layout
 from vizro.models._models_utils import _build_inner_layout, _log_call, check_captured_callable_model
 from vizro.models._tooltip import coerce_str_to_tooltip
-from vizro.models.types import ComponentType, LayoutType
+from vizro.models.types import ComponentType, ControlType, LayoutType, _IdProperty
 
 
 # TODO: this could be done with default_factory once we bump to pydantic>=2.10.0.
@@ -38,6 +38,7 @@ class Container(VizroBaseModel):
             `plain`, `filled` or `outlined`. Defaults to `plain` (or `outlined` for collapsible container).
         description (Optional[Tooltip]): Optional markdown string that adds an icon next to the title.
             Hovering over the icon shows a tooltip with the provided description. Defaults to `None`.
+        controls (list[ControlType]): See [ControlType][vizro.models.types.ControlType]. Defaults to `[]`.
         extra (Optional[dict[str, Any]]): Extra keyword arguments that are passed to `dbc.Container` and overwrite any
             defaults chosen by the Vizro team. This may have unexpected behavior.
             Visit the [dbc documentation](https://dash-bootstrap-components.opensource.faculty.ai/docs/components/layout/)
@@ -82,7 +83,7 @@ class Container(VizroBaseModel):
             Hovering over the icon shows a tooltip with the provided description. Defaults to `None`.""",
         ),
     ]
-
+    controls: list[ControlType] = []
     extra: SkipJsonSchema[
         Annotated[
             dict[str, Any],
@@ -97,6 +98,19 @@ class Container(VizroBaseModel):
         ]
     ]
 
+    @model_validator(mode="after")
+    def _validate_title_if_collapsed(self):
+        if self.collapsed is not None and not self.title:
+            raise ValueError("`Container` must have a `title` explicitly set when `collapsed` is not None.")
+        return self
+
+    @property
+    def _action_outputs(self) -> dict[str, _IdProperty]:
+        return {
+            **({"title": f"{self.id}_title.children"} if self.title else {}),
+            **({"description": f"{self.description.id}-text.children"} if self.description else {}),
+        }
+
     @_log_call
     def build(self):
         # TODO: TBD on how to encode 'elevated', as box-shadows are not visible on a dark theme
@@ -110,7 +124,6 @@ class Container(VizroBaseModel):
         # 2) Logic inside Tabs.build that sets hidden=True for the heading or uses del to remove the heading via
         # providing an ID to the heading and accessing it in the component tree
         # 3) New field in Container like short_title to allow tab label to be set independently
-
         if self.collapsed is not None:
             clientside_callback(
                 ClientsideFunction(namespace="container", function_name="collapse_container"),
@@ -119,7 +132,7 @@ class Container(VizroBaseModel):
                     Output(f"{self.id}_icon", "style"),
                     Output(f"{self.id}_tooltip", "children"),
                 ],
-                inputs=[Input(f"{self.id}_title", "n_clicks"), State(f"{self.id}_collapse", "is_open")],
+                inputs=[Input(f"{self.id}_title_content", "n_clicks"), State(f"{self.id}_collapse", "is_open")],
                 prevent_initial_call=True,
             )
 
@@ -128,7 +141,8 @@ class Container(VizroBaseModel):
         defaults = {
             "id": self.id,
             "children": [
-                self._build_container_title(),
+                self._build_container_title() if self.title else None,
+                self._build_control_panel() if self.controls else None,
                 self._build_container(),
             ],
             "fluid": True,
@@ -156,9 +170,14 @@ class Container(VizroBaseModel):
 
     def _build_container_title(self):
         """Builds and returns the container title, including an optional icon and tooltip if collapsed."""
-        description = self.description.build().children if self.description else [None]
+        description = self.description.build().children if self.description is not None else [None]
 
-        title_content = [html.Div([self.title, *description], className="inner-container-title")]
+        title_content = [
+            html.Div(
+                [html.Span(id=f"{self.id}_title", children=self.title), *description], className="inner-container-title"
+            )
+        ]
+
         if self.collapsed is not None:
             # collapse_container is not run when page is initially loaded, so we set the content correctly conditional
             # on self.collapsed upfront. This prevents the up/down arrow rotating on in initial load.
@@ -180,5 +199,12 @@ class Container(VizroBaseModel):
         return html.H3(
             children=title_content,
             className="container-title-collapse" if self.collapsed is not None else "container-title",
-            id=f"{self.id}_title",
+            id=f"{self.id}_title_content",
+        )
+
+    def _build_control_panel(self):
+        return html.Div(
+            id=f"{self.id}-control-panel",
+            children=[control.build() for control in self.controls],
+            className="container-controls-panel",
         )

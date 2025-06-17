@@ -11,6 +11,42 @@ See the fragment files in the [changelog.d directory](https://github.com/mckinse
 
 <!-- scriv-insert-here -->
 
+<a id='changelog-0.1.40'></a>
+
+# 0.1.40 — 2025-06-03
+
+## Highlights ✨
+
+- Enable controls inside containers. See the [user guide on container](https://vizro.readthedocs.io/en/stable/pages/user-guides/container/#add-controls-to-container) for more details. ([#1094](https://github.com/mckinsey/vizro/pull/1094))
+
+## Added
+
+- Add `description` argument to `Tabs` to enable tooltips in the title. See the [user guide on container](https://vizro.readthedocs.io/en/stable/pages/user-guides/container/#add-a-tooltip) for an example. ([#1178](https://github.com/mckinsey/vizro/pull/1178))
+
+- Enable `extra` argument for `vm.Graph`, which allows passing arguments directly to the underlying `dcc.Graph`. ([#1210](https://github.com/mckinsey/vizro/pull/1210))
+
+## Fixed
+
+- Fix a bug where assigning a custom action to `Filter.selector.actions` raised an error. ([#1197](https://github.com/mckinsey/vizro/pull/1197))
+
+<a id='changelog-0.1.39'></a>
+
+# 0.1.39 — 2025-05-16
+
+## Added
+
+- Add `description` argument to `Dashboard`, `Page`, `Container`, `Graph`, `AgGrid` and `Table` to enable tooltips in titles. See this [user guide](https://vizro.readthedocs.io/en/stable/pages/user-guides/container/#add-a-tooltip) for an example. ([#1144](https://github.com/mckinsey/vizro/pull/1144))
+
+- Enable `title` inside `Tabs`. ([#1169](https://github.com/mckinsey/vizro/pull/1169))
+
+## Changed
+
+- Bump `dash>=3.0.0`, `dash-bootstrap-components>=2.0.0`, `dash-ag-grid>=31.3.1` and `dash-mantine-components>=1.0.0`. ([#1160](https://github.com/mckinsey/vizro/pull/1160))
+
+## Fixed
+
+- Fix bug where `dash_data_table` and `dash_ag_grid` callables with the same `id` would not raise an error but break the dashboard. ([#1159](https://github.com/mckinsey/vizro/pull/1159))
+
 <a id='changelog-0.1.38'></a>
 
 # 0.1.38 — 2025-04-24

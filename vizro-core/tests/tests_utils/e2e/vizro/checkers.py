@@ -5,7 +5,7 @@ import e2e.vizro.constants as cnst
 from e2e.vizro.paths import (
     categorical_components_value_name_path,
     categorical_components_value_path,
-    graph_y_axis_value_path,
+    graph_axis_value_path,
     select_all_path,
 )
 from e2e.vizro.waiters import graph_load_waiter, graph_load_waiter_selenium
@@ -35,10 +35,10 @@ def browser_console_warnings_checker(log_level, log_levels):
     )
 
 
-def check_graph_is_loading(driver, graph_id):
+def check_graph_is_loaded(driver, graph_id):
     """Waiting for graph to start reloading."""
     driver.wait_for_element(f"div[id='{graph_id}'][data-dash-is-loading='true']")
-    graph_load_waiter(driver, graph_id)
+    graph_load_waiter(driver)
 
 
 def check_graph_is_loading_selenium(driver, graph_id, timeout=cnst.SELENIUM_WAITERS_TIMEOUT):
@@ -53,10 +53,10 @@ def check_graph_is_loading_selenium(driver, graph_id, timeout=cnst.SELENIUM_WAIT
 
 def check_graph_is_empty(driver, graph_id):
     driver.wait_for_text_to_equal(
-        graph_y_axis_value_path(
+        graph_axis_value_path(
             graph_id=graph_id,
-            y_axis_value_number="1",
-            y_axis_value="−1",  # noqa: RUF001
+            axis_value_number="1",
+            axis_value="−1",  # noqa: RUF001
         ),
         "−1",  # noqa: RUF001
     )

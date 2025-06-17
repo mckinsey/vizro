@@ -73,7 +73,7 @@ def expected_range_slider_with_optional():
             dcc.Store(id="range_slider_callback_data", data={"id": "range_slider", "min": 0.0, "max": 10.0}),
             html.Div(
                 [
-                    dbc.Label(["Title", None], html_for="range_slider"),
+                    dbc.Label([html.Span("Title", id="range_slider_title"), None], html_for="range_slider"),
                     html.Div(
                         [
                             dcc.Input(
@@ -130,7 +130,7 @@ def expected_range_slider_with_extra():
             dcc.Store(id="range_slider_callback_data", data={"id": "range_slider", "min": 0.0, "max": 10.0}),
             html.Div(
                 [
-                    dbc.Label(["Title", None], html_for="range_slider"),
+                    dbc.Label([html.Span("Title", id="range_slider_title"), None], html_for="range_slider"),
                     html.Div(
                         [
                             dcc.Input(
@@ -187,7 +187,7 @@ def expected_range_slider_with_description():
     expected_description = [
         html.Span("info", id="info-icon", className="material-symbols-outlined tooltip-icon"),
         dbc.Tooltip(
-            children=dcc.Markdown("Test description", className="card-text"),
+            children=dcc.Markdown("Test description", id="info-text", className="card-text"),
             id="info",
             target="info-icon",
             autohide=False,
@@ -198,7 +198,10 @@ def expected_range_slider_with_description():
             dcc.Store(id="range_slider_callback_data", data={"id": "range_slider", "min": 0.0, "max": 10.0}),
             html.Div(
                 [
-                    dbc.Label(["Title", *expected_description], html_for="range_slider"),
+                    dbc.Label(
+                        [html.Span("Title", id="range_slider_title"), *expected_description],
+                        html_for="range_slider",
+                    ),
                     html.Div(
                         [
                             dcc.Input(
@@ -264,6 +267,8 @@ class TestRangeSliderInstantiation:
         assert range_slider.title == ""
         assert range_slider.description is None
         assert range_slider.actions == []
+        assert range_slider._action_outputs == {"__default__": f"{range_slider.id}.value"}
+        assert range_slider._action_inputs == {"__default__": f"{range_slider.id}.value"}
 
     def test_create_range_slider_mandatory_and_optional(self):
         range_slider = vm.RangeSlider(
@@ -287,6 +292,12 @@ class TestRangeSliderInstantiation:
         assert range_slider.title == "Test title"
         assert range_slider.actions == []
         assert isinstance(range_slider.description, vm.Tooltip)
+        assert range_slider._action_outputs == {
+            "__default__": f"{range_slider.id}.value",
+            "title": f"{range_slider.id}_title.children",
+            "description": f"{range_slider.description.id}-text.children",
+        }
+        assert range_slider._action_inputs == {"__default__": f"{range_slider.id}.value"}
 
     @pytest.mark.parametrize(
         "min, max, expected_min, expected_max",

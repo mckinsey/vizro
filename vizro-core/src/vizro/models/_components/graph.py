@@ -1,16 +1,17 @@
 import logging
 import warnings
 from contextlib import suppress
-from typing import Annotated, Literal, Optional, cast
+from typing import Annotated, Any, Literal, Optional, cast
 
 import pandas as pd
 from dash import ClientsideFunction, Input, Output, State, clientside_callback, dcc, html, set_props
 from dash.exceptions import MissingCallbackContextException
 from plotly import graph_objects as go
-from pydantic import AfterValidator, BeforeValidator, Field, PrivateAttr, field_validator
+from pydantic import AfterValidator, BeforeValidator, Field, field_validator
 from pydantic.functional_serializers import PlainSerializer
 from pydantic.json_schema import SkipJsonSchema
 
+from vizro._vizro_utils import _set_defaults_nested
 from vizro.actions import filter_interaction
 from vizro.actions._actions_utils import CallbackTriggerDict, _get_component_actions
 from vizro.managers import data_manager, model_manager
@@ -19,7 +20,7 @@ from vizro.models._action._actions_chain import _action_validator_factory
 from vizro.models._components._components_utils import _process_callable_data_frame
 from vizro.models._models_utils import _log_call
 from vizro.models._tooltip import coerce_str_to_tooltip
-from vizro.models.types import ActionType, CapturedCallable, ModelID, validate_captured_callable
+from vizro.models.types import ActionType, CapturedCallable, ModelID, _IdProperty, validate_captured_callable
 
 logger = logging.getLogger(__name__)
 
@@ -40,6 +41,11 @@ class Graph(VizroBaseModel):
         description (Optional[Tooltip]): Optional markdown string that adds an icon next to the title.
             Hovering over the icon shows a tooltip with the provided description. Defaults to `None`.
         actions (list[ActionType]): See [`ActionType`][vizro.models.types.ActionType]. Defaults to `[]`.
+        extra (Optional[dict[str, Any]]): Extra keyword arguments that are passed to `dcc.Graph` and overwrite any
+            defaults chosen by the Vizro team. This may have unexpected behavior.
+            Visit the [dcc documentation](https://dash.plotly.com/dash-core-components/graph#graph-properties)
+            to see all available arguments. [Not part of the official Vizro schema](../explanation/schema.md) and the
+            underlying component may change in the future. Defaults to `{}`.
 
     """
 
@@ -80,11 +86,31 @@ class Graph(VizroBaseModel):
         PlainSerializer(lambda x: x[0].actions),
         Field(default=[]),
     ]
-
-    # Component properties for actions and interactions
-    _output_component_property: str = PrivateAttr("figure")
+    extra: SkipJsonSchema[
+        Annotated[
+            dict[str, Any],
+            Field(
+                default={},
+                description="""Extra keyword arguments that are passed to `dcc.Graph` and overwrite any
+            defaults chosen by the Vizro team. This may have unexpected behavior.
+            Visit the [dcc documentation](https://dash.plotly.com/dash-core-components/graph#graph-properties)
+            to see all available arguments. [Not part of the official Vizro schema](../explanation/schema.md) and the
+            underlying component may change in the future. Defaults to `{}`.""",
+            ),
+        ]
+    ]
 
     _validate_figure = field_validator("figure", mode="before")(validate_captured_callable)
+
+    @property
+    def _action_outputs(self) -> dict[str, _IdProperty]:
+        return {
+            "__default__": f"{self.id}.figure",
+            **({"title": f"{self.id}_title.children"} if self.title else {}),
+            **({"header": f"{self.id}_header.children"} if self.header else {}),
+            **({"footer": f"{self.id}_footer.children"} if self.footer else {}),
+            **({"description": f"{self.description.id}-text.children"} if self.description else {}),
+        }
 
     # Convenience wrapper/syntactic sugar.
     def __call__(self, **kwargs):
@@ -216,32 +242,39 @@ class Graph(VizroBaseModel):
         # transparent and has no axes so it doesn't draw anything on the screen which would flicker away when the
         # graph callback is executed to make the dcc.Loading icon appear.
         description = self.description.build().children if self.description else [None]
+        defaults = {
+            "id": self.id,
+            "figure": (
+                go.Figure(
+                    layout={
+                        "paper_bgcolor": "rgba(0,0,0,0)",
+                        "plot_bgcolor": "rgba(0,0,0,0)",
+                        "xaxis": {"visible": False},
+                        "yaxis": {"visible": False},
+                    }
+                )
+            ),
+            "config": {
+                "autosizable": True,
+                "frameMargins": 0,
+                "responsive": True,
+                "modeBarButtonsToRemove": ["toImage"],
+            },
+        }
+        # While most components fully override defaults with values from `extra`,
+        # for graph component we apply a merge to preserve our default values unless explicitly overridden.
+        graph_defaults = _set_defaults_nested(self.extra, defaults)
+
         return dcc.Loading(
             children=html.Div(
                 children=[
-                    html.H3([self.title, *description], className="figure-title", id=f"{self.id}_title")
+                    html.H3([html.Span(self.title, id=f"{self.id}_title"), *description], className="figure-title")
                     if self.title
                     else None,
                     dcc.Markdown(self.header, className="figure-header", id=f"{self.id}_header")
                     if self.header
                     else None,
-                    dcc.Graph(
-                        id=self.id,
-                        figure=go.Figure(
-                            layout={
-                                "paper_bgcolor": "rgba(0,0,0,0)",
-                                "plot_bgcolor": "rgba(0,0,0,0)",
-                                "xaxis": {"visible": False},
-                                "yaxis": {"visible": False},
-                            }
-                        ),
-                        config={
-                            "autosizable": True,
-                            "frameMargins": 0,
-                            "responsive": True,
-                            "modeBarButtonsToRemove": ["toImage"],
-                        },
-                    ),
+                    dcc.Graph(**graph_defaults),
                     dcc.Markdown(self.footer, className="figure-footer", id=f"{self.id}_footer")
                     if self.footer
                     else None,

@@ -1,5 +1,9 @@
 # Dashboard generation
 
+!!! warning "Vizro-AI has been replaced by Vizro-MCP"
+
+    Vizro-AI has largely been replaced by [Vizro-MCP](https://github.com/mckinsey/vizro/blob/main/vizro-mcp/README.md) and only supports chart generation from version 0.4.0.
+
 In the previous tutorial, we explained how to use Vizro-AI to generate individual charts from text. Vizro-AI also supports text-to-dashboard functionality, enabling you to generate a complete [Vizro](https://vizro.readthedocs.io/en/stable/) dashboard containing multiple charts and pages.
 
 You may also want to review the [Vizro dashboard tutorial](https://vizro.readthedocs.io/en/stable/pages/tutorials/first-dashboard/), which creates a dashboard from scratch rather than by generation with Vizro-AI.

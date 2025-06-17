@@ -19,7 +19,8 @@ Uncomment the section that is right (remove the HTML comment wrapper).
 
 ### Added
 
-- Add `description` argument to `Dashboard`, `Page`, `Container`, `Graph`, `AgGrid` and `Table` to enable tooltips in titles. See the [user guide on tooltips for `Container` for an example](https://vizro.readthedocs.io/en/stable/pages/user-guides/container/#add-a-tooltip). ([#1144](https://github.com/mckinsey/vizro/pull/1144))
+- Add `description` argument to `Button` to enable tooltip next to button text. See the [user guide on button](https://vizro.readthedocs.io/en/stable/pages/user-guides/buttons/#add-a-tooltip) for an example. ([#1225](https://github.com/mckinsey/vizro/pull/1225))
+
 
 <!--
 ### Changed

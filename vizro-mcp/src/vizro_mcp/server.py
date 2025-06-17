@@ -99,7 +99,7 @@ def get_sample_data_info(data_name: Literal["iris", "tips", "stocks", "gapminder
 
 @mcp.tool()
 def validate_model_config(
-    config: dict[str, Any],
+    dashboard_config: dict[str, Any],
     data_infos: list[DFMetaData],  # Should be Optional[..]=None, but Cursor complains..
     auto_open: bool = True,
 ) -> ValidationResults:
@@ -109,7 +109,7 @@ def validate_model_config(
     The PyCafe link will be automatically opened in your default browser if auto_open is True.
 
     Args:
-        config: Either a JSON string or a dictionary representing a Vizro model configuration
+        dashboard_config: Either a JSON string or a dictionary representing a Vizro dashboard model configuration
         data_infos: List of DFMetaData objects containing information about the data files
         auto_open: Whether to automatically open the PyCafe link in a browser
 
@@ -119,7 +119,7 @@ def validate_model_config(
     Vizro._reset()
 
     try:
-        dashboard = vm.Dashboard.model_validate(config)
+        dashboard = vm.Dashboard.model_validate(dashboard_config)
     except ValidationError as e:
         return ValidationResults(
             valid=False,
@@ -333,14 +333,14 @@ Create an EDA dashboard based on the following dataset:{file_path_or_url}. Proce
 
 @mcp.tool()
 def validate_chart_code(
-    config: ChartPlan,
+    chart_config: ChartPlan,
     data_info: DFMetaData,
     auto_open: bool = True,
 ) -> ValidationResults:
     """Validate the chart code created by the user and optionally open the PyCafe link in a browser.
 
     Args:
-        config: A ChartPlan object with the chart configuration
+        chart_config: A ChartPlan object with the chart configuration
         data_info: Metadata for the dataset to be used in the chart
         auto_open: Whether to automatically open the PyCafe link in a browser
 
@@ -350,7 +350,7 @@ def validate_chart_code(
     Vizro._reset()
 
     try:
-        chart_plan_obj = ChartPlan.model_validate(config)
+        chart_plan_obj = ChartPlan.model_validate(chart_config)
     except ValidationError as e:
         return ValidationResults(
             valid=False,

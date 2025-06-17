@@ -7,7 +7,7 @@ from e2e.asserts import assert_image_not_equal, assert_pixelmatch
 from e2e.vizro import constants as cnst
 from e2e.vizro.checkers import (
     check_graph_is_empty,
-    check_graph_is_loading,
+    check_graph_is_loaded,
     check_selected_categorical_component,
     check_selected_dropdown,
     check_slider_value,
@@ -16,7 +16,7 @@ from e2e.vizro.navigation import accordion_select, page_select, select_dropdown_
 from e2e.vizro.paths import (
     categorical_components_value_path,
     dropdown_arrow_path,
-    graph_y_axis_value_path,
+    graph_axis_value_path,
     slider_value_path,
 )
 from e2e.vizro.waiters import callbacks_finish_waiter
@@ -110,7 +110,7 @@ def test_dropdown_filter_multi(dash_br):
 
     # Choose "versicolor" value and check that graph is reloaded
     select_dropdown_value(dash_br, value=3, dropdown_id=cnst.DROPDOWN_MULTI_DYNAMIC_FILTER_ID)
-    check_graph_is_loading(dash_br, graph_id=cnst.BOX_DYNAMIC_FILTERS_ID)
+    check_graph_is_loaded(dash_br, graph_id=cnst.BOX_DYNAMIC_FILTERS_ID)
 
     # Remove "setosa" and "versicolor" from the dynamic data and simulate refreshing the page
     page_select(
@@ -146,7 +146,7 @@ def test_dropdown_filter(dash_br):
 
     # Choose "versicolor" value and check that graph is reloaded
     select_dropdown_value(dash_br, value=2, dropdown_id=cnst.DROPDOWN_DYNAMIC_FILTER_ID)
-    check_graph_is_loading(dash_br, graph_id=cnst.BOX_DYNAMIC_FILTERS_ID)
+    check_graph_is_loaded(dash_br, graph_id=cnst.BOX_DYNAMIC_FILTERS_ID)
 
     # Remove "setosa" and "versicolor" from the dynamic data and simulate refreshing the page
     page_select(
@@ -182,7 +182,7 @@ def test_checklist_filter(dash_br):
     # Choose "versicolor" value and check that graph is reloaded
     dash_br.multiple_click(categorical_components_value_path(elem_id=cnst.CHECKLIST_DYNAMIC_FILTER_ID, value=1), 1)
     dash_br.multiple_click(categorical_components_value_path(elem_id=cnst.CHECKLIST_DYNAMIC_FILTER_ID, value=3), 1)
-    check_graph_is_loading(dash_br, cnst.BOX_DYNAMIC_FILTERS_ID)
+    check_graph_is_loaded(dash_br, cnst.BOX_DYNAMIC_FILTERS_ID)
 
     # Remove "setosa" and "versicolor" from the dynamic data and simulate refreshing the page
     page_select(
@@ -219,7 +219,7 @@ def test_radio_items_filter(dash_br):
 
     # Choose "versicolor" value and check that graph is reloaded
     dash_br.multiple_click(categorical_components_value_path(elem_id=cnst.RADIOITEMS_DYNAMIC_FILTER_ID, value=2), 1)
-    check_graph_is_loading(dash_br, cnst.BOX_DYNAMIC_FILTERS_ID)
+    check_graph_is_loaded(dash_br, cnst.BOX_DYNAMIC_FILTERS_ID)
 
     # Remove "setosa" and "versicolor" from the dynamic data and simulate refreshing the page
     page_select(
@@ -273,9 +273,9 @@ def test_numerical_filters(dash_br):
 
     # Change "min" slider and range slider values to "5"
     dash_br.multiple_click(slider_value_path(elem_id=cnst.SLIDER_DYNAMIC_FILTER_ID, value=1), 1)
-    check_graph_is_loading(dash_br, graph_id=cnst.BAR_DYNAMIC_FILTER_ID)
+    check_graph_is_loaded(dash_br, graph_id=cnst.BAR_DYNAMIC_FILTER_ID)
     dash_br.multiple_click(slider_value_path(elem_id=cnst.RANGE_SLIDER_DYNAMIC_FILTER_ID, value=1), 1)
-    check_graph_is_loading(dash_br, graph_id=cnst.BAR_DYNAMIC_FILTER_ID)
+    check_graph_is_loaded(dash_br, graph_id=cnst.BAR_DYNAMIC_FILTER_ID)
 
     # Check slider value
     check_slider_value(dash_br, expected_end_value="5", elem_id=cnst.SLIDER_DYNAMIC_FILTER_ID)
@@ -314,17 +314,13 @@ def test_datepicker_range_filters(dash_br):
 
     # Check y axis min value is '0'
     dash_br.wait_for_text_to_equal(
-        graph_y_axis_value_path(
-            graph_id=cnst.BAR_DYNAMIC_DATEPICKER_FILTER_ID, y_axis_value_number="1", y_axis_value="0"
-        ),
+        graph_axis_value_path(graph_id=cnst.BAR_DYNAMIC_DATEPICKER_FILTER_ID, axis_value_number="1", axis_value="0"),
         "0",
     )
 
     # Check y axis max value is '6'
     dash_br.wait_for_text_to_equal(
-        graph_y_axis_value_path(
-            graph_id=cnst.BAR_DYNAMIC_DATEPICKER_FILTER_ID, y_axis_value_number="4", y_axis_value="6"
-        ),
+        graph_axis_value_path(graph_id=cnst.BAR_DYNAMIC_DATEPICKER_FILTER_ID, axis_value_number="4", axis_value="6"),
         "6",
     )
 
@@ -345,9 +341,7 @@ def test_datepicker_range_filters(dash_br):
 
     # Check y axis max value is '5'
     dash_br.wait_for_text_to_equal(
-        graph_y_axis_value_path(
-            graph_id=cnst.BAR_DYNAMIC_DATEPICKER_FILTER_ID, y_axis_value_number="6", y_axis_value="5"
-        ),
+        graph_axis_value_path(graph_id=cnst.BAR_DYNAMIC_DATEPICKER_FILTER_ID, axis_value_number="6", axis_value="5"),
         "5",
     )
 
@@ -356,13 +350,11 @@ def test_datepicker_range_filters(dash_br):
     dash_br.wait_for_element('div[data-calendar="true"]')
     dash_br.multiple_click('button[aria-label="6 March 2024"]', 1)
     dash_br.multiple_click('button[aria-label="10 March 2024"]', 1)
-    check_graph_is_loading(dash_br, cnst.BAR_DYNAMIC_DATEPICKER_FILTER_ID)
+    check_graph_is_loaded(dash_br, cnst.BAR_DYNAMIC_DATEPICKER_FILTER_ID)
 
     # Check y axis max value is '4'
     dash_br.wait_for_text_to_equal(
-        graph_y_axis_value_path(
-            graph_id=cnst.BAR_DYNAMIC_DATEPICKER_FILTER_ID, y_axis_value_number="5", y_axis_value="4"
-        ),
+        graph_axis_value_path(graph_id=cnst.BAR_DYNAMIC_DATEPICKER_FILTER_ID, axis_value_number="5", axis_value="4"),
         "4",
     )
 
@@ -398,16 +390,16 @@ def test_datepicker_single_filters(dash_br):
 
     # Check y axis min value is '0'
     dash_br.wait_for_text_to_equal(
-        graph_y_axis_value_path(
-            graph_id=cnst.BAR_DYNAMIC_DATEPICKER_SINGLE_FILTER_ID, y_axis_value_number="1", y_axis_value="0"
+        graph_axis_value_path(
+            graph_id=cnst.BAR_DYNAMIC_DATEPICKER_SINGLE_FILTER_ID, axis_value_number="1", axis_value="0"
         ),
         "0",
     )
 
     # Check y axis max value is '1'
     dash_br.wait_for_text_to_equal(
-        graph_y_axis_value_path(
-            graph_id=cnst.BAR_DYNAMIC_DATEPICKER_SINGLE_FILTER_ID, y_axis_value_number="6", y_axis_value="1"
+        graph_axis_value_path(
+            graph_id=cnst.BAR_DYNAMIC_DATEPICKER_SINGLE_FILTER_ID, axis_value_number="6", axis_value="1"
         ),
         "1",
     )
@@ -429,8 +421,8 @@ def test_datepicker_single_filters(dash_br):
 
     # Check y axis max value is '4'
     dash_br.wait_for_text_to_equal(
-        graph_y_axis_value_path(
-            graph_id=cnst.BAR_DYNAMIC_DATEPICKER_SINGLE_FILTER_ID, y_axis_value_number="6", y_axis_value="4"
+        graph_axis_value_path(
+            graph_id=cnst.BAR_DYNAMIC_DATEPICKER_SINGLE_FILTER_ID, axis_value_number="6", axis_value="4"
         ),
         "4",
     )
@@ -443,8 +435,8 @@ def test_datepicker_single_filters(dash_br):
 
     # Check y axis max value is '1'
     dash_br.wait_for_text_to_equal(
-        graph_y_axis_value_path(
-            graph_id=cnst.BAR_DYNAMIC_DATEPICKER_SINGLE_FILTER_ID, y_axis_value_number="6", y_axis_value="1"
+        graph_axis_value_path(
+            graph_id=cnst.BAR_DYNAMIC_DATEPICKER_SINGLE_FILTER_ID, axis_value_number="6", axis_value="1"
         ),
         "1",
     )
@@ -486,7 +478,7 @@ def test_dynamic_data_parameter_refresh_dynamic_filters(dash_br):
     # select '10' points for slider which is showing only 'setosa' data and check that scatter graph
     # with dynamic data is empty and that scatter graph with static data is the same
     select_slider_handler(dash_br, elem_id=cnst.SLIDER_DF_PARAMETER, value=2)
-    check_graph_is_loading(dash_br, graph_id=cnst.SCATTER_DF_STATIC)
+    check_graph_is_loaded(dash_br, graph_id=cnst.SCATTER_DF_STATIC)
     check_graph_is_empty(dash_br, graph_id=cnst.SCATTER_DF_PARAMETER)
     dash_br.wait_for_element(f"div[id='{cnst.SCATTER_DF_STATIC}'] path[style*='rgb(57, 73, 171)']:nth-of-type(1)")
 

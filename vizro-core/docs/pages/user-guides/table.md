@@ -531,9 +531,9 @@ If the available arguments are not sufficient, there is always the option to cre
 The [`Table`][vizro.models.Table] and the [`AgGrid`][vizro.models.AgGrid] models accept `title`, `header`, `footer` and `description` arguments. These are useful for providing additional context on the table.
 
 - **title**: Displayed as an [H3 header](https://dash.plotly.com/dash-html-components/h3), useful for summarizing the main topic or insight of the component.
-- **header**: Accepts markdown text, ideal for extra descriptions, subtitles, or detailed data insights.
-- **footer**: Accepts markdown text, commonly used for citing data sources, providing information on the last update, or adding disclaimers.
-- **description**: Displayed as an icon that opens a tooltip containing markdown text when hovered over. You can provide a string to use the default info icon or a [`Tooltip`][vizro.models.Tooltip] model to use any icon from the [Google Material Icons library](https://fonts.google.com/icons).
+- **header**: Accepts [Markdown text](https://markdown-guide.readthedocs.io/), ideal for extra descriptions, subtitles, or detailed data insights.
+- **footer**: Accepts [Markdown text](https://markdown-guide.readthedocs.io/), commonly used for citing data sources, providing information on the last update, or adding disclaimers.
+- **description**: Displayed as an icon that opens a tooltip containing [Markdown text](https://markdown-guide.readthedocs.io/) when hovered over. You can provide a string to use the default info icon or a [`Tooltip`][vizro.models.Tooltip] model to use any icon from the [Google Material Icons library](https://fonts.google.com/icons).
 
 ### Formatted AgGrid
 

@@ -16,7 +16,7 @@ from vizro.models._components.form._form_utils import (
 )
 from vizro.models._models_utils import _log_call
 from vizro.models._tooltip import coerce_str_to_tooltip
-from vizro.models.types import ActionType
+from vizro.models.types import ActionType, _IdProperty
 
 
 class RangeSlider(VizroBaseModel):
@@ -100,8 +100,17 @@ class RangeSlider(VizroBaseModel):
 
     _dynamic: bool = PrivateAttr(False)
 
-    # Component properties for actions and interactions
-    _input_property: str = PrivateAttr("value")
+    @property
+    def _action_outputs(self) -> dict[str, _IdProperty]:
+        return {
+            "__default__": f"{self.id}.value",
+            **({"title": f"{self.id}_title.children"} if self.title else {}),
+            **({"description": f"{self.description.id}-text.children"} if self.description else {}),
+        }
+
+    @property
+    def _action_inputs(self) -> dict[str, _IdProperty]:
+        return {"__default__": f"{self.id}.value"}
 
     def __call__(self, min, max, current_value):
         output = [
@@ -141,7 +150,12 @@ class RangeSlider(VizroBaseModel):
                 dcc.Store(f"{self.id}_callback_data", data={"id": self.id, "min": min, "max": max}),
                 html.Div(
                     children=[
-                        dbc.Label(children=[self.title, *description], html_for=self.id) if self.title else None,
+                        dbc.Label(
+                            children=[html.Span(id=f"{self.id}_title", children=self.title), *description],
+                            html_for=self.id,
+                        )
+                        if self.title
+                        else None,
                         html.Div(
                             [
                                 dcc.Input(

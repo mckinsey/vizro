@@ -1,40 +1,17 @@
-import math
-from datetime import date
 from typing import Annotated, Any, Literal, Optional, Union, cast
 
 import dash_bootstrap_components as dbc
 from dash import dcc, html
-from pydantic import AfterValidator, BeforeValidator, Field, PrivateAttr, StrictBool, ValidationInfo, model_validator
+from pydantic import AfterValidator, BeforeValidator, Field, PrivateAttr, ValidationInfo, model_validator
 from pydantic.functional_serializers import PlainSerializer
 from pydantic.json_schema import SkipJsonSchema
 
 from vizro.models import Tooltip, VizroBaseModel
 from vizro.models._action._actions_chain import _action_validator_factory
 from vizro.models._components.form._form_utils import get_options_and_default, validate_options_dict, validate_value
-from vizro.models._models_utils import _log_call
+from vizro.models._models_utils import _calculate_option_height, _log_call
 from vizro.models._tooltip import coerce_str_to_tooltip
-from vizro.models.types import ActionType, MultiValueType, OptionsDictType, OptionsType, SingleValueType
-
-
-def _get_list_of_labels(full_options: OptionsType) -> Union[list[StrictBool], list[float], list[str], list[date]]:
-    """Returns a list of labels from the selector options provided."""
-    if all(isinstance(option, dict) for option in full_options):
-        return [option["label"] for option in full_options]  # type: ignore[index]
-    else:
-        return cast(Union[list[StrictBool], list[float], list[str], list[date]], full_options)
-
-
-def _calculate_option_height(full_options: OptionsType) -> int:
-    """Calculates the height of the dropdown options based on the longest option."""
-    # 30 characters is roughly the number of "A" characters you can fit comfortably on a line in the dropdown.
-    # "A" is representative of a slightly wider than average character:
-    # https://stackoverflow.com/questions/3949422/which-letter-of-the-english-alphabet-takes-up-most-pixels
-    # We look at the longest option to find number_of_lines it requires. Option height is the same for all options
-    # and needs 24px for each line + 8px padding.
-    list_of_labels = _get_list_of_labels(full_options)
-    max_length = max(len(str(option)) for option in list_of_labels)
-    number_of_lines = math.ceil(max_length / 30)
-    return 8 + 24 * number_of_lines
+from vizro.models.types import ActionType, MultiValueType, OptionsDictType, OptionsType, SingleValueType, _IdProperty
 
 
 def validate_multi(multi, info: ValidationInfo):
@@ -130,11 +107,20 @@ class Dropdown(VizroBaseModel):
     # For example: vm.Graph could have a dynamic that is by default set on True.
     _dynamic: bool = PrivateAttr(False)
 
-    # Component properties for actions and interactions
-    _input_property: str = PrivateAttr("value")
-
     # Reused validators
     _validate_options = model_validator(mode="before")(validate_options_dict)
+
+    @property
+    def _action_outputs(self) -> dict[str, _IdProperty]:
+        return {
+            "__default__": f"{self.id}.value",
+            **({"title": f"{self.id}_title.children"} if self.title else {}),
+            **({"description": f"{self.description.id}-text.children"} if self.description else {}),
+        }
+
+    @property
+    def _action_inputs(self) -> dict[str, _IdProperty]:
+        return {"__default__": f"{self.id}.value"}
 
     def __call__(self, options):
         full_options, default_value = get_options_and_default(options=options, multi=self.multi)
@@ -155,7 +141,11 @@ class Dropdown(VizroBaseModel):
 
         return html.Div(
             children=[
-                dbc.Label([self.title, *description], html_for=self.id) if self.title else None,
+                dbc.Label(
+                    children=[html.Span(id=f"{self.id}_title", children=self.title), *description], html_for=self.id
+                )
+                if self.title
+                else None,
                 dcc.Dropdown(**(defaults | self.extra)),
             ]
         )

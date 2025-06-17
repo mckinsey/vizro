@@ -1,46 +1,24 @@
-# # Vizro is an open-source toolkit for creating modular data visualization applications.
-# # check out https://github.com/mckinsey/vizro for more info about Vizro
-# # and checkout https://vizro.readthedocs.io/en/stable/ for documentation.
-
 import vizro.models as vm
 import vizro.plotly.express as px
 from vizro import Vizro
-from vizro.tables import dash_ag_grid, dash_data_table
 
-tips = px.data.tips()
+gapminder = px.data.gapminder()
 
-page1 = vm.Page(
-    title="LAYOUT_FLEX_WRAP_AND_AG_GRID",
-    layout=vm.Flex(wrap=True),
+page = vm.Page(
+    title="Containers with controls",
     components=[
-        vm.AgGrid(id=f"outer_id_{i}", figure=dash_ag_grid(tips, id=f"inner_id_{i}", style={"width": 1000}))
-        # vm.AgGrid(id=f"outer_id_{i}", figure=dash_ag_grid(tips, id=f"qwer", style={"width": 1000}))
-        for i in range(3)
+        vm.Container(
+            title="Container with gapminder data",
+            components=[vm.Graph(id="bar_chart", figure=px.bar(gapminder, x="country", y="gdpPercap"))],
+            controls=[
+                vm.Filter(column="continent", selector=vm.RadioItems()),
+                vm.Filter(column="year", selector=vm.RangeSlider(title="This is a longer title and it goes and goes")),
+            ],
+        ),
     ],
 )
 
-page2 = vm.Page(
-    title="LAYOUT_FLEX_GAP_AND_TABLE",
-    layout=vm.Flex(gap="40px"),
-    # components=[vm.Table(figure=dash_data_table(tips, style_table={"width": "1000px"})) for i in range(3)],
-    components=[
-        vm.Table(figure=dash_data_table(tips, id=f"qwert_{i}", style_table={"width": "1000px"})) for i in range(3)
-    ],
-)
-
-page3 = vm.Page(
-    title="cross_id",
-    layout=vm.Flex(gap="40px"),
-    components=[
-        vm.Table(figure=dash_data_table(tips, id="qwert", style_table={"width": "1000px"})),
-        vm.AgGrid(figure=dash_ag_grid(tips, id="qwert", style={"width": 1000})),
-    ],
-)
-
-dashboard = vm.Dashboard(pages=[page1, page2, page3])
-
+dashboard = vm.Dashboard(pages=[page])
 
 if __name__ == "__main__":
     Vizro().build(dashboard).run()
-
-## TO CHECK: also for figure and/or Graph?

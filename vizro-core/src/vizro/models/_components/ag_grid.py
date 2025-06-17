@@ -1,6 +1,7 @@
 import logging
 from typing import Annotated, Literal, Optional
 
+import dash_ag_grid as dag
 import pandas as pd
 from dash import ClientsideFunction, Input, Output, State, clientside_callback, dcc, html
 from pydantic import AfterValidator, BeforeValidator, Field, PrivateAttr, field_validator
@@ -16,9 +17,14 @@ from vizro.models._action._actions_chain import _action_validator_factory
 from vizro.models._components._components_utils import _process_callable_data_frame
 from vizro.models._models_utils import _log_call
 from vizro.models._tooltip import coerce_str_to_tooltip
-from vizro.models.types import ActionType, CapturedCallable, validate_captured_callable
+from vizro.models.types import ActionType, CapturedCallable, _IdProperty, validate_captured_callable
 
 logger = logging.getLogger(__name__)
+
+# A set of properties unique to dag.AgGrid (inner build object) that are not present in html.Div (outer build wrapper).
+# Creates _action_outputs and _action_inputs for accessing inner dag.AgGrid properties via the outer vm.AgGrid ID.
+# Example: "outer-ag-grid-id.cellClicked" is transformed to "inner-ag-grid-id.cellClicked".
+DAG_AG_GRID_PROPERTIES = set(dag.AgGrid().available_properties) - set(html.Div().available_properties)
 
 
 class AgGrid(VizroBaseModel):
@@ -77,12 +83,33 @@ class AgGrid(VizroBaseModel):
         Field(default=[]),  # TODO[MS]: here and elsewhere: do we need to validate default here?
     ]
 
-    _input_component_id: str = PrivateAttr()
-
-    # Component properties for actions and interactions
-    _output_component_property: str = PrivateAttr("children")
-
+    _inner_component_id: str = PrivateAttr()
     _validate_figure = field_validator("figure", mode="before")(validate_captured_callable)
+
+    def model_post_init(self, context) -> None:
+        super().model_post_init(context)
+        self._inner_component_id = self.figure._arguments.get("id", f"__input_{self.id}")
+
+    # TODO-AV2 E: Implement _action_trigger where makes sense.
+    #  For the AgGrid the mapping could look like: {"__default__": f"{self._inner_component_id}.cellClicked"}
+
+    @property
+    def _action_outputs(self) -> dict[str, _IdProperty]:
+        return {
+            "__default__": f"{self.id}.children",
+            "figure": f"{self.id}.children",
+            **({"title": f"{self.id}_title.children"} if self.title else {}),
+            **({"header": f"{self.id}_header.children"} if self.header else {}),
+            **({"footer": f"{self.id}_footer.children"} if self.footer else {}),
+            **({"description": f"{self.description.id}-text.children"} if self.description else {}),
+            **{ag_grid_prop: f"{self._inner_component_id}.{ag_grid_prop}" for ag_grid_prop in DAG_AG_GRID_PROPERTIES},
+        }
+
+    @property
+    def _action_inputs(self) -> dict[str, _IdProperty]:
+        return {
+            **{ag_grid_prop: f"{self._inner_component_id}.{ag_grid_prop}" for ag_grid_prop in DAG_AG_GRID_PROPERTIES},
+        }
 
     # Convenience wrapper/syntactic sugar.
     def __call__(self, **kwargs):
@@ -92,7 +119,7 @@ class AgGrid(VizroBaseModel):
         if "data_frame" not in kwargs:
             kwargs["data_frame"] = data_manager[self["data_frame"]].load()
         figure = self.figure(**kwargs)
-        figure.id = self._input_component_id
+        figure.id = self._inner_component_id
         return figure
 
     # Convenience wrapper/syntactic sugar.
@@ -107,7 +134,7 @@ class AgGrid(VizroBaseModel):
     def _filter_interaction_input(self):
         """Required properties when using `filter_interaction`."""
         return {
-            "cellClicked": State(component_id=self._input_component_id, component_property="cellClicked"),
+            "cellClicked": State(component_id=self._inner_component_id, component_property="cellClicked"),
             "modelID": State(component_id=self.id, component_property="id"),  # required, to determine triggered model
         }
 
@@ -139,21 +166,18 @@ class AgGrid(VizroBaseModel):
 
     @_log_call
     def pre_build(self):
-        self._input_component_id = self.figure._arguments.get("id", f"__input_{self.id}")
-        # Check if any other AgGrid figure function has the same input component ID
-        existing_models = [
-            model
-            for model in model_manager._get_models(self.__class__)
-            if hasattr(model, "_input_component_id")
-            and model.id != self.id
-            and model._input_component_id == self._input_component_id
-        ]
+        # Check if any other Vizro model or CapturedCallable has the same input component ID
+        all_inner_component_ids = {  # type: ignore[var-annotated]
+            model._inner_component_id
+            for model in model_manager._get_models()
+            if hasattr(model, "_inner_component_id") and model.id != self.id
+        }
 
-        if existing_models:
+        if self._inner_component_id in set(model_manager) | all_inner_component_ids:
             raise DuplicateIDError(
-                f"CapturedCallable with id={self._input_component_id} has an id that is "
-                f"already in use by another CapturedCallable. CapturedCallables must have unique ids "
-                f"across the whole dashboard."
+                f"CapturedCallable with id={self._inner_component_id} has an id that is "
+                "already in use by another Vizro model or CapturedCallable. "
+                "CapturedCallables must have unique ids across the whole dashboard."
             )
 
     def build(self):
@@ -161,29 +185,29 @@ class AgGrid(VizroBaseModel):
         # to ensure that all grid elements, such as menu icons and filter icons, are consistent with the theme.
         clientside_callback(
             ClientsideFunction(namespace="dashboard", function_name="update_ag_grid_theme"),
-            Output(self._input_component_id, "className"),
+            Output(self._inner_component_id, "className"),
             Input("theme-selector", "value"),
         )
         description = self.description.build().children if self.description else [None]
         return dcc.Loading(
             children=html.Div(
                 children=[
-                    html.H3([self.title, *description], className="figure-title", id=f"{self.id}_title")
+                    html.H3([html.Span(self.title, id=f"{self.id}_title"), *description], className="figure-title")
                     if self.title
                     else None,
                     dcc.Markdown(self.header, className="figure-header", id=f"{self.id}_header")
                     if self.header
                     else None,
-                    # The Div component with `id=self._input_component_id` is rendered during the build phase.
+                    # The Div component with `id=self._inner_component_id` is rendered during the build phase.
                     # This placeholder component is quickly replaced by the actual AgGrid object, which is generated
                     # using a filtered data_frame and parameterized arguments as part of the on_page_load mechanism.
                     # To prevent pagination and persistence issues while maintaining a lightweight component initial
                     # load, this method now returns a html.Div object instead of the previous dag.AgGrid.
                     # The actual AgGrid is then rendered by the on_page_load mechanism.
-                    # The `id=self._input_component_id` is set to avoid the "Non-existing object" Dash exception.
+                    # The `id=self._inner_component_id` is set to avoid the "Non-existing object" Dash exception.
                     html.Div(
                         id=self.id,
-                        children=[html.Div(id=self._input_component_id)],
+                        children=[html.Div(id=self._inner_component_id)],
                         className="table-container",
                     ),
                     dcc.Markdown(self.footer, className="figure-footer", id=f"{self.id}_footer")

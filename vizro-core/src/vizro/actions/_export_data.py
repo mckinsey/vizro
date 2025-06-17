@@ -42,7 +42,8 @@ class export_data(_AbstractAction):
         figure_ids_on_page = [
             model.id
             for model in cast(
-                Iterable[FigureType], model_manager._get_models(FIGURE_MODELS, page=model_manager._get_model_page(self))
+                Iterable[FigureType],
+                model_manager._get_models(FIGURE_MODELS, root_model=model_manager._get_model_page(self)),
             )
         ]
 
@@ -92,7 +93,7 @@ class export_data(_AbstractAction):
     # This must be defined even though it's not used anywhere (since we define transformed_outputs) since it's an
     # abstractmethod.
     @property
-    def outputs(self):
+    def outputs(self):  # type: ignore[override]
         pass
 
     @property
