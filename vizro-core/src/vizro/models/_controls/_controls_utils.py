@@ -3,7 +3,7 @@ from typing import Optional
 
 from vizro.managers import model_manager
 from vizro.managers._model_manager import FIGURE_MODELS
-from vizro.models import Checklist, Container, Dropdown, RadioItems, VizroBaseModel
+from vizro.models import Container, VizroBaseModel
 from vizro.models.types import ControlType
 
 

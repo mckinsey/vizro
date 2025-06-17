@@ -1,13 +1,9 @@
 import logging
-import math
-from datetime import date
 from functools import wraps
-from typing import Union, cast
 
 from dash import html
-from pydantic import StrictBool
 
-from vizro.models.types import CapturedCallable, OptionsType, _SupportsCapturedCallable
+from vizro.models.types import CapturedCallable, _SupportsCapturedCallable
 
 logger = logging.getLogger(__name__)
 
