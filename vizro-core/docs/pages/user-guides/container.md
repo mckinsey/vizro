@@ -589,7 +589,7 @@ Here are a few cases where you might want to use `controls` within a `Container`
 
 !!! tip "Container styles"
 
-    When you have multiple adjacent containers with controls, consider using a [styled containers](#styled-containers) to make the separations between sections of your page clear. Containers with controls also work with [collapsible containers](#collapsible-containers).
+    When you have multiple adjacent containers with controls, consider using a [styled containers](#styled-containers) to make the separations between sections of your page clear. Containers with controls also work with [collapsible containers](#collapsible-containers) and inside [nested containers](#nested-containers).
 
 ## The `extra` argument
 
