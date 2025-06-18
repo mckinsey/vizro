@@ -6,7 +6,6 @@ from asserts import assert_component_equal
 from dash import dcc, html
 from pydantic import ValidationError
 
-from vizro.managers import model_manager
 from vizro.models import Tooltip
 from vizro.models._action._action import Action
 from vizro.models._components.form import Dropdown
@@ -218,7 +217,7 @@ class TestDropdownBuild:
             ([{"label": "A" * 61, "value": "A"}, {"label": "B", "value": "B"}, {"label": "C", "value": "C"}], 80),
         ],
     )
-    def test_page_dropdown_dynamic_option_height(self, options, option_height):
+    def test_dropdown_option_height(self, options, option_height):
         default_value = options[0]["value"] if all(isinstance(option, dict) for option in options) else options[0]  # type: ignore[index]
         dropdown = Dropdown(id="dropdown_id", multi=False, options=options).build()
         expected_dropdown = html.Div(
@@ -239,9 +238,8 @@ class TestDropdownBuild:
 
         assert_component_equal(dropdown, expected_dropdown)
 
-    @pytest.mark.usefixtures("managers_page_container_controls")
     @pytest.mark.parametrize(
-        "options,  container_dropdown_height",
+        "options, option_height",
         [
             (["A", "B", "C"], 32),
             ([10, 20, 30], 32),
@@ -256,30 +254,19 @@ class TestDropdownBuild:
             ([{"label": "A" * 61, "value": "A"}, {"label": "B", "value": "B"}, {"label": "C", "value": "C"}], 128),
         ],
     )
-    def test_container_dropdown_dynamic_option_height(self, options, container_dropdown_height):
-        """Test dropdown dynamic option height calculation for page and container dropdowns."""
-        # Common dropdown configuration
+    def test_dropdown_in_container_option_height(self, options, option_height):
         default_value = options[0]["value"] if all(isinstance(option, dict) for option in options) else options[0]  # type: ignore[index]
+        dropdown = Dropdown(id="dropdown_id", multi=False, options=options)
+        dropdown._in_container = True
+        dropdown = dropdown.build()
 
-        # Build actual dropdowns
-        model_manager["container_filter_dropdown"].selector = Dropdown(
-            options=options, multi=False, id="container_dropdown_id"
-        )
-        container_dropdown_manager = model_manager["container_filter_dropdown"]
-        container_dropdown_manager.pre_build()
-        container_dropdown = container_dropdown_manager.selector.build()
-
-        # Expected components
-        expected_container_dropdown = html.Div(
+        expected_dropdown = html.Div(
             [
-                dbc.Label(
-                    children=[html.Span(id="container_dropdown_id_title", children="Country"), None],
-                    html_for="container_dropdown_id",
-                ),
+                None,
                 dcc.Dropdown(
-                    id="container_dropdown_id",
-                    optionHeight=container_dropdown_height,
+                    id="dropdown_id",
                     options=options,
+                    optionHeight=option_height,
                     multi=False,
                     value=default_value,
                     persistence=True,
@@ -289,7 +276,7 @@ class TestDropdownBuild:
             ]
         )
 
-        assert_component_equal(container_dropdown, expected_container_dropdown)
+        assert_component_equal(dropdown, expected_dropdown)
 
     def test_dropdown_build_with_extra(self):
         """Test that extra arguments correctly override defaults."""

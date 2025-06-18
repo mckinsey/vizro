@@ -91,6 +91,15 @@ page1 = vm.Page(
     controls=[
         vm.Filter(column="species"),
     ],
+    controls=[
+        vm.Parameter(
+            targets=["grid.data_frame.n"],
+            selector=vm.Slider(
+                title="Change me to see bug", min=0, max=N, step=1, marks={0: "0", N // 2: str(N // 2), N: str(N)}
+            ),
+        ),
+        *make_controls(),
+    ],
 )
 
 
@@ -187,4 +196,5 @@ page4 = vm.Page(
 dashboard = vm.Dashboard(title="Test dashboard", pages=[page1, page2, page3, page4])
 
 if __name__ == "__main__":
-    Vizro().build(dashboard).run()
+    app = Vizro().build(dashboard)
+    app.run()
