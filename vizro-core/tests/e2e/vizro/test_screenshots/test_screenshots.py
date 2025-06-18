@@ -38,7 +38,7 @@ def test_kpi_indicators_page(dash_br):
 
 @image_assertion
 def test_homepage(dash_br):
-    graph_load_waiter(dash_br, graph_id=cnst.AREA_GRAPH_ID)
+    graph_load_waiter(dash_br)
 
 
 @image_assertion
@@ -93,12 +93,19 @@ def test_nested_tabs_filters_page(dash_br):
     page_select(dash_br, page_path=cnst.FILTERS_PAGE_PATH, page_name=cnst.FILTERS_PAGE)
 
 
+@image_assertion
+def test_filters_inside_containers_page(dash_br):
+    page_select(
+        dash_br, page_path=cnst.FILTERS_INSIDE_CONTAINERS_PAGE_PATH, page_name=cnst.FILTERS_INSIDE_CONTAINERS_PAGE
+    )
+
+
 @pytest.mark.parametrize(
     "dash_br_driver", [({"port": cnst.ONE_PAGE_PORT})], ids=["one_page"], indirect=["dash_br_driver"]
 )
 @image_assertion
 def test_export_action_page(dash_br_driver):
-    graph_load_waiter(dash_br_driver, graph_id=cnst.LINE_EXPORT_ID)
+    graph_load_waiter(dash_br_driver)
 
 
 @pytest.mark.parametrize(
@@ -275,7 +282,7 @@ def test_collapsible_containers_grid_switched(dash_br):
 @image_assertion
 def test_collapsible_containers_flex(dash_br):
     accordion_select(dash_br, accordion_name=cnst.LAYOUT_ACCORDION)
-    page_select(dash_br, page_name=cnst.COLLAPSIBLE_CONTAINERS_GRID)
+    page_select(dash_br, page_name=cnst.COLLAPSIBLE_CONTAINERS_FLEX)
 
 
 @pytest.mark.filterwarnings("ignore::DeprecationWarning")
@@ -293,10 +300,25 @@ def test_collapsible_containers_flex_switched(dash_br):
     dash_br.wait_for_no_elements('span[aria-describedby*="tooltip"]')
 
 
+@pytest.mark.filterwarnings("ignore::DeprecationWarning")
+@image_assertion
+def test_collapsible_subcontainers_flex(dash_br):
+    """Test that after closing subcontainer the parent container is still open."""
+    accordion_select(dash_br, accordion_name=cnst.LAYOUT_ACCORDION)
+    page_select(dash_br, page_name=cnst.COLLAPSIBLE_CONTAINERS_FLEX)
+
+    # close subcontainer
+    dash_br.multiple_click("#flex_subcontainer_icon", 1)
+
+    # move mouse to different location of the screen to prevent flakiness because of tooltip.
+    dash_br.click_at_coord_fractions(theme_toggle_path(), 0, 1)
+    dash_br.wait_for_no_elements('span[aria-describedby*="tooltip"]')
+
+
 @pytest.mark.mobile_screenshots
 @image_assertion
 def test_homepage_mobile(dash_br):
-    graph_load_waiter(dash_br, graph_id=cnst.AREA_GRAPH_ID)
+    graph_load_waiter(dash_br)
 
 
 @pytest.mark.mobile_screenshots
@@ -305,7 +327,7 @@ def test_homepage_mobile(dash_br):
 )
 @image_assertion
 def test_filter_interactions_page(dash_br_driver):
-    graph_load_waiter(dash_br_driver, graph_id=cnst.BOX_INTERACTIONS_ID)
+    graph_load_waiter(dash_br_driver)
 
 
 @pytest.mark.mobile_screenshots
@@ -314,7 +336,7 @@ def test_filter_interactions_page(dash_br_driver):
 )
 @image_assertion
 def test_filter_interactions_dark_theme_page(dash_br_driver):
-    graph_load_waiter(dash_br_driver, graph_id=cnst.BOX_INTERACTIONS_ID)
+    graph_load_waiter(dash_br_driver)
     dash_br_driver.multiple_click(theme_toggle_path(), 1)
     check_graph_color(dash_br_driver, style_background=cnst.STYLE_TRANSPARENT, color=cnst.RGBA_TRANSPARENT)
     check_theme_color(dash_br_driver, color=cnst.THEME_DARK)

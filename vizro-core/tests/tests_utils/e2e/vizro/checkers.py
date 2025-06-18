@@ -35,10 +35,10 @@ def browser_console_warnings_checker(log_level, log_levels):
     )
 
 
-def check_graph_is_loading(driver, graph_id):
+def check_graph_is_loaded(driver, graph_id):
     """Waiting for graph to start reloading."""
     driver.wait_for_element(f"div[id='{graph_id}'][data-dash-is-loading='true']")
-    graph_load_waiter(driver, graph_id)
+    graph_load_waiter(driver)
 
 
 def check_graph_is_loading_selenium(driver, graph_id, timeout=cnst.SELENIUM_WAITERS_TIMEOUT):

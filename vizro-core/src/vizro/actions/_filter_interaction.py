@@ -51,7 +51,8 @@ class filter_interaction(_AbstractAction):
         figure_ids_on_page = [
             model.id
             for model in cast(
-                Iterable[FigureType], model_manager._get_models(FIGURE_MODELS, page=model_manager._get_model_page(self))
+                Iterable[FigureType],
+                model_manager._get_models(FIGURE_MODELS, root_model=model_manager._get_model_page(self)),
             )
         ]
 
@@ -96,5 +97,5 @@ class filter_interaction(_AbstractAction):
         )
 
     @property
-    def outputs(self):
+    def outputs(self):  # type: ignore[override]
         return {target: target for target in self.targets}

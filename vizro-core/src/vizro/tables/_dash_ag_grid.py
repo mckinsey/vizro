@@ -5,8 +5,8 @@ from typing import Any
 import dash_ag_grid as dag
 import pandas as pd
 
+from vizro._vizro_utils import _set_defaults_nested
 from vizro.models.types import capture
-from vizro.tables._utils import _set_defaults_nested
 
 _FORMAT_CURRENCY_EU = """d3.formatLocale({
   "decimal": ",",

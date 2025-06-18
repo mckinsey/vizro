@@ -22,6 +22,7 @@ nav:
           - Container: pages/user-guides/container.md
           - Tab: pages/user-guides/tabs.md
       - CONTROLS:
+          - Overview: pages/user-guides/controls.md
           - Filter: pages/user-guides/filters.md
           - Parameter: pages/user-guides/parameters.md
           - Selector: pages/user-guides/selectors.md
@@ -58,7 +59,7 @@ nav:
       - User examples: pages/explanation/your-examples.md
       - Contribute to Vizro: pages/explanation/contributing.md
       - Documentation style: pages/explanation/documentation-style-guide.md
-      - Vizro Schema: pages/explanation/schema.md
+      - Vizro schema: pages/explanation/schema.md
       - Authors: pages/explanation/authors.md
   - Examples gallery:
       - Gallery: https://vizro.mckinsey.com/
@@ -120,7 +121,7 @@ markdown_extensions:
             kwds:
               type: vizro
               requirements: |
-                vizro==0.1.39
+                vizro==0.1.40
   - pymdownx.tabbed:
       alternate_style: true
   - pymdownx.mark
