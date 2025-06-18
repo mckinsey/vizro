@@ -1,7 +1,6 @@
 import vizro.models as vm
 from typing import Literal
 from vizro.managers import data_manager
-from vizro.models._controls._controls_utils import set_container_control_default
 from vizro import Vizro
 
 import vizro.plotly.express as px
@@ -25,7 +24,6 @@ class CustomParameter(vm.Parameter):
     type: Literal["custom_parameter"] = "custom_parameter"
 
     def pre_build(self):
-        set_container_control_default(control=self)
         self._check_numerical_and_temporal_selectors_values()
         self._check_categorical_selectors_options()
         self._set_selector_title()
@@ -78,14 +76,6 @@ page1 = vm.Page(
                     ],
                 ),
             ]
-        ),
-    ],
-    controls=[
-        vm.Parameter(
-            targets=["grid.data_frame.n"],
-            selector=vm.Slider(
-                title="Change me to see bug", min=0, max=N, step=1, marks={0: "0", N // 2: str(N // 2), N: str(N)}
-            ),
         ),
     ],
 )
