@@ -591,7 +591,6 @@ Here are a few cases where you might want to use `controls` within a `Container`
 
     When you have multiple adjacent containers with controls, consider using a [styled containers](#styled-containers) to make the separations between sections of your page clear. Containers with controls also work with [collapsible containers](#collapsible-containers).
 
-
 ## The `extra` argument
 
 The `Container` is based on the underlying Dash component [`dbc.Container`](https://dash-bootstrap-components.opensource.faculty.ai/docs/components/layout/). Using the `extra` argument you can pass extra arguments to `dbc.Container` in order to alter it beyond the chosen defaults.
