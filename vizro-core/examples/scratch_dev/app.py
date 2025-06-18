@@ -1,75 +1,23 @@
-import numpy as np
+"""Dev app to try things out."""
 
-from vizro import Vizro
 import vizro.models as vm
-import pandas as pd
-from vizro.tables import dash_ag_grid
-import string
+import vizro.plotly.express as px
+from vizro import Vizro
 
 
-N = len(string.ascii_letters)
-df = pd.DataFrame(
-    {
-        "category 1": np.random.choice(list("abc"), N),
-        "category 2": np.random.choice(list("ABC"), N),
-        "long_words": [" ".join(list(string.ascii_letters[: n + 1])) for n in range(N)],
-        "numbers": np.random.randint(N, size=N),
-    }
-)
-
-
-def dynamic_data(n=10):
-    return df.loc[:n]
-
-
-def make_controls():
-    return [
-        vm.Filter(column="long_words"),
-        vm.Filter(
-            column="category 1",
-            selector=vm.Checklist(),
-        ),
-        vm.Filter(column="category 2", selector=vm.RadioItems()),
-        vm.Filter(column="numbers"),
-    ]
-
-
-page_1 = vm.Page(
-    title="Test page",
+page = vm.Page(
+    title="Incorrect color of selector 'x' clear selection",
     components=[
-        vm.Container(
-            components=[vm.AgGrid(id="grid", figure=dash_ag_grid(dynamic_data))],
-            controls=make_controls(),
+        vm.Graph(
+            figure=px.scatter(px.data.iris(), x="sepal_width", y="sepal_length", color="species"),
         ),
     ],
     controls=[
-        vm.Parameter(
-            targets=["grid.data_frame.n"],
-            selector=vm.Slider(
-                title="Change me to see bug", min=0, max=N, step=1, marks={0: "0", N // 2: str(N // 2), N: str(N)}
-            ),
-        ),
-        *make_controls(),
+        vm.Filter(column="species", selector=vm.Dropdown(multi=False)),
     ],
 )
 
-
-page_2 = vm.Page(
-    title="Test page 2",
-    components=[
-        vm.Container(
-            components=[vm.AgGrid(figure=dash_ag_grid(df))],
-            variant="outlined",
-        ),
-    ],
-)
-
-dashboard = vm.Dashboard(
-    title="Test dashboard",
-    pages=[page_1, page_2],
-    navigation=vm.Navigation(pages={"Group A": ["Test page"], "Group B": ["Test page 2"]}, nav_selector=vm.NavBar()),
-)
+dashboard = vm.Dashboard(pages=[page])
 
 if __name__ == "__main__":
-    app = Vizro().build(dashboard)
-    app.run()
+    Vizro().build(dashboard).run()
