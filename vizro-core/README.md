@@ -31,12 +31,27 @@ Use it to build beautiful and powerful data visualization apps quickly and easil
 
 Then customize and deploy your app to production at scale.
 
+In just a few lines of simple low-code configuration, with in-built visual design best practices, you can quickly assemble high-quality, multi-page prototypes, that are production-ready.
+
 <div align="center">
 <img src="https://raw.githubusercontent.com/mckinsey/vizro/main/.github/images/code_dashboard.png" width="100%"/>
-Use a few lines of simple low-code configuration, with in-built visual design best practices, to assemble high-quality
-multi-page prototypes.
 </div>
-<br>
+
+Every Vizro app is defined by a simple configuration, using these high-level categories:
+
+- **[Components](https://vizro.readthedocs.io/en/stable/pages/user-guides/components/):** charts, tables, cards, KPI indicators, forms and more.
+- **[Controls](https://vizro.readthedocs.io/en/stable/pages/user-guides/controls/):** filters and parameters, using a range of selectors such as drop-down menus and sliders.
+- **[Actions](https://vizro.readthedocs.io/en/stable/pages/user-guides/actions/):** interactions between components, drill-throughs, export functionality and more.
+- **[Layouts](https://vizro.readthedocs.io/en/stable/pages/user-guides/layouts/):** grid layouts or flexible containers, with a range of pre-set styles.
+- **[Navigation](https://vizro.readthedocs.io/en/stable/pages/user-guides/navigation/):** a range of app layout and navigation settings, including nested page hierarchies.
+
+Configuration can be written in multiple formats including **Pydantic models**, **JSON**, **YAML** or **Python dictionaries** for added flexibility of implementation.
+
+Optional high-code extensions enable almost infinite customization in a modular way, combining the best of low-code and high-code - including bespoke [**visual formatting**](https://vizro.readthedocs.io/en/stable/pages/user-guides/visual-formatting/) and [**custom components**](https://vizro.readthedocs.io/en/stable/pages/user-guides/extensions/).
+
+Visit the ["How-to guides"](https://vizro.readthedocs.io/en/stable/pages/user-guides/install/) for a more detailed explanation of Vizro features.
+
+## Why use Vizro?
 
 The benefits of the Vizro toolkit include:
 
@@ -44,10 +59,6 @@ The benefits of the Vizro toolkit include:
 <img src="https://raw.githubusercontent.com/mckinsey/vizro/main/.github/images/infographic.svg" width="800"/>
 </div>
 <br>
-
-Visit our ["How-to guides"](https://vizro.readthedocs.io/en/stable/pages/user-guides/install/) for a more detailed explanation of Vizro features.
-
-## Why use Vizro?
 
 Vizro helps you to build data visualization apps that are:
 
@@ -115,9 +126,21 @@ Visit the [dashboard examples gallery](https://vizro.mckinsey.com/) to see the d
 <img src="https://raw.githubusercontent.com/mckinsey/vizro/main/.github/images/toolkit_dashboard_examples.png" width="600">
 </a>
 
+## [Vizro-MCP](https://github.com/mckinsey/vizro/tree/main/vizro-mcp)
+
+**A [Model Context Protocol (MCP)](https://modelcontextprotocol.io/) server for Vizro.**
+
+Vizro-MCP works alongside an LLM to help you create Vizro dashboards and charts. It provides tools and templates to create a functioning Vizro chart or dashboard step-by-step.
+
+Compatible with MCP-enabled LLM clients such as Cursor or Claude Desktop.
+
+<img src="https://raw.githubusercontent.com/mckinsey/vizro/main/vizro-mcp/assets/vizro-mcp.gif" alt="Vizro MCP Demo" width="600">
+
 ## [Vizro-AI](https://vizro.readthedocs.io/projects/vizro-ai/)
 
 **Use LLMs to generate charts and dashboards.**
+
+> **Vizro-AI dashboard generation is no longer actively developed and is superseded by [Vizro-MCP](https://github.com/mckinsey/vizro/tree/main/vizro-mcp). Vizro-AI supports only chart generation from version 0.4.0.**
 
 Vizro-AI is a separate package (called `vizro_ai`) that extends Vizro to incorporate LLMs. Use it to build interactive Vizro charts and dashboards, by simply describing what you need in plain English or other languages.
 
@@ -142,10 +165,11 @@ The [get started documentation](https://vizro.readthedocs.io/en/stable/pages/tut
 
 This repository is a monorepo containing the following packages:
 
-|           Folder           |                                           Version                                           |                          Documentation                           |
-| :------------------------: | :-----------------------------------------------------------------------------------------: | :--------------------------------------------------------------: |
-| [vizro-core](./vizro-core) |    [![PyPI version](https://badge.fury.io/py/vizro.svg)](https://badge.fury.io/py/vizro)    |      [Vizro Docs](https://vizro.readthedocs.io/en/stable/)       |
-|   [vizro-ai](./vizro-ai)   | [![PyPI version](https://badge.fury.io/py/vizro-ai.svg)](https://badge.fury.io/py/vizro-ai) | [Vizro-AI Docs](https://vizro.readthedocs.io/projects/vizro-ai/) |
+|           Folder           |                                            Version                                            |                                   Documentation                                   |
+| :------------------------: | :-------------------------------------------------------------------------------------------: | :-------------------------------------------------------------------------------: |
+| [vizro-core](./vizro-core) |     [![PyPI version](https://badge.fury.io/py/vizro.svg)](https://badge.fury.io/py/vizro)     |               [Vizro Docs](https://vizro.readthedocs.io/en/stable/)               |
+|   [vizro-ai](./vizro-ai)   |  [![PyPI version](https://badge.fury.io/py/vizro-ai.svg)](https://badge.fury.io/py/vizro-ai)  |         [Vizro-AI Docs](https://vizro.readthedocs.io/projects/vizro-ai/)          |
+|  [vizro-mcp](./vizro-mcp)  | [![PyPI version](https://badge.fury.io/py/vizro-mcp.svg)](https://badge.fury.io/py/vizro-mcp) | [Vizro-MCP Docs](https://github.com/mckinsey/vizro/blob/main/vizro-mcp/README.md) |
 
 ## Community and development
 
