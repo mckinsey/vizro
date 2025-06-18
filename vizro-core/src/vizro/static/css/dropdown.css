@@ -157,3 +157,7 @@ div.dropdown .VirtualizedSelectOption:nth-child(1):has(> div) {
 .dash-dropdown .Select.is-focused:not(.is-open) > .Select-control {
   background: inherit;
 }
+
+.dash-dropdown .Select-clear-zone:hover {
+  color: var(--text-secondary);
+}
