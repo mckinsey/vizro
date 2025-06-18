@@ -159,5 +159,5 @@ div.dropdown .VirtualizedSelectOption:nth-child(1):has(> div) {
 }
 
 .dash-dropdown .Select-clear-zone:hover {
-  color: var(--text-secondary);
+  color: var(--text-primaryHover);
 }
