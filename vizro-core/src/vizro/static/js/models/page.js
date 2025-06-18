@@ -1,3 +1,17 @@
+function encodeUrlParams(ids, values) {
+  return ids.map((id, i) => [
+    id,
+    btoa(
+      String.fromCharCode(
+        ...new TextEncoder().encode(JSON.stringify(values[i])),
+      ),
+    )
+      .replace(/\+/g, "-")
+      .replace(/\//g, "_")
+      .replace(/=+$/, ""),
+  ]);
+}
+
 function decodeUrlParams(params) {
   function decodeParam(encoded) {
     let base64 = encoded.replace(/-/g, "+").replace(/_/g, "/");

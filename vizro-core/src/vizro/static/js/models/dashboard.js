@@ -67,20 +67,6 @@ function collapse_nav_panel(n_clicks, is_open) {
   }
 }
 
-function encodeUrlParams(ids, values) {
-  return ids.map((id, i) => [
-    id,
-    btoa(
-      String.fromCharCode(
-        ...new TextEncoder().encode(JSON.stringify(values[i])),
-      ),
-    )
-      .replace(/\+/g, "-")
-      .replace(/\//g, "_")
-      .replace(/=+$/, ""),
-  ]);
-}
-
 window.dash_clientside = {
   ...window.dash_clientside,
   dashboard: {
