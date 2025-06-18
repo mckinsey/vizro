@@ -87,7 +87,6 @@ class Parameter(VizroBaseModel):
 
     @_log_call
     def build(self):
-        # TODO NOW COMMENT: needed self.id to exist even for non-dynamic - like in above comment about align.
         return dcc.Loading(
             id=self.id,
             children=self.selector.build(),

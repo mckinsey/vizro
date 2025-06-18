@@ -224,12 +224,6 @@ class Filter(VizroBaseModel):
         selector = cast(SelectorType, self.selector)
 
         selector_build_obj = selector.build()
-        # TODO: Align the (dynamic) object's return structure with the figure's components when the Dash bug is fixed.
-        #  This means returning an empty "html.Div(id=self.id, className=...)" as a placeholder from Filter.build().
-        #  Also, make selector.title visible when the filter is reloading.
-        # if not self._dynamic:
-        #     return selector_build_obj
-        # TODO NOW COMMENT: needed self.id to exist even for non-dynamic - like in above comment about align.
 
         # Temporarily hide the selector and numeric dcc.Input components during the filter reloading process.
         # Other components, such as the title, remain visible because of the configuration:
@@ -244,6 +238,9 @@ class Filter(VizroBaseModel):
             if f"{selector.id}_end_value" in selector_build_obj:
                 selector_build_obj[f"{selector.id}_end_value"].className = "d-none"
 
+        # TODO: Align the (dynamic) object's return structure with the figure's components when the Dash bug is fixed.
+        #  This means returning an empty "html.Div(id=self.id, className=...)" as a placeholder from Filter.build().
+        #  Also, make selector.title visible when the filter is reloading.
         return dcc.Loading(
             id=self.id,
             children=selector_build_obj,

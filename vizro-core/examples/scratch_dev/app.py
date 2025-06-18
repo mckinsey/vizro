@@ -173,13 +173,13 @@ page_2 = vm.Page(
     ],
     controls=[
         vm.Filter(
-            # id="page_2_filter_species",
+            id="page_2_filter_species",
             column="species",
             show_in_url=True,
             selector=vm.Dropdown(id="page_2_filter_selector_species"),
         ),
         vm.Filter(
-            id="page_2_filter_sepal width",
+            id="page_2_filter_sepal_width",
             column="sepal_width",
             show_in_url=True,
             selector=vm.RangeSlider(id="page_2_filter_selector_sepal_width"),
@@ -190,26 +190,30 @@ page_2 = vm.Page(
 page_3 = vm.Page(
     title="Page_3",
     components=[
-        vm.Graph(
-            id="page_3_graph",
-            figure=px.scatter(
-                df, x="petal_length", y="petal_width", color="species", color_discrete_map=SPECIES_COLORS
-            ),
-        ),
-    ],
-    controls=[
-        vm.Filter(
-            id="page_3_filter_sepal_width",
-            column="sepal_width",
-            show_in_url=True,
-            selector=vm.Slider(id="page_3_filter_selector_sepal_width"),
-        ),
-        vm.Filter(
-            id="page_3_filter_species",
-            column="species",
-            show_in_url=True,
-            selector=vm.Dropdown(id="page_3_filter_selector_species"),
-        ),
+        vm.Container(
+            components=[
+                vm.Graph(
+                    id="page_3_graph",
+                    figure=px.scatter(
+                        df, x="petal_length", y="petal_width", color="species", color_discrete_map=SPECIES_COLORS
+                    ),
+                ),
+            ],
+            controls=[
+                vm.Filter(
+                    id="page_3_filter_sepal_width",
+                    column="sepal_width",
+                    show_in_url=True,
+                    selector=vm.Slider(id="page_3_filter_selector_sepal_width"),
+                ),
+                vm.Filter(
+                    id="page_3_filter_species",
+                    column="species",
+                    show_in_url=True,
+                    selector=vm.Dropdown(id="page_3_filter_selector_species"),
+                ),
+            ]
+        )
     ],
 )
 
