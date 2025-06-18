@@ -3,7 +3,9 @@ from vizro.tables import dash_ag_grid
 from typing import Literal
 from vizro.managers import data_manager
 from vizro.models._controls._controls_utils import set_container_control_default
+from vizro import Vizro
 
+import vizro.plotly.express as px
 
 # TODO-Comment: Consider using parametrised data loading function so that only the needed data is loaded into the app.
 # TODO-Docs: https://vizro.readthedocs.io/en/stable/pages/user-guides/data/#parametrize-data-loading
