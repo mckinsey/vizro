@@ -28,7 +28,6 @@ function decodeUrlParams(params) {
 
   for (const [key, val] of params.entries()) {
     ids.push(key);
-    // TODO-NOW: Is it smart to silent the error here?
     // Silent the error if the value cannot be decoded. It's added for external query parameters.
     try {
       values.push(decodeParam(val));
@@ -40,16 +39,12 @@ function decodeUrlParams(params) {
   return { ids, values };
 }
 
-// TODO-NOW: Remove unnecessary console logs here and from "gateway".
 function sync_url_query_params_and_controls(...values_ids) {
   // Control IDs are required due to Dash's limitations on clientside callback flexible signatures, so that we can:
   //   1. Map control selector value input to url query parameters properly.
   //   2. Map url query parameters to control selector value outputs properly.
   // The Solution relies on the fact that the order of control IDs matches the order of the
   // control selector value inputs and their corresponding outputs.
-
-  // TODO-NOW: Think about replacing the controlIds inputs with the dcc.Store that would map of control IDs to
-  //  selector IDs. In this case, we could solve the problem by using the store, ctx.inputs_list, ctx.outputs_list.
 
   // Split control inputs and selector values that are in format:
   // [selector-1-value, selector-2-value, selector-N-value, ..., control-1-id, control-2-id, control-N-id, ...]
