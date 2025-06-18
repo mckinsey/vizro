@@ -181,8 +181,7 @@ class Page(VizroBaseModel):
             selector_values_outputs = [Output(control.selector.id, "value") for control in url_controls]
             selector_values_inputs = [Input(control.selector.id, "value") for control in url_controls]
             # Note the id is the control's id rather than the underlying selector's. This means a user doesn't
-            # need to specify vm.Filter(selector=vm.Dropdown(id=...)) when they set show_in_url = True. It is
-            # mapped back on to the selector's id in vm.Filter and vm.Parameter.
+            # need to specify vm.Filter(selector=vm.Dropdown(id=...)) when they set show_in_url = True.
             control_ids_states = [State(control.id, "id") for control in url_controls]
 
             clientside_callback(

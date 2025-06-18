@@ -78,7 +78,7 @@ TODO-FOR-REVIEWER: Manual testing steps for sync URL-controls:
 
     5.4 Copy and paste URL into a new tab:
         - ✅ Confirm: Filters/parameters are applied from URL
-        - ⚠️ Note: Grid interaction is **not** currently reflected in the URL, New "interact" action will solve that.
+        - Note: Grid interaction is not currently reflected in the URL, New "interact" action will solve that.
 
     5.5 Test order of URL parameters (Open each link in the new browser tab + Navigate to Page-1 and back to Page-4):
         Test cases:
