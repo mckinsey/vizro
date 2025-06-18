@@ -1,5 +1,4 @@
 import vizro.models as vm
-from vizro.tables import dash_ag_grid
 from typing import Literal
 from vizro.managers import data_manager
 from vizro.models._controls._controls_utils import set_container_control_default
@@ -7,19 +6,10 @@ from vizro import Vizro
 
 import vizro.plotly.express as px
 
-# TODO-Comment: Consider using parametrised data loading function so that only the needed data is loaded into the app.
-# TODO-Docs: https://vizro.readthedocs.io/en/stable/pages/user-guides/data/#parametrize-data-loading
+
 def load_data_function(number_of_data_points: int = 50):
     return px.data.iris().head(number_of_data_points)
 
-
-# TODO-Comment: Consider setting up a data manager cache (PS: data is cached per function input argument)
-# TODO-Docs: https://vizro.readthedocs.io/en/stable/pages/user-guides/data/#configure-cache
-# data_manager.cache = Cache(config={
-#     "CACHE_TYPE": "FileSystemCache",
-#     "CACHE_DIR": "cache",
-#     "CACHE_DEFAULT_TIMEOUT": 600,
-# })
 
 data_manager["data_key"] = load_data_function
 
@@ -91,16 +81,12 @@ page1 = vm.Page(
         ),
     ],
     controls=[
-        vm.Filter(column="species"),
-    ],
-    controls=[
         vm.Parameter(
             targets=["grid.data_frame.n"],
             selector=vm.Slider(
                 title="Change me to see bug", min=0, max=N, step=1, marks={0: "0", N // 2: str(N // 2), N: str(N)}
             ),
         ),
-        *make_controls(),
     ],
 )
 
@@ -159,7 +145,6 @@ page3 = vm.Page(
 
 page4 = vm.Page(
     title="Tabs v3",
-    # layout=vm.Flex(),
     components=[
         vm.Tabs(
             tabs=[
