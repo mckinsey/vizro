@@ -4,17 +4,33 @@ import vizro.models as vm
 import vizro.plotly.express as px
 from vizro import Vizro
 
+iris = px.data.iris()
 
 page = vm.Page(
     title="Incorrect color of selector 'x' clear selection",
     components=[
-        vm.Graph(
-            figure=px.scatter(px.data.iris(), x="sepal_width", y="sepal_length", color="species"),
+        vm.Tabs(
+            tabs=[
+                vm.Container(
+                    title="Tab with iris data",
+                    components=[vm.Graph(figure=px.bar(iris, x="species", y="sepal_length"))],
+                    controls=[
+                        vm.Filter(column="petal_length", selector=vm.Slider()),
+                        vm.Filter(column="sepal_length", selector=vm.RangeSlider()),
+                    ],
+                ),
+            ]
+        ),
+        vm.Container(
+            title="Container with iris data",
+            components=[vm.Graph(figure=px.bar(iris, x="species", y="sepal_length"))],
+            controls=[
+                vm.Filter(column="petal_length", selector=vm.Slider()),
+                vm.Filter(column="sepal_length", selector=vm.RangeSlider()),
+            ],
         ),
     ],
-    controls=[
-        vm.Filter(column="species", selector=vm.Dropdown(multi=False)),
-    ],
+    controls=[vm.Filter(column="sepal_length", selector=vm.RangeSlider())],
 )
 
 dashboard = vm.Dashboard(pages=[page])
