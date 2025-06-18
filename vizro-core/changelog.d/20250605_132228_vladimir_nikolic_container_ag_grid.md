@@ -25,7 +25,7 @@ Uncomment the section that is right (remove the HTML comment wrapper).
 
 ### Changed
 
-- Enable pagination for the `AgGrid` by default. See the [user guide on how to disable the pagination](https://vizro.readthedocs.io/en/stable/pages/user-guides/table/#disable-pagination). ([#1226](https://github.com/mckinsey/vizro/pull/1226))
+- Changed `dash_ag_grid` defaults to improve layout compatibility and performance ("domLayout": "autoHeight" and "pagination": `True`). See the [user guide on how to disable the pagination](https://vizro.readthedocs.io/en/stable/pages/user-guides/table/#disable-pagination). ([#1226](https://github.com/mckinsey/vizro/pull/1226))
 
 <!--
 ### Deprecated
