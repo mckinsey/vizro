@@ -212,7 +212,7 @@ page_3 = vm.Page(
                     show_in_url=True,
                     selector=vm.Dropdown(id="page_3_filter_selector_species"),
                 ),
-            ]
+            ],
         )
     ],
 )
