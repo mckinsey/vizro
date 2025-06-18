@@ -112,6 +112,13 @@ class Container(VizroBaseModel):
         }
 
     @_log_call
+    def pre_build(self):
+        # Note this relies on the fact that filters are pre-built upfront in Vizro._pre_build. Otherwise
+        # control.selector might not be set.
+        for control in self.controls:
+            control.selector._in_container = True
+
+    @_log_call
     def build(self):
         # TODO: TBD on how to encode 'elevated', as box-shadows are not visible on a dark theme
         # It needs to be properly designed and tested out (margins have to be added etc.).
