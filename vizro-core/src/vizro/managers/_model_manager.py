@@ -5,9 +5,7 @@ from __future__ import annotations
 import random
 import uuid
 from collections.abc import Collection, Generator, Iterable, Mapping
-from typing import TYPE_CHECKING, Optional, TypeVar, Union, cast, Any
-
-from nutree import Tree
+from typing import TYPE_CHECKING, Optional, TypeVar, Union, cast
 
 from vizro.managers._managers_utils import _state_modifier
 
@@ -37,7 +35,6 @@ class DuplicateIDError(ValueError):
 class ModelManager:
     def __init__(self):
         self.__models: dict[ModelID, VizroBaseModel] = {}
-        self.__dashboard_tree: Tree = Tree("dashboard", calc_data_id=lambda tree, data: data.id)
         self._frozen_state = False
 
     # TODO: Consider storing "page_id" or "parent_model_id" and make searching helper methods easier?
