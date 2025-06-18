@@ -1,70 +1,55 @@
-from vizro import Vizro
-import vizro.plotly.express as px
-import vizro.models as vm
+import numpy as np
 
-gapminder_2007 = px.data.gapminder().query("year == 2007")
+from vizro import Vizro
+import vizro.models as vm
+import pandas as pd
+from vizro.tables import dash_ag_grid
+import string
+
+
+N = len(string.ascii_letters)
+df = pd.DataFrame(
+    {
+        "category 1": np.random.choice(list("abc"), N),
+        "category 2": np.random.choice(list("ABC"), N),
+        "long_words": [" ".join(list(string.ascii_letters[: n + 1])) for n in range(N)],
+        "numbers": np.random.randint(N, size=N),
+    }
+)
+
+
+def dynamic_data(n=10):
+    return df.loc[:n]
+
+
+def make_controls():
+    return [
+        vm.Filter(column="long_words"),
+        vm.Filter(
+            column="category 1",
+            selector=vm.Checklist(),
+        ),
+        vm.Filter(column="category 2", selector=vm.RadioItems()),
+        vm.Filter(column="numbers"),
+    ]
+
 
 page_1 = vm.Page(
-    title="Page with button",
-    layout=vm.Grid(grid=[[0, 1, 2, 3, 4], [5, 5, 5, 5, 5], [5, 5, 5, 5, 5]]),
+    title="Test page",
     components=[
         vm.Container(
-            title="Plain button",
-            components=[
-                vm.Button(text="Click me!", description=vm.Tooltip(text="Button tooltip", icon="info"), variant="plain")
-            ],
-            variant="outlined",
+            components=[vm.AgGrid(id="grid", figure=dash_ag_grid(dynamic_data))],
+            controls=make_controls(),
         ),
-        vm.Container(
-            title="Filled button",
-            components=[vm.Button(text="Click me!", description=vm.Tooltip(text="Button tooltip", icon="info"))],
-            variant="outlined",
+    ],
+    controls=[
+        vm.Parameter(
+            targets=["grid.data_frame.n"],
+            selector=vm.Slider(
+                title="Change me to see bug", min=0, max=N, step=1, marks={0: "0", N // 2: str(N // 2), N: str(N)}
+            ),
         ),
-        vm.Container(
-            title="Outlined button",
-            components=[
-                vm.Button(
-                    text="Click me!", description=vm.Tooltip(text="Button tooltip", icon="info"), variant="outlined"
-                )
-            ],
-            variant="outlined",
-        ),
-        vm.Container(
-            title="Button with extra success",
-            components=[
-                vm.Button(
-                    text="Click me!",
-                    description=vm.Tooltip(text="Button tooltip", icon="info"),
-                    extra={"color": "success", "outline": True},
-                )
-            ],
-            variant="outlined",
-        ),
-        vm.Container(
-            title="Button with extra danger",
-            components=[
-                vm.Button(
-                    text="Click me!",
-                    description=vm.Tooltip(text="Button tooltip", icon="info"),
-                    extra={"color": "danger", "outline": True},
-                )
-            ],
-            variant="outlined",
-        ),
-        vm.Container(
-            title="Graph",
-            components=[
-                vm.Graph(
-                    title="Graph 1",
-                    figure=px.bar(
-                        gapminder_2007,
-                        x="continent",
-                        y="lifeExp",
-                        color="continent",
-                    ),
-                ),
-            ],
-        ),
+        *make_controls(),
     ],
 )
 

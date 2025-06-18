@@ -217,9 +217,49 @@ class TestDropdownBuild:
             ([{"label": "A" * 61, "value": "A"}, {"label": "B", "value": "B"}, {"label": "C", "value": "C"}], 80),
         ],
     )
-    def test_dropdown_dynamic_option_height(self, options, option_height):
+    def test_dropdown_option_height(self, options, option_height):
         default_value = options[0]["value"] if all(isinstance(option, dict) for option in options) else options[0]  # type: ignore[index]
         dropdown = Dropdown(id="dropdown_id", multi=False, options=options).build()
+        expected_dropdown = html.Div(
+            [
+                None,
+                dcc.Dropdown(
+                    id="dropdown_id",
+                    options=options,
+                    optionHeight=option_height,
+                    multi=False,
+                    value=default_value,
+                    persistence=True,
+                    persistence_type="session",
+                    className="dropdown",
+                ),
+            ]
+        )
+
+        assert_component_equal(dropdown, expected_dropdown)
+
+    @pytest.mark.parametrize(
+        "options, option_height",
+        [
+            (["A", "B", "C"], 32),
+            ([10, 20, 30], 32),
+            (["A" * 15, "B", "C"], 32),
+            (["A" * 30, "B", "C"], 56),
+            (["A" * 31, "B", "C"], 80),
+            (["A" * 60, "B", "C"], 104),
+            (["A" * 61, "B", "C"], 128),
+            ([{"label": "A" * 30, "value": "A"}, {"label": "B", "value": "B"}, {"label": "C", "value": "C"}], 56),
+            ([{"label": "A" * 31, "value": "A"}, {"label": "B", "value": "B"}, {"label": "C", "value": "C"}], 80),
+            ([{"label": "A" * 60, "value": "A"}, {"label": "B", "value": "B"}, {"label": "C", "value": "C"}], 104),
+            ([{"label": "A" * 61, "value": "A"}, {"label": "B", "value": "B"}, {"label": "C", "value": "C"}], 128),
+        ],
+    )
+    def test_dropdown_in_container_option_height(self, options, option_height):
+        default_value = options[0]["value"] if all(isinstance(option, dict) for option in options) else options[0]  # type: ignore[index]
+        dropdown = Dropdown(id="dropdown_id", multi=False, options=options)
+        dropdown._in_container = True
+        dropdown = dropdown.build()
+
         expected_dropdown = html.Div(
             [
                 None,

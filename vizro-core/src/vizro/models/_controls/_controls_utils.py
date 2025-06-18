@@ -3,7 +3,7 @@ from typing import Optional
 
 from vizro.managers import model_manager
 from vizro.managers._model_manager import FIGURE_MODELS
-from vizro.models import Checklist, Container, RadioItems, VizroBaseModel
+from vizro.models import Container, VizroBaseModel
 from vizro.models.types import ControlType
 
 
@@ -40,9 +40,3 @@ def check_control_targets(control: ControlType) -> None:
         raise ValueError(f"Control {control.id} should be defined within a Page object.")
 
     _validate_targets(targets=control.targets, root_model=root_model)
-
-
-def set_container_control_default(control: ControlType) -> None:
-    page = model_manager._get_model_page(control)
-    if control not in page.controls and isinstance(control.selector, (Checklist, RadioItems)):
-        control.selector.extra.setdefault("inline", True)

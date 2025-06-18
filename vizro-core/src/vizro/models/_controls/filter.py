@@ -23,7 +23,7 @@ from vizro.models._components.form import (
     RangeSlider,
     Slider,
 )
-from vizro.models._controls._controls_utils import check_control_targets, set_container_control_default
+from vizro.models._controls._controls_utils import check_control_targets
 from vizro.models._models_utils import _log_call
 from vizro.models.types import FigureType, ModelID, MultiValueType, SelectorType, SingleValueType, _IdProperty
 
@@ -162,9 +162,6 @@ class Filter(VizroBaseModel):
         self._column_type = self._validate_column_type(targeted_data)
         self.selector = self.selector or SELECTORS[self._column_type][0]()
         self.selector.title = self.selector.title or self.column.title()
-
-        # set default inline=True for container selectors
-        set_container_control_default(control=self)
 
         if isinstance(self.selector, DISALLOWED_SELECTORS.get(self._column_type, ())):
             raise ValueError(
