@@ -24,7 +24,7 @@ To ensure the dynamic height adjustment and prevent scrolling, the height must b
 
 /* This rule is necessary because setting height: 100% here would prevent Plotly from rendering its chart—
    the chart would not be visible if its parent has no explicit height.
-   By removing the height restriction (setting height: auto and max-height: 100%), 
+   By removing the height restriction (setting height: auto and max-height: 100%),
    Plotly can render the chart using its default or specified height, ensuring it is displayed correctly.
 */
 .flex-item .tab-pane > div:first-child {
