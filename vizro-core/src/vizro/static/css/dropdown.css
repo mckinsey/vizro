@@ -1,5 +1,5 @@
 /* Outer layout for dash dropdown */
-#dashboard-container .dash-dropdown {
+div.dash-dropdown {
   background-color: var(--field-enabled);
   border: none;
   border-radius: 0;
@@ -8,7 +8,7 @@
 }
 
 /* Dropdown menu when clicking on expand arrow */
-#dashboard-container .Select-menu-outer {
+div.Select-menu-outer {
   background-color: var(--field-enabled);
   border: none;
   border-radius: 0;
@@ -19,66 +19,52 @@
 }
 
 /* Dropdown menu options */
-#dashboard-container .VirtualizedSelectOption {
+div.VirtualizedSelectOption {
   color: var(--text-primary);
   font-weight: 400;
 }
 
 /* Dropdown menu hover effect */
-#dashboard-container .VirtualizedSelectFocusedOption {
+div.VirtualizedSelectFocusedOption {
   background-color: var(--stateOverlays-hover);
 }
 
 /* Input box for existing values and user input */
-#dashboard-container .Select-control {
+div.Select-control {
   background-color: inherit;
   border: inherit;
   border-radius: inherit;
   height: 32px;
 }
 
-#dashboard-container .Select.is-focused > .Select-control {
+div.Select.is-focused > .Select-control {
   background-color: var(--field-enabled);
 }
 
 /* User input */
-#dashboard-container .dash-dropdown .Select-input {
+div.dash-dropdown .Select-input {
   display: block;
   height: 24px;
   margin-left: unset;
 }
 
-.Select-input > input {
+div.Select-input > input {
+  height: 100%;
   padding: 0 !important; /* Required so tags don't jump caused by adding table */
 }
 
-#dashboard-container.Select-input > input {
-  height: 100%;
-  padding: 0;
-}
-
 /* Border on focus */
-#dashboard-container .is-focused:not(.is-open) > .Select-control {
+div.is-focused:not(.is-open) > .Select-control {
   box-shadow: 0 0 0 2px var(--focus) inset;
 }
 
 /* Single-select dropdown only ------------------- */
-#dashboard-container .Select--single .Select-value {
+div.Select--single .Select-value {
   padding-left: 0.5rem;
 }
 
-.has-value.Select--single > .Select-control .Select-value .Select-value-label,
-.has-value.is-pseudo-focused.Select--single
-  > .Select-control
-  .Select-value
-  .Select-value-label {
-  color: var(
-    --text-primary
-  ) !important; /* Required so text color don't change caused by adding table */
-}
-
 /* Tags --------------------------- */
-#dashboard-container .Select--multi .Select-value {
+div.Select--multi .Select-value {
   background-color: var(--dropdown-label-bg);
   border: 0;
   border-radius: 0;
@@ -93,14 +79,14 @@
 }
 
 /* Tag: Label */
-#dashboard-container .Select--multi .Select-value-label {
+div.Select--multi .Select-value-label {
   color: var(--text-primary);
   line-height: 1.5rem;
   padding: 0 4px;
 }
 
 /* Tag: Cross */
-#dashboard-container .Select--multi .Select-value-icon {
+div.Select--multi .Select-value-icon {
   background: inherit;
   border: none;
   color: var(--text-secondary);
@@ -110,53 +96,64 @@
 }
 
 /* Tag: Cross on hover */
-#dashboard-container .Select--multi .Select-value-icon:hover {
+div.Select--multi .Select-value-icon:hover {
   background: inherit;
   color: var(--text-secondary);
 }
 
 /* Tag: Arrow */
-.Select-arrow-zone {
+span.Select-arrow-zone {
   padding-right: 8px;
   width: 16px;
 }
 
+div.has-value.Select--single
+  > .Select-control
+  .Select-value
+  .Select-value-label,
+div.has-value.is-pseudo-focused.Select--single
+  > .Select-control
+  .Select-value
+  .Select-value-label {
+  color: var(
+    --text-primary
+  ) !important; /* Required so text color don't change caused by adding table */
+}
+
 /* Page Selector Dropdown */
-#dashboard-container
-  .dash-dropdown
-  .Select-menu-outer
-  .VirtualizedSelectSelectedOption
-  > a {
+div.dash-dropdown .Select-menu-outer {
+  margin-top: 0;
+}
+
+div.Select-menu-outer .VirtualizedSelectSelectedOption > a {
   pointer-events: none;
 }
 
-#dashboard-container
-  .dash-dropdown
-  .Select-menu-outer
-  .VirtualizedSelectOption
-  > a {
+div.dash-dropdown .Select-menu-outer .VirtualizedSelectOption > a {
   height: 100%;
   width: 100%;
 }
 
-#dashboard-container .Select--multi .Select-clear-zone {
+div.Select--multi .Select-clear-zone {
   color: var(--text-secondary);
   width: 16px;
 }
 
 /** spacing for tag elements only when elements are present inside
 wrapper **/
-.Select--multi.has-value .Select-multi-value-wrapper {
+div.Select--multi.has-value .Select-multi-value-wrapper {
   display: flex;
   flex-wrap: wrap;
   gap: 4px;
   padding: 4px 8px;
 }
 
-#dashboard-container
-  .dropdown
-  .VirtualizedSelectOption:nth-child(1):has(> div) {
+div.dropdown .VirtualizedSelectOption:nth-child(1):has(> div) {
   border-bottom: 1px solid var(--border-subtleAlpha01);
   padding: 0;
   padding-left: 0.5rem;
+}
+
+.dash-dropdown .Select.is-focused:not(.is-open) > .Select-control {
+  background: inherit;
 }

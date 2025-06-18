@@ -1,48 +1,55 @@
+import numpy as np
+
 from vizro import Vizro
-import vizro.plotly.express as px
 import vizro.models as vm
 import pandas as pd
 from vizro.tables import dash_ag_grid
+import string
 
-gapminder_2007 = px.data.gapminder().query("year == 2007")
 
-# Create a list of fake long words
-long_words = [
-    "Client Discussion",
-    "Client Discussion Engagement",
-    "Completed Engagement",
-    "Confirmed Engagement in Progress",
-    "Inactive/on hold",
-]
+N = len(string.ascii_letters)
+df = pd.DataFrame(
+    {
+        "category 1": np.random.choice(list("abc"), N),
+        "category 2": np.random.choice(list("ABC"), N),
+        "long_words": [" ".join(list(string.ascii_letters[: n + 1])) for n in range(N)],
+        "numbers": np.random.randint(N, size=N),
+    }
+)
 
-# Create the DataFrame
-df = pd.DataFrame({"id": range(1, 6), "category": ["A", "B", "A", "C", "B"], "long_words": long_words})
+
+def dynamic_data(n=10):
+    return df.loc[:n]
+
+
+def make_controls():
+    return [
+        vm.Filter(column="long_words"),
+        vm.Filter(
+            column="category 1",
+            selector=vm.Checklist(),
+        ),
+        vm.Filter(column="category 2", selector=vm.RadioItems()),
+        vm.Filter(column="numbers"),
+    ]
 
 
 page_1 = vm.Page(
     title="Test page",
     components=[
         vm.Container(
-            components=[vm.AgGrid(figure=dash_ag_grid(df))],
-            variant="outlined",
-            controls=[
-                vm.Filter(column="long_words"),
-                vm.Filter(
-                    column="category",
-                    selector=vm.Dropdown(
-                        options=[
-                            {"label": "a", "value": "A"},
-                            {"label": "b", "value": "B"},
-                            {"label": "c", "value": "C"},
-                        ]
-                    ),
-                ),
-                vm.Filter(column="id"),
-            ],
+            components=[vm.AgGrid(id="grid", figure=dash_ag_grid(dynamic_data))],
+            controls=make_controls(),
         ),
     ],
     controls=[
-        vm.Filter(column="long_words"),
+        vm.Parameter(
+            targets=["grid.data_frame.n"],
+            selector=vm.Slider(
+                title="Change me to see bug", min=0, max=N, step=1, marks={0: "0", N // 2: str(N // 2), N: str(N)}
+            ),
+        ),
+        *make_controls(),
     ],
 )
 

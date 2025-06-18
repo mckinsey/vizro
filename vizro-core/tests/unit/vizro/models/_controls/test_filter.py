@@ -535,7 +535,7 @@ class TestFilterCall:
             )
 
 
-class TestPreBuildMethod:
+class TestFilterPreBuildMethod:
     def test_filter_not_in_page(self):
         with pytest.raises(ValueError, match="Control filter_id should be defined within a Page object"):
             vm.Filter(id="filter_id", column="column_numerical").pre_build()
@@ -865,20 +865,6 @@ class TestPreBuildMethod:
         assert isinstance(default_action, _AbstractAction)
         assert default_action.filter_function == _filter_between
         assert default_action.id == f"__filter_action_{filter.id}"
-
-    @pytest.mark.usefixtures("managers_one_page_container_controls")
-    def test_container_filter_defaults(self):
-        filter = model_manager["container_filter"]
-        filter.pre_build()
-
-        assert filter.selector.extra == {"inline": True}
-
-    @pytest.mark.usefixtures("managers_one_page_container_controls")
-    def test_filter_dropdown_height(self):
-        filter = model_manager["container_dropdown"]
-        filter.pre_build()
-
-        assert filter.selector.extra == {"optionHeight": 56}
 
     @pytest.mark.usefixtures("managers_one_page_container_controls")
     def test_container_filter_default_targets(self):

@@ -7,6 +7,8 @@ from dash import dcc, html
 from pydantic import ValidationError
 
 import vizro.models as vm
+from vizro import Vizro
+from vizro.managers import model_manager
 
 
 class TestContainerInstantiation:
@@ -70,6 +72,56 @@ class TestContainerInstantiation:
             ValidationError, match="`Container` must have a `title` explicitly set when `collapsed` is not None."
         ):
             vm.Container(components=[vm.Button()], collapsed=True)
+
+
+class TestContainerPreBuildMethod:
+    def test_controls_have_in_container_set(self, standard_px_chart):
+        # This test needs to setup a whole page so that we can define filters and parameters even though we only care
+        # about them being inside a vm.Container.
+        vm.Page(
+            title="Test page",
+            components=[
+                vm.Container(
+                    components=[vm.Graph(id="graph", figure=standard_px_chart)],
+                    controls=[
+                        vm.Filter(id="filter_dropdown", column="continent"),
+                        vm.Filter(id="filter_radio_items", column="continent", selector=vm.RadioItems()),
+                        vm.Filter(id="filter_checklist", column="continent", selector=vm.Checklist()),
+                        # Test filter that doesn't have _in_container property to make sure it doesn't crash:
+                        vm.Filter(id="filter_slider", column="lifeExp"),
+                        vm.Parameter(
+                            id="parameter_dropdown",
+                            targets=["graph.x"],
+                            selector=vm.Dropdown(options=["gdpPercap", "lifeExp"], multi=False),
+                        ),
+                        vm.Parameter(
+                            id="parameter_radio_items",
+                            targets=["graph.y"],
+                            selector=vm.RadioItems(options=["gdpPercap", "lifeExp"]),
+                        ),
+                        vm.Parameter(
+                            id="parameter_checklist",
+                            targets=["graph.custom_data"],
+                            selector=vm.Checklist(options=["country", "continent"]),
+                        ),
+                        # Test parameter that doesn't have _in_container property to make sure it doesn't crash:
+                        vm.Parameter(
+                            id="parameter_slider",
+                            targets=["graph.size_max"],
+                            selector=vm.Slider(min=1, max=100, value=50),
+                        ),
+                    ],
+                )
+            ],
+        )
+        Vizro._pre_build()
+
+        assert model_manager["filter_dropdown"].selector._in_container
+        assert model_manager["filter_radio_items"].selector._in_container
+        assert model_manager["filter_checklist"].selector._in_container
+        assert model_manager["parameter_dropdown"].selector._in_container
+        assert model_manager["parameter_radio_items"].selector._in_container
+        assert model_manager["parameter_checklist"].selector._in_container
 
 
 class TestContainerBuildMethod:
