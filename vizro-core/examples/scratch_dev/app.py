@@ -1,177 +1,67 @@
-import vizro.models as vm
-from typing import Literal
-from vizro.managers import data_manager
+"""Dev app."""
+
 from vizro import Vizro
-
 import vizro.plotly.express as px
-
-
-def load_data_function(number_of_data_points: int = 50):
-    return px.data.iris().head(number_of_data_points)
-
-
-data_manager["data_key"] = load_data_function
-
+import vizro.models as vm
+import pandas as pd
+from vizro.tables import dash_ag_grid, dash_data_table
 
 gapminder_2007 = px.data.gapminder().query("year == 2007")
-tips = px.data.tips()
-df = px.data.iris()
 
+page_1 = vm.Page(
+    title="Grid AgGird",
+    layout=vm.Grid(grid=[[0, 1]]),
+    components=[
+        vm.AgGrid(figure=dash_ag_grid(gapminder_2007)),
+        vm.Graph(figure=px.scatter(gapminder_2007, x="continent", y="lifeExp")),
+    ],
+    controls=[vm.Filter(column="country")],
+)
 
-class CustomParameter(vm.Parameter):
-    """Custom Parameter used to overcome Vizro exception when targeting figures outside its vm.Container."""
+page_2 = vm.Page(
+    title="Grid Table",
+    layout=vm.Grid(grid=[[0, 1]]),
+    components=[
+        vm.Table(figure=dash_data_table(gapminder_2007)),
+        vm.Graph(figure=px.scatter(gapminder_2007, x="continent", y="lifeExp")),
+    ],
+    controls=[vm.Filter(column="country")],
+)
 
-    type: Literal["custom_parameter"] = "custom_parameter"
+page_3 = vm.Page(
+    title="Flex AgGird",
+    layout=vm.Flex(direction="row"),
+    components=[
+        vm.AgGrid(figure=dash_ag_grid(gapminder_2007)),
+        vm.Graph(figure=px.scatter(gapminder_2007, x="continent", y="lifeExp")),
+    ],
+    controls=[vm.Filter(column="country")],
+)
 
-    def pre_build(self):
-        self._check_numerical_and_temporal_selectors_values()
-        self._check_categorical_selectors_options()
-        self._set_selector_title()
-        self._set_actions()
+page_4 = vm.Page(
+    title="Flex Table",
+    layout=vm.Flex(direction="row"),
+    components=[
+        vm.Table(figure=dash_data_table(gapminder_2007)),
+        vm.Graph(figure=px.scatter(gapminder_2007, x="continent", y="lifeExp")),
+    ],
+    controls=[vm.Filter(column="country")],
+)
 
-
-# TODO-Comment: The following line is needed to enable using CustomParameter in the Container components.
-vm.Container.add_type("components", CustomParameter)
-
-page1 = vm.Page(
-    title="Tabs",
-    description="""Single page app description.""",
+page_5 = vm.Page(
+    title="Page",
     layout=vm.Flex(),
     components=[
+        vm.Card(text="""BLABLA"""),
         vm.Container(
-            title="Global parameters and filters",
-            description="Set global parameters and filters that apply to all tabs.",
-            collapsed=False,
-            components=[
-                CustomParameter(
-                    targets=[
-                        "page_1_graph_1.data_frame.number_of_data_points",
-                        "page_2_graph_1.data_frame.number_of_data_points",
-                    ],
-                    selector=vm.Slider(min=1, max=150, value=50),
-                ),
-            ],
-            controls=[],
-        ),
-        vm.Tabs(
-            tabs=[
-                vm.Container(
-                    title="Page 1 title",
-                    components=[
-                        vm.Graph(
-                            id="page_1_graph_1",
-                            figure=px.scatter("data_key", x="sepal_length", y="petal_width", color="species"),
-                        ),
-                    ],
-                ),
-                vm.Container(
-                    title="Page 2 title",
-                    components=[
-                        vm.Graph(
-                            id="page_2_graph_1",
-                            figure=px.scatter(
-                                "data_key", x="sepal_length", y="petal_width", color="species", height=600
-                            ),
-                        ),
-                    ],
-                ),
-            ]
+            variant="outlined",
+            title="Container with AgGrid",
+            components=[vm.AgGrid(figure=dash_ag_grid(gapminder_2007))],
         ),
     ],
 )
 
-
-page2 = vm.Page(
-    title="Tabs v2",
-    layout=vm.Flex(),
-    components=[
-        vm.Tabs(
-            tabs=[
-                vm.Container(
-                    title="Tab1",
-                    components=[
-                        vm.Graph(
-                            title="Graph 1",
-                            figure=px.bar(
-                                gapminder_2007,
-                                x="continent",
-                                y="lifeExp",
-                                color="continent",
-                            ),
-                        ),
-                    ],
-                ),
-                vm.Container(
-                    title="Tab2",
-                    components=[
-                        vm.Graph(
-                            title="Graph 2",
-                            figure=px.scatter(
-                                gapminder_2007,
-                                x="gdpPercap",
-                                y="lifeExp",
-                                size="pop",
-                                color="continent",
-                            ),
-                        ),
-                    ],
-                ),
-                vm.Container(
-                    title="Tab3",
-                    layout=vm.Flex(),
-                    components=[vm.Card(text="First card!"), vm.Card(text="Second card!"), vm.Card(text="Third card!")],
-                ),
-            ]
-        )
-    ],
-)
-
-page3 = vm.Page(
-    title="Flex - default - graphs",
-    layout=vm.Flex(),
-    components=[vm.Graph(figure=px.violin(tips, y="tip", x="day", color="day", box=True)) for i in range(6)],
-)
-
-
-page4 = vm.Page(
-    title="Tabs v3",
-    components=[
-        vm.Tabs(
-            tabs=[
-                vm.Container(
-                    title="Tab1",
-                    layout=vm.Flex(direction="row"),
-                    components=[
-                        vm.Graph(
-                            title="Graph 1",
-                            figure=px.bar(gapminder_2007, x="continent", y="lifeExp", color="continent", height=400),
-                        ),
-                        vm.Card(text="Card 1"),
-                    ],
-                ),
-                vm.Container(
-                    title="Tab2",
-                    components=[
-                        vm.Graph(
-                            title="Graph 2",
-                            figure=px.scatter(
-                                gapminder_2007,
-                                x="gdpPercap",
-                                y="lifeExp",
-                                size="pop",
-                                color="continent",
-                            ),
-                        ),
-                    ],
-                ),
-            ]
-        )
-    ],
-)
-
-
-dashboard = vm.Dashboard(title="Test dashboard", pages=[page1, page2, page3, page4])
+dashboard = vm.Dashboard(title="Test dashboard", pages=[page_1, page_2, page_3, page_4, page_5])
 
 if __name__ == "__main__":
-    app = Vizro().build(dashboard)
-    app.run()
+    Vizro().build(dashboard).run()
