@@ -297,7 +297,7 @@ def create_starter_dashboard():
 @mcp.prompt()
 def create_dashboard(
     file_path_or_url: str = Field(description="The absolute path or URL to the data file you want to use."),
-    context: Optional[str] = Field(default=None, description="Describe the dashboard you want to create."),
+    context: Optional[str] = Field(default=None, description="(Optional) Describe the dashboard you want to create."),
 ) -> str:
     """Prompt template for creating an EDA dashboard based on one dataset."""
     return get_dashboard_prompt(file_path_or_url, context)
@@ -359,7 +359,7 @@ def validate_chart_code(
 @mcp.prompt()
 def create_vizro_chart(
     file_path_or_url: str = Field(description="The absolute path or URL to the data file you want to use."),
-    context: Optional[str] = Field(default=None, description="Describe the chart you want to create."),
+    context: Optional[str] = Field(default=None, description="(Optional) Describe the chart you want to create."),
 ) -> str:
     """Prompt template for creating a Vizro chart."""
     return get_chart_prompt(file_path_or_url, context)
