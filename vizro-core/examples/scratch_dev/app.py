@@ -60,20 +60,6 @@ page_2 = vm.Page(
         vm.Container(
             components=[vm.AgGrid(figure=dash_ag_grid(df))],
             variant="outlined",
-            controls=[
-                vm.Filter(column="long_words"),
-                vm.Filter(
-                    column="category",
-                    selector=vm.Dropdown(
-                        options=[
-                            {"label": "a", "value": "A"},
-                            {"label": "b", "value": "B"},
-                            {"label": "c", "value": "C"},
-                        ]
-                    ),
-                ),
-                vm.Filter(column="id"),
-            ],
         ),
     ],
 )
