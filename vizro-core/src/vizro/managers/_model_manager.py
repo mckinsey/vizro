@@ -37,16 +37,8 @@ class DuplicateIDError(ValueError):
 class ModelManager:
     def __init__(self):
         self.__models: dict[ModelID, VizroBaseModel] = {}
-        # AM: need to handle CapturedCallable in future too? Which doesn't have .id
-        # AM: forward_attrs looks useful
         self.__dashboard_tree: Tree = Tree("dashboard", calc_data_id=lambda tree, data: data.id)
         self._frozen_state = False
-
-    # AM: maybe just instantiate model manager in Vizro and pass dashboard in init
-    # def set_dashboard(self, dashboard):
-    #     for model in self.__get_model_children(dashboard):
-    #
-    #
 
     # TODO: Consider storing "page_id" or "parent_model_id" and make searching helper methods easier?
     @_state_modifier
@@ -99,8 +91,7 @@ class ModelManager:
                 yield model  # type: ignore[misc]
 
     def __get_model_children(self, model: Model) -> Generator[Model, None, None]:
-        """Iterates through children of `model`."""
-        # AM: this is depth-first post-order and matches nutree well
+        """Iterates through children of `model` with depth-first pre-order traversal."""
         from vizro.models import VizroBaseModel
 
         if isinstance(model, VizroBaseModel):
@@ -109,11 +100,11 @@ class ModelManager:
                 yield from self.__get_model_children(getattr(model, model_field))
         elif isinstance(model, Mapping):
             # We don't look through keys because Vizro models aren't hashable.
-            for single_model in model.values():
-                yield from self.__get_model_children(single_model)
+            for child in model.values():
+                yield from self.__get_model_children(child)
         elif isinstance(model, Collection) and not isinstance(model, str):
-            for single_model in model:
-                yield from self.__get_model_children(single_model)
+            for child in model:
+                yield from self.__get_model_children(child)
 
     def _get_model_page(self, model: Model) -> Page:  # type: ignore[return]
         """Gets the page containing `model`."""
