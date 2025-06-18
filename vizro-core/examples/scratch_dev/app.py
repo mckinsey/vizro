@@ -1,3 +1,5 @@
+"""Dev app to try things out."""
+
 import vizro.models as vm
 import vizro.plotly.express as px
 from vizro import Vizro
@@ -5,7 +7,7 @@ from vizro import Vizro
 iris = px.data.iris()
 
 page = vm.Page(
-    title="Containers with controls",
+    title="Incorrect color of selector 'x' clear selection",
     components=[
         vm.Tabs(
             tabs=[
