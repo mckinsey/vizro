@@ -218,12 +218,14 @@ Current logic:
     overflow: hidden;
   }
 
-  #collapsible-left-side.show ~ .collapse-icon-div #collapse-icon {
-    right: -10px;
+  #collapsible-left-side.show:has(#left-main:not([hidden]))
+    ~ .collapse-icon-div
+    #collapse-icon {
+    right: -7px;
     z-index: 10;
   }
 
-  #left-side {
+  #left-side:has(#left-main:not([hidden])) {
     height: calc(100vh - 48px);
     position: absolute;
     width: 100vw;
@@ -231,8 +233,9 @@ Current logic:
     zoom: 100%;
   }
 
-  #left-main {
-    width: 100%;
+  /* If #left-main is NOT hidden, apply this rule */
+  #left-main:not([hidden]) {
+    flex: 1;
   }
 }
 

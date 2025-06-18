@@ -1,67 +1,75 @@
-"""Dev app."""
+import numpy as np
 
 from vizro import Vizro
-import vizro.plotly.express as px
 import vizro.models as vm
 import pandas as pd
-from vizro.tables import dash_ag_grid, dash_data_table
+from vizro.tables import dash_ag_grid
+import string
 
-gapminder_2007 = px.data.gapminder().query("year == 2007")
+
+N = len(string.ascii_letters)
+df = pd.DataFrame(
+    {
+        "category 1": np.random.choice(list("abc"), N),
+        "category 2": np.random.choice(list("ABC"), N),
+        "long_words": [" ".join(list(string.ascii_letters[: n + 1])) for n in range(N)],
+        "numbers": np.random.randint(N, size=N),
+    }
+)
+
+
+def dynamic_data(n=10):
+    return df.loc[:n]
+
+
+def make_controls():
+    return [
+        vm.Filter(column="long_words"),
+        vm.Filter(
+            column="category 1",
+            selector=vm.Checklist(),
+        ),
+        vm.Filter(column="category 2", selector=vm.RadioItems()),
+        vm.Filter(column="numbers"),
+    ]
+
 
 page_1 = vm.Page(
-    title="Grid AgGird",
-    layout=vm.Grid(grid=[[0, 1]]),
+    title="Test page",
     components=[
-        vm.AgGrid(figure=dash_ag_grid(gapminder_2007)),
-        vm.Graph(figure=px.scatter(gapminder_2007, x="continent", y="lifeExp")),
+        vm.Container(
+            components=[vm.AgGrid(id="grid", figure=dash_ag_grid(dynamic_data))],
+            controls=make_controls(),
+        ),
     ],
-    controls=[vm.Filter(column="country")],
+    controls=[
+        vm.Parameter(
+            targets=["grid.data_frame.n"],
+            selector=vm.Slider(
+                title="Change me to see bug", min=0, max=N, step=1, marks={0: "0", N // 2: str(N // 2), N: str(N)}
+            ),
+        ),
+        *make_controls(),
+    ],
 )
+
 
 page_2 = vm.Page(
-    title="Grid Table",
-    layout=vm.Grid(grid=[[0, 1]]),
+    title="Test page 2",
     components=[
-        vm.Table(figure=dash_data_table(gapminder_2007)),
-        vm.Graph(figure=px.scatter(gapminder_2007, x="continent", y="lifeExp")),
-    ],
-    controls=[vm.Filter(column="country")],
-)
-
-page_3 = vm.Page(
-    title="Flex AgGird",
-    layout=vm.Flex(direction="row"),
-    components=[
-        vm.AgGrid(figure=dash_ag_grid(gapminder_2007)),
-        vm.Graph(figure=px.scatter(gapminder_2007, x="continent", y="lifeExp")),
-    ],
-    controls=[vm.Filter(column="country")],
-)
-
-page_4 = vm.Page(
-    title="Flex Table",
-    layout=vm.Flex(direction="row"),
-    components=[
-        vm.Table(figure=dash_data_table(gapminder_2007)),
-        vm.Graph(figure=px.scatter(gapminder_2007, x="continent", y="lifeExp")),
-    ],
-    controls=[vm.Filter(column="country")],
-)
-
-page_5 = vm.Page(
-    title="Page",
-    layout=vm.Flex(),
-    components=[
-        vm.Card(text="""BLABLA"""),
         vm.Container(
+            components=[vm.AgGrid(figure=dash_ag_grid(df))],
             variant="outlined",
-            title="Container with AgGrid",
-            components=[vm.AgGrid(figure=dash_ag_grid(gapminder_2007))],
         ),
     ],
 )
 
-dashboard = vm.Dashboard(title="Test dashboard", pages=[page_1, page_2, page_3, page_4, page_5])
+dashboard = vm.Dashboard(
+    title="Test dashboard",
+    pages=[page_1, page_2],
+    navigation=vm.Navigation(pages={"Group A": ["Test page"], "Group B": ["Test page 2"]}, nav_selector=vm.NavBar()),
+)
 
 if __name__ == "__main__":
-    Vizro().build(dashboard).run()
+    app = Vizro().build(dashboard)
+    app.run()
