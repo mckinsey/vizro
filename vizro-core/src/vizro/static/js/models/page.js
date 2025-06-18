@@ -41,68 +41,50 @@ function decodeUrlParams(params) {
 
 function sync_url_query_params_and_controls(...values_ids) {
   // Control IDs are required due to Dash's limitations on clientside callback flexible signatures, so that we can:
-  //   1. Map control selector value input to url query parameters properly.
-  //   2. Map url query parameters to control selector value outputs properly.
+  //   1. Map url query parameters to control selector value outputs properly.
+  //   2. Map control selector value input to url query parameters properly.
   // The Solution relies on the fact that the order of control IDs matches the order of the
   // control selector value inputs and their corresponding outputs.
 
   // Split control inputs and selector values that are in format:
   // [selector-1-value, selector-2-value, selector-N-value, ..., control-1-id, control-2-id, control-N-id, ...]
   const count = values_ids.length / 2;
-  const inputValues = values_ids.slice(0, count);
+  let controlValues = values_ids.slice(0, count);
   const controlIds = values_ids.slice(count);
 
   const urlParams = new URLSearchParams(window.location.search);
-  const encodedControlsIdsValues = encodeUrlParams(controlIds, inputValues);
 
-  // Find under which circumstances the callback is triggered:
-  const trigger_id = dash_clientside.callback_context.triggered_id;
+  const isPageOpened =
+    dash_clientside.callback_context.triggered_id === undefined;
 
-  const isPageOpenedWithParams =
-    trigger_id === undefined && urlParams.size !== 0;
-  if (isPageOpenedWithParams) {
-    console.log(
-      "CS:CB Page with URL PARAMS (url -> controls + controls -> url)",
-    );
-  }
-  const isPageOpenedNoParams = trigger_id === undefined && urlParams.size === 0;
-  if (isPageOpenedNoParams) {
-    console.log("CS:CB Page with NO URL PARAMS (controls -> url)");
-  }
-  const isControlChanged = trigger_id !== undefined;
-  if (isControlChanged) {
+  // Conditionally trigger the OPL action: return `null` to trigger it, or dash_clientside.no_update to skip.
+  const triggerOPL = isPageOpened ? null : dash_clientside.no_update;
+
+  // Prepare default selector values outputs
+  const outputSelectorValues = controlIds.map(() => dash_clientside.no_update);
+
+  if (isPageOpened) {
+    console.log("CS:CB Page opened (url -> controls -> url)");
+
+    const { ids: decodedParamIds, values: decodedParamValues } =
+      decodeUrlParams(urlParams);
+
+    // Overwrite control selector input and output values with the values from the URL.
+    controlIds.forEach((controlId, i) => {
+      const index = decodedParamIds.indexOf(controlId);
+      // Update only if the control ID is found in the URL parameters.
+      if (index !== -1) {
+        controlValues[i] = decodedParamValues[index];
+        outputSelectorValues[i] = decodedParamValues[index];
+      }
+    });
+  } else {
     console.log("CS:CB Control is changed (controls -> url)");
   }
 
-  // Crafting outputs:
-  // 1. Conditionally trigger the OPL action: return `null` to trigger it, or dash_clientside.no_update to skip.
-  const triggerOPL = isControlChanged ? dash_clientside.no_update : null;
-
-  // 2. Updated URL query string.
-  for (const [
-    encodedControlId,
-    encodedControlValue,
-  ] of encodedControlsIdsValues) {
-    if (isControlChanged || !urlParams.has(encodedControlId)) {
-      // If the control is changed or the URL does not have the control ID,
-      // we need to update the URL param.
-      urlParams.set(encodedControlId, encodedControlValue);
-    }
-  }
-
-  // 3. Updated control selector values.
-
-  // Now urlParams contains all the updated parameters.
-  const { ids: decodedParamIds, values: decodedParamValues } =
-    decodeUrlParams(urlParams);
-
-  // Update only control selector values that are present in the URL query params if the page is opened with params.
-  const newSelectorValues = controlIds.map((id) => {
-    const index = decodedParamIds.indexOf(id);
-    return isPageOpenedWithParams && index !== -1
-      ? decodedParamValues[index]
-      : dash_clientside.no_update;
-  });
+  // Update urlParams with updated control values
+  const encodedControlsIdsValues = encodeUrlParams(controlIds, controlValues);
+  encodedControlsIdsValues.forEach(([id, value]) => urlParams.set(id, value));
 
   // Directly `replace` the URL instead of using a dcc.Location as a callback Output. Do it because the dcc.Location
   // uses history.pushState under the hood which causes destroying the history. With replaceState, we partially
@@ -110,8 +92,8 @@ function sync_url_query_params_and_controls(...values_ids) {
   const newUrl = `${window.location.pathname}?${urlParams.toString()}`;
   history.replaceState(null, "", newUrl);
 
-  console.log("CS:CB Returns:", [triggerOPL, ...newSelectorValues]);
-  return [triggerOPL, ...newSelectorValues];
+  console.log("CS:CB Returns:", [triggerOPL, ...outputSelectorValues]);
+  return [triggerOPL, ...outputSelectorValues];
 }
 
 window.dash_clientside = {
