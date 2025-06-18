@@ -78,10 +78,11 @@ page_2 = vm.Page(
     ],
 )
 
-dashboard = vm.Dashboard(title="Test dashboard", pages=[page_1, page_2], 
-                          navigation=vm.Navigation(
-        pages={"Group A": ["Test page"], "Group B": ["Test page 2"]}, nav_selector=vm.NavBar()
-    ),)
+dashboard = vm.Dashboard(
+    title="Test dashboard",
+    pages=[page_1, page_2],
+    navigation=vm.Navigation(pages={"Group A": ["Test page"], "Group B": ["Test page 2"]}, nav_selector=vm.NavBar()),
+)
 
 if __name__ == "__main__":
     app = Vizro().build(dashboard)
