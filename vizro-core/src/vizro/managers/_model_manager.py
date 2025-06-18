@@ -118,7 +118,7 @@ class ModelManager:
 
     def __get_model_children(self, model: Model) -> Generator[Model, None, None]:
         """Iterates through children of `model`."""
-        # AM: this is depth-first post-order and matches nutree well
+        # AM: this is depth-first pre-order and matches nutree well
         from vizro.models import VizroBaseModel
 
         if isinstance(model, VizroBaseModel):
@@ -137,7 +137,7 @@ class ModelManager:
         """Iterates through children of `model`."""
         # AM rough notes: this is basically copied and pasted from __get_model_children and then modified to populate
         # dashboard tree instead of yielding.
-        # Still depth-first post-order.
+        # Still depth-first pre-order.
         from vizro.models import VizroBaseModel
 
         if isinstance(model, VizroBaseModel):
@@ -183,11 +183,11 @@ model_manager = ModelManager()
 """
 AM rough notes:
 
-Options how fow to translate pydantic models into tree with anytree:
+Options for how to translate pydantic models into tree with anytree:
 1. model_dump -> dict -> import but then need to convert to children - might be able to keep isinstance since can 
 have non-json serialisable. Also problem with dashboard.model_dump(context={"add_name": True}, exclude_unset=False)
 on our simple dashboard used in _to_python tests - haven't investigated why.  
-2. use as Mixin. Means doing multiple inheritance and already have clash with Page.path.#
+2. use as Mixin. Means doing multiple inheritance and already have clash with Page.path.
 
 nutree seems much better overall.
 
@@ -206,5 +206,15 @@ CURRENT STATUS OF ABOVE CODE:
 - tree seems to be populated correctly but worth checking
 - tried swapping getitem to use dashboard_tree and seems to partially work but hits problem with not finding ids 
 probably due to order of prebuild and putting things in the tree
-- next steps would be to try and remove __get_model_children and modifed other methods to use nutree navigation instead
+- next steps would be to try and remove __get_model_children and modifY other methods to use nutree navigation instead
+
+Rough thoughts on how we might handle _is_container property. Could keep as property and/or:
+key question is given model (or model.id), how to find corresponding node in the tree?
+
+Dropdown()._nutree_node.up(2)
+model_manager[dropdown_id].up(2)
+
+Storing just parent as property in all model's seems like a worse version of storing the corresponding node:
+dropdown._nutree_node
+dropdown.)nutree_tree[dropdown.id]
 """
