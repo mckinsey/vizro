@@ -8,11 +8,13 @@ from vizro import Vizro
 page = vm.Page(
     title="Incorrect color of selector 'x' clear selection",
     components=[
-        vm.Graph(figure=px.scatter(px.data.iris(), x="sepal_width", y="sepal_length", color="species"),),
+        vm.Graph(
+            figure=px.scatter(px.data.iris(), x="sepal_width", y="sepal_length", color="species"),
+        ),
     ],
     controls=[
         vm.Filter(column="species", selector=vm.Dropdown(multi=False)),
-    ]
+    ],
 )
 
 dashboard = vm.Dashboard(pages=[page])
