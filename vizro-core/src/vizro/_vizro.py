@@ -107,7 +107,11 @@ class Vizro:
         pio.templates.default = dashboard.theme
 
         # Note that model instantiation and pre_build are independent of Dash.
+        # AM rough notes: hard to place this correctly now since MM is needed in pre-build but also should be updated
+        # with new models during pre-build.
+        model_manager._set_dashboard(dashboard)
         self._pre_build()
+
         self.dash.layout = dashboard.build()
 
         # Add data-bs-theme attribute that is always present, even for pages without theme selector,

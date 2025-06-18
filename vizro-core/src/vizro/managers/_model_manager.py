@@ -37,16 +37,29 @@ class DuplicateIDError(ValueError):
 class ModelManager:
     def __init__(self):
         self.__models: dict[ModelID, VizroBaseModel] = {}
-        # AM: need to handle CapturedCallable in future too? Which doesn't have .id
-        # AM: forward_attrs looks useful
-        self.__dashboard_tree: Tree = Tree("dashboard", calc_data_id=lambda tree, data: data.id)
+        # AM rough notes: need to handle CapturedCallable in future too? Which doesn't have .id
+        # AM rough notes: forward_attrs=True looks nice for simplifying syntax. TypedTree also maybe useful so you
+        # can set kind=<field_name> if we want field name there (only alternative would be node for each field name
+        # also).
+        self.__dashboard_tree: Tree = Tree(calc_data_id=lambda tree, data: data.id)
         self._frozen_state = False
 
-    # AM: maybe just instantiate model manager in Vizro and pass dashboard in init
-    # def set_dashboard(self, dashboard):
-    #     for model in self.__get_model_children(dashboard):
-    #
-    #
+    # AM rough notes: probably better to just instantiate model manager in Vizro and pass dashboard in init rather
+    # than doing it as separate method here.
+    def _set_dashboard(self, dashboard):
+        self.__populate_tree(dashboard)
+        d = self.__dashboard_tree
+        # AM rough notes: importantly the nodes are just pointers to real objects so not duplicated in memory.
+        # assert d.first_child().data.pages[0] is d["Test page"].data
+        d.print(title=False, repr=lambda node: f"{node.data.__class__.__name__}(id={node.data.id})")
+        # repr = {node.data!r} is maybe the default and shows all fields too
+        d.to_mermaid_flowchart(
+            "graph.md",
+            node_mapper='["{node.data.__class__.__name__}(id={node.data.id})"]',
+            direction="LR",
+            add_root=False,
+            title=False,
+        )
 
     # TODO: Consider storing "page_id" or "parent_model_id" and make searching helper methods easier?
     @_state_modifier
@@ -65,8 +78,13 @@ class ModelManager:
         del self.__models[model_id]
 
     def __getitem__(self, model_id: ModelID) -> VizroBaseModel:
+        # AM rough notes: smart lookup in nutree allows lookup by id and model itself and probably good to use here.
+        # But there's unexpected behaviour/maybe a bug in nutree where you set Tree(calc_data_id) upfront.
+        # Probably easy to fix.
+        # AM rough notes: problem here probably caused by pre-build order in filters.
+        return self.__dashboard_tree.find_first(data_id=model_id).data
         # Do we need to return deepcopy(self.__models[model_id]) to avoid adjusting element by accident?
-        return self.__models[model_id]
+        # return self.__models[model_id]
 
     def __iter__(self) -> Generator[ModelID, None, None]:
         """Iterates through all models.
@@ -115,6 +133,32 @@ class ModelManager:
             for single_model in model:
                 yield from self.__get_model_children(single_model)
 
+    def __populate_tree(self, model: Model, parent=None):
+        """Iterates through children of `model`."""
+        # AM rough notes: this is basically copied and pasted from __get_model_children and then modified to populate
+        # dashboard tree instead of yielding.
+        # Still depth-first post-order.
+        from vizro.models import VizroBaseModel
+
+        if isinstance(model, VizroBaseModel):
+            if parent is None:
+                # AM rough notes:
+                # Populate root node of dashboard. Maybe dashboard should be actual tree root instead
+                # (so Tree("dashboard")) but note there's no way to attach data to it then.
+                self.__dashboard_tree.add(model)
+            else:
+                self.__dashboard_tree[parent].add(model)
+
+            for model_field in model.__class__.model_fields:
+                self.__populate_tree(getattr(model, model_field), model)
+        elif isinstance(model, Mapping):
+            # We don't look through keys because Vizro models aren't hashable.
+            for child_model in model.values():
+                self.__populate_tree(child_model, parent)
+        elif isinstance(model, Collection) and not isinstance(model, str):
+            for child_model in model:
+                self.__populate_tree(child_model, parent)
+
     def _get_model_page(self, model: Model) -> Page:  # type: ignore[return]
         """Gets the page containing `model`."""
         from vizro.models import Page
@@ -135,3 +179,32 @@ class ModelManager:
 
 
 model_manager = ModelManager()
+
+"""
+AM rough notes:
+
+Options how fow to translate pydantic models into tree with anytree:
+1. model_dump -> dict -> import but then need to convert to children - might be able to keep isinstance since can 
+have non-json serialisable. Also problem with dashboard.model_dump(context={"add_name": True}, exclude_unset=False)
+on our simple dashboard used in _to_python tests - haven't investigated why.  
+2. use as Mixin. Means doing multiple inheritance and already have clash with Page.path.#
+
+nutree seems much better overall.
+
+Keep get_models etc. centralised into MM for now but then maybe move to Dashboard model later.
+
+Might be useful to have property in every model to enable you to get to its Node in the tree or just a reference to the 
+whole dashboard tree? Basically this inserts model manager into every model so no need for global. 
+
+How to encode field name? Could do as new node in tree (e.g. components is node) or as kind in nutree. Or maybe no 
+need to encode it at all?
+
+nutree supports custom tree traversal orders so we could write our own, but how would we define it in a better way than 
+priority = 1000 etc.?
+
+CURRENT STATUS OF ABOVE CODE:
+- tree seems to be populated correctly but worth checking
+- tried swapping getitem to use dashboard_tree and seems to partially work but hits problem with not finding ids 
+probably due to order of prebuild and putting things in the tree
+- next steps would be to try and remove __get_model_children and modifed other methods to use nutree navigation instead
+"""
