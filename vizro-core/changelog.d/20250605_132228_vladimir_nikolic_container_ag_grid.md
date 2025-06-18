@@ -25,7 +25,7 @@ Uncomment the section that is right (remove the HTML comment wrapper).
 
 ### Changed
 
-- Changed `dash_ag_grid` defaults to improve layout compatibility and performance ("domLayout": "autoHeight" and "pagination": `True`). See the [user guide on how to disable the pagination](https://vizro.readthedocs.io/en/stable/pages/user-guides/table/#disable-pagination). ([#1226](https://github.com/mckinsey/vizro/pull/1226))
+- Updated the default settings for `dash_ag_grid` to enhance layout compatibility and performance. The grid now uses `"domLayout": "autoHeight"` and enables pagination by default. For instructions on how to disable pagination, see the [user guide](https://vizro.readthedocs.io/en/stable/pages/user-guides/table/#disable-pagination). ([#1226](https://github.com/mckinsey/vizro/pull/1226))
 
 <!--
 ### Deprecated
