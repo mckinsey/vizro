@@ -12,6 +12,7 @@ from vizro.models import VizroBaseModel
 from vizro.models._models_utils import _log_call
 from vizro.models._navigation._navigation_utils import _validate_pages
 from vizro.models.types import ModelID
+from vizro._vizro_utils import _get_relative_path_with_unknown_url_params
 
 
 def coerce_pages_type(pages):
@@ -93,7 +94,7 @@ class Accordion(VizroBaseModel):
                     children=page.title,
                     className="accordion-item-link",
                     active="exact",
-                    href=get_relative_path(page.path),
+                    href=_get_relative_path_with_unknown_url_params(page_path=page.path),
                 )
             )
         return nav_links

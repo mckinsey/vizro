@@ -1,7 +1,9 @@
 from __future__ import annotations
 
 import base64
+import json
 import logging
+from flask import g
 from functools import partial
 from pathlib import Path
 from typing import TYPE_CHECKING, Annotated, Literal, Optional, cast
@@ -321,6 +323,8 @@ class Dashboard(VizroBaseModel):
     def _make_page_layout(self, page: Page, **kwargs):
         # **kwargs are not used but ensure that unexpected query parameters do not raise errors. See
         # https://github.com/AnnMarieW/dash-multi-page-app-demos/#5-preventing-query-string-errors
+
+        g.url_query_params = kwargs
         page_divs = self._get_page_divs(page=page)
         page_layout = self._arrange_page_divs(page_divs=page_divs)
         page_layout.id = page.id
