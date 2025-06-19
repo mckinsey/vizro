@@ -140,7 +140,6 @@ class CapturedCallableProxy:
     # TODO: is this method still needed?
     def __getitem__(self, arg_name: str):
         """Avoid failure on access"""
-
         pass
 
     def __repr_clean__(self):
