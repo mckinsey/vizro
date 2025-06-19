@@ -4,13 +4,14 @@
 from __future__ import annotations
 
 import functools
-import importlib
 import inspect
 import sys
 import warnings
 from contextlib import contextmanager
 from datetime import date
 from typing import Annotated, Any, Literal, Optional, Protocol, Union, runtime_checkable
+
+from pydantic import ImportString, TypeAdapter, ValidationError
 
 if sys.version_info >= (3, 10):
     from typing import TypeAlias
@@ -96,7 +97,7 @@ class JsonSchemaExtraType(TypedDict):
     mode: str
 
 
-def validate_captured_callable(cls, value, info: ValidationInfo):
+def validate_captured_callable(cls, value: Any, info: ValidationInfo):
     """Reusable validator for the `figure` argument of Figure like models."""
     # Bypass validation so that legacy vm.Action(function=filter_interaction(...)) and
     # vm.Action(function=export_data(...)) work.
@@ -105,12 +106,60 @@ def validate_captured_callable(cls, value, info: ValidationInfo):
     if isinstance(value, (export_data, filter_interaction)):
         return value
 
+    try:
+        # Downside of validation is that it gets raised multiple times if there are multiple graphs in the dashboard.
+        callable_defs: list[str] = TypeAdapter(list[str]).validate_python(
+            info.context.get("callable_defs", []) if info.context is not None else []
+        )
+    except ValidationError as e:
+        raise ValueError("Invalid context for CapturedCallable. `callable_defs` must be a list of strings.") from e
+
     # TODO[MS]: We may want to double check on the mechanism of how field info is brought to. This seems
     # to get deprecated in V3
     json_schema_extra: JsonSchemaExtraType = cls.model_fields[info.field_name].json_schema_extra
     return CapturedCallable._validate_captured_callable(
-        captured_callable_config=value, json_schema_extra=json_schema_extra
+        captured_callable_config=value, json_schema_extra=json_schema_extra, callable_defs=callable_defs
     )
+
+
+# This proxy class is used to allow undefined CapturedCallable's to be validated and serialized.
+# When trying to instatiate a dashboard from json, if we cannot import the fucntion, then the CapturedCallableProxy
+# is the instatiated object of choice if the `_target_` is in the `callable_defs` list of the validation context.
+# This allows us to instatiate dashboard objects wihtout needing to execute/import the function definiition. Useful
+# in the context of untrusted code generation (e.g. by LLMs).
+class CapturedCallableProxy:
+    """Proxy for CapturedCallable that allows undefined CapturedCallable's to be validated and serialized."""
+
+    function_name: str
+    call_args: dict[str, Any]
+
+    def __init__(self, function_name: str, call_args: dict[str, Any]):
+        self.function_name = function_name
+        self.call_args = call_args
+
+    # TODO: is this method still needed?
+    def __getitem__(self, arg_name: str):
+        """Avoid failure on access"""
+
+        pass
+
+    def __repr_clean__(self):
+        """Alternative __repr__ method with cleaned module paths."""
+        args = ", ".join(f"{key}={value!r}" for key, value in self.call_args.items())
+        return f"{self.function_name}({args})"
+
+    # The below is to allow CapturedCallableProxy to be part of the Vizro schema - see CapturedCallable for more details.
+    @classmethod
+    def __get_pydantic_core_schema__(cls, source: Any, handler: Any) -> cs.core_schema.CoreSchema:
+        """Core validation, which boils down to checking if it is a custom type."""
+        return cs.core_schema.no_info_plain_validator_function(cls.core_validation)
+
+    @staticmethod
+    def core_validation(value: Any):
+        """Core validation logic."""
+        if not isinstance(value, CapturedCallableProxy):
+            raise ValueError(f"Expected CapturedCallableProxy, got {type(value)}")
+        return value
 
 
 class CapturedCallable:
@@ -247,8 +296,13 @@ class CapturedCallable:
         cls,
         captured_callable_config: Union[dict[str, Any], _SupportsCapturedCallable, CapturedCallable],
         json_schema_extra: JsonSchemaExtraType,
+        callable_defs: list[str],
     ):
-        value = cls._parse_json(captured_callable_config=captured_callable_config, json_schema_extra=json_schema_extra)
+        value = cls._parse_json(
+            captured_callable_config=captured_callable_config,
+            json_schema_extra=json_schema_extra,
+            callable_defs=callable_defs,
+        )
         value = cls._extract_from_attribute(value)
         value = cls._check_type(captured_callable=value, json_schema_extra=json_schema_extra)
         return value
@@ -276,7 +330,8 @@ class CapturedCallable:
         cls,
         captured_callable_config: Union[_SupportsCapturedCallable, CapturedCallable, dict[str, Any]],
         json_schema_extra: JsonSchemaExtraType,
-    ) -> Union[CapturedCallable, _SupportsCapturedCallable]:
+        callable_defs: list[str],
+    ) -> Union[CapturedCallable, _SupportsCapturedCallable, CapturedCallableProxy]:
         """Parses captured_callable_config specification from JSON/YAML.
 
         If captured_callable_config is already _SupportCapturedCallable or CapturedCallable then it just passes through
@@ -299,10 +354,30 @@ class CapturedCallable:
             ) from exc
 
         import_path = json_schema_extra["import_path"]
-        try:
-            function = getattr(importlib.import_module(import_path), function_name)
-        except (AttributeError, ModuleNotFoundError) as exc:
-            raise ValueError(f"_target_={function_name} cannot be imported from {import_path}.") from exc
+
+        # Try multiple approaches to import the function - order matters here.
+        import_attempts = [
+            import_path + ":" + function_name,
+            function_name,
+        ]
+
+        for import_string in import_attempts:
+            try:
+                function: CapturedCallable = TypeAdapter(ImportString).validate_python(import_string)
+                break
+            except ValidationError:
+                continue
+        else:
+            if function_name in callable_defs:
+                return CapturedCallableProxy(
+                    function_name=function_name,
+                    call_args=captured_callable_config,
+                )
+            raise ValueError(
+                f"""Failed to import function '{function_name}' from any of the attempted paths:
+{import_attempts}.
+"""
+            )
 
         # All the other items in figure are the keyword arguments to pass into function.
         function_kwargs = captured_callable_config
@@ -337,6 +412,9 @@ class CapturedCallable:
 
         expected_mode = json_schema_extra["mode"]
         import_path = json_schema_extra["import_path"]
+
+        if isinstance(captured_callable, CapturedCallableProxy):
+            return captured_callable
 
         if not isinstance(captured_callable, CapturedCallable):
             raise ValueError(
@@ -652,3 +730,13 @@ class _Controls(TypedDict):
     filters: list[Any]
     parameters: list[Any]
     filter_interaction: list[dict[str, Any]]
+
+
+if __name__ == "__main__":
+    from pydantic import BaseModel
+
+    class Foo(BaseModel):
+        test: CapturedCallableProxy
+
+    foo = Foo(test=CapturedCallableProxy(function_name="custom_bar2", call_args={"data_frame": "iris"}))
+    print(foo.model_dump())

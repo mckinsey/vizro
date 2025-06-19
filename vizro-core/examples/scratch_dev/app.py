@@ -1,60 +1,99 @@
-import numpy as np
-
-from vizro import Vizro
+import plotly.graph_objects as go
 import vizro.models as vm
-import pandas as pd
-from vizro.tables import dash_ag_grid
-import string
+import vizro.plotly.express as px
+from charts import custom_scatter
+from vizro import Vizro
+from vizro.managers import data_manager, model_manager
+from vizro.models.types import CapturedCallableProxy, capture
 
+data_manager["iris"] = px.data.iris()
 
-N = len(string.ascii_letters)
-df = pd.DataFrame(
-    {
-        "category 1": np.random.choice(list("abc"), N),
-        "category 2": np.random.choice(list("ABC"), N),
-        "long_words": [" ".join(list(string.ascii_letters[: n + 1])) for n in range(N)],
-        "numbers": np.random.randint(N, size=N),
-    }
-)
-
-
-def dynamic_data(n=10):
-    return df.loc[:n]
-
-
-def make_controls():
-    return [
-        vm.Filter(column="long_words"),
-        vm.Filter(
-            column="category 1",
-            selector=vm.Checklist(),
-        ),
-        vm.Filter(column="category 2", selector=vm.RadioItems()),
-        vm.Filter(column="numbers"),
-    ]
-
-
-page_1 = vm.Page(
-    title="Test page",
-    components=[
-        vm.Container(
-            components=[vm.AgGrid(id="grid", figure=dash_ag_grid(dynamic_data))],
-            controls=make_controls(),
-        ),
+dashboard_config = {
+    "title": "Test dashboard",
+    "pages": [
+        {
+            "title": "Page 1",
+            "components": [
+                {"type": "card", "text": "Hello, world!"},
+                {
+                    "type": "graph",
+                    "figure": {
+                        "_target_": "scatter",
+                        "data_frame": "iris",
+                        "x": "sepal_length",
+                        "y": "sepal_width",
+                    },
+                },
+                {
+                    "type": "graph",
+                    "figure": {
+                        "_target_": "charts.custom_scatter",
+                        "data_frame": "iris",
+                        "x": "sepal_length",
+                        "y": "sepal_width",
+                    },
+                },
+                {
+                    "type": "graph",
+                    "figure": {
+                        "_target_": "__main__.custom_bar",
+                        "data_frame": "iris",
+                        "x": "sepal_length",
+                        "y": "sepal_width",
+                    },
+                },
+                {
+                    "type": "graph",
+                    "figure": {
+                        "_target_": "custom_bar2",
+                        "data_frame": "iris",
+                    },
+                },
+            ],
+        }
     ],
-    controls=[
-        vm.Parameter(
-            targets=["grid.data_frame.n"],
-            selector=vm.Slider(
-                title="Change me to see bug", min=0, max=N, step=1, marks={0: "0", N // 2: str(N // 2), N: str(N)}
-            ),
-        ),
-        *make_controls(),
-    ],
-)
+}
 
-dashboard = vm.Dashboard(title="Test dashboard", pages=[page_1])
+
+@capture("graph")
+def custom_bar(data_frame: str, x: str, y: str):
+    return go.Figure(data=[go.Bar(x=data_frame[x], y=data_frame[y])])
+
+
+# dashboard = vm.Dashboard(
+#     title="Test dashboard",
+#     pages=[
+#         vm.Page(
+#             title="Page 1",
+#             components=[
+#                 vm.Card(text="Hello, world!"),
+#                 vm.Graph(figure=px.scatter(data_frame="iris", x="sepal_length", y="sepal_width")),
+#                 vm.Graph(figure=custom_scatter(data_frame="iris", x="sepal_length", y="sepal_width")),
+#             ],
+#             controls=[vm.Filter(column="sepal_length")],
+#         )
+#     ],
+# )
+
 
 if __name__ == "__main__":
+    dashboard = vm.Dashboard.model_validate(dashboard_config, context={"callable_defs": ["custom_bar2"]})
+    print(dashboard._to_python())
+    # config = dashboard.model_dump(exclude_unset=True)
+    # print(config)
+    # print("-" * 100)
+    # model_manager._clear()
+    # dashboard2 = vm.Dashboard.model_validate(config)
+    # print(dashboard2._to_python())
     app = Vizro().build(dashboard)
-    app.run()
+
+    # app.run(debug=True)
+
+# What I ultimately want:
+
+
+# - import path is the clean and normal way to define custom additions to vizro, ie json in .json, python in .py
+# - serializing a Dashboard object should be possible with external captured callables
+#   - for pre-defined callables (like px or vizro functions), this would be just normal json
+#   - for user-defined callables, LETS SEE
+# - instantiation:
