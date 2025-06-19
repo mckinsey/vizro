@@ -18,6 +18,7 @@ from vizro.tables import dash_ag_grid, dash_data_table
 iris = px.data.iris()
 tips = px.data.tips()
 stocks = px.data.stocks(datetimes=True)
+gapminder = px.data.gapminder()
 gapminder_2007 = px.data.gapminder().query("year == 2007")
 waterfall_df = pd.DataFrame(
     {
@@ -166,6 +167,12 @@ graphs = vm.Page(
                 width and length.
                 """,
             footer="""SOURCE: **Plotly iris data set, 2024**""",
+            description="""
+                **The Iris dataset** includes measurements of 150 iris flowers across three types: Setosa, Versicolor,
+                and Virginica.
+                While all samples are labeled by type, they can appear similar when looking at just some features -
+                 making it a useful dataset for exploring patterns and challenges in classification.
+            """,
         ),
     ],
 )
@@ -178,6 +185,12 @@ ag_grid = vm.Page(
             title="Gapminder Data Insights",
             header="""#### An Interactive Exploration of Global Health, Wealth, and Population""",
             footer="""SOURCE: **Plotly gapminder data set, 2024**""",
+            description="""
+                **The Gapminder dataset** tracks the development of countries over time using indicators like
+                life expectancy, income per person, and population size.
+                It helps reveal broad global trends, such as how health and wealth have improved in many regions—though
+                progress hasn't been even across all countries.
+            """,
         )
     ],
 )
@@ -274,17 +287,41 @@ button = vm.Page(
                 size="petal_length",
             ),
         ),
-        vm.Button(text="Export data", actions=[vm.Action(function=export_data())]),
+        vm.Button(
+            text="Export data",
+            actions=[vm.Action(function=export_data())],
+            description="""
+                Use this button to export the filtered data from the Iris dataset.
+            """,
+        ),
     ],
     controls=[vm.Filter(column="species", selector=vm.Dropdown(title="Species"))],
 )
 
 containers = vm.Page(
     title="Containers",
+    layout=vm.Grid(grid=[[0, 1]]),
     components=[
         vm.Container(
             title="Container I",
-            layout=vm.Grid(grid=[[0, 1]]),
+            components=[
+                vm.Graph(
+                    figure=px.scatter(
+                        iris,
+                        x="sepal_width",
+                        y="sepal_length",
+                        color="species",
+                        marginal_y="violin",
+                        marginal_x="box",
+                        title="Container II - Scatter",
+                    )
+                )
+            ],
+            variant="outlined",
+            controls=[vm.Filter(column="species", selector=vm.Checklist()), vm.Filter(column="sepal_length")],
+        ),
+        vm.Container(
+            title="Container II",
             components=[
                 vm.Graph(
                     figure=px.scatter(
@@ -305,22 +342,7 @@ containers = vm.Page(
                     )
                 ),
             ],
-        ),
-        vm.Container(
-            title="Container II",
-            components=[
-                vm.Graph(
-                    figure=px.scatter(
-                        iris,
-                        x="sepal_width",
-                        y="sepal_length",
-                        color="species",
-                        marginal_y="violin",
-                        marginal_x="box",
-                        title="Container II - Scatter",
-                    )
-                )
-            ],
+            variant="outlined",
         ),
     ],
 )
@@ -407,11 +429,20 @@ filters = vm.Page(
         ),
     ],
     controls=[
-        vm.Filter(column="species"),
+        vm.Filter(
+            column="species",
+            selector=vm.Dropdown(
+                description="""Select one or more species to explore patterns
+                specific to Setosa, Versicolor, or Virginica."""
+            ),
+        ),
         vm.Filter(
             column="petal_length",
             targets=["scatter_chart2"],
-            selector=vm.RangeSlider(),
+            selector=vm.RangeSlider(
+                description="""Use the slider to filter flowers by petal length.
+                Only samples within the selected range will be shown."""
+            ),
         ),
     ],
 )
@@ -512,6 +543,79 @@ selectors = vm.Page(
         vm.Filter(targets=["graph-stocks"], column="date", selector=vm.DatePicker(title="Date Picker (Stocks - date)")),
     ],
 )
+
+# LAYOUT ------------------------------------------------------------------
+
+grid_layout = vm.Page(
+    title="Grid layout",
+    layout=vm.Grid(grid=[[0, 1], [2, 2]]),
+    components=[
+        vm.Graph(
+            figure=px.line(
+                gapminder_2007,
+                title="Graph 1",
+                x="year",
+                y="lifeExp",
+                color="continent",
+            ),
+        ),
+        vm.Graph(
+            figure=px.scatter(
+                gapminder_2007,
+                title="Graph 2",
+                x="gdpPercap",
+                y="lifeExp",
+                size="pop",
+                color="continent",
+            ),
+        ),
+        vm.Graph(
+            figure=px.box(
+                gapminder_2007,
+                title="Graph 3",
+                x="continent",
+                y="lifeExp",
+                color="continent",
+            ),
+        ),
+    ],
+)
+
+flex_layout = vm.Page(
+    title="Flex layout",
+    layout=vm.Flex(direction="column", wrap=True),
+    components=[
+        vm.Graph(
+            figure=px.line(
+                gapminder,
+                title="Graph 1",
+                x="year",
+                y="lifeExp",
+                color="continent",
+            ),
+        ),
+        vm.Graph(
+            figure=px.scatter(
+                gapminder_2007,
+                title="Graph 2",
+                x="gdpPercap",
+                y="lifeExp",
+                size="pop",
+                color="continent",
+            ),
+        ),
+        vm.Graph(
+            figure=px.box(
+                gapminder_2007,
+                title="Graph 3",
+                x="continent",
+                y="lifeExp",
+                color="continent",
+            ),
+        ),
+    ],
+)
+
 
 # ACTIONS ---------------------------------------------------------------------
 export_data_action = vm.Page(
@@ -795,11 +899,12 @@ kpi_indicators = vm.Page(
 components = [graphs, ag_grid, table, cards, figure, button, containers, collapsible_container, tabs]
 controls = [filters, parameters, selectors]
 actions = [export_data_action, chart_interaction]
+layout = [grid_layout, flex_layout]
 extensions = [custom_charts, custom_tables, custom_actions, custom_figures, custom_components]
 
 dashboard = vm.Dashboard(
     title="Vizro Features",
-    pages=[home, *components, *controls, *actions, *extensions],
+    pages=[home, *components, *controls, *actions, *layout, *extensions],
     navigation=vm.Navigation(
         nav_selector=vm.NavBar(
             items=[
@@ -820,6 +925,7 @@ dashboard = vm.Dashboard(
                         ],
                         "Controls": ["Filters", "Parameters", "Selectors"],
                         "Actions": ["Export data", "Chart interaction"],
+                        "Layout": ["Grid layout", "Flex layout"],
                         "Extensions": [
                             "Custom Charts",
                             "Custom Tables",
@@ -833,6 +939,10 @@ dashboard = vm.Dashboard(
             ]
         )
     ),
+    description="""
+        This dashboard provides an overview of all available components and features in Vizro. Use it to explore,
+         test, and understand how everything works together.
+    """,
 )
 
 
