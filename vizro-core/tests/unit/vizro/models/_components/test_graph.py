@@ -3,6 +3,7 @@
 import re
 
 import dash_bootstrap_components as dbc
+import pandas as pd
 import plotly.graph_objects as go
 import pytest
 from asserts import assert_component_equal
@@ -14,6 +15,7 @@ import vizro.models as vm
 import vizro.plotly.express as px
 from vizro.managers import data_manager
 from vizro.models._action._action import Action
+from vizro.models.types import capture
 
 
 @pytest.fixture
@@ -32,6 +34,87 @@ def standard_px_chart_with_str_dataframe():
 @pytest.fixture
 def standard_px_chart_with_title():
     return px.scatter(data_frame="gapminder", x="gdpPercap", y="lifeExp", title="Title")
+
+
+@pytest.fixture
+def graph_config_with_target():
+    def _graph_config_with_target(target="_main__.custom_bar"):
+        return {
+            "type": "graph",
+            "figure": {
+                "_target_": target,
+                "data_frame": "iris",
+                "x": "sepal_length",
+                "y": "sepal_width",
+            },
+        }
+
+    return _graph_config_with_target
+
+
+@pytest.fixture
+def expected_code():
+    def _expected_code(target: str):
+        if target == "scatter":
+            return """############ Imports ##############
+import vizro.plotly.express as px
+import vizro.models as vm
+
+
+####### Data Manager Settings #####
+#######!!! UNCOMMENT BELOW !!!#####
+# from vizro.managers import data_manager
+# data_manager["iris"] = ===> Fill in here <===
+
+
+########### Model code ############
+model = vm.Graph(
+    type="graph",
+    figure=px.scatter(data_frame="iris", x="sepal_length", y="sepal_width"),
+)
+"""
+        elif target == "tests.unit.vizro.models._components.test_graph.custom_scatter":
+            return """############ Imports ##############
+import vizro.models as vm
+from vizro.models.types import capture
+
+
+####### Function definitions ######
+@capture("graph")
+def custom_scatter(data_frame: pd.DataFrame, x: str, y: str):
+    return go.Figure(data=[go.Scatter(x=data_frame[x], y=data_frame[y])])
+
+
+####### Data Manager Settings #####
+#######!!! UNCOMMENT BELOW !!!#####
+# from vizro.managers import data_manager
+# data_manager["iris"] = ===> Fill in here <===
+
+
+########### Model code ############
+model = vm.Graph(
+    type="graph",
+    figure=custom_scatter(data_frame="iris", x="sepal_length", y="sepal_width"),
+)
+"""
+        elif target == "custom_bar":
+            return """############ Imports ##############
+import vizro.models as vm
+
+
+########### Model code ############
+model = vm.Graph(
+    type="graph",
+    figure=custom_bar(data_frame="iris", x="sepal_length", y="sepal_width"),
+)
+"""
+
+    return _expected_code
+
+
+@capture("graph")
+def custom_scatter(data_frame: pd.DataFrame, x: str, y: str):
+    return go.Figure(data=[go.Scatter(x=data_frame[x], y=data_frame[y])])
 
 
 class TestGraphInstantiation:
@@ -108,6 +191,21 @@ class TestGraphInstantiation:
         assert my_graph.type == "graph"
         assert my_graph.figure == standard_px_chart._captured_callable
         assert my_graph.actions == []
+
+
+class TestGraphInstantiationJson:
+    @pytest.mark.parametrize(
+        "target",
+        [
+            "scatter",
+            "tests.unit.vizro.models._components.test_graph.custom_scatter",
+            "custom_bar",
+        ],
+    )
+    def test_graph_instantiation_with_target(self, graph_config_with_target, target, expected_code):
+        graph = vm.Graph.model_validate(graph_config_with_target(target), context={"callable_defs": ["custom_bar"]})
+        result = graph._to_python()
+        assert result == expected_code(target)
 
 
 class TestDunderMethodsGraph:

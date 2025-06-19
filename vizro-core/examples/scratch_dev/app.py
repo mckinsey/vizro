@@ -77,23 +77,36 @@ def custom_bar(data_frame: str, x: str, y: str):
 
 
 if __name__ == "__main__":
-    dashboard = vm.Dashboard.model_validate(dashboard_config, context={"callable_defs": ["custom_bar2"]})
-    print(dashboard._to_python())
+    # dashboard = vm.Dashboard.model_validate(dashboard_config, context={"callable_defs": ["custom_bar2"]})
+    # print(dashboard._to_python())
     # config = dashboard.model_dump(exclude_unset=True)
     # print(config)
     # print("-" * 100)
     # model_manager._clear()
     # dashboard2 = vm.Dashboard.model_validate(config)
     # print(dashboard2._to_python())
-    app = Vizro().build(dashboard)
+    # app = Vizro().build(dashboard)
 
     # app.run(debug=True)
 
-# What I ultimately want:
+    # What I ultimately want:
 
+    # - import path is the clean and normal way to define custom additions to vizro, ie json in .json, python in .py
+    # - serializing a Dashboard object should be possible with external captured callables
+    #   - for pre-defined callables (like px or vizro functions), this would be just normal json
+    #   - for user-defined callables, LETS SEE
+    # - instantiation:
 
-# - import path is the clean and normal way to define custom additions to vizro, ie json in .json, python in .py
-# - serializing a Dashboard object should be possible with external captured callables
-#   - for pre-defined callables (like px or vizro functions), this would be just normal json
-#   - for user-defined callables, LETS SEE
-# - instantiation:
+    graph = {
+        "type": "graph",
+        "figure": {
+            "_target_": "custom_bar",
+            "data_frame": "iris",
+            "x": "sepal_length",
+            "y": "sepal_width",
+        },
+    }
+
+    model = vm.Graph.model_validate(graph, context={"callable_defs": ["custom_bar"]})
+
+    print(model._to_python())
