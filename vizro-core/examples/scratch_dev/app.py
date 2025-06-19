@@ -98,10 +98,13 @@ TODO-FOR-REVIEWER: Manual testing steps for sync URL-controls:
             - ✅Confirm that the `UNKNOWN` still exists in the URL.
             - ✅Confirm that the URL contains all other controls.
             - ✅Confirm that the changing the control neither page refresh does not remove UNKNOWN from the URL.
-            - ❗the UNKNOWN parameter is not removed from the URL when navigating to Page-1 and back to Page-4.
+            - ❗ONLY FROM BRANCH: "feat/url-unknown-params":
+                - ✅Confirm that the UNKNOWN parameter persists in the URL when navigating to other pages.
         (unknown query parameter ID with value that is not base64 encoded)
         - http://localhost:8050/page_4?UNKNOWN=asd
             - ✅Confirm that the bug is not raised and that the page can be opened.
+            - ❗ONLY FROM BRANCH: "feat/url-unknown-params":
+                - ✅Confirm that the UNKNOWN parameter persists in the URL when navigating to other pages.
 """
 from dash import dcc
 import json
@@ -128,9 +131,9 @@ def encode_to_base64(value):
 
 
 @capture("action")
-def custom_drill_through_action(clicked_point):
+def custom_drill_through_action(clicked_point, url_search):
     species = clicked_point["points"][0]["customdata"][0]
-    return f"/page_3", f"?page_3_filter_species={encode_to_base64(species)}"
+    return f"/page_3", f"{url_search or '?'}&page_3_filter_species={encode_to_base64(species)}"
 
 
 page_1 = vm.Page(
@@ -165,7 +168,7 @@ page_2 = vm.Page(
             ),
             actions=[
                 vm.Action(
-                    function=custom_drill_through_action("page_2_graph.clickData"),
+                    function=custom_drill_through_action("page_2_graph.clickData", "vizro_url_callback_nav.search"),
                     outputs=["vizro_url_callback_nav.pathname", "vizro_url_callback_nav.search"],
                 )
             ],
