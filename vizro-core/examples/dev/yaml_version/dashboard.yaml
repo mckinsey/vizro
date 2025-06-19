@@ -572,6 +572,68 @@ pages:
         - [3]
         - [3]
     title: Selectors
+  - components:
+      - text: |
+          The `description` argument enables you to add helpful context to your components by displaying an
+          info icon next to its title. Hovering over the icon reveals a tooltip with the text you provide.
+
+          Tooltips can be added to any Vizro component that has a `title` argument.
+          You can provide a string to use the default info icon or `Tooltip` model to use any icon from the
+          [Google Material Icons library](https://fonts.google.com/icons).
+          Tooltips provide clean and lightweight way to add additional details to your dashboard.
+        type: card
+      - figure:
+          _target_: scatter
+          x: sepal_width
+          y: sepal_length
+          color: species
+          size: petal_length
+          data_frame: iris
+        type: graph
+        title: Relationships between Sepal Width and Sepal Length
+        description: |
+          **The Iris dataset** includes measurements of 150 iris flowers across three types: Setosa, Versicolor,
+          and Virginica.
+          While all samples are labeled by type, they can appear similar when looking at just some features -
+           making it a useful dataset for exploring patterns and challenges in classification.
+      - type: button
+        text: Export data
+        id: export_data_1
+        description: Use this button to export the filtered data from the Iris dataset.
+        actions:
+          - function:
+              _target_: export_data
+    controls:
+      - column: species
+        selector:
+          title: Species
+          type: dropdown
+          description: |
+            Select one or more species to explore patterns
+            specific to Setosa, Versicolor, or Virginica.
+        type: filter
+      - column: sepal_width
+        selector:
+          type: range_slider
+          description: |
+            Use the slider to filter flowers by sepal width.
+            Only samples within the selected range will be shown.
+        type: filter
+    layout:
+      grid:
+        - [0]
+        - [0]
+        - [1]
+        - [1]
+        - [1]
+        - [1]
+        - [1]
+        - [1]
+        - [2]
+      type: grid
+    description: |
+      This page provides overview of Tooltip functionality.
+    title: Tooltip
 navigation:
   nav_selector:
     type: nav_bar
@@ -593,6 +655,7 @@ navigation:
             - Containers
             - Collapsible containers
             - Tabs
+            - Tooltip
           Controls:
             - Filters
             - Parameters

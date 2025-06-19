@@ -533,7 +533,7 @@ tooltip = vm.Page(
             """
         ),
         vm.Graph(
-            title="Placeholder title",
+            title="Relationships between Sepal Width and Sepal Length",
             figure=px.scatter(
                 iris,
                 x="sepal_width",
@@ -719,72 +719,141 @@ selectors = vm.Page(
 
 grid_layout = vm.Page(
     title="Grid layout",
-    layout=vm.Grid(grid=[[0, 1], [2, 2]]),
+    layout=vm.Grid(grid=[[0, 0, 0, 0], [1, 1, 3, 3], [1, 1, 4, 4], [2, 2, 5, 5], [2, 2, 6, 6]]),
     components=[
-        vm.Graph(
-            figure=px.line(
-                gapminder_2007,
-                title="Graph 1",
-                x="year",
-                y="lifeExp",
-                color="continent",
-            ),
+        vm.Card(
+            text="""
+                ### Card #1
+
+                Lorem ipsum dolor sit amet, consetetur sadipscing no sea elitr sed diam nonumy.
+                Sed diam voluptua. At vero eos et accusam et justo no duo dolores et ea rebum.
+            """
         ),
-        vm.Graph(
-            figure=px.scatter(
-                gapminder_2007,
-                title="Graph 2",
-                x="gdpPercap",
-                y="lifeExp",
-                size="pop",
-                color="continent",
-            ),
+        vm.Card(
+            text="""
+                ### Card #2
+
+                Sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat.
+                Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet.
+            """
         ),
-        vm.Graph(
-            figure=px.box(
-                gapminder_2007,
-                title="Graph 3",
-                x="continent",
-                y="lifeExp",
-                color="continent",
-            ),
+        vm.Card(
+            text="""
+                ### Card #3
+
+                Sed diam voluptua. At vero eos et accusam et justo no duo dolores et ea rebum.
+                Lorem ipsum dolor sit amet, consetetur sadipscing no sea est elitr dolor sit amet.
+            """
+        ),
+        vm.Card(
+            text="""
+                ### Card #4
+
+                Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet.
+                Sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat.
+            """
+        ),
+        vm.Card(
+            text="""
+                ### Card #5
+
+                Lorem ipsum dolor sit amet, consetetur sadipscing no sea est elitr dolor sit amet.
+                Sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat.
+            """
+        ),
+        vm.Card(
+            text="""
+                ### Card #6
+
+                Sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat.
+                Lorem ipsum dolor sit amet, consetetur sadipscing no sea est elitr dolor sit amet.
+            """
+        ),
+        vm.Card(
+            text="""
+                ### Card #7
+
+                Lorem ipsum dolor sit amet, consetetur sadipscing no sea elitr sed diam nonumy.
+                Sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat.
+            """
         ),
     ],
+    description="""
+        Use Grid when you have a specific layout in mind—like a dashboard with clearly defined sections
+        (e.g. top summary row, bottom detail view).
+    """,
 )
 
 flex_layout = vm.Page(
     title="Flex layout",
-    layout=vm.Flex(direction="column", wrap=True),
+    layout=vm.Flex(
+        direction="column",
+        wrap=True,
+        gap="40px",
+    ),
     components=[
-        vm.Graph(
-            figure=px.line(
-                gapminder,
-                title="Graph 1",
-                x="year",
-                y="lifeExp",
-                color="continent",
-            ),
+        vm.Card(
+            text="""
+                ### Card #1
+
+                Lorem ipsum dolor sit amet, consetetur sadipscing no sea elitr sed diam nonumy.
+                Sed diam voluptua. At vero eos et accusam et justo no duo dolores et ea rebum.
+            """
         ),
-        vm.Graph(
-            figure=px.scatter(
-                gapminder_2007,
-                title="Graph 2",
-                x="gdpPercap",
-                y="lifeExp",
-                size="pop",
-                color="continent",
-            ),
+        vm.Card(
+            text="""
+                ### Card #2
+
+                Sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat.
+                Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet.
+            """
         ),
-        vm.Graph(
-            figure=px.box(
-                gapminder_2007,
-                title="Graph 3",
-                x="continent",
-                y="lifeExp",
-                color="continent",
-            ),
+        vm.Card(
+            text="""
+                ### Card #3
+
+                Sed diam voluptua. At vero eos et accusam et justo no duo dolores et ea rebum.
+                Lorem ipsum dolor sit amet, consetetur sadipscing no sea est elitr dolor sit amet.
+            """
+        ),
+        vm.Card(
+            text="""
+                ### Card #4
+
+                Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet.
+                Sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat.
+            """
+        ),
+        vm.Card(
+            text="""
+                ### Card #5
+
+                Lorem ipsum dolor sit amet, consetetur sadipscing no sea est elitr dolor sit amet.
+                Sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat.
+            """
+        ),
+        vm.Card(
+            text="""
+                ### Card #6
+
+                Sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat.
+                Lorem ipsum dolor sit amet, consetetur sadipscing no sea est elitr dolor sit amet.
+            """
+        ),
+        vm.Card(
+            text="""
+                ### Card #7
+
+                Lorem ipsum dolor sit amet, consetetur sadipscing no sea elitr sed diam nonumy.
+                Sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat.
+            """
         ),
     ],
+    description="""
+        Use Flex when you want a responsive row of items that adjusts automatically—great for things like
+        dynamic card collections or tag-like elements that should flow naturally.
+
+    """,
 )
 
 
@@ -1123,4 +1192,4 @@ if __name__ == "__main__":
         class_name="anchor-container",
     )
     app.dash.layout.children.append(banner)
-    app.run()
+    app.run(port=8051)
