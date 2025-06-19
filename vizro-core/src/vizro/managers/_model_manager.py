@@ -44,6 +44,7 @@ class ModelManager:
 
     # AM rough notes: probably better to just instantiate model manager in Vizro and pass dashboard in init rather
     # than doing it as separate method here.
+    # Ideal next checkpoint future state: work out whether to put this __init__.
     def _set_dashboard(self, dashboard):
         self.__populate_tree(dashboard)
         d = self.__dashboard_tree
@@ -60,6 +61,7 @@ class ModelManager:
         )
 
     # TODO: Consider storing "page_id" or "parent_model_id" and make searching helper methods easier?
+    # Ideal next checkpoint future state: this is removed.
     @_state_modifier
     def __setitem__(self, model_id: ModelID, model: Model):
         if model_id in self.__models:
@@ -70,11 +72,14 @@ class ModelManager:
             )
         self.__models[model_id] = model
 
+    # Ideal next checkpoint future state: this is removed. Maybe still be needed for temporary hack for actionschain
+    # needed during 0.1.x -> 0.2.0 transition.
     @_state_modifier
     def __delitem__(self, model_id: ModelID):
         # Only required to handle legacy actions and could be removed when those are no longer needed.
         del self.__models[model_id]
 
+    # Ideal next checkpoint future state: this still exists but uses self.__dashboard_tree.
     def __getitem__(self, model_id: ModelID) -> VizroBaseModel:
         # AM rough notes: smart lookup in nutree allows lookup by id and model itself and probably good to use here.
         # But there's unexpected behaviour/maybe a bug in nutree where you set Tree(calc_data_id) upfront.
@@ -85,6 +90,7 @@ class ModelManager:
         # Do we need to return deepcopy(self.__models[model_id]) to avoid adjusting element by accident?
         # return self.__models[model_id]
 
+    # Ideal next checkpoint future state: this still exists but uses self.__dashboard_tree.
     def __iter__(self) -> Generator[ModelID, None, None]:
         """Iterates through all models.
 
@@ -94,6 +100,7 @@ class ModelManager:
         #  lookup by model ID or more like dictionary?
         yield from self.__models
 
+    # Ideal next checkpoint future state: this still exists but uses self.__dashboard_tree.
     def _get_models(
         self,
         model_type: Optional[Union[type[Model], tuple[type[Model], ...], type[FIGURE_MODELS]]] = None,
@@ -115,6 +122,7 @@ class ModelManager:
             if model_type is None or isinstance(model, model_type):
                 yield model  # type: ignore[misc]
 
+    # Ideal next checkpoint future state: this method is removed.
     def __get_model_children(self, model: Model) -> Generator[Model, None, None]:
         """Iterates through children of `model`."""
         # AM: this is depth-first pre-order and matches nutree well
@@ -157,6 +165,7 @@ class ModelManager:
             for child_model in model:
                 self.__populate_tree(child_model, parent, field_name)
 
+    # Ideal next checkpoint future state: this still exists but uses self.__dashboard_tree.
     def _get_model_page(self, model: Model) -> Page:  # type: ignore[return]
         """Gets the page containing `model`."""
         from vizro.models import Page
@@ -168,6 +177,7 @@ class ModelManager:
             if model in self.__get_model_children(page):  # type: ignore[operator]
                 return page
 
+    # Ideal next checkpoint future state: move this to VizroBaseModel set_id validator.
     @staticmethod
     def _generate_id() -> ModelID:
         return str(uuid.UUID(int=rd.getrandbits(128)))
