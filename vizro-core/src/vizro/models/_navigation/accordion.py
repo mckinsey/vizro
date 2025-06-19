@@ -3,10 +3,10 @@ from collections.abc import Mapping
 from typing import Annotated, Literal, cast
 
 import dash_bootstrap_components as dbc
-from dash import get_relative_path
 from pydantic import AfterValidator, BeforeValidator, Field
 
 from vizro._constants import ACCORDION_DEFAULT_TITLE
+from vizro._vizro_utils import _get_relative_path_with_unknown_url_params
 from vizro.managers._model_manager import model_manager
 from vizro.models import VizroBaseModel
 from vizro.models._models_utils import _log_call
@@ -93,7 +93,7 @@ class Accordion(VizroBaseModel):
                     children=page.title,
                     className="accordion-item-link",
                     active="exact",
-                    href=get_relative_path(page.path),
+                    href=_get_relative_path_with_unknown_url_params(page_path=page.path),
                 )
             )
         return nav_links

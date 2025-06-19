@@ -92,6 +92,15 @@ function sync_url_query_params_and_controls(...values_ids) {
   const newUrl = `${window.location.pathname}?${urlParams.toString()}`;
   history.replaceState(null, "", newUrl);
 
+  // Overwrite all navigation links on the page to use the new query string.
+
+  //  const links = document.querySelectorAll("a[href^='/']");
+  //  links.forEach(link => {
+  //    const href = link.getAttribute("href");
+  //    const base = href.split('?')[0];
+  //    dash_clientside.set_props(link.id, {href: base + "?" + urlParams.toString()});
+  //  });
+
   console.log("CS:CB Returns:", [triggerOPL, ...outputSelectorValues]);
   return [triggerOPL, ...outputSelectorValues];
 }

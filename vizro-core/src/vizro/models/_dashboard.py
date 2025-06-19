@@ -22,6 +22,7 @@ from dash import (
     html,
 )
 from dash.development.base_component import Component
+from flask import g
 from pydantic import AfterValidator, BeforeValidator, Field, ValidationInfo
 from typing_extensions import TypedDict
 
@@ -321,6 +322,8 @@ class Dashboard(VizroBaseModel):
     def _make_page_layout(self, page: Page, **kwargs):
         # **kwargs are not used but ensure that unexpected query parameters do not raise errors. See
         # https://github.com/AnnMarieW/dash-multi-page-app-demos/#5-preventing-query-string-errors
+
+        g.url_query_params = kwargs
         page_divs = self._get_page_divs(page=page)
         page_layout = self._arrange_page_divs(page_divs=page_divs)
         page_layout.id = page.id
