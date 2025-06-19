@@ -2,9 +2,11 @@
 
 from collections import defaultdict
 from collections.abc import Mapping
+from typing import Any
+
 from dash import get_relative_path
 from flask import g
-from typing import Any
+
 from vizro.managers import model_manager
 
 
@@ -22,10 +24,7 @@ def _get_relative_path_with_unknown_url_params(page_path: str) -> str:
     base_path = get_relative_path(page_path)
 
     # Find unknown url query parameters inspecting the model_manager
-    unknown_params = {
-        key: value for key, value in g.url_query_params.items()
-        if key not in model_manager
-    }
+    unknown_params = {key: value for key, value in g.url_query_params.items() if key not in model_manager}
 
     if not unknown_params:
         return base_path
