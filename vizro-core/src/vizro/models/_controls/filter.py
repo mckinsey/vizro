@@ -90,6 +90,7 @@ class Filter(VizroBaseModel):
         "If none are given then target all components on the page that use `column`.",
     )
     selector: Optional[SelectorType] = None
+    show_in_url: bool = False
 
     _dynamic: bool = PrivateAttr(False)
     _column_type: Literal["numerical", "categorical", "temporal"] = PrivateAttr()
@@ -221,12 +222,8 @@ class Filter(VizroBaseModel):
     def build(self):
         # Cast is justified as the selector is set in pre_build and is not None.
         selector = cast(SelectorType, self.selector)
+
         selector_build_obj = selector.build()
-        # TODO: Align the (dynamic) object's return structure with the figure's components when the Dash bug is fixed.
-        #  This means returning an empty "html.Div(id=self.id, className=...)" as a placeholder from Filter.build().
-        #  Also, make selector.title visible when the filter is reloading.
-        if not self._dynamic:
-            return selector_build_obj
 
         # Temporarily hide the selector and numeric dcc.Input components during the filter reloading process.
         # Other components, such as the title, remain visible because of the configuration:
@@ -234,12 +231,16 @@ class Filter(VizroBaseModel):
         # Note: dcc.Slider and dcc.RangeSlider do not support the "style" property directly,
         # so the "className" attribute is used to apply custom CSS for visibility control.
         # Reference for Dash class names: https://dashcheatsheet.pythonanywhere.com/
-        selector_build_obj[selector.id].className = "invisible"
-        if f"{selector.id}_start_value" in selector_build_obj:
-            selector_build_obj[f"{selector.id}_start_value"].className = "d-none"
-        if f"{selector.id}_end_value" in selector_build_obj:
-            selector_build_obj[f"{selector.id}_end_value"].className = "d-none"
+        if self._dynamic:
+            selector_build_obj[selector.id].className = "invisible"
+            if f"{selector.id}_start_value" in selector_build_obj:
+                selector_build_obj[f"{selector.id}_start_value"].className = "d-none"
+            if f"{selector.id}_end_value" in selector_build_obj:
+                selector_build_obj[f"{selector.id}_end_value"].className = "d-none"
 
+        # TODO: Align the (dynamic) object's return structure with the figure's components when the Dash bug is fixed.
+        #  This means returning an empty "html.Div(id=self.id, className=...)" as a placeholder from Filter.build().
+        #  Also, make selector.title visible when the filter is reloading.
         return dcc.Loading(
             id=self.id,
             children=selector_build_obj,

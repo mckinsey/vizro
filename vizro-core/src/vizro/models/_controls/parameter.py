@@ -1,6 +1,7 @@
 from collections.abc import Iterable
 from typing import Annotated, Literal, cast
 
+from dash import dcc
 from pydantic import AfterValidator, Field
 
 from vizro._constants import PARAMETER_ACTION_PREFIX
@@ -74,6 +75,7 @@ class Parameter(VizroBaseModel):
         AfterValidator(check_duplicate_parameter_target),
     ]
     selector: SelectorType
+    show_in_url: bool = False
 
     @_log_call
     def pre_build(self):
@@ -85,7 +87,12 @@ class Parameter(VizroBaseModel):
 
     @_log_call
     def build(self):
-        return self.selector.build()
+        return dcc.Loading(
+            id=self.id,
+            children=self.selector.build(),
+            color="grey",
+            overlay_style={"visibility": "visible"},
+        )
 
     def _check_numerical_and_temporal_selectors_values(self):
         if isinstance(self.selector, (Slider, RangeSlider, DatePicker)):
