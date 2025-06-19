@@ -98,13 +98,10 @@ TODO-FOR-REVIEWER: Manual testing steps for sync URL-controls:
             - ✅Confirm that the `UNKNOWN` still exists in the URL.
             - ✅Confirm that the URL contains all other controls.
             - ✅Confirm that the changing the control neither page refresh does not remove UNKNOWN from the URL.
-            - ❗ONLY FROM BRANCH: "feat/url-unknown-params":
-                - ✅Confirm that the UNKNOWN parameter persists in the URL when navigating to other pages.
+            - ✅the UNKNOWN parameter is not removed from the URL when navigating to Page-1 and back to Page-4.
         (unknown query parameter ID with value that is not base64 encoded)
         - http://localhost:8050/page_4?UNKNOWN=asd
             - ✅Confirm that the bug is not raised and that the page can be opened.
-            - ❗ONLY FROM BRANCH: "feat/url-unknown-params":
-                - ✅Confirm that the UNKNOWN parameter persists in the URL when navigating to other pages.
 """
 from dash import dcc
 import json
