@@ -16,8 +16,8 @@ from packaging.version import parse
 import vizro
 from vizro._constants import VIZRO_ASSETS_PATH
 from vizro.managers import data_manager, model_manager
-from vizro.models import Dashboard, Filter, Graph
-from vizro.models.types import CapturedCallableProxy
+from vizro.managers._model_manager import FIGURE_MODELS
+from vizro.models import Dashboard, Filter
 
 logger = logging.getLogger(__name__)
 
@@ -115,9 +115,9 @@ class Vizro:
 
         # Check if there are undefined captured callables in the dashboard.
         self._undefined_captured_callables = {
-            f"{model.figure.function_name}"
-            for model in list(model_manager._get_models(root_model=dashboard, model_type=Graph))
-            if isinstance(model.figure, CapturedCallableProxy)
+            (model.figure._function, model.figure._mode)
+            for model in list(model_manager._get_models(root_model=dashboard, model_type=FIGURE_MODELS))
+            if model.figure._prevent_run
         }
         # Add data-bs-theme attribute that is always present, even for pages without theme selector,
         # i.e. the Dash "Loading..." screen.
@@ -142,8 +142,8 @@ class Vizro:
 
         if self._undefined_captured_callables:
             raise ValueError(
-                f"""Dashboard contains Graph models with undefined CapturedCallable's: {self._undefined_captured_callables}.
-Provide a valid import path for the CapturedCallable's in the dashboard config."""
+                f"""Dashboard contains models with undefined CapturedCallable's: {self._undefined_captured_callables}.
+Provide a valid import path for the CapturedCallables in the dashboard config."""
             )
 
         if kwargs.get("processes", 1) > 1 and type(data_manager.cache.cache) is SimpleCache:

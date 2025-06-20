@@ -9,7 +9,7 @@ import sys
 import warnings
 from contextlib import contextmanager
 from datetime import date
-from typing import Annotated, Any, Literal, Optional, Protocol, Union, runtime_checkable
+from typing import Annotated, Any, Callable, Literal, Optional, Protocol, Union, runtime_checkable
 
 from pydantic import ImportString, TypeAdapter, ValidationError
 
@@ -108,7 +108,7 @@ def validate_captured_callable(cls, value: Any, info: ValidationInfo):
 
     try:
         # Downside of validation is that it gets raised multiple times if there are multiple graphs in the dashboard.
-        callable_defs: list[str] = TypeAdapter(list[str]).validate_python(
+        callable_defs: list[tuple[str, str]] = TypeAdapter(list[tuple[str, str]]).validate_python(
             info.context.get("callable_defs", []) if info.context is not None else []
         )
     except ValidationError as e:
@@ -122,45 +122,9 @@ def validate_captured_callable(cls, value: Any, info: ValidationInfo):
     )
 
 
-# This proxy class is used to allow undefined CapturedCallable's to be validated and serialized.
-# When trying to instatiate a dashboard from json, if we cannot import the fucntion, then the CapturedCallableProxy
-# is the instatiated object of choice if the `_target_` is in the `callable_defs` list of the validation context.
-# This allows us to instatiate dashboard objects wihtout needing to execute/import the function definiition. Useful
-# in the context of untrusted code generation (e.g. by LLMs).
-class CapturedCallableProxy:
-    """Proxy for CapturedCallable that allows undefined CapturedCallable's to be validated and serialized."""
-
-    function_name: str
-    call_args: dict[str, Any]
-
-    def __init__(self, function_name: str, call_args: dict[str, Any]):
-        self.function_name = function_name
-        self.call_args = call_args
-
-    # TODO: is this method still needed?
-    def __getitem__(self, arg_name: str):
-        """Avoid failure on access"""
-        pass
-
-    def __repr_clean__(self):
-        """Alternative __repr__ method with cleaned module paths."""
-        args = ", ".join(f"{key}={value!r}" for key, value in self.call_args.items())
-        return f"{self.function_name}({args})"
-
-    # The below is to allow CapturedCallableProxy to be part of the Vizro schema - see CapturedCallable for more details.
-    @classmethod
-    def __get_pydantic_core_schema__(cls, source: Any, handler: Any) -> cs.core_schema.CoreSchema:
-        """Core validation, which boils down to checking if it is a custom type."""
-        return cs.core_schema.no_info_plain_validator_function(cls.core_validation)
-
-    @staticmethod
-    def core_validation(value: Any):
-        """Core validation logic."""
-        if not isinstance(value, CapturedCallableProxy):
-            raise ValueError(f"Expected CapturedCallableProxy, got {type(value)}")
-        return value
-
-
+# CapturedCallable now allows instatiation via string, which will instantiate an object with ._prevent_run = True.
+# This allows us to instantiate dashboard objects without needing to execute/import the function definition.
+# Useful in the context of untrusted code generation (e.g. by LLMs).
 class CapturedCallable:
     """Stores a captured function call to use in a dashboard.
 
@@ -179,7 +143,7 @@ class CapturedCallable:
     or [custom figures](../user-guides/custom-figures.md).
     """
 
-    def __init__(self, function, /, *args, **kwargs):
+    def __init__(self, function: Union[Callable[..., Any], str], /, *args: Any, **kwargs: Any):
         """Creates a new `CapturedCallable` object that will be able to re-run `function`.
 
         Partially binds *args and **kwargs to the function call.
@@ -195,42 +159,49 @@ class CapturedCallable:
         # it more difficult to handle variadic keyword arguments due to https://bugs.python.org/issue41745.
         # Hence we abandon bound_arguments.args and bound_arguments.kwargs in favor of just using
         # self.__function(**bound_arguments.arguments).
-        parameters = inspect.signature(function).parameters
-        invalid_params = {
-            param.name
-            for param in parameters.values()
-            if param.kind in [inspect.Parameter.POSITIONAL_ONLY, inspect.Parameter.VAR_POSITIONAL]
-        }
+        if isinstance(function, Callable):
+            parameters = inspect.signature(function).parameters
+            invalid_params = {
+                param.name
+                for param in parameters.values()
+                if param.kind in [inspect.Parameter.POSITIONAL_ONLY, inspect.Parameter.VAR_POSITIONAL]
+            }
 
-        if invalid_params:
-            raise ValueError(
-                f"Invalid parameter {', '.join(invalid_params)}. CapturedCallable does not accept functions with "
-                f"positional-only or variadic positional parameters (*args)."
-            )
+            if invalid_params:
+                raise ValueError(
+                    f"Invalid parameter {', '.join(invalid_params)}. CapturedCallable does not accept functions with "
+                    f"positional-only or variadic positional parameters (*args)."
+                )
 
-        self.__function = function
-        self.__bound_arguments = inspect.signature(function).bind_partial(*args, **kwargs).arguments
-        self.__unbound_arguments = [
-            param for param in parameters.values() if param.name not in self.__bound_arguments
-        ]  # Maintaining the same order here is important.
+            self.__function = function
+            self.__bound_arguments = inspect.signature(function).bind_partial(*args, **kwargs).arguments
+            self.__unbound_arguments = [
+                param for param in parameters.values() if param.name not in self.__bound_arguments
+            ]  # Maintaining the same order here is important.
 
-        # A function can only ever have one variadic keyword parameter. {""} is just here so that var_keyword_param
-        # is always unpacking a one element set.
-        (var_keyword_param,) = {
-            param.name for param in parameters.values() if param.kind == inspect.Parameter.VAR_KEYWORD
-        } or {""}
+            # A function can only ever have one variadic keyword parameter. {""} is just here so that var_keyword_param
+            # is always unpacking a one element set.
+            (var_keyword_param,) = {
+                param.name for param in parameters.values() if param.kind == inspect.Parameter.VAR_KEYWORD
+            } or {""}
 
-        # Since we do __call__ as self.__function(**bound_arguments.arguments), we need to restructure the arguments
-        # a bit to put the kwargs in the right place.
-        # For a function with parameter **kwargs this converts self.__bound_arguments = {"kwargs": {"a": 1}} into
-        # self.__bound_arguments = {"a": 1}.
-        if var_keyword_param in self.__bound_arguments:
-            self.__bound_arguments.update(self.__bound_arguments[var_keyword_param])
-            del self.__bound_arguments[var_keyword_param]
+            # Since we do __call__ as self.__function(**bound_arguments.arguments), we need to restructure the arguments
+            # a bit to put the kwargs in the right place.
+            # For a function with parameter **kwargs this converts self.__bound_arguments = {"kwargs": {"a": 1}} into
+            # self.__bound_arguments = {"a": 1}.
+            if var_keyword_param in self.__bound_arguments:
+                self.__bound_arguments.update(self.__bound_arguments[var_keyword_param])
+                del self.__bound_arguments[var_keyword_param]
 
-        # Used in later validations of the captured callable.
-        self._mode = None
-        self._model_example = None
+            # Used in later validations of the captured callable.
+            self._mode = None
+            self._model_example = None
+            self._prevent_run = False
+        else:
+            self._prevent_run = True
+            self.__function = function
+            self.__bound_arguments = kwargs
+            self._mode = args[0]
 
     def __call__(self, *args, **kwargs):
         """Run the `function` with the initially bound arguments overridden by `**kwargs`.
@@ -280,6 +251,7 @@ class CapturedCallable:
     def _arguments(self):
         # TODO: This is used twice: in _get_parametrized_config and in vm.Action and should be removed when those
         # references are removed.
+        # Addition MS: this seems to be also used in model_post_init in _components/ag_grid.py
         # TODO-AV2 B 1: try to subclass Mapping. Check if anything requires MutableMapping (used in Vizro AI tests
         #  and to set data_frame only?). Try to remove these by making special method for setting data_frame. Then
         # can remove as many uses of _arguments as possible and use .items() where suitable instead.
@@ -295,7 +267,7 @@ class CapturedCallable:
         cls,
         captured_callable_config: Union[dict[str, Any], _SupportsCapturedCallable, CapturedCallable],
         json_schema_extra: JsonSchemaExtraType,
-        callable_defs: list[str],
+        callable_defs: list[tuple[str, str]],
     ):
         value = cls._parse_json(
             captured_callable_config=captured_callable_config,
@@ -330,7 +302,7 @@ class CapturedCallable:
         captured_callable_config: Union[_SupportsCapturedCallable, CapturedCallable, dict[str, Any]],
         json_schema_extra: JsonSchemaExtraType,
         callable_defs: list[str],
-    ) -> Union[CapturedCallable, _SupportsCapturedCallable, CapturedCallableProxy]:
+    ) -> Union[CapturedCallable, _SupportsCapturedCallable]:
         """Parses captured_callable_config specification from JSON/YAML.
 
         If captured_callable_config is already _SupportCapturedCallable or CapturedCallable then it just passes through
@@ -367,11 +339,10 @@ class CapturedCallable:
             except ValidationError:
                 continue
         else:
-            if function_name in callable_defs:
-                return CapturedCallableProxy(
-                    function_name=function_name,
-                    call_args=captured_callable_config,
-                )
+            if function_name in (def_name for def_name, _ in callable_defs):
+                # Find the mode from callable_defs tuple
+                mode = next(mode for def_name, mode in callable_defs if def_name == function_name)
+                return CapturedCallable(function_name, mode, **captured_callable_config)
             raise ValueError(
                 f"""Failed to import function '{function_name}' from any of the attempted paths:
 {import_attempts}.
@@ -412,9 +383,6 @@ class CapturedCallable:
         expected_mode = json_schema_extra["mode"]
         import_path = json_schema_extra["import_path"]
 
-        if isinstance(captured_callable, CapturedCallableProxy):
-            return captured_callable
-
         if not isinstance(captured_callable, CapturedCallable):
             raise ValueError(
                 f"Invalid CapturedCallable. Supply a function imported from {import_path} or defined with "
@@ -436,6 +404,8 @@ class CapturedCallable:
 
     def __repr_clean__(self):
         """Alternative __repr__ method with cleaned module paths."""
+        if self._prevent_run:
+            return f"{self._function}({self._arguments})"
         args = ", ".join(f"{key}={value!r}" for key, value in self._arguments.items())
         original_module_path = f"{self._function.__module__}"
         return f"{_clean_module_string(original_module_path)}{self._function.__name__}({args})"
@@ -729,13 +699,3 @@ class _Controls(TypedDict):
     filters: list[Any]
     parameters: list[Any]
     filter_interaction: list[dict[str, Any]]
-
-
-if __name__ == "__main__":
-    from pydantic import BaseModel
-
-    class Foo(BaseModel):
-        test: CapturedCallableProxy
-
-    foo = Foo(test=CapturedCallableProxy(function_name="custom_bar2", call_args={"data_frame": "iris"}))
-    print(foo.model_dump())

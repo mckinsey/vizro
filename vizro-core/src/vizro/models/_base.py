@@ -68,7 +68,7 @@ def _format_and_lint(code_string: str) -> str:
 
 def _dict_to_python(object: Any) -> str:
     import vizro.actions as va
-    from vizro.models.types import CapturedCallable, CapturedCallableProxy
+    from vizro.models.types import CapturedCallable
 
     if isinstance(object, dict) and "__vizro_model__" in object:
         __vizro_model__ = object.pop("__vizro_model__")
@@ -95,7 +95,7 @@ def _dict_to_python(object: Any) -> str:
         # Need to do this manually to avoid extra quotation marks that arise when doing repr(list).
         code_string = ", ".join(_dict_to_python(item) for item in object)
         return f"[{code_string}]"
-    elif isinstance(object, (CapturedCallable, CapturedCallableProxy)):
+    elif isinstance(object, CapturedCallable):
         return object.__repr_clean__()
     else:
         return repr(object)

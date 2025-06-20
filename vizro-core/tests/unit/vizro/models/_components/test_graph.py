@@ -197,7 +197,9 @@ class TestGraphInstantiationJson:
         ],
     )
     def test_graph_instantiation_with_target(self, graph_config_with_target, target, expected_code):
-        graph = vm.Graph.model_validate(graph_config_with_target(target), context={"callable_defs": ["custom_bar"]})
+        graph = vm.Graph.model_validate(
+            graph_config_with_target(target), context={"callable_defs": [("custom_bar", "graph")]}
+        )
         result = graph._to_python()
         assert result == expected_code
 

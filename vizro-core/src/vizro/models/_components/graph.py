@@ -1,7 +1,7 @@
 import logging
 import warnings
 from contextlib import suppress
-from typing import Annotated, Any, Literal, Optional, Union, cast
+from typing import Annotated, Any, Literal, Optional, cast
 
 import pandas as pd
 from dash import ClientsideFunction, Input, Output, State, clientside_callback, dcc, html, set_props
@@ -23,7 +23,6 @@ from vizro.models._tooltip import coerce_str_to_tooltip
 from vizro.models.types import (
     ActionType,
     CapturedCallable,
-    CapturedCallableProxy,
     ModelID,
     _IdProperty,
     validate_captured_callable,
@@ -58,7 +57,7 @@ class Graph(VizroBaseModel):
 
     type: Literal["graph"] = "graph"
     figure: Annotated[
-        SkipJsonSchema[Union[CapturedCallable, CapturedCallableProxy]],
+        SkipJsonSchema[CapturedCallable],
         AfterValidator(_process_callable_data_frame),
         Field(
             json_schema_extra={"mode": "graph", "import_path": "vizro.plotly.express"},
