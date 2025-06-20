@@ -37,7 +37,7 @@ class Vizro:
                 [Dash documentation](https://dash.plotly.com/reference#dash.dash) for possible arguments.
 
         """
-        self._undefined_captured_callables: list[str] = []
+        self._undefined_captured_callables: set[str] = {}
 
         # Set suppress_callback_exceptions=True for the following reasons:
         # 1. Prevents the following Dash exception when using html.Div as placeholders in build methods:
@@ -114,10 +114,11 @@ class Vizro:
         self.dash.layout = dashboard.build()
 
         # Check if there are undefined captured callables in the dashboard.
-        for model in list(model_manager._get_models(root_model=dashboard)):
-            if isinstance(model, Graph) and isinstance(model.figure, CapturedCallableProxy):
-                self._undefined_captured_callables.append(f"{model.figure.function_name}")
-
+        self._undefined_captured_callables = {
+            f"{model.figure.function_name}"
+            for model in list(model_manager._get_models(root_model=dashboard, model_type=Graph))
+            if isinstance(model.figure, CapturedCallableProxy)
+        }
         # Add data-bs-theme attribute that is always present, even for pages without theme selector,
         # i.e. the Dash "Loading..." screen.
         bootstrap_theme = dashboard.theme.removeprefix("vizro_")

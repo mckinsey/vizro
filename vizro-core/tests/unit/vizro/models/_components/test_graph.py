@@ -52,11 +52,7 @@ def graph_config_with_target():
     return _graph_config_with_target
 
 
-@pytest.fixture
-def expected_code():
-    def _expected_code(target: str):
-        if target == "scatter":
-            return """############ Imports ##############
+expected_code_px = """############ Imports ##############
 import vizro.plotly.express as px
 import vizro.models as vm
 
@@ -73,8 +69,8 @@ model = vm.Graph(
     figure=px.scatter(data_frame="iris", x="sepal_length", y="sepal_width"),
 )
 """
-        elif target == "tests.unit.vizro.models._components.test_graph.custom_scatter":
-            return """############ Imports ##############
+
+expected_code_custom = """############ Imports ##############
 import vizro.models as vm
 from vizro.models.types import capture
 
@@ -97,8 +93,7 @@ model = vm.Graph(
     figure=custom_scatter(data_frame="iris", x="sepal_length", y="sepal_width"),
 )
 """
-        elif target == "custom_bar":
-            return """############ Imports ##############
+expected_code_pass_validation = """############ Imports ##############
 import vizro.models as vm
 
 
@@ -108,8 +103,6 @@ model = vm.Graph(
     figure=custom_bar(data_frame="iris", x="sepal_length", y="sepal_width"),
 )
 """
-
-    return _expected_code
 
 
 @capture("graph")
@@ -195,17 +188,18 @@ class TestGraphInstantiation:
 
 class TestGraphInstantiationJson:
     @pytest.mark.parametrize(
-        "target",
+        "target,expected_code",
         [
-            "scatter",
-            "tests.unit.vizro.models._components.test_graph.custom_scatter",
-            "custom_bar",
+            ("scatter", expected_code_px),
+            ("vizro.plotly.express.scatter", expected_code_px),
+            (f"{__name__}.custom_scatter", expected_code_custom),
+            ("custom_bar", expected_code_pass_validation),
         ],
     )
     def test_graph_instantiation_with_target(self, graph_config_with_target, target, expected_code):
         graph = vm.Graph.model_validate(graph_config_with_target(target), context={"callable_defs": ["custom_bar"]})
         result = graph._to_python()
-        assert result == expected_code(target)
+        assert result == expected_code
 
 
 class TestDunderMethodsGraph:
