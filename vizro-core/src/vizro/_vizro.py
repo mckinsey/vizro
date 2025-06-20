@@ -16,6 +16,7 @@ from packaging.version import parse
 import vizro
 from vizro._constants import VIZRO_ASSETS_PATH
 from vizro.managers import data_manager, model_manager
+from vizro.managers._model_manager import FIGURE_MODELS
 from vizro.models import Dashboard, Filter
 
 logger = logging.getLogger(__name__)
@@ -36,6 +37,8 @@ class Vizro:
                 [Dash documentation](https://dash.plotly.com/reference#dash.dash) for possible arguments.
 
         """
+        self._undefined_captured_callables: set[str] = {}
+
         # Set suppress_callback_exceptions=True for the following reasons:
         # 1. Prevents the following Dash exception when using html.Div as placeholders in build methods:
         #    "Property 'cellClicked' was used with component ID '__input_ag_grid_id' in one of the Input
@@ -110,6 +113,12 @@ class Vizro:
         self._pre_build()
         self.dash.layout = dashboard.build()
 
+        # Check if there are undefined captured callables in the dashboard.
+        self._undefined_captured_callables = {
+            (model.figure._function, model.figure._mode)
+            for model in list(model_manager._get_models(root_model=dashboard, model_type=FIGURE_MODELS))
+            if model.figure._prevent_run
+        }
         # Add data-bs-theme attribute that is always present, even for pages without theme selector,
         # i.e. the Dash "Loading..." screen.
         bootstrap_theme = dashboard.theme.removeprefix("vizro_")
@@ -130,6 +139,12 @@ class Vizro:
         """
         data_manager._frozen_state = True
         model_manager._frozen_state = True
+
+        if self._undefined_captured_callables:
+            raise ValueError(
+                f"""Dashboard contains models with undefined CapturedCallable's: {self._undefined_captured_callables}.
+Provide a valid import path for the CapturedCallables in the dashboard config."""
+            )
 
         if kwargs.get("processes", 1) > 1 and type(data_manager.cache.cache) is SimpleCache:
             warnings.warn(

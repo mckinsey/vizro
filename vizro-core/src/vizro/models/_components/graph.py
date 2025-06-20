@@ -20,7 +20,13 @@ from vizro.models._action._actions_chain import _action_validator_factory
 from vizro.models._components._components_utils import _process_callable_data_frame
 from vizro.models._models_utils import _log_call
 from vizro.models._tooltip import coerce_str_to_tooltip
-from vizro.models.types import ActionType, CapturedCallable, ModelID, _IdProperty, validate_captured_callable
+from vizro.models.types import (
+    ActionType,
+    CapturedCallable,
+    ModelID,
+    _IdProperty,
+    validate_captured_callable,
+)
 
 logger = logging.getLogger(__name__)
 
