@@ -88,3 +88,99 @@ For more information, see our documentation on [customizing CSS](custom-css.md)
 It is possible to create custom React.js components and add them directly to any Vizro dashboard so enabling you to code beneath both the Vizro and Dash layers and control React.js directly
 
 For more information, see the documentation on [using React.js components with Dash](https://dash.plotly.com/plugins)
+
+## Using custom functions in `yaml`/`json` configuration
+
+It is possible to refer to custom functions that are used as `CapturedCallable` by their import path in a `yaml`/`json` configuration of the dashboard.
+
+In the [documentation sections on custom charts, tables, figures and actions](#vizro-customizations), you will find examples on how the Vizro schema can be extended by using custom Python code. It is possible to refer to these custom functions in the `yaml`/`json` configuration by using the `_target_` key and the correct import path.
+
+!!! example "Custom charts with YAML config example"
+
+
+    ```{.python pycafe-link  hl_lines="27 28"}
+    import pandas as pd
+    import plotly.graph_objects as go
+    import vizro.models as vm
+    import vizro.plotly.express as px
+    import yaml
+    from vizro import Vizro
+    from vizro.managers import data_manager
+    from vizro.models.types import capture
+
+    data_manager["iris"] = px.data.iris()
+
+
+    @capture("graph")
+    def custom_bar(data_frame: pd.DataFrame, x: str, y: str) -> go.Figure: # (1)!
+        """Custom bar chart using Plotly Graph Objects."""
+        return go.Figure(data=[go.Bar(x=data_frame[x], y=data_frame[y])])
+
+
+    # Dashboard configuration in YAML format
+    dashboard_yaml = """
+    title: "Custom Chart Example"
+    pages:
+    - title: "Custom Bar Chart"
+        components:
+        - type: "graph"
+            figure:
+            _target_: "__main__.custom_bar"
+            data_frame: "iris"
+            x: "sepal_length"
+            y: "sepal_width"
+    """
+
+    # Load dashboard from YAML
+    dashboard_config = yaml.safe_load(dashboard_yaml)# (2)!
+    dashboard = vm.Dashboard(**dashboard_config)
+
+    # Build and run the dashboard
+    app = Vizro().build(dashboard)
+
+    if __name__ == "__main__":
+        app.run()
+    ```
+
+    1. Define the custom chart either in `app.py` or in a separate file.
+    2. Parse the YAML or JSON configuration that refers to the custom chart with the **correct import path**. If the custom chart is defined in the `app.py`, then use `__main__` as the import path.
+
+### Validating dashboards without executing `CapturedCallable` functions
+
+It is possible to validate a dashboard configuration without executing the `CapturedCallable` functions. 
+
+This is useful when you want to check if the dashboard configuration is valid, but you don't want to execute the custom functions until run-time, which may be in a sandboxed environment.
+This may be useful when the custom functions are not available at validation time, or when they originate from untrusted sources (e.g. when a large language model is used to generate that code).
+
+!!! example "Validating dashboards without executing `CapturedCallable` functions"
+
+    ```python
+    import vizro.models as vm
+    import vizro.plotly.express as px
+    from vizro import Vizro
+    from vizro.managers import data_manager
+
+    data_manager["iris"] = px.data.iris()
+
+    dashboard_config = {
+        "title": "Test dashboard",
+        "pages": [
+            {
+                "title": "Page 1",
+                "components": [
+                    {
+                        "type": "ag_grid",
+                        "figure": {"_target_": "weird_grid", "data_frame": "iris"},
+                    },
+                ],
+            }
+        ],
+    }
+
+    dashboard = vm.Dashboard.model_validate(
+        dashboard_config,
+        context={"callable_defs": [("weird_grid", "ag_grid")]},
+    )
+    Vizro().build(dashboard)
+    ```
+
